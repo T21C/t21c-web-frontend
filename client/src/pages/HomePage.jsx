@@ -92,10 +92,94 @@ const HomePage = () => {
             }
             1;
         }
+        class Circle {
+            constructor(x, y, dx, dy, radius, color) {
+                this.x = x;
+                this.y = y;
+                this.dx = dx;
+                this.dy = dy;
+                this.radius = radius;
+                this.minRadius = radius;
+                this.color = color;
+            }
+
+            draw() {
+                c.beginPath();
+                c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                c.fillStyle = this.color;
+                c.fill();
+            }
+        }
+        class RevolvingCircles {
+            constructor(x, y, radius, speed) {
+                this.x = x;
+                this.y = y;
+                this.circle1 = new Circle(x, y, 0, 0, radius, "red");
+                this.circle2 = new Circle(x, y, 0, 0, radius, "blue");
+                this.speed = speed;
+                this.trailLength = 20; // Number of points to keep for the trail
+                this.trailPointDistance = 5; // Distance between trail points
+                this.circle1Trail = []; // Array to store previous positions for circle1 trail
+                this.circle2Trail = []; // Array to store previous positions for circle2 trail
+            }
+
+            update() {
+                // Update the angles for both circles to make them revolve around each other
+                const angle1 = (performance.now() * this.speed) / 1000;
+                const angle2 = angle1 + Math.PI; // Offset the second circle's angle
+
+                // Update positions for both circles
+                let gap = 48;
+                this.circle1.x = this.x / 2 + Math.cos(angle1) * gap;
+                this.circle2.x = this.x / 2 + Math.cos(angle2) * gap;
+                this.circle1.y = this.y / 2 + Math.sin(angle1) * gap;
+                this.circle2.y = this.y / 2 + Math.sin(angle2) * gap;
+
+                // Store the previous positions in the trail arrays
+                this.circle1Trail.push({ x: this.circle1.x, y: this.circle1.y });
+                this.circle2Trail.push({ x: this.circle2.x, y: this.circle2.y });
+
+                // Limit the trail length
+                if (this.circle1Trail.length > this.trailLength) {
+                    this.circle1Trail.shift(); // Remove the oldest trail point
+                }
+                if (this.circle2Trail.length > this.trailLength) {
+                    this.circle2Trail.shift(); // Remove the oldest trail point
+                }
+
+                // Draw the circles
+                this.drawCirclesWithTrail();
+            }
+
+            drawCirclesWithTrail() {
+                // Draw circles
+                this.circle1.draw();
+                this.circle2.draw();
+
+                // Draw trails
+                this.drawTrail(this.circle1Trail, "red");
+                this.drawTrail(this.circle2Trail, "blue");
+            }
+
+            drawTrail(trail, color) {
+                c.beginPath();
+                c.strokeStyle = color;
         
+                for (let i = 0; i < trail.length; i++) {
+                    const alpha = i / (trail.length - 1); // Calculate alpha based on the position in the trail
+                    const radius = this.circle1.radius * alpha; // Adjust the radius based on alpha
+        
+                    c.arc(trail[i].x, trail[i].y, radius, 0, Math.PI * 2, false);
+                }
+        
+                c.lineWidth = 2; // Set a fixed line width for the trail
+                c.stroke();
+            }
+        }
+
+        const fireandice = new RevolvingCircles(window.innerWidth / 2, window.innerHeight / 2, 16, 4);
 
         let starArray = [];
-        let fireandice = null;
         function init() {
             starArray = [];
             for (let i = 0; i < 50; i++) {
