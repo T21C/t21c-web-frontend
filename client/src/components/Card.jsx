@@ -19,10 +19,10 @@ const Card = ({ creator, song, artist, image }) => {
     
       if (videoId) {
         // Construct the thumbnail URL
-        return `https://img.youtube.com/vi/${videoId}/default.jpg`;
+        return `https://img.youtube.com/vi/${videoId}/0.jpg`;
       } else {
-        // If no match is found, return null or handle it accordingly
-        return null;
+        // If no match is found, return no yt link image (prefab)
+        return 'https://media.discordapp.net/attachments/433586705069637633/1208418025020198962/no_yt_link.png?ex=65e335fc&is=65d0c0fc&hm=57b5d4f6060e278f812fb2d6f01354210619e765dca25fbee6ad8315d8c14257&=&format=webp&quality=lossless&width=953&height=536';
       }
     }
     useEffect(() => {
