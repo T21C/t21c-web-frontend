@@ -264,10 +264,7 @@ const HomePage = () => {
                         {" "}
                         <span>21</span> Forums
                     </h1>
-                    <p>
-                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Beatae tenetur cumque deserunt eligendi aperiam in, nisi quibusdam ad iure sint molestias voluptate eos
-                        aliquid ab nulla soluta. Temporibus provident neque, officiis numquam quo quae asperiores!
-                    </p>
+                    <p>*To be informed that we're not affiliated nor approved by the 7th Beat Game (The creator of ADOFAI)</p>
 
                     <button onClick={scrollToRecent}>Explore ! </button>
                 </div>
