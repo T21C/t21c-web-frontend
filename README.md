@@ -12,7 +12,13 @@ Currently, two official plugins are available:
 
 # terminal codes
 dont forget to install node module
+
     > cd client
     > npm install
+            
 then you can use this to run the server
+
     > npm run dev
+
+# .gitignore
+just a reminder i have .txt excluded in the outer .gitignore file

@@ -162,22 +162,23 @@ const HomePage = () => {
             }
 
             drawTrail(trail, color) {
-                c.beginPath();
-                c.strokeStyle = color;
-        
                 for (let i = 0; i < trail.length; i++) {
                     const alpha = i / (trail.length - 1); // Calculate alpha based on the position in the trail
                     const radius = this.circle1.radius * alpha; // Adjust the radius based on alpha
         
-                    c.arc(trail[i].x, trail[i].y, radius, 0, Math.PI * 2, false);
-                }
+                    const fillColor = color;
+                    
         
-                c.lineWidth = 2; // Set a fixed line width for the trail
-                c.stroke();
+                    c.beginPath();
+                    c.fillStyle = fillColor;
+                    c.globalAlpha = alpha; // Apply alpha separately
+                    c.arc(trail[i].x, trail[i].y, radius, 0, Math.PI * 2, false);
+                    c.fill();
+                }
             }
         }
 
-        const fireandice = new RevolvingCircles(window.innerWidth / 2, window.innerHeight / 2, 16, 4);
+        const fireandice = new RevolvingCircles(innerWidth / 2, innerHeight / 2, 16, 4);
 
         let starArray = [];
         function init() {
