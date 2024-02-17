@@ -36,8 +36,8 @@ const HomePage = () => {
             init();
         });
 
-        class Circle {
-            constructor(x, y, dx, dy, radius) {
+        class Star {
+            constructor(x, y, dx, dy, radius, numberOfPoints) {
                 this.x = x;
                 this.y = y;
                 this.dx = dx;
@@ -45,44 +45,62 @@ const HomePage = () => {
                 this.radius = radius;
                 this.minRadius = radius;
                 this.color = colorArray[Math.floor(Math.random() * colorArray.length)];
+                this.numberOfPoints = numberOfPoints;
             }
-
+        
             draw() {
                 c.beginPath();
-                c.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                for (let i = 0; i < this.numberOfPoints * 2; i++) {
+                    const angle = (Math.PI / this.numberOfPoints) * i;
+                    const radius = i % 2 === 0 ? this.radius : this.radius / 2; // Alternate between outer and inner radius
+                    const x = this.x + radius * Math.cos(angle);
+                    const y = this.y + radius * Math.sin(angle);
+        
+                    if (i === 0) {
+                        c.moveTo(x, y);
+                    } else {
+                        c.lineTo(x, y);
+                    }
+                }
+                c.closePath();
                 c.fillStyle = this.color;
                 c.fill();
             }
-
+        
             update() {
                 if (this.x + this.radius > innerWidth || this.x - this.radius < 0) {
                     this.dx = -this.dx;
                 }
-
+        
                 if (this.y + this.radius > innerHeight || this.y - this.radius < 0) {
                     this.dy = -this.dy;
                 }
-
+        
                 this.x += this.dx;
                 this.y += this.dy;
-
+        
                 // Interactivity
-                if (mouse.x - this.x < 80 && mouse.x - this.x > -80 && mouse.y - this.y < 80 && mouse.y - this.y > -80) {
+                if (
+                    mouse.x - this.x < 80 &&
+                    mouse.x - this.x > -80 &&
+                    mouse.y - this.y < 80 &&
+                    mouse.y - this.y > -80
+                ) {
                     if (this.radius < maxRadius) {
                         this.radius += 1;
                     }
                 } else if (this.radius > this.minRadius) {
                     this.radius -= 1;
                 }
-
+        
                 this.draw();
             }
-        }
+    1    }
 
-        let circleArray = [];
+        let starArray = [];
 
         function init() {
-            circleArray = [];
+            starArray = [];
             for (let i = 0; i < 50; i++) {
                 const radius = Math.random() * 5 + 1;
                 const x = Math.random() * (innerWidth - radius * 2) + radius;
@@ -90,7 +108,7 @@ const HomePage = () => {
                 const dx = Math.random() - 0.5;
                 const dy = Math.random() - 0.5;
 
-                circleArray.push(new Circle(x, y, dx, dy, radius));
+                starArray.push(new Star(x, y, dx, dy, radius, 4));
             }
         }
 
@@ -98,8 +116,8 @@ const HomePage = () => {
             requestAnimationFrame(animate);
             c.clearRect(0, 0, innerWidth, innerHeight);
 
-            for (let i = 0; i < circleArray.length; i++) {
-                circleArray[i].update();
+            for (let i = 0; i < starArray.length; i++) {
+                starArray[i].update();
             }
         }
 
