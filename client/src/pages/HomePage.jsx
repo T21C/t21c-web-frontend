@@ -188,7 +188,7 @@ const HomePage = () => {
                 </div>
             </div>
 
-            <button onClick={() => console.log(recent)}>test</button>
+            {/* <button onClick={() => console.log(recent)}>test</button> */}
 
             <div className="spacer spacer-two"></div>
             <Footer />
