@@ -117,26 +117,7 @@ const HomePage = () => {
             const res = await fetch("https://be.t21c.kro.kr/levels");
             const data = await res.json();
             //const lastRow = data.results[data.length - 1]
-            const lastRow = [
-                [
-                    data.results[data.results.length - 1].creator,
-                    data.results[data.results.length - 1].song,
-                    data.results[data.results.length - 1].artist,
-                    data.results[data.results.length - 1].vidLink.slice(32),
-                ],
-                [
-                    data.results[data.results.length - 2].creator,
-                    data.results[data.results.length - 2].song,
-                    data.results[data.results.length - 2].artist,
-                    data.results[data.results.length - 2].vidLink.slice(32),
-                ],
-                [
-                    data.results[data.results.length - 3].creator,
-                    data.results[data.results.length - 3].song,
-                    data.results[data.results.length - 3].artist,
-                    data.results[data.results.length - 3].vidLink.slice(32),
-                ],
-            ];
+            const lastRow = [data.results[data.results.length - 1], data.results[data.results.length - 2], data.results[data.results.length - 3]];
 
             console.log(data);
             console.log(lastRow);
@@ -205,7 +186,7 @@ const HomePage = () => {
           <Card creator={"mumyeong"} song={"The Magical World and Imaginary Gems （魔法世界とイマジナリー・ジェム）"} artist={"Hei"} image={"lPJVi797Uy0"}/> */}
 
                     {recent.map((element, index) => (
-                        <Card key={index} creator={element[0]} song={element[1]} artist={element[2]} image={element[3]} />
+                        <Card key={index} creator={element.creator} song={element.song} artist={element.artist} image={element.vidLink} />
                     ))}
                 </div>
             </div>
