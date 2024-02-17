@@ -23,7 +23,7 @@ const HomePage = () => {
 
         const maxRadius = 30;
         const minRadius = 2;
-        const colorArray = ["#6497bf", "#C91A19"];
+        const colorArray = ["#ffffff", "#e5c7ff"];
 
         window.addEventListener("mousemove", (e) => {
             mouse.x = e.x;
