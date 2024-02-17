@@ -47,7 +47,7 @@ const HomePage = () => {
                 this.color = colorArray[Math.floor(Math.random() * colorArray.length)];
                 this.numberOfPoints = numberOfPoints;
             }
-        
+
             draw() {
                 c.beginPath();
                 for (let i = 0; i < this.numberOfPoints * 2; i++) {
@@ -55,7 +55,7 @@ const HomePage = () => {
                     const radius = i % 2 === 0 ? this.radius : this.radius / 2; // Alternate between outer and inner radius
                     const x = this.x + radius * Math.cos(angle);
                     const y = this.y + radius * Math.sin(angle);
-        
+
                     if (i === 0) {
                         c.moveTo(x, y);
                     } else {
@@ -66,39 +66,36 @@ const HomePage = () => {
                 c.fillStyle = this.color;
                 c.fill();
             }
-        
+
             update() {
                 if (this.x + this.radius > innerWidth || this.x - this.radius < 0) {
                     this.dx = -this.dx;
                 }
-        
+
                 if (this.y + this.radius > innerHeight || this.y - this.radius < 0) {
                     this.dy = -this.dy;
                 }
-        
+
                 this.x += this.dx;
                 this.y += this.dy;
-        
+
                 // Interactivity
-                if (
-                    mouse.x - this.x < 80 &&
-                    mouse.x - this.x > -80 &&
-                    mouse.y - this.y < 80 &&
-                    mouse.y - this.y > -80
-                ) {
+                if (mouse.x - this.x < 80 && mouse.x - this.x > -80 && mouse.y - this.y < 80 && mouse.y - this.y > -80) {
                     if (this.radius < maxRadius) {
                         this.radius += 1;
                     }
                 } else if (this.radius > this.minRadius) {
                     this.radius -= 1;
                 }
-        
+
                 this.draw();
             }
-    1    }
+            1;
+        }
+        
 
         let starArray = [];
-
+        let fireandice = null;
         function init() {
             starArray = [];
             for (let i = 0; i < 50; i++) {
@@ -119,6 +116,7 @@ const HomePage = () => {
             for (let i = 0; i < starArray.length; i++) {
                 starArray[i].update();
             }
+            fireandice.update();
         }
 
         init();
