@@ -44,6 +44,7 @@ const HomePage = () => {
                 this.dy = dy;
                 this.radius = radius;
                 this.minRadius = radius;
+                // hello
                 this.color = colorArray[Math.floor(Math.random() * colorArray.length)];
             }
 
