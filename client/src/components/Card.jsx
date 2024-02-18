@@ -1,8 +1,14 @@
 // eslint-disable-next-line no-unused-vars
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 
 // eslint-disable-next-line react/prop-types
 const Card = ({ creator, song, artist, image }) => {
+    const [imagePh] = useState([
+        "src/assets/waves/1.png",
+        "src/assets/waves/2.png",
+        "src/assets/waves/3.png",
+        "src/assets/waves/4.png"
+      ])
     const cardRef = useRef(null);
     const imageContainerRef = useRef(null);
     function getYouTubeThumbnailUrl(url) {
@@ -22,7 +28,7 @@ const Card = ({ creator, song, artist, image }) => {
         return `https://img.youtube.com/vi/${videoId}/0.jpg`;
       } else {
         // If no match is found, return no yt link image (prefab)
-        return 'https://media.discordapp.net/attachments/433586705069637633/1208418025020198962/no_yt_link.png?ex=65e335fc&is=65d0c0fc&hm=57b5d4f6060e278f812fb2d6f01354210619e765dca25fbee6ad8315d8c14257&=&format=webp&quality=lossless&width=953&height=536';
+        return selectItemConsistently(song, imagePh);
       }
     }
     useEffect(() => {
@@ -60,6 +66,22 @@ const Card = ({ creator, song, artist, image }) => {
             card.removeEventListener("mouseleave", handleMouseLeave);
         };
     }, []);
+
+    function simpleHash(str) {
+        let hash = 0;
+        for (let i = 0; i < str.length; i++) {
+          const char = str.charCodeAt(i);
+          hash = (hash << 5) - hash + char;
+          hash = hash & hash; 
+        }
+        return hash;
+      }
+      
+      function selectItemConsistently(name, items) {
+        const hash = simpleHash(name);
+        const index = Math.abs(hash) % items.length; 
+        return items[index];
+      }
 
     return (
         <div
