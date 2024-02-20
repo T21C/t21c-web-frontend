@@ -2,7 +2,7 @@
 import React, { useRef, useEffect, useState } from "react";
 
 // eslint-disable-next-line react/prop-types
-const Card = ({ creator, song, artist, image }) => {
+const Card = ({ creator, song, artist, image: vidLink }) => {
     const [imagePh] = useState([
         "src/assets/waves/1.png",
         "src/assets/waves/2.png",
@@ -111,7 +111,7 @@ const Card = ({ creator, song, artist, image }) => {
                     <span className="artist-name">- by {artist}</span>
                 </p>
                 <div ref={imageContainerRef} className="img-container" style={{ width: "100%", transition: "transform 0.2s ease", transformStyle: "preserve-3d" }}>
-                    <img src={`${getYouTubeThumbnailUrl(image)}`} alt="Song Thumbnail" style={{ width: "100%" }} />
+                    <img src={`${getYouTubeThumbnailUrl(vidLink)}`} alt="Song Thumbnail" style={{ width: "100%" }} />
                 </div>
                 <button onClick={()=>{
                     window.open(vidLink, "_blank")
