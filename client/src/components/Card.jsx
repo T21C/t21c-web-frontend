@@ -113,7 +113,9 @@ const Card = ({ creator, song, artist, image }) => {
                 <div ref={imageContainerRef} className="img-container" style={{ width: "100%", transition: "transform 0.2s ease", transformStyle: "preserve-3d" }}>
                     <img src={`${getYouTubeThumbnailUrl(image)}`} alt="Song Thumbnail" style={{ width: "100%" }} />
                 </div>
-                <button>Check It Out !</button>
+                <button onClick={()=>{
+                    window.open(vidLink, "_blank")
+                }}>Check It Out !</button>
             </div>
         </div>
     );
