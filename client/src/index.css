@@ -8,7 +8,7 @@
 
 :root {
   --primary-color: #6d23ce;
-  --backgorund-color: #1b1b1b;
+  --backgorund-color: #222222;
   --secondary-color: #DED4F0;
   --third-color:#A3A2D8;
   --text-color: #FFFFFF;
@@ -247,6 +247,9 @@ nav .wrapper svg:hover {
 }
 .card-tilt h1 {
   margin-bottom: 1rem;
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
+  overflow: hidden;
 }
 .card-tilt .song-name {
   width: 100%;

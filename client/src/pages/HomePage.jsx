@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 import React, { useEffect, useState } from "react";
@@ -25,16 +26,19 @@ const HomePage = () => {
         const minRadius = 2;
         const colorArray = ["#ffffff", "#e5c7ff"];
 
-        window.addEventListener("mousemove", (e) => {
+        const updateMousePosition = (e) => {
             mouse.x = e.x;
             mouse.y = e.y;
-        });
-
-        window.addEventListener("resize", () => {
+        };
+    
+        const resizeCanvas = () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            init();
-        });
+            init(); 
+        };
+
+        window.addEventListener("mousemove", updateMousePosition);
+        window.addEventListener("resize", resizeCanvas);
 
         class Star {
             constructor(x, y, dx, dy, radius, numberOfPoints) {
@@ -177,6 +181,7 @@ const HomePage = () => {
                     c.fill();
                 }
             }
+
         }
 
         const fireandice = new RevolvingCircles(innerWidth / 2, innerHeight / 2, 16, 4);
@@ -216,18 +221,32 @@ const HomePage = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            const res = await fetch("https://be.t21c.kro.kr/levels");
-            const data = await res.json();
-            //const lastRow = data.results[data.length - 1]
-            const lastRow = [data.results[data.results.length - 1], data.results[data.results.length - 2], data.results[data.results.length - 3]];
-
-            console.log(data);
-            console.log(lastRow);
-
-            setRecent(lastRow);
+            try {
+                const res = await fetch("https://be.t21c.kro.kr/levels");
+                if (!res.ok) {
+                    // Handle non-200 responses
+                    throw new Error(`API call failed with status code: ${res.status}`);
+                }
+                const data = await res.json();
+                if (!data.results || !Array.isArray(data.results)) {
+                    // Handle unexpected data structure
+                    throw new Error("Unexpected API response structure");
+                }
+    
+                // Safely get the last three items, even if there are fewer than three
+                const lastRow = data.results.slice(-3);
+    
+                console.log(data);
+                console.log(lastRow);
+    
+                setRecent(lastRow);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
         };
         fetchData();
     }, []);
+    
 
     const scrollToRecent = () => {
         const recent = document.querySelector("#recent");
@@ -238,23 +257,23 @@ const HomePage = () => {
         <>
             <div className="home">
                 <Navigation>
-                    <NavLink className={({ isActive }) => "nav-link " + (isActive ? "active-link" : "")} to="/">
+                    <NavLink className={({ isActive }) => "nav-link " + (isActive ? "active-link" : "")} to="/levels">
                         <li>Levels</li>
                     </NavLink>
 
-                    <NavLink className="nav-link">
+                    <NavLink className={({ isActive }) => "nav-link " + (isActive ? "active-link" : "")} to="/" >
                         <li>Leaderboard</li>
                     </NavLink>
 
-                    <NavLink className="nav-link">
+                    <NavLink className={({ isActive }) => "nav-link " + (isActive ? "active-link" : "")} to="/">
                         <li>Passes</li>
                     </NavLink>
 
-                    <NavLink className="nav-link">
+                    <NavLink className={({ isActive }) => "nav-link " + (isActive ? "active-link" : "")} to="/">
                         <li>Refrences</li>
                     </NavLink>
 
-                    <NavLink className="nav-link">
+                    <NavLink className={({ isActive }) => "nav-link " + (isActive ? "active-link" : "")} to="/">
                         <li>Credits</li>
                     </NavLink>
                 </Navigation>
@@ -290,7 +309,7 @@ const HomePage = () => {
                 </div>
             </div>
 
-            {/* <button onClick={() => console.log(recent)}>test</button> */}
+            <button onClick={() => console.log(recent)}>test</button>
 
             <div className="spacer spacer-two"></div>
             <Footer />
