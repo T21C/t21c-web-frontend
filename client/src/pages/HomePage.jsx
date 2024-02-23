@@ -1,12 +1,16 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Card, Footer, Navigation } from "../components";
 import { Link, NavLink } from "react-router-dom";
+import { UserContext } from "../context/UserContext";
 
 const HomePage = () => {
+
     const [recent, setRecent] = useState([]);
+    const {levelData, setLevelData} = useContext(UserContext)
+
     useEffect(() => {
         const canvas = document.querySelector(".homeCanvas");
         const home = document.querySelector(".home");
@@ -221,31 +225,38 @@ const HomePage = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            try {
-                const res = await fetch("https://be.t21c.kro.kr/levels");
-                if (!res.ok) {
-                    // Handle non-200 responses
-                    throw new Error(`API call failed with status code: ${res.status}`);
+            if(levelData.length > 0){
+                setRecent(levelData.slice(-3));
+            }else{
+                try {
+                    const res = await fetch("https://be.t21c.kro.kr/levels");
+                    if (!res.ok) {
+                        // Handle non-200 responses
+                        throw new Error(`API call failed with status code: ${res.status}`);
+                    }
+                    const data = await res.json();
+                    if (!data.results || !Array.isArray(data.results)) {
+                        // Handle unexpected data structure
+                        throw new Error("Unexpected API response structure");
+                    }
+        
+                    // Safely get the last three items, even if there are fewer than three
+                    
+                    const lastRow = data.results.slice(-3);
+        
+                    console.log(data);
+                    console.log(lastRow);
+        
+                    setRecent(lastRow);
+                    setLevelData(data.results)
+                } catch (error) {
+                    console.error("Error fetching data:", error);
                 }
-                const data = await res.json();
-                if (!data.results || !Array.isArray(data.results)) {
-                    // Handle unexpected data structure
-                    throw new Error("Unexpected API response structure");
-                }
-    
-                // Safely get the last three items, even if there are fewer than three
-                const lastRow = data.results.slice(-3);
-    
-                console.log(data);
-                console.log(lastRow);
-    
-                setRecent(lastRow);
-            } catch (error) {
-                console.error("Error fetching data:", error);
             }
+            
         };
         fetchData();
-    }, []);
+    }, [levelData, setLevelData]);
     
 
     const scrollToRecent = () => {
@@ -314,7 +325,7 @@ const HomePage = () => {
                 </div>
             </div>
 
-            {/* <button onClick={() => console.log(recent)}>test</button> */}
+            {/* <button onClick={() => console.log(levelData)}>test</button> */}
 
             <div className="spacer spacer-two"></div>
             <Footer />

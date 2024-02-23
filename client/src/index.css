@@ -260,7 +260,6 @@ nav .wrapper svg:hover {
 .card-tilt {
   max-width: 25rem;
   width: 100%;
-  min-height: 35rem;
   background-color: var(--white-color);
   border: 2px solid #E9E9EA;
   border-radius: 10px;
@@ -309,7 +308,7 @@ nav .wrapper svg:hover {
 }
 .card-tilt .img-container {
   width: 100%;
-  height: 17rem;
+  max-height: 17rem;
   overflow: hidden;
   border-radius: 5px;
   margin-bottom: 3rem;
@@ -318,6 +317,48 @@ nav .wrapper svg:hover {
   width: 100%;
   -o-object-fit: contain;
      object-fit: contain;
+}
+
+.level-page {
+  background-color: var(--backgorund-color);
+  height: 100vh;
+  color: var(--text-color);
+}
+
+.filter-wrapper {
+  background-color: var(--third-color);
+  max-width: 80rem;
+  padding: 1rem 2rem;
+  margin: 0 2rem;
+  border-radius: 5px;
+  margin: 0 auto;
+}
+.filter-wrapper .filter {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-top: 0.2rem;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+.filter-wrapper .filter p {
+  gap: 1rem;
+  border: 2px solid var(--primary-color);
+  background-color: var(--third-color);
+  padding: 0.2rem 0.5rem;
+  border-radius: 5px;
+}
+.filter-wrapper .sort {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-top: 0.2rem;
+  gap: 1rem;
+}
+.filter-wrapper .sort p {
+  display: inline-block;
+  width: -moz-fit-content;
+  width: fit-content;
 }
 
 @keyframes fire {

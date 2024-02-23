@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 const Navigation = ({children}) => {
 
@@ -16,7 +17,10 @@ const Navigation = ({children}) => {
         <div className='wrapper'>
 
           <div>
+            <Link to="/" style={{color:"white", textDecoration:"none"}}>
               LOGO
+            </Link>
+
           </div>
 
           <div className='nav-menu'>
