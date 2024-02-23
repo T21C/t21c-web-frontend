@@ -214,8 +214,8 @@ const HomePage = () => {
         animate();
 
         return () => {
-            window.removeEventListener("mousemove", mousemove);
-            window.removeEventListener("resize", resize);
+            window.removeEventListener("mousemove", updateMousePosition);
+            window.removeEventListener("resize", resizeCanvas);
         };
     }, []);
 
@@ -302,14 +302,19 @@ const HomePage = () => {
                     {/* <Card creator={"mumyeong"} song={"The Magical World and Imaginary Gems （魔法世界とイマジナリー・ジェム）"} artist={"Hei"} image={"lPJVi797Uy0"}/>
           <Card creator={"mumyeong"} song={"The Magical World and Imaginary Gems （魔法世界とイマジナリー・ジェム）"} artist={"Hei"} image={"lPJVi797Uy0"}/>
           <Card creator={"mumyeong"} song={"The Magical World and Imaginary Gems （魔法世界とイマジナリー・ジェム）"} artist={"Hei"} image={"lPJVi797Uy0"}/> */}
+            {
+                recent && recent.length > 0 ? 
+                recent.map((element, index) => (
+                    <Card key={index} creator={element.creator} song={element.song} artist={element.artist} image={element.vidLink} />
+                ))
+                :
+                <div className="loader"></div>
+            }
 
-                    {recent.map((element, index) => (
-                        <Card key={index} creator={element.creator} song={element.song} artist={element.artist} image={element.vidLink} />
-                    ))}
                 </div>
             </div>
 
-            <button onClick={() => console.log(recent)}>test</button>
+            {/* <button onClick={() => console.log(recent)}>test</button> */}
 
             <div className="spacer spacer-two"></div>
             <Footer />
