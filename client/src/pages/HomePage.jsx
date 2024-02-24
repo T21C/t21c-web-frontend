@@ -52,7 +52,6 @@ const HomePage = () => {
                 this.dy = dy;
                 this.radius = radius;
                 this.minRadius = radius;
-                // hello
                 this.color = colorArray[Math.floor(Math.random() * colorArray.length)];
                 this.numberOfPoints = numberOfPoints;
             }
@@ -310,9 +309,7 @@ const HomePage = () => {
             <div className="recent-rated" id="recent">
                 <h1 className="title-recent">Recently Rated</h1>
                 <div className="card-holder">
-                    {/* <Card creator={"mumyeong"} song={"The Magical World and Imaginary Gems （魔法世界とイマジナリー・ジェム）"} artist={"Hei"} image={"lPJVi797Uy0"}/>
-          <Card creator={"mumyeong"} song={"The Magical World and Imaginary Gems （魔法世界とイマジナリー・ジェム）"} artist={"Hei"} image={"lPJVi797Uy0"}/>
-          <Card creator={"mumyeong"} song={"The Magical World and Imaginary Gems （魔法世界とイマジナリー・ジェム）"} artist={"Hei"} image={"lPJVi797Uy0"}/> */}
+                    {/*Card creator, song, artist, image(vidLink) */}
             {
                 recent && recent.length > 0 ? 
                 recent.map((element, index) => (

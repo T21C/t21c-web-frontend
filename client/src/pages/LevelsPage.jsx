@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
 import React, { useContext } from 'react'
-import { Navigation } from '../components'
+import { LevelTR, Navigation } from '../components'
 import { NavLink } from 'react-router-dom'
 import { UserContext } from '../context/UserContext'
 
@@ -56,7 +56,7 @@ const LevelsPage = () => {
     <table>
         <thead>
             <tr>
-                <th>Song Artist</th>
+                <th>Song</th>
                 <th>Artist</th>
                 <th>Creators</th>
                 <th>Diff</th>
@@ -66,61 +66,7 @@ const LevelsPage = () => {
         </thead>
 
         <tbody>
-            <tr>
-                <td>Song artist</td>
-                <td>artist</td>
-                <td>creators</td>
-                <td>diff</td>
-                <td>clears</td>
-                <td>
-                    <div className="download">
-                        <button>download</button>
-                        <button>download</button>
-                    </div>
-                </td>
-            </tr>
-
-            <tr>
-                <td>Song artist</td>
-                <td>artist</td>
-                <td>creators</td>
-                <td>diff</td>
-                <td>clears</td>
-                <td>
-                    <div className="download">
-                        <button>download</button>
-                        <button>download</button>
-                    </div>
-                </td>
-            </tr>
-
-            <tr>
-                <td>Song artist</td>
-                <td>artist</td>
-                <td>creators</td>
-                <td>diff</td>
-                <td>clears</td>
-                <td>
-                    <div className="download">
-                        <button>download</button>
-                        <button>download</button>
-                    </div>
-                </td>
-            </tr>
-
-            <tr>
-                <td>Song artist</td>
-                <td>artist</td>
-                <td>creators</td>
-                <td>diff</td>
-                <td>clears</td>
-                <td>
-                    <div className="download">
-                        <button>download</button>
-                        <button>download</button>
-                    </div>
-                </td>
-            </tr>
+            <LevelTR songName={"Song"} songArtist={"Artist"} creator={"Creator"} diff={"difficulty"} clearsNumber={727} driveDL={"https://www.youtube.com"} workshopDL={"https://www.youtube.com"}></LevelTR>
         </tbody>
     </table>
 </div>
