@@ -79,6 +79,7 @@ const LevelsPage = () => {
         </thead>
 
         <tbody>
+            <LevelTR songName={"song"} songArtist={"artist"} creator={"creator"} clearsNumber={2} diff={22} driveDL={"https://www.youtube.com"} steamDL={"https://store.steampowered.com"}></LevelTR>
             <tr>
                 <td>
                     <div className="first-col">
