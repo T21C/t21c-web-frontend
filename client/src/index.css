@@ -324,16 +324,32 @@ nav .wrapper svg:hover {
   height: 100vh;
   color: var(--text-color);
 }
-
-.filter-wrapper {
+.level-page .wrapper {
+  padding: 0 1rem;
+}
+.level-page input {
+  width: 100%;
+  height: 3rem;
+  display: block;
+  max-width: 85rem;
+  border-radius: 5px;
+  margin: 0 auto;
+  margin-top: 3rem;
+  padding: 0 1rem;
+  border: 3px solid transparent;
+}
+.level-page input:focus {
+  border-color: var(--third-color); /* Change to desired focus border color */
+  outline: none; /* Optional: Removes the default focus outline */
+}
+.level-page .wrapper-inner {
   background-color: var(--third-color);
   max-width: 80rem;
   padding: 1rem 2rem;
-  margin: 0 2rem;
   border-radius: 5px;
-  margin: 0 auto;
+  margin: 1rem auto;
 }
-.filter-wrapper .filter {
+.level-page .wrapper-inner .filter {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
@@ -341,24 +357,54 @@ nav .wrapper svg:hover {
   margin-bottom: 1rem;
   gap: 1rem;
 }
-.filter-wrapper .filter p {
+.level-page .wrapper-inner .filter p {
+  transition: all 0.1s linear;
   gap: 1rem;
   border: 2px solid var(--primary-color);
   background-color: var(--third-color);
-  padding: 0.2rem 0.5rem;
+  padding: 0.5rem;
   border-radius: 5px;
+  text-align: center;
+  flex-grow: 1;
+  cursor: pointer;
 }
-.filter-wrapper .sort {
+.level-page .wrapper-inner .filter .select-active {
+  background-color: var(--primary-color);
+}
+.level-page .wrapper-inner .sort {
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
   margin-top: 0.2rem;
   gap: 1rem;
 }
-.filter-wrapper .sort p {
-  display: inline-block;
-  width: -moz-fit-content;
-  width: fit-content;
+.level-page .wrapper-inner .sort p {
+  transition: all 0.1s linear;
+  gap: 1rem;
+  border: 2px solid var(--primary-color);
+  background-color: var(--third-color);
+  padding: 0.5rem;
+  border-radius: 5px;
+  text-align: center;
+  flex-grow: 1;
+  cursor: pointer;
+}
+.level-page .wrapper-inner .sort .select-active {
+  background-color: var(--primary-color);
+}
+.level-page .table-div {
+  width: 100%;
+}
+.level-page .table-div table {
+  width: 100%;
+  max-width: 80rem;
+  margin: 0 auto;
+  text-align: center;
+  margin-top: 3rem;
+  border-spacing: 1rempx 0;
+}
+.level-page .table-div table th {
+  font-size: calc(15px + 1vw);
 }
 
 @keyframes fire {
