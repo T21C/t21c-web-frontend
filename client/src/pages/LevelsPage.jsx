@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { LevelTR, Navigation } from '../components'
 import { NavLink } from 'react-router-dom'
 import { UserContext } from '../context/UserContext'
@@ -9,9 +9,13 @@ const LevelsPage = () => {
 
 
     const {levelData, setLevelData} = useContext(UserContext)
+    const [filter, setFilter] = useState(["12K", "Non 12K"])
+    const [sort, setSort] = useState(["Player", "Diff", "Score", "Date"])
+  
+    const [selectedSort, setSelectedSort] = useState(null)
+    const [selectedFilter, setSelectedFilter] = useState(null)
 
-
-  return (
+    return (
     <div className='level-page'>
         <Navigation>
             <NavLink className={({ isActive }) => "nav-link " + (isActive ? "active-link" : "")} to="/levels">
@@ -35,24 +39,33 @@ const LevelsPage = () => {
             </NavLink>
         </Navigation>
 
-        <input type="text" />
-        <div className="filter-wrapper">
-            <p>Filter :</p>
-            <div className="filter">
-                <p>Player</p>
-                <p>Diff</p>
-                <p>Score</p>
-                <p>Date</p>
-            </div>
+        <div className="wrapper">
+            <input type="text" placeholder='Search' />
+        </div>
 
-            <p>sort :</p>
-            <div className="sort">
-                <p>12K</p>
-                <p>Non 12K</p>
+        <div className="wrapper">
+            <div className="wrapper-inner">
+                <p>Sort :</p>
+                <div className="filter">
+                    {
+                        sort.map((el, index) => (
+                            <p className={selectedSort === el ? "select-active" : ""} key={index} onClick={() => selectedSort === el ? setSelectedSort(null) : setSelectedSort(el)}>{el}</p>
+                        ))
+                    }
+                </div>
+
+                <p>Filter :</p>
+                <div className="sort">
+                    {
+                        filter.map((el, index) => (
+                            <p className={selectedFilter === el ? "select-active" : ""} onClick={() => selectedFilter === el ? setSelectedFilter(null) : setSelectedFilter(el)} key={index}>{el}</p>
+                        ))
+                    }
+                </div>
             </div>
         </div>
 
-        <div className="table-wrapper">
+        <div className="wrapper table-div">
     <table>
         <thead>
             <tr>
@@ -66,12 +79,65 @@ const LevelsPage = () => {
         </thead>
 
         <tbody>
-            <LevelTR songName={"Song"} songArtist={"Artist"} creator={"Creator"} diff={"difficulty"} clearsNumber={727} driveDL={"https://www.youtube.com"} workshopDL={"https://www.youtube.com"}></LevelTR>
+            <tr>
+                <td>
+                    <div className="first-col">
+                        <p>levelid</p>
+                        <p>song artist</p>
+                    </div>
+                </td>
+                <td>artist</td>
+                <td>creators</td>
+                <td>diff</td>
+                <td>clears</td>
+                <td>
+                    <div className="download">
+                        <button>download</button>
+                        <button>download</button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div className="first-col">
+                        <p>levelid</p>
+                        <p>song artist</p>
+                    </div>
+                </td>
+                <td>artist</td>
+                <td>creators</td>
+                <td>diff</td>
+                <td>clears</td>
+                <td>
+                    <div className="download">
+                        <button>download</button>
+                        <button>download</button>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div className="first-col">
+                        <p>levelid</p>
+                        <p>song artist</p>
+                    </div>
+                </td>
+                <td>artist</td>
+                <td>creators</td>
+                <td>diff</td>
+                <td>clears</td>
+                <td>
+                    <div className="download">
+                        <button>download</button>
+                        <button>download</button>
+                    </div>
+                </td>
+            </tr>
         </tbody>
     </table>
 </div>
 
-
+                    <button onClick={()=> console.log(selectedSort)}>test</button>
     </div>
   )
 }
