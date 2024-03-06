@@ -321,6 +321,7 @@ nav .wrapper svg:hover {
 .level-page {
   background-color: var(--backgorund-color);
   color: var(--text-color);
+  min-height: 100vh;
 }
 .level-page .wrapper-level {
   padding: 0 1rem;

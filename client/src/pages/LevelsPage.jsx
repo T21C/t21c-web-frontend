@@ -44,7 +44,12 @@ const LevelsPage = () => {
         if(levelData.length > 0 && selectedSort != null || levelData.length > 0 && selectedFilter != null){
             if(selectedSort === "Player"){
                 sortedLevel = sortedLevel.sort((a, b) =>
-                    a.creator.localeCompare(b.creator)
+                    b.creator.localeCompare(a.creator)
+                )
+            }
+            if(selectedSort === "Diff"){
+                sortedLevel = sortedLevel.sort((a, b) =>
+                    b.diff - a.diff
                 )
             }
         }
