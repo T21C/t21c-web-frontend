@@ -300,7 +300,6 @@ nav .wrapper svg:hover {
 }
 .card-tilt button:hover {
   background-color: var(--primary-color);
-  border: none;
   color: var(--text-color);
 }
 .card-tilt button:active {
@@ -321,10 +320,9 @@ nav .wrapper svg:hover {
 
 .level-page {
   background-color: var(--backgorund-color);
-  height: 100vh;
   color: var(--text-color);
 }
-.level-page .wrapper {
+.level-page .wrapper-level {
   padding: 0 1rem;
 }
 .level-page input {
@@ -392,19 +390,34 @@ nav .wrapper svg:hover {
 .level-page .wrapper-inner .sort .select-active {
   background-color: var(--primary-color);
 }
-.level-page .table-div {
-  width: 100%;
+.level-page .grid-container {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
 }
-.level-page .table-div table {
-  width: 100%;
-  max-width: 80rem;
-  margin: 0 auto;
+.level-page .grid-container .grid-header {
+  padding: 10px;
   text-align: center;
-  margin-top: 3rem;
-  border-spacing: 1rempx 0;
+  font-weight: bold;
 }
-.level-page .table-div table th {
-  font-size: calc(15px + 1vw);
+.level-page .grid-container .grid-content-long {
+  grid-column: 1/-1;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 10px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
+  height: 4rem;
+  align-items: center;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("./assets/level-asset/1.png") center/cover no-repeat;
+  margin-bottom: 1rem;
+}
+.level-page .grid-container .grid-content-long .content {
+  padding: 10px;
+  text-align: center;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 @keyframes fire {

@@ -352,7 +352,6 @@ nav{
 
         &:hover{
             background-color: var(--primary-color);
-            border: none;
             color: var(--text-color);
         }
 
@@ -378,10 +377,10 @@ nav{
 
 .level-page{
     background-color: var(--backgorund-color);
-    height: 100vh;
     color: var(--text-color);
+    min-height: 100vh;
 
-    .wrapper{
+    .wrapper-level{
         padding: 0 1rem;
     }
 
@@ -468,26 +467,41 @@ nav{
         }
     }
 
-    .table-div{
-        width: 100%;
-        
-        table{
-            width: 100%;
-            max-width: 80rem;
-            margin: 0 auto;
-            text-align: center;
-            margin-top: 3rem;
-            border-spacing: 1rempx 0;
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr); // 6 equal columns
+        gap: 10px; // Space between grid items
 
-            th{
-                font-size: calc(15px + 1vw);
-            }
+        .grid-header {
+          padding: 10px;
+          text-align: center;
+          font-weight: bold;
         }
-    }
-    
-
-
+      
+        .grid-content-long {
+          grid-column: 1 / -1; // Span across all 6 columns
+          display: grid;
+          grid-template-columns: repeat(6, 1fr); // Repeat 6 equal columns inside the long content box
+          gap: 10px;
+          border: 2px solid rgba(255, 255, 255, 0.5);          border-radius: 4px;
+          height: 4rem;
+          align-items: center;
+          background: 
+          linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), // Black transparent layer
+          url("./assets/level-asset/1.png") center/cover no-repeat; // Background image
+          margin-bottom: 1rem;
+      
+          .content {
+            padding: 10px;
+            text-align: center;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+          }
+        }
+      }
 }
+
 
 
 
