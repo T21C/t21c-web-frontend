@@ -32,7 +32,8 @@ nav {
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   color: var(--text-color);
   z-index: 3;
-  position: relative;
+  position: fixed;
+  top: 0;
 }
 nav .wrapper {
   display: flex;
@@ -131,7 +132,7 @@ nav .wrapper svg:hover {
 .home .hero-text {
   position: relative;
   z-index: 2;
-  margin-top: 8rem;
+  padding-top: 8rem;
   color: white;
 }
 .home .hero-text h1 {
@@ -322,6 +323,7 @@ nav .wrapper svg:hover {
   background-color: var(--backgorund-color);
   color: var(--text-color);
   min-height: 100vh;
+  padding-top: 6rem;
 }
 .level-page .wrapper-level {
   padding: 0 1rem;
@@ -333,7 +335,6 @@ nav .wrapper svg:hover {
   max-width: 85rem;
   border-radius: 5px;
   margin: 0 auto;
-  margin-top: 3rem;
   padding: 0 1rem;
   border: 3px solid transparent;
 }
@@ -347,6 +348,7 @@ nav .wrapper svg:hover {
   padding: 1rem 2rem;
   border-radius: 5px;
   margin: 1rem auto;
+  margin-bottom: 3rem;
 }
 .level-page .wrapper-inner .filter {
   display: flex;
