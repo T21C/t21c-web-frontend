@@ -92,7 +92,7 @@ const LevelsPage = () => {
     {/* <button onClick={()=> console.log(levelData)}>test</button> */}
 
         <div className="grid-container wrapper-level">
-        {/* Headers */}
+
             <div className="grid-header">Song</div>
             <div className="grid-header">Artist</div>
             <div className="grid-header">Creators</div>
@@ -100,26 +100,6 @@ const LevelsPage = () => {
             <div className="grid-header">Clears</div>
             <div className="grid-header">Links</div>
             
-            {/* Long Content Box that matches the headers */}
-           
-
-            {/* {levelData.length !== 0 ?
-                <>
-                    <LevelCard object={levelData[0]} />
-                    <LevelCard object={levelData[1]} />
-                    <LevelCard object={levelData[2]} />
-                    <LevelCard object={levelData[3]} />
-                    <LevelCard object={levelData[4]} />
-                    <LevelCard object={levelData[5]} />
-                    <LevelCard object={levelData[6]} />
-                    <LevelCard object={levelData[7]} />
-
-
-                </>
-                : 
-                <></>
-            } */}
-
             {levelData.length !== 0 ?
             showLevel.map((element, index) => (
                 <LevelCard key={index} object={element} />

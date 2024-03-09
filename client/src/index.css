@@ -412,8 +412,9 @@ nav .wrapper svg:hover {
   border-radius: 4px;
   height: 4rem;
   align-items: center;
-  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("./assets/level-asset/1.png") center/cover no-repeat;
   margin-bottom: 1rem;
+  transition: all 0.2s linear;
+  cursor: pointer;
 }
 .level-page .grid-container .grid-content-long .content {
   padding: 10px;
@@ -421,6 +422,27 @@ nav .wrapper svg:hover {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+.level-page .grid-container .grid-content-long *:hover {
+  background-color: linear-gradient(rgb(0, 0, 0), rgb(0, 0, 0));
+}
+.level-page .grid-container .grid-content-long .content-download {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+}
+.level-page .grid-container .grid-content-long .content-download svg {
+  height: 2.5rem;
+  width: 2.5rem;
+  stroke: var(--white-color);
+  transition: all 0.1s linear;
+}
+.level-page .grid-container .grid-content-long .content-download svg path {
+  color: var(--white-color);
+  background-color: var(--white-color);
+}
+.level-page .grid-container .grid-content-long .content-download svg:hover {
+  transform: scale(1.5);
 }
 
 @keyframes fire {
