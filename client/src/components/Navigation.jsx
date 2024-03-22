@@ -1,54 +1,67 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import React, { useState } from 'react'
-import { Link } from 'react-router-dom'
+import React, { useState } from "react";
+import { Link } from "react-router-dom";
 
-const Navigation = ({children}) => {
+const Navigation = ({ children }) => {
+  const [openNav, setOpenNav] = useState(false);
 
-  const[openNav, setOpenNav] = useState(false)
-
-  function changeNavState(){
-    setOpenNav(!openNav)
+  function changeNavState() {
+    setOpenNav(!openNav);
   }
   return (
     <>
       <nav>
-
-        <div className='wrapper'>
-
+        <div className="wrapper">
           <div>
-            <Link to="/" style={{color:"white", textDecoration:"none"}}>
+            <Link to="/" style={{ color: "white", textDecoration: "none" }}>
               LOGO
             </Link>
-
           </div>
 
-          <div className='nav-menu'>
-              <ul>
-                {children}
-              </ul>
+          <div className="nav-menu">
+            <ul>{children}</ul>
           </div>
 
-          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="" onClick={changeNavState}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className=""
+            onClick={changeNavState}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+            />
           </svg>
-
         </div>
-
       </nav>
 
       <div className={`nav-menu-outer ${openNav ? "open-nav" : "close-nav"}`}>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="close" onClick={changeNavState}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M6 18 18 6M6 6l12 12" />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={1.5}
+          stroke="currentColor"
+          className="close"
+          onClick={changeNavState}
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M6 18 18 6M6 6l12 12"
+          />
         </svg>
 
-          <ul>
-            {children}
-          </ul>
+        <ul>{children}</ul>
       </div>
     </>
+  );
+};
 
-  )
-}
-
-export default Navigation
+export default Navigation;

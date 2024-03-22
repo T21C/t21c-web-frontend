@@ -5,4 +5,4 @@ import CompleteNav from "./CompleteNav";
 import LevelCard from "./LevelCard";
 
 
-export {LevelCard, Navigation, Card, Footer, CompleteNav}
+export { LevelCard, Navigation, Card, Footer, CompleteNav };
