@@ -61,7 +61,7 @@ const LevelsPage = () => {
         <input type="text" placeholder="Search" />
       </div>
 
-      <div className="wrapper-level">
+      {/* <div className="wrapper-level">
         <div className="wrapper-inner">
           <p>Sort :</p>
           <div className="filter">
@@ -97,7 +97,7 @@ const LevelsPage = () => {
             ))}
           </div>
         </div>
-      </div>
+      </div> */}
 
       <div className="grid-container wrapper-level">
         <div className="grid-header">Song</div>
