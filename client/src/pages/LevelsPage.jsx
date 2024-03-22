@@ -89,7 +89,6 @@ const LevelsPage = () => {
             </div>
         </div>
 
-    {/* <button onClick={()=> console.log(levelData)}>test</button> */}
 
         <div className="grid-container wrapper-level">
 
