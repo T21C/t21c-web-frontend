@@ -9,7 +9,7 @@
 
 :root{
     --primary-color : #6d23ce;
-    --backgorund-color: #222222;
+    --backgorund-color: #1b1b1b;
     --secondary-color : #DED4F0;
     --third-color:#A3A2D8;
     --text-color: #FFFFFF;
@@ -163,7 +163,7 @@ nav{
 
 
         h1{
-            margin: 0 auto;
+            margin: 5rem auto;
             width: fit-content;
             font-size: 15vw;
             font-weight: bolder;
@@ -412,60 +412,11 @@ nav{
         margin-bottom: 3rem;
 
         .filter{
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            margin-top: .2rem;
-            margin-bottom: 1rem;
-    
-            gap: 1rem;
-    
-            p{
-                transition: all .1s linear;
-                gap: 1rem;
-    
-                border: 2px solid var(--primary-color);
-                background-color: var(--third-color);
-                padding: .5rem;
-                border-radius: 5px;
-                text-align: center;
-                flex-grow: 1;
-                cursor: pointer;
-    
-    
-            }
-
-            .select-active{
-                background-color: var(--primary-color);
-            }
     
         }
     
         .sort{
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            margin-top: .2rem;            
-    
-            gap: 1rem;
-    
-            p{
-                transition: all .1s linear;
-                gap: 1rem;
-    
-                border: 2px solid var(--primary-color);
-                background-color: var(--third-color);
-                padding: .5rem;
-                border-radius: 5px;
-                text-align: center;
-                flex-grow: 1;
-                cursor: pointer;
-            }
-
-            .select-active{
-                background-color: var(--primary-color);
-            }
-    
+            
         }
     }
 

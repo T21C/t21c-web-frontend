@@ -8,7 +8,7 @@
 
 :root {
   --primary-color: #6d23ce;
-  --backgorund-color: #222222;
+  --backgorund-color: #1b1b1b;
   --secondary-color: #DED4F0;
   --third-color:#A3A2D8;
   --text-color: #FFFFFF;
@@ -136,7 +136,7 @@ nav .wrapper svg:hover {
   color: white;
 }
 .home .hero-text h1 {
-  margin: 0 auto;
+  margin: 5rem auto;
   width: -moz-fit-content;
   width: fit-content;
   font-size: 15vw;
@@ -349,49 +349,6 @@ nav .wrapper svg:hover {
   border-radius: 5px;
   margin: 1rem auto;
   margin-bottom: 3rem;
-}
-.level-page .wrapper-inner .filter {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  margin-top: 0.2rem;
-  margin-bottom: 1rem;
-  gap: 1rem;
-}
-.level-page .wrapper-inner .filter p {
-  transition: all 0.1s linear;
-  gap: 1rem;
-  border: 2px solid var(--primary-color);
-  background-color: var(--third-color);
-  padding: 0.5rem;
-  border-radius: 5px;
-  text-align: center;
-  flex-grow: 1;
-  cursor: pointer;
-}
-.level-page .wrapper-inner .filter .select-active {
-  background-color: var(--primary-color);
-}
-.level-page .wrapper-inner .sort {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  margin-top: 0.2rem;
-  gap: 1rem;
-}
-.level-page .wrapper-inner .sort p {
-  transition: all 0.1s linear;
-  gap: 1rem;
-  border: 2px solid var(--primary-color);
-  background-color: var(--third-color);
-  padding: 0.5rem;
-  border-radius: 5px;
-  text-align: center;
-  flex-grow: 1;
-  cursor: pointer;
-}
-.level-page .wrapper-inner .sort .select-active {
-  background-color: var(--primary-color);
 }
 .level-page .grid-container {
   display: grid;

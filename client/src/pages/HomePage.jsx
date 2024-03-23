@@ -2,9 +2,9 @@
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 import React, { useContext, useEffect, useState } from "react";
-import { Card, Footer, Navigation, CompleteNav } from "../components";
-import { Link, NavLink } from "react-router-dom";
+import { Card, Footer, CompleteNav } from "../components";
 import { UserContext } from "../context/UserContext";
+import { fetchRecent } from "../Repository/RemoteRepository";
 
 const HomePage = () => {
   const [recent, setRecent] = useState([]);
@@ -230,37 +230,7 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
-      if (levelData.length > 0) {
-        setRecent(levelData.slice(-3));
-      } else {
-        try {
-          const res = await fetch("https://be.t21c.kro.kr/levels");
-          if (!res.ok) {
-            // Handle non-200 responses
-            throw new Error(`API call failed with status code: ${res.status}`);
-          }
-          const data = await res.json();
-          if (!data.results || !Array.isArray(data.results)) {
-            // Handle unexpected data structure
-            throw new Error("Unexpected API response structure");
-          }
-
-          // Safely get the last three items, even if there are fewer than three
-
-          const lastRow = data.results.slice(-3);
-
-          console.log(data);
-          console.log(lastRow);
-
-          setRecent(lastRow);
-          setLevelData(data.results);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      }
-    };
-    fetchData();
+    fetchRecent().then((res)=> setRecent(res))
   }, [levelData, setLevelData]);
 
   const scrollToRecent = () => {

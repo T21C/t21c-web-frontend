@@ -2,16 +2,11 @@
 // eslint-disable-next-line no-unused-vars
 import React, { useContext, useEffect, useState } from "react";
 import { CompleteNav, LevelCard, Navigation } from "../components";
-import { NavLink } from "react-router-dom";
 import { UserContext } from "../context/UserContext";
 
 const LevelsPage = () => {
   const { levelData, setLevelData } = useContext(UserContext);
-  const [filter, setFilter] = useState(["12K", "Non 12K"]);
-  const [sort, setSort] = useState(["Player", "Diff", "Score", "Date"]);
 
-  const [selectedSort, setSelectedSort] = useState(null);
-  const [selectedFilter, setSelectedFilter] = useState(null);
   const [showLevel, setShowLevel] = useState([]);
 
   useEffect(() => {
@@ -34,25 +29,7 @@ const LevelsPage = () => {
     fetchData();
   });
 
-  useEffect(() => {
-    let sortedLevel = [...levelData];
 
-    if (
-      (levelData.length > 0 && selectedSort != null) ||
-      (levelData.length > 0 && selectedFilter != null)
-    ) {
-      if (selectedSort === "Player") {
-        sortedLevel = sortedLevel.sort((a, b) =>
-          b.creator.localeCompare(a.creator)
-        );
-      }
-      if (selectedSort === "Diff") {
-        sortedLevel = sortedLevel.sort((a, b) => b.diff - a.diff);
-      }
-    }
-
-    setShowLevel(sortedLevel);
-  }, [levelData, selectedFilter, selectedSort]);
   return (
     <div className="level-page">
       <CompleteNav />
@@ -61,43 +38,20 @@ const LevelsPage = () => {
         <input type="text" placeholder="Search" />
       </div>
 
-      {/* <div className="wrapper-level">
+      <div className="wrapper-level">
         <div className="wrapper-inner">
-          <p>Sort :</p>
+          <p>Filter :</p>
           <div className="filter">
-            {sort.map((el, index) => (
-              <p
-                className={selectedSort === el ? "select-active" : ""}
-                key={index}
-                onClick={() =>
-                  selectedSort === el
-                    ? setSelectedSort(null)
-                    : setSelectedSort(el)
-                }
-              >
-                {el}
-              </p>
-            ))}
+            
           </div>
 
-          <p>Filter :</p>
+          <p>Sort :</p>
           <div className="sort">
-            {filter.map((el, index) => (
-              <p
-                className={selectedFilter === el ? "select-active" : ""}
-                onClick={() =>
-                  selectedFilter === el
-                    ? setSelectedFilter(null)
-                    : setSelectedFilter(el)
-                }
-                key={index}
-              >
-                {el}
-              </p>
-            ))}
+            
+
           </div>
         </div>
-      </div> */}
+      </div>
 
       <div className="grid-container wrapper-level">
         <div className="grid-header">Song</div>
