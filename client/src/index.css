@@ -350,6 +350,87 @@ nav .wrapper svg:hover {
   margin: 1rem auto;
   margin-bottom: 3rem;
 }
+.level-page .wrapper-inner input {
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+}
+.level-page .wrapper-inner .filter {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.level-page .wrapper-inner .filter .filter-components {
+  display: flex;
+  align-items: center;
+}
+.level-page .wrapper-inner .filter .filter-components .custom-radio-button {
+  opacity: 0;
+  position: absolute;
+}
+.level-page .wrapper-inner .filter .filter-components .custom-radio-button:checked + .custom-radio-label .radio-custom-design {
+  background-color: purple;
+}
+.level-page .wrapper-inner .filter .filter-components .custom-radio-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.level-page .wrapper-inner .filter .filter-components .custom-radio-label .radio-custom-design {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  background-color: #fff;
+}
+.level-page .wrapper-inner .filter .filter-components.dropdown {
+  padding: 10px;
+  border-radius: 8px;
+  gap: 1rem;
+}
+.level-page .wrapper-inner .filter .filter-components.dropdown select {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 14px;
+  cursor: pointer;
+}
+.level-page .wrapper-inner .filter .filter-components.dropdown select option {
+  padding: 10px;
+}
+.level-page .wrapper-inner .filter .filter-components.dropdown select:hover {
+  border-color: #888;
+}
+.level-page .wrapper-inner .filter .filter-components.dropdown select:focus {
+  outline: none;
+  border-color: #555;
+  box-shadow: 0 0 0 2px rgba(0, 0, 255, 0.2);
+}
+.level-page .wrapper-inner .sort .custom-radio-button {
+  opacity: 0;
+  position: absolute;
+}
+.level-page .wrapper-inner .sort .custom-radio-button:checked + .custom-radio-label .radio-custom-design {
+  background-color: purple;
+}
+.level-page .wrapper-inner .sort .custom-radio-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+.level-page .wrapper-inner .sort .custom-radio-label .radio-custom-design {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  border: 2px solid #ccc;
+  border-radius: 50%;
+  background-color: #fff;
+}
 .level-page .grid-container {
   display: grid;
   grid-template-columns: repeat(6, 1fr);
