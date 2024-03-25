@@ -1,7 +1,7 @@
 
 import { Route, Routes } from 'react-router-dom'
 import './App.css'
-import { HomePage, LevelsPage } from './pages'
+import { HomePage, LevelDetailPage, LevelsPage } from './pages'
 
 
 function App() {
@@ -10,6 +10,7 @@ function App() {
     <Routes>
       <Route path = "/" element={<HomePage/>}/>
       <Route path = "/levels" element={<LevelsPage/>}/>
+      <Route path='/leveldetail' element={<LevelDetailPage/>}/>
     </Routes>
   )
 }

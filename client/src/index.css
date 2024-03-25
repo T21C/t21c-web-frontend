@@ -9,11 +9,12 @@
 :root {
   --primary-color: #6d23ce;
   --backgorund-color: #090909;
-  --secondary-color: #DED4F0;
-  --third-color:#A3A2D8;
-  --text-color: #FFFFFF;
-  --white-color:#F9FAFB;
-  --gray-color:#afafaf;
+  --secondary-color: #ded4f0;
+  --third-color: #a3a2d8;
+  --text-color: #ffffff;
+  --white-color: #f9fafb;
+  --gray-color: #afafaf;
+  --gray-color-two: #303030;
 }
 
 body {
@@ -262,7 +263,7 @@ nav .wrapper svg:hover {
   max-width: 25rem;
   width: 100%;
   background-color: var(--white-color);
-  border: 2px solid #E9E9EA;
+  border: 2px solid #e9e9ea;
   border-radius: 10px;
   padding: 1rem;
   box-sizing: border-box;
@@ -323,12 +324,28 @@ nav .wrapper svg:hover {
   background-color: var(--backgorund-color);
   color: var(--text-color);
   min-height: 100vh;
-  padding-top: 6rem;
 }
 .level-page .wrapper-level {
   padding: 0 1rem;
 }
+.level-page .wrapper-level-top {
+  padding-top: 6rem;
+}
+.level-page .background-level {
+  height: 100vh;
+  width: 100vw;
+  z-index: 1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-image: url("https://images.rawpixel.com/image_social_landscape/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTM2NjcxMC1pbWFnZS1rd3Z4eGVxcC5qcGc.jpg");
+  background-size: cover;
+  filter: blur(10px);
+  background-color: black;
+}
 .level-page input {
+  position: relative;
+  z-index: 2;
   width: 100%;
   height: 3rem;
   display: block;
@@ -343,54 +360,31 @@ nav .wrapper svg:hover {
   outline: none; /* Optional: Removes the default focus outline */
 }
 .level-page .wrapper-inner {
-  background-color: var(--third-color);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  gap: 1rem;
   max-width: 80rem;
+  z-index: 2;
   padding: 1rem 2rem;
   border-radius: 5px;
-  margin: 1rem auto;
+  margin: 0 auto;
   margin-bottom: 3rem;
-}
-.level-page .wrapper-inner input {
-  width: 1rem;
-  height: 1rem;
-  margin: 0;
+  color: #fff;
+  position: relative;
 }
 .level-page .wrapper-inner .filter {
   display: flex;
   gap: 1rem;
   flex-wrap: wrap;
 }
-.level-page .wrapper-inner .filter .filter-components {
-  display: flex;
-  align-items: center;
-}
-.level-page .wrapper-inner .filter .filter-components .custom-radio-button {
-  opacity: 0;
-  position: absolute;
-}
-.level-page .wrapper-inner .filter .filter-components .custom-radio-button:checked + .custom-radio-label .radio-custom-design {
-  background-color: purple;
-}
-.level-page .wrapper-inner .filter .filter-components .custom-radio-label {
-  display: flex;
-  align-items: center;
-  cursor: pointer;
-}
-.level-page .wrapper-inner .filter .filter-components .custom-radio-label .radio-custom-design {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
-  border: 2px solid #ccc;
-  border-radius: 50%;
-  background-color: #fff;
-}
-.level-page .wrapper-inner .filter .filter-components.dropdown {
-  padding: 10px;
+.level-page .wrapper-inner .filter .dropdown {
   border-radius: 8px;
   gap: 1rem;
+  display: flex;
+  align-items: center;
 }
-.level-page .wrapper-inner .filter .filter-components.dropdown select {
+.level-page .wrapper-inner .filter .dropdown select {
   width: 100%;
   padding: 8px 10px;
   border: 1px solid #ccc;
@@ -399,41 +393,75 @@ nav .wrapper svg:hover {
   font-size: 14px;
   cursor: pointer;
 }
-.level-page .wrapper-inner .filter .filter-components.dropdown select option {
+.level-page .wrapper-inner .filter .dropdown select option {
   padding: 10px;
 }
-.level-page .wrapper-inner .filter .filter-components.dropdown select:hover {
+.level-page .wrapper-inner .filter .dropdown select:hover {
   border-color: #888;
 }
-.level-page .wrapper-inner .filter .filter-components.dropdown select:focus {
+.level-page .wrapper-inner .filter .dropdown select:focus {
   outline: none;
   border-color: #555;
   box-shadow: 0 0 0 2px rgba(0, 0, 255, 0.2);
 }
-.level-page .wrapper-inner .sort .custom-radio-button {
-  opacity: 0;
-  position: absolute;
-}
-.level-page .wrapper-inner .sort .custom-radio-button:checked + .custom-radio-label .radio-custom-design {
-  background-color: purple;
-}
-.level-page .wrapper-inner .sort .custom-radio-label {
+.level-page .wrapper-inner .filter .select-group {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  cursor: pointer;
+  gap: 1rem;
 }
-.level-page .wrapper-inner .sort .custom-radio-label .radio-custom-design {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  margin-right: 10px;
-  border: 2px solid #ccc;
-  border-radius: 50%;
-  background-color: #fff;
+.level-page .wrapper-inner .filter .select-group .button-radio {
+  padding: 0.5rem 2rem;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 100ms ease-in;
+}
+.level-page .wrapper-inner .filter .select-group .button-radio:hover {
+  border: 2px solid var(--third-color);
+}
+.level-page .wrapper-inner .filter .select-group .button-radio-active {
+  border: 2px solid var(--primary-color);
+}
+.level-page .wrapper-inner .filter .select-group .button-radio-active:hover {
+  border: 2px solid var(--primary-color);
+}
+.level-page .wrapper-inner .spacer-left-right {
+  width: 2px;
+  background-color: var(--third-color);
+  border-radius: 1px;
+}
+.level-page .wrapper-inner .sort {
+  width: 33rem;
+}
+.level-page .wrapper-inner .sort .select-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+.level-page .wrapper-inner .sort .select-group .button-radio {
+  padding: 0.5rem 2rem;
+  border-radius: 4px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 100ms ease-in;
+}
+.level-page .wrapper-inner .sort .select-group .button-radio:hover {
+  border: 2px solid var(--third-color);
+}
+.level-page .wrapper-inner .sort .select-group .button-radio-active {
+  border: 2px solid var(--primary-color);
+}
+.level-page .wrapper-inner .sort .select-group .button-radio-active:hover {
+  border: 2px solid var(--primary-color);
 }
 .level-page .grid-container {
+  position: relative;
+  padding-top: 2rem;
+  z-index: 2;
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 10px;
 }
 .level-page .grid-container .grid-header {
@@ -444,15 +472,16 @@ nav .wrapper svg:hover {
 .level-page .grid-container .grid-content-long {
   grid-column: 1/-1;
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 10px;
-  border: 2px solid rgba(255, 255, 255, 0.5);
+  grid-template-columns: repeat(5, 1fr);
   border-radius: 4px;
   height: 4rem;
   align-items: center;
   margin-bottom: 1rem;
   transition: all 0.2s linear;
   cursor: pointer;
+}
+.level-page .grid-container .grid-content-long:hover {
+  background-color: rgba(0, 0, 0, 0.4);
 }
 .level-page .grid-container .grid-content-long .content {
   padding: 10px;
@@ -461,17 +490,16 @@ nav .wrapper svg:hover {
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.level-page .grid-container .grid-content-long *:hover {
-  background-color: linear-gradient(rgb(0, 0, 0), rgb(0, 0, 0));
-}
 .level-page .grid-container .grid-content-long .content-download {
   display: flex;
   justify-content: center;
   gap: 10px;
 }
 .level-page .grid-container .grid-content-long .content-download svg {
-  height: 2.5rem;
-  width: 2.5rem;
+  height: 100%;
+  width: 100%;
+  max-width: 2.5rem;
+  max-height: 2.5rem;
   stroke: var(--white-color);
   transition: all 0.1s linear;
 }
@@ -481,6 +509,140 @@ nav .wrapper svg:hover {
 }
 .level-page .grid-container .grid-content-long .content-download svg:hover {
   transform: scale(1.5);
+}
+
+.level-detail {
+  background-color: var(--backgorund-color);
+  color: var(--text-color);
+  min-height: 100vh;
+  padding-bottom: 3rem;
+}
+.level-detail .wrapper-level {
+  padding: 0 3rem;
+}
+.level-detail .wrapper-level-top {
+  padding-top: 5rem;
+}
+.level-detail button {
+  background-color: var(--third-color);
+  border: none;
+  border-radius: 3px;
+  color: var(--white-color);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  max-width: 70rem;
+  margin: 0 auto;
+  margin-bottom: 1rem;
+}
+.level-detail .header {
+  display: flex;
+  gap: 1rem;
+  max-width: 70rem;
+  margin: 0 auto;
+  margin-bottom: 2rem;
+}
+.level-detail .header .left {
+  padding: 0.5rem;
+  background-color: var(--gray-color-two);
+  border: 2px solid var(--gray-color);
+  border-radius: 3px;
+  flex: 5;
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+}
+.level-detail .header .left .diff {
+  margin-left: 1rem;
+  width: 50px;
+  height: 50px;
+  display: grid;
+  place-items: center;
+  background-color: #0cf;
+  border-radius: 25px;
+  border: 2px solid var(--white-color);
+  font-weight: bold;
+}
+.level-detail .header .right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.level-detail .header .right button {
+  height: 100%;
+  width: 100%;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 3px;
+  color: var(--white-color);
+  font-size: 1rem;
+  cursor: pointer;
+  margin: 0;
+}
+.level-detail .body {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+  max-width: 70rem;
+  margin: 2rem auto;
+}
+.level-detail .body .info {
+  flex: 2;
+  max-width: 30rem;
+  background-color: var(--third-color);
+  padding: 1rem;
+  border-radius: 3px;
+}
+.level-detail .body .info p {
+  padding-bottom: 1rem;
+  font-size: 1.2rem;
+}
+.level-detail .body .youtube {
+  flex: 3;
+  aspect-ratio: 16/9;
+}
+.level-detail .body .youtube iframe {
+  width: 100%;
+  height: 100%;
+}
+.level-detail .rank {
+  max-width: 70rem;
+  margin: 2rem auto;
+  background-color: var(--gray-color-two);
+  border-radius: 3px;
+  padding: 1rem;
+}
+.level-detail .rank h1 {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+.level-detail .rank .rank-list {
+  display: flex;
+  flex-direction: column;
+}
+.level-detail .rank .rank-list .list {
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--third-color);
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 3px;
+  align-items: center;
+  gap: 1rem;
+}
+.level-detail .rank .rank-list .list * {
+  flex: 1;
+}
+.level-detail .rank .rank-list .list button {
+  height: 100%;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 2px;
+  color: var(--white-color);
+  cursor: pointer;
+  height: 2rem;
+  margin: 0;
 }
 
 @keyframes fire {
@@ -544,6 +706,11 @@ footer .copy-right {
   }
   100% {
     background-position: 0 50%;
+  }
+}
+@media (max-width: 1145px) {
+  .spacer-left-right {
+    display: none;
   }
 }
 @media (max-width: 490px) {

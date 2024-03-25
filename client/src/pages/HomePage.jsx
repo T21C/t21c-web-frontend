@@ -1,7 +1,4 @@
-/* eslint-disable react/no-unescaped-entities */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-undef */
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Card, Footer, CompleteNav } from "../components";
 import { UserContext } from "../context/UserContext";
 import { fetchRecent } from "../Repository/RemoteRepository";
@@ -15,10 +12,10 @@ const HomePage = () => {
     fetchRecent().then((res)=> setRecent(res))
   }, [levelData, setLevelData]);
 
-  const scrollToRecent = () => {
-    const recent = document.querySelector("#recent");
-    recent.scrollIntoView({ behavior: "smooth" });
-  };
+  // const scrollToRecent = () => {
+  //   const recent = document.querySelector("#recent");
+  //   recent.scrollIntoView({ behavior: "smooth" });
+  // };
 
   return (
     <>
@@ -49,8 +46,6 @@ const HomePage = () => {
           )}
         </div>
       </div>
-
-      {/* <button onClick={() => console.log(levelData)}>test</button> */}
 
       <div className="spacer spacer-two"></div>
       <Footer />
