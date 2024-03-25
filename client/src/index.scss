@@ -631,18 +631,32 @@ nav {
     max-width: 70rem;
     margin: 0 auto;
     margin-bottom: 2rem;
+    height: 8rem;
 
     .left{
+      position: relative;
       padding: .5rem;
       background-color: var(--gray-color-two);
-      border: 2px solid var(--gray-color);
-      border-radius: 3px;
+      border-radius: 5px;
       flex: 5;
       align-items: center;
+      background-image: url("https://i.ytimg.com/vi/bWv9qadBYq4/sddefault.jpg");
+      background-position: center;
       
 
       display: flex;
       gap: 1rem;
+
+      &:before{
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: rgba(0, 0, 0, 0.3);
+        border-radius: 5px;
+      }
 
       .diff{
         margin-left: 1rem;
@@ -654,6 +668,11 @@ nav {
         border-radius: 25px;
         border: 2px solid var(--white-color);
         font-weight: bold;
+        z-index: 2;
+      }
+
+      .title{
+        z-index: 2;
       }
     }
 
