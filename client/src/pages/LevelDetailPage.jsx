@@ -4,6 +4,8 @@ import { CompleteNav } from '../components'
 
 const LevelDetailPage = () => {
     const id = new URLSearchParams(window.location.search).get("id")
+
+    
   return (
     <div className='level-detail'>
         <CompleteNav/>

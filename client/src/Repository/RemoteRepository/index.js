@@ -142,6 +142,12 @@ function getColorDiff(diff){
   }
 }
 
+function async getLevelInfo(id){
+  try{
+    const res = axios.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`)
+  }
+}
+
 
 
 export {fetchRecent, fetchData, getColorDiff}
