@@ -735,6 +735,119 @@ nav {
   }
 }
 
+.level-card-rev{
+  display: flex;
+  justify-content: left;
+  gap: 1rem;
+  min-height: 4rem;
+  padding: .6rem;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  align-items: center;
+  flex-wrap: wrap;
+
+  &:hover{
+      background-color: rgba($color: #ded4f0, $alpha: .2);
+  }
+
+  .level-exp{
+    font-size: .9rem;
+    color: rgba($color: #ffffff, $alpha: .7);
+  }
+
+  .level-desc{
+    font-size: 1.2rem;
+
+  }
+
+  .level-id{
+    color: rgba($color: #ffffff, $alpha: .4);
+    font-size: .8rem;
+  }
+
+  .level-exp, .level-desc, .level-id {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+
+  .img-wrapper{
+    width: 3rem;
+
+    img{
+      object-fit: contain;
+      height: 100%;
+      width: 100%;
+    }
+  }
+
+  .artist-wrapper{
+    overflow: hidden;
+    width: 150px;
+    
+  }
+  .clears-wrapper{
+    overflow: hidden;
+
+    width: 50px;
+  }
+
+  .song-wrapper{
+    overflow: hidden;
+
+    width: 150px;
+  }
+
+  .creator-wrapper{
+    flex: 1;
+    overflow: hidden;
+    min-width: 200px;
+    padding-right: 50px;
+
+    .group{
+      width: 100%;
+      align-items: center;
+      display: flex;
+      gap: .3rem;
+    }
+  }
+
+  .downloads-wrapper {
+    flex: 1;
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+    cursor: pointer;
+    justify-content: flex-end; 
+  
+    a {
+    
+      display: block; 
+      height: 3rem;
+      width: 3rem;
+      
+      svg {
+        height: 100%;
+        width: 100%;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: all .2s;
+  
+        path {
+          color: var(--white-color);
+        }
+  
+        &:hover {
+          transform: scale(1.3); 
+        }
+      }
+    }
+  }
+  
+}
+
 .level-detail{
   background-color: var(--backgorund-color);
   color: var(--text-color);
@@ -849,23 +962,30 @@ nav {
       //   margin: 0;
       // }
 
+      a{
+        margin: 0 auto;
+        display: block; /* Add this line */
+        height: 3rem;
+        width: 3rem;
+        
         svg{
-          padding: .2rem;
-          border-radius: 4px;
-          margin: 0 auto;
           height: 100%;
           width:100%;
+          border-radius: 4px;
+          margin: 0 auto;
           cursor: pointer;
           transition: all .2s;
-
+  
           path{
             color: var(--white-color);
           }
-
+  
           &:hover{
             scale: 1.3;
           }
         }
+      }
+
     }
   }
 

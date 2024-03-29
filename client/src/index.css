@@ -619,6 +619,97 @@ nav .wrapper svg:hover {
   margin-bottom: 0.5rem;
 }
 
+.level-card-rev {
+  display: flex;
+  justify-content: left;
+  gap: 1rem;
+  min-height: 4rem;
+  padding: 0.6rem;
+  border-radius: 5px;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.level-card-rev:hover {
+  background-color: rgba(222, 212, 240, 0.2);
+}
+.level-card-rev .level-exp {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+.level-card-rev .level-desc {
+  font-size: 1.2rem;
+}
+.level-card-rev .level-id {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 0.8rem;
+}
+.level-card-rev .level-exp, .level-card-rev .level-desc, .level-card-rev .level-id {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.level-card-rev .img-wrapper {
+  width: 3rem;
+}
+.level-card-rev .img-wrapper img {
+  -o-object-fit: contain;
+     object-fit: contain;
+  height: 100%;
+  width: 100%;
+}
+.level-card-rev .artist-wrapper {
+  overflow: hidden;
+  width: 150px;
+}
+.level-card-rev .clears-wrapper {
+  overflow: hidden;
+  width: 50px;
+}
+.level-card-rev .song-wrapper {
+  overflow: hidden;
+  width: 150px;
+}
+.level-card-rev .creator-wrapper {
+  flex: 1;
+  overflow: hidden;
+  min-width: 200px;
+  padding-right: 50px;
+}
+.level-card-rev .creator-wrapper .group {
+  width: 100%;
+  align-items: center;
+  display: flex;
+  gap: 0.3rem;
+}
+.level-card-rev .downloads-wrapper {
+  flex: 1;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  cursor: pointer;
+  justify-content: flex-end;
+}
+.level-card-rev .downloads-wrapper a {
+  display: block;
+  height: 3rem;
+  width: 3rem;
+}
+.level-card-rev .downloads-wrapper a svg {
+  height: 100%;
+  width: 100%;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.level-card-rev .downloads-wrapper a svg path {
+  color: var(--white-color);
+}
+.level-card-rev .downloads-wrapper a svg:hover {
+  transform: scale(1.3);
+}
+
 .level-detail {
   background-color: var(--backgorund-color);
   color: var(--text-color);
@@ -710,19 +801,24 @@ nav .wrapper svg:hover {
   flex-direction: column;
   gap: 1rem;
 }
-.level-detail .header .right svg {
-  padding: 0.2rem;
-  border-radius: 4px;
+.level-detail .header .right a {
   margin: 0 auto;
+  display: block; /* Add this line */
+  height: 3rem;
+  width: 3rem;
+}
+.level-detail .header .right a svg {
   height: 100%;
   width: 100%;
+  border-radius: 4px;
+  margin: 0 auto;
   cursor: pointer;
   transition: all 0.2s;
 }
-.level-detail .header .right svg path {
+.level-detail .header .right a svg path {
   color: var(--white-color);
 }
-.level-detail .header .right svg:hover {
+.level-detail .header .right a svg:hover {
   scale: 1.3;
 }
 .level-detail .body {
