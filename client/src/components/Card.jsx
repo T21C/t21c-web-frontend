@@ -16,11 +16,9 @@ const Card = ({ creator, song, artist, image: vidLink }) => {
     const shortUrlRegex = /youtu\.be\/([a-zA-Z0-9_-]{11})/;
     const longUrlRegex = /youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})/;
 
-    // Try to match the input URL with the regular expressions
     const shortMatch = url.match(shortUrlRegex);
     const longMatch = url.match(longUrlRegex);
 
-    // Extract video ID from the matched regex groups
     const videoId = shortMatch
       ? shortMatch[1]
       : longMatch
@@ -94,7 +92,6 @@ const Card = ({ creator, song, artist, image: vidLink }) => {
         perspective: "1500px",
         maxWidth: "600px",
         margin: "auto",
-        padding: "20px",
       }}
     >
       <div
@@ -102,10 +99,6 @@ const Card = ({ creator, song, artist, image: vidLink }) => {
         className="card-tilt"
         style={{
           transition: "transform 0.2s all cubic-bezier(.25,.36,.81,.72)",
-          transformStyle: "preserve-3d",
-          width: "100%",
-          borderRadius: "20px",
-          boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)",
         }}
       >
         <h1>{creator}</h1>

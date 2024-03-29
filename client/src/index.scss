@@ -231,7 +231,7 @@ nav {
 
 .recent-rated {
   background-color: var(--secondary-color);
-  padding: 1rem;
+  padding: 1.5rem;
   padding-bottom: 10rem;
   position: relative;
 
@@ -289,25 +289,27 @@ nav {
   .card-holder {
     display: flex;
     flex-wrap: wrap;
-    gap: 1rem;
+    gap: 2rem;
     width: 100;
   }
 }
 
 .card-tilt {
   max-width: 25rem;
-  width: 100%;
   background-color: var(--white-color);
   border: 2px solid #e9e9ea;
-  border-radius: 10px;
+  border-radius: 20px;
   padding: 1rem;
   box-sizing: border-box;
-
+  transform-style: preserve-3d;
   transition: 0.2s all cubic-bezier(0.25, 0.36, 0.81, 0.72);
 
   perspective: 1000px;
 
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+
   h1 {
+    width: 100%;
     margin-bottom: 1rem;
     text-overflow: ellipsis;
     text-wrap: nowrap;
@@ -598,18 +600,168 @@ nav {
   }
 }
 
+.level-page-rev {
+  background-color: var(--backgorund-color);
+  color: var(--text-color);
+  min-height: 100vh;
+
+  .background-level {
+    height: 100vh;
+    width: 100vw;
+    z-index: 1;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-image: url("https://images.rawpixel.com/image_social_landscape/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTM2NjcxMC1pbWFnZS1rd3Z4eGVxcC5qcGc.jpg");
+    background-size: cover;
+    filter: blur(15px);
+  }
+
+  .level-body{
+    position: relative;
+    z-index: 2;
+    padding: 0 1.5rem;
+    padding-top: 6rem;
+    min-height: 100vh;
+
+    max-width: 70rem;
+    margin: 0 auto;
+
+
+    .input-option{
+      display: flex;
+      gap: .5rem;
+      height: 2rem;
+
+
+      input{
+        width: 100%;
+        background-color: rgba($color: #ffffff, $alpha: .3);
+        border: none;
+        border-radius: 3px;
+        padding: .5rem;
+        color: var(--white-color);
+
+        &:focus{
+          outline: none;
+        }
+      }
+
+      svg{
+        height: 2rem;
+        width: 2.2rem;
+        background-color: rgba($color: #ffffff, $alpha: .3);
+        padding: .1rem;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: all .2s linear;
+
+        &:focus{
+          outline: none;
+        }
+      }
+    }
+
+    .filter{
+      position: relative;
+      z-index: 2;
+      overflow: visible;
+    }
+
+    .sort{
+      position: relative;
+      z-index: 1;
+
+      .sort-option{
+        display: flex;
+        gap: 2rem;
+
+
+        .recent, .diff{
+          p{
+            margin-bottom: .5rem;
+          }
+
+          .wrapper{
+            display: flex;
+            gap: 1rem;
+          }
+
+          svg{
+            height: 2.5rem;
+            width: 2.5rem;
+
+            background-color: rgba($color: #ffffff, $alpha: .3);
+            padding: .1rem;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all .2s linear;
+    
+            &:focus{
+              outline: none;
+            }
+          }
+        }
+      }
+    }
+
+    .settings-class {
+      transition: height 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 1s ease-in-out;
+      height: 10rem;
+      overflow: hidden;
+    }
+    
+    .spacer-setting{
+      width: 100%;
+      height: 1px;
+      background-color: #ffffff;
+      margin-bottom: .5rem;
+    }
+
+    .input-setting{
+      margin-top: 1rem;
+    }
+
+    .setting-title{
+      margin-bottom: 1rem;
+    }
+
+    .setting-description{
+      margin-bottom: .5rem;
+    }
+
+
+
+  }
+}
+
 .level-detail{
   background-color: var(--backgorund-color);
   color: var(--text-color);
   min-height: 100vh;
   padding-bottom: 3rem;
 
+  .background-level {
+    height: 100vh;
+    width: 100vw;
+    z-index: 1;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-image: url("https://images.rawpixel.com/image_social_landscape/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTM2NjcxMC1pbWFnZS1rd3Z4eGVxcC5qcGc.jpg");
+    background-size: cover;
+    filter: blur(15px);
+  }
+
   .wrapper-level {
     padding: 0 3rem;
+    position: relative;
+    z-index: 2;
   }
 
   .wrapper-level-top {
     padding-top: 5rem;
+    position: relative;
   }
 
   button{
@@ -656,7 +808,7 @@ nav {
         left: 0;
         right: 0;
         bottom: 0;
-        background-color: rgba(0, 0, 0, 0.3);
+        background-color: rgba(0, 0, 0, 0.5);
         border-radius: 5px;
       }
 
@@ -685,17 +837,35 @@ nav {
       flex-direction: column;
       gap: 1rem;
 
-      button{
-        height: 100%;
-        width: 100%;
-        background-color: var(--primary-color);
-        border: none;
-        border-radius: 3px;
-        color: var(--white-color);
-        font-size: 1rem;
-        cursor: pointer;
-        margin: 0;
-      }
+      // button{
+      //   height: 100%;
+      //   width: 100%;
+      //   background-color: var(--primary-color);
+      //   border: none;
+      //   border-radius: 3px;
+      //   color: var(--white-color);
+      //   font-size: 1rem;
+      //   cursor: pointer;
+      //   margin: 0;
+      // }
+
+        svg{
+          padding: .2rem;
+          border-radius: 4px;
+          margin: 0 auto;
+          height: 100%;
+          width:100%;
+          cursor: pointer;
+          transition: all .2s;
+
+          path{
+            color: var(--white-color);
+          }
+
+          &:hover{
+            scale: 1.3;
+          }
+        }
     }
   }
 
@@ -855,14 +1025,35 @@ footer {
   }
 }
 
-@media (max-width: 490px) {
+@media (max-width: 420px) {
   .card-tilt {
     max-width: 20rem;
+
+    .song-name{
+      margin-bottom: 1rem;
+    }
   }
 }
 
-@media (max-width: 410px) {
+@media (max-width: 375px) {
+  .card-tilt {
+    max-width: 18rem;
+  }
+}
+
+@media (max-width: 340px) {
+  .card-tilt {
+    max-width: 16rem;
+  }
+}
+
+@media (max-width: 300px) {
   .card-tilt {
     max-width: 15rem;
+    height: 24rem;
+
+    h1, p{
+      margin-bottom: .5rem;
+    }
   }
 }
