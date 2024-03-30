@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const Navigation = ({ children }) => {
   const [openNav, setOpenNav] = useState(false);
@@ -14,9 +14,15 @@ const Navigation = ({ children }) => {
       <nav>
         <div className="wrapper">
           <div>
-            <Link to="/" style={{ color: "white", textDecoration: "none" }}>
-              LOGO
-            </Link>
+            <NavLink
+              className={({ isActive }) =>
+                "nav-link " + (isActive ? "active-link" : "")
+              }
+              to="/"
+            >
+              <img src="https://media.discordapp.net/attachments/1217150553231069275/1217150991791689810/image.png?ex=66157032&is=6602fb32&hm=cf735a44c4dfb53bc2be56f6ae8a18ece5d9c0035bd535ad4665a9e3506d656a&=&format=webp&quality=lossless" alt="" style={{ width: '2rem', height: '2rem', objectFit:"cover", borderRadius:"1rem"}} />
+            </NavLink>
+
           </div>
 
           <div className="nav-menu">
