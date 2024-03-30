@@ -21,29 +21,29 @@ const LevelPageRev = () => {
   const [pageNumber, setPageNumber] = useState(0)
 
   const {
-    level, 
-    loading, 
-    hasMore, 
-    error} = useLevelSearch(query, sort, pageNumber)
+    level,
+    loading,
+    hasMore,
+    error } = useLevelSearch(query, sort, pageNumber)
 
   const observer = useRef()
-  
+
   const lastLevelEl = useCallback(node => {
     if (loading) return;
-    if (observer.current)observer.current.disconnect()
+    if (observer.current) observer.current.disconnect()
 
     observer.current = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting && hasMore) {
-            setPageNumber(prevPage => prevPage + 1);
-        }
+      if (entries[0].isIntersecting && hasMore) {
+        setPageNumber(prevPage => prevPage + 1);
+      }
     });
 
-    if (node) observer.current.observe(node); 
+    if (node) observer.current.observe(node);
 
     return () => observer.current.disconnect();
-}, [loading, hasMore]);
+  }, [loading, hasMore]);
 
-  function handleQueryChange(e){
+  function handleQueryChange(e) {
     setQuery(e.target.value)
     setPageNumber(0)
   }
@@ -67,7 +67,7 @@ const LevelPageRev = () => {
 
       <div className="level-body">
         <div className="input-option">
-          <input value={query} type="text" placeholder="Search artist, song, creator" onChange={handleQueryChange}/>
+          <input value={query} type="text" placeholder="Search artist, song, creator" onChange={handleQueryChange} />
 
           <Tooltip id="filter" place="bottom" noArrow>
             filter
@@ -394,18 +394,18 @@ const LevelPageRev = () => {
         {/* <LevelCardRev diff="20" creator="adrianccccccccccccccccccccccccccccccccccccscccccccccccccccccccccccccccc" id="1234" artist="adrian and me" song="test song title" clears="0"/>
         <LevelCardRev diff="20" creator="adrian" id="1234" artist="adrian and me" song="test song title" clears="0"/> */}
 
-        {level.map ((level, index) =>{
-          if(level.length == index + 1){
+        {level.map((level, index) => {
+          if (level.length == index + 1) {
             // return <LevelCardRev ref={lastLevelEl} key={level} creator={level} diff="25" id="1236" artist="john and friends" song="yet another song title" clears="2" />
             return <div ref={lastLevelEl} key={level}>{level}</div>
           }
           // return <LevelCardRev key={level} creator={level} diff="25" id="1236" artist="john and friends" song="yet another song title" clears="2" />
           return <div key={level}>{level}</div>
 
-       })}
+        })}
 
-        <div>{loading && "...laoding"}</div>
-        <div>{error &&  "error"}</div>
+        <div>{loading && "...loading"}</div>
+        <div>{error && "error"}</div>
 
 
       </div>
