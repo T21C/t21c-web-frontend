@@ -20,7 +20,7 @@ const Navigation = ({ children }) => {
               }
               to="/"
             >
-              <img src="https://media.discordapp.net/attachments/1217150553231069275/1217150991791689810/image.png?ex=66157032&is=6602fb32&hm=cf735a44c4dfb53bc2be56f6ae8a18ece5d9c0035bd535ad4665a9e3506d656a&=&format=webp&quality=lossless" alt="" style={{ width: '2rem', height: '2rem', objectFit:"cover", borderRadius:"1rem"}} />
+              <img src="src/assets/img/TUF_LOGO.png" alt="" style={{ width: '2.5rem', height: '2.5rem', objectFit:"cover", borderRadius:"1rem"}} />
             </NavLink>
 
           </div>
