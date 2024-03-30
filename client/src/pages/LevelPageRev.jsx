@@ -1,7 +1,8 @@
-import { useState } from "react";
-import { CompleteNav } from "../components";
+import { useCallback, useRef, useState } from "react";
+import { CompleteNav, LevelCardRev } from "../components";
 import { Tooltip } from "react-tooltip";
 import Select from "react-select";
+import useLevelSearch from "../Repository/useLevelSearch";
 
 const options = [
   { value: "chocolate", label: "Chocolate" },
@@ -12,11 +13,40 @@ const options = [
 const LevelPageRev = () => {
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
-
+  const [query, setQuery] = useState("")
   const [selectedFilterDiff, setSelectedFilterDiff] = useState(null);
 
   const [sort, setSort] = useState("RECENT_ASC");
 
+  const [pageNumber, setPageNumber] = useState(0)
+
+  const {
+    level, 
+    loading, 
+    hasMore, 
+    error} = useLevelSearch(query, sort, pageNumber)
+
+  const observer = useRef()
+  
+  const lastLevelEl = useCallback(node => {
+    if (loading) return;
+    if (observer.current)observer.current.disconnect()
+
+    observer.current = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting && hasMore) {
+            setPageNumber(prevPage => prevPage + 1);
+        }
+    });
+
+    if (node) observer.current.observe(node); 
+
+    return () => observer.current.disconnect();
+}, [loading, hasMore]);
+
+  function handleQueryChange(e){
+    setQuery(e.target.value)
+    setPageNumber(0)
+  }
   function handleFilterOpen() {
     setFilterOpen(!filterOpen);
   }
@@ -37,7 +67,7 @@ const LevelPageRev = () => {
 
       <div className="level-body">
         <div className="input-option">
-          <input type="text" />
+          <input value={query} type="text" placeholder="Search artist, song, creator" onChange={handleQueryChange}/>
 
           <Tooltip id="filter" place="bottom" noArrow>
             filter
@@ -361,6 +391,23 @@ const LevelPageRev = () => {
 
 
         {/* goes here */}
+        {/* <LevelCardRev diff="20" creator="adrianccccccccccccccccccccccccccccccccccccscccccccccccccccccccccccccccc" id="1234" artist="adrian and me" song="test song title" clears="0"/>
+        <LevelCardRev diff="20" creator="adrian" id="1234" artist="adrian and me" song="test song title" clears="0"/> */}
+
+        {level.map ((level, index) =>{
+          if(level.length == index + 1){
+            // return <LevelCardRev ref={lastLevelEl} key={level} creator={level} diff="25" id="1236" artist="john and friends" song="yet another song title" clears="2" />
+            return <div ref={lastLevelEl} key={level}>{level}</div>
+          }
+          // return <LevelCardRev key={level} creator={level} diff="25" id="1236" artist="john and friends" song="yet another song title" clears="2" />
+          return <div key={level}>{level}</div>
+
+       })}
+
+        <div>{loading && "...laoding"}</div>
+        <div>{error &&  "error"}</div>
+
+
       </div>
     </div>
   );
