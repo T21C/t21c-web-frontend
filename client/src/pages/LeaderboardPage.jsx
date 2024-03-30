@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { CompleteNav } from "../components";
 import { UserContext } from "../context/UserContext"; // Assuming you have a UserContext for managing leaderboard data
-import { fetchLeaderboardData } from "../Repository/RemoteRepository"; // Assuming you have a function to fetch leaderboard data
+import { fetchPlayerData } from "../Repository/RemoteRepository"; // Assuming you have a function to fetch leaderboard data
 
 const LeaderboardPage = () => {
-  const { leaderboardData, setLeaderboardData } = useContext(UserContext);
+  const { playerData, setPlayerData } = useContext(UserContext);
 
   // State for selected filters and loading indicator
   const [selectedSort, setSelectedSort] = useState("");
@@ -13,18 +13,18 @@ const LeaderboardPage = () => {
 
   // Fetch leaderboard data when component mounts and when filters change
   useEffect(() => {
-    fetchLeaderboard();
+    fetchPlayerData();
   }, [selectedSort, selectedDirection]);
 
   // Function to fetch leaderboard data
-  const fetchLeaderboard = async () => {
+  const fetchPlayerData = async () => {
     try {
       setLoading(true);
-      const data = await fetchLeaderboardData({
+      const data = await fetchPlayerData({
         sort: selectedSort,
         direction: selectedDirection,
       });
-      setLeaderboardData(data);
+      setPlayerData(data);
     } catch (error) {
       console.error("Error fetching leaderboard data:", error);
     } finally {

@@ -153,9 +153,9 @@ async function fetchLevelInfo(id){
   }
 }
 
-async function fetchLeaderboardData(){
+async function fetchPlayerData(){
 
 }
 
 
-export {fetchRecent, fetchData, getColorDiff, fetchLevelInfo, fetchLeaderboardData}
+export {fetchRecent, fetchData, getColorDiff, fetchLevelInfo, fetchPlayerData}

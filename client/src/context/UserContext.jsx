@@ -5,9 +5,10 @@ const UserContext = createContext()
 
 const UserContextProvider = (props) => {
     const[levelData, setLevelData] = useState([])
+    const[playerData, setPlayerData] = useState([])
 
     return(
-        <UserContext.Provider value={{levelData, setLevelData}}>
+        <UserContext.Provider value={{levelData, setLevelData, playerData, setPlayerData}}>
             {props.children}
         </UserContext.Provider>
     )
