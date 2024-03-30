@@ -145,7 +145,7 @@ function getColorDiff(diff) {
   }
 }
 
-
+// fetching
 async function fetchLevelInfo(id) {
   try {
     const res = await axios.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`)
@@ -156,6 +156,7 @@ async function fetchLevelInfo(id) {
   }
 }
 
+async function fetchPlayerData() { }
 
 
-export { fetchRecent, fetchData, getColorDiff, fetchLevelInfo }
+export { fetchRecent, fetchData, getColorDiff, fetchLevelInfo, fetchPlayerData }

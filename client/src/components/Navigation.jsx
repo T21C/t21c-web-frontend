@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 const Navigation = ({ children }) => {
   const [openNav, setOpenNav] = useState(false);
@@ -14,9 +14,15 @@ const Navigation = ({ children }) => {
       <nav>
         <div className="wrapper">
           <div>
-            <Link to="/" style={{ color: "white", textDecoration: "none" }}>
-              LOGO
-            </Link>
+            <NavLink
+              className={({ isActive }) =>
+                "nav-link " + (isActive ? "active-link" : "")
+              }
+              to="/"
+            >
+              <img src="src/assets/img/TUF_LOGO.png" alt="" style={{ width: '2.5rem', height: '2.5rem', objectFit:"cover", borderRadius:"1rem"}} />
+            </NavLink>
+
           </div>
 
           <div className="nav-menu">

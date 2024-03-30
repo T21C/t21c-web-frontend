@@ -19,9 +19,9 @@ const CompleteNav = () => {
         className={({ isActive }) =>
           "nav-link " + (isActive ? "active-link" : "")
         }
-        to="/"
+        to="/leaderboard"
       >
-        <li>UNAV</li>
+        <li>Leaderboard</li>
       </NavLink>
 
       <NavLink
