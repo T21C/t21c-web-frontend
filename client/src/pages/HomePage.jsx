@@ -35,6 +35,7 @@ const HomePage = () => {
             recent.map((element, index) => (
               <Card
                 key={index}
+                id = {element.id}
                 creator={element.creator}
                 song={element.song}
                 artist={element.artist}

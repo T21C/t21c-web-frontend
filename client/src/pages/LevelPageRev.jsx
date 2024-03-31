@@ -1,8 +1,10 @@
-import { useCallback, useRef, useState } from "react";
+/* eslint-disable no-unused-vars */
+import { useEffect, useState } from "react";
 import { CompleteNav, LevelCardRev } from "../components";
 import { Tooltip } from "react-tooltip";
 import Select from "react-select";
-import useLevelSearch from "../Repository/useLevelSearch";
+import InfiniteScroll from "react-infinite-scroll-component";
+import axios from "axios";
 
 const options = [
   { value: "chocolate", label: "Chocolate" },
@@ -13,39 +15,66 @@ const options = [
 const LevelPageRev = () => {
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(false);
-  const [query, setQuery] = useState("")
+  const [query, setQuery] = useState("");
   const [selectedFilterDiff, setSelectedFilterDiff] = useState(null);
 
-  const [sort, setSort] = useState("RECENT_ASC");
+  const [sort, setSort] = useState("RECENT_DESC");
 
-  const [pageNumber, setPageNumber] = useState(0)
+  const [levels, setLevels] = useState([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [pageNumber, setPageNumber] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-  const {
-    level, 
-    loading, 
-    hasMore, 
-    error} = useLevelSearch(query, sort, pageNumber)
+  useEffect(() => {
+    let cancel;
+    const fetchLevels = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_OFFSET_LEVEL}`,
+          {
+            params: { query, sort, offset: pageNumber * 10 },
+            cancelToken: new axios.CancelToken((c) => (cancel = c)),
+          }
+        );
+        const newLevels = await Promise.all(
+          response.data.results.map(async (l) => {
+            // Assuming there's an endpoint to fetch additional data for each level by ID
+            const additionalDataResponse = await axios.get(
+              `${import.meta.env.VITE_INDIVIDUAL_PASSES}${l.id}`
+            )
+            return {
+              id: l.id,
+              creator: l.creator,
+              song: l.song,
+              artist: l.artist,
+              dlLink: l.dlLink,
+              wsLink: l.workshopLink,
+              clears: additionalDataResponse.data.count,
+            };
+          })
+        );
+        setLevels((prev) =>
+          pageNumber === 0 ? newLevels : [...prev, ...newLevels]
+        );
+        setHasMore(response.data.count > 0);
+      } catch (error) {
+        if (!axios.isCancel(error)) setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const observer = useRef()
-  
-  const lastLevelEl = useCallback(node => {
-    if (loading) return;
-    if (observer.current)observer.current.disconnect()
+    fetchLevels();
 
-    observer.current = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting && hasMore) {
-            setPageNumber(prevPage => prevPage + 1);
-        }
-    });
+    return () => cancel && cancel();
+  }, [query, sort, pageNumber]);
 
-    if (node) observer.current.observe(node); 
-
-    return () => observer.current.disconnect();
-}, [loading, hasMore]);
-
-  function handleQueryChange(e){
-    setQuery(e.target.value)
-    setPageNumber(0)
+  function handleQueryChange(e) {
+    setQuery(e.target.value);
+    setPageNumber(0);
+    setLevels([]);
   }
   function handleFilterOpen() {
     setFilterOpen(!filterOpen);
@@ -57,6 +86,8 @@ const LevelPageRev = () => {
 
   function handleSort(value) {
     setSort(value);
+    setPageNumber(0);
+    setLevels([]);
   }
 
   return (
@@ -67,7 +98,12 @@ const LevelPageRev = () => {
 
       <div className="level-body">
         <div className="input-option">
-          <input value={query} type="text" placeholder="Search artist, song, creator" onChange={handleQueryChange}/>
+          <input
+            value={query}
+            type="text"
+            placeholder="Search artist, song, creator"
+            onChange={handleQueryChange}
+          />
 
           <Tooltip id="filter" place="bottom" noArrow>
             filter
@@ -387,27 +423,33 @@ const LevelPageRev = () => {
           </div>
         </div>
 
-
-
-
-        {/* goes here */}
-        {/* <LevelCardRev diff="20" creator="adrianccccccccccccccccccccccccccccccccccccscccccccccccccccccccccccccccc" id="1234" artist="adrian and me" song="test song title" clears="0"/>
-        <LevelCardRev diff="20" creator="adrian" id="1234" artist="adrian and me" song="test song title" clears="0"/> */}
-
-        {level.map ((level, index) =>{
-          if(level.length == index + 1){
-            // return <LevelCardRev ref={lastLevelEl} key={level} creator={level} diff="25" id="1236" artist="john and friends" song="yet another song title" clears="2" />
-            return <div ref={lastLevelEl} key={level}>{level}</div>
+        <InfiniteScroll
+        style={{paddingBottom:"5rem"}}
+          dataLength={levels.length}
+          next={() => setPageNumber((prevPageNumber) => prevPageNumber + 1)}
+          hasMore={hasMore}
+          loader={<h1>Loading...</h1>}
+          endMessage={
+            <p style={{ textAlign: "center" }}>
+              <b>You have seen it all</b>
+            </p>
           }
-          // return <LevelCardRev key={level} creator={level} diff="25" id="1236" artist="john and friends" song="yet another song title" clears="2" />
-          return <div key={level}>{level}</div>
-
-       })}
-
-        <div>{loading && "...laoding"}</div>
-        <div>{error &&  "error"}</div>
-
-
+        >
+          {levels.map((l, index) => (
+            console.log(l),
+            <LevelCardRev
+              key={index}
+              creator={l.creator}
+              diff="25"
+              id={l.id}
+              artist={l.artist}
+              song={l.song}
+              clears={l.clears}
+              dl={l.dlLink}
+              ws={l.wsLink}
+            />
+          ))}
+        </InfiniteScroll>
       </div>
     </div>
   );

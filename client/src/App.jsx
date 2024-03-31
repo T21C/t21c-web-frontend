@@ -1,7 +1,7 @@
 
 import { Route, Routes } from 'react-router-dom'
 import './App.css'
-import { HomePage, LevelDetailPage, LevelsPage, LevelPageRev } from './pages'
+import { HomePage, LevelDetailPage, LevelPageRev } from './pages'
 
 function App() {
 

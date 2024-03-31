@@ -154,5 +154,69 @@ async function fetchLevelInfo(id){
 }
 
 
+//youtube thubnail
 
-export {fetchRecent, fetchData, getColorDiff, fetchLevelInfo}
+const imagePh = [
+  "src/assets/waves/1.png",
+  "src/assets/waves/2.png",
+  "src/assets/waves/3.png",
+  "src/assets/waves/4.png",
+];
+
+function simpleHash(str) {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    const char = str.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash;
+  }
+  return hash;
+}
+
+function selectItemConsistently(name, items) {
+  const hash = simpleHash(name);
+  const index = Math.abs(hash) % items.length;
+  return items[index];
+}
+
+function getYouTubeThumbnailUrl(url, title) {
+  const shortUrlRegex = /youtu\.be\/([a-zA-Z0-9_-]{11})/;
+  const longUrlRegex = /youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})/;
+
+  const shortMatch = url.match(shortUrlRegex);
+  const longMatch = url.match(longUrlRegex);
+
+  const videoId = shortMatch
+    ? shortMatch[1]
+    : longMatch
+    ? longMatch[1]
+    : null;
+
+  if (videoId) {
+    return `https://img.youtube.com/vi/${videoId}/0.jpg`;
+  } else {
+    return selectItemConsistently(title, imagePh);
+  }
+}
+
+function getYouTubeEmbedUrl(url) {
+  const shortUrlRegex = /youtu\.be\/([a-zA-Z0-9_-]{11})/;
+  const longUrlRegex = /youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})/;
+
+  const shortMatch = url.match(shortUrlRegex);
+  const longMatch = url.match(longUrlRegex);
+
+  const videoId = shortMatch ? shortMatch[1] : longMatch ? longMatch[1] : null;
+
+  if (videoId) {
+    // Return the embed URL
+    return `https://www.youtube.com/embed/${videoId}`;
+  } else {
+    // Handle the case where the URL does not match the expected format
+    // Perhaps return a default embed URL or handle this scenario as needed
+    return null; // Adjust this return value based on your needs
+  }
+}
+
+
+export {fetchRecent, fetchData, getColorDiff, fetchLevelInfo, getYouTubeThumbnailUrl, getYouTubeEmbedUrl}

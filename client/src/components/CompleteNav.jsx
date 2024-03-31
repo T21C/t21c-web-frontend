@@ -15,41 +15,15 @@ const CompleteNav = () => {
         <li>Levels</li>
       </NavLink>
 
-      <NavLink
+      {/* <NavLink
         className={({ isActive }) =>
           "nav-link " + (isActive ? "active-link" : "")
         }
         to="/"
       >
         <li>UNAV</li>
-      </NavLink>
+      </NavLink> */}
 
-      <NavLink
-        className={({ isActive }) =>
-          "nav-link " + (isActive ? "active-link" : "")
-        }
-        to="/"
-      >
-        <li>UNAV</li>
-      </NavLink>
-
-      <NavLink
-        className={({ isActive }) =>
-          "nav-link " + (isActive ? "active-link" : "")
-        }
-        to="/"
-      >
-        <li>UNAV</li>
-      </NavLink>
-
-      <NavLink
-        className={({ isActive }) =>
-          "nav-link " + (isActive ? "active-link" : "")
-        }
-        to="/"
-      >
-        <li>UNAV</li>
-      </NavLink>
     </Navigation>
   );
 };

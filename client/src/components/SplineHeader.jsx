@@ -6,4 +6,5 @@ const SplineHeader = () => {
   );
 }
 
+
 export default SplineHeader;
