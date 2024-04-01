@@ -2,6 +2,7 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
+import logo from "../assets/logo-full.png";
 
 const Navigation = ({ children }) => {
   const [openNav, setOpenNav] = useState(false);
@@ -9,6 +10,7 @@ const Navigation = ({ children }) => {
   function changeNavState() {
     setOpenNav(!openNav);
   }
+
   return (
     <>
       <nav>
@@ -20,9 +22,10 @@ const Navigation = ({ children }) => {
               }
               to="/"
             >
-              <img src="src/assets/img/TUF_LOGO.png" alt="" style={{ width: '2.5rem', height: '2.5rem', objectFit:"cover", borderRadius:"1rem"}} />
+              <div className="img-container">
+                <img src={logo} alt="logo" />
+              </div>
             </NavLink>
-
           </div>
 
           <div className="nav-menu">
