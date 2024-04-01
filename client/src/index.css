@@ -93,47 +93,6 @@ nav .wrapper svg:hover {
   border-bottom: solid 2px var(--primary-color);
 }
 
-@media (max-width: 580px) {
-  nav .wrapper .nav-menu {
-    display: none;
-  }
-  nav .wrapper svg {
-    display: block;
-  }
-  .nav-menu-outer {
-    display: block;
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 3;
-    width: 40%;
-    height: 100%;
-    background: rgba(255, 255, 255, 0.1); /* White with low opacity */
-    -webkit-backdrop-filter: blur(10px);
-            backdrop-filter: blur(10px); /* Blur effect */
-    border-left: 1px solid rgba(255, 255, 255, 0.25);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    color: var(--text-color);
-  }
-  .nav-menu-outer .close {
-    width: 2rem;
-    margin: 1.5rem;
-    float: right;
-  }
-  .nav-menu-outer .close:hover {
-    cursor: pointer;
-  }
-  .nav-menu-outer ul {
-    margin-top: 70%;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-  .nav-menu-outer ul li {
-    padding: 1rem;
-  }
-}
 .home {
   position: relative;
   background-color: var(--backgorund-color);
@@ -217,20 +176,14 @@ nav .wrapper svg:hover {
   background-image: url("./assets/wavesTwo.svg");
 }
 
-.recent-rated {
-  background-color: var(--secondary-color);
-  padding: 1.5rem;
-  padding-bottom: 10rem;
-  position: relative;
-}
-.recent-rated .loader {
+.loader {
   position: absolute;
   left: 50%;
   top: 56%;
   z-index: 100;
   transform: translateX(-50%) translateY(-50%) scale(2, 2);
 }
-.recent-rated .loader:before, .recent-rated .loader:after {
+.loader:before, .loader:after {
   content: "";
   position: absolute;
   height: 20px;
@@ -238,13 +191,26 @@ nav .wrapper svg:hover {
   border-radius: 0 100% 0 0;
   transform-origin: 0 100%;
 }
-.recent-rated .loader:before {
+.loader:before {
   box-shadow: 0 -2px 0 0 #0cf;
   animation: ice 1s infinite linear;
 }
-.recent-rated .loader:after {
+.loader:after {
   box-shadow: 2px 0 0 0 #f00;
   animation: fire 1s infinite linear;
+}
+
+.loader-level-detail {
+  left: 50%;
+  top: 40%;
+  transform: translateX(-50%) translateY(-50%) scale(2, 2);
+}
+
+.recent-rated {
+  background-color: var(--secondary-color);
+  padding: 1.5rem;
+  padding-bottom: 10rem;
+  position: relative;
 }
 .recent-rated .title-recent {
   margin: 2rem auto;
@@ -331,18 +297,7 @@ nav .wrapper svg:hover {
      object-fit: contain;
 }
 
-.level-page {
-  background-color: var(--backgorund-color);
-  color: var(--text-color);
-  min-height: 100vh;
-}
-.level-page .wrapper-level {
-  padding: 0 1rem;
-}
-.level-page .wrapper-level-top {
-  padding-top: 6rem;
-}
-.level-page .background-level {
+.background-level {
   height: 100vh;
   width: 100vw;
   z-index: 1;
@@ -353,6 +308,18 @@ nav .wrapper svg:hover {
   background-size: cover;
   filter: blur(10px);
   background-color: black;
+}
+
+.level-page {
+  background-color: var(--backgorund-color);
+  color: var(--text-color);
+  min-height: 100vh;
+}
+.level-page .wrapper-level {
+  padding: 0 1rem;
+}
+.level-page .wrapper-level-top {
+  padding-top: 6rem;
 }
 .level-page input {
   position: relative;
@@ -527,17 +494,6 @@ nav .wrapper svg:hover {
   color: var(--text-color);
   min-height: 100vh;
 }
-.level-page-rev .background-level {
-  height: 100vh;
-  width: 100vw;
-  z-index: 1;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background-image: url("https://images.rawpixel.com/image_social_landscape/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTM2NjcxMC1pbWFnZS1rd3Z4eGVxcC5qcGc.jpg");
-  background-size: cover;
-  filter: blur(15px);
-}
 .level-page-rev .level-body {
   position: relative;
   z-index: 2;
@@ -588,14 +544,17 @@ nav .wrapper svg:hover {
   display: flex;
   gap: 2rem;
 }
-.level-page-rev .level-body .sort .sort-option .recent p, .level-page-rev .level-body .sort .sort-option .diff p {
+.level-page-rev .level-body .sort .sort-option .recent p,
+.level-page-rev .level-body .sort .sort-option .diff p {
   margin-bottom: 0.5rem;
 }
-.level-page-rev .level-body .sort .sort-option .recent .wrapper, .level-page-rev .level-body .sort .sort-option .diff .wrapper {
+.level-page-rev .level-body .sort .sort-option .recent .wrapper,
+.level-page-rev .level-body .sort .sort-option .diff .wrapper {
   display: flex;
   gap: 1rem;
 }
-.level-page-rev .level-body .sort .sort-option .recent svg, .level-page-rev .level-body .sort .sort-option .diff svg {
+.level-page-rev .level-body .sort .sort-option .recent svg,
+.level-page-rev .level-body .sort .sort-option .diff svg {
   height: 2.5rem;
   width: 2.5rem;
   background-color: rgba(255, 255, 255, 0.3);
@@ -604,7 +563,8 @@ nav .wrapper svg:hover {
   cursor: pointer;
   transition: all 0.2s linear;
 }
-.level-page-rev .level-body .sort .sort-option .recent svg:focus, .level-page-rev .level-body .sort .sort-option .diff svg:focus {
+.level-page-rev .level-body .sort .sort-option .recent svg:focus,
+.level-page-rev .level-body .sort .sort-option .diff svg:focus {
   outline: none;
 }
 .level-page-rev .level-body .settings-class {
@@ -654,7 +614,9 @@ nav .wrapper svg:hover {
   color: rgba(255, 255, 255, 0.4);
   font-size: 0.8rem;
 }
-.level-card-rev .level-exp, .level-card-rev .level-desc, .level-card-rev .level-id {
+.level-card-rev .level-exp,
+.level-card-rev .level-desc,
+.level-card-rev .level-id {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -726,24 +688,13 @@ nav .wrapper svg:hover {
   padding-bottom: 3rem;
   background-color: var(--backgorund-color);
 }
-.level-detail .background-level {
-  height: 100vh;
-  width: 100vw;
-  z-index: 1;
-  position: fixed;
-  top: 0;
-  left: 0;
-  background-image: url("https://images.rawpixel.com/image_social_landscape/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTM2NjcxMC1pbWFnZS1rd3Z4eGVxcC5qcGc.jpg");
-  background-size: cover;
-  filter: blur(15px);
-}
 .level-detail .wrapper-level {
   padding: 0 3rem;
   position: relative;
   z-index: 2;
 }
 .level-detail .wrapper-level-top {
-  padding-top: 5rem;
+  padding-top: 6rem;
   position: relative;
 }
 .level-detail button {
@@ -760,18 +711,22 @@ nav .wrapper svg:hover {
 }
 .level-detail .header {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
   max-width: 70rem;
   margin: 0 auto;
   margin-bottom: 2rem;
   height: 8rem;
 }
+.level-detail .header .left, .level-detail .header .right {
+  flex-basis: 100%;
+}
 .level-detail .header .left {
   position: relative;
   padding: 0.5rem;
   background-color: var(--gray-color-two);
   border-radius: 5px;
-  flex: 10;
+  flex: 15;
   align-items: center;
   background-position: center;
   background-repeat: no-repeat;
@@ -782,6 +737,7 @@ nav .wrapper svg:hover {
 .level-detail .header .left:before {
   content: "";
   position: absolute;
+  width: 100%;
   top: 0;
   left: 0;
   right: 0;
@@ -790,6 +746,9 @@ nav .wrapper svg:hover {
   border-radius: 5px;
 }
 .level-detail .header .left .diff {
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: auto;
   margin-left: 1rem;
   width: 50px;
   height: 50px;
@@ -803,6 +762,16 @@ nav .wrapper svg:hover {
 }
 .level-detail .header .left .title {
   z-index: 2;
+}
+.level-detail .header .left .title h1,
+.level-detail .header .left .title p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  white-space: normal;
+  text-overflow: ellipsis;
+  overflow-wrap: break-word;
 }
 .level-detail .header .right {
   flex: 1;
@@ -851,6 +820,10 @@ nav .wrapper svg:hover {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
+  font-weight: bold;
+}
+.level-detail .body .info .info-item .one {
+  color: rgb(255, 230, 0);
 }
 .level-detail .body .info .info-item p {
   margin: 0;
@@ -860,12 +833,12 @@ nav .wrapper svg:hover {
   white-space: nowrap;
   overflow: hidden;
   justify-self: end;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.5rem;
   background-color: var(--primary-color);
   border-radius: 3px;
   min-width: 5rem;
   text-align: center;
-  max-width: 20rem;
+  max-width: 100%;
   text-overflow: ellipsis;
 }
 .level-detail .body .info button {
@@ -909,36 +882,36 @@ nav .wrapper svg:hover {
   display: flex;
   flex-direction: column;
   max-height: 30rem;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 .level-detail .rank .rank-list::-webkit-scrollbar {
   width: 5px;
 }
 .level-detail .rank .rank-list::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: #a5a5a5;
   border-radius: 10px;
 }
 .level-detail .rank .rank-list::-webkit-scrollbar-thumb {
-  background: #888;
+  background: #464646;
   border-radius: 10px;
 }
 .level-detail .rank .rank-list::-webkit-scrollbar-thumb:hover {
-  background: #555;
+  background: #333333;
 }
 .level-detail .rank .rank-list .list {
   display: flex;
   justify-content: space-between;
   background-color: var(--third-color);
-  padding: 1rem;
+  padding: 0.5rem;
   margin: 0.5rem;
   margin-bottom: 1rem;
   border-radius: 3px;
   align-items: center;
-  gap: 1rem;
+  gap: 0.5rem;
   flex-wrap: wrap;
 }
 .level-detail .rank .rank-list .list * {
-  flex: 5rem;
+  flex: 1rem;
 }
 .level-detail .rank .rank-list .list .judgements {
   height: 100%;
@@ -954,8 +927,8 @@ nav .wrapper svg:hover {
   width: 12rem;
 }
 .level-detail .rank .rank-list .list .judgements span {
-  display: inline-block; /* Ensures they're treated like inline elements but can have padding/margins */
-  color: white; /* Text color */
+  display: inline-block;
+  color: white;
   -webkit-user-select: none;
      -moz-user-select: none;
           user-select: none;
@@ -964,6 +937,37 @@ nav .wrapper svg:hover {
   padding: 0 0.1rem;
 }
 
+@media (max-width: 460px) {
+  .level-detail .header {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+  .level-detail .header .left, .level-detail .header .right {
+    width: 100%;
+    padding: 1rem;
+    justify-content: center;
+  }
+  .level-detail .header .left .diff, .level-detail .header .right .diff {
+    margin: 0 auto;
+    order: -1;
+  }
+  .level-detail .header .left .title, .level-detail .header .right .title {
+    width: 10rem;
+  }
+  .level-detail .header .left .title h1,
+  .level-detail .header .left .title p, .level-detail .header .right .title h1,
+  .level-detail .header .right .title p {
+    max-width: calc(100% - 50px - 1rem);
+  }
+  .level-detail .header .right {
+    order: 1;
+    width: auto;
+  }
+  .level-detail .header .right a {
+    margin: 1rem auto;
+  }
+}
 @media (max-width: 930px) {
   .level-detail .body {
     flex-direction: column;
@@ -1067,7 +1071,8 @@ footer .copy-right {
     max-width: 15rem;
     height: 24rem;
   }
-  .card-tilt h1, .card-tilt p {
+  .card-tilt h1,
+  .card-tilt p {
     margin-bottom: 0.5rem;
   }
 }/*# sourceMappingURL=index.css.map */

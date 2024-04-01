@@ -43,10 +43,10 @@ nav {
     margin: 0 auto;
     padding: 1rem 2rem;
 
-    .img-container{
+    .img-container {
       width: 10rem;
 
-      img{
+      img {
         height: 100%;
         width: 100%;
         object-fit: contain;
@@ -98,57 +98,57 @@ nav {
   border-bottom: solid 2px var(--primary-color);
 }
 
-@media (max-width: 580px) {
-  nav {
-    .wrapper {
-      .nav-menu {
-        display: none;
-      }
+// @media (max-width: 580px) {
+//   nav {
+//     .wrapper {
+//       .nav-menu {
+//         display: none;
+//       }
 
-      svg {
-        display: block;
-      }
-    }
-  }
+//       svg {
+//         display: block;
+//       }
+//     }
+//   }
 
-  .nav-menu-outer {
-    display: block;
-    position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 3;
-    width: 40%;
-    height: 100%;
+//   .nav-menu-outer {
+//     display: block;
+//     position: fixed;
+//     top: 0;
+//     right: 0;
+//     z-index: 3;
+//     width: 40%;
+//     height: 100%;
 
-    background: rgba(255, 255, 255, 0.1); /* White with low opacity */
-    backdrop-filter: blur(10px); /* Blur effect */
-    border-left: 1px solid rgba(255, 255, 255, 0.25);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    color: var(--text-color);
+//     background: rgba(255, 255, 255, 0.1); /* White with low opacity */
+//     backdrop-filter: blur(10px); /* Blur effect */
+//     border-left: 1px solid rgba(255, 255, 255, 0.25);
+//     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+//     color: var(--text-color);
 
-    .close {
-      width: 2rem;
-      margin: 1.5rem;
-      float: right;
+//     .close {
+//       width: 2rem;
+//       margin: 1.5rem;
+//       float: right;
 
-      &:hover {
-        cursor: pointer;
-      }
-    }
+//       &:hover {
+//         cursor: pointer;
+//       }
+//     }
 
-    ul {
-      margin-top: 70%;
-      padding: 1rem;
-      display: flex;
-      flex-direction: column;
-      gap: 2rem;
+//     ul {
+//       margin-top: 70%;
+//       padding: 1rem;
+//       display: flex;
+//       flex-direction: column;
+//       gap: 2rem;
 
-      li {
-        padding: 1rem;
-      }
-    }
-  }
-}
+//       li {
+//         padding: 1rem;
+//       }
+//     }
+//   }
+// }
 
 .home {
   position: relative;
@@ -239,39 +239,45 @@ nav {
   background-image: url("./assets/wavesTwo.svg");
 }
 
+.loader {
+  position: absolute;
+  left: 50%;
+  top: 56%;
+  z-index: 100;
+  transform: translateX(-50%) translateY(-50%) scale(2, 2);
+
+  &:before,
+  &:after {
+    content: "";
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    border-radius: 0 100% 0 0;
+    transform-origin: 0 100%;
+  }
+
+  &:before {
+    box-shadow: 0 -2px 0 0 #0cf;
+    animation: ice 1s infinite linear;
+  }
+
+  &:after {
+    box-shadow: 2px 0 0 0 #f00;
+    animation: fire 1s infinite linear;
+  }
+}
+
+.loader-level-detail{
+  left: 50%;
+  top: 40%;
+  transform: translateX(-50%) translateY(-50%) scale(2, 2);
+}
+
 .recent-rated {
   background-color: var(--secondary-color);
   padding: 1.5rem;
   padding-bottom: 10rem;
   position: relative;
-
-  .loader {
-    position: absolute;
-    left: 50%;
-    top: 56%;
-    z-index: 100;
-    transform: translateX(-50%) translateY(-50%) scale(2, 2);
-
-    &:before,
-    &:after {
-      content: "";
-      position: absolute;
-      height: 20px;
-      width: 20px;
-      border-radius: 0 100% 0 0;
-      transform-origin: 0 100%;
-    }
-
-    &:before {
-      box-shadow: 0 -2px 0 0 #0cf;
-      animation: ice 1s infinite linear;
-    }
-
-    &:after {
-      box-shadow: 2px 0 0 0 #f00;
-      animation: fire 1s infinite linear;
-    }
-  }
 
   .title-recent {
     margin: 2rem auto;
@@ -376,6 +382,19 @@ nav {
   }
 }
 
+.background-level {
+  height: 100vh;
+  width: 100vw;
+  z-index: 1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-image: url("https://images.rawpixel.com/image_social_landscape/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTM2NjcxMC1pbWFnZS1rd3Z4eGVxcC5qcGc.jpg");
+  background-size: cover;
+  filter: blur(10px);
+  background-color: rgba($color: #000000, $alpha: 1);
+}
+
 .level-page {
   background-color: var(--backgorund-color);
   color: var(--text-color);
@@ -387,19 +406,6 @@ nav {
 
   .wrapper-level-top {
     padding-top: 6rem;
-  }
-
-  .background-level {
-    height: 100vh;
-    width: 100vw;
-    z-index: 1;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-image: url("https://images.rawpixel.com/image_social_landscape/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTM2NjcxMC1pbWFnZS1rd3Z4eGVxcC5qcGc.jpg");
-    background-size: cover;
-    filter: blur(10px);
-    background-color: rgba($color: #000000, $alpha: 1);
   }
 
   input {
@@ -507,7 +513,7 @@ nav {
     }
 
     .sort {
-        width: 33rem;
+      width: 33rem;
 
       .select-group {
         display: flex;
@@ -543,25 +549,19 @@ nav {
     padding-top: 2rem;
     z-index: 2;
     display: grid;
-    grid-template-columns: repeat(5, 1fr);//change to 6 for clears
+    grid-template-columns: repeat(5, 1fr); //change to 6 for clears
     gap: 10px;
-
 
     .grid-header {
       padding: 10px;
       text-align: center;
       font-weight: bold;
-
     }
 
     .grid-content-long {
-
       grid-column: 1 / -1; // Span across all 6 columns
       display: grid;
-      grid-template-columns: repeat(
-        5, 
-        1fr
-      ); // change to 6 for clears
+      grid-template-columns: repeat(5, 1fr); // change to 6 for clears
       border-radius: 4px;
       height: 4rem;
       align-items: center;
@@ -570,9 +570,8 @@ nav {
       cursor: pointer;
 
       &:hover {
-        background-color: rgba($color: #000000, $alpha: .4);
+        background-color: rgba($color: #000000, $alpha: 0.4);
       }
-
 
       .content {
         padding: 10px;
@@ -581,7 +580,6 @@ nav {
         white-space: nowrap;
         text-overflow: ellipsis;
       }
-
 
       .content-download {
         display: flex;
@@ -615,19 +613,8 @@ nav {
   color: var(--text-color);
   min-height: 100vh;
 
-  .background-level {
-    height: 100vh;
-    width: 100vw;
-    z-index: 1;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-image: url("https://images.rawpixel.com/image_social_landscape/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTM2NjcxMC1pbWFnZS1rd3Z4eGVxcC5qcGc.jpg");
-    background-size: cover;
-    filter: blur(15px);
-  }
 
-  .level-body{
+  .level-body {
     position: relative;
     z-index: 2;
     padding: 0 1.5rem;
@@ -637,77 +624,75 @@ nav {
     max-width: 70rem;
     margin: 0 auto;
 
-
-    .input-option{
+    .input-option {
       display: flex;
-      gap: .5rem;
+      gap: 0.5rem;
       height: 2rem;
 
-
-      input{
+      input {
         width: 100%;
-        background-color: rgba($color: #ffffff, $alpha: .3);
+        background-color: rgba($color: #ffffff, $alpha: 0.3);
         border: none;
         border-radius: 3px;
-        padding: .5rem;
+        padding: 0.5rem;
         color: var(--white-color);
 
-        &:focus{
+        &:focus {
           outline: none;
         }
       }
 
-      svg{
+      svg {
         height: 2rem;
         width: 2.2rem;
-        background-color: rgba($color: #ffffff, $alpha: .3);
-        padding: .1rem;
+        background-color: rgba($color: #ffffff, $alpha: 0.3);
+        padding: 0.1rem;
         border-radius: 3px;
         cursor: pointer;
-        transition: all .2s linear;
+        transition: all 0.2s linear;
 
-        &:focus{
+        &:focus {
           outline: none;
         }
       }
     }
 
-    .filter{
+    .filter {
       position: relative;
       z-index: 2;
       overflow: visible;
     }
 
-    .sort{
+    .sort {
       position: relative;
       z-index: 1;
 
-      .sort-option{
+      .sort-option {
         display: flex;
         gap: 2rem;
 
-
-        .recent, .diff{
-          p{
-            margin-bottom: .5rem;
+        .recent,
+        .diff {
+          p {
+            margin-bottom: 0.5rem;
           }
 
-          .wrapper{
+          .wrapper {
             display: flex;
             gap: 1rem;
           }
 
-          svg{
+          svg {
             height: 2.5rem;
             width: 2.5rem;
 
-            background-color: rgba($color: #ffffff, $alpha: .3);
-            padding: .1rem;
+            background-color: rgba($color: #ffffff, $alpha: 0.3);
+            padding: 0.1rem;
             border-radius: 3px;
             cursor: pointer;
-            transition: all .2s linear;
-    
-            &:focus{
+            transition: all 0.2s linear;
+
+            &:focus {
               outline: none;
             }
           }
@@ -716,166 +701,151 @@ nav {
     }
 
     .settings-class {
-      transition: height 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 1s ease-in-out;
+      transition: height 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+        opacity 1s ease-in-out;
       height: 10rem;
       overflow: hidden;
     }
-    
-    .spacer-setting{
+
+    .spacer-setting {
       width: 100%;
       height: 1px;
       background-color: #ffffff;
-      margin-bottom: .5rem;
+      margin-bottom: 0.5rem;
     }
 
-    .input-setting{
+    .input-setting {
       margin-top: 1rem;
     }
 
-    .setting-title{
+    .setting-title {
       margin-bottom: 1rem;
     }
 
-    .setting-description{
-      margin-bottom: .5rem;
+    .setting-description {
+      margin-bottom: 0.5rem;
     }
-
-
-
   }
 }
 
-.level-card-rev{
+.level-card-rev {
   display: flex;
   justify-content: left;
   gap: 1rem;
   min-height: 4rem;
-  padding: .6rem;
+  padding: 0.6rem;
   border-radius: 5px;
   margin-bottom: 1rem;
   cursor: pointer;
   align-items: center;
   flex-wrap: wrap;
 
-  &:hover{
-      background-color: rgba($color: #ded4f0, $alpha: .2);
+  &:hover {
+    background-color: rgba($color: #ded4f0, $alpha: 0.2);
   }
 
-  .level-exp{
-    font-size: .9rem;
-    color: rgba($color: #ffffff, $alpha: .7);
+  .level-exp {
+    font-size: 0.9rem;
+    color: rgba($color: #ffffff, $alpha: 0.7);
   }
 
-  .level-desc{
+  .level-desc {
     font-size: 1.2rem;
-
   }
 
-  .level-id{
-    color: rgba($color: #ffffff, $alpha: .4);
-    font-size: .8rem;
+  .level-id {
+    color: rgba($color: #ffffff, $alpha: 0.4);
+    font-size: 0.8rem;
   }
 
-  .level-exp, .level-desc, .level-id {
+  .level-exp,
+  .level-desc,
+  .level-id {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
 
-
-  .img-wrapper{
+  .img-wrapper {
     width: 3rem;
 
-    img{
+    img {
       object-fit: contain;
       height: 100%;
       width: 100%;
     }
   }
 
-  .artist-wrapper{
+  .artist-wrapper {
     overflow: hidden;
     width: 150px;
-    
   }
-  .clears-wrapper{
+  .clears-wrapper {
     overflow: hidden;
 
     width: 50px;
   }
 
-  .song-wrapper{
+  .song-wrapper {
     overflow: hidden;
 
     width: 150px;
   }
 
-  .creator-wrapper{
+  .creator-wrapper {
     flex: 1;
     overflow: hidden;
     min-width: 200px;
     padding-right: 50px;
 
-    .group{
+    .group {
       width: 100%;
       align-items: center;
       display: flex;
-      gap: .3rem;
+      gap: 0.3rem;
     }
   }
 
   .downloads-wrapper {
     flex: 1;
     display: flex;
-    gap: .5rem;
+    gap: 0.5rem;
     align-items: center;
     cursor: pointer;
-    justify-content: flex-end; 
-  
+    justify-content: flex-end;
+
     a {
-    
-      display: block; 
+      display: block;
       height: 3rem;
       width: 3rem;
-      
+
       svg {
         height: 100%;
         width: 100%;
         border-radius: 4px;
         cursor: pointer;
-        transition: all .2s;
-  
+        transition: all 0.2s;
+
         path {
           color: var(--white-color);
         }
-  
+
         &:hover {
-          transform: scale(1.3); 
+          transform: scale(1.3);
         }
       }
     }
   }
-  
 }
 
-.level-detail{
+
+
+.level-detail {
   background-color: var(--backgorund-color);
   color: var(--text-color);
   min-height: 100vh;
   padding-bottom: 3rem;
   background-color: var(--backgorund-color);
-
-  .background-level {
-    height: 100vh;
-    width: 100vw;
-    z-index: 1;
-    position: fixed;
-    top: 0;
-    left: 0;
-    background-image: url("https://images.rawpixel.com/image_social_landscape/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTM2NjcxMC1pbWFnZS1rd3Z4eGVxcC5qcGc.jpg");
-    background-size: cover;
-    filter: blur(15px);
-  }
 
   .wrapper-level {
     padding: 0 3rem;
@@ -884,50 +854,57 @@ nav {
   }
 
   .wrapper-level-top {
-    padding-top: 5rem;
+    padding-top: 6rem;
     position: relative;
   }
 
-  button{
+  button {
     background-color: var(--third-color);
     border: none;
     border-radius: 3px;
     color: var(--white-color);
     font-size: 1rem;
     cursor: pointer;
-    padding: .5rem 1rem;
+    padding: 0.5rem 1rem;
     max-width: 70rem;
     margin: 0 auto;
     margin-bottom: 1rem;
   }
 
-  .header{
+  .header {
     display: flex;
+    flex-wrap: wrap; // Allows items to wrap onto the next line on small screens
     gap: 1rem;
     max-width: 70rem;
     margin: 0 auto;
     margin-bottom: 2rem;
-    height: 8rem;
+    height: 8rem; 
 
-    .left{
+    .left, .right {
+      flex-basis: 100%; // Forces them to take full width on smaller screens
+    }
+    
+
+    
+
+    .left {
       position: relative;
-      padding: .5rem;
+      padding: 0.5rem;
       background-color: var(--gray-color-two);
       border-radius: 5px;
-      flex: 10;
+      flex: 15;
       align-items: center;
-      //background-image: url("https://i.ytimg.com/vi/bWv9qadBYq4/sddefault.jpg");
       background-position: center;
       background-repeat: no-repeat;
       background-size: cover;
-      
 
       display: flex;
       gap: 1rem;
 
-      &:before{
-        content: '';
+      &:before {
+        content: "";
         position: absolute;
+        width: 100%;
         top: 0;
         left: 0;
         right: 0;
@@ -936,7 +913,10 @@ nav {
         border-radius: 5px;
       }
 
-      .diff{
+      .diff {
+        flex-grow: 0;
+        flex-shrink: 0;
+        flex-basis: auto;
         margin-left: 1rem;
         width: 50px;
         height: 50px;
@@ -949,46 +929,56 @@ nav {
         z-index: 2;
       }
 
-      .title{
+      .title {
         z-index: 2;
+
+        h1,
+        p {
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          -webkit-line-clamp: 2;
+          overflow: hidden;
+          white-space: normal;
+          text-overflow: ellipsis;
+          overflow-wrap: break-word;
+        }
       }
     }
 
-    .right{
+    .right {
       flex: 1;
 
       display: flex;
       flex-direction: column;
       gap: 1rem;
 
-      a{
+      a {
         margin: 0 auto;
         display: block; /* Add this line */
         height: 3rem;
         width: 3rem;
-        
-        svg{
+
+        svg {
           height: 100%;
-          width:100%;
+          width: 100%;
           border-radius: 4px;
           margin: 0 auto;
           cursor: pointer;
-          transition: all .2s;
-  
-          path{
+          transition: all 0.2s;
+
+          path {
             color: var(--white-color);
           }
-  
-          &:hover{
+
+          &:hover {
             scale: 1.3;
           }
         }
       }
-
     }
   }
 
-  .body{
+  .body {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -996,54 +986,60 @@ nav {
     max-width: 70rem;
     margin: 2rem auto;
 
-
     .info {
       display: grid;
-      grid-template-columns: repeat(minmax(200px, 1fr)); // Creates a responsive number of columns
+      grid-template-columns: repeat(
+        minmax(200px, 1fr)
+      ); // Creates a responsive number of columns
       gap: 1rem;
       padding: 1rem;
-      background-color: rgba($color: #ffffff, $alpha: .15);
+      background-color: rgba($color: #ffffff, $alpha: 0.15);
       border-radius: 5px;
       align-self: stretch;
-  
+
       .info-item {
         display: grid;
         grid-template-columns: 1fr 1fr; // Adjust the ratio between the label and value if necessary
         align-items: center;
-  
+        font-weight: bold;
+
+        .one{
+          color: rgb(255, 230, 0);
+        }
+
         p {
           margin: 0;
         }
-        
+
         .info-desc {
-          display: inline-block; 
-          white-space: nowrap; 
-          overflow: hidden; 
-          justify-self: end; 
-          padding: .5rem 1rem; 
-          background-color: var(--primary-color); 
-          border-radius: 3px; 
-          min-width: 5rem; 
-          text-align: center; 
-          max-width: 20rem; 
-          text-overflow: ellipsis; 
+          display: inline-block;
+          white-space: nowrap;
+          overflow: hidden;
+          justify-self: end;
+          padding: 0.5rem .5rem;
+          background-color: var(--primary-color);
+          border-radius: 3px;
+          min-width: 5rem;
+          text-align: center;
+          max-width: 100%;
+          text-overflow: ellipsis;
         }
       }
 
-      button{
-          height: 100%;
-          width: 100%;
-          background-color: var(--primary-color);
-          border: none;
-          border-radius: 3px;
-          color: var(--white-color);
-          font-size: 1rem;
-          cursor: pointer;
-          margin: 0;
-        }
+      button {
+        height: 100%;
+        width: 100%;
+        background-color: var(--primary-color);
+        border: none;
+        border-radius: 3px;
+        color: var(--white-color);
+        font-size: 1rem;
+        cursor: pointer;
+        margin: 0;
+      }
     }
 
-    .youtube{
+    .youtube {
       display: flex; // This makes .youtube a flex container
       justify-content: center; // This will center the iframe horizontally
       align-items: center; // This will center the iframe vertically
@@ -1051,9 +1047,8 @@ nav {
       aspect-ratio: 16/9;
       overflow: hidden;
       border-radius: 5px;
-      
 
-      iframe{
+      iframe {
         height: 100%;
         width: 100%;
         object-fit: contain;
@@ -1061,60 +1056,58 @@ nav {
     }
   }
 
-  .rank{
+  .rank {
     max-width: 70rem;
     margin: 2rem auto;
-    background-color: rgba($color: #ffffff, $alpha: .15);
+    background-color: rgba($color: #ffffff, $alpha: 0.15);
     border-radius: 3px;
     padding: 1rem;
 
-    h1{
+    h1 {
       text-align: center;
       margin-bottom: 2rem;
     }
 
-    .rank-list{
+    .rank-list {
       display: flex;
       flex-direction: column;
       max-height: 30rem;
-      overflow-y: scroll;
-
+      overflow-y: auto;
 
       &::-webkit-scrollbar {
-        width: 5px; 
+        width: 5px;
       }
-    
+
       &::-webkit-scrollbar-track {
-        background: #f1f1f1; 
-        border-radius: 10px; 
+        background: #a5a5a5;
+        border-radius: 10px;
       }
-    
+
       &::-webkit-scrollbar-thumb {
-        background: #888; 
+        background: #464646;
         border-radius: 10px;
         &:hover {
-          background: #555;
+          background: #333333;
         }
       }
 
-      .list{
+      .list {
         display: flex;
         justify-content: space-between;
         background-color: var(--third-color);
-        padding: 1rem;
-        margin: .5rem;
+        padding: 0.5rem;
+        margin: 0.5rem;
         margin-bottom: 1rem;
         border-radius: 3px;
         align-items: center;
-        gap: 1rem;
+        gap: .5rem;
         flex-wrap: wrap;
 
-        *{
-          flex: 5rem;
+        * {
+          flex: 1rem;
         }
 
-
-        .judgements{
+        .judgements {
           height: 100%;
           background-color: var(--primary-color);
           border: none;
@@ -1123,29 +1116,70 @@ nav {
           cursor: pointer;
           margin: 0;
           text-align: center;
-          padding: .5rem;
+          padding: 0.5rem;
 
           min-width: 12rem;
           width: 12rem;
 
-          span{
-            display: inline-block; /* Ensures they're treated like inline elements but can have padding/margins */
-            color: white; /* Text color */
+          span {
+            display: inline-block; 
+            color: white; 
             user-select: none;
-            font-weight: bold;;
-            font-size: .9rem;
-            padding: 0 .1rem;
+            font-weight: bold;
+            font-size: 0.9rem;
+            padding: 0 0.1rem;
           }
         }
       }
     }
   }
-
 }
 
-@media (max-width: 930px) { // This is a very large breakpoint, you probably meant 930px
+@media (max-width: 460px) {
   .level-detail {
+    .header {
+      flex-direction: column;
+      align-items: center; // Center align the flex children since it's now a column
+      width: 100%;
 
+      .left, .right {
+        width: 100%; // Set the width of left and right to 100% on small screens
+        padding: 1rem; // Adjust padding as needed
+        justify-content: center; // For .left and .right content alignment
+
+        .diff {
+          margin: 0 auto; // Center .diff within .left
+          order: -1; // Move .diff above the h1 and p if necessary
+        }
+
+        .title{
+          width: 10rem;
+        }
+
+        .title h1,
+        .title p {
+          // Since text is already set to overflow with ellipsis, we don't need to change that here
+          // Ensure the width is constrained to allow for ellipsis to work
+          max-width: calc(100% - 50px - 1rem); // Adjust for the size of .diff and any desired margin
+        }
+      }
+
+      // Assuming you want the .right section to come after .left in the mobile view
+      .right {
+        order: 1; // Put .right after .left in the flex column
+        width: auto; // Let .right take up the necessary space
+
+        // Any specific styles for children of .right that need adjustment for mobile
+        a {
+          margin: 1rem auto; // Center align anchor elements
+        }
+      }
+    }
+  }
+}
+@media (max-width: 930px) {
+  // This is a very large breakpoint, you probably meant 930px
+  .level-detail {
     .body {
       flex-direction: column;
 
@@ -1244,7 +1278,7 @@ footer {
   .card-tilt {
     max-width: 20rem;
 
-    .song-name{
+    .song-name {
       margin-bottom: 1rem;
     }
   }
@@ -1267,8 +1301,9 @@ footer {
     max-width: 15rem;
     height: 24rem;
 
-    h1, p{
-      margin-bottom: .5rem;
+    h1,
+    p {
+      margin-bottom: 0.5rem;
     }
   }
 }

@@ -16,17 +16,15 @@ const LevelDetailPage = () => {
   const id = new URLSearchParams(window.location.search).get("id");
   const [res, setRes] = useState(null);
   const [player, setPlayer] = useState(null);
-  const [highSpeed, setHighSpeed] = useState(null)
-  const [highAcc, setHighAcc] = useState(null)
-  const [highScore, setHighScore] = useState(null)
+  const [highSpeed, setHighSpeed] = useState(null);
+  const [highAcc, setHighAcc] = useState(null);
+  const [highScore, setHighScore] = useState(null);
 
   useEffect(() => {
     fetchLevelInfo(id).then((res) => setRes(res));
   }, [id]);
 
-
-  function changePlayer(res){
-
+  function changePlayer(res) {
     if (res && res.passes.results.length > 0) {
       const levelDetail = {
         baseScore: res.level.baseScore,
@@ -39,7 +37,7 @@ const LevelDetailPage = () => {
           speed: each.speed ? each.speed : 1,
           misses: each.judgements[0],
         };
-  
+
         return {
           id: each.id,
           player: each.player,
@@ -60,35 +58,49 @@ const LevelDetailPage = () => {
         };
       });
 
-      return transformedResults
-  
+      return transformedResults;
     }
   }
 
-  useEffect(()=>{
-    setPlayer(changePlayer(res))
-  },[res])
+  useEffect(() => {
+    setPlayer(changePlayer(res));
+  }, [res]);
 
-  useEffect(()=>{
-    if(player && player.length > 0){
-      const maxSpeedIndex = player.reduce((maxIdx, curr, idx, arr) => (curr.speed > arr[maxIdx].speed ? idx : maxIdx), 0);
-      const maxScoreIndex = player.reduce((maxIdx, curr, idx, arr) => (curr.score > arr[maxIdx].score ? idx : maxIdx), 0);
-      const maxAccIndex = player.reduce((maxIdx, curr, idx, arr) => (curr.acc > arr[maxIdx].acc ? idx : maxIdx), 0);
-      setHighSpeed(maxSpeedIndex)
-      setHighAcc(maxAccIndex)
-      setHighScore(maxScoreIndex)
+  useEffect(() => {
+    if (player && player.length > 0) {
+      const maxSpeedIndex = player.reduce(
+        (maxIdx, curr, idx, arr) =>
+          curr.speed > arr[maxIdx].speed ? idx : maxIdx,
+        0
+      );
+      const maxScoreIndex = player.reduce(
+        (maxIdx, curr, idx, arr) =>
+          curr.score > arr[maxIdx].score ? idx : maxIdx,
+        0
+      );
+      const maxAccIndex = player.reduce(
+        (maxIdx, curr, idx, arr) => (curr.acc > arr[maxIdx].acc ? idx : maxIdx),
+        0
+      );
+      setHighSpeed(maxSpeedIndex);
+      setHighAcc(maxAccIndex);
+      setHighScore(maxScoreIndex);
     }
-  }, [player])
+  }, [player]);
 
-  changePlayer(res)
+  changePlayer(res);
 
   function redirect() {
     window.history.go(-1);
   }
 
-
-
-  if (res == null) return <div>Loading...</div>;
+  if (res == null)
+    return (
+      <div style={{height:"100vh", width:"100vw", backgroundColor:"#090909"}}>
+        <div className="background-level"></div>
+        <div className="loader loader-level-detail"></div>
+      </div>
+    );
 
   return (
     <div className="level-detail">
@@ -162,22 +174,40 @@ const LevelDetailPage = () => {
         <div className="body">
           <div className="info">
             <div className="info-item">
-              <p>First Clear</p>
+              <p> <span className="one">#1</span> Clear</p>
               <span className="info-desc">
-                {player ? `${player[0].player} - ${player[0].time.slice(0, 10)}`: "-"}
+                {player
+                  ? `${player[0].player} | ${player[0].time.slice(0, 10)}`
+                  : "-"}
               </span>
             </div>
             <div className="info-item">
-              <p>Highest Score</p>
-              <span className="info-desc">{highScore ? `${player[highScore].player} - ${player[highScore].score.toFixed(2)}`: "-"}</span>
+              <p> <span className="one">#1</span> Score</p>
+              <span className="info-desc">
+                {highScore
+                  ? `${player[highScore].player} | ${player[
+                      highScore
+                    ].score.toFixed(2)}`
+                  : "-"}
+              </span>
             </div>
             <div className="info-item">
-              <p>Highest Speed Trial</p>
-              <span className="info-desc">{highSpeed ? `${player[highSpeed].player} - ${player[highSpeed].speed}`: "-"}</span>
+              <p> <span className="one">#1</span> Speed</p>
+              <span className="info-desc">
+                {highSpeed
+                  ? `${player[highSpeed].player} | ${player[highSpeed].speed}`
+                  : "-"}
+              </span>
             </div>
             <div className="info-item">
-              <p>Highest Accuracy</p>
-              <span className="info-desc">{highAcc ? `${player[highAcc].player} - ${player[highAcc].acc.toFixed(2)}%`: "-"}</span>
+              <p> <span className="one">#1</span> Accuracy</p>
+              <span className="info-desc">
+                {highAcc
+                  ? `${player[highAcc].player} | ${player[highAcc].acc.toFixed(
+                      2
+                    )}%`
+                  : "-"}
+              </span>
             </div>
             <div className="info-item">
               <p>Number Of Clears</p>

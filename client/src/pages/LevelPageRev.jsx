@@ -436,7 +436,7 @@ const LevelPageRev = () => {
           dataLength={levels.length}
           next={() => setPageNumber((prevPageNumber) => prevPageNumber + 1)}
           hasMore={hasMore}
-          loader={<h1>Loading...</h1>}
+          loader={<h1>Hold Tight...</h1>}
           endMessage={
             <p style={{ textAlign: "center" }}>
               <b>You have seen it all</b>
