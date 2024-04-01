@@ -10,6 +10,7 @@ function App() {
       <Route path = "/" element={<HomePage/>}/>
       <Route path = "/levels" element={<LevelPageRev/>}/>
       <Route path='/leveldetail' element={<LevelDetailPage/>}/>
+      {/* <Route path='/leaderboard' element={<LeaderboardPage/>}/> */}
     </Routes>
   )
 }
