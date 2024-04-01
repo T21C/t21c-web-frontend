@@ -43,6 +43,16 @@ nav {
     margin: 0 auto;
     padding: 1rem 2rem;
 
+    .img-container{
+      width: 10rem;
+
+      img{
+        height: 100%;
+        width: 100%;
+        object-fit: contain;
+      }
+    }
+
     ul {
       gap: 1rem;
       list-style: none;
@@ -992,7 +1002,7 @@ nav {
       grid-template-columns: repeat(minmax(200px, 1fr)); // Creates a responsive number of columns
       gap: 1rem;
       padding: 1rem;
-      background-color: var(--third-color); // Use your own color variable or value
+      background-color: rgba($color: #ffffff, $alpha: .15);
       border-radius: 5px;
       align-self: stretch;
   
@@ -1015,7 +1025,7 @@ nav {
           border-radius: 3px; 
           min-width: 5rem; 
           text-align: center; 
-          max-width: 8rem; 
+          max-width: 20rem; 
           text-overflow: ellipsis; 
         }
       }
@@ -1054,7 +1064,7 @@ nav {
   .rank{
     max-width: 70rem;
     margin: 2rem auto;
-    background-color: var(--gray-color-two);
+    background-color: rgba($color: #ffffff, $alpha: .15);
     border-radius: 3px;
     padding: 1rem;
 
@@ -1069,21 +1079,21 @@ nav {
       max-height: 30rem;
       overflow-y: scroll;
 
-      // Customizing scrollbar for Chrome, Safari, and Edge
+
       &::-webkit-scrollbar {
-        width: 5px; // Adjusts the width of the scrollbar
+        width: 5px; 
       }
     
       &::-webkit-scrollbar-track {
-        background: #f1f1f1; // The track or background
-        border-radius: 10px; // Optional: adds rounded corners to the track
+        background: #f1f1f1; 
+        border-radius: 10px; 
       }
     
       &::-webkit-scrollbar-thumb {
-        background: #888; // The scroll thumb
-        border-radius: 10px; // Optional: adds rounded corners to the thumb
+        background: #888; 
+        border-radius: 10px;
         &:hover {
-          background: #555; // The scroll thumb when hovered
+          background: #555;
         }
       }
 
@@ -1097,20 +1107,35 @@ nav {
         border-radius: 3px;
         align-items: center;
         gap: 1rem;
+        flex-wrap: wrap;
 
         *{
-          flex: 1;
+          flex: 5rem;
         }
 
-        button{
+
+        .judgements{
           height: 100%;
           background-color: var(--primary-color);
           border: none;
-          border-radius: 2px;
+          border-radius: 3px;
           color: var(--white-color);
           cursor: pointer;
-          height: 2rem;
           margin: 0;
+          text-align: center;
+          padding: .5rem;
+
+          min-width: 12rem;
+          width: 12rem;
+
+          span{
+            display: inline-block; /* Ensures they're treated like inline elements but can have padding/margins */
+            color: white; /* Text color */
+            user-select: none;
+            font-weight: bold;;
+            font-size: .9rem;
+            padding: 0 .1rem;
+          }
         }
       }
     }

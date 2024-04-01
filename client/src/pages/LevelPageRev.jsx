@@ -40,7 +40,6 @@ const LevelPageRev = () => {
         );
         const newLevels = await Promise.all(
           response.data.results.map(async (l) => {
-            // Assuming there's an endpoint to fetch additional data for each level by ID
             const additionalDataResponse = await axios.get(
               `${import.meta.env.VITE_INDIVIDUAL_PASSES}${l.id}`
             )
@@ -88,6 +87,13 @@ const LevelPageRev = () => {
     setSort(value);
     setPageNumber(0);
     setLevels([]);
+  }
+
+  function resetAll(){
+    setPageNumber(0)
+    setSort("RECENT_DESC")
+    setQuery("")
+    setLoading(true)
   }
 
   return (
@@ -164,6 +170,7 @@ const LevelPageRev = () => {
           </svg>
 
           <svg
+          onClick={()=> resetAll()}
             data-tooltip-id="reset"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -238,9 +245,10 @@ const LevelPageRev = () => {
                   zIndex: 9999, // Set z-index for the options
                 }),
               }}
-              placeholder="Select Diff"
+              placeholder="Disabled"
               isSearchable
               isClearable
+              isDisabled
             />
           </div>
 
@@ -436,7 +444,6 @@ const LevelPageRev = () => {
           }
         >
           {levels.map((l, index) => (
-            console.log(l),
             <LevelCardRev
               key={index}
               creator={l.creator}

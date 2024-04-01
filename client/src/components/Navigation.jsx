@@ -2,6 +2,8 @@
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import image from "../assets/logo-full.png"
+
 
 const Navigation = ({ children }) => {
   const [openNav, setOpenNav] = useState(false);
@@ -15,7 +17,9 @@ const Navigation = ({ children }) => {
         <div className="wrapper">
           <div>
             <Link to="/" style={{ color: "white", textDecoration: "none" }}>
-              LOGO
+              <div className="img-container">
+                <img className="image-logo-top" src={image} alt="LOGO" />
+              </div>
             </Link>
           </div>
 

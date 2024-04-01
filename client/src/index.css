@@ -44,6 +44,15 @@ nav .wrapper {
   margin: 0 auto;
   padding: 1rem 2rem;
 }
+nav .wrapper .img-container {
+  width: 10rem;
+}
+nav .wrapper .img-container img {
+  height: 100%;
+  width: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
 nav .wrapper ul {
   gap: 1rem;
   list-style: none;
@@ -834,7 +843,7 @@ nav .wrapper svg:hover {
   grid-template-columns: repeat(minmax(200px, 1fr));
   gap: 1rem;
   padding: 1rem;
-  background-color: var(--third-color);
+  background-color: rgba(255, 255, 255, 0.15);
   border-radius: 5px;
   align-self: stretch;
 }
@@ -856,7 +865,7 @@ nav .wrapper svg:hover {
   border-radius: 3px;
   min-width: 5rem;
   text-align: center;
-  max-width: 8rem;
+  max-width: 20rem;
   text-overflow: ellipsis;
 }
 .level-detail .body .info button {
@@ -888,7 +897,7 @@ nav .wrapper svg:hover {
 .level-detail .rank {
   max-width: 70rem;
   margin: 2rem auto;
-  background-color: var(--gray-color-two);
+  background-color: rgba(255, 255, 255, 0.15);
   border-radius: 3px;
   padding: 1rem;
 }
@@ -926,19 +935,33 @@ nav .wrapper svg:hover {
   border-radius: 3px;
   align-items: center;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 .level-detail .rank .rank-list .list * {
-  flex: 1;
+  flex: 5rem;
 }
-.level-detail .rank .rank-list .list button {
+.level-detail .rank .rank-list .list .judgements {
   height: 100%;
   background-color: var(--primary-color);
   border: none;
-  border-radius: 2px;
+  border-radius: 3px;
   color: var(--white-color);
   cursor: pointer;
-  height: 2rem;
   margin: 0;
+  text-align: center;
+  padding: 0.5rem;
+  min-width: 12rem;
+  width: 12rem;
+}
+.level-detail .rank .rank-list .list .judgements span {
+  display: inline-block; /* Ensures they're treated like inline elements but can have padding/margins */
+  color: white; /* Text color */
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  font-weight: bold;
+  font-size: 0.9rem;
+  padding: 0 0.1rem;
 }
 
 @media (max-width: 930px) {

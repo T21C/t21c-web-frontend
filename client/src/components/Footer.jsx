@@ -1,12 +1,15 @@
 // eslint-disable-next-line no-unused-vars
 import React from "react";
+import image from "../assets/logo.png"
+
+
 
 const Footer = () => {
   return (
     <footer>
       <div className="wrapper">
         <div className="logo-container">
-          <h1>21 FORUMS</h1>
+        <img src={image} alt="Logo" />
         </div>
 
         <div className="about-container">

@@ -1,6 +1,9 @@
 /* eslint-disable no-undef */
 function calculateAccuracy(judgements)
 {
+    if(!judgements[0] && !judgements[1] && !judgements[2] &&!judgements[3] &&!judgements[4] &&!judgements[5] && !judgements[6]){
+        return 95;
+    }
     let total = 0;
     let weights = 0;
     for(let i = 0; i < judgements.length; i++)
@@ -29,6 +32,8 @@ function calculatePP(xacc, speed, baseScore, isDesertBus, tileCount, misses, isN
     
     let score = 0
     let scorev2 = 0
+
+    let kOne, kTwo;
     
     //get xacc multiplier
     if (xacc < 95){
@@ -46,7 +51,7 @@ function calculatePP(xacc, speed, baseScore, isDesertBus, tileCount, misses, isN
     else if (xacc == 100){
         xaccMtp = 6
     }
-    console.log(xaccMtp)
+    // console.log(xaccMtp)
     
     //get speed multiplier
     if (isDesertBus)
@@ -142,8 +147,8 @@ function getRankedScore(scores, top = 20) {
     return rankedScore
 }
 
-console.log(calculateAccuracy([16, 44, 47, 10614, 68, 25, 0]));
-console.log("---------------")
-console.log(calculatePP(99.232938783059, 1, 4000, false, 10798, 16, false));
+// console.log(calculateAccuracy([16, 44, 47, 10614, 68, 25, 0]));
+// console.log("---------------")
+// console.log(calculatePP(99.232938783059, 1, 4000, false, 10798, 16, false));
 
 export {calculateAccuracy, calculatePP, getRankedScore}

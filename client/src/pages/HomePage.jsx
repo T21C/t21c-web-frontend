@@ -45,6 +45,7 @@ const HomePage = () => {
           ) : (
             <div className="loader"></div>
           )}
+
         </div>
       </div>
 
