@@ -40,12 +40,15 @@ const LevelPageRev = () => {
         );
         const newLevels = await Promise.all(
           response.data.results.map(async (l) => {
+            //console.log(l)
             const additionalDataResponse = await axios.get(
               `${import.meta.env.VITE_INDIVIDUAL_PASSES}${l.id}`
             )
             return {
               id: l.id,
               team: l.team,
+              pdnDiff:l.pdnDiff,
+              pguDiff:l.pguDiff,
               creator: l.creator,
               song: l.song,
               artist: l.artist,
@@ -59,6 +62,7 @@ const LevelPageRev = () => {
           pageNumber === 0 ? newLevels : [...prev, ...newLevels]
         );
         setHasMore(response.data.count > 0);
+        //console.log(newLevels)
       } catch (error) {
         if (!axios.isCancel(error)) setError(true);
       } finally {
@@ -448,7 +452,8 @@ const LevelPageRev = () => {
             <LevelCardRev
               key={index}
               creator={l.creator}
-              diff="25"
+              pdnDiff={l.pdnDiff}
+              pguDiff={l.pguDiff}
               id={l.id}
               artist={l.artist}
               song={l.song}
