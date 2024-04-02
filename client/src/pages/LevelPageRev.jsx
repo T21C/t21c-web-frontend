@@ -45,6 +45,7 @@ const LevelPageRev = () => {
             )
             return {
               id: l.id,
+              team: l.team,
               creator: l.creator,
               song: l.song,
               artist: l.artist,
@@ -454,6 +455,7 @@ const LevelPageRev = () => {
               clears={l.clears}
               dl={l.dlLink}
               ws={l.wsLink}
+              team = {l.team}
             />
           ))}
         </InfiniteScroll>

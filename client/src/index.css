@@ -14,7 +14,6 @@
   --text-color: #ffffff;
   --white-color: #f9fafb;
   --gray-color: #afafaf;
-  --gray-color-two: #303030;
 }
 
 body {
@@ -29,7 +28,8 @@ nav {
   background: rgba(255, 255, 255, 0.06); /* White with low opacity */
   -webkit-backdrop-filter: blur(5px);
           backdrop-filter: blur(5px); /* Blur effect */
-  border-color: rgba(255, 255, 255, 0.25); /* Thin white border */
+  border-bottom: 1px solid;
+  border-color: rgba(255, 255, 255, 0.1); /* Thin white border */
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   color: var(--text-color);
   z-index: 3;
@@ -716,7 +716,7 @@ nav .wrapper svg:hover {
   max-width: 70rem;
   margin: 0 auto;
   margin-bottom: 2rem;
-  height: 8rem;
+  min-height: 8rem;
 }
 .level-detail .header .left, .level-detail .header .right {
   flex-basis: 100%;
@@ -724,7 +724,6 @@ nav .wrapper svg:hover {
 .level-detail .header .left {
   position: relative;
   padding: 0.5rem;
-  background-color: var(--gray-color-two);
   border-radius: 5px;
   flex: 15;
   align-items: center;
@@ -963,12 +962,13 @@ nav .wrapper svg:hover {
   .level-detail .header .right {
     order: 1;
     width: auto;
+    flex-direction: row;
   }
   .level-detail .header .right a {
     margin: 1rem auto;
   }
 }
-@media (max-width: 930px) {
+@media (max-width: 1150px) {
   .level-detail .body {
     flex-direction: column;
   }

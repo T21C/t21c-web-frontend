@@ -125,7 +125,7 @@ const LevelDetailPage = () => {
             </div>
 
             <div className="title">
-              <h1>{res.level.creator}</h1>
+              <h1>{res.level.team ? res.level.team : res.level.creator}</h1>
               <p>
                 #{id}&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;{res.level.song}
                 &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;{res.level.artist}
@@ -149,7 +149,7 @@ const LevelDetailPage = () => {
               </a>
             )}
 
-            {res.level.wsLink && (
+            {res.level.workshopLink && (
               <a href={res.level.wsLink} target="_blank">
                 <svg
                   fill="#ffffff"
