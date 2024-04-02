@@ -745,16 +745,19 @@ nav {
 }
 
 .level-card-rev {
+  position: relative;
   display: flex;
   justify-content: left;
   gap: 1rem;
   min-height: 4rem;
-  padding: 0.6rem;
-  border-radius: 5px;
+  padding: 1rem;
+  border-radius: 0px;
   margin-bottom: 1rem;
   cursor: pointer;
   align-items: center;
   flex-wrap: wrap;
+  border-bottom: 1px solid;
+  border-color: rgb(131, 131, 131);
 
   &:hover {
     background-color: rgba($color: #ded4f0, $alpha: 0.2);
@@ -771,7 +774,13 @@ nav {
 
   .level-id {
     color: rgba($color: #ffffff, $alpha: 0.4);
-    font-size: 0.8rem;
+    font-size: 0.6rem;
+  }
+
+  .id{
+    position: absolute;
+    top: 1px;
+    left: 3px;
   }
 
   .level-exp,
@@ -794,7 +803,7 @@ nav {
 
   .artist-wrapper {
     overflow: hidden;
-    width: 150px;
+    width: 200px;
   }
   .clears-wrapper {
     overflow: hidden;
@@ -802,14 +811,14 @@ nav {
     width: 50px;
   }
 
-  .song-wrapper {
-    overflow: hidden;
+  // .song-wrapper {
+  //   overflow: hidden;
 
-    width: 150px;
-  }
+  //   width: 150px;
+  // }
 
   .creator-wrapper {
-    flex: 1;
+    flex: 2;
     overflow: hidden;
     min-width: 200px;
     padding-right: 50px;
@@ -937,11 +946,14 @@ nav {
         height: 50px;
         display: grid;
         place-items: center;
-        background-color: #0cf;
-        border-radius: 25px;
-        border: 2px solid var(--white-color);
         font-weight: bold;
         z-index: 2;
+
+        img{
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
       }
 
       .title {
@@ -1019,7 +1031,7 @@ nav {
         font-weight: bold;
 
         .one{
-          color: rgb(255, 230, 0);
+          color: rgb(255, 242, 126);
         }
 
         p {
@@ -1120,6 +1132,11 @@ nav {
 
         * {
           flex: 1rem;
+        }
+
+        .number{
+          flex: 0;
+          font-weight: bold;
         }
 
         .judgements {

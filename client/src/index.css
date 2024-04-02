@@ -589,16 +589,19 @@ nav .wrapper svg:hover {
 }
 
 .level-card-rev {
+  position: relative;
   display: flex;
   justify-content: left;
   gap: 1rem;
   min-height: 4rem;
-  padding: 0.6rem;
-  border-radius: 5px;
+  padding: 1rem;
+  border-radius: 0px;
   margin-bottom: 1rem;
   cursor: pointer;
   align-items: center;
   flex-wrap: wrap;
+  border-bottom: 1px solid;
+  border-color: rgb(131, 131, 131);
 }
 .level-card-rev:hover {
   background-color: rgba(222, 212, 240, 0.2);
@@ -612,7 +615,12 @@ nav .wrapper svg:hover {
 }
 .level-card-rev .level-id {
   color: rgba(255, 255, 255, 0.4);
-  font-size: 0.8rem;
+  font-size: 0.6rem;
+}
+.level-card-rev .id {
+  position: absolute;
+  top: 1px;
+  left: 3px;
 }
 .level-card-rev .level-exp,
 .level-card-rev .level-desc,
@@ -632,18 +640,14 @@ nav .wrapper svg:hover {
 }
 .level-card-rev .artist-wrapper {
   overflow: hidden;
-  width: 150px;
+  width: 200px;
 }
 .level-card-rev .clears-wrapper {
   overflow: hidden;
   width: 50px;
 }
-.level-card-rev .song-wrapper {
-  overflow: hidden;
-  width: 150px;
-}
 .level-card-rev .creator-wrapper {
-  flex: 1;
+  flex: 2;
   overflow: hidden;
   min-width: 200px;
   padding-right: 50px;
@@ -753,11 +757,14 @@ nav .wrapper svg:hover {
   height: 50px;
   display: grid;
   place-items: center;
-  background-color: #0cf;
-  border-radius: 25px;
-  border: 2px solid var(--white-color);
   font-weight: bold;
   z-index: 2;
+}
+.level-detail .header .left .diff img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
 }
 .level-detail .header .left .title {
   z-index: 2;
@@ -822,7 +829,7 @@ nav .wrapper svg:hover {
   font-weight: bold;
 }
 .level-detail .body .info .info-item .one {
-  color: rgb(255, 230, 0);
+  color: rgb(255, 242, 126);
 }
 .level-detail .body .info .info-item p {
   margin: 0;
@@ -911,6 +918,10 @@ nav .wrapper svg:hover {
 }
 .level-detail .rank .rank-list .list * {
   flex: 1rem;
+}
+.level-detail .rank .rank-list .list .number {
+  flex: 0;
+  font-weight: bold;
 }
 .level-detail .rank .rank-list .list .judgements {
   height: 100%;

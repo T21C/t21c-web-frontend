@@ -1,9 +1,10 @@
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CompleteNav } from "../components";
 import {
   fetchLevelInfo,
+  getLevelImage,
   getYouTubeEmbedUrl,
   getYouTubeThumbnailUrl,
 } from "../Repository/RemoteRepository";
@@ -96,7 +97,9 @@ const LevelDetailPage = () => {
 
   if (res == null)
     return (
-      <div style={{height:"100vh", width:"100vw", backgroundColor:"#090909"}}>
+      <div
+        style={{ height: "100vh", width: "100vw", backgroundColor: "#090909" }}
+      >
         <div className="background-level"></div>
         <div className="loader loader-level-detail"></div>
       </div>
@@ -108,26 +111,31 @@ const LevelDetailPage = () => {
       <div className="background-level"></div>
 
       <div className="wrapper-level wrapper-level-top">
-        <button onClick={() => redirect()}>Back</button>
+        {/* <button onClick={() => console.log(highAcc, highScore, highSpeed)}>
+          Back
+        </button> */}
         <div className="header">
           <div
             className="left"
             style={{
               backgroundImage: `url(${
                 res.level
-                  ? getYouTubeThumbnailUrl(res.level.vidLink, res.level.title)
+                  ? getYouTubeThumbnailUrl(res.level.vidLink, res.level.song)
                   : "defaultImageURL"
               })`,
             }}
           >
             <div className="diff">
-              <p>20</p>
+              <img
+                src={getLevelImage(res.level.pdnDiff, res.level.pguDiff)}
+                alt=""
+              />
             </div>
 
             <div className="title">
-              <h1>{res.level.team ? res.level.team : res.level.creator}</h1>
+              <h1>{res.level.song}</h1>
               <p>
-                #{id}&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;{res.level.song}
+                #{id}&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;{res.level.team ? res.level.team : res.level.creator}
                 &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;{res.level.artist}
               </p>
             </div>
@@ -150,7 +158,7 @@ const LevelDetailPage = () => {
             )}
 
             {res.level.workshopLink && (
-              <a href={res.level.wsLink} target="_blank">
+              <a href={res.level.workshopLink} target="_blank">
                 <svg
                   fill="#ffffff"
                   viewBox="0 0 32 32"
@@ -173,42 +181,59 @@ const LevelDetailPage = () => {
 
         <div className="body">
           <div className="info">
+
             <div className="info-item">
-              <p> <span className="one">#1</span> Clear</p>
+              <p>
+                {" "}
+                <span className="one">#1</span> Clear
+              </p>
               <span className="info-desc">
                 {player
                   ? `${player[0].player} | ${player[0].time.slice(0, 10)}`
                   : "-"}
               </span>
             </div>
+
             <div className="info-item">
-              <p> <span className="one">#1</span> Score</p>
+              <p>
+                {" "}
+                <span className="one">#1</span> Score
+              </p>
               <span className="info-desc">
-                {highScore
+                {player && player[highScore]
                   ? `${player[highScore].player} | ${player[
                       highScore
                     ].score.toFixed(2)}`
                   : "-"}
               </span>
             </div>
+
             <div className="info-item">
-              <p> <span className="one">#1</span> Speed</p>
+              <p>
+                {" "}
+                <span className="one">#1</span> Speed
+              </p>
               <span className="info-desc">
-                {highSpeed
+                {player && player[highSpeed]
                   ? `${player[highSpeed].player} | ${player[highSpeed].speed}`
                   : "-"}
               </span>
             </div>
+
             <div className="info-item">
-              <p> <span className="one">#1</span> Accuracy</p>
+              <p>
+                {" "}
+                <span className="one">#1</span> Accuracy
+              </p>
               <span className="info-desc">
-                {highAcc
+                {player && player[highAcc]
                   ? `${player[highAcc].player} | ${player[highAcc].acc.toFixed(
                       2
                     )}%`
                   : "-"}
               </span>
             </div>
+
             <div className="info-item">
               <p>Number Of Clears</p>
               <span className="info-desc">
@@ -216,7 +241,7 @@ const LevelDetailPage = () => {
               </span>
             </div>
 
-            <button>Full Info</button>
+            {/* <button>Full Info</button> */}
           </div>
 
           <div className="youtube">
@@ -238,6 +263,21 @@ const LevelDetailPage = () => {
             {player ? (
               player.map((each, index) => (
                 <div className="list" key={index}>
+                  <p
+                    className="number"
+                    style={{
+                      color:
+                        index === 0
+                          ? "gold"
+                          : index === 1
+                          ? "gray"
+                          : index === 2
+                          ? "brown"
+                          : "inherit",
+                    }}
+                  >
+                    #{index + 1}
+                  </p>
                   <p className="name">{each.player}</p>
                   <p className="general">{each.score.toFixed(2)}</p>
                   <p className="acc">{each.acc.toFixed(2)}%</p>

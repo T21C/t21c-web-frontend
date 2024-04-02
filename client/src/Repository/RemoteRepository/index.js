@@ -1,5 +1,92 @@
 import axios from 'axios';
 
+const pguData = {
+  "P1" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/P1.png?raw=true",
+  "P2" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/P2.png?raw=true",
+  "P3" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/P3.png?raw=true",
+  "P4" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/P4.png?raw=true",
+  "P5" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/P5.png?raw=true",
+  "P6" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/P6.png?raw=true",
+  "P7" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/P7.png?raw=true",
+  "P8" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/P8.png?raw=true",
+  "P9" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/P9.png?raw=true",
+  "P10" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/P10.png?raw=true",
+  "P11" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/P11.png?raw=true",
+  "P12" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/P12.png?raw=true",
+  "P13" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/P13.png?raw=true",
+  "P14" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/P14.png?raw=true",
+  "P15" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/P15.png?raw=true",
+  "P16" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/P16.png?raw=true",
+  "P17" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/P17.png?raw=true",
+  "P18" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/P18.png?raw=true",
+  "P19" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/P19.png?raw=true",
+  "P20" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/P20.png?raw=true",
+  "G1" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/G1.png?raw=true",
+  "G2" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/G2.png?raw=true",
+  "G3" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/G3.png?raw=true",
+  "G4" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/G4.png?raw=true",
+  "G5" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/G5.png?raw=true",
+  "G6" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/G6.png?raw=true",
+  "G7" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/G7.png?raw=true",
+  "G8" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/G8.png?raw=true",
+  "G9" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/G9.png?raw=true",
+  "G10" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/G10.png?raw=true",
+  "G11" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/G11.png?raw=true",
+  "G12" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/G12.png?raw=true",
+  "G13" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/G13.png?raw=true",
+  "G14" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/G14.png?raw=true",
+  "G15" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/G15.png?raw=true",
+  "G16" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/G16.png?raw=true",
+  "G17" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/G17.png?raw=true",
+  "G18" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/G18.png?raw=true",
+  "G19" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/G19.png?raw=true",
+  "G20" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/G20.png?raw=true",
+  "U1" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U1.png?raw=true",
+  "U2" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U2.png?raw=true",
+  "U3" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U3.png?raw=true",
+  "U4" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U4.png?raw=true",
+  "U5" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U5.png?raw=true",
+  "U6" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U6.png?raw=true",
+  "U7" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U7.png?raw=true",
+  "U8" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U8.png?raw=true",
+  "U9" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U9.png?raw=true",
+  "U10" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U10.png?raw=true",
+  "U11" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U11.png?raw=true",
+  "U12" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U12.png?raw=true",
+  "U13" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U13.png?raw=true",
+  "U14" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U14.png?raw=true",
+  "U15" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U15.png?raw=true",
+  "U16" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U16.png?raw=true",
+  "U17" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U17.png?raw=true",
+  "U18" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U18.png?raw=true",
+  "U19" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U19.png?raw=true",
+  "U20" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U20.png?raw=true",
+}
+
+const pgnData = {
+  "0"  : "https://github.com/T21C/T21C-assets/blob/main/miscDiff/Unranked.png?raw=true",
+  "-2" :"https://github.com/T21C/T21C-assets/blob/main/miscDiff/-2.png?raw=true",
+ "-21" : "https://github.com/T21C/T21C-assets/blob/main/miscDiff/21-.png?raw=true",
+  "-22"  : "https://github.com/T21C/T21C-assets/blob/main/miscDiff/MP.png?raw=true",
+  "0.9"  : "https://github.com/T21C/T21C-assets/blob/main/miscDiff/epiccc.png?raw=true",
+  "727"  : "https://github.com/T21C/T21C-assets/blob/main/miscDiff/Grande.png?raw=true",
+  "64"  : "https://github.com/T21C/T21C-assets/blob/main/miscDiff/Desertbus.png?raw=true",
+  "21.5" : "https://github.com/T21C/T21C-assets/blob/main/miscDiff/q1+.png?raw=true", 
+  "21.55" : "https://github.com/T21C/T21C-assets/blob/main/miscDiff/q2.png?raw=true", 
+  "21.6" : "https://github.com/T21C/T21C-assets/blob/main/miscDiff/q2+.png?raw=true", 
+  "21.65" : "https://github.com/T21C/T21C-assets/blob/main/miscDiff/q3.png?raw=true", 
+  "21.7" : "https://github.com/T21C/T21C-assets/blob/main/miscDiff/q3+.png?raw=true"
+}
+
+const imagePh = [
+  "src/assets/waves/1.png",
+  "src/assets/waves/2.png",
+  "src/assets/waves/3.png",
+  "src/assets/waves/4.png",
+];
+
+
+
 async function fetchRecent(){
     try {
         const res = await axios.get(import.meta.env.VITE_ALL_LEVEL_URL);
@@ -44,104 +131,6 @@ async function fetchData({offset = "", diff = '', cleared = '', sort = '', direc
     
 }
 
-function getColorDiff(diff){
-  if(diff == 0){
-    return "eb3467"
-  }else if(diff == 1 || diff == 2){
-    return "#0099ff"
-  }else if(diff == 3){
-    return "00bbff"
-  }else if(diff == 4){
-    return "00ddff"
-  }else if(diff == 5){
-    return "00fff"
-  }else if(diff == 6){
-    return "00ffaa"
-  }else if(diff == 7){
-    return "00ff00"
-  }else if(diff == 8){
-    return "64fa00"
-  }else if(diff == 9){
-    return "99ff00"
-  }else if(diff == 10){
-    return "ccff00"
-  }else if(diff == 11){
-    return "ffff00"
-  }else if(diff == 12){
-    return "ffdd00"
-  }else if(diff == 13){
-    return "ffcc00"
-  }else if(diff == 14){
-    return "ffaa00"
-  }else if(diff == 15){
-    return "ff8800"
-  }else if(diff == 16){
-    return "ff6600"
-  }else if(diff == 17){
-    return "ff4400"
-  }else if(diff == 18){
-    return "ff0000"
-  }else if(diff >18 && diff < 19 ){
-    return "cc0000"
-  }else if(diff == 19){
-    return "a61c00"
-  }else if(diff >19 && diff < 20 ){
-    return "660000"
-  }else if(diff == 20){
-    return "360900"
-  }else if(diff >20 && diff < 20.1 ){
-    return "2e0800"
-  }else if(diff == 20.1){
-    return "240600"
-  }else if(diff >20.1 && diff < 20.2 ){
-    return "210702"
-  }else if(diff == 20.2){
-    return "200600"
-  }else if(diff >20.2 && diff < 20.3 ){
-    return "130400"
-  }else if(diff == 20.3){
-    return "0d0300"
-  }else if(diff >20.3 && diff < 20.4 ){
-    return "000000"
-  }else if(diff == 20.4){
-    return "060430"
-  }else if(diff >20.4 && diff < 20.5 ){
-    return "0a031f"
-  }else if(diff == 20.5){
-    return "110634"
-  }else if(diff >20.5 && diff < 20.6 ){
-    return "11072d"
-  }else if(diff >20.6 && diff < 20.7 ){
-    return "150837"
-  }else if(diff == 20.7){
-    return "180b3b"
-  }else if(diff >20.7 && diff < 20.8 ){
-    return "190c3c"
-  }else if(diff == 20.8){
-    return "1f0f4a"
-  }else if(diff >20.8 && diff < 20.9 ){
-    return "1c0d45"
-  }else if(diff == 20.9){
-    return "261358"
-  }else if(diff >20.9 && diff < 21 ){
-    return "29155e"
-  }else if(diff == 21){
-    return "2d1766"
-  }else if(diff >21 && diff < 21.1 ){
-    return "311a6e"
-  }else if(diff == 21.1){
-    return "351c75"
-  }else if(diff >21.1 && diff < 21.2 ){
-    return "321d67"
-  }else if(diff == 21.2){
-    return "2e1d59"
-  }else if(diff >21.2 && diff < 21.3 ){
-    return "221541"
-  }else if(diff == 21.3){
-    return "1c0c45"
-  }
-}
-
 
 async function fetchLevelInfo(id){
   try{
@@ -153,15 +142,6 @@ async function fetchLevelInfo(id){
   }
 }
 
-
-//youtube thubnail
-
-const imagePh = [
-  "src/assets/waves/1.png",
-  "src/assets/waves/2.png",
-  "src/assets/waves/3.png",
-  "src/assets/waves/4.png",
-];
 
 function simpleHash(str) {
   let hash = 0;
@@ -209,14 +189,21 @@ function getYouTubeEmbedUrl(url) {
   const videoId = shortMatch ? shortMatch[1] : longMatch ? longMatch[1] : null;
 
   if (videoId) {
-    // Return the embed URL
     return `https://www.youtube.com/embed/${videoId}`;
   } else {
-    // Handle the case where the URL does not match the expected format
-    // Perhaps return a default embed URL or handle this scenario as needed
-    return null; // Adjust this return value based on your needs
+    return null; 
   }
 }
 
 
-export {fetchRecent, fetchData, getColorDiff, fetchLevelInfo, getYouTubeThumbnailUrl, getYouTubeEmbedUrl}
+
+
+function getLevelImage(pgnDiff, pguDiff){
+  if(pguDiff == "64"){
+    return pgnData["64"]
+  }
+ return pgnDiff == pguDiff ?  pgnData[pgnDiff] : pguData[pguDiff] ;
+}
+
+
+export {fetchRecent, fetchData, fetchLevelInfo, getYouTubeThumbnailUrl, getYouTubeEmbedUrl, getLevelImage}
