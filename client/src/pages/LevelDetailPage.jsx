@@ -45,15 +45,14 @@ const LevelDetailPage = () => {
           curr.speed > arr[maxIdx].speed ? idx : maxIdx,
         0
       );
-      const maxScoreIndex = player.reduce(
-        (maxIdx, curr, idx, arr) =>
-          curr.scoreV2 > arr[maxIdx].scoreV2 ? idx : maxIdx,
-        0
-      );
-      const maxAccIndex = player.reduce(
-        (maxIdx, curr, idx, arr) => (curr.acc > arr[maxIdx].acc ? idx : maxIdx),
-        0
-      );
+      const maxScoreIndex = player.reduce((maxIndex, player, index, array) =>
+      player.scoreV2 > array[maxIndex].scoreV2 ? index : maxIndex, 0);
+    
+    // Find the index of the player with the highest accuracy
+    const maxAccIndex = player.reduce((maxIndex, player, index, array) =>
+      player.accuracy > array[maxIndex].accuracy ? index : maxIndex, 0);
+
+
       setHighSpeed(maxSpeedIndex);
       setHighAcc(maxAccIndex);
       setHighScore(maxScoreIndex);
@@ -90,16 +89,17 @@ const LevelDetailPage = () => {
       case 'SCR':
         return sortByScoreV2(players);
       default:
-        return players; // Fallback to the original order if needed
+        return players;
     }
   };
   
 
   useEffect(() => {
-    // Assuming the initial fetch populates the 'player' state
-    const sortedPlayers = sortLeaderboard(player); // Call your sorting function
-    setDisplayedPlayers(sortedPlayers); // Update displayedPlayers state
-  }, [player, leaderboardSort]); // Depend on 'player' for initial sort and 'leaderboardSort' for subsequent sorts
+
+    const sortedPlayers = sortLeaderboard(player); 
+    setDisplayedPlayers(sortedPlayers); 
+    console.log(player)
+  }, [player, leaderboardSort]);
   
   
   
