@@ -264,7 +264,8 @@ const LevelDetailPage = () => {
           </div>
 
           <div className="youtube">
-            <iframe
+            {getYouTubeEmbedUrl(res.level.vidLink) ? 
+              <iframe
               src={getYouTubeEmbedUrl(res.level.vidLink)}
               title="YouTube video player"
               frameBorder="0"
@@ -272,6 +273,9 @@ const LevelDetailPage = () => {
               referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen
             ></iframe>
+          :
+          <img src={getYouTubeThumbnailUrl(res.level.vidLink, res.level.song)} alt="" />
+          }
           </div>
         </div>
 

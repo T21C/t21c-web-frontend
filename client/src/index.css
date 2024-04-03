@@ -948,10 +948,6 @@ nav .wrapper svg:hover {
   text-align: right;
   min-width: 3rem;
 }
-.level-detail .rank .rank-list .list .number {
-  flex: 0;
-  font-weight: bold;
-}
 .level-detail .rank .rank-list .list .judgements {
   flex: 1;
   height: 100%;

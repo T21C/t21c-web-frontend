@@ -8,7 +8,7 @@ import { getLevelImage } from "../Repository/RemoteRepository";
 const LevelCardRev = ({ pdnDiff, pguDiff, creator, id, artist, song, clears, dl, ws, team }) => {
     const navigate = useNavigate()
     const redirect = () => {
-      window.open(`/leveldetail?id=${id}`, '_blank');
+      navigate(`/leveldetail?id=${id}`);
     };
 
     const onAnchorClick = (e) => {
