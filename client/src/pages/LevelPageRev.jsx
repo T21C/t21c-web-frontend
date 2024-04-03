@@ -1,10 +1,11 @@
 /* eslint-disable no-unused-vars */
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { CompleteNav, LevelCardRev } from "../components";
 import { Tooltip } from "react-tooltip";
 import Select from "react-select";
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
+import { UserContext } from "../context/UserContext";
 
 const options = [
   { value: "chocolate", label: "Chocolate" },
@@ -13,18 +14,13 @@ const options = [
 ];
 
 const LevelPageRev = () => {
-  const [filterOpen, setFilterOpen] = useState(false);
-  const [sortOpen, setSortOpen] = useState(false);
-  const [query, setQuery] = useState("");
-  const [selectedFilterDiff, setSelectedFilterDiff] = useState(null);
 
-  const [sort, setSort] = useState("RECENT_DESC");
-
-  const [levels, setLevels] = useState([]);
   const [hasMore, setHasMore] = useState(true);
   const [pageNumber, setPageNumber] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+
+  const {levelsData, setLevelsData, filterOpen, setFilterOpen, sortOpen, setSortOpen, query, setQuery,selectedFilterDiff, setSelectedFilterDiff, sort, setSort} = useContext(UserContext)
 
   useEffect(() => {
     let cancel;
@@ -58,7 +54,7 @@ const LevelPageRev = () => {
             };
           })
         );
-        setLevels((prev) =>
+        setLevelsData((prev) =>
           pageNumber === 0 ? newLevels : [...prev, ...newLevels]
         );
         setHasMore(response.data.count > 0);
@@ -78,7 +74,7 @@ const LevelPageRev = () => {
   function handleQueryChange(e) {
     setQuery(e.target.value);
     setPageNumber(0);
-    setLevels([]);
+    setLevelsData([]);
   }
   function handleFilterOpen() {
     setFilterOpen(!filterOpen);
@@ -91,13 +87,14 @@ const LevelPageRev = () => {
   function handleSort(value) {
     setSort(value);
     setPageNumber(0);
-    setLevels([]);
+    setLevelsData([]);
   }
 
   function resetAll(){
     setPageNumber(0)
     setSort("RECENT_DESC")
     setQuery("")
+    setLevelsData([])
     setLoading(true)
   }
 
@@ -438,7 +435,7 @@ const LevelPageRev = () => {
 
         <InfiniteScroll
         style={{paddingBottom:"5rem"}}
-          dataLength={levels.length}
+          dataLength={levelsData.length}
           next={() => setPageNumber((prevPageNumber) => prevPageNumber + 1)}
           hasMore={hasMore}
           loader={<h1>Hold Tight...</h1>}
@@ -448,7 +445,7 @@ const LevelPageRev = () => {
             </p>
           }
         >
-          {levels.map((l, index) => (
+          {levelsData.map((l, index) => (
             <LevelCardRev
               key={index}
               creator={l.creator}

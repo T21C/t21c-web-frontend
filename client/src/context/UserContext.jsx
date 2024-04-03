@@ -4,11 +4,15 @@ import { createContext, useState } from "react"
 const UserContext = createContext()
 
 const UserContextProvider = (props) => {
-    const[levelData, setLevelData] = useState([])
-    const[playerData, setPlayerData] = useState([])
+    const[levelsData, setLevelsData] = useState([])
+    const [filterOpen, setFilterOpen] = useState(false);
+    const [sortOpen, setSortOpen] = useState(false);
+    const [query, setQuery] = useState("");
+    const [selectedFilterDiff, setSelectedFilterDiff] = useState(null);
+    const [sort, setSort] = useState("RECENT_DESC");
 
     return(
-        <UserContext.Provider value={{levelData, setLevelData, playerData, setPlayerData}}>
+        <UserContext.Provider value={{levelsData, setLevelsData, filterOpen, setFilterOpen, sortOpen, setSortOpen, query, setQuery,selectedFilterDiff, setSelectedFilterDiff, sort, setSort}}>
             {props.children}
         </UserContext.Provider>
     )

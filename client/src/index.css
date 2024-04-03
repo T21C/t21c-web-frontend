@@ -880,15 +880,34 @@ nav .wrapper svg:hover {
   border-radius: 3px;
   padding: 1rem;
 }
+.level-detail .rank .sort {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+}
+.level-detail .rank .sort svg {
+  height: 2.2rem;
+  width: 2.2rem;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 0.25rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s linear;
+}
+.level-detail .rank .sort svg:focus {
+  outline: none;
+}
 .level-detail .rank h1 {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 0.5rem;
 }
 .level-detail .rank .rank-list {
   display: flex;
   flex-direction: column;
   max-height: 30rem;
   overflow-y: auto;
+  padding: 0.5rem;
 }
 .level-detail .rank .rank-list::-webkit-scrollbar {
   width: 5px;
@@ -909,21 +928,28 @@ nav .wrapper svg:hover {
   justify-content: space-between;
   background-color: var(--third-color);
   padding: 0.5rem;
-  margin: 0.5rem;
   margin-bottom: 1rem;
   border-radius: 3px;
   align-items: center;
   gap: 0.5rem;
   flex-wrap: wrap;
 }
-.level-detail .rank .rank-list .list * {
-  flex: 1rem;
+.level-detail .rank .rank-list .list .name, .level-detail .rank .rank-list .list .general, .level-detail .rank .rank-list .list .acc {
+  flex: 1;
+  flex-basis: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
-.level-detail .rank .rank-list .list .number {
-  flex: 0;
-  font-weight: bold;
+.level-detail .rank .rank-list .list .name {
+  min-width: 8rem;
+}
+.level-detail .rank .rank-list .list .general, .level-detail .rank .rank-list .list .acc {
+  text-align: right;
+  min-width: 3rem;
 }
 .level-detail .rank .rank-list .list .judgements {
+  flex: 1;
   height: 100%;
   background-color: var(--primary-color);
   border: none;
@@ -933,8 +959,8 @@ nav .wrapper svg:hover {
   margin: 0;
   text-align: center;
   padding: 0.5rem;
-  min-width: 12rem;
-  width: 12rem;
+  min-width: 13rem;
+  width: 13rem;
 }
 .level-detail .rank .rank-list .list .judgements span {
   display: inline-block;

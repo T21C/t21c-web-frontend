@@ -1,13 +1,14 @@
 // import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { getLevelImage } from "../Repository/RemoteRepository";
 
 
 
 // eslint-disable-next-line react/prop-types
 const LevelCardRev = ({ pdnDiff, pguDiff, creator, id, artist, song, clears, dl, ws, team }) => {
-
+    const navigate = useNavigate()
     const redirect = () => {
-      window.open(`/leveldetail?id=${id}`, '_blank');
+      navigate(`/leveldetail?id=${id}`);
     };
 
     const onAnchorClick = (e) => {
@@ -24,11 +25,11 @@ const LevelCardRev = ({ pdnDiff, pguDiff, creator, id, artist, song, clears, dl,
 
       <div className="creator-wrapper">
           <div className="group">
-              <p className="level-exp">{song}</p>
+              <p className="level-exp">{artist}</p>
               {/* <p className='level-id'>#{id}</p> */}
           </div>
           {/* <p className='level-desc'>{team ? team : creator}</p> */}
-          <p className='level-desc'>{artist}</p>
+          <p className='level-desc'>{song}</p>
       </div>
 
       <div className="artist-wrapper">
