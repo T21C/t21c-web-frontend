@@ -13,7 +13,7 @@ import { Tooltip } from "react-tooltip";
 import { useNavigate } from "react-router-dom";
 
 const LevelDetailPage = () => {
-  const navigate = useNavigate()
+  // const navigate = useNavigate()
   const id = new URLSearchParams(window.location.search).get("id");
   const [res, setRes] = useState(null);
   const [player, setPlayer] = useState([]);
@@ -122,7 +122,7 @@ const LevelDetailPage = () => {
       <div className="background-level"></div>
 
       <div className="wrapper-level wrapper-level-top">
-      <button onClick={() => navigate(-1)}>Back</button>
+      {/* <button onClick={() => navigate(-1)}>Back</button> */}
         <div className="header">
           <div
             className="left"
