@@ -5,7 +5,7 @@ import { getLevelImage } from "../Repository/RemoteRepository";
 
 
 // eslint-disable-next-line react/prop-types
-const LevelCardRev = ({ pdnDiff, pguDiff, creator, id, artist, song, clears, dl, ws, team }) => {
+const LevelCardRev = ({ pdnDiff, pguDiff, creator, id, artist, song, clears, dl, ws, team, legacy }) => {
     const navigate = useNavigate()
     const redirect = () => {
       navigate(`/leveldetail?id=${id}`);
@@ -15,12 +15,11 @@ const LevelCardRev = ({ pdnDiff, pguDiff, creator, id, artist, song, clears, dl,
       e.stopPropagation();
     };
 
-
   return (
     <div className='level-card-rev' onClick={() => redirect()}>
       <div className="id level-id">#{id}</div>
       <div className="img-wrapper">
-          <img src={getLevelImage(pdnDiff, pguDiff)} alt="" />
+          <img src={getLevelImage(pdnDiff, pguDiff, legacy)} alt="" />
       </div>
 
       <div className="creator-wrapper">

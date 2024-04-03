@@ -1,5 +1,57 @@
 import axios from 'axios';
 
+const legacyData = {
+  "1" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/lv01.png?raw=true",
+  "2" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/lv02.png?raw=true",
+  "3" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/lv03.png?raw=true",
+  "4" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/lv04.png?raw=true",
+  "5" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/lv05.png?raw=true",
+  "6" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/lv06.png?raw=true",
+  "7" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/lv07.png?raw=true",
+  "8" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/lv08.png?raw=true",
+  "9" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/lv09.png?raw=true",
+  "10" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/10.png?raw=true",
+  "11" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/11.png?raw=true",
+  "12" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/12.png?raw=true",
+  "13" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/13.png?raw=true",
+  "14" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/14.png?raw=true",
+  "15" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/15.png?raw=true",
+  "16" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/16.png?raw=true",
+  "17" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/17.png?raw=true",
+  "18" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/18.png?raw=true",
+  "18.5" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/18+.png?raw=true",
+  "19" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/19.png?raw=true",
+  "19.5" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/19+.png?raw=true",
+  "20" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/lvl20_0.png?raw=true",
+  "20.05" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/lv20__0p.png?raw=true",
+  "20.1" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/lv20__1.png?raw=true",
+  "20.15" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/lv20__1p.png?raw=true",
+  "20.2" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/lv20__2.png?raw=true",
+  "20.25" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/lv20__2p.png?raw=true",
+  "20.3" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/lv20__3.png?raw=true",
+  "20.35" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/lv20__3p.png?raw=true",
+  "20.4" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/lv20__4.png?raw=true",
+  "20.45" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/lv20__4p.png?raw=true",
+  "20.5" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/20.5.png?raw=true",
+  "20.55" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/20.5p.png?raw=true",
+  "20.6" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/20.6.png?raw=true",
+  "20.65" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/20.6p.png?raw=true",
+  "20.7" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/20.7.png?raw=true",
+  "20.75" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/20.7p.png?raw=true",
+  "20.8" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/20.8.png?raw=true",
+  "20.85" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/20.8p.png?raw=true",
+  "20.9" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/20.9.png?raw=true",
+  "20.95" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/20.9p.png?raw=true",
+  "21" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/21.png?raw=true",
+  "21.05" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/21p.png?raw=true",
+  "21.1" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/21.1.png?raw=true",
+  "21.15" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/21.1p.png?raw=true",
+  "21.2" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/21.2.png?raw=true",
+  "21.25" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/21.2p.png?raw=true",
+  "21.3" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/21.3.png?raw=true",
+  "21.35" : "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/21.3+.png?raw=true",
+}
+
 const pguData = {
   "P1" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/P1.png?raw=true",
   "P2" : "https://github.com/T21C/T21C-assets/blob/main/pguDiff/P2.png?raw=true",
@@ -198,11 +250,17 @@ function getYouTubeEmbedUrl(url) {
 
 
 
-function getLevelImage(pgnDiff, pguDiff){
-  if(pguDiff == "64"){
+function getLevelImage(pdnDiff, diff, legacy){
+  if(diff == "64"){
     return pgnData["64"]
   }
- return pgnDiff == pguDiff ?  pgnData[pgnDiff] : pguData[pguDiff] ;
+  console.log(legacy);
+  if(legacy){
+    return legacyData[diff] == null ? pgnData[pdnDiff] : legacyData[diff];
+  }else {
+    return pdnDiff == diff ?  pgnData[pdnDiff] : pguData[diff];
+  }
+
 }
 
 

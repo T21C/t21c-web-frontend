@@ -42,6 +42,7 @@ const LevelPageRev = () => {
             return {
               id: l.id,
               team: l.team,
+              diff:l.diff,
               pdnDiff:l.pdnDiff,
               pguDiff:l.pguDiff,
               creator: l.creator,
@@ -475,7 +476,7 @@ const LevelPageRev = () => {
               key={index}
               creator={l.creator}
               pdnDiff={l.pdnDiff}
-              pguDiff={l.pguDiff}
+              pguDiff={legacyDiff ? l.diff:l.pguDiff}
               id={l.id}
               artist={l.artist}
               song={l.song}
@@ -483,6 +484,7 @@ const LevelPageRev = () => {
               dl={l.dlLink}
               ws={l.wsLink}
               team = {l.team}
+              legacy={legacyDiff}
             />
           ))}
         </InfiniteScroll>
