@@ -19,7 +19,7 @@ const LevelPageRev = () => {
   const [error, setError] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(false);
 
-  const {levelsData, setLevelsData, filterOpen, setFilterOpen, sortOpen, setSortOpen, query, setQuery,selectedFilterDiff, setSelectedFilterDiff, sort, setSort, hasMore, setHasMore, pageNumber, setPageNumber} = useContext(UserContext)
+  const {levelsData, setLevelsData, legacyDiff, setLegacyDiff, filterOpen, setFilterOpen, sortOpen, setSortOpen, query, setQuery,selectedFilterDiff, setSelectedFilterDiff, sort, setSort, hasMore, setHasMore, pageNumber, setPageNumber} = useContext(UserContext)
 
   useEffect(() => {
     let cancel;
@@ -71,6 +71,10 @@ const LevelPageRev = () => {
     return () => cancel && cancel();
   }, [query, sort, pageNumber, forceUpdate]);
 
+  function toggleLegacyDiff() {
+    setLegacyDiff(!legacyDiff);
+  }
+
   function handleQueryChange(e) {
     setQuery(e.target.value);
     setPageNumber(0);
@@ -107,6 +111,23 @@ const LevelPageRev = () => {
 
       <div className="level-body">
         <div className="input-option">
+          <svg
+            style={{
+              backgroundColor: legacyDiff ? "rgba(255, 255, 255, 0.7)" : "",
+            }}
+            onClick={() => toggleLegacyDiff()}
+            data-tooltip-id="legacy"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="2"
+            stroke="#ffffff"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
+            <polygon points="11 19 2 12 11 5 11 19"></polygon><polygon points="22 19 13 12 22 5 22 19"></polygon>
+          </svg>
+
           <input
             value={query}
             type="text"
@@ -114,6 +135,9 @@ const LevelPageRev = () => {
             onChange={handleQueryChange}
           />
 
+          <Tooltip id="legacy" place="bottom" noArrow>
+            Toggle Legacy Diff
+          </Tooltip>
           <Tooltip id="filter" place="bottom" noArrow>
             filter
           </Tooltip>

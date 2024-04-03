@@ -5,6 +5,7 @@ const UserContext = createContext()
 
 const UserContextProvider = (props) => {
     const[levelsData, setLevelsData] = useState([])
+    const [legacyDiff, setLegacyDiff] = useState(false);
     const [filterOpen, setFilterOpen] = useState(false);
     const [sortOpen, setSortOpen] = useState(false);
     const [query, setQuery] = useState("");
@@ -14,7 +15,7 @@ const UserContextProvider = (props) => {
     const [pageNumber, setPageNumber] = useState(0);
 
     return(
-        <UserContext.Provider value={{levelsData, setLevelsData, filterOpen, setFilterOpen, sortOpen, setSortOpen, query, setQuery,selectedFilterDiff, setSelectedFilterDiff, sort, setSort, hasMore, setHasMore, pageNumber, setPageNumber}}>
+        <UserContext.Provider value={{levelsData, setLevelsData, legacyDiff, setLegacyDiff, filterOpen, setFilterOpen, sortOpen, setSortOpen, query, setQuery,selectedFilterDiff, setSelectedFilterDiff, sort, setSort, hasMore, setHasMore, pageNumber, setPageNumber}}>
             {props.children}
         </UserContext.Provider>
     )
