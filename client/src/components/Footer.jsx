@@ -64,7 +64,7 @@ const Footer = () => {
       </div>
 
       <p className="copy-right">
-        &copy; 2024 Adrian Purnama. All rights reserved.
+        &copy; 2024 Adrian Purnama. All rights reserved. Version - {import.meta.env.VITE_APP_COMMIT_HASH}
       </p>
     </footer>
   );
