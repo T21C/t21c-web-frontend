@@ -195,6 +195,7 @@ const LevelDetailPage = () => {
 
         <div className="body">
           <div className="info">
+
             <div className="info-item">
               <p>
                 {" "}
