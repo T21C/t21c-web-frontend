@@ -15,12 +15,10 @@ const options = [
 
 const LevelPageRev = () => {
 
-  const [hasMore, setHasMore] = useState(true);
-  const [pageNumber, setPageNumber] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
-  const {levelsData, setLevelsData, filterOpen, setFilterOpen, sortOpen, setSortOpen, query, setQuery,selectedFilterDiff, setSelectedFilterDiff, sort, setSort} = useContext(UserContext)
+  const {levelsData, setLevelsData, filterOpen, setFilterOpen, sortOpen, setSortOpen, query, setQuery,selectedFilterDiff, setSelectedFilterDiff, sort, setSort, hasMore, setHasMore, pageNumber, setPageNumber} = useContext(UserContext)
 
   useEffect(() => {
     let cancel;
@@ -54,11 +52,12 @@ const LevelPageRev = () => {
             };
           })
         );
-        setLevelsData((prev) =>
-          pageNumber === 0 ? newLevels : [...prev, ...newLevels]
-        );
+        const existingIds = new Set(levelsData.map(level => level.id));
+
+        const uniqueLevels = newLevels.filter(level => !existingIds.has(level.id));
+
+        setLevelsData(prev => [...prev, ...uniqueLevels]);
         setHasMore(response.data.count > 0);
-        //console.log(newLevels)
       } catch (error) {
         if (!axios.isCancel(error)) setError(true);
       } finally {
