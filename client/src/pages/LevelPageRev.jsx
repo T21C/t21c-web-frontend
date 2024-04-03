@@ -17,6 +17,7 @@ const LevelPageRev = () => {
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [forceUpdate, setForceUpdate] = useState(false);
 
   const {levelsData, setLevelsData, filterOpen, setFilterOpen, sortOpen, setSortOpen, query, setQuery,selectedFilterDiff, setSelectedFilterDiff, sort, setSort, hasMore, setHasMore, pageNumber, setPageNumber} = useContext(UserContext)
 
@@ -68,7 +69,7 @@ const LevelPageRev = () => {
     fetchLevels();
 
     return () => cancel && cancel();
-  }, [query, sort, pageNumber]);
+  }, [query, sort, pageNumber, forceUpdate]);
 
   function handleQueryChange(e) {
     setQuery(e.target.value);
@@ -95,6 +96,7 @@ const LevelPageRev = () => {
     setQuery("")
     setLevelsData([])
     setLoading(true)
+    setForceUpdate(f => !f);
   }
 
   return (
