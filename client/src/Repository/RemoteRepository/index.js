@@ -254,7 +254,6 @@ function getLevelImage(pdnDiff, diff, legacy){
   if(diff == "64"){
     return pgnData["64"]
   }
-  console.log(legacy);
   if(legacy){
     return legacyData[diff] == null ? pgnData[pdnDiff] : legacyData[diff];
   }else {

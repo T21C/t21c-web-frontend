@@ -5,7 +5,7 @@ import { Tooltip } from "react-tooltip";
 import Select from "react-select";
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
-import { UserContext } from "../context/UserContext";
+import { LevelContext } from "../context/LevelContext";
 
 const options = [
   { value: "chocolate", label: "Chocolate" },
@@ -19,7 +19,7 @@ const LevelPageRev = () => {
   const [error, setError] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(false);
 
-  const {levelsData, setLevelsData, legacyDiff, setLegacyDiff, filterOpen, setFilterOpen, sortOpen, setSortOpen, query, setQuery,selectedFilterDiff, setSelectedFilterDiff, sort, setSort, hasMore, setHasMore, pageNumber, setPageNumber} = useContext(UserContext)
+  const {levelsData, setLevelsData, legacyDiff, setLegacyDiff, filterOpen, setFilterOpen, sortOpen, setSortOpen, query, setQuery,selectedFilterDiff, setSelectedFilterDiff, sort, setSort, hasMore, setHasMore, pageNumber, setPageNumber} = useContext(LevelContext)
 
   useEffect(() => {
     let cancel;
@@ -458,17 +458,19 @@ const LevelPageRev = () => {
 
               <div className="random">
                 <p>Random</p>
-                <Tooltip id="ra" place="top" noArrow>
-                  Recent Ascending
+                <Tooltip id="rnd" place="top" noArrow>
+                  Random
                 </Tooltip>
 
                 <div className="wrapper">
-                <svg                     style={{
+                <svg 
+                data-tooltip-id="rnd"                    
+                style={{
                       backgroundColor:
                         sort == "RANDOM" ? "rgba(255, 255, 255, 0.7)" : "",
                     }}
                     onClick={() => handleSort("RANDOM")}
-                    value="RANDOM" fill="#ffffff" viewBox="-7.5 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>random</title> <path d="M14.92 17.56c-0.32-0.32-0.88-0.32-1.2 0s-0.32 0.88 0 1.2l0.76 0.76h-3.76c-0.6 0-1.080-0.32-1.6-0.96-0.28-0.36-0.8-0.44-1.2-0.16-0.36 0.28-0.44 0.8-0.16 1.2 0.84 1.12 1.8 1.64 2.92 1.64h3.76l-0.76 0.76c-0.32 0.32-0.32 0.88 0 1.2 0.16 0.16 0.4 0.24 0.6 0.24s0.44-0.080 0.6-0.24l2.2-2.2c0.32-0.32 0.32-0.88 0-1.2l-2.16-2.24zM10.72 12.48h3.76l-0.76 0.76c-0.32 0.32-0.32 0.88 0 1.2 0.16 0.16 0.4 0.24 0.6 0.24s0.44-0.080 0.6-0.24l2.2-2.2c0.32-0.32 0.32-0.88 0-1.2l-2.2-2.2c-0.32-0.32-0.88-0.32-1.2 0s-0.32 0.88 0 1.2l0.76 0.76h-3.76c-2.48 0-3.64 2.56-4.68 4.84-0.88 2-1.76 3.84-3.12 3.84h-2.080c-0.48 0-0.84 0.36-0.84 0.84s0.36 0.88 0.84 0.88h2.080c2.48 0 3.64-2.56 4.68-4.84 0.88-2 1.72-3.88 3.12-3.88zM0.84 12.48h2.080c0.6 0 1.080 0.28 1.56 0.92 0.16 0.2 0.4 0.32 0.68 0.32 0.2 0 0.36-0.040 0.52-0.16 0.36-0.28 0.44-0.8 0.16-1.2-0.84-1.040-1.8-1.6-2.92-1.6h-2.080c-0.48 0.040-0.84 0.4-0.84 0.88s0.36 0.84 0.84 0.84z"></path> </g></svg>
+                    value="RANDOM" fill="#ffffff" viewBox="-7.5 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>random</title> <path d="M14.92 17.56c-0.32-0.32-0.88-0.32-1.2 0s-0.32 0.88 0 1.2l0.76 0.76h-3.76c-0.6 0-1.080-0.32-1.6-0.96-0.28-0.36-0.8-0.44-1.2-0.16-0.36 0.28-0.44 0.8-0.16 1.2 0.84 1.12 1.8 1.64 2.92 1.64h3.76l-0.76 0.76c-0.32 0.32-0.32 0.88 0 1.2 0.16 0.16 0.4 0.24 0.6 0.24s0.44-0.080 0.6-0.24l2.2-2.2c0.32-0.32 0.32-0.88 0-1.2l-2.16-2.24zM10.72 12.48h3.76l-0.76 0.76c-0.32 0.32-0.32 0.88 0 1.2 0.16 0.16 0.4 0.24 0.6 0.24s0.44-0.080 0.6-0.24l2.2-2.2c0.32-0.32 0.32-0.88 0-1.2l-2.2-2.2c-0.32-0.32-0.88-0.32-1.2 0s-0.32 0.88 0 1.2l0.76 0.76h-3.76c-2.48 0-3.64 2.56-4.68 4.84-0.88 2-1.76 3.84-3.12 3.84h-2.080c-0.48 0-0.84 0.36-0.84 0.84s0.36 0.88 0.84 0.88h2.080c2.48 0 3.64-2.56 4.68-4.84 0.88-2 1.72-3.88 3.12-3.88zM0.84 12.48h2.080c0.6 0 1.080 0.28 1.56 0.92 0.16 0.2 0.4 0.32 0.68 0.32 0.2 0 0.36-0.040 0.52-0.16 0.36-0.28 0.44-0.8 0.16-1.2-0.84-1.040-1.8-1.6-2.92-1.6h-2.080c-0.48 0.040-0.84 0.4-0.84 0.88s0.36 0.84 0.84 0.84z"></path> </g></svg>
                 </div>
               </div>
 

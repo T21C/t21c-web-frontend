@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Card, Footer, CompleteNav } from "../components";
-import { UserContext } from "../context/UserContext";
+import { UserContext } from "../context/LevelContext";
 import { fetchRecent } from "../Repository/RemoteRepository";
 import SplineHeader from "../components/SplineHeader";
 
