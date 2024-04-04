@@ -1213,6 +1213,8 @@ nav {
   background-color: var(--primary-color);
   min-height: 100vh;
   display: flex;
+  position: relative;
+  flex-wrap: wrap;
 
   .wrapper-body {
     padding: 0 3rem;
@@ -1221,7 +1223,7 @@ nav {
   }
 
   .wrapper-top {
-    padding-top: 6rem;
+    padding: 6rem 0;
     position: relative;
     width: 10%;
     flex-wrap: wrap;
@@ -1240,11 +1242,52 @@ nav {
     max-width: 15rem;
   }
 
+  button {
+    margin: 1rem 0;
+    max-width: 30rem;
+    padding: .5rem 2rem;
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 3px;
+    color: var(--white-color);
+    font-size: 1rem;
+    cursor: pointer;
+    margin: 0;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.1s linear;
+
+    &:hover {
+      background-color: var(--primary-color);
+      color: var(--text-color);
+    }
+
+    &:active {
+      background-color: purple;
+    }
+
+  }
+  p{
+    margin: 1rem 0;
+    font-size: .8rem;
+  }
+
+  .middle-img{
+    position: absolute;
+    width: 6rem;
+    height: 6rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 3;
+  }
+
   .submission-level{
     background-color: var(--third-color);
     flex: 1;
     text-align: center;
     color: var(--text-color);
+    min-width: 30rem;
   }
 
   .submission-passes{
@@ -1252,6 +1295,7 @@ nav {
     flex: 1;
     text-align: center;
     color: var(--backgorund-color);
+    min-width: 30rem;
 
   }
 }
