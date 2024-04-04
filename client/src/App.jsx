@@ -1,6 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import { Suspense, lazy } from "react";
+import LevelSubmissionPage from "./pages/LevelSubmissionPage.jsx";
+import PassSubmissionPage from "./pages/PassSubmissionPage.jsx";
 const HomePage = lazy(() => import("./pages/HomePage.jsx"));
 const LevelDetailPage = lazy(()=> import ("./pages/LevelDetailPage.jsx"))
 const LevelPageRev = lazy(()=>import ("./pages/LevelPageRev.jsx"))
@@ -23,10 +25,14 @@ function App() {
       }
     >
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/levels" element={<LevelPageRev />} />
-        <Route path="/leveldetail" element={<LevelDetailPage />} />
-        <Route path="/submission" element={<SubmissionPage />} />
+        <Route index path="/" element={<HomePage />} />
+        <Route path="levels" element={<LevelPageRev />} />
+        <Route path="leveldetail" element={<LevelDetailPage />} />
+
+        <Route path="submission" element={<SubmissionPage />} />
+        <Route path="submission/level" element={<LevelSubmissionPage />} />
+        <Route path="submission/pass" element={<PassSubmissionPage />} />
+
         {/* <Route path='/leaderboard' element={<LeaderboardPage/>}/> */}
       </Routes>
     </Suspense>
