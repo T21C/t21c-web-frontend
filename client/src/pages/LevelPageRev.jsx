@@ -23,6 +23,7 @@ const LevelPageRev = () => {
 
   useEffect(() => {
     let cancel;
+
     const fetchLevels = async () => {
       setLoading(true);
       try {
@@ -67,10 +68,56 @@ const LevelPageRev = () => {
       }
     };
 
-    fetchLevels();
+    const fetchLevelById = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          `${import.meta.env.VITE_INDIVIDUAL_LEVEL}${query.slice(1)}`,
+          {
+            cancelToken: new axios.CancelToken((c) => (cancel = c)),
+          }
+        );
+      //console.log(response)
+        const clears = await axios.get(
+              `${import.meta.env.VITE_INDIVIDUAL_PASSES}${response.data.id}`
+            )
 
+        const fullData = {
+          id: response.data.id,
+          team: response.data.team,
+          diff:response.data.diff,
+          pdnDiff:response.data.pdnDiff,
+          pguDiff:response.data.pguDiff,
+          creator: response.data.creator,
+          song: response.data.song,
+          artist: response.data.artist,
+          dlLink: response.data.dlLink,
+          wsLink: response.data.workshopLink,
+          clears: clears.data.count,
+      }
+        console.log(fullData)
+
+        setLevelsData([fullData]);
+        setHasMore(false);
+      } catch (error) {
+        if (!axios.isCancel(error)) setError(true);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+
+    if(query[0] == "#"){
+      fetchLevelById()
+    }else{
+      fetchLevels();
+    }
     return () => cancel && cancel();
   }, [query, sort, pageNumber, forceUpdate]);
+
+  useEffect(()=>{
+    console.log([levelsData])
+  }, [levelsData])
 
   function toggleLegacyDiff() {
     setLegacyDiff(!legacyDiff);
@@ -132,7 +179,7 @@ const LevelPageRev = () => {
           <input
             value={query}
             type="text"
-            placeholder="Search artist, song, creator"
+            placeholder="Search artist, song, creator, #id"
             onChange={handleQueryChange}
           />
 
