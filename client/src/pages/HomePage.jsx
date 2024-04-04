@@ -1,12 +1,12 @@
 import { useContext, useEffect, useState } from "react";
 import { Card, Footer, CompleteNav } from "../components";
-import { UserContext } from "../context/LevelContext";
+import { LevelContext } from "../context/LevelContext";
 import { fetchRecent } from "../Repository/RemoteRepository";
 import SplineHeader from "../components/SplineHeader";
 
 const HomePage = () => {
   const [recent, setRecent] = useState([]);
-  const { levelData, setLevelData } = useContext(UserContext);
+  const { levelData, setLevelData } = useContext(LevelContext);
 
   useEffect(() => {
     fetchRecent().then((res)=> setRecent(res))
