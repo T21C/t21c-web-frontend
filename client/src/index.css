@@ -1003,7 +1003,8 @@ nav .wrapper svg:hover {
 }
 .submission-page h2 {
   margin: 2rem auto;
-  max-width: 15rem;
+  max-width: 17rem;
+  font-size: 2rem;
 }
 .submission-page button {
   margin: 1rem 0;
@@ -1027,9 +1028,11 @@ nav .wrapper svg:hover {
 .submission-page button:active {
   background-color: purple;
 }
-.submission-page p {
+.submission-page .link {
   margin: 1rem 0;
   font-size: 0.8rem;
+  display: block;
+  font-weight: bold;
 }
 .submission-page .middle-img {
   position: absolute;

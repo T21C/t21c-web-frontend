@@ -1239,7 +1239,8 @@ nav {
       
   h2{
     margin: 2rem auto;
-    max-width: 15rem;
+    max-width: 17rem;
+    font-size: 2rem;
   }
 
   button {
@@ -1267,9 +1268,11 @@ nav {
     }
 
   }
-  p{
+  .link{
     margin: 1rem 0;
     font-size: .8rem;
+    display: block;
+    font-weight: bold;
   }
 
   .middle-img{
