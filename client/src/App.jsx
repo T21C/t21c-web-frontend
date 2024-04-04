@@ -4,6 +4,7 @@ import { Suspense, lazy } from "react";
 const HomePage = lazy(() => import("./pages/HomePage.jsx"));
 const LevelDetailPage = lazy(()=> import ("./pages/LevelDetailPage.jsx"))
 const LevelPageRev = lazy(()=>import ("./pages/LevelPageRev.jsx"))
+const SubmissionPage = lazy(()=> import("./pages/SubmissionPage.jsx"))
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/" element={<HomePage />} />
         <Route path="/levels" element={<LevelPageRev />} />
         <Route path="/leveldetail" element={<LevelDetailPage />} />
+        <Route path="/submission" element={<SubmissionPage />} />
         {/* <Route path='/leaderboard' element={<LeaderboardPage/>}/> */}
       </Routes>
     </Suspense>

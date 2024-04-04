@@ -15,6 +15,15 @@ const CompleteNav = () => {
         <li>Levels</li>
       </NavLink>
 
+      <NavLink
+        className={({ isActive }) =>
+          "nav-link " + (isActive ? "active-link" : "")
+        }
+        to="/submission"
+      >
+        <li>submission</li>
+      </NavLink>
+
       {/* <NavLink
         className={({ isActive }) =>
           "nav-link " + (isActive ? "active-link" : "")

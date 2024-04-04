@@ -977,6 +977,45 @@ nav .wrapper svg:hover {
     margin: 1rem auto;
   }
 }
+.submission-page {
+  background-color: var(--primary-color);
+  min-height: 100vh;
+  display: flex;
+}
+.submission-page .wrapper-body {
+  padding: 0 3rem;
+  position: relative;
+  z-index: 2;
+}
+.submission-page .wrapper-top {
+  padding-top: 6rem;
+  position: relative;
+  width: 10%;
+  flex-wrap: wrap;
+}
+.submission-page svg {
+  display: block;
+  max-width: 15rem;
+  height: 15rem;
+  margin: 1rem auto;
+}
+.submission-page h2 {
+  margin: 2rem auto;
+  max-width: 15rem;
+}
+.submission-page .submission-level {
+  background-color: var(--third-color);
+  flex: 1;
+  text-align: center;
+  color: var(--text-color);
+}
+.submission-page .submission-passes {
+  background-color: var(--secondary-color);
+  flex: 1;
+  text-align: center;
+  color: var(--backgorund-color);
+}
+
 @media (max-width: 1150px) {
   .level-detail .body {
     flex-direction: column;
