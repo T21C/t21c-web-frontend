@@ -388,22 +388,6 @@ nav .wrapper svg:hover {
   align-items: center;
   gap: 1rem;
 }
-.level-page .wrapper-inner .filter .select-group .button-radio {
-  padding: 0.5rem 2rem;
-  border-radius: 4px;
-  border: 2px solid transparent;
-  cursor: pointer;
-  transition: all 100ms ease-in;
-}
-.level-page .wrapper-inner .filter .select-group .button-radio:hover {
-  border: 2px solid var(--third-color);
-}
-.level-page .wrapper-inner .filter .select-group .button-radio-active {
-  border: 2px solid var(--primary-color);
-}
-.level-page .wrapper-inner .filter .select-group .button-radio-active:hover {
-  border: 2px solid var(--primary-color);
-}
 .level-page .wrapper-inner .spacer-left-right {
   width: 2px;
   background-color: var(--third-color);
@@ -417,22 +401,6 @@ nav .wrapper svg:hover {
   flex-wrap: wrap;
   align-items: center;
   gap: 1rem;
-}
-.level-page .wrapper-inner .sort .select-group .button-radio {
-  padding: 0.5rem 2rem;
-  border-radius: 4px;
-  border: 2px solid transparent;
-  cursor: pointer;
-  transition: all 100ms ease-in;
-}
-.level-page .wrapper-inner .sort .select-group .button-radio:hover {
-  border: 2px solid var(--third-color);
-}
-.level-page .wrapper-inner .sort .select-group .button-radio-active {
-  border: 2px solid var(--primary-color);
-}
-.level-page .wrapper-inner .sort .select-group .button-radio-active:hover {
-  border: 2px solid var(--primary-color);
 }
 .level-page .grid-container {
   position: relative;
@@ -545,18 +513,21 @@ nav .wrapper svg:hover {
   gap: 2rem;
 }
 .level-page-rev .level-body .sort .sort-option .recent p,
-.level-page-rev .level-body .sort .sort-option .diff p {
+.level-page-rev .level-body .sort .sort-option .diff p,
+.level-page-rev .level-body .sort .sort-option .random p {
   margin-bottom: 0.5rem;
 }
 .level-page-rev .level-body .sort .sort-option .recent .wrapper,
-.level-page-rev .level-body .sort .sort-option .diff .wrapper {
+.level-page-rev .level-body .sort .sort-option .diff .wrapper,
+.level-page-rev .level-body .sort .sort-option .random .wrapper {
   display: flex;
   gap: 1rem;
 }
 .level-page-rev .level-body .sort .sort-option .recent svg,
-.level-page-rev .level-body .sort .sort-option .diff svg {
-  height: 2.5rem;
-  width: 2.5rem;
+.level-page-rev .level-body .sort .sort-option .diff svg,
+.level-page-rev .level-body .sort .sort-option .random svg {
+  height: 2rem;
+  width: 2rem;
   background-color: rgba(255, 255, 255, 0.3);
   padding: 0.1rem;
   border-radius: 3px;
@@ -564,7 +535,8 @@ nav .wrapper svg:hover {
   transition: all 0.2s linear;
 }
 .level-page-rev .level-body .sort .sort-option .recent svg:focus,
-.level-page-rev .level-body .sort .sort-option .diff svg:focus {
+.level-page-rev .level-body .sort .sort-option .diff svg:focus,
+.level-page-rev .level-body .sort .sort-option .random svg:focus {
   outline: none;
 }
 .level-page-rev .level-body .settings-class {
