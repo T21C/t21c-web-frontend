@@ -139,14 +139,44 @@ const imagePh = [
 
 
 
-async function fetchRecent(){
-    try {
-        const res = await axios.get(import.meta.env.VITE_ALL_LEVEL_URL);
-        return res.data.results.slice(0, 3);
-    } catch (error) {
-        console.error(error)
-        return []
-    }
+async function fetchRecent(ids) {
+  try {
+      // Fetch data for each id using Promise.all
+      const resp = await Promise.all(ids.map(id =>
+          axios.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`)
+      ));
+      
+      // Extract data from the response
+      const res = resp.map(res => res.data);
+      console.log(res);
+      
+      // Fetch another set of data
+      const respTwo = await axios.get(`${import.meta.env.VITE_OFFSET_LEVEL}`);
+      const resTwo = respTwo.data.results;
+      console.log(resTwo);
+
+      // Construct and return the response object
+      const finalRes =  {
+          recentRated: resTwo.map(res => ({
+              id: res.id,
+              song: res.song,
+              artist: res.artist,
+              creator: res.creator,
+          })),
+          recent: res.map(res => ({
+              id: res.id,
+              song: res.song,
+              artist: res.artist,
+              creator: res.creator,
+              vidLink: res.vidLink,
+          }))
+      };
+      console.log(finalRes)
+
+  } catch (error) {
+      console.error(error);
+      return {};
+  }
 }
 
 async function fetchData({offset = "", diff = '', cleared = '', sort = '', direction = '' } = {}){

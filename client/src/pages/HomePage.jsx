@@ -1,16 +1,44 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Card, Footer, CompleteNav } from "../components";
-import { LevelContext } from "../context/LevelContext";
 import { fetchRecent } from "../Repository/RemoteRepository";
-import SplineHeader from "../components/SplineHeader";
+import logo from "../assets/logo-full.png";
+const ids = [1, 2, 3]
 
 const HomePage = () => {
-  const [recent, setRecent] = useState([]);
-  const { levelData, setLevelData } = useContext(LevelContext);
+  const [recent, setRecent] = useState({});
+  const heroRef = useRef(null);
 
   useEffect(() => {
-    fetchRecent().then((res)=> setRecent(res))
-  }, [levelData, setLevelData]);
+    fetchRecent(ids).then(res => {
+      console.log(res);
+      setRecent(res.recent); // Adjust based on actual response structure
+    });
+
+    // Function to update cursor position relative to the "hero" section
+    const updateCursorPosition = (e) => {
+      if (heroRef.current) {
+        const { left, top } = heroRef.current.getBoundingClientRect();
+        const x = e.clientX - left;
+        const y = e.clientY - top;
+
+        // Update the blob's position state only if the cursor is within the "hero" section
+        if (x >= 0 && y >= 0 && x <= heroRef.current.offsetWidth && y <= heroRef.current.offsetHeight) {
+          const blob = heroRef.current.querySelector('.blob');
+          if (blob) {
+            blob.style.left = `${x}px`;
+            blob.style.top = `${y}px`;
+          }
+        }
+      }
+    };
+
+    document.addEventListener('mousemove', updateCursorPosition);
+
+    // Clean up
+    return () => {
+      document.removeEventListener('mousemove', updateCursorPosition);
+    };
+  }, []);
 
   // const scrollToRecent = () => {
   //   const recent = document.querySelector("#recent");
@@ -19,18 +47,33 @@ const HomePage = () => {
 
   return (
     <>
-      <div className="home">
-        <CompleteNav />
+      <CompleteNav />
+      <div className="home" ref={heroRef}>
 
-        <SplineHeader/>
+        <div className="blob"></div>
+        <div className="blur"></div>
+        <div className="hero  wrapper-top wrapper-body"  >
+          <img src={logo} alt="" />
+          
+
+
+          <div className="many-recent">
+            <input type="text" placeholder="Search artist, song, creator, #id"/>
+
+            <div className="list">
+
+            </div>
+
+
+          </div>
+        </div>
 
         <div className="spacer spacer-one"></div>
       </div>
 
       <div className="recent-rated" id="recent">
-        <h1 className="title-recent">Recently Rated</h1>
+        <h1 className="title-recent">Featured Rated</h1>
         <div className="card-holder">
-          {/*Card creator, song, artist, image(vidLink) */}
           {recent && recent.length > 0 ? (
             recent.map((element, index) => (
               <Card
