@@ -15,6 +15,8 @@ const LevelCardRev = ({ pdnDiff, pguDiff, creator, id, artist, song, clears, dl,
       e.stopPropagation();
     };
 
+    console.log(clears)
+
   return (
     <div className='level-card-rev' onClick={() => redirect()}>
       <div className="id level-id">#{id}</div>
@@ -41,7 +43,7 @@ const LevelCardRev = ({ pdnDiff, pguDiff, creator, id, artist, song, clears, dl,
           <div className="level-desc">{song}</div>
       </div> */}
 
-      {clears ? 
+      {clears || clears == 0 ? 
         (      
           <div className="clears-wrapper">
             <p className="level-exp">Clears</p>
