@@ -587,7 +587,7 @@ const LevelPageRev = () => {
               key={index}
               creator={l.creator}
               pdnDiff={l.pdnDiff}
-              pguDiff={l.pguDiff}
+              pguDiff={legacyDiff ? l.diff:l.pguDiff}
               id={l.id}
               artist={l.artist}
               song={l.song}
