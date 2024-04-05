@@ -1162,6 +1162,9 @@ footer h2 {
 footer p {
   line-height: 1.2rem;
 }
+footer img {
+  width: 5rem;
+}
 footer .about-container {
   max-width: 15rem;
 }
