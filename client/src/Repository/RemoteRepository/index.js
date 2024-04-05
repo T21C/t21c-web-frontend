@@ -241,6 +241,7 @@ function selectItemConsistently(name, items) {
   return items[index];
 }
 
+
 function getYouTubeThumbnailUrl(url, title) {
   const shortUrlRegex = /youtu\.be\/([a-zA-Z0-9_-]{11})/;
   const longUrlRegex = /youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})/;
@@ -257,8 +258,7 @@ function getYouTubeThumbnailUrl(url, title) {
   if (videoId) {
     return `https://img.youtube.com/vi/${videoId}/0.jpg`;
   } else {
-    return selectItemConsistently(title, imagePh);
-  }
+    return selectItemConsistently(title, imagePh);  }
 }
 
 function getYouTubeEmbedUrl(url) {

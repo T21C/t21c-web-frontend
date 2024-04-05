@@ -15,8 +15,6 @@ const LevelCardRev = ({ pdnDiff, pguDiff, creator, id, artist, song, clears, dl,
       e.stopPropagation();
     };
 
-    console.log(getLevelImage(pdnDiff, pguDiff, legacy), pguDiff, pdnDiff, legacy)
-
   return (
     <div className='level-card-rev' onClick={() => redirect()}>
       <div className="id level-id">#{id}</div>

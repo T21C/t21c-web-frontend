@@ -10,11 +10,10 @@ import {
 } from "../Repository/RemoteRepository";
 
 import { Tooltip } from "react-tooltip";
-import { useLocation, useNavigate } from "react-router-dom";
 
 const LevelDetailPage = () => {
-  const location = useLocation()
-  const [id, setId] = useState("");
+  // cange how to get param
+  const id = new URLSearchParams(window.location.search).get("id");
   const [res, setRes] = useState(null);
   const [player, setPlayer] = useState([]);
   const [highSpeed, setHighSpeed] = useState(null);
@@ -24,12 +23,6 @@ const LevelDetailPage = () => {
   const [displayedPlayers, setDisplayedPlayers] = useState([]);
 
   const [leaderboardSort, setLeaderboardSort] = useState("TIME");
-
-  useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const queryId = searchParams.get("id"); 
-    if (queryId) setId(queryId);
-  }, [location.search]);
 
   useEffect(() => {
     fetchLevelInfo(id)
