@@ -38,11 +38,6 @@ const LevelCardRev = ({ pdnDiff, pguDiff, creator, id, artist, song, clears, dl,
           <div className="level-desc">{team ? team : creator}</div>
       </div>
 
-      {/* <div className="song-wrapper">
-          <p className="level-exp">Song</p>
-          <div className="level-desc">{song}</div>
-      </div> */}
-
       {clears || clears == 0 ? 
         (      
           <div className="clears-wrapper">

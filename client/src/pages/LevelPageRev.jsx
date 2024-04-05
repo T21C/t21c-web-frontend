@@ -81,7 +81,7 @@ const LevelPageRev = () => {
         );
 
         setLevelsData((prev) => [...prev, ...uniqueLevels]);
-        setHasMore(response.data.count > 0);
+        setHasMore(response.data.count > levelsData.length + newLevels.length);
       } catch (error) {
         if (!axios.isCancel(error)) setError(true);
       } finally {
