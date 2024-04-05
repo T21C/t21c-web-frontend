@@ -15,7 +15,7 @@ const SubmissionPage = () => {
     navigate('/submission/pass');
   };
   return (
-    <div className="submission-page wrapper-body">
+    <div className="submission-page">
         <CompleteNav/>
         <img className="middle-img" src={image} alt="logo" />
 

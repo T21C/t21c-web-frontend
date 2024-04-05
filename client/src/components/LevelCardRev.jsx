@@ -8,12 +8,14 @@ import { getLevelImage } from "../Repository/RemoteRepository";
 const LevelCardRev = ({ pdnDiff, pguDiff, creator, id, artist, song, clears, dl, ws, team, legacy }) => {
     const navigate = useNavigate()
     const redirect = () => {
-      navigate(`/leveldetail?id=${id}`);
+      navigate(`/leveldetail?id=${encodeURIComponent(id)}`);
     };
 
     const onAnchorClick = (e) => {
       e.stopPropagation();
     };
+
+    console.log(getLevelImage(pdnDiff, pguDiff, legacy), pguDiff, pdnDiff, legacy)
 
   return (
     <div className='level-card-rev' onClick={() => redirect()}>
@@ -41,10 +43,17 @@ const LevelCardRev = ({ pdnDiff, pguDiff, creator, id, artist, song, clears, dl,
           <div className="level-desc">{song}</div>
       </div> */}
 
-      <div className="clears-wrapper">
-          <p className="level-exp">Clears</p>
-          <div className="level-desc">{clears}</div>
-      </div>
+      {clears ? 
+        (      
+          <div className="clears-wrapper">
+            <p className="level-exp">Clears</p>
+            <div className="level-desc">{clears}</div>
+          </div>)
+      :
+      <></>
+    }
+
+
 
       <div className="downloads-wrapper">
         {ws &&

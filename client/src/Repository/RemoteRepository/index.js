@@ -141,29 +141,28 @@ const imagePh = [
 
 async function fetchRecent(ids) {
   try {
-      // Fetch data for each id using Promise.all
       const resp = await Promise.all(ids.map(id =>
           axios.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`)
       ));
       
-      // Extract data from the response
       const res = resp.map(res => res.data);
-      console.log(res);
-      
-      // Fetch another set of data
       const respTwo = await axios.get(`${import.meta.env.VITE_OFFSET_LEVEL}`);
       const resTwo = respTwo.data.results;
-      console.log(resTwo);
 
-      // Construct and return the response object
       const finalRes =  {
           recentRated: resTwo.map(res => ({
               id: res.id,
               song: res.song,
               artist: res.artist,
               creator: res.creator,
+              team: res.team,
+              ws:res.workshopDownload,
+              dl: res.dlLink,
+              pguDiff: res.pguDiff,
+              pdnDiff: res.pdnDiff,
+              legacy : res.diff
           })),
-          recent: res.map(res => ({
+          recentFeatured: res.map(res => ({
               id: res.id,
               song: res.song,
               artist: res.artist,
@@ -172,6 +171,7 @@ async function fetchRecent(ids) {
           }))
       };
       console.log(finalRes)
+      return finalRes
 
   } catch (error) {
       console.error(error);

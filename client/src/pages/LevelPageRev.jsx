@@ -6,6 +6,7 @@ import Select from "react-select";
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
 import { LevelContext } from "../context/LevelContext";
+import { useLocation } from "react-router-dom";
 
 const options = [
   { value: "chocolate", label: "Chocolate" },
@@ -17,7 +18,7 @@ const LevelPageRev = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(false);
-
+  const location = useLocation()
   const {
     levelsData,
     setLevelsData,
@@ -133,6 +134,14 @@ const LevelPageRev = () => {
     }
     return () => cancel && cancel();
   }, [query, sort, pageNumber, forceUpdate]);
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const searchQuery = searchParams.get("query");
+    if (searchQuery !== null) {
+      setQuery(decodeURIComponent(searchQuery));
+    }
+  }, [location.search]);
 
   function toggleLegacyDiff() {
     setLegacyDiff(!legacyDiff);
@@ -578,7 +587,7 @@ const LevelPageRev = () => {
               key={index}
               creator={l.creator}
               pdnDiff={l.pdnDiff}
-              pguDiff={legacyDiff ? l.diff : l.pguDiff}
+              pguDiff={l.pguDiff}
               id={l.id}
               artist={l.artist}
               song={l.song}

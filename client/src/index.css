@@ -93,6 +93,47 @@ nav .wrapper svg:hover {
   border-bottom: solid 2px var(--primary-color);
 }
 
+@media (max-width: 580px) {
+  nav .wrapper .nav-menu {
+    display: none;
+  }
+  nav .wrapper svg {
+    display: block;
+  }
+  .nav-menu-outer {
+    display: block;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 99999;
+    width: 40%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1); /* White with low opacity */
+    -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px); /* Blur effect */
+    border-left: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: var(--text-color);
+  }
+  .nav-menu-outer .close {
+    width: 2rem;
+    margin: 1.5rem;
+    float: right;
+  }
+  .nav-menu-outer .close:hover {
+    cursor: pointer;
+  }
+  .nav-menu-outer ul {
+    margin-top: 70%;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .nav-menu-outer ul li {
+    padding: 1rem;
+  }
+}
 .wrapper-body {
   padding: 0 3rem;
   position: relative;
@@ -107,7 +148,6 @@ nav .wrapper svg:hover {
 .home {
   position: relative;
   background-color: var(--backgorund-color);
-  height: 110vh;
   color: var(--text-color);
 }
 .home .spacer-svg {
@@ -132,14 +172,15 @@ nav .wrapper svg:hover {
   width: 100%;
   height: 100%;
   z-index: 2;
-  -webkit-backdrop-filter: blur(70px);
-          backdrop-filter: blur(70px);
+  -webkit-backdrop-filter: blur(100px);
+          backdrop-filter: blur(100px);
 }
 .home .hero {
   position: relative;
   z-index: 3;
+  padding-bottom: 10rem;
 }
-.home .hero img {
+.home .hero .img-hero {
   display: block;
   margin: 0 auto;
   width: 50%;
@@ -156,11 +197,31 @@ nav .wrapper svg:hover {
   background-color: rgba(255, 255, 255, 0.3);
   border: none;
   border-radius: 3px;
-  padding: 0.5rem;
+  padding: 1rem;
   color: var(--white-color);
+  margin-bottom: 1rem;
 }
 .home .hero .many-recent input:focus {
   outline: none;
+}
+.home .hero .many-recent .list {
+  overflow-y: auto;
+  height: 30rem;
+  padding: 0.5rem;
+}
+.home .hero .many-recent .list::-webkit-scrollbar {
+  width: 5px;
+}
+.home .hero .many-recent .list::-webkit-scrollbar-track {
+  background: #a5a5a5;
+  border-radius: 10px;
+}
+.home .hero .many-recent .list::-webkit-scrollbar-thumb {
+  background: #464646;
+  border-radius: 10px;
+}
+.home .hero .many-recent .list::-webkit-scrollbar-thumb:hover {
+  background: #333333;
 }
 
 .spacer {

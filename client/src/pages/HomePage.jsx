@@ -1,27 +1,36 @@
 import { useEffect, useRef, useState } from "react";
-import { Card, Footer, CompleteNav } from "../components";
+import { Card, Footer, CompleteNav, LevelCardRev } from "../components";
 import { fetchRecent } from "../Repository/RemoteRepository";
 import logo from "../assets/logo-full.png";
+import { useNavigate } from "react-router-dom";
 const ids = [1, 2, 3]
 
 const HomePage = () => {
   const [recent, setRecent] = useState({});
+  const [query, setQuery] = useState("")
   const heroRef = useRef(null);
 
-  useEffect(() => {
+  useEffect(()=>{
     fetchRecent(ids).then(res => {
-      console.log(res);
-      setRecent(res.recent); // Adjust based on actual response structure
+      setRecent(res)
     });
+  }, [])
 
-    // Function to update cursor position relative to the "hero" section
+  const navigate = useNavigate(); 
+
+  const handleSubmit = (e) => {
+    e.preventDefault(); 
+    navigate(`/levels?query=${encodeURIComponent(query)}`); 
+  };
+
+  useEffect(() => {
+
     const updateCursorPosition = (e) => {
       if (heroRef.current) {
         const { left, top } = heroRef.current.getBoundingClientRect();
         const x = e.clientX - left;
         const y = e.clientY - top;
 
-        // Update the blob's position state only if the cursor is within the "hero" section
         if (x >= 0 && y >= 0 && x <= heroRef.current.offsetWidth && y <= heroRef.current.offsetHeight) {
           const blob = heroRef.current.querySelector('.blob');
           if (blob) {
@@ -34,7 +43,6 @@ const HomePage = () => {
 
     document.addEventListener('mousemove', updateCursorPosition);
 
-    // Clean up
     return () => {
       document.removeEventListener('mousemove', updateCursorPosition);
     };
@@ -53,15 +61,40 @@ const HomePage = () => {
         <div className="blob"></div>
         <div className="blur"></div>
         <div className="hero  wrapper-top wrapper-body"  >
-          <img src={logo} alt="" />
+          <img className="img-hero" src={logo} alt="" />
           
 
 
           <div className="many-recent">
-            <input type="text" placeholder="Search artist, song, creator, #id"/>
-
+          <form onSubmit={handleSubmit}> {/* Add the form with an onSubmit handler */}
+            <input
+              type="text"
+              placeholder="Search artist, song, creator, #id"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </form>
             <div className="list">
-
+              {recent && recent.recentRated && recent.recentRated.length > 0 ? (
+                recent.recentRated.map((l, index) => (
+                  <LevelCardRev
+                  style={{
+                    height: "2rem"
+                  }}
+                    key={index}
+                    creator={l.creator}
+                    pdnDiff={l.pdnDiff}
+                    pguDiff={l.pguDiff}                    
+                    id={l.id}
+                    artist={l.artist}
+                    song={l.song}
+                    dl={l.dlLink}
+                    ws={l.wsLink}
+                    team={l.team}
+                  /> 
+              ))):(
+                <div className="loader"></div>
+              )}
             </div>
 
 
@@ -74,8 +107,8 @@ const HomePage = () => {
       <div className="recent-rated" id="recent">
         <h1 className="title-recent">Featured Rated</h1>
         <div className="card-holder">
-          {recent && recent.length > 0 ? (
-            recent.map((element, index) => (
+          {recent && recent.recentFeatured && recent.recentFeatured.length > 0 ? (
+            recent.recentFeatured.map((element, index) => (
               <Card
                 key={index}
                 id = {element.id}
