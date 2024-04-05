@@ -1,6 +1,7 @@
 // eslint-disable-next-line no-unused-vars
 import React from "react";
 import image from "../assets/logo.png"
+import { Link } from "react-router-dom";
 
 
 
@@ -15,19 +16,14 @@ const Footer = () => {
         <div className="about-container">
           <h2>About Us</h2>
           <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Similique
-            sint pariatur veniam nostrum cumque, tempora deleniti
-            necessitatibus, voluptatum praesentium laudantium neque, dignissimos
-            quasi natus officia.
+          a dedicated community passionate about the world of A Dance of Fire and Ice (ADOFAI). Our focus is on custom levels and clears, providing a vibrant platform for creators and players alike to share, discover, and engage with the endless possibilities that custom content brings to this rhythmic game.
           </p>
         </div>
 
         <div className="link-container">
           <h2>Links</h2>
-          <p>Levels</p>
-          <p>Passes</p>
-          <p>Refrences</p>
-          <p>Credits</p>
+          <Link className="link" to="/levels">Levels</Link>
+          <Link className="link" to="/submission">Submission</Link>
         </div>
 
         <div className="self-promotion-container">
@@ -64,7 +60,7 @@ const Footer = () => {
       </div>
 
       <p className="copy-right">
-        &copy; 2024 Adrian Purnama. All rights reserved. Version - {import.meta.env.VITE_APP_COMMIT_HASH}
+        &copy; 2024 Adrian Purnama. All rights reserved. Version - 1.0.0
       </p>
     </footer>
   );

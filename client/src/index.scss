@@ -74,6 +74,10 @@ nav {
       list-style: none;
       display: flex;
       align-items: center;
+
+      li{
+        padding: .5rem;
+      }
     }
 
     svg {
@@ -1416,6 +1420,11 @@ footer {
     margin: 0 auto;
     margin-top: 2rem;
     padding-bottom: 2rem;
+  }
+  .link{
+    display: block;
+    padding-top: .5rem;
+    color: white;
   }
 }
 

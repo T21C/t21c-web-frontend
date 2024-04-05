@@ -59,6 +59,9 @@ nav .wrapper ul {
   display: flex;
   align-items: center;
 }
+nav .wrapper ul li {
+  padding: 0.5rem;
+}
 nav .wrapper svg {
   height: 2rem;
   margin: 5px;
@@ -1189,6 +1192,11 @@ footer .copy-right {
   margin: 0 auto;
   margin-top: 2rem;
   padding-bottom: 2rem;
+}
+footer .link {
+  display: block;
+  padding-top: 0.5rem;
+  color: white;
 }
 
 @keyframes gradient {
