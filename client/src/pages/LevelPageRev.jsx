@@ -135,14 +135,6 @@ const LevelPageRev = () => {
     return () => cancel && cancel();
   }, [query, sort, pageNumber, forceUpdate]);
 
-  useEffect(() => {
-    const searchParams = new URLSearchParams(location.search);
-    const searchQuery = searchParams.get("query");
-    if (searchQuery !== null) {
-      setQuery(decodeURIComponent(searchQuery));
-    }
-  }, [location.search]);
-
   function toggleLegacyDiff() {
     setLegacyDiff(!legacyDiff);
   }

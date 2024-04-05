@@ -1,13 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Card, Footer, CompleteNav, LevelCardRev } from "../components";
 import { fetchRecent } from "../Repository/RemoteRepository";
 import logo from "../assets/logo-full.png";
 import { useNavigate } from "react-router-dom";
+import { LevelContext } from "../context/LevelContext";
 const ids = [1, 2, 3]
 
 const HomePage = () => {
   const [recent, setRecent] = useState({});
-  const [query, setQuery] = useState("")
+  const {query, setQuery} = useContext(LevelContext)
   const heroRef = useRef(null);
 
   useEffect(()=>{
@@ -20,7 +21,7 @@ const HomePage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault(); 
-    navigate(`/levels?query=${encodeURIComponent(query)}`); 
+    navigate(`/levels`); 
   };
 
   useEffect(() => {
