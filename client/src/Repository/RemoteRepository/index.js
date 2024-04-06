@@ -218,9 +218,30 @@ async function fetchLevelInfo(id){
   try{
     const res = await axios.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`)
     const res2 = await axios.get(`${import.meta.env.VITE_INDIVIDUAL_PASSES}${id}`)
-    return {level : res.data, passes : res2.data}
+
+    return {
+      level : res.data, 
+      passes :{
+        count : res2.data.length,
+        player : res2.data}
+      }
+
   }catch(error){
     throw new error
+  }
+}
+
+async function fetchPassPlayerInfo(players){
+  if(!players) return
+  try{
+
+    const res = await Promise.all(players.map(player =>{
+       return axios.get(`${import.meta.env.VITE_INDIVIDUAL_PLAYER}${player}`)
+    }))
+    
+    return res.map(entry => entry.data.results[0])
+  }catch(error){
+    console.log(error)
   }
 }
 
@@ -292,5 +313,15 @@ function getLevelImage(pdnDiff, diff, legacy){
 
 }
 
+function isoToEmoji(code){
+  return code
+  .toLowerCase()
+  .split("")
+  .map(letter => letter.charCodeAt(0)%32 + 0x1F1E5)
+  .map(n => String.fromCodePoint(n))
+  .join("")
+}
+  
 
-export {fetchRecent, fetchData, fetchLevelInfo, getYouTubeThumbnailUrl, getYouTubeEmbedUrl, getLevelImage}
+
+export {isoToEmoji, fetchPassPlayerInfo, fetchRecent, fetchData, fetchLevelInfo, getYouTubeThumbnailUrl, getYouTubeEmbedUrl, getLevelImage}

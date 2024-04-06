@@ -116,7 +116,7 @@ const LevelPageRev = () => {
           wsLink: response.data.workshopLink,
           clears: clears.data.count,
         };
-        console.log(fullData);
+        // console.log(fullData);
 
         setLevelsData([fullData]);
         setHasMore(false);

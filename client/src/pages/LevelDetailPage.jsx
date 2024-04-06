@@ -4,9 +4,11 @@ import React, { useEffect, useState } from "react";
 import { CompleteNav } from "../components";
 import {
   fetchLevelInfo,
+  fetchPassPlayerInfo,
   getLevelImage,
   getYouTubeEmbedUrl,
   getYouTubeThumbnailUrl,
+  isoToEmoji,
 } from "../Repository/RemoteRepository";
 
 import { Tooltip } from "react-tooltip";
@@ -16,9 +18,12 @@ const LevelDetailPage = () => {
   const id = new URLSearchParams(window.location.search).get("id");
   const [res, setRes] = useState(null);
   const [player, setPlayer] = useState([]);
+  const [initialPlayer, setInitialPlayer] = useState([])
+
   const [highSpeed, setHighSpeed] = useState(null);
   const [highAcc, setHighAcc] = useState(null);
   const [highScore, setHighScore] = useState(null);
+  const [passCount, setPassCount] = useState(0)
 
   const [displayedPlayers, setDisplayedPlayers] = useState([]);
 
@@ -28,8 +33,10 @@ const LevelDetailPage = () => {
     fetchLevelInfo(id)
       .then((res) => {
         setRes(res);
-        const fetchedPlayers = res?.passes.results || [];
-        setPlayer(fetchedPlayers);
+        const fetchedPlayers = res?.passes.player.results || [];
+        const passCount = res?.passes.player.count || 0 ;
+        setInitialPlayer(fetchedPlayers);
+        setPassCount(passCount)
       })
       .catch((error) => {
         console.error("Error fetching level info:", error);
@@ -38,7 +45,6 @@ const LevelDetailPage = () => {
 
   useEffect(() => {
     if (player.length > 0) {
-      // Your existing logic to calculate maxSpeedIndex, maxScoreIndex, maxAccIndex
       const maxSpeedIndex = player.reduce(
         (maxIdx, curr, idx, arr) =>
           curr.speed > arr[maxIdx].speed ? idx : maxIdx,
@@ -47,7 +53,6 @@ const LevelDetailPage = () => {
       const maxScoreIndex = player.reduce((maxIndex, player, index, array) =>
       player.scoreV2 > array[maxIndex].scoreV2 ? index : maxIndex, 0);
     
-    // Find the index of the player with the highest accuracy
     const maxAccIndex = player.reduce((maxIndex, player, index, array) =>
       player.accuracy > array[maxIndex].accuracy ? index : maxIndex, 0);
 
@@ -60,8 +65,50 @@ const LevelDetailPage = () => {
       setHighAcc(null);
       setHighScore(null);
     }
-    console.log(player);
+    console.log(player)
+
   }, [player]);
+
+
+  useEffect(() => {
+    const enrichPlayers = async () => {
+      let storedPlayers = JSON.parse(localStorage.getItem('players')) || [];
+  
+      // Only fetch and update localStorage if there's a discrepancy in player count
+      if (storedPlayers.length !== passCount) {
+        try {
+          const playerNames = initialPlayer.map(p => p.player);
+          storedPlayers = await fetchPassPlayerInfo(playerNames);
+          localStorage.setItem('players', JSON.stringify(storedPlayers));
+        } catch (error) {
+          console.error('Failed to fetch or update player info:', error);
+        }
+      }
+
+      const enrichedPlayers = initialPlayer
+      .map(player => {
+        // Find additional info for each player
+        const additionalInfo = storedPlayers.find(info => info.name === player.player);
+        
+        // Only enrich and include the player if they are not banned
+        if (additionalInfo && !additionalInfo.isBanned) {
+          return {
+            ...player,
+            country: additionalInfo.country, // Add country info from additionalInfo
+          };
+        }
+        return null; // Return null for banned players or those without additional info
+      })
+      .filter(player => player !== null); // Filter out any players set to null (banned or without additional info)
+    
+    setPlayer(enrichedPlayers);
+    };
+  
+    if (initialPlayer.length && passCount) {
+      enrichPlayers();
+    }
+  }, [initialPlayer, passCount]);
+
 
   function handleSort(sort){
     setLeaderboardSort(sort)
@@ -97,10 +144,7 @@ const LevelDetailPage = () => {
 
     const sortedPlayers = sortLeaderboard(player); 
     setDisplayedPlayers(sortedPlayers); 
-    console.log(player)
   }, [player, leaderboardSort]);
-  
-  
 
 
   if (res == null)
@@ -119,7 +163,6 @@ const LevelDetailPage = () => {
       <div className="background-level"></div>
 
       <div className="wrapper-level wrapper-level-top">
-      {/* <button onClick={() => navigate(-1)}>Back</button> */}
         <div className="header">
           <div
             className="left"
@@ -253,7 +296,7 @@ const LevelDetailPage = () => {
             <div className="info-item">
               <p>Number Of Clears</p>
               <span className="info-desc">
-                {res.passes.count ? res.passes.count : "0"}
+                {player ? player.length : "0"}
               </span>
             </div>
 
@@ -384,7 +427,7 @@ const LevelDetailPage = () => {
           <div className="rank-list">
             {displayedPlayers && displayedPlayers.length > 0 ? (
               displayedPlayers.map((each, index) => (
-                <div className="list" key={index}>
+                <div className="list" key={index} >
                   <p className="name">
                     <span
                       style={{
@@ -398,14 +441,16 @@ const LevelDetailPage = () => {
                             : "inherit",
                       }}
                     >
-                      #{index + 1}
-                    </span>{" "}
+                      <b>#{index + 1}</b>
+                    </span>
+                    &nbsp;
+                    {isoToEmoji(each.country)}
                     &nbsp;
                     {each.player}
                   </p>
                   <p className="general">{each.scoreV2.toFixed(2)}</p>
                   <p className="acc">{(each.accuracy * 100).toFixed(2)}%</p>
-                  <p className="judgements">
+                  <p className="judgements" onClick={() => window.open(each.vidLink, '_blank')}>
                     <span style={{ color: "red" }}>{each.judgements[0]}</span>
                     &nbsp;
                     <span style={{ color: "orange" }}>

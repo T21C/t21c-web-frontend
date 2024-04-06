@@ -19,7 +19,7 @@
 
 body {
   overflow-x: hidden;
-  user-select: none;
+  // user-select: none;
 
   // &::-webkit-scrollbar {
   //   width: 10px;
@@ -1189,8 +1189,8 @@ nav {
           text-align: center;
           padding: 0.5rem;
 
-          min-width: 13rem;
-          width: 13rem;
+          min-width: 14rem;
+          width: 14rem;
 
           span {
             display: inline-block; 
