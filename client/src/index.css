@@ -184,7 +184,7 @@ nav .wrapper svg:hover {
 .home .hero .img-hero {
   display: block;
   margin: 0 auto;
-  width: 50%;
+  width: 100%;
   max-width: 20rem;
   margin-bottom: 3rem;
 }
@@ -879,6 +879,9 @@ nav .wrapper svg:hover {
   margin: 0;
 }
 .level-detail .body .info .info-item .info-desc {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
   display: inline-block;
   white-space: nowrap;
   overflow: hidden;

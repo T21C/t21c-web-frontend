@@ -225,7 +225,7 @@ nav {
       .img-hero{
         display: block;
         margin: 0 auto;
-        width: 50%;
+        width: 100%;
         max-width: 20rem;
         margin-bottom: 3rem;
       }
@@ -1047,6 +1047,7 @@ nav {
         }
 
         .info-desc {
+          user-select: none;
           display: inline-block;
           white-space: nowrap;
           overflow: hidden;
