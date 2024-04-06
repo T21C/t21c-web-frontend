@@ -351,20 +351,11 @@ const LevelDetailPage = () => {
               displayedPlayers.map((each, index) => (
                 <div className="list" key={index} >
                   <p className="name">
-                    <span
-                      style={{
-                        color:
-                          index === 0
-                            ? "gold"
-                            : index === 1
-                            ? "silver"
-                            : index === 2
-                            ? "brown"
-                            : "inherit",
-                      }}
-                    >
+
+                    <span style={{ color:index === 0 ? "gold" : index === 1? "silver": index === 2? "brown": "inherit"}} >
                       <b>#{index + 1}</b>
                     </span>
+                    
                     &nbsp;
                     {isoToEmoji(each.country)}
                     &nbsp;
