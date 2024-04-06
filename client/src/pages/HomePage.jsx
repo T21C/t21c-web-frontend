@@ -8,8 +8,21 @@ const ids = [1, 2, 3]
 
 const HomePage = () => {
   const [recent, setRecent] = useState({});
-  const {query, setQuery} = useContext(LevelContext)
   const heroRef = useRef(null);
+
+  const {
+    setLevelsData,
+    query,
+    setQuery,
+    setSort,
+    setPageNumber,
+  } = useContext(LevelContext);
+
+  function resetAll() {
+    setPageNumber(0);
+    setSort("RECENT_DESC");
+    setLevelsData([]);
+  }
 
   useEffect(()=>{
     fetchRecent(ids).then(res => {
@@ -21,6 +34,7 @@ const HomePage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault(); 
+    resetAll()
     navigate(`/levels`); 
   };
 
@@ -67,7 +81,7 @@ const HomePage = () => {
 
 
           <div className="many-recent">
-          <form onSubmit={handleSubmit}> {/* Add the form with an onSubmit handler */}
+          <form onSubmit={handleSubmit}> 
             <input
               type="text"
               placeholder="Search artist, song, creator, #id"
