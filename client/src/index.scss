@@ -231,6 +231,7 @@ nav {
       }
 
     .many-recent{
+      position: relative;
       max-width: 70rem;
       margin: 0 auto;
 
@@ -249,10 +250,13 @@ nav {
         }
       }
 
+
+
       .list{
+        position: relative;
         overflow-y: auto;
         height: 30rem;
-        padding: .5rem;
+        padding: .5rem;        
 
         &::-webkit-scrollbar {
           width: 5px;
@@ -272,8 +276,7 @@ nav {
         }
       }
     }
-
-    }
+  }
   
 }
 .spacer {
@@ -1093,7 +1096,7 @@ nav {
     margin: 2rem auto;
     background-color: rgba($color: #ffffff, $alpha: 0.15);
     border-radius: 3px;
-    padding: 1rem;
+    padding: .5rem;
 
     .sort{
       display: flex;
@@ -1169,7 +1172,7 @@ nav {
         }
 
         .name{
-          min-width: 8rem;
+          min-width: 6rem;
         }
 
         .general, .acc{
@@ -1190,8 +1193,8 @@ nav {
           text-align: center;
           padding: 0.5rem;
 
-          min-width: 14rem;
-          width: 14rem;
+          min-width: 12rem;
+          width: 12rem;
 
           span {
             display: inline-block; 

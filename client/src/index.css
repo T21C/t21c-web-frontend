@@ -189,6 +189,7 @@ nav .wrapper svg:hover {
   margin-bottom: 3rem;
 }
 .home .hero .many-recent {
+  position: relative;
   max-width: 70rem;
   margin: 0 auto;
 }
@@ -206,6 +207,7 @@ nav .wrapper svg:hover {
   outline: none;
 }
 .home .hero .many-recent .list {
+  position: relative;
   overflow-y: auto;
   height: 30rem;
   padding: 0.5rem;
@@ -920,7 +922,7 @@ nav .wrapper svg:hover {
   margin: 2rem auto;
   background-color: rgba(255, 255, 255, 0.15);
   border-radius: 3px;
-  padding: 1rem;
+  padding: 0.5rem;
 }
 .level-detail .rank .sort {
   display: flex;
@@ -984,7 +986,7 @@ nav .wrapper svg:hover {
   text-overflow: ellipsis;
 }
 .level-detail .rank .rank-list .list .name {
-  min-width: 8rem;
+  min-width: 6rem;
 }
 .level-detail .rank .rank-list .list .general, .level-detail .rank .rank-list .list .acc {
   text-align: right;
@@ -1001,8 +1003,8 @@ nav .wrapper svg:hover {
   margin: 0;
   text-align: center;
   padding: 0.5rem;
-  min-width: 14rem;
-  width: 14rem;
+  min-width: 12rem;
+  width: 12rem;
 }
 .level-detail .rank .rank-list .list .judgements span {
   display: inline-block;
