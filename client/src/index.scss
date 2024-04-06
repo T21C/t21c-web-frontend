@@ -1173,6 +1173,13 @@ nav {
 
         .name{
           min-width: 6rem;
+          display: flex;
+          align-items: center;
+          gap: .1rem;
+          
+          img{
+            width: 2rem;
+          }
         }
 
         .general, .acc{

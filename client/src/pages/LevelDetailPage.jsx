@@ -355,9 +355,9 @@ const LevelDetailPage = () => {
                     <span style={{ color:index === 0 ? "gold" : index === 1? "silver": index === 2? "brown": "inherit"}} >
                       <b>#{index + 1}</b>
                     </span>
-                    
+
                     &nbsp;
-                    {isoToEmoji(each.country)}
+                    <img src={isoToEmoji(each.country)} alt=""/>
                     &nbsp;
                     {each.player}
                   </p>

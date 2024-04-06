@@ -317,12 +317,17 @@ function getLevelImage(pdnDiff, diff, legacy) {
 }
 
 function isoToEmoji(code) {
-  return twemoji.parse(code
+  const htmlString =  twemoji.parse(code
     .toLowerCase()
     .split("")
     .map(letter => letter.charCodeAt(0) % 32 + 0x1F1E5)
     .map(n => String.fromCodePoint(n))
     .join(""))
+
+  const srcRegex = /src\s*=\s*"(.+?)"/;
+  const match = htmlString.match(srcRegex);
+
+  return match ? match[1] : null;
 }
 
 

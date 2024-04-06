@@ -987,6 +987,12 @@ nav .wrapper svg:hover {
 }
 .level-detail .rank .rank-list .list .name {
   min-width: 6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+}
+.level-detail .rank .rank-list .list .name img {
+  width: 2rem;
 }
 .level-detail .rank .rank-list .list .general, .level-detail .rank .rank-list .list .acc {
   text-align: right;
