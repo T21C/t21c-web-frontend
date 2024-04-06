@@ -146,6 +146,7 @@ nav .wrapper svg:hover {
 }
 
 .home {
+  overflow: hidden;
   position: relative;
   background-color: var(--backgorund-color);
   color: var(--text-color);
