@@ -27,6 +27,7 @@ const HomePage = () => {
   useEffect(()=>{
     fetchRecent(ids).then(res => {
       setRecent(res)
+      console.log(res)
     });
   }, [])
 
@@ -103,8 +104,8 @@ const HomePage = () => {
                     id={l.id}
                     artist={l.artist}
                     song={l.song}
-                    dl={l.dlLink}
-                    ws={l.wsLink}
+                    dl={l.dl}
+                    ws={l.ws}
                     team={l.team}
                   /> 
               ))):(
