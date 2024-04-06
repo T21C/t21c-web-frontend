@@ -1187,11 +1187,11 @@ footer .wrapper {
 }
 footer .copy-right {
   color: var(--text-color);
+  margin: 0 auto;
+  padding: 2rem 2rem;
+  text-wrap: wrap;
   width: -moz-fit-content;
   width: fit-content;
-  margin: 0 auto;
-  margin-top: 2rem;
-  padding-bottom: 2rem;
 }
 footer .link {
   display: block;

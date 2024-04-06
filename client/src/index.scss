@@ -1421,10 +1421,10 @@ footer {
 
   .copy-right {
     color: var(--text-color);
-    width: fit-content;
     margin: 0 auto;
-    margin-top: 2rem;
-    padding-bottom: 2rem;
+    padding: 2rem 2rem;
+    text-wrap: wrap;
+    width: fit-content;
   }
   .link{
     display: block;

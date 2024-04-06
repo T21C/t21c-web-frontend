@@ -120,7 +120,7 @@ const HomePage = () => {
       </div>
 
       <div className="recent-rated" id="recent">
-        <h1 className="title-recent">Featured Rated</h1>
+        <h1 className="title-recent">Featured Levels</h1>
         <div className="card-holder">
           {recent && recent.recentFeatured && recent.recentFeatured.length > 0 ? (
             recent.recentFeatured.map((element, index) => (
