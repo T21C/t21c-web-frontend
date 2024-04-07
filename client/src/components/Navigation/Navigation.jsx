@@ -14,6 +14,9 @@ const Navigation = ({ children }) => {
 
   return (
     <>
+      <div className="close-outer" style={{ display: openNav ? 'block' : 'none' }} onClick={changeNavState}></div>
+
+
       <nav>
         <div className="wrapper">
           <div>
@@ -39,7 +42,7 @@ const Navigation = ({ children }) => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className=""
+            className="menu"
             onClick={changeNavState}
           >
             <path

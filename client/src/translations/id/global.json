@@ -1,0 +1,86 @@
+{
+    "homePage": {
+      "featuredText": "Level Unggulan",
+      "featuredLevel": [1, 2, 3],
+      "inputPlaceholder": "Cari artis, lagu, pembuat, #id"
+    },
+    "levelPage": {
+      "inputPlaceholder": "Cari artis, lagu, pembuat, #id",
+      "toolTip": {
+        "legacy": "Alihkan Kesulitan Warisan",
+        "filter": "Filter",
+        "sort": "Urutkan",
+        "reset": "Atur Ulang",
+        "recenrAsc": "Terbaru Naik",
+        "recentDesc": "Terbaru Turun",
+        "DifficultyAsc": "Kesulitan Naik",
+        "DifficultyDesc": "Kesulitan Turun",
+        "random": "Acak"
+      },
+      "settingExp": {
+        "headerSort": "Urutkan",
+        "headerFilter": "Filter",
+        "filterDiffs": "Kesulitan",
+        "sortRecent": "Terbaru",
+        "sortDifficulty": "Kesulitan",
+        "sortRandom": "Acak"
+      }
+    },
+    "detailPage": {
+      "#1Clears": {
+        "clear": "#1 Bersih",
+        "score": "#1 Skor",
+        "speed": "#1 Kecepatan",
+        "accuracy": "#1 Akurasi",
+        "numOClear": "Jumlah Bersih"
+      },
+      "leaderboard": {
+        "header": "Peringkat",
+        "notBeaten": "Level Ini Belum Dikalahkan",
+        "toolTip": {
+          "time": "Waktu",
+          "accuracy": "Akurasi",
+          "score": "skor"
+        }
+      }
+    },
+    "submissionPage": {
+      "header": {
+        "headerPass": "Saya di sini ingin mengirimkan pass saya",
+        "headerLevel": "Hai, Saya di sini untuk Mengirim Level"
+      },
+      "button": {
+        "buttonPass": "Kirimkan pass",
+        "buttonLevel": "Kirimkan level"
+      },
+      "RulesAGuide": "lihat aturan dan panduan"
+    },
+    "cardFeaturedComponent": {
+      "by": "Oleh",
+      "button": "Lihat Sekarang!"
+    },
+    "levelCardComponent": {
+      "creator": "Pembuat",
+      "clears": "Bersih"
+    },
+    "navigationComponent": {
+      "levels": "Level"
+    },
+    "footerComponent": {
+      "aboutUs": {
+        "header": "Tentang Kami",
+        "paragraph": "komunitas yang berdedikasi tentang dunia A Dance of Fire and Ice (ADOFAI). Fokus kami ada pada level kustom dan clears, menyediakan platform yang dinamis untuk pembuat dan pemain sama-sama untuk berbagi, menemukan, dan berinteraksi dengan kemungkinan-kemungkinan tak terbatas yang dibawa konten kustom ke dalam game ritmis ini."
+      },
+      "links": {
+        "header": "Tautan",
+        "levels": "Level",
+        "submission": "pengajuan"
+      },
+      "shoutOut": {
+        "header": "Periksa Saya",
+        "paragraph": "Hei saya orang yang membuat website ini, periksa saya"
+      },
+      "copyRight": "&copy; 2024 Adrian Purnama. Semua hak cipta dilindungi. Versi - 1.0.0"
+    }
+  }
+  

@@ -5,9 +5,12 @@ import { fetchRecent } from "../../Repository/RemoteRepository";
 import logo from "../../assets/logo-full.png";
 import { useNavigate } from "react-router-dom";
 import { LevelContext } from "../../context/LevelContext";
+import { useTranslation } from "react-i18next";
+
 const ids = [1, 2, 3]
 
 const HomePage = () => {
+  const {t} = useTranslation()
   const [recent, setRecent] = useState({});
   const heroRef = useRef(null);
 
@@ -89,7 +92,7 @@ const HomePage = () => {
           <form onSubmit={handleSubmit}> 
             <input
               type="text"
-              placeholder="Search artist, song, creator, #id"
+              placeholder={t('homePage.inputPlaceholder')}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />

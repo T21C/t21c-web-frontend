@@ -1,0 +1,105 @@
+{
+    "homePage":{
+        "featuredText" : "Featured Levels",
+        "featuredLevel" : [1, 2, 3],
+        "inputPlaceholder" : "Search artist, song, creator, #id"
+    },
+
+    "levelPage":{
+        "inputPlaceholder" : "Search artist, song, creator, #id",
+        
+        "toolTip":{
+            "legacy" : "Toggle Legacy Diff",
+            "filter" : "Filter",
+            "sort": "Sort",
+            "reset" : "Reset",
+            "recenrAsc" : "Recent Ascending",
+            "recentDesc": "Recent Descending",
+            "DifficultyAsc" : "Difficulty Ascending",
+            "DifficultyDesc" : "Difficulty Descending",
+            "random": "Random"
+        },
+        "settingExp" : {
+            "headerSort": "Sort",
+            "headerFilter" : "Filter",
+            "filterDiffs" : "Diffs",
+            "sortRecent" : "Recent",
+            "sortDifficulty" : "Difficulty",
+            "sortRandom" : "Random"
+        }
+    },
+
+    "detailPage" : {
+        "#1Clears":{
+            "clear" : "#1 Clear",
+            "score" : "#1 Score",
+            "speed" : "#1 Speed",
+            "accuracy" : "#1 Accuracy",
+            "numOClear" : "Number Of Clears"
+        },
+
+        "leaderboard":{
+            "header" : "Ranks",
+            "notBeaten" : "This Level Has Not Been Beaten Yet",
+
+            "toolTip" : {
+                "time" : "Time",
+                "accuracy" : "Accuracy",
+                "score" : "score"
+            }
+        }
+    },
+
+    "submissionPage" : {
+        "header" : {
+            "headerPass" : "Im here wanting to submit my pass",
+            "headerLevel" : "Hi, Im here to Submit A Level"
+        },
+
+        "button" : {
+            "buttonPass" : "Submit a pass",
+            "buttonLevel" : "Submit a level"
+        },
+
+        "RulesAGuide" : "view rules and guidelines"
+    },
+
+
+
+
+
+
+    "cardFeaturedComponent" : {
+        "by" : "By",
+        "button" : "Check It Out !"
+    },
+
+    "levelCardComponent" : {
+        "creator" : "Creator",
+        "clears" : "Clears"
+    },
+
+    "navigationComponent" : {
+        "levels" : "Levels"
+    },
+
+    "footerComponent" : {
+        "aboutUs" : {
+            "header" : "About Us",
+            "paragraph" : "a dedicated community passionate about the world of A Dance of Fire and Ice (ADOFAI). Our focus is on custom levels and clears, providing a vibrant platform for creators and players alike to share, discover, and engage with the endless possibilities that custom content brings to this rhythmic game."
+        },
+        "links" : {
+            "header" : "Links",
+            "levels" : "Levels",
+            "submission" : "submissions"
+        },
+        "shoutOut" : {
+            "header" : "Check Me Out",
+            "paragraph" : "Hey im the one that created this website, check me out"
+        },
+
+        "copyRight" : "&copy; 2024 Adrian Purnama. All rights reserved. Version - 1.0.0"
+    }
+
+
+}

@@ -71,7 +71,7 @@ const Card = ({ id,  creator, song, artist, image: vidLink }) => {
         <p className="song-name">
           {song}
           <br />
-          <span className="artist-name">- by {artist}</span>
+          <span className="artist-name">by {artist}</span>
         </p>
         <div
           ref={imageContainerRef}
