@@ -1,6 +1,7 @@
-// eslint-disable-next-line no-unused-vars
+/* eslint-disable no-unused-vars */
+import "./footer.css"
 import React from "react";
-import image from "../assets/logo.png"
+import image from "../../assets/logo.png"
 import { Link } from "react-router-dom";
 
 

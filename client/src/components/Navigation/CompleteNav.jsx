@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import "./navigation.css"
 import React from "react";
 import Navigation from "./Navigation";
 import { NavLink } from "react-router-dom";

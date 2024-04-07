@@ -1,7 +1,7 @@
 // import { useNavigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { getLevelImage } from "../Repository/RemoteRepository";
-
+import { getLevelImage } from "../../Repository/RemoteRepository";
+import "./levelcard.css"
 
 
 // eslint-disable-next-line react/prop-types

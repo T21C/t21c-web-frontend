@@ -1,0 +1,102 @@
+.level-page-rev {
+  background-color: var(--backgorund-color);
+  color: var(--text-color);
+  min-height: 100vh;
+}
+.level-page-rev .level-body {
+  position: relative;
+  z-index: 2;
+  padding: 0 1.5rem;
+  padding-top: 6rem;
+  min-height: 100vh;
+  max-width: 70rem;
+  margin: 0 auto;
+}
+.level-page-rev .level-body .input-option {
+  display: flex;
+  gap: 0.5rem;
+  height: 2rem;
+}
+.level-page-rev .level-body .input-option input {
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.3);
+  border: none;
+  border-radius: 3px;
+  padding: 0.5rem;
+  color: var(--white-color);
+}
+.level-page-rev .level-body .input-option input:focus {
+  outline: none;
+}
+.level-page-rev .level-body .input-option svg {
+  height: 2rem;
+  width: 2.2rem;
+  background-color: rgba(255, 255, 255, 0.3);
+  padding: 0.1rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s linear;
+}
+.level-page-rev .level-body .input-option svg:focus {
+  outline: none;
+}
+.level-page-rev .level-body .filter {
+  position: relative;
+  z-index: 2;
+  overflow: visible;
+}
+.level-page-rev .level-body .sort {
+  position: relative;
+  z-index: 1;
+}
+.level-page-rev .level-body .sort .sort-option {
+  display: flex;
+  gap: 2rem;
+}
+.level-page-rev .level-body .sort .sort-option .recent p,
+.level-page-rev .level-body .sort .sort-option .diff p,
+.level-page-rev .level-body .sort .sort-option .random p {
+  margin-bottom: 0.5rem;
+}
+.level-page-rev .level-body .sort .sort-option .recent .wrapper,
+.level-page-rev .level-body .sort .sort-option .diff .wrapper,
+.level-page-rev .level-body .sort .sort-option .random .wrapper {
+  display: flex;
+  gap: 1rem;
+}
+.level-page-rev .level-body .sort .sort-option .recent svg,
+.level-page-rev .level-body .sort .sort-option .diff svg,
+.level-page-rev .level-body .sort .sort-option .random svg {
+  height: 2rem;
+  width: 2rem;
+  background-color: rgba(255, 255, 255, 0.3);
+  padding: 0.1rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s linear;
+}
+.level-page-rev .level-body .sort .sort-option .recent svg:focus,
+.level-page-rev .level-body .sort .sort-option .diff svg:focus,
+.level-page-rev .level-body .sort .sort-option .random svg:focus {
+  outline: none;
+}
+.level-page-rev .level-body .settings-class {
+  transition: height 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 1s ease-in-out;
+  height: 10rem;
+  overflow: hidden;
+}
+.level-page-rev .level-body .spacer-setting {
+  width: 100%;
+  height: 1px;
+  background-color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+.level-page-rev .level-body .input-setting {
+  margin-top: 1rem;
+}
+.level-page-rev .level-body .setting-title {
+  margin-bottom: 1rem;
+}
+.level-page-rev .level-body .setting-description {
+  margin-bottom: 0.5rem;
+}/*# sourceMappingURL=levelpage.css.map */

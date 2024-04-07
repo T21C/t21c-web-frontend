@@ -1,0 +1,122 @@
+.card-tilt {
+    max-width: 25rem;
+    background-color: var(--white-color);
+    border: 2px solid #e9e9ea;
+    border-radius: 20px;
+    padding: 1rem;
+    box-sizing: border-box;
+    transform-style: preserve-3d;
+    transition: 0.2s all cubic-bezier(0.25, 0.36, 0.81, 0.72);
+  
+    perspective: 1000px;
+  
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  
+    h1 {
+      width: 100%;
+      margin-bottom: 1rem;
+      text-overflow: ellipsis;
+      text-wrap: nowrap;
+      overflow: hidden;
+    }
+  
+    .song-name {
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1rem;
+      margin-bottom: 3rem;
+    }
+  
+    .artist-name {
+      color: var(--gray-color);
+      font-size: 0.9rem;
+    }
+  
+    button {
+      display: block;
+      margin-left: auto;
+      padding: 0.7rem 1rem;
+      border-radius: 5px;
+      border: 2px solid var(--primary-color);
+      color: var(--primary-color);
+      background-color: transparent;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.1s linear;
+  
+      &:hover {
+        background-color: var(--primary-color);
+        color: var(--text-color);
+      }
+  
+      &:active {
+        background-color: var(--gray-color);
+      }
+    }
+  
+    .img-container {
+      width: 100%;
+      max-height: 17rem;
+      overflow: hidden;
+      border-radius: 5px;
+      margin-bottom: 3rem;
+  
+      img {
+        width: 100%;
+        object-fit: contain;
+      }
+    }
+  }
+  
+  .background-level {
+    height: 100vh;
+    width: 100vw;
+    z-index: 1;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-image: url("https://images.rawpixel.com/image_social_landscape/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTM2NjcxMC1pbWFnZS1rd3Z4eGVxcC5qcGc.jpg");
+    background-size: cover;
+    filter: blur(15px);
+    background-color: rgba($color: #000000, $alpha: 1);
+  }
+  
+
+  
+
+@media (max-width: 420px) {
+    .card-tilt {
+      max-width: 20rem;
+  
+      .song-name {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+  
+  @media (max-width: 375px) {
+    .card-tilt {
+      max-width: 18rem;
+    }
+  }
+  
+  @media (max-width: 340px) {
+    .card-tilt {
+      max-width: 16rem;
+    }
+  }
+  
+  @media (max-width: 300px) {
+    .card-tilt {
+      max-width: 15rem;
+      height: 24rem;
+  
+      h1,
+      p {
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+  

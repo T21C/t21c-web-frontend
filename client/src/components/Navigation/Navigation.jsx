@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
+import "./navigation.css"
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-import logo from "../assets/logo-full.png";
+import logo from "../../assets/logo-full.png";
 
 const Navigation = ({ children }) => {
   const [openNav, setOpenNav] = useState(false);

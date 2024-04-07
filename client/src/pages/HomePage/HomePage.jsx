@@ -1,9 +1,10 @@
+import "./homepage.css"
 import { useContext, useEffect, useRef, useState } from "react";
-import { Card, Footer, CompleteNav, LevelCardRev } from "../components";
-import { fetchRecent } from "../Repository/RemoteRepository";
-import logo from "../assets/logo-full.png";
+import { Card, Footer, CompleteNav, LevelCardRev } from "../../components";
+import { fetchRecent } from "../../Repository/RemoteRepository";
+import logo from "../../assets/logo-full.png";
 import { useNavigate } from "react-router-dom";
-import { LevelContext } from "../context/LevelContext";
+import { LevelContext } from "../../context/LevelContext";
 const ids = [1, 2, 3]
 
 const HomePage = () => {

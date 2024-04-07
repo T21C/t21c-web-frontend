@@ -1,0 +1,342 @@
+.level-detail {
+  background-color: var(--backgorund-color);
+  color: var(--text-color);
+  min-height: 100vh;
+  padding-bottom: 3rem;
+  background-color: var(--backgorund-color);
+}
+.level-detail .wrapper-level {
+  padding: 0 3rem;
+  position: relative;
+  z-index: 2;
+}
+.level-detail .wrapper-level-top {
+  padding-top: 6rem;
+  position: relative;
+}
+.level-detail button {
+  background-color: var(--third-color);
+  border: none;
+  border-radius: 3px;
+  color: var(--white-color);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  max-width: 70rem;
+  margin: 0 auto;
+  margin-bottom: 1rem;
+}
+.level-detail .header {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  max-width: 70rem;
+  margin: 0 auto;
+  margin-bottom: 2rem;
+  min-height: 8rem;
+}
+.level-detail .header .left, .level-detail .header .right {
+  flex-basis: 100%;
+}
+.level-detail .header .left {
+  position: relative;
+  padding: 0.5rem;
+  border-radius: 5px;
+  flex: 15;
+  align-items: center;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display: flex;
+  gap: 1rem;
+}
+.level-detail .header .left:before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 5px;
+}
+.level-detail .header .left .diff {
+  flex-grow: 0;
+  flex-shrink: 0;
+  flex-basis: auto;
+  margin-left: 1rem;
+  width: 50px;
+  height: 50px;
+  display: grid;
+  place-items: center;
+  font-weight: bold;
+  z-index: 2;
+}
+.level-detail .header .left .diff img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+.level-detail .header .left .title {
+  z-index: 2;
+}
+.level-detail .header .left .title h1,
+.level-detail .header .left .title p {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  white-space: normal;
+  text-overflow: ellipsis;
+  overflow-wrap: break-word;
+}
+.level-detail .header .right {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.level-detail .header .right a {
+  margin: 0 auto;
+  display: block; /* Add this line */
+  height: 3rem;
+  width: 3rem;
+}
+.level-detail .header .right a svg {
+  height: 100%;
+  width: 100%;
+  border-radius: 4px;
+  margin: 0 auto;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.level-detail .header .right a svg path {
+  color: var(--white-color);
+}
+.level-detail .header .right a svg:hover {
+  scale: 1.3;
+}
+.level-detail .body {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  justify-content: space-between;
+  max-width: 70rem;
+  margin: 2rem auto;
+}
+.level-detail .body .info {
+  display: grid;
+  grid-template-columns: repeat(minmax(200px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 5px;
+  align-self: stretch;
+}
+.level-detail .body .info .info-item {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  font-weight: bold;
+}
+.level-detail .body .info .info-item .one {
+  color: rgb(255, 242, 126);
+}
+.level-detail .body .info .info-item p {
+  margin: 0;
+}
+.level-detail .body .info .info-item .info-desc {
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  justify-self: end;
+  padding: 0.5rem 0.5rem;
+  background-color: var(--primary-color);
+  border-radius: 3px;
+  min-width: 5rem;
+  text-align: center;
+  max-width: 100%;
+  text-overflow: ellipsis;
+}
+.level-detail .body .info button {
+  height: 100%;
+  width: 100%;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 3px;
+  color: var(--white-color);
+  font-size: 1rem;
+  cursor: pointer;
+  margin: 0;
+}
+.level-detail .body .youtube {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 3;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  border-radius: 5px;
+}
+.level-detail .body .youtube iframe {
+  height: 100%;
+  width: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+.level-detail .rank {
+  max-width: 70rem;
+  margin: 2rem auto;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 3px;
+  padding: 0.5rem;
+}
+.level-detail .rank .sort {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem;
+}
+.level-detail .rank .sort svg {
+  height: 2.2rem;
+  width: 2.2rem;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 0.25rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s linear;
+}
+.level-detail .rank .sort svg:focus {
+  outline: none;
+}
+.level-detail .rank h1 {
+  text-align: center;
+  margin-bottom: 0.5rem;
+}
+.level-detail .rank .rank-list {
+  display: flex;
+  flex-direction: column;
+  max-height: 30rem;
+  overflow-y: auto;
+  padding: 0.5rem;
+}
+.level-detail .rank .rank-list::-webkit-scrollbar {
+  width: 5px;
+}
+.level-detail .rank .rank-list::-webkit-scrollbar-track {
+  background: #a5a5a5;
+  border-radius: 10px;
+}
+.level-detail .rank .rank-list::-webkit-scrollbar-thumb {
+  background: #464646;
+  border-radius: 10px;
+}
+.level-detail .rank .rank-list::-webkit-scrollbar-thumb:hover {
+  background: #333333;
+}
+.level-detail .rank .rank-list .list {
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--third-color);
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border-radius: 3px;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.level-detail .rank .rank-list .list .name, .level-detail .rank .rank-list .list .general, .level-detail .rank .rank-list .list .acc {
+  flex: 1;
+  flex-basis: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.level-detail .rank .rank-list .list .name {
+  min-width: 6rem;
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+}
+.level-detail .rank .rank-list .list .name img {
+  width: 2rem;
+}
+.level-detail .rank .rank-list .list .general, .level-detail .rank .rank-list .list .acc {
+  text-align: right;
+  min-width: 3rem;
+}
+.level-detail .rank .rank-list .list .judgements {
+  flex: 1;
+  height: 100%;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 3px;
+  color: var(--white-color);
+  cursor: pointer;
+  margin: 0;
+  text-align: center;
+  padding: 0.5rem;
+  flex-wrap: wrap;
+  min-width: 12rem;
+  width: 12rem;
+}
+.level-detail .rank .rank-list .list .judgements span {
+  display: inline-block;
+  color: white;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+          user-select: none;
+  font-weight: bold;
+  font-size: 0.9rem;
+  padding: 0 0.1rem;
+}
+
+@media (max-width: 460px) {
+  .level-detail .header {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+  .level-detail .header .left, .level-detail .header .right {
+    width: 100%;
+    padding: 1rem;
+    justify-content: center;
+  }
+  .level-detail .header .left .diff, .level-detail .header .right .diff {
+    margin: 0 auto;
+    order: -1;
+  }
+  .level-detail .header .left .title, .level-detail .header .right .title {
+    width: 10rem;
+  }
+  .level-detail .header .left .title h1,
+  .level-detail .header .left .title p, .level-detail .header .right .title h1,
+  .level-detail .header .right .title p {
+    max-width: calc(100% - 50px - 1rem);
+  }
+  .level-detail .header .right {
+    order: 1;
+    width: auto;
+    flex-direction: row;
+  }
+  .level-detail .header .right a {
+    margin: 1rem auto;
+  }
+}
+@media (max-width: 1150px) {
+  .level-detail .body {
+    flex-direction: column;
+  }
+  .level-detail .body .info {
+    width: 100%;
+  }
+  .level-detail .body .youtube {
+    aspect-ratio: 16/9;
+    width: 100%;
+  }
+}/*# sourceMappingURL=leveldetailpage.css.map */

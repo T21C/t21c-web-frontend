@@ -1,0 +1,80 @@
+.submission-page {
+  background-color: var(--primary-color);
+  min-height: 100vh;
+  display: flex;
+  position: relative;
+  flex-wrap: wrap;
+}
+.submission-page .wrapper-body {
+  padding: 0 3rem;
+  position: relative;
+  z-index: 2;
+}
+.submission-page .wrapper-top {
+  padding: 6rem 0;
+  position: relative;
+  width: 10%;
+  flex-wrap: wrap;
+}
+.submission-page svg {
+  display: block;
+  max-width: 15rem;
+  height: 15rem;
+  margin: 1rem auto;
+}
+.submission-page h2 {
+  margin: 2rem auto;
+  max-width: 17rem;
+  font-size: 2rem;
+}
+.submission-page button {
+  margin: 1rem 0;
+  max-width: 30rem;
+  padding: 0.5rem 2rem;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 3px;
+  color: var(--white-color);
+  font-size: 1rem;
+  cursor: pointer;
+  margin: 0;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.1s linear;
+}
+.submission-page button:hover {
+  background-color: var(--primary-color);
+  color: var(--text-color);
+}
+.submission-page button:active {
+  background-color: purple;
+}
+.submission-page .link {
+  margin: 1rem 0;
+  font-size: 0.8rem;
+  display: block;
+  font-weight: bold;
+}
+.submission-page .middle-img {
+  position: absolute;
+  width: 6rem;
+  height: 6rem;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+}
+.submission-page .submission-level {
+  background-color: var(--third-color);
+  flex: 1;
+  text-align: center;
+  color: var(--text-color);
+  min-width: 30rem;
+}
+.submission-page .submission-passes {
+  background-color: var(--secondary-color);
+  flex: 1;
+  text-align: center;
+  color: var(--backgorund-color);
+  min-width: 30rem;
+}/*# sourceMappingURL=submissionpage.css.map */

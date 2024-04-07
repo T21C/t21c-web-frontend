@@ -1,11 +1,12 @@
 /* eslint-disable no-unused-vars */
+import "./levelpage.css"
 import { useContext, useEffect, useState } from "react";
-import { CompleteNav, LevelCardRev } from "../components";
+import { CompleteNav, LevelCardRev } from "../../components";
 import { Tooltip } from "react-tooltip";
 import Select from "react-select";
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
-import { LevelContext } from "../context/LevelContext";
+import { LevelContext } from "../../context/LevelContext";
 import { useLocation } from "react-router-dom";
 
 const options = [

@@ -1,8 +1,7 @@
-import { CompleteNav, Footer } from "../components"
-import image from "../assets/logo.png"
-import { Link, Outlet, Route, Routes, useNavigate } from "react-router-dom"
-import LevelSubmissionPage from "./LevelSubmissionPage"
-import PassSubmissionPage from "./PassSubmissionPage"
+import "./submissionpage.css"
+import { CompleteNav } from "../../components"
+import image from "../../assets/logo.png"
+import { Link, useNavigate } from "react-router-dom"
 
 const SubmissionPage = () => {
   const navigate = useNavigate()

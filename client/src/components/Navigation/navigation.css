@@ -1,0 +1,114 @@
+nav {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.06); /* White with low opacity */
+  -webkit-backdrop-filter: blur(5px);
+          backdrop-filter: blur(5px); /* Blur effect */
+  border-bottom: 1px solid;
+  border-color: rgba(255, 255, 255, 0.1); /* Thin white border */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: var(--text-color);
+  z-index: 9999;
+  position: fixed;
+  top: 0;
+}
+nav .wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 1rem 2rem;
+}
+nav .wrapper .img-container {
+  width: 10rem;
+}
+nav .wrapper .img-container img {
+  height: 100%;
+  width: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+nav .wrapper ul {
+  gap: 1rem;
+  list-style: none;
+  display: flex;
+  align-items: center;
+}
+nav .wrapper ul li {
+  padding: 0.5rem;
+}
+nav .wrapper svg {
+  height: 2rem;
+  margin: 5px;
+  display: none;
+}
+nav .wrapper svg:hover {
+  cursor: pointer;
+}
+
+.nav-menu-outer {
+  display: none;
+  transition: all 0.2s ease-in;
+}
+.nav-menu-outer ul {
+  list-style: none;
+}
+
+.open-nav {
+  transform: translateX(0);
+}
+
+.close-nav {
+  transform: translateX(100%);
+}
+
+.nav-link {
+  color: var(--text-color);
+  text-decoration: none;
+}
+
+.active-link {
+  border-bottom: solid 2px var(--primary-color);
+}
+
+@media (max-width: 580px) {
+  nav .wrapper .nav-menu {
+    display: none;
+  }
+  nav .wrapper svg {
+    display: block;
+  }
+  .nav-menu-outer {
+    display: block;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 99999;
+    width: 40%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.1); /* White with low opacity */
+    -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px); /* Blur effect */
+    border-left: 1px solid rgba(255, 255, 255, 0.25);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    color: var(--text-color);
+  }
+  .nav-menu-outer .close {
+    width: 2rem;
+    margin: 1.5rem;
+    float: right;
+  }
+  .nav-menu-outer .close:hover {
+    cursor: pointer;
+  }
+  .nav-menu-outer ul {
+    margin-top: 70%;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .nav-menu-outer ul li {
+    padding: 1rem;
+  }
+}/*# sourceMappingURL=navigation.css.map */

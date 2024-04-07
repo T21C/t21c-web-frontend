@@ -1,7 +1,8 @@
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
+import "./leveldetailpage.css"
 import React, { useEffect, useState } from "react";
-import { CompleteNav } from "../components";
+import { CompleteNav } from "../../components";
 import {
   fetchLevelInfo,
   fetchPassPlayerInfo,
@@ -9,7 +10,7 @@ import {
   getYouTubeEmbedUrl,
   getYouTubeThumbnailUrl,
   isoToEmoji,
-} from "../Repository/RemoteRepository";
+} from "../../Repository/RemoteRepository";
 
 import { Tooltip } from "react-tooltip";
 

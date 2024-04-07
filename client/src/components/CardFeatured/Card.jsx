@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
-import { getYouTubeThumbnailUrl } from "../Repository/RemoteRepository";
 import { useNavigate } from "react-router-dom";
-
+import { getYouTubeThumbnailUrl } from "../../Repository/RemoteRepository";
+import "./card.css"
 // eslint-disable-next-line react/prop-types
 const Card = ({ id,  creator, song, artist, image: vidLink }) => {
   const cardRef = useRef(null);
