@@ -19,19 +19,21 @@ const HomePage = () => {
     setPageNumber,
   } = useContext(LevelContext);
 
+  //reset all when query from home page
   function resetAll() {
     setPageNumber(0);
     setSort("RECENT_DESC");
     setLevelsData([]);
   }
 
+  //fetch res
   useEffect(()=>{
     fetchRecent(ids).then(res => {
       setRecent(res)
-      console.log(res)
     });
   }, [])
 
+  //query submit and bavigate
   const navigate = useNavigate(); 
 
   const handleSubmit = (e) => {
@@ -40,6 +42,7 @@ const HomePage = () => {
     navigate(`/levels`); 
   };
 
+  //blob useEffect
   useEffect(() => {
 
     const updateCursorPosition = (e) => {
