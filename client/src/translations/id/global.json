@@ -11,10 +11,10 @@
         "filter": "Filter",
         "sort": "Urutkan",
         "reset": "Atur Ulang",
-        "recenrAsc": "Terbaru Naik",
+        "recentAsc": "Terbaru Naik",
         "recentDesc": "Terbaru Turun",
-        "DifficultyAsc": "Kesulitan Naik",
-        "DifficultyDesc": "Kesulitan Turun",
+        "difficultyAsc": "Kesulitan Naik",
+        "difficultyDesc": "Kesulitan Turun",
         "random": "Acak"
       },
       "settingExp": {
@@ -24,6 +24,10 @@
         "sortRecent": "Terbaru",
         "sortDifficulty": "Kesulitan",
         "sortRandom": "Acak"
+      },
+      "infScroll" : {
+          "loading" : "Tunggu Sebentar ...",
+          "end" : "Kamu Sudah Melihat Semuanya"
       }
     },
     "detailPage": {
@@ -64,7 +68,8 @@
       "clears": "Bersih"
     },
     "navigationComponent": {
-      "levels": "Level"
+      "levels": "Level",
+      "submission" : "Pengajuan"
     },
     "footerComponent": {
       "aboutUs": {
@@ -80,7 +85,7 @@
         "header": "Periksa Saya",
         "paragraph": "Hei saya orang yang membuat website ini, periksa saya"
       },
-      "copyRight": "&copy; 2024 Adrian Purnama. Semua hak cipta dilindungi. Versi - 1.0.0"
+      "copyRight": "2024 Adrian Purnama. Semua hak cipta dilindungi. Versi - 1.0.0"
     }
   }
   

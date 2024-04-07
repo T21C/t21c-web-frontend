@@ -2,8 +2,10 @@ import { useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getYouTubeThumbnailUrl } from "../../Repository/RemoteRepository";
 import "./card.css"
+import { useTranslation } from "react-i18next";
 // eslint-disable-next-line react/prop-types
 const Card = ({ id,  creator, song, artist, image: vidLink }) => {
+  const {t} = useTranslation()
   const cardRef = useRef(null);
   const imageContainerRef = useRef(null);
 
@@ -71,7 +73,7 @@ const Card = ({ id,  creator, song, artist, image: vidLink }) => {
         <p className="song-name">
           {song}
           <br />
-          <span className="artist-name">by {artist}</span>
+          <span className="artist-name">{t("cardFeaturedComponent.by")} {artist}</span>
         </p>
         <div
           ref={imageContainerRef}
@@ -91,7 +93,7 @@ const Card = ({ id,  creator, song, artist, image: vidLink }) => {
         <button
           onClick={()=>redirect()}
         >
-          Check It Out !
+          {t("cardFeaturedComponent.button")}
         </button>
       </div>
     </div>

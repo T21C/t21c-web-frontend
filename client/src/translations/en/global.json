@@ -13,10 +13,10 @@
             "filter" : "Filter",
             "sort": "Sort",
             "reset" : "Reset",
-            "recenrAsc" : "Recent Ascending",
+            "recentAsc" : "Recent Ascending",
             "recentDesc": "Recent Descending",
-            "DifficultyAsc" : "Difficulty Ascending",
-            "DifficultyDesc" : "Difficulty Descending",
+            "difficultyAsc" : "Difficulty Ascending",
+            "difficultyDesc" : "Difficulty Descending",
             "random": "Random"
         },
         "settingExp" : {
@@ -26,6 +26,10 @@
             "sortRecent" : "Recent",
             "sortDifficulty" : "Difficulty",
             "sortRandom" : "Random"
+        },
+        "infScroll" : {
+            "loading" : "Hold Tight ...",
+            "end" : "You have seen it all"
         }
     },
 
@@ -80,7 +84,8 @@
     },
 
     "navigationComponent" : {
-        "levels" : "Levels"
+        "levels" : "Levels",
+        "submission" : "Submission"
     },
 
     "footerComponent" : {
@@ -98,7 +103,7 @@
             "paragraph" : "Hey im the one that created this website, check me out"
         },
 
-        "copyRight" : "&copy; 2024 Adrian Purnama. All rights reserved. Version - 1.0.0"
+        "copyRight" : "2024 Adrian Purnama. All rights reserved. Version - 1.0.0"
     }
 
 

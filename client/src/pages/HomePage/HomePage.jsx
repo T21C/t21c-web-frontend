@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { LevelContext } from "../../context/LevelContext";
 import { useTranslation } from "react-i18next";
 
-const ids = [1, 2, 3]
+const ids = [512, 564, 191]
 
 const HomePage = () => {
   const {t} = useTranslation()
@@ -128,7 +128,7 @@ const HomePage = () => {
       </div>
 
       <div className="recent-rated" id="recent">
-        <h1 className="title-recent">Featured Levels</h1>
+        <h1 className="title-recent">{t('homePage.featuredText')}</h1>
         <div className="card-holder">
           {recent && recent.recentFeatured && recent.recentFeatured.length > 0 ? (
             recent.recentFeatured.map((element, index) => (

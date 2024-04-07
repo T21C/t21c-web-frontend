@@ -2,11 +2,13 @@
 import { useNavigate } from "react-router-dom";
 import { getLevelImage } from "../../Repository/RemoteRepository";
 import "./levelcard.css"
+import { useTranslation } from "react-i18next";
 
 
 // eslint-disable-next-line react/prop-types
 const LevelCardRev = ({ pdnDiff, pguDiff, creator, id, artist, song, clears, dl, ws, team, legacy }) => {
-    const navigate = useNavigate()
+  const {t} = useTranslation()  
+  const navigate = useNavigate()
     const redirect = () => {
       navigate(`/leveldetail?id=${encodeURIComponent(id)}`);
     };
@@ -32,14 +34,14 @@ const LevelCardRev = ({ pdnDiff, pguDiff, creator, id, artist, song, clears, dl,
       </div>
 
       <div className="artist-wrapper">
-          <p className="level-exp">Creator</p>
+          <p className="level-exp">{t("levelCardComponent.creator")}</p>
           <div className="level-desc">{team ? team : creator}</div>
       </div>
 
       {clears || clears == 0 ? 
         (      
           <div className="clears-wrapper">
-            <p className="level-exp">Clears</p>
+            <p className="level-exp">{t("levelCardComponent.clears")}</p>
             <div className="level-desc">{clears}</div>
           </div>)
       :

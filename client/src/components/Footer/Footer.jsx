@@ -3,10 +3,12 @@ import "./footer.css"
 import React from "react";
 import image from "../../assets/logo.png"
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 
 
 const Footer = () => {
+  const {t} = useTranslation()
   return (
     <footer>
       <div className="wrapper">
@@ -15,21 +17,21 @@ const Footer = () => {
         </div>
 
         <div className="about-container">
-          <h2>About Us</h2>
+          <h2>{t("footerComponent.aboutUs.header")}</h2>
           <p>
-          a dedicated community passionate about the world of A Dance of Fire and Ice (ADOFAI). Our focus is on custom levels and clears, providing a vibrant platform for creators and players alike to share, discover, and engage with the endless possibilities that custom content brings to this rhythmic game.
+          {t("footerComponent.aboutUs.paragraph")}
           </p>
         </div>
 
         <div className="link-container">
-          <h2>Links</h2>
-          <Link className="link" to="/levels">Levels</Link>
-          <Link className="link" to="/submission">Submission</Link>
+          <h2>{t("footerComponent.links.header")}</h2>
+          <Link className="link" to="/levels">{t("footerComponent.links.levels")}</Link>
+          <Link className="link" to="/submission">{t("footerComponent.links.submission")}</Link>
         </div>
 
         <div className="self-promotion-container">
-          <h2>Check Me Out</h2>
-          <p>Hey im the one that created this website, check me out</p>
+          <h2>{t("footerComponent.shoutOut.header")}</h2>
+          <p>{t("footerComponent.shoutOut.paragraph")}</p>
 
           <a href="https://instagram.com/adr_iyan_" target="_blank">
             <svg
@@ -61,7 +63,7 @@ const Footer = () => {
       </div>
 
       <p className="copy-right">
-        &copy; 2024 Adrian Purnama. All rights reserved. Version - 1.0.0
+      &copy; {t("footerComponent.copyRight")}
       </p>
     </footer>
   );

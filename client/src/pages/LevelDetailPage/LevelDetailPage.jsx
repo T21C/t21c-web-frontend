@@ -13,8 +13,10 @@ import {
 } from "../../Repository/RemoteRepository";
 
 import { Tooltip } from "react-tooltip";
+import { useTranslation } from "react-i18next";
 
 const LevelDetailPage = () => {
+  const {t} = useTranslation()
   // cange how to get param
   const id = new URLSearchParams(window.location.search).get("id");
   const [res, setRes] = useState(null);
@@ -215,7 +217,8 @@ const LevelDetailPage = () => {
 
             <div className="info-item">
               <p>
-                <span className="one">#1</span> Clear
+                {/* <span className="one">#1</span> Clear */}
+                {t("detailPage.#1Clears.clear")}
               </p>
               <span className="info-desc">
                 {player.length > 0 ? 
@@ -226,7 +229,8 @@ const LevelDetailPage = () => {
 
             <div className="info-item">
               <p>
-                <span className="one">#1</span> Score
+                {/* <span className="one">#1</span> Score */}
+                {t("detailPage.#1Clears.score")}
               </p>
               <span className="info-desc">
                 {player && player[highScore]
@@ -237,7 +241,8 @@ const LevelDetailPage = () => {
 
             <div className="info-item">
               <p>
-                <span className="one">#1</span> Speed
+                {/* <span className="one">#1</span> Speed */}
+                {t("detailPage.#1Clears.speed")}
               </p>
               <span className="info-desc">
                 {player && player[highSpeed]
@@ -248,7 +253,10 @@ const LevelDetailPage = () => {
 
             <div className="info-item">
               <p>
-                <span className="one">#1</span> Accuracy
+                {/* <span className="one">#1</span> Accuracy */}
+                {t("detailPage.#1Clears.accuracy")}
+
+                
               </p>
               <span className="info-desc">
                 {player && player[highAcc]
@@ -258,7 +266,7 @@ const LevelDetailPage = () => {
             </div>
 
             <div className="info-item">
-              <p>Number Of Clears</p>
+              <p>{t("detailPage.#1Clears.numOClear")}</p>
               <span className="info-desc">
                 {player ? player.length : "0"}
               </span>
@@ -284,17 +292,17 @@ const LevelDetailPage = () => {
         </div>
 
         <div className="rank">
-          <h1>Ranks</h1>
+          <h1>{t("detailPage.leaderboard.header")}</h1>
           {player && player.length > 0 ? (
             <div className="sort">
                 <Tooltip id="tm" place="top" noArrow>
-                  Time
+                {t("detailPage.leaderboard.toolTip.time")}
                 </Tooltip>
                 <Tooltip id="ac" place="top" noArrow>
-                  Accuracy
+                {t("detailPage.leaderboard.toolTip.accuracy")}
                 </Tooltip>
                 <Tooltip id="sc" place="top" noArrow>
-                  Score
+                {t("detailPage.leaderboard.toolTip.score")}
                 </Tooltip>
 
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -392,7 +400,7 @@ const LevelDetailPage = () => {
                 </div>
               ))
             ) : (
-              <h1>This Level Has not Been Beaten Yet</h1>
+              <h1>{t("detailPage.leaderboard.notBeaten")}</h1>
             )}
           </div>
         </div>

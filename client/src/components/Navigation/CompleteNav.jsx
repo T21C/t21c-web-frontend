@@ -6,8 +6,10 @@ import { NavLink } from "react-router-dom";
 import i18next from 'i18next';
 import { isoToEmoji } from "../../Repository/RemoteRepository";
 import { UserContext } from "../../context/UserContext";
+import { useTranslation } from "react-i18next";
 
 const CompleteNav = () => {
+  const {t} = useTranslation()
   const [openDialog, setOpenDialog] = useState(false)
 
   function changeDialogState(){
@@ -31,7 +33,7 @@ const CompleteNav = () => {
           <div className="language-dialog" style={{ display: openDialog ? 'block' : 'none' }}>
             <div className="dialog">
               <ul>
-                <li className="list-language" onClick={() => handleChangeLanguage("us")} style={{ backgroundColor: language === "en" ? "#a3a2d8" : "" }}>English</li>
+                <li className="list-language" onClick={() => handleChangeLanguage("us")} style={{ backgroundColor: language === "us" ? "#a3a2d8" : "" }}>English</li>
                 <li className="list-language" onClick={() => handleChangeLanguage("kr")} style={{ backgroundColor: language === "kr" ? "#a3a2d8" : "" }}>Korean</li>
                 <li className="list-language" onClick={() => handleChangeLanguage("de")} style={{ backgroundColor: language === "de" ? "#a3a2d8" : "" }}>German</li>
                 <li className="list-language" onClick={() => handleChangeLanguage("id")} style={{ backgroundColor: language === "id" ? "#a3a2d8" : "" }}>Indonesian</li>
@@ -47,7 +49,7 @@ const CompleteNav = () => {
           }
           to="/levels"
         >
-          <li>Levels</li>
+          <li>{t("navigationComponent.levels")}</li>
         </NavLink>
         
 
@@ -57,14 +59,14 @@ const CompleteNav = () => {
           }
           to="/submission"
         >
-          <li>submission</li>
+          <li>{t("navigationComponent.submission")}</li>
         </NavLink>
 
         <li className="nav-language" onClick={changeDialogState}>
             <img className="nav-flag" src={isoToEmoji(language)} alt="" />
             <svg className="language-dropdown" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M7 10L12 15L17 10" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
         </li>
-        
+
         {/* <NavLink
           className={({ isActive }) =>
             "nav-link " + (isActive ? "active-link" : "")
