@@ -22,6 +22,7 @@ const CompleteNav = () => {
     i18next.changeLanguage(newLanguage).then(() => {
       setLanguage(newLanguage); 
     });
+    changeDialogState()
   }
  
  
