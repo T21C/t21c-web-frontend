@@ -30,7 +30,7 @@ const LevelDetailPage = () => {
 
   const [displayedPlayers, setDisplayedPlayers] = useState([]);
 
-  const [leaderboardSort, setLeaderboardSort] = useState("TIME");
+  const [leaderboardSort, setLeaderboardSort] = useState("SCR");
 
   useEffect(() => {
     fetchLevelInfo(id)

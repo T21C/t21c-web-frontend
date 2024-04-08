@@ -26,7 +26,7 @@ const LevelCardRev = ({ pdnDiff, pguDiff, creator, id, artist, song, clears, dl,
 
       <div className="creator-wrapper">
           <div className="group">
-              <p className="level-exp">#{id} - {t("levelCardComponent.by", { artist: artist })}</p>
+              <p className="level-exp">#{id} - {artist}</p>
               {/* <p className='level-id'>#{id}</p> */}
           </div>
           {/* <p className='level-desc'>{team ? team : creator}</p> */}

@@ -75,8 +75,7 @@
 
   "levelCardComponent": {
     "creator": "제작자",
-    "clears": "클리어 수",
-    "by": "{{artist}} 작곡"
+    "clears": "클리어 수"
   },
 
   "navigationComponent": {
