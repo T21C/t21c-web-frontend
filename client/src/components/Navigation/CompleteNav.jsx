@@ -40,7 +40,7 @@ const CompleteNav = () => {
                 </li>
                 <li className="list-language" onClick={() => handleChangeLanguage("kr")} style={{ backgroundColor: language === "kr" ? "#a3a2d8" : "" }}>
                   <img src={isoToEmoji("kr")}  alt="" />
-                  Korean
+                  한국어 (Korean)
                 </li>
                 {/* <li className="list-language" onClick={() => handleChangeLanguage("de")} style={{ backgroundColor: language === "de" ? "#a3a2d8" : "" }}>
                   <img src={isoToEmoji("de")}  alt="" />
