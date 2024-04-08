@@ -282,8 +282,8 @@
   text-align: center;
   padding: 0.5rem;
   flex-wrap: wrap;
-  min-width: 12rem;
-  width: 12rem;
+  min-width: 13rem;
+  width: 13rem;
 }
 .level-detail .rank .rank-list .list .judgements span {
   display: inline-block;
