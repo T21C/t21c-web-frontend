@@ -314,10 +314,16 @@
   .level-detail .header .left .title, .level-detail .header .right .title {
     width: 10rem;
   }
+  .level-detail .header .left .title h1, .level-detail .header .right .title h1 {
+    font-size: 1.5rem;
+  }
+  .level-detail .header .left .title p, .level-detail .header .right .title p {
+    font-size: 0.5rem;
+  }
   .level-detail .header .left .title h1,
   .level-detail .header .left .title p, .level-detail .header .right .title h1,
   .level-detail .header .right .title p {
-    max-width: calc(100% - 50px - 1rem);
+    max-width: 100%;
   }
   .level-detail .header .right {
     order: 1;

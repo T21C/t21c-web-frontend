@@ -366,11 +366,19 @@
   
           .title{
             width: 10rem;
+
+            h1{
+              font-size: 1.5rem;
+            }
+
+            p{
+              font-size: .5rem;
+            }
           }
   
           .title h1,
           .title p {
-            max-width: calc(100% - 50px - 1rem); 
+            max-width: 100%; 
           }
         }
 
