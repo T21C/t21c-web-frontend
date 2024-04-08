@@ -20,7 +20,7 @@
       transform: translate(-50%, -50%);
       height: 300px;
       width: 300px;
-      background: linear-gradient(to right, var(--third-color), var(--primary-color));
+      background: linear-gradient(to right, var(--secondary-color), var(--primary-color));
       z-index: 1;
       transition: all 5s cubic-bezier(.17,.67,.83,.67);
       animation: blobAnimation 20s infinite;
