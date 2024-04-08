@@ -80,7 +80,8 @@
 
     "levelCardComponent" : {
         "creator" : "Creator",
-        "clears" : "Clears"
+        "clears" : "Clears",
+        "by" : "By"
     },
 
     "navigationComponent" : {

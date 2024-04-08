@@ -65,7 +65,8 @@
     },
     "levelCardComponent": {
       "creator": "Pembuat",
-      "clears": "Bersih"
+      "clears": "Bersih",
+      "by" : "Oleh"
     },
     "navigationComponent": {
       "levels": "Level",
