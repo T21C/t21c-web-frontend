@@ -87,9 +87,10 @@
             "submission": "submissions"
         },
         "shoutOut": {
-            "header": "Find Us On Our Discord",
-            "paragraph": "You can find us, and even join our community from our discord"
-        },
-        "copyRight": "2024 TUF Dev Team, All Rights Reserved. Version - 1.0.0"
+            "header": "Credits",
+            "paragraph": "Website made by the TUF Dev Team, development led by Adrian and t3ww. Code of this website is made available on GitHub."
+          },
+      
+          "copyRight": "2024 TUF Dev Team, All Rights Reserved. Version - 1.0.0"
+        }
     }
-}
