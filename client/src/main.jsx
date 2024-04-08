@@ -11,7 +11,7 @@ import { UserContextProvider } from './context/UserContext.jsx';
 
 i18next.init({
   interpolation: { escapeValue: false },
-  lng: localStorage.getItem('appLanguage') || 'en',
+  lng: localStorage.getItem('appLanguage') || 'us',
   resources: {
     us: {
       translation: globalEn,

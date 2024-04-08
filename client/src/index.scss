@@ -23,19 +23,20 @@ body {
   // user-select: none;
 
   // &::-webkit-scrollbar {
-  //   width: 10px;
+  //   background-color: transparent;
   // }
 
   // &::-webkit-scrollbar-track {
-  //   background: #ffffff;
+  //   background: transparent;
   // }
 
   // &::-webkit-scrollbar-thumb {
-  //   background: #464646;
+  //   background: red;
   //   &:hover {
-  //     background: #333333;
+  //     background: red;
   //   }
-  // }
+  // }  
+
 }
 
 
