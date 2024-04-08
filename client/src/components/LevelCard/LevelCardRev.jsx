@@ -19,14 +19,14 @@ const LevelCardRev = ({ pdnDiff, pguDiff, creator, id, artist, song, clears, dl,
 
   return (
     <div className='level-card-rev' onClick={() => redirect()}>
-      <div className="id level-id">#{id}</div>
+      {/* <div className="id level-id">#{id}</div> */}
       <div className="img-wrapper">
           <img src={getLevelImage(pdnDiff, pguDiff, legacy)} alt="" />
       </div>
 
       <div className="creator-wrapper">
           <div className="group">
-              <p className="level-exp">{artist}</p>
+              <p className="level-exp">#{id} - By {artist}</p>
               {/* <p className='level-id'>#{id}</p> */}
           </div>
           {/* <p className='level-desc'>{team ? team : creator}</p> */}
@@ -47,9 +47,7 @@ const LevelCardRev = ({ pdnDiff, pguDiff, creator, id, artist, song, clears, dl,
       :
       <></>
     }
-
-
-
+    
       <div className="downloads-wrapper">
         {ws &&
             <a href={ws} onClick={onAnchorClick} target="_blank">

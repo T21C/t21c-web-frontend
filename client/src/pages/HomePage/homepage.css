@@ -138,24 +138,44 @@
   }
 }
 @keyframes blobAnimation {
-  0% {
+  0%, 100% {
     border-radius: 33% 67% 70% 30%/30% 30% 70% 70%;
-    transform: translate(-50%, -50%) rotate(0deg);
+    transform: translate(-50%, -50%) rotate(0deg) scale(1) skew(0deg, 0deg);
   }
-  25% {
-    border-radius: 58% 42% 55% 45%/55% 48% 52% 45%;
-    transform: translate(-50%, -50%) rotate(90deg);
+  10% {
+    border-radius: 35% 65% 65% 35%/35% 65% 35% 65%;
+    transform: translate(-50%, -50%) rotate(36deg) scale(0.98) skew(5deg, -5deg);
+  }
+  20% {
+    border-radius: 37% 63% 63% 37%/37% 63% 37% 63%;
+    transform: translate(-50%, -50%) rotate(72deg) scale(1.02) skew(-10deg, 10deg);
+  }
+  30% {
+    border-radius: 39% 61% 61% 39%/39% 61% 39% 61%;
+    transform: translate(-50%, -50%) rotate(108deg) scale(1) skew(15deg, -15deg);
+  }
+  40% {
+    border-radius: 41% 59% 59% 41%/41% 59% 41% 59%;
+    transform: translate(-50%, -50%) rotate(144deg) scale(0.96) skew(-20deg, 20deg);
   }
   50% {
-    border-radius: 50% 50% 33% 67%/67% 60% 40% 33%;
-    transform: translate(-50%, -50%) rotate(180deg);
+    border-radius: 43% 57% 57% 43%/43% 57% 43% 57%;
+    transform: translate(-50%, -50%) rotate(180deg) scale(1.04) skew(25deg, -25deg);
   }
-  75% {
-    border-radius: 43% 57% 41% 59%/41% 54% 46% 59%;
-    transform: translate(-50%, -50%) rotate(270deg);
+  60% {
+    border-radius: 45% 55% 55% 45%/45% 55% 45% 55%;
+    transform: translate(-50%, -50%) rotate(216deg) scale(0.99) skew(-30deg, 30deg);
   }
-  100% {
-    border-radius: 33% 67% 70% 30%/30% 30% 70% 70%;
-    transform: translate(-50%, -50%) rotate(360deg);
+  70% {
+    border-radius: 47% 53% 53% 47%/47% 53% 47% 53%;
+    transform: translate(-50%, -50%) rotate(252deg) scale(1.01) skew(35deg, -35deg);
+  }
+  80% {
+    border-radius: 49% 51% 51% 49%/49% 51% 49% 51%;
+    transform: translate(-50%, -50%) rotate(288deg) scale(1) skew(-40deg, 40deg);
+  }
+  90% {
+    border-radius: 51% 49% 49% 51%/51% 49% 51% 49%;
+    transform: translate(-50%, -50%) rotate(324deg) scale(0.97) skew(45deg, -45deg);
   }
 }/*# sourceMappingURL=homepage.css.map */

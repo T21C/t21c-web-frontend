@@ -29,9 +29,15 @@
   padding: 1rem 1rem;
   cursor: pointer;
   color: var(--backgorund-color);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 .language-dialog .dialog .list-language:hover {
   background-color: var(--secondary-color);
+}
+.language-dialog .dialog .list-language img {
+  width: 2rem;
 }
 
 nav {

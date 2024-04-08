@@ -33,10 +33,21 @@ const CompleteNav = () => {
           <div className="language-dialog" style={{ display: openDialog ? 'block' : 'none' }}>
             <div className="dialog">
               <ul>
-                <li className="list-language" onClick={() => handleChangeLanguage("us")} style={{ backgroundColor: language === "us" ? "#a3a2d8" : "" }}>English</li>
-                <li className="list-language" onClick={() => handleChangeLanguage("kr")} style={{ backgroundColor: language === "kr" ? "#a3a2d8" : "" }}>Korean</li>
-                <li className="list-language" onClick={() => handleChangeLanguage("de")} style={{ backgroundColor: language === "de" ? "#a3a2d8" : "" }}>German</li>
-                <li className="list-language" onClick={() => handleChangeLanguage("id")} style={{ backgroundColor: language === "id" ? "#a3a2d8" : "" }}>Indonesian</li>
+                <li className="list-language" onClick={() => handleChangeLanguage("us")} style={{ backgroundColor: language === "us" ? "#a3a2d8" : "" }}> 
+                  <img src={isoToEmoji("us")}  alt="" />
+                  English
+                </li>
+                <li className="list-language" onClick={() => handleChangeLanguage("kr")} style={{ backgroundColor: language === "kr" ? "#a3a2d8" : "" }}>
+                  <img src={isoToEmoji("kr")}  alt="" />
+                  Korean
+                </li>
+                <li className="list-language" onClick={() => handleChangeLanguage("de")} style={{ backgroundColor: language === "de" ? "#a3a2d8" : "" }}>
+                  <img src={isoToEmoji("de")}  alt="" />
+                  German
+                </li>
+                <li className="list-language" onClick={() => handleChangeLanguage("id")} style={{ backgroundColor: language === "id" ? "#a3a2d8" : "" }}>
+                  <img src={isoToEmoji("id")}  alt="" />
+                  Indonesia</li>
               </ul>
             </div>
           </div>

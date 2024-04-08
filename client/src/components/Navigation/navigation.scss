@@ -32,9 +32,16 @@
       padding: 1rem 1rem;
       cursor: pointer;
       color: var(--backgorund-color);
+      display: flex;
+      align-items: center;
+      gap: 1rem;
 
       &:hover{
         background-color: var(--secondary-color);
+      }
+
+      img{
+        width: 2rem;
       }
     }
   }

@@ -5,7 +5,7 @@
     justify-content: left;
     gap: 1rem;
     min-height: 4rem;
-    padding: 1rem;
+    padding: .5rem;
     border-radius: 0px;
     margin-bottom: 1rem;
     cursor: pointer;
@@ -13,6 +13,7 @@
     flex-wrap: wrap;
     border-bottom: 1px solid;
     border-color: rgb(131, 131, 131);
+    transition: all .1s ease-in-out;
   
     &:hover {
       background-color: rgba($color: #ded4f0, $alpha: 0.2);
@@ -96,8 +97,8 @@
   
       a {
         display: block;
-        height: 3rem;
-        width: 3rem;
+        height: 2.5rem;
+        width: 2.5rem;
   
         svg {
           height: 100%;
@@ -117,4 +118,114 @@
       }
     }
   }
+
+  @media (max-width: 795px){
+    .level-card-rev{
+
+
+      .downloads-wrapper{
+        min-width: 200px;
+      }
+    }
+  }
   
+  @media (max-width: 545px) {
+    .level-card-rev { /* Assuming this class wraps your .level-card-rev elements */
+
+
+      .downloads-wrapper{
+        min-width: 100px;
+      }
+
+      .artist-wrapper {
+        overflow: hidden;
+        width: 150px;
+      }
+  }
+}
+  
+@media (max-width: 400px) {
+  .level-card-rev{
+
+
+    .level-exp {
+      font-size: 0.8rem;
+    }
+  
+    .level-desc {
+      font-size: 1rem;
+    }
+  
+    .level-id {
+      font-size: 0.6rem;
+    }
+
+    .downloads-wrapper{
+      min-width: 70px;
+    }
+
+    .artist-wrapper {
+      overflow: hidden;
+      width: 120px;
+    }
+
+    .img-wrapper {
+      width: 2rem;
+
+    }
+
+
+    .downloads-wrapper {
+  
+      a {
+        height: 2rem;
+        width: 2rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 380px) {
+  .level-card-rev{
+
+
+    .level-exp {
+      font-size: 0.6rem;
+    }
+  
+    .level-desc {
+      font-size: .9rem;
+    }
+  
+    .level-id {
+      font-size: 0.5rem;
+    }
+
+    .downloads-wrapper{
+      min-width: 60px;
+    }
+
+    .artist-wrapper {
+      overflow: hidden;
+      width: 110px;
+    }
+
+    .img-wrapper {
+      width: 1.5rem;
+
+    }
+
+    .creator-wrapper{
+      min-width: 100px;
+    }
+
+
+    .downloads-wrapper {
+  
+      a {
+        height: 2rem;
+        width: 2rem;
+      }
+    }
+  }
+}
