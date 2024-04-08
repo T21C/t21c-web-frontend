@@ -1,0 +1,92 @@
+{
+    "homePage": {
+      "featuredText": "Empfohlene Level",
+      "featuredLevel": [1, 2, 3],
+      "inputPlaceholder": "Künstler, Lied, Ersteller, #id suchen"
+    },
+    "levelPage": {
+      "inputPlaceholder": "Künstler, Lied, Ersteller, #id suchen",
+      "toolTip": {
+        "legacy": "Legacy Diff umschalten",
+        "filter": "Filter",
+        "sort": "Sortieren",
+        "reset": "Zurücksetzen",
+        "recentAsc": "Zuletzt aufsteigend",
+        "recentDesc": "Zuletzt absteigend",
+        "difficultyAsc": "Schwierigkeit aufsteigend",
+        "difficultyDesc": "Schwierigkeit absteigend",
+        "random": "Zufällig"
+      },
+      "settingExp": {
+        "headerSort": "Sortieren",
+        "headerFilter": "Filter",
+        "filterDiffs": "Schwierigkeiten",
+        "sortRecent": "Neueste",
+        "sortDifficulty": "Schwierigkeit",
+        "sortRandom": "Zufällig"
+      },
+      "infScroll": {
+        "loading": "Bitte warten ...",
+        "end": "Du hast alles gesehen"
+      }
+    },
+    "detailPage": {
+      "#1Clears": {
+        "clear": "#1 Clear",
+        "score": "#1 Punktzahl",
+        "speed": "#1 Geschwindigkeit",
+        "accuracy": "#1 Genauigkeit",
+        "numOClear": "Anzahl der Clears"
+      },
+      "leaderboard": {
+        "header": "Rangliste",
+        "notBeaten": "Dieses Level wurde noch nicht geschlagen",
+        "toolTip": {
+          "time": "Zeit",
+          "accuracy": "Genauigkeit",
+          "score": "Punktzahl"
+        }
+      }
+    },
+    "submissionPage": {
+      "header": {
+        "headerPass": "Ich möchte meinen Durchgang einreichen",
+        "headerLevel": "Hallo, ich möchte ein Level einreichen"
+      },
+      "button": {
+        "buttonPass": "Durchgang einreichen",
+        "buttonLevel": "Level einreichen"
+      },
+      "RulesAGuide": "Regeln und Richtlinien ansehen"
+    },
+    "cardFeaturedComponent": {
+      "by": "Von",
+      "button": "Schau es dir an!"
+    },
+    "levelCardComponent": {
+      "creator": "Ersteller",
+      "clears": "Clears",
+      "by": "Von"
+    },
+    "navigationComponent": {
+      "levels": "Level",
+      "submission": "Einreichung"
+    },
+    "footerComponent": {
+      "aboutUs": {
+        "header": "Über uns",
+        "paragraph": "eine engagierte Gemeinschaft, die sich leidenschaftlich mit der Welt von A Dance of Fire and Ice (ADOFAI) beschäftigt. Unser Fokus liegt auf benutzerdefinierten Leveln und Durchgängen, und wir bieten eine lebendige Plattform für Ersteller und Spieler gleichermaßen, um die endlosen Möglichkeiten zu teilen, zu entdecken und sich mit dem benutzerdefinierten Inhalt zu beschäftigen, den dieses rhythmische Spiel bietet."
+      },
+      "links": {
+        "header": "Links",
+        "levels": "Level",
+        "submission": "Einreichungen"
+      },
+      "shoutOut": {
+        "header": "Schaut vorbei",
+        "paragraph": "Hey, ich habe diese Website erstellt, schaut mal vorbei"
+      },
+      "copyRight": "2024 Adrian Purnama. Alle Rechte vorbehalten. Version - 1.0.0"
+    }
+  }
+  
