@@ -435,6 +435,17 @@
       .list-detail{
         min-height: 9rem;
         flex-direction: column;
+
+
+
+
+        .name, .general, .acc {
+          text-align: center;
+          max-width: 100%;
+          overflow: hidden; 
+          white-space: nowrap; 
+          text-overflow: ellipsis;
+        }
       }
     }
 

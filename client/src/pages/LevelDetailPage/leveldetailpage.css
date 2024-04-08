@@ -359,4 +359,11 @@
     min-height: 9rem;
     flex-direction: column;
   }
+  .rank-list .list-detail .name, .rank-list .list-detail .general, .rank-list .list-detail .acc {
+    text-align: center;
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
 }/*# sourceMappingURL=leveldetailpage.css.map */
