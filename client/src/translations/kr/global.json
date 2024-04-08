@@ -1,92 +1,104 @@
 {
-    "homePage": {
-      "featuredText": "추천 레벨",
-      "featuredLevel": [1, 2, 3],
-      "inputPlaceholder": "아티스트, 노래, 크리에이터, #id 검색"
+  "homePage": {
+    "featuredText": "스포트라이트",
+    "featuredLevel": [1, 2, 3],
+    "inputPlaceholder": "작곡가, 곡명, 제작자, #id로 검색"
+  },
+
+  "levelPage": {
+    "inputPlaceholder": "작곡가, 곡명, 제작자, #id로 검색",
+
+    "toolTip": {
+      "legacy": "Legacy 난이도 토글",
+      "filter": "필터",
+      "sort": "정렬",
+      "reset": "초기화",
+      "recentAsc": "등재일 오름차순",
+      "recentDesc": "등자일 내림차순",
+      "difficultyAsc": "난도 오름차순",
+      "difficultyDesc": "난도 내림차순",
+      "random": "랜덤"
     },
-    "levelPage": {
-      "inputPlaceholder": "아티스트, 노래, 크리에이터, #id 검색",
+    "settingExp": {
+      "headerSort": "정렬",
+      "headerFilter": "필터",
+      "filterDiffs": "난도",
+      "sortRecent": "등재일",
+      "sortDifficulty": "난도",
+      "sortRandom": "랜덤"
+    },
+    "infScroll": {
+      "loading": "조금만 기다려 줘요...",
+      "end": "리스트 끝에 도달했어요!"
+    }
+  },
+
+  "detailPage": {
+    "#1Clears": {
+      "clear": "#1 클리어",
+      "score": "#1 점수",
+      "speed": "#1 배속",
+      "accuracy": "#1 정확도",
+      "numOClear": "클리어 수"
+    },
+
+    "leaderboard": {
+      "header": "순위표",
+      "notBeaten": "이 레벨은 아직 쓰러지지 않았어요...",
+
       "toolTip": {
-        "legacy": "레거시 차이 전환",
-        "filter": "필터",
-        "sort": "정렬",
-        "reset": "리셋",
-        "recentAsc": "최근 오름차순",
-        "recentDesc": "최근 내림차순",
-        "difficultyAsc": "난이도 오름차순",
-        "difficultyDesc": "난이도 내림차순",
-        "random": "랜덤"
-      },
-      "settingExp": {
-        "headerSort": "정렬",
-        "headerFilter": "필터",
-        "filterDiffs": "차이점들",
-        "sortRecent": "최근",
-        "sortDifficulty": "난이도",
-        "sortRandom": "랜덤"
-      },
-      "infScroll": {
-        "loading": "잠시만 기다려 주세요...",
-        "end": "모든 내용을 보셨습니다"
+        "time": "일시",
+        "accuracy": "정확도",
+        "score": "점수"
       }
+    }
+  },
+
+  "submissionPage": {
+    "header": {
+      "headerPass": "레벨을 클리어했어요!",
+      "headerLevel": "레벨을 책정받고 싶어요!"
     },
-    "detailPage": {
-      "#1Clears": {
-        "clear": "#1 클리어",
-        "score": "#1 점수",
-        "speed": "#1 속도",
-        "accuracy": "#1 정확도",
-        "numOClear": "클리어 수"
-      },
-      "leaderboard": {
-        "header": "순위",
-        "notBeaten": "이 레벨은 아직 클리어되지 않았습니다",
-        "toolTip": {
-          "time": "시간",
-          "accuracy": "정확도",
-          "score": "점수"
-        }
-      }
+
+    "button": {
+      "buttonPass": "클리어 제출",
+      "buttonLevel": "레벨 제출"
     },
-    "submissionPage": {
-      "header": {
-        "headerPass": "나의 플레이를 제출하고자 합니다",
-        "headerLevel": "안녕하세요, 레벨을 제출하고자 합니다"
-      },
-      "button": {
-        "buttonPass": "플레이 제출",
-        "buttonLevel": "레벨 제출"
-      },
-      "RulesAGuide": "규칙 및 가이드라인 보기"
+
+    "RulesAGuide": "규칙 및 가이드라인 보기"
+  },
+
+  "cardFeaturedComponent": {
+    "by": "{{creator}} 제작",
+    "button": "레벨 확인"
+  },
+
+  "levelCardComponent": {
+    "creator": "제작자",
+    "clears": "클리어 수",
+    "by": "{{artist}} 작곡"
+  },
+
+  "navigationComponent": {
+    "levels": "레벨",
+    "submission": "제출"
+  },
+
+  "footerComponent": {
+    "aboutUs": {
+      "header": "소개",
+      "paragraph": "The Universal Forums(유니포럼)는 ADOFAI의 커스텀 레벨을 모아 난이도 책정을 진행하는 데 초점을 맞춘 커뮤니티 기반 단체입니다."
     },
-    "cardFeaturedComponent": {
-      "by": "작성자",
-      "button": "확인해보세요!"
-    },
-    "levelCardComponent": {
-      "creator": "크리에이터",
-      "clears": "클리어",
-      "by": "작성자"
-    },
-    "navigationComponent": {
+    "links": {
+      "header": "링크",
       "levels": "레벨",
       "submission": "제출"
     },
-    "footerComponent": {
-      "aboutUs": {
-        "header": "우리에 대하여",
-        "paragraph": "A Dance of Fire and Ice(ADOFAI)의 세계에 대한 열정을 가진 헌신적인 커뮤니티입니다. 우리의 초점은 사용자가 정의한 레벨과 클리어에 있으며, 크리에이터와 플레이어 모두가 이 리듬 게임이 제공하는 무한한 가능성을 공유하고, 발견하고, 참여할 수 있는 활기찬 플랫폼을 제공합니다."
-      },
-      "links": {
-        "header": "링크",
-        "levels": "레벨",
-        "submission": "제출"
-      },
-      "shoutOut": {
-        "header": "내 웹사이트 확인하기",
-        "paragraph": "안녕하세요, 이 웹사이트를 만든 사람입니다. 확인해 보세요"
-      },
-      "copyRight": "2024 Adrian Purnama. 모든 권리 보유. 버전 - 1.0.0"
-    }
+    "shoutOut": {
+      "header": "크레딧",
+      "paragraph": "TUF Dev Team 웹사이트 제작. Adrian, t3ww 주도. 본 웹사이트의 코드는 GitHub에서 공개되어 있습니다."
+    },
+
+    "copyRight": "2024 TUF Dev Team, All Rights Reserved. 버전 - 1.0.0"
   }
-  
+}

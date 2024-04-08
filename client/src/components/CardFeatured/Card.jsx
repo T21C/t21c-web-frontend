@@ -69,11 +69,12 @@ const Card = ({ id,  creator, song, artist, image: vidLink }) => {
           transition: "transform 0.2s all cubic-bezier(.25,.36,.81,.72)",
         }}
       >
-        <h1>{creator}</h1>
+        <h1>{song}</h1>
         <p className="song-name">
-          {song}
+          {artist}
           <br />
-          <span className="artist-name">{t("cardFeaturedComponent.by")} {artist}</span>
+          <br />
+          <span className="artist-name">{t("cardFeaturedComponent.by", {creator : creator})}</span>
         </p>
         <div
           ref={imageContainerRef}

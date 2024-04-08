@@ -42,10 +42,10 @@ const CompleteNav = () => {
                   <img src={isoToEmoji("kr")}  alt="" />
                   Korean
                 </li>
-                <li className="list-language" onClick={() => handleChangeLanguage("de")} style={{ backgroundColor: language === "de" ? "#a3a2d8" : "" }}>
+                {/* <li className="list-language" onClick={() => handleChangeLanguage("de")} style={{ backgroundColor: language === "de" ? "#a3a2d8" : "" }}>
                   <img src={isoToEmoji("de")}  alt="" />
                   German
-                </li>
+                </li> */}
                 <li className="list-language" onClick={() => handleChangeLanguage("id")} style={{ backgroundColor: language === "id" ? "#a3a2d8" : "" }}>
                   <img src={isoToEmoji("id")}  alt="" />
                   Indonesia</li>

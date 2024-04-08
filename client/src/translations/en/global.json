@@ -1,96 +1,104 @@
 {
     "homePage": {
-        "featuredText": "Spotlights",
-        "featuredLevel": [
-            1,
-            2,
-            3
-        ],
-        "inputPlaceholder": "Search artist, song, creator, #id"
+      "featuredText": "Featured Levels",
+      "featuredLevel": [1, 2, 3],
+      "inputPlaceholder": "Search artist, song, creator, #id"
     },
+  
     "levelPage": {
-        "inputPlaceholder": "Search artist, song, creator, #id",
-        "toolTip": {
-            "legacy": "Toggle Legacy Diff",
-            "filter": "Filter",
-            "sort": "Sort",
-            "reset": "Reset",
-            "recentAsc": "Recent Ascending",
-            "recentDesc": "Recent Descending",
-            "difficultyAsc": "Difficulty Ascending",
-            "difficultyDesc": "Difficulty Descending",
-            "random": "Random"
-        },
-        "settingExp": {
-            "headerSort": "Sort",
-            "headerFilter": "Filter",
-            "filterDiffs": "Diffs",
-            "sortRecent": "Recent",
-            "sortDifficulty": "Difficulty",
-            "sortRandom": "Random"
-        },
-        "infScroll": {
-            "loading": "Hold Tight ...",
-            "end": "You have seen it all"
-        }
+      "inputPlaceholder": "Search artist, song, creator, #id",
+  
+      "toolTip": {
+        "legacy": "Toggle Legacy Diff",
+        "filter": "Filter",
+        "sort": "Sort",
+        "reset": "Reset",
+        "recentAsc": "Recent Ascending",
+        "recentDesc": "Recent Descending",
+        "difficultyAsc": "Difficulty Ascending",
+        "difficultyDesc": "Difficulty Descending",
+        "random": "Random"
+      },
+      "settingExp": {
+        "headerSort": "Sort",
+        "headerFilter": "Filter",
+        "filterDiffs": "Diffs",
+        "sortRecent": "Recent",
+        "sortDifficulty": "Difficulty",
+        "sortRandom": "Random"
+      },
+      "infScroll": {
+        "loading": "Hold tight...",
+        "end": "End of list reached"
+      }
     },
+  
     "detailPage": {
-        "#1Clears": {
-            "clear": "#1 Clear",
-            "score": "#1 Score",
-            "speed": "#1 Speed",
-            "accuracy": "#1 Accuracy",
-            "numOClear": "Number Of Clears"
-        },
-        "leaderboard": {
-            "header": "Ranks",
-            "notBeaten": "This Level Has Not Been Beaten Yet",
-            "toolTip": {
-                "time": "Time",
-                "accuracy": "Accuracy",
-                "score": "score"
-            }
+      "#1Clears": {
+        "clear": "#1 Clear",
+        "score": "#1 Score",
+        "speed": "#1 Speed",
+        "accuracy": "#1 Accuracy",
+        "numOClear": "Number of Clears"
+      },
+  
+      "leaderboard": {
+        "header": "Ranks",
+        "notBeaten": "This level hasn't been beaten yet...",
+  
+        "toolTip": {
+          "time": "Date",
+          "accuracy": "Accuracy",
+          "score": "Score"
         }
+      }
     },
+  
     "submissionPage": {
-        "header": {
-            "headerPass": "Im here wanting to submit my pass",
-            "headerLevel": "Hi, Im here to Submit A Level"
-        },
-        "button": {
-            "buttonPass": "Submit a pass",
-            "buttonLevel": "Submit a level"
-        },
-        "RulesAGuide": "view rules and guidelines"
+      "header": {
+        "headerPass": "I cleared a level!",
+        "headerLevel": "I want my level to be rated!"
+      },
+  
+      "button": {
+        "buttonPass": "Submit a pass",
+        "buttonLevel": "Submit a level"
+      },
+  
+      "RulesAGuide": "View rules and guidelines"
     },
+  
     "cardFeaturedComponent": {
-        "by": "By",
-        "button": "Check It Out !"
+      "by": "Level by {{creator}}",
+      "button": "Check Level"
     },
+  
     "levelCardComponent": {
-        "creator": "Creator",
-        "clears": "Clears",
-        "by": "By"
+      "creator": "Creator",
+      "clears": "Clears",
+      "by": "Song by {{artist}}"
     },
+  
     "navigationComponent": {
-        "levels": "Levels",
-        "submission": "Submission"
+      "levels": "Levels",
+      "submission": "Submissions"
     },
+  
     "footerComponent": {
-        "aboutUs": {
-            "header": "About Us",
-            "paragraph": "a dedicated community passionate about the world of A Dance of Fire and Ice (ADOFAI). Our focus is on custom levels and clears, providing a vibrant platform for creators and players alike to share, discover, and engage with the endless possibilities that custom content brings to this rhythmic game."
-        },
-        "links": {
-            "header": "Links",
-            "levels": "Levels",
-            "submission": "submissions"
-        },
-        "shoutOut": {
-            "header": "Credits",
-            "paragraph": "Website made by the TUF Dev Team, development led by Adrian and t3ww. Code of this website is made available on GitHub."
-          },
-      
-          "copyRight": "2024 TUF Dev Team, All Rights Reserved. Version - 1.0.0"
-        }
+      "aboutUs": {
+        "header": "About Us",
+        "paragraph": "The Universal Forums is a community-driven organization focused on collecting and rating difficulties on custom levels of the game ADOFAI."
+      },
+      "links": {
+        "header": "Links",
+        "levels": "Levels",
+        "submission": "Submissions"
+      },
+      "shoutOut": {
+        "header": "Credits",
+        "paragraph": "Website made by the TUF Dev Team, development led by Adrian and t3ww. Code of this website is made available on GitHub."
+      },
+  
+      "copyRight": "2024 TUF Dev Team, All Rights Reserved. Version - 1.0.0"
     }
+  }
