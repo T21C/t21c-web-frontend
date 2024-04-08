@@ -278,7 +278,7 @@
           }
         }
   
-        .list {
+        .list-detail {
           display: flex;
           justify-content: space-between;
           background-color: var(--third-color);
@@ -316,6 +316,9 @@
         
   
           .judgements {
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
             flex: 1;
             height: 100%;
             background-color: var(--primary-color);
@@ -345,6 +348,22 @@
     }
   }
 
+  @media (max-width: 1150px) {
+    .level-detail {
+      .body {
+        flex-direction: column;
+  
+        .info {
+          width: 100%;
+        }
+  
+        .youtube {
+          aspect-ratio: 16/9; 
+          width: 100%; 
+        }
+      }
+    }
+  }
   
 @media (max-width: 460px) {
     .level-detail {
@@ -410,21 +429,14 @@
       }
       
     }
-  }
 
-  @media (max-width: 1150px) {
-    .level-detail {
-      .body {
+    .rank-list{
+
+      .list-detail{
+        min-height: 9rem;
         flex-direction: column;
-  
-        .info {
-          width: 100%;
-        }
-  
-        .youtube {
-          aspect-ratio: 16/9; 
-          width: 100%; 
-        }
       }
     }
+
   }
+

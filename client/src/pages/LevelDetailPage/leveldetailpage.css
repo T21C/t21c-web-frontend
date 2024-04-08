@@ -239,7 +239,7 @@
 .level-detail .rank .rank-list::-webkit-scrollbar-thumb:hover {
   background: #333333;
 }
-.level-detail .rank .rank-list .list {
+.level-detail .rank .rank-list .list-detail {
   display: flex;
   justify-content: space-between;
   background-color: var(--third-color);
@@ -250,27 +250,30 @@
   gap: 0.5rem;
   flex-wrap: wrap;
 }
-.level-detail .rank .rank-list .list .name, .level-detail .rank .rank-list .list .general, .level-detail .rank .rank-list .list .acc {
+.level-detail .rank .rank-list .list-detail .name, .level-detail .rank .rank-list .list-detail .general, .level-detail .rank .rank-list .list-detail .acc {
   flex: 1;
   flex-basis: 0;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
 }
-.level-detail .rank .rank-list .list .name {
+.level-detail .rank .rank-list .list-detail .name {
   min-width: 6rem;
   display: flex;
   align-items: center;
   gap: 0.1rem;
 }
-.level-detail .rank .rank-list .list .name img {
+.level-detail .rank .rank-list .list-detail .name img {
   width: 2rem;
 }
-.level-detail .rank .rank-list .list .general, .level-detail .rank .rank-list .list .acc {
+.level-detail .rank .rank-list .list-detail .general, .level-detail .rank .rank-list .list-detail .acc {
   text-align: right;
   min-width: 3rem;
 }
-.level-detail .rank .rank-list .list .judgements {
+.level-detail .rank .rank-list .list-detail .judgements {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
   flex: 1;
   height: 100%;
   background-color: var(--primary-color);
@@ -285,7 +288,7 @@
   min-width: 13rem;
   width: 13rem;
 }
-.level-detail .rank .rank-list .list .judgements span {
+.level-detail .rank .rank-list .list-detail .judgements span {
   display: inline-block;
   color: white;
   -webkit-user-select: none;
@@ -296,6 +299,18 @@
   padding: 0 0.1rem;
 }
 
+@media (max-width: 1150px) {
+  .level-detail .body {
+    flex-direction: column;
+  }
+  .level-detail .body .info {
+    width: 100%;
+  }
+  .level-detail .body .youtube {
+    aspect-ratio: 16/9;
+    width: 100%;
+  }
+}
 @media (max-width: 460px) {
   .level-detail .header {
     flex-direction: column;
@@ -340,16 +355,8 @@
     flex-direction: column;
     justify-content: flex-start;
   }
-}
-@media (max-width: 1150px) {
-  .level-detail .body {
+  .rank-list .list-detail {
+    min-height: 9rem;
     flex-direction: column;
-  }
-  .level-detail .body .info {
-    width: 100%;
-  }
-  .level-detail .body .youtube {
-    aspect-ratio: 16/9;
-    width: 100%;
   }
 }/*# sourceMappingURL=leveldetailpage.css.map */

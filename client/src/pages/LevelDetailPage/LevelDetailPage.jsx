@@ -358,7 +358,7 @@ const LevelDetailPage = () => {
           <div className="rank-list">
             {displayedPlayers && displayedPlayers.length > 0 ? (
               displayedPlayers.map((each, index) => (
-                <div className="list" key={index} >
+                <div className="list-detail" key={index} >
                   <p className="name">
 
                     <span style={{ color:index === 0 ? "gold" : index === 1? "silver": index === 2? "brown": "inherit"}} >
