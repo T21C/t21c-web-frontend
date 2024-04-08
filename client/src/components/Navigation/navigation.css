@@ -32,6 +32,7 @@
   display: flex;
   align-items: center;
   gap: 1rem;
+  transition: all 50ms linear;
 }
 .language-dialog .dialog .list-language:hover {
   background-color: var(--secondary-color);
