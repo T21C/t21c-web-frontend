@@ -114,6 +114,9 @@ const pguData = {
   "U18": "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U18.png?raw=true",
   "U19": "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U19.png?raw=true",
   "U20": "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U20.png?raw=true",
+
+
+  "-2": "https://github.com/T21C/T21C-assets/blob/main/miscDiff/-2.png?raw=true",
 }
 
 const pgnData = {
