@@ -350,17 +350,17 @@
     .level-detail {
       .header {
         flex-direction: column;
-        align-items: center; // Center align the flex children since it's now a column
+        align-items: center; 
         width: 100%;
   
         .left, .right {
-          width: 100%; // Set the width of left and right to 100% on small screens
-          padding: 1rem; // Adjust padding as needed
-          justify-content: center; // For .left and .right content alignment
+          width: 100%;
+          padding: 1rem;
+          justify-content: center;
   
           .diff {
-            margin: 0 auto; // Center .diff within .left
-            order: -1; // Move .diff above the h1 and p if necessary
+            margin: 0 auto;
+            order: -1; 
           }
   
   
@@ -370,41 +370,52 @@
   
           .title h1,
           .title p {
-            // Since text is already set to overflow with ellipsis, we don't need to change that here
-            // Ensure the width is constrained to allow for ellipsis to work
-            max-width: calc(100% - 50px - 1rem); // Adjust for the size of .diff and any desired margin
+            max-width: calc(100% - 50px - 1rem); 
           }
         }
-  
-        // Assuming you want the .right section to come after .left in the mobile view
+
         .right {
-          order: 1; // Put .right after .left in the flex column
-          width: auto; // Let .right take up the necessary space
+          order: 1; 
+          width: auto; 
           flex-direction: row;
-  
-          // Any specific styles for children of .right that need adjustment for mobile
+ 
           a {
-            margin: 1rem auto; // Center align anchor elements
+            margin: 1rem auto; 
           }
         }
       }
+
+      .body{
+
+
+        .info{
+          
+
+          .info-item{
+            padding-bottom: .5rem;
+            gap: .2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+          }
+        }
+      }
+      
     }
   }
 
   @media (max-width: 1150px) {
-    // This is a very large breakpoint, you probably meant 930px
     .level-detail {
       .body {
         flex-direction: column;
   
         .info {
-          width: 100%; // Changed from max-width to width to ensure it takes full width
-          // Removed flex-direction: row; since .info is a grid container
+          width: 100%;
         }
   
         .youtube {
-          aspect-ratio: 16/9; // Resets any aspect-ratio settings to default
-          width: 100%; // Take the full width of the container
+          aspect-ratio: 16/9; 
+          width: 100%; 
         }
       }
     }
