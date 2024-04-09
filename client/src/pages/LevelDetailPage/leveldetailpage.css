@@ -3,7 +3,6 @@
   color: var(--text-color);
   min-height: 100vh;
   padding-bottom: 3rem;
-  background-color: var(--backgorund-color);
 }
 .level-detail .wrapper-level {
   padding: 0 3rem;
@@ -240,9 +239,10 @@
   background: #333333;
 }
 .level-detail .rank .rank-list .list-detail {
+  position: relative;
   display: flex;
   justify-content: space-between;
-  background-color: var(--third-color);
+  background-color: var(--list-secondary);
   padding: 0.5rem;
   margin-bottom: 1rem;
   border-radius: 3px;
@@ -258,7 +258,7 @@
   text-overflow: ellipsis;
 }
 .level-detail .rank .rank-list .list-detail .name {
-  min-width: 8rem;
+  min-width: 10rem;
   display: flex;
   align-items: center;
   gap: 0.1rem;
@@ -276,7 +276,7 @@
   justify-content: space-around;
   flex: 1;
   height: 100%;
-  background-color: var(--primary-color);
+  background-color: var(--list-primary);
   border: none;
   border-radius: 3px;
   color: var(--white-color);
@@ -365,5 +365,12 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
+  .rank-list .list-detail .index {
+    position: absolute;
+    left: 10px;
+    top: 40%;
+    transform: translateY(-50%);
+    font-size: 2rem;
   }
 }/*# sourceMappingURL=leveldetailpage.css.map */

@@ -370,7 +370,7 @@ const LevelDetailPage = () => {
                 <div className="list-detail" key={index} >
                   <p className="name">
 
-                    <span style={{ color:index === 0 ? "gold" : index === 1? "silver": index === 2? "brown": "inherit"}} >
+                    <span className="index" style={{ color:index === 0 ? "gold" : index === 1? "silver": index === 2? "brown": "inherit"}} >
                       <b>#{index + 1}</b>
                     </span>
 

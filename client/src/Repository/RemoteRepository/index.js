@@ -185,7 +185,7 @@ async function fetchRecent(ids) {
         vidLink: res.vidLink,
       }))
     };
-    console.log(finalRes)
+    //console.log(finalRes)
     return finalRes
 
   } catch (error) {
@@ -204,7 +204,7 @@ async function fetchData({ offset = "", diff = '', cleared = '', sort = '', dire
     ...(sort && direction && { sort: `${sort}_${direction}` }),
   }).toString();
   const url = `${baseUrl}${queryParams}`
-  console.log(url)
+  //console.log(url)
 
   try {
     const res = await axios.get(url)
@@ -218,7 +218,7 @@ async function fetchData({ offset = "", diff = '', cleared = '', sort = '', dire
       wsLink: each.workshopLink
 
     }))
-    console.log(simplifiedRes)
+    //console.log(simplifiedRes)
 
     return simplifiedRes
   } catch (error) {
@@ -262,12 +262,12 @@ async function fetchPassPlayerInfo(players) {
       if (results.length === 1) {
         return results[0];
       } else if (results.length > 1) {
-        const exactPlayer = results.find(p => p.name === player); // Example condition
+        const exactPlayer = results.find(p => p.name === player); 
         return exactPlayer;
       }
     });
   } catch (error) {
-    console.log(error);
+    //console.log(error);
   }
 }
 
