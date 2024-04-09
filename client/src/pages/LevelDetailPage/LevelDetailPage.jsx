@@ -48,11 +48,19 @@ const LevelDetailPage = () => {
 
   useEffect(() => {
     if (player.length > 0) {
-      const maxSpeedIndex = player.reduce(
-        (maxIdx, curr, idx, arr) =>
-          curr.speed > arr[maxIdx].speed ? idx : maxIdx,
-        0
-      );
+      const maxSpeedIndex = (() => {
+        const speeds = player.map(p => p.speed);
+        const minSpeed = Math.min(...speeds);
+        const maxSpeed = Math.max(...speeds);
+      
+        if (minSpeed === maxSpeed) {
+          return 999; 
+        } else {
+          return player.reduce((maxIdx, curr, idx, arr) =>
+            curr.speed > arr[maxIdx].speed ? idx : maxIdx, 0
+          );
+        }
+      })();
       const maxScoreIndex = player.reduce((maxIndex, player, index, array) =>
       player.scoreV2 > array[maxIndex].scoreV2 ? index : maxIndex, 0);
     
@@ -75,36 +83,33 @@ const LevelDetailPage = () => {
 
   useEffect(() => {
     const enrichPlayers = async () => {
-      let storedPlayers = JSON.parse(localStorage.getItem('players')) || [];
-  
-      if (storedPlayers.length !== passCount) {
-        try {
-          const playerNames = initialPlayer.map(p => p.player);
-          storedPlayers = await fetchPassPlayerInfo(playerNames);
-          localStorage.setItem('players', JSON.stringify(storedPlayers));
-        } catch (error) {
-          console.error('Failed to fetch or update player info:', error);
-        }
-      }
+      try {
+        const playerNames = initialPlayer.map(p => p.player);
+        const fetchedPlayersInfo = await fetchPassPlayerInfo(playerNames); 
 
-      const enrichedPlayers = initialPlayer
-      .map(player => {
-        const additionalInfo = storedPlayers.find(info => info.name === player.player);
-        
-        if (additionalInfo && !additionalInfo.isBanned) {
-          return {
-            ...player,
-            country: additionalInfo.country, 
-          };
-        }
-        return null; 
-      })
-      .filter(player => player !== null); 
-    
-    setPlayer(enrichedPlayers);
+        const enrichedPlayers = initialPlayer
+        .map(player => {
+          const additionalInfo = fetchedPlayersInfo.find(info => info.name === player.player);
+          
+          if (additionalInfo && !additionalInfo.isBanned) {
+            return {
+              ...player,
+              country: additionalInfo.country,
+            };
+          }
+          return null; 
+        })
+        .filter(player => player !== null);
+  
+      setPlayer(enrichedPlayers);
+      } catch (error) {
+        console.error('Failed to fetch or update player info:', error);
+      }
+  
+
     };
   
-    if (initialPlayer.length && passCount) {
+    if (initialPlayer.length > 0 && passCount) {
       enrichPlayers();
     }
   }, [initialPlayer, passCount]);
@@ -112,7 +117,8 @@ const LevelDetailPage = () => {
   useEffect(() => {
 
     const sortedPlayers = sortLeaderboard(player); 
-    setDisplayedPlayers(sortedPlayers); 
+    setDisplayedPlayers(sortedPlayers);
+    console.log(sortedPlayers) 
   }, [player, leaderboardSort]);
 
 
@@ -241,13 +247,16 @@ const LevelDetailPage = () => {
 
             <div className="info-item">
               <p>
-                {/* <span className="one">#1</span> Speed */}
                 {t("detailPage.#1Clears.speed")}
               </p>
               <span className="info-desc">
-                {player && player[highSpeed]
-                  ? `${player[highSpeed].player} | ${player[highSpeed].speed || 1}`
-                  : "-"}
+                {
+                  player && highSpeed !== 999 && player[highSpeed]
+                    ? `${player[highSpeed].player} | ${player[highSpeed].speed || 1}`
+                    : highSpeed === 999
+                      ? t("detailPage.#1Clears.speedSame")
+                      : "-"
+                }
               </span>
             </div>
 
@@ -370,8 +379,10 @@ const LevelDetailPage = () => {
                     &nbsp;
                     {each.player}
                   </p>
+                  <div className="time">{each.vidUploadTime.slice(0, 10)}</div>
                   <p className="general">{each.scoreV2.toFixed(2)}</p>
                   <p className="acc">{(each.accuracy * 100).toFixed(2)}%</p>
+                  <div className="speed">{each.speed ? each.speed : "1.0"}</div>
                   <p className="judgements" onClick={() => window.open(each.vidLink, '_blank')}>
                     <span style={{ color: "red" }}>{each.judgements[0]}</span>
                     &nbsp;

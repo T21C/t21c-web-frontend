@@ -258,7 +258,7 @@
   text-overflow: ellipsis;
 }
 .level-detail .rank .rank-list .list-detail .name {
-  min-width: 6rem;
+  min-width: 8rem;
   display: flex;
   align-items: center;
   gap: 0.1rem;
@@ -311,7 +311,7 @@
     width: 100%;
   }
 }
-@media (max-width: 460px) {
+@media (max-width: 540px) {
   .level-detail .header {
     flex-direction: column;
     align-items: center;
@@ -356,7 +356,7 @@
     justify-content: flex-start;
   }
   .rank-list .list-detail {
-    min-height: 9rem;
+    min-height: 12rem;
     flex-direction: column;
   }
   .rank-list .list-detail .name, .rank-list .list-detail .general, .rank-list .list-detail .acc {

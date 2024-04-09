@@ -47,27 +47,40 @@ const HomePage = () => {
 
   //blob useEffect
   useEffect(() => {
-
+    let blob = null; // Cache for the blob element
+  
     const updateCursorPosition = (e) => {
-      if (heroRef.current) {
+      if (!blob && heroRef.current) {
+        blob = heroRef.current.querySelector('.blob');
+      }
+  
+      if (blob) {
         const { left, top } = heroRef.current.getBoundingClientRect();
         const x = e.clientX - left;
         const y = e.clientY - top;
-
+  
         if (x >= 0 && y >= 0 && x <= heroRef.current.offsetWidth && y <= heroRef.current.offsetHeight) {
-          const blob = heroRef.current.querySelector('.blob');
-          if (blob) {
-            blob.style.left = `${x}px`;
-            blob.style.top = `${y}px`;
-          }
+          blob.style.left = `${x}px`;
+          blob.style.top = `${y}px`;
         }
       }
     };
-
-    document.addEventListener('mousemove', updateCursorPosition);
-
+  
+    // Throttle wrapper
+    let timeoutId = null;
+    const throttledUpdateCursorPosition = (e) => {
+      if (timeoutId === null) {
+        timeoutId = setTimeout(() => {
+          updateCursorPosition(e);
+          timeoutId = null;
+        }, 10); 
+      }
+    };
+  
+    document.addEventListener('mousemove', throttledUpdateCursorPosition);
+  
     return () => {
-      document.removeEventListener('mousemove', updateCursorPosition);
+      document.removeEventListener('mousemove', throttledUpdateCursorPosition);
     };
   }, []);
 

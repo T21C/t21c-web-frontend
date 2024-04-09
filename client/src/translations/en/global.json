@@ -38,6 +38,7 @@
         "clear": "#1 Clear",
         "score": "#1 Score",
         "speed": "#1 Speed",
+        "speedSame" : "All speeds are the same",
         "accuracy": "#1 Accuracy",
         "numOClear": "Number of Clears"
       },

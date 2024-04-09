@@ -116,7 +116,18 @@ const pguData = {
   "U20": "https://github.com/T21C/T21C-assets/blob/main/pguDiff/U20.png?raw=true",
 
 
+  "0": "https://github.com/T21C/T21C-assets/blob/main/miscDiff/Unranked.png?raw=true",
   "-2": "https://github.com/T21C/T21C-assets/blob/main/miscDiff/-2.png?raw=true",
+  "-21": "https://github.com/T21C/T21C-assets/blob/main/miscDiff/21-.png?raw=true",
+  "-22": "https://github.com/T21C/T21C-assets/blob/main/miscDiff/MP.png?raw=true",
+  "0.9": "https://github.com/T21C/T21C-assets/blob/main/miscDiff/epiccc.png?raw=true",
+  "727": "https://github.com/T21C/T21C-assets/blob/main/miscDiff/Grande.png?raw=true",
+  "64": "https://github.com/T21C/T21C-assets/blob/main/miscDiff/Desertbus.png?raw=true",
+  "21.5": "https://github.com/T21C/T21C-assets/blob/main/miscDiff/q1+.png?raw=true",
+  "21.55": "https://github.com/T21C/T21C-assets/blob/main/miscDiff/q2.png?raw=true",
+  "21.6": "https://github.com/T21C/T21C-assets/blob/main/miscDiff/q2+.png?raw=true",
+  "21.65": "https://github.com/T21C/T21C-assets/blob/main/miscDiff/q3.png?raw=true",
+  "21.7": "https://github.com/T21C/T21C-assets/blob/main/miscDiff/q3+.png?raw=true"
 }
 
 const pgnData = {
@@ -237,16 +248,26 @@ async function fetchLevelInfo(id) {
 }
 
 async function fetchPassPlayerInfo(players) {
-  if (!players) return
+  if (!players) return;
+
   try {
-
-    const res = await Promise.all(players.map(player => {
-      return axios.get(`${import.meta.env.VITE_INDIVIDUAL_PLAYER}${player}`)
-    }))
-
-    return res.map(entry => entry.data.results[0])
+    const responses = await Promise.all(players.map(player =>
+      axios.get(`${import.meta.env.VITE_INDIVIDUAL_PLAYER}${player}`).then(response => ({
+        player,
+        data: response.data
+      }))
+    ));
+    return responses.map(({ player, data }) => {
+      const results = data.results;
+      if (results.length === 1) {
+        return results[0];
+      } else if (results.length > 1) {
+        const exactPlayer = results.find(p => p.name === player); // Example condition
+        return exactPlayer;
+      }
+    });
   } catch (error) {
-    console.log(error)
+    console.log(error);
   }
 }
 
