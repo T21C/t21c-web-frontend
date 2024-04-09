@@ -154,8 +154,8 @@ const LevelDetailPage = () => {
   
 
 
-
-  if (res == null)
+//if (!res || player.length === 0 || highSpeed === null || highAcc === null || highScore === null || displayedPlayers.length === 0)
+ if (res == null)
     return (
       <div
         style={{ height: "100vh", width: "100vw", backgroundColor: "#090909" }}
