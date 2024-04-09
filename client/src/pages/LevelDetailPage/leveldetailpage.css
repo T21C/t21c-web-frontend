@@ -358,7 +358,7 @@
     justify-content: flex-start;
   }
   .rank-list .list-detail {
-    min-height: 12rem;
+    min-height: 13rem;
     flex-direction: column;
   }
   .rank-list .list-detail .name, .rank-list .list-detail .general, .rank-list .list-detail .acc {
@@ -367,6 +367,10 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+  }
+  .rank-list .list-detail .name {
+    justify-content: center;
+    min-height: 1.4rem;
   }
   .rank-list .list-detail .index {
     position: absolute;

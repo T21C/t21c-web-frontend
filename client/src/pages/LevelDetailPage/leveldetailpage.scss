@@ -435,7 +435,7 @@
     .rank-list{
 
       .list-detail{
-        min-height: 12rem;
+        min-height: 13rem;
         flex-direction: column;
 
 
@@ -447,6 +447,11 @@
           overflow: hidden; 
           white-space: nowrap; 
           text-overflow: ellipsis;
+        }
+
+        .name{
+          justify-content: center;
+          min-height: 1.4rem;
         }
 
         .index{
