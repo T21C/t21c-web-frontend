@@ -395,6 +395,8 @@
 }
 
 .levels-dialog {
+  color: var(--backgorund-color);
+  color: var(--text-color);
   position: fixed;
   top: 50%;
   left: 50%;
@@ -406,29 +408,68 @@
 }
 .levels-dialog .dialog {
   background-color: var(--white-color);
-  padding: 0.5rem 0;
   border-radius: 5px;
   margin: 0 1rem;
+  overflow: hidden;
 }
-.levels-dialog .dialog .list-levels {
-  list-style: none;
-  padding: 0.5rem 1rem;
-  cursor: pointer;
-  color: var(--backgorund-color);
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  transition: all 50ms linear;
+.levels-dialog .dialog .header {
+  word-wrap: break-word;
+  padding: 1rem;
+  position: relative;
 }
-.levels-dialog .dialog .list-levels:hover {
-  background-color: var(--secondary-color);
+.levels-dialog .dialog .header:before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 5px;
+  z-index: 1;
 }
-.levels-dialog .dialog .list-levels img {
-  width: 2rem;
+.levels-dialog .dialog .header h2, .levels-dialog .dialog .header p {
+  position: relative;
+  z-index: 2;
 }
-.levels-dialog .dialog .diff {
+.levels-dialog .dialog .body {
+  padding: 1rem;
+  color: var(--backgorund-color) !important;
+}
+.levels-dialog .dialog .body .diff {
+  text-align: center;
   display: flex;
   justify-content: space-around;
+  margin-bottom: 0.5rem;
+  border-bottom: 2px solid var(--backgorund-color);
+  padding: 0.5rem;
+}
+.levels-dialog .dialog .body .team-info {
+  margin-bottom: 1rem;
+  border-bottom: 2px solid var(--backgorund-color);
+  padding: 0.5rem;
+}
+.levels-dialog .dialog .body .team-info .each-info {
+  margin-bottom: 0.5rem;
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 5fr;
+  align-items: center;
+}
+.levels-dialog .dialog .body .links {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  align-items: center;
+}
+.levels-dialog .dialog .body .links svg {
+  width: 50px;
+  height: 50px;
+  transition: all 0.1s linear;
+}
+.levels-dialog .dialog .body .links svg:hover {
+  transform: scale(1.2);
 }
 
 .dialog-scale-up {

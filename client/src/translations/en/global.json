@@ -43,6 +43,13 @@
         "accuracy": "#1 Accuracy",
         "numOClear": "Number of clears"
       },
+      "dialog" : {
+        "artist": "Artist",
+        "creator" : "Creator",
+        "id" : "Id",
+        "charter" : "charter",
+        "vfxer" : "vfxer"
+      },
   
       "leaderboard": {
         "header": "Ranks",
