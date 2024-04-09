@@ -2,6 +2,7 @@
 // eslint-disable-next-line no-unused-vars
 import "./leveldetailpage.css"
 import React, { useEffect, useState } from "react";
+import { useLocation } from 'react-router-dom';
 import { CompleteNav } from "../../components";
 import {
   fetchLevelInfo,
@@ -17,6 +18,7 @@ import { useTranslation } from "react-i18next";
 
 const LevelDetailPage = () => {
   const {t} = useTranslation()
+  const { detailPage } = useLocation();
   // cange how to get param
   const id = new URLSearchParams(window.location.search).get("id");
   const [res, setRes] = useState(null);
@@ -33,6 +35,10 @@ const LevelDetailPage = () => {
   const [leaderboardSort, setLeaderboardSort] = useState("SCR");
 
   const [infoLoading, setInfoLoading] = useState(true);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [detailPage]);
 
   useEffect(() => {
     fetchLevelInfo(id)
@@ -240,7 +246,7 @@ const LevelDetailPage = () => {
               <span className="info-desc">
               {!infoLoading ? 
                 (player.length > 0 ? `${player[0].player} | ${player[0].vidUploadTime.slice(0, 10)}` : "-")
-                : "waiting"}
+                : t("detailPage.waiting")}
               </span>
             </div>
 
@@ -252,7 +258,7 @@ const LevelDetailPage = () => {
               <span className="info-desc">
               {!infoLoading ? 
                 (player && player[highScore] ? `${player[highScore].player} | ${player[highScore].scoreV2.toFixed(2)}` : "-")
-                : "waiting"}
+                : t("detailPage.waiting")}
               </span>
             </div>
 
@@ -263,8 +269,8 @@ const LevelDetailPage = () => {
               <span className="info-desc">
               {!infoLoading ? 
                 (player && highSpeed !== 999 && player[highSpeed] ? `${player[highSpeed].player} | ${player[highSpeed].speed || 1}` 
-                : highSpeed === 999 ? t("detailPage.#1Clears.speedSame") : "-")
-                : "waiting"}
+                : highSpeed === 999 ? "-" : "-")
+                : t("detailPage.waiting")}
               </span>
             </div>
 
@@ -278,14 +284,14 @@ const LevelDetailPage = () => {
               <span className="info-desc">
               {!infoLoading ? 
                 (player && player[highAcc] ? `${player[highAcc].player} | ${(player[highAcc].accuracy * 100).toFixed(2)}%` : "-")
-                : "waiting"}
+                : t("detailPage.waiting")}
               </span>
             </div>
 
             <div className="info-item">
               <p>{t("detailPage.#1Clears.numOClear")}</p>
               <span className="info-desc">
-                {!infoLoading ? (player ? player.length : "0") : "waiting"}
+                {!infoLoading ? (player ? player.length : "0") : t("detailPage.waiting")}
               </span>
             </div>
 
@@ -337,7 +343,7 @@ const LevelDetailPage = () => {
                 </g>
               </svg>
 
-              <svg                 viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
               style={{
                 backgroundColor:
                   leaderboardSort == "ACC" ? "rgba(255, 255, 255, 0.7)" : "",

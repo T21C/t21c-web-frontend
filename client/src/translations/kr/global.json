@@ -34,6 +34,7 @@
   },
 
   "detailPage": {
+    "waiting" : "기다리는 중",
     "#1Clears": {
       "clear": "#1 클리어",
       "score": "#1 점수",

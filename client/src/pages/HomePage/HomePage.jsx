@@ -73,7 +73,7 @@ const HomePage = () => {
         timeoutId = setTimeout(() => {
           updateCursorPosition(e);
           timeoutId = null;
-        }, 10); 
+        }, 100); 
       }
     };
   
