@@ -278,7 +278,7 @@ const LevelDetailPage = () => {
               </p>
               <span className="info-desc">
               {!infoLoading ? 
-                (player && highSpeed !== 999 && player[highSpeed] ? `${player[highSpeed].player} | ${player[highSpeed].speed || 1}` 
+                (player && highSpeed !== 999 && player[highSpeed] ? `${player[highSpeed].player} | ${player[highSpeed].speed || 1}×` 
                 : highSpeed === 999 ? "-" : "-")
                 : t("detailPage.waiting")}
               </span>
@@ -409,7 +409,7 @@ const LevelDetailPage = () => {
                   <div className="time">{each.vidUploadTime.slice(0, 10)}</div>
                   <p className="general">{each.scoreV2.toFixed(2)}</p>
                   <p className="acc">{(each.accuracy * 100).toFixed(2)}%</p>
-                  <div className="speed">{each.speed ? each.speed : "1.0"}</div>
+                  <div className="speed">{each.speed ? each.speed : "1.0"}×</div>
                   <p className="judgements" onClick={() => window.open(each.vidLink, '_blank')}>
                     <span style={{ color: "red" }}>{each.judgements[0]}</span>
                     &nbsp;
