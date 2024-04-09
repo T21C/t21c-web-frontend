@@ -28,6 +28,7 @@ const LevelDetailPage = () => {
   const [highSpeed, setHighSpeed] = useState(null);
   const [highAcc, setHighAcc] = useState(null);
   const [highScore, setHighScore] = useState(null);
+  const [highDate, setHighDate] = useState(null)
   const [passCount, setPassCount] = useState(0)
 
   const [displayedPlayers, setDisplayedPlayers] = useState([]);
@@ -73,20 +74,28 @@ const LevelDetailPage = () => {
           );
         }
       })();
-      const maxScoreIndex = player.reduce((maxIndex, player, index, array) =>
+    const maxScoreIndex = player.reduce((maxIndex, player, index, array) =>
       player.scoreV2 > array[maxIndex].scoreV2 ? index : maxIndex, 0);
     
     const maxAccIndex = player.reduce((maxIndex, player, index, array) =>
       player.accuracy > array[maxIndex].accuracy ? index : maxIndex, 0);
 
+      const maxDateIndex = player.reduce((earliestIdx, curr, idx, arr) => {
+        const currDate = new Date(curr.vidUploadTime).getTime();
+        const earliestDate = new Date(arr[earliestIdx].vidUploadTime).getTime();
+        return currDate < earliestDate ? idx : earliestIdx;
+      }, 0);
+
 
       setHighSpeed(maxSpeedIndex);
       setHighAcc(maxAccIndex);
       setHighScore(maxScoreIndex);
+      setHighDate(maxDateIndex)
     } else {
       setHighSpeed(null);
       setHighAcc(null);
       setHighScore(null);
+      setHighDate(null)
     }
     //console.log(player)
     //setInfoLoading(false)
@@ -136,6 +145,7 @@ const LevelDetailPage = () => {
     const sortedPlayers = sortLeaderboard(player); 
     setDisplayedPlayers(sortedPlayers);
     //console.log(sortedPlayers) 
+    //console.log(player)
   }, [player, leaderboardSort]);
 
 
@@ -245,7 +255,7 @@ const LevelDetailPage = () => {
               </p>
               <span className="info-desc">
               {!infoLoading ? 
-                (player.length > 0 ? `${player[0].player} | ${player[0].vidUploadTime.slice(0, 10)}` : "-")
+                (player && player[highDate] ? `${player[highDate].player} | ${player[highDate].vidUploadTime.slice(0, 10)}` : "-")
                 : t("detailPage.waiting")}
               </span>
             </div>
