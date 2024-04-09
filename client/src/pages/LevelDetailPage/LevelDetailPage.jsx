@@ -32,6 +32,8 @@ const LevelDetailPage = () => {
 
   const [leaderboardSort, setLeaderboardSort] = useState("SCR");
 
+  const [infoLoading, setInfoLoading] = useState(true);
+
   useEffect(() => {
     fetchLevelInfo(id)
       .then((res) => {
@@ -40,6 +42,10 @@ const LevelDetailPage = () => {
         const passCount = res?.passes.player.count || 0 ;
         setInitialPlayer(fetchedPlayers);
         setPassCount(passCount)
+
+        if(passCount == 0){
+          setInfoLoading(false)
+        }
       })
       .catch((error) => {
         console.error("Error fetching level info:", error);
@@ -76,9 +82,11 @@ const LevelDetailPage = () => {
       setHighAcc(null);
       setHighScore(null);
     }
-    console.log(player)
+    //console.log(player)
+    //setInfoLoading(false)
 
   }, [player]);
+
 
 
   useEffect(() => {
@@ -102,8 +110,11 @@ const LevelDetailPage = () => {
         .filter(player => player !== null);
   
       setPlayer(enrichedPlayers);
+     
       } catch (error) {
         console.error('Failed to fetch or update player info:', error);
+      }finally{
+        setInfoLoading(false);
       }
   
 
@@ -118,7 +129,7 @@ const LevelDetailPage = () => {
 
     const sortedPlayers = sortLeaderboard(player); 
     setDisplayedPlayers(sortedPlayers);
-    console.log(sortedPlayers) 
+    //console.log(sortedPlayers) 
   }, [player, leaderboardSort]);
 
 
@@ -227,9 +238,9 @@ const LevelDetailPage = () => {
                 {t("detailPage.#1Clears.clear")}
               </p>
               <span className="info-desc">
-                {player.length > 0 ? 
-                `${player[0].player} | ${player[0].vidUploadTime.slice(0, 10 )}`
-                  : "-"}
+              {!infoLoading ? 
+                (player.length > 0 ? `${player[0].player} | ${player[0].vidUploadTime.slice(0, 10)}` : "-")
+                : "waiting"}
               </span>
             </div>
 
@@ -239,9 +250,9 @@ const LevelDetailPage = () => {
                 {t("detailPage.#1Clears.score")}
               </p>
               <span className="info-desc">
-                {player && player[highScore]
-                  ? `${player[highScore].player} | ${player[highScore].scoreV2.toFixed(2)}`
-                  : "-"}
+              {!infoLoading ? 
+                (player && player[highScore] ? `${player[highScore].player} | ${player[highScore].scoreV2.toFixed(2)}` : "-")
+                : "waiting"}
               </span>
             </div>
 
@@ -250,13 +261,10 @@ const LevelDetailPage = () => {
                 {t("detailPage.#1Clears.speed")}
               </p>
               <span className="info-desc">
-                {
-                  player && highSpeed !== 999 && player[highSpeed]
-                    ? `${player[highSpeed].player} | ${player[highSpeed].speed || 1}`
-                    : highSpeed === 999
-                      ? t("detailPage.#1Clears.speedSame")
-                      : "-"
-                }
+              {!infoLoading ? 
+                (player && highSpeed !== 999 && player[highSpeed] ? `${player[highSpeed].player} | ${player[highSpeed].speed || 1}` 
+                : highSpeed === 999 ? t("detailPage.#1Clears.speedSame") : "-")
+                : "waiting"}
               </span>
             </div>
 
@@ -268,16 +276,16 @@ const LevelDetailPage = () => {
                 
               </p>
               <span className="info-desc">
-                {player && player[highAcc]
-                  ? `${player[highAcc].player} | ${(player[highAcc].accuracy * 100).toFixed(2)}%`
-                  : "-"}
+              {!infoLoading ? 
+                (player && player[highAcc] ? `${player[highAcc].player} | ${(player[highAcc].accuracy * 100).toFixed(2)}%` : "-")
+                : "waiting"}
               </span>
             </div>
 
             <div className="info-item">
               <p>{t("detailPage.#1Clears.numOClear")}</p>
               <span className="info-desc">
-                {player ? player.length : "0"}
+                {!infoLoading ? (player ? player.length : "0") : "waiting"}
               </span>
             </div>
 
@@ -365,7 +373,10 @@ const LevelDetailPage = () => {
             </div>
           ) : <></>}
           <div className="rank-list">
-            {displayedPlayers && displayedPlayers.length > 0 ? (
+            {!infoLoading ? 
+            
+
+            displayedPlayers && displayedPlayers.length > 0 ? (
               displayedPlayers.map((each, index) => (
                 <div className="list-detail" key={index} >
                   <p className="name">
@@ -412,7 +423,13 @@ const LevelDetailPage = () => {
               ))
             ) : (
               <h1>{t("detailPage.leaderboard.notBeaten")}</h1>
-            )}
+            )
+
+            :
+
+            <div className="loader loader-level-detail-rank"></div>
+
+          }
           </div>
         </div>
       </div>

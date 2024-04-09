@@ -218,9 +218,11 @@
   margin-bottom: 0.5rem;
 }
 .level-detail .rank .rank-list {
+  position: relative;
   display: flex;
   flex-direction: column;
   max-height: 30rem;
+  min-height: 10rem;
   overflow-y: auto;
   padding: 0.5rem;
 }
