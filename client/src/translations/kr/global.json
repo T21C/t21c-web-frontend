@@ -2,7 +2,8 @@
   "homePage": {
     "featuredText": "스포트라이트",
     "featuredLevel": [1, 2, 3],
-    "inputPlaceholder": "작곡가, 곡명, 제작자, #id로 검색"
+    "inputPlaceholder": "작곡가, 곡명, 제작자, #id로 검색",
+    "seeMore" : "더보기"
   },
 
   "levelPage": {

@@ -102,13 +102,14 @@ const HomePage = () => {
 
 
           <div className="many-recent">
-          <form onSubmit={handleSubmit}> 
+          <form onSubmit={handleSubmit} className="input-form"> 
             <input
               type="text"
               placeholder={t('homePage.inputPlaceholder')}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
             />
+            <button>{t('homePage.seeMore')}</button>
           </form>
             <div className="list">
               {recent && recent.recentRated && recent.recentRated.length > 0 ? (

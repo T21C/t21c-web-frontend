@@ -1,92 +1,105 @@
 {
-    "homePage": {
-      "featuredText": "Level Unggulan",
-      "featuredLevel": [1, 2, 3],
-      "inputPlaceholder": "Cari artis, lagu, pembuat, #id"
+  "homePage": {
+    "featuredText": "Level Unggulan",
+    "featuredLevel": [1, 2, 3],
+    "inputPlaceholder": "Cari artis, lagu, pembuat, #id",
+    "seeMore" : "Lihat Lebih"
+  },
+
+  "levelPage": {
+    "inputPlaceholder": "Cari artis, lagu, pembuat, #id",
+
+    "toolTip": {
+      "legacy": "Kembali ke legacy",
+      "filter": "Filter",
+      "sort": "Penyusunan",
+      "reset": "Atur Ulang",
+      "recentAsc": "Penyusunan Terkecil",
+      "recentDesc": "Penyusunan Terbesar",
+      "difficultyAsc": "Kesulitan Terkecil",
+      "difficultyDesc": "Kesulitan Terbesar",
+      "random": "Acak"
     },
-    "levelPage": {
-      "inputPlaceholder": "Cari artis, lagu, pembuat, #id",
-      "toolTip": {
-        "legacy": "Alihkan Kesulitan Warisan",
-        "filter": "Filter",
-        "sort": "Urutkan",
-        "reset": "Atur Ulang",
-        "recentAsc": "Terbaru Naik",
-        "recentDesc": "Terbaru Turun",
-        "difficultyAsc": "Kesulitan Naik",
-        "difficultyDesc": "Kesulitan Turun",
-        "random": "Acak"
-      },
-      "settingExp": {
-        "headerSort": "Urutkan",
-        "headerFilter": "Filter",
-        "filterDiffs": "Kesulitan",
-        "sortRecent": "Terbaru",
-        "sortDifficulty": "Kesulitan",
-        "sortRandom": "Acak"
-      },
-      "infScroll" : {
-          "loading" : "Tunggu Sebentar ...",
-          "end" : "Kamu Sudah Melihat Semuanya"
-      }
+    "settingExp": {
+      "headerSort": "Penyusunan",
+      "headerFilter": "Filter",
+      "filterDiffs": "Kesulitan",
+      "sortRecent": "Terbaru",
+      "sortDifficulty": "Kesulitan",
+      "sortRandom": "Acak"
     },
-    "detailPage": {
-      "#1Clears": {
-        "clear": "#1 Bersih",
-        "score": "#1 Skor",
-        "speed": "#1 Kecepatan",
-        "accuracy": "#1 Akurasi",
-        "numOClear": "Jumlah Bersih"
-      },
-      "leaderboard": {
-        "header": "Peringkat",
-        "notBeaten": "Level Ini Belum Dikalahkan",
-        "toolTip": {
-          "time": "Waktu",
-          "accuracy": "Akurasi",
-          "score": "skor"
-        }
-      }
-    },
-    "submissionPage": {
-      "header": {
-        "headerPass": "Saya di sini ingin mengirimkan pass saya",
-        "headerLevel": "Hai, Saya di sini untuk Mengirim Level"
-      },
-      "button": {
-        "buttonPass": "Kirimkan pass",
-        "buttonLevel": "Kirimkan level"
-      },
-      "RulesAGuide": "lihat aturan dan panduan"
-    },
-    "cardFeaturedComponent": {
-      "by": "Oleh",
-      "button": "Lihat Sekarang!"
-    },
-    "levelCardComponent": {
-      "creator": "Pembuat",
-      "clears": "Bersih",
-      "by" : "Oleh"
-    },
-    "navigationComponent": {
-      "levels": "Level",
-      "submission" : "Pengajuan"
-    },
-    "footerComponent": {
-      "aboutUs": {
-        "header": "Tentang Kami",
-        "paragraph": "komunitas yang berdedikasi tentang dunia A Dance of Fire and Ice (ADOFAI). Fokus kami ada pada level kustom dan clears, menyediakan platform yang dinamis untuk pembuat dan pemain sama-sama untuk berbagi, menemukan, dan berinteraksi dengan kemungkinan-kemungkinan tak terbatas yang dibawa konten kustom ke dalam game ritmis ini."
-      },
-      "links": {
-        "header": "Tautan",
-        "levels": "Level",
-        "submission": "pengajuan"
-      },
-      "shoutOut": {
-        "header": "Periksa Saya",
-        "paragraph": "Hei saya orang yang membuat website ini, periksa saya"
-      },
-      "copyRight": "2024 Adrian Purnama. Semua hak cipta dilindungi. Versi - 1.0.0"
+    "infScroll": {
+      "loading": "Tunggu Sebentar...",
+      "end": "Anda sudah melihat semuanya"
     }
+  },
+
+  "detailPage": {
+    "waiting" : "Menunggu",
+    "#1Clears": {
+      "clear": "#1 Selesai",
+      "score": "#1 Skor",
+      "speed": "#1 Kecepatan",
+      "accuracy": "#1 Akurasi",
+      "numOClear": "Banyak Penyelesaian"
+    },
+
+    "leaderboard": {
+      "header": "Rangking",
+      "notBeaten": "Level ini Belum Terkalahkan",
+
+      "toolTip": {
+        "time": "Tanggal",
+        "accuracy": "Akurasi",
+        "score": "Skor"
+      }
+    }
+  },
+
+  "submissionPage": {
+    "header": {
+      "headerPass": "Saya Menyelesaikan Level",
+      "headerLevel": "Saya Ingin Level Saya Diberikan Rating"
+    },
+
+    "button": {
+      "buttonPass": "Ajukan Pass",
+      "buttonLevel": "Ajukan Level"
+    },
+
+    "RulesAGuide": "Lihat Peraturan dan Cara"
+  },
+
+  "cardFeaturedComponent": {
+    "by": "Level oleh {{creator}}",
+    "button": "Lihat Level!"
+  },
+
+  "levelCardComponent": {
+    "creator": "Pembuat",
+    "clears": "Selesai"
+  },
+
+  "navigationComponent": {
+    "levels": "Level",
+    "submission": "Pengajuan"
+  },
+
+  "footerComponent": {
+    "aboutUs": {
+      "header": "Tentang Kami",
+      "paragraph": "Forum Universal adalah organisasi berbasis komunitas yang berfokus pada pengumpulan dan pemeringkatan kesulitan pada tingkat khusus permainan ADAFAI."
+    },
+    "links": {
+      "header": "Tautan",
+      "levels": "Level",
+      "submission": "Pengajuan"
+    },
+    "shoutOut": {
+      "header": "Kredit",
+      "paragraph": "Website dibuat oleh Tim Pengembang TUF, pengembangan dipimpin oleh Adrian dan t3ww. Kode situs web ini tersedia di GitHub."
+    },
+
+    "copyRight": "Tim Pengembang TUF 2024, Semua Hak Dilindungi Undang-Undang. Versi - 1.0.0"
   }
-  
+}
