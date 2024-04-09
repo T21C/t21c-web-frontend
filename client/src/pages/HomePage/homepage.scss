@@ -13,16 +13,23 @@
       bottom: 0;
     }
   
-    .blob{
+    .blob {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       height: 300px;
       width: 300px;
-      background: linear-gradient(60deg, var(--list-secondary), var(--list-primary), var(--primary-color), var(--secondary-color), var(--third-color));      z-index: 1;
+      background: linear-gradient(to right, 
+          var(--primary-color), 
+          var(--list-primary), 
+          var(--list-secondary), 
+          var(--primary-color), 
+          var(--third-color));
+      background-size: 600% 600%;
+      z-index: 1;
       transition: all 5s cubic-bezier(.17,.67,.83,.67);
-      animation: blobAnimation 20s infinite, colorShift 10s infinite;
+      animation: blobAnimation 30s infinite, gradient 20s infinite linear;
     }
   
     .blur{
@@ -191,15 +198,7 @@
     }
   }
 
-  
-@keyframes colorShift {
-  0%, 100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-}
+
   
   @keyframes blobAnimation {
     0%, 100% {
