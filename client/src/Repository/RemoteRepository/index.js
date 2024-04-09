@@ -312,14 +312,21 @@ function getYouTubeThumbnailUrl(url, title) {
 function getYouTubeEmbedUrl(url) {
   const shortUrlRegex = /youtu\.be\/([a-zA-Z0-9_-]{11})/;
   const longUrlRegex = /youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})/;
+  const timestampRegex = /[?&]t=(\d+)s/;
 
   const shortMatch = url.match(shortUrlRegex);
   const longMatch = url.match(longUrlRegex);
+  const timestampMatch = url.match(timestampRegex);
 
   const videoId = shortMatch ? shortMatch[1] : longMatch ? longMatch[1] : null;
+  const timestamp = timestampMatch ? timestampMatch[1] : null;
 
   if (videoId) {
-    return `https://www.youtube.com/embed/${videoId}`;
+    let embedUrl = `https://www.youtube.com/embed/${videoId}`;
+    if (timestamp) {
+      embedUrl += `?start=${timestamp}`;
+    }
+    return embedUrl;
   } else {
     return null;
   }
