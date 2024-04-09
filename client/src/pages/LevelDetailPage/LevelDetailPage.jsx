@@ -36,6 +36,7 @@ const LevelDetailPage = () => {
   const [leaderboardSort, setLeaderboardSort] = useState("SCR");
 
   const [infoLoading, setInfoLoading] = useState(true);
+  const [openDialog, setOpenDialog] = useState(false)
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -99,6 +100,7 @@ const LevelDetailPage = () => {
     }
     //console.log(player)
     //setInfoLoading(false)
+    console.log(res)
 
   }, [player]);
 
@@ -178,6 +180,21 @@ const LevelDetailPage = () => {
         return players;
     }
   };
+
+  function changeDialogState(){
+    setOpenDialog(!openDialog)
+  }
+
+  useEffect(()=>{
+    console.log(res)
+  }, [res])
+
+  function formatString(input) {
+    const regex = / & | but /g;
+    const parts = input.split(regex);
+    const formattedParts = parts.map(part => `(${part})`);
+    return formattedParts.join(" - ");
+  }
   
 
 
@@ -193,6 +210,45 @@ const LevelDetailPage = () => {
     );
 
   return (
+  <>
+    <div className="close-outer close-outer-levels" style={{ 
+      display: openDialog ? 'block' : 'none'}} onClick={changeDialogState}></div>
+      
+      <div className={`levels-dialog ${openDialog ? 'dialog-scale-up' : ''}`} style={{ display: openDialog ? 'block' : 'none' }}>
+        <div className="dialog">
+
+          <ul>
+            <li className="list-levels">
+              <p style={{textWrap: "nowrap"}}>Song Name : </p>
+              <p className="p-list-level">{res.level.song}</p>
+            </li>
+            <li className="list-levels">
+              <p style={{textWrap: "nowrap"}}>Song Artist : </p>
+              <p>{res.level.artist}</p>
+            </li>
+            <li className="list-levels">
+              <p style={{textWrap: "nowrap"}}>Creator : </p>
+              <p>{res.level.team ? formatString(res.level.team) : formatString(res.level.creator)}</p>
+            </li>
+            <li className="list-levels">
+              <p style={{textWrap: "nowrap"}}>Charter : </p>
+              <p>{formatString(res.level.charter)}</p>
+            </li>
+            <li className="list-levels">
+              <p style={{textWrap: "nowrap"}}>Vfxer : </p>
+              <p>{formatString(res.level.vfxer)}</p>
+            </li>
+            <li className="list-levels diff">
+              <p>Legacy  {res.level.diff}</p>
+              <p>Pdn  {res.level.diff}</p>
+              <p>Pgu  {res.level.diff}</p>
+              <p>PguNum  {res.level.diff}</p>
+            </li>
+          </ul>
+          
+      </div>
+    </div>
+
     <div className="level-detail">
       <CompleteNav />
       <div className="background-level"></div>
@@ -305,7 +361,7 @@ const LevelDetailPage = () => {
               </span>
             </div>
 
-            {/* <button>Full Info</button> */}
+            <button onClick={changeDialogState}>Full Info</button>
           </div>
 
           <div className="youtube">
@@ -450,6 +506,7 @@ const LevelDetailPage = () => {
         </div>
       </div>
     </div>
+  </>
   );
 };
 

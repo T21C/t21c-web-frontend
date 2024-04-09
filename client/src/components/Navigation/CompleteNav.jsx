@@ -30,9 +30,11 @@ const CompleteNav = () => {
   return (
 
     <>
-      <div className="close-outer close-outer-language" style={{ display: openDialog ? 'block' : 'none' }} onClick={changeDialogState}></div>
-          <div className="language-dialog" style={{ display: openDialog ? 'block' : 'none' }}>
-            <div className="dialog">
+        <div className="close-outer close-outer-language" style={{ 
+          display: openDialog ? 'block' : 'none'}} onClick={changeDialogState}></div>
+          
+          <div className={`language-dialog ${openDialog ? 'dialog-scale-up' : ''}`} style={{ display: openDialog ? 'block' : 'none' }}>
+            <div className={"dialog"}>
               <ul>
                 <li className="list-language" onClick={() => handleChangeLanguage("us")} style={{ backgroundColor: language === "us" ? "#a3a2d8" : "" }}> 
                   <img src={isoToEmoji("us")}  alt="" />
@@ -51,8 +53,8 @@ const CompleteNav = () => {
                   Indonesia (Id)
                 </li>
               </ul>
-            </div>
           </div>
+        </div>
 
       <Navigation>
 

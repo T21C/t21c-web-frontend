@@ -167,7 +167,7 @@
 .level-detail .body .info button {
   height: 100%;
   width: 100%;
-  background-color: var(--primary-color);
+  background-color: var(--third-color);
   border: none;
   border-radius: 3px;
   color: var(--white-color);
@@ -380,5 +380,67 @@
     top: 40%;
     transform: translateY(-50%);
     font-size: 2rem;
+  }
+}
+.close-outer {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  z-index: 999;
+}
+
+.close-outer-levels {
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999999;
+}
+
+.levels-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999999;
+  max-width: 30rem;
+  width: 100%;
+  animation: none;
+}
+.levels-dialog .dialog {
+  background-color: var(--white-color);
+  padding: 0.5rem 0;
+  border-radius: 5px;
+  margin: 0 1rem;
+}
+.levels-dialog .dialog .list-levels {
+  list-style: none;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  color: var(--backgorund-color);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 50ms linear;
+}
+.levels-dialog .dialog .list-levels:hover {
+  background-color: var(--secondary-color);
+}
+.levels-dialog .dialog .list-levels img {
+  width: 2rem;
+}
+.levels-dialog .dialog .diff {
+  display: flex;
+  justify-content: space-around;
+}
+.dialog-scale-up {
+  animation: scaleUpAnimation 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes scaleUpAnimation {
+  from {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
   }
 }/*# sourceMappingURL=leveldetailpage.css.map */

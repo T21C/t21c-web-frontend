@@ -7,7 +7,7 @@
   z-index: 999;
 }
 
-.close-outer-language{
+.close-outer-level{
   background: rgba(0, 0, 0, 0.5);
   z-index: 9999999;
 }
@@ -21,6 +21,7 @@
   z-index: 9999999;
   max-width: 20rem;
   width: 100%;
+  animation: none;
 
   .dialog{
     background-color: var(--white-color);
@@ -37,15 +38,25 @@
       gap: 1rem;
       transition: all 50ms linear;
 
-
-      &:hover{
-        background-color: var(--secondary-color);
-      }
-
       img{
         width: 2rem;
       }
     }
+  }
+}
+
+.dialog-scale-up {
+  animation: scaleUpAnimation .3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes scaleUpAnimation {
+  from {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
   }
 }
 

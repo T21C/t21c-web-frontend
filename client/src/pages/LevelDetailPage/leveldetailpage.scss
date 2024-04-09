@@ -150,7 +150,7 @@
         display: grid;
         grid-template-columns: repeat(
           minmax(200px, 1fr)
-        ); // Creates a responsive number of columns
+        );
         gap: 1rem;
         padding: 1rem;
         background-color: rgba($color: #ffffff, $alpha: 0.15);
@@ -159,7 +159,7 @@
   
         .info-item {
           display: grid;
-          grid-template-columns: 1fr 1fr; // Adjust the ratio between the label and value if necessary
+          grid-template-columns: 1fr 1fr; 
           align-items: center;
           font-weight: bold;
           
@@ -192,7 +192,7 @@
         button {
           height: 100%;
           width: 100%;
-          background-color: var(--primary-color);
+          background-color: var(--third-color);
           border: none;
           border-radius: 3px;
           color: var(--white-color);
@@ -468,3 +468,78 @@
 
   }
 
+
+  .close-outer{
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    z-index: 999;
+  }
+  
+  .close-outer-levels{
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999999;
+  }
+  
+  
+  .levels-dialog{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999999;
+    max-width: 30rem;
+    width: 100%;
+    animation: none;
+  
+    .dialog{
+      background-color: var(--white-color);
+      padding: .5rem 0;
+      border-radius: 5px;
+      margin: 0 1rem;
+  
+      .list-levels{
+        list-style: none;
+        padding: .5rem 1rem;
+        cursor: pointer;
+        color: var(--backgorund-color);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        transition: all 50ms linear;
+  
+  
+        &:hover{
+          background-color: var(--secondary-color);
+        }
+  
+        img{
+          width: 2rem;
+        }
+      }
+
+      .diff{
+        display: flex;
+        justify-content: space-around;
+      }
+
+      .download{
+
+      }
+    }
+  }
+  
+  .dialog-scale-up {
+    animation: scaleUpAnimation .3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  }
+  
+  @keyframes scaleUpAnimation {
+    from {
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0;
+    }
+    to {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+    }
+  }
