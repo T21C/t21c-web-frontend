@@ -2,12 +2,12 @@
   width: 100vw;
   height: 100vh;
   position: fixed;
-  z-index: 999;
+  z-index: 500;
 }
 
 .close-outer-language {
   background: var(--color-black-t60);
-  z-index: 9999999;
+  z-index: 1500;
 }
 
 .language-dialog {
@@ -15,7 +15,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 9999999;
+  z-index: 2000;
   max-width: 20rem;
   width: 100%;
   animation: none;
@@ -65,7 +65,7 @@ nav {
   border-color: var(--color-white-t10); /* Thin white border */
   box-shadow: 0 4px 6px var(--color-black-t10);
   color: var(--color-white);
-  z-index: 9999;
+  z-index: 100;
   position: fixed;
   top: 0;
 }
@@ -169,7 +169,7 @@ nav .wrapper .menu:hover {
     position: fixed;
     top: 0;
     right: 0;
-    z-index: 99999;
+    z-index: 1000;
     width: 40%;
     height: 100%;
     background: var(--color-white-t10); /* White with low opacity */

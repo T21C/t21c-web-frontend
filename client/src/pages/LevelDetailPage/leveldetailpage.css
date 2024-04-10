@@ -379,16 +379,9 @@
     font-size: 2rem;
   }
 }
-.close-outer {
-  width: 100vw;
-  height: 100vh;
-  position: fixed;
-  z-index: 999;
-}
-
 .close-outer-levels {
   background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
+  z-index: 500;
 }
 
 .levels-dialog {
@@ -398,7 +391,7 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 99999;
+  z-index: 1000;
   max-width: 30rem;
   width: 100%;
   animation: none;
