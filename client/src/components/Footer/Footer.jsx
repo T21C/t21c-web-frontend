@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import "./footer.css"
 import React from "react";
-import image from "../../assets/logo.png"
+import image from "../../assets/tuf-logo/logo.png"
 import { Link } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 

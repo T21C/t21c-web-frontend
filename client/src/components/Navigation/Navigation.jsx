@@ -3,7 +3,7 @@
 import "./navigation.css"
 import React, { useState } from "react";
 import { NavLink } from "react-router-dom";
-import logo from "../../assets/logo-full.png";
+import logo from "../../assets/tuf-logo/logo-full.png";
 
 const Navigation = ({ children }) => {
   const [openNav, setOpenNav] = useState(false);

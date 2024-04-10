@@ -2,7 +2,7 @@ import "./homepage.css"
 import { useContext, useEffect, useRef, useState } from "react";
 import { Card, Footer, CompleteNav, LevelCardRev } from "../../components";
 import { fetchRecent } from "../../Repository/RemoteRepository";
-import logo from "../../assets/logo-full.png";
+import logo from "../../assets/tuf-logo/logo-full.png";
 import { useNavigate } from "react-router-dom";
 import { LevelContext } from "../../context/LevelContext";
 import { useTranslation } from "react-i18next";
