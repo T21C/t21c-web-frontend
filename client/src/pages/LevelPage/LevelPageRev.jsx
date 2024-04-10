@@ -159,7 +159,7 @@ const LevelPageRev = () => {
     setSort(value);
     setPageNumber(0);
     setLevelsData([]);
-    setLoading(true);
+    setLoading(true);//both of this is no
     setForceUpdate((f) => !f);
   }
 
