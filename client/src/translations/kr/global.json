@@ -43,6 +43,14 @@
       "accuracy": "#1 정확도",
       "numOClear": "클리어 수"
     },
+    "dialog" : {
+      "fullInfo" : "전체 정보",
+      "artist": "아티스트",
+      "creator" : "창작자",
+      "charter" : "헌장",
+      "vfxer" : "VFX 아티스트",
+      "id" : "아이디"
+    },
 
     "leaderboard": {
       "header": "순위표",

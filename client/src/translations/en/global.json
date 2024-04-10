@@ -44,11 +44,12 @@
         "numOClear": "Number of clears"
       },
       "dialog" : {
+        "fullInfo" : "Full Info",
         "artist": "Artist",
         "creator" : "Creator",
-        "id" : "Id",
         "charter" : "charter",
-        "vfxer" : "vfxer"
+        "vfxer" : "vfxer",
+        "id" : "Id"
       },
   
       "leaderboard": {

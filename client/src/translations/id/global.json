@@ -43,6 +43,14 @@
       "accuracy": "#1 Akurasi",
       "numOClear": "Banyak Penyelesaian"
     },
+    "dialog": {
+      "fullInfo": "Info Lengkap",
+      "artist": "Artis",
+      "creator": "Pencipta",
+      "charter": "Piagam",
+      "vfxer": "Ahli VFX",
+      "id": "Id"
+    },
 
     "leaderboard": {
       "header": "Rangking",

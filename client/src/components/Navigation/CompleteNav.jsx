@@ -38,11 +38,11 @@ const CompleteNav = () => {
               <ul>
                 <li className="list-language" onClick={() => handleChangeLanguage("us")} style={{ backgroundColor: language === "us" ? "#a3a2d8" : "" }}> 
                   <img src={isoToEmoji("us")}  alt="" />
-                  English
+                  English(en)
                 </li>
                 <li className="list-language" onClick={() => handleChangeLanguage("kr")} style={{ backgroundColor: language === "kr" ? "#a3a2d8" : "" }}>
                   <img src={isoToEmoji("kr")}  alt="" />
-                  한국어 (Kr)
+                  한국어 (ko)
                 </li>
                 {/* <li className="list-language" onClick={() => handleChangeLanguage("de")} style={{ backgroundColor: language === "de" ? "#a3a2d8" : "" }}>
                   <img src={isoToEmoji("de")}  alt="" />
@@ -50,7 +50,7 @@ const CompleteNav = () => {
                 </li> */}
                 <li className="list-language" onClick={() => handleChangeLanguage("id")} style={{ backgroundColor: language === "id" ? "#a3a2d8" : "" }}>
                   <img src={isoToEmoji("id")}  alt="" />
-                  Indonesia (Id)
+                  Bahasa Indonesia (id)
                 </li>
               </ul>
           </div>

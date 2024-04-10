@@ -228,9 +228,9 @@ const LevelDetailPage = () => {
           <div className="header" style={{
               backgroundImage: `url(${res && res.level ? getYouTubeThumbnailUrl(res.level.vidLink, res.level.song): "defaultImageURL"})`, backgroundPosition : "center"}}>
             <h2>{res.level.song}</h2>
-            <p> <b>artist :</b> {res.level.artist}</p>
-            <p> <b>creator :</b> {res.level.team ? formatString(res.level.team) : formatString(res.level.creator)}</p>
-            <p> <b>Id :</b> #{res.level.id}</p>
+            <p> <b>{t("detailPage.dialog.artist")} :</b> {res.level.artist}</p>
+            <p> <b>{t("detailPage.dialog.creator")} :</b> {res.level.team ? formatString(res.level.team) : formatString(res.level.creator)}</p>
+            <p> <b>{t("detailPage.dialog.id")} :</b> #{res.level.id}</p>
 
           </div>
 
@@ -260,21 +260,21 @@ const LevelDetailPage = () => {
 
               {res.level.creator && (
                 <div className="each-info">
-                  <h3>Creator</h3>
+                  <h3>{t("detailPage.dialog.creator")}</h3>
                   <p>{formatString(res.level.creator)}</p>
                 </div>
                 )}
                 
                 {res.level.vfxer && (
                 <div className="each-info">
-                  <h3>Vfxer</h3>
+                  <h3>{t("detailPage.dialog.vfxer")}</h3>
                   <p>{formatString(res.level.vfxer)}</p>
                 </div>
                 )}
 
                 {res.level.charter && (
                 <div className="each-info">
-                  <h3>Charter</h3>
+                  <h3>{t("detailPage.dialog.charter")}</h3>
                   <p>{formatString(res.level.charter)}</p>
                 </div>
                 )}
@@ -427,7 +427,7 @@ const LevelDetailPage = () => {
               </span>
             </div>
 
-            <button onClick={changeDialogState}>Full Info</button>
+            <button onClick={changeDialogState}>{t("detailPage.dialog.fullInfo")}</button>
           </div>
 
           <div className="youtube">
