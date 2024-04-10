@@ -5,7 +5,7 @@
   z-index: 999;
 }
 
-.close-outer-level {
+.close-outer-language {
   background: rgba(0, 0, 0, 0.5);
   z-index: 9999999;
 }
@@ -37,6 +37,9 @@
 }
 .language-dialog .dialog .list-language img {
   width: 2rem;
+}
+.language-dialog .dialog .list-language:hover {
+  background-color: var(--secondary-color);
 }
 
 .dialog-scale-up {

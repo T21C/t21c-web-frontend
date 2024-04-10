@@ -478,7 +478,7 @@
   
   .close-outer-levels{
     background: rgba(0, 0, 0, 0.5);
-    z-index: 999999;
+    z-index: 999
   }
   
   
@@ -489,13 +489,13 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    z-index: 9999999;
+    z-index: 99999;
     max-width: 30rem;
     width: 100%;
     animation: none;
   
     .dialog{
-      background-color: var(--white-color);
+      background-color: #55377d;
       border-radius: 5px;
       margin: 0 1rem;
       overflow: hidden;
@@ -515,7 +515,6 @@
           right: 0;
           bottom: 0;
           background-color: rgba(0, 0, 0, 0.6);
-          border-radius: 5px;
           z-index: 1;
         }
 
@@ -527,20 +526,20 @@
 
       .body{
         padding: 1rem;
-        color: var(--backgorund-color) !important;
+        color: var(--text-color);
         
         .diff{
           text-align: center;
           display: flex;
           justify-content: space-around;
           margin-bottom: .5rem;
-          border-bottom: 2px solid var(--backgorund-color);
+          border-bottom: 2px solid var(--white-color);
           padding: .5rem;
         }
 
         .team-info{
           margin-bottom: 1rem;
-          border-bottom: 2px solid var(--backgorund-color);
+          border-bottom: 2px solid var(--white-color);
           padding: .5rem;
 
           .each-info {
