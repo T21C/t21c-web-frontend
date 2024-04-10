@@ -1,8 +1,8 @@
 .home {
   overflow: hidden;
   position: relative;
-  background-color: var(--backgorund-color);
-  color: var(--text-color);
+  background-color: var(--color-black);
+  color: var(--color-white);
 }
 .home .spacer-svg {
   position: absolute;
@@ -16,7 +16,7 @@
   transform: translate(-50%, -50%);
   height: 300px;
   width: 300px;
-  background: linear-gradient(to right, var(--primary-color), var(--list-primary), var(--list-secondary), var(--primary-color), var(--third-color));
+  background: linear-gradient(to right, var(--color-purple), var(--color-purple-1), var(--color-purple-3), var(--color-purple), var(--color-purple-2));
   background-size: 600% 600%;
   z-index: 1;
   transition: all 5s cubic-bezier(0.17, 0.67, 0.83, 0.67);
@@ -58,10 +58,10 @@
 .home .hero .many-recent .input-form input {
   width: 100%;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: var(--color-white-t30);
   border: none;
   border-radius: 3px;
-  color: var(--white-color);
+  color: var(--color-white);
   padding: 0 0.5rem;
 }
 .home .hero .many-recent .input-form input:focus {
@@ -72,10 +72,10 @@
   width: fit-content;
   padding: 0 0.5rem;
   height: 100%;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: var(--color-white-t30);
   border: none;
   border-radius: 3px;
-  color: var(--white-color);
+  color: var(--color-white-t30);
   cursor: pointer;
   text-wrap: nowrap;
 }
@@ -114,7 +114,7 @@
 .recent-rated {
   position: relative;
   z-index: 3;
-  background-color: var(--secondary-color);
+  background-color: var(--color-purple-3);
   padding: 1.5rem;
   padding-bottom: 10rem;
   position: relative;
@@ -124,7 +124,6 @@
   width: -moz-fit-content;
   width: fit-content;
   font-size: clamp(3rem, 6vw, 6rem);
-  border-bottom: 5px solid var(--pink-color);
   letter-spacing: 1px;
   text-align: center;
   background: linear-gradient(to right, #ce78ff, #ff2ad1, #a1007e, #a51d61, #b700ff);

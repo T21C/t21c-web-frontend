@@ -1,7 +1,7 @@
 
 .level-detail {
-    background-color: var(--backgorund-color);
-    color: var(--text-color);
+    background-color: var(--color-black);
+    color: var(--colro-white);
     min-height: 100vh;
     padding-bottom: 3rem;
   
@@ -17,10 +17,10 @@
     }
   
     button {
-      background-color: var(--third-color);
+      background-color: var(--color-purple-3);
       border: none;
       border-radius: 3px;
-      color: var(--white-color);
+      color: var(--color-white);
       font-size: 1rem;
       cursor: pointer;
       padding: 0.5rem 1rem;
@@ -66,7 +66,7 @@
           left: 0;
           right: 0;
           bottom: 0;
-          background-color: rgba(0, 0, 0, 0.5);
+          background-color: var(--color-black-t60);
           border-radius: 5px;
         }
   
@@ -114,7 +114,7 @@
   
         a {
           margin: 0 auto;
-          display: block; /* Add this line */
+          display: block;
           height: 3rem;
           width: 3rem;
   
@@ -127,7 +127,7 @@
             transition: all 0.2s;
   
             path {
-              color: var(--white-color);
+              color: var(--color-white);
             }
   
             &:hover {
@@ -153,7 +153,7 @@
         );
         gap: 1rem;
         padding: 1rem;
-        background-color: rgba($color: #ffffff, $alpha: 0.15);
+        background-color: var(--color-white-t60);
         border-radius: 5px;
         align-self: stretch;
   
@@ -162,11 +162,6 @@
           grid-template-columns: 1fr 1fr; 
           align-items: center;
           font-weight: bold;
-          
-  
-          .one{
-            color: rgb(255, 242, 126);
-          }
   
           p {
             margin: 0;
@@ -180,7 +175,7 @@
             overflow: hidden;
             justify-self: end;
             padding: 0.5rem .5rem;
-            background-color: var(--list-primary);
+            background-color: var(--color-purple-1);
             border-radius: 3px;
             min-width: 5rem;
             text-align: center;
@@ -192,10 +187,10 @@
         button {
           height: 100%;
           width: 100%;
-          background-color: var(--third-color);
+          background-color: var(--color-purple-3);
           border: none;
           border-radius: 3px;
-          color: var(--white-color);
+          color: var(--color-white);
           font-size: 1rem;
           cursor: pointer;
           margin: 0;
@@ -203,9 +198,9 @@
       }
   
       .youtube {
-        display: flex; // This makes .youtube a flex container
-        justify-content: center; // This will center the iframe horizontally
-        align-items: center; // This will center the iframe vertically
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
         flex: 3;
         aspect-ratio: 16/9;
         overflow: hidden;
@@ -222,7 +217,7 @@
     .rank {
       max-width: 70rem;
       margin: 2rem auto;
-      background-color: rgba($color: #ffffff, $alpha: 0.15);
+      background-color: var(--color-white-t10);
       border-radius: 3px;
       padding: .5rem;
   
@@ -235,7 +230,7 @@
           svg {
             height: 2.2rem;
             width: 2.2rem;
-            background-color: rgba($color: #ffffff, $alpha: 0.2);
+            background-color: var(--color-white-t20);
             padding: 0.25rem;
             border-radius: 3px;
             cursor: pointer;
@@ -285,7 +280,7 @@
           position: relative;
           display: flex;
           justify-content: space-between;
-          background-color: var(--list-secondary);
+          background-color: var(--color-purple-2);
           padding: 0.5rem;
           margin-bottom: 1rem;
           border-radius: 3px;
@@ -325,7 +320,7 @@
             justify-content: space-around;
             flex: 1;
             height: 100%;
-            background-color: var(--list-primary);
+            background-color: var(--color-purple-1);
             border: none;
             border-radius: 3px;
             color: var(--white-color);
@@ -340,7 +335,7 @@
   
             span {
               display: inline-block; 
-              color: white; 
+              color: var(--color-white); 
               user-select: none;
               font-weight: bold;
               font-size: 0.9rem;
@@ -483,8 +478,8 @@
   
   
   .levels-dialog{
-    color: var(--backgorund-color);
-    color: var(--text-color);
+    color: var(--color-black);
+    color: var(--color-white);
     position: fixed;
     top: 50%;
     left: 50%;
@@ -514,7 +509,7 @@
           left: 0;
           right: 0;
           bottom: 0;
-          background-color: rgba(0, 0, 0, 0.6);
+          background-color: var(--color-black-t60);
           z-index: 1;
         }
 
@@ -526,20 +521,20 @@
 
       .body{
         padding: 1rem;
-        color: var(--text-color);
+        color: var(--color-white);
         
         .diff{
           text-align: center;
           display: flex;
           justify-content: space-around;
           margin-bottom: .5rem;
-          border-bottom: 2px solid var(--white-color);
+          border-bottom: 2px solid var(--color-white);
           padding: .5rem;
         }
 
         .team-info{
           margin-bottom: 1rem;
-          border-bottom: 2px solid var(--white-color);
+          border-bottom: 2px solid var(--color-white);
           padding: .5rem;
 
           .each-info {

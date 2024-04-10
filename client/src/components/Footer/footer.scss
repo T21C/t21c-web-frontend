@@ -1,5 +1,6 @@
 footer {
-    background-color: var(--primary-color);
+    background-color: var(--color-purple-1);
+    color: var(--color-white);
     height: 100%;
   
     h2 {
@@ -27,7 +28,7 @@ footer {
 
   
         path {
-          fill: var(--text-color);
+          fill: var(--color-white);
         }
       }
     }
@@ -40,11 +41,11 @@ footer {
       justify-content: space-evenly;
       padding: 2rem;
       gap: 2rem;
-      color: var(--text-color);
+      color: var(--color-white);
     }
   
     .copy-right {
-      color: var(--text-color);
+      color: var(--color-white);
       margin: 0 auto;
       padding: 2rem 2rem;
       text-wrap: wrap;
@@ -53,7 +54,7 @@ footer {
     .link{
       display: block;
       padding-top: .5rem;
-      color: white;
+      color: var(--color-white)
     }
   }
   

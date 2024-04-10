@@ -8,7 +8,7 @@
 }
 
 .close-outer-language{
-  background: rgba(0, 0, 0, 0.5);
+  background: var(--color-black-t60);
   z-index: 9999999;
 }
 
@@ -24,7 +24,7 @@
   animation: none;
 
   .dialog{
-    background-color: var(--white-color);
+    background-color: var(--color-white);
     padding: 1rem 0;
     border-radius: 5px;
 
@@ -32,7 +32,7 @@
       list-style: none;
       padding: 1rem 1rem;
       cursor: pointer;
-      color: var(--backgorund-color);
+      color: var(--color-black);
       display: flex;
       align-items: center;
       gap: 1rem;
@@ -43,7 +43,7 @@
       }
 
       &:hover{
-        background-color: var(--secondary-color);
+        background-color: var(--color-purple-2);
       }
     }
   }
@@ -67,13 +67,13 @@
 nav {
     width: 100%;
   
-    background: rgba(255, 255, 255, 0.06); /* White with low opacity */
+    background: var(--color-white-t6); /* White with low opacity */
     backdrop-filter: blur(5px); /* Blur effect */
     border-bottom: 1px solid;
-    border-color: rgba(255, 255, 255, 0.1); /* Thin white border */
+    border-color: var(--color-white-t10); /* Thin white border */
   
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    color: var(--text-color);
+    box-shadow: 0 4px 6px var(--color-black-t10);
+    color: var(--color-white);
   
     z-index: 9999;
     position: fixed;
@@ -178,12 +178,12 @@ nav {
   }
   
   .nav-link {
-    color: var(--text-color);
+    color: var(--color-white);
     text-decoration: none;
   }
   
   .active-link {
-    border-bottom: solid 2px var(--primary-color);
+    border-bottom: solid 2px var(--color-purple-1);
   }
   
   @media (max-width: 580px) {
@@ -212,11 +212,11 @@ nav {
       width: 40%;
       height: 100%;
   
-      background: rgba(255, 255, 255, 0.1); /* White with low opacity */
+      background: var(--color-white-t10); /* White with low opacity */
       backdrop-filter: blur(10px); /* Blur effect */
-      border-left: 1px solid rgba(255, 255, 255, 0.25);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      color: var(--text-color);
+      border-left: 1px solid var(--color-white-t10);
+      box-shadow: 0 4px 6px var(--color-black-t10);
+      color: var(--color-white);
   
       .close {
         width: 2rem;

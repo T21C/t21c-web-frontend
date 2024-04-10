@@ -1,5 +1,6 @@
 footer {
-  background-color: var(--primary-color);
+  background-color: var(--color-purple-1);
+  color: var(--color-white);
   height: 100%;
 }
 footer h2 {
@@ -22,7 +23,7 @@ footer .self-promotion-container svg {
   cursor: pointer;
 }
 footer .self-promotion-container svg path {
-  fill: var(--text-color);
+  fill: var(--color-white);
 }
 footer .wrapper {
   margin: 0 auto;
@@ -32,10 +33,10 @@ footer .wrapper {
   justify-content: space-evenly;
   padding: 2rem;
   gap: 2rem;
-  color: var(--text-color);
+  color: var(--color-white);
 }
 footer .copy-right {
-  color: var(--text-color);
+  color: var(--color-white);
   margin: 0 auto;
   padding: 2rem 2rem;
   text-wrap: wrap;
@@ -45,5 +46,5 @@ footer .copy-right {
 footer .link {
   display: block;
   padding-top: 0.5rem;
-  color: white;
+  color: var(--color-white);
 }/*# sourceMappingURL=footer.css.map */

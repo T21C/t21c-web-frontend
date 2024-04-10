@@ -1,5 +1,5 @@
 .submission-page {
-  background-color: var(--primary-color);
+  background-color: var(--color-purple-1);
   min-height: 100vh;
   display: flex;
   position: relative;
@@ -23,18 +23,18 @@
   margin: 1rem auto;
 }
 .submission-page h2 {
-  margin: 2rem auto;
-  max-width: 17rem;
+  margin: 5rem auto;
+  max-width: 20rem;
   font-size: 2rem;
 }
 .submission-page button {
   margin: 1rem 0;
   max-width: 30rem;
   padding: 0.5rem 2rem;
-  background-color: var(--primary-color);
+  background-color: var(--color-purple-1);
   border: none;
   border-radius: 3px;
-  color: var(--white-color);
+  color: var(--color-white);
   font-size: 1rem;
   cursor: pointer;
   margin: 0;
@@ -43,8 +43,8 @@
   transition: all 0.1s linear;
 }
 .submission-page button:hover {
-  background-color: var(--primary-color);
-  color: var(--text-color);
+  background-color: var(--color-purple-1);
+  color: var(--color-white);
 }
 .submission-page button:active {
   background-color: purple;
@@ -65,16 +65,16 @@
   z-index: 3;
 }
 .submission-page .submission-level {
-  background-color: var(--third-color);
+  background-color: var(--color-purple-3);
   flex: 1;
   text-align: center;
-  color: var(--text-color);
+  color: var(--color-white);
   min-width: 30rem;
 }
 .submission-page .submission-passes {
-  background-color: var(--secondary-color);
+  background-color: var(--color-purple-2);
   flex: 1;
   text-align: center;
-  color: var(--backgorund-color);
+  color: var(--color-white);
   min-width: 30rem;
 }/*# sourceMappingURL=submissionpage.css.map */

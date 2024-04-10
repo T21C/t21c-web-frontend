@@ -11,23 +11,23 @@
   align-items: center;
   flex-wrap: wrap;
   border-bottom: 1px solid;
-  border-color: rgb(131, 131, 131);
+  border-color: var(--color-gray-3);
   transition: all 0.1s ease-in-out;
 }
 .level-card-rev:hover {
-  background-color: rgba(222, 212, 240, 0.2);
+  background-color: var(--color-white-t30);
 }
 .level-card-rev .level-exp {
   width: -moz-fit-content;
   width: fit-content;
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--color-white-t80);
 }
 .level-card-rev .level-desc {
   font-size: 1.2rem;
 }
 .level-card-rev .level-id {
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--color-white-t30);
   font-size: 0.6rem;
 }
 .level-card-rev .id {
@@ -92,7 +92,7 @@
   transition: all 0.2s;
 }
 .level-card-rev .downloads-wrapper a svg path {
-  color: var(--white-color);
+  color: var(--color-white);
 }
 .level-card-rev .downloads-wrapper a svg:hover {
   transform: scale(1.3);

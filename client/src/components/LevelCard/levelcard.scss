@@ -12,17 +12,17 @@
     align-items: center;
     flex-wrap: wrap;
     border-bottom: 1px solid;
-    border-color: rgb(131, 131, 131);
+    border-color: var(--color-gray-3);
     transition: all .1s ease-in-out;
   
     &:hover {
-      background-color: rgba($color: #ded4f0, $alpha: 0.2);
+      background-color: var(--color-white-t30);
     }
   
     .level-exp {
       width: fit-content;
       font-size: 0.9rem;
-      color: rgba($color: #ffffff, $alpha: 0.7);
+      color: var(--color-white-t80);
     }
   
     .level-desc {
@@ -30,7 +30,7 @@
     }
   
     .level-id {
-      color: rgba($color: #ffffff, $alpha: 0.4);
+      color: var(--color-white-t30);
       font-size: 0.6rem;
     }
   
@@ -109,7 +109,7 @@
           transition: all 0.2s;
   
           path {
-            color: var(--white-color);
+            color: var(--color-white);
           }
   
           &:hover {

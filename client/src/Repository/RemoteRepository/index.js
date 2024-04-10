@@ -146,10 +146,10 @@ const pgnData = {
 }
 
 const imagePh = [
-  "src/assets/waves/1.png",
-  "src/assets/waves/2.png",
-  "src/assets/waves/3.png",
-  "src/assets/waves/4.png",
+  "src/assets/placeholder/1.png",
+  "src/assets/placeholder/2.png",
+  "src/assets/placeholder/3.png",
+  "src/assets/placeholder/4.png",
 ];
 
 

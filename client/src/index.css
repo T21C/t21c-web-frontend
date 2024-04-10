@@ -11,11 +11,27 @@
   --secondary-color: #ded4f0;
   --third-color: #a3a2d8;
   --backgorund-color: #090909;
-  --text-color: #ffffff;
   --white-color: #f9fafb;
   --gray-color: rgb(202, 202, 202);
   --list-secondary: #807fa8;
   --list-primary: #5c588d;
+  --color-black: #090909;
+  --color-white: #f9fafb;
+  --color-purple: #6d23ce;
+  --color-purple-1: #5c588d;
+  --color-purple-2: #807fa8;
+  --color-purple-3: #a3a2d8;
+  --color-gray-3: #838383;
+  --color-gray-2: #cacaca;
+  --color-gray-3: #e9e9ea;
+  --color-black-t10: rgba(9, 9, 9, 0.1);
+  --color-black-t20: rgba(9, 9, 9, 0.2);
+  --color-black-t60: rgba(9, 9, 9, 0.6);
+  --color-white-t6: rgba(249, 250, 251, 0.06);
+  --color-white-t10: rgba(249, 250, 251, 0.1);
+  --color-white-t20: rgba(249, 250, 251, 0.2);
+  --color-white-t30: rgba(249, 250, 251, 0.3);
+  --color-white-t80: rgba(249, 250, 251, 0.8);
 }
 
 body {
