@@ -1,6 +1,6 @@
 import "./submissionpage.css"
 import { CompleteNav } from "../../components"
-import image from "../../assets/logo.png"
+import image from "../../assets/tuf-logo/logo.png"
 //import { Link, useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next";
 
