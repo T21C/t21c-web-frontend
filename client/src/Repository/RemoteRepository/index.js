@@ -233,11 +233,10 @@ async function fetchLevelInfo(id) {
   try {
     const res = await axios.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`)
     const res2 = await axios.get(`${import.meta.env.VITE_INDIVIDUAL_PASSES}${id}`)
-
     return {
       level: res.data,
       passes: {
-        count: res2.data.length,
+        count: res2.data.count,
         player: res2.data
       }
     }
@@ -257,15 +256,19 @@ async function fetchPassPlayerInfo(players) {
         data: response.data
       }))
     ));
-    return responses.map(({ player, data }) => {
+
+    const filteredResponses = responses.map(({ player, data }) => {
       const results = data.results;
-      if (results.length === 1) {
-        return results[0];
-      } else if (results.length > 1) {
-        const exactPlayer = results.find(p => p.name === player); 
+      if (results.length === 0) {
+        return null; 
+      } else if (results.length === 1) {
+        return results[0]; 
+      } else {
+        const exactPlayer = results.find(p => p.name === player);
         return exactPlayer;
       }
-    });
+    }).filter(response => response !== null); 
+    return filteredResponses;
   } catch (error) {
     //console.log(error);
   }

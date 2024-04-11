@@ -111,7 +111,9 @@ const LevelDetailPage = () => {
       try {
         const playerNames = initialPlayer.map(p => p.player);
         const fetchedPlayersInfo = await fetchPassPlayerInfo(playerNames); 
+        console.log(fetchedPlayersInfo)
 
+        
         const enrichedPlayers = initialPlayer
         .map(player => {
           const additionalInfo = fetchedPlayersInfo.find(info => info.name === player.player);
@@ -187,7 +189,8 @@ const LevelDetailPage = () => {
 
   useEffect(()=>{
     console.log(res)
-  }, [res])
+    console.log(passCount)
+  }, [res, passCount])
 
   function formatString(input) {
     const regex = / & | but /g;
