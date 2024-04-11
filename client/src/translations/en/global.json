@@ -1,6 +1,6 @@
 {
     "homePage": {
-      "featuredText": "Featured Levels",
+      "featuredText": "Spotlights",
       "featuredLevel": [1, 2, 3],
       "inputPlaceholder": "Search artist, song, creator, #id",
       "seeMore" : "See More"
