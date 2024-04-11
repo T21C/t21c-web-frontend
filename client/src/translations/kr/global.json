@@ -48,6 +48,7 @@
       "artist": "작곡가",
       "creator" : "제작자",
       "charter" : "차터",
+      "team" : "팀",
       "vfxer" : "이펙터",
       "id" : "ID"
     },

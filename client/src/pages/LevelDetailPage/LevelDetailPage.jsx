@@ -229,7 +229,13 @@ const LevelDetailPage = () => {
               backgroundImage: `url(${res && res.level ? getYouTubeThumbnailUrl(res.level.vidLink, res.level.song): "defaultImageURL"})`, backgroundPosition : "center"}}>
             <h2>{res.level.song}</h2>
             <p> <b>{t("detailPage.dialog.artist")} :</b> {res.level.artist}</p>
-            <p> <b>{t("detailPage.dialog.creator")} :</b> {res.level.team ? formatString(res.level.team) : formatString(res.level.creator)}</p>
+            
+            <p>
+              <b>{t(res.level.team ? "detailPage.dialog.team" : "detailPage.dialog.creator")} :</b>
+              {formatString(res.level.team ? res.level.team : res.level.creator)}
+            </p>
+
+
             <p> <b>{t("detailPage.dialog.id")} :</b> #{res.level.id}</p>
 
           </div>
@@ -258,10 +264,17 @@ const LevelDetailPage = () => {
 
             <div className="team-info">
 
-              {res.level.creator && (
+              {res.level.team && (
                 <div className="each-info">
-                  <h3>{t("detailPage.dialog.creator")}</h3>
-                  <p>{formatString(res.level.creator)}</p>
+                  <h3>{t("detailPage.dialog.team")}</h3>
+                  <p>{formatString(res.level.team)}</p>
+                </div>
+                )}
+
+              {res.level.charter && (
+                <div className="each-info">
+                  <h3>{t("detailPage.dialog.charter")}</h3>
+                  <p>{formatString(res.level.charter)}</p>
                 </div>
                 )}
                 
@@ -269,13 +282,6 @@ const LevelDetailPage = () => {
                 <div className="each-info">
                   <h3>{t("detailPage.dialog.vfxer")}</h3>
                   <p>{formatString(res.level.vfxer)}</p>
-                </div>
-                )}
-
-                {res.level.charter && (
-                <div className="each-info">
-                  <h3>{t("detailPage.dialog.charter")}</h3>
-                  <p>{formatString(res.level.charter)}</p>
                 </div>
                 )}
 
