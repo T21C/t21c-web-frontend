@@ -239,7 +239,7 @@ const LevelDetailPage = () => {
             <div className="diff">
               
               <div className="each-diff">
-                <h3>Pgu</h3>
+                <h3>PGU</h3>
                 <p>{formatDiff(res.level.pguDiff)}</p>
               </div>
 
@@ -250,7 +250,7 @@ const LevelDetailPage = () => {
               </div>
 
               <div className="each-diff">
-                <h3>Pdn</h3>
+                <h3>PDN</h3>
                 <p>{formatDiff(res.level.pdnDiff)}</p>
               </div>
             
