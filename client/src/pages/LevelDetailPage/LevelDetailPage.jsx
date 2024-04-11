@@ -100,7 +100,7 @@ const LevelDetailPage = () => {
     }
     //console.log(player)
     //setInfoLoading(false)
-    console.log(res)
+    //console.log(res)
 
   }, [player]);
 

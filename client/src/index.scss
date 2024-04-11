@@ -9,8 +9,28 @@
 
 :root {
 
-  --list-secondary : #807fa8;
-  --list-primary : #5c588d;
+//   --color-black: #f0f0f0; /* Inverted from dark #090909 to light */
+// --color-white: #060606; /* Inverted from light #f9fafb to darker */
+// --color-purple: #92daff; /* Lighter shade of purple for better contrast */
+
+// --color-purple-1: #a3a6f2; /* Lighter shade */
+// --color-purple-2: #c7c9f8; /* Lighter shade */
+// --color-purple-3: #ebedff; /* Lighter shade */
+
+// --color-gray-3 : #767676; /* Adjusted to a lighter gray */
+// --color-gray-2: #939393; /* Lighter shade */
+// --color-gray-3 : #b1b1b1; /* Lighter shade, corrected duplication */
+
+// --color-black-t10: rgba(240, 240, 240, 0.1); 
+// --color-black-t20: rgba(240, 240, 240, 0.2); 
+// --color-black-t60: rgba(240, 240, 240, 0.6);
+
+// --color-white-t6: rgba(6, 6, 6, 0.06); 
+// --color-white-t10: rgba(6, 6, 6, 0.1); 
+// --color-white-t20: rgba(6, 6, 6, 0.2);
+// --color-white-t30: rgba(6, 6, 6, 0.3);
+// --color-white-t80: rgba(6, 6, 6, 0.8); 
+
 
   --color-black: #090909;
   --color-white: #f9fafb;
@@ -56,27 +76,7 @@
     fill: var(--color-white) !important;
   }
 }
-// --color-black: #f0f0f0; /* Inverted from dark #090909 to light */
-// --color-white: #060606; /* Inverted from light #f9fafb to darker */
-// --color-purple: #92daff; /* Lighter shade of purple for better contrast */
 
-// --color-purple-1: #a3a6f2; /* Lighter shade */
-// --color-purple-2: #c7c9f8; /* Lighter shade */
-// --color-purple-3: #ebedff; /* Lighter shade */
-
-// --color-gray-3 : #767676; /* Adjusted to a lighter gray */
-// --color-gray-2: #939393; /* Lighter shade */
-// --color-gray-3 : #b1b1b1; /* Lighter shade, corrected duplication */
-
-// --color-black-t10: rgba(240, 240, 240, 0.1); 
-// --color-black-t20: rgba(240, 240, 240, 0.2); 
-// --color-black-t60: rgba(240, 240, 240, 0.6);
-
-// --color-white-t6: rgba(6, 6, 6, 0.06); 
-// --color-white-t10: rgba(6, 6, 6, 0.1); 
-// --color-white-t20: rgba(6, 6, 6, 0.2);
-// --color-white-t30: rgba(6, 6, 6, 0.3);
-// --color-white-t80: rgba(6, 6, 6, 0.8); 
 
 
 
@@ -150,6 +150,21 @@ body {
   }
 }
 
+.background-level {
+  height: 100vh;
+  width: 100vw;
+  z-index: 1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-image: url("https://images.rawpixel.com/image_social_landscape/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTM2NjcxMC1pbWFnZS1rd3Z4eGVxcC5qcGc.jpg");
+  background-size: cover;
+  filter: blur(15px);
+  background-color: var(--color-black);
+}
+//./assets/important/dark/theme-background.jpg
+//https://images.rawpixel.com/image_social_landscape/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTM2NjcxMC1pbWFnZS1rd3Z4eGVxcC5qcGc.jpg
+// https://wallpapers.com/images/featured-small/cute-galaxy-k2pcmgdeks4z200p.webp
 .loader-level-detail{
   left: 50%;
   top: 40%;

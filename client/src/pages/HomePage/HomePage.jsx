@@ -6,6 +6,9 @@ import logo from "../../assets/tuf-logo/logo-full.png";
 import { useNavigate } from "react-router-dom";
 import { LevelContext } from "../../context/LevelContext";
 import { useTranslation } from "react-i18next";
+import wavesOne from "../../assets/important/dark/wavesOne.svg"
+import wavesTwo from "../../assets/important/dark/wavesTwo.svg"
+
 
 const ids = [512, 564, 191]
 
@@ -138,7 +141,7 @@ const HomePage = () => {
           </div>
         </div>
 
-        <div className="spacer spacer-one"></div>
+        <div className="spacer spacer-one" style={{backgroundImage: `url(${wavesOne})`}}></div>
       </div>
 
       <div className="recent-rated" id="recent">
@@ -162,7 +165,7 @@ const HomePage = () => {
         </div>
       </div>
 
-      <div className="spacer spacer-two"></div>
+      <div className="spacer spacer-two" style={{backgroundImage: `url(${wavesTwo})`}}></div>
       <Footer />
     </>
   );
