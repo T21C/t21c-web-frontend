@@ -7,6 +7,8 @@
 }
 
 :root {
+  --list-secondary: #807fa8;
+  --list-primary: #5c588d;
   --color-black: #090909;
   --color-white: #f9fafb;
   --color-purple: #6d23ce;
@@ -25,6 +27,19 @@
   --color-white-t30: rgba(249, 250, 251, 0.3);
   --color-white-t60: rgba(249, 250, 251, 0.6);
   --color-white-t80: rgba(249, 250, 251, 0.8);
+}
+
+.svg-fill path {
+  fill: var(--color-white) !important;
+}
+
+.svg-stroke path {
+  stroke: var(--color-white) !important;
+}
+
+.svg-fill-stroke path {
+  stroke: var(--color-white) !important;
+  fill: var(--color-white) !important;
 }
 
 body {

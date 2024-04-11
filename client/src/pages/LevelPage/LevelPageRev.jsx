@@ -180,7 +180,7 @@ const LevelPageRev = () => {
 
       <div className="level-body">
         <div className="input-option">
-          <svg data-tooltip-id="legacy" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" strokeWidth="2" stroke="#ffffff" strokeLinecap="round" strokeLinejoin="round"
+          <svg className="svg-fill" data-tooltip-id="legacy" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
             style={{
               backgroundColor: legacyDiff ? "rgba(255, 255, 255, 0.7)" : "",
               width: "3rem",
@@ -213,7 +213,7 @@ const LevelPageRev = () => {
             {t('levelPage.toolTip.reset')}
           </Tooltip>
 
-          <svg data-tooltip-id="filter"xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"
+          <svg className="svg-fill-stroke" data-tooltip-id="filter"xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor"
             style={{
               backgroundColor: filterOpen ? "rgba(255, 255, 255, 0.7)" : "",
               padding: ".2rem",
@@ -223,7 +223,7 @@ const LevelPageRev = () => {
             <path d="M5.05 3C3.291 3 2.352 5.024 3.51 6.317l5.422 6.059v4.874c0 .472.227.917.613 1.2l3.069 2.25c1.01.742 2.454.036 2.454-1.2v-7.124l5.422-6.059C21.647 5.024 20.708 3 18.95 3H5.05Z" />
           </svg>
 
-          <svg data-tooltip-id="sort" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+          <svg className="svg-fill" data-tooltip-id="sort" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
             style={{
               backgroundColor: sortOpen ? "rgba(255, 255, 255, 0.7)" : "",
             }}
@@ -237,7 +237,7 @@ const LevelPageRev = () => {
             </g>
           </svg>
 
-          <svg xmlns="http://www.w3.org/2000/svg"fill="none"viewBox="0 0 24 24"strokeWidth="1.5"stroke="currentColor"
+          <svg className="svg-stroke" xmlns="http://www.w3.org/2000/svg"fill="none"viewBox="0 0 24 24"strokeWidth="1.5"stroke="currentColor"
             onClick={() => resetAll()}
             data-tooltip-id="reset"
           >
@@ -332,7 +332,7 @@ const LevelPageRev = () => {
                 </Tooltip>
 
                 <div className="wrapper">
-                  <svg viewBox="0 0 24 24"fill="none"xmlns="http://www.w3.org/2000/svg"
+                  <svg className="svg-fill" viewBox="0 0 24 24"fill="none"xmlns="http://www.w3.org/2000/svg"
                     style={{
                       backgroundColor:
                         sort == "RECENT_ASC" ? "rgba(255, 255, 255, 0.7)" : "",
@@ -352,7 +352,7 @@ const LevelPageRev = () => {
                     </g>
                   </svg>
 
-                  <svg viewBox="0 0 24 24"fill="none"xmlns="http://www.w3.org/2000/svg"
+                  <svg className="svg-fill" viewBox="0 0 24 24"fill="none"xmlns="http://www.w3.org/2000/svg"
                     style={{
                       backgroundColor:
                         sort == "RECENT_DESC" ? "rgba(255, 255, 255, 0.7)" : "",
@@ -386,7 +386,7 @@ const LevelPageRev = () => {
                   {t('levelPage.toolTip.difficultyDesc')}
                   </Tooltip>
 
-                  <svg viewBox="0 0 24 24"fill="none"xmlns="http://www.w3.org/2000/svg"
+                  <svg className="svg-fill" viewBox="0 0 24 24"fill="none"xmlns="http://www.w3.org/2000/svg"
                     style={{
                       backgroundColor:
                         sort == "DIFF_ASC" ? "rgba(255, 255, 255, 0.7)" : "",
@@ -403,7 +403,7 @@ x                  >
                     <path d="M15.98 19.25H15.5C15.09 19.25 14.75 18.91 14.75 18.5C14.75 18.09 15.09 17.75 15.5 17.75H15.98C16.63 17.75 17.2 17.21 17.23 16.56C17.24 16.27 17.24 15.92 17.24 15.5V15C17.24 14.59 17.58 14.25 17.99 14.25C18.4 14.25 18.74 14.59 18.74 15V15.5C18.74 15.95 18.74 16.32 18.72 16.64C18.65 18.08 17.41 19.25 15.97 19.25H15.98Z" fill="#ffffff" />
                   </svg>
 
-                  <svg width="800px"height="800px"viewBox="0 0 24 24"fill="none"xmlns="http://www.w3.org/2000/svg"
+                  <svg className="svg-fill" width="800px"height="800px"viewBox="0 0 24 24"fill="none"xmlns="http://www.w3.org/2000/svg"
                     style={{
                       backgroundColor:
                         sort == "DIFF_DESC" ? "rgba(255, 255, 255, 0.7)" : "",
@@ -429,7 +429,7 @@ x                  >
                 </Tooltip>
 
                 <div className="wrapper">
-                  <svg fill="#ffffff"viewBox="-7.5 0 32 32"version="1.1"xmlns="http://www.w3.org/2000/svg"stroke="#ffffff"
+                  <svg className="svg-fill-stroke" fill="#ffffff"viewBox="-7.5 0 32 32"version="1.1"xmlns="http://www.w3.org/2000/svg"stroke="#ffffff"
                     data-tooltip-id="rnd"
                     style={{
                       backgroundColor:

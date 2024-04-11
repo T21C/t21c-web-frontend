@@ -42,7 +42,7 @@ const Navigation = ({ children }) => {
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="menu"
+            className="menu svg-stroke"
             onClick={changeNavState}
           >
             <path
@@ -61,7 +61,7 @@ const Navigation = ({ children }) => {
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="close"
+          className="close svg-stroke"
           onClick={changeNavState}
         >
           <path

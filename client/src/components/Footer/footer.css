@@ -22,9 +22,6 @@ footer .self-promotion-container svg {
   margin-top: 1rem;
   cursor: pointer;
 }
-footer .self-promotion-container svg path {
-  fill: var(--color-white);
-}
 footer .wrapper {
   margin: 0 auto;
   max-width: 80rem;

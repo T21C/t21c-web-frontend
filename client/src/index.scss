@@ -8,15 +8,9 @@
 }
 
 :root {
-  // --primary-color: #6d23ce;
-  // --secondary-color: #ded4f0;
-  // --third-color: #a3a2d8;
-  // --backgorund-color: #090909;
-  // --white-color: #f9fafb;
-  // --gray-color: rgb(202, 202, 202);
 
-  // --list-secondary : #807fa8;
-  // --list-primary : #5c588d;
+  --list-secondary : #807fa8;
+  --list-primary : #5c588d;
 
   --color-black: #090909;
   --color-white: #f9fafb;
@@ -40,9 +34,28 @@
   --color-white-t30: rgba(249, 250, 251, 0.3);
   --color-white-t60: rgba(249, 250, 251, 0.6); 
   --color-white-t80: rgba(249, 250, 251, 0.8); 
+
+
 }
 
+.svg-fill{
+  path{
+    fill: var(--color-white) !important;
+  }
+}
 
+.svg-stroke{
+  path{
+    stroke: var(--color-white) !important;
+  }
+}
+
+.svg-fill-stroke{
+  path{
+    stroke: var(--color-white) !important;
+    fill: var(--color-white) !important;
+  }
+}
 // --color-black: #f0f0f0; /* Inverted from dark #090909 to light */
 // --color-white: #060606; /* Inverted from light #f9fafb to darker */
 // --color-purple: #92daff; /* Lighter shade of purple for better contrast */

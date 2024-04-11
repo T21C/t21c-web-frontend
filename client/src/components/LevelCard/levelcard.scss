@@ -108,10 +108,6 @@
           cursor: pointer;
           transition: all 0.2s;
   
-          path {
-            color: var(--color-white);
-          }
-  
           &:hover {
             transform: scale(1.3);
           }
@@ -131,7 +127,7 @@
   }
   
   @media (max-width: 545px) {
-    .level-card-rev { /* Assuming this class wraps your .level-card-rev elements */
+    .level-card-rev {
 
 
       .downloads-wrapper{
