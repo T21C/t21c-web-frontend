@@ -27,7 +27,7 @@ footer .wrapper {
   max-width: 80rem;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-evenly;
+  justify-content: space-between;
   padding: 2rem;
   gap: 2rem;
   color: var(--color-white);
