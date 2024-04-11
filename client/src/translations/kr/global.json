@@ -29,7 +29,7 @@
       "sortRandom": "랜덤"
     },
     "infScroll": {
-      "loading": "조금만 기다려 줘요...",
+      "loading": "로딩 중...",
       "end": "리스트 끝에 도달했어요!"
     }
   },
@@ -45,11 +45,11 @@
     },
     "dialog" : {
       "fullInfo" : "전체 정보",
-      "artist": "아티스트",
-      "creator" : "창작자",
-      "charter" : "헌장",
-      "vfxer" : "VFX 아티스트",
-      "id" : "아이디"
+      "artist": "작곡가",
+      "creator" : "제작자",
+      "charter" : "차터",
+      "vfxer" : "이펙터",
+      "id" : "ID"
     },
 
     "leaderboard": {
@@ -79,7 +79,7 @@
   },
 
   "cardFeaturedComponent": {
-    "by": "{{creator}} 제작",
+    "by": "by {{creator}}",
     "button": "레벨 확인"
   },
 

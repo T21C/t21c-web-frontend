@@ -47,9 +47,9 @@
         "fullInfo" : "Full Info",
         "artist": "Artist",
         "creator" : "Creator",
-        "charter" : "charter",
-        "vfxer" : "vfxer",
-        "id" : "Id"
+        "charter" : "Charter",
+        "vfxer" : "VFXer",
+        "id" : "ID"
       },
   
       "leaderboard": {
