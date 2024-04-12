@@ -55,7 +55,7 @@
 
     "leaderboard": {
       "header": "순위표",
-      "notBeaten": "이 레벨은 아직 쓰러지지 않았어요...",
+      "notBeaten": "인류는 아직 이 레벨을 정복하지 못했어요...",
 
       "toolTip": {
         "time": "일시",
