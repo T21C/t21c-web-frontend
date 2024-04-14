@@ -69,12 +69,10 @@
   flex: 1;
   text-align: center;
   color: var(--color-white);
-  min-width: 30rem;
 }
 .submission-page .submission-passes {
   background-color: var(--color-purple-2);
   flex: 1;
   text-align: center;
   color: var(--color-white);
-  min-width: 30rem;
 }/*# sourceMappingURL=submissionpage.css.map */
