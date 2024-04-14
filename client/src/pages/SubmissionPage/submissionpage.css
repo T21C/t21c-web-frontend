@@ -3,7 +3,6 @@
   min-height: 100vh;
   display: flex;
   position: relative;
-  flex-wrap: wrap;
 }
 .submission-page .wrapper-body {
   padding: 0 3rem;
@@ -69,10 +68,18 @@
   flex: 1;
   text-align: center;
   color: var(--color-white);
+  width: 100%;
 }
 .submission-page .submission-passes {
   background-color: var(--color-purple-2);
   flex: 1;
   text-align: center;
   color: var(--color-white);
+  width: 100%;
+}
+
+@media (max-width: 670px) {
+  .submission-page {
+    flex-direction: column;
+  }
 }/*# sourceMappingURL=submissionpage.css.map */
