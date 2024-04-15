@@ -1,6 +1,7 @@
 import axios from 'axios';
 import twemoji from '@discordapp/twemoji';
 
+
 const legacyData = {
   "1": "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/lv01.png?raw=true",
   "2": "https://github.com/T21C/T21C-assets/blob/main/legacyDiff/lv02.png?raw=true",
@@ -146,10 +147,10 @@ const pgnData = {
 }
 
 const imagePh = [
-  "src/assets/placeholder/1.png",
-  "src/assets/placeholder/2.png",
-  "src/assets/placeholder/3.png",
-  "src/assets/placeholder/4.png",
+  "../../assets/placeholder/1.png",
+  "../../assets/placeholder/2.png",
+  "../../assets/placeholder/3.png",
+  "../../assets/placeholder/4.png",
 ];
 
 
@@ -246,6 +247,22 @@ async function fetchLevelInfo(id) {
   }
 }
 
+async function checkLevel(id) {
+  try {
+    const res = await axios.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`)
+    console.log(res)
+    if(id === "#"){
+      return
+    }
+    if(res){
+      return id
+    }
+
+  } catch (error) {
+    throw new error
+  }
+}
+
 async function fetchPassPlayerInfo(players) {
   if (!players) return;
 
@@ -299,16 +316,14 @@ function getYouTubeThumbnailUrl(url, title) {
   const shortMatch = url.match(shortUrlRegex);
   const longMatch = url.match(longUrlRegex);
 
-  const videoId = shortMatch
-    ? shortMatch[1]
-    : longMatch
-      ? longMatch[1]
-      : null;
+  const videoId = shortMatch ? shortMatch[1] : (longMatch ? longMatch[1] : null);
 
   if (videoId) {
     return `https://img.youtube.com/vi/${videoId}/0.jpg`;
-  } else {
+  } else if (title && imagePh.length > 0) {
     return selectItemConsistently(title, imagePh);
+  } else {
+    return; 
   }
 }
 
@@ -335,7 +350,57 @@ function getYouTubeEmbedUrl(url) {
   }
 }
 
+async function getYouTubeVideoDetails(url) {
+  const shortUrlRegex = /youtu\.be\/([a-zA-Z0-9_-]{11})/;
+  const longUrlRegex = /youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})/;
 
+  const shortMatch = url.match(shortUrlRegex);
+  const longMatch = url.match(longUrlRegex);
+
+  const videoId = shortMatch ? shortMatch[1] : (longMatch ? longMatch[1] : null);
+
+  if (!videoId) {
+    return null;
+  }
+
+  const apiKey = 'AIzaSyAvW8Fe_CqIUHzYw2aSMKCe247NtSewmJY'; 
+  const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=snippet,contentDetails`;
+
+  try {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+
+    if (data.items.length === 0) {
+      return null;
+    }
+
+    const details = {
+      title: data.items[0].snippet.title,
+      channelName: data.items[0].snippet.channelTitle,
+      duration: formatDuration(data.items[0].contentDetails.duration)
+    };
+
+    return details;
+  } catch (error) {
+    console.error('Error fetching YouTube video details:', error);
+    return null; 
+  }
+}
+
+
+function formatDuration(duration) {
+  const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
+  const hours = (match && match[1]) ? parseInt(match[1], 10) : 0;
+  const minutes = (match && match[2]) ? parseInt(match[2], 10) : 0;
+  const seconds = (match && match[3]) ? parseInt(match[3], 10) : 0;
+
+  const date = new Date(0, 0, 0, hours, minutes, seconds);
+  let formatted = (hours > 0 ? String(hours).padStart(2, '0') + ':' : '') +
+                  String(minutes).padStart(2, '0') + ':' +
+                  String(seconds).padStart(2, '0');
+  
+  return formatted.slice(0, 5); 
+}
 
 
 function getLevelImage(pdnDiff, diff, legacy) {
@@ -366,4 +431,4 @@ function isoToEmoji(code) {
 
 
 
-export { isoToEmoji, fetchPassPlayerInfo, fetchRecent, fetchData, fetchLevelInfo, getYouTubeThumbnailUrl, getYouTubeEmbedUrl, getLevelImage }
+export {getYouTubeVideoDetails, checkLevel, isoToEmoji, fetchPassPlayerInfo, fetchRecent, fetchData, fetchLevelInfo, getYouTubeThumbnailUrl, getYouTubeEmbedUrl, getLevelImage }
