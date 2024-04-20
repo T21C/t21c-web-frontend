@@ -363,12 +363,13 @@ async function getYouTubeVideoDetails(url) {
     return null;
   }
 
-  const apiKey = 'AIzaSyAvW8Fe_CqIUHzYw2aSMKCe247NtSewmJY'; 
+  const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY; 
   const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=snippet,contentDetails`;
 
   try {
     const response = await fetch(apiUrl);
     const data = await response.json();
+    console.log(data)
 
     if (data.items.length === 0) {
       return null;
@@ -377,7 +378,7 @@ async function getYouTubeVideoDetails(url) {
     const details = {
       title: data.items[0].snippet.title,
       channelName: data.items[0].snippet.channelTitle,
-      duration: formatDuration(data.items[0].contentDetails.duration)
+      timestamp: data.items[0].snippet.publishedAt
     };
 
     return details;
@@ -385,21 +386,6 @@ async function getYouTubeVideoDetails(url) {
     console.error('Error fetching YouTube video details:', error);
     return null; 
   }
-}
-
-
-function formatDuration(duration) {
-  const match = duration.match(/PT(\d+H)?(\d+M)?(\d+S)?/);
-  const hours = (match && match[1]) ? parseInt(match[1], 10) : 0;
-  const minutes = (match && match[2]) ? parseInt(match[2], 10) : 0;
-  const seconds = (match && match[3]) ? parseInt(match[3], 10) : 0;
-
-  const date = new Date(0, 0, 0, hours, minutes, seconds);
-  let formatted = (hours > 0 ? String(hours).padStart(2, '0') + ':' : '') +
-                  String(minutes).padStart(2, '0') + ':' +
-                  String(seconds).padStart(2, '0');
-  
-  return formatted.slice(0, 5); 
 }
 
 

@@ -88,10 +88,11 @@
 }
 .pass-submission-page form .info .youtube-input .information {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 1rem;
   font-size: 0.8rem;
+  margin-bottom: 0.5rem;
 }
 .pass-submission-page form .info .feel-speed {
   display: flex;
