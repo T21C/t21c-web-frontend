@@ -128,6 +128,7 @@ const LevelDetailPage = () => {
         })
         .filter(player => player !== null);
   
+  
       setPlayer(enrichedPlayers);
      
       } catch (error) {
