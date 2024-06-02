@@ -1,22 +1,23 @@
 import "./submissionpage.css"
 import { CompleteNav } from "../../components"
 import image from "../../assets/tuf-logo/logo.png"
+// eslint-disable-next-line no-unused-vars
 import { Link, useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next";
 
 
 const SubmissionPage = () => {
   const {t} = useTranslation()
-  const navigate = useNavigate()
+  //const navigate = useNavigate()
 
   const handleSubmitLevelClick = () => {
-    navigate('/submission/level');
-    // window.open("https://forms.gle/PzFxy8ebgCHTEzCt8", "_blank")
+    // navigate('/submission/level');
+    window.open("https://forms.gle/PzFxy8ebgCHTEzCt8", "_blank")
   };
 
   const handleSubmitPassClick = () => {
-    navigate('/submission/pass');
-    // window.open("https://lmelki28.github.io/adofaiSubmission_eng.html", "_blank");
+    // navigate('/submission/pass');
+    window.open("https://lmelki28.github.io/adofaiSubmission_eng.html", "_blank");
 
   };
   return (
