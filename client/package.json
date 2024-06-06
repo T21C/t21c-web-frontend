@@ -13,6 +13,7 @@
     "@discordapp/twemoji": "^15.0.3",
     "@splinetool/react-spline": "^2.2.6",
     "axios": "^1.6.8",
+    "easyformjs": "^1.0.1",
     "i18next": "^23.10.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

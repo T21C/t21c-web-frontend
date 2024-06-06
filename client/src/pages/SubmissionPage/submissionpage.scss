@@ -6,7 +6,6 @@
     min-height: 100vh;
     display: flex;
     position: relative;
-    flex-wrap: wrap;
   
     .wrapper-body {
       padding: 0 3rem;
@@ -82,7 +81,7 @@
       flex: 1;
       text-align: center;
       color: var(--color-white);
-      min-width: 30rem;
+      width: 100%;
     }
   
     .submission-passes{
@@ -90,7 +89,15 @@
       flex: 1;
       text-align: center;
       color: var(--color-white);
-      min-width: 30rem;
+      width: 100%;
+
   
     }
   }
+
+  @media (max-width: 670px) {
+    .submission-page{
+        flex-direction: column;
+    }
+
+}
