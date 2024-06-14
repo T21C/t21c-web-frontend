@@ -17,7 +17,7 @@ const SubmissionPage = () => {
 
   const handleSubmitPassClick = () => {
     // navigate('/submission/pass');
-    window.open("https://lmelki28.github.io/adofaiSubmission_eng.html", "_blank");
+    window.open("https://tuforumns-bc.github.io/", "_blank");
 
   };
   return (
