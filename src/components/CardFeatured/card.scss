@@ -1,0 +1,109 @@
+.card-tilt {
+    max-width: 25rem;
+    background-color: var(--color-white);
+    border: 2px solid var(--color-gray-2);
+    border-radius: 20px;
+    padding: 1rem;
+    box-sizing: border-box;
+    transform-style: preserve-3d;
+    transition: 0.2s all cubic-bezier(0.25, 0.36, 0.81, 0.72);
+    color: var(--color-black);
+  
+    perspective: 1000px;
+  
+    box-shadow: 0 10px 30px var(--color-black-t20);
+  
+    h1 {
+      margin-bottom: .3rem;
+      width: 100%;
+      text-overflow: ellipsis;
+      text-wrap: nowrap;
+      overflow: hidden;
+    }
+  
+    .song-name {
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1rem;
+      margin-bottom: 3rem;
+    }
+  
+    .artist-name {
+      color: var(--color-gray-1);
+      font-size: 0.9rem;
+    }
+  
+    button {
+      display: block;
+      margin-left: auto;
+      padding: 0.7rem 1rem;
+      border-radius: 5px;
+      border: 2px solid var(--color-purple-1);
+      color: var(--color-purple-1);
+      background-color: transparent;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.1s linear;
+  
+      &:hover {
+        background-color: var(--color-purple-1);
+        color: var(--color-white);
+      }
+  
+      &:active {
+        background-color: var(--color-gray-1);
+      }
+    }
+  
+    .img-container {
+      width: 100%;
+      max-height: 17rem;
+      overflow: hidden;
+      border-radius: 5px;
+      margin-bottom: 3rem;
+  
+      img {
+        width: 100%;
+        object-fit: contain;
+      }
+    }
+  }
+
+  
+
+@media (max-width: 420px) {
+    .card-tilt {
+      max-width: 20rem;
+  
+      .song-name {
+        margin-bottom: 1rem;
+      }
+    }
+  }
+  
+  @media (max-width: 375px) {
+    .card-tilt {
+      max-width: 18rem;
+    }
+  }
+  
+  @media (max-width: 340px) {
+    .card-tilt {
+      max-width: 16rem;
+    }
+  }
+  
+  @media (max-width: 300px) {
+    .card-tilt {
+      max-width: 15rem;
+      height: 24rem;
+  
+      h1,
+      p {
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+  

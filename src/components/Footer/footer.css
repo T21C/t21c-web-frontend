@@ -1,0 +1,47 @@
+footer {
+  background-color: var(--color-purple-1);
+  color: var(--color-white);
+  height: 100%;
+}
+footer h2 {
+  margin-bottom: 0.5rem;
+}
+footer p {
+  line-height: 1.2rem;
+}
+footer img {
+  width: 5rem;
+}
+footer .about-container {
+  max-width: 15rem;
+}
+footer .self-promotion-container {
+  max-width: 10rem;
+}
+footer .self-promotion-container svg {
+  margin-top: 1rem;
+  cursor: pointer;
+}
+footer .wrapper {
+  margin: 0 auto;
+  max-width: 80rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  padding: 2rem;
+  gap: 2rem;
+  color: var(--color-white);
+}
+footer .copy-right {
+  color: var(--color-white);
+  margin: 0 auto;
+  padding: 2rem 2rem;
+  text-wrap: wrap;
+  width: -moz-fit-content;
+  width: fit-content;
+}
+footer .link {
+  display: block;
+  padding-top: 0.5rem;
+  color: var(--color-white);
+}/*# sourceMappingURL=footer.css.map */

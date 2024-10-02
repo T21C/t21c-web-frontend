@@ -1,0 +1,114 @@
+{
+  "homePage": {
+    "featuredText": "스포트라이트",
+    "featuredLevel": [1, 2, 3],
+    "inputPlaceholder": "작곡가, 곡명, 제작자, #id로 검색",
+    "seeMore" : "더보기"
+  },
+
+  "levelPage": {
+    "inputPlaceholder": "작곡가, 곡명, 제작자, #id로 검색",
+
+    "toolTip": {
+      "legacy": "Legacy 난이도 토글",
+      "filter": "필터",
+      "sort": "정렬",
+      "reset": "초기화",
+      "recentAsc": "등재일 오름차순",
+      "recentDesc": "등자일 내림차순",
+      "difficultyAsc": "난도 오름차순",
+      "difficultyDesc": "난도 내림차순",
+      "random": "랜덤"
+    },
+    "settingExp": {
+      "headerSort": "정렬",
+      "headerFilter": "필터",
+      "filterDiffs": "난도",
+      "sortRecent": "등재일",
+      "sortDifficulty": "난도",
+      "sortRandom": "랜덤"
+    },
+    "infScroll": {
+      "loading": "로딩 중...",
+      "end": "리스트 끝에 도달했어요!"
+    }
+  },
+
+  "detailPage": {
+    "waiting" : "기다리는 중",
+    "#1Clears": {
+      "clear": "#1 클리어",
+      "score": "#1 점수",
+      "speed": "#1 배속",
+      "accuracy": "#1 정확도",
+      "numOClear": "클리어 수"
+    },
+    "dialog" : {
+      "fullInfo" : "전체 정보",
+      "artist": "작곡가",
+      "creator" : "제작자",
+      "charter" : "차터",
+      "team" : "팀",
+      "vfxer" : "이펙터",
+      "id" : "ID"
+    },
+
+    "leaderboard": {
+      "header": "순위표",
+      "notBeaten": "인류는 아직 이 레벨을 정복하지 못했어요...",
+
+      "toolTip": {
+        "time": "일시",
+        "accuracy": "정확도",
+        "score": "점수"
+      }
+    }
+  },
+
+  "submissionPage": {
+    "header": {
+      "headerPass": "레벨을 클리어했어요!",
+      "headerLevel": "레벨을 책정받고 싶어요!"
+    },
+
+    "button": {
+      "buttonPass": "클리어 제출",
+      "buttonLevel": "레벨 제출"
+    },
+
+    "RulesAGuide": "규칙 및 가이드라인 보기"
+  },
+
+  "cardFeaturedComponent": {
+    "by": "by {{creator}}",
+    "button": "레벨 확인"
+  },
+
+  "levelCardComponent": {
+    "creator": "제작자",
+    "clears": "클리어 수"
+  },
+
+  "navigationComponent": {
+    "levels": "레벨",
+    "submission": "제출"
+  },
+
+  "footerComponent": {
+    "aboutUs": {
+      "header": "소개",
+      "paragraph": "The Universal Forums(유니포럼)는 ADOFAI의 커스텀 레벨을 모아 난이도 책정을 진행하는 데 초점을 맞춘 커뮤니티 기반 단체입니다."
+    },
+    "links": {
+      "header": "링크",
+      "levels": "레벨",
+      "submission": "제출"
+    },
+    "shoutOut": {
+      "header": "크레딧",
+      "paragraph": "TUF Dev Team 웹사이트 제작. Adrian, t3ww 주도. 본 웹사이트의 코드는 GitHub에서 공개되어 있습니다."
+    },
+
+    "copyRight": "2024 TUF Dev Team, All Rights Reserved. 버전 - 1.0.0"
+  }
+}

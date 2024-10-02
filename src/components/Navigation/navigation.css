@@ -1,0 +1,200 @@
+.close-outer {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  z-index: 500;
+}
+
+.close-outer-language {
+  background: var(--color-black-t60);
+  z-index: 1500;
+}
+
+.language-dialog {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2000;
+  max-width: 20rem;
+  width: 100%;
+  animation: none;
+}
+.language-dialog .dialog {
+  background-color: var(--color-white);
+  padding: 1rem 0;
+  border-radius: 5px;
+}
+.language-dialog .dialog .list-language {
+  list-style: none;
+  padding: 1rem 1rem;
+  cursor: pointer;
+  color: var(--color-black);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  transition: all 50ms linear;
+}
+.language-dialog .dialog .list-language img {
+  width: 2rem;
+}
+.language-dialog .dialog .list-language:hover {
+  background-color: var(--color-purple-2);
+}
+
+.dialog-scale-up {
+  animation: scaleUpAnimation 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes scaleUpAnimation {
+  from {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+nav {
+  width: 100%;
+  background: var(--color-white-t6); /* White with low opacity */
+  -webkit-backdrop-filter: blur(5px);
+          backdrop-filter: blur(5px); /* Blur effect */
+  border-bottom: 1px solid;
+  border-color: var(--color-white-t10); /* Thin white border */
+  box-shadow: 0 4px 6px var(--color-black-t10);
+  color: var(--color-white);
+  z-index: 100;
+  position: fixed;
+  top: 0;
+}
+nav .wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 80rem;
+  margin: 0 auto;
+  padding: 1rem 1rem 1rem 2rem;
+}
+nav .wrapper .img-container {
+  width: 8rem;
+}
+nav .wrapper .img-container img {
+  height: 100%;
+  width: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+}
+nav .wrapper ul {
+  gap: 0.5rem;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  height: 1rem;
+}
+nav .wrapper ul li {
+  padding: 0.5rem;
+}
+nav .wrapper ul .nav-language {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+nav .wrapper ul .nav-language .nav-flag {
+  width: 2rem;
+  height: 2rem;
+}
+nav .wrapper ul .nav-language .language-dropdown {
+  padding: 0.5rem;
+  width: 3rem;
+  height: 3rem;
+}
+nav .wrapper .menu {
+  height: 2rem;
+  margin: 5px;
+  display: none;
+}
+nav .wrapper .menu:hover {
+  cursor: pointer;
+}
+
+.nav-menu-outer {
+  display: none;
+  transition: all 0.2s linear;
+}
+.nav-menu-outer ul {
+  list-style: none;
+}
+.nav-menu-outer .nav-language {
+  display: flex;
+  align-items: center;
+}
+.nav-menu-outer .nav-language .nav-flag {
+  width: 2rem;
+  height: 2rem;
+}
+.nav-menu-outer .nav-language .language-dropdown {
+  width: 2rem;
+  height: 2rem;
+  cursor: pointer;
+}
+
+.open-nav {
+  transform: translateX(0);
+}
+
+.close-nav {
+  transform: translateX(100%);
+}
+
+.nav-link {
+  color: var(--color-white);
+  text-decoration: none;
+}
+
+.active-link {
+  border-bottom: solid 2px var(--color-purple-1);
+}
+
+@media (max-width: 580px) {
+  nav .wrapper .nav-menu {
+    display: none;
+  }
+  nav .wrapper .menu {
+    display: block;
+  }
+  .nav-menu-outer {
+    display: block;
+    position: fixed;
+    top: 0;
+    right: 0;
+    z-index: 1000;
+    width: 40%;
+    height: 100%;
+    background: var(--color-white-t10); /* White with low opacity */
+    -webkit-backdrop-filter: blur(10px);
+            backdrop-filter: blur(10px); /* Blur effect */
+    border-left: 1px solid var(--color-white-t10);
+    box-shadow: 0 4px 6px var(--color-black-t10);
+    color: var(--color-white);
+  }
+  .nav-menu-outer .close {
+    width: 2rem;
+    margin: 1.5rem;
+    float: right;
+  }
+  .nav-menu-outer .close:hover {
+    cursor: pointer;
+  }
+  .nav-menu-outer ul {
+    margin-top: 70%;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+  .nav-menu-outer ul li {
+    padding: 1rem;
+  }
+}/*# sourceMappingURL=navigation.css.map */

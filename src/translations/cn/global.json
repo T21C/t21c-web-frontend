@@ -1,0 +1,103 @@
+{
+  "homePage": {
+    "featuredText": "特色关卡",
+    "featuredLevel": [1, 2, 3],
+    "inputPlaceholder": "搜索艺术家、歌曲、创建者、#id",
+    "seeMore": "查看更多"
+  },
+
+  "levelPage": {
+    "inputPlaceholder": "搜索艺术家、歌曲、创建者、#id",
+
+    "toolTip": {
+      "legacy": "切换传统难度",
+      "filter": "过滤",
+      "sort": "排序",
+      "reset": "重置",
+      "recentAsc": "最近升序",
+      "recentDesc": "最近降序",
+      "difficultyAsc": "难度升序",
+      "difficultyDesc": "难度降序",
+      "random": "随机"
+    },
+    "settingExp": {
+      "headerSort": "排序",
+      "headerFilter": "过滤",
+      "filterDiffs": "难度",
+      "sortRecent": "最近",
+      "sortDifficulty": "难度",
+      "sortRandom": "随机"
+    },
+    "infScroll": {
+      "loading": "请稍候...",
+      "end": "已到达列表末尾"
+    }
+  },
+  "detailPage": {
+    "waiting": "等待中",
+    "#1Clears": {
+      "clear": "#1 击破",
+      "score": "#1 得分",
+      "speed": "#1 倍速",
+      "accuracy": "#1 精准度",
+      "numOClear": "击破次数"
+    },
+    "dialog": {
+      "fullInfo": "完整信息",
+      "artist": "艺术家",
+      "creator": "谱师",
+      "team" : "团队",
+      "charter": "谱面作者",
+      "vfxer": "视觉特效师",
+      "id": "编号"
+    },
+    "leaderboard": {
+      "header": "排名",
+      "notBeaten": "该关卡尚未被打败...",
+      "toolTip": {
+        "time": "日期",
+        "accuracy": "精准度",
+        "score": "得分"
+      }
+    }
+  },
+  "submissionPage": {
+    "header": {
+      "headerPass": "我通过了一个关卡！",
+      "headerLevel": "我想让我的关卡被评级！"
+    },
+    "button": {
+      "buttonPass": "提交通关",
+      "buttonLevel": "提交关卡"
+    },
+    "RulesAGuide": "查看规则和指南"
+  },
+  "cardFeaturedComponent": {
+    "by": "关卡由 {{creator}} 创建",
+    "button": "检查关卡"
+  },
+  "levelCardComponent": {
+    "creator": "创建者",
+    "clears": "通过次数"
+  },
+  "navigationComponent": {
+    "levels": "关卡",
+    "submission": "提交"
+  },
+  "footerComponent": {
+    "aboutUs": {
+      "header": "关于我们",
+      "paragraph": "Universal Forums 是一个社区驱动的组织，专注于收集和评级游戏冰与火之舞的自定义关卡难度。"
+    },
+    "links": {
+      "header": "链接",
+      "levels": "关卡",
+      "submission": "提交"
+    },
+    "shoutOut": {
+      "header": "制作人员名单",
+      "paragraph": "网站由 TUF 开发团队创建，Adrian 和 t3ww 领导开发。此网站的代码在 GitHub 上可用。"
+    },
+    "copyRight": "2024 TUF 开发团队版权所有。版本 - 1.0.0"
+  }
+}

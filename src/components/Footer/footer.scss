@@ -1,0 +1,58 @@
+footer {
+
+    background-color: var(--color-purple-1);
+    color: var(--color-white);
+    height: 100%;
+  
+    h2 {
+      margin-bottom: 0.5rem;
+    }
+  
+    p {
+      line-height: 1.2rem;
+    }
+  
+    img{
+      width: 5rem;
+    }
+  
+    .about-container {
+      max-width: 15rem;
+    }
+  
+    .self-promotion-container {
+      max-width: 10rem;
+
+      svg {
+        margin-top: 1rem;
+        cursor: pointer;
+
+      }
+    }
+  
+    .wrapper {
+      margin: 0 auto;
+      max-width: 80rem;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      padding: 2rem;
+      gap: 2rem;
+      color: var(--color-white);
+    }
+  
+    .copy-right {
+      color: var(--color-white);
+      margin: 0 auto;
+      padding: 2rem 2rem;
+      text-wrap: wrap;
+      width: fit-content;
+    }
+    .link{
+      display: block;
+      padding-top: .5rem;
+      color: var(--color-white)
+    }
+  }
+  
+  

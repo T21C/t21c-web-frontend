@@ -1,0 +1,114 @@
+{
+    "homePage": {
+      "featuredText": "Spotlights",
+      "featuredLevel": [1, 2, 3],
+      "inputPlaceholder": "Search artist, song, creator, #id",
+      "seeMore" : "See More"
+    },
+  
+    "levelPage": {
+      "inputPlaceholder": "Search artist, song, creator, #id",
+  
+      "toolTip": {
+        "legacy": "Toggle Legacy Diff",
+        "filter": "Filter",
+        "sort": "Sort",
+        "reset": "Reset",
+        "recentAsc": "Recent Ascending",
+        "recentDesc": "Recent Descending",
+        "difficultyAsc": "Difficulty Ascending",
+        "difficultyDesc": "Difficulty Descending",
+        "random": "Random"
+      },
+      "settingExp": {
+        "headerSort": "Sort",
+        "headerFilter": "Filter",
+        "filterDiffs": "Diffs",
+        "sortRecent": "Recent",
+        "sortDifficulty": "Difficulty",
+        "sortRandom": "Random"
+      },
+      "infScroll": {
+        "loading": "Hold tight...",
+        "end": "End of list reached"
+      }
+    },
+  
+    "detailPage": {
+      "waiting" : "Waiting",
+      "#1Clears": {
+        "clear": "#1 Clear",
+        "score": "#1 Score",
+        "speed": "#1 Speed",
+        "accuracy": "#1 Accuracy",
+        "numOClear": "Number of clears"
+      },
+      "dialog" : {
+        "fullInfo" : "Full Info",
+        "artist": "Artist",
+        "creator" : "Creator",
+        "team" : "Team",
+        "charter" : "Charter",
+        "vfxer" : "VFXer",
+        "id" : "ID"
+      },
+  
+      "leaderboard": {
+        "header": "Ranks",
+        "notBeaten": "This level hasn't been beaten yet...",
+  
+        "toolTip": {
+          "time": "Date",
+          "accuracy": "Accuracy",
+          "score": "Score"
+        }
+      }
+    },
+  
+    "submissionPage": {
+      "header": {
+        "headerPass": "I want to submit a pass",
+        "headerLevel": "I want my level to be rated!"
+      },
+  
+      "button": {
+        "buttonPass": "Submit a pass",
+        "buttonLevel": "Submit a level"
+      },
+  
+      "RulesAGuide": "View rules and guidelines"
+    },
+  
+    "cardFeaturedComponent": {
+      "by": "Level by {{creator}}",
+      "button": "Check Level"
+    },
+  
+    "levelCardComponent": {
+      "creator": "Creator",
+      "clears": "Clears"
+    },
+  
+    "navigationComponent": {
+      "levels": "Levels",
+      "submission": "Submissions"
+    },
+  
+    "footerComponent": {
+      "aboutUs": {
+        "header": "About Us",
+        "paragraph": "The Universal Forums is a community-driven organization focused on collecting and rating difficulties on custom levels of the game ADOFAI."
+      },
+      "links": {
+        "header": "Links",
+        "levels": "Levels",
+        "submission": "Submissions"
+      },
+      "shoutOut": {
+        "header": "Credits",
+        "paragraph": "Website made by the TUF Dev Team, development led by Adrian and t3ww. Code of this website is made available on GitHub."
+      },
+  
+      "copyRight": "2024 TUF Dev Team, All Rights Reserved. Version - 1.0.0"
+    }
+  }

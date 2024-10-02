@@ -1,0 +1,228 @@
+
+.level-card-rev {
+    position: relative;
+    display: flex;
+    justify-content: left;
+    gap: 1rem;
+    min-height: 4rem;
+    padding: .5rem;
+    border-radius: 0px;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    align-items: center;
+    flex-wrap: wrap;
+    border-bottom: 1px solid;
+    border-color: var(--color-gray-3);
+    transition: all .1s ease-in-out;
+  
+    &:hover {
+      background-color: var(--color-white-t30);
+    }
+  
+    .level-exp {
+      width: fit-content;
+      font-size: 0.9rem;
+      color: var(--color-white-t80);
+    }
+  
+    .level-desc {
+      font-size: 1.2rem;
+    }
+  
+    .level-id {
+      color: var(--color-white-t30);
+      font-size: 0.6rem;
+    }
+  
+    .id{
+      position: absolute;
+      top: 3px;
+      left: 3px;
+    }
+  
+    .level-exp,
+    .level-desc,
+    .level-id {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  
+    .img-wrapper {
+      width: 3rem;
+  
+      img {
+        object-fit: contain;
+        height: 100%;
+        width: 100%;
+      }
+    }
+  
+    .artist-wrapper {
+      overflow: hidden;
+      width: 200px;
+    }
+    .clears-wrapper {
+      overflow: hidden;
+  
+      width: 50px;
+    }
+  
+    // .song-wrapper {
+    //   overflow: hidden;
+  
+    //   width: 150px;
+    // }
+  
+    .creator-wrapper {
+      flex: 2;
+      overflow: hidden;
+      min-width: 200px;
+      padding-right: 50px;
+  
+      .group {
+        width: 100%;
+        align-items: center;
+        display: flex;
+        gap: 0.3rem;
+      }
+    }
+  
+    .downloads-wrapper {
+      flex: 1;
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+      cursor: pointer;
+      justify-content: flex-end;
+  
+      a {
+        display: block;
+        height: 2.5rem;
+        width: 2.5rem;
+  
+        svg {
+          height: 100%;
+          width: 100%;
+          border-radius: 4px;
+          cursor: pointer;
+          transition: all 0.2s;
+  
+          &:hover {
+            transform: scale(1.3);
+          }
+        }
+      }
+    }
+  }
+
+  @media (max-width: 795px){
+    .level-card-rev{
+
+
+      .downloads-wrapper{
+        min-width: 200px;
+      }
+    }
+  }
+  
+  @media (max-width: 545px) {
+    .level-card-rev {
+
+
+      .downloads-wrapper{
+        min-width: 100px;
+      }
+
+      .artist-wrapper {
+        overflow: hidden;
+        width: 150px;
+      }
+  }
+}
+  
+@media (max-width: 400px) {
+  .level-card-rev{
+
+
+    .level-exp {
+      font-size: 0.8rem;
+    }
+  
+    .level-desc {
+      font-size: 1rem;
+    }
+  
+    .level-id {
+      font-size: 0.6rem;
+    }
+
+    .downloads-wrapper{
+      min-width: 70px;
+    }
+
+    .artist-wrapper {
+      overflow: hidden;
+      width: 120px;
+    }
+
+    .img-wrapper {
+      width: 2rem;
+
+    }
+
+
+    .downloads-wrapper {
+  
+      a {
+        height: 2rem;
+        width: 2rem;
+      }
+    }
+  }
+}
+
+@media (max-width: 380px) {
+  .level-card-rev{
+
+
+    .level-exp {
+      font-size: 0.6rem;
+    }
+  
+    .level-desc {
+      font-size: .9rem;
+    }
+  
+    .level-id {
+      font-size: 0.5rem;
+    }
+
+    .downloads-wrapper{
+      min-width: 60px;
+    }
+
+    .artist-wrapper {
+      overflow: hidden;
+      width: 110px;
+    }
+
+    .img-wrapper {
+      width: 1.5rem;
+
+    }
+
+    .creator-wrapper{
+      min-width: 100px;
+    }
+
+
+    .downloads-wrapper {
+  
+      a {
+        height: 2rem;
+        width: 2rem;
+      }
+    }
+  }
+}
