@@ -4,6 +4,9 @@ import image from "../../assets/placeholder/3.png";
 import {GoogleFormSubmitter} from "easyformjs"
 import { useEffect, useState } from "react";
 import { checkLevel, getYouTubeThumbnailUrl, getYouTubeVideoDetails } from "../../Repository/RemoteRepository";
+import calcAcc from "../../components/Misc/CalcAcc";
+import { getScoreV2 } from "../../components/Misc/CalcScore";
+import { parseJudgements } from "../../components/Misc/ParseJudgements";
 
 const PassSubmissionPage = () => {
   const initialFormState = {
@@ -21,8 +24,12 @@ const PassSubmissionPage = () => {
   };
 
   const [form, setForm] = useState(initialFormState);
-
-  const [level, setLevel] = useState('');
+  const [accuracy, setAccuracy] = useState("");
+  const [score, setScore] = useState("");
+  const [judgements, setJudgements] = useState([]);
+  const [canSwitch, setCanSwitch] = useState(false);
+  
+  const [level, setLevel] = useState(null);
   const [levelLoading, setLevelLoading] = useState(true);
 
   const [youtubeDetail, setYoutubeDetail] = useState({
@@ -31,25 +38,39 @@ const PassSubmissionPage = () => {
     timestamp: '-',
   });
 
+
+  useEffect(() => {
+    if (level) {
+      
+      updateAccuracy(form);
+      updateScore(form);
+    }
+  }, [level]);
+
   useEffect(() => {
     const { levelId } = form;
+    setLevelLoading(true);
+    setLevel(null);
 
+      
     if (!levelId) {
-      setLevel('');
+      setLevel(null);
       setLevelLoading(false);
       return;
     }
 
     const cleanLevelId = levelId.startsWith('#') ? levelId.substring(1) : levelId;
-    setLevelLoading(true);
 
     checkLevel(cleanLevelId)
-      .then((res) => {
-        setLevel(res ? cleanLevelId : '');
+      .then((data) => {
+        
+        setLevel(data ? data : null);
         setLevelLoading(false);
+        console.log();
+        
       })
       .catch(() => {
-        setLevel('');
+        setLevel(null);
         setLevelLoading(false);
       });
   }, [form.levelId]);
@@ -72,11 +93,67 @@ const PassSubmissionPage = () => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
+
     setForm((prev) => ({
       ...prev,
       [name]: value,
     }));
+
+    const updatedForm = {
+      ...form,
+      [name]: value,
+    };
+
+
+
+
+    updateAccuracy(updatedForm);
+
+    updateScore(updatedForm);
+    
+    
   };
+
+  const updateAccuracy = (updatedForm) => {
+    
+    const newJudgements = parseJudgements(updatedForm);
+    setJudgements(newJudgements)
+
+      // Calculate accuracy if all elements are valid integers
+    if (newJudgements.every(Number.isInteger)) {
+        setAccuracy((calcAcc(newJudgements)*100).toString().slice(0,7)+"%");
+    } else {
+        setAccuracy(null); // Reset if invalid input
+    }
+    };
+
+  const updateScore = (updatedForm) => {
+
+    const newJudgements = parseJudgements(updatedForm);
+
+    const passData = {
+        speed: updatedForm.speed,
+        judgements: newJudgements, // Use new judgements here
+    };
+
+    const chartData = level;
+
+    // Check if levelId is present and all judgements are valid
+    if (!form.levelId) {
+        setScore("Level ID is required.");
+    } else if (!newJudgements.every(Number.isInteger)) {
+        setScore("Not all judgements are filled.");
+    } else if (!Object.values(passData).every(value => value !== null)) {
+        setScore("Not enough pass info.");
+    } else if (passData && chartData) {
+        console.log(passData);
+        setScore(getScoreV2(passData, chartData).toFixed(2));
+    } else {
+        setScore("Insufficient data to calculate score.");
+    }
+};
+
 
   const googleForm = new GoogleFormSubmitter("https://docs.google.com/forms/u/0/d/e/1FAIpQLSczH_8JFCE8W-TUiKFgBNoBke9g1XLW2TlihTm-_hfY03ldSw/formResponse")
   const handleSubmit = (e) => {
@@ -142,6 +219,7 @@ const PassSubmissionPage = () => {
                       >
                         <path d="M16.476 10.283A7.917 7.917 0 1 1 8.56 2.366a7.916 7.916 0 0 1 7.916 7.917zm-5.034-2.687a2.845 2.845 0 0 0-.223-1.13A2.877 2.877 0 0 0 9.692 4.92a2.747 2.747 0 0 0-1.116-.227 2.79 2.79 0 0 0-1.129.227 2.903 2.903 0 0 0-1.543 1.546 2.803 2.803 0 0 0-.227 1.128v.02a.792.792 0 0 0 1.583 0v-.02a1.23 1.23 0 0 1 .099-.503 1.32 1.32 0 0 1 .715-.717 1.223 1.223 0 0 1 .502-.098 1.18 1.18 0 0 1 .485.096 1.294 1.294 0 0 1 .418.283 1.307 1.307 0 0 1 .281.427 1.273 1.273 0 0 1 .099.513 1.706 1.706 0 0 1-.05.45 1.546 1.546 0 0 1-.132.335 2.11 2.11 0 0 1-.219.318c-.126.15-.25.293-.365.424a4.113 4.113 0 0 0-.451.639 3.525 3.525 0 0 0-.342.842 3.904 3.904 0 0 0-.12.995v.035a.792.792 0 0 0 1.583 0v-.035a2.324 2.324 0 0 1 .068-.59 1.944 1.944 0 0 1 .187-.463 2.49 2.49 0 0 1 .276-.39c.098-.115.209-.237.c-"
                       />
+                      
                     </svg>
                     <p style={{ color }}>
                       {!form.levelId
@@ -157,12 +235,23 @@ const PassSubmissionPage = () => {
                 })()}
               </div>
               <a
-                href={`/leveldetail?id=${level}`}
+                href={level ? (level["id"] == form.levelId ? `/leveldetail?id=${level["id"]}`: "#" ): "#"}
+                onClick={e => {
+                  if (!level){
+                    e.preventDefault();
+                  }
+                  else if (level) {
+                    if(level["id"] != form.levelId){
+                      e.preventDefault();
+                    }
+                  }
+                }}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="button-goto"
                 style={{
                   backgroundColor: !form.levelId ? "#ffc107" : levelLoading ? "#ffc107" : level ? "#28a745" : "#dc3545",
+                  cursor: !form.levelId ? "not-allowed": levelLoading ? "wait": level ? "pointer" : "not-allowed",
                 }}
               >
                 Go to level
@@ -294,8 +383,8 @@ const PassSubmissionPage = () => {
             </div>
 
             <div className="acc-score">
-              <p>Accuracy: -</p>
-              <p>Score: -</p>
+              <p>Accuracy: {accuracy !== null ? accuracy : 'N/A'}</p>
+              <p>Score: {score}</p>
             </div>
           </div>
 

@@ -16,8 +16,8 @@ const SubmissionPage = () => {
   };
 
   const handleSubmitPassClick = () => {
-    // navigate('/submission/pass');
-    window.open("https://tuforumns-bc.github.io/", "_blank");
+    
+    navigate('/submission/pass');
 
   };
   return (

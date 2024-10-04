@@ -1,17 +1,19 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import { Suspense, lazy } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import LevelSubmissionPage from "./pages/LevelSubmissionPage/LevelSubmissionPage.jsx";
 import PassSubmissionPage from "./pages/PassSubmissionPage/PassSubmissionPage.jsx";
+
 const HomePage = lazy(() => import("./pages/HomePage/HomePage.jsx"));
 const LevelDetailPage = lazy(()=> import ("./pages/LevelDetailPage/LevelDetailPage.jsx"))
 const SubmissionPage = lazy(()=> import("./pages/SubmissionPage/SubmissionPage.jsx"))
 const LevelPageRev = lazy(()=> import ("./pages/LevelPage/LevelPageRev.jsx"))
 
 function App() {
-
+  
   return (
-    <Suspense
+    <>   
+     <Suspense
       fallback={
         <div
           style={{
@@ -37,6 +39,7 @@ function App() {
         {/* <Route path='/leaderboard' element={<LeaderboardPage/>}/> */}
       </Routes>
     </Suspense>
+    </>
   );
 }
 

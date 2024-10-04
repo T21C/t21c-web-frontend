@@ -250,12 +250,11 @@ async function fetchLevelInfo(id) {
 async function checkLevel(id) {
   try {
     const res = await axios.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`)
-    console.log(res)
     if(id === "#"){
       return
     }
     if(res){
-      return id
+      return res.data
     }
 
   } catch (error) {

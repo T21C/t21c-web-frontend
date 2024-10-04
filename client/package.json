@@ -11,9 +11,11 @@
   },
   "dependencies": {
     "@discordapp/twemoji": "^15.0.3",
+    "@react-oauth/google": "^0.12.1",
     "@splinetool/react-spline": "^2.2.6",
-    "axios": "^1.6.8",
+    "axios": "^1.7.7",
     "easyformjs": "^1.0.1",
+    "firebase": "^10.14.0",
     "i18next": "^23.10.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
