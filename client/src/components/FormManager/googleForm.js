@@ -27,8 +27,9 @@ class GoogleFormSubmitter {
     }
 
     async submit(accessToken) {
-        console.log("sending", this.prepareFormBody());
-
+        const body = this.prepareFormBody()
+        console.log("sending ", body);
+        
         try {
             const response = await fetch(this.apiUrl, {
                 method: 'POST',
@@ -36,7 +37,7 @@ class GoogleFormSubmitter {
                     'Authorization': `Bearer ${accessToken}`,
                     'Content-Type': 'application/x-www-form-urlencoded',
                 },
-                body: this.prepareFormBody()
+                body: body
             });
 
             const data = await response.json();

@@ -11,6 +11,7 @@ const port = 3001;
 
 app.use(cors()); // Enable CORS for all routes
 app.use(express.json());
+app.use(express.urlencoded({ extended: true })); 
 
 // Helper function to verify access token
 const verifyAccessToken = async (accessToken) => {
@@ -106,6 +107,10 @@ app.post('/api/form-submit', async (req, res) => {
   // Prepare to forward the form submission to Google Apps Script
   const appScriptUrl = process.env.GOOGLE_APPS_SCRIPT_URL; // Read the script URL from .env
 
+  console.log("request received: ", req);
+  
+  console.log("sending", new URLSearchParams(req.body).toString());
+  
   try {
     const formResponse = await fetch(appScriptUrl, {
       method: 'POST',
