@@ -1,12 +1,13 @@
 import { CompleteNav } from "../../components";
 import "./passsubmission.css";
 import image from "../../assets/placeholder/3.png";
-import {GoogleFormSubmitter} from "easyformjs"
+import { GoogleFormSubmitter } from "../../components/FormManager/googleForm";
 import { useEffect, useState } from "react";
 import { checkLevel, getYouTubeThumbnailUrl, getYouTubeVideoDetails } from "../../Repository/RemoteRepository";
 import calcAcc from "../../components/Misc/CalcAcc";
 import { getScoreV2 } from "../../components/Misc/CalcScore";
 import { parseJudgements } from "../../components/Misc/ParseJudgements";
+import { useAuth } from "../../context/AuthContext";
 
 const PassSubmissionPage = () => {
   const initialFormState = {
@@ -23,6 +24,7 @@ const PassSubmissionPage = () => {
     late: '',
   };
 
+  const { user } = useAuth();
   const [form, setForm] = useState(initialFormState);
   const [accuracy, setAccuracy] = useState("");
   const [score, setScore] = useState("");
@@ -154,26 +156,31 @@ const PassSubmissionPage = () => {
     }
 };
 
-
-  const googleForm = new GoogleFormSubmitter("https://docs.google.com/forms/u/0/d/e/1FAIpQLSczH_8JFCE8W-TUiKFgBNoBke9g1XLW2TlihTm-_hfY03ldSw/formResponse")
+  const scriptUrl = "https://script.google.com/macros/s/AKfycbzQt66nhy5wyOB8MxG-LFpkvrnf4BLCTXQBAV41hNM7oNIqUWWyjXAWhQuas093L61ZXg/exec"
+  const googleForm = new GoogleFormSubmitter(scriptUrl)
   const handleSubmit = (e) => {
-    e.preventDefault();
-    googleForm.setDetail('1501102710', form.levelId)
-    googleForm.setDetail('863109178', form.speed)
-    googleForm.setDetail('1017646927', form.leaderboardName)
-    googleForm.setDetail('1622600394', form.feelingRating)
-    googleForm.setDetail('662649267', youtubeDetail.title)
-    googleForm.setDetail('188528298', form.videoLink)
-    googleForm.setDetail('1922370523', youtubeDetail.timestamp)
-    googleForm.setDetail('1155066920', form.tooEarly)
-    googleForm.setDetail('1594163639', form.early)
-    googleForm.setDetail('1084592024', form.ePerfect)
-    googleForm.setDetail('169503435', form.perfect)
-    googleForm.setDetail('1398756494', form.lPerfect)
-    googleForm.setDetail('17648355', form.late)
-    googleForm.submit();
+    if(!user){
+      console.log("no user");
 
-    // setForm(initialFormState)
+      return 
+    }
+    e.preventDefault();
+    googleForm.setDetail('id', form.levelId)
+    googleForm.setDetail('*/Speed Trial', form.speed)
+    googleForm.setDetail('Passer', form.leaderboardName)
+    googleForm.setDetail('Feeling Difficulty', form.feelingRating)
+    googleForm.setDetail('Title', youtubeDetail.title)
+    googleForm.setDetail('*/Raw Video ID', form.videoLink)
+    googleForm.setDetail('*/Raw Time (GMT)', youtubeDetail.timestamp)
+    googleForm.setDetail('Early!!', form.tooEarly)
+    googleForm.setDetail('Early!', form.early)
+    googleForm.setDetail('EPerfect!', form.ePerfect)
+    googleForm.setDetail('Perfect!', form.perfect)
+    googleForm.setDetail('LPerfect!', form.lPerfect)
+    googleForm.setDetail('Late!', form.late)
+    googleForm.setDetail('Late!!', "0")
+    console.log(googleForm)
+    googleForm.submit(user.access_token)
   }
 
   return (
