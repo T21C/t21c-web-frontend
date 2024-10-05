@@ -8,6 +8,7 @@ import calcAcc from "../../components/Misc/CalcAcc";
 import { getScoreV2 } from "../../components/Misc/CalcScore";
 import { parseJudgements } from "../../components/Misc/ParseJudgements";
 import { useAuth } from "../../context/AuthContext";
+import {FetchIcon} from "../../components/FetchIcon/FetchIcon"
 
 const PassSubmissionPage = () => {
   const initialFormState = {
@@ -29,8 +30,8 @@ const PassSubmissionPage = () => {
   const [accuracy, setAccuracy] = useState("");
   const [score, setScore] = useState("");
   const [judgements, setJudgements] = useState([]);
-  const [canSwitch, setCanSwitch] = useState(false);
-  
+  const [isInvalidFeelingRating, setIsInvalidFeelingRating] = useState(false); // Track validation
+
   const [level, setLevel] = useState(null);
   const [levelLoading, setLevelLoading] = useState(true);
 
@@ -40,6 +41,10 @@ const PassSubmissionPage = () => {
     timestamp: '-',
   });
 
+  const validateFeelingRating = (value) => {
+    const regex = /^$|^[PGUpgu][1-9]$|^[PGUpgu]1[0-9]$|^[PGUpgu]20$/; // Validate P,G,U followed by 1-20
+    return regex.test(value);
+  };
 
   useEffect(() => {
     if (level) {
@@ -107,7 +112,16 @@ const PassSubmissionPage = () => {
       [name]: value,
     };
 
+    if (name === 'feelingRating') {
+      const isValid = validateFeelingRating(value);
+      setIsInvalidFeelingRating(!isValid); // Update validation state
 
+      if (!isValid) {
+        e.target.style.backgroundColor = 'yellow';
+      } else {
+        e.target.style.backgroundColor = ''; // Reset to default
+      }
+    }
 
 
     updateAccuracy(updatedForm);
@@ -216,26 +230,7 @@ const PassSubmissionPage = () => {
                     : '#dc3545';
                   return (
                     <>
-                      <svg
-                        fill={color}
-                        width="30px"
-                        height="30px"
-                        viewBox="-1.7 0 20.4 20.4"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M16.476 10.283A7.917 7.917 0 1 1 8.56 2.366a7.916 7.916 0 0 1 7.916 7.917zm-5.034-2.687a2.845 2.845 0 0 0-.223-1.13A2.877 2.877 0 0 0 9.692 4.92a2.747 2.747 0 0 0-1.116-.227 2.79 2.79 0 0 0-1.129.227 2.903 2.903 0 0 0-1.543 1.546 2.803 2.803 0 0 0-.227 1.128v.02a.792.792 0 0 0 1.583 0v-.02a1.23 1.23 0 0 1 .099-.503 1.32 1.32 0 0 1 .715-.717 1.223 1.223 0 0 1 .502-.098 1.18 1.18 0 0 1 .485.096 1.294 1.294 0 0 1 .418.283 1.307 1.307 0 0 1 .281.427 1.273 1.273 0 0 1 .099.513 1.706 1.706 0 0 1-.05.45 1.546 1.546 0 0 1-.132.335 2.11 2.11 0 0 1-.219.318c-.126.15-.25.293-.365.424a4.113 4.113 0 0 0-.451.639 3.525 3.525 0 0 0-.342.842 3.904 3.904 0 0 0-.12.995v.035a.792.792 0 0 0 1.583 0v-.035a2.324 2.324 0 0 1 .068-.59 1.944 1.944 0 0 1 .187-.463 2.49 2.49 0 0 1 .276-.39c.098-.115.209-.237.c-"
-                      />
-                      
-                    </svg>
-                    <p style={{ color }}>
-                      {!form.levelId
-                        ? 'Waiting'
-                        : levelLoading
-                        ? 'Fetching'
-                        : level
-                        ? 'Verified'
-                        : 'Unverified'}
-                    </p>
+                    <FetchIcon form={form} levelLoading={levelLoading} level={level} color={color} />
                   </>
                   );
                 })()}
@@ -260,7 +255,14 @@ const PassSubmissionPage = () => {
                   cursor: !form.levelId ? "not-allowed": levelLoading ? "wait": level ? "pointer" : "not-allowed",
                 }}
               >
-                Go to level
+                
+        {!form.levelId
+          ? 'Input Level ID'
+          : levelLoading
+          ? 'Fetching'
+          : level
+          ? 'Go to level'
+          : 'Level not found'}
               </a>
             </div>
           </div>
@@ -310,13 +312,28 @@ const PassSubmissionPage = () => {
               onChange={handleInputChange}
             />
 
-            <input
-              type="text"
-              placeholder="Feeling rating"
-              name="feelingRating"
-              value={form.feelingRating}
-              onChange={handleInputChange}
-            />
+      <div style={{ position: 'relative', display: 'inline-block', marginRight: '2rem', width:"80%"}}>
+        <input
+          type="text"
+          placeholder="Feeling rating (ex. G12~G13)"
+          name="feelingRating"
+          value={form.feelingRating}
+          onChange={handleInputChange}
+        />
+        {isInvalidFeelingRating && (
+          <span
+            style={{
+              color: 'red',
+              marginLeft: '10px',
+              position: 'absolute',
+              top: '50%',
+              transform: 'translateY(-50%)',
+            }}
+          >
+            ?
+          </span>
+        )}
+      </div>
           </div>
 
           <div className="accuracy">
@@ -347,6 +364,7 @@ const PassSubmissionPage = () => {
                 <p>L Perfect</p>
                 <input type="text"
                   name="lPerfect"
+                  placeholder="number"
                   value={form.lPerfect}
                   onChange={handleInputChange}
                 />
