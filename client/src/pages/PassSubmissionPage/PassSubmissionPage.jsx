@@ -156,8 +156,7 @@ const PassSubmissionPage = () => {
     }
 };
 
-  const scriptUrl = "https://script.google.com/macros/s/AKfycbzQt66nhy5wyOB8MxG-LFpkvrnf4BLCTXQBAV41hNM7oNIqUWWyjXAWhQuas093L61ZXg/exec"
-  const googleForm = new GoogleFormSubmitter(scriptUrl)
+ const googleForm = new GoogleFormSubmitter()
   const handleSubmit = (e) => {
     if(!user){
       console.log("no user");

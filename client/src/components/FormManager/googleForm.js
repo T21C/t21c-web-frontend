@@ -3,8 +3,8 @@ function gIT(i) {
 }
 
 class GoogleFormSubmitter {
-    constructor(appScriptUrl) {
-        this.appScriptUrl = appScriptUrl; // Store the Apps Script URL
+    constructor() {
+        this.apiUrl = `${import.meta.env.VITE_API_URL}/api/form-submit`; // Read the API URL from the environment variable
         this.details = {};
     }
 
@@ -26,21 +26,30 @@ class GoogleFormSubmitter {
         return formBody.join("&"); // Prepare the form body for submission
     }
 
-    submit(accessToken) {
+    async submit(accessToken) {
         console.log("sending", this.prepareFormBody());
-        
-            fetch(this.appScriptUrl, {
-                mode: 'no-cors',
+
+        try {
+            const response = await fetch(this.apiUrl, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
                     'Content-Type': 'application/x-www-form-urlencoded',
-                    'User-Agent': 'insomnia/8.6.1'
                 },
                 body: this.prepareFormBody()
-            }).then(response => console.log("Form submitted successfully", response))
-              .catch(error => console.error("Failed to submit form", error));
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                console.log("Form submitted successfully", data);
+            } else {
+                console.error("Failed to submit form", data.error);
+            }
+        } catch (error) {
+            console.error("Error during form submission", error);
         }
+    }
 }
 
 export { gIT, GoogleFormSubmitter };
