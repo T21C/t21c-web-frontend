@@ -46,6 +46,11 @@ const PassSubmissionPage = () => {
     return regex.test(value);
   };
 
+  const truncateString = (str, maxLength) => {
+    if (!str) return "";
+    return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
+  };
+
   useEffect(() => {
     if (level) {
       
@@ -73,7 +78,7 @@ const PassSubmissionPage = () => {
         
         setLevel(data ? data : null);
         setLevelLoading(false);
-        console.log();
+        console.log(data);
         
       })
       .catch(() => {
@@ -163,7 +168,6 @@ const PassSubmissionPage = () => {
     } else if (!Object.values(passData).every(value => value !== null)) {
         setScore("Not enough pass info.");
     } else if (passData && chartData) {
-        console.log(passData);
         setScore(getScoreV2(passData, chartData).toFixed(2));
     } else {
         setScore("Insufficient data to calculate score.");
@@ -192,7 +196,6 @@ const PassSubmissionPage = () => {
     googleForm.setDetail('LPerfect!', form.lPerfect)
     googleForm.setDetail('Late!', form.late)
     googleForm.setDetail('Late!!', "0")
-    console.log(googleForm)
     googleForm.submit(user.access_token)
   }
 
@@ -219,6 +222,14 @@ const PassSubmissionPage = () => {
             />
 
             <div className="information">
+                {level ? 
+                (<div className="chart-info"><h2 className="chart-info-sub">{truncateString(level["song"], 30)}</h2>
+                 <div className="chart-info-sub"><span>{truncateString(level["artist"], 15)}</span><span>{truncateString(level["creator"], 20)}</span></div></div>)
+                 : 
+                (<div className="chart-info"><h2 className="chart-info-sub" style={{color: "#aaa"}}>Song name</h2>
+                 <div className="chart-info-sub"><span style={{color: "#aaa"}}>Artist</span><span style={{color: "#aaa"}}>Charter</span></div></div>)
+                 } 
+
               <div className="verified">
                 {(() => {
                   const color = !form.levelId

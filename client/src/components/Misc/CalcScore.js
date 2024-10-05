@@ -40,29 +40,20 @@ const getScoreV2Mtp = (inputs) => {
 
         const xacc = calcAcc(inp, true)
         const xaccPercentage = xacc * 100;
-        console.log(`X Accuracy: ${xaccPercentage}`);
     
         if (xaccPercentage < 95) {
-            console.log("Returning 1 from position: xacc < 95");
             return 1;
         }
         else if (xaccPercentage < 99) {
-            const result = (xaccPercentage - 94) ** 1.6 / 12.1326 + 0.9176;
-            console.log(`Returning ${result} from position: 95 <= xacc < 99`);
-            return result;
+            return (xaccPercentage - 94) ** 1.6 / 12.1326 + 0.9176;
         }
         else if (xaccPercentage < 99.8) {
-            const result = (xaccPercentage - 97) ** 1.5484 - 0.9249;
-            console.log(`Returning ${result} from position: 99 <= xacc < 99.8`);
-            return result;
+            return (xaccPercentage - 97) ** 1.5484 - 0.9249;
         }
         else if (xaccPercentage < 100) {
-            const result = (xaccPercentage - 99) * 5;
-            console.log(`Returning ${result} from position: 99.8 <= xacc < 100`);
-            return result;
+            return (xaccPercentage - 99) * 5;
         }
         else if (xaccPercentage === 100) {
-            console.log("Returning 6 from position: xacc == 100");
             return 6;
         }
     }
@@ -115,15 +106,11 @@ const getScore = (passData, chartData) => {
         speedMtp = getSpeedMtp(speed)
         score = base * xaccMtp * speedMtp
     }
-    console.log(score);
     return score
 }
 
 
 export const getScoreV2 = (passData, chartData) => {
-    
-    console.log(passData);
-    console.log(chartData);
     
     
 
