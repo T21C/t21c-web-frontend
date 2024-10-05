@@ -31,15 +31,13 @@ const PassSubmissionPage = () => {
   const [score, setScore] = useState("");
   const [judgements, setJudgements] = useState([]);
   const [isInvalidFeelingRating, setIsInvalidFeelingRating] = useState(false); // Track validation
-
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [isFormValidDisplay, setIsFormValidDisplay] = useState({});
+  const [submitAttempt, setSubmitAttempt] = useState(false);
   const [level, setLevel] = useState(null);
   const [levelLoading, setLevelLoading] = useState(true);
 
-  const [youtubeDetail, setYoutubeDetail] = useState({
-    title: '-',
-    channelName: '-',
-    timestamp: '-',
-  });
+  const [youtubeDetail, setYoutubeDetail] = useState(null)
 
   const validateFeelingRating = (value) => {
     const regex = /^$|^[PGUpgu][1-9]$|^[PGUpgu]1[0-9]$|^[PGUpgu]20$/; // Validate P,G,U followed by 1-20
@@ -50,6 +48,31 @@ const PassSubmissionPage = () => {
     if (!str) return "";
     return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
   };
+
+  const validateForm = () => {
+    const requiredFields = ['levelId', 'videoLink', 'leaderboardName', 'feelingRating', 'ePerfect', 'perfect', 'lPerfect', 'tooEarly', 'early', 'late'];
+    const validationResult = {};
+    const displayValidationRes = {}
+    requiredFields.forEach(field => {
+      validationResult[field] = (form[field].trim() !== ''); // Check if each field is filled
+    });
+
+    validationResult["levelId"] = !(level === null || level === undefined);
+    
+    for (const field in validationResult) {
+      displayValidationRes[field] = submitAttempt ? validationResult[field] : true;
+    }
+
+    console.log(validationResult);
+    console.log(submitAttempt)
+    
+    setIsFormValidDisplay(displayValidationRes); // Set the validity object
+    setIsFormValid(validationResult)
+  };
+
+  useEffect(() => {
+    validateForm(); // Run validation on every form change
+  }, [form, level, submitAttempt]);
 
   useEffect(() => {
     if (level) {
@@ -94,11 +117,7 @@ const PassSubmissionPage = () => {
       setYoutubeDetail(
         res
           ? res
-          : {
-              title: '-',
-              channelName: '-',
-              timestamp: '-',
-            }
+          : null
       );
     });
   }, [form.videoLink]);
@@ -164,26 +183,31 @@ const PassSubmissionPage = () => {
     if (!form.levelId) {
         setScore("Level ID is required.");
     } else if (!newJudgements.every(Number.isInteger)) {
-        setScore("Not all judgements are filled.");
+        setScore("Not all judgements are filled");
     } else if (!Object.values(passData).every(value => value !== null)) {
-        setScore("Not enough pass info.");
+        setScore("Not enough pass info");
     } else if (passData && chartData) {
         setScore(getScoreV2(passData, chartData).toFixed(2));
     } else {
-        setScore("Insufficient data to calculate score.");
+        setScore("Insufficient data to calculate score");
     }
 };
 
  const googleForm = new GoogleFormSubmitter()
   const handleSubmit = (e) => {
+    e.preventDefault();
     if(!user){
       console.log("no user");
 
       return 
     }
-    e.preventDefault();
+    if (!Object.values(isFormValid).every(Boolean)) {
+      setSubmitAttempt(true)
+      console.log("incomplete form, returning")
+      return
+    };
     googleForm.setDetail('id', form.levelId)
-    googleForm.setDetail('*/Speed Trial', form.speed)
+    googleForm.setDetail('*/Speed Trial', form.speed? form.speed : 1.0)
     googleForm.setDetail('Passer', form.leaderboardName)
     googleForm.setDetail('Feeling Difficulty', form.feelingRating)
     googleForm.setDetail('Title', youtubeDetail.title)
@@ -204,7 +228,7 @@ const PassSubmissionPage = () => {
       <CompleteNav />
       <div className="background-level"></div>
 
-      <form>
+      <form style={{marginTop: "4rem"}}>
         <div className="img-wrapper">
           <img src={getYouTubeThumbnailUrl(form.videoLink) || image} alt="" />
         </div>
@@ -218,14 +242,16 @@ const PassSubmissionPage = () => {
               placeholder="Level Id"
               name="levelId"
               value={form.levelId}
-              onChange={handleInputChange}
+              onChange={handleInputChange}  
+              style={{ borderColor: isFormValidDisplay.levelId ? "" : "red" }}
+            
             />
 
             <div className="information">
-                {level ? 
+                {(level && form.levelId) ? 
                 (<div className="chart-info"><h2 className="chart-info-sub">{truncateString(level["song"], 30)}</h2>
                  <div className="chart-info-sub"><span>{truncateString(level["artist"], 15)}</span><span>{truncateString(level["creator"], 20)}</span></div></div>)
-                 : 
+                : 
                 (<div className="chart-info"><h2 className="chart-info-sub" style={{color: "#aaa"}}>Song name</h2>
                  <div className="chart-info-sub"><span style={{color: "#aaa"}}>Artist</span><span style={{color: "#aaa"}}>Charter</span></div></div>)
                  } 
@@ -285,9 +311,10 @@ const PassSubmissionPage = () => {
               name="videoLink"
               value={form.videoLink}
               onChange={handleInputChange}
+              style={{ borderColor: isFormValidDisplay.videoLink ? "" : "red" }}
             />
-
-            <div className="information">
+            {youtubeDetail? 
+            (<div className="information">
               <div className="yt-info">
                 <h4>YT Title</h4>
                 <p>{youtubeDetail.title}</p>
@@ -302,15 +329,21 @@ const PassSubmissionPage = () => {
                 <h4>Timestamp</h4>
                 <p>{youtubeDetail.timestamp}</p>
               </div>
-            </div>
+            </div>)
+            :(
+              <div className="yt-info">
+                <p style={{color: "#aaa"}}>No link provided</p>
+                <br />
+                </div>)}
+            
 
             <input
-              style={{ maxWidth: '15rem' }}
               type="text"
               placeholder="Alt Leaderboard Name"
               name="leaderboardName"
               value={form.leaderboardName}
               onChange={handleInputChange}
+              style={{ borderColor: isFormValidDisplay.leaderboardName ? "" : "red",  maxWidth: '15rem', marginTop: "0.5rem"  }}
             />
           </div>
 
@@ -330,6 +363,7 @@ const PassSubmissionPage = () => {
           name="feelingRating"
           value={form.feelingRating}
           onChange={handleInputChange}
+          style={{ borderColor: isFormValidDisplay.feelingRating ? "" : "red" }}
         />
         {isInvalidFeelingRating && (
           <span
@@ -353,10 +387,11 @@ const PassSubmissionPage = () => {
                 <p>E Perfect</p>
                 <input
                   type="text"
-                  placeholder="number"
+                  placeholder="#"
                   name="ePerfect"
                   value={form.ePerfect}
                   onChange={handleInputChange}
+                  style={{ borderColor: isFormValidDisplay.ePerfect ? "" : "red" }}
                 />
               </div>
 
@@ -364,10 +399,11 @@ const PassSubmissionPage = () => {
                 <p>Perfect</p>
                 <input
                   type="text"
-                  placeholder="number"
+                  placeholder="#"
                   name="perfect"
                   value={form.perfect}
                   onChange={handleInputChange}
+                  style={{ borderColor: isFormValidDisplay.perfect ? "" : "red" }}
                 />
               </div>
 
@@ -375,9 +411,10 @@ const PassSubmissionPage = () => {
                 <p>L Perfect</p>
                 <input type="text"
                   name="lPerfect"
-                  placeholder="number"
+                  placeholder="#"
                   value={form.lPerfect}
                   onChange={handleInputChange}
+                  style={{ borderColor: isFormValidDisplay.lPerfect ? "" : "red" }}
                 />
               </div>
             </div>
@@ -387,10 +424,11 @@ const PassSubmissionPage = () => {
                 <p>Too Early</p>
                 <input
                   type="text"
-                  placeholder="number"
+                  placeholder="#"
                   name="tooEarly"
                   value={form.tooEarly}
                   onChange={handleInputChange}
+                  style={{ borderColor: isFormValidDisplay.tooEarly ? "" : "red" }}
                 />
               </div>
 
@@ -398,10 +436,11 @@ const PassSubmissionPage = () => {
                 <p>Early</p>
                 <input
                   type="text"
-                  placeholder="number"
+                  placeholder="#"
                   name="early"
                   value={form.early}
                   onChange={handleInputChange}
+                  style={{ borderColor: isFormValidDisplay.early ? "" : "red" }}
                 />
               </div>
 
@@ -409,10 +448,11 @@ const PassSubmissionPage = () => {
                 <p>Late</p>
                 <input
                   type="text"
-                  placeholder="number"
+                  placeholder="#"
                   name="late"
                   value={form.late}
                   onChange={handleInputChange}
+                  style={{ borderColor: isFormValidDisplay.late ? "" : "red" }}
                 />
               </div>
             </div>

@@ -64,7 +64,7 @@
   gap: 1rem;
 }
 .pass-submission-page form .info .id-input .information .chart-info {
-  
+  text-align: center;
   align-items: center;
   font-weight: bold;
   width: 140%
