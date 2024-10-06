@@ -1,4 +1,4 @@
-.pass-submission-page {
+.level-submission-page {
   background-color: var(--color-black);
   width: 100vw;
   min-height: 100vh;
@@ -7,7 +7,7 @@
   place-items: center;
   overflow-x: hidden;
 }
-.pass-submission-page form {
+.level-submission-page form {
   background-color: var(--color-white);
   max-width: 60rem;
   border-radius: 8px;
@@ -17,16 +17,16 @@
   margin: 1rem;
 }
 @media (max-width: 900px) {
-  .pass-submission-page form {
+  .level-submission-page form {
     width: 90%;
     flex-direction: column;
     margin-top: 6rem;
   }
 }
-.pass-submission-page form .img-wrapper {
+.level-submission-page form .img-wrapper {
   flex: 2;
 }
-.pass-submission-page form .img-wrapper img {
+.level-submission-page form .img-wrapper img {
   width: 100%;
   height: 100%;
   -o-object-fit: cover;
@@ -34,14 +34,14 @@
   -o-object-position: center;
      object-position: center;
 }
-.pass-submission-page form .info {
+.level-submission-page form .info {
   flex: 3;
   padding: 1rem;
 }
-.pass-submission-page form .info h1 {
+.level-submission-page form .info h1 {
   margin-bottom: 1rem;
 }
-.pass-submission-page form .info input {
+.level-submission-page form .info input {
   background-color: transparent;
   border: 0;
   border-bottom: 3px solid var(--color-purple-2);
@@ -49,56 +49,18 @@
   padding: 0.5rem 0.2rem;
   font-size: 1rem;
 }
-.pass-submission-page form .info .id-input {
+.level-submission-page form .info .youtube-input {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 2rem;
+  margin-top: 0.5rem;
+  
 }
-.pass-submission-page form .info .id-input input {
+.level-submission-page form .info .youtube-input input {
   max-height: 1rem;
 }
-.pass-submission-page form .info .id-input .information {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-.pass-submission-page form .info .id-input .information .chart-info {
-  text-align: center;
-  align-items: center;
-  font-weight: bold;
-  width: 140%
-}
-.pass-submission-page form .info .id-input .information .chart-info .chart-info-sub {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-}
-.pass-submission-page form .info .id-input .information .verified {
-  display: flex;
-  align-items: center;
-  font-weight: bold;
-}
-.pass-submission-page form .info .id-input .information .button-goto {
-  border-radius: 3px;
-  border: none;
-  padding: 0.5rem;
-  font-weight: bold;
-  width: 100%;
-  color: var(--color-white);
-  text-decoration: none;
-  text-align: center;
-}
-.pass-submission-page form .info .youtube-input {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 2rem;
-}
-.pass-submission-page form .info .youtube-input input {
-  max-height: 1rem;
-}
-.pass-submission-page form .info .youtube-input .information {
+.level-submission-page form .info .information {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -106,15 +68,15 @@
   font-size: 0.8rem;
   margin-bottom: 0.5rem;
 }
-.pass-submission-page form .info .feel-speed {
+.level-submission-page form .info .feel-speed {
   display: flex;
   gap: 1rem;
   margin-bottom: 2.5rem;
 }
-.pass-submission-page form .info .feel-speed input {
+.level-submission-page form .info .feel-speed input {
   width: 100%;
 }
-.pass-submission-page form .info .accuracy {
+.level-submission-page form .info .accuracy {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -124,58 +86,58 @@
   border-radius: 5px;
   margin-bottom: 2rem;
 }
-.pass-submission-page form .info .accuracy .top, .pass-submission-page form .info .accuracy .bottom {
+.level-submission-page form .info .accuracy .top, .level-submission-page form .info .accuracy .bottom {
   display: flex;
   gap: 2rem;
   justify-content: space-around;
 }
-.pass-submission-page form .info .accuracy .top input, .pass-submission-page form .info .accuracy .bottom input {
+.level-submission-page form .info .accuracy .top input, .level-submission-page form .info .accuracy .bottom input {
   padding: 0;
   width: 100%;
 }
-.pass-submission-page form .info .accuracy .top .each-accuracy {
+.level-submission-page form .info .accuracy .top .each-accuracy {
   display: flex;
   align-items: center;
   text-wrap: nowrap;
   gap: 0.5rem;
 }
-.pass-submission-page form .info .accuracy .top .each-accuracy:nth-child(1) {
+.level-submission-page form .info .accuracy .top .each-accuracy:nth-child(1) {
   flex: 4;
 }
-.pass-submission-page form .info .accuracy .top .each-accuracy:nth-child(2) {
+.level-submission-page form .info .accuracy .top .each-accuracy:nth-child(2) {
   flex: 5;
 }
-.pass-submission-page form .info .accuracy .top .each-accuracy:nth-child(3) {
+.level-submission-page form .info .accuracy .top .each-accuracy:nth-child(3) {
   flex: 4;
 }
-.pass-submission-page form .info .accuracy .bottom {
+.level-submission-page form .info .accuracy .bottom {
   justify-content: center;
 }
-.pass-submission-page form .info .accuracy .bottom .each-accuracy {
+.level-submission-page form .info .accuracy .bottom .each-accuracy {
   display: flex;
   align-items: center;
   text-wrap: nowrap;
   gap: 0.5rem;
 }
-.pass-submission-page form .info .accuracy .bottom .each-accuracy:nth-child(1) {
+.level-submission-page form .info .accuracy .bottom .each-accuracy:nth-child(1) {
   max-width: 7rem;
   flex: 1;
 }
-.pass-submission-page form .info .accuracy .bottom .each-accuracy:nth-child(2) {
+.level-submission-page form .info .accuracy .bottom .each-accuracy:nth-child(2) {
   max-width: 7rem;
   flex: 1;
 }
-.pass-submission-page form .info .accuracy .bottom .each-accuracy:nth-child(3) {
+.level-submission-page form .info .accuracy .bottom .each-accuracy:nth-child(3) {
   max-width: 7rem;
   flex: 1;
 }
-.pass-submission-page form .info .accuracy .acc-score {
+.level-submission-page form .info .accuracy .acc-score {
   display: flex;
   gap: 2rem;
   font-weight: bold;
   font-size: 0.9rem;
 }
-.pass-submission-page form .info .submit {
+.level-submission-page form .info .submit {
   width: 100%;
   background-color: var(--color-purple-3);
   border: none;
@@ -188,12 +150,12 @@
   margin: 0 auto;
   transition: all 100ms linear;
 }
-.pass-submission-page form .info .submit:hover {
+.level-submission-page form .info .submit:hover {
   background-color: var(--color-purple-2);
 }
-.pass-submission-page form .info .submit:active {
+.level-submission-page form .info .submit:active {
   background-color: var(--color-purple-1);
-}/*# sourceMappingURL=passsubmission.css.map */
+}/*# sourceMappingURL=levelsubmission.css.map */
 
 .tooltip-container {
   position: relative;

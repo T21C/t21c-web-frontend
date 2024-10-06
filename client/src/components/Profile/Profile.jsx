@@ -1,28 +1,35 @@
 import React, { useEffect, useState } from 'react';
+import { useAuth } from '../../context/AuthContext'; // Assuming your AuthContext is in this path
 import './profile.css';
-import { useAuth } from '../../context/AuthContext';
-
 
 function Profile() {
   const { profile, login, logout } = useAuth(); // Access profile, login, and logout from the context
-  const [imageUrl, setImageUrl] = useState(null); // State to store the fetched image URL
+  const [imageSrc, setImageSrc] = useState(null); // Local state for image source
+
 
   useEffect(() => {
-    if (profile && profile.picture) {
-      // Fetch the image separately
-      fetch(profile.picture, {
-        mode: 'cors', // Enable CORS mode
-      })
+    if (profile && profile.imageBlob) {
+      // Check if the image blob is valid (i.e., not empty)
+      fetch(profile.imageBlob)
         .then((response) => response.blob())
         .then((blob) => {
-          const objectURL = URL.createObjectURL(blob); // Convert the blob to an object URL
-          setImageUrl(objectURL); // Set the image URL in state
+            const objectURL = URL.createObjectURL(blob);
+            
+          if (blob.type != "text/html; charset=utf-8") {
+            
+            setImageSrc(objectURL);
+          } 
+          else {
+            setImageSrc('failed'); 
+          }
         })
         .catch((error) => {
           console.error('Error fetching the image:', error);
+          setImageSrc('failed'); // Handle errors by resetting the image source
         });
     }
   }, [profile]);
+
 
   return (
     <div className="profile-container">
@@ -32,9 +39,14 @@ function Profile() {
             <h3>{profile.name}</h3>
             <h5>{profile.email}</h5>
           </div>
-          {imageUrl ? ( // Render the fetched image once it's available
-            <img src={imageUrl} alt="Profile" className="profile-avatar" />
-          ) : (
+          {imageSrc ? (
+            imageSrc == "failed" ? (
+              <p>No image</p>
+            ):(
+               // Render the fetched image once it's available
+            <img src={imageSrc} alt="Profile" className="profile-avatar" />)
+          ) 
+          : (
             <p>Loading image...</p>
           )}
           <button className="btn-login profile-button" onClick={logout}>

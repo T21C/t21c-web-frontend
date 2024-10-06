@@ -52,11 +52,12 @@ const LevelSubmissionPage = () => {
     requiredFields.forEach(field => {
       validationResult[field] = (form[field].trim() !== '');
     });
-  
+    validationResult.directLink = validationResult["dlLink"] || validationResult["workshopLink"]
+
     for (const field in validationResult) {
       displayValidationRes[field] = submitAttempt ? validationResult[field] : true;
     }
-  
+    
     setIsFormValidDisplay(displayValidationRes);
     setIsFormValid(validationResult);
   };
@@ -93,7 +94,7 @@ const LevelSubmissionPage = () => {
       [name]: value,
     };
 
-    if (name === 'suggested') {
+    if (name === 'diff') {
       const isValid = validateFeelingRating(value);
       setIsInvalidFeelingRating(!isValid); // Update validation state
 
@@ -129,12 +130,13 @@ const LevelSubmissionPage = () => {
   googleForm.setDetail('videoLink', form.vidLink);
   googleForm.setDetail('directDL', form.dlLink);
   googleForm.setDetail('wsLink', form.workshopLink);
+  //googleForm.setDetail('_submitterEmail', user.)
   
   googleForm.submit(user.access_token);
 };
 
   return (
-    <div className="pass-submission-page">
+    <div className="level-submission-page">
       <CompleteNav />
       <div className="background-level"></div>
 
@@ -144,88 +146,119 @@ const LevelSubmissionPage = () => {
         </div>
 
         <div className="info">
-    <h1>Submit chart</h1>
+          <h1>Submit chart</h1>
 
-    <div className="input-group">
-      <input
-        type="text"
-        placeholder="Artist"
-        name="artist"
-        value={form.artist}
-        onChange={handleInputChange}
-      />
-      <input
-        type="text"
-        placeholder="Charter"
-        name="charter"
-        value={form.charter}
-        onChange={handleInputChange}
-      />
-      <input
-        type="text"
-        placeholder="Creator"
-        name="creator"
-        value={form.creator}
-        onChange={handleInputChange}
-      />
-      <input
-        type="text"
-        placeholder="Difficulty"
-        name="diff"
-        value={form.diff}
-        onChange={handleInputChange}
-      />
-    </div>
+          <div className="information">
+          <input
+            type="text"
+            placeholder="Artist"
+            name="artist"
+            value={form.artist}
+            onChange={handleInputChange}
+            style={{ borderColor: isFormValidDisplay.artist ? "" : "red" }}
+          />
+          <div style={{width: "10%"}}>-</div>
+          <input
+            type="text"
+            placeholder="Song"
+            name="song"
+            value={form.song}
+            onChange={handleInputChange}
+            style={{ borderColor: isFormValidDisplay.song ? "" : "red" }}
+          />
+        </div>
+        <div className="youtube-input">
+                <input
+                  type="text"
+                  placeholder="Video Link"
+                  name="vidLink"
+                  value={form.vidLink}
+                  onChange={handleInputChange}
+                  style={{ borderColor: isFormValidDisplay.vidLink ? "" : "red" }}
+                />
+                {youtubeDetail? 
+                (<div className="information">
+                  <div className="yt-info">
+                    <h4>YT Title</h4>
+                    <p>{youtubeDetail.title}</p>
+                  </div>
 
-    <div className="input-group">
-      <input
-        type="text"
-        placeholder="Song"
-        name="song"
-        value={form.song}
-        onChange={handleInputChange}
-      />
-      <input
-        type="text"
-        placeholder="Team"
-        name="team"
-        value={form.team}
-        onChange={handleInputChange}
-      />
-    </div>
+                  <div className="yt-info">
+                    <h4>Channel</h4>
+                    <p>{youtubeDetail.channelName}</p>
+                  </div>
 
-    <div className="input-group">
-      <input
-        type="text"
-        placeholder="VFX Artist"
-        name="vfxer"
-        value={form.vfxer}
-        onChange={handleInputChange}
-      />
-      <input
-        type="text"
-        placeholder="Video Link"
-        name="vidLink"
-        value={form.vidLink}
-        onChange={handleInputChange}
-      />
-      <input
-        type="text"
-        placeholder="Download Link"
-        name="dlLink"
-        value={form.dlLink}
-        onChange={handleInputChange}
-      />
-      <input
-        type="text"
-        placeholder="Workshop Link"
-        name="workshopLink"
-        value={form.workshopLink}
-        onChange={handleInputChange}
-      />
-    </div>
+                  <div className="yt-info">
+                    <h4>Timestamp</h4>
+                    <p>{youtubeDetail.timestamp}</p>
+                  </div>
+                </div>)
+                :(
+                  <div className="yt-info">
+                    <p style={{color: "#aaa"}}>No link provided</p>
+                    <br />
+                    </div>)}
+        </div>
+        <div className="input-group">
+          <input
+            type="text"
+            placeholder="Charter"
+            name="charter"
+            value={form.charter}
+            onChange={handleInputChange}
+          />
+          <input
+            type="text"
+            placeholder="Difficulty"
+            name="diff"
+            value={form.diff}
+            onChange={handleInputChange}
+            style={{ borderColor: isFormValidDisplay.diff ? "" : "red" }}
+          />
+          <input
+            type="text"
+            placeholder="Creator"
+            name="creator"
+            value={form.creator}
+            onChange={handleInputChange}
+            style={{ borderColor: isFormValidDisplay.creator ? "" : "red" }}
+          />
+          <input
+            type="text"
+            placeholder="Team"
+            name="team"
+            value={form.team}
+            onChange={handleInputChange}
+          />
+        </div>
 
-          <button className="submit" onClick={handleSubmit}>Submit</button>
+        <div className="input-group">
+          <input
+            type="text"
+            placeholder="VFX Artist"
+            name="vfxer"
+            value={form.vfxer}
+            onChange={handleInputChange}
+          />
+          <input
+            type="text"
+            placeholder="Download Link"
+            name="dlLink"
+            value={form.dlLink}
+            onChange={handleInputChange}
+            style={{ borderColor: isFormValidDisplay.directLink ? "" : "red" }}
+          />
+          <input
+            type="text"
+            placeholder="Workshop Link"
+            name="workshopLink"
+            value={form.workshopLink}
+            onChange={handleInputChange}
+            style={{ borderColor: isFormValidDisplay.directLink ? "" : "red" }}
+          />
+        </div>
+
+            <button className="submit" onClick={handleSubmit}>Submit</button>
         </div>
       </form>
     </div>

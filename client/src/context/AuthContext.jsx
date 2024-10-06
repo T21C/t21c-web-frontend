@@ -10,6 +10,22 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); // user state
   const [profile, setProfile] = useState(null); // profile state
 
+  // Fetch the image when setting the profile
+  const fetchProfileImage = async (profileData) => {
+    if (profileData && profileData.picture) {
+      try {
+        const response = await fetch(profileData.picture, { mode: 'cors' });
+        const blob = await response.blob();
+        const objectURL = URL.createObjectURL(blob);
+        return objectURL; // Return the image URL as a blob URL
+      } catch (error) {
+        console.error('Error fetching the image:', error);
+        return null; // Handle error by returning null
+      }
+    }
+    return null; // If no profile picture, return null
+  };
+
   // Check localStorage for user info on mount
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
@@ -24,8 +40,12 @@ export const AuthProvider = ({ children }) => {
           });
   
           if (response.data.valid) {
+            // Fetch profile image
+            const imageUrl = await fetchProfileImage(parsedUser.profile);
+            const updatedProfile = { ...parsedUser.profile, imageBlob: imageUrl }; // Add image URL to profile
+
             setUser(parsedUser); // Restore user object
-            setProfile(parsedUser.profile); // Restore user profile info if available
+            setProfile(updatedProfile); // Restore user profile info with the image
           } else {
             console.log('Token is invalid, clearing local storage');
             localStorage.removeItem('user'); // Clear invalid user from localStorage
@@ -43,7 +63,6 @@ export const AuthProvider = ({ children }) => {
       checkTokenValidity();
     }
   }, []);
-  
 
   // Google login logic
   const login = useGoogleLogin({
@@ -55,17 +74,20 @@ export const AuthProvider = ({ children }) => {
         });
 
         if (response.data.valid) {
+          // Fetch profile image
+          const imageUrl = await fetchProfileImage(response.data.profile);
+          const updatedProfile = { ...response.data.profile, imageBlob: imageUrl }; // Add image URL to profile
+
           const userData = {
             access_token: codeResponse.access_token, // Store relevant user info
-            profile: response.data.profile, // Assuming profile is returned from your API
+            profile: updatedProfile, // Store profile with the image URL
           };
 
           // Store user data in localStorage
           localStorage.setItem('user', JSON.stringify(userData));
 
           setUser(userData); // Store the user object with the access token
-          setProfile(response.data.profile); // Store user profile info directly from server
-          console.log("Setting profile data", response.data.profile);
+          setProfile(updatedProfile); // Store user profile info directly from server
         } else {
           console.error('Invalid token');
         }
