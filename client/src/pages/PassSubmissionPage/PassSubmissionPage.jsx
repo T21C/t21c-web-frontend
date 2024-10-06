@@ -356,27 +356,26 @@ const PassSubmissionPage = () => {
               onChange={handleInputChange}
             />
 
-      <div style={{ position: 'relative', display: 'inline-block', marginRight: '2rem', width:"80%"}}>
+      <div style={{ position: 'relative', display: 'flex', marginRight: '2rem', width:"80%", justifyContent: "center"}}>
         <input
           type="text"
-          placeholder="Feeling rating (ex. G12~G13)"
+          placeholder="Feeling rating (ex. G12)"
           name="feelingRating"
           value={form.feelingRating}
           onChange={handleInputChange}
           style={{ borderColor: isFormValidDisplay.feelingRating ? "" : "red" }}
         />
         {isInvalidFeelingRating && (
-          <span
-            style={{
+          <div className="tooltip-container">
+          <span style={{
               color: 'red',
               marginLeft: '10px',
               position: 'absolute',
               top: '50%',
               transform: 'translateY(-50%)',
-            }}
-          >
-            ?
-          </span>
+            }}>?</span>
+          <span className="tooltip">Unknown difficulty, will submit but please make sure it's readable by the managers</span>
+        </div>
         )}
       </div>
           </div>

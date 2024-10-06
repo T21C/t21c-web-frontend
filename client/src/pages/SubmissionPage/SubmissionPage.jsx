@@ -6,13 +6,14 @@ import { Link, useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next";
 
 
+
 const SubmissionPage = () => {
   const {t} = useTranslation()
+  const navigate = useNavigate();
   //const navigate = useNavigate()
 
   const handleSubmitLevelClick = () => {
-    // navigate('/submission/level');
-    window.open("https://forms.gle/PzFxy8ebgCHTEzCt8", "_blank")
+    navigate('/submission/level');
   };
 
   const handleSubmitPassClick = () => {
