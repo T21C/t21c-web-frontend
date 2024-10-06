@@ -91,7 +91,9 @@ app.post('/api/check-token', async (req, res) => {
 // Form submission endpoint
 app.post('/api/form-submit', async (req, res) => {
   const accessToken = req.headers.authorization.split(' ')[1]; // Extract access token from headers
-
+  const formType = req.headers['x-form-type'];  // Extract X-Form-Type from client request
+  console.log("form type extracted", formType);
+  
   // Verify the access token first
   const tokenInfo = await verifyAccessToken(accessToken);
 
@@ -116,7 +118,7 @@ app.post('/api/form-submit', async (req, res) => {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${accessToken}`, // Forward the access token to Google Apps Script
-        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Type': 'application/x-www-form-urlencoded',  // Custom header indicating form type
       },
       body: new URLSearchParams(req.body).toString(), // Send the form data
     });
@@ -133,6 +135,8 @@ app.post('/api/form-submit', async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);

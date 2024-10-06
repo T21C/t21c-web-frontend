@@ -106,7 +106,7 @@ const LevelSubmissionPage = () => {
   };
 
 
- const googleForm = new GoogleFormSubmitter()
+ const googleForm = new GoogleFormSubmitter("chart")
   const handleSubmit = (e) => {
   e.preventDefault();
   if (!user) {
@@ -119,16 +119,16 @@ const LevelSubmissionPage = () => {
     return;
   }
 
-  googleForm.setDetail('Artist', form.artist);
-  googleForm.setDetail('Charter', form.charter);
-  googleForm.setDetail('Creator', form.creator);
-  googleForm.setDetail('Difficulty', form.diff);
-  googleForm.setDetail('Song', form.song);
-  googleForm.setDetail('Team', form.team);
-  googleForm.setDetail('VFX Artist', form.vfxer);
-  googleForm.setDetail('Video Link', form.vidLink);
-  googleForm.setDetail('Download Link', form.dlLink);
-  googleForm.setDetail('Workshop Link', form.workshopLink);
+  googleForm.setDetail('artist', form.artist);
+  googleForm.setDetail('charter', form.charter);
+  googleForm.setDetail('creator', form.creator);
+  googleForm.setDetail('diff', form.diff);
+  googleForm.setDetail('song', form.song);
+  googleForm.setDetail('team', form.team);
+  googleForm.setDetail('vfxer', form.vfxer);
+  googleForm.setDetail('videoLink', form.vidLink);
+  googleForm.setDetail('directDL', form.dlLink);
+  googleForm.setDetail('wsLink', form.workshopLink);
   
   googleForm.submit(user.access_token);
 };
@@ -144,7 +144,7 @@ const LevelSubmissionPage = () => {
         </div>
 
         <div className="info">
-    <h1>New Submission</h1>
+    <h1>Submit chart</h1>
 
     <div className="input-group">
       <input

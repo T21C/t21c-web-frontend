@@ -193,7 +193,7 @@ const PassSubmissionPage = () => {
     }
 };
 
- const googleForm = new GoogleFormSubmitter()
+ const googleForm = new GoogleFormSubmitter("pass")
   const handleSubmit = (e) => {
     e.preventDefault();
     if(!user){

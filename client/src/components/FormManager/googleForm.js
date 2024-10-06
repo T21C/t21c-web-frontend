@@ -3,9 +3,10 @@ function gIT(i) {
 }
 
 class GoogleFormSubmitter {
-    constructor() {
+    constructor(type) {
         this.apiUrl = `${import.meta.env.VITE_API_URL}/api/form-submit`; // Read the API URL from the environment variable
         this.details = {};
+        this.type = type
     }
 
     setDetail(key, value) {
@@ -23,6 +24,7 @@ class GoogleFormSubmitter {
             const encodeValue = encodeURIComponent(this.details[each]);
             formBody.push(encodeKey + "=" + encodeValue);
         }
+        formBody.push(encodeURIComponent('X-Form-Type')+"="+encodeURIComponent(this.type))
         return formBody.join("&"); // Prepare the form body for submission
     }
 
@@ -36,6 +38,7 @@ class GoogleFormSubmitter {
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
                     'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-Form-Type': this.type,
                 },
                 body: body
             });
