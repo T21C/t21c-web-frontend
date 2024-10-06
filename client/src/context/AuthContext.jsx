@@ -14,7 +14,9 @@ export const AuthProvider = ({ children }) => {
   const fetchProfileImage = async (profileData) => {
     if (profileData && profileData.picture) {
       try {
-        const response = await fetch(profileData.picture, { mode: 'cors' });
+        const response = await fetch(
+          profileData.picture, 
+          {referrerPolicy: 'no-referrer'});
         const blob = await response.blob();
         const objectURL = URL.createObjectURL(blob);
         return objectURL; // Return the image URL as a blob URL
