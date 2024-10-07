@@ -113,12 +113,14 @@ const getScore = (passData, chartData) => {
 export const getScoreV2 = (passData, chartData) => {
     
     
-
+    console.log(passData)
     const inputs = passData['judgements'];
     const scoreOrig = getScore(passData, chartData);
-    const mtp = getScoreV2Mtp(inputs);
-//if (passData['isNoHoldTap'])     not implemented in the google form
-//    {mtp *= 0.9};
+    var mtp = getScoreV2Mtp(inputs);
+    if (!passData['isNoHoldTap']) 
+       {
+        mtp *= 0.9
+    };
     
     return (scoreOrig * mtp)
 }

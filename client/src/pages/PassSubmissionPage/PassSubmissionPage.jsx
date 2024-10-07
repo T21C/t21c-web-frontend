@@ -23,12 +23,13 @@ const PassSubmissionPage = () => {
     tooEarly: '',
     early: '',
     late: '',
+    isNormalHold: true,
   };
 
   const { user } = useAuth();
   const [form, setForm] = useState(initialFormState);
-  const [accuracy, setAccuracy] = useState("");
-  const [score, setScore] = useState("");
+  const [accuracy, setAccuracy] = useState(null);
+  const [score, setScore] = useState("Level ID is required");
   const [judgements, setJudgements] = useState([]);
   const [isInvalidFeelingRating, setIsInvalidFeelingRating] = useState(false); // Track validation
   const [isFormValid, setIsFormValid] = useState(false);
@@ -67,9 +68,6 @@ const PassSubmissionPage = () => {
     for (const field in validationResult) {
       displayValidationRes[field] = submitAttempt ? validationResult[field] : true;
     }
-
-    console.log(validationResult);
-    console.log(submitAttempt)
     
     const frValid = validateFeelingRating(form["feelingRating"])
     setIsInvalidFeelingRating(!frValid); // Update validation state
@@ -130,27 +128,30 @@ const PassSubmissionPage = () => {
   }, [form.videoLink]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-
-
+    const { name, type, value, checked } = e.target;
+  
+    // Determine the value based on whether the input is a checkbox
+    const inputValue = type === 'checkbox' ? checked : value;
+  
+    console.log(e.target);
+  
+    // Update the form state
     setForm((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: inputValue,
     }));
-
+  
+    // Create an updated form object
     const updatedForm = {
       ...form,
-      [name]: value,
+      [name]: inputValue,
     };
-
-
+  
+    // Update accuracy and score
     updateAccuracy(updatedForm);
-
     updateScore(updatedForm);
-    
-    
   };
-
+  
   const updateAccuracy = (updatedForm) => {
     
     const newJudgements = parseJudgements(updatedForm);
@@ -168,16 +169,18 @@ const PassSubmissionPage = () => {
 
     const newJudgements = parseJudgements(updatedForm);
 
+    console.log(updatedForm)
     const passData = {
         speed: updatedForm.speed,
         judgements: newJudgements, // Use new judgements here
+        isNoHoldTap: updatedForm.isNormalHold,
     };
 
     const chartData = level;
 
     // Check if levelId is present and all judgements are valid
     if (!form.levelId) {
-        setScore("Level ID is required.");
+        setScore("Level ID is required");
     } else if (!newJudgements.every(Number.isInteger)) {
         setScore("Not all judgements are filled");
     } else if (!Object.values(passData).every(value => value !== null)) {
@@ -220,6 +223,7 @@ const PassSubmissionPage = () => {
     googleForm.setDetail('LPerfect!', form.lPerfect)
     googleForm.setDetail('Late!', form.late)
     googleForm.setDetail('Late!!', "0")
+    googleForm.setDetail('isNoHold', form.isNormalHold)
     googleForm.submit(user.access_token)
 
     googleForm.submit(user.access_token)
@@ -375,10 +379,28 @@ const PassSubmissionPage = () => {
               name="leaderboardName"
               value={form.leaderboardName}
               onChange={handleInputChange}
-              style={{ borderColor: isFormValidDisplay.leaderboardName ? "" : "red",  maxWidth: '15rem'  }}
+              style={{ borderColor: isFormValidDisplay.leaderboardName ? "" : "red"  }}
             />
+            <div className="tooltip-container">
+              <input
+               type="checkbox" 
+               value={form.isNormalHold} 
+               onChange={handleInputChange} 
+               name="isNormalHold" 
+               />
+              <span style={{
+                  margin: '0 15px 0 10px',
+                  position: 'relative',
+                }}>Used normal holds</span>
+              <span className="tooltip" style={{
+                 bottom: "110%",
+                  right: "10%"}}>Tick if you have used the "Normal hold" or "Allow tapping ending tile" behaviors or if the chart didn't contain holds</span>
+
+            </div>
           </div>
-          <div className="info-input">
+      
+      
+      <div className="info-input">
             <input
               type="text"
               placeholder="Speed (ex: 1.2)"
@@ -387,7 +409,7 @@ const PassSubmissionPage = () => {
               onChange={handleInputChange}
             />
 
-      <div style={{ position: 'relative', display: 'flex', marginRight: '2rem', width:"80%", justifyContent: "center"}}>
+      <div style={{ display: 'flex', justifyContent: "center", gap: "10px"}}>
         <input
           type="text"
           placeholder="Feeling rating (ex. G12)"
@@ -398,18 +420,16 @@ const PassSubmissionPage = () => {
             backgroundColor: isInvalidFeelingRating ? "yellow" : ""
           }} 
         />
-        {isInvalidFeelingRating && (
           <div className="tooltip-container">
           <span style={{
               color: 'red',
-              marginLeft: '10px',
-              position: 'absolute',
-              top: '50%',
-              transform: 'translateY(-50%)',
+              visibility: `${isInvalidFeelingRating? '' : 'hidden'}`
             }}>?</span>
-          <span className="tooltip">Unknown difficulty, will submit but please make sure it's readable by the managers</span>
+          <span className="tooltip" 
+                style={{
+                 bottom: "115%",
+                  right: "-15%"}}>Unknown difficulty, will submit but please make sure it's readable by the managers</span>
         </div>
-        )}
       </div>
           </div>
 

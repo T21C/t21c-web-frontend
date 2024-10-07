@@ -90,9 +90,19 @@
   display: flex;
   gap: 1rem;
   margin-bottom: 0.5rem;
+  justify-content: space-around;
 }
+
+.pass-submission-page form .info .info-input > * {
+  flex: 1 1 150px; /* Flex-grow, flex-shrink, and base size (width of 150px) */
+  min-width: 150px; /* Minimum width to avoid shrinking too small */
+  max-width: 200px; /* Maximum width to control expansion */
+  height: 40px; /* Fixed height */
+  box-sizing: border-box; /* To include padding and borders in width/height calculation */
+}
+
 .pass-submission-page form .info .info-input input {
-  width: 100%;
+  width: auto;
 }
 .pass-submission-page form .info .accuracy {
   display: flex;
@@ -175,31 +185,3 @@
 .pass-submission-page form .info .submit:active {
   background-color: var(--color-purple-1);
 }/*# sourceMappingURL=passsubmission.css.map */
-
-.tooltip-container {
-  position: relative;
-  display: inline-block; /* Allow inline display for other elements */
-}
-
-
-.tooltip {
-  visibility: hidden;
-  width: 170px;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  border-radius: 5px;
-  padding: 5px;
-  position: absolute;
-  font-size: 0.6rem;
-  z-index: 1;
-  bottom: 115%; /* Position above the span */
-  right: -15%; /* Center the tooltip */
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.tooltip-container:hover .tooltip {
-  visibility: visible;
-  opacity: 0.8;
-}
