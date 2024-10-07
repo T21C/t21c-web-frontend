@@ -33,7 +33,11 @@ const PassSubmissionPage = () => {
   const [isInvalidFeelingRating, setIsInvalidFeelingRating] = useState(false); // Track validation
   const [isFormValid, setIsFormValid] = useState(false);
   const [isFormValidDisplay, setIsFormValidDisplay] = useState({});
-  const [successMessage, setSuccessMessage] = useState(true);
+
+  const [showMessage, setShowMessage] = useState(false)
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
+
   const [submitAttempt, setSubmitAttempt] = useState(false);
   const [level, setLevel] = useState(null);
   const [levelLoading, setLevelLoading] = useState(true);
@@ -198,6 +202,10 @@ const PassSubmissionPage = () => {
       console.log("incomplete form, returning")
       return
     };
+
+    setShowMessage(true)
+    setError(null);
+    setSuccess(false);
     googleForm.setDetail('id', form.levelId)
     googleForm.setDetail('*/Speed Trial', form.speed? form.speed : 1.0)
     googleForm.setDetail('Passer', form.leaderboardName)
@@ -214,20 +222,39 @@ const PassSubmissionPage = () => {
     googleForm.setDetail('Late!!', "0")
     googleForm.submit(user.access_token)
 
-    setSuccessMessage(true); // Show success message
-    setForm(initialFormState)
-    setSubmitAttempt(false);
+    googleForm.submit(user.access_token)
+  .then(result => {
+    if (result === "ok") {
+      setSuccess(true);
+      setForm(initialFormState)
+      setSubmitAttempt(false);
+    } else {
+      setError(result);
+    }
+  })
+  .catch(err => {
+    setError(err.message || "Unknown");
+  })
   }
+
   const handleCloseSuccessMessage = () => {
-    setSuccessMessage(false);
+    setShowMessage(false)
   };
+
   return (
     <div className="pass-submission-page">
       <CompleteNav />
       <div className="background-level"></div>
       <div className="form-container">
-      <div className={`success-message ${successMessage ? 'visible' : ''}`}>
-          <p>Form submitted successfully!</p>
+      <div className={`result-message ${showMessage ? 'visible' : ''}`} 
+        style={{backgroundColor: 
+        ( success? "#2b2" :
+          error? "#b22":
+          "#888"
+        )}}>
+          {success? (<p>Form submitted successfully!</p>) :
+          error? (<p>Error ocurred: {truncateString(error, 20)}</p>):
+          (<p>Submitting...</p>)}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div>
       <form>

@@ -151,7 +151,7 @@ body {
   }
 }
 
-.success-message {
+.result-message {
   position:relative;
   margin-top: 0px;
   margin-bottom: 0px;
@@ -167,17 +167,17 @@ body {
   visibility: hidden; /* Hidden initially */
 }
 
-.success-message.visible {
+.result-message.visible {
   opacity: 1; /* Show the message */
   visibility: visible; /* Make it visible */
 }
 
-.success-message p {
+.result-message p {
   margin:0;
   padding-right: 10px;
 }
 
-.success-message .close-btn {
+.result-message .close-btn {
   background: none;
   border: none;
   color: white;
@@ -185,6 +185,6 @@ body {
   cursor: pointer;
 }
 
-.success-message .close-btn:hover {
+.result-message .close-btn:hover {
   color: #ffdddd;
 }

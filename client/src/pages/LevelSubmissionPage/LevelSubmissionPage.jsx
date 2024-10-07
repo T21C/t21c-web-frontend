@@ -25,9 +25,12 @@ const LevelSubmissionPage = () => {
   const [isInvalidFeelingRating, setIsInvalidFeelingRating] = useState(false); // Track validation
   const [isFormValid, setIsFormValid] = useState(false);
   const [isFormValidDisplay, setIsFormValidDisplay] = useState({});
-  const [successMessage, setSuccessMessage] = useState(false);
+  
+  const [showMessage, setShowMessage] = useState(false)
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
+
   const [submitAttempt, setSubmitAttempt] = useState(false);
-  const [level, setLevel] = useState(null);
 
   const [youtubeDetail, setYoutubeDetail] = useState(null)
   
@@ -67,7 +70,7 @@ const LevelSubmissionPage = () => {
 
   useEffect(() => {
     validateForm(); // Run validation on every form change
-  }, [form, level, submitAttempt]);
+  }, [form, submitAttempt]);
 
 
 
@@ -92,15 +95,10 @@ const LevelSubmissionPage = () => {
       [name]: value,
     }));
 
-    const updatedForm = {
-      ...form,
-      [name]: value,
-    };
-
   };
 
   const handleCloseSuccessMessage = () => {
-    setSuccessMessage(false);
+    setShowMessage(false)
   };
 
  const googleForm = new GoogleFormSubmitter("chart")
@@ -117,6 +115,9 @@ const LevelSubmissionPage = () => {
     return;
   }
 
+  setShowMessage(true)
+  setError(null);
+  setSuccess(false);
   googleForm.setDetail('artist', form.artist);
   googleForm.setDetail('charter', form.charter);
   googleForm.setDetail('creator', form.creator);
@@ -127,12 +128,20 @@ const LevelSubmissionPage = () => {
   googleForm.setDetail('videoLink', form.vidLink);
   googleForm.setDetail('directDL', form.dlLink);
   googleForm.setDetail('wsLink', form.workshopLink);
-  //googleForm.setDetail('_submitterEmail', user.)
   
-  googleForm.submit(user.access_token);
-  setSuccessMessage(true); // Show success message
-  setForm(initialFormState)
-  setSubmitAttempt(false);
+  googleForm.submit(user.access_token)
+  .then(result => {
+    if (result === "ok") {
+      setSuccess(true);
+      setForm(initialFormState)
+      setSubmitAttempt(false);
+    } else {
+      setError(result);
+    }
+  })
+  .catch(err => {
+    setError(err.message || "(Unknown)");
+  })
 };
 
   return (
@@ -140,8 +149,15 @@ const LevelSubmissionPage = () => {
       <CompleteNav />
       <div className="background-level"></div>
       <div className="form-container">
-        <div className={`success-message ${successMessage ? 'visible' : ''}`}>
-          <p>Form submitted successfully!</p>
+        <div className={`result-message ${showMessage ? 'visible' : ''}`} 
+        style={{backgroundColor: 
+        ( success? "#2b2" :
+          error? "#b22":
+          "#888"
+        )}}>
+          {success? (<p>Form submitted successfully!</p>) :
+          error? (<p>Error ocurred: {truncateString(error, 20)}</p>):
+          (<p>Submitting...</p>)}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div>
       <form>

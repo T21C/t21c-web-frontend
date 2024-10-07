@@ -111,8 +111,12 @@ app.post('/api/form-submit', async (req, res) => {
 
   console.log("request received: ", req);
   
-  console.log("sending", new URLSearchParams(req.body).toString());
   
+  const reqEmail = { ...req.body, _submitterEmail: tokenInfo.email };
+
+
+
+  console.log("sending", new URLSearchParams(reqEmail).toString());
   try {
     const formResponse = await fetch(appScriptUrl, {
       method: 'POST',
@@ -120,7 +124,7 @@ app.post('/api/form-submit', async (req, res) => {
         'Authorization': `Bearer ${accessToken}`, // Forward the access token to Google Apps Script
         'Content-Type': 'application/x-www-form-urlencoded',  // Custom header indicating form type
       },
-      body: new URLSearchParams(req.body).toString(), // Send the form data
+      body: new URLSearchParams(reqEmail).toString(), // Send the form data
     });
 
     if (!formResponse.ok) {

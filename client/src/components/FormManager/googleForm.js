@@ -47,11 +47,14 @@ class GoogleFormSubmitter {
 
             if (response.ok) {
                 console.log("Form submitted successfully", data);
+                return "ok";
             } else {
                 console.error("Failed to submit form", data.error);
+                return data.error;
             }
         } catch (error) {
             console.error("Error during form submission", error);
+            return error
         }
     }
 }
