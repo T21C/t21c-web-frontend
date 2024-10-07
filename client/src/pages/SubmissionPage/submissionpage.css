@@ -37,7 +37,7 @@
   max-width: 25rem;
   font-size: 2rem;
 }
-.submission-page button {
+.submission-page .submit-button {
   margin: 1rem 0;
   max-width: 30rem;
   padding: 0.5rem 2rem;

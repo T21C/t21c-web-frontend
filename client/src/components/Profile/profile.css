@@ -67,6 +67,7 @@
 .profile-details {
     display: flex;
     align-items: center;
+    justify-content: center;
   }
   
   .profile-content {
