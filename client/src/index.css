@@ -125,3 +125,66 @@ body {
     transform: rotate(-360deg);
   }
 }/*# sourceMappingURL=index.css.map */
+
+.form-container {
+  margin-top: 4.7rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  
+}
+
+.form-container form {
+  background-color: var(--color-white);
+  max-width: 60rem;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  z-index: 10;
+  margin: 0.7rem;
+}
+@media (max-width: 900px) {
+  .form-container form {
+    width: 90%;
+    flex-direction: column;
+    margin-top: 6rem;
+  }
+}
+
+.success-message {
+  position:relative;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  background-color: #4caf50;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  z-index: 1000; /* Ensure it stays on top */
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  opacity: 0; /* Start hidden */
+  visibility: hidden; /* Hidden initially */
+}
+
+.success-message.visible {
+  opacity: 1; /* Show the message */
+  visibility: visible; /* Make it visible */
+}
+
+.success-message p {
+  margin:0;
+  padding-right: 10px;
+}
+
+.success-message .close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.success-message .close-btn:hover {
+  color: #ffdddd;
+}

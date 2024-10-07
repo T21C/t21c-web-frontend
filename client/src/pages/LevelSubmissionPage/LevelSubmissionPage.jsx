@@ -2,13 +2,9 @@ import { CompleteNav } from "../../components";
 import "./levelsubmission.css";
 import image from "../../assets/placeholder/3.png";
 import { GoogleFormSubmitter } from "../../components/FormManager/googleForm";
-import { useEffect, useState } from "react";
-import { checkLevel, getYouTubeThumbnailUrl, getYouTubeVideoDetails } from "../../Repository/RemoteRepository";
-import calcAcc from "../../components/Misc/CalcAcc";
-import { getScoreV2 } from "../../components/Misc/CalcScore";
-import { parseJudgements } from "../../components/Misc/ParseJudgements";
+import { useEffect, useRef, useState } from "react";
+import { getYouTubeThumbnailUrl, getYouTubeVideoDetails } from "../../Repository/RemoteRepository";
 import { useAuth } from "../../context/AuthContext";
-import {FetchIcon} from "../../components/FetchIcon/FetchIcon"
 
 const LevelSubmissionPage = () => {
   const initialFormState = {
@@ -29,10 +25,13 @@ const LevelSubmissionPage = () => {
   const [isInvalidFeelingRating, setIsInvalidFeelingRating] = useState(false); // Track validation
   const [isFormValid, setIsFormValid] = useState(false);
   const [isFormValidDisplay, setIsFormValidDisplay] = useState({});
+  const [successMessage, setSuccessMessage] = useState(false);
   const [submitAttempt, setSubmitAttempt] = useState(false);
   const [level, setLevel] = useState(null);
 
   const [youtubeDetail, setYoutubeDetail] = useState(null)
+  
+
 
   const validateFeelingRating = (value) => {
     const regex = /^$|^[PGUpgu][1-9]$|^[PGUpgu]1[0-9]$|^[PGUpgu]20$/; // Validate P,G,U followed by 1-20
@@ -45,7 +44,7 @@ const LevelSubmissionPage = () => {
   };
 
   const validateForm = () => {
-    const requiredFields = ['artist', 'charter', 'creator', 'diff', 'dlLink', 'song', 'team', 'vfxer', 'vidLink', 'workshopLink'];
+    const requiredFields = ['artist', 'creator', 'diff', 'dlLink', 'song', 'vidLink', 'workshopLink'];
     const validationResult = {};
     const displayValidationRes = {};
     
@@ -53,11 +52,15 @@ const LevelSubmissionPage = () => {
       validationResult[field] = (form[field].trim() !== '');
     });
     validationResult.directLink = validationResult["dlLink"] || validationResult["workshopLink"]
-
+    
+    delete validationResult["dlLink"];
+    delete validationResult["workshopLink"];
     for (const field in validationResult) {
       displayValidationRes[field] = submitAttempt ? validationResult[field] : true;
     }
     
+    const frValid = validateFeelingRating(form["diff"])
+    setIsInvalidFeelingRating(!frValid); // Update validation state
     setIsFormValidDisplay(displayValidationRes);
     setIsFormValid(validationResult);
   };
@@ -94,22 +97,16 @@ const LevelSubmissionPage = () => {
       [name]: value,
     };
 
-    if (name === 'diff') {
-      const isValid = validateFeelingRating(value);
-      setIsInvalidFeelingRating(!isValid); // Update validation state
-
-      if (!isValid) {
-        e.target.style.backgroundColor = 'yellow';
-      } else {
-        e.target.style.backgroundColor = ''; // Reset to default
-      }
-    }
   };
 
+  const handleCloseSuccessMessage = () => {
+    setSuccessMessage(false);
+  };
 
  const googleForm = new GoogleFormSubmitter("chart")
   const handleSubmit = (e) => {
-  e.preventDefault();
+  e.preventDefault()
+    
   if (!user) {
     console.log("no user");
     return;
@@ -133,31 +130,30 @@ const LevelSubmissionPage = () => {
   //googleForm.setDetail('_submitterEmail', user.)
   
   googleForm.submit(user.access_token);
+  setSuccessMessage(true); // Show success message
+  setForm(initialFormState)
+  setSubmitAttempt(false);
 };
 
   return (
     <div className="level-submission-page">
       <CompleteNav />
       <div className="background-level"></div>
-
-      <form style={{marginTop: "4rem"}}>
+      <div className="form-container">
+        <div className={`success-message ${successMessage ? 'visible' : ''}`}>
+          <p>Form submitted successfully!</p>
+          <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
+        </div>
+      <form>
+        
         <div className="img-wrapper">
           <img src={getYouTubeThumbnailUrl(form.vidLink) || image} alt="" />
         </div>
 
         <div className="info">
-          <h1>Submit chart</h1>
+          <h1>Submit a Level</h1>
 
           <div className="information">
-          <input
-            type="text"
-            placeholder="Artist"
-            name="artist"
-            value={form.artist}
-            onChange={handleInputChange}
-            style={{ borderColor: isFormValidDisplay.artist ? "" : "red" }}
-          />
-          <div style={{width: "10%"}}>-</div>
           <input
             type="text"
             placeholder="Song"
@@ -165,6 +161,14 @@ const LevelSubmissionPage = () => {
             value={form.song}
             onChange={handleInputChange}
             style={{ borderColor: isFormValidDisplay.song ? "" : "red" }}
+          />
+          <input
+            type="text"
+            placeholder="Artist"
+            name="artist"
+            value={form.artist}
+            onChange={handleInputChange}
+            style={{ borderColor: isFormValidDisplay.artist ? "" : "red" }}
           />
         </div>
         <div className="youtube-input">
@@ -199,7 +203,7 @@ const LevelSubmissionPage = () => {
                     <br />
                     </div>)}
         </div>
-        <div className="input-group">
+        <div className="info-group">
           <input
             type="text"
             placeholder="Charter"
@@ -213,8 +217,12 @@ const LevelSubmissionPage = () => {
             name="diff"
             value={form.diff}
             onChange={handleInputChange}
-            style={{ borderColor: isFormValidDisplay.diff ? "" : "red" }}
+            style={{ borderColor: isFormValidDisplay.diff ? "" : "red",
+                    backgroundColor: isInvalidFeelingRating ? "yellow" : ""
+             }}
           />
+          </div>
+        <div className="info-group">
           <input
             type="text"
             placeholder="Creator"
@@ -225,21 +233,24 @@ const LevelSubmissionPage = () => {
           />
           <input
             type="text"
-            placeholder="Team"
+            placeholder="Team Name"
             name="team"
             value={form.team}
             onChange={handleInputChange}
           />
         </div>
 
-        <div className="input-group">
+        <div className="info-group">
           <input
             type="text"
-            placeholder="VFX Artist"
+            placeholder="VFX-ers"
             name="vfxer"
             value={form.vfxer}
             onChange={handleInputChange}
           />
+          </div>
+          
+        <div className="info-group">
           <input
             type="text"
             placeholder="Download Link"
@@ -260,7 +271,8 @@ const LevelSubmissionPage = () => {
 
             <button className="submit" onClick={handleSubmit}>Submit</button>
         </div>
-      </form>
+      </form>      
+    </div>
     </div>
   
   );

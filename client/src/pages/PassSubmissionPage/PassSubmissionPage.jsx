@@ -33,6 +33,7 @@ const PassSubmissionPage = () => {
   const [isInvalidFeelingRating, setIsInvalidFeelingRating] = useState(false); // Track validation
   const [isFormValid, setIsFormValid] = useState(false);
   const [isFormValidDisplay, setIsFormValidDisplay] = useState({});
+  const [successMessage, setSuccessMessage] = useState(true);
   const [submitAttempt, setSubmitAttempt] = useState(false);
   const [level, setLevel] = useState(null);
   const [levelLoading, setLevelLoading] = useState(true);
@@ -66,6 +67,8 @@ const PassSubmissionPage = () => {
     console.log(validationResult);
     console.log(submitAttempt)
     
+    const frValid = validateFeelingRating(form["feelingRating"])
+    setIsInvalidFeelingRating(!frValid); // Update validation state
     setIsFormValidDisplay(displayValidationRes); // Set the validity object
     setIsFormValid(validationResult)
   };
@@ -135,17 +138,6 @@ const PassSubmissionPage = () => {
       ...form,
       [name]: value,
     };
-
-    if (name === 'feelingRating') {
-      const isValid = validateFeelingRating(value);
-      setIsInvalidFeelingRating(!isValid); // Update validation state
-
-      if (!isValid) {
-        e.target.style.backgroundColor = 'yellow';
-      } else {
-        e.target.style.backgroundColor = ''; // Reset to default
-      }
-    }
 
 
     updateAccuracy(updatedForm);
@@ -221,20 +213,30 @@ const PassSubmissionPage = () => {
     googleForm.setDetail('Late!', form.late)
     googleForm.setDetail('Late!!', "0")
     googleForm.submit(user.access_token)
-  }
 
+    setSuccessMessage(true); // Show success message
+    setForm(initialFormState)
+    setSubmitAttempt(false);
+  }
+  const handleCloseSuccessMessage = () => {
+    setSuccessMessage(false);
+  };
   return (
     <div className="pass-submission-page">
       <CompleteNav />
       <div className="background-level"></div>
-
-      <form style={{marginTop: "4rem"}}>
+      <div className="form-container">
+      <div className={`success-message ${successMessage ? 'visible' : ''}`}>
+          <p>Form submitted successfully!</p>
+          <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
+        </div>
+      <form>
         <div className="img-wrapper">
           <img src={getYouTubeThumbnailUrl(form.videoLink) || image} alt="" />
         </div>
 
         <div className="info">
-          <h1>Pass Submission</h1>
+          <h1>Submit a Pass</h1>
 
           <div className="id-input">
             <input
@@ -337,17 +339,19 @@ const PassSubmissionPage = () => {
                 </div>)}
             
 
+
+          </div>
+          <div className="info-input">
             <input
               type="text"
               placeholder="Alt Leaderboard Name"
               name="leaderboardName"
               value={form.leaderboardName}
               onChange={handleInputChange}
-              style={{ borderColor: isFormValidDisplay.leaderboardName ? "" : "red",  maxWidth: '15rem', marginTop: "0.5rem"  }}
+              style={{ borderColor: isFormValidDisplay.leaderboardName ? "" : "red",  maxWidth: '15rem'  }}
             />
           </div>
-
-          <div className="feel-speed">
+          <div className="info-input">
             <input
               type="text"
               placeholder="Speed (ex: 1.2)"
@@ -363,7 +367,9 @@ const PassSubmissionPage = () => {
           name="feelingRating"
           value={form.feelingRating}
           onChange={handleInputChange}
-          style={{ borderColor: isFormValidDisplay.feelingRating ? "" : "red" }}
+          style={{ borderColor: isFormValidDisplay.feelingRating ? "" : "red",
+            backgroundColor: isInvalidFeelingRating ? "yellow" : ""
+          }} 
         />
         {isInvalidFeelingRating && (
           <div className="tooltip-container">
@@ -465,6 +471,7 @@ const PassSubmissionPage = () => {
           <button className="submit" onClick={handleSubmit}>Submit</button>
         </div>
       </form>
+    </div>
     </div>
   );
 };
