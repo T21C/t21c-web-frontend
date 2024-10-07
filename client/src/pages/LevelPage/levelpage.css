@@ -91,6 +91,17 @@
   background-color: var(--color-white);
   margin-bottom: 0.5rem;
 }
+.level-page-rev .level-body .diff-filters {
+  display: flex;
+  flex-direction: row; /* Stacks items vertically */
+  gap: 1rem; /* Adds space between the filter containers */
+}
+
+.level-page-rev .level-body .filter-container {
+  display: flex;
+  flex-direction: column; /* Stack the label and select vertically */
+}
+
 .level-page-rev .level-body .input-setting {
   margin-top: 1rem;
 }

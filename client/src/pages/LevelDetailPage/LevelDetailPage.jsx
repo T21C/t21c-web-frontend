@@ -260,8 +260,8 @@ const LevelDetailPage = () => {
               </div>
 
               <div className="each-diff">
-                <h3>PDN</h3>
-                <p>{formatDiff(res.level.pdnDiff)}</p>
+                <h3>NEW</h3>
+                <p>{formatDiff(res.level.newDiff)}</p>
               </div>
             
             </div>
@@ -337,7 +337,7 @@ const LevelDetailPage = () => {
               backgroundImage: `url(${res && res.level ? getYouTubeThumbnailUrl(res.level.vidLink, res.level.song): "defaultImageURL"})`}}>
 
             <div className="diff">
-              <img src={getLevelImage(res.level.pdnDiff, res.level.pguDiff)} alt="" />
+              <img src={getLevelImage(res.level.newDiff, res.level.pdnDiff, res.level.pguDiff)} alt="" />
             </div>
 
             <div className="title">
@@ -437,7 +437,7 @@ const LevelDetailPage = () => {
               </span>
             </div>
 
-            <button onClick={changeDialogState}>{t("detailPage.dialog.fullInfo")}</button>
+            <button className="info-button" onClick={changeDialogState}>{t("detailPage.dialog.fullInfo")}</button>
           </div>
 
           <div className="youtube">

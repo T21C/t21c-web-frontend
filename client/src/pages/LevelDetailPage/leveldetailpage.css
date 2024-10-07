@@ -13,7 +13,7 @@
   padding-top: 6rem;
   position: relative;
 }
-.level-detail button {
+.level-detail .info-button {
   background-color: var(--color-purple-3);
   border: none;
   border-radius: 3px;
@@ -85,7 +85,6 @@
 .level-detail .header .left .title p {
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
   overflow: hidden;
   white-space: normal;
   text-overflow: ellipsis;
@@ -397,7 +396,7 @@
   animation: none;
 }
 .levels-dialog .dialog {
-  background-color: var(--color-purple-3);
+  background-color: var(--color-purple-2);
   border-radius: 5px;
   margin: 0 1rem;
   overflow: hidden;

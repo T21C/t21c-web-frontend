@@ -12,9 +12,66 @@ import { useTranslation } from "react-i18next";
 import bgImgDark from "../../assets/important/dark/theme-background.jpg"
 
 const options = [
-  { value: "chocolate", label: "Chocolate" },
-  { value: "strawberry", label: "Strawberry" },
-  { value: "vanilla", label: "Vanilla" },
+  { value: 'P1', label: 'P1' },
+  { value: 'P2', label: 'P2' },
+  { value: 'P3', label: 'P3' },
+  { value: 'P4', label: 'P4' },
+  { value: 'P5', label: 'P5' },
+  { value: 'P6', label: 'P6' },
+  { value: 'P7', label: 'P7' },
+  { value: 'P8', label: 'P8' },
+  { value: 'P9', label: 'P9' },
+  { value: 'P10', label: 'P10' },
+  { value: 'P11', label: 'P11' },
+  { value: 'P12', label: 'P12' },
+  { value: 'P13', label: 'P13' },
+  { value: 'P14', label: 'P14' },
+  { value: 'P15', label: 'P15' },
+  { value: 'P16', label: 'P16' },
+  { value: 'P17', label: 'P17' },
+  { value: 'P18', label: 'P18' },
+  { value: 'P19', label: 'P19' },
+  { value: 'P20', label: 'P20' },
+  { value: 'G1', label: 'G1' },
+  { value: 'G2', label: 'G2' },
+  { value: 'G3', label: 'G3' },
+  { value: 'G4', label: 'G4' },
+  { value: 'G5', label: 'G5' },
+  { value: 'G6', label: 'G6' },
+  { value: 'G7', label: 'G7' },
+  { value: 'G8', label: 'G8' },
+  { value: 'G9', label: 'G9' },
+  { value: 'G10', label: 'G10' },
+  { value: 'G11', label: 'G11' },
+  { value: 'G12', label: 'G12' },
+  { value: 'G13', label: 'G13' },
+  { value: 'G14', label: 'G14' },
+  { value: 'G15', label: 'G15' },
+  { value: 'G16', label: 'G16' },
+  { value: 'G17', label: 'G17' },
+  { value: 'G18', label: 'G18' },
+  { value: 'G19', label: 'G19' },
+  { value: 'G20', label: 'G20' },
+  { value: 'U1', label: 'U1' },
+  { value: 'U2', label: 'U2' },
+  { value: 'U3', label: 'U3' },
+  { value: 'U4', label: 'U4' },
+  { value: 'U5', label: 'U5' },
+  { value: 'U6', label: 'U6' },
+  { value: 'U7', label: 'U7' },
+  { value: 'U8', label: 'U8' },
+  { value: 'U9', label: 'U9' },
+  { value: 'U10', label: 'U10' },
+  { value: 'U11', label: 'U11' },
+  { value: 'U12', label: 'U12' },
+  { value: 'U13', label: 'U13' },
+  { value: 'U14', label: 'U14' },
+  { value: 'U15', label: 'U15' },
+  { value: 'U16', label: 'U16' },
+  { value: 'U17', label: 'U17' },
+  { value: 'U18', label: 'U18' },
+  { value: 'U19', label: 'U19' },
+  { value: 'U20', label: 'U20' }
 ];
 
 const LevelPageRev = () => {
@@ -34,8 +91,10 @@ const LevelPageRev = () => {
     setSortOpen,
     query,
     setQuery,
-    selectedFilterDiff,
-    setSelectedFilterDiff,
+    selectedLowFilterDiff,
+    setSelectedLowFilterDiff,
+    selectedHighFilterDiff,
+    setSelectedHighFilterDiff,
     sort,
     setSort,
     hasMore,
@@ -67,6 +126,7 @@ const LevelPageRev = () => {
               id: l.id,
               team: l.team,
               diff: l.diff,
+              newDiff: l.newDiff,
               pdnDiff: l.pdnDiff,
               pguDiff: l.pguDiff,
               creator: l.creator,
@@ -111,6 +171,7 @@ const LevelPageRev = () => {
           id: response.data.id,
           team: response.data.team,
           diff: response.data.diff,
+          newDiff: response.data.newDiff,
           pdnDiff: response.data.pdnDiff,
           pguDiff: response.data.pguDiff,
           creator: response.data.creator,
@@ -256,60 +317,119 @@ const LevelPageRev = () => {
           >
             <div className="spacer-setting"></div>
             <h2 className="setting-title">{t('levelPage.settingExp.headerFilter')}</h2>
-            <p className="setting-description">{t('levelPage.settingExp.filterDiffs')}</p>
-
-            <Select
-              defaultValue={selectedFilterDiff}
-              onChange={setSelectedFilterDiff}
-              options={options}
-              menuPortalTarget={document.body}
-              styles={{
+            {/* <p className="setting-description">{t('levelPage.settingExp.filterDiffs')}</p> */}
+            <div className="diff-filters">
+    <div className="filter-container">
+        <p className="setting-description">Lower diff</p>
+        <Select
+            id="low-diff-select" // Set an ID for the select
+            defaultValue={selectedLowFilterDiff}
+            onChange={setSelectedLowFilterDiff}
+            options={options}
+            menuPortalTarget={document.body}
+            styles={{
                 menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                 container: (provided) => ({
-                  ...provided,
-                  zIndex: 9999,
+                    ...provided,
+                    zIndex: 9999,
                 }),
                 control: (provided, state) => ({
-                  ...provided,
-                  width: "10rem",
-                  backgroundColor: "rgba(255, 255, 255, 0.3)", 
-                  border: "none", 
-                  outline: "none",
-                  boxShadow: state.isFocused
-                    ? "0 0 0 2px #000000"
-                    : provided.boxShadow, 
-                  "&:hover": {
-                    boxShadow: "none", 
-                  },
-                  singleValue: {
-                    ...provided.singleValue,
-                    color: "#FFFFFF !important",
-                  },
-                  indicatorSeparator: {
-                    ...provided.indicatorSeparator,
-                    backgroundColor: "#000000", 
-                  },
+                    ...provided,
+                    width: "10rem",
+                    backgroundColor: "rgba(255, 255, 255, 0.3)", 
+                    border: "none", 
+                    outline: "none",
+                    boxShadow: state.isFocused
+                        ? "0 0 0 2px #000000"
+                        : provided.boxShadow, 
+                    "&:hover": {
+                        boxShadow: "none", 
+                    },
+                    singleValue: {
+                        ...provided.singleValue,
+                        color: "#FFFFFF !important",
+                    },
+                    indicatorSeparator: {
+                        ...provided.indicatorSeparator,
+                        backgroundColor: "#000000", 
+                    },
                 }),
                 menu: (provided) => ({
-                  ...provided,
-                  width: "10rem", 
-                  backgroundColor: "rgb(255, 255, 255)", 
-                  border: "none", 
-                  boxShadow: "none", 
-                  color: "#000000", 
-                  zIndex: 9999, 
+                    ...provided,
+                    width: "10rem", 
+                    backgroundColor: "#fff", 
+                    border: "none", 
+                    boxShadow: "none", 
+                    color: "#000000", 
+                    zIndex: 9999, 
                 }),
                 option: (provided, state) => ({
-                  ...provided,
-                  backgroundColor: state.isSelected ? "#cccccc" : "transparent",
-                  zIndex: 9999, 
+                    ...provided,
+                    backgroundColor: state.isSelected ? "rgb(255,255,255)" : "transparent",
+                    zIndex: 9999, 
                 }),
-              }}
-              placeholder="Disabled"
-              isSearchable
-              isClearable
-              isDisabled
-            />
+            }}
+            placeholder="Disabled"
+            isSearchable
+        />
+    </div>
+    
+    <div className="filter-container">
+        <p className="setting-description">Upper diff</p>
+        <Select
+            id="high-diff-select" // Set an ID for the select
+            defaultValue={selectedHighFilterDiff}
+            onChange={setSelectedHighFilterDiff}
+            options={options}
+            menuPortalTarget={document.body}
+            styles={{
+                menuPortal: (base) => ({ ...base, zIndex: 9999 }),
+                container: (provided) => ({
+                    ...provided,
+                    zIndex: 9999,
+                }),
+                control: (provided, state) => ({
+                    ...provided,
+                    width: "10rem",
+                    backgroundColor: "rgba(255, 255, 255, 0.3)", 
+                    border: "none", 
+                    outline: "none",
+                    boxShadow: state.isFocused
+                        ? "0 0 0 2px #000000"
+                        : provided.boxShadow, 
+                    "&:hover": {
+                        boxShadow: "none", 
+                    },
+                    singleValue: {
+                        ...provided.singleValue,
+                        color: "#FFFFFF !important",
+                    },
+                    indicatorSeparator: {
+                        ...provided.indicatorSeparator,
+                        backgroundColor: "#000000", 
+                    },
+                }),
+                menu: (provided) => ({
+                    ...provided,
+                    width: "10rem", 
+                    backgroundColor: "#fff", 
+                    border: "none", 
+                    boxShadow: "none", 
+                    color: "#000000", 
+                    zIndex: 9999, 
+                }),
+                option: (provided, state) => ({
+                    ...provided,
+                    backgroundColor: state.isSelected ? "rgb(255,255,255)" : "transparent",
+                    zIndex: 9999, 
+                }),
+            }}
+            placeholder="Disabled"
+            isSearchable
+        />
+    </div>
+</div>
+
           </div>
 
           <div
@@ -467,6 +587,7 @@ x                  >
             <LevelCardRev
               key={index}
               creator={l.creator}
+              newDiff={l.newDiff}
               pdnDiff={l.pdnDiff}
               pguDiff={legacyDiff ? l.diff:l.pguDiff}
               id={l.id}

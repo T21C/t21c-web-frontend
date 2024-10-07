@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 
 
 // eslint-disable-next-line react/prop-types
-const LevelCardRev = ({ pdnDiff, pguDiff, creator, id, artist, song, clears, dl, ws, team, legacy }) => {
+const LevelCardRev = ({newDiff, pdnDiff, pguDiff, creator, id, artist, song, clears, dl, ws, team, legacy }) => {
   const {t} = useTranslation()  
   const navigate = useNavigate()
     const redirect = () => {
@@ -21,7 +21,7 @@ const LevelCardRev = ({ pdnDiff, pguDiff, creator, id, artist, song, clears, dl,
     <div className='level-card-rev' onClick={() => redirect()}>
       {/* <div className="id level-id">#{id}</div> */}
       <div className="img-wrapper">
-          <img src={getLevelImage(pdnDiff, pguDiff, legacy)} alt="" />
+          <img src={getLevelImage(newDiff, pdnDiff, pguDiff, legacy)} alt="" />
       </div>
 
       <div className="creator-wrapper">
