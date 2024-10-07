@@ -3,26 +3,12 @@
   width: 100vw;
   min-height: 100vh;
   position: relative;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   place-items: center;
   overflow-x: hidden;
 }
-.pass-submission-page form {
-  background-color: var(--color-white);
-  max-width: 60rem;
-  border-radius: 8px;
-  overflow: hidden;
-  display: flex;
-  z-index: 10;
-  margin: 1rem;
-}
-@media (max-width: 900px) {
-  .pass-submission-page form {
-    width: 90%;
-    flex-direction: column;
-    margin-top: 6rem;
-  }
-}
+
 .pass-submission-page form .img-wrapper {
   flex: 2;
 }
@@ -46,7 +32,7 @@
   border: 0;
   border-bottom: 3px solid var(--color-purple-2);
   outline: none;
-  padding: 0.5rem 0.2rem;
+  padding: 0.5rem 0.2rem 0.2rem 0.5rem;
   font-size: 1rem;
 }
 .pass-submission-page form .info .id-input {
@@ -55,13 +41,21 @@
   gap: 0.5rem;
   margin-bottom: 2rem;
 }
-.pass-submission-page form .info .id-input input {
-  max-height: 1rem;
-}
 .pass-submission-page form .info .id-input .information {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1rem;
+}
+.pass-submission-page form .info .id-input .information .chart-info {
+  text-align: center;
+  align-items: center;
+  font-weight: bold;
+  width: 140%
+}
+.pass-submission-page form .info .id-input .information .chart-info .chart-info-sub {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 }
 .pass-submission-page form .info .id-input .information .verified {
   display: flex;
@@ -82,10 +76,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-bottom: 2rem;
-}
-.pass-submission-page form .info .youtube-input input {
-  max-height: 1rem;
+  margin-bottom: 1rem;
 }
 .pass-submission-page form .info .youtube-input .information {
   display: flex;
@@ -95,12 +86,12 @@
   font-size: 0.8rem;
   margin-bottom: 0.5rem;
 }
-.pass-submission-page form .info .feel-speed {
+.pass-submission-page form .info .info-input {
   display: flex;
   gap: 1rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 0.5rem;
 }
-.pass-submission-page form .info .feel-speed input {
+.pass-submission-page form .info .info-input input {
   width: 100%;
 }
 .pass-submission-page form .info .accuracy {
@@ -111,6 +102,7 @@
   border: 2px solid var(--color-purple-2);
   padding: 1rem;
   border-radius: 5px;
+  margin-top: 1rem;
   margin-bottom: 2rem;
 }
 .pass-submission-page form .info .accuracy .top, .pass-submission-page form .info .accuracy .bottom {
@@ -183,3 +175,31 @@
 .pass-submission-page form .info .submit:active {
   background-color: var(--color-purple-1);
 }/*# sourceMappingURL=passsubmission.css.map */
+
+.tooltip-container {
+  position: relative;
+  display: inline-block; /* Allow inline display for other elements */
+}
+
+
+.tooltip {
+  visibility: hidden;
+  width: 170px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  font-size: 0.6rem;
+  z-index: 1;
+  bottom: 115%; /* Position above the span */
+  right: -15%; /* Center the tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip-container:hover .tooltip {
+  visibility: visible;
+  opacity: 0.8;
+}

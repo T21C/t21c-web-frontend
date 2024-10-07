@@ -1,0 +1,123 @@
+.level-submission-page {
+  background-color: var(--color-black);
+  width: 100vw;
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  place-items: center;
+  overflow-x: hidden;
+}
+.level-submission-page form {
+  background-color: var(--color-white);
+  max-width: 60rem;
+  border-radius: 8px;
+  overflow: hidden;
+  display: flex;
+  z-index: 10;
+  margin: 3rem;
+}
+@media (max-width: 900px) {
+  .level-submission-page form {
+    width: 90%;
+    flex-direction: column;
+    margin-top: 3rem;
+  }
+}
+.level-submission-page form .img-wrapper {
+  flex: 2;
+}
+.level-submission-page form .img-wrapper img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: center;
+     object-position: center;
+}
+.level-submission-page form .info {
+  flex: 3;
+  padding: 1.1rem;
+}
+.level-submission-page form .info h1 {
+  margin-bottom: 1rem;
+}
+.level-submission-page form .info input {
+  background-color: transparent;
+  border: 0;
+  border-bottom: 3px solid var(--color-purple-2);
+  outline: none;
+  padding: 0.5rem 0.2rem 0.2rem 0.5rem;
+  font-size: 1rem;
+}
+.level-submission-page form .info .youtube-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+.level-submission-page form .info .information {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  gap: 1rem;
+  font-size: 0.8rem;
+  margin-bottom: 1rem;
+}
+
+.level-submission-page form .info .info-group {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+.level-submission-page form .info .submit {
+  width: 100%;
+  background-color: var(--color-purple-3);
+  border: none;
+  border-radius: 3px;
+  color: var(--color-white);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  max-width: 70rem;
+  margin: 0 auto;
+  transition: all 100ms linear;
+}
+.level-submission-page form .info .submit:hover {
+  background-color: var(--color-purple-2);
+}
+.level-submission-page form .info .submit:active {
+  background-color: var(--color-purple-1);
+}/*# sourceMappingURL=levelsubmission.css.map */
+
+.tooltip-container {
+  position: relative;
+  display: inline-block; /* Allow inline display for other elements */
+}
+
+
+.tooltip {
+  visibility: hidden;
+  width: 170px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  font-size: 0.6rem;
+  z-index: 1;
+  bottom: 115%; /* Position above the span */
+  right: -15%; /* Center the tooltip */
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.tooltip-container:hover .tooltip {
+  visibility: visible;
+  opacity: 0.8;
+}

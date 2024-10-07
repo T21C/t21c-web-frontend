@@ -1,0 +1,85 @@
+
+/* CSS */
+.btn-login {
+  align-items: center;
+  background-color: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: .25rem;
+  box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
+  box-sizing: border-box;
+  color: rgba(0, 0, 0, 0.85);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: system-ui,-apple-system,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 15px;
+  font-weight: 600;
+  justify-content: center;
+  line-height: 1.25;
+  margin: 0;
+  min-height: 1rem;
+  padding: calc(.5rem - 1px) calc(1rem - 1px);
+  position: relative;
+  text-decoration: none;
+  transition: all 250ms;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: baseline;
+  width: auto;
+}
+
+.btn-login:hover,
+.btn-login:focus {
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.btn-login:hover {
+  transform: scale(1.02);
+}
+
+.btn-login:active {
+  background-color: #F0F0F1;
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
+  color: rgba(0, 0, 0, 0.65);
+  transform: translateY(0);
+}
+
+.btn-login.profile-button {
+    padding: 0; /* Remove padding so the button wraps tightly around the image */
+    width: 50px; /* Adjust the button size to your needs */
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: transparent;
+    margin-left: 0.4rem;
+  }
+  
+  .btn-icon {
+    width: 70%; /* Adjust the size relative to the button */
+    height: 70%;
+    object-fit: contain; /* Ensure the image fits within the bounds without stretching */
+  }
+
+.profile-details {
+    display: flex;
+    align-items: center;
+  }
+  
+  .profile-content {
+    margin-right: 15px;
+    text-align: right/* Add spacing between content and avatar */
+  }
+  
+  .profile-avatar {
+    width: 50px; /* Adjust the size of the avatar */
+    height: 50px;
+    border-radius: 50%;
+  }
+  
+  .profile-button {
+    margin-left: 20px; /* Spacing between the avatar and the logout button */
+  }

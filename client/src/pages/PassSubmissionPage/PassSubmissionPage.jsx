@@ -1,9 +1,14 @@
 import { CompleteNav } from "../../components";
 import "./passsubmission.css";
 import image from "../../assets/placeholder/3.png";
-import {GoogleFormSubmitter} from "easyformjs"
+import { GoogleFormSubmitter } from "../../components/FormManager/googleForm";
 import { useEffect, useState } from "react";
 import { checkLevel, getYouTubeThumbnailUrl, getYouTubeVideoDetails } from "../../Repository/RemoteRepository";
+import calcAcc from "../../components/Misc/CalcAcc";
+import { getScoreV2 } from "../../components/Misc/CalcScore";
+import { parseJudgements } from "../../components/Misc/ParseJudgements";
+import { useAuth } from "../../context/AuthContext";
+import {FetchIcon} from "../../components/FetchIcon/FetchIcon"
 
 const PassSubmissionPage = () => {
   const initialFormState = {
@@ -20,36 +25,94 @@ const PassSubmissionPage = () => {
     late: '',
   };
 
+  const { user } = useAuth();
   const [form, setForm] = useState(initialFormState);
+  const [accuracy, setAccuracy] = useState("");
+  const [score, setScore] = useState("");
+  const [judgements, setJudgements] = useState([]);
+  const [isInvalidFeelingRating, setIsInvalidFeelingRating] = useState(false); // Track validation
+  const [isFormValid, setIsFormValid] = useState(false);
+  const [isFormValidDisplay, setIsFormValidDisplay] = useState({});
 
-  const [level, setLevel] = useState('');
+  const [showMessage, setShowMessage] = useState(false)
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
+
+  const [submitAttempt, setSubmitAttempt] = useState(false);
+  const [level, setLevel] = useState(null);
   const [levelLoading, setLevelLoading] = useState(true);
 
-  const [youtubeDetail, setYoutubeDetail] = useState({
-    title: '-',
-    channelName: '-',
-    timestamp: '-',
-  });
+  const [youtubeDetail, setYoutubeDetail] = useState(null)
+
+  const validateFeelingRating = (value) => {
+    const regex = /^$|^[PGUpgu][1-9]$|^[PGUpgu]1[0-9]$|^[PGUpgu]20$/; // Validate P,G,U followed by 1-20
+    return regex.test(value);
+  };
+
+  const truncateString = (str, maxLength) => {
+    if (!str) return "";
+    return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
+  };
+
+  const validateForm = () => {
+    const requiredFields = ['levelId', 'videoLink', 'leaderboardName', 'feelingRating', 'ePerfect', 'perfect', 'lPerfect', 'tooEarly', 'early', 'late'];
+    const validationResult = {};
+    const displayValidationRes = {}
+    requiredFields.forEach(field => {
+      validationResult[field] = (form[field].trim() !== ''); // Check if each field is filled
+    });
+
+    validationResult["levelId"] = !(level === null || level === undefined);
+    
+    for (const field in validationResult) {
+      displayValidationRes[field] = submitAttempt ? validationResult[field] : true;
+    }
+
+    console.log(validationResult);
+    console.log(submitAttempt)
+    
+    const frValid = validateFeelingRating(form["feelingRating"])
+    setIsInvalidFeelingRating(!frValid); // Update validation state
+    setIsFormValidDisplay(displayValidationRes); // Set the validity object
+    setIsFormValid(validationResult)
+  };
+
+  useEffect(() => {
+    validateForm(); // Run validation on every form change
+  }, [form, level, submitAttempt]);
+
+  useEffect(() => {
+    if (level) {
+      
+      updateAccuracy(form);
+      updateScore(form);
+    }
+  }, [level]);
 
   useEffect(() => {
     const { levelId } = form;
+    setLevelLoading(true);
+    setLevel(null);
 
+      
     if (!levelId) {
-      setLevel('');
+      setLevel(null);
       setLevelLoading(false);
       return;
     }
 
     const cleanLevelId = levelId.startsWith('#') ? levelId.substring(1) : levelId;
-    setLevelLoading(true);
 
     checkLevel(cleanLevelId)
-      .then((res) => {
-        setLevel(res ? cleanLevelId : '');
+      .then((data) => {
+        
+        setLevel(data ? data : null);
         setLevelLoading(false);
+        console.log(data);
+        
       })
       .catch(() => {
-        setLevel('');
+        setLevel(null);
         setLevelLoading(false);
       });
   }, [form.levelId]);
@@ -61,56 +124,146 @@ const PassSubmissionPage = () => {
       setYoutubeDetail(
         res
           ? res
-          : {
-              title: '-',
-              channelName: '-',
-              timestamp: '-',
-            }
+          : null
       );
     });
   }, [form.videoLink]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+
+
     setForm((prev) => ({
       ...prev,
       [name]: value,
     }));
+
+    const updatedForm = {
+      ...form,
+      [name]: value,
+    };
+
+
+    updateAccuracy(updatedForm);
+
+    updateScore(updatedForm);
+    
+    
   };
 
-  const googleForm = new GoogleFormSubmitter("https://docs.google.com/forms/u/0/d/e/1FAIpQLSczH_8JFCE8W-TUiKFgBNoBke9g1XLW2TlihTm-_hfY03ldSw/formResponse")
+  const updateAccuracy = (updatedForm) => {
+    
+    const newJudgements = parseJudgements(updatedForm);
+    setJudgements(newJudgements)
+
+      // Calculate accuracy if all elements are valid integers
+    if (newJudgements.every(Number.isInteger)) {
+        setAccuracy((calcAcc(newJudgements)*100).toString().slice(0,7)+"%");
+    } else {
+        setAccuracy(null); // Reset if invalid input
+    }
+    };
+
+  const updateScore = (updatedForm) => {
+
+    const newJudgements = parseJudgements(updatedForm);
+
+    const passData = {
+        speed: updatedForm.speed,
+        judgements: newJudgements, // Use new judgements here
+    };
+
+    const chartData = level;
+
+    // Check if levelId is present and all judgements are valid
+    if (!form.levelId) {
+        setScore("Level ID is required.");
+    } else if (!newJudgements.every(Number.isInteger)) {
+        setScore("Not all judgements are filled");
+    } else if (!Object.values(passData).every(value => value !== null)) {
+        setScore("Not enough pass info");
+    } else if (passData && chartData) {
+        setScore(getScoreV2(passData, chartData).toFixed(2));
+    } else {
+        setScore("Insufficient data to calculate score");
+    }
+};
+
+ const googleForm = new GoogleFormSubmitter("pass")
   const handleSubmit = (e) => {
     e.preventDefault();
-    googleForm.setDetail('1501102710', form.levelId)
-    googleForm.setDetail('863109178', form.speed)
-    googleForm.setDetail('1017646927', form.leaderboardName)
-    googleForm.setDetail('1622600394', form.feelingRating)
-    googleForm.setDetail('662649267', youtubeDetail.title)
-    googleForm.setDetail('188528298', form.videoLink)
-    googleForm.setDetail('1922370523', youtubeDetail.timestamp)
-    googleForm.setDetail('1155066920', form.tooEarly)
-    googleForm.setDetail('1594163639', form.early)
-    googleForm.setDetail('1084592024', form.ePerfect)
-    googleForm.setDetail('169503435', form.perfect)
-    googleForm.setDetail('1398756494', form.lPerfect)
-    googleForm.setDetail('17648355', form.late)
-    googleForm.submit();
+    if(!user){
+      console.log("no user");
 
-    // setForm(initialFormState)
+      return 
+    }
+    if (!Object.values(isFormValid).every(Boolean)) {
+      setSubmitAttempt(true)
+      console.log("incomplete form, returning")
+      return
+    };
+
+    setShowMessage(true)
+    setError(null);
+    setSuccess(false);
+    googleForm.setDetail('id', form.levelId)
+    googleForm.setDetail('*/Speed Trial', form.speed? form.speed : 1.0)
+    googleForm.setDetail('Passer', form.leaderboardName)
+    googleForm.setDetail('Feeling Difficulty', form.feelingRating)
+    googleForm.setDetail('Title', youtubeDetail.title)
+    googleForm.setDetail('*/Raw Video ID', form.videoLink)
+    googleForm.setDetail('*/Raw Time (GMT)', youtubeDetail.timestamp)
+    googleForm.setDetail('Early!!', form.tooEarly)
+    googleForm.setDetail('Early!', form.early)
+    googleForm.setDetail('EPerfect!', form.ePerfect)
+    googleForm.setDetail('Perfect!', form.perfect)
+    googleForm.setDetail('LPerfect!', form.lPerfect)
+    googleForm.setDetail('Late!', form.late)
+    googleForm.setDetail('Late!!', "0")
+    googleForm.submit(user.access_token)
+
+    googleForm.submit(user.access_token)
+  .then(result => {
+    if (result === "ok") {
+      setSuccess(true);
+      setForm(initialFormState)
+      setSubmitAttempt(false);
+    } else {
+      setError(result);
+    }
+  })
+  .catch(err => {
+    setError(err.message || "Unknown");
+  })
   }
+
+  const handleCloseSuccessMessage = () => {
+    setShowMessage(false)
+  };
 
   return (
     <div className="pass-submission-page">
       <CompleteNav />
       <div className="background-level"></div>
-
+      <div className="form-container">
+      <div className={`result-message ${showMessage ? 'visible' : ''}`} 
+        style={{backgroundColor: 
+        ( success? "#2b2" :
+          error? "#b22":
+          "#888"
+        )}}>
+          {success? (<p>Form submitted successfully!</p>) :
+          error? (<p>Error ocurred: {truncateString(error, 20)}</p>):
+          (<p>Submitting...</p>)}
+          <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
+        </div>
       <form>
         <div className="img-wrapper">
           <img src={getYouTubeThumbnailUrl(form.videoLink) || image} alt="" />
         </div>
 
         <div className="info">
-          <h1>Pass Submission</h1>
+          <h1>Submit a Pass</h1>
 
           <div className="id-input">
             <input
@@ -118,10 +271,20 @@ const PassSubmissionPage = () => {
               placeholder="Level Id"
               name="levelId"
               value={form.levelId}
-              onChange={handleInputChange}
+              onChange={handleInputChange}  
+              style={{ borderColor: isFormValidDisplay.levelId ? "" : "red" }}
+            
             />
 
             <div className="information">
+                {(level && form.levelId) ? 
+                (<div className="chart-info"><h2 className="chart-info-sub">{truncateString(level["song"], 30)}</h2>
+                 <div className="chart-info-sub"><span>{truncateString(level["artist"], 15)}</span><span>{truncateString(level["creator"], 20)}</span></div></div>)
+                : 
+                (<div className="chart-info"><h2 className="chart-info-sub" style={{color: "#aaa"}}>Song name</h2>
+                 <div className="chart-info-sub"><span style={{color: "#aaa"}}>Artist</span><span style={{color: "#aaa"}}>Charter</span></div></div>)
+                 } 
+
               <div className="verified">
                 {(() => {
                   const color = !form.levelId
@@ -133,39 +296,39 @@ const PassSubmissionPage = () => {
                     : '#dc3545';
                   return (
                     <>
-                      <svg
-                        fill={color}
-                        width="30px"
-                        height="30px"
-                        viewBox="-1.7 0 20.4 20.4"
-                        xmlns="http://www.w3.org/2000/svg"
-                      >
-                        <path d="M16.476 10.283A7.917 7.917 0 1 1 8.56 2.366a7.916 7.916 0 0 1 7.916 7.917zm-5.034-2.687a2.845 2.845 0 0 0-.223-1.13A2.877 2.877 0 0 0 9.692 4.92a2.747 2.747 0 0 0-1.116-.227 2.79 2.79 0 0 0-1.129.227 2.903 2.903 0 0 0-1.543 1.546 2.803 2.803 0 0 0-.227 1.128v.02a.792.792 0 0 0 1.583 0v-.02a1.23 1.23 0 0 1 .099-.503 1.32 1.32 0 0 1 .715-.717 1.223 1.223 0 0 1 .502-.098 1.18 1.18 0 0 1 .485.096 1.294 1.294 0 0 1 .418.283 1.307 1.307 0 0 1 .281.427 1.273 1.273 0 0 1 .099.513 1.706 1.706 0 0 1-.05.45 1.546 1.546 0 0 1-.132.335 2.11 2.11 0 0 1-.219.318c-.126.15-.25.293-.365.424a4.113 4.113 0 0 0-.451.639 3.525 3.525 0 0 0-.342.842 3.904 3.904 0 0 0-.12.995v.035a.792.792 0 0 0 1.583 0v-.035a2.324 2.324 0 0 1 .068-.59 1.944 1.944 0 0 1 .187-.463 2.49 2.49 0 0 1 .276-.39c.098-.115.209-.237.c-"
-                      />
-                    </svg>
-                    <p style={{ color }}>
-                      {!form.levelId
-                        ? 'Waiting'
-                        : levelLoading
-                        ? 'Fetching'
-                        : level
-                        ? 'Verified'
-                        : 'Unverified'}
-                    </p>
+                    <FetchIcon form={form} levelLoading={levelLoading} level={level} color={color} />
                   </>
                   );
                 })()}
               </div>
               <a
-                href={`/leveldetail?id=${level}`}
+                href={level ? (level["id"] == form.levelId ? `/leveldetail?id=${level["id"]}`: "#" ): "#"}
+                onClick={e => {
+                  if (!level){
+                    e.preventDefault();
+                  }
+                  else if (level) {
+                    if(level["id"] != form.levelId){
+                      e.preventDefault();
+                    }
+                  }
+                }}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="button-goto"
                 style={{
                   backgroundColor: !form.levelId ? "#ffc107" : levelLoading ? "#ffc107" : level ? "#28a745" : "#dc3545",
+                  cursor: !form.levelId ? "not-allowed": levelLoading ? "wait": level ? "pointer" : "not-allowed",
                 }}
               >
-                Go to level
+                
+        {!form.levelId
+          ? 'Input Level ID'
+          : levelLoading
+          ? 'Fetching'
+          : level
+          ? 'Go to level'
+          : 'Level not found'}
               </a>
             </div>
           </div>
@@ -177,9 +340,10 @@ const PassSubmissionPage = () => {
               name="videoLink"
               value={form.videoLink}
               onChange={handleInputChange}
+              style={{ borderColor: isFormValidDisplay.videoLink ? "" : "red" }}
             />
-
-            <div className="information">
+            {youtubeDetail? 
+            (<div className="information">
               <div className="yt-info">
                 <h4>YT Title</h4>
                 <p>{youtubeDetail.title}</p>
@@ -194,19 +358,27 @@ const PassSubmissionPage = () => {
                 <h4>Timestamp</h4>
                 <p>{youtubeDetail.timestamp}</p>
               </div>
-            </div>
+            </div>)
+            :(
+              <div className="yt-info">
+                <p style={{color: "#aaa"}}>No link provided</p>
+                <br />
+                </div>)}
+            
 
+
+          </div>
+          <div className="info-input">
             <input
-              style={{ maxWidth: '15rem' }}
               type="text"
               placeholder="Alt Leaderboard Name"
               name="leaderboardName"
               value={form.leaderboardName}
               onChange={handleInputChange}
+              style={{ borderColor: isFormValidDisplay.leaderboardName ? "" : "red",  maxWidth: '15rem'  }}
             />
           </div>
-
-          <div className="feel-speed">
+          <div className="info-input">
             <input
               type="text"
               placeholder="Speed (ex: 1.2)"
@@ -215,13 +387,30 @@ const PassSubmissionPage = () => {
               onChange={handleInputChange}
             />
 
-            <input
-              type="text"
-              placeholder="Feeling rating"
-              name="feelingRating"
-              value={form.feelingRating}
-              onChange={handleInputChange}
-            />
+      <div style={{ position: 'relative', display: 'flex', marginRight: '2rem', width:"80%", justifyContent: "center"}}>
+        <input
+          type="text"
+          placeholder="Feeling rating (ex. G12)"
+          name="feelingRating"
+          value={form.feelingRating}
+          onChange={handleInputChange}
+          style={{ borderColor: isFormValidDisplay.feelingRating ? "" : "red",
+            backgroundColor: isInvalidFeelingRating ? "yellow" : ""
+          }} 
+        />
+        {isInvalidFeelingRating && (
+          <div className="tooltip-container">
+          <span style={{
+              color: 'red',
+              marginLeft: '10px',
+              position: 'absolute',
+              top: '50%',
+              transform: 'translateY(-50%)',
+            }}>?</span>
+          <span className="tooltip">Unknown difficulty, will submit but please make sure it's readable by the managers</span>
+        </div>
+        )}
+      </div>
           </div>
 
           <div className="accuracy">
@@ -230,10 +419,11 @@ const PassSubmissionPage = () => {
                 <p>E Perfect</p>
                 <input
                   type="text"
-                  placeholder="number"
+                  placeholder="#"
                   name="ePerfect"
                   value={form.ePerfect}
                   onChange={handleInputChange}
+                  style={{ borderColor: isFormValidDisplay.ePerfect ? "" : "red" }}
                 />
               </div>
 
@@ -241,10 +431,11 @@ const PassSubmissionPage = () => {
                 <p>Perfect</p>
                 <input
                   type="text"
-                  placeholder="number"
+                  placeholder="#"
                   name="perfect"
                   value={form.perfect}
                   onChange={handleInputChange}
+                  style={{ borderColor: isFormValidDisplay.perfect ? "" : "red" }}
                 />
               </div>
 
@@ -252,8 +443,10 @@ const PassSubmissionPage = () => {
                 <p>L Perfect</p>
                 <input type="text"
                   name="lPerfect"
+                  placeholder="#"
                   value={form.lPerfect}
                   onChange={handleInputChange}
+                  style={{ borderColor: isFormValidDisplay.lPerfect ? "" : "red" }}
                 />
               </div>
             </div>
@@ -263,10 +456,11 @@ const PassSubmissionPage = () => {
                 <p>Too Early</p>
                 <input
                   type="text"
-                  placeholder="number"
+                  placeholder="#"
                   name="tooEarly"
                   value={form.tooEarly}
                   onChange={handleInputChange}
+                  style={{ borderColor: isFormValidDisplay.tooEarly ? "" : "red" }}
                 />
               </div>
 
@@ -274,10 +468,11 @@ const PassSubmissionPage = () => {
                 <p>Early</p>
                 <input
                   type="text"
-                  placeholder="number"
+                  placeholder="#"
                   name="early"
                   value={form.early}
                   onChange={handleInputChange}
+                  style={{ borderColor: isFormValidDisplay.early ? "" : "red" }}
                 />
               </div>
 
@@ -285,23 +480,25 @@ const PassSubmissionPage = () => {
                 <p>Late</p>
                 <input
                   type="text"
-                  placeholder="number"
+                  placeholder="#"
                   name="late"
                   value={form.late}
                   onChange={handleInputChange}
+                  style={{ borderColor: isFormValidDisplay.late ? "" : "red" }}
                 />
               </div>
             </div>
 
             <div className="acc-score">
-              <p>Accuracy: -</p>
-              <p>Score: -</p>
+              <p>Accuracy: {accuracy !== null ? accuracy : 'N/A'}</p>
+              <p>Score: {score}</p>
             </div>
           </div>
 
           <button className="submit" onClick={handleSubmit}>Submit</button>
         </div>
       </form>
+    </div>
     </div>
   );
 };
