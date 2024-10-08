@@ -244,7 +244,7 @@ async function fetchData({ offset = "", diff = '', cleared = '', sort = '', dire
     ...(sort && direction && { sort: `${sort}_${direction}` }),
   }).toString();
   const url = `${baseUrl}${queryParams}`
-  //console.log(url)
+  console.log(url)
 
   try {
     const res = await axios.get(url)
@@ -258,7 +258,7 @@ async function fetchData({ offset = "", diff = '', cleared = '', sort = '', dire
       wsLink: each.workshopLink
 
     }))
-    //console.log(simplifiedRes)
+    console.log(simplifiedRes)
 
     return simplifiedRes
   } catch (error) {
@@ -426,17 +426,22 @@ async function getYouTubeVideoDetails(url) {
   }
 }
 
-function getLevelImage(newDiff, pdnDiff, diff, legacy) {
+function getLevelImage(newDiff, pgnDiff, pguDiff, legacy) {
   // Check for image in the order of priority
+  console.log(newDiff, pgnDiff, pguDiff, legacy);
+  
   const imageSources = [
     { name: 'newDiff', source: newDataRaw[newDiff]},
-    { name: 'pgnData', source: pgnDataRaw[pdnDiff] },
-    { name: 'pguData', source: pguDataRaw[diff] },
+    { name: 'pgnData', source: pgnDataRaw[pgnDiff] },
+    { name: 'pgnData2', source: pgnDataRaw[pguDiff] },
+    { name: 'pguData', source: pguDataRaw[pguDiff] },
     { name: 'legacyData', source: legacyDataRaw[legacy] }
   ];
 
   for (const imgSource of imageSources) {
     if (imgSource.source != null) {
+      console.log("returning", imageSources);
+      
       return imgSource.source; // Return the first found image
     }
   }
