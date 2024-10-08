@@ -159,10 +159,10 @@ const newData = {
 
 
 const imagePh = [
-  "../../assets/placeholder/1.png",
-  "../../assets/placeholder/2.png",
-  "../../assets/placeholder/3.png",
-  "../../assets/placeholder/4.png",
+  "../src/assets/placeholder/1.png",
+  "../src/assets/placeholder/2.png",
+  "../src/assets/placeholder/3.png",
+  "../src/assets/placeholder/4.png",
 ];
 
 const legacyDataRaw = Object.fromEntries(
@@ -427,8 +427,6 @@ async function getYouTubeVideoDetails(url) {
 }
 
 function getLevelImage(newDiff, pgnDiff, pguDiff, legacy) {
-  // Check for image in the order of priority
-  console.log(newDiff, pgnDiff, pguDiff, legacy);
   
   const imageSources = [
     { name: 'newDiff', source: newDataRaw[newDiff]},
@@ -440,9 +438,7 @@ function getLevelImage(newDiff, pgnDiff, pguDiff, legacy) {
 
   for (const imgSource of imageSources) {
     if (imgSource.source != null) {
-      console.log("returning", imageSources);
-      
-      return imgSource.source; // Return the first found image
+      return imgSource.source;
     }
   }
 

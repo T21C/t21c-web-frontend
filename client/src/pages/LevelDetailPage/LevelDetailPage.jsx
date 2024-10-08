@@ -451,7 +451,17 @@ const LevelDetailPage = () => {
               allowFullScreen
             ></iframe>
           :
-            <img src={getYouTubeThumbnailUrl(res.level.vidLink, res.level.song)} alt="" />
+          <div
+            className="thumbnail-container"
+            style={{
+              backgroundImage: `url(${getYouTubeThumbnailUrl(res.level.vidLink, res.level.song)})`,
+            }}
+          >
+            <div className="thumbnail-text">
+              <p>Thumbnail not found</p>
+              {res.level.vidLink && <a href={res.level.vidLink}>Go to video</a>}
+            </div>
+          </div>
           }
           </div>
         </div>

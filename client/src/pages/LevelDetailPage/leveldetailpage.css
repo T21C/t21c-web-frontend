@@ -186,6 +186,30 @@
   -o-object-fit: contain;
      object-fit: contain;
 }
+
+.level-detail .body .youtube .thumbnail-container {
+  background-size: cover;
+  background-position: center;
+  height: 100%; /* Adjust height as needed */
+  width: 100%; /* Adjust width as needed */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background-repeat: no-repeat; /* Ensure background doesn't repeat */
+}
+
+.level-detail .body .youtube .thumbnail-text {
+  font-size: 24px;
+  font-weight: bold;
+  text-align:center;
+  color: white;
+  text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
+}
+.level-detail .body .youtube .thumbnail-text a {
+  color: rgb(117, 188, 255);
+}
+
 .level-detail .rank {
   max-width: 70rem;
   margin: 2rem auto;
