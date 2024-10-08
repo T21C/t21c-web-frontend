@@ -1,4 +1,3 @@
-// import { useNavigate } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { getLevelImage } from "../../Repository/RemoteRepository";
 import "./levelcard.css"

@@ -126,14 +126,14 @@ app.post('/api/form-submit', async (req, res) => {
       },
       body: new URLSearchParams(reqEmail).toString(), // Send the form data
     });
+    
 
     if (!formResponse.ok) {
       const errorData = await formResponse.json();
       return res.status(500).json({ error: 'Failed to submit form to Google Apps Script', details: errorData });
     }
 
-    const responseData = await formResponse.json();
-    res.json({ success: true, message: 'Form submitted successfully', responseData });
+    res.json({ success: true, message: 'Form submitted successfully'});
   } catch (error) {
     console.error('Error forwarding form submission:', error);
     res.status(500).json({ error: 'Internal Server Error' });

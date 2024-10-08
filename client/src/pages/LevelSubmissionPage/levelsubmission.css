@@ -74,6 +74,13 @@
   margin-bottom: 0.5rem;
   margin-top: 0.5rem;
 }
+
+.level-submission-page form .info .info-group .diff-tooltip{
+  padding-right: 5px;
+  gap: 5px; 
+  display: flex
+}
+
 .level-submission-page form .info .submit {
   width: 100%;
   background-color: var(--color-purple-3);

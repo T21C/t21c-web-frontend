@@ -31,6 +31,7 @@ const LevelSubmissionPage = () => {
   const [error, setError] = useState(null);
 
   const [submitAttempt, setSubmitAttempt] = useState(false);
+  const [submission, setSubmission] = useState(false);
 
   const [youtubeDetail, setYoutubeDetail] = useState(null)
   
@@ -115,6 +116,7 @@ const LevelSubmissionPage = () => {
     return;
   }
 
+  setSubmission(true)
   setShowMessage(true)
   setError(null);
   setSuccess(false);
@@ -141,6 +143,10 @@ const LevelSubmissionPage = () => {
   })
   .catch(err => {
     setError(err.message || "(Unknown)");
+  })
+  .finally(()=>{
+    setSubmission(false)
+    setSubmitAttempt(false);
   })
 };
 
@@ -227,7 +233,18 @@ const LevelSubmissionPage = () => {
             value={form.charter}
             onChange={handleInputChange}
           />
-          <input
+          <div className="diff-tooltip">
+          <div className="tooltip-container">
+          <span style={{
+              color: 'red',
+              visibility: `${isInvalidFeelingRating? '' : 'hidden'}`
+            }}>?</span>
+          <span className="tooltip" 
+                style={{
+                 bottom: "115%",
+                  right: "-15%"}}>Unknown difficulty, will submit but please make sure it's readable by the managers</span>
+          </div>
+            <input
             type="text"
             placeholder="Difficulty"
             name="diff"
@@ -237,6 +254,7 @@ const LevelSubmissionPage = () => {
                     backgroundColor: isInvalidFeelingRating ? "yellow" : ""
              }}
           />
+          </div>
           </div>
         <div className="info-group">
           <input
@@ -285,7 +303,7 @@ const LevelSubmissionPage = () => {
           />
         </div>
 
-            <button className="submit" onClick={handleSubmit}>Submit</button>
+          <button disabled={submission} className="submit" onClick={handleSubmit}>Submit {submission && (<>(please wait)</>)}</button>
         </div>
       </form>      
     </div>

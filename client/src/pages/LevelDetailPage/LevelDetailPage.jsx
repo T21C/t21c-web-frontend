@@ -580,7 +580,7 @@ const LevelDetailPage = () => {
                 </div>
               ))
             ) : (
-              <h1>{t("detailPage.leaderboard.notBeaten")}</h1>
+              <h3>{t("detailPage.leaderboard.notBeaten")}</h3>
             )
 
             :

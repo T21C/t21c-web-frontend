@@ -23,7 +23,7 @@ const PassSubmissionPage = () => {
     tooEarly: '',
     early: '',
     late: '',
-    isNormalHold: true,
+    isNoHold: false,
   };
 
   const { user } = useAuth();
@@ -40,6 +40,7 @@ const PassSubmissionPage = () => {
   const [error, setError] = useState(null);
 
   const [submitAttempt, setSubmitAttempt] = useState(false);
+  const [submission, setSubmission] = useState(false);
   const [level, setLevel] = useState(null);
   const [levelLoading, setLevelLoading] = useState(true);
 
@@ -106,7 +107,6 @@ const PassSubmissionPage = () => {
         
         setLevel(data ? data : null);
         setLevelLoading(false);
-        console.log(data);
         
       })
       .catch(() => {
@@ -133,7 +133,6 @@ const PassSubmissionPage = () => {
     // Determine the value based on whether the input is a checkbox
     const inputValue = type === 'checkbox' ? checked : value;
   
-    console.log(e.target);
   
     // Update the form state
     setForm((prev) => ({
@@ -169,11 +168,10 @@ const PassSubmissionPage = () => {
 
     const newJudgements = parseJudgements(updatedForm);
 
-    console.log(updatedForm)
     const passData = {
         speed: updatedForm.speed,
         judgements: newJudgements, // Use new judgements here
-        isNoHoldTap: updatedForm.isNormalHold,
+        isNoHoldTap: updatedForm.isNoHold,
     };
 
     const chartData = level;
@@ -206,6 +204,7 @@ const PassSubmissionPage = () => {
       return
     };
 
+    setSubmission(true)
     setShowMessage(true)
     setError(null);
     setSuccess(false);
@@ -223,21 +222,23 @@ const PassSubmissionPage = () => {
     googleForm.setDetail('LPerfect!', form.lPerfect)
     googleForm.setDetail('Late!', form.late)
     googleForm.setDetail('Late!!', "0")
-    googleForm.setDetail('isNoHold', form.isNormalHold)
-    googleForm.submit(user.access_token)
+    googleForm.setDetail('NHT', form.isNoHold)
 
     googleForm.submit(user.access_token)
   .then(result => {
     if (result === "ok") {
       setSuccess(true);
       setForm(initialFormState)
-      setSubmitAttempt(false);
     } else {
       setError(result);
     }
   })
   .catch(err => {
     setError(err.message || "Unknown");
+  })
+  .finally(()=>{
+    setSubmission(false)
+    setSubmitAttempt(false);
   })
   }
 
@@ -384,17 +385,18 @@ const PassSubmissionPage = () => {
             <div className="tooltip-container">
               <input
                type="checkbox" 
-               value={form.isNormalHold} 
+               value={form.isNoHold} 
                onChange={handleInputChange} 
-               name="isNormalHold" 
+               name="isNoHold" 
+               checked={form.isNoHold}
                />
               <span style={{
                   margin: '0 15px 0 10px',
                   position: 'relative',
-                }}>Used normal holds</span>
+                }}>Used alternate holds</span>
               <span className="tooltip" style={{
                  bottom: "110%",
-                  right: "10%"}}>Tick if you have used the "Normal hold" or "Allow tapping ending tile" behaviors or if the chart didn't contain holds</span>
+                  right: "10%"}}>Tick if you have used hold option other than "Normal hold" (0.9x score)</span>
 
             </div>
           </div>
@@ -515,7 +517,7 @@ const PassSubmissionPage = () => {
             </div>
           </div>
 
-          <button className="submit" onClick={handleSubmit}>Submit</button>
+          <button disabled={submission} className="submit" onClick={handleSubmit}>Submit {submission && (<>(please wait)</>)}</button>
         </div>
       </form>
     </div>

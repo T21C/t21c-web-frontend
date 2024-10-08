@@ -74,6 +74,8 @@ const options = [
   { value: "21.49", label: "U20" },
 ];
 
+const limit = 30;
+
 const LevelPageRev = () => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
@@ -101,7 +103,14 @@ const LevelPageRev = () => {
     setHasMore,
     pageNumber,
     setPageNumber,
+    hideUnranked,          // Add this
+    setHideUnranked,       // Add this
+    hideCensored,          // Add this
+    setHideCensored,       // Add this
+    hideEpic,              // Add this
+    setHideEpic            // Add this
   } = useContext(LevelContext);
+  
 
   useEffect(() => {
     let cancel;
@@ -113,9 +122,10 @@ const LevelPageRev = () => {
 
         // Construct the params object conditionally
       const params = {
+        limit: limit,
         query, 
         sort, 
-        offset: pageNumber * 10,
+        offset: pageNumber * limit,
       };
 
       // Add minDiff only if selectedLowFilterDiff is defined
@@ -126,9 +136,9 @@ const LevelPageRev = () => {
       // Add maxDiff only if selectedHighFilterDiff is defined
       if (selectedHighFilterDiff) {
         params.maxDiff = selectedHighFilterDiff.value;
-      }
+      } 
         const response = await axios.get(
-          `${import.meta.env.VITE_OFFSET_LEVEL}`,
+          `${import.meta.env.VITE_LIST_LEVEL}`,
           {
             params: params,
             cancelToken: new axios.CancelToken((c) => (cancel = c)),
@@ -509,7 +519,35 @@ const LevelPageRev = () => {
                   placeholder="Disabled"
                   isSearchable
                 />
-              </div>
+              </div>{/*
+              <div className="checkbox-filters">
+                
+        <label>
+          <input
+            type="checkbox"
+            checked={hideUnranked}
+            onChange={toggleHideUnranked}
+          />
+          Hide Unranked
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={hideCensored}
+            onChange={toggleHideCensored}
+          />
+          Hide Censored
+        </label>
+        <label>
+          <input
+            type="checkbox"
+            checked={hideEpic}
+            onChange={toggleHideEpic}
+          />
+          Hide Epic
+        </label>
+      </div>
+              */}
             </div>
           </div>
 

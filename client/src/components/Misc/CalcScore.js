@@ -117,7 +117,7 @@ export const getScoreV2 = (passData, chartData) => {
     const inputs = passData['judgements'];
     const scoreOrig = getScore(passData, chartData);
     var mtp = getScoreV2Mtp(inputs);
-    if (!passData['isNoHoldTap']) 
+    if (passData['isNoHoldTap']) 
        {
         mtp *= 0.9
     };

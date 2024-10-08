@@ -39,7 +39,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 .pass-submission-page form .info .id-input .information {
   display: flex;
@@ -113,7 +113,7 @@
   padding: 1rem;
   border-radius: 5px;
   margin-top: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 .pass-submission-page form .info .accuracy .top, .pass-submission-page form .info .accuracy .bottom {
   display: flex;
