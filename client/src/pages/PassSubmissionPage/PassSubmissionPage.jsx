@@ -9,6 +9,7 @@ import { getScoreV2 } from "../../components/Misc/CalcScore";
 import { parseJudgements } from "../../components/Misc/ParseJudgements";
 import { useAuth } from "../../context/AuthContext";
 import {FetchIcon} from "../../components/FetchIcon/FetchIcon"
+import { validateFeelingRating } from "../../components/Misc/Utility";
 
 const PassSubmissionPage = () => {
   const initialFormState = {
@@ -46,10 +47,7 @@ const PassSubmissionPage = () => {
 
   const [youtubeDetail, setYoutubeDetail] = useState(null)
 
-  const validateFeelingRating = (value) => {
-    const regex = /^$|^[PGUpgu][1-9]$|^[PGUpgu]1[0-9]$|^[PGUpgu]20$/; // Validate P,G,U followed by 1-20
-    return regex.test(value);
-  };
+
 
   const truncateString = (str, maxLength) => {
     if (!str) return "";
@@ -429,6 +427,7 @@ const PassSubmissionPage = () => {
             }}>?</span>
           <span className="tooltip" 
                 style={{
+                  visibility: `${isInvalidFeelingRating? '' : 'hidden'}`,
                  bottom: "115%",
                   right: "-15%"}}>Unknown difficulty, will submit but please make sure it's readable by the managers</span>
         </div>

@@ -5,6 +5,7 @@ import { GoogleFormSubmitter } from "../../components/FormManager/googleForm";
 import { useEffect, useRef, useState } from "react";
 import { getYouTubeThumbnailUrl, getYouTubeVideoDetails } from "../../Repository/RemoteRepository";
 import { useAuth } from "../../context/AuthContext";
+import { validateFeelingRating } from "../../components/Misc/Utility";
 
 const LevelSubmissionPage = () => {
   const initialFormState = {
@@ -36,11 +37,6 @@ const LevelSubmissionPage = () => {
   const [youtubeDetail, setYoutubeDetail] = useState(null)
   
 
-
-  const validateFeelingRating = (value) => {
-    const regex = /^$|^[PGUpgu][1-9]$|^[PGUpgu]1[0-9]$|^[PGUpgu]20$/; // Validate P,G,U followed by 1-20
-    return regex.test(value);
-  };
 
   const truncateString = (str, maxLength) => {
     if (!str) return "";
@@ -241,6 +237,7 @@ const LevelSubmissionPage = () => {
             }}>?</span>
           <span className="tooltip" 
                 style={{
+                  visibility: `${isInvalidFeelingRating? '' : 'hidden'}`,
                  bottom: "115%",
                   right: "-15%"}}>Unknown difficulty, will submit but please make sure it's readable by the managers</span>
           </div>
