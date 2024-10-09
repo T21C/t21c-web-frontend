@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../../context/AuthContext'; // Assuming your AuthContext is in this path
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import './profile.css';
 
 function Profile() {
   const { profile, login, logout } = useAuth(); // Access profile, login, and logout from the context
   const [imageSrc, setImageSrc] = useState(null); // Local state for image source
-
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (profile && profile.imageBlob) {
@@ -30,11 +31,13 @@ function Profile() {
     }
   }, [profile]);
 
-
+  const handleProfileClick = () => {
+    navigate('/Profile'); // Adjust the path according to your routing
+  };
   return (
     <div className="profile-container">
       {profile ? (
-        <div className="profile-details">
+        <div className="profile-details" onClick={handleProfileClick}>
           <div className="profile-content">
             <h3>{profile.name}</h3>
             <h5>{profile.email}</h5>

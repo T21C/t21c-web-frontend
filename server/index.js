@@ -2,12 +2,24 @@ import express from 'express';
 import fetch from 'node-fetch';
 import dotenv from 'dotenv';
 import cors from 'cors';
+import sql from 'mssql'; // Import mssql package
 
 // Load environment variables from .env
 dotenv.config();
 
 const app = express();
 const port = 3001;
+
+const sqlConfig = {
+  server: process.env.DB_SERVER, // Your SQL Server instance
+  database: process.env.DB_NAME, // Your database name
+  options: {
+    encrypt: true, // Use true if you're on Azure
+    trustServerCertificate: true, // Change to false in production
+    // Use integrated security
+    trustedConnection: true, // This enables Windows Authentication
+  },
+};
 
 app.use(cors()); // Enable CORS for all routes
 app.use(express.json());
@@ -141,6 +153,24 @@ app.post('/api/form-submit', async (req, res) => {
 });
 
 
+app.get('/api/test-query', async (req, res) => {
+  try {
+    // Establish connection to the SQL Server
+    await sql.connect(sqlConfig);
+    
+    // Execute a simple SQL query
+    const result = await sql.query`SELECT * FROM dbo.usernames`; // Replace 'your_table_name' with your actual table name
+
+    // Return the results
+    res.json(result.recordset);
+  } catch (err) {
+    console.error('SQL error', err);
+    res.status(500).json({ error: 'Internal Server Error', details: err.message });
+  } finally {
+    // Close the connection
+    await sql.close();
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);

@@ -18,8 +18,6 @@ export const validateFeelingRating = (value) => {
     // Final regex combining all the patterns
     const regex = new RegExp(`^$|^${pguRegex}$|^-2$|^${rangeRegex}$|^${legacyRegex}$|^${legacyRange}$`);
     
-    console.log(regex);
-    
     // Test input value against the regex pattern
     return regex.test(value);
 };
