@@ -191,21 +191,23 @@ const PassSubmissionPage = () => {
  const googleForm = new FormManager("pass")
   const handleSubmit = (e) => {
     e.preventDefault();
+    setShowMessage(true)
+    setSuccess(false);
     if(!user){
       console.log("no user");
+      setError("You must be logged in");
 
       return 
     }
     if (!Object.values(isFormValid).every(Boolean)) {
       setSubmitAttempt(true)
+      setError("incomplete form");
       console.log("incomplete form, returning")
       return
     };
 
     setSubmission(true)
-    setShowMessage(true)
     setError(null);
-    setSuccess(false);
     googleForm.setDetail('id', form.levelId)
     googleForm.setDetail('*/Speed Trial', form.speed? form.speed : 1.0)
     googleForm.setDetail('Passer', form.leaderboardName)
@@ -256,7 +258,7 @@ const PassSubmissionPage = () => {
           "#888"
         )}}>
           {success? (<p>Form submitted successfully!</p>) :
-          error? (<p>Error ocurred: {truncateString(error, 20)}</p>):
+          error? (<p>Error: {truncateString(error, 28)}</p>):
           (<p>Submitting...</p>)}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div>

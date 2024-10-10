@@ -99,22 +99,24 @@ const LevelSubmissionPage = () => {
 
  const googleForm = new FormManager("chart")
   const handleSubmit = (e) => {
-  e.preventDefault()
-    
-  if (!user) {
-    console.log("no user");
-    return;
-  }
-  if (!Object.values(isFormValid).every(Boolean)) {
-    setSubmitAttempt(true);
-    console.log("incomplete form, returning");
-    return;
-  }
+    e.preventDefault();
+    setShowMessage(true)
+    setSuccess(false);
+    if(!user){
+      console.log("no user");
+      setError("You must be logged in.");
 
-  setSubmission(true)
-  setShowMessage(true)
-  setError(null);
-  setSuccess(false);
+      return 
+    }
+    if (!Object.values(isFormValid).every(Boolean)) {
+      setSubmitAttempt(true)
+      setError("incomplete form!");
+      console.log("incomplete form, returning")
+      return
+    };
+
+    setSubmission(true)
+    setError(null);
   googleForm.setDetail('artist', form.artist);
   googleForm.setDetail('charter', form.charter);
   googleForm.setDetail('diff', form.diff);
@@ -156,7 +158,7 @@ const LevelSubmissionPage = () => {
           "#888"
         )}}>
           {success? (<p>Form submitted successfully!</p>) :
-          error? (<p>Error ocurred: {truncateString(error, 20)}</p>):
+          error? (<p>Error: {truncateString(error, 27)}</p>):
           (<p>Submitting...</p>)}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div>
