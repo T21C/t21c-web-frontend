@@ -69,7 +69,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   // Google login logic
-  const login = useGoogleLogin({
+  const loginGoogle = useGoogleLogin({
     onSuccess: async (codeResponse) => {
       try {
         // Send the access token to your custom API for validation and user info
@@ -103,14 +103,25 @@ export const AuthProvider = ({ children }) => {
     onError: (error) => console.log('Login Failed:', error),
   });
 
+  const loginDiscord = () => {
+    // Use environment variables to construct the authorization URL
+    const clientId = import.meta.env.VITE_CLIENT_ID;
+    const redirectUri = encodeURIComponent(import.meta.env.VITE_REDIRECT_URI);
+    const scope = encodeURIComponent('identify email');
+    const discordAuthUrl = `${import.meta.env.VITE_DISCORD_LINK}?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
+  
+    window.location.href = discordAuthUrl; // Redirect user to Discord login page
+  };
+  
   // Logout logic
   const logout = () => {
-    googleLogout();
-    localStorage.removeItem('user'); // Clear stored user data on logout
+    // Clear stored token and user profile data on logout
+    localStorage.removeItem('discordToken');
     setUser(null);
     setProfile(null);
     setUsername(''); // Clear username on logout
   };
+  
 
   // Update username
   const updateUsername = (newUsername) => {
@@ -123,9 +134,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Provide state and functions to the entire app
-  return (
-    <AuthContext.Provider value={{ user, profile, username, login, logout, updateUsername }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  // Provide state and functions to the entire app
+return (
+  <AuthContext.Provider value={{ user, profile, username, loginDiscord, logout, updateUsername }}>
+    {children}
+  </AuthContext.Provider>
+);
+
 };

@@ -8,7 +8,8 @@ import sql from 'mssql'; // Import mssql package
 dotenv.config();
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001; // Fallback to 3000 if PORT is not defined
+const host = process.env.REDIRECT_URI || "http://localhost"
 
 const sqlConfig = {
   server: process.env.DB_SERVER, // Your SQL Server instance
@@ -87,6 +88,58 @@ app.post('/api/google-auth', async (req, res) => {
   }
 });
 
+
+app.post('/api/discord-auth', async (req, res) => {
+  const { code } = req.body; // Get the authorization code from request body
+
+  if (!code) {
+      return res.status(400).json({ error: 'Authorization code is required' });
+  }
+
+  try {
+      const requestBody = new URLSearchParams({
+          client_id: process.env.CLIENT_ID,
+          client_secret: process.env.CLIENT_SECRET,
+          code,
+          grant_type: 'authorization_code',
+          redirect_uri: `${process.env.CLIENT_URL}/callback`, // Adjust this as needed
+      }).toString();
+
+      console.log('Request Body:', requestBody); // Log request body
+
+      const tokenResponseData = await fetch('https://discord.com/api/oauth2/token', {
+          method: 'POST',
+          body: requestBody,
+          headers: {
+              'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+          },
+      });
+
+      if (!tokenResponseData.ok) {
+          const errorText = await tokenResponseData.text(); // Get error details
+          console.error('Error Response:', errorText);
+          return res.status(500).json({ error: 'Failed to exchange code for token', details: errorText });
+      }
+
+      const oauthData = await tokenResponseData.json(); // Parse the token response
+      console.log('OAuth Data:', oauthData);
+
+      // Send back the token data to the client
+      return res.status(200).json({
+          access_token: oauthData.access_token,
+          refresh_token: oauthData.refresh_token,
+          expires_in: oauthData.expires_in,
+          scope: oauthData.scope,
+          token_type: oauthData.token_type,
+      });
+
+  } catch (error) {
+      console.error('Error during token exchange:', error);
+      return res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
 // Token checking endpoint
 app.post('/api/check-token', async (req, res) => {
   const { accessToken } = req.body;
@@ -152,25 +205,6 @@ app.post('/api/form-submit', async (req, res) => {
   }
 });
 
-
-app.get('/api/test-query', async (req, res) => {
-  try {
-    // Establish connection to the SQL Server
-    await sql.connect(sqlConfig);
-    
-    // Execute a simple SQL query
-    const result = await sql.query`SELECT * FROM dbo.usernames`; // Replace 'your_table_name' with your actual table name
-
-    // Return the results
-    res.json(result.recordset);
-  } catch (err) {
-    console.error('SQL error', err);
-    res.status(500).json({ error: 'Internal Server Error', details: err.message });
-  } finally {
-    // Close the connection
-    await sql.close();
-  }
-});
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
