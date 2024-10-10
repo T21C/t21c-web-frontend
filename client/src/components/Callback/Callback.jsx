@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from "../../context/AuthContext";
 
 const CallbackPage = () => {
-  const [profileInfo, setProfileInfo] = useState(null); // State to hold profile info
   const navigate = useNavigate();
+  const { handleAccessToken } = useAuth(); // Access setUser and handleAccessToken from AuthContext
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -19,44 +20,24 @@ const CallbackPage = () => {
         .then((response) => response.json())
         .then((data) => {
           const accessToken = data.access_token;
-          const tokenType = data.token_type;
 
-          // Log token info (optional)
           console.log('Access Token:', accessToken);
 
-          // Store token in localStorage or state
-          localStorage.setItem('discordToken', accessToken);
+          // Set the access token in AuthContext
+          handleAccessToken(accessToken);
 
-          // Fetch the user's profile from Discord using the access token
-          return fetch('https://discord.com/api/users/@me', {
-            headers: {
-              authorization: `${tokenType} ${accessToken}`,
-            },
-          });
-        })
-        .then((profileResponse) => profileResponse.json())
-        .then((profile) => {
-          // Extract profile details
-          const { username, discriminator } = profile;
-
-          // Log profile details
-          console.log('Discord Profile:', profile);
-
-          // Display profile information on the page
-          setProfileInfo(`${username}#${discriminator}`);
-
-          // Optionally redirect to another page after fetching profile
+          // Redirect back to the root
+          navigate('/');
         })
         .catch((error) => {
           console.error('Error during Discord login process:', error);
         });
     }
-  }, [navigate]);
+  }, [navigate, handleAccessToken]);
 
   return (
-    <div>
+    <div style={{ backgroundColor: 'black', height: '100vh', color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
       <h2>Processing Discord login...</h2>
-      {profileInfo && <p>Welcome, {profileInfo}</p>} {/* Display the profile info */}
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import { CompleteNav } from "../../components";
 import "./levelsubmission.css";
 import image from "../../assets/placeholder/3.png";
-import { GoogleFormSubmitter } from "../../components/FormManager/googleForm";
+import { FormManager } from "../../components/FormManager/FormManager";
 import { useEffect, useRef, useState } from "react";
 import { getYouTubeThumbnailUrl, getYouTubeVideoDetails } from "../../Repository/RemoteRepository";
 import { useAuth } from "../../context/AuthContext";
@@ -98,7 +98,7 @@ const LevelSubmissionPage = () => {
     setShowMessage(false)
   };
 
- const googleForm = new GoogleFormSubmitter("chart")
+ const googleForm = new FormManager("chart")
   const handleSubmit = (e) => {
   e.preventDefault()
     

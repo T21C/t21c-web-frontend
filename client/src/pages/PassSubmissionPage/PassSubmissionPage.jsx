@@ -1,7 +1,7 @@
 import { CompleteNav } from "../../components";
 import "./passsubmission.css";
 import image from "../../assets/placeholder/3.png";
-import { GoogleFormSubmitter } from "../../components/FormManager/googleForm";
+import { FormManager } from "../../components/FormManager/FormManager";
 import { useEffect, useState } from "react";
 import { checkLevel, getYouTubeThumbnailUrl, getYouTubeVideoDetails } from "../../Repository/RemoteRepository";
 import calcAcc from "../../components/Misc/CalcAcc";
@@ -188,7 +188,7 @@ const PassSubmissionPage = () => {
     }
 };
 
- const googleForm = new GoogleFormSubmitter("pass")
+ const googleForm = new FormManager("pass")
   const handleSubmit = (e) => {
     e.preventDefault();
     if(!user){

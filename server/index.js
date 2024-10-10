@@ -29,21 +29,30 @@ app.use(express.urlencoded({ extended: true }));
 // Helper function to verify access token
 const verifyAccessToken = async (accessToken) => {
   try {
-    const tokenInfoResponse = await fetch(`https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=${accessToken}`);
+    const tokenInfoResponse = await fetch('https://discord.com/api/users/@me', {
+      headers: {
+        authorization: `Bearer ${accessToken}`,
+      },
+    });
+
     if (!tokenInfoResponse.ok) {
       return false; // Invalid token
     }
+
     const tokenInfo = await tokenInfoResponse.json();
-    return tokenInfo;
+    return tokenInfo; // Return the profile information if the token is valid
   } catch (error) {
     console.error('Error verifying token:', error);
-    return false;
+    return false; // Return false on error
   }
 };
 
-// Example ban list (this could be fetched from an external API)
-const banList = ['bannedUser@example.com', 'anotherBannedUser@example.com'];
 
+// Example ban list (this could be fetched from an external API)
+const emailBanList = ['bannedUser@example.com', 'anotherBannedUser@example.com'];
+const idBanList = ['15982378912598', '78912538976123']
+
+// CURRENTLY NOT IN USE
 app.post('/api/google-auth', async (req, res) => {
   const { code } = req.body; // Extract code object from request body
   
@@ -167,7 +176,7 @@ app.post('/api/form-submit', async (req, res) => {
   }
 
   // Check if the user is in the ban list
-  if (banList.includes(tokenInfo.email)) {
+  if (emailBanList.includes(tokenInfo.email)) {
     return res.status(403).json({ error: 'User is banned' });
   }
 
@@ -177,11 +186,11 @@ app.post('/api/form-submit', async (req, res) => {
   console.log("request received: ", req);
   
   
-  const reqEmail = { ...req.body, _submitterEmail: tokenInfo.email };
+  const reqFull = { ...req.body, _submitterEmail: tokenInfo.email, _discordUsername: tokenInfo.username};
 
 
 
-  console.log("sending", new URLSearchParams(reqEmail).toString());
+  console.log("sending", new URLSearchParams(reqFull).toString());
   try {
     const formResponse = await fetch(appScriptUrl, {
       method: 'POST',
@@ -189,7 +198,7 @@ app.post('/api/form-submit', async (req, res) => {
         'Authorization': `Bearer ${accessToken}`, // Forward the access token to Google Apps Script
         'Content-Type': 'application/x-www-form-urlencoded',  // Custom header indicating form type
       },
-      body: new URLSearchParams(reqEmail).toString(), // Send the form data
+      body: new URLSearchParams(reqFull).toString(), // Send the form data
     });
     
 

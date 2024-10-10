@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useGoogleLogin, googleLogout } from '@react-oauth/google';
+import { useGoogleLogin } from '@react-oauth/google';
 import axios from 'axios';
 
 const AuthContext = createContext();
@@ -8,14 +8,26 @@ export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); // user state
-  const [profile, setProfile] = useState(null); // profile state
-  const [username, setUsername] = useState(''); // username state
+  const [accessToken, setAccessToken] = useState(null); // Access token state
 
-  // Fetch the image when setting the profile
-  const fetchProfileImage = async (profileData) => {
-    if (profileData && profileData.picture) {
+  // Function to parse and set user data
+
+
+
+  // Fetch the image URL when setting the user
+  const fetchProfileImage = async (userData) => {
+    if (userData && userData.id && userData.avatar) {
+      const { id, avatar } = userData;
+
+      // Construct the URL for the profile image
+      const imageUrl = `https://cdn.discordapp.com/avatars/${id}/${avatar}`;
+
       try {
-        const response = await fetch(profileData.picture, { referrerPolicy: 'no-referrer' });
+        
+        const response = await fetch(imageUrl, { referrerPolicy: 'no-referrer' });
+        if (!response.ok) {
+          throw new Error('Failed to fetch image');
+        }
         const blob = await response.blob();
         const objectURL = URL.createObjectURL(blob);
         return objectURL; // Return the image URL as a blob URL
@@ -27,72 +39,112 @@ export const AuthProvider = ({ children }) => {
     return null; // If no profile picture, return null
   };
 
+
+
+
+
+
+  const parseUserData = async (userData) => {
+    if (userData) {
+      const imageUrl = await fetchProfileImage(userData);
+      const updatedUser = { ...userData, imageBlob: imageUrl }; // Add image URL to user
+      setUser(updatedUser); // Update user state
+
+      
+      // Store user data in localStorage
+      if (accessToken){
+      localStorage.setItem("discordAccessToken", accessToken)
+      }
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+    }
+  };
+
+
+
+
+  const handleAccessToken = (token) => {
+    if(token){
+      setAccessToken(token); // Set access token
+    }
+    else{
+      console.log("no token provided, skipping");
+    }
+  };
+
+
+
+
+  useEffect(() => {
+    if (accessToken) {
+      console.log("Access token set");
+      getUserData(accessToken);
+    }
+  }, [accessToken]);
+
+
+
+
+
+
+
+  const getUserData = async (token) => {
+    console.log("getting data");
+    
+    try {
+      console.log("data:", token);
+      const response = await fetch('https://discord.com/api/users/@me', {
+        headers: {
+          authorization: `Bearer ${token}`, // Use Bearer token format
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch user data');
+      }
+
+      const profile = await response.json();
+      const { id, username, global_name, avatar } = profile;
+
+      // Create user object with the profile info
+      const userData = {
+        id,
+        global_name: `${global_name}`,
+        username: `${username}`,
+        avatar,
+        access_token: token, // Include the access token in user data
+      };
+
+      // Set the user in AuthContext
+      
+      parseUserData(userData);
+
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
+
+
+
   // Check localStorage for user info on mount
   useEffect(() => {
     const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-
-      // Check if the access token is valid
-      const checkTokenValidity = async () => {
-        try {
-          const response = await axios.post('http://localhost:3001/api/check-token', {
-            accessToken: parsedUser.access_token, // Assuming your user object contains the access token
-          });
-
-          if (response.data.valid) {
-            // Fetch profile image
-            const imageUrl = await fetchProfileImage(parsedUser.profile);
-            const updatedProfile = { ...parsedUser.profile, imageBlob: imageUrl }; // Add image URL to profile
-
-            setUser(parsedUser); // Restore user object
-            setProfile(updatedProfile); // Restore user profile info with the image
-            setUsername(updatedProfile.name || ''); // Set initial username if available
-          } else {
-            console.log('Token is invalid, clearing local storage');
-            localStorage.removeItem('user'); // Clear invalid user from localStorage
-            setUser(null);
-            setProfile(null);
-            setUsername(''); // Clear username on invalid token
-          }
-        } catch (error) {
-          console.error('Error checking token validity:', error);
-          localStorage.removeItem('user'); // Clear user on error
-          setUser(null);
-          setProfile(null);
-          setUsername(''); // Clear username on error
-        }
-      };
-
-      checkTokenValidity();
+    const storedAccessToken = localStorage.getItem('discordAccessToken');
+    if(storedAccessToken) {
+      getUserData(storedAccessToken)
     }
   }, []);
+
 
   // Google login logic
   const loginGoogle = useGoogleLogin({
     onSuccess: async (codeResponse) => {
       try {
-        // Send the access token to your custom API for validation and user info
         const response = await axios.post('http://localhost:3001/api/google-auth', {
           code: codeResponse,
         });
 
         if (response.data.valid) {
-          // Fetch profile image
-          const imageUrl = await fetchProfileImage(response.data.profile);
-          const updatedProfile = { ...response.data.profile, imageBlob: imageUrl }; // Add image URL to profile
-
-          const userData = {
-            access_token: codeResponse.access_token, // Store relevant user info
-            profile: updatedProfile, // Store profile with the image URL
-          };
-
-          // Store user data in localStorage
-          localStorage.setItem('user', JSON.stringify(userData));
-
-          setUser(userData); // Store the user object with the access token
-          setProfile(updatedProfile); // Store user profile info directly from server
-          setUsername(updatedProfile.name || ''); // Set initial username if available
+          await parseUserData(response.data.user); // Parse user data on success
         } else {
           console.error('Invalid token');
         }
@@ -104,7 +156,6 @@ export const AuthProvider = ({ children }) => {
   });
 
   const loginDiscord = () => {
-    // Use environment variables to construct the authorization URL
     const clientId = import.meta.env.VITE_CLIENT_ID;
     const redirectUri = encodeURIComponent(import.meta.env.VITE_REDIRECT_URI);
     const scope = encodeURIComponent('identify email');
@@ -112,33 +163,19 @@ export const AuthProvider = ({ children }) => {
   
     window.location.href = discordAuthUrl; // Redirect user to Discord login page
   };
-  
+
   // Logout logic
   const logout = () => {
-    // Clear stored token and user profile data on logout
-    localStorage.removeItem('discordToken');
+    localStorage.removeItem('user');
+    localStorage.removeItem('discordAccessToken'); // Clear user from localStorage
     setUser(null);
-    setProfile(null);
-    setUsername(''); // Clear username on logout
-  };
-  
-
-  // Update username
-  const updateUsername = (newUsername) => {
-    setUsername(newUsername);
-    
-    // Update the profile in local storage as well
-    const updatedProfile = { ...profile, name: newUsername }; // Update profile with new username
-    setProfile(updatedProfile); // Update profile state
-    localStorage.setItem('user', JSON.stringify({ ...user, profile: updatedProfile })); // Update local storage
+    setAccessToken(null);
   };
 
   // Provide state and functions to the entire app
-  // Provide state and functions to the entire app
-return (
-  <AuthContext.Provider value={{ user, profile, username, loginDiscord, logout, updateUsername }}>
-    {children}
-  </AuthContext.Provider>
-);
-
+  return (
+    <AuthContext.Provider value={{ user, setUser, loginDiscord, logout, handleAccessToken}}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
