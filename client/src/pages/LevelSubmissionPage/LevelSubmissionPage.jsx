@@ -11,7 +11,6 @@ const LevelSubmissionPage = () => {
   const initialFormState = {
     artist: '',
     charter: '',
-    creator: '',
     diff: '',
     dlLink: '',
     song: '',
@@ -44,7 +43,7 @@ const LevelSubmissionPage = () => {
   };
 
   const validateForm = () => {
-    const requiredFields = ['artist', 'creator', 'diff', 'dlLink', 'song', 'vidLink', 'workshopLink'];
+    const requiredFields = ['artist', 'diff', 'dlLink', 'song', 'vidLink', 'workshopLink'];
     const validationResult = {};
     const displayValidationRes = {};
     
@@ -118,7 +117,6 @@ const LevelSubmissionPage = () => {
   setSuccess(false);
   googleForm.setDetail('artist', form.artist);
   googleForm.setDetail('charter', form.charter);
-  googleForm.setDetail('creator', form.creator);
   googleForm.setDetail('diff', form.diff);
   googleForm.setDetail('song', form.song);
   googleForm.setDetail('team', form.team);
@@ -228,6 +226,7 @@ const LevelSubmissionPage = () => {
             name="charter"
             value={form.charter}
             onChange={handleInputChange}
+            style={{marginLeft: "6px"}}
           />
           <div className="diff-tooltip">
           <div className="tooltip-container">
@@ -239,7 +238,7 @@ const LevelSubmissionPage = () => {
                 style={{
                   visibility: `${isInvalidFeelingRating? '' : 'hidden'}`,
                  bottom: "115%",
-                  right: "-15%"}}>Unknown difficulty, will submit but please make sure it's readable by the managers</span>
+                  left: "-2rem"}}>Unknown difficulty, will submit but please make sure it's readable by the managers</span>
           </div>
             <input
             type="text"
@@ -254,34 +253,24 @@ const LevelSubmissionPage = () => {
           </div>
           </div>
         <div className="info-group">
-          <input
+          
+        <input
             type="text"
-            placeholder="Creator"
-            name="creator"
-            value={form.creator}
-            onChange={handleInputChange}
-            style={{ borderColor: isFormValidDisplay.creator ? "" : "red" }}
-          />
-          <input
-            type="text"
-            placeholder="Team Name"
-            name="team"
-            value={form.team}
-            onChange={handleInputChange}
-          />
-        </div>
-
-        <div className="info-group">
-          <input
-            type="text"
-            placeholder="VFX-ers"
+            placeholder="VFX-ers (opt.)"
             name="vfxer"
             value={form.vfxer}
             onChange={handleInputChange}
           />
+          <input
+            type="text"
+            placeholder="Team Name (opt.)"
+            name="team"
+            value={form.team}
+            onChange={handleInputChange}
+          />
           </div>
           
-        <div className="info-group">
+        <div className="info-group" style={{marginTop: "2rem",paddingLeft: "30px", paddingRight: "30px"}}>
           <input
             type="text"
             placeholder="Download Link"
@@ -290,6 +279,7 @@ const LevelSubmissionPage = () => {
             onChange={handleInputChange}
             style={{ borderColor: isFormValidDisplay.directLink ? "" : "red" }}
           />
+          <span style={{display: "flex", alignItems: "center"}}>or</span>
           <input
             type="text"
             placeholder="Workshop Link"

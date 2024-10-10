@@ -91,7 +91,7 @@
   cursor: pointer;
   padding: 0.5rem 1rem;
   max-width: 70rem;
-  margin: 0 auto;
+  margin: 1rem auto auto auto;
   transition: all 100ms linear;
 }
 .level-submission-page form .info .submit:hover {
