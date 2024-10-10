@@ -44,17 +44,16 @@ export const AuthProvider = ({ children }) => {
 
 
 
-  const parseUserData = async (userData) => {
+  const setUserData = async (userData) => {
+    console.log("setting data", userData);
+    
     if (userData) {
       const imageUrl = await fetchProfileImage(userData);
       const updatedUser = { ...userData, imageBlob: imageUrl }; // Add image URL to user
-      setUser(updatedUser); // Update user state
 
-      
+      setUser(updatedUser)
+      setAccessToken(updatedUser.access_token)
       // Store user data in localStorage
-      if (accessToken){
-      localStorage.setItem("discordAccessToken", accessToken)
-      }
       localStorage.setItem('user', JSON.stringify(updatedUser));
     }
   };
@@ -76,18 +75,59 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (accessToken) {
-      console.log("Access token set");
-      getUserData(accessToken);
+      console.log("Access token setting:", accessToken);
+      getTokenData(accessToken);
     }
   }, [accessToken]);
 
 
 
 
+  const getUserData = async (user) => {
+    
+    try {
+      console.log("getting data");
+      console.log("data:", user.access_token);
+      if(user){
+      const response = await fetch('https://discord.com/api/users/@me', {
+        headers: {
+          authorization: `Bearer ${user.access_token}`, // Use Bearer token format
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('failed response', response);
+      }
+
+      const profile = await response.json();
+      const { id, username, global_name, avatar } = profile;
+
+      // Create user object with the profile info
+      const userData = {
+        id,
+        global_name: `${global_name}`,
+        username: `${username}`,
+        avatar,
+        access_token: user.access_token, // Include the access token in user data
+      };
+
+      // Set the user in AuthContext
+      
+      setUserData(userData);
+    }
+    else{
+      console.log("invalid user", user);
+      
+    }
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    }
+  };
 
 
 
-  const getUserData = async (token) => {
+
+  const getTokenData = async (token) => {
     console.log("getting data");
     
     try {
@@ -99,7 +139,7 @@ export const AuthProvider = ({ children }) => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to fetch user data');
+        throw new Error('failed response', response);
       }
 
       const profile = await response.json();
@@ -116,7 +156,7 @@ export const AuthProvider = ({ children }) => {
 
       // Set the user in AuthContext
       
-      parseUserData(userData);
+      setUserData(userData);
 
     } catch (error) {
       console.error('Error fetching user data:', error);
@@ -127,10 +167,11 @@ export const AuthProvider = ({ children }) => {
 
   // Check localStorage for user info on mount
   useEffect(() => {
-    const storedUser = localStorage.getItem('user');
-    const storedAccessToken = localStorage.getItem('discordAccessToken');
-    if(storedAccessToken) {
-      getUserData(storedAccessToken)
+    const storedUser = JSON.parse(localStorage.getItem('user'))
+    if(storedUser) {
+      console.log("");
+      
+      getUserData(storedUser)
     }
   }, []);
 
@@ -144,7 +185,7 @@ export const AuthProvider = ({ children }) => {
         });
 
         if (response.data.valid) {
-          await parseUserData(response.data.user); // Parse user data on success
+          await setUserData(response.data.user); // Parse user data on success
         } else {
           console.error('Invalid token');
         }
@@ -174,7 +215,7 @@ export const AuthProvider = ({ children }) => {
 
   // Provide state and functions to the entire app
   return (
-    <AuthContext.Provider value={{ user, setUser, loginDiscord, logout, handleAccessToken}}>
+    <AuthContext.Provider value={{ user, setUser, accessToken, loginDiscord, logout, handleAccessToken}}>
       {children}
     </AuthContext.Provider>
   );

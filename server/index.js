@@ -34,7 +34,8 @@ const verifyAccessToken = async (accessToken) => {
         authorization: `Bearer ${accessToken}`,
       },
     });
-
+    console.log(tokenInfoResponse);
+    
     if (!tokenInfoResponse.ok) {
       return false; // Invalid token
     }
@@ -186,9 +187,9 @@ app.post('/api/form-submit', async (req, res) => {
   console.log("request received: ", req);
   
   
+  
+
   const reqFull = { ...req.body, _submitterEmail: tokenInfo.email, _discordUsername: tokenInfo.username};
-
-
 
   console.log("sending", new URLSearchParams(reqFull).toString());
   try {

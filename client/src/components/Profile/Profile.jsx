@@ -36,8 +36,8 @@ function Profile() {
       {user ? (
         <div className="profile-details">
           <div className="profile-content">
-            <h3>{user.username}</h3>
-            <h5>{user.email}</h5>
+            <h3>{user.global_name}</h3>
+            <h5>@{user.username}</h5>
           </div>
           {imageSrc ? (
             imageSrc == "failed" ? (
