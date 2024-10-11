@@ -1,7 +1,7 @@
 import { CompleteNav } from "../../components";
 import "./passsubmission.css";
 import image from "../../assets/placeholder/3.png";
-import { GoogleFormSubmitter } from "../../components/FormManager/googleForm";
+import { FormManager } from "../../components/FormManager/FormManager";
 import { useEffect, useState } from "react";
 import { checkLevel, getYouTubeThumbnailUrl, getYouTubeVideoDetails } from "../../Repository/RemoteRepository";
 import calcAcc from "../../components/Misc/CalcAcc";
@@ -9,6 +9,7 @@ import { getScoreV2 } from "../../components/Misc/CalcScore";
 import { parseJudgements } from "../../components/Misc/ParseJudgements";
 import { useAuth } from "../../context/AuthContext";
 import {FetchIcon} from "../../components/FetchIcon/FetchIcon"
+import { validateFeelingRating } from "../../components/Misc/Utility";
 
 const PassSubmissionPage = () => {
   const initialFormState = {
@@ -23,12 +24,13 @@ const PassSubmissionPage = () => {
     tooEarly: '',
     early: '',
     late: '',
+    isNoHold: false,
   };
 
   const { user } = useAuth();
   const [form, setForm] = useState(initialFormState);
-  const [accuracy, setAccuracy] = useState("");
-  const [score, setScore] = useState("");
+  const [accuracy, setAccuracy] = useState(null);
+  const [score, setScore] = useState("Level ID is required");
   const [judgements, setJudgements] = useState([]);
   const [isInvalidFeelingRating, setIsInvalidFeelingRating] = useState(false); // Track validation
   const [isFormValid, setIsFormValid] = useState(false);
@@ -39,15 +41,13 @@ const PassSubmissionPage = () => {
   const [error, setError] = useState(null);
 
   const [submitAttempt, setSubmitAttempt] = useState(false);
+  const [submission, setSubmission] = useState(false);
   const [level, setLevel] = useState(null);
   const [levelLoading, setLevelLoading] = useState(true);
 
   const [youtubeDetail, setYoutubeDetail] = useState(null)
 
-  const validateFeelingRating = (value) => {
-    const regex = /^$|^[PGUpgu][1-9]$|^[PGUpgu]1[0-9]$|^[PGUpgu]20$/; // Validate P,G,U followed by 1-20
-    return regex.test(value);
-  };
+
 
   const truncateString = (str, maxLength) => {
     if (!str) return "";
@@ -67,9 +67,6 @@ const PassSubmissionPage = () => {
     for (const field in validationResult) {
       displayValidationRes[field] = submitAttempt ? validationResult[field] : true;
     }
-
-    console.log(validationResult);
-    console.log(submitAttempt)
     
     const frValid = validateFeelingRating(form["feelingRating"])
     setIsInvalidFeelingRating(!frValid); // Update validation state
@@ -108,7 +105,6 @@ const PassSubmissionPage = () => {
         
         setLevel(data ? data : null);
         setLevelLoading(false);
-        console.log(data);
         
       })
       .catch(() => {
@@ -130,27 +126,29 @@ const PassSubmissionPage = () => {
   }, [form.videoLink]);
 
   const handleInputChange = (e) => {
-    const { name, value } = e.target;
-
-
+    const { name, type, value, checked } = e.target;
+  
+    // Determine the value based on whether the input is a checkbox
+    const inputValue = type === 'checkbox' ? checked : value;
+  
+  
+    // Update the form state
     setForm((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: inputValue,
     }));
-
+  
+    // Create an updated form object
     const updatedForm = {
       ...form,
-      [name]: value,
+      [name]: inputValue,
     };
-
-
+  
+    // Update accuracy and score
     updateAccuracy(updatedForm);
-
     updateScore(updatedForm);
-    
-    
   };
-
+  
   const updateAccuracy = (updatedForm) => {
     
     const newJudgements = parseJudgements(updatedForm);
@@ -171,13 +169,14 @@ const PassSubmissionPage = () => {
     const passData = {
         speed: updatedForm.speed,
         judgements: newJudgements, // Use new judgements here
+        isNoHoldTap: updatedForm.isNoHold,
     };
 
     const chartData = level;
 
     // Check if levelId is present and all judgements are valid
     if (!form.levelId) {
-        setScore("Level ID is required.");
+        setScore("Level ID is required");
     } else if (!newJudgements.every(Number.isInteger)) {
         setScore("Not all judgements are filled");
     } else if (!Object.values(passData).every(value => value !== null)) {
@@ -189,23 +188,26 @@ const PassSubmissionPage = () => {
     }
 };
 
- const googleForm = new GoogleFormSubmitter("pass")
+ const googleForm = new FormManager("pass")
   const handleSubmit = (e) => {
     e.preventDefault();
+    setShowMessage(true)
+    setSuccess(false);
     if(!user){
       console.log("no user");
+      setError("You must be logged in");
 
       return 
     }
     if (!Object.values(isFormValid).every(Boolean)) {
       setSubmitAttempt(true)
+      setError("incomplete form");
       console.log("incomplete form, returning")
       return
     };
 
-    setShowMessage(true)
+    setSubmission(true)
     setError(null);
-    setSuccess(false);
     googleForm.setDetail('id', form.levelId)
     googleForm.setDetail('*/Speed Trial', form.speed? form.speed : 1.0)
     googleForm.setDetail('Passer', form.leaderboardName)
@@ -220,20 +222,23 @@ const PassSubmissionPage = () => {
     googleForm.setDetail('LPerfect!', form.lPerfect)
     googleForm.setDetail('Late!', form.late)
     googleForm.setDetail('Late!!', "0")
-    googleForm.submit(user.access_token)
+    googleForm.setDetail('NHT', form.isNoHold)
 
     googleForm.submit(user.access_token)
   .then(result => {
     if (result === "ok") {
       setSuccess(true);
       setForm(initialFormState)
-      setSubmitAttempt(false);
     } else {
       setError(result);
     }
   })
   .catch(err => {
     setError(err.message || "Unknown");
+  })
+  .finally(()=>{
+    setSubmission(false)
+    setSubmitAttempt(false);
   })
   }
 
@@ -253,7 +258,7 @@ const PassSubmissionPage = () => {
           "#888"
         )}}>
           {success? (<p>Form submitted successfully!</p>) :
-          error? (<p>Error ocurred: {truncateString(error, 20)}</p>):
+          error? (<p>Error: {truncateString(error, 28)}</p>):
           (<p>Submitting...</p>)}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div>
@@ -375,10 +380,29 @@ const PassSubmissionPage = () => {
               name="leaderboardName"
               value={form.leaderboardName}
               onChange={handleInputChange}
-              style={{ borderColor: isFormValidDisplay.leaderboardName ? "" : "red",  maxWidth: '15rem'  }}
+              style={{ borderColor: isFormValidDisplay.leaderboardName ? "" : "red"  }}
             />
+            <div className="tooltip-container">
+              <input
+               type="checkbox" 
+               value={form.isNoHold} 
+               onChange={handleInputChange} 
+               name="isNoHold" 
+               checked={form.isNoHold}
+               />
+              <span style={{
+                  margin: '0 15px 0 10px',
+                  position: 'relative',
+                }}>Used alternate holds</span>
+              <span className="tooltip" style={{
+                 bottom: "110%",
+                  right: "10%"}}>Tick if you have used hold option other than "Normal hold" (0.9x score)</span>
+
+            </div>
           </div>
-          <div className="info-input">
+      
+      
+      <div className="info-input">
             <input
               type="text"
               placeholder="Speed (ex: 1.2)"
@@ -387,7 +411,7 @@ const PassSubmissionPage = () => {
               onChange={handleInputChange}
             />
 
-      <div style={{ position: 'relative', display: 'flex', marginRight: '2rem', width:"80%", justifyContent: "center"}}>
+      <div style={{ display: 'flex', justifyContent: "center", gap: "10px"}}>
         <input
           type="text"
           placeholder="Feeling rating (ex. G12)"
@@ -398,18 +422,17 @@ const PassSubmissionPage = () => {
             backgroundColor: isInvalidFeelingRating ? "yellow" : ""
           }} 
         />
-        {isInvalidFeelingRating && (
           <div className="tooltip-container">
           <span style={{
               color: 'red',
-              marginLeft: '10px',
-              position: 'absolute',
-              top: '50%',
-              transform: 'translateY(-50%)',
+              visibility: `${isInvalidFeelingRating? '' : 'hidden'}`
             }}>?</span>
-          <span className="tooltip">Unknown difficulty, will submit but please make sure it's readable by the managers</span>
+          <span className="tooltip" 
+                style={{
+                  visibility: `${isInvalidFeelingRating? '' : 'hidden'}`,
+                 bottom: "115%",
+                  right: "-15%"}}>Unknown difficulty, will submit but please make sure it's readable by the managers</span>
         </div>
-        )}
       </div>
           </div>
 
@@ -495,7 +518,7 @@ const PassSubmissionPage = () => {
             </div>
           </div>
 
-          <button className="submit" onClick={handleSubmit}>Submit</button>
+          <button disabled={submission} className="submit" onClick={handleSubmit}>Submit {submission && (<>(please wait)</>)}</button>
         </div>
       </form>
     </div>

@@ -2,7 +2,7 @@ function gIT(i) {
     return document.getElementById(i).value;
 }
 
-class GoogleFormSubmitter {
+class FormManager {
     constructor(type) {
         this.apiUrl = `${import.meta.env.VITE_API_URL}/api/form-submit`; // Read the API URL from the environment variable
         this.details = {};
@@ -59,4 +59,4 @@ class GoogleFormSubmitter {
     }
 }
 
-export { gIT, GoogleFormSubmitter };
+export { gIT, FormManager};

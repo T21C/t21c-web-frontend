@@ -74,6 +74,13 @@
   margin-bottom: 0.5rem;
   margin-top: 0.5rem;
 }
+
+.level-submission-page form .info .info-group .diff-tooltip{
+  padding-right: 5px;
+  gap: 5px; 
+  display: flex
+}
+
 .level-submission-page form .info .submit {
   width: 100%;
   background-color: var(--color-purple-3);
@@ -84,7 +91,7 @@
   cursor: pointer;
   padding: 0.5rem 1rem;
   max-width: 70rem;
-  margin: 0 auto;
+  margin: 1rem auto auto auto;
   transition: all 100ms linear;
 }
 .level-submission-page form .info .submit:hover {
@@ -93,31 +100,3 @@
 .level-submission-page form .info .submit:active {
   background-color: var(--color-purple-1);
 }/*# sourceMappingURL=levelsubmission.css.map */
-
-.tooltip-container {
-  position: relative;
-  display: inline-block; /* Allow inline display for other elements */
-}
-
-
-.tooltip {
-  visibility: hidden;
-  width: 170px;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  border-radius: 5px;
-  padding: 5px;
-  position: absolute;
-  font-size: 0.6rem;
-  z-index: 1;
-  bottom: 115%; /* Position above the span */
-  right: -15%; /* Center the tooltip */
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.tooltip-container:hover .tooltip {
-  visibility: visible;
-  opacity: 0.8;
-}

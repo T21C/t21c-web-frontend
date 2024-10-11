@@ -1,16 +1,16 @@
 import { CompleteNav } from "../../components";
 import "./levelsubmission.css";
 import image from "../../assets/placeholder/3.png";
-import { GoogleFormSubmitter } from "../../components/FormManager/googleForm";
+import { FormManager } from "../../components/FormManager/FormManager";
 import { useEffect, useRef, useState } from "react";
 import { getYouTubeThumbnailUrl, getYouTubeVideoDetails } from "../../Repository/RemoteRepository";
 import { useAuth } from "../../context/AuthContext";
+import { validateFeelingRating } from "../../components/Misc/Utility";
 
 const LevelSubmissionPage = () => {
   const initialFormState = {
     artist: '',
     charter: '',
-    creator: '',
     diff: '',
     dlLink: '',
     song: '',
@@ -31,15 +31,11 @@ const LevelSubmissionPage = () => {
   const [error, setError] = useState(null);
 
   const [submitAttempt, setSubmitAttempt] = useState(false);
+  const [submission, setSubmission] = useState(false);
 
   const [youtubeDetail, setYoutubeDetail] = useState(null)
   
 
-
-  const validateFeelingRating = (value) => {
-    const regex = /^$|^[PGUpgu][1-9]$|^[PGUpgu]1[0-9]$|^[PGUpgu]20$/; // Validate P,G,U followed by 1-20
-    return regex.test(value);
-  };
 
   const truncateString = (str, maxLength) => {
     if (!str) return "";
@@ -47,7 +43,7 @@ const LevelSubmissionPage = () => {
   };
 
   const validateForm = () => {
-    const requiredFields = ['artist', 'creator', 'diff', 'dlLink', 'song', 'vidLink', 'workshopLink'];
+    const requiredFields = ['artist', 'diff', 'dlLink', 'song', 'vidLink', 'workshopLink'];
     const validationResult = {};
     const displayValidationRes = {};
     
@@ -101,26 +97,28 @@ const LevelSubmissionPage = () => {
     setShowMessage(false)
   };
 
- const googleForm = new GoogleFormSubmitter("chart")
+ const googleForm = new FormManager("chart")
   const handleSubmit = (e) => {
-  e.preventDefault()
-    
-  if (!user) {
-    console.log("no user");
-    return;
-  }
-  if (!Object.values(isFormValid).every(Boolean)) {
-    setSubmitAttempt(true);
-    console.log("incomplete form, returning");
-    return;
-  }
+    e.preventDefault();
+    setShowMessage(true)
+    setSuccess(false);
+    if(!user){
+      console.log("no user");
+      setError("You must be logged in.");
 
-  setShowMessage(true)
-  setError(null);
-  setSuccess(false);
+      return 
+    }
+    if (!Object.values(isFormValid).every(Boolean)) {
+      setSubmitAttempt(true)
+      setError("incomplete form!");
+      console.log("incomplete form, returning")
+      return
+    };
+
+    setSubmission(true)
+    setError(null);
   googleForm.setDetail('artist', form.artist);
   googleForm.setDetail('charter', form.charter);
-  googleForm.setDetail('creator', form.creator);
   googleForm.setDetail('diff', form.diff);
   googleForm.setDetail('song', form.song);
   googleForm.setDetail('team', form.team);
@@ -142,6 +140,10 @@ const LevelSubmissionPage = () => {
   .catch(err => {
     setError(err.message || "(Unknown)");
   })
+  .finally(()=>{
+    setSubmission(false)
+    setSubmitAttempt(false);
+  })
 };
 
   return (
@@ -156,7 +158,7 @@ const LevelSubmissionPage = () => {
           "#888"
         )}}>
           {success? (<p>Form submitted successfully!</p>) :
-          error? (<p>Error ocurred: {truncateString(error, 20)}</p>):
+          error? (<p>Error: {truncateString(error, 27)}</p>):
           (<p>Submitting...</p>)}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div>
@@ -226,8 +228,21 @@ const LevelSubmissionPage = () => {
             name="charter"
             value={form.charter}
             onChange={handleInputChange}
+            style={{marginLeft: "6px"}}
           />
-          <input
+          <div className="diff-tooltip">
+          <div className="tooltip-container">
+          <span style={{
+              color: 'red',
+              visibility: `${isInvalidFeelingRating? '' : 'hidden'}`
+            }}>?</span>
+          <span className="tooltip" 
+                style={{
+                  visibility: `${isInvalidFeelingRating? '' : 'hidden'}`,
+                 bottom: "115%",
+                  left: "-2rem"}}>Unknown difficulty, will submit but please make sure it's readable by the managers</span>
+          </div>
+            <input
             type="text"
             placeholder="Difficulty"
             name="diff"
@@ -238,35 +253,26 @@ const LevelSubmissionPage = () => {
              }}
           />
           </div>
+          </div>
         <div className="info-group">
-          <input
+          
+        <input
             type="text"
-            placeholder="Creator"
-            name="creator"
-            value={form.creator}
-            onChange={handleInputChange}
-            style={{ borderColor: isFormValidDisplay.creator ? "" : "red" }}
-          />
-          <input
-            type="text"
-            placeholder="Team Name"
-            name="team"
-            value={form.team}
-            onChange={handleInputChange}
-          />
-        </div>
-
-        <div className="info-group">
-          <input
-            type="text"
-            placeholder="VFX-ers"
+            placeholder="VFX-ers (opt.)"
             name="vfxer"
             value={form.vfxer}
             onChange={handleInputChange}
           />
+          <input
+            type="text"
+            placeholder="Team Name (opt.)"
+            name="team"
+            value={form.team}
+            onChange={handleInputChange}
+          />
           </div>
           
-        <div className="info-group">
+        <div className="info-group" style={{marginTop: "2rem",paddingLeft: "30px", paddingRight: "30px"}}>
           <input
             type="text"
             placeholder="Download Link"
@@ -275,6 +281,7 @@ const LevelSubmissionPage = () => {
             onChange={handleInputChange}
             style={{ borderColor: isFormValidDisplay.directLink ? "" : "red" }}
           />
+          <span style={{display: "flex", alignItems: "center"}}>or</span>
           <input
             type="text"
             placeholder="Workshop Link"
@@ -285,7 +292,7 @@ const LevelSubmissionPage = () => {
           />
         </div>
 
-            <button className="submit" onClick={handleSubmit}>Submit</button>
+          <button disabled={submission} className="submit" onClick={handleSubmit}>Submit {submission && (<>(please wait)</>)}</button>
         </div>
       </form>      
     </div>

@@ -9,7 +9,11 @@
   box-sizing: border-box;
   color: rgba(0, 0, 0, 0.85);
   cursor: pointer;
-  display: inline-flex;
+  white-space: nowrap;
+  flex-grow: 1;
+  gap: 0.5rem;
+  flex-shrink: 0;
+  display: flex;
   font-family: system-ui,-apple-system,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size: 15px;
   font-weight: 600;
@@ -25,7 +29,7 @@
   -webkit-user-select: none;
   touch-action: manipulation;
   vertical-align: baseline;
-  width: auto;
+  width: 130%;
 }
 
 .btn-login:hover,
@@ -67,6 +71,7 @@
 .profile-details {
     display: flex;
     align-items: center;
+    justify-content: center;
   }
   
   .profile-content {
