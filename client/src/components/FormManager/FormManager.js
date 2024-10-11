@@ -30,7 +30,7 @@ class FormManager {
 
     async submit(accessToken) {
         const body = this.prepareFormBody()
-        console.log("sending ", body);
+        console.log("sending form");
         
         try {
             const response = await fetch(this.apiUrl, {
@@ -46,7 +46,7 @@ class FormManager {
             const data = await response.json();
 
             if (response.ok) {
-                console.log("Form submitted successfully", data);
+                console.log("Form submitted successfully");
                 return "ok";
             } else {
                 console.error("Failed to submit form", data.error);

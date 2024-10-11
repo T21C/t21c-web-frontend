@@ -45,7 +45,6 @@ export const AuthProvider = ({ children }) => {
 
 
   const setUserData = async (userData) => {
-    console.log("setting data", userData);
     
     if (userData) {
       const imageUrl = await fetchProfileImage(userData);
@@ -66,7 +65,6 @@ export const AuthProvider = ({ children }) => {
       setAccessToken(token); // Set access token
     }
     else{
-      console.log("no token provided, skipping");
     }
   };
 
@@ -75,7 +73,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (accessToken) {
-      console.log("Access token setting:", accessToken);
+      //console.log("Access token received");
       getTokenData(accessToken);
     }
   }, [accessToken]);
@@ -86,8 +84,7 @@ export const AuthProvider = ({ children }) => {
   const getUserData = async (user) => {
     
     try {
-      console.log("getting data");
-      console.log("data:", user.access_token);
+      //console.log("getting data from user");
       if(user){
       const response = await fetch('https://discord.com/api/users/@me', {
         headers: {
@@ -128,10 +125,9 @@ export const AuthProvider = ({ children }) => {
 
 
   const getTokenData = async (token) => {
-    console.log("getting data");
+    //console.log("getting data by token");
     
     try {
-      console.log("data:", token);
       const response = await fetch('https://discord.com/api/users/@me', {
         headers: {
           authorization: `Bearer ${token}`, // Use Bearer token format
@@ -169,8 +165,6 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem('user'))
     if(storedUser) {
-      console.log("");
-      
       getUserData(storedUser)
     }
   }, []);

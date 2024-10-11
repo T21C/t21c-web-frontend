@@ -12,7 +12,6 @@ const CallbackPage = () => {
     const code = urlParams.get('code');
 
     if (code && !codeFetched) { // Ensure the code is processed only once
-      console.log("sending", code);
 
       // Set codeFetched to true to prevent multiple fetch calls
       setCodeFetched(true);
@@ -24,7 +23,6 @@ const CallbackPage = () => {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log('Access Token:', data.access_token);
 
           // Set the access token in AuthContext
           handleAccessToken(data.access_token);
