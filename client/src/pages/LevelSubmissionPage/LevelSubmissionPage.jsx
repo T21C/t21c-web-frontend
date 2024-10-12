@@ -110,7 +110,7 @@ const LevelSubmissionPage = () => {
     }
     if (!Object.values(isFormValid).every(Boolean)) {
       setSubmitAttempt(true)
-      setError("incomplete form!");
+      setError("Incomplete form!");
       console.log("incomplete form, returning")
       return
     };
