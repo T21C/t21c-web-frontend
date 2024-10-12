@@ -209,7 +209,7 @@ const PassSubmissionPage = () => {
     setSubmission(true)
     setError(null);
     googleForm.setDetail('id', form.levelId)
-    googleForm.setDetail('*/Speed Trial', form.speed? form.speed : 1.0)
+    googleForm.setDetail('*/Speed Trial', form.speed)
     googleForm.setDetail('Passer', form.leaderboardName)
     googleForm.setDetail('Feeling Difficulty', form.feelingRating)
     googleForm.setDetail('Title', youtubeDetail.title)
