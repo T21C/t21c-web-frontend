@@ -431,7 +431,7 @@ const PassSubmissionPage = () => {
                 style={{
                   visibility: `${isInvalidFeelingRating? '' : 'hidden'}`,
                  bottom: "115%",
-                  right: "-15%"}}>Unknown difficulty, will submit but please make sure it's readable by the managers</span>
+                  right: "-15%"}}>Unknown difficulty, will submit but please make sure it's readable by the managers. Correct diff ex.: G13; P7~P13; 21.1+; 19~20.0+</span>
         </div>
       </div>
           </div>
