@@ -416,7 +416,7 @@ async function getBilibiliVideoDetails(url) {
 
   //console.log(videoId);
   
-  const apiUrl = `http://localhost:3001/api/bilibili?bvid=${videoId}`;
+  const apiUrl = `${import.meta.env.VITE_API_URL}/api/bilibili?bvid=${videoId}`;
 
   try {
     const response = await fetch(apiUrl);
