@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
 import "./leveldetailpage.css"
+import placeholder from "../../assets/placeholder/3.png";
 import React, { useEffect, useRef, useState } from "react";
 import { useLocation } from 'react-router-dom';
 import { CompleteNav } from "../../components";
@@ -8,8 +9,7 @@ import {
   fetchLevelInfo,
   fetchPassPlayerInfo,
   getLevelImage,
-  getYouTubeEmbedUrl,
-  getYouTubeThumbnailUrl,
+  getVideoDetails,
   isoToEmoji,
 } from "../../Repository/RemoteRepository";
 
@@ -24,6 +24,8 @@ const LevelDetailPage = () => {
   const [res, setRes] = useState(null);
   const [player, setPlayer] = useState([]);
   const [initialPlayer, setInitialPlayer] = useState([])
+  const [videoDetail, setVideoDetail] = useState(null)
+  const [vidLink, setVidLink] = useState("")
 
   const [highSpeed, setHighSpeed] = useState(null);
   const [highAcc, setHighAcc] = useState(null);
@@ -39,6 +41,19 @@ const LevelDetailPage = () => {
   const [openDialog, setOpenDialog] = useState(false)
 
   useEffect(() => {
+    
+    getVideoDetails(vidLink).then((res) => {
+      setVideoDetail(
+        res
+          ? res
+          : null
+      );
+    });
+
+
+  }, [vidLink]);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, [detailPage]);
 
@@ -48,9 +63,12 @@ const LevelDetailPage = () => {
         setRes(res);
         const fetchedPlayers = res?.passes.player.results || [];
         const passCount = res?.passes.player.count || 0 ;
+        const vLink = res?.level.vidLink || "" ;
+        console.log("link", vLink);
+        
         setInitialPlayer(fetchedPlayers);
         setPassCount(passCount)
-
+        setVidLink(vLink)
         if(passCount == 0){
           setInfoLoading(false)
         }
@@ -230,7 +248,7 @@ const LevelDetailPage = () => {
         <div className="dialog">
 
           <div className="header" style={{
-              backgroundImage: `url(${res && res.level ? getYouTubeThumbnailUrl(res.level.vidLink, res.level.song): "defaultImageURL"})`, backgroundPosition : "center"}}>
+              backgroundImage: `url(${res && videoDetail ? videoDetail.image: "defaultImageURL"})`, backgroundPosition : "center"}}>
             <h2>{res.level.song}</h2>
             <p> <b>{t("detailPage.dialog.artist")} :</b> {res.level.artist}</p>
             
@@ -334,7 +352,7 @@ const LevelDetailPage = () => {
 
           <div className="left"
             style={{
-              backgroundImage: `url(${res && res.level ? getYouTubeThumbnailUrl(res.level.vidLink, res.level.song): "defaultImageURL"})`}}>
+              backgroundImage: `url(${res && videoDetail ? videoDetail.image: "defaultImageURL"})`}}>
 
             <div className="diff">
               <img src={getLevelImage(res.level.newDiff, res.level.pdnDiff, res.level.pguDiff)} alt="" />
@@ -441,10 +459,10 @@ const LevelDetailPage = () => {
           </div>
 
           <div className="youtube">
-            {getYouTubeEmbedUrl(res.level.vidLink) ? 
+            {videoDetail ? 
               <iframe
-              src={getYouTubeEmbedUrl(res.level.vidLink)}
-              title="YouTube video player"
+              src={videoDetail.embed}
+              title="Video player"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerPolicy="strict-origin-when-cross-origin"
@@ -454,7 +472,7 @@ const LevelDetailPage = () => {
           <div
             className="thumbnail-container"
             style={{
-              backgroundImage: `url(${getYouTubeThumbnailUrl(res.level.vidLink, res.level.song)})`,
+              backgroundImage: `url(${videoDetail? videoDetail.image: placeholder})`,
             }}
           >
             <div className="thumbnail-text">

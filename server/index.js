@@ -53,6 +53,7 @@ const verifyAccessToken = async (accessToken) => {
 const emailBanList = ['bannedUser@example.com', 'anotherBannedUser@example.com'];
 const idBanList = ['15982378912598', '78912538976123']
 
+
 // CURRENTLY NOT IN USE
 app.post('/api/google-auth', async (req, res) => {
   const { code } = req.body; // Extract code object from request body
@@ -215,6 +216,46 @@ app.post('/api/form-submit', async (req, res) => {
   }
 });
 
+
+app.get('/api/image', async (req, res) => {
+  const imageUrl = req.query.url; // Extract image URL from query parameters
+
+  try {
+    const response = await fetch(imageUrl);
+    const contentType = response.headers.get('content-type');
+
+    if (!response.ok) {
+      return res.status(response.status).send("Failed to fetch image.");
+    }
+
+    // Set the appropriate content type and pipe the image response
+    res.set('Content-Type', contentType);
+    response.body.pipe(res);
+  } catch (error) {
+    console.error("Error fetching image:", error);
+    res.status(500).send("Error fetching image.");
+  }
+});
+
+
+app.get('/api/bilibili', async (req, res) => {
+  const bvid = req.query.bvid; // Extract bvid from query parameters
+  const apiUrl = `https://api.bilibili.com/x/web-interface/view?bvid=${bvid}`;
+
+  try {
+    const response = await fetch(apiUrl);
+    const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(response.status).json(data); // Return the error response from Bilibili
+    }
+
+    res.json(data); // Send the fetched data as response
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
 
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);

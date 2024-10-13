@@ -23,6 +23,8 @@
 .pass-submission-page form .info {
   flex: 3;
   padding: 1rem;
+  background-color: white;
+  z-index: 15;
 }
 .pass-submission-page form .info h1 {
   margin-bottom: 1rem;
@@ -35,6 +37,23 @@
   padding: 0.5rem 0.2rem 0.2rem 0.5rem;
   font-size: 1rem;
 }
+
+
+.pass-submission-page form .info .youtube-input {
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+  max-width: 95%;
+}
+
+.pass-submission-page form .info .youtube-input .youtube-info {
+  display: flex;
+  gap:20px
+}
+
 .pass-submission-page form .info .id-input {
   display: flex;
   flex-direction: column;
@@ -46,6 +65,7 @@
   align-items: center;
   gap: 1rem;
 }
+
 .pass-submission-page form .info .id-input .information .chart-info {
   text-align: center;
   align-items: center;

@@ -1,9 +1,9 @@
 import { CompleteNav } from "../../components";
 import "./passsubmission.css";
-import image from "../../assets/placeholder/3.png";
+import placeholder from "../../assets/placeholder/3.png";
 import { FormManager } from "../../components/FormManager/FormManager";
 import { useEffect, useState } from "react";
-import { checkLevel, getYouTubeThumbnailUrl, getYouTubeVideoDetails } from "../../Repository/RemoteRepository";
+import { checkLevel, getVideoDetails } from "../../Repository/RemoteRepository";
 import calcAcc from "../../components/Misc/CalcAcc";
 import { getScoreV2 } from "../../components/Misc/CalcScore";
 import { parseJudgements } from "../../components/Misc/ParseJudgements";
@@ -45,7 +45,7 @@ const PassSubmissionPage = () => {
   const [level, setLevel] = useState(null);
   const [levelLoading, setLevelLoading] = useState(true);
 
-  const [youtubeDetail, setYoutubeDetail] = useState(null)
+  const [videoDetail, setVideoDetail] = useState(null)
 
 
 
@@ -88,6 +88,13 @@ const PassSubmissionPage = () => {
 
   useEffect(() => {
     const { levelId } = form;
+
+    if (!/^\d+$/.test(levelId)){
+      setLevelLoading(false);
+      setLevel(null);
+      return;
+    }
+
     setLevelLoading(true);
     setLevel(null);
 
@@ -98,9 +105,7 @@ const PassSubmissionPage = () => {
       return;
     }
 
-    const cleanLevelId = levelId.startsWith('#') ? levelId.substring(1) : levelId;
-
-    checkLevel(cleanLevelId)
+    checkLevel(levelId)
       .then((data) => {
         
         setLevel(data ? data : null);
@@ -115,14 +120,17 @@ const PassSubmissionPage = () => {
 
   useEffect(() => {
     const { videoLink } = form;
-
-    getYouTubeVideoDetails(videoLink).then((res) => {
-      setYoutubeDetail(
+    console.log(videoLink);
+    
+    getVideoDetails(videoLink).then((res) => {
+      setVideoDetail(
         res
           ? res
           : null
       );
     });
+
+
   }, [form.videoLink]);
 
   const handleInputChange = (e) => {
@@ -212,9 +220,9 @@ const PassSubmissionPage = () => {
     googleForm.setDetail('*/Speed Trial', form.speed)
     googleForm.setDetail('Passer', form.leaderboardName)
     googleForm.setDetail('Feeling Difficulty', form.feelingRating)
-    googleForm.setDetail('Title', youtubeDetail.title)
+    googleForm.setDetail('Title', videoDetail.title)
     googleForm.setDetail('*/Raw Video ID', form.videoLink)
-    googleForm.setDetail('*/Raw Time (GMT)', youtubeDetail.timestamp)
+    googleForm.setDetail('*/Raw Time (GMT)', videoDetail.timestamp)
     googleForm.setDetail('Early!!', form.tooEarly)
     googleForm.setDetail('Early!', form.early)
     googleForm.setDetail('EPerfect!', form.ePerfect)
@@ -261,11 +269,32 @@ const PassSubmissionPage = () => {
           error? (<p>Error: {truncateString(error, 28)}</p>):
           (<p>Submitting...</p>)}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
-        </div>
-      <form>
-        <div className="img-wrapper">
-          <img src={getYouTubeThumbnailUrl(form.videoLink) || image} alt="" />
-        </div>
+        </div><form
+  className={`form-container ${videoDetail ? 'shadow' : ''}`}
+  style={{
+    backgroundImage: `url(${videoDetail ? videoDetail.image : placeholder})`,
+  }}
+>
+  <div
+    className="thumbnail-container"
+    style={{
+      filter: videoDetail? `drop-shadow(0 0 1rem black)`: ""}}
+  >
+    {videoDetail ? (
+      <iframe
+        src={videoDetail.embed}
+        title="Video player"
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerPolicy="strict-origin-when-cross-origin"
+        allowFullScreen
+      ></iframe>
+    ) : (
+      <div className="thumbnail-text">
+        <h2>Video not found</h2>
+      </div>
+    )}
+  </div>
 
         <div className="info">
           <h1>Submit a Pass</h1>
@@ -339,40 +368,37 @@ const PassSubmissionPage = () => {
           </div>
 
           <div className="youtube-input">
-            <input
-              type="text"
-              placeholder="Video Link"
-              name="videoLink"
-              value={form.videoLink}
-              onChange={handleInputChange}
-              style={{ borderColor: isFormValidDisplay.videoLink ? "" : "red" }}
-            />
-            {youtubeDetail? 
-            (<div className="information">
-              <div className="yt-info">
-                <h4>YT Title</h4>
-                <p>{youtubeDetail.title}</p>
-              </div>
+                <input
+                  type="text"
+                  placeholder="Video Link"
+                  name="videoLink"
+                  value={form.videoLink}
+                  onChange={handleInputChange}
+                  style={{ borderColor: isFormValidDisplay.videoLink ? "" : "red" }}
+                />
+                {videoDetail? 
+                (<div className="youtube-info">
+                  <div className="yt-info">
+                    <h4>YT Title</h4>
+                    <p style={{maxWidth:"%"}}>{videoDetail.title}</p>
+                  </div>
 
-              <div className="yt-info">
-                <h4>Channel</h4>
-                <p>{youtubeDetail.channelName}</p>
-              </div>
+                  <div className="yt-info">
+                    <h4>Channel</h4>
+                    <p>{videoDetail.channelName}</p>
+                  </div>
 
-              <div className="yt-info">
-                <h4>Timestamp</h4>
-                <p>{youtubeDetail.timestamp}</p>
-              </div>
-            </div>)
-            :(
-              <div className="yt-info">
-                <p style={{color: "#aaa"}}>No link provided</p>
-                <br />
-                </div>)}
-            
-
-
-          </div>
+                  <div className="yt-info">
+                    <h4>Timestamp</h4>
+                    <p>{videoDetail.timestamp}</p>
+                  </div>
+                </div>)
+                :(
+                  <div className="yt-info">
+                    <p style={{color: "#aaa"}}>No link provided</p>
+                    <br />
+                    </div>)}
+        </div>
           <div className="info-input">
             <input
               type="text"

@@ -1,9 +1,9 @@
 import { CompleteNav } from "../../components";
 import "./levelsubmission.css";
-import image from "../../assets/placeholder/3.png";
+import placeholder from "../../assets/placeholder/3.png";
 import { FormManager } from "../../components/FormManager/FormManager";
-import { useEffect, useRef, useState } from "react";
-import { getYouTubeThumbnailUrl, getYouTubeVideoDetails } from "../../Repository/RemoteRepository";
+import { useEffect, useState } from "react";
+import { getVideoDetails } from "../../Repository/RemoteRepository";
 import { useAuth } from "../../context/AuthContext";
 import { validateFeelingRating } from "../../components/Misc/Utility";
 
@@ -16,7 +16,7 @@ const LevelSubmissionPage = () => {
     song: '',
     team: '',
     vfxer: '',
-    vidLink: '',
+    videoLink: '',
     workshopLink: ''
   };
 
@@ -30,10 +30,11 @@ const LevelSubmissionPage = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
 
+
   const [submitAttempt, setSubmitAttempt] = useState(false);
   const [submission, setSubmission] = useState(false);
 
-  const [youtubeDetail, setYoutubeDetail] = useState(null)
+  const [videoDetail, setVideoDetail] = useState(null)
   
 
 
@@ -43,7 +44,7 @@ const LevelSubmissionPage = () => {
   };
 
   const validateForm = () => {
-    const requiredFields = ['artist', 'diff', 'dlLink', 'song', 'vidLink', 'workshopLink'];
+    const requiredFields = ['artist','charter', 'diff', 'dlLink', 'song', 'videoLink', 'workshopLink'];
     const validationResult = {};
     const displayValidationRes = {};
     
@@ -71,16 +72,18 @@ const LevelSubmissionPage = () => {
 
 
   useEffect(() => {
-    const { vidLink } = form;
+    const { videoLink } = form;
     
-    getYouTubeVideoDetails(vidLink).then((res) => {
-      setYoutubeDetail(
+    getVideoDetails(videoLink).then((res) => {
+      setVideoDetail(
         res
           ? res
           : null
       );
     });
-  }, [form.vidLink]);
+
+
+  }, [form.videoLink]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -123,7 +126,7 @@ const LevelSubmissionPage = () => {
   googleForm.setDetail('song', form.song);
   googleForm.setDetail('team', form.team);
   googleForm.setDetail('vfxer', form.vfxer);
-  googleForm.setDetail('videoLink', form.vidLink);
+  googleForm.setDetail('videoLink', form.videoLink);
   googleForm.setDetail('directDL', form.dlLink);
   googleForm.setDetail('wsLink', form.workshopLink);
   
@@ -162,12 +165,30 @@ const LevelSubmissionPage = () => {
           (<p>Submitting...</p>)}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div>
-      <form>
-        
-        <div className="img-wrapper">
-          <img src={getYouTubeThumbnailUrl(form.vidLink) || image} alt="" />
-        </div>
+  
 
+        <form className={`form-container ${videoDetail ? 'shadow' : ''}`}
+    style={{
+      backgroundImage: `url(${videoDetail ? videoDetail.image : placeholder})`,
+    }}>
+  <div
+    className="thumbnail-container"
+  >
+    {videoDetail ? (
+      <iframe
+        src={videoDetail.embed}
+        title="Video player"
+        frameBorder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerPolicy="strict-origin-when-cross-origin"
+        allowFullScreen
+      ></iframe>
+    ) : (
+      <div className="thumbnail-text">
+      <h2>Video not found</h2>
+      </div>
+    )}
+  </div>
         <div className="info">
           <h1>Submit a Level</h1>
 
@@ -193,26 +214,26 @@ const LevelSubmissionPage = () => {
                 <input
                   type="text"
                   placeholder="Video Link"
-                  name="vidLink"
-                  value={form.vidLink}
+                  name="videoLink"
+                  value={form.videoLink}
                   onChange={handleInputChange}
-                  style={{ borderColor: isFormValidDisplay.vidLink ? "" : "red" }}
+                  style={{ borderColor: isFormValidDisplay.videoLink ? "" : "red" }}
                 />
-                {youtubeDetail? 
-                (<div className="information">
+                {videoDetail? 
+                (<div className="youtube-info">
                   <div className="yt-info">
                     <h4>YT Title</h4>
-                    <p>{youtubeDetail.title}</p>
+                    <p style={{maxWidth:"%"}}>{videoDetail.title}</p>
                   </div>
 
                   <div className="yt-info">
                     <h4>Channel</h4>
-                    <p>{youtubeDetail.channelName}</p>
+                    <p>{videoDetail.channelName}</p>
                   </div>
 
                   <div className="yt-info">
                     <h4>Timestamp</h4>
-                    <p>{youtubeDetail.timestamp}</p>
+                    <p>{videoDetail.timestamp}</p>
                   </div>
                 </div>)
                 :(
@@ -228,7 +249,9 @@ const LevelSubmissionPage = () => {
             name="charter"
             value={form.charter}
             onChange={handleInputChange}
-            style={{marginLeft: "6px"}}
+            style={{marginLeft: "6px", borderColor: isFormValidDisplay.directLink ? "" : "red" }}
+         
+            
           />
           <div className="diff-tooltip">
           <div className="tooltip-container">

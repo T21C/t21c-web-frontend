@@ -8,22 +8,7 @@
   place-items: center;
   overflow-x: hidden;
 }
-.level-submission-page form {
-  background-color: var(--color-white);
-  max-width: 60rem;
-  border-radius: 8px;
-  overflow: hidden;
-  display: flex;
-  z-index: 10;
-  margin: 3rem;
-}
-@media (max-width: 900px) {
-  .level-submission-page form {
-    width: 90%;
-    flex-direction: column;
-    margin-top: 3rem;
-  }
-}
+
 .level-submission-page form .img-wrapper {
   flex: 2;
 }
@@ -34,10 +19,6 @@
      object-fit: cover;
   -o-object-position: center;
      object-position: center;
-}
-.level-submission-page form .info {
-  flex: 3;
-  padding: 1.1rem;
 }
 .level-submission-page form .info h1 {
   margin-bottom: 1rem;
@@ -53,18 +34,27 @@
 .level-submission-page form .info .youtube-input {
   display: flex;
   flex-direction: column;
+  justify-items: center;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
   margin-top: 0.5rem;
+  max-width: 95%;
+}
+
+.level-submission-page form .info .youtube-input .youtube-info {
+  display: flex;
+  gap:20px
 }
 .level-submission-page form .info .information {
   display: flex;
+  padding: 0 40px 0 40px;
   align-items: center;
   justify-content: space-around;
-  gap: 1rem;
+  gap: 0.8rem;
   font-size: 0.8rem;
   margin-bottom: 1rem;
 }
+
 
 .level-submission-page form .info .info-group {
   display: flex;

@@ -1,6 +1,6 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getYouTubeThumbnailUrl } from "../../Repository/RemoteRepository";
+import { getVideoDetails } from "../../Repository/RemoteRepository";
 import "./card.css"
 import { useTranslation } from "react-i18next";
 // eslint-disable-next-line react/prop-types
@@ -8,6 +8,20 @@ const Card = ({ id,  creator, song, artist, image: vidLink }) => {
   const {t} = useTranslation()
   const cardRef = useRef(null);
   const imageContainerRef = useRef(null);
+  const [videoDetail, setVideoDetail] = useState(null)
+  
+
+  useEffect(() => {
+    getVideoDetails(vidLink).then((res) => {
+      setVideoDetail(
+        res
+          ? res
+          : null
+      );
+    });
+
+
+  }, [vidLink]);
 
   let navigate = useNavigate();
 
@@ -85,11 +99,15 @@ const Card = ({ id,  creator, song, artist, image: vidLink }) => {
             transformStyle: "preserve-3d",
           }}
         >
-          <img
-            src={`${getYouTubeThumbnailUrl(vidLink, creator)}`}
-            alt="Song Thumbnail"
-            style={{ width: "100%" }}
-          />
+          {videoDetail ? (
+        <img
+          src={videoDetail.image}
+          alt="Song Thumbnail"
+          style={{ width: "100%" }}
+        />
+      ) : (
+        <p>Loading thumbnail...</p> // Show loading state while fetching
+      )}
         </div>
         <button
           onClick={()=>redirect()}

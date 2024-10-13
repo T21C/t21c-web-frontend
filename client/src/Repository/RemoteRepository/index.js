@@ -154,7 +154,9 @@ const pgnData = {
 
 const newDataType = "miscDiff"
 const newData = {
-  "66": 'ma.png'
+  "66": "q4.png",
+  "102": "ma.png",
+  "61": "Qq.png"
 }
 
 
@@ -244,7 +246,6 @@ async function fetchData({ offset = "", diff = '', cleared = '', sort = '', dire
     ...(sort && direction && { sort: `${sort}_${direction}` }),
   }).toString();
   const url = `${baseUrl}${queryParams}`
-  console.log(url)
 
   try {
     const res = await axios.get(url)
@@ -258,7 +259,7 @@ async function fetchData({ offset = "", diff = '', cleared = '', sort = '', dire
       wsLink: each.workshopLink
 
     }))
-    console.log(simplifiedRes)
+    //console.log(simplifiedRes)
 
     return simplifiedRes
   } catch (error) {
@@ -347,7 +348,7 @@ function selectItemConsistently(name, items) {
 }
 
 
-function getYouTubeThumbnailUrl(url, title) {
+function getYouTubeThumbnailUrl(url) {
   const shortUrlRegex = /youtu\.be\/([a-zA-Z0-9_-]{11})/;
   const longUrlRegex = /youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})/;
 
@@ -358,10 +359,21 @@ function getYouTubeThumbnailUrl(url, title) {
 
   if (videoId) {
     return `https://img.youtube.com/vi/${videoId}/0.jpg`;
-  } else if (title && imagePh.length > 0) {
-    return selectItemConsistently(title, imagePh);
   } else {
     return; 
+  }
+}
+
+function getBilibiliEmbedUrl(data) {
+
+  // Extract aid and cid from the data
+  const { aid, bvid, cid } = data;
+
+  if (bvid) {
+    // Construct the iframe src URL
+    return `//player.bilibili.com/player.html?isOutside=true&aid=${aid}&bvid=${bvid}&cid=${cid}&p=1`;
+  } else {
+    return null; // Return null if bvid is not found
   }
 }
 
@@ -388,7 +400,67 @@ function getYouTubeEmbedUrl(url) {
   }
 }
 
+
+async function getBilibiliVideoDetails(url) {
+  //console.log(url);
+  
+  const urlRegex = /https?:\/\/(www\.)?bilibili\.com\/video\/(BV[a-zA-Z0-9]+)\/?/;
+
+  const match = url.match(urlRegex);
+
+  const videoId = match ? match[2] : null;
+
+  if (!videoId) {
+    return null;
+  }
+
+  //console.log(videoId);
+  
+  const apiUrl = `http://localhost:3001/api/bilibili?bvid=${videoId}`;
+
+  try {
+    const response = await fetch(apiUrl);
+
+    // Check if response is OK
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    // Since fetch automatically handles decompression, you can directly parse JSON
+    const resp = await response.json();
+
+    //console.log("Response Data:", resp);
+
+    if (resp.code === -400){
+      return null;
+    }
+
+    const data = resp.data;
+    //console.log("Data:", data);
+
+    const unix = data.pubdate; // Start with a Unix timestamp
+    const date = new Date(unix * 1000); // Convert timestamp to milliseconds
+    const imageUrl = `http://localhost:3001/api/image?url=${encodeURIComponent(data.pic)}`;
+
+    const details = {
+      title: data.title,
+      channelName: data.owner.name,
+      timestamp: date.toISOString(),
+      image: imageUrl,
+      embed: getBilibiliEmbedUrl(data)
+    };
+
+    //console.log("returning", details);
+    
+    return details;
+  } catch (error) {
+    console.error('Error fetching Bilibili video details:', error);
+    return null; 
+  }
+}
+
 async function getYouTubeVideoDetails(url) {
+  
   const shortUrlRegex = /youtu\.be\/([a-zA-Z0-9_-]{11})/;
   const longUrlRegex = /youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})/;
 
@@ -404,10 +476,11 @@ async function getYouTubeVideoDetails(url) {
   const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY; 
   const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=snippet,contentDetails`;
 
-  try {
+
+   try {
     const response = await fetch(apiUrl);
     const data = await response.json();
-    console.log(data)
+    //console.log(data)
 
     if (data.items.length === 0) {
       return null;
@@ -416,7 +489,9 @@ async function getYouTubeVideoDetails(url) {
     const details = {
       title: data.items[0].snippet.title,
       channelName: data.items[0].snippet.channelTitle,
-      timestamp: data.items[0].snippet.publishedAt
+      timestamp: data.items[0].snippet.publishedAt,
+      image: getYouTubeThumbnailUrl(url),
+      embed: getYouTubeEmbedUrl(url)
     };
 
     return details;
@@ -424,6 +499,21 @@ async function getYouTubeVideoDetails(url) {
     console.error('Error fetching YouTube video details:', error);
     return null; 
   }
+}
+
+async function getVideoDetails(url) {
+
+  if (!url){
+    return null;
+  }
+  var details = await getYouTubeVideoDetails(url)
+  if (!details) {
+    details = await getBilibiliVideoDetails(url)
+  }
+
+  //console.log("details", details);
+  
+  return details;
 }
 
 function getLevelImage(newDiff, pgnDiff, pguDiff, legacy) {
@@ -462,4 +552,13 @@ function isoToEmoji(code) {
 
 
 
-export {getYouTubeVideoDetails, checkLevel, isoToEmoji, fetchPassPlayerInfo, fetchRecent, fetchData, fetchLevelInfo, getYouTubeThumbnailUrl, getYouTubeEmbedUrl, getLevelImage }
+export {
+  getYouTubeVideoDetails, 
+  checkLevel, 
+  isoToEmoji, 
+  fetchPassPlayerInfo, 
+  fetchRecent, 
+  fetchData, 
+  fetchLevelInfo, 
+  getVideoDetails, 
+  getLevelImage }
