@@ -71,21 +71,19 @@
     display: flex;
     position: relative;
     justify-content: end;
-}
-
-.slider-range {
-    /*background-color: #FF000020;*/
-    z-index: 2;
-    display: flex;
-    /*bottom: 20px;*/
+    margin-bottom: 0.25rem;
 }
 
 .slider-left-value,
 .slider-right-value {
     color: #dee2e6;
     font-size: 20px;
-    margin-top: 24px;
+    /*margin-top: 24px;*/
     text-align: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.25rem;
 }
 
 .slider-left-value {
@@ -94,6 +92,22 @@
 
 .slider-right-value {
     right: 6px;
+}
+
+.slider-values {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.value-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.value-text {
+    font-size: 10pt;
 }
 
 /* Removing the default appearance */
@@ -125,47 +139,26 @@
 
 /* For Chrome browsers */
 .thumb::-webkit-slider-thumb {
-    background-color: #f1f5f7;
-    border: none;
-    border-radius: 50%;
+    position: relative;
+    content: '';
+    height: 10px;
+    width: 10px;
+    border: 10px solid transparent;
+    border-top: 17px solid #fff;
     cursor: pointer;
-    /*bottom: 4px;*/
-    height: 18px;
-    width: 18px;
     margin-top: 4px;
     pointer-events: all;
-    position: relative;
 }
 
 /* For Firefox browsers */
 .thumb::-moz-range-thumb {
-    background-color: #ff0000;
-    border: none;
-    border-radius: 50%;
+    position: relative;
+    content: '';
+    height: 10px;
+    width: 10px;
+    border: 10px solid transparent;
+    border-top: 17px solid #fff;
     cursor: pointer;
-    height: 18px;
-    width: 18px;
     margin-top: 4px;
     pointer-events: all;
-    position: relative;
 }
-
-/*.pin {*/
-/*    !*position: relative;*!*/
-/*    !*top: 40%;*!*/
-/*    !*left: 50%;*!*/
-/*    !*margin-left: 115px;*!*/
-/*    border-radius: 50%;*/
-/*    border: 10px solid #fff;*/
-/*    width: 10px;*/
-/*    height: 10px;*/
-/*}*/
-
-/*.pin::after {*/
-/*    position: relative;*/
-/*    content: '';*/
-/*    bottom: -30px;*/
-/*    left: -10px;*/
-/*    border: 10px solid transparent;*/
-/*    border-top: 17px solid #fff;*/
-/*}*/

@@ -19,23 +19,39 @@
 }
 .level-page-rev .level-body .input-option input {
   width: 100%;
-  background-color: var(--color-white-t20);
-  border: none;
+  /*background-color: var(--color-white-t20);*/
+  background-color: #FFFFFF1A;
+  border: 2px solid #FFFFFF1A;
   border-radius: 3px;
   padding: 0.5rem;
-  color: var(--white-color);
+  color: var(--color-white);
+}
+.level-page-rev .level-body .input-option input:hover {
+  background-color: #FFFFFF59;
+  border: 2px solid #FFFFFF59;
 }
 .level-page-rev .level-body .input-option input:focus {
   outline: none;
+  background-color: #FFFFFF59;
+  border: 2px solid #FFFFFF59;
+}
+.level-page-rev .level-body .input-option input::placeholder {
+  color: #d7d7d7;
 }
 .level-page-rev .level-body .input-option svg {
   height: 2rem;
   width: 2.2rem;
-  background-color: var(--color-white-t20);
+  /*background-color: var(--color-white-t20);*/
+  background-color: #FFFFFF1A;
+  border: 2px solid #FFFFFF1A;
   padding: 0.1rem;
   border-radius: 3px;
   cursor: pointer;
   transition: all 0.2s linear;
+}
+.level-page-rev .level-body .input-option svg:hover {
+  background-color: #FFFFFF79;
+  border: 2px solid #FFFFFF79;
 }
 .level-page-rev .level-body .input-option svg:focus {
   outline: none;
@@ -55,28 +71,40 @@
 }
 .level-page-rev .level-body .sort .sort-option .recent p,
 .level-page-rev .level-body .sort .sort-option .diff p,
+.level-page-rev .level-body .sort .sort-option .clears p,
 .level-page-rev .level-body .sort .sort-option .random p {
   margin-bottom: 0.5rem;
 }
 .level-page-rev .level-body .sort .sort-option .recent .wrapper,
 .level-page-rev .level-body .sort .sort-option .diff .wrapper,
+.level-page-rev .level-body .sort .sort-option .clears .wrapper,
 .level-page-rev .level-body .sort .sort-option .random .wrapper {
   display: flex;
   gap: 1rem;
 }
 .level-page-rev .level-body .sort .sort-option .recent svg,
 .level-page-rev .level-body .sort .sort-option .diff svg,
+.level-page-rev .level-body .sort .sort-option .clears svg,
 .level-page-rev .level-body .sort .sort-option .random svg {
   height: 2rem;
   width: 2rem;
-  background-color: var(--color-white-t20);
+  background-color: #FFFFFF1A;
+  border: 2px solid #FFFFFF1A;
   padding: 0.1rem;
   border-radius: 3px;
   cursor: pointer;
   transition: all 0.2s linear;
 }
+.level-page-rev .level-body .sort .sort-option .recent svg:hover,
+.level-page-rev .level-body .sort .sort-option .diff svg:hover,
+.level-page-rev .level-body .sort .sort-option .clears svg:hover,
+.level-page-rev .level-body .sort .sort-option .random svg:hover {
+  background-color: #FFFFFF79;
+  border: 2px solid #FFFFFF79;
+}
 .level-page-rev .level-body .sort .sort-option .recent svg:focus,
 .level-page-rev .level-body .sort .sort-option .diff svg:focus,
+.level-page-rev .level-body .sort .sort-option .clears svg:focus,
 .level-page-rev .level-body .sort .sort-option .random svg:focus {
   outline: none;
 }
@@ -91,15 +119,17 @@
   background-color: var(--color-white);
   margin-bottom: 0.5rem;
 }
+
 .level-page-rev .level-body .diff-filters {
   display: flex;
-  flex-direction: row; /* Stacks items vertically */
+  flex-direction: column; /* Stacks items vertically */
   gap: 1rem; /* Adds space between the filter containers */
 }
 
 .level-page-rev .level-body .filter-container {
   display: flex;
   flex-direction: column; /* Stack the label and select vertically */
+  /*gap: 10rem;*/
 }
 
 .level-page-rev .level-body .input-setting {
@@ -111,35 +141,3 @@
 .level-page-rev .level-body .setting-description {
   margin-bottom: 0.5rem;
 }/*# sourceMappingURL=levelpage.css.map */
-
-#thumbs-container {
-  display: flex;
-  flex-direction: row;
-  gap: 10px;
-}
-
-.pin {
-  position: relative;
-  border-radius: 50%;
-  border: 10px solid #fff;
-  width: 10px;
-  height: 10px;
-}
-
-.pin::after {
-  position: absolute;
-  content: '';
-  bottom: -36px;
-  left: -10px;
-  border: 10px solid transparent;
-  border-top: 25px solid #fff;
-}
-
-.thumb-diff-icon {
-  position: absolute;
-  z-index: 1;
-  width: 20px;
-  height: 20px;
-  bottom: -10px;
-  right: -10px;
-}

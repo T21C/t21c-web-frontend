@@ -1,8 +1,8 @@
-import React, {useState, useRef, useEffect, useContext} from 'react';
+import {useState, useRef, useEffect, useContext} from 'react';
 import { LevelContext } from '../../context/LevelContext';
 import './MiscDiffPopover.css';
 
-const MiscDiffPopover = ({ content, prompt }) => {
+const MiscDiffPopover = () => {
     const {
         hideUnranked, setHideUnranked,
         hideCensored, setHideCensored,
@@ -31,11 +31,7 @@ const MiscDiffPopover = ({ content, prompt }) => {
 
     useEffect(() => {
         const handleClickOutside = (event) => {
-            if (
-                popoverRef.current &&
-                !popoverRef.current.contains(event.target) &&
-                !triggerRef.current.contains(event.target)
-            ) {
+            if (popoverRef.current && !popoverRef.current.contains(event.target) && !triggerRef.current.contains(event.target)) {
                 setIsVisible(false); // Close the popover if clicked outside
             }
         };
@@ -51,7 +47,7 @@ const MiscDiffPopover = ({ content, prompt }) => {
             <button
                 ref={triggerRef}
                 onClick={toggleVisibility}
-                className="popover-trigger"
+                className={ isVisible ? "popover-trigger popover-trigger-active" : "popover-trigger"}
                 aria-haspopup="true"
                 aria-expanded={isVisible}
                 aria-controls="popover-content"
@@ -60,7 +56,7 @@ const MiscDiffPopover = ({ content, prompt }) => {
                 <div>{miscCount} Selected</div>
                 <svg xmlns="http://www.w3.org/2000/svg" height="14" width="8.75"
                      viewBox="0 0 320 512"
-                     style={ isVisible ? { rotate: 180, transition: 0.5 } : { rotate: 0, transition: 0.5 } }
+                     className={ isVisible ? "popover-indicator popover-indicator-active" : "popover-indicator" }
                 >
                     <path fill="#ffffff" d="M137.4 374.6c12.5 12.5 32.8 12.5 45.3 0l128-128c9.2-9.2 11.9-22.9 6.9-34.9s-16.6-19.8-29.6-19.8L32 192c-12.9 0-24.6 7.8-29.6 19.8s-2.2 25.7 6.9 34.9l128 128z"/>
                 </svg>
@@ -74,12 +70,14 @@ const MiscDiffPopover = ({ content, prompt }) => {
                     role="dialog"
                     aria-modal="true"
                 >
-
-                    {/*{content}*/}
                     <div>
-                        Non-Standard Diffs
-                    </div>
+                        <h5>Non-Standard Diffs:</h5>
 
+                        <div className="">
+
+                        </div>
+
+                    </div>
                 </div>
             )}
         </div>

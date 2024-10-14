@@ -2,12 +2,13 @@
 /* CSS */
 .btn-login {
   align-items: center;
-  background-color: #FFFFFF;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: #FFFFFF10;
+  border: 2px solid #FFFFFF10;
+  /*border: 1px solid rgba(0, 0, 0, 0.1);*/
   border-radius: .25rem;
-  box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
+  /*box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;*/
   box-sizing: border-box;
-  color: rgba(0, 0, 0, 0.85);
+  color: #FFFFFF;
   cursor: pointer;
   white-space: nowrap;
   flex-grow: 1;
@@ -16,7 +17,6 @@
   display: flex;
   font-family: system-ui,-apple-system,system-ui,"Helvetica Neue",Helvetica,Arial,sans-serif;
   font-size: 15px;
-  font-weight: 600;
   justify-content: center;
   line-height: 1.25;
   margin: 0;
@@ -34,20 +34,22 @@
 
 .btn-login:hover,
 .btn-login:focus {
-  border-color: rgba(0, 0, 0, 0.15);
-  box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
-  color: rgba(0, 0, 0, 0.65);
+  /*border-color: rgba(0, 0, 0, 0.15);*/
+  /*box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;*/
+  color: #FFFFFF;
 }
 
 .btn-login:hover {
+  background-color: #FFFFFF79;
+  border: 2px solid #FFFFFF79;
   transform: scale(1.02);
 }
 
 .btn-login:active {
-  background-color: #F0F0F1;
-  border-color: rgba(0, 0, 0, 0.15);
-  box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
-  color: rgba(0, 0, 0, 0.65);
+  /*background-color: #F0F0F1;*/
+  /*border-color: rgba(0, 0, 0, 0.15);*/
+  /*box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;*/
+  color: #FFFFFF;
   transform: translateY(0);
 }
 
