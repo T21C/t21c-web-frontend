@@ -3,5 +3,7 @@ import Card from "./CardFeatured/Card"
 import Footer from "./Footer/Footer";
 import LevelCardRev from "./LevelCard/LevelCardRev"
 
+import MiscDiffPopover from "./MiscDiffPopover/MiscDiffPopover";
+import DifficultySlider from "./DifficultySlider/DifficultySlider";
 
-export { Card, Footer, CompleteNav, LevelCardRev};
+export { Card, Footer, CompleteNav, LevelCardRev, MiscDiffPopover, DifficultySlider};

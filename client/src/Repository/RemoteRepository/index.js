@@ -519,7 +519,7 @@ async function getVideoDetails(url) {
 function getLevelImage(newDiff, pgnDiff, pguDiff, legacy) {
   
   const imageSources = [
-    { name: 'newDiff', source: newDataRaw[newDiff]},
+    { name: 'newDiff', source: newDataRaw[newDiff] },
     { name: 'pgnData', source: pgnDataRaw[pgnDiff] },
     { name: 'pgnData2', source: pgnDataRaw[pguDiff] },
     { name: 'pguData', source: pguDataRaw[pguDiff] },

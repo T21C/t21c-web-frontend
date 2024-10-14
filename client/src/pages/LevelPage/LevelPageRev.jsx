@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import "./levelpage.css";
 import { useContext, useEffect, useState } from "react";
-import { CompleteNav, LevelCardRev } from "../../components";
+import { CompleteNav, LevelCardRev, MiscDiffPopover, DifficultySlider} from "../../components";
 import { Tooltip } from "react-tooltip";
 import Select from "react-select";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -10,6 +10,9 @@ import { LevelContext } from "../../context/LevelContext";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import bgImgDark from "../../assets/important/dark/theme-background.jpg";
+import {getLevelImage} from "../../Repository/RemoteRepository/index.js";
+
+import { DiffSliderContext } from "../../context/DiffSliderContext";
 
 const options = [
   { value: "1", label: "P1" },
@@ -83,35 +86,26 @@ const LevelPageRev = () => {
   const [forceUpdate, setForceUpdate] = useState(false);
   const location = useLocation();
   const {
-    levelsData,
-    setLevelsData,
-    legacyDiff,
-    setLegacyDiff,
-    filterOpen,
-    setFilterOpen,
-    sortOpen,
-    setSortOpen,
-    query,
-    setQuery,
-    selectedLowFilterDiff,
-    setSelectedLowFilterDiff,
-    selectedHighFilterDiff,
-    setSelectedHighFilterDiff,
-    sort,
-    setSort,
-    hasMore,
-    setHasMore,
-    pageNumber,
-    setPageNumber,
-    hideUnranked,          // Add this
-    setHideUnranked,       // Add this
-    hideCensored,          // Add this
-    setHideCensored,       // Add this
-    hideEpic,              // Add this
-    setHideEpic            // Add this
+    levelsData, setLevelsData,
+    legacyDiff, setLegacyDiff,
+    filterOpen, setFilterOpen,
+    sortOpen, setSortOpen,
+    query, setQuery,
+    selectedLowFilterDiff, setSelectedLowFilterDiff,
+    selectedHighFilterDiff, setSelectedHighFilterDiff,
+    sort, setSort,
+    hasMore, setHasMore,
+    pageNumber, setPageNumber,
+    hideUnranked, setHideUnranked,
+    hideCensored, setHideCensored,
+    hideEpic, setHideEpic
   } = useContext(LevelContext);
-  
 
+  let {
+    minVal, setMinVal,
+    maxVal, setMaxVal
+  } = useContext(DiffSliderContext)
+  
   useEffect(() => {
     let cancel;
 
@@ -119,7 +113,7 @@ const LevelPageRev = () => {
       
       setLoading(true);
       try {
-
+        
         // Construct the params object conditionally
       const params = {
         limit: limit,
@@ -241,6 +235,14 @@ const LevelPageRev = () => {
   function handleFilterOpen() {
     setFilterOpen(!filterOpen);
   }
+  
+  // resets the level results when the min/max diff filter is updated
+  useEffect(() => {
+    setPageNumber(0)
+    setLevelsData([])
+    setLoading(true)
+    setForceUpdate((f) => !f)
+  }, [selectedLowFilterDiff, selectedHighFilterDiff])
 
   function handleSortOpen() {
     setSortOpen(!sortOpen);
@@ -257,25 +259,27 @@ const LevelPageRev = () => {
   function resetAll() {
     setPageNumber(0);
     setSort("RECENT_DESC");
+    setMinVal(1);
+    setMaxVal(54);
     setQuery("");
     setLevelsData([]);
     setLoading(true);
     setForceUpdate((f) => !f);
   }
 
-  function handleLowFilter(value){
-    setPageNumber(0);
-    setLevelsData([]);
-    setSelectedLowFilterDiff(value)
-    setForceUpdate((f) => !f);
-  }
-
-  function handleHighFilter(value){
-    setPageNumber(0);
-    setLevelsData([]);
-    setSelectedHighFilterDiff(value)
-    setForceUpdate((f) => !f);
-  }
+  // function handleLowFilter(value){
+  //   setPageNumber(0);
+  //   setLevelsData([]);
+  //   setSelectedLowFilterDiff(value)
+  //   setForceUpdate((f) => !f);
+  // }
+  //
+  // function handleHighFilter(value){
+  //   setPageNumber(0);
+  //   setLevelsData([]);
+  //   setSelectedHighFilterDiff(value)
+  //   setForceUpdate((f) => !f);
+  // }
 
   return (
     <div className="level-page-rev">
@@ -393,12 +397,13 @@ const LevelPageRev = () => {
           </svg>
         </div>
 
-        <div className="input-setting">
+        <div className="input-setting" style={{width: "100%"}}>
           <div
             className="filter settings-class"
             style={{
               height: filterOpen ? "10rem" : "0",
               opacity: filterOpen ? "1" : "0",
+              width: "100%"
             }}
           >
             <div className="spacer-setting"></div>
@@ -406,149 +411,170 @@ const LevelPageRev = () => {
               {t("levelPage.settingExp.headerFilter")}
             </h2>
             {/* <p className="setting-description">{t('levelPage.settingExp.filterDiffs')}</p> */}
-            <div className="diff-filters">
-              <div className="filter-container">
-                <p className="setting-description">Lower diff</p>
-                <Select
-                  id="low-diff-select" // Set an ID for the select
-                  defaultValue={selectedLowFilterDiff}
-                  onChange={handleLowFilter}
-                  options={options}
-                  menuPortalTarget={document.body}
-                  styles={{
-                    menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                    container: (provided) => ({
-                      ...provided,
-                      zIndex: 9999,
-                    }),
-                    control: (provided, state) => ({
-                      ...provided,
-                      width: "10rem",
-                      backgroundColor: "rgba(255, 255, 255, 0.3)",
-                      border: "none",
-                      outline: "none",
-                      boxShadow: state.isFocused
-                        ? "0 0 0 2px #000000"
-                        : provided.boxShadow,
-                      "&:hover": {
-                        boxShadow: "none",
-                      },
-                      singleValue: {
-                        ...provided.singleValue,
-                        color: "#FFFFFF !important",
-                      },
-                      indicatorSeparator: {
-                        ...provided.indicatorSeparator,
-                        backgroundColor: "#000000",
-                      },
-                    }),
-                    menu: (provided) => ({
-                      ...provided,
-                      width: "10rem",
-                      backgroundColor: "#fff",
-                      border: "none",
-                      boxShadow: "none",
-                      color: "#000000",
-                      zIndex: 9999,
-                    }),
-                    option: (provided, state) => ({
-                      ...provided,
-                      backgroundColor: state.isSelected
-                        ? "rgb(255,255,255)"
-                        : "transparent",
-                      zIndex: 9999,
-                    }),
-                  }}
-                  placeholder="Disabled"
-                  isSearchable
+            
+            <div className="diff-filters"
+                 style={{
+                   display: "flex", flexDirection: "column"
+                 }}>
+              
+              {/*<div className="filter-container" id="thumbs-container">*/}
+              {/*  <div className="pin" id="min-diff-thumb">*/}
+              {/*    <img*/}
+              {/*        className="thumb-diff-icon"*/}
+              {/*        id="min-diff-icon"*/}
+              {/*        src={getLevelImage('', '', 'U1', '')}*/}
+              {/*        alt=""*/}
+              {/*    />*/}
+              {/*  </div>*/}
+              {/*  <div className="pin" id="max-diff-thumb">*/}
+              {/*    <img*/}
+              {/*        className="thumb-diff-icon"*/}
+              {/*        id="max-diff-icon"*/}
+              {/*        src={getLevelImage('', '', 'U20', '')}*/}
+              {/*        alt=""*/}
+              {/*    />*/}
+              {/*  </div>*/}
+              {/*</div>*/}
+              
+              {/*<div className="filter-container" id="thumbs-container">*/}
+              {/*  <MiscDiffPopover prompt={<div>Hello</div>}>*/}
+              {/*    /!*{ ? '1' : }*!/*/}
+              {/*  </MiscDiffPopover>*/}
+              {/*</div>  */}
+              
+              <div className="filter-container"
+                   style={{
+                     width: "100%", display: "flex", flexDirection: "row"
+                   }}
+              >
+                <DifficultySlider
+                    min={1}
+                    max={60}
+                    onChange={({min, max}) => {
+                      // console.log(min = ${min}, max = ${max})
+                      // console.log('return minDiff: ' + minDiff + '\nreturn maxDiff: ' + maxDiff)
+                    }}
+                    system={'TUF'}
                 />
               </div>
-
-              <div className="filter-container">
-                <p className="setting-description">Upper diff</p>
-                <Select
-                  id="high-diff-select" // Set an ID for the select
-                  defaultValue={selectedHighFilterDiff}
-                  onChange={handleHighFilter}
-                  options={options}
-                  menuPortalTarget={document.body}
-                  styles={{
-                    menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                    container: (provided) => ({
-                      ...provided,
-                      zIndex: 9999,
-                    }),
-                    control: (provided, state) => ({
-                      ...provided,
-                      width: "10rem",
-                      backgroundColor: "rgba(255, 255, 255, 0.3)",
-                      border: "none",
-                      outline: "none",
-                      boxShadow: state.isFocused
-                        ? "0 0 0 2px #000000"
-                        : provided.boxShadow,
-                      "&:hover": {
-                        boxShadow: "none",
-                      },
-                      singleValue: {
-                        ...provided.singleValue,
-                        color: "#FFFFFF !important",
-                      },
-                      indicatorSeparator: {
-                        ...provided.indicatorSeparator,
-                        backgroundColor: "#000000",
-                      },
-                    }),
-                    menu: (provided) => ({
-                      ...provided,
-                      width: "10rem",
-                      backgroundColor: "#fff",
-                      border: "none",
-                      boxShadow: "none",
-                      color: "#000000",
-                      zIndex: 9999,
-                    }),
-                    option: (provided, state) => ({
-                      ...provided,
-                      backgroundColor: state.isSelected
-                        ? "rgb(255,255,255)"
-                        : "transparent",
-                      zIndex: 9999,
-                    }),
-                  }}
-                  placeholder="Disabled"
-                  isSearchable
-                />
-              </div>{/*
-              <div className="checkbox-filters">
-                
-        <label>
-          <input
-            type="checkbox"
-            checked={hideUnranked}
-            onChange={toggleHideUnranked}
-          />
-          Hide Unranked
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={hideCensored}
-            onChange={toggleHideCensored}
-          />
-          Hide Censored
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={hideEpic}
-            onChange={toggleHideEpic}
-          />
-          Hide Epic
-        </label>
-      </div>
-              */}
             </div>
+            
+            {/*<div className="diff-filters">*/}
+            {/*  <div className="filter-container">*/}
+            {/*    <p className="setting-description">Lower diff</p>*/}
+            {/*    <Select*/}
+            {/*      id="low-diff-select" // Set an ID for the select*/}
+            {/*      defaultValue={selectedLowFilterDiff}*/}
+            {/*      onChange={handleLowFilter}*/}
+            {/*      options={options}*/}
+            {/*      menuPortalTarget={document.body}*/}
+            {/*      styles={{*/}
+            {/*        menuPortal: (base) => ({ ...base, zIndex: 9999 }),*/}
+            {/*        container: (provided) => ({*/}
+            {/*          ...provided,*/}
+            {/*          zIndex: 9999,*/}
+            {/*        }),*/}
+            {/*        control: (provided, state) => ({*/}
+            {/*          ...provided,*/}
+            {/*          width: "10rem",*/}
+            {/*          backgroundColor: "rgba(255, 255, 255, 0.3)",*/}
+            {/*          border: "none",*/}
+            {/*          outline: "none",*/}
+            {/*          boxShadow: state.isFocused*/}
+            {/*            ? "0 0 0 2px #000000"*/}
+            {/*            : provided.boxShadow,*/}
+            {/*          "&:hover": {*/}
+            {/*            boxShadow: "none",*/}
+            {/*          },*/}
+            {/*          singleValue: {*/}
+            {/*            ...provided.singleValue,*/}
+            {/*            color: "#FFFFFF !important",*/}
+            {/*          },*/}
+            {/*          indicatorSeparator: {*/}
+            {/*            ...provided.indicatorSeparator,*/}
+            {/*            backgroundColor: "#000000",*/}
+            {/*          },*/}
+            {/*        }),*/}
+            {/*        menu: (provided) => ({*/}
+            {/*          ...provided,*/}
+            {/*          width: "10rem",*/}
+            {/*          backgroundColor: "#fff",*/}
+            {/*          border: "none",*/}
+            {/*          boxShadow: "none",*/}
+            {/*          color: "#000000",*/}
+            {/*          zIndex: 9999,*/}
+            {/*        }),*/}
+            {/*        option: (provided, state) => ({*/}
+            {/*          ...provided,*/}
+            {/*          backgroundColor: state.isSelected*/}
+            {/*            ? "rgb(255,255,255)"*/}
+            {/*            : "transparent",*/}
+            {/*          zIndex: 9999,*/}
+            {/*        }),*/}
+            {/*      }}*/}
+            {/*      placeholder="Disabled"*/}
+            {/*      isSearchable*/}
+            {/*    />*/}
+            {/*  </div>*/}
+            
+            {/*  <div className="filter-container">*/}
+            {/*    <p className="setting-description">Upper diff</p>*/}
+            {/*    <Select*/}
+            {/*      id="high-diff-select" // Set an ID for the select*/}
+            {/*      defaultValue={selectedHighFilterDiff}*/}
+            {/*      onChange={handleHighFilter}*/}
+            {/*      options={options}*/}
+            {/*      menuPortalTarget={document.body}*/}
+            {/*      styles={{*/}
+            {/*        menuPortal: (base) => ({ ...base, zIndex: 9999 }),*/}
+            {/*        container: (provided) => ({*/}
+            {/*          ...provided,*/}
+            {/*          zIndex: 9999,*/}
+            {/*        }),*/}
+            {/*        control: (provided, state) => ({*/}
+            {/*          ...provided,*/}
+            {/*          width: "10rem",*/}
+            {/*          backgroundColor: "rgba(255, 255, 255, 0.3)",*/}
+            {/*          border: "none",*/}
+            {/*          outline: "none",*/}
+            {/*          boxShadow: state.isFocused*/}
+            {/*            ? "0 0 0 2px #000000"*/}
+            {/*            : provided.boxShadow,*/}
+            {/*          "&:hover": {*/}
+            {/*            boxShadow: "none",*/}
+            {/*          },*/}
+            {/*          singleValue: {*/}
+            {/*            ...provided.singleValue,*/}
+            {/*            color: "#FFFFFF !important",*/}
+            {/*          },*/}
+            {/*          indicatorSeparator: {*/}
+            {/*            ...provided.indicatorSeparator,*/}
+            {/*            backgroundColor: "#000000",*/}
+            {/*          },*/}
+            {/*        }),*/}
+            {/*        menu: (provided) => ({*/}
+            {/*          ...provided,*/}
+            {/*          width: "10rem",*/}
+            {/*          backgroundColor: "#fff",*/}
+            {/*          border: "none",*/}
+            {/*          boxShadow: "none",*/}
+            {/*          color: "#000000",*/}
+            {/*          zIndex: 9999,*/}
+            {/*        }),*/}
+            {/*        option: (provided, state) => ({*/}
+            {/*          ...provided,*/}
+            {/*          backgroundColor: state.isSelected*/}
+            {/*            ? "rgb(255,255,255)"*/}
+            {/*            : "transparent",*/}
+            {/*          zIndex: 9999,*/}
+            {/*        }),*/}
+            {/*      }}*/}
+            {/*      placeholder="Disabled"*/}
+            {/*      isSearchable*/}
+            {/*    />*/}
+            {/*  </div>*/}
+            {/*  */}
+            {/*</div>*/}
           </div>
 
           <div

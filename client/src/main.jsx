@@ -14,6 +14,8 @@ import { UserContextProvider } from './context/UserContext.jsx';
 import { GoogleOAuthProvider } from "@react-oauth/google"
 import { AuthProvider } from './context/AuthContext.jsx';
 
+import { DiffSliderContextProvider } from './context/DiffSliderContext.jsx';
+
 i18next.init({
   interpolation: { escapeValue: false },
   lng: localStorage.getItem('appLanguage') || 'us',
@@ -38,18 +40,19 @@ i18next.init({
 
 
 ReactDOM.createRoot(document.getElementById('root')).render(
- <BrowserRouter>
-   <GoogleOAuthProvider clientId='886035995245-8735p49ljpm17btvst50pp8qbg73t7s4.apps.googleusercontent.com'>
-   
-   <LevelContextProvider>
-    <I18nextProvider i18n={i18next}>
-      <UserContextProvider>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
-      </UserContextProvider>
-    </I18nextProvider>
-   </LevelContextProvider>
-   </GoogleOAuthProvider>
- </BrowserRouter>
+  <BrowserRouter>
+    <GoogleOAuthProvider clientId='886035995245-8735p49ljpm17btvst50pp8qbg73t7s4.apps.googleusercontent.com'>
+      <LevelContextProvider>
+        <DiffSliderContextProvider>
+          <I18nextProvider i18n={i18next}>
+            <UserContextProvider>
+              <AuthProvider>
+                <App />
+              </AuthProvider>
+            </UserContextProvider>
+          </I18nextProvider>
+        </DiffSliderContextProvider>
+      </LevelContextProvider>
+    </GoogleOAuthProvider>
+  </BrowserRouter>
 );
