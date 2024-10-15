@@ -440,7 +440,7 @@ async function getBilibiliVideoDetails(url) {
 
     const unix = data.pubdate; // Start with a Unix timestamp
     const date = new Date(unix * 1000); // Convert timestamp to milliseconds
-    const imageUrl = `http://localhost:3001/api/image?url=${encodeURIComponent(data.pic)}`;
+    const imageUrl = `${import.meta.env.VITE_API_URL}/api/image?url=${encodeURIComponent(data.pic)}`;
 
     const details = {
       title: data.title,
@@ -516,6 +516,82 @@ async function getVideoDetails(url) {
   return details;
 }
 
+async function getDriveFromYt(link) {
+  let yoon = null;
+  let drive = null;
+  let dsc = null;
+
+  let id = "";
+
+  // Determine the YouTube video ID from the link
+  if (link.split("/")[0].includes("youtu.be")) {
+      id = link.split('/').join(',').split('?').join(',').split(',')[1];
+  } else if (link.split("/")[2].includes("youtu.be")) {
+      id = link.split("/").join(',').split('?').join(',').split(',')[3];
+  } else {
+      id = link.split('?v=')[1];
+  }
+
+  try {
+      const response = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${id}&key=AIzaSyAvW8Fe_CqIUHzYw2aSMKCe247NtSewmJY`);
+      const data = await response.json();
+
+      if (data.items[0]) {
+          let desc = data.items[0].snippet.description;
+          let format = desc.split('\n').join(',').split('/').join(',').split(',');
+          yoon = "";
+          drive = "";
+          dsc = desc;
+
+          // Handle Google Drive links
+          if (desc.includes("drive.google.com/file/d")) { 
+              for (let i = 0; i < format.length; i++) {
+                  if (format[i].includes("drive.google.com")) {
+                      drive += "https://" + format[i] + "/file/d/" + format[i+3] + "/" + format[i+4] + "\n"; 
+                  }
+              }
+          }
+
+          // Handle hyonsu.com links
+          if (desc.includes("hyonsu.com/")) { 
+              for (let i = 0; i < format.length; i++) {
+                  if (format[i].includes("hyonsu.com")) {
+                      yoon += "https://" + format[i] + "/attachments/" + format[i+2] + "/" + format[i+3] + "/" + format[i+4] + "\n";
+                  }
+              }
+          }
+
+          // Handle Discord CDN links
+          if (desc.includes("cdn.discordapp.com")) { 
+              for (let i = 0; i < format.length; i++) {
+                  if (format[i].includes("cdn.discordapp.com")) {
+                      yoon += "https://fixcdn.hyonsu.com/attachments/" + format[i+2] + "/" + format[i+3] + "/" + format[i+4] + "\n";
+                  }
+              }
+          }
+
+
+
+          // Return the result
+          return {
+              drive: drive? drive: yoon,
+              desc: dsc
+          };
+      }
+  } catch (error) {
+      console.error("Error fetching YouTube video details:", error);
+      return null; // Return null if an error occurs
+  }
+
+  return {
+      yoon: yoon,
+      drive: drive,
+      desc: dsc
+  };
+}
+
+
+
 function getLevelImage(newDiff, pgnDiff, pguDiff, legacy) {
   
   const imageSources = [
@@ -554,6 +630,7 @@ function isoToEmoji(code) {
 
 export {
   getYouTubeVideoDetails, 
+  getDriveFromYt,
   checkLevel, 
   isoToEmoji, 
   fetchPassPlayerInfo, 

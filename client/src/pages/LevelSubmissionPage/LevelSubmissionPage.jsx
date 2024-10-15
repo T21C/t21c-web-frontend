@@ -3,7 +3,7 @@ import "./levelsubmission.css";
 import placeholder from "../../assets/placeholder/3.png";
 import { FormManager } from "../../components/FormManager/FormManager";
 import { useEffect, useState } from "react";
-import { getVideoDetails } from "../../Repository/RemoteRepository";
+import { getDriveFromYt, getVideoDetails } from "../../Repository/RemoteRepository";
 import { useAuth } from "../../context/AuthContext";
 import { validateFeelingRating } from "../../components/Misc/Utility";
 
@@ -73,17 +73,38 @@ const LevelSubmissionPage = () => {
 
   useEffect(() => {
     const { videoLink } = form;
-    
-    getVideoDetails(videoLink).then((res) => {
-      setVideoDetail(
-        res
-          ? res
-          : null
-      );
-    });
-
-
-  }, [form.videoLink]);
+  
+    // Define an async function inside useEffect
+    const fetchData = async () => {
+      try {
+        // Fetch video details
+        const videoDetails = await getVideoDetails(videoLink);
+        setVideoDetail(videoDetails ? videoDetails : null);
+        if (videoDetails){
+          form.charter = videoDetails.channelName
+        }
+  
+        // Fetch Drive link from YouTube
+        const driveDetails = await getDriveFromYt(videoLink);
+        console.log("drive details", driveDetails);
+        if (driveDetails.drive) {
+          console.log(driveDetails);
+  
+          // Update form with drive link if available
+          setForm((prevForm) => ({
+            ...prevForm,
+            dlLink: driveDetails.drive ? driveDetails.drive : "",
+          }));
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+  
+    // Call the async function
+    fetchData();
+  }, [form.videoLink]); // Dependency array to re-run when form.videoLink changes
+  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
