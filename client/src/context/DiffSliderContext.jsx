@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { createContext, useState, useRef } from 'react'
+import { createContext, useState } from 'react'
 
 const DiffSliderContext = createContext()
 

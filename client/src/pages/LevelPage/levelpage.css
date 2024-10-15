@@ -38,7 +38,8 @@
 .level-page-rev .level-body .input-option input::placeholder {
   color: #d7d7d7;
 }
-.level-page-rev .level-body .input-option svg {
+.level-page-rev .level-body .input-option svg,
+.level-page-rev .level-body .input-option .img-div {
   height: 2rem;
   width: 2.2rem;
   /*background-color: var(--color-white-t20);*/
@@ -48,13 +49,34 @@
   border-radius: 3px;
   cursor: pointer;
   transition: all 0.2s linear;
+
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
-.level-page-rev .level-body .input-option svg:hover {
+.level-page-rev .level-body .input-option svg:hover,
+.level-page-rev .level-body .input-option .img-div:hover {
   background-color: #FFFFFF79;
   border: 2px solid #FFFFFF79;
 }
-.level-page-rev .level-body .input-option svg:focus {
+.level-page-rev .level-body .input-option svg:focus,
+.level-page-rev .level-body .input-option .img-div:focus {
   outline: none;
+}
+.img-div img {
+  width: 1.25rem;
+  height: 1.25rem;
+  position: absolute;
+  transition: 0.5s;
+}
+.active-system {
+  /*opacity: 1;*/
+  transition: 0.5s;
+}
+.inactive-system {
+  opacity: 0;
+  transition: 0.5s;
 }
 .level-page-rev .level-body .filter {
   position: relative;

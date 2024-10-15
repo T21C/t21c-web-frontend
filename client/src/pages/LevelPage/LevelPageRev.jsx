@@ -211,172 +211,196 @@ const LevelPageRev = () => {
 
       <div className="level-body">
         <div className="input-option">
-          <svg
-            className="svg-fill"
-            data-tooltip-id="legacy"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{
-              backgroundColor:
-                  legacyDiff ? "#FFFFFF79" : "",
-              borderColor:
-                  legacyDiff ? "#FFFFFF79" : "",
-              width: "3rem",
-              paddingLeft: ".1rem",
-              paddingRight: ".3rem",
-            }}
-            onClick={() => toggleLegacyDiff()}
-          >
-            <polygon points="11 19 2 12 11 5 11 19"></polygon>
-            <polygon points="22 19 13 12 22 5 22 19"></polygon>
-          </svg>
-
+          {/*<svg*/}
+          {/*    className="svg-fill"*/}
+          {/*    data-tooltip-id="legacy"*/}
+          {/*    xmlns="http://www.w3.org/2000/svg"*/}
+          {/*    fill="currentColor"*/}
+          {/*    viewBox="0 0 24 24"*/}
+          {/*    strokeWidth="2"*/}
+          {/*    strokeLinecap="round"*/}
+          {/*    strokeLinejoin="round"*/}
+          {/*    style={{*/}
+          {/*      backgroundColor:*/}
+          {/*          legacyDiff ? "#FFFFFF79" : "",*/}
+          {/*      borderColor:*/}
+          {/*          legacyDiff ? "#FFFFFF79" : "",*/}
+          {/*      width: "3rem",*/}
+          {/*      paddingLeft: ".1rem",*/}
+          {/*      paddingRight: ".3rem",*/}
+          {/*    }}*/}
+          {/*    onClick={() => toggleLegacyDiff()}*/}
+          {/*>*/}
+          {/*  <polygon points="11 19 2 12 11 5 11 19"></polygon>*/}
+          {/*  <polygon points="22 19 13 12 22 5 22 19"></polygon>*/}
+          {/*</svg>*/}
+          
           <input
-            value={query}
-            type="text"
-            placeholder={t("levelPage.inputPlaceholder")}
-            onChange={handleQueryChange}
+              value={query}
+              type="text"
+              placeholder={t("levelPage.inputPlaceholder")}
+              onChange={handleQueryChange}
           />
-
-          <Tooltip id="legacy" place="bottom" noArrow style={{ zIndex: 999 }}>
+          
+          <Tooltip id="legacy" place="bottom" noArrow style={{zIndex: 999}}>
             {t("levelPage.toolTip.legacy")}
           </Tooltip>
-          <Tooltip id="filter" place="bottom" noArrow style={{ zIndex: 999 }}>
+          <Tooltip id="filter" place="bottom" noArrow style={{zIndex: 999}}>
             {t("levelPage.toolTip.filter")}
           </Tooltip>
-          <Tooltip id="sort" place="bottom" noArrow style={{ zIndex: 999 }}>
+          <Tooltip id="sort" place="bottom" noArrow style={{zIndex: 999}}>
             {t("levelPage.toolTip.sort")}
           </Tooltip>
-          <Tooltip id="reset" place="bottom" noArrow style={{ zIndex: 999 }}>
+          <Tooltip id="reset" place="bottom" noArrow style={{zIndex: 999}}>
             {t("levelPage.toolTip.reset")}
           </Tooltip>
-
+          
           <svg
-            className="svg-fill-stroke"
-            data-tooltip-id="filter"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            style={{
-              backgroundColor:
-                  filterOpen ? "#FFFFFF79" : "",
-              borderColor:
-                  filterOpen ? "#FFFFFF79" : "",
-              padding: ".2rem",
-            }}
-            onClick={() => handleFilterOpen()}
+              className="svg-fill-stroke"
+              data-tooltip-id="filter"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              style={{
+                backgroundColor:
+                    filterOpen ? "#FFFFFF79" : "",
+                borderColor:
+                    filterOpen ? "#FFFFFF79" : "",
+                padding: ".2rem",
+              }}
+              onClick={() => handleFilterOpen()}
           >
-            <path d="M5.05 3C3.291 3 2.352 5.024 3.51 6.317l5.422 6.059v4.874c0 .472.227.917.613 1.2l3.069 2.25c1.01.742 2.454.036 2.454-1.2v-7.124l5.422-6.059C21.647 5.024 20.708 3 18.95 3H5.05Z" />
+            <path
+                d="M5.05 3C3.291 3 2.352 5.024 3.51 6.317l5.422 6.059v4.874c0 .472.227.917.613 1.2l3.069 2.25c1.01.742 2.454.036 2.454-1.2v-7.124l5.422-6.059C21.647 5.024 20.708 3 18.95 3H5.05Z"/>
           </svg>
-
+          
           <svg
-            className="svg-fill"
-            data-tooltip-id="sort"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            style={{
-              backgroundColor:
-                  sortOpen ? "#FFFFFF79" : "",
-              borderColor:
-                  sortOpen ? "#FFFFFF79" : ""
-            }}
-            onClick={() => handleSortOpen()}
+              className="svg-fill"
+              data-tooltip-id="sort"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              style={{
+                backgroundColor:
+                    sortOpen ? "#FFFFFF79" : "",
+                borderColor:
+                    sortOpen ? "#FFFFFF79" : ""
+              }}
+              onClick={() => handleSortOpen()}
           >
-            <g id="SVGRepo_bgCarrier" strokeWidth="0" />
+            <g id="SVGRepo_bgCarrier" strokeWidth="0"/>
             <g
-              id="SVGRepo_tracerCarrier"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+                id="SVGRepo_tracerCarrier"
+                strokeLinecap="round"
+                strokeLinejoin="round"
             />
             <g id="SVGRepo_iconCarrier">
               <path
-                d="M20 10.875C20.3013 10.875 20.5733 10.6948 20.6907 10.4173C20.8081 10.1399 20.7482 9.81916 20.5384 9.60289L16.5384 5.47789C16.3972 5.33222 16.2029 5.25 16 5.25C15.7971 5.25 15.6029 5.33222 15.4616 5.47789L11.4616 9.60289C11.2519 9.81916 11.1919 10.1399 11.3093 10.4173C11.4268 10.6948 11.6988 10.875 12 10.875H15.25V18C15.25 18.4142 15.5858 18.75 16 18.75C16.4142 18.75 16.75 18.4142 16.75 18L16.75 10.875H20Z"
-                fill="#ffffff"
+                  d="M20 10.875C20.3013 10.875 20.5733 10.6948 20.6907 10.4173C20.8081 10.1399 20.7482 9.81916 20.5384 9.60289L16.5384 5.47789C16.3972 5.33222 16.2029 5.25 16 5.25C15.7971 5.25 15.6029 5.33222 15.4616 5.47789L11.4616 9.60289C11.2519 9.81916 11.1919 10.1399 11.3093 10.4173C11.4268 10.6948 11.6988 10.875 12 10.875H15.25V18C15.25 18.4142 15.5858 18.75 16 18.75C16.4142 18.75 16.75 18.4142 16.75 18L16.75 10.875H20Z"
+                  fill="#ffffff"
               />
               <path
-                opacity="0.5"
-                d="M12 13.125C12.3013 13.125 12.5733 13.3052 12.6907 13.5827C12.8081 13.8601 12.7482 14.1808 12.5384 14.3971L8.53844 18.5221C8.39719 18.6678 8.20293 18.75 8.00002 18.75C7.79711 18.75 7.60285 18.6678 7.46159 18.5221L3.46159 14.3971C3.25188 14.1808 3.19192 13.8601 3.30934 13.5827C3.42676 13.3052 3.69877 13.125 4.00002 13.125H7.25002L7.25002 6C7.25002 5.58579 7.5858 5.25 8.00002 5.25C8.41423 5.25 8.75002 5.58579 8.75002 6L8.75002 13.125L12 13.125Z"
-                fill="#ffffff"
+                  opacity="0.5"
+                  d="M12 13.125C12.3013 13.125 12.5733 13.3052 12.6907 13.5827C12.8081 13.8601 12.7482 14.1808 12.5384 14.3971L8.53844 18.5221C8.39719 18.6678 8.20293 18.75 8.00002 18.75C7.79711 18.75 7.60285 18.6678 7.46159 18.5221L3.46159 14.3971C3.25188 14.1808 3.19192 13.8601 3.30934 13.5827C3.42676 13.3052 3.69877 13.125 4.00002 13.125H7.25002L7.25002 6C7.25002 5.58579 7.5858 5.25 8.00002 5.25C8.41423 5.25 8.75002 5.58579 8.75002 6L8.75002 13.125L12 13.125Z"
+                  fill="#ffffff"
               />
             </g>
           </svg>
-
+          
+          <div
+              className="img-div"
+              data-tooltip-id="legacy"
+              style={{
+                backgroundColor:
+                    legacyDiff ? "#FFFFFF79" : "",
+                borderColor:
+                    legacyDiff ? "#FFFFFF79" : "",
+              }}
+              onClick={() => toggleLegacyDiff()}
+          >
+            <img
+                className={legacyDiff ? "inactive-system" : "active-system"}
+                // id="pgu-diff-icon"
+                src="https://github.com/T21C/T21C-assets/blob/main/serverIcons/TUF.png?raw=true"
+            />
+            <img
+                className={legacyDiff ? "active-system" : "inactive-system"}
+                // id="legacy-diff-icon"
+                src="https://github.com/T21C/T21C-assets/blob/main/serverIcons/T21+C.png?raw=true"
+            />
+          </div>
+          
           <svg
-            className="svg-stroke"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            onClick={() => resetAll()}
-            data-tooltip-id="reset"
+              className="svg-stroke"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="currentColor"
+              onClick={() => resetAll()}
+              data-tooltip-id="reset"
           >
             <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"
+                stroke="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"
             />
           </svg>
         </div>
-
+        
         <div className="input-setting" style={{width: "100%"}}>
           <div
-            className="filter settings-class"
-            style={{
-              height: filterOpen ? "13rem" : "0",
-              opacity: filterOpen ? "1" : "0",
-              width: "100%"
-            }}
+              className="filter settings-class"
+              style={{
+                height: filterOpen ? "13rem" : "0",
+                opacity: filterOpen ? "1" : "0",
+                width: "100%"
+              }}
           >
             <div className="spacer-setting"></div>
             <h2 className="setting-title">
               {t("levelPage.settingExp.headerFilter")}
             </h2>
             <p className="setting-description">{t('levelPage.settingExp.filterDiffs')}</p>
-
+            
             <div className="diff-filters">
-
+              
               <div className="filter-container">
                 <MiscDiffPopover/>
               </div>
-
+              
               <div className="filter-container">
                 <DifficultySlider min={1} max={60}/>
               </div>
             </div>
           </div>
-
+          
           <div
-            className="sort settings-class"
-            style={{
-              height: sortOpen ? "10rem" : "0",
-              opacity: sortOpen ? "1" : "0",
-            }}
+              className="sort settings-class"
+              style={{
+                height: sortOpen ? "10rem" : "0",
+                opacity: sortOpen ? "1" : "0",
+              }}
           >
             <div className="spacer-setting"></div>
             <h2 className="setting-title">
               {t("levelPage.settingExp.headerSort")}
             </h2>
-
+            
             <div className="sort-option">
               <div className="recent">
                 <p>{t("levelPage.settingExp.sortRecent")}</p>
-                <Tooltip id="ra" place="top" noArrow style={{ zIndex: 999 }}>
+                <Tooltip id="ra" place="top" noArrow style={{zIndex: 999}}>
                   {t("levelPage.toolTip.recentAsc")}
                 </Tooltip>
-                <Tooltip id="rd" place="top" noArrow style={{ zIndex: 999 }}>
+                <Tooltip id="rd" place="top" noArrow style={{zIndex: 999}}>
                   {t("levelPage.toolTip.recentDesc")}
                 </Tooltip>
-
+                
                 <div className="wrapper">
                   <svg
                       className="svg-fill"
