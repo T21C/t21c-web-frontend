@@ -416,7 +416,7 @@ async function getBilibiliVideoDetails(url) {
 
   //console.log(videoId);
   
-  const apiUrl = `http://localhost:3001/api/bilibili?bvid=${videoId}`;
+  const apiUrl = `${import.meta.env.VITE_API_URL}/api/bilibili?bvid=${videoId}`;
 
   try {
     const response = await fetch(apiUrl);
@@ -440,7 +440,7 @@ async function getBilibiliVideoDetails(url) {
 
     const unix = data.pubdate; // Start with a Unix timestamp
     const date = new Date(unix * 1000); // Convert timestamp to milliseconds
-    const imageUrl = `http://localhost:3001/api/image?url=${encodeURIComponent(data.pic)}`;
+    const imageUrl = `${import.meta.env.VITE_API_URL}/api/image?url=${encodeURIComponent(data.pic)}`;
 
     const details = {
       title: data.title,

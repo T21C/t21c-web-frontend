@@ -128,7 +128,7 @@ body {
 
 .form-container {
   place-items: center;
-  max-width: 65rem;
+  max-width: 75rem;
   overflow: hidden;
   display: flex;
   z-index: 10;
@@ -365,8 +365,8 @@ select:-moz-focusring {
 .thumbnail-container {
   gap: 20px; /* Space between thumbnail and form */
   z-index: 10;
-  width: 300px; /* Fixed width */
-  height: 200px;
+  width: 400px; /* Fixed width */
+  height: 250px;
   place-content: center;
   text-shadow: 0px 0px 4px black;
   overflow: hidden; /* Hide any overflow */
@@ -379,8 +379,8 @@ select:-moz-focusring {
 
 @media (max-width: 900px) {
   .thumbnail-container {
-    width: auto; /* Fixed width */
-    height: 200px; /* Fixed height */
+    width: 100%; /* Fixed width */
+    height: 300px; /* Fixed height */
   }
 }
 
