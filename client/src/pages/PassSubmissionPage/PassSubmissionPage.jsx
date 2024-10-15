@@ -9,7 +9,7 @@ import { getScoreV2 } from "../../components/Misc/CalcScore";
 import { parseJudgements } from "../../components/Misc/ParseJudgements";
 import { useAuth } from "../../context/AuthContext";
 import {FetchIcon} from "../../components/FetchIcon/FetchIcon"
-import { validateFeelingRating } from "../../components/Misc/Utility";
+import { validateFeelingRating, validateSpeed, validateNumber } from "../../components/Misc/Utility";
 
 const PassSubmissionPage = () => {
   const initialFormState = {
@@ -32,7 +32,8 @@ const PassSubmissionPage = () => {
   const [accuracy, setAccuracy] = useState(null);
   const [score, setScore] = useState("Level ID is required");
   const [judgements, setJudgements] = useState([]);
-  const [isInvalidFeelingRating, setIsInvalidFeelingRating] = useState(false); // Track validation
+  const [isValidFeelingRating, setIsValidFeelingRating] = useState(true); // Track validation
+  const [isValidSpeed, setIsValidSpeed] = useState(true)
   const [isFormValid, setIsFormValid] = useState(false);
   const [isFormValidDisplay, setIsFormValidDisplay] = useState({});
 
@@ -55,11 +56,17 @@ const PassSubmissionPage = () => {
   };
 
   const validateForm = () => {
-    const requiredFields = ['levelId', 'videoLink', 'leaderboardName', 'feelingRating', 'ePerfect', 'perfect', 'lPerfect', 'tooEarly', 'early', 'late'];
+    const requiredFields = ['levelId', 'videoLink', 'feelingRating', 'ePerfect', 'perfect', 'lPerfect', 'tooEarly', 'early', 'late'];
+    const judgements = ['ePerfect', 'perfect', 'lPerfect', 'tooEarly', 'early', 'late']
     const validationResult = {};
     const displayValidationRes = {}
     requiredFields.forEach(field => {
-      validationResult[field] = (form[field].trim() !== ''); // Check if each field is filled
+      if (judgements.includes(field)){
+        validationResult[field] = (form[field].trim() !== '') && validateNumber(form[field]) ; 
+      }
+      else{
+        validationResult[field] = (form[field].trim() !== ''); // Check if each field is filled
+      }
     });
 
     validationResult["levelId"] = !(level === null || level === undefined);
@@ -69,7 +76,10 @@ const PassSubmissionPage = () => {
     }
     
     const frValid = validateFeelingRating(form["feelingRating"])
-    setIsInvalidFeelingRating(!frValid); // Update validation state
+    const speedValid = validateSpeed(form["speed"])
+    validationResult["speed"] = speedValid
+    setIsValidFeelingRating(frValid);
+    setIsValidSpeed(speedValid); // Update validation state
     setIsFormValidDisplay(displayValidationRes); // Set the validity object
     setIsFormValid(validationResult)
   };
@@ -217,7 +227,7 @@ const PassSubmissionPage = () => {
     setSubmission(true)
     setError(null);
     googleForm.setDetail('id', form.levelId)
-    googleForm.setDetail('*/Speed Trial', form.speed)
+    googleForm.setDetail('*/Speed Trial', form.speed >= 1? "" : form.speed)
     googleForm.setDetail('Passer', form.leaderboardName)
     googleForm.setDetail('Feeling Difficulty', form.feelingRating)
     googleForm.setDetail('Title', videoDetail.title)
@@ -406,7 +416,6 @@ const PassSubmissionPage = () => {
               name="leaderboardName"
               value={form.leaderboardName}
               onChange={handleInputChange}
-              style={{ borderColor: isFormValidDisplay.leaderboardName ? "" : "red"  }}
             />
             <div className="tooltip-container">
               <input
@@ -435,6 +444,7 @@ const PassSubmissionPage = () => {
               name="speed"
               value={form.speed}
               onChange={handleInputChange}
+              style={{backgroundColor: isValidSpeed? "transparent" : "#faa"}}
             />
 
       <div style={{ display: 'flex', justifyContent: "center", gap: "10px"}}>
@@ -445,17 +455,17 @@ const PassSubmissionPage = () => {
           value={form.feelingRating}
           onChange={handleInputChange}
           style={{ borderColor: isFormValidDisplay.feelingRating ? "" : "red",
-            backgroundColor: isInvalidFeelingRating ? "yellow" : ""
+            backgroundColor: !isValidFeelingRating ? "yellow" : ""
           }} 
         />
           <div className="tooltip-container">
           <span style={{
               color: 'red',
-              visibility: `${isInvalidFeelingRating? '' : 'hidden'}`
+              visibility: `${!isValidFeelingRating? '' : 'hidden'}`
             }}>?</span>
           <span className="tooltip" 
                 style={{
-                  visibility: `${isInvalidFeelingRating? '' : 'hidden'}`,
+                  visibility: `${!isValidFeelingRating? '' : 'hidden'}`,
                  bottom: "115%",
                   right: "-15%"}}>Unknown difficulty, will submit but please make sure it's readable by the managers. Correct diff ex.: G13; P7~P13; 21.1+; 19~20.0+</span>
         </div>

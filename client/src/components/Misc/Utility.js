@@ -1,4 +1,4 @@
-export const validateFeelingRating = (value) => {
+export function validateFeelingRating (value) {
     const exprPattern1 = "[PGUpgu][1-9]";     // Handles single letters followed by 1-9
     const exprPattern2 = "[PGUpgu]1[0-9]";    // Handles single letters followed by 10-19
     const exprPattern3 = "[PGUpgu]20";        // Handles single letters followed by 20
@@ -15,3 +15,14 @@ export const validateFeelingRating = (value) => {
     
     return regex.test(value);
 };
+
+
+export function validateSpeed (value) {
+    const regex = new RegExp("^$|^1(\.[0-9])?$")
+    return regex.test(value)
+}
+
+export function validateNumber ( value){
+    const regex = new RegExp("^\\d+$")
+    return regex.test(value)
+}
