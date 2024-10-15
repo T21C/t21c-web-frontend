@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { getDriveFromYt, getVideoDetails } from "../../Repository/RemoteRepository";
 import { useAuth } from "../../context/AuthContext";
 import { validateFeelingRating } from "../../components/Misc/Utility";
+import { useTranslation } from "react-i18next";
 
 const LevelSubmissionPage = () => {
   const initialFormState = {
@@ -20,6 +21,7 @@ const LevelSubmissionPage = () => {
     workshopLink: ''
   };
 
+  const {t} = useTranslation()
   const { user } = useAuth();
   const [form, setForm] = useState(initialFormState);
   const [isInvalidFeelingRating, setIsInvalidFeelingRating] = useState(false); // Track validation
@@ -86,7 +88,6 @@ const LevelSubmissionPage = () => {
   
         // Fetch Drive link from YouTube
         const driveDetails = await getDriveFromYt(videoLink);
-        console.log("drive details", driveDetails);
         if (driveDetails.drive) {
           console.log(driveDetails);
   
@@ -181,9 +182,9 @@ const LevelSubmissionPage = () => {
           error? "#b22":
           "#888"
         )}}>
-          {success? (<p>Form submitted successfully!</p>) :
-          error? (<p>Error: {truncateString(error, 27)}</p>):
-          (<p>Submitting...</p>)}
+          {success? (<p>{t("levelSubmission.alert.success")}</p>) :
+          error? (<p>{t("levelSubmission.alert.error")}{truncateString(error, 27)}</p>):
+          (<p>{t("levelSubmission.alert.loading")}</p>)}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div>
   
@@ -206,17 +207,17 @@ const LevelSubmissionPage = () => {
       ></iframe>
     ) : (
       <div className="thumbnail-text">
-      <h2>Video not found</h2>
+      <h2>{t("levelSubmission.thumbnailInfo")}</h2>
       </div>
     )}
   </div>
         <div className="info">
-          <h1>Submit a Level</h1>
+          <h1>{t("levelSubmission.title")}</h1>
 
           <div className="information">
           <input
             type="text"
-            placeholder="Song"
+            placeholder={t("levelSubmission.submInfo.song")}
             name="song"
             value={form.song}
             onChange={handleInputChange}
@@ -224,7 +225,7 @@ const LevelSubmissionPage = () => {
           />
           <input
             type="text"
-            placeholder="Artist"
+            placeholder={t("levelSubmission.submInfo.artist")}
             name="artist"
             value={form.artist}
             onChange={handleInputChange}
@@ -234,7 +235,7 @@ const LevelSubmissionPage = () => {
         <div className="youtube-input">
                 <input
                   type="text"
-                  placeholder="Video Link"
+                  placeholder={t("levelSubmission.submInfo.vidLink")}
                   name="videoLink"
                   value={form.videoLink}
                   onChange={handleInputChange}
@@ -243,30 +244,30 @@ const LevelSubmissionPage = () => {
                 {videoDetail? 
                 (<div className="youtube-info">
                   <div className="yt-info">
-                    <h4>YT Title</h4>
+                    <h4>{t("levelSubmission.videoInfo.title")}</h4>
                     <p style={{maxWidth:"%"}}>{videoDetail.title}</p>
                   </div>
 
                   <div className="yt-info">
-                    <h4>Channel</h4>
+                    <h4>{t("levelSubmission.videoInfo.channel")}</h4>
                     <p>{videoDetail.channelName}</p>
                   </div>
 
                   <div className="yt-info">
-                    <h4>Timestamp</h4>
+                    <h4>{t("levelSubmission.videoInfo.timestamp")}</h4>
                     <p>{videoDetail.timestamp}</p>
                   </div>
                 </div>)
                 :(
                   <div className="yt-info">
-                    <p style={{color: "#aaa"}}>No link provided</p>
+                    <p style={{color: "#aaa"}}>{t("levelSubmission.videoInfo.nolink")}</p>
                     <br />
                     </div>)}
         </div>
         <div className="info-group">
           <input
             type="text"
-            placeholder="Charter"
+            placeholder={t("levelSubmission.submInfo.charter")}
             name="charter"
             value={form.charter}
             onChange={handleInputChange}
@@ -284,11 +285,11 @@ const LevelSubmissionPage = () => {
                 style={{
                   visibility: `${isInvalidFeelingRating? '' : 'hidden'}`,
                  bottom: "115%",
-                  left: "-2rem"}}>Unknown difficulty, will submit but please make sure it's readable by the managers. Correct diff ex.: G13; P7~P13; 21.1+; 19~20.0+</span>
+                  left: "-2rem"}}>{t("levelSubmission.tooltip")}</span>
           </div>
             <input
             type="text"
-            placeholder="Difficulty"
+            placeholder={t("levelSubmission.submInfo.diff")}
             name="diff"
             value={form.diff}
             onChange={handleInputChange}
@@ -302,14 +303,14 @@ const LevelSubmissionPage = () => {
           
         <input
             type="text"
-            placeholder="VFX-ers (opt.)"
+            placeholder={t("levelSubmission.submInfo.vfxer")}
             name="vfxer"
             value={form.vfxer}
             onChange={handleInputChange}
           />
           <input
             type="text"
-            placeholder="Team Name (opt.)"
+            placeholder={t("levelSubmission.submInfo.team")}
             name="team"
             value={form.team}
             onChange={handleInputChange}
@@ -319,16 +320,16 @@ const LevelSubmissionPage = () => {
         <div className="info-group" style={{marginTop: "2rem",paddingLeft: "30px", paddingRight: "30px"}}>
           <input
             type="text"
-            placeholder="Download Link"
+            placeholder={t("levelSubmission.submInfo.dlLink")}
             name="dlLink"
             value={form.dlLink}
             onChange={handleInputChange}
             style={{ borderColor: isFormValidDisplay.directLink ? "" : "red" }}
           />
-          <span style={{display: "flex", alignItems: "center"}}>or</span>
+          <span style={{display: "flex", alignItems: "center"}}>{t("levelSubmission.submInfo.dlLinksOr")}</span>
           <input
             type="text"
-            placeholder="Workshop Link"
+            placeholder={t("levelSubmission.submInfo.workshop")}
             name="workshopLink"
             value={form.workshopLink}
             onChange={handleInputChange}
@@ -336,7 +337,7 @@ const LevelSubmissionPage = () => {
           />
         </div>
 
-          <button disabled={submission} className="submit" onClick={handleSubmit}>Submit {submission && (<>(please wait)</>)}</button>
+        <button disabled={submission} className="submit" onClick={handleSubmit}>{t("levelSubmission.submit")}{submission && (<>{t("levelSubmission.submitWait")}</>)}</button>
         </div>
       </form>      
     </div>
