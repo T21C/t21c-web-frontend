@@ -144,7 +144,7 @@ body {
   margin-top: 2rem;
   background-color: var(--color-white);
   background-size: contain;
-  background-position: center 0;
+  background-position: center -80px;
   background-repeat: no-repeat;
   flex-direction: column;
 }

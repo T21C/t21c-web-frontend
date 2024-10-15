@@ -3,7 +3,7 @@ import "./passsubmission.css";
 import placeholder from "../../assets/placeholder/3.png";
 import { FormManager } from "../../components/FormManager/FormManager";
 import { useEffect, useState } from "react";
-import { checkLevel, getVideoDetails } from "../../Repository/RemoteRepository";
+import { checkLevel, getDriveFromYt, getVideoDetails } from "../../Repository/RemoteRepository";
 import calcAcc from "../../components/Misc/CalcAcc";
 import { getScoreV2 } from "../../components/Misc/CalcScore";
 import { parseJudgements } from "../../components/Misc/ParseJudgements";
@@ -138,6 +138,9 @@ const PassSubmissionPage = () => {
           ? res
           : null
       );
+      if (res){
+        form.leaderboardName = res.channelName
+      }
     });
 
 
