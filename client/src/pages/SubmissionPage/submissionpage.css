@@ -1,94 +1,141 @@
 .submission-page {
   background-color: rgb(19, 12, 22);
   min-height: 100vh;
-}
-.submission-page .wrapper-body {
-  padding: 4rem 0;
-  position: relative;
-  z-index: 2;
-}
-.submission-page .submission-container {
-  padding: 0 7%;
-  display: flex;
-  position: relative;
+  min-width: 100%;
 }
 
-.submission-page .wrapper-body button {
-  font-size: 1.3rem;
-  margin-top: 0.7rem;
-  padding: 0.7rem 2rem;
-  box-shadow: 2px 4px 3px 2px rgba(16, 0, 34, 0.2);
+.submission-page .submission-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
+  min-height: 30vh;
+  min-width: 100vw;
+  padding-top: 15vh;
 }
-.submission-page .wrapper-top {
-  padding: 6rem 0;
-  position: relative;
-  width: 10%;
-  flex-wrap: wrap;
+
+.submission-page .middle-img {
+  position: absolute;
+  padding: 0.5rem 0.75rem 0.5rem 0.5rem;
+  width: 10rem;
+  height: 10rem;
+  z-index: 3;
+
+  background-color: #FFFFFF1A;
+  border: 2px solid #FFFFFF1A;
+  border-radius: 15px;
 }
+
+.submission-page .submission-passes,
+.submission-page .submission-level {
+  display: flex;
+  flex-direction: column;
+  color: var(--color-white);
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.submission-wrapper {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  min-width: 18vw;
+
+  background-color: #FFFFFF1A;
+  border: 2px solid #FFFFFF1A;
+  border-radius: 15px;
+}
+
+.submission-page .submission-passes {
+  margin-left: 20%;
+  margin-right: 5%;
+}
+
+.submission-page .submission-level {
+  margin-left: 5%;
+  margin-right: 20%;
+}
+
 .submission-page .submission-svg {
   display: block;
   max-width: 15rem;
   height: 15rem;
-  margin: 1rem auto;
-}
-.submission-page h2 {
-  margin: 5rem auto 1rem auto;
-  height: 7rem;
-  max-width: 25rem;
-  font-size: 2rem;
-}
-.submission-page .submit-button {
-  margin: 1rem 0;
-  max-width: 30rem;
-  padding: 0.5rem 2rem;
-  background-color: var(--color-purple-1);
-  border: none;
-  border-radius: 3px;
-  color: var(--color-white);
-  font-size: 1rem;
-  cursor: pointer;
-  margin: 0;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.1s linear;
-}
-.submission-page button:hover {
-  background-color: var(--color-purple-1);
-  color: var(--color-white);
-}
-.submission-page button:active {
-  background-color: purple;
-}
-.submission-page .link {
-  margin: 1rem 0;
-  font-size: 0.8rem;
-  display: block;
-  font-weight: bold;
-}
-.submission-page .middle-img {
-  position: absolute;
-  width: 9rem;
-  height: 9rem;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 3;
-}
-.submission-page .submission-level {
-  flex: 1;
-  text-align: center;
-  color: var(--color-white);
-  width: 100%;
-}
-.submission-page .submission-passes {
-  flex: 1;
-  text-align: center;
-  color: var(--color-white);
-  width: 100%;
 }
 
+.submission-page h2 {
+  max-width: 25rem;
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid #FFFFFF1A;
+}
+
+.submit-button-wrapper {
+  width: 100%;
+  margin-top: 2rem;
+  padding-top: 0.5rem;
+}
+
+.submission-page .submit-button {
+  background-color: #FFFFFF1A;
+  border: 2px solid #FFFFFF1A;
+  border-radius: 3px;
+  max-width: 30rem;
+  padding: 0.5rem 2rem;
+
+  color: var(--color-white);
+  font-size: 1.3rem;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.1s linear;
+}
+
+.submission-page button:hover {
+  background-color: #FFFFFF59;
+  border: 2px solid #FFFFFF59;
+}
+
+.submission-page button:active {
+  background-color: #FFFFFF79;
+  border: 2px solid #FFFFFF79;
+}
+
+/* styles for mobile/thin screens */
 @media (max-width: 670px) {
-  .submission-page {
+  .submission-page .submission-container {
     flex-direction: column;
+    padding-top: 0;
   }
+
+  .submission-page .submission-passes, .submission-page .submission-level {
+    min-height: 100%;
+    min-width: 100%;
+  }
+
+  .submission-page .submission-passes {
+    padding-left: 0;
+    margin: 20% 0 0 0;
+  }
+
+  .submission-page .submission-level {
+    padding-right: 0;
+    margin: 10% 0;
+  }
+
+  .submission-wrapper {
+    min-width: 75vw;
+  }
+
+  .submission-page .middle-img {
+    opacity: 0;
+    z-index: -1;
+  }
+
 }/*# sourceMappingURL=submissionpage.css.map */

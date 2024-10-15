@@ -21,6 +21,7 @@ const LevelPageRev = () => {
   const [error, setError] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(false);
   const location = useLocation();
+
   const {
     levelsData, setLevelsData,
     legacyDiff, setLegacyDiff,

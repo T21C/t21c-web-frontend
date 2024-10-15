@@ -13,7 +13,7 @@ const UserContextProvider = (props) => {
     
 
     return(
-        <UserContext.Provider value={{language, setLanguage }}>
+        <UserContext.Provider value={{ language, setLanguage }}>
             {props.children}
         </UserContext.Provider>
     )

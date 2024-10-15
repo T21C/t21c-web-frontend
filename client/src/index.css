@@ -49,13 +49,13 @@ body {
 }
 
 .wrapper-body {
-  padding: 0 3rem;
+  /*padding: 0 3rem;*/
   position: relative;
   z-index: 2;
 }
 
 .wrapper-top {
-  padding-top: 7rem;
+  /*padding-top: 7rem;*/
   position: relative;
 }
 
