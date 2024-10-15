@@ -431,7 +431,7 @@ const PassSubmissionPage = () => {
       <div className="info-input">
             <input
               type="text"
-              placeholder="Speed (ex: 1.2)"
+              placeholder="Speed (opt; ex: 1.2)"
               name="speed"
               value={form.speed}
               onChange={handleInputChange}
@@ -462,7 +462,7 @@ const PassSubmissionPage = () => {
       </div>
           </div>
 
-          <div className="accuracy">
+          <div className="accuracy" style={{backgroundColor: "#222", color: "#fff"}}>
             <div className="top">
               <div className="each-accuracy">
                 <p>E Perfect</p>
@@ -472,7 +472,9 @@ const PassSubmissionPage = () => {
                   name="ePerfect"
                   value={form.ePerfect}
                   onChange={handleInputChange}
-                  style={{ borderColor: isFormValidDisplay.ePerfect ? "" : "red" }}
+                  style={{ borderColor: isFormValidDisplay.ePerfect ? "" : "red",
+                    color: "#FCFF4D"
+                  }}
                 />
               </div>
 
@@ -484,7 +486,8 @@ const PassSubmissionPage = () => {
                   name="perfect"
                   value={form.perfect}
                   onChange={handleInputChange}
-                  style={{ borderColor: isFormValidDisplay.perfect ? "" : "red" }}
+                  style={{ borderColor: isFormValidDisplay.perfect ? "" : "red",
+                    color: "#5FFF4E" }}
                 />
               </div>
 
@@ -495,7 +498,8 @@ const PassSubmissionPage = () => {
                   placeholder="#"
                   value={form.lPerfect}
                   onChange={handleInputChange}
-                  style={{ borderColor: isFormValidDisplay.lPerfect ? "" : "red" }}
+                  style={{ borderColor: isFormValidDisplay.lPerfect ? "" : "red",
+                    color: "#FCFF4D" }}
                 />
               </div>
             </div>
@@ -509,7 +513,8 @@ const PassSubmissionPage = () => {
                   name="tooEarly"
                   value={form.tooEarly}
                   onChange={handleInputChange}
-                  style={{ borderColor: isFormValidDisplay.tooEarly ? "" : "red" }}
+                  style={{ borderColor: isFormValidDisplay.tooEarly ? "" : "red",
+                    color: "#FF0000"  }}
                 />
               </div>
 
@@ -521,7 +526,8 @@ const PassSubmissionPage = () => {
                   name="early"
                   value={form.early}
                   onChange={handleInputChange}
-                  style={{ borderColor: isFormValidDisplay.early ? "" : "red" }}
+                  style={{ borderColor: isFormValidDisplay.early ? "" : "red",
+                    color: "#FF6F4D"  }}
                 />
               </div>
 
@@ -533,7 +539,8 @@ const PassSubmissionPage = () => {
                   name="late"
                   value={form.late}
                   onChange={handleInputChange}
-                  style={{ borderColor: isFormValidDisplay.late ? "" : "red" }}
+                  style={{ borderColor: isFormValidDisplay.late ? "" : "red",
+                    color: "#FF6F4D"  }}
                 />
               </div>
             </div>

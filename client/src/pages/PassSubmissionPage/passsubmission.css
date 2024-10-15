@@ -159,6 +159,10 @@
 .pass-submission-page form .info .accuracy .top .each-accuracy:nth-child(3) {
   flex: 4;
 }
+.pass-submission-page form .info .accuracy .top .each-accuracy input {
+  font-size: 1rem;
+  font-weight: bold;
+}
 .pass-submission-page form .info .accuracy .bottom {
   justify-content: center;
 }
@@ -167,6 +171,10 @@
   align-items: center;
   text-wrap: nowrap;
   gap: 0.5rem;
+}
+.pass-submission-page form .info .accuracy .bottom .each-accuracy input {
+  font-size: 1rem;
+  font-weight: bold;
 }
 .pass-submission-page form .info .accuracy .bottom .each-accuracy:nth-child(1) {
   max-width: 7rem;
