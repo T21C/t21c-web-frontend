@@ -10,6 +10,7 @@ import { parseJudgements } from "../../components/Misc/ParseJudgements";
 import { useAuth } from "../../context/AuthContext";
 import {FetchIcon} from "../../components/FetchIcon/FetchIcon"
 import { validateFeelingRating, validateSpeed, validateNumber } from "../../components/Misc/Utility";
+import { useTranslation } from "react-i18next";
 
 const PassSubmissionPage = () => {
   const initialFormState = {
@@ -27,10 +28,11 @@ const PassSubmissionPage = () => {
     isNoHold: false,
   };
 
+  const { t } = useTranslation()
   const { user } = useAuth();
   const [form, setForm] = useState(initialFormState);
   const [accuracy, setAccuracy] = useState(null);
-  const [score, setScore] = useState("Level ID is required");
+  const [score, setScore] = useState("");
   const [judgements, setJudgements] = useState([]);
   const [isValidFeelingRating, setIsValidFeelingRating] = useState(true); // Track validation
   const [isValidSpeed, setIsValidSpeed] = useState(true)
@@ -197,15 +199,15 @@ const PassSubmissionPage = () => {
 
     // Check if levelId is present and all judgements are valid
     if (!form.levelId) {
-        setScore("Level ID is required");
+        setScore(t("passSubmission.score.needId"));
     } else if (!newJudgements.every(Number.isInteger)) {
-        setScore("Not all judgements are filled");
+        setScore(t("passSubmission.score.needJudg"));
     } else if (!Object.values(passData).every(value => value !== null)) {
-        setScore("Not enough pass info");
+        setScore(t("passSubmission.score.needInfo"));
     } else if (passData && chartData) {
         setScore(getScoreV2(passData, chartData).toFixed(2));
     } else {
-        setScore("Insufficient data to calculate score");
+        setScore(t("passSubmission.score.noInfo"));
     }
 };
 
@@ -216,13 +218,13 @@ const PassSubmissionPage = () => {
     setSuccess(false);
     if(!user){
       console.log("no user");
-      setError("You must be logged in");
+      setError(t("passSubmission.alert.login"));
 
       return 
     }
     if (!Object.values(isFormValid).every(Boolean)) {
       setSubmitAttempt(true)
-      setError("Incomplete form");
+      setError(t("passSubmission.alert.form"));
       console.log("incomplete form, returning")
       return
     };
@@ -278,9 +280,9 @@ const PassSubmissionPage = () => {
           error? "#b22":
           "#888"
         )}}>
-          {success? (<p>Form submitted successfully!</p>) :
-          error? (<p>Error: {truncateString(error, 28)}</p>):
-          (<p>Submitting...</p>)}
+          {success? (<p>{t("passSubmission.alert.success")}</p>) :
+          error? (<p>{t("passSubmission.alert.error")}{truncateString(error, 28)}</p>):
+          (<p>{t("passSubmission.alert.loading")}</p>)}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div><form
   className={`form-container ${videoDetail ? 'shadow' : ''}`}
@@ -304,18 +306,18 @@ const PassSubmissionPage = () => {
       ></iframe>
     ) : (
       <div className="thumbnail-text">
-        <h2>Video not found</h2>
+        <h2>{t("passSubmission.thumbnailInfo")}</h2>
       </div>
     )}
   </div>
 
         <div className="info">
-          <h1>Submit a Pass</h1>
+          <h1>{t("passSubmission.title")}</h1>
 
           <div className="id-input">
             <input
               type="text"
-              placeholder="Level Id"
+              placeholder={t("passSubmission.submInfo.levelId")}
               name="levelId"
               value={form.levelId}
               onChange={handleInputChange}  
@@ -328,8 +330,8 @@ const PassSubmissionPage = () => {
                 (<div className="chart-info"><h2 className="chart-info-sub">{truncateString(level["song"], 30)}</h2>
                  <div className="chart-info-sub"><span>{truncateString(level["artist"], 15)}</span><span>{truncateString(level["creator"], 20)}</span></div></div>)
                 : 
-                (<div className="chart-info"><h2 className="chart-info-sub" style={{color: "#aaa"}}>Song name</h2>
-                 <div className="chart-info-sub"><span style={{color: "#aaa"}}>Artist</span><span style={{color: "#aaa"}}>Charter</span></div></div>)
+                (<div className="chart-info"><h2 className="chart-info-sub" style={{color: "#aaa"}}>{t("passSubmission.levelInfo.song")}</h2>
+                 <div className="chart-info-sub"><span style={{color: "#aaa"}}>{t("passSubmission.levelInfo.artist")}</span><span style={{color: "#aaa"}}>{t("passSubmission.levelInfo.charter")}</span></div></div>)
                  } 
 
               <div className="verified">
@@ -370,12 +372,12 @@ const PassSubmissionPage = () => {
               >
                 
         {!form.levelId
-          ? 'Input Level ID'
+          ? t("passSubmission.levelFetching.input")
           : levelLoading
-          ? 'Fetching'
+          ? t("passSubmission.levelFetching.fetching")
           : level
-          ? 'Go to level'
-          : 'Level not found'}
+          ? t("passSubmission.levelFetching.goto")
+          : t("passSubmission.levelFetching.notfound")}
               </a>
             </div>
           </div>
@@ -383,7 +385,7 @@ const PassSubmissionPage = () => {
           <div className="youtube-input">
                 <input
                   type="text"
-                  placeholder="Video Link"
+                  placeholder={t("passSubmission.videoInfo.vidLink")}
                   name="videoLink"
                   value={form.videoLink}
                   onChange={handleInputChange}
@@ -392,30 +394,30 @@ const PassSubmissionPage = () => {
                 {videoDetail? 
                 (<div className="youtube-info">
                   <div className="yt-info">
-                    <h4>YT Title</h4>
+                    <h4>{t("passSubmission.videoInfo.title")}</h4>
                     <p style={{maxWidth:"%"}}>{videoDetail.title}</p>
                   </div>
 
                   <div className="yt-info">
-                    <h4>Channel</h4>
+                    <h4>{t("passSubmission.videoInfo.channel")}</h4>
                     <p>{videoDetail.channelName}</p>
                   </div>
 
                   <div className="yt-info">
-                    <h4>Timestamp</h4>
+                    <h4>{t("passSubmission.videoInfo.timestamp")}</h4>
                     <p>{videoDetail.timestamp}</p>
                   </div>
                 </div>)
                 :(
                   <div className="yt-info">
-                    <p style={{color: "#aaa"}}>No link provided</p>
+                    <p style={{color: "#aaa"}}>{t("passSubmission.videoInfo.nolink")}</p>
                     <br />
                     </div>)}
         </div>
           <div className="info-input">
             <input
               type="text"
-              placeholder="Alt Leaderboard Name"
+              placeholder={t("passSubmission.submInfo.altname")}
               name="leaderboardName"
               value={form.leaderboardName}
               onChange={handleInputChange}
@@ -431,10 +433,10 @@ const PassSubmissionPage = () => {
               <span style={{
                   margin: '0 15px 0 10px',
                   position: 'relative',
-                }}>Used alternate holds</span>
+                }}>{t("passSubmission.submInfo.nohold")}</span>
               <span className="tooltip" style={{
                  bottom: "110%",
-                  right: "10%"}}>Tick if you have used hold option other than "Normal hold" (0.9x score)</span>
+                  right: "10%"}}>{t("passSubmission.holdTooltip")}</span>
 
             </div>
           </div>
@@ -443,7 +445,7 @@ const PassSubmissionPage = () => {
       <div className="info-input">
             <input
               type="text"
-              placeholder="Speed (opt; ex: 1.2)"
+              placeholder={t("passSubmission.submInfo.speed")}
               name="speed"
               value={form.speed}
               onChange={handleInputChange}
@@ -453,7 +455,7 @@ const PassSubmissionPage = () => {
       <div style={{ display: 'flex', justifyContent: "center", gap: "10px"}}>
         <input
           type="text"
-          placeholder="Feeling rating (ex. G12)"
+          placeholder={t("passSubmission.submInfo.feelDiff")}
           name="feelingRating"
           value={form.feelingRating}
           onChange={handleInputChange}
@@ -470,7 +472,7 @@ const PassSubmissionPage = () => {
                 style={{
                   visibility: `${!isValidFeelingRating? '' : 'hidden'}`,
                  bottom: "115%",
-                  right: "-15%"}}>Unknown difficulty, will submit but please make sure it's readable by the managers. Correct diff ex.: G13; P7~P13; 21.1+; 19~20.0+</span>
+                  right: "-15%"}}>{t("passSubmission.tooltip")}</span>
         </div>
       </div>
           </div>
@@ -478,7 +480,7 @@ const PassSubmissionPage = () => {
           <div className="accuracy" style={{backgroundColor: "#222", color: "#fff"}}>
             <div className="top">
               <div className="each-accuracy">
-                <p>E Perfect</p>
+                <p>{t("passSubmission.judgements.ePerfect")}</p>
                 <input
                   type="text"
                   placeholder="#"
@@ -492,7 +494,7 @@ const PassSubmissionPage = () => {
               </div>
 
               <div className="each-accuracy">
-                <p>Perfect</p>
+                <p>{t("passSubmission.judgements.perfect")}</p>
                 <input
                   type="text"
                   placeholder="#"
@@ -505,7 +507,7 @@ const PassSubmissionPage = () => {
               </div>
 
               <div className="each-accuracy">
-                <p>L Perfect</p>
+                <p>{t("passSubmission.judgements.lPerfect")}</p>
                 <input type="text"
                   name="lPerfect"
                   placeholder="#"
@@ -519,7 +521,7 @@ const PassSubmissionPage = () => {
 
             <div className="bottom">
               <div className="each-accuracy">
-                <p>Too Early</p>
+                <p>{t("passSubmission.judgements.tooearly")}</p>
                 <input
                   type="text"
                   placeholder="#"
@@ -532,7 +534,7 @@ const PassSubmissionPage = () => {
               </div>
 
               <div className="each-accuracy">
-                <p>Early</p>
+                <p>{t("passSubmission.judgements.early")}</p>
                 <input
                   type="text"
                   placeholder="#"
@@ -545,7 +547,7 @@ const PassSubmissionPage = () => {
               </div>
 
               <div className="each-accuracy">
-                <p>Late</p>
+                <p>{t("passSubmission.judgements.late")}</p>
                 <input
                   type="text"
                   placeholder="#"
@@ -559,12 +561,12 @@ const PassSubmissionPage = () => {
             </div>
 
             <div className="acc-score">
-              <p>Accuracy: {accuracy !== null ? accuracy : 'N/A'}</p>
-              <p>Score: {score}</p>
+              <p>{t("passSubmission.scoreCalc")}{accuracy !== null ? accuracy : 'N/A'}</p>
+              <p>{t("passSubmission.acc")}{score}</p>
             </div>
           </div>
 
-          <button disabled={submission} className="submit" onClick={handleSubmit}>Submit {submission && (<>(please wait)</>)}</button>
+          <button disabled={submission} className="submit" onClick={handleSubmit}>{t("passSubmission.submit")}{submission && (<>{t("passSubmission.submitWait")}</>)}</button>
         </div>
       </form>
     </div>

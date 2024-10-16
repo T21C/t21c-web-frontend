@@ -119,6 +119,14 @@ nav .wrapper .menu:hover {
   cursor: pointer;
 }
 
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.2rem
+}
+
 .nav-menu-outer {
   display: none;
   transition: all 0.2s linear;

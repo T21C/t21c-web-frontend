@@ -357,7 +357,7 @@ select:-moz-focusring {
 .thumbnail-container {
   gap: 20px; /* Space between thumbnail and form */
   z-index: 10;
-  width: 75%; /* Fixed width */  
+  aspect-ratio: 16/9;
   height: 350px; /* Fixed height */
   place-content: center;
   text-shadow: 0px 0px 4px black;
@@ -371,7 +371,6 @@ select:-moz-focusring {
 
 @media (max-width: 900px) {
   .thumbnail-container {
-    width: 100%; /* Fixed width */
     height: 300px; /* Fixed height */
   }
 }
@@ -397,7 +396,6 @@ select:-moz-focusring {
   padding: 1.1rem;
   background-color: white;
   z-index: 15;
-  min-width: 45rem;
 }
 
 
