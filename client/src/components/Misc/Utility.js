@@ -18,7 +18,7 @@ export function validateFeelingRating (value) {
 
 
 export function validateSpeed (value) {
-    const regex = new RegExp("^$|^1(\.[0-9])?$")
+    const regex = new RegExp("^$|^1(\.[0-9]+)?$")
     return regex.test(value)
 }
 
