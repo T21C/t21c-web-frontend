@@ -2,7 +2,8 @@ import express from 'express';
 import fetch from 'node-fetch';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import sql from 'mssql'; // Import mssql package
+import fs from 'fs';
+import { exec } from 'child_process'; 
 
 // Load environment variables from .env
 dotenv.config();
@@ -10,21 +11,53 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3001; // Fallback to 3000 if PORT is not defined
 const host = process.env.REDIRECT_URI || "http://localhost"
+const jsonFilePath = './data/output.json'; // Path to the JSON file
 
-const sqlConfig = {
-  server: process.env.DB_SERVER, // Your SQL Server instance
-  database: process.env.DB_NAME, // Your database name
-  options: {
-    encrypt: true, // Use true if you're on Azure
-    trustServerCertificate: true, // Change to false in production
-    // Use integrated security
-    trustedConnection: true, // This enables Windows Authentication
-  },
+
+const readJsonFile = () => {
+  try {
+    const data = fs.readFileSync(jsonFilePath, 'utf-8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error reading JSON file:', error);
+    return {}; // Return empty object on error
+  }
 };
 
 app.use(cors()); // Enable CORS for all routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
+
+const updateData = (useSaved=false) => {
+  console.log("starting execution");
+  exec(`executable.exe all_players --output=playerlist.json ${useSaved? "--useSaved": ""}`, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error executing script: ${error.message}`);
+      return;
+    }
+    if (stderr) {
+      console.error(`Script stderr: ${stderr}`);
+      return;
+    }
+    console.log(`Script output: ${stdout}`);
+  });
+  exec(`executable.exe all_clears --output=clearlist.json ${useSaved? "--useSaved": ""}`, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error executing script: ${error.message}`);
+      return;
+    }
+    if (stderr) {
+      console.error(`Script stderr: ${stderr}`);
+      return;
+    }
+    console.log(`Script output: ${stdout}`);
+  });
+};
+
+// Run the Python script every X milliseconds (e.g., every hour)
+const intervalMilliseconds = 120000; // Change this to your desired interval (e.g., 1 hour)
+setInterval(updateData, intervalMilliseconds);
+
 
 // Helper function to verify access token
 const verifyAccessToken = async (accessToken) => {
@@ -258,5 +291,6 @@ app.get('/api/bilibili', async (req, res) => {
 });
 
 app.listen(port, () => {
+  updateData(true)
   console.log(`Server running on http://localhost:${port}`);
 });
