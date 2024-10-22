@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const updateData = (useSaved=true) => {
   console.log("starting execution");
-  exec(`executable.exe all_players --output=playerlist.json ${useSaved? "--useSaved": ""}`, (error, stdout, stderr) => {
+  exec(`executable.exe all_players --output=playerlist.json --reverse ${useSaved? "--useSaved": ""}`, (error, stdout, stderr) => {
     if (error) {
       console.error(`Error executing script: ${error.message}`);
       return;
