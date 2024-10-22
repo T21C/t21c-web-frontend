@@ -2,7 +2,7 @@
 // eslint-disable-next-line no-unused-vars
 import "./leveldetailpage.css"
 import placeholder from "../../assets/placeholder/3.png";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useLocation } from 'react-router-dom';
 import { CompleteNav } from "../../components";
 import {
@@ -15,6 +15,7 @@ import {
 
 import { Tooltip } from "react-tooltip";
 import { useTranslation } from "react-i18next";
+import { use } from "i18next";
 
 const LevelDetailPage = () => {
   const {t} = useTranslation()
@@ -26,6 +27,7 @@ const LevelDetailPage = () => {
   const [initialPlayer, setInitialPlayer] = useState([])
   const [videoDetail, setVideoDetail] = useState(null)
   const [vidLink, setVidLink] = useState("")
+  const [comment, setComment] = useState("")
 
   const [highSpeed, setHighSpeed] = useState(null);
   const [highAcc, setHighAcc] = useState(null);
@@ -64,11 +66,13 @@ const LevelDetailPage = () => {
         const fetchedPlayers = res?.passes.player.results || [];
         const passCount = res?.passes.player.count || 0 ;
         const vLink = res?.level.vidLink || "" ;
+        const comment = res?.level.publicComments || "";
         console.log("link", vLink);
         
         setInitialPlayer(fetchedPlayers);
         setPassCount(passCount)
         setVidLink(vLink)
+        setComment(comment)
         if(passCount == 0){
           setInfoLoading(false)
         }
@@ -283,7 +287,6 @@ const LevelDetailPage = () => {
               </div>
             
             </div>
-
             <div className="team-info">
 
               {res.level.team && (
@@ -307,9 +310,10 @@ const LevelDetailPage = () => {
                 </div>
                 )}
 
+                
              </div> 
 
-              <div className="links">
+              <div className="links" style={{borderBottom: comment? "2px solid #fff": "transparent", paddingBottom: comment? "8px": "0"}}>
 
                 {res.level.dlLink && (
                   <a href={res.level.dlLink} target="_blank">
@@ -337,7 +341,10 @@ const LevelDetailPage = () => {
                   </a>
                 )}
               </div>
-
+              <br/>
+              {comment && (
+                <p style={{marginBottom: "5px"}}>Comment: <b>{comment? comment : ""}</b></p>
+                )}
           </div>
           
       </div>
@@ -365,6 +372,7 @@ const LevelDetailPage = () => {
                 {res.level.team ? res.level.team : res.level.creator}
                 &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;{res.level.artist}
               </p>
+              
             </div>
           </div>
 

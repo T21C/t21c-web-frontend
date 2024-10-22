@@ -39,22 +39,16 @@ const getScoreV2Mtp = (inputs) => {
     const getXaccMtp = (inp) => {
 
         const xacc = calcAcc(inp, true)
-        const xaccPercentage = xacc * 100;
-    
-        if (xaccPercentage < 95) {
-            return 1;
+        const xacc_percentage = xacc * 100
+
+        if (xacc_percentage < 95){
+            return 1
         }
-        else if (xaccPercentage < 99) {
-            return (xaccPercentage - 94) ** 1.6 / 12.1326 + 0.9176;
+        if (xacc_percentage < 100){
+            return (-0.027 / (xacc - 1.0054) + 0.513)
         }
-        else if (xaccPercentage < 99.8) {
-            return (xaccPercentage - 97) ** 1.5484 - 0.9249;
-        }
-        else if (xaccPercentage < 100) {
-            return (xaccPercentage - 99) * 5;
-        }
-        else if (xaccPercentage === 100) {
-            return 6;
+        if (xacc_percentage == 100){
+            return 10
         }
     }
     
@@ -64,7 +58,7 @@ const getSpeedMtp = (SPEED, isDesBus=false)=>{
         if (!SPEED || SPEED == 1)
             return 1
         else if (SPEED > 1){
-            return 2 - SPEED}
+            return Math.max(2 - SPEED, 0)}
     }
 
     if (!SPEED || SPEED == 1){
@@ -72,20 +66,12 @@ const getSpeedMtp = (SPEED, isDesBus=false)=>{
     if (SPEED < 1){
         return 0}
     if (SPEED < 1.1){
-        return 25 * (SPEED - 1.1) ** 2 + 0.75}
-    if (SPEED < 1.2){
-        return 0.75}
-    if (SPEED < 1.25){
-        return 50 * (SPEED - 1.2) ** 2 + 0.75}
-    if (SPEED < 1.3){
-        return -50 * (SPEED - 1.3) ** 2 + 1}
+        return -3.5 * SPEED + 4.5}
     if (SPEED < 1.5){
-        return 1}
-    if (SPEED < 1.75){
-        return 2 * (SPEED - 1.5) ** 2 + 1}
+        return 0.65}
     if (SPEED < 2){
-        return -2 * (SPEED - 2) ** 2 + 1.25}
-    return 0
+        return (0.7 * SPEED) - 0.4}
+    return 1
 }
 
 const getScore = (passData, chartData) => {

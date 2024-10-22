@@ -191,8 +191,8 @@ app.post('/api/form-submit', async (req, res) => {
   
 
   const reqFull = { ...req.body, _submitterEmail: tokenInfo.email, _discordUsername: tokenInfo.username};
-
-  console.log("sending", new URLSearchParams(reqFull).toString());
+  const reqString = new URLSearchParams(reqFull).toString()
+  const filtered =  reqString.replace(/%0A/g, '');
   try {
     const formResponse = await fetch(appScriptUrl, {
       method: 'POST',
@@ -200,7 +200,7 @@ app.post('/api/form-submit', async (req, res) => {
         'Authorization': `Bearer ${accessToken}`, // Forward the access token to Google Apps Script
         'Content-Type': 'application/x-www-form-urlencoded',  // Custom header indicating form type
       },
-      body: new URLSearchParams(reqFull).toString(), // Send the form data
+      body: filtered, // Send the form data
     });
     
 
