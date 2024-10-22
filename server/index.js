@@ -28,7 +28,7 @@ app.use(cors()); // Enable CORS for all routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
 
-const updateData = (useSaved=false) => {
+const updateData = (useSaved=true) => {
   console.log("starting execution");
   exec(`executable.exe all_players --output=playerlist.json ${useSaved? "--useSaved": ""}`, (error, stdout, stderr) => {
     if (error) {
@@ -291,6 +291,6 @@ app.get('/api/bilibili', async (req, res) => {
 });
 
 app.listen(port, () => {
-  updateData(true)
+  updateData(false)
   console.log(`Server running on http://localhost:${port}`);
 });
