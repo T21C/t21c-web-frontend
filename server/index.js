@@ -28,11 +28,11 @@ app.use(cors()); // Enable CORS for all routes
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
 
-const updateData = (useSaved=true) => {
+const updateData = () => {
   console.log("starting execution");
-  exec(`executable.exe all_players --output=playerlist.json --reverse ${useSaved? "--useSaved": ""}`, (error, stdout, stderr) => {
+  exec(`executable.exe all_players --output=playerlist.json --reverse`, (error, stdout, stderr) => {
     if (error) {
-      console.error(`Error executing script: ${error.message}`);
+      console.error(`Error executing for all_players: ${error.message}`);
       return;
     }
     if (stderr) {
@@ -40,22 +40,23 @@ const updateData = (useSaved=true) => {
       return;
     }
     console.log(`Script output: ${stdout}`);
-  });
-  exec(`executable.exe all_clears --output=clearlist.json ${useSaved? "--useSaved": ""}`, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error executing script: ${error.message}`);
-      return;
-    }
-    if (stderr) {
-      console.error(`Script stderr: ${stderr}`);
-      return;
-    }
-    console.log(`Script output: ${stdout}`);
+    console.log("starting all_clears");
+    exec(`executable.exe all_clears --output=clearlist.json --useSaved`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error executing script for all_clears: ${error.message}`);
+        return;
+      }
+      if (stderr) {
+        console.error(`Script stderr: ${stderr}`);
+        return;
+      }
+      console.log(`Script output: ${stdout}`);
+      });
   });
 };
 
 // Run the Python script every X milliseconds (e.g., every hour)
-const intervalMilliseconds = 120000; // Change this to your desired interval (e.g., 1 hour)
+const intervalMilliseconds = 600000; // Change this to your desired interval (e.g., 1 hour)
 setInterval(updateData, intervalMilliseconds);
 
 
@@ -291,6 +292,6 @@ app.get('/api/bilibili', async (req, res) => {
 });
 
 app.listen(port, () => {
-  updateData(false)
+  updateData()
   console.log(`Server running on http://localhost:${port}`);
 });
