@@ -10,13 +10,13 @@ dotenv.config();
 
 const app = express();
 const port = process.env.PORT || 3001; // Fallback to 3000 if PORT is not defined
-const host = process.env.REDIRECT_URI || "http://localhost"
-const jsonFilePath = './data/output.json'; // Path to the JSON file
+const playerlistJson = 'playerlist.json'; // Path to the JSON file
+const clearlistJson = "clearlist.json"
+const EXCLUDE_CLEARLIST = true
 
-
-const readJsonFile = () => {
+const readJsonFile = (path) => {
   try {
-    const data = fs.readFileSync(jsonFilePath, 'utf-8');
+    const data = fs.readFileSync(path, 'utf-8');
     return JSON.parse(data);
   } catch (error) {
     console.error('Error reading JSON file:', error);
@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 
 const updateData = () => {
   console.log("starting execution");
-  exec(`executable.exe all_players --output=playerlist.json --reverse`, (error, stdout, stderr) => {
+  exec(`executable.exe all_players --output=${playerlistJson} --reverse`, (error, stdout, stderr) => {
     if (error) {
       console.error(`Error executing for all_players: ${error.message}`);
       return;
@@ -40,8 +40,9 @@ const updateData = () => {
       return;
     }
     console.log(`Script output: ${stdout}`);
+    if (!EXCLUDE_CLEARLIST){
     console.log("starting all_clears");
-    exec(`executable.exe all_clears --output=clearlist.json --useSaved`, (error, stdout, stderr) => {
+    exec(`executable.exe all_clears --output=${clearlistJson} --useSaved`, (error, stdout, stderr) => {
       if (error) {
         console.error(`Error executing script for all_clears: ${error.message}`);
         return;
@@ -52,6 +53,7 @@ const updateData = () => {
       }
       console.log(`Script output: ${stdout}`);
       });
+    }
   });
 };
 
@@ -86,6 +88,59 @@ const verifyAccessToken = async (accessToken) => {
 // Example ban list (this could be fetched from an external API)
 const emailBanList = ['bannedUser@example.com', 'anotherBannedUser@example.com'];
 const idBanList = ['15982378912598', '78912538976123']
+const validSortOptions = [
+  "rankedScore",
+  "generalScore",
+  "universalPasses",
+  "avgXacc",
+  "WFPasses",
+  "totalPasses",
+  "topDiff",
+  "top12kDiff",
+  "player"
+];
+
+app.get('/leaderboard', async (req, res) => {
+  const { sortBy = 'rankedScore', order = 'desc', includeAllScores = 'false' } = req.query;
+
+  if (!validSortOptions.includes(sortBy)) {
+    return res.status(400).json({ error: `Invalid sortBy option. Valid options are: ${validSortOptions.join(', ')}` });
+  }
+  // Read JSON data
+  const leaderboardData = readJsonFile(playerlistJson);
+
+  if (!Array.isArray(leaderboardData)) {
+    return res.status(500).json({ error: 'Invalid leaderboard data' });
+  }
+
+  // Sorting logic
+  const sortedData = leaderboardData.sort((a, b) => {
+    const valueA = a[sortBy];
+    const valueB = b[sortBy];
+
+    // Handle cases where fields might be missing or invalid
+    if (valueA === undefined || valueB === undefined) {
+      return 0;
+    }
+
+    if (order === 'asc') {
+      return valueA > valueB ? 1 : -1;
+    } else {
+      return valueA < valueB ? 1 : -1;
+    }
+  });
+
+  const responseData = sortedData.map(player => {
+    if (includeAllScores === 'false' && player.allScores) {
+      const { allScores, ...rest } = player; // Remove the allScores field
+      return rest;
+    }
+    return player;
+  });
+
+  // Send the sorted data as response
+  res.json(responseData);
+});
 
 
 // CURRENTLY NOT IN USE
