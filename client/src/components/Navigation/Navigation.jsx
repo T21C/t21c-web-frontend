@@ -70,6 +70,15 @@ const Navigation = ({ children }) => {
                 >
                   <li>{t("navigationComponent.submission")}</li>
                 </NavLink>
+                
+                <NavLink
+                  className={({ isActive }) =>
+                    "nav-link " + (isActive ? "active-link" : "")
+                  }
+                  to="/leaderboard"
+                >
+                  <li>{t("navigationComponent.leaderboard")}</li>
+                </NavLink>
               </ul>
             </div>
           </div>

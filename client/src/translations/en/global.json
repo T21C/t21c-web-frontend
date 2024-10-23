@@ -193,7 +193,8 @@
   
     "navigationComponent": {
       "levels": "Levels",
-      "submission": "Submissions"
+      "submission": "Submissions",
+      "leaderboard": "Leaderboard"
     },
   
     "footerComponent": {

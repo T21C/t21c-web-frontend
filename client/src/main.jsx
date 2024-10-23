@@ -13,6 +13,7 @@ import { I18nextProvider } from "react-i18next";
 import { UserContextProvider } from './context/UserContext.jsx';
 import { GoogleOAuthProvider } from "@react-oauth/google"
 import { AuthProvider } from './context/AuthContext.jsx';
+import { PlayerContextProvider } from './context/PlayerContext.jsx';
 
 i18next.init({
   interpolation: { escapeValue: false },
@@ -44,9 +45,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
    <LevelContextProvider>
     <I18nextProvider i18n={i18next}>
       <UserContextProvider>
-        <AuthProvider>
-          <App />
-        </AuthProvider>
+        <PlayerContextProvider>
+          <AuthProvider>
+            <App />
+          </AuthProvider>
+        </PlayerContextProvider>
       </UserContextProvider>
     </I18nextProvider>
    </LevelContextProvider>
