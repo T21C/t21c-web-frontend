@@ -132,13 +132,20 @@ app.get('/leaderboard', async (req, res) => {
 
   const responseData = sortedData.map(player => {
     if (includeAllScores === 'false' && player.allScores) {
-      const { allScores, ...rest } = player; // Remove the allScores field
-      return rest;
-    }
+      const { allScores, ...rest } = player;
+      const latestClears = allScores ? allScores.slice(0, 20) : null;
+
+      const withScores = {
+        ...rest,
+        latestClears: latestClears
+      };
+
+      return withScores;
+      }
     return player;
   });
 
-  // Send the sorted data as response
+  // Send the sorted data as respon11se
   res.json(responseData);
 });
 

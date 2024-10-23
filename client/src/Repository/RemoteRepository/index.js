@@ -441,13 +441,16 @@ async function getBilibiliVideoDetails(url) {
     const unix = data.pubdate; // Start with a Unix timestamp
     const date = new Date(unix * 1000); // Convert timestamp to milliseconds
     const imageUrl = `${import.meta.env.VITE_API_URL}/api/image?url=${encodeURIComponent(data.pic)}`;
+    const pfpUrl = `${import.meta.env.VITE_API_URL}/api/image?url=${encodeURIComponent(data.owner.face)}`;
 
+    //console.log("pfp:", pfpUrl);
     const details = {
       title: data.title,
       channelName: data.owner.name,
       timestamp: date.toISOString(),
       image: imageUrl,
-      embed: getBilibiliEmbedUrl(data)
+      embed: getBilibiliEmbedUrl(data),
+      pfp: pfpUrl
     };
 
     //console.log("returning", details);
@@ -475,12 +478,23 @@ async function getYouTubeVideoDetails(url) {
 
   const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY; 
   const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=snippet,contentDetails`;
+  var channelApiUrl = `https://www.googleapis.com/youtube/v3/channels`;
 
 
    try {
     const response = await fetch(apiUrl);
     const data = await response.json();
+
+    const channelId = data.items[0].snippet.channelId;
+    channelApiUrl = `${channelApiUrl}?${new URLSearchParams({
+      id: channelId,
+      key: apiKey,
+      part: "snippet"
+    }).toString()}`;
+    const channelResponse = await fetch(channelApiUrl);
+    const channelData = await channelResponse.json();
     //console.log(data)
+    //console.log(channelData.items[0].snippet.thumbnails.default.url)
 
     if (data.items.length === 0) {
       return null;
@@ -491,7 +505,8 @@ async function getYouTubeVideoDetails(url) {
       channelName: data.items[0].snippet.channelTitle,
       timestamp: data.items[0].snippet.publishedAt,
       image: getYouTubeThumbnailUrl(url),
-      embed: getYouTubeEmbedUrl(url)
+      embed: getYouTubeEmbedUrl(url),
+      pfp: channelData.items[0].snippet.thumbnails.default.url
     };
 
     return details;

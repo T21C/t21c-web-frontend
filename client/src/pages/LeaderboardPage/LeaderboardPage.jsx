@@ -74,7 +74,7 @@ const options = [
   { value: "21.49", label: "U20" },
 ];
 
-const limit = 30;
+const limit = 10;
 
 const LeaderboardPage = () => {
   const { t } = useTranslation();
@@ -699,6 +699,7 @@ const LeaderboardPage = () => {
               universalPasses={l.universalPasses}
               WFPasses={l.WFPasses}
               topDiff={l.topDiff}
+              latestClears={l.latestClears}
             />
           ))}
         </InfiniteScroll>
