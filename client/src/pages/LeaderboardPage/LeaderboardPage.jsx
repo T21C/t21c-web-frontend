@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import "./leaderboardpage.css";
 import { useContext, useEffect, useState } from "react";
-import { CompleteNav, LevelCardRev } from "../../components";
+import { CompleteNav, PlayerCard } from "../../components";
 import { Tooltip } from "react-tooltip";
 import Select from "react-select";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -82,6 +82,7 @@ const LeaderboardPage = () => {
   const [error, setError] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(false);
   const location = useLocation();
+  const [displayedPlayers, setDisplayedPlayers] = useState([])
   const {
     playerData,
     setPlayerData,
@@ -109,132 +110,37 @@ const LeaderboardPage = () => {
     setHideEpic            // Add this
   } = useContext(PlayerContext);
   
-
+    //fetches the entire thing at once
   useEffect(() => {
-    let cancel;
-
-    const fetchLevels = async () => {
-      
+    const fetchPlayers = async () => {
       setLoading(true);
       try {
-
-        // Construct the params object conditionally
-      const params = {
-        limit: limit,
-        query, 
-        sort, 
-        offset: pageNumber * limit,
-      };
-
-      // Add minDiff only if selectedLowFilterDiff is defined
-      if (selectedLowFilterDiff) {
-        params.minDiff = selectedLowFilterDiff.value;
-      }
-
-      // Add maxDiff only if selectedHighFilterDiff is defined
-      if (selectedHighFilterDiff) {
-        params.maxDiff = selectedHighFilterDiff.value;
-      } 
-        const response = await axios.get(
-          `${import.meta.env.VITE_LIST_LEVEL}`,
-          {
-            params: params,
-            cancelToken: new axios.CancelToken((c) => (cancel = c)),
-          }
-        );
-        const newLevels = await Promise.all(
-          response.data.results.map(async (l) => {
-            //console.log(l)
-            
-            const additionalDataResponse = await axios.get(
-              `${import.meta.env.VITE_INDIVIDUAL_PASSES}${l.id}`
-            );
-            return {
-              id: l.id,
-              team: l.team,
-              diff: l.diff,
-              newDiff: l.newDiff,
-              pdnDiff: l.pdnDiff,
-              pguDiff: l.pguDiff,
-              creator: l.creator,
-              song: l.song,
-              artist: l.artist,
-              dlLink: l.dlLink,
-              wsLink: l.workshopLink,
-              clears: additionalDataResponse.data.count,
-            };
-          })
-        );
-        const existingIds = new Set(levelsData.map((level) => level.id));
-
-        const uniqueLevels = newLevels.filter(
-          (level) => !existingIds.has(level.id)
-        );
-
-        setLevelsData((prev) => [...prev, ...uniqueLevels]);
-        setHasMore(response.data.count > levelsData.length + newLevels.length);
+        const response = await axios.get(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_FULL_LEADERBOARD}`);
+        
+        // Store all the data
+        console.log(response.data);
+        
+        setPlayerData(response.data);
+        
+        // Initially, you might want to display just the first page
+        setDisplayedPlayers(response.data.slice(0, limit));
       } catch (error) {
-        if (!axios.isCancel(error)) setError(true);
+        setError(true);
+        console.error('Error fetching leaderboard data:', error);
       } finally {
         setLoading(false);
       }
     };
+  
+    fetchPlayers();
+  }, []);
+  
 
-    const fetchLevelById = async () => {
-      setLoading(true);
-      try {
-        const response = await axios.get(
-          `${import.meta.env.VITE_INDIVIDUAL_LEVEL}${query.slice(1)}`,
-          {
-            cancelToken: new axios.CancelToken((c) => (cancel = c)),
-          }
-        );
-        //console.log(response)
-        const clears = await axios.get(
-          `${import.meta.env.VITE_INDIVIDUAL_PASSES}${response.data.id}`
-        );
-
-        const fullData = {
-          id: response.data.id,
-          team: response.data.team,
-          diff: response.data.diff,
-          newDiff: response.data.newDiff,
-          pdnDiff: response.data.pdnDiff,
-          pguDiff: response.data.pguDiff,
-          creator: response.data.creator,
-          song: response.data.song,
-          artist: response.data.artist,
-          dlLink: response.data.dlLink,
-          wsLink: response.data.workshopLink,
-          clears: clears.data.count,
-        };
-        // console.log(fullData);
-
-        setLevelsData([fullData]);
-        setHasMore(false);
-      } catch (error) {
-        if (!axios.isCancel(error)) setError(true);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (query[0] == "#") {
-      fetchLevelById();
-    } else {
-      fetchLevels();
-    }
-    return () => cancel && cancel();
-  }, [query, sort, pageNumber, forceUpdate, selectedLowFilterDiff, selectedHighFilterDiff]);
-
-  function toggleLegacyDiff() {
-    setLegacyDiff(!legacyDiff);
-  }
 
   function handleQueryChange(e) {
     setQuery(e.target.value);
     setPageNumber(0);
-    setLevelsData([]);
+    setPlayerData([]);
   }
   function handleFilterOpen() {
     setFilterOpen(!filterOpen);
@@ -247,7 +153,7 @@ const LeaderboardPage = () => {
   function handleSort(value) {
     setSort(value);
     setPageNumber(0);
-    setLevelsData([]);
+    setPlayerData([]);
     setLoading(true); //both of this is no
     setForceUpdate((f) => !f);
   }
@@ -256,32 +162,32 @@ const LeaderboardPage = () => {
     setPageNumber(0);
     setSort("RECENT_DESC");
     setQuery("");
-    setLevelsData([]);
+    setPlayerData([]);
     setLoading(true);
     setForceUpdate((f) => !f);
   }
 
   function handleLowFilter(value){
     setPageNumber(0);
-    setLevelsData([]);
+    setPlayerData([]);
     setSelectedLowFilterDiff(value)
     setForceUpdate((f) => !f);
   }
 
   function handleHighFilter(value){
     setPageNumber(0);
-    setLevelsData([]);
+    setPlayerData([]);
     setSelectedHighFilterDiff(value)
     setForceUpdate((f) => !f);
   }
 
   return (
-    <div className="level-page-rev">
+    <div className="leaderboard-page">
       <CompleteNav />
 
       <div className="background-level"></div>
 
-      <div className="level-body">
+      <div className="leaderboard-body">
         <div className="input-option">
           <svg
             className="svg-fill"
@@ -293,7 +199,6 @@ const LeaderboardPage = () => {
             strokeLinecap="round"
             strokeLinejoin="round"
             style={{
-              backgroundColor: legacyDiff ? "rgba(255, 255, 255, 0.7)" : "",
               width: "3rem",
               paddingLeft: ".1rem",
               paddingRight: ".3rem",
@@ -311,9 +216,6 @@ const LeaderboardPage = () => {
             onChange={handleQueryChange}
           />
 
-          <Tooltip id="legacy" place="bottom" noArrow>
-            {t("levelPage.toolTip.legacy")}
-          </Tooltip>
           <Tooltip id="filter" place="bottom" noArrow>
             {t("levelPage.toolTip.filter")}
           </Tooltip>
@@ -403,7 +305,7 @@ const LeaderboardPage = () => {
             <h2 className="setting-title">
               {t("levelPage.settingExp.headerFilter")}
             </h2>
-            {/* <p className="setting-description">{t('levelPage.settingExp.filterDiffs')}</p> */}
+            {/* <p className="setting-description">{t('leaderboardPage.settingExp.filterDiffs')}</p> */}
             <div className="diff-filters">
               <div className="filter-container">
                 <p className="setting-description">Lower diff</p>
@@ -769,35 +671,38 @@ const LeaderboardPage = () => {
         </div>
 
         <InfiniteScroll
-          style={{ paddingBottom: "5rem" }}
-          dataLength={levelsData.length}
-          next={() => setPageNumber((prevPageNumber) => prevPageNumber + 1)}
-          hasMore={hasMore}
-          loader={<h1>{t("levelPage.infScroll.loading")}</h1>}
-          endMessage={
-            <p style={{ textAlign: "center" }}>
-              <b>{t("levelPage.infScroll.end")}</b>
-            </p>
-          }
-        >
-          {levelsData.map((l, index) => (
-            <LevelCardRev
+            style={{ paddingBottom: "5rem" }}
+            dataLength={displayedPlayers.length} // number of players displayed so far
+            next={() => {
+              const newPagePlayers = playerData.slice(
+                displayedPlayers.length,
+                displayedPlayers.length + limit
+              );
+              setDisplayedPlayers((prev) => [...prev, ...newPagePlayers]);
+            }}
+            hasMore={displayedPlayers.length < playerData.length}
+            loader={<h1>{t("leaderboardPage.infScroll.loading")}</h1>}
+            endMessage={
+              <p style={{ textAlign: "center" }}>
+                <b>{t("leaderboardPage.infScroll.end")}</b>
+              </p>
+            }
+          >
+          {displayedPlayers.map((l, index) => (
+            <PlayerCard
               key={index}
-              creator={l.creator}
-              newDiff={l.newDiff}
-              pdnDiff={l.pdnDiff}
-              pguDiff={legacyDiff ? l.diff : l.pguDiff}
-              id={l.id}
-              artist={l.artist}
-              song={l.song}
-              clears={l.clears}
-              dl={l.dlLink}
-              ws={l.wsLink}
-              team={l.team}
-              legacy={legacyDiff}
+              player={l.player}
+              rankedScore={l.rankedScore}
+              generalScore={l.generalScore}
+              avgXacc={l.avgXacc}
+              totalPasses={l.totalPasses}
+              universalPasses={l.universalPasses}
+              WFPasses={l.WFPasses}
+              topDiff={l.topDiff}
             />
           ))}
         </InfiniteScroll>
+
       </div>
     </div>
   );

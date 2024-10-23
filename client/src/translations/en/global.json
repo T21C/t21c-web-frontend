@@ -190,6 +190,13 @@
       "creator": "Creator",
       "clears": "Clears"
     },
+
+    "playerCardComponent": {
+      "player": "Player",
+      "rankedScore": "Ranked score",
+      "generalScore": "General score",
+      "avgXacc": "Average X-acc"
+    },
   
     "navigationComponent": {
       "levels": "Levels",
