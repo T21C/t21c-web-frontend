@@ -26,3 +26,7 @@ dist-ssr
 #enc
 .env
 /players
+/player.json
+/passes.json
+/charts.json
+/clearlist.json

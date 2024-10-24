@@ -5,6 +5,7 @@ import cors from 'cors';
 import fs from 'fs';
 import path from 'path'
 import { exec } from 'child_process'; 
+import { getPfpUrl } from './pfpResolver.js';
 
 // Load environment variables from .env
 dotenv.config();
@@ -14,6 +15,9 @@ const port = process.env.PORT || 3001; // Fallback to 3000 if PORT is not define
 const playerlistJson = 'playerlist.json'; // Path to the JSON file
 const clearlistJson = "clearlist.json"
 const playerFolder = "players"
+var updateTimeList = {}
+var levelUpdateTime = 0
+
 const EXCLUDE_CLEARLIST = true
 
 const readJsonFile = (path) => {
@@ -42,6 +46,7 @@ const updateData = () => {
       return;
     }
     console.log(`Script output: ${stdout}`);
+    levelUpdateTime = Date.now()
     if (!EXCLUDE_CLEARLIST){
     console.log("starting all_clears");
     exec(`executable.exe all_clears --output=${clearlistJson} --useSaved`, (error, stdout, stderr) => {
@@ -58,6 +63,12 @@ const updateData = () => {
     }
   });
 };
+
+const updateTimestamp = ({name}) => {
+  console.log(name)
+  updateTimeList[name] = Date.now()
+
+}
 
 // Run the Python script every X milliseconds (e.g., every hour)
 const intervalMilliseconds = 600000; // Change this to your desired interval (e.g., 1 hour)
@@ -93,6 +104,8 @@ const idBanList = ['15982378912598', '78912538976123']
 const validSortOptions = [
   "rankedScore",
   "generalScore",
+  "ppScore",
+  "wfScore",
   "universalPasses",
   "avgXacc",
   "WFPasses",
@@ -162,7 +175,6 @@ app.get("/player", async (req, res) => {
         console.error('Error creating directory:', err);
         reject(err);
       } else {
-        console.log('Directory created or already exists.');
         resolve();
       }
     });
@@ -187,8 +199,14 @@ app.get("/player", async (req, res) => {
     });
   };
 
+
   try {
-    await getPlayer();
+
+    if (updateTimeList[player] < levelUpdateTime){
+      await getPlayer();
+    }
+
+
     const result = readJsonFile(plrPath); // Ensure this function is handled correctly
     console.log("result", result);
 
