@@ -2,7 +2,8 @@ import "./profilePage.css"
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
-import { getVideoDetails } from "../../Repository/RemoteRepository";
+import { getLevelImage, getVideoDetails, isoToEmoji } from "../../Repository/RemoteRepository";
+import { CompleteNav, ScoreCard } from "../../components";
 
 
 
@@ -11,7 +12,6 @@ const ProfilePage = () => {
     const [playerData, setPlayerData] = useState(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
-    const [pfpSrc, setPfpSrc] = useState("")
     useEffect(() => {
         const fetchPlayer = async () => {
           setLoading(true);
@@ -34,14 +34,110 @@ const ProfilePage = () => {
         fetchPlayer();
       }, []);
 
-    return (
-      <>
-      {playerData && (
-        <div className="profile-page">
-        {playerData.player}
-        <img src={playerData.pfp} alt="No picture" referrerPolicy="no-referrer"/>
-        </div>)}
-        </>)
+      return (
+        <div className="player-page">
+          <CompleteNav />
+    
+          <div className="background-level"></div>
+        {playerData && (
+          <div className="player-body">
+          <div className="player-content">
+            <div className="player-header">
+              <div className="player-info-container">
+                <div className="player-picture-container">
+                  <img
+                    src={playerData.pfp}
+                    alt="Profile"
+                    referrerPolicy="no-referrer"
+                    className="player-picture"
+                  />
+                </div>
+                <div className="player-info">
+                  <h1>{playerData.player}</h1>
+                  <img
+                    src={isoToEmoji(playerData.country)}
+                    alt={playerData.country}
+                    className="country-flag"
+                  />
+                </div>
+              </div>
+        
+              <div className="diff-container">
+                <div className="diff-info">
+                  <p>Top clear</p>
+                  <img
+                    src={getLevelImage(playerData.topDiff, playerData.topDiff, playerData.topDiff, playerData.topDiff)}
+                    alt={playerData.topDiff}
+                    className="diff-image"
+                  />
+                </div>
+        
+                <div className="diff-info">
+                  <p>Top 12k clear</p>
+                  <img
+                    src={getLevelImage(playerData.top12kDiff, playerData.top12kDiff, playerData.top12kDiff, playerData.top12kDiff)}
+                    alt={playerData.top12kDiff}
+                    className="diff-image"
+                  />
+                </div>
+              </div>
+            </div>
+        
+          
+            <div className="score-container">
+              <div className="score-item">
+                <p className="score-name">Ranked Score</p>
+                <p className="score-value">{playerData.rankedScore.toFixed(2)}</p>
+              </div>
+              <div className="score-item">
+                <p className="score-name">General Score</p>
+                <p className="score-value">{playerData.generalScore.toFixed(2)}</p>
+              </div>
+              <div className="score-item">
+                <p className="score-name">PP Score</p>
+                <p className="score-value">{playerData.ppScore.toFixed(2)}</p>
+              </div>
+              <div className="score-item">
+                <p className="score-name">12k Score</p>
+                <p className="score-value">{playerData["12kScore"].toFixed(2)}</p>
+              </div>
+            </div>
+        
+            <div className="passes-container">
+              <div className="score-item">
+                <p className="score-name">WF Passes</p>
+                <p className="score-value">{playerData.WFPasses}</p>
+              </div>
+              <div className="score-item">
+                <p className="score-name">Average X Accuracy</p>
+                <p className="score-value">{(playerData.avgXacc*100).toFixed(2)}%</p>
+              </div>
+              <div className="score-item">
+                <p className="score-name">Total Passes</p>
+                <p className="score-value">{playerData.totalPasses}</p>
+              </div>
+              <div className="score-item">
+                <p className="score-name">Universal Passes</p>
+                <p className="score-value">{playerData.universalPasses}</p>
+              </div>
+            </div>
+          </div>
+          {playerData.allScores && playerData.allScores.length > 0 && (
+              <div className="all-scores">
+                <h2>All Scores</h2>
+                <ul>
+                  {playerData.allScores.map((score, index) => (
+                    <li key={index}>
+                      <ScoreCard scoreData={score} />
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+        </div>
+      );
 }
 
 export default ProfilePage

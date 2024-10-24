@@ -1,0 +1,118 @@
+.score-card {
+  position: relative;
+  display: flex;
+  justify-content: left;
+  gap: 1rem;
+  min-height: 4rem;
+  padding: 0.5rem;
+  border-radius: 0px;
+  cursor: pointer;
+  align-items: center;
+  flex-wrap: wrap;
+  transition: all 0.1s ease-in-out;
+}
+.score-card:hover {
+  background-color: var(--color-white-t30);
+}
+.score-card .score-exp {
+  width: -moz-fit-content;
+  width: fit-content;
+  font-size: 0.9rem;
+  color: var(--color-white-t80);
+}
+.score-card .score-desc {
+  font-size: 1.2rem;
+}
+.score-card .score-id {
+  color: var(--color-white-t30);
+  font-size: 0.6rem;
+}
+.score-card .id {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+}
+.score-card .score-exp,
+.score-card .score-desc,
+.score-card .score-id {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.score-card .img-wrapper {
+  width: 3rem;
+}
+.score-card .img-wrapper img {
+  -o-object-fit: contain;
+     object-fit: contain;
+  height: 100%;
+  width: 100%;
+  border-radius: 100%;
+}
+.score-card .score-wrapper {
+  overflow: hidden;
+  min-width: 200px;
+}
+.score-card .acc-wrapper {
+  overflow: hidden;
+  min-width: 100px;
+}
+.score-card .name-wrapper {
+  flex: 2;
+  overflow: hidden;
+  min-width: 200px;
+  padding-right: 50px;
+}
+@media (max-width: 400px) {
+  .score-card .score-exp {
+    font-size: 0.8rem;
+  }
+  .score-card .score-desc {
+    font-size: 1rem;
+  }
+  .score-card .score-id {
+    font-size: 0.6rem;
+  }
+  .score-card .downloads-wrapper {
+    min-width: 70px;
+  }
+  .score-card .artist-wrapper {
+    overflow: hidden;
+    width: 120px;
+  }
+  .score-card .img-wrapper {
+    width: 2rem;
+  }
+  .score-card .downloads-wrapper a {
+    height: 2rem;
+    width: 2rem;
+  }
+}
+@media (max-width: 380px) {
+  .score-card .score-exp {
+    font-size: 0.6rem;
+  }
+  .score-card .score-desc {
+    font-size: 0.9rem;
+  }
+  .score-card .score-id {
+    font-size: 0.5rem;
+  }
+  .score-card .downloads-wrapper {
+    min-width: 60px;
+  }
+  .score-card .artist-wrapper {
+    overflow: hidden;
+    width: 110px;
+  }
+  .score-card .img-wrapper {
+    width: 1.5rem;
+  }
+  .score-card .creator-wrapper {
+    min-width: 100px;
+  }
+  .score-card .downloads-wrapper a {
+    height: 2rem;
+    width: 2rem;
+  }
+}/*# sourceMappingURL=scorecard.css.map */

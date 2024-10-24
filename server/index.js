@@ -30,7 +30,6 @@ const loadPfpList = () => {
   return {}; // Return an empty object if the file does not exist
 };
 
-// Function to save the pfpList to JSON file
 const savePfpList = (pfpList) => {
   fs.writeFileSync(pfpListJson, JSON.stringify(pfpList, null, 2), 'utf-8');
 };
@@ -45,7 +44,7 @@ const readJsonFile = (path) => {
   }
 };
 
-app.use(cors()); // Enable CORS for all routes
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
 
@@ -80,13 +79,10 @@ const updateData = () => {
   });
 };
 
-
 const fetchPfps = async () => {
-  console.log("fetching pfps:");
-  
   const playerlist = readJsonFile(playerlistJson)
   const pfpListTemp = loadPfpList()
-  console.log("playerlist length:" , Object.keys(playerlist).length);
+  //console.log("playerlist length:" , Object.keys(playerlist).length);
   
   //get first 30 for testing
   //for (const player of playerlist.slice(0, 50)) {
@@ -96,17 +92,14 @@ const fetchPfps = async () => {
     }
     console.log("new player:" , player.player);
     if (player.allScores){
-      console.log("has all scores:", player.allScores.length);
       for (const score of player.allScores.slice(0, 15)){
         if (score.vidLink) {
-          console.log("has link:" , score.vidLink);
           const videoDetails = await getPfpUrl(score.vidLink);
 
-          console.log("pfp link:" , videoDetails);
           // Check if the videoDetails contain the needed data
           if (videoDetails) {
               pfpListTemp[player.player] = videoDetails; // Store the name and link in the object
-              console.log(`Fetched pfp for ${player}: ${videoDetails}`);
+              //console.log(`Fetched pfp for ${player}: ${videoDetails}`);
               break; // Stop after finding the first valid video detail
           }
           else{
@@ -117,21 +110,16 @@ const fetchPfps = async () => {
     }
   }
   savePfpList(pfpListTemp)
-  console.log("new list:", pfpListTemp)
+  //console.log("new list:", pfpListTemp)
 }
 
 const updateTimestamp = (name) => {
-  console.log(name)
   updateTimeList[name] = Date.now()
-
 }
 
-// Run the Python script every X milliseconds (e.g., every hour)
-const intervalMilliseconds = 600000; // Change this to your desired interval (e.g., 1 hour)
+const intervalMilliseconds = 600000; // every 10 minutes
 setInterval(updateData, intervalMilliseconds);
 
-
-// Helper function to verify access token
 const verifyAccessToken = async (accessToken) => {
   try {
     const tokenInfoResponse = await fetch('https://discord.com/api/users/@me', {
@@ -139,7 +127,7 @@ const verifyAccessToken = async (accessToken) => {
         authorization: `Bearer ${accessToken}`,
       },
     });
-    console.log(tokenInfoResponse);
+    //console.log(tokenInfoResponse);
     
     if (!tokenInfoResponse.ok) {
       return false; // Invalid token
@@ -153,8 +141,6 @@ const verifyAccessToken = async (accessToken) => {
   }
 };
 
-
-// Example ban list (this could be fetched from an external API)
 const emailBanList = ['bannedUser@example.com', 'anotherBannedUser@example.com'];
 const idBanList = ['15982378912598', '78912538976123']
 const validSortOptions = [
@@ -225,7 +211,7 @@ app.get("/player", async (req, res) => {
   const { player = 'V0W4N'} = req.query;
   const plrPath = path.join(playerFolder, `${player}.json`)
   const pfpList = loadPfpList() 
-  console.log(plrPath)
+  //console.log(plrPath)
 
   await new Promise((resolve, reject) => {
     fs.mkdir(playerFolder, { recursive: true }, (err) => {
@@ -260,7 +246,7 @@ app.get("/player", async (req, res) => {
 
   try {
 
-    console.log(updateTimeList);
+    //console.log(updateTimeList);
     
     if (!updateTimeList[player] || updateTimeList[player] < levelUpdateTime){
       await getPlayer();
@@ -268,7 +254,7 @@ app.get("/player", async (req, res) => {
       console.log("updating", player, "with timestamp", updateTimeList[player])
     }
     else{
-      console.log("using recent save for player", player);
+      //console.log("using recent save for player", player);
       
     }
 
@@ -288,7 +274,7 @@ app.get("/player", async (req, res) => {
 app.post('/api/google-auth', async (req, res) => {
   const { code } = req.body; // Extract code object from request body
   
-  console.log("request body: ", req.body);
+  //console.log("request body: ", req.body);
   
   if (!code || !code.access_token) {
     return res.status(400).json({ error: 'No access token provided' });
@@ -315,7 +301,7 @@ app.post('/api/google-auth', async (req, res) => {
     }
 
     const userInfo = await userInfoResponse.json();
-    console.log("userInfo", userInfo);
+    //console.log("userInfo", userInfo);
     
     // Token is valid, return the token info and user profile
     res.json({
@@ -346,7 +332,7 @@ app.post('/api/discord-auth', async (req, res) => {
           redirect_uri: `${process.env.CLIENT_URL}/callback`, // Adjust this as needed
       }).toString();
 
-      console.log('Request Body:', requestBody); // Log request body
+      //console.log('Request Body:', requestBody); // Log request body
 
       const tokenResponseData = await fetch('https://discord.com/api/oauth2/token', {
           method: 'POST',
@@ -363,7 +349,7 @@ app.post('/api/discord-auth', async (req, res) => {
       }
 
       const oauthData = await tokenResponseData.json(); // Parse the token response
-      console.log('OAuth Data:', oauthData);
+      //console.log('OAuth Data:', oauthData);
 
       // Send back the token data to the client
       return res.status(200).json({
@@ -398,7 +384,7 @@ app.post('/api/check-token', async (req, res) => {
 app.post('/api/form-submit', async (req, res) => {
   const accessToken = req.headers.authorization.split(' ')[1]; // Extract access token from headers
   const formType = req.headers['x-form-type'];  // Extract X-Form-Type from client request
-  console.log("form type extracted", formType);
+  //console.log("form type extracted", formType);
   
   // Verify the access token first
   const tokenInfo = await verifyAccessToken(accessToken);

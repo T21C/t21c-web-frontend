@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 
 
 // eslint-disable-next-line react/prop-types
-const PlayerCard = ({key, player, rankedScore, generalScore, twvKScore, wfScore, avgXacc, totalPasses, universalPasses, WFPasses, topDiff, latestClears, pfp}) => {
+const PlayerCard = ({player, rankedScore, generalScore, twvKScore, wfScore, avgXacc, totalPasses, universalPasses, WFPasses, topDiff, latestClears, pfp}) => {
   //console.log("got data", key, player, rankedScore, generalScore, twvKScore, wfScore, avgXacc, totalPasses, universalPasses, WFPasses, topDiff, latestClears);
   
   const {t} = useTranslation()  

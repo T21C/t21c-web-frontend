@@ -198,6 +198,13 @@
       "avgXacc": "Average X-acc"
     },
   
+    "scoreCardComponent": {
+      "song": "Song",
+      "accuracy": "Accuracy",
+      "speed": "Speed",
+      "score": "Score"
+    },
+
     "navigationComponent": {
       "levels": "Levels",
       "submission": "Submissions",
