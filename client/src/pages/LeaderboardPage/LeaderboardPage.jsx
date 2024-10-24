@@ -694,6 +694,8 @@ const LeaderboardPage = () => {
               player={l.player}
               rankedScore={l.rankedScore}
               generalScore={l.generalScore}
+              twvKScore={l["12kScore"]} 
+              wfScore={l.wfScore}
               avgXacc={l.avgXacc}
               totalPasses={l.totalPasses}
               universalPasses={l.universalPasses}
