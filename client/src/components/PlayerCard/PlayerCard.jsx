@@ -7,13 +7,13 @@ import { useEffect, useState } from "react";
 
 // eslint-disable-next-line react/prop-types
 const PlayerCard = ({key, player, rankedScore, generalScore, twvKScore, wfScore, avgXacc, totalPasses, universalPasses, WFPasses, topDiff, latestClears}) => {
-  console.log("got data", key, player, rankedScore, generalScore, twvKScore, wfScore, avgXacc, totalPasses, universalPasses, WFPasses, topDiff, latestClears);
+  //console.log("got data", key, player, rankedScore, generalScore, twvKScore, wfScore, avgXacc, totalPasses, universalPasses, WFPasses, topDiff, latestClears);
   
   const [pfpSrc, setPfpSrc] = useState('');
   const {t} = useTranslation()  
   const navigate = useNavigate()
     const redirect = () => {
-      navigate(`#`);
+      navigate(`/profile/${player}`);
     };
 
     const onAnchorClick = (e) => {

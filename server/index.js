@@ -3,6 +3,7 @@ import fetch from 'node-fetch';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import fs from 'fs';
+import path from 'path'
 import { exec } from 'child_process'; 
 
 // Load environment variables from .env
@@ -12,6 +13,7 @@ const app = express();
 const port = process.env.PORT || 3001; // Fallback to 3000 if PORT is not defined
 const playerlistJson = 'playerlist.json'; // Path to the JSON file
 const clearlistJson = "clearlist.json"
+const playerFolder = "players"
 const EXCLUDE_CLEARLIST = true
 
 const readJsonFile = (path) => {
@@ -145,9 +147,57 @@ app.get('/leaderboard', async (req, res) => {
     return player;
   });
 
-  // Send the sorted data as respon11se
+  // Send the sorted data as response
   res.json(responseData);
 });
+
+app.get("/player", async (req, res) => {
+  const { player = 'V0W4N'} = req.query;
+  const plrPath = path.join(playerFolder, `${player}.json`)
+  console.log(plrPath)
+
+  await new Promise((resolve, reject) => {
+    fs.mkdir(playerFolder, { recursive: true }, (err) => {
+      if (err) {
+        console.error('Error creating directory:', err);
+        reject(err);
+      } else {
+        console.log('Directory created or already exists.');
+        resolve();
+      }
+    });
+  });
+
+  const getPlayer = () => {
+    return new Promise((resolve, reject) => {
+      exec(`executable.exe player "${player}" --output="${plrPath}" --showCharts --useSaved`, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Error executing for all_players: ${error.message}`);
+          reject(error);
+          return;
+        }
+        if (stderr) {
+          console.error(`Script stderr: ${stderr}`);
+          reject(new Error(stderr));
+          return;
+        }
+        console.log(`Script output: ${stdout}`);
+        resolve(stdout);
+      });
+    });
+  };
+
+  try {
+    await getPlayer();
+    const result = readJsonFile(plrPath); // Ensure this function is handled correctly
+    console.log("result", result);
+
+    res.json(result);
+  } catch (err) {
+    console.error('Error retrieving player data:', err);
+    res.status(500).json({ error: 'Error retrieving player data' });
+  }
+})
 
 
 // CURRENTLY NOT IN USE

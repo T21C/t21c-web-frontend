@@ -7,7 +7,7 @@ import Select from "react-select";
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
 import { PlayerContext } from "../../context/PlayerContext";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import bgImgDark from "../../assets/important/dark/theme-background.jpg";
 
@@ -140,7 +140,7 @@ const LeaderboardPage = () => {
   function handleQueryChange(e) {
     setQuery(e.target.value);
     setPageNumber(0);
-    setPlayerData([]);
+    setDisplayedPlayers([]);
   }
   function handleFilterOpen() {
     setFilterOpen(!filterOpen);
@@ -153,7 +153,7 @@ const LeaderboardPage = () => {
   function handleSort(value) {
     setSort(value);
     setPageNumber(0);
-    setPlayerData([]);
+    setDisplayedPlayers([]);
     setLoading(true); //both of this is no
     setForceUpdate((f) => !f);
   }
@@ -162,21 +162,21 @@ const LeaderboardPage = () => {
     setPageNumber(0);
     setSort("RECENT_DESC");
     setQuery("");
-    setPlayerData([]);
+    setDisplayedPlayers([]);
     setLoading(true);
     setForceUpdate((f) => !f);
   }
 
   function handleLowFilter(value){
     setPageNumber(0);
-    setPlayerData([]);
+    setDisplayedPlayers([]);
     setSelectedLowFilterDiff(value)
     setForceUpdate((f) => !f);
   }
 
   function handleHighFilter(value){
     setPageNumber(0);
-    setPlayerData([]);
+    setPlayersetDisplayedPlayersData([]);
     setSelectedHighFilterDiff(value)
     setForceUpdate((f) => !f);
   }
