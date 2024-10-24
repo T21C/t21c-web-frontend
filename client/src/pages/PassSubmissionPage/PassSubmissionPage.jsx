@@ -561,8 +561,8 @@ const PassSubmissionPage = () => {
             </div>
 
             <div className="acc-score">
-              <p>{t("passSubmission.scoreCalc")}{accuracy !== null ? accuracy : 'N/A'}</p>
-              <p>{t("passSubmission.acc")}{score}</p>
+              <p>{t("passSubmission.acc")}{accuracy !== null ? accuracy : 'N/A'}</p>
+              <p>{t("passSubmission.scoreCalc")}{score}</p>
             </div>
           </div>
 

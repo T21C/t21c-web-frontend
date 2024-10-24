@@ -702,6 +702,7 @@ const LeaderboardPage = () => {
               WFPasses={l.WFPasses}
               topDiff={l.topDiff}
               latestClears={l.latestClears}
+              pfp={l.pfp}
             />
           ))}
         </InfiniteScroll>

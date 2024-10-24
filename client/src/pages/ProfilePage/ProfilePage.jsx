@@ -34,39 +34,14 @@ const ProfilePage = () => {
         fetchPlayer();
       }, []);
 
-      useEffect(() => {
-        if (playerData == null){
-            return
-        }
-        const fetchVideoDetails = async () => {
-      
-          //const originalConsoleError = console.error;
-          //console.error = () => {};
-  
-          for (const link of playerData.allScores) {
-            if (link.vidLink) {
-              try {
-                const videoDetails = await getVideoDetails(link.vidLink);
-                // Check if the videoDetails contain the needed data
-                if (videoDetails && videoDetails.pfp) {
-                  setPfpSrc(videoDetails.pfp); // Set data and stop the loop
-                  break;
-                }
-              } catch (error) {
-                console.error(error)
-              }
-            }
-          }
-          //console.error = originalConsoleError;
-        };
-        
-        fetchVideoDetails();
-      }, [playerData]);  
     return (
-    <div className="profile-page">
-        {playerName}
-        <img src={pfpSrc} alt="No picture" referrerPolicy="no-referrer"/>
-    </div>)
+      <>
+      {playerData && (
+        <div className="profile-page">
+        {playerData.player}
+        <img src={playerData.pfp} alt="No picture" referrerPolicy="no-referrer"/>
+        </div>)}
+        </>)
 }
 
 export default ProfilePage

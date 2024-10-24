@@ -11,14 +11,29 @@ import { getPfpUrl } from './pfpResolver.js';
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3001; // Fallback to 3000 if PORT is not defined
+const port = process.env.PORT || 3001;
 const playerlistJson = 'playerlist.json'; // Path to the JSON file
 const clearlistJson = "clearlist.json"
+const pfpListJson = "pfpList.json"
 const playerFolder = "players"
 var updateTimeList = {}
 var levelUpdateTime = 0
 
 const EXCLUDE_CLEARLIST = true
+
+
+const loadPfpList = () => {
+  if (fs.existsSync(pfpListJson)) {
+    const data = fs.readFileSync(pfpListJson, 'utf-8');
+    return JSON.parse(data);
+  }
+  return {}; // Return an empty object if the file does not exist
+};
+
+// Function to save the pfpList to JSON file
+const savePfpList = (pfpList) => {
+  fs.writeFileSync(pfpListJson, JSON.stringify(pfpList, null, 2), 'utf-8');
+};
 
 const readJsonFile = (path) => {
   try {
@@ -45,8 +60,9 @@ const updateData = () => {
       console.error(`Script stderr: ${stderr}`);
       return;
     }
-    console.log(`Script output: ${stdout}`);
+    console.log(`Script output:\n${stdout}`);
     levelUpdateTime = Date.now()
+    fetchPfps()
     if (!EXCLUDE_CLEARLIST){
     console.log("starting all_clears");
     exec(`executable.exe all_clears --output=${clearlistJson} --useSaved`, (error, stdout, stderr) => {
@@ -64,7 +80,47 @@ const updateData = () => {
   });
 };
 
-const updateTimestamp = ({name}) => {
+
+const fetchPfps = async () => {
+  console.log("fetching pfps:");
+  
+  const playerlist = readJsonFile(playerlistJson)
+  const pfpListTemp = loadPfpList()
+  console.log("playerlist length:" , Object.keys(playerlist).length);
+  
+  //get first 30 for testing
+  //for (const player of playerlist.slice(0, 50)) {
+  for (const player of playerlist) {
+    if (Object.keys(pfpListTemp).includes(player.player)){
+      continue
+    }
+    console.log("new player:" , player.player);
+    if (player.allScores){
+      console.log("has all scores:", player.allScores.length);
+      for (const score of player.allScores.slice(0, 15)){
+        if (score.vidLink) {
+          console.log("has link:" , score.vidLink);
+          const videoDetails = await getPfpUrl(score.vidLink);
+
+          console.log("pfp link:" , videoDetails);
+          // Check if the videoDetails contain the needed data
+          if (videoDetails) {
+              pfpListTemp[player.player] = videoDetails; // Store the name and link in the object
+              console.log(`Fetched pfp for ${player}: ${videoDetails}`);
+              break; // Stop after finding the first valid video detail
+          }
+          else{
+              pfpListTemp[player.player] = null;
+          }
+        }
+      }
+    }
+  }
+  savePfpList(pfpListTemp)
+  console.log("new list:", pfpListTemp)
+}
+
+const updateTimestamp = (name) => {
   console.log(name)
   updateTimeList[name] = Date.now()
 
@@ -118,6 +174,7 @@ const validSortOptions = [
 app.get('/leaderboard', async (req, res) => {
   const { sortBy = 'rankedScore', order = 'desc', includeAllScores = 'false' } = req.query;
 
+  const pfpList = loadPfpList() 
   if (!validSortOptions.includes(sortBy)) {
     return res.status(400).json({ error: `Invalid sortBy option. Valid options are: ${validSortOptions.join(', ')}` });
   }
@@ -145,18 +202,18 @@ app.get('/leaderboard', async (req, res) => {
     }
   });
 
+
+
   const responseData = sortedData.map(player => {
+    player.pfp= pfpList[player.player]
+
     if (includeAllScores === 'false' && player.allScores) {
       const { allScores, ...rest } = player;
-      const latestClears = allScores ? allScores.slice(0, 20) : null;
 
-      const withScores = {
-        ...rest,
-        latestClears: latestClears
-      };
-
-      return withScores;
+      return rest;
       }
+    
+    
     return player;
   });
 
@@ -167,6 +224,7 @@ app.get('/leaderboard', async (req, res) => {
 app.get("/player", async (req, res) => {
   const { player = 'V0W4N'} = req.query;
   const plrPath = path.join(playerFolder, `${player}.json`)
+  const pfpList = loadPfpList() 
   console.log(plrPath)
 
   await new Promise((resolve, reject) => {
@@ -202,14 +260,22 @@ app.get("/player", async (req, res) => {
 
   try {
 
-    if (updateTimeList[player] < levelUpdateTime){
+    console.log(updateTimeList);
+    
+    if (!updateTimeList[player] || updateTimeList[player] < levelUpdateTime){
       await getPlayer();
+      updateTimestamp(player)
+      console.log("updating", player, "with timestamp", updateTimeList[player])
+    }
+    else{
+      console.log("using recent save for player", player);
+      
     }
 
 
     const result = readJsonFile(plrPath); // Ensure this function is handled correctly
-    console.log("result", result);
 
+    result.pfp= pfpList[result.player]
     res.json(result);
   } catch (err) {
     console.error('Error retrieving player data:', err);
@@ -423,5 +489,5 @@ app.get('/api/bilibili', async (req, res) => {
 
 app.listen(port, () => {
   updateData()
-  console.log(`Server running on http://localhost:${port}`);
+  console.log(`Server running on ${process.env.OWN_URL}`);
 });
