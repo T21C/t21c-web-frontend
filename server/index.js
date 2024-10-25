@@ -316,6 +316,12 @@ app.get("/player", async (req, res) => {
   }
 })
 
+app.get("/pfp", async (req, res) => {
+  const { player } = req.query;
+  const pfpList = loadPfpList() 
+  res.json(pfpList[player]);
+})
+
 
 // CURRENTLY NOT IN USE
 app.post('/api/google-auth', async (req, res) => {
