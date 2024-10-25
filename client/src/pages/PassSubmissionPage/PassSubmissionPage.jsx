@@ -73,13 +73,19 @@ const PassSubmissionPage = () => {
 
     validationResult["levelId"] = !(level === null || level === undefined);
     
+
+    
+    const frValid = validateFeelingRating(form["feelingRating"])
+    const speedValid = validateSpeed(form["speed"])
+    validationResult.speed = speedValid
+    validationResult["videoLink"] = videoDetail && true;
+
+
     for (const field in validationResult) {
       displayValidationRes[field] = submitAttempt ? validationResult[field] : true;
     }
     
-    const frValid = validateFeelingRating(form["feelingRating"])
-    const speedValid = validateSpeed(form["speed"])
-    validationResult["speed"] = speedValid
+    console.log(validationResult["videoLink"], videoDetail)
     setIsValidFeelingRating(frValid);
     setIsValidSpeed(speedValid); // Update validation state
     setIsFormValidDisplay(displayValidationRes); // Set the validity object
@@ -88,7 +94,7 @@ const PassSubmissionPage = () => {
 
   useEffect(() => {
     validateForm(); // Run validation on every form change
-  }, [form, level, submitAttempt]);
+  }, [form, level, submitAttempt, videoDetail]);
 
   useEffect(() => {
     if (level) {
@@ -449,7 +455,9 @@ const PassSubmissionPage = () => {
               name="speed"
               value={form.speed}
               onChange={handleInputChange}
-              style={{backgroundColor: isValidSpeed? "transparent" : "#faa"}}
+              style={{ 
+                borderColor: isFormValidDisplay.speed ? "" : "red",
+                backgroundColor: isValidSpeed? "transparent" : "#faa"}}
             />
 
       <div style={{ display: 'flex', justifyContent: "center", gap: "10px"}}>
@@ -459,7 +467,8 @@ const PassSubmissionPage = () => {
           name="feelingRating"
           value={form.feelingRating}
           onChange={handleInputChange}
-          style={{ borderColor: isFormValidDisplay.feelingRating ? "" : "red",
+          style={{ 
+            borderColor: isFormValidDisplay.feelingRating ? "" : "red",
             backgroundColor: !isValidFeelingRating ? "yellow" : ""
           }} 
         />

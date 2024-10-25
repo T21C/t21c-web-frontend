@@ -114,7 +114,6 @@ body {
 
 .form-container {
   place-items: center;
-  max-width: 55rem;
   overflow: hidden;
   display: flex;
   z-index: 10;
@@ -128,6 +127,7 @@ body {
 .form-container form {
   border-radius: 8px;
   margin-top: 2rem;
+  max-width: 47rem;
   background-color: var(--color-white);
   background-size: contain;
   background-position: center -80px;

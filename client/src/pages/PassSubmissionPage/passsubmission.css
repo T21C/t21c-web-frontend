@@ -46,7 +46,9 @@
   margin-bottom: 0.5rem;
   margin-top: 0.5rem;
 }
-
+.pass-submission-page form .info .youtube-input .yt-info {
+  min-width: 7rem
+}
 .pass-submission-page form .info .youtube-input .youtube-info {
   display: flex;
   gap:20px

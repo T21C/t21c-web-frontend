@@ -448,7 +448,7 @@ async function getBilibiliVideoDetails(url) {
     const details = {
       title: data.title,
       channelName: data.owner.name,
-      timestamp: date.toISOString(),
+      timestamp: date.toISOString().replace("T", " ").replace("Z", ""),
       image: imageUrl,
       embed: getBilibiliEmbedUrl(data),
       pfp: pfpUrl
@@ -504,7 +504,7 @@ async function getYouTubeVideoDetails(url) {
     const details = {
       title: data.items[0].snippet.title,
       channelName: data.items[0].snippet.channelTitle,
-      timestamp: data.items[0].snippet.publishedAt,
+      timestamp: data.items[0].snippet.publishedAt.replace("T", " ").replace("Z", ""),
       image: getYouTubeThumbnailUrl(url),
       embed: getYouTubeEmbedUrl(url),
       pfp: channelData.items[0].snippet.thumbnails.default.url
