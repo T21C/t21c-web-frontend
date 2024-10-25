@@ -22,7 +22,7 @@ const ScoreCard = ({scoreData}) => {
   const {t} = useTranslation()  
   const navigate = useNavigate()
     const redirect = () => {
-      navigate(`#`);
+      navigate(`/leveldetail?id=${scoreData.chartId}`);
     };
 
     const onAnchorClick = (e) => {

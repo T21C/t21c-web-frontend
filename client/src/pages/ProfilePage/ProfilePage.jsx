@@ -5,6 +5,28 @@ import { useParams } from "react-router-dom"
 import { getLevelImage, getVideoDetails, isoToEmoji } from "../../Repository/RemoteRepository";
 import { CompleteNav, ScoreCard } from "../../components";
 
+const parseRankColor = (rank) => {
+  var clr;
+  switch(rank) {
+    case 1:
+      clr = "#efff63";
+      break;
+    case 2:
+      clr = "#eeeeee";
+      break;
+    case 3:
+      clr = "#ff834a";
+      break;
+    default:
+      clr = "#777777";
+      break;
+  }
+  console.log("color", clr, rank);
+  
+  return clr
+}
+
+
 
 
 const ProfilePage = () => {
@@ -53,7 +75,14 @@ const ProfilePage = () => {
                   />
                 </div>
                 <div className="player-info">
-                  <h1>{playerData.player}</h1>
+                  <div className="player-name-rank">
+                    <h1>{playerData.player}</h1>
+                    <h2
+                      style={{
+                        color: parseRankColor(playerData.ranks.rankedScore), 
+                        backgroundColor: `${parseRankColor(playerData.ranks.rankedScore)}27`}}
+                    >#{playerData.ranks.rankedScore}</h2>
+                  </div>
                   <img
                     src={isoToEmoji(playerData.country)}
                     alt={playerData.country}

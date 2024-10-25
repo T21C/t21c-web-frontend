@@ -15,6 +15,7 @@ const port = process.env.PORT || 3001;
 const playerlistJson = 'playerlist.json'; // Path to the JSON file
 const clearlistJson = "clearlist.json"
 const pfpListJson = "pfpList.json"
+const rankListJson = "rankList.json"
 const playerFolder = "players"
 var updateTimeList = {}
 var levelUpdateTime = 0
@@ -44,9 +45,52 @@ const readJsonFile = (path) => {
   }
 };
 
+const writeJsonFile = (path, data) => {
+  fs.writeFileSync(path, JSON.stringify(data, null, 2), 'utf-8');
+}
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
+
+const updateRanks = () => {
+  console.log("updating ranks");
+  const players = readJsonFile(playerlistJson)
+   // Example list of player objects
+  // Parameters to sort by
+  const sortParameters = [
+    "rankedScore",
+    "generalScore",
+    "ppScore",
+    "wfScore",
+    "12kScore",
+    "avgXacc",
+    "totalPasses",
+    "universalPasses",
+    "WFPasses",
+  ];
+
+  // Initialize the rank dictionary
+  const rankPositions = {};
+
+  // Initialize each player in the rankPositions dictionary
+  players.forEach(player => {
+    rankPositions[player.player] = {};
+  });
+
+  // Populate the ranks for each parameter
+  sortParameters.forEach(param => {
+    // Sort the players based on the current parameter in descending order
+    const sortedPlayers = [...players].sort((a, b) => b[param] - a[param]);
+
+    // Assign rank positions for each player based on the sorted order
+    sortedPlayers.forEach((player, index) => {
+      const playerName = player.player;
+      rankPositions[playerName][param] = index + 1; // Store rank (1-based)
+    });
+  });
+  writeJsonFile(rankListJson, rankPositions)
+}
 
 const updateData = () => {
   console.log("starting execution");
@@ -61,6 +105,7 @@ const updateData = () => {
     }
     console.log(`Script output:\n${stdout}`);
     levelUpdateTime = Date.now()
+    updateRanks()
     fetchPfps()
     if (!EXCLUDE_CLEARLIST){
     console.log("starting all_clears");
@@ -211,6 +256,7 @@ app.get("/player", async (req, res) => {
   const { player = 'V0W4N'} = req.query;
   const plrPath = path.join(playerFolder, `${player}.json`)
   const pfpList = loadPfpList() 
+  const rankList = readJsonFile(rankListJson)
   //console.log(plrPath)
 
   await new Promise((resolve, reject) => {
@@ -262,6 +308,7 @@ app.get("/player", async (req, res) => {
     const result = readJsonFile(plrPath); // Ensure this function is handled correctly
 
     result.pfp= pfpList[result.player]
+    result.ranks = rankList[result.player]
     res.json(result);
   } catch (err) {
     console.error('Error retrieving player data:', err);

@@ -50,9 +50,22 @@
   margin-left: 20px;
 }
 
-.player-page .player-info h1 {
+.player-page .player-info .player-name-rank {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.player-page .player-info .player-name-rank h1 {
   margin: 0;
   font-size: 24px;
+}
+
+.player-page .player-info .player-name-rank h2 {
+  padding: 10px;
+  border-radius: 50%;
+  margin-left: 10px;
+  font-size: 20px;
 }
 
 .player-page .country-flag {
