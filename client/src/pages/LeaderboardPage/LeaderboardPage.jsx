@@ -98,16 +98,7 @@ const LeaderboardPage = () => {
     setSelectedHighFilterDiff,
     sort,
     setSort,
-    hasMore,
-    setHasMore,
-    pageNumber,
     setPageNumber,
-    hideUnranked,          // Add this
-    setHideUnranked,       // Add this
-    hideCensored,          // Add this
-    setHideCensored,       // Add this
-    hideEpic,              // Add this
-    setHideEpic            // Add this
   } = useContext(PlayerContext);
   
     //fetches the entire thing at once

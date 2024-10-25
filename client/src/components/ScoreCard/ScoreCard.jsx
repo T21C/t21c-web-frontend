@@ -56,7 +56,7 @@ const ScoreCard = ({scoreData}) => {
           <p className="score-exp">{t("scoreCardComponent.song")}</p>
           <p className='score-desc'>{scoreData.song}</p>
       </div>
-      <div className="name-wrapper">
+      <div className="score-wrapper">
           <p className="score-exp">{t("scoreCardComponent.score")}</p>
           <p className='score-desc'>{scoreData.score.toFixed(2)}</p>
       </div>
@@ -67,7 +67,7 @@ const ScoreCard = ({scoreData}) => {
 
       <div className="acc-wrapper">
           <p className="score-exp">{t("scoreCardComponent.speed")}</p>
-          <div className="score-desc">{formatSpeed(scoreData.speed)}x</div>
+          <div className="score-desc">{formatSpeed(scoreData.speed)}×</div>
       </div>
 
       

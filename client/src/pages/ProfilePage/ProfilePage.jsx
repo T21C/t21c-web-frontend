@@ -61,7 +61,7 @@ const ProfilePage = () => {
           <CompleteNav />
     
           <div className="background-level"></div>
-        {playerData ? (
+        {playerData != null ? (Object.keys(playerData).length > 0 ? (
           <div className="player-body">
           <div className="player-content">
             <div className="player-header">
@@ -165,6 +165,12 @@ const ProfilePage = () => {
             )}
           </div>
         )
+      
+        :
+
+        
+            <h1 className="player-notfound">No player found</h1>)
+        
         
         :
 

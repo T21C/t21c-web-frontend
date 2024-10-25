@@ -150,6 +150,7 @@ const pgnData = {
   "21.6": "q2+.png",
   "21.65": "q3.png",
   "21.7": "q3+.png",
+  "MA": "ma.png",
 }
 
 const newDataType = "miscDiff"

@@ -51,7 +51,7 @@
 }
 .score-card .score-wrapper {
   overflow: hidden;
-  min-width: 200px;
+  min-width: 150px;
 }
 .score-card .acc-wrapper {
   overflow: hidden;
@@ -60,7 +60,7 @@
 .score-card .name-wrapper {
   flex: 2;
   overflow: hidden;
-  min-width: 200px;
+  min-width: 100px;
   padding-right: 50px;
 }
 @media (max-width: 400px) {

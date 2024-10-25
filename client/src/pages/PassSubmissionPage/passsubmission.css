@@ -3,7 +3,6 @@
   width: 100vw;
   min-height: 100vh;
   position: relative;
-  display: flex;
   flex-direction: column;
   place-items: center;
   overflow-x: hidden;

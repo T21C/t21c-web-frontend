@@ -4,6 +4,17 @@
   min-height: 100vh;
 }
 
+.player-notfound {
+  color: var(--color-white);
+  position: absolute;
+  white-space: nowrap;
+  top: 50%;          /* Position from the top */
+  left: 50%;         /* Position from the left */
+  transform: translate(-50%, -50%); /* Center the element */
+  z-index: 2;
+}
+
+
 .player-page .player-body {
   position: relative;
   z-index: 2;
@@ -63,7 +74,7 @@
 
 .player-page .player-info .player-name-rank h2 {
   padding: 10px;
-  border-radius: 50%;
+  border-radius: 40px;
   margin-left: 10px;
   font-size: 20px;
 }
