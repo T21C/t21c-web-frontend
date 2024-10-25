@@ -266,67 +266,6 @@
 .level-detail .rank .rank-list::-webkit-scrollbar-thumb:hover {
   background: #333333;
 }
-.level-detail .rank .rank-list .list-detail {
-  position: relative;
-  display: flex;
-  justify-content: space-between;
-  background-color: var(--color-purple-2);
-  padding: 0.5rem;
-  margin-bottom: 1rem;
-  border-radius: 3px;
-  align-items: center;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-.level-detail .rank .rank-list .list-detail .name, .level-detail .rank .rank-list .list-detail .general, .level-detail .rank .rank-list .list-detail .acc {
-  flex: 1;
-  flex-basis: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-.level-detail .rank .rank-list .list-detail .name {
-  min-width: 10rem;
-  display: flex;
-  align-items: center;
-  gap: 0.1rem;
-}
-.level-detail .rank .rank-list .list-detail .name img {
-  width: 2rem;
-}
-.level-detail .rank .rank-list .list-detail .general, .level-detail .rank .rank-list .list-detail .acc {
-  text-align: right;
-  min-width: 3rem;
-}
-.level-detail .rank .rank-list .list-detail .judgements {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  flex: 1;
-  height: 100%;
-  background-color: var(--color-purple-1);
-  border: none;
-  border-radius: 3px;
-  color: var(--color-white);
-  cursor: pointer;
-  margin: 0;
-  text-align: center;
-  padding: 0.5rem;
-  flex-wrap: wrap;
-  min-width: 13rem;
-  width: 13rem;
-}
-.level-detail .rank .rank-list .list-detail .judgements span {
-  display: inline-block;
-  color: var(--color-white);
-  -webkit-user-select: none;
-     -moz-user-select: none;
-          user-select: none;
-  font-weight: bold;
-  font-size: 0.9rem;
-  padding: 0 0.1rem;
-}
-
 @media (max-width: 1150px) {
   .level-detail .body {
     flex-direction: column;
