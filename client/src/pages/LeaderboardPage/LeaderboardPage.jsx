@@ -180,6 +180,16 @@ const LeaderboardPage = () => {
     setSelectedHighFilterDiff(value)
     setForceUpdate((f) => !f);
   }
+  if (playerData == null)
+    return (
+      <div
+        style={{ height: "100vh", width: "100vw", backgroundColor: "#090909" }}
+      >
+        <CompleteNav />
+        <div className="background-level"></div>
+        <div className="loader loader-level-detail"></div>
+      </div>
+    );
 
   return (
     <div className="leaderboard-page">

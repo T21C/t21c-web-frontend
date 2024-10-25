@@ -4,7 +4,7 @@ import { createContext, useState } from "react"
 const PlayerContext = createContext()
 
 const PlayerContextProvider = (props) => {
-    const [playerData, setPlayerData] = useState([])
+    const [playerData, setPlayerData] = useState(null)
     const [filterOpen, setFilterOpen] = useState(false);
     const [sortOpen, setSortOpen] = useState(true);
     const [query, setQuery] = useState("");

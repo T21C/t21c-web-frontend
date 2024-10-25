@@ -61,7 +61,7 @@ const ProfilePage = () => {
           <CompleteNav />
     
           <div className="background-level"></div>
-        {playerData && (
+        {playerData ? (
           <div className="player-body">
           <div className="player-content">
             <div className="player-header">
@@ -164,7 +164,11 @@ const ProfilePage = () => {
               </div>
             )}
           </div>
-        )}
+        )
+        
+        :
+
+        <div className="loader"></div>}
         </div>
       );
 }

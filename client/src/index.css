@@ -102,25 +102,18 @@ body {
 
 .loader-level-detail {
   left: 50%;
-  top: 40%;
-  transform: translateX(-50%) translateY(-50%) scale(2, 2);
+  top: 45%;
 }
 
 .loader-level-detail-rank {
   left: 50%;
   top: 20%;
-  transform: translateX(-50%) translateY(-50%) scale(1, 1);
 }
-@keyframes fire {
-  to {
-    transform: rotate(360deg);
-  }
+
+.loader-level-detail-rank {
+  left: 50%;
+  top: 20%;
 }
-@keyframes ice {
-  to {
-    transform: rotate(-360deg);
-  }
-}/*# sourceMappingURL=index.css.map */
 
 .form-container {
   place-items: center;
