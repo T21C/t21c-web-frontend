@@ -6,7 +6,6 @@
   min-height: 4rem;
   padding: 0.5rem;
   border-radius: 0px;
-  cursor: pointer;
   align-items: center;
   flex-wrap: wrap;
   transition: all 0.1s ease-in-out;
@@ -49,20 +48,35 @@
   width: 100%;
   border-radius: 100%;
 }
-.score-card .score-wrapper {
-  overflow: hidden;
-  min-width: 150px;
-}
-.score-card .acc-wrapper {
-  overflow: hidden;
-  min-width: 100px;
-}
 .score-card .name-wrapper {
   flex: 2;
   overflow: hidden;
+  cursor: pointer;
   min-width: 100px;
-  padding-right: 50px;
+  padding-right: 10px;
 }
+.score-card .score-wrapper {
+  overflow: hidden;
+  min-width: 120px;
+}
+.score-card .acc-wrapper {
+  overflow: hidden;
+  min-width: 80px;
+}
+.score-card .speed-wrapper {
+  overflow: hidden;
+  min-width: 50px;
+}
+
+.score-card .name-wrapper:hover .score-desc {
+  text-decoration: underline;
+}
+
+.score-card .vid-logo-wrapper {
+  min-width: 50px; /* Smooth scaling */
+}
+
+
 @media (max-width: 400px) {
   .score-card .score-exp {
     font-size: 0.8rem;

@@ -34,6 +34,31 @@
       }
     },
   
+    "leaderboardPage": {
+      "inputPlaceholder": "Search player name",
+  
+      "toolTip": {
+        "filter": "Filter (NOT IMPLEMENTED)",
+        "sort": "Sort",
+        "reset": "Reset",
+        "recentAsc": "Rank Ascending",
+        "recentDesc": "Rank Descending",
+        "difficultyAsc": "Difficulty Ascending",
+        "difficultyDesc": "Difficulty Descending",
+        "random": "Random"
+      },
+      "settingExp": {
+        "headerSort": "Sort",
+        "headerFilter": "Filter",
+        "filterDiffs": "Diffs",
+        "sortRanked": "By rank"
+      },
+      "infScroll": {
+        "loading": "Hold tight...",
+        "end": "End of list reached"
+      }
+    },
+
     "detailPage": {
       "waiting" : "Waiting",
       "#1Clears": {

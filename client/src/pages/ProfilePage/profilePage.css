@@ -155,7 +155,7 @@
 }
 
 .player-page .all-scores li {
-  margin-bottom: 10px;
+  margin: 10px inherit ;
   padding: 10px;
   border-bottom: 1px solid #ccc;
 }

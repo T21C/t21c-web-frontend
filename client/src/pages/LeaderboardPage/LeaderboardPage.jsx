@@ -11,68 +11,6 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import bgImgDark from "../../assets/important/dark/theme-background.jpg";
 
-const options = [
-  { value: "1", label: "P1" },
-  { value: "3", label: "P2" },
-  { value: "4", label: "P3" },
-  { value: "5", label: "P4" },
-  { value: "6", label: "P5" },
-  { value: "7", label: "P6" },
-  { value: "8", label: "P7" },
-  { value: "9", label: "P8" },
-  { value: "10", label: "P9" },
-  { value: "11", label: "P10" },
-  { value: "12", label: "P11" },
-  { value: "13", label: "P12" },
-  { value: "14", label: "P13" },
-  { value: "15", label: "P14" },
-  { value: "16", label: "P15" },
-  { value: "17", label: "P16" },
-  { value: "18", label: "P17" },
-  { value: "18.5", label: "P18" },
-  { value: "19", label: "P19" },
-  { value: "19.5", label: "P20" },
-  { value: "20", label: "G1" },
-  { value: "20.05", label: "G2" },
-  { value: "20.1", label: "G3" },
-  { value: "20.15", label: "G4" },
-  { value: "20.2", label: "G5" },
-  { value: "20.25", label: "G6" },
-  { value: "20.3", label: "G7" },
-  { value: "20.35", label: "G8" },
-  { value: "20.4", label: "G9" },
-  { value: "20.45", label: "G10" },
-  { value: "20.5", label: "G11" },
-  { value: "20.55", label: "G12" },
-  { value: "20.6", label: "G13" },
-  { value: "20.65", label: "G14" },
-  { value: "20.7", label: "G15" },
-  { value: "20.75", label: "G16" },
-  { value: "20.8", label: "G17" },
-  { value: "20.85", label: "G18" },
-  { value: "20.9", label: "G19" },
-  { value: "20.95", label: "G20" },
-  { value: "21", label: "U1" },
-  { value: "21.04", label: "U2" },
-  { value: "21.05", label: "U3" },
-  { value: "21.09", label: "U4" },
-  { value: "21.1", label: "U5" },
-  { value: "21.14", label: "U6" },
-  { value: "21.15", label: "U7" },
-  { value: "21.19", label: "U8" },
-  { value: "21.2", label: "U9" },
-  { value: "21.24", label: "U10" },
-  { value: "21.25", label: "U11" },
-  { value: "21.29", label: "U12" },
-  { value: "21.3", label: "U13" },
-  { value: "21.34", label: "U14" },
-  { value: "21.35", label: "U15" },
-  { value: "21.39", label: "U16" },
-  { value: "21.4", label: "U17" },
-  { value: "21.44", label: "U18" },
-  { value: "21.45", label: "U19" },
-  { value: "21.49", label: "U20" },
-];
 
 const limit = 10;
 
@@ -83,6 +21,7 @@ const LeaderboardPage = () => {
   const [forceUpdate, setForceUpdate] = useState(false);
   const location = useLocation();
   const [displayedPlayers, setDisplayedPlayers] = useState([])
+  const [playerList, setPlayerList] = useState([])
   const {
     playerData,
     setPlayerData,
@@ -92,13 +31,8 @@ const LeaderboardPage = () => {
     setSortOpen,
     query,
     setQuery,
-    selectedLowFilterDiff,
-    setSelectedLowFilterDiff,
-    selectedHighFilterDiff,
-    setSelectedHighFilterDiff,
     sort,
     setSort,
-    setPageNumber,
   } = useContext(PlayerContext);
   
     //fetches the entire thing at once
@@ -108,13 +42,9 @@ const LeaderboardPage = () => {
       try {
         const response = await axios.get(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_FULL_LEADERBOARD}`);
         
-        // Store all the data
-        console.log(response.data);
-        
         setPlayerData(response.data);
-        
-        // Initially, you might want to display just the first page
-        setDisplayedPlayers(response.data.slice(0, limit));
+        setPlayerList(response.data);
+        setDisplayedPlayers(response.data.slice(0,10))
       } catch (error) {
         setError(true);
         console.error('Error fetching leaderboard data:', error);
@@ -126,12 +56,29 @@ const LeaderboardPage = () => {
     fetchPlayers();
   }, []);
   
-
+  useEffect(() => {
+    
+    if (playerData && playerData.length > 0) {
+      var filteredPlayers = playerData.filter(player =>
+        player.player.toLowerCase().includes(query.toLowerCase())
+      );
+      if(sort === "RANK_DESC"){
+        filteredPlayers = filteredPlayers.reverse()
+      }
+      setPlayerList(filteredPlayers);
+      setDisplayedPlayers(filteredPlayers.slice(0,10))
+    } else {
+      setPlayerList([]);
+    }
+    setLoading(false);
+    console.log(displayedPlayers);
+    
+  }, [playerData, query, sort]);
 
   function handleQueryChange(e) {
-    setQuery(e.target.value);
-    setPageNumber(0);
+    setLoading(true);
     setDisplayedPlayers([]);
+    setQuery(e.target.value);
   }
   function handleFilterOpen() {
     setFilterOpen(!filterOpen);
@@ -142,35 +89,19 @@ const LeaderboardPage = () => {
   }
 
   function handleSort(value) {
-    setSort(value);
-    setPageNumber(0);
-    setDisplayedPlayers([]);
     setLoading(true); //both of this is no
-    setForceUpdate((f) => !f);
+    setSort(value);
   }
 
   function resetAll() {
-    setPageNumber(0);
-    setSort("RECENT_DESC");
+    setSort("RANK_ASC");
     setQuery("");
     setDisplayedPlayers([]);
     setLoading(true);
+    setLoading(false);
     setForceUpdate((f) => !f);
   }
 
-  function handleLowFilter(value){
-    setPageNumber(0);
-    setDisplayedPlayers([]);
-    setSelectedLowFilterDiff(value)
-    setForceUpdate((f) => !f);
-  }
-
-  function handleHighFilter(value){
-    setPageNumber(0);
-    setPlayersetDisplayedPlayersData([]);
-    setSelectedHighFilterDiff(value)
-    setForceUpdate((f) => !f);
-  }
   if (playerData == null)
     return (
       <div
@@ -190,41 +121,23 @@ const LeaderboardPage = () => {
 
       <div className="leaderboard-body">
         <div className="input-option">
-          <svg
-            className="svg-fill"
-            data-tooltip-id="legacy"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{
-              width: "3rem",
-              paddingLeft: ".1rem",
-              paddingRight: ".3rem",
-            }}
-            onClick={() => toggleLegacyDiff()}
-          >
-            <polygon points="11 19 2 12 11 5 11 19"></polygon>
-            <polygon points="22 19 13 12 22 5 22 19"></polygon>
-          </svg>
+
 
           <input
             value={query}
             type="text"
-            placeholder={t("levelPage.inputPlaceholder")}
+            placeholder={t("leaderboardPage.inputPlaceholder")}
             onChange={handleQueryChange}
           />
 
           <Tooltip id="filter" place="bottom" noArrow>
-            {t("levelPage.toolTip.filter")}
+            {t("leaderboardPage.toolTip.filter")}
           </Tooltip>
           <Tooltip id="sort" place="bottom" noArrow>
-            {t("levelPage.toolTip.sort")}
+            {t("leaderboardPage.toolTip.sort")}
           </Tooltip>
           <Tooltip id="reset" place="bottom" noArrow>
-            {t("levelPage.toolTip.reset")}
+            {t("leaderboardPage.toolTip.reset")}
           </Tooltip>
 
           <svg
@@ -293,8 +206,8 @@ const LeaderboardPage = () => {
             />
           </svg>
         </div>
-
         <div className="input-setting">
+        {/*
           <div
             className="filter settings-class"
             style={{
@@ -304,9 +217,10 @@ const LeaderboardPage = () => {
           >
             <div className="spacer-setting"></div>
             <h2 className="setting-title">
-              {t("levelPage.settingExp.headerFilter")}
+              {t("leaderboardPage.settingExp.headerFilter")}
             </h2>
-            {/* <p className="setting-description">{t('leaderboardPage.settingExp.filterDiffs')}</p> */}
+            {/* <p className="setting-description">{t('leaderboardPage.settingExp.filterDiffs')}</p>
+            
             <div className="diff-filters">
               <div className="filter-container">
                 <p className="setting-description">Lower diff</p>
@@ -420,37 +334,9 @@ const LeaderboardPage = () => {
                   placeholder="Disabled"
                   isSearchable
                 />
-              </div>{/*
-              <div className="checkbox-filters">
-                
-        <label>
-          <input
-            type="checkbox"
-            checked={hideUnranked}
-            onChange={toggleHideUnranked}
-          />
-          Hide Unranked
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={hideCensored}
-            onChange={toggleHideCensored}
-          />
-          Hide Censored
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={hideEpic}
-            onChange={toggleHideEpic}
-          />
-          Hide Epic
-        </label>
-      </div>
-              */}
-            </div>
+             
           </div>
+            */}
 
           <div
             className="sort settings-class"
@@ -461,17 +347,17 @@ const LeaderboardPage = () => {
           >
             <div className="spacer-setting"></div>
             <h2 className="setting-title">
-              {t("levelPage.settingExp.headerSort")}
+              {t("leaderboardPage.settingExp.headerSort")}
             </h2>
 
             <div className="sort-option">
               <div className="recent">
-                <p>{t("levelPage.settingExp.sortRecent")}</p>
+                <p>{t("leaderboardPage.settingExp.sortRanked")}</p>
                 <Tooltip id="ra" place="top" noArrow>
-                  {t("levelPage.toolTip.recentAsc")}
+                  {t("leaderboardPage.toolTip.recentAsc")}
                 </Tooltip>
                 <Tooltip id="rd" place="top" noArrow>
-                  {t("levelPage.toolTip.recentDesc")}
+                  {t("leaderboardPage.toolTip.recentDesc")}
                 </Tooltip>
 
                 <div className="wrapper">
@@ -482,10 +368,10 @@ const LeaderboardPage = () => {
                     xmlns="http://www.w3.org/2000/svg"
                     style={{
                       backgroundColor:
-                        sort == "RECENT_ASC" ? "rgba(255, 255, 255, 0.7)" : "",
+                        sort == "RANK_ASC" ? "rgba(255, 255, 255, 0.7)" : "",
                     }}
-                    value="RECENT_ASC"
-                    onClick={() => handleSort("RECENT_ASC")}
+                    value="RANK_ASC"
+                    onClick={() => handleSort("RANK_ASC")}
                     data-tooltip-id="ra"
                   >
                     <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
@@ -519,10 +405,10 @@ const LeaderboardPage = () => {
                     xmlns="http://www.w3.org/2000/svg"
                     style={{
                       backgroundColor:
-                        sort == "RECENT_DESC" ? "rgba(255, 255, 255, 0.7)" : "",
+                        sort == "RANK_DESC" ? "rgba(255, 255, 255, 0.7)" : "",
                     }}
-                    onClick={() => handleSort("RECENT_DESC")}
-                    value="RECENT_DESC"
+                    onClick={() => handleSort("RANK_DESC")}
+                    value="RANK_DESC"
                     data-tooltip-id="rd"
                   >
                     <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
@@ -550,16 +436,16 @@ const LeaderboardPage = () => {
                   </svg>
                 </div>
               </div>
-
+                {/*
               <div className="diff">
-                <p>{t("levelPage.settingExp.filterDiffs")}</p>
+                <p>{t("leaderboardPage.settingExp.filterDiffs")}</p>
 
                 <div className="wrapper">
                   <Tooltip id="da" place="top" noArrow>
-                    {t("levelPage.toolTip.difficultyAsc")}
+                    {t("leaderboardPage.toolTip.difficultyAsc")}
                   </Tooltip>
                   <Tooltip id="dd" place="top" noArrow>
-                    {t("levelPage.toolTip.difficultyDesc")}
+                    {t("leaderboardPage.toolTip.difficultyDesc")}
                   </Tooltip>
 
                   <svg
@@ -576,12 +462,10 @@ const LeaderboardPage = () => {
                     data-tooltip-id="da"
                     x
                   >
-                    {/* arrow */}
                     <path
                       d="M10.22 15.97L9 17.19V5C9 4.59 8.66 4.25 8.25 4.25C7.84 4.25 7.5 4.59 7.5 5V17.19L6.28 15.97C5.99 15.68 5.51 15.68 5.22 15.97C4.93 16.26 4.93 16.74 5.22 17.03L7.72 19.53C7.79 19.6 7.87 19.65 7.96 19.69C8.05 19.73 8.15 19.75 8.25 19.75C8.35 19.75 8.45 19.73 8.54 19.69C8.63 19.65 8.71 19.6 8.78 19.53L11.28 17.03C11.57 16.74 11.57 16.26 11.28 15.97C10.99 15.68 10.51 15.68 10.22 15.97Z"
                       fill="#ffffff"
                     ></path>{" "}
-                    {/* 0 -> U */}
                     <path
                       d="M17 11.25C16.59 11.25 16.25 10.91 16.25 10.5V6.43997L15.86 6.64997C15.49 6.84997 15.04 6.71997 14.84 6.35997C14.64 5.99997 14.77 5.53997 15.13 5.33997L15.78 4.97997C16.14 4.71997 16.6 4.67997 17 4.85997C17.45 5.06997 17.74 5.52997 17.74 6.04997V10.5C17.74 10.91 17.4 11.25 16.99 11.25H17Z"
                       fill="#ffffff"
@@ -611,12 +495,10 @@ const LeaderboardPage = () => {
                     value="DIFF_DESC"
                     data-tooltip-id="dd"
                   >
-                    {/* arrow */}
                     <path
                       d="M10.22 15.97L9 17.19V5C9 4.59 8.66 4.25 8.25 4.25C7.84 4.25 7.5 4.59 7.5 5V17.19L6.28 15.97C5.99 15.68 5.51 15.68 5.22 15.97C4.93 16.26 4.93 16.74 5.22 17.03L7.72 19.53C7.79 19.6 7.87 19.65 7.96 19.69C8.05 19.73 8.15 19.75 8.25 19.75C8.35 19.75 8.45 19.73 8.54 19.69C8.63 19.65 8.71 19.6 8.78 19.53L11.28 17.03C11.57 16.74 11.57 16.26 11.28 15.97C10.99 15.68 10.51 15.68 10.22 15.97Z"
                       fill="#ffffff"
                     ></path>{" "}
-                    {/* U -> 0 */}
                     <path
                       d="M17.12 19.2499C16.9228 19.2473 16.7346 19.1671 16.5961 19.0268C16.4576 18.8864 16.38 18.6971 16.38 18.4999V14.4399L15.99 14.6599C15.815 14.7567 15.6086 14.78 15.4164 14.7247C15.2242 14.6694 15.0618 14.54 14.965 14.3649C14.8682 14.1899 14.8449 13.9836 14.9002 13.7913C14.9555 13.5991 15.085 13.4367 15.26 13.3399L15.92 12.9799C16.0943 12.8527 16.2999 12.7753 16.5148 12.7559C16.7297 12.7365 16.9458 12.7759 17.14 12.8699C17.3633 12.9752 17.5518 13.1423 17.683 13.3515C17.8141 13.5606 17.8825 13.8031 17.88 14.0499V18.4999C17.8774 18.6998 17.7962 18.8905 17.6539 19.0309C17.5117 19.1713 17.3199 19.25 17.12 19.2499Z"
                       fill="#ffffff"
@@ -634,9 +516,9 @@ const LeaderboardPage = () => {
               </div>
 
               <div className="random">
-                <p>{t("levelPage.settingExp.sortRandom")}</p>
+                <p>{t("leaderboardPage.settingExp.sortRandom")}</p>
                 <Tooltip id="rnd" place="top" noArrow>
-                  {t("levelPage.toolTip.random")}
+                  {t("leaderboardPage.toolTip.random")}
                 </Tooltip>
 
                 <div className="wrapper">
@@ -666,29 +548,30 @@ const LeaderboardPage = () => {
                     </g>
                   </svg>
                 </div>
-              </div>
+              </div>*/}
             </div>
           </div>
         </div>
 
-        <InfiniteScroll
-            style={{ paddingBottom: "5rem" }}
-            dataLength={displayedPlayers.length} // number of players displayed so far
+        {!loading ? (
+          <InfiniteScroll
+        style={{ paddingBottom: "5rem" }}
+        dataLength={displayedPlayers.length} // number of players displayed so far
             next={() => {
-              const newPagePlayers = playerData.slice(
+              const newPagePlayers = playerList.slice(
                 displayedPlayers.length,
                 displayedPlayers.length + limit
               );
               setDisplayedPlayers((prev) => [...prev, ...newPagePlayers]);
             }}
-            hasMore={displayedPlayers.length < playerData.length}
-            loader={<h1>{t("leaderboardPage.infScroll.loading")}</h1>}
-            endMessage={
-              <p style={{ textAlign: "center" }}>
-                <b>{t("leaderboardPage.infScroll.end")}</b>
-              </p>
-            }
-          >
+            hasMore={displayedPlayers.length < playerList.length}
+        loader={<h1>{t("leaderboardPage.infScroll.loading")}</h1>}
+        endMessage={
+          <p style={{ textAlign: "center" }}>
+            <b>{t("leaderboardPage.infScroll.end")}</b>
+          </p>
+        }
+      >
           {displayedPlayers.map((l, index) => (
             <PlayerCard
               key={index}
@@ -706,8 +589,11 @@ const LeaderboardPage = () => {
               pfp={l.pfp}
             />
           ))}
-        </InfiniteScroll>
-
+        </InfiniteScroll>)
+        :
+          
+        <div className="loader"></div>
+      }
       </div>
     </div>
   );

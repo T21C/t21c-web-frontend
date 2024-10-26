@@ -111,6 +111,14 @@ body {
   transform: translateX(-50%) translateY(-50%) scale(-0.5,0.5);
 }
 
+.vid-logo-wrapper .svg-fill:hover svg {
+  transition: transform 0.3s ease;
+  transform: scale(1.2); /* Adjust scale factor as needed */
+}
+.vid-logo-wrapper .svg-fill svg:not(:hover) {
+  transition: transform 0.3s ease;
+  transform: scale(1); /* Default scale */
+}
 
 .form-container {
   place-items: center;
