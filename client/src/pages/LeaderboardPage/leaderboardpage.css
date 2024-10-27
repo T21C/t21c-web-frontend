@@ -51,6 +51,7 @@
 }
 .leaderboard-page .leaderboard-body .sort .sort-option {
   display: flex;
+  align-items: center;
   gap: 2rem;
 }
 .leaderboard-page .leaderboard-body .sort .sort-option .recent p,

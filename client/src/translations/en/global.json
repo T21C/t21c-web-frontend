@@ -1,4 +1,18 @@
 {
+    "valueLabels":{
+      "rankedScore": "Ranked Score",
+      "generalScore": "General Score",
+      "ppScore": "PP Score",
+      "wfScore": "WF Score",
+      "12kScore": "12k Score",
+      "avgXacc": "Average Accuracy",
+      "totalPasses": "Total Passes",
+      "universalPasses": "Universal Passes",
+      "WFPasses": "WF Passes",
+      "topDiff": "Top Difficulty",
+      "top12kDiff": "Top 12k Difficulty"
+    },
+
     "homePage": {
       "featuredText": "Spotlights",
       "featuredLevel": [1, 2, 3],
@@ -41,8 +55,8 @@
         "filter": "Filter (NOT IMPLEMENTED)",
         "sort": "Sort",
         "reset": "Reset",
-        "recentAsc": "Rank Ascending",
-        "recentDesc": "Rank Descending",
+        "recentAsc": "Ascending",
+        "recentDesc": "Descending",
         "difficultyAsc": "Difficulty Ascending",
         "difficultyDesc": "Difficulty Descending",
         "random": "Random"
@@ -51,7 +65,8 @@
         "headerSort": "Sort",
         "headerFilter": "Filter",
         "filterDiffs": "Diffs",
-        "sortRanked": "By rank"
+        "sortOrder": "Sort order",
+        "sortBy": "Sort by"
       },
       "infScroll": {
         "loading": "Hold tight...",
@@ -89,7 +104,12 @@
         }
       }
     },
-  
+
+    "profilePage": {
+      "allScores": "All scores",
+      "notFound": "No player found"
+    },
+
     "submissionPage": {
       "header": {
         "headerPass": "I want to submit a pass",

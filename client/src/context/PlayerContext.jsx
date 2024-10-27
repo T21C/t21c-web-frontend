@@ -5,32 +5,20 @@ const PlayerContext = createContext()
 
 const PlayerContextProvider = (props) => {
     const [playerData, setPlayerData] = useState(null)
-    const [filterOpen, setFilterOpen] = useState(false);
     const [sortOpen, setSortOpen] = useState(true);
     const [query, setQuery] = useState("");
-    const [selectedLowFilterDiff, setSelectedLowFilterDiff] = useState(null);
-    const [selectedHighFilterDiff, setSelectedHighFilterDiff] = useState(null);
-    const [sort, setSort] = useState("RECENT_DESC");
+    const [sort, setSort] = useState("DESC");
     const [hasMore, setHasMore] = useState(true);
     const [pageNumber, setPageNumber] = useState(0);
-
-    // Add new state for toggles
-    const [hideUnranked, setHideUnranked] = useState(false);
-    const [hideCensored, setHideCensored] = useState(false);
-    const [hideEpic, setHideEpic] = useState(false);
+    const [sortBy, setSortBy] = useState("rankedScore")
 
     return (
         <PlayerContext.Provider 
             value={{ 
                 playerData, setPlayerData, 
-                filterOpen, setFilterOpen, 
                 sortOpen, setSortOpen, 
                 query, setQuery, 
-                selectedLowFilterDiff, setSelectedLowFilterDiff, 
-                selectedHighFilterDiff, setSelectedHighFilterDiff, 
-                hideUnranked, setHideUnranked, 
-                hideCensored, setHideCensored, 
-                hideEpic, setHideEpic,
+                sortBy, setSortBy,
                 sort, setSort, 
                 hasMore, setHasMore, 
                 pageNumber, setPageNumber 

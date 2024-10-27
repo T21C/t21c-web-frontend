@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
 import { getLevelImage, getVideoDetails, isoToEmoji } from "../../Repository/RemoteRepository";
 import { CompleteNav, ScoreCard } from "../../components";
+import { useTranslation } from "react-i18next";
+
 
 const parseRankColor = (rank) => {
   var clr;
@@ -34,6 +36,22 @@ const ProfilePage = () => {
     const [playerData, setPlayerData] = useState(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
+    const {t} = useTranslation()
+
+    var valueLabels = {
+      rankedScore: t("valueLabels.rankedScore"),
+      generalScore: t("valueLabels.generalScore"),
+      ppScore: t("valueLabels.ppScore"),
+      wfScore: t("valueLabels.wfScore"),
+      "12kScore": t("valueLabels.12kScore"),
+      avgXacc: t("valueLabels.avgXacc"),
+      totalPasses: t("valueLabels.totalPasses"),
+      universalPasses: t("valueLabels.universalPasses"),
+      WFPasses: t("valueLabels.WFPasses"),
+      topDiff: t("valueLabels.topDiff"),
+      top12kDiff: t("valueLabels.top12kDiff")
+    };
+
     useEffect(() => {
         const fetchPlayer = async () => {
           setLoading(true);
@@ -92,7 +110,7 @@ const ProfilePage = () => {
         
               <div className="diff-container">
                 <div className="diff-info">
-                  <p>Top clear</p>
+                  <p>{valueLabels.topDiff}</p>
                   <img
                     src={getLevelImage(playerData.topDiff, playerData.topDiff, playerData.topDiff, playerData.topDiff)}
                     alt={playerData.topDiff}
@@ -101,7 +119,7 @@ const ProfilePage = () => {
                 </div>
         
                 <div className="diff-info">
-                  <p>Top 12k clear</p>
+                  <p>{valueLabels.top12kDiff}</p>
                   <img
                     src={getLevelImage(playerData.top12kDiff, playerData.top12kDiff, playerData.top12kDiff, playerData.top12kDiff)}
                     alt={playerData.top12kDiff}
@@ -114,45 +132,53 @@ const ProfilePage = () => {
           
             <div className="score-container">
               <div className="score-item">
-                <p className="score-name">Ranked Score</p>
+                <p className="score-name">{valueLabels.rankedScore}</p>
                 <p className="score-value">{playerData.rankedScore.toFixed(2)}</p>
               </div>
+              <br />
               <div className="score-item">
-                <p className="score-name">General Score</p>
+                <p className="score-name">{valueLabels.generalScore}</p>
                 <p className="score-value">{playerData.generalScore.toFixed(2)}</p>
               </div>
+              <br />
               <div className="score-item">
-                <p className="score-name">PP Score</p>
+                <p className="score-name">{valueLabels.ppScore}</p>
                 <p className="score-value">{playerData.ppScore.toFixed(2)}</p>
               </div>
+              <br />
               <div className="score-item">
-                <p className="score-name">12k Score</p>
+                <p className="score-name">{valueLabels.wfScore}</p>
+                <p className="score-value">{playerData.wfScore.toFixed(2)}</p>
+              </div>
+              <br />
+              <div className="score-item">
+                <p className="score-name">{valueLabels["12kScore"]}</p>
                 <p className="score-value">{playerData["12kScore"].toFixed(2)}</p>
               </div>
             </div>
         
             <div className="passes-container">
               <div className="score-item">
-                <p className="score-name">WF Passes</p>
+                <p className="score-name">{valueLabels.WFPasses}</p>
                 <p className="score-value">{playerData.WFPasses}</p>
               </div>
               <div className="score-item">
-                <p className="score-name">Average X Accuracy</p>
+                <p className="score-name">{valueLabels.avgXacc}</p>
                 <p className="score-value">{(playerData.avgXacc*100).toFixed(2)}%</p>
               </div>
               <div className="score-item">
-                <p className="score-name">Total Passes</p>
+                <p className="score-name">{valueLabels.totalPasses}</p>
                 <p className="score-value">{playerData.totalPasses}</p>
               </div>
               <div className="score-item">
-                <p className="score-name">Universal Passes</p>
+                <p className="score-name">{valueLabels.universalPasses}</p>
                 <p className="score-value">{playerData.universalPasses}</p>
               </div>
             </div>
           </div>
           {playerData.allScores && playerData.allScores.length > 0 && (
               <div className="all-scores">
-                <h2>All Scores</h2>
+                <h2>{t("profilePage.allScores")}</h2>
                 <ul>
                   {playerData.allScores.map((score, index) => (
                     <li key={index}>
@@ -168,7 +194,7 @@ const ProfilePage = () => {
         :
 
         
-            <h1 className="player-notfound">No player found</h1>)
+            <h1 className="player-notfound">{t("profilePage.notFound")}</h1>)
         
         
         :

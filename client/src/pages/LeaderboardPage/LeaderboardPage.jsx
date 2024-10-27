@@ -12,6 +12,8 @@ import { useTranslation } from "react-i18next";
 import bgImgDark from "../../assets/important/dark/theme-background.jpg";
 
 
+
+
 const limit = 10;
 
 const LeaderboardPage = () => {
@@ -25,8 +27,8 @@ const LeaderboardPage = () => {
   const {
     playerData,
     setPlayerData,
-    filterOpen,
-    setFilterOpen,
+    sortBy,
+    setSortBy,
     sortOpen,
     setSortOpen,
     query,
@@ -34,8 +36,49 @@ const LeaderboardPage = () => {
     sort,
     setSort,
   } = useContext(PlayerContext);
+  var sortOptions = [
+    { value: 'rankedScore', label:  t("valueLabels.rankedScore") },
+    { value: 'generalScore', label: t("valueLabels.generalScore") },
+    { value: 'ppScore', label: t("valueLabels.ppScore") },
+    { value: 'wfScore', label: t("valueLabels.wfScore") },
+    { value: '12kScore', label: t("valueLabels.12kScore") },
+    { value: 'avgXacc', label: t("valueLabels.avgXacc") },
+    { value: 'totalPasses', label: t("valueLabels.totalPasses") },
+    { value: 'universalPasses', label: t("valueLabels.universalPasses") },
+    { value: 'WFPasses', label: t("valueLabels.WFPasses") },
+    { value: 'topDiff', label: t("valueLabels.topDiff") },
+    { value: 'top12kDiff', label: t("valueLabels.top12kDiff") },
+  ];
+
+  function sortByField(data) {
+    console.log("sorting by", sortBy);
+    
+    return data.sort((a, b) => {
+      if (sortBy === "topDiff" || sortBy === "top12kDiff") {
+        // Extract letter and number from diff fields
+        const parseDiff = (value) => {
+          const letter = value[0];
+          const num = parseInt(value.slice(1), 10);
+          // Assign order priority for letters P < G < U
+          const priority = { "P": 1, "G": 2, "U": 3 };
+          return { letterOrder: priority[letter], num };
+        };
+        const diffA = parseDiff(a[sortBy]);
+        const diffB = parseDiff(b[sortBy]);
+        
+        // Sort by letter order first, then by number if letters are the same
+        if (diffA.letterOrder !== diffB.letterOrder) {
+          return diffB.letterOrder - diffA.letterOrder;
+        } else {
+          return diffB.num - diffA.num;
+        }
+      } else {
+        // For all other fields, simple numeric sort in descending order
+        return b[sortBy] - a[sortBy];
+      }
+    });
+  }
   
-    //fetches the entire thing at once
   useEffect(() => {
     const fetchPlayers = async () => {
       setLoading(true);
@@ -57,12 +100,12 @@ const LeaderboardPage = () => {
   }, []);
   
   useEffect(() => {
-    
     if (playerData && playerData.length > 0) {
       var filteredPlayers = playerData.filter(player =>
         player.player.toLowerCase().includes(query.toLowerCase())
       );
-      if(sort === "RANK_DESC"){
+      filteredPlayers = sortByField(filteredPlayers)
+      if(sort === "ASC"){
         filteredPlayers = filteredPlayers.reverse()
       }
       setPlayerList(filteredPlayers);
@@ -73,32 +116,41 @@ const LeaderboardPage = () => {
     setLoading(false);
     console.log(displayedPlayers);
     
-  }, [playerData, query, sort]);
+  }, [playerData, query, sort, sortBy, forceUpdate, t]);
 
   function handleQueryChange(e) {
     setLoading(true);
     setDisplayedPlayers([]);
     setQuery(e.target.value);
   }
+
   function handleFilterOpen() {
-    setFilterOpen(!filterOpen);
+    //setFilterOpen(!filterOpen);
   }
 
   function handleSortOpen() {
     setSortOpen(!sortOpen);
   }
 
+  function handleSortBy(selectedOption) {
+    setLoading(true); 
+    setSortBy(selectedOption.value);
+    setForceUpdate((f) => !f);
+  }
+
+
   function handleSort(value) {
-    setLoading(true); //both of this is no
+    setLoading(true);
     setSort(value);
+    setForceUpdate((f) => !f);
   }
 
   function resetAll() {
-    setSort("RANK_ASC");
-    setQuery("");
+    setLoading(true)
     setDisplayedPlayers([]);
-    setLoading(true);
-    setLoading(false);
+    setSortBy(sortOptions[0].value)
+    setSort("DESC");
+    setQuery("");
     setForceUpdate((f) => !f);
   }
 
@@ -149,7 +201,7 @@ const LeaderboardPage = () => {
             strokeWidth="1.5"
             stroke="currentColor"
             style={{
-              backgroundColor: filterOpen ? "rgba(255, 255, 255, 0.7)" : "",
+              //backgroundColor: filterOpen ? "rgba(255, 255, 255, 0.7)" : "",
               padding: ".2rem",
             }}
             onClick={() => handleFilterOpen()}
@@ -205,139 +257,9 @@ const LeaderboardPage = () => {
               d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"
             />
           </svg>
+          
         </div>
         <div className="input-setting">
-        {/*
-          <div
-            className="filter settings-class"
-            style={{
-              height: filterOpen ? "10rem" : "0",
-              opacity: filterOpen ? "1" : "0",
-            }}
-          >
-            <div className="spacer-setting"></div>
-            <h2 className="setting-title">
-              {t("leaderboardPage.settingExp.headerFilter")}
-            </h2>
-            {/* <p className="setting-description">{t('leaderboardPage.settingExp.filterDiffs')}</p>
-            
-            <div className="diff-filters">
-              <div className="filter-container">
-                <p className="setting-description">Lower diff</p>
-                <Select
-                  id="low-diff-select" // Set an ID for the select
-                  defaultValue={selectedLowFilterDiff}
-                  onChange={handleLowFilter}
-                  options={options}
-                  menuPortalTarget={document.body}
-                  styles={{
-                    menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                    container: (provided) => ({
-                      ...provided,
-                      zIndex: 9999,
-                    }),
-                    control: (provided, state) => ({
-                      ...provided,
-                      width: "10rem",
-                      backgroundColor: "rgba(255, 255, 255, 0.3)",
-                      border: "none",
-                      outline: "none",
-                      boxShadow: state.isFocused
-                        ? "0 0 0 2px #000000"
-                        : provided.boxShadow,
-                      "&:hover": {
-                        boxShadow: "none",
-                      },
-                      singleValue: {
-                        ...provided.singleValue,
-                        color: "#FFFFFF !important",
-                      },
-                      indicatorSeparator: {
-                        ...provided.indicatorSeparator,
-                        backgroundColor: "#000000",
-                      },
-                    }),
-                    menu: (provided) => ({
-                      ...provided,
-                      width: "10rem",
-                      backgroundColor: "#fff",
-                      border: "none",
-                      boxShadow: "none",
-                      color: "#000000",
-                      zIndex: 9999,
-                    }),
-                    option: (provided, state) => ({
-                      ...provided,
-                      backgroundColor: state.isSelected
-                        ? "rgb(255,255,255)"
-                        : "transparent",
-                      zIndex: 9999,
-                    }),
-                  }}
-                  placeholder="Disabled"
-                  isSearchable
-                />
-              </div>
-
-              <div className="filter-container">
-                <p className="setting-description">Upper diff</p>
-                <Select
-                  id="high-diff-select" // Set an ID for the select
-                  defaultValue={selectedHighFilterDiff}
-                  onChange={handleHighFilter}
-                  options={options}
-                  menuPortalTarget={document.body}
-                  styles={{
-                    menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                    container: (provided) => ({
-                      ...provided,
-                      zIndex: 9999,
-                    }),
-                    control: (provided, state) => ({
-                      ...provided,
-                      width: "10rem",
-                      backgroundColor: "rgba(255, 255, 255, 0.3)",
-                      border: "none",
-                      outline: "none",
-                      boxShadow: state.isFocused
-                        ? "0 0 0 2px #000000"
-                        : provided.boxShadow,
-                      "&:hover": {
-                        boxShadow: "none",
-                      },
-                      singleValue: {
-                        ...provided.singleValue,
-                        color: "#FFFFFF !important",
-                      },
-                      indicatorSeparator: {
-                        ...provided.indicatorSeparator,
-                        backgroundColor: "#000000",
-                      },
-                    }),
-                    menu: (provided) => ({
-                      ...provided,
-                      width: "10rem",
-                      backgroundColor: "#fff",
-                      border: "none",
-                      boxShadow: "none",
-                      color: "#000000",
-                      zIndex: 9999,
-                    }),
-                    option: (provided, state) => ({
-                      ...provided,
-                      backgroundColor: state.isSelected
-                        ? "rgb(255,255,255)"
-                        : "transparent",
-                      zIndex: 9999,
-                    }),
-                  }}
-                  placeholder="Disabled"
-                  isSearchable
-                />
-             
-          </div>
-            */}
-
           <div
             className="sort settings-class"
             style={{
@@ -352,7 +274,7 @@ const LeaderboardPage = () => {
 
             <div className="sort-option">
               <div className="recent">
-                <p>{t("leaderboardPage.settingExp.sortRanked")}</p>
+                <p>{t("leaderboardPage.settingExp.sortOrder")}</p>
                 <Tooltip id="ra" place="top" noArrow>
                   {t("leaderboardPage.toolTip.recentAsc")}
                 </Tooltip>
@@ -368,10 +290,10 @@ const LeaderboardPage = () => {
                     xmlns="http://www.w3.org/2000/svg"
                     style={{
                       backgroundColor:
-                        sort == "RANK_ASC" ? "rgba(255, 255, 255, 0.7)" : "",
+                        sort == "ASC" ? "rgba(255, 255, 255, 0.7)" : "",
                     }}
-                    value="RANK_ASC"
-                    onClick={() => handleSort("RANK_ASC")}
+                    value="ASC"
+                    onClick={() => handleSort("ASC")}
                     data-tooltip-id="ra"
                   >
                     <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
@@ -405,10 +327,10 @@ const LeaderboardPage = () => {
                     xmlns="http://www.w3.org/2000/svg"
                     style={{
                       backgroundColor:
-                        sort == "RANK_DESC" ? "rgba(255, 255, 255, 0.7)" : "",
+                        sort == "DESC" ? "rgba(255, 255, 255, 0.7)" : "",
                     }}
-                    onClick={() => handleSort("RANK_DESC")}
-                    value="RANK_DESC"
+                    onClick={() => handleSort("DESC")}
+                    value="DESC"
                     data-tooltip-id="rd"
                   >
                     <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
@@ -434,121 +356,78 @@ const LeaderboardPage = () => {
                       ></path>
                     </g>
                   </svg>
+
+                 
                 </div>
+                
               </div>
-                {/*
-              <div className="diff">
-                <p>{t("leaderboardPage.settingExp.filterDiffs")}</p>
-
-                <div className="wrapper">
-                  <Tooltip id="da" place="top" noArrow>
-                    {t("leaderboardPage.toolTip.difficultyAsc")}
-                  </Tooltip>
-                  <Tooltip id="dd" place="top" noArrow>
-                    {t("leaderboardPage.toolTip.difficultyDesc")}
-                  </Tooltip>
-
-                  <svg
-                    className="svg-fill"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    style={{
-                      backgroundColor:
-                        sort == "DIFF_ASC" ? "rgba(255, 255, 255, 0.7)" : "",
-                    }}
-                    value="DIFF_ASC"
-                    onClick={() => handleSort("DIFF_ASC")}
-                    data-tooltip-id="da"
-                    x
-                  >
-                    <path
-                      d="M10.22 15.97L9 17.19V5C9 4.59 8.66 4.25 8.25 4.25C7.84 4.25 7.5 4.59 7.5 5V17.19L6.28 15.97C5.99 15.68 5.51 15.68 5.22 15.97C4.93 16.26 4.93 16.74 5.22 17.03L7.72 19.53C7.79 19.6 7.87 19.65 7.96 19.69C8.05 19.73 8.15 19.75 8.25 19.75C8.35 19.75 8.45 19.73 8.54 19.69C8.63 19.65 8.71 19.6 8.78 19.53L11.28 17.03C11.57 16.74 11.57 16.26 11.28 15.97C10.99 15.68 10.51 15.68 10.22 15.97Z"
-                      fill="#ffffff"
-                    ></path>{" "}
-                    <path
-                      d="M17 11.25C16.59 11.25 16.25 10.91 16.25 10.5V6.43997L15.86 6.64997C15.49 6.84997 15.04 6.71997 14.84 6.35997C14.64 5.99997 14.77 5.53997 15.13 5.33997L15.78 4.97997C16.14 4.71997 16.6 4.67997 17 4.85997C17.45 5.06997 17.74 5.52997 17.74 6.04997V10.5C17.74 10.91 17.4 11.25 16.99 11.25H17Z"
-                      fill="#ffffff"
-                    />
-                    <path
-                      d="M16.5 17.25C15.26 17.25 14.25 16.24 14.25 15C14.25 13.76 15.26 12.75 16.5 12.75C17.74 12.75 18.75 13.76 18.75 15C18.75 16.24 17.74 17.25 16.5 17.25ZM16.5 14.25C16.09 14.25 15.75 14.59 15.75 15C15.75 15.41 16.09 15.75 16.5 15.75C16.91 15.75 17.25 15.41 17.25 15C17.25 14.59 16.91 14.25 16.5 14.25Z"
-                      fill="#ffffff"
-                    />
-                    <path
-                      d="M15.98 19.25H15.5C15.09 19.25 14.75 18.91 14.75 18.5C14.75 18.09 15.09 17.75 15.5 17.75H15.98C16.63 17.75 17.2 17.21 17.23 16.56C17.24 16.27 17.24 15.92 17.24 15.5V15C17.24 14.59 17.58 14.25 17.99 14.25C18.4 14.25 18.74 14.59 18.74 15V15.5C18.74 15.95 18.74 16.32 18.72 16.64C18.65 18.08 17.41 19.25 15.97 19.25H15.98Z"
-                      fill="#ffffff"
-                    />
-                  </svg>
-
-                  <svg
-                    className="svg-fill"
-                    width="800px"
-                    height="800px"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    style={{
-                      backgroundColor:
-                        sort == "DIFF_DESC" ? "rgba(255, 255, 255, 0.7)" : "",
-                    }}
-                    onClick={() => handleSort("DIFF_DESC")}
-                    value="DIFF_DESC"
-                    data-tooltip-id="dd"
-                  >
-                    <path
-                      d="M10.22 15.97L9 17.19V5C9 4.59 8.66 4.25 8.25 4.25C7.84 4.25 7.5 4.59 7.5 5V17.19L6.28 15.97C5.99 15.68 5.51 15.68 5.22 15.97C4.93 16.26 4.93 16.74 5.22 17.03L7.72 19.53C7.79 19.6 7.87 19.65 7.96 19.69C8.05 19.73 8.15 19.75 8.25 19.75C8.35 19.75 8.45 19.73 8.54 19.69C8.63 19.65 8.71 19.6 8.78 19.53L11.28 17.03C11.57 16.74 11.57 16.26 11.28 15.97C10.99 15.68 10.51 15.68 10.22 15.97Z"
-                      fill="#ffffff"
-                    ></path>{" "}
-                    <path
-                      d="M17.12 19.2499C16.9228 19.2473 16.7346 19.1671 16.5961 19.0268C16.4576 18.8864 16.38 18.6971 16.38 18.4999V14.4399L15.99 14.6599C15.815 14.7567 15.6086 14.78 15.4164 14.7247C15.2242 14.6694 15.0618 14.54 14.965 14.3649C14.8682 14.1899 14.8449 13.9836 14.9002 13.7913C14.9555 13.5991 15.085 13.4367 15.26 13.3399L15.92 12.9799C16.0943 12.8527 16.2999 12.7753 16.5148 12.7559C16.7297 12.7365 16.9458 12.7759 17.14 12.8699C17.3633 12.9752 17.5518 13.1423 17.683 13.3515C17.8141 13.5606 17.8825 13.8031 17.88 14.0499V18.4999C17.8774 18.6998 17.7962 18.8905 17.6539 19.0309C17.5117 19.1713 17.3199 19.25 17.12 19.2499Z"
-                      fill="#ffffff"
-                    />
-                    <path
-                      d="M16.62 9.24998C16.1754 9.248 15.7414 9.11437 15.3727 8.86593C15.004 8.6175 14.7172 8.26541 14.5484 7.85411C14.3797 7.44281 14.3365 6.99072 14.4245 6.55493C14.5124 6.11913 14.7275 5.71916 15.0425 5.40549C15.3576 5.09182 15.7585 4.87852 16.1947 4.79251C16.6309 4.7065 17.0828 4.75164 17.4933 4.92222C17.9039 5.09281 18.2547 5.3812 18.5015 5.75099C18.7483 6.12078 18.88 6.5554 18.88 6.99998C18.8813 7.29667 18.8237 7.59067 18.7105 7.86491C18.5973 8.13915 18.4307 8.38817 18.2204 8.5975C18.0102 8.80683 17.7604 8.9723 17.4857 9.08431C17.2109 9.19632 16.9167 9.25263 16.62 9.24998ZM16.62 6.24998C16.4211 6.24998 16.2303 6.329 16.0897 6.46965C15.949 6.6103 15.87 6.80107 15.87 6.99998C15.87 7.19889 15.949 7.38966 16.0897 7.53031C16.2303 7.67096 16.4211 7.74998 16.62 7.74998C16.8189 7.74998 17.0097 7.67096 17.1503 7.53031C17.291 7.38966 17.37 7.19889 17.37 6.99998C17.37 6.80107 17.291 6.6103 17.1503 6.46965C17.0097 6.329 16.8189 6.24998 16.62 6.24998Z"
-                      fill="#ffffff"
-                    />
-                    <path
-                      d="M16.11 11.25H15.62C15.4211 11.25 15.2303 11.171 15.0897 11.0303C14.949 10.8897 14.87 10.6989 14.87 10.5C14.87 10.3011 14.949 10.1103 15.0897 9.96967C15.2303 9.82902 15.4211 9.75 15.62 9.75H16.11C16.4293 9.7433 16.7345 9.61752 16.9657 9.39735C17.197 9.17719 17.3376 8.87853 17.36 8.56C17.36 8.27 17.36 7.92 17.36 7.5V7C17.36 6.80281 17.4376 6.61354 17.5761 6.47317C17.7146 6.33281 17.9028 6.25263 18.1 6.25C18.2999 6.24998 18.4917 6.32868 18.6339 6.46905C18.7761 6.60942 18.8574 6.80017 18.86 7V7.5C18.86 7.95 18.86 8.32 18.86 8.64C18.817 9.34229 18.5093 10.0022 17.999 10.4865C17.4886 10.9709 16.8136 11.2437 16.11 11.25Z"
-                      fill="#ffffff"
-                    />
-                  </svg>
-                </div>
-              </div>
-
-              <div className="random">
-                <p>{t("leaderboardPage.settingExp.sortRandom")}</p>
-                <Tooltip id="rnd" place="top" noArrow>
-                  {t("leaderboardPage.toolTip.random")}
-                </Tooltip>
-
-                <div className="wrapper">
-                  <svg
-                    className="svg-fill-stroke"
-                    fill="#ffffff"
-                    viewBox="-7.5 0 32 32"
-                    version="1.1"
-                    xmlns="http://www.w3.org/2000/svg"
-                    stroke="#ffffff"
-                    data-tooltip-id="rnd"
-                    style={{
-                      backgroundColor:
-                        sort == "RANDOM" ? "rgba(255, 255, 255, 0.7)" : "",
-                    }}
-                    onClick={() => handleSort("RANDOM")}
-                    value="RANDOM"
-                  >
-                    <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                    <g
-                      id="SVGRepo_tracerCarrier"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    ></g>
-                    <g id="SVGRepo_iconCarrier">
-                      <path d="M14.92 17.56c-0.32-0.32-0.88-0.32-1.2 0s-0.32 0.88 0 1.2l0.76 0.76h-3.76c-0.6 0-1.080-0.32-1.6-0.96-0.28-0.36-0.8-0.44-1.2-0.16-0.36 0.28-0.44 0.8-0.16 1.2 0.84 1.12 1.8 1.64 2.92 1.64h3.76l-0.76 0.76c-0.32 0.32-0.32 0.88 0 1.2 0.16 0.16 0.4 0.24 0.6 0.24s0.44-0.080 0.6-0.24l2.2-2.2c0.32-0.32 0.32-0.88 0-1.2l-2.16-2.24zM10.72 12.48h3.76l-0.76 0.76c-0.32 0.32-0.32 0.88 0 1.2 0.16 0.16 0.4 0.24 0.6 0.24s0.44-0.080 0.6-0.24l2.2-2.2c0.32-0.32 0.32-0.88 0-1.2l-2.2-2.2c-0.32-0.32-0.88-0.32-1.2 0s-0.32 0.88 0 1.2l0.76 0.76h-3.76c-2.48 0-3.64 2.56-4.68 4.84-0.88 2-1.76 3.84-3.12 3.84h-2.080c-0.48 0-0.84 0.36-0.84 0.84s0.36 0.88 0.84 0.88h2.080c2.48 0 3.64-2.56 4.68-4.84 0.88-2 1.72-3.88 3.12-3.88zM0.84 12.48h2.080c0.6 0 1.080 0.28 1.56 0.92 0.16 0.2 0.4 0.32 0.68 0.32 0.2 0 0.36-0.040 0.52-0.16 0.36-0.28 0.44-0.8 0.16-1.2-0.84-1.040-1.8-1.6-2.92-1.6h-2.080c-0.48 0.040-0.84 0.4-0.84 0.88s0.36 0.84 0.84 0.84z"></path>{" "}
-                    </g>
-                  </svg>
-                </div>
-              </div>*/}
+              <div className="recent">
+                
+              <p>{t("leaderboardPage.settingExp.sortBy")}</p>
+              <Select
+                      id="sort-select"
+                      onChange={handleSortBy}
+                      value={sortOptions.find(option => option.value === sortBy)}
+                      options={sortOptions}
+                      menuPortalTarget={document.body}
+                      styles={{
+                        input: (base) => ({
+                          ...base, 
+                          color: "#fff"
+                        }),
+                        menuPortal: (base) => ({
+                           ...base,
+                            zIndex: 9999 
+                          }),
+                        container: (provided) => ({
+                          ...provided,
+                          zIndex: 20,
+                        }),
+                        control: (provided, state) => ({
+                          ...provided,
+                          width: "11rem",
+                          backgroundColor: "rgba(255, 255, 255, 0.3)",
+                          border: "none",
+                          outline: "none",
+                          color: "#fff",
+                          boxShadow: 
+                            state.isFocused
+                            && "0 0 0 2px #757575"
+                        }),
+                        singleValue: (provided) => ({
+                          ...provided,
+                          color: "#FFFFFF !important",
+                        }),
+                        indicatorSeparator: (provided) => ({
+                          ...provided,
+                          backgroundColor: "#000000aa",
+                        }),
+                        menu: (provided) => ({
+                          ...provided,
+                          width: "11rem",
+                          backgroundColor: "#070711ef",
+                          borderRadius: "3px",
+                          border: "none",
+                          boxShadow: "none",
+                          textDecoration: "bold",
+                          color: "#fff",
+                          zIndex: 9999,
+                        }),
+                        option: (provided, state) => ({
+                          ...provided,
+                          backgroundColor: state.isSelected
+                            ? "#303040ee"
+                            : "transparent",
+                          zIndex: 9999,
+                          "&:hover": {
+                            backgroundColor: "#555555",
+                          }
+                        }),
+                      }}
+                      placeholder="Select Sort Option"
+                      isSearchable
+                    /> 
+                    </div>   
             </div>
           </div>
         </div>
@@ -575,17 +454,8 @@ const LeaderboardPage = () => {
           {displayedPlayers.map((l, index) => (
             <PlayerCard
               key={index}
-              player={l.player}
-              rankedScore={l.rankedScore}
-              generalScore={l.generalScore}
-              twvKScore={l["12kScore"]} 
-              wfScore={l.wfScore}
-              avgXacc={l.avgXacc}
-              totalPasses={l.totalPasses}
-              universalPasses={l.universalPasses}
-              WFPasses={l.WFPasses}
-              topDiff={l.topDiff}
-              latestClears={l.latestClears}
+              currSort={sortBy}
+              player={l}
               pfp={l.pfp}
             />
           ))}

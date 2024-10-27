@@ -68,7 +68,6 @@ const LevelDetailPage = () => {
         const passCount = res?.passes.player.count || 0 ;
         const vLink = res?.level.vidLink || "" ;
         const comment = res?.level.publicComments || "";
-        console.log("link", vLink);
         
         setInitialPlayer(fetchedPlayers);
         setPassCount(passCount)
@@ -134,7 +133,6 @@ const LevelDetailPage = () => {
       try {
         const playerNames = initialPlayer.map(p => p.player);
         const fetchedPlayersInfo = await fetchPassPlayerInfo(playerNames); 
-        console.log(fetchedPlayersInfo)
 
         
         const enrichedPlayers = initialPlayer
@@ -212,8 +210,8 @@ const LevelDetailPage = () => {
   }
 
   useEffect(()=>{
-    console.log(res)
-    console.log(passCount)
+    //console.log(res)
+    //console.log(passCount)
   }, [res, passCount])
 
   function formatString(input) {
