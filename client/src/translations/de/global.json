@@ -1,4 +1,17 @@
 {
+  "valueLabels":{
+      "rankedScore": "Ranked Score",
+      "generalScore": "General Score",
+      "ppScore": "PP Score",
+      "wfScore": "WF Score",
+      "12kScore": "12k Score",
+      "avgXacc": "Average Accuracy",
+      "totalPasses": "Total Passes",
+      "universalPasses": "Universal Passes",
+      "WFPasses": "WF Passes",
+      "topDiff": "Top Difficulty",
+      "top12kDiff": "Top 12k Difficulty"
+    },
     "homePage": {
       "featuredText": "Empfohlene Level",
       "featuredLevel": [1, 2, 3],
@@ -30,6 +43,32 @@
         "end": "Du hast alles gesehen"
       }
     },
+    
+    "leaderboardPage": {
+      "inputPlaceholder": "Search player name",
+  
+      "toolTip": {
+        "filter": "Filter (NOT IMPLEMENTED)",
+        "sort": "Sort",
+        "reset": "Reset",
+        "recentAsc": "Ascending",
+        "recentDesc": "Descending",
+        "difficultyAsc": "Difficulty Ascending",
+        "difficultyDesc": "Difficulty Descending",
+        "random": "Random"
+      },
+      "settingExp": {
+        "headerSort": "Sort",
+        "headerFilter": "Filter",
+        "filterDiffs": "Diffs",
+        "sortOrder": "Sort order",
+        "sortBy": "Sort by"
+      },
+      "infScroll": {
+        "loading": "Hold tight...",
+        "end": "End of list reached"
+      }
+    },
     "detailPage": {
       "#1Clears": {
         "clear": "#1 Clear",
@@ -48,6 +87,12 @@
         }
       }
     },
+
+    "profilePage": {
+      "allScores": "All scores",
+      "notFound": "No player found"
+    },
+    
     "submissionPage": {
       "header": {
         "headerPass": "Ich möchte meinen Durchgang einreichen",
@@ -59,6 +104,107 @@
       },
       "RulesAGuide": "Regeln und Richtlinien ansehen"
     },
+
+"levelSubmission": {
+      "alert": {
+        "login": "You must be logged in",
+        "form": "Incomplete form",
+        "success": "Form submitted successfully!",
+        "error": "Error: ",
+        "loading": "Submitting..."
+      },
+      "thumbnailInfo": "Video not found",
+      "title": "Submit a Level",
+      "videoInfo": {
+        "title": "Video title",
+        "channel": "Channel name",
+        "timestamp": "Timestamp",
+        "nolink": "No link provided"
+      },
+      "tooltip": "Unknown difficulty, will submit but please make sure it's readable by the managers. Correct diff ex.: G13; P7~P13; 21.1+; 19~20.0+",
+      "submInfo": {
+        "song": "Song",
+        "artist": "Artist",
+        "vidLink": "Video Link",
+        "charter": "Video Link",
+        "diff": "Difficulty",
+        "vfxer": "VFX-ers (opt.)",
+        "team": "Team Name (opt.)",
+        "dlLink": "Download link",
+        "workshop": "Workshop link",
+        "dlLinksOr": "or"
+      },
+      
+      "submit": "Submit",
+      "submitWait": " please wait..."
+    },
+"passSubmission": {
+      "alert": {
+        "login": "You must be logged in",
+        "form": "Incomplete form",
+        "success": "Form submitted successfully!",
+        "error": "Error: ",
+        "loading": "Submitting..."
+      },
+      "score": {
+        "needId": "Level ID is required",
+        "needJudg": "Not all judgements are filled",
+        "needInfo": "Not enough pass info",
+        "noInfo": "Insufficient data to calculate score"
+      },
+      "thumbnailInfo": "Video not found",
+      "title": "Submit a Pass",
+      "videoInfo": {
+        "vidLink": "Video link",
+        "title": "Video title",
+        "channel": "Channel name",
+        "timestamp": "Timestamp",
+        "nolink": "No link provided"
+      },
+      "levelInfo": {
+        "song": "Song name",
+        "charter": "Charter",
+        "artist": "Artist"
+      },
+      "holdTooltip": "Tick if you have used hold option other than \"Normal hold\" (0.9x score)",
+      "tooltip": "Unknown difficulty, will submit but please make sure it's readable by the managers. Correct diff ex.: G13; P7~P13; 21.1+; 19~20.0+",
+      "levelFetching":{
+        "input": "Input Level ID",
+        "fetching": "Fetching",
+        "goto": "Go to level",
+        "notfound": "Level not found"
+      },
+      
+      "submInfo": {
+        "levelId": "Level Id",
+        "altname": "Alt leaderboard name",
+        "nohold": "Used alternate holds",
+        "speed": "Speed (opt; ex: 1.2)",
+        "feelDiff": "Feeling rating (ex. G12)",
+        "team": "Team Name (opt.)",
+        "dlLink": "Download link",
+        "workshop": "Workshop link"
+      },
+      "judgements":{
+        "tooearly": "Too Early",
+        "early": "Early",
+        "ePerfect": "EPerfect",
+        "perfect": "Perfect",
+        "lPerfect": "LPerfect",
+        "late": "Late"
+      },
+      "acc": "Accuracy: ",
+      "scoreCalc": "Score: ",
+      "submit": "Submit",
+      "submitWait": " please wait..."
+
+    },
+
+    "profile": {
+      "signIn": "Sign in",
+      "loadingImg": "Loading image...",
+      "noImg": "No Image"
+    },
     "cardFeaturedComponent": {
       "by": "Von",
       "button": "Schau es dir an!"
@@ -68,9 +214,23 @@
       "clears": "Clears",
       "by": "Von"
     },
+    "playerCardComponent": {
+      "player": "Player",
+      "rankedScore": "Ranked score",
+      "generalScore": "General score",
+      "avgXacc": "Average X-acc"
+    },
+  
+    "scoreCardComponent": {
+      "song": "Song",
+      "accuracy": "Accuracy",
+      "speed": "Speed",
+      "score": "Score"
+    },
     "navigationComponent": {
       "levels": "Level",
-      "submission": "Einreichung"
+      "submission": "Einreichung",
+      "leaderboard": "Leaderboard"
     },
     "footerComponent": {
       "aboutUs": {
@@ -86,7 +246,7 @@
         "header": "Schaut vorbei",
         "paragraph": "Hey, ich habe diese Website erstellt, schaut mal vorbei"
       },
-      "copyRight": "2024 Adrian Purnama. Alle Rechte vorbehalten. Version - 1.0.0"
+      "copyRight": "2024 Adrian Purnama. Alle Rechte vorbehalten. Version - 1.1.0"
     }
   }
   

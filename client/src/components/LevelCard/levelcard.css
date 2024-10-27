@@ -38,7 +38,6 @@
 .level-card-rev .level-exp,
 .level-card-rev .level-desc,
 .level-card-rev .level-id {
-  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -56,7 +55,6 @@
   width: 200px;
 }
 .level-card-rev .clears-wrapper {
-  overflow: hidden;
   width: 50px;
 }
 .level-card-rev .creator-wrapper {

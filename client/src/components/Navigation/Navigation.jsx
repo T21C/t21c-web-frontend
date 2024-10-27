@@ -14,6 +14,14 @@ const Navigation = ({ children }) => {
   const [openNav, setOpenNav] = useState(false);
   const { language, setLanguage } = useContext(UserContext);
   const [openDialog, setOpenDialog] = useState(false);
+  const languages = {
+    us: { display: "English (us)", countryCode: "us" },
+    kr: { display: "한국어 (ko)", countryCode: "kr" },
+    cn: { display: "中文 (zh)", countryCode: "cn" },
+    id: { display: "Bahasa Indonesia (id)", countryCode: "id" },
+    ru: { display: "Русский (ru)", countryCode: "ru" },
+    de: { display: "Deutsch (de)", countryCode: "de" }
+  };
 
   function changeNavState() {
     setOpenNav(!openNav);
@@ -141,22 +149,17 @@ const Navigation = ({ children }) => {
       <div className={`language-dialog ${openDialog ? 'dialog-scale-up' : ''}`} style={{ display: openDialog ? 'block' : 'none' }}>
         <div className={"dialog"}>
           <ul>
-            <li className="list-language" onClick={() => handleChangeLanguage("us")} style={{ backgroundColor: language === "us" ? "#a3a2d8" : "" }}> 
-              <img src={isoToEmoji("us")} alt="" />
-              English (en)
-            </li>
-            <li className="list-language" onClick={() => handleChangeLanguage("kr")} style={{ backgroundColor: language === "kr" ? "#a3a2d8" : "" }}>
-              <img src={isoToEmoji("kr")} alt="" />
-              한국어 (ko)
-            </li>
-            <li className="list-language" onClick={() => handleChangeLanguage("cn")} style={{ backgroundColor: language === "cn" ? "#a3a2d8" : "" }}>
-              <img src={isoToEmoji("cn")} alt="" />
-              中文 (zh)
-            </li>
-            <li className="list-language" onClick={() => handleChangeLanguage("id")} style={{ backgroundColor: language === "id" ? "#a3a2d8" : "" }}>
-              <img src={isoToEmoji("id")} alt="" />
-              Bahasa Indonesia (id)
-            </li>
+            {Object.entries(languages).map(([code, { display, countryCode }]) => (
+                <li
+                  key={code}
+                  className="list-language"
+                  onClick={() => handleChangeLanguage(code)}
+                  style={{ backgroundColor: language === code ? "#a3a2d8" : "" }}
+                >
+                  <img src={isoToEmoji(countryCode)} alt="" />
+                  {display}
+                </li>
+              ))}
           </ul>
         </div>
       </div>

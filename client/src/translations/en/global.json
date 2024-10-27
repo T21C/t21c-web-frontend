@@ -113,7 +113,7 @@
     "submissionPage": {
       "header": {
         "headerPass": "I want to submit a pass",
-        "headerLevel": "I want my level to be rated!"
+        "headerLevel": "I want my level to be rated"
       },
   
       "button": {
@@ -271,6 +271,6 @@
         "paragraph": "Website made by the TUF Dev Team, development led by Adrian and t3ww. Code of this website is made available on GitHub."
       },
   
-      "copyRight": "2024 TUF Dev Team, All Rights Reserved. Version - 1.0.0"
+      "copyRight": "2024 TUF Dev Team, All Rights Reserved. Version - 1.1.0"
     }
   }

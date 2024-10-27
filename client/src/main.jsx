@@ -9,6 +9,7 @@ import globalId from "./translations/id/global.json"
 import globalDe from "./translations/de/global.json"
 import globalKr from "./translations/kr/global.json"
 import globalCn from "./translations/cn/global.json"
+import globalRu from "./translations/ru/global.json"
 import { I18nextProvider } from "react-i18next";
 import { UserContextProvider } from './context/UserContext.jsx';
 import { GoogleOAuthProvider } from "@react-oauth/google"
@@ -33,7 +34,10 @@ i18next.init({
     },
     cn : {
       translation : globalCn
-    }
+    },
+    ru : {
+      translation : globalRu
+    },
   },
 });
 
