@@ -94,7 +94,7 @@ const updateRanks = () => {
 
 const updateData = () => {
   console.log("starting execution");
-  exec(`executable.exe all_players --output=${playerlistJson} --reverse`, (error, stdout, stderr) => {
+  exec(`python ./parser_module/executable.py all_players --output=${playerlistJson} --reverse`, (error, stdout, stderr) => {
     if (error) {
       console.error(`Error executing for all_players: ${error.message}`);
       return;
@@ -109,7 +109,7 @@ const updateData = () => {
     fetchPfps()
     if (!EXCLUDE_CLEARLIST){
     console.log("starting all_clears");
-    exec(`executable.exe all_clears --output=${clearlistJson} --useSaved`, (error, stdout, stderr) => {
+    exec(`python ./parser_module/executable.py all_clears --output=${clearlistJson} --useSaved`, (error, stdout, stderr) => {
       if (error) {
         console.error(`Error executing script for all_clears: ${error.message}`);
         return;
@@ -272,7 +272,7 @@ app.get("/player", async (req, res) => {
 
   const getPlayer = () => {
     return new Promise((resolve, reject) => {
-      exec(`executable.exe player "${player}" --output="${plrPath}" --showCharts --useSaved`, (error, stdout, stderr) => {
+      exec(`python ./parser_module/executable.py player "${player}" --output="${plrPath}" --showCharts --useSaved`, (error, stdout, stderr) => {
         if (error) {
           console.error(`Error executing for all_players: ${error.message}`);
           reject(error);
