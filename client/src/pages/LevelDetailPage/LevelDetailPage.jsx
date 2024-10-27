@@ -16,6 +16,7 @@ import {
 import { Tooltip } from "react-tooltip";
 import { useTranslation } from "react-i18next";
 import { use } from "i18next";
+import ClearCard from "../../components/ClearCard/ClearCard";
 
 const LevelDetailPage = () => {
   const {t} = useTranslation()
@@ -67,7 +68,6 @@ const LevelDetailPage = () => {
         const passCount = res?.passes.player.count || 0 ;
         const vLink = res?.level.vidLink || "" ;
         const comment = res?.level.publicComments || "";
-        console.log("link", vLink);
         
         setInitialPlayer(fetchedPlayers);
         setPassCount(passCount)
@@ -133,7 +133,6 @@ const LevelDetailPage = () => {
       try {
         const playerNames = initialPlayer.map(p => p.player);
         const fetchedPlayersInfo = await fetchPassPlayerInfo(playerNames); 
-        console.log(fetchedPlayersInfo)
 
         
         const enrichedPlayers = initialPlayer
@@ -211,8 +210,8 @@ const LevelDetailPage = () => {
   }
 
   useEffect(()=>{
-    console.log(res)
-    console.log(passCount)
+    //console.log(res)
+    //console.log(passCount)
   }, [res, passCount])
 
   function formatString(input) {
@@ -238,6 +237,7 @@ const LevelDetailPage = () => {
       <div
         style={{ height: "100vh", width: "100vw", backgroundColor: "#090909" }}
       >
+        <CompleteNav />
         <div className="background-level"></div>
         <div className="loader loader-level-detail"></div>
       </div>
@@ -559,51 +559,10 @@ const LevelDetailPage = () => {
           <div className="rank-list">
             {!infoLoading ? 
             
-
+              
             displayedPlayers && displayedPlayers.length > 0 ? (
               displayedPlayers.map((each, index) => (
-                <div className="list-detail" key={index} >
-                  <p className="name">
-
-                    <span className="index" style={{ color:index === 0 ? "gold" : index === 1? "silver": index === 2? "brown": "inherit"}} >
-                      <b>#{index + 1}</b>
-                    </span>
-
-                    &nbsp;
-                    <img src={isoToEmoji(each.country)} alt=""/>
-                    &nbsp;
-                    {each.player}
-                  </p>
-                  <div className="time">{each.vidUploadTime.slice(0, 10)}</div>
-                  <p className="general">{each.scoreV2.toFixed(2)}</p>
-                  <p className="acc">{(each.accuracy * 100).toFixed(2)}%</p>
-                  <div className="speed">{each.speed ? each.speed : "1.0"}×</div>
-                  <p className="judgements" onClick={() => window.open(each.vidLink, '_blank')}>
-                    <span style={{ color: "red" }}>{each.judgements[0]}</span>
-                    &nbsp;
-                    <span style={{ color: "orange" }}>
-                      {each.judgements[1]}
-                    </span>
-                    &nbsp;
-                    <span style={{ color: "yellow" }}>
-                      {each.judgements[2]}
-                    </span>
-                    &nbsp;
-                    <span style={{ color: "lightGreen" }}>
-                      {each.judgements[3]}
-                    </span>
-                    &nbsp;
-                    <span style={{ color: "yellow" }}>
-                      {each.judgements[4]}
-                    </span>
-                    &nbsp;
-                    <span style={{ color: "orange" }}>
-                      {each.judgements[5]}
-                    </span>
-                    &nbsp;
-                    <span style={{ color: "red" }}>{each.judgements[6]}</span>
-                  </p>
-                </div>
+                <ClearCard scoreData={each} index={index}/>
               ))
             ) : (
               <h3>{t("detailPage.leaderboard.notBeaten")}</h3>

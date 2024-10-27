@@ -255,7 +255,7 @@ const LevelSubmissionPage = () => {
 
                   <div className="yt-info">
                     <h4>{t("levelSubmission.videoInfo.timestamp")}</h4>
-                    <p>{videoDetail.timestamp}</p>
+                    <p>{videoDetail.timestamp.replace("T", " ").replace("Z", "")}</p>
                   </div>
                 </div>)
                 :(

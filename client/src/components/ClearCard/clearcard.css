@@ -1,0 +1,195 @@
+.clear-card {
+    position: relative;
+    display: flex;
+    justify-content: left;
+    gap: 1rem;
+    min-height: 4rem;
+    padding: 0.5rem;
+    border-radius: 0px;
+    align-items: center;
+    flex-wrap: wrap;
+    transition: all 0.1s ease-in-out;
+  }
+  .clear-card:hover {
+    background-color: var(--color-white-t30);
+  }
+  .clear-card .clear-exp {
+    width: -moz-fit-content;
+    width: fit-content;
+    font-size: 0.9rem;
+    color: var(--color-white-t80);
+  }
+  .clear-card .clear-desc {
+    font-size: 1.2rem;
+  }
+  .clear-card .clear-id {
+    color: var(--color-white-t30);
+    font-size: 0.6rem;
+  }
+  .clear-card .id {
+    position: absolute;
+    top: 3px;
+    left: 3px;
+  }
+  .clear-card .clear-exp,
+  .clear-card .clear-desc,
+  .clear-card .clear-id {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .clear-card .img-wrapper {
+    width: 3rem;
+  }
+  .clear-card .clear-wrapper {
+    overflow: hidden;
+    min-width: 200px;
+  }
+  .clear-card .acc-wrapper {
+    overflow: hidden;
+    min-width: 100px;
+  }
+  .clear-card .name-wrapper {
+    flex: 2;
+    overflow: hidden;
+    min-width: 200px;
+    padding-right: 50px;
+  }
+  @media (max-width: 400px) {
+    .clear-card .clear-exp {
+      font-size: 0.8rem;
+    }
+    .clear-card .clear-desc {
+      font-size: 1rem;
+    }
+    .clear-card .clear-id {
+      font-size: 0.6rem;
+    }
+    .clear-card .downloads-wrapper {
+      min-width: 70px;
+    }
+    .clear-card .artist-wrapper {
+      overflow: hidden;
+      width: 120px;
+    }
+    .clear-card .img-wrapper {
+      width: 2rem;
+    }
+    .clear-card .downloads-wrapper a {
+      height: 2rem;
+      width: 2rem;
+    }
+  }
+  @media (max-width: 380px) {
+    .clear-card .clear-exp {
+      font-size: 0.6rem;
+    }
+    .clear-card .clear-desc {
+      font-size: 0.9rem;
+    }
+    .clear-card .clear-id {
+      font-size: 0.5rem;
+    }
+    .clear-card .downloads-wrapper {
+      min-width: 60px;
+    }
+    .clear-card .artist-wrapper {
+      overflow: hidden;
+      width: 110px;
+    }
+    .clear-card .img-wrapper {
+      width: 1.5rem;
+    }
+    .clear-card .creator-wrapper {
+      min-width: 100px;
+    }
+    .clear-card .downloads-wrapper a {
+      height: 2rem;
+      width: 2rem;
+    }
+  }/*# sourceMappingURL=scorecard.css.map */
+
+  
+.clear-card {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--color-white-t10);
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border-radius: 3px;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.clear-card .name, .clear-card .general, .clear-card .acc {
+  flex: 1;
+  flex-basis: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.clear-card a {
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+  min-width: 40px;
+}
+.clear-card .name {
+  min-width: 18rem;
+  display: flex;
+  align-items: center;
+  gap: 0.1rem;
+  cursor: pointer;
+}
+
+.clear-card .player-name {
+  margin-left:3px
+}
+
+.clear-card .name:hover .player-name {
+  text-decoration: underline;
+  transition: transform 0.3s ease;
+  transform: scale(1.07);
+}
+.clear-card .name:not(:hover) .player-name {
+  transition: transform 0.3s ease;
+  transform: scale(1);
+}
+
+.clear-card .name img,
+.clear-card .name svg {
+  width: 2rem;
+}
+.clear-card .name .pfp{
+  border-radius: 50%;
+  width: 2.75rem;
+}
+.clear-card .general, .clear-card .acc {
+  text-align: right;
+  min-width: 3rem;
+}
+.clear-card .judgements {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex: 1;
+  height: 100%;
+  background-color: var(--color-purple-1);
+  border: none;
+  border-radius: 3px;
+  color: var(--color-white);
+  margin: 0;
+  text-align: center;
+  padding: 0.5rem;
+  flex-wrap: wrap;
+  min-width: 13rem;
+  width: 13rem;
+}
+.clear-card .judgements span {
+  display: inline-block;
+  color: var(--color-white);
+  font-weight: bold;
+  font-size: 0.9rem;
+  padding: 0 0.1rem;
+}

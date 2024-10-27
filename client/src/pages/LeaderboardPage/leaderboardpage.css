@@ -1,0 +1,114 @@
+.leaderboard-page {
+  background-color: var(--color-black);
+  color: var(--color-white);
+  min-height: 100vh;
+}
+.leaderboard-page .leaderboard-body {
+  position: relative;
+  z-index: 2;
+  padding: 0 1.5rem;
+  padding-top: 6rem;
+  min-height: 100vh;
+  max-width: 70rem;
+  margin: 0 auto;
+}
+.leaderboard-page .leaderboard-body .input-option {
+  display: flex;
+  gap: 0.5rem;
+  height: 2rem;
+}
+.leaderboard-page .leaderboard-body .input-option input {
+  width: 100%;
+  background-color: var(--color-white-t20);
+  border: none;
+  border-radius: 3px;
+  padding: 0.5rem;
+  color: var(--white-color);
+}
+.leaderboard-page .leaderboard-body .input-option input:focus {
+  outline: none;
+}
+.leaderboard-page .leaderboard-body .input-option svg {
+  height: 2rem;
+  width: 2.2rem;
+  background-color: var(--color-white-t20);
+  padding: 0.1rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s linear;
+}
+.leaderboard-page .leaderboard-body .input-option svg:focus {
+  outline: none;
+}
+.leaderboard-page .leaderboard-body .filter {
+  position: relative;
+  z-index: 2;
+  overflow: visible;
+}
+.leaderboard-page .leaderboard-body .sort {
+  position: relative;
+  z-index: 1;
+}
+.leaderboard-page .leaderboard-body .sort .sort-option {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+.leaderboard-page .leaderboard-body .sort .sort-option .recent p,
+.leaderboard-page .leaderboard-body .sort .sort-option .diff p,
+.leaderboard-page .leaderboard-body .sort .sort-option .random p {
+  margin-bottom: 0.5rem;
+}
+.leaderboard-page .leaderboard-body .sort .sort-option .recent .wrapper,
+.leaderboard-page .leaderboard-body .sort .sort-option .diff .wrapper,
+.leaderboard-page .leaderboard-body .sort .sort-option .random .wrapper {
+  display: flex;
+  gap: 1rem;
+}
+.leaderboard-page .leaderboard-body .sort .sort-option .recent svg,
+.leaderboard-page .leaderboard-body .sort .sort-option .diff svg,
+.leaderboard-page .leaderboard-body .sort .sort-option .random svg {
+  height: 2rem;
+  width: 2rem;
+  background-color: var(--color-white-t20);
+  padding: 0.1rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s linear;
+}
+.leaderboard-page .leaderboard-body .sort .sort-option .recent svg:focus,
+.leaderboard-page .leaderboard-body .sort .sort-option .diff svg:focus,
+.leaderboard-page .leaderboard-body .sort .sort-option .random svg:focus {
+  outline: none;
+}
+.leaderboard-page .leaderboard-body .settings-class {
+  transition: height 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 1s ease-in-out;
+  height: 10rem;
+  overflow: hidden;
+}
+.leaderboard-page .leaderboard-body .spacer-setting {
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-white);
+  margin-bottom: 0.5rem;
+}
+.leaderboard-page .leaderboard-body .diff-filters {
+  display: flex;
+  flex-direction: row; /* Stacks items vertically */
+  gap: 1rem; /* Adds space between the filter containers */
+}
+
+.leaderboard-page .leaderboard-body .filter-container {
+  display: flex;
+  flex-direction: column; /* Stack the label and select vertically */
+}
+
+.leaderboard-page .leaderboard-body .input-setting {
+  margin-top: 1rem;
+}
+.leaderboard-page .leaderboard-body .setting-title {
+  margin-bottom: 1rem;
+}
+.leaderboard-page .leaderboard-body .setting-description {
+  margin-bottom: 0.5rem;
+}/*# sourceMappingURL=leaderboardpage.css.map */

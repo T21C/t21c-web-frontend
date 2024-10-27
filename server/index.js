@@ -2,31 +2,169 @@ import express from 'express';
 import fetch from 'node-fetch';
 import dotenv from 'dotenv';
 import cors from 'cors';
-import sql from 'mssql'; // Import mssql package
+import fs from 'fs';
+import path from 'path'
+import { exec } from 'child_process'; 
+import { getPfpUrl } from './pfpResolver.js';
 
 // Load environment variables from .env
 dotenv.config();
 
 const app = express();
-const port = process.env.PORT || 3001; // Fallback to 3000 if PORT is not defined
-const host = process.env.REDIRECT_URI || "http://localhost"
+const port = process.env.PORT || 3001;
+const playerlistJson = 'playerlist.json'; // Path to the JSON file
+const clearlistJson = "clearlist.json"
+const pfpListJson = "pfpList.json"
+const rankListJson = "rankList.json"
+const playerFolder = "players"
+var updateTimeList = {}
+var levelUpdateTime = 0
 
-const sqlConfig = {
-  server: process.env.DB_SERVER, // Your SQL Server instance
-  database: process.env.DB_NAME, // Your database name
-  options: {
-    encrypt: true, // Use true if you're on Azure
-    trustServerCertificate: true, // Change to false in production
-    // Use integrated security
-    trustedConnection: true, // This enables Windows Authentication
-  },
+const EXCLUDE_CLEARLIST = true
+
+
+const loadPfpList = () => {
+  if (fs.existsSync(pfpListJson)) {
+    const data = fs.readFileSync(pfpListJson, 'utf-8');
+    return JSON.parse(data);
+  }
+  return {}; // Return an empty object if the file does not exist
 };
 
-app.use(cors()); // Enable CORS for all routes
+const savePfpList = (pfpList) => {
+  fs.writeFileSync(pfpListJson, JSON.stringify(pfpList, null, 2), 'utf-8');
+};
+
+const readJsonFile = (path) => {
+  try {
+    const data = fs.readFileSync(path, 'utf-8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.error('Error reading JSON file:', error);
+    return {}; // Return empty object on error
+  }
+};
+
+const writeJsonFile = (path, data) => {
+  fs.writeFileSync(path, JSON.stringify(data, null, 2), 'utf-8');
+}
+
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true })); 
 
-// Helper function to verify access token
+const updateRanks = () => {
+  console.log("updating ranks");
+  const players = readJsonFile(playerlistJson)
+   // Example list of player objects
+  // Parameters to sort by
+  const sortParameters = [
+    "rankedScore",
+    "generalScore",
+    "ppScore",
+    "wfScore",
+    "12kScore",
+    "avgXacc",
+    "totalPasses",
+    "universalPasses",
+    "WFPasses",
+  ];
+
+  // Initialize the rank dictionary
+  const rankPositions = {};
+
+  // Initialize each player in the rankPositions dictionary
+  players.forEach(player => {
+    rankPositions[player.player] = {};
+  });
+
+  // Populate the ranks for each parameter
+  sortParameters.forEach(param => {
+    // Sort the players based on the current parameter in descending order
+    const sortedPlayers = [...players].sort((a, b) => b[param] - a[param]);
+
+    // Assign rank positions for each player based on the sorted order
+    sortedPlayers.forEach((player, index) => {
+      const playerName = player.player;
+      rankPositions[playerName][param] = index + 1; // Store rank (1-based)
+    });
+  });
+  writeJsonFile(rankListJson, rankPositions)
+}
+
+const updateData = () => {
+  console.log("starting execution");
+  exec(`executable.exe all_players --output=${playerlistJson} --reverse`, (error, stdout, stderr) => {
+    if (error) {
+      console.error(`Error executing for all_players: ${error.message}`);
+      return;
+    }
+    if (stderr) {
+      console.error(`Script stderr: ${stderr}`);
+      return;
+    }
+    console.log(`Script output:\n${stdout}`);
+    levelUpdateTime = Date.now()
+    updateRanks()
+    fetchPfps()
+    if (!EXCLUDE_CLEARLIST){
+    console.log("starting all_clears");
+    exec(`executable.exe all_clears --output=${clearlistJson} --useSaved`, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`Error executing script for all_clears: ${error.message}`);
+        return;
+      }
+      if (stderr) {
+        console.error(`Script stderr: ${stderr}`);
+        return;
+      }
+      console.log(`Script output: ${stdout}`);
+      });
+    }
+  });
+};
+
+const fetchPfps = async () => {
+  const playerlist = readJsonFile(playerlistJson)
+  const pfpListTemp = loadPfpList()
+  //console.log("playerlist length:" , Object.keys(playerlist).length);
+  
+  //get first 30 for testing
+  //for (const player of playerlist.slice(0, 50)) {
+  for (const player of playerlist) {
+    if (Object.keys(pfpListTemp).includes(player.player)){
+      continue
+    }
+    console.log("new player:" , player.player);
+    if (player.allScores){
+      for (const score of player.allScores.slice(0, 15)){
+        if (score.vidLink) {
+          const videoDetails = await getPfpUrl(score.vidLink);
+
+          // Check if the videoDetails contain the needed data
+          if (videoDetails) {
+              pfpListTemp[player.player] = videoDetails; // Store the name and link in the object
+              //console.log(`Fetched pfp for ${player}: ${videoDetails}`);
+              break; // Stop after finding the first valid video detail
+          }
+          else{
+              pfpListTemp[player.player] = null;
+          }
+        }
+      }
+    }
+  }
+  savePfpList(pfpListTemp)
+  //console.log("new list:", pfpListTemp)
+}
+
+const updateTimestamp = (name) => {
+  updateTimeList[name] = Date.now()
+}
+
+const intervalMilliseconds = 600000; // every 10 minutes
+setInterval(updateData, intervalMilliseconds);
+
 const verifyAccessToken = async (accessToken) => {
   try {
     const tokenInfoResponse = await fetch('https://discord.com/api/users/@me', {
@@ -34,7 +172,7 @@ const verifyAccessToken = async (accessToken) => {
         authorization: `Bearer ${accessToken}`,
       },
     });
-    console.log(tokenInfoResponse);
+    //console.log(tokenInfoResponse);
     
     if (!tokenInfoResponse.ok) {
       return false; // Invalid token
@@ -48,17 +186,148 @@ const verifyAccessToken = async (accessToken) => {
   }
 };
 
-
-// Example ban list (this could be fetched from an external API)
 const emailBanList = ['bannedUser@example.com', 'anotherBannedUser@example.com'];
 const idBanList = ['15982378912598', '78912538976123']
+const validSortOptions = [
+  "rankedScore",
+  "generalScore",
+  "ppScore",
+  "wfScore",
+  "universalPasses",
+  "avgXacc",
+  "WFPasses",
+  "totalPasses",
+  "topDiff",
+  "top12kDiff",
+  "player"
+];
+
+app.get('/leaderboard', async (req, res) => {
+  const { sortBy = 'rankedScore', order = 'desc', includeAllScores = 'false' } = req.query;
+
+  const pfpList = loadPfpList() 
+  if (!validSortOptions.includes(sortBy)) {
+    return res.status(400).json({ error: `Invalid sortBy option. Valid options are: ${validSortOptions.join(', ')}` });
+  }
+  // Read JSON data
+  const leaderboardData = readJsonFile(playerlistJson);
+
+  if (!Array.isArray(leaderboardData)) {
+    return res.status(500).json({ error: 'Invalid leaderboard data' });
+  }
+
+  // Sorting logic
+  const sortedData = leaderboardData.sort((a, b) => {
+    const valueA = a[sortBy];
+    const valueB = b[sortBy];
+
+    // Handle cases where fields might be missing or invalid
+    if (valueA === undefined || valueB === undefined) {
+      return 0;
+    }
+
+    if (order === 'asc') {
+      return valueA > valueB ? 1 : -1;
+    } else {
+      return valueA < valueB ? 1 : -1;
+    }
+  });
+
+
+
+  const responseData = sortedData.map(player => {
+    player.pfp= pfpList[player.player]
+
+    if (includeAllScores === 'false' && player.allScores) {
+      const { allScores, ...rest } = player;
+
+      return rest;
+      }
+    
+    
+    return player;
+  });
+
+  // Send the sorted data as response
+  res.json(responseData);
+});
+
+app.get("/player", async (req, res) => {
+  const { player = 'V0W4N'} = req.query;
+  const plrPath = path.join(playerFolder, `${player}.json`)
+  const pfpList = loadPfpList() 
+  const rankList = readJsonFile(rankListJson)
+  //console.log(plrPath)
+
+  await new Promise((resolve, reject) => {
+    fs.mkdir(playerFolder, { recursive: true }, (err) => {
+      if (err) {
+        console.error('Error creating directory:', err);
+        reject(err);
+      } else {
+        resolve();
+      }
+    });
+  });
+
+  const getPlayer = () => {
+    return new Promise((resolve, reject) => {
+      exec(`executable.exe player "${player}" --output="${plrPath}" --showCharts --useSaved`, (error, stdout, stderr) => {
+        if (error) {
+          console.error(`Error executing for all_players: ${error.message}`);
+          reject(error);
+          return;
+        }
+        if (stderr) {
+          console.error(`Script stderr: ${stderr}`);
+          reject(new Error(stderr));
+          return;
+        }
+        console.log(`Script output: ${stdout}`);
+        resolve(stdout);
+      });
+    });
+  };
+
+
+  try {
+
+    //console.log(updateTimeList);
+    
+    if (!updateTimeList[player] || updateTimeList[player] < levelUpdateTime){
+      await getPlayer();
+      updateTimestamp(player)
+      console.log("updating", player, "with timestamp", updateTimeList[player])
+    }
+    else{
+      //console.log("using recent save for player", player);
+      
+    }
+
+
+    const result = readJsonFile(plrPath); // Ensure this function is handled correctly
+
+    result.pfp= pfpList[result.player]
+    result.ranks = rankList[result.player]
+    res.json(result);
+  } catch (err) {
+    console.error('Error retrieving player data:', err);
+    res.status(500).json({ error: 'Error retrieving player data' });
+  }
+})
+
+app.get("/pfp", async (req, res) => {
+  const { player } = req.query;
+  const pfpList = loadPfpList() 
+  res.json(pfpList[player]);
+})
 
 
 // CURRENTLY NOT IN USE
 app.post('/api/google-auth', async (req, res) => {
   const { code } = req.body; // Extract code object from request body
   
-  console.log("request body: ", req.body);
+  //console.log("request body: ", req.body);
   
   if (!code || !code.access_token) {
     return res.status(400).json({ error: 'No access token provided' });
@@ -85,7 +354,7 @@ app.post('/api/google-auth', async (req, res) => {
     }
 
     const userInfo = await userInfoResponse.json();
-    console.log("userInfo", userInfo);
+    //console.log("userInfo", userInfo);
     
     // Token is valid, return the token info and user profile
     res.json({
@@ -116,7 +385,7 @@ app.post('/api/discord-auth', async (req, res) => {
           redirect_uri: `${process.env.CLIENT_URL}/callback`, // Adjust this as needed
       }).toString();
 
-      console.log('Request Body:', requestBody); // Log request body
+      //console.log('Request Body:', requestBody); // Log request body
 
       const tokenResponseData = await fetch('https://discord.com/api/oauth2/token', {
           method: 'POST',
@@ -133,7 +402,7 @@ app.post('/api/discord-auth', async (req, res) => {
       }
 
       const oauthData = await tokenResponseData.json(); // Parse the token response
-      console.log('OAuth Data:', oauthData);
+      //console.log('OAuth Data:', oauthData);
 
       // Send back the token data to the client
       return res.status(200).json({
@@ -168,7 +437,7 @@ app.post('/api/check-token', async (req, res) => {
 app.post('/api/form-submit', async (req, res) => {
   const accessToken = req.headers.authorization.split(' ')[1]; // Extract access token from headers
   const formType = req.headers['x-form-type'];  // Extract X-Form-Type from client request
-  console.log("form type extracted", formType);
+  //console.log("form type extracted", formType);
   
   // Verify the access token first
   const tokenInfo = await verifyAccessToken(accessToken);
@@ -258,5 +527,6 @@ app.get('/api/bilibili', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+  updateData()
+  console.log(`Server running on ${process.env.OWN_URL}`);
 });

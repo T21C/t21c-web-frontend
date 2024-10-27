@@ -1,4 +1,18 @@
 {
+    "valueLabels":{
+      "rankedScore": "Ranked Score",
+      "generalScore": "General Score",
+      "ppScore": "PP Score",
+      "wfScore": "WF Score",
+      "12kScore": "12k Score",
+      "avgXacc": "Average Accuracy",
+      "totalPasses": "Total Passes",
+      "universalPasses": "Universal Passes",
+      "WFPasses": "WF Passes",
+      "topDiff": "Top Difficulty",
+      "top12kDiff": "Top 12k Difficulty"
+    },
+
     "homePage": {
       "featuredText": "Spotlights",
       "featuredLevel": [1, 2, 3],
@@ -34,6 +48,32 @@
       }
     },
   
+    "leaderboardPage": {
+      "inputPlaceholder": "Search player name",
+  
+      "toolTip": {
+        "filter": "Filter (NOT IMPLEMENTED)",
+        "sort": "Sort",
+        "reset": "Reset",
+        "recentAsc": "Ascending",
+        "recentDesc": "Descending",
+        "difficultyAsc": "Difficulty Ascending",
+        "difficultyDesc": "Difficulty Descending",
+        "random": "Random"
+      },
+      "settingExp": {
+        "headerSort": "Sort",
+        "headerFilter": "Filter",
+        "filterDiffs": "Diffs",
+        "sortOrder": "Sort order",
+        "sortBy": "Sort by"
+      },
+      "infScroll": {
+        "loading": "Hold tight...",
+        "end": "End of list reached"
+      }
+    },
+
     "detailPage": {
       "waiting" : "Waiting",
       "#1Clears": {
@@ -64,7 +104,12 @@
         }
       }
     },
-  
+
+    "profilePage": {
+      "allScores": "All scores",
+      "notFound": "No player found"
+    },
+
     "submissionPage": {
       "header": {
         "headerPass": "I want to submit a pass",
@@ -190,10 +235,25 @@
       "creator": "Creator",
       "clears": "Clears"
     },
+
+    "playerCardComponent": {
+      "player": "Player",
+      "rankedScore": "Ranked score",
+      "generalScore": "General score",
+      "avgXacc": "Average X-acc"
+    },
   
+    "scoreCardComponent": {
+      "song": "Song",
+      "accuracy": "Accuracy",
+      "speed": "Speed",
+      "score": "Score"
+    },
+
     "navigationComponent": {
       "levels": "Levels",
-      "submission": "Submissions"
+      "submission": "Submissions",
+      "leaderboard": "Leaderboard"
     },
   
     "footerComponent": {
