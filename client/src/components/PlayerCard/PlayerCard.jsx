@@ -1,11 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import { getVideoDetails } from "../../Repository/RemoteRepository";
 import "./playercard.css"
 import { useTranslation } from "react-i18next";
 import { useContext, useEffect, useState } from "react";
 import { PlayerContext } from "../../context/PlayerContext";
 
 import { Encoder } from 'base32.js';
+import { formatScore } from "../Misc/Utility";
 
 function encodeToBase32(input) {
   const encoder = new Encoder();
@@ -16,6 +16,7 @@ function encodeToBase32(input) {
 
 // eslint-disable-next-line react/prop-types
 const nonRoundable = ["topDiff", "top12kDiff"]
+const passes = ["totalPasses", "universalPasses", "WFPasses"] 
 
 const PlayerCard = ({player}) => {
   const {sortBy
@@ -49,11 +50,11 @@ const PlayerCard = ({player}) => {
     const scoreFields = {
       rankedScore: {
         label: sortLabels.rankedScore,
-        value: player.rankedScore.toFixed(2),
+        value: formatScore(player.rankedScore),
       },
       generalScore: {
         label: sortLabels.generalScore,
-        value: player.generalScore.toFixed(2),
+        value: formatScore(player.generalScore),
       },
       avgXacc: {
         label: sortLabels.avgXacc,
@@ -61,13 +62,13 @@ const PlayerCard = ({player}) => {
       },
     };
     
-    const primaryField = scoreFields[sortBy] || {
+    const primaryField = {
       label: sortLabels[sortBy],
       value: player[sortBy] !== undefined ? 
 
       player[sortBy]
       
-      : player.generalScore.toFixed(2),
+      : player.generalScore,
     };
 
     const excludeKeys = Object.keys(scoreFields).filter(key => key === prioritizedField);
@@ -82,10 +83,16 @@ const PlayerCard = ({player}) => {
       }
 
 
-    console.log(primaryField, prioritizedField);
+    //console.log(primaryField, prioritizedField);
     
     if (!nonRoundable.includes(sortBy)){
-      primaryField.value = parseFloat(primaryField.value).toFixed(2)
+      if (!passes.includes(sortBy)){
+        if (sortBy === "avgXacc"){
+          primaryField.value = (parseFloat(primaryField.value)*100).toFixed(2).toString()+"%"
+        }
+        else primaryField.value = formatScore(parseFloat(primaryField.value))
+      }
+      else primaryField.value = Math.round(parseFloat(primaryField.value))
     }
 
   return (

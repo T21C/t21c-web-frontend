@@ -1,8 +1,8 @@
 .home {
   overflow: hidden;
   position: relative;
-  background-color: var(--color-black);
   color: var(--color-white);
+  background-color: black;
 }
 .home .spacer-svg {
   position: absolute;
@@ -109,6 +109,8 @@
 
 .spacer-two {
   background-image: url("../../assets/important/dark/wavesTwo.svg");
+  position: relative;
+  z-index: 5;
 }
 
 .recent-rated {

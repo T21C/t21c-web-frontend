@@ -64,6 +64,7 @@ def searchByChart(chartId: int, chartPath=chartPathDef, passPath=passPathDef, pl
         Scores.append(ResultObj().updateParams({
                             "player": Pass["player"],
                             "song": chart["song"],
+                            "artist": chart["artist"],
                             "score": util.getScoreV2(Pass, chart),
                             "pguDiff": chart["pguDiff"],
                             "Xacc": util.getXacc(Pass["judgements"]),
@@ -168,6 +169,7 @@ def searchByPlayer(playerName: str, chartPath=chartPathDef , passPath=passPathDe
         Scores.append(ResultObj().updateParams({
                             "player": Pass["player"],
                             "song": chart["song"],
+                            "artist": chart["artist"],
                             "score": util.getScoreV2(Pass, chart),
                             "pguDiff": chart["pguDiff"],
                             "Xacc": util.getXacc(Pass["judgements"]),

@@ -2,6 +2,8 @@ footer {
   background-color: var(--color-purple-1);
   color: var(--color-white);
   height: 100%;
+  position: relative;
+  z-index: 5;
 }
 footer h2 {
   margin-bottom: 0.5rem;

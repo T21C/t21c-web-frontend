@@ -785,18 +785,8 @@ const LevelPageRev = () => {
           {levelsData.map((l, index) => (
             <LevelCardRev
               key={index}
-              creator={l.creator}
-              newDiff={l.newDiff}
-              pdnDiff={l.pdnDiff}
-              pguDiff={legacyDiff ? l.diff : l.pguDiff}
-              id={l.id}
-              artist={l.artist}
-              song={l.song}
-              clears={l.clears}
-              dl={l.dlLink}
-              ws={l.wsLink}
-              team={l.team}
-              legacy={l.diff}
+              level={l}
+              legacyMode={legacyDiff}
             />
           ))}
         </InfiniteScroll>

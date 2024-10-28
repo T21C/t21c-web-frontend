@@ -4,24 +4,14 @@ import "./scorecard.css"
 import "../../index.css"
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
+import { formatSpeed, formatScore } from "../../components/Misc/Utility"
 
-const formatSpeed = (speed) => {
-  const speedTwoDecimals = speed.toFixed(2);
-  if (speedTwoDecimals[speedTwoDecimals.length - 1] !== '0') {
-    return speedTwoDecimals;
-  }
-  const speedOneDecimal = speed.toFixed(1);
-  if (speedOneDecimal[speedOneDecimal.length - 1] !== '0') {
-    return speedOneDecimal;
-  }
-  return Math.round(speed);
-};
 
 // eslint-disable-next-line react/prop-types
 const ScoreCard = ({scoreData}) => {
   const {t} = useTranslation()  
   const navigate = useNavigate()
-  //console.log(scoreData);
+  console.log(scoreData);
   
     const redirect = () => {
       navigate(`/leveldetail?id=${scoreData.chartId}`);
@@ -55,12 +45,12 @@ const ScoreCard = ({scoreData}) => {
         <img src={getLevelImage(scoreData.pguDiff, scoreData.pguDiff ,scoreData.pguDiff ,scoreData.pguDiff)} referrerPolicy="no-referrer" alt="" />
       </div>
       <div className="name-wrapper" onClick={() => redirect()}>
-          <p className="score-exp">{t("scoreCardComponent.song")}</p>
+          <p className="score-exp">{scoreData.artist}</p>
           <p className='score-desc'>{scoreData.song}</p>
       </div>
       <div className="score-wrapper">
           <p className="score-exp">{t("scoreCardComponent.score")}</p>
-          <p className='score-desc'>{scoreData.score.toFixed(2)}</p>
+          <p className='score-desc'>{formatScore(scoreData.score)}</p>
       </div>
       <div className="acc-wrapper">
           <p className="score-exp">{t("scoreCardComponent.accuracy")}</p>
@@ -69,7 +59,7 @@ const ScoreCard = ({scoreData}) => {
 
       <div className="speed-wrapper">
           <p className="score-exp">{t("scoreCardComponent.speed")}</p>
-          <div className="score-desc">{formatSpeed(scoreData.speed)}{scoreData.speed}×</div>
+          <div className="score-desc">{formatSpeed(scoreData.speed)}×</div>
       </div>
 
       <div className="vid-logo-wrapper">

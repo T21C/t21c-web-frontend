@@ -58,6 +58,7 @@ class ResultObj:
     def __init__(self):
         self.params = {"player": "",
                        "song": "",
+                       "artist": "",
                        "score": "",
                        "pguDiff": 0,
                        "Xacc": 0,
@@ -247,7 +248,7 @@ class Utils:
             "wfScore": 0,
             "TvwKScore": 0
         }
-
+        tvwkCounter = 0
         for score in scores:
             # General score is the sum of all "score" values
             results["generalScore"] += score["score"]
@@ -261,8 +262,9 @@ class Utils:
                 results["wfScore"] += score["baseScore"]
 
             # TvwK Score if is12K is True
-            if score["is12K"]:
-                results["TvwKScore"] += score["score"]
+            if score["is12K"] and tvwkCounter < 20:
+                results["TvwKScore"] += (0.9 ** tvwkCounter) * score["score"]
+                tvwkCounter += 1
 
         return results.values()
 

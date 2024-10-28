@@ -157,16 +157,20 @@
   transform: scale(1);
 }
 
-.clear-card .name img,
-.clear-card .name svg {
+.clear-card .name img {
   width: 2rem;
+}
+
+
+.clear-card .name svg {
+  width: 2.75rem;
 }
 .clear-card .name .pfp{
   border-radius: 50%;
   width: 2.75rem;
 }
 .clear-card .general, .clear-card .acc {
-  text-align: right;
+  text-align: center;
   min-width: 3rem;
 }
 .clear-card .judgements {

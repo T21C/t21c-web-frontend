@@ -26,3 +26,22 @@ export function validateNumber ( value){
     const regex = new RegExp("^\\d+$")
     return regex.test(value)
 }
+export function formatSpeed (speed) {
+    const speedTwoDecimals = speed.toFixed(2);
+    if (speedTwoDecimals[speedTwoDecimals.length - 1] !== '0') {
+      return speedTwoDecimals;
+    }
+    const speedOneDecimal = speed.toFixed(1);
+    if (speedOneDecimal[speedOneDecimal.length - 1] !== '0') {
+      return speedOneDecimal;
+    }
+    return Math.round(speed);
+  };
+
+export  function formatScore(score) {
+    return new Intl.NumberFormat('en-US', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    }).format(score);
+  }
+  
