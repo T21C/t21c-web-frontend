@@ -384,7 +384,7 @@ const LevelPageRev = () => {
             data-tooltip-id="reset"
           >
             <path
-              stroke="currentColor"
+              stroke="currentCcolor"
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth="2"
@@ -796,7 +796,7 @@ const LevelPageRev = () => {
               dl={l.dlLink}
               ws={l.wsLink}
               team={l.team}
-              legacy={legacyDiff}
+              legacy={l.diff}
             />
           ))}
         </InfiniteScroll>
