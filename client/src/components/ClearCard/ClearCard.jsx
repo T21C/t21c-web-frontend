@@ -4,6 +4,7 @@ import "./clearcard.css"
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Encoder } from "base32.js";
 
 const formatSpeed = (speed) => {
   const speedTwoDecimals = speed.toFixed(2);
@@ -17,7 +18,11 @@ const formatSpeed = (speed) => {
 
   return Math.round(speed);
 };
-
+function encodeToBase32(input) {
+  const encoder = new Encoder();
+  const buffer = new TextEncoder().encode(input);
+  return encoder.write(buffer).finalize();
+}
 // eslint-disable-next-line react/prop-types
 const ClearCard = ({scoreData, index}) => {
   console.log(scoreData)
@@ -47,7 +52,7 @@ const ClearCard = ({scoreData, index}) => {
   console.log(scoreData);
   
     const redirect = () => {
-      navigate(`/profile/${scoreData.player}`);
+      navigate(`/profile/${encodeToBase32(scoreData.player)}`);
     };
 
     const onAnchorClick = (e) => {
