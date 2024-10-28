@@ -6,14 +6,10 @@ import { useTranslation } from "react-i18next";
 
 // eslint-disable-next-line react/prop-types
 const LevelCardRev = ({newDiff, pdnDiff, pguDiff, creator, id, artist, song, clears, dl, ws, team, legacy }) => {
-  //console.log("got", newDiff, pdnDiff, pguDiff, legacy)
-  //console.log("img link: ", getLevelImage(newDiff, pdnDiff, pguDiff, legacy));
-  
-  
   const {t} = useTranslation()  
   const navigate = useNavigate()
     const redirect = () => {
-      navigate(`/leveldetail?id=${encodeURIComponent(id)}`);
+      navigate(`/leveldetail?id=${id}`);
     };
 
     const onAnchorClick = (e) => {

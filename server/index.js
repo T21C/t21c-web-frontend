@@ -6,6 +6,8 @@ import fs from 'fs';
 import path from 'path'
 import { exec } from 'child_process'; 
 import { getPfpUrl } from './pfpResolver.js';
+import pkg from 'base32.js';
+const { Encoder, Decoder } = pkg;
 
 // Load environment variables from .env
 dotenv.config();
@@ -20,8 +22,20 @@ const playerFolder = "players"
 var updateTimeList = {}
 var levelUpdateTime = 0
 
+
 const EXCLUDE_CLEARLIST = true
 
+function encodeToBase32(input) {
+  const encoder = new Encoder();
+  const buffer = new TextEncoder().encode(input);
+  return encoder.write(buffer).finalize();
+}
+
+function decodeFromBase32(encoded) {
+  const decoder = new Decoder();
+  const decodedBuffer = decoder.write(encoded).finalize();
+  return new TextDecoder().decode(decodedBuffer);
+}
 
 const loadPfpList = () => {
   if (fs.existsSync(pfpListJson)) {
@@ -48,6 +62,8 @@ const readJsonFile = (path) => {
 const writeJsonFile = (path, data) => {
   fs.writeFileSync(path, JSON.stringify(data, null, 2), 'utf-8');
 }
+
+
 
 app.use(cors());
 app.use(express.json());
@@ -257,7 +273,7 @@ app.get("/player", async (req, res) => {
   const plrPath = path.join(playerFolder, `${player}.json`)
   const pfpList = loadPfpList() 
   const rankList = readJsonFile(rankListJson)
-  //console.log(plrPath)
+  console.log(plrPath)
 
   await new Promise((resolve, reject) => {
     fs.mkdir(playerFolder, { recursive: true }, (err) => {
@@ -271,8 +287,9 @@ app.get("/player", async (req, res) => {
   });
 
   const getPlayer = () => {
+    console.log("decoded", decodeFromBase32(player))
     return new Promise((resolve, reject) => {
-      exec(`python ./parser_module/executable.py player "${player}" --output="${plrPath}" --showCharts --useSaved`, (error, stdout, stderr) => {
+      exec(`python ./parser_module/executable.py player "${decodeFromBase32(player)}" --output="${plrPath}" --showCharts --useSaved`, (error, stdout, stderr) => {
         if (error) {
           console.error(`Error executing for all_players: ${error.message}`);
           reject(error);

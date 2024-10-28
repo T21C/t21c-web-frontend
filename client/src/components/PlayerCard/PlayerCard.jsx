@@ -5,10 +5,18 @@ import { useTranslation } from "react-i18next";
 import { useContext, useEffect, useState } from "react";
 import { PlayerContext } from "../../context/PlayerContext";
 
-const nonRoundable = ["topDiff", "top12kDiff"]
+import { Encoder } from 'base32.js';
+
+function encodeToBase32(input) {
+  const encoder = new Encoder();
+  const buffer = new TextEncoder().encode(input);
+  return encoder.write(buffer).finalize();
+}
 
 
 // eslint-disable-next-line react/prop-types
+const nonRoundable = ["topDiff", "top12kDiff"]
+
 const PlayerCard = ({player}) => {
   const {sortBy
   } = useContext(PlayerContext);
@@ -30,7 +38,7 @@ const PlayerCard = ({player}) => {
     top12kDiff: t("valueLabels.top12kDiff")
   };
     const redirect = () => {
-      navigate(`/profile/${player.player}`);
+      navigate(`/profile/${encodeToBase32(player.player)}`);
     };
 
     const onAnchorClick = (e) => {
