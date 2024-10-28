@@ -10,11 +10,10 @@ const formatSpeed = (speed) => {
   if (speedTwoDecimals[speedTwoDecimals.length - 1] !== '0') {
     return speedTwoDecimals;
   }
-  const speedOneDecimal = speed.toFixed(2);
+  const speedOneDecimal = speed.toFixed(1);
   if (speedOneDecimal[speedOneDecimal.length - 1] !== '0') {
     return speedOneDecimal;
   }
-
   return Math.round(speed);
 };
 
@@ -70,7 +69,7 @@ const ScoreCard = ({scoreData}) => {
 
       <div className="speed-wrapper">
           <p className="score-exp">{t("scoreCardComponent.speed")}</p>
-          <div className="score-desc">{formatSpeed(scoreData.speed)}×</div>
+          <div className="score-desc">{formatSpeed(scoreData.speed)}{scoreData.speed}×</div>
       </div>
 
       <div className="vid-logo-wrapper">
