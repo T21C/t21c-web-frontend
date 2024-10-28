@@ -218,7 +218,7 @@ const validSortOptions = [
   "player"
 ];
 
-app.get('/leaderboard', async (req, res) => {
+app.get('/api/leaderboard', async (req, res) => {
   const { sortBy = 'rankedScore', order = 'desc', includeAllScores = 'false' } = req.query;
 
   const pfpList = loadPfpList() 
@@ -268,7 +268,7 @@ app.get('/leaderboard', async (req, res) => {
   res.json(responseData);
 });
 
-app.get("/player", async (req, res) => {
+app.get("/api/player", async (req, res) => {
   const { player = 'V0W4N'} = req.query;
   const plrPath = path.join(playerFolder, `${player}.json`)
   const pfpList = loadPfpList() 
@@ -333,7 +333,7 @@ app.get("/player", async (req, res) => {
   }
 })
 
-app.get("/pfp", async (req, res) => {
+app.get("/api/pfp", async (req, res) => {
   const { player } = req.query;
   const pfpList = loadPfpList() 
   res.json(pfpList[player]);
