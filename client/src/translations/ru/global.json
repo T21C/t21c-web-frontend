@@ -17,7 +17,7 @@
       "featuredText": "Избранные",
       "featuredLevel": [1, 2, 3],
       "inputPlaceholder": "Посик по исполнителю, треку, создателю, #id",
-      "seeMore" : "Смотреть больше"
+      "seeMore" : "Смотреть ещё"
     },
   
     "levelPage": {
