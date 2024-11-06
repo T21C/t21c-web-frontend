@@ -1,0 +1,162 @@
+.player-page {
+  background-color: var(--color-black);
+  color: var(--color-white);
+  min-height: 100vh;
+}
+
+.player-notfound {
+  color: var(--color-white);
+  position: absolute;
+  white-space: nowrap;
+  top: 50%;          /* Position from the top */
+  left: 50%;         /* Position from the left */
+  transform: translate(-50%, -50%); /* Center the element */
+  z-index: 2;
+}
+
+
+.player-page .player-body {
+  position: relative;
+  z-index: 2;
+  padding: 0 1.5rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;  /* Centers horizontally */
+  align-items: center;          /* Full viewport height */
+}
+.player-page .player-content {
+  position: relative;
+  z-index: 2;
+  padding: 0 1.5rem;
+  padding-top: 6rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;  /* Centers horizontally */
+  align-items: center;        /* Full viewport height */
+}
+.player-page .player-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 600px; /* Fixed min-width */
+  padding: 20px;
+}
+.player-page .player-info-container {
+  display: flex;
+  align-items: center;
+}
+.player-page .player-picture-container {
+  flex-shrink: 0;
+}
+
+.player-page .player-picture {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.player-page .player-info {
+  margin-left: 20px;
+}
+
+.player-page .player-info .player-name-rank {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+}
+
+.player-page .player-info .player-name-rank h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.player-page .player-info .player-name-rank h2 {
+  padding: 10px;
+  border-radius: 40px;
+  margin-left: 10px;
+  font-size: 20px;
+}
+
+.player-page .country-flag {
+  width: 40px;
+  height: 40px;
+  margin-top: 10px;
+}
+
+.player-page .score-container {
+  display: flex;
+  justify-content: space-between; /* Spread out the scores */
+  gap: 1rem; /* Add space between items */
+}
+
+.player-page .passes-container {
+  display: flex;
+  justify-content: space-between; /* Spread out the scores */
+  gap: 1rem; /* Add space between items */
+}
+
+.player-page .score-item {
+  display: flex;
+  flex-direction: column; /* Stack the score name on top of the score */
+  align-items: center;
+}
+
+.player-page .score-name {
+  font-size: 0.9rem; /* Optional: Change color for the score name */
+  text-align: center;
+}
+
+.player-page .score-value {
+  font-size: 1.2rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.player-page .diff-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
+}
+
+.player-page .diff-info {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.player-page .diff-info p {
+  margin-right: 10px; /* Space between description and image */
+}
+
+.player-page .diff-image {
+  width: 50px; /* Adjust as necessary */
+  height: auto;
+}
+
+.player-page .all-scores {
+  margin-top: 20px; /* Add space between the previous content and this list */
+  padding: 20px;
+  max-width: 65%;
+  background-color: #00000057; /* Optional: Set a background to distinguish the section */
+  width: 100%; /* Ensure it spans the entire width */
+}
+
+.player-page .all-scores h2 {
+  margin-bottom: 15px;
+}
+
+.player-page .all-scores ul {
+  list-style-type: none; /* Remove bullets */
+  padding: 0;
+}
+
+.player-page .all-scores li {
+  margin: 10px inherit ;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+

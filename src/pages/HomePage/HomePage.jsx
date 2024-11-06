@@ -48,45 +48,6 @@ const HomePage = () => {
     navigate(`/levels`); 
   };
 
-  //blob useEffect
-  useEffect(() => {
-    let blob = null; // Cache for the blob element
-  
-    const updateCursorPosition = (e) => {
-      if (!blob && heroRef.current) {
-        blob = heroRef.current.querySelector('.blob');
-      }
-  
-      if (blob) {
-        const { left, top } = heroRef.current.getBoundingClientRect();
-        const x = e.clientX - left;
-        const y = e.clientY - top;
-  
-        if (x >= 0 && y >= 0 && x <= heroRef.current.offsetWidth && y <= heroRef.current.offsetHeight) {
-          blob.style.left = `${x}px`;
-          blob.style.top = `${y}px`;
-        }
-      }
-    };
-  
-    // Throttle wrapper
-    let timeoutId = null;
-    const throttledUpdateCursorPosition = (e) => {
-      if (timeoutId === null) {
-        timeoutId = setTimeout(() => {
-          updateCursorPosition(e);
-          timeoutId = null;
-        }, 100); 
-      }
-    };
-  
-    document.addEventListener('mousemove', throttledUpdateCursorPosition);
-  
-    return () => {
-      document.removeEventListener('mousemove', throttledUpdateCursorPosition);
-    };
-  }, []);
-
   // const scrollToRecent = () => {
   //   const recent = document.querySelector("#recent");
   //   recent.scrollIntoView({ behavior: "smooth" });
@@ -94,11 +55,11 @@ const HomePage = () => {
 
   return (
     <>
+    <div>
       <CompleteNav />
       <div className="home" ref={heroRef}>
+        <div className="background-level"></div>
 
-        <div className="blob"></div>
-        <div className="blur"></div>
         <div className="hero  wrapper-top wrapper-body"  >
           <img className="img-hero" src={logo} alt="" />
           
@@ -122,15 +83,7 @@ const HomePage = () => {
                     height: "2rem"
                   }}
                     key={index}
-                    creator={l.creator}
-                    pdnDiff={l.pdnDiff}
-                    pguDiff={l.pguDiff}                    
-                    id={l.id}
-                    artist={l.artist}
-                    song={l.song}
-                    dl={l.dl}
-                    ws={l.ws}
-                    team={l.team}
+                    level={l}
                   /> 
               ))):(
                 <div className="loader"></div>
@@ -167,6 +120,7 @@ const HomePage = () => {
 
       <div className="spacer spacer-two"></div>
       <Footer />
+    </div>
     </>
   );
 };

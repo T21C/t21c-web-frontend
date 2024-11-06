@@ -3,6 +3,10 @@ import "./App.css";
 import { Suspense, lazy, useEffect, useState } from "react";
 import LevelSubmissionPage from "./pages/LevelSubmissionPage/LevelSubmissionPage.jsx";
 import PassSubmissionPage from "./pages/PassSubmissionPage/PassSubmissionPage.jsx";
+import CallbackPage from "./components/Callback/Callback.jsx";
+import LeaderboardPage from "./pages/LeaderboardPage/LeaderboardPage.jsx";
+import ProfilePage from "./pages/ProfilePage/ProfilePage.jsx"
+import AdminPage from "./pages/AdminPage/AdminPage.jsx";
 
 const HomePage = lazy(() => import("./pages/HomePage/HomePage.jsx"));
 const LevelDetailPage = lazy(()=> import ("./pages/LevelDetailPage/LevelDetailPage.jsx"))
@@ -27,6 +31,7 @@ function App() {
         </div>
       }
     >
+                
       <Routes>
         <Route index path="/" element={<HomePage />} />
         <Route path="levels" element={<LevelPageRev />} />
@@ -35,8 +40,11 @@ function App() {
         <Route path="submission" element={<SubmissionPage />} />
         <Route path="submission/level" element={<LevelSubmissionPage />} />
         <Route path="submission/pass" element={<PassSubmissionPage />} />
+        <Route path="callback" element={<CallbackPage />} />
+        <Route path="profile/:playerName" element={<ProfilePage />} />
 
-        {/* <Route path='/leaderboard' element={<LeaderboardPage/>}/> */}
+        <Route path='leaderboard' element={<LeaderboardPage/>}/>
+        <Route path='admin' element={<AdminPage/>} />
       </Routes>
     </Suspense>
     </>

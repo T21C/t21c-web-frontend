@@ -1,4 +1,18 @@
 {
+  "valueLabels":{
+    "rankedScore": "Ranked Score",
+    "generalScore": "General Score",
+    "ppScore": "PP Score",
+    "wfScore": "WF Score",
+    "12kScore": "12k Score",
+    "avgXacc": "Average Accuracy",
+    "totalPasses": "Total Passes",
+    "universalPasses": "Universal Passes",
+    "WFPasses": "WF Passes",
+    "topDiff": "Top Difficulty",
+    "top12kDiff": "Top 12k Difficulty"
+  },
+
   "homePage": {
     "featuredText": "스포트라이트",
     "featuredLevel": [1, 2, 3],
@@ -34,6 +48,32 @@
     }
   },
 
+"leaderboardPage": {
+      "inputPlaceholder": "Search player name",
+  
+      "toolTip": {
+        "filter": "Filter (NOT IMPLEMENTED)",
+        "sort": "Sort",
+        "reset": "Reset",
+        "recentAsc": "Ascending",
+        "recentDesc": "Descending",
+        "difficultyAsc": "Difficulty Ascending",
+        "difficultyDesc": "Difficulty Descending",
+        "random": "Random"
+      },
+      "settingExp": {
+        "headerSort": "Sort",
+        "headerFilter": "Filter",
+        "filterDiffs": "Diffs",
+        "sortOrder": "Sort order",
+        "sortBy": "Sort by"
+      },
+      "infScroll": {
+        "loading": "Hold tight...",
+        "end": "End of list reached"
+      }
+    },
+
   "detailPage": {
     "waiting" : "기다리는 중",
     "#1Clears": {
@@ -65,6 +105,11 @@
     }
   },
 
+  "profilePage": {
+    "allScores": "All scores",
+    "notFound": "No player found"
+  },
+
   "submissionPage": {
     "header": {
       "headerPass": "레벨을 클리어했어요!",
@@ -79,6 +124,108 @@
     "RulesAGuide": "규칙 및 가이드라인 보기"
   },
 
+  "levelSubmission": {
+    "alert": {
+      "login": "You must be logged in",
+      "form": "Incomplete form",
+      "success": "Form submitted successfully!",
+      "error": "Error: ",
+      "loading": "Submitting..."
+    },
+    "thumbnailInfo": "Video not found",
+    "title": "Submit a Level",
+    "videoInfo": {
+      "title": "Video title",
+      "channel": "Channel name",
+      "timestamp": "Timestamp",
+      "nolink": "No link provided"
+    },
+    "tooltip": "Unknown difficulty, will submit but please make sure it's readable by the managers. Correct diff ex.: G13; P7~P13; 21.1+; 19~20.0+",
+    "submInfo": {
+      "song": "Song",
+      "artist": "Artist",
+      "vidLink": "Video Link",
+      "charter": "Video Link",
+      "diff": "Difficulty",
+      "vfxer": "VFX-ers (opt.)",
+      "team": "Team Name (opt.)",
+      "dlLink": "Download link",
+      "workshop": "Workshop link",
+      "dlLinksOr": "or"
+    },
+    
+    "submit": "Submit",
+    "submitWait": " please wait..."
+    },
+  
+  "passSubmission": {
+    "alert": {
+      "login": "You must be logged in",
+      "form": "Incomplete form",
+      "success": "Form submitted successfully!",
+      "error": "Error: ",
+      "loading": "Submitting..."
+    },
+    "score": {
+      "needId": "Level ID is required",
+      "needJudg": "Not all judgements are filled",
+      "needInfo": "Not enough pass info",
+      "noInfo": "Insufficient data to calculate score"
+    },
+    "thumbnailInfo": "Video not found",
+    "title": "Submit a Pass",
+    "videoInfo": {
+      "vidLink": "Video link",
+      "title": "Video title",
+      "channel": "Channel name",
+      "timestamp": "Timestamp",
+      "nolink": "No link provided"
+    },
+    "levelInfo": {
+      "song": "Song name",
+      "charter": "Charter",
+      "artist": "Artist"
+    },
+    "holdTooltip": "Tick if you have used hold option other than \"Normal hold\" (0.9x score)",
+    "12kTooltip": "Tick if you have cleared the chart with 12 keys or less",
+    "16kTooltip": "Tick if you have cleared the chart with 16 keys or more",
+    "tooltip": "Unknown difficulty, will submit but please make sure it's readable by the managers. Correct diff ex.: G13; P7~P13; 21.1+; 19~20.0+",
+    "levelFetching":{
+      "input": "Input Level ID",
+      "fetching": "Fetching",
+      "goto": "Go to level",
+      "notfound": "Level not found"
+    },
+    
+    "submInfo": {
+      "levelId": "Level Id",
+      "altname": "Alt leaderboard name",
+      "nohold": "Used alternate holds",
+      "speed": "Speed (opt; ex: 1.2)",
+      "feelDiff": "Feeling rating (ex. G12)",
+      "team": "Team Name (opt.)",
+      "dlLink": "Download link",
+      "workshop": "Workshop link"
+    },
+    "judgements":{
+      "tooearly": "Too Early",
+      "early": "Early",
+      "ePerfect": "EPerfect",
+      "perfect": "Perfect",
+      "lPerfect": "LPerfect",
+      "late": "Late"
+    },
+    "acc": "Accuracy: ",
+    "scoreCalc": "Score: ",
+    "submit": "Submit",
+    "submitWait": " please wait..."
+  },
+  "profile": {
+    "signIn": "Sign in",
+    "loadingImg": "Loading image...",
+    "noImg": "No Image"
+  },
+
   "cardFeaturedComponent": {
     "by": "by {{creator}}",
     "button": "레벨 확인"
@@ -88,10 +235,24 @@
     "creator": "제작자",
     "clears": "클리어 수"
   },
+  "playerCardComponent": {
+    "player": "Player",
+    "rankedScore": "Ranked score",
+    "generalScore": "General score",
+    "avgXacc": "Average X-acc"
+  },
 
+  "scoreCardComponent": {
+    "song": "Song",
+    "accuracy": "Accuracy",
+    "speed": "Speed",
+    "score": "Score"
+  },
+  
   "navigationComponent": {
     "levels": "레벨",
-    "submission": "제출"
+    "submission": "제출",
+    "leaderboard": "Leaderboard"
   },
 
   "footerComponent": {
@@ -109,6 +270,6 @@
       "paragraph": "TUF Dev Team 웹사이트 제작. Adrian, t3ww 주도. 본 웹사이트의 코드는 GitHub에서 공개되어 있습니다."
     },
 
-    "copyRight": "2024 TUF Dev Team, All Rights Reserved. 버전 - 1.0.0"
+    "copyRight": "2024 TUF Dev Team, All Rights Reserved. 버전 - 1.1.0"
   }
 }

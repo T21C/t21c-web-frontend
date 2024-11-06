@@ -1,39 +1,115 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import "./navigation.css"
-import React, { useState } from "react";
+import "./navigation.css";
+import React, { useState, useContext } from "react";
 import { NavLink } from "react-router-dom";
 import logo from "../../assets/tuf-logo/logo-full.png";
+import { useTranslation } from "react-i18next";
+import { UserContext } from "../../context/UserContext";
+import i18next from 'i18next';
+import { isoToEmoji } from "../../Repository/RemoteRepository";
 
 const Navigation = ({ children }) => {
+  const { t } = useTranslation();
   const [openNav, setOpenNav] = useState(false);
+  const { language, setLanguage } = useContext(UserContext);
+  const [openDialog, setOpenDialog] = useState(false);
+  const languages = {
+    us: { display: "English (us)", countryCode: "us" },
+    kr: { display: "한국어 (ko)", countryCode: "kr" },
+    cn: { display: "中文 (zh)", countryCode: "cn" },
+    id: { display: "Bahasa Indonesia (id)", countryCode: "id" },
+    ru: { display: "Русский (ru)", countryCode: "ru" },
+    de: { display: "Deutsch (de)", countryCode: "de" }
+  };
 
   function changeNavState() {
     setOpenNav(!openNav);
+  }
+
+  function changeDialogState() {
+    setOpenDialog(!openDialog);
+  }
+
+  function handleChangeLanguage(newLanguage) {
+    i18next.changeLanguage(newLanguage).then(() => {
+      setLanguage(newLanguage); 
+    });
+    changeDialogState();
   }
 
   return (
     <>
       <div className="close-outer" style={{ display: openNav ? 'block' : 'none' }} onClick={changeNavState}></div>
 
-
       <nav>
         <div className="wrapper">
-          <div>
-            <NavLink
-              className={({ isActive }) =>
-                "nav-link " + (isActive ? "active-link" : "")
-              }
-              to="/"
-            >
-              <div className="img-container">
-                <img src={logo} alt="logo" />
-              </div>
-            </NavLink>
+          {/* Left side: Logo and main navigation links */}
+          <div className="nav-left">
+            <div>
+              <NavLink
+                className={({ isActive }) =>
+                  "nav-link " + (isActive ? "active-link" : "")
+                }
+                to="/"
+              >
+                <div className="img-container">
+                  <img src={logo} alt="logo" />
+                </div>
+              </NavLink>
+            </div>
+
+            <div className="nav-menu">
+              <ul>
+                <NavLink
+                  className={({ isActive }) =>
+                    "nav-link " + (isActive ? "active-link" : "")
+                  }
+                  to="/levels"
+                >
+                  <li>{t("navigationComponent.levels")}</li>
+                </NavLink>
+
+
+                
+                <NavLink
+                  className={({ isActive }) =>
+                    "nav-link " + (isActive ? "active-link" : "")
+                  }
+                  to="/leaderboard"
+                >
+                  <li>{t("navigationComponent.leaderboard")}</li>
+                </NavLink>
+              </ul>
+            </div>
           </div>
 
-          <div className="nav-menu">
-            <ul>{children}</ul>
+          {/* Right side: Language switcher and profile */}
+          <div className="nav-right">
+            <ul>
+            <NavLink
+                  className={({ isActive }) =>
+                    "nav-link " + (isActive ? "active-link" : "")
+                  }
+                  to="/admin"
+                >
+                  <li>Rating{/*t("navigationComponent.rating")*/}</li>
+                </NavLink>
+            <NavLink
+                  className={({ isActive }) =>
+                    "nav-link " + (isActive ? "active-link" : "")
+                  }
+                  to="/submission"
+                >
+                  <li>{t("navigationComponent.submission")}</li>
+                </NavLink>
+              <li className="nav-language" onClick={changeDialogState}>
+                <img className="nav-flag" src={isoToEmoji(language)} alt="" />
+                <svg className="language-dropdown svg-stroke" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M7 10L12 15L17 10" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path></g></svg>
+              </li>
+
+              {children}  {/* This will include the Profile component */}
+            </ul>
           </div>
 
           <svg
@@ -72,6 +148,28 @@ const Navigation = ({ children }) => {
         </svg>
 
         <ul>{children}</ul>
+      </div>
+
+      {/* Language Dialog */}
+      <div className="close-outer close-outer-language" style={{ 
+        display: openDialog ? 'block' : 'none'}} onClick={changeDialogState}></div>
+        
+      <div className={`language-dialog ${openDialog ? 'dialog-scale-up' : ''}`} style={{ display: openDialog ? 'block' : 'none' }}>
+        <div className={"dialog"}>
+          <ul>
+            {Object.entries(languages).map(([code, { display, countryCode }]) => (
+                <li
+                  key={code}
+                  className="list-language"
+                  onClick={() => handleChangeLanguage(code)}
+                  style={{ backgroundColor: language === code ? "#a3a2d8" : "" }}
+                >
+                  <img src={isoToEmoji(countryCode)} alt="" />
+                  {display}
+                </li>
+              ))}
+          </ul>
+        </div>
       </div>
     </>
   );

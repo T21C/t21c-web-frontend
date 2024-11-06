@@ -7,7 +7,6 @@ export const parseJudgements = (updatedForm) => {
         const parsedValue = parseInt(updatedForm[field], 10);
         parsedJudgements[field] = Number.isNaN(parsedValue) ? null : parsedValue;
     });
-    console.log(judgementFields.map((field) => parsedJudgements[field]));
     
     return judgementFields.map((field) => parsedJudgements[field]);
   };

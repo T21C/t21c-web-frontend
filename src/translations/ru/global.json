@@ -1,0 +1,274 @@
+{
+    "valueLabels":{
+      "rankedScore": "Рейтинговый счёт",
+      "generalScore": "Общий счёт",
+      "ppScore": "Счёт PP",
+      "wfScore": "Счёт WF",
+      "12kScore": "12к счёт",
+      "avgXacc": "Средняя точность",
+      "totalPasses": "Всего прохождений",
+      "universalPasses": "Universal-проходжений",
+      "WFPasses": "WF-Прохождений",
+      "topDiff": "Топ сложность",
+      "top12kDiff": "Топ 12к сложность"
+    },
+
+    "homePage": {
+      "featuredText": "Избранные",
+      "featuredLevel": [1, 2, 3],
+      "inputPlaceholder": "Посик по исполнителю, треку, создателю, #id",
+      "seeMore" : "Смотреть ещё"
+    },
+  
+    "levelPage": {
+      "inputPlaceholder": "Посик по исполнителю, треку, создателю, #id",
+  
+      "toolTip": {
+        "legacy": "Переключить Legacy сложность",
+        "filter": "Фильтр",
+        "sort": "Сортировка",
+        "reset": "Сброс",
+        "recentAsc": "По возрастанию (недавние)",
+        "recentDesc": "По убыванию (недавние)",
+        "difficultyAsc": "По возрастанию сложности",
+        "difficultyDesc": "По убыванию сложности",
+        "random": "Случайно"
+      },
+        "settingExp": {
+        "headerSort": "Сортировка",
+        "headerFilter": "Фильтр",
+        "filterDiffs": "Сложности",
+        "sortRecent": "Недавние",
+        "sortDifficulty": "Сложность",
+        "sortRandom": "Случайно"
+      },
+      "infScroll": {
+        "loading": "Загружаем...",
+        "end": "Конец списка"
+      }
+    },
+  
+    "leaderboardPage": {
+      "inputPlaceholder": "Поиск имени игрока",
+  
+      "toolTip": {
+        "filter": "Фильтр (НЕ РЕАЛИЗОВАНО)",
+        "sort": "Сортировка",
+        "reset": "Сброс",
+        "recentAsc": "По возрастанию",
+        "recentDesc": "По убыванию",
+        "difficultyAsc": "По возрастанию сложности",
+        "difficultyDesc": "По убыванию сложности",
+        "random": "Случайно"
+      },
+      "settingExp": {
+        "headerSort": "Сортировка",
+        "headerFilter": "Фильтр",
+        "filterDiffs": "Сложности",
+        "sortOrder": "Порядок сортировки",
+        "sortBy": "Сортировать по"
+      },
+      "infScroll": {
+        "loading": "Загружаем...",
+        "end": "Конец списка"
+      }
+    },
+
+    "detailPage": {
+      "waiting": "Подождите...",
+      "#1Clears": {
+        "clear": "#1 Прохождение",
+        "score": "#1 Счёт",
+        "speed": "#1 Скорость",
+        "accuracy": "#1 Точность",
+        "numOClear": "Количество прохождений"
+      },
+      "dialog": {
+        "fullInfo": "Полная информация",
+        "artist": "Исполнитель",
+        "creator": "Создатель",
+        "team": "Команда",
+        "charter": "Чартер",
+        "vfxer": "VFX-ер",
+        "id": "ID"
+      },
+
+      "leaderboard": {
+        "header": "Рейтинги",
+        "notBeaten": "Этот уровень еще не пройден...",
+
+        "toolTip": {
+          "time": "Дата",
+          "accuracy": "Точность",
+          "score": "Счёт"
+        }
+      }
+    },
+
+    "profilePage": {
+      "allScores": "Все проходжения",
+      "notFound": "Игрок не найден"
+    },
+
+    "submissionPage": {
+    "header": {
+      "headerPass": "Я хочу отправить прохождение",
+      "headerLevel": "Я хочу, чтобы мой уровень был оценен"
+    },
+
+    "button": {
+      "buttonPass": "Отправить прохождение",
+      "buttonLevel": "Отправить уровень"
+    },
+
+    "RulesAGuide": "Посмотреть правила и руководство"
+  },
+
+    "levelSubmission": {
+    "alert": {
+      "login": "Вы должны быть авторизованы",
+      "form": "Форма не заполнена",
+      "success": "Форма успешно отправлена!",
+      "error": "Ошибка: ",
+      "loading": "Отправляем..."
+    },
+    "thumbnailInfo": "Видео не найдено",
+    "title": "Отправить уровень",
+    "videoInfo": {
+      "title": "Название видео",
+      "channel": "Название канала",
+      "timestamp": "Времени загрузки",
+      "nolink": "Ссылка не указана"
+    },
+    "tooltip": "Неизвестная сложность. Форма отправится, но убедитесь, что менеджеры поймут, какую сложность вы имеете ввиду. Пример сложности: G13; P7~P13; 21.1+; 19~20.0+",
+    "submInfo": {
+      "song": "Песня",
+      "artist": "Исполнитель",
+      "vidLink": "Ссылка на видео",
+      "charter": "Чартер",
+      "diff": "Сложность",
+      "vfxer": "VFX-еры (опц.)",
+      "team": "Название команды (опц.)",
+      "dlLink": "Прямая ссылка загрузки",
+      "workshop": "Ссылка на мастерскую",
+      "dlLinksOr": "или"
+    },
+
+    "submit": "Отправить",
+    "submitWait": " подождите..."
+  },
+  
+    "passSubmission": {
+    "alert": {
+      "login": "Вы должны быть авторизованы",
+      "form": "Форма не заполнена",
+      "success": "Форма успешно отправлена!",
+      "error": "Ошибка: ",
+      "loading": "Отправка..."
+    },
+    "score": {
+      "needId": "Требуется ID уровня",
+      "needJudg": "Не все оценки указаны",
+      "needInfo": "Недостаточно информации о прохождении",
+      "noInfo": "Недостаточно данных для расчёта оценки"
+    },
+    "thumbnailInfo": "Видео не найдено",
+    "title": "Отправить прохождение",
+    "videoInfo": {
+      "vidLink": "Ссылка на видео",
+      "title": "Название видео",
+      "channel": "Название канала",
+      "timestamp": "Метка времени",
+      "nolink": "Ссылка не указана"
+    },
+    "levelInfo": {
+      "song": "Название песни",
+      "charter": "Чартер",
+      "artist": "Артист"
+    },
+    "holdTooltip": "Отметьте, если использовали альтернативные удержания (0.9x оценка)",
+    "12kTooltip": "Tick if you have cleared the chart with 12 keys or less",
+    "16kTooltip": "Tick if you have cleared the chart with 16 keys or more",  
+    "tooltip": "Неизвестная сложность. Отправим, но убедитесь, что менеджерам будет легко понять уровень. Пример сложности: G13; P7~P13; 21.1+; 19~20.0+",
+    "levelFetching": {
+      "input": "Введите ID уровня",
+      "fetching": "Получение данных",
+      "goto": "Перейти к уровню",
+      "notfound": "Уровень не найден"
+    },
+
+    "submInfo": {
+      "levelId": "ID уровня",
+      "altname": "Альтернативное имя",
+      "nohold": "Альтернативные удержания",
+      "speed": "Скорость (опц.; ex.: 1.2)",
+      "feelDiff": "Сложность (ex.: G12)",
+      "team": "Название команды (опц.)",
+      "dlLink": "Ссылка для загрузки",
+      "workshop": "Ссылка на мастерскую"
+    },
+    "judgements": {
+      "tooearly": "Сл. рано!!",
+      "early": "Рано",
+      "ePerfect": "РИдеально",
+      "perfect": "Идеально",
+      "lPerfect": "ПИдеально",
+      "late": "Поздно"
+    },
+    "acc": "Точность: ",
+    "scoreCalc": "Счёт: ",
+    "submit": "Отправить",
+    "submitWait": " подождите..."
+  },
+
+    "profile": {
+      "signIn": "Войти",
+      "loadingImg": "Загрузка фото...",
+      "noImg": "Нет фото"
+    },
+
+    "cardFeaturedComponent": {
+      "by": "Уровень от {{creator}}",
+      "button": "Посмотреть"
+    },
+  
+    "levelCardComponent": {
+      "creator": "Создатель",
+      "clears": "Прохождений"
+    },
+
+    "playerCardComponent": {
+      "player": "Игрок"
+    },
+  
+    "scoreCardComponent": {
+      "song": "Трек",
+      "accuracy": "Точность",
+      "speed": "Скорость",
+      "score": "Счёт"
+    },
+
+    "navigationComponent": {
+      "levels": "Уровни",
+      "submission": "Отправить",
+      "leaderboard": "Лидерборд"
+    },
+  
+    "footerComponent": {
+      "aboutUs": {
+        "header": "О нас",
+        "paragraph": "The Universal Forums это основаная на коммюнити организация нацеленная на сбор и оценку сложностей кастомных уровней игры ADOFAI."
+      },
+      "links": {
+        "header": "Ссылки",
+        "levels": "Уровни",
+        "submission": "Отправления"
+      },
+      "shoutOut": {
+        "header": "Создатели",
+        "paragraph": "Сайт создан TUF Dev Team, разработка под руководством Adrian и t3ww. Исходный код этого сайта доступен на GitHub."
+      },
+  
+      "copyRight": "2024 TUF Dev Team, Все права защищены. Версия - 1.1.0"
+    }
+  }

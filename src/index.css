@@ -72,25 +72,21 @@ body {
   left: 50%;
   top: 56%;
   z-index: 100;
-  transform: translateX(-50%) translateY(-50%) scale(2, 2);
 }
 .loader:before, .loader:after {
-  content: "";
   position: absolute;
-  height: 20px;
-  width: 20px;
+  height: 200px;
+  width: 200px;
   border-radius: 0 100% 0 0;
-  transform-origin: 0 100%;
 }
 .loader:before {
-  box-shadow: 0 -2px 0 0 #0cf;
-  animation: ice 1s infinite linear;
+  transform: translateX(-50%) translateY(-50%) scale(1, 1) rotate(100deg);
+  content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><radialGradient id="a12" cx=".66" fx=".66" cy=".3125" fy=".3125" gradientTransform="scale(1.5)"><stop offset="0" stop-color="%23FF156D"></stop><stop offset=".3" stop-color="%23FF156D" stop-opacity=".9"></stop><stop offset=".6" stop-color="%23FF156D" stop-opacity=".6"></stop><stop offset=".8" stop-color="%23FF156D" stop-opacity=".3"></stop><stop offset="1" stop-color="%23FF156D" stop-opacity="0"></stop></radialGradient><circle transform-origin="center" fill="none" stroke="url(%23a12)" stroke-width="15" stroke-linecap="round" stroke-dasharray="200 1000" stroke-dashoffset="0" cx="100" cy="100" r="70"><animateTransform type="rotate" attributeName="transform" calcMode="spline" dur="1.8" values="360;0" keyTimes="0;1" keySplines="0 0 1 1" repeatCount="indefinite"></animateTransform></circle><circle transform-origin="center" fill="none" opacity="0" stroke="%23FF156D" stroke-width="11" stroke-linecap="round" cx="100" cy="100" r="70"></circle></svg>')
 }
 .loader:after {
-  box-shadow: 2px 0 0 0 #f00;
-  animation: fire 1s infinite linear;
+  transform: translateX(-50%) translateY(-50%) scale(-1,1);
+  content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><radialGradient id="a12" cx=".66" fx=".66" cy=".3125" fy=".3125" gradientTransform="scale(1.5)"><stop offset="0" stop-color="%23152CFF"></stop><stop offset=".3" stop-color="%23152CFF" stop-opacity=".9"></stop><stop offset=".6" stop-color="%23152CFF" stop-opacity=".6"></stop><stop offset=".8" stop-color="%23152CFF" stop-opacity=".3"></stop><stop offset="1" stop-color="%23152CFF" stop-opacity="0"></stop></radialGradient><circle transform-origin="center" fill="none" stroke="url(%23a12)" stroke-width="15" stroke-linecap="round" stroke-dasharray="200 1000" stroke-dashoffset="0" cx="100" cy="100" r="70"><animateTransform type="rotate" attributeName="transform" calcMode="spline" dur="2.1" values="360;0" keyTimes="0;1" keySplines="0 0 1 1" repeatCount="indefinite"></animateTransform></circle><circle transform-origin="center" fill="none" opacity="0" stroke="%23152CFF" stroke-width="11" stroke-linecap="round" cx="100" cy="100" r="70"></circle></svg>')
 }
-
 .background-level {
   height: 100vh;
   width: 100vw;
@@ -106,23 +102,296 @@ body {
 
 .loader-level-detail {
   left: 50%;
-  top: 40%;
-  transform: translateX(-50%) translateY(-50%) scale(2, 2);
+  top: 45%;
 }
 
 .loader-level-detail-rank {
   left: 50%;
-  top: 20%;
-  transform: translateX(-50%) translateY(-50%) scale(2, 2);
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%) scale(-0.5,0.5);
 }
 
-@keyframes fire {
-  to {
-    transform: rotate(360deg);
+.vid-logo-wrapper .svg-fill:hover svg {
+  transition: transform 0.3s ease;
+  transform: scale(1.2); /* Adjust scale factor as needed */
+}
+.vid-logo-wrapper .svg-fill svg:not(:hover) {
+  transition: transform 0.3s ease;
+  transform: scale(1); /* Default scale */
+}
+
+.form-container {
+  place-items: center;
+  overflow: hidden;
+  display: flex;
+  z-index: 10;
+  transition: height 0.4s ease, transform 0.4s ease; 
+  transform-origin: top;
+  flex-direction: column;
+  margin: 4rem;
+  margin-top: 5rem;
+  margin-bottom: 2rem;
+}
+
+
+.form-container form {
+  border-radius: 8px;
+  margin-top: 2rem;
+  max-width: 47rem;
+  background-color: var(--color-white);
+  background-size: contain;
+  background-position: center -80px;
+  background-repeat: no-repeat;
+  flex-direction: column;
+}
+.result-message {
+  position: fixed;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  background-color: #4caf50;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  z-index: 1000; /* Ensure it stays on top */
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  opacity: 0; /* Start hidden */
+  visibility: hidden; /* Hidden initially */
+}
+
+.result-message.visible {
+  opacity: 1; /* Show the message */
+  visibility: visible; /* Make it visible */
+}
+
+.result-message p {
+  margin:0;
+  padding-right: 10px;
+}
+
+.result-message .close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.result-message .close-btn:hover {
+  color: #ffdddd;
+}
+
+
+select {
+
+  /* styling */
+  background-color: white;
+  border: thin solid var(--color-gray-2);
+  border-radius: 4px;
+  display: inline-block;
+  font: inherit;
+  line-height: 1.5em;
+  padding: 0.5em 3.5em 0.5em 1em;
+
+  /* reset */
+
+  margin: 0;      
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+
+/* arrows */
+
+select.classic {
+  background-image:
+    linear-gradient(45deg, transparent 50%, blue 50%),
+    linear-gradient(135deg, blue 50%, transparent 50%),
+    linear-gradient(to right, skyblue, skyblue);
+  background-position:
+    calc(100% - 20px) calc(1em + 2px),
+    calc(100% - 15px) calc(1em + 2px),
+    100% 0;
+  background-size:
+    5px 5px,
+    5px 5px,
+    2.5em 2.5em;
+  background-repeat: no-repeat;
+}
+
+select.classic:focus {
+  background-image:
+    linear-gradient(45deg, white 50%, transparent 50%),
+    linear-gradient(135deg, transparent 50%, white 50%),
+    linear-gradient(to right, gray, gray);
+  background-position:
+    calc(100% - 15px) 1em,
+    calc(100% - 20px) 1em,
+    100% 0;
+  background-size:
+    5px 5px,
+    5px 5px,
+    2.5em 2.5em;
+  background-repeat: no-repeat;
+  border-color: grey;
+  outline: 0;
+}
+
+
+
+
+select.round {
+  background-image:
+    linear-gradient(45deg, transparent 50%, gray 50%),
+    linear-gradient(135deg, gray 50%, transparent 50%),
+    radial-gradient(#ddd 70%, transparent 72%);
+  background-position:
+    calc(100% - 20px) calc(1em + 2px),
+    calc(100% - 15px) calc(1em + 2px),
+    calc(100% - .5em) .5em;
+  background-size:
+    5px 5px,
+    5px 5px,
+    1.5em 1.5em;
+  background-repeat: no-repeat;
+}
+
+select.round:focus {
+  background-image:
+    linear-gradient(45deg, white 50%, transparent 50%),
+    linear-gradient(135deg, transparent 50%, white 50%),
+    radial-gradient(gray 70%, transparent 72%);
+  background-position:
+    calc(100% - 15px) 1em,
+    calc(100% - 20px) 1em,
+    calc(100% - .5em) .5em;
+  background-size:
+    5px 5px,
+    5px 5px,
+    1.5em 1.5em;
+  background-repeat: no-repeat;
+  border-color: green;
+  outline: 0;
+}
+
+
+
+
+
+select.minimal {
+  background-image:
+    linear-gradient(45deg, transparent 50%, gray 50%),
+    linear-gradient(135deg, gray 50%, transparent 50%),
+    linear-gradient(to right, #ccc, #ccc);
+  background-position:
+    calc(100% - 20px) calc(1em + 2px),
+    calc(100% - 15px) calc(1em + 2px),
+    calc(100% - 2.5em) 0.5em;
+  background-size:
+    5px 5px,
+    5px 5px,
+    1px 1.5em;
+  background-repeat: no-repeat;
+}
+
+select.minimal:focus {
+  background-image:
+    linear-gradient(45deg, green 50%, transparent 50%),
+    linear-gradient(135deg, transparent 50%, green 50%),
+    linear-gradient(to right, #ccc, #ccc);
+  background-position:
+    calc(100% - 15px) 1em,
+    calc(100% - 20px) 1em,
+    calc(100% - 2.5em) 0.5em;
+  background-size:
+    5px 5px,
+    5px 5px,
+    1px 1.5em;
+  background-repeat: no-repeat;
+  border-color: green;
+  outline: 0;
+}
+
+
+select:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 #000;
+}
+
+
+.tooltip-container {
+  position: relative;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  display: flex; /* Allow inline display for other elements */
+}
+
+.tooltip {
+  visibility: hidden;
+  width: 170px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  font-size: 0.8rem;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+
+.tooltip-container:hover .tooltip {
+  visibility: visible;
+  opacity: 0.95;
+}
+
+.thumbnail-container {
+  gap: 20px; /* Space between thumbnail and form */
+  z-index: 10;
+  aspect-ratio: 16/9;
+  height: 350px; /* Fixed height */
+  place-content: center;
+  text-shadow: 0px 0px 4px black;
+  overflow: hidden; /* Hide any overflow */
+  transition: box-shadow 0.3s ease; /* Smooth transition for shadow */
+}
+
+.thumbnail-container.shadow {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8); /* Shadow effect */
+}
+
+@media (max-width: 900px) {
+  .thumbnail-container {
+    height: 300px; /* Fixed height */
   }
 }
-@keyframes ice {
-  to {
-    transform: rotate(-360deg);
-  }
-}/*# sourceMappingURL=index.css.map */
+
+.thumbnail-container img {
+  height: 100%; /* Make the image height match the container */
+  width: auto; /* Keep the width proportional */
+  object-fit: fill; /* Allow the image to deform if necessary */
+}
+
+.thumbnail-container iframe {
+  height: 100%; /* Make iframe height match the container */
+  width: 100%; /* Ensure iframe fills the container */
+}
+
+.thumbnail-text {
+  text-align: center; /* Center text */
+  color: white;
+}
+
+.info {
+  flex: 3;
+  padding: 1.1rem;
+  background-color: white;
+  z-index: 15;
+}
+
+

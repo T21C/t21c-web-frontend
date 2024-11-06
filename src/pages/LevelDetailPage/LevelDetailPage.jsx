@@ -1,20 +1,22 @@
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
 import "./leveldetailpage.css"
-import React, { useEffect, useRef, useState } from "react";
+import placeholder from "../../assets/placeholder/3.png";
+import React, { useEffect, useState } from "react";
 import { useLocation } from 'react-router-dom';
 import { CompleteNav } from "../../components";
 import {
   fetchLevelInfo,
   fetchPassPlayerInfo,
   getLevelImage,
-  getYouTubeEmbedUrl,
-  getYouTubeThumbnailUrl,
+  getVideoDetails,
   isoToEmoji,
 } from "../../Repository/RemoteRepository";
 
 import { Tooltip } from "react-tooltip";
 import { useTranslation } from "react-i18next";
+import { use } from "i18next";
+import ClearCard from "../../components/ClearCard/ClearCard";
 
 const LevelDetailPage = () => {
   const {t} = useTranslation()
@@ -24,6 +26,9 @@ const LevelDetailPage = () => {
   const [res, setRes] = useState(null);
   const [player, setPlayer] = useState([]);
   const [initialPlayer, setInitialPlayer] = useState([])
+  const [videoDetail, setVideoDetail] = useState(null)
+  const [vidLink, setVidLink] = useState("")
+  const [comment, setComment] = useState("")
 
   const [highSpeed, setHighSpeed] = useState(null);
   const [highAcc, setHighAcc] = useState(null);
@@ -39,6 +44,19 @@ const LevelDetailPage = () => {
   const [openDialog, setOpenDialog] = useState(false)
 
   useEffect(() => {
+    
+    getVideoDetails(vidLink).then((res) => {
+      setVideoDetail(
+        res
+          ? res
+          : null
+      );
+    });
+
+
+  }, [vidLink]);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, [detailPage]);
 
@@ -48,9 +66,13 @@ const LevelDetailPage = () => {
         setRes(res);
         const fetchedPlayers = res?.passes.player.results || [];
         const passCount = res?.passes.player.count || 0 ;
+        const vLink = res?.level.vidLink || "" ;
+        const comment = res?.level.publicComments || "";
+        
         setInitialPlayer(fetchedPlayers);
         setPassCount(passCount)
-
+        setVidLink(vLink)
+        setComment(comment)
         if(passCount == 0){
           setInfoLoading(false)
         }
@@ -111,7 +133,6 @@ const LevelDetailPage = () => {
       try {
         const playerNames = initialPlayer.map(p => p.player);
         const fetchedPlayersInfo = await fetchPassPlayerInfo(playerNames); 
-        console.log(fetchedPlayersInfo)
 
         
         const enrichedPlayers = initialPlayer
@@ -189,8 +210,8 @@ const LevelDetailPage = () => {
   }
 
   useEffect(()=>{
-    console.log(res)
-    console.log(passCount)
+    //console.log(res)
+    //console.log(passCount)
   }, [res, passCount])
 
   function formatString(input) {
@@ -216,6 +237,7 @@ const LevelDetailPage = () => {
       <div
         style={{ height: "100vh", width: "100vw", backgroundColor: "#090909" }}
       >
+        <CompleteNav />
         <div className="background-level"></div>
         <div className="loader loader-level-detail"></div>
       </div>
@@ -230,7 +252,7 @@ const LevelDetailPage = () => {
         <div className="dialog">
 
           <div className="header" style={{
-              backgroundImage: `url(${res && res.level ? getYouTubeThumbnailUrl(res.level.vidLink, res.level.song): "defaultImageURL"})`, backgroundPosition : "center"}}>
+              backgroundImage: `url(${res && videoDetail ? videoDetail.image: "defaultImageURL"})`, backgroundPosition : "center"}}>
             <h2>{res.level.song}</h2>
             <p> <b>{t("detailPage.dialog.artist")} :</b> {res.level.artist}</p>
             
@@ -260,12 +282,11 @@ const LevelDetailPage = () => {
               </div>
 
               <div className="each-diff">
-                <h3>PDN</h3>
-                <p>{formatDiff(res.level.pdnDiff)}</p>
+                <h3>NEW</h3>
+                <p>{formatDiff(res.level.newDiff)}</p>
               </div>
             
             </div>
-
             <div className="team-info">
 
               {res.level.team && (
@@ -289,9 +310,10 @@ const LevelDetailPage = () => {
                 </div>
                 )}
 
+                
              </div> 
 
-              <div className="links">
+              <div className="links" style={{borderBottom: comment? "2px solid #fff": "transparent", paddingBottom: comment? "8px": "0"}}>
 
                 {res.level.dlLink && (
                   <a href={res.level.dlLink} target="_blank">
@@ -319,7 +341,10 @@ const LevelDetailPage = () => {
                   </a>
                 )}
               </div>
-
+              <br/>
+              {comment && (
+                <p style={{marginBottom: "5px"}}>Comment: <b>{comment? comment : ""}</b></p>
+                )}
           </div>
           
       </div>
@@ -334,10 +359,10 @@ const LevelDetailPage = () => {
 
           <div className="left"
             style={{
-              backgroundImage: `url(${res && res.level ? getYouTubeThumbnailUrl(res.level.vidLink, res.level.song): "defaultImageURL"})`}}>
+              backgroundImage: `url(${res && videoDetail ? videoDetail.image: "defaultImageURL"})`}}>
 
             <div className="diff">
-              <img src={getLevelImage(res.level.pdnDiff, res.level.pguDiff)} alt="" />
+              <img src={getLevelImage(res.level.newDiff, res.level.pdnDiff, res.level.pguDiff)} alt="" />
             </div>
 
             <div className="title">
@@ -347,6 +372,7 @@ const LevelDetailPage = () => {
                 {res.level.team ? res.level.team : res.level.creator}
                 &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;{res.level.artist}
               </p>
+              
             </div>
           </div>
 
@@ -437,21 +463,31 @@ const LevelDetailPage = () => {
               </span>
             </div>
 
-            <button onClick={changeDialogState}>{t("detailPage.dialog.fullInfo")}</button>
+            <button className="info-button" onClick={changeDialogState}>{t("detailPage.dialog.fullInfo")}</button>
           </div>
 
           <div className="youtube">
-            {getYouTubeEmbedUrl(res.level.vidLink) ? 
+            {videoDetail ? 
               <iframe
-              src={getYouTubeEmbedUrl(res.level.vidLink)}
-              title="YouTube video player"
+              src={videoDetail.embed}
+              title="Video player"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
               referrerPolicy="strict-origin-when-cross-origin"
               allowFullScreen
             ></iframe>
           :
-            <img src={getYouTubeThumbnailUrl(res.level.vidLink, res.level.song)} alt="" />
+          <div
+            className="thumbnail-container"
+            style={{
+              backgroundImage: `url(${videoDetail? videoDetail.image: placeholder})`,
+            }}
+          >
+            <div className="thumbnail-text">
+              <p>Thumbnail not found</p>
+              {res.level.vidLink && <a href={res.level.vidLink}>Go to video</a>}
+            </div>
+          </div>
           }
           </div>
         </div>
@@ -523,54 +559,13 @@ const LevelDetailPage = () => {
           <div className="rank-list">
             {!infoLoading ? 
             
-
+              
             displayedPlayers && displayedPlayers.length > 0 ? (
               displayedPlayers.map((each, index) => (
-                <div className="list-detail" key={index} >
-                  <p className="name">
-
-                    <span className="index" style={{ color:index === 0 ? "gold" : index === 1? "silver": index === 2? "brown": "inherit"}} >
-                      <b>#{index + 1}</b>
-                    </span>
-
-                    &nbsp;
-                    <img src={isoToEmoji(each.country)} alt=""/>
-                    &nbsp;
-                    {each.player}
-                  </p>
-                  <div className="time">{each.vidUploadTime.slice(0, 10)}</div>
-                  <p className="general">{each.scoreV2.toFixed(2)}</p>
-                  <p className="acc">{(each.accuracy * 100).toFixed(2)}%</p>
-                  <div className="speed">{each.speed ? each.speed : "1.0"}×</div>
-                  <p className="judgements" onClick={() => window.open(each.vidLink, '_blank')}>
-                    <span style={{ color: "red" }}>{each.judgements[0]}</span>
-                    &nbsp;
-                    <span style={{ color: "orange" }}>
-                      {each.judgements[1]}
-                    </span>
-                    &nbsp;
-                    <span style={{ color: "yellow" }}>
-                      {each.judgements[2]}
-                    </span>
-                    &nbsp;
-                    <span style={{ color: "lightGreen" }}>
-                      {each.judgements[3]}
-                    </span>
-                    &nbsp;
-                    <span style={{ color: "yellow" }}>
-                      {each.judgements[4]}
-                    </span>
-                    &nbsp;
-                    <span style={{ color: "orange" }}>
-                      {each.judgements[5]}
-                    </span>
-                    &nbsp;
-                    <span style={{ color: "red" }}>{each.judgements[6]}</span>
-                  </p>
-                </div>
+                <ClearCard scoreData={each} index={index}/>
               ))
             ) : (
-              <h1>{t("detailPage.leaderboard.notBeaten")}</h1>
+              <h3>{t("detailPage.leaderboard.notBeaten")}</h3>
             )
 
             :

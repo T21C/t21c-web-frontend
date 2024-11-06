@@ -75,7 +75,7 @@ nav .wrapper {
   align-items: center;
   max-width: 80rem;
   margin: 0 auto;
-  padding: 1rem 1rem 1rem 2rem;
+  padding: 0.7rem 1rem 0.7rem 2rem;
 }
 nav .wrapper .img-container {
   width: 8rem;
@@ -117,6 +117,14 @@ nav .wrapper .menu {
 }
 nav .wrapper .menu:hover {
   cursor: pointer;
+}
+
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 1.2rem
 }
 
 .nav-menu-outer {

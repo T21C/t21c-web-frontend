@@ -3,26 +3,11 @@
   width: 100vw;
   min-height: 100vh;
   position: relative;
-  display: grid;
+  flex-direction: column;
   place-items: center;
   overflow-x: hidden;
 }
-.pass-submission-page form {
-  background-color: var(--color-white);
-  max-width: 60rem;
-  border-radius: 8px;
-  overflow: hidden;
-  display: flex;
-  z-index: 10;
-  margin: 1rem;
-}
-@media (max-width: 900px) {
-  .pass-submission-page form {
-    width: 90%;
-    flex-direction: column;
-    margin-top: 6rem;
-  }
-}
+
 .pass-submission-page form .img-wrapper {
   flex: 2;
 }
@@ -37,6 +22,8 @@
 .pass-submission-page form .info {
   flex: 3;
   padding: 1rem;
+  background-color: white;
+  z-index: 15;
 }
 .pass-submission-page form .info h1 {
   margin-bottom: 1rem;
@@ -46,22 +33,49 @@
   border: 0;
   border-bottom: 3px solid var(--color-purple-2);
   outline: none;
-  padding: 0.5rem 0.2rem;
+  padding: 0.5rem 0.2rem 0.2rem 0.5rem;
   font-size: 1rem;
 }
+
+
+.pass-submission-page form .info .youtube-input {
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+.pass-submission-page form .info .youtube-input .yt-info {
+  min-width: 7rem
+}
+.pass-submission-page form .info .youtube-input .youtube-info {
+  display: flex;
+  gap:20px
+}
+
 .pass-submission-page form .info .id-input {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-bottom: 2rem;
-}
-.pass-submission-page form .info .id-input input {
-  max-height: 1rem;
+  margin-bottom: 1rem;
 }
 .pass-submission-page form .info .id-input .information {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1rem;
+}
+
+.pass-submission-page form .info .id-input .information .chart-info {
+  text-align: center;
+  align-items: center;
+  font-weight: bold;
+  width: 140%
+}
+.pass-submission-page form .info .id-input .information .chart-info .chart-info-sub {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
 }
 .pass-submission-page form .info .id-input .information .verified {
   display: flex;
@@ -82,10 +96,7 @@
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  margin-bottom: 2rem;
-}
-.pass-submission-page form .info .youtube-input input {
-  max-height: 1rem;
+  margin-bottom: 0.5rem;
 }
 .pass-submission-page form .info .youtube-input .information {
   display: flex;
@@ -93,15 +104,49 @@
   justify-content: space-between;
   gap: 1rem;
   font-size: 0.8rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.25rem;
 }
-.pass-submission-page form .info .feel-speed {
+
+.pass-submission-page form .info .info-input {
   display: flex;
   gap: 1rem;
-  margin-bottom: 2.5rem;
+  margin-bottom: 0.25rem;
+  justify-content: space-around;
 }
-.pass-submission-page form .info .feel-speed input {
-  width: 100%;
+
+.pass-submission-page form .info .info-input > * {
+  flex: 1 1 150px; /* Flex-grow, flex-shrink, and base size (width of 150px) */
+  min-width: 100px; /* Minimum width to avoid shrinking too small */
+  max-width: 200px; /* Maximum width to control expansion */
+  height: 40px; /* Fixed height */
+  box-sizing: border-box; /* To include padding and borders in width/height calculation */
+}
+.pass-submission-page form .info .info-input-container {
+  overflow: hidden;
+  max-height: 0; /* Collapsed height */
+  transition: max-height 0.4s ease; /* Transition for smooth sliding */
+  display: flex;
+  margin-top: 1rem;
+  padding-right: 1.5rem;
+  flex-direction: row;
+}
+
+.pass-submission-page form .info .info-input-container.expand {
+  overflow:visible;
+  max-height: 200px; /* Set a maximum value, or use a value that comfortably fits the content */
+}
+
+
+.pass-submission-page form .info .info-input .keycount-checkbox {
+  max-width: 130px;
+}
+
+.pass-submission-page form .info .info-input .keycount-checkbox .tooltip{
+  right: -15%;
+}
+
+.pass-submission-page form .info .info-input input {
+  width: auto;
 }
 .pass-submission-page form .info .accuracy {
   display: flex;
@@ -111,7 +156,8 @@
   border: 2px solid var(--color-purple-2);
   padding: 1rem;
   border-radius: 5px;
-  margin-bottom: 2rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 .pass-submission-page form .info .accuracy .top, .pass-submission-page form .info .accuracy .bottom {
   display: flex;
@@ -137,6 +183,10 @@
 .pass-submission-page form .info .accuracy .top .each-accuracy:nth-child(3) {
   flex: 4;
 }
+.pass-submission-page form .info .accuracy .top .each-accuracy input {
+  font-size: 1rem;
+  font-weight: bold;
+}
 .pass-submission-page form .info .accuracy .bottom {
   justify-content: center;
 }
@@ -145,6 +195,10 @@
   align-items: center;
   text-wrap: nowrap;
   gap: 0.5rem;
+}
+.pass-submission-page form .info .accuracy .bottom .each-accuracy input {
+  font-size: 1rem;
+  font-weight: bold;
 }
 .pass-submission-page form .info .accuracy .bottom .each-accuracy:nth-child(1) {
   max-width: 7rem;

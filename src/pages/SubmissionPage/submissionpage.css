@@ -1,13 +1,23 @@
 .submission-page {
-  background-color: var(--color-purple-1);
+  background-color: rgb(19, 12, 22);
   min-height: 100vh;
+}
+.submission-page .wrapper-body {
+  padding: 4rem 0;
+  position: relative;
+  z-index: 2;
+}
+.submission-page .submission-container {
+  padding: 0 7%;
   display: flex;
   position: relative;
 }
-.submission-page .wrapper-body {
-  padding: 0 3rem;
-  position: relative;
-  z-index: 2;
+
+.submission-page .wrapper-body button {
+  font-size: 1.3rem;
+  margin-top: 0.7rem;
+  padding: 0.7rem 2rem;
+  box-shadow: 2px 4px 3px 2px rgba(16, 0, 34, 0.2);
 }
 .submission-page .wrapper-top {
   padding: 6rem 0;
@@ -22,11 +32,12 @@
   margin: 1rem auto;
 }
 .submission-page h2 {
-  margin: 5rem auto;
-  max-width: 20rem;
+  margin: 5rem auto 1rem auto;
+  height: 7rem;
+  max-width: 25rem;
   font-size: 2rem;
 }
-.submission-page button {
+.submission-page .submit-button {
   margin: 1rem 0;
   max-width: 30rem;
   padding: 0.5rem 2rem;
@@ -56,22 +67,20 @@
 }
 .submission-page .middle-img {
   position: absolute;
-  width: 6rem;
-  height: 6rem;
+  width: 9rem;
+  height: 9rem;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 3;
 }
 .submission-page .submission-level {
-  background-color: var(--color-purple-3);
   flex: 1;
   text-align: center;
   color: var(--color-white);
   width: 100%;
 }
 .submission-page .submission-passes {
-  background-color: var(--color-purple-2);
   flex: 1;
   text-align: center;
   color: var(--color-white);
