@@ -250,6 +250,16 @@
         "paragraph": "Hey, ich habe diese Website erstellt, schaut mal vorbei"
       },
       "copyRight": "2024 Adrian Purnama. Alle Rechte vorbehalten. Version - 1.1.0"
+    },
+    "adminPage": {
+      "header": {
+        "headerRating": "Manage Ratings",
+        "headerSubmissions": "Manage Submissions"
+      },
+      "button": {
+        "buttonRating": "Go to Ratings",
+        "buttonSubmissions": "Go to Submissions"
+      }
     }
   }
   

@@ -189,7 +189,7 @@
     "holdTooltip": "Отметьте, если использовали альтернативные удержания (0.9x оценка)",
     "12kTooltip": "Tick if you have cleared the chart with 12 keys or less",
     "16kTooltip": "Tick if you have cleared the chart with 16 keys or more",  
-    "tooltip": "Неизвестная сложность. Отправим, но убедитесь, что менеджерам будет легко понять уровень. Пример сложности: G13; P7~P13; 21.1+; 19~20.0+",
+    "tooltip": "Неизвестная сложность. Отправим, но ��бедитесь, что менеджерам будет легко понять уровень. Пример сложности: G13; P7~P13; 21.1+; 19~20.0+",
     "levelFetching": {
       "input": "Введите ID уровня",
       "fetching": "Получение данных",
@@ -270,5 +270,16 @@
       },
   
       "copyRight": "2024 TUF Dev Team, Все права защищены. Версия - 1.1.0"
+    },
+
+    "adminPage": {
+      "header": {
+        "headerRating": "Manage Ratings",
+        "headerSubmissions": "Manage Submissions"
+      },
+      "button": {
+        "buttonRating": "Go to Ratings",
+        "buttonSubmissions": "Go to Submissions"
+      }
     }
   }

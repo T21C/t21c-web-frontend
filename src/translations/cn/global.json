@@ -262,5 +262,15 @@
       "paragraph": "网站由 TUF 开发团队创建，Adrian 和 t3ww 领导开发。此网站的代码在 GitHub 上可用。"
     },
     "copyRight": "2024 TUF 开发团队版权所有。版本 - 1.1.0"
+  },
+  "adminPage": {
+    "header": {
+      "headerRating": "Manage Ratings",
+      "headerSubmissions": "Manage Submissions"
+    },
+    "button": {
+      "buttonRating": "Go to Ratings",
+      "buttonSubmissions": "Go to Submissions"
+    }
   }
 }

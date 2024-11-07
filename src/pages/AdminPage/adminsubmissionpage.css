@@ -1,0 +1,418 @@
+.submission-admin-page {
+    background-color: var(--color-black);
+    width: 100%;
+    color: var(--color-white);
+    min-height: 100vh;
+  }
+  .submission-admin-page .submissions-admin-list {
+    position: relative;
+    z-index: 2;
+    padding: 0 1.5rem;
+    padding-top: 6rem;
+    max-width: 70rem;
+    margin: 0 auto;
+  }
+  .submission-admin-page .submissions-admin-list .input-option {
+    display: flex;
+    gap: 0.5rem;
+    height: 2rem;
+  }
+  .submission-admin-page .submissions-admin-list .input-option input {
+    width: 100%;
+    background-color: var(--color-white-t20);
+    border: none;
+    border-radius: 3px;
+    padding: 0.5rem;
+    color: var(--white-color);
+  }
+  .submission-admin-page .submissions-admin-list .input-option input:focus {
+    outline: none;
+  }
+  .submission-admin-page .submissions-admin-list .input-option svg {
+    height: 2rem;
+    width: 2.2rem;
+    background-color: var(--color-white-t20);
+    padding: 0.1rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s linear;
+  }
+  .submission-admin-page .submissions-admin-list .input-option svg:focus {
+    outline: none;
+  }
+  .submission-admin-page .submissions-admin-list .filter {
+    position: relative;
+    z-index: 2;
+    overflow: visible;
+  }
+  .submission-admin-page .submissions-admin-list .sort {
+    position: relative;
+    z-index: 1;
+  }
+  .submission-admin-page .submissions-admin-list .sort .sort-option {
+    display: flex;
+    gap: 2rem;
+  }
+  .submission-admin-page .submissions-admin-list .sort .sort-option .recent p,
+  .submission-admin-page .submissions-admin-list .sort .sort-option .diff p,
+  .submission-admin-page .submissions-admin-list .sort .sort-option .random p {
+    margin-bottom: 0.5rem;
+  }
+  .submission-admin-page .submissions-admin-list .sort .sort-option .recent .wrapper,
+  .submission-admin-page .submissions-admin-list .sort .sort-option .diff .wrapper,
+  .submission-admin-page .submissions-admin-list .sort .sort-option .random .wrapper {
+    display: flex;
+    gap: 1rem;
+  }
+  .submission-admin-page .submissions-admin-list .sort .sort-option .recent svg,
+  .submission-admin-page .submissions-admin-list .sort .sort-option .diff svg,
+  .submission-admin-page .submissions-admin-list .sort .sort-option .random svg {
+    height: 2rem;
+    width: 2rem;
+    background-color: var(--color-white-t20);
+    padding: 0.1rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s linear;
+  }
+  .submission-admin-page .submissions-admin-list .sort .sort-option .recent svg:focus,
+  .submission-admin-page .submissions-admin-list .sort .sort-option .diff svg:focus,
+  .submission-admin-page .submissions-admin-list .sort .sort-option .random svg:focus {
+    outline: none;
+  }
+  .submission-admin-page .submissions-admin-list .settings-class {
+    transition: height 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 1s ease-in-out;
+    height: 10rem;
+    overflow: hidden;
+  }
+  .submission-admin-page .submissions-admin-list .spacer-setting {
+    width: 100%;
+    height: 1px;
+    background-color: var(--color-white);
+    margin-bottom: 0.5rem;
+  }
+  .submission-admin-page .submissions-admin-list .diff-filters {
+    display: flex;
+    flex-direction: row; /* Stacks items vertically */
+    gap: 1rem; /* Adds space between the filter containers */
+  }
+  
+  .submission-admin-page .submissions-admin-list .filter-container {
+    display: flex;
+    flex-direction: column; /* Stack the label and select vertically */
+  }
+  
+  .submission-admin-page .submissions-admin-list .input-setting {
+    margin-top: 1rem;
+  }
+  .submission-admin-page .submissions-admin-list .setting-title {
+    margin-bottom: 1rem;
+  }
+  .submission-admin-page .submissions-admin-list .setting-description {
+    margin-bottom: 0.5rem;
+  }
+
+  .submission-admin-page .submissions-admin-list .rating-list {
+    z-index: 2;
+    margin-top: 2rem;
+    background-color: var(--color-white-t20);
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto; /* Enable horizontal scrolling */
+  }
+
+  .submission-admin-page .submissions-admin-list .rating-header {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    font-weight: bold;
+    border-bottom: 1px solid var(--color-white);
+    margin-bottom: 0.5rem;
+    min-width: max-content; /* Prevent header wrapping */
+  }
+
+  .submission-admin-page .submissions-admin-list .rating-header p {
+    flex: 1;
+    min-width: 150px; /* Set minimum column width */
+    text-align: left;
+  }
+
+  .submission-admin-page .submissions-admin-list .rating-item {
+    display: flex;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-white-t20);
+    transition: background-color 0.2s ease;
+    min-width: max-content; /* Prevent row wrapping */
+  }
+
+  .submission-admin-page .submissions-admin-list .rating-item:hover {
+    background-color: var(--color-white-t20);
+  }
+
+  .submission-admin-page .submissions-admin-list .rating-item {
+    flex: 1;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }/*# sourceMappingURL=levelpage.css.map */
+
+  .submission-admin-page .submissions-admin-list .rating-list [class^="column-"] {
+    width: 150px; /* default width for all columns */
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .submission-admin-page .submissions-admin-list .rating-header p {
+    flex: unset;  /* Remove the flex: 1 if it exists */
+    min-width: unset;  /* Remove the min-width if it exists */
+  }
+  .submission-admin-page .submissions-admin-list .rating-list .column-0 {
+    width: 40px;
+  }
+
+  .submission-admin-page .submissions-admin-list .rating-list .rating-item input {
+    background: transparent;
+    border: 1px solid #ccc;
+    color: inherit;
+    padding: 2px 4px;
+  }
+
+  .submission-admin-page .submissions-admin-list .rating-list .rating-item input:focus {
+    outline: none;
+    border-color: #fff;
+  }
+
+  .submission-admin-page .submissions-admin-list .rating-list .rating-item textarea {
+    white-space: normal;
+    background: transparent;
+    border: 1px solid #999;
+    color: inherit;
+    resize:vertical;
+    min-height: 2em;
+    padding: 2px 4px;
+    font-family: inherit; /* Maintains consistent font */
+    font-size: inherit;   /* Maintains consistent font size */
+    line-height: 1.2;     /* Comfortable line height for reading */
+    overflow-y: hidden;   /* Hides scrollbar */
+  }
+
+  .submission-admin-page .submissions-admin-list .rating-list .rating-item textarea:focus {
+    outline: none;
+    border-color: #fff;
+  }
+
+  /* Optional: Auto-resize height based on content */
+  .submission-admin-page .submissions-admin-list .rating-list .rating-item textarea {
+    overflow: hidden;
+  }
+
+  .submission-admin-page .admin-page {
+    padding: 20px;
+  }
+  
+  .submission-admin-page .submissions-list {
+    display: grid;
+    gap: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  
+  .submission-admin-page .submission-card {
+    border: 1px solid #ddd;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  
+  .submission-admin-page .action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+  }
+  
+  .submission-admin-page .approve-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .submission-admin-page .decline-btn {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .submission-admin-page {
+    padding: 20px;
+    margin: 0 auto;
+  }
+
+  .submissions-admin-list {
+    display: grid;
+    gap: 20px;
+    margin-top: 20px;
+  }
+
+  .submission-card {
+    
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+
+  .submission-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+  }
+
+  .submission-header h3 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #333;
+  }
+
+  .submission-date {
+    color: #666;
+    font-size: 0.9rem;
+  }
+
+  .submission-details {
+    display: grid;
+    gap: 12px;
+  }
+
+  .detail-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .detail-label {
+    font-weight: 600;
+    min-width: 120px;
+    color: #555;
+  }
+
+  .detail-value {
+    color: #333;
+  }
+
+  .detail-link {
+    color: #0066cc;
+    text-decoration: none;
+  }
+
+  .detail-link:hover {
+    text-decoration: underline;
+  }
+
+  .action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+  }
+
+  .approve-btn, .decline-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: opacity 0.2s;
+  }
+
+  .approve-btn {
+    background-color: #4CAF50;
+    color: white;
+  }
+
+  .decline-btn {
+    background-color: #f44336;
+    color: white;
+  }
+
+  .approve-btn:hover, .decline-btn:hover {
+    opacity: 0.9;
+  }
+
+  .video-embed {
+    margin: 15px 0;
+    width: 100%;
+  }
+
+  .embed-container {
+    position: relative; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+  }
+
+  .embed-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    margin-bottom: 15px;
+  }
+
+  .youtube {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    margin: 15px 0;
+  }
+
+  .youtube iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 50%;
+    border: none;
+  }
+
+  .thumbnail-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .card-content {
+    display: flex;
+    gap: 20px;
+    margin-top: 15px;
+  }
+
+  .submission-details {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .embed-container {
+    width: 400px;
+    min-width: 400px;
+    height:auto;
+  }
+

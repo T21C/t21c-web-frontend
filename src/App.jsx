@@ -6,6 +6,8 @@ import PassSubmissionPage from "./pages/PassSubmissionPage/PassSubmissionPage.js
 import CallbackPage from "./components/Callback/Callback.jsx";
 import LeaderboardPage from "./pages/LeaderboardPage/LeaderboardPage.jsx";
 import ProfilePage from "./pages/ProfilePage/ProfilePage.jsx"
+import RatingPage from "./pages/AdminPage/RatingPage.jsx";
+import SubmissionManagementPage from "./pages/AdminPage/SubmissionManagementPage.jsx";
 import AdminPage from "./pages/AdminPage/AdminPage.jsx";
 
 const HomePage = lazy(() => import("./pages/HomePage/HomePage.jsx"));
@@ -45,6 +47,8 @@ function App() {
 
         <Route path='leaderboard' element={<LeaderboardPage/>}/>
         <Route path='admin' element={<AdminPage/>} />
+        <Route path='admin/submissions' element={<SubmissionManagementPage/>} />
+        <Route path='admin/rating' element={<RatingPage/>} />
       </Routes>
     </Suspense>
     </>

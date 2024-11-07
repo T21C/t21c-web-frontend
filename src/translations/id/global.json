@@ -275,5 +275,16 @@
     },
 
     "copyRight": "Tim Pengembang TUF 2024, Semua Hak Dilindungi Undang-Undang. Versi - 1.1.0"
+  },
+
+  "adminPage": {
+    "header": {
+      "headerRating": "Manage Ratings",
+      "headerSubmissions": "Manage Submissions"
+    },
+    "button": {
+      "buttonRating": "Go to Ratings",
+      "buttonSubmissions": "Go to Submissions"
+    }
   }
 }

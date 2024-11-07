@@ -271,5 +271,16 @@
     },
 
     "copyRight": "2024 TUF Dev Team, All Rights Reserved. 버전 - 1.1.0"
+  },
+
+  "adminPage": {
+    "header": {
+      "headerRating": "Manage Ratings",
+      "headerSubmissions": "Manage Submissions"
+    },
+    "button": {
+      "buttonRating": "Go to Ratings",
+      "buttonSubmissions": "Go to Submissions"
+    }
   }
 }

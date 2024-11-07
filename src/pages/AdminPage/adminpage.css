@@ -1,211 +1,66 @@
-.admin-rating-page {
+.admin-page {
+    min-height: 100vh;
     background-color: var(--color-black);
     color: var(--color-white);
-    min-height: 100vh;
-  }
-  .admin-rating-page .admin-body {
-    position: relative;
-    z-index: 2;
-    padding: 0 1.5rem;
-    padding-top: 6rem;
-    min-height: 100vh;
-    max-width: 70rem;
-    margin: 0 auto;
-  }
-  .admin-rating-page .admin-body .input-option {
-    display: flex;
-    gap: 0.5rem;
-    height: 2rem;
-  }
-  .admin-rating-page .admin-body .input-option input {
+}
+
+.admin-container {
+    height: 100%;
     width: 100%;
-    background-color: var(--color-white-t20);
-    border: none;
-    border-radius: 3px;
-    padding: 0.5rem;
-    color: var(--white-color);
-  }
-  .admin-rating-page .admin-body .input-option input:focus {
-    outline: none;
-  }
-  .admin-rating-page .admin-body .input-option svg {
-    height: 2rem;
-    width: 2.2rem;
-    background-color: var(--color-white-t20);
-    padding: 0.1rem;
-    border-radius: 3px;
-    cursor: pointer;
-    transition: all 0.2s linear;
-  }
-  .admin-rating-page .admin-body .input-option svg:focus {
-    outline: none;
-  }
-  .admin-rating-page .admin-body .filter {
-    position: relative;
-    z-index: 2;
-    overflow: visible;
-  }
-  .admin-rating-page .admin-body .sort {
-    position: relative;
-    z-index: 1;
-  }
-  .admin-rating-page .admin-body .sort .sort-option {
     display: flex;
+    justify-content: center;
+    align-items: center;
     gap: 2rem;
-  }
-  .admin-rating-page .admin-body .sort .sort-option .recent p,
-  .admin-rating-page .admin-body .sort .sort-option .diff p,
-  .admin-rating-page .admin-body .sort .sort-option .random p {
-    margin-bottom: 0.5rem;
-  }
-  .admin-rating-page .admin-body .sort .sort-option .recent .wrapper,
-  .admin-rating-page .admin-body .sort .sort-option .diff .wrapper,
-  .admin-rating-page .admin-body .sort .sort-option .random .wrapper {
+    padding: 2rem;
+    padding-top: 7rem;
+}
+
+.admin-ratings,
+.admin-submissions {
     display: flex;
-    gap: 1rem;
-  }
-  .admin-rating-page .admin-body .sort .sort-option .recent svg,
-  .admin-rating-page .admin-body .sort .sort-option .diff svg,
-  .admin-rating-page .admin-body .sort .sort-option .random svg {
-    height: 2rem;
-    width: 2rem;
-    background-color: var(--color-white-t20);
-    padding: 0.1rem;
-    border-radius: 3px;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    background: var(--color-grey);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.admin-ratings:hover,
+.admin-submissions:hover {
+    transform: none;
+}
+
+.admin-svg {
+    width: 300px;
+    height: 300px;
+    margin: 2rem 0;
+}
+
+.admin-button {
+    padding: 1rem 2rem;
+    background-color: var(--color-black-t60);
+    color: var(--white);
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
-    transition: all 0.2s linear;
-  }
-  .admin-rating-page .admin-body .sort .sort-option .recent svg:focus,
-  .admin-rating-page .admin-body .sort .sort-option .diff svg:focus,
-  .admin-rating-page .admin-body .sort .sort-option .random svg:focus {
-    outline: none;
-  }
-  .admin-rating-page .admin-body .settings-class {
-    transition: height 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 1s ease-in-out;
-    height: 10rem;
-    overflow: hidden;
-  }
-  .admin-rating-page .admin-body .spacer-setting {
-    width: 100%;
-    height: 1px;
-    background-color: var(--color-white);
-    margin-bottom: 0.5rem;
-  }
-  .admin-rating-page .admin-body .diff-filters {
-    display: flex;
-    flex-direction: row; /* Stacks items vertically */
-    gap: 1rem; /* Adds space between the filter containers */
-  }
-  
-  .admin-rating-page .admin-body .filter-container {
-    display: flex;
-    flex-direction: column; /* Stack the label and select vertically */
-  }
-  
-  .admin-rating-page .admin-body .input-setting {
-    margin-top: 1rem;
-  }
-  .admin-rating-page .admin-body .setting-title {
-    margin-bottom: 1rem;
-  }
-  .admin-rating-page .admin-body .setting-description {
-    margin-bottom: 0.5rem;
-  }
-
-  .admin-rating-page .admin-body .rating-list {
-    z-index: 2;
-    margin-top: 2rem;
-    background-color: var(--color-white-t20);
-    border-radius: 8px;
-    padding: 1rem;
-    overflow-x: auto; /* Enable horizontal scrolling */
-  }
-
-  .admin-rating-page .admin-body .rating-header {
-    display: flex;
-    gap: 1rem;
-    padding: 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
     font-weight: bold;
-    border-bottom: 1px solid var(--color-white);
-    margin-bottom: 0.5rem;
-    min-width: max-content; /* Prevent header wrapping */
-  }
+}
 
-  .admin-rating-page .admin-body .rating-header p {
-    flex: 1;
-    min-width: 150px; /* Set minimum column width */
-    text-align: left;
-  }
-
-  .admin-rating-page .admin-body .rating-item {
-    display: flex;
-    gap: 1rem;
-    padding: 0.75rem 1rem;
-    border-bottom: 1px solid var(--color-white-t20);
-    transition: background-color 0.2s ease;
-    min-width: max-content; /* Prevent row wrapping */
-  }
-
-  .admin-rating-page .admin-body .rating-item:hover {
+.admin-button:hover {
     background-color: var(--color-white-t20);
-  }
+    transform: translateY(-5px);
+}
 
-  .admin-rating-page .admin-body .rating-item {
-    flex: 1;
-    text-align: left;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }/*# sourceMappingURL=levelpage.css.map */
+@media screen and (max-width: 768px) {
+    .admin-container {
+        flex-direction: column;
+    }
 
-  .admin-rating-page .admin-body .rating-list [class^="column-"] {
-    width: 150px; /* default width for all columns */
-    text-align: left;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .admin-rating-page .admin-body .rating-header p {
-    flex: unset;  /* Remove the flex: 1 if it exists */
-    min-width: unset;  /* Remove the min-width if it exists */
-  }
-  .admin-rating-page .admin-body .rating-list .column-0 {
-    width: 40px;
-  }
-
-  .admin-rating-page .admin-body .rating-list .rating-item input {
-    background: transparent;
-    border: 1px solid #ccc;
-    color: inherit;
-    padding: 2px 4px;
-  }
-
-  .admin-rating-page .admin-body .rating-list .rating-item input:focus {
-    outline: none;
-    border-color: #fff;
-  }
-
-  .admin-rating-page .admin-body .rating-list .rating-item textarea {
-    white-space: normal;
-    background: transparent;
-    border: 1px solid #999;
-    color: inherit;
-    resize:vertical;
-    min-height: 2em;
-    padding: 2px 4px;
-    font-family: inherit; /* Maintains consistent font */
-    font-size: inherit;   /* Maintains consistent font size */
-    line-height: 1.2;     /* Comfortable line height for reading */
-    overflow-y: hidden;   /* Hides scrollbar */
-  }
-
-  .admin-rating-page .admin-body .rating-list .rating-item textarea:focus {
-    outline: none;
-    border-color: #fff;
-  }
-
-  /* Optional: Auto-resize height based on content */
-  .admin-rating-page .admin-body .rating-list .rating-item textarea {
-    overflow: hidden;
-  }
-
+    .admin-svg {
+        width: 200px;
+        height: 200px;
+    }
+}
