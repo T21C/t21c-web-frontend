@@ -1,5 +1,5 @@
 import { CompleteNav } from "../../components";
-import "./adminratingpage.css";
+import "./css/adminratingpage.css";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";

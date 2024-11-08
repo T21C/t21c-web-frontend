@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from "../../context/AuthContext";
-import "./adminsubmissionpage.css";
+import "./css/adminsubmissionpage.css";
 import { CompleteNav } from '../../components';
 import { getVideoDetails } from '../../Repository/RemoteRepository';
 import placeholder from "../../assets/placeholder/3.png";
