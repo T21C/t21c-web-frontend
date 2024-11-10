@@ -6,6 +6,8 @@ import { useTranslation } from "react-i18next";
 
 const FIXED_COLUMNS = ["ID", "Song", "Artist(s)", "Charter(s)", "Video link", "DL link"];
 
+const SUPER_ADMINS = ["teo_72", "v0w4n"];
+
 const truncateString = (str, maxLength) => {
   if (!str) return "";
   return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
@@ -31,7 +33,7 @@ const RatingPage = () => {
     const fetchRatings = async () => {
       try {
         if (user) {
-          setIsSuperAdmin(["teo_72", "v0w4n"].includes(user.username));
+          setIsSuperAdmin(SUPER_ADMINS.includes(user.username));
           console.log("fetching ratings", user);
           const response = await fetch(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_RATING_API}`, {
             headers: {authorization: `Bearer ${user.access_token}`}

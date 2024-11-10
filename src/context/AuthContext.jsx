@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useGoogleLogin } from '@react-oauth/google';
+import api from '../utils/api';
 import axios from 'axios';
 
 const AuthContext = createContext();
@@ -9,9 +10,18 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null); // user state
   const [accessToken, setAccessToken] = useState(null); // Access token state
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
 
   // Function to parse and set user data
 
+
+  const checkAdmin = async (token) => {
+    const response = await api.get(import.meta.env.VITE_CHECK_ADMIN);
+    console.log("admin check", response.data);  
+    setIsAdmin(response.data.isAdmin);
+    setIsSuperAdmin(response.data.isSuperAdmin);
+  };
 
 
   // Fetch the image URL when setting the user
@@ -52,6 +62,7 @@ export const AuthProvider = ({ children }) => {
 
       setUser(updatedUser)
       setAccessToken(updatedUser.access_token)
+      checkAdmin(updatedUser.access_token);
       // Store user data in localStorage
       localStorage.setItem('user', JSON.stringify(updatedUser));
     }
@@ -82,42 +93,30 @@ export const AuthProvider = ({ children }) => {
 
 
   const getUserData = async (user) => {
-    
     try {
-      //console.log("getting data from user");
-      if(user){
-      const response = await fetch('https://discord.com/api/users/@me', {
-        headers: {
-          authorization: `Bearer ${user.access_token}`, // Use Bearer token format
-        },
-      });
+        // Set the token in the API instance headers
+        
+        const response = await axios.get('https://discord.com/api/users/@me',
+          {
+            headers: {
+              authorization: `Bearer ${user.access_token}`,
+            },
+          }
+        );
+        const { id, username, global_name, avatar } = response.data;
 
-      if (!response.ok) {
-        throw new Error('failed response', response);
-      }
-
-      const profile = await response.json();
-      const { id, username, global_name, avatar } = profile;
-
-      // Create user object with the profile info
-      const userData = {
-        id,
-        global_name: `${global_name}`,
-        username: `${username}`,
-        avatar,
-        access_token: user.access_token, // Include the access token in user data
-      };
-
-      // Set the user in AuthContext
-      
-      setUserData(userData);
-    }
-    else{
-      console.log("invalid user", user);
-      
-    }
+        const userData = {
+          id,
+          global_name: `${global_name}`,
+          username: `${username}`,
+          avatar,
+          access_token: user.access_token,
+        };
+        
+        setUserData(userData);
     } catch (error) {
       console.error('Error fetching user data:', error);
+      // Clear user data on error
     }
   };
 
@@ -125,35 +124,24 @@ export const AuthProvider = ({ children }) => {
 
 
   const getTokenData = async (token) => {
-    //console.log("getting data by token");
-    
     try {
-      const response = await fetch('https://discord.com/api/users/@me', {
+        // Set the token in the API instance h
+      const response = await axios.get('https://discord.com/api/users/@me', {
         headers: {
-          authorization: `Bearer ${token}`, // Use Bearer token format
+          authorization: `Bearer ${token}`,
         },
       });
+      const { id, username, global_name, avatar } = response.data;
 
-      if (!response.ok) {
-        throw new Error('failed response', response);
-      }
-
-      const profile = await response.json();
-      const { id, username, global_name, avatar } = profile;
-
-      // Create user object with the profile info
       const userData = {
         id,
         global_name: `${global_name}`,
         username: `${username}`,
         avatar,
-        access_token: token, // Include the access token in user data
+        access_token: token,
       };
-
-      // Set the user in AuthContext
       
       setUserData(userData);
-
     } catch (error) {
       console.error('Error fetching user data:', error);
     }
@@ -174,7 +162,7 @@ export const AuthProvider = ({ children }) => {
   const loginGoogle = useGoogleLogin({
     onSuccess: async (codeResponse) => {
       try {
-        const response = await axios.post('http://localhost:3001/api/google-auth', {
+        const response = await api.post('/google-auth', {
           code: codeResponse,
         });
 
@@ -201,15 +189,16 @@ export const AuthProvider = ({ children }) => {
 
   // Logout logic
   const logout = () => {
-    localStorage.removeItem('user');
-    localStorage.removeItem('discordAccessToken'); // Clear user from localStorage
+    localStorage.removeItem('user');// Clear user from localStorage
     setUser(null);
     setAccessToken(null);
+    setIsAdmin(false);
+    setIsSuperAdmin(false);
   };
 
   // Provide state and functions to the entire app
   return (
-    <AuthContext.Provider value={{ user, setUser, accessToken, loginDiscord, logout, handleAccessToken}}>
+    <AuthContext.Provider value={{ user, setUser, accessToken, loginDiscord, logout, handleAccessToken, isAdmin, isSuperAdmin}}>
       {children}
     </AuthContext.Provider>
   );

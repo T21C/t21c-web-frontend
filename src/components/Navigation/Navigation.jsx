@@ -1,19 +1,23 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import "./navigation.css";
-import React, { useState, useContext } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState, useContext, useEffect } from "react";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import logo from "../../assets/tuf-logo/logo-full.png";
 import { useTranslation } from "react-i18next";
 import { UserContext } from "../../context/UserContext";
 import i18next from 'i18next';
 import { isoToEmoji } from "../../Repository/RemoteRepository";
-
+import { useAuth } from "../../context/AuthContext";
 const Navigation = ({ children }) => {
   const { t } = useTranslation();
   const [openNav, setOpenNav] = useState(false);
   const { language, setLanguage } = useContext(UserContext);
   const [openDialog, setOpenDialog] = useState(false);
+  const [isAdminView, setIsAdminView] = useState(false);
+  const { isAdmin, isSuperAdmin } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
   const languages = {
     us: { display: "English (us)", countryCode: "us" },
     kr: { display: "한국어 (ko)", countryCode: "kr" },
@@ -22,6 +26,11 @@ const Navigation = ({ children }) => {
     ru: { display: "Русский (ru)", countryCode: "ru" },
     de: { display: "Deutsch (de)", countryCode: "de" }
   };
+
+  useEffect(() => {
+    const isAdminPath = location.pathname.startsWith('/admin');
+    setIsAdminView(isAdminPath);
+  }, [location]);
 
   function changeNavState() {
     setOpenNav(!openNav);
@@ -37,6 +46,12 @@ const Navigation = ({ children }) => {
     });
     changeDialogState();
   }
+
+  const toggleAdminView = () => {
+    const newAdminView = !isAdminView;
+    console.log("admin view", newAdminView);
+    navigate(newAdminView ? '/admin/rating' : '/levels');
+  };
 
   return (
     <>
@@ -61,25 +76,35 @@ const Navigation = ({ children }) => {
 
             <div className="nav-menu">
               <ul>
-                <NavLink
-                  className={({ isActive }) =>
-                    "nav-link " + (isActive ? "active-link" : "")
-                  }
-                  to="/levels"
-                >
-                  <li>{t("navigationComponent.levels")}</li>
-                </NavLink>
-
-
-                
-                <NavLink
-                  className={({ isActive }) =>
-                    "nav-link " + (isActive ? "active-link" : "")
-                  }
-                  to="/leaderboard"
-                >
-                  <li>{t("navigationComponent.leaderboard")}</li>
-                </NavLink>
+                {isAdminView ? (
+                  // Admin Links
+                  <>
+                    <NavLink className={({ isActive }) =>
+                      "nav-link " + (isActive ? "active-link" : "")}
+                      to="/admin/rating">
+                      <li>Rating{/*t("navigationComponent.rating")*/}</li>
+                    </NavLink>
+                    <NavLink className={({ isActive }) =>
+                      "nav-link " + (isActive ? "active-link" : "")}
+                      to="/admin/submissions">
+                      <li>Submissions{/*t("navigationComponent.submissions")*/}</li>
+                    </NavLink>
+                  </>
+                ) : (
+                  // Regular Links
+                  <>
+                    <NavLink className={({ isActive }) =>
+                      "nav-link " + (isActive ? "active-link" : "")}
+                      to="/levels">
+                      <li>{t("navigationComponent.levels")}</li>
+                    </NavLink>
+                    <NavLink className={({ isActive }) =>
+                      "nav-link " + (isActive ? "active-link" : "")}
+                      to="/leaderboard">
+                      <li>{t("navigationComponent.leaderboard")}</li>
+                    </NavLink>
+                  </>
+                )}
               </ul>
             </div>
           </div>
@@ -87,22 +112,19 @@ const Navigation = ({ children }) => {
           {/* Right side: Language switcher and profile */}
           <div className="nav-right">
             <ul>
-            <NavLink
-                  className={({ isActive }) =>
-                    "nav-link " + (isActive ? "active-link" : "")
-                  }
-                  to="/admin"
-                >
-                  <li>Rating{/*t("navigationComponent.rating")*/}</li>
-                </NavLink>
-            <NavLink
-                  className={({ isActive }) =>
-                    "nav-link " + (isActive ? "active-link" : "")
-                  }
-                  to="/submission"
-                >
-                  <li>{t("navigationComponent.submission")}</li>
-                </NavLink>
+              {(isAdmin || isSuperAdmin) && (
+                <li onClick={toggleAdminView} style={{cursor: 'pointer'}}>
+                  {isAdminView ? "Back" : "Admin"}
+                </li>
+              )}
+              <NavLink
+                className={({ isActive }) =>
+                  "nav-link " + (isActive ? "active-link" : "")
+                }
+                to="/submission"
+              >
+                <li>{t("navigationComponent.submission")}</li>
+              </NavLink>
               <li className="nav-language" onClick={changeDialogState}>
                 <img className="nav-flag" src={isoToEmoji(language)} alt="" />
                 <svg className="language-dropdown svg-stroke" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M7 10L12 15L17 10" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path></g></svg>
