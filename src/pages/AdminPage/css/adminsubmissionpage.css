@@ -3,14 +3,15 @@
     width: 100%;
     color: var(--color-white);
     min-height: 100vh;
+    font-size: 1.1rem;
   }
   .submission-admin-page .submissions-admin-list {
     position: relative;
     z-index: 2;
-    padding: 0 1.5rem;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
     padding-top: 6rem;
     max-width: 70rem;
-    margin: 0 auto;
   }
   .submission-admin-page .submissions-admin-list .input-option {
     display: flex;
@@ -212,122 +213,118 @@
   .submission-admin-page .admin-page {
     padding: 20px;
   }
-  
-  .submission-admin-page .submissions-list {
-    display: grid;
-    gap: 20px;
-    max-width: 800px;
-    margin: 0 auto;
-  }
+
   
   .submission-admin-page .submission-card {
-    border: 1px solid #ddd;
-    padding: 20px;
+    background: var(--color-white-t20);
     border-radius: 8px;
-  }
-  
-  .submission-admin-page .action-buttons {
-    display: flex;
-    gap: 10px;
-    margin-top: 15px;
-  }
-  
-  .submission-admin-page .approve-btn {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-  
-  .submission-admin-page .decline-btn {
-    background-color: #f44336;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-  }
-
-  .submission-admin-page {
     padding: 20px;
-    margin: 0 auto;
-  }
-
-  .submissions-admin-list {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    margin-bottom: 1.5rem;
+    color: var(--color-white);
+    border: 1px solid var(--color-white-t20);
     display: grid;
+    grid-template-columns: repeat(11, 1fr); /* Creates 8 equal columns */
     gap: 20px;
-    margin-top: 20px;
+    transition: all 0.5s ease-out;
+    max-height: 600px; /* Set this to something larger than your card height */
+    opacity: 1;
   }
 
-  .submission-card {
-    
-    background: #fff;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  .submission-admin-page .submission-card.approve {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background-color: rgba(0, 255, 8, 0.3); /* Green tint */
+    pointer-events: none;
+    overflow: hidden;
   }
 
-  .submission-header {
+  .submission-admin-page .submission-card.decline {
+    max-height:0;
+    opacity: 0;
+    padding: 0;
+    border: none;
+    background-color: rgba(244, 67, 54, 0.3); /* Red tint */
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .submission-admin-page .submission-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 15px;
     padding-bottom: 10px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--color-white-t20);
+    grid-column: 1 / -1;
   }
 
-  .submission-header h3 {
+  .submission-admin-page .submissions-admin-list h1 {
+    margin: 1rem 0 0.5rem 2.5rem;
+    font-size: 2.5rem;
+    color: var(--color-white);
+  }
+
+  .submission-admin-page .submission-header h3 {
     margin: 0;
-    font-size: 1.5rem;
-    color: #333;
+    margin-left: 1rem;
+    font-size: 1.7rem;
+    color: var(--color-white);
   }
 
-  .submission-date {
-    color: #666;
-    font-size: 0.9rem;
+  .submission-admin-page .submission-date {
+    color: #bbb;
+    font-size: 1rem;
   }
 
-  .submission-details {
+  .submission-admin-page .submission-details {
+    padding: 1rem;
+    font-size: 1.25rem;
     display: grid;
-    gap: 12px;
+    gap: 0.5rem;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    grid-column: 1 / span 4; /* Takes up first 3 columns */
   }
 
-  .detail-row {
+  .submission-admin-page .detail-row {
     display: flex;
+    margin-left: 2rem;
     align-items: center;
     gap: 10px;
   }
 
-  .detail-label {
-    font-weight: 600;
+  .submission-admin-page .detail-label {
     min-width: 120px;
-    color: #555;
+    color: rgb(232, 232, 255);
   }
 
-  .detail-value {
-    color: #333;
+  .submission-admin-page .detail-value {
+    font-weight: 600;
+    color: var(--color-white);
   }
 
-  .detail-link {
-    color: #0066cc;
+  .submission-admin-page .detail-link {
+    font-weight: 600;
+    color: rgb(180, 175, 255);
     text-decoration: none;
   }
 
-  .detail-link:hover {
+  .submission-admin-page .detail-link:hover {
     text-decoration: underline;
   }
 
-  .action-buttons {
+  .submission-admin-page .action-buttons {
     display: flex;
     gap: 10px;
     margin-top: 15px;
     padding-top: 15px;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--color-white-t20);
   }
 
-  .approve-btn, .decline-btn {
+  .submission-admin-page .approve-btn, .submission-admin-page .decline-btn {
     padding: 8px 16px;
     border: none;
     border-radius: 4px;
@@ -336,33 +333,40 @@
     transition: opacity 0.2s;
   }
 
-  .approve-btn {
+  .submission-admin-page .approve-btn {
     background-color: #4CAF50;
     color: white;
   }
 
-  .decline-btn {
+  .submission-admin-page .decline-btn {
     background-color: #f44336;
     color: white;
   }
 
-  .approve-btn:hover, .decline-btn:hover {
+  .submission-admin-page .approve-btn:hover, .submission-admin-page .decline-btn:hover {
     opacity: 0.9;
   }
 
-  .video-embed {
+  .submission-admin-page .video-embed {
     margin: 15px 0;
     width: 100%;
   }
 
-  .embed-container {
+  .submission-admin-page .embed-container {
     position: relative; /* 16:9 aspect ratio */
     height: 0;
     overflow: hidden;
     max-width: 100%;
+    grid-column: 6 / span 5; /* Takes up last 5 columns */
+    width: 100%; /* Takes full width of its grid area */
+    height: 100%; /* Takes full height */
+    min-height: 16rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .embed-container iframe {
+  .submission-admin-page .embed-container iframe {
     position: absolute;
     top: 0;
     left: 0;
@@ -372,14 +376,15 @@
     margin-bottom: 15px;
   }
 
-  .youtube {
+  .submission-admin-page .youtube {
     position: relative;
     width: 100%;
     padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
     margin: 15px 0;
+    flex: 1;
   }
 
-  .youtube iframe {
+  .submission-admin-page .youtube iframe {
     position: absolute;
     top: 0;
     left: 0;
@@ -388,7 +393,7 @@
     border: none;
   }
 
-  .thumbnail-container {
+  .submission-admin-page .thumbnail-container {
     position: absolute;
     top: 0;
     left: 0;
@@ -399,20 +404,11 @@
     background-repeat: no-repeat;
   }
 
-  .card-content {
-    display: flex;
-    gap: 20px;
-    margin-top: 15px;
+  .submission-admin-page .card-content {
+    display: contents; /* This makes the card-content div transparent to the grid */
   }
 
-  .submission-details {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .embed-container {
-    width: 400px;
-    min-width: 400px;
-    height:auto;
+  .submission-admin-page .submission-card:hover {
+    background: var(--color-white-t30);
   }
 
