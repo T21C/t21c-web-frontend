@@ -9,6 +9,7 @@ const SubmissionManagementPage = () => {
   const [submissions, setSubmissions] = useState([]);
   const [videoEmbeds, setVideoEmbeds] = useState({});
   const [animatingCards, setAnimatingCards] = useState({});
+  const [disabledButtons, setDisabledButtons] = useState({});
 
   useEffect(() => {
     fetchPendingSubmissions();
@@ -46,32 +47,54 @@ const SubmissionManagementPage = () => {
     try {
       console.log('Starting animation for:', submissionId, 'with action:', action);
       
-      // First, just set the animation state
+      // Disable buttons for this card
+      setDisabledButtons(prev => ({
+        ...prev,
+        [submissionId]: true
+      }));
+      
+      // Set animation state
       setAnimatingCards(prev => ({
         ...prev,
         [submissionId]: action
       }));
 
       // Wait for animation to complete before removing
-      setTimeout(() => {
+      setTimeout(async () => {
         // Comment out API call for now
-        /*
         const response = await fetch(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_SUBMISSION_API}/${submissionId}/${action}`, {
           method: 'PUT',
         });
-        */
         
-        setSubmissions(prev => prev.filter(sub => sub._id !== submissionId));
-        setAnimatingCards(prev => {
-          const newState = { ...prev };
-          delete newState[submissionId];
-          return newState;
-        });
-      }, 500); // Match this with your CSS transition duration
+        if (response.ok) {
+          setSubmissions(prev => prev.filter(sub => sub._id !== submissionId));
+          setAnimatingCards(prev => {
+            const newState = { ...prev };
+            delete newState[submissionId];
+            return newState;
+          });
+          // Clean up disabled state
+          setDisabledButtons(prev => {
+            const newState = { ...prev };
+            delete newState[submissionId];
+            return newState;
+          });
+        }
+        else {
+          console.error('Error updating submission:', response.statusText);
+          // Re-enable buttons on error
+          setDisabledButtons(prev => {
+            const newState = { ...prev };
+            delete newState[submissionId];
+            return newState;
+          });
+        }
+      }, 500);
 
     } catch (error) {
       console.error(`Error ${action}ing submission:`, error);
-      setAnimatingCards(prev => {
+      // Re-enable buttons on error
+      setDisabledButtons(prev => {
         const newState = { ...prev };
         delete newState[submissionId];
         return newState;
@@ -185,12 +208,14 @@ const SubmissionManagementPage = () => {
                     <button 
                       onClick={() => handleSubmission(submission._id, 'approve')}
                       className="approve-btn"
+                      disabled={disabledButtons[submission._id]}
                     >
                       Allow
                     </button>
                     <button 
                       onClick={() => handleSubmission(submission._id, 'decline')}
                       className="decline-btn"
+                      disabled={disabledButtons[submission._id]}
                     >
                       Decline
                     </button>
