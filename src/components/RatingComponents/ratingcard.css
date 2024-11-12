@@ -1,0 +1,74 @@
+.rating-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  backdrop-filter: blur(10px);
+}
+
+.rating-card-content {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.rating-card-header {
+  flex: 2;
+  min-width: 200px;
+}
+
+.rating-card-header h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.rating-card-header .artist {
+  margin: 0.25rem 0 0;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.rating-card-details {
+  flex: 3;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.5rem 1rem;
+}
+
+.rating-card-details p {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.rating-card-details p::before {
+  content: attr(data-label);
+  color: #aaa;
+  margin-right: 0.5rem;
+}
+
+.view-details-btn {
+  flex: 0 0 auto;
+  font-weight: bold;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 0 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  align-self: stretch;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.view-details-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+} 

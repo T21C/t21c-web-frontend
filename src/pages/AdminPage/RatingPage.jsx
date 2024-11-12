@@ -3,6 +3,8 @@ import "./css/adminratingpage.css";
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
+import { DetailPopup } from "../../components/RatingComponents/detailPopup";
+import { RatingCard } from "../../components/RatingComponents/ratingCard";
 
 const FIXED_COLUMNS = ["ID", "Song", "Artist(s)", "Creator(s)", "Video link", "DL link", "Current Diff", "Low Diff", "Rerate #", "Requester FR", "Average", "Comments"];
 const SUPER_ADMINS = ["teo_72", "v0w4n"];
@@ -21,6 +23,7 @@ const RatingPage = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
   const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const [selectedRating, setSelectedRating] = useState(null);
 
   const handleCloseSuccessMessage = () => {
     setShowMessage(false);
@@ -92,62 +95,6 @@ const RatingPage = () => {
     fetchData();
   }, [user]);
 
-  const isEditableCell = (cellIndex) => {
-    return cellIndex === 11 || cellIndex === 12;
-  };
-
-  const renderCell = (cell, cellIndex, rowIndex) => {
-    // Links remain the same
-    if (cellIndex === 4 || cellIndex === 5) {
-      return (
-        <a href={cell} key={`cell-${rowIndex}-${cellIndex}`} className={`column-${cellIndex}`}>
-          {cellIndex === 4 ? "Video" : "Direct download"}
-        </a>
-      );
-    }
-    
-    // Editable cells
-    if (isEditableCell(cellIndex)) {
-      return (
-        <textarea
-          key={`cell-${rowIndex}-${cellIndex}`}
-          className={`column-${cellIndex}`}
-          value={typeof cell === 'object' ? JSON.stringify(cell) : String(cell)}
-          onChange={(e) => {
-            // Update ratings state
-            const newRatings = [...ratings];
-            newRatings[rowIndex + 1][cellIndex] = e.target.value;
-            setRatings(newRatings);
-            
-            // Only auto-resize column 12 (comment column)
-            if (cellIndex === 12) {
-              requestAnimationFrame(() => {
-                const textarea = e.target;
-                textarea.style.height = 'auto';
-                textarea.style.height = textarea.scrollHeight + 'px';
-              });
-            }
-          }}
-          // Only apply onFocus auto-resize to column 12
-          onFocus={(e) => {
-            if (cellIndex === 12) {
-              const textarea = e.target;
-              textarea.style.height = 'auto';
-              textarea.style.height = textarea.scrollHeight + 'px';
-            }
-          }}
-        />
-      );
-    }
-    
-    // Non-editable cells
-    return (
-      <p key={`cell-${rowIndex}-${cellIndex}`} className={`column-${cellIndex}`}>
-        {typeof cell === 'object' ? JSON.stringify(cell) : String(cell)}
-      </p>
-    );
-  };
-
   const handleSubmit = async () => {
     try {
       const editableRows = ratings.slice(1);
@@ -185,11 +132,11 @@ const RatingPage = () => {
       <div className="background-level"></div>
       <div className="admin-rating-body">
         <div className={`result-message ${showMessage ? 'visible' : ''}`} 
-        style={{backgroundColor: 
-        ( success? "#2b2" :
-          error? "#b22":
-          "#888"
-        )}}>
+          style={{backgroundColor: 
+            ( success? "#2b2" :
+              error? "#b22":
+              "#888"
+            )}}>
           {success? (<p>{t("levelSubmission.alert.success")}</p>) :
           error? (<p>{t("levelSubmission.alert.error")}{truncateString(error, 27)}</p>):
           (<p>{t("levelSubmission.alert.loading")}</p>)}
@@ -198,21 +145,29 @@ const RatingPage = () => {
         <button className="submit-button" onClick={handleSubmit}>
           Submit Changes
         </button>
+        
         <div className="rating-list">
-          {/* Headers */}
-          <div className="rating-header">
-            {ratings[0]?.map((header, index) => (
-              <p className={`column-${index}`} key={`header-${index}`}>{String(header)}</p>
-            ))}
-          </div>
-          
-          {/* Data rows */}
           {ratings.slice(1).map((row, rowIndex) => (
-            <div className={`rating-item row-${rowIndex}`} key={`row-${rowIndex}`}>
-              {row.map((cell, cellIndex) => renderCell(cell, cellIndex, rowIndex))}
-            </div>
+            <RatingCard
+              key={`row-${rowIndex}`}
+              row={row}
+              rowIndex={rowIndex}
+              setSelectedRating={setSelectedRating}
+              raters={raters}
+              user={user}
+              FIXED_COLUMNS={FIXED_COLUMNS}
+            />
           ))}
         </div>
+        <DetailPopup
+          selectedRating={selectedRating}
+          setSelectedRating={setSelectedRating}
+          ratings={ratings}
+          setRatings={setRatings}
+          raters={raters}
+          user={user}
+          FIXED_COLUMNS={FIXED_COLUMNS}
+        />
       </div>
     </div>
   );
