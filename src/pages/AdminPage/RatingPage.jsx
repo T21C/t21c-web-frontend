@@ -4,8 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
 
-const FIXED_COLUMNS = ["ID", "Song", "Artist(s)", "Charter(s)", "Video link", "DL link"];
-
+const FIXED_COLUMNS = ["ID", "Song", "Artist(s)", "Creator(s)", "Video link", "DL link", "Current Diff", "Low Diff", "Rerate #", "Requester FR", "Average", "Comments"];
 const SUPER_ADMINS = ["teo_72", "v0w4n"];
 
 const truncateString = (str, maxLength) => {
@@ -14,10 +13,10 @@ const truncateString = (str, maxLength) => {
 };
 
 const RatingPage = () => {
-
-  const {t} = useTranslation()
+  const {t} = useTranslation();
   const { user } = useAuth();
   const [ratings, setRatings] = useState([]);
+  const [raters, setRaters] = useState([]);
   const [showMessage, setShowMessage] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
@@ -30,51 +29,71 @@ const RatingPage = () => {
   };
 
   useEffect(() => {
-    const fetchRatings = async () => {
+    const fetchData = async () => {
       try {
         if (user) {
           setIsSuperAdmin(SUPER_ADMINS.includes(user.username));
-          console.log("fetching ratings", user);
-          const response = await fetch(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_RATING_API}`, {
+          
+          // Fetch raters first
+          const ratersResponse = await fetch(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_RATING_API}/raters`, {
             headers: {authorization: `Bearer ${user.access_token}`}
           });
-          const data = await response.json();
+          const ratersList = await ratersResponse.json();
           
-          // Find the user's column index
-          const userColumnIndex = data[0].findIndex((header, index) => 
-            index >= 4 && header === user.username
-          );
-          console.log("User column index:", userColumnIndex);
-
-          if (userColumnIndex !== -1) {
-            const swappedData = data.map(row => {
-              const newRow = [...row];
-              [newRow[userColumnIndex], newRow[14]] = [newRow[14], newRow[userColumnIndex]];
-              return newRow;
-            });
-            
-            const namedData = [...FIXED_COLUMNS, ...swappedData[0].slice(FIXED_COLUMNS.length)];
-            setRatings([namedData, ...swappedData.slice(1)]);
-          } else {
-            const namedData = [...FIXED_COLUMNS, ...data[0].slice(FIXED_COLUMNS.length)];
-            setRatings([namedData, ...data.slice(1)]);
+          // Move current user to the beginning of ratersList if present
+          const userIndex = ratersList.indexOf(user.username);
+          if (userIndex !== -1) {
+            ratersList.splice(userIndex, 1);
+            ratersList.unshift(user.username);
           }
+          
+          setRaters(ratersList);
+
+          // Then fetch ratings
+          const ratingsResponse = await fetch(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_RATING_API}`, {
+            headers: {authorization: `Bearer ${user.access_token}`}
+          });
+          const data = await ratingsResponse.json();
+          
+          // Transform the data to match the table structure
+          const transformedData = data.map(rating => {
+            const row = [
+              rating.ID,
+              rating.song,
+              rating.artist,
+              rating.creator,
+              rating.rawVideoLink,
+              rating.rawDLLink,
+              rating.currentDiff,
+              rating.lowDiff,
+              rating.rerateNum,
+              rating.requesterFR,
+              rating.average,
+              rating.comments,
+              ...ratersList.map(rater => {
+                const raterRating = rating.ratings?.[rater];
+                return raterRating ? raterRating[0] : "";
+              }),
+              rating.ratings?.[user.username]?.[1] || "" // User's comment
+            ];
+            return row;
+          });
+
+          // Create headers
+          const headers = [...FIXED_COLUMNS, ...ratersList, "Your Comment"];
+          
+          setRatings([headers, ...transformedData]);
         }
       } catch (error) {
-        console.error("Error fetching ratings:", error);
+        console.error("Error fetching data:", error);
       }
     };
 
-    fetchRatings();
+    fetchData();
   }, [user]);
 
   const isEditableCell = (cellIndex) => {
-    if (isSuperAdmin) {
-      // Make all cells except ID, Video and Download links editable
-      return cellIndex !== 0 && cellIndex !== 4 && cellIndex !== 5 && cellIndex !== 13;
-    }
-    // Regular admin can only edit rating and comment
-    return cellIndex === 12 || cellIndex === 14;
+    return cellIndex === 11 || cellIndex === 12;
   };
 
   const renderCell = (cell, cellIndex, rowIndex) => {
@@ -129,6 +148,37 @@ const RatingPage = () => {
     );
   };
 
+  const handleSubmit = async () => {
+    try {
+      const editableRows = ratings.slice(1);
+      
+      const updates = editableRows.map(row => ({
+        id: row[0], // ID is at index 0
+        rating: row[raters.indexOf(user.username) + FIXED_COLUMNS.length] || 0, // Find user's rating column
+        comment: row[row.length - 1] // Last column is the comment
+      }));
+
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/rating`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.access_token}`
+        },
+        body: JSON.stringify({ updates })
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update ratings');
+      }
+
+      setSuccess(true);
+      setShowMessage(true);
+    } catch (err) {
+      setError(err.message);
+      setShowMessage(true);
+    }
+  };
+
   return (
     <div className="admin-rating-page">
       <CompleteNav />
@@ -145,43 +195,7 @@ const RatingPage = () => {
           (<p>{t("levelSubmission.alert.loading")}</p>)}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div>
-        <button 
-          className="submit-button"
-          onClick={async () => {
-            try {
-              // Get all editable rows (skip header row)
-              const editableRows = ratings.slice(1);
-              
-              // Create array of updates
-              const updates = editableRows.map((row, index) => ({
-                index: index,
-                rating: row[14], // Column 14 value
-                comment: row[12] // Column 12 value  
-              }));
-
-              // Submit request
-              const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/rating`, {
-                method: 'PUT',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${user.access_token}`
-                },
-                body: JSON.stringify({ updates })
-              });
-
-              if (!response.ok) {
-                throw new Error('Failed to update ratings');
-              }
-
-              setSuccess(true);
-              setShowMessage(true);
-
-            } catch (err) {
-              setError(err.message);
-              setShowMessage(true);
-            }
-          }}
-        >
+        <button className="submit-button" onClick={handleSubmit}>
           Submit Changes
         </button>
         <div className="rating-list">
@@ -199,11 +213,8 @@ const RatingPage = () => {
             </div>
           ))}
         </div>
-
-          
+      </div>
     </div>
-    </div>
-  
   );
 };
 
