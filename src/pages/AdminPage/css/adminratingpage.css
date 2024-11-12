@@ -118,6 +118,7 @@
     background-color: var(--color-white-t20);
     border-radius: 8px;
     padding: 1rem;
+    padding-bottom: 0;
     overflow-x: auto; /* Enable horizontal scrolling */
   }
 

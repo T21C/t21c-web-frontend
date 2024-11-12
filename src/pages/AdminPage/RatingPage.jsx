@@ -142,10 +142,8 @@ const RatingPage = () => {
           (<p>{t("levelSubmission.alert.loading")}</p>)}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div>
-        <button className="submit-button" onClick={handleSubmit}>
-          Submit Changes
-        </button>
-        
+        {ratings.length > 0 ?
+        <>
         <div className="rating-list">
           {ratings.slice(1).map((row, rowIndex) => (
             <RatingCard
@@ -167,7 +165,11 @@ const RatingPage = () => {
           raters={raters}
           user={user}
           FIXED_COLUMNS={FIXED_COLUMNS}
-        />
+          />
+        </>
+        :
+        <div className="loader loader-level-detail"/>
+        }
       </div>
     </div>
   );

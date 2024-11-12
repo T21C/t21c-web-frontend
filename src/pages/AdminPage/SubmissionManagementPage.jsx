@@ -107,92 +107,63 @@ const SubmissionManagementPage = () => {
       <CompleteNav />
       <div className="background-level"></div>
       <div className="submission-admin-page">
-        <div className="submissions-admin-list">
-          <h1>Submission Moderation</h1>
-          {submissions.map((submission) => (
-            <div 
-              key={submission._id} 
-              className={`submission-card ${animatingCards[submission._id] || ''}`}
-            >
-              <div className="submission-header">
-                <h3>{submission.song}</h3>
-                <span className="submission-date">
-                  {new Date(submission.createdAt).toLocaleDateString()}
-                </span>
-              </div>
-              
-              <div className="card-content">
-                <div className="submission-details">
-                  <div className="detail-row">
-                    <span className="detail-label">Artist:</span>
-                    <span className="detail-value">{submission.artist}</span>
-                  </div>
-                  
-                  <div className="detail-row">
-                    <span className="detail-label">Charter:</span>
-                    <span className="detail-value">{submission.charter}</span>
-                  </div>
-                  
-                  <div className="detail-row">
-                    <span className="detail-label">Difficulty:</span>
-                    <span className="detail-value">{submission.diff}</span>
-                  </div>
-
-
-
-                  
-                  {submission.directDL ? (
+        {submissions.length > 0 ? (
+          <div className="submissions-admin-list">
+            <h1>Submission Moderation</h1>
+            {submissions.map((submission) => (
+              <div 
+                key={submission._id} 
+                className={`submission-card ${animatingCards[submission._id] || ''}`}
+              >
+                <div className="submission-header">
+                  <h3>{submission.song}</h3>
+                  <span className="submission-date">
+                    {new Date(submission.createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+                
+                <div className="card-content">
+                  <div className="submission-details">
                     <div className="detail-row">
-                      <span className="detail-label">Download:</span>
-                    <a 
-                      href={submission.directDL} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="detail-link"
-                    >
-                      Direct Link
-                      </a>
+                      <span className="detail-label">Artist:</span>
+                      <span className="detail-value">{submission.artist}</span>
                     </div>
-                  ):(
+                    
                     <div className="detail-row">
-                      <span className="detail-label">Download:</span>
-                      <span className="detail-value" style={{color: "rgb(255, 100, 100)"}}>Not Available</span>
+                      <span className="detail-label">Charter:</span>
+                      <span className="detail-value">{submission.charter}</span>
                     </div>
-                  )}
-
-                  {submission.wsLink && (
+                    
                     <div className="detail-row">
-                    <span className="detail-label">Workshop:</span>
-                    <a 
-                      href={submission.wsLink} 
-                      target="_blank" 
-                      rel="noopener noreferrer"
-                      className="detail-link"
-                    >
-                      Workshop Link
-                      </a>
+                      <span className="detail-label">Difficulty:</span>
+                      <span className="detail-value">{submission.diff}</span>
                     </div>
-                  )}
 
 
 
-                  {submission.team && (
-                    <div className="detail-row">
-                      <span className="detail-label">Team:</span>
-                      <span className="detail-value">{submission.team}</span>
-                    </div>
-                  )}
+                    
+                    {submission.directDL ? (
+                      <div className="detail-row">
+                        <span className="detail-label">Download:</span>
+                      <a 
+                        href={submission.directDL} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="detail-link"
+                      >
+                        Direct Link
+                        </a>
+                      </div>
+                    ):(
+                      <div className="detail-row">
+                        <span className="detail-label">Download:</span>
+                        <span className="detail-value" style={{color: "rgb(255, 100, 100)"}}>Not Available</span>
+                      </div>
+                    )}
 
-                  {submission.vfxer && (
-                    <div className="detail-row">
-                      <span className="detail-label">VFXer:</span>
-                      <span className="detail-value">{submission.vfxer}</span>
-                    </div>
-                  )}
-
-                  {submission.wsLink && (
-                    <div className="detail-row">
-                      <span className="detail-label">Workshop Link:</span>
+                    {submission.wsLink && (
+                      <div className="detail-row">
+                      <span className="detail-label">Workshop:</span>
                       <a 
                         href={submission.wsLink} 
                         target="_blank" 
@@ -200,51 +171,84 @@ const SubmissionManagementPage = () => {
                         className="detail-link"
                       >
                         Workshop Link
-                      </a>
-                    </div>
-                  )}
+                        </a>
+                      </div>
+                    )}
 
-                  <div className="action-buttons">
-                    <button 
-                      onClick={() => handleSubmission(submission._id, 'approve')}
-                      className="approve-btn"
-                      disabled={disabledButtons[submission._id]}
-                    >
-                      Allow
-                    </button>
-                    <button 
-                      onClick={() => handleSubmission(submission._id, 'decline')}
-                      className="decline-btn"
-                      disabled={disabledButtons[submission._id]}
-                    >
-                      Decline
-                    </button>
+
+
+                    {submission.team && (
+                      <div className="detail-row">
+                        <span className="detail-label">Team:</span>
+                        <span className="detail-value">{submission.team}</span>
+                      </div>
+                    )}
+
+                    {submission.vfxer && (
+                      <div className="detail-row">
+                        <span className="detail-label">VFXer:</span>
+                        <span className="detail-value">{submission.vfxer}</span>
+                      </div>
+                    )}
+
+                    {submission.wsLink && (
+                      <div className="detail-row">
+                        <span className="detail-label">Workshop Link:</span>
+                        <a 
+                          href={submission.wsLink} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="detail-link"
+                        >
+                          Workshop Link
+                        </a>
+                      </div>
+                    )}
+
+                    <div className="action-buttons">
+                      <button 
+                        onClick={() => handleSubmission(submission._id, 'approve')}
+                        className="approve-btn"
+                        disabled={disabledButtons[submission._id]}
+                      >
+                        Allow
+                      </button>
+                      <button 
+                        onClick={() => handleSubmission(submission._id, 'decline')}
+                        className="decline-btn"
+                        disabled={disabledButtons[submission._id]}
+                      >
+                        Decline
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="embed-container">
+                    {videoEmbeds[submission._id] ? (
+                      <iframe
+                        src={videoEmbeds[submission._id].embed}
+                        title="Video player"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerPolicy="strict-origin-when-cross-origin"
+                        allowFullScreen
+                      ></iframe>
+                    ) : (
+                      <div
+                        className="thumbnail-container"
+                        style={{
+                          backgroundImage: `url(${videoEmbeds[submission._id]?.image || placeholder})`,
+                        }}
+                      />
+                    )}
                   </div>
                 </div>
-
-                <div className="embed-container">
-                  {videoEmbeds[submission._id] ? (
-                    <iframe
-                      src={videoEmbeds[submission._id].embed}
-                      title="Video player"
-                      frameBorder="0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                      referrerPolicy="strict-origin-when-cross-origin"
-                      allowFullScreen
-                    ></iframe>
-                  ) : (
-                    <div
-                      className="thumbnail-container"
-                      style={{
-                        backgroundImage: `url(${videoEmbeds[submission._id]?.image || placeholder})`,
-                      }}
-                    />
-                  )}
-                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="loader loader-level-detail"/>
+        )}
       </div>
     </>
   );
