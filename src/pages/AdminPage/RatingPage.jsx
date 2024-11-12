@@ -57,35 +57,7 @@ const RatingPage = () => {
             headers: {authorization: `Bearer ${user.access_token}`}
           });
           const data = await ratingsResponse.json();
-          
-          // Transform the data to match the table structure
-          const transformedData = data.map(rating => {
-            const row = [
-              rating.ID,
-              rating.song,
-              rating.artist,
-              rating.creator,
-              rating.rawVideoLink,
-              rating.rawDLLink,
-              rating.currentDiff,
-              rating.lowDiff,
-              rating.rerateNum,
-              rating.requesterFR,
-              rating.average,
-              rating.comments,
-              ...ratersList.map(rater => {
-                const raterRating = rating.ratings?.[rater];
-                return raterRating ? raterRating[0] : "";
-              }),
-              rating.ratings?.[user.username]?.[1] || "" // User's comment
-            ];
-            return row;
-          });
-
-          // Create headers
-          const headers = [...FIXED_COLUMNS, ...ratersList, "Your Comment"];
-          
-          setRatings([headers, ...transformedData]);
+          setRatings(data);
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -97,12 +69,10 @@ const RatingPage = () => {
 
   const handleSubmit = async () => {
     try {
-      const editableRows = ratings.slice(1);
-      
-      const updates = editableRows.map(row => ({
-        id: row[0], // ID is at index 0
-        rating: row[raters.indexOf(user.username) + FIXED_COLUMNS.length] || 0, // Find user's rating column
-        comment: row[row.length - 1] // Last column is the comment
+      const updates = ratings.map(rating => ({
+        id: rating.ID,
+        rating: rating.ratings?.[user.username]?.[0] || 0,
+        comment: rating.ratings?.[user.username]?.[1] || ""
       }));
 
       const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/rating`, {
@@ -145,15 +115,14 @@ const RatingPage = () => {
         {ratings.length > 0 ?
         <>
         <div className="rating-list">
-          {ratings.slice(1).map((row, rowIndex) => (
+          {ratings.map((rating, index) => (
             <RatingCard
-              key={`row-${rowIndex}`}
-              row={row}
-              rowIndex={rowIndex}
+              key={rating.ID}
+              rating={rating}
+              index={index}
               setSelectedRating={setSelectedRating}
               raters={raters}
               user={user}
-              FIXED_COLUMNS={FIXED_COLUMNS}
             />
           ))}
         </div>
