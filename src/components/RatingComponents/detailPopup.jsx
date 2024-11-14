@@ -4,6 +4,29 @@ import { getVideoDetails, getLevelIconSingle, inputDataRaw } from "../../Reposit
 import { RatingItem } from './RatingItem';
 import { validateFeelingRating } from '../Misc/Utility';
 import { RatingInput } from './RatingInput';
+import api from '../../utils/api';
+
+async function updateRating(id, rating, comment) {
+  try {
+    const response = await api.put(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_RATING_API}`, {
+      updates: [{
+        id,
+        rating,
+        comment
+      }]
+    });
+
+    if (!response.data.success) {
+      throw new Error(`Failed to update rating ${JSON.stringify(response)}`);
+    }
+
+    const data = await response;
+    return data;
+  } catch (error) {
+    console.error('Error updating rating:', error);
+    throw error;
+  }
+}
 
 export const DetailPopup = ({ 
   selectedRating, 
@@ -16,6 +39,8 @@ export const DetailPopup = ({
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
     const [pendingRating, setPendingRating] = useState("");
     const [pendingComment, setPendingComment] = useState("");
+    const [isSaving, setIsSaving] = useState(false);
+    const [saveError, setSaveError] = useState(null);
 
     useEffect(() => {
         const handleEscKey = (event) =>  {
@@ -33,7 +58,7 @@ export const DetailPopup = ({
 
     useEffect(() => {
         const fetchVideoData = async () => {
-            if (selectedRating) {
+            if (selectedRating && !videoData) {
                 const res = await getVideoDetails(selectedRating.rawVideoLink);
                 setVideoData(res);
                 console.log(res);
@@ -63,15 +88,44 @@ export const DetailPopup = ({
         return () => window.removeEventListener('beforeunload', handleBeforeUnload);
     }, [hasUnsavedChanges]);
 
-    const handleSaveChanges = () => {
-        const newRatings = [...ratings];
-        const ratingIndex = ratings.findIndex(r => r.ID === selectedRating.ID);
-        if (!newRatings[ratingIndex].ratings) {
-            newRatings[ratingIndex].ratings = {};
+    const handleSaveChanges = async () => {
+        setIsSaving(true);
+        setSaveError(null);
+        
+        try {
+            // Call API to update rating
+            await updateRating(
+                selectedRating.ID,
+                pendingRating,
+                pendingComment,
+                user.token
+            );
+
+            // Update local state
+            const newRatings = [...ratings];
+            const ratingIndex = ratings.findIndex(r => r.ID === selectedRating.ID);
+            if (!newRatings[ratingIndex].ratings) {
+                newRatings[ratingIndex].ratings = {};
+            }
+            newRatings[ratingIndex].ratings[user.username] = [pendingRating, pendingComment];
+            
+            // Recalculate average if needed
+            const ratingValues = Object.values(newRatings[ratingIndex].ratings)
+                .map(r => r[0])
+                .filter(r => r > 0);
+            newRatings[ratingIndex].average = ratingValues.length > 0
+                ? ratingValues.reduce((a, b) => Number(a) + Number(b), 0) / ratingValues.length
+                : 0;
+            
+            setRatings(newRatings);
+            setHasUnsavedChanges(false);
+            setSaveError(null);
+        } catch (error) {
+            console.error('Failed to save changes:', error);
+            setSaveError('Failed to save changes. Please try again.');
+        } finally {
+            setIsSaving(false);
         }
-        newRatings[ratingIndex].ratings[user.username] = [pendingRating, pendingComment];
-        setRatings(newRatings);
-        setHasUnsavedChanges(false);
     };
 
     const handleClose = () => {
@@ -200,12 +254,17 @@ export const DetailPopup = ({
                     />
                   </div>
                   <button 
-                    className="save-changes-btn"
-                    disabled={!hasUnsavedChanges}
+                    className={`save-changes-btn ${isSaving ? 'saving' : ''}`}
+                    disabled={!hasUnsavedChanges || isSaving}
                     onClick={handleSaveChanges}
                   >
-                    Save Changes
+                    {isSaving ? 'Saving...' : 'Save Changes'}
                   </button>
+                  {saveError && (
+                    <div className="save-error-message">
+                        {saveError}
+                    </div>
+                  )}
                 </div>
                 <div className="rating-field other-ratings">
                   <label>Other Ratings:</label>
