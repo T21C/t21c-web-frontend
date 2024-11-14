@@ -13,11 +13,14 @@ export const DetailPopup = ({
   user, 
 }) => {
     const [videoData, setVideoData] = useState(null);
+    const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+    const [pendingRating, setPendingRating] = useState("");
+    const [pendingComment, setPendingComment] = useState("");
 
     useEffect(() => {
         const handleEscKey = (event) =>  {
             if (event.key === 'Escape' && !event.defaultPrevented) { // Only close popup if escape wasn't handled by child
-                setSelectedRating(null);
+                handleClose();
             }
         };
 
@@ -26,7 +29,7 @@ export const DetailPopup = ({
         return () => {
             document.removeEventListener('keydown', handleEscKey);
         };
-    }, [setSelectedRating]);
+    }, [hasUnsavedChanges]);
 
     useEffect(() => {
         const fetchVideoData = async () => {
@@ -40,6 +43,47 @@ export const DetailPopup = ({
         fetchVideoData();
     }, [selectedRating]);
 
+    useEffect(() => {
+        // Initialize pending values when selectedRating changes
+        setPendingRating(selectedRating?.ratings?.[user.username]?.[0] || "");
+        setPendingComment(selectedRating?.ratings?.[user.username]?.[1] || "");
+        setHasUnsavedChanges(false);
+    }, [selectedRating, user.username]);
+
+    // Add beforeunload event listener
+    useEffect(() => {
+        const handleBeforeUnload = (e) => {
+            if (hasUnsavedChanges) {
+                e.preventDefault();
+                e.returnValue = ''; // Required for Chrome
+            }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+        return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+    }, [hasUnsavedChanges]);
+
+    const handleSaveChanges = () => {
+        const newRatings = [...ratings];
+        const ratingIndex = ratings.findIndex(r => r.ID === selectedRating.ID);
+        if (!newRatings[ratingIndex].ratings) {
+            newRatings[ratingIndex].ratings = {};
+        }
+        newRatings[ratingIndex].ratings[user.username] = [pendingRating, pendingComment];
+        setRatings(newRatings);
+        setHasUnsavedChanges(false);
+    };
+
+    const handleClose = () => {
+        if (hasUnsavedChanges) {
+            if (window.confirm('You have unsaved changes. Are you sure you want to close?')) {
+                setSelectedRating(null);
+            }
+        } else {
+            setSelectedRating(null);
+        }
+    };
+
     if (!selectedRating) return null;
     const userRating = selectedRating.ratings?.[user.username]?.[0] || "";
     const userComment = selectedRating.ratings?.[user.username]?.[1] || "";
@@ -49,7 +93,7 @@ export const DetailPopup = ({
         <div className="rating-popup">
           <button 
             className="close-popup-btn"
-            onClick={() => setSelectedRating(null)}
+            onClick={handleClose}
             aria-label="Close popup"
           >
             <svg 
@@ -112,40 +156,32 @@ export const DetailPopup = ({
                     <label>Your Rating:</label>
                     <div className="rating-input-container">
                       <RatingInput
-                        value={userRating}
+                        value={pendingRating}
                         onChange={(value) => {
-                          const newRatings = [...ratings];
-                          const ratingIndex = ratings.findIndex(r => r.ID === selectedRating.ID);
-                          if (!newRatings[ratingIndex].ratings) {
-                            newRatings[ratingIndex].ratings = {};
-                          }
-                          if (!newRatings[ratingIndex].ratings[user.username]) {
-                            newRatings[ratingIndex].ratings[user.username] = ["", ""];
-                          }
-                          newRatings[ratingIndex].ratings[user.username][0] = value;
-                          setRatings(newRatings);
+                          setPendingRating(value);
+                          setHasUnsavedChanges(true);
                         }}
                       />
-                      {(userRating && (validateFeelingRating(userRating) || Object.keys(inputDataRaw).includes(userRating.toUpperCase()))) && (
+                      {(pendingRating && (validateFeelingRating(pendingRating) || Object.keys(inputDataRaw).includes(pendingRating.toUpperCase()))) && (
                         <div className="rating-images">
-                          {userRating.includes('-') ? (
+                          {pendingRating.includes('-') ? (
                             <>
                               <img 
-                                src={getLevelIconSingle(userRating.split('-')[0])} 
-                                alt={userRating.split('-')[0]}
+                                src={getLevelIconSingle(pendingRating.split('-')[0])} 
+                                alt={pendingRating.split('-')[0]}
                                 className="rating-level-image"
                               />
                               <span className="rating-separator">-</span>
                               <img 
-                                src={getLevelIconSingle(userRating.split('-')[1])} 
-                                alt={userRating.split('-')[1]}
+                                src={getLevelIconSingle(pendingRating.split('-')[1])} 
+                                alt={pendingRating.split('-')[1]}
                                 className="rating-level-image"
                               />
                             </>
                           ) : (
                             <img 
-                              src={getLevelIconSingle(userRating)} 
-                              alt={userRating}
+                              src={getLevelIconSingle(pendingRating)} 
+                              alt={pendingRating}
                               className="rating-level-image"
                             />
                           )}
@@ -156,21 +192,20 @@ export const DetailPopup = ({
                   <div className="rating-field">
                     <label>Your Comment:</label>
                     <textarea
-                      value={userComment}
+                      value={pendingComment}
                       onChange={(e) => {
-                        const newRatings = [...ratings];
-                        const ratingIndex = ratings.findIndex(r => r.ID === selectedRating.ID);
-                        if (!newRatings[ratingIndex].ratings) {
-                          newRatings[ratingIndex].ratings = {};
-                        }
-                        if (!newRatings[ratingIndex].ratings[user.username]) {
-                          newRatings[ratingIndex].ratings[user.username] = ["", ""];
-                        }
-                        newRatings[ratingIndex].ratings[user.username][1] = e.target.value;
-                        setRatings(newRatings);
+                        setPendingComment(e.target.value);
+                        setHasUnsavedChanges(true);
                       }}
                     />
                   </div>
+                  <button 
+                    className="save-changes-btn"
+                    disabled={!hasUnsavedChanges}
+                    onClick={handleSaveChanges}
+                  >
+                    Save Changes
+                  </button>
                 </div>
                 <div className="rating-field other-ratings">
                   <label>Other Ratings:</label>
