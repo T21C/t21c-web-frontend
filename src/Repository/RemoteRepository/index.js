@@ -121,19 +121,27 @@ const pguData = {
   "U18": "U18.png",
   "U19": "U19.png",
   "U20": "U20.png",
-  "0": "Unranked.png",
-  "-2": "-2.png",
-  "-21": "21-.png",
-  "-22": "MP.png",
-  "0.9": "epiccc.png",
-  "727": "Grande.png",
-  "64": "Desertbus.png",
-  "21.5": "q1+.png",
-  "21.55": "q2.png",
-  "21.6": "q2+.png",
-  "21.65": "q3.png",
-  "21.7": "q3+.png",
 }
+
+
+const inputDataType = "miscDiff"
+const inputData = {
+  "Qq": "Qq.png",
+  "Q1+": "q1+.png",
+  "Q2": "q2.png",
+  "Q2+": "q2+.png",
+  "Q3": "q3.png",
+  "Q3+": "q3+.png",
+  "Q4": "q4.png",
+  "Bus": "Desertbus.png",
+  "Grande": "Grande.png",
+  "MA": "ma.png",
+  "MP": "MP.png",
+  "-21": "21-.png",
+  "-2": "-2.png",
+  "0": "Unranked.png",
+}
+
 
 
 const pgnDataType = "miscDiff"
@@ -145,7 +153,7 @@ const pgnData = {
   "0.9": "epiccc.png",
   "727": "Grande.png",
   "64": "Desertbus.png",
-  "21.5": "q1+.png",
+  "21.5": "Qq.png",
   "21.55": "q2.png",
   "21.6": "q2+.png",
   "21.65": "q3.png",
@@ -196,6 +204,20 @@ const newDataRaw = Object.fromEntries(
   ])
 );
 
+export const inputDataRaw = [
+  ...Object.entries(pguData).map(([key, fileName]) => [
+    key,
+    `${baseURL}${pguDataType}/${fileName}${queryParams}`,
+  ]),
+  ...Object.entries(inputData).slice(1).map(([key, fileName]) => [
+    key,
+    `${baseURL}${inputDataType}/${fileName}${queryParams}`,
+  ]),
+  ...Object.entries(inputData).slice(0, 1).map(([key, fileName]) => [
+    key,
+    `${baseURL}${inputDataType}/${fileName}${queryParams}`,
+  ])
+];
 
 async function fetchRecent(ids) {
   try {
@@ -627,6 +649,27 @@ function getLevelImage(newDiff, pgnDiff, pguDiff, legacy) {
   return null; // Return null if no image is found
 }
 
+function getLevelIconSingle(diff) {
+  diff = diff.toUpperCase();
+
+
+  const imageSources = [
+    { name: 'newDiff', source: newDataRaw[diff]},
+    { name: 'pgnData', source: pgnDataRaw[diff] },
+    { name: 'pgnData2', source: pgnDataRaw[diff] },
+    { name: 'pguData', source: pguDataRaw[diff] },
+    { name: 'legacyData', source: legacyDataRaw[diff] }
+  ];
+
+  for (const imgSource of imageSources) {
+    if (imgSource.source != null) {
+      return imgSource.source;
+    }
+  }
+
+  return null; // Return null if no image is found
+}
+
 
 function isoToEmoji(code) {
   const htmlString =  twemoji.parse(code
@@ -654,4 +697,6 @@ export {
   fetchData, 
   fetchLevelInfo, 
   getVideoDetails, 
-  getLevelImage }
+  getLevelImage,
+  getLevelIconSingle
+}

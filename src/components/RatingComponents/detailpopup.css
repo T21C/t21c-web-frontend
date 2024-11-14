@@ -18,7 +18,7 @@
     padding: 1.75rem;
     width: 90%;
     max-width: 800px;
-    max-height: 90vh;
+    max-height: 95vh;
     overflow-y: auto;
     position: relative;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
@@ -98,9 +98,9 @@
   }
   
   .video-container {
-    flex: 2;
+    flex: 1.5;
     position: relative;
-    padding-bottom: 37.5%; /* Maintains 16:9 aspect ratio for 2/3 width */
+    padding-bottom: 31.5%; /* Maintains 16:9 aspect ratio for 2/3 width */
     height: 0;
   }
   
@@ -125,6 +125,7 @@
   
   .rating-columns {
     display: grid;
+    height: 31vh;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
   }
@@ -183,7 +184,7 @@
   .other-rating-item {
     padding: 0.5rem;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s;
   }
   
   .other-rating-item:hover {
@@ -221,11 +222,129 @@
     font-size: 0.9rem;
     line-height: 1.4;
     white-space: pre-wrap;
+    overflow: hidden;
+    transition: all 0.2s;
   }
   
+  .rating-comment.hidden {
+    height: 0;
+    padding: 0;
+  }
+
   .rating-field input:focus,
   .rating-field textarea:focus {
     outline: none;
     border-color: rgba(255, 255, 255, 0.4);
     background: rgba(255, 255, 255, 0.15);
+  }
+
+  .rating-input-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .rating-input-container input {
+    width: 120px;
+  }
+
+  .rating-level-image {
+    height: 38px; /* Match your input height */
+    width: auto;
+    object-fit: contain;
+  }
+
+  .rating-images {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .rating-separator {
+    color: #fff;
+    font-weight: bold;
+  }
+
+  .rating-input-wrapper {
+    position: relative;
+    width: 120px;
+    z-index: 1001;
+  }
+
+  .rating-input-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .rating-input-container input {
+    width: 90px;
+    padding-right: 24px;
+  }
+
+  .dropdown-toggle {
+    background: none;
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+    padding: 4px;
+    position: absolute;
+    right: 4px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .dropdown-toggle:hover {
+    color: #fff;
+  }
+
+  .rating-dropdown {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: calc(100% + 8px);
+    width: 200px;
+    max-height: 400px;
+    overflow-y: auto;
+    background: #333;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    z-index: 1000;
+  }
+
+  .rating-dropdown::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .rating-dropdown::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+
+  .rating-dropdown::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+  }
+
+  .rating-dropdown::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  .rating-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .rating-option:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .rating-option-image {
+    height: 34px;
+    width: auto;
+    object-fit: contain;
   }
