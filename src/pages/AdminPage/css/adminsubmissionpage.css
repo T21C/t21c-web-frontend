@@ -4,6 +4,7 @@
     color: var(--color-white);
     min-height: 100vh;
     font-size: 1.1rem;
+    position: relative;
   }
   .submission-admin-page .submissions-admin-list {
     position: relative;
@@ -229,6 +230,8 @@
     transition: all 0.5s ease-out;
     max-height: 600px; /* Set this to something larger than your card height */
     opacity: 1;
+    position: relative;
+    z-index: 10;
   }
 
   .submission-admin-page .submission-card.approve {
@@ -411,4 +414,63 @@
   .submission-admin-page .submission-card:hover {
     background: var(--color-white-t30);
   }
+
+  .submission-admin-page .no-submissions {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .submission-admin-page .submissions-admin-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .submission-admin-page .submission-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 1rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .submission-admin-page .tab-button {
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 4px;
+    position: relative;
+    z-index: 11;
+  }
+
+  .submission-admin-page .tab-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .submission-admin-page .tab-button.active {
+    background: rgba(255, 255, 255, 0.2);
+    font-weight: 500;
+  }
+
+  .submission-admin-page .submissions-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    position: relative;
+    z-index: 10;
+  }
+
 
