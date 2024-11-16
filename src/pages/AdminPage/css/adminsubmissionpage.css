@@ -117,7 +117,7 @@
   .submission-admin-page .submissions-admin-list .rating-list {
     z-index: 2;
     margin-top: 2rem;
-    background-color: var(--color-white-t20);
+    background-color: rgba(255,255,255,0.12);
     border-radius: 8px;
     padding: 1rem;
     overflow-x: auto; /* Enable horizontal scrolling */
@@ -217,7 +217,7 @@
 
   
   .submission-admin-page .submission-card {
-    background: var(--color-white-t20);
+    background: rgba(255,255,255,0.12);
     border-radius: 8px;
     padding: 20px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.3);
@@ -412,7 +412,7 @@
   }
 
   .submission-admin-page .submission-card:hover {
-    background: var(--color-white-t30);
+    background: var(--color-white-t20);
   }
 
   .submission-admin-page .no-submissions {
@@ -429,6 +429,7 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
+    padding-top: 6rem;
     position: relative;
     z-index: 10;
   }
@@ -438,6 +439,7 @@
     gap: 1rem;
     margin-bottom: 2rem;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 0.5rem;
     padding-bottom: 1rem;
     position: relative;
     z-index: 10;
@@ -473,4 +475,89 @@
     z-index: 10;
   }
 
+  .submission-admin-page .pass-submission-card .judgements-details {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    margin-top: 4px;
+    align-items: center;
+  }
 
+  .submission-admin-page .submission-card .judgement {
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+    min-width: 30px;
+    text-align: center;
+    color: white;
+  }
+
+  .submission-admin-page .pass-submission-card {
+    color: var(--color-white);
+  }
+
+  /* Colors matching submission page */
+  .submission-admin-page .pass-submission-card .early-double {
+    color: #FF0000;  /* Too Early - Red */
+  }
+
+  .submission-admin-page .pass-submission-card .early-single {
+    color: #FF6F4D;  /* Early - Orange-Red */
+  }
+
+  .submission-admin-page .pass-submission-card .e-perfect {
+    color: #FCFF4D;  /* EPerfect - Yellow */
+  }
+
+  .submission-admin-page .pass-submission-card .perfect {
+    color: #5FFF4E;  /* Perfect - Green */
+  }
+
+  .submission-admin-page .pass-submission-card .l-perfect {
+    color: #FCFF4D;  /* LPerfect - Yellow */
+  }
+
+  .submission-admin-page .pass-submission-card .late-single {
+    color: #FF6F4D;  /* Late - Orange-Red */
+  }
+
+  .submission-admin-page .pass-submission-card .late-double {
+    color: #FF0000;  /* Too Late - Red */
+  }
+
+  .submission-admin-page .pass-submission-card .flags-details {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .submission-admin-page .pass-submission-card .flags-details span {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+  }
+
+  .submission-admin-page .pass-submission-card .detail-row {
+    margin-bottom: 12px;
+  }
+
+  .submission-admin-page .pass-submission-card .detail-label {
+    font-weight: bold;
+    margin-right: 8px;
+    color: #aaa;
+  }
+
+  .submission-admin-page .pass-submission-card .detail-value {
+    color: #fff;
+  }
+
+  .submission-admin-page .pass-submission-card .embed-container {
+    grid-column: 7 / span 5; /* Takes up last 5 columns */
+  }
+
+  .submission-admin-page .loader-submission-detail {
+    margin: 0 auto;
+    margin-top: 10rem;
+  }

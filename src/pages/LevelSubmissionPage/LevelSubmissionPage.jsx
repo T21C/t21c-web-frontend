@@ -122,7 +122,7 @@ const LevelSubmissionPage = () => {
     setShowMessage(false)
   };
 
- const googleForm = new FormManager("chart")
+ const submissionForm = new FormManager("chart")
   const handleSubmit = (e) => {
     e.preventDefault();
     setShowMessage(true)
@@ -142,17 +142,17 @@ const LevelSubmissionPage = () => {
 
     setSubmission(true)
     setError(null);
-  googleForm.setDetail('artist', form.artist);
-  googleForm.setDetail('charter', form.charter);
-  googleForm.setDetail('diff', form.diff);
-  googleForm.setDetail('song', form.song);
-  googleForm.setDetail('team', form.team);
-  googleForm.setDetail('vfxer', form.vfxer);
-  googleForm.setDetail('videoLink', form.videoLink);
-  googleForm.setDetail('directDL', form.dlLink);
-  googleForm.setDetail('wsLink', form.workshopLink);
+  submissionForm.setDetail('artist', form.artist);
+  submissionForm.setDetail('charter', form.charter);
+  submissionForm.setDetail('diff', form.diff);
+  submissionForm.setDetail('song', form.song);
+  submissionForm.setDetail('team', form.team);
+  submissionForm.setDetail('vfxer', form.vfxer);
+  submissionForm.setDetail('videoLink', form.videoLink);
+  submissionForm.setDetail('directDL', form.dlLink);
+  submissionForm.setDetail('wsLink', form.workshopLink);
   
-  googleForm.submit(user.access_token)
+  submissionForm.submit(user.access_token)
   .then(result => {
     if (result === "ok") {
       setSuccess(true);

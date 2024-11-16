@@ -37,13 +37,16 @@ const ChartSubmissions = () => {
       const fetchPendingSubmissions = async () => {
         try {
           setIsLoading(true);
+          console.log("Fetching pending submissions");
           const response = await fetch(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_SUBMISSION_API}/charts/pending`);
           const data = await response.json();
           console.log(data);
+          
           setSubmissions(data);
         } catch (error) {
           console.error('Error fetching submissions:', error);
         } finally {
+          console.log("Finished fetching submissions");
           setIsLoading(false);
         }
       };
@@ -110,14 +113,14 @@ const ChartSubmissions = () => {
 
 
 
-    if (submissions?.length === 0) {
+    if (submissions?.length === 0 && !isLoading) {
       return <p className="no-submissions">No pending chart submissions to review</p>;
     }
   
     return (
       <div className="submissions-list">  
         {isLoading ? (  
-          <div className="loader loader-level-detail"/>
+          <div className="loader loader-submission-detail"/>
         ) : (
           submissions.map((submission) => (
           <div 

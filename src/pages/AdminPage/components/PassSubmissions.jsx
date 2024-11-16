@@ -22,9 +22,9 @@ const PassSubmissions = () => {
       useEffect(() => {
         // Load video embeds when submissions change
         submissions.forEach(async (submission) => {
-          if (submission.videoLink && !videoEmbeds[submission._id]) {
+          if (submission.rawVideoId && !videoEmbeds[submission._id]) {
             try {
-              const videoDetails = await getVideoDetails(submission.videoLink);
+              const videoDetails = await getVideoDetails(submission.rawVideoId);
               setVideoEmbeds(prev => ({
                 ...prev,
                 [submission._id]: videoDetails
@@ -112,19 +112,22 @@ const PassSubmissions = () => {
   
   
   
-    if (submissions?.length === 0) {
+    if (submissions?.length === 0 && !isLoading) {
     return <p className="no-submissions">No pending pass submissions to review</p>;
   }
 
   return (
     <div className="submissions-list">
-      {submissions.map((submission) => (
+      {isLoading ? (  
+          <div className="loader loader-submission-detail"/>
+        ) : (
+          submissions.map((submission) => (
         <div 
           key={submission._id} 
-          className={`submission-card ${animatingCards[submission._id] || ''}`}
+          className={`submission-card pass-submission-card ${animatingCards[submission._id] || ''}`}
         >
         <div className="submission-header">
-          <h3>{submission.song}</h3>
+          <h3>{submission.title}</h3>
           <span className="submission-date">
             {new Date(submission.createdAt).toLocaleDateString()}
           </span>
@@ -133,85 +136,53 @@ const PassSubmissions = () => {
         <div className="card-content">
           <div className="submission-details">
             <div className="detail-row">
-              <span className="detail-label">Artist:</span>
-              <span className="detail-value">{submission.artist}</span>
+              <span className="detail-label">Level ID:</span>
+              <span className="detail-value">{submission.levelId}</span>
             </div>
-            
+
             <div className="detail-row">
-              <span className="detail-label">Charter:</span>
-              <span className="detail-value">{submission.charter}</span>
+              <span className="detail-label">Player:</span>
+              <span className="detail-value">{submission.passer}</span>
             </div>
-            
+
             <div className="detail-row">
-              <span className="detail-label">Difficulty:</span>
-              <span className="detail-value">{submission.diff}</span>
+              <span className="detail-label">Feeling Difficulty:</span>
+              <span className="detail-value">{submission.feelingDifficulty}</span>
             </div>
 
-
-
-            
-            {submission.directDL ? (
-              <div className="detail-row">
-                <span className="detail-label">Download:</span>
-              <a 
-                href={submission.directDL} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="detail-link"
-              >
-                Direct Link
-                </a>
+            <div className="detail-row">
+              <span className="detail-label">Judgements:</span>
+              <div className="judgements-details">
+                <span className="judgement early-double">{submission.judgements.earlyDouble}</span>
+                <span className="judgement early-single">{submission.judgements.earlySingle}</span>
+                <span className="judgement e-perfect">{submission.judgements.ePerfect}</span>
+                <span className="judgement perfect">{submission.judgements.perfect}</span>
+                <span className="judgement l-perfect">{submission.judgements.lPerfect}</span>
+                <span className="judgement late-single">{submission.judgements.lateSingle}</span>
+                <span className="judgement late-double">{submission.judgements.lateDouble}</span>
               </div>
-            ):(
-              <div className="detail-row">
-                <span className="detail-label">Download:</span>
-                <span className="detail-value" style={{color: "rgb(255, 100, 100)"}}>Not Available</span>
+            </div>
+
+            <div className="detail-row">
+              <span className="detail-label">Flags:</span>
+              <div className="flags-details">
+                {submission.flags.is12k && <span>12K</span>}
+                {submission.flags.isNHT && <span>NHT</span>}
+                {submission.flags.is16k && <span>16K</span>}
               </div>
-            )}
+            </div>
 
-            {submission.wsLink && (
-              <div className="detail-row">
-              <span className="detail-label">Workshop:</span>
-              <a 
-                href={submission.wsLink} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="detail-link"
-              >
-                Workshop Link
-                </a>
-              </div>
-            )}
+            <div className="detail-row">
+              <span className="detail-label">Submitter:</span>
+              <span className="detail-value">{submission.submitter.discordUsername}</span>
+            </div>
 
-
-
-            {submission.team && (
-              <div className="detail-row">
-                <span className="detail-label">Team:</span>
-                <span className="detail-value">{submission.team}</span>
-              </div>
-            )}
-
-            {submission.vfxer && (
-              <div className="detail-row">
-                <span className="detail-label">VFXer:</span>
-                <span className="detail-value">{submission.vfxer}</span>
-              </div>
-            )}
-
-            {submission.wsLink && (
-              <div className="detail-row">
-                <span className="detail-label">Workshop Link:</span>
-                <a 
-                  href={submission.wsLink} 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="detail-link"
-                >
-                  Workshop Link
-                </a>
-              </div>
-            )}
+            <div className="detail-row">
+              <span className="detail-label">Upload Time:</span>
+              <span className="detail-value">
+                {new Date(submission.rawTime).toLocaleString()}
+              </span>
+            </div>
 
             <div className="action-buttons">
               <button 
@@ -252,7 +223,7 @@ const PassSubmissions = () => {
           </div>
         </div>
       </div>
-      ))}
+      )))}
     </div>
   );
 };
