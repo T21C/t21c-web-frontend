@@ -265,85 +265,66 @@
 
   .rating-input-wrapper {
     position: relative;
-    width: 120px;
-    z-index: 1001;
+    width: 100%;
   }
 
   .rating-input-container {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 8px;
   }
 
   .rating-input-container input {
-    width: 90px;
-    padding-right: 24px;
+    flex: 1;
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid #333;
+    background: #2a2a2a;
+    color: #fff;
+    width: 100%;
   }
 
   .dropdown-toggle {
-    background: none;
+    background: #333;
     border: none;
-    color: #aaa;
-    cursor: pointer;
-    padding: 4px;
-    position: absolute;
-    right: 4px;
-    top: 50%;
-    transform: translateY(-50%);
-  }
-
-  .dropdown-toggle:hover {
     color: #fff;
+    padding: 8px;
+    border-radius: 4px;
+    cursor: pointer;
   }
 
   .rating-dropdown {
     position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    left: calc(100% + 8px);
-    width: 200px;
-    max-height: 400px;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #2a2a2a;
+    border: 1px solid #333;
+    border-radius: 4px;
+    margin-top: 4px;
+    max-height: 200px;
     overflow-y: auto;
-    background: #333;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
+    width: 85%;
     z-index: 1000;
-  }
-
-  .rating-dropdown::-webkit-scrollbar {
-    width: 8px;
-  }
-
-  .rating-dropdown::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 4px;
-  }
-
-  .rating-dropdown::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 4px;
-  }
-
-  .rating-dropdown::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.3);
   }
 
   .rating-option {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0.5rem 0.75rem;
+    gap: 8px;
+    padding: 8px 12px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    justify-content: space-between;
+    color: #fff;
   }
 
   .rating-option:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background: #333;
   }
 
   .rating-option-image {
-    height: 34px;
-    width: auto;
+    width: 24px;
+    height: 24px;
     object-fit: contain;
   }
 

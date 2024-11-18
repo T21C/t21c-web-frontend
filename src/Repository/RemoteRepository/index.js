@@ -176,21 +176,21 @@ const imagePh = [
   "../src/assets/placeholder/4.png",
 ];
 
-const legacyDataRaw = Object.fromEntries(
+export const legacyDataRaw = Object.fromEntries(
   Object.entries(legacyData).map(([key, fileName]) => [
     key,
     `${baseURL}${legacyDataType}/${fileName}${queryParams}`,
   ])
 );
 
-const pguDataRaw = Object.fromEntries(
+export const pguDataRaw = Object.fromEntries(
   Object.entries(pguData).map(([key, fileName]) => [
     key,
     `${baseURL}${pguDataType}/${fileName}${queryParams}`,
   ])
 );
 
-const pgnDataRaw = Object.fromEntries(
+export const pgnDataRaw = Object.fromEntries(
   Object.entries(pgnData).map(([key, fileName]) => [
     key,
     `${baseURL}${pgnDataType}/${fileName}${queryParams}`,
@@ -203,6 +203,14 @@ const newDataRaw = Object.fromEntries(
     `${baseURL}${newDataType}/${fileName}${queryParams}`,
   ])
 );
+
+export const legacyInputDataRaw = [
+  ...Object.entries(legacyData).map(([key, fileName]) => [
+    key,
+    `${baseURL}${legacyDataType}/${fileName}${queryParams}`,
+  ])
+  
+]
 
 export const inputDataRaw = [
   ...Object.entries(pguData).map(([key, fileName]) => [
@@ -630,23 +638,27 @@ async function getDriveFromYt(link) {
 
 
 
-function getLevelImage(newDiff, pgnDiff, pguDiff, legacy) {
+function getLevelImage(...values) {
+  const dataSources = [newDataRaw, pgnDataRaw, pguDataRaw, legacyDataRaw];
+  let fallbackImage = null;
   
-  const imageSources = [
-    { name: 'newDiff', source: newDataRaw[newDiff]},
-    { name: 'pgnData', source: pgnDataRaw[pgnDiff] },
-    { name: 'pgnData2', source: pgnDataRaw[pguDiff] },
-    { name: 'pguData', source: pguDataRaw[pguDiff] },
-    { name: 'legacyData', source: legacyDataRaw[legacy] }
-  ];
-
-  for (const imgSource of imageSources) {
-    if (imgSource.source != null) {
-      return imgSource.source;
+  for (const value of values) {
+    for (const source of dataSources) {
+      const image = source[value];
+      if (image) {
+        // If value is "0" or 0, store as fallback but continue searching
+        if (value === "0" || value === 0) {
+          fallbackImage = fallbackImage || image;
+          continue;
+        }
+        // For any other value, return immediately if image found
+        return image;
+      }
     }
   }
-
-  return null; // Return null if no image is found
+  
+  // Return fallback image if found, otherwise null
+  return fallbackImage || null;
 }
 
 function getLevelIconSingle(diff) {
