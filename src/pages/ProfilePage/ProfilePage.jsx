@@ -56,7 +56,7 @@ const ProfilePage = () => {
         const fetchPlayer = async () => {
           setLoading(true);
           try {
-            const response = await axios.get(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_PROFILE}?${new URLSearchParams({player: playerName})}`);
+            const response = await axios.get(import.meta.env.VITE_INDIVIDUAL_PLAYER + playerName);
             
             // Store all the data
             console.log(response.data);

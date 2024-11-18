@@ -303,18 +303,18 @@ async function fetchData({ offset = "", diff = '', cleared = '', sort = '', dire
 
 async function fetchLevelInfo(id) {
   try {
-    const res = await axios.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`)
-    const res2 = await axios.get(`${import.meta.env.VITE_INDIVIDUAL_PASSES}${id}`)
-    return {
-      level: res.data,
-      passes: {
-        count: res2.data.count,
-        player: res2.data
-      }
-    }
+    const [levelRes, passesRes] = await Promise.all([
+      axios.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`),
+      axios.get(`${import.meta.env.VITE_INDIVIDUAL_PASSES}?levelId=${id}&sort=SCORE_DESC`)
+    ]);
 
+    return {
+      level: levelRes.data,
+      passes: passesRes.data
+    };
   } catch (error) {
-    throw new error
+    console.error('Error fetching level info:', error);
+    throw error;
   }
 }
 
@@ -333,34 +333,32 @@ async function checkLevel(id) {
   }
 }
 
-async function fetchPassPlayerInfo(players) {
-  if (!players) return;
-
+async function fetchPassPlayerInfo(playerNames) {
   try {
-    const responses = await Promise.all(players.map(player =>
-      axios.get(`${import.meta.env.VITE_INDIVIDUAL_PLAYER}${player}`).then(response => ({
-        player,
-        data: response.data
-      }))
-    ));
-
-    const filteredResponses = responses.map(({ player, data }) => {
-      const results = data.results;
-      if (results.length === 0) {
-        return null; 
-      } else if (results.length === 1) {
-        return results[0]; 
-      } else {
-        const exactPlayer = results.find(p => p.name === player);
-        return exactPlayer;
-      }
-    }).filter(response => response !== null); 
-    return filteredResponses;
+    // Fetch player info in parallel
+    const playerPromises = playerNames.map(name => 
+      fetchPlayerByName(name)
+    );
+    
+    const players = await Promise.all(playerPromises);
+    return players.filter(player => player !== null);
   } catch (error) {
-    //console.log(error);
+    console.error('Error fetching player info:', error);
+    return [];
   }
 }
 
+async function fetchPlayerByName(name) {
+  try {
+    const { data } = await axios.get(`${import.meta.env.VITE_PLAYERS_API}`, {
+      params: { name }
+    });
+    return data.results[0]; // Return first match
+  } catch (error) {
+    console.error('Error fetching player:', error);
+    return null;
+  }
+}
 
 function simpleHash(str) {
   let hash = 0;
@@ -447,7 +445,7 @@ async function getBilibiliVideoDetails(url) {
 
   //console.log(videoId);
   
-  const apiUrl = `${import.meta.env.VITE_API_URL}${import.meta.env.VITE_BILIBILI_API}?bvid=${videoId}`;
+  const apiUrl = `${import.meta.env.VITE_BILIBILI_API}?bvid=${videoId}`;
 
   try {
     const response = await fetch(apiUrl);
@@ -471,8 +469,8 @@ async function getBilibiliVideoDetails(url) {
 
     const unix = data.pubdate; // Start with a Unix timestamp
     const date = new Date(unix * 1000); // Convert timestamp to milliseconds
-    const imageUrl = `${import.meta.env.VITE_API_URL}${import.meta.env.VITE_IMAGE}?url=${encodeURIComponent(data.pic)}`;
-    const pfpUrl = `${import.meta.env.VITE_API_URL}${import.meta.env.VITE_IMAGE}?url=${encodeURIComponent(data.owner.face)}`;
+    const imageUrl = `${import.meta.env.VITE_IMAGE}?url=${encodeURIComponent(data.pic)}`;
+    const pfpUrl = `${import.meta.env.VITE_IMAGE}?url=${encodeURIComponent(data.owner.face)}`;
 
     console.log("pfp:", pfpUrl);
     const details = {
@@ -639,11 +637,13 @@ async function getDriveFromYt(link) {
 
 
 function getLevelImage(...values) {
-  const dataSources = [newDataRaw, pgnDataRaw, pguDataRaw, legacyDataRaw];
+  const dataSources = [pguDataRaw, newDataRaw, pgnDataRaw, legacyDataRaw];
   let fallbackImage = null;
   
-  for (const value of values) {
-    for (const source of dataSources) {
+  // Check each data source
+  for (const source of dataSources) {
+    // Try all values in current source
+    for (const value of values) {
       const image = source[value];
       if (image) {
         // If value is "0" or 0, store as fallback but continue searching
@@ -655,6 +655,7 @@ function getLevelImage(...values) {
         return image;
       }
     }
+    // If we found a fallback in this source and checked all values, move to next source
   }
   
   // Return fallback image if found, otherwise null

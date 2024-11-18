@@ -53,7 +53,7 @@ export const RatingInput = ({ value, onChange, isLegacy }) => {
           value={value}
           onChange={(e) => {
             // Allow only numbers, decimal point, and hyphen
-            const newValue = e.target.value.replace(/[^0-9.-]/g, '');
+            const newValue = isLegacy ? e.target.value.replace(/[^0-9.-]/g, '') : e.target.value;
             onChange(newValue);
             setShowDropdown(true);
           }}

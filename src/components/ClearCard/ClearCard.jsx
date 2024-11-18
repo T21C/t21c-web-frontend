@@ -33,7 +33,7 @@ const ClearCard = ({scoreData, index}) => {
   useEffect(() => {
     const fetchPlayer = async () => {
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_PFP}?${new URLSearchParams({player: scoreData.player})}`);
+        const response = await axios.get(`${import.meta.env.VITE_PFP}?${new URLSearchParams({player: scoreData.player})}`);
         
         // Store all the data
         console.log(response.data);

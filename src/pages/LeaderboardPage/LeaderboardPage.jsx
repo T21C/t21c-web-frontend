@@ -83,7 +83,7 @@ const LeaderboardPage = () => {
     const fetchPlayers = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_FULL_LEADERBOARD}`);
+        const response = await axios.get(`${import.meta.env.VITE_FULL_LEADERBOARD}`);
         
         setPlayerData(response.data);
         setPlayerList(response.data);

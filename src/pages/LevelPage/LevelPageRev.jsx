@@ -137,7 +137,7 @@ const LevelPageRev = () => {
         } 
 
         const response = await axios.get(
-          `${import.meta.env.VITE_LIST_LEVEL}`,
+          `${import.meta.env.VITE_ALL_LEVEL_URL}`,
           {
             params: params,
             cancelToken: new axios.CancelToken((c) => (cancel = c)),

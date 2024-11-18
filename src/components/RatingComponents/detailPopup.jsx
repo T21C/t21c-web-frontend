@@ -8,7 +8,7 @@ import api from '../../utils/api';
 
 async function updateRating(id, rating, comment) {
   try {
-    const response = await api.put(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_RATING_API}`, {
+    const response = await api.put(`${import.meta.env.VITE_RATING_API}`, {
       updates: [{
         id,
         rating,

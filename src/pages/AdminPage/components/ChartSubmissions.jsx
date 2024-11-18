@@ -38,7 +38,7 @@ const ChartSubmissions = () => {
         try {
           setIsLoading(true);
           console.log("Fetching pending submissions");
-          const response = await fetch(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_SUBMISSION_API}/charts/pending`);
+          const response = await fetch(`${import.meta.env.VITE_SUBMISSION_API}/charts/pending`);
           const data = await response.json();
           console.log(data);
           
@@ -70,7 +70,7 @@ const ChartSubmissions = () => {
           // Wait for animation to complete before removing
           setTimeout(async () => {
             // Comment out API call for now
-            const response = await fetch(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_SUBMISSION_API}/charts/${submissionId}/${action}`, {
+            const response = await fetch(`${import.meta.env.VITE_SUBMISSION_API}/charts/${submissionId}/${action}`, {
               method: 'PUT',
             });
             

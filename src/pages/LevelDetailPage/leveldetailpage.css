@@ -28,9 +28,9 @@
 .level-detail .header {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
   max-width: 70rem;
   margin: 0 auto;
+  gap: 0.5rem;
   margin-bottom: 2rem;
   min-height: 8rem;
 }
@@ -41,6 +41,7 @@
   position: relative;
   padding: 0.5rem;
   border-radius: 5px;
+  margin-right: 0.5rem;
   flex: 15;
   align-items: center;
   background-position: center;
@@ -429,6 +430,23 @@
 
 .dialog-scale-up {
   animation: scaleUpAnimation 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+.edit-button {
+  height: 3rem;
+  width: 3rem;
+  background-color: transparent;
+  border: none;
+  color: var(--color-white);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  transform: scale(0.8);
+  margin: 0 auto;
+}
+
+.edit-button:hover {
+  transform: scale(1);
 }
 
 @keyframes scaleUpAnimation {

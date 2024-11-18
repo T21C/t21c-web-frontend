@@ -39,7 +39,7 @@ const PassSubmissions = () => {
       const fetchPendingSubmissions = async () => {
         try {
           setIsLoading(true);
-          const response = await fetch(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_SUBMISSION_API}/passes/pending`);
+          const response = await fetch(`${import.meta.env.VITE_SUBMISSION_API}/passes/pending`);
           const data = await response.json();
           console.log(data);
           setSubmissions(data);
@@ -69,7 +69,7 @@ const PassSubmissions = () => {
           // Wait for animation to complete before removing
           setTimeout(async () => {
             // Comment out API call for now
-            const response = await fetch(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_SUBMISSION_API}/passes/${submissionId}/${action}`, {
+            const response = await fetch(`${import.meta.env.VITE_SUBMISSION_API}/passes/${submissionId}/${action}`, {
               method: 'PUT',
             });
             

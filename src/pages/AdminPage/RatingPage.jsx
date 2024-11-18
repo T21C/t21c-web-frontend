@@ -38,7 +38,7 @@ const RatingPage = () => {
           setIsSuperAdmin(SUPER_ADMINS.includes(user.username));
           
           // Fetch raters first
-          const ratersResponse = await fetch(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_RATING_API}/raters`, {
+          const ratersResponse = await fetch(`${import.meta.env.VITE_RATING_API}/raters`, {
             headers: {authorization: `Bearer ${user.access_token}`}
           });
           const ratersList = await ratersResponse.json();
@@ -53,7 +53,7 @@ const RatingPage = () => {
           setRaters(ratersList);
 
           // Then fetch ratings
-          const ratingsResponse = await fetch(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_RATING_API}`, {
+          const ratingsResponse = await fetch(`${import.meta.env.VITE_RATING_API}`, {
             headers: {authorization: `Bearer ${user.access_token}`}
           });
           const data = await ratingsResponse.json();

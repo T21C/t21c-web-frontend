@@ -9,7 +9,7 @@ const LevelCardRev = ({index, level, legacyMode }) => {
   const {t} = useTranslation()  
   console.log(level);
   
-  level.wsLink = level.ws ? level.ws : level.wsLink
+  level.wsLink = level.ws ? level.ws : level.wsLink ? level.wsLink : level.workshopLink;
   level.dlLink = level.dl ? level.dl : level.dlLink
 
   const lvImage = 

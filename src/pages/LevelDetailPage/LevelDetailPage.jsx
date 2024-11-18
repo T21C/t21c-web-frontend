@@ -20,206 +20,77 @@ import ClearCard from "../../components/ClearCard/ClearCard";
 import axios from 'axios';
 import { EditChartPopup } from "../../components/EditChartPopup/EditChartPopup";
 
+const getHighScores = (players) => {
+  if (!players?.length) return null;
+  
+  return {
+    firstClear: players.reduce((a, b) => 
+      new Date(a.vidUploadTime) < new Date(b.vidUploadTime) ? a : b),
+    highestScore: players.reduce((a, b) => 
+      b.scoreV2 > a.scoreV2 ? b : a),
+    highestAcc: players.reduce((a, b) => 
+      b.accuracy > a.accuracy ? b : a),
+    highestSpeed: players.some(p => p.speed) ? 
+      players.reduce((a, b) => (b.speed || 0) > (a.speed || 0) ? b : a) : null
+  };
+};
+
 const LevelDetailPage = () => {
   const {t} = useTranslation()
   const { detailPage } = useLocation();
   // cange how to get param
   const id = new URLSearchParams(window.location.search).get("id");
   const [res, setRes] = useState(null);
-  const [player, setPlayer] = useState([]);
-  const [initialPlayer, setInitialPlayer] = useState([])
-  const [videoDetail, setVideoDetail] = useState(null)
-  const [vidLink, setVidLink] = useState("")
-  const [comment, setComment] = useState("")
+  const [displayedPlayers, setDisplayedPlayers] = useState([]);
+  const [leaderboardSort, setLeaderboardSort] = useState("SCR");
+  const [infoLoading, setInfoLoading] = useState(true);
+  const [videoDetail, setVideoDetail] = useState(null);
 
-  const [highSpeed, setHighSpeed] = useState(null);
-  const [highAcc, setHighAcc] = useState(null);
-  const [highScore, setHighScore] = useState(null);
-  const [highDate, setHighDate] = useState(null)
   const [passCount, setPassCount] = useState(0)
 
-  const [displayedPlayers, setDisplayedPlayers] = useState([]);
-
-  const [leaderboardSort, setLeaderboardSort] = useState("SCR");
-
-  const [infoLoading, setInfoLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false)
   const [openEditDialog, setOpenEditDialog] = useState(false);
 
-  const toggleToRate = async () => {
-    try {
-      const response = await axios.put(`/api/levels/${id}/toggleToRate`);
-      console.log(response.data.message);
-      // Optionally, you can update the local state if needed
-      setRes((prevRes) => ({
-        ...prevRes,
-        level: {
-          ...prevRes.level,
-          toRate: response.data.toRate,
-        },
-      }));
-    } catch (error) {
-      console.error('Error toggling toRate flag:', error);
-    }
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await fetchLevelInfo(id);
+        setRes(data);
+        setDisplayedPlayers(sortLeaderboard(data.passes.results));
+        setInfoLoading(false);
+      } catch (error) {
+        console.error("Error fetching level data:", error);
+        setInfoLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [id]);
 
   useEffect(() => {
-    
-    getVideoDetails(vidLink).then((res) => {
-      setVideoDetail(
-        res
-          ? res
-          : null
-      );
-    });
-
-
-  }, [vidLink]);
+    if (res?.level?.vidLink) {
+      getVideoDetails(res.level.vidLink).then(setVideoDetail);
+    }
+  }, [res?.level?.vidLink]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [detailPage]);
 
-  useEffect(() => {
-    fetchLevelInfo(id)
-      .then((res) => {
-        setRes(res);
-        const fetchedPlayers = res?.passes.player.results || [];
-        const passCount = res?.passes.player.count || 0 ;
-        const vLink = res?.level.vidLink || "" ;
-        const comment = res?.level.publicComments || "";
-        
-        setInitialPlayer(fetchedPlayers);
-        setPassCount(passCount)
-        setVidLink(vLink)
-        setComment(comment)
-        if(passCount == 0){
-          setInfoLoading(false)
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching level info:", error);
-      });
-  }, [id]);
-
-  useEffect(() => {
-    if (player.length > 0) {
-      const maxSpeedIndex = (() => {
-        const speeds = player.map(p => p.speed);
-        const minSpeed = Math.min(...speeds);
-        const maxSpeed = Math.max(...speeds);
-      
-        if (minSpeed === maxSpeed) {
-          return 999; 
-        } else {
-          return player.reduce((maxIdx, curr, idx, arr) =>
-            curr.speed > arr[maxIdx].speed ? idx : maxIdx, 0
-          );
-        }
-      })();
-    const maxScoreIndex = player.reduce((maxIndex, player, index, array) =>
-      player.scoreV2 > array[maxIndex].scoreV2 ? index : maxIndex, 0);
-    
-    const maxAccIndex = player.reduce((maxIndex, player, index, array) =>
-      player.accuracy > array[maxIndex].accuracy ? index : maxIndex, 0);
-
-      const maxDateIndex = player.reduce((earliestIdx, curr, idx, arr) => {
-        const currDate = new Date(curr.vidUploadTime).getTime();
-        const earliestDate = new Date(arr[earliestIdx].vidUploadTime).getTime();
-        return currDate < earliestDate ? idx : earliestIdx;
-      }, 0);
-
-
-      setHighSpeed(maxSpeedIndex);
-      setHighAcc(maxAccIndex);
-      setHighScore(maxScoreIndex);
-      setHighDate(maxDateIndex)
-    } else {
-      setHighSpeed(null);
-      setHighAcc(null);
-      setHighScore(null);
-      setHighDate(null)
-    }
-    //console.log(player)
-    //setInfoLoading(false)
-    //console.log(res)
-
-  }, [player]);
-
-
-
-  useEffect(() => {
-    const enrichPlayers = async () => {
-      try {
-        const playerNames = initialPlayer.map(p => p.player);
-        const fetchedPlayersInfo = await fetchPassPlayerInfo(playerNames); 
-
-        
-        const enrichedPlayers = initialPlayer
-        .map(player => {
-          const additionalInfo = fetchedPlayersInfo.find(info => info.name === player.player);
-          
-          if (additionalInfo && !additionalInfo.isBanned) {
-            return {
-              ...player,
-              country: additionalInfo.country,
-            };
-          }
-          return null; 
-        })
-        .filter(player => player !== null);
-  
-  
-      setPlayer(enrichedPlayers);
-     
-      } catch (error) {
-        console.error('Failed to fetch or update player info:', error);
-      }finally{
-        setInfoLoading(false);
-      }
-  
-
-    };
-  
-    if (initialPlayer.length > 0 && passCount) {
-      enrichPlayers();
-    }
-  }, [initialPlayer, passCount]);
-
-  useEffect(() => {
-
-    const sortedPlayers = sortLeaderboard(player); 
-    setDisplayedPlayers(sortedPlayers);
-    //console.log(sortedPlayers) 
-    //console.log(player)
-  }, [player, leaderboardSort]);
-
-
-
   function handleSort(sort){
     setLeaderboardSort(sort)
   }
 
-  const sortByVidUploadTime = (players) => {
-    return [...players].sort((a, b) => new Date(a.vidUploadTime) - new Date(b.vidUploadTime));
-  };
-  
-  const sortByScoreV2 = (players) => {
-    return [...players].sort((a, b) => b.scoreV2 - a.scoreV2);
-  };
-  
-  const sortByAccuracy = (players) => {
-    return [...players].sort((a, b) => b.accuracy - a.accuracy);
-  };
-
   const sortLeaderboard = (players) => {
+    if (!players) return [];
+    
     switch (leaderboardSort) {
       case 'TIME':
-        return sortByVidUploadTime(players);
+        return [...players].sort((a, b) => new Date(a.vidUploadTime) - new Date(b.vidUploadTime));
       case 'ACC':
-        return sortByAccuracy(players);
+        return [...players].sort((a, b) => b.accuracy - a.accuracy);
       case 'SCR':
-        return sortByScoreV2(players);
+        return [...players].sort((a, b) => b.scoreV2 - a.scoreV2);
       default:
         return players;
     }
@@ -229,16 +100,8 @@ const LevelDetailPage = () => {
     setOpenDialog(!openDialog)
   }
 
-  useEffect(()=>{
-    //console.log(res)
-    //console.log(passCount)
-  }, [res, passCount])
-
   function formatString(input) {
-    const regex = / & | but /g;
-    const parts = input.split(regex);
-    const formattedParts = parts.map(part => `${part}`);
-    return formattedParts.join(" - ");
+    return input.split(/ & | but /g).join(" - ");
   }
 
   function formatDiff(value) {
@@ -333,7 +196,7 @@ const LevelDetailPage = () => {
                 
              </div> 
 
-              <div className="links" style={{borderBottom: comment? "2px solid #fff": "transparent", paddingBottom: comment? "8px": "0"}}>
+              <div className="links" style={{borderBottom: res.level.publicComments? "2px solid #fff": "transparent", paddingBottom: res.level.publicComments? "8px": "0"}}>
 
                 {res.level.dlLink && (
                   <a href={res.level.dlLink} target="_blank">
@@ -362,8 +225,8 @@ const LevelDetailPage = () => {
                 )}
               </div>
               <br/>
-              {comment && (
-                <p style={{marginBottom: "5px"}}>Comment: <b>{comment? comment : ""}</b></p>
+              {res.level.publicComments && (
+                <p style={{marginBottom: "5px"}}>Comment: <b>{res.level.publicComments? res.level.publicComments : ""}</b></p>
                 )}
           </div>
           
@@ -395,17 +258,7 @@ const LevelDetailPage = () => {
               
             </div>
           </div>
-
-          <div className="right"> 
-            {res.level.dlLink && (
-              <a className="svg-stroke" href={res.level.dlLink} target="_blank">
-                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M17 17H17.01M17.4 14H18C18.9319 14 19.3978 14 19.7654 14.1522C20.2554 14.3552 20.6448 14.7446 20.8478 15.2346C21 15.6022 21 16.0681 21 17C21 17.9319 21 18.3978 20.8478 18.7654C20.6448 19.2554 20.2554 19.6448 19.7654 19.8478C19.3978 20 18.9319 20 18 20H6C5.06812 20 4.60218 20 4.23463 19.8478C3.74458 19.6448 3.35523 19.2554 3.15224 18.7654C3 18.3978 3 17.9319 3 17C3 16.0681 3 15.6022 3.15224 15.2346C3.35523 14.7446 3.74458 14.3552 4.23463 14.1522C4.60218 14 5.06812 14 6 14H6.6M12 15V4M12 15L9 12M12 15L15 12" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </a>
-            )}
-
-            <button 
+          <button 
               className="edit-button svg-stroke"
               onClick={() => setOpenEditDialog(true)}
               title="Edit chart details"
@@ -415,6 +268,22 @@ const LevelDetailPage = () => {
                 <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.4374 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
+          <div className="right"> 
+            
+            {res.level.dlLink && (
+              <a className="svg-stroke" href={res.level.dlLink} target="_blank">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M17 17H17.01M17.4 14H18C18.9319 14 19.3978 14 19.7654 14.1522C20.2554 14.3552 20.6448 14.7446 20.8478 15.2346C21 15.6022 21 16.0681 21 17C21 17.9319 21 18.3978 20.8478 18.7654C20.6448 19.2554 20.2554 19.6448 19.7654 19.8478C19.3978 20 18.9319 20 18 20H6C5.06812 20 4.60218 20 4.23463 19.8478C3.74458 19.6448 3.35523 19.2554 3.15224 18.7654C3 18.3978 3 17.9319 3 17C3 16.0681 3 15.6022 3.15224 15.2346C3.35523 14.7446 3.74458 14.3552 4.23463 14.1522C4.60218 14 5.06812 14 6 14H6.6M12 15V4M12 15L9 12M12 15L15 12" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </a>
+            )}
+            {res.level.workshopLink && (
+              <a href={res.level.workshopLink} target="_blank">
+                     <svg className="svg-fill" fill="#ffffff" viewBox="3 3 26 26" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M 22 6 C 18.745659 6 16.09469 8.6041857 16.007812 11.837891 L 12.337891 17.083984 C 12.065931 17.032464 11.786701 17 11.5 17 C 10.551677 17 9.673638 17.297769 8.9472656 17.800781 L 4 15.84375 L 4 21.220703 L 7.1054688 22.449219 C 7.5429388 24.475474 9.3449541 26 11.5 26 C 13.703628 26 15.534282 24.405137 15.917969 22.310547 L 21.691406 17.984375 C 21.794183 17.989633 21.895937 18 22 18 C 25.309 18 28 15.309 28 12 C 28 8.691 25.309 6 22 6 z M 22 8 C 24.206 8 26 9.794 26 12 C 26 14.206 24.206 16 22 16 C 19.794 16 18 14.206 18 12 C 18 9.794 19.794 8 22 8 z M 22 9 A 3 3 0 0 0 22 15 A 3 3 0 0 0 22 9 z M 11.5 18 C 13.43 18 15 19.57 15 21.5 C 15 23.43 13.43 25 11.5 25 C 10.078718 25 8.8581368 24.145398 8.3105469 22.925781 L 10.580078 23.824219 C 10.882078 23.944219 11.192047 24.001953 11.498047 24.001953 C 12.494047 24.001953 13.436219 23.403875 13.824219 22.421875 C 14.333219 21.137875 13.703922 19.683781 12.419922 19.175781 L 10.142578 18.273438 C 10.560118 18.097145 11.019013 18 11.5 18 z"></path></g></svg>
+            
+              </a>
+            )}
+
           </div>
         </div>
 
@@ -422,63 +291,59 @@ const LevelDetailPage = () => {
           <div className="info">
 
             <div className="info-item">
-              <p>
-                {/* <span className="one">#1</span> Clear */}
-                {t("detailPage.#1Clears.clear")}
-              </p>
+              <p>{t("detailPage.#1Clears.clear")}</p>
               <span className="info-desc">
-              {!infoLoading ? 
-                (player && player[highDate] ? `${player[highDate].player} | ${player[highDate].vidUploadTime.slice(0, 10)}` : "-")
-                : t("detailPage.waiting")}
+                {!infoLoading ? 
+                  (displayedPlayers.length > 0 ? 
+                    `${getHighScores(displayedPlayers).firstClear.player} | ${getHighScores(displayedPlayers).firstClear.vidUploadTime.slice(0, 10)}` 
+                    : "-")
+                  : t("detailPage.waiting")}
               </span>
             </div>
 
             <div className="info-item">
-              <p>
-                {/* <span className="one">#1</span> Score */}
-                {t("detailPage.#1Clears.score")}
-              </p>
+              <p>{t("detailPage.#1Clears.score")}</p>
               <span className="info-desc">
-              {!infoLoading ? 
-                (player && player[highScore] ? `${player[highScore].player} | ${player[highScore].scoreV2.toFixed(2)}` : "-")
-                : t("detailPage.waiting")}
+                {!infoLoading ? 
+                  (displayedPlayers.length > 0 ? 
+                    `${getHighScores(displayedPlayers).highestScore.player} | ${getHighScores(displayedPlayers).highestScore.scoreV2.toFixed(2)}` 
+                    : "-")
+                  : t("detailPage.waiting")}
               </span>
             </div>
 
             <div className="info-item">
-              <p>
-                {t("detailPage.#1Clears.speed")}
-              </p>
+              <p>{t("detailPage.#1Clears.speed")}</p>
               <span className="info-desc">
-              {!infoLoading ? 
-                (player && highSpeed !== 999 && player[highSpeed] ? `${player[highSpeed].player} | ${player[highSpeed].speed || 1}×` 
-                : highSpeed === 999 ? "-" : "-")
-                : t("detailPage.waiting")}
+                {!infoLoading ? 
+                  (displayedPlayers.length > 0 && getHighScores(displayedPlayers).highestSpeed ? 
+                    `${getHighScores(displayedPlayers).highestSpeed.player} | ${getHighScores(displayedPlayers).highestSpeed.speed || 1}×` 
+                    : "-")
+                  : t("detailPage.waiting")}
               </span>
             </div>
 
             <div className="info-item">
-              <p>
-                {/* <span className="one">#1</span> Accuracy */}
-                {t("detailPage.#1Clears.accuracy")}
-
-                
-              </p>
+              <p>{t("detailPage.#1Clears.accuracy")}</p>
               <span className="info-desc">
-              {!infoLoading ? 
-                (player && player[highAcc] ? `${player[highAcc].player} | ${(player[highAcc].accuracy * 100).toFixed(2)}%` : "-")
-                : t("detailPage.waiting")}
+                {!infoLoading ? 
+                  (displayedPlayers.length > 0 ? 
+                    `${getHighScores(displayedPlayers).highestAcc.player} | ${(getHighScores(displayedPlayers).highestAcc.accuracy * 100).toFixed(2)}%` 
+                    : "-")
+                  : t("detailPage.waiting")}
               </span>
             </div>
 
             <div className="info-item">
               <p>{t("detailPage.#1Clears.numOClear")}</p>
               <span className="info-desc">
-                {!infoLoading ? (player ? player.length : "0") : t("detailPage.waiting")}
+                {!infoLoading ? displayedPlayers.length : t("detailPage.waiting")}
               </span>
             </div>
 
-            <button className="info-button" onClick={changeDialogState}>{t("detailPage.dialog.fullInfo")}</button>
+            <button className="info-button" onClick={changeDialogState}>
+              {t("detailPage.dialog.fullInfo")}
+            </button>
           </div>
 
           <div className="youtube">
@@ -509,7 +374,7 @@ const LevelDetailPage = () => {
 
         <div className="rank">
           <h1>{t("detailPage.leaderboard.header")}</h1>
-          {player && player.length > 0 ? (
+          {displayedPlayers && displayedPlayers.length > 0 ? (
             <div className="sort">
                 <Tooltip id="tm" place="top" noArrow>
                 {t("detailPage.leaderboard.toolTip.time")}
