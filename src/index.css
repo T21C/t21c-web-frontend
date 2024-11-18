@@ -111,6 +111,14 @@ body {
   transform: translateX(-50%) translateY(-50%) scale(-0.5,0.5);
 }
 
+.loader-level-page {
+  position: relative;
+  height: 0px;
+  width: 0;
+  left: 50%;
+  top: 100px;
+  transform: translateX(0%) translateY(0%);
+}
 .vid-logo-wrapper .svg-fill:hover svg {
   transition: transform 0.3s ease;
   transform: scale(1.2); /* Adjust scale factor as needed */

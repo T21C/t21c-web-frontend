@@ -747,16 +747,15 @@ const LevelPageRev = () => {
         </div>
 
         <InfiniteScroll
-          style={{ paddingBottom: "5rem" }}
+          style={{ paddingBottom: "15rem" }}
           dataLength={levelsData.length}
           next={() => setPageNumber((prevPageNumber) => prevPageNumber + 1)}
           hasMore={hasMore}
-          loader={<h1>{t("levelPage.infScroll.loading")}</h1>}
+          loader={<div className="loader loader-level-page"></div>}
           endMessage={
             <p style={{ textAlign: "center" }}>
               <b>{t("levelPage.infScroll.end")}</b>
-            </p>
-          }
+            </p>}
         >
           {levelsData.map((l, index) => (
             <LevelCardRev
