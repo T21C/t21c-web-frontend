@@ -116,27 +116,26 @@ const LevelPageRev = () => {
     let cancel;
 
     const fetchLevels = async () => {
-      
       setLoading(true);
       try {
-
         // Construct the params object conditionally
-      const params = {
-        limit: limit,
-        query, 
-        sort, 
-        offset: pageNumber * limit,
-      };
+        const params = {
+          limit: limit,
+          query, 
+          sort, 
+          offset: pageNumber * limit,
+        };
 
-      // Add minDiff only if selectedLowFilterDiff is defined
-      if (selectedLowFilterDiff) {
-        params.minDiff = selectedLowFilterDiff.value;
-      }
+        // Add minDiff only if selectedLowFilterDiff is defined
+        if (selectedLowFilterDiff) {
+          params.minDiff = selectedLowFilterDiff.value;
+        }
 
-      // Add maxDiff only if selectedHighFilterDiff is defined
-      if (selectedHighFilterDiff) {
-        params.maxDiff = selectedHighFilterDiff.value;
-      } 
+        // Add maxDiff only if selectedHighFilterDiff is defined
+        if (selectedHighFilterDiff) {
+          params.maxDiff = selectedHighFilterDiff.value;
+        } 
+
         const response = await axios.get(
           `${import.meta.env.VITE_LIST_LEVEL}`,
           {
@@ -144,31 +143,11 @@ const LevelPageRev = () => {
             cancelToken: new axios.CancelToken((c) => (cancel = c)),
           }
         );
-        const newLevels = await Promise.all(
-          response.data.results.map(async (l) => {
-            //console.log(l)
-            
-            const additionalDataResponse = await axios.get(
-              `${import.meta.env.VITE_INDIVIDUAL_PASSES}${l.id}`
-            );
-            return {
-              id: l.id,
-              team: l.team,
-              diff: l.diff,
-              newDiff: l.newDiff,
-              pdnDiff: l.pdnDiff,
-              pguDiff: l.pguDiff,
-              creator: l.creator,
-              song: l.song,
-              artist: l.artist,
-              dlLink: l.dlLink,
-              wsLink: l.workshopLink,
-              clears: additionalDataResponse.data.count,
-            };
-          })
-        );
-        const existingIds = new Set(levelsData.map((level) => level.id));
 
+        // Remove the Promise.all and additional requests
+        const newLevels = response.data.results;
+        
+        const existingIds = new Set(levelsData.map((level) => level.id));
         const uniqueLevels = newLevels.filter(
           (level) => !existingIds.has(level.id)
         );
@@ -191,11 +170,8 @@ const LevelPageRev = () => {
             cancelToken: new axios.CancelToken((c) => (cancel = c)),
           }
         );
-        //console.log(response)
-        const clears = await axios.get(
-          `${import.meta.env.VITE_INDIVIDUAL_PASSES}${response.data.id}`
-        );
 
+        // Remove the additional clears request
         const fullData = {
           id: response.data.id,
           team: response.data.team,
@@ -208,9 +184,9 @@ const LevelPageRev = () => {
           artist: response.data.artist,
           dlLink: response.data.dlLink,
           wsLink: response.data.workshopLink,
-          clears: clears.data.count,
+          // The clears count should now come from the server response
+          clears: response.data.clears || 0,
         };
-        // console.log(fullData);
 
         setLevelsData([fullData]);
         setHasMore(false);
@@ -250,7 +226,7 @@ const LevelPageRev = () => {
     setSort(value);
     setPageNumber(0);
     setLevelsData([]);
-    setLoading(true); //both of this is no
+    setLoading(true);
     setForceUpdate((f) => !f);
   }
 

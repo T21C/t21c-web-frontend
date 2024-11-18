@@ -17,6 +17,7 @@ import { Tooltip } from "react-tooltip";
 import { useTranslation } from "react-i18next";
 import { use } from "i18next";
 import ClearCard from "../../components/ClearCard/ClearCard";
+import axios from 'axios';
 
 const LevelDetailPage = () => {
   const {t} = useTranslation()
@@ -42,6 +43,23 @@ const LevelDetailPage = () => {
 
   const [infoLoading, setInfoLoading] = useState(true);
   const [openDialog, setOpenDialog] = useState(false)
+
+  const toggleToRate = async () => {
+    try {
+      const response = await axios.put(`/api/levels/${id}/toggleToRate`);
+      console.log(response.data.message);
+      // Optionally, you can update the local state if needed
+      setRes((prevRes) => ({
+        ...prevRes,
+        level: {
+          ...prevRes.level,
+          toRate: response.data.toRate,
+        },
+      }));
+    } catch (error) {
+      console.error('Error toggling toRate flag:', error);
+    }
+  };
 
   useEffect(() => {
     
@@ -376,7 +394,7 @@ const LevelDetailPage = () => {
             </div>
           </div>
 
-          <div className="right">
+          <div className="right"> 
             {res.level.dlLink && (
               <a className="svg-stroke" href={res.level.dlLink} target="_blank">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
