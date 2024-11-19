@@ -208,10 +208,33 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
 
               <div className="form-group">
                 <label htmlFor="pguDiff">PGU Difficulty</label>
-                <RatingInput
-                  value={formData.pguDiff.toString()}
-                  onChange={handlePguDiffChange}
-                />
+                <div className="difficulty-row">
+                  <RatingInput
+                    value={formData.pguDiff.toString()}
+                    onChange={handlePguDiffChange}
+                  />
+                  
+                </div>
+              </div>
+              <div className="form-group to-rate-checkbox-container" >
+              <div 
+                className="to-rate-checkbox"
+                onClick={() => {
+                  setFormData(prev => ({
+                    ...prev,
+                    toRate: !prev.toRate
+                  }));
+                }}
+                >
+                  <input
+                    type="checkbox"
+                    name="toRate"
+                    checked={formData.toRate}
+                    onChange={handleInputChange}
+                    onClick={(e) => e.stopPropagation()}
+                  />
+                  To Rate
+                </div>
               </div>
             </div>
 
@@ -252,24 +275,13 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
 
             <div className="form-group">
               <label htmlFor="publicComments">Public Comments</label>
-              <textarea
+              <input
+                type="text"
                 id="publicComments"
                 name="publicComments"
                 value={formData.publicComments}
                 onChange={handleInputChange}
               />
-            </div>
-
-            <div className="form-group checkbox">
-              <label>
-                <input
-                  type="checkbox"
-                  name="toRate"
-                  checked={formData.toRate}
-                  onChange={handleInputChange}
-                />
-                To Rate
-              </label>
             </div>
 
             {error && <div className="error-message">{error}</div>}

@@ -39,7 +39,7 @@
 }
 
 .popup-content h2 {
-  margin-bottom: 24px;
+  margin-bottom: 16px;
   color: #fff;
 }
 
@@ -47,20 +47,20 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .form-links {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 16px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
 }
 
 .form-group label {
@@ -77,10 +77,6 @@
   color: #fff;
 }
 
-.form-group textarea {
-  min-height: 100px;
-  resize: vertical;
-}
 
 .form-group.checkbox {
   flex-direction: row;
@@ -98,21 +94,66 @@
 }
 
 .save-button {
+  margin-top: 16px;
   width: 100%;
   padding: 12px;
-  background: #4a90e2;
+  background: #417fc6;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
+  transition: background 0.2s ease;
 }
 
 .save-button:disabled {
-  background: #2a5a8e;
+  background: #737f8d;
   cursor: not-allowed;
 }
 
 .save-button:hover:not(:disabled) {
-  background: #357abd;
+  background: #2d67a1;
+}
+
+.difficulty-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.to-rate-checkbox-container {
+  display: grid;
+  align-items: center;
+  justify-content: center;
+}
+
+.to-rate-checkbox {
+  display: flex;
+  align-items: center;
+  background: #2a2a2a;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid #333;
+}
+
+.to-rate-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: #fff;
+  font-size: 14px;
+  user-select: none;
+}
+
+.to-rate-checkbox input[type="checkbox"] {
+  margin: 0;
+  width: 16px;
+  height: 16px;
+  accent-color: #4a90e2;
+  cursor: pointer;
+}
+
+.to-rate-checkbox:hover {
+  background: #333;
 } 
