@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { inputDataRaw } from "../../Repository/RemoteRepository";
 import "./detailpopup.css";
 
-export const RatingInput = ({ value, onChange, isLegacy }) => {
+export const RatingInput = ({ value, onChange, isLegacy, showDiff=true }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedRating, setSelectedRating] = useState([null,null]);
 
@@ -77,7 +77,7 @@ export const RatingInput = ({ value, onChange, isLegacy }) => {
         >
           <div className={`dropdown-toggle-icon ${showDropdown ? 'open' : ''}`}>▼</div>
         </button>
-        {selectedRating[1] && (
+        {selectedRating[1] && showDiff && (
           <img src={selectedRating[1]} alt={selectedRating[0]} className="rating-option-image" />
         )}
 

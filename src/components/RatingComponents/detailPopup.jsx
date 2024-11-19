@@ -215,6 +215,7 @@ export const DetailPopup = ({
                           setPendingRating(value);
                           setHasUnsavedChanges(true);
                         }}
+                        showDiff={false}
                       />
                       {(pendingRating && (validateFeelingRating(pendingRating) || Object.keys(inputDataRaw).includes(pendingRating.toUpperCase()))) && (
                         <div className="rating-images">
@@ -222,20 +223,20 @@ export const DetailPopup = ({
                             <>
                               <img 
                                 src={getLevelIconSingle(pendingRating.split('-')[0])} 
-                                alt={pendingRating.split('-')[0]}
+                                alt=""
                                 className="rating-level-image"
                               />
                               <span className="rating-separator">-</span>
                               <img 
                                 src={getLevelIconSingle(pendingRating.split('-')[1])} 
-                                alt={pendingRating.split('-')[1]}
+                                alt=""
                                 className="rating-level-image"
                               />
                             </>
                           ) : (
                             <img 
                               src={getLevelIconSingle(pendingRating)} 
-                              alt={pendingRating}
+                              alt=""
                               className="rating-level-image"
                             />
                           )}
