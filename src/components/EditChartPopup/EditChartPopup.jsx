@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import './editchartpopup.css';
 import axios from 'axios';
 import { RatingInput } from '../RatingComponents/RatingInput';
-
+import { parseBaseScore } from '../../Repository/RemoteRepository';
 export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
   const [formData, setFormData] = useState({
     song: '',
@@ -14,6 +14,8 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
     diff: '',
     pguDiff: '',
     newDiff: '',
+    baseScore: '',
+    baseScoreDiff: '',
     dlLink: '',
     workshopLink: '',
     vidLink: '',
@@ -35,11 +37,13 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
         diff: chart.diff || '',
         pguDiff: chart.pguDiff || '',
         newDiff: chart.newDiff || '',
+        baseScore: chart.baseScore || '',
+        baseScoreDiff: chart.baseScoreDiff || '',
         dlLink: chart.dlLink || '',
         workshopLink: chart.workshopLink || '',
         vidLink: chart.vidLink || '',
         publicComments: chart.publicComments || '',
-        toRate: chart.toRate || false
+        toRate: chart.toRate || false,
       });
     }
   }, [chart]);
@@ -50,6 +54,19 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+  };
+
+  const handlePguDiffChange = (value) => {
+    setFormData(prev => {
+      const shouldSyncBaseScore = !prev.baseScoreDiff || 
+        prev.baseScoreDiff === prev.pguDiff;
+
+      return {
+        ...prev,
+        pguDiff: value,
+        baseScoreDiff: shouldSyncBaseScore ? value : prev.baseScoreDiff
+      };
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -158,7 +175,22 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
                   onChange={handleInputChange}
                 />
               </div>
-
+              <div className="form-group">
+                <label htmlFor="baseScore">Base Score</label>
+                <RatingInput
+                  value={formData.baseScoreDiff.toString()}
+                  onChange={(value) => {
+                    setFormData(prev => ({
+                      ...prev,
+                      baseScoreDiff: value
+                    }));
+                  }}
+                />
+                <div className="calculated-score">
+                  Calculated Score: {parseBaseScore(formData.baseScoreDiff)}
+                </div>
+              </div>
+              {/*
               <div className="form-group">
                 <label htmlFor="diff">Legacy Difficulty</label>
                 <RatingInput
@@ -172,17 +204,13 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
                   isLegacy={true}
                 />
               </div>
+              */}
 
               <div className="form-group">
                 <label htmlFor="pguDiff">PGU Difficulty</label>
                 <RatingInput
                   value={formData.pguDiff.toString()}
-                  onChange={(value) => {
-                    setFormData(prev => ({
-                      ...prev,
-                      pguDiff: value
-                    }));
-                  }}
+                  onChange={handlePguDiffChange}
                 />
               </div>
             </div>

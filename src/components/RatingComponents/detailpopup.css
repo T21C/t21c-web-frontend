@@ -246,6 +246,14 @@
     width: 120px;
   }
 
+  .dropdown-toggle-icon {
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .dropdown-toggle-icon.open {
+    transform: rotate(180deg);
+  }
+
   .rating-level-image {
     height: 38px; /* Match your input height */
     width: auto;

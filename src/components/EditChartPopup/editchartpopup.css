@@ -87,6 +87,11 @@
   align-items: center;
 }
 
+.calculated-score {
+  color: #fff;
+  font-size: 14px;
+}
+
 .error-message {
   color: #ff4444;
   margin-bottom: 16px;

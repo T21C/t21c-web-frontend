@@ -1,9 +1,20 @@
 import { useState, useEffect } from 'react';
-import { inputDataRaw, legacyInputDataRaw } from "../../Repository/RemoteRepository";
+import { inputDataRaw } from "../../Repository/RemoteRepository";
 import "./detailpopup.css";
 
 export const RatingInput = ({ value, onChange, isLegacy }) => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [selectedRating, setSelectedRating] = useState([null,null]);
+
+  const getSelectedRating = (rating) => {
+    // Find the matching URL for the rating
+    const matchingEntry = inputDataRaw.find(([key]) => key === rating);
+    return matchingEntry ? matchingEntry : [null,null]; // Return URL or empty string if not found
+  };
+
+  useEffect(() => {
+    setSelectedRating(getSelectedRating(value));
+  }, [value]);
 
   const handleSelect = (rating) => {
     onChange(rating);
@@ -11,9 +22,7 @@ export const RatingInput = ({ value, onChange, isLegacy }) => {
   };
 
   // Filter options based on input
-  console.log(legacyInputDataRaw)
-  console.log(inputDataRaw)
-  const dataRaw = isLegacy ? legacyInputDataRaw : inputDataRaw;
+  const dataRaw = inputDataRaw;
   const filteredOptions = dataRaw.filter(([rating]) => 
     rating.toLowerCase().includes(value.toLowerCase())
   );
@@ -66,8 +75,12 @@ export const RatingInput = ({ value, onChange, isLegacy }) => {
           onClick={() => setShowDropdown(!showDropdown)}
           type="button"
         >
-          ▼
+          <div className={`dropdown-toggle-icon ${showDropdown ? 'open' : ''}`}>▼</div>
         </button>
+        {selectedRating[1] && (
+          <img src={selectedRating[1]} alt={selectedRating[0]} className="rating-option-image" />
+        )}
+
       </div>
       {showDropdown && filteredOptions.length > 0 && (
         <div className="rating-dropdown">
