@@ -103,6 +103,11 @@ const Navigation = ({ children }) => {
                       to="/leaderboard">
                       <li>{t("navigationComponent.leaderboard")}</li>
                     </NavLink>
+                    <NavLink className={({ isActive }) =>
+                      "nav-link " + (isActive ? "active-link" : "")}
+                      to="/pass">
+                      <li>{t("navigationComponent.pass")}</li>
+                    </NavLink>
                   </>
                 )}
               </ul>

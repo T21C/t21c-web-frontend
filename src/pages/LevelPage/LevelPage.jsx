@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import "./levelpage.css";
 import { useContext, useEffect, useState } from "react";
-import { CompleteNav, LevelCardRev } from "../../components";
+import { CompleteNav, LevelCard } from "../../components";
 import { Tooltip } from "react-tooltip";
 import Select from "react-select";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -76,7 +76,7 @@ const options = [
 
 const limit = 30;
 
-const LevelPageRev = () => {
+const LevelPage = () => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
@@ -254,7 +254,7 @@ const LevelPageRev = () => {
   }
 
   return (
-    <div className="level-page-rev">
+    <div className="level-page">
       <CompleteNav />
 
       <div className="background-level"></div>
@@ -758,7 +758,7 @@ const LevelPageRev = () => {
             </p>}
         >
           {levelsData.map((l, index) => (
-            <LevelCardRev
+            <LevelCard
               key={index}
               level={l}
               legacyMode={legacyDiff}
@@ -770,4 +770,4 @@ const LevelPageRev = () => {
   );
 };
 
-export default LevelPageRev;
+export default LevelPage;

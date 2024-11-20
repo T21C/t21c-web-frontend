@@ -15,6 +15,7 @@ import { UserContextProvider } from './context/UserContext.jsx';
 import { GoogleOAuthProvider } from "@react-oauth/google"
 import { AuthProvider } from './context/AuthContext.jsx';
 import { PlayerContextProvider } from './context/PlayerContext.jsx';
+import { PassContextProvider } from './context/PassContext.jsx';  
 
 i18next.init({
   interpolation: { escapeValue: false },
@@ -51,7 +52,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
       <UserContextProvider>
         <PlayerContextProvider>
           <AuthProvider>
-            <App />
+            <PassContextProvider>
+              <App />
+            </PassContextProvider>
           </AuthProvider>
         </PlayerContextProvider>
       </UserContextProvider>

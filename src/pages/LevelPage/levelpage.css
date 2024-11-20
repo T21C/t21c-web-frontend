@@ -1,9 +1,9 @@
-.level-page-rev {
+.level-page {
   background-color: var(--color-black);
   color: var(--color-white);
   min-height: 100vh;
 }
-.level-page-rev .level-body {
+.level-page .level-body {
   position: relative;
   z-index: 2;
   padding: 0 1.5rem;
@@ -12,12 +12,12 @@
   max-width: 70rem;
   margin: 0 auto;
 }
-.level-page-rev .level-body .input-option {
+.level-page .level-body .input-option {
   display: flex;
   gap: 0.5rem;
   height: 2rem;
 }
-.level-page-rev .level-body .input-option input {
+.level-page .level-body .input-option input {
   width: 100%;
   background-color: var(--color-white-t20);
   border: none;
@@ -25,10 +25,10 @@
   padding: 0.5rem;
   color: var(--white-color);
 }
-.level-page-rev .level-body .input-option input:focus {
+.level-page .level-body .input-option input:focus {
   outline: none;
 }
-.level-page-rev .level-body .input-option svg {
+.level-page .level-body .input-option svg {
   height: 2rem;
   width: 2.2rem;
   background-color: var(--color-white-t20);
@@ -37,36 +37,36 @@
   cursor: pointer;
   transition: all 0.2s linear;
 }
-.level-page-rev .level-body .input-option svg:focus {
+.level-page .level-body .input-option svg:focus {
   outline: none;
 }
-.level-page-rev .level-body .filter {
+.level-page .level-body .filter {
   position: relative;
   z-index: 2;
   overflow: visible;
 }
-.level-page-rev .level-body .sort {
+.level-page .level-body .sort {
   position: relative;
   z-index: 1;
 }
-.level-page-rev .level-body .sort .sort-option {
+.level-page .level-body .sort .sort-option {
   display: flex;
   gap: 2rem;
 }
-.level-page-rev .level-body .sort .sort-option .recent p,
-.level-page-rev .level-body .sort .sort-option .diff p,
-.level-page-rev .level-body .sort .sort-option .random p {
+.level-page .level-body .sort .sort-option .recent p,
+.level-page .level-body .sort .sort-option .diff p,
+.level-page .level-body .sort .sort-option .random p {
   margin-bottom: 0.5rem;
 }
-.level-page-rev .level-body .sort .sort-option .recent .wrapper,
-.level-page-rev .level-body .sort .sort-option .diff .wrapper,
-.level-page-rev .level-body .sort .sort-option .random .wrapper {
+.level-page .level-body .sort .sort-option .recent .wrapper,
+.level-page .level-body .sort .sort-option .diff .wrapper,
+.level-page .level-body .sort .sort-option .random .wrapper {
   display: flex;
   gap: 1rem;
 }
-.level-page-rev .level-body .sort .sort-option .recent svg,
-.level-page-rev .level-body .sort .sort-option .diff svg,
-.level-page-rev .level-body .sort .sort-option .random svg {
+.level-page .level-body .sort .sort-option .recent svg,
+.level-page .level-body .sort .sort-option .diff svg,
+.level-page .level-body .sort .sort-option .random svg {
   height: 2rem;
   width: 2rem;
   background-color: var(--color-white-t20);
@@ -75,39 +75,39 @@
   cursor: pointer;
   transition: all 0.2s linear;
 }
-.level-page-rev .level-body .sort .sort-option .recent svg:focus,
-.level-page-rev .level-body .sort .sort-option .diff svg:focus,
-.level-page-rev .level-body .sort .sort-option .random svg:focus {
+.level-page .level-body .sort .sort-option .recent svg:focus,
+.level-page .level-body .sort .sort-option .diff svg:focus,
+.level-page .level-body .sort .sort-option .random svg:focus {
   outline: none;
 }
-.level-page-rev .level-body .settings-class {
+.level-page .level-body .settings-class {
   transition: height 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 1s ease-in-out;
   height: 10rem;
   overflow: hidden;
 }
-.level-page-rev .level-body .spacer-setting {
+.level-page .level-body .spacer-setting {
   width: 100%;
   height: 1px;
   background-color: var(--color-white);
   margin-bottom: 0.5rem;
 }
-.level-page-rev .level-body .diff-filters {
+.level-page .level-body .diff-filters {
   display: flex;
   flex-direction: row; /* Stacks items vertically */
   gap: 1rem; /* Adds space between the filter containers */
 }
 
-.level-page-rev .level-body .filter-container {
+.level-page .level-body .filter-container {
   display: flex;
   flex-direction: column; /* Stack the label and select vertically */
 }
 
-.level-page-rev .level-body .input-setting {
+.level-page .level-body .input-setting {
   margin-top: 1rem;
 }
-.level-page-rev .level-body .setting-title {
+.level-page .level-body .setting-title {
   margin-bottom: 1rem;
 }
-.level-page-rev .level-body .setting-description {
+.level-page .level-body .setting-description {
   margin-bottom: 0.5rem;
 }/*# sourceMappingURL=levelpage.css.map */

@@ -9,11 +9,12 @@ import ProfilePage from "./pages/ProfilePage/ProfilePage.jsx"
 import RatingPage from "./pages/AdminPage/RatingPage.jsx";
 import SubmissionManagementPage from "./pages/AdminPage/SubmissionManagementPage.jsx";
 import AdminPage from "./pages/AdminPage/AdminPage.jsx";
+import PassPage from "./pages/PassPage/PassPage.jsx";
 
 const HomePage = lazy(() => import("./pages/HomePage/HomePage.jsx"));
 const LevelDetailPage = lazy(()=> import ("./pages/LevelDetailPage/LevelDetailPage.jsx"))
 const SubmissionPage = lazy(()=> import("./pages/SubmissionPage/SubmissionPage.jsx"))
-const LevelPageRev = lazy(()=> import ("./pages/LevelPage/LevelPageRev.jsx"))
+const LevelPage = lazy(()=> import ("./pages/LevelPage/LevelPage.jsx"))
 
 function App() {
   
@@ -36,7 +37,7 @@ function App() {
                 
       <Routes>
         <Route index path="/" element={<HomePage />} />
-        <Route path="levels" element={<LevelPageRev />} />
+        <Route path="levels" element={<LevelPage />} />
         <Route path="leveldetail" element={<LevelDetailPage />} />
 
         <Route path="submission" element={<SubmissionPage />} />
@@ -46,6 +47,8 @@ function App() {
         <Route path="profile/:playerName" element={<ProfilePage />} />
 
         <Route path='leaderboard' element={<LeaderboardPage/>}/>
+        <Route path='pass' element={<PassPage/>} />
+
         <Route path='admin' element={<AdminPage/>} />
         <Route path='admin/submissions' element={<SubmissionManagementPage/>} />
         <Route path='admin/rating' element={<RatingPage/>} />

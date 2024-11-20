@@ -5,7 +5,7 @@ import { useTranslation } from "react-i18next";
 
 
 // eslint-disable-next-line react/prop-types
-const LevelCardRev = ({index, level, legacyMode }) => {
+const LevelCard = ({index, level, legacyMode }) => {
   const {t} = useTranslation()  
   console.log(level);
   
@@ -30,7 +30,7 @@ const LevelCardRev = ({index, level, legacyMode }) => {
     };
 
   return (
-    <div className='level-card-rev' onClick={() => redirect()}>
+    <div className='level-card' onClick={() => redirect()}>
       {/* <div className="id level-id">#{id}</div> */}
       <div className="img-wrapper">
           <img src={lvImage} alt="" />
@@ -87,6 +87,6 @@ const LevelCardRev = ({index, level, legacyMode }) => {
   );
 };
 
-export default LevelCardRev;
+export default LevelCard;
 
 

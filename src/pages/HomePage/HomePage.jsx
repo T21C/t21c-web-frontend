@@ -1,6 +1,6 @@
 import "./homepage.css"
 import { useContext, useEffect, useRef, useState } from "react";
-import { Card, Footer, CompleteNav, LevelCardRev } from "../../components";
+import { Card, Footer, CompleteNav, LevelCard } from "../../components";
 import { fetchRecent } from "../../Repository/RemoteRepository";
 import logo from "../../assets/tuf-logo/logo-full.png";
 import { useNavigate } from "react-router-dom";
@@ -78,7 +78,7 @@ const HomePage = () => {
             <div className="list">
               {recent && recent.recentRated && recent.recentRated.length > 0 ? (
                 recent.recentRated.map((l, index) => (
-                  <LevelCardRev
+                  <LevelCard
                   style={{
                     height: "2rem"
                   }}
