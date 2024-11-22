@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
-import "./leveldetailpage.css"
+import "./passdetailpage.css"
 import placeholder from "../../assets/placeholder/3.png";
 import React, { useEffect, useState } from "react";
 import { useLocation } from 'react-router-dom';
@@ -8,6 +8,7 @@ import { CompleteNav } from "../../components";
 import {
   fetchLevelInfo,
   fetchPassPlayerInfo,
+  fetchPassInfo,
   getLevelImage,
   getVideoDetails,
   isoToEmoji,
@@ -18,24 +19,24 @@ import { useTranslation } from "react-i18next";
 import { use } from "i18next";
 import ClearCard from "../../components/ClearCard/ClearCard";
 import axios from 'axios';
-import { EditChartPopup } from "../../components/EditChartPopup/EditChartPopup";
+import { EditPassPopup } from "../../components/EditPassPopup/EditPassPopup";
 
-const getHighScores = (players) => {
-  if (!players?.length) return null;
+const getHighScores = (passes) => {
+  if (!passes?.length) return null;
   
   return {
-    firstClear: players.reduce((a, b) => 
+    firstClear: passes.reduce((a, b) => 
       new Date(a.date) < new Date(b.date) ? a : b),
-    highestScore: players.reduce((a, b) => 
+    highestScore: passes.reduce((a, b) => 
       b.score > a.score ? b : a),
-    highestAcc: players.reduce((a, b) => 
+    highestAcc: passes.reduce((a, b) => 
       b.Xacc > a.Xacc ? b : a),
-    highestSpeed: players.some(p => p.speed) ? 
-      players.reduce((a, b) => (b.speed || 0) > (a.speed || 0) ? b : a) : null
+    highestSpeed: passes.some(p => p.speed) ? 
+      passes.reduce((a, b) => (b.speed || 0) > (a.speed || 0) ? b : a) : null
   };
 };
 
-const LevelDetailPage = () => {
+const PassDetailPage = () => {
   const {t} = useTranslation()
   const { detailPage } = useLocation();
   // cange how to get param
@@ -54,12 +55,15 @@ const LevelDetailPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchLevelInfo(id);
-        setRes(data);
+        const data = await fetchPassInfo(id);
+        setRes(prevRes => ({
+          ...prevRes,
+          pass: data
+        }));
         setDisplayedPlayers(sortLeaderboard(data.passes));
         setInfoLoading(false);
       } catch (error) {
-        console.error("Error fetching level data:", error);
+        console.error("Error fetching pass data:", error);
         setInfoLoading(false);
       }
     };
@@ -68,57 +72,40 @@ const LevelDetailPage = () => {
   }, [id]);
 
   useEffect(() => {
-    if (res?.level?.vidLink) {
-      getVideoDetails(res.level.vidLink).then(setVideoDetail);
+    if (res?.pass?.vidLink) {
+      getVideoDetails(res.pass.vidLink).then(setVideoDetail);
     }
-  }, [res?.level?.vidLink]);
+  }, [res?.pass?.vidLink]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [detailPage]);
 
-  function handleSort(sort) {
-    setLeaderboardSort(sort);
-    if (res?.passes) {
-      const newSortedPlayers = sortLeaderboard([...res.passes]);
-      setDisplayedPlayers(newSortedPlayers);
-    }
+  function handleSort(sort){
+    setLeaderboardSort(sort)
   }
 
-  const sortLeaderboard = (players) => {
-    if (!players) return [];
+  const sortLeaderboard = (passes) => {
+    if (!passes) return [];
     
-    const sortedPlayers = [...players];
-
     switch (leaderboardSort) {
       case 'TIME':
-        return sortedPlayers.sort((a, b) => 
-          new Date(b.date) - new Date(a.date)
-        );
+        return [...passes].sort((a, b) => new Date(a.date) - new Date(b.date));
       case 'ACC':
-        return sortedPlayers.sort((a, b) => 
-          (b.Xacc || 0) - (a.Xacc || 0)
-        );
+        return [...passes].sort((a, b) => b.Xacc - a.Xacc);
       case 'SCR':
-        return sortedPlayers.sort((a, b) => 
-          (b.score || 0) - (a.score || 0)
-        );
+        return [...passes].sort((a, b) => b.score - a.score);
       default:
-        return sortedPlayers;
+        return passes;
     }
   };
-
-  useEffect(() => {
-    if (res?.passes) {
-      setDisplayedPlayers(sortLeaderboard(res.passes));
-    }
-  }, [leaderboardSort, res?.passes]);
 
   function changeDialogState(){
     setOpenDialog(!openDialog)
   }
 
   function formatString(input) {
+    if (!input) return "";
     return input.split(/ & | but /g).join(" - ");
   }
 
@@ -139,31 +126,31 @@ const LevelDetailPage = () => {
         style={{ height: "100vh", width: "100vw", backgroundColor: "#090909" }}
       >
         <CompleteNav />
-        <div className="background-level"></div>
-        <div className="loader loader-level-detail"></div>
+        <div className="background-pass"></div>
+        <div className="loader loader-pass-detail"></div>
       </div>
     );
 
   return (
   <>
-    <div className="close-outer close-outer-levels" style={{ 
+    <div className="close-outer close-outer-passs" style={{ 
       display: openDialog ? 'block' : 'none'}} onClick={changeDialogState}></div>
       
-      <div className={`levels-dialog ${openDialog ? 'dialog-scale-up' : ''}`} style={{ display: openDialog ? 'block' : 'none' }}>
+      <div className={`passs-dialog ${openDialog ? 'dialog-scale-up' : ''}`} style={{ display: openDialog ? 'block' : 'none' }}>
         <div className="dialog">
 
           <div className="header" style={{
               backgroundImage: `url(${res && videoDetail ? videoDetail.image: "defaultImageURL"})`, backgroundPosition : "center"}}>
-            <h2>{res.level.song}</h2>
-            <p> <b>{t("detailPage.dialog.artist")} :</b> {res.level.artist}</p>
+            <h2>{res.pass.song}</h2>
+            <p> <b>{t("detailPage.dialog.artist")} :</b> {res.pass.artist}</p>
             
             <p>
-              <b>{t(res.level.team ? "detailPage.dialog.team" : "detailPage.dialog.creator")} :</b>
-              {formatString(res.level.team ? res.level.team : res.level.creator)}
+              <b>{t(res.pass.team ? "detailPage.dialog.team" : "detailPage.dialog.creator")} :</b>
+              {formatString(res.pass.team ? res.pass.team : res.pass.creator)}
             </p>
 
 
-            <p> <b>{t("detailPage.dialog.id")} :</b> #{res.level.id}</p>
+            <p> <b>{t("detailPage.dialog.id")} :</b> #{res.pass.id}</p>
 
           </div>
 
@@ -173,59 +160,59 @@ const LevelDetailPage = () => {
               
               <div className="each-diff">
                 <h3>PGU</h3>
-                <p>{formatDiff(res.level.pguDiff)}</p>
+                <p>{formatDiff(res.pass.pguDiff)}</p>
               </div>
 
 
               <div className="each-diff">
                 <h3>Legacy</h3>
-                <p>{formatDiff(res.level.diff)}</p>
+                <p>{formatDiff(res.pass.diff)}</p>
               </div>
 
               <div className="each-diff">
                 <h3>NEW</h3>
-                <p>{formatDiff(res.level.newDiff)}</p>
+                <p>{formatDiff(res.pass.newDiff)}</p>
               </div>
             
             </div>
             <div className="team-info">
 
-              {res.level.team && (
+              {res.pass.team && (
                 <div className="each-info">
                   <h3>{t("detailPage.dialog.team")}</h3>
-                  <p>{formatString(res.level.team)}</p>
+                  <p>{formatString(res.pass.team)}</p>
                 </div>
                 )}
 
-              {res.level.charter && (
+              {res.pass.charter && (
                 <div className="each-info">
                   <h3>{t("detailPage.dialog.charter")}</h3>
-                  <p>{formatString(res.level.charter)}</p>
+                  <p>{formatString(res.pass.charter)}</p>
                 </div>
                 )}
                 
-                {res.level.vfxer && (
+                {res.pass.vfxer && (
                 <div className="each-info">
                   <h3>{t("detailPage.dialog.vfxer")}</h3>
-                  <p>{formatString(res.level.vfxer)}</p>
+                  <p>{formatString(res.pass.vfxer)}</p>
                 </div>
                 )}
 
                 
              </div> 
 
-              <div className="links" style={{borderBottom: res.level.publicComments? "2px solid #fff": "transparent", paddingBottom: res.level.publicComments? "8px": "0"}}>
+              <div className="links" style={{borderBottom: res.pass.publicComments? "2px solid #fff": "transparent", paddingBottom: res.pass.publicComments? "8px": "0"}}>
 
-                {res.level.dlLink && (
-                  <a href={res.level.dlLink} target="_blank">
+                {res.pass.dlLink && (
+                  <a href={res.pass.dlLink} target="_blank">
                     <svg className="svg-stroke" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path d="M17 17H17.01M17.4 14H18C18.9319 14 19.3978 14 19.7654 14.1522C20.2554 14.3552 20.6448 14.7446 20.8478 15.2346C21 15.6022 21 16.0681 21 17C21 17.9319 21 18.3978 20.8478 18.7654C20.6448 19.2554 20.2554 19.6448 19.7654 19.8478C19.3978 20 18.9319 20 18 20H6C5.06812 20 4.60218 20 4.23463 19.8478C3.74458 19.6448 3.35523 19.2554 3.15224 18.7654C3 18.3978 3 17.9319 3 17C3 16.0681 3 15.6022 3.15224 15.2346C3.35523 14.7446 3.74458 14.3552 4.23463 14.1522C4.60218 14 5.06812 14 6 14H6.6M12 15V4M12 15L9 12M12 15L15 12" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                     </svg>
                   </a>
                 )}
 
-                {res.level.workshopLink && (
-                  <a href={res.level.workshopLink} target="_blank">
+                {res.pass.workshopLink && (
+                  <a href={res.pass.workshopLink} target="_blank">
                     <svg className="svg-fill" fill="#ffffff" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" >
                       <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
                       <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
@@ -236,26 +223,26 @@ const LevelDetailPage = () => {
                   </a>
                 )}
 
-                {res.level.vidLink && (
-                  <a className="svg-fill" href={res.level.vidLink} target="_blank">
+                {res.pass.vidLink && (
+                  <a className="svg-fill" href={res.pass.vidLink} target="_blank">
                     <svg viewBox="0 -3 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>youtube [#168]</title> <desc>Created with Sketch.</desc> <defs> </defs> <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd"> <g id="Dribbble-Light-Preview" transform="translate(-300.000000, -7442.000000)" fill="#ffffff"> <g id="icons" transform="translate(56.000000, 160.000000)"> <path d="M251.988432,7291.58588 L251.988432,7285.97425 C253.980638,7286.91168 255.523602,7287.8172 257.348463,7288.79353 C255.843351,7289.62824 253.980638,7290.56468 251.988432,7291.58588 M263.090998,7283.18289 C262.747343,7282.73013 262.161634,7282.37809 261.538073,7282.26141 C259.705243,7281.91336 248.270974,7281.91237 246.439141,7282.26141 C245.939097,7282.35515 245.493839,7282.58153 245.111335,7282.93357 C243.49964,7284.42947 244.004664,7292.45151 244.393145,7293.75096 C244.556505,7294.31342 244.767679,7294.71931 245.033639,7294.98558 C245.376298,7295.33761 245.845463,7295.57995 246.384355,7295.68865 C247.893451,7296.0008 255.668037,7296.17532 261.506198,7295.73552 C262.044094,7295.64178 262.520231,7295.39147 262.895762,7295.02447 C264.385932,7293.53455 264.28433,7285.06174 263.090998,7283.18289" id="youtube-[#168]"> </path> </g> </g> </g> </g></svg>
                   </a>
                 )}
               </div>
               <br/>
-              {res.level.publicComments && (
-                <p style={{marginBottom: "5px"}}>Comment: <b>{res.level.publicComments? res.level.publicComments : ""}</b></p>
+              {res.pass.publicComments && (
+                <p style={{marginBottom: "5px"}}>Comment: <b>{res.pass.publicComments? res.pass.publicComments : ""}</b></p>
                 )}
           </div>
           
       </div>
     </div>
 
-    <div className="level-detail">
+    <div className="pass-detail">
       <CompleteNav />
-      <div className="background-level"></div>
+      <div className="background-pass"></div>
 
-      <div className="wrapper-level wrapper-level-top">
+      <div className="wrapper-pass wrapper-pass-top">
         <div className="header">
 
           <div className="left"
@@ -263,23 +250,21 @@ const LevelDetailPage = () => {
               backgroundImage: `url(${res && videoDetail ? videoDetail.image: "defaultImageURL"})`}}>
 
             <div className="diff">
-              <img src={getLevelImage(res.level.newDiff, res.level.pdnDiff, res.level.pguDiff)} alt="" />
+              <img src={getLevelImage(res.pass.newDiff, res.pass.pdnDiff, res.pass.pguDiff)} alt="" />
             </div>
 
             <div className="title">
-              <h1>{res.level.song}</h1>
+              <h1>{res.pass.song}</h1>
               <p>
                 #{id}&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
-                {res.level.team ? res.level.team : res.level.creator}
-                &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;{res.level.artist}
+                {res.pass.artist}
               </p>
-              
             </div>
           </div>
           <button 
               className="edit-button svg-stroke"
               onClick={() => setOpenEditDialog(true)}
-              title="Edit chart details"
+              title="Edit pass details"
             >
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -288,15 +273,15 @@ const LevelDetailPage = () => {
             </button>
           <div className="right"> 
             
-            {res.level.dlLink && (
-              <a className="svg-stroke" href={res.level.dlLink} target="_blank">
+            {res.pass.dlLink && (
+              <a className="svg-stroke" href={res.pass.dlLink} target="_blank">
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path d="M17 17H17.01M17.4 14H18C18.9319 14 19.3978 14 19.7654 14.1522C20.2554 14.3552 20.6448 14.7446 20.8478 15.2346C21 15.6022 21 16.0681 21 17C21 17.9319 21 18.3978 20.8478 18.7654C20.6448 19.2554 20.2554 19.6448 19.7654 19.8478C19.3978 20 18.9319 20 18 20H6C5.06812 20 4.60218 20 4.23463 19.8478C3.74458 19.6448 3.35523 19.2554 3.15224 18.7654C3 18.3978 3 17.9319 3 17C3 16.0681 3 15.6022 3.15224 15.2346C3.35523 14.7446 3.74458 14.3552 4.23463 14.1522C4.60218 14 5.06812 14 6 14H6.6M12 15V4M12 15L9 12M12 15L15 12" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </a>
             )}
-            {res.level.workshopLink && (
-              <a href={res.level.workshopLink} target="_blank">
+            {res.pass.workshopLink && (
+              <a href={res.pass.workshopLink} target="_blank">
                      <svg className="svg-fill" fill="#ffffff" viewBox="3 3 26 26" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M 22 6 C 18.745659 6 16.09469 8.6041857 16.007812 11.837891 L 12.337891 17.083984 C 12.065931 17.032464 11.786701 17 11.5 17 C 10.551677 17 9.673638 17.297769 8.9472656 17.800781 L 4 15.84375 L 4 21.220703 L 7.1054688 22.449219 C 7.5429388 24.475474 9.3449541 26 11.5 26 C 13.703628 26 15.534282 24.405137 15.917969 22.310547 L 21.691406 17.984375 C 21.794183 17.989633 21.895937 18 22 18 C 25.309 18 28 15.309 28 12 C 28 8.691 25.309 6 22 6 z M 22 8 C 24.206 8 26 9.794 26 12 C 26 14.206 24.206 16 22 16 C 19.794 16 18 14.206 18 12 C 18 9.794 19.794 8 22 8 z M 22 9 A 3 3 0 0 0 22 15 A 3 3 0 0 0 22 9 z M 11.5 18 C 13.43 18 15 19.57 15 21.5 C 15 23.43 13.43 25 11.5 25 C 10.078718 25 8.8581368 24.145398 8.3105469 22.925781 L 10.580078 23.824219 C 10.882078 23.944219 11.192047 24.001953 11.498047 24.001953 C 12.494047 24.001953 13.436219 23.403875 13.824219 22.421875 C 14.333219 21.137875 13.703922 19.683781 12.419922 19.175781 L 10.142578 18.273438 C 10.560118 18.097145 11.019013 18 11.5 18 z"></path></g></svg>
             
               </a>
@@ -383,7 +368,7 @@ const LevelDetailPage = () => {
           >
             <div className="thumbnail-text">
               <p>Thumbnail not found</p>
-              {res.level.vidLink && <a href={res.level.vidLink}>Go to video</a>}
+              {res.pass.vidLink && <a href={res.pass.vidLink}>Go to video</a>}
             </div>
           </div>
           }
@@ -460,7 +445,17 @@ const LevelDetailPage = () => {
               
             displayedPlayers && displayedPlayers.length > 0 ? (
               displayedPlayers.map((each, index) => (
-                <ClearCard scoreData={each} index={index}/>
+                <ClearCard 
+                  key={index}
+                  scoreData={{
+                    ...each,
+                    accuracy: each.Xacc,
+                    scoreV2: each.score,
+                    vidUploadTime: each.date,
+                    isNoHoldTap: each.isNoHold
+                  }} 
+                  index={index}
+                />
               ))
             ) : (
               <h3>{t("detailPage.leaderboard.notBeaten")}</h3>
@@ -468,7 +463,7 @@ const LevelDetailPage = () => {
 
             :
 
-            <div className="loader loader-level-detail-rank"></div>
+            <div className="loader loader-pass-detail-rank"></div>
 
           }
           </div>
@@ -477,13 +472,13 @@ const LevelDetailPage = () => {
     </div>
 
     {openEditDialog && (
-      <EditChartPopup
-        chart={res.level}
+      <EditPassPopup
+        pass={res.pass}
         onClose={() => setOpenEditDialog(false)}
-        onUpdate={(updatedChart) => {
+        onUpdate={(updatedPass) => {
           setRes(prev => ({
             ...prev,
-            level: updatedChart
+            pass: updatedPass
           }));
         }}
       />
@@ -492,4 +487,4 @@ const LevelDetailPage = () => {
   );
 };
 
-export default LevelDetailPage;
+export default PassDetailPage;

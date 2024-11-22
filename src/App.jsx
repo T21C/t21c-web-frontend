@@ -10,6 +10,7 @@ import RatingPage from "./pages/AdminPage/RatingPage.jsx";
 import SubmissionManagementPage from "./pages/AdminPage/SubmissionManagementPage.jsx";
 import AdminPage from "./pages/AdminPage/AdminPage.jsx";
 import PassPage from "./pages/PassPage/PassPage.jsx";
+import PassDetailPage from "./pages/PassDetailPage/PassDetailPage.jsx";
 
 const HomePage = lazy(() => import("./pages/HomePage/HomePage.jsx"));
 const LevelDetailPage = lazy(()=> import ("./pages/LevelDetailPage/LevelDetailPage.jsx"))
@@ -39,6 +40,8 @@ function App() {
         <Route index path="/" element={<HomePage />} />
         <Route path="levels" element={<LevelPage />} />
         <Route path="leveldetail" element={<LevelDetailPage />} />
+        <Route path="passdetail" element={<PassDetailPage />} />
+
 
         <Route path="submission" element={<SubmissionPage />} />
         <Route path="submission/level" element={<LevelSubmissionPage />} />

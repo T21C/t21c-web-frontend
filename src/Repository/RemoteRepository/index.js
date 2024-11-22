@@ -301,13 +301,25 @@ async function fetchData({ offset = "", diff = '', cleared = '', sort = '', dire
 }
 
 
+async function fetchPassInfo(id) {
+  try {
+    const res = await axios.get(`${import.meta.env.VITE_INDIVIDUAL_PASSES}${id}`)
+    console.log(res.data)
+    return res.data
+  } catch (error) {
+    console.error(error)
+    return []
+  }
+}
+
 async function fetchLevelInfo(id) {
   try {
     const [levelRes, passesRes] = await Promise.all([
       axios.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`),
-      axios.get(`${import.meta.env.VITE_INDIVIDUAL_PASSES}?levelId=${id}&sort=SCORE_DESC`)
+      axios.get(`${import.meta.env.VITE_ALL_PASSES_URL}/level/${id}`)
     ]);
 
+    console.log(passesRes.data)
     return {
       level: levelRes.data,
       passes: passesRes.data
@@ -685,6 +697,7 @@ function getLevelIconSingle(diff) {
 
 
 function isoToEmoji(code) {
+  console.log(code);
   const htmlString =  twemoji.parse(code
     .toLowerCase()
     .split("")
@@ -774,5 +787,6 @@ export {
   getLevelImage,
   getLevelIconSingle,
   calculateBaseScore,
-  parseBaseScore
+  parseBaseScore,
+  fetchPassInfo
 }

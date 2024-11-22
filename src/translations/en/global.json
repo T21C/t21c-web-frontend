@@ -48,6 +48,11 @@
       }
     },
   
+
+    "passPage": {
+      "inputPlaceholder": "Search player name"
+    },
+
     "leaderboardPage": {
       "inputPlaceholder": "Search player name",
   
@@ -257,7 +262,8 @@
     "navigationComponent": {
       "levels": "Levels",
       "submission": "Submissions",
-      "leaderboard": "Leaderboard"
+      "leaderboard": "Leaderboard",
+      "pass": "Passes"
     },
   
     "footerComponent": {
@@ -272,7 +278,7 @@
       },
       "shoutOut": {
         "header": "Credits",
-        "paragraph": "Website made by the TUF Dev Team, development led by Adrian and t3ww. Code of this website is made available on GitHub."
+        "paragraph": "Website made by the TUF Dev Team, development led by Adrian and t3ww. Rework by V0W4N. Code of this website is made available on GitHub."
       },
   
       "copyRight": "2024 TUF Dev Team, All Rights Reserved. Version - 1.1.0"

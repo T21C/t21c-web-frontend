@@ -39,27 +39,18 @@ const PassPage = () => {
     setHide12k
   } = useContext(PassContext);
 
+  const [displayedPasses, setDisplayedPasses] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 30;
+
   useEffect(() => {
     let cancel;
 
     const fetchPasses = async () => {
       setLoading(true);
       try {
-        const params = {
-          limit: limit,
-          query, 
-          sort, 
-          offset: pageNumber * limit,
-          hideNHT,
-          hide12k
-        };
-
         const response = await axios.get(
-          `${import.meta.env.VITE_ALL_PASSES_URL}`,
-          {
-            params: params,
-            cancelToken: new axios.CancelToken((c) => (cancel = c)),
-          }
+          `${import.meta.env.VITE_ALL_PASSES_URL}`
         );
 
         const newPasses = response.data.results;
@@ -70,7 +61,7 @@ const PassPage = () => {
         );
 
         setPassesData((prev) => [...prev, ...uniquePasses]);
-        setHasMore(response.data.count > passesData.length + newPasses.length);
+        setHasMore(response.data.count > passesData.length + uniquePasses.length);
       } catch (error) {
         if (!axios.isCancel(error)) setError(true);
       } finally {
@@ -80,12 +71,75 @@ const PassPage = () => {
 
     fetchPasses();
     return () => cancel && cancel();
-  }, [query, sort, pageNumber, forceUpdate, hideNHT, hide12k]);
+  }, [pageNumber]);
+
+  useEffect(() => {
+    const filtered = getFilteredPasses();
+    const sorted = getSortedPasses(filtered);
+    setDisplayedPasses(sorted.slice(0, currentPage * itemsPerPage));
+    setHasMore(sorted.length > currentPage * itemsPerPage);
+  }, [passesData, query, hideNHT, hide12k, sort, currentPage]);
+
+  const loadMore = () => {
+    const filtered = getFilteredPasses();
+    const sorted = getSortedPasses(filtered);
+    const nextPageItems = sorted.slice(0, (currentPage + 1) * itemsPerPage);
+    
+    setDisplayedPasses(nextPageItems);
+    setCurrentPage(prev => prev + 1);
+    setHasMore(sorted.length > (currentPage + 1) * itemsPerPage);
+  };
+
+  function resetAll() {
+    setPageNumber(0);
+    setCurrentPage(1);
+    setSort("RECENT_DESC");
+    setQuery("");
+    setPassesData([]);
+    setHideNHT(false);
+    setHide12k(false);
+    setLoading(true);
+    setForceUpdate((f) => !f);
+  }
+
+  const getFilteredPasses = () => {
+    return passesData.filter(pass => {
+      const searchMatch = !query || 
+        pass.player.toLowerCase().includes(query.toLowerCase()) ||
+        pass.song.toLowerCase().includes(query.toLowerCase()) ||
+        pass.artist.toLowerCase().includes(query.toLowerCase());
+
+      const nhtMatch = !hideNHT || !pass.isNoHold;
+
+      const twelveKMatch = !hide12k || !pass.is12K;
+
+      return searchMatch && nhtMatch && twelveKMatch;
+    });
+  };
+
+  const getSortedPasses = (filteredPasses) => {
+    const passes = [...filteredPasses];
+    
+    switch (sort) {
+      case 'RECENT_DESC':
+        return passes.sort((a, b) => new Date(b.date) - new Date(a.date));
+      case 'RECENT_ASC':
+        return passes.sort((a, b) => new Date(a.date) - new Date(b.date));
+      case 'SCORE_DESC':
+        return passes.sort((a, b) => b.score - a.score);
+      case 'SCORE_ASC':
+        return passes.sort((a, b) => a.score - b.score);
+      case 'ACC_DESC':
+        return passes.sort((a, b) => b.Xacc - a.Xacc);
+      case 'ACC_ASC':
+        return passes.sort((a, b) => a.Xacc - b.Xacc);
+      default:
+        return passes;
+    }
+  };
 
   function handleQueryChange(e) {
     setQuery(e.target.value);
-    setPageNumber(0);
-    setPassesData([]);
   }
 
   function handleFilterOpen() {
@@ -98,21 +152,6 @@ const PassPage = () => {
 
   function handleSort(value) {
     setSort(value);
-    setPageNumber(0);
-    setPassesData([]);
-    setLoading(true);
-    setForceUpdate((f) => !f);
-  }
-
-  function resetAll() {
-    setPageNumber(0);
-    setSort("RECENT_DESC");
-    setQuery("");
-    setPassesData([]);
-    setHideNHT(false);
-    setHide12k(false);
-    setLoading(true);
-    setForceUpdate((f) => !f);
   }
 
   return (
@@ -201,8 +240,8 @@ const PassPage = () => {
 
         <InfiniteScroll
           style={{ paddingBottom: "15rem" }}
-          dataLength={passesData.length}
-          next={() => setPageNumber((prevPageNumber) => prevPageNumber + 1)}
+          dataLength={displayedPasses.length}
+          next={loadMore}
           hasMore={hasMore}
           loader={<div className="loader loader-pass-page"></div>}
           endMessage={
@@ -211,9 +250,9 @@ const PassPage = () => {
             </p>
           }
         >
-          {passesData.map((pass, index) => (
+          {displayedPasses.map((pass, index) => (
             <PassCard
-              key={index}
+              key={pass.passId || index}
               pass={pass}
             />
           ))}
