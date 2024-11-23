@@ -84,29 +84,29 @@ const ClearCard = ({scoreData, index}) => {
                   <p className="acc">{(scoreData.Xacc * 100).toFixed(2)}%</p>
                   <div className="speed">{scoreData.speed ? scoreData.speed : "1.0"}×</div>
                   <p className="judgements">
-                    <span style={{ color: "red" }}>{scoreData.judgements[0]}</span>
+                    <span style={{ color: "red" }}>{scoreData.judgements.earlyDouble}</span>
                     &nbsp;
                     <span style={{ color: "orange" }}>
-                      {scoreData.judgements[1]}
+                      {scoreData.judgements.earlySingle}
                     </span>
                     &nbsp;
                     <span style={{ color: "yellow" }}>
-                      {scoreData.judgements[2]}
+                      {scoreData.judgements.ePerfect}
                     </span>
                     &nbsp;
                     <span style={{ color: "lightGreen" }}>
-                      {scoreData.judgements[3]}
+                      {scoreData.judgements.perfect}
                     </span>
                     &nbsp;
                     <span style={{ color: "yellow" }}>
-                      {scoreData.judgements[4]}
+                      {scoreData.judgements.lPerfect}
                     </span>
                     &nbsp;
                     <span style={{ color: "orange" }}>
-                      {scoreData.judgements[5]}
+                      {scoreData.judgements.lateSingle}
                     </span>
                     &nbsp;
-                    <span style={{ color: "red" }}>{scoreData.judgements[6]}</span>
+                    <span style={{ color: "red" }}>{scoreData.judgements.lateDouble}</span>
                   </p>
                   <div className="vid-logo-wrapper">
                   <a className="svg-fill" href={scoreData.vidLink} target="_blank">

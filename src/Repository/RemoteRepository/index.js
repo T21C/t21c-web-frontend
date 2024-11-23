@@ -232,30 +232,43 @@ async function fetchRecent(ids) {
     const resp = await Promise.all(ids.map(id =>
       axios.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`)
     ));
-
+    
     const res = resp.map(res => res.data);
-    const respTwo = await axios.get(`${import.meta.env.VITE_OFFSET_LEVEL}`);
-    const resTwo = respTwo.data.results;
+    const respTwo = await axios.get(`${import.meta.env.VITE_ALL_LEVEL_URL}?limit=15&offset=0`);
+    const resTwo = respTwo.data;
 
+    console.log(respTwo);
     const finalRes = {
       recentRated: resTwo.map(res => ({
         id: res.id,
         song: res.song,
         artist: res.artist,
         creator: res.creator,
+        charter: res.charter,
+        vfxer: res.vfxer,
         team: res.team,
-        ws: res.workshopDownload,
-        dl: res.dlLink,
+        workshopLink: res.workshopLink,
+        dlLink: res.dlLink,
         pguDiff: res.pguDiff,
+        pguDiffNum: res.pguDiffNum,
         pdnDiff: res.pdnDiff,
-        legacy: res.diff
+        diff: res.diff,
+        baseScore: res.baseScore,
+        isCleared: res.isCleared,
+        clears: res.clears,
+        publicComments: res.publicComments
       })),
       recentFeatured: res.map(res => ({
         id: res.id,
         song: res.song,
         artist: res.artist,
         creator: res.creator,
+        charter: res.charter,
+        vfxer: res.vfxer,
+        team: res.team,
         vidLink: res.vidLink,
+        dlLink: res.dlLink,
+        workshopLink: res.workshopLink
       }))
     };
     //console.log(finalRes)

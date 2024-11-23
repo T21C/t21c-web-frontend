@@ -11,7 +11,7 @@
   z-index: 9999;
 }
 
-.form-container {
+.edit-popup-overlay .form-container {
   position: relative;
   background-color: var(--color-black);
   width: 90%;
@@ -24,23 +24,23 @@
   z-index: 10000;
 }
 
-.form-container::-webkit-scrollbar {
+.edit-popup-overlay .form-container::-webkit-scrollbar {
   width: 8px;
 }
 
-.form-container::-webkit-scrollbar-track {
+.edit-popup-overlay .form-container::-webkit-scrollbar-track {
   background: var(--color-black);
 }
 
-.form-container::-webkit-scrollbar-thumb {
+.edit-popup-overlay .form-container::-webkit-scrollbar-thumb {
   background: var(--color-purple-2);
   border-radius: 4px;
 }
 
-.form-container form .img-wrapper {
+.edit-popup-overlay .form-container form .img-wrapper {
   flex: 2;
 }
-.form-container form .img-wrapper img {
+.edit-popup-overlay .form-container form .img-wrapper img {
   width: 100%;
   height: 100%;
   -o-object-fit: cover;
@@ -48,17 +48,17 @@
   -o-object-position: center;
      object-position: center;
 }
-.form-container form .info {
+.edit-popup-overlay .form-container form .info {
   flex: 3;
   padding: 1rem;
   background-color: white;
   position: relative;
   z-index: 10001;
 }
-.form-container form .info h1 {
+.edit-popup-overlay .form-container form .info h1 {
   margin-bottom: 1rem;
 }
-.form-container form .info input {
+.edit-popup-overlay .form-container form .info input {
   background-color: transparent;
   border: 0;
   border-bottom: 3px solid var(--color-purple-2);
@@ -68,7 +68,7 @@
 }
 
 
-.form-container form .info .youtube-input {
+.edit-popup-overlay .form-container form .info .youtube-input {
   display: flex;
   flex-direction: column;
   justify-items: center;
@@ -76,43 +76,43 @@
   margin-bottom: 0.5rem;
   margin-top: 0.5rem;
 }
-.form-container form .info .youtube-input .yt-info {
+.edit-popup-overlay .form-container form .info .youtube-input .yt-info {
   min-width: 7rem
 }
-.form-container form .info .youtube-input .youtube-info {
+.edit-popup-overlay .form-container form .info .youtube-input .youtube-info {
   display: flex;
   gap:20px
 }
 
-.form-container form .info .id-input {
+.edit-popup-overlay .form-container form .info .id-input {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 1rem;
 }
-.form-container form .info .id-input .information {
+.edit-popup-overlay .form-container form .info .id-input .information {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-.form-container form .info .id-input .information .chart-info {
+.edit-popup-overlay .form-container form .info .id-input .information .chart-info {
   text-align: center;
   align-items: center;
   font-weight: bold;
   width: 140%
 }
-.form-container form .info .id-input .information .chart-info .chart-info-sub {
+.edit-popup-overlay .form-container form .info .id-input .information .chart-info .chart-info-sub {
   display: flex;
   align-items: center;
   justify-content: space-around;
 }
-.form-container form .info .id-input .information .verified {
+.edit-popup-overlay .form-container form .info .id-input .information .verified {
   display: flex;
   align-items: center;
   font-weight: bold;
 }
-.form-container form .info .id-input .information .button-goto {
+.edit-popup-overlay .form-container form .info .id-input .information .button-goto {
   border-radius: 3px;
   border: none;
   padding: 0.5rem;
@@ -122,13 +122,13 @@
   text-decoration: none;
   text-align: center;
 }
-.form-container form .info .youtube-input {
+.edit-popup-overlay .form-container form .info .youtube-input {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
 }
-.form-container form .info .youtube-input .information {
+.edit-popup-overlay .form-container form .info .youtube-input .information {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -137,21 +137,21 @@
   margin-bottom: 0.25rem;
 }
 
-.form-container form .info .info-input {
+.edit-popup-overlay .form-container form .info .info-input {
   display: flex;
   gap: 1rem;
   margin-bottom: 0.25rem;
   justify-content: space-around;
 }
 
-.form-container form .info .info-input > * {
+.edit-popup-overlay .form-container form .info .info-input > * {
   flex: 1 1 150px; /* Flex-grow, flex-shrink, and base size (width of 150px) */
   min-width: 100px; /* Minimum width to avoid shrinking too small */
   max-width: 200px; /* Maximum width to control expansion */
   height: 40px; /* Fixed height */
   box-sizing: border-box; /* To include padding and borders in width/height calculation */
 }
-.form-container form .info .info-input-container {
+.edit-popup-overlay .form-container form .info .info-input-container {
   overflow: hidden;
   max-height: 0; /* Collapsed height */
   transition: max-height 0.4s ease; /* Transition for smooth sliding */
@@ -161,24 +161,24 @@
   flex-direction: row;
 }
 
-.form-container form .info .info-input-container.expand {
+.edit-popup-overlay .form-container form .info .info-input-container.expand {
   overflow:visible;
   max-height: 200px; /* Set a maximum value, or use a value that comfortably fits the content */
 }
 
 
-.form-container form .info .info-input .keycount-checkbox {
+.edit-popup-overlay .form-container form .info .info-input .keycount-checkbox {
   max-width: 130px;
 }
 
-.form-container form .info .info-input .keycount-checkbox .tooltip{
+.edit-popup-overlay .form-container form .info .info-input .keycount-checkbox .tooltip{
   right: -15%;
 }
 
-.form-container form .info .info-input input {
+.edit-popup-overlay .form-container form .info .info-input input {
   width: auto;
 }
-.form-container form .info .accuracy {
+.edit-popup-overlay .form-container form .info .accuracy {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -189,66 +189,66 @@
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
-.form-container form .info .accuracy .top, .form-container form .info .accuracy .bottom {
+.edit-popup-overlay .form-container form .info .accuracy .top, .form-container form .info .accuracy .bottom {
   display: flex;
   gap: 2rem;
   justify-content: space-around;
 }
-.form-container form .info .accuracy .top input, .form-container form .info .accuracy .bottom input {
+.edit-popup-overlay .form-container form .info .accuracy .top input, .form-container form .info .accuracy .bottom input {
   padding: 0;
   width: 100%;
 }
-.form-container form .info .accuracy .top .each-accuracy {
+.edit-popup-overlay .form-container form .info .accuracy .top .each-accuracy {
   display: flex;
   align-items: center;
   text-wrap: nowrap;
   gap: 0.5rem;
 }
-.form-container form .info .accuracy .top .each-accuracy:nth-child(1) {
+.edit-popup-overlay .form-container form .info .accuracy .top .each-accuracy:nth-child(1) {
   flex: 4;
 }
-.form-container form .info .accuracy .top .each-accuracy:nth-child(2) {
+.edit-popup-overlay .form-container form .info .accuracy .top .each-accuracy:nth-child(2) {
   flex: 5;
 }
-.form-container form .info .accuracy .top .each-accuracy:nth-child(3) {
+.edit-popup-overlay .form-container form .info .accuracy .top .each-accuracy:nth-child(3) {
   flex: 4;
 }
-.form-container form .info .accuracy .top .each-accuracy input {
+.edit-popup-overlay .form-container form .info .accuracy .top .each-accuracy input {
   font-size: 1rem;
   font-weight: bold;
 }
-.form-container form .info .accuracy .bottom {
+.edit-popup-overlay .form-container form .info .accuracy .bottom {
   justify-content: center;
 }
-.form-container form .info .accuracy .bottom .each-accuracy {
+.edit-popup-overlay .form-container form .info .accuracy .bottom .each-accuracy {
   display: flex;
   align-items: center;
   text-wrap: nowrap;
   gap: 0.5rem;
 }
-.form-container form .info .accuracy .bottom .each-accuracy input {
+.edit-popup-overlay .form-container form .info .accuracy .bottom .each-accuracy input {
   font-size: 1rem;
   font-weight: bold;
 }
-.form-container form .info .accuracy .bottom .each-accuracy:nth-child(1) {
+.edit-popup-overlay .form-container form .info .accuracy .bottom .each-accuracy:nth-child(1) {
   max-width: 7rem;
   flex: 1;
 }
-.form-container form .info .accuracy .bottom .each-accuracy:nth-child(2) {
+.edit-popup-overlay .form-container form .info .accuracy .bottom .each-accuracy:nth-child(2) {
   max-width: 7rem;
   flex: 1;
 }
-.form-container form .info .accuracy .bottom .each-accuracy:nth-child(3) {
+.edit-popup-overlay .form-container form .info .accuracy .bottom .each-accuracy:nth-child(3) {
   max-width: 7rem;
   flex: 1;
 }
-.form-container form .info .accuracy .acc-score {
+.edit-popup-overlay .form-container form .info .accuracy .acc-score {
   display: flex;
   gap: 2rem;
   font-weight: bold;
   font-size: 0.9rem;
 }
-.form-container form .info .submit {
+.edit-popup-overlay .form-container form .info .submit {
   width: 100%;
   background-color: var(--color-purple-3);
   border: none;
@@ -261,14 +261,14 @@
   margin: 0 auto;
   transition: all 100ms linear;
 }
-.form-container form .info .submit:hover {
+.edit-popup-overlay .form-container form .info .submit:hover {
   background-color: var(--color-purple-2);
 }
-.form-container form .info .submit:active {
+.edit-popup-overlay .form-container form .info .submit:active {
   background-color: var(--color-purple-1);
 }
 
-.close-button {
+.edit-popup-overlay .close-button {
   position: absolute;
   top: 1rem;
   right: 1rem;
@@ -280,7 +280,7 @@
   z-index: 10002;
 }
 
-.thumbnail-container {
+.edit-popup-overlay .thumbnail-container {
   position: relative;
   width: 100%;
   padding-top: 56.25%; /* 16:9 Aspect Ratio */
@@ -288,7 +288,7 @@
   overflow: hidden;
 }
 
-.thumbnail-container iframe {
+.edit-popup-overlay .thumbnail-container iframe {
   position: absolute;
   top: 0;
   left: 0;
@@ -297,7 +297,7 @@
   border: none;
 }
 
-.thumbnail-text {
+.edit-popup-overlay .thumbnail-text {
   position: absolute;
   top: 0;
   left: 0;
@@ -311,18 +311,18 @@
   padding: 1rem;
 }
 
-.form-container {
+.edit-popup-overlay .form-container {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   transition: all 0.3s ease;
 }
 
-.form-container.shadow {
+.edit-popup-overlay .form-container.shadow {
   box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.9);
 }
 
-.form-container form {
+.edit-popup-overlay .form-container form {
   position: relative;
   display: flex;
   flex-direction: column;

@@ -57,8 +57,9 @@ export const DetailPopup = ({
     }, [hasUnsavedChanges]);
 
     useEffect(() => {
+        console.log("selectedRating", selectedRating);
         const fetchVideoData = async () => {
-            if (selectedRating && !videoData) {
+            if (selectedRating) {
                 const res = await getVideoDetails(selectedRating.rawVideoLink);
                 setVideoData(res);
                 console.log(res);

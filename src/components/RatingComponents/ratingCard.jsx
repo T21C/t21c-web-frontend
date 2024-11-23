@@ -5,11 +5,13 @@ export const RatingCard = ({
   index, 
   setSelectedRating, 
   raters, 
-  user 
+  user, 
+  isSuperAdmin,
+  onEditChart 
 }) => {
     const userRating = rating.ratings?.[user.username]?.[0] || "";
     const userComment = rating.ratings?.[user.username]?.[1] || "";
-
+    console.log("user", user);
     return (
       <div className="rating-card">
         <div className="rating-card-content">
@@ -23,12 +25,22 @@ export const RatingCard = ({
             <p data-label="Average Rating:">{rating.average}</p>
             <p data-label="Your Rating:">{userRating}</p>
           </div>
-          <button 
-            className="view-details-btn"
-            onClick={() => setSelectedRating(rating)}
-          >
-            View Details
-          </button>
+          <div className="rating-card-actions">
+            <button 
+              onClick={() => setSelectedRating(rating)} 
+              className="view-details-btn"
+            >
+              View Details
+            </button>
+            {user && isSuperAdmin && (  // Only show edit button if user is logged in
+              <button 
+                onClick={onEditChart} 
+                className="edit-chart-btn"
+              >
+                Edit Chart
+              </button>
+            )}
+          </div>
         </div>
       </div>
     );

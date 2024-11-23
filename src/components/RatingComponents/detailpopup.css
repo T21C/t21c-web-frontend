@@ -8,7 +8,7 @@
     display: flex;
     justify-content: center;
     align-items: start;
-    padding-top: 6rem;
+    padding-top: 5rem;
     z-index: 1000;  /* Ensure it's above other content */
   }
   

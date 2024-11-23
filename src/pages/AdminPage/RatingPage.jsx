@@ -5,6 +5,8 @@ import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { DetailPopup } from "../../components/RatingComponents/detailPopup";
 import { RatingCard } from "../../components/RatingComponents/ratingCard";
+import { EditChartPopup } from "../../components/EditChartPopup/EditChartPopup";
+import { fetchLevelInfo } from "../../Repository/RemoteRepository";
 
 const FIXED_COLUMNS = ["ID", "Song", "Artist(s)", "Creator(s)", "Video link", "DL link", "Current Diff", "Low Diff", "Rerate #", "Requester FR", "Average", "Comments"];
 const SUPER_ADMINS = ["teo_72", "v0w4n"];
@@ -16,14 +18,15 @@ const truncateString = (str, maxLength) => {
 
 const RatingPage = () => {
   const {t} = useTranslation();
-  const { user } = useAuth();
+  const { user, isSuperAdmin } = useAuth();
   const [ratings, setRatings] = useState([]);
   const [raters, setRaters] = useState([]);
   const [showMessage, setShowMessage] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
-  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
   const [selectedRating, setSelectedRating] = useState(null);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [selectedChart, setSelectedChart] = useState(null);
 
   const handleCloseSuccessMessage = () => {
     setShowMessage(false);
@@ -35,7 +38,6 @@ const RatingPage = () => {
     const fetchData = async () => {
       try {
         if (user) {
-          setIsSuperAdmin(SUPER_ADMINS.includes(user.username));
           
           // Fetch raters first
           const ratersResponse = await fetch(`${import.meta.env.VITE_RATING_API}/raters`, {
@@ -96,6 +98,22 @@ const RatingPage = () => {
     }
   };
 
+  const handleEditChart = async (chartId) => {
+    try {
+      // Fetch full chart data using the same method as LevelDetailPage
+      const data = await fetchLevelInfo(chartId);
+      if (data && data.level) {
+        setSelectedChart(data.level);
+        setOpenEditDialog(true);
+      }
+    } catch (error) {
+      console.error("Error fetching chart data:", error);
+      // Optionally show error message to user
+      setError("Failed to load chart data");
+      setShowMessage(true);
+    }
+  };
+
   return (
     <div className="admin-rating-page">
       <CompleteNav />
@@ -112,33 +130,68 @@ const RatingPage = () => {
           (<p>{t("levelSubmission.alert.loading")}</p>)}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div>
-        {ratings.length > 0 ?
-        <>
-        <div className="rating-list">
-          {ratings.map((rating, index) => (
-            <RatingCard
-              key={rating.ID}
-              rating={rating}
-              index={index}
+
+        {ratings === null ? (
+          <div className="loader loader-level-detail"/>
+        ) : ratings.length > 0 ? (
+          <>
+            <div className="rating-list">
+              {ratings.map((rating, index) => (
+                <RatingCard
+                  key={rating.ID}
+                  rating={rating}
+                  index={index}
+                  setSelectedRating={setSelectedRating}
+                  raters={raters}
+                  user={user}
+                  isSuperAdmin={isSuperAdmin}
+                  onEditChart={() => handleEditChart(rating.ID)}
+                />
+              ))}
+            </div>
+            <DetailPopup
+              selectedRating={selectedRating}
               setSelectedRating={setSelectedRating}
+              ratings={ratings}
+              setRatings={setRatings}
               raters={raters}
               user={user}
+              FIXED_COLUMNS={FIXED_COLUMNS}
             />
-          ))}
-        </div>
-        <DetailPopup
-          selectedRating={selectedRating}
-          setSelectedRating={setSelectedRating}
-          ratings={ratings}
-          setRatings={setRatings}
-          raters={raters}
-          user={user}
-          FIXED_COLUMNS={FIXED_COLUMNS}
-          />
-        </>
-        :
-        <div className="loader loader-level-detail"/>
-        }
+
+            {openEditDialog && selectedChart && isSuperAdmin && (
+              <EditChartPopup
+                chart={selectedChart}
+                onClose={() => {
+                  setOpenEditDialog(false);
+                  setSelectedChart(null);
+                }}
+                onUpdate={(updatedChart) => {
+                  setRatings(prev => prev.map(rating => 
+                    rating.ID === updatedChart.id 
+                      ? {
+                          ...rating,
+                          Song: updatedChart.song,
+                          "Artist(s)": updatedChart.artist,
+                          "Creator(s)": updatedChart.creator,
+                          "Video link": updatedChart.vidLink,
+                          "DL link": updatedChart.dlLink,
+                          "Current Diff": updatedChart.diff
+                        }
+                      : rating
+                  ));
+                  setOpenEditDialog(false);
+                  setSelectedChart(null);
+                }}
+              />
+            )}
+          </>
+        ) : (
+          <div className="no-ratings-message">
+            <h2>No ratings available{/*t("adminPage.rating.noCharts")*/}</h2>
+            <p>All rated!{/*t("adminPage.rating.allRated")*/}</p>
+          </div>
+        )}
       </div>
     </div>
   );
