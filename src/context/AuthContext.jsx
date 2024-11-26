@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useGoogleLogin } from '@react-oauth/google';
 import api from '../utils/api';
-
+import axios from 'axios';
 const AuthContext = createContext();
 
 export const useAuth = () => useContext(AuthContext);
@@ -15,9 +15,9 @@ export const AuthProvider = ({ children }) => {
   // Function to parse and set user data
 
 
-  const checkAdmin = async (token) => {
+  const checkAdmin = async () => {
     const response = await api.get(import.meta.env.VITE_CHECK_ADMIN);
-    console.log("admin check", response.data);  
+    //console.log("admin check", response.data);  
     setIsAdmin(response.data.isAdmin);
     setIsSuperAdmin(response.data.isSuperAdmin);
   };
@@ -95,7 +95,13 @@ export const AuthProvider = ({ children }) => {
     try {
         // Set the token in the API instance headers
         
-        const response = await api.get('https://discord.com/api/users/@me');
+        const response = await axios.get('https://discord.com/api/users/@me', 
+          {
+            headers: {
+              Authorization: `Bearer ${user.access_token}`,
+            },
+          }
+        );
         const { id, username, global_name, avatar } = response.data;
 
         const userData = {
@@ -118,8 +124,13 @@ export const AuthProvider = ({ children }) => {
 
   const getTokenData = async (token) => {
     try {
-        // Set the token in the API instance h
-      const response = await api.get('https://discord.com/api/users/@me');
+      const response = await axios.get('https://discord.com/api/users/@me', 
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const { id, username, global_name, avatar } = response.data;
 
       const userData = {

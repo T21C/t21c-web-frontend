@@ -7,6 +7,7 @@ const CallbackPage = () => {
   const navigate = useNavigate();
   const { handleAccessToken } = useAuth(); // Access setUser and handleAccessToken from AuthContext
   const [codeFetched, setCodeFetched] = useState(false); // Track if the code has been processed
+  const [success, setSuccess] = useState(null);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
@@ -21,9 +22,9 @@ const CallbackPage = () => {
         { code },
         {'Content-Type': 'application/json'},
       )
-        .then((response) => response.json())
+        .then((response) => response.data)
         .then((data) => {
-
+          setSuccess(true);
           // Set the access token in AuthContext
           handleAccessToken(data.access_token);
 
@@ -32,13 +33,16 @@ const CallbackPage = () => {
         })
         .catch((error) => {
           console.error('Error during Discord login process:', error);
+          setSuccess(false);
+          navigate('/');
         });
     }
   }, [codeFetched, handleAccessToken, navigate]);
 
   return (
     <div style={{ backgroundColor: 'black', height: '100vh', color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <h2>Processing Discord login...</h2>
+      <h2>{success == null ? "Processing Discord login..." :
+           success ? "Login successful, redirecting..." : "Login failed, redirecting..."}</h2>
     </div>
   );
 };

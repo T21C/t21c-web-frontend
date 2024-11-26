@@ -689,23 +689,17 @@ async function getDriveFromYt(link) {
 function getLevelImage(...values) {
   const dataSources = [inputDictRaw, pguDataRaw, pgnDataRaw, newDataRaw, legacyDataRaw];
   let fallbackImage = null;
-  console.log(values);
-  console.log(dataSources);
-  // Check each data source
   for (const source of dataSources) {
     // Try all values in current source
     for (const value of values) {
       const image = source[value];
       if (image) {
-        console.log(value);
         
         // If value is "0" or 0, store as fallback but continue searching
         if (value === "0" || value === 0) {
           fallbackImage = fallbackImage || image;
           continue;
         }
-        // For any other value, return immediately if image found
-        console.log("returning for", value);
         
         return image;
       }
