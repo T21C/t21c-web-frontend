@@ -231,6 +231,36 @@ export const inputDataRaw = [
   ])
 ];
 
+export const inputDictRaw = {
+  // Convert PGU data entries
+  ...Object.fromEntries(
+    Object.entries(pguData).map(([key, fileName]) => [
+      key,
+      `${baseURL}${pguDataType}/${fileName}${queryParams}`
+    ])
+  ),
+  
+  // Convert regular input data entries (excluding first)
+  ...Object.fromEntries(
+    Object.entries(inputData)
+      .slice(1)
+      .map(([key, fileName]) => [
+        key,
+        `${baseURL}${inputDataType}/${fileName}${queryParams}`
+      ])
+  ),
+  
+  // Convert first input data entry separately
+  ...Object.fromEntries(
+    Object.entries(inputData)
+      .slice(0, 1)
+      .map(([key, fileName]) => [
+        key,
+        `${baseURL}${inputDataType}/${fileName}${queryParams}`
+      ])
+  )
+};
+
 async function fetchRecent(ids) {
   try {
     const resp = await Promise.all(ids.map(id =>
@@ -657,21 +687,26 @@ async function getDriveFromYt(link) {
 
 
 function getLevelImage(...values) {
-  const dataSources = [pguDataRaw, newDataRaw, pgnDataRaw, legacyDataRaw];
+  const dataSources = [inputDictRaw, pguDataRaw, pgnDataRaw, newDataRaw, legacyDataRaw];
   let fallbackImage = null;
-  
+  console.log(values);
+  console.log(dataSources);
   // Check each data source
   for (const source of dataSources) {
     // Try all values in current source
     for (const value of values) {
       const image = source[value];
       if (image) {
+        console.log(value);
+        
         // If value is "0" or 0, store as fallback but continue searching
         if (value === "0" || value === 0) {
           fallbackImage = fallbackImage || image;
           continue;
         }
         // For any other value, return immediately if image found
+        console.log("returning for", value);
+        
         return image;
       }
     }

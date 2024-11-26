@@ -265,7 +265,7 @@ const LevelDetailPage = () => {
               backgroundImage: `url(${res && videoDetail ? videoDetail.image: "defaultImageURL"})`}}>
 
             <div className="diff">
-              <img src={getLevelImage(res.level.newDiff, res.level.pdnDiff, res.level.pguDiff)} alt="" />
+              <img src={getLevelImage( res.level.pguDiff,res.level.pdnDiff, res.level.newDiff, )} alt="" />
             </div>
 
             <div className="title">
