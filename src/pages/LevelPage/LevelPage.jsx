@@ -6,6 +6,7 @@ import { Tooltip } from "react-tooltip";
 import Select from "react-select";
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
+import api from '../../utils/api';
 import { LevelContext } from "../../context/LevelContext";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -136,7 +137,7 @@ const LevelPage = () => {
           params.maxDiff = selectedHighFilterDiff.value;
         } 
 
-        const response = await axios.get(
+        const response = await api.get(
           `${import.meta.env.VITE_ALL_LEVEL_URL}`,
           {
             params: params,
@@ -164,7 +165,7 @@ const LevelPage = () => {
     const fetchLevelById = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(
+        const response = await api.get(
           `${import.meta.env.VITE_INDIVIDUAL_LEVEL}${query.slice(1)}`,
           {
             cancelToken: new axios.CancelToken((c) => (cancel = c)),

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../../context/AuthContext";
+import api from "../../utils/api";
 
 const CallbackPage = () => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const CallbackPage = () => {
       // Set codeFetched to true to prevent multiple fetch calls
       setCodeFetched(true);
       
-      fetch(`${import.meta.env.VITE_DISCORD_AUTH}`, {
+      api.post(`${import.meta.env.VITE_DISCORD_AUTH}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code }),

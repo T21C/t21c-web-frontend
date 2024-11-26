@@ -5,7 +5,7 @@ import { CompleteNav, PlayerCard } from "../../components";
 import { Tooltip } from "react-tooltip";
 import Select from "react-select";
 import InfiniteScroll from "react-infinite-scroll-component";
-import axios from "axios";
+import api from '../../utils/api';
 import { PlayerContext } from "../../context/PlayerContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
@@ -83,7 +83,7 @@ const LeaderboardPage = () => {
     const fetchPlayers = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`${import.meta.env.VITE_FULL_LEADERBOARD}`);
+        const response = await api.get(`${import.meta.env.VITE_FULL_LEADERBOARD}`);
         
         setPlayerData(response.data);
         setPlayerList(response.data);

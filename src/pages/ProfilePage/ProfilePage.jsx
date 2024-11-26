@@ -1,5 +1,5 @@
 import "./profilePage.css"
-import axios from "axios";
+import api from "../../utils/api";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
 import { getLevelImage, getVideoDetails, isoToEmoji } from "../../Repository/RemoteRepository";
@@ -56,7 +56,7 @@ const ProfilePage = () => {
         const fetchPlayer = async () => {
           setLoading(true);
           try {
-            const response = await axios.get(import.meta.env.VITE_INDIVIDUAL_PLAYER + playerName);
+            const response = await api.get(import.meta.env.VITE_INDIVIDUAL_PLAYER + playerName);
             
             // Store all the data
             console.log(response.data);

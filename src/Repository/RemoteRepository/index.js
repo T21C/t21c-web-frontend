@@ -1,5 +1,6 @@
 import axios from 'axios';
 import twemoji from '@discordapp/twemoji';
+import api from "../../utils/api";
 
 const baseURL = "https://github.com/T21C/T21C-assets/blob/main/"; // Common URL part
 const queryParams = "?raw=true"
@@ -163,7 +164,10 @@ const pgnData = {
 
 const newDataType = "miscDiff"
 const newData = {
+
+  "64": "q3.png",
   "66": "q4.png",
+  "101": "Desertbus.png",
   "102": "ma.png",
   "61": "Qq.png"
 }
@@ -230,11 +234,11 @@ export const inputDataRaw = [
 async function fetchRecent(ids) {
   try {
     const resp = await Promise.all(ids.map(id =>
-      axios.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`)
+      api.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`)
     ));
     
     const res = resp.map(res => res.data);
-    const respTwo = await axios.get(`${import.meta.env.VITE_ALL_LEVEL_URL}?limit=15&offset=0`);
+    const respTwo = await api.get(`${import.meta.env.VITE_ALL_LEVEL_URL}?limit=15&offset=0`);
     const resTwo = respTwo.data;
 
     console.log(respTwo);
@@ -292,7 +296,7 @@ async function fetchData({ offset = "", diff = '', cleared = '', sort = '', dire
   const url = `${baseUrl}${queryParams}`
 
   try {
-    const res = await axios.get(url)
+    const res = await api.get(url)
     const simplifiedRes = res.data.results.map(each => ({
       id: each.id,
       song: each.song,
@@ -316,7 +320,7 @@ async function fetchData({ offset = "", diff = '', cleared = '', sort = '', dire
 
 async function fetchPassInfo(id) {
   try {
-    const res = await axios.get(`${import.meta.env.VITE_INDIVIDUAL_PASSES}${id}`)
+    const res = await api.get(`${import.meta.env.VITE_INDIVIDUAL_PASSES}${id}`)
     console.log(res.data)
     return res.data
   } catch (error) {
@@ -328,11 +332,11 @@ async function fetchPassInfo(id) {
 async function fetchLevelInfo(id) {
   try {
     const [levelRes, passesRes] = await Promise.all([
-      axios.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`),
-      axios.get(`${import.meta.env.VITE_ALL_PASSES_URL}/level/${id}`)
+      api.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`),
+      api.get(`${import.meta.env.VITE_ALL_PASSES_URL}/level/${id}`)
     ]);
 
-    console.log(passesRes.data)
+    //console.log(passesRes.data)
     return {
       level: levelRes.data,
       passes: passesRes.data
@@ -345,7 +349,7 @@ async function fetchLevelInfo(id) {
 
 async function checkLevel(id) {
   try {
-    const res = await axios.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`)
+    const res = await api.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`)
     if(id === "#"){
       return
     }
@@ -375,7 +379,7 @@ async function fetchPassPlayerInfo(playerNames) {
 
 async function fetchPlayerByName(name) {
   try {
-    const { data } = await axios.get(`${import.meta.env.VITE_PLAYERS_API}`, {
+    const { data } = await api.get(`${import.meta.env.VITE_PLAYERS_API}`, {
       params: { name }
     });
     return data.results[0]; // Return first match
@@ -473,31 +477,22 @@ async function getBilibiliVideoDetails(url) {
   const apiUrl = `${import.meta.env.VITE_BILIBILI_API}?bvid=${videoId}`;
 
   try {
-    const response = await fetch(apiUrl);
-
-    // Check if response is OK
-    if (!response.ok) {
+    const response = await api.get(apiUrl);
+    if (response.status !== 200) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    // Since fetch automatically handles decompression, you can directly parse JSON
-    const resp = await response.json();
-
-    //console.log("Response Data:", resp);
-
-    if (resp.code === -400){
+    if (response.code === -400){
       return null;
     }
-
-    const data = resp.data;
-    //console.log("Data:", data);
+    const data = response.data.data;
 
     const unix = data.pubdate; // Start with a Unix timestamp
     const date = new Date(unix * 1000); // Convert timestamp to milliseconds
     const imageUrl = `${import.meta.env.VITE_IMAGE}?url=${encodeURIComponent(data.pic)}`;
     const pfpUrl = `${import.meta.env.VITE_IMAGE}?url=${encodeURIComponent(data.owner.face)}`;
 
-    console.log("pfp:", pfpUrl);
+    //console.log("pfp:", pfpUrl);
     const details = {
       title: data.title,
       channelName: data.owner.name,
@@ -692,10 +687,9 @@ function getLevelIconSingle(diff) {
 
 
   const imageSources = [
+    { name: 'pguData', source: pguDataRaw[diff] },
     { name: 'newDiff', source: newDataRaw[diff]},
     { name: 'pgnData', source: pgnDataRaw[diff] },
-    { name: 'pgnData2', source: pgnDataRaw[diff] },
-    { name: 'pguData', source: pguDataRaw[diff] },
     { name: 'legacyData', source: legacyDataRaw[diff] }
   ];
 
@@ -710,7 +704,7 @@ function getLevelIconSingle(diff) {
 
 
 function isoToEmoji(code) {
-  console.log(code);
+  //console.log(code);  
   const htmlString =  twemoji.parse(code
     .toLowerCase()
     .split("")

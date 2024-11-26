@@ -13,7 +13,7 @@ api.interceptors.request.use(
       ? JSON.parse(localStorage.getItem('user'))
       : null;
     
-    console.log("user", user);
+    //console.log("user", user);
     if (user?.access_token) {
       config.headers.Authorization = `Bearer ${user.access_token}`;
     }

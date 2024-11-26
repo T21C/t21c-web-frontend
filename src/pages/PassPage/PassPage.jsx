@@ -8,6 +8,7 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { PassContext } from "../../context/PassContext";
+import api from '../../utils/api';
 
 const limit = 30;
 
@@ -49,7 +50,7 @@ const PassPage = () => {
     const fetchPasses = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(
+        const response = await api.get(
           `${import.meta.env.VITE_ALL_PASSES_URL}`
         );
 

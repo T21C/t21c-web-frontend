@@ -2,7 +2,7 @@ import { getVideoDetails } from "../../../Repository/RemoteRepository";
 import placeholder from "../../../assets/placeholder/1.png"
 import "../css/adminsubmissionpage.css";
 import { useState, useEffect } from "react";
-
+import api from "../../../utils/api";
 const ChartSubmissions = () => {
     
     
@@ -38,7 +38,7 @@ const ChartSubmissions = () => {
         try {
           setIsLoading(true);
           console.log("Fetching pending submissions");
-          const response = await fetch(`${import.meta.env.VITE_SUBMISSION_API}/charts/pending`);
+          const response = await api.get(`${import.meta.env.VITE_SUBMISSION_API}/charts/pending`);
           const data = await response.json();
           console.log(data);
           
@@ -70,9 +70,7 @@ const ChartSubmissions = () => {
           // Wait for animation to complete before removing
           setTimeout(async () => {
             // Comment out API call for now
-            const response = await fetch(`${import.meta.env.VITE_SUBMISSION_API}/charts/${submissionId}/${action}`, {
-              method: 'PUT',
-            });
+            const response = await api.put(`${import.meta.env.VITE_SUBMISSION_API}/charts/${submissionId}/${action}`);
             
             if (response.ok) {
               setSubmissions(prev => prev.filter(sub => sub._id !== submissionId));

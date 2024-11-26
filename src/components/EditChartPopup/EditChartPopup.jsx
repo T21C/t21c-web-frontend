@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import './editchartpopup.css';
-import axios from 'axios';
 import { RatingInput } from '../RatingComponents/RatingInput';
 import { parseBaseScore } from '../../Repository/RemoteRepository';
+import api from '../../utils/api';
+
 export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
   const [formData, setFormData] = useState({
     song: '',
@@ -75,7 +76,7 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
     setError(null);
 
     try {
-      const response = await axios.put(
+      const response = await api.put(
         `${import.meta.env.VITE_INDIVIDUAL_LEVEL}${chart._id}`,
         formData
       );

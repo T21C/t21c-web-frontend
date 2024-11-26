@@ -2,6 +2,7 @@ import { getVideoDetails } from "../../../Repository/RemoteRepository";
 import placeholder from "../../../assets/placeholder/1.png"
 import "../css/adminsubmissionpage.css";
 import { useState, useEffect } from "react";
+import api from "../../../utils/api";
 
 const PassSubmissions = () => {
   
@@ -39,7 +40,7 @@ const PassSubmissions = () => {
       const fetchPendingSubmissions = async () => {
         try {
           setIsLoading(true);
-          const response = await fetch(`${import.meta.env.VITE_SUBMISSION_API}/passes/pending`);
+          const response = await api.get(`${import.meta.env.VITE_SUBMISSION_API}/passes/pending`);
           const data = await response.json();
           console.log(data);
           setSubmissions(data);
@@ -69,9 +70,7 @@ const PassSubmissions = () => {
           // Wait for animation to complete before removing
           setTimeout(async () => {
             // Comment out API call for now
-            const response = await fetch(`${import.meta.env.VITE_SUBMISSION_API}/passes/${submissionId}/${action}`, {
-              method: 'PUT',
-            });
+            const response = await api.put(`${import.meta.env.VITE_SUBMISSION_API}/passes/${submissionId}/${action}`);
             
             if (response.ok) {
               setSubmissions(prev => prev.filter(sub => sub._id !== submissionId));

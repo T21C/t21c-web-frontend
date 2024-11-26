@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import './editpasspopup.css';
-import axios from 'axios';
+import api from '../../utils/api';
 import { getScoreV2 } from '../Misc/CalcScore.js';
 import calcAcc from '../Misc/CalcAcc.js';
 import { getVideoDetails, checkLevel } from "../../Repository/RemoteRepository";
@@ -302,12 +302,11 @@ const handleSubmit = async (e) => {
       } : null
     };
 
-    const response = await axios.put(
+    const response = await api.put(
       `${import.meta.env.VITE_INDIVIDUAL_PASSES}${pass.id}`,
       updateData,
       {
         headers: {
-          'Authorization': `Bearer ${user.access_token}`,
           'Content-Type': 'application/json'
         }
       }

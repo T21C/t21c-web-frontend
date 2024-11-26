@@ -7,6 +7,7 @@ import { DetailPopup } from "../../components/RatingComponents/detailPopup";
 import { RatingCard } from "../../components/RatingComponents/ratingCard";
 import { EditChartPopup } from "../../components/EditChartPopup/EditChartPopup";
 import { fetchLevelInfo } from "../../Repository/RemoteRepository";
+import api from "../../utils/api";
 
 const FIXED_COLUMNS = ["ID", "Song", "Artist(s)", "Creator(s)", "Video link", "DL link", "Current Diff", "Low Diff", "Rerate #", "Requester FR", "Average", "Comments"];
 const SUPER_ADMINS = ["teo_72", "v0w4n"];
@@ -40,9 +41,7 @@ const RatingPage = () => {
         if (user) {
           
           // Fetch raters first
-          const ratersResponse = await fetch(`${import.meta.env.VITE_RATING_API}/raters`, {
-            headers: {authorization: `Bearer ${user.access_token}`}
-          });
+          const ratersResponse = await api.get(`${import.meta.env.VITE_RATING_API}/raters`)
           const ratersList = await ratersResponse.json();
           
           // Move current user to the beginning of ratersList if present
@@ -55,9 +54,7 @@ const RatingPage = () => {
           setRaters(ratersList);
 
           // Then fetch ratings
-          const ratingsResponse = await fetch(`${import.meta.env.VITE_RATING_API}`, {
-            headers: {authorization: `Bearer ${user.access_token}`}
-          });
+          const ratingsResponse = await api.get(`${import.meta.env.VITE_RATING_API}`);
           const data = await ratingsResponse.json();
           setRatings(data);
         }
@@ -77,11 +74,9 @@ const RatingPage = () => {
         comment: rating.ratings?.[user.username]?.[1] || ""
       }));
 
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/rating`, {
-        method: 'PUT',
+      const response = await api.put(`${import.meta.env.VITE_API_URL}/api/admin/rating`, {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user.access_token}`
         },
         body: JSON.stringify({ updates })
       });

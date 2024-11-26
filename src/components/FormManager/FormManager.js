@@ -1,3 +1,5 @@
+import api from "../../utils/api";
+
 function gIT(i) {
     return document.getElementById(i).value;
 }
@@ -33,10 +35,8 @@ class FormManager {
         console.log("sending form");
         
         try {
-            const response = await fetch(this.apiUrl, {
-                method: 'POST',
+            const response = await api.post(this.apiUrl, {
                 headers: {
-                    'Authorization': `Bearer ${accessToken}`,
                     'Content-Type': 'application/x-www-form-urlencoded',
                     'X-Form-Type': this.type,
                 },
