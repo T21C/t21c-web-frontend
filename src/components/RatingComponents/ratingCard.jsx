@@ -11,7 +11,7 @@ export const RatingCard = ({
 }) => {
     const userRating = rating.ratings?.[user.username]?.[0] || "";
     const userComment = rating.ratings?.[user.username]?.[1] || "";
-    console.log("user", user);
+    //console.log("user", user);
     return (
       <div className="rating-card">
         <div className="rating-card-content">

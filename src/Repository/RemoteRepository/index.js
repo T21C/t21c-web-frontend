@@ -716,7 +716,7 @@ function getLevelIconSingle(diff) {
 
 
   const imageSources = [
-    { name: 'inputData', source: inputDataDictRaw[diff] },
+    { name: 'inputData', source: inputDictRaw[diff] },
     { name: 'pguData', source: pguDataRaw[diff] },
     { name: 'newDiff', source: newDataRaw[diff]},
     { name: 'pgnData', source: pgnDataRaw[diff] },

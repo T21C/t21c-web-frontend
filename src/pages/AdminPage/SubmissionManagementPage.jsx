@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from "../../context/AuthContext";
 import "./css/adminsubmissionpage.css";
 import { CompleteNav } from '../../components';
+import ScrollButton from '../../components/ScrollButton/ScrollButton';
 import ChartSubmissions from './components/ChartSubmissions';
 import PassSubmissions from './components/PassSubmissions';
 
@@ -14,6 +15,7 @@ const SubmissionManagementPage = () => {
       <CompleteNav />
       <div className="background-level"></div>
       <div className="submission-admin-page">
+        <ScrollButton />
         <div className="submissions-admin-container">
           <h1>Submission Moderation</h1>
           

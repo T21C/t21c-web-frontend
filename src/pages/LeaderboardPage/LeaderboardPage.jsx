@@ -10,6 +10,7 @@ import { PlayerContext } from "../../context/PlayerContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import bgImgDark from "../../assets/important/dark/theme-background.jpg";
+import ScrollButton from "../../components/ScrollButton/ScrollButton";
 
 
 
@@ -172,6 +173,7 @@ const LeaderboardPage = () => {
       <div className="background-level"></div>
 
       <div className="leaderboard-body">
+        <ScrollButton />  
         <div className="input-option">
 
 

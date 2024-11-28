@@ -11,7 +11,7 @@ export function validateFeelingRating (value) {
     
     const legacyRange = `^(([1-9]|1[0-7])|(1[8-9]\\+?)|(20(\\.[0-9])?\\+?)|(21(\\.[0-4])?\\+?))(~|-)(([1-9]|1[0-7])|(1[8-9]\\+?)|(20(\\.[0-9])?\\+?)|(21(\\.[0-4])?\\+?))$`;
     
-    const regex = new RegExp(`^$|^${pguRegex}$|^-2$|^${rangeRegex}$|^${legacyRegex}$|^${legacyRange}$`);
+    const regex = new RegExp(`^$|^${pguRegex}$|^-2$|^-21$|^${rangeRegex}$|^${legacyRegex}$|^${legacyRange}$`);
     
     return regex.test(value);
 };

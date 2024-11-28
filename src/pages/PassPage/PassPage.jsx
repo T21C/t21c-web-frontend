@@ -9,6 +9,7 @@ import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { PassContext } from "../../context/PassContext";
 import api from '../../utils/api';
+import ScrollButton from "../../components/ScrollButton/ScrollButton";
 
 const limit = 30;
 
@@ -176,6 +177,7 @@ const PassPage = () => {
       <div className="background-pass"></div>
 
       <div className="pass-body">
+        <ScrollButton />
         <div className="input-option">
           <input
             value={query}

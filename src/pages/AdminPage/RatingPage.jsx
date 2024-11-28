@@ -1,16 +1,15 @@
 import { CompleteNav } from "../../components";
 import "./css/adminratingpage.css";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { DetailPopup } from "../../components/RatingComponents/detailPopup";
 import { RatingCard } from "../../components/RatingComponents/ratingCard";
 import { EditChartPopup } from "../../components/EditChartPopup/EditChartPopup";
 import { fetchLevelInfo } from "../../Repository/RemoteRepository";
+import ScrollButton from "../../components/ScrollButton/ScrollButton";
 import api from "../../utils/api";
-
-const FIXED_COLUMNS = ["ID", "Song", "Artist(s)", "Creator(s)", "Video link", "DL link", "Current Diff", "Low Diff", "Rerate #", "Requester FR", "Average", "Comments"];
-const SUPER_ADMINS = ["teo_72", "v0w4n"];
+import { io } from "socket.io-client";
 
 const truncateString = (str, maxLength) => {
   if (!str) return "";
@@ -20,9 +19,10 @@ const truncateString = (str, maxLength) => {
 const RatingPage = () => {
   const {t} = useTranslation();
   const { user, isSuperAdmin } = useAuth();
-  const [ratings, setRatings] = useState([]);
+  const [ratings, setRatings] = useState(null);
   const [raters, setRaters] = useState([]);
   const [showMessage, setShowMessage] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
   const [selectedRating, setSelectedRating] = useState(null);
@@ -35,14 +35,25 @@ const RatingPage = () => {
     setError(false);
   };
 
+  const fetchRatings = useCallback(async () => {
+    try {
+      const ratingsResponse = await api.get(`${import.meta.env.VITE_RATING_API}`);
+      const data = await ratingsResponse.data;
+      console.log("refreshing ratings");
+      setRatings(data);
+      console.log("data", data);
+    } catch (error) {
+      console.error("Error fetching ratings:", error);
+    }
+  }, []);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         if (user) {
-          
-          // Fetch raters first
-          const ratersResponse = await api.get(`${import.meta.env.VITE_RATING_API}/raters`)
-          const ratersList = await ratersResponse.json();
+          // Fetch raters
+          const ratersResponse = await api.get(`${import.meta.env.VITE_RATING_API}/raters`);
+          const ratersList = await ratersResponse.data;
           
           // Move current user to the beginning of ratersList if present
           const userIndex = ratersList.indexOf(user.username);
@@ -52,19 +63,71 @@ const RatingPage = () => {
           }
           
           setRaters(ratersList);
-
-          // Then fetch ratings
-          const ratingsResponse = await api.get(`${import.meta.env.VITE_RATING_API}`);
-          const data = await ratingsResponse.json();
-          setRatings(data);
+          await fetchRatings();
         }
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
-  }, [user]);
+
+    let socket;
+
+    const connectSocket = () => {
+      socket = io(import.meta.env.VITE_API_URL, {
+        path: '/socket.io',
+        reconnectionAttempts: 5,
+        timeout: 10000
+      });
+
+      socket.on('connect', () => {
+        console.log('Connected to Socket.IO server');
+      });
+
+      socket.on('connect_error', (error) => {
+        console.error('Socket.IO connection error:', error);
+      });
+
+      socket.on('disconnect', (reason) => {
+        console.log('Disconnected:', reason);
+        if (reason === 'io server disconnect') {
+          socket.connect();
+        }
+      });
+
+      socket.on('ratingsUpdated', () => {
+        console.log('Received ratingsUpdated event, fetching new data...');
+        fetchRatings();
+      });
+    };
+
+    connectSocket();
+
+    return () => {
+      if (socket) {
+        socket.off('ratingsUpdated', () => {
+          console.log('Received ratingsUpdated event, fetching new data...');
+          fetchRatings();
+        });
+        socket.disconnect();
+      }
+    };
+  }, [user, fetchRatings]);
+
+  useEffect(() => {
+    console.log("ratings", ratings);
+    console.log("looking for selectedRating", selectedRating);
+    if (selectedRating) {
+      const updatedSelectedRating = ratings.find(r => r.ID === selectedRating.ID);
+      if (updatedSelectedRating) {
+        setSelectedRating(updatedSelectedRating);
+      }
+    }
+  }, [ratings]);
+
 
   const handleSubmit = async () => {
     try {
@@ -74,19 +137,17 @@ const RatingPage = () => {
         comment: rating.ratings?.[user.username]?.[1] || ""
       }));
 
-      const response = await api.put(`${import.meta.env.VITE_API_URL}/api/admin/rating`, {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ updates })
+      const response = await api.put(`${import.meta.env.VITE_API_URL}/v2/admin/rating`, {
+        updates
       });
 
-      if (!response.ok) {
+      if (response.status !== 200) {
         throw new Error('Failed to update ratings');
       }
 
       setSuccess(true);
       setShowMessage(true);
+      // No need to manually fetch ratings here as the socket will handle the update
     } catch (err) {
       setError(err.message);
       setShowMessage(true);
@@ -114,6 +175,7 @@ const RatingPage = () => {
       <CompleteNav />
       <div className="background-level"></div>
       <div className="admin-rating-body">
+        <ScrollButton />
         <div className={`result-message ${showMessage ? 'visible' : ''}`} 
           style={{backgroundColor: 
             ( success? "#2b2" :
@@ -151,7 +213,6 @@ const RatingPage = () => {
               setRatings={setRatings}
               raters={raters}
               user={user}
-              FIXED_COLUMNS={FIXED_COLUMNS}
             />
 
             {openEditDialog && selectedChart && isSuperAdmin && (

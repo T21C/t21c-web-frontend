@@ -11,6 +11,7 @@ import { LevelContext } from "../../context/LevelContext";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import bgImgDark from "../../assets/important/dark/theme-background.jpg";
+import ScrollButton from "../../components/ScrollButton/ScrollButton";
 
 const options = [
   { value: "1", label: "P1" },
@@ -261,6 +262,7 @@ const LevelPage = () => {
       <div className="background-level"></div>
 
       <div className="level-body">
+        <ScrollButton />
         <div className="input-option">
           <svg
             className="svg-fill"

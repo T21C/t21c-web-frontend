@@ -41,10 +41,12 @@ export const DetailPopup = ({
     const [pendingComment, setPendingComment] = useState("");
     const [isSaving, setIsSaving] = useState(false);
     const [saveError, setSaveError] = useState(null);
+    const [otherRatings, setOtherRatings] = useState({});
+    const [commentError, setCommentError] = useState(false);
 
     useEffect(() => {
         const handleEscKey = (event) =>  {
-            if (event.key === 'Escape' && !event.defaultPrevented) { // Only close popup if escape wasn't handled by child
+            if (event.key === 'Escape' && !event.defaultPrevented) {
                 handleClose();
             }
         };
@@ -57,7 +59,15 @@ export const DetailPopup = ({
     }, [hasUnsavedChanges]);
 
     useEffect(() => {
-        console.log("selectedRating", selectedRating);
+        if (selectedRating) {
+            setPendingRating(selectedRating.ratings?.[user.username]?.[0] || "");
+            setPendingComment(selectedRating.ratings?.[user.username]?.[1] || "");
+            setHasUnsavedChanges(false);
+            setOtherRatings(selectedRating.ratings);
+        }
+    }, [selectedRating]);
+
+    useEffect(() => {
         const fetchVideoData = async () => {
             if (selectedRating) {
                 const res = await getVideoDetails(selectedRating.rawVideoLink);
@@ -69,14 +79,6 @@ export const DetailPopup = ({
         fetchVideoData();
     }, [selectedRating]);
 
-    useEffect(() => {
-        // Initialize pending values when selectedRating changes
-        setPendingRating(selectedRating?.ratings?.[user.username]?.[0] || "");
-        setPendingComment(selectedRating?.ratings?.[user.username]?.[1] || "");
-        setHasUnsavedChanges(false);
-    }, [selectedRating, user.username]);
-
-    // Add beforeunload event listener
     useEffect(() => {
         const handleBeforeUnload = (e) => {
             if (hasUnsavedChanges) {
@@ -92,9 +94,15 @@ export const DetailPopup = ({
     const handleSaveChanges = async () => {
         setIsSaving(true);
         setSaveError(null);
+        setCommentError(false);
+
+        if (pendingRating === "-2" && !pendingComment.trim()) {
+            setCommentError(true);
+            setIsSaving(false);
+            return;
+        }
         
         try {
-            // Call API to update rating
             await updateRating(
                 selectedRating.ID,
                 pendingRating,
@@ -102,7 +110,6 @@ export const DetailPopup = ({
                 user.token
             );
 
-            // Update local state
             const newRatings = [...ratings];
             const ratingIndex = ratings.findIndex(r => r.ID === selectedRating.ID);
             if (!newRatings[ratingIndex].ratings) {
@@ -110,7 +117,6 @@ export const DetailPopup = ({
             }
             newRatings[ratingIndex].ratings[user.username] = [pendingRating, pendingComment];
             
-            // Recalculate average if needed
             const ratingValues = Object.values(newRatings[ratingIndex].ratings)
                 .map(r => r[0])
                 .filter(r => r > 0);
@@ -220,7 +226,7 @@ export const DetailPopup = ({
                       />
                       {(pendingRating && (validateFeelingRating(pendingRating) || Object.keys(inputDataRaw).includes(pendingRating.toUpperCase()))) && (
                         <div className="rating-images">
-                          {pendingRating.includes('-') ? (
+                          {pendingRating.includes('-') && pendingRating.length > 3 ? (
                             <>
                               <img 
                                 src={getLevelIconSingle(pendingRating.split('-')[0])} 
@@ -252,7 +258,9 @@ export const DetailPopup = ({
                       onChange={(e) => {
                         setPendingComment(e.target.value);
                         setHasUnsavedChanges(true);
+                        setCommentError(false);
                       }}
+                      style={{ borderColor: commentError ? 'red' : '' }}
                     />
                   </div>
                   <button 
@@ -271,10 +279,14 @@ export const DetailPopup = ({
                 <div className="rating-field other-ratings">
                   <label>Other Ratings:</label>
                   <div className="other-ratings-content">
-                    {Object.entries(selectedRating.ratings || {})
-                      .filter(([username]) => username !== user.username)
+                    {Object.entries(otherRatings || {})
                       .map(([username, [rating, comment]]) => (
-                        <RatingItem key={username} username={username} rating={rating} comment={comment} />
+                        <RatingItem 
+                          key={username} 
+                          username={username} 
+                          rating={rating} 
+                          comment={comment} 
+                        />
                       ))}
                   </div>
                 </div>

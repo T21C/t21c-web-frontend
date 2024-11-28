@@ -21,7 +21,9 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
     workshopLink: '',
     vidLink: '',
     publicComments: '',
-    toRate: false
+    rerateNum: "",
+    toRate: false,
+    rerateReason: ''
   });
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -44,7 +46,9 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
         workshopLink: chart.workshopLink || '',
         vidLink: chart.vidLink || '',
         publicComments: chart.publicComments || '',
+        rerateNum: chart.rerateNum || '',
         toRate: chart.toRate || false,
+        rerateReason: chart.rerateReason || ''
       });
     }
   }, [chart]);
@@ -217,24 +221,48 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
                   
                 </div>
               </div>
-              <div className="form-group to-rate-checkbox-container" >
-              <div 
-                className="to-rate-checkbox"
-                onClick={() => {
-                  setFormData(prev => ({
-                    ...prev,
-                    toRate: !prev.toRate
-                  }));
-                }}
-                >
+              <div className="form-group to-rate-checkbox-container">
+                <div className="to-rate-top-row">
+                  <div className="to-rate-group">
+                    <div 
+                      className="to-rate-checkbox"
+                      onClick={() => {
+                        setFormData(prev => ({
+                          ...prev,
+                          toRate: !prev.toRate
+                        }));
+                      }}
+                    >
+                      <input
+                        type="checkbox"
+                        name="toRate"
+                        checked={formData.toRate}
+                        onChange={handleInputChange}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                      To Rate
+                    </div>
+                    <div className={`rerate-num ${formData.toRate ? 'show' : ''}`}>
+                      <input
+                        type="text"
+                        id="rerateNum"
+                        name="rerateNum"
+                        value={formData.rerateNum}
+                        onChange={handleInputChange}
+                        placeholder="Rerate Number..."
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div className={`rerate-reason ${formData.toRate ? 'show' : ''}`}>
                   <input
-                    type="checkbox"
-                    name="toRate"
-                    checked={formData.toRate}
+                    type="text"
+                    id="rerateReason"
+                    name="rerateReason"
+                    value={formData.rerateReason}
                     onChange={handleInputChange}
-                    onClick={(e) => e.stopPropagation()}
+                    placeholder="Reason for rerating..."
                   />
-                  To Rate
                 </div>
               </div>
             </div>

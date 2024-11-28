@@ -369,3 +369,9 @@
     padding-bottom: 0.40rem;
     text-align: center;
   }
+
+  .to-rate-checkbox-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
