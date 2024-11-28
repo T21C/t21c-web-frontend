@@ -14,9 +14,9 @@ const LevelCard = ({index, level, legacyMode }) => {
 
   const lvImage = 
   legacyMode ?
-  getLevelImage(level.newDiff, level.pdnDiff, null, level.diff)
+  getLevelImage(level.pdnDiff, level.newDiff, level.diff)
   :
-  getLevelImage(level.newDiff, level.pdnDiff, level.pguDiff, level.diff)
+  getLevelImage(level.pdnDiff, level.newDiff, level.pguDiff, level.diff)
 
   
   
