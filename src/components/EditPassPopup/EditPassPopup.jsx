@@ -25,11 +25,11 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
     tooEarly: pass.judgements.earlyDouble.toString() || '',
     early: pass.judgements.earlySingle.toString() || '',
     late: pass.judgements.lateSingle.toString() || '',
-    isNoHold: pass.isNoHold || false,
-    is12k: pass.is12k || false,
-    is16k: pass.is16k || false
+    isNoHold: pass.isNoHoldTap || false,
+    is12k: pass.is12K || false,
+    is16k: pass.is16K || false
   };
-
+  console.log(initialFormState)
   const { t } = useTranslation()
   const { user } = useAuth();
   const [form, setForm] = useState(initialFormState);
@@ -158,9 +158,6 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
           ? res
           : null
       );
-      if (res){
-        form.leaderboardName = res.channelName
-      }
     });
 
 
@@ -262,7 +259,7 @@ const handleSubmit = async (e) => {
       levelId: form.levelId,
       videoLink: form.videoLink,
       leaderboardName: form.leaderboardName,
-      speed: parseFloat(form.speed) >= 1 ? 1 : parseFloat(form.speed),
+      speed: parseFloat(form.speed) >= 1 ? parseFloat(form.speed) : 1,
       feelingRating: form.feelingRating,
       title: videoDetail?.title,
       rawVideoId: form.videoLink,
@@ -301,7 +298,8 @@ const handleSubmit = async (e) => {
         pfp: videoDetail.pfp
       } : null
     };
-
+    console.log("updateData", updateData)
+    console.log("speed", form.speed)
     const response = await api.put(
       `${import.meta.env.VITE_INDIVIDUAL_PASSES}${pass.id}`,
       updateData,

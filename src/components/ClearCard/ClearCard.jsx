@@ -78,10 +78,10 @@ const ClearCard = ({scoreData, index}) => {
                     {scoreData.player}
                     </span>
                   </p>
-                  <div className="time">{scoreData.date.slice(0, 10)}</div>
-                  <p className="general">{scoreData.score.toFixed(2)}</p>
+                  <div className="time">{scoreData.vidUploadTime.slice(0, 10)}</div>
+                  <p className="general">{scoreData.scoreV2.toFixed(2)}</p>
                   <p className="feeling">Feeling: <b>{scoreData.feelingRating? scoreData.feelingRating : "(None)"}</b></p>
-                  <p className="acc">{(scoreData.Xacc * 100).toFixed(2)}%</p>
+                  <p className="acc">{(scoreData.accuracy * 100).toFixed(2)}%</p>
                   <div className="speed">{scoreData.speed ? scoreData.speed : "1.0"}×</div>
                   <p className="judgements">
                     <span style={{ color: "red" }}>{scoreData.judgements.earlyDouble}</span>

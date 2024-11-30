@@ -254,7 +254,7 @@ const PassSubmissionPage = () => {
     setSubmission(true)
     setError(null);
     submissionForm.setDetail('levelId', form.levelId)
-    submissionForm.setDetail('speed', form.speed >= 1? "1" : form.speed)
+    submissionForm.setDetail('speed', form.speed >= 1 ? form.speed : "1")
     submissionForm.setDetail('passer', form.leaderboardName)
     submissionForm.setDetail('feelingDifficulty', form.feelingRating)
     submissionForm.setDetail('title', videoDetail.title)

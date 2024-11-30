@@ -1,4 +1,5 @@
 import './ratingcard.css';
+import { calculateRatingValue, validateFeelingRating } from '../Misc/Utility';
 
 export const RatingCard = ({ 
   rating, 
@@ -11,7 +12,13 @@ export const RatingCard = ({
 }) => {
     const userRating = rating.ratings?.[user.username]?.[0] || "";
     const userComment = rating.ratings?.[user.username]?.[1] || "";
-    //console.log("user", user);
+    
+    // Extract and process all ratings
+    console.log(rating.ratings)
+    const processedRatings = Object.entries(rating.ratings || {})
+        .map(([rater, [ratingValue]]) => calculateRatingValue(ratingValue))
+        .filter(rating => rating !== null);
+
     return (
       <div className="rating-card">
         <div className="rating-card-content">
@@ -24,6 +31,7 @@ export const RatingCard = ({
             <p data-label="Current Difficulty:">{rating.currentDiff}</p>
             <p data-label="Average Rating:">{rating.average}</p>
             <p data-label="Your Rating:">{userRating}</p>
+            <p data-label="All Ratings:">{processedRatings.join(', ')}</p>
           </div>
           <div className="rating-card-actions">
             <button 
@@ -32,7 +40,7 @@ export const RatingCard = ({
             >
               View Details
             </button>
-            {user && isSuperAdmin && (  // Only show edit button if user is logged in
+            {user && isSuperAdmin && (
               <button 
                 onClick={onEditChart} 
                 className="edit-chart-btn"

@@ -20,6 +20,7 @@ import { use } from "i18next";
 import ClearCard from "../../components/ClearCard/ClearCard";
 import axios from 'axios';
 import { EditPassPopup } from "../../components/EditPassPopup/EditPassPopup";
+import { useAuth } from "../../context/AuthContext";
 
 const getHighScores = (passes) => {
   if (!passes?.length) return null;
@@ -46,7 +47,7 @@ const PassDetailPage = () => {
   const [leaderboardSort, setLeaderboardSort] = useState("SCR");
   const [infoLoading, setInfoLoading] = useState(true);
   const [videoDetail, setVideoDetail] = useState(null);
-
+  const { user, isSuperAdmin } = useAuth();
   const [passCount, setPassCount] = useState(0)
 
   const [openDialog, setOpenDialog] = useState(false)
@@ -261,6 +262,7 @@ const PassDetailPage = () => {
               </p>
             </div>
           </div>
+          {isSuperAdmin && (
           <button 
               className="edit-button svg-stroke"
               onClick={() => setOpenEditDialog(true)}
@@ -271,6 +273,7 @@ const PassDetailPage = () => {
                 <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.4374 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
+          )}
           <div className="right"> 
             
             {res.pass.dlLink && (
@@ -471,7 +474,7 @@ const PassDetailPage = () => {
       </div>
     </div>
 
-    {openEditDialog && (
+    {openEditDialog && isSuperAdmin && (
       <EditPassPopup
         pass={res.pass}
         onClose={() => setOpenEditDialog(false)}

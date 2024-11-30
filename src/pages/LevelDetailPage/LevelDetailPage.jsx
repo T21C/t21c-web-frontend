@@ -26,11 +26,11 @@ const getHighScores = (players) => {
   
   return {
     firstClear: players.reduce((a, b) => 
-      new Date(a.date) < new Date(b.date) ? a : b),
+      new Date(a.vidUploadTime) < new Date(b.vidUploadTime) ? a : b),
     highestScore: players.reduce((a, b) => 
-      b.score > a.score ? b : a),
+      b.scoreV2 > a.scoreV2 ? b : a),
     highestAcc: players.reduce((a, b) => 
-      b.Xacc > a.Xacc ? b : a),
+      b.accuracy > a.accuracy ? b : a),
     highestSpeed: players.some(p => p.speed) ? 
       players.reduce((a, b) => (b.speed || 0) > (a.speed || 0) ? b : a) : null
   };
@@ -59,13 +59,14 @@ const LevelDetailPage = () => {
         const data = await fetchLevelInfo(id);
         setRes(data);
         setDisplayedPlayers(sortLeaderboard(data.passes));
+        console.log(sortLeaderboard(data.passes));
+        
         setInfoLoading(false);
       } catch (error) {
         console.error("Error fetching level data:", error);
         setInfoLoading(false);
       }
     };
-
     fetchData();
   }, [id]);
 
@@ -95,15 +96,15 @@ const LevelDetailPage = () => {
     switch (leaderboardSort) {
       case 'TIME':
         return sortedPlayers.sort((a, b) => 
-          new Date(b.date) - new Date(a.date)
+          new Date(b.vidUploadTime) - new Date(a.vidUploadTime)
         );
       case 'ACC':
         return sortedPlayers.sort((a, b) => 
-          (b.Xacc || 0) - (a.Xacc || 0)
+          (b.accuracy || 0) - (a.accuracy || 0)
         );
       case 'SCR':
         return sortedPlayers.sort((a, b) => 
-          (b.score || 0) - (a.score || 0)
+          (b.scoreV2 || 0) - (a.scoreV2 || 0)
         );
       default:
         return sortedPlayers;
@@ -317,7 +318,7 @@ const LevelDetailPage = () => {
               <span className="info-desc">
                 {!infoLoading ? 
                   (displayedPlayers.length > 0 ? 
-                    `${getHighScores(displayedPlayers).firstClear.player} | ${getHighScores(displayedPlayers).firstClear.date.slice(0, 10)}` 
+                    `${getHighScores(displayedPlayers).firstClear.player} | ${getHighScores(displayedPlayers).firstClear.vidUploadTime.slice(0, 10)}` 
                     : "-")
                   : t("detailPage.waiting")}
               </span>
@@ -328,7 +329,7 @@ const LevelDetailPage = () => {
               <span className="info-desc">
                 {!infoLoading ? 
                   (displayedPlayers.length > 0 ? 
-                    `${getHighScores(displayedPlayers).highestScore.player} | ${getHighScores(displayedPlayers).highestScore.score.toFixed(2)}` 
+                    `${getHighScores(displayedPlayers).highestScore.player} | ${getHighScores(displayedPlayers).highestScore.scoreV2.toFixed(2)}` 
                     : "-")
                   : t("detailPage.waiting")}
               </span>
@@ -350,7 +351,7 @@ const LevelDetailPage = () => {
               <span className="info-desc">
                 {!infoLoading ? 
                   (displayedPlayers.length > 0 ? 
-                    `${getHighScores(displayedPlayers).highestAcc.player} | ${(getHighScores(displayedPlayers).highestAcc.Xacc * 100).toFixed(2)}%` 
+                    `${getHighScores(displayedPlayers).highestAcc.player} | ${(getHighScores(displayedPlayers).highestAcc.accuracy * 100).toFixed(2)}%` 
                     : "-")
                   : t("detailPage.waiting")}
               </span>
