@@ -158,7 +158,7 @@
   
   .rating-field textarea {
     width: 100%;
-    height: 60px;
+    height: 100px;
     padding: 0.75rem;
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -222,6 +222,7 @@
     white-space: pre-wrap;
     overflow: hidden;
     transition: all 0.2s;
+    width: 300px;
   }
   
   .rating-comment.hidden {
@@ -345,7 +346,7 @@
     cursor: pointer;
     font-weight: 500;
     transition: background-color 0.2s;
-    margin-top: 0.5rem;
+    margin-top: 0rem;
   }
 
   .save-changes-btn:hover:not(:disabled) {

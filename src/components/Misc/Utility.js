@@ -36,14 +36,14 @@ export function calculateRatingValue(rating) {
   const cleanRating = rating.trim().toUpperCase();
   
   // Handle feeling ratings first
-  if (validateFeelingRating(cleanRating)) {
+  if (validateFeelingRating(cleanRating, false)) {
     return cleanRating;
   }
   
   // Check if it's a range (contains hyphen)
   if (cleanRating.includes('-')) {
     const [start, end] = cleanRating.split('-');
-    
+    console.log("start, end", start, end)
     // Validate both parts exist
     if (!start || !end) return null;
     
@@ -69,7 +69,8 @@ export function calculateRatingValue(rating) {
   return null;
 }
 
-export function validateFeelingRating (value) {
+export function validateFeelingRating(value, range = true) {
+    // Define regex patterns
     const exprPattern1 = "[PGUpgu][1-9]";     // Handles single letters followed by 1-9
     const exprPattern2 = "[PGUpgu]1[0-9]";    // Handles single letters followed by 10-19
     const exprPattern3 = "[PGUpgu]20";        // Handles single letters followed by 20
@@ -82,11 +83,13 @@ export function validateFeelingRating (value) {
     
     const legacyRange = `^(([1-9]|1[0-7])|(1[8-9]\\+?)|(20(\\.[0-9])?\\+?)|(21(\\.[0-4])?\\+?))(~|-)(([1-9]|1[0-7])|(1[8-9]\\+?)|(20(\\.[0-9])?\\+?)|(21(\\.[0-4])?\\+?))$`;
     
-    const regex = new RegExp(`^$|^${pguRegex}$|^-2$|^-21$|^${rangeRegex}$|^${legacyRegex}$|^${legacyRange}$`);
+    // Create the appropriate regex based on range flag
+    const regex = range 
+        ? new RegExp(`^$|^${pguRegex}$|^-2$|^-21$|^${rangeRegex}$|^${legacyRegex}$|^${legacyRange}$`)
+        : new RegExp(`^$|^${pguRegex}$|^-2$|^-21$|^${legacyRegex}$`);
     
     return regex.test(value);
-};
-
+}
 
 export function validateSpeed(value) {
     // Matches empty string or numbers >= 1.0
