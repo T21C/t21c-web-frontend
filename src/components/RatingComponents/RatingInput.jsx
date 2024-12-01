@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { inputDataRaw } from "../../Repository/RemoteRepository";
-import "./detailpopup.css";
+import "./ratinginput.css";
 
 export const RatingInput = ({ value, onChange, isLegacy, showDiff=true }) => {
   const [showDropdown, setShowDropdown] = useState(false);

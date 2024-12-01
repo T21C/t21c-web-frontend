@@ -1,74 +1,186 @@
 .rating-card {
-  background: rgba(255, 255, 255, 0.1);
+  background: #222;
   border-radius: 8px;
-  padding: 1rem;
+  padding: 1.5rem;
   margin-bottom: 1rem;
-  backdrop-filter: blur(10px);
 }
 
 .rating-card-content {
   display: flex;
-  align-items: stretch;
-  justify-content: space-between;
+  flex-direction: column;
   gap: 1rem;
-}
-
-.rating-card-header {
-  flex: 2;
-  min-width: 200px;
 }
 
 .rating-card-header h3 {
   margin: 0;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.song-title {
   color: #fff;
+  flex-shrink: 0;
+}
+
+.title-separator {
+  color: #777;
+  flex-shrink: 0;
+}
+
+.song-creator {
+  color: #aaa;
+  font-size: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: normal;
+}
+
+.rating-card-header {
+  margin-bottom: 0.75rem;
 }
 
 .rating-card-header .artist {
   margin: 0.25rem 0 0;
-  color: #888;
+  color: #aaa;
   font-size: 0.9rem;
 }
 
 .rating-card-details {
-  flex: 3;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 0.5rem 1rem;
-}
-
-.rating-card-details p {
-  margin: 0;
   display: flex;
-  align-items: center;
-  font-size: 0.9rem;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-.rating-card-details p::before {
+.rating-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.rating-info-item {
+  margin: 0;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.rating-info-item::before {
   content: attr(data-label);
+  display: block;
+  font-size: 0.8rem;
   color: #aaa;
-  margin-right: 0.5rem;
+  margin-bottom: 0.25rem;
+}
+
+.rating-info-full {
+  width: 100%;
+}
+
+.rating-card-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 0.5rem;
+}
+
+.view-details-btn,
+.edit-chart-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
 }
 
 .view-details-btn {
-  flex: 0 0 auto;
-  font-weight: bold;
-  font-size: 1rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: #2196F3;
   color: white;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  padding: 0 1.5rem;
-  cursor: pointer;
-  transition: all 0.2s;
-  white-space: nowrap;
-  align-self: stretch;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+}
+
+.edit-chart-btn {
+  background: #4CAF50;
+  color: white;
 }
 
 .view-details-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.3);
+  background: #1976D2;
+}
+
+.edit-chart-btn:hover {
+  background: #45a049;
+}
+
+.rating-card .rerate-reason {
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  grid-column: 1;
+}
+
+.rating-card .rerate-reason .reason-content {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: all 0.3s ease;
+}
+
+.rating-card .rerate-reason.expanded .reason-content {
+  white-space: normal;
+  overflow: visible;
+}
+
+.rating-card .rerate-reason .expand-indicator {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  width: 12px;
+  height: 12px;
+  border-right: 2px solid #aaa;
+  border-bottom: 2px solid #aaa;
+  transform: rotate(45deg);
+  transition: transform 0.3s ease;
+}
+
+.rating-card .rerate-reason.expanded .expand-indicator {
+  transform: rotate(-135deg);
+}
+
+.rating-card .rerate-reason:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* Add subtle animation for the content */
+.rating-card .rerate-reason .reason-content {
+  transform-origin: top;
+  transition: transform 0.3s ease, max-height 0.3s ease;
+}
+
+/* Optional: Add a max-height for the expanded state */
+.rating-card .rerate-reason.expanded {
+  min-height: fit-content;
+  height: auto;
+}
+
+/* Add hover effect to indicate clickability */
+.rating-card .rerate-reason:not(:empty) {
+  position: relative;
+}
+
+.rating-card .rerate-reason:not(:empty)::after {
+  content: "Click to expand";
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  font-size: 0.7rem;
+  color: #666;
+  transition: opacity 0.2s ease;
+}
+
+.rating-card .rerate-reason:not(:empty):hover::after {
+  opacity: 1;
 } 

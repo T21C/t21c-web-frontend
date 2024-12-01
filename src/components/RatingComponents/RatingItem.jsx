@@ -1,3 +1,4 @@
+import './ratingitem.css';
 import { useState } from 'react';
 export const RatingItem = ({ username, rating, comment }) => {
     const [isExpanded, setIsExpanded] = useState(false);

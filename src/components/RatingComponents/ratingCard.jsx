@@ -1,5 +1,11 @@
 import './ratingcard.css';
-import { calculateRatingValue, validateFeelingRating } from '../Misc/Utility';
+import { calculateRatingValue } from '../Misc/Utility';
+import { useState } from 'react';
+
+const trimString = (str, maxLength = 40) => {
+  if (!str) return '';
+  return str.length > maxLength ? str.substring(0, maxLength - 3) + '...' : str;
+};
 
 export const RatingCard = ({ 
   rating, 
@@ -8,31 +14,71 @@ export const RatingCard = ({
   raters, 
   user, 
   isSuperAdmin,
+  showDetailedView,
   onEditChart 
 }) => {
     const userRating = rating.ratings?.[user.username]?.[0] || "";
-    const userComment = rating.ratings?.[user.username]?.[1] || "";
-    
-    // Extract and process all ratings
-    console.log(rating.ratings)
     const processedRatings = Object.entries(rating.ratings || {})
         .map(([rater, [ratingValue]]) => calculateRatingValue(ratingValue))
         .filter(rating => rating !== null);
+        
+    const rerateValue = rating.requesterFR || rating.rerateNum;
+    const rerateReason = rating.rerateReason;
+    // Format title with creator
+    const songTitle = trimString(rating.song, 50);
+    const creator = trimString(rating.creator, 30);
+    const fullTitle = `${rating.song} - ${rating.creator}`;
+    const [isReasonExpanded, setIsReasonExpanded] = useState(false);
+    
+    const handleReasonClick = () => {
+      setIsReasonExpanded(!isReasonExpanded);
+    };
 
     return (
       <div className="rating-card">
         <div className="rating-card-content">
           <div className="rating-card-header">
-            <h3>{rating.song}</h3>
+            <h3 title={fullTitle}>
+              <span className="song-title">{songTitle}</span>
+              <span className="title-separator"> - </span>
+              <span className="song-creator">{creator}</span>
+            </h3>
             <p className="artist">{rating.artist}</p>
           </div>
+          
           <div className="rating-card-details">
-            <p data-label="Creator:">{rating.creator}</p>
-            <p data-label="Current Difficulty:">{rating.currentDiff}</p>
-            <p data-label="Average Rating:">{rating.average}</p>
-            <p data-label="Your Rating:">{userRating}</p>
-            <p data-label="All Ratings:">{processedRatings.join(', ')}</p>
+            <div className="rating-info-grid">
+              <p className="rating-info-item" data-label="Your Rating">
+                {userRating}
+              </p>
+              <p className="rating-info-item" data-label="Rerate">
+                    {rerateValue}
+                  </p>
+              {isSuperAdmin && showDetailedView ? (
+                <p className="rating-info-item" data-label="All Ratings">
+                  {processedRatings.join(', ')}
+                </p>
+              ) : (
+                <>
+                  <p className="rating-info-item" data-label="Average">
+                    {rating.average}
+                  </p>
+                </>
+              )}
+              <div 
+                className={`rating-info-item rerate-reason ${isReasonExpanded ? 'expanded' : ''}`}
+                data-label="Rerate message"
+                onClick={handleReasonClick}
+                title="Click to expand"
+              >
+                <div className="reason-content">
+                  {rerateReason}
+                </div>
+                {rerateReason && <div className="expand-indicator"></div>}
+              </div>
+            </div>
           </div>
+
           <div className="rating-card-actions">
             <button 
               onClick={() => setSelectedRating(rating)} 

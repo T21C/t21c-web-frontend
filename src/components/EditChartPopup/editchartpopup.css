@@ -22,7 +22,7 @@
   position: relative;
 }
 
-.close-popup-btn {
+.edit-popup .close-popup-btn {
   position: absolute;
   top: 16px;
   right: 16px;
@@ -33,43 +33,43 @@
   padding: 4px;
 }
 
-.close-popup-btn svg {
+.edit-popup .close-popup-btn svg {
   width: 24px;
   height: 24px;
 }
 
-.popup-content h2 {
+.edit-popup .popup-content h2 {
   margin-bottom: 16px;
   color: #fff;
 }
 
-.form-grid {
+.edit-popup .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
   margin-bottom: 16px;
 }
 
-.form-links {
+.edit-popup .form-links {
   display: flex;
   flex-direction: column;
   gap: 16px;
   margin-bottom: 16px;
 }
 
-.form-group {
+.edit-popup .form-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.form-group label {
+.edit-popup .form-group label {
   color: #fff;
   font-size: 14px;
 }
 
-.form-group input,
-.form-group textarea {
+.edit-popup .form-group input,
+.edit-popup .form-group textarea {
   padding: 8px 12px;
   border-radius: 4px;
   border: 1px solid #333;
@@ -77,23 +77,22 @@
   color: #fff;
 }
 
-
-.form-group.checkbox {
+.edit-popup .form-group.checkbox {
   flex-direction: row;
   align-items: center;
 }
 
-.calculated-score {
+.edit-popup .calculated-score {
   color: #fff;
   font-size: 14px;
 }
 
-.error-message {
+.edit-popup .error-message {
   color: #ff4444;
   margin-bottom: 16px;
 }
 
-.save-button {
+.edit-popup .save-button {
   margin-top: 16px;
   width: 100%;
   padding: 12px;
@@ -106,35 +105,35 @@
   transition: background 0.2s ease;
 }
 
-.save-button:disabled {
+.edit-popup .save-button:disabled {
   background: #737f8d;
   cursor: not-allowed;
 }
 
-.save-button:hover:not(:disabled) {
+.edit-popup .save-button:hover:not(:disabled) {
   background: #2d67a1;
 }
 
-.difficulty-row {
+.edit-popup .difficulty-row {
   display: flex;
   align-items: center;
   gap: 1.5rem;
 }
 
-.to-rate-checkbox-container {
+.edit-popup .to-rate-checkbox-container {
   display: grid;
   grid-template-rows: auto auto;
   gap: 8px;
   align-content: center;
 }
 
-.to-rate-top-row {
+.edit-popup .to-rate-top-row {
   display: flex;
   justify-content: center;
   width: 100%;
 }
 
-.to-rate-group {
+.edit-popup .to-rate-group {
   display: grid;
   grid-template-columns: auto 0fr;
   gap: 8px;
@@ -142,7 +141,7 @@
   justify-content: center;
 }
 
-.to-rate-checkbox {
+.edit-popup .to-rate-checkbox {
   display: flex;
   align-items: center;
   background: #2a2a2a;
@@ -157,7 +156,7 @@
   white-space: nowrap;
 }
 
-.to-rate-checkbox input[type="checkbox"] {
+.edit-popup .to-rate-checkbox input[type="checkbox"] {
   margin: 0;
   width: 16px;
   height: 16px;
@@ -165,23 +164,23 @@
   cursor: pointer;
 }
 
-.to-rate-checkbox:hover {
+.edit-popup .to-rate-checkbox:hover {
   background: #333;
 }
 
-.rerate-num {
+.edit-popup .rerate-num {
   width: 0;
   overflow: hidden;
   transition: width 0.3s ease-out, opacity 0.3s ease-out;
   opacity: 0;
 }
 
-.rerate-num.show {
+.edit-popup .rerate-num.show {
   width: 120px;
   opacity: 1;
 }
 
-.rerate-num input {
+.edit-popup .rerate-num input {
   width: 100%;
   padding: 8px 12px;
   border-radius: 4px;
@@ -190,7 +189,7 @@
   color: #fff;
 }
 
-.rerate-reason {
+.edit-popup .rerate-reason {
   grid-row: 2;
   width: 100%;
   max-height: 0;
@@ -199,12 +198,12 @@
   opacity: 0;
 }
 
-.rerate-reason.show {
+.edit-popup .rerate-reason.show {
   max-height: 40px;
   opacity: 1;
 }
 
-.rerate-reason input {
+.edit-popup .rerate-reason input {
   width: 100%;
   padding: 8px 12px;
   border-radius: 4px;
@@ -213,7 +212,7 @@
   color: #fff;
 }
 
-.to-rate-group:has(.rerate-num.show) {
+.edit-popup .to-rate-group:has(.rerate-num.show) {
   grid-template-columns: auto 120px;
 }
  

@@ -28,6 +28,7 @@ const RatingPage = () => {
   const [selectedRating, setSelectedRating] = useState(null);
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [selectedChart, setSelectedChart] = useState(null);
+  const [showDetailedView, setShowDetailedView] = useState(false);
 
   const handleCloseSuccessMessage = () => {
     setShowMessage(false);
@@ -176,6 +177,19 @@ const RatingPage = () => {
       <div className="background-level"></div>
       <div className="admin-rating-body">
         <ScrollButton />
+        {isSuperAdmin && (
+          <div className="view-mode-toggle">
+            <span className="toggle-label">Detailed View</span>
+            <label className="switch">
+              <input
+                type="checkbox"
+                checked={showDetailedView}
+                onChange={(e) => setShowDetailedView(e.target.checked)}
+              />
+              <span className="slider round"></span>
+            </label>
+          </div>
+        )}
         <div className={`result-message ${showMessage ? 'visible' : ''}`} 
           style={{backgroundColor: 
             ( success? "#2b2" :
@@ -202,6 +216,7 @@ const RatingPage = () => {
                   raters={raters}
                   user={user}
                   isSuperAdmin={isSuperAdmin}
+                  showDetailedView={showDetailedView}
                   onEditChart={() => handleEditChart(rating.ID)}
                 />
               ))}

@@ -36,7 +36,7 @@
     animation: fadeIn 0.2s ease-in-out;
   }
   
-  .close-popup-btn {
+  .rating-popup .close-popup-btn {
     position: absolute;
     top: 1rem;
     right: 1rem;
@@ -53,42 +53,42 @@
     transition: background-color 0.2s;
   }
   
-  .close-popup-btn:hover {
+  .rating-popup .close-popup-btn:hover {
     background-color: rgba(255, 255, 255, 0.1);
   }
   
-  .close-popup-btn svg {
+  .rating-popup .close-popup-btn svg {
     display: block;
   }
   
-  .popup-content {
+  .rating-popup .popup-content {
     display: flex;
     flex-direction: column;
   }
   
-  .popup-content h2 {
+  .rating-popup .popup-content h2 {
     margin: 0;
   }
   
-  .popup-content .artist {
+  .rating-popup .popup-content .artist {
     margin: 0.25rem 0 0;
     color: #aaa;
   }
   
-  .popup-header {
+  .rating-popup .popup-header {
     margin-bottom: 0.75rem;
   }
   
-  .popup-header h2 {
+  .rating-popup .popup-header h2 {
     margin: 0;
   }
   
-  .popup-header .artist {
+  .rating-popup .popup-header .artist {
     margin: 0.25rem 0 0;
     color: #aaa;
   }
   
-  .popup-main-content {
+  .rating-popup .popup-main-content {
     display: flex;
     gap: 2rem;
     align-items: flex-start;
@@ -97,14 +97,14 @@
     padding-bottom: 1rem;
   }
   
-  .video-container {
+  .rating-popup .video-container {
     flex: 1.5;
     position: relative;
     padding-bottom: 31.5%; /* Maintains 16:9 aspect ratio for 2/3 width */
     height: 0;
   }
   
-  .video-container iframe {
+  .rating-popup .video-container iframe {
     position: absolute;
     top: 0;
     left: 0;
@@ -112,42 +112,42 @@
     height: 100%;
   }
   
-  .details-container {
+  .rating-popup .details-container {
     flex: 1;
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
   
-  .rating-section {
+  .rating-popup .rating-section {
     width: 100%;
   }
   
-  .rating-columns {
+  .rating-popup .rating-columns {
     display: grid;
     height: 31vh;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;
   }
   
-  .rating-field-group {
+  .rating-popup .rating-field-group {
     display: flex;
     flex-direction: column;
     gap: 1rem;
   }
   
-  .rating-field {
+  .rating-popup .rating-field {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
   }
   
-  .rating-field label {
+  .rating-popup .rating-field label {
     color: #aaa;
     font-size: 0.9rem;
   }
   
-  .rating-field input {
+  .rating-popup .rating-field input {
     width: 120px;
     padding: 0.5rem;
     background: rgba(255, 255, 255, 0.1);
@@ -156,7 +156,7 @@
     color: white;
   }
   
-  .rating-field textarea {
+  .rating-popup .rating-field textarea {
     width: 100%;
     height: 100px;
     padding: 0.75rem;
@@ -169,7 +169,7 @@
     resize: none; /* Disable resize */
   }
   
-  .other-ratings-content {
+  .rating-popup .other-ratings-content {
     background: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 4px;
@@ -179,40 +179,40 @@
     color: white;
   }
   
-  .other-rating-item {
+  .rating-popup .other-rating-item {
     padding: 0.5rem;
     cursor: pointer;
     transition: all 0.2s;
   }
   
-  .other-rating-item:hover {
+  .rating-popup .other-rating-item:hover {
     background-color: rgba(255, 255, 255, 0.05);
   }
   
-  .other-rating-item.expanded {
+  .rating-popup .other-rating-item.expanded {
     background-color: rgba(255, 255, 255, 0.05);
   }
   
-  .rating-item-header {
+  .rating-popup .rating-item-header {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
   
-  .rater-name {
+  .rating-popup .rater-name {
     font-weight: 500;
     color: #ddd;
   }
   
-  .rater-rating {
+  .rating-popup .rater-rating {
     color: #aaa;
   }
   
-  .comment-icon {
+  .rating-popup .comment-icon {
     color: #aaa;
   }
   
-  .rating-comment {
+  .rating-popup .rating-comment {
     margin-top: 0.5rem;
     padding-top: 0.5rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -225,65 +225,65 @@
     width: 300px;
   }
   
-  .rating-comment.hidden {
+  .rating-popup .rating-comment.hidden {
     height: 0;
     padding: 0;
   }
 
-  .rating-field input:focus,
-  .rating-field textarea:focus {
+  .rating-popup .rating-field input:focus,
+  .rating-popup .rating-field textarea:focus {
     outline: none;
     border-color: rgba(255, 255, 255, 0.4);
     background: rgba(255, 255, 255, 0.15);
   }
 
-  .rating-input-container {
+  .rating-popup .rating-input-container {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
 
-  .rating-input-container input {
+  .rating-popup .rating-input-container input {
     width: 120px;
   }
 
-  .dropdown-toggle-icon {
+  .rating-popup .dropdown-toggle-icon {
       transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
-  .dropdown-toggle-icon.open {
+  .rating-popup .dropdown-toggle-icon.open {
     transform: rotate(180deg);
   }
 
-  .rating-level-image {
+  .rating-popup .rating-level-image {
     height: 38px; /* Match your input height */
     width: auto;
     object-fit: contain;
   }
 
-  .rating-images {
+  .rating-popup .rating-images {
     display: flex;
     align-items: center;
     gap: 0.25rem;
   }
 
-  .rating-separator {
+  .rating-popup .rating-separator {
     color: #fff;
     font-weight: bold;
   }
 
-  .rating-input-wrapper {
+  .rating-popup .rating-input-wrapper {
     position: relative;
     width: 100%;
   }
 
-  .rating-input-container {
+  .rating-popup .rating-input-container {
     display: flex;
     align-items: center;
     gap: 8px;
   }
 
-  .rating-input-container input {
+  .rating-popup .rating-input-container input {
     flex: 1;
     padding: 8px 12px;
     border-radius: 4px;
@@ -293,7 +293,7 @@
     width: 100%;
   }
 
-  .dropdown-toggle {
+  .rating-popup .dropdown-toggle {
     background: #333;
     border: none;
     color: #fff;
@@ -302,7 +302,7 @@
     cursor: pointer;
   }
 
-  .rating-dropdown {
+  .rating-popup .rating-dropdown {
     position: absolute;
     top: 100%;
     left: 0;
@@ -317,7 +317,7 @@
     z-index: 1000;
   }
 
-  .rating-option {
+  .rating-popup .rating-option {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -327,17 +327,17 @@
     color: #fff;
   }
 
-  .rating-option:hover {
+  .rating-popup .rating-option:hover {
     background: #333;
   }
 
-  .rating-option-image {
+  .rating-popup .rating-option-image {
     width: 24px;
     height: 24px;
     object-fit: contain;
   }
 
-  .save-changes-btn {
+  .rating-popup .save-changes-btn {
     padding: 0.5rem 1rem;
     background: #4CAF50;
     border: none;
@@ -349,29 +349,29 @@
     margin-top: 0rem;
   }
 
-  .save-changes-btn:hover:not(:disabled) {
+  .rating-popup .save-changes-btn:hover:not(:disabled) {
     background: #45a049;
   }
 
-  .save-changes-btn:disabled {
+  .rating-popup .save-changes-btn:disabled {
     background: #666;
     cursor: not-allowed;
     opacity: 0.7;
   }
 
-  .save-changes-btn.saving {
+  .rating-popup .save-changes-btn.saving {
     background: #666;
     cursor: wait;
   }
 
-  .save-error-message {
+  .rating-popup .save-error-message {
     color: #ff4444;
     font-size: 0.9rem;
     padding-bottom: 0.40rem;
     text-align: center;
   }
 
-  .to-rate-checkbox-container {
+  .rating-popup .to-rate-checkbox-container {
     display: flex;
     align-items: center;
     gap: 1rem;
