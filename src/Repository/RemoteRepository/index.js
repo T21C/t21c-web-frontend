@@ -617,8 +617,9 @@ async function getDriveFromYt(link) {
 
   let id = "";
 
-  // Determine the YouTube video ID from the link
-  if (link.split("/")[0].includes("youtu.be")) {
+  if (!link){
+    id = null;
+  } else if (link.split("/")[0].includes("youtu.be")) {
       id = link.split('/').join(',').split('?').join(',').split(',')[1];
   } else if (link.split("/")[2].includes("youtu.be")) {
       id = link.split("/").join(',').split('?').join(',').split(',')[3];

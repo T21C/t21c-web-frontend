@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import './editchartpopup.css';
 import { RatingInput } from '../RatingComponents/RatingInput';
 import { parseBaseScore } from '../../Repository/RemoteRepository';
 import api from '../../utils/api';
+import { useNavigate } from 'react-router-dom';
 
 export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
   const [formData, setFormData] = useState({
@@ -27,6 +28,7 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
   });
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (chart) {
@@ -96,6 +98,25 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
       setIsSaving(false);
     }
   };
+
+  const handleDelete = useCallback(async () => {
+    if (!window.confirm('Are you sure you want to delete this chart? This action cannot be undone.')) {
+      return;
+    }
+
+    setIsSaving(true);
+    setError(null);
+
+    try {
+      await api.delete(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${chart._id}`);
+      onClose();
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || 'Failed to delete chart');
+    } finally {
+      setIsSaving(false);
+    }
+  }, [chart._id, onClose, onUpdate, navigate]);
 
   return (
     <div className="edit-popup-overlay">
@@ -315,13 +336,24 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
 
             {error && <div className="error-message">{error}</div>}
 
-            <button 
-              type="submit" 
-              className="save-button"
-              disabled={isSaving}
-            >
-              {isSaving ? 'Saving...' : 'Save Changes'}
-            </button>
+            <div className="button-group">
+              <button 
+                type="submit" 
+                className="save-button"
+                disabled={isSaving}
+              >
+                {isSaving ? 'Saving...' : 'Save Changes'}
+              </button>
+              
+              <button 
+                type="button"
+                className="delete-button"
+                onClick={handleDelete}
+                disabled={isSaving}
+              >
+                Delete Chart
+              </button>
+            </div>
           </form>
         </div>
       </div>

@@ -1,11 +1,11 @@
-import { CompleteNav } from "../../components";
+import { CompleteNav } from "@/components";
 import "./levelsubmission.css";
-import placeholder from "../../assets/placeholder/3.png";
-import { FormManager } from "../../components/FormManager/FormManager";
+import placeholder from "@/assets/placeholder/3.png";
+import { FormManager } from "@/components/FormManager/FormManager";
 import { useEffect, useState } from "react";
-import { getDriveFromYt, getVideoDetails } from "../../Repository/RemoteRepository";
-import { useAuth } from "../../context/AuthContext";
-import { validateFeelingRating } from "../../components/Misc/Utility";
+import { getDriveFromYt, getVideoDetails } from "@/Repository/RemoteRepository";
+import { useAuth } from "@/context/AuthContext";
+import { validateFeelingRating } from "@/components/Misc/Utility";
 import { useTranslation } from "react-i18next";
 
 const LevelSubmissionPage = () => {
@@ -182,9 +182,9 @@ const LevelSubmissionPage = () => {
           error? "#b22":
           "#888"
         )}}>
-          {success? (<p>{t("levelSubmission.alert.success")}</p>) :
-          error? (<p>{t("levelSubmission.alert.error")}{truncateString(error, 27)}</p>):
-          (<p>{t("levelSubmission.alert.loading")}</p>)}
+          {success ? <p>{t("levelSubmission.alert.success")}</p> :
+           error ? <p>{t("levelSubmission.alert.error")} {truncateString(error?.message || error?.toString() || error, 27)}</p> :
+           <p>{t("levelSubmission.alert.loading")}</p>}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div>
   

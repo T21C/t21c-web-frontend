@@ -30,7 +30,7 @@ export function getValueAsRating(value) {
 
 export function calculateRatingValue(rating) {
   // If not a string, return null
-  if (typeof rating !== 'string') return null;
+  if (typeof rating !== 'string' || rating === "") return null;
   
   // Clean the input
   const cleanRating = rating.trim().toUpperCase();

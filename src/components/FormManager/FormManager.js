@@ -1,3 +1,4 @@
+import axios from "axios";
 import api from "../../utils/api";
 
 function gIT(i) {
@@ -26,7 +27,6 @@ class FormManager {
             const encodeValue = encodeURIComponent(this.details[each]);
             formBody.push(encodeKey + "=" + encodeValue);
         }
-        formBody.push(encodeURIComponent('X-Form-Type')+"="+encodeURIComponent(this.type))
         return formBody.join("&"); // Prepare the form body for submission
     }
 
@@ -35,17 +35,19 @@ class FormManager {
         console.log("sending form");
         
         try {
-            const response = await api.post(this.apiUrl, {
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-Form-Type': this.type,
-                },
-                body: body
-            });
+            const response = await api.post(this.apiUrl, 
+                body,  // This is the data payload
+                {     // This is the config object
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Form-Type': this.type,
+                    }
+                }
+            );
 
-            const data = await response.json();
-
-            if (response.ok) {
+            const data = await response.data;
+            console.log(response);
+            if (response.status === 200) {
                 console.log("Form submitted successfully");
                 return "ok";
             } else {

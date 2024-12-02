@@ -41,7 +41,7 @@ const PassSubmissions = () => {
         try {
           setIsLoading(true);
           const response = await api.get(`${import.meta.env.VITE_SUBMISSION_API}/passes/pending`);
-          const data = await response.json();
+          const data = await response.data;
           console.log(data);
           setSubmissions(data);
         } catch (error) {

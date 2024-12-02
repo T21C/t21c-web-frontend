@@ -39,7 +39,7 @@ const ChartSubmissions = () => {
           setIsLoading(true);
           console.log("Fetching pending submissions");
           const response = await api.get(`${import.meta.env.VITE_SUBMISSION_API}/charts/pending`);
-          const data = await response.json();
+          const data = await response.data;
           console.log(data);
           
           setSubmissions(data);

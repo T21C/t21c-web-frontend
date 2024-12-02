@@ -10,6 +10,7 @@ import { parseJudgements } from '../Misc/ParseJudgements';
 import { validateFeelingRating, validateSpeed, validateNumber } from '../Misc/Utility';
 import placeholder from '../../assets/placeholder/4.png';
 import { FetchIcon } from '../FetchIcon/FetchIcon.jsx';
+import { useNavigate } from 'react-router-dom';
 
 
 export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
@@ -53,7 +54,7 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
 
   const [videoDetail, setVideoDetail] = useState(null)
 
-
+  const navigate = useNavigate();
 
   const truncateString = (str, maxLength) => {
     if (!str) return "";
@@ -330,6 +331,27 @@ const handleSubmit = async (e) => {
   const handleCloseSuccessMessage = () => {
     setShowMessage(false)
   };
+
+  const handleDelete = async () => {
+    if (!window.confirm(t('passSubmission.deleteConfirm'))) {
+      return;
+    }
+
+    setSubmission(true);
+    setError(null);
+
+    try {
+      await api.delete(`${import.meta.env.VITE_INDIVIDUAL_PASSES}${pass.id}`);
+      onClose();
+      navigate('/passes');
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || t('passSubmission.deleteFailed'));
+    } finally {
+      setSubmission(false);
+    }
+  };
+
   return (
     <div className="edit-popup-overlay">
       <div className="form-container">
@@ -690,7 +712,25 @@ const handleSubmit = async (e) => {
                 </div>
               </div>
 
-              <button disabled={submission} className="submit" onClick={handleSubmit}>{t("passSubmission.submit")}{submission && (<>{t("passSubmission.submitWait")}</>)}</button>
+              <div className="button-group">
+                <button 
+                  disabled={submission} 
+                  className="submit" 
+                  onClick={handleSubmit}
+                >
+                  {t("passSubmission.submit")}
+                  {submission && (<>{t("passSubmission.submitWait")}</>)}
+                </button>
+                
+                <button 
+                  type="button"
+                  className="delete-button"
+                  onClick={handleDelete}
+                  disabled={submission}
+                >
+                  {t("passSubmission.delete")}
+                </button>
+              </div>
             </div>
           </form>
         </div>

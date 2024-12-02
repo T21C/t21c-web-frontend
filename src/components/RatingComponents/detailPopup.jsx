@@ -1,10 +1,10 @@
 import "./detailpopup.css";
 import { useEffect, useState } from 'react';
-import { getVideoDetails, getLevelIconSingle, inputDataRaw } from "../../Repository/RemoteRepository";
+import { getVideoDetails, getLevelIconSingle, inputDataRaw } from "@/Repository/RemoteRepository";
 import { RatingItem } from './RatingItem';
-import { validateFeelingRating } from '../Misc/Utility';
+import { validateFeelingRating } from '@/components/Misc/Utility';
 import { RatingInput } from './RatingInput';
-import api from '../../utils/api';
+import api from '@/utils/api';
 
 async function updateRating(id, rating, comment) {
   try {

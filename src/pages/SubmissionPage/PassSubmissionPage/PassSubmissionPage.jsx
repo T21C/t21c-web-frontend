@@ -1,15 +1,15 @@
-import { CompleteNav } from "../../components";
+import { CompleteNav } from "@/components";
 import "./passsubmission.css";
-import placeholder from "../../assets/placeholder/3.png";
-import { FormManager } from "../../components/FormManager/FormManager";
+import placeholder from "@/assets/placeholder/3.png";
+import { FormManager } from "@/components/FormManager/FormManager";
 import { useEffect, useState } from "react";
-import { checkLevel, getDriveFromYt, getVideoDetails } from "../../Repository/RemoteRepository";
-import calcAcc from "../../components/Misc/CalcAcc";
-import { getScoreV2 } from "../../components/Misc/CalcScore";
-import { parseJudgements } from "../../components/Misc/ParseJudgements";
-import { useAuth } from "../../context/AuthContext";
-import {FetchIcon} from "../../components/FetchIcon/FetchIcon"
-import { validateFeelingRating, validateSpeed, validateNumber } from "../../components/Misc/Utility";
+import { checkLevel, getDriveFromYt, getVideoDetails } from "@/Repository/RemoteRepository";
+import calcAcc from "@/components/Misc/CalcAcc";
+import { getScoreV2 } from "@/components/Misc/CalcScore";
+import { parseJudgements } from "@/components/Misc/ParseJudgements";
+import { useAuth } from "@/context/AuthContext";
+import {FetchIcon} from "@/components/FetchIcon/FetchIcon"
+import { validateFeelingRating, validateSpeed, validateNumber } from "@/components/Misc/Utility";
 import { useTranslation } from "react-i18next";
 
 const PassSubmissionPage = () => {
@@ -305,7 +305,7 @@ const PassSubmissionPage = () => {
           "#888"
         )}}>
           {success? (<p>{t("passSubmission.alert.success")}</p>) :
-          error? (<p>{t("passSubmission.alert.error")}{truncateString(error, 28)}</p>):
+          error? (<p>{t("passSubmission.alert.error")}{truncateString(error?.message || error?.toString() || error, 27)}</p>):
           (<p>{t("passSubmission.alert.loading")}</p>)}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div><form

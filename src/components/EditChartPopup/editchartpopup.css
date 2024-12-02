@@ -93,8 +93,8 @@
 }
 
 .edit-popup .save-button {
-  margin-top: 16px;
-  width: 100%;
+  margin-top: 0;
+  width: auto;
   padding: 12px;
   background: #417fc6;
   color: white;
@@ -214,5 +214,36 @@
 
 .edit-popup .to-rate-group:has(.rerate-num.show) {
   grid-template-columns: auto 120px;
+}
+
+.button-group {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.button-group button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s ease;
+}
+
+.button-group .delete-button {
+  background: #c64141;
+  color: white;
+  max-width: 13rem;
+}
+
+.delete-button:hover:not(:disabled) {
+  background: #a13535;
+}
+
+.delete-button:disabled {
+  background: #8d7373;
+  cursor: not-allowed;
 }
  

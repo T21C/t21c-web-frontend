@@ -51,9 +51,7 @@ export const RatingCard = ({
               <p className="rating-info-item" data-label="Your Rating">
                 {userRating}
               </p>
-              <p className="rating-info-item" data-label="Rerate">
-                    {rerateValue}
-                  </p>
+              
               {isSuperAdmin && showDetailedView ? (
                 <p className="rating-info-item" data-label="All Ratings">
                   {processedRatings.join(', ')}
@@ -65,17 +63,24 @@ export const RatingCard = ({
                   </p>
                 </>
               )}
-              <div 
-                className={`rating-info-item rerate-reason ${isReasonExpanded ? 'expanded' : ''}`}
-                data-label="Rerate message"
-                onClick={handleReasonClick}
-                title="Click to expand"
-              >
-                <div className="reason-content">
-                  {rerateReason}
-                </div>
-                {rerateReason && <div className="expand-indicator"></div>}
-              </div>
+              {(rerateValue || rerateReason) && (
+                <>
+                  <p className="rating-info-item" data-label="Rerate">
+                    {rerateValue}
+                  </p>
+                  <div 
+                    className={`rating-info-item rerate-reason ${isReasonExpanded ? 'expanded' : ''}`}
+                    data-label="Rerate message"
+                    onClick={handleReasonClick}
+                    title="Click to expand"
+                  > 
+                    <div className="reason-content">
+                      {rerateReason}
+                    </div>  
+                    {rerateReason && <div className="expand-indicator"></div>}
+                  </div>
+                </>
+              )}
             </div>
           </div>
 

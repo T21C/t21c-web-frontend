@@ -1,8 +1,8 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import { Suspense, lazy, useEffect, useState } from "react";
-import LevelSubmissionPage from "./pages/LevelSubmissionPage/LevelSubmissionPage.jsx";
-import PassSubmissionPage from "./pages/PassSubmissionPage/PassSubmissionPage.jsx";
+import LevelSubmissionPage from "./pages/SubmissionPage/LevelSubmissionPage/LevelSubmissionPage.jsx";
+import PassSubmissionPage from "./pages/SubmissionPage/PassSubmissionPage/PassSubmissionPage.jsx";
 import CallbackPage from "./components/Callback/Callback.jsx";
 import LeaderboardPage from "./pages/LeaderboardPage/LeaderboardPage.jsx";
 import ProfilePage from "./pages/ProfilePage/ProfilePage.jsx"
