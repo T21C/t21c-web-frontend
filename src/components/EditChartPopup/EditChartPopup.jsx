@@ -24,7 +24,8 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
     publicComments: '',
     rerateNum: "",
     toRate: false,
-    rerateReason: ''
+    rerateReason: '',
+    isDeleted: false
   });
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -50,7 +51,8 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
         publicComments: chart.publicComments || '',
         rerateNum: chart.rerateNum || '',
         toRate: chart.toRate || false,
-        rerateReason: chart.rerateReason || ''
+        rerateReason: chart.rerateReason || '',
+        isDeleted: chart.isDeleted || false
       });
     }
   }, [chart]);
@@ -100,7 +102,7 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
   };
 
   const handleDelete = useCallback(async () => {
-    if (!window.confirm('Are you sure you want to delete this chart? This action cannot be undone.')) {
+    if (!window.confirm('Are you sure you want to delete this chart? This can be undone later.')) {
       return;
     }
 
@@ -108,15 +110,48 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
     setError(null);
 
     try {
-      await api.delete(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${chart._id}`);
-      onClose();
+      const response = await api.patch(
+        `${import.meta.env.VITE_INDIVIDUAL_LEVEL}${chart._id}/soft-delete`
+      );
+      if (response.data) {
+        if (onUpdate) {
+          await onUpdate(response.data.deletedChart);
+        }
+        onClose();
+      }
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || 'Failed to delete chart');
     } finally {
       setIsSaving(false);
     }
-  }, [chart._id, onClose, onUpdate, navigate]);
+  }, [chart._id, onClose, onUpdate]);
+
+  const handleRestore = useCallback(async () => {
+    if (!window.confirm('Are you sure you want to restore this chart?')) {
+      return;
+    }
+
+    setIsSaving(true);
+    setError(null);
+
+    try {
+      const response = await api.patch(
+        `${import.meta.env.VITE_INDIVIDUAL_LEVEL}${chart._id}/restore`
+      );
+      if (response.data) {
+        if (onUpdate) {
+          await onUpdate(response.data.restoredChart);
+        }
+        onClose();
+      }
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || 'Failed to restore chart');
+    } finally {
+      setIsSaving(false);
+    }
+  }, [chart._id, onClose, onUpdate]);
 
   return (
     <div className="edit-popup-overlay">
@@ -345,14 +380,26 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
                 {isSaving ? 'Saving...' : 'Save Changes'}
               </button>
               
-              <button 
-                type="button"
-                className="delete-button"
-                onClick={handleDelete}
-                disabled={isSaving}
-              >
-                Delete Chart
-              </button>
+              {formData.isDeleted ? (
+                <button 
+                  type="button"
+                  className="delete-button"
+                  onClick={handleRestore}
+                  disabled={isSaving}
+                  style={{backgroundColor: "#28a745"}}
+                >
+                  {isSaving ? 'Restoring...' : 'Restore Chart'}
+                </button>
+              ) : (
+                <button 
+                  type="button"
+                  className="delete-button"
+                  onClick={handleDelete}
+                  disabled={isSaving}
+                >
+                  {isSaving ? 'Deleting...' : 'Delete Chart'}
+                </button>
+              )}
             </div>
           </form>
         </div>

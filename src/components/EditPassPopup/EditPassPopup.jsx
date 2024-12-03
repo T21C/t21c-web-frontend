@@ -318,7 +318,7 @@ const handleSubmit = async (e) => {
     if (response.data) {
       setSuccess(true);
       if (onUpdate) {
-        onUpdate(response.data.pass);
+        await onUpdate(response.data.pass);
       }
     } else {
       setError("Failed to update pass");
@@ -337,7 +337,7 @@ const handleSubmit = async (e) => {
   };
 
   const handleDelete = async () => {
-    if (!window.confirm(t('passSubmission.deleteConfirm'))) {
+    if (!window.confirm("Do you want to delete this pass? This can be undone later.")) {
       return;
     }
 
@@ -345,11 +345,40 @@ const handleSubmit = async (e) => {
     setError(null);
 
     try {
-      await api.delete(`${import.meta.env.VITE_INDIVIDUAL_PASSES}${pass.id}`);
-      onClose();
+      const response = await api.patch(`${import.meta.env.VITE_INDIVIDUAL_PASSES}${pass.id}/soft-delete`);
+      if (response.data) {
+        if (onUpdate) {
+          await onUpdate(response.data.pass);
+        }
+        onClose();
+      }
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.message || t('passSubmission.deleteFailed'));
+      setError(err.response?.data?.message || "Soft deletion failed");
+    } finally {
+      setSubmission(false);
+    }
+  };
+
+  const handleRestore = async () => {
+    if (!window.confirm("Do you want to restore this pass?")) {
+      return;
+    }
+
+    setSubmission(true);
+    setError(null);
+
+    try {
+      const response = await api.patch(`${import.meta.env.VITE_INDIVIDUAL_PASSES}${pass.id}/restore`);
+      if (response.data) {
+        if (onUpdate) {
+          await onUpdate(response.data.pass);
+        }
+        onClose();
+      }
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || t('passSubmission.restoreFailed'));
     } finally {
       setSubmission(false);
     }
@@ -721,18 +750,29 @@ const handleSubmit = async (e) => {
                   className="submit" 
                   onClick={handleSubmit}
                 >
-                  {t("passSubmission.submit")}
-                  {submission && (<>{t("passSubmission.submitWait")}</>)}
+                  {submission ? t("passSubmission.submitWait") : t("passSubmission.submit")}
                 </button>
                 
-                <button 
-                  type="button"
-                  className="delete-button"
-                  onClick={handleDelete}
-                  disabled={submission}
-                >
-                  {t("passSubmission.delete")}
-                </button>
+                {pass.isDeleted ? (
+                  <button 
+                    type="button"
+                    className="delete-button"
+                    onClick={handleRestore}
+                    style={{backgroundColor: "#28a745"}}
+                    disabled={submission}
+                  >
+                    Restore{/*t("passSubmission.restore")*/}
+                  </button>
+                ) : (
+                  <button 
+                    type="button"
+                    className="delete-button"
+                    onClick={handleDelete}
+                    disabled={submission}
+                  >
+                    Delete{/*t("passSubmission.delete")*/}
+                  </button>
+                )}
               </div>
             </div>
           </form>

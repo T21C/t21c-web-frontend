@@ -120,4 +120,20 @@
 /* Loader styles */
 .loader-pass-page {
   margin: 2rem auto;
+}
+
+.deletion-filter {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.deletion-filter select {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  background: #2a2a2a;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
 } 

@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import { PassContext } from "../../context/PassContext";
 import api from '../../utils/api';
 import ScrollButton from "../../components/ScrollButton/ScrollButton";
+import { useAuth } from "../../context/AuthContext";
 
 const limit = 30;
 
@@ -19,7 +20,8 @@ const PassPage = () => {
   const [error, setError] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(false);
   const location = useLocation();
-  
+  const { isSuperAdmin } = useAuth();
+
   const {
     passesData,
     setPassesData,
@@ -40,6 +42,8 @@ const PassPage = () => {
     hide12k,
     setHide12k
   } = useContext(PassContext);
+
+  const [deletedFilter, setDeletedFilter] = useState('hide');
 
   useEffect(() => {
     console.log('Current state:', {
@@ -62,6 +66,7 @@ const PassPage = () => {
           query,
           sort,
           offset: pageNumber * limit,
+          deletedFilter,
         };
 
         console.log('Fetching with params:', params);
@@ -111,7 +116,7 @@ const PassPage = () => {
     }
 
     return () => cancel && cancel();
-  }, [query, sort, pageNumber, forceUpdate]);
+  }, [query, sort, pageNumber, forceUpdate, deletedFilter]);
 
   const fetchPassById = async () => {
     setLoading(true);
@@ -252,6 +257,23 @@ const PassPage = () => {
                 Hide 12K
               </label>
             </div>
+            {isSuperAdmin && (
+              <div className="deletion-filter">
+                <h3>{t("passPage.deletedFilter.title")}</h3>
+                <select 
+                  value={deletedFilter}
+                  onChange={(e) => {
+                    setDeletedFilter(e.target.value);
+                    setPageNumber(0);
+                    setPassesData([]);
+                  }}
+                >
+                  <option value="hide">{t("passPage.deletedFilter.hide")}</option>
+                  <option value="show">{t("passPage.deletedFilter.show")}</option>
+                  <option value="only">{t("passPage.deletedFilter.only")}</option>
+                </select>
+              </div>
+            )}
           </div>
         </div>
 

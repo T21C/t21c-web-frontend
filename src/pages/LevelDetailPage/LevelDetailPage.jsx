@@ -53,6 +53,29 @@ const LevelDetailPage = () => {
   const [openDialog, setOpenDialog] = useState(false)
   const [openEditDialog, setOpenEditDialog] = useState(false);
 
+  const reloadChartData = async () => {
+    try {
+      setInfoLoading(true);
+      const data = await fetchLevelInfo(id);
+      setRes(prevRes => ({
+        ...prevRes,
+        level: data.level,
+        passes: data.passes
+      }));
+      setDisplayedPlayers(sortLeaderboard(data.passes));
+      
+      // Reload video details if needed
+      if (data.level.vidLink) {
+        const videoData = await getVideoDetails(data.level.vidLink);
+        setVideoDetail(videoData);
+      }
+    } catch (error) {
+      console.error("Error reloading chart data:", error);
+    } finally {
+      setInfoLoading(false);
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -259,6 +282,16 @@ const LevelDetailPage = () => {
       <div className="background-level"></div>
 
       <div className="wrapper-level wrapper-level-top">
+      {res?.level?.isDeleted && (
+      <div className="deletion-banner-wrapper">
+        <div className="deletion-banner">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <span>This chart has been deleted</span>
+        </div>
+        </div>
+      )}
         <div className="header">
 
           <div className="left"
@@ -481,15 +514,13 @@ const LevelDetailPage = () => {
       </div>
     </div>
 
-    {openEditDialog && (
+    {openEditDialog && isSuperAdmin && (
       <EditChartPopup
         chart={res.level}
         onClose={() => setOpenEditDialog(false)}
-        onUpdate={(updatedChart) => {
-          setRes(prev => ({
-            ...prev,
-            level: updatedChart
-          }));
+        onUpdate={async (updatedChart) => {
+          await reloadChartData();
+          setOpenEditDialog(false);
         }}
       />
     )}

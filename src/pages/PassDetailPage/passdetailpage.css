@@ -459,3 +459,32 @@
     opacity: 1;
   }
 }/*# sourceMappingURL=passdetailpage.css.map */
+
+
+.pass-detail .deletion-banner-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.pass-detail .deletion-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: rgba(220, 53, 69, 0.9);
+  padding: 0.75rem 2rem;
+  border-radius: 4px;
+  max-width: 70rem;
+  margin-bottom: 1rem;
+}
+
+.pass-detail .deletion-banner svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: white;
+}
+
+.pass-detail .deletion-banner span {
+  color: white;
+  font-weight: 500;
+}/*# sourceMappingURL=passdetailpage.css.map */

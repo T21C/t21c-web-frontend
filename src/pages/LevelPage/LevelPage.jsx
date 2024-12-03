@@ -112,6 +112,7 @@ const LevelPage = () => {
     hideEpic,              // Add this
     setHideEpic            // Add this
   } = useContext(LevelContext);
+  const [showDeleted, setShowDeleted] = useState(false);
   
 
   useEffect(() => {
@@ -126,6 +127,7 @@ const LevelPage = () => {
           query, 
           sort, 
           offset: pageNumber * limit,
+          showDeleted: showDeleted,
         };
 
         // Add minDiff only if selectedLowFilterDiff is defined
@@ -205,7 +207,7 @@ const LevelPage = () => {
       fetchLevels();
     }
     return () => cancel && cancel();
-  }, [query, sort, pageNumber, forceUpdate, selectedLowFilterDiff, selectedHighFilterDiff]);
+  }, [query, sort, pageNumber, forceUpdate, selectedLowFilterDiff, selectedHighFilterDiff, showDeleted]);
 
   function toggleLegacyDiff() {
     setLegacyDiff(!legacyDiff);
@@ -498,35 +500,22 @@ const LevelPage = () => {
                   placeholder="Disabled"
                   isSearchable
                 />
-              </div>{/*
+              </div>
               <div className="checkbox-filters">
-                
-        <label>
-          <input
-            type="checkbox"
-            checked={hideUnranked}
-            onChange={toggleHideUnranked}
-          />
-          Hide Unranked
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={hideCensored}
-            onChange={toggleHideCensored}
-          />
-          Hide Censored
-        </label>
-        <label>
-          <input
-            type="checkbox"
-            checked={hideEpic}
-            onChange={toggleHideEpic}
-          />
-          Hide Epic
-        </label>
-      </div>
-              */}
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={showDeleted}
+                    onChange={(e) => {
+                      setShowDeleted(e.target.checked);
+                      setPageNumber(0);
+                      setLevelsData([]);
+                      setForceUpdate(prev => !prev);
+                    }}
+                  />
+                  Show Deleted Charts
+                </label>
+              </div>
             </div>
           </div>
 

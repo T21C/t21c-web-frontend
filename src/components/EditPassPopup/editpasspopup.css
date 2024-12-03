@@ -13,14 +13,11 @@
 
 .edit-popup-overlay .form-container {
   position: relative;
-  background-color: var(--color-black);
-  width: 90%;
   max-width: 1200px;
   max-height: 90vh;
   overflow-y: auto;
   margin: auto;
   border-radius: 8px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
   z-index: 10000;
 }
 
@@ -35,6 +32,11 @@
 .edit-popup-overlay .form-container::-webkit-scrollbar-thumb {
   background: var(--color-purple-2);
   border-radius: 4px;
+}
+
+.edit-popup-overlay .form-container form {
+  width:85%;
+  margin: 0 auto;
 }
 
 .edit-popup-overlay .form-container form .img-wrapper {
@@ -271,12 +273,15 @@
 
 .edit-popup-overlay .close-button {
   position: absolute;
+  width: 2.2rem;
+  height: 2.2rem;
   top: 1rem;
-  right: 1rem;
-  background: none;
+  right: 10%;
+  background: rgba(0, 0, 0, 0.75);
   border: none;
+  border-radius: 50%;
   color: white;
-  font-size: 1.5rem;
+  font-size: 1.75rem;
   cursor: pointer;
   z-index: 10002;
 }
