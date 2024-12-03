@@ -291,13 +291,17 @@ const handleSubmit = async (e) => {
 
       // Video details if available
       videoDetails: videoDetail ? {
-        title: videoDetail.title,
-        channelName: videoDetail.channelName,
-        timestamp: videoDetail.timestamp,
+        title: videoDetail.title || level.song,
+        channelName: videoDetail.channelName || form.leaderboardName,
+        timestamp: videoDetail.timestamp || new Date().toISOString(),
         image: videoDetail.image,
         embed: videoDetail.embed,
         pfp: videoDetail.pfp
-      } : null
+      } : {
+        title: level.song,
+        channelName: form.leaderboardName,
+        timestamp: new Date().toISOString(),
+      }
     };
     console.log("updateData", updateData)
     console.log("speed", form.speed)
@@ -343,7 +347,6 @@ const handleSubmit = async (e) => {
     try {
       await api.delete(`${import.meta.env.VITE_INDIVIDUAL_PASSES}${pass.id}`);
       onClose();
-      navigate('/passes');
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || t('passSubmission.deleteFailed'));

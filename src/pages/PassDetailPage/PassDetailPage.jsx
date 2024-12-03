@@ -16,9 +16,7 @@ import {
 
 import { Tooltip } from "react-tooltip";
 import { useTranslation } from "react-i18next";
-import { use } from "i18next";
 import ClearCard from "../../components/ClearCard/ClearCard";
-import axios from 'axios';
 import { EditPassPopup } from "../../components/EditPassPopup/EditPassPopup";
 import { useAuth } from "../../context/AuthContext";
 
