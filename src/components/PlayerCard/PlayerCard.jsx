@@ -2,16 +2,12 @@ import { useNavigate } from "react-router-dom";
 import "./playercard.css"
 import { useTranslation } from "react-i18next";
 import { useContext, useEffect, useState } from "react";
-import { PlayerContext } from "../../context/PlayerContext";
+import { PlayerContext } from "@/context/PlayerContext";
 
-import { Encoder } from 'base32.js';
+import { encodeToBase32 } from "@/Repository/RemoteRepository";
 import { formatScore } from "../Misc/Utility";
 
-function encodeToBase32(input) {
-  const encoder = new Encoder();
-  const buffer = new TextEncoder().encode(input);
-  return encoder.write(buffer).finalize();
-}
+
 
 
 // eslint-disable-next-line react/prop-types
@@ -96,7 +92,7 @@ const PlayerCard = ({player}) => {
     }
 
   return (
-    <div className='player-card' onClick={() => redirect()}>
+    <div className='player-card' onClick={() => redirect()} style={{backgroundColor: player.isBanned ? "#ff000099" : ""}}>
       <div className="img-wrapper">
         {player.pfp? (
           <img src={player.pfp} referrerPolicy="no-referrer" alt="" />)

@@ -110,4 +110,39 @@
 }
 .level-page .level-body .setting-description {
   margin-bottom: 0.5rem;
+}
+
+.deletion-filter-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.deletion-filter-inline select {
+  width: auto;
+  padding: 0.5rem;
+  background: #2a2a2a;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  margin-left: 0.5rem;
+}
+
+.checkbox-filters {
+  display: flex;
+  gap: 2rem;
+  margin-top: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.checkbox-filters label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+  background: var(--color-white-t20);
+  padding: 0.5rem 1rem;
+  border-radius: 3px;
 }/*# sourceMappingURL=levelpage.css.map */

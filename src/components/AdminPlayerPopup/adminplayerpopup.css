@@ -1,0 +1,106 @@
+.admin-player-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.admin-player-popup {
+  background-color: var(--color-black);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 8px;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  position: relative;
+}
+
+.admin-player-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.admin-player-popup-header h2 {
+  margin: 0;
+  color: var(--color-white);
+}
+
+.admin-player-popup .close-button {
+  background: none;
+  border: none;
+  color: var(--color-white);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.admin-player-popup .form-group {
+  margin-bottom: 20px;
+}
+
+.admin-player-popup .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--color-white);
+}
+
+.admin-player-popup .form-group select {
+  width: 100%;
+  padding: 8px;
+  background-color: var(--color-white-t20);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  color: var(--color-white);
+}
+
+.admin-player-popup .form-group input[type="checkbox"] {
+  margin-right: 8px;
+}
+
+.admin-player-popup .button-group {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.admin-player-popup .save-button, .admin-player-popup .cancel-button {
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  border: none;
+  font-weight: bold;
+}
+
+.admin-player-popup .save-button {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.admin-player-popup .save-button:disabled {
+  background-color: #888;
+  cursor: not-allowed;
+}
+
+.admin-player-popup .cancel-button {
+  background-color: #f44336;
+  color: white;
+}
+
+.admin-player-popup .error-message {
+  color: #f44336;
+  margin-bottom: 16px;
+}
+
+.admin-player-popup .form-group input[type="checkbox"] {
+  accent-color: #4CAF50;
+  width: 16px;
+  height: 16px;
+} 

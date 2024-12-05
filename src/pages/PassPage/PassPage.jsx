@@ -237,7 +237,7 @@ const PassPage = () => {
           >
             <div className="spacer-setting"></div>
             <h2 className="setting-title">
-              {t("passPage.settingExp.headerFilter")}
+              Filter
             </h2>
             <div className="checkbox-filters">
               <label>
@@ -256,24 +256,26 @@ const PassPage = () => {
                 />
                 Hide 12K
               </label>
+              {isSuperAdmin && (
+                <div className="deletion-filter-inline">
+                  <label>
+                    Show deleted passes
+                    <select 
+                      value={deletedFilter}
+                      onChange={(e) => {
+                        setDeletedFilter(e.target.value);
+                        setPageNumber(0);
+                        setPassesData([]);
+                      }}
+                    >
+                      <option value="hide">Hide</option>
+                      <option value="show">Show</option>
+                      <option value="only">Only</option>
+                    </select>
+                  </label>
+                </div>
+              )}
             </div>
-            {isSuperAdmin && (
-              <div className="deletion-filter">
-                <h3>{t("passPage.deletedFilter.title")}</h3>
-                <select 
-                  value={deletedFilter}
-                  onChange={(e) => {
-                    setDeletedFilter(e.target.value);
-                    setPageNumber(0);
-                    setPassesData([]);
-                  }}
-                >
-                  <option value="hide">{t("passPage.deletedFilter.hide")}</option>
-                  <option value="show">{t("passPage.deletedFilter.show")}</option>
-                  <option value="only">{t("passPage.deletedFilter.only")}</option>
-                </select>
-              </div>
-            )}
           </div>
         </div>
 
@@ -284,11 +286,11 @@ const PassPage = () => {
             console.log('Loading more...', { pageNumber });
             setPageNumber(prev => prev + 1);
           }}
-          hasMore={hasMore && !loading}
-          loader={<div className="loader loader-pass-page"></div>}
+          hasMore={hasMore}
+          loader={<div className="loader loader-level-page"></div>}
           endMessage={
-            <p style={{ textAlign: "center" }}>
-              <b>{t("passPage.infScroll.end")}</b>
+            <p style={{ textAlign: "center" , paddingTop: "2rem"}}>
+              <b>End of list</b>
             </p>
           }
         >

@@ -70,6 +70,7 @@
   display: flex;
   gap: 2rem;
   margin-top: 1rem;
+  align-items: center;
 }
 
 .pass-page .pass-body .checkbox-filters label {
@@ -81,11 +82,10 @@
   background: var(--color-white-t20);
   padding: 0.5rem 1rem;
   border-radius: 3px;
-  transition: all 0.2s ease;
 }
 
-.pass-page .pass-body .checkbox-filters label:hover {
-  background: var(--color-white-t30);
+.pass-page .pass-body .checkbox-filters select {
+  cursor: pointer;
 }
 
 .pass-page .pass-body .checkbox-filters input[type="checkbox"] {
@@ -132,6 +132,21 @@
   width: 100%;
   padding: 0.5rem;
   margin-top: 0.5rem;
+  background: #2a2a2a;
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.deletion-filter-inline {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.deletion-filter-inline select {
+  width: auto;
+  padding: 0.5rem;
   background: #2a2a2a;
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.2);

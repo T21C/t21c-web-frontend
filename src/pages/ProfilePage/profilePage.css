@@ -37,12 +37,20 @@
   align-items: center;        /* Full viewport height */
 }
 .player-page .player-header {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  min-width: 600px;
+  justify-content: space-evenly;
+  padding: 20px;
+}
+
+.player-page .player-header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-width: 600px; /* Fixed min-width */
-  padding: 20px;
 }
+
 .player-page .player-info-container {
   display: flex;
   align-items: center;
@@ -158,5 +166,32 @@
   margin: 10px inherit ;
   padding: 10px;
   border-bottom: 1px solid #ccc;
+}
+
+.admin-edit-button {
+  position: absolute;
+  right: -60px; /* Position it outside the header */
+  top: 20px;
+  background-color: var(--color-white-t10);
+  color: var(--color-white);
+  border: none;
+  width: 50px;
+  height: 50px;
+  padding: 2px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.admin-edit-button:hover {
+  background-color: var(--color-white-t20);
+}
+
+.admin-edit-button svg {
+  width: 36px;
+  height: 36px;
 }
 

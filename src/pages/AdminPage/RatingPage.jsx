@@ -29,6 +29,7 @@ const RatingPage = () => {
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [selectedChart, setSelectedChart] = useState(null);
   const [showDetailedView, setShowDetailedView] = useState(false);
+  const [hideRated, setHideRated] = useState(false);
 
   const handleCloseSuccessMessage = () => {
     setShowMessage(false);
@@ -177,19 +178,32 @@ const RatingPage = () => {
       <div className="background-level"></div>
       <div className="admin-rating-body">
         <ScrollButton />
-        {isSuperAdmin && (
+        <div className="view-controls">
+          {isSuperAdmin && (
+            <div className="view-mode-toggle">
+              <span className="toggle-label">Detailed View</span>
+              <label className="switch">
+                <input
+                  type="checkbox"
+                  checked={showDetailedView}
+                  onChange={(e) => setShowDetailedView(e.target.checked)}
+                />
+                <span className="slider round"></span>
+              </label>
+            </div>
+          )}
           <div className="view-mode-toggle">
-            <span className="toggle-label">Detailed View</span>
+            <span className="toggle-label">Hide Rated</span>
             <label className="switch">
               <input
                 type="checkbox"
-                checked={showDetailedView}
-                onChange={(e) => setShowDetailedView(e.target.checked)}
+                checked={hideRated}
+                onChange={(e) => setHideRated(e.target.checked)}
               />
               <span className="slider round"></span>
             </label>
           </div>
-        )}
+        </div>
         <div className={`result-message ${showMessage ? 'visible' : ''}`} 
           style={{backgroundColor: 
             ( success? "#2b2" :
@@ -207,18 +221,20 @@ const RatingPage = () => {
         ) : ratings.length > 0 ? (
           <>
             <div className="rating-list">
-              {ratings.map((rating, index) => (
-                <RatingCard
-                  key={rating.ID}
-                  rating={rating}
-                  index={index}
-                  setSelectedRating={setSelectedRating}
-                  raters={raters}
-                  user={user}
-                  isSuperAdmin={isSuperAdmin}
-                  showDetailedView={showDetailedView}
-                  onEditChart={() => handleEditChart(rating.ID)}
-                />
+              {ratings
+                .filter(rating => !hideRated || !rating.ratings?.[user.username])
+                .map((rating, index) => (
+                  <RatingCard
+                    key={rating.ID}
+                    rating={rating}
+                    index={index}
+                    setSelectedRating={setSelectedRating}
+                    raters={raters}
+                    user={user}
+                    isSuperAdmin={isSuperAdmin}
+                    showDetailedView={showDetailedView}
+                    onEditChart={() => handleEditChart(rating.ID)}
+                  />
               ))}
             </div>
             <DetailPopup

@@ -30,7 +30,7 @@ const LevelCard = ({index, level, legacyMode }) => {
     };
 
   return (
-    <div className='level-card' onClick={() => redirect()}>
+    <div className='level-card' onClick={() => redirect()} style={{ backgroundColor: level.isDeleted ? "#f0000099" : "none" }}>
       {/* <div className="id level-id">#{id}</div> */}
       <div className="img-wrapper">
           <img src={lvImage} alt="" />

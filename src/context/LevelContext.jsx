@@ -14,7 +14,7 @@ const LevelContextProvider = (props) => {
     const [sort, setSort] = useState("RECENT_DESC");
     const [hasMore, setHasMore] = useState(true);
     const [pageNumber, setPageNumber] = useState(0);
-
+    const [deletedFilter, setDeletedFilter] = useState("hide");
     // Add new state for toggles
     const [hideUnranked, setHideUnranked] = useState(false);
     const [hideCensored, setHideCensored] = useState(false);
@@ -35,7 +35,8 @@ const LevelContextProvider = (props) => {
                 hideEpic, setHideEpic,
                 sort, setSort, 
                 hasMore, setHasMore, 
-                pageNumber, setPageNumber 
+                pageNumber, setPageNumber,
+                deletedFilter, setDeletedFilter
             }}
         >
             {props.children}

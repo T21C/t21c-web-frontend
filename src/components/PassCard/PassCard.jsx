@@ -18,7 +18,7 @@ const PassCard = ({ pass }) => {
   const formattedAccuracy = (pass.Xacc * 100).toFixed(2) + '%';
 
   return (
-    <div className='pass-card' onClick={() => redirect()}>
+    <div className='pass-card' onClick={() => redirect()} style={{ backgroundColor: pass.isDeleted ? "#f0000099" : "none" }}>
       <div className="pass-info-wrapper">
         <div className="group">
           <p className="pass-exp">#{pass.passId} - {pass.player}</p>

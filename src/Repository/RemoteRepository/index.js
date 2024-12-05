@@ -1,6 +1,7 @@
 import axios from 'axios';
 import twemoji from '@discordapp/twemoji';
 import api from "../../utils/api";
+import { Encoder } from 'base32.js';
 
 const baseURL = "https://github.com/T21C/T21C-assets/blob/main/"; // Common URL part
 const queryParams = "?raw=true"
@@ -812,6 +813,13 @@ const parseBaseScore = (value) => {
     : calculateBaseScore(calculatePguDiffNum(value));
 };
 
+function encodeToBase32(input) {
+  const encoder = new Encoder();
+  const buffer = new TextEncoder().encode(input);
+  return encoder.write(buffer).finalize();
+}
+
+
 export {
   getYouTubeVideoDetails, 
   getDriveFromYt,
@@ -826,5 +834,6 @@ export {
   getLevelIconSingle,
   calculateBaseScore,
   parseBaseScore,
+  encodeToBase32,
   fetchPassInfo
 }

@@ -11,6 +11,7 @@ const PlayerContextProvider = (props) => {
     const [hasMore, setHasMore] = useState(true);
     const [pageNumber, setPageNumber] = useState(0);
     const [sortBy, setSortBy] = useState("rankedScore")
+    const [showBanned, setShowBanned] = useState("hide");
 
     return (
         <PlayerContext.Provider 
@@ -21,7 +22,8 @@ const PlayerContextProvider = (props) => {
                 sortBy, setSortBy,
                 sort, setSort, 
                 hasMore, setHasMore, 
-                pageNumber, setPageNumber 
+                pageNumber, setPageNumber,
+                showBanned, setShowBanned
             }}
         >
             {props.children}

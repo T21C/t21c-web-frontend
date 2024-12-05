@@ -259,41 +259,39 @@
     opacity: 0.8;
   }
 
-  .view-mode-toggle {
+  .admin-rating-page .admin-rating-body .view-mode-toggle {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
-    padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
-    width: fit-content;
+    gap: 10px;
     margin-left: auto;
     backdrop-filter: blur(5px);
     border: transparent;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
   }
 
-  .toggle-label {
+  .admin-rating-page .admin-rating-body .toggle-label {
     color: rgba(255, 255, 255, 0.8);
     font-size: 0.9rem;
     font-weight: 500;
   }
 
   /* Switch styles */
-  .switch {
+  .admin-rating-page .admin-rating-body .switch {
     position: relative;
     display: inline-block;
     width: 48px;
     height: 24px;
   }
 
-  .switch input {
+  .admin-rating-page .admin-rating-body .switch input {
     opacity: 0;
     width: 0;
     height: 0;
   }
 
-  .slider {
+  .admin-rating-page .admin-rating-body .slider {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -304,7 +302,7 @@
     transition: .4s;
   }
 
-  .slider:before {
+  .admin-rating-page .admin-rating-body .slider:before {
     position: absolute;
     content: "";
     height: 18px;
@@ -315,24 +313,43 @@
     transition: .4s;
   }
 
-  input:checked + .slider {
+  .admin-rating-page .admin-rating-body input:checked + .slider {
     background-color: #2196F3;
   }
 
-  input:focus + .slider {
+  .admin-rating-page .admin-rating-body input:focus + .slider {
     box-shadow: 0 0 1px #2196F3;
   }
 
-  input:checked + .slider:before {
+  .admin-rating-page .admin-rating-body input:checked + .slider:before {
     transform: translateX(24px);
   }
 
   /* Rounded sliders */
-  .slider.round {
+  .admin-rating-page .admin-rating-body .slider.round {
     border-radius: 24px;
   }
 
-  .slider.round:before {
+  .admin-rating-page .admin-rating-body .slider.round:before {
     border-radius: 50%;
+  }
+
+  .admin-rating-page .admin-rating-body .view-controls {
+    display: flex;
+    justify-content: flex-end;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+.admin-rating-page .admin-rating-body .view-mode-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    backdrop-filter: blur(5px);
+    border: transparent;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    margin-left: 0;
   }
 

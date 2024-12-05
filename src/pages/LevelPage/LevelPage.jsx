@@ -12,6 +12,7 @@ import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import bgImgDark from "../../assets/important/dark/theme-background.jpg";
 import ScrollButton from "../../components/ScrollButton/ScrollButton";
+import { useAuth } from "../../context/AuthContext";
 
 const options = [
   { value: "1", label: "P1" },
@@ -84,6 +85,7 @@ const LevelPage = () => {
   const [error, setError] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(false);
   const location = useLocation();
+  const { isSuperAdmin } = useAuth();
   const {
     levelsData,
     setLevelsData,
@@ -105,6 +107,8 @@ const LevelPage = () => {
     setHasMore,
     pageNumber,
     setPageNumber,
+    deletedFilter,
+    setDeletedFilter,
     hideUnranked,          // Add this
     setHideUnranked,       // Add this
     hideCensored,          // Add this
@@ -112,8 +116,6 @@ const LevelPage = () => {
     hideEpic,              // Add this
     setHideEpic            // Add this
   } = useContext(LevelContext);
-  const [showDeleted, setShowDeleted] = useState(false);
-  
 
   useEffect(() => {
     let cancel;
@@ -127,7 +129,12 @@ const LevelPage = () => {
           query, 
           sort, 
           offset: pageNumber * limit,
-          showDeleted: showDeleted,
+          deletedFilter,
+          lowFilterDiff: selectedLowFilterDiff,
+          highFilterDiff: selectedHighFilterDiff,
+          hideUnranked,
+          hideCensored,
+          hideEpic
         };
 
         // Add minDiff only if selectedLowFilterDiff is defined
@@ -207,7 +214,7 @@ const LevelPage = () => {
       fetchLevels();
     }
     return () => cancel && cancel();
-  }, [query, sort, pageNumber, forceUpdate, selectedLowFilterDiff, selectedHighFilterDiff, showDeleted]);
+  }, [query, sort, pageNumber, forceUpdate, selectedLowFilterDiff, selectedHighFilterDiff, deletedFilter]);
 
   function toggleLegacyDiff() {
     setLegacyDiff(!legacyDiff);
@@ -502,19 +509,67 @@ const LevelPage = () => {
                 />
               </div>
               <div className="checkbox-filters">
+              {/*
                 <label>
                   <input
                     type="checkbox"
-                    checked={showDeleted}
+                    checked={hideUnranked}
                     onChange={(e) => {
-                      setShowDeleted(e.target.checked);
+                      setHideUnranked(e.target.checked);
                       setPageNumber(0);
                       setLevelsData([]);
                       setForceUpdate(prev => !prev);
                     }}
                   />
-                  Show Deleted Charts
+                  {t("levelPage.settingExp.hideUnranked")}
                 </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={hideCensored}
+                    onChange={(e) => {
+                      setHideCensored(e.target.checked);
+                      setPageNumber(0);
+                      setLevelsData([]);
+                      setForceUpdate(prev => !prev);
+                    }}
+                  />
+                  {t("levelPage.settingExp.hideCensored")}
+                </label>
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={hideEpic}
+                    onChange={(e) => {
+                      setHideEpic(e.target.checked);
+                      setPageNumber(0);
+                      setLevelsData([]);
+                      setForceUpdate(prev => !prev);
+                    }}
+                  />
+                  {t("levelPage.settingExp.hideEpic")}
+                </label>
+                */}
+                {isSuperAdmin && (
+                  <div className="deletion-filter-inline">
+                    <label>
+                      Show deleted charts
+                      <select 
+                        value={deletedFilter}
+                        onChange={(e) => {
+                          setDeletedFilter(e.target.value);
+                          setPageNumber(0);
+                          setLevelsData([]);
+                          setForceUpdate(prev => !prev);
+                        }}
+                      >
+                        <option value="hide">Hide</option>
+                        <option value="show">Show</option>
+                        <option value="only">Only</option>
+                      </select>
+                    </label>
+                  </div>
+                )}
               </div>
             </div>
           </div>

@@ -37,6 +37,12 @@ const LeaderboardPage = () => {
     sort,
     setSort,
   } = useContext(PlayerContext);
+  const [showBanned, setShowBanned] = useState('hide');
+  const bannedOptions = [
+    { value: 'show', label: "Show" },
+    { value: 'hide', label: "Hide" },
+    { value: 'only', label: "Only" }
+  ];
   var sortOptions = [
     { value: 'rankedScore', label:  t("valueLabels.rankedScore") },
     { value: 'generalScore', label: t("valueLabels.generalScore") },
@@ -84,7 +90,9 @@ const LeaderboardPage = () => {
     const fetchPlayers = async () => {
       setLoading(true);
       try {
-        const response = await api.get(`${import.meta.env.VITE_FULL_LEADERBOARD}`);
+        setPlayerData([])
+        const response = await api.get(`${import.meta.env.VITE_FULL_LEADERBOARD}`, {
+        });
         
         setPlayerData(response.data);
         setPlayerList(response.data);
@@ -98,26 +106,37 @@ const LeaderboardPage = () => {
     };
   
     fetchPlayers();
-  }, []);
+  }, [forceUpdate]);
   
   useEffect(() => {
     if (playerData && playerData.length > 0) {
-      var filteredPlayers = playerData.filter(player =>
-        player.player.toLowerCase().includes(query.toLowerCase())
-      );
-      filteredPlayers = sortByField(filteredPlayers)
+      var filteredPlayers = playerData.filter(player => {
+        // First filter by search query
+        const matchesQuery = player.player.toLowerCase().includes(query.toLowerCase());
+        
+        // Then filter by banned status
+        const matchesBannedFilter = 
+          (showBanned === 'show') ? true :  // Show all players
+          (showBanned === 'hide') ? !player.isBanned :  // Hide banned players
+          (showBanned === 'only') ? player.isBanned :  // Show only banned players
+          true;  // Default fallback
+        
+        return matchesQuery && matchesBannedFilter;
+      });
+
+      filteredPlayers = sortByField(filteredPlayers);
       if(sort === "ASC"){
-        filteredPlayers = filteredPlayers.reverse()
+        filteredPlayers = filteredPlayers.reverse();
       }
       setPlayerList(filteredPlayers);
-      setDisplayedPlayers(filteredPlayers.slice(0,10))
+      setDisplayedPlayers(filteredPlayers.slice(0,10));
     } else {
       setPlayerList([]);
     }
     setLoading(false);
     console.log(displayedPlayers);
     
-  }, [playerData, query, sort, sortBy, forceUpdate, t]);
+  }, [playerData, query, sort, sortBy, forceUpdate, t, showBanned]);
 
   function handleQueryChange(e) {
     setLoading(true);
@@ -136,14 +155,12 @@ const LeaderboardPage = () => {
   function handleSortBy(selectedOption) {
     setLoading(true); 
     setSortBy(selectedOption.value);
-    setForceUpdate((f) => !f);
   }
 
 
   function handleSort(value) {
     setLoading(true);
     setSort(value);
-    setForceUpdate((f) => !f);
   }
 
   function resetAll() {
@@ -152,6 +169,7 @@ const LeaderboardPage = () => {
     setSortBy(sortOptions[0].value)
     setSort("DESC");
     setQuery("");
+    setShowBanned('hide');
     setForceUpdate((f) => !f);
   }
 
@@ -365,71 +383,131 @@ const LeaderboardPage = () => {
               </div>
               <div className="recent">
                 
-              <p>{t("leaderboardPage.settingExp.sortBy")}</p>
+              <p>Show banned players</p>
               <Select
-                      id="sort-select"
-                      onChange={handleSortBy}
-                      value={sortOptions.find(option => option.value === sortBy)}
-                      options={sortOptions}
-                      menuPortalTarget={document.body}
-                      styles={{
-                        input: (base) => ({
-                          ...base, 
-                          color: "#fff"
-                        }),
-                        menuPortal: (base) => ({
-                           ...base,
-                            zIndex: 9999 
-                          }),
-                        container: (provided) => ({
-                          ...provided,
-                          zIndex: 20,
-                        }),
-                        control: (provided, state) => ({
-                          ...provided,
-                          width: "11rem",
-                          backgroundColor: "rgba(255, 255, 255, 0.3)",
-                          border: "none",
-                          outline: "none",
-                          color: "#fff",
-                          boxShadow: 
-                            state.isFocused
-                            && "0 0 0 2px #757575"
-                        }),
-                        singleValue: (provided) => ({
-                          ...provided,
-                          color: "#FFFFFF !important",
-                        }),
-                        indicatorSeparator: (provided) => ({
-                          ...provided,
-                          backgroundColor: "#000000aa",
-                        }),
-                        menu: (provided) => ({
-                          ...provided,
-                          width: "11rem",
-                          backgroundColor: "#070711ef",
-                          borderRadius: "3px",
-                          border: "none",
-                          boxShadow: "none",
-                          textDecoration: "bold",
-                          color: "#fff",
-                          zIndex: 9999,
-                        }),
-                        option: (provided, state) => ({
-                          ...provided,
-                          backgroundColor: state.isSelected
-                            ? "#303040ee"
-                            : "transparent",
-                          zIndex: 9999,
-                          "&:hover": {
-                            backgroundColor: "#555555",
-                          }
-                        }),
-                      }}
-                      placeholder="Select Sort Option"
-                      isSearchable
-                    /> 
-                    </div>   
+                value={sortOptions.find(option => option.value === sortBy)}
+                onChange={handleSortBy}
+                options={sortOptions}
+                menuPortalTarget={document.body}
+                styles={{
+                  input: (base) => ({
+                    ...base, 
+                    color: "#fff"
+                  }),
+                  menuPortal: (base) => ({
+                    ...base,
+                    zIndex: 9999 
+                  }),
+                  container: (provided) => ({
+                    ...provided,
+                    zIndex: 20,
+                  }),
+                  control: (provided, state) => ({
+                    ...provided,
+                    width: "11rem",
+                    backgroundColor: "rgba(255, 255, 255, 0.3)",
+                    border: "none",
+                    outline: "none",
+                    color: "#fff",
+                    boxShadow: 
+                      state.isFocused
+                      && "0 0 0 2px #757575"
+                  }),
+                  singleValue: (provided) => ({
+                    ...provided,
+                    color: "#FFFFFF !important",
+                  }),
+                  indicatorSeparator: (provided) => ({
+                    ...provided,
+                    backgroundColor: "#000000aa",
+                  }),
+                  menu: (provided) => ({
+                    ...provided,
+                    width: "11rem",
+                    backgroundColor: "#070711ef",
+                    borderRadius: "3px",
+                    border: "none",
+                    boxShadow: "none",
+                    textDecoration: "bold",
+                    color: "#fff",
+                    zIndex: 9999,
+                  }),
+                  option: (provided, state) => ({
+                    ...provided,
+                    backgroundColor: state.isSelected
+                      ? "#303040ee"
+                      : "transparent",
+                    zIndex: 9999,
+                    "&:hover": {
+                      backgroundColor: "#555555",
+                    }
+                  }),
+                }}
+              />
+              </div>
+              <div className="recent">
+                <p>{t("leaderboardPage.settingExp.showBanned")}</p>
+                <Select
+                  value={bannedOptions.find(option => option.value === showBanned)}
+                  onChange={(option) => setShowBanned(option.value)}
+                  options={bannedOptions}
+                  menuPortalTarget={document.body}
+                  styles={{
+                    input: (base) => ({
+                      ...base, 
+                      color: "#fff"
+                    }),
+                    menuPortal: (base) => ({
+                      ...base,
+                      zIndex: 9999 
+                    }),
+                    container: (provided) => ({
+                      ...provided,
+                      zIndex: 20,
+                    }),
+                    control: (provided, state) => ({
+                      ...provided,
+                      width: "11rem",
+                      backgroundColor: "rgba(255, 255, 255, 0.3)",
+                      border: "none",
+                      outline: "none",
+                      color: "#fff",
+                      boxShadow: 
+                        state.isFocused
+                        && "0 0 0 2px #757575"
+                    }),
+                    singleValue: (provided) => ({
+                      ...provided,
+                      color: "#FFFFFF !important",
+                    }),
+                    indicatorSeparator: (provided) => ({
+                      ...provided,
+                      backgroundColor: "#000000aa",
+                    }),
+                    menu: (provided) => ({
+                      ...provided,
+                      width: "11rem",
+                      backgroundColor: "#070711ef",
+                      borderRadius: "3px",
+                      border: "none",
+                      boxShadow: "none",
+                      textDecoration: "bold",
+                      color: "#fff",
+                      zIndex: 9999,
+                    }),
+                    option: (provided, state) => ({
+                      ...provided,
+                      backgroundColor: state.isSelected
+                        ? "#303040ee"
+                        : "transparent",
+                      zIndex: 9999,
+                      "&:hover": {
+                        backgroundColor: "#555555",
+                      }
+                    }),
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
