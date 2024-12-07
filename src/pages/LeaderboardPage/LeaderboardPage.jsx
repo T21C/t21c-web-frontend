@@ -15,7 +15,7 @@ import ScrollButton from "../../components/ScrollButton/ScrollButton";
 
 
 
-const limit = 10;
+const limit = 30;
 
 const LeaderboardPage = () => {
   const { t } = useTranslation();

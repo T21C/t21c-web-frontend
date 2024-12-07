@@ -1,12 +1,30 @@
 import { useNavigate } from "react-router-dom";
-import { getLevelImage } from "../../Repository/RemoteRepository";
+import { getLevelImage } from "@/Repository/RemoteRepository";
 import "./levelcard.css"
 import { useTranslation } from "react-i18next";
+import { useState } from "react";
+import api from "@/utils/api";
+import { EditChartPopup } from "@/components/EditChartPopup/EditChartPopup"; // Import the EditChartPopup component
 
 
 // eslint-disable-next-line react/prop-types
-const LevelCard = ({index, level, legacyMode }) => {
+const LevelCard = ({index, level, legacyMode, isSuperAdmin }) => {
   const {t} = useTranslation()  
+  const [toRate, setToRate] = useState(level.toRate || false);
+  const [showEditPopup, setShowEditPopup] = useState(false); // State to manage popup visibility
+
+  const handleCheckboxChange = async (e) => {
+    const newToRate = e.target.checked;
+    setToRate(newToRate);
+
+    try {
+      await api.put(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${level.id}/toRate`, { toRate: newToRate });
+      console.log(`Chart ${level.id} updated with toRate: ${newToRate}`);
+    } catch (error) {
+      console.error(`Failed to update chart ${level.id}:`, error);
+    }
+  };
+
   //console.log(level);
   
   level.wsLink = level.ws ? level.ws : level.wsLink ? level.wsLink : level.workshopLink;
@@ -29,12 +47,31 @@ const LevelCard = ({index, level, legacyMode }) => {
       e.stopPropagation();
     };
 
+    const handleEditClick = (e) => {
+      e.stopPropagation(); // Prevent triggering the redirect
+      setShowEditPopup(true);
+    };
+
   return (
-    <div className='level-card' onClick={() => redirect()} style={{ backgroundColor: level.isDeleted ? "#f0000099" : "none" }}>
+    <div className='level-card' style={{ backgroundColor: level.isDeleted ? "#f0000099" : "none" }}>
       {/* <div className="id level-id">#{id}</div> */}
+      { isSuperAdmin && (
+      <div className="toRate-checkbox">
+        <label>
+          <input
+            type="checkbox"
+            checked={toRate}
+            onChange={handleCheckboxChange}
+            onClick={(e) => e.stopPropagation()}
+          />
+        </label>
+      </div>
+      )}
+      <div className="level-card-wrapper" onClick={() => redirect()}>
       <div className="img-wrapper">
           <img src={lvImage} alt="" />
       </div>
+
 
       <div className="creator-wrapper">
           <div className="group">
@@ -49,7 +86,6 @@ const LevelCard = ({index, level, legacyMode }) => {
           <p className="level-exp">{t("levelCardComponent.creator")}</p>
           <div className="level-desc">{level.team ? level.team : level.creator}</div>
       </div>
-
       {level.clears || level.clears == 0 ? 
         (      
           <div className="clears-wrapper">
@@ -80,9 +116,23 @@ const LevelCard = ({index, level, legacyMode }) => {
             </a>
             )}
 
-
-
       </div>
+      {isSuperAdmin && (
+        <button className="edit-button" onClick={handleEditClick}>
+          Edit
+        </button>
+      )}
+      </div>
+      {showEditPopup && (
+        <EditChartPopup
+          chart={level}
+          onClose={() => setShowEditPopup(false)}
+          onUpdate={(updatedChart) => {
+            // Handle chart update logic here
+            setShowEditPopup(false);
+          }}
+        />
+      )}
     </div>
   );
 };

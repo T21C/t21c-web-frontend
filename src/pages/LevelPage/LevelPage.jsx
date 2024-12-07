@@ -809,6 +809,7 @@ const LevelPage = () => {
               key={index}
               level={l}
               legacyMode={legacyDiff}
+              isSuperAdmin={isSuperAdmin}
             />
           ))}
         </InfiniteScroll>

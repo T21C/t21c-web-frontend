@@ -1,5 +1,11 @@
 .level-card {
   position: relative;
+  display:flex;
+  flex-direction: row;
+}
+
+.level-card-wrapper {
+  position: relative;
   display: flex;
   justify-content: left;
   gap: 1rem;
@@ -13,6 +19,8 @@
   border-bottom: 1px solid;
   border-color: var(--color-gray-3);
   transition: all 0.1s ease-in-out;
+  justify-items: space-between;
+  flex-grow: 1;
 }
 .level-card:hover {
   background-color: var(--color-white-t30);
@@ -92,6 +100,15 @@
 .level-card .downloads-wrapper a svg:hover {
   transform: scale(1.3);
 }
+.level-card .toRate-checkbox {
+  display: flex;
+  align-items: center;
+  margin:1rem
+}
+.level-card .toRate-checkbox input {
+  width: 1.5rem;
+  height: 1.5rem;
+}
 
 @media (max-width: 795px) {
   .level-card .downloads-wrapper {
@@ -159,4 +176,19 @@
     height: 2rem;
     width: 2rem;
   }
-}/*# sourceMappingURL=levelcard.css.map */
+}
+
+.edit-button {
+  margin-left: auto;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.edit-button:hover {
+  background-color: var(--color-primary-dark);
+}
