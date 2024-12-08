@@ -35,7 +35,7 @@ const PlayerCard = ({player}) => {
     top12kDiff: t("valueLabels.top12kDiff")
   };
     const redirect = () => {
-      navigate(`/profile/${encodeToBase32(player.player)}`);
+      navigate(`/profile/${player.id}`);
     };
 
     const onAnchorClick = (e) => {
@@ -103,7 +103,7 @@ const PlayerCard = ({player}) => {
           <div className="group">
               <p className="player-exp">{t("playerCardComponent.player")}</p>
           </div>
-          <p className='player-desc'>{player.player}</p>
+          <p className='player-desc'>{player.name}</p>
       </div>
       <div className="score-wrapper">
         <p className="player-exp">{primaryField.label}</p>

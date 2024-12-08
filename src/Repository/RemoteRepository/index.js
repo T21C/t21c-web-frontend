@@ -713,28 +713,6 @@ function getLevelImage(...values) {
   return fallbackImage || null;
 }
 
-function getLevelIconSingle(diff) {
-  diff = diff.toUpperCase();
-
-
-  const imageSources = [
-    { name: 'inputData', source: inputDictRaw[diff] },
-    { name: 'pguData', source: pguDataRaw[diff] },
-    { name: 'newDiff', source: newDataRaw[diff]},
-    { name: 'pgnData', source: pgnDataRaw[diff] },
-    { name: 'legacyData', source: legacyDataRaw[diff] }
-  ];
-
-  for (const imgSource of imageSources) {
-    if (imgSource.source != null) {
-      return imgSource.source;
-    }
-  }
-
-  return null; // Return null if no image is found
-}
-
-
 function isoToEmoji(code) {
   //console.log(code);  
   const htmlString =  twemoji.parse(code
@@ -831,7 +809,6 @@ export {
   fetchLevelInfo, 
   getVideoDetails, 
   getLevelImage,
-  getLevelIconSingle,
   calculateBaseScore,
   parseBaseScore,
   encodeToBase32,

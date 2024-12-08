@@ -33,6 +33,7 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
 
   useEffect(() => {
     if (chart) {
+      console.log("chart", chart);
       setFormData({
         song: chart.song || '',
         artist: chart.artist || '',
@@ -85,7 +86,7 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
 
     try {
       const response = await api.put(
-        `${import.meta.env.VITE_INDIVIDUAL_LEVEL}${chart._id}`,
+        `${import.meta.env.VITE_INDIVIDUAL_LEVEL}${chart.id}`,
         formData
       );
 
@@ -111,7 +112,7 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
 
     try {
       const response = await api.patch(
-        `${import.meta.env.VITE_INDIVIDUAL_LEVEL}${chart._id}/soft-delete`
+        `${import.meta.env.VITE_INDIVIDUAL_LEVEL}${chart.id}/soft-delete`
       );
       if (response.data) {
         if (onUpdate) {
@@ -125,7 +126,7 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
     } finally {
       setIsSaving(false);
     }
-  }, [chart._id, onClose, onUpdate]);
+  }, [chart.id, onClose, onUpdate]);
 
   const handleRestore = useCallback(async () => {
     if (!window.confirm('Are you sure you want to restore this chart?')) {
@@ -137,7 +138,7 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
 
     try {
       const response = await api.patch(
-        `${import.meta.env.VITE_INDIVIDUAL_LEVEL}${chart._id}/restore`
+        `${import.meta.env.VITE_INDIVIDUAL_LEVEL}${chart.id}/restore`
       );
       if (response.data) {
         if (onUpdate) {
@@ -151,7 +152,7 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
     } finally {
       setIsSaving(false);
     }
-  }, [chart._id, onClose, onUpdate]);
+  }, [chart.id, onClose, onUpdate]);
 
   return (
     <div className="edit-popup-overlay">

@@ -3,8 +3,8 @@ import "./css/adminratingpage.css";
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
-import { DetailPopup } from "../../components/RatingComponents/detailPopup";
-import { RatingCard } from "../../components/RatingComponents/ratingCard";
+import { DetailPopup } from "../../components/RatingComponents/DetailPopup";
+import { RatingCard } from "../../components/RatingComponents/RatingCard";
 import { EditChartPopup } from "../../components/EditChartPopup/EditChartPopup";
 import { fetchLevelInfo } from "../../Repository/RemoteRepository";
 import ScrollButton from "../../components/ScrollButton/ScrollButton";
@@ -103,7 +103,7 @@ const RatingPage = () => {
       socket.on('ratingsUpdated', () => {
         console.log('Received ratingsUpdated event, fetching new data...');
         fetchRatings();
-      });
+      });      
     };
 
     connectSocket();
@@ -123,38 +123,13 @@ const RatingPage = () => {
     console.log("ratings", ratings);
     console.log("looking for selectedRating", selectedRating);
     if (selectedRating) {
-      const updatedSelectedRating = ratings.find(r => r.ID === selectedRating.ID);
+      const updatedSelectedRating = ratings.find(r => r.id === selectedRating.id);
       if (updatedSelectedRating) {
         setSelectedRating(updatedSelectedRating);
       }
     }
   }, [ratings]);
 
-
-  const handleSubmit = async () => {
-    try {
-      const updates = ratings.map(rating => ({
-        id: rating.ID,
-        rating: rating.ratings?.[user.username]?.[0] || 0,
-        comment: rating.ratings?.[user.username]?.[1] || ""
-      }));
-
-      const response = await api.put(`${import.meta.env.VITE_API_URL}/v2/admin/rating`, {
-        updates
-      });
-
-      if (response.status !== 200) {
-        throw new Error('Failed to update ratings');
-      }
-
-      setSuccess(true);
-      setShowMessage(true);
-      // No need to manually fetch ratings here as the socket will handle the update
-    } catch (err) {
-      setError(err.message);
-      setShowMessage(true);
-    }
-  };
 
   const handleEditChart = async (chartId) => {
     try {
@@ -233,7 +208,7 @@ const RatingPage = () => {
                     user={user}
                     isSuperAdmin={isSuperAdmin}
                     showDetailedView={showDetailedView}
-                    onEditChart={() => handleEditChart(rating.ID)}
+                    onEditChart={() => handleEditChart(rating.levelId)}
                   />
               ))}
             </div>
@@ -255,7 +230,7 @@ const RatingPage = () => {
                 }}
                 onUpdate={(updatedChart) => {
                   setRatings(prev => prev.map(rating => 
-                    rating.ID === updatedChart.id 
+                    rating.levelId === updatedChart.id 
                       ? {
                           ...rating,
                           Song: updatedChart.song,

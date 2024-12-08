@@ -20,12 +20,12 @@ const ChartSubmissions = () => {
       useEffect(() => {
         // Load video embeds when submissions change
         submissions.forEach(async (submission) => {
-          if (submission.videoLink && !videoEmbeds[submission._id]) {
+          if (submission.videoLink && !videoEmbeds[submission.id]) {
             try {
               const videoDetails = await getVideoDetails(submission.videoLink);
               setVideoEmbeds(prev => ({
                 ...prev,
-                [submission._id]: videoDetails
+                [submission.id]: videoDetails
               }));
             } catch (error) {
               console.error('Error fetching video details:', error);
@@ -122,8 +122,8 @@ const ChartSubmissions = () => {
         ) : (
           submissions.map((submission) => (
           <div 
-            key={submission._id} 
-            className={`submission-card ${animatingCards[submission._id] || ''}`}
+            key={submission.id} 
+            className={`submission-card ${animatingCards[submission.id] || ''}`}
           >
           <div className="submission-header">
             <h3>{submission.song}</h3>
@@ -217,16 +217,16 @@ const ChartSubmissions = () => {
 
               <div className="action-buttons">
                 <button 
-                  onClick={() => handleSubmission(submission._id, 'approve')}
+                  onClick={() => handleSubmission(submission.id, 'approve')}
                   className="approve-btn"
-                  disabled={disabledButtons[submission._id]}
+                  disabled={disabledButtons[submission.id]}
                 >
                   Allow
                 </button>
                 <button 
-                  onClick={() => handleSubmission(submission._id, 'decline')}
+                  onClick={() => handleSubmission(submission.id, 'decline')}
                   className="decline-btn"
-                  disabled={disabledButtons[submission._id]}
+                  disabled={disabledButtons[submission.id]}
                 >
                   Decline
                 </button>
@@ -234,9 +234,9 @@ const ChartSubmissions = () => {
             </div>
 
             <div className="embed-container">
-              {videoEmbeds[submission._id] ? (
+              {videoEmbeds[submission.id] ? (
                 <iframe
-                  src={videoEmbeds[submission._id].embed}
+                  src={videoEmbeds[submission.id].embed}
                   title="Video player"
                   frameBorder="0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
@@ -247,7 +247,7 @@ const ChartSubmissions = () => {
                 <div
                   className="thumbnail-container"
                   style={{
-                    backgroundImage: `url(${videoEmbeds[submission._id]?.image || placeholder})`,
+                    backgroundImage: `url(${videoEmbeds[submission.id]?.image || placeholder})`,
                   }}
                 />
               )}

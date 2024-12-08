@@ -351,7 +351,7 @@
   z-index: 500;
 }
 
-.passs-dialog {
+.pass-dialog {
   color: var(--color-black);
   color: var(--color-white);
   position: fixed;
@@ -363,18 +363,18 @@
   width: 100%;
   animation: none;
 }
-.passs-dialog .dialog {
+.pass-dialog .dialog {
   background-color: var(--color-purple-2);
   border-radius: 5px;
   margin: 0 1rem;
   overflow: hidden;
 }
-.passs-dialog .dialog .header {
+.pass-dialog .dialog .header {
   word-wrap: break-word;
   padding: 1rem;
   position: relative;
 }
-.passs-dialog .dialog .header:before {
+.pass-dialog .dialog .header:before {
   content: "";
   position: absolute;
   width: 100%;
@@ -385,15 +385,15 @@
   background-color: var(--color-black-t60);
   z-index: 1;
 }
-.passs-dialog .dialog .header h2, .passs-dialog .dialog .header p {
+.pass-dialog .dialog .header h2, .pass-dialog .dialog .header p {
   position: relative;
   z-index: 2;
 }
-.passs-dialog .dialog .body {
+.pass-dialog .dialog .body {
   padding: 1rem;
   color: var(--color-white);
 }
-.passs-dialog .dialog .body .diff {
+.pass-dialog .dialog .body .diff {
   text-align: center;
   display: flex;
   justify-content: space-around;
@@ -401,30 +401,30 @@
   border-bottom: 2px solid var(--color-white);
   padding: 0.5rem;
 }
-.passs-dialog .dialog .body .team-info {
+.pass-dialog .dialog .body .team-info {
   margin-bottom: 1rem;
   border-bottom: 2px solid var(--color-white);
   padding: 0.5rem;
 }
-.passs-dialog .dialog .body .team-info .each-info {
+.pass-dialog .dialog .body .team-info .each-info {
   margin-bottom: 0.5rem;
   display: grid;
   gap: 1rem;
   grid-template-columns: 1fr 5fr;
   align-items: center;
 }
-.passs-dialog .dialog .body .links {
+.pass-dialog .dialog .body .links {
   display: flex;
   justify-content: center;
   gap: 2rem;
   align-items: center;
 }
-.passs-dialog .dialog .body .links svg {
+.pass-dialog .dialog .body .links svg {
   width: 50px;
   height: 50px;
   transition: all 0.1s linear;
 }
-.passs-dialog .dialog .body .links svg:hover {
+.pass-dialog .dialog .body .links svg:hover {
   transform: scale(1.2);
 }
 
@@ -432,7 +432,7 @@
   animation: scaleUpAnimation 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-.edit-button {
+.pass-detail .edit-button {
   height: 3rem;
   width: 3rem;
   background-color: transparent;
@@ -445,7 +445,7 @@
   margin: 0 auto;
 }
 
-.edit-button:hover {
+.pass-detail .edit-button:hover {
   transform: scale(1);
 }
 

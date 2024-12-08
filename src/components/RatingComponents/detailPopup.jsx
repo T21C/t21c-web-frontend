@@ -1,6 +1,6 @@
 import "./detailpopup.css";
 import { useEffect, useState } from 'react';
-import { getVideoDetails, getLevelIconSingle, inputDataRaw } from "@/Repository/RemoteRepository";
+import { getVideoDetails, getLevelImage, inputDataRaw } from "@/Repository/RemoteRepository";
 import { RatingItem } from './RatingItem';
 import { validateFeelingRating } from '@/components/Misc/Utility';
 import { RatingInput } from './RatingInput';
@@ -41,7 +41,7 @@ export const DetailPopup = ({
     const [pendingComment, setPendingComment] = useState("");
     const [isSaving, setIsSaving] = useState(false);
     const [saveError, setSaveError] = useState(null);
-    const [otherRatings, setOtherRatings] = useState({});
+    const [otherRatings, setOtherRatings] = useState([]);
     const [commentError, setCommentError] = useState(false);
 
     useEffect(() => {
@@ -60,17 +60,20 @@ export const DetailPopup = ({
 
     useEffect(() => {
         if (selectedRating) {
-            setPendingRating(selectedRating.ratings?.[user.username]?.[0] || "");
-            setPendingComment(selectedRating.ratings?.[user.username]?.[1] || "");
+            console.log("selectedRating", selectedRating);
+            setPendingRating(selectedRating.ratingDetails?.find(
+              detail => detail.username === user.username)?.rating || "");
+            setPendingComment(selectedRating.ratingDetails?.find(
+              detail => detail.username === user.username)?.comment || "");
             setHasUnsavedChanges(false);
-            setOtherRatings(selectedRating.ratings);
+            setOtherRatings(selectedRating.ratingDetails);
         }
     }, [selectedRating]);
 
     useEffect(() => {
         const fetchVideoData = async () => {
             if (selectedRating) {
-                const res = await getVideoDetails(selectedRating.rawVideoLink);
+                const res = await getVideoDetails(selectedRating.level.vidLink);
                 setVideoData(res);
                 console.log(res);
             }
@@ -104,7 +107,7 @@ export const DetailPopup = ({
         
         try {
             await updateRating(
-                selectedRating.ID,
+                selectedRating.id,
                 pendingRating,
                 pendingComment,
                 user.token
@@ -197,15 +200,15 @@ export const DetailPopup = ({
               <div className="details-container">
                 <div className="detail-field">
                   <span className="detail-label">Creator:</span>
-                  <span className="detail-value">{selectedRating.creator}</span>
+                  <span className="detail-value">{selectedRating.level.creator}</span>
                 </div>
                 <div className="detail-field">
                   <span className="detail-label">Current Difficulty:</span>
-                  <span className="detail-value">{selectedRating.currentDiff}</span>
+                  <img src={getLevelImage(selectedRating.level.pguDiff)} alt="" className="detail-value lv-icon" />
                 </div>
                 <div className="detail-field">
                   <span className="detail-label">Average Rating:</span>
-                  <span className="detail-value">{selectedRating.average}</span>
+                  <img src={getLevelImage(selectedRating.average)} alt="" className="detail-value lv-icon" />
                 </div>
               </div>
             </div>
@@ -229,20 +232,20 @@ export const DetailPopup = ({
                           {pendingRating.includes('-') && pendingRating.length > 3 ? (
                             <>
                               <img 
-                                src={getLevelIconSingle(pendingRating.split('-')[0])} 
+                                src={getLevelImage(pendingRating.split('-')[0])} 
                                 alt=""
                                 className="rating-level-image"
                               />
                               <span className="rating-separator">-</span>
                               <img 
-                                src={getLevelIconSingle(pendingRating.split('-')[1])} 
+                                src={getLevelImage(pendingRating.split('-')[1])} 
                                 alt=""
                                 className="rating-level-image"
                               />
                             </>
                           ) : (
                             <img 
-                              src={getLevelIconSingle(pendingRating)} 
+                              src={getLevelImage(pendingRating)} 
                               alt=""
                               className="rating-level-image"
                             />
@@ -279,8 +282,7 @@ export const DetailPopup = ({
                 <div className="rating-field other-ratings">
                   <label>Other Ratings:</label>
                   <div className="other-ratings-content">
-                    {Object.entries(otherRatings || {})
-                      .map(([username, [rating, comment]]) => (
+                    {otherRatings.map(({username, rating, comment}) => (
                         <RatingItem 
                           key={username} 
                           username={username} 

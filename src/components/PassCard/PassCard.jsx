@@ -1,13 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import "./passcard.css"
 import { useTranslation } from "react-i18next";
+import { getLevelImage } from "../../Repository/RemoteRepository";
 
 const PassCard = ({ pass }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   const redirect = () => {
-    navigate(`/passdetail?id=${pass.passId}`);
+    navigate(`/passdetail?id=${pass.id}`);
   };
 
   const onAnchorClick = (e) => {
@@ -15,16 +16,16 @@ const PassCard = ({ pass }) => {
   };
 
   // Format accuracy to percentage with 2 decimal places
-  const formattedAccuracy = (pass.Xacc * 100).toFixed(2) + '%';
+  const formattedAccuracy = (pass.accuracy * 100).toFixed(2) + '%';
 
   return (
     <div className='pass-card' onClick={() => redirect()} style={{ backgroundColor: pass.isDeleted ? "#f0000099" : "none" }}>
       <div className="pass-info-wrapper">
         <div className="group">
-          <p className="pass-exp">#{pass.passId} - {pass.player}</p>
+          <p className="pass-exp">#{pass.id} - {pass.player.name}</p>
           {pass.isWorldsFirst && <span className="wf-badge">WF</span>}
         </div>
-        <p className='pass-desc'>{pass.song}</p>
+        <p className='pass-desc'>{pass.level.song}</p>
       </div>
 
       <div className="stats-wrapper">
@@ -35,7 +36,7 @@ const PassCard = ({ pass }) => {
 
         <div className="score-section">
           <p className="pass-exp">Score</p>
-          <div className="pass-desc">{Math.round(pass.score)}</div>
+          <div className="pass-desc">{Math.round(pass.scoreV2)}</div>
         </div>
 
         {pass.speed && (
@@ -48,8 +49,8 @@ const PassCard = ({ pass }) => {
 
       <div className="flags-wrapper">
         {pass.is12K && <div className="flag">12K</div>}
-        {pass.isNoHold && <div className="flag">NHT</div>}
-        <div className="flag">{pass.pguDiff}</div>
+        {pass.isNoHoldTap && <div className="flag">NHT</div>}
+        <img className="lv-icon" src={getLevelImage(pass.level.pguDiff)} alt="" />
       </div>
 
       <div className="video-wrapper">

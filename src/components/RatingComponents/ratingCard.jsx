@@ -17,17 +17,17 @@ export const RatingCard = ({
   showDetailedView,
   onEditChart 
 }) => {
-    const userRating = rating.ratings?.[user.username]?.[0] || "";
-    const processedRatings = Object.entries(rating.ratings || {})
-        .map(([rater, [ratingValue]]) => calculateRatingValue(ratingValue))
+    const userRating = rating.ratingDetails?.find(detail => detail.username === user.username)?.rating || "";
+    const processedRatings = rating.ratingDetails
+        .map(({rating}) => calculateRatingValue(rating))
         .filter(rating => rating !== null);
         
-    const rerateValue = rating.requesterFR || rating.rerateNum;
-    const rerateReason = rating.rerateReason;
+    const rerateValue = rating.level.requesterFR || rating.level.rerateNum;
+    const rerateReason = rating.level.rerateReason;
     // Format title with creator
-    const songTitle = trimString(rating.song, 50);
-    const creator = trimString(rating.creator, 30);
-    const fullTitle = `${rating.song} - ${rating.creator}`;
+    const songTitle = trimString(rating.level.song, 50);
+    const creator = trimString(rating.level.creator, 30);
+    const fullTitle = `${rating.level.song} - ${rating.level.creator}`;
     const [isReasonExpanded, setIsReasonExpanded] = useState(false);
     
     const handleReasonClick = () => {
@@ -43,7 +43,7 @@ export const RatingCard = ({
               <span className="title-separator"> - </span>
               <span className="song-creator">{creator}</span>
             </h3>
-            <p className="artist">{rating.artist}</p>
+            <p className="artist">{rating.level.artist}</p>
           </div>
           
           <div className="rating-card-details">

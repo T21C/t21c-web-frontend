@@ -112,7 +112,7 @@ const LeaderboardPage = () => {
     if (playerData && playerData.length > 0) {
       var filteredPlayers = playerData.filter(player => {
         // First filter by search query
-        const matchesQuery = player.player.toLowerCase().includes(query.toLowerCase());
+        const matchesQuery = player.name.toLowerCase().includes(query.toLowerCase());
         
         // Then filter by banned status
         const matchesBannedFilter = 

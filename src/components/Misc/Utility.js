@@ -102,6 +102,7 @@ export function validateNumber ( value){
     return regex.test(value)
 }
 export function formatSpeed (speed) {
+    if (speed === null) return "1.0";
     const speedTwoDecimals = speed.toFixed(2);
     if (speedTwoDecimals[speedTwoDecimals.length - 1] !== '0') {
       return speedTwoDecimals;

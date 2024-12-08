@@ -14,7 +14,7 @@ const ScoreCard = ({scoreData}) => {
   console.log(scoreData);
   
     const redirect = () => {
-      navigate(`/leveldetail?id=${scoreData.chartId}`);
+      navigate(`/leveldetail?id=${scoreData.levelId}`);
     };
 
     const onAnchorClick = (e) => {
@@ -42,19 +42,19 @@ const ScoreCard = ({scoreData}) => {
   return (
     <div className='score-card'>
       <div className="img-wrapper">
-        <img src={getLevelImage(scoreData.pguDiff, scoreData.pguDiff ,scoreData.pguDiff ,scoreData.pguDiff)} referrerPolicy="no-referrer" alt="" />
+        <img src={getLevelImage(scoreData.level.pguDiff)} referrerPolicy="no-referrer" alt="" />
       </div>
       <div className="name-wrapper" onClick={() => redirect()}>
-          <p className="score-exp">{scoreData.artist}</p>
-          <p className='score-desc'>{scoreData.song}</p>
+          <p className="score-exp">{scoreData.level.artist}</p>
+          <p className='score-desc'>{scoreData.level.song}</p>
       </div>
       <div className="score-wrapper">
           <p className="score-exp">{t("scoreCardComponent.score")}</p>
-          <p className='score-desc'>{formatScore(scoreData.score)}</p>
+          <p className='score-desc'>{formatScore(scoreData.scoreV2)}</p>
       </div>
       <div className="acc-wrapper">
           <p className="score-exp">{t("scoreCardComponent.accuracy")}</p>
-          <div className="score-desc">{(scoreData.Xacc*100).toFixed(2)}%</div>
+          <div className="score-desc">{(scoreData.accuracy*100).toFixed(2)}%</div>
       </div>
 
       <div className="speed-wrapper">

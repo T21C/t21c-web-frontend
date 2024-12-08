@@ -18,11 +18,6 @@ const formatSpeed = (speed) => {
 
   return Math.round(speed);
 };
-function encodeToBase32(input) {
-  const encoder = new Encoder();
-  const buffer = new TextEncoder().encode(input);
-  return encoder.write(buffer).finalize();
-}
 // eslint-disable-next-line react/prop-types
 const ClearCard = ({scoreData, index}) => {
   console.log(scoreData)
@@ -32,7 +27,7 @@ const ClearCard = ({scoreData, index}) => {
   console.log(scoreData);
   
     const redirect = () => {
-      navigate(`/profile/${encodeToBase32(scoreData.player)}`);
+      navigate(`/profile/${scoreData.playerId}`);
     };
 
     const onAnchorClick = (e) => {
@@ -72,10 +67,10 @@ const ClearCard = ({scoreData, index}) => {
       
                     }
                     &nbsp;
-                    <img src={isoToEmoji(scoreData.country)} className="country" alt=""/>
+                    <img src={isoToEmoji(scoreData.player.country)} className="country" alt=""/>
                     &nbsp;
                     <span className="player-name">
-                    {scoreData.player}
+                    {scoreData.player.name}
                     </span>
                   </p>
                   <div className="time">{scoreData.vidUploadTime.slice(0, 10)}</div>

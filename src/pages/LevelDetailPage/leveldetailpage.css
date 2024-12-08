@@ -432,7 +432,7 @@
   animation: scaleUpAnimation 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
-.edit-button {
+.level-detail .edit-button {
   height: 3rem;
   width: 3rem;
   background-color: transparent;
@@ -445,7 +445,7 @@
   margin: 0 auto;
 }
 
-.edit-button:hover {
+.level-detail .edit-button:hover {
   transform: scale(1);
 }
 
