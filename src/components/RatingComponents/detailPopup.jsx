@@ -60,13 +60,12 @@ export const DetailPopup = ({
 
     useEffect(() => {
         if (selectedRating) {
-            console.log("selectedRating", selectedRating);
-            setPendingRating(selectedRating.ratingDetails?.find(
+            setPendingRating(selectedRating.RatingDetails?.find(
               detail => detail.username === user.username)?.rating || "");
-            setPendingComment(selectedRating.ratingDetails?.find(
+            setPendingComment(selectedRating.RatingDetails?.find(
               detail => detail.username === user.username)?.comment || "");
             setHasUnsavedChanges(false);
-            setOtherRatings(selectedRating.ratingDetails);
+            setOtherRatings(selectedRating.RatingDetails);
         }
     }, [selectedRating]);
 
@@ -75,7 +74,6 @@ export const DetailPopup = ({
             if (selectedRating) {
                 const res = await getVideoDetails(selectedRating.level.vidLink);
                 setVideoData(res);
-                console.log(res);
             }
         };
 

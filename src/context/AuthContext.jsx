@@ -17,7 +17,6 @@ export const AuthProvider = ({ children }) => {
 
   const checkAdmin = async () => {
     const response = await api.get(import.meta.env.VITE_CHECK_ADMIN);
-    //console.log("admin check", response.data);  
     setIsAdmin(response.data.isAdmin);
     setIsSuperAdmin(response.data.isSuperAdmin);
   };
@@ -83,7 +82,6 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (accessToken) {
-      //console.log("Access token received");
       getTokenData(accessToken);
     }
   }, [accessToken]);
@@ -175,7 +173,7 @@ export const AuthProvider = ({ children }) => {
         console.error('Error during login:', error);
       }
     },
-    onError: (error) => console.log('Login Failed:', error),
+    onError: (error) => console.error('Login Failed:', error),
   });
 
   const loginDiscord = () => {

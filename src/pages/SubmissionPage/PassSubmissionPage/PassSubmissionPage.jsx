@@ -88,7 +88,6 @@ const PassSubmissionPage = () => {
       displayValidationRes[field] = submitAttempt ? validationResult[field] : true;
     }
     
-    //console.log(validationResult["videoLink"], videoDetail)
     setIsValidFeelingRating(frValid);
     setIsValidSpeed(speedValid); // Update validation state
     setIsFormValidDisplay(displayValidationRes); // Set the validity object
@@ -149,7 +148,6 @@ const PassSubmissionPage = () => {
 
   useEffect(() => {
     const { videoLink } = form;
-    //console.log(videoLink);
     
     getVideoDetails(videoLink).then((res) => {
       setVideoDetail(
@@ -239,7 +237,7 @@ const PassSubmissionPage = () => {
     setShowMessage(true)
     setSuccess(false);
     if(!user){
-      console.log("no user");
+      console.error("no user");
       setError(t("passSubmission.alert.login"));
 
       return 
@@ -247,29 +245,35 @@ const PassSubmissionPage = () => {
     if (!Object.values(isFormValid).every(Boolean)) {
       setSubmitAttempt(true)
       setError(t("passSubmission.alert.form"));
-      console.log("incomplete form, returning")
+      console.error("incomplete form, returning")
       return
     };
 
     setSubmission(true)
     setError(null);
-    submissionForm.setDetail('levelId', form.levelId)
-    submissionForm.setDetail('speed', form.speed >= 1 ? form.speed : "1")
-    submissionForm.setDetail('passer', form.leaderboardName)
-    submissionForm.setDetail('feelingDifficulty', form.feelingRating)
-    submissionForm.setDetail('title', videoDetail.title)
-    submissionForm.setDetail('rawVideoId', form.videoLink)
-    submissionForm.setDetail('rawTime', videoDetail.timestamp)
-    submissionForm.setDetail('earlyDouble', form.tooEarly)
-    submissionForm.setDetail('earlySingle', form.early)
-    submissionForm.setDetail('ePerfect', form.ePerfect)
-    submissionForm.setDetail('perfect', form.perfect)
-    submissionForm.setDetail('lPerfect', form.lPerfect)
-    submissionForm.setDetail('lateSingle', form.late)
-    submissionForm.setDetail('lateDouble', "0")
-    submissionForm.setDetail('isNHT', form.isNoHold)
-    submissionForm.setDetail("is12k", IsUDiff && form.is12k)
-    submissionForm.setDetail("is16k", IsUDiff && form.is16k)
+
+    submissionForm.setDetail('levelId', form.levelId);
+    submissionForm.setDetail('videoLink', form.videoLink);
+    submissionForm.setDetail('passer', form.leaderboardName);
+    submissionForm.setDetail('speed', form.speed);
+    submissionForm.setDetail('feelingDifficulty', form.feelingRating);
+    submissionForm.setDetail('title', videoDetail?.title || '');
+    submissionForm.setDetail('rawVideoId', form.videoLink);
+    submissionForm.setDetail('rawTime', videoDetail?.timestamp || new Date().toISOString());
+
+    // Add judgements directly to form
+    submissionForm.setDetail('earlyDouble', parseInt(form.tooEarly) || 0);
+    submissionForm.setDetail('earlySingle', parseInt(form.early) || 0);
+    submissionForm.setDetail('ePerfect', parseInt(form.ePerfect) || 0);
+    submissionForm.setDetail('perfect', parseInt(form.perfect) || 0);
+    submissionForm.setDetail('lPerfect', parseInt(form.lPerfect) || 0);
+    submissionForm.setDetail('lateSingle', parseInt(form.late) || 0);
+    submissionForm.setDetail('lateDouble', 0);
+
+    // Add flags directly to form
+    submissionForm.setDetail('is12k', IsUDiff && form.is12k);
+    submissionForm.setDetail('isNHT', form.isNoHold);
+    submissionForm.setDetail('is16k', IsUDiff && form.is16k);
 
     submissionForm.submit(user.access_token)
   .then(result => {

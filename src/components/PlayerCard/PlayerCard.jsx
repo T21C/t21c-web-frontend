@@ -79,7 +79,6 @@ const PlayerCard = ({player}) => {
       }
 
 
-    //console.log(primaryField, prioritizedField);
     
     if (!nonRoundable.includes(sortBy)){
       if (!passes.includes(sortBy)){

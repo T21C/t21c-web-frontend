@@ -43,7 +43,6 @@ const PassSubmissions = () => {
       setIsLoading(true);
       const response = await api.get(`${import.meta.env.VITE_SUBMISSION_API}/passes/pending`);
       const data = await response.data;
-      console.log(data);
       setSubmissions(data);
     } catch (error) {
       console.error('Error fetching submissions:', error);
@@ -81,17 +80,13 @@ const PassSubmissions = () => {
     try {
       const { name, country } = newPlayerData[submissionId] || {};
       if (!name || !country) {
-        alert(t('passSubmission.alert.playerInfo'));
+        alert("Please fill in all fields");
         return;
       }
 
-      const response = await fetch('/v2/admin/submissions/players', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
-        },
-        body: JSON.stringify({ name, country })
+      const response = await api.post(`${import.meta.env.VITE_INDIVIDUAL_PLAYER}create`, {
+        name,
+        country
       });
 
       if (!response.ok) {
@@ -104,7 +99,7 @@ const PassSubmissions = () => {
       setNewPlayerData(prev => ({ ...prev, [submissionId]: {} }));
     } catch (error) {
       console.error('Error creating player:', error);
-      alert(t('passSubmission.alert.createPlayerError'));
+      alert("Error creating player: " + error);
     }
   };
 
@@ -112,12 +107,11 @@ const PassSubmissions = () => {
     const submission = submissions.find(s => s.id === submissionId);
     
     if (action === 'approve' && !submission.assignedPlayerId) {
-      alert(t('passSubmission.alert.noPlayerAssigned'));
+      alert("No player assigned");
       return;
     }
 
     try {
-      console.log('Starting animation for:', submissionId, 'with action:', action);
       
       // Disable buttons for this card
       setDisabledButtons(prev => ({
@@ -163,7 +157,7 @@ const PassSubmissions = () => {
   
     } catch (error) {
       console.error('Error processing submission:', error);
-      alert(t('passSubmission.alert.submissionError'));
+      alert("Error processing submission");
     }
   };
 
@@ -248,14 +242,14 @@ const PassSubmissions = () => {
                     <div className="create-player-form">
                       <input
                         type="text"
-                        placeholder={t('passSubmission.playerCountry')}
+                        placeholder="Player Country"
                         onChange={(e) => setNewPlayerData(prev => ({
                           ...prev,
                           [submission.id]: { ...prev[submission.id], country: e.target.value }
                         }))}
                       />
                       <button onClick={() => handleCreatePlayer(submission.id)}>
-                        {t('passSubmission.createPlayer')}
+                        Create Player
                       </button>
                     </div>
                   )}
@@ -267,14 +261,14 @@ const PassSubmissions = () => {
                     className="approve-btn"
                     disabled={disabledButtons[submission.id]}
                   >
-                    {t('passSubmission.allow')}
+                    Allow
                   </button>
                   <button
                     onClick={() => handleSubmission(submission.id, 'decline')}
                     className="decline-btn"
                     disabled={disabledButtons[submission.id]}
                   >
-                    {t('passSubmission.decline')}
+                    Decline
                   </button>
                 </div>
               </div>

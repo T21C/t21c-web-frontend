@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
-import { inputDataRaw } from "../../Repository/RemoteRepository";
+import { inputDataRaw, inputPguDictRaw } from "@/Repository/RemoteRepository";
+
 import "./ratinginput.css";
 
-export const RatingInput = ({ value, onChange, isLegacy, showDiff=true }) => {
+export const RatingInput = ({ value, onChange, isLegacy, showDiff=true, pguOnly=false }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedRating, setSelectedRating] = useState([null,null]);
 
   const getSelectedRating = (rating) => {
     // Find the matching URL for the rating
-    const matchingEntry = inputDataRaw.find(([key]) => key === rating);
+    const dataRaw = pguOnly ? inputPguDictRaw : inputDataRaw;
+    const matchingEntry = dataRaw.find(([key]) => key === rating);
     return matchingEntry ? matchingEntry : [null,null]; // Return URL or empty string if not found
   };
 
@@ -22,7 +24,7 @@ export const RatingInput = ({ value, onChange, isLegacy, showDiff=true }) => {
   };
 
   // Filter options based on input
-  const dataRaw = inputDataRaw;
+  const dataRaw = pguOnly ? inputPguDictRaw : inputDataRaw;
   const filteredOptions = dataRaw.filter(([rating]) => 
     rating.toLowerCase().includes(value.toLowerCase())
   );

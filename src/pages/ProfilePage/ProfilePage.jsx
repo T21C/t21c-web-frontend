@@ -25,7 +25,6 @@ const parseRankColor = (rank) => {
       clr = "#777777";
       break;
   }
-  console.log("color", clr, rank);
   
   return clr
 }
@@ -62,8 +61,6 @@ const ProfilePage = () => {
           try {
             const response = await api.get(import.meta.env.VITE_INDIVIDUAL_PLAYER + playerName);
             
-            // Store all the data
-            console.log(response.data);
             
             setPlayerData(response.data);
             

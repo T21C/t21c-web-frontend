@@ -98,9 +98,6 @@ const getScore = (passData, chartData) => {
 
 export const getScoreV2 = (passData, chartData) => {
     
-    
-    console.log(passData)
-    console.log(chartData)
     const inputs = passData['judgements'];
     const scoreOrig = getScore(passData, chartData);
     var mtp = getScoreV2Mtp(inputs);

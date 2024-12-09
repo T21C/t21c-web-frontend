@@ -11,6 +11,7 @@ import { PassContext } from "../../context/PassContext";
 import api from '../../utils/api';
 import ScrollButton from "../../components/ScrollButton/ScrollButton";
 import { useAuth } from "../../context/AuthContext";
+import { RatingInput } from '@/components/RatingComponents/RatingInput';
 
 const limit = 30;
 
@@ -44,16 +45,9 @@ const PassPage = () => {
   } = useContext(PassContext);
 
   const [deletedFilter, setDeletedFilter] = useState('hide');
+  const [selectedLowFilterDiff, setSelectedLowFilterDiff] = useState('');
+  const [selectedHighFilterDiff, setSelectedHighFilterDiff] = useState('');
 
-  useEffect(() => {
-    console.log('Current state:', {
-      passesLength: passesData.length,
-      pageNumber,
-      hasMore,
-      loading,
-      error
-    });
-  }, [passesData, pageNumber, hasMore, loading, error]);
 
   useEffect(() => {
     let cancel;
@@ -67,9 +61,12 @@ const PassPage = () => {
           sort,
           offset: pageNumber * limit,
           deletedFilter,
+          lowDiff: selectedLowFilterDiff,
+          highDiff: selectedHighFilterDiff,
+          hideNHT,
+          hide12k
         };
 
-        console.log('Fetching with params:', params);
 
         const response = await api.get(
           `${import.meta.env.VITE_ALL_PASSES_URL}`,
@@ -79,7 +76,6 @@ const PassPage = () => {
           }
         );
 
-        console.log('API Response:', response.data);
 
         const newPasses = response.data.results;
         
@@ -92,12 +88,6 @@ const PassPage = () => {
         
         setHasMore(newPasses.length === limit);
 
-        console.log('Updated state:', {
-          newPassesCount: newPasses.length,
-          totalPassesCount: response.data.count,
-          pageNumber,
-          hasMore: newPasses.length === limit
-        });
 
       } catch (error) {
         if (!axios.isCancel(error)) {
@@ -116,7 +106,7 @@ const PassPage = () => {
     }
 
     return () => cancel && cancel();
-  }, [query, sort, pageNumber, forceUpdate, deletedFilter]);
+  }, [query, sort, pageNumber, forceUpdate, deletedFilter, selectedLowFilterDiff, selectedHighFilterDiff, hideNHT, hide12k]);
 
   const fetchPassById = async () => {
     setLoading(true);
@@ -174,6 +164,20 @@ const PassPage = () => {
     // Update sort
     setSort(value);
   }
+
+  const handleLowFilter = (value) => {
+    setSelectedLowFilterDiff(value);
+    setPageNumber(0);
+    setPassesData([]);
+    setForceUpdate(prev => !prev);
+  };
+
+  const handleHighFilter = (value) => {
+    setSelectedHighFilterDiff(value);
+    setPageNumber(0);
+    setPassesData([]);
+    setForceUpdate(prev => !prev);
+  };
 
   return (
     <div className="pass-page">
@@ -236,9 +240,27 @@ const PassPage = () => {
             }}
           >
             <div className="spacer-setting"></div>
-            <h2 className="setting-title">
-              Filter
-            </h2>
+            <h2 className="setting-title">Filter</h2>
+            <div className="diff-filters">
+              <div className="filter-container">
+                <p className="setting-description">Lower diff</p>
+                <RatingInput
+                  value={selectedLowFilterDiff || ''}
+                  onChange={handleLowFilter}
+                  showDiff={true}
+                />
+              </div>
+
+              <div className="filter-container">
+                <p className="setting-description">Upper diff</p>
+                <RatingInput
+                  value={selectedHighFilterDiff || ''}
+                  onChange={handleHighFilter}
+                  showDiff={true}
+                />
+              </div>
+            </div>
+
             <div className="checkbox-filters">
               <label>
                 <input
@@ -259,7 +281,7 @@ const PassPage = () => {
               {isSuperAdmin && (
                 <div className="deletion-filter-inline">
                   <label>
-                    Show deleted passes
+                    Deleted passes:
                     <select 
                       value={deletedFilter}
                       onChange={(e) => {
@@ -283,7 +305,6 @@ const PassPage = () => {
           style={{ paddingBottom: "15rem" }}
           dataLength={passesData.length}
           next={() => {
-            console.log('Loading more...', { pageNumber });
             setPageNumber(prev => prev + 1);
           }}
           hasMore={hasMore}

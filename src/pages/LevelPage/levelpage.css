@@ -83,7 +83,7 @@
 .level-page .level-body .settings-class {
   transition: height 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 1s ease-in-out;
   height: 10rem;
-  overflow: hidden;
+  overflow: visible;
 }
 .level-page .level-body .spacer-setting {
   width: 100%;
@@ -93,13 +93,62 @@
 }
 .level-page .level-body .diff-filters {
   display: flex;
-  flex-direction: row; /* Stacks items vertically */
-  gap: 1rem; /* Adds space between the filter containers */
+  flex-direction: row;
+  gap: 1rem;
+  margin-bottom: 1rem;
 }
 
 .level-page .level-body .filter-container {
   display: flex;
-  flex-direction: column; /* Stack the label and select vertically */
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.level-page .level-body .filter-container .setting-description {
+  color: var(--color-white);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+/* Style adjustments for RatingInput inside filter */
+.level-page .level-body .filter-container .rating-input-wrapper {
+  width: 10rem;
+}
+
+.level-page .level-body .filter-container .rating-input-container {
+  background-color: rgb(42, 42, 42, 0.8);
+  border-radius: 3px;
+}
+
+.level-page .level-body .filter-container .rating-input-container input {
+  background: transparent;
+  color: var(--color-white);
+  border: none;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.level-page .level-body .filter-container .rating-input-container input:focus {
+  outline: none;
+}
+
+.level-page .level-body .filter-container .rating-dropdown {
+  background: #2a2a2a;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.level-page .level-body .filter-container .rating-option {
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.level-page .level-body .filter-container .rating-option:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .level-page .level-body .input-setting {

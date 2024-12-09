@@ -49,7 +49,6 @@ const Navigation = ({ children }) => {
 
   const toggleAdminView = () => {
     const newAdminView = !isAdminView;
-    console.log("admin view", newAdminView);
     navigate(newAdminView ? '/admin/rating' : '/levels');
   };
 

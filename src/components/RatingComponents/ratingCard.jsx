@@ -17,12 +17,12 @@ export const RatingCard = ({
   showDetailedView,
   onEditChart 
 }) => {
-    const userRating = rating.ratingDetails?.find(detail => detail.username === user.username)?.rating || "";
-    const processedRatings = rating.ratingDetails
+    const userRating = rating.RatingDetails?.find(detail => detail.username === user.username)?.rating || "";
+    const processedRatings = rating.RatingDetails
         .map(({rating}) => calculateRatingValue(rating))
         .filter(rating => rating !== null);
         
-    const rerateValue = rating.level.requesterFR || rating.level.rerateNum;
+    const rerateValue = rating.level.rerateNum || rating.requesterFR ;
     const rerateReason = rating.level.rerateReason;
     // Format title with creator
     const songTitle = trimString(rating.level.song, 50);
@@ -65,12 +65,12 @@ export const RatingCard = ({
               )}
               {(rerateValue || rerateReason) && (
                 <>
-                  <p className="rating-info-item" data-label="Rerate">
+                  <p className="rating-info-item" data-label={`${rating.level.rerateNum ? "Rerate Number" : "Requested Rating"}`}>
                     {rerateValue}
                   </p>
                   <div 
                     className={`rating-info-item rerate-reason ${isReasonExpanded ? 'expanded' : ''}`}
-                    data-label="Rerate message"
+                    data-label="Rerate Message"
                     onClick={handleReasonClick}
                     title="Click to expand"
                   > 

@@ -41,9 +41,7 @@ const RatingPage = () => {
     try {
       const ratingsResponse = await api.get(`${import.meta.env.VITE_RATING_API}`);
       const data = await ratingsResponse.data;
-      console.log("refreshing ratings");
       setRatings(data);
-      console.log("data", data);
     } catch (error) {
       console.error("Error fetching ratings:", error);
     }
@@ -101,7 +99,6 @@ const RatingPage = () => {
       });
 
       socket.on('ratingsUpdated', () => {
-        console.log('Received ratingsUpdated event, fetching new data...');
         fetchRatings();
       });      
     };
@@ -111,7 +108,6 @@ const RatingPage = () => {
     return () => {
       if (socket) {
         socket.off('ratingsUpdated', () => {
-          console.log('Received ratingsUpdated event, fetching new data...');
           fetchRatings();
         });
         socket.disconnect();
@@ -120,8 +116,6 @@ const RatingPage = () => {
   }, [user, fetchRatings]);
 
   useEffect(() => {
-    console.log("ratings", ratings);
-    console.log("looking for selectedRating", selectedRating);
     if (selectedRating) {
       const updatedSelectedRating = ratings.find(r => r.id === selectedRating.id);
       if (updatedSelectedRating) {
@@ -229,19 +223,22 @@ const RatingPage = () => {
                   setSelectedChart(null);
                 }}
                 onUpdate={(updatedChart) => {
-                  setRatings(prev => prev.map(rating => 
-                    rating.levelId === updatedChart.id 
-                      ? {
-                          ...rating,
-                          Song: updatedChart.song,
-                          "Artist(s)": updatedChart.artist,
-                          "Creator(s)": updatedChart.creator,
-                          "Video link": updatedChart.vidLink,
-                          "DL link": updatedChart.dlLink,
-                          "Current Diff": updatedChart.diff
-                        }
-                      : rating
-                  ));
+                  // Only update ratings if updatedChart exists (not a soft delete)
+                  if (updatedChart) {
+                    setRatings(prev => prev.map(rating => 
+                      rating.levelId === updatedChart.id 
+                        ? {
+                            ...rating,
+                            Song: updatedChart.song,
+                            "Artist(s)": updatedChart.artist,
+                            "Creator(s)": updatedChart.creator,
+                            "Video link": updatedChart.vidLink,
+                            "DL link": updatedChart.dlLink,
+                            "Current Diff": updatedChart.diff
+                          }
+                        : rating
+                    ));
+                  }
                   setOpenEditDialog(false);
                   setSelectedChart(null);
                 }}

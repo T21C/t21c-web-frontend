@@ -11,14 +11,15 @@ import { validateFeelingRating, validateSpeed, validateNumber } from '../Misc/Ut
 import placeholder from '../../assets/placeholder/4.png';
 import { FetchIcon } from '../FetchIcon/FetchIcon.jsx';
 import { useNavigate } from 'react-router-dom';
-
+import { PlayerInput } from '../../components/PlayerComponents/PlayerInput';
 
 export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
   const initialFormState = {
     levelId: pass.levelId.toString() || '',
     videoLink: pass.vidLink || '',
-    leaderboardName: pass.player || '',
     speed: pass.speed || '1',
+    playerId: pass.playerId || '',
+    leaderboardName: pass.player.name || '',
     feelingRating: pass.feelingRating || '',
     ePerfect: pass.judgements.ePerfect.toString() || '',
     perfect: pass.judgements.perfect.toString() || '',
@@ -30,7 +31,6 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
     is12k: pass.is12K || false,
     is16k: pass.is16K || false
   };
-  console.log(initialFormState)
   const { t } = useTranslation()
   const { user } = useAuth();
   const [form, setForm] = useState(initialFormState);
@@ -71,26 +71,21 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
         validationResult[field] = (form[field].trim() !== '') && validateNumber(form[field]) ; 
       }
       else{
-        console.log(field, form[field])
         validationResult[field] = (form[field].trim() !== ''); // Check if each field is filled
       }
     });
 
     validationResult["levelId"] = !(level === null || level === undefined);
     
-
-    
     const frValid = validateFeelingRating(form["feelingRating"])
     const speedValid = validateSpeed(form["speed"])
     validationResult.speed = speedValid
     validationResult["videoLink"] = videoDetail && true;
 
-
     for (const field in validationResult) {
       displayValidationRes[field] = submitAttempt ? validationResult[field] : true;
     }
     
-    //console.log(validationResult["videoLink"], videoDetail)
     setIsValidFeelingRating(frValid);
     setIsValidSpeed(speedValid); // Update validation state
     setIsFormValidDisplay(displayValidationRes); // Set the validity object
@@ -151,7 +146,7 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
 
   useEffect(() => {
     const { videoLink } = form;
-    //console.log(videoLink);
+
     
     getVideoDetails(videoLink).then((res) => {
       setVideoDetail(
@@ -238,15 +233,21 @@ const handleSubmit = async (e) => {
   setSuccess(false);
   
   if (!user) {
-    console.log("no user");
+    console.error("no user");
     setError(t("passSubmission.alert.login"));
+    return;
+  }
+
+  // Check if player is selected
+  if (!form.playerId) {
+    setError("Please select a valid player");
     return;
   }
 
   if (!isFormValid) {
     setSubmitAttempt(true);
     setError(t("passSubmission.alert.form"));
-    console.log("incomplete form, returning");
+    console.error("incomplete form, returning");
     return;
   }
 
@@ -254,20 +255,20 @@ const handleSubmit = async (e) => {
   setError(null);
 
   try {
-    // Preserve all original fields while formatting for PUT endpoint
     const updateData = {
-      // Original fields from form
-      levelId: form.levelId,
-      videoLink: form.videoLink,
-      leaderboardName: form.leaderboardName,
+      // Required fields from the API
+      levelId: parseInt(form.levelId),
+      playerId: form.playerId,
       speed: parseFloat(form.speed) >= 1 ? parseFloat(form.speed) : 1,
       feelingRating: form.feelingRating,
-      title: videoDetail?.title,
-      rawVideoId: form.videoLink,
-      rawTime: videoDetail?.timestamp,
-      baseScore: parseFloat(level?.baseScore),
+      vidTitle: videoDetail?.title || level?.song || '',
+      vidLink: form.videoLink,
+      vidUploadTime: videoDetail?.timestamp || new Date().toISOString(),
+      is12K: IsUDiff && form.is12k,
+      is16K: IsUDiff && form.is16k,
+      isNoHoldTap: form.isNoHold,
 
-      // Judgements in both array and object format for compatibility
+      // Judgements in the exact format expected by the API
       judgements: {
         earlyDouble: parseInt(form.tooEarly) || 0,
         earlySingle: parseInt(form.early) || 0,
@@ -276,35 +277,10 @@ const handleSubmit = async (e) => {
         lPerfect: parseInt(form.lPerfect) || 0,
         lateSingle: parseInt(form.late) || 0,
         lateDouble: 0
-      },
-
-      // Flags
-      isNoHold: form.isNoHold,
-      is12k: IsUDiff && form.is12k,
-      is16k: IsUDiff && form.is16k,
-
-      // Additional metadata
-      submitter: {
-        discordUsername: user.username,
-        email: user.email
-      },
-
-      // Video details if available
-      videoDetails: videoDetail ? {
-        title: videoDetail.title || level.song,
-        channelName: videoDetail.channelName || form.leaderboardName,
-        timestamp: videoDetail.timestamp || new Date().toISOString(),
-        image: videoDetail.image,
-        embed: videoDetail.embed,
-        pfp: videoDetail.pfp
-      } : {
-        title: level.song,
-        channelName: form.leaderboardName,
-        timestamp: new Date().toISOString(),
       }
     };
-    console.log("updateData", updateData)
-    console.log("speed", form.speed)
+
+    
     const response = await api.put(
       `${import.meta.env.VITE_INDIVIDUAL_PASSES}${pass.id}`,
       updateData,
@@ -536,12 +512,21 @@ const handleSubmit = async (e) => {
                       </div>)}
             </div>
               <div className="info-input">
-                <input
-                  type="text"
-                  placeholder={t("passSubmission.submInfo.altname")}
-                  name="leaderboardName"
-                  value={form.leaderboardName}
-                  onChange={handleInputChange}
+                <PlayerInput
+                  value={form.leaderboardName || ''}
+                  onChange={(value) => {
+                    setForm(prev => ({  
+                      ...prev,
+                      leaderboardName: value
+                    }));
+                  }}
+                  onSelect={(player) => {
+                    setForm(prev => ({
+                      ...prev,
+                      leaderboardName: player.name,
+                      playerId: player.id
+                    }));
+                  }}
                 />
                 <div className="tooltip-container">
                   <input

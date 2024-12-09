@@ -43,7 +43,6 @@ export function calculateRatingValue(rating) {
   // Check if it's a range (contains hyphen)
   if (cleanRating.includes('-')) {
     const [start, end] = cleanRating.split('-');
-    console.log("start, end", start, end)
     // Validate both parts exist
     if (!start || !end) return null;
     
@@ -59,8 +58,6 @@ export function calculateRatingValue(rating) {
     const avg = Math.round((startValue + endValue) / 2);
     return getValueAsRating(avg);
   }
-  console.log(rating)
-  console.log(cleanRating)
   // If it's a single rating, validate it exists in inputDataRaw
   if (Object.keys(inputDataRaw).includes(cleanRating)) {
     return cleanRating;

@@ -58,7 +58,6 @@ const LeaderboardPage = () => {
   ];
 
   function sortByField(data) {
-    console.log("sorting by", sortBy);
     
     return data.sort((a, b) => {
       if (sortBy === "topDiff" || sortBy === "top12kDiff") {
@@ -134,7 +133,6 @@ const LeaderboardPage = () => {
       setPlayerList([]);
     }
     setLoading(false);
-    console.log(displayedPlayers);
     
   }, [playerData, query, sort, sortBy, forceUpdate, t, showBanned]);
 

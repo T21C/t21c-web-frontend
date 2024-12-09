@@ -33,7 +33,6 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
 
   useEffect(() => {
     if (chart) {
-      console.log("chart", chart);
       setFormData({
         song: chart.song || '',
         artist: chart.artist || '',
@@ -95,7 +94,7 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
         onClose();
       }
     } catch (err) {
-      console.log(err)
+      console.error(err)
       setError(err.response?.data?.message || 'Failed to update chart');
     } finally {
       setIsSaving(false);

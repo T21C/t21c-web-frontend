@@ -19,13 +19,11 @@ const LevelCard = ({index, level, legacyMode, isSuperAdmin }) => {
 
     try {
       await api.put(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${level.id}/toRate`, { toRate: newToRate });
-      console.log(`Chart ${level.id} updated with toRate: ${newToRate}`);
     } catch (error) {
       console.error(`Failed to update chart ${level.id}:`, error);
     }
   };
 
-  //console.log(level);
   
   level.wsLink = level.ws ? level.ws : level.wsLink ? level.wsLink : level.workshopLink;
   level.dlLink = level.dl ? level.dl : level.dlLink

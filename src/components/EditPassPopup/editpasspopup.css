@@ -179,6 +179,7 @@
 
 .edit-popup-overlay .form-container form .info .info-input input {
   width: auto;
+  color: var(--color-black);
 }
 .edit-popup-overlay .form-container form .info .accuracy {
   display: flex;

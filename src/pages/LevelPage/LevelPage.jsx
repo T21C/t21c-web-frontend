@@ -1,18 +1,19 @@
 /* eslint-disable no-unused-vars */
 import "./levelpage.css";
 import { useContext, useEffect, useState } from "react";
-import { CompleteNav, LevelCard } from "../../components";
+import { CompleteNav, LevelCard } from "@/components";
 import { Tooltip } from "react-tooltip";
-import Select from "react-select";
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
-import api from '../../utils/api';
-import { LevelContext } from "../../context/LevelContext";
+import api from '@/utils/api';
+import { LevelContext } from "@/context/LevelContext";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import bgImgDark from "../../assets/important/dark/theme-background.jpg";
-import ScrollButton from "../../components/ScrollButton/ScrollButton";
-import { useAuth } from "../../context/AuthContext";
+import ScrollButton from "@/components/ScrollButton/ScrollButton";
+import { useAuth } from "@/context/AuthContext";
+import { RatingInput } from '@/components/RatingComponents/RatingInput';
+import { pguDataRaw, calculatePguDiffNum } from "@/Repository/RemoteRepository";
+
 
 const options = [
   { value: "1", label: "P1" },
@@ -119,7 +120,7 @@ const LevelPage = () => {
 
   useEffect(() => {
     let cancel;
-
+    
     const fetchLevels = async () => {
       setLoading(true);
       try {
@@ -130,23 +131,29 @@ const LevelPage = () => {
           sort, 
           offset: pageNumber * limit,
           deletedFilter,
-          lowFilterDiff: selectedLowFilterDiff,
-          highFilterDiff: selectedHighFilterDiff,
           hideUnranked,
           hideCensored,
           hideEpic
         };
+        // Pass difficulty filters as raw strings if they exist
+        
+        const lowDiff = calculatePguDiffNum(selectedLowFilterDiff?.toUpperCase());
+        const highDiff = calculatePguDiffNum(selectedHighFilterDiff?.toUpperCase());
 
-        // Add minDiff only if selectedLowFilterDiff is defined
-        if (selectedLowFilterDiff) {
-          params.minDiff = selectedLowFilterDiff.value;
+        if (lowDiff !== 0 && highDiff !== 0 && lowDiff > highDiff) {
+          // Swap if min > max
+          params.minDiff = highDiff;
+          params.maxDiff = lowDiff;
+        } else {
+          // Normal case
+          if (lowDiff !== 0) {
+            params.minDiff = lowDiff;
+          }
+          if (highDiff !== 0) {
+            params.maxDiff = highDiff;
+          }
         }
-
-        // Add maxDiff only if selectedHighFilterDiff is defined
-        if (selectedHighFilterDiff) {
-          params.maxDiff = selectedHighFilterDiff.value;
-        } 
-
+        
         const response = await api.get(
           `${import.meta.env.VITE_ALL_LEVEL_URL}`,
           {
@@ -245,6 +252,8 @@ const LevelPage = () => {
     setPageNumber(0);
     setSort("RECENT_DESC");
     setQuery("");
+    setSelectedLowFilterDiff(null);
+    setSelectedHighFilterDiff(null);
     setLevelsData([]);
     setLoading(true);
     setForceUpdate((f) => !f);
@@ -397,159 +406,24 @@ const LevelPage = () => {
             <div className="diff-filters">
               <div className="filter-container">
                 <p className="setting-description">Lower diff</p>
-                <Select
-                  id="low-diff-select" // Set an ID for the select
-                  defaultValue={selectedLowFilterDiff}
+                <RatingInput
+                  value={selectedLowFilterDiff || ''}
                   onChange={handleLowFilter}
-                  options={options}
-                  menuPortalTarget={document.body}
-                  styles={{
-                    menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                    container: (provided) => ({
-                      ...provided,
-                      zIndex: 9999,
-                    }),
-                    control: (provided, state) => ({
-                      ...provided,
-                      width: "10rem",
-                      backgroundColor: "rgba(255, 255, 255, 0.3)",
-                      border: "none",
-                      outline: "none",
-                      boxShadow: state.isFocused
-                        ? "0 0 0 2px #000000"
-                        : provided.boxShadow,
-                      "&:hover": {
-                        boxShadow: "none",
-                      },
-                      singleValue: {
-                        ...provided.singleValue,
-                        color: "#FFFFFF !important",
-                      },
-                      indicatorSeparator: {
-                        ...provided.indicatorSeparator,
-                        backgroundColor: "#000000",
-                      },
-                    }),
-                    menu: (provided) => ({
-                      ...provided,
-                      width: "10rem",
-                      backgroundColor: "#fff",
-                      border: "none",
-                      boxShadow: "none",
-                      color: "#000000",
-                      zIndex: 9999,
-                    }),
-                    option: (provided, state) => ({
-                      ...provided,
-                      backgroundColor: state.isSelected
-                        ? "rgb(255,255,255)"
-                        : "transparent",
-                      zIndex: 9999,
-                    }),
-                  }}
-                  placeholder="Disabled"
-                  isSearchable
+                  showDiff={true}
+                  /*pguOnly={true}*/
                 />
               </div>
 
               <div className="filter-container">
                 <p className="setting-description">Upper diff</p>
-                <Select
-                  id="high-diff-select" // Set an ID for the select
-                  defaultValue={selectedHighFilterDiff}
+                <RatingInput
+                  value={selectedHighFilterDiff || ''}
                   onChange={handleHighFilter}
-                  options={options}
-                  menuPortalTarget={document.body}
-                  styles={{
-                    menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-                    container: (provided) => ({
-                      ...provided,
-                      zIndex: 9999,
-                    }),
-                    control: (provided, state) => ({
-                      ...provided,
-                      width: "10rem",
-                      backgroundColor: "rgba(255, 255, 255, 0.3)",
-                      border: "none",
-                      outline: "none",
-                      boxShadow: state.isFocused
-                        ? "0 0 0 2px #000000"
-                        : provided.boxShadow,
-                      "&:hover": {
-                        boxShadow: "none",
-                      },
-                      singleValue: {
-                        ...provided.singleValue,
-                        color: "#FFFFFF !important",
-                      },
-                      indicatorSeparator: {
-                        ...provided.indicatorSeparator,
-                        backgroundColor: "#000000",
-                      },
-                    }),
-                    menu: (provided) => ({
-                      ...provided,
-                      width: "10rem",
-                      backgroundColor: "#fff",
-                      border: "none",
-                      boxShadow: "none",
-                      color: "#000000",
-                      zIndex: 9999,
-                    }),
-                    option: (provided, state) => ({
-                      ...provided,
-                      backgroundColor: state.isSelected
-                        ? "rgb(255,255,255)"
-                        : "transparent",
-                      zIndex: 9999,
-                    }),
-                  }}
-                  placeholder="Disabled"
-                  isSearchable
+                  showDiff={true}
+                  /*pguOnly={true}*/
                 />
               </div>
               <div className="checkbox-filters">
-              {/*
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={hideUnranked}
-                    onChange={(e) => {
-                      setHideUnranked(e.target.checked);
-                      setPageNumber(0);
-                      setLevelsData([]);
-                      setForceUpdate(prev => !prev);
-                    }}
-                  />
-                  {t("levelPage.settingExp.hideUnranked")}
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={hideCensored}
-                    onChange={(e) => {
-                      setHideCensored(e.target.checked);
-                      setPageNumber(0);
-                      setLevelsData([]);
-                      setForceUpdate(prev => !prev);
-                    }}
-                  />
-                  {t("levelPage.settingExp.hideCensored")}
-                </label>
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={hideEpic}
-                    onChange={(e) => {
-                      setHideEpic(e.target.checked);
-                      setPageNumber(0);
-                      setLevelsData([]);
-                      setForceUpdate(prev => !prev);
-                    }}
-                  />
-                  {t("levelPage.settingExp.hideEpic")}
-                </label>
-                */}
                 {isSuperAdmin && (
                   <div className="deletion-filter-inline">
                     <label>

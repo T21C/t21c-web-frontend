@@ -11,7 +11,6 @@ import { formatSpeed, formatScore } from "../../components/Misc/Utility"
 const ScoreCard = ({scoreData}) => {
   const {t} = useTranslation()  
   const navigate = useNavigate()
-  console.log(scoreData);
   
     const redirect = () => {
       navigate(`/leveldetail?id=${scoreData.levelId}`);

@@ -82,7 +82,6 @@ const LevelDetailPage = () => {
         const data = await fetchLevelInfo(id);
         setRes(data);
         setDisplayedPlayers(sortLeaderboard(data.passes));
-        console.log(sortLeaderboard(data.passes));
         
         setInfoLoading(false);
       } catch (error) {

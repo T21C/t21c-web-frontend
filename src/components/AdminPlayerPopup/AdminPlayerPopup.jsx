@@ -2,18 +2,7 @@ import React, { useState } from 'react';
 import './adminplayerpopup.css';
 import api from '../../utils/api';
 import { encodeToBase32 } from '@/Repository/RemoteRepository';
-
-
-const COUNTRY_CODES = [
-  { code: 'AF', name: 'Afghanistan' },
-  { code: 'AL', name: 'Albania' },
-  // ... add more countries as needed
-  { code: 'DE', name: 'Germany' },
-  { code: 'ID', name: 'Indonesia' },
-  { code: 'UA', name: 'Ukraine' },
-  { code: 'GB', name: 'United Kingdom' },
-  { code: 'US', name: 'United States' }
-];
+import { CountrySelect } from '../PlayerComponents/CountrySelect';
 
 const AdminPlayerPopup = ({ player, onClose, onUpdate }) => {
   const [selectedCountry, setSelectedCountry] = useState(player.country || '');
@@ -29,14 +18,14 @@ const AdminPlayerPopup = ({ player, onClose, onUpdate }) => {
     try {
       // Update country
       if (selectedCountry !== player.country) {
-        await api.put(`${import.meta.env.VITE_INDIVIDUAL_PLAYER}${encodeToBase32(player.player)}/country`, {
+        await api.put(`${import.meta.env.VITE_INDIVIDUAL_PLAYER}${player.id}/country`, {
           country: selectedCountry
         });
       }
 
       // Update ban status
       if (isBanned !== player.isBanned) {
-        await api.put(`${import.meta.env.VITE_INDIVIDUAL_PLAYER}${encodeToBase32(player.player)}/ban`, {
+        await api.put(`${import.meta.env.VITE_INDIVIDUAL_PLAYER}${player.id}/ban`, {
           isBanned
         });
       }
@@ -66,18 +55,10 @@ const AdminPlayerPopup = ({ player, onClose, onUpdate }) => {
         <form onSubmit={handleSubmit}>
           <div className="form-group">
             <label htmlFor="country">Country</label>
-            <select
-              id="country"
+            <CountrySelect
               value={selectedCountry}
-              onChange={(e) => setSelectedCountry(e.target.value)}
-            >
-              <option value="">Select Country</option>
-              {COUNTRY_CODES.sort((a, b) => a.name.localeCompare(b.name)).map(country => (
-                <option key={country.code} value={country.code}>
-                  {country.name} ({country.code})
-                </option>
-              ))}
-            </select>
+              onChange={setSelectedCountry}
+            />
           </div>
 
           <div className="form-group">

@@ -195,12 +195,23 @@ export const pguDataRaw = Object.fromEntries(
   ])
 );
 
+export const inputPguDictRaw = [
+  ...Object.entries(pguData).map(([key, fileName]) => [
+    key,
+    `${baseURL}${pguDataType}/${fileName}${queryParams}`
+  ])
+];
+
+
+
 export const pgnDataRaw = Object.fromEntries(
   Object.entries(pgnData).map(([key, fileName]) => [
     key,
     `${baseURL}${pgnDataType}/${fileName}${queryParams}`,
   ])
 );
+
+
 
 const newDataRaw = Object.fromEntries(
   Object.entries(newData).map(([key, fileName]) => [
@@ -272,7 +283,6 @@ async function fetchRecent(ids) {
     const respTwo = await api.get(`${import.meta.env.VITE_ALL_LEVEL_URL}?limit=15&offset=0`);
     const resTwo = respTwo.data;
 
-    console.log(respTwo);
     const finalRes = {
       recentRated: resTwo.map(res => ({
         id: res.id,
@@ -306,7 +316,6 @@ async function fetchRecent(ids) {
         workshopLink: res.workshopLink
       }))
     };
-    //console.log(finalRes)
     return finalRes
 
   } catch (error) {
@@ -338,7 +347,6 @@ async function fetchData({ offset = "", diff = '', cleared = '', sort = '', dire
       wsLink: each.workshopLink
 
     }))
-    //console.log(simplifiedRes)
 
     return simplifiedRes
   } catch (error) {
@@ -352,7 +360,6 @@ async function fetchData({ offset = "", diff = '', cleared = '', sort = '', dire
 async function fetchPassInfo(id) {
   try {
     const res = await api.get(`${import.meta.env.VITE_INDIVIDUAL_PASSES}${id}`)
-    console.log(res.data)
     return res.data
   } catch (error) {
     console.error(error)
@@ -367,7 +374,6 @@ async function fetchLevelInfo(id) {
       api.get(`${import.meta.env.VITE_ALL_PASSES_URL}/level/${id}`)
     ]);
 
-    //console.log(passesRes.data)
     return {
       level: levelRes.data,
       passes: passesRes.data
@@ -491,7 +497,6 @@ function getYouTubeEmbedUrl(url) {
 
 
 async function getBilibiliVideoDetails(url) {
-  //console.log(url);
   
   const urlRegex = /https?:\/\/(www\.)?bilibili\.com\/video\/(BV[a-zA-Z0-9]+)\/?/;
 
@@ -503,7 +508,6 @@ async function getBilibiliVideoDetails(url) {
     return null;
   }
 
-  //console.log(videoId);
   
   const apiUrl = `${import.meta.env.VITE_BILIBILI_API}?bvid=${videoId}`;
 
@@ -523,7 +527,6 @@ async function getBilibiliVideoDetails(url) {
     const imageUrl = `${import.meta.env.VITE_IMAGE}?url=${encodeURIComponent(data.pic)}`;
     const pfpUrl = `${import.meta.env.VITE_IMAGE}?url=${encodeURIComponent(data.owner.face)}`;
 
-    //console.log("pfp:", pfpUrl);
     const details = {
       title: data.title,
       channelName: data.owner.name,
@@ -533,7 +536,6 @@ async function getBilibiliVideoDetails(url) {
       pfp: pfpUrl
     };
 
-    //console.log("returning", details);
     
     return details;
   } catch (error) {
@@ -573,8 +575,6 @@ async function getYouTubeVideoDetails(url) {
     }).toString()}`;
     const channelResponse = await fetch(channelApiUrl);
     const channelData = await channelResponse.json();
-    //console.log(data)
-    //console.log(channelData.items[0].snippet.thumbnails.default.url)
 
     if (data.items.length === 0) {
       return null;
@@ -606,8 +606,6 @@ async function getVideoDetails(url) {
     details = await getBilibiliVideoDetails(url)
   }
 
-  //console.log("details", details);
-  
   return details;
 }
 
@@ -714,7 +712,6 @@ function getLevelImage(...values) {
 }
 
 function isoToEmoji(code) {
-  //console.log(code);  
   const htmlString =  twemoji.parse(code
     .toLowerCase()
     .split("")
@@ -812,5 +809,6 @@ export {
   calculateBaseScore,
   parseBaseScore,
   encodeToBase32,
-  fetchPassInfo
+  fetchPassInfo,
+  calculatePguDiffNum
 }

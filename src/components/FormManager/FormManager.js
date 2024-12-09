@@ -32,7 +32,6 @@ class FormManager {
 
     async submit(accessToken) {
         const body = this.prepareFormBody()
-        console.log("sending form");
         
         try {
             const response = await api.post(this.apiUrl, 
@@ -46,9 +45,7 @@ class FormManager {
             );
 
             const data = await response.data;
-            console.log(response);
             if (response.status === 200) {
-                console.log("Form submitted successfully");
                 return "ok";
             } else {
                 console.error("Failed to submit form", data.error);

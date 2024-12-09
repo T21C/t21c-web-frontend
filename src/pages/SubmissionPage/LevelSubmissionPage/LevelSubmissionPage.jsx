@@ -89,7 +89,6 @@ const LevelSubmissionPage = () => {
         // Fetch Drive link from YouTube
         const driveDetails = await getDriveFromYt(videoLink);
         if (driveDetails.drive) {
-          console.log(driveDetails);
   
           // Update form with drive link if available
           setForm((prevForm) => ({
@@ -128,7 +127,7 @@ const LevelSubmissionPage = () => {
     setShowMessage(true)
     setSuccess(false);
     if(!user){
-      console.log("no user");
+      console.error("no user");
       setError("You must be logged in.");
 
       return 
@@ -136,7 +135,7 @@ const LevelSubmissionPage = () => {
     if (!Object.values(isFormValid).every(Boolean)) {
       setSubmitAttempt(true)
       setError("Incomplete form!");
-      console.log("incomplete form, returning")
+      console.error("incomplete form, returning")
       return
     };
 

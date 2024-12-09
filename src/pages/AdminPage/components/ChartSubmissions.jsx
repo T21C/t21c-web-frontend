@@ -37,23 +37,19 @@ const ChartSubmissions = () => {
       const fetchPendingSubmissions = async () => {
         try {
           setIsLoading(true);
-          console.log("Fetching pending submissions");
           const response = await api.get(`${import.meta.env.VITE_SUBMISSION_API}/charts/pending`);
           const data = await response.data;
-          console.log(data);
           
           setSubmissions(data);
         } catch (error) {
           console.error('Error fetching submissions:', error);
         } finally {
-          console.log("Finished fetching submissions");
           setIsLoading(false);
         }
       };
     
       const handleSubmission = async (submissionId, action) => {
         try {
-          console.log('Starting animation for:', submissionId, 'with action:', action);
           
           // Disable buttons for this card
           setDisabledButtons(prev => ({

@@ -20,11 +20,9 @@ const formatSpeed = (speed) => {
 };
 // eslint-disable-next-line react/prop-types
 const ClearCard = ({scoreData, index}) => {
-  console.log(scoreData)
   const {t} = useTranslation()  
   const navigate = useNavigate()
   
-  console.log(scoreData);
   
     const redirect = () => {
       navigate(`/profile/${scoreData.playerId}`);
@@ -51,7 +49,6 @@ const ClearCard = ({scoreData, index}) => {
     vidLink: "\nhttps://www.youtube.com/watch?v=H7SHcejTyYY"
     */
 
-    console.log(scoreData);
     
   return (
     <div className="clear-card" key={index} >

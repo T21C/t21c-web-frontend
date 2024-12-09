@@ -61,6 +61,10 @@
   color: var(--color-white);
 }
 
+.admin-player-popup .form-group option {
+  background-color: var(--color-black);
+}
+
 .admin-player-popup .form-group input[type="checkbox"] {
   margin-right: 8px;
 }

@@ -151,4 +151,52 @@
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 4px;
+}
+
+/* Add these styles to match levelpage.css */
+.pass-page .pass-body .diff-filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.pass-page .pass-body .filter-container {
+  flex: 1;
+}
+
+.pass-page .pass-body .filter-container .rating-input-container {
+  position: relative;
+  background-color: rgb(42, 42, 42, 0.8);
+  border-radius: 3px;
+}
+
+.pass-page .pass-body .filter-container .rating-input-container input {
+  background: transparent;
+  color: var(--color-white);
+  border: none;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.pass-page .pass-body .filter-container .rating-input-container input:focus {
+  outline: none;
+}
+
+.pass-page .pass-body .filter-container .rating-dropdown {
+  background: #2a2a2a;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.pass-page .pass-body .filter-container .rating-option {
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pass-page .pass-body .filter-container .rating-option:hover {
+  background: rgba(255, 255, 255, 0.1);
 } 
