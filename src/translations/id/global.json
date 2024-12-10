@@ -175,8 +175,8 @@
         "artist": "Artist"
       },
       "holdTooltip": "Tick if you have used hold option other than \"Normal hold\" (0.9x score)",
-      "12kTooltip": "Tick if you have cleared the chart with 12 keys or less",
-      "16kTooltip": "Tick if you have cleared the chart with 16 keys or more",
+      "12kTooltip": "Tick if you have cleared the level with 12 keys or less",
+      "16kTooltip": "Tick if you have cleared the level with 16 keys or more",
       "tooltip": "Unknown difficulty, will submit but please make sure it's readable by the managers. Correct diff ex.: G13; P7~P13; 21.1+; 19~20.0+",
       "levelFetching":{
         "input": "Input Level ID",

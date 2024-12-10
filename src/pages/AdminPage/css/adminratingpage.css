@@ -220,7 +220,7 @@
     margin-top: 10px;
   }
 
-  .edit-chart-btn {
+  .edit-level-btn {
     padding: 8px 16px;
     background-color: #444;
     color: white;
@@ -230,7 +230,7 @@
     transition: background-color 0.2s;
   }
 
-  .edit-chart-btn:hover {
+  .edit-level-btn:hover {
     background-color: #555;
   }
 

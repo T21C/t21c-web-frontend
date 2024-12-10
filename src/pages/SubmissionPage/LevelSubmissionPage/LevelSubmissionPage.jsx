@@ -121,7 +121,7 @@ const LevelSubmissionPage = () => {
     setShowMessage(false)
   };
 
- const submissionForm = new FormManager("chart")
+ const submissionForm = new FormManager("level")
   const handleSubmit = (e) => {
     e.preventDefault();
     setShowMessage(true)

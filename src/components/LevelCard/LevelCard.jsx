@@ -4,7 +4,7 @@ import "./levelcard.css"
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import api from "@/utils/api";
-import { EditChartPopup } from "@/components/EditChartPopup/EditChartPopup"; // Import the EditChartPopup component
+import { EditLevelPopup } from "@/components/EditLevelPopup/EditLevelPopup"; // Import the EditLevelPopup component
 
 
 // eslint-disable-next-line react/prop-types
@@ -20,7 +20,7 @@ const LevelCard = ({index, level, legacyMode, isSuperAdmin }) => {
     try {
       await api.put(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${level.id}/toRate`, { toRate: newToRate });
     } catch (error) {
-      console.error(`Failed to update chart ${level.id}:`, error);
+      console.error(`Failed to update level ${level.id}:`, error);
     }
   };
 
@@ -122,11 +122,11 @@ const LevelCard = ({index, level, legacyMode, isSuperAdmin }) => {
       )}
       </div>
       {showEditPopup && (
-        <EditChartPopup
-          chart={level}
+        <EditLevelPopup
+          level={level}
           onClose={() => setShowEditPopup(false)}
-          onUpdate={(updatedChart) => {
-            // Handle chart update logic here
+          onUpdate={(updatedLevel) => {
+            // Handle level update logic here
             setShowEditPopup(false);
           }}
         />

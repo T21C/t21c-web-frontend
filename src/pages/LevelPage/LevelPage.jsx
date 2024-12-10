@@ -428,7 +428,7 @@ const LevelPage = () => {
                 {isSuperAdmin && (
                   <div className="deletion-filter-inline">
                     <label>
-                      Show deleted charts
+                      Show deleted levels
                       <select 
                         value={deletedFilter}
                         onChange={(e) => {

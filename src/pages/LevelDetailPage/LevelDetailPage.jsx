@@ -18,7 +18,7 @@ import { useTranslation } from "react-i18next";
 import { use } from "i18next";
 import ClearCard from "../../components/ClearCard/ClearCard";
 import axios from 'axios';
-import { EditChartPopup } from "../../components/EditChartPopup/EditChartPopup";
+import { EditLevelPopup } from "../../components/EditLevelPopup/EditLevelPopup";
 import { useAuth } from "../../context/AuthContext";
 
 const getHighScores = (players) => {
@@ -53,7 +53,7 @@ const LevelDetailPage = () => {
   const [openDialog, setOpenDialog] = useState(false)
   const [openEditDialog, setOpenEditDialog] = useState(false);
 
-  const reloadChartData = async () => {
+  const reloadLevelData = async () => {
     try {
       setInfoLoading(true);
       const data = await fetchLevelInfo(id);
@@ -70,7 +70,7 @@ const LevelDetailPage = () => {
         setVideoDetail(videoData);
       }
     } catch (error) {
-      console.error("Error reloading chart data:", error);
+      console.error("Error reloading level data:", error);
     } finally {
       setInfoLoading(false);
     }
@@ -287,7 +287,7 @@ const LevelDetailPage = () => {
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
           </svg>
-          <span>This chart has been deleted</span>
+          <span>This level has been deleted</span>
         </div>
         </div>
       )}
@@ -315,7 +315,7 @@ const LevelDetailPage = () => {
           <button 
               className="edit-button svg-stroke"
               onClick={() => setOpenEditDialog(true)}
-              title="Edit chart details"
+              title="Edit level details"
             >
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -514,11 +514,11 @@ const LevelDetailPage = () => {
     </div>
 
     {openEditDialog && isSuperAdmin && (
-      <EditChartPopup
-        chart={res.level}
+      <EditLevelPopup
+        level={res.level}
         onClose={() => setOpenEditDialog(false)}
-        onUpdate={async (updatedChart) => {
-          await reloadChartData();
+        onUpdate={async (updatedLevel) => {
+          await reloadLevelData();
           setOpenEditDialog(false);
         }}
       />

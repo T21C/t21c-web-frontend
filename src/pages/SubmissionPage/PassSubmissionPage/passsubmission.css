@@ -66,13 +66,13 @@
   gap: 1rem;
 }
 
-.pass-submission-page form .info .id-input .information .chart-info {
+.pass-submission-page form .info .id-input .information .level-info {
   text-align: center;
   align-items: center;
   font-weight: bold;
   width: 140%
 }
-.pass-submission-page form .info .id-input .information .chart-info .chart-info-sub {
+.pass-submission-page form .info .id-input .information .level-info .level-info-sub {
   display: flex;
   align-items: center;
   justify-content: space-around;

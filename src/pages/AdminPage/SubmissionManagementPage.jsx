@@ -3,11 +3,11 @@ import { useAuth } from "../../context/AuthContext";
 import "./css/adminsubmissionpage.css";
 import { CompleteNav } from '../../components';
 import ScrollButton from '../../components/ScrollButton/ScrollButton';
-import ChartSubmissions from './components/ChartSubmissions';
+import LevelSubmissions from './components/LevelSubmissions';
 import PassSubmissions from './components/PassSubmissions';
 
 const SubmissionManagementPage = () => {
-  const [activeTab, setActiveTab] = useState('charts'); // 'charts' or 'passes'
+  const [activeTab, setActiveTab] = useState('levels'); // 'levels' or 'passes'
 
 
   return (
@@ -21,10 +21,10 @@ const SubmissionManagementPage = () => {
           
           <div className="submission-tabs">
             <button 
-              className={`tab-button ${activeTab === 'charts' ? 'active' : ''}`}
-              onClick={() => setActiveTab('charts')}
+              className={`tab-button ${activeTab === 'levels' ? 'active' : ''}`}
+              onClick={() => setActiveTab('levels')}
             >
-              Charts
+              Levels
             </button>
             <button 
               className={`tab-button ${activeTab === 'passes' ? 'active' : ''}`}
@@ -34,8 +34,8 @@ const SubmissionManagementPage = () => {
             </button>
           </div>
 
-          {activeTab === 'charts' ? (
-              <ChartSubmissions />
+          {activeTab === 'levels' ? (
+              <LevelSubmissions />
             ) : (
               <PassSubmissions />
             )}

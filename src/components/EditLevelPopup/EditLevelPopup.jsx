@@ -1,11 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
-import './editchartpopup.css';
+import './editlevelpopup.css';
 import { RatingInput } from '../RatingComponents/RatingInput';
 import { parseBaseScore } from '../../Repository/RemoteRepository';
 import api from '../../utils/api';
 import { useNavigate } from 'react-router-dom';
 
-export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
+export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
   const [formData, setFormData] = useState({
     song: '',
     artist: '',
@@ -32,30 +32,30 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (chart) {
+    if (level) {
       setFormData({
-        song: chart.song || '',
-        artist: chart.artist || '',
-        creator: chart.creator || '',
-        charter: chart.charter || '',
-        vfxer: chart.vfxer || '',
-        team: chart.team || '',
-        diff: chart.diff || '',
-        pguDiff: chart.pguDiff || '',
-        newDiff: chart.newDiff || '',
-        baseScore: chart.baseScore || '',
-        baseScoreDiff: chart.baseScoreDiff || '',
-        dlLink: chart.dlLink || '',
-        workshopLink: chart.workshopLink || '',
-        vidLink: chart.vidLink || '',
-        publicComments: chart.publicComments || '',
-        rerateNum: chart.rerateNum || '',
-        toRate: chart.toRate || false,
-        rerateReason: chart.rerateReason || '',
-        isDeleted: chart.isDeleted || false
+        song: level.song || '',
+        artist: level.artist || '',
+        creator: level.creator || '',
+        charter: level.charter || '',
+        vfxer: level.vfxer || '',
+        team: level.team || '',
+        diff: level.diff || '',
+        pguDiff: level.pguDiff || '',
+        newDiff: level.newDiff || '',
+        baseScore: level.baseScore || '',
+        baseScoreDiff: level.baseScoreDiff || '',
+        dlLink: level.dlLink || '',
+        workshopLink: level.workshopLink || '',
+        vidLink: level.vidLink || '',
+        publicComments: level.publicComments || '',
+        rerateNum: level.rerateNum || '',
+        toRate: level.toRate || false,
+        rerateReason: level.rerateReason || '',
+        isDeleted: level.isDeleted || false
       });
     }
-  }, [chart]);
+  }, [level]);
 
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -85,7 +85,7 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
 
     try {
       const response = await api.put(
-        `${import.meta.env.VITE_INDIVIDUAL_LEVEL}${chart.id}`,
+        `${import.meta.env.VITE_INDIVIDUAL_LEVEL}${level.id}`,
         formData
       );
 
@@ -95,14 +95,14 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
       }
     } catch (err) {
       console.error(err)
-      setError(err.response?.data?.message || 'Failed to update chart');
+      setError(err.response?.data?.message || 'Failed to update level');
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleDelete = useCallback(async () => {
-    if (!window.confirm('Are you sure you want to delete this chart? This can be undone later.')) {
+    if (!window.confirm('Are you sure you want to delete this level? This can be undone later.')) {
       return;
     }
 
@@ -111,24 +111,24 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
 
     try {
       const response = await api.patch(
-        `${import.meta.env.VITE_INDIVIDUAL_LEVEL}${chart.id}/soft-delete`
+        `${import.meta.env.VITE_INDIVIDUAL_LEVEL}${level.id}/soft-delete`
       );
       if (response.data) {
         if (onUpdate) {
-          await onUpdate(response.data.deletedChart);
+          await onUpdate(response.data.deletedLevel);
         }
         onClose();
       }
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.message || 'Failed to delete chart');
+      setError(err.response?.data?.message || 'Failed to delete level');
     } finally {
       setIsSaving(false);
     }
-  }, [chart.id, onClose, onUpdate]);
+  }, [level.id, onClose, onUpdate]);
 
   const handleRestore = useCallback(async () => {
-    if (!window.confirm('Are you sure you want to restore this chart?')) {
+    if (!window.confirm('Are you sure you want to restore this level?')) {
       return;
     }
 
@@ -137,21 +137,21 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
 
     try {
       const response = await api.patch(
-        `${import.meta.env.VITE_INDIVIDUAL_LEVEL}${chart.id}/restore`
+        `${import.meta.env.VITE_INDIVIDUAL_LEVEL}${level.id}/restore`
       );
       if (response.data) {
         if (onUpdate) {
-          await onUpdate(response.data.restoredChart);
+          await onUpdate(response.data.restoredLevel);
         }
         onClose();
       }
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.message || 'Failed to restore chart');
+      setError(err.response?.data?.message || 'Failed to restore level');
     } finally {
       setIsSaving(false);
     }
-  }, [chart.id, onClose, onUpdate]);
+  }, [level.id, onClose, onUpdate]);
 
   return (
     <div className="edit-popup-overlay">
@@ -167,7 +167,7 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
         </button>
 
         <div className="popup-content">
-          <h2>Edit Chart Details</h2>
+          <h2>Edit Level Details</h2>
           
           <form onSubmit={handleSubmit}>
             <div className="form-grid">
@@ -388,7 +388,7 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
                   disabled={isSaving}
                   style={{backgroundColor: "#28a745"}}
                 >
-                  {isSaving ? 'Restoring...' : 'Restore Chart'}
+                  {isSaving ? 'Restoring...' : 'Restore Level'}
                 </button>
               ) : (
                 <button 
@@ -397,7 +397,7 @@ export const EditChartPopup = ({ chart, onClose, onUpdate }) => {
                   onClick={handleDelete}
                   disabled={isSaving}
                 >
-                  {isSaving ? 'Deleting...' : 'Delete Chart'}
+                  {isSaving ? 'Deleting...' : 'Delete Level'}
                 </button>
               )}
             </div>

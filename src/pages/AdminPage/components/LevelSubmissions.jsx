@@ -3,7 +3,7 @@ import placeholder from "../../../assets/placeholder/1.png"
 import "../css/adminsubmissionpage.css";
 import { useState, useEffect } from "react";
 import api from "../../../utils/api";
-const ChartSubmissions = () => {
+const LevelSubmissions = () => {
     
     
     const [submissions, setSubmissions] = useState([]);
@@ -37,7 +37,7 @@ const ChartSubmissions = () => {
       const fetchPendingSubmissions = async () => {
         try {
           setIsLoading(true);
-          const response = await api.get(`${import.meta.env.VITE_SUBMISSION_API}/charts/pending`);
+          const response = await api.get(`${import.meta.env.VITE_SUBMISSION_API}/levels/pending`);
           const data = await response.data;
           
           setSubmissions(data);
@@ -66,7 +66,7 @@ const ChartSubmissions = () => {
           // Wait for animation to complete before removing
           setTimeout(async () => {
             // Comment out API call for now
-            const response = await api.put(`${import.meta.env.VITE_SUBMISSION_API}/charts/${submissionId}/${action}`);
+            const response = await api.put(`${import.meta.env.VITE_SUBMISSION_API}/levels/${submissionId}/${action}`);
             
             if (response.ok) {
               setSubmissions(prev => prev.filter(sub => sub._id !== submissionId));
@@ -108,7 +108,7 @@ const ChartSubmissions = () => {
 
 
     if (submissions?.length === 0 && !isLoading) {
-      return <p className="no-submissions">No pending chart submissions to review</p>;
+      return <p className="no-submissions">No pending level submissions to review</p>;
     }
   
     return (
@@ -257,4 +257,4 @@ const ChartSubmissions = () => {
     );
   };
   
-  export default ChartSubmissions;
+  export default LevelSubmissions;

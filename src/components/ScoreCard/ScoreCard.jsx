@@ -22,7 +22,7 @@ const ScoreCard = ({scoreData}) => {
 
     /*
   #  Xacc: 0.9865883166263395
-    chartId: 3569
+    levelId: 3569
     date: "2024-08-07T03:12:46"
     is12K: false
     isNoHold: false

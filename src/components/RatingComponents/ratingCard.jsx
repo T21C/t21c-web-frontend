@@ -15,7 +15,7 @@ export const RatingCard = ({
   user, 
   isSuperAdmin,
   showDetailedView,
-  onEditChart 
+  onEditLevel 
 }) => {
     const userRating = rating.RatingDetails?.find(detail => detail.username === user.username)?.rating || "";
     const processedRatings = rating.RatingDetails
@@ -93,10 +93,10 @@ export const RatingCard = ({
             </button>
             {user && isSuperAdmin && (
               <button 
-                onClick={onEditChart} 
-                className="edit-chart-btn"
+                onClick={onEditLevel} 
+                className="edit-level-btn"
               >
-                Edit Chart
+                Edit Level
               </button>
             )}
           </div>

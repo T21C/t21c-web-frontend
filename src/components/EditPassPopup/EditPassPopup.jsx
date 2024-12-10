@@ -211,7 +211,7 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
         isNoHoldTap: updatedForm.isNoHold,
     };
 
-    const chartData = level;
+    const levelData = level;
 
     // Check if levelId is present and all judgements are valid
     if (!form.levelId) {
@@ -220,8 +220,8 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
         setScore(t("passSubmission.score.needJudg"));
     } else if (!Object.values(passData).every(value => value !== null)) {
         setScore(t("passSubmission.score.needInfo"));
-    } else if (passData && chartData) {
-        setScore(getScoreV2(passData, chartData).toFixed(2));
+    } else if (passData && levelData) {
+        setScore(getScoreV2(passData, levelData).toFixed(2));
     } else {
         setScore(t("passSubmission.score.noInfo"));
     }
@@ -424,11 +424,11 @@ const handleSubmit = async (e) => {
 
               <div className="information">
                   {(level && form.levelId) ? 
-                  (<div className="chart-info"><h2 className="chart-info-sub">{truncateString(level["song"], 30)}</h2>
-                   <div className="chart-info-sub"><span>{truncateString(level["artist"], 15)}</span><span>{truncateString(level["creator"], 20)}</span></div></div>)
+                  (<div className="level-info"><h2 className="level-info-sub">{truncateString(level["song"], 30)}</h2>
+                   <div className="level-info-sub"><span>{truncateString(level["artist"], 15)}</span><span>{truncateString(level["creator"], 20)}</span></div></div>)
                   : 
-                  (<div className="chart-info"><h2 className="chart-info-sub" style={{color: "#aaa"}}>{t("passSubmission.levelInfo.song")}</h2>
-                   <div className="chart-info-sub"><span style={{color: "#aaa"}}>{t("passSubmission.levelInfo.artist")}</span><span style={{color: "#aaa"}}>{t("passSubmission.levelInfo.charter")}</span></div></div>)
+                  (<div className="level-info"><h2 className="level-info-sub" style={{color: "#aaa"}}>{t("passSubmission.levelInfo.song")}</h2>
+                   <div className="level-info-sub"><span style={{color: "#aaa"}}>{t("passSubmission.levelInfo.artist")}</span><span style={{color: "#aaa"}}>{t("passSubmission.levelInfo.charter")}</span></div></div>)
                    } 
 
                 <div className="verified">

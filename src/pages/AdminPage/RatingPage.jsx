@@ -5,7 +5,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useTranslation } from "react-i18next";
 import { DetailPopup } from "../../components/RatingComponents/DetailPopup";
 import { RatingCard } from "../../components/RatingComponents/RatingCard";
-import { EditChartPopup } from "../../components/EditChartPopup/EditChartPopup";
+import { EditLevelPopup } from "../../components/EditLevelPopup/EditLevelPopup";
 import { fetchLevelInfo } from "../../Repository/RemoteRepository";
 import ScrollButton from "../../components/ScrollButton/ScrollButton";
 import api from "../../utils/api";
@@ -27,7 +27,7 @@ const RatingPage = () => {
   const [error, setError] = useState(false);
   const [selectedRating, setSelectedRating] = useState(null);
   const [openEditDialog, setOpenEditDialog] = useState(false);
-  const [selectedChart, setSelectedChart] = useState(null);
+  const [selectedLevel, setSelectedLevel] = useState(null);
   const [showDetailedView, setShowDetailedView] = useState(false);
   const [hideRated, setHideRated] = useState(false);
 
@@ -125,18 +125,18 @@ const RatingPage = () => {
   }, [ratings]);
 
 
-  const handleEditChart = async (chartId) => {
+  const handleEditLevel = async (levelId) => {
     try {
-      // Fetch full chart data using the same method as LevelDetailPage
-      const data = await fetchLevelInfo(chartId);
+      // Fetch full level data using the same method as LevelDetailPage
+      const data = await fetchLevelInfo(levelId);
       if (data && data.level) {
-        setSelectedChart(data.level);
+        setSelectedLevel(data.level);
         setOpenEditDialog(true);
       }
     } catch (error) {
-      console.error("Error fetching chart data:", error);
+      console.error("Error fetching level data:", error);
       // Optionally show error message to user
-      setError("Failed to load chart data");
+      setError("Failed to load level data");
       setShowMessage(true);
     }
   };
@@ -202,7 +202,7 @@ const RatingPage = () => {
                     user={user}
                     isSuperAdmin={isSuperAdmin}
                     showDetailedView={showDetailedView}
-                    onEditChart={() => handleEditChart(rating.levelId)}
+                    onEditLevel={() => handleEditLevel(rating.levelId)}
                   />
               ))}
             </div>
@@ -215,39 +215,39 @@ const RatingPage = () => {
               user={user}
             />
 
-            {openEditDialog && selectedChart && isSuperAdmin && (
-              <EditChartPopup
-                chart={selectedChart}
+            {openEditDialog && selectedLevel && isSuperAdmin && (
+              <EditLevelPopup
+                level={selectedLevel}
                 onClose={() => {
                   setOpenEditDialog(false);
-                  setSelectedChart(null);
+                  setSelectedLevel(null);
                 }}
-                onUpdate={(updatedChart) => {
-                  // Only update ratings if updatedChart exists (not a soft delete)
-                  if (updatedChart) {
+                onUpdate={(updatedLevel) => {
+                  // Only update ratings if updatedLevel exists (not a soft delete)
+                  if (updatedLevel) {
                     setRatings(prev => prev.map(rating => 
-                      rating.levelId === updatedChart.id 
+                      rating.levelId === updatedLevel.id 
                         ? {
                             ...rating,
-                            Song: updatedChart.song,
-                            "Artist(s)": updatedChart.artist,
-                            "Creator(s)": updatedChart.creator,
-                            "Video link": updatedChart.vidLink,
-                            "DL link": updatedChart.dlLink,
-                            "Current Diff": updatedChart.diff
+                            Song: updatedLevel.song,
+                            "Artist(s)": updatedLevel.artist,
+                            "Creator(s)": updatedLevel.creator,
+                            "Video link": updatedLevel.vidLink,
+                            "DL link": updatedLevel.dlLink,
+                            "Current Diff": updatedLevel.diff
                           }
                         : rating
                     ));
                   }
                   setOpenEditDialog(false);
-                  setSelectedChart(null);
+                  setSelectedLevel(null);
                 }}
               />
             )}
           </>
         ) : (
           <div className="no-ratings-message">
-            <h2>No ratings available{/*t("adminPage.rating.noCharts")*/}</h2>
+            <h2>No ratings available{/*t("adminPage.rating.noLevels")*/}</h2>
             <p>All rated!{/*t("adminPage.rating.allRated")*/}</p>
           </div>
         )}
