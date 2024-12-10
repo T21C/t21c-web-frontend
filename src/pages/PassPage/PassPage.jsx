@@ -38,8 +38,6 @@ const PassPage = () => {
     setHasMore,
     pageNumber,
     setPageNumber,
-    hideNHT,
-    setHideNHT,
     hide12k,
     setHide12k
   } = useContext(PassContext);
@@ -48,6 +46,15 @@ const PassPage = () => {
   const [selectedLowFilterDiff, setSelectedLowFilterDiff] = useState('');
   const [selectedHighFilterDiff, setSelectedHighFilterDiff] = useState('');
 
+  const sortOptions = [
+    { value: 'SCORE_DESC', label: "Highest Score" },
+    { value: 'SCORE_ASC', label: "Lowest Score" },
+    { value: 'XACC_DESC', label: "Best Accuracy" },
+    { value: 'XACC_ASC', label: "Worst Accuracy" },
+    { value: 'RECENT_DESC', label: "Newest" },
+    { value: 'RECENT_ASC', label: "Oldest" },
+    { value: 'RANDOM', label: "Random" }
+  ];
 
   useEffect(() => {
     let cancel;
@@ -63,10 +70,24 @@ const PassPage = () => {
           deletedFilter,
           lowDiff: selectedLowFilterDiff,
           highDiff: selectedHighFilterDiff,
-          hideNHT,
-          hide12k
+          only12k: hide12k
         };
 
+        if (query.startsWith("#") && query.length > 1) {
+          const passId = query.slice(1);
+          if (!isNaN(passId) && passId.trim() !== '') {
+            const response = await api.get(
+              `${import.meta.env.VITE_PASS_BY_ID_URL}/${passId}`,
+              {
+                cancelToken: new axios.CancelToken((c) => (cancel = c)),
+              }
+            );
+            setPassesData(response.data.results);
+            setHasMore(false);
+            setLoading(false);
+            return;
+          }
+        }
 
         const response = await api.get(
           `${import.meta.env.VITE_ALL_PASSES_URL}`,
@@ -75,7 +96,6 @@ const PassPage = () => {
             cancelToken: new axios.CancelToken((c) => (cancel = c)),
           }
         );
-
 
         const newPasses = response.data.results;
         
@@ -88,7 +108,6 @@ const PassPage = () => {
         
         setHasMore(newPasses.length === limit);
 
-
       } catch (error) {
         if (!axios.isCancel(error)) {
           console.error('Fetch error:', error);
@@ -99,37 +118,16 @@ const PassPage = () => {
       }
     };
 
-    if (query[0] === "#") {
-      fetchPassById();
-    } else {
-      fetchPasses();
-    }
+    fetchPasses();
 
     return () => cancel && cancel();
-  }, [query, sort, pageNumber, forceUpdate, deletedFilter, selectedLowFilterDiff, selectedHighFilterDiff, hideNHT, hide12k]);
-
-  const fetchPassById = async () => {
-    setLoading(true);
-    try {
-      const response = await api.get(
-        `${import.meta.env.VITE_INDIVIDUAL_PASS}${query.slice(1)}`
-      );
-
-      setPassesData([response.data]);
-      setHasMore(false);
-    } catch (error) {
-      setError(true);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [query, sort, pageNumber, forceUpdate, deletedFilter, selectedLowFilterDiff, selectedHighFilterDiff, hide12k]);
 
   function resetAll() {
     setPageNumber(0);
-    setSort("RECENT_DESC");
+    setSort("SCORE_DESC");
     setQuery("");
     setPassesData([]);
-    setHideNHT(false);
     setHide12k(false);
     setLoading(true);
     setForceUpdate((f) => !f);
@@ -152,7 +150,6 @@ const PassPage = () => {
 
   function handleFilterOpen() {
     setFilterOpen(!filterOpen);
-    setSortOpen(false);
   }
 
   function handleSort(value) {
@@ -178,6 +175,10 @@ const PassPage = () => {
     setPassesData([]);
     setForceUpdate(prev => !prev);
   };
+
+  function handleSortOpen() {
+    setSortOpen(!sortOpen);
+  }
 
   return (
     <div className="pass-page">
@@ -229,6 +230,36 @@ const PassPage = () => {
               d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"
             />
           </svg>
+
+          <svg
+            className="svg-fill"
+            data-tooltip-id="sort"
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            style={{
+              backgroundColor: sortOpen ? "rgba(255, 255, 255, 0.7)" : "",
+            }}
+            onClick={() => handleSortOpen()}
+          >
+            <g id="SVGRepo_bgCarrier" strokeWidth="0" />
+            <g
+              id="SVGRepo_tracerCarrier"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            <g id="SVGRepo_iconCarrier">
+              <path
+                d="M20 10.875C20.3013 10.875 20.5733 10.6948 20.6907 10.4173C20.8081 10.1399 20.7482 9.81916 20.5384 9.60289L16.5384 5.47789C16.3972 5.33222 16.2029 5.25 16 5.25C15.7971 5.25 15.6029 5.33222 15.4616 5.47789L11.4616 9.60289C11.2519 9.81916 11.1919 10.1399 11.3093 10.4173C11.4268 10.6948 11.6988 10.875 12 10.875H15.25V18C15.25 18.4142 15.5858 18.75 16 18.75C16.4142 18.75 16.75 18.4142 16.75 18L16.75 10.875H20Z"
+                fill="#ffffff"
+              />
+              <path
+                opacity="0.5"
+                d="M12 13.125C12.3013 13.125 12.5733 13.3052 12.6907 13.5827C12.8081 13.8601 12.7482 14.1808 12.5384 14.3971L8.53844 18.5221C8.39719 18.6678 8.20293 18.75 8.00002 18.75C7.79711 18.75 7.60285 18.6678 7.46159 18.5221L3.46159 14.3971C3.25188 14.1808 3.19192 13.8601 3.30934 13.5827C3.42676 13.3052 3.69877 13.125 4.00002 13.125H7.25002L7.25002 6C7.25002 5.58579 7.5858 5.25 8.00002 5.25C8.41423 5.25 8.75002 5.58579 8.75002 6L8.75002 13.125L12 13.125Z"
+                fill="#ffffff"
+              />
+            </g>
+          </svg>
         </div>
 
         <div className="input-setting">
@@ -237,6 +268,7 @@ const PassPage = () => {
             style={{
               height: filterOpen ? "10rem" : "0",
               opacity: filterOpen ? "1" : "0",
+              overflow: filterOpen ? "visible" : "hidden",
             }}
           >
             <div className="spacer-setting"></div>
@@ -265,18 +297,14 @@ const PassPage = () => {
               <label>
                 <input
                   type="checkbox"
-                  checked={hideNHT}
-                  onChange={() => setHideNHT(!hideNHT)}
-                />
-                Hide NHT
-              </label>
-              <label>
-                <input
-                  type="checkbox"
                   checked={hide12k}
-                  onChange={() => setHide12k(!hide12k)}
+                  onChange={() => {
+                    setHide12k(!hide12k);
+                    setPageNumber(0);
+                    setPassesData([]);
+                  }}
                 />
-                Hide 12K
+                Only 12K
               </label>
               {isSuperAdmin && (
                 <div className="deletion-filter-inline">
@@ -297,6 +325,81 @@ const PassPage = () => {
                   </label>
                 </div>
               )}
+            </div>
+          </div>
+
+          <div
+            className="sort settings-class"
+            style={{
+              height: sortOpen ? "10rem" : "0",
+              opacity: sortOpen ? "1" : "0",
+              overflow: sortOpen ? "visible" : "hidden",
+            }}
+          >
+            <div className="spacer-setting"></div>
+            <h2 className="setting-title">Sort</h2>
+
+            <div className="sort-option">
+              <div className="recent">
+                <p>Sort by</p>
+                <Select
+                  value={sortOptions.find(option => option.value === sort)}
+                  onChange={(option) => handleSort(option.value)}
+                  options={sortOptions}
+                  menuPortalTarget={document.body}
+                  styles={{
+                    input: (base) => ({
+                      ...base, 
+                      color: "#fff"
+                    }),
+                    menuPortal: (base) => ({
+                      ...base,
+                      zIndex: 9999 
+                    }),
+                    container: (provided) => ({
+                      ...provided,
+                      zIndex: 20,
+                    }),
+                    control: (provided, state) => ({
+                      ...provided,
+                      width: "12rem",
+                      backgroundColor: "rgba(255, 255, 255, 0.3)",
+                      border: "none",
+                      outline: "none",
+                      color: "#fff",
+                      boxShadow: state.isFocused && "0 0 0 2px #757575"
+                    }),
+                    singleValue: (provided) => ({
+                      ...provided,
+                      color: "#FFFFFF !important",
+                    }),
+                    indicatorSeparator: (provided) => ({
+                      ...provided,
+                      backgroundColor: "#000000aa",
+                    }),
+                    menu: (provided) => ({
+                      ...provided,
+                      backgroundColor: "#000000fa",
+                      borderRadius: "3px",
+                      border: "none",
+                      boxShadow: "none",
+                      textDecoration: "bold",
+                      color: "#fff",
+                      zIndex: 9999,
+                    }),
+                    option: (provided, state) => ({
+                      ...provided,
+                      backgroundColor: state.isSelected
+                        ? "#303040ee"
+                        : "transparent",
+                      zIndex: 9999,
+                      "&:hover": {
+                        backgroundColor: "#555555",
+                      }
+                    }),
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>

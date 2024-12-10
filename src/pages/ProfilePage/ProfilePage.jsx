@@ -195,18 +195,18 @@ const ProfilePage = () => {
               </div>
             </div>
           </div>
-          {playerData.playerPasses && playerData.playerPasses.length > 0 && (
-              <div className="all-scores">
-                <h2>{t("profilePage.allScores")}</h2>
-                <ul>
-                  {playerData.playerPasses.filter(score => !score.isDeleted).sort((a, b) => b.scoreV2 - a.scoreV2).map((score, index) => (
-                    <li key={index}>
-                      <ScoreCard scoreData={score} />
-                    </li>
-                  ))}
-                </ul>
+          {playerData.passes && playerData.passes.length > 0 && (
+            <div className="scores-section">
+              <h2>Scores</h2>
+              <div className="scores-list">
+                {playerData.passes.filter(score => !score.isDeleted).sort((a, b) => b.scoreV2 - a.scoreV2).map((score, index) => (
+                  <li key={index}>
+                    <ScoreCard scoreData={score} />
+                  </li>
+                ))}
               </div>
-            )}
+            </div>
+          )}
           </div>
         )
       

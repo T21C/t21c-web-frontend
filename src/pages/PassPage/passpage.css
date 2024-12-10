@@ -49,14 +49,12 @@
 
 .pass-page .pass-body .filter {
   position: relative;
-  z-index: 2;
   overflow: visible;
 }
 
 .pass-page .pass-body .settings-class {
-  transition: height 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 1s ease-in-out;
+  transition: height 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 0.5s ease-in-out;
   height: 10rem;
-  overflow: hidden;
 }
 
 .pass-page .pass-body .spacer-setting {
@@ -98,6 +96,9 @@
 
 .pass-page .pass-body .input-setting {
   margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .pass-page .pass-body .setting-title {
@@ -199,4 +200,57 @@
 
 .pass-page .pass-body .filter-container .rating-option:hover {
   background: rgba(255, 255, 255, 0.1);
+}
+
+/* Add these styles for the sort panel */
+.pass-page .pass-body .sort {
+  position: relative;
+  z-index: 10;
+}
+
+.pass-page .pass-body .sort .sort-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.pass-page .pass-body .sort .sort-option .recent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pass-page .pass-body .sort .sort-option .recent p {
+  margin: 0;
+  color: var(--color-white);
+}
+
+.pass-page .pass-body .sort .sort-option .random p {
+  margin-bottom: 0.5rem;
+}
+
+.pass-page .pass-body .sort .sort-option .recent .wrapper,
+.pass-page .pass-body .sort .sort-option .random .wrapper {
+  display: flex;
+  gap: 1rem;
+}
+
+.pass-page .pass-body .sort .sort-option .recent svg,
+.pass-page .pass-body .sort .sort-option .random svg {
+  height: 2rem;
+  width: 2rem;
+  background-color: var(--color-white-t20);
+  padding: 0.1rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s linear;
+}
+
+.pass-page .pass-body .sort .sort-option .recent svg:focus,
+.pass-page .pass-body .sort .sort-option .random svg:focus {
+  outline: none;
+}
+
+.pass-page .pass-body .sort.settings-class {
+  margin-top: 1rem;
 } 
