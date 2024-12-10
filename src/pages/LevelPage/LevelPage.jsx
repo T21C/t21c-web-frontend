@@ -396,6 +396,7 @@ const LevelPage = () => {
             style={{
               height: filterOpen ? "10rem" : "0",
               opacity: filterOpen ? "1" : "0",
+              overflow: filterOpen ? "visible" : "hidden",
             }}
           >
             <div className="spacer-setting"></div>
@@ -453,6 +454,7 @@ const LevelPage = () => {
             style={{
               height: sortOpen ? "10rem" : "0",
               opacity: sortOpen ? "1" : "0",
+              overflow: sortOpen ? "visible" : "hidden",
             }}
           >
             <div className="spacer-setting"></div>

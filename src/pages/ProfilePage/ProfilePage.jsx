@@ -103,9 +103,9 @@ const ProfilePage = () => {
                     <h1>{playerData.name}</h1>
                     <h2
                       style={{
-                        color: parseRankColor(playerData.rankings.rankedScore), 
-                        backgroundColor: `${parseRankColor(playerData.rankings.rankedScore)}27`}}
-                    >#{playerData.rankings.rankedScore}</h2>
+                        color: parseRankColor(playerData.ranks.rankedScoreRank), 
+                        backgroundColor: `${parseRankColor(playerData.ranks.rankedScoreRank)}27`}}
+                    >#{playerData.ranks.rankedScoreRank}</h2>
                   </div>
                   <img
                     src={isoToEmoji(playerData.country)}

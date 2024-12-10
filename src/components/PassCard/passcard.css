@@ -56,9 +56,17 @@
 }
 
 .pass-card .accuracy-section,
-.pass-card .score-section {
-  text-align: center;
+.pass-card .score-section,
+.pass-card .speed-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
+
+.pass-card .score-section {
+  min-width: 50px;
+}
+
 
 .pass-card .flags-wrapper {
   display: flex;

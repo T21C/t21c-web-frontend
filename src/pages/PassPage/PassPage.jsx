@@ -47,13 +47,15 @@ const PassPage = () => {
   const [selectedHighFilterDiff, setSelectedHighFilterDiff] = useState('');
 
   const sortOptions = [
-    { value: 'SCORE_DESC', label: "Highest Score" },
-    { value: 'SCORE_ASC', label: "Lowest Score" },
-    { value: 'XACC_DESC', label: "Best Accuracy" },
-    { value: 'XACC_ASC', label: "Worst Accuracy" },
-    { value: 'RECENT_DESC', label: "Newest" },
-    { value: 'RECENT_ASC', label: "Oldest" },
-    { value: 'RANDOM', label: "Random" }
+    { value: 'RECENT_DESC', label: 'Newest' },
+    { value: 'RECENT_ASC', label: 'Oldest' },
+    { value: 'SCORE_DESC', label: 'Highest Score' },
+    { value: 'SCORE_ASC', label: 'Lowest Score' },
+    { value: 'XACC_DESC', label: 'Highest Accuracy' },
+    { value: 'XACC_ASC', label: 'Lowest Accuracy' },
+    { value: 'DIFF_DESC', label: 'Highest Difficulty' },
+    { value: 'DIFF_ASC', label: 'Lowest Difficulty' },
+    { value: 'RANDOM', label: 'Random' }
   ];
 
   useEffect(() => {
@@ -213,23 +215,6 @@ const PassPage = () => {
             <path d="M5.05 3C3.291 3 2.352 5.024 3.51 6.317l5.422 6.059v4.874c0 .472.227.917.613 1.2l3.069 2.25c1.01.742 2.454.036 2.454-1.2v-7.124l5.422-6.059C21.647 5.024 20.708 3 18.95 3H5.05Z" />
           </svg>
 
-          <svg
-            className="svg-stroke"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
-            onClick={() => resetAll()}
-            data-tooltip-id="reset"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"
-            />
-          </svg>
 
           <svg
             className="svg-fill"
@@ -260,6 +245,26 @@ const PassPage = () => {
               />
             </g>
           </svg>
+
+
+          <svg
+            className="svg-stroke"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth="1.5"
+            stroke="currentColor"
+            onClick={() => resetAll()}
+            data-tooltip-id="reset"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"
+            />
+          </svg>
+
         </div>
 
         <div className="input-setting">
