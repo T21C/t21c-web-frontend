@@ -1,42 +1,52 @@
-import { useState, useEffect } from 'react';
-import { inputDataRaw, inputPguDictRaw } from "@/Repository/RemoteRepository";
-
+import { useState, useEffect, useContext } from 'react';
+import { DifficultyContext } from "@/context/DifficultyContext";
 import "./ratinginput.css";
 
-export const RatingInput = ({ value, onChange, isLegacy, showDiff=true, pguOnly=false }) => {
+export const RatingInput = ({ 
+  value, 
+  onChange, 
+  isLegacy=false, 
+  showDiff=true, 
+  pguOnly=false
+}) => {
+  const { difficultyList, loading } = useContext(DifficultyContext);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedRating, setSelectedRating] = useState([null,null]);
+  const [selectedRating, setSelectedRating] = useState(null);
+  const [inputValue, setInputValue] = useState(value || '');
+
+  useEffect(() => {
+    setInputValue(value || '');
+  }, [value]);
 
   const getSelectedRating = (rating) => {
-    // Find the matching URL for the rating
-    const dataRaw = pguOnly ? inputPguDictRaw : inputDataRaw;
-    const matchingEntry = dataRaw.find(([key]) => key === rating);
-    return matchingEntry ? matchingEntry : [null,null]; // Return URL or empty string if not found
+    if (!rating) return null;
+    return difficultyList.find(d => d.name.toLowerCase() === rating.toLowerCase());
   };
 
   useEffect(() => {
     setSelectedRating(getSelectedRating(value));
-  }, [value]);
+  }, [value, difficultyList]);
 
-  const handleSelect = (rating) => {
-    onChange(rating);
+  const handleSelect = (diff) => {
+    onChange(diff.name);
     setShowDropdown(false);
   };
 
-  // Filter options based on input
-  const dataRaw = pguOnly ? inputPguDictRaw : inputDataRaw;
-  const filteredOptions = dataRaw.filter(([rating]) => 
-    rating.toLowerCase().includes(value.toLowerCase())
-  );
+  // Filter options based on input and pguOnly flag
+  const filteredOptions = difficultyList
+    .filter(diff => {
+      if (pguOnly && diff.type !== 'PGU') return false;
+      return diff.name.toLowerCase().includes(inputValue.toLowerCase());
+    });
 
   // Handle keyboard events
   const handleKeyDown = (e) => {
     if (showDropdown) {
-      e.stopPropagation(); // Prevent event from bubbling up when dropdown is open
+      e.stopPropagation();
       
       if (e.key === 'Enter' && filteredOptions.length > 0) {
         e.preventDefault();
-        handleSelect(filteredOptions[0][0]);
+        handleSelect(filteredOptions[0]);
       } else if (e.key === 'Escape') {
         e.preventDefault();
         setShowDropdown(false);
@@ -56,17 +66,28 @@ export const RatingInput = ({ value, onChange, isLegacy, showDiff=true, pguOnly=
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  if (loading) {
+    return <div className="rating-input-wrapper">Loading difficulties...</div>;
+  }
+
   return (
     <div className="rating-input-wrapper">
       <div className="rating-input-container">
         <input
           type="text"
-          value={value}
+          value={inputValue}
           onChange={(e) => {
-            // Allow only numbers, decimal point, and hyphen
-            const newValue = isLegacy ? e.target.value.replace(/[^0-9.-]/g, '') : e.target.value;
-            onChange(newValue);
+            const newValue = e.target.value;
+            setInputValue(newValue);
             setShowDropdown(true);
+            
+            // Only trigger onChange when exact match is found
+            const exactMatch = difficultyList.find(d => 
+              d.name.toLowerCase() === newValue.toLowerCase()
+            );
+            if (exactMatch) {
+              onChange(exactMatch.name);
+            }
           }}
           onFocus={() => setShowDropdown(true)}
           onKeyDown={handleKeyDown}
@@ -79,21 +100,28 @@ export const RatingInput = ({ value, onChange, isLegacy, showDiff=true, pguOnly=
         >
           <div className={`dropdown-toggle-icon ${showDropdown ? 'open' : ''}`}>▼</div>
         </button>
-        {selectedRating[1] && showDiff && (
-          <img src={selectedRating[1]} alt={selectedRating[0]} className="rating-option-image" />
+        {selectedRating && showDiff && (
+          <img 
+            src={isLegacy && selectedRating.legacyIcon ? selectedRating.legacyIcon : selectedRating.icon} 
+            alt={selectedRating.name} 
+            className="rating-option-image" 
+          />
         )}
-
       </div>
       {showDropdown && filteredOptions.length > 0 && (
         <div className="rating-dropdown">
-          {filteredOptions.map(([rating, imageUrl]) => (
+          {filteredOptions.map((diff) => (
             <div
-              key={rating}
+              key={diff.id}
               className="rating-option"
-              onClick={() => handleSelect(rating)}
+              onClick={() => handleSelect(diff)}
             >
-              <span>{rating}</span>
-              <img src={imageUrl} alt={rating} className="rating-option-image" />
+              <span>{diff.name}</span>
+              <img 
+                src={isLegacy && diff.legacyIcon ? diff.legacyIcon : diff.icon} 
+                alt={diff.name} 
+                className="rating-option-image" 
+              />
             </div>
           ))}
         </div>

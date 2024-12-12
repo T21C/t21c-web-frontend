@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import api from '@/utils/api';
 import "./playerinput.css";
 
-export const PlayerInput = ({ value, onChange, onSelect }) => {
+export const PlayerInput = ({ value, onChange, onSelect, currentPlayer }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchResults, setSearchResults] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -15,7 +15,7 @@ export const PlayerInput = ({ value, onChange, onSelect }) => {
 
     setIsLoading(true);
     try {
-      const response = await api.get(`${import.meta.env.VITE_PLAYER_SEARCH}${encodeURIComponent(searchTerm)}`);
+      const response = await api.get(`${import.meta.env.VITE_PLAYERS}/search/${encodeURIComponent(searchTerm)}`);
       const players = await response.data;
       setSearchResults(players);
     } catch (error) {

@@ -50,7 +50,7 @@ const PassDetailPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const passData = await api.get(`${import.meta.env.VITE_INDIVIDUAL_PASS}${id}`);
+        const passData = await api.get(`${import.meta.env.VITE_PASSES}/${id}`);
         setRes(prevRes => ({
           ...prevRes,
           pass: passData.data

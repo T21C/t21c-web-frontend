@@ -17,14 +17,14 @@ const AdminPlayerPopup = ({ player, onClose, onUpdate }) => {
     try {
       // Update country
       if (selectedCountry !== player.country) {
-        await api.put(`${import.meta.env.VITE_INDIVIDUAL_PLAYER}${player.id}/country`, {
+        await api.put(`${import.meta.env.VITE_PLAYERS}/${player.id}/country`, {
           country: selectedCountry
         });
       }
 
       // Update ban status
       if (isBanned !== player.isBanned) {
-        await api.put(`${import.meta.env.VITE_INDIVIDUAL_PLAYER}${player.id}/ban`, {
+        await api.put(`${import.meta.env.VITE_PLAYERS}/${player.id}/ban`, {
           isBanned
         });
       }

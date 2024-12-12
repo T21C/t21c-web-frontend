@@ -17,7 +17,7 @@ const LevelCard = ({index, level, legacyMode, isSuperAdmin,  }) => {
     setToRate(newToRate);
 
     try {
-      await api.put(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${level.id}/toRate`, { toRate: newToRate });
+      await api.put(`${import.meta.env.VITE_LEVELS}/${level.id}/toRate`, { toRate: newToRate });
     } catch (error) {
       console.error(`Failed to update level ${level.id}:`, error);
     }

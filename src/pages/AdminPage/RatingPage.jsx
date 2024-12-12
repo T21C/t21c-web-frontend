@@ -104,7 +104,7 @@ const RatingPage = () => {
   const handleEditLevel = async (levelId) => {
     try {
       // Fetch full level data using the same method as LevelDetailPage
-      const data = await api.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${levelId}`);
+      const data = await api.get(`${import.meta.env.VITE_LEVELS}/${levelId}`);
       if (data && data.level) {
         setSelectedLevel(data.level);
         setOpenEditDialog(true);

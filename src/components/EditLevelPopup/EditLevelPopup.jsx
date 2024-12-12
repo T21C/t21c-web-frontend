@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import './editlevelpopup.css';
 import api from '../../utils/api';
 import { useNavigate } from 'react-router-dom';
+import { RatingInput } from '../RatingComponents/RatingInput';
 
 export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
   const [formData, setFormData] = useState({
@@ -72,6 +73,22 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
     }));
   };
 
+  const handleDifficultyChange = (e) => {
+    const newDiffId = e.target.value;
+    const newDiff = difficulties.filter(diff => diff.id === newDiffId)[0];
+    const currentDiff = difficulties.filter(diff => diff.id === formData.diffId)[0];
+    console.log(difficulties);
+    
+    console.log(newDiff, currentDiff);
+    setFormData(prev => ({
+      ...prev,
+      diffId: newDiffId,
+      baseScore: (prev.baseScore === currentDiff?.baseScore) 
+        ? newDiff?.baseScore || ''
+        : prev.baseScore
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSaving(true);
@@ -79,7 +96,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
 
     try {
       const response = await api.put(
-        `${import.meta.env.VITE_INDIVIDUAL_LEVEL}${level.id}`,
+        `${import.meta.env.VITE_LEVELS}/${level.id}`,
         formData
       );
 
@@ -170,97 +187,112 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="diffId">Difficulty</label>
-                <select
-                  id="diffId"
-                  name="diffId"
-                  value={formData.diffId}
-                  onChange={handleInputChange}
-                >
-                  <option value="">Select Difficulty</option>
-                  {difficulties.map(diff => (
-                    <option key={diff.id} value={diff.id}>
-                      {diff.name} ({diff.type}) - Base Score: {diff.baseScore}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="vidLink">Video Link</label>
                 <input
-                  type="text"
-                  id="vidLink"
-                  name="vidLink"
-                  value={formData.vidLink}
+                  id="baseScore"
+                  name="baseScore"
+                  value={formData.baseScore}
                   onChange={handleInputChange}
+                  placeholder="Base Score"
                 />
               </div>
 
               <div className="form-group">
-                <label htmlFor="dlLink">Download Link</label>
-                <input
-                  type="text"
-                  id="dlLink"
-                  name="dlLink"
-                  value={formData.dlLink}
-                  onChange={handleInputChange}
+                <RatingInput
+                  value={difficulties.find(d => d.id === formData.diffId)?.name || ''}
+                  onChange={(value) => {
+                    const selectedDiff = difficulties.find(d => d.name === value);
+                    if (selectedDiff) {
+                      const newDiffId = selectedDiff.id;
+                      const currentDiff = difficulties.find(diff => diff.id === formData.diffId);
+                      
+                      setFormData(prev => ({
+                        ...prev,
+                        diffId: newDiffId,
+                        baseScore: (prev.baseScore === currentDiff?.baseScore) 
+                          ? selectedDiff?.baseScore || ''
+                          : prev.baseScore
+                      }));
+                    }
+                  }}
+                  difficulties={difficulties}
+                  showDiff={true}
                 />
               </div>
 
-              <div className="form-group">
-                <label htmlFor="workshopLink">Workshop Link</label>
-                <input
-                  type="text"
-                  id="workshopLink"
-                  name="workshopLink"
-                  value={formData.workshopLink}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="publicComments">Public Comments</label>
-                <textarea
-                  id="publicComments"
-                  name="publicComments"
-                  value={formData.publicComments}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label>
+              <div className="to-rate-checkbox-container">
+                <div className="to-rate-group">
+                  <label className="to-rate-checkbox">
+                    <input
+                      type="checkbox"
+                      name="toRate"
+                      checked={formData.toRate}
+                      onChange={handleInputChange}
+                    />
+                    To Rate
+                  </label>
+                  <div className={`rerate-num ${formData.toRate ? 'show' : ''}`}>
+                    <input
+                      type="text"
+                      name="rerateNum"
+                      value={formData.rerateNum}
+                      onChange={handleInputChange}
+                      placeholder="Rerate #"
+                    />
+                  </div>
+                </div>
+                <div className={`rerate-reason ${formData.toRate ? 'show' : ''}`}>
                   <input
-                    type="checkbox"
-                    name="toRate"
-                    checked={formData.toRate}
+                    type="text"
+                    name="rerateReason"
+                    value={formData.rerateReason}
                     onChange={handleInputChange}
+                    placeholder="Rerate Reason"
                   />
-                  To Rate
-                </label>
+                </div>
               </div>
+            </div>
 
-              <div className="form-group">
-                <label htmlFor="rerateNum">Rerate Number</label>
-                <input
-                  type="text"
-                  id="rerateNum"
-                  name="rerateNum"
-                  value={formData.rerateNum}
-                  onChange={handleInputChange}
-                />
-              </div>
+            <div className="form-group">
+              <label htmlFor="vidLink">Video Link</label>
+              <input
+                type="text"
+                id="vidLink"
+                name="vidLink"
+                value={formData.vidLink}
+                onChange={handleInputChange}
+              />
+            </div>
 
-              <div className="form-group">
-                <label htmlFor="rerateReason">Rerate Reason</label>
-                <textarea
-                  id="rerateReason"
-                  name="rerateReason"
-                  value={formData.rerateReason}
-                  onChange={handleInputChange}
-                />
-              </div>
+            <div className="form-group">
+              <label htmlFor="dlLink">Download Link</label>
+              <input
+                type="text"
+                id="dlLink"
+                name="dlLink"
+                value={formData.dlLink}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="workshopLink">Workshop Link</label>
+              <input
+                type="text"
+                id="workshopLink"
+                name="workshopLink"
+                value={formData.workshopLink}
+                onChange={handleInputChange}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="publicComments">Public Comments</label>
+              <textarea
+                id="publicComments"
+                name="publicComments"
+                value={formData.publicComments}
+                onChange={handleInputChange}
+              />
             </div>
 
             {error && <div className="error-message">{error}</div>}

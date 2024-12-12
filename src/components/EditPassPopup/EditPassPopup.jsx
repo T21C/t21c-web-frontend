@@ -3,7 +3,7 @@ import './editpasspopup.css';
 import api from '../../utils/api';
 import { getScoreV2 } from '../Misc/CalcScore.js';
 import calcAcc from '../Misc/CalcAcc.js';
-import { getVideoDetails, checkLevel } from "../../Repository/RemoteRepository";
+import { getVideoDetails } from "../../Repository/RemoteRepository";
 import { useTranslation } from 'react-i18next'; 
 import { useAuth } from '../../context/AuthContext';
 import { parseJudgements } from '../Misc/ParseJudgements';
@@ -282,7 +282,7 @@ const handleSubmit = async (e) => {
 
     
     const response = await api.put(
-      `${import.meta.env.VITE_INDIVIDUAL_PASS}${pass.id}`,
+      `${import.meta.env.VITE_PASSES}/${pass.id}`,
       updateData,
       {
         headers: {
@@ -321,7 +321,7 @@ const handleSubmit = async (e) => {
     setError(null);
 
     try {
-      const response = await api.patch(`${import.meta.env.VITE_INDIVIDUAL_PASS}${pass.id}/soft-delete`);
+      const response = await api.patch(`${import.meta.env.VITE_PASSES}/${pass.id}/soft-delete`);
       if (response.data) {
         if (onUpdate) {
           await onUpdate(response.data.pass);
@@ -345,7 +345,7 @@ const handleSubmit = async (e) => {
     setError(null);
 
     try {
-      const response = await api.patch(`${import.meta.env.VITE_INDIVIDUAL_PASS}${pass.id}/restore`);
+      const response = await api.patch(`${import.meta.env.VITE_PASSES}/${pass.id}/restore`);
       if (response.data) {
         if (onUpdate) {
           await onUpdate(response.data.pass);

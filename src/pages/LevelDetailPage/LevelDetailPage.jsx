@@ -53,8 +53,8 @@ const LevelDetailPage = () => {
   const reloadLevelData = async () => {
     try {
       setInfoLoading(true);
-      const levelData = await api.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`);
-      const passesData = await api.get(`${import.meta.env.VITE_INDIVIDUAL_PASS}/level/${id}`);
+      const levelData = await api.get(`${import.meta.env.VITE_LEVELS}/${id}`);
+      const passesData = await api.get(`${import.meta.env.VITE_PASSES}//level/${id}`);
       setRes(prevRes => ({
         ...prevRes,
         level: levelData.data,
@@ -77,8 +77,8 @@ const LevelDetailPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const levelData = await api.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`);
-        const passesData = await api.get(`${import.meta.env.VITE_INDIVIDUAL_PASS}/level/${id}`);
+        const levelData = await api.get(`${import.meta.env.VITE_LEVELS}/${id}`);
+        const passesData = await api.get(`${import.meta.env.VITE_PASSES}//level/${id}`);
         setRes(prevRes => ({
           ...prevRes,
           level: levelData.data,

@@ -273,142 +273,6 @@ export const inputDictRaw = {
   )
 };
 
-async function fetchRecent(ids) {
-  try {
-    const resp = await Promise.all(ids.map(id =>
-      api.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`)
-    ));
-    
-    const res = resp.map(res => res.data);
-    const respTwo = await api.get(`${import.meta.env.VITE_ALL_LEVEL_URL}?limit=15&offset=0`);
-    const resTwo = respTwo.data;
-
-    const finalRes = {
-      recentRated: resTwo.map(res => ({
-        id: res.id,
-        song: res.song,
-        artist: res.artist,
-        creator: res.creator,
-        charter: res.charter,
-        vfxer: res.vfxer,
-        team: res.team,
-        workshopLink: res.workshopLink,
-        dlLink: res.dlLink,
-        pguDiff: res.pguDiff,
-        pguDiffNum: res.pguDiffNum,
-        pdnDiff: res.pdnDiff,
-        diff: res.diff,
-        baseScore: res.baseScore,
-        isCleared: res.isCleared,
-        clears: res.clears,
-        publicComments: res.publicComments
-      })),
-      recentFeatured: res.map(res => ({
-        id: res.id,
-        song: res.song,
-        artist: res.artist,
-        creator: res.creator,
-        charter: res.charter,
-        vfxer: res.vfxer,
-        team: res.team,
-        vidLink: res.vidLink,
-        dlLink: res.dlLink,
-        workshopLink: res.workshopLink
-      }))
-    };
-    return finalRes
-
-  } catch (error) {
-    console.error(error);
-    return {};
-  }
-}
-
-async function fetchData({ offset = "", diff = '', cleared = '', sort = '', direction = '' } = {}) {
-  const baseUrl = import.meta.env.VITE_OFFSET_LEVEL
-
-  const queryParams = new URLSearchParams({
-    ...(offset && { offset }),
-    ...(diff && { diff }),
-    ...(cleared && { cleared }),
-    ...(sort && direction && { sort: `${sort}_${direction}` }),
-  }).toString();
-  const url = `${baseUrl}${queryParams}`
-
-  try {
-    const res = await api.get(url)
-    const simplifiedRes = res.data.results.map(each => ({
-      id: each.id,
-      song: each.song,
-      artist: each.artist,
-      creator: each.creator,
-      diff: each.diff,
-      dlLink: each.dlLink,
-      wsLink: each.workshopLink
-
-    }))
-
-    return simplifiedRes
-  } catch (error) {
-    console.error(error)
-    return []
-  }
-
-}
-
-
-async function fetchPassInfo(id) {
-  try {
-    const res = await api.get(`${import.meta.env.VITE_INDIVIDUAL_PASS}${id}`)
-    return res.data
-  } catch (error) {
-    console.error(error)
-    return []
-  }
-}
-
-async function checkLevel(id) {
-  try {
-    const res = await api.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`)
-    if(id === "#"){
-      return
-    }
-    if(res){
-      return res.data
-    }
-
-  } catch (error) {
-    throw new error
-  }
-}
-
-async function fetchPassPlayerInfo(playerNames) {
-  try {
-    // Fetch player info in parallel
-    const playerPromises = playerNames.map(name => 
-      fetchPlayerByName(name)
-    );
-    
-    const players = await Promise.all(playerPromises);
-    return players.filter(player => player !== null);
-  } catch (error) {
-    console.error('Error fetching player info:', error);
-    return [];
-  }
-}
-
-async function fetchPlayerByName(name) {
-  try {
-    const { data } = await api.get(`${import.meta.env.VITE_PLAYERS_API}`, {
-      params: { name }
-    });
-    return data.results[0]; // Return first match
-  } catch (error) {
-    console.error('Error fetching player:', error);
-    return null;
-  }
-}
-
 function simpleHash(str) {
   let hash = 0;
   for (let i = 0; i < str.length; i++) {
@@ -419,11 +283,6 @@ function simpleHash(str) {
   return hash;
 }
 
-function selectItemConsistently(name, items) {
-  const hash = simpleHash(name);
-  const index = Math.abs(hash) % items.length;
-  return items[index];
-}
 
 
 function getYouTubeThumbnailUrl(url) {
@@ -688,11 +547,6 @@ function isoToEmoji(code) {
 export {
   getYouTubeVideoDetails, 
   getDriveFromYt,
-  checkLevel, 
   isoToEmoji, 
-  fetchPassPlayerInfo, 
-  fetchRecent, 
-  fetchData, 
   getVideoDetails, 
-  fetchPassInfo,
 }

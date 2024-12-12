@@ -153,9 +153,9 @@ const LevelPage = () => {
           }
         }
         
-        console.log(import.meta.env.VITE_LIST_LEVEL);
+        console.log(import.meta.env.VITE_LEVELS);
         const response = await api.get(
-          `${import.meta.env.VITE_LIST_LEVEL}`,
+          `${import.meta.env.VITE_LEVELS}`,
           {
             params: params,
             cancelToken: new axios.CancelToken((c) => (cancel = c)),
@@ -184,7 +184,7 @@ const LevelPage = () => {
       setLoading(true);
       try {
         const response = await api.get(
-          `${import.meta.env.VITE_INDIVIDUAL_LEVEL}${query.slice(1)}`,
+          `${import.meta.env.VITE_LEVELS}/${query.slice(1)}`,
           {
             cancelToken: new axios.CancelToken((c) => (cancel = c)),
           }

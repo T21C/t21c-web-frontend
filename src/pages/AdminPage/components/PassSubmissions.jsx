@@ -84,7 +84,7 @@ const PassSubmissions = () => {
         return;
       }
 
-      const response = await api.post(`${import.meta.env.VITE_INDIVIDUAL_PLAYER}create`, {
+      const response = await api.post(`${import.meta.env.VITE_PLAYERS}/create`, {
         name,
         country
       });
@@ -199,22 +199,22 @@ const PassSubmissions = () => {
                 <div className="detail-row">
                   <span className="detail-label">Judgements:</span>
                   <div className="judgements-details">
-                    <span className="judgement early-double">{submission.PassSubmissionJudgement.earlyDouble}</span>
-                    <span className="judgement early-single">{submission.PassSubmissionJudgement.earlySingle}</span>
-                    <span className="judgement e-perfect">{submission.PassSubmissionJudgement.ePerfect}</span>
-                    <span className="judgement perfect">{submission.PassSubmissionJudgement.perfect}</span>
-                    <span className="judgement l-perfect">{submission.PassSubmissionJudgement.lPerfect}</span>
-                    <span className="judgement late-single">{submission.PassSubmissionJudgement.lateSingle}</span>
-                    <span className="judgement late-double">{submission.PassSubmissionJudgement.lateDouble}</span>
+                    <span className="judgement early-double">{submission.judgements.earlyDouble}</span>
+                    <span className="judgement early-single">{submission.judgements.earlySingle}</span>
+                    <span className="judgement e-perfect">{submission.judgements.ePerfect}</span>
+                    <span className="judgement perfect">{submission.judgements.perfect}</span>
+                    <span className="judgement l-perfect">{submission.judgements.lPerfect}</span>
+                    <span className="judgement late-single">{submission.judgements.lateSingle}</span>
+                    <span className="judgement late-double">{submission.judgements.lateDouble}</span>
                   </div>
                 </div>
 
                 <div className="detail-row">
                   <span className="detail-label">Flags:</span>
                   <div className="flags-details">
-                    {submission.PassSubmissionFlag.is12k && <span>12K</span>}
-                    {submission.PassSubmissionFlag.isNHT && <span>NHT</span>}
-                    {submission.PassSubmissionFlag.is16k && <span>16K</span>}
+                    {submission.flags.is12k && <span>12K</span>}
+                    {submission.flags.isNHT && <span>NHT</span>}
+                    {submission.flags.is16k && <span>16K</span>}
                   </div>
                 </div>
 
@@ -231,11 +231,12 @@ const PassSubmissions = () => {
                 </div>
 
                 <div className="player-assignment">
-                  <h4>{t('passSubmission.playerAssignment')}</h4>
+                  <h4 style={{marginBottom: "5px"}}>Assign player</h4>
                   <PlayerInput
-                    value={playerSearchValues[submission.id] || submission.passer}
+                    value={playerSearchValues[submission.id] != null ? playerSearchValues[submission.id] : submission.passer}
                     onChange={(value) => setPlayerSearchValues(prev => ({ ...prev, [submission.id]: value }))}
                     onSelect={(player) => handlePlayerSelect(submission.id, player)}
+                    currentPlayer={submission.assignedPlayerId}
                   />
 
                   {showCreatePlayer[submission.id] && (

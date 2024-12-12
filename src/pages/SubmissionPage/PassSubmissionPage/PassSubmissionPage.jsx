@@ -3,7 +3,7 @@ import "./passsubmission.css";
 import placeholder from "@/assets/placeholder/3.png";
 import { FormManager } from "@/components/FormManager/FormManager";
 import { useEffect, useState } from "react";
-import { checkLevel, getDriveFromYt, getVideoDetails } from "@/Repository/RemoteRepository";
+import { getVideoDetails } from "@/Repository/RemoteRepository";
 import calcAcc from "@/components/Misc/CalcAcc";
 import { getScoreV2 } from "@/components/Misc/CalcScore";
 import { parseJudgements } from "@/components/Misc/ParseJudgements";
@@ -11,6 +11,12 @@ import { useAuth } from "@/context/AuthContext";
 import {FetchIcon} from "@/components/FetchIcon/FetchIcon"
 import { validateFeelingRating, validateSpeed, validateNumber } from "@/components/Misc/Utility";
 import { useTranslation } from "react-i18next";
+import api from "@/utils/api";
+
+const checkLevel = async (levelId) => {
+  const response = await api.get(`${import.meta.env.VITE_LEVELS}/${levelId}`);
+  return response.data;
+}
 
 const PassSubmissionPage = () => {
   const initialFormState = {
