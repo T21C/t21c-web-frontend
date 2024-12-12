@@ -1,4 +1,4 @@
-.edit-popup-overlay {
+.edit-pass-popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,7 +11,7 @@
   z-index: 9999;
 }
 
-.edit-popup-overlay .form-container {
+.edit-pass-popup-overlay .form-container {
   position: relative;
   max-width: 1200px;
   max-height: 90vh;
@@ -21,28 +21,28 @@
   z-index: 10000;
 }
 
-.edit-popup-overlay .form-container::-webkit-scrollbar {
+.edit-pass-popup-overlay .form-container::-webkit-scrollbar {
   width: 8px;
 }
 
-.edit-popup-overlay .form-container::-webkit-scrollbar-track {
+.edit-pass-popup-overlay .form-container::-webkit-scrollbar-track {
   background: var(--color-black);
 }
 
-.edit-popup-overlay .form-container::-webkit-scrollbar-thumb {
+.edit-pass-popup-overlay .form-container::-webkit-scrollbar-thumb {
   background: var(--color-purple-2);
   border-radius: 4px;
 }
 
-.edit-popup-overlay .form-container form {
+.edit-pass-popup-overlay .form-container form {
   width:85%;
   margin: 0 auto;
 }
 
-.edit-popup-overlay .form-container form .img-wrapper {
+.edit-pass-popup-overlay .form-container form .img-wrapper {
   flex: 2;
 }
-.edit-popup-overlay .form-container form .img-wrapper img {
+.edit-pass-popup-overlay .form-container form .img-wrapper img {
   width: 100%;
   height: 100%;
   -o-object-fit: cover;
@@ -50,17 +50,17 @@
   -o-object-position: center;
      object-position: center;
 }
-.edit-popup-overlay .form-container form .info {
+.edit-pass-popup-overlay .form-container form .info {
   flex: 3;
   padding: 1rem;
   background-color: white;
   position: relative;
   z-index: 10001;
 }
-.edit-popup-overlay .form-container form .info h1 {
+.edit-pass-popup-overlay .form-container form .info h1 {
   margin-bottom: 1rem;
 }
-.edit-popup-overlay .form-container form .info input {
+.edit-pass-popup-overlay .form-container form .info input {
   background-color: transparent;
   border: 0;
   border-bottom: 3px solid var(--color-purple-2);
@@ -70,7 +70,7 @@
 }
 
 
-.edit-popup-overlay .form-container form .info .youtube-input {
+.edit-pass-popup-overlay .form-container form .info .youtube-input {
   display: flex;
   flex-direction: column;
   justify-items: center;
@@ -78,43 +78,43 @@
   margin-bottom: 0.5rem;
   margin-top: 0.5rem;
 }
-.edit-popup-overlay .form-container form .info .youtube-input .yt-info {
+.edit-pass-popup-overlay .form-container form .info .youtube-input .yt-info {
   min-width: 7rem
 }
-.edit-popup-overlay .form-container form .info .youtube-input .youtube-info {
+.edit-pass-popup-overlay .form-container form .info .youtube-input .youtube-info {
   display: flex;
   gap:20px
 }
 
-.edit-popup-overlay .form-container form .info .id-input {
+.edit-pass-popup-overlay .form-container form .info .id-input {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 1rem;
 }
-.edit-popup-overlay .form-container form .info .id-input .information {
+.edit-pass-popup-overlay .form-container form .info .id-input .information {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-.edit-popup-overlay .form-container form .info .id-input .information .level-info {
+.edit-pass-popup-overlay .form-container form .info .id-input .information .level-info {
   text-align: center;
   align-items: center;
   font-weight: bold;
   width: 140%
 }
-.edit-popup-overlay .form-container form .info .id-input .information .level-info .level-info-sub {
+.edit-pass-popup-overlay .form-container form .info .id-input .information .level-info .level-info-sub {
   display: flex;
   align-items: center;
   justify-content: space-around;
 }
-.edit-popup-overlay .form-container form .info .id-input .information .verified {
+.edit-pass-popup-overlay .form-container form .info .id-input .information .verified {
   display: flex;
   align-items: center;
   font-weight: bold;
 }
-.edit-popup-overlay .form-container form .info .id-input .information .button-goto {
+.edit-pass-popup-overlay .form-container form .info .id-input .information .button-goto {
   border-radius: 3px;
   border: none;
   padding: 0.5rem;
@@ -124,13 +124,13 @@
   text-decoration: none;
   text-align: center;
 }
-.edit-popup-overlay .form-container form .info .youtube-input {
+.edit-pass-popup-overlay .form-container form .info .youtube-input {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
   margin-bottom: 0.5rem;
 }
-.edit-popup-overlay .form-container form .info .youtube-input .information {
+.edit-pass-popup-overlay .form-container form .info .youtube-input .information {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -139,21 +139,21 @@
   margin-bottom: 0.25rem;
 }
 
-.edit-popup-overlay .form-container form .info .info-input {
+.edit-pass-popup-overlay .form-container form .info .info-input {
   display: flex;
   gap: 1rem;
   margin-bottom: 0.25rem;
   justify-content: space-around;
 }
 
-.edit-popup-overlay .form-container form .info .info-input > * {
+.edit-pass-popup-overlay .form-container form .info .info-input > * {
   flex: 1 1 150px; /* Flex-grow, flex-shrink, and base size (width of 150px) */
   min-width: 100px; /* Minimum width to avoid shrinking too small */
   max-width: 200px; /* Maximum width to control expansion */
   height: 40px; /* Fixed height */
   box-sizing: border-box; /* To include padding and borders in width/height calculation */
 }
-.edit-popup-overlay .form-container form .info .info-input-container {
+.edit-pass-popup-overlay .form-container form .info .info-input-container {
   overflow: hidden;
   max-height: 0; /* Collapsed height */
   transition: max-height 0.4s ease; /* Transition for smooth sliding */
@@ -163,25 +163,25 @@
   flex-direction: row;
 }
 
-.edit-popup-overlay .form-container form .info .info-input-container.expand {
+.edit-pass-popup-overlay .form-container form .info .info-input-container.expand {
   overflow:visible;
   max-height: 200px; /* Set a maximum value, or use a value that comfortably fits the content */
 }
 
 
-.edit-popup-overlay .form-container form .info .info-input .keycount-checkbox {
+.edit-pass-popup-overlay .form-container form .info .info-input .keycount-checkbox {
   max-width: 130px;
 }
 
-.edit-popup-overlay .form-container form .info .info-input .keycount-checkbox .tooltip{
+.edit-pass-popup-overlay .form-container form .info .info-input .keycount-checkbox .tooltip{
   right: -15%;
 }
 
-.edit-popup-overlay .form-container form .info .info-input input {
+.edit-pass-popup-overlay .form-container form .info .info-input input {
   width: auto;
   color: var(--color-black);
 }
-.edit-popup-overlay .form-container form .info .accuracy {
+.edit-pass-popup-overlay .form-container form .info .accuracy {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -192,66 +192,66 @@
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
-.edit-popup-overlay .form-container form .info .accuracy .top, .form-container form .info .accuracy .bottom {
+.edit-pass-popup-overlay .form-container form .info .accuracy .top, .form-container form .info .accuracy .bottom {
   display: flex;
   gap: 2rem;
   justify-content: space-around;
 }
-.edit-popup-overlay .form-container form .info .accuracy .top input, .form-container form .info .accuracy .bottom input {
+.edit-pass-popup-overlay .form-container form .info .accuracy .top input, .form-container form .info .accuracy .bottom input {
   padding: 0;
   width: 100%;
 }
-.edit-popup-overlay .form-container form .info .accuracy .top .each-accuracy {
+.edit-pass-popup-overlay .form-container form .info .accuracy .top .each-accuracy {
   display: flex;
   align-items: center;
   text-wrap: nowrap;
   gap: 0.5rem;
 }
-.edit-popup-overlay .form-container form .info .accuracy .top .each-accuracy:nth-child(1) {
+.edit-pass-popup-overlay .form-container form .info .accuracy .top .each-accuracy:nth-child(1) {
   flex: 4;
 }
-.edit-popup-overlay .form-container form .info .accuracy .top .each-accuracy:nth-child(2) {
+.edit-pass-popup-overlay .form-container form .info .accuracy .top .each-accuracy:nth-child(2) {
   flex: 5;
 }
-.edit-popup-overlay .form-container form .info .accuracy .top .each-accuracy:nth-child(3) {
+.edit-pass-popup-overlay .form-container form .info .accuracy .top .each-accuracy:nth-child(3) {
   flex: 4;
 }
-.edit-popup-overlay .form-container form .info .accuracy .top .each-accuracy input {
+.edit-pass-popup-overlay .form-container form .info .accuracy .top .each-accuracy input {
   font-size: 1rem;
   font-weight: bold;
 }
-.edit-popup-overlay .form-container form .info .accuracy .bottom {
+.edit-pass-popup-overlay .form-container form .info .accuracy .bottom {
   justify-content: center;
 }
-.edit-popup-overlay .form-container form .info .accuracy .bottom .each-accuracy {
+.edit-pass-popup-overlay .form-container form .info .accuracy .bottom .each-accuracy {
   display: flex;
   align-items: center;
   text-wrap: nowrap;
   gap: 0.5rem;
 }
-.edit-popup-overlay .form-container form .info .accuracy .bottom .each-accuracy input {
+.edit-pass-popup-overlay .form-container form .info .accuracy .bottom .each-accuracy input {
   font-size: 1rem;
   font-weight: bold;
 }
-.edit-popup-overlay .form-container form .info .accuracy .bottom .each-accuracy:nth-child(1) {
+.edit-pass-popup-overlay .form-container form .info .accuracy .bottom .each-accuracy:nth-child(1) {
   max-width: 7rem;
   flex: 1;
 }
-.edit-popup-overlay .form-container form .info .accuracy .bottom .each-accuracy:nth-child(2) {
+.edit-pass-popup-overlay .form-container form .info .accuracy .bottom .each-accuracy:nth-child(2) {
   max-width: 7rem;
   flex: 1;
 }
-.edit-popup-overlay .form-container form .info .accuracy .bottom .each-accuracy:nth-child(3) {
+.edit-pass-popup-overlay .form-container form .info .accuracy .bottom .each-accuracy:nth-child(3) {
   max-width: 7rem;
   flex: 1;
 }
-.edit-popup-overlay .form-container form .info .accuracy .acc-score {
+.edit-pass-popup-overlay .form-container form .info .accuracy .acc-score {
   display: flex;
   gap: 2rem;
   font-weight: bold;
   font-size: 0.9rem;
 }
-.edit-popup-overlay .form-container form .info .submit {
+.edit-pass-popup-overlay .form-container form .info .submit {
   width: auto;
   flex: 1;
   background-color: var(--color-purple-3);
@@ -265,14 +265,14 @@
   margin: 0 auto;
   transition: all 100ms linear;
 }
-.edit-popup-overlay .form-container form .info .submit:hover {
+.edit-pass-popup-overlay .form-container form .info .submit:hover {
   background-color: var(--color-purple-2);
 }
-.edit-popup-overlay .form-container form .info .submit:active {
+.edit-pass-popup-overlay .form-container form .info .submit:active {
   background-color: var(--color-purple-1);
 }
 
-.edit-popup-overlay .close-button {
+.edit-pass-popup-overlay .close-button {
   position: absolute;
   width: 2.2rem;
   height: 2.2rem;
@@ -287,7 +287,7 @@
   z-index: 10002;
 }
 
-.edit-popup-overlay .thumbnail-container {
+.edit-pass-popup-overlay .thumbnail-container {
   position: relative;
   width: 100%;
   padding-top: 56.25%; /* 16:9 Aspect Ratio */
@@ -295,7 +295,7 @@
   overflow: hidden;
 }
 
-.edit-popup-overlay .thumbnail-container iframe {
+.edit-pass-popup-overlay .thumbnail-container iframe {
   position: absolute;
   top: 0;
   left: 0;
@@ -304,7 +304,7 @@
   border: none;
 }
 
-.edit-popup-overlay .thumbnail-text {
+.edit-pass-popup-overlay .thumbnail-text {
   position: absolute;
   top: 0;
   left: 0;
@@ -318,18 +318,18 @@
   padding: 1rem;
 }
 
-.edit-popup-overlay .form-container {
+.edit-pass-popup-overlay .form-container {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   transition: all 0.3s ease;
 }
 
-.edit-popup-overlay .form-container.shadow {
+.edit-pass-popup-overlay .form-container.shadow {
   box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.9);
 }
 
-.edit-popup-overlay .form-container form {
+.edit-pass-popup-overlay .form-container form {
   position: relative;
   display: flex;
   flex-direction: column;

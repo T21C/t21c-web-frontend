@@ -1,9 +1,10 @@
 import "./detailpopup.css";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import { getVideoDetails, inputDataRaw } from "@/Repository/RemoteRepository";
 import { RatingItem } from './RatingItem';
 import { validateFeelingRating } from '@/components/Misc/Utility';
 import { RatingInput } from './RatingInput';
+import { DifficultyContext } from "@/context/DifficultyContext";
 import api from '@/utils/api';
 
 async function updateRating(id, rating, comment) {
@@ -35,8 +36,8 @@ export const DetailPopup = ({
   setRatings, 
   user, 
 }) => {
+    const { difficultyList } = useContext(DifficultyContext);
     const [videoData, setVideoData] = useState(null);
-    const [diffMap, setDiffMap] = useState([]);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
     const [pendingRating, setPendingRating] = useState("");
     const [pendingComment, setPendingComment] = useState("");
@@ -44,15 +45,6 @@ export const DetailPopup = ({
     const [saveError, setSaveError] = useState(null);
     const [otherRatings, setOtherRatings] = useState([]);
     const [commentError, setCommentError] = useState(false);
-
-
-  useEffect(() => {
-    const fetchDiffMap = async () => {
-      const res = await api.get(import.meta.env.VITE_DIFFICULTIES);
-      setDiffMap(res.data);
-    };
-    fetchDiffMap();
-  }, []);
 
     useEffect(() => {
         const handleEscKey = (event) =>  {

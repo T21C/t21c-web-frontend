@@ -28,8 +28,7 @@ const LevelCard = ({index, level, legacyMode, isSuperAdmin,  }) => {
   level.dlLink = level.dl ? level.dl : level.dlLink
 
   const lvImage = (legacyMode ? level.difficulty.legacyIcon : level.difficulty.icon) || level.difficulty.icon
-  console.log(lvImage);
-  
+
   const navigate = useNavigate()
     const redirect = () => {
       navigate(`/leveldetail?id=${level.id}`);

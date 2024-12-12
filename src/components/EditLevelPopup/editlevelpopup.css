@@ -1,4 +1,4 @@
-.edit-popup-overlay {
+.edit-level-popup-overlay {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,7 +11,7 @@
   z-index: 1000;
 }
 
-.edit-popup {
+.edit-level-popup {
   background: #1a1a1a;
   border-radius: 8px;
   padding: 24px;
@@ -22,7 +22,7 @@
   position: relative;
 }
 
-.edit-popup .close-popup-btn {
+.edit-level-popup .close-popup-btn {
   position: absolute;
   top: 16px;
   right: 16px;
@@ -31,45 +31,46 @@
   color: #fff;
   cursor: pointer;
   padding: 4px;
+  font-size: 2rem;
 }
 
-.edit-popup .close-popup-btn svg {
-  width: 24px;
-  height: 24px;
+.edit-level-popup .close-popup-btn svg {
+  width: 32px;
+  height: 32px;
 }
 
-.edit-popup .popup-content h2 {
+.edit-level-popup .popup-content h2 {
   margin-bottom: 16px;
   color: #fff;
 }
 
-.edit-popup .form-grid {
+.edit-level-popup .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
   margin-bottom: 16px;
 }
 
-.edit-popup .form-links {
+.edit-level-popup .form-links {
   display: flex;
   flex-direction: column;
   gap: 16px;
   margin-bottom: 16px;
 }
 
-.edit-popup .form-group {
+.edit-level-popup .form-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.edit-popup .form-group label {
+.edit-level-popup .form-group label {
   color: #fff;
   font-size: 14px;
 }
 
-.edit-popup .form-group input,
-.edit-popup .form-group textarea {
+.edit-level-popup .form-group input,
+.edit-level-popup .form-group textarea {
   padding: 8px 12px;
   border-radius: 4px;
   border: 1px solid #333;
@@ -77,146 +78,22 @@
   color: #fff;
 }
 
-.edit-popup .form-group.checkbox {
+.edit-level-popup .form-group.checkbox {
   flex-direction: row;
   align-items: center;
 }
 
-.edit-popup .calculated-score {
+.edit-level-popup .calculated-score {
   color: #fff;
   font-size: 14px;
 }
 
-.edit-popup .error-message {
+.edit-level-popup .error-message {
   color: #ff4444;
   margin-bottom: 16px;
 }
 
-.edit-popup .save-button {
-  margin-top: 0;
-  width: auto;
-  padding: 12px;
-  background: #417fc6;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 16px;
-  transition: background 0.2s ease;
-}
-
-.edit-popup .save-button:disabled {
-  background: #737f8d;
-  cursor: not-allowed;
-}
-
-.edit-popup .save-button:hover:not(:disabled) {
-  background: #2d67a1;
-}
-
-.edit-popup .difficulty-row {
-  display: flex;
-  align-items: center;
-  gap: 1.5rem;
-}
-
-.edit-popup .to-rate-checkbox-container {
-  display: grid;
-  grid-template-rows: auto auto;
-  gap: 8px;
-  align-content: center;
-}
-
-.edit-popup .to-rate-top-row {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-.edit-popup .to-rate-group {
-  display: grid;
-  grid-template-columns: auto 0fr;
-  gap: 8px;
-  transition: grid-template-columns 0.3s ease-out;
-  justify-content: center;
-}
-
-.edit-popup .to-rate-checkbox {
-  display: flex;
-  align-items: center;
-  background: #2a2a2a;
-  padding: 6px 12px;
-  border-radius: 4px;
-  border: 1px solid #333;
-  gap: 0.5rem;
-  cursor: pointer;
-  color: #fff;
-  font-size: 14px;
-  user-select: none;
-  white-space: nowrap;
-}
-
-.edit-popup .to-rate-checkbox input[type="checkbox"] {
-  margin: 0;
-  width: 16px;
-  height: 16px;
-  accent-color: #4a90e2;
-  cursor: pointer;
-}
-
-.edit-popup .to-rate-checkbox:hover {
-  background: #333;
-}
-
-.edit-popup .rerate-num {
-  width: 0;
-  overflow: hidden;
-  transition: width 0.3s ease-out, opacity 0.3s ease-out;
-  opacity: 0;
-}
-
-.edit-popup .rerate-num.show {
-  width: 120px;
-  opacity: 1;
-}
-
-.edit-popup .rerate-num input {
-  width: 100%;
-  padding: 8px 12px;
-  border-radius: 4px;
-  border: 1px solid #333;
-  background: #2a2a2a;
-  color: #fff;
-}
-
-.edit-popup .rerate-reason {
-  grid-row: 2;
-  width: 100%;
-  max-height: 0;
-  overflow: hidden;
-  transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
-  opacity: 0;
-}
-
-.edit-popup .rerate-reason.show {
-  max-height: 40px;
-  opacity: 1;
-}
-
-.edit-popup .rerate-reason input {
-  width: 100%;
-  padding: 8px 12px;
-  border-radius: 4px;
-  border: 1px solid #333;
-  background: #2a2a2a;
-  color: #fff;
-}
-
-.edit-popup .to-rate-group:has(.rerate-num.show) {
-  grid-template-columns: auto 120px;
-}
-
-.edit-popup .button-group {
+.edit-level-popup .button-group {
   display: flex;
   gap: 16px;
   margin-top: 16px;
@@ -232,7 +109,29 @@
   transition: background 0.2s ease;
 }
 
-.button-group .delete-button {
+.save-button {
+  margin-top: 0;
+  width: auto;
+  padding: 12px;
+  background: #417fc6;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s ease;
+}
+
+.save-button:disabled {
+  background: #737f8d;
+  cursor: not-allowed;
+}
+
+.save-button:hover:not(:disabled) {
+  background: #2d67a1;
+}
+
+.delete-button {
   background: #c64141;
   color: white;
   max-width: 13rem;
@@ -247,7 +146,109 @@
   cursor: not-allowed;
 }
 
-.edit-popup .difficulty-select {
+.edit-level-popup .difficulty-row {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.edit-level-popup .to-rate-checkbox-container {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 8px;
+  align-content: center;
+}
+
+.edit-level-popup .to-rate-top-row {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.edit-level-popup .to-rate-group {
+  display: grid;
+  grid-template-columns: auto 0fr;
+  gap: 8px;
+  transition: grid-template-columns 0.3s ease-out;
+  justify-content: center;
+}
+
+.edit-level-popup .to-rate-checkbox {
+  display: flex;
+  align-items: center;
+  background: #2a2a2a;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid #333;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: #fff;
+  font-size: 14px;
+  user-select: none;
+  white-space: nowrap;
+}
+
+.edit-level-popup .to-rate-checkbox input[type="checkbox"] {
+  margin: 0;
+  width: 16px;
+  height: 16px;
+  accent-color: #4a90e2;
+  cursor: pointer;
+}
+
+.edit-level-popup .to-rate-checkbox:hover {
+  background: #333;
+}
+
+.edit-level-popup .rerate-num {
+  width: 0;
+  overflow: hidden;
+  transition: width 0.3s ease-out, opacity 0.3s ease-out;
+  opacity: 0;
+}
+
+.edit-level-popup .rerate-num.show {
+  width: 120px;
+  opacity: 1;
+}
+
+.edit-level-popup .rerate-num input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #333;
+  background: #2a2a2a;
+  color: #fff;
+}
+
+.edit-level-popup .rerate-reason {
+  grid-row: 2;
+  width: 100%;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+  opacity: 0;
+}
+
+.edit-level-popup .rerate-reason.show {
+  max-height: 40px;
+  opacity: 1;
+}
+
+.edit-level-popup .rerate-reason input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #333;
+  background: #2a2a2a;
+  color: #fff;
+}
+
+.edit-level-popup .to-rate-group:has(.rerate-num.show) {
+  grid-template-columns: auto 120px;
+}
+
+.edit-level-popup .difficulty-select {
   width: 100%;
   padding: 8px;
   border: 1px solid #ccc;
@@ -256,11 +257,11 @@
   font-size: 14px;
 }
 
-.edit-popup .difficulty-select option {
+.edit-level-popup .difficulty-select option {
   padding: 8px;
 }
 
-.edit-popup .calculated-score {
+.edit-level-popup .calculated-score {
   margin-top: 8px;
   font-size: 14px;
   color: #666;

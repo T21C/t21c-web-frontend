@@ -113,9 +113,9 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
   };
 
   return (
-    <div className="edit-popup-overlay">
-      <div className="edit-popup">
-        <button className="close-button" onClick={onClose}>×</button>
+    <div className="edit-level-popup-overlay">
+      <div className="edit-level-popup">
+        <button className="close-popup-btn" onClick={onClose}>×</button>
         <div className="popup-content">
           <h2>Edit Level Details</h2>
           <form onSubmit={handleSubmit}>
@@ -298,10 +298,20 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
             {error && <div className="error-message">{error}</div>}
             
             <div className="button-group">
-              <button type="submit" disabled={isSaving}>
+              <button 
+                type="submit" 
+                className="save-button"
+                disabled={isSaving}
+              >
                 {isSaving ? 'Saving...' : 'Save Changes'}
               </button>
-              <button type="button" onClick={onClose}>Cancel</button>
+              <button 
+                type="button" 
+                className="delete-button"
+                onClick={onClose}
+              >
+                Cancel
+              </button>
             </div>
           </form>
         </div>

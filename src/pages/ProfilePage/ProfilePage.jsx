@@ -27,7 +27,7 @@ const ProfilePage = () => {
     const [error, setError] = useState(false)
     const {t} = useTranslation()
     const { isSuperAdmin } = useAuth();
-    const { difficulties } = useDifficultyContext();
+    const { difficultyList } = useDifficultyContext();
     const [showAdminPopup, setShowAdminPopup] = useState(false);
 
     var valueLabels = {
@@ -105,7 +105,7 @@ const ProfilePage = () => {
                     <div className="diff-info">
                       <p>{valueLabels.topDiff}</p>
                       <img
-                        src={difficulties?.find(diff => diff.name === playerData.topDiff)?.icon}
+                        src={difficultyList?.find(diff => diff.name === playerData.topDiff)?.icon}
                         alt={playerData.topDiff}
                         className="diff-image"
                       />
@@ -114,7 +114,7 @@ const ProfilePage = () => {
                     <div className="diff-info">
                       <p>{valueLabels.top12kDiff}</p>
                       <img
-                        src={difficulties?.find(diff => diff.name === playerData.top12kDiff)?.icon}
+                        src={difficultyList?.find(diff => diff.name === playerData.top12kDiff)?.icon}
                         alt={playerData.top12kDiff}
                         className="diff-image"
                       />

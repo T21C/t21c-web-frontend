@@ -78,9 +78,8 @@ const getScore = (passData, levelData) => {
     const speed = passData['speed']
     const legacyDiff = levelData['diff']
     const inputs = passData['judgements']
-    const base = levelData['baseScore']
+    const base = levelData['baseScore'] !== null ? levelData['baseScore'] : (levelData.difficulty?.baseScore || 0)
     const xaccMtp = getXaccMtp(inputs)
-
 
     var speedMtp = 0
     var score = 0

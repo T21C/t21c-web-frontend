@@ -361,7 +361,7 @@ const handleSubmit = async (e) => {
   };
 
   return (
-    <div className="edit-popup-overlay">
+    <div className="edit-pass-popup-overlay">
       <div className="form-container">
         <button 
           className="close-button" 

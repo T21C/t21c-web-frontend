@@ -1,8 +1,16 @@
 /* eslint-disable react/prop-types */
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useContext } from "react";
 import api from '../utils/api';
 
 const DifficultyContext = createContext();
+
+export const useDifficultyContext = () => {
+    const context = useContext(DifficultyContext);
+    if (!context) {
+        throw new Error('useDifficultyContext must be used within a DifficultyContextProvider');
+    }
+    return context;
+};
 
 const DifficultyContextProvider = (props) => {
     const [difficulties, setDifficulties] = useState({});
