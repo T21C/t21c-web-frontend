@@ -359,7 +359,7 @@ async function fetchData({ offset = "", diff = '', cleared = '', sort = '', dire
 
 async function fetchPassInfo(id) {
   try {
-    const res = await api.get(`${import.meta.env.VITE_INDIVIDUAL_PASSES}${id}`)
+    const res = await api.get(`${import.meta.env.VITE_INDIVIDUAL_PASS}${id}`)
     return res.data
   } catch (error) {
     console.error(error)

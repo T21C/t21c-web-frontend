@@ -6,9 +6,6 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from 'react-router-dom';
 import { CompleteNav } from "../../components";
 import {
-  fetchLevelInfo,
-  fetchPassPlayerInfo,
-  fetchPassInfo,
   getVideoDetails,
   isoToEmoji,
 } from "../../Repository/RemoteRepository";
@@ -53,12 +50,12 @@ const PassDetailPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchPassInfo(id);
+        const passData = await api.get(`${import.meta.env.VITE_INDIVIDUAL_PASS}${id}`);
         setRes(prevRes => ({
           ...prevRes,
-          pass: data
+          pass: passData.data
         }));
-        setDisplayedPlayers(sortLeaderboard(data.passes));
+        setDisplayedPlayers(sortLeaderboard(passData.data));
         setInfoLoading(false);
       } catch (error) {
         console.error("Error fetching pass data:", error);

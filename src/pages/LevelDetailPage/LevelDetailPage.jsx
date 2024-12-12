@@ -14,9 +14,9 @@ import { Tooltip } from "react-tooltip";
 import { useTranslation } from "react-i18next";
 import { use } from "i18next";
 import ClearCard from "../../components/ClearCard/ClearCard";
-import axios from 'axios';
 import { EditLevelPopup } from "../../components/EditLevelPopup/EditLevelPopup";
 import { useAuth } from "../../context/AuthContext";
+import api from "../../utils/api";
 
 const getHighScores = (players) => {
   if (!players?.length) return null;
@@ -53,17 +53,18 @@ const LevelDetailPage = () => {
   const reloadLevelData = async () => {
     try {
       setInfoLoading(true);
-      const data = await api.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`);
+      const levelData = await api.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`);
+      const passesData = await api.get(`${import.meta.env.VITE_INDIVIDUAL_PASS}/level/${id}`);
       setRes(prevRes => ({
         ...prevRes,
-        level: data.level,
-        passes: data.passes
+        level: levelData.data,
+        passes: passesData.data
       }));
-      setDisplayedPlayers(sortLeaderboard(data.passes));
+      setDisplayedPlayers(sortLeaderboard(passesData.data));
       
       // Reload video details if needed
-      if (data.level.vidLink) {
-        const videoData = await getVideoDetails(data.level.vidLink);
+      if (levelData.data.vidLink) {
+        const videoData = await getVideoDetails(levelData.data.vidLink);
         setVideoDetail(videoData);
       }
     } catch (error) {
@@ -76,9 +77,14 @@ const LevelDetailPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await api.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`);
-        setRes(data);
-        setDisplayedPlayers(sortLeaderboard(data.passes));
+        const levelData = await api.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`);
+        const passesData = await api.get(`${import.meta.env.VITE_INDIVIDUAL_PASS}/level/${id}`);
+        setRes(prevRes => ({
+          ...prevRes,
+          level: levelData.data,
+          passes: passesData.data
+        }));
+        setDisplayedPlayers(sortLeaderboard(passesData.data));
         
         setInfoLoading(false);
       } catch (error) {
