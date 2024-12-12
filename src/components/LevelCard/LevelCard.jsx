@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { getLevelImage } from "@/Repository/RemoteRepository";
 import "./levelcard.css"
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
@@ -8,7 +7,7 @@ import { EditLevelPopup } from "@/components/EditLevelPopup/EditLevelPopup"; // 
 
 
 // eslint-disable-next-line react/prop-types
-const LevelCard = ({index, level, legacyMode, isSuperAdmin }) => {
+const LevelCard = ({index, level, legacyMode, isSuperAdmin,  }) => {
   const {t} = useTranslation()  
   const [toRate, setToRate] = useState(level.toRate || false);
   const [showEditPopup, setShowEditPopup] = useState(false); // State to manage popup visibility
@@ -28,13 +27,8 @@ const LevelCard = ({index, level, legacyMode, isSuperAdmin }) => {
   level.wsLink = level.ws ? level.ws : level.wsLink ? level.wsLink : level.workshopLink;
   level.dlLink = level.dl ? level.dl : level.dlLink
 
-  const lvImage = 
-  legacyMode ?
-  getLevelImage(level.newDiff)
-  :
-  getLevelImage(level.pguDiff)
-
-  
+  const lvImage = (legacyMode ? level.difficulty.legacyIcon : level.difficulty.icon) || level.difficulty.icon
+  console.log(lvImage);
   
   const navigate = useNavigate()
     const redirect = () => {

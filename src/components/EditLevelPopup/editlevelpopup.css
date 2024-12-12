@@ -216,7 +216,7 @@
   grid-template-columns: auto 120px;
 }
 
-.button-group {
+.edit-popup .button-group {
   display: flex;
   gap: 16px;
   margin-top: 16px;
@@ -245,5 +245,24 @@
 .delete-button:disabled {
   background: #8d7373;
   cursor: not-allowed;
+}
+
+.edit-popup .difficulty-select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  font-size: 14px;
+}
+
+.edit-popup .difficulty-select option {
+  padding: 8px;
+}
+
+.edit-popup .calculated-score {
+  margin-top: 8px;
+  font-size: 14px;
+  color: #666;
 }
  

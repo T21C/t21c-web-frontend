@@ -11,7 +11,6 @@ export const RatingCard = ({
   rating, 
   index, 
   setSelectedRating, 
-  raters, 
   user, 
   isSuperAdmin,
   showDetailedView,

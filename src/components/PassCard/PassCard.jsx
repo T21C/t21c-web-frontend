@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import "./passcard.css"
 import { useTranslation } from "react-i18next";
-import { getLevelImage } from "../../Repository/RemoteRepository";
 
 const PassCard = ({ pass }) => {
   const { t } = useTranslation();
@@ -50,7 +49,7 @@ const PassCard = ({ pass }) => {
       <div className="flags-wrapper">
         {pass.is12K && <div className="flag">12K</div>}
         {pass.isNoHoldTap && <div className="flag">NHT</div>}
-        <img className="lv-icon" src={getLevelImage(pass.level.pguDiff)} alt="" />
+        <img className="lv-icon" src={pass.level.difficulty.icon} alt="" />
       </div>
 
       <div className="video-wrapper">

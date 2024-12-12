@@ -1,6 +1,6 @@
 import "./detailpopup.css";
 import { useEffect, useState } from 'react';
-import { getVideoDetails, getLevelImage, inputDataRaw } from "@/Repository/RemoteRepository";
+import { getVideoDetails, inputDataRaw } from "@/Repository/RemoteRepository";
 import { RatingItem } from './RatingItem';
 import { validateFeelingRating } from '@/components/Misc/Utility';
 import { RatingInput } from './RatingInput';
@@ -36,6 +36,7 @@ export const DetailPopup = ({
   user, 
 }) => {
     const [videoData, setVideoData] = useState(null);
+    const [diffMap, setDiffMap] = useState([]);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
     const [pendingRating, setPendingRating] = useState("");
     const [pendingComment, setPendingComment] = useState("");
@@ -43,6 +44,15 @@ export const DetailPopup = ({
     const [saveError, setSaveError] = useState(null);
     const [otherRatings, setOtherRatings] = useState([]);
     const [commentError, setCommentError] = useState(false);
+
+
+  useEffect(() => {
+    const fetchDiffMap = async () => {
+      const res = await api.get(import.meta.env.VITE_DIFFICULTIES);
+      setDiffMap(res.data);
+    };
+    fetchDiffMap();
+  }, []);
 
     useEffect(() => {
         const handleEscKey = (event) =>  {
@@ -202,11 +212,11 @@ export const DetailPopup = ({
                 </div>
                 <div className="detail-field">
                   <span className="detail-label">Current Difficulty:</span>
-                  <img src={getLevelImage(selectedRating.level.pguDiff)} alt="" className="detail-value lv-icon" />
+                  <img src={selectedRating.level.difficulty.icon} alt="" className="detail-value lv-icon" />
                 </div>
                 <div className="detail-field">
                   <span className="detail-label">Average Rating:</span>
-                  <img src={getLevelImage(selectedRating.average)} alt="" className="detail-value lv-icon" />
+                  <img src={diffMap.filter(diff => diff.name === selectedRating.average)[0].icon} alt="" className="detail-value lv-icon" />
                 </div>
               </div>
             </div>
@@ -230,20 +240,20 @@ export const DetailPopup = ({
                           {pendingRating.includes('-') && pendingRating.length > 3 ? (
                             <>
                               <img 
-                                src={getLevelImage(pendingRating.split('-')[0])} 
+                                src={diffMap.filter(diff => diff.name === pendingRating.split('-')[0])[0].icon} 
                                 alt=""
                                 className="rating-level-image"
                               />
                               <span className="rating-separator">-</span>
                               <img 
-                                src={getLevelImage(pendingRating.split('-')[1])} 
+                                src={diffMap.filter(diff => diff.name === pendingRating.split('-')[1])[0].icon} 
                                 alt=""
                                 className="rating-level-image"
                               />
                             </>
                           ) : (
                             <img 
-                              src={getLevelImage(pendingRating)} 
+                              src={diffMap.filter(diff => diff.name === pendingRating)[0].icon} 
                               alt=""
                               className="rating-level-image"
                             />

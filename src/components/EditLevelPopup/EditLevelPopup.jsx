@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import './editlevelpopup.css';
 import { RatingInput } from '../RatingComponents/RatingInput';
-import { parseBaseScore } from '../../Repository/RemoteRepository';
 import api from '../../utils/api';
 import { useNavigate } from 'react-router-dom';
 
@@ -25,11 +24,26 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
     rerateNum: "",
     toRate: false,
     rerateReason: '',
-    isDeleted: false
+    isDeleted: false,
+    diffId: '',
   });
+  const [difficulties, setDifficulties] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchDifficulties = async () => {
+      try {
+        const response = await api.get('/v2/data/diffs');
+        setDifficulties(response.data);
+      } catch (err) {
+        console.error('Failed to fetch difficulties:', err);
+        setError('Failed to load difficulties');
+      }
+    };
+    fetchDifficulties();
+  }, []);
 
   useEffect(() => {
     if (level) {
@@ -52,7 +66,8 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
         rerateNum: level.rerateNum || '',
         toRate: level.toRate || false,
         rerateReason: level.rerateReason || '',
-        isDeleted: level.isDeleted || false
+        isDeleted: level.isDeleted || false,
+        diffId: level.diffId || '',
       });
     }
   }, [level]);
@@ -153,6 +168,33 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
     }
   }, [level.id, onClose, onUpdate]);
 
+  const selectedDifficulty = difficulties.find(d => d.id === formData.diffId) || {};
+
+  const renderDifficultySelector = () => (
+    <div className="form-group">
+      <label htmlFor="diffId">Difficulty</label>
+      <select
+        id="diffId"
+        name="diffId"
+        value={formData.diffId}
+        onChange={handleInputChange}
+        className="difficulty-select"
+      >
+        <option value="">Select Difficulty</option>
+        {difficulties.map(diff => (
+          <option key={diff.id} value={diff.id}>
+            {diff.name} ({diff.type}) - Base Score: {diff.baseScore}
+          </option>
+        ))}
+      </select>
+      {selectedDifficulty.baseScore !== undefined && (
+        <div className="calculated-score">
+          Base Score: {selectedDifficulty.baseScore}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="edit-popup-overlay">
       <div className="edit-popup">
@@ -236,36 +278,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
                   onChange={handleInputChange}
                 />
               </div>
-              <div className="form-group">
-                <label htmlFor="baseScore">Base Score</label>
-                <RatingInput
-                  value={formData.baseScoreDiff.toString()}
-                  onChange={(value) => {
-                    setFormData(prev => ({
-                      ...prev,
-                      baseScoreDiff: value
-                    }));
-                  }}
-                />
-                <div className="calculated-score">
-                  Calculated Score: {parseBaseScore(formData.baseScoreDiff)}
-                </div>
-              </div>
-              {/*
-              <div className="form-group">
-                <label htmlFor="diff">Legacy Difficulty</label>
-                <RatingInput
-                  value={formData.diff.toString()}
-                  onChange={(value) => {
-                    setFormData(prev => ({
-                      ...prev,
-                      diff: value
-                    }));
-                  }}
-                  isLegacy={true}
-                />
-              </div>
-              */}
+              {renderDifficultySelector()}
 
               <div className="form-group">
                 <label htmlFor="pguDiff">PGU Difficulty</label>

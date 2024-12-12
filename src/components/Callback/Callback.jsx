@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../../context/AuthContext";
-import api from "../../utils/api";
+import axios from 'axios';
 
 const CallbackPage = () => {
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ const CallbackPage = () => {
       // Set codeFetched to true to prevent multiple fetch calls
       setCodeFetched(true);
       
-      api.post(`${import.meta.env.VITE_DISCORD_AUTH}`,
+      axios.post(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_DISCORD_AUTH}`,
         { code },
         {'Content-Type': 'application/json'},
       )

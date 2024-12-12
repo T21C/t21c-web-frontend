@@ -9,7 +9,6 @@ import {
   fetchLevelInfo,
   fetchPassPlayerInfo,
   fetchPassInfo,
-  getLevelImage,
   getVideoDetails,
   isoToEmoji,
 } from "../../Repository/RemoteRepository";
@@ -259,7 +258,7 @@ const PassDetailPage = () => {
               backgroundImage: `url(${res && videoDetail ? videoDetail.image: "defaultImageURL"})`}}>
 
             <div className="diff">
-              <img src={getLevelImage(res.pass.newDiff, res.pass.pdnDiff, res.pass.pguDiff)} alt="" />
+              <img src={res.pass.level.difficulty.icon} alt="" />
             </div>
 
             <div className="title">

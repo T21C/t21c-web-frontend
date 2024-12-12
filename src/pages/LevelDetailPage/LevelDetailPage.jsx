@@ -7,8 +7,6 @@ import { useLocation } from 'react-router-dom';
 import { CompleteNav } from "../../components";
 import {
   fetchLevelInfo,
-  fetchPassPlayerInfo,
-  getLevelImage,
   getVideoDetails,
   isoToEmoji,
 } from "../../Repository/RemoteRepository";
@@ -298,7 +296,7 @@ const LevelDetailPage = () => {
               backgroundImage: `url(${res && videoDetail ? videoDetail.image: "defaultImageURL"})`}}>
 
             <div className="diff">
-              <img src={getLevelImage( res.level.pguDiff,res.level.pdnDiff, res.level.newDiff, )} alt="" />
+              <img src={res.level.difficulty.icon} alt="" />
             </div>
 
             <div className="title">

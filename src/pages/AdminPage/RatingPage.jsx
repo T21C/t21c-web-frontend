@@ -20,7 +20,6 @@ const RatingPage = () => {
   const {t} = useTranslation();
   const { user, isSuperAdmin } = useAuth();
   const [ratings, setRatings] = useState(null);
-  const [raters, setRaters] = useState([]);
   const [showMessage, setShowMessage] = useState(false);
   const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
@@ -47,34 +46,12 @@ const RatingPage = () => {
     }
   }, []);
 
+
+  
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (user) {
-          // Fetch raters
-          const ratersResponse = await api.get(`${import.meta.env.VITE_RATING_API}/raters`);
-          const ratersList = await ratersResponse.data;
-          
-          // Move current user to the beginning of ratersList if present
-          const userIndex = ratersList.indexOf(user.username);
-          if (userIndex !== -1) {
-            ratersList.splice(userIndex, 1);
-            ratersList.unshift(user.username);
-          }
-          
-          setRaters(ratersList);
-          await fetchRatings();
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-
     let socket;
+
+    fetchRatings();
 
     const connectSocket = () => {
       socket = io(import.meta.env.VITE_API_URL, {
@@ -198,7 +175,6 @@ const RatingPage = () => {
                     rating={rating}
                     index={index}
                     setSelectedRating={setSelectedRating}
-                    raters={raters}
                     user={user}
                     isSuperAdmin={isSuperAdmin}
                     showDetailedView={showDetailedView}
@@ -211,7 +187,6 @@ const RatingPage = () => {
               setSelectedRating={setSelectedRating}
               ratings={ratings}
               setRatings={setRatings}
-              raters={raters}
               user={user}
             />
 

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import './adminplayerpopup.css';
 import api from '../../utils/api';
-import { encodeToBase32 } from '@/Repository/RemoteRepository';
 import { CountrySelect } from '../PlayerComponents/CountrySelect';
 
 const AdminPlayerPopup = ({ player, onClose, onUpdate }) => {

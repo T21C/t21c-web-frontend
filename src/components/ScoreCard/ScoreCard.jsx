@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import { getLevelImage, getVideoDetails } from "../../Repository/RemoteRepository";
 import "./scorecard.css"
 import "../../index.css"
 import { useTranslation } from "react-i18next";
@@ -41,7 +40,7 @@ const ScoreCard = ({scoreData}) => {
   return (
     <div className='score-card'>
       <div className="img-wrapper">
-        <img src={getLevelImage(scoreData.level.pguDiff)} referrerPolicy="no-referrer" alt="" />
+        <img src={scoreData.level.difficulty.icon} referrerPolicy="no-referrer" alt="" />
       </div>
       <div className="name-wrapper" onClick={() => redirect()}>
           <p className="score-exp">{scoreData.level.artist}</p>

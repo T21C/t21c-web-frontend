@@ -686,31 +686,6 @@ async function getDriveFromYt(link) {
 
 
 
-function getLevelImage(...values) {
-  const dataSources = [inputDictRaw, pguDataRaw, pgnDataRaw, newDataRaw, legacyDataRaw];
-  let fallbackImage = null;
-  for (const source of dataSources) {
-    // Try all values in current source
-    for (const value of values) {
-      const image = source[value];
-      if (image) {
-        
-        // If value is "0" or 0, store as fallback but continue searching
-        if (value === "0" || value === 0) {
-          fallbackImage = fallbackImage || image;
-          continue;
-        }
-        
-        return image;
-      }
-    }
-    // If we found a fallback in this source and checked all values, move to next source
-  }
-  
-  // Return fallback image if found, otherwise null
-  return fallbackImage || null;
-}
-
 function isoToEmoji(code) {
   const htmlString =  twemoji.parse(code
     .toLowerCase()
@@ -726,74 +701,6 @@ function isoToEmoji(code) {
 }
 
 
-function calculatePguDiffNum(pguDiff) {
-  if (!pguDiff) return 0;
-
-  const difficultyMap = {
-    "Unranked": 0,
-    ...Object.fromEntries(Array.from({ length: 20 }, (_, i) => [`P${i + 1}`, i + 1])),
-    ...Object.fromEntries(Array.from({ length: 20 }, (_, i) => [`G${i + 1}`, i + 21])),
-    ...Object.fromEntries(Array.from({ length: 20 }, (_, i) => [`U${i + 1}`, i + 41])),
-    "QQ": 61,
-    "Q2": 62,
-    "Q2p": 63,
-    "Q3": 64,
-    "Q3p": 65,
-    "Q4": 66,
-    "MP": -22,
-    "Grande": 100,
-    "Bus": 101,
-    "MA": 102,
-  };
-
-  // Convert the array of entries back to an object
-  const diffMap = Object.fromEntries(Object.entries(difficultyMap));
-
-  // Try to parse as number first
-  const numericValue = Number(pguDiff);
-  if (!isNaN(numericValue)) {
-    return numericValue;
-  }
-
-  // Look up in difficulty map
-  return diffMap[pguDiff] || 0;
-}
-
-// Add these utility functions
-const calculateBaseScore = (value) => {
-  if (!value || value < 1) return 0;
-
-  const scoreMap = {
-    1: 0.1,  2: 0.2,  3: 0.3,  4: 0.4,  5: 0.5,
-    6: 0.6,  7: 0.7,  8: 0.8,  9: 0.9,  10: 1,
-    11: 2,   12: 3,   13: 5,   14: 10,  15: 15,
-    16: 20,  17: 30,  18: 45,  19: 60,  20: 75,
-    21: 100, 22: 110, 23: 120, 24: 130, 25: 140,
-    26: 150, 27: 160, 28: 170, 29: 180, 30: 190,
-    31: 200, 32: 210, 33: 220, 34: 230, 35: 240,
-    36: 250, 37: 275, 38: 300, 39: 350, 40: 400,
-    41: 500, 42: 600, 43: 700, 44: 850, 45: 1000,
-    46: 1300, 47: 1600, 48: 1800, 49: 2000, 50: 2500,
-    51: 3000, 52: 4000, 53: 5000, 54: 11000,
-    [-21]: 0, [-22]: 0, [-1]: 0.1, [-2]: 0
-  };
-
-  return scoreMap[value] ?? 0;
-};
-
-const parseBaseScore = (value) => {
-  const parsedValue = Number(value);
-  return !isNaN(parsedValue) && parsedValue > 0 
-    ? parsedValue 
-    : calculateBaseScore(calculatePguDiffNum(value));
-};
-
-function encodeToBase32(input) {
-  const encoder = new Encoder();
-  const buffer = new TextEncoder().encode(input);
-  return encoder.write(buffer).finalize();
-}
-
 
 export {
   getYouTubeVideoDetails, 
@@ -805,10 +712,5 @@ export {
   fetchData, 
   fetchLevelInfo, 
   getVideoDetails, 
-  getLevelImage,
-  calculateBaseScore,
-  parseBaseScore,
-  encodeToBase32,
   fetchPassInfo,
-  calculatePguDiffNum
 }

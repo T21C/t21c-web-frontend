@@ -12,7 +12,6 @@ import { useTranslation } from "react-i18next";
 import ScrollButton from "@/components/ScrollButton/ScrollButton";
 import { useAuth } from "@/context/AuthContext";
 import { RatingInput } from '@/components/RatingComponents/RatingInput';
-import { pguDataRaw, calculatePguDiffNum } from "@/Repository/RemoteRepository";
 
 
 const options = [
@@ -137,8 +136,8 @@ const LevelPage = () => {
         };
         // Pass difficulty filters as raw strings if they exist
         
-        const lowDiff = calculatePguDiffNum(selectedLowFilterDiff?.toUpperCase());
-        const highDiff = calculatePguDiffNum(selectedHighFilterDiff?.toUpperCase());
+        const lowDiff = selectedLowFilterDiff;
+        const highDiff = selectedHighFilterDiff;
 
         if (lowDiff !== 0 && highDiff !== 0 && lowDiff > highDiff) {
           // Swap if min > max
@@ -154,8 +153,9 @@ const LevelPage = () => {
           }
         }
         
+        console.log(import.meta.env.VITE_LIST_LEVEL);
         const response = await api.get(
-          `${import.meta.env.VITE_ALL_LEVEL_URL}`,
+          `${import.meta.env.VITE_LIST_LEVEL}`,
           {
             params: params,
             cancelToken: new axios.CancelToken((c) => (cancel = c)),
@@ -174,6 +174,7 @@ const LevelPage = () => {
         setHasMore(response.data.count > levelsData.length + newLevels.length);
       } catch (error) {
         if (!axios.isCancel(error)) setError(true);
+        console.log(error);
       } finally {
         setLoading(false);
       }

@@ -2,7 +2,7 @@ import "./profilePage.css"
 import api from "../../utils/api";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom"
-import { getLevelImage, getVideoDetails, isoToEmoji } from "../../Repository/RemoteRepository";
+import { isoToEmoji } from "../../Repository/RemoteRepository";
 import { CompleteNav, ScoreCard } from "../../components";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../../context/AuthContext";
@@ -33,7 +33,7 @@ const parseRankColor = (rank) => {
 
 
 const ProfilePage = () => {
-    const {playerName} = useParams()
+    const {playerId} = useParams()
     const [playerData, setPlayerData] = useState(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
@@ -41,6 +41,7 @@ const ProfilePage = () => {
     const { isSuperAdmin } = useAuth();
     const [showAdminPopup, setShowAdminPopup] = useState(false);
 
+    const [diffMap, setDiffMap] = useState([]);
     var valueLabels = {
       rankedScore: t("valueLabels.rankedScore"),
       generalScore: t("valueLabels.generalScore"),
@@ -56,10 +57,19 @@ const ProfilePage = () => {
     };
 
     useEffect(() => {
+        const fetchDiffMap = async () => {
+            const res = await api.get(import.meta.env.VITE_DIFFICULTIES);
+            setDiffMap(res.data);
+        };
+        fetchDiffMap();
+        
+    }, []);
+
+    useEffect(() => {
         const fetchPlayer = async () => {
           setLoading(true);
           try {
-            const response = await api.get(import.meta.env.VITE_INDIVIDUAL_PLAYER + playerName);
+            const response = await api.get(import.meta.env.VITE_INDIVIDUAL_PLAYER + playerId);
             
             
             setPlayerData(response.data);
@@ -120,7 +130,7 @@ const ProfilePage = () => {
                 <div className="diff-info">
                   <p>{valueLabels.topDiff}</p>
                   <img
-                    src={getLevelImage(playerData.topDiff, playerData.topDiff, playerData.topDiff, playerData.topDiff)}
+                    src={diffMap?.filter(diff => diff.name === playerData.topDiff)[0]?.icon}
                     alt={playerData.topDiff}
                     className="diff-image"
                   />
@@ -129,7 +139,7 @@ const ProfilePage = () => {
                 <div className="diff-info">
                   <p>{valueLabels.top12kDiff}</p>
                   <img
-                    src={getLevelImage(playerData.top12kDiff, playerData.top12kDiff, playerData.top12kDiff, playerData.top12kDiff)}
+                    src={diffMap?.filter(diff => diff.name === playerData.top12kDiff)[0]?.icon}
                     alt={playerData.top12kDiff}
                     className="diff-image"
                   />

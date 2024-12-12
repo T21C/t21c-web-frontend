@@ -47,7 +47,7 @@ function App() {
         <Route path="submission/level" element={<LevelSubmissionPage />} />
         <Route path="submission/pass" element={<PassSubmissionPage />} />
         <Route path="callback" element={<CallbackPage />} />
-        <Route path="profile/:playerName" element={<ProfilePage />} />
+        <Route path="profile/:playerId" element={<ProfilePage />} />
 
         <Route path='leaderboard' element={<LeaderboardPage/>}/>
         <Route path='pass' element={<PassPage/>} />
