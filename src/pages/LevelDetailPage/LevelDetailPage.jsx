@@ -6,7 +6,6 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from 'react-router-dom';
 import { CompleteNav } from "../../components";
 import {
-  fetchLevelInfo,
   getVideoDetails,
   isoToEmoji,
 } from "../../Repository/RemoteRepository";
@@ -54,7 +53,7 @@ const LevelDetailPage = () => {
   const reloadLevelData = async () => {
     try {
       setInfoLoading(true);
-      const data = await fetchLevelInfo(id);
+      const data = await api.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`);
       setRes(prevRes => ({
         ...prevRes,
         level: data.level,
@@ -77,7 +76,7 @@ const LevelDetailPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await fetchLevelInfo(id);
+        const data = await api.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`);
         setRes(data);
         setDisplayedPlayers(sortLeaderboard(data.passes));
         

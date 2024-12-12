@@ -6,7 +6,6 @@ import { useTranslation } from "react-i18next";
 import { DetailPopup } from "../../components/RatingComponents/DetailPopup";
 import { RatingCard } from "../../components/RatingComponents/RatingCard";
 import { EditLevelPopup } from "../../components/EditLevelPopup/EditLevelPopup";
-import { fetchLevelInfo } from "../../Repository/RemoteRepository";
 import ScrollButton from "../../components/ScrollButton/ScrollButton";
 import api from "../../utils/api";
 import { io } from "socket.io-client";
@@ -105,7 +104,7 @@ const RatingPage = () => {
   const handleEditLevel = async (levelId) => {
     try {
       // Fetch full level data using the same method as LevelDetailPage
-      const data = await fetchLevelInfo(levelId);
+      const data = await api.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${levelId}`);
       if (data && data.level) {
         setSelectedLevel(data.level);
         setOpenEditDialog(true);

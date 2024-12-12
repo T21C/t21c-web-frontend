@@ -16,8 +16,8 @@ export const RatingCard = ({
   showDetailedView,
   onEditLevel 
 }) => {
-    const userRating = rating.RatingDetails?.find(detail => detail.username === user.username)?.rating || "";
-    const processedRatings = rating.RatingDetails
+    const userRating = rating.details?.find(detail => detail.username === user.username)?.rating || "";
+    const processedRatings = rating.details
         .map(({rating}) => calculateRatingValue(rating))
         .filter(rating => rating !== null);
         

@@ -70,12 +70,12 @@ export const DetailPopup = ({
 
     useEffect(() => {
         if (selectedRating) {
-            setPendingRating(selectedRating.RatingDetails?.find(
+            setPendingRating(selectedRating.details?.find(
               detail => detail.username === user.username)?.rating || "");
-            setPendingComment(selectedRating.RatingDetails?.find(
+            setPendingComment(selectedRating.details?.find(
               detail => detail.username === user.username)?.comment || "");
             setHasUnsavedChanges(false);
-            setOtherRatings(selectedRating.RatingDetails);
+            setOtherRatings(selectedRating.details);
         }
     }, [selectedRating]);
 
@@ -216,7 +216,7 @@ export const DetailPopup = ({
                 </div>
                 <div className="detail-field">
                   <span className="detail-label">Average Rating:</span>
-                  <img src={diffMap.filter(diff => diff.name === selectedRating.average)[0].icon} alt="" className="detail-value lv-icon" />
+                  <img src={diffMap?.filter(diff => diff.name === selectedRating.average)[0]?.icon} alt="" className="detail-value lv-icon" />
                 </div>
               </div>
             </div>
@@ -240,20 +240,20 @@ export const DetailPopup = ({
                           {pendingRating.includes('-') && pendingRating.length > 3 ? (
                             <>
                               <img 
-                                src={diffMap.filter(diff => diff.name === pendingRating.split('-')[0])[0].icon} 
+                                src={diffMap?.filter(diff => diff.name === pendingRating.split('-')[0])[0]?.icon} 
                                 alt=""
                                 className="rating-level-image"
                               />
                               <span className="rating-separator">-</span>
                               <img 
-                                src={diffMap.filter(diff => diff.name === pendingRating.split('-')[1])[0].icon} 
+                                src={diffMap?.filter(diff => diff.name === pendingRating.split('-')[1])[0]?.icon} 
                                 alt=""
                                 className="rating-level-image"
                               />
                             </>
                           ) : (
                             <img 
-                              src={diffMap.filter(diff => diff.name === pendingRating)[0].icon} 
+                              src={diffMap?.filter(diff => diff.name === pendingRating)[0]?.icon} 
                               alt=""
                               className="rating-level-image"
                             />

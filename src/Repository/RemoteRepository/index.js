@@ -367,23 +367,6 @@ async function fetchPassInfo(id) {
   }
 }
 
-async function fetchLevelInfo(id) {
-  try {
-    const [levelRes, passesRes] = await Promise.all([
-      api.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`),
-      api.get(`${import.meta.env.VITE_ALL_PASSES_URL}/level/${id}`)
-    ]);
-
-    return {
-      level: levelRes.data,
-      passes: passesRes.data
-    };
-  } catch (error) {
-    console.error('Error fetching level info:', error);
-    throw error;
-  }
-}
-
 async function checkLevel(id) {
   try {
     const res = await api.get(`${import.meta.env.VITE_INDIVIDUAL_LEVEL}${id}`)
@@ -710,7 +693,6 @@ export {
   fetchPassPlayerInfo, 
   fetchRecent, 
   fetchData, 
-  fetchLevelInfo, 
   getVideoDetails, 
   fetchPassInfo,
 }
