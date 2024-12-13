@@ -16,6 +16,10 @@ const PassSubmissions = () => {
   const [playerSearchValues, setPlayerSearchValues] = useState({});
   const [showCreatePlayer, setShowCreatePlayer] = useState({});
   const [newPlayerData, setNewPlayerData] = useState({});
+  const [discordAssignments, setDiscordAssignments] = useState({});
+  const [discordAssignmentStatus, setDiscordAssignmentStatus] = useState({});
+  const [discordAssignmentError, setDiscordAssignmentError] = useState({});
+  const [pendingAssignments, setPendingAssignments] = useState({});
 
   useEffect(() => {
     fetchPendingSubmissions();
@@ -38,12 +42,43 @@ const PassSubmissions = () => {
     });
   }, [submissions]);
 
+  const autoAssignPlayers = async (submissions) => {
+    for (const submission of submissions) {
+      try {
+        // Search for player matching the passer name
+        const response = await api.get(`${import.meta.env.VITE_PLAYERS}/search/${encodeURIComponent(submission.passer)}`);
+        const players = await response.data;
+        
+        // Find exact match (case insensitive)
+        const exactMatch = players.find(p => 
+          p.name.toLowerCase() === submission.passer.toLowerCase()
+        );
+
+        if (exactMatch) {
+          console.log('[PassSubmissions] Auto-assigning player:', exactMatch.name, 'to submission:', submission.id);
+          await handlePlayerSelect(submission.id, exactMatch);
+        }
+      } catch (error) {
+        console.error('[PassSubmissions] Error auto-assigning player for submission:', submission.id, error);
+      }
+    }
+  };
+
   const fetchPendingSubmissions = async () => {
     try {
       setIsLoading(true);
       const response = await api.get(`${import.meta.env.VITE_SUBMISSION_API}/passes/pending`);
       const data = await response.data;
+      
+      // Initialize player search values with passer names
+      const initialSearchValues = {};
+      data.forEach(submission => {
+        initialSearchValues[submission.id] = submission.passer;
+      });
+      setPlayerSearchValues(initialSearchValues);
+      
       setSubmissions(data);
+      await autoAssignPlayers(data);
     } catch (error) {
       console.error('Error fetching submissions:', error);
     } finally {
@@ -52,54 +87,106 @@ const PassSubmissions = () => {
   };
 
   const handlePlayerSelect = async (submissionId, player) => {
-    if (player.isNew) {
-      setShowCreatePlayer(prev => ({ ...prev, [submissionId]: true }));
-      setNewPlayerData(prev => ({ ...prev, [submissionId]: { name: player.name } }));
-    } else {
-      try {
-        await api.put(`${import.meta.env.VITE_SUBMISSION_API}/passes/${submissionId}/assign-player`, 
-          { playerId: player.id },
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            }
-          }
-        );
-
-        setSubmissions(prev => prev.map(sub => 
-          sub.id === submissionId ? { ...sub, assignedPlayerId: player.id } : sub
-        ));
-      } catch (error) {
-        console.error('Error assigning player:', error);
-        alert("Error assigning player");
-      }
-    }
-  };
-
-  const handleCreatePlayer = async (submissionId) => {
     try {
-      const { name, country } = newPlayerData[submissionId] || {};
-      if (!name || !country) {
-        alert("Please fill in all fields");
+      const submission = submissions.find(s => s.id === submissionId);
+      if (!submission) {
+        console.error('[PassSubmissions] Submission not found:', submissionId);
         return;
       }
 
-      const response = await api.post(`${import.meta.env.VITE_PLAYERS}/create`, {
-        name,
-        country
+      console.log('[PassSubmissions] Assigning player:', player.name, 'to submission:', submissionId);
+      await api.put(`${import.meta.env.VITE_SUBMISSION_API}/passes/${submissionId}/assign-player`, 
+        { playerId: player.id },
+        { headers: { 'Content-Type': 'application/json' } }
+      );
+
+      // Update submission with new player info
+      setSubmissions(prev => prev.map(sub => 
+        sub.id === submissionId ? { 
+          ...sub, 
+          assignedPlayerId: player.id,
+          assignedPlayerDiscordId: player.discordId,
+          assignedPlayerName: player.name
+        } : sub
+      ));
+
+      // Clear any existing discord assignment states
+      setDiscordAssignmentStatus(prev => {
+        const newState = { ...prev };
+        delete newState[submissionId];
+        return newState;
+      });
+      setDiscordAssignmentError(prev => {
+        const newState = { ...prev };
+        delete newState[submissionId];
+        return newState;
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to create player');
-      }
-
-      const player = await response.json();
-      await handlePlayerSelect(submissionId, player);
-      setShowCreatePlayer(prev => ({ ...prev, [submissionId]: false }));
-      setNewPlayerData(prev => ({ ...prev, [submissionId]: {} }));
     } catch (error) {
-      console.error('Error creating player:', error);
-      alert("Error creating player: " + error);
+      console.error('Error assigning player:', error);
+      alert("Error assigning player");
+    }
+  };
+
+  const handleDiscordAssignment = async (submissionId) => {
+    const submission = submissions.find(s => s.id === submissionId);
+    if (!submission.assignedPlayerId) return;
+
+    console.log('[PassSubmissions] Starting discord assignment');
+    setDiscordAssignmentStatus(prev => ({
+      ...prev,
+      [submissionId]: 'assigning'
+    }));
+
+    try {
+      await api.put(`${import.meta.env.VITE_PLAYERS}/${submission.assignedPlayerId}/discord`, {
+        discordId: submission.submitterDiscordId,
+        discordUsername: submission.submitterDiscordUsername,
+        discordAvatar: submission.submitterDiscordAvatar,
+      });
+      
+      setSubmissions(prev => prev.map(sub => 
+        sub.id === submissionId 
+          ? { ...sub, assignedPlayerDiscordId: submission.submitterDiscordId }
+          : sub
+      ));
+      
+      setDiscordAssignmentStatus(prev => ({
+        ...prev,
+        [submissionId]: 'success'
+      }));
+
+      setTimeout(() => {
+        setDiscordAssignmentStatus(prev => {
+          const newState = { ...prev };
+          delete newState[submissionId];
+          return newState;
+        });
+      }, 1500);
+
+    } catch (error) {
+      console.error('[PassSubmissions] Discord assignment failed:', error);
+      setDiscordAssignmentError(prev => ({
+        ...prev,
+        [submissionId]: error.response?.data?.details || 'Failed to assign discord info'
+      }));
+      setDiscordAssignmentStatus(prev => ({
+        ...prev,
+        [submissionId]: 'error'
+      }));
+
+      setTimeout(() => {
+        setDiscordAssignmentStatus(prev => {
+          const newState = { ...prev };
+          delete newState[submissionId];
+          return newState;
+        });
+        setDiscordAssignmentError(prev => {
+          const newState = { ...prev };
+          delete newState[submissionId];
+          return newState;
+        });
+      }, 1500);
     }
   };
 
@@ -112,7 +199,6 @@ const PassSubmissions = () => {
     }
 
     try {
-      
       // Disable buttons for this card
       setDisabledButtons(prev => ({
         ...prev,
@@ -127,7 +213,6 @@ const PassSubmissions = () => {
   
       // Wait for animation to complete before removing
       setTimeout(async () => {
-        // Comment out API call for now
         const response = await api.put(`${import.meta.env.VITE_SUBMISSION_API}/passes/${submissionId}/${action}`);
         
         if (response.ok) {
@@ -137,7 +222,7 @@ const PassSubmissions = () => {
             delete newState[submissionId];
             return newState;
           });
-          // Clean up disabled state
+          // Clean up states
           setDisabledButtons(prev => {
             const newState = { ...prev };
             delete newState[submissionId];
@@ -159,6 +244,21 @@ const PassSubmissions = () => {
       console.error('Error processing submission:', error);
       alert("Error processing submission");
     }
+  };
+
+  const startDiscordAssignment = (submissionId) => {
+    setPendingAssignments(prev => ({
+      ...prev,
+      [submissionId]: true
+    }));
+  };
+
+  const cancelDiscordAssignment = (submissionId) => {
+    setPendingAssignments(prev => {
+      const newState = { ...prev };
+      delete newState[submissionId];
+      return newState;
+    });
   };
 
   if (submissions?.length === 0 && !isLoading) {
@@ -192,7 +292,7 @@ const PassSubmissions = () => {
                 </div>
 
                 <div className="detail-row">
-                  <span className="detail-label">Feeling Difficulty:</span>
+                  <span className="detail-label">Feeling Diff:</span>
                   <span className="detail-value">{submission.feelingDifficulty}</span>
                 </div>
 
@@ -231,46 +331,75 @@ const PassSubmissions = () => {
                 </div>
 
                 <div className="player-assignment">
-                  <h4 style={{marginBottom: "5px"}}>Assign player</h4>
+                  <h4 style={{marginBottom: "5px", fontSize: "0.95rem"}}>Assign player</h4>
                   <PlayerInput
-                    value={playerSearchValues[submission.id] != null ? playerSearchValues[submission.id] : submission.passer}
-                    onChange={(value) => setPlayerSearchValues(prev => ({ ...prev, [submission.id]: value }))}
+                    value={playerSearchValues[submission.id] || ''}
+                    onChange={(value) => setPlayerSearchValues(prev => ({
+                      ...prev,
+                      [submission.id]: value
+                    }))}
                     onSelect={(player) => handlePlayerSelect(submission.id, player)}
-                    currentPlayer={submission.assignedPlayerId}
+                    currentPlayer={submissions.find(s => s.id === submission.id)?.assignedPlayerId}
                   />
 
-                  {showCreatePlayer[submission.id] && (
-                    <div className="create-player-form">
-                      <input
-                        type="text"
-                        placeholder="Player Country"
-                        onChange={(e) => setNewPlayerData(prev => ({
-                          ...prev,
-                          [submission.id]: { ...prev[submission.id], country: e.target.value }
-                        }))}
-                      />
-                      <button onClick={() => handleCreatePlayer(submission.id)}>
-                        Create Player
-                      </button>
-                    </div>
-                  )}
-                </div>
+                  <div className={`discord-assignment ${discordAssignmentStatus[submission.id] || ''}`}>
+                    {discordAssignmentError[submission.id] && (
+                      <div className="assignment-error">{discordAssignmentError[submission.id]}</div>
+                    )}
+                    
+                    {submission.assignedPlayerId && !submission.assignedPlayerDiscordId && (
+                      <div className="discord-buttons">
+                        {pendingAssignments[submission.id] ? (
+                          <div className="discord-buttons">
+                            <span className="assignment-confirmation">
+                              Will assign @{submission.submitterDiscordUsername} to {submission.assignedPlayerName}. Proceed?
+                            </span>
+                            <button 
+                              className="confirm-discord-btn"
+                              onClick={() => handleDiscordAssignment(submission.id)}
+                              disabled={discordAssignmentStatus[submission.id] === 'assigning'}
+                            >
+                              Confirm
+                            </button>
+                            <button 
+                              className="cancel-discord-btn"
+                              onClick={() => cancelDiscordAssignment(submission.id)}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        ) : (
+                          <button 
+                            className="assign-discord-btn"
+                            onClick={() => startDiscordAssignment(submission.id)}
+                            disabled={discordAssignmentStatus[submission.id] === 'assigning'}
+                          >
+                            Assign Discord Info
+                            <span className="assignment-tooltip">
+                              {`${submission.submitterDiscordUsername} → ${submission.assignedPlayerName || 'Unknown Player'}`}
+                            </span>
+                          </button>
+                        )}
+                      </div>
+                    )}
+                  </div>
 
-                <div className="action-buttons">
-                  <button
-                    onClick={() => handleSubmission(submission.id, 'approve')}
-                    className="approve-btn"
-                    disabled={disabledButtons[submission.id]}
-                  >
-                    Allow
-                  </button>
-                  <button
-                    onClick={() => handleSubmission(submission.id, 'decline')}
-                    className="decline-btn"
-                    disabled={disabledButtons[submission.id]}
-                  >
-                    Decline
-                  </button>
+                  <div className="action-buttons">
+                    <button
+                      onClick={() => handleSubmission(submission.id, 'approve')}
+                      className="approve-btn"
+                      disabled={disabledButtons[submission.id]}
+                    >
+                      Allow
+                    </button>
+                    <button
+                      onClick={() => handleSubmission(submission.id, 'decline')}
+                      className="decline-btn"
+                      disabled={disabledButtons[submission.id]}
+                    >
+                      Decline
+                    </button>
+                  </div>
                 </div>
               </div>
 

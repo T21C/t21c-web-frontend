@@ -105,8 +105,8 @@ const ProfilePage = () => {
                     <div className="diff-info">
                       <p>{valueLabels.topDiff}</p>
                       <img
-                        src={difficultyList?.find(diff => diff.name === playerData.topDiff)?.icon}
-                        alt={playerData.topDiff}
+                        src={playerData.topDiff?.icon}
+                        alt={playerData.topDiff?.name || 'None'}
                         className="diff-image"
                       />
                     </div>
@@ -114,8 +114,8 @@ const ProfilePage = () => {
                     <div className="diff-info">
                       <p>{valueLabels.top12kDiff}</p>
                       <img
-                        src={difficultyList?.find(diff => diff.name === playerData.top12kDiff)?.icon}
-                        alt={playerData.top12kDiff}
+                        src={playerData.top12kDiff?.icon}
+                        alt={playerData.top12kDiff?.name || 'None'}
                         className="diff-image"
                       />
                     </div>
