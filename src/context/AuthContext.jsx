@@ -179,7 +179,7 @@ export const AuthProvider = ({ children }) => {
   const loginDiscord = () => {
     const clientId = import.meta.env.VITE_CLIENT_ID;
     const redirectUri = encodeURIComponent(import.meta.env.VITE_REDIRECT_URI);
-    const scope = encodeURIComponent('identify email');
+    const scope = encodeURIComponent(import.meta.env.VITE_DISCORD_SCOPE);
     const discordAuthUrl = `${import.meta.env.VITE_DISCORD_LINK}?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=code&scope=${scope}`;
   
     window.location.href = discordAuthUrl; // Redirect user to Discord login page
