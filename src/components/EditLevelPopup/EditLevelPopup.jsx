@@ -3,6 +3,7 @@ import './editlevelpopup.css';
 import api from '../../utils/api';
 import { useNavigate } from 'react-router-dom';
 import { RatingInput } from '../RatingComponents/RatingInput';
+import { useDifficultyContext } from '@/context/DifficultyContext';
 
 export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
   const [formData, setFormData] = useState({
@@ -24,23 +25,10 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
     isDeleted: false,
   });
 
-  const [difficulties, setDifficulties] = useState([]);
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchDifficulties = async () => {
-      try {
-        const response = await api.get('/v2/data/diffs');
-        setDifficulties(response.data);
-      } catch (err) {
-        console.error('Failed to fetch difficulties:', err);
-        setError('Failed to load difficulties');
-      }
-    };
-    fetchDifficulties();
-  }, []);
+  const { difficulties } = useDifficultyContext();
 
   useEffect(() => {
     if (level) {
@@ -62,6 +50,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
         rerateReason: level.rerateReason || '',
         isDeleted: level.isDeleted || false,
       });
+      
     }
   }, [level]);
 
@@ -73,20 +62,41 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
     }));
   };
 
-  const handleDifficultyChange = (e) => {
-    const newDiffId = e.target.value;
-    const newDiff = difficulties.filter(diff => diff.id === newDiffId)[0];
-    const currentDiff = difficulties.filter(diff => diff.id === formData.diffId)[0];
-    console.log(difficulties);
-    
-    console.log(newDiff, currentDiff);
-    setFormData(prev => ({
-      ...prev,
-      diffId: newDiffId,
-      baseScore: (prev.baseScore === currentDiff?.baseScore) 
-        ? newDiff?.baseScore || ''
-        : prev.baseScore
-    }));
+  const handleDifficultyChange = (value) => {
+    const selectedDiff = difficulties.find(d => d.name === value);
+    if (selectedDiff) {
+      const baseScoreDisplay = (() => {
+        const baseScore = parseFloat(formData.baseScore);
+        const matchingDiff = difficulties.find(d => d.baseScore === baseScore);
+        return matchingDiff ? matchingDiff.name : formData.baseScore.toString();
+      })();
+
+      const shouldUpdateBaseScore = baseScoreDisplay === value;
+      
+      setFormData(prev => ({
+        ...prev,
+        diffId: selectedDiff.id,
+        baseScore: shouldUpdateBaseScore ? selectedDiff.baseScore : prev.baseScore
+      }));
+    }
+  };
+
+  const handleBaseScoreChange = (value, isFromDropdown) => {
+    if (isFromDropdown) {
+      const selectedDiff = difficulties.find(d => d.name === value);
+      if (selectedDiff) {
+        setFormData(prev => ({
+          ...prev,
+          baseScore: selectedDiff.baseScore
+        }));
+      }
+    }
+    else{
+      setFormData(prev => ({
+        ...prev,
+        baseScore: null
+      }));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -111,6 +121,12 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
       setIsSaving(false);
     }
   };
+
+  const getDifficultyName = useCallback((diffId) => {
+    if (!difficulties || !diffId) return '';
+    const diff = difficulties.find(d => d.id === parseInt(diffId));
+    return diff ? diff.name : '';
+  }, [difficulties]);
 
   return (
     <div className="edit-level-popup-overlay">
@@ -187,33 +203,27 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
               </div>
 
               <div className="form-group">
-                <input
-                  id="baseScore"
-                  name="baseScore"
-                  value={formData.baseScore}
-                  onChange={handleInputChange}
+                <RatingInput
+                  value={(() => {
+                    if (formData.baseScore === null) {
+                      return "";
+                    }
+                    const baseScore = parseFloat(formData.baseScore);
+                    const matchingDiff = difficulties.find(d => d.baseScore === baseScore);
+                    return matchingDiff ? matchingDiff.name : formData.baseScore.toString();
+                  })()}
+                  onChange={handleBaseScoreChange}
+                  difficulties={difficulties}
+                  allowCustomInput={true}
                   placeholder="Base Score"
                 />
               </div>
 
               <div className="form-group">
                 <RatingInput
-                  value={difficulties.find(d => d.id === formData.diffId)?.name || ''}
-                  onChange={(value) => {
-                    const selectedDiff = difficulties.find(d => d.name === value);
-                    if (selectedDiff) {
-                      const newDiffId = selectedDiff.id;
-                      const currentDiff = difficulties.find(diff => diff.id === formData.diffId);
-                      
-                      setFormData(prev => ({
-                        ...prev,
-                        diffId: newDiffId,
-                        baseScore: (prev.baseScore === currentDiff?.baseScore) 
-                          ? selectedDiff?.baseScore || ''
-                          : prev.baseScore
-                      }));
-                    }
-                  }}
+                  value={getDifficultyName(formData.diffId)}
+                  diffId={parseInt(formData.diffId)}
+                  onChange={handleDifficultyChange}
                   difficulties={difficulties}
                   showDiff={true}
                 />
@@ -298,11 +308,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
             {error && <div className="error-message">{error}</div>}
             
             <div className="button-group">
-              <button 
-                type="submit" 
-                className="save-button"
-                disabled={isSaving}
-              >
+              <button type="submit" disabled={isSaving}>
                 {isSaving ? 'Saving...' : 'Save Changes'}
               </button>
               <button 

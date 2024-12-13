@@ -48,7 +48,7 @@ const ProfilePage = () => {
         const fetchPlayer = async () => {
           setLoading(true);
           try {
-            const response = await api.get(import.meta.env.VITE_INDIVIDUAL_PLAYER + playerId);
+            const response = await api.get(import.meta.env.VITE_PLAYERS+"/"+playerId);
             setPlayerData(response.data);
           } catch (error) {
             setError(true);

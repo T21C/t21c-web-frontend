@@ -13,8 +13,8 @@ export const useDifficultyContext = () => {
 };
 
 const DifficultyContextProvider = (props) => {
-    const [difficulties, setDifficulties] = useState({});
-    const [difficultyList, setDifficultyList] = useState([]);
+    const [difficultyDict, setDifficultyDict] = useState({});
+    const [difficulties, setDifficulties] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -30,8 +30,8 @@ const DifficultyContextProvider = (props) => {
                     diffsDict[diff.id] = diff;
                 });
 
-                setDifficulties(diffsDict);
-                setDifficultyList(diffsArray);
+                setDifficulties(diffsArray);
+                setDifficultyDict(diffsDict);
                 setLoading(false);
             } catch (err) {
                 console.error('Error fetching difficulties:', err);
@@ -47,7 +47,7 @@ const DifficultyContextProvider = (props) => {
         <DifficultyContext.Provider 
             value={{ 
                 difficulties,
-                difficultyList,
+                difficultyDict,
                 loading,
                 error
             }}
