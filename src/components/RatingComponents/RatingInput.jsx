@@ -1,6 +1,4 @@
 import { useState, useEffect, useCallback } from 'react';
-import { inputDataRaw, inputPguDictRaw } from "@/Repository/RemoteRepository";
-
 import "./ratinginput.css";
 
 export const RatingInput = ({ 
@@ -20,15 +18,18 @@ export const RatingInput = ({
 
   useEffect(() => {
     setInputValue(value);
-  }, [value]);
+    const hasMatch = difficulties?.some(d => d.name === value);
+    setSelectedRating(hasMatch ? getSelectedRating(value, diffId) : [null, null]);
+  }, [value, difficulties, diffId]);
 
   const handleInputChange = (e) => {
     const newValue = e.target.value;
     setInputValue(newValue);
+    setShowDropdown(true);
+    
     if (allowCustomInput) {
       onChange(newValue, false);
     }
-    setShowDropdown(true);
   };
 
   const getSelectedRating = (rating, currentDiffId) => {
@@ -42,28 +43,11 @@ export const RatingInput = ({
       const diff = difficulties.find(d => d.name === rating);
       return diff ? [diff.name, diff.icon] : [null, null];
     }
-    // Original logic for non-difficulties case
-    const dataRaw = pguOnly ? inputPguDictRaw : inputDataRaw;
-    const matchingEntry = dataRaw.find(([key]) => key === rating);
-    return matchingEntry ? matchingEntry : [null,null];
+    return [null, null];
   };
 
-  useEffect(() => {
-    // Clear selected rating if input doesn't match any difficulty
-    const hasMatch = difficulties?.some(d => d.name === value);
-    setSelectedRating(hasMatch ? getSelectedRating(value, diffId) : [null, null]);
-  }, [value, difficulties, diffId]);
-
-  // Filter options based on input
-  const filteredOptions = difficulties 
-    ? difficulties.filter(diff => 
-        diff.name.toLowerCase().includes(inputValue.toLowerCase())
-      ).map(diff => [diff.name, diff.icon])
-    : dataRaw.filter(([rating]) => 
-        rating.toLowerCase().includes(inputValue.toLowerCase())
-      );
-
   const handleSelect = (rating) => {
+    setInputValue(rating);
     onChange(rating, true);
     setShowDropdown(false);
   };
@@ -105,6 +89,14 @@ export const RatingInput = ({
     document.addEventListener('mousedown', handleOutsideClick);
     return () => document.removeEventListener('mousedown', handleOutsideClick);
   }, [handleInputFinalize]);
+
+  // Filter options based on input
+  const filteredOptions = difficulties
+    ?.sort((a, b) => a.sortOrder - b.sortOrder)
+    .filter(diff => 
+      diff.name.toLowerCase().includes(inputValue.toLowerCase())
+    )
+    .map(diff => [diff.name, diff.icon]);
 
   return (
     <div className="rating-input-wrapper">

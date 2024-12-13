@@ -1,6 +1,6 @@
 import "./detailpopup.css";
 import { useEffect, useState, useContext } from 'react';
-import { getVideoDetails, inputDataRaw } from "@/Repository/RemoteRepository";
+import { getVideoDetails } from "@/Repository/RemoteRepository";
 import { RatingItem } from './RatingItem';
 import { validateFeelingRating } from '@/components/Misc/Utility';
 import { RatingInput } from './RatingInput';
@@ -36,7 +36,7 @@ export const DetailPopup = ({
   setRatings, 
   user, 
 }) => {
-    const { difficultyList } = useContext(DifficultyContext);
+    const { difficulties } = useContext(DifficultyContext);
     const [videoData, setVideoData] = useState(null);
     const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
     const [pendingRating, setPendingRating] = useState("");
@@ -142,9 +142,11 @@ export const DetailPopup = ({
         if (hasUnsavedChanges) {
             if (window.confirm('You have unsaved changes. Are you sure you want to close?')) {
                 setSelectedRating(null);
+                setVideoData(null);
             }
         } else {
             setSelectedRating(null);
+            setVideoData(null);
         }
     };
 
@@ -182,8 +184,8 @@ export const DetailPopup = ({
             </div>
             
             <div className="popup-main-content">
+            <div className="video-container">
               {videoData && (
-                <div className="video-container">
                   <iframe 
                     src={videoData.embed}
                     title="Video"
@@ -194,8 +196,8 @@ export const DetailPopup = ({
                     allowFullScreen
                     className="video-iframe"
                   />
-                </div>
               )}
+                </div>
 
               <div className="details-container">
                 <div className="detail-field">
@@ -208,7 +210,7 @@ export const DetailPopup = ({
                 </div>
                 <div className="detail-field">
                   <span className="detail-label">Average Rating:</span>
-                  <img src={diffMap?.filter(diff => diff.name === selectedRating.average)[0]?.icon} alt="" className="detail-value lv-icon" />
+                  <img src={difficulties?.filter(diff => diff.name === selectedRating.average)[0]?.icon} alt="" className="detail-value lv-icon" />
                 </div>
               </div>
             </div>
@@ -226,26 +228,28 @@ export const DetailPopup = ({
                           setHasUnsavedChanges(true);
                         }}
                         showDiff={false}
+                        difficulties={difficulties}
+                        allowCustomInput={true}
                       />
-                      {(pendingRating && (validateFeelingRating(pendingRating) || Object.keys(inputDataRaw).includes(pendingRating.toUpperCase()))) && (
+                      {(pendingRating && (validateFeelingRating(pendingRating) || difficulties?.some(d => d.name === pendingRating))) && (
                         <div className="rating-images">
                           {pendingRating.includes('-') && pendingRating.length > 3 ? (
                             <>
                               <img 
-                                src={diffMap?.filter(diff => diff.name === pendingRating.split('-')[0])[0]?.icon} 
+                                src={difficulties?.find(d => d.name === pendingRating.split('-')[0])?.icon} 
                                 alt=""
                                 className="rating-level-image"
                               />
                               <span className="rating-separator">-</span>
                               <img 
-                                src={diffMap?.filter(diff => diff.name === pendingRating.split('-')[1])[0]?.icon} 
+                                src={difficulties?.find(d => d.name === pendingRating.split('-')[1])?.icon} 
                                 alt=""
                                 className="rating-level-image"
                               />
                             </>
                           ) : (
                             <img 
-                              src={diffMap?.filter(diff => diff.name === pendingRating)[0]?.icon} 
+                              src={difficulties?.find(d => d.name === pendingRating)?.icon} 
                               alt=""
                               className="rating-level-image"
                             />

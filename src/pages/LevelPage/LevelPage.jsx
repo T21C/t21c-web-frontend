@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import ScrollButton from "@/components/ScrollButton/ScrollButton";
 import { useAuth } from "@/context/AuthContext";
 import { RatingInput } from '@/components/RatingComponents/RatingInput';
+import { DifficultyContext } from "@/context/DifficultyContext";
 
 
 const options = [
@@ -86,6 +87,7 @@ const LevelPage = () => {
   const [forceUpdate, setForceUpdate] = useState(false);
   const location = useLocation();
   const { isSuperAdmin } = useAuth();
+  const { difficulties } = useContext(DifficultyContext);
   const {
     levelsData,
     setLevelsData,
@@ -194,10 +196,7 @@ const LevelPage = () => {
         const fullData = {
           id: response.data.id,
           team: response.data.team,
-          diff: response.data.diff,
-          newDiff: response.data.newDiff,
-          pdnDiff: response.data.pdnDiff,
-          pguDiff: response.data.pguDiff,
+          diffId: response.data.diffId,
           creator: response.data.creator,
           song: response.data.song,
           artist: response.data.artist,
@@ -260,17 +259,19 @@ const LevelPage = () => {
     setForceUpdate((f) => !f);
   }
 
-  function handleLowFilter(value){
+  function handleLowFilter(value) {
+    const diff = difficulties.find(d => d.name === value);
     setPageNumber(0);
     setLevelsData([]);
-    setSelectedLowFilterDiff(value)
+    setSelectedLowFilterDiff(value);
     setForceUpdate((f) => !f);
   }
 
-  function handleHighFilter(value){
+  function handleHighFilter(value) {
+    const diff = difficulties.find(d => d.name === value);
     setPageNumber(0);
     setLevelsData([]);
-    setSelectedHighFilterDiff(value)
+    setSelectedHighFilterDiff(value);
     setForceUpdate((f) => !f);
   }
 
@@ -412,6 +413,8 @@ const LevelPage = () => {
                   value={selectedLowFilterDiff || ''}
                   onChange={handleLowFilter}
                   showDiff={true}
+                  difficulties={difficulties}
+                  allowCustomInput={true}
                   /*pguOnly={true}*/
                 />
               </div>
@@ -422,7 +425,8 @@ const LevelPage = () => {
                   value={selectedHighFilterDiff || ''}
                   onChange={handleHighFilter}
                   showDiff={true}
-                  /*pguOnly={true}*/
+                  difficulties={difficulties}
+                  allowCustomInput={true}
                 />
               </div>
               <div className="checkbox-filters">

@@ -39,7 +39,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
         charter: level.charter || '',
         vfxer: level.vfxer || '',
         team: level.team || '',
-        diffId: level.diffId || '',
+        diffId: level.diffId !== null ? level.diffId : 0,
         baseScore: level.baseScore || '',
         vidLink: level.vidLink || '',
         dlLink: level.dlLink || '',
@@ -64,8 +64,9 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
 
   const handleDifficultyChange = (value) => {
     const selectedDiff = difficulties.find(d => d.name === value);
-    if (selectedDiff) {
+    if (selectedDiff !== null) {
       const baseScoreDisplay = (() => {
+        if (formData.baseScore === null) return "";
         const baseScore = parseFloat(formData.baseScore);
         const matchingDiff = difficulties.find(d => d.baseScore === baseScore);
         return matchingDiff ? matchingDiff.name : formData.baseScore.toString();
@@ -90,11 +91,10 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
           baseScore: selectedDiff.baseScore
         }));
       }
-    }
-    else{
+    } else {
       setFormData(prev => ({
         ...prev,
-        baseScore: null
+        baseScore: value === "" ? null : value
       }));
     }
   };
@@ -123,7 +123,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
   };
 
   const getDifficultyName = useCallback((diffId) => {
-    if (!difficulties || !diffId) return '';
+    if (!difficulties) return '';
     const diff = difficulties.find(d => d.id === parseInt(diffId));
     return diff ? diff.name : '';
   }, [difficulties]);
