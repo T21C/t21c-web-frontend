@@ -2,10 +2,20 @@ import React, { useState } from 'react';
 import './adminplayerpopup.css';
 import api from '../../utils/api';
 import { CountrySelect } from '../PlayerComponents/CountrySelect';
+import { toast } from 'react-hot-toast';
+import PropTypes from 'prop-types';
 
-const AdminPlayerPopup = ({ player, onClose, onUpdate }) => {
-  const [selectedCountry, setSelectedCountry] = useState(player.country || '');
+const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
+  if (!player) {
+    console.error('Player prop is undefined');
+    return null;
+  }
+
+  const [selectedCountry, setSelectedCountry] = useState(player.country || 'XX');
   const [isBanned, setIsBanned] = useState(player.isBanned || false);
+  const [showBanConfirm, setShowBanConfirm] = useState(false);
+  const [pendingBanState, setPendingBanState] = useState(false);
+  const [playerName, setPlayerName] = useState(player.name || '');
   const [discordId, setDiscordId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -16,10 +26,66 @@ const AdminPlayerPopup = ({ player, onClose, onUpdate }) => {
     id: player.discordId || null,
     isNewData: false
   });
+  const [pendingDiscordInfo, setPendingDiscordInfo] = useState(null);
+  const [showDiscordConfirm, setShowDiscordConfirm] = useState(false);
 
-  const handleFetchDiscord = async () => {
-    if (!discordId.trim()) {
-      setError('Please enter a Discord ID');
+  const handleNameUpdate = async () => {
+    if (!playerName.trim() || playerName === player.name) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      await api.put(`${import.meta.env.VITE_PLAYERS}/${player.id}/name`, {
+        name: playerName
+      });
+
+      onUpdate?.({
+        ...player,
+        name: playerName
+      });
+    } catch (err) {
+      setError(err.response?.data?.details || 'Failed to update player name');
+      setPlayerName(player.name); // Reset to original name on error
+      console.error('Error updating player name:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCountryUpdate = async () => {
+    if (selectedCountry === player.country) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      await api.put(`${import.meta.env.VITE_PLAYERS}/${player.id}/country`, {
+        country: selectedCountry
+      });
+
+      onUpdate?.({
+        ...player,
+        country: selectedCountry
+      });
+    } catch (err) {
+      setError(err.response?.data?.details || 'Failed to update country');
+      setSelectedCountry(player.country); // Reset on error
+      console.error('Error updating country:', err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleBanChange = (newBanState) => {
+    setPendingBanState(newBanState);
+    setShowBanConfirm(true);
+  };
+
+  const handleBanUpdate = async (confirmed) => {
+    if (!confirmed) {
+      setShowBanConfirm(false);
+      setPendingBanState(isBanned);
       return;
     }
 
@@ -27,68 +93,117 @@ const AdminPlayerPopup = ({ player, onClose, onUpdate }) => {
     setError(null);
 
     try {
-      const response = await api.get(`${import.meta.env.VITE_PLAYERS}/${player.id}/discord/${discordId}`);
-      const { discordUser } = response.data;
-      
-      setDiscordInfo({
-        username: discordUser.username,
-        avatarId: discordUser.avatar,
-        avatarUrl: `https://cdn.discordapp.com/avatars/${discordUser.id}/${discordUser.avatar}.png`,
-        id: discordUser.id,
-        isNewData: true
+      await api.put(`${import.meta.env.VITE_PLAYERS}/${player.id}/ban`, {
+        isBanned: pendingBanState
       });
-      setDiscordId('');
+
+      setIsBanned(pendingBanState);
+      onUpdate?.({
+        ...player,
+        isBanned: pendingBanState
+      });
     } catch (err) {
-      setError('Failed to fetch Discord user');
-      console.error('Error fetching Discord user:', err);
+      setError(err.response?.data?.details || 'Failed to update ban status');
+      setPendingBanState(isBanned); // Reset on error
+      console.error('Error updating ban status:', err);
+    } finally {
+      setIsLoading(false);
+      setShowBanConfirm(false);
+    }
+  };
+
+  const handleDiscordIdSubmit = async () => {
+    if (!discordId) return;
+
+    try {
+      setIsLoading(true);
+      // First, fetch Discord user info
+      const fetchResponse = await fetch(
+        `${import.meta.env.VITE_API_URL}/v2/data/players/${player.id}/discord/${discordId}`,
+      );
+      if (!fetchResponse.ok) {
+        const error = await fetchResponse.json();
+        toast.error(error.details || 'Failed to fetch Discord user');
+        return;
+      }
+
+      const fetchData = await fetchResponse.json();
+      const discordUser = fetchData.discordUser;
+
+      // Store fetched info and show confirmation
+      setPendingDiscordInfo({
+        username: discordUser.username,
+        avatar: discordUser.avatar,
+        id: discordUser.id,
+        avatarUrl: discordUser.avatarUrl
+      });
+      setShowDiscordConfirm(true);
+    } catch (error) {
+      console.error('Error fetching Discord ID:', error);
+      toast.error('Failed to fetch Discord ID');
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleApplyDiscord = () => {
-    if (!discordInfo.isNewData) return;
-
-    onUpdate?.({
-      ...player,
-      discordId: discordInfo.id,
-      discordUsername: discordInfo.username,
-      discordAvatarId: discordInfo.avatarId,
-      discordAvatar: discordInfo.avatarUrl
-    });
-
-    setDiscordInfo(prev => ({...prev, isNewData: false}));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError(null);
+  const handleDiscordConfirm = async (confirmed) => {
+    if (!confirmed || !pendingDiscordInfo) {
+      setShowDiscordConfirm(false);
+      setPendingDiscordInfo(null);
+      return;
+    }
 
     try {
-      if (selectedCountry !== player.country) {
-        await api.put(`${import.meta.env.VITE_PLAYERS}/${player.id}/country`, {
-          country: selectedCountry
-        });
+      setIsLoading(true);
+      const updateResponse = await fetch(
+        `${import.meta.env.VITE_API_URL}/v2/data/players/${player.id}/discord/${pendingDiscordInfo.id}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: pendingDiscordInfo.username,
+            avatar: pendingDiscordInfo.avatar,
+          }),
+        },
+      );
+
+      if (!updateResponse.ok) {
+        const error = await updateResponse.json();
+        toast.error(error.details || 'Failed to update Discord info');
+        return;
       }
 
-      if (isBanned !== player.isBanned) {
-        await api.put(`${import.meta.env.VITE_PLAYERS}/${player.id}/ban`, {
-          isBanned
-        });
-      }
+      const updateData = await updateResponse.json();
+      const updatedDiscordInfo = updateData.discordInfo;
 
-      onUpdate?.({
-        ...player,
-        country: selectedCountry,
-        isBanned
+      // Update local state and parent component
+      setDiscordInfo({
+        username: updatedDiscordInfo.username,
+        avatarUrl: updatedDiscordInfo.avatarUrl,
+        avatarId: updatedDiscordInfo.avatar,
+        id: updatedDiscordInfo.id,
+        isNewData: false
       });
-      onClose();
-    } catch (err) {
-      setError('Failed to update player settings');
-      console.error('Error updating player:', err);
+
+      onUpdate({
+        ...player,
+        discordId: updatedDiscordInfo.id,
+        discordUsername: updatedDiscordInfo.username,
+        discordAvatar: updatedDiscordInfo.avatarUrl,
+        discordAvatarId: updatedDiscordInfo.avatar
+      });
+
+      toast.success('Discord info updated successfully');
+      setDiscordId(''); // Clear input
+    } catch (error) {
+      console.error('Error updating Discord info:', error);
+      toast.error('Failed to update Discord info');
     } finally {
       setIsLoading(false);
+      setShowDiscordConfirm(false);
+      setPendingDiscordInfo(null);
     }
   };
 
@@ -96,28 +211,91 @@ const AdminPlayerPopup = ({ player, onClose, onUpdate }) => {
     <div className="admin-player-popup-overlay">
       <div className="admin-player-popup">
         <div className="admin-player-popup-header">
-          <h2>Edit Player: {player.name}</h2>
+          <h2>Edit Player</h2>
           <button className="close-button" onClick={onClose}>×</button>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="country">Country</label>
-            <CountrySelect
-              value={selectedCountry}
-              onChange={setSelectedCountry}
-            />
+        <div className="admin-form">
+          <div className="form-group name-section">
+            <label htmlFor="playerName">Player Name</label>
+            <div className="name-input-group">
+              <input
+                type="text"
+                id="playerName"
+                value={playerName}
+                onChange={(e) => setPlayerName(e.target.value)}
+                placeholder="Enter player name"
+              />
+              {playerName !== player.name && (
+                <button
+                  type="button"
+                  onClick={handleNameUpdate}
+                  disabled={isLoading || !playerName.trim()}
+                  className="update-name-button"
+                >
+                  Update
+                </button>
+              )}
+            </div>
           </div>
 
-          <div className="form-group">
-            <label>
-              <input
-                type="checkbox"
-                checked={isBanned}
-                onChange={(e) => setIsBanned(e.target.checked)}
+          <div className="form-group country-section">
+            <label htmlFor="country">Country</label>
+            <div className="country-input-group">
+              <CountrySelect
+                value={selectedCountry}
+                onChange={setSelectedCountry}
               />
-              Ban Player
-            </label>
+              {selectedCountry !== player.country && (
+                <button
+                  type="button"
+                  onClick={handleCountryUpdate}
+                  disabled={isLoading}
+                  className="update-country-button"
+                >
+                  Update
+                </button>
+              )}
+            </div>
+          </div>
+
+          <div className="form-group ban-section">
+            <div className="ban-checkbox-container">
+              <label className="ban-label">
+                <input
+                  type="checkbox"
+                  checked={showBanConfirm ? pendingBanState : isBanned}
+                  onChange={(e) => handleBanChange(e.target.checked)}
+                  disabled={isLoading || showBanConfirm}
+                />
+                Ban Player
+              </label>
+            </div>
+            {showBanConfirm && (
+              <div className="ban-confirm-container">
+                <p className="ban-confirm-message">
+                  Are you sure you want to {pendingBanState ? 'ban' : 'unban'} this player?
+                </p>
+                <div className="ban-confirm-buttons">
+                  <button
+                    type="button"
+                    onClick={() => handleBanUpdate(true)}
+                    disabled={isLoading}
+                    className="ban-confirm-button"
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleBanUpdate(false)}
+                    disabled={isLoading}
+                    className="ban-cancel-button"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           <div className="form-group discord-section">
@@ -129,33 +307,59 @@ const AdminPlayerPopup = ({ player, onClose, onUpdate }) => {
                 value={discordId}
                 onChange={(e) => setDiscordId(e.target.value)}
                 placeholder="Enter Discord ID to validate"
+                disabled={isLoading || showDiscordConfirm}
               />
               <button
                 type="button"
-                onClick={handleFetchDiscord}
-                disabled={isLoading}
+                onClick={handleDiscordIdSubmit}
+                disabled={isLoading || showDiscordConfirm}
                 className="fetch-discord-button"
               >
                 Validate
               </button>
             </div>
-            {discordInfo.username && (
-              <div className="discord-info">
-                <div className="discord-info-header">
-                  <div>
-                    <p className="discord-username">{discordInfo.username}</p>
-                    <p className="discord-id">ID: {discordInfo.id}</p>
-                  </div>
-                  {discordInfo.isNewData && (
-                    <button
-                      type="button"
-                      onClick={handleApplyDiscord}
-                      className="apply-discord-button"
-                    >
-                      Apply Changes
-                    </button>
+
+            {showDiscordConfirm && pendingDiscordInfo && (
+              <div className="discord-confirm-container">
+                <div className="discord-preview">
+                  {pendingDiscordInfo.avatarUrl && (
+                    <img 
+                      src={pendingDiscordInfo.avatarUrl}
+                      alt="Discord Avatar"
+                      className="discord-avatar"
+                    />
                   )}
+                  <div>
+                    <p className="discord-username">@{pendingDiscordInfo.username}</p>
+                    <p className="discord-id">ID: {pendingDiscordInfo.id}</p>
+                  </div>
                 </div>
+                <p className="discord-confirm-message">
+                  Are you sure you want to update this player's Discord info?
+                </p>
+                <div className="ban-confirm-buttons">
+                  <button
+                    type="button"
+                    onClick={() => handleDiscordConfirm(true)}
+                    disabled={isLoading}
+                    className="ban-confirm-button"
+                  >
+                    Confirm
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleDiscordConfirm(false)}
+                    disabled={isLoading}
+                    className="ban-cancel-button"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {discordInfo.username && !showDiscordConfirm && (
+              <div className="discord-info">
                 {discordInfo.avatarUrl && (
                   <img 
                     src={discordInfo.avatarUrl}
@@ -163,33 +367,56 @@ const AdminPlayerPopup = ({ player, onClose, onUpdate }) => {
                     className="discord-avatar"
                   />
                 )}
+                <div className="discord-info-header">
+                  <div>
+                    <p className="discord-username">@{discordInfo.username}</p>
+                    <p className="discord-id">ID: {discordInfo.id}</p>
+                  </div>
+                </div>
               </div>
             )}
           </div>
 
           {error && <div className="error-message">{error}</div>}
 
-          <div className="button-group">
-            <button 
-              type="submit" 
-              className="save-button"
-              disabled={isLoading}
-            >
-              {isLoading ? 'Saving...' : 'Save Changes'}
-            </button>
-            <button 
-              type="button" 
-              className="cancel-button" 
-              onClick={onClose}
-              disabled={isLoading}
-            >
-              Cancel
-            </button>
-          </div>
-        </form>
+          <button 
+            type="button" 
+            className="done-button"
+            onClick={onClose}
+          >
+            Done
+          </button>
+        </div>
       </div>
     </div>
   );
+};
+
+AdminPlayerPopup.propTypes = {
+  player: PropTypes.shape({
+    id: PropTypes.number.isRequired,
+    name: PropTypes.string,
+    country: PropTypes.string,
+    isBanned: PropTypes.bool,
+    discordUsername: PropTypes.string,
+    discordAvatar: PropTypes.string,
+    discordAvatarId: PropTypes.string,
+    discordId: PropTypes.string
+  }),
+  onClose: PropTypes.func.isRequired,
+  onUpdate: PropTypes.func.isRequired
+};
+
+AdminPlayerPopup.defaultProps = {
+  player: {
+    name: '',
+    country: 'XX',
+    isBanned: false,
+    discordUsername: '',
+    discordAvatar: null,
+    discordAvatarId: null,
+    discordId: null
+  }
 };
 
 export default AdminPlayerPopup; 

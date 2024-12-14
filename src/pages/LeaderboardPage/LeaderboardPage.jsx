@@ -95,7 +95,7 @@ const LeaderboardPage = () => {
         
         setPlayerData(response.data);
         setPlayerList(response.data);
-        setDisplayedPlayers(response.data.slice(0,10))
+        setDisplayedPlayers(response.data.slice(0, limit))
       } catch (error) {
         setError(true);
         console.error('Error fetching leaderboard data:', error);
@@ -128,9 +128,12 @@ const LeaderboardPage = () => {
         filteredPlayers = filteredPlayers.reverse();
       }
       setPlayerList(filteredPlayers);
-      setDisplayedPlayers(filteredPlayers.slice(0,10));
+      
+      const currentDisplayCount = Math.min(displayedPlayers.length || limit, filteredPlayers.length);
+      setDisplayedPlayers(filteredPlayers.slice(0, currentDisplayCount));
     } else {
       setPlayerList([]);
+      setDisplayedPlayers([]);
     }
     setLoading(false);
     
@@ -512,36 +515,38 @@ const LeaderboardPage = () => {
 
         {!loading ? (
           <InfiniteScroll
-        style={{ paddingBottom: "5rem" }}
-        dataLength={displayedPlayers.length} // number of players displayed so far
+            style={{ paddingBottom: "5rem" }}
+            dataLength={displayedPlayers.length}
             next={() => {
+              const currentLength = displayedPlayers.length;
               const newPagePlayers = playerList.slice(
-                displayedPlayers.length,
-                displayedPlayers.length + limit
+                currentLength,
+                currentLength + limit
               );
-              setDisplayedPlayers((prev) => [...prev, ...newPagePlayers]);
+              if (newPagePlayers.length > 0) {
+                setDisplayedPlayers(prev => [...prev, ...newPagePlayers]);
+              }
             }}
             hasMore={displayedPlayers.length < playerList.length}
-        loader={<h1>{t("leaderboardPage.infScroll.loading")}</h1>}
-        endMessage={
-          <p style={{ textAlign: "center" }}>
-            <b>{t("leaderboardPage.infScroll.end")}</b>
-          </p>
+            loader={<h1>{t("leaderboardPage.infScroll.loading")}</h1>}
+            endMessage={
+              <p style={{ textAlign: "center" }}>
+                <b>{t("leaderboardPage.infScroll.end")}</b>
+              </p>
+            }
+          >
+            {displayedPlayers.map((l, index) => (
+              <PlayerCard
+                key={index}
+                currSort={sortBy}
+                player={l}
+                pfp={l.pfp}
+              />
+            ))}
+          </InfiniteScroll>)
+          :
+          <div className="loader"></div>
         }
-      >
-          {displayedPlayers.map((l, index) => (
-            <PlayerCard
-              key={index}
-              currSort={sortBy}
-              player={l}
-              pfp={l.pfp}
-            />
-          ))}
-        </InfiniteScroll>)
-        :
-          
-        <div className="loader"></div>
-      }
       </div>
     </div>
   );

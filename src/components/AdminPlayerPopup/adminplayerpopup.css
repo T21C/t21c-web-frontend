@@ -31,6 +31,7 @@
 .admin-player-popup-header h2 {
   margin: 0;
   color: var(--color-white);
+  font-size: 1.5em;
 }
 
 .admin-player-popup .close-button {
@@ -42,9 +43,6 @@
   padding: 0;
 }
 
-.admin-player-popup .form-group {
-  margin-bottom: 20px;
-}
 
 .admin-player-popup .form-group label {
   display: block;
@@ -109,29 +107,144 @@
   height: 16px;
 }
 
-.discord-section {
-  margin-top: 20px;
-  padding-top: 20px;
-  border-top: 1px solid var(--color-white-t20);
+.admin-player-popup .discord-section {
+  margin-bottom: 20px;
 }
 
-.discord-input-group {
+.admin-player-popup .discord-input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.admin-player-popup .discord-input-group input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.admin-player-popup .fetch-discord-button {
+  padding: 8px 16px;
+  background-color: #5865F2;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.admin-player-popup .fetch-discord-button:disabled {
+  background-color: #7983f2;
+  cursor: not-allowed;
+}
+
+.admin-player-popup .discord-info,
+.admin-player-popup .discord-preview {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background-color: #2c2c2c;
+  padding: 12px;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+.admin-player-popup .discord-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.admin-player-popup .discord-info-header,
+.admin-player-popup .discord-preview > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.admin-player-popup .discord-username {
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  margin: 0;
+}
+
+.admin-player-popup .discord-id {
+  font-size: 12px;
+  color: #a3a3a3;
+  margin: 0;
+}
+
+.admin-player-popup .discord-confirm-container {
+  background-color: #1f1f1f;
+  padding: 15px;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.admin-player-popup .discord-confirm-message {
+  margin: 15px 0;
+  color: #fff;
+  text-align: center;
+}
+
+.admin-player-popup .ban-confirm-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.admin-player-popup .ban-confirm-button,
+.admin-player-popup .ban-cancel-button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.admin-player-popup .ban-confirm-button {
+  background-color: #5865F2;
+  color: white;
+}
+
+.admin-player-popup .ban-cancel-button {
+  background-color: #4a4a4a;
+  color: white;
+}
+
+.admin-player-popup .ban-confirm-button:disabled,
+.admin-player-popup .ban-cancel-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.admin-player-popup .name-section {
+  margin-bottom: 10px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--color-white-t20);
+}
+
+.admin-player-popup .name-input-group {
   display: flex;
   gap: 10px;
 }
 
-.discord-input-group input {
+.admin-player-popup .name-input-group input {
   flex: 1;
   padding: 8px;
   background-color: var(--color-white-t20);
   border: 1px solid var(--color-white-t20);
   border-radius: 4px;
   color: var(--color-white);
+  font-size: 1.1em;
 }
 
-.fetch-discord-button {
+.admin-player-popup .update-name-button {
   padding: 8px 16px;
-  background-color: #7289DA;
+  background-color: #4CAF50;
   color: white;
   border: none;
   border-radius: 4px;
@@ -140,75 +253,147 @@
   min-width: 80px;
 }
 
-.fetch-discord-button:disabled {
-  background-color: #4e5d94;
+.admin-player-popup .update-name-button:hover {
+  background-color: #45a049;
+}
+
+.admin-player-popup .update-name-button:disabled {
+  background-color: #888;
   cursor: not-allowed;
 }
 
-.discord-info {
-  margin-top: 15px;
-  padding: 10px;
-  background-color: var(--color-white-t10);
-  border-radius: 4px;
+.admin-player-popup .country-section {
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--color-white-t20);
 }
 
-.discord-info p {
-  margin: 0;
-  color: var(--color-white);
-}
-
-.discord-avatar {
-  margin-top: 10px;
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
-  border: 2px solid var(--color-white-t20);
-}
-
-.discord-info-header {
+.admin-player-popup .country-input-group {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
+  gap: 10px;
 }
 
-.discord-username {
-  font-size: 1.1em;
-  font-weight: bold;
-  margin: 0;
-  color: var(--color-white);
-}
-
-.discord-id {
-  font-size: 0.9em;
-  color: var(--color-white-t60);
-  margin: 2px 0 0 0;
-}
-
-.apply-discord-button {
-  padding: 6px 12px;
-  background-color: #43b581;
+.admin-player-popup .update-country-button {
+  padding: 8px 16px;
+  background-color: #4CAF50;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
-  font-size: 0.9em;
+  min-width: 80px;
 }
 
-.apply-discord-button:hover {
-  background-color: #3ca374;
+.admin-player-popup .update-country-button:hover {
+  background-color: #45a049;
 }
 
-.apply-discord-button:disabled {
-  background-color: #2d7d59;
+.admin-player-popup .update-country-button:disabled {
+  background-color: #888;
   cursor: not-allowed;
 }
 
-.discord-handle {
-  font-size: 0.9em;
-  color: var(--color-white-t60);
-  margin-top: -5px;
-  margin-bottom: 5px;
-  display: block;
+.admin-player-popup .ban-section {
+  border-bottom: none;
+}
+
+.admin-player-popup .ban-checkbox-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+
+.admin-player-popup .form-group .ban-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.1em;
+  color: var(--color-white);
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+
+.admin-player-popup .ban-label input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #f44336;
+}
+
+.admin-player-popup .done-button {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--color-white-t20);
+  color: var(--color-white);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1.1em;
+  margin-top: 20px;
+  transition: background-color 0.2s;
+}
+
+.admin-player-popup .done-button:hover {
+  background-color: var(--color-white-t30);
+}
+
+.admin-player-popup .ban-confirm-container {
+  margin-top: 15px;
+  padding: 15px;
+  background-color: var(--color-white-t10);
+  border-radius: 4px;
+  text-align: center;
+}
+
+.admin-player-popup .ban-confirm-message {
+  color: var(--color-white);
+  margin: 0 0 15px 0;
+  font-size: 1em;
+}
+
+.admin-player-popup .ban-confirm-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.admin-player-popup .ban-confirm-button {
+  padding: 8px 16px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  min-width: 80px;
+  transition: background-color 0.2s;
+}
+
+.admin-player-popup .ban-confirm-button:hover {
+  background-color: #d32f2f;
+}
+
+.admin-player-popup .ban-cancel-button {
+  padding: 8px 16px;
+  background-color: var(--color-white-t20);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  min-width: 80px;
+  transition: background-color 0.2s;
+}
+
+.admin-player-popup .ban-cancel-button:hover {
+  background-color: var(--color-white-t30);
+}
+
+.admin-player-popup .ban-confirm-button:disabled,
+.admin-player-popup .form-group .ban-cancel-button:disabled {
+  background-color: #888;
+  cursor: not-allowed;
 } 

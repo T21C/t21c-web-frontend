@@ -1,7 +1,6 @@
 import "./homepage.css"
 import { useContext, useEffect, useRef, useState } from "react";
 import { Card, Footer, CompleteNav, LevelCard } from "../../components";
-import { fetchRecent } from "../../Repository/RemoteRepository";
 import logo from "../../assets/tuf-logo/logo-full.png";
 import { useNavigate } from "react-router-dom";
 import { LevelContext } from "../../context/LevelContext";
@@ -33,11 +32,7 @@ const HomePage = () => {
   }
 
   //fetch res
-  useEffect(()=>{
-    fetchRecent(ids).then(res => {
-      setRecent(res)
-    });
-  }, [])
+
 
   //query submit and bavigate
   const navigate = useNavigate(); 

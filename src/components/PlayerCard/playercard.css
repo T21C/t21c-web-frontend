@@ -4,15 +4,15 @@
   justify-content: left;
   gap: 1rem;
   min-height: 4rem;
-  padding: 0.5rem;
+  padding: 0.9rem 0.55rem ;
   border-radius: 0px;
-  margin-bottom: 1rem;
   cursor: pointer;
   align-items: center;
   flex-wrap: wrap;
   border-bottom: 1px solid;
-  border-color: var(--color-gray-3);
+  border-color: rgba(150, 150, 150, 0.7);
   transition: all 0.1s ease-in-out;
+  
 }
 .player-card:hover {
   background-color: var(--color-white-t30);
@@ -43,7 +43,7 @@
   white-space: nowrap;
 }
 .player-card .img-wrapper {
-  width: 3rem;
+  width: 3.5rem;
 }
 .player-card .img-wrapper img {
   -o-object-fit: contain;
@@ -162,4 +162,27 @@
     height: 2rem;
     width: 2rem;
   }
+}
+
+.player-card .name-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.player-card .player-discord-handle {
+  font-size: 0.7em;
+  color: var(--color-white-t60);
+  margin-top: -4px;
+}
+
+/* Update existing styles */
+.player-card .player-name {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.3em;
+  color: var(--color-white);
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }/*# sourceMappingURL=playercard.css.map */
