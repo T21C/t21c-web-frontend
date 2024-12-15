@@ -31,7 +31,7 @@ const LevelCard = ({index, level, legacyMode, isSuperAdmin,  }) => {
 
   const navigate = useNavigate()
     const redirect = () => {
-      navigate(`/leveldetail?id=${level.id}`);
+      navigate(`/levels/${level.id}`);
     };
 
     const onAnchorClick = (e) => {

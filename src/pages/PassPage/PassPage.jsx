@@ -12,6 +12,7 @@ import api from '../../utils/api';
 import ScrollButton from "../../components/ScrollButton/ScrollButton";
 import { useAuth } from "../../context/AuthContext";
 import { RatingInput } from '@/components/RatingComponents/RatingInput';
+import { DifficultyContext } from "../../context/DifficultyContext";
 
 const limit = 30;
 
@@ -22,6 +23,7 @@ const PassPage = () => {
   const [forceUpdate, setForceUpdate] = useState(false);
   const location = useLocation();
   const { isSuperAdmin } = useAuth();
+  const { difficulties } = useContext(DifficultyContext);
 
   const {
     passesData,
@@ -60,26 +62,44 @@ const PassPage = () => {
 
   useEffect(() => {
     let cancel;
-
+    
     const fetchPasses = async () => {
       setLoading(true);
       try {
+        // Construct the params object conditionally
         const params = {
           limit: limit,
-          query,
-          sort,
+          query, 
+          sort, 
           offset: pageNumber * limit,
           deletedFilter,
-          lowDiff: selectedLowFilterDiff,
-          highDiff: selectedHighFilterDiff,
-          only12k: hide12k
+          hide12k
         };
+        
+        // Pass difficulty filters as raw strings if they exist
+        const lowDiff = selectedLowFilterDiff;
+        const highDiff = selectedHighFilterDiff;
 
+        if (lowDiff !== 0 && highDiff !== 0 && lowDiff > highDiff) {
+          // Swap if min > max
+          params.minDiff = highDiff;
+          params.maxDiff = lowDiff;
+        } else {
+          // Normal case
+          if (lowDiff !== 0) {
+            params.minDiff = lowDiff;
+          }
+          if (highDiff !== 0) {
+            params.maxDiff = highDiff;
+          }
+        }
+
+        // Handle ID-based search
         if (query.startsWith("#") && query.length > 1) {
           const passId = query.slice(1);
           if (!isNaN(passId) && passId.trim() !== '') {
             const response = await api.get(
-              `${import.meta.env.VITE_PASS_BY_ID_URL}/${passId}`,
+              `${import.meta.env.VITE_PASSES}/byId/${passId}`,
               {
                 cancelToken: new axios.CancelToken((c) => (cancel = c)),
               }
@@ -92,7 +112,7 @@ const PassPage = () => {
         }
 
         const response = await api.get(
-          `${import.meta.env.VITE_ALL_PASSES_URL}`,
+          `${import.meta.env.VITE_PASSES}`,
           {
             params: params,
             cancelToken: new axios.CancelToken((c) => (cancel = c)),
@@ -101,15 +121,14 @@ const PassPage = () => {
 
         const newPasses = response.data.results;
         
-        setPassesData(prev => {
+        setPassesData((prev) => {
           if (pageNumber === 0) {
             return newPasses;
           }
           return [...prev, ...newPasses];
         });
         
-        setHasMore(newPasses.length === limit);
-
+        setHasMore(response.data.count > (pageNumber * limit) + newPasses.length);
       } catch (error) {
         if (!axios.isCancel(error)) {
           console.error('Fetch error:', error);
@@ -285,6 +304,7 @@ const PassPage = () => {
                   value={selectedLowFilterDiff || ''}
                   onChange={handleLowFilter}
                   showDiff={true}
+                  difficulties={difficulties}
                 />
               </div>
 
@@ -294,6 +314,7 @@ const PassPage = () => {
                   value={selectedHighFilterDiff || ''}
                   onChange={handleHighFilter}
                   showDiff={true}
+                  difficulties={difficulties}
                 />
               </div>
             </div>

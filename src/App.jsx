@@ -39,8 +39,8 @@ function App() {
       <Routes>
         <Route index path="/" element={<LevelPage />} />
         <Route path="levels" element={<LevelPage />} />
-        <Route path="leveldetail" element={<LevelDetailPage />} />
-        <Route path="passdetail" element={<PassDetailPage />} />
+        <Route path="levels/:id" element={<LevelDetailPage />} />
+        <Route path="passes/:id" element={<PassDetailPage />} />
 
 
         <Route path="submission" element={<SubmissionPage />} />
@@ -50,7 +50,7 @@ function App() {
         <Route path="profile/:playerId" element={<ProfilePage />} />
 
         <Route path='leaderboard' element={<LeaderboardPage/>}/>
-        <Route path='pass' element={<PassPage/>} />
+        <Route path='passes' element={<PassPage/>} />
 
         <Route path='admin' element={<AdminPage/>} />
         <Route path='admin/submissions' element={<SubmissionManagementPage/>} />

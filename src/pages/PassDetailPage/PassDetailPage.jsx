@@ -3,7 +3,7 @@
 import "./passdetailpage.css"
 import placeholder from "../../assets/placeholder/3.png";
 import React, { useEffect, useState } from "react";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { CompleteNav } from "../../components";
 import {
   getVideoDetails,
@@ -15,27 +15,13 @@ import { useTranslation } from "react-i18next";
 import ClearCard from "../../components/ClearCard/ClearCard";
 import { EditPassPopup } from "../../components/EditPassPopup/EditPassPopup";
 import { useAuth } from "../../context/AuthContext";
-
-const getHighScores = (passes) => {
-  if (!passes?.length) return null;
-  
-  return {
-    firstClear: passes.reduce((a, b) => 
-      new Date(a.date) < new Date(b.date) ? a : b),
-    highestScore: passes.reduce((a, b) => 
-      b.score > a.score ? b : a),
-    highestAcc: passes.reduce((a, b) => 
-      b.Xacc > a.Xacc ? b : a),
-    highestSpeed: passes.some(p => p.speed) ? 
-      passes.reduce((a, b) => (b.speed || 0) > (a.speed || 0) ? b : a) : null
-  };
-};
+import api from "../../utils/api";
 
 const PassDetailPage = () => {
   const {t} = useTranslation()
   const { detailPage } = useLocation();
   // cange how to get param
-  const id = new URLSearchParams(window.location.search).get("id");
+  const {id} = useParams()
   const [res, setRes] = useState(null);
   const [displayedPlayers, setDisplayedPlayers] = useState([]);
   const [leaderboardSort, setLeaderboardSort] = useState("SCR");
@@ -55,7 +41,6 @@ const PassDetailPage = () => {
           ...prevRes,
           pass: passData.data
         }));
-        setDisplayedPlayers(sortLeaderboard(passData.data));
         setInfoLoading(false);
       } catch (error) {
         console.error("Error fetching pass data:", error);
@@ -79,21 +64,6 @@ const PassDetailPage = () => {
   function handleSort(sort){
     setLeaderboardSort(sort)
   }
-
-  const sortLeaderboard = (passes) => {
-    if (!passes) return [];
-    
-    switch (leaderboardSort) {
-      case 'TIME':
-        return [...passes].sort((a, b) => new Date(a.date) - new Date(b.date));
-      case 'ACC':
-        return [...passes].sort((a, b) => b.Xacc - a.Xacc);
-      case 'SCR':
-        return [...passes].sort((a, b) => b.score - a.score);
-      default:
-        return passes;
-    }
-  };
 
   function changeDialogState(){
     setOpenDialog(!openDialog)
@@ -255,7 +225,7 @@ const PassDetailPage = () => {
               backgroundImage: `url(${res && videoDetail ? videoDetail.image: "defaultImageURL"})`}}>
 
             <div className="diff">
-              <img src={res.pass.level.difficulty.icon} alt="" />
+              <img src={res.pass.level?.difficulty?.icon} alt="" />
             </div>
 
             <div className="title">

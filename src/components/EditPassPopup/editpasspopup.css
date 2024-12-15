@@ -149,7 +149,7 @@
 .edit-pass-popup-overlay .form-container form .info .info-input > * {
   flex: 1 1 150px; /* Flex-grow, flex-shrink, and base size (width of 150px) */
   min-width: 100px; /* Minimum width to avoid shrinking too small */
-  max-width: 200px; /* Maximum width to control expansion */
+  max-width: 300px; /* Maximum width to control expansion */
   height: 40px; /* Fixed height */
   box-sizing: border-box; /* To include padding and borders in width/height calculation */
 }

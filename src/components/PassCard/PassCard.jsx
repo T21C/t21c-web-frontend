@@ -7,7 +7,7 @@ const PassCard = ({ pass }) => {
   const navigate = useNavigate();
 
   const redirect = () => {
-    navigate(`/passdetail?id=${pass.id}`);
+    navigate(`/passes/${pass.id}`);
   };
 
   const onAnchorClick = (e) => {

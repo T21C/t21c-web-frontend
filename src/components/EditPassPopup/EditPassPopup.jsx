@@ -104,7 +104,7 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
     }
 
     if(level){
-      setIsUDiff(level["pguDiffNum"] >= 21);
+      setIsUDiff(level?.difficulty?.id >= 41);
     }
     if(!form.levelId){
       setIsUDiff(false)
@@ -131,10 +131,10 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
       return;
     }
 
-    checkLevel(levelId)
+    api.get(`${import.meta.env.VITE_LEVELS}/${levelId}`)
       .then((data) => {
         
-        setLevel(data ? data : null);
+        setLevel(data.data ? data.data : null);
         setLevelLoading(false);
         
       })
@@ -424,8 +424,8 @@ const handleSubmit = async (e) => {
 
               <div className="information">
                   {(level && form.levelId) ? 
-                  (<div className="level-info"><h2 className="level-info-sub">{truncateString(level["song"], 30)}</h2>
-                   <div className="level-info-sub"><span>{truncateString(level["artist"], 15)}</span><span>{truncateString(level["creator"], 20)}</span></div></div>)
+                  (<div className="level-info"><h2 className="level-info-sub">{truncateString(level.song, 30)}</h2>
+                   <div className="level-info-sub"><span>{truncateString(level.artist, 15)}</span><span>{truncateString(level.creator, 20)}</span></div></div>)
                   : 
                   (<div className="level-info"><h2 className="level-info-sub" style={{color: "#aaa"}}>{t("passSubmission.levelInfo.song")}</h2>
                    <div className="level-info-sub"><span style={{color: "#aaa"}}>{t("passSubmission.levelInfo.artist")}</span><span style={{color: "#aaa"}}>{t("passSubmission.levelInfo.charter")}</span></div></div>)
@@ -448,13 +448,13 @@ const handleSubmit = async (e) => {
                   })()}
                 </div>
                 <a
-                  href={level ? (level["id"] == form.levelId ? `/leveldetail?id=${level["id"]}`: "#" ): "#"}
+                  href={level ? (level.id == form.levelId ? `/leveldetail?id=${level.id}`: "#" ): "#"}
                   onClick={e => {
                     if (!level){
                       e.preventDefault();
                     }
                     else if (level) {
-                      if(level["id"] != form.levelId){
+                      if(level.id != form.levelId){
                         e.preventDefault();
                       }
                     }

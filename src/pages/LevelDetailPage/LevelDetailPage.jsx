@@ -3,7 +3,7 @@
 import "./leveldetailpage.css"
 import placeholder from "../../assets/placeholder/3.png";
 import React, { useEffect, useState } from "react";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import { CompleteNav } from "../../components";
 import {
   getVideoDetails,
@@ -37,7 +37,7 @@ const LevelDetailPage = () => {
   const {t} = useTranslation()
   const { detailPage } = useLocation();
   // cange how to get param
-  const id = new URLSearchParams(window.location.search).get("id");
+  const {id} = useParams()
   const [res, setRes] = useState(null);
   const [displayedPlayers, setDisplayedPlayers] = useState([]);
   const [leaderboardSort, setLeaderboardSort] = useState("SCR");

@@ -1,5 +1,3 @@
-import { inputDataRaw } from "../../Repository/RemoteRepository";
-
 // Define difficulty levels and their numeric values
 const DIFFICULTY_LEVELS = {
   'P': { base: 0, max: 20 },    // P1-P20
