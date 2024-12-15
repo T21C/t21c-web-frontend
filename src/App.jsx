@@ -18,10 +18,8 @@ const SubmissionPage = lazy(()=> import("./pages/SubmissionPage/SubmissionPage.j
 const LevelPage = lazy(()=> import ("./pages/LevelPage/LevelPage.jsx"))
 
 function App() {
-  
   return (
-    <>   
-     <Suspense
+    <Suspense
       fallback={
         <div
           style={{
@@ -35,13 +33,11 @@ function App() {
         </div>
       }
     >
-                
       <Routes>
         <Route index path="/" element={<LevelPage />} />
         <Route path="levels" element={<LevelPage />} />
         <Route path="levels/:id" element={<LevelDetailPage />} />
         <Route path="passes/:id" element={<PassDetailPage />} />
-
 
         <Route path="submission" element={<SubmissionPage />} />
         <Route path="submission/level" element={<LevelSubmissionPage />} />
@@ -57,7 +53,6 @@ function App() {
         <Route path='admin/rating' element={<RatingPage/>} />
       </Routes>
     </Suspense>
-    </>
   );
 }
 

@@ -104,7 +104,7 @@ const Navigation = ({ children }) => {
                     </NavLink>
                     <NavLink className={({ isActive }) =>
                       "nav-link " + (isActive ? "active-link" : "")}
-                      to="/pass">
+                      to="/passes">
                       <li>{t("navigationComponent.pass")}</li>
                     </NavLink>
                   </>

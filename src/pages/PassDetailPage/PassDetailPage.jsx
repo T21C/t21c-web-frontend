@@ -52,6 +52,14 @@ const PassDetailPage = () => {
   }, [id]);
 
   useEffect(() => {
+    if (res?.pass) {
+      document.title = `${res.pass.player?.name}'s Clear of ${res.pass.song} | TUF`;
+    } else {
+      document.title = 'Loading Pass... | TUF';
+    }
+  }, [res?.pass]);
+
+  useEffect(() => {
     if (res?.pass?.vidLink) {
       getVideoDetails(res.pass.vidLink).then(setVideoDetail);
     }

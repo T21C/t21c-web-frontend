@@ -17,6 +17,7 @@ import { AuthProvider } from './context/AuthContext.jsx';
 import { PlayerContextProvider } from './context/PlayerContext.jsx';
 import { PassContextProvider } from './context/PassContext.jsx';  
 import { DifficultyContextProvider } from './context/DifficultyContext.jsx';
+import { HelmetProvider } from 'react-helmet-async';
 
 i18next.init({
   interpolation: { escapeValue: false },
@@ -44,24 +45,25 @@ i18next.init({
 });
 
 ReactDOM.createRoot(document.getElementById('root')).render(
- <BrowserRouter>
-   <GoogleOAuthProvider clientId='886035995245-8735p49ljpm17btvst50pp8qbg73t7s4.apps.googleusercontent.com'>
-
-     <LevelContextProvider>
-      <I18nextProvider i18n={i18next}>
-        <UserContextProvider>
-          <PlayerContextProvider>
-          <DifficultyContextProvider>
-            <AuthProvider>
-              <PassContextProvider>
-                <App />
-              </PassContextProvider>
-            </AuthProvider>
-          </DifficultyContextProvider>  
-          </PlayerContextProvider>
-        </UserContextProvider>
-      </I18nextProvider>
-     </LevelContextProvider>
-   </GoogleOAuthProvider>
- </BrowserRouter>
+  <HelmetProvider>
+    <BrowserRouter>
+      <GoogleOAuthProvider clientId='886035995245-8735p49ljpm17btvst50pp8qbg73t7s4.apps.googleusercontent.com'>
+        <LevelContextProvider>
+          <I18nextProvider i18n={i18next}>
+            <UserContextProvider>
+              <PlayerContextProvider>
+                <DifficultyContextProvider>
+                  <AuthProvider>
+                    <PassContextProvider>
+                      <App />
+                    </PassContextProvider>
+                  </AuthProvider>
+                </DifficultyContextProvider>  
+              </PlayerContextProvider>
+            </UserContextProvider>
+          </I18nextProvider>
+        </LevelContextProvider>
+      </GoogleOAuthProvider>
+    </BrowserRouter>
+  </HelmetProvider>
 );
