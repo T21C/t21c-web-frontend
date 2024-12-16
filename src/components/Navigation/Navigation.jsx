@@ -88,6 +88,11 @@ const Navigation = ({ children }) => {
                       to="/admin/submissions">
                       <li>Submissions{/*t("navigationComponent.submissions")*/}</li>
                     </NavLink>
+                    <NavLink className={({ isActive }) =>
+                      "nav-link " + (isActive ? "active-link" : "")}
+                      to="/admin/announcements">
+                      <li>Announcements{/*t("navigationComponent.announcements")*/}</li>
+                    </NavLink>
                   </>
                 ) : (
                   // Regular Links

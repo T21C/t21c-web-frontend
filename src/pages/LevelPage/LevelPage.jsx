@@ -122,27 +122,15 @@ const LevelPage = () => {
       setLoading(true);
       try {
         const response = await api.get(
-          `${import.meta.env.VITE_LEVELS}/${query.slice(1)}`,
+          `${import.meta.env.VITE_LEVELS}/byId/${query.slice(1)}`,
           {
             cancelToken: new axios.CancelToken((c) => (cancel = c)),
           }
         );
 
-        // Remove the additional clears request
-        const fullData = {
-          id: response.data.id,
-          team: response.data.team,
-          diffId: response.data.diffId,
-          creator: response.data.creator,
-          song: response.data.song,
-          artist: response.data.artist,
-          dlLink: response.data.dlLink,
-          wsLink: response.data.workshopLink,
-          // The clears count should now come from the server response
-          clears: response.data.clears || 0,
-        };
-
-        setLevelsData([fullData]);
+        // Remove the additional clears reques
+        console.log(response.data);
+        setLevelsData([response.data]);
         setHasMore(false);
       } catch (error) {
         if (!axios.isCancel(error)) setError(true);
@@ -151,7 +139,7 @@ const LevelPage = () => {
       }
     };
 
-    if (query[0] == "#") {
+    if (query[0] == "#" && !isNaN(parseInt(query.slice(1)))) {
       fetchLevelById();
     } else {
       fetchLevels();
