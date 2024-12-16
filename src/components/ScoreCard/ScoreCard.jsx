@@ -12,7 +12,7 @@ const ScoreCard = ({scoreData}) => {
   const navigate = useNavigate()
   
     const redirect = () => {
-      navigate(`/levels/${scoreData.levelId}`);
+      navigate(`/passes/${scoreData.id}`);
     };
 
     const onAnchorClick = (e) => {
