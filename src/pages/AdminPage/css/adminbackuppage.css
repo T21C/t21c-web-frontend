@@ -15,17 +15,11 @@
   padding-bottom: 10rem;
 }
 
-.admin-backup-page h1 {
-  font-size: 2.5rem;
-  margin-bottom: 2rem;
-  color: var(--color-white);
-}
-
 .admin-backup-page .backup-tabs-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: 0.5rem;
   padding-bottom: 1rem;
@@ -117,6 +111,7 @@
   align-items: center;
   transition: all 0.3s ease;
   border: 1px solid var(--color-white-t20);
+  position: relative;
 }
 
 .admin-backup-page .backup-item:hover {
@@ -125,11 +120,19 @@
 
 .admin-backup-page .backup-info {
   flex: 1;
+  margin-right: 3rem;
+  min-width: 0;
 }
 
-.admin-backup-page .backup-info h3 {
-  margin: 0;
+.admin-backup-page .filename-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 0.5rem;
+}
+
+.admin-backup-page .filename-container h3 {
+  margin: 0;
   font-size: 1.2rem;
   color: var(--color-white);
 }
@@ -159,8 +162,8 @@
 
 .admin-backup-page .backup-actions {
   display: flex;
-  gap: 1rem;
-  margin-left: 1.5rem;
+  gap: 8px;
+  align-items: center;
 }
 
 .admin-backup-page .restore-btn,
@@ -196,6 +199,104 @@
 .admin-backup-page .restore-btn:disabled,
 .admin-backup-page .delete-btn:disabled {
   opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-backup-page .edit-btn {
+  background: none;
+  border: none;
+  color: var(--color-white-t80);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.admin-backup-page .edit-btn:hover:not(:disabled) {
+  color: var(--color-white);
+  background-color: var(--color-white-t10);
+}
+
+.admin-backup-page .edit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-backup-page .rename-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.admin-backup-page .rename-input-container {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  background: var(--color-white-t10);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.admin-backup-page .rename-input {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  color: var(--color-white);
+  font-size: 1rem;
+  min-width: 0;
+}
+
+.admin-backup-page .file-extension {
+  padding: 8px;
+  color: var(--color-white-t60);
+  font-size: 1rem;
+  background: var(--color-white-t10);
+  border-left: 1px solid var(--color-white-t20);
+  user-select: none;
+}
+
+.admin-backup-page .rename-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-backup-page .save-rename-btn,
+.admin-backup-page .cancel-rename-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.admin-backup-page .save-rename-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.admin-backup-page .save-rename-btn:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+.admin-backup-page .cancel-rename-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.admin-backup-page .cancel-rename-btn:hover:not(:disabled) {
+  background-color: #da190b;
+}
+
+.admin-backup-page .save-rename-btn:disabled,
+.admin-backup-page .cancel-rename-btn:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
@@ -244,17 +345,6 @@
   opacity: 1;
 }
 
-@keyframes slideIn {
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
 .admin-backup-page .no-backups-message {
   text-align: center;
   color: var(--color-white-t80);
@@ -282,26 +372,10 @@
   color: var(--color-white-t80);
 }
 
-.admin-backup-page .backup-controls {
-  margin-bottom: 1.5rem;
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-}
-
-.admin-backup-page .sort-controls {
+.admin-backup-page .sort-buttons {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background-color: rgba(255, 255, 255, 0.12);
-  padding: 0.25rem;
-  border-radius: 6px;
-  border: 1px solid var(--color-white-t20);
-}
-
-.admin-backup-page .sort-label {
-  color: var(--color-white-t80);
-  font-size: 1rem;
 }
 
 .admin-backup-page .sort-btn {
@@ -324,11 +398,6 @@
   font-weight: 500;
 }
 
-.admin-backup-page .backup-section {
-  display: flex;
-  flex-direction: column;
-}
-
 .admin-backup-page .header-right {
   display: flex;
   align-items: center;
@@ -348,12 +417,6 @@
   transition: all 0.3s ease;
 }
 
-.admin-backup-page .reload-btn svg {
-  width: 1.2rem;
-  height: 1.2rem;
-  color: var(--color-white);
-}
-
 .admin-backup-page .reload-btn:hover {
   background-color: var(--color-white-t30);
 }
@@ -370,67 +433,61 @@
   border-radius: 6px;
 }
 
+.admin-backup-page .header-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-bottom: 1em;
+}
+
+.admin-backup-page .header-container h1 {
+  text-align: center;
+  margin-bottom: 0;
+  font-size: 2rem;
+  color: var(--color-white);
+}
+
+.admin-backup-page .refresh-button {
+  position: absolute;
+  right: 0;
+  background: none;
+  border: none;
+  color: var(--color-white);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.admin-backup-page .refresh-button:hover {
+  opacity: 1;
+  transform: rotate(180deg);
+}
+
+.admin-backup-page .refresh-button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
 @media screen and (max-width: 768px) {
   .admin-backup-page .admin-backup-body {
     padding: 1rem;
     padding-top: 5rem;
-  }
-
-  .admin-backup-page h1 {
-    font-size: 2rem;
-  }
-
-  .admin-backup-page .backup-header h2 {
-    font-size: 1.5rem;
-  }
-
-  .admin-backup-page .backup-item {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .admin-backup-page .backup-info {
-    text-align: center;
-  }
-
-  .admin-backup-page .backup-details {
-    align-items: center;
-  }
-
-  .admin-backup-page .backup-date,
-  .admin-backup-page .backup-size {
-    justify-content: center;
-  }
-
-  .admin-backup-page .backup-actions {
-    width: 100%;
-    justify-content: center;
-    margin-left: 0;
-  }
-
-  .admin-backup-page .notifications {
-    left: 1rem;
-    right: 1rem;
-  }
-
-  .admin-backup-page .tab-button {
-    font-size: 1.1rem;
-    padding: 0.5rem 1rem;
-  }
-
-  .admin-backup-page .backup-controls {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 1rem;
-  }
-
-  .admin-backup-page .sort-controls {
-    width: 100%;
-    justify-content: center;
-  }
-
-  .admin-backup-page .create-backup-btn {
-    width: 100%;
   }
 
   .admin-backup-page .backup-header {
@@ -449,16 +506,6 @@
     width: 100%;
   }
 
-  .admin-backup-page .reload-btn {
-    width: 3rem;
-    height: 3rem;
-  }
-
-  .admin-backup-page .reload-btn svg {
-    width: 1.4rem;
-    height: 1.4rem;
-  }
-
   .admin-backup-page .backup-tabs-container {
     flex-direction: column;
     gap: 1rem;
@@ -472,4 +519,29 @@
   .admin-backup-page .total-size {
     text-align: center;
   }
-} 
+
+  .admin-backup-page .backup-item {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .admin-backup-page .backup-info {
+    text-align: center;
+    margin-right: 0;
+  }
+
+  .admin-backup-page .backup-details {
+    align-items: center;
+  }
+
+  .admin-backup-page .backup-actions {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .admin-backup-page .edit-btn {
+    padding: 12px;
+    font-size: 1.4rem;
+  }
+}
+ 
