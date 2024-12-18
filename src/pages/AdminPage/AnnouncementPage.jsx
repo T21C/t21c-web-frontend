@@ -35,9 +35,27 @@ const AnnouncementPage = () => {
         api.get(`${import.meta.env.VITE_LEVELS}/unannounced/rerates`),
         api.get(`${import.meta.env.VITE_PASSES}/unannounced/new`)
       ]);
+      
+      // Update the lists
       setNewLevels(newLevelsResponse.data);
       setRerates(reratesResponse.data);
       setPasses(passesResponse.data);
+
+      // Clean up selected items that are no longer in their respective lists
+      setSelectedLevels(prev => {
+        return prev.filter(id => {
+          if (activeTab === 'newLevels') {
+            return newLevelsResponse.data.some(level => level.id === id);
+          } else if (activeTab === 'rerates') {
+            return reratesResponse.data.some(level => level.id === id);
+          }
+          return false;
+        });
+      });
+      
+      setSelectedPasses(prev => 
+        prev.filter(id => passesResponse.data.some(pass => pass.id === id))
+      );
     } catch (err) {
       setError('Failed to fetch items. Please try again.');
       console.error('Error fetching items:', err);
@@ -149,20 +167,36 @@ const AnnouncementPage = () => {
         api.get(`${import.meta.env.VITE_LEVELS}/unannounced/rerates`)
       ]);
 
+      // Get the current lists before update
+      const currentNewLevels = new Set(newLevels.map(l => l.id));
+      const currentRerates = new Set(rerates.map(l => l.id));
+
+      // Update both lists
       setNewLevels(newLevelsResponse.data);
       setRerates(reratesResponse.data);
+
+      // Create sets of IDs after update
+      const newNewLevels = new Set(newLevelsResponse.data.map(l => l.id));
+      const newRerates = new Set(reratesResponse.data.map(l => l.id));
+
+      // Clean up selected levels that have moved between lists or been removed
+      setSelectedLevels(prev => {
+        return prev.filter(id => {
+          // If we're in new levels tab, keep only IDs that are still in new levels
+          if (activeTab === 'newLevels') {
+            // Remove if it was in new levels but moved to rerates or was removed
+            return newNewLevels.has(id) && !newRerates.has(id);
+          }
+          // If we're in rerates tab, keep only IDs that are still in rerates
+          else if (activeTab === 'rerates') {
+            // Remove if it was in rerates but moved to new levels or was removed
+            return newRerates.has(id) && !newNewLevels.has(id);
+          }
+          return false;
+        });
+      });
     } catch (err) {
       console.error('Error refreshing data:', err);
-      // Even if refresh fails, update the local state
-      if (activeTab === 'newLevels') {
-        setNewLevels(prev => prev.map(level => 
-          level.id === updatedData.level.id ? updatedData.level : level
-        ));
-      } else if (activeTab === 'rerates') {
-        setRerates(prev => prev.map(level => 
-          level.id === updatedData.level.id ? updatedData.level : level
-        ));
-      }
     }
     setEditingLevel(null);
   };
