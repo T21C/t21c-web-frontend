@@ -74,7 +74,7 @@ export const DetailPopup = ({
     useEffect(() => {
         const fetchVideoData = async () => {
             if (selectedRating) {
-                const res = await getVideoDetails(selectedRating.level.vidLink);
+                const res = await getVideoDetails(selectedRating.level.videoLink);
                 setVideoData(res);
             }
         };

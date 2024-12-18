@@ -4,7 +4,6 @@ import "./ratinginput.css";
 export const RatingInput = ({ 
   value, 
   onChange, 
-  isLegacy, 
   showDiff=true, 
   pguOnly=false,
   difficulties,

@@ -365,4 +365,30 @@
 .delete-button:disabled {
   background: #8d7373;
   cursor: not-allowed;
+}
+
+.announcement-status {
+  margin: 1rem 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+}
+
+.announcement-status .checkbox-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  grid-column: 2;
+  color: var(--color-black);
+}
+
+.announcement-status .checkbox-container input[type="checkbox"] {
+  width: auto;
+  margin-right: 0.5rem;
+}
+
+.announcement-status .checkbox-container span:not(.checkmark) {
+  font-weight: 500;
 }/*# sourceMappingURL=editpasspopup.css.map */

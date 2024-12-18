@@ -16,7 +16,7 @@ import { PlayerInput } from '../../components/PlayerComponents/PlayerInput';
 export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
   const initialFormState = {
     levelId: pass.levelId.toString() || '',
-    videoLink: pass.vidLink || '',
+    videoLink: pass.videoLink || '',
     speed: pass.speed || '1',
     playerId: pass.playerId || '',
     leaderboardName: pass.player.name || '',
@@ -28,8 +28,9 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
     early: pass.judgements.earlySingle.toString() || '',
     late: pass.judgements.lateSingle.toString() || '',
     isNoHold: pass.isNoHoldTap || false,
-    is12k: pass.is12K || false,
-    is16k: pass.is16K || false
+    is12K: pass.is12K || false,
+    is16K: pass.is16K || false,
+    isAnnounced: pass.isAnnounced || false
   };
   const { t } = useTranslation()
   const { user } = useAuth();
@@ -164,11 +165,11 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
   
     // Determine the value based on whether the input is a checkbox
     const inputValue = type === 'checkbox' ? checked : value;
-    if (name === "is16k"){
-      form.is12k=false
+    if (name === "is16K"){
+      form.is12K=false
     }
-    if (name === "is12k"){
-      form.is16k=false
+    if (name === "is12K"){
+      form.is16K=false
     }
   
     // Update the form state
@@ -262,11 +263,12 @@ const handleSubmit = async (e) => {
       speed: parseFloat(form.speed) >= 1 ? parseFloat(form.speed) : 1,
       feelingRating: form.feelingRating,
       vidTitle: videoDetail?.title || level?.song || '',
-      vidLink: form.videoLink,
+      videoLink: form.videoLink,
       vidUploadTime: videoDetail?.timestamp || new Date().toISOString(),
-      is12K: IsUDiff && form.is12k,
-      is16K: IsUDiff && form.is16k,
+      is12K: IsUDiff && form.is12K,
+      is16K: IsUDiff && form.is16K,
       isNoHoldTap: form.isNoHold,
+      isAnnounced: form.isAnnounced,
 
       // Judgements in the exact format expected by the API
       judgements: {
@@ -448,7 +450,7 @@ const handleSubmit = async (e) => {
                   })()}
                 </div>
                 <a
-                  href={level ? (level.id == form.levelId ? `/leveldetail?id=${level.id}`: "#" ): "#"}
+                  href={level ? (level.id == form.levelId ? `/levels/${level.id}`: "#" ): "#"}
                   onClick={e => {
                     if (!level){
                       e.preventDefault();
@@ -482,7 +484,7 @@ const handleSubmit = async (e) => {
             <div className="youtube-input">
                   <input
                     type="text"
-                    placeholder={t("passSubmission.videoInfo.vidLink")}
+                    placeholder={t("passSubmission.videoInfo.videoLink")}
                     name="videoLink"
                     value={form.videoLink}
                     onChange={handleInputChange}
@@ -592,10 +594,10 @@ const handleSubmit = async (e) => {
               <div className="tooltip-container keycount-checkbox">
                 <input
                   type="checkbox"
-                  value={form.is12k}
+                  value={form.is12K}
                   onChange={handleInputChange}
-                  name="is12k"
-                  checked={form.is12k}
+                  name="is12K"
+                  checked={form.is12K}
                 />
                 <span
                   style={{
@@ -603,7 +605,7 @@ const handleSubmit = async (e) => {
                     position: 'relative',
                   }}
                 >
-                  {t('passSubmission.submInfo.is12k')}
+                  {t('passSubmission.submInfo.is12K')}
                 </span>
                 <span
                   className="tooltip"
@@ -617,10 +619,10 @@ const handleSubmit = async (e) => {
               <div className="tooltip-container keycount-checkbox">
                 <input
                   type="checkbox"
-                  value={form.is16k}
+                  value={form.is16K}
                   onChange={handleInputChange}
-                  name="is16k"
-                  checked={form.is16k}
+                  name="is16K"
+                  checked={form.is16K}
                 />
                 <span
                   style={{
@@ -628,7 +630,7 @@ const handleSubmit = async (e) => {
                     position: 'relative',
                   }}
                 >
-                  {t('passSubmission.submInfo.is16k')}
+                  {t('passSubmission.submInfo.is16K')}
                 </span>
                 <span
                   className="tooltip"
@@ -640,6 +642,18 @@ const handleSubmit = async (e) => {
                 </span>
               </div>
         </div>
+        <div className="announcement-status">
+                <label className="checkbox-container">
+                  <input
+                    type="checkbox"
+                    name="isAnnounced"
+                    checked={form.isAnnounced}
+                    onChange={handleInputChange}
+                  />
+                  <span className="checkmark"></span>
+                  <span>Is Announced</span>
+                </label>
+              </div>
               <div className="accuracy" style={{backgroundColor: "#222", color: "#fff"}}>
                 <div className="top">
                   <div className="each-accuracy">
@@ -759,6 +773,8 @@ const handleSubmit = async (e) => {
                   </button>
                 )}
               </div>
+
+
             </div>
           </form>
         </div>

@@ -28,9 +28,9 @@ const PassSubmissions = () => {
   useEffect(() => {
     // Load video embeds when submissions change
     submissions.forEach(async (submission) => {
-      if (submission.rawVideoId && !videoEmbeds[submission.id]) {
+      if (submission.videoLink && !videoEmbeds[submission.id]) {
         try {
-          const videoDetails = await getVideoDetails(submission.rawVideoId);
+          const videoDetails = await getVideoDetails(submission.videoLink);
           setVideoEmbeds(prev => ({
             ...prev,
             [submission.id]: videoDetails
@@ -312,9 +312,9 @@ const PassSubmissions = () => {
                 <div className="detail-row">
                   <span className="detail-label">Flags:</span>
                   <div className="flags-details">
-                    {submission.flags.is12k && <span>12K</span>}
-                    {submission.flags.isNHT && <span>NHT</span>}
-                    {submission.flags.is16k && <span>16K</span>}
+                    {submission.flags.is12K && <span>12K</span>}
+                    {submission.flags.isNoHoldTap && <span>NHT</span>}
+                    {submission.flags.is16K && <span>16K</span>}
                   </div>
                 </div>
 

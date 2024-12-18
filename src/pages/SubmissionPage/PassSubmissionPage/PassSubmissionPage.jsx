@@ -32,8 +32,8 @@ const PassSubmissionPage = () => {
     early: '',
     late: '',
     isNoHold: false,
-    is12k: false,
-    is16k: false
+    is12K: false,
+    is16K: false
   };
 
   const { t } = useTranslation()
@@ -112,7 +112,7 @@ const PassSubmissionPage = () => {
     }
 
     if(level){
-      setIsUDiff(level["pguDiffNum"] >= 21);
+      setIsUDiff(level.difficulty?.name[0] === "U");
     }
     if(!form.levelId){
       setIsUDiff(false)
@@ -174,11 +174,11 @@ const PassSubmissionPage = () => {
   
     // Determine the value based on whether the input is a checkbox
     const inputValue = type === 'checkbox' ? checked : value;
-    if (name === "is16k"){
-      form.is12k=false
+    if (name === "is16K"){
+      form.is12K=false
     }
-    if (name === "is12k"){
-      form.is16k=false
+    if (name === "is12K"){
+      form.is16K=false
     }
   
     // Update the form state
@@ -264,7 +264,7 @@ const PassSubmissionPage = () => {
     submissionForm.setDetail('speed', form.speed);
     submissionForm.setDetail('feelingDifficulty', form.feelingRating);
     submissionForm.setDetail('title', videoDetail?.title || '');
-    submissionForm.setDetail('rawVideoId', form.videoLink);
+    submissionForm.setDetail('videoLink', form.videoLink);
     submissionForm.setDetail('rawTime', videoDetail?.timestamp || new Date().toISOString());
 
     // Add judgements directly to form
@@ -277,9 +277,9 @@ const PassSubmissionPage = () => {
     submissionForm.setDetail('lateDouble', 0);
 
     // Add flags directly to form
-    submissionForm.setDetail('is12k', IsUDiff && form.is12k);
-    submissionForm.setDetail('isNHT', form.isNoHold);
-    submissionForm.setDetail('is16k', IsUDiff && form.is16k);
+    submissionForm.setDetail('is12K', IsUDiff && form.is12K);
+    submissionForm.setDetail('isNoHoldTap', form.isNoHold);
+    submissionForm.setDetail('is16K', IsUDiff && form.is16K);
 
     submissionForm.submit(user.access_token)
   .then(result => {
@@ -385,7 +385,7 @@ const PassSubmissionPage = () => {
                 })()}
               </div>
               <a
-                href={level ? (level["id"] == form.levelId ? `/leveldetail?id=${level["id"]}`: "#" ): "#"}
+                href={level ? (level["id"] == form.levelId ? `/levels/${level["id"]}`: "#" ): "#"}
                 onClick={e => {
                   if (!level){
                     e.preventDefault();
@@ -419,7 +419,7 @@ const PassSubmissionPage = () => {
           <div className="youtube-input">
                 <input
                   type="text"
-                  placeholder={t("passSubmission.videoInfo.vidLink")}
+                  placeholder={t("passSubmission.videoInfo.videoLink")}
                   name="videoLink"
                   value={form.videoLink}
                   onChange={handleInputChange}
@@ -520,10 +520,10 @@ const PassSubmissionPage = () => {
           <div className="tooltip-container keycount-checkbox">
             <input
               type="checkbox"
-              value={form.is12k}
+              value={form.is12K}
               onChange={handleInputChange}
-              name="is12k"
-              checked={form.is12k}
+              name="is12K"
+              checked={form.is12K}
             />
             <span
               style={{
@@ -531,7 +531,7 @@ const PassSubmissionPage = () => {
                 position: 'relative',
               }}
             >
-              {t('passSubmission.submInfo.is12k')}
+              {t('passSubmission.submInfo.is12K')}
             </span>
             <span
               className="tooltip"
@@ -545,10 +545,10 @@ const PassSubmissionPage = () => {
           <div className="tooltip-container keycount-checkbox">
             <input
               type="checkbox"
-              value={form.is16k}
+              value={form.is16K}
               onChange={handleInputChange}
-              name="is16k"
-              checked={form.is16k}
+              name="is16K"
+              checked={form.is16K}
             />
             <span
               style={{
@@ -556,7 +556,7 @@ const PassSubmissionPage = () => {
                 position: 'relative',
               }}
             >
-              {t('passSubmission.submInfo.is16k')}
+              {t('passSubmission.submInfo.is16K')}
             </span>
             <span
               className="tooltip"

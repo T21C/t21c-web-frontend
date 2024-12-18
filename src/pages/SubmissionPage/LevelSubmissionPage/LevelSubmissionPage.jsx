@@ -234,7 +234,7 @@ const LevelSubmissionPage = () => {
         <div className="youtube-input">
                 <input
                   type="text"
-                  placeholder={t("levelSubmission.submInfo.vidLink")}
+                  placeholder={t("levelSubmission.submInfo.videoLink")}
                   name="videoLink"
                   value={form.videoLink}
                   onChange={handleInputChange}

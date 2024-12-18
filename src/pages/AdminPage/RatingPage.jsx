@@ -103,15 +103,14 @@ const RatingPage = () => {
 
   const handleEditLevel = async (levelId) => {
     try {
-      // Fetch full level data using the same method as LevelDetailPage
-      const data = await api.get(`${import.meta.env.VITE_LEVELS}/${levelId}`);
-      if (data && data.level) {
-        setSelectedLevel(data.level);
+      // Fetch full level data
+      const response = await api.get(`${import.meta.env.VITE_LEVELS}/${levelId}`);
+      if (response && response.data) {
+        setSelectedLevel(response.data);
         setOpenEditDialog(true);
       }
     } catch (error) {
       console.error("Error fetching level data:", error);
-      // Optionally show error message to user
       setError("Failed to load level data");
       setShowMessage(true);
     }
@@ -196,19 +195,20 @@ const RatingPage = () => {
                   setOpenEditDialog(false);
                   setSelectedLevel(null);
                 }}
-                onUpdate={(updatedLevel) => {
-                  // Only update ratings if updatedLevel exists (not a soft delete)
-                  if (updatedLevel) {
+                onUpdate={(updatedData) => {
+                  // Only update ratings if updatedData exists (not a soft delete)
+                  if (updatedData) {
+
                     setRatings(prev => prev.map(rating => 
-                      rating.levelId === updatedLevel.id 
+                      rating.levelId === updatedData.level.id 
                         ? {
                             ...rating,
-                            Song: updatedLevel.song,
-                            "Artist(s)": updatedLevel.artist,
-                            "Creator(s)": updatedLevel.creator,
-                            "Video link": updatedLevel.vidLink,
-                            "DL link": updatedLevel.dlLink,
-                            "Current Diff": updatedLevel.diff
+                            Song: updatedData.level.song,
+                            "Artist(s)": updatedData.level.artist,
+                            "Creator(s)": updatedData.level.creator,
+                            "Video link": updatedData.level.videoLink,
+                            "DL link": updatedData.level.dlLink,
+                            "Current Diff": updatedData.level.difficulty?.name
                           }
                         : rating
                     ));

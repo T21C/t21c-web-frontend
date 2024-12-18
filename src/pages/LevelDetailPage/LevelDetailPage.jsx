@@ -63,8 +63,8 @@ const LevelDetailPage = () => {
       setDisplayedPlayers(sortLeaderboard(passesData.data));
       
       // Reload video details if needed
-      if (levelData.data.vidLink) {
-        const videoData = await getVideoDetails(levelData.data.vidLink);
+      if (levelData.data.videoLink) {
+        const videoData = await getVideoDetails(levelData.data.videoLink);
         setVideoDetail(videoData);
       }
     } catch (error) {
@@ -96,10 +96,10 @@ const LevelDetailPage = () => {
   }, [id]);
 
   useEffect(() => {
-    if (res?.level?.vidLink) {
-      getVideoDetails(res.level.vidLink).then(setVideoDetail);
+    if (res?.level?.videoLink) {
+      getVideoDetails(res.level.videoLink).then(setVideoDetail);
     }
-  }, [res?.level?.vidLink]);
+  }, [res?.level?.videoLink]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -169,7 +169,7 @@ const LevelDetailPage = () => {
 
   const getMetaImage = () => {
     if (videoDetail?.image) return videoDetail.image;
-    if (res?.level?.vidLink) return `https://img.youtube.com/vi/${res.level.vidLink.split('v=')[1]}/maxresdefault.jpg`;
+    if (res?.level?.videoLink) return `https://img.youtube.com/vi/${res.level.videoLink.split('v=')[1]}/maxresdefault.jpg`;
     return placeholder;
   };
 
@@ -331,7 +331,7 @@ const LevelDetailPage = () => {
           >
             <div className="thumbnail-text">
               <p>Thumbnail not found</p>
-              {res.level.vidLink && <a href={res.level.vidLink}>Go to video</a>}
+              {res.level.videoLink && <a href={res.level.videoLink}>Go to video</a>}
             </div>
           </div>
           }

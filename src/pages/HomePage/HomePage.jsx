@@ -103,7 +103,7 @@ const HomePage = () => {
                 creator={element.creator}
                 song={element.song}
                 artist={element.artist}
-                image={element.vidLink}
+                image={element.videoLink}
               />
             ))
           ) : (

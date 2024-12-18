@@ -1,164 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from "../../context/AuthContext";
-import { CompleteNav } from '../../components';
-import ScrollButton from '../../components/ScrollButton/ScrollButton';
-import api from '../../utils/api';
-import './announcementpage.css';
-
-// Tab Components
-const NewLevelsTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRemove }) => (
-  <div className="announcement-section">
-    <div className="items-list">
-      {levels.length > 0 ? (
-        levels.map(level => (
-          <div key={level.id} className="announcement-item">
-            <label className="checkbox-container">
-              <input
-                type="checkbox"
-                checked={selectedLevels.includes(level.id)}
-                onChange={() => onCheckboxChange(level.id)}
-                disabled={isLoading}
-              />
-              <span className="checkmark"></span>
-              <div className="item-details">
-                <div className="item-title">
-                  {level.song} - {level.artist}
-                </div>
-                <div className="item-subtitle">
-                  {level.difficulty?.name}
-                  {level.team && ` • ${level.team}`}
-                </div>
-              </div>
-            </label>
-            <button 
-              className="trash-button"
-              onClick={async () => {
-                try {
-                  await api.post(`${import.meta.env.VITE_LEVELS}/markAnnounced/${level.id}`);
-                  onRemove(level.id);
-                } catch (err) {
-                  throw err;
-                }
-              }}
-              disabled={isLoading}
-            >
-              🗑️
-            </button>
-          </div>
-        ))
-      ) : (
-        <div className="no-items-message">No new levels to announce</div>
-      )}
-    </div>
-  </div>
-);
-
-const ReratesTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRemove }) => (
-  <div className="announcement-section">
-    <div className="items-list">
-      {levels.length > 0 ? (
-        levels.map(level => (
-          <div key={level.id} className="announcement-item">
-            <label className="checkbox-container">
-              <input
-                type="checkbox"
-                checked={selectedLevels.includes(level.id)}
-                onChange={() => onCheckboxChange(level.id)}
-                disabled={isLoading}
-              />
-              <span className="checkmark"></span>
-              <div className="item-details">
-                <div className="item-title">
-                  {level.song} - {level.artist}
-                </div>
-                <div className="item-subtitle">
-                  {level.previousDifficulty?.name} ➔ {level.difficulty?.name}
-                  {level.team && ` • ${level.team}`}
-                </div>
-              </div>
-            </label>
-            <button 
-              className="trash-button"
-              onClick={async () => {
-                try {
-                  await api.post(`${import.meta.env.VITE_LEVELS}/markAnnounced/${level.id}`);
-                  onRemove(level.id);
-                } catch (err) {
-                  throw err;
-                }
-              }}
-              disabled={isLoading}
-            >
-              🗑️
-            </button>
-          </div>
-        ))
-      ) : (
-        <div className="no-items-message">No rerates to announce</div>
-      )}
-    </div>
-  </div>
-);
-
-const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemove }) => (
-  <div className="announcement-section">
-    <div className="items-list">
-      {Array.isArray(passes) && passes.length > 0 ? (
-        passes.map(pass => {
-          // Skip invalid passes
-          if (!pass?.id || !pass?.player?.name || !pass?.level?.song) {
-            console.warn('Invalid pass data:', pass);
-            return null;
-          }
-
-          return (
-            <div key={pass.id} className="announcement-item">
-              <label className="checkbox-container">
-                <input
-                  type="checkbox"
-                  checked={selectedPasses.includes(pass.id)}
-                  onChange={() => onCheckboxChange(pass.id)}
-                  disabled={isLoading}
-                />
-                <span className="checkmark"></span>
-                <div className="item-details">
-                  <div className="item-title">
-                    {pass.player?.name}'s clear of {pass.level?.song}
-                  </div>
-                  <div className="item-subtitle">
-                    Score: {pass.scoreV2?.toFixed(2) || 'N/A'} | Accuracy: {((pass.accuracy || 0) * 100).toFixed(2)}%
-                    {pass.level?.difficulty?.name && ` • ${pass.level.difficulty.name}`}
-                  </div>
-                </div>
-              </label>
-              <button 
-                className="trash-button"
-                onClick={async () => {
-                  if (!pass.id || isNaN(pass.id) || pass.id <= 0) {
-                    console.error('Invalid pass ID:', pass.id);
-                    return;
-                  }
-                  try {
-                    await api.post(`${import.meta.env.VITE_PASSES}/markAnnounced/${pass.id}`);
-                    onRemove(pass.id);
-                  } catch (err) {
-                    console.error('Error marking pass as announced:', err);
-                    throw err;
-                  }
-                }}
-                disabled={isLoading}
-              >
-                🗑️
-              </button>
-            </div>
-          );
-        }).filter(Boolean)
-      ) : (
-        <div className="no-items-message">No passes to announce</div>
-      )}
-    </div>
-  </div>
-);
+import { useAuth } from "@/context/AuthContext";
+import { CompleteNav } from '@/components';
+import ScrollButton from '@/components/ScrollButton/ScrollButton';
+import { EditLevelPopup } from '@/components/EditLevelPopup/EditLevelPopup';
+import api from '@/utils/api';
+import './css/announcementpage.css';
+import NewLevelsTab from './components/NewLevelsTab';
+import ReratesTab from './components/ReratesTab';
+import PassesTab from './components/PassesTab';
 
 const AnnouncementPage = () => {
   const { isSuperAdmin } = useAuth();
@@ -169,7 +18,9 @@ const AnnouncementPage = () => {
   const [selectedLevels, setSelectedLevels] = useState([]);
   const [selectedPasses, setSelectedPasses] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isAnnouncing, setIsAnnouncing] = useState(false);
   const [error, setError] = useState(null);
+  const [editingLevel, setEditingLevel] = useState(null);
 
   useEffect(() => {
     fetchItems();
@@ -239,7 +90,7 @@ const AnnouncementPage = () => {
       return;
     }
 
-    setIsLoading(true);
+    setIsAnnouncing(true);
     setError(null);
     try {
       if (validLevelIds.length > 0) {
@@ -282,8 +133,38 @@ const AnnouncementPage = () => {
       // Refetch items to ensure consistency
       await fetchItems();
     } finally {
-      setIsLoading(false);
+      setIsAnnouncing(false);
     }
+  };
+
+  const handleEditLevel = (level) => {
+    setEditingLevel(level);
+  };
+
+  const handleLevelUpdate = async (updatedData) => {
+    try {
+      // Refetch all data to ensure consistency
+      const [newLevelsResponse, reratesResponse] = await Promise.all([
+        api.get(`${import.meta.env.VITE_LEVELS}/unannounced/new`),
+        api.get(`${import.meta.env.VITE_LEVELS}/unannounced/rerates`)
+      ]);
+
+      setNewLevels(newLevelsResponse.data);
+      setRerates(reratesResponse.data);
+    } catch (err) {
+      console.error('Error refreshing data:', err);
+      // Even if refresh fails, update the local state
+      if (activeTab === 'newLevels') {
+        setNewLevels(prev => prev.map(level => 
+          level.id === updatedData.level.id ? updatedData.level : level
+        ));
+      } else if (activeTab === 'rerates') {
+        setRerates(prev => prev.map(level => 
+          level.id === updatedData.level.id ? updatedData.level : level
+        ));
+      }
+    }
+    setEditingLevel(null);
   };
 
   if (error) {
@@ -311,7 +192,16 @@ const AnnouncementPage = () => {
       <div className="announcement-page">
         <ScrollButton />
         <div className="announcement-container">
-          <h1>Announcements</h1>
+          <div className="header-container">
+            <h1>Announcements</h1>
+            <button 
+              className="refresh-button"
+              onClick={fetchItems}
+              disabled={isLoading}
+            >
+              <svg fill="#ffffff" height="40px" width="40px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 489.698 489.698" xml:space="preserve"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <g> <g> <path d="M468.999,227.774c-11.4,0-20.8,8.3-20.8,19.8c-1,74.9-44.2,142.6-110.3,178.9c-99.6,54.7-216,5.6-260.6-61l62.9,13.1 c10.4,2.1,21.8-4.2,23.9-15.6c2.1-10.4-4.2-21.8-15.6-23.9l-123.7-26c-7.2-1.7-26.1,3.5-23.9,22.9l15.6,124.8 c1,10.4,9.4,17.7,19.8,17.7c15.5,0,21.8-11.4,20.8-22.9l-7.3-60.9c101.1,121.3,229.4,104.4,306.8,69.3 c80.1-42.7,131.1-124.8,132.1-215.4C488.799,237.174,480.399,227.774,468.999,227.774z"></path> <path d="M20.599,261.874c11.4,0,20.8-8.3,20.8-19.8c1-74.9,44.2-142.6,110.3-178.9c99.6-54.7,216-5.6,260.6,61l-62.9-13.1 c-10.4-2.1-21.8,4.2-23.9,15.6c-2.1,10.4,4.2,21.8,15.6,23.9l123.8,26c7.2,1.7,26.1-3.5,23.9-22.9l-15.6-124.8 c-1-10.4-9.4-17.7-19.8-17.7c-15.5,0-21.8,11.4-20.8,22.9l7.2,60.9c-101.1-121.2-229.4-104.4-306.8-69.2 c-80.1,42.6-131.1,124.8-132.2,215.3C0.799,252.574,9.199,261.874,20.599,261.874z"></path> </g> </g> </g></svg>
+            </button>
+          </div>
 
           <div className="submission-tabs">
             <button 
@@ -342,6 +232,7 @@ const AnnouncementPage = () => {
               selectedLevels={selectedLevels}
               onCheckboxChange={handleLevelCheckboxChange}
               onRemove={handleRemoveLevel}
+              onEdit={handleEditLevel}
               isLoading={isLoading}
             />
           )}
@@ -352,6 +243,7 @@ const AnnouncementPage = () => {
               selectedLevels={selectedLevels}
               onCheckboxChange={handleLevelCheckboxChange}
               onRemove={handleRemoveLevel}
+              onEdit={handleEditLevel}
               isLoading={isLoading}
             />
           )}
@@ -371,14 +263,23 @@ const AnnouncementPage = () => {
               className="announce-button"
               onClick={handleAnnounce}
               disabled={
-                isLoading || 
+                isLoading || isAnnouncing || 
                 (activeTab === 'passes' ? selectedPasses.length === 0 : selectedLevels.length === 0)
               }
             >
-              {isLoading ? 'Announcing...' : 'Announce Selected'}
+              {isAnnouncing ? 'Announcing...' : 'Announce Selected'}
             </button>
           </div>
         </div>
+
+        {editingLevel && (
+          <EditLevelPopup
+            level={editingLevel}
+            onClose={() => setEditingLevel(null)}
+            onUpdate={handleLevelUpdate}
+            isFromAnnouncementPage={true}
+          />
+        )}
       </div>
     </>
   );

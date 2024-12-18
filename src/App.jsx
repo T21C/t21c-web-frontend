@@ -12,6 +12,7 @@ import AdminPage from "./pages/AdminPage/AdminPage.jsx";
 import PassPage from "./pages/PassPage/PassPage.jsx";
 import PassDetailPage from "./pages/PassDetailPage/PassDetailPage.jsx";
 import AnnouncementPage from "./pages/AdminPage/AnnouncementPage.jsx";
+import BackupPage from "./pages/AdminPage/BackupPage.jsx";
 
 const HomePage = lazy(() => import("./pages/HomePage/HomePage.jsx"));
 const LevelDetailPage = lazy(()=> import ("./pages/LevelDetailPage/LevelDetailPage.jsx"))
@@ -53,6 +54,7 @@ function App() {
         <Route path='admin/submissions' element={<SubmissionManagementPage/>} />
         <Route path='admin/rating' element={<RatingPage/>} />
         <Route path='admin/announcements' element={<AnnouncementPage/>} />
+        <Route path='admin/backups' element={<BackupPage/>} />
       </Routes>
     </Suspense>
   );

@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { RatingInput } from '../RatingComponents/RatingInput';
 import { useDifficultyContext } from '@/context/DifficultyContext';
 
-export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
+export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPage = false }) => {
   const [formData, setFormData] = useState({
     song: '',
     artist: '',
@@ -14,8 +14,9 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
     vfxer: '',
     team: '',
     diffId: '',
+    previousDiffId: null,
     baseScore: '',
-    vidLink: '',
+    videoLink: '',
     dlLink: '',
     workshopLink: '',
     publicComments: '',
@@ -40,8 +41,9 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
         vfxer: level.vfxer || '',
         team: level.team || '',
         diffId: level.diffId !== null ? level.diffId : 0,
+        previousDiffId: level.previousDiffId !== null ? level.previousDiffId : null,
         baseScore: level.baseScore || '',
-        vidLink: level.vidLink || '',
+        videoLink: level.videoLink || '',
         dlLink: level.dlLink || '',
         workshopLink: level.workshopLink || '',
         publicComments: level.publicComments || '',
@@ -62,7 +64,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
     }));
   };
 
-  const handleDifficultyChange = (value) => {
+  const handleDifficultyChange = (value, field = 'diffId') => {
     const selectedDiff = difficulties.find(d => d.name === value);
     if (selectedDiff !== null) {
       const baseScoreDisplay = (() => {
@@ -72,11 +74,11 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
         return matchingDiff ? matchingDiff.name : formData.baseScore.toString();
       })();
 
-      const shouldUpdateBaseScore = baseScoreDisplay === value;
+      const shouldUpdateBaseScore = baseScoreDisplay === value && field === 'diffId';
       
       setFormData(prev => ({
         ...prev,
-        diffId: selectedDiff.id,
+        [field]: selectedDiff.id,
         baseScore: shouldUpdateBaseScore ? selectedDiff.baseScore : prev.baseScore
       }));
     }
@@ -223,52 +225,65 @@ export const EditLevelPopup = ({ level, onClose, onUpdate }) => {
                 <RatingInput
                   value={getDifficultyName(formData.diffId)}
                   diffId={parseInt(formData.diffId)}
-                  onChange={handleDifficultyChange}
+                  onChange={(value) => handleDifficultyChange(value, 'diffId')}
                   difficulties={difficulties}
                   showDiff={true}
                 />
               </div>
 
-              <div className="to-rate-checkbox-container">
-                <div className="to-rate-group">
-                  <label className="to-rate-checkbox">
-                    <input
-                      type="checkbox"
-                      name="toRate"
-                      checked={formData.toRate}
-                      onChange={handleInputChange}
-                    />
-                    To Rate
-                  </label>
-                  <div className={`rerate-num ${formData.toRate ? 'show' : ''}`}>
+              {isFromAnnouncementPage ? (
+                <div className="form-group">
+                  <RatingInput
+                    value={getDifficultyName(formData.previousDiffId)}
+                    diffId={parseInt(formData.previousDiffId)}
+                    onChange={(value) => handleDifficultyChange(value, 'previousDiffId')}
+                    difficulties={difficulties}
+                    showDiff={true}
+                    placeholder="Previous Difficulty"
+                  />
+                </div>
+              ) : (
+                <div className="to-rate-checkbox-container">
+                  <div className="to-rate-group">
+                    <label className="to-rate-checkbox">
+                      <input
+                        type="checkbox"
+                        name="toRate"
+                        checked={formData.toRate}
+                        onChange={handleInputChange}
+                      />
+                      To Rate
+                    </label>
+                    <div className={`rerate-num ${formData.toRate ? 'show' : ''}`}>
+                      <input
+                        type="text"
+                        name="rerateNum"
+                        value={formData.rerateNum}
+                        onChange={handleInputChange}
+                        placeholder="Rerate #"
+                      />
+                    </div>
+                  </div>
+                  <div className={`rerate-reason ${formData.toRate ? 'show' : ''}`}>
                     <input
                       type="text"
-                      name="rerateNum"
-                      value={formData.rerateNum}
+                      name="rerateReason"
+                      value={formData.rerateReason}
                       onChange={handleInputChange}
-                      placeholder="Rerate #"
+                      placeholder="Rerate Reason"
                     />
                   </div>
                 </div>
-                <div className={`rerate-reason ${formData.toRate ? 'show' : ''}`}>
-                  <input
-                    type="text"
-                    name="rerateReason"
-                    value={formData.rerateReason}
-                    onChange={handleInputChange}
-                    placeholder="Rerate Reason"
-                  />
-                </div>
-              </div>
+              )}
             </div>
 
             <div className="form-group">
-              <label htmlFor="vidLink">Video Link</label>
+              <label htmlFor="videoLink">Video Link</label>
               <input
                 type="text"
-                id="vidLink"
-                name="vidLink"
-                value={formData.vidLink}
+                id="videoLink"
+                name="videoLink"
+                value={formData.videoLink}
                 onChange={handleInputChange}
               />
             </div>

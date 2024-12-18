@@ -135,7 +135,7 @@
       "submInfo": {
         "song": "Song",
         "artist": "Artist",
-        "vidLink": "Video Link",
+        "videoLink": "Video Link",
         "charter": "Video Link",
         "diff": "Difficulty",
         "vfxer": "VFX-ers (opt.)",
@@ -166,7 +166,7 @@
       "thumbnailInfo": "Video not found",
       "title": "Submit a Pass",
       "videoInfo": {
-        "vidLink": "Video link",
+        "videoLink": "Video link",
         "title": "Video title",
         "channel": "Channel name",
         "timestamp": "Timestamp",

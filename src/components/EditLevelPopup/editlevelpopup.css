@@ -266,4 +266,31 @@
   font-size: 14px;
   color: #666;
 }
+
+.edit-level-popup .form-group .rating-input {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: 1px solid #333;
+  background: #2a2a2a;
+  color: #fff;
+}
+
+.edit-level-popup .form-group .rating-input:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.edit-level-popup .form-group .rating-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+
+/* Style for all rating inputs to be consistent */
+.edit-level-popup .form-group .rating-input,
+.edit-level-popup .form-group input[type="text"],
+.edit-level-popup .form-group select {
+  height: 40px;
+  box-sizing: border-box;
+}
  

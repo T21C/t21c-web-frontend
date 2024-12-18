@@ -81,18 +81,25 @@ const Navigation = ({ children }) => {
                     <NavLink className={({ isActive }) =>
                       "nav-link " + (isActive ? "active-link" : "")}
                       to="/admin/rating">
-                      <li>Rating{/*t("navigationComponent.rating")*/}</li>
+                      <li>Rating</li>
                     </NavLink>
                     <NavLink className={({ isActive }) =>
                       "nav-link " + (isActive ? "active-link" : "")}
                       to="/admin/submissions">
-                      <li>Submissions{/*t("navigationComponent.submissions")*/}</li>
+                      <li>Submissions</li>
                     </NavLink>
                     <NavLink className={({ isActive }) =>
                       "nav-link " + (isActive ? "active-link" : "")}
                       to="/admin/announcements">
-                      <li>Announcements{/*t("navigationComponent.announcements")*/}</li>
+                      <li>Announcements</li>
                     </NavLink>
+                    {(isSuperAdmin) && (
+                      <NavLink className={({ isActive }) =>
+                        "nav-link " + (isActive ? "active-link" : "")}
+                        to="/admin/backups">
+                        <li>Backups</li>
+                      </NavLink>
+                    )}
                   </>
                 ) : (
                   // Regular Links
