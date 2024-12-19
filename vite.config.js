@@ -52,6 +52,16 @@ export default defineConfig({
             console.log('proxy error', err);
           });
         }
+      },
+      '^/player/\\d+$': {
+        target: process.env.VITE_API_URL || 'http://localhost:3002',
+        changeOrigin: true,
+        ws: false,
+        configure: (proxy, _options) => {
+          proxy.on('error', (err, _req, _res) => {
+            console.log('proxy error', err);
+          });
+        }
       }
     },
     strictPort: true,

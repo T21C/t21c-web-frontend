@@ -124,6 +124,54 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     }
   };
 
+  const handleDelete = async () => {
+    if (!window.confirm("Do you want to delete this level? This can be undone later.")) {
+      return;
+    }
+
+    setIsSaving(true);
+    setError(null);
+
+    try {
+      const response = await api.delete(`${import.meta.env.VITE_LEVELS}/${level.id}`);
+      if (response.data) {
+        if (onUpdate) {
+          await onUpdate(response.data);
+        }
+        onClose();
+      }
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || "Soft deletion failed");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleRestore = async () => {
+    if (!window.confirm("Do you want to restore this level?")) {
+      return;
+    }
+
+    setIsSaving(true);
+    setError(null);
+
+    try {
+      const response = await api.patch(`${import.meta.env.VITE_LEVELS}/${level.id}/restore`);
+      if (response.data) {
+        if (onUpdate) {
+          await onUpdate(response.data);
+        }
+        onClose();
+      }
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || "Restoration failed");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const getDifficultyName = useCallback((diffId) => {
     if (!difficulties) return '';
     const diff = difficulties.find(d => d.id === parseInt(diffId));
@@ -329,9 +377,12 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               <button 
                 type="button" 
                 className="delete-button"
-                onClick={onClose}
+                onClick={formData.isDeleted ? handleRestore : handleDelete}
+                style={{backgroundColor: formData.isDeleted ? 'green' : 'red'}}
+                disabled={isSaving}
               >
-                Cancel
+                {isSaving ? (formData.isDeleted ? 'Restoring...' : 'Deleting...') : 
+                 (formData.isDeleted ? 'Restore' : 'Delete')}
               </button>
             </div>
           </form>

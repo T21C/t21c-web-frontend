@@ -5,6 +5,7 @@ import { getVideoDetails } from "@/Repository/RemoteRepository";
 import "@/pages/AdminPage/css/adminsubmissionpage.css";
 import api from "@/utils/api";
 import { PlayerInput } from '@/components/PlayerComponents/PlayerInput';
+import { toast } from 'react-hot-toast';
 
 const PassSubmissions = () => {
   const { t } = useTranslation();
@@ -20,9 +21,23 @@ const PassSubmissions = () => {
   const [discordAssignmentStatus, setDiscordAssignmentStatus] = useState({});
   const [discordAssignmentError, setDiscordAssignmentError] = useState({});
   const [pendingAssignments, setPendingAssignments] = useState({});
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchPendingSubmissions();
+  }, []);
+
+  useEffect(() => {
+    // Add event listener for refresh button
+    const handleRefresh = () => {
+      console.log('[PassSubmissions] Refreshing submissions...');
+      fetchPendingSubmissions();
+    };
+    window.addEventListener('refreshSubmissions', handleRefresh);
+    
+    return () => {
+      window.removeEventListener('refreshSubmissions', handleRefresh);
+    };
   }, []);
 
   useEffect(() => {
@@ -78,11 +93,12 @@ const PassSubmissions = () => {
       setPlayerSearchValues(initialSearchValues);
       
       setSubmissions(data);
-      await autoAssignPlayers(data);
     } catch (error) {
       console.error('Error fetching submissions:', error);
     } finally {
       setIsLoading(false);
+      // Dispatch event to notify parent that loading is complete
+      window.dispatchEvent(new Event('submissionsLoadingComplete'));
     }
   };
 
@@ -142,7 +158,7 @@ const PassSubmissions = () => {
       await api.put(`${import.meta.env.VITE_PLAYERS}/${submission.assignedPlayerId}/discord`, {
         discordId: submission.submitterDiscordId,
         discordUsername: submission.submitterDiscordUsername,
-        discordAvatar: submission.submitterDiscordAvatar,
+        discordAvatar: submission.submitterDiscordPfp,
       });
       
       setSubmissions(prev => prev.map(sub => 
@@ -260,6 +276,36 @@ const PassSubmissions = () => {
       return newState;
     });
   };
+
+  const handleAutoAllow = async () => {
+    try {
+      setLoading(true);
+      const response = await api.post(`${import.meta.env.VITE_SUBMISSION_API}/auto-approve/passes`);
+      
+      if (response.data.results) {
+        // Refresh the submissions list
+        await fetchPendingSubmissions();
+        
+        // Show success message
+        toast.success(`Auto-approved ${response.data.results.filter(r => r.success).length} submissions`);
+      }
+    } catch (error) {
+      console.error('Error auto-allowing submissions:', error);
+      toast.error('Failed to auto-allow submissions');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    // Add event listener for auto-allow button
+    const handleAutoAllowEvent = () => handleAutoAllow();
+    window.addEventListener('autoAllowPasses', handleAutoAllowEvent);
+    
+    return () => {
+      window.removeEventListener('autoAllowPasses', handleAutoAllowEvent);
+    };
+  }, []);
 
   if (submissions?.length === 0 && !isLoading) {
     return <p className="no-submissions">No pending pass submissions to review</p>;

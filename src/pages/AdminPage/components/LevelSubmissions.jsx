@@ -18,6 +18,19 @@ const LevelSubmissions = () => {
       }, []);
     
       useEffect(() => {
+        // Add event listener for refresh button
+        const handleRefresh = () => {
+          console.log('[LevelSubmissions] Refreshing submissions...');
+          fetchPendingSubmissions();
+        };
+        window.addEventListener('refreshSubmissions', handleRefresh);
+        
+        return () => {
+          window.removeEventListener('refreshSubmissions', handleRefresh);
+        };
+      }, []);
+    
+      useEffect(() => {
         // Load video embeds when submissions change
         submissions.forEach(async (submission) => {
           if (submission.videoLink && !videoEmbeds[submission.id]) {
@@ -45,6 +58,8 @@ const LevelSubmissions = () => {
           console.error('Error fetching submissions:', error);
         } finally {
           setIsLoading(false);
+          // Dispatch event to notify parent that loading is complete
+          window.dispatchEvent(new Event('submissionsLoadingComplete'));
         }
       };
     

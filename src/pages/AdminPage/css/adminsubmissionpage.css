@@ -739,3 +739,73 @@
     max-width: 100%;
     margin-top: 4px;
   }
+
+  .submission-admin-page .auto-allow-button {
+    margin-left: auto;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-white-t20);
+    border: none;
+    color: white;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 4px;
+    position: relative;
+    z-index: 11;
+  }
+
+  .submission-admin-page .auto-allow-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .submission-admin-page .auto-allow-button:active {
+    transform: scale(0.98);
+  }
+
+  .submission-admin-page .header-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-bottom: 2rem;
+  }
+
+  .submission-admin-page .header-container h1 {
+    margin: 0;
+  }
+
+  .submission-admin-page .refresh-button {
+    position: absolute;
+    right: 0;
+    background: none;
+    border: none;
+    color: var(--color-white);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .submission-admin-page .refresh-button:hover {
+    opacity: 1;
+    transform: rotate(180deg);
+  }
+
+  .submission-admin-page .refresh-button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }

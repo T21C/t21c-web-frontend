@@ -323,7 +323,7 @@ const handleSubmit = async (e) => {
     setError(null);
 
     try {
-      const response = await api.patch(`${import.meta.env.VITE_PASSES}/${pass.id}/soft-delete`);
+      const response = await api.delete(`${import.meta.env.VITE_PASSES}/${pass.id}`);
       if (response.data) {
         if (onUpdate) {
           await onUpdate(response.data.pass);
@@ -350,13 +350,13 @@ const handleSubmit = async (e) => {
       const response = await api.patch(`${import.meta.env.VITE_PASSES}/${pass.id}/restore`);
       if (response.data) {
         if (onUpdate) {
-          await onUpdate(response.data.pass);
+          await onUpdate(response.data);
         }
         onClose();
       }
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.message || t('passSubmission.restoreFailed'));
+      setError(err.response?.data?.message || "Restoration failed");
     } finally {
       setSubmission(false);
     }
@@ -752,26 +752,15 @@ const handleSubmit = async (e) => {
                   {submission ? t("passSubmission.submitWait") : t("passSubmission.submit")}
                 </button>
                 
-                {pass.isDeleted ? (
-                  <button 
-                    type="button"
-                    className="delete-button"
-                    onClick={handleRestore}
-                    style={{backgroundColor: "#28a745"}}
-                    disabled={submission}
-                  >
-                    Restore{/*t("passSubmission.restore")*/}
-                  </button>
-                ) : (
-                  <button 
-                    type="button"
-                    className="delete-button"
-                    onClick={handleDelete}
-                    disabled={submission}
-                  >
-                    Delete{/*t("passSubmission.delete")*/}
-                  </button>
-                )}
+                <button 
+                  type="button" 
+                  className="delete-button"
+                  onClick={pass.isDeleted ? handleRestore : handleDelete}
+                  disabled={submission}
+                >
+                  {submission ? (pass.isDeleted ? 'Restoring...' : 'Deleting...') : 
+                   (pass.isDeleted ? 'Restore' : 'Delete')}
+                </button>
               </div>
 
 
