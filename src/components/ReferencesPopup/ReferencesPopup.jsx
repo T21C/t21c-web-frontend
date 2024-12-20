@@ -35,7 +35,7 @@ const getContrastColor = (backgroundColor) => {
   return backgroundColor;
 };
 
-export const ReferencesPopup = ({ onClose }) => {
+const ReferencesPopup = ({ onClose }) => {
   const { isSuperAdmin } = useAuth();
   const [references, setReferences] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -463,3 +463,5 @@ export const ReferencesPopup = ({ onClose }) => {
     </div>
   );
 }; 
+
+export default ReferencesPopup;

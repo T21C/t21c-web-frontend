@@ -36,7 +36,7 @@ function App() {
       }
     >
       <Routes>
-        <Route index path="/" element={<LevelPage />} />
+        <Route index path="/" element={<HomePage />} />
         <Route path="levels" element={<LevelPage />} />
         <Route path="levels/:id" element={<LevelDetailPage />} />
         <Route path="passes/:id" element={<PassDetailPage />} />

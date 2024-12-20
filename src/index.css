@@ -88,12 +88,12 @@ body {
   content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><radialGradient id="a12" cx=".66" fx=".66" cy=".3125" fy=".3125" gradientTransform="scale(1.5)"><stop offset="0" stop-color="%23152CFF"></stop><stop offset=".3" stop-color="%23152CFF" stop-opacity=".9"></stop><stop offset=".6" stop-color="%23152CFF" stop-opacity=".6"></stop><stop offset=".8" stop-color="%23152CFF" stop-opacity=".3"></stop><stop offset="1" stop-color="%23152CFF" stop-opacity="0"></stop></radialGradient><circle transform-origin="center" fill="none" stroke="url(%23a12)" stroke-width="15" stroke-linecap="round" stroke-dasharray="200 1000" stroke-dashoffset="0" cx="100" cy="100" r="70"><animateTransform type="rotate" attributeName="transform" calcMode="spline" dur="2.1" values="360;0" keyTimes="0;1" keySplines="0 0 1 1" repeatCount="indefinite"></animateTransform></circle><circle transform-origin="center" fill="none" opacity="0" stroke="%23152CFF" stroke-width="11" stroke-linecap="round" cx="100" cy="100" r="70"></circle></svg>')
 }
 .background-level {
-  height: 100vh;
-  width: 100vw;
+  height: 110vh;
+  width: 110vw;
   z-index: 1;
   position: fixed;
-  top: 0;
-  left: 0;
+  top: -30px;
+  left: -30px;
   background-image: url("https://images.rawpixel.com/image_social_landscape/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTM2NjcxMC1pbWFnZS1rd3Z4eGVxcC5qcGc.jpg");
   background-size: cover;
   filter: blur(15px);

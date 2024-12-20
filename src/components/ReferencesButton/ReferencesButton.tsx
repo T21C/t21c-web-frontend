@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './referencesbutton.css';
-import { ReferencesPopup } from '../ReferencesPopup/ReferencesPopup';
+import ReferencesPopup from '../ReferencesPopup/ReferencesPopup';
 
 const ReferencesButton = () => {
   const [showPopup, setShowPopup] = useState(false);

@@ -9,7 +9,7 @@ import { EditLevelPopup } from "../../components/EditLevelPopup/EditLevelPopup";
 import ScrollButton from "../../components/ScrollButton/ScrollButton";
 import api from "../../utils/api";
 import { io } from "socket.io-client";
-import { ReferencesPopup } from "../../components/ReferencesPopup/ReferencesPopup";
+import ReferencesPopup from "../../components/ReferencesPopup/ReferencesPopup";
 
 const truncateString = (str, maxLength) => {
   if (!str) return "";

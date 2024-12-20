@@ -23,7 +23,7 @@
 }
 
 .references-button.visible {
-  opacity: 0.6;
+  opacity: 0.8;
   visibility: visible;
   transform: scale(1);
 }

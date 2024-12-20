@@ -205,7 +205,7 @@ const PassPage = () => {
     <div className="pass-page">
       <CompleteNav />
 
-      <div className="background-pass"></div>
+      <div className="background-level"></div>
 
       <div className="pass-body">
         <ScrollButton />
