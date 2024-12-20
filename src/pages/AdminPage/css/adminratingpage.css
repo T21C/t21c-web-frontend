@@ -339,6 +339,22 @@
     justify-content: flex-end;
     gap: 20px;
     margin-bottom: 20px;
+
+    .references-button {
+      padding: 8px 16px;
+      background-color: #ffffff2a;
+      color: var(--color-white);
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.2s;
+      margin-right: auto; /* Push other controls to the right */
+
+      &:hover {
+        background-color: #ffffff44;
+      }
+    }
   }
 
 .admin-rating-page .admin-rating-body .view-mode-toggle {
@@ -352,4 +368,20 @@
     border-radius: 8px;
     margin-left: 0;
   }
+
+.references-button {
+  padding: 8px 16px;
+  background-color: var(--color-purple-1);
+  color: var(--color-white);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+  margin-right: 16px;
+}
+
+.references-button:hover {
+  background-color: var(--color-purple-2);
+}
 

@@ -13,6 +13,7 @@ import ScrollButton from "@/components/ScrollButton/ScrollButton";
 import { useAuth } from "@/context/AuthContext";
 import { RatingInput } from '@/components/RatingComponents/RatingInput';
 import { DifficultyContext } from "@/context/DifficultyContext";
+import ReferencesButton from "../../components/ReferencesButton/ReferencesButton";
 
 const limit = 30;
 
@@ -207,6 +208,7 @@ const LevelPage = () => {
 
       <div className="level-body">
         <ScrollButton />
+        <ReferencesButton />
         <div className="input-option">
           <svg
             className="svg-fill"

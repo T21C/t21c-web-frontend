@@ -1,0 +1,93 @@
+.references-button {
+  position: fixed;
+  bottom: 50px;
+  left: 70px;
+  height: 50px;
+  border-radius: 25px;
+  background-color: #ffffff35;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  color: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  padding: 0;
+  min-width: 50px;
+  width: 50px;
+  overflow: hidden;
+}
+
+.references-button.visible {
+  opacity: 0.6;
+  visibility: visible;
+  transform: scale(1);
+}
+
+.references-button:hover {
+    opacity: 1;
+  background-color: #ffffff44;
+  left: 35px;
+  width: 150px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.button-content {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  padding: 0 13px;
+  width: 100%;
+}
+
+.references-button svg {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.button-text {
+  font-size: 14px;
+  opacity: 0;
+  transform: translateX(-10px);
+  transition: all 0.3s ease;
+  margin-left: 4px;
+}
+
+.references-button:hover .button-text {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Media query for mobile devices */
+@media (max-width: 768px) {
+  .references-button {
+    bottom: 16px;
+    left: 16px;
+    height: 36px;
+    min-width: 36px;
+    width: 36px;
+  }
+
+  .button-content {
+    padding: 0 9px;
+  }
+
+  .references-button:hover {
+    width: 120px;
+  }
+
+  .references-button svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .button-text {
+    font-size: 12px;
+  }
+} 

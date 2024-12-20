@@ -9,6 +9,7 @@ import { EditLevelPopup } from "../../components/EditLevelPopup/EditLevelPopup";
 import ScrollButton from "../../components/ScrollButton/ScrollButton";
 import api from "../../utils/api";
 import { io } from "socket.io-client";
+import { ReferencesPopup } from "../../components/ReferencesPopup/ReferencesPopup";
 
 const truncateString = (str, maxLength) => {
   if (!str) return "";
@@ -28,6 +29,7 @@ const RatingPage = () => {
   const [selectedLevel, setSelectedLevel] = useState(null);
   const [showDetailedView, setShowDetailedView] = useState(false);
   const [hideRated, setHideRated] = useState(false);
+  const [showReferences, setShowReferences] = useState(false);
 
   const handleCloseSuccessMessage = () => {
     setShowMessage(false);
@@ -123,6 +125,12 @@ const RatingPage = () => {
       <div className="admin-rating-body">
         <ScrollButton />
         <div className="view-controls">
+          <button 
+            className="references-button"
+            onClick={() => setShowReferences(true)}
+          >
+            Reference Levels
+          </button>
           {isSuperAdmin && (
             <div className="view-mode-toggle">
               <span className="toggle-label">Detailed View</span>
@@ -224,6 +232,10 @@ const RatingPage = () => {
             <h2>No ratings available{/*t("adminPage.rating.noLevels")*/}</h2>
             <p>All rated!{/*t("adminPage.rating.allRated")*/}</p>
           </div>
+        )}
+
+        {showReferences && (
+          <ReferencesPopup onClose={() => setShowReferences(false)} />
         )}
       </div>
     </div>
