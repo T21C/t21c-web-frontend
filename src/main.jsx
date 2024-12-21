@@ -2,7 +2,7 @@ import ReactDOM from 'react-dom/client';
 import App from './App.jsx';
 import './index.css';
 import { BrowserRouter } from 'react-router-dom';
-import { LevelContextProvider } from './context/LevelContext.jsx';
+import { LevelContextProvider } from './contexts/LevelContext.jsx';
 import i18next from "i18next";
 import globalEn from "./translations/en/global.json";
 import globalId from "./translations/id/global.json"
@@ -11,12 +11,12 @@ import globalKr from "./translations/kr/global.json"
 import globalCn from "./translations/cn/global.json"
 import globalRu from "./translations/ru/global.json"
 import { I18nextProvider } from "react-i18next";
-import { UserContextProvider } from './context/UserContext.jsx';
+import { UserContextProvider } from './contexts/UserContext.jsx';
 import { GoogleOAuthProvider } from "@react-oauth/google"
-import { AuthProvider } from './context/AuthContext.jsx';
-import { PlayerContextProvider } from './context/PlayerContext.jsx';
-import { PassContextProvider } from './context/PassContext.jsx';  
-import { DifficultyContextProvider } from './context/DifficultyContext.jsx';
+import { AuthProvider } from './contexts/AuthContext.jsx';
+import { PlayerContextProvider } from './contexts/PlayerContext.jsx';
+import { PassContextProvider } from './contexts/PassContext.jsx';  
+import { DifficultyContextProvider } from './contexts/DifficultyContext.jsx';
 import { HelmetProvider } from 'react-helmet-async';
 
 i18next.init({

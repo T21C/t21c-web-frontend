@@ -6,5 +6,6 @@ import PlayerCard from "./PlayerCard/PlayerCard";
 import ScoreCard from "./ScoreCard/ScoreCard";
 import PassCard from "./PassCard/PassCard";
 import ReferencesPopup from "./ReferencesPopup/ReferencesPopup";
+import MetaTags from './MetaTags/MetaTags';
 
-export { Card, Footer, CompleteNav, LevelCard, PlayerCard, ScoreCard, PassCard, ReferencesPopup};
+export { Card, Footer, CompleteNav, LevelCard, PlayerCard, ScoreCard, PassCard, ReferencesPopup, MetaTags};

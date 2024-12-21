@@ -15,8 +15,10 @@ import { useTranslation } from "react-i18next";
 import { use } from "i18next";
 import ClearCard from "../../components/ClearCard/ClearCard";
 import { EditLevelPopup } from "../../components/EditLevelPopup/EditLevelPopup";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import api from "../../utils/api";
+import { useDifficultyContext } from "../../contexts/DifficultyContext";
+import { MetaTags } from '../../components';
 
 const getHighScores = (players) => {
   if (!players?.length) return null;
@@ -49,6 +51,11 @@ const LevelDetailPage = () => {
 
   const [openDialog, setOpenDialog] = useState(false)
   const [openEditDialog, setOpenEditDialog] = useState(false);
+
+  const { difficultyDict } = useDifficultyContext();
+
+  const location = useLocation();
+  const currentUrl = window.location.origin + location.pathname;
 
   const reloadLevelData = async () => {
     try {
@@ -187,6 +194,13 @@ const LevelDetailPage = () => {
 
   return (
   <>
+    <MetaTags
+      title={res?.level?.song}
+      description={`Chart of ${res?.level?.song} by ${res?.level?.creator}`}
+      url={currentUrl}
+      image={''}
+      type="article"
+    />
     <div className="level-detail">
       <CompleteNav />
       <div className="background-level"></div>
@@ -209,7 +223,11 @@ const LevelDetailPage = () => {
               backgroundImage: `url(${res && videoDetail ? videoDetail.image: "defaultImageURL"})`}}>
 
             <div className="diff">
-              <img src={res.level.difficulty.icon} alt="" />
+              <img 
+                src={difficultyDict[res.level.difficulty.id]?.icon} 
+                alt={difficultyDict[res.level.difficulty.id]?.name || 'Difficulty icon'} 
+                className="difficulty-icon"
+              />
             </div>
 
             <div className="title">
@@ -261,7 +279,7 @@ const LevelDetailPage = () => {
               <span className="info-desc">
                 {!infoLoading ? 
                   (displayedPlayers.length > 0 ? 
-                    `${getHighScores(displayedPlayers).firstClear.player} | ${getHighScores(displayedPlayers).firstClear.vidUploadTime.slice(0, 10)}` 
+                    `${getHighScores(displayedPlayers).firstClear.player.name} | ${getHighScores(displayedPlayers).firstClear.vidUploadTime.slice(0, 10)}` 
                     : "-")
                   : t("detailPage.waiting")}
               </span>
@@ -272,7 +290,7 @@ const LevelDetailPage = () => {
               <span className="info-desc">
                 {!infoLoading ? 
                   (displayedPlayers.length > 0 ? 
-                    `${getHighScores(displayedPlayers).highestScore.player} | ${getHighScores(displayedPlayers).highestScore.scoreV2.toFixed(2)}` 
+                    `${getHighScores(displayedPlayers).highestScore.player.name} | ${getHighScores(displayedPlayers).highestScore.scoreV2.toFixed(2)}` 
                     : "-")
                   : t("detailPage.waiting")}
               </span>
@@ -283,7 +301,7 @@ const LevelDetailPage = () => {
               <span className="info-desc">
                 {!infoLoading ? 
                   (displayedPlayers.length > 0 && getHighScores(displayedPlayers).highestSpeed ? 
-                    `${getHighScores(displayedPlayers).highestSpeed.player} | ${getHighScores(displayedPlayers).highestSpeed.speed || 1}×` 
+                    `${getHighScores(displayedPlayers).highestSpeed.player.name} | ${getHighScores(displayedPlayers).highestSpeed.speed || 1}×` 
                     : "-")
                   : t("detailPage.waiting")}
               </span>
@@ -294,7 +312,7 @@ const LevelDetailPage = () => {
               <span className="info-desc">
                 {!infoLoading ? 
                   (displayedPlayers.length > 0 ? 
-                    `${getHighScores(displayedPlayers).highestAcc.player} | ${(getHighScores(displayedPlayers).highestAcc.accuracy * 100).toFixed(2)}%` 
+                    `${getHighScores(displayedPlayers).highestAcc.player.name} | ${(getHighScores(displayedPlayers).highestAcc.accuracy * 100).toFixed(2)}%` 
                     : "-")
                   : t("detailPage.waiting")}
               </span>

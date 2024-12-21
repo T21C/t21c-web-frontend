@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import api from "@/utils/api";
 import { EditLevelPopup } from "@/components/EditLevelPopup/EditLevelPopup"; // Import the EditLevelPopup component
+import { useDifficultyContext } from "../../contexts/DifficultyContext";
 
 
 // eslint-disable-next-line react/prop-types
@@ -11,6 +12,8 @@ const LevelCard = ({index, level, legacyMode, isSuperAdmin,  }) => {
   const {t} = useTranslation()  
   const [toRate, setToRate] = useState(level.toRate || false);
   const [showEditPopup, setShowEditPopup] = useState(false); // State to manage popup visibility
+  const { difficultyDict } = useDifficultyContext();
+  const difficultyInfo = difficultyDict[level.difficulty.id];
 
   const handleCheckboxChange = async (e) => {
     const newToRate = e.target.checked;
@@ -27,7 +30,7 @@ const LevelCard = ({index, level, legacyMode, isSuperAdmin,  }) => {
   level.wsLink = level.ws ? level.ws : level.wsLink ? level.wsLink : level.workshopLink;
   level.dlLink = level.dl ? level.dl : level.dlLink
 
-  const lvImage = (legacyMode ? level.difficulty.legacyIcon : level.difficulty.icon) || level.difficulty.icon
+  const lvImage = (legacyMode ? difficultyInfo?.legacyIcon : difficultyInfo?.icon) || difficultyInfo?.icon
 
   const navigate = useNavigate()
     const redirect = () => {
@@ -60,7 +63,7 @@ const LevelCard = ({index, level, legacyMode, isSuperAdmin,  }) => {
       )}
       <div className="level-card-wrapper" onClick={() => redirect()}>
       <div className="img-wrapper">
-          <img src={lvImage} alt="" />
+          <img src={lvImage} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
       </div>
 
 

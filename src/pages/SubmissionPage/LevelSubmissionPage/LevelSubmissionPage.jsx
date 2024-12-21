@@ -4,7 +4,7 @@ import placeholder from "@/assets/placeholder/3.png";
 import { FormManager } from "@/components/FormManager/FormManager";
 import { useEffect, useState } from "react";
 import { getDriveFromYt, getVideoDetails } from "@/Repository/RemoteRepository";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { validateFeelingRating } from "@/components/Misc/Utility";
 import { useTranslation } from "react-i18next";
 

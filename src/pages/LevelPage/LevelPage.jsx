@@ -6,14 +6,16 @@ import { Tooltip } from "react-tooltip";
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
 import api from '@/utils/api';
-import { LevelContext } from "@/context/LevelContext";
+import { LevelContext } from "@/contexts/LevelContext";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ScrollButton from "@/components/ScrollButton/ScrollButton";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { RatingInput } from '@/components/RatingComponents/RatingInput';
-import { DifficultyContext } from "@/context/DifficultyContext";
+import { DifficultyContext } from "@/contexts/DifficultyContext";
 import ReferencesButton from "../../components/ReferencesButton/ReferencesButton";
+import { MetaTags } from "../../components";
+const currentUrl = window.location.origin + location.pathname;
 
 const limit = 30;
 
@@ -201,7 +203,15 @@ const LevelPage = () => {
   }
 
   return (
+    
     <div className="level-page">
+          <MetaTags
+      title={"Level List"}
+      description={``}
+      url={currentUrl}
+      image={''}
+      type="article"
+    />
       <CompleteNav />
 
       <div className="background-level"></div>

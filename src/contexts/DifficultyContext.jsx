@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
 import { createContext, useState, useEffect, useContext } from "react";
 import api from '../utils/api';
+import axios from "axios";
 
 const DifficultyContext = createContext();
 
@@ -24,13 +25,37 @@ const DifficultyContextProvider = (props) => {
                 const response = await api.get(import.meta.env.VITE_DIFFICULTIES);
                 const diffsArray = response.data;
                 
+                // Preload all icons and create blob URLs
+                const preloadIcons = async (difficulties) => {
+                    return Promise.all(difficulties.map(async (diff) => {
+                        try {
+                            // Add /icon/img.png to the icon URL if it doesn't already have it
+                            const iconUrl =  diff.icon 
+                            
+                            const iconResponse = await axios.get(iconUrl, {
+                                responseType: 'blob'  // Specify that we want binary data
+                            });
+                            
+                            const blob = iconResponse.data;  // Access blob directly from data
+                            const blobUrl = URL.createObjectURL(blob);
+                            return { ...diff, icon: blobUrl };
+                        } catch (err) {
+                            console.error(`Failed to load icon for ${diff.name}:`, err);
+                            return diff; // Keep original icon URL if failed
+                        }
+                    }));
+                };
+
+                // Load icons and update state
+                const diffsWithIcons = await preloadIcons(diffsArray);
+                
                 // Convert array to id-based dictionary
                 const diffsDict = {};
-                diffsArray.forEach(diff => {
+                diffsWithIcons.forEach(diff => {
                     diffsDict[diff.id] = diff;
                 });
 
-                setDifficulties(diffsArray);
+                setDifficulties(diffsWithIcons);
                 setDifficultyDict(diffsDict);
                 setLoading(false);
             } catch (err) {
@@ -41,6 +66,15 @@ const DifficultyContextProvider = (props) => {
         };
 
         fetchDifficulties();
+
+        // Cleanup blob URLs on unmount
+        return () => {
+            difficulties.forEach(diff => {
+                if (diff.icon && diff.icon.startsWith('blob:')) {
+                    URL.revokeObjectURL(diff.icon);
+                }
+            });
+        };
     }, []);
 
     return (

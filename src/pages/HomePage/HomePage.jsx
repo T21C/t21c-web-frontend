@@ -3,6 +3,7 @@ import "./homepage.css"
 import { CompleteNav } from "../../components";
 import api from "../../utils/api";
 import { Link } from 'react-router-dom';
+import { useDifficultyContext } from "../../contexts/DifficultyContext";
 import {
   BarChart,
   Bar,
@@ -13,6 +14,8 @@ import {
   Legend,
   ResponsiveContainer
 } from 'recharts';
+import { MetaTags } from '../../components';
+import { useLocation } from 'react-router-dom';
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -62,15 +65,20 @@ const DifficultyCard = ({ name, passCount }) => (
 );
 
 const DifficultyGraph = ({ data, mode }) => {
-  const chartData = data.map(diff => ({
-    name: diff.name,
-    value: mode === 'passes' ? diff.passCount : diff.levelCount,
-    passCount: diff.passCount,
-    levelCount: diff.levelCount,
-    fill: diff.color ? `${diff.color}` : '#ff2ad1',
-    originalColor: diff.color || '#ff2ad1',
-    icon: diff.icon
-  }));
+  const { difficultyDict } = useDifficultyContext();
+  
+  const chartData = data.map(diff => {
+    const difficultyInfo = difficultyDict[diff.id] || {};
+    return {
+      name: diff.name,
+      value: mode === 'passes' ? diff.passCount : diff.levelCount,
+      passCount: diff.passCount,
+      levelCount: diff.levelCount,
+      fill: difficultyInfo.color || '#ff2ad1',
+      originalColor: difficultyInfo.color || '#ff2ad1',
+      icon: difficultyInfo.icon || null
+    };
+  });
 
   return (
     <ResponsiveContainer width="100%" height={300}>
@@ -105,6 +113,7 @@ const DifficultyGraph = ({ data, mode }) => {
             outline: 'none',
             zIndex: 100
           }}
+          animationDuration={0}
         />
         <Bar 
           dataKey="value" 
@@ -115,10 +124,6 @@ const DifficultyGraph = ({ data, mode }) => {
           onMouseLeave={(data, index, e) => {
             e.target.style.fill = data.payload.fill;
           }}
-          isAnimationActive={true}
-          animationBegin={0}
-          animationDuration={800}
-          animationEasing="ease-out"
         />
       </BarChart>
     </ResponsiveContainer>
@@ -138,7 +143,7 @@ const Footer = () => (
       <div className="footer-section links">
         <h4>Quick Links</h4>
         <Link to="/levels">Browse Levels</Link>
-        <Link to="/upload">Browse Passes</Link>
+        <Link to="/passes">Browse Passes</Link>
         <Link to="/leaderboard">Leaderboard</Link>
       </div>
       <div className="footer-section">
@@ -166,6 +171,8 @@ const HomePage = () => {
   const [boundingRect, setBoundingRect] = useState(null);
   const [isVisible, setIsVisible] = useState(false);
   const [graphMode, setGraphMode] = useState('passes'); // 'passes' or 'levels'
+  const location = useLocation();
+  const currentUrl = window.location.origin + location.pathname;
 
   // Fetch stats on mount
   useEffect(() => {
@@ -217,6 +224,13 @@ const HomePage = () => {
   }, [boundingRect]);
 
   return (<>
+    <MetaTags
+      title="Home"
+      description="Welcome to the Rhythm Game Community Hub"
+      url={currentUrl}
+      image="/og-image.jpg"
+      type="website"
+    />
     <div className="background-level"></div>
     <div className="home">
       <CompleteNav />
@@ -245,7 +259,7 @@ const HomePage = () => {
               &nbsp;
               <img width="32px" src="/src/assets/icons/chart.png" alt="arrow-right" className="arrow-right" />
             </Link>
-            <Link to="/upload" className="action-button">
+            <Link to="/passes" className="action-button">
               <span>Browse Passes</span>
               &nbsp;
               <svg width="32px" version="1.1" id="Uploaded to svgrepo.com" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="-3.2 -3.2 38.40 38.40" xml:space="preserve" fill="#ffffff" stroke="#ffffff" stroke-width="0.8320000000000001"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"><path class="blueprint_een" d="M30.745,20.386L25,13l3.375-7.594C28.669,4.745,28.185,4,27.461,4H17.5l-0.361-2.164 C17.059,1.353,16.642,1,16.153,1H2.014L1.986,0.835c-0.09-0.544-0.604-0.914-1.15-0.822C0.347,0.095,0.02,0.521,0.019,1H0 l0.016,0.096C0.018,1.119,0.01,1.141,0.014,1.165l5,30C5.095,31.653,5.519,32,5.999,32c0.055,0,0.109-0.004,0.165-0.014 c0.545-0.091,0.913-0.606,0.822-1.151L5.014,19H14.5l0.361,2.164C14.941,21.647,15.358,22,15.847,22h14.108 C30.788,22,31.256,21.043,30.745,20.386z M15.306,3l2.342,14H4.694L2.361,3H15.306z M16.633,19.384L16.361,18h1.253L16.633,19.384z M17.436,20l1.391-1.983L16.827,6h9.095l-3.237,7.282L27.911,20C27.911,20,17.472,20.004,17.436,20z"></path> </g></svg></Link>
@@ -287,7 +301,7 @@ const HomePage = () => {
                   Levels
                 </button>
               </div>
-              {Object.entries(stats.difficulties.byType).slice(0, 1).map(([type, difficulties]) => (
+              {Object.entries(stats.difficulties.byType).filter(([type]) => type !== 'SPECIAL').map(([type, difficulties]) => (
                 <div key={type} className="difficulty-type-section">
                   <h3>{type}</h3>
                   <DifficultyGraph data={difficulties} mode={graphMode} />

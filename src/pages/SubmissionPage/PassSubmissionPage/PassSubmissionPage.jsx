@@ -7,7 +7,7 @@ import { getVideoDetails } from "@/Repository/RemoteRepository";
 import calcAcc from "@/components/Misc/CalcAcc";
 import { getScoreV2 } from "@/components/Misc/CalcScore";
 import { parseJudgements } from "@/components/Misc/ParseJudgements";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import {FetchIcon} from "@/components/FetchIcon/FetchIcon"
 import { validateFeelingRating, validateSpeed, validateNumber } from "@/components/Misc/Utility";
 import { useTranslation } from "react-i18next";

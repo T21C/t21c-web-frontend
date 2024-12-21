@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../../context/AuthContext'; // Assuming your AuthContext is in this path
+import { useAuth } from '../../contexts/AuthContext'; // Assuming your AuthContext is in this path
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import './profile.css';
 import { useTranslation } from 'react-i18next';

@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import "./playercard.css"
 import { useTranslation } from "react-i18next";
 import { useContext, useEffect, useState } from "react";
-import { PlayerContext } from "@/context/PlayerContext";
+import { PlayerContext } from "@/contexts/PlayerContext";
 import { formatScore } from "../Misc/Utility";
 
 

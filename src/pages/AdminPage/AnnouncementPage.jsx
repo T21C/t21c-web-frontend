@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from "@/context/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { CompleteNav } from '@/components';
 import ScrollButton from '@/components/ScrollButton/ScrollButton';
 import { EditLevelPopup } from '@/components/EditLevelPopup/EditLevelPopup';

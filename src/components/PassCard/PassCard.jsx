@@ -1,11 +1,14 @@
 import { useNavigate } from "react-router-dom";
 import "./passcard.css"
 import { useTranslation } from "react-i18next";
+import { useDifficultyContext } from "../../contexts/DifficultyContext";
 
 const PassCard = ({ pass }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-
+  const { difficultyDict } = useDifficultyContext();
+  const difficultyInfo = difficultyDict[pass.level.difficulty.id];
+  console.log(pass.level);
   const redirect = () => {
     navigate(`/passes/${pass.id}`);
   };
@@ -49,7 +52,11 @@ const PassCard = ({ pass }) => {
       <div className="flags-wrapper">
         {pass.is12K && <div className="flag">12K</div>}
         {pass.isNoHoldTap && <div className="flag">NHT</div>}
-        <img className="lv-icon" src={pass.level.difficulty.icon} alt="" />
+        <img 
+          src={difficultyInfo?.icon} 
+          alt={difficultyInfo?.name || 'Difficulty icon'} 
+          className="difficulty-icon"
+        />
       </div>
 
       <div className="video-wrapper">

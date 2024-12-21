@@ -6,12 +6,14 @@ import { Tooltip } from "react-tooltip";
 import Select from "react-select";
 import InfiniteScroll from "react-infinite-scroll-component";
 import api from '../../utils/api';
-import { PlayerContext } from "../../context/PlayerContext";
+import { PlayerContext } from "../../contexts/PlayerContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import bgImgDark from "../../assets/important/dark/theme-background.jpg";
 import ScrollButton from "../../components/ScrollButton/ScrollButton";
+import { MetaTags } from "../../components";
 
+const currentUrl = window.location.origin + location.pathname;
 
 
 
@@ -187,6 +189,13 @@ const LeaderboardPage = () => {
 
   return (
     <div className="leaderboard-page">
+      <MetaTags
+        title="Leaderboard"
+        description="View top players and rankings"
+        url={currentUrl}
+        image="/leaderboard-preview.jpg"
+        type="website"
+      />
       <CompleteNav />
 
       <div className="background-level"></div>

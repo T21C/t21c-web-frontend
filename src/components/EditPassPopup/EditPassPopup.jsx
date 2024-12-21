@@ -5,7 +5,7 @@ import { getScoreV2 } from '../Misc/CalcScore.js';
 import calcAcc from '../Misc/CalcAcc.js';
 import { getVideoDetails } from "../../Repository/RemoteRepository";
 import { useTranslation } from 'react-i18next'; 
-import { useAuth } from '../../context/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 import { parseJudgements } from '../Misc/ParseJudgements';
 import { validateFeelingRating, validateSpeed, validateNumber } from '../Misc/Utility';
 import placeholder from '../../assets/placeholder/4.png';

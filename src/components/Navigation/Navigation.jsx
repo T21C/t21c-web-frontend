@@ -5,10 +5,10 @@ import React, { useState, useContext, useEffect } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import logo from "../../assets/tuf-logo/logo-full.png";
 import { useTranslation } from "react-i18next";
-import { UserContext } from "../../context/UserContext";
+import { UserContext } from "../../contexts/UserContext";
 import i18next from 'i18next';
 import { isoToEmoji } from "../../Repository/RemoteRepository";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 const Navigation = ({ children }) => {
   const { t } = useTranslation();
   const [openNav, setOpenNav] = useState(false);

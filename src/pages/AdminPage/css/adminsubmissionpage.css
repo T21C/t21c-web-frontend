@@ -476,7 +476,6 @@
   .submission-admin-page .submissions-list {
     display: flex;
     flex-direction: column;
-    gap: 1rem;
     position: relative;
     z-index: 0;
   }
@@ -503,6 +502,7 @@
   .submission-admin-page .pass-submission-card {
     color: var(--color-white);
     min-height: auto;
+    margin-bottom: 2rem;
   }
 
   /* Colors matching submission page */

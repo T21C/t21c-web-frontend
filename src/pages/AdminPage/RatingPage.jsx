@@ -1,7 +1,7 @@
 import { CompleteNav } from "../../components";
 import "./css/adminratingpage.css";
 import { useEffect, useState, useCallback } from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import { DetailPopup } from "../../components/RatingComponents/DetailPopup";
 import { RatingCard } from "../../components/RatingComponents/RatingCard";

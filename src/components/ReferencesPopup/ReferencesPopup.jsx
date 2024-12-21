@@ -2,7 +2,8 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './referencespopup.css';
 import api from '../../utils/api';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { useDifficultyContext } from '@/contexts/DifficultyContext';
 
 const hexToRgb = (hex) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -37,6 +38,7 @@ const getContrastColor = (backgroundColor) => {
 
 const ReferencesPopup = ({ onClose }) => {
   const { isSuperAdmin } = useAuth();
+  const { difficultyDict } = useDifficultyContext();
   const [references, setReferences] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -188,84 +190,87 @@ const ReferencesPopup = ({ onClose }) => {
     <div className="tab-content">
       {references
         .filter(ref => ref.difficulty.name.startsWith(tabPrefix))
-        .map((ref) => (
-          <div 
-            key={ref.difficulty.id} 
-            className={`difficulty-section ${expandedDiffs.has(ref.difficulty.id) ? 'expanded' : ''}`}
-            style={{ 
-              backgroundColor: `${ref.difficulty.color}1a`,
-              borderLeft: `4px solid ${ref.difficulty.color}`
-            }}
-          >
+        .map((ref) => {
+          const difficultyInfo = difficultyDict[ref.difficulty.id] || ref.difficulty;
+          return (
             <div 
-              className="difficulty-header"
-              onClick={() => toggleDifficulty(ref.difficulty.id)}
+              key={ref.difficulty.id} 
+              className={`difficulty-section ${expandedDiffs.has(ref.difficulty.id) ? 'expanded' : ''}`}
+              style={{ 
+                backgroundColor: `${difficultyInfo.color}1a`,
+                borderLeft: `4px solid ${difficultyInfo.color}`
+              }}
             >
-              <div className="difficulty-info">
-                <img 
-                  src={ref.difficulty.icon} 
-                  alt={ref.difficulty.name}
-                  className="difficulty-icon"
-                />
-                <h3 
-                  className="difficulty-name" 
-                  style={{ 
-                    color: getContrastColor(ref.difficulty.color),
-                    textShadow: getBrightness(ref.difficulty.color) < 128 
-                      ? '0 1px 2px rgba(0, 0, 0, 0.5)'
-                      : 'none'
-                  }}
-                >
-                  {ref.difficulty.name}
-                </h3>
+              <div 
+                className="difficulty-header"
+                onClick={() => toggleDifficulty(ref.difficulty.id)}
+              >
+                <div className="difficulty-info">
+                  <img 
+                    src={difficultyInfo.icon} 
+                    alt={difficultyInfo.name}
+                    className="difficulty-icon"
+                  />
+                  <h3 
+                    className="difficulty-name" 
+                    style={{ 
+                      color: getContrastColor(difficultyInfo.color),
+                      textShadow: getBrightness(difficultyInfo.color) < 128 
+                        ? '0 1px 2px rgba(0, 0, 0, 0.5)'
+                        : 'none'
+                    }}
+                  >
+                    {difficultyInfo.name}
+                  </h3>
+                </div>
+                <div className="header-right">
+                  <span className="level-count">{ref.levels.length} level{ref.levels.length === 1 ? '' : 's'}</span>
+                  <span className="expand-icon">
+                    {expandedDiffs.has(ref.difficulty.id) ? '▼' : '▶'}
+                  </span>
+                </div>
               </div>
-              <div className="header-right">
-                <span className="level-count">{ref.levels.length} level{ref.levels.length === 1 ? '' : 's'}</span>
-                <span className="expand-icon">
-                  {expandedDiffs.has(ref.difficulty.id) ? '▼' : '▶'}
-                </span>
-              </div>
-            </div>
-            
-            {expandedDiffs.has(ref.difficulty.id) && (
-              <div className="levels-list">
-                {ref.levels.map((level) => (
-                  <div key={level.id} className="level-row">
-                    <span className="level-id">#{level.id}</span>
-                    <a 
-                      href={`/levels/${level.id}`}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        navigate(`/levels/${level.id}`);
-                      }}
-                      className="level-song"
-                    >
-                      {level.song}
-                      <svg className="external-link-icon" viewBox="0 0 24 24" width="12" height="12">
-                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" fill="none" stroke="currentColor" strokeWidth="2"/>
-                      </svg>
-                    </a>
-                    <span className="level-artist">{level.artist}</span>
-                    <span className="level-creator">{level.creator}</span>
-                    {level.videoLink && (
+              
+              {expandedDiffs.has(ref.difficulty.id) && (
+                <div className="levels-list">
+                  {ref.levels.map((level) => (
+                    <div key={level.id} className="level-row">
+                      <span className="level-id">#{level.id}</span>
                       <a 
-                        href={level.videoLink} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="video-link"
-                        onClick={(e) => e.stopPropagation()}
+                        href={`/levels/${level.id}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          navigate(`/levels/${level.id}`);
+                        }}
+                        className="level-song"
                       >
-                        <svg className="youtube-icon" viewBox="0 0 24 24">
-                          <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                        {level.song}
+                        <svg className="external-link-icon" viewBox="0 0 24 24" width="12" height="12">
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" fill="none" stroke="currentColor" strokeWidth="2"/>
                         </svg>
                       </a>
-                    )}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
+                      <span className="level-artist">{level.artist}</span>
+                      <span className="level-creator">{level.creator}</span>
+                      {level.videoLink && (
+                        <a 
+                          href={level.videoLink} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="video-link"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          <svg className="youtube-icon" viewBox="0 0 24 24">
+                            <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+                          </svg>
+                        </a>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
     </div>
   );
 
@@ -273,36 +278,39 @@ const ReferencesPopup = ({ onClose }) => {
     <div className="edit-mode-content">
       {references
         .filter(ref => ref.difficulty.name.startsWith(tabPrefix))
-        .map((ref) => (
-          <div key={ref.difficulty.id} className="edit-difficulty-row">
-            <div 
-              className="edit-difficulty-name"
-              style={{ 
-                color: getContrastColor(ref.difficulty.color),
-                backgroundColor: `${ref.difficulty.color}1a`,
-                borderLeft: `4px solid ${ref.difficulty.color}`
-              }}
-            >
-              <img 
-                src={ref.difficulty.icon} 
-                alt={ref.difficulty.name} 
-                className="difficulty-icon"
-              />
-              {ref.difficulty.name}
+        .map((ref) => {
+          const difficultyInfo = difficultyDict[ref.difficulty.id] || ref.difficulty;
+          return (
+            <div key={ref.difficulty.id} className="edit-difficulty-row">
+              <div 
+                className="edit-difficulty-name"
+                style={{ 
+                  color: getContrastColor(difficultyInfo.color),
+                  backgroundColor: `${difficultyInfo.color}1a`,
+                  borderLeft: `4px solid ${difficultyInfo.color}`
+                }}
+              >
+                <img 
+                  src={difficultyInfo.icon} 
+                  alt={difficultyInfo.name} 
+                  className="difficulty-icon"
+                />
+                {difficultyInfo.name}
+              </div>
+              <div className="edit-level-ids">
+                <input
+                  type="text"
+                  value={editedLevelIds[ref.difficulty.id] || ''}
+                  onChange={(e) => setEditedLevelIds(prev => ({
+                    ...prev,
+                    [ref.difficulty.id]: e.target.value
+                  }))}
+                  placeholder="Enter level IDs separated by commas"
+                />
+              </div>
             </div>
-            <div className="edit-level-ids">
-              <input
-                type="text"
-                value={editedLevelIds[ref.difficulty.id] || ''}
-                onChange={(e) => setEditedLevelIds(prev => ({
-                  ...prev,
-                  [ref.difficulty.id]: e.target.value
-                }))}
-                placeholder="Enter level IDs separated by commas"
-              />
-            </div>
-          </div>
-        ))}
+          );
+        })}
     </div>
   );
 

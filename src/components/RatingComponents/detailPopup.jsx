@@ -4,7 +4,7 @@ import { getVideoDetails } from "@/Repository/RemoteRepository";
 import { RatingItem } from './RatingItem';
 import { validateFeelingRating } from '@/components/Misc/Utility';
 import { RatingInput } from './RatingInput';
-import { DifficultyContext } from "@/context/DifficultyContext";
+import { DifficultyContext } from "@/contexts/DifficultyContext";
 import api from '@/utils/api';
 
 async function updateRating(id, rating, comment) {

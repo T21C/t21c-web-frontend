@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import "./css/adminsubmissionpage.css";
 import { CompleteNav } from '../../components';
 import ScrollButton from '../../components/ScrollButton/ScrollButton';

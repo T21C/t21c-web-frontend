@@ -1,7 +1,7 @@
 import { CompleteNav } from "../../components";
 import "./css/adminbackuppage.css";
 import { useEffect, useState, useMemo } from "react";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import ScrollButton from "../../components/ScrollButton/ScrollButton";
 import api from "../../utils/api";

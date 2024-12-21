@@ -3,7 +3,7 @@ import './editlevelpopup.css';
 import api from '../../utils/api';
 import { useNavigate } from 'react-router-dom';
 import { RatingInput } from '../RatingComponents/RatingInput';
-import { useDifficultyContext } from '@/context/DifficultyContext';
+import { useDifficultyContext } from '@/contexts/DifficultyContext';
 
 export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPage = false }) => {
   const [formData, setFormData] = useState({

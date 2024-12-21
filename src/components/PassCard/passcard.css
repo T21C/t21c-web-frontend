@@ -19,6 +19,11 @@
   background-color: var(--color-white-t30);
 }
 
+.pass-card .difficulty-icon {
+  height: 2.75rem;
+  width: 2.75rem;
+}
+
 .pass-card .pass-exp {
   width: fit-content;
   font-size: 0.9rem;

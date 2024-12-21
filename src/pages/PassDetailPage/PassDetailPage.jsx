@@ -14,8 +14,10 @@ import { Tooltip } from "react-tooltip";
 import { useTranslation } from "react-i18next";
 import ClearCard from "../../components/ClearCard/ClearCard";
 import { EditPassPopup } from "../../components/EditPassPopup/EditPassPopup";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import api from "../../utils/api";
+import { MetaTags } from "../../components";
+const currentUrl = window.location.origin + location.pathname;
 
 const PassDetailPage = () => {
   const {t} = useTranslation()
@@ -104,8 +106,10 @@ const PassDetailPage = () => {
       </div>
     );
 
+    
   return (
   <>
+
     <div className="close-outer close-outer-passs" style={{ 
       display: openDialog ? 'block' : 'none'}} onClick={changeDialogState}></div>
       
@@ -468,6 +472,14 @@ const PassDetailPage = () => {
         }}
       />
     )}
+
+    <MetaTags
+      title={`${res?.pass?.level?.song || 'Pass'} - ${res?.pass?.player?.name || 'Player'}`}
+      description={`${res?.pass?.player?.name} passed ${res?.pass?.level?.song} by ${res?.pass?.level?.artist}`}
+      url={currentUrl}
+      image={res?.pass?.level?.thumbnail || '/default-thumbnail.jpg'}
+      type="article"
+    />
   </>
   );
 };

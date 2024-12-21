@@ -1,12 +1,12 @@
 import "./profilePage.css"
 import api from "../../utils/api";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom"
+import { useParams, useLocation } from "react-router-dom"
 import { isoToEmoji } from "../../Repository/RemoteRepository";
-import { CompleteNav, ScoreCard } from "../../components";
+import { CompleteNav, ScoreCard, MetaTags } from "../../components";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "../../context/AuthContext";
-import { useDifficultyContext } from "../../context/DifficultyContext";
+import { useAuth } from "../../contexts/AuthContext";
+import { useDifficultyContext } from "../../contexts/DifficultyContext";
 import AdminPlayerPopup from "../../components/AdminPlayerPopup/AdminPlayerPopup";
 
 const parseRankColor = (rank) => {
@@ -30,6 +30,8 @@ const ProfilePage = () => {
     const { difficultyList } = useDifficultyContext();
     const [showAdminPopup, setShowAdminPopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
+    const location = useLocation();
+    const currentUrl = window.location.origin + location.pathname;
 
     var valueLabels = {
       rankedScore: t("valueLabels.rankedScore"),
@@ -76,6 +78,13 @@ const ProfilePage = () => {
 
       return (
         <div className="player-page">
+          <MetaTags
+            title={`${playerData?.name || 'Profile'}`}
+            description={`Check out ${playerData?.name}'s profile and achievements`}
+            url={currentUrl}
+            image={playerData?.avatar || '/default-avatar.jpg'}
+            type="profile"
+          />
           <CompleteNav />
           <div className="background-level"></div>
           {playerData != null ? (Object.keys(playerData).length > 0 ? (

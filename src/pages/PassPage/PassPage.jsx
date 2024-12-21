@@ -1,18 +1,19 @@
 import "./passpage.css";
 import { useContext, useEffect, useState } from "react";
-import { CompleteNav, PassCard } from "../../components";
+import { CompleteNav, MetaTags, PassCard } from "../../components";
 import { Tooltip } from "react-tooltip";
 import Select from "react-select";
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { PassContext } from "../../context/PassContext";
+import { PassContext } from "../../contexts/PassContext";
 import api from '../../utils/api';
 import ScrollButton from "../../components/ScrollButton/ScrollButton";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
 import { RatingInput } from '@/components/RatingComponents/RatingInput';
-import { DifficultyContext } from "../../context/DifficultyContext";
+import { DifficultyContext } from "../../contexts/DifficultyContext";
+const currentUrl = window.location.origin + location.pathname;
 
 const limit = 30;
 
@@ -203,7 +204,15 @@ const PassPage = () => {
 
   return (
     <div className="pass-page">
+      <MetaTags
+        title="Pass List"
+        description="Browse and discover player achievements"
+        url={currentUrl}
+        image="/passes-preview.jpg"
+        type="article"
+      />
       <CompleteNav />
+      
 
       <div className="background-level"></div>
 
