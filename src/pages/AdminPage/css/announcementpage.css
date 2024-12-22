@@ -38,7 +38,6 @@
   display: flex;
   justify-content: center;
   gap: 1rem;
-  margin-bottom: 2rem;
 }
 
 .announcement-page .tab-button {
@@ -337,4 +336,35 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.announcement-page .tab-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.announcement-page .submission-tabs {
+  display: flex;
+  gap: 1rem;
+}
+
+.announcement-page .select-all-button {
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  color: var(--color-white);
+  background-color: var(--color-white-t20);
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.announcement-page .select-all-button:hover {
+  background-color: var(--color-white-t30);
+}
+
+.announcement-page .select-all-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }

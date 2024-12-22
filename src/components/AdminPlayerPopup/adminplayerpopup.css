@@ -396,4 +396,32 @@
 .admin-player-popup .form-group .ban-cancel-button:disabled {
   background-color: #888;
   cursor: not-allowed;
+}
+
+.admin-player-popup .discord-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+}
+
+.admin-player-popup .discord-delete-button {
+  padding: 6px 12px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.9em;
+  transition: background-color 0.2s;
+}
+
+.admin-player-popup .discord-delete-button:hover {
+  background-color: #d32f2f;
+}
+
+.admin-player-popup .discord-delete-button:disabled {
+  background-color: #888;
+  cursor: not-allowed;
 } 

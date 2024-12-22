@@ -112,7 +112,7 @@ const PassSubmissionPage = () => {
     }
 
     if(level){
-      setIsUDiff(level.difficulty?.name[0] === "U");
+      setIsUDiff(level.difficulty?.name[0] === "U" || level.difficulty?.name[0] === "Q");
     }
     if(!form.levelId){
       setIsUDiff(false)

@@ -207,6 +207,38 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
     }
   };
 
+  const handleDiscordDelete = async () => {
+    try {
+      setIsLoading(true);
+      const response = await api.delete(`${import.meta.env.VITE_PLAYERS}/${player.id}/discord`);
+      
+      if (response.status === 200) {
+        setDiscordInfo({
+          username: '',
+          avatarUrl: null,
+          avatarId: null,
+          id: null,
+          isNewData: false
+        });
+        
+        onUpdate({
+          ...player,
+          discordId: null,
+          discordUsername: null,
+          discordAvatar: null,
+          discordAvatarId: null
+        });
+        
+        toast.success('Discord info removed successfully');
+      }
+    } catch (error) {
+      console.error('Error removing Discord info:', error);
+      toast.error('Failed to remove Discord info');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div className="admin-player-popup-overlay">
       <div className="admin-player-popup">
@@ -372,6 +404,14 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                     <p className="discord-username">@{discordInfo.username}</p>
                     <p className="discord-id">ID: {discordInfo.id}</p>
                   </div>
+                  <button
+                    type="button"
+                    onClick={handleDiscordDelete}
+                    disabled={isLoading}
+                    className="discord-delete-button"
+                  >
+                    Remove
+                  </button>
                 </div>
               </div>
             )}

@@ -201,6 +201,19 @@ const AnnouncementPage = () => {
     setEditingLevel(null);
   };
 
+  const handleSelectAll = () => {
+    if (activeTab === 'passes') {
+      const allPassIds = passes.map(pass => pass.id);
+      const shouldSelectAll = selectedPasses.length !== passes.length;
+      setSelectedPasses(shouldSelectAll ? allPassIds : []);
+    } else {
+      const currentLevels = activeTab === 'newLevels' ? newLevels : rerates;
+      const allLevelIds = currentLevels.map(level => level.id);
+      const shouldSelectAll = selectedLevels.length !== currentLevels.length;
+      setSelectedLevels(shouldSelectAll ? allLevelIds : []);
+    }
+  };
+
   if (error) {
     return (
       <>
@@ -237,27 +250,46 @@ const AnnouncementPage = () => {
             </button>
           </div>
 
-          <div className="submission-tabs">
-            <button 
-              className={`tab-button ${activeTab === 'newLevels' ? 'active' : ''}`}
-              onClick={() => setActiveTab('newLevels')}
-            >
-              New Levels
-            </button>
-            <button 
-              className={`tab-button ${activeTab === 'rerates' ? 'active' : ''}`}
-              onClick={() => setActiveTab('rerates')}
-            >
-              Rerates
-            </button>
-            <button 
-              className={`tab-button ${activeTab === 'passes' ? 'active' : ''}`}
-              onClick={() => setActiveTab('passes')}
-            >
-              Passes
-            </button>
+          <div className="tab-header">
+            <div className="submission-tabs">
+              <button
+                className={`tab-button ${activeTab === 'newLevels' ? 'active' : ''}`}
+                onClick={() => setActiveTab('newLevels')}
+              >
+                New Levels
+              </button>
+              <button
+                className={`tab-button ${activeTab === 'rerates' ? 'active' : ''}`}
+                onClick={() => setActiveTab('rerates')}
+              >
+                Rerates
+              </button>
+              <button
+                className={`tab-button ${activeTab === 'passes' ? 'active' : ''}`}
+                onClick={() => setActiveTab('passes')}
+              >
+                Passes
+              </button>
+            </div>
+
           </div>
 
+          <button
+              className="select-all-button"
+              onClick={handleSelectAll}
+              style={{ marginBottom: '1rem', marginLeft: '1rem' }}
+              disabled={isLoading || (
+                activeTab === 'passes' ? passes.length === 0 : 
+                activeTab === 'newLevels' ? newLevels.length === 0 : 
+                rerates.length === 0
+              )}
+            >
+              {activeTab === 'passes' 
+                ? selectedPasses.length === passes.length ? 'Deselect All' : 'Select All'
+                : selectedLevels.length === (activeTab === 'newLevels' ? newLevels : rerates).length 
+                  ? 'Deselect All' : 'Select All'
+              }
+            </button>
           {error && <div className="error-message">{error}</div>}
 
           {activeTab === 'newLevels' && (
