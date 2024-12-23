@@ -24,6 +24,8 @@ const SubmissionPage = () => {
     navigate('/submission/pass');
 
   };
+
+  
   return (
     <div className="submission-page">
       <MetaTags

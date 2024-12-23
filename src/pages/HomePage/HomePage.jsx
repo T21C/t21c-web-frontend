@@ -145,6 +145,7 @@ const Footer = () => (
         <Link to="/levels">Browse Levels</Link>
         <Link to="/passes">Browse Passes</Link>
         <Link to="/leaderboard">Leaderboard</Link>
+        <Link to="/about">About Us</Link>
       </div>
       <div className="footer-section">
         <h4>Community</h4>
