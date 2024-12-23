@@ -82,7 +82,10 @@ const PassSubmissionPage = () => {
 
     validationResult["levelId"] = !(level === null || level === undefined);
     
-
+    // Add validation for 12K/16K selection when IsUDiff is true
+    if (IsUDiff) {
+      validationResult["keyMode"] = form.is12K || form.is16K;
+    }
     
     const frValid = validateFeelingRating(form["feelingRating"])
     const speedValid = validateSpeed(form["speed"])
@@ -515,7 +518,10 @@ const PassSubmissionPage = () => {
       </div>
       <div
       className={`info-input-container ${IsUDiff ? 'expand' : ''}`}
-      style={{ justifyContent: 'end', marginRight: '2.5rem' }}
+      style={{ 
+        justifyContent: 'end', 
+        marginRight: '2.5rem'
+      }}
     >
           <div className="tooltip-container keycount-checkbox">
             <input
@@ -524,6 +530,7 @@ const PassSubmissionPage = () => {
               onChange={handleInputChange}
               name="is12K"
               checked={form.is12K}
+              style={{outline: IsUDiff && submitAttempt && !isFormValid.keyMode ? '2px solid red' : 'none'}}
             />
             <span
               style={{
@@ -549,6 +556,7 @@ const PassSubmissionPage = () => {
               onChange={handleInputChange}
               name="is16K"
               checked={form.is16K}
+              style={{outline: IsUDiff && submitAttempt && !isFormValid.keyMode ? '2px solid red' : 'none'}}
             />
             <span
               style={{

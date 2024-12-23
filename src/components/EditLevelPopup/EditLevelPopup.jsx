@@ -24,10 +24,12 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     toRate: false,
     rerateReason: '',
     isDeleted: false,
+    isHidden: false,
   });
 
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
+  const [isHideMode, setIsHideMode] = useState(false);
   const navigate = useNavigate();
   const { difficulties } = useDifficultyContext();
 
@@ -51,6 +53,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         toRate: level.toRate || false,
         rerateReason: level.rerateReason || '',
         isDeleted: level.isDeleted || false,
+        isHidden: level.isHidden || false,
       });
       
     }
@@ -125,6 +128,11 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   };
 
   const handleDelete = async () => {
+    if (isHideMode) {
+      await handleToggleHidden();
+      return;
+    }
+
     if (!window.confirm("Do you want to delete this level? This can be undone later.")) {
       return;
     }
@@ -146,6 +154,36 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     } finally {
       setIsSaving(false);
     }
+  };
+
+  const handleToggleHidden = async () => {
+    if (!window.confirm(`Do you want to ${level.isHidden ? 'unhide' : 'hide'} this level?`)) {
+      return;
+    }
+
+    setIsSaving(true);
+    setError(null);
+
+    try {
+      const response = await api.patch(`${import.meta.env.VITE_LEVELS}/${level.id}/toggle-hidden`);
+      if (response.data) {
+        if (onUpdate) {
+          const updatedLevel = { ...level, isHidden: response.data.isHidden };
+          await onUpdate(updatedLevel);
+        }
+        onClose();
+      }
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || "Failed to toggle hidden status");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const toggleMode = (e) => {
+    e.stopPropagation();
+    setIsHideMode(!isHideMode);
   };
 
   const handleRestore = async () => {
@@ -376,13 +414,13 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               </button>
               <button 
                 type="button" 
-                className="delete-button"
-                onClick={formData.isDeleted ? handleRestore : handleDelete}
-                style={{backgroundColor: formData.isDeleted ? 'green' : 'red'}}
+                className={`delete-button ${isHideMode ? 'hide-mode' : ''}`}
+                onClick={handleDelete}
                 disabled={isSaving}
               >
-                {isSaving ? (formData.isDeleted ? 'Restoring...' : 'Deleting...') : 
-                 (formData.isDeleted ? 'Restore' : 'Delete')}
+                {isSaving ? (isHideMode ? 'Processing...' : 'Deleting...') : 
+                 (isHideMode ? (level.isHidden ? 'Unhide' : 'Hide') : 'Delete')}
+                <div className="toggle-arrow" onClick={toggleMode}></div>
               </button>
             </div>
           </form>

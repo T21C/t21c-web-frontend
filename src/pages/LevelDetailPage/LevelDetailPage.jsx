@@ -61,7 +61,7 @@ const LevelDetailPage = () => {
     try {
       setInfoLoading(true);
       const levelData = await api.get(`${import.meta.env.VITE_LEVELS}/${id}`);
-      const passesData = await api.get(`${import.meta.env.VITE_PASSES}//level/${id}`);
+      const passesData = await api.get(`${import.meta.env.VITE_PASSES}/level/${id}`);
       setRes(prevRes => ({
         ...prevRes,
         level: levelData.data,
@@ -206,7 +206,7 @@ const LevelDetailPage = () => {
       <div className="background-level"></div>
 
       <div className="wrapper-level wrapper-level-top">
-      {res?.level?.isDeleted && (
+      {res?.level?.isDeleted ? (
       <div className="deletion-banner-wrapper">
         <div className="deletion-banner">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -215,7 +215,17 @@ const LevelDetailPage = () => {
           <span>This level has been deleted</span>
         </div>
         </div>
-      )}
+      ) : res?.level?.isHidden ? (
+        <div className="deletion-banner-wrapper">
+          <div className="deletion-banner">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span>This level has been hidden</span>
+          </div>
+        </div>
+      ) : null}
+    
         <div className="header">
 
           <div className="left"

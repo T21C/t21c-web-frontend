@@ -135,6 +135,9 @@
   background: #c64141;
   color: white;
   max-width: 13rem;
+  position: relative;
+  padding-right: 2.5rem;
+  transition: background-color 0.3s ease;
 }
 
 .delete-button:hover:not(:disabled) {
@@ -144,6 +147,36 @@
 .delete-button:disabled {
   background: #8d7373;
   cursor: not-allowed;
+}
+
+.delete-button .toggle-arrow {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 6px solid white;
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+.delete-button .toggle-arrow:hover {
+  opacity: 0.8;
+}
+
+.delete-button.hide-mode {
+  background: #666;
+}
+
+.delete-button.hide-mode:hover:not(:disabled) {
+  background: #555;
+}
+
+.delete-button.hide-mode .toggle-arrow {
+  transform: translateY(-50%) rotate(180deg);
 }
 
 .edit-level-popup .difficulty-row {

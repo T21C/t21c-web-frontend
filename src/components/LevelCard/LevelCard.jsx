@@ -47,7 +47,7 @@ const LevelCard = ({index, level, legacyMode, isSuperAdmin,  }) => {
     };
 
   return (
-    <div className='level-card' style={{ backgroundColor: level.isDeleted ? "#f0000099" : "none" }}>
+    <div className='level-card' style={{ backgroundColor: level.isDeleted ? "#f0000099" : level.isHidden ? "#88888899" : "none" }}>
       {/* <div className="id level-id">#{id}</div> */}
       { isSuperAdmin && (
       <div className="toRate-checkbox">

@@ -123,8 +123,8 @@
 }
 .pass-submission-page form .info .info-input-container {
   overflow: hidden;
-  max-height: 0; /* Collapsed height */
-  transition: max-height 0.4s ease; /* Transition for smooth sliding */
+  max-height: 0;
+  transition: max-height 0.4s ease;
   display: flex;
   margin-top: 1rem;
   padding-right: 1.5rem;
@@ -132,17 +132,44 @@
 }
 
 .pass-submission-page form .info .info-input-container.expand {
-  overflow:visible;
-  max-height: 200px; /* Set a maximum value, or use a value that comfortably fits the content */
+  overflow: visible;
+  max-height: 50px;
 }
-
 
 .pass-submission-page form .info .info-input .keycount-checkbox {
   max-width: 130px;
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
-.pass-submission-page form .info .info-input .keycount-checkbox .tooltip{
-  right: -15%;
+.pass-submission-page form .info .info-input .keycount-checkbox input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  accent-color: var(--color-purple-2);
+}
+
+.pass-submission-page form .info .info-input .keycount-checkbox input[type="checkbox"]:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--color-purple-2);
+}
+
+.pass-submission-page form .info .info-input .keycount-checkbox input[type="checkbox"].invalid {
+  accent-color: #ff4444;
+  background-color: #ff4444;
+}
+
+.pass-submission-page form .info .info-input .keycount-checkbox input[type="checkbox"].invalid:checked {
+  background-color: #ff4444;
+}
+
+.pass-submission-page form .info .info-input .keycount-checkbox .validation-message {
+  margin-top: 4px;
+  font-size: 12px;
+  color: #ff4444;
 }
 
 .pass-submission-page form .info .info-input input {
