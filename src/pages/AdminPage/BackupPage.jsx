@@ -48,6 +48,10 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
   const [editingId, setEditingId] = useState(null);
   const [newName, setNewName] = useState('');
   const [renameLoading, setRenameLoading] = useState(false);
+  const [superAdminPassword, setSuperAdminPassword] = useState('');
+  const [showPasswordInput, setShowPasswordInput] = useState(false);
+  const [selectedAction, setSelectedAction] = useState({ type: '', backup: null });
+  const [error, setError] = useState('');
 
   const getFileNameAndExtension = (filename) => {
     const lastDotIndex = filename.lastIndexOf('.');
@@ -55,24 +59,64 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
     return [filename.slice(0, lastDotIndex), filename.slice(lastDotIndex)];
   };
 
-  const handleRename = async (backup) => {
+  const handleAction = async (action, backup) => {
+    if (action === 'restore' && !window.confirm('Are you sure you want to restore this backup? This will overwrite current data.')) {
+      return;
+    }
+    if (action === 'delete' && !window.confirm('Are you sure you want to delete this backup?')) {
+      return;
+    }
+    setSelectedAction({ type: action, backup });
+    setShowPasswordInput(true);
+    setError('');
+  };
+
+  const handlePasswordSubmit = async () => {
     try {
-      setRenameLoading(true);
-      const [, extension] = getFileNameAndExtension(backup.filename);
-      const fullNewName = newName + extension;
-      const response = await api.post(
-        `${import.meta.env.VITE_BACKUP_API}/rename/${type}/${backup.filename}`,
-        { newName: fullNewName }
-      );
-      if (response.data.success) {
-        backup.filename = response.data.newName;
-        setEditingId(null);
-        setNewName('');
+      const { type: action, backup } = selectedAction;
+      
+      if (action === 'rename') {
+        setRenameLoading(true);
+        const [, extension] = getFileNameAndExtension(backup.filename);
+        const fullNewName = newName + extension;
+        const response = await api.post(
+          `${import.meta.env.VITE_BACKUP_API}/rename/${type}/${backup.filename}`,
+          { 
+            newName: fullNewName,
+            superAdminPassword 
+          }
+        );
+        if (response.data.success) {
+          backup.filename = response.data.newName;
+          setEditingId(null);
+          setNewName('');
+        }
+      } else if (action === 'restore') {
+        await onRestore(type, backup.filename, superAdminPassword);
+      } else if (action === 'delete') {
+        await onDelete(type, backup.filename, superAdminPassword);
       }
+      
+      setShowPasswordInput(false);
+      setSuperAdminPassword('');
+      setSelectedAction({ type: '', backup: null });
+      setError('');
     } catch (error) {
-      console.error('Error renaming backup:', error);
+      //console.error('Error performing action:', error);
+      setError(error.response?.status === 403 ? 'Invalid password' : (error.response?.data?.error || 'An error occurred while performing the action'));
     } finally {
       setRenameLoading(false);
+    }
+  };
+
+  const handleCancel = () => {
+    setShowPasswordInput(false);
+    setSuperAdminPassword('');
+    setSelectedAction({ type: '', backup: null });
+    setError('');
+    if (editingId) {
+      setEditingId(null);
+      setNewName('');
     }
   };
 
@@ -108,7 +152,7 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
                     <div className="rename-buttons">
                       <button
                         className="save-rename-btn"
-                        onClick={() => handleRename(backup)}
+                        onClick={() => handleAction('rename', backup)}
                         disabled={renameLoading || !newName.trim()}
                       >
                         {renameLoading ? 'Saving...' : 'Save'}
@@ -153,14 +197,14 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
               <div className="backup-actions">
                 <button
                   className="restore-btn"
-                  onClick={() => onRestore(type, backup.filename)}
+                  onClick={() => handleAction('restore', backup)}
                   disabled={loading || renameLoading}
                 >
                   Restore
                 </button>
                 <button
                   className="delete-btn"
-                  onClick={() => onDelete(type, backup.filename)}
+                  onClick={() => handleAction('delete', backup)}
                   disabled={loading || renameLoading}
                 >
                   Delete
@@ -170,6 +214,37 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
           );
         })}
       </div>
+
+      {showPasswordInput && (
+        <div className="password-modal">
+          <div className="password-modal-content">
+            <h3>Super Admin Password Required</h3>
+            <p>Please enter your super admin password to {selectedAction.type} the backup.</p>
+            <input
+              type="password"
+              value={superAdminPassword}
+              onChange={(e) => setSuperAdminPassword(e.target.value)}
+              placeholder="Enter password"
+            />
+            {error && <p className="error-message">{error}</p>}
+            <div className="password-modal-actions">
+              <button 
+                className="confirm-btn"
+                onClick={handlePasswordSubmit}
+                disabled={!superAdminPassword}
+              >
+                Confirm
+              </button>
+              <button 
+                className="cancel-btn"
+                onClick={handleCancel}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
@@ -190,6 +265,9 @@ const BackupPage = () => {
   const [backups, setBackups] = useState({ mysql: [], files: [] });
   const [sortOrder, setSortOrder] = useState('newest');
   const [notifications, setNotifications] = useState([]);
+  const [showCreatePasswordModal, setShowCreatePasswordModal] = useState(false);
+  const [createPassword, setCreatePassword] = useState('');
+  const [createError, setCreateError] = useState('');
 
   const addNotification = (message, type = 'success') => {
     const id = Date.now();
@@ -217,53 +295,67 @@ const BackupPage = () => {
   }, []);
 
   const handleCreateBackup = async () => {
+    setShowCreatePasswordModal(true);
+    setCreateError('');
+  };
+
+  const handleCreatePasswordSubmit = async () => {
     try {
       setLoading(true);
-      const response = await api.post(`${import.meta.env.VITE_BACKUP_API}/create/${activeTab}`);
+      const response = await api.post(`${import.meta.env.VITE_BACKUP_API}/create/${activeTab}`, {
+        superAdminPassword: createPassword
+      });
       if (response.data.success) {
         addNotification(`${activeTab.toUpperCase()} backup created successfully`);
         await loadBackups();
+        setShowCreatePasswordModal(false);
+        setCreatePassword('');
+        setCreateError('');
       }
     } catch (error) {
       console.error('Failed to create backup:', error);
-      addNotification('Failed to create backup', 'error');
+      setCreateError(error.response?.status === 403 ? 'Invalid password' : (error.response?.data?.error || 'Failed to create backup'));
     } finally {
       setLoading(false);
     }
   };
 
-  const handleRestore = async (type, filename) => {
-    if (window.confirm('Are you sure you want to restore this backup? This will overwrite current data.')) {
-      try {
-        setLoading(true);
-        const response = await api.post(`${import.meta.env.VITE_BACKUP_API}/restore/${type}/${filename}`);
-        if (response.data.success) {
-          addNotification('Backup restored successfully');
-        }
-      } catch (error) {
-        console.error('Failed to restore backup:', error);
-        addNotification('Failed to restore backup', 'error');
-      } finally {
-        setLoading(false);
+  const handleRestore = async (type, filename, superAdminPassword) => {
+    try {
+      setLoading(true);
+      const response = await api.post(
+        `${import.meta.env.VITE_BACKUP_API}/restore/${type}/${filename}`,
+        { superAdminPassword }
+      );
+      if (response.data.success) {
+        addNotification('Backup restored successfully');
       }
+    } catch (error) {
+      console.error('Failed to restore backup:', error);
+      addNotification('Failed to restore backup', 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleDelete = async (type, filename) => {
-    if (window.confirm('Are you sure you want to delete this backup?')) {
-      try {
-        setLoading(true);
-        const response = await api.delete(`${import.meta.env.VITE_BACKUP_API}/delete/${type}/${filename}`);
-        if (response.data.success) {
-          addNotification('Backup deleted successfully');
-          await loadBackups();
+  const handleDelete = async (type, filename, superAdminPassword) => {
+    try {
+      setLoading(true);
+      const response = await api.delete(
+        `${import.meta.env.VITE_BACKUP_API}/delete/${type}/${filename}`,
+        { 
+          data: { superAdminPassword }
         }
-      } catch (error) {
-        console.error('Failed to delete backup:', error);
-        addNotification('Failed to delete backup', 'error');
-      } finally {
-        setLoading(false);
+      );
+      if (response.data.success) {
+        addNotification('Backup deleted successfully');
+        await loadBackups();
       }
+    } catch (error) {
+      console.error('Failed to delete backup:', error);
+      addNotification('Failed to delete backup', 'error');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -374,6 +466,41 @@ const BackupPage = () => {
         </div>
       </div>
       <ScrollButton />
+      
+      {showCreatePasswordModal && (
+        <div className="password-modal">
+          <div className="password-modal-content">
+            <h3>Super Admin Password Required</h3>
+            <p>Please enter your super admin password to create a new backup.</p>
+            <input
+              type="password"
+              value={createPassword}
+              onChange={(e) => setCreatePassword(e.target.value)}
+              placeholder="Enter password"
+            />
+            {createError && <p className="error-message">{createError}</p>}
+            <div className="password-modal-actions">
+              <button 
+                className="confirm-btn"
+                onClick={handleCreatePasswordSubmit}
+                disabled={!createPassword}
+              >
+                Confirm
+              </button>
+              <button 
+                className="cancel-btn"
+                onClick={() => {
+                  setShowCreatePasswordModal(false);
+                  setCreatePassword('');
+                  setCreateError('');
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

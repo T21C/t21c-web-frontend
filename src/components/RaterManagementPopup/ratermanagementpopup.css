@@ -1,0 +1,396 @@
+.rater-management-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.rater-management-overlay .rater-management-popup {
+  background-color: var(--color-black);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 8px;
+  padding: 20px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.rater-management-overlay .popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--color-white-t20);
+  gap: 20px;
+}
+
+.rater-management-overlay .popup-header h2 {
+  margin: 0;
+  color: var(--color-white);
+  font-size: 1.5em;
+  white-space: nowrap;
+}
+
+.rater-management-overlay .close-button {
+  background: none;
+  border: none;
+  color: var(--color-white);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.rater-management-overlay .search-section {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--color-white-t20);
+}
+
+.rater-management-overlay .search-input {
+  width: 100%;
+  padding: 8px 12px;
+  background-color: var(--color-white-t20);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  color: var(--color-white);
+  font-size: 1em;
+}
+
+.rater-management-overlay .raters-list {
+  overflow-y: auto;
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+.rater-management-overlay .rater-entry {
+  background-color: var(--color-white-t10);
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.rater-management-overlay .rater-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  cursor: pointer;
+}
+
+.rater-management-overlay .rater-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+}
+
+.rater-management-overlay .rater-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rater-management-overlay .rater-name {
+  color: var(--color-white);
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rater-management-overlay .super-admin-icon {
+  font-size: 0.9em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rater-management-overlay .discord-tag {
+  color: #7289DA;
+  font-size: 0.9em;
+}
+
+.rater-management-overlay .discord-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.rater-management-overlay .delete-rater-button {
+  padding: 6px 12px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  margin-left: 10px;
+}
+
+.rater-management-overlay .rater-details {
+  padding: 16px;
+  border-top: 1px solid var(--color-white-t20);
+  background-color: var(--color-white-t05);
+}
+
+.rater-management-overlay .discord-section {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.rater-management-overlay .discord-input-group {
+  display: flex;
+  gap: 10px;
+}
+
+.rater-management-overlay .discord-input-group input {
+  flex: 1;
+  padding: 8px 12px;
+  background-color: var(--color-white-t20);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  color: var(--color-white);
+}
+
+.rater-management-overlay .discord-input-group button {
+  padding: 8px 16px;
+  background-color: #7289DA;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.rater-management-overlay .discord-confirm {
+  background-color: var(--color-white-t10);
+  padding: 15px;
+  border-radius: 4px;
+}
+
+.rater-management-overlay .discord-preview,
+.rater-management-overlay .current-discord-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px;
+  background-color: var(--color-white-t10);
+  border-radius: 4px;
+}
+
+.rater-management-overlay .discord-username {
+  color: var(--color-white);
+  margin: 0;
+  font-weight: bold;
+}
+
+.rater-management-overlay .discord-id {
+  color: var(--color-white-t70);
+  margin: 0;
+  font-size: 0.9em;
+}
+
+.rater-management-overlay .confirm-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.rater-management-overlay .confirm-buttons button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.rater-management-overlay .confirm-buttons button:first-child {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.rater-management-overlay .confirm-buttons button:last-child {
+  background-color: var(--color-white-t20);
+  color: white;
+}
+
+.rater-management-overlay .loading {
+  color: var(--color-white);
+  text-align: center;
+  padding: 20px;
+}
+
+.rater-management-overlay .add-rater-section {
+  display: flex;
+  gap: 10px;
+  padding-top: 15px;
+  border-top: 1px solid var(--color-white-t20);
+}
+
+.rater-management-overlay .add-rater-section input {
+  flex: 1;
+  padding: 8px 12px;
+  background-color: var(--color-white-t20);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  color: var(--color-white);
+  font-size: 1em;
+}
+
+.rater-management-overlay .add-rater-section button {
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.rater-management-overlay button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.rater-management-overlay .delete-rater-button:hover:not(:disabled) {
+  background-color: #d32f2f;
+}
+
+.rater-management-overlay .add-rater-section button:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+.rater-management-overlay .discord-input-group button:hover:not(:disabled) {
+  background-color: #5b6eae;
+}
+
+.rater-management-overlay .confirm-buttons button:first-child:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+.rater-management-overlay .confirm-buttons button:last-child:hover:not(:disabled) {
+  background-color: var(--color-white-t30);
+}
+
+.rater-management-overlay .header-password-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.rater-management-overlay .header-password-input input {
+  width: 100%;
+  padding: 8px 12px;
+  background-color: var(--color-white-t10);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  color: var(--color-white);
+  font-size: 0.9em;
+}
+
+.rater-management-overlay .header-password-input input::placeholder {
+  color: #666666;
+}
+
+.rater-management-overlay .rater-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.rater-management-overlay .make-admin-button,
+.rater-management-overlay .remove-admin-button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  color: white;
+  animation: fadeInButtons 0.5s ease-in-out forwards;
+}
+
+.rater-management-overlay .make-admin-button.hidden,
+.rater-management-overlay .remove-admin-button.hidden {
+  animation: fadeOutButtons 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeInButtons {
+  from {
+    opacity: 0;
+    transform: translateX(-7px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeOutButtons {
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(7px);
+  }
+}
+
+.rater-management-overlay .make-admin-button {
+  background-color: #4CAF50;
+}
+
+.rater-management-overlay .make-admin-button:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+.rater-management-overlay .remove-admin-button {
+  background-color: #f44336;
+}
+
+.rater-management-overlay .remove-admin-button:hover:not(:disabled) {
+  background-color: #d32f2f;
+}
+
+.rater-management-overlay .error-message-container {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #f44336;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 1001;
+  max-width: 90%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.rater-management-overlay .error-message-container .close-error {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rater-management-overlay .error-message-container .error-text {
+  margin: 0;
+  font-size: 0.9em;
+  flex: 1;
+} 

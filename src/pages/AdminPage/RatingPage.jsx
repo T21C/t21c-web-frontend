@@ -10,6 +10,7 @@ import ScrollButton from "../../components/ScrollButton/ScrollButton";
 import api from "../../utils/api";
 import { io } from "socket.io-client";
 import ReferencesPopup from "../../components/ReferencesPopup/ReferencesPopup";
+import RaterManagementPopup from "../../components/RaterManagementPopup/RaterManagementPopup";
 
 const truncateString = (str, maxLength) => {
   if (!str) return "";
@@ -30,6 +31,7 @@ const RatingPage = () => {
   const [showDetailedView, setShowDetailedView] = useState(false);
   const [hideRated, setHideRated] = useState(false);
   const [showReferences, setShowReferences] = useState(false);
+  const [showRaterManagement, setShowRaterManagement] = useState(false);
 
   const handleCloseSuccessMessage = () => {
     setShowMessage(false);
@@ -125,12 +127,22 @@ const RatingPage = () => {
       <div className="admin-rating-body">
         <ScrollButton />
         <div className="view-controls">
-          <button 
-            className="references-button"
-            onClick={() => setShowReferences(true)}
-          >
-            Reference Levels
-          </button>
+          <div className="admin-buttons">
+            <button 
+              className="admin-button"
+              onClick={() => setShowReferences(true)}
+            >
+              Reference Levels
+            </button>
+            {isSuperAdmin && (
+              <button 
+                className="admin-button"
+                onClick={() => setShowRaterManagement(true)}
+              >
+                Manage Raters
+              </button>
+            )}
+          </div>
           {isSuperAdmin && (
             <div className="view-mode-toggle">
               <span className="toggle-label">Detailed View</span>
@@ -236,6 +248,13 @@ const RatingPage = () => {
 
         {showReferences && (
           <ReferencesPopup onClose={() => setShowReferences(false)} />
+        )}
+
+        {showRaterManagement && isSuperAdmin && (
+          <RaterManagementPopup 
+            onClose={() => setShowRaterManagement(false)}
+            currentUser={user}
+          />
         )}
       </div>
     </div>

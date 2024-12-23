@@ -336,25 +336,33 @@
 
   .admin-rating-page .admin-rating-body .view-controls {
     display: flex;
-    justify-content: flex-end;
-    gap: 20px;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
 
-    .references-button {
-      padding: 8px 16px;
-      background-color: #ffffff2a;
-      color: var(--color-white);
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background-color 0.2s;
-      margin-right: auto; /* Push other controls to the right */
+  .admin-buttons {
+    display: flex;
+    gap: 10px;
+    margin-right: auto;
+  }
 
-      &:hover {
-        background-color: #ffffff44;
-      }
-    }
+  .admin-button {
+    padding: 8px 16px;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--color-white);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.2s ease;
+  }
+
+  .admin-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.5);
   }
 
 .admin-rating-page .admin-rating-body .view-mode-toggle {
