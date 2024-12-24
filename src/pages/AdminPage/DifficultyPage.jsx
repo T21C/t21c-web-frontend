@@ -79,8 +79,9 @@ const DifficultyPage = () => {
       // Reload difficulties in context
       await reloadDifficulties();
     } catch (err) {
-      setError(err.response?.status === 403 ? 'Invalid password' : (err.response?.data?.error || 'An error occurred while performing the action'));
-      addNotification(err.response?.status === 403 ? 'Invalid password' : (err.response?.data?.error || 'An error occurred while performing the action'), 'error');
+      const errorMessage = err.response?.status === 403 ? 'Invalid password' : (err.response?.data?.error || 'An error occurred while performing the action');
+      setError(errorMessage);
+      addNotification(errorMessage, 'error');
     }
   };
 
@@ -130,56 +131,34 @@ const DifficultyPage = () => {
   };
 
   const handleCreateDifficulty = async () => {
-    setError(null);
     try {
       const response = await api.post(`${import.meta.env.VITE_DIFFICULTIES}`, {
         ...newDifficulty,
         superAdminPassword
       });
-      setDifficulties(prev => [...prev, response.data]);
-      setIsCreating(false);
-      setNewDifficulty({
-        id: '',
-        name: '',
-        type: 'PGU',
-        icon: '',
-        emoji: '',
-        color: '#ffffff',
-        baseScore: 0,
-        sortOrder: 0,
-        legacy: '',
-        legacyIcon: '',
-        legacyEmoji: ''
-      });
+      return response.data;
     } catch (err) {
       throw err;
     }
   };
 
   const handleUpdateDifficulty = async (difficulty) => {
-    setError(null);
     try {
       const response = await api.put(`${import.meta.env.VITE_DIFFICULTIES}/${difficulty.id}`, {
         ...difficulty,
         superAdminPassword
       });
-      setDifficulties(prev => prev.map(d => d.id === difficulty.id ? response.data : d));
-      setEditingDifficulty(null);
+      return response.data;
     } catch (err) {
       throw err;
     }
   };
 
   const handleDeleteDifficulty = async (difficultyId, fallbackId) => {
-    setError(null);
     try {
       await api.delete(`${import.meta.env.VITE_DIFFICULTIES}/${difficultyId}?fallbackId=${fallbackId}`, {
         data: { superAdminPassword }
       });
-      setDifficulties(prev => prev.filter(d => d.id !== difficultyId));
-      setDeletingDifficulty(null);
-      setShowDeleteInput(false);
-      setFallbackId('');
     } catch (err) {
       throw err;
     }
@@ -214,11 +193,14 @@ const DifficultyPage = () => {
               onClick={reloadDifficulties}
               disabled={isLoading || contextLoading}
             >
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M2 12C2 6.48 6.48 2 12 2C17.52 2 22 6.48 22 12C22 17.52 17.52 22 12 22" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M12 22C9.24 22 6.82 20.77 5.14 18.86" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M2 12H8L5 15L8 18H2" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+            <svg fill="#ffffff" height="30px" width="30px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 489.698 489.698" xml:space="preserve">
+              <g>
+                <g>
+                  <path d="M468.999,227.774c-11.4,0-20.8,8.3-20.8,19.8c-1,74.9-44.2,142.6-110.3,178.9c-99.6,54.7-216,5.6-260.6-61l62.9,13.1 c10.4,2.1,21.8-4.2,23.9-15.6c2.1-10.4-4.2-21.8-15.6-23.9l-123.7-26c-7.2-1.7-26.1,3.5-23.9,22.9l15.6,124.8 c1,10.4,9.4,17.7,19.8,17.7c15.5,0,21.8-11.4,20.8-22.9l-7.3-60.9c101.1,121.3,229.4,104.4,306.8,69.3 c80.1-42.7,131.1-124.8,132.1-215.4C488.799,237.174,480.399,227.774,468.999,227.774z"></path>
+                  <path d="M20.599,261.874c11.4,0,20.8-8.3,20.8-19.8c1-74.9,44.2-142.6,110.3-178.9c99.6-54.7,216-5.6,260.6,61l-62.9-13.1 c-10.4-2.1-21.8,4.2-23.9,15.6c-2.1,10.4,4.2,21.8,15.6,23.9l123.8,26c7.2,1.7,26.1-3.5,23.9-22.9l-15.6-124.8 c-1-10.4-9.4-17.7-19.8-17.7c-15.5,0-21.8,11.4-20.8,22.9l7.2,60.9c-101.1-121.2-229.4-104.4-306.8-69.2 c-80.1,42.6-131.1,124.8-132.2,215.3C0.799,252.574,9.199,261.874,20.599,261.874z"></path>
+                </g>
+              </g>
+            </svg>
             </button>
           </div>
 
