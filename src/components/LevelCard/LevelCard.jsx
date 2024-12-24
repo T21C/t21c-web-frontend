@@ -8,10 +8,11 @@ import { useDifficultyContext } from "../../contexts/DifficultyContext";
 
 
 // eslint-disable-next-line react/prop-types
-const LevelCard = ({index, level, legacyMode, isSuperAdmin,  }) => {
+const LevelCard = ({index, level: initialLevel, legacyMode, isSuperAdmin,  }) => {
   const {t} = useTranslation()  
+  const [level, setLevel] = useState(initialLevel);
   const [toRate, setToRate] = useState(level.toRate || false);
-  const [showEditPopup, setShowEditPopup] = useState(false); // State to manage popup visibility
+  const [showEditPopup, setShowEditPopup] = useState(false);
   const { difficultyDict } = useDifficultyContext();
   const difficultyInfo = difficultyDict[level.difficulty.id];
 
@@ -26,6 +27,11 @@ const LevelCard = ({index, level, legacyMode, isSuperAdmin,  }) => {
     }
   };
 
+  const handleLevelUpdate = (updatedLevel) => {
+    setLevel(updatedLevel);
+    setToRate(updatedLevel.toRate);
+    setShowEditPopup(false);
+  };
   
   level.wsLink = level.ws ? level.ws : level.wsLink ? level.wsLink : level.workshopLink;
   level.dlLink = level.dl ? level.dl : level.dlLink
@@ -42,14 +48,13 @@ const LevelCard = ({index, level, legacyMode, isSuperAdmin,  }) => {
     };
 
     const handleEditClick = (e) => {
-      e.stopPropagation(); // Prevent triggering the redirect
+      e.stopPropagation();
       setShowEditPopup(true);
     };
 
   return (
     <div className='level-card' style={{ backgroundColor: level.isDeleted ? "#f0000099" : level.isHidden ? "#88888899" : "none" }}>
-      {/* <div className="id level-id">#{id}</div> */}
-      { isSuperAdmin && (
+      {isSuperAdmin && (
       <div className="toRate-checkbox">
         <label>
           <input
@@ -121,10 +126,7 @@ const LevelCard = ({index, level, legacyMode, isSuperAdmin,  }) => {
         <EditLevelPopup
           level={level}
           onClose={() => setShowEditPopup(false)}
-          onUpdate={(updatedLevel) => {
-            // Handle level update logic here
-            setShowEditPopup(false);
-          }}
+          onUpdate={handleLevelUpdate}
         />
       )}
     </div>

@@ -115,8 +115,8 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         formData
       );
 
-      if (response.data) {
-        onUpdate(response.data);
+      if (response.data && response.data.level) {
+        onUpdate(response.data.level);
         onClose();
       }
     } catch (err) {
