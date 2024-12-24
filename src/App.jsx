@@ -14,6 +14,8 @@ import PassDetailPage from "./pages/PassDetailPage/PassDetailPage.jsx";
 import AnnouncementPage from "./pages/AdminPage/AnnouncementPage.jsx";
 import BackupPage from "./pages/AdminPage/BackupPage.jsx";
 import AboutUsPage from "./pages/AboutUsPage/AboutUsPage.jsx";
+import DifficultyPage from "./pages/AdminPage/DifficultyPage.jsx";
+import { CompleteNav } from "./components/index.js";
 
 const HomePage = lazy(() => import("./pages/HomePage/HomePage.jsx"));
 const LevelDetailPage = lazy(()=> import ("./pages/LevelDetailPage/LevelDetailPage.jsx"))
@@ -31,6 +33,7 @@ function App() {
             backgroundColor: "#090909",
           }}
         >
+          <CompleteNav />
           <div className="background-level"></div>
           <div className="loader loader-level-detail"></div>
         </div>
@@ -56,6 +59,7 @@ function App() {
         <Route path='admin/rating' element={<RatingPage/>} />
         <Route path='admin/announcements' element={<AnnouncementPage/>} />
         <Route path='admin/backups' element={<BackupPage/>} />
+        <Route path='admin/difficulties' element={<DifficultyPage/>} />
         <Route path='about' element={<AboutUsPage/>} />
       </Routes>
     </Suspense>

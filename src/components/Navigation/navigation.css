@@ -205,4 +205,8 @@ nav .wrapper .menu:hover {
   .nav-menu-outer ul li {
     padding: 1rem;
   }
+}
+
+nav.admin-view .wrapper {
+  max-width: 90vw;
 }/*# sourceMappingURL=navigation.css.map */

@@ -29,7 +29,7 @@ const Navigation = ({ children }) => {
 
   useEffect(() => {
     const isAdminPath = location.pathname.startsWith('/admin');
-    setIsAdminView(isAdminPath);
+    setIsAdminView(isAdminPath && isSuperAdmin);
   }, [location]);
 
   function changeNavState() {
@@ -56,7 +56,7 @@ const Navigation = ({ children }) => {
     <>
       <div className="close-outer" style={{ display: openNav ? 'block' : 'none' }} onClick={changeNavState}></div>
 
-      <nav>
+      <nav className={isAdminView && isSuperAdmin ? 'admin-view' : ''}>
         <div className="wrapper">
           {/* Left side: Logo and main navigation links */}
           <div className="nav-left">
@@ -93,13 +93,17 @@ const Navigation = ({ children }) => {
                       to="/admin/announcements">
                       <li>Announcements</li>
                     </NavLink>
-                    {(isSuperAdmin) && (
+                    
+                    <NavLink className={({ isActive }) =>
+                        "nav-link " + (isActive ? "active-link" : "")}
+                        to="/admin/difficulties">
+                        <li>Difficulties</li>
+                      </NavLink>
                       <NavLink className={({ isActive }) =>
                         "nav-link " + (isActive ? "active-link" : "")}
                         to="/admin/backups">
                         <li>Backups</li>
                       </NavLink>
-                    )}
                   </>
                 ) : (
                   // Regular Links
@@ -119,6 +123,13 @@ const Navigation = ({ children }) => {
                       to="/passes">
                       <li>{t("navigationComponent.pass")}</li>
                     </NavLink>
+                    {(isAdmin || isSuperAdmin) && (
+                    <NavLink className={({ isActive }) =>
+                      "nav-link " + (isActive ? "active-link" : "")}
+                      to="/admin/rating">
+                      <li>Rating</li>
+                    </NavLink>
+                    )}
                   </>
                 )}
               </ul>
@@ -128,7 +139,7 @@ const Navigation = ({ children }) => {
           {/* Right side: Language switcher and profile */}
           <div className="nav-right">
             <ul>
-              {(isAdmin || isSuperAdmin) && (
+              {(isSuperAdmin) && (
                 <li onClick={toggleAdminView} style={{cursor: 'pointer'}}>
                   {isAdminView ? "Back" : "Admin"}
                 </li>

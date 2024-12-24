@@ -203,19 +203,6 @@ const LevelPage = () => {
   }
 
 
-  if (loading) {
-    return (
-      <div
-        style={{ height: "100vh", width: "100vw", backgroundColor: "#090909" }}
-      >
-        <CompleteNav />
-        <div className="background-level"></div>
-        <div className="loader loader-level-detail"></div>
-      </div>
-    );
-  }
-
-
   return (
     
     <div className="level-page">
