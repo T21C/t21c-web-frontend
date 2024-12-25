@@ -59,9 +59,9 @@ const PlayerCard = ({player}) => {
     const primaryField = {
       label: sortLabels[sortBy],
       value: player[sortBy] !== undefined ? 
-
-      player[sortBy]
-      
+        (player[sortBy] && typeof player[sortBy] === 'object' && player[sortBy].name) 
+          ? player[sortBy].name 
+          : player[sortBy]
       : player.generalScore,
     };
 

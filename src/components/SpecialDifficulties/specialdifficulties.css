@@ -1,0 +1,134 @@
+.special-difficulties-dropdown {
+  position: relative;
+  width: 25%;
+}
+
+.special-difficulties-dropdown .dropdown-toggle {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--color-white-t20);
+  border: none;
+  border-radius: 4px;
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.special-difficulties-dropdown .dropdown-toggle:hover {
+  background: var(--color-white-t30);
+}
+
+.special-difficulties-dropdown .dropdown-arrow {
+  width: 20px;
+  height: 20px;
+  transition: transform 0.2s ease;
+}
+
+.special-difficulties-dropdown .dropdown-arrow.open {
+  transform: rotate(180deg);
+}
+
+.special-difficulties-dropdown .selected-count {
+  color: var(--color-white-t70);
+  margin-left: auto;
+  margin-right: 0.5rem;
+}
+
+.special-difficulties-dropdown .difficulties-grid {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  width: 30rem;
+  background: var(--color-black);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  padding: 1rem;
+  z-index: 1000;
+  max-height: 600px;
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.special-difficulties-dropdown .difficulties-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-white-t20);
+}
+
+.special-difficulties-dropdown .select-all-button {
+  background: var(--color-white-t20);
+  color: var(--color-white);
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.special-difficulties-dropdown .select-all-button:hover {
+  background: var(--color-white-t30);
+  transform: translateY(-1px);
+}
+
+.special-difficulties-dropdown .difficulty-group {
+  margin-bottom: 1.5rem;
+}
+
+.special-difficulties-dropdown .difficulty-group:last-child {
+  margin-bottom: 0;
+}
+
+.special-difficulties-dropdown .group-title {
+  color: var(--color-white);
+  font-size: 0.9rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--color-white-t20);
+}
+
+.special-difficulties-dropdown .difficulties-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.5rem;
+}
+
+.special-difficulties-dropdown .difficulty-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  opacity: 0.8;
+}
+
+.special-difficulties-dropdown .difficulty-item:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.special-difficulties-dropdown .difficulty-item.selected {
+  opacity: 1;
+  box-shadow: 0 0 0 2px var(--color-white);
+}
+
+.special-difficulties-dropdown .difficulty-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.special-difficulties-dropdown .difficulty-name {
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+} 

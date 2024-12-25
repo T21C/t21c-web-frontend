@@ -119,17 +119,17 @@
 }
 
 /* Loader styles */
-.loader-pass-page {
+.pass-page .loader-pass-page {
   margin: 2rem auto;
 }
 
-.deletion-filter {
+.pass-page .deletion-filter {
   margin-top: 1rem;
   padding: 0.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.deletion-filter select {
+.pass-page .deletion-filter select {
   width: 100%;
   padding: 0.5rem;
   margin-top: 0.5rem;
@@ -139,13 +139,13 @@
   border-radius: 4px;
 }
 
-.deletion-filter-inline {
+.pass-page .deletion-filter-inline {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.deletion-filter-inline select {
+.pass-page .deletion-filter-inline select {
   width: auto;
   padding: 0.5rem;
   background: #2a2a2a;

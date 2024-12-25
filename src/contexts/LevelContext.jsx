@@ -9,16 +9,17 @@ const LevelContextProvider = (props) => {
     const [filterOpen, setFilterOpen] = useState(false);
     const [sortOpen, setSortOpen] = useState(true);
     const [query, setQuery] = useState("");
-    const [selectedLowFilterDiff, setSelectedLowFilterDiff] = useState(null);
-    const [selectedHighFilterDiff, setSelectedHighFilterDiff] = useState(null);
+    // Initialize with full PGU range
+    const [selectedLowFilterDiff, setSelectedLowFilterDiff] = useState("P1");
+    const [selectedHighFilterDiff, setSelectedHighFilterDiff] = useState("U20");
     const [sort, setSort] = useState("RECENT_DESC");
     const [hasMore, setHasMore] = useState(true);
     const [pageNumber, setPageNumber] = useState(0);
     const [deletedFilter, setDeletedFilter] = useState("hide");
     // Add new state for toggles
-    const [hideUnranked, setHideUnranked] = useState(false);
-    const [hideCensored, setHideCensored] = useState(false);
-    const [hideEpic, setHideEpic] = useState(false);
+    // Add new states for difficulty filtering with full PGU range
+    const [sliderRange, setSliderRange] = useState([1, 60]); // P1 to U20
+    const [selectedSpecialDiffs, setSelectedSpecialDiffs] = useState([]); // Empty array for no special difficulties
 
     return (
         <LevelContext.Provider 
@@ -30,13 +31,13 @@ const LevelContextProvider = (props) => {
                 query, setQuery, 
                 selectedLowFilterDiff, setSelectedLowFilterDiff, 
                 selectedHighFilterDiff, setSelectedHighFilterDiff, 
-                hideUnranked, setHideUnranked, 
-                hideCensored, setHideCensored, 
-                hideEpic, setHideEpic,
                 sort, setSort, 
                 hasMore, setHasMore, 
                 pageNumber, setPageNumber,
-                deletedFilter, setDeletedFilter
+                deletedFilter, setDeletedFilter,
+                // Add new states to context value
+                sliderRange, setSliderRange,
+                selectedSpecialDiffs, setSelectedSpecialDiffs
             }}
         >
             {props.children}

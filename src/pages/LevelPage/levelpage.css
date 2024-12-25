@@ -42,27 +42,16 @@
 }
 .level-page .level-body .filter {
   position: relative;
-  z-index: 2;
-  overflow: visible;
+  z-index: 100;
 }
 .level-page .level-body .sort {
   position: relative;
-  z-index: 1;
-}
-.level-page .level-body .sort .sort-option {
-  display: flex;
-  gap: 2rem;
+  z-index: 90;
 }
 .level-page .level-body .sort .sort-option .recent p,
 .level-page .level-body .sort .sort-option .diff p,
 .level-page .level-body .sort .sort-option .random p {
   margin-bottom: 0.5rem;
-}
-.level-page .level-body .sort .sort-option .recent .wrapper,
-.level-page .level-body .sort .sort-option .diff .wrapper,
-.level-page .level-body .sort .sort-option .random .wrapper {
-  display: flex;
-  gap: 1rem;
 }
 .level-page .level-body .sort .sort-option .recent svg,
 .level-page .level-body .sort .sort-option .diff svg,
@@ -73,7 +62,7 @@
   padding: 0.1rem;
   border-radius: 3px;
   cursor: pointer;
-  transition: all 0.2s linear;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .level-page .level-body .sort .sort-option .recent svg:focus,
 .level-page .level-body .sort .sort-option .diff svg:focus,
@@ -81,9 +70,25 @@
   outline: none;
 }
 .level-page .level-body .settings-class {
-  transition: height 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 1s ease-in-out;
-  height: 10rem;
+  padding: 1rem 2rem;
+  position: relative;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: visible;
+  margin-bottom: 1rem;
+  opacity: 1;
+  max-height: 500px;
+}
+.level-page .level-body .settings-class.hidden {
+  max-height: 0;
+  opacity: 0;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.level-page .level-body .settings-class.visible {
+  opacity: 1;
+  pointer-events: auto;
 }
 .level-page .level-body .spacer-setting {
   width: 100%;
@@ -93,9 +98,10 @@
 }
 .level-page .level-body .diff-filters {
   display: flex;
-  flex-direction: row;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 1.5rem;
   margin-bottom: 1rem;
+  position: relative;
 }
 
 .level-page .level-body .filter-container {
@@ -161,15 +167,16 @@
   margin-bottom: 0.5rem;
 }
 
-.deletion-filter-inline {
+.level-page .deletion-filter-inline {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.deletion-filter-inline select {
+.level-page .deletion-filter-inline select {
+  
   width: auto;
-  padding: 0.5rem;
+  padding: 0.25rem 0.5rem;
   background: #2a2a2a;
   color: white;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -177,15 +184,16 @@
   margin-left: 0.5rem;
 }
 
-.checkbox-filters {
+.level-page .checkbox-filters {
   display: flex;
   gap: 2rem;
-  margin-top: 1rem;
   align-items: center;
   flex-wrap: wrap;
+  position: relative;
+  z-index: 80;
 }
 
-.checkbox-filters label {
+.level-page .checkbox-filters label {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -194,4 +202,74 @@
   background: var(--color-white-t20);
   padding: 0.5rem 1rem;
   border-radius: 3px;
-}/*# sourceMappingURL=levelpage.css.map */
+}
+
+.level-page .slider-container,
+.level-page .difficulty-slider,
+.level-page .slider-labels {
+  display: none;
+}
+
+.level-page .special-difficulties,
+.level-page .special-buttons {
+  display: none;
+}
+
+.level-page .filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.level-page .filter-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.level-page .filter {
+  background-color: #0004;
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.level-page .sort {
+  background-color: #0004;
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.level-page .sort-option {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+}
+
+.level-page .sort-option > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0rem;
+}
+
+.level-page .sort-option .wrapper {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.level-page .sort-option svg {
+  height: 2rem;
+  width: 2rem;
+  background-color: var(--color-white-t20);
+  padding: 0.1rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s linear;
+}
+
+.level-page .sort-option svg:focus {
+  outline: none;
+}
+
+/*# sourceMappingURL=levelpage.css.map */

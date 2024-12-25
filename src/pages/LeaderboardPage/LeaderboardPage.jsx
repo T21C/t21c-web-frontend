@@ -60,26 +60,14 @@ const LeaderboardPage = () => {
   ];
 
   function sortByField(data) {
-    
     return data.sort((a, b) => {
       if (sortBy === "topDiff" || sortBy === "top12kDiff") {
-        // Extract letter and number from diff fields
-        const parseDiff = (value) => {
-          const letter = value[0];
-          const num = parseInt(value.slice(1), 10);
-          // Assign order priority for letters P < G < U
-          const priority = { "P": 1, "G": 2, "U": 3 };
-          return { letterOrder: priority[letter], num };
-        };
-        const diffA = parseDiff(a[sortBy]);
-        const diffB = parseDiff(b[sortBy]);
+        // Use the difficulty object's sort order directly, treating null as 0
+        const diffA = a[sortBy]?.sortOrder || 0;
+        const diffB = b[sortBy]?.sortOrder || 0;
         
-        // Sort by letter order first, then by number if letters are the same
-        if (diffA.letterOrder !== diffB.letterOrder) {
-          return diffB.letterOrder - diffA.letterOrder;
-        } else {
-          return diffB.num - diffA.num;
-        }
+        // Compare sort orders
+        return diffB - diffA;
       } else {
         // For all other fields, simple numeric sort in descending order
         return b[sortBy] - a[sortBy];

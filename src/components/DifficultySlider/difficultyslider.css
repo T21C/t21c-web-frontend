@@ -1,0 +1,102 @@
+.difficulty-slider-container {
+  width: 100%;
+  padding: 0rem 1rem;
+  position: relative;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.difficulty-slider-container .slider-track {
+  width: 100%;
+  height: 12px;
+  border-radius: 6px;
+  position: relative;
+  background: var(--color-white-t20);
+  cursor: pointer;
+  margin: 2rem 0;
+  z-index: 2;
+}
+
+.difficulty-slider-container .range-highlight {
+  position: absolute;
+  height: 20px;
+  top: -4px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  pointer-events: none;
+  z-index: 1;
+  filter: brightness(1.2);
+}
+
+.difficulty-slider-container .slider-knobs {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+}
+
+.difficulty-slider-container .knob-container {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  cursor: grab;
+  padding: 10px;
+}
+
+.difficulty-slider-container .knob-container:active {
+  cursor: grabbing;
+  z-index: 4;
+}
+
+.difficulty-slider-container .difficulty-icon.knob {
+  width: 40px;
+  height: 40px;
+  transition: all 0.2s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+}
+
+.difficulty-slider-container .knob-container:hover .difficulty-icon.knob {
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+  transform: scale(1.1);
+}
+
+.difficulty-slider-container .difficulty-display {
+  position: relative;
+  width: 100%;
+  top: -10px;
+  height: 0;
+  z-index: 2;
+}
+
+.difficulty-slider-container .difficulty-value {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  transform: translateX(-50%);
+  padding: 0.3rem 0.5rem;
+  min-width: fit-content;
+  transition: all 0.2s ease;
+}
+
+.difficulty-slider-container .difficulty-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
+  text-align: center;
+  bottom: 10px;
+  user-select: none;
+  -webkit-user-select: none;
+  position: relative;
+}
+
+

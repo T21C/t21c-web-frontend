@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import api from '@/utils/api';
 import { useAuth } from './AuthContext';
 
@@ -21,6 +21,8 @@ export const NotificationProvider = ({ children }) => {
   const [pendingSubmissions, setPendingSubmissions] = useState(0);
   const [pendingRatings, setPendingRatings] = useState(0);
   const { isSuperAdmin, isAdmin } = useAuth();
+  const lastFetchTimeRef = useRef(null);
+  const fetchTimeoutRef = useRef(null);
 
   const fetchNotificationCounts = async () => {
     if (!isSuperAdmin && !isAdmin) return;
@@ -31,9 +33,29 @@ export const NotificationProvider = ({ children }) => {
       
       setPendingSubmissions(totalPendingSubmissions);
       setPendingRatings(unratedRatings);
+      
+      // Update last fetch time
+      lastFetchTimeRef.current = Date.now();
+      
+      // Schedule next fetch
+      scheduleFetch();
     } catch (error) {
       console.error('Error fetching notification counts:', error);
+      // Even on error, schedule next fetch
+      scheduleFetch();
     }
+  };
+
+  const scheduleFetch = () => {
+    // Clear any existing timeout
+    if (fetchTimeoutRef.current) {
+      clearTimeout(fetchTimeoutRef.current);
+    }
+
+    // Schedule next fetch 30 seconds after the last fetch
+    fetchTimeoutRef.current = setTimeout(() => {
+      fetchNotificationCounts();
+    }, 30000);
   };
 
   useEffect(() => {
@@ -65,6 +87,10 @@ export const NotificationProvider = ({ children }) => {
       try {
         const data = JSON.parse(event.data);
         if (data.type === 'submissionUpdate' || data.type === 'ratingUpdate') {
+          // For SSE updates, fetch immediately and reset the timer
+          if (fetchTimeoutRef.current) {
+            clearTimeout(fetchTimeoutRef.current);
+          }
           fetchNotificationCounts();
         }
       } catch (error) {
@@ -91,6 +117,10 @@ export const NotificationProvider = ({ children }) => {
       console.debug('SSE: Cleaning up connection');
       if (eventSource) {
         eventSource.close();
+      }
+      // Clear any pending fetch timeout
+      if (fetchTimeoutRef.current) {
+        clearTimeout(fetchTimeoutRef.current);
       }
     };
   }, [isSuperAdmin, isAdmin]);

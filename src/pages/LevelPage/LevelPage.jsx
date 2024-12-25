@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import "./levelpage.css";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 import { CompleteNav, LevelCard } from "@/components";
 import { Tooltip } from "react-tooltip";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -11,10 +11,11 @@ import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import ScrollButton from "@/components/ScrollButton/ScrollButton";
 import { useAuth } from "@/contexts/AuthContext";
-import { RatingInput } from '@/components/RatingComponents/RatingInput';
 import { DifficultyContext } from "@/contexts/DifficultyContext";
 import ReferencesButton from "../../components/ReferencesButton/ReferencesButton";
 import { MetaTags } from "../../components";
+import DifficultySlider from '@/components/DifficultySlider/DifficultySlider';
+import SpecialDifficulties from '@/components/SpecialDifficulties/SpecialDifficulties';
 const currentUrl = window.location.origin + location.pathname;
 
 const limit = 30;
@@ -50,13 +51,49 @@ const LevelPage = () => {
     setPageNumber,
     deletedFilter,
     setDeletedFilter,
-    hideUnranked,          // Add this
-    setHideUnranked,       // Add this
-    hideCensored,          // Add this
-    setHideCensored,       // Add this
-    hideEpic,              // Add this
-    setHideEpic            // Add this
+    sliderRange,
+    setSliderRange,
+    selectedSpecialDiffs,
+    setSelectedSpecialDiffs
   } = useContext(LevelContext);
+
+  // Filter difficulties by type
+  const pguDifficulties = difficulties.filter(d => d.type === 'PGU');
+  const specialDifficulties = difficulties.filter(d => d.type === 'SPECIAL');
+
+  // Handle slider value updates without triggering immediate fetches
+  function handleSliderChange(newRange) {
+    setSliderRange(newRange);
+    
+    // Find difficulties corresponding to slider values
+    const lowDiff = pguDifficulties.find(d => d.sortOrder === newRange[0]);
+    const highDiff = pguDifficulties.find(d => d.sortOrder === newRange[1]);
+    
+    setSelectedLowFilterDiff(lowDiff?.name || null);
+    setSelectedHighFilterDiff(highDiff?.name || null);
+  }
+
+  // Handle slider changes complete (after drag or click)
+  const handleSliderChangeComplete = useCallback((newRange) => {
+    handleSliderChange(newRange);
+    // Only reset page and trigger fetch when dragging is complete
+    setPageNumber(0);
+    setLevelsData([]);
+    setForceUpdate(f => !f);
+  }, []);
+
+  function toggleSpecialDifficulty(diffName) {
+    setSelectedSpecialDiffs(prev => {
+      const newSelection = prev.includes(diffName)
+        ? prev.filter(d => d !== diffName)
+        : [...prev, diffName];
+      
+      setPageNumber(0);
+      setLevelsData([]);
+      setForceUpdate(f => !f);
+      return newSelection;
+    });
+  }
 
   useEffect(() => {
     let cancel;
@@ -64,46 +101,33 @@ const LevelPage = () => {
     const fetchLevels = async () => {
       setLoading(true);
       try {
-        // Construct the params object conditionally
+        // Query parameters for pagination and basic filtering
         const params = {
-          limit: limit,
-          query, 
-          sort, 
+          limit,
           offset: pageNumber * limit,
-          deletedFilter,
-          hideUnranked,
-          hideCensored,
-          hideEpic
+          query,
+          sort,
+          deletedFilter
         };
-        // Pass difficulty filters as raw strings if they exist
-        
-        const lowDiff = selectedLowFilterDiff;
-        const highDiff = selectedHighFilterDiff;
 
-        if (lowDiff !== 0 && highDiff !== 0 && lowDiff > highDiff) {
-          // Swap if min > max
-          params.minDiff = highDiff;
-          params.maxDiff = lowDiff;
-        } else {
-          // Normal case
-          if (lowDiff !== 0) {
-            params.minDiff = lowDiff;
-          }
-          if (highDiff !== 0) {
-            params.maxDiff = highDiff;
-          }
-        }
-        
-        console.log(import.meta.env.VITE_LEVELS);
-        const response = await api.get(
-          `${import.meta.env.VITE_LEVELS}`,
+        // Request body for difficulty filtering
+        const requestBody = {
+          pguRange: {
+            from: selectedLowFilterDiff,
+            to: selectedHighFilterDiff
+          },
+          specialDifficulties: selectedSpecialDiffs
+        };
+
+        const response = await api.post(
+          `${import.meta.env.VITE_LEVELS}/filter`,
+          requestBody,
           {
-            params: params,
+            params,
             cancelToken: new axios.CancelToken((c) => (cancel = c)),
           }
         );
 
-        // Remove the Promise.all and additional requests
         const newLevels = response.data.results;
         
         const existingIds = new Set(levelsData.map((level) => level.id));
@@ -148,7 +172,7 @@ const LevelPage = () => {
       fetchLevels();
     }
     return () => cancel && cancel();
-  }, [query, sort, pageNumber, forceUpdate, selectedLowFilterDiff, selectedHighFilterDiff, deletedFilter]);
+  }, [query, sort, pageNumber, forceUpdate, deletedFilter]);
 
   function toggleLegacyDiff() {
     setLegacyDiff(!legacyDiff);
@@ -179,11 +203,20 @@ const LevelPage = () => {
     setPageNumber(0);
     setSort("RECENT_DESC");
     setQuery("");
-    setSelectedLowFilterDiff(null);
-    setSelectedHighFilterDiff(null);
+    // Reset to initial PGU range
+    setSelectedLowFilterDiff("P1");
+    setSelectedHighFilterDiff("U20");
+    setSliderRange([1, 60]);
+    // Reset special difficulties
+    setSelectedSpecialDiffs([]);
+    // Reset deleted filter if admin
+    if (isSuperAdmin) {
+      setDeletedFilter("hide");
+    }
+    // Clear and reload data
     setLevelsData([]);
     setLoading(true);
-    setForceUpdate((f) => !f);
+    setForceUpdate(f => !f);
   }
 
   function handleLowFilter(value) {
@@ -331,75 +364,60 @@ const LevelPage = () => {
 
         <div className="input-setting">
           <div
-            className="filter settings-class"
-            style={{
-              height: filterOpen ? "10rem" : "0",
-              opacity: filterOpen ? "1" : "0",
-              overflow: filterOpen ? "visible" : "hidden",
-            }}
+            className={`filter settings-class ${filterOpen ? 'visible' : 'hidden'}`}
           >
-            <div className="spacer-setting"></div>
             <h2 className="setting-title">
               {t("levelPage.settingExp.headerFilter")}
             </h2>
-            {/* <p className="setting-description">{t('levelPage.settingExp.filterDiffs')}</p> */}
-            <div className="diff-filters">
-              <div className="filter-container">
-                <p className="setting-description">Lower diff</p>
-                <RatingInput
-                  value={selectedLowFilterDiff || ''}
-                  onChange={handleLowFilter}
-                  showDiff={true}
-                  difficulties={difficulties}
-                  allowCustomInput={true}
-                  /*pguOnly={true}*/
+            <div className="filter-section">
+              <div className="filter-row">
+                <DifficultySlider
+                  values={sliderRange}
+                  onChange={handleSliderChange}
+                  onChangeComplete={handleSliderChangeComplete}
+                  difficulties={pguDifficulties}
+                  min={1}
+                  max={60}
                 />
+              </div>
+              
+              <div className="filter-row">
+                <SpecialDifficulties
+                  difficulties={specialDifficulties}
+                  selectedDiffs={selectedSpecialDiffs}
+                  onToggle={toggleSpecialDifficulty}
+                />
+                              {isSuperAdmin && (
+                  <div className="checkbox-filters">
+                    <div className="deletion-filter-inline">
+                      <label>
+                        Show deleted levels
+                        <select 
+                          value={deletedFilter}
+                          onChange={(e) => {
+                            setDeletedFilter(e.target.value);
+                            setPageNumber(0);
+                            setLevelsData([]);
+                            setForceUpdate(prev => !prev);
+                          }}
+                        >
+                          <option value="hide">Hide</option>
+                          <option value="show">Show</option>
+                          <option value="only">Only</option>
+                        </select>
+                      </label>
+                    </div>
+                  </div>
+              )}
               </div>
 
-              <div className="filter-container">
-                <p className="setting-description">Upper diff</p>
-                <RatingInput
-                  value={selectedHighFilterDiff || ''}
-                  onChange={handleHighFilter}
-                  showDiff={true}
-                  difficulties={difficulties}
-                  allowCustomInput={true}
-                />
-              </div>
-              <div className="checkbox-filters">
-                {isSuperAdmin && (
-                  <div className="deletion-filter-inline">
-                    <label>
-                      Show deleted levels
-                      <select 
-                        value={deletedFilter}
-                        onChange={(e) => {
-                          setDeletedFilter(e.target.value);
-                          setPageNumber(0);
-                          setLevelsData([]);
-                          setForceUpdate(prev => !prev);
-                        }}
-                      >
-                        <option value="hide">Hide</option>
-                        <option value="show">Show</option>
-                        <option value="only">Only</option>
-                      </select>
-                    </label>
-                  </div>
-                )}
-              </div>
+
             </div>
           </div>
 
           <div
-            className="sort settings-class"
-            style={{
-              height: sortOpen ? "10rem" : "0",
-              opacity: sortOpen ? "1" : "0",
-              overflow: sortOpen ? "visible" : "hidden",
-            }}
+            className={`sort settings-class ${sortOpen ? 'visible' : 'hidden'}`}
           >
-            <div className="spacer-setting"></div>
             <h2 className="setting-title">
               {t("levelPage.settingExp.headerSort")}
             </h2>
@@ -616,7 +634,7 @@ const LevelPage = () => {
           dataLength={levelsData.length}
           next={() => setPageNumber((prevPageNumber) => prevPageNumber + 1)}
           hasMore={hasMore}
-          loader={<div className="loader loader-level-page"></div>}
+          loader={<div className="loader loader-level-page" style={{zIndex: 1}}></div>}
           endMessage={
             <p style={{ textAlign: "center" }}>
               <b>{t("levelPage.infScroll.end")}</b>
