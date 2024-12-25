@@ -1,7 +1,39 @@
 import '../css/announcementpage.css';
+import api from '@/utils/api';
+import { useState } from 'react';
+import { TrashIcon } from '../../../components/Icons/TrashIcon';
   
-const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemove }) => (
+const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemove }) => {
+  const [removingIds, setRemovingIds] = useState(new Set());
+  const [error, setError] = useState('');
+
+  const handleRemove = async (pass) => {
+    try {
+      setRemovingIds(prev => new Set([...prev, pass.id]));
+      setError('');
+      
+      // Optimistically remove from UI
+      onRemove(pass.id);
+      
+      // Then make the server request
+      await api.post(`${import.meta.env.VITE_PASSES}/markAnnounced/${pass.id}`);
+    } catch (err) {
+      console.error('Error marking pass as announced:', err);
+      setError(`Failed to remove ${pass.player?.name}'s pass. Please try again.`);
+      // Refetch the data to ensure UI is in sync
+      window.location.reload();
+    } finally {
+      setRemovingIds(prev => {
+        const next = new Set(prev);
+        next.delete(pass.id);
+        return next;
+      });
+    }
+  };
+
+  return (
     <div className="announcement-section">
+      {error && <div className="error-message">{error}</div>}
       <div className="items-list">
         {Array.isArray(passes) && passes.length > 0 ? (
           passes.map(pass => {
@@ -18,7 +50,7 @@ const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemo
                     type="checkbox"
                     checked={selectedPasses.includes(pass.id)}
                     onChange={() => onCheckboxChange(pass.id)}
-                    disabled={isLoading}
+                    disabled={isLoading || removingIds.has(pass.id)}
                   />
                   <span className="checkmark"></span>
                   <div className="item-details">
@@ -33,23 +65,17 @@ const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemo
                 </label>
                 <button 
                   className="trash-button"
-                  onClick={async () => {
-                    if (!pass.id || isNaN(pass.id) || pass.id <= 0) {
-                      console.error('Invalid pass ID:', pass.id);
-                      return;
-                    }
-                    try {
-                      await api.post(`${import.meta.env.VITE_PASSES}/markAnnounced/${pass.id}`);
-                      onRemove(pass.id);
-                    } catch (err) {
-                      console.error('Error marking pass as announced:', err);
-                      throw err;
-                    }
-                  }}
-                  disabled={isLoading}
+                  onClick={() => handleRemove(pass)}
+                  disabled={isLoading || removingIds.has(pass.id)}
                   style ={{width: '40px', height: '40px'}}
                 >
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M4 6H20M16 6L15.7294 5.18807C15.4671 4.40125 15.3359 4.00784 15.0927 3.71698C14.8779 3.46013 14.6021 3.26132 14.2905 3.13878C13.9376 3 13.523 3 12.6936 3H11.3064C10.477 3 10.0624 3 9.70951 3.13878C9.39792 3.26132 9.12208 3.46013 8.90729 3.71698C8.66405 4.00784 8.53292 4.40125 8.27064 5.18807L8 6M18 6V16.2C18 17.8802 18 18.7202 17.673 19.362C17.3854 19.9265 16.9265 20.3854 16.362 20.673C15.7202 21 14.8802 21 13.2 21H10.8C9.11984 21 8.27976 21 7.63803 20.673C7.07354 20.3854 6.6146 19.9265 6.32698 19.362C6 18.7202 6 17.8802 6 16.2V6M14 10V17M10 10V17" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path> </g></svg>
+                  {removingIds.has(pass.id) ? (
+                    <svg className="spinner" viewBox="0 0 50 50">
+                      <circle cx="25" cy="25" r="20" fill="none" strokeWidth="5"></circle>
+                    </svg>
+                  ) : (
+                    <TrashIcon color="#fff"/>
+                  )}
                 </button>
               </div>
             );
@@ -60,5 +86,6 @@ const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemo
       </div>
     </div>
   );
+};
 
-  export default PassesTab;
+export default PassesTab;

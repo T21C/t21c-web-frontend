@@ -148,7 +148,7 @@ const RatingPage = () => {
             </label>
           </div>
         </div>
-        <div className={`result-message ${showMessage ? 'visible' : ''}`} 
+        {/* <div className={`result-message ${showMessage ? 'visible' : ''}`} 
           style={{backgroundColor: 
             ( success? "#2b2" :
               error? "#b22":
@@ -158,7 +158,7 @@ const RatingPage = () => {
           error? (<p>{t("levelSubmission.alert.error")}{truncateString(error, 27)}</p>):
           (<p>{t("levelSubmission.alert.loading")}</p>)}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
-        </div>
+        </div>*/}
 
         {loading ? (
           <div className="loader loader-level-detail"/>
@@ -200,13 +200,15 @@ const RatingPage = () => {
                 onUpdate={(updatedData) => {
                   // Only update ratings if updatedData exists (not a soft delete)
                   if (updatedData) {
+                    // Handle both response structures (direct level object or nested in data)
+                    const updatedLevel = updatedData.level || updatedData;
                     setRatings(prev => prev.map(rating => 
-                      rating.level.id === updatedData.level.id 
+                      rating.level.id === updatedLevel.id 
                         ? {
                             ...rating,
                             level: {
                               ...rating.level,
-                              ...updatedData.level
+                              ...updatedLevel
                             }
                           }
                         : rating

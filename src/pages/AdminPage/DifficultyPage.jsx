@@ -5,6 +5,9 @@ import { CompleteNav } from '@/components';
 import ScrollButton from '@/components/ScrollButton/ScrollButton';
 import api from '@/utils/api';
 import './css/difficultypage.css';
+import { EditIcon } from '../../components/Icons/EditIcon';
+import { RefreshIcon } from '../../components/Icons/RefreshIcon';
+import { TrashIcon } from '../../components/Icons/TrashIcon';
 
 const DifficultyPage = () => {
   const { isSuperAdmin } = useAuth();
@@ -193,14 +196,7 @@ const DifficultyPage = () => {
               onClick={reloadDifficulties}
               disabled={isLoading || contextLoading}
             >
-            <svg fill="#ffffff" height="30px" width="30px" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 489.698 489.698" xml:space="preserve">
-              <g>
-                <g>
-                  <path d="M468.999,227.774c-11.4,0-20.8,8.3-20.8,19.8c-1,74.9-44.2,142.6-110.3,178.9c-99.6,54.7-216,5.6-260.6-61l62.9,13.1 c10.4,2.1,21.8-4.2,23.9-15.6c2.1-10.4-4.2-21.8-15.6-23.9l-123.7-26c-7.2-1.7-26.1,3.5-23.9,22.9l15.6,124.8 c1,10.4,9.4,17.7,19.8,17.7c15.5,0,21.8-11.4,20.8-22.9l-7.3-60.9c101.1,121.3,229.4,104.4,306.8,69.3 c80.1-42.7,131.1-124.8,132.1-215.4C488.799,237.174,480.399,227.774,468.999,227.774z"></path>
-                  <path d="M20.599,261.874c11.4,0,20.8-8.3,20.8-19.8c1-74.9,44.2-142.6,110.3-178.9c99.6-54.7,216-5.6,260.6,61l-62.9-13.1 c-10.4-2.1-21.8,4.2-23.9,15.6c-2.1,10.4,4.2,21.8,15.6,23.9l123.8,26c7.2,1.7,26.1-3.5,23.9-22.9l-15.6-124.8 c-1-10.4-9.4-17.7-19.8-17.7c-15.5,0-21.8,11.4-20.8,22.9l7.2,60.9c-101.1-121.2-229.4-104.4-306.8-69.2 c-80.1,42.6-131.1,124.8-132.2,215.3C0.799,252.574,9.199,261.874,20.599,261.874z"></path>
-                </g>
-              </g>
-            </svg>
+              <RefreshIcon color="#fff" size="36px" />
             </button>
           </div>
 
@@ -239,20 +235,14 @@ const DifficultyPage = () => {
                       onClick={() => setEditingDifficulty(difficulty)}
                       disabled={isLoading}
                     >
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M16.474,5.408L18.592,7.526L6.936,19.183L4.818,17.065L16.474,5.408Z" fill="currentColor"/>
-                        <path d="M19.479,7.092L21.597,4.974L19.479,2.856L17.361,4.974L19.479,7.092Z" fill="currentColor"/>
-                        <path d="M4,20H6.118L4,17.882V20Z" fill="currentColor"/>
-                      </svg>
+                      <EditIcon color="#fff" size="24px" />
                     </button>
                     <button
                       className="delete-button"
                       onClick={() => setDeletingDifficulty(difficulty)}
                       disabled={isLoading}
                     >
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" fill="currentColor"/>
-                      </svg>
+                      <TrashIcon color="#fff" size="24px"/>
                     </button>
                   </div>
                 </div>

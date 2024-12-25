@@ -103,7 +103,10 @@ const PlayerCard = ({player}) => {
         </div>
         
         <div style={{fontSize: `${Math.max(0.8, 1.3 - (player.rank.toString().length * 0.15))}rem`}} className={`rank-display ${player.rank <= 3 ? `rank-${player.rank}` : ''}`}>
-          #{player.rank}
+          <span style={{fontSize: `${Math.max(0.8, 1.3 - (player.rank.toString().length * 0.15))*0.7}rem`}}>
+            #
+          </span>
+          {player.rank}
         </div>
       </div>
       <div className="name-wrapper">

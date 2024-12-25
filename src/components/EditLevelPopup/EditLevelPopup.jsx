@@ -30,6 +30,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
   const [isHideMode, setIsHideMode] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const navigate = useNavigate();
   const { difficulties } = useDifficultyContext();
 
@@ -55,16 +56,17 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         isDeleted: level.isDeleted || false,
         isHidden: level.isHidden || false,
       });
-      
+      setHasUnsavedChanges(false);
     }
   }, [level]);
 
   const handleInputChange = (e) => {
-    const { name, value, type, checked } = e.target;
+    const { name, type, value, checked } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+    setHasUnsavedChanges(true);
   };
 
   const handleDifficultyChange = (value, field = 'diffId') => {
@@ -84,6 +86,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         [field]: selectedDiff.id,
         baseScore: shouldUpdateBaseScore ? selectedDiff.baseScore : prev.baseScore
       }));
+      setHasUnsavedChanges(true);
     }
   };
 
@@ -102,6 +105,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         baseScore: value === "" ? null : value
       }));
     }
+    setHasUnsavedChanges(true);
   };
 
   const handleSubmit = async (e) => {
@@ -116,7 +120,8 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
       );
 
       if (response.data && response.data.level) {
-        onUpdate(response.data.level);
+        onUpdate(response.data);
+        setHasUnsavedChanges(false);
         onClose();
       }
     } catch (err) {
@@ -146,6 +151,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         if (onUpdate) {
           await onUpdate(response.data);
         }
+        setHasUnsavedChanges(false);
         onClose();
       }
     } catch (err) {
@@ -171,6 +177,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
           const updatedLevel = { ...level, isHidden: response.data.isHidden };
           await onUpdate(updatedLevel);
         }
+        setHasUnsavedChanges(false);
         onClose();
       }
     } catch (err) {
@@ -178,6 +185,16 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
       setError(err.response?.data?.message || "Failed to toggle hidden status");
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleClose = () => {
+    if (hasUnsavedChanges) {
+      if (window.confirm('You have unsaved changes. Are you sure you want to close?')) {
+        onClose();
+      }
+    } else {
+      onClose();
     }
   };
 
@@ -217,9 +234,13 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   }, [difficulties]);
 
   return (
-    <div className="edit-level-popup-overlay">
+    <div className="edit-level-popup-overlay" onClick={(e) => {
+      if (e.target === e.currentTarget) {
+        handleClose();
+      }
+    }}>
       <div className="edit-level-popup">
-        <button className="close-popup-btn" onClick={onClose}>×</button>
+        <button className="close-popup-btn" onClick={handleClose}>×</button>
         <div className="popup-content">
           <h2>Edit Level Details</h2>
           <form onSubmit={handleSubmit}>

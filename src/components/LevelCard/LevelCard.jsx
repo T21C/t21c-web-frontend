@@ -11,7 +11,7 @@ import { useDifficultyContext } from "../../contexts/DifficultyContext";
 const LevelCard = ({index, level: initialLevel, legacyMode, isSuperAdmin,  }) => {
   const {t} = useTranslation()  
   const [level, setLevel] = useState(initialLevel);
-  const [toRate, setToRate] = useState(level.toRate || false);
+  const [toRate, setToRate] = useState(!!initialLevel.toRate);
   const [showEditPopup, setShowEditPopup] = useState(false);
   const { difficultyDict } = useDifficultyContext();
   const difficultyInfo = difficultyDict[level.difficulty.id];
@@ -21,15 +21,24 @@ const LevelCard = ({index, level: initialLevel, legacyMode, isSuperAdmin,  }) =>
     setToRate(newToRate);
 
     try {
-      await api.put(`${import.meta.env.VITE_LEVELS}/${level.id}/toRate`, { toRate: newToRate });
+      const response = await api.put(`${import.meta.env.VITE_LEVELS}/${level.id}/toRate`, { toRate: newToRate });
+      if (response.data) {
+        setLevel(prev => ({
+          ...prev,
+          toRate: newToRate
+        }));
+      }
     } catch (error) {
+      // Revert the checkbox state if the API call fails
+      setToRate(!newToRate);
       console.error(`Failed to update level ${level.id}:`, error);
     }
   };
 
-  const handleLevelUpdate = (updatedLevel) => {
+  const handleLevelUpdate = (updatedData) => {
+    const updatedLevel = updatedData.level || updatedData;
     setLevel(updatedLevel);
-    setToRate(updatedLevel.toRate);
+    setToRate(!!updatedLevel.toRate);
     setShowEditPopup(false);
   };
   

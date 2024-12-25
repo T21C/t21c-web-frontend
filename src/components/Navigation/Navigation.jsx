@@ -20,7 +20,7 @@ const Navigation = ({ children }) => {
   const { isAdmin, isSuperAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const { displayCount, totalNotifications } = useNotification();
+  const { pendingRatings, pendingSubmissions } = useNotification();
   const languages = {
     us: { display: "English (us)", countryCode: "us" },
     kr: { display: "한국어 (ko)", countryCode: "kr" },
@@ -88,12 +88,26 @@ const Navigation = ({ children }) => {
                     <NavLink className={({ isActive }) =>
                       "nav-link " + (isActive ? "active-link" : "")}
                       to="/admin/rating">
-                      <li>Rating</li>
+                      <li className="nav-item">
+                        Rating
+                        {pendingRatings > 0 && (
+                          <span className="notification-badge">
+                            {pendingRatings > 9 ? '9+' : pendingRatings}
+                          </span>
+                        )}
+                      </li>
                     </NavLink>
                     <NavLink className={({ isActive }) =>
                       "nav-link " + (isActive ? "active-link" : "")}
                       to="/admin/submissions">
-                      <li>Submissions</li>
+                      <li className="nav-item">
+                        Submissions
+                        {pendingSubmissions > 0 && (
+                          <span className="notification-badge">
+                            {pendingSubmissions > 9 ? '9+' : pendingSubmissions}
+                          </span>
+                        )}
+                      </li>
                     </NavLink>
                     <NavLink className={({ isActive }) =>
                       "nav-link " + (isActive ? "active-link" : "")}
@@ -134,7 +148,14 @@ const Navigation = ({ children }) => {
                     <NavLink className={({ isActive }) =>
                       "nav-link " + (isActive ? "active-link" : "")}
                       to="/admin/rating">
-                      <li>Rating</li>
+                      <li className="nav-item">
+                        Rating
+                        {pendingRatings > 0 && (
+                          <span className="notification-badge">
+                            {pendingRatings > 9 ? '9+' : pendingRatings}
+                          </span>
+                        )}
+                      </li>
                     </NavLink>
                     )}
                   </>

@@ -9,7 +9,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { parseJudgements } from '../Misc/ParseJudgements';
 import { validateFeelingRating, validateSpeed, validateNumber } from '../Misc/Utility';
 import placeholder from '../../assets/placeholder/4.png';
-import { FetchIcon } from '../FetchIcon/FetchIcon.jsx';
+import { FetchIcon } from '../Icons/FetchIcon.jsx';
 import { useNavigate } from 'react-router-dom';
 import { PlayerInput } from '../../components/PlayerComponents/PlayerInput';
 

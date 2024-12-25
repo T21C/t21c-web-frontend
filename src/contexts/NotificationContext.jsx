@@ -20,58 +20,80 @@ export const useNotification = () => {
 export const NotificationProvider = ({ children }) => {
   const [pendingSubmissions, setPendingSubmissions] = useState(0);
   const [pendingRatings, setPendingRatings] = useState(0);
-  const { isSuperAdmin } = useAuth();
+  const { isSuperAdmin, isAdmin } = useAuth();
 
   const fetchNotificationCounts = async () => {
-    if (!isSuperAdmin) return;
+    if (!isSuperAdmin && !isAdmin) return;
     
     try {
-      // Get pending submissions count
-      const submissionsResponse = await api.get(`${import.meta.env.VITE_SUBMISSION_API}/levels/pending`);
-      const pendingLevels = submissionsResponse.data.length || 0;
-
-      // Get pending pass submissions count
-      const passSubmissionsResponse = await api.get(`${import.meta.env.VITE_SUBMISSION_API}/passes/pending`);
-      const pendingPasses = passSubmissionsResponse.data.length || 0;
-
-      setPendingSubmissions(pendingLevels + pendingPasses);
-
-      // Get pending ratings count
-      const ratingsResponse = await api.get(import.meta.env.VITE_RATING_API);
-      const pendingRatingCount = ratingsResponse.data.filter(rating => 
-        rating.level && rating.level.toRate && !rating.average
-      ).length;
-      setPendingRatings(pendingRatingCount);
+      const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/admin/statistics`);
+      const { unratedRatings, totalPendingSubmissions } = response.data;
+      
+      setPendingSubmissions(totalPendingSubmissions);
+      setPendingRatings(unratedRatings);
     } catch (error) {
       console.error('Error fetching notification counts:', error);
     }
   };
 
   useEffect(() => {
-    if (!isSuperAdmin) return;
+    if (!isSuperAdmin && !isAdmin) return;
 
     // Initial fetch
     fetchNotificationCounts();
 
+    let retryCount = 0;
+    const maxRetries = 3;
+    let isFirstConnection = true;
+
     // Set up SSE connection
-    const eventSource = new EventSource(`${import.meta.env.VITE_API_URL}/events`);
+    const eventSource = new EventSource(`${import.meta.env.VITE_API_URL}/events`, {
+      withCredentials: true
+    });
+
+    eventSource.onopen = () => {
+      if (isFirstConnection) {
+        console.debug('SSE: Initial connection established');
+        isFirstConnection = false;
+      } else {
+        console.debug('SSE: Reconnected successfully');
+      }
+      retryCount = 0;
+    };
 
     eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.type === 'submissionUpdate' || data.type === 'ratingUpdate') {
-        fetchNotificationCounts();
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'submissionUpdate' || data.type === 'ratingUpdate') {
+          fetchNotificationCounts();
+        }
+      } catch (error) {
+        console.error('Error parsing SSE message:', error);
       }
     };
 
     eventSource.onerror = (error) => {
-      console.error('SSE Error:', error);
-      eventSource.close();
+      // Check if it's a normal reconnection attempt
+      if (eventSource.readyState === EventSource.CONNECTING) {
+        retryCount++;
+        if (retryCount <= maxRetries) {
+          // Don't log anything for normal reconnection attempts
+          return;
+        }
+        console.warn(`SSE: Reconnection attempt ${retryCount}/${maxRetries}`);
+      } else if (eventSource.readyState === EventSource.CLOSED) {
+        console.error('SSE: Connection closed', error);
+        eventSource.close();
+      }
     };
 
     return () => {
-      eventSource.close();
+      console.debug('SSE: Cleaning up connection');
+      if (eventSource) {
+        eventSource.close();
+      }
     };
-  }, [isSuperAdmin]);
+  }, [isSuperAdmin, isAdmin]);
 
   const totalNotifications = pendingSubmissions + pendingRatings;
   const displayCount = totalNotifications > 9 ? '9+' : totalNotifications.toString();
