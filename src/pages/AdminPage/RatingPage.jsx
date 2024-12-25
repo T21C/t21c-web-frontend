@@ -8,7 +8,6 @@ import { RatingCard } from "../../components/RatingComponents/RatingCard";
 import { EditLevelPopup } from "../../components/EditLevelPopup/EditLevelPopup";
 import ScrollButton from "../../components/ScrollButton/ScrollButton";
 import api from "../../utils/api";
-import { io } from "socket.io-client";
 import ReferencesPopup from "../../components/ReferencesPopup/ReferencesPopup";
 import RaterManagementPopup from "../../components/RaterManagementPopup/RaterManagementPopup";
 
@@ -41,69 +40,50 @@ const RatingPage = () => {
 
   const fetchRatings = useCallback(async () => {
     try {
-      const ratingsResponse = await api.get(`${import.meta.env.VITE_RATING_API}`);
-      const data = await ratingsResponse.data;
+      const response = await api.get(import.meta.env.VITE_RATING_API);
+      const data = response.data;
       setRatings(data);
+      setLoading(false);
     } catch (error) {
       console.error("Error fetching ratings:", error);
+      setError("Failed to fetch ratings");
+      setShowMessage(true);
+      setLoading(false);
     }
   }, []);
 
-
-  
   useEffect(() => {
-    let socket;
-
+    // Initial fetch
     fetchRatings();
 
-    const connectSocket = () => {
-      socket = io(import.meta.env.VITE_API_URL, {
-        path: '/socket.io',
-        reconnectionAttempts: 5,
-        timeout: 10000
-      });
+    // Set up SSE connection
+    const eventSource = new EventSource(`${import.meta.env.VITE_API_URL}/events`);
 
-      socket.on('connect', () => {
-        console.log('Connected to Socket.IO server');
-      });
-
-      socket.on('connect_error', (error) => {
-        console.error('Socket.IO connection error:', error);
-      });
-
-      socket.on('disconnect', (reason) => {
-        console.log('Disconnected:', reason);
-        if (reason === 'io server disconnect') {
-          socket.connect();
-        }
-      });
-
-      socket.on('ratingsUpdated', () => {
+    eventSource.onmessage = (event) => {
+      const data = JSON.parse(event.data);
+      if (data.type === 'ratingUpdate' || data.type === 'ping') {
         fetchRatings();
-      });      
+      }
     };
 
-    connectSocket();
+    eventSource.onerror = (error) => {
+      console.error('SSE Error:', error);
+      eventSource.close();
+    };
 
     return () => {
-      if (socket) {
-        socket.off('ratingsUpdated', () => {
-          fetchRatings();
-        });
-        socket.disconnect();
-      }
+      eventSource.close();
     };
   }, [user, fetchRatings]);
 
   useEffect(() => {
     if (selectedRating) {
-      const updatedSelectedRating = ratings.find(r => r.id === selectedRating.id);
+      const updatedSelectedRating = ratings?.find(r => r.id === selectedRating.id);
       if (updatedSelectedRating) {
         setSelectedRating(updatedSelectedRating);
       }
     }
-  }, [ratings]);
-
+  }, [ratings, selectedRating]);
 
   const handleEditLevel = async (levelId) => {
     try {
@@ -180,23 +160,25 @@ const RatingPage = () => {
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div>
 
-        {ratings === null ? (
+        {loading ? (
           <div className="loader loader-level-detail"/>
+        ) : ratings === null ? (
+          <div>Error loading ratings</div>
         ) : ratings.length > 0 ? (
           <>
             <div className="rating-list">
               {ratings
-                .filter(rating => !hideRated || !rating.ratings?.[user.username])
+                .filter(rating => !hideRated || rating.averageDifficulty !== null)
                 .map((rating, index) => (
                   <RatingCard
-                    key={rating.ID}
+                    key={rating.id}
                     rating={rating}
                     index={index}
                     setSelectedRating={setSelectedRating}
                     user={user}
                     isSuperAdmin={isSuperAdmin}
                     showDetailedView={showDetailedView}
-                    onEditLevel={() => handleEditLevel(rating.levelId)}
+                    onEditLevel={() => handleEditLevel(rating.level.id)}
                   />
               ))}
             </div>
@@ -218,17 +200,14 @@ const RatingPage = () => {
                 onUpdate={(updatedData) => {
                   // Only update ratings if updatedData exists (not a soft delete)
                   if (updatedData) {
-
                     setRatings(prev => prev.map(rating => 
-                      rating.levelId === updatedData.level.id 
+                      rating.level.id === updatedData.level.id 
                         ? {
                             ...rating,
-                            Song: updatedData.level.song,
-                            "Artist(s)": updatedData.level.artist,
-                            "Creator(s)": updatedData.level.creator,
-                            "Video link": updatedData.level.videoLink,
-                            "DL link": updatedData.level.dlLink,
-                            "Current Diff": updatedData.level.difficulty?.name
+                            level: {
+                              ...rating.level,
+                              ...updatedData.level
+                            }
                           }
                         : rating
                     ));
@@ -241,8 +220,8 @@ const RatingPage = () => {
           </>
         ) : (
           <div className="no-ratings-message">
-            <h2>No ratings available{/*t("adminPage.rating.noLevels")*/}</h2>
-            <p>All rated!{/*t("adminPage.rating.allRated")*/}</p>
+            <h2>No ratings available</h2>
+            <p>All rated!</p>
           </div>
         )}
 

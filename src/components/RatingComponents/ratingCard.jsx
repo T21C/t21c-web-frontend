@@ -58,7 +58,7 @@ export const RatingCard = ({
               ) : (
                 <>
                   <p className="rating-info-item" data-label="Average">
-                    {rating.average}
+                    {rating.averageDifficulty ? rating.averageDifficulty.name : ''}
                   </p>
                 </>
               )}

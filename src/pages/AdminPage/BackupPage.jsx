@@ -52,6 +52,8 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
   const [showPasswordInput, setShowPasswordInput] = useState(false);
   const [selectedAction, setSelectedAction] = useState({ type: '', backup: null });
   const [error, setError] = useState('');
+  const [downloadProgress, setDownloadProgress] = useState({});
+  const [downloading, setDownloading] = useState({});
 
   const getFileNameAndExtension = (filename) => {
     const lastDotIndex = filename.lastIndexOf('.');
@@ -120,6 +122,53 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
     }
   };
 
+  const handleDownload = async (backup) => {
+    if (downloading[backup.filename]) return;
+    
+    try {
+      setDownloading(prev => ({ ...prev, [backup.filename]: true }));
+      setDownloadProgress(prev => ({ ...prev, [backup.filename]: 0 }));
+
+      const response = await api.get(
+        `${import.meta.env.VITE_BACKUP_API}/download/${type}/${backup.filename}`,
+        {
+          responseType: 'blob',
+          onDownloadProgress: (progressEvent) => {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            setDownloadProgress(prev => ({ ...prev, [backup.filename]: percentCompleted }));
+          }
+        }
+      );
+      
+      // Create blob link to download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', backup.filename);
+      
+      // Append to html link element page
+      document.body.appendChild(link);
+      
+      // Start download
+      link.click();
+      
+      // Clean up and remove the link
+      link.parentNode.removeChild(link);
+      window.URL.revokeObjectURL(url);
+
+      // Reset progress after a short delay
+      setTimeout(() => {
+        setDownloadProgress(prev => ({ ...prev, [backup.filename]: 0 }));
+        setDownloading(prev => ({ ...prev, [backup.filename]: false }));
+      }, 1000);
+    } catch (error) {
+      console.error('Failed to download backup:', error);
+      addNotification('Failed to download backup', 'error');
+      setDownloading(prev => ({ ...prev, [backup.filename]: false }));
+      setDownloadProgress(prev => ({ ...prev, [backup.filename]: 0 }));
+    }
+  };
+
   if (!backups || backups.length === 0) {
     return (
       <div className="no-backups-message">
@@ -134,8 +183,51 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
       <div className="backup-list">
         {backups.map((backup) => {
           const [fileName, extension] = getFileNameAndExtension(backup.filename);
+          const progress = downloadProgress[backup.filename] || 0;
+          const isDownloading = downloading[backup.filename];
+          const circumference = 2 * Math.PI * 10; // For progress circle
+          const offset = circumference - (progress / 100) * circumference;
+
           return (
             <div key={backup.filename} className="backup-item">
+              <div className="download-wrapper">
+              <div className={`download-progress ${isDownloading ? 'visible' : ''}`}>
+                  <svg className="progress-circle" width="24" height="24">
+                    <circle
+                      className="progress-background"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                    />
+                    <circle
+                      className="progress-bar"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      strokeDasharray={circumference}
+                      strokeDashoffset={offset}
+                    />
+                  </svg>
+                </div>
+                <button
+                  className={`download-btn ${isDownloading ? 'downloading' : ''}`}
+                  onClick={() => handleDownload(backup)}
+                  disabled={loading || renameLoading || isDownloading}
+                  title="Download backup"
+                >
+                  <svg className="svg-stroke" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17 17H17.01M17.4 14H18C18.9319 14 19.3978 14 19.7654 14.1522C20.2554 14.3552 20.6448 14.7446 20.8478 15.2346C21 15.6022 21 16.0681 21 17C21 17.9319 21 18.3978 20.8478 18.7654C20.6448 19.2554 20.2554 19.6448 19.7654 19.8478C19.3978 20 18.9319 20 18 20H6C5.06812 20 4.60218 20 4.23463 19.8478C3.74458 19.6448 3.35523 19.2554 3.15224 18.7654C3 18.3978 3 17.9319 3 17C3 16.0681 3 15.6022 3.15224 15.2346C3.35523 14.7446 3.74458 14.3552 4.23463 14.1522C4.60218 14 5.06812 14 6 14H6.6M12 15V4M12 15L9 12M12 15L15 12" 
+                      fill="none" 
+                      stroke="#ffffff" 
+                      strokeWidth="2" 
+                      strokeLinecap="round" 
+                      strokeLinejoin="round">
+                    </path>
+                  </svg>
+                </button>
+                
+              </div>
+
               <div className="backup-info">
                 {editingId === backup.filename ? (
                   <div className="rename-controls">

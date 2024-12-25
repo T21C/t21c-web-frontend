@@ -9,6 +9,8 @@ import { UserContext } from "../../contexts/UserContext";
 import i18next from 'i18next';
 import { isoToEmoji } from "../../Repository/RemoteRepository";
 import { useAuth } from "../../contexts/AuthContext";
+import { useNotification } from "@/contexts/NotificationContext";
+
 const Navigation = ({ children }) => {
   const { t } = useTranslation();
   const [openNav, setOpenNav] = useState(false);
@@ -18,6 +20,7 @@ const Navigation = ({ children }) => {
   const { isAdmin, isSuperAdmin } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { displayCount, totalNotifications } = useNotification();
   const languages = {
     us: { display: "English (us)", countryCode: "us" },
     kr: { display: "한국어 (ko)", countryCode: "kr" },
@@ -30,6 +33,10 @@ const Navigation = ({ children }) => {
   useEffect(() => {
     const isAdminPath = location.pathname.startsWith('/admin');
     setIsAdminView(isAdminPath && isSuperAdmin);
+  }, [location]);
+
+  useEffect(() => {
+    setOpenNav(false);
   }, [location]);
 
   function changeNavState() {

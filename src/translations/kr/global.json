@@ -5,7 +5,7 @@
     "ppScore": "PP Score",
     "wfScore": "WF Score",
     "12kScore": "12k Score",
-    "avgXacc": "Average Accuracy",
+    "avgXacc": "Average XAcc",
     "totalPasses": "Total Passes",
     "universalPasses": "Universal Passes",
     "WFPasses": "WF Passes",

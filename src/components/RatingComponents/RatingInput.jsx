@@ -5,7 +5,6 @@ export const RatingInput = ({
   value, 
   onChange, 
   showDiff=true, 
-  pguOnly=false,
   difficulties,
   diffId,
   allowCustomInput=false,

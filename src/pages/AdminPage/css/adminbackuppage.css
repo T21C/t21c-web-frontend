@@ -108,7 +108,7 @@
   padding: 1.5rem;
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: end;
   transition: all 0.3s ease;
   border: 1px solid var(--color-white-t20);
   position: relative;
@@ -167,7 +167,8 @@
 }
 
 .admin-backup-page .restore-btn,
-.admin-backup-page .delete-btn {
+.admin-backup-page .delete-btn,
+.admin-backup-page .download-btn {
   padding: 0.6rem 1.2rem;
   border: none;
   border-radius: 4px;
@@ -183,6 +184,11 @@
   color: var(--color-white);
 }
 
+.admin-backup-page .download-btn {
+  background-color: rgba(33, 150, 243, 0.3);
+  color: var(--color-white);
+}
+
 .admin-backup-page .delete-btn {
   background-color: rgba(244, 67, 54, 0.3);
   color: var(--color-white);
@@ -192,12 +198,17 @@
   background-color: var(--color-white-t30);
 }
 
+.admin-backup-page .download-btn:hover {
+  background-color: rgba(33, 150, 243, 0.4);
+}
+
 .admin-backup-page .delete-btn:hover {
   background-color: rgba(244, 67, 54, 0.4);
 }
 
 .admin-backup-page .restore-btn:disabled,
-.admin-backup-page .delete-btn:disabled {
+.admin-backup-page .delete-btn:disabled,
+.admin-backup-page .download-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
@@ -640,5 +651,84 @@
   color: #ff4444;
   margin: -0.5rem 0 1rem;
   font-size: 0.9rem;
-} 
+}
+
+.admin-backup-page .download-wrapper {
+  position: absolute;
+  top: 0.75rem;
+  right: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-backup-page .download-btn {
+  background: none;
+  border: none;
+  padding: 0.3rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.admin-backup-page .download-btn:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.admin-backup-page .download-btn .svg-stroke {
+  width: 32px;
+  height: 32px;
+  transition: all 0.2s ease;
+}
+
+.admin-backup-page .download-btn:hover .svg-stroke {
+  transform: scale(1.1);
+}
+
+.admin-backup-page .download-btn:active .svg-stroke {
+  transform: scale(1.1);
+}
+
+.admin-backup-page .download-progress {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.admin-backup-page .download-progress.visible {
+  opacity: 1;
+}
+
+.admin-backup-page .progress-circle {
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+.admin-backup-page .progress-background {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.1);
+  stroke-width: 2.5;
+}
+
+.admin-backup-page .progress-bar {
+  fill: none;
+  stroke: #2196f3;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.3s ease;
+}
+
+.admin-backup-page .download-btn.downloading {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.admin-backup-page .download-btn.downloading .svg-stroke {
+  transform: none;
+}
  

@@ -393,7 +393,7 @@ const LeaderboardPage = () => {
               </div>
               <div className="recent">
                 
-              <p>Show banned players</p>
+              <p>Sort by</p>
               <Select
                 value={sortOptions.find(option => option.value === sortBy)}
                 onChange={handleSortBy}
@@ -456,7 +456,7 @@ const LeaderboardPage = () => {
               />
               </div>
               <div className="recent">
-                <p>{t("leaderboardPage.settingExp.showBanned")}</p>
+                <p>Show banned players</p>
                 <Select
                   value={bannedOptions.find(option => option.value === showBanned)}
                   onChange={(option) => setShowBanned(option.value)}

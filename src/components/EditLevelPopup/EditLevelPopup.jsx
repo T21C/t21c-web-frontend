@@ -346,7 +346,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                         name="rerateNum"
                         value={formData.rerateNum}
                         onChange={handleInputChange}
-                        placeholder="Rerate #"
+                        placeholder="Rerate Number"
                       />
                     </div>
                   </div>
@@ -409,7 +409,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
             {error && <div className="error-message">{error}</div>}
             
             <div className="button-group">
-              <button type="submit" disabled={isSaving}>
+              <button type="submit" disabled={isSaving} className="save-button">
                 {isSaving ? 'Saving...' : 'Save Changes'}
               </button>
               <button 

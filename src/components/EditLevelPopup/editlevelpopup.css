@@ -11,7 +11,7 @@
   z-index: 1000;
 }
 
-.edit-level-popup {
+.edit-level-popup-overlay .edit-level-popup {
   background: #1a1a1a;
   border-radius: 8px;
   padding: 24px;
@@ -22,7 +22,7 @@
   position: relative;
 }
 
-.edit-level-popup .close-popup-btn {
+.edit-level-popup-overlay .close-popup-btn {
   position: absolute;
   top: 16px;
   right: 16px;
@@ -34,43 +34,43 @@
   font-size: 2rem;
 }
 
-.edit-level-popup .close-popup-btn svg {
+.edit-level-popup-overlay .close-popup-btn svg {
   width: 32px;
   height: 32px;
 }
 
-.edit-level-popup .popup-content h2 {
+.edit-level-popup-overlay .popup-content h2 {
   margin-bottom: 16px;
   color: #fff;
 }
 
-.edit-level-popup .form-grid {
+.edit-level-popup-overlay .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
   margin-bottom: 16px;
 }
 
-.edit-level-popup .form-links {
+.edit-level-popup-overlay .form-links {
   display: flex;
   flex-direction: column;
   gap: 16px;
   margin-bottom: 16px;
 }
 
-.edit-level-popup .form-group {
+.edit-level-popup-overlay .form-group {
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
-.edit-level-popup .form-group label {
+.edit-level-popup-overlay .form-group label {
   color: #fff;
   font-size: 14px;
 }
 
-.edit-level-popup .form-group input,
-.edit-level-popup .form-group textarea {
+.edit-level-popup-overlay .form-group input,
+.edit-level-popup-overlay .form-group textarea {
   padding: 8px 12px;
   border-radius: 4px;
   border: 1px solid #333;
@@ -78,28 +78,28 @@
   color: #fff;
 }
 
-.edit-level-popup .form-group.checkbox {
+.edit-level-popup-overlay .form-group.checkbox {
   flex-direction: row;
   align-items: center;
 }
 
-.edit-level-popup .calculated-score {
+.edit-level-popup-overlay .calculated-score {
   color: #fff;
   font-size: 14px;
 }
 
-.edit-level-popup .error-message {
+.edit-level-popup-overlay .error-message {
   color: #ff4444;
   margin-bottom: 16px;
 }
 
-.edit-level-popup .button-group {
+.edit-level-popup-overlay .button-group {
   display: flex;
   gap: 16px;
   margin-top: 16px;
 }
 
-.button-group button {
+.edit-level-popup-overlay .button-group button {
   flex: 1;
   padding: 12px;
   border: none;
@@ -109,7 +109,7 @@
   transition: background 0.2s ease;
 }
 
-.save-button {
+.edit-level-popup-overlay .save-button {
   margin-top: 0;
   width: auto;
   padding: 12px;
@@ -122,83 +122,92 @@
   transition: background 0.2s ease;
 }
 
-.save-button:disabled {
+.edit-level-popup-overlay .save-button:disabled {
   background: #737f8d;
   cursor: not-allowed;
 }
 
-.save-button:hover:not(:disabled) {
+.edit-level-popup-overlay .save-button:hover:not(:disabled) {
   background: #2d67a1;
 }
 
-.delete-button {
+.edit-level-popup-overlay .delete-button {
   background: #c64141;
   color: white;
   max-width: 13rem;
   position: relative;
-  padding-right: 2.5rem;
+  padding-right: 3.5rem;
   transition: background-color 0.3s ease;
 }
 
-.delete-button:hover:not(:disabled) {
+.edit-level-popup-overlay .delete-button:hover:not(:disabled) {
   background: #a13535;
 }
 
-.delete-button:disabled {
+.edit-level-popup-overlay .delete-button:disabled {
   background: #8d7373;
   cursor: not-allowed;
 }
 
-.delete-button .toggle-arrow {
+.edit-level-popup-overlay .delete-button .toggle-arrow {
   position: absolute;
-  right: 0.75rem;
-  top: 50%;
-  transform: translateY(-50%);
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.edit-level-popup-overlay .delete-button .toggle-arrow::after {
+  content: '';
   width: 0;
   height: 0;
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 6px solid white;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid white;
   transition: transform 0.3s ease;
-  cursor: pointer;
 }
 
-.delete-button .toggle-arrow:hover {
-  opacity: 0.8;
+.edit-level-popup-overlay .delete-button .toggle-arrow:hover {
+  background: rgba(255, 255, 255, 0.1);
 }
 
-.delete-button.hide-mode {
+.edit-level-popup-overlay .delete-button.hide-mode {
   background: #666;
 }
 
-.delete-button.hide-mode:hover:not(:disabled) {
+.edit-level-popup-overlay .delete-button.hide-mode:hover:not(:disabled) {
   background: #555;
 }
 
-.delete-button.hide-mode .toggle-arrow {
-  transform: translateY(-50%) rotate(180deg);
+.edit-level-popup-overlay .delete-button.hide-mode .toggle-arrow::after {
+  transform: rotate(180deg);
 }
 
-.edit-level-popup .difficulty-row {
+.edit-level-popup-overlay .difficulty-row {
   display: flex;
   align-items: center;
   gap: 1.5rem;
 }
 
-.edit-level-popup .to-rate-checkbox-container {
+.edit-level-popup-overlay .to-rate-checkbox-container {
   display: grid;
   grid-template-rows: auto auto;
   gap: 8px;
   align-content: center;
 }
 
-.edit-level-popup .to-rate-top-row {
+.edit-level-popup-overlay .to-rate-top-row {
   display: flex;
   justify-content: center;
   width: 100%;
 }
 
-.edit-level-popup .to-rate-group {
+.edit-level-popup-overlay .to-rate-group {
   display: grid;
   grid-template-columns: auto 0fr;
   gap: 8px;
@@ -206,7 +215,7 @@
   justify-content: center;
 }
 
-.edit-level-popup .to-rate-checkbox {
+.edit-level-popup-overlay .to-rate-checkbox {
   display: flex;
   align-items: center;
   background: #2a2a2a;
@@ -221,7 +230,7 @@
   white-space: nowrap;
 }
 
-.edit-level-popup .to-rate-checkbox input[type="checkbox"] {
+.edit-level-popup-overlay .to-rate-checkbox input[type="checkbox"] {
   margin: 0;
   width: 16px;
   height: 16px;
@@ -229,23 +238,23 @@
   cursor: pointer;
 }
 
-.edit-level-popup .to-rate-checkbox:hover {
+.edit-level-popup-overlay .to-rate-checkbox:hover {
   background: #333;
 }
 
-.edit-level-popup .rerate-num {
+.edit-level-popup-overlay .rerate-num {
   width: 0;
   overflow: hidden;
   transition: width 0.3s ease-out, opacity 0.3s ease-out;
   opacity: 0;
 }
 
-.edit-level-popup .rerate-num.show {
+.edit-level-popup-overlay .rerate-num.show {
   width: 120px;
   opacity: 1;
 }
 
-.edit-level-popup .rerate-num input {
+.edit-level-popup-overlay .rerate-num input {
   width: 100%;
   padding: 8px 12px;
   border-radius: 4px;
@@ -254,7 +263,7 @@
   color: #fff;
 }
 
-.edit-level-popup .rerate-reason {
+.edit-level-popup-overlay .rerate-reason {
   grid-row: 2;
   width: 100%;
   max-height: 0;
@@ -263,12 +272,12 @@
   opacity: 0;
 }
 
-.edit-level-popup .rerate-reason.show {
+.edit-level-popup-overlay .rerate-reason.show {
   max-height: 40px;
   opacity: 1;
 }
 
-.edit-level-popup .rerate-reason input {
+.edit-level-popup-overlay .rerate-reason input {
   width: 100%;
   padding: 8px 12px;
   border-radius: 4px;
@@ -277,11 +286,11 @@
   color: #fff;
 }
 
-.edit-level-popup .to-rate-group:has(.rerate-num.show) {
+.edit-level-popup-overlay .to-rate-group:has(.rerate-num.show) {
   grid-template-columns: auto 120px;
 }
 
-.edit-level-popup .difficulty-select {
+.edit-level-popup-overlay .difficulty-select {
   width: 100%;
   padding: 8px;
   border: 1px solid #ccc;
@@ -290,17 +299,17 @@
   font-size: 14px;
 }
 
-.edit-level-popup .difficulty-select option {
+.edit-level-popup-overlay .difficulty-select option {
   padding: 8px;
 }
 
-.edit-level-popup .calculated-score {
+.edit-level-popup-overlay .calculated-score {
   margin-top: 8px;
   font-size: 14px;
   color: #666;
 }
 
-.edit-level-popup .form-group .rating-input {
+.edit-level-popup-overlay .form-group .rating-input {
   width: 100%;
   padding: 8px 12px;
   border-radius: 4px;
@@ -309,20 +318,18 @@
   color: #fff;
 }
 
-.edit-level-popup .form-group .rating-input:focus {
+.edit-level-popup-overlay .form-group .rating-input:focus {
   outline: none;
   border-color: #4a90e2;
 }
 
-.edit-level-popup .form-group .rating-input::placeholder {
+.edit-level-popup-overlay .form-group .rating-input::placeholder {
   color: rgba(255, 255, 255, 0.5);
 }
 
-
-/* Style for all rating inputs to be consistent */
-.edit-level-popup .form-group .rating-input,
-.edit-level-popup .form-group input[type="text"],
-.edit-level-popup .form-group select {
+.edit-level-popup-overlay .form-group .rating-input,
+.edit-level-popup-overlay .form-group input[type="text"],
+.edit-level-popup-overlay .form-group select {
   height: 40px;
   box-sizing: border-box;
 }

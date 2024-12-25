@@ -118,17 +118,15 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
     try {
       setIsLoading(true);
       // First, fetch Discord user info
-      const fetchResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/v2/data/players/${player.id}/discord/${discordId}`,
-      );
-      if (!fetchResponse.ok) {
-        const error = await fetchResponse.json();
+      const fetchResponse = await api.get(`${import.meta.env.VITE_PLAYERS}/${player.id}/discord/${discordId}`);
+      
+      if (fetchResponse.status !== 200) {
+        const error = await fetchResponse.data;
         toast.error(error.details || 'Failed to fetch Discord user');
         return;
       }
 
-      const fetchData = await fetchResponse.json();
-      const discordUser = fetchData.discordUser;
+      const discordUser = fetchResponse.data.discordUser;
 
       // Store fetched info and show confirmation
       setPendingDiscordInfo({
@@ -155,28 +153,18 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
 
     try {
       setIsLoading(true);
-      const updateResponse = await fetch(
-        `${import.meta.env.VITE_API_URL}/v2/data/players/${player.id}/discord/${pendingDiscordInfo.id}`,
-        {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: pendingDiscordInfo.username,
-            avatar: pendingDiscordInfo.avatar,
-          }),
-        },
-      );
+      const updateResponse = await api.put(`${import.meta.env.VITE_PLAYERS}/${player.id}/discord/${pendingDiscordInfo.id}`, {
+        username: pendingDiscordInfo.username,
+        avatar: pendingDiscordInfo.avatar,
+      });
 
-      if (!updateResponse.ok) {
-        const error = await updateResponse.json();
+      if (updateResponse.status !== 200) {
+        const error = await updateResponse.data;
         toast.error(error.details || 'Failed to update Discord info');
         return;
       }
 
-      const updateData = await updateResponse.json();
-      const updatedDiscordInfo = updateData.discordInfo;
+      const updatedDiscordInfo = updateResponse.data.discordInfo;
 
       // Update local state and parent component
       setDiscordInfo({

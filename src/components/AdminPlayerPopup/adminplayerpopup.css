@@ -159,7 +159,7 @@
 .admin-player-popup .discord-info-header,
 .admin-player-popup .discord-preview > div {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 4px;
 }
 

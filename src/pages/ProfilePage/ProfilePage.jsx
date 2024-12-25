@@ -114,7 +114,9 @@ const ProfilePage = () => {
                         <h2
                           style={{
                             color: parseRankColor(playerData.ranks.rankedScoreRank), 
-                            backgroundColor: `${parseRankColor(playerData.ranks.rankedScoreRank)}27`}}
+                            backgroundColor: `${parseRankColor(playerData.ranks.rankedScoreRank)}27`,
+                            transform: "translateY(-0.45rem)"
+                        }}
                         >#{playerData.ranks.rankedScoreRank}</h2>
                       </div>
                       <img

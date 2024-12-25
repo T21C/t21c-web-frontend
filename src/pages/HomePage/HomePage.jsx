@@ -179,7 +179,7 @@ const HomePage = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const response = await api.get(import.meta.env.VITE_STATS_API_URL);
+        const response = await api.get(import.meta.env.VITE_STATISTICS);
         setStats(response.data);
       } catch (error) {
         console.error('Failed to fetch statistics:', error);

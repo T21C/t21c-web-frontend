@@ -5,6 +5,11 @@ const DIFFICULTY_LEVELS = {
   'U': { base: 40, max: 20 },   // U1-U10 (values 31-40)
 };
 
+export function trimString(str, maxLength = 40) {
+  if (!str) return '';
+  return str.length > maxLength ? str.substring(0, maxLength - 3) + '...' : str;
+}
+
 export function getRatingValue(rating) {
   if (!rating || typeof rating !== 'string') return null;
   const prefix = rating.charAt(0);
