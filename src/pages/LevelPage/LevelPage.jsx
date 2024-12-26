@@ -216,7 +216,7 @@ const LevelPage = () => {
     if (isSuperAdmin) {
       setDeletedFilter("hide");
     }
-    setClearedFilter("hide");
+    setClearedFilter("show");
     // Clear and reload data
     setLevelsData([]);
     setLoading(true);
@@ -406,7 +406,7 @@ const LevelPage = () => {
                     setForceUpdate(prev => !prev);
                   }}
                   label="Cleared Levels"
-                  states={['show', 'only']}
+                  states={['show', 'hide']}
                 />
                 {isSuperAdmin && (
                   <StateDisplay

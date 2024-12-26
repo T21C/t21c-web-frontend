@@ -188,10 +188,7 @@ const LevelSubmissionPage = () => {
         </div>
   
 
-        <form className={`form-container ${videoDetail ? 'shadow' : ''}`}
-    style={{
-      backgroundImage: `url(${videoDetail ? videoDetail.image : placeholder})`,
-    }}>
+        <form className={`form-container ${videoDetail ? 'shadow' : ''}`}>
   <div
     className="thumbnail-container"
   >
@@ -203,11 +200,20 @@ const LevelSubmissionPage = () => {
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         referrerPolicy="strict-origin-when-cross-origin"
         allowFullScreen
+        style={{
+          width: "100%",
+          height: "100%",
+          borderRadius: "10px",
+          objectFit: "contain",
+          objectPosition: "center"
+        }}
       ></iframe>
-    ) : (
+    ) : (<>
       <div className="thumbnail-text">
-      <h2>{t("levelSubmission.thumbnailInfo")}</h2>
+        <img src={placeholder} alt="placeholder" />
       </div>
+      <h2>{t("levelSubmission.thumbnailInfo")}</h2>
+      </>
     )}
   </div>
         <div className="info">

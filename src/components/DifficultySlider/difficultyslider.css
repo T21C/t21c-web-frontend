@@ -82,9 +82,8 @@
   align-items: center;
   gap: 0.5rem;
   transform: translateX(-50%);
-  padding: 0.3rem 0.5rem;
+  padding: 0.2rem 0.5rem;
   min-width: fit-content;
-  transition: all 0.2s ease;
 }
 
 .difficulty-slider-container .difficulty-name {

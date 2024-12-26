@@ -8,6 +8,43 @@
   overflow-x: hidden;
 }
 
+.level-submission-page .form-container {
+  place-items: center;
+  overflow: hidden;
+  display: flex;
+  z-index: 10;
+  transition: height 0.4s ease, transform 0.4s ease; 
+  transform-origin: top;
+  flex-direction: column;
+  margin: 4rem;
+  margin-top: 5rem;
+  margin-bottom: 2rem;
+}
+
+
+.level-submission-page .form-container form {
+  border-radius: 8px;
+  margin-top: 2rem;
+  max-width: 47rem;
+  background-color: #000000cf;
+  color: var(--color-white);
+  background-size: contain;
+  background-position: center -80px;
+  background-repeat: no-repeat;
+  flex-direction: column;
+}
+
+.level-submission-page .form-container form input::placeholder {
+  color: var(--color-white);
+  opacity: 0.5;
+}
+
+.level-submission-page .form-container form input {
+  caret-color: var(--color-white);
+  color: var(--color-white);
+}
+
+
 .level-submission-page form .img-wrapper {
   flex: 2;
 }
@@ -67,15 +104,17 @@
   padding-right: 5px;
   gap: 5px; 
   display: flex
-}
+} 
 
 .level-submission-page form .info .submit {
   width: 100%;
-  background-color: var(--color-purple-3);
+  background-color: #8f7dea;
   border: none;
   border-radius: 3px;
   color: var(--color-white);
-  font-size: 1rem;
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-shadow: 0px 0px 4px #0005;
   cursor: pointer;
   padding: 0.5rem 1rem;
   max-width: 70rem;
@@ -83,8 +122,101 @@
   transition: all 100ms linear;
 }
 .level-submission-page form .info .submit:hover {
-  background-color: var(--color-purple-2);
+  background-color: #7763c2;
 }
 .level-submission-page form .info .submit:active {
-  background-color: var(--color-purple-1);
+  background-color: #7763c2;
 }/*# sourceMappingURL=levelsubmission.css.map */
+
+.level-submission-page .tooltip-container {
+  position: relative;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  display: flex; /* Allow inline display for other elements */
+}
+
+.tooltip {
+  visibility: hidden;
+  width: 170px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  font-size: 0.8rem;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+
+.tooltip-container:hover .tooltip {
+  visibility: visible;
+  opacity: 0.95;
+}
+
+.level-submission-page .thumbnail-container {
+  gap: 20px; /* Space between thumbnail and form */
+  z-index: 10;
+  aspect-ratio: 16/9;
+  height: 350px; /* Fixed height */
+  place-content: center;
+  text-shadow: 0px 0px 4px black;
+  overflow: hidden; /* Hide any overflow */
+  transition: box-shadow 0.3s ease; /* Smooth transition for shadow */
+}
+
+.level-submission-page .thumbnail-container.shadow {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8); /* Shadow effect */
+}
+
+@media (max-width: 900px) {
+  .thumbnail-container {
+    height: 300px; /* Fixed height */
+  }
+}
+
+.level-submission-page .thumbnail-container img {
+  height: 100%; /* Make the image height match the container */
+  width: auto; /* Keep the width proportional */
+  object-fit: fill; /* Allow the image to deform if necessary */
+}
+
+.level-submission-page .thumbnail-container iframe {
+  height: 100%; /* Make iframe height match the container */
+  width: 100%; /* Ensure iframe fills the container */
+}
+
+.level-submission-page .thumbnail-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center; /* Center text */
+  color: white;
+}
+
+.level-submission-page .thumbnail-text img {
+  position:relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  z-index: -2;
+}
+
+.level-submission-page .thumbnail-container h2 {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+.level-submission-page .info {
+  flex: 3;
+  padding: 1.1rem;
+  z-index: 15;
+}

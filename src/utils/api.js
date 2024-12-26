@@ -19,8 +19,30 @@ api.interceptors.request.use(
     return config;
   },
   (error) => {
+    // Handle request errors, but don't interfere with cancellation
+    if (axios.isCancel(error)) {
+      return Promise.reject(error);
+    }
     return Promise.reject(error);
   }
 );
+
+// Response interceptor to handle errors
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    // Don't transform cancel errors, just pass them through
+    if (axios.isCancel(error)) {
+      return Promise.reject(error);
+    }
+    
+    // Handle other errors here
+    return Promise.reject(error);
+  }
+);
+
+// Add cancel token utilities to the api instance
+api.CancelToken = axios.CancelToken;
+api.isCancel = axios.isCancel;
 
 export default api; 

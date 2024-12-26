@@ -55,9 +55,8 @@
 .submission-page button:hover {
   background-color: var(--color-purple-1);
   color: var(--color-white);
-}
-.submission-page button:active {
-  background-color: purple;
+  background-color: rgb(111, 51, 150);
+  transform: translateY(-2px);
 }
 .submission-page .link {
   margin: 1rem 0;

@@ -2,7 +2,7 @@ import { CompleteNav } from "@/components";
 import "./passsubmission.css";
 import placeholder from "@/assets/placeholder/3.png";
 import { FormManager } from "@/components/FormManager/FormManager";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { getVideoDetails } from "@/Repository/RemoteRepository";
 import calcAcc from "@/components/Misc/CalcAcc";
 import { getScoreV2 } from "@/components/Misc/CalcScore";
@@ -12,11 +12,8 @@ import {FetchIcon} from "@/components/Icons/FetchIcon"
 import { validateFeelingRating, validateSpeed, validateNumber } from "@/components/Misc/Utility";
 import { useTranslation } from "react-i18next";
 import api from "@/utils/api";
+import axios from 'axios';
 
-const checkLevel = async (levelId) => {
-  const response = await api.get(`${import.meta.env.VITE_LEVELS}/${levelId}`);
-  return response.data;
-}
 
 const PassSubmissionPage = () => {
   const initialFormState = {
@@ -56,10 +53,17 @@ const PassSubmissionPage = () => {
   const [submission, setSubmission] = useState(false);
   const [level, setLevel] = useState(null);
   const [levelLoading, setLevelLoading] = useState(true);
+  const [searchResults, setSearchResults] = useState([]);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const [videoDetail, setVideoDetail] = useState(null)
 
-
+  const searchCancelTokenRef = useRef(null);
+  const levelFetchCancelTokenRef = useRef(null);
+  const videoDetailsCancelTokenRef = useRef(null);
+  const dropdownRef = useRef(null);
+  const searchContainerRef = useRef(null);
 
   const truncateString = (str, maxLength) => {
     if (!str) return "";
@@ -126,7 +130,7 @@ const PassSubmissionPage = () => {
   useEffect(() => {
     const { levelId } = form;
 
-    if (!/^\d+$/.test(levelId)){
+    if (!/^\d+$/.test(levelId)) {
       setLevelLoading(false);
       setLevel(null);
       return;
@@ -135,6 +139,13 @@ const PassSubmissionPage = () => {
     setLevelLoading(true);
     setLevel(null);
 
+    // Cancel previous level fetch request if it exists
+    if (levelFetchCancelTokenRef.current) {
+      levelFetchCancelTokenRef.current.cancel('New level fetch initiated');
+    }
+
+    // Create new cancel token
+    levelFetchCancelTokenRef.current = api.CancelToken.source();
       
     if (!levelId) {
       setLevel(null);
@@ -142,34 +153,77 @@ const PassSubmissionPage = () => {
       return;
     }
 
-    checkLevel(levelId)
-      .then((data) => {
-        
-        setLevel(data ? data : null);
+    api.get(`${import.meta.env.VITE_LEVELS}/${levelId}`, {
+      cancelToken: levelFetchCancelTokenRef.current.token
+    })
+      .then((response) => {
+        setLevel(response.data ? response.data : null);
         setLevelLoading(false);
-        
       })
-      .catch(() => {
-        setLevel(null);
-        setLevelLoading(false);
+      .catch((error) => {
+        if (!api.isCancel(error)) {
+          setLevel(null);
+          setLevelLoading(false);
+        }
       });
+
+    // Cleanup function to cancel any pending requests when component unmounts
+    // or when levelId changes
+    return () => {
+      if (levelFetchCancelTokenRef.current) {
+        levelFetchCancelTokenRef.current.cancel('Component unmounted or levelId changed');
+      }
+    };
   }, [form.levelId]);
+
+  // Add cleanup for search requests when component unmounts
+  useEffect(() => {
+    return () => {
+      if (searchCancelTokenRef.current) {
+        searchCancelTokenRef.current.cancel('Component unmounted');
+      }
+    };
+  }, []);
 
   useEffect(() => {
     const { videoLink } = form;
     
-    getVideoDetails(videoLink).then((res) => {
-      setVideoDetail(
-        res
-          ? res
-          : null
-      );
-      if (res){
-        form.leaderboardName = res.channelName
+    // Cancel previous video details request if it exists
+    if (videoDetailsCancelTokenRef.current) {
+      videoDetailsCancelTokenRef.current.cancel('New video details fetch initiated');
+    }
+
+    // Create new cancel token
+    videoDetailsCancelTokenRef.current = axios.CancelToken.source();
+
+    if (!videoLink) {
+      setVideoDetail(null);
+      return;
+    }
+    
+    getVideoDetails(videoLink, videoDetailsCancelTokenRef.current.token)
+      .then((res) => {
+        setVideoDetail(res ? res : null);
+        if (res) {
+          setForm(prev => ({
+            ...prev,
+            leaderboardName: res.channelName
+          }));
+        }
+      })
+      .catch((error) => {
+        if (!axios.isCancel(error)) {
+          setVideoDetail(null);
+          console.error('Error fetching video details:', error);
+        }
+      });
+
+    // Cleanup function
+    return () => {
+      if (videoDetailsCancelTokenRef.current) {
+        videoDetailsCancelTokenRef.current.cancel('Component unmounted or video link changed');
       }
-    });
-
-
+    };
   }, [form.videoLink]);
 
   const handleInputChange = (e) => {
@@ -306,6 +360,88 @@ const PassSubmissionPage = () => {
     setShowMessage(false)
   };
 
+  const searchLevels = async (query) => {
+    if (!query) {
+      setSearchResults([]);
+      return;
+    }
+
+    // Cancel previous search request if it exists
+    if (searchCancelTokenRef.current) {
+      searchCancelTokenRef.current.cancel('New search initiated');
+    }
+
+    // Create new cancel token
+    searchCancelTokenRef.current = api.CancelToken.source();
+
+    try {
+      const response = await api.post(`${import.meta.env.VITE_LEVELS}/filter`, 
+        {
+          pguRange: { from: null, to: null },
+          specialDifficulties: []
+        },
+        {
+          params: {
+            query,
+            limit: 10,
+            offset: 0
+          },
+          cancelToken: searchCancelTokenRef.current.token
+        }
+      );
+      setSearchResults(response.data.results);
+    } catch (error) {
+      if (!api.isCancel(error)) {
+        console.error('Error searching levels:', error);
+        setSearchResults([]);
+      }
+    }
+  };
+
+  const handleLevelSelect = (selectedLevel) => {
+    setForm(prev => ({
+      ...prev,
+      levelId: selectedLevel.id.toString()
+    }));
+    setLevel(selectedLevel);
+    setIsExpanded(false);
+  };
+
+  const handleLevelInputChange = (e) => {
+    const value = e.target.value;
+    setForm(prev => ({
+      ...prev,
+      levelId: value
+    }));
+    
+    if (value) {
+      searchLevels(value);
+    } else {
+      setSearchResults([]);
+    }
+  };
+
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
+
+  // Add click outside handler
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (dropdownRef.current && 
+          searchContainerRef.current && 
+          !dropdownRef.current.contains(event.target) && 
+          !searchContainerRef.current.contains(event.target)) {
+        setIsExpanded(false);
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <div className="pass-submission-page">
       <CompleteNav />
@@ -352,20 +488,61 @@ const PassSubmissionPage = () => {
           <h1>{t("passSubmission.title")}</h1>
 
           <div className="id-input">
-            <input
-              type="text"
-              placeholder={t("passSubmission.submInfo.levelId")}
-              name="levelId"
-              value={form.levelId}
-              onChange={handleInputChange}  
-              style={{ borderColor: isFormValidDisplay.levelId ? "" : "red" }}
-            
-            />
+            <div className="search-container" ref={searchContainerRef}>
+              <input
+                type="text"
+                placeholder={t("passSubmission.submInfo.levelId")}
+                name="levelId"
+                value={form.levelId}
+                onChange={handleLevelInputChange}
+                style={{ borderColor: isFormValidDisplay.levelId ? "" : "red" }}
+              />
+              {searchResults.length > 0 && (
+                <button 
+                  type="button"
+                  className={`expand-button ${isExpanded ? 'expanded' : ''}`}
+                  onClick={toggleExpand}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </button>
+              )}
+            </div>
+
+            <div className={`level-dropdown ${isExpanded ? 'expanded' : ''}`} ref={dropdownRef}>
+              {searchResults.map((result) => (
+                <div
+                  key={result.id}
+                  className="level-option"
+                  onClick={() => handleLevelSelect(result)}
+                >
+                  <img 
+                    src={result.difficulty?.icon} 
+                    alt={result.difficulty?.name}
+                    className="difficulty-icon"
+                  />
+                  <div className="level-content">
+                    <div className="level-title">
+                      {result.song} (ID: {result.id})
+                    </div>
+                    <div className="level-details">
+                      <span>{result.artist}</span>
+                      <span>{result.creator}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
 
             <div className="information">
                 {(level && form.levelId) ? 
-                (<div className="level-info"><h2 className="level-info-sub">{truncateString(level["song"], 30)}</h2>
-                 <div className="level-info-sub"><span>{truncateString(level["artist"], 15)}</span><span>{truncateString(level["creator"], 20)}</span></div></div>)
+                (<>
+                  <img  src={level.difficulty?.icon} alt={level.difficulty?.name} className="level-icon" />
+
+                <div className="level-info"><h2 className="level-info-sub">{truncateString(level["song"], 30)}</h2>
+                 <div className="level-info-sub"><span>{truncateString(level["artist"], 15)}</span><span>{truncateString(level["creator"], 20)}</span></div></div>
+                 </>)
                 : 
                 (<div className="level-info"><h2 className="level-info-sub" style={{color: "#aaa"}}>{t("passSubmission.levelInfo.song")}</h2>
                  <div className="level-info-sub"><span style={{color: "#aaa"}}>{t("passSubmission.levelInfo.artist")}</span><span style={{color: "#aaa"}}>{t("passSubmission.levelInfo.charter")}</span></div></div>)
@@ -405,6 +582,7 @@ const PassSubmissionPage = () => {
                 style={{
                   backgroundColor: !form.levelId ? "#ffc107" : levelLoading ? "#ffc107" : level ? "#28a745" : "#dc3545",
                   cursor: !form.levelId ? "not-allowed": levelLoading ? "wait": level ? "pointer" : "not-allowed",
+                  textShadow: "0 0 5px #0009" ,
                 }}
               >
                 
