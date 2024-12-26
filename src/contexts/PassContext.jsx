@@ -1,46 +1,54 @@
-/* eslint-disable react/prop-types */
-import { createContext, useState } from "react"
+import React, { createContext, useState } from 'react';
 
-const PassContext = createContext()
+export const PassContext = createContext();
 
-const PassContextProvider = (props) => {
-    const [passesData, setPassesData] = useState([]);
-    const [filterOpen, setFilterOpen] = useState(false);
-    const [sortOpen, setSortOpen] = useState(true);
-    const [query, setQuery] = useState("");
-    const [sort, setSort] = useState("RECENT_DESC");
-    const [hasMore, setHasMore] = useState(true);
-    const [pageNumber, setPageNumber] = useState(0);
+export const PassContextProvider = ({ children }) => {
+  const [passesData, setPassesData] = useState([]);
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [sortOpen, setSortOpen] = useState(false);
+  const [query, setQuery] = useState('');
+  const [sort, setSort] = useState('SCORE_DESC');
+  const [hasMore, setHasMore] = useState(true);
+  const [pageNumber, setPageNumber] = useState(0);
+  const [hide12k, setHide12k] = useState(false);
+  const [deletedFilter, setDeletedFilter] = useState('hide');
+  const [selectedLowFilterDiff, setSelectedLowFilterDiff] = useState("P1");
+  const [selectedHighFilterDiff, setSelectedHighFilterDiff] = useState("U20");
+  const [forceUpdate, setForceUpdate] = useState(false);
+  const [sliderRange, setSliderRange] = useState([1, 60]);
 
-    // Pass-specific filters
-    const [hideNHT, setHideNHT] = useState(false);
-    const [hide12k, setHide12k] = useState(false);
-    const [minAccuracy, setMinAccuracy] = useState(null);
-    const [maxAccuracy, setMaxAccuracy] = useState(null);
-    const [minScore, setMinScore] = useState(null);
-    const [maxScore, setMaxScore] = useState(null);
-
-    return (
-        <PassContext.Provider 
-            value={{ 
-                passesData, setPassesData,
-                filterOpen, setFilterOpen,
-                sortOpen, setSortOpen,
-                query, setQuery,
-                hideNHT, setHideNHT,
-                hide12k, setHide12k,
-                minAccuracy, setMinAccuracy,
-                maxAccuracy, setMaxAccuracy,
-                minScore, setMinScore,
-                maxScore, setMaxScore,
-                sort, setSort,
-                hasMore, setHasMore,
-                pageNumber, setPageNumber
-            }}
-        >
-            {props.children}
-        </PassContext.Provider>
-    )
-}
-
-export { PassContext, PassContextProvider } 
+  return (
+    <PassContext.Provider
+      value={{
+        passesData,
+        setPassesData,
+        filterOpen,
+        setFilterOpen,
+        sortOpen,
+        setSortOpen,
+        query,
+        setQuery,
+        sort,
+        setSort,
+        hasMore,
+        setHasMore,
+        pageNumber,
+        setPageNumber,
+        hide12k,
+        setHide12k,
+        deletedFilter,
+        setDeletedFilter,
+        selectedLowFilterDiff,
+        setSelectedLowFilterDiff,
+        selectedHighFilterDiff,
+        setSelectedHighFilterDiff,
+        forceUpdate,
+        setForceUpdate,
+        sliderRange,
+        setSliderRange
+      }}
+    >
+      {children}
+    </PassContext.Provider>
+  );
+}; 

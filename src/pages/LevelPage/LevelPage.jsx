@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import "./levelpage.css";
 import { useContext, useEffect, useState, useCallback } from "react";
-import { CompleteNav, LevelCard } from "@/components";
+import { CompleteNav, LevelCard, StateDisplay } from "@/components";
 import { Tooltip } from "react-tooltip";
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
@@ -51,6 +51,8 @@ const LevelPage = () => {
     setPageNumber,
     deletedFilter,
     setDeletedFilter,
+    clearedFilter,
+    setClearedFilter,
     sliderRange,
     setSliderRange,
     selectedSpecialDiffs,
@@ -107,7 +109,8 @@ const LevelPage = () => {
           offset: pageNumber * limit,
           query,
           sort,
-          deletedFilter
+          deletedFilter,
+          clearedFilter
         };
 
         // Request body for difficulty filtering
@@ -139,7 +142,7 @@ const LevelPage = () => {
         setHasMore(response.data.count > levelsData.length + newLevels.length);
       } catch (error) {
         if (!axios.isCancel(error)) setError(true);
-        console.log(error);
+        //console.log(error);
       } finally {
         setLoading(false);
       }
@@ -209,32 +212,40 @@ const LevelPage = () => {
     setSliderRange([1, 60]);
     // Reset special difficulties
     setSelectedSpecialDiffs([]);
-    // Reset deleted filter if admin
+    // Reset filters
     if (isSuperAdmin) {
       setDeletedFilter("hide");
     }
+    setClearedFilter("hide");
     // Clear and reload data
     setLevelsData([]);
     setLoading(true);
     setForceUpdate(f => !f);
   }
 
-  function handleLowFilter(value) {
-    const diff = difficulties.find(d => d.name === value);
-    setPageNumber(0);
-    setLevelsData([]);
-    setSelectedLowFilterDiff(value);
-    setForceUpdate((f) => !f);
-  }
 
-  function handleHighFilter(value) {
-    const diff = difficulties.find(d => d.name === value);
-    setPageNumber(0);
-    setLevelsData([]);
-    setSelectedHighFilterDiff(value);
-    setForceUpdate((f) => !f);
+  if (difficulties.length === 0) {
+    return (
+      <div className="level-page">
+      <MetaTags
+        title={"Level List"}
+        description={``}
+        url={currentUrl}
+        image={''}
+        type="article"
+        />
+        <CompleteNav />
+  
+        <div className="background-level"></div>
+      <div className="level-body">
+        <div className="level-body-content" style={{marginTop: "45vh"}} >
+          <div className="loader loader-level-page" style={{top: "-6rem"}}></div>
+          <p style={{ fontSize: "1.5rem", fontWeight: "bold", justifyContent: "center", textAlign: "center"}}>Loading difficulties...</p>
+        </div>
+      </div>
+    </div>
+    );
   }
-
 
   return (
     
@@ -249,7 +260,6 @@ const LevelPage = () => {
       <CompleteNav />
 
       <div className="background-level"></div>
-
       <div className="level-body">
         <ScrollButton />
         <ReferencesButton />
@@ -387,28 +397,29 @@ const LevelPage = () => {
                   selectedDiffs={selectedSpecialDiffs}
                   onToggle={toggleSpecialDifficulty}
                 />
-                              {isSuperAdmin && (
-                  <div className="checkbox-filters">
-                    <div className="deletion-filter-inline">
-                      <label>
-                        Show deleted levels
-                        <select 
-                          value={deletedFilter}
-                          onChange={(e) => {
-                            setDeletedFilter(e.target.value);
-                            setPageNumber(0);
-                            setLevelsData([]);
-                            setForceUpdate(prev => !prev);
-                          }}
-                        >
-                          <option value="hide">Hide</option>
-                          <option value="show">Show</option>
-                          <option value="only">Only</option>
-                        </select>
-                      </label>
-                    </div>
-                  </div>
-              )}
+                <StateDisplay
+                  currentState={clearedFilter}
+                  onChange={(newState) => {
+                    setClearedFilter(newState);
+                    setPageNumber(0);
+                    setLevelsData([]);
+                    setForceUpdate(prev => !prev);
+                  }}
+                  label="Cleared Levels"
+                  states={['show', 'only']}
+                />
+                {isSuperAdmin && (
+                  <StateDisplay
+                    currentState={deletedFilter}
+                    onChange={(newState) => {
+                      setDeletedFilter(newState);
+                      setPageNumber(0);
+                      setLevelsData([]);
+                      setForceUpdate(prev => !prev);
+                    }}
+                    label="Deleted Levels"
+                  />
+                )}
               </div>
 
 
@@ -630,13 +641,13 @@ const LevelPage = () => {
         </div>
 
         <InfiniteScroll
-          style={{ paddingBottom: "15rem" }}
+          style={{ paddingBottom: "25rem", overflow: "visible" }}
           dataLength={levelsData.length}
           next={() => setPageNumber((prevPageNumber) => prevPageNumber + 1)}
           hasMore={hasMore}
           loader={<div className="loader loader-level-page" style={{zIndex: 1}}></div>}
           endMessage={
-            <p style={{ textAlign: "center" }}>
+            <p className="end-message">
               <b>{t("levelPage.infScroll.end")}</b>
             </p>}
         >

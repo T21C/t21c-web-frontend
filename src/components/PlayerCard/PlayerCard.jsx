@@ -24,7 +24,7 @@ const PlayerCard = ({player}) => {
     generalScore: t("valueLabels.generalScore"),
     ppScore: t("valueLabels.ppScore"),
     wfScore: t("valueLabels.wfScore"),
-    "12kScore": t("valueLabels.12kScore"),
+    "score12k": t("valueLabels.score12k"),
     avgXacc: t("valueLabels.avgXacc"),
     totalPasses: t("valueLabels.totalPasses"),
     universalPasses: t("valueLabels.universalPasses"),
@@ -39,6 +39,7 @@ const PlayerCard = ({player}) => {
     const onAnchorClick = (e) => {
       e.stopPropagation();
     };
+    
     const prioritizedField = sortBy || 'rankedScore';
 
     const scoreFields = {

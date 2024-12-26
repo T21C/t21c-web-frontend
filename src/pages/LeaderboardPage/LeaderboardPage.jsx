@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import "./leaderboardpage.css";
 import { useContext, useEffect, useState } from "react";
-import { CompleteNav, PlayerCard } from "../../components";
+import { CompleteNav, PlayerCard, StateDisplay } from "../../components";
 import { Tooltip } from "react-tooltip";
 import Select from "react-select";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -15,42 +15,50 @@ import { MetaTags } from "../../components";
 
 const currentUrl = window.location.origin + location.pathname;
 
-
-
 const limit = 30;
 
 const LeaderboardPage = () => {
   const { t } = useTranslation();
-  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [forceUpdate, setForceUpdate] = useState(false);
   const location = useLocation();
-  const [displayedPlayers, setDisplayedPlayers] = useState([])
-  const [playerList, setPlayerList] = useState([])
+
+  const bannedOptions = [
+    { value: 'show', label: "Show" },
+    { value: 'hide', label: "Hide" },
+    { value: 'only', label: "Only" }
+  ];
+
   const {
     playerData,
     setPlayerData,
-    sortBy,
-    setSortBy,
+    displayedPlayers,
+    setDisplayedPlayers,
+    filterOpen,
+    setFilterOpen,
     sortOpen,
     setSortOpen,
     query,
     setQuery,
     sort,
     setSort,
+    sortBy,
+    setSortBy,
+    showBanned,
+    setShowBanned,
+    loading,
+    setLoading,
+    initialLoading,
+    setInitialLoading,
+    forceUpdate,
+    setForceUpdate
   } = useContext(PlayerContext);
-  const [showBanned, setShowBanned] = useState('hide');
-  const bannedOptions = [
-    { value: 'show', label: "Show" },
-    { value: 'hide', label: "Hide" },
-    { value: 'only', label: "Only" }
-  ];
+
   var sortOptions = [
     { value: 'rankedScore', label:  t("valueLabels.rankedScore") },
     { value: 'generalScore', label: t("valueLabels.generalScore") },
     { value: 'ppScore', label: t("valueLabels.ppScore") },
     { value: 'wfScore', label: t("valueLabels.wfScore") },
-    { value: '12kScore', label: t("valueLabels.12kScore") },
+    { value: 'score12k', label: t("valueLabels.score12k") },
     { value: 'avgXacc', label: t("valueLabels.avgXacc") },
     { value: 'totalPasses', label: t("valueLabels.totalPasses") },
     { value: 'universalPasses', label: t("valueLabels.universalPasses") },
@@ -77,20 +85,19 @@ const LeaderboardPage = () => {
   
   useEffect(() => {
     const fetchPlayers = async () => {
-      setLoading(true);
+      setInitialLoading(true);
       try {
         setPlayerData([])
         const response = await api.get(`${import.meta.env.VITE_FULL_LEADERBOARD}`, {
         });
         
         setPlayerData(response.data);
-        setPlayerList(response.data);
         setDisplayedPlayers(response.data.slice(0, limit))
       } catch (error) {
         setError(true);
         console.error('Error fetching leaderboard data:', error);
       } finally {
-        setLoading(false);
+        setInitialLoading(false);
       }
     };
   
@@ -99,16 +106,14 @@ const LeaderboardPage = () => {
   
   useEffect(() => {
     if (playerData && playerData.length > 0) {
+      setLoading(true);
       var filteredPlayers = playerData.filter(player => {
-        // First filter by search query
         const matchesQuery = player.name.toLowerCase().includes(query.toLowerCase());
-        
-        // Then filter by banned status
         const matchesBannedFilter = 
-          (showBanned === 'show') ? true :  // Show all players
-          (showBanned === 'hide') ? !player.isBanned :  // Hide banned players
-          (showBanned === 'only') ? player.isBanned :  // Show only banned players
-          true;  // Default fallback
+          (showBanned === 'show') ? true :
+          (showBanned === 'hide') ? !player.isBanned :
+          (showBanned === 'only') ? player.isBanned :
+          true;
         
         return matchesQuery && matchesBannedFilter;
       });
@@ -117,16 +122,12 @@ const LeaderboardPage = () => {
       if(sort === "ASC"){
         filteredPlayers = filteredPlayers.reverse();
       }
-      setPlayerList(filteredPlayers);
-      
-      const currentDisplayCount = Math.min(displayedPlayers.length || limit, filteredPlayers.length);
-      setDisplayedPlayers(filteredPlayers.slice(0, currentDisplayCount));
+      setDisplayedPlayers(filteredPlayers);
+      setLoading(false);
     } else {
-      setPlayerList([]);
       setDisplayedPlayers([]);
+      setLoading(false);
     }
-    setLoading(false);
-    
   }, [playerData, query, sort, sortBy, forceUpdate, t, showBanned]);
 
   function handleQueryChange(e) {
@@ -279,11 +280,16 @@ const LeaderboardPage = () => {
         </div>
         <div className="input-setting">
           <div
-            className="sort settings-class"
-            style={{
-              height: sortOpen ? "10rem" : "0",
-              opacity: sortOpen ? "1" : "0",
-            }}
+            className={`filter settings-class ${filterOpen ? 'visible' : 'hidden'}`}
+          >
+            <h2 className="setting-title">
+              {t("leaderboardPage.settingExp.headerFilter")}
+            </h2>
+            {/* ... rest of filter content ... */}
+          </div>
+
+          <div
+            className={`sort settings-class ${sortOpen ? 'visible' : 'hidden'}`}
           >
             <div className="spacer-setting"></div>
             <h2 className="setting-title">
@@ -328,7 +334,7 @@ const LeaderboardPage = () => {
                       ></path>
                       {/* AZ */}
                       <path
-                        d="M14 11.21C14.39 11.35 14.82 11.15 14.96 10.76L15.24 9.98001H17.27L17.55 10.76C17.66 11.07 17.95 11.26 18.26 11.26C18.34 11.26 18.43 11.25 18.51 11.22C18.9 11.08 19.1 10.65 18.96 10.26L17.25 5.47001C17.08 5.04001 16.69 4.76001 16.25 4.76001C15.81 4.76001 15.42 5.04001 15.25 5.49001L13.55 10.26C13.41 10.65 13.61 11.08 14 11.22V11.21ZM16.73 8.48001H15.77L16.25 7.14001L16.73 8.48001Z"
+                        d="M14 11.21C14.39 11.35 14.82 11.15 14.96 10.76L15.24 9.98001H17.27L17.55 10.76C17.66 11.07 17.95 11.26 18.26 11.26C18.34 11.26 18.43 11.25 18.51 11.22C18.9 11.08 19.1 10.65 18.96 10.26L17.25 5.47001C17.08 5.04001 16.69 4.76001 16.25 4.76001C15.81 4.76001 15.42 5.04001 15.25 5.49001L13.55 10.26C13.41 10.65 13.61 11.08 14 11.22V11.21Z"
                         fill="#ffffff"
                       ></path>
                       <path
@@ -374,81 +380,14 @@ const LeaderboardPage = () => {
                       ></path>
                     </g>
                   </svg>
-
-                 
                 </div>
-                
               </div>
               <div className="recent">
-                
-              <p>Sort by</p>
-              <Select
-                value={sortOptions.find(option => option.value === sortBy)}
-                onChange={handleSortBy}
-                options={sortOptions}
-                menuPortalTarget={document.body}
-                styles={{
-                  input: (base) => ({
-                    ...base, 
-                    color: "#fff"
-                  }),
-                  menuPortal: (base) => ({
-                    ...base,
-                    zIndex: 9999 
-                  }),
-                  container: (provided) => ({
-                    ...provided,
-                    zIndex: 20,
-                  }),
-                  control: (provided, state) => ({
-                    ...provided,
-                    width: "11rem",
-                    backgroundColor: "rgba(255, 255, 255, 0.3)",
-                    border: "none",
-                    outline: "none",
-                    color: "#fff",
-                    boxShadow: 
-                      state.isFocused
-                      && "0 0 0 2px #757575"
-                  }),
-                  singleValue: (provided) => ({
-                    ...provided,
-                    color: "#FFFFFF !important",
-                  }),
-                  indicatorSeparator: (provided) => ({
-                    ...provided,
-                    backgroundColor: "#000000aa",
-                  }),
-                  menu: (provided) => ({
-                    ...provided,
-                    width: "11rem",
-                    backgroundColor: "#070711ef",
-                    borderRadius: "3px",
-                    border: "none",
-                    boxShadow: "none",
-                    textDecoration: "bold",
-                    color: "#fff",
-                    zIndex: 9999,
-                  }),
-                  option: (provided, state) => ({
-                    ...provided,
-                    backgroundColor: state.isSelected
-                      ? "#303040ee"
-                      : "transparent",
-                    zIndex: 9999,
-                    "&:hover": {
-                      backgroundColor: "#555555",
-                    }
-                  }),
-                }}
-              />
-              </div>
-              <div className="recent">
-                <p>Show banned players</p>
+                <p>Sort by</p>
                 <Select
-                  value={bannedOptions.find(option => option.value === showBanned)}
-                  onChange={(option) => setShowBanned(option.value)}
-                  options={bannedOptions}
+                  value={sortOptions.find(option => option.value === sortBy)}
+                  onChange={handleSortBy}
+                  options={sortOptions}
                   menuPortalTarget={document.body}
                   styles={{
                     input: (base) => ({
@@ -506,17 +445,34 @@ const LeaderboardPage = () => {
                   }}
                 />
               </div>
+              <div className="recent" style={{ display: "grid", alignItems: "end" }}>
+              <StateDisplay
+                    currentState={showBanned}
+                    onChange={(newState) => {
+                      setShowBanned(newState);
+                      setDisplayedPlayers([]);
+                      setForceUpdate(prev => !prev);
+                    }}
+                    label="Banned Players"
+                    width={60}
+                    height={24}
+                    padding={3}
+                    showLabel={true}
+                  />
+              </div>
             </div>
           </div>
         </div>
 
-        {!loading ? (
+        {initialLoading ? (
+          <div className="loader"></div>
+        ) : (
           <InfiniteScroll
-            style={{ paddingBottom: "5rem" }}
+            style={{ paddingBottom: "4rem", overflow: "visible" }}
             dataLength={displayedPlayers.length}
             next={() => {
               const currentLength = displayedPlayers.length;
-              const newPagePlayers = playerList.slice(
+              const newPagePlayers = playerData.slice(
                 currentLength,
                 currentLength + limit
               );
@@ -524,12 +480,14 @@ const LeaderboardPage = () => {
                 setDisplayedPlayers(prev => [...prev, ...newPagePlayers]);
               }
             }}
-            hasMore={displayedPlayers.length < playerList.length}
-            loader={<h1>{t("leaderboardPage.infScroll.loading")}</h1>}
+            hasMore={displayedPlayers.length < playerData.length}
+            loader={loading && <div className="loader"></div>}
             endMessage={
-              <p style={{ textAlign: "center" }}>
-                <b>{t("leaderboardPage.infScroll.end")}</b>
-              </p>
+              !loading && displayedPlayers.length > 0 && (
+                <p style={{ textAlign: "center" }}>
+                  <b>{t("leaderboardPage.infScroll.end")}</b>
+                </p>
+              )
             }
           >
             {displayedPlayers.map((l, index) => (
@@ -540,10 +498,8 @@ const LeaderboardPage = () => {
                 pfp={l.pfp}
               />
             ))}
-          </InfiniteScroll>)
-          :
-          <div className="loader"></div>
-        }
+          </InfiniteScroll>
+        )}
       </div>
     </div>
   );

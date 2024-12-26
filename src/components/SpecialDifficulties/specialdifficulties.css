@@ -9,6 +9,7 @@
   background: var(--color-white-t20);
   border: none;
   border-radius: 4px;
+  font-size: 1rem;
   color: var(--color-white);
   display: flex;
   align-items: center;

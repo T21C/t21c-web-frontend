@@ -11,6 +11,8 @@
   min-height: 100vh;
   max-width: 70rem;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
 }
 .level-page .level-body .input-option {
   display: flex;
@@ -169,19 +171,47 @@
 
 .level-page .deletion-filter-inline {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 0.5rem;
+  padding: 0.5rem;
+  background: var(--color-white-t20);
+  border-radius: 3px;
 }
 
-.level-page .deletion-filter-inline select {
-  
-  width: auto;
-  padding: 0.25rem 0.5rem;
-  background: #2a2a2a;
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  margin-left: 0.5rem;
+.level-page .deletion-slider {
+  width: 150px;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.2);
+  outline: none;
+  border-radius: 2px;
+}
+
+.level-page .deletion-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.level-page .deletion-slider::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+}
+
+.level-page .deletion-value {
+  color: var(--color-white);
+  font-size: 0.9rem;
+  text-align: center;
 }
 
 .level-page .checkbox-filters {
@@ -272,4 +302,92 @@
   outline: none;
 }
 
+.level-page .level-body .three-state-slider-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.level-page .level-body .three-state-slider {
+  width: 50px;
+  height: 16px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.2);
+  outline: none;
+  border-radius: 8px;
+  margin: 10px 0;
+  cursor: pointer;
+  position: relative;
+}
+
+.level-page .level-body .three-state-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 0.2s ease;
+  transform: translateX(0);
+  position: relative;
+  z-index: 2;
+}
+
+.level-page .level-body .three-state-slider::-moz-range-thumb {
+  width: 20px;
+  height: 20px;
+  background: white;
+  border-radius: 50%;
+  cursor: pointer;
+  border: none;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              background-color 0.2s ease;
+  position: absoulte;
+  z-index: 2;
+}
+
+.level-page .level-body .three-state-slider[data-state="hide"]::-moz-range-thumb,
+.level-page .level-body .three-state-slider[data-state="hide"]::-webkit-slider-thumb {
+  transform: translateX(0);
+}
+
+.level-page .level-body .three-state-slider[data-state="show"]::-webkit-slider-thumb,
+.level-page .level-body .three-state-slider[data-state="show"]::-moz-range-thumb {
+  transform: translateX(0);
+}
+
+.level-page .level-body .three-state-slider[data-state="only"]::-moz-range-thumb,
+.level-page .level-body .three-state-slider[data-state="only"]::-webkit-slider-thumb {
+  transform: translateX(0);
+}
+
+.level-page .level-body .slider-value {
+  color: var(--color-white);
+  font-size: 0.9rem;
+  text-align: center;
+  min-width: 40px;
+}
+
+.level-page .level-body .three-state-slider::-webkit-slider-thumb:hover {
+  background: #2196F3;
+}
+
+.level-page .level-body .three-state-slider::-moz-range-thumb:hover {
+  background: #2196F3;
+}
+
+
+.level-page .end-message {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  font-weight: bold;
+  justify-content: center;
+  text-align: center;
+}
 /*# sourceMappingURL=levelpage.css.map */

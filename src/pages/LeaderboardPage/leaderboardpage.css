@@ -42,49 +42,66 @@
 }
 .leaderboard-page .leaderboard-body .filter {
   position: relative;
-  z-index: 2;
-  overflow: visible;
+  z-index: 100;
+  background-color: #0004;
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-top: 1rem;
 }
 .leaderboard-page .leaderboard-body .sort {
   position: relative;
-  z-index: 1;
+  z-index: 90;
+  background-color: #0004;
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-top: 1rem;
 }
 .leaderboard-page .leaderboard-body .sort .sort-option {
   display: flex;
-  align-items: center;
+  flex-direction: row;
   gap: 2rem;
 }
-.leaderboard-page .leaderboard-body .sort .sort-option .recent p,
-.leaderboard-page .leaderboard-body .sort .sort-option .diff p,
-.leaderboard-page .leaderboard-body .sort .sort-option .random p {
-  margin-bottom: 0.5rem;
-}
-.leaderboard-page .leaderboard-body .sort .sort-option .recent .wrapper,
-.leaderboard-page .leaderboard-body .sort .sort-option .diff .wrapper,
-.leaderboard-page .leaderboard-body .sort .sort-option .random .wrapper {
+.leaderboard-page .leaderboard-body .sort .sort-option > div {
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 0rem;
 }
-.leaderboard-page .leaderboard-body .sort .sort-option .recent svg,
-.leaderboard-page .leaderboard-body .sort .sort-option .diff svg,
-.leaderboard-page .leaderboard-body .sort .sort-option .random svg {
+.leaderboard-page .leaderboard-body .sort .sort-option .wrapper{
+  display: flex;
+  gap: 0.5rem;
+}
+.leaderboard-page .leaderboard-body .sort .sort-option svg {
   height: 2rem;
-  width: 2rem;
+  width: 2rem;  
   background-color: var(--color-white-t20);
   padding: 0.1rem;
   border-radius: 3px;
   cursor: pointer;
   transition: all 0.2s linear;
 }
-.leaderboard-page .leaderboard-body .sort .sort-option .recent svg:focus,
-.leaderboard-page .leaderboard-body .sort .sort-option .diff svg:focus,
-.leaderboard-page .leaderboard-body .sort .sort-option .random svg:focus {
+.leaderboard-page .leaderboard-body .sort .sort-option svg:focus {
   outline: none;
 }
 .leaderboard-page .leaderboard-body .settings-class {
-  transition: height 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 1s ease-in-out;
-  height: 10rem;
+  padding: 1rem 2rem;
+  position: relative;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: visible;
+  margin-bottom: 1rem;
+  opacity: 1;
+  max-height: 500px;
+}
+.leaderboard-page .leaderboard-body .settings-class.hidden {
+  max-height: 0;
+  opacity: 0;
+  padding: 0;
+  margin: 0;
   overflow: hidden;
+  pointer-events: none;
+}
+.leaderboard-page .leaderboard-body .settings-class.visible {
+  opacity: 1;
+  pointer-events: auto;
 }
 .leaderboard-page .leaderboard-body .spacer-setting {
   width: 100%;
@@ -119,63 +136,54 @@
   gap: 0.5rem;
 }
 
-.leaderboard-page .leaderboard-body .sort .sort-option .banned-toggle .switch-wrapper {
-  display: flex;
-  align-items: center;
-}
-
 .leaderboard-page .leaderboard-body .sort .sort-option .banned-toggle p {
   margin-bottom: 0.5rem;
 }
 
-/* If you don't already have these switch styles */
-.switch {
-  position: relative;
-  display: inline-block;
-  width: 60px;
-  height: 34px;
+.leaderboard-page .leaderboard-body .sort .sort-option .recent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
+.leaderboard-page .leaderboard-body .sort .sort-option .recent p {
+  margin: 0;
 }
 
-.slider {
-  position: absolute;
+/* Filter section */
+.leaderboard-page .leaderboard-body .filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.leaderboard-page .leaderboard-body .filter-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* State display styles */
+.leaderboard-page .leaderboard-body .state-display-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.leaderboard-page .leaderboard-body .state-display {
+  background: rgba(255, 255, 255, 0.2);
   cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--color-white-t10);
-  transition: .4s;
+  position: relative;
+  overflow: visible;
+  box-sizing: border-box;
 }
 
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 26px;
-  width: 26px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: .4s;
+/* Transitions and animations */
+.leaderboard-page .leaderboard-body .sort .sort-option svg {
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-input:checked + .slider {
-  background-color: rgba(134, 114, 222, 0.5);
-}
-
-input:checked + .slider:before {
-  transform: translateX(26px);
-}
-
-.slider.round {
-  border-radius: 34px;
-}
-
-.slider.round:before {
-  border-radius: 50%;
+.leaderboard-page .leaderboard-body .settings-class {
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }/*# sourceMappingURL=leaderboardpage.css.map */

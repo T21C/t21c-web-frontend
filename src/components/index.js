@@ -7,5 +7,6 @@ import ScoreCard from "./ScoreCard/ScoreCard";
 import PassCard from "./PassCard/PassCard";
 import ReferencesPopup from "./ReferencesPopup/ReferencesPopup";
 import MetaTags from './MetaTags/MetaTags';
+import StateDisplay from "./StateDisplay/StateDisplay";
 
-export { Card, Footer, CompleteNav, LevelCard, PlayerCard, ScoreCard, PassCard, ReferencesPopup, MetaTags};
+export { Card, Footer, CompleteNav, LevelCard, PlayerCard, ScoreCard, PassCard, ReferencesPopup, MetaTags, StateDisplay };

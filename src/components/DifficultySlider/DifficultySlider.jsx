@@ -116,9 +116,9 @@ const DifficultySlider = ({
     if (!trackRef.current || isDragging) return;
 
     const rect = trackRef.current.getBoundingClientRect();
-    const clickPosition = e.clientX - rect.left;
+    const clickPosition = Math.min(Math.max(0, e.clientX - rect.left), rect.width);
     const percentage = clickPosition / rect.width;
-    const clickedValue = Math.round(min + (max - min) * percentage);
+    const clickedValue = Math.round(Math.min(Math.max(min, min + (max - min) * percentage), max));
 
     // Find which knob is closer to the clicked position
     const distanceToFirst = Math.abs(values[0] - clickedValue);
@@ -146,6 +146,7 @@ const DifficultySlider = ({
     return false;
   };
   const getGlowColor = (diff) => {
+    if (!diff) return "#FFFFFF";
     if (diff.name[0] === "U") {
       const number = parseInt(diff.name.slice(1));
       
@@ -156,6 +157,10 @@ const DifficultySlider = ({
     return diff.color;
   }
 
+
+  if (difficulties.length === 0) {
+    return null;
+  }
 
   return (
     <div className="difficulty-slider-container">
@@ -186,11 +191,13 @@ const DifficultySlider = ({
         </div>
       </div>
 
+
+
       <div 
         ref={trackRef}
         className="slider-track" 
-        style={{ background: getSliderBackground() }}
-        onClick={handleTrackClick}
+        style={{ background: getSliderBackground()
+         }}
       >
         <div 
           className="range-highlight"
@@ -200,6 +207,9 @@ const DifficultySlider = ({
             background: getSliderBackground(true)
           }}
         />
+              <div className="slider-track-clickable" 
+        onClick={handleTrackClick}
+      />
         <div className="slider-knobs">
           <div 
             className="knob-container" 
@@ -233,7 +243,7 @@ const DifficultySlider = ({
           </div>
         </div>
       </div>
-    </div>
+      </div>
   );
 };
 

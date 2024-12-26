@@ -16,7 +16,7 @@ const LevelContextProvider = (props) => {
     const [hasMore, setHasMore] = useState(true);
     const [pageNumber, setPageNumber] = useState(0);
     const [deletedFilter, setDeletedFilter] = useState("hide");
-    // Add new state for toggles
+    const [clearedFilter, setClearedFilter] = useState("show");
     // Add new states for difficulty filtering with full PGU range
     const [sliderRange, setSliderRange] = useState([1, 60]); // P1 to U20
     const [selectedSpecialDiffs, setSelectedSpecialDiffs] = useState([]); // Empty array for no special difficulties
@@ -35,6 +35,7 @@ const LevelContextProvider = (props) => {
                 hasMore, setHasMore, 
                 pageNumber, setPageNumber,
                 deletedFilter, setDeletedFilter,
+                clearedFilter, setClearedFilter,
                 // Add new states to context value
                 sliderRange, setSliderRange,
                 selectedSpecialDiffs, setSelectedSpecialDiffs

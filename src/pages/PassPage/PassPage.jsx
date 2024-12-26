@@ -1,6 +1,6 @@
 import "./passpage.css";
-import { useContext, useEffect, useState } from "react";
-import { CompleteNav, MetaTags, PassCard } from "../../components";
+import { useContext, useEffect, useState, useCallback } from "react";
+import { CompleteNav, MetaTags, PassCard, StateDisplay } from "../../components";
 import { Tooltip } from "react-tooltip";
 import Select from "react-select";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -13,6 +13,7 @@ import ScrollButton from "../../components/ScrollButton/ScrollButton";
 import { useAuth } from "../../contexts/AuthContext";
 import { RatingInput } from '@/components/RatingComponents/RatingInput';
 import { DifficultyContext } from "../../contexts/DifficultyContext";
+import DifficultySlider from '@/components/DifficultySlider/DifficultySlider';
 const currentUrl = window.location.origin + location.pathname;
 
 const limit = 30;
@@ -21,10 +22,12 @@ const PassPage = () => {
   const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-  const [forceUpdate, setForceUpdate] = useState(false);
   const location = useLocation();
   const { isSuperAdmin } = useAuth();
   const { difficulties } = useContext(DifficultyContext);
+
+  // Filter difficulties by type
+  const pguDifficulties = difficulties.filter(d => d.type === 'PGU');
 
   const {
     passesData,
@@ -42,12 +45,18 @@ const PassPage = () => {
     pageNumber,
     setPageNumber,
     hide12k,
-    setHide12k
+    setHide12k,
+    deletedFilter,
+    setDeletedFilter,
+    selectedLowFilterDiff,
+    setSelectedLowFilterDiff,
+    selectedHighFilterDiff,
+    setSelectedHighFilterDiff,
+    forceUpdate,
+    setForceUpdate,
+    sliderRange,
+    setSliderRange
   } = useContext(PassContext);
-
-  const [deletedFilter, setDeletedFilter] = useState('hide');
-  const [selectedLowFilterDiff, setSelectedLowFilterDiff] = useState('');
-  const [selectedHighFilterDiff, setSelectedHighFilterDiff] = useState('');
 
   const sortOptions = [
     { value: 'RECENT_DESC', label: 'Newest' },
@@ -67,34 +76,9 @@ const PassPage = () => {
     const fetchPasses = async () => {
       setLoading(true);
       try {
-        // Construct the params object conditionally
-        const params = {
-          limit: limit,
-          query, 
-          sort, 
-          offset: pageNumber * limit,
-          deletedFilter,
-          hide12k
-        };
+        // Add console.log for debugging
+        console.log('Fetching with pageNumber:', pageNumber);
         
-        // Pass difficulty filters as raw strings if they exist
-        const lowDiff = selectedLowFilterDiff;
-        const highDiff = selectedHighFilterDiff;
-
-        if (lowDiff !== 0 && highDiff !== 0 && lowDiff > highDiff) {
-          // Swap if min > max
-          params.minDiff = highDiff;
-          params.maxDiff = lowDiff;
-        } else {
-          // Normal case
-          if (lowDiff !== 0) {
-            params.minDiff = lowDiff;
-          }
-          if (highDiff !== 0) {
-            params.maxDiff = highDiff;
-          }
-        }
-
         // Handle ID-based search
         if (query.startsWith("#") && query.length > 1) {
           const passId = query.slice(1);
@@ -112,10 +96,25 @@ const PassPage = () => {
           }
         }
 
-        const response = await api.get(
+
+
+        // Request body for difficulty filtering
+        console.log(pageNumber, limit);
+        const requestBody = {
+          limit,
+          offset: pageNumber * limit,
+          query,
+          sort,
+          deletedFilter,
+          hide12k,
+          minDiff: selectedLowFilterDiff !== 0 ? selectedLowFilterDiff : undefined,
+          maxDiff: selectedHighFilterDiff !== 0 ? selectedHighFilterDiff : undefined
+        };
+
+        const response = await api.post(
           `${import.meta.env.VITE_PASSES}`,
+          requestBody,
           {
-            params: params,
             cancelToken: new axios.CancelToken((c) => (cancel = c)),
           }
         );
@@ -143,31 +142,39 @@ const PassPage = () => {
     fetchPasses();
 
     return () => cancel && cancel();
-  }, [query, sort, pageNumber, forceUpdate, deletedFilter, selectedLowFilterDiff, selectedHighFilterDiff, hide12k]);
+  }, [query, pageNumber, forceUpdate, deletedFilter, hide12k]);
 
+
+
+
+  
   function resetAll() {
+    console.log(`PageNumber change in resetAll: ${pageNumber} -> 0`);
     setPageNumber(0);
     setSort("SCORE_DESC");
     setQuery("");
-    setPassesData([]);
+    // Reset to initial PGU range
+    setSelectedLowFilterDiff("P1");
+    setSelectedHighFilterDiff("U20");
+    setSliderRange([1, 60]);
+    // Reset 12k filter
     setHide12k(false);
+    // Reset deleted filter if admin
+    if (isSuperAdmin) {
+      setDeletedFilter("hide");
+    }
+    // Clear and reload data
+    setPassesData([]);
     setLoading(true);
     setForceUpdate((f) => !f);
   }
 
   function handleQueryChange(e) {
-    // Reset pagination state
+    console.log(`PageNumber change in handleQueryChange: ${pageNumber} -> 0`);
     setPageNumber(0);
     setPassesData([]);
-    setHasMore(true);
-    
-    // Update query
     setQuery(e.target.value);
-    
-    // Optional: Reset loading state
     setLoading(true);
-    
-    // Optional
   }
 
   function handleFilterOpen() {
@@ -175,32 +182,72 @@ const PassPage = () => {
   }
 
   function handleSort(value) {
-    // Reset pagination state
-    setPageNumber(0);
+    console.log(`PageNumber change in handleSort: ${pageNumber} -> 0`);
     setPassesData([]);
-    setHasMore(true);
-    
-    // Update sort
     setSort(value);
+    setPageNumber(0);
+    setLoading(true); 
+    setForceUpdate(f => !f);
   }
 
-  const handleLowFilter = (value) => {
-    setSelectedLowFilterDiff(value);
-    setPageNumber(0);
-    setPassesData([]);
-    setForceUpdate(prev => !prev);
-  };
-
-  const handleHighFilter = (value) => {
-    setSelectedHighFilterDiff(value);
-    setPageNumber(0);
-    setPassesData([]);
-    setForceUpdate(prev => !prev);
-  };
 
   function handleSortOpen() {
     setSortOpen(!sortOpen);
   }
+
+  // Handle slider value updates without triggering immediate fetches
+  function handleSliderChange(newRange) {
+    setSliderRange(newRange);
+    
+    // Find difficulties corresponding to slider values
+    const lowDiff = pguDifficulties.find(d => d.sortOrder === newRange[0]);
+    const highDiff = pguDifficulties.find(d => d.sortOrder === newRange[1]);
+    
+    // Only update the local state, don't trigger fetch
+    setSelectedLowFilterDiff(lowDiff.name || "P1");
+    setSelectedHighFilterDiff(highDiff.name || "U20");
+  }
+
+  // Handle slider changes complete (after drag or click)
+  const handleSliderChangeComplete = useCallback((newRange) => {
+    // Find difficulties corresponding to slider values
+    const lowDiff = pguDifficulties.find(d => d.sortOrder === newRange[0]);
+    const highDiff = pguDifficulties.find(d => d.sortOrder === newRange[1]);
+    
+    // Update state and trigger fetch only on complete
+    setSelectedLowFilterDiff(lowDiff.name || "P1");
+    setSelectedHighFilterDiff(highDiff.name || "U20");
+    setSliderRange(newRange);
+    setPageNumber(0);
+    setPassesData([]);
+    setForceUpdate(f => !f);
+  }, [pguDifficulties]);
+
+
+  if (difficulties.length === 0) {
+    return (
+      <div className="pass-page">
+      <MetaTags
+        title={"Pass List"}
+        description={``}
+        url={currentUrl}
+        image={''}
+        type="article"
+        />
+        <CompleteNav />
+  
+        <div className="background-level"></div>
+      <div className="pass-body">
+        <div className="pass-body-content" style={{marginTop: "45vh"}} >
+          <div className="loader loader-level-page" style={{top: "-6rem"}}></div>
+          <p style={{ fontSize: "1.5rem", fontWeight: "bold", justifyContent: "center", textAlign: "center"}}>Loading difficulties...</p>
+        </div>
+      </div>
+    </div>
+    );
+  }
+
+
 
   return (
     <div className="pass-page">
@@ -297,81 +344,57 @@ const PassPage = () => {
 
         <div className="input-setting">
           <div
-            className="filter settings-class"
-            style={{
-              height: filterOpen ? "10rem" : "0",
-              opacity: filterOpen ? "1" : "0",
-              overflow: filterOpen ? "visible" : "hidden",
-            }}
+            className={`filter settings-class ${filterOpen ? 'visible' : 'hidden'}`}
           >
-            <div className="spacer-setting"></div>
             <h2 className="setting-title">Filter</h2>
-            <div className="diff-filters">
-              <div className="filter-container">
-                <p className="setting-description">Lower diff</p>
-                <RatingInput
-                  value={selectedLowFilterDiff || ''}
-                  onChange={handleLowFilter}
-                  showDiff={true}
-                  difficulties={difficulties}
+            <div className="filter-section">
+              <div className="filter-row">
+                <DifficultySlider
+                  values={sliderRange}
+                  onChange={handleSliderChange}
+                  onChangeComplete={handleSliderChangeComplete}
+                  difficulties={pguDifficulties}
+                  min={1}
+                  max={60}
                 />
               </div>
 
-              <div className="filter-container">
-                <p className="setting-description">Upper diff</p>
-                <RatingInput
-                  value={selectedHighFilterDiff || ''}
-                  onChange={handleHighFilter}
-                  showDiff={true}
-                  difficulties={difficulties}
-                />
+              <div className="checkbox-filters">
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={hide12k}
+                    onChange={() => {
+                      setHide12k(!hide12k);
+                      setPageNumber(0);
+                      setPassesData([]);
+                    }}
+                  />
+                  Only 12K
+                </label>
+                {isSuperAdmin && (
+                  <StateDisplay
+                    currentState={deletedFilter}
+                    onChange={(newState) => {
+                      setDeletedFilter(newState);
+                      setPageNumber(0);
+                      setPassesData([]);
+                      setForceUpdate(prev => !prev);
+                    }}
+                    label="Deleted Passes"
+                    width={60}
+                    height={24}
+                    padding={3}
+                    showLabel={true}
+                  />
+                )}
               </div>
-            </div>
-
-            <div className="checkbox-filters">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={hide12k}
-                  onChange={() => {
-                    setHide12k(!hide12k);
-                    setPageNumber(0);
-                    setPassesData([]);
-                  }}
-                />
-                Only 12K
-              </label>
-              {isSuperAdmin && (
-                <div className="deletion-filter-inline">
-                  <label>
-                    Deleted passes:
-                    <select 
-                      value={deletedFilter}
-                      onChange={(e) => {
-                        setDeletedFilter(e.target.value);
-                        setPageNumber(0);
-                        setPassesData([]);
-                      }}
-                    >
-                      <option value="hide">Hide</option>
-                      <option value="show">Show</option>
-                      <option value="only">Only</option>
-                    </select>
-                  </label>
-                </div>
-              )}
             </div>
           </div>
 
           <div
-            className="sort settings-class"
-            style={{
-              height: sortOpen ? "10rem" : "0",
-              opacity: sortOpen ? "1" : "0",
-              overflow: sortOpen ? "visible" : "hidden",
-            }}
+            className={`sort settings-class ${sortOpen ? 'visible' : 'hidden'}`}
           >
-            <div className="spacer-setting"></div>
             <h2 className="setting-title">Sort</h2>
 
             <div className="sort-option">
@@ -440,12 +463,14 @@ const PassPage = () => {
         </div>
 
         <InfiniteScroll
-          style={{ paddingBottom: "15rem" }}
+          style={{ paddingBottom: "4rem", overflow: "visible" }}
           dataLength={passesData.length}
           next={() => {
-            setPageNumber(prev => prev + 1);
+            const newPage = pageNumber + 1;
+            console.log(`PageNumber change in InfiniteScroll: ${pageNumber} -> ${newPage}`);
+            setPageNumber(newPage);
           }}
-          hasMore={hasMore}
+          hasMore={hasMore && !loading}
           loader={<div className="loader loader-level-page"></div>}
           endMessage={
             <p style={{ textAlign: "center" , paddingTop: "2rem"}}>

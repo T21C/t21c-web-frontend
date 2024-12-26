@@ -38,7 +38,7 @@ const ProfilePage = () => {
       generalScore: t("valueLabels.generalScore"),
       ppScore: t("valueLabels.ppScore"),
       wfScore: t("valueLabels.wfScore"),
-      score12k: t("valueLabels.12kScore"),
+      score12k: t("valueLabels.score12k"),
       avgXacc: t("valueLabels.avgXacc"),
       totalPasses: t("valueLabels.totalPasses"),
       universalPasses: t("valueLabels.universalPasses"),
