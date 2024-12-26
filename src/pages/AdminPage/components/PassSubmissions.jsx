@@ -8,7 +8,9 @@ import { PlayerInput } from '@/components/PlayerComponents/PlayerInput';
 import { toast } from 'react-hot-toast';
 
 const PassSubmissions = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('components');
+  const tPass = (key, params = {}) => t(`passSubmissions.${key}`, params);
+
   const [submissions, setSubmissions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [videoEmbeds, setVideoEmbeds] = useState({});
@@ -210,24 +212,21 @@ const PassSubmissions = () => {
     const submission = submissions.find(s => s.id === submissionId);
     
     if (action === 'approve' && !submission.assignedPlayerId) {
-      alert("No player assigned");
+      alert(tPass('errors.noPlayer'));
       return;
     }
 
     try {
-      // Disable buttons for this card
       setDisabledButtons(prev => ({
         ...prev,
         [submissionId]: true
       }));
       
-      // Set animation state
       setAnimatingCards(prev => ({
         ...prev,
         [submissionId]: action
       }));
   
-      // Wait for animation to complete before removing
       setTimeout(async () => {
         const response = await api.put(`${import.meta.env.VITE_SUBMISSION_API}/passes/${submissionId}/${action}`);
         
@@ -238,7 +237,6 @@ const PassSubmissions = () => {
             delete newState[submissionId];
             return newState;
           });
-          // Clean up states
           setDisabledButtons(prev => {
             const newState = { ...prev };
             delete newState[submissionId];
@@ -247,7 +245,6 @@ const PassSubmissions = () => {
         }
         else {
           console.error('Error updating submission:', response.statusText);
-          // Re-enable buttons on error
           setDisabledButtons(prev => {
             const newState = { ...prev };
             delete newState[submissionId];
@@ -258,7 +255,7 @@ const PassSubmissions = () => {
   
     } catch (error) {
       console.error('Error processing submission:', error);
-      alert("Error processing submission");
+      alert(tPass('errors.processing'));
     }
   };
 
@@ -283,15 +280,14 @@ const PassSubmissions = () => {
       const response = await api.post(`${import.meta.env.VITE_SUBMISSION_API}/auto-approve/passes`);
       
       if (response.data.results) {
-        // Refresh the submissions list
         await fetchPendingSubmissions();
-        
-        // Show success message
-        toast.success(`Auto-approved ${response.data.results.filter(r => r.success).length} submissions`);
+        toast.success(tPass('success.autoAllow', { 
+          count: response.data.results.filter(r => r.success).length 
+        }));
       }
     } catch (error) {
       console.error('Error auto-allowing submissions:', error);
-      toast.error('Failed to auto-allow submissions');
+      toast.error(tPass('errors.autoAllow'));
     } finally {
       setLoading(false);
     }
@@ -308,7 +304,7 @@ const PassSubmissions = () => {
   }, []);
 
   if (submissions?.length === 0 && !isLoading) {
-    return <p className="no-submissions">No pending pass submissions to review</p>;
+    return <p className="no-submissions">{tPass('noSubmissions')}</p>;
   }
 
   return (
@@ -328,22 +324,22 @@ const PassSubmissions = () => {
             <div className="card-content">
               <div className="submission-details">
                 <div className="detail-row">
-                  <span className="detail-label">Level ID:</span>
+                  <span className="detail-label">{tPass('details.levelId')}</span>
                   <span className="detail-value">{submission.levelId}</span>
                 </div>
 
                 <div className="detail-row">
-                  <span className="detail-label">Player:</span>
+                  <span className="detail-label">{tPass('details.player')}</span>
                   <span className="detail-value">{submission.passer}</span>
                 </div>
 
                 <div className="detail-row">
-                  <span className="detail-label">Feeling Diff:</span>
+                  <span className="detail-label">{tPass('details.feelingDiff')}</span>
                   <span className="detail-value">{submission.feelingDifficulty}</span>
                 </div>
 
                 <div className="detail-row">
-                  <span className="detail-label">Judgements:</span>
+                  <span className="detail-label">{tPass('details.judgements.label')}</span>
                   <div className="judgements-details">
                     <span className="judgement early-double">{submission.judgements.earlyDouble}</span>
                     <span className="judgement early-single">{submission.judgements.earlySingle}</span>
@@ -356,28 +352,28 @@ const PassSubmissions = () => {
                 </div>
 
                 <div className="detail-row">
-                  <span className="detail-label">Flags:</span>
+                  <span className="detail-label">{tPass('details.flags.label')}</span>
                   <div className="flags-details">
-                    {submission.flags.is12K && <span>12K</span>}
-                    {submission.flags.isNoHoldTap && <span>NHT</span>}
-                    {submission.flags.is16K && <span>16K</span>}
+                    {submission.flags.is12K && <span>{tPass('details.flags.types.12k')}</span>}
+                    {submission.flags.isNoHoldTap && <span>{tPass('details.flags.types.nht')}</span>}
+                    {submission.flags.is16K && <span>{tPass('details.flags.types.16k')}</span>}
                   </div>
                 </div>
 
                 <div className="detail-row">
-                  <span className="detail-label">Submitter:</span>
+                  <span className="detail-label">{tPass('details.submitter')}</span>
                   <span className="detail-value">{submission.submitterDiscordUsername}</span>
                 </div>
 
                 <div className="detail-row">
-                  <span className="detail-label">Upload Time:</span>
+                  <span className="detail-label">{tPass('details.uploadTime')}</span>
                   <span className="detail-value">
                     {new Date(submission.rawTime).toLocaleString()}
                   </span>
                 </div>
 
                 <div className="player-assignment">
-                  <h4 style={{marginBottom: "5px", fontSize: "0.95rem"}}>Assign player</h4>
+                  <h4 style={{marginBottom: "5px", fontSize: "0.95rem"}}>{tPass('playerAssignment.title')}</h4>
                   <PlayerInput
                     value={playerSearchValues[submission.id] || ''}
                     onChange={(value) => setPlayerSearchValues(prev => ({
@@ -398,20 +394,23 @@ const PassSubmissions = () => {
                         {pendingAssignments[submission.id] ? (
                           <div className="discord-buttons">
                             <span className="assignment-confirmation">
-                              Will assign @{submission.submitterDiscordUsername} to {submission.assignedPlayerName}. Proceed?
+                              {tPass('playerAssignment.discord.confirmMessage', {
+                                username: submission.submitterDiscordUsername,
+                                playerName: submission.assignedPlayerName
+                              })}
                             </span>
                             <button 
                               className="confirm-discord-btn"
                               onClick={() => handleDiscordAssignment(submission.id)}
                               disabled={discordAssignmentStatus[submission.id] === 'assigning'}
                             >
-                              Confirm
+                              {tPass('playerAssignment.discord.buttons.confirm')}
                             </button>
                             <button 
                               className="cancel-discord-btn"
                               onClick={() => cancelDiscordAssignment(submission.id)}
                             >
-                              Cancel
+                              {tPass('playerAssignment.discord.buttons.cancel')}
                             </button>
                           </div>
                         ) : (
@@ -420,9 +419,12 @@ const PassSubmissions = () => {
                             onClick={() => startDiscordAssignment(submission.id)}
                             disabled={discordAssignmentStatus[submission.id] === 'assigning'}
                           >
-                            Assign Discord Info
+                            {tPass('playerAssignment.discord.assignButton')}
                             <span className="assignment-tooltip">
-                              {`${submission.submitterDiscordUsername} → ${submission.assignedPlayerName || 'Unknown Player'}`}
+                              {tPass('playerAssignment.discord.tooltip', {
+                                discordUsername: submission.submitterDiscordUsername,
+                                playerName: submission.assignedPlayerName || 'Unknown Player'
+                              })}
                             </span>
                           </button>
                         )}
@@ -436,14 +438,14 @@ const PassSubmissions = () => {
                       className="approve-btn"
                       disabled={disabledButtons[submission.id]}
                     >
-                      Allow
+                      {tPass('buttons.allow')}
                     </button>
                     <button
                       onClick={() => handleSubmission(submission.id, 'decline')}
                       className="decline-btn"
                       disabled={disabledButtons[submission.id]}
                     >
-                      Decline
+                      {tPass('buttons.decline')}
                     </button>
                   </div>
                 </div>

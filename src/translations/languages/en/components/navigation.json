@@ -1,0 +1,49 @@
+{
+  "main": {
+    "links": {
+      "levels": "Levels",
+      "leaderboard": "Leaderboard",
+      "pass": "Pass",
+      "submission": "Submission",
+      "rating": "Rating",
+      "admin": {
+        "rating": "Rating",
+        "submissions": "Submissions",
+        "announcements": "Announcements",
+        "difficulties": "Difficulties",
+        "backups": "Backups",
+        "back": "Back",
+        "admin": "Admin"
+      }
+    },
+    "notifications": {
+      "moreThanNine": "9+"
+    }
+  },
+  "languages": {
+    "en": {
+      "display": "English (us)",
+      "countryCode": "us"
+    },
+    "kr": {
+      "display": "한국어 (ko)",
+      "countryCode": "kr"
+    },
+    "cn": {
+      "display": "中文 (zh)",
+      "countryCode": "cn"
+    },
+    "id": {
+      "display": "Bahasa Indonesia (id)",
+      "countryCode": "id"
+    },
+    "ru": {
+      "display": "Русский (ru)",
+      "countryCode": "ru"
+    },
+    "de": {
+      "display": "Deutsch (de)",
+      "countryCode": "de"
+    }
+  }
+} 

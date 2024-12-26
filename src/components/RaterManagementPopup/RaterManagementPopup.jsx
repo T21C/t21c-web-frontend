@@ -2,8 +2,13 @@ import React, { useState, useEffect } from 'react';
 import './ratermanagementpopup.css';
 import api from '../../utils/api';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 
 const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) => {
+  const { t } = useTranslation('components');
+  const tRater = (key, params) => t(`raterManagement.raterEntry.${key}`, params);
+  const tError = (key) => t(`raterManagement.errors.${key}`);
+
   const [isExpanded, setIsExpanded] = useState(false);
   const [discordId, setDiscordId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -12,7 +17,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
 
   const handleAdminStatusChange = async () => {
     if (!superAdminPassword) {
-      onError('Password is required');
+      onError(tError('passwordRequired'));
       return;
     }
 
@@ -30,19 +35,19 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
       });
     } catch (error) {
       console.error('Error updating admin status:', error);
-      onError(error.response?.data?.error || 'Failed to update admin status');
+      onError(error.response?.data?.error || tError('updateAdminFailed'));
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleDelete = async () => {
-    if (!window.confirm('Are you sure you want to delete this rater?')) {
+    if (!window.confirm(tError('deleteConfirm'))) {
       return;
     }
 
     if (!superAdminPassword) {
-      onError('Password is required');
+      onError(tError('passwordRequired'));
       return;
     }
 
@@ -53,7 +58,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
       onDelete(rater.id);
     } catch (error) {
       console.error('Error deleting rater:', error);
-      onError(error.response?.data?.error || 'Failed to delete rater');
+      onError(error.response?.data?.error || tError('deleteFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -76,7 +81,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
       setShowDiscordConfirm(true);
     } catch (error) {
       console.error('Error fetching Discord ID:', error);
-      onError('Failed to fetch Discord ID');
+      onError(tError('discordFetchFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -90,7 +95,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
     }
 
     if (rater.isSuperAdmin && !superAdminPassword) {
-      onError('Super admin password is required');
+      onError(tError('passwordRequired'));
       return;
     }
 
@@ -118,7 +123,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
       setDiscordId('');
     } catch (error) {
       console.error('Error updating Discord info:', error);
-      onError(error.response?.data?.error || 'Failed to update Discord info');
+      onError(error.response?.data?.error || tError('updateDiscordFailed'));
     } finally {
       setIsLoading(false);
       setShowDiscordConfirm(false);
@@ -128,7 +133,6 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
 
   const DefaultAvatar = () => (
     <svg fill="#ffffff" width="42px" viewBox="-0.32 -0.32 32.64 32.64" version="1.1" xmlns="http://www.w3.org/2000/svg" stroke="#ffffff" strokeWidth="0.32"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M16 0c-8.836 0-16 7.163-16 16s7.163 16 16 16c8.837 0 16.001-7.163 16.001-16s-7.163-16-16.001-16zM16 30.032c-7.72 0-14-6.312-14-14.032s6.28-14 14-14 14.001 6.28 14.001 14-6.281 14.032-14.001 14.032zM14.53 25.015h2.516v-2.539h-2.516zM15.97 6.985c-1.465 0-2.672 0.395-3.62 1.184s-1.409 2.37-1.386 3.68l0.037 0.073h2.295c0-0.781 0.261-1.904 0.781-2.308s1.152-0.604 1.893-0.604c0.854 0 1.511 0.232 1.971 0.696s0.689 1.127 0.689 1.989c0 0.725-0.17 1.343-0.512 1.855-0.343 0.512-0.916 1.245-1.721 2.198-0.831 0.749-1.344 1.351-1.538 1.806s-0.297 1.274-0.305 2.454h2.405c0-0.74 0.047-1.285 0.14-1.636s0.36-0.744 0.799-1.184c0.945-0.911 1.703-1.802 2.277-2.674 0.573-0.87 0.86-1.831 0.86-2.881 0-1.465-0.443-2.607-1.331-3.424s-2.134-1.226-3.736-1.226z"></path> </g></svg>
-        
   );
 
   return (
@@ -146,9 +150,9 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
           )}
           <div className="rater-text">
             <span className="rater-name">
-              {rater.discordUsername || 'Unknown'}
+              {rater.discordUsername || tRater('unknown')}
               {rater.isSuperAdmin && (
-                <span className="super-admin-icon" title="Admin">
+                <span className="super-admin-icon" title={tRater('adminBadge')}>
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M8 0L10.2 4.8L15.2 5.6L11.6 9.2L12.4 14.4L8 12L3.6 14.4L4.4 9.2L0.8 5.6L5.8 4.8L8 0Z" fill="#FFD700"/>
                   </svg>
@@ -170,7 +174,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
               }}
               disabled={!superAdminPassword}
             >
-              Remove Admin
+              {tRater('buttons.removeAdmin')}
             </button>
           ) : (
             <>
@@ -182,7 +186,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
                 }}
                 disabled={!superAdminPassword}
               >
-                Make Admin
+                {tRater('buttons.makeAdmin')}
               </button>
               <button 
                 className="delete-rater-button"
@@ -191,7 +195,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
                   handleDelete();
                 }}
               >
-                Delete
+                {tRater('buttons.delete')}
               </button>
             </>
           )}
@@ -206,14 +210,14 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
                 type="text"
                 value={discordId}
                 onChange={(e) => setDiscordId(e.target.value)}
-                placeholder="Enter Discord ID"
+                placeholder={tRater('discord.idInput')}
                 disabled={isLoading || showDiscordConfirm}
               />
               <button
                 onClick={handleDiscordIdSubmit}
                 disabled={isLoading || showDiscordConfirm}
               >
-                Validate
+                {tRater('discord.validateButton')}
               </button>
             </div>
 
@@ -231,23 +235,23 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
                   )}
                   <div>
                     <p className="discord-username">@{pendingDiscordInfo.username}</p>
-                    <p className="discord-id">ID: {pendingDiscordInfo.id}</p>
+                    <p className="discord-id">{tRater('discord.idLabel', { id: pendingDiscordInfo.id })}</p>
                   </div>
                 </div>
 
                 <div className="confirm-section">
                   <p className="confirm-message">
-                    Update Discord info to @{pendingDiscordInfo.username}?
+                    {tRater('discord.confirmMessage', { username: pendingDiscordInfo.username })}
                   </p>
                   <div className="confirm-buttons">
                     <button 
                       onClick={() => handleDiscordConfirm(true)}
                       disabled={rater.isSuperAdmin && !superAdminPassword}
                     >
-                      Confirm
+                      {tRater('discord.confirmButton')}
                     </button>
                     <button onClick={() => handleDiscordConfirm(false)}>
-                      Cancel
+                      {tRater('discord.cancelButton')}
                     </button>
                   </div>
                 </div>
@@ -267,12 +271,11 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
                 )}
                 <div>
                   <p className="discord-username">@{rater.discordUsername}</p>
-                  <p className="discord-id">ID: {rater.discordId}</p>
+                  <p className="discord-id">{tRater('discord.idLabel', { id: rater.discordId })}</p>
                 </div>
               </div>
             )}
           </div>
-
         </div>
       )}
     </div>
@@ -280,6 +283,10 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
 };
 
 const RaterManagementPopup = ({ onClose, currentUser }) => {
+  const { t } = useTranslation('components');
+  const tRater = (key) => t(`raterManagement.${key}`);
+  const tError = (key) => t(`raterManagement.errors.${key}`);
+
   const [raters, setRaters] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [newRaterDiscordId, setNewRaterDiscordId] = useState('');
@@ -294,7 +301,7 @@ const RaterManagementPopup = ({ onClose, currentUser }) => {
         setRaters(response.data);
       } catch (error) {
         console.error('Error fetching raters:', error);
-        setErrorMessage('Failed to load raters');
+        setErrorMessage(tError('loadFailed'));
       } finally {
         setIsLoading(false);
       }
@@ -312,7 +319,7 @@ const RaterManagementPopup = ({ onClose, currentUser }) => {
       setNewRaterDiscordId('');
     } catch (error) {
       console.error('Error adding rater:', error);
-      setErrorMessage('Failed to add rater');
+      setErrorMessage(tError('addFailed'));
     }
   };
 
@@ -340,13 +347,13 @@ const RaterManagementPopup = ({ onClose, currentUser }) => {
     <div className="rater-management-overlay">
       <div className="rater-management-popup">
         <div className="popup-header">
-          <h2>Manage Raters</h2>
+          <h2>{tRater('title')}</h2>
           <div className="header-password-input">
             <input
               type="password"
               value={superAdminPassword}
               onChange={(e) => setSuperAdminPassword(e.target.value)}
-              placeholder="Enter super admin password"
+              placeholder={tRater('superAdmin.password.placeholder')}
             />
           </div>
           <button className="close-button" onClick={onClose}>×</button>
@@ -357,14 +364,14 @@ const RaterManagementPopup = ({ onClose, currentUser }) => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by username or ID..."
+            placeholder={tRater('search.placeholder')}
             className="search-input"
           />
         </div>
 
         <div className="raters-list">
           {isLoading ? (
-            <div className="loading">Loading raters...</div>
+            <div className="loading">{tRater('loading')}</div>
           ) : (
             filteredRaters.map(rater => (
               <RaterEntry
@@ -384,9 +391,9 @@ const RaterManagementPopup = ({ onClose, currentUser }) => {
             type="text"
             value={newRaterDiscordId}
             onChange={(e) => setNewRaterDiscordId(e.target.value)}
-            placeholder="Enter Discord ID"
+            placeholder={tRater('addRater.placeholder')}
           />
-          <button onClick={handleAddRater}>Add Rater</button>
+          <button onClick={handleAddRater}>{tRater('addRater.button')}</button>
         </div>
       </div>
 

@@ -1,21 +1,22 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from "../../contexts/AuthContext";
+import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 
 const CallbackPage = () => {
   const navigate = useNavigate();
-  const { handleAccessToken } = useAuth(); // Access setUser and handleAccessToken from AuthContext
-  const [codeFetched, setCodeFetched] = useState(false); // Track if the code has been processed
+  const { handleAccessToken } = useAuth();
+  const [codeFetched, setCodeFetched] = useState(false);
   const [success, setSuccess] = useState(null);
+  const { t } = useTranslation('components');
+  const tAuth = (key) => t(`auth.callback.${key}`);
 
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get('code');
 
-    if (code && !codeFetched) { // Ensure the code is processed only once
-
-      // Set codeFetched to true to prevent multiple fetch calls
+    if (code && !codeFetched) {
       setCodeFetched(true);
       
       axios.post(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_DISCORD_AUTH}`,
@@ -25,24 +26,23 @@ const CallbackPage = () => {
         .then((response) => response.data)
         .then((data) => {
           setSuccess(true);
-          // Set the access token in AuthContext
           handleAccessToken(data.access_token);
-
-          // Redirect back to the root
           navigate('/');
         })
         .catch((error) => {
-          console.error('Error during Discord login process:', error);
+          console.error(tAuth('errors.discord'), error);
           setSuccess(false);
           navigate('/');
         });
     }
-  }, [codeFetched, handleAccessToken, navigate]);
+  }, [codeFetched, handleAccessToken, navigate, tAuth]);
 
   return (
     <div style={{ backgroundColor: 'black', height: '100vh', color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <h2>{success == null ? "Processing Discord login..." :
-           success ? "Login successful, redirecting..." : "Login failed, redirecting..."}</h2>
+      <h2>
+        {success === null ? tAuth('status.processing') :
+         success ? tAuth('status.success') : tAuth('status.failure')}
+      </h2>
     </div>
   );
 };

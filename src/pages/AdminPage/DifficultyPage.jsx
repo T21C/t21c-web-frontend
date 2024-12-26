@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { CompleteNav } from '@/components';
+import { CompleteNav, MetaTags } from '@/components';
 import ScrollButton from '@/components/ScrollButton/ScrollButton';
 import api from '@/utils/api';
 import './css/difficultypage.css';
 import { EditIcon } from '../../components/Icons/EditIcon';
 import { RefreshIcon } from '../../components/Icons/RefreshIcon';
 import { TrashIcon } from '../../components/Icons/TrashIcon';
+import { useTranslation } from 'react-i18next';
 
 const DifficultyPage = () => {
   const { isSuperAdmin } = useAuth();
   const { difficulties, loading: contextLoading, reloadDifficulties } = useDifficultyContext();
+  const { t } = useTranslation('pages');
+  const tDiff = (key, params = {}) => t(`difficulty.${key}`, params);
+  const currentUrl = window.location.origin + location.pathname;
+
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [editingDifficulty, setEditingDifficulty] = useState(null);
@@ -44,13 +49,13 @@ const DifficultyPage = () => {
       
       if (type === 'create') {
         await handleCreateDifficulty();
-        addNotification('Difficulty created successfully');
+        addNotification(tDiff('notifications.created'));
       } else if (type === 'edit') {
         await handleUpdateDifficulty(data);
-        addNotification('Difficulty updated successfully');
+        addNotification(tDiff('notifications.updated'));
       } else if (type === 'delete') {
         await handleDeleteDifficulty(data.id, data.fallbackId);
-        addNotification('Difficulty deleted successfully');
+        addNotification(tDiff('notifications.deleted'));
       }
       
       // Reset all states on success
@@ -82,7 +87,9 @@ const DifficultyPage = () => {
       // Reload difficulties in context
       await reloadDifficulties();
     } catch (err) {
-      const errorMessage = err.response?.status === 403 ? 'Invalid password' : (err.response?.data?.error || 'An error occurred while performing the action');
+      const errorMessage = err.response?.status === 403 
+        ? tDiff('passwordModal.errors.invalid') 
+        : tDiff('passwordModal.errors.generic');
       setError(errorMessage);
       addNotification(errorMessage, 'error');
     }
@@ -170,12 +177,19 @@ const DifficultyPage = () => {
   if (!isSuperAdmin) {
     return (
       <>
+        <MetaTags
+          title={tDiff('meta.title')}
+          description={tDiff('meta.description')}
+          url={currentUrl}
+          image="/og-image.jpg"
+          type="website"
+        />
         <CompleteNav />
         <div className="background-level"></div>
         <div className="difficulty-page">
           <div className="difficulty-container">
-            <h1>Access Denied</h1>
-            <p>You need super admin privileges to access this page.</p>
+            <h1>{tDiff('access.denied.title')}</h1>
+            <p>{tDiff('access.denied.message')}</p>
           </div>
         </div>
       </>
@@ -184,17 +198,25 @@ const DifficultyPage = () => {
 
   return (
     <>
+      <MetaTags
+        title={tDiff('meta.title')}
+        description={tDiff('meta.description')}
+        url={currentUrl}
+        image="/og-image.jpg"
+        type="website"
+      />
       <CompleteNav />
       <div className="background-level"></div>
       <div className="difficulty-page">
         <ScrollButton />
         <div className="difficulty-container">
           <div className="header-container">
-            <h1>Manage Difficulties</h1>
+            <h1>{tDiff('header.title')}</h1>
             <button
               className="refresh-button"
               onClick={reloadDifficulties}
               disabled={isLoading || contextLoading}
+              aria-label={tDiff('header.refresh')}
             >
               <RefreshIcon color="#fff" size="36px" />
             </button>
@@ -207,14 +229,14 @@ const DifficultyPage = () => {
             onClick={() => setIsCreating(true)}
             disabled={isLoading || contextLoading}
           >
-            Create New Difficulty
+            {tDiff('buttons.create')}
           </button>
 
           <div className="difficulties-list">
             {isLoading || contextLoading ? (
-              <div className="loading-message">Loading difficulties...</div>
+              <div className="loading-message">{tDiff('loading.difficulties')}</div>
             ) : difficulties.length === 0 ? (
-              <div className="no-items-message">No difficulties found.</div>
+              <div className="no-items-message">{tDiff('noItems.message')}</div>
             ) : (
               difficulties.map(difficulty => (
                 <div key={difficulty.id} className="difficulty-item">
@@ -226,7 +248,7 @@ const DifficultyPage = () => {
                     />
                     <div className="difficulty-details">
                       <span className="difficulty-name">{difficulty.name}</span>
-                      <span className="difficulty-type">{difficulty.type}</span>
+                      <span className="difficulty-type">{tDiff(`difficultyTypes.${difficulty.type}`)}</span>
                     </div>
                   </div>
                   <div className="difficulty-actions">
@@ -270,27 +292,27 @@ const DifficultyPage = () => {
                 </button>
 
                 <div className={`delete-warning ${showDeleteInput ? 'fade-out' : ''}`}>
-                  <h2>⚠️ Warning: Destructive Action ⚠️</h2>
+                  <h2>{tDiff('modal.delete.warning.title')}</h2>
                   <div className="warning-content">
-                    <p>You are about to delete the difficulty: <strong>{deletingDifficulty?.name}</strong></p>
-                    <p>This action:</p>
+                    <p>{tDiff('modal.delete.warning.message', { name: deletingDifficulty?.name })}</p>
+                    <p>{tDiff('modal.delete.warning.description')}</p>
                     <ul>
-                      <li>Cannot be undone</li>
-                      <li>Will affect all levels using this difficulty</li>
-                      <li>Requires a backup before proceeding</li>
+                      {tDiff('modal.delete.warning.points', { returnObjects: true }).map((point, index) => (
+                        <li key={index}>{point}</li>
+                      ))}
                     </ul>
-                    <p className="warning-highlight">Make sure you have created a backup before proceeding!</p>
+                    <p className="warning-highlight">{tDiff('modal.delete.warning.highlight')}</p>
                   </div>
                   <button 
                     className="understand-button"
                     onClick={() => setShowDeleteInput(true)}
                   >
-                    I understand the risks
+                    {tDiff('buttons.understand')}
                   </button>
                 </div>
 
                 <div className={`delete-input ${showDeleteInput ? 'fade-in' : ''}`} style={{height: showDeleteInput ? 'auto' : '0px'}}>
-                  <h2>Delete Difficulty</h2>
+                  <h2>{tDiff('modal.delete.title')}</h2>
                   <form onSubmit={(e) => {
                     e.preventDefault();
                     if (fallbackId) {
@@ -305,26 +327,28 @@ const DifficultyPage = () => {
                     }
                   }}>
                     <div className="form-group">
-                      <label>Enter Fallback Difficulty ID:</label>
+                      <label>{tDiff('form.labels.fallbackId')}</label>
                       <input
                         type="number"
                         value={fallbackId}
                         onChange={(e) => setFallbackId(e.target.value)}
-                        placeholder="Enter the ID of the replacement difficulty"
+                        placeholder={tDiff('form.placeholders.fallbackId')}
                         required
                       />
-                      <p className="help-text">All levels using {deletingDifficulty?.name} will be updated to use this difficulty instead.</p>
+                      <p className="help-text">
+                        {tDiff('form.helpText.fallbackId', { name: deletingDifficulty?.name })}
+                      </p>
                     </div>
                     <div className="modal-actions">
                       <button type="submit" className="delete-confirm-button">
-                        Delete Difficulty
+                        {tDiff('buttons.delete')}
                       </button>
                       <button
                         type="button"
                         className="cancel-button"
                         onClick={handleCloseDeleteModal}
                       >
-                        Cancel
+                        {tDiff('buttons.cancel')}
                       </button>
                     </div>
                   </form>
@@ -361,7 +385,7 @@ const DifficultyPage = () => {
                     <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </button>
-                <h2>{isCreating ? 'Create New Difficulty' : 'Edit Difficulty'}</h2>
+                <h2>{isCreating ? tDiff('modal.create.title') : tDiff('modal.edit.title')}</h2>
                 <form onSubmit={(e) => {
                   e.preventDefault();
                   if (isCreating) {
@@ -372,7 +396,7 @@ const DifficultyPage = () => {
                   setShowPasswordModal(true);
                 }}>
                   <div className="form-group">
-                    <label>ID:</label>
+                    <label>{tDiff('form.labels.id')}</label>
                     <input
                       type="number"
                       value={isCreating ? newDifficulty.id : editingDifficulty.id}
@@ -389,7 +413,7 @@ const DifficultyPage = () => {
                   </div>
 
                   <div className="form-group">
-                    <label>Name:</label>
+                    <label>{tDiff('form.labels.name')}</label>
                     <input
                       type="text"
                       value={isCreating ? newDifficulty.name : editingDifficulty.name}
@@ -405,7 +429,7 @@ const DifficultyPage = () => {
                   </div>
 
                   <div className="form-group">
-                    <label>Type:</label>
+                    <label>{tDiff('form.labels.type')}</label>
                     <select
                       value={isCreating ? newDifficulty.type : editingDifficulty.type}
                       onChange={(e) => {
@@ -417,13 +441,13 @@ const DifficultyPage = () => {
                       }}
                       required
                     >
-                      <option value="PGU">PGU</option>
-                      <option value="SPECIAL">SPECIAL</option>
+                      <option value="PGU">{tDiff('difficultyTypes.PGU')}</option>
+                      <option value="SPECIAL">{tDiff('difficultyTypes.SPECIAL')}</option>
                     </select>
                   </div>
 
                   <div className="form-group">
-                    <label>Icon URL:</label>
+                    <label>{tDiff('form.labels.icon')}</label>
                     <input
                       type="text"
                       value={isCreating ? newDifficulty.icon : editingDifficulty.icon}
@@ -439,7 +463,7 @@ const DifficultyPage = () => {
                   </div>
 
                   <div className="form-group">
-                    <label>Legacy Icon URL:</label>
+                    <label>{tDiff('form.labels.legacyIcon')}</label>
                     <input
                       type="text"
                       value={isCreating ? newDifficulty.legacyIcon : editingDifficulty.legacyIcon}
@@ -454,7 +478,7 @@ const DifficultyPage = () => {
                   </div>
 
                   <div className="form-group">
-                    <label>Emoji:</label>
+                    <label>{tDiff('form.labels.emoji')}</label>
                     <input
                       type="text"
                       value={isCreating ? newDifficulty.emoji : editingDifficulty.emoji}
@@ -470,7 +494,7 @@ const DifficultyPage = () => {
                   </div>
 
                   <div className="form-group">
-                    <label>Legacy Emoji:</label>
+                    <label>{tDiff('form.labels.legacyEmoji')}</label>
                     <input
                       type="text"
                       value={isCreating ? newDifficulty.legacyEmoji : editingDifficulty.legacyEmoji}
@@ -485,7 +509,7 @@ const DifficultyPage = () => {
                   </div>
 
                   <div className="form-group">
-                    <label>Color:</label>
+                    <label>{tDiff('form.labels.color')}</label>
                     <div className="color-input-container">
                       <input
                         type="color"
@@ -517,7 +541,7 @@ const DifficultyPage = () => {
                   </div>
 
                   <div className="form-group">
-                    <label>Base Score:</label>
+                    <label>{tDiff('form.labels.baseScore')}</label>
                     <input
                       type="number"
                       step="0.01"
@@ -534,7 +558,7 @@ const DifficultyPage = () => {
                   </div>
 
                   <div className="form-group">
-                    <label>Sort Order:</label>
+                    <label>{tDiff('form.labels.sortOrder')}</label>
                     <input
                       type="number"
                       value={isCreating ? newDifficulty.sortOrder : editingDifficulty.sortOrder}
@@ -550,7 +574,7 @@ const DifficultyPage = () => {
                   </div>
 
                   <div className="form-group">
-                    <label>Legacy:</label>
+                    <label>{tDiff('form.labels.legacy')}</label>
                     <input
                       type="text"
                       value={isCreating ? newDifficulty.legacy : editingDifficulty.legacy}
@@ -567,7 +591,7 @@ const DifficultyPage = () => {
 
                   <div className="modal-actions">
                     <button type="submit" className="save-button">
-                      {isCreating ? 'Create' : 'Save'}
+                      {isCreating ? tDiff('buttons.create') : tDiff('buttons.save')}
                     </button>
                     <button
                       type="button"
@@ -580,7 +604,7 @@ const DifficultyPage = () => {
                         }
                       }}
                     >
-                      Cancel
+                      {tDiff('buttons.cancel')}
                     </button>
                   </div>
                 </form>
@@ -591,13 +615,13 @@ const DifficultyPage = () => {
           {showPasswordModal && (
             <div className="password-modal">
               <div className="password-modal-content">
-                <h3>Super Admin Password Required</h3>
-                <p>Please enter your super admin password to {selectedAction.type} the difficulty.</p>
+                <h3>{tDiff('passwordModal.title')}</h3>
+                <p>{tDiff('passwordModal.message', { action: selectedAction.type })}</p>
                 <input
                   type="password"
                   value={superAdminPassword}
                   onChange={(e) => setSuperAdminPassword(e.target.value)}
-                  placeholder="Enter password"
+                  placeholder={tDiff('passwordModal.placeholder')}
                 />
                 {error && <p className="error-message">{error}</p>}
                 <div className="password-modal-actions">
@@ -606,13 +630,13 @@ const DifficultyPage = () => {
                     onClick={handlePasswordSubmit}
                     disabled={!superAdminPassword}
                   >
-                    Confirm
+                    {tDiff('buttons.confirm')}
                   </button>
                   <button 
                     className="cancel-btn"
                     onClick={handleCancel}
                   >
-                    Cancel
+                    {tDiff('buttons.cancel')}
                   </button>
                 </div>
               </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
-import { CompleteNav } from '@/components';
+import { CompleteNav, MetaTags } from '@/components';
 import ScrollButton from '@/components/ScrollButton/ScrollButton';
 import { EditLevelPopup } from '@/components/EditLevelPopup/EditLevelPopup';
 import api from '@/utils/api';
@@ -9,9 +9,14 @@ import NewLevelsTab from './components/NewLevelsTab';
 import ReratesTab from './components/ReratesTab';
 import PassesTab from './components/PassesTab';
 import { RefreshIcon } from '../../components/Icons/RefreshIcon';
+import { useTranslation } from 'react-i18next';
 
 const AnnouncementPage = () => {
   const { isSuperAdmin } = useAuth();
+  const { t } = useTranslation('pages');
+  const tAnnounce = (key) => t(`announcement.${key}`);
+  const currentUrl = window.location.origin + location.pathname;
+
   const [activeTab, setActiveTab] = useState('newLevels');
   const [newLevels, setNewLevels] = useState([]);
   const [rerates, setRerates] = useState([]);
@@ -37,12 +42,10 @@ const AnnouncementPage = () => {
         api.get(`${import.meta.env.VITE_PASSES}/unannounced/new`)
       ]);
       
-      // Update the lists
       setNewLevels(newLevelsResponse.data);
       setRerates(reratesResponse.data);
       setPasses(passesResponse.data);
 
-      // Clean up selected items that are no longer in their respective lists
       setSelectedLevels(prev => {
         return prev.filter(id => {
           if (activeTab === 'newLevels') {
@@ -58,7 +61,7 @@ const AnnouncementPage = () => {
         prev.filter(id => passesResponse.data.some(pass => pass.id === id))
       );
     } catch (err) {
-      setError('Failed to fetch items. Please try again.');
+      setError(tAnnounce('errors.fetchFailed'));
       console.error('Error fetching items:', err);
     } finally {
       setIsLoading(false);
@@ -100,12 +103,11 @@ const AnnouncementPage = () => {
     const hasSelectedItems = selectedLevels.length > 0 || selectedPasses.length > 0;
     if (!hasSelectedItems) return;
 
-    // Validate selected IDs
     const validPassIds = selectedPasses.filter(id => !isNaN(id) && id > 0);
     const validLevelIds = selectedLevels.filter(id => !isNaN(id) && id > 0);
 
     if (validPassIds.length !== selectedPasses.length || validLevelIds.length !== selectedLevels.length) {
-      setError('Some selected items have invalid IDs');
+      setError(tAnnounce('errors.invalidIds'));
       return;
     }
 
@@ -113,43 +115,35 @@ const AnnouncementPage = () => {
     setError(null);
     try {
       if (validLevelIds.length > 0) {
-        // Mark levels as announced
         await api.post(`${import.meta.env.VITE_LEVELS}/announce`, {
           levelIds: validLevelIds
         });
         
-        // Send webhook for levels/rerates
         await api.post(`${import.meta.env.VITE_WEBHOOK}/${activeTab === 'newLevels' ? 'levels' : 'rerates'}`, {
           levelIds: validLevelIds
         });
         
-        // Remove announced levels from the lists
         setNewLevels(prev => prev.filter(level => !validLevelIds.includes(level.id)));
         setRerates(prev => prev.filter(level => !validLevelIds.includes(level.id)));
       }
 
       if (validPassIds.length > 0) {
-        // Mark passes as announced
         await api.post(`${import.meta.env.VITE_PASSES}/announce`, {
           passIds: validPassIds
         });
 
-        // Send webhook for passes
         await api.post(`${import.meta.env.VITE_WEBHOOK}/passes`, {
           passIds: validPassIds
         });
         
-        // Remove announced passes from the list
         setPasses(prev => prev.filter(pass => !validPassIds.includes(pass.id)));
       }
 
-      // Reset selections
       setSelectedLevels([]);
       setSelectedPasses([]);
     } catch (err) {
-      setError('Failed to announce items. Please try again.');
+      setError(tAnnounce('errors.announceFailed'));
       console.error('Error announcing items:', err);
-      // Refetch items to ensure consistency
       await fetchItems();
     } finally {
       setIsAnnouncing(false);
@@ -162,35 +156,26 @@ const AnnouncementPage = () => {
 
   const handleLevelUpdate = async (updatedData) => {
     try {
-      // Refetch all data to ensure consistency
       const [newLevelsResponse, reratesResponse] = await Promise.all([
         api.get(`${import.meta.env.VITE_LEVELS}/unannounced/new`),
         api.get(`${import.meta.env.VITE_LEVELS}/unannounced/rerates`)
       ]);
 
-      // Get the current lists before update
       const currentNewLevels = new Set(newLevels.map(l => l.id));
       const currentRerates = new Set(rerates.map(l => l.id));
 
-      // Update both lists
       setNewLevels(newLevelsResponse.data);
       setRerates(reratesResponse.data);
 
-      // Create sets of IDs after update
       const newNewLevels = new Set(newLevelsResponse.data.map(l => l.id));
       const newRerates = new Set(reratesResponse.data.map(l => l.id));
 
-      // Clean up selected levels that have moved between lists or been removed
       setSelectedLevels(prev => {
         return prev.filter(id => {
-          // If we're in new levels tab, keep only IDs that are still in new levels
           if (activeTab === 'newLevels') {
-            // Remove if it was in new levels but moved to rerates or was removed
             return newNewLevels.has(id) && !newRerates.has(id);
           }
-          // If we're in rerates tab, keep only IDs that are still in rerates
           else if (activeTab === 'rerates') {
-            // Remove if it was in rerates but moved to new levels or was removed
             return newRerates.has(id) && !newNewLevels.has(id);
           }
           return false;
@@ -218,6 +203,13 @@ const AnnouncementPage = () => {
   if (error) {
     return (
       <>
+        <MetaTags
+          title={tAnnounce('meta.title')}
+          description={tAnnounce('meta.description')}
+          url={currentUrl}
+          image="/og-image.jpg"
+          type="website"
+        />
         <CompleteNav />
         <div className="background-level"></div>
         <div className="announcement-page">
@@ -225,7 +217,7 @@ const AnnouncementPage = () => {
           <div className="announcement-container">
             <div className="error-message">{error}</div>
             <button onClick={fetchItems} className="announce-button">
-              Retry
+              {tAnnounce('buttons.retry')}
             </button>
           </div>
         </div>
@@ -235,17 +227,25 @@ const AnnouncementPage = () => {
 
   return (
     <>
+      <MetaTags
+        title={tAnnounce('meta.title')}
+        description={tAnnounce('meta.description')}
+        url={currentUrl}
+        image="/og-image.jpg"
+        type="website"
+      />
       <CompleteNav />
       <div className="background-level"></div>
       <div className="announcement-page">
         <ScrollButton />
         <div className="announcement-container">
           <div className="header-container">
-            <h1>Announcements</h1>
+            <h1>{tAnnounce('header.title')}</h1>
             <button 
               className="refresh-button"
               onClick={fetchItems}
               disabled={isLoading}
+              aria-label={tAnnounce('buttons.refresh')}
             >
               <RefreshIcon color="#fff" size="40px" />
             </button>
@@ -257,40 +257,42 @@ const AnnouncementPage = () => {
                 className={`tab-button ${activeTab === 'newLevels' ? 'active' : ''}`}
                 onClick={() => setActiveTab('newLevels')}
               >
-                New Levels
+                {tAnnounce('tabs.newLevels')}
               </button>
               <button
                 className={`tab-button ${activeTab === 'rerates' ? 'active' : ''}`}
                 onClick={() => setActiveTab('rerates')}
               >
-                Rerates
+                {tAnnounce('tabs.rerates')}
               </button>
               <button
                 className={`tab-button ${activeTab === 'passes' ? 'active' : ''}`}
                 onClick={() => setActiveTab('passes')}
               >
-                Passes
+                {tAnnounce('tabs.passes')}
               </button>
             </div>
-
           </div>
 
           <button
-              className="select-all-button"
-              onClick={handleSelectAll}
-              style={{ marginBottom: '1rem', marginLeft: '1rem' }}
-              disabled={isLoading || (
-                activeTab === 'passes' ? passes.length === 0 : 
-                activeTab === 'newLevels' ? newLevels.length === 0 : 
-                rerates.length === 0
-              )}
-            >
-              {activeTab === 'passes' 
-                ? selectedPasses.length === passes.length ? 'Deselect All' : 'Select All'
-                : selectedLevels.length === (activeTab === 'newLevels' ? newLevels : rerates).length 
-                  ? 'Deselect All' : 'Select All'
-              }
-            </button>
+            className="select-all-button"
+            onClick={handleSelectAll}
+            style={{ marginBottom: '1rem', marginLeft: '1rem' }}
+            disabled={isLoading || (
+              activeTab === 'passes' ? passes.length === 0 : 
+              activeTab === 'newLevels' ? newLevels.length === 0 : 
+              rerates.length === 0
+            )}
+          >
+            {activeTab === 'passes' 
+              ? selectedPasses.length === passes.length 
+                ? tAnnounce('buttons.deselectAll') 
+                : tAnnounce('buttons.selectAll')
+              : selectedLevels.length === (activeTab === 'newLevels' ? newLevels : rerates).length 
+                ? tAnnounce('buttons.deselectAll') 
+                : tAnnounce('buttons.selectAll')
+            }
+          </button>
           {error && <div className="error-message">{error}</div>}
 
           {activeTab === 'newLevels' && (
@@ -334,7 +336,7 @@ const AnnouncementPage = () => {
                 (activeTab === 'passes' ? selectedPasses.length === 0 : selectedLevels.length === 0)
               }
             >
-              {isAnnouncing ? 'Announcing...' : 'Announce Selected'}
+              {isAnnouncing ? tAnnounce('buttons.announcing') : tAnnounce('buttons.announce')}
             </button>
           </div>
         </div>

@@ -1,0 +1,24 @@
+{
+  "buttons": {
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "save": "Save",
+    "delete": "Delete"
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalid_url": "Please enter a valid URL",
+    "min_length": "Must be at least {{count}} characters"
+  },
+  "status": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "success": "Success!"
+  },
+  "navigation": {
+    "home": "Home",
+    "profile": "Profile",
+    "levels": "Levels",
+    "leaderboard": "Leaderboard"
+  }
+} 

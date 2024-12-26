@@ -1,13 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from "../../contexts/AuthContext";
+import { useTranslation } from "react-i18next";
 import "./css/adminsubmissionpage.css";
-import { CompleteNav } from '../../components';
+import { CompleteNav, MetaTags } from '../../components';
 import ScrollButton from '../../components/ScrollButton/ScrollButton';
 import LevelSubmissions from './components/LevelSubmissions';
 import PassSubmissions from './components/PassSubmissions';
 import { RefreshIcon } from '../../components/Icons/RefreshIcon';
 
 const SubmissionManagementPage = () => {
+  const { t } = useTranslation('pages');
+  const tSubmission = (key, params = {}) => t(`submission.${key}`, params);
+  const currentUrl = window.location.origin + location.pathname;
   const [activeTab, setActiveTab] = useState('levels'); // 'levels' or 'passes'
   const [isLoading, setIsLoading] = useState(false);
 
@@ -33,20 +37,28 @@ const SubmissionManagementPage = () => {
 
   return (
     <>
+      <MetaTags
+        title={tSubmission('meta.title')}
+        description={tSubmission('meta.description')}
+        url={currentUrl}
+        image="/og-image.jpg"
+        type="website"
+      />
       <CompleteNav />
       <div className="background-level"></div>
       <div className="submission-admin-page">
         <ScrollButton />
         <div className="submissions-admin-container">
           <div className="header-container">
-            <h1>Submission Moderation</h1>
+            <h1>{tSubmission('header.title')}</h1>
             <button 
               className="refresh-button" 
               onClick={handleRefresh}
               disabled={isLoading}
-              >
-                <RefreshIcon color="#fff" size="40px" />
-               </button>
+              aria-label={tSubmission('header.refresh')}
+            >
+              <RefreshIcon color="#fff" size="40px" />
+            </button>
           </div>
           
           <div className="submission-tabs">
@@ -54,29 +66,29 @@ const SubmissionManagementPage = () => {
               className={`tab-button ${activeTab === 'levels' ? 'active' : ''}`}
               onClick={() => setActiveTab('levels')}
             >
-              Levels
+              {tSubmission('tabs.levels')}
             </button>
             <button 
               className={`tab-button ${activeTab === 'passes' ? 'active' : ''}`}
               onClick={() => setActiveTab('passes')}
             >
-              Passes
+              {tSubmission('tabs.passes')}
             </button>
             {activeTab === 'passes' && (
               <button 
                 className="auto-allow-button"
                 onClick={() => window.dispatchEvent(new Event('autoAllowPasses'))}
               >
-                Auto-allow
+                {tSubmission('tabs.autoAllow')}
               </button>
             )}
           </div>
 
           {activeTab === 'levels' ? (
-              <LevelSubmissions />
-            ) : (
-              <PassSubmissions />
-            )}
+            <LevelSubmissions />
+          ) : (
+            <PassSubmissions />
+          )}
         </div>
       </div>
     </>

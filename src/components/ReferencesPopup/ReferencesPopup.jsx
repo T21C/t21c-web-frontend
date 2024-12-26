@@ -4,6 +4,7 @@ import './referencespopup.css';
 import api from '../../utils/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
+import { useTranslation } from 'react-i18next';
 
 const hexToRgb = (hex) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -37,6 +38,9 @@ const getContrastColor = (backgroundColor) => {
 };
 
 const ReferencesPopup = ({ onClose }) => {
+  const { t } = useTranslation('components');
+  const tRef = (key, params = {}) => t(`references.popup.${key}`, params);
+
   const { isSuperAdmin } = useAuth();
   const { difficultyDict } = useDifficultyContext();
   const [references, setReferences] = useState([]);
@@ -59,7 +63,7 @@ const ReferencesPopup = ({ onClose }) => {
       setReferences(response.data);
     } catch (err) {
       console.error('Error fetching references:', err);
-      setError('Failed to load references');
+      setError(tRef('errors.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -162,7 +166,7 @@ const ReferencesPopup = ({ onClose }) => {
       await fetchReferences();
       setIsEditMode(false);
     } catch (err) {
-      setError('Failed to save changes');
+      setError(tRef('errors.saveFailed'));
       console.error('Error saving references:', err);
     } finally {
       setSaving(false);
@@ -224,7 +228,11 @@ const ReferencesPopup = ({ onClose }) => {
                   </h3>
                 </div>
                 <div className="header-right">
-                  <span className="level-count">{ref.levels.length} level{ref.levels.length === 1 ? '' : 's'}</span>
+                  <span className="level-count">
+                    {ref.levels.length === 1 
+                      ? tRef('levelCount.singular')
+                      : tRef('levelCount.plural', { count: ref.levels.length })}
+                  </span>
                   <span className="expand-icon">
                     {expandedDiffs.has(ref.difficulty.id) ? '▼' : '▶'}
                   </span>
@@ -305,7 +313,7 @@ const ReferencesPopup = ({ onClose }) => {
                     ...prev,
                     [ref.difficulty.id]: e.target.value
                   }))}
-                  placeholder="Enter level IDs separated by commas"
+                  placeholder={tRef('editMode.placeholder')}
                 />
               </div>
             </div>
@@ -373,7 +381,7 @@ const ReferencesPopup = ({ onClose }) => {
                 <path d="M15 6L9 12L15 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
-            <h2>{activeTab} Difficulties</h2>
+            <h2>{tRef('title', { tab: activeTab })}</h2>
             <button className="nav-arrow right" onClick={() => handleTabChange(1)}>
               <svg viewBox="0 0 24 24" width="24" height="24">
                 <path d="M9 6L15 12L9 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -386,7 +394,7 @@ const ReferencesPopup = ({ onClose }) => {
               className="toggle-all-btn"
               onClick={toggleAllDifficulties}
             >
-              {isAllExpanded ? 'Collapse All' : 'Expand All'}
+              {isAllExpanded ? tRef('buttons.collapseAll') : tRef('buttons.expandAll')}
             </button>
           )}
 
@@ -396,7 +404,7 @@ const ReferencesPopup = ({ onClose }) => {
               onClick={handleEditModeToggle}
               disabled={saving}
             >
-              {isEditMode ? 'View Mode' : 'Edit Mode'}
+              {isEditMode ? tRef('buttons.viewMode') : tRef('buttons.editMode')}
             </button>
           )}
 
@@ -407,7 +415,7 @@ const ReferencesPopup = ({ onClose }) => {
                 onClick={handleSaveChanges}
                 disabled={saving}
               >
-                {saving ? 'Saving...' : 'Save Changes'}
+                {saving ? tRef('buttons.saving') : tRef('buttons.saveChanges')}
               </button>
               <button 
                 className="cancel-edit-btn"
@@ -417,14 +425,14 @@ const ReferencesPopup = ({ onClose }) => {
                 }}
                 disabled={saving}
               >
-                Cancel
+                {tRef('buttons.cancel')}
               </button>
             </div>
           )}
         </div>
 
         {loading ? (
-          <div className="loading">Loading references...</div>
+          <div className="loading">{tRef('loading')}</div>
         ) : error ? (
           <div className="error">{error}</div>
         ) : (
@@ -435,33 +443,17 @@ const ReferencesPopup = ({ onClose }) => {
                 transform: `translateX(${activeTab === 'P' ? '0' : activeTab === 'G' ? '-125%' : '-250%'})` 
               }}
             >
-              {/* View Mode Content */}
-              {!isEditMode && (
+              {!isEditMode ? (
                 <>
-                  <div className="tab-content">
-                    {renderTabContent('P')}
-                  </div>
-                  <div className="tab-content">
-                    {renderTabContent('G')}
-                  </div>
-                  <div className="tab-content">
-                    {renderTabContent('U')}
-                  </div>
+                  <div className="tab-content">{renderTabContent('P')}</div>
+                  <div className="tab-content">{renderTabContent('G')}</div>
+                  <div className="tab-content">{renderTabContent('U')}</div>
                 </>
-              )}
-
-              {/* Edit Mode Content */}
-              {isEditMode && (
+              ) : (
                 <>
-                  <div className="tab-content edit-mode">
-                    {renderEditModeContent('P')}
-                  </div>
-                  <div className="tab-content edit-mode">
-                    {renderEditModeContent('G')}
-                  </div>
-                  <div className="tab-content edit-mode">
-                    {renderEditModeContent('U')}
-                  </div>
+                  <div className="tab-content edit-mode">{renderEditModeContent('P')}</div>
+                  <div className="tab-content edit-mode">{renderEditModeContent('G')}</div>
+                  <div className="tab-content edit-mode">{renderEditModeContent('U')}</div>
                 </>
               )}
             </div>

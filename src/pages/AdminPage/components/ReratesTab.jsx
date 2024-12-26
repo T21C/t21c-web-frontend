@@ -3,8 +3,12 @@ import '../css/announcementpage.css';
 import { useState } from 'react';
 import { EditIcon } from '../../../components/Icons/EditIcon';
 import { TrashIcon } from '../../../components/Icons/TrashIcon';
+import { useTranslation } from 'react-i18next';
 
 const ReratesTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRemove, onEdit }) => {
+  const { t } = useTranslation('components');
+  const tRerate = (key, params = {}) => t(`reratesTab.${key}`, params);
+  
   const [removingIds, setRemovingIds] = useState(new Set());
   const [error, setError] = useState('');
 
@@ -20,7 +24,7 @@ const ReratesTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRem
       await api.post(`${import.meta.env.VITE_LEVELS}/markAnnounced/${level.id}`);
     } catch (err) {
       console.error('Error marking level as announced:', err);
-      setError(`Failed to remove ${level.song}. Please try again.`);
+      setError(tRerate('errors.removeLevel', { song: level.song }));
       // Refetch the data to ensure UI is in sync
       window.location.reload();
     } finally {
@@ -49,11 +53,14 @@ const ReratesTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRem
                 <span className="checkmark"></span>
                 <div className="item-details">
                   <div className="item-title">
-                    {level.song} - {level.artist}
+                    {tRerate('details.title', { song: level.song, artist: level.artist })}
                   </div>
                   <div className="item-subtitle">
-                    {level.previousDifficulty?.name} ➔ {level.difficulty?.name}
-                    {level.team && ` • ${level.team}`}
+                    {tRerate('details.subtitle.difficulty', { 
+                      oldDifficulty: level.previousDifficulty?.name,
+                      newDifficulty: level.difficulty?.name
+                    })}
+                    {level.team && tRerate('details.subtitle.team', { team: level.team })}
                   </div>
                 </div>
               </label>
@@ -63,6 +70,7 @@ const ReratesTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRem
                   onClick={() => onEdit(level)}
                   disabled={isLoading || removingIds.has(level.id)}
                   style ={{width: '40px', height: '40px'}}
+                  aria-label={tRerate('buttons.edit')}
                 >
                   <EditIcon color="#fff" size="24px" />
                 </button>
@@ -71,6 +79,7 @@ const ReratesTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRem
                   onClick={() => handleRemove(level)}
                   disabled={isLoading || removingIds.has(level.id)}
                   style ={{width: '40px', height: '40px'}}
+                  aria-label={tRerate('buttons.remove')}
                 >
                   {removingIds.has(level.id) ? (
                     <svg className="spinner" viewBox="0 0 50 50">
@@ -84,7 +93,7 @@ const ReratesTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRem
             </div>
           ))
         ) : (
-          <div className="no-items-message">No rerates to announce</div>
+          <div className="no-items-message">{tRerate('noRerates')}</div>
         )}
       </div>
     </div>

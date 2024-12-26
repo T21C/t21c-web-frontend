@@ -1,10 +1,10 @@
-import { CompleteNav } from "../../components";
+import { CompleteNav, MetaTags } from "../../components";
 import "./css/adminratingpage.css";
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useTranslation } from "react-i18next";
-import { DetailPopup } from "../../components/RatingComponents/DetailPopup";
-import { RatingCard } from "../../components/RatingComponents/RatingCard";
+import { DetailPopup } from "../../components/RatingComponents/detailPopup";
+import { RatingCard } from "../../components/RatingComponents/ratingCard";
 import { EditLevelPopup } from "../../components/EditLevelPopup/EditLevelPopup";
 import ScrollButton from "../../components/ScrollButton/ScrollButton";
 import api from "../../utils/api";
@@ -17,7 +17,9 @@ const truncateString = (str, maxLength) => {
 };
 
 const RatingPage = () => {
-  const {t} = useTranslation();
+  const { t } = useTranslation('pages');
+  const tRating = (key, params = {}) => t(`rating.${key}`, params);
+  const currentUrl = window.location.origin + location.pathname;
   const { user, isSuperAdmin } = useAuth();
   const [ratings, setRatings] = useState(null);
   const [showMessage, setShowMessage] = useState(false);
@@ -102,6 +104,13 @@ const RatingPage = () => {
 
   return (
     <div className="admin-rating-page">
+      <MetaTags
+        title={tRating('meta.title')}
+        description={tRating('meta.description')}
+        url={currentUrl}
+        image="/og-image.jpg"
+        type="website"
+      />
       <CompleteNav />
       <div className="background-level"></div>
       <div className="admin-rating-body">
@@ -112,20 +121,20 @@ const RatingPage = () => {
               className="admin-button"
               onClick={() => setShowReferences(true)}
             >
-              Reference Levels
+              {tRating('buttons.references')}
             </button>
             {isSuperAdmin && (
               <button 
                 className="admin-button"
                 onClick={() => setShowRaterManagement(true)}
               >
-                Manage Raters
+                {tRating('buttons.manageRaters')}
               </button>
             )}
           </div>
           {isSuperAdmin && (
             <div className="view-mode-toggle">
-              <span className="toggle-label">Detailed View</span>
+              <span className="toggle-label">{tRating('toggles.detailedView.label')}</span>
               <label className="switch">
                 <input
                   type="checkbox"
@@ -137,7 +146,7 @@ const RatingPage = () => {
             </div>
           )}
           <div className="view-mode-toggle">
-            <span className="toggle-label">Hide Rated</span>
+            <span className="toggle-label">{tRating('toggles.hideRated.label')}</span>
             <label className="switch">
               <input
                 type="checkbox"
@@ -148,22 +157,11 @@ const RatingPage = () => {
             </label>
           </div>
         </div>
-        {/* <div className={`result-message ${showMessage ? 'visible' : ''}`} 
-          style={{backgroundColor: 
-            ( success? "#2b2" :
-              error? "#b22":
-              "#888"
-            )}}>
-          {success? (<p>{t("levelSubmission.alert.success")}</p>) :
-          error? (<p>{t("levelSubmission.alert.error")}{truncateString(error, 27)}</p>):
-          (<p>{t("levelSubmission.alert.loading")}</p>)}
-          <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
-        </div>*/}
 
         {loading ? (
           <div className="loader loader-level-detail"/>
         ) : ratings === null ? (
-          <div>Error loading ratings</div>
+          <div>{tRating('messages.error')}</div>
         ) : ratings.length > 0 ? (
           <>
             <div className="rating-list">
@@ -198,9 +196,7 @@ const RatingPage = () => {
                   setSelectedLevel(null);
                 }}
                 onUpdate={(updatedData) => {
-                  // Only update ratings if updatedData exists (not a soft delete)
                   if (updatedData) {
-                    // Handle both response structures (direct level object or nested in data)
                     const updatedLevel = updatedData.level || updatedData;
                     setRatings(prev => prev.map(rating => 
                       rating.level.id === updatedLevel.id 
@@ -222,8 +218,8 @@ const RatingPage = () => {
           </>
         ) : (
           <div className="no-ratings-message">
-            <h2>No ratings available</h2>
-            <p>All rated!</p>
+            <h2>{tRating('messages.noRatings.title')}</h2>
+            <p>{tRating('messages.noRatings.subtitle')}</p>
           </div>
         )}
 

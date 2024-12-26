@@ -33,7 +33,8 @@ const PassSubmissionPage = () => {
     is16K: false
   };
 
-  const { t } = useTranslation()
+  const { t } = useTranslation('pages');
+  const tPass = (key, params = {}) => t(`passSubmission.${key}`, params);
   const { user } = useAuth();
   const [form, setForm] = useState(initialFormState);
   const [accuracy, setAccuracy] = useState(null);
@@ -282,15 +283,15 @@ const PassSubmissionPage = () => {
 
     // Check if levelId is present and all judgements are valid
     if (!form.levelId) {
-        setScore(t("passSubmission.score.needId"));
+        setScore(tPass("score.needId"));
     } else if (!newJudgements.every(Number.isInteger)) {
-        setScore(t("passSubmission.score.needJudg"));
+        setScore(tPass("score.needJudg"));
     } else if (!Object.values(passData).every(value => value !== null)) {
-        setScore(t("passSubmission.score.needInfo"));
+        setScore(tPass("score.needInfo"));
     } else if (passData && levelData) {
         setScore(getScoreV2(passData, levelData).toFixed(2));
     } else {
-        setScore(t("passSubmission.score.noInfo"));
+        setScore(tPass("score.noInfo"));
     }
 };
 
@@ -301,13 +302,13 @@ const PassSubmissionPage = () => {
     setSuccess(false);
     if(!user){
       console.error("no user");
-      setError(t("passSubmission.alert.login"));
+      setError(tPass("alert.login"));
 
       return 
     }
     if (!Object.values(isFormValid).every(Boolean)) {
       setSubmitAttempt(true)
-      setError(t("passSubmission.alert.form"));
+      setError(tPass("alert.form"));
       console.error("incomplete form, returning")
       return
     };
@@ -447,406 +448,370 @@ const PassSubmissionPage = () => {
       <CompleteNav />
       <div className="background-level"></div>
       <div className="form-container">
-      <div className={`result-message ${showMessage ? 'visible' : ''}`} 
-        style={{backgroundColor: 
-        ( success? "#2b2" :
-          error? "#b22":
-          "#888"
-        )}}>
-          {success? (<p>{t("passSubmission.alert.success")}</p>) :
-          error? (<p>{t("passSubmission.alert.error")}{truncateString(error?.message || error?.toString() || error, 27)}</p>):
-          (<p>{t("passSubmission.alert.loading")}</p>)}
+        <div className={`result-message ${showMessage ? 'visible' : ''}`} 
+          style={{backgroundColor: 
+          ( success? "#2b2" :
+            error? "#b22":
+            "#888"
+          )}}>
+          {success? (<p>{tPass("alert.success")}</p>) :
+          error? (<p>{tPass("alert.error")}{truncateString(error?.message || error?.toString() || error, 27)}</p>):
+          (<p>{tPass("alert.loading")}</p>)}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
-        </div><form
-  className={`form-container ${videoDetail ? 'shadow' : ''}`}
-  style={{
-    backgroundImage: `url(${videoDetail ? videoDetail.image : placeholder})`,
-  }}
->
-  <div
-    className="thumbnail-container"
-    style={{
-      filter: videoDetail? `drop-shadow(0 0 1rem black)`: ""}}
-  >
-    {videoDetail ? (
-      <iframe
-        src={videoDetail.embed}
-        title="Video player"
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerPolicy="strict-origin-when-cross-origin"
-        allowFullScreen
-      ></iframe>
-    ) : (
-      <div className="thumbnail-text">
-        <h2>{t("passSubmission.thumbnailInfo")}</h2>
-      </div>
-    )}
-  </div>
+        </div>
 
-        <div className="info">
-          <h1>{t("passSubmission.title")}</h1>
-
-          <div className="id-input">
-            <div className="search-container" ref={searchContainerRef}>
-              <input
-                type="text"
-                placeholder={t("passSubmission.submInfo.levelId")}
-                name="levelId"
-                value={form.levelId}
-                onChange={handleLevelInputChange}
-                style={{ borderColor: isFormValidDisplay.levelId ? "" : "red" }}
-              />
-              {searchResults.length > 0 && (
-                <button 
-                  type="button"
-                  className={`expand-button ${isExpanded ? 'expanded' : ''}`}
-                  onClick={toggleExpand}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <polyline points="6 9 12 15 18 9"></polyline>
-                  </svg>
-                </button>
-              )}
-            </div>
-
-            <div className={`level-dropdown ${isExpanded ? 'expanded' : ''}`} ref={dropdownRef}>
-              {searchResults.map((result) => (
-                <div
-                  key={result.id}
-                  className="level-option"
-                  onClick={() => handleLevelSelect(result)}
-                >
-                  <img 
-                    src={result.difficulty?.icon} 
-                    alt={result.difficulty?.name}
-                    className="difficulty-icon"
-                  />
-                  <div className="level-content">
-                    <div className="level-title">
-                      {result.song} (ID: {result.id})
-                    </div>
-                    <div className="level-details">
-                      <span>{result.artist}</span>
-                      <span>{result.creator}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <div className="information">
-                {(level && form.levelId) ? 
-                (<>
-                  <img  src={level.difficulty?.icon} alt={level.difficulty?.name} className="level-icon" />
-
-                <div className="level-info"><h2 className="level-info-sub">{truncateString(level["song"], 30)}</h2>
-                 <div className="level-info-sub"><span>{truncateString(level["artist"], 15)}</span><span>{truncateString(level["creator"], 20)}</span></div></div>
-                 </>)
-                : 
-                (<div className="level-info"><h2 className="level-info-sub" style={{color: "#aaa"}}>{t("passSubmission.levelInfo.song")}</h2>
-                 <div className="level-info-sub"><span style={{color: "#aaa"}}>{t("passSubmission.levelInfo.artist")}</span><span style={{color: "#aaa"}}>{t("passSubmission.levelInfo.charter")}</span></div></div>)
-                 } 
-
-              <div className="verified">
-                {(() => {
-                  const color = !form.levelId
-                    ? '#ffc107'
-                    : levelLoading
-                    ? '#ffc107'
-                    : level
-                    ? '#28a745'
-                    : '#dc3545';
-                  return (
-                    <>
-                    <FetchIcon form={form} levelLoading={levelLoading} level={level} color={color} />
-                  </>
-                  );
-                })()}
+        <form className={`form-container ${videoDetail ? 'shadow' : ''}`}
+          style={{backgroundImage: `url(${videoDetail ? videoDetail.image : placeholder})`}}>
+          <div className="thumbnail-container"
+            style={{filter: videoDetail? `drop-shadow(0 0 1rem black)`: ""}}>
+            {videoDetail ? (
+              <iframe
+                src={videoDetail.embed}
+                title="Video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              ></iframe>
+            ) : (
+              <div className="thumbnail-text">
+                <h2>{tPass("thumbnailInfo")}</h2>
               </div>
-              <a
-                href={level ? (level["id"] == form.levelId ? `/levels/${level["id"]}`: "#" ): "#"}
-                onClick={e => {
-                  if (!level){
-                    e.preventDefault();
-                  }
-                  else if (level) {
-                    if(level["id"] != form.levelId){
-                      e.preventDefault();
-                    }
-                  }
-                }}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="button-goto"
-                style={{
-                  backgroundColor: !form.levelId ? "#ffc107" : levelLoading ? "#ffc107" : level ? "#28a745" : "#dc3545",
-                  cursor: !form.levelId ? "not-allowed": levelLoading ? "wait": level ? "pointer" : "not-allowed",
-                  textShadow: "0 0 5px #0009" ,
-                }}
-              >
-                
-        {!form.levelId
-          ? t("passSubmission.levelFetching.input")
-          : levelLoading
-          ? t("passSubmission.levelFetching.fetching")
-          : level
-          ? t("passSubmission.levelFetching.goto")
-          : t("passSubmission.levelFetching.notfound")}
-              </a>
-            </div>
+            )}
           </div>
 
-          <div className="youtube-input">
+          <div className="info">
+            <h1>{tPass("title")}</h1>
+
+            <div className="id-input">
+              <div className="search-container" ref={searchContainerRef}>
                 <input
                   type="text"
-                  placeholder={t("passSubmission.videoInfo.videoLink")}
-                  name="videoLink"
-                  value={form.videoLink}
-                  onChange={handleInputChange}
-                  style={{ borderColor: isFormValidDisplay.videoLink ? "" : "red" }}
+                  placeholder={tPass("submInfo.levelId")}
+                  name="levelId"
+                  value={form.levelId}
+                  onChange={handleLevelInputChange}
+                  style={{ borderColor: isFormValidDisplay.levelId ? "" : "red" }}
                 />
-                {videoDetail? 
-                (<div className="youtube-info">
-                  <div className="yt-info">
-                    <h4>{t("passSubmission.videoInfo.title")}</h4>
-                    <p style={{maxWidth:"%"}}>{videoDetail.title}</p>
-                  </div>
+                {searchResults.length > 0 && (
+                  <button 
+                    type="button"
+                    className={`expand-button ${isExpanded ? 'expanded' : ''}`}
+                    onClick={toggleExpand}
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                  </button>
+                )}
+              </div>
 
-                  <div className="yt-info">
-                    <h4>{t("passSubmission.videoInfo.channel")}</h4>
-                    <p>{videoDetail.channelName}</p>
+              <div className={`level-dropdown ${isExpanded ? 'expanded' : ''}`} ref={dropdownRef}>
+                {searchResults.map((result) => (
+                  <div
+                    key={result.id}
+                    className="level-option"
+                    onClick={() => handleLevelSelect(result)}
+                  >
+                    <img 
+                      src={result.difficulty?.icon} 
+                      alt={result.difficulty?.name}
+                      className="difficulty-icon"
+                    />
+                    <div className="level-content">
+                      <div className="level-title">
+                        {result.song} (ID: {result.id})
+                      </div>
+                      <div className="level-details">
+                        <span>{result.artist}</span>
+                        <span>{result.creator}</span>
+                      </div>
+                    </div>
                   </div>
+                ))}
+              </div>
 
-                  <div className="yt-info">
-                    <h4>{t("passSubmission.videoInfo.timestamp")}</h4>
-                    <p>{videoDetail.timestamp.replace("T", " ").replace("Z", "")}</p>
+              <div className="information">
+                {(level && form.levelId) ? 
+                (<>
+                  <img src={level.difficulty?.icon} alt={level.difficulty?.name} className="level-icon" />
+                  <div className="level-info">
+                    <h2 className="level-info-sub">{truncateString(level["song"], 30)}</h2>
+                    <div className="level-info-sub">
+                      <span>{truncateString(level["artist"], 15)}</span>
+                      <span>{truncateString(level["creator"], 20)}</span>
+                    </div>
                   </div>
-                </div>)
-                :(
-                  <div className="yt-info">
-                    <p style={{color: "#aaa"}}>{t("passSubmission.videoInfo.nolink")}</p>
-                    <br />
-                    </div>)}
-        </div>
-          <div className="info-input">
-            <input
-              type="text"
-              placeholder={t("passSubmission.submInfo.altname")}
-              name="leaderboardName"
-              value={form.leaderboardName}
-              onChange={handleInputChange}
-            />
-            <div className="tooltip-container">
-              <input
-               type="checkbox" 
-               value={form.isNoHold} 
-               onChange={handleInputChange} 
-               name="isNoHold" 
-               checked={form.isNoHold}
-               />
-              <span style={{
-                  margin: '0 15px 0 10px',
-                  position: 'relative',
-                }}>{t("passSubmission.submInfo.nohold")}</span>
-              <span className="tooltip" style={{
-                 bottom: "110%",
-                  right: "10%"}}>{t("passSubmission.holdTooltip")}</span>
+                </>) : 
+                (<div className="level-info">
+                  <h2 className="level-info-sub" style={{color: "#aaa"}}>{tPass("levelInfo.song")}</h2>
+                  <div className="level-info-sub">
+                    <span style={{color: "#aaa"}}>{tPass("levelInfo.artist")}</span>
+                    <span style={{color: "#aaa"}}>{tPass("levelInfo.charter")}</span>
+                  </div>
+                </div>)}
 
+                <div className="verified">
+                  <FetchIcon form={form} levelLoading={levelLoading} level={level} color={color} />
+                </div>
+
+                <a href={level ? (level["id"] == form.levelId ? `/levels/${level["id"]}`: "#" ): "#"}
+                  onClick={e => {
+                    if (!level || (level && level["id"] != form.levelId)) {
+                      e.preventDefault();
+                    }
+                  }}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="button-goto"
+                  style={{
+                    backgroundColor: !form.levelId ? "#ffc107" : levelLoading ? "#ffc107" : level ? "#28a745" : "#dc3545",
+                    cursor: !form.levelId ? "not-allowed": levelLoading ? "wait": level ? "pointer" : "not-allowed",
+                    textShadow: "0 0 5px #0009"
+                  }}>
+                  {!form.levelId
+                    ? tPass("levelFetching.input")
+                    : levelLoading
+                    ? tPass("levelFetching.fetching")
+                    : level
+                    ? tPass("levelFetching.goto")
+                    : tPass("levelFetching.notfound")}
+                </a>
+              </div>
             </div>
-          </div>
-      
-      
-      <div className="info-input">
+
+            <div className="youtube-input">
               <input
                 type="text"
-                placeholder={t("passSubmission.submInfo.speed")}
+                placeholder={tPass("videoInfo.videoLink")}
+                name="videoLink"
+                value={form.videoLink}
+                onChange={handleInputChange}
+                style={{ borderColor: isFormValidDisplay.videoLink ? "" : "red" }}
+              />
+              {videoDetail ? 
+              (<div className="youtube-info">
+                <div className="yt-info">
+                  <h4>{tPass("videoInfo.title")}</h4>
+                  <p>{videoDetail.title}</p>
+                </div>
+                <div className="yt-info">
+                  <h4>{tPass("videoInfo.channel")}</h4>
+                  <p>{videoDetail.channelName}</p>
+                </div>
+                <div className="yt-info">
+                  <h4>{tPass("videoInfo.timestamp")}</h4>
+                  <p>{videoDetail.timestamp.replace("T", " ").replace("Z", "")}</p>
+                </div>
+              </div>) : 
+              (<div className="yt-info">
+                <p style={{color: "#aaa"}}>{tPass("videoInfo.nolink")}</p>
+                <br />
+              </div>)}
+            </div>
+
+            <div className="info-input">
+              <input
+                type="text"
+                placeholder={tPass("submInfo.altname")}
+                name="leaderboardName"
+                value={form.leaderboardName}
+                onChange={handleInputChange}
+              />
+              <div className="tooltip-container">
+                <input
+                  type="checkbox"
+                  value={form.isNoHold}
+                  onChange={handleInputChange}
+                  name="isNoHold"
+                  checked={form.isNoHold}
+                />
+                <span style={{margin: '0 15px 0 10px', position: 'relative'}}>
+                  {tPass("submInfo.nohold")}
+                </span>
+                <span className="tooltip" style={{bottom: "110%", right: "10%"}}>
+                  {tPass("holdTooltip")}
+                </span>
+              </div>
+            </div>
+
+            <div className="info-input">
+              <input
+                type="text"
+                placeholder={tPass("submInfo.speed")}
                 name="speed"
                 value={form.speed}
                 onChange={handleInputChange}
-                style={{ 
+                style={{
                   borderColor: isFormValidDisplay.speed ? "" : "red",
-                  backgroundColor: isValidSpeed? "transparent" : "#faa"}}
+                  backgroundColor: isValidSpeed ? "transparent" : "#faa"
+                }}
               />
-  
-        <div style={{ display: 'flex', justifyContent: "center", gap: "10px"}}>
-          <input
-            type="text"
-            placeholder={t("passSubmission.submInfo.feelDiff")}
-            name="feelingRating"
-            value={form.feelingRating}
-            onChange={handleInputChange}
-            style={{ 
-              borderColor: isFormValidDisplay.feelingRating ? "" : "red",
-              backgroundColor: !isValidFeelingRating ? "yellow" : ""
-            }} 
-          />
-          <div className="tooltip-container">
-            <span style={{
-                color: 'red',
-                visibility: `${!isValidFeelingRating? '' : 'hidden'}`
-              }}>?</span>
-            <span className="tooltip" 
-                  style={{
-                    visibility: `${!isValidFeelingRating? '' : 'hidden'}`,
-                   bottom: "115%",
-                    right: "-15%"}}>{t("passSubmission.tooltip")}</span>
-          </div>
-        </div>
-      </div>
-      <div
-      className={`info-input-container ${IsUDiff ? 'expand' : ''}`}
-      style={{ 
-        justifyContent: 'end', 
-        marginRight: '2.5rem'
-      }}
-    >
-          <div className="tooltip-container keycount-checkbox">
-            <input
-              type="checkbox"
-              value={form.is12K}
-              onChange={handleInputChange}
-              name="is12K"
-              checked={form.is12K}
-              style={{outline: IsUDiff && submitAttempt && !isFormValid.keyMode ? '2px solid red' : 'none'}}
-            />
-            <span
-              style={{
-                margin: '0 15px 0 10px',
-                position: 'relative',
-              }}
-            >
-              {t('passSubmission.submInfo.is12K')}
-            </span>
-            <span
-              className="tooltip"
-              style={{
-                bottom: '110%'
-              }}
-            >
-              {t('passSubmission.12kTooltip')}
-            </span>
-          </div>
-          <div className="tooltip-container keycount-checkbox">
-            <input
-              type="checkbox"
-              value={form.is16K}
-              onChange={handleInputChange}
-              name="is16K"
-              checked={form.is16K}
-              style={{outline: IsUDiff && submitAttempt && !isFormValid.keyMode ? '2px solid red' : 'none'}}
-            />
-            <span
-              style={{
-                margin: '0 15px 0 10px',
-                position: 'relative',
-              }}
-            >
-              {t('passSubmission.submInfo.is16K')}
-            </span>
-            <span
-              className="tooltip"
-              style={{
-                bottom: '110%'
-              }}
-            >
-              {t('passSubmission.16kTooltip')}
-            </span>
-          </div>
-    </div>
-          <div className="accuracy" style={{backgroundColor: "#222", color: "#fff"}}>
-            <div className="top">
-              <div className="each-accuracy">
-                <p>{t("passSubmission.judgements.ePerfect")}</p>
+              <div style={{ display: 'flex', justifyContent: "center", gap: "10px"}}>
                 <input
                   type="text"
-                  placeholder="#"
-                  name="ePerfect"
-                  value={form.ePerfect}
+                  placeholder={tPass("submInfo.feelDiff")}
+                  name="feelingRating"
+                  value={form.feelingRating}
                   onChange={handleInputChange}
-                  style={{ borderColor: isFormValidDisplay.ePerfect ? "" : "red",
-                    color: "#FCFF4D"
+                  style={{
+                    borderColor: isFormValidDisplay.feelingRating ? "" : "red",
+                    backgroundColor: !isValidFeelingRating ? "yellow" : ""
                   }}
                 />
-              </div>
-
-              <div className="each-accuracy">
-                <p>{t("passSubmission.judgements.perfect")}</p>
-                <input
-                  type="text"
-                  placeholder="#"
-                  name="perfect"
-                  value={form.perfect}
-                  onChange={handleInputChange}
-                  style={{ borderColor: isFormValidDisplay.perfect ? "" : "red",
-                    color: "#5FFF4E" }}
-                />
-              </div>
-
-              <div className="each-accuracy">
-                <p>{t("passSubmission.judgements.lPerfect")}</p>
-                <input type="text"
-                  name="lPerfect"
-                  placeholder="#"
-                  value={form.lPerfect}
-                  onChange={handleInputChange}
-                  style={{ borderColor: isFormValidDisplay.lPerfect ? "" : "red",
-                    color: "#FCFF4D" }}
-                />
+                <div className="tooltip-container">
+                  <span style={{
+                    color: 'red',
+                    visibility: `${!isValidFeelingRating ? '' : 'hidden'}`
+                  }}>?</span>
+                  <span className="tooltip" style={{
+                    visibility: `${!isValidFeelingRating ? '' : 'hidden'}`,
+                    bottom: "115%",
+                    right: "-15%"
+                  }}>{tPass("tooltip")}</span>
+                </div>
               </div>
             </div>
 
-            <div className="bottom">
-              <div className="each-accuracy">
-                <p>{t("passSubmission.judgements.tooearly")}</p>
+            <div className={`info-input-container ${IsUDiff ? 'expand' : ''}`}
+              style={{justifyContent: 'end', marginRight: '2.5rem'}}>
+              <div className="tooltip-container keycount-checkbox">
                 <input
-                  type="text"
-                  placeholder="#"
-                  name="tooEarly"
-                  value={form.tooEarly}
+                  type="checkbox"
+                  value={form.is12K}
                   onChange={handleInputChange}
-                  style={{ borderColor: isFormValidDisplay.tooEarly ? "" : "red",
-                    color: "#FF0000"  }}
+                  name="is12K"
+                  checked={form.is12K}
+                  style={{outline: IsUDiff && submitAttempt && !isFormValid.keyMode ? '2px solid red' : 'none'}}
                 />
+                <span style={{margin: '0 15px 0 10px', position: 'relative'}}>
+                  {tPass("submInfo.is12K")}
+                </span>
+                <span className="tooltip" style={{bottom: '110%'}}>
+                  {tPass("12kTooltip")}
+                </span>
               </div>
-
-              <div className="each-accuracy">
-                <p>{t("passSubmission.judgements.early")}</p>
+              <div className="tooltip-container keycount-checkbox">
                 <input
-                  type="text"
-                  placeholder="#"
-                  name="early"
-                  value={form.early}
+                  type="checkbox"
+                  value={form.is16K}
                   onChange={handleInputChange}
-                  style={{ borderColor: isFormValidDisplay.early ? "" : "red",
-                    color: "#FF6F4D"  }}
+                  name="is16K"
+                  checked={form.is16K}
+                  style={{outline: IsUDiff && submitAttempt && !isFormValid.keyMode ? '2px solid red' : 'none'}}
                 />
-              </div>
-
-              <div className="each-accuracy">
-                <p>{t("passSubmission.judgements.late")}</p>
-                <input
-                  type="text"
-                  placeholder="#"
-                  name="late"
-                  value={form.late}
-                  onChange={handleInputChange}
-                  style={{ borderColor: isFormValidDisplay.late ? "" : "red",
-                    color: "#FF6F4D"  }}
-                />
+                <span style={{margin: '0 15px 0 10px', position: 'relative'}}>
+                  {tPass("submInfo.is16K")}
+                </span>
+                <span className="tooltip" style={{bottom: '110%'}}>
+                  {tPass("16kTooltip")}
+                </span>
               </div>
             </div>
 
-            <div className="acc-score">
-              <p>{t("passSubmission.acc")}{accuracy !== null ? accuracy : 'N/A'}</p>
-              <p>{t("passSubmission.scoreCalc")}{score}</p>
+            <div className="accuracy" style={{backgroundColor: "#222", color: "#fff"}}>
+              <div className="top">
+                <div className="each-accuracy">
+                  <p>{tPass("judgements.ePerfect")}</p>
+                  <input
+                    type="text"
+                    placeholder="#"
+                    name="ePerfect"
+                    value={form.ePerfect}
+                    onChange={handleInputChange}
+                    style={{
+                      borderColor: isFormValidDisplay.ePerfect ? "" : "red",
+                      color: "#FCFF4D"
+                    }}
+                  />
+                </div>
+                <div className="each-accuracy">
+                  <p>{tPass("judgements.perfect")}</p>
+                  <input
+                    type="text"
+                    placeholder="#"
+                    name="perfect"
+                    value={form.perfect}
+                    onChange={handleInputChange}
+                    style={{
+                      borderColor: isFormValidDisplay.perfect ? "" : "red",
+                      color: "#5FFF4E"
+                    }}
+                  />
+                </div>
+                <div className="each-accuracy">
+                  <p>{tPass("judgements.lPerfect")}</p>
+                  <input
+                    type="text"
+                    placeholder="#"
+                    name="lPerfect"
+                    value={form.lPerfect}
+                    onChange={handleInputChange}
+                    style={{
+                      borderColor: isFormValidDisplay.lPerfect ? "" : "red",
+                      color: "#FCFF4D"
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="bottom">
+                <div className="each-accuracy">
+                  <p>{tPass("judgements.tooearly")}</p>
+                  <input
+                    type="text"
+                    placeholder="#"
+                    name="tooEarly"
+                    value={form.tooEarly}
+                    onChange={handleInputChange}
+                    style={{
+                      borderColor: isFormValidDisplay.tooEarly ? "" : "red",
+                      color: "#FF0000"
+                    }}
+                  />
+                </div>
+                <div className="each-accuracy">
+                  <p>{tPass("judgements.early")}</p>
+                  <input
+                    type="text"
+                    placeholder="#"
+                    name="early"
+                    value={form.early}
+                    onChange={handleInputChange}
+                    style={{
+                      borderColor: isFormValidDisplay.early ? "" : "red",
+                      color: "#FF6F4D"
+                    }}
+                  />
+                </div>
+                <div className="each-accuracy">
+                  <p>{tPass("judgements.late")}</p>
+                  <input
+                    type="text"
+                    placeholder="#"
+                    name="late"
+                    value={form.late}
+                    onChange={handleInputChange}
+                    style={{
+                      borderColor: isFormValidDisplay.late ? "" : "red",
+                      color: "#FF6F4D"
+                    }}
+                  />
+                </div>
+              </div>
+
+              <div className="acc-score">
+                <p>{tPass("acc")}{accuracy !== null ? accuracy : 'N/A'}</p>
+                <p>{tPass("scoreCalc")}{score}</p>
+              </div>
             </div>
+
+            <button disabled={submission} className="submit" onClick={handleSubmit}>
+              {tPass("submit")}{submission && (<>{tPass("submitWait")}</>)}
+            </button>
           </div>
-
-          <button disabled={submission} className="submit" onClick={handleSubmit}>{t("passSubmission.submit")}{submission && (<>{t("passSubmission.submitWait")}</>)}</button>
-        </div>
-      </form>
-    </div>
+        </form>
+      </div>
     </div>
   );
 };

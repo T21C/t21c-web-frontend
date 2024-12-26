@@ -21,7 +21,9 @@ const currentUrl = window.location.origin + location.pathname;
 const limit = 30;
 
 const LevelPage = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('pages');
+  const tLevel = (key, params = {}) => t(`level.${key}`, params);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(false);
@@ -227,36 +229,37 @@ const LevelPage = () => {
   if (difficulties.length === 0) {
     return (
       <div className="level-page">
-      <MetaTags
-        title={"Level List"}
-        description={``}
-        url={currentUrl}
-        image={''}
-        type="article"
+        <MetaTags
+          title={tLevel('meta.title')}
+          description={tLevel('meta.description')}
+          url={currentUrl}
+          image={''}
+          type="article"
         />
         <CompleteNav />
   
         <div className="background-level"></div>
-      <div className="level-body">
-        <div className="level-body-content" style={{marginTop: "45vh"}} >
-          <div className="loader loader-level-page" style={{top: "-6rem"}}></div>
-          <p style={{ fontSize: "1.5rem", fontWeight: "bold", justifyContent: "center", textAlign: "center"}}>Loading difficulties...</p>
+        <div className="level-body">
+          <div className="level-body-content" style={{marginTop: "45vh"}} >
+            <div className="loader loader-level-page" style={{top: "-6rem"}}></div>
+            <p style={{ fontSize: "1.5rem", fontWeight: "bold", justifyContent: "center", textAlign: "center"}}>
+              {tLevel('loading.difficulties')}
+            </p>
+          </div>
         </div>
       </div>
-    </div>
     );
   }
 
   return (
-    
     <div className="level-page">
-          <MetaTags
-      title={"Level List"}
-      description={``}
-      url={currentUrl}
-      image={''}
-      type="article"
-    />
+      <MetaTags
+        title={tLevel('meta.title')}
+        description={tLevel('meta.description')}
+        url={currentUrl}
+        image={''}
+        type="article"
+      />
       <CompleteNav />
 
       <div className="background-level"></div>
@@ -288,21 +291,21 @@ const LevelPage = () => {
           <input
             value={query}
             type="text"
-            placeholder={t("levelPage.inputPlaceholder")}
+            placeholder={tLevel('input.placeholder')}
             onChange={handleQueryChange}
           />
 
           <Tooltip id="legacy" place="bottom" noArrow>
-            {t("levelPage.toolTip.legacy")}
+            {tLevel('toolTip.legacy')}
           </Tooltip>
           <Tooltip id="filter" place="bottom" noArrow>
-            {t("levelPage.toolTip.filter")}
+            {tLevel('toolTip.filter')}
           </Tooltip>
           <Tooltip id="sort" place="bottom" noArrow>
-            {t("levelPage.toolTip.sort")}
+            {tLevel('toolTip.sort')}
           </Tooltip>
           <Tooltip id="reset" place="bottom" noArrow>
-            {t("levelPage.toolTip.reset")}
+            {tLevel('toolTip.reset')}
           </Tooltip>
 
           <svg
@@ -377,7 +380,7 @@ const LevelPage = () => {
             className={`filter settings-class ${filterOpen ? 'visible' : 'hidden'}`}
           >
             <h2 className="setting-title">
-              {t("levelPage.settingExp.headerFilter")}
+              {tLevel('settingExp.headerFilter')}
             </h2>
             <div className="filter-section">
               <div className="filter-row">
@@ -430,17 +433,17 @@ const LevelPage = () => {
             className={`sort settings-class ${sortOpen ? 'visible' : 'hidden'}`}
           >
             <h2 className="setting-title">
-              {t("levelPage.settingExp.headerSort")}
+              {tLevel('settingExp.headerSort')}
             </h2>
 
             <div className="sort-option">
               <div className="recent">
-                <p>{t("levelPage.settingExp.sortRecent")}</p>
+                <p>{tLevel('settingExp.sortRecent')}</p>
                 <Tooltip id="ra" place="top" noArrow>
-                  {t("levelPage.toolTip.recentAsc")}
+                  {tLevel('toolTip.recentAsc')}
                 </Tooltip>
                 <Tooltip id="rd" place="top" noArrow>
-                  {t("levelPage.toolTip.recentDesc")}
+                  {tLevel('toolTip.recentDesc')}
                 </Tooltip>
 
                 <div className="wrapper">
@@ -521,14 +524,14 @@ const LevelPage = () => {
               </div>
 
               <div className="diff">
-                <p>{t("levelPage.settingExp.filterDiffs")}</p>
+                <p>{tLevel('settingExp.filterDiffs')}</p>
 
                 <div className="wrapper">
                   <Tooltip id="da" place="top" noArrow>
-                    {t("levelPage.toolTip.difficultyAsc")}
+                    {tLevel('toolTip.difficultyAsc')}
                   </Tooltip>
                   <Tooltip id="dd" place="top" noArrow>
-                    {t("levelPage.toolTip.difficultyDesc")}
+                    {tLevel('toolTip.difficultyDesc')}
                   </Tooltip>
 
                   <svg
@@ -603,9 +606,9 @@ const LevelPage = () => {
               </div>
 
               <div className="random">
-                <p>{t("levelPage.settingExp.sortRandom")}</p>
+                <p>{tLevel('settingExp.sortRandom')}</p>
                 <Tooltip id="rnd" place="top" noArrow>
-                  {t("levelPage.toolTip.random")}
+                  {tLevel('toolTip.random')}
                 </Tooltip>
 
                 <div className="wrapper">
@@ -648,7 +651,7 @@ const LevelPage = () => {
           loader={<div className="loader loader-level-page" style={{zIndex: 1}}></div>}
           endMessage={
             <p className="end-message">
-              <b>{t("levelPage.infScroll.end")}</b>
+              <b>{tLevel('infScroll.end')}</b>
             </p>}
         >
           {levelsData.map((l, index) => (

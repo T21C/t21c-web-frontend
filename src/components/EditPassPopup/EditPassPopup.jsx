@@ -14,6 +14,9 @@ import { useNavigate } from 'react-router-dom';
 import { PlayerInput } from '../../components/PlayerComponents/PlayerInput';
 
 export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
+  const { t } = useTranslation('components');
+  const tPass = (key) => t(`passPopups.edit.${key}`);
+
   const initialFormState = {
     levelId: pass.levelId.toString() || '',
     videoLink: pass.videoLink || '',
@@ -32,7 +35,6 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
     is16K: pass.is16K || false,
     isAnnounced: pass.isAnnounced || false
   };
-  const { t } = useTranslation()
   const { user } = useAuth();
   const [form, setForm] = useState(initialFormState);
   const [accuracy, setAccuracy] = useState(null);
@@ -216,15 +218,15 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
 
     // Check if levelId is present and all judgements are valid
     if (!form.levelId) {
-        setScore(t("passSubmission.score.needId"));
+        setScore(tPass('form.score.needId'));
     } else if (!newJudgements.every(Number.isInteger)) {
-        setScore(t("passSubmission.score.needJudg"));
+        setScore(tPass('form.score.needJudg'));
     } else if (!Object.values(passData).every(value => value !== null)) {
-        setScore(t("passSubmission.score.needInfo"));
+        setScore(tPass('form.score.needInfo'));
     } else if (passData && levelData) {
         setScore(getScoreV2(passData, levelData).toFixed(2));
     } else {
-        setScore(t("passSubmission.score.noInfo"));
+        setScore(tPass('form.score.noInfo'));
     }
 };
 
@@ -235,7 +237,7 @@ const handleSubmit = async (e) => {
   
   if (!user) {
     console.error("no user");
-    setError(t("passSubmission.alert.login"));
+    setError(tPass('alert.login'));
     return;
   }
 
@@ -247,7 +249,7 @@ const handleSubmit = async (e) => {
 
   if (!isFormValid) {
     setSubmitAttempt(true);
-    setError(t("passSubmission.alert.form"));
+    setError(tPass('alert.form'));
     console.error("incomplete form, returning");
     return;
   }
@@ -315,7 +317,7 @@ const handleSubmit = async (e) => {
   };
 
   const handleDelete = async () => {
-    if (!window.confirm("Do you want to delete this pass? This can be undone later.")) {
+    if (!window.confirm(tPass('confirmations.delete'))) {
       return;
     }
 
@@ -339,7 +341,7 @@ const handleSubmit = async (e) => {
   };
 
   const handleRestore = async () => {
-    if (!window.confirm("Do you want to restore this pass?")) {
+    if (!window.confirm(tPass('confirmations.restore'))) {
       return;
     }
 
@@ -370,7 +372,7 @@ const handleSubmit = async (e) => {
           onClick={onClose}
           aria-label="Close"
         >
-          ×
+          {tPass('close')}
         </button>
 
         <div className={`result-message ${showMessage ? 'visible' : ''}`} 
@@ -379,10 +381,10 @@ const handleSubmit = async (e) => {
             error? "#b22":
             "#888"
           }}>
-          {success? (<p>{t("passSubmission.alert.success")}</p>) :
-           error? (<p>{t("passSubmission.alert.error")}{truncateString(error, 28)}</p>):
-           (<p>{t("passSubmission.alert.loading")}</p>)}
-          <button onClick={() => setShowMessage(false)} className="close-btn">×</button>
+          {success? (<p>{tPass('alert.success')}</p>) :
+           error? (<p>{tPass('alert.error')}{truncateString(error, 28)}</p>):
+           (<p>{tPass('alert.loading')}</p>)}
+          <button onClick={() => setShowMessage(false)} className="close-btn">{tPass('close')}</button>
         </div>
 
         <form className={`form-container ${videoDetail ? 'shadow' : ''}`}
@@ -405,23 +407,22 @@ const handleSubmit = async (e) => {
               ></iframe>
             ) : (
               <div className="thumbnail-text">
-                <h2>{t("passSubmission.thumbnailInfo")}</h2>
+                <h2>{tPass('thumbnailInfo')}</h2>
               </div>
             )}
           </div>
 
           <div className="info">
-            <h1>{t("passSubmission.title")}</h1>
+            <h1>{tPass('title')}</h1>
 
             <div className="id-input">
               <input
                 type="text"
-                placeholder={t("passSubmission.submInfo.levelId")}
+                placeholder={tPass('form.submInfo.levelId')}
                 name="levelId"
                 value={form.levelId}
                 onChange={handleInputChange}  
                 style={{ borderColor: isFormValidDisplay.levelId ? "" : "red" }}
-              
               />
 
               <div className="information">
@@ -429,8 +430,8 @@ const handleSubmit = async (e) => {
                   (<div className="level-info"><h2 className="level-info-sub">{truncateString(level.song, 30)}</h2>
                    <div className="level-info-sub"><span>{truncateString(level.artist, 15)}</span><span>{truncateString(level.creator, 20)}</span></div></div>)
                   : 
-                  (<div className="level-info"><h2 className="level-info-sub" style={{color: "#aaa"}}>{t("passSubmission.levelInfo.song")}</h2>
-                   <div className="level-info-sub"><span style={{color: "#aaa"}}>{t("passSubmission.levelInfo.artist")}</span><span style={{color: "#aaa"}}>{t("passSubmission.levelInfo.charter")}</span></div></div>)
+                  (<div className="level-info"><h2 className="level-info-sub" style={{color: "#aaa"}}>{tPass('form.levelInfo.song')}</h2>
+                   <div className="level-info-sub"><span style={{color: "#aaa"}}>{tPass('form.levelInfo.artist')}</span><span style={{color: "#aaa"}}>{tPass('form.levelInfo.charter')}</span></div></div>)
                    } 
 
                 <div className="verified">
@@ -471,12 +472,12 @@ const handleSubmit = async (e) => {
                 >
                   
           {!form.levelId
-            ? t("passSubmission.levelFetching.input")
+            ? tPass('form.levelFetching.input')
             : levelLoading
-            ? t("passSubmission.levelFetching.fetching")
+            ? tPass('form.levelFetching.fetching')
             : level
-            ? t("passSubmission.levelFetching.goto")
-            : t("passSubmission.levelFetching.notfound")}
+            ? tPass('form.levelFetching.goto')
+            : tPass('form.levelFetching.notfound')}
                 </a>
               </div>
             </div>
@@ -484,7 +485,7 @@ const handleSubmit = async (e) => {
             <div className="youtube-input">
                   <input
                     type="text"
-                    placeholder={t("passSubmission.videoInfo.videoLink")}
+                    placeholder={tPass('form.videoInfo.videoLink')}
                     name="videoLink"
                     value={form.videoLink}
                     onChange={handleInputChange}
@@ -493,23 +494,23 @@ const handleSubmit = async (e) => {
                   {videoDetail? 
                   (<div className="youtube-info">
                     <div className="yt-info">
-                      <h4>{t("passSubmission.videoInfo.title")}</h4>
+                      <h4>{tPass('form.videoInfo.title')}</h4>
                       <p style={{maxWidth:"%"}}>{videoDetail.title}</p>
                     </div>
 
                     <div className="yt-info">
-                      <h4>{t("passSubmission.videoInfo.channel")}</h4>
+                      <h4>{tPass('form.videoInfo.channel')}</h4>
                       <p>{videoDetail.channelName}</p>
                     </div>
 
                     <div className="yt-info">
-                      <h4>{t("passSubmission.videoInfo.timestamp")}</h4>
+                      <h4>{tPass('form.videoInfo.timestamp')}</h4>
                       <p>{videoDetail.timestamp.replace("T", " ").replace("Z", "")}</p>
                     </div>
                   </div>)
                   :(
                     <div className="yt-info">
-                      <p style={{color: "#aaa"}}>{t("passSubmission.videoInfo.nolink")}</p>
+                      <p style={{color: "#aaa"}}>{tPass('form.videoInfo.nolink')}</p>
                       <br />
                       </div>)}
             </div>
@@ -541,10 +542,10 @@ const handleSubmit = async (e) => {
                   <span style={{
                       margin: '0 15px 0 10px',
                       position: 'relative',
-                    }}>{t("passSubmission.submInfo.nohold")}</span>
+                    }}>{tPass('form.submInfo.nohold')}</span>
                   <span className="tooltip" style={{
                      bottom: "110%",
-                      right: "10%"}}>{t("passSubmission.holdTooltip")}</span>
+                      right: "10%"}}>{tPass('holdTooltip')}</span>
 
                 </div>
               </div>
@@ -553,7 +554,7 @@ const handleSubmit = async (e) => {
           <div className="info-input">
                   <input
                     type="text"
-                    placeholder={t("passSubmission.submInfo.speed")}
+                    placeholder={tPass('form.submInfo.speed')}
                     name="speed"
                     value={form.speed}
                     onChange={handleInputChange}
@@ -565,7 +566,7 @@ const handleSubmit = async (e) => {
             <div style={{ display: 'flex', justifyContent: "center", gap: "10px"}}>
               <input
                 type="text"
-                placeholder={t("passSubmission.submInfo.feelDiff")}
+                placeholder={tPass('form.submInfo.feelDiff')}
                 name="feelingRating"
                 value={form.feelingRating}
                 onChange={handleInputChange}
@@ -583,7 +584,7 @@ const handleSubmit = async (e) => {
                       style={{
                         visibility: `${!isValidFeelingRating? '' : 'hidden'}`,
                        bottom: "115%",
-                        right: "-15%"}}>{t("passSubmission.tooltip")}</span>
+                        right: "-15%"}}>{tPass('tooltip')}</span>
               </div>
             </div>
           </div>
@@ -605,7 +606,7 @@ const handleSubmit = async (e) => {
                     position: 'relative',
                   }}
                 >
-                  {t('passSubmission.submInfo.is12K')}
+                  {tPass('form.submInfo.is12K')}
                 </span>
                 <span
                   className="tooltip"
@@ -613,7 +614,7 @@ const handleSubmit = async (e) => {
                     bottom: '110%'
                   }}
                 >
-                  {t('passSubmission.12kTooltip')}
+                  {tPass('12kTooltip')}
                 </span>
               </div>
               <div className="tooltip-container keycount-checkbox">
@@ -630,7 +631,7 @@ const handleSubmit = async (e) => {
                     position: 'relative',
                   }}
                 >
-                  {t('passSubmission.submInfo.is16K')}
+                  {tPass('form.submInfo.is16K')}
                 </span>
                 <span
                   className="tooltip"
@@ -638,7 +639,7 @@ const handleSubmit = async (e) => {
                     bottom: '110%'
                   }}
                 >
-                  {t('passSubmission.16kTooltip')}
+                  {tPass('16kTooltip')}
                 </span>
               </div>
         </div>
@@ -657,7 +658,7 @@ const handleSubmit = async (e) => {
               <div className="accuracy" style={{backgroundColor: "#222", color: "#fff"}}>
                 <div className="top">
                   <div className="each-accuracy">
-                    <p>{t("passSubmission.judgements.ePerfect")}</p>
+                    <p>{tPass('form.judgements.ePerfect')}</p>
                     <input
                       type="text"
                       placeholder="#"
@@ -671,7 +672,7 @@ const handleSubmit = async (e) => {
                   </div>
 
                   <div className="each-accuracy">
-                    <p>{t("passSubmission.judgements.perfect")}</p>
+                    <p>{tPass('form.judgements.perfect')}</p>
                     <input
                       type="text"
                       placeholder="#"
@@ -684,7 +685,7 @@ const handleSubmit = async (e) => {
                   </div>
 
                   <div className="each-accuracy">
-                    <p>{t("passSubmission.judgements.lPerfect")}</p>
+                    <p>{tPass('form.judgements.lPerfect')}</p>
                     <input type="text"
                       name="lPerfect"
                       placeholder="#"
@@ -698,7 +699,7 @@ const handleSubmit = async (e) => {
 
                 <div className="bottom">
                   <div className="each-accuracy">
-                    <p>{t("passSubmission.judgements.tooearly")}</p>
+                    <p>{tPass('form.judgements.tooearly')}</p>
                     <input
                       type="text"
                       placeholder="#"
@@ -711,7 +712,7 @@ const handleSubmit = async (e) => {
                   </div>
 
                   <div className="each-accuracy">
-                    <p>{t("passSubmission.judgements.early")}</p>
+                    <p>{tPass('form.judgements.early')}</p>
                     <input
                       type="text"
                       placeholder="#"
@@ -724,7 +725,7 @@ const handleSubmit = async (e) => {
                   </div>
 
                   <div className="each-accuracy">
-                    <p>{t("passSubmission.judgements.late")}</p>
+                    <p>{tPass('form.judgements.late')}</p>
                     <input
                       type="text"
                       placeholder="#"
@@ -738,8 +739,8 @@ const handleSubmit = async (e) => {
                 </div>
 
                 <div className="acc-score">
-                  <p>{t("passSubmission.acc")}{accuracy !== null ? accuracy : 'N/A'}</p>
-                  <p>{t("passSubmission.scoreCalc")}{score}</p>
+                  <p>{tPass('acc')}{accuracy !== null ? accuracy : 'N/A'}</p>
+                  <p>{tPass('scoreCalc')}{score}</p>
                 </div>
               </div>
 
@@ -749,7 +750,7 @@ const handleSubmit = async (e) => {
                   className="submit" 
                   onClick={handleSubmit}
                 >
-                  {submission ? t("passSubmission.submitWait") : t("passSubmission.submit")}
+                  {submission ? tPass('form.buttons.submitWait') : tPass('form.buttons.submit')}
                 </button>
                 
                 <button 
@@ -758,12 +759,11 @@ const handleSubmit = async (e) => {
                   onClick={pass.isDeleted ? handleRestore : handleDelete}
                   disabled={submission}
                 >
-                  {submission ? (pass.isDeleted ? 'Restoring...' : 'Deleting...') : 
-                   (pass.isDeleted ? 'Restore' : 'Delete')}
+                  {submission ? 
+                    (pass.isDeleted ? tPass('form.buttons.delete.restoring') : tPass('form.buttons.delete.deleting')) : 
+                    (pass.isDeleted ? tPass('form.buttons.delete.restore') : tPass('form.buttons.delete.default'))}
                 </button>
               </div>
-
-
             </div>
           </form>
         </div>

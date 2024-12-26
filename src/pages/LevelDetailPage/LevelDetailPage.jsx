@@ -36,9 +36,10 @@ const getHighScores = (players) => {
 };
 
 const LevelDetailPage = () => {
-  const {t} = useTranslation()
+  const { t } = useTranslation('pages');
+  const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
+  
   const { detailPage } = useLocation();
-  // cange how to get param
   const {id} = useParams()
   const [res, setRes] = useState(null);
   const [displayedPlayers, setDisplayedPlayers] = useState([]);
@@ -196,7 +197,7 @@ const LevelDetailPage = () => {
   <>
     <MetaTags
       title={res?.level?.song}
-      description={`Chart of ${res?.level?.song} by ${res?.level?.creator}`}
+      description={tLevel('meta.description', { song: res?.level?.song, creator: res?.level?.creator })}
       url={currentUrl}
       image={''}
       type="article"
@@ -207,13 +208,13 @@ const LevelDetailPage = () => {
 
       <div className="wrapper-level wrapper-level-top">
       {res?.level?.isDeleted ? (
-      <div className="deletion-banner-wrapper">
-        <div className="deletion-banner">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-          </svg>
-          <span>This level has been deleted</span>
-        </div>
+        <div className="deletion-banner-wrapper">
+          <div className="deletion-banner">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span>{tLevel('banners.deleted')}</span>
+          </div>
         </div>
       ) : res?.level?.isHidden ? (
         <div className="deletion-banner-wrapper">
@@ -221,13 +222,12 @@ const LevelDetailPage = () => {
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
-            <span>This level has been hidden</span>
+            <span>{tLevel('banners.hidden')}</span>
           </div>
         </div>
       ) : null}
     
         <div className="header">
-
           <div className="left"
             style={{
               backgroundImage: `url(${res && videoDetail ? videoDetail.image: "defaultImageURL"})`}}>
@@ -247,14 +247,13 @@ const LevelDetailPage = () => {
                 {res.level.team ? res.level.team : res.level.creator}
                 &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;{res.level.artist}
               </p>
-              
             </div>
           </div>
           {isSuperAdmin && (
-          <button 
+            <button 
               className="edit-button svg-stroke"
               onClick={() => setOpenEditDialog(true)}
-              title="Edit level details"
+              title={tLevel('buttons.edit')}
             >
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -263,122 +262,136 @@ const LevelDetailPage = () => {
             </button>
           )}
           <div className="right"> 
-            
             {res.level.dlLink && (
-              <a className="svg-stroke" href={res.level.dlLink} target="_blank">
+              <a className="svg-stroke" href={res.level.dlLink} target="_blank" title={tLevel('links.download')}>
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path d="M17 17H17.01M17.4 14H18C18.9319 14 19.3978 14 19.7654 14.1522C20.2554 14.3552 20.6448 14.7446 20.8478 15.2346C21 15.6022 21 16.0681 21 17C21 17.9319 21 18.3978 20.8478 18.7654C20.6448 19.2554 20.2554 19.6448 19.7654 19.8478C19.3978 20 18.9319 20 18 20H6C5.06812 20 4.60218 20 4.23463 19.8478C3.74458 19.6448 3.35523 19.2554 3.15224 18.7654C3 18.3978 3 17.9319 3 17C3 16.0681 3 15.6022 3.15224 15.2346C3.35523 14.7446 3.74458 14.3552 4.23463 14.1522C4.60218 14 5.06812 14 6 14H6.6M12 15V4M12 15L9 12M12 15L15 12" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </a>
             )}
             {res.level.workshopLink && (
-              <a href={res.level.workshopLink} target="_blank">
-                     <svg className="svg-fill" fill="#ffffff" viewBox="3 3 26 26" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M 22 6 C 18.745659 6 16.09469 8.6041857 16.007812 11.837891 L 12.337891 17.083984 C 12.065931 17.032464 11.786701 17 11.5 17 C 10.551677 17 9.673638 17.297769 8.9472656 17.800781 L 4 15.84375 L 4 21.220703 L 7.1054688 22.449219 C 7.5429388 24.475474 9.3449541 26 11.5 26 C 13.703628 26 15.534282 24.405137 15.917969 22.310547 L 21.691406 17.984375 C 21.794183 17.989633 21.895937 18 22 18 C 25.309 18 28 15.309 28 12 C 28 8.691 25.309 6 22 6 z M 22 8 C 24.206 8 26 9.794 26 12 C 26 14.206 24.206 16 22 16 C 19.794 16 18 14.206 18 12 C 18 9.794 19.794 8 22 8 z M 22 9 A 3 3 0 0 0 22 15 A 3 3 0 0 0 22 9 z M 11.5 18 C 13.43 18 15 19.57 15 21.5 C 15 23.43 13.43 25 11.5 25 C 10.078718 25 8.8581368 24.145398 8.3105469 22.925781 L 10.580078 23.824219 C 10.882078 23.944219 11.192047 24.001953 11.498047 24.001953 C 12.494047 24.001953 13.436219 23.403875 13.824219 22.421875 C 14.333219 21.137875 13.703922 19.683781 12.419922 19.175781 L 10.142578 18.273438 C 10.560118 18.097145 11.019013 18 11.5 18 z"></path></g></svg>
-            
+              <a href={res.level.workshopLink} target="_blank" title={tLevel('links.workshop')}>
+                <svg className="svg-fill" fill="#ffffff" viewBox="3 3 26 26" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M20 10.875C20.3013 10.875 20.5733 10.6948 20.6907 10.4173C20.8081 10.1399 20.7482 9.81916 20.5384 9.60289L16.5384 5.47789C16.3972 5.33222 16.2029 5.25 16 5.25C15.7971 5.25 15.6029 5.33222 15.4616 5.47789L11.4616 9.60289C11.2519 9.81916 11.1919 10.1399 11.3093 10.4173C11.4268 10.6948 11.6988 10.875 12 10.875H15.25V18C15.25 18.4142 15.5858 18.75 16 18.75C16.4142 18.75 16.75 18.4142 16.75 18L16.75 10.875H20Z"/>
+                </svg>
               </a>
             )}
-
           </div>
         </div>
 
         <div className="body">
           <div className="info">
-
             <div className="info-item">
-              <p>{t("detailPage.#1Clears.clear")}</p>
+              <p>{tLevel('stats.firstClear.label')}</p>
               <span className="info-desc">
                 {!infoLoading ? 
                   (displayedPlayers.length > 0 ? 
-                    `${getHighScores(displayedPlayers).firstClear.player.name} | ${getHighScores(displayedPlayers).firstClear.vidUploadTime.slice(0, 10)}` 
+                    tLevel('stats.firstClear.value', {
+                      player: getHighScores(displayedPlayers).firstClear.player.name,
+                      date: getHighScores(displayedPlayers).firstClear.vidUploadTime.slice(0, 10)
+                    })
                     : "-")
-                  : t("detailPage.waiting")}
+                  : tLevel('stats.waiting')}
               </span>
             </div>
 
             <div className="info-item">
-              <p>{t("detailPage.#1Clears.score")}</p>
+              <p>{tLevel('stats.highestScore.label')}</p>
               <span className="info-desc">
                 {!infoLoading ? 
                   (displayedPlayers.length > 0 ? 
-                    `${getHighScores(displayedPlayers).highestScore.player.name} | ${getHighScores(displayedPlayers).highestScore.scoreV2.toFixed(2)}` 
+                    tLevel('stats.highestScore.value', {
+                      player: getHighScores(displayedPlayers).highestScore.player.name,
+                      score: getHighScores(displayedPlayers).highestScore.scoreV2.toFixed(2)
+                    })
                     : "-")
-                  : t("detailPage.waiting")}
+                  : tLevel('stats.waiting')}
               </span>
             </div>
 
             <div className="info-item">
-              <p>{t("detailPage.#1Clears.speed")}</p>
+              <p>{tLevel('stats.highestSpeed.label')}</p>
               <span className="info-desc">
                 {!infoLoading ? 
                   (displayedPlayers.length > 0 && getHighScores(displayedPlayers).highestSpeed ? 
-                    `${getHighScores(displayedPlayers).highestSpeed.player.name} | ${getHighScores(displayedPlayers).highestSpeed.speed || 1}×` 
-                    : "-")
-                  : t("detailPage.waiting")}
+                    tLevel('stats.highestSpeed.value', {
+                      player: getHighScores(displayedPlayers).highestSpeed.player.name,
+                      speed: getHighScores(displayedPlayers).highestSpeed.speed || 1
+                    })
+                    : tLevel('stats.highestSpeed.noSpeed'))
+                  : tLevel('stats.waiting')}
               </span>
             </div>
 
             <div className="info-item">
-              <p>{t("detailPage.#1Clears.accuracy")}</p>
+              <p>{tLevel('stats.highestAccuracy.label')}</p>
               <span className="info-desc">
                 {!infoLoading ? 
                   (displayedPlayers.length > 0 ? 
-                    `${getHighScores(displayedPlayers).highestAcc.player.name} | ${(getHighScores(displayedPlayers).highestAcc.accuracy * 100).toFixed(2)}%` 
+                    tLevel('stats.highestAccuracy.value', {
+                      player: getHighScores(displayedPlayers).highestAcc.player.name,
+                      accuracy: (getHighScores(displayedPlayers).highestAcc.accuracy * 100).toFixed(2)
+                    })
                     : "-")
-                  : t("detailPage.waiting")}
+                  : tLevel('stats.waiting')}
               </span>
             </div>
 
             <div className="info-item">
-              <p>{t("detailPage.#1Clears.numOClear")}</p>
+              <p>{tLevel('stats.totalClears.label')}</p>
               <span className="info-desc">
-                {!infoLoading ? displayedPlayers.length : t("detailPage.waiting")}
+                {!infoLoading ? 
+                  tLevel('stats.totalClears.value', { count: displayedPlayers.length }) 
+                  : tLevel('stats.waiting')}
               </span>
             </div>
 
             <button className="info-button" onClick={changeDialogState}>
-              {t("detailPage.dialog.fullInfo")}
+              {tLevel('dialog.fullInfo')}
             </button>
           </div>
 
           <div className="youtube">
             {videoDetail ? 
               <iframe
-              src={videoDetail.embed}
-              title="Video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-            ></iframe>
-          :
-          <div
-            className="thumbnail-container"
-            style={{
-              backgroundImage: `url(${videoDetail? videoDetail.image: placeholder})`,
-            }}
-          >
-            <div className="thumbnail-text">
-              <p>Thumbnail not found</p>
-              {res.level.videoLink && <a href={res.level.videoLink}>Go to video</a>}
-            </div>
-          </div>
-          }
+                src={videoDetail.embed}
+                title="Video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              ></iframe>
+            :
+              <div
+                className="thumbnail-container"
+                style={{
+                  backgroundImage: `url(${videoDetail? videoDetail.image: placeholder})`,
+                }}
+              >
+                <div className="thumbnail-text">
+                  <p>{tLevel('links.thumbnailNotFound.text')}</p>
+                  {res.level.videoLink && 
+                    <a href={res.level.videoLink}>{tLevel('links.thumbnailNotFound.goToVideo')}</a>
+                  }
+                </div>
+              </div>
+            }
           </div>
         </div>
 
         <div className="rank">
-          <h1>{t("detailPage.leaderboard.header")}</h1>
+          <h1>{tLevel('leaderboard.header')}</h1>
           {displayedPlayers && displayedPlayers.length > 0 ? (
             <div className="sort">
-                <Tooltip id="tm" place="top" noArrow>
-                {t("detailPage.leaderboard.toolTip.time")}
-                </Tooltip>
-                <Tooltip id="ac" place="top" noArrow>
-                {t("detailPage.leaderboard.toolTip.accuracy")}
-                </Tooltip>
-                <Tooltip id="sc" place="top" noArrow>
-                {t("detailPage.leaderboard.toolTip.score")}
-                </Tooltip>
+              <Tooltip id="tm" place="top" noArrow>
+                {tLevel('leaderboard.tooltips.time')}
+              </Tooltip>
+              <Tooltip id="ac" place="top" noArrow>
+                {tLevel('leaderboard.tooltips.accuracy')}
+              </Tooltip>
+              <Tooltip id="sc" place="top" noArrow>
+                {tLevel('leaderboard.tooltips.score')}
+              </Tooltip>
 
               <svg className="svg-stroke" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
               data-tooltip-id = "tm"
@@ -432,21 +445,16 @@ const LevelDetailPage = () => {
           ) : <></>}
           <div className="rank-list">
             {!infoLoading ? 
-            
-              
-            displayedPlayers && displayedPlayers.length > 0 ? (
-              displayedPlayers.map((each, index) => (
-                <ClearCard scoreData={each} index={index}/>
-              ))
-            ) : (
-              <h3>{t("detailPage.leaderboard.notBeaten")}</h3>
-            )
-
-            :
-
-            <div className="loader loader-level-detail-rank"></div>
-
-          }
+              displayedPlayers && displayedPlayers.length > 0 ? (
+                displayedPlayers.map((each, index) => (
+                  <ClearCard scoreData={each} index={index} key={index}/>
+                ))
+              ) : (
+                <h3>{tLevel('leaderboard.notBeaten')}</h3>
+              )
+              :
+              <div className="loader loader-level-detail-rank"></div>
+            }
           </div>
         </div>
       </div>

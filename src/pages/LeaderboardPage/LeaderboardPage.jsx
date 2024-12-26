@@ -14,18 +14,33 @@ import ScrollButton from "../../components/ScrollButton/ScrollButton";
 import { MetaTags } from "../../components";
 
 const currentUrl = window.location.origin + location.pathname;
-
 const limit = 30;
 
 const LeaderboardPage = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('pages');
+  const tLeaderboard = (key, params = {}) => t(`leaderboard.${key}`, params);
+  
   const [error, setError] = useState(false);
   const location = useLocation();
 
   const bannedOptions = [
-    { value: 'show', label: "Show" },
-    { value: 'hide', label: "Hide" },
-    { value: 'only', label: "Only" }
+    { value: 'show', label: tLeaderboard('bannedPlayers.options.show') },
+    { value: 'hide', label: tLeaderboard('bannedPlayers.options.hide') },
+    { value: 'only', label: tLeaderboard('bannedPlayers.options.only') }
+  ];
+
+  const sortOptions = [
+    { value: 'rankedScore', label: tLeaderboard('sortOptions.rankedScore') },
+    { value: 'generalScore', label: tLeaderboard('sortOptions.generalScore') },
+    { value: 'ppScore', label: tLeaderboard('sortOptions.ppScore') },
+    { value: 'wfScore', label: tLeaderboard('sortOptions.wfScore') },
+    { value: 'score12k', label: tLeaderboard('sortOptions.score12k') },
+    { value: 'avgXacc', label: tLeaderboard('sortOptions.avgXacc') },
+    { value: 'totalPasses', label: tLeaderboard('sortOptions.totalPasses') },
+    { value: 'universalPasses', label: tLeaderboard('sortOptions.universalPasses') },
+    { value: 'WFPasses', label: tLeaderboard('sortOptions.WFPasses') },
+    { value: 'topDiff', label: tLeaderboard('sortOptions.topDiff') },
+    { value: 'top12kDiff', label: tLeaderboard('sortOptions.top12kDiff') }
   ];
 
   const {
@@ -52,20 +67,6 @@ const LeaderboardPage = () => {
     forceUpdate,
     setForceUpdate
   } = useContext(PlayerContext);
-
-  var sortOptions = [
-    { value: 'rankedScore', label:  t("valueLabels.rankedScore") },
-    { value: 'generalScore', label: t("valueLabels.generalScore") },
-    { value: 'ppScore', label: t("valueLabels.ppScore") },
-    { value: 'wfScore', label: t("valueLabels.wfScore") },
-    { value: 'score12k', label: t("valueLabels.score12k") },
-    { value: 'avgXacc', label: t("valueLabels.avgXacc") },
-    { value: 'totalPasses', label: t("valueLabels.totalPasses") },
-    { value: 'universalPasses', label: t("valueLabels.universalPasses") },
-    { value: 'WFPasses', label: t("valueLabels.WFPasses") },
-    { value: 'topDiff', label: t("valueLabels.topDiff") },
-    { value: 'top12kDiff', label: t("valueLabels.top12kDiff") },
-  ];
 
   function sortByField(data) {
     return data.sort((a, b) => {
@@ -179,8 +180,8 @@ const LeaderboardPage = () => {
   return (
     <div className="leaderboard-page">
       <MetaTags
-        title="Leaderboard"
-        description="View top players and rankings"
+        title={tLeaderboard('meta.title')}
+        description={tLeaderboard('meta.description')}
         url={currentUrl}
         image="/leaderboard-preview.jpg"
         type="website"
@@ -197,18 +198,18 @@ const LeaderboardPage = () => {
           <input
             value={query}
             type="text"
-            placeholder={t("leaderboardPage.inputPlaceholder")}
+            placeholder={tLeaderboard('input.placeholder')}
             onChange={handleQueryChange}
           />
 
           <Tooltip id="filter" place="bottom" noArrow>
-            {t("leaderboardPage.toolTip.filter")}
+            {tLeaderboard('tooltips.filter')}
           </Tooltip>
           <Tooltip id="sort" place="bottom" noArrow>
-            {t("leaderboardPage.toolTip.sort")}
+            {tLeaderboard('tooltips.sort')}
           </Tooltip>
           <Tooltip id="reset" place="bottom" noArrow>
-            {t("leaderboardPage.toolTip.reset")}
+            {tLeaderboard('tooltips.reset')}
           </Tooltip>
 
           <svg
@@ -283,7 +284,7 @@ const LeaderboardPage = () => {
             className={`filter settings-class ${filterOpen ? 'visible' : 'hidden'}`}
           >
             <h2 className="setting-title">
-              {t("leaderboardPage.settingExp.headerFilter")}
+              {tLeaderboard('settings.filter.header')}
             </h2>
             {/* ... rest of filter content ... */}
           </div>
@@ -293,17 +294,17 @@ const LeaderboardPage = () => {
           >
             <div className="spacer-setting"></div>
             <h2 className="setting-title">
-              {t("leaderboardPage.settingExp.headerSort")}
+              {tLeaderboard('settings.sort.header')}
             </h2>
 
             <div className="sort-option">
               <div className="recent">
-                <p>{t("leaderboardPage.settingExp.sortOrder")}</p>
+                <p>{tLeaderboard('settings.sort.sortOrder')}</p>
                 <Tooltip id="ra" place="top" noArrow>
-                  {t("leaderboardPage.toolTip.recentAsc")}
+                  {tLeaderboard('tooltips.recentAsc')}
                 </Tooltip>
                 <Tooltip id="rd" place="top" noArrow>
-                  {t("leaderboardPage.toolTip.recentDesc")}
+                  {tLeaderboard('tooltips.recentDesc')}
                 </Tooltip>
 
                 <div className="wrapper">
@@ -383,7 +384,7 @@ const LeaderboardPage = () => {
                 </div>
               </div>
               <div className="recent">
-                <p>Sort by</p>
+                <p>{tLeaderboard('settings.sort.sortBy')}</p>
                 <Select
                   value={sortOptions.find(option => option.value === sortBy)}
                   onChange={handleSortBy}
@@ -446,19 +447,19 @@ const LeaderboardPage = () => {
                 />
               </div>
               <div className="recent" style={{ display: "grid", alignItems: "end" }}>
-              <StateDisplay
-                    currentState={showBanned}
-                    onChange={(newState) => {
-                      setShowBanned(newState);
-                      setDisplayedPlayers([]);
-                      setForceUpdate(prev => !prev);
-                    }}
-                    label="Banned Players"
-                    width={60}
-                    height={24}
-                    padding={3}
-                    showLabel={true}
-                  />
+                <StateDisplay
+                  currentState={showBanned}
+                  onChange={(newState) => {
+                    setShowBanned(newState);
+                    setDisplayedPlayers([]);
+                    setForceUpdate(prev => !prev);
+                  }}
+                  label={tLeaderboard('bannedPlayers.label')}
+                  width={60}
+                  height={24}
+                  padding={3}
+                  showLabel={true}
+                />
               </div>
             </div>
           </div>
@@ -485,7 +486,7 @@ const LeaderboardPage = () => {
             endMessage={
               !loading && displayedPlayers.length > 0 && (
                 <p style={{ textAlign: "center" }}>
-                  <b>{t("leaderboardPage.infScroll.end")}</b>
+                  <b>{tLeaderboard('infiniteScroll.end')}</b>
                 </p>
               )
             }

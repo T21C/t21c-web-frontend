@@ -1,0 +1,92 @@
+{
+  "meta": {
+    "title": "Manage Difficulties | TUF",
+    "description": "Manage difficulty levels for The Universal Forums (TUF)"
+  },
+  "header": {
+    "title": "Manage Difficulties",
+    "refresh": "Refresh difficulties"
+  },
+  "access": {
+    "denied": {
+      "title": "Access Denied",
+      "message": "You need super admin privileges to access this page."
+    }
+  },
+  "buttons": {
+    "create": "Create New Difficulty",
+    "creating": "Creating...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "understand": "I understand the risks"
+  },
+  "loading": {
+    "difficulties": "Loading difficulties..."
+  },
+  "noItems": {
+    "message": "No difficulties found."
+  },
+  "difficultyTypes": {
+    "PGU": "PGU",
+    "SPECIAL": "SPECIAL"
+  },
+  "form": {
+    "labels": {
+      "id": "ID:",
+      "name": "Name:",
+      "type": "Type:",
+      "icon": "Icon URL:",
+      "legacyIcon": "Legacy Icon URL:",
+      "emoji": "Emoji:",
+      "legacyEmoji": "Legacy Emoji:",
+      "color": "Color:",
+      "baseScore": "Base Score:",
+      "sortOrder": "Sort Order:",
+      "legacy": "Legacy:",
+      "fallbackId": "Enter Fallback Difficulty ID:"
+    },
+    "placeholders": {
+      "fallbackId": "Enter the ID of the replacement difficulty"
+    },
+    "helpText": {
+      "fallbackId": "All levels using {name} will be updated to use this difficulty instead."
+    }
+  },
+  "modal": {
+    "create": {
+      "title": "Create New Difficulty"
+    },
+    "edit": {
+      "title": "Edit Difficulty"
+    },
+    "delete": {
+      "title": "Delete Difficulty",
+      "warning": {
+        "title": "⚠️ Warning: Destructive Action ⚠️",
+        "message": "You are about to delete the difficulty: {name}",
+        "description": "This action:",
+        "points": [
+          "Cannot be undone",
+          "Will affect all levels using this difficulty",
+          "Requires a backup before proceeding"
+        ],
+        "highlight": "Make sure you have created a backup before proceeding!"
+      }
+    }
+  },
+  "passwordModal": {
+    "title": "Super Admin Password Required",
+    "message": "Please enter your super admin password to {action} the difficulty.",
+    "placeholder": "Enter password",
+    "errors": {
+      "invalid": "Invalid password",
+      "generic": "An error occurred while performing the action"
+    }
+  },
+  "notifications": {
+    "created": "Difficulty created successfully",
+    "updated": "Difficulty updated successfully",
+    "deleted": "Difficulty deleted successfully"
+  }
+} 

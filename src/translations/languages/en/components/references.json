@@ -1,0 +1,31 @@
+{
+  "button": {
+    "label": "Open References",
+    "text": "References"
+  },
+  "popup": {
+    "title": "{tab} Difficulties",
+    "buttons": {
+      "close": "Close",
+      "expandAll": "Expand All",
+      "collapseAll": "Collapse All",
+      "editMode": "Edit Mode",
+      "viewMode": "View Mode",
+      "saveChanges": "Save Changes",
+      "saving": "Saving...",
+      "cancel": "Cancel"
+    },
+    "loading": "Loading references...",
+    "errors": {
+      "loadFailed": "Failed to load references",
+      "saveFailed": "Failed to save changes"
+    },
+    "levelCount": {
+      "singular": "1 level",
+      "plural": "{count} levels"
+    },
+    "editMode": {
+      "placeholder": "Enter level IDs separated by commas"
+    }
+  }
+} 

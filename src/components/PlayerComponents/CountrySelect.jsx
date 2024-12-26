@@ -2,8 +2,12 @@ import { useState, useEffect } from 'react';
 import { isoToEmoji } from '@/Repository/RemoteRepository';
 import "./countryselect.css";
 import { COUNTRY_CODES } from "@/utils/countryCodes";
+import { useTranslation } from 'react-i18next';
 
 export const CountrySelect = ({ value, onChange }) => {
+  const { t } = useTranslation('components');
+  const tPlayer = (key) => t(`player.countrySelect.${key}`);
+
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredCountries, setFilteredCountries] = useState(COUNTRY_CODES);
@@ -60,7 +64,7 @@ export const CountrySelect = ({ value, onChange }) => {
               <span>{selectedCountry.name}</span>
             </>
           ) : (
-            <span className="select-country-placeholder">Select Country</span>
+            <span className="select-country-placeholder">{tPlayer('placeholder')}</span>
           )}
           <div className={`select-country-dropdown-toggle-icon ${showDropdown ? 'open' : ''}`}>▼</div>
         </div>
@@ -71,7 +75,7 @@ export const CountrySelect = ({ value, onChange }) => {
           <input
             type="text"
             className="select-country-search"
-            placeholder="Search countries..."
+            placeholder={tPlayer('search.placeholder')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onClick={(e) => e.stopPropagation()}

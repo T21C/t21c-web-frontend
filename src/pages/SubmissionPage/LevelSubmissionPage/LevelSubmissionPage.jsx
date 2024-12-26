@@ -21,10 +21,11 @@ const LevelSubmissionPage = () => {
     workshopLink: ''
   };
 
-  const {t} = useTranslation()
+  const { t } = useTranslation('pages');
+  const tLevel = (key, params = {}) => t(`levelSubmission.${key}`, params);
   const { user } = useAuth();
   const [form, setForm] = useState(initialFormState);
-  const [isInvalidFeelingRating, setIsInvalidFeelingRating] = useState(false); // Track validation
+  const [isInvalidFeelingRating, setIsInvalidFeelingRating] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [isFormValidDisplay, setIsFormValidDisplay] = useState({});
   
@@ -32,13 +33,10 @@ const LevelSubmissionPage = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
 
-
   const [submitAttempt, setSubmitAttempt] = useState(false);
   const [submission, setSubmission] = useState(false);
 
   const [videoDetail, setVideoDetail] = useState(null)
-  
-
 
   const truncateString = (str, maxLength) => {
     if (!str) return "";
@@ -62,35 +60,28 @@ const LevelSubmissionPage = () => {
     }
     
     const frValid = validateFeelingRating(form["diff"])
-    setIsInvalidFeelingRating(!frValid); // Update validation state
+    setIsInvalidFeelingRating(!frValid);
     setIsFormValidDisplay(displayValidationRes);
     setIsFormValid(validationResult);
   };
 
   useEffect(() => {
-    validateForm(); // Run validation on every form change
+    validateForm();
   }, [form, submitAttempt]);
-
-
 
   useEffect(() => {
     const { videoLink } = form;
   
-    // Define an async function inside useEffect
     const fetchData = async () => {
       try {
-        // Fetch video details
         const videoDetails = await getVideoDetails(videoLink);
         setVideoDetail(videoDetails ? videoDetails : null);
         if (videoDetails){
           form.charter = videoDetails.channelName
         }
   
-        // Fetch Drive link from YouTube
         const driveDetails = await getDriveFromYt(videoLink);
         if (driveDetails.drive) {
-  
-          // Update form with drive link if available
           setForm((prevForm) => ({
             ...prevForm,
             dlLink: driveDetails.drive ? driveDetails.drive : "",
@@ -101,74 +92,68 @@ const LevelSubmissionPage = () => {
       }
     };
   
-    // Call the async function
     fetchData();
-  }, [form.videoLink]); // Dependency array to re-run when form.videoLink changes
-  
+  }, [form.videoLink]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-
-
     setForm((prev) => ({
       ...prev,
       [name]: value,
     }));
-
   };
 
   const handleCloseSuccessMessage = () => {
     setShowMessage(false)
   };
 
- const submissionForm = new FormManager("level")
+  const submissionForm = new FormManager("level")
   const handleSubmit = (e) => {
     e.preventDefault();
     setShowMessage(true)
     setSuccess(false);
     if(!user){
       console.error("no user");
-      setError("You must be logged in.");
-
+      setError(tLevel("alert.login"));
       return 
     }
     if (!Object.values(isFormValid).every(Boolean)) {
       setSubmitAttempt(true)
-      setError("Incomplete form!");
+      setError(tLevel("alert.form"));
       console.error("incomplete form, returning")
       return
     };
 
     setSubmission(true)
     setError(null);
-  submissionForm.setDetail('artist', form.artist);
-  submissionForm.setDetail('charter', form.charter);
-  submissionForm.setDetail('diff', form.diff);
-  submissionForm.setDetail('song', form.song);
-  submissionForm.setDetail('team', form.team);
-  submissionForm.setDetail('vfxer', form.vfxer);
-  submissionForm.setDetail('videoLink', form.videoLink);
-  submissionForm.setDetail('directDL', form.dlLink);
-  submissionForm.setDetail('wsLink', form.workshopLink);
+    submissionForm.setDetail('artist', form.artist);
+    submissionForm.setDetail('charter', form.charter);
+    submissionForm.setDetail('diff', form.diff);
+    submissionForm.setDetail('song', form.song);
+    submissionForm.setDetail('team', form.team);
+    submissionForm.setDetail('vfxer', form.vfxer);
+    submissionForm.setDetail('videoLink', form.videoLink);
+    submissionForm.setDetail('directDL', form.dlLink);
+    submissionForm.setDetail('wsLink', form.workshopLink);
   
-  submissionForm.submit(user.access_token)
-  .then(result => {
-    if (result === "ok") {
-      setSuccess(true);
-      setForm(initialFormState)
+    submissionForm.submit(user.access_token)
+    .then(result => {
+      if (result === "ok") {
+        setSuccess(true);
+        setForm(initialFormState)
+        setSubmitAttempt(false);
+      } else {
+        setError(result);
+      }
+    })
+    .catch(err => {
+      setError(err.message || "(Unknown)");
+    })
+    .finally(()=>{
+      setSubmission(false)
       setSubmitAttempt(false);
-    } else {
-      setError(result);
-    }
-  })
-  .catch(err => {
-    setError(err.message || "(Unknown)");
-  })
-  .finally(()=>{
-    setSubmission(false)
-    setSubmitAttempt(false);
-  })
-};
+    })
+  };
 
   return (
     <div className="level-submission-page">
@@ -181,173 +166,170 @@ const LevelSubmissionPage = () => {
           error? "#b22":
           "#888"
         )}}>
-          {success ? <p>{t("levelSubmission.alert.success")}</p> :
-           error ? <p>{t("levelSubmission.alert.error")} {truncateString(error?.message || error?.toString() || error, 27)}</p> :
-           <p>{t("levelSubmission.alert.loading")}</p>}
+          {success ? <p>{tLevel("alert.success")}</p> :
+           error ? <p>{tLevel("alert.error")} {truncateString(error?.message || error?.toString() || error, 27)}</p> :
+           <p>{tLevel("alert.loading")}</p>}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div>
-  
 
         <form className={`form-container ${videoDetail ? 'shadow' : ''}`}>
-  <div
-    className="thumbnail-container"
-  >
-    {videoDetail ? (
-      <iframe
-        src={videoDetail.embed}
-        title="Video player"
-        frameBorder="0"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-        referrerPolicy="strict-origin-when-cross-origin"
-        allowFullScreen
-        style={{
-          width: "100%",
-          height: "100%",
-          borderRadius: "10px",
-          objectFit: "contain",
-          objectPosition: "center"
-        }}
-      ></iframe>
-    ) : (<>
-      <div className="thumbnail-text">
-        <img src={placeholder} alt="placeholder" />
-      </div>
-      <h2>{t("levelSubmission.thumbnailInfo")}</h2>
-      </>
-    )}
-  </div>
-        <div className="info">
-          <h1>{t("levelSubmission.title")}</h1>
+          <div className="thumbnail-container">
+            {videoDetail ? (
+              <iframe
+                src={videoDetail.embed}
+                title="Video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  borderRadius: "10px",
+                  objectFit: "contain",
+                  objectPosition: "center"
+                }}
+              ></iframe>
+            ) : (<>
+              <div className="thumbnail-text">
+                <img src={placeholder} alt="placeholder" />
+              </div>
+              <h2>{tLevel("thumbnailInfo")}</h2>
+            </>)}
+          </div>
 
-          <div className="information">
-          <input
-            type="text"
-            placeholder={t("levelSubmission.submInfo.song")}
-            name="song"
-            value={form.song}
-            onChange={handleInputChange}
-            style={{ borderColor: isFormValidDisplay.song ? "" : "red" }}
-          />
-          <input
-            type="text"
-            placeholder={t("levelSubmission.submInfo.artist")}
-            name="artist"
-            value={form.artist}
-            onChange={handleInputChange}
-            style={{ borderColor: isFormValidDisplay.artist ? "" : "red" }}
-          />
-        </div>
-        <div className="youtube-input">
+          <div className="info">
+            <h1>{tLevel("title")}</h1>
+
+            <div className="information">
+              <input
+                type="text"
+                placeholder={tLevel("submInfo.song")}
+                name="song"
+                value={form.song}
+                onChange={handleInputChange}
+                style={{ borderColor: isFormValidDisplay.song ? "" : "red" }}
+              />
+              <input
+                type="text"
+                placeholder={tLevel("submInfo.artist")}
+                name="artist"
+                value={form.artist}
+                onChange={handleInputChange}
+                style={{ borderColor: isFormValidDisplay.artist ? "" : "red" }}
+              />
+            </div>
+
+            <div className="youtube-input">
+              <input
+                type="text"
+                placeholder={tLevel("submInfo.videoLink")}
+                name="videoLink"
+                value={form.videoLink}
+                onChange={handleInputChange}
+                style={{ borderColor: isFormValidDisplay.videoLink ? "" : "red" }}
+              />
+              {videoDetail ? 
+              (<div className="youtube-info">
+                <div className="yt-info">
+                  <h4>{tLevel("videoInfo.title")}</h4>
+                  <p>{videoDetail.title}</p>
+                </div>
+                <div className="yt-info">
+                  <h4>{tLevel("videoInfo.channel")}</h4>
+                  <p>{videoDetail.channelName}</p>
+                </div>
+                <div className="yt-info">
+                  <h4>{tLevel("videoInfo.timestamp")}</h4>
+                  <p>{videoDetail.timestamp.replace("T", " ").replace("Z", "")}</p>
+                </div>
+              </div>) : 
+              (<div className="yt-info">
+                <p style={{color: "#aaa"}}>{tLevel("videoInfo.nolink")}</p>
+                <br />
+              </div>)}
+            </div>
+
+            <div className="info-group">
+              <input
+                type="text"
+                placeholder={tLevel("submInfo.charter")}
+                name="charter"
+                value={form.charter}
+                onChange={handleInputChange}
+                style={{marginLeft: "6px", borderColor: isFormValidDisplay.directLink ? "" : "red" }}
+              />
+              <div className="diff-tooltip">
+                <div className="tooltip-container">
+                  <span style={{
+                    color: 'red',
+                    visibility: `${isInvalidFeelingRating ? '' : 'hidden'}`
+                  }}>?</span>
+                  <span className="tooltip" 
+                    style={{
+                      visibility: `${isInvalidFeelingRating ? '' : 'hidden'}`,
+                      bottom: "115%",
+                      left: "-2rem"
+                    }}>{tLevel("tooltip")}</span>
+                </div>
                 <input
                   type="text"
-                  placeholder={t("levelSubmission.submInfo.videoLink")}
-                  name="videoLink"
-                  value={form.videoLink}
+                  placeholder={tLevel("submInfo.diff")}
+                  name="diff"
+                  value={form.diff}
                   onChange={handleInputChange}
-                  style={{ borderColor: isFormValidDisplay.videoLink ? "" : "red" }}
-                />
-                {videoDetail? 
-                (<div className="youtube-info">
-                  <div className="yt-info">
-                    <h4>{t("levelSubmission.videoInfo.title")}</h4>
-                    <p style={{maxWidth:"%"}}>{videoDetail.title}</p>
-                  </div>
-
-                  <div className="yt-info">
-                    <h4>{t("levelSubmission.videoInfo.channel")}</h4>
-                    <p>{videoDetail.channelName}</p>
-                  </div>
-
-                  <div className="yt-info">
-                    <h4>{t("levelSubmission.videoInfo.timestamp")}</h4>
-                    <p>{videoDetail.timestamp.replace("T", " ").replace("Z", "")}</p>
-                  </div>
-                </div>)
-                :(
-                  <div className="yt-info">
-                    <p style={{color: "#aaa"}}>{t("levelSubmission.videoInfo.nolink")}</p>
-                    <br />
-                    </div>)}
-        </div>
-        <div className="info-group">
-          <input
-            type="text"
-            placeholder={t("levelSubmission.submInfo.charter")}
-            name="charter"
-            value={form.charter}
-            onChange={handleInputChange}
-            style={{marginLeft: "6px", borderColor: isFormValidDisplay.directLink ? "" : "red" }}
-         
-            
-          />
-          <div className="diff-tooltip">
-          <div className="tooltip-container">
-          <span style={{
-              color: 'red',
-              visibility: `${isInvalidFeelingRating? '' : 'hidden'}`
-            }}>?</span>
-          <span className="tooltip" 
-                style={{
-                  visibility: `${isInvalidFeelingRating? '' : 'hidden'}`,
-                 bottom: "115%",
-                  left: "-2rem"}}>{t("levelSubmission.tooltip")}</span>
-          </div>
-            <input
-            type="text"
-            placeholder={t("levelSubmission.submInfo.diff")}
-            name="diff"
-            value={form.diff}
-            onChange={handleInputChange}
-            style={{ borderColor: isFormValidDisplay.diff ? "" : "red",
+                  style={{ 
+                    borderColor: isFormValidDisplay.diff ? "" : "red",
                     backgroundColor: isInvalidFeelingRating ? "yellow" : ""
-             }}
-          />
-          </div>
-          </div>
-        <div className="info-group">
-          
-        <input
-            type="text"
-            placeholder={t("levelSubmission.submInfo.vfxer")}
-            name="vfxer"
-            value={form.vfxer}
-            onChange={handleInputChange}
-          />
-          <input
-            type="text"
-            placeholder={t("levelSubmission.submInfo.team")}
-            name="team"
-            value={form.team}
-            onChange={handleInputChange}
-          />
-          </div>
-          
-        <div className="info-group" style={{marginTop: "2rem",paddingLeft: "30px", paddingRight: "30px"}}>
-          <input
-            type="text"
-            placeholder={t("levelSubmission.submInfo.dlLink")}
-            name="dlLink"
-            value={form.dlLink}
-            onChange={handleInputChange}
-            style={{ borderColor: isFormValidDisplay.directLink ? "" : "red" }}
-          />
-          <span style={{display: "flex", alignItems: "center"}}>{t("levelSubmission.submInfo.dlLinksOr")}</span>
-          <input
-            type="text"
-            placeholder={t("levelSubmission.submInfo.workshop")}
-            name="workshopLink"
-            value={form.workshopLink}
-            onChange={handleInputChange}
-            style={{ borderColor: isFormValidDisplay.directLink ? "" : "red" }}
-          />
-        </div>
+                  }}
+                />
+              </div>
+            </div>
 
-        <button disabled={submission} className="submit" onClick={handleSubmit}>{t("levelSubmission.submit")}{submission && (<>{t("levelSubmission.submitWait")}</>)}</button>
-        </div>
-      </form>      
+            <div className="info-group">
+              <input
+                type="text"
+                placeholder={tLevel("submInfo.vfxer")}
+                name="vfxer"
+                value={form.vfxer}
+                onChange={handleInputChange}
+              />
+              <input
+                type="text"
+                placeholder={tLevel("submInfo.team")}
+                name="team"
+                value={form.team}
+                onChange={handleInputChange}
+              />
+            </div>
+            
+            <div className="info-group" style={{marginTop: "2rem", paddingLeft: "30px", paddingRight: "30px"}}>
+              <input
+                type="text"
+                placeholder={tLevel("submInfo.dlLink")}
+                name="dlLink"
+                value={form.dlLink}
+                onChange={handleInputChange}
+                style={{ borderColor: isFormValidDisplay.directLink ? "" : "red" }}
+              />
+              <span style={{display: "flex", alignItems: "center"}}>{tLevel("submInfo.dlLinksOr")}</span>
+              <input
+                type="text"
+                placeholder={tLevel("submInfo.workshop")}
+                name="workshopLink"
+                value={form.workshopLink}
+                onChange={handleInputChange}
+                style={{ borderColor: isFormValidDisplay.directLink ? "" : "red" }}
+              />
+            </div>
+
+            <button disabled={submission} className="submit" onClick={handleSubmit}>
+              {tLevel("submit")}{submission && (<>{tLevel("submitWait")}</>)}
+            </button>
+          </div>
+        </form>      
+      </div>
     </div>
-    </div>
-  
   );
 };
 

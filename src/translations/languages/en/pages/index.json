@@ -1,0 +1,20 @@
+{
+  "home": {
+    "$ref": "./home.json"
+  },
+  "level": {
+    "$ref": "./level.json"
+  },
+  "pass": {
+    "$ref": "./pass.json"
+  },
+  "leaderboard": {
+    "$ref": "./leaderboard.json"
+  },
+  "detail": {
+    "$ref": "./detail.json"
+  },
+  "profile": {
+    "$ref": "./profile.json"
+  }
+} 

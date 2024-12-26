@@ -4,8 +4,12 @@ import api from '../../utils/api';
 import { CountrySelect } from '../PlayerComponents/CountrySelect';
 import { toast } from 'react-hot-toast';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 
 const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
+  const { t } = useTranslation('components');
+  const tAdmin = (key) => t(`adminPopups.player.${key}`);
+
   if (!player) {
     console.error('Player prop is undefined');
     return null;
@@ -45,8 +49,8 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
         name: playerName
       });
     } catch (err) {
-      setError(err.response?.data?.details || 'Failed to update player name');
-      setPlayerName(player.name); // Reset to original name on error
+      setError(err.response?.data?.details || tAdmin('errors.nameUpdate'));
+      setPlayerName(player.name);
       console.error('Error updating player name:', err);
     } finally {
       setIsLoading(false);
@@ -69,8 +73,8 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
         country: selectedCountry
       });
     } catch (err) {
-      setError(err.response?.data?.details || 'Failed to update country');
-      setSelectedCountry(player.country); // Reset on error
+      setError(err.response?.data?.details || tAdmin('errors.countryUpdate'));
+      setSelectedCountry(player.country);
       console.error('Error updating country:', err);
     } finally {
       setIsLoading(false);
@@ -103,8 +107,8 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
         isBanned: pendingBanState
       });
     } catch (err) {
-      setError(err.response?.data?.details || 'Failed to update ban status');
-      setPendingBanState(isBanned); // Reset on error
+      setError(err.response?.data?.details || tAdmin('errors.banUpdate'));
+      setPendingBanState(isBanned);
       console.error('Error updating ban status:', err);
     } finally {
       setIsLoading(false);
@@ -117,18 +121,15 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
 
     try {
       setIsLoading(true);
-      // First, fetch Discord user info
       const fetchResponse = await api.get(`${import.meta.env.VITE_PLAYERS}/${player.id}/discord/${discordId}`);
       
       if (fetchResponse.status !== 200) {
         const error = await fetchResponse.data;
-        toast.error(error.details || 'Failed to fetch Discord user');
+        toast.error(error.details || tAdmin('errors.discordFetch'));
         return;
       }
 
       const discordUser = fetchResponse.data.discordUser;
-
-      // Store fetched info and show confirmation
       setPendingDiscordInfo({
         username: discordUser.username,
         avatar: discordUser.avatar,
@@ -138,7 +139,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
       setShowDiscordConfirm(true);
     } catch (error) {
       console.error('Error fetching Discord ID:', error);
-      toast.error('Failed to fetch Discord ID');
+      toast.error(tAdmin('errors.discordFetch'));
     } finally {
       setIsLoading(false);
     }
@@ -160,13 +161,11 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
 
       if (updateResponse.status !== 200) {
         const error = await updateResponse.data;
-        toast.error(error.details || 'Failed to update Discord info');
+        toast.error(error.details || tAdmin('errors.discordUpdate'));
         return;
       }
 
       const updatedDiscordInfo = updateResponse.data.discordInfo;
-
-      // Update local state and parent component
       setDiscordInfo({
         username: updatedDiscordInfo.username,
         avatarUrl: updatedDiscordInfo.avatarUrl,
@@ -183,11 +182,11 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
         discordAvatarId: updatedDiscordInfo.avatar
       });
 
-      toast.success('Discord info updated successfully');
-      setDiscordId(''); // Clear input
+      toast.success(tAdmin('success.discordUpdate'));
+      setDiscordId('');
     } catch (error) {
       console.error('Error updating Discord info:', error);
-      toast.error('Failed to update Discord info');
+      toast.error(tAdmin('errors.discordUpdate'));
     } finally {
       setIsLoading(false);
       setShowDiscordConfirm(false);
@@ -217,11 +216,11 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
           discordAvatarId: null
         });
         
-        toast.success('Discord info removed successfully');
+        toast.success(tAdmin('success.discordDelete'));
       }
     } catch (error) {
       console.error('Error removing Discord info:', error);
-      toast.error('Failed to remove Discord info');
+      toast.error(tAdmin('errors.discordDelete'));
     } finally {
       setIsLoading(false);
     }
@@ -231,20 +230,20 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
     <div className="admin-player-popup-overlay">
       <div className="admin-player-popup">
         <div className="admin-player-popup-header">
-          <h2>Edit Player</h2>
-          <button className="close-button" onClick={onClose}>×</button>
+          <h2>{tAdmin('title')}</h2>
+          <button className="close-button" onClick={onClose}>{tAdmin('close')}</button>
         </div>
 
         <div className="admin-form">
           <div className="form-group name-section">
-            <label htmlFor="playerName">Player Name</label>
+            <label htmlFor="playerName">{tAdmin('form.name.label')}</label>
             <div className="name-input-group">
               <input
                 type="text"
                 id="playerName"
                 value={playerName}
                 onChange={(e) => setPlayerName(e.target.value)}
-                placeholder="Enter player name"
+                placeholder={tAdmin('form.name.placeholder')}
               />
               {playerName !== player.name && (
                 <button
@@ -253,14 +252,14 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                   disabled={isLoading || !playerName.trim()}
                   className="update-name-button"
                 >
-                  Update
+                  {tAdmin('form.name.button')}
                 </button>
               )}
             </div>
           </div>
 
           <div className="form-group country-section">
-            <label htmlFor="country">Country</label>
+            <label htmlFor="country">{tAdmin('form.country.label')}</label>
             <div className="country-input-group">
               <CountrySelect
                 value={selectedCountry}
@@ -273,7 +272,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                   disabled={isLoading}
                   className="update-country-button"
                 >
-                  Update
+                  {tAdmin('form.country.button')}
                 </button>
               )}
             </div>
@@ -288,13 +287,13 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                   onChange={(e) => handleBanChange(e.target.checked)}
                   disabled={isLoading || showBanConfirm}
                 />
-                Ban Player
+                {tAdmin('form.ban.label')}
               </label>
             </div>
             {showBanConfirm && (
               <div className="ban-confirm-container">
                 <p className="ban-confirm-message">
-                  Are you sure you want to {pendingBanState ? 'ban' : 'unban'} this player?
+                  {pendingBanState ? tAdmin('form.ban.confirm.ban') : tAdmin('form.ban.confirm.unban')}
                 </p>
                 <div className="ban-confirm-buttons">
                   <button
@@ -303,7 +302,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                     disabled={isLoading}
                     className="ban-confirm-button"
                   >
-                    Confirm
+                    {tAdmin('form.ban.confirm.buttons.confirm')}
                   </button>
                   <button
                     type="button"
@@ -311,7 +310,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                     disabled={isLoading}
                     className="ban-cancel-button"
                   >
-                    Cancel
+                    {tAdmin('form.ban.confirm.buttons.cancel')}
                   </button>
                 </div>
               </div>
@@ -319,14 +318,14 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
           </div>
 
           <div className="form-group discord-section">
-            <label htmlFor="discordId">Discord ID</label>
+            <label htmlFor="discordId">{tAdmin('form.discord.label')}</label>
             <div className="discord-input-group">
               <input
                 type="text"
                 id="discordId"
                 value={discordId}
                 onChange={(e) => setDiscordId(e.target.value)}
-                placeholder="Enter Discord ID to validate"
+                placeholder={tAdmin('form.discord.placeholder')}
                 disabled={isLoading || showDiscordConfirm}
               />
               <button
@@ -335,7 +334,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                 disabled={isLoading || showDiscordConfirm}
                 className="fetch-discord-button"
               >
-                Validate
+                {tAdmin('form.discord.buttons.validate')}
               </button>
             </div>
 
@@ -355,7 +354,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                   </div>
                 </div>
                 <p className="discord-confirm-message">
-                  Are you sure you want to update this player's Discord info?
+                  {tAdmin('form.discord.confirm.message')}
                 </p>
                 <div className="ban-confirm-buttons">
                   <button
@@ -364,7 +363,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                     disabled={isLoading}
                     className="ban-confirm-button"
                   >
-                    Confirm
+                    {tAdmin('form.discord.confirm.buttons.confirm')}
                   </button>
                   <button
                     type="button"
@@ -372,7 +371,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                     disabled={isLoading}
                     className="ban-cancel-button"
                   >
-                    Cancel
+                    {tAdmin('form.discord.confirm.buttons.cancel')}
                   </button>
                 </div>
               </div>
@@ -398,7 +397,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                     disabled={isLoading}
                     className="discord-delete-button"
                   >
-                    Remove
+                    {tAdmin('form.discord.buttons.remove')}
                   </button>
                 </div>
               </div>
@@ -412,7 +411,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
             className="done-button"
             onClick={onClose}
           >
-            Done
+            {tAdmin('buttons.done')}
           </button>
         </div>
       </div>

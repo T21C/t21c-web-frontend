@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
+import { useTranslation } from 'react-i18next';
 import './statedisplay.css';
 
 const StateDisplay = ({ 
@@ -14,6 +15,9 @@ const StateDisplay = ({
   showValue = true,
   className = ''
 }) => {
+  const { t } = useTranslation('components');
+  const tState = (key) => t(`stateDisplay.states.${key}`);
+
   // Calculate dimensions based on props
   const dimensions = useMemo(() => {
     const thumbSize = Math.floor(height-padding)-2;
@@ -44,8 +48,6 @@ const StateDisplay = ({
     onChange(states[nextIndex]);
   };
 
-  const displayValue = currentState.charAt(0).toUpperCase() + currentState.slice(1);
-
   const style = {
     '--thumb-size': `${dimensions.thumbSize}px`,
     '--horizontal-padding': `${dimensions.horizontalPadding}px`,
@@ -70,7 +72,7 @@ const StateDisplay = ({
         />
         {showValue && (
           <span className="state-value">
-            {displayValue}
+            {tState(currentState)}
           </span>
         )}
       </div>

@@ -12,7 +12,10 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useNotification } from "@/contexts/NotificationContext";
 
 const Navigation = ({ children }) => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('components');
+  const tNav = (key) => t(`navigation.main.${key}`);
+  const tLang = (key) => t(`navigation.languages.${key}`);
+
   const [openNav, setOpenNav] = useState(false);
   const { language, setLanguage } = useContext(UserContext);
   const [openDialog, setOpenDialog] = useState(false);
@@ -21,13 +24,14 @@ const Navigation = ({ children }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const { pendingRatings, pendingSubmissions } = useNotification();
+
   const languages = {
-    us: { display: "English (us)", countryCode: "us" },
-    kr: { display: "한국어 (ko)", countryCode: "kr" },
-    cn: { display: "中文 (zh)", countryCode: "cn" },
-    id: { display: "Bahasa Indonesia (id)", countryCode: "id" },
-    ru: { display: "Русский (ru)", countryCode: "ru" },
-    de: { display: "Deutsch (de)", countryCode: "de" }
+    us: { display: tLang('en.display'), countryCode: tLang('en.countryCode') },
+    kr: { display: tLang('kr.display'), countryCode: tLang('kr.countryCode') },
+    cn: { display: tLang('cn.display'), countryCode: tLang('cn.countryCode') },
+    id: { display: tLang('id.display'), countryCode: tLang('id.countryCode') },
+    ru: { display: tLang('ru.display'), countryCode: tLang('ru.countryCode') },
+    de: { display: tLang('de.display'), countryCode: tLang('de.countryCode') }
   };
 
   useEffect(() => {
@@ -89,10 +93,10 @@ const Navigation = ({ children }) => {
                       "nav-link " + (isActive ? "active-link" : "")}
                       to="/admin/rating">
                       <li className="nav-item">
-                        Rating
+                        {tNav('links.admin.rating')}
                         {pendingRatings > 0 && (
                           <span className="notification-badge">
-                            {pendingRatings > 9 ? '9+' : pendingRatings}
+                            {pendingRatings > 9 ? tNav('notifications.moreThanNine') : pendingRatings}
                           </span>
                         )}
                       </li>
@@ -101,10 +105,10 @@ const Navigation = ({ children }) => {
                       "nav-link " + (isActive ? "active-link" : "")}
                       to="/admin/submissions">
                       <li className="nav-item">
-                        Submissions
+                        {tNav('links.admin.submissions')}
                         {pendingSubmissions > 0 && (
                           <span className="notification-badge">
-                            {pendingSubmissions > 9 ? '9+' : pendingSubmissions}
+                            {pendingSubmissions > 9 ? tNav('notifications.moreThanNine') : pendingSubmissions}
                           </span>
                         )}
                       </li>
@@ -112,19 +116,18 @@ const Navigation = ({ children }) => {
                     <NavLink className={({ isActive }) =>
                       "nav-link " + (isActive ? "active-link" : "")}
                       to="/admin/announcements">
-                      <li>Announcements</li>
+                      <li>{tNav('links.admin.announcements')}</li>
                     </NavLink>
-                    
                     <NavLink className={({ isActive }) =>
-                        "nav-link " + (isActive ? "active-link" : "")}
-                        to="/admin/difficulties">
-                        <li>Difficulties</li>
-                      </NavLink>
-                      <NavLink className={({ isActive }) =>
-                        "nav-link " + (isActive ? "active-link" : "")}
-                        to="/admin/backups">
-                        <li>Backups</li>
-                      </NavLink>
+                      "nav-link " + (isActive ? "active-link" : "")}
+                      to="/admin/difficulties">
+                      <li>{tNav('links.admin.difficulties')}</li>
+                    </NavLink>
+                    <NavLink className={({ isActive }) =>
+                      "nav-link " + (isActive ? "active-link" : "")}
+                      to="/admin/backups">
+                      <li>{tNav('links.admin.backups')}</li>
+                    </NavLink>
                   </>
                 ) : (
                   // Regular Links
@@ -132,27 +135,27 @@ const Navigation = ({ children }) => {
                     <NavLink className={({ isActive }) =>
                       "nav-link " + (isActive ? "active-link" : "")}
                       to="/levels">
-                      <li>{t("navigationComponent.levels")}</li>
+                      <li>{tNav('links.levels')}</li>
                     </NavLink>
                     <NavLink className={({ isActive }) =>
                       "nav-link " + (isActive ? "active-link" : "")}
                       to="/leaderboard">
-                      <li>{t("navigationComponent.leaderboard")}</li>
+                      <li>{tNav('links.leaderboard')}</li>
                     </NavLink>
                     <NavLink className={({ isActive }) =>
                       "nav-link " + (isActive ? "active-link" : "")}
                       to="/passes">
-                      <li>{t("navigationComponent.pass")}</li>
+                      <li>{tNav('links.pass')}</li>
                     </NavLink>
                     {(isAdmin || isSuperAdmin) && (
                     <NavLink className={({ isActive }) =>
                       "nav-link " + (isActive ? "active-link" : "")}
                       to="/admin/rating">
                       <li className="nav-item">
-                        Rating
+                        {tNav('links.rating')}
                         {pendingRatings > 0 && (
                           <span className="notification-badge">
-                            {pendingRatings > 9 ? '9+' : pendingRatings}
+                            {pendingRatings > 9 ? tNav('notifications.moreThanNine') : pendingRatings}
                           </span>
                         )}
                       </li>
@@ -169,7 +172,7 @@ const Navigation = ({ children }) => {
             <ul>
               {(isSuperAdmin) && (
                 <li onClick={toggleAdminView} style={{cursor: 'pointer'}}>
-                  {isAdminView ? "Back" : "Admin"}
+                  {isAdminView ? tNav('links.admin.back') : tNav('links.admin.admin')}
                 </li>
               )}
               <NavLink
@@ -178,11 +181,17 @@ const Navigation = ({ children }) => {
                 }
                 to="/submission"
               >
-                <li>{t("navigationComponent.submission")}</li>
+                <li>{tNav('links.submission')}</li>
               </NavLink>
               <li className="nav-language" onClick={changeDialogState}>
                 <img className="nav-flag" src={isoToEmoji(language)} alt="" />
-                <svg className="language-dropdown svg-stroke" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M7 10L12 15L17 10" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path></g></svg>
+                <svg className="language-dropdown svg-stroke" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                  <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+                  <g id="SVGRepo_iconCarrier">
+                    <path d="M7 10L12 15L17 10" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
+                  </g>
+                </svg>
               </li>
 
               {children}  {/* This will include the Profile component */}
@@ -235,16 +244,16 @@ const Navigation = ({ children }) => {
         <div className={"dialog"}>
           <ul>
             {Object.entries(languages).map(([code, { display, countryCode }]) => (
-                <li
-                  key={code}
-                  className="list-language"
-                  onClick={() => handleChangeLanguage(code)}
-                  style={{ backgroundColor: language === code ? "#a3a2d8" : "" }}
-                >
-                  <img src={isoToEmoji(countryCode)} alt="" />
-                  {display}
-                </li>
-              ))}
+              <li
+                key={code}
+                className="list-language"
+                onClick={() => handleChangeLanguage(code)}
+                style={{ backgroundColor: language === code ? "#a3a2d8" : "" }}
+              >
+                <img src={isoToEmoji(countryCode)} alt="" />
+                {display}
+              </li>
+            ))}
           </ul>
         </div>
       </div>

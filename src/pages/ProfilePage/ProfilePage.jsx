@@ -25,7 +25,8 @@ const ProfilePage = () => {
     const [playerData, setPlayerData] = useState(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
-    const {t} = useTranslation()
+    const { t } = useTranslation('pages');
+    const tProfile = (key, params = {}) => t(`profile.${key}`, params);
     const { isSuperAdmin } = useAuth();
     const { difficultyList } = useDifficultyContext();
     const [showAdminPopup, setShowAdminPopup] = useState(false);
@@ -34,17 +35,17 @@ const ProfilePage = () => {
     const currentUrl = window.location.origin + location.pathname;
 
     var valueLabels = {
-      rankedScore: t("valueLabels.rankedScore"),
-      generalScore: t("valueLabels.generalScore"),
-      ppScore: t("valueLabels.ppScore"),
-      wfScore: t("valueLabels.wfScore"),
-      score12k: t("valueLabels.score12k"),
-      avgXacc: t("valueLabels.avgXacc"),
-      totalPasses: t("valueLabels.totalPasses"),
-      universalPasses: t("valueLabels.universalPasses"),
-      WFPasses: t("valueLabels.WFPasses"),
-      topDiff: t("valueLabels.topDiff"),
-      top12kDiff: t("valueLabels.top12kDiff")
+      rankedScore: tProfile('valueLabels.rankedScore'),
+      generalScore: tProfile('valueLabels.generalScore'),
+      ppScore: tProfile('valueLabels.ppScore'),
+      wfScore: tProfile('valueLabels.wfScore'),
+      score12k: tProfile('valueLabels.score12k'),
+      avgXacc: tProfile('valueLabels.avgXacc'),
+      totalPasses: tProfile('valueLabels.totalPasses'),
+      universalPasses: tProfile('valueLabels.universalPasses'),
+      WFPasses: tProfile('valueLabels.WFPasses'),
+      topDiff: tProfile('valueLabels.topDiff'),
+      top12kDiff: tProfile('valueLabels.top12kDiff')
     };
 
     useEffect(() => {
@@ -79,8 +80,8 @@ const ProfilePage = () => {
       return (
         <div className="player-page">
           <MetaTags
-            title={`${playerData?.name || 'Profile'}`}
-            description={`Check out ${playerData?.name}'s profile and achievements`}
+            title={playerData?.name ? tProfile('meta.title', { name: playerData.name }) : tProfile('meta.defaultTitle')}
+            description={tProfile('meta.description', { name: playerData?.name || '' })}
             url={currentUrl}
             image={playerData?.avatar || '/default-avatar.jpg'}
             type="profile"
@@ -209,7 +210,7 @@ const ProfilePage = () => {
               </div>
               {playerData.passes && playerData.passes.length > 0 && (
                 <div className="scores-section">
-                  <h2>Scores</h2>
+                  <h2>{tProfile('sections.scores.title')}</h2>
                   <div className="scores-list">
                     {playerData.passes.filter(score => !score.isDeleted && !score.level?.isHidden).sort((a, b) => b.scoreV2 - a.scoreV2).map((score, index) => (
                       <li key={index}>
@@ -220,7 +221,7 @@ const ProfilePage = () => {
                 </div>
               )}
             </div>
-          ) : <h1 className="player-notfound">{t("profilePage.notFound")}</h1>)
+          ) : <h1 className="player-notfound">{tProfile('notFound')}</h1>)
           : <div className="loader"></div>}
           
           {showEditPopup && playerData && (

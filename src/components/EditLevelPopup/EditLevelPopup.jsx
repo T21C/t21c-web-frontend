@@ -4,8 +4,12 @@ import api from '../../utils/api';
 import { useNavigate } from 'react-router-dom';
 import { RatingInput } from '../RatingComponents/RatingInput';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
+import { useTranslation } from 'react-i18next';
 
 export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPage = false }) => {
+  const { t } = useTranslation('components');
+  const tLevel = (key) => t(`levelPopups.edit.${key}`);
+
   const [formData, setFormData] = useState({
     song: '',
     artist: '',
@@ -126,7 +130,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
       }
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.message || 'Failed to update level');
+      setError(err.response?.data?.message || tLevel('errors.update'));
     } finally {
       setIsSaving(false);
     }
@@ -138,7 +142,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
       return;
     }
 
-    if (!window.confirm("Do you want to delete this level? This can be undone later.")) {
+    if (!window.confirm(tLevel('confirmations.delete'))) {
       return;
     }
 
@@ -156,14 +160,14 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
       }
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.message || "Soft deletion failed");
+      setError(err.response?.data?.message || tLevel('errors.delete'));
     } finally {
       setIsSaving(false);
     }
   };
 
   const handleToggleHidden = async () => {
-    if (!window.confirm(`Do you want to ${level.isHidden ? 'unhide' : 'hide'} this level?`)) {
+    if (!window.confirm(level.isHidden ? tLevel('confirmations.unhide') : tLevel('confirmations.hide'))) {
       return;
     }
 
@@ -182,7 +186,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
       }
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.message || "Failed to toggle hidden status");
+      setError(err.response?.data?.message || tLevel('errors.toggleHidden'));
     } finally {
       setIsSaving(false);
     }
@@ -190,7 +194,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
 
   const handleClose = () => {
     if (hasUnsavedChanges) {
-      if (window.confirm('You have unsaved changes. Are you sure you want to close?')) {
+      if (window.confirm(tLevel('confirmations.unsavedChanges'))) {
         onClose();
       }
     } else {
@@ -204,7 +208,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   };
 
   const handleRestore = async () => {
-    if (!window.confirm("Do you want to restore this level?")) {
+    if (!window.confirm(tLevel('confirmations.restore'))) {
       return;
     }
 
@@ -221,7 +225,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
       }
     } catch (err) {
       console.error(err);
-      setError(err.response?.data?.message || "Restoration failed");
+      setError(err.response?.data?.message || tLevel('errors.restore'));
     } finally {
       setIsSaving(false);
     }
@@ -240,13 +244,13 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
       }
     }}>
       <div className="edit-level-popup">
-        <button className="close-popup-btn" onClick={handleClose}>×</button>
+        <button className="close-popup-btn" onClick={handleClose}>{tLevel('close')}</button>
         <div className="popup-content">
-          <h2>Edit Level Details</h2>
+          <h2>{tLevel('title')}</h2>
           <form onSubmit={handleSubmit}>
             <div className="form-grid">
               <div className="form-group">
-                <label htmlFor="song">Song</label>
+                <label htmlFor="song">{tLevel('form.labels.song')}</label>
                 <input
                   type="text"
                   id="song"
@@ -257,7 +261,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               </div>
 
               <div className="form-group">
-                <label htmlFor="artist">Artist</label>
+                <label htmlFor="artist">{tLevel('form.labels.artist')}</label>
                 <input
                   type="text"
                   id="artist"
@@ -268,7 +272,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               </div>
 
               <div className="form-group">
-                <label htmlFor="creator">Creator</label>
+                <label htmlFor="creator">{tLevel('form.labels.creator')}</label>
                 <input
                   type="text"
                   id="creator"
@@ -279,7 +283,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               </div>
 
               <div className="form-group">
-                <label htmlFor="charter">Charter</label>
+                <label htmlFor="charter">{tLevel('form.labels.charter')}</label>
                 <input
                   type="text"
                   id="charter"
@@ -290,7 +294,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               </div>
 
               <div className="form-group">
-                <label htmlFor="vfxer">VFXer</label>
+                <label htmlFor="vfxer">{tLevel('form.labels.vfxer')}</label>
                 <input
                   type="text"
                   id="vfxer"
@@ -301,7 +305,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               </div>
 
               <div className="form-group">
-                <label htmlFor="team">Team</label>
+                <label htmlFor="team">{tLevel('form.labels.team')}</label>
                 <input
                   type="text"
                   id="team"
@@ -324,7 +328,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   onChange={handleBaseScoreChange}
                   difficulties={difficulties}
                   allowCustomInput={true}
-                  placeholder="Base Score"
+                  placeholder={tLevel('form.placeholders.baseScore')}
                 />
               </div>
 
@@ -346,7 +350,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                     onChange={(value) => handleDifficultyChange(value, 'previousDiffId')}
                     difficulties={difficulties}
                     showDiff={true}
-                    placeholder="Previous Difficulty"
+                    placeholder={tLevel('form.labels.previousDifficulty')}
                   />
                 </div>
               ) : (
@@ -359,7 +363,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                         checked={formData.toRate}
                         onChange={handleInputChange}
                       />
-                      To Rate
+                      {tLevel('form.checkboxes.toRate')}
                     </label>
                     <div className={`rerate-num ${formData.toRate ? 'show' : ''}`}>
                       <input
@@ -367,7 +371,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                         name="rerateNum"
                         value={formData.rerateNum}
                         onChange={handleInputChange}
-                        placeholder="Rerate Number"
+                        placeholder={tLevel('form.placeholders.rerateNumber')}
                       />
                     </div>
                   </div>
@@ -377,7 +381,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                       name="rerateReason"
                       value={formData.rerateReason}
                       onChange={handleInputChange}
-                      placeholder="Rerate Reason"
+                      placeholder={tLevel('form.placeholders.rerateReason')}
                     />
                   </div>
                 </div>
@@ -385,7 +389,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
             </div>
 
             <div className="form-group">
-              <label htmlFor="videoLink">Video Link</label>
+              <label htmlFor="videoLink">{tLevel('form.labels.videoLink')}</label>
               <input
                 type="text"
                 id="videoLink"
@@ -396,7 +400,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
             </div>
 
             <div className="form-group">
-              <label htmlFor="dlLink">Download Link</label>
+              <label htmlFor="dlLink">{tLevel('form.labels.dlLink')}</label>
               <input
                 type="text"
                 id="dlLink"
@@ -407,7 +411,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
             </div>
 
             <div className="form-group">
-              <label htmlFor="workshopLink">Workshop Link</label>
+              <label htmlFor="workshopLink">{tLevel('form.labels.workshopLink')}</label>
               <input
                 type="text"
                 id="workshopLink"
@@ -418,7 +422,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
             </div>
 
             <div className="form-group">
-              <label htmlFor="publicComments">Public Comments</label>
+              <label htmlFor="publicComments">{tLevel('form.labels.publicComments')}</label>
               <textarea
                 id="publicComments"
                 name="publicComments"
@@ -431,7 +435,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
             
             <div className="button-group">
               <button type="submit" disabled={isSaving} className="save-button">
-                {isSaving ? 'Saving...' : 'Save Changes'}
+                {isSaving ? tLevel('form.buttons.save.saving') : tLevel('form.buttons.save.default')}
               </button>
               <button 
                 type="button" 
@@ -439,8 +443,11 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                 onClick={handleDelete}
                 disabled={isSaving}
               >
-                {isSaving ? (isHideMode ? 'Processing...' : 'Deleting...') : 
-                 (isHideMode ? (level.isHidden ? 'Unhide' : 'Hide') : 'Delete')}
+                {isSaving ? 
+                  (isHideMode ? tLevel('form.buttons.delete.processing') : tLevel('form.buttons.delete.deleting')) : 
+                  (isHideMode ? 
+                    (level.isHidden ? tLevel('form.buttons.delete.unhide') : tLevel('form.buttons.delete.hide')) : 
+                    tLevel('form.buttons.delete.default'))}
                 <div className="toggle-arrow" onClick={toggleMode}></div>
               </button>
             </div>

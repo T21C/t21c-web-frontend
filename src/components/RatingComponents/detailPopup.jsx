@@ -6,6 +6,7 @@ import { validateFeelingRating } from '@/components/Misc/Utility';
 import { RatingInput } from './RatingInput';
 import { DifficultyContext } from "@/contexts/DifficultyContext";
 import api from '@/utils/api';
+import { useTranslation } from 'react-i18next';
 
 async function updateRating(id, rating, comment) {
   try {
@@ -32,6 +33,9 @@ export const DetailPopup = ({
   setRatings, 
   user, 
 }) => {
+  const { t } = useTranslation('components');
+  const tRating = (key) => t(`rating.detailPopup.${key}`);
+
   const { difficulties } = useContext(DifficultyContext);
   const [videoData, setVideoData] = useState(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -64,7 +68,6 @@ export const DetailPopup = ({
       const rating = userDetail?.rating || "";
       const comment = userDetail?.comment || "";
       
-      // Set both pending and initial values
       setPendingRating(rating);
       setPendingComment(comment);
       setInitialRating(rating);
@@ -75,7 +78,6 @@ export const DetailPopup = ({
     }
   }, [selectedRating, user.username]);
 
-  // Check if current input matches initial values
   useEffect(() => {
     const hasChanges = pendingRating !== initialRating || pendingComment !== initialComment;
     setHasUnsavedChanges(hasChanges);
@@ -109,31 +111,27 @@ export const DetailPopup = ({
     setCommentError(false);
 
     try {
-      // Validate comment length
       if (pendingComment && pendingComment.length > 1000) {
         setCommentError(true);
-        setSaveError('Comment must be less than 1000 characters');
+        setSaveError(tRating('errors.commentLength'));
         setIsSaving(false);
         return;
       }
 
       const updatedRating = await updateRating(selectedRating.id, pendingRating, pendingComment);
 
-      // Update the ratings list
       setRatings(prevRatings => prevRatings.map(rating => 
         rating.id === updatedRating.id ? updatedRating : rating
       ));
 
-      // Update the selected rating
       setSelectedRating(updatedRating);
       setOtherRatings(updatedRating.details || []);
       
-      // Update initial values to match the new state
       setInitialRating(pendingRating);
       setInitialComment(pendingComment);
       setHasUnsavedChanges(false);
     } catch (error) {
-      setSaveError(error.message || 'Failed to save changes');
+      setSaveError(error.message || tRating('errors.saveFailed'));
     } finally {
       setIsSaving(false);
     }
@@ -141,7 +139,7 @@ export const DetailPopup = ({
 
   const handleClose = () => {
     if (hasUnsavedChanges) {
-      if (window.confirm('You have unsaved changes. Are you sure you want to close?')) {
+      if (window.confirm(tRating('errors.unsavedChanges'))) {
         setSelectedRating(null);
         setVideoData(null);
       }
@@ -159,7 +157,7 @@ export const DetailPopup = ({
         <button 
           className="close-popup-btn"
           onClick={handleClose}
-          aria-label="Close popup"
+          aria-label={tRating('closeButton')}
         >
           <svg 
             width="24" 
@@ -200,15 +198,15 @@ export const DetailPopup = ({
 
             <div className="details-container">
               <div className="detail-field">
-                <span className="detail-label">Creator:</span>
+                <span className="detail-label">{tRating('labels.creator')}</span>
                 <span className="detail-value">{selectedRating.level.creator}</span>
               </div>
               <div className="detail-field">
-                <span className="detail-label">Current Difficulty:</span>
+                <span className="detail-label">{tRating('labels.currentDifficulty')}</span>
                 <img src={selectedRating.level.difficulty.icon} alt="" className="detail-value lv-icon" />
               </div>
               <div className="detail-field">
-                <span className="detail-label">Average Rating:</span>
+                <span className="detail-label">{tRating('labels.averageRating')}</span>
                 <img src={selectedRating.averageDifficulty?.icon} alt="" className="detail-value lv-icon" />
               </div>
             </div>
@@ -218,7 +216,7 @@ export const DetailPopup = ({
             <div className="rating-columns">
               <div className="rating-field-group">
                 <div className="rating-field">
-                  <label>Your Rating:</label>
+                  <label>{tRating('labels.yourRating')}</label>
                   <div className="rating-input-container">
                     <RatingInput
                       value={pendingRating}
@@ -233,7 +231,7 @@ export const DetailPopup = ({
                   </div>
                 </div>
                 <div className="rating-field">
-                  <label>Your Comment:</label>
+                  <label>{tRating('labels.yourComment')}</label>
                   <textarea
                     value={pendingComment}
                     onChange={(e) => {
@@ -248,7 +246,7 @@ export const DetailPopup = ({
                   disabled={!hasUnsavedChanges || isSaving}
                   onClick={handleSaveChanges}
                 >
-                  {isSaving ? 'Saving...' : 'Save Changes'}
+                  {isSaving ? tRating('buttons.saving') : tRating('buttons.saveChanges')}
                 </button>
                 {saveError && (
                   <div className="save-error-message">
@@ -257,7 +255,7 @@ export const DetailPopup = ({
                 )}
               </div>
               <div className="rating-field other-ratings">
-                <label>Other Ratings:</label>
+                <label>{tRating('labels.otherRatings')}</label>
                 <div className="other-ratings-content">
                   {otherRatings.map(({username, rating, comment}) => (
                     <RatingItem 

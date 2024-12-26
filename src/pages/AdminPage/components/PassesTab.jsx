@@ -2,8 +2,12 @@ import '../css/announcementpage.css';
 import api from '@/utils/api';
 import { useState } from 'react';
 import { TrashIcon } from '../../../components/Icons/TrashIcon';
+import { useTranslation } from 'react-i18next';
   
 const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemove }) => {
+  const { t } = useTranslation('components');
+  const tPass = (key, params = {}) => t(`passesTab.${key}`, params);
+  
   const [removingIds, setRemovingIds] = useState(new Set());
   const [error, setError] = useState('');
 
@@ -19,7 +23,7 @@ const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemo
       await api.post(`${import.meta.env.VITE_PASSES}/markAnnounced/${pass.id}`);
     } catch (err) {
       console.error('Error marking pass as announced:', err);
-      setError(`Failed to remove ${pass.player?.name}'s pass. Please try again.`);
+      setError(tPass('errors.removePass', { playerName: pass.player?.name }));
       // Refetch the data to ensure UI is in sync
       window.location.reload();
     } finally {
@@ -39,7 +43,7 @@ const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemo
           passes.map(pass => {
             // Skip invalid passes
             if (!pass?.id || !pass?.player?.name || !pass?.level?.song) {
-              console.warn('Invalid pass data:', pass);
+              console.warn(tPass('errors.invalidPass'), pass);
               return null;
             }
   
@@ -55,11 +59,21 @@ const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemo
                   <span className="checkmark"></span>
                   <div className="item-details">
                     <div className="item-title">
-                      {pass.player?.name}'s clear of {pass.level?.song}
+                      {tPass('details.title', { 
+                        playerName: pass.player?.name,
+                        songName: pass.level?.song
+                      })}
                     </div>
                     <div className="item-subtitle">
-                      Score: {pass.scoreV2?.toFixed(2) || 'N/A'} | Accuracy: {((pass.accuracy || 0) * 100).toFixed(2)}%
-                      {pass.level?.difficulty?.name && ` • ${pass.level.difficulty.name}`}
+                      {pass.scoreV2 !== undefined ? 
+                        tPass('details.stats.score', { score: pass.scoreV2.toFixed(2) }) :
+                        tPass('details.stats.scoreNA')
+                      } | {tPass('details.stats.accuracy', { 
+                        accuracy: ((pass.accuracy || 0) * 100).toFixed(2)
+                      })}
+                      {pass.level?.difficulty?.name && tPass('details.stats.difficulty', { 
+                        difficultyName: pass.level.difficulty.name 
+                      })}
                     </div>
                   </div>
                 </label>
@@ -68,6 +82,7 @@ const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemo
                   onClick={() => handleRemove(pass)}
                   disabled={isLoading || removingIds.has(pass.id)}
                   style ={{width: '40px', height: '40px'}}
+                  aria-label={tPass('buttons.remove')}
                 >
                   {removingIds.has(pass.id) ? (
                     <svg className="spinner" viewBox="0 0 50 50">
@@ -81,7 +96,7 @@ const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemo
             );
           }).filter(Boolean)
         ) : (
-          <div className="no-items-message">No passes to announce</div>
+          <div className="no-items-message">{tPass('noPasses')}</div>
         )}
       </div>
     </div>

@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './specialdifficulties.css';
+import { useTranslation } from 'react-i18next';
 
 // Define group order and their display names
 const GROUP_ORDER = {
@@ -13,6 +14,9 @@ const SpecialDifficulties = ({
   selectedDiffs, 
   onToggle 
 }) => {
+  const { t } = useTranslation('components');
+  const tDiff = (key, params = {}) => t(`difficulties.special.${key}`, params);
+
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
 
@@ -72,9 +76,9 @@ const SpecialDifficulties = ({
         className="dropdown-toggle"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span>Special Difficulties</span>
+        <span>{tDiff('title')}</span>
         <span className="selected-count">
-          {selectedDiffs.length > 0 && `(${selectedDiffs.length})`}
+          {selectedDiffs.length > 0 && tDiff('selectedCount', { count: selectedDiffs.length })}
         </span>
         <svg 
           className={`dropdown-arrow ${isOpen ? 'open' : ''}`}
@@ -94,17 +98,17 @@ const SpecialDifficulties = ({
       {isOpen && (
         <div className="difficulties-grid">
           <div className="difficulties-header">
-            <h3>Special Difficulties</h3>
+            <h3>{tDiff('title')}</h3>
             <button 
               className="select-all-button"
               onClick={handleSelectAll}
             >
-              {selectedDiffs.length > 0 ? 'Deselect All' : 'Select All'}
+              {selectedDiffs.length > 0 ? tDiff('buttons.deselectAll') : tDiff('buttons.selectAll')}
             </button>
           </div>
           {orderedGroups.map(([group, diffs]) => (
             <div key={group} className="difficulty-group">
-              <h3 className="group-title">{group}</h3>
+              <h3 className="group-title">{tDiff(`groups.${group}`)}</h3>
               <div className="difficulties-list">
                 {diffs.map(diff => (
                   <button

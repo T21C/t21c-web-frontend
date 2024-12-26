@@ -1,0 +1,17 @@
+{
+  "noRerates": "No rerates to announce",
+  "errors": {
+    "removeLevel": "Failed to remove {song}. Please try again."
+  },
+  "details": {
+    "title": "{song} - {artist}",
+    "subtitle": {
+      "difficulty": "{oldDifficulty} ➔ {newDifficulty}",
+      "team": " • {team}"
+    }
+  },
+  "buttons": {
+    "edit": "Edit level",
+    "remove": "Remove level"
+  }
+} 

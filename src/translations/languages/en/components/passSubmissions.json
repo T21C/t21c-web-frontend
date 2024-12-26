@@ -1,0 +1,54 @@
+{
+  "noSubmissions": "No pending pass submissions to review",
+  "details": {
+    "levelId": "Level ID:",
+    "player": "Player:",
+    "feelingDiff": "Feeling Diff:",
+    "judgements": {
+      "label": "Judgements:",
+      "types": {
+        "earlyDouble": "Early Double",
+        "earlySingle": "Early Single",
+        "ePerfect": "E-Perfect",
+        "perfect": "Perfect",
+        "lPerfect": "L-Perfect",
+        "lateSingle": "Late Single",
+        "lateDouble": "Late Double"
+      }
+    },
+    "flags": {
+      "label": "Flags:",
+      "types": {
+        "12k": "12K",
+        "nht": "NHT",
+        "16k": "16K"
+      }
+    },
+    "submitter": "Submitter:",
+    "uploadTime": "Upload Time:"
+  },
+  "playerAssignment": {
+    "title": "Assign player",
+    "discord": {
+      "assignButton": "Assign Discord Info",
+      "confirmMessage": "Will assign @{username} to {playerName}. Proceed?",
+      "buttons": {
+        "confirm": "Confirm",
+        "cancel": "Cancel"
+      },
+      "tooltip": "{discordUsername} → {playerName}"
+    }
+  },
+  "buttons": {
+    "allow": "Allow",
+    "decline": "Decline"
+  },
+  "errors": {
+    "noPlayer": "No player assigned",
+    "processing": "Error processing submission",
+    "autoAllow": "Failed to auto-allow submissions"
+  },
+  "success": {
+    "autoAllow": "Auto-approved {count} submissions"
+  }
+} 

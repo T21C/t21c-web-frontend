@@ -8,7 +8,7 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { PassContext } from "../../contexts/PassContext";
-import api from '../../utils/api';
+import api from '@/utils/api';
 import ScrollButton from "../../components/ScrollButton/ScrollButton";
 import { useAuth } from "../../contexts/AuthContext";
 import { RatingInput } from '@/components/RatingComponents/RatingInput';
@@ -19,7 +19,9 @@ const currentUrl = window.location.origin + location.pathname;
 const limit = 30;
 
 const PassPage = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('pages');
+  const tPass = (key, params = {}) => t(`pass.${key}`, params);
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const location = useLocation();
@@ -59,15 +61,15 @@ const PassPage = () => {
   } = useContext(PassContext);
 
   const sortOptions = [
-    { value: 'RECENT_DESC', label: 'Newest' },
-    { value: 'RECENT_ASC', label: 'Oldest' },
-    { value: 'SCORE_DESC', label: 'Highest Score' },
-    { value: 'SCORE_ASC', label: 'Lowest Score' },
-    { value: 'XACC_DESC', label: 'Highest Accuracy' },
-    { value: 'XACC_ASC', label: 'Lowest Accuracy' },
-    { value: 'DIFF_DESC', label: 'Highest Difficulty' },
-    { value: 'DIFF_ASC', label: 'Lowest Difficulty' },
-    { value: 'RANDOM', label: 'Random' }
+    { value: 'RECENT_DESC', label: tPass('settings.sort.options.newest') },
+    { value: 'RECENT_ASC', label: tPass('settings.sort.options.oldest') },
+    { value: 'SCORE_DESC', label: tPass('settings.sort.options.highestScore') },
+    { value: 'SCORE_ASC', label: tPass('settings.sort.options.lowestScore') },
+    { value: 'XACC_DESC', label: tPass('settings.sort.options.highestAccuracy') },
+    { value: 'XACC_ASC', label: tPass('settings.sort.options.lowestAccuracy') },
+    { value: 'DIFF_DESC', label: tPass('settings.sort.options.highestDifficulty') },
+    { value: 'DIFF_ASC', label: tPass('settings.sort.options.lowestDifficulty') },
+    { value: 'RANDOM', label: tPass('settings.sort.options.random') }
   ];
 
   useEffect(() => {
@@ -227,23 +229,25 @@ const PassPage = () => {
   if (difficulties.length === 0) {
     return (
       <div className="pass-page">
-      <MetaTags
-        title={"Pass List"}
-        description={``}
-        url={currentUrl}
-        image={''}
-        type="article"
+        <MetaTags
+          title={tPass('meta.title')}
+          description={tPass('meta.description')}
+          url={currentUrl}
+          image={''}
+          type="article"
         />
         <CompleteNav />
   
         <div className="background-level"></div>
-      <div className="pass-body">
-        <div className="pass-body-content" style={{marginTop: "45vh"}} >
-          <div className="loader loader-level-page" style={{top: "-6rem"}}></div>
-          <p style={{ fontSize: "1.5rem", fontWeight: "bold", justifyContent: "center", textAlign: "center"}}>Loading difficulties...</p>
+        <div className="pass-body">
+          <div className="pass-body-content" style={{marginTop: "45vh"}} >
+            <div className="loader loader-level-page" style={{top: "-6rem"}}></div>
+            <p style={{ fontSize: "1.5rem", fontWeight: "bold", justifyContent: "center", textAlign: "center"}}>
+              {tPass('loading.difficulties')}
+            </p>
+          </div>
         </div>
       </div>
-    </div>
     );
   }
 
@@ -252,8 +256,8 @@ const PassPage = () => {
   return (
     <div className="pass-page">
       <MetaTags
-        title="Pass List"
-        description="Browse and discover player achievements"
+        title={tPass('meta.title')}
+        description={tPass('meta.description')}
         url={currentUrl}
         image="/passes-preview.jpg"
         type="article"
@@ -269,9 +273,19 @@ const PassPage = () => {
           <input
             value={query}
             type="text"
-            placeholder={t("passPage.inputPlaceholder")}
+            placeholder={tPass('input.placeholder')}
             onChange={handleQueryChange}
           />
+
+          <Tooltip id="filter" place="bottom" noArrow>
+            {tPass('toolTip.filter')}
+          </Tooltip>
+          <Tooltip id="sort" place="bottom" noArrow>
+            {tPass('toolTip.sort')}
+          </Tooltip>
+          <Tooltip id="reset" place="bottom" noArrow>
+            {tPass('toolTip.reset')}
+          </Tooltip>
 
           <svg
             className="svg-fill-stroke"
@@ -346,7 +360,7 @@ const PassPage = () => {
           <div
             className={`filter settings-class ${filterOpen ? 'visible' : 'hidden'}`}
           >
-            <h2 className="setting-title">Filter</h2>
+            <h2 className="setting-title">{tPass('settings.filter.title')}</h2>
             <div className="filter-section">
               <div className="filter-row">
                 <DifficultySlider
@@ -370,7 +384,7 @@ const PassPage = () => {
                       setPassesData([]);
                     }}
                   />
-                  Only 12K
+                  {tPass('settings.filter.options.only12k')}
                 </label>
                 {isSuperAdmin && (
                   <StateDisplay
@@ -381,7 +395,7 @@ const PassPage = () => {
                       setPassesData([]);
                       setForceUpdate(prev => !prev);
                     }}
-                    label="Deleted Passes"
+                    label={tPass('settings.filter.options.deletedPasses')}
                     width={60}
                     height={24}
                     padding={3}
@@ -395,11 +409,11 @@ const PassPage = () => {
           <div
             className={`sort settings-class ${sortOpen ? 'visible' : 'hidden'}`}
           >
-            <h2 className="setting-title">Sort</h2>
+            <h2 className="setting-title">{tPass('settings.sort.title')}</h2>
 
             <div className="sort-option">
               <div className="recent">
-                <p>Sort by</p>
+                <p>{tPass('settings.sort.label')}</p>
                 <Select
                   value={sortOptions.find(option => option.value === sort)}
                   onChange={(option) => handleSort(option.value)}
@@ -474,7 +488,7 @@ const PassPage = () => {
           loader={<div className="loader loader-level-page"></div>}
           endMessage={
             <p style={{ textAlign: "center" , paddingTop: "2rem"}}>
-              <b>End of list</b>
+              <b>{tPass('infScroll.end')}</b>
             </p>
           }
         >

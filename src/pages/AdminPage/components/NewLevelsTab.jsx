@@ -3,8 +3,12 @@ import api from '@/utils/api';
 import { useState } from 'react';
 import { EditIcon } from '../../../components/Icons/EditIcon';
 import { TrashIcon } from '../../../components/Icons/TrashIcon';
+import { useTranslation } from 'react-i18next';
 
 const NewLevelsTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRemove, onEdit }) => {
+  const { t } = useTranslation('components');
+  const tLevel = (key, params = {}) => t(`newLevelsTab.${key}`, params);
+  
   const [removingIds, setRemovingIds] = useState(new Set());
   const [error, setError] = useState('');
 
@@ -20,7 +24,7 @@ const NewLevelsTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onR
       await api.post(`${import.meta.env.VITE_LEVELS}/markAnnounced/${level.id}`);
     } catch (err) {
       console.error('Error marking level as announced:', err);
-      setError(`Failed to remove ${level.song}. Please try again.`);
+      setError(tLevel('errors.removeLevel', { song: level.song }));
       // Refetch the data to ensure UI is in sync
       window.location.reload();
     } finally {
@@ -53,7 +57,7 @@ const NewLevelsTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onR
                   </div>
                   <div className="item-subtitle">
                     {level.difficulty?.name}
-                    {level.team && ` • ${level.team}`}
+                    {level.team && tLevel('details.team', { team: level.team })}
                   </div>
                 </div>
               </label>
@@ -62,6 +66,7 @@ const NewLevelsTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onR
                   className="edit-button"
                   onClick={() => onEdit(level)}
                   disabled={isLoading || removingIds.has(level.id)}
+                  aria-label={tLevel('buttons.edit')}
                 >
                   <EditIcon color="#fff" size="24px" />
                 </button>
@@ -70,6 +75,7 @@ const NewLevelsTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onR
                   onClick={() => handleRemove(level)}
                   disabled={isLoading || removingIds.has(level.id)}
                   style ={{width: '40px', height: '40px'}}
+                  aria-label={tLevel('buttons.remove')}
                 >
                   {removingIds.has(level.id) ? (
                     <svg className="spinner" viewBox="0 0 50 50">
@@ -83,7 +89,7 @@ const NewLevelsTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onR
             </div>
           ))
         ) : (
-          <div className="no-items-message">No new levels to announce</div>
+          <div className="no-items-message">{tLevel('noLevels')}</div>
         )}
       </div>
     </div>

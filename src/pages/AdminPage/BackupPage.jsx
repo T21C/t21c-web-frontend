@@ -1,4 +1,4 @@
-import { CompleteNav } from "../../components";
+import { CompleteNav, MetaTags } from "../../components";
 import "./css/adminbackuppage.css";
 import { useEffect, useState, useMemo } from "react";
 import { useAuth } from "../../contexts/AuthContext";
@@ -10,6 +10,8 @@ import { RefreshIcon } from "../../components/Icons/RefreshIcon";
 
 const TimeAgo = ({ date }) => {
   const [timeAgo, setTimeAgo] = useState('');
+  const { t } = useTranslation('pages');
+  const tBackup = (key, params = {}) => t(`backup.${key}`, params);
 
   useEffect(() => {
     const updateTimeAgo = () => {
@@ -35,18 +37,21 @@ const TimeAgo = ({ date }) => {
         unit = 'minute';
       }
 
-      setTimeAgo(`${interval} ${unit}${interval !== 1 ? 's' : ''} ago`);
+      const key = `timeAgo.${unit}${interval !== 1 ? 's' : ''}`;
+      setTimeAgo(tBackup(key, { count: interval }));
     };
 
     updateTimeAgo();
     const timer = setInterval(updateTimeAgo, 60000); // Update every minute
     return () => clearInterval(timer);
-  }, [date]);
+  }, [date, tBackup]);
 
   return <span className="time-ago">{timeAgo}</span>;
 };
 
 const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
+  const { t } = useTranslation('pages');
+  const tBackup = (key, params = {}) => t(`backup.${key}`, params);
   const [editingId, setEditingId] = useState(null);
   const [newName, setNewName] = useState('');
   const [renameLoading, setRenameLoading] = useState(false);
@@ -64,10 +69,10 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
   };
 
   const handleAction = async (action, backup) => {
-    if (action === 'restore' && !window.confirm('Are you sure you want to restore this backup? This will overwrite current data.')) {
+    if (action === 'restore' && !window.confirm(tBackup('passwordModal.restoreMessage'))) {
       return;
     }
-    if (action === 'delete' && !window.confirm('Are you sure you want to delete this backup?')) {
+    if (action === 'delete' && !window.confirm(tBackup('passwordModal.deleteMessage'))) {
       return;
     }
     setSelectedAction({ type: action, backup });
@@ -106,8 +111,10 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
       setSelectedAction({ type: '', backup: null });
       setError('');
     } catch (error) {
-      //console.error('Error performing action:', error);
-      setError(error.response?.status === 403 ? 'Invalid password' : (error.response?.data?.error || 'An error occurred while performing the action'));
+      setError(error.response?.status === 403 
+        ? tBackup('passwordModal.errors.invalid') 
+        : tBackup('passwordModal.errors.generic')
+      );
     } finally {
       setRenameLoading(false);
     }
@@ -142,30 +149,22 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
         }
       );
       
-      // Create blob link to download
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', backup.filename);
-      
-      // Append to html link element page
       document.body.appendChild(link);
-      
-      // Start download
       link.click();
-      
-      // Clean up and remove the link
       link.parentNode.removeChild(link);
       window.URL.revokeObjectURL(url);
 
-      // Reset progress after a short delay
       setTimeout(() => {
         setDownloadProgress(prev => ({ ...prev, [backup.filename]: 0 }));
         setDownloading(prev => ({ ...prev, [backup.filename]: false }));
       }, 1000);
     } catch (error) {
       console.error('Failed to download backup:', error);
-      addNotification('Failed to download backup', 'error');
+      addNotification(tBackup('notifications.downloadFailed'), 'error');
       setDownloading(prev => ({ ...prev, [backup.filename]: false }));
       setDownloadProgress(prev => ({ ...prev, [backup.filename]: 0 }));
     }
@@ -174,8 +173,8 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
   if (!backups || backups.length === 0) {
     return (
       <div className="no-backups-message">
-        <h2>No {type} backups available</h2>
-        <p>Create your first backup using the button above</p>
+        <h2>{tBackup('noBackups.title', { type })}</h2>
+        <p>{tBackup('noBackups.message')}</p>
       </div>
     );
   }
@@ -187,13 +186,13 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
           const [fileName, extension] = getFileNameAndExtension(backup.filename);
           const progress = downloadProgress[backup.filename] || 0;
           const isDownloading = downloading[backup.filename];
-          const circumference = 2 * Math.PI * 10; // For progress circle
+          const circumference = 2 * Math.PI * 10;
           const offset = circumference - (progress / 100) * circumference;
 
           return (
             <div key={backup.filename} className="backup-item">
               <div className="download-wrapper">
-              <div className={`download-progress ${isDownloading ? 'visible' : ''}`}>
+                <div className={`download-progress ${isDownloading ? 'visible' : ''}`}>
                   <svg className="progress-circle" width="24" height="24">
                     <circle
                       className="progress-background"
@@ -215,7 +214,7 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
                   className={`download-btn ${isDownloading ? 'downloading' : ''}`}
                   onClick={() => handleDownload(backup)}
                   disabled={loading || renameLoading || isDownloading}
-                  title="Download backup"
+                  title={tBackup('buttons.download')}
                 >
                   <svg className="svg-stroke" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M17 17H17.01M17.4 14H18C18.9319 14 19.3978 14 19.7654 14.1522C20.2554 14.3552 20.6448 14.7446 20.8478 15.2346C21 15.6022 21 16.0681 21 17C21 17.9319 21 18.3978 20.8478 18.7654C20.6448 19.2554 20.2554 19.6448 19.7654 19.8478C19.3978 20 18.9319 20 18 20H6C5.06812 20 4.60218 20 4.23463 19.8478C3.74458 19.6448 3.35523 19.2554 3.15224 18.7654C3 18.3978 3 17.9319 3 17C3 16.0681 3 15.6022 3.15224 15.2346C3.35523 14.7446 3.74458 14.3552 4.23463 14.1522C4.60218 14 5.06812 14 6 14H6.6M12 15V4M12 15L9 12M12 15L15 12" 
@@ -227,7 +226,6 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
                     </path>
                   </svg>
                 </button>
-                
               </div>
 
               <div className="backup-info">
@@ -238,7 +236,7 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
                         type="text"
                         value={newName}
                         onChange={(e) => setNewName(e.target.value)}
-                        placeholder="Enter new name"
+                        placeholder={tBackup('fileInfo.newName')}
                         className="rename-input"
                       />
                       <span className="file-extension">{extension}</span>
@@ -249,7 +247,7 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
                         onClick={() => handleAction('rename', backup)}
                         disabled={renameLoading || !newName.trim()}
                       >
-                        {renameLoading ? 'Saving...' : 'Save'}
+                        {renameLoading ? tBackup('buttons.saving') : tBackup('buttons.save')}
                       </button>
                       <button
                         className="cancel-rename-btn"
@@ -259,7 +257,7 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
                         }}
                         disabled={renameLoading}
                       >
-                        Cancel
+                        {tBackup('buttons.cancel')}
                       </button>
                     </div>
                   </div>
@@ -280,10 +278,12 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
                     </div>
                     <div className="backup-details">
                       <p className="backup-date">
-                        Created: {new Date(backup.created).toLocaleString()}
+                        {tBackup('fileInfo.created', { date: new Date(backup.created).toLocaleString() })}
                         <TimeAgo date={backup.created} />
                       </p>
-                      <p className="backup-size">Size: {formatFileSize(backup.size)}</p>
+                      <p className="backup-size">
+                        {tBackup('fileInfo.size', { size: formatFileSize(backup.size) })}
+                      </p>
                     </div>
                   </>
                 )}
@@ -294,14 +294,14 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
                   onClick={() => handleAction('restore', backup)}
                   disabled={loading || renameLoading}
                 >
-                  Restore
+                  {tBackup('buttons.restore')}
                 </button>
                 <button
                   className="delete-btn"
                   onClick={() => handleAction('delete', backup)}
                   disabled={loading || renameLoading}
                 >
-                  Delete
+                  {tBackup('buttons.delete')}
                 </button>
               </div>
             </div>
@@ -312,13 +312,13 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
       {showPasswordInput && (
         <div className="password-modal">
           <div className="password-modal-content">
-            <h3>Super Admin Password Required</h3>
-            <p>Please enter your super admin password to {selectedAction.type} the backup.</p>
+            <h3>{tBackup('passwordModal.title')}</h3>
+            <p>{tBackup(`passwordModal.${selectedAction.type}Message`)}</p>
             <input
               type="password"
               value={superAdminPassword}
               onChange={(e) => setSuperAdminPassword(e.target.value)}
-              placeholder="Enter password"
+              placeholder={tBackup('passwordModal.placeholder')}
             />
             {error && <p className="error-message">{error}</p>}
             <div className="password-modal-actions">
@@ -327,13 +327,13 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
                 onClick={handlePasswordSubmit}
                 disabled={!superAdminPassword}
               >
-                Confirm
+                {tBackup('buttons.confirm')}
               </button>
               <button 
                 className="cancel-btn"
                 onClick={handleCancel}
               >
-                Cancel
+                {tBackup('buttons.cancel')}
               </button>
             </div>
           </div>
@@ -352,8 +352,10 @@ const formatFileSize = (bytes) => {
 };
 
 const BackupPage = () => {
-  const { t } = useTranslation();
+  const { t } = useTranslation('pages');
+  const tBackup = (key, params = {}) => t(`backup.${key}`, params);
   const { user } = useAuth();
+  const currentUrl = window.location.origin + location.pathname;
   const [activeTab, setActiveTab] = useState('mysql');
   const [loading, setLoading] = useState(false);
   const [backups, setBackups] = useState({ mysql: [], files: [] });
@@ -378,7 +380,7 @@ const BackupPage = () => {
       setBackups(response.data);
     } catch (error) {
       console.error('Failed to load backups:', error);
-      addNotification('Failed to load backups', 'error');
+      addNotification(tBackup('notifications.loadFailed'), 'error');
     } finally {
       setLoading(false);
     }
@@ -400,7 +402,7 @@ const BackupPage = () => {
         superAdminPassword: createPassword
       });
       if (response.data.success) {
-        addNotification(`${activeTab.toUpperCase()} backup created successfully`);
+        addNotification(tBackup('notifications.backupCreated', { type: activeTab.toUpperCase() }));
         await loadBackups();
         setShowCreatePasswordModal(false);
         setCreatePassword('');
@@ -408,7 +410,10 @@ const BackupPage = () => {
       }
     } catch (error) {
       console.error('Failed to create backup:', error);
-      setCreateError(error.response?.status === 403 ? 'Invalid password' : (error.response?.data?.error || 'Failed to create backup'));
+      setCreateError(error.response?.status === 403 
+        ? tBackup('passwordModal.errors.invalid') 
+        : tBackup('notifications.createFailed')
+      );
     } finally {
       setLoading(false);
     }
@@ -422,11 +427,11 @@ const BackupPage = () => {
         { superAdminPassword }
       );
       if (response.data.success) {
-        addNotification('Backup restored successfully');
+        addNotification(tBackup('notifications.backupRestored'));
       }
     } catch (error) {
       console.error('Failed to restore backup:', error);
-      addNotification('Failed to restore backup', 'error');
+      addNotification(tBackup('notifications.restoreFailed'), 'error');
     } finally {
       setLoading(false);
     }
@@ -442,12 +447,12 @@ const BackupPage = () => {
         }
       );
       if (response.data.success) {
-        addNotification('Backup deleted successfully');
+        addNotification(tBackup('notifications.backupDeleted'));
         await loadBackups();
       }
     } catch (error) {
       console.error('Failed to delete backup:', error);
-      addNotification('Failed to delete backup', 'error');
+      addNotification(tBackup('notifications.deleteFailed'), 'error');
     } finally {
       setLoading(false);
     }
@@ -468,16 +473,24 @@ const BackupPage = () => {
 
   return (
     <div className="admin-backup-page">
+      <MetaTags
+        title={tBackup('meta.title')}
+        description={tBackup('meta.description')}
+        url={currentUrl}
+        image="/og-image.jpg"
+        type="website"
+      />
       <CompleteNav user={user} />
       <div className="admin-backup-body">
         <div className="header-container">
-          <h1>Backups</h1>
+          <h1>{tBackup('header.title')}</h1>
           <button 
             className="refresh-button"
             onClick={loadBackups}
             disabled={loading}
+            aria-label={tBackup('header.refresh')}
           >
-              <RefreshIcon color="#fff" size="36px" />
+            <RefreshIcon color="#fff" size="36px" />
           </button>
         </div>
 
@@ -487,35 +500,35 @@ const BackupPage = () => {
               className={`tab-button ${activeTab === 'mysql' ? 'active' : ''}`}
               onClick={() => setActiveTab('mysql')}
             >
-              MySQL Backups
+              {tBackup('tabs.mysql')}
             </button>
             <button
               className={`tab-button ${activeTab === 'files' ? 'active' : ''}`}
               onClick={() => setActiveTab('files')}
             >
-              Files Backups
+              {tBackup('tabs.files')}
             </button>
           </div>
           <div className="total-size">
-            Total Size: {formatFileSize(totalSize)}
+            {tBackup('stats.totalSize', { size: formatFileSize(totalSize) })}
           </div>
         </div>
 
         <div className="backup-header">
           <div className="header-left">
-            <h2>{activeTab === 'mysql' ? 'MySQL' : 'Files'} Backups</h2>
+            <h2>{activeTab === 'mysql' ? tBackup('tabs.mysql') : tBackup('tabs.files')}</h2>
             <div className="sort-buttons">
               <button
                 className={`sort-btn ${sortOrder === 'newest' ? 'active' : ''}`}
                 onClick={() => setSortOrder('newest')}
               >
-                Newest
+                {tBackup('sort.newest')}
               </button>
               <button
                 className={`sort-btn ${sortOrder === 'oldest' ? 'active' : ''}`}
                 onClick={() => setSortOrder('oldest')}
               >
-                Oldest
+                {tBackup('sort.oldest')}
               </button>
             </div>
           </div>
@@ -525,7 +538,10 @@ const BackupPage = () => {
               onClick={handleCreateBackup}
               disabled={loading}
             >
-              {loading ? 'Creating...' : `Create ${activeTab.toUpperCase()} Backup`}
+              {loading 
+                ? tBackup('buttons.creating') 
+                : tBackup('buttons.create', { type: activeTab.toUpperCase() })
+              }
             </button>
           </div>
         </div>
@@ -557,13 +573,13 @@ const BackupPage = () => {
       {showCreatePasswordModal && (
         <div className="password-modal">
           <div className="password-modal-content">
-            <h3>Super Admin Password Required</h3>
-            <p>Please enter your super admin password to create a new backup.</p>
+            <h3>{tBackup('passwordModal.title')}</h3>
+            <p>{tBackup('passwordModal.createMessage')}</p>
             <input
               type="password"
               value={createPassword}
               onChange={(e) => setCreatePassword(e.target.value)}
-              placeholder="Enter password"
+              placeholder={tBackup('passwordModal.placeholder')}
             />
             {createError && <p className="error-message">{createError}</p>}
             <div className="password-modal-actions">
@@ -572,7 +588,7 @@ const BackupPage = () => {
                 onClick={handleCreatePasswordSubmit}
                 disabled={!createPassword}
               >
-                Confirm
+                {tBackup('buttons.confirm')}
               </button>
               <button 
                 className="cancel-btn"
@@ -582,7 +598,7 @@ const BackupPage = () => {
                   setCreateError('');
                 }}
               >
-                Cancel
+                {tBackup('buttons.cancel')}
               </button>
             </div>
           </div>
