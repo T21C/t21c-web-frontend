@@ -91,6 +91,9 @@
   gap: 15px;
   flex: 1;
 }
+.rater-management-overlay .rater-info > svg {
+  width: 40px;
+}
 
 .rater-management-overlay .rater-text {
   display: flex;

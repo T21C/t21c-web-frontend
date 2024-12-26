@@ -3,9 +3,9 @@
   "thumbnailInfo": "Video information will appear here",
   "submInfo": {
     "levelId": "Level ID",
-    "altname": "Alternative Name (optional)",
+    "altname": "Alternative Name (opt.)",
     "nohold": "No Hold Tap",
-    "speed": "Speed",
+    "speed": "Speed (opt., >=1.0)",
     "feelDiff": "Feeling Difficulty",
     "is12K": "12K",
     "is16K": "16K"

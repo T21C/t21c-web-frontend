@@ -31,8 +31,7 @@ const PassSubmissions = () => {
 
   useEffect(() => {
     // Add event listener for refresh button
-    const handleRefresh = () => {
-      console.log('[PassSubmissions] Refreshing submissions...');
+    const handleRefresh = () => {;
       fetchPendingSubmissions();
     };
     window.addEventListener('refreshSubmissions', handleRefresh);
@@ -72,7 +71,6 @@ const PassSubmissions = () => {
         );
 
         if (exactMatch) {
-          console.log('[PassSubmissions] Auto-assigning player:', exactMatch.name, 'to submission:', submission.id);
           await handlePlayerSelect(submission.id, exactMatch);
         }
       } catch (error) {
@@ -112,7 +110,6 @@ const PassSubmissions = () => {
         return;
       }
 
-      console.log('[PassSubmissions] Assigning player:', player.name, 'to submission:', submissionId);
       await api.put(`${import.meta.env.VITE_SUBMISSION_API}/passes/${submissionId}/assign-player`, 
         { playerId: player.id },
         { headers: { 'Content-Type': 'application/json' } }
@@ -150,7 +147,6 @@ const PassSubmissions = () => {
     const submission = submissions.find(s => s.id === submissionId);
     if (!submission.assignedPlayerId) return;
 
-    console.log('[PassSubmissions] Starting discord assignment');
     setDiscordAssignmentStatus(prev => ({
       ...prev,
       [submissionId]: 'assigning'

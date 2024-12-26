@@ -3,6 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import './profile.css';
 import { useTranslation } from 'react-i18next';
+import DefaultAvatar from '../Icons/DefaultAvatar';
 
 function Profile() {
   const { user, loginDiscord, logout } = useAuth();
@@ -45,7 +46,7 @@ function Profile() {
               <img src={imageSrc} alt="Profile" className="profile-avatar" />
             )
           ) : (
-            <p>{tProfile('loadingImg')}</p>
+            <DefaultAvatar className="profile-avatar" />
           )}
           <button className="btn-login profile-button" onClick={logout}>
             <svg fill="#ffffff" viewBox="-9.6 -9.6 51.20 51.20" version="1.1" xmlns="http://www.w3.org/2000/svg" transform="rotate(180)" stroke="#ffffff" strokeWidth="1.536">

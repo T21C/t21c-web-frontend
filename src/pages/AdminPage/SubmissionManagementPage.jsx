@@ -7,6 +7,7 @@ import ScrollButton from '../../components/ScrollButton/ScrollButton';
 import LevelSubmissions from './components/LevelSubmissions';
 import PassSubmissions from './components/PassSubmissions';
 import { RefreshIcon } from '../../components/Icons/RefreshIcon';
+import { useNotification } from '../../contexts/NotificationContext';
 
 const SubmissionManagementPage = () => {
   const { t } = useTranslation('pages');
@@ -15,7 +16,7 @@ const SubmissionManagementPage = () => {
   const { isSuperAdmin } = useAuth();
   const [activeTab, setActiveTab] = useState('levels'); // 'levels' or 'passes'
   const [isLoading, setIsLoading] = useState(false);
-
+  const { pendingLevelSubmissions, pendingPassSubmissions } = useNotification();
   const handleRefresh = () => {
     setIsLoading(true);
     // Dispatch a custom event to trigger refresh in child components
@@ -99,12 +100,22 @@ const SubmissionManagementPage = () => {
               onClick={() => setActiveTab('levels')}
             >
               {tSubmission('tabs.levels')}
+              {pendingLevelSubmissions > 0 && (
+                          <span className="notification-badge">
+                            {pendingLevelSubmissions > 9 ? tNav('notifications.moreThanNine') : pendingSubmissions}
+                          </span>
+                        )}
             </button>
             <button 
               className={`tab-button ${activeTab === 'passes' ? 'active' : ''}`}
               onClick={() => setActiveTab('passes')}
             >
               {tSubmission('tabs.passes')}
+              {pendingPassSubmissions > 0 && (
+                <span className="notification-badge">
+                  {pendingPassSubmissions > 9 ? tNav('notifications.moreThanNine') : pendingPassSubmissions}
+                </span>
+              )}
             </button>
             {activeTab === 'passes' && (
               <button 

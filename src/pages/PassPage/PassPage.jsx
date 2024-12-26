@@ -78,8 +78,6 @@ const PassPage = () => {
     const fetchPasses = async () => {
       setLoading(true);
       try {
-        // Add console.log for debugging
-        console.log('Fetching with pageNumber:', pageNumber);
         
         // Handle ID-based search
         if (query.startsWith("#") && query.length > 1) {
@@ -100,8 +98,6 @@ const PassPage = () => {
 
 
 
-        // Request body for difficulty filtering
-        console.log(pageNumber, limit);
         const requestBody = {
           limit,
           offset: pageNumber * limit,
@@ -151,7 +147,6 @@ const PassPage = () => {
 
   
   function resetAll() {
-    console.log(`PageNumber change in resetAll: ${pageNumber} -> 0`);
     setPageNumber(0);
     setSort("SCORE_DESC");
     setQuery("");
@@ -172,7 +167,6 @@ const PassPage = () => {
   }
 
   function handleQueryChange(e) {
-    console.log(`PageNumber change in handleQueryChange: ${pageNumber} -> 0`);
     setPageNumber(0);
     setPassesData(null);
     setQuery(e.target.value);
@@ -184,7 +178,6 @@ const PassPage = () => {
   }
 
   function handleSort(value) {
-    console.log(`PageNumber change in handleSort: ${pageNumber} -> 0`);
     setPassesData([]);
     setSort(value);
     setPageNumber(0);
@@ -255,7 +248,6 @@ const PassPage = () => {
         dataLength={passesData.length}
         next={() => {
           const newPage = pageNumber + 1;
-          console.log(`PageNumber change in InfiniteScroll: ${pageNumber} -> ${newPage}`);
           setPageNumber(newPage);
         }}
         hasMore={hasMore && !loading}

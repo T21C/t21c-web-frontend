@@ -1,5 +1,5 @@
 import "./detailpopup.css";
-import { useEffect, useState, useContext } from 'react';
+import { useEffect, useState, useContext, useRef } from 'react';
 import { getVideoDetails } from "@/Repository/RemoteRepository";
 import { RatingItem } from './RatingItem';
 import { validateFeelingRating } from '@/components/Misc/Utility';
@@ -47,6 +47,8 @@ export const DetailPopup = ({
   const [saveError, setSaveError] = useState(null);
   const [otherRatings, setOtherRatings] = useState([]);
   const [commentError, setCommentError] = useState(false);
+
+  const popupRef = useRef(null);
 
   useEffect(() => {
     const handleEscKey = (event) =>  {
@@ -103,6 +105,19 @@ export const DetailPopup = ({
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
   }, [hasUnsavedChanges]);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (popupRef.current && !popupRef.current.contains(event.target)) {
+        handleClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [hasUnsavedChanges]);
+
   const handleSaveChanges = async () => {
     if (!selectedRating || !hasUnsavedChanges) return;
     
@@ -153,7 +168,7 @@ export const DetailPopup = ({
 
   return (
     <div className="rating-popup-overlay">
-      <div className="rating-popup">
+      <div className="rating-popup" ref={popupRef}>
         <button 
           className="close-popup-btn"
           onClick={handleClose}

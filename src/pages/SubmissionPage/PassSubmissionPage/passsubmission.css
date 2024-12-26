@@ -46,7 +46,7 @@
 }
 .pass-submission-page form .info {
   flex: 3;
-  padding: 1.5rem 2rem;
+  padding: 1.5rem 2rem 1rem 2rem;
   background-color: var(--color-black);
   color: var(--color-white);
   z-index: 15;
@@ -58,7 +58,7 @@
   color: var(--color-white);
 }
 .pass-submission-page form .info input {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.03);
   border: 0;
   border-bottom: 3px solid hsl(252, 30%, 35%);
   outline: none;
@@ -110,7 +110,7 @@
 }
 
 .pass-submission-page form .info .id-input .expand-button {
-  background: var(--color-purple-2);
+  background-color: hsl(252, 100%, 72%);
   border: none;
   border-radius: 3px;
   width: 32px;
@@ -125,7 +125,10 @@
 }
 
 .pass-submission-page form .info .id-input .expand-button:hover {
-  background: var(--color-purple-1);
+  background-color: hsl(252, 100%, 68%);
+}
+.pass-submission-page form .info .id-input .expand-button:active {
+  background-color: hsl(252, 100%, 62%);
 }
 
 .pass-submission-page form .info .id-input .expand-button svg {
@@ -352,7 +355,6 @@
   padding: 1rem;
   border-radius: 5px;
   margin-top: 1rem;
-  margin-bottom: 1rem;
 }
 .pass-submission-page form .info .accuracy .top, .pass-submission-page form .info .accuracy .bottom {
   display: flex;

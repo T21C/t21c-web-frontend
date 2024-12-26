@@ -144,7 +144,6 @@ const LevelPage = () => {
         setHasMore(response.data.count > levelsData.length + newLevels.length);
       } catch (error) {
         if (!axios.isCancel(error)) setError(true);
-        //console.log(error);
       } finally {
         setLoading(false);
       }
@@ -160,9 +159,7 @@ const LevelPage = () => {
           }
         );
 
-        // Remove the additional clears reques
-        console.log(response.data);
-        setLevelsData([response.data]);
+       setLevelsData([response.data]);
         setHasMore(false);
       } catch (error) {
         if (!axios.isCancel(error)) setError(true);

@@ -257,13 +257,17 @@ const LevelSubmissionPage = () => {
                 name="charter"
                 value={form.charter}
                 onChange={handleInputChange}
-                style={{marginLeft: "6px", borderColor: isFormValidDisplay.directLink ? "" : "red" }}
+                style={{ borderColor: isFormValidDisplay.directLink ? "" : "red" }}
               />
               <div className="diff-tooltip">
                 <div className="tooltip-container">
                   <span style={{
                     color: 'red',
-                    visibility: `${isInvalidFeelingRating ? '' : 'hidden'}`
+                    visibility: `${isInvalidFeelingRating ? '' : 'hidden'}`,
+                    backgroundColor: "rgba(255, 255, 0, 0.25)",
+                    padding: "0.2rem 0.4rem",
+                    borderRadius: "5px",
+                    margin: "0 -0.1rem"
                   }}>?</span>
                   <span className="tooltip" 
                     style={{
@@ -280,7 +284,7 @@ const LevelSubmissionPage = () => {
                   onChange={handleInputChange}
                   style={{ 
                     borderColor: isFormValidDisplay.diff ? "" : "red",
-                    backgroundColor: isInvalidFeelingRating ? "yellow" : ""
+                    backgroundColor: isInvalidFeelingRating ? "rgba(255, 255, 0, 0.25)" : ""
                   }}
                 />
               </div>
@@ -303,7 +307,7 @@ const LevelSubmissionPage = () => {
               />
             </div>
             
-            <div className="info-group" style={{marginTop: "2rem", paddingLeft: "30px", paddingRight: "30px"}}>
+            <div className="info-group" style={{marginTop: "2rem"}}>
               <input
                 type="text"
                 placeholder={tLevel("submInfo.dlLink")}

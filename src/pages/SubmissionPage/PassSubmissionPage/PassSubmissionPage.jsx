@@ -468,7 +468,7 @@ const PassSubmissionPage = () => {
             "#888"
           )}}>
           {success? (<p>{tPass("alert.success")}</p>) :
-          error? (<p>{tPass("alert.error")}{truncateString(error?.message || error?.toString() || error, 27)}</p>):
+          error? (<p>{tPass("alert.error")}{truncateString(error?.message || error?.toString() || error, 50)}</p>):
           (<p>{tPass("alert.loading")}</p>)}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div>
@@ -657,7 +657,7 @@ const PassSubmissionPage = () => {
                 onChange={handleInputChange}
                 style={{
                   borderColor: isFormValidDisplay.speed ? "" : "red",
-                  backgroundColor: isValidSpeed ? "transparent" : "#faa"
+                  backgroundColor: isValidSpeed ? "" : "#f005"
                 }}
               />
               <div style={{ display: 'flex', justifyContent: "center", gap: "10px"}}>
@@ -669,7 +669,7 @@ const PassSubmissionPage = () => {
                   onChange={handleInputChange}
                   style={{
                     borderColor: isFormValidDisplay.feelingRating ? "" : "red",
-                    backgroundColor: !isValidFeelingRating ? "yellow" : ""
+                    backgroundColor: !isValidFeelingRating ? "#ff05" : ""
                   }}
                 />
                 <div className="tooltip-container">
@@ -722,7 +722,7 @@ const PassSubmissionPage = () => {
               </div>
             </div>
 
-            <div className="accuracy" style={{backgroundColor: "#222", color: "#fff"}}>
+            <div className="accuracy" style={{backgroundColor: "#ffffff06", color: "#fff"}}>
               <div className="top">
                 <div className="each-accuracy">
                   <p>{tPass("judgements.ePerfect")}</p>

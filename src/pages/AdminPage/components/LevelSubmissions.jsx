@@ -22,7 +22,6 @@ const LevelSubmissions = () => {
   useEffect(() => {
     // Add event listener for refresh button
     const handleRefresh = () => {
-      console.log('[LevelSubmissions] Refreshing submissions...');
       fetchPendingSubmissions();
     };
     window.addEventListener('refreshSubmissions', handleRefresh);

@@ -6,6 +6,8 @@ const NotificationContext = createContext({
   pendingSubmissions: 0,
   pendingRatings: 0,
   totalNotifications: 0,
+  pendingLevelSubmissions: 0,
+  pendingPassSubmissions: 0,
   displayCount: '0'
 });
 
@@ -20,6 +22,8 @@ export const useNotification = () => {
 export const NotificationProvider = ({ children }) => {
   const [pendingSubmissions, setPendingSubmissions] = useState(0);
   const [pendingRatings, setPendingRatings] = useState(0);
+  const [pendingLevelSubmissions, setPendingLevelSubmissions] = useState(0);
+  const [pendingPassSubmissions, setPendingPassSubmissions] = useState(0);
   const { isSuperAdmin, isAdmin } = useAuth();
   const lastFetchTimeRef = useRef(null);
   const fetchTimeoutRef = useRef(null);
@@ -29,10 +33,12 @@ export const NotificationProvider = ({ children }) => {
     
     try {
       const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/admin/statistics`);
-      const { unratedRatings, totalPendingSubmissions } = response.data;
+      const { unratedRatings, totalPendingSubmissions, pendingLevelSubmissions, pendingPassSubmissions } = response.data;
       
       setPendingSubmissions(totalPendingSubmissions);
       setPendingRatings(unratedRatings);
+      setPendingLevelSubmissions(pendingLevelSubmissions);
+      setPendingPassSubmissions(pendingPassSubmissions);
       
       // Update last fetch time
       lastFetchTimeRef.current = Date.now();
@@ -86,8 +92,25 @@ export const NotificationProvider = ({ children }) => {
     eventSource.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        if (data.type === 'submissionUpdate' || data.type === 'ratingUpdate') {
-          // For SSE updates, fetch immediately and reset the timer
+        if (data.type === 'submissionUpdate') {
+          // For submission updates, fetch immediately and reset the timer
+          if (fetchTimeoutRef.current) {
+            clearTimeout(fetchTimeoutRef.current);
+          }
+          
+          // Log submission update details if available
+          if (data.data) {
+            console.debug('SSE: Submission update received:', {
+              action: data.data.action,
+              type: data.data.submissionType,
+              id: data.data.submissionId,
+              count: data.data.count
+            });
+          }
+          
+          fetchNotificationCounts();
+        } else if (data.type === 'ratingUpdate') {
+          // For rating updates, fetch immediately and reset the timer
           if (fetchTimeoutRef.current) {
             clearTimeout(fetchTimeoutRef.current);
           }
@@ -132,7 +155,9 @@ export const NotificationProvider = ({ children }) => {
     pendingSubmissions,
     pendingRatings,
     totalNotifications,
-    displayCount
+    displayCount,
+    pendingLevelSubmissions,
+    pendingPassSubmissions
   };
 
   return (

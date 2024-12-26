@@ -26,7 +26,7 @@
   border-radius: 8px;
   margin-top: 2rem;
   max-width: 47rem;
-  background-color: #000000cf;
+  background-color: #000010d6;
   color: var(--color-white);
   background-size: contain;
   background-position: center -80px;
@@ -68,43 +68,52 @@
   font-size: 1rem;
 }
 .level-submission-page form .info .youtube-input {
-  display: flex;
-  flex-direction: column;
-  justify-items: center;
+  display: grid;
   gap: 0.5rem;
-  margin-bottom: 0.5rem;
-  margin-top: 0.5rem;
+  margin: 0.5rem 0;
+  padding: 0 1rem;
 }
 
 .level-submission-page form .info .youtube-input .youtube-info {
-  display: flex;
-  gap:20px
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 .level-submission-page form .info .information {
-  display: flex;
-  padding: 0 40px 0 40px;
-  align-items: center;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 0.8rem;
-  font-size: 0.8rem;
+  padding: 0 2rem;
   margin-bottom: 1rem;
 }
 
 
 .level-submission-page form .info .info-group {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  gap: 0.5rem;
-  margin-bottom: 0.5rem;
-  margin-top: 0.5rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin: 0.5rem 0;
+  padding: 0 2rem;
 }
 
-.level-submission-page form .info .info-group .diff-tooltip{
-  padding-right: 5px;
-  gap: 5px; 
-  display: flex
+.level-submission-page form .info .info-group .diff-tooltip {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 } 
+
+.level-submission-page form .info .info-group .diff-tooltip input {
+  width: 100%;
+}
+
+.level-submission-page form .info .info-group .diff-tooltip .tooltip-container {
+  position: absolute;
+  right: -1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
 
 .level-submission-page form .info .submit {
   width: 100%;
