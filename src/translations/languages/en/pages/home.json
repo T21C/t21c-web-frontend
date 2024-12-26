@@ -46,7 +46,7 @@
       "github": "GitHub"
     },
     "copyright": {
-      "main": "© {year} TUF. Not affiliated with 7th Beat Games.",
+      "main": "© {{year}} TUF. Not affiliated with 7th Beat Games.",
       "credit": "Made with ❤️ by V0W4N"
     }
   }

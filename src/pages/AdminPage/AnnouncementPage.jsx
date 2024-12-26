@@ -200,6 +200,37 @@ const AnnouncementPage = () => {
     }
   };
 
+  if (isSuperAdmin === undefined) {
+    return (
+      <>
+        <MetaTags
+          title={tAnnounce('meta.title')}
+          description={tAnnounce('meta.description')}
+          url={currentUrl}
+          image="/og-image.jpg"
+          type="website"
+        />
+        <CompleteNav />
+        <div className="background-level"></div>
+        <div className="announcement-page">
+          <div className="announcement-container">
+            <div className="loader loader-level-detail"/>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (!isSuperAdmin) {
+    return (
+      <AccessDenied 
+        metaTitle={tAnnounce('meta.title')}
+        metaDescription={tAnnounce('meta.description')}
+        currentUrl={currentUrl}
+      />
+    );
+  }
+
   if (error) {
     return (
       <>

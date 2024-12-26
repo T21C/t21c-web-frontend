@@ -31,24 +31,54 @@
     "title": "Assign player",
     "discord": {
       "assignButton": "Assign Discord Info",
-      "confirmMessage": "Will assign @{username} to {playerName}. Proceed?",
+      "confirmMessage": "Will assign @{{username}} to {{playerName}}. Proceed?",
       "buttons": {
         "confirm": "Confirm",
         "cancel": "Cancel"
       },
-      "tooltip": "{discordUsername} → {playerName}"
+      "tooltip": "{{discordUsername}} → {{playerName}}"
     }
   },
   "buttons": {
     "allow": "Allow",
-    "decline": "Decline"
+    "decline": "Decline",
+    "save": "Save",
+    "cancel": "Cancel",
+    "reset": "Reset",
+    "clear": "Clear",
+    "selectAll": "Select All",
+    "autoAllow": "Auto-Allow",
+    "autoReject": "Auto-Reject"
   },
   "errors": {
     "noPlayer": "No player assigned",
     "processing": "Error processing submission",
-    "autoAllow": "Failed to auto-allow submissions"
+    "autoAllow": "Failed to auto-allow submissions",
+    "loading": "Failed to load submissions",
+    "saving": "Failed to save submissions"
   },
   "success": {
-    "autoAllow": "Auto-approved {count} submissions"
+    "autoAllow": "Auto-approved {{count}} submissions"
+  },
+  "loading": "Loading submissions...",
+  "noItems": "No submissions found",
+  "search": {
+    "placeholder": "Search submissions..."
+  },
+  "stats": {
+    "selected": "Selected",
+    "total": "Total"
+  },
+  "modal": {
+    "title": "Confirm Action",
+    "confirmMessage": "Will assign @{{username}} to {{playerName}}. Proceed?",
+    "buttons": {
+      "confirm": "Confirm",
+      "cancel": "Cancel"
+    },
+    "tooltip": "{{discordUsername}} → {{playerName}}"
+  },
+  "notifications": {
+    "autoAllow": "Auto-approved {{count}} submissions"
   }
 } 

@@ -174,7 +174,7 @@ const PassPage = () => {
   function handleQueryChange(e) {
     console.log(`PageNumber change in handleQueryChange: ${pageNumber} -> 0`);
     setPageNumber(0);
-    setPassesData([]);
+    setPassesData(null);
     setQuery(e.target.value);
     setLoading(true);
   }
@@ -226,6 +226,67 @@ const PassPage = () => {
   }, [pguDifficulties]);
 
 
+  const renderContent = () => {
+    // Initial difficulties loading
+    if (difficulties.length === 0) {
+      return (
+        <div className="pass-body-content" style={{marginTop: "45vh"}} >
+          <div className="loader loader-level-page" style={{top: "-6rem"}}></div>
+          <p style={{ fontSize: "1.5rem", fontWeight: "bold", justifyContent: "center", textAlign: "center"}}>
+            {tPass('loading.difficulties')}
+          </p>
+        </div>
+      );
+    }
+
+    // Loading state (passesData is null)
+    if (passesData === null) {
+      return (
+        <div className="pass-body-content" style={{marginTop: "45vh"}} >
+          <div className="loader loader-level-page" style={{top: "-6rem"}}></div>
+        </div>
+      );
+    }
+
+    // Data loaded (passesData is an array)
+    return (
+      <InfiniteScroll
+        style={{ paddingBottom: "4rem", overflow: "visible" }}
+        dataLength={passesData.length}
+        next={() => {
+          const newPage = pageNumber + 1;
+          console.log(`PageNumber change in InfiniteScroll: ${pageNumber} -> ${newPage}`);
+          setPageNumber(newPage);
+        }}
+        hasMore={hasMore && !loading}
+        loader={
+          <div style={{ paddingTop: "2rem" }}>
+            <div className="loader loader-level-page"></div>
+          </div>
+        }
+        endMessage={
+          !loading && (
+            <p style={{ textAlign: "center" , paddingTop: "2rem"}}>
+              <b>{tPass('infScroll.end')}</b>
+            </p>
+          )
+        }
+      >
+        {passesData.map((pass, index) => (
+          <PassCard
+            key={pass.passId || index}
+            pass={pass}
+          />
+        ))}
+        {loading && passesData.length > 0 && (
+          <div style={{ paddingTop: "2rem" }}>
+            <div className="loader loader-level-page"></div>
+          </div>
+        )}
+      </InfiniteScroll>
+    );
+  };
+
   if (difficulties.length === 0) {
     return (
       <div className="pass-page">
@@ -233,25 +294,18 @@ const PassPage = () => {
           title={tPass('meta.title')}
           description={tPass('meta.description')}
           url={currentUrl}
-          image={''}
+          image="/passes-preview.jpg"
           type="article"
         />
         <CompleteNav />
   
         <div className="background-level"></div>
         <div className="pass-body">
-          <div className="pass-body-content" style={{marginTop: "45vh"}} >
-            <div className="loader loader-level-page" style={{top: "-6rem"}}></div>
-            <p style={{ fontSize: "1.5rem", fontWeight: "bold", justifyContent: "center", textAlign: "center"}}>
-              {tPass('loading.difficulties')}
-            </p>
-          </div>
+          {renderContent()}
         </div>
       </div>
     );
   }
-
-
 
   return (
     <div className="pass-page">
@@ -264,7 +318,6 @@ const PassPage = () => {
       />
       <CompleteNav />
       
-
       <div className="background-level"></div>
 
       <div className="pass-body">
@@ -476,29 +529,7 @@ const PassPage = () => {
           </div>
         </div>
 
-        <InfiniteScroll
-          style={{ paddingBottom: "4rem", overflow: "visible" }}
-          dataLength={passesData.length}
-          next={() => {
-            const newPage = pageNumber + 1;
-            console.log(`PageNumber change in InfiniteScroll: ${pageNumber} -> ${newPage}`);
-            setPageNumber(newPage);
-          }}
-          hasMore={hasMore && !loading}
-          loader={<div className="loader loader-level-page"></div>}
-          endMessage={
-            <p style={{ textAlign: "center" , paddingTop: "2rem"}}>
-              <b>{tPass('infScroll.end')}</b>
-            </p>
-          }
-        >
-          {passesData.map((pass, index) => (
-            <PassCard
-              key={pass.passId || index}
-              pass={pass}
-            />
-          ))}
-        </InfiniteScroll>
+        {renderContent()}
       </div>
     </div>
   );

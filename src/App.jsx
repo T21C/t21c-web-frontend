@@ -54,7 +54,7 @@ function App() {
         <Route path='leaderboard' element={<LeaderboardPage/>}/>
         <Route path='passes' element={<PassPage/>} />
 
-        <Route path='admin' element={<AdminPage/>} />
+        {/* <Route path='admin' element={<AdminPage/>} /> */}
         <Route path='admin/submissions' element={<SubmissionManagementPage/>} />
         <Route path='admin/rating' element={<RatingPage/>} />
         <Route path='admin/announcements' element={<AnnouncementPage/>} />

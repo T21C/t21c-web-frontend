@@ -8,5 +8,18 @@ import PassCard from "./PassCard/PassCard";
 import ReferencesPopup from "./ReferencesPopup/ReferencesPopup";
 import MetaTags from './MetaTags/MetaTags';
 import StateDisplay from "./StateDisplay/StateDisplay";
+import AccessDenied from "./StateDisplay/AccessDenied";
 
-export { Card, Footer, CompleteNav, LevelCard, PlayerCard, ScoreCard, PassCard, ReferencesPopup, MetaTags, StateDisplay };
+export { 
+  Card, 
+  Footer, 
+  CompleteNav, 
+  LevelCard, 
+  PlayerCard, 
+  ScoreCard, 
+  PassCard, 
+  ReferencesPopup, 
+  MetaTags, 
+  StateDisplay,
+  AccessDenied 
+};

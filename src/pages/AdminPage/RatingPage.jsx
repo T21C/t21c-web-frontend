@@ -10,6 +10,7 @@ import ScrollButton from "../../components/ScrollButton/ScrollButton";
 import api from "../../utils/api";
 import ReferencesPopup from "../../components/ReferencesPopup/ReferencesPopup";
 import RaterManagementPopup from "../../components/RaterManagementPopup/RaterManagementPopup";
+import AccessDenied from "../../components/StateDisplay/AccessDenied";
 
 const truncateString = (str, maxLength) => {
   if (!str) return "";
@@ -20,7 +21,7 @@ const RatingPage = () => {
   const { t } = useTranslation('pages');
   const tRating = (key, params = {}) => t(`rating.${key}`, params);
   const currentUrl = window.location.origin + location.pathname;
-  const { user, isSuperAdmin } = useAuth();
+  const { user, isSuperAdmin, isAdmin } = useAuth();
   const [ratings, setRatings] = useState(null);
   const [showMessage, setShowMessage] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -101,6 +102,35 @@ const RatingPage = () => {
       setShowMessage(true);
     }
   };
+
+  if (isSuperAdmin === undefined && isAdmin === undefined) {
+    return (
+      <div className="admin-rating-page">
+        <MetaTags
+          title={tRating('meta.title')}
+          description={tRating('meta.description')}
+          url={currentUrl}
+          image="/og-image.jpg"
+          type="website"
+        />
+        <CompleteNav />
+        <div className="background-level"></div>
+        <div className="admin-rating-body">
+          <div className="loader loader-level-detail"/>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isSuperAdmin && !isAdmin) {
+    return (
+      <AccessDenied 
+        metaTitle={tRating('meta.title')}
+        metaDescription={tRating('meta.description')}
+        currentUrl={currentUrl}
+      />
+    );
+  }
 
   return (
     <div className="admin-rating-page">

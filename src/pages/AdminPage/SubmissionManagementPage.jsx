@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { useAuth } from "../../contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import "./css/adminsubmissionpage.css";
-import { CompleteNav, MetaTags } from '../../components';
+import { AccessDenied, CompleteNav, MetaTags } from '../../components';
 import ScrollButton from '../../components/ScrollButton/ScrollButton';
 import LevelSubmissions from './components/LevelSubmissions';
 import PassSubmissions from './components/PassSubmissions';
@@ -10,8 +10,9 @@ import { RefreshIcon } from '../../components/Icons/RefreshIcon';
 
 const SubmissionManagementPage = () => {
   const { t } = useTranslation('pages');
-  const tSubmission = (key, params = {}) => t(`submission.${key}`, params);
+  const tSubmission = (key, params = {}) => t(`submissionManagement.${key}`, params);
   const currentUrl = window.location.origin + location.pathname;
+  const { isSuperAdmin } = useAuth();
   const [activeTab, setActiveTab] = useState('levels'); // 'levels' or 'passes'
   const [isLoading, setIsLoading] = useState(false);
 
@@ -34,6 +35,37 @@ const SubmissionManagementPage = () => {
       window.removeEventListener('submissionsLoadingComplete', handleLoadingComplete);
     };
   }, []);
+
+  if (isSuperAdmin === undefined) {
+    return (
+      <>
+        <MetaTags
+          title={tSubmission('meta.title')}
+          description={tSubmission('meta.description')}
+          url={currentUrl}
+          image="/og-image.jpg"
+          type="website"
+        />
+        <CompleteNav />
+        <div className="background-level"></div>
+        <div className="submission-admin-page">
+          <div className="submissions-admin-container">
+            <div className="loader loader-level-detail"/>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (!isSuperAdmin) {
+    return (
+      <AccessDenied 
+        metaTitle={tSubmission('meta.title')}
+        metaDescription={tSubmission('meta.description')}
+        currentUrl={currentUrl}
+      />
+    );
+  }
 
   return (
     <>

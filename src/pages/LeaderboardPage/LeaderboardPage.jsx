@@ -12,6 +12,7 @@ import { useTranslation } from "react-i18next";
 import bgImgDark from "../../assets/important/dark/theme-background.jpg";
 import ScrollButton from "../../components/ScrollButton/ScrollButton";
 import { MetaTags } from "../../components";
+import { useAuth } from "../../contexts/AuthContext";
 
 const currentUrl = window.location.origin + location.pathname;
 const limit = 30;
@@ -19,8 +20,10 @@ const limit = 30;
 const LeaderboardPage = () => {
   const { t } = useTranslation('pages');
   const tLeaderboard = (key, params = {}) => t(`leaderboard.${key}`, params);
-  
+  const { isSuperadmin } = useAuth();
+
   const [error, setError] = useState(false);
+  const [filteredData, setFilteredData] = useState([]);
   const location = useLocation();
 
   const bannedOptions = [
@@ -123,13 +126,18 @@ const LeaderboardPage = () => {
       if(sort === "ASC"){
         filteredPlayers = filteredPlayers.reverse();
       }
-      setDisplayedPlayers(filteredPlayers);
+      
+      // Store filtered data separately
+      setFilteredData(filteredPlayers);
+      // Only show the first 'limit' players initially
+      setDisplayedPlayers(filteredPlayers.slice(0, limit));
       setLoading(false);
     } else {
+      setFilteredData([]);
       setDisplayedPlayers([]);
       setLoading(false);
     }
-  }, [playerData, query, sort, sortBy, forceUpdate, t, showBanned]);
+  }, [playerData, query, sort, sortBy, showBanned, t]);
 
   function handleQueryChange(e) {
     setLoading(true);
@@ -446,9 +454,10 @@ const LeaderboardPage = () => {
                   }}
                 />
               </div>
-              <div className="recent" style={{ display: "grid", alignItems: "end" }}>
-                <StateDisplay
-                  currentState={showBanned}
+              {isSuperadmin && (
+                <div className="recent" style={{ display: "grid", alignItems: "end" }}>
+                  <StateDisplay
+                    currentState={showBanned}
                   onChange={(newState) => {
                     setShowBanned(newState);
                     setDisplayedPlayers([]);
@@ -461,6 +470,7 @@ const LeaderboardPage = () => {
                   showLabel={true}
                 />
               </div>
+              )}
             </div>
           </div>
         </div>
@@ -473,7 +483,7 @@ const LeaderboardPage = () => {
             dataLength={displayedPlayers.length}
             next={() => {
               const currentLength = displayedPlayers.length;
-              const newPagePlayers = playerData.slice(
+              const newPagePlayers = filteredData.slice(
                 currentLength,
                 currentLength + limit
               );
@@ -481,7 +491,7 @@ const LeaderboardPage = () => {
                 setDisplayedPlayers(prev => [...prev, ...newPagePlayers]);
               }
             }}
-            hasMore={displayedPlayers.length < playerData.length}
+            hasMore={displayedPlayers.length < filteredData.length}
             loader={loading && <div className="loader"></div>}
             endMessage={
               !loading && displayedPlayers.length > 0 && (

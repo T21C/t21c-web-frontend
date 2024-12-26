@@ -7,6 +7,7 @@ import ScrollButton from "../../components/ScrollButton/ScrollButton";
 import api from "../../utils/api";
 import { EditIcon } from "../../components/Icons/EditIcon";
 import { RefreshIcon } from "../../components/Icons/RefreshIcon";
+import AccessDenied from "../../components/StateDisplay/AccessDenied";
 
 const TimeAgo = ({ date }) => {
   const [timeAgo, setTimeAgo] = useState('');
@@ -354,7 +355,7 @@ const formatFileSize = (bytes) => {
 const BackupPage = () => {
   const { t } = useTranslation('pages');
   const tBackup = (key, params = {}) => t(`backup.${key}`, params);
-  const { user } = useAuth();
+  const { user, isSuperAdmin } = useAuth();
   const currentUrl = window.location.origin + location.pathname;
   const [activeTab, setActiveTab] = useState('mysql');
   const [loading, setLoading] = useState(false);
@@ -470,6 +471,35 @@ const BackupPage = () => {
   const totalSize = useMemo(() => {
     return backups[activeTab].reduce((total, backup) => total + backup.size, 0);
   }, [backups, activeTab]);
+
+  if (isSuperAdmin === undefined) {
+    return (
+      <div className="admin-backup-page">
+        <MetaTags
+          title={tBackup('meta.title')}
+          description={tBackup('meta.description')}
+          url={currentUrl}
+          image="/og-image.jpg"
+          type="website"
+        />
+        <CompleteNav />
+        <div className="background-level"></div>
+        <div className="admin-backup-body">
+          <div className="loader loader-level-detail"/>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isSuperAdmin) {
+    return (
+      <AccessDenied 
+        metaTitle={tBackup('meta.title')}
+        metaDescription={tBackup('meta.description')}
+        currentUrl={currentUrl}
+      />
+    );
+  }
 
   return (
     <div className="admin-backup-page">

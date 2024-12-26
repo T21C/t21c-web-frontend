@@ -10,6 +10,6 @@
       "Extra": "Extra",
       "Hidden": "Hidden"
     },
-    "selectedCount": "({count})"
+    "selectedCount": "({{count}})"
   }
 } 

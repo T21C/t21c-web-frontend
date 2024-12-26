@@ -12,14 +12,14 @@
     "files": "Files Backups"
   },
   "stats": {
-    "totalSize": "Total Size: {size}"
+    "totalSize": "Total Size: {{size}}"
   },
   "sort": {
     "newest": "Newest",
     "oldest": "Oldest"
   },
   "buttons": {
-    "create": "Create {type} Backup",
+    "create": "Create {{type}} Backup",
     "creating": "Creating...",
     "restore": "Restore",
     "delete": "Delete",
@@ -29,22 +29,22 @@
     "confirm": "Confirm"
   },
   "noBackups": {
-    "title": "No {type} backups available",
+    "title": "No {{type}} backups available",
     "message": "Create your first backup using the button above"
   },
   "timeAgo": {
-    "second": "{count} second ago",
-    "seconds": "{count} seconds ago",
-    "minute": "{count} minute ago",
-    "minutes": "{count} minutes ago",
-    "hour": "{count} hour ago",
-    "hours": "{count} hours ago",
-    "day": "{count} day ago",
-    "days": "{count} days ago",
-    "month": "{count} month ago",
-    "months": "{count} months ago",
-    "year": "{count} year ago",
-    "years": "{count} years ago"
+    "second": "{{count}} second ago",
+    "seconds": "{{count}} seconds ago",
+    "minute": "{{count}} minute ago",
+    "minutes": "{{count}} minutes ago",
+    "hour": "{{count}} hour ago",
+    "hours": "{{count}} hours ago",
+    "day": "{{count}} day ago",
+    "days": "{{count}} days ago",
+    "month": "{{count}} month ago",
+    "months": "{{count}} months ago",
+    "year": "{{count}} year ago",
+    "years": "{{count}} years ago"
   },
   "passwordModal": {
     "title": "Super Admin Password Required",
@@ -59,7 +59,7 @@
     }
   },
   "notifications": {
-    "backupCreated": "{type} backup created successfully",
+    "backupCreated": "{{type}} backup created successfully",
     "backupRestored": "Backup restored successfully",
     "backupDeleted": "Backup deleted successfully",
     "downloadFailed": "Failed to download backup",
@@ -69,8 +69,8 @@
     "deleteFailed": "Failed to delete backup"
   },
   "fileInfo": {
-    "created": "Created: {date}",
-    "size": "Size: {size}",
+    "created": "Created: {{date}}",
+    "size": "Size: {{size}}",
     "newName": "Enter new name"
   }
 } 

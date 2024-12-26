@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { CompleteNav, MetaTags } from '@/components';
+import { CompleteNav, MetaTags, AccessDenied } from '@/components';
 import ScrollButton from '@/components/ScrollButton/ScrollButton';
 import api from '@/utils/api';
 import './css/difficultypage.css';
@@ -174,9 +174,9 @@ const DifficultyPage = () => {
     }
   };
 
-  if (!isSuperAdmin) {
+  if (isSuperAdmin === undefined) {
     return (
-      <>
+      <div className="difficulty-page">
         <MetaTags
           title={tDiff('meta.title')}
           description={tDiff('meta.description')}
@@ -186,13 +186,20 @@ const DifficultyPage = () => {
         />
         <CompleteNav />
         <div className="background-level"></div>
-        <div className="difficulty-page">
-          <div className="difficulty-container">
-            <h1>{tDiff('access.denied.title')}</h1>
-            <p>{tDiff('access.denied.message')}</p>
-          </div>
+        <div className="difficulty-container">
+          <div className="loader loader-level-detail"/>
         </div>
-      </>
+      </div>
+    );
+  }
+
+  if (!isSuperAdmin) {
+    return (
+      <AccessDenied 
+        metaTitle={tDiff('meta.title')}
+        metaDescription={tDiff('meta.description')}
+        currentUrl={currentUrl}
+      />
     );
   }
 

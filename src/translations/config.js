@@ -6,7 +6,6 @@ import enCommon from './languages/en/common.json';
 import enPages from './languages/en/pages/loadTranslations';
 import enComponents from './languages/en/components/loadTranslations';
 
-
 const resources = {
   en: {
     common: enCommon,
@@ -23,6 +22,13 @@ i18next
     fallbackLng: 'en',
     interpolation: {
       escapeValue: false,
+      nestingSeparator: '$',  // Change nesting separator to avoid conflicts
+      formatSeparator: ',',
+      format: function(value, format, lng) {
+        if (format === 'uppercase') return value.toUpperCase();
+        if (format === 'lowercase') return value.toLowerCase();
+        return value;
+      },
     },
     // Namespaces configuration
     ns: ['common', 'pages', 'components'],

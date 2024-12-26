@@ -66,6 +66,14 @@ const PassSubmissionPage = () => {
   const dropdownRef = useRef(null);
   const searchContainerRef = useRef(null);
 
+  // Add color logic for FetchIcon
+  const getIconColor = () => {
+    if (!form.levelId) return "#ffc107";
+    if (levelLoading) return "#ffc107";
+    if (!level) return "#dc3545";
+    return "#28a745";
+  };
+
   const truncateString = (str, maxLength) => {
     if (!str) return "";
     return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
@@ -158,6 +166,11 @@ const PassSubmissionPage = () => {
       cancelToken: levelFetchCancelTokenRef.current.token
     })
       .then((response) => {
+        if (response.data.isDeleted) {
+          setLevel(null);
+          setLevelLoading(false);
+          return;
+        }
         setLevel(response.data ? response.data : null);
         setLevelLoading(false);
       })
@@ -552,7 +565,7 @@ const PassSubmissionPage = () => {
                 </div>)}
 
                 <div className="verified">
-                  <FetchIcon form={form} levelLoading={levelLoading} level={level} color={color} />
+                  <FetchIcon form={form} levelLoading={levelLoading} level={level} color={getIconColor()} />
                 </div>
 
                 <a href={level ? (level["id"] == form.levelId ? `/levels/${level["id"]}`: "#" ): "#"}
@@ -565,7 +578,7 @@ const PassSubmissionPage = () => {
                   rel="noopener noreferrer"
                   className="button-goto"
                   style={{
-                    backgroundColor: !form.levelId ? "#ffc107" : levelLoading ? "#ffc107" : level ? "#28a745" : "#dc3545",
+                    backgroundColor: getIconColor(),
                     cursor: !form.levelId ? "not-allowed": levelLoading ? "wait": level ? "pointer" : "not-allowed",
                     textShadow: "0 0 5px #0009"
                   }}>

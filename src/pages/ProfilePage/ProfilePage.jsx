@@ -116,7 +116,7 @@ const ProfilePage = () => {
                           style={{
                             color: parseRankColor(playerData.ranks.rankedScoreRank), 
                             backgroundColor: `${parseRankColor(playerData.ranks.rankedScoreRank)}27`,
-                            transform: "translateY(-0.45rem)"
+                            transform: playerData.discordUsername ? "translateY(-0.45rem)" : "translateY(0)"
                         }}
                         >#{playerData.ranks.rankedScoreRank}</h2>
                       </div>

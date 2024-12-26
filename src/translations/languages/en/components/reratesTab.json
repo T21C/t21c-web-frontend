@@ -1,13 +1,13 @@
 {
   "noRerates": "No rerates to announce",
   "errors": {
-    "removeLevel": "Failed to remove {song}. Please try again."
+    "removeLevel": "Failed to remove {{song}}. Please try again."
   },
-  "details": {
-    "title": "{song} - {artist}",
+  "card": {
+    "title": "{{song}} - {{artist}}",
     "subtitle": {
-      "difficulty": "{oldDifficulty} ➔ {newDifficulty}",
-      "team": " • {team}"
+      "difficulty": "{{oldDifficulty}} ➔ {{newDifficulty}}",
+      "team": " • {{team}}"
     }
   },
   "buttons": {

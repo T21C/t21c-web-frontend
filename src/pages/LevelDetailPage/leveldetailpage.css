@@ -133,6 +133,7 @@
   background-color: var(--color-white-t10);
   border-radius: 5px;
   align-self: stretch;
+  min-width: 40%;
 }
 .level-detail .body .info .info-item {
   display: grid;

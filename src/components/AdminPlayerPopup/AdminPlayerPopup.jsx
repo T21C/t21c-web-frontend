@@ -361,7 +361,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                     type="button"
                     onClick={() => handleDiscordConfirm(true)}
                     disabled={isLoading}
-                    className="ban-confirm-button"
+                    className="discord-confirm-button"
                   >
                     {tAdmin('form.discord.confirm.buttons.confirm')}
                   </button>
@@ -369,7 +369,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                     type="button"
                     onClick={() => handleDiscordConfirm(false)}
                     disabled={isLoading}
-                    className="ban-cancel-button"
+                    className="discord-cancel-button"
                   >
                     {tAdmin('form.discord.confirm.buttons.cancel')}
                   </button>
@@ -387,7 +387,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                   />
                 )}
                 <div className="discord-info-header">
-                  <div>
+                  <div className="discord-info-header-content">
                     <p className="discord-username">@{discordInfo.username}</p>
                     <p className="discord-id">ID: {discordInfo.id}</p>
                   </div>

@@ -50,7 +50,7 @@
       "fallbackId": "Enter the ID of the replacement difficulty"
     },
     "helpText": {
-      "fallbackId": "All levels using {name} will be updated to use this difficulty instead."
+      "fallbackId": "All levels using {{name}} will be updated to use this difficulty instead."
     }
   },
   "modal": {
@@ -64,7 +64,7 @@
       "title": "Delete Difficulty",
       "warning": {
         "title": "⚠️ Warning: Destructive Action ⚠️",
-        "message": "You are about to delete the difficulty: {name}",
+        "message": "You are about to delete the difficulty: {{name}}",
         "description": "This action:",
         "points": [
           "Cannot be undone",
@@ -77,7 +77,7 @@
   },
   "passwordModal": {
     "title": "Super Admin Password Required",
-    "message": "Please enter your super admin password to {action} the difficulty.",
+    "message": "Please enter your super admin password to {{action}} the difficulty.",
     "placeholder": "Enter password",
     "errors": {
       "invalid": "Invalid password",

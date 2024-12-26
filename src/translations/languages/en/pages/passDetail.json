@@ -1,46 +1,46 @@
 {
   "meta": {
-    "title": "{song} | TUF",
-    "description": "View the pass of {playerName} for {song} - {artist}"
+    "title": "{{song}} | TUF",
+    "description": "View the pass of {{playerName}} for {{song}} - {{artist}}"
   },
   "banners": {
     "deleted": "This pass has been deleted"
   },
   "level": {
-    "baseScore": "{score}PP",
+    "baseScore": "{{score}}PP",
     "credits": {
-      "team": "{team}",
-      "charter": "Chart by {charter}",
-      "vfxer": "VFX by {vfxer}"
+      "team": "{{team}}",
+      "charter": "Chart by {{charter}}",
+      "vfxer": "VFX by {{vfxer}}"
     }
   },
   "player": {
-    "rank": "#{rank}",
+    "rank": "#{{rank}}",
     "score": {
-      "current": "{score}",
+      "current": "{{score}}",
       "difference": {
-        "positive": "+{score}"
+        "positive": "+{{score}}"
       },
-      "previous": "{score}"
+      "previous": "{{score}}"
     },
-    "clearDate": "Cleared on {date}"
+    "clearDate": "Cleared on {{date}}"
   },
   "stats": {
     "score": {
       "label": "Score",
-      "value": "{score}"
+      "value": "{{score}}"
     },
     "accuracy": {
       "label": "Accuracy",
-      "value": "{accuracy}%"
+      "value": "{{accuracy}}%"
     },
     "speed": {
       "label": "Speed",
-      "value": "{speed}x"
+      "value": "{{speed}}x"
     },
     "feelingRating": {
       "label": "Feeling Rating",
-      "value": "{rating}",
+      "value": "{{rating}}",
       "none": "None"
     }
   },
@@ -55,31 +55,31 @@
     "types": {
       "earlyPerfect": {
         "label": "Early Perfect",
-        "value": "{count}"
+        "value": "{{count}}"
       },
       "perfect": {
         "label": "Perfect",
-        "value": "{count}"
+        "value": "{{count}}"
       },
       "latePerfect": {
         "label": "Late Perfect",
-        "value": "{count}"
+        "value": "{{count}}"
       },
       "tooEarly": {
         "label": "Too Early",
-        "value": "{count}"
+        "value": "{{count}}"
       },
       "early": {
         "label": "Early",
-        "value": "{count}"
+        "value": "{{count}}"
       },
       "late": {
         "label": "Late",
-        "value": "{count}"
+        "value": "{{count}}"
       },
       "tooLate": {
         "label": "Too Late",
-        "value": "{count}"
+        "value": "{{count}}"
       }
     }
   },

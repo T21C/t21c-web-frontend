@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "{song} | TUF",
-    "description": "Chart of {song} by {creator}"
+    "title": "{{song}} | TUF",
+    "description": "Chart of {{song}} by {{creator}}"
   },
   "banners": {
     "deleted": "This level has been deleted",
@@ -21,24 +21,24 @@
   "stats": {
     "firstClear": {
       "label": "First Clear",
-      "value": "{player} | {date}"
+      "value": "{{player}} | {{date}}"
     },
     "highestScore": {
       "label": "Highest Score",
-      "value": "{player} | {score}"
+      "value": "{{player}} | {{score}}"
     },
     "highestSpeed": {
       "label": "Highest Speed",
-      "value": "{player} | {speed}×",
+      "value": "{{player}} | {{speed}}×",
       "noSpeed": "-"
     },
     "highestAccuracy": {
       "label": "Highest Accuracy",
-      "value": "{player} | {accuracy}%"
+      "value": "{{player}} | {{accuracy}}%"
     },
     "totalClears": {
       "label": "Total Clears",
-      "value": "{count}"
+      "value": "{{count}}"
     },
     "waiting": "Loading..."
   },

@@ -1,7 +1,7 @@
 {
   "meta": {
-    "title": "{name} | TUF",
-    "description": "Check out {name}'s profile and achievements",
+    "title": "{{name}} | TUF",
+    "description": "Check out {{name}}'s profile and achievements",
     "defaultTitle": "Profile"
   },
   "notFound": "Player not found",
