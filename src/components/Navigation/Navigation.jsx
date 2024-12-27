@@ -26,14 +26,14 @@ const Navigation = ({ children }) => {
   const { pendingRatings, pendingSubmissions } = useNotification();
 
   const languages = {
-    en: { display: "English", countryCode: "us" },
-    kr: { display: "한국어", countryCode: "kr" },
-    cn: { display: "中文", countryCode: "cn" },
-    id: { display: "Bahasa Indonesia", countryCode: "id" },
-    ru: { display: "Русский", countryCode: "ru" },
-    de: { display: "Deutsch", countryCode: "de" },
-    fr: { display: "Français", countryCode: "fr" },
-    es: { display: "Español", countryCode: "es" }
+    en: { display: "English", countryCode: "us", implemented: true },
+    kr: { display: "한국어", countryCode: "kr", implemented: false },
+    cn: { display: "中文", countryCode: "cn", implemented: false },
+    id: { display: "Bahasa Indonesia", countryCode: "id", implemented: false },
+    ru: { display: "Русский", countryCode: "ru", implemented: false },
+    de: { display: "Deutsch", countryCode: "de", implemented: false },
+    fr: { display: "Français", countryCode: "fr", implemented: false },
+    es: { display: "Español", countryCode: "es", implemented: false }
   };
 
   const getCurrentCountryCode = () => {
@@ -81,6 +81,12 @@ const Navigation = ({ children }) => {
 
   function handleChangeLanguage(newLanguage, e) {
     e.stopPropagation(); // Prevent event from bubbling
+    
+    // Only allow changing to implemented languages
+    if (!languages[newLanguage].implemented) {
+      return;
+    }
+    
     const i18nLanguage = newLanguage === 'us' ? 'en' : newLanguage;
     i18next.changeLanguage(i18nLanguage).then(() => {
       setLanguage(i18nLanguage);
@@ -226,10 +232,14 @@ const Navigation = ({ children }) => {
 
               <div className={`nav-language-select ${openDialog ? 'open' : ''}`}>
                 <ul className="nav-language-select__list">
-                  {Object.entries(languages).map(([code, { display, countryCode }]) => (
+                  {Object.entries(languages).map(([code, { display, countryCode, implemented }]) => (
                     <li
                       key={code}
-                      className={`nav-language-select__option ${(language === code || (language === 'en' && code === 'us')) ? 'selected' : ''}`}
+                      className={`nav-language-select__option ${
+                        !implemented ? 'not-implemented' : ''
+                      } ${
+                        (language === code || (language === 'en' && code === 'us')) ? 'selected' : ''
+                      }`}
                       onClick={(e) => handleChangeLanguage(code, e)}
                     >
                       <img 
@@ -237,7 +247,14 @@ const Navigation = ({ children }) => {
                         src={isoToEmoji(countryCode)} 
                         alt={display} 
                       />
-                      {display}
+                      <div className="nav-language-select__option-content">
+                        <span>{display}</span>
+                        {!implemented && (
+                          <span className="nav-language-select__option-status">
+                            {tLang('comingSoon')}
+                          </span>
+                        )}
+                      </div>
                     </li>
                   ))}
                 </ul>

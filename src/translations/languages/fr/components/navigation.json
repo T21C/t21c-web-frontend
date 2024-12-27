@@ -18,6 +18,9 @@
     },
     "notifications": {
       "moreThanNine": "9+"
+    },
+    "languages": {
+      "comingSoon": "(En cours de développement)"
     }
   }
 } 
