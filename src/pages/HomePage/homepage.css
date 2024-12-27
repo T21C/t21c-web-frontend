@@ -183,8 +183,8 @@
 }
 
 .home .main-title {
-  font-size: clamp(3rem, 5vw, 5rem);
-  margin: -50px;
+  font-size: clamp(4rem, 5vw, 5rem);
+  margin: -50px 0;
   letter-spacing: 1px;
   position: relative;
   cursor: default;
@@ -192,6 +192,7 @@
   opacity: 0;
   animation: slideDown 0.8s ease-out forwards;
   animation-delay: 0.5s;
+  display:grid;
 }
 
 .home .title-mask {
@@ -208,6 +209,7 @@
 
 .home .title-glow {
   position: absolute;
+  display:grid;
   width: 100%;
   height: 100%;
   align-content: center;

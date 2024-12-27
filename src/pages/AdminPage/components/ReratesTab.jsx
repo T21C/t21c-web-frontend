@@ -53,14 +53,14 @@ const ReratesTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRem
                 <span className="checkmark"></span>
                 <div className="item-details">
                   <div className="item-title">
-                    {tRerate('details.title', { song: level.song, artist: level.artist })}
+                    {tRerate('card.title', { song: level.song, artist: level.artist })}
                   </div>
                   <div className="item-subtitle">
-                    {tRerate('details.subtitle.difficulty', { 
+                    {tRerate('card.subtitle.difficulty', { 
                       oldDifficulty: level.previousDifficulty?.name,
                       newDifficulty: level.difficulty?.name
                     })}
-                    {level.team && tRerate('details.subtitle.team', { team: level.team })}
+                    {level.team && tRerate('card.subtitle.team', { team: level.team })}
                   </div>
                 </div>
               </label>

@@ -95,28 +95,29 @@ const SubmissionManagementPage = () => {
           </div>
           
           <div className="submission-tabs">
-            <button 
+            <div 
               className={`tab-button ${activeTab === 'levels' ? 'active' : ''}`}
               onClick={() => setActiveTab('levels')}
             >
               {tSubmission('tabs.levels')}
-              {pendingLevelSubmissions > 0 && (
-                          <span className="notification-badge">
-                            {pendingLevelSubmissions > 9 ? tNav('notifications.moreThanNine') : pendingSubmissions}
-                          </span>
-                        )}
-            </button>
-            <button 
+              <span className="notification-badge" style={{visibility: pendingLevelSubmissions > 0 ? 'visible' : 'hidden'}}>
+                {pendingLevelSubmissions || pendingLevelSubmissions > 0 && (
+                  pendingLevelSubmissions > 99 ? "99+" : pendingLevelSubmissions
+                )}
+              </span>
+            </div>
+            
+            <div 
               className={`tab-button ${activeTab === 'passes' ? 'active' : ''}`}
               onClick={() => setActiveTab('passes')}
             >
               {tSubmission('tabs.passes')}
-              {pendingPassSubmissions > 0 && (
-                <span className="notification-badge">
-                  {pendingPassSubmissions > 9 ? tNav('notifications.moreThanNine') : pendingPassSubmissions}
-                </span>
-              )}
-            </button>
+              <span className="notification-badge" style={{visibility: pendingPassSubmissions > 0 ? 'visible' : 'hidden'}}>
+                {pendingPassSubmissions || pendingPassSubmissions > 0 && (
+                  pendingPassSubmissions > 99 ? "99+" : pendingPassSubmissions
+                )}
+              </span>
+            </div>
             {activeTab === 'passes' && (
               <button 
                 className="auto-allow-button"

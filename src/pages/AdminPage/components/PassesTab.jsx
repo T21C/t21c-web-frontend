@@ -59,19 +59,19 @@ const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemo
                   <span className="checkmark"></span>
                   <div className="item-details">
                     <div className="item-title">
-                      {tPass('details.title', { 
+                      {tPass('card.title', { 
                         playerName: pass.player?.name,
                         songName: pass.level?.song
                       })}
                     </div>
                     <div className="item-subtitle">
                       {pass.scoreV2 !== undefined ? 
-                        tPass('details.stats.score', { score: pass.scoreV2.toFixed(2) }) :
-                        tPass('details.stats.scoreNA')
-                      } | {tPass('details.stats.accuracy', { 
+                        tPass('card.stats.score', { score: pass.scoreV2.toFixed(2) }) :
+                        tPass('card.stats.scoreNA')
+                      } | {tPass('card.stats.accuracy', { 
                         accuracy: ((pass.accuracy || 0) * 100).toFixed(2)
                       })}
-                      {pass.level?.difficulty?.name && tPass('details.stats.difficulty', { 
+                      {pass.level?.difficulty?.name && tPass('card.stats.difficulty', { 
                         difficultyName: pass.level.difficulty.name 
                       })}
                     </div>

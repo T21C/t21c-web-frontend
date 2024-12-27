@@ -10,6 +10,7 @@ import ReratesTab from './components/ReratesTab';
 import PassesTab from './components/PassesTab';
 import { RefreshIcon } from '../../components/Icons/RefreshIcon';
 import { useTranslation } from 'react-i18next';
+import { AccessDenied } from '../../components';
 
 const AnnouncementPage = () => {
   const { isSuperAdmin } = useAuth();

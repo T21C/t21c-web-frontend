@@ -57,7 +57,7 @@ const NewLevelsTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onR
                   </div>
                   <div className="item-subtitle">
                     {level.difficulty?.name}
-                    {level.team && tLevel('details.team', { team: level.team })}
+                    {level.team && tLevel('card.team', { team: level.team })}
                   </div>
                 </div>
               </label>

@@ -133,7 +133,7 @@ const Navigation = ({ children }) => {
                       {tNav('links.admin.rating')}
                       {pendingRatings > 0 && (
                         <span className="nav-notification-badge">
-                          {pendingRatings > 9 ? tNav('notifications.moreThanNine') : pendingRatings}
+                          {pendingRatings > 99 ? "99+" : pendingRatings}
                         </span>
                       )}
                     </li>
@@ -145,7 +145,7 @@ const Navigation = ({ children }) => {
                       {tNav('links.admin.submissions')}
                       {pendingSubmissions > 0 && (
                         <span className="nav-notification-badge">
-                          {pendingSubmissions > 9 ? tNav('notifications.moreThanNine') : pendingSubmissions}
+                          {pendingSubmissions > 99 ? "99+" : pendingSubmissions}
                         </span>
                       )}
                     </li>
@@ -192,7 +192,7 @@ const Navigation = ({ children }) => {
                       {tNav('links.rating')}
                       {pendingRatings > 0 && (
                         <span className="nav-notification-badge">
-                          {pendingRatings > 9 ? tNav('notifications.moreThanNine') : pendingRatings}
+                          {pendingRatings > 99 ? "99+" : pendingRatings}
                         </span>
                       )}
                     </li>
