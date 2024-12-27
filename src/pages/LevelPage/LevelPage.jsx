@@ -406,7 +406,7 @@ const LevelPage = () => {
                     setForceUpdate(prev => !prev);
                   }}
                   label="Cleared Levels"
-                  states={['show', 'hide']}
+                  states={['show', 'hide', 'only']}
                 />
                 {isSuperAdmin && (
                   <StateDisplay

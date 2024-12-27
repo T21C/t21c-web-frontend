@@ -5,6 +5,7 @@ import { useState } from "react";
 import api from "@/utils/api";
 import { EditLevelPopup } from "@/components/EditLevelPopup/EditLevelPopup";
 import { useDifficultyContext } from "../../contexts/DifficultyContext";
+import { EditIcon } from "../Icons/EditIcon";
 
 const LevelCard = ({index, level: initialLevel, legacyMode, isSuperAdmin}) => {
   const { t } = useTranslation('components');
@@ -144,7 +145,7 @@ const LevelCard = ({index, level: initialLevel, legacyMode, isSuperAdmin}) => {
 
         {isSuperAdmin && (
           <button className="edit-button" onClick={handleEditClick}>
-            {tCard('buttons.edit')}
+            <EditIcon size={32} />
           </button>
         )}
       </div>

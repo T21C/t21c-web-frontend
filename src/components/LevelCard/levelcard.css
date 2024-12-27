@@ -89,16 +89,20 @@
   height: 2.5rem;
   width: 2.5rem;
 }
-.level-card .downloads-wrapper a svg {
+.level-card .downloads-wrapper a svg,
+.level-card .edit-button svg {
   height: 100%;
   width: 100%;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s;
 }
-.level-card .downloads-wrapper a svg:hover {
+.level-card .downloads-wrapper a svg:hover,
+.level-card .edit-button svg:hover {
   transform: scale(1.3);
 }
+
+
 .level-card .toRate-checkbox {
   display: flex;
   align-items: center;
