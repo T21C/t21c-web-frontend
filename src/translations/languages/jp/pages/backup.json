@@ -1,0 +1,76 @@
+{
+  "meta": {
+    "title": "Backups | TUF",
+    "description": "Manage database and file backups for The Universal Forums (TUF)"
+  },
+  "header": {
+    "title": "Backups",
+    "refresh": "Refresh backups"
+  },
+  "tabs": {
+    "mysql": "MySQL Backups",
+    "files": "Files Backups"
+  },
+  "stats": {
+    "totalSize": "Total Size: {{size}}"
+  },
+  "sort": {
+    "newest": "Newest",
+    "oldest": "Oldest"
+  },
+  "buttons": {
+    "create": "Create {{type}} Backup",
+    "creating": "Creating...",
+    "restore": "Restore",
+    "delete": "Delete",
+    "save": "Save",
+    "saving": "Saving...",
+    "cancel": "Cancel",
+    "confirm": "Confirm"
+  },
+  "noBackups": {
+    "title": "No {{type}} backups available",
+    "message": "Create your first backup using the button above"
+  },
+  "timeAgo": {
+    "second": "{{count}} second ago",
+    "seconds": "{{count}} seconds ago",
+    "minute": "{{count}} minute ago",
+    "minutes": "{{count}} minutes ago",
+    "hour": "{{count}} hour ago",
+    "hours": "{{count}} hours ago",
+    "day": "{{count}} day ago",
+    "days": "{{count}} days ago",
+    "month": "{{count}} month ago",
+    "months": "{{count}} months ago",
+    "year": "{{count}} year ago",
+    "years": "{{count}} years ago"
+  },
+  "passwordModal": {
+    "title": "Super Admin Password Required",
+    "createMessage": "Please enter your super admin password to create a new backup.",
+    "restoreMessage": "Please enter your super admin password to restore the backup.",
+    "deleteMessage": "Please enter your super admin password to delete the backup.",
+    "renameMessage": "Please enter your super admin password to rename the backup.",
+    "placeholder": "Enter password",
+    "errors": {
+      "invalid": "Invalid password",
+      "generic": "An error occurred while performing the action"
+    }
+  },
+  "notifications": {
+    "backupCreated": "{{type}} backup created successfully",
+    "backupRestored": "Backup restored successfully",
+    "backupDeleted": "Backup deleted successfully",
+    "downloadFailed": "Failed to download backup",
+    "loadFailed": "Failed to load backups",
+    "createFailed": "Failed to create backup",
+    "restoreFailed": "Failed to restore backup",
+    "deleteFailed": "Failed to delete backup"
+  },
+  "fileInfo": {
+    "created": "Created: {{date}}",
+    "size": "Size: {{size}}",
+    "newName": "Enter new name"
+  }
+} 

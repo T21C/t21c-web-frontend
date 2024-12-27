@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "title": "Level List",
+    "description": "Browse and discover ADOFAI custom levels"
+  },
+  "loading": {
+    "difficulties": "Loading difficulties..."
+  },
+  "input": {
+    "placeholder": "Search by song name, artist, or charter..."
+  },
+  "toolTip": {
+    "legacy": "Toggle legacy difficulty display",
+    "filter": "Filter results",
+    "sort": "Sort results",
+    "reset": "Reset all filters",
+    "recentAsc": "Sort by oldest first",
+    "recentDesc": "Sort by newest first",
+    "difficultyAsc": "Sort by difficulty ascending",
+    "difficultyDesc": "Sort by difficulty descending",
+    "random": "Random sort"
+  },
+  "settingExp": {
+    "headerFilter": "Filter Settings",
+    "headerSort": "Sort Settings",
+    "sortRecent": "Recent",
+    "filterDiffs": "Difficulty",
+    "sortRandom": "Random"
+  },
+  "infScroll": {
+    "end": "You've reached the end!"
+  }
+} 
