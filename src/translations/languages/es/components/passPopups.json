@@ -1,0 +1,71 @@
+{
+  "edit": {
+    "title": "Edit Pass",
+    "close": "×",
+    "thumbnailInfo": "Video information will appear here",
+    "form": {
+      "submInfo": {
+        "levelId": "Level ID",
+        "videoLink": "Video Link",
+        "speed": "Speed",
+        "feelDiff": "Feeling Difficulty",
+        "nohold": "No Hold",
+        "is12K": "12K",
+        "is16K": "16K"
+      },
+      "levelInfo": {
+        "song": "Song Name",
+        "artist": "Artist",
+        "charter": "Charter"
+      },
+      "levelFetching": {
+        "input": "Enter Level ID",
+        "fetching": "Fetching...",
+        "goto": "Go to Level",
+        "notfound": "Not Found"
+      },
+      "videoInfo": {
+        "videoLink": "Video Link",
+        "title": "Title",
+        "channel": "Channel",
+        "timestamp": "Upload Date",
+        "nolink": "No video link provided"
+      },
+      "judgements": {
+        "ePerfect": "Early Perfect",
+        "perfect": "Perfect",
+        "lPerfect": "Late Perfect",
+        "tooearly": "Too Early",
+        "early": "Early",
+        "late": "Late"
+      },
+      "buttons": {
+        "submit": "Submit",
+        "submitWait": "Submitting...",
+        "delete": {
+          "default": "Delete",
+          "deleting": "Deleting...",
+          "restore": "Restore",
+          "restoring": "Restoring..."
+        }
+      }
+    },
+    "acc": "Accuracy: ",
+    "scoreCalc": "Score: ",
+    "holdTooltip": "Tap notes only, no hold notes",
+    "12kTooltip": "12 key variant",
+    "16kTooltip": "16 key variant",
+    "tooltip": "Enter a number between 1-10",
+    "alert": {
+      "success": "Pass updated successfully!",
+      "error": "Error: ",
+      "loading": "Processing...",
+      "login": "Please log in to submit a pass",
+      "form": "Please fill in all required fields correctly"
+    },
+    "confirmations": {
+      "delete": "Do you want to delete this pass? This can be undone later.",
+      "restore": "Do you want to restore this pass?"
+    }
+  }
+} 

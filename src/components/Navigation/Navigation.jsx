@@ -26,13 +26,28 @@ const Navigation = ({ children }) => {
   const { pendingRatings, pendingSubmissions } = useNotification();
 
   const languages = {
-    us: { display: tLang('en.display'), countryCode: tLang('en.countryCode') },
-    kr: { display: tLang('kr.display'), countryCode: tLang('kr.countryCode') },
-    cn: { display: tLang('cn.display'), countryCode: tLang('cn.countryCode') },
-    id: { display: tLang('id.display'), countryCode: tLang('id.countryCode') },
-    ru: { display: tLang('ru.display'), countryCode: tLang('ru.countryCode') },
-    de: { display: tLang('de.display'), countryCode: tLang('de.countryCode') }
+    en: { display: "English", countryCode: "us" },
+    kr: { display: "한국어", countryCode: "kr" },
+    cn: { display: "中文", countryCode: "cn" },
+    id: { display: "Bahasa Indonesia", countryCode: "id" },
+    ru: { display: "Русский", countryCode: "ru" },
+    de: { display: "Deutsch", countryCode: "de" },
+    fr: { display: "Français", countryCode: "fr" },
+    es: { display: "Español", countryCode: "es" }
   };
+
+  const getCurrentCountryCode = () => {
+    if (language === 'en' || language === 'us') {
+      return 'us';
+    }
+    return languages[language]?.countryCode || language;
+  };
+
+  useEffect(() => {
+    if (language === 'us') {
+      setLanguage('en');
+    }
+  }, []);
 
   useEffect(() => {
     const isAdminPath = location.pathname.startsWith('/admin');
@@ -43,19 +58,34 @@ const Navigation = ({ children }) => {
     setOpenNav(false);
   }, [location]);
 
+  useEffect(() => {
+    // Close language select when clicking outside
+    function handleClickOutside(event) {
+      if (openDialog && !event.target.closest('.nav-language-selector')) {
+        setOpenDialog(false);
+      }
+    }
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, [openDialog]);
+
   function changeNavState() {
     setOpenNav(!openNav);
   }
 
-  function changeDialogState() {
+  function changeDialogState(e) {
+    e.stopPropagation(); // Prevent event from bubbling
     setOpenDialog(!openDialog);
   }
 
-  function handleChangeLanguage(newLanguage) {
-    i18next.changeLanguage(newLanguage).then(() => {
-      setLanguage(newLanguage); 
+  function handleChangeLanguage(newLanguage, e) {
+    e.stopPropagation(); // Prevent event from bubbling
+    const i18nLanguage = newLanguage === 'us' ? 'en' : newLanguage;
+    i18next.changeLanguage(i18nLanguage).then(() => {
+      setLanguage(i18nLanguage);
     });
-    changeDialogState();
+    setOpenDialog(false);
   }
 
   const toggleAdminView = () => {
@@ -65,147 +95,166 @@ const Navigation = ({ children }) => {
 
   return (
     <>
-      <div className="close-outer" style={{ display: openNav ? 'block' : 'none' }} onClick={changeNavState}></div>
+      <div 
+        className={`nav-mobile-overlay ${openNav ? 'visible' : ''}`} 
+        onClick={changeNavState}
+      />
 
-      <nav className={isAdminView && isSuperAdmin ? 'admin-view' : ''}>
-        <div className="wrapper">
+      <nav className={isAdminView && isSuperAdmin ? 'nav--admin' : ''}>
+        <div className="nav-wrapper">
           {/* Left side: Logo and main navigation links */}
           <div className="nav-left">
-            <div>
-              <NavLink
-                className={({ isActive }) =>
-                  "nav-link " + (isActive ? "active-link" : "")
-                }
-                to="/"
-              >
-                <div className="img-container">
-                  <img src={logo} alt="logo" />
-                </div>
-              </NavLink>
-            </div>
+            <NavLink
+              className={({ isActive }) =>
+                "nav-link " + (isActive ? "active" : "")
+              }
+              to="/"
+            >
+              <div className="nav-logo">
+                <img src={logo} alt="logo" />
+              </div>
+            </NavLink>
 
-            <div className="nav-menu">
-              <ul>
-                {isAdminView ? (
-                  // Admin Links
-                  <>
-                    <NavLink className={({ isActive }) =>
-                      "nav-link " + (isActive ? "active-link" : "")}
-                      to="/admin/rating">
-                      <li className="nav-item">
-                        {tNav('links.admin.rating')}
-                        {pendingRatings > 0 && (
-                          <span className="notification-badge">
-                            {pendingRatings > 9 ? tNav('notifications.moreThanNine') : pendingRatings}
-                          </span>
-                        )}
-                      </li>
-                    </NavLink>
-                    <NavLink className={({ isActive }) =>
-                      "nav-link " + (isActive ? "active-link" : "")}
-                      to="/admin/submissions">
-                      <li className="nav-item">
-                        {tNav('links.admin.submissions')}
-                        {pendingSubmissions > 0 && (
-                          <span className="notification-badge">
-                            {pendingSubmissions > 9 ? tNav('notifications.moreThanNine') : pendingSubmissions}
-                          </span>
-                        )}
-                      </li>
-                    </NavLink>
-                    <NavLink className={({ isActive }) =>
-                      "nav-link " + (isActive ? "active-link" : "")}
-                      to="/admin/announcements">
-                      <li>{tNav('links.admin.announcements')}</li>
-                    </NavLink>
-                    <NavLink className={({ isActive }) =>
-                      "nav-link " + (isActive ? "active-link" : "")}
-                      to="/admin/difficulties">
-                      <li>{tNav('links.admin.difficulties')}</li>
-                    </NavLink>
-                    <NavLink className={({ isActive }) =>
-                      "nav-link " + (isActive ? "active-link" : "")}
-                      to="/admin/backups">
-                      <li>{tNav('links.admin.backups')}</li>
-                    </NavLink>
-                  </>
-                ) : (
-                  // Regular Links
-                  <>
-                    <NavLink className={({ isActive }) =>
-                      "nav-link " + (isActive ? "active-link" : "")}
-                      to="/levels">
-                      <li>{tNav('links.levels')}</li>
-                    </NavLink>
-                    <NavLink className={({ isActive }) =>
-                      "nav-link " + (isActive ? "active-link" : "")}
-                      to="/leaderboard">
-                      <li>{tNav('links.leaderboard')}</li>
-                    </NavLink>
-                    <NavLink className={({ isActive }) =>
-                      "nav-link " + (isActive ? "active-link" : "")}
-                      to="/passes">
-                      <li>{tNav('links.pass')}</li>
-                    </NavLink>
-                    {(isAdmin || isSuperAdmin) && (
-                    <NavLink className={({ isActive }) =>
-                      "nav-link " + (isActive ? "active-link" : "")}
-                      to="/admin/rating">
-                      <li className="nav-item">
-                        {tNav('links.rating')}
-                        {pendingRatings > 0 && (
-                          <span className="notification-badge">
-                            {pendingRatings > 9 ? tNav('notifications.moreThanNine') : pendingRatings}
-                          </span>
-                        )}
-                      </li>
-                    </NavLink>
-                    )}
-                  </>
-                )}
-              </ul>
-            </div>
-          </div>
-
-          {/* Right side: Language switcher and profile */}
-          <div className="nav-right">
-            <ul>
-              {(isSuperAdmin) && (
-                <li onClick={toggleAdminView} style={{cursor: 'pointer'}}>
-                  {isAdminView ? tNav('links.admin.back') : tNav('links.admin.admin')}
-                </li>
+            <ul className="nav-list">
+              {isAdminView ? (
+                // Admin Links
+                <>
+                  <NavLink className={({ isActive }) =>
+                    "nav-link " + (isActive ? "active" : "")}
+                    to="/admin/rating">
+                    <li className="nav-list-item">
+                      {tNav('links.admin.rating')}
+                      {pendingRatings > 0 && (
+                        <span className="nav-notification-badge">
+                          {pendingRatings > 9 ? tNav('notifications.moreThanNine') : pendingRatings}
+                        </span>
+                      )}
+                    </li>
+                  </NavLink>
+                  <NavLink className={({ isActive }) =>
+                    "nav-link " + (isActive ? "active" : "")}
+                    to="/admin/submissions">
+                    <li className="nav-list-item">
+                      {tNav('links.admin.submissions')}
+                      {pendingSubmissions > 0 && (
+                        <span className="nav-notification-badge">
+                          {pendingSubmissions > 9 ? tNav('notifications.moreThanNine') : pendingSubmissions}
+                        </span>
+                      )}
+                    </li>
+                  </NavLink>
+                  <NavLink className={({ isActive }) =>
+                    "nav-link " + (isActive ? "active" : "")}
+                    to="/admin/announcements">
+                    <li className="nav-list-item">{tNav('links.admin.announcements')}</li>
+                  </NavLink>
+                  <NavLink className={({ isActive }) =>
+                    "nav-link " + (isActive ? "active" : "")}
+                    to="/admin/difficulties">
+                    <li className="nav-list-item">{tNav('links.admin.difficulties')}</li>
+                  </NavLink>
+                  <NavLink className={({ isActive }) =>
+                    "nav-link " + (isActive ? "active" : "")}
+                    to="/admin/backups">
+                    <li className="nav-list-item">{tNav('links.admin.backups')}</li>
+                  </NavLink>
+                </>
+              ) : (
+                // Regular Links
+                <>
+                  <NavLink className={({ isActive }) =>
+                    "nav-link " + (isActive ? "active" : "")}
+                    to="/levels">
+                    <li className="nav-list-item">{tNav('links.levels')}</li>
+                  </NavLink>
+                  <NavLink className={({ isActive }) =>
+                    "nav-link " + (isActive ? "active" : "")}
+                    to="/leaderboard">
+                    <li className="nav-list-item">{tNav('links.leaderboard')}</li>
+                  </NavLink>
+                  <NavLink className={({ isActive }) =>
+                    "nav-link " + (isActive ? "active" : "")}
+                    to="/passes">
+                    <li className="nav-list-item">{tNav('links.pass')}</li>
+                  </NavLink>
+                  {(isAdmin || isSuperAdmin) && (
+                  <NavLink className={({ isActive }) =>
+                    "nav-link " + (isActive ? "active" : "")}
+                    to="/admin/rating">
+                    <li className="nav-list-item">
+                      {tNav('links.rating')}
+                      {pendingRatings > 0 && (
+                        <span className="nav-notification-badge">
+                          {pendingRatings > 9 ? tNav('notifications.moreThanNine') : pendingRatings}
+                        </span>
+                      )}
+                    </li>
+                  </NavLink>
+                  )}
+                </>
               )}
-              <NavLink
-                className={({ isActive }) =>
-                  "nav-link " + (isActive ? "active-link" : "")
-                }
-                to="/submission"
-              >
-                <li>{tNav('links.submission')}</li>
-              </NavLink>
-              <li className="nav-language" onClick={changeDialogState}>
-                <img className="nav-flag" src={isoToEmoji(language)} alt="" />
-                <svg className="language-dropdown svg-stroke" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                  <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
-                  <g id="SVGRepo_iconCarrier">
-                    <path d="M7 10L12 15L17 10" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
-                  </g>
-                </svg>
-              </li>
-
-              {children}  {/* This will include the Profile component */}
             </ul>
           </div>
 
+          {/* Right side: Language switcher and profile */}
+          <ul className="nav-list">
+            {isSuperAdmin && (
+              <li className="nav-list-item" onClick={toggleAdminView}>
+                {isAdminView ? tNav('links.admin.back') : tNav('links.admin.admin')}
+              </li>
+            )}
+            <NavLink
+              className={({ isActive }) =>
+                "nav-link " + (isActive ? "active" : "")
+              }
+              to="/submission"
+            >
+              <li className="nav-list-item">{tNav('links.submission')}</li>
+            </NavLink>
+            
+            <li className={`nav-language-selector ${openDialog ? 'open' : ''}`}>
+              <div className="nav-language-selector__button" onClick={changeDialogState}>
+                <img 
+                  className="nav-language-selector__flag" 
+                  src={isoToEmoji(getCurrentCountryCode())} 
+                  alt={languages[language]?.display || ''} 
+                />
+                <svg className="nav-language-selector__arrow svg-stroke" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M7 10L12 15L17 10" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
+
+              <div className={`nav-language-select ${openDialog ? 'open' : ''}`}>
+                <ul className="nav-language-select__list">
+                  {Object.entries(languages).map(([code, { display, countryCode }]) => (
+                    <li
+                      key={code}
+                      className={`nav-language-select__option ${(language === code || (language === 'en' && code === 'us')) ? 'selected' : ''}`}
+                      onClick={(e) => handleChangeLanguage(code, e)}
+                    >
+                      <img 
+                        className="nav-language-select__option-flag" 
+                        src={isoToEmoji(countryCode)} 
+                        alt={display} 
+                      />
+                      {display}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </li>
+
+            {children}
+          </ul>
+
           <svg
+            className="nav-mobile-menu svg-stroke"
+            onClick={changeNavState}
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
             strokeWidth={1.5}
             stroke="currentColor"
-            className="menu svg-stroke"
-            onClick={changeNavState}
           >
             <path
               strokeLinecap="round"
@@ -216,15 +265,15 @@ const Navigation = ({ children }) => {
         </div>
       </nav>
 
-      <div className={`nav-menu-outer ${openNav ? "open-nav" : "close-nav"}`}>
+      <div className={`nav-mobile ${openNav ? "open" : ""}`}>
         <svg
+          className="nav-mobile__close svg-stroke"
+          onClick={changeNavState}
           xmlns="http://www.w3.org/2000/svg"
           fill="none"
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="close svg-stroke"
-          onClick={changeNavState}
         >
           <path
             strokeLinecap="round"
@@ -233,29 +282,9 @@ const Navigation = ({ children }) => {
           />
         </svg>
 
-        <ul>{children}</ul>
-      </div>
-
-      {/* Language Dialog */}
-      <div className="close-outer close-outer-language" style={{ 
-        display: openDialog ? 'block' : 'none'}} onClick={changeDialogState}></div>
-        
-      <div className={`language-dialog ${openDialog ? 'dialog-scale-up' : ''}`} style={{ display: openDialog ? 'block' : 'none' }}>
-        <div className={"dialog"}>
-          <ul>
-            {Object.entries(languages).map(([code, { display, countryCode }]) => (
-              <li
-                key={code}
-                className="list-language"
-                onClick={() => handleChangeLanguage(code)}
-                style={{ backgroundColor: language === code ? "#a3a2d8" : "" }}
-              >
-                <img src={isoToEmoji(countryCode)} alt="" />
-                {display}
-              </li>
-            ))}
-          </ul>
-        </div>
+        <ul className="nav-mobile__list">
+          {children}
+        </ul>
       </div>
     </>
   );

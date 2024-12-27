@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "title": "Rating Management | TUF",
+    "description": "Manage and rate levels for The Universal Forums (TUF)"
+  },
+  "buttons": {
+    "references": "Reference Levels",
+    "manageRaters": "Manage Raters"
+  },
+  "toggles": {
+    "detailedView": {
+      "label": "Detailed View"
+    },
+    "hideRated": {
+      "label": "Hide Rated"
+    }
+  },
+  "messages": {
+    "loading": "Loading ratings...",
+    "error": "Error loading ratings",
+    "noRatings": {
+      "title": "No ratings available",
+      "subtitle": "All rated!"
+    }
+  }
+} 

@@ -1,0 +1,56 @@
+{
+  "edit": {
+    "title": "Edit Level Details",
+    "close": "×",
+    "form": {
+      "labels": {
+        "song": "Song",
+        "artist": "Artist",
+        "creator": "Creator",
+        "charter": "Charter",
+        "vfxer": "VFXer",
+        "team": "Team",
+        "baseScore": "Base Score",
+        "videoLink": "Video Link",
+        "dlLink": "Download Link",
+        "workshopLink": "Workshop Link",
+        "publicComments": "Public Comments",
+        "previousDifficulty": "Previous Difficulty"
+      },
+      "placeholders": {
+        "baseScore": "Base Score",
+        "rerateNumber": "Rerate Number",
+        "rerateReason": "Rerate Reason"
+      },
+      "checkboxes": {
+        "toRate": "To Rate"
+      },
+      "buttons": {
+        "save": {
+          "default": "Save Changes",
+          "saving": "Saving..."
+        },
+        "delete": {
+          "default": "Delete",
+          "deleting": "Deleting...",
+          "hide": "Hide",
+          "unhide": "Unhide",
+          "processing": "Processing..."
+        }
+      }
+    },
+    "confirmations": {
+      "unsavedChanges": "You have unsaved changes. Are you sure you want to close?",
+      "delete": "Do you want to delete this level? This can be undone later.",
+      "hide": "Do you want to hide this level?",
+      "unhide": "Do you want to unhide this level?",
+      "restore": "Do you want to restore this level?"
+    },
+    "errors": {
+      "update": "Failed to update level",
+      "delete": "Soft deletion failed",
+      "toggleHidden": "Failed to toggle hidden status",
+      "restore": "Restoration failed"
+    }
+  }
+} 
