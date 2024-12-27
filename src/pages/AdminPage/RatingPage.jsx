@@ -11,6 +11,7 @@ import api from "../../utils/api";
 import ReferencesPopup from "../../components/ReferencesPopup/ReferencesPopup";
 import RaterManagementPopup from "../../components/RaterManagementPopup/RaterManagementPopup";
 import AccessDenied from "../../components/StateDisplay/AccessDenied";
+import ReferencesButton from "../../components/ReferencesButton/ReferencesButton";
 
 const truncateString = (str, maxLength) => {
   if (!str) return "";
@@ -147,12 +148,9 @@ const RatingPage = () => {
         <ScrollButton />
         <div className="view-controls">
           <div className="admin-buttons">
-            <button 
-              className="admin-button"
-              onClick={() => setShowReferences(true)}
-            >
-              {tRating('buttons.references')}
-            </button>
+            {!selectedRating && (
+              <ReferencesButton onClick={() => setShowReferences(true)} />
+            )}
             {isSuperAdmin && (
               <button 
                 className="admin-button"
@@ -210,13 +208,16 @@ const RatingPage = () => {
                   />
               ))}
             </div>
-            <DetailPopup
-              selectedRating={selectedRating}
-              setSelectedRating={setSelectedRating}
-              ratings={ratings}
-              setRatings={setRatings}
-              user={user}
-            />
+            {selectedRating && (
+              <DetailPopup
+                selectedRating={selectedRating}
+                setSelectedRating={setSelectedRating}
+                setShowReferences={setShowReferences}
+                ratings={ratings}
+                setRatings={setRatings}
+                user={user}
+              />
+            )}
 
             {openEditDialog && selectedLevel && isSuperAdmin && (
               <EditLevelPopup

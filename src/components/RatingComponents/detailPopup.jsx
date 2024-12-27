@@ -7,6 +7,7 @@ import { RatingInput } from './RatingInput';
 import { DifficultyContext } from "@/contexts/DifficultyContext";
 import api from '@/utils/api';
 import { useTranslation } from 'react-i18next';
+import ReferencesButton from "../ReferencesButton/ReferencesButton";
 
 async function updateRating(id, rating, comment) {
   try {
@@ -29,6 +30,7 @@ async function updateRating(id, rating, comment) {
 export const DetailPopup = ({ 
   selectedRating, 
   setSelectedRating, 
+  setShowReferences,
   ratings, 
   setRatings, 
   user, 
@@ -47,8 +49,76 @@ export const DetailPopup = ({
   const [saveError, setSaveError] = useState(null);
   const [otherRatings, setOtherRatings] = useState([]);
   const [commentError, setCommentError] = useState(false);
+  const [isVideoLoading, setIsVideoLoading] = useState(true);
+  const [isExiting, setIsExiting] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
 
   const popupRef = useRef(null);
+
+  useEffect(() => {
+    if (selectedRating) {
+      setIsExiting(false);
+      setIsAnimating(true);
+      const timer = setTimeout(() => {
+        setIsAnimating(false);
+      }, 400); // Match the animation duration
+      return () => clearTimeout(timer);
+    }
+  }, [selectedRating]);
+
+  useEffect(() => {
+    const handleEscKey = (event) => {
+      if (event.key === 'Escape' && !event.defaultPrevented && !isAnimating) {
+        handleClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscKey);
+    return () => document.removeEventListener('keydown', handleEscKey);
+  }, [hasUnsavedChanges, isAnimating]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (isAnimating) return; // Prevent closing during animations
+      
+      if (popupRef.current && 
+          !popupRef.current.contains(event.target) && 
+          event.target.classList.contains('rating-popup-overlay') &&
+          !event.target.closest('.references-popup') &&
+          !event.target.closest('.references-button')) {
+        handleClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [hasUnsavedChanges, isAnimating]);
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
+        e.returnValue = ''; // Required for Chrome
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasUnsavedChanges]);
+
+  useEffect(() => {
+    if (selectedRating?.level?.videoLink) {
+      setIsVideoLoading(true);
+      getVideoDetails(selectedRating.level.videoLink)
+        .then(data => {
+          setVideoData(data);
+        })
+        .catch(error => console.error('Error fetching video details:', error))
+        .finally(() => {
+          setIsVideoLoading(false);
+        });
+    }
+  }, [selectedRating]);
 
   useEffect(() => {
     const handleEscKey = (event) =>  {
@@ -85,39 +155,6 @@ export const DetailPopup = ({
     setHasUnsavedChanges(hasChanges);
   }, [pendingRating, pendingComment, initialRating, initialComment]);
 
-  useEffect(() => {
-    if (selectedRating?.level?.videoLink) {
-      getVideoDetails(selectedRating.level.videoLink)
-        .then(data => setVideoData(data))
-        .catch(error => console.error('Error fetching video details:', error));
-    }
-  }, [selectedRating]);
-
-  useEffect(() => {
-    const handleBeforeUnload = (e) => {
-      if (hasUnsavedChanges) {
-        e.preventDefault();
-        e.returnValue = ''; // Required for Chrome
-      }
-    };
-
-    window.addEventListener('beforeunload', handleBeforeUnload);
-    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [hasUnsavedChanges]);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (popupRef.current && !popupRef.current.contains(event.target)) {
-        handleClose();
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [hasUnsavedChanges]);
-
   const handleSaveChanges = async () => {
     if (!selectedRating || !hasUnsavedChanges) return;
     
@@ -153,22 +190,50 @@ export const DetailPopup = ({
   };
 
   const handleClose = () => {
+    if (isAnimating) return; // Prevent closing during entry animation
+    
     if (hasUnsavedChanges) {
       if (window.confirm(tRating('errors.unsavedChanges'))) {
-        setSelectedRating(null);
-        setVideoData(null);
+        initiateClose();
       }
     } else {
+      initiateClose();
+    }
+  };
+
+  const initiateClose = () => {
+    setIsExiting(true);
+    // Wait for exit animation to complete
+    setTimeout(() => {
       setSelectedRating(null);
       setVideoData(null);
+      setPendingRating("");
+      setPendingComment("");
+      setInitialRating("");
+      setInitialComment("");
+      setHasUnsavedChanges(false);
+      setSaveError(null);
+      setCommentError(false);
+      setOtherRatings([]);
+      setIsExiting(false);
+    }, 200); // Match the exit animation duration
+  };
+
+  const handleVideoLoad = () => {
+    const iframe = document.querySelector('.video-iframe');
+    if (iframe) {
+      iframe.classList.add('loaded');
     }
   };
 
   if (!selectedRating) return null;
 
   return (
-    <div className="rating-popup-overlay">
-      <div className="rating-popup" ref={popupRef}>
+    <div className={`rating-popup-overlay ${isExiting ? 'exiting' : ''}`}>
+      <div className="references-button-container">
+        <ReferencesButton onClick={() => setShowReferences(true)} />
+      </div>
+      <div className={`rating-popup ${isExiting ? 'exiting' : ''}`} ref={popupRef}>
         <button 
           className="close-popup-btn"
           onClick={handleClose}
@@ -197,18 +262,26 @@ export const DetailPopup = ({
           
           <div className="popup-main-content">
             <div className="video-container">
-              {videoData && (
-                <iframe 
-                  src={videoData.embed}
-                  title="Video"
-                  width="100%"
-                  height="100%"
-                  frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="video-iframe"
-                />
-              )}
+              <div className="video-aspect-ratio">
+                {isVideoLoading ? (
+                  <div className="video-placeholder">
+                    <div className="video-loading" />
+                  </div>
+                ) : !videoData ? (
+                  <div className="video-placeholder">
+                    No video available
+                  </div>
+                ) : (
+                  <iframe 
+                    src={videoData.embed}
+                    title="Video"
+                    className="video-iframe"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    onLoad={handleVideoLoad}
+                  />
+                )}
+              </div>
             </div>
 
             <div className="details-container">

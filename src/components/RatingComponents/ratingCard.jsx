@@ -19,6 +19,7 @@ export const RatingCard = ({
 }) => {
     const { t } = useTranslation('components');
     const tRating = (key) => t(`rating.ratingCard.${key}`);
+    const [isEditing, setIsEditing] = useState(false);
 
     const userRating = rating.details?.find(detail => detail.username === user.username)?.rating || "";
     const processedRatings = rating.details
@@ -34,6 +35,15 @@ export const RatingCard = ({
     
     const handleReasonClick = () => {
       setIsReasonExpanded(!isReasonExpanded);
+    };
+
+    const handleEditClick = async () => {
+      setIsEditing(true);
+      try {
+        await onEditLevel();
+      } finally {
+        setIsEditing(false);
+      }
     };
 
     return (
@@ -95,10 +105,17 @@ export const RatingCard = ({
             </button>
             {user && isSuperAdmin && (
               <button 
-                onClick={onEditLevel} 
-                className="edit-level-btn"
+                onClick={handleEditClick} 
+                className={`edit-level-btn ${isEditing ? 'loading' : ''}`}
+                disabled={isEditing}
               >
-                {tRating('buttons.editLevel')}
+                {isEditing ? (
+                  <svg className="spinner" viewBox="0 0 50 50">
+                    <circle cx="25" cy="25" r="20" fill="none" strokeWidth="5"></circle>
+                  </svg>
+                ) : (
+                  tRating('buttons.editLevel')
+                )}
               </button>
             )}
           </div>
