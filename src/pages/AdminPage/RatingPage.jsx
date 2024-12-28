@@ -194,7 +194,9 @@ const RatingPage = () => {
           <>
             <div className="rating-list">
               {ratings
-                .filter(rating => !hideRated || rating.averageDifficulty !== null)
+                .filter(rating => !hideRated 
+                  || !rating.details?.find(detail => detail.username === user.username)?.rating
+                )
                 .map((rating, index) => (
                   <RatingCard
                     key={rating.id}

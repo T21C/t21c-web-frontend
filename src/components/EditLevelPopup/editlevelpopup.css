@@ -333,4 +333,20 @@
   height: 40px;
   box-sizing: border-box;
 }
+
+.edit-level-popup-overlay .restore-button {
+  background: #41c641;
+  color: white;
+  max-width: 13rem;
+  transition: background-color 0.3s ease;
+}
+
+.edit-level-popup-overlay .restore-button:hover:not(:disabled) {
+  background: #35a135;
+}
+
+.edit-level-popup-overlay .restore-button:disabled {
+  background: #738d73;
+  cursor: not-allowed;
+}
  

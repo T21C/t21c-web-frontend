@@ -36,6 +36,10 @@
           "hide": "Hide",
           "unhide": "Unhide",
           "processing": "Processing..."
+        },
+        "restore": {
+          "default": "Restore Level",
+          "restoring": "Restoring..."
         }
       }
     },
@@ -50,7 +54,7 @@
       "update": "Failed to update level",
       "delete": "Soft deletion failed",
       "toggleHidden": "Failed to toggle hidden status",
-      "restore": "Restoration failed"
+      "restore": "Failed to restore level"
     }
   }
 } 

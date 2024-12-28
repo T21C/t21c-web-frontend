@@ -66,7 +66,7 @@ export const RatingCard = ({
               
               {isSuperAdmin && showDetailedView ? (
                 <p className="rating-info-item" data-label={tRating('labels.allRatings')}>
-                  {processedRatings.join(', ')}
+                  {rating.details.map(detail => detail.rating).join(', ')}
                 </p>
               ) : (
                 <>

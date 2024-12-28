@@ -61,10 +61,6 @@ export function calculateRatingValue(rating) {
     const avg = Math.round((startValue + endValue) / 2);
     return getValueAsRating(avg);
   }
-  // If it's a single rating, validate it exists in inputDataRaw
-  if (Object.keys(inputDataRaw).includes(cleanRating)) {
-    return cleanRating;
-  }
   
   return null;
 }

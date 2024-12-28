@@ -437,19 +437,30 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               <button type="submit" disabled={isSaving} className="save-button">
                 {isSaving ? tLevel('form.buttons.save.saving') : tLevel('form.buttons.save.default')}
               </button>
-              <button 
-                type="button" 
-                className={`delete-button ${isHideMode ? 'hide-mode' : ''}`}
-                onClick={handleDelete}
-                disabled={isSaving}
-              >
-                {isSaving ? 
-                  (isHideMode ? tLevel('form.buttons.delete.processing') : tLevel('form.buttons.delete.deleting')) : 
-                  (isHideMode ? 
-                    (level.isHidden ? tLevel('form.buttons.delete.unhide') : tLevel('form.buttons.delete.hide')) : 
-                    tLevel('form.buttons.delete.default'))}
-                <div className="toggle-arrow" onClick={toggleMode}></div>
-              </button>
+              {level.isDeleted || level.isHidden ? (
+                <button 
+                  type="button"
+                  className="restore-button"
+                  onClick={handleRestore}
+                  disabled={isSaving}
+                >
+                  {isSaving ? tLevel('form.buttons.restore.restoring') : tLevel('form.buttons.restore.default')}
+                </button>
+              ) : (
+                <button 
+                  type="button" 
+                  className={`delete-button ${isHideMode ? 'hide-mode' : ''}`}
+                  onClick={handleDelete}
+                  disabled={isSaving}
+                >
+                  {isSaving ? 
+                    (isHideMode ? tLevel('form.buttons.delete.processing') : tLevel('form.buttons.delete.deleting')) : 
+                    (isHideMode ? 
+                      (level.isHidden ? tLevel('form.buttons.delete.unhide') : tLevel('form.buttons.delete.hide')) : 
+                      tLevel('form.buttons.delete.default'))}
+                  <div className="toggle-arrow" onClick={toggleMode}></div>
+                </button>
+              )}
             </div>
           </form>
         </div>
