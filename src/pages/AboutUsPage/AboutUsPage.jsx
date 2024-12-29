@@ -9,7 +9,7 @@ import DefaultAvatar from "../../components/Icons/DefaultAvatar";
 
 const AboutUsPage = () => {
   const { t } = useTranslation('pages');
-  const tAbout = (key) => t(`about.${key}`);
+  const tAbout = (key, params = {}) => t(`about.${key}`, params);
   const currentUrl = window.location.origin + location.pathname;
   const [raters, setRaters] = useState([]);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -60,6 +60,8 @@ const AboutUsPage = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [boundingRect]);
 
+
+  
   return (
     <>
       <MetaTags
@@ -69,8 +71,8 @@ const AboutUsPage = () => {
         image="/og-image.jpg"
         type="website"
       />
-      <div className="about-us">
         <CompleteNav />
+        <div className="about-us">
         <div className="about-us-container">
           <div className="about-content">
             <section className="about-section">
