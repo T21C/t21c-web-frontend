@@ -23,6 +23,20 @@
           }
         }
       },
+      "merge": {
+        "label": "Merge Player",
+        "placeholder": "Enter target player ID",
+        "button": "Merge",
+        "confirm": {
+          "message": "Are you sure you want to merge this player's passes? This action cannot be undone.",
+          "warning": "All passes will be transferred to the target player and this player entry will be deleted.",
+          "buttons": {
+            "understand": "I understand",
+            "confirm": "Confirm Merge",
+            "cancel": "Cancel"
+          }
+        }
+      },
       "discord": {
         "label": "Discord ID",
         "placeholder": "Enter Discord ID to validate",
@@ -48,11 +62,14 @@
       "banUpdate": "Failed to update ban status",
       "discordFetch": "Failed to fetch Discord ID",
       "discordUpdate": "Failed to update Discord info",
-      "discordRemove": "Failed to remove Discord info"
+      "discordRemove": "Failed to remove Discord info",
+      "mergePlayer": "Failed to merge player",
+      "invalidTargetId": "Invalid target player ID"
     },
     "success": {
       "discordUpdate": "Discord info updated successfully",
-      "discordRemove": "Discord info removed successfully"
+      "discordRemove": "Discord info removed successfully",
+      "mergePlayer": "Player merged successfully"
     }
   }
 } 

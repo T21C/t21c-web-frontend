@@ -1,32 +1,32 @@
 {
   "countrySelect": {
-    "placeholder": "Select Country",
+    "placeholder": "选择国家",
     "search": {
-      "placeholder": "Search countries..."
+      "placeholder": "搜索国家……"
     }
   },
   "playerInput": {
-    "placeholder": "Search player...",
-    "loading": "Loading...",
-    "minChars": "Type at least 2 characters to search",
-    "noResults": "No players found",
+    "placeholder": "搜索玩家……",
+    "loading": "加载中……",
+    "minChars": "输入至少2个字符以搜索",
+    "noResults": "未找到玩家",
     "creation": {
-      "button": "Create new player \"{{name}}\"",
-      "loading": "Creating player \"{{name}}\"...",
-      "error": "Failed to create player"
+      "button": "创建新玩家 \"{{name}}\"",
+      "loading": "正在创建玩家 \"{{name}}\"...",
+      "error": "创建玩家失败"
     }
   },
   "errors": {
-    "loading": "Failed to load player data",
-    "saving": "Failed to save player data",
-    "notFound": "Player not found",
-    "duplicate": "Player already exists",
-    "invalid": "Invalid player data"
+    "loading": "加载玩家数据失败",
+    "saving": "保存玩家数据失败",
+    "notFound": "未找到玩家",
+    "duplicate": "玩家已存在",
+    "invalid": "无效玩家数据"
   },
   "buttons": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "create": "Create new player \"{{name}}\"",
-    "loading": "Creating player \"{{name}}\"..."
+    "save": "保存",
+    "cancel": "取消",
+    "create": "创建新玩家 \"{{name}}\"",
+    "loading": "正在创建玩家 \"{{name}}\"..."
   }
 } 

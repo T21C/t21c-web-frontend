@@ -1,27 +1,27 @@
 {
   "meta": {
-    "title": "Announcements | TUF",
-    "description": "Manage and announce new levels, rerates, and passes for The Universal Forums (TUF)"
+    "title": "公告列表 | TUF",
+    "description": "管理并发布论坛上的新关卡、关卡重评和通关记录"
   },
   "header": {
-    "title": "Announcements"
+    "title": "公告"
   },
   "tabs": {
-    "newLevels": "New Levels",
-    "rerates": "Rerates",
-    "passes": "Passes"
+    "newLevels": "新关卡",
+    "rerates": "关卡重评",
+    "passes": "通关记录"
   },
   "buttons": {
-    "retry": "Retry",
-    "refresh": "Refresh",
-    "selectAll": "Select All",
-    "deselectAll": "Deselect All",
-    "announce": "Announce Selected",
-    "announcing": "Announcing..."
+    "retry": "重试",
+    "refresh": "刷新",
+    "selectAll": "全选",
+    "deselectAll": "取消全选",
+    "announce": "公告选中项目",
+    "announcing": "公告发布中……"
   },
   "errors": {
-    "fetchFailed": "Failed to fetch items. Please try again.",
-    "announceFailed": "Failed to announce items. Please try again.",
-    "invalidIds": "Some selected items have invalid IDs"
+    "fetchFailed": "获取项目失败，请重试。",
+    "announceFailed": "公告发布失败，请重试。",
+    "invalidIds": "部分选中项目的 ID 无效。"
   }
 } 

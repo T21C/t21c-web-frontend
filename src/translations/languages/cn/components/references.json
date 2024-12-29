@@ -1,53 +1,53 @@
 {
   "button": {
-    "label": "Open References",
-    "text": "References"
+    "label": "打开参考列表",
+    "text": "参考列表"
   },
   "popup": {
-    "title": "{{tab}} Difficulties",
+    "title": "{{tab}} 级难度",
     "buttons": {
-      "close": "Close",
-      "expandAll": "Expand All",
-      "collapseAll": "Collapse All",
-      "editMode": "Edit Mode",
-      "viewMode": "View Mode",
-      "saveChanges": "Save Changes",
-      "saving": "Saving...",
-      "cancel": "Cancel"
+      "close": "关闭",
+      "expandAll": "展开所有项目",
+      "collapseAll": "收起所有项目",
+      "editMode": "编辑模式",
+      "viewMode": "查看模式",
+      "saveChanges": "保存更改",
+      "saving": "保存中……",
+      "cancel": "取消"
     },
-    "loading": "Loading references...",
+    "loading": "正在加载参考列表……",
     "errors": {
-      "loadFailed": "Failed to load references",
-      "saveFailed": "Failed to save changes"
+      "loadFailed": "加载参考列表失败",
+      "saveFailed": "保存更改失败"
     },
     "levelCount": {
-      "singular": "1 level",
-      "plural": "{{count}} levels"
+      "singular": "1 个关卡",
+      "plural": "{{count}} 个关卡"
     },
     "editMode": {
-      "placeholder": "Enter level IDs separated by commas"
+      "placeholder": "输入关卡 ID，使用逗号分隔"
     }
   },
   "errors": {
-    "loading": "Failed to load difficulties",
-    "saving": "Failed to save difficulties"
+    "loading": "加载难度失败",
+    "saving": "保存难度失败"
   },
-  "title": "{{tab}} Difficulties",
+  "title": "{{tab}} 级难度",
   "buttons": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "reset": "Reset",
-    "clear": "Clear",
-    "selectAll": "Select All"
+    "save": "保存",
+    "cancel": "取消",
+    "reset": "重置",
+    "clear": "清除",
+    "selectAll": "全选"
   },
-  "loading": "Loading difficulties...",
-  "noItems": "No difficulties found",
+  "loading": "正在加载难度列表……",
+  "noItems": "未找到难度",
   "search": {
-    "placeholder": "Search difficulties..."
+    "placeholder": "查找难度……"
   },
   "stats": {
-    "selected": "Selected",
-    "total": "Total",
-    "plural": "{{count}} levels"
+    "selected": "已选中",
+    "total": "总计",
+    "plural": "{{count}} 个关卡"
   }
 } 

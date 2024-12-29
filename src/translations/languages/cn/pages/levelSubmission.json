@@ -1,32 +1,32 @@
 {
-  "title": "Submit a Level",
-  "thumbnailInfo": "Video information will appear here",
+  "title": "提交关卡",
+  "thumbnailInfo": "视频信息会显示在此处",
   "submInfo": {
-    "song": "Song",
-    "artist": "Artist",
-    "videoLink": "Video Link",
-    "charter": "Charter",
-    "diff": "Difficulty",
-    "vfxer": "VFX-ers (optional)",
-    "team": "Team Name (optional)",
-    "dlLink": "Download link",
-    "workshop": "Workshop link",
-    "dlLinksOr": "or"
+    "song": "曲名",
+    "artist": "曲师",
+    "videoLink": "视频链接",
+    "charter": "谱师",
+    "diff": "难度",
+    "vfxer": "特效师（选填）",
+    "team": "团队（选填）",
+    "dlLink": "下载链接",
+    "workshop": "创意工坊链接",
+    "dlLinksOr": "或"
   },
   "videoInfo": {
-    "title": "Video title",
-    "channel": "Channel name",
-    "timestamp": "Upload Time",
-    "nolink": "No link provided"
+    "title": "视频标题",
+    "channel": "频道名称",
+    "timestamp": "上传时间",
+    "nolink": "未提供链接"
   },
-  "tooltip": "Unknown difficulty, will submit but please make sure it's readable by the managers. Correct diff ex.: G13; P7~P13; 21.1+; 19~20.0+",
-  "submit": "Submit",
-  "submitWait": "...",
+  "tooltip": "未知难度。仍然可以提交，但请确保管理员能够读懂。正确的难度格式范例：G13；P7~P13；21.1+；19~20.0+",
+  "submit": "提交",
+  "submitWait": "……",
   "alert": {
-    "success": "Level submitted successfully!",
-    "error": "Error: ",
-    "loading": "Submitting...",
-    "login": "Please log in to submit a level",
-    "form": "Please fill in all required fields correctly"
+    "success": "关卡提交成功！",
+    "error": "错误：",
+    "loading": "提交中……",
+    "login": "提交关卡前请先登录",
+    "form": "请正确填写所有必填项"
   }
 } 

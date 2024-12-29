@@ -25,10 +25,10 @@ const Navigation = ({ children }) => {
   const location = useLocation();
   const { pendingRatings, pendingSubmissions } = useNotification();
 
-  const languages = {
+  let languages = {
     en: { display: "English", countryCode: "us", implemented: true },
     kr: { display: "한국어", countryCode: "kr", implemented: false },
-    cn: { display: "中文", countryCode: "cn", implemented: false },
+    cn: { display: "中文", countryCode: "cn", implemented: true },
     jp: { display: "日本語", countryCode: "jp", implemented: false },
     id: { display: "Bahasa Indonesia", countryCode: "id", implemented: false },
     ru: { display: "Русский", countryCode: "ru", implemented: false },
@@ -36,6 +36,21 @@ const Navigation = ({ children }) => {
     fr: { display: "Français", countryCode: "fr", implemented: false },
     es: { display: "Español", countryCode: "es", implemented: false }
   };
+
+  // Convert to array and sort
+  languages = Object.entries(languages)
+    .sort(([keyA, a], [keyB, b]) => {
+      // First sort by implemented status (true first)
+      if (a.implemented !== b.implemented) {
+        return b.implemented - a.implemented;
+      }
+      // Then sort alphabetically by display name
+      return a.display.localeCompare(b.display);
+    })
+    .reduce((obj, [key, value]) => {
+      obj[key] = value;
+      return obj;
+    }, {});
 
   const getCurrentCountryCode = () => {
     if (language === 'en' || language === 'us') {
@@ -112,9 +127,6 @@ const Navigation = ({ children }) => {
           {/* Left side: Logo and main navigation links */}
           <div className="nav-left">
             <NavLink
-              className={({ isActive }) =>
-                "nav-link " + (isActive ? "active" : "")
-              }
               to="/"
             >
               <div className="nav-logo">

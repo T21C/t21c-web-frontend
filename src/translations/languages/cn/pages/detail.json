@@ -1,28 +1,28 @@
 {
-  "waiting": "Waiting",
+  "waiting": "等待中",
   "#1Clears": {
-    "clear": "#1 Clear",
-    "score": "#1 Score",
-    "speed": "#1 Speed",
-    "accuracy": "#1 Accuracy",
-    "numOClear": "Number of clears"
+    "clear": "世界首通",
+    "score": "最高分数",
+    "speed": "最高飙速",
+    "accuracy": "最高精准度",
+    "numOClear": "总通关人数"
   },
   "dialog": {
-    "fullInfo": "Full Info",
-    "artist": "Artist",
-    "creator": "Creator",
-    "team": "Team",
-    "charter": "Charter",
-    "vfxer": "VFXer",
+    "fullInfo": "完整信息",
+    "artist": "曲师",
+    "creator": "关卡设计",
+    "team": "团队",
+    "charter": "谱师",
+    "vfxer": "特效师",
     "id": "ID"
   },
   "leaderboard": {
-    "header": "Ranks",
-    "notBeaten": "This level hasn't been beaten yet...",
+    "header": "排行榜",
+    "notBeaten": "还没有人通过本关卡……",
     "toolTip": {
-      "time": "Date",
-      "accuracy": "Accuracy",
-      "score": "Score"
+      "time": "日期",
+      "accuracy": "精准度",
+      "score": "分数"
     }
   }
 } 

@@ -1,15 +1,15 @@
 {
   "meta": {
-    "title": "Submit Content",
-    "description": "Submit new levels and passes to the community",
+    "title": "提交内容",
+    "description": "向社区提交新的关卡或通关记录",
     "type": "website"
   },
   "header": {
-    "headerPass": "Submit Pass",
-    "headerLevel": "Submit Level"
+    "headerPass": "提交通关记录",
+    "headerLevel": "提交关卡"
   },
   "button": {
-    "buttonPass": "Submit Pass",
-    "buttonLevel": "Submit Level"
+    "buttonPass": "提交通关记录",
+    "buttonLevel": "提交关卡"
   }
 } 

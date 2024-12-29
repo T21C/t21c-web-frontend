@@ -1,4 +1,4 @@
-import aboutUs from './aboutUs.json';
+import about from './about.json';
 import admin from './admin.json';
 import announcement from './announcement.json';
 import backup from './backup.json';
@@ -19,7 +19,7 @@ import submission from './submission.json';
 import submissionManagement from './submissionManagement.json';
 
 const translations = {
-  aboutUs,
+  about,
   admin,
   announcement,
   backup,

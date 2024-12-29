@@ -1,26 +1,29 @@
 {
   "meta": {
-    "title": "Rating Management | TUF",
-    "description": "Manage and rate levels for The Universal Forums (TUF)"
+    "title": "管理评级 | TUF",
+    "description": "管理论坛上的关卡并为其评级"
   },
   "buttons": {
-    "references": "Reference Levels",
-    "manageRaters": "Manage Raters"
+    "references": "参考关卡列表",
+    "manageRaters": "管理评级员"
   },
   "toggles": {
     "detailedView": {
-      "label": "Detailed View"
+      "label": "详细视图"
     },
     "hideRated": {
-      "label": "Hide Rated"
+      "label": "隐藏已评级关卡"
+    },
+    "lowDiff": {
+      "label": "低难度"
     }
   },
   "messages": {
-    "loading": "Loading ratings...",
-    "error": "Error loading ratings",
+    "loading": "正在加载评级……",
+    "error": "加载评级时出错",
     "noRatings": {
-      "title": "No ratings available",
-      "subtitle": "All rated!"
+      "title": "没有需要评级的关卡",
+      "subtitle": "已全部评完！"
     }
   }
 } 

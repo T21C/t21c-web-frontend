@@ -1,27 +1,27 @@
 {
   "meta": {
     "title": "The Universal Forums",
-    "description": "The Universal Forums (TUF) is a community-driven platform for rhythm game players to share and compete on custom charts."
+    "description": "The Universal Forums (TUF) 是一个由社区驱动的，给音游玩家分享并竞争自制关卡的平台。"
   },
   "header": {
     "title": "The Universal Forums",
-    "subtitle": "A community-driven platform for rhythm game players"
+    "subtitle": "一个由社区驱动的音游玩家平台"
   },
   "sections": {
     "featured": {
-      "title": "Featured Charts",
-      "empty": "No featured charts available"
+      "title": "精选关卡",
+      "empty": "无精选关卡"
     },
     "recent": {
-      "title": "Recent Charts",
-      "empty": "No recent charts available"
+      "title": "最近关卡",
+      "empty": "无最近关卡"
     }
   },
   "card": {
-    "by": "by {{creator}}"
+    "by": "关卡设计 {{creator}}"
   },
   "loading": {
-    "featured": "Loading featured charts...",
-    "recent": "Loading recent charts..."
+    "featured": "正在加载精选关卡……",
+    "recent": "正在加载最近关卡……"
   }
 } 

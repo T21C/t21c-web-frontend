@@ -1,44 +1,44 @@
 {
   "meta": {
-    "title": "Pass List",
-    "description": "Browse and discover player achievements"
+    "title": "通关记录列表",
+    "description": "浏览并发掘玩家们的成就"
   },
   "loading": {
-    "difficulties": "Loading difficulties..."
+    "difficulties": "正在加载难度列表……"
   },
   "input": {
-    "placeholder": "Search by player name, song, or artist..."
+    "placeholder": "按曲名、曲师或谱师搜索……"
   },
   "toolTip": {
-    "filter": "Filter results",
-    "sort": "Sort results",
-    "reset": "Reset all filters"
+    "filter": "筛选结果",
+    "sort": "排序结果",
+    "reset": "重置筛选条件"
   },
   "settings": {
     "filter": {
-      "title": "Filter",
+      "title": "筛选条件",
       "options": {
-        "only12k": "Only 12K",
-        "deletedPasses": "Deleted Passes"
+        "only12k": "仅12键以下",
+        "deletedPasses": "已被删除的通关记录"
       }
     },
     "sort": {
-      "title": "Sort",
-      "label": "Sort by",
+      "title": "排序",
+      "label": "排序依据",
       "options": {
-        "newest": "Newest",
-        "oldest": "Oldest",
-        "highestScore": "Highest Score",
-        "lowestScore": "Lowest Score",
-        "highestAccuracy": "Highest Accuracy",
-        "lowestAccuracy": "Lowest Accuracy",
-        "highestDifficulty": "Highest Difficulty",
-        "lowestDifficulty": "Lowest Difficulty",
-        "random": "Random"
+        "newest": "最新",
+        "oldest": "最早",
+        "highestScore": "分数最高",
+        "lowestScore": "分数最低",
+        "highestAccuracy": "精准度最高",
+        "lowestAccuracy": "精准度最低",
+        "highestDifficulty": "难度最高",
+        "lowestDifficulty": "难度最低",
+        "random": "随机排序"
       }
     }
   },
   "infScroll": {
-    "end": "End of list"
+    "end": "已经到底啦！"
   }
 } 

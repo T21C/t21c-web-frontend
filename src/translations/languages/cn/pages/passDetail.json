@@ -1,17 +1,17 @@
 {
   "meta": {
     "title": "{{song}} | TUF",
-    "description": "View the pass of {{playerName}} for {{song}} - {{artist}}"
+    "description": "查看 {{playerName}} 通关 {{song}} - {{artist}} 的记录"
   },
   "banners": {
-    "deleted": "This pass has been deleted"
+    "deleted": "该通关记录已被删除"
   },
   "level": {
     "baseScore": "{{score}}PP",
     "credits": {
       "team": "{{team}}",
-      "charter": "Chart by {{charter}}",
-      "vfxer": "VFX by {{vfxer}}"
+      "charter": "由 {{charter}} 制作谱面",
+      "vfxer": "由 {{vfxer}} 制作特效"
     }
   },
   "player": {
@@ -23,73 +23,73 @@
       },
       "previous": "{{score}}"
     },
-    "clearDate": "Cleared on {{date}}"
+    "clearDate": "通关于 {{date}}"
   },
   "stats": {
     "score": {
-      "label": "Score",
+      "label": "分数",
       "value": "{{score}}"
     },
     "accuracy": {
-      "label": "Accuracy",
+      "label": "精准度",
       "value": "{{accuracy}}%"
     },
     "speed": {
-      "label": "Speed",
+      "label": "飙速",
       "value": "{{speed}}x"
     },
     "feelingRating": {
-      "label": "Feeling Rating",
+      "label": "体感难度",
       "value": "{{rating}}",
-      "none": "None"
+      "none": "无"
     }
   },
   "flags": {
-    "worldsFirst": "🏆 World's First! 🏆",
-    "12k": "12K",
-    "16k": "16K",
-    "noHoldTap": "No Hold Tap"
+    "worldsFirst": "🏆 世界首通！ 🏆",
+    "12k": "12键",
+    "16k": "16键",
+    "noHoldTap": "非默认长按设置"
   },
   "judgements": {
-    "title": "Judgements",
+    "title": "判定",
     "types": {
       "earlyPerfect": {
-        "label": "Early Perfect",
+        "label": "稍快！",
         "value": "{{count}}"
       },
       "perfect": {
-        "label": "Perfect",
+        "label": "完美！",
         "value": "{{count}}"
       },
       "latePerfect": {
-        "label": "Late Perfect",
+        "label": "稍慢！",
         "value": "{{count}}"
       },
       "tooEarly": {
-        "label": "Too Early",
+        "label": "太快！！",
         "value": "{{count}}"
       },
       "early": {
-        "label": "Early",
+        "label": "太快！",
         "value": "{{count}}"
       },
       "late": {
-        "label": "Late",
+        "label": "太慢！",
         "value": "{{count}}"
       },
       "tooLate": {
-        "label": "Too Late",
+        "label": "太慢！！",
         "value": "{{count}}"
       }
     }
   },
   "video": {
     "notAvailable": {
-      "text": "Video not available",
-      "watchOnYoutube": "Watch on YouTube"
+      "text": "无视频",
+      "watchOnYoutube": "在 YouTube 上观看"
     }
   },
   "buttons": {
-    "edit": "Edit pass details"
+    "edit": "编辑通关记录"
   }
 } 

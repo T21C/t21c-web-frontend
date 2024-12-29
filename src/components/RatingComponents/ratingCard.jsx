@@ -47,7 +47,9 @@ export const RatingCard = ({
     };
 
     return (
-      <div className="rating-card">
+      <div
+        className={`rating-card ${rating.lowDiff ? 'low-diff' : ''}`}
+      >
         <div className="rating-card-content">
           <div className="rating-card-header">
             <h3 title={fullTitle}>

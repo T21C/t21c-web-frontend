@@ -1,66 +1,66 @@
 {
   "featured": {
-    "by": "Level by {{creator}}",
-    "button": "Check Level"
+    "by": "关卡设计 {{creator}}",
+    "button": "查看关卡"
   },
   "level": {
-    "creator": "Creator",
-    "clears": "Clears",
+    "creator": "关卡设计",
+    "clears": "通关总数",
     "buttons": {
-      "edit": "Edit"
+      "edit": "编辑"
     },
     "links": {
-      "workshop": "Workshop Link",
-      "download": "Download Link",
-      "unavailable": "No links available"
+      "workshop": "创意工坊链接",
+      "download": "下载链接",
+      "unavailable": "无可用链接"
     }
   },
   "pass": {
     "stats": {
-      "xAccuracy": "XAccuracy",
-      "score": "Score",
-      "speed": "Speed"
+      "xAccuracy": "X-精准度",
+      "score": "分数",
+      "speed": "飙速"
     },
     "flags": {
-      "worldsFirst": "WF",
-      "twelveKey": "12K",
-      "noHoldTap": "NHT"
+      "worldsFirst": "世界首通",
+      "twelveKey": "12键",
+      "noHoldTap": "非默认长按设置"
     },
     "links": {
-      "video": "Watch video"
+      "video": "观看视频"
     }
   },
   "player": {
-    "title": "Player",
+    "title": "玩家",
     "stats": {
-      "rankedScore": "Ranked Score",
-      "generalScore": "General Score",
-      "ppScore": "PP Score",
-      "wfScore": "WF Score",
-      "score12k": "12k Score",
-      "avgXacc": "Average X-acc",
-      "totalPasses": "Total Passes",
-      "universalPasses": "Universal Passes",
-      "WFPasses": "WF Passes",
-      "topDiff": "Top Difficulty",
-      "top12kDiff": "Top 12k Difficulty"
+      "rankedScore": "排位分数",
+      "generalScore": "常规分数",
+      "ppScore": "PP 分数",
+      "wfScore": "世界首通分数",
+      "score12k": "12键分数",
+      "avgXacc": "平均X-精准度",
+      "totalPasses": "总通关数",
+      "universalPasses": "U级通关数",
+      "WFPasses": "世界首通数",
+      "topDiff": "最高通关难度",
+      "top12kDiff": "最高12键通关难度"
     }
   },
   "clear": {
     "score": {
-      "ranked": "Ranked Score",
-      "general": "General Score",
-      "pp": "PP Score",
-      "wf": "WF Score",
-      "12k": "12k Score"
+      "ranked": "排位分数",
+      "general": "常规分数",
+      "pp": "PP 分数",
+      "wf": "世界首通分数",
+      "12k": "12键分数"
     },
     "stats": {
-      "avgXacc": "Average XAcc",
-      "totalPasses": "Total Passes",
-      "universalPasses": "Universal Passes",
-      "WFPasses": "WF Passes",
-      "topDiff": "Top Difficulty",
-      "top12kDiff": "Top 12k Difficulty"
+      "avgXacc": "平均X-精准度",
+      "totalPasses": "总通关数",
+      "universalPasses": "U级通关数",
+      "WFPasses": "世界首通数",
+      "topDiff": "最高通关难度",
+      "top12kDiff": "最高12键通关难度"
     }
   }
 } 

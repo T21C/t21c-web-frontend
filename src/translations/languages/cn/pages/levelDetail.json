@@ -1,57 +1,57 @@
 {
   "meta": {
     "title": "{{song}} | TUF",
-    "description": "Chart of {{song}} by {{creator}}"
+    "description": "由 {{creator}} 设计制作的 {{song}}"
   },
   "banners": {
-    "deleted": "This level has been deleted",
-    "hidden": "This level has been hidden"
+    "deleted": "本关卡已被删除",
+    "hidden": "本关卡已被隐藏"
   },
   "buttons": {
-    "edit": "Edit level details"
+    "edit": "编辑关卡信息"
   },
   "links": {
-    "download": "Download level",
-    "workshop": "View on Workshop",
+    "download": "下载关卡",
+    "workshop": "在创意工坊上查看",
     "thumbnailNotFound": {
-      "text": "Thumbnail not found",
-      "goToVideo": "Go to video"
+      "text": "未找到视频封面",
+      "goToVideo": "跳转到视频"
     }
   },
   "stats": {
     "firstClear": {
-      "label": "First Clear",
+      "label": "世界首通",
       "value": "{{player}} | {{date}}"
     },
     "highestScore": {
-      "label": "Highest Score",
+      "label": "最高分数",
       "value": "{{player}} | {{score}}"
     },
     "highestSpeed": {
-      "label": "Highest Speed",
+      "label": "最高飙速",
       "value": "{{player}} | {{speed}}×",
       "noSpeed": "-"
     },
     "highestAccuracy": {
-      "label": "Highest Accuracy",
+      "label": "最高精准度",
       "value": "{{player}} | {{accuracy}}%"
     },
     "totalClears": {
-      "label": "Total Clears",
+      "label": "总通关人数",
       "value": "{{count}}"
     },
-    "waiting": "Loading..."
+    "waiting": "加载中……"
   },
   "leaderboard": {
-    "header": "Leaderboard",
-    "notBeaten": "This level hasn't been beaten yet!",
+    "header": "排行榜",
+    "notBeaten": "还没有人通过本关卡！",
     "tooltips": {
-      "time": "Sort by clear date",
-      "accuracy": "Sort by accuracy",
-      "score": "Sort by score"
+      "time": "按通过日期排序",
+      "accuracy": "按精准度排序",
+      "score": "按分数排序"
     }
   },
   "dialog": {
-    "fullInfo": "View Full Info"
+    "fullInfo": "查看完整信息"
   }
 } 

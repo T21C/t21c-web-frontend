@@ -1,12 +1,12 @@
 {
   "card": {
     "labels": {
-      "score": "Score",
-      "accuracy": "Accuracy",
-      "speed": "Speed"
+      "score": "分数",
+      "accuracy": "精准度",
+      "speed": "飙速"
     },
     "tooltips": {
-      "watchVideo": "Watch video"
+      "watchVideo": "观看视频"
     }
   }
 } 

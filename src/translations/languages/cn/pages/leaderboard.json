@@ -1,50 +1,50 @@
 {
   "meta": {
-    "title": "Leaderboard",
-    "description": "View top players and rankings"
+    "title": "排行榜",
+    "description": "查看顶尖玩家排名"
   },
   "input": {
-    "placeholder": "Search by player name..."
+    "placeholder": "按玩家名称搜索……"
   },
   "tooltips": {
-    "filter": "Filter results",
-    "sort": "Sort results",
-    "reset": "Reset all filters",
-    "recentAsc": "Sort ascending",
-    "recentDesc": "Sort descending"
+    "filter": "筛选结果",
+    "sort": "排序结果",
+    "reset": "重置筛选条件",
+    "recentAsc": "升序",
+    "recentDesc": "降序"
   },
   "settings": {
     "filter": {
-      "header": "Filter Settings"
+      "header": "筛选设置"
     },
     "sort": {
-      "header": "Sort Settings",
-      "sortOrder": "Sort Order",
-      "sortBy": "Sort by"
+      "header": "排序设置",
+      "sortOrder": "排序方式",
+      "sortBy": "排序依据"
     }
   },
   "bannedPlayers": {
-    "label": "Banned Players",
+    "label": "已封禁玩家",
     "options": {
-      "show": "Show",
-      "hide": "Hide",
-      "only": "Only"
+      "show": "显示",
+      "hide": "隐藏",
+      "only": "仅"
     }
   },
   "sortOptions": {
-    "rankedScore": "Ranked Score",
-    "generalScore": "General Score",
-    "ppScore": "PP Score",
-    "wfScore": "WF Score",
-    "score12k": "12K Score",
-    "avgXacc": "Average X-acc",
-    "totalPasses": "Total Passes",
-    "universalPasses": "Universal Passes",
-    "WFPasses": "WF Passes",
-    "topDiff": "Top Difficulty",
-    "top12kDiff": "Top 12K Difficulty"
+    "rankedScore": "排位分数",
+    "generalScore": "常规分数",
+    "ppScore": "PP 分数",
+    "wfScore": "世界首通分数",
+    "score12k": "12键分数",
+    "avgXacc": "平均X-精准度",
+    "totalPasses": "总通关数",
+    "universalPasses": "U级通关数",
+    "WFPasses": "世界首通数",
+    "topDiff": "最高通关难度",
+    "top12kDiff": "最高12键通关难度"
   },
   "infiniteScroll": {
-    "end": "You've reached the end!"
+    "end": "已经到底啦！"
   }
 } 

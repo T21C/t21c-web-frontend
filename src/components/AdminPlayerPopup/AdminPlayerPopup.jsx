@@ -32,6 +32,18 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
   });
   const [pendingDiscordInfo, setPendingDiscordInfo] = useState(null);
   const [showDiscordConfirm, setShowDiscordConfirm] = useState(false);
+  const [showMergeModal, setShowMergeModal] = useState(false);
+  const [showMergeInput, setShowMergeInput] = useState(false);
+  const [targetPlayerId, setTargetPlayerId] = useState('');
+  const [pendingMergeState, setPendingMergeState] = useState(null);
+
+  const handleClose = (e) => {
+    if (isLoading) return;
+    
+    if (e.target.className === 'admin-player-popup-overlay') {
+      onClose();
+    }
+  };
 
   const handleNameUpdate = async () => {
     if (!playerName.trim() || playerName === player.name) return;
@@ -226,9 +238,41 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
     }
   };
 
+  const handleMergePlayer = async (confirmed) => {
+    if (!confirmed || !targetPlayerId) {
+      setShowMergeModal(false);
+      setShowMergeInput(false);
+      setTargetPlayerId('');
+      setPendingMergeState(null);
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      await api.post(`${import.meta.env.VITE_PLAYERS}/${player.id}/merge`, {
+        targetPlayerId: parseInt(targetPlayerId)
+      });
+
+      toast.success(tAdmin('success.mergePlayer'));
+      onClose();
+      window.location.href = '/leaderboard';
+    } catch (err) {
+      console.error('Error merging player:', err);
+      toast.error(err.response?.data?.details || tAdmin('errors.mergePlayer'));
+      setTargetPlayerId('');
+      setPendingMergeState(null);
+    } finally {
+      setIsLoading(false);
+      setShowMergeModal(false);
+      setShowMergeInput(false);
+    }
+  };
+
   return (
-    <div className="admin-player-popup-overlay">
-      <div className="admin-player-popup">
+    <div className="admin-player-popup-overlay" onClick={handleClose}>
+      <div className="admin-player-popup" onClick={(e) => e.stopPropagation()}>
         <div className="admin-player-popup-header">
           <h2>{tAdmin('title')}</h2>
           <button className="close-button" onClick={onClose}>{tAdmin('close')}</button>
@@ -403,6 +447,69 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
               </div>
             )}
           </div>
+
+          <div className="form-group merge-section">
+            <button
+              className="merge-button"
+              onClick={() => setShowMergeModal(true)}
+              disabled={isLoading}
+            >
+              {tAdmin('form.merge.button')}
+            </button>
+          </div>
+
+          {showMergeModal && (
+            <div className="merge-modal" onClick={() => !isLoading && handleMergePlayer(false)}>
+              <div className="merge-modal-content" onClick={(e) => e.stopPropagation()}>
+                {!showMergeInput ? (
+                  <>
+                    <div className="merge-warning">
+                      <div className="warning-content">
+                        {tAdmin('form.merge.confirm.message')}
+                        <ul>
+                          <li>{tAdmin('form.merge.confirm.warning')}</li>
+                        </ul>
+                      </div>
+                      <button
+                        className="understand-button"
+                        onClick={() => setShowMergeInput(true)}
+                        disabled={isLoading}
+                      >
+                        {tAdmin('form.merge.confirm.buttons.understand')}
+                      </button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <input
+                      type="text"
+                      className="merge-input"
+                      placeholder={tAdmin('form.merge.placeholder')}
+                      value={targetPlayerId}
+                      onChange={(e) => setTargetPlayerId(e.target.value)}
+                      disabled={isLoading}
+                    />
+                    <div className="button-group">
+                      <button
+                        className="merge-confirm-button"
+                        onClick={() => handleMergePlayer(true)}
+                        disabled={!targetPlayerId || isLoading}
+                      >
+                        {tAdmin('form.merge.confirm.buttons.confirm')}
+                      </button>
+                      <button
+                        className="cancel-button"
+                        onClick={() => handleMergePlayer(false)}
+                        disabled={isLoading}
+                      >
+                        {tAdmin('form.merge.confirm.buttons.cancel')}
+                      </button>
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
 
           {error && <div className="error-message">{error}</div>}
 

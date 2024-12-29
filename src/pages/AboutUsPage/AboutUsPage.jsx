@@ -1,12 +1,64 @@
 import "./aboutuspage.css";
-import { CompleteNav } from "../../components";
+import { CompleteNav, Footer } from "../../components";
 import { MetaTags } from "../../components";
 import { useTranslation } from "react-i18next";
+import { useState, useEffect, useCallback } from "react";
+import axios from "axios";
+import api from "../../utils/api";
+import DefaultAvatar from "../../components/Icons/DefaultAvatar";
 
 const AboutUsPage = () => {
-  const currentUrl = window.location.origin + location.pathname;
   const { t } = useTranslation('pages');
-  const tAbout = (key) => t(`aboutUs.${key}`);
+  const tAbout = (key) => t(`about.${key}`);
+  const currentUrl = window.location.origin + location.pathname;
+  const [raters, setRaters] = useState([]);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [boundingRect, setBoundingRect] = useState(null);
+
+  useEffect(() => {
+    const fetchRaters = async () => {
+      try {
+        const response = await api.get(import.meta.env.VITE_RATERS_API);
+        setRaters(response.data.sort((a, b) => !a.isSuperAdmin - !b.isSuperAdmin));
+      } catch (error) {
+        console.error('Failed to fetch raters:', error);
+      }
+    };
+
+    fetchRaters();
+  }, []);
+
+  const updateBoundingRect = useCallback(() => {
+    const element = document.querySelector('.main-title');
+    if (element) {
+      setBoundingRect(element.getBoundingClientRect());
+    }
+  }, []);
+
+  useEffect(() => {
+    updateBoundingRect();
+    window.addEventListener('scroll', updateBoundingRect);
+    window.addEventListener('resize', updateBoundingRect);
+
+    return () => {
+      window.removeEventListener('scroll', updateBoundingRect);
+      window.removeEventListener('resize', updateBoundingRect);
+    };
+  }, [updateBoundingRect]);
+
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      if (boundingRect) {
+        setMousePosition({ 
+          x: e.clientX - boundingRect.left, 
+          y: e.clientY - boundingRect.top 
+        });
+      }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, [boundingRect]);
 
   return (
     <>
@@ -17,15 +69,9 @@ const AboutUsPage = () => {
         image="/og-image.jpg"
         type="website"
       />
-      <div className="background-level"></div>
-      <CompleteNav />
       <div className="about-us">
+        <CompleteNav />
         <div className="about-us-container">
-          <div className="about-header">
-            <img src="/src/assets/tuf-logo/logo.png" alt="TUF Logo" className="about-logo" />
-            <h1>{tAbout('header.title')}</h1>
-          </div>
-
           <div className="about-content">
             <section className="about-section">
               <h2>{tAbout('sections.whoWeAre.title')}</h2>
@@ -71,9 +117,55 @@ const AboutUsPage = () => {
                 </a>
               </div>
             </section>
+            <section className="credits-section">
+              <div className="section-content">
+                <h2>{tAbout('sections.credits.title')}</h2>
+                <div className="version-info" style={{
+                  '--mouse-x': `${mousePosition.x}px`,
+                  '--mouse-y': `${mousePosition.y}px`
+                }}>
+                  <div className="version-current">
+                    <span className="version-mask">{tAbout('sections.credits.version.current')}</span>
+                    <span className="version-glow">{tAbout('sections.credits.version.current')}</span>
+                  </div>
+                  <div className="version-original">{tAbout('sections.credits.version.original')}</div>
+                </div>
+                <div className="credits-grid">
+                  <div className="credit-category">
+                    <h3>{tAbout('sections.credits.categories.rating.title')}</h3>
+                    <div className="credit-list">
+                      {raters.map((rater) => (
+                        <div key={rater.discordId} className="credit-item">
+                          {rater.discordAvatar ? (
+                            <img 
+                              src={rater.discordAvatar}
+                              alt={`${rater.discordUsername}'s avatar`}
+                              className="rater-avatar"
+                            />
+                          ) : (
+                            <DefaultAvatar className="rater-avatar" />
+                          )}
+                          <div className="rater-info">
+                            <span className="credit-name">
+                              <span className="at">@</span>
+                              {rater.discordUsername}
+                              {rater.isSuperAdmin ? ' ⭐' : ''}
+                            </span>
+                            <span className="credit-role">
+                              {rater.isSuperAdmin ? 'Manager' : 'Rater'}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

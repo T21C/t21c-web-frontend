@@ -1,15 +1,15 @@
 {
   "meta": {
-    "title": "Submission Management | TUF",
-    "description": "Manage level and pass submissions for The Universal Forums (TUF)"
+    "title": "管理提交项目 | TUF",
+    "description": "管理论坛上的提交项目"
   },
   "header": {
-    "title": "Submission Management",
-    "refresh": "Refresh submissions"
+    "title": "管理提交项目",
+    "refresh": "刷新提交项目"
   },
   "tabs": {
-    "levels": "Level Submissions",
-    "passes": "Pass Submissions",
-    "autoAllow": "Auto-Allow Valid Passes"
+    "levels": "关卡提交列表",
+    "passes": "通关记录提交列表",
+    "autoAllow": "自动通过合规通关记录"
   }
 } 

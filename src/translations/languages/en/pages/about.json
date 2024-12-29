@@ -48,6 +48,18 @@
         "discord": "Join us on Discord",
         "github": "Contribute on GitHub"
       }
+    },
+    "credits": {
+      "title": "Credits",
+      "version": {
+        "current": "v2.0 developed by V0W4N",
+        "original": "Original by Adrian"
+      },
+      "categories": {
+        "rating": {
+          "title": "Rating Team"
+        }
+      }
     }
   }
 } 

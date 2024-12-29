@@ -13,6 +13,9 @@
     },
     "hideRated": {
       "label": "Hide Rated"
+    },
+    "lowDiff": {
+      "label": "Low Difficulty"
     }
   },
   "messages": {

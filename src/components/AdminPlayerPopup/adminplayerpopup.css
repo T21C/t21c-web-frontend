@@ -96,6 +96,10 @@
   color: white;
 }
 
+.admin-player-popup .cancel-button:hover {
+  background-color: hsl(4, 90%, 50%)
+}
+
 .admin-player-popup .error-message {
   color: #f44336;
   margin-bottom: 16px;
@@ -466,4 +470,132 @@
 .admin-player-popup .discord-cancel-button:disabled {
   background-color: #888;
   cursor: not-allowed;
+}
+
+.admin-player-popup .merge-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--color-white-t20);
+}
+
+.admin-player-popup .merge-button {
+  background-color: #9e0000;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 8px 16px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.admin-player-popup .merge-button:hover {
+  background-color: #f50000;
+}
+
+.admin-player-popup .merge-button:disabled {
+  background-color: #ffb74d;
+  cursor: not-allowed;
+}
+
+.admin-player-popup .merge-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+}
+
+.admin-player-popup .merge-modal-content {
+  background-color: var(--color-black);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 8px;
+  padding: 20px;
+  width: 90%;
+  max-width: 400px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.admin-player-popup .merge-warning {
+  color: #ff9800;
+  margin: 15px 0;
+  padding: 15px;
+  background-color: rgba(255, 152, 0, 0.1);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 152, 0, 0.3);
+}
+
+.admin-player-popup .merge-input {
+  width: 100%;
+  padding: 8px;
+  margin: 10px 0;
+  background-color: var(--color-white-t20);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  color: var(--color-white);
+  font-size: 1.1em;
+}
+
+.admin-player-popup .warning-content {
+  margin: 10px 0;
+  color: #ff9800;
+}
+
+.admin-player-popup .warning-content ul {
+  margin: 10px 0;
+  padding-left: 20px;
+}
+
+.admin-player-popup .understand-button,
+.admin-player-popup .merge-confirm-button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.admin-player-popup button {
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+}
+
+.admin-player-popup .understand-button {
+  margin: 10px 0;
+  background-color: #424242;
+  color: white;
+}
+
+.admin-player-popup .understand-button:hover {
+  background-color: #930000;
+}
+
+.admin-player-popup .merge-confirm-button {
+  background-color: #ff9900;
+  color: white;
+}
+
+.admin-player-popup .merge-confirm-button:hover {
+  background-color: #d06d0a;
+}
+
+.admin-player-popup .merge-confirm-button:disabled {
+  background-color: #7e7e7e;
+  cursor: not-allowed;
+}
+
+.admin-player-popup .help-text {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 0.5rem;
 } 

@@ -1,42 +1,42 @@
 {
   "validation": {
-    "required": "This field is required",
-    "min_length": "Must be at least {{length}} characters",
-    "max_length": "Must be at most {{length}} characters",
-    "email": "Must be a valid email address",
+    "required": "此空为必填项",
+    "min_length": "必须至少包含{{length}}个字符",
+    "max_length": "必须至多包含{{length}}个字符",
+    "email": "必须为有效电子邮件地址",
     "password": {
-      "match": "Passwords must match",
-      "requirements": "Password must contain at least 8 characters"
+      "match": "密码必须匹配",
+      "requirements": "密码必须至少包含8个字符"
     }
   },
   "errors": {
-    "generic": "An error occurred. Please try again.",
-    "network": "Network error. Please check your connection.",
-    "unauthorized": "You are not authorized to perform this action.",
-    "notFound": "The requested resource was not found.",
-    "validation": "Please check your input and try again."
+    "generic": "发生错误，请重试。",
+    "network": "网络错误，请检查您的连接。",
+    "unauthorized": "您没有权限执行此操作。",
+    "notFound": "未找到请求的资源。",
+    "validation": "请检查您的输入并重试。"
   },
   "loading": {
-    "generic": "Loading...",
-    "submitting": "Submitting...",
-    "saving": "Saving...",
-    "deleting": "Deleting..."
+    "generic": "加载中……",
+    "submitting": "提交中……",
+    "saving": "保存中……",
+    "deleting": "删除中……"
   },
   "buttons": {
-    "submit": "Submit",
-    "cancel": "Cancel",
-    "save": "Save",
-    "delete": "Delete",
-    "edit": "Edit",
-    "close": "Close",
-    "back": "Back",
-    "next": "Next",
-    "previous": "Previous"
+    "submit": "提交",
+    "cancel": "取消",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "close": "关闭",
+    "back": "返回",
+    "next": "下一页",
+    "previous": "上一页"
   },
   "pagination": {
-    "previous": "Previous",
-    "next": "Next",
-    "page": "Page {{page}} of {{total}}",
-    "showing": "Showing {{start}}-{{end}} of {{total}} items"
+    "previous": "上一页",
+    "next": "下一页",
+    "page": "第{{page}}页，共{{total}}页",
+    "showing": "正在显示共{{total}}个项目中的第{{start}}至{{end}}项"
   }
 } 

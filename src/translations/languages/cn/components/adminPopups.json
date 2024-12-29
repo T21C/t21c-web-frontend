@@ -1,58 +1,75 @@
 {
   "player": {
-    "title": "Edit Player",
+    "title": "编辑玩家",
     "close": "×",
     "form": {
       "name": {
-        "label": "Player Name",
-        "placeholder": "Enter player name",
-        "button": "Update"
+        "label": "玩家名称",
+        "placeholder": "输入玩家名称",
+        "button": "更新"
       },
       "country": {
-        "label": "Country",
-        "button": "Update"
+        "label": "国家",
+        "button": "更新"
       },
       "ban": {
-        "label": "Ban Player",
+        "label": "封禁玩家",
         "confirm": {
-          "ban": "Are you sure you want to ban this player?",
-          "unban": "Are you sure you want to unban this player?",
+          "ban": "确认封禁该玩家？",
+          "unban": "确认解封该玩家？",
           "buttons": {
-            "confirm": "Confirm",
-            "cancel": "Cancel"
+            "confirm": "确认",
+            "cancel": "取消"
+          }
+        }
+      },
+      "merge": {
+        "label": "合并玩家",
+        "placeholder": "输入目标玩家 ID",
+        "button": "合并",
+        "confirm": {
+          "message": "确认合并此玩家的通关记录？该操作不能撤销。",
+          "warning": "所有通关记录都将被转移到目标玩家名下，且此玩家的记录会被删除。",
+          "buttons": {
+            "understand": "我明白",
+            "confirm": "确认合并",
+            "cancel": "取消"
           }
         }
       },
       "discord": {
         "label": "Discord ID",
-        "placeholder": "Enter Discord ID to validate",
+        "placeholder": "输入 Discord ID 以验证",
         "buttons": {
-          "validate": "Validate",
-          "remove": "Remove"
+          "validate": "验证",
+          "remove": "移除"
         },
         "confirm": {
-          "message": "Are you sure you want to update this player's Discord info?",
+          "message": "确认更新此玩家的 Discord 信息？",
           "buttons": {
-            "confirm": "Confirm",
-            "cancel": "Cancel"
+            "confirm": "确认",
+            "cancel": "取消"
           }
         }
       }
     },
     "buttons": {
-      "done": "Done"
+      "done": "完成"
     },
     "errors": {
-      "nameUpdate": "Failed to update player name",
-      "countryUpdate": "Failed to update country",
-      "banUpdate": "Failed to update ban status",
-      "discordFetch": "Failed to fetch Discord ID",
-      "discordUpdate": "Failed to update Discord info",
-      "discordRemove": "Failed to remove Discord info"
+      "nameUpdate": "更新玩家名称失败",
+      "countryUpdate": "更新国家失败",
+      "banUpdate": "更新封禁状态失败",
+      "discordFetch": "获取 Discord ID 失败",
+      "discordUpdate": "更新 Discord 信息失败",
+      "discordRemove": "移除 Discord 信息失败",
+      "mergePlayer": "合并玩家失败",
+      "invalidTargetId": "目标玩家 ID 无效"
     },
     "success": {
-      "discordUpdate": "Discord info updated successfully",
-      "discordRemove": "Discord info removed successfully"
+      "discordUpdate": "Discord 信息更新成功",
+      "discordRemove": "Discord 信息移除成功",
+      "mergePlayer": "合并玩家成功"
     }
   }
 } 

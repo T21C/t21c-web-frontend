@@ -1,4 +1,4 @@
-import { CompleteNav, MetaTags } from "../../components";
+import { CompleteNav, MetaTags, StateDisplay } from "../../components";
 import "./css/adminratingpage.css";
 import { useEffect, useState, useCallback } from "react";
 import { useAuth } from "../../contexts/AuthContext";
@@ -33,6 +33,7 @@ const RatingPage = () => {
   const [selectedLevel, setSelectedLevel] = useState(null);
   const [showDetailedView, setShowDetailedView] = useState(false);
   const [hideRated, setHideRated] = useState(false);
+  const [lowDiffFilter, setLowDiffFilter] = useState('show');
   const [showReferences, setShowReferences] = useState(false);
   const [showRaterManagement, setShowRaterManagement] = useState(false);
 
@@ -60,23 +61,65 @@ const RatingPage = () => {
     // Initial fetch
     fetchRatings();
 
-    // Set up SSE connection
-    const eventSource = new EventSource(`${import.meta.env.VITE_API_URL}/events`);
+    let retryCount = 0;
+    const maxRetries = 3;
+    let isFirstConnection = true;
 
-    eventSource.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      if (data.type === 'ratingUpdate' || data.type === 'ping') {
-        fetchRatings();
-      }
+    const setupEventSource = () => {
+      const eventSource = new EventSource(`${import.meta.env.VITE_API_URL}/events`, {
+        withCredentials: true
+      });
+
+      eventSource.onopen = () => {
+        if (isFirstConnection) {
+          console.debug('SSE: Initial connection established');
+          isFirstConnection = false;
+        } else {
+          console.debug('SSE: Reconnected successfully');
+        }
+        retryCount = 0;
+      };
+
+      eventSource.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === 'ratingUpdate' || data.type === 'ping' || data.type === 'levelUpdate') {
+            fetchRatings();
+            console.debug('SSE: Rating update received');
+          }
+        } catch (error) {
+          console.error('SSE: Error parsing message:', error);
+        }
+      };
+
+      eventSource.onerror = (error) => {
+        // Check if it's a normal reconnection attempt
+        if (eventSource.readyState === EventSource.CONNECTING) {
+          retryCount++;
+          if (retryCount <= maxRetries) {
+            console.debug(`SSE: Reconnection attempt ${retryCount}/${maxRetries}`);
+            return;
+          }
+          console.warn(`SSE: Max reconnection attempts reached`);
+        }
+        
+        if (eventSource.readyState === EventSource.CLOSED) {
+          console.error('SSE: Connection closed, attempting to reconnect in 5s');
+          eventSource.close();
+          setTimeout(setupEventSource, 5000);
+        }
+      };
+
+      return eventSource;
     };
 
-    eventSource.onerror = (error) => {
-      console.error('SSE Error:', error);
-      eventSource.close();
-    };
+    const eventSource = setupEventSource();
 
     return () => {
-      eventSource.close();
+      console.debug('SSE: Cleaning up connection');
+      if (eventSource) {
+        eventSource.close();
+      }
     };
   }, [user, fetchRatings]);
 
@@ -184,6 +227,13 @@ const RatingPage = () => {
               <span className="slider round"></span>
             </label>
           </div>
+            <StateDisplay
+              currentState={lowDiffFilter}
+              states={['show','hide',  'only']}
+              onChange={setLowDiffFilter}
+              label={tRating('toggles.lowDiff.label')}
+              width={60}
+            />
         </div>
 
         {loading ? (
@@ -192,11 +242,17 @@ const RatingPage = () => {
           <div>{tRating('messages.error')}</div>
         ) : ratings.length > 0 ? (
           <>
+            <span className="rating-count"> {ratings.length} ratings total</span>
             <div className="rating-list">
               {ratings
                 .filter(rating => !hideRated 
                   || !rating.details?.find(detail => detail.username === user.username)?.rating
                 )
+                .filter(rating => {
+                  if (lowDiffFilter === 'hide') return !rating.lowDiff;
+                  if (lowDiffFilter === 'only') return rating.lowDiff;
+                  return true; // 'show' shows all
+                })
                 .map((rating, index) => (
                   <RatingCard
                     key={rating.id}

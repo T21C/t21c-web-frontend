@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import './ratermanagementpopup.css';
 import api from '../../utils/api';
 import PropTypes from 'prop-types';
@@ -290,6 +290,30 @@ const RaterManagementPopup = ({ onClose, currentUser }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [superAdminPassword, setSuperAdminPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  const handleClickOutside = useCallback((event) => {
+    if (event.target.classList.contains('rater-management-overlay')) {
+      onClose();
+    }
+  }, [onClose]);
+
+  const handleEscapeKey = useCallback((event) => {
+    if (event.key === 'Escape') {
+      onClose();
+    }
+  }, [onClose]);
+
+  useEffect(() => {
+    // Add event listeners
+    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleEscapeKey);
+
+    // Cleanup
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [handleClickOutside, handleEscapeKey]);
 
   useEffect(() => {
     const fetchRaters = async () => {

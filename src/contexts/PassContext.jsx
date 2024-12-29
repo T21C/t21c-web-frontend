@@ -3,7 +3,7 @@ import React, { createContext, useState } from 'react';
 export const PassContext = createContext();
 
 export const PassContextProvider = ({ children }) => {
-  const [passesData, setPassesData] = useState([]);
+  const [passesData, setPassesData] = useState(null);
   const [filterOpen, setFilterOpen] = useState(false);
   const [sortOpen, setSortOpen] = useState(true);
   const [query, setQuery] = useState('');

@@ -1,60 +1,60 @@
 {
-  "title": "Submit Pass",
-  "thumbnailInfo": "Video information will appear here",
+  "title": "提交通关记录",
+  "thumbnailInfo": "视频信息会显示在此处",
   "submInfo": {
-    "levelId": "Level ID",
-    "altname": "Alternative Name (opt.)",
-    "nohold": "No Hold Tap",
-    "speed": "Speed (opt., >=1.0)",
-    "feelDiff": "Feeling Difficulty",
-    "is12K": "12K",
-    "is16K": "16K"
+    "levelId": "关卡 ID",
+    "altname": "排行榜名称（选填）",
+    "nohold": "非默认长按设置",
+    "speed": "飙速（选填；需大于等于1.0）",
+    "feelDiff": "体感难度",
+    "is12K": "12键",
+    "is16K": "16键"
   },
   "levelInfo": {
-    "song": "Song Name",
-    "artist": "Artist",
-    "charter": "Charter"
+    "song": "曲名",
+    "artist": "曲师",
+    "charter": "谱师"
   },
   "levelFetching": {
-    "input": "Enter ID",
-    "fetching": "Fetching...",
-    "goto": "Go to Level",
-    "notfound": "Not Found"
+    "input": "输入 ID",
+    "fetching": "获取中……",
+    "goto": "跳转到关卡",
+    "notfound": "未找到关卡"
   },
   "videoInfo": {
-    "videoLink": "YouTube Video Link",
-    "title": "Title",
-    "channel": "Channel",
-    "timestamp": "Upload Time",
-    "nolink": "Enter a valid YouTube video link"
+    "videoLink": "YouTube 视频链接",
+    "title": "视频标题",
+    "channel": "频道名称",
+    "timestamp": "上传时间",
+    "nolink": "请输入正确的 YouTube 视频链接。"
   },
   "judgements": {
-    "ePerfect": "Early Perfect",
-    "perfect": "Perfect",
-    "lPerfect": "Late Perfect",
-    "tooearly": "Too Early",
-    "early": "Early",
-    "late": "Late"
+    "ePerfect": "稍快！",
+    "perfect": "完美！",
+    "lPerfect": "稍慢！",
+    "tooearly": "太快！！",
+    "early": "太快！",
+    "late": "太慢！"
   },
-  "acc": "Accuracy: ",
-  "scoreCalc": "Score: ",
-  "submit": "Submit",
-  "submitWait": "...",
-  "holdTooltip": "Check this if you didn't use hold tap",
-  "12kTooltip": "Check this if you used 12 keys",
-  "16kTooltip": "Check this if you used 16 keys",
-  "tooltip": "Enter a number between 1 and 10",
+  "acc": "精准度：",
+  "scoreCalc": "分数：",
+  "submit": "提交",
+  "submitWait": "……",
+  "holdTooltip": "如果你使用了“标准”长按设置，请勾选此项",
+  "12kTooltip": "如果你使用了12键及以下通过本关卡，请勾选此项",
+  "16kTooltip": "如果你使用了16键及以上通过本关卡，请勾选此项",
+  "tooltip": "输入1到10之间的任意整数",
   "alert": {
-    "success": "Pass submitted successfully!",
-    "error": "Error: ",
-    "loading": "Submitting...",
-    "login": "Please log in to submit a pass",
-    "form": "Please fill in all required fields correctly"
+    "success": "通关记录提交成功！",
+    "error": "错误：",
+    "loading": "提交中……",
+    "login": "上传通关记录前请先登录",
+    "form": "请正确填写所有必填项"
   },
   "score": {
-    "needId": "Enter level ID",
-    "needJudg": "Enter judgements",
-    "needInfo": "Enter all required info",
-    "noInfo": "No info available"
+    "needId": "输入关卡 ID",
+    "needJudg": "输入判定",
+    "needInfo": "输入所有必填项",
+    "noInfo": "无可用信息"
   }
 } 

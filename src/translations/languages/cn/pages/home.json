@@ -1,53 +1,53 @@
 {
   "meta": {
-    "title": "Home | TUF",
-    "description": "Welcome to The Universal Forums (TUF) - A community-driven organization for ADOFAI custom levels"
+    "title": "主页 | TUF",
+    "description": "欢迎来到 The Universal Forums (TUF) ——一个由社区驱动的，致力于收集、评级并整理《冰与火之舞》自制关卡的组织"
   },
   "title": {
-    "revamped": "Revamped"
+    "revamped": "翻新版"
   },
   "buttons": {
-    "browseLevels": "Browse Levels",
-    "browsePasses": "Browse Passes",
-    "leaderboard": "Leaderboard"
+    "browseLevels": "浏览关卡",
+    "browsePasses": "浏览通关记录",
+    "leaderboard": "排行榜"
   },
   "stats": {
     "overview": {
-      "title": "Overview",
-      "totalLevels": "Total Levels",
-      "totalPasses": "Total Passes",
-      "totalPlayers": "Total Players",
-      "passesLast30Days": "Passes (30 Days)"
+      "title": "总览",
+      "totalLevels": "关卡数",
+      "totalPasses": "通关记录数",
+      "totalPlayers": "玩家数",
+      "passesLast30Days": "通关记录数（过去30天）"
     },
     "difficulties": {
-      "title": "Difficulty Statistics",
+      "title": "难度统计",
       "graphModes": {
-        "passes": "Passes",
-        "levels": "Levels"
+        "passes": "个通关记录",
+        "levels": "个关卡"
       }
     },
-    "comingSoon": "More fun stuff coming soon..."
+    "comingSoon": "还有更多有趣的内容即将到来……"
   },
   "footer": {
     "about": {
       "title": "TUF",
-      "description": "The Universal Forums is a community-driven organization focused on collecting and rating difficulties on custom levels of the game ADOFAI."
+      "description": "The Universal Forums 是一个由社区驱动的，致力于收集、评级并整理《冰与火之舞》自制关卡的组织。"
     },
     "quickLinks": {
-      "title": "Quick Links",
-      "browseLevels": "Browse Levels",
-      "browsePasses": "Browse Passes",
-      "leaderboard": "Leaderboard",
-      "aboutUs": "About Us"
+      "title": "链接",
+      "browseLevels": "浏览关卡",
+      "browsePasses": "浏览通关记录",
+      "leaderboard": "排行榜",
+      "aboutUs": "关于我们"
     },
     "community": {
-      "title": "Community",
+      "title": "社区",
       "discord": "Discord",
       "github": "GitHub"
     },
     "copyright": {
-      "main": "© {{year}} TUF. Not affiliated with 7th Beat Games.",
-      "credit": "Made with ❤️ by V0W4N"
+      "main": "© {{year}} TUF。与 7th Beat Games 无关。",
+      "credit": "由 V0W4N 用 ❤️ 制作"
     }
   }
 } 

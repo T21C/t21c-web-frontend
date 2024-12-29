@@ -9,10 +9,12 @@ import ReferencesPopup from "./ReferencesPopup/ReferencesPopup";
 import MetaTags from './MetaTags/MetaTags';
 import StateDisplay from "./StateDisplay/StateDisplay";
 import AccessDenied from "./StateDisplay/AccessDenied";
+import ScrollButton from "./ScrollButton/ScrollButton";
 
 export { 
   Card, 
   Footer, 
+  ScrollButton,
   CompleteNav, 
   LevelCard, 
   PlayerCard, 

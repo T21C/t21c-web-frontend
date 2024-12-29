@@ -1,7 +1,7 @@
 {
-  "noRerates": "No rerates to announce",
+  "noRerates": "没有要公布的重评项目",
   "errors": {
-    "removeLevel": "Failed to remove {{song}}. Please try again."
+    "removeLevel": "移除 {{song}} 失败，请重试。"
   },
   "card": {
     "title": "{{song}} - {{artist}}",
@@ -11,7 +11,7 @@
     }
   },
   "buttons": {
-    "edit": "Edit level",
-    "remove": "Remove level"
+    "edit": "编辑关卡",
+    "remove": "移除关卡"
   }
 } 

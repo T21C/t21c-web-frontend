@@ -1,6 +1,6 @@
 {
-  "song": "Song",
-  "accuracy": "Accuracy",
-  "speed": "Speed",
-  "score": "Score"
+  "song": "曲名",
+  "accuracy": "精准度",
+  "speed": "飙速",
+  "score": "分数"
 } 

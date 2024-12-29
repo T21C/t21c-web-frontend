@@ -9,7 +9,7 @@
     padding: 0 1.5rem;
     padding-top: 6rem;
     min-height: 100vh;
-    max-width: 70rem;
+    max-width: 65rem;
     margin: 0 auto;
   }
   .admin-rating-page .admin-rating-body .input-option {
@@ -114,7 +114,6 @@
 
   .admin-rating-page .admin-rating-body .rating-list {
     z-index: 2;
-    margin-top: 2rem;
     background-color: var(--color-white-t20);
     border-radius: 8px;
     padding: 1rem;
@@ -217,7 +216,6 @@
   .rating-card-actions {
     display: flex;
     gap: 10px;
-    margin-top: 10px;
   }
 
   .edit-level-btn {
@@ -338,7 +336,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 1rem;
     flex-wrap: wrap;
     gap: 15px;
   }
@@ -392,4 +390,13 @@
 .references-button:hover {
   background-color: var(--color-purple-2);
 }
+
+.admin-rating-page .admin-rating-body .rating-count {
+  display: flex;
+  font-size: 1rem;
+  margin: 0;
+  padding: 0 0 0.5rem 1.25rem;
+  color: #fffd;
+}
+
 

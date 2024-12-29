@@ -1,15 +1,15 @@
 {
   "special": {
-    "title": "Special Difficulties",
+    "title": "特殊难度",
     "buttons": {
-      "selectAll": "Select All",
-      "deselectAll": "Deselect All"
+      "selectAll": "全选",
+      "deselectAll": "取消全选"
     },
     "groups": {
       "Quantum": "Quantum",
       "Extra": "Extra",
       "Hidden": "Hidden"
     },
-    "selectedCount": "({{count}})"
+    "selectedCount": "（{{count}}）"
   }
 } 

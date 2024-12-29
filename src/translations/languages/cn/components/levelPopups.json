@@ -1,56 +1,60 @@
 {
   "edit": {
-    "title": "Edit Level Details",
+    "title": "编辑关卡信息",
     "close": "×",
     "form": {
       "labels": {
-        "song": "Song",
-        "artist": "Artist",
-        "creator": "Creator",
-        "charter": "Charter",
-        "vfxer": "VFXer",
-        "team": "Team",
-        "baseScore": "Base Score",
-        "videoLink": "Video Link",
-        "dlLink": "Download Link",
-        "workshopLink": "Workshop Link",
-        "publicComments": "Public Comments",
-        "previousDifficulty": "Previous Difficulty"
+        "song": "曲名",
+        "artist": "曲师",
+        "creator": "制作者",
+        "charter": "谱师",
+        "vfxer": "特效师",
+        "team": "制作团队",
+        "baseScore": "基础分",
+        "videoLink": "视频链接",
+        "dlLink": "下载链接",
+        "workshopLink": "创意工坊链接",
+        "publicComments": "公开注释",
+        "previousDifficulty": "先前评级"
       },
       "placeholders": {
-        "baseScore": "Base Score",
-        "rerateNumber": "Rerate Number",
-        "rerateReason": "Rerate Reason"
+        "baseScore": "基础分",
+        "rerateNumber": "重评评级",
+        "rerateReason": "重评原因"
       },
       "checkboxes": {
-        "toRate": "To Rate"
+        "toRate": "标记为待评级"
       },
       "buttons": {
         "save": {
-          "default": "Save Changes",
-          "saving": "Saving..."
+          "default": "保存更改",
+          "saving": "保存中……"
         },
         "delete": {
-          "default": "Delete",
-          "deleting": "Deleting...",
-          "hide": "Hide",
-          "unhide": "Unhide",
-          "processing": "Processing..."
+          "default": "删除",
+          "deleting": "删除中……",
+          "hide": "隐藏",
+          "unhide": "取消隐藏",
+          "processing": "处理中……"
+        },
+        "restore": {
+          "default": "恢复关卡",
+          "restoring": "恢复中……"
         }
       }
     },
     "confirmations": {
-      "unsavedChanges": "You have unsaved changes. Are you sure you want to close?",
-      "delete": "Do you want to delete this level? This can be undone later.",
-      "hide": "Do you want to hide this level?",
-      "unhide": "Do you want to unhide this level?",
-      "restore": "Do you want to restore this level?"
+      "unsavedChanges": "你有未保存的更改，确定要退出吗？",
+      "delete": "确认删除本关卡？删除后可以恢复。",
+      "hide": "确认隐藏本关卡？",
+      "unhide": "确认取消隐藏本关卡？",
+      "restore": "确认恢复本关卡？"
     },
     "errors": {
-      "update": "Failed to update level",
-      "delete": "Soft deletion failed",
-      "toggleHidden": "Failed to toggle hidden status",
-      "restore": "Restoration failed"
+      "update": "更新关卡失败",
+      "delete": "软删除失败",
+      "toggleHidden": "切换隐藏状态失败",
+      "restore": "恢复失败"
     }
   }
 } 
