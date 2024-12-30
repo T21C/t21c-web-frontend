@@ -64,7 +64,9 @@ export const RatingCard = ({
 
     return (
       <div
-        className={`rating-card ${rating.lowDiff ? 'low-diff' : ''}`}
+        className={`rating-card ${
+          rating.details.length >= 4 ? 'four-rated' : 
+          rating.lowDiff ? 'low-diff' : ''}`}
       >
         <div className="rating-card-content">
           <div className="rating-card-header">
@@ -76,12 +78,17 @@ export const RatingCard = ({
               </h3>
               <p className="artist">{rating.level.artist}</p>
             </div>
-            <span 
-              className="updated-at" 
-              title={tRating('tooltips.lastUpdated')}
-            >
-              {tRating('labels.updatedAt')} {formatDate(rating.updatedAt)}
-            </span>
+            <div className="header-meta">
+              <span 
+                className="updated-at" 
+                title={tRating('tooltips.lastUpdated')}
+              >
+                {tRating('labels.updatedAt')} {formatDate(rating.updatedAt)}
+              </span>
+              <span className="level-id">
+                #{rating.level.id}
+              </span>
+            </div>
           </div>
           
           <div className="rating-card-details">

@@ -56,6 +56,7 @@ export const DetailPopup = ({
   const [isVideoLoading, setIsVideoLoading] = useState(true);
   const [isExiting, setIsExiting] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isCommentRequired, setIsCommentRequired] = useState(false);
 
   const popupRef = useRef(null);
 
@@ -160,6 +161,8 @@ export const DetailPopup = ({
       setInitialRating(rating);
       setInitialComment(comment);
       
+      validateRating(rating);
+      
       setHasUnsavedChanges(false);
       setOtherRatings(selectedRating.details || []);
     }
@@ -170,6 +173,53 @@ export const DetailPopup = ({
     setHasUnsavedChanges(hasChanges);
   }, [pendingRating, pendingComment, initialRating, initialComment]);
 
+  const validateRating = (rating) => {
+    console.log(`\n🔍 Validating rating: "${rating}"`);
+    
+    if (!rating) {
+      console.log('  ↳ Empty rating, no comment required');
+      setIsCommentRequired(false);
+      return true;
+    }
+
+    // Handle bare -2 case first
+    if (rating.trim() === '-2') {
+      console.log('  ↳ Found bare -2');
+      setIsCommentRequired(true);
+      return true;
+    }
+
+    // Find the first separator and split only once
+    const match = rating.match(/^([^-~\s]+)([-~\s])(.+)$/);
+    if (!match) {
+      console.log('  ↳ No separator found, treating as single rating');
+      setIsCommentRequired(false);
+      return true;
+    }
+
+    const [_, firstPart, separator, secondPart] = match;
+    const parts = [firstPart, secondPart];
+    console.log(`  ↳ Split by "${separator}" into:`, parts);
+    
+    // Check if any part is exactly "-2"
+    const containsMinusTwo = parts.some(part => {
+      // Exclude cases like -21 or other negative numbers
+      if (part.startsWith('-') && part !== '-2') {
+        console.log(`    Skipping "${part}" (negative number but not -2)`);
+        return false;
+      }
+      const isMinusTwo = part === '-2';
+      if (isMinusTwo) {
+        console.log(`    Found exact "-2" match in "${part}"`);
+      }
+      return isMinusTwo;
+    });
+
+    console.log(`  ↳ Comment required: ${containsMinusTwo}`);
+    setIsCommentRequired(containsMinusTwo);
+    return true;
+  };
+
   const handleSaveChanges = async () => {
     if (!selectedRating || !hasUnsavedChanges) return;
     
@@ -178,9 +228,16 @@ export const DetailPopup = ({
     setCommentError(false);
 
     try {
-      if (pendingComment && pendingComment.length > 1000) {
+      if (pendingComment.length > 1000) {
         setCommentError(true);
         setSaveError(tRating('errors.commentLength'));
+        setIsSaving(false);
+        return;
+      }
+
+      if (isCommentRequired && !pendingComment.trim()) {
+        setCommentError(true);
+        setSaveError(tRating('errors.commentRequired'));
         setIsSaving(false);
         return;
       }
@@ -351,28 +408,44 @@ export const DetailPopup = ({
                       value={pendingRating}
                       onChange={(value) => {
                         setPendingRating(value);
+                        validateRating(value);
                       }}
                       showDiff={false}
                       difficulties={difficulties}
                       allowCustomInput={true}
                     />
-                  {(pendingRating && difficulties?.find(d => d.name === pendingRating)) && <img src={difficulties?.find(d => d.name === pendingRating)?.icon} alt="" className="detail-value lv-icon" />}
+                    {(pendingRating && difficulties?.find(d => d.name === pendingRating)) && 
+                      <img src={difficulties?.find(d => d.name === pendingRating)?.icon} alt="" className="detail-value lv-icon" />}
                   </div>
                 </div>
                 <div className="rating-field">
-                  <label>{tRating('labels.yourComment')}</label>
+                  <label>
+                    {tRating('labels.yourComment')}
+                    {isCommentRequired && (
+                      <span 
+                        className="required-mark" 
+                        data-tooltip={tRating('tooltips.requiredComment')}
+                      >
+                        *
+                      </span>
+                    )}
+                  </label>
                   <textarea
                     value={pendingComment}
                     onChange={(e) => {
                       setPendingComment(e.target.value);
                       setCommentError(false);
                     }}
-                    style={{ borderColor: commentError ? 'red' : '' }}
+                    style={{ 
+                      borderColor: commentError ? 'red' : '',
+                      backgroundColor: isCommentRequired ? 'rgba(255, 0, 0, 0.05)' : ''
+                    }}
+                    placeholder={isCommentRequired ? tRating('placeholders.requiredComment') : ''}
                   />
                 </div>
                 <button 
                   className={`save-rating-changes-btn ${isSaving ? 'saving' : ''}`}
-                  disabled={!hasUnsavedChanges || isSaving}
+                  disabled={!hasUnsavedChanges || isSaving || (isCommentRequired && !pendingComment.trim())}
                   onClick={handleSaveChanges}
                 >
                   {isSaving ? tRating('buttons.saving') : tRating('buttons.saveChanges')}

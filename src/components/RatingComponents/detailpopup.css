@@ -256,6 +256,9 @@
 .rating-popup .rating-field label {
     color: #aaa;
     font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 .rating-popup .rating-field input {
@@ -530,4 +533,35 @@
 .rating-popup .lv-icon {
     height: 32px;
     width: auto;
+}
+
+.rating-popup .required-mark {
+    color: #ff4444;
+    font-weight: bold;
+    font-size: 1.1rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+}
+
+.rating-popup .required-mark::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    font-weight: normal;
+    white-space: nowrap;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    z-index: 1000;
+}
+
+.rating-popup .required-mark:hover::after {
+    opacity: 1;
+    transform: translateY(0);
 }

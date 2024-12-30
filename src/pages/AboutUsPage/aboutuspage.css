@@ -259,13 +259,6 @@
     padding: 0.75rem;
   }
 
-  .about-us .version-current {
-    font-size: 1.1rem;
-  }
-
-  .about-us .version-original {
-    font-size: 0.9rem;
-  }
 }
 
 @keyframes gradientMove {
@@ -288,7 +281,7 @@
 
 
 .about-us .main-title {
-  font-size: clamp(4rem, 5vw, 5rem);
+  font-size: 4.5rem;
   margin: -50px 0;
   letter-spacing: 1px;
   position: relative;

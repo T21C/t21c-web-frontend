@@ -13,6 +13,7 @@ import { DifficultyContextProvider } from './contexts/DifficultyContext.jsx';
 import { HelmetProvider } from 'react-helmet-async';
 import { NotificationProvider } from './contexts/NotificationContext.jsx';
 import i18next from './translations/config';
+import { RatingFilterProvider } from './contexts/RatingFilterContext.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <HelmetProvider>
@@ -25,9 +26,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <UserContextProvider>
                 <PlayerContextProvider>
                 <DifficultyContextProvider>
+                  <RatingFilterProvider>
                     <PassContextProvider>
                       <App />
                     </PassContextProvider>
+                  </RatingFilterProvider>
                 </DifficultyContextProvider>  
               </PlayerContextProvider>
             </UserContextProvider>

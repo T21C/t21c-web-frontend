@@ -126,9 +126,9 @@ const AboutUsPage = () => {
                   '--mouse-x': `${mousePosition.x}px`,
                   '--mouse-y': `${mousePosition.y}px`
                 }}>
-                  <div className="version-current">
-                    <span className="version-mask">{tAbout('sections.credits.version.current')}</span>
-                    <span className="version-glow">{tAbout('sections.credits.version.current')}</span>
+                  <div className="main-title">
+                    <span className="title-mask">{tAbout('sections.credits.version.current')}</span>
+                    <span className="title-glow">{tAbout('sections.credits.version.current')}</span>
                   </div>
                   <div className="version-original">{tAbout('sections.credits.version.original')}</div>
                 </div>

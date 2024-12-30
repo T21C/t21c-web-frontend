@@ -406,4 +406,168 @@
   background-color: rgba(255, 255, 255, 0.2);
 }
 
+.admin-rating-page .admin-rating-body .sort-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-right: auto;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+}
+
+.admin-rating-page .admin-rating-body .sort-controls:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.admin-rating-page .admin-rating-body .sort-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.admin-rating-page .admin-rating-body .sort-buttons:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.admin-rating-page .admin-rating-body .sort-buttons svg {
+  width: 2rem;
+  height: 2rem;
+  padding: 0.25rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.admin-rating-page .admin-rating-body .sort-buttons svg:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.admin-rating-page .admin-rating-body .sort-buttons svg:active {
+  transform: translateY(0);
+}
+
+/* Custom Select Overrides */
+.admin-rating-page .admin-rating-body .custom-select-container {
+  min-width: 14rem;
+  width: 14rem; /* Fixed width */
+}
+
+.admin-rating-page .admin-rating-body .custom-select__control {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  transition: all 0.2s ease !important;
+  width: 14rem !important; /* Fixed width */
+}
+
+.admin-rating-page .admin-rating-body .custom-select__single-value {
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  right: 0 !important;
+  max-width: calc(14rem - 40px) !important; /* Account for the dropdown arrow */
+}
+
+.admin-rating-page .admin-rating-body .custom-select__menu {
+  background: rgba(20, 20, 20, 0.95) !important;
+  backdrop-filter: blur(10px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
+  width: 14rem !important; /* Fixed width */
+}
+
+.admin-rating-page .admin-rating-body .custom-select__option {
+  color: rgba(255, 255, 255, 0.9) !important;
+  transition: all 0.2s ease !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  padding-right: 24px !important; /* Space for potential scrollbar */
+}
+
+.admin-rating-page .admin-rating-body .custom-select__menu-list {
+  width: 14rem !important; /* Fixed width */
+  padding: 4px !important;
+}
+
+.admin-rating-page .admin-rating-body .custom-select__option:hover {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+}
+
+.admin-rating-page .admin-rating-body .custom-select__option--is-selected {
+  background: rgba(74, 144, 226, 0.3) !important;
+  color: #fff !important;
+}
+
+.admin-rating-page .admin-rating-body .ratings-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.admin-rating-page .admin-rating-body .ratings-count {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.admin-rating-page .admin-rating-body .ratings-count:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.ratings-header-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 0.5rem 1rem;
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+.help-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.help-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.help-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+.ratings-count {
+  font-size: 1rem;
+  color: #fff;
+}
+
 
