@@ -18,14 +18,17 @@
     "recentDesc": "Sort by newest first",
     "difficultyAsc": "Sort by difficulty ascending",
     "difficultyDesc": "Sort by difficulty descending",
-    "random": "Random sort"
+    "random": "Random sort",
+    "clearsAsc": "Sort by least cleared",
+    "clearsDesc": "Sort by most cleared"
   },
   "settingExp": {
     "headerFilter": "Filter Settings",
     "headerSort": "Sort Settings",
     "sortRecent": "Recent",
     "filterDiffs": "Difficulty",
-    "sortRandom": "Random"
+    "sortRandom": "Random",
+    "sortClears": "Clears"
   },
   "infScroll": {
     "end": "You've reached the end!"

@@ -18,6 +18,24 @@
   gap: 0.75rem;
 }
 
+.rating-card .rating-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.rating-card .header-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.rating-card .updated-at {
+  font-size: 0.8rem;
+  color: #777;
+  white-space: nowrap;
+}
+
 .rating-card .rating-card-header h3 {
   margin: 0;
   font-size: 1.2rem;

@@ -86,4 +86,11 @@
 .rating-separator {
   color: #fff;
   font-weight: bold;
+}
+
+.rating-input-wrapper .calculated-difficulty {
+  font-size: 0.9em;
+  color: #666;
+  margin-top: 4px;
+  padding-left: 4px;
 } 

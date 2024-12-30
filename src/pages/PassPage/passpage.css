@@ -110,20 +110,6 @@
   gap: 0.5rem;
 }
 
-.pass-page .pass-body .sort .sort-option svg {
-  height: 2rem;
-  width: 2rem;
-  background-color: var(--color-white-t20);
-  padding: 0.1rem;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: all 0.2s linear;
-}
-
-.pass-page .pass-body .sort .sort-option svg:focus {
-  outline: none;
-}
-
 /* Filter section */
 .pass-page .pass-body .filter-section {
   display: flex;
@@ -273,4 +259,21 @@
   height: 1px;
   background-color: var(--color-white);
   margin-bottom: 0.5rem;
+}
+
+/* Select element styling */
+.pass-page .pass-body .sort-option .recent {
+  position: relative;
+}
+
+.pass-page .pass-body .sort-option .recent p {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+/* Focus state */
+.pass-page .pass-body .sort-option .css-t3ipsp-control {
+  border-color: #4a90e2 !important;
+  box-shadow: 0 0 0 1px #4a90e2 !important;
+  background-color: rgba(255, 255, 255, 0.4) !important;
 } 

@@ -18,6 +18,10 @@
       "label": "Low Difficulty"
     }
   },
+  "tooltips": {
+    "sortAsc": "Sort by oldest",
+    "sortDesc": "Sort by newest"
+  },
   "messages": {
     "loading": "Loading ratings...",
     "error": "Error loading ratings",

@@ -1,0 +1,107 @@
+.custom-select-container {
+  position: relative;
+}
+
+.custom-select-label {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--color-white);
+}
+
+.custom-select-wrapper {
+  position: relative;
+  z-index: 100;
+}
+
+/* Menu animations */
+.custom-select-menu {
+  animation: dropdownExpand 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: top;
+  max-height: 0;
+  overflow: hidden;
+}
+
+/* Override react-select's default max-height */
+.custom-select__menu-list {
+  overflow: hidden !important;
+}
+
+.custom-select-menu.closing {
+  animation: dropdownCollapse 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  pointer-events: none;
+}
+
+
+@keyframes dropdownExpand {
+  from {
+    max-height: 0;
+    transform: scaleY(0.96);
+  }
+  to {
+    max-height: 20.5rem;
+    transform: scaleY(1);
+  }
+}
+
+@keyframes dropdownCollapse {
+  from {
+    max-height: 20.5rem;
+    transform: scaleY(1);
+  }
+  to {
+    max-height: 0;
+    opacity: 0;
+    transform: scaleY(0.96);
+  }
+}
+
+/* Focus state */
+.custom-select__control--is-focused {
+
+  box-shadow: 0 0 0 1px #ffffff58 !important;
+  background-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Option hover and selection effects */
+.custom-select__option {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.custom-select__option::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: linear-gradient(to bottom, #4a90e2, #357abd);
+  opacity: 0;
+  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.custom-select__option:hover::before,
+.custom-select__option--is-selected::before {
+  opacity: 1;
+}
+
+/* Selected option styling */
+.custom-select__option--is-selected {
+  position: relative;
+}
+
+.custom-select__option--is-selected::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 3px;
+  background: linear-gradient(to bottom, #4a90e2, #357abd);
+}
+
+/* Dropdown indicator animation */
+.custom-select__dropdown-indicator {
+  transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+} 

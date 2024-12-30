@@ -1,6 +1,6 @@
 import "./passpage.css";
 import { useContext, useEffect, useState, useCallback } from "react";
-import { CompleteNav, MetaTags, PassCard, StateDisplay } from "../../components";
+import { CompleteNav, MetaTags, PassCard, StateDisplay, CustomSelect } from "../../components";
 import { Tooltip } from "react-tooltip";
 import Select from "react-select";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -458,63 +458,11 @@ const PassPage = () => {
 
             <div className="sort-option">
               <div className="recent">
-                <p>{tPass('settings.sort.label')}</p>
-                <Select
+                <CustomSelect
                   value={sortOptions.find(option => option.value === sort)}
                   onChange={(option) => handleSort(option.value)}
                   options={sortOptions}
-                  menuPortalTarget={document.body}
-                  styles={{
-                    input: (base) => ({
-                      ...base, 
-                      color: "#fff"
-                    }),
-                    menuPortal: (base) => ({
-                      ...base,
-                      zIndex: 9999 
-                    }),
-                    container: (provided) => ({
-                      ...provided,
-                      zIndex: 20,
-                    }),
-                    control: (provided, state) => ({
-                      ...provided,
-                      width: "12rem",
-                      backgroundColor: "rgba(255, 255, 255, 0.3)",
-                      border: "none",
-                      outline: "none",
-                      color: "#fff",
-                      boxShadow: state.isFocused && "0 0 0 2px #757575"
-                    }),
-                    singleValue: (provided) => ({
-                      ...provided,
-                      color: "#FFFFFF !important",
-                    }),
-                    indicatorSeparator: (provided) => ({
-                      ...provided,
-                      backgroundColor: "#000000aa",
-                    }),
-                    menu: (provided) => ({
-                      ...provided,
-                      backgroundColor: "#000000fa",
-                      borderRadius: "3px",
-                      border: "none",
-                      boxShadow: "none",
-                      textDecoration: "bold",
-                      color: "#fff",
-                      zIndex: 9999,
-                    }),
-                    option: (provided, state) => ({
-                      ...provided,
-                      backgroundColor: state.isSelected
-                        ? "#303040ee"
-                        : "transparent",
-                      zIndex: 9999,
-                      "&:hover": {
-                        backgroundColor: "#555555",
-                      }
-                    }),
-                  }}
+                  label={tPass('settings.sort.label')}
                 />
               </div>
             </div>

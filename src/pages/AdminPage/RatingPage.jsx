@@ -12,6 +12,9 @@ import ReferencesPopup from "../../components/ReferencesPopup/ReferencesPopup";
 import RaterManagementPopup from "../../components/RaterManagementPopup/RaterManagementPopup";
 import AccessDenied from "../../components/StateDisplay/AccessDenied";
 import ReferencesButton from "../../components/ReferencesButton/ReferencesButton";
+import SortAscIcon from "../../components/Icons/SortAscIcon";
+import SortDescIcon from "../../components/Icons/SortDescIcon";
+import { Tooltip } from "react-tooltip";
 
 const truncateString = (str, maxLength) => {
   if (!str) return "";
@@ -36,6 +39,7 @@ const RatingPage = () => {
   const [lowDiffFilter, setLowDiffFilter] = useState('show');
   const [showReferences, setShowReferences] = useState(false);
   const [showRaterManagement, setShowRaterManagement] = useState(false);
+  const [sortOrder, setSortOrder] = useState('DESC'); // 'ASC' or 'DESC'
 
   const handleCloseSuccessMessage = () => {
     setShowMessage(false);
@@ -147,6 +151,20 @@ const RatingPage = () => {
     }
   };
 
+  const handleSort = (order) => {
+    if (order === sortOrder) {
+      setSortOrder(''); // Reset sort if clicking the same button
+      setRatings(prev => [...prev].sort((a, b) => b.id - a.id)); // Default sort by ID
+    } else {
+      setSortOrder(order);
+      setRatings(prev => [...prev].sort((a, b) => {
+        const dateA = new Date(a.updatedAt);
+        const dateB = new Date(b.updatedAt);
+        return order === 'ASC' ? dateA - dateB : dateB - dateA;
+      }));
+    }
+  };
+
   if (isSuperAdmin === undefined && isAdmin === undefined) {
     return (
       <div className="admin-rating-page">
@@ -195,14 +213,41 @@ const RatingPage = () => {
               <ReferencesButton onClick={() => setShowReferences(true)} />
             )}
             {isSuperAdmin && (
-              <button 
-                className="admin-button"
-                onClick={() => setShowRaterManagement(true)}
-              >
-                {tRating('buttons.manageRaters')}
-              </button>
+              <>
+                <button 
+                  className="admin-button"
+                  onClick={() => setShowRaterManagement(true)}
+                >
+                  {tRating('buttons.manageRaters')}
+                </button>
+                
+              </>
             )}
           </div>
+          <div className="sort-buttons">
+                  <Tooltip id="sa" place="top" noArrow>
+                    {tRating('tooltips.sortAsc')}
+                  </Tooltip>
+                  <Tooltip id="sd" place="top" noArrow>
+                    {tRating('tooltips.sortDesc')}
+                  </Tooltip>
+                  <SortAscIcon
+                    className="svg-fill"
+                    style={{
+                      backgroundColor: sortOrder === 'ASC' ? "rgba(255, 255, 255, 0.4)" : "",
+                    }}
+                    onClick={() => handleSort('ASC')}
+                    data-tooltip-id="sa"
+                  />
+                  <SortDescIcon
+                    className="svg-fill"
+                    style={{
+                      backgroundColor: sortOrder === 'DESC' ? "rgba(255, 255, 255, 0.4)" : "",
+                    }}
+                    onClick={() => handleSort('DESC')}
+                    data-tooltip-id="sd"
+                  />
+                </div>
           {isSuperAdmin && (
             <div className="view-mode-toggle">
               <span className="toggle-label">{tRating('toggles.detailedView.label')}</span>
@@ -274,6 +319,7 @@ const RatingPage = () => {
                 ratings={ratings}
                 setRatings={setRatings}
                 user={user}
+                isSuperAdmin={isSuperAdmin}
               />
             )}
 

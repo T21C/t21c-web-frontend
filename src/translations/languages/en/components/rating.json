@@ -17,7 +17,11 @@
       "commentLength": "Comment must be less than 1000 characters",
       "saveFailed": "Failed to save changes",
       "updateFailed": "Failed to update rating",
-      "unsavedChanges": "You have unsaved changes. Are you sure you want to close?"
+      "unsavedChanges": "You have unsaved changes. Are you sure you want to close?",
+      "deleteFailed": "Failed to delete rating"
+    },
+    "confirmations": {
+      "deleteRating": "Are you sure you want to delete this rating from {{username}}?"
     }
   },
   "ratingCard": {
@@ -27,10 +31,14 @@
       "average": "Average",
       "rerateNumber": "Rerate Number",
       "requestedRating": "Requested Rating",
-      "rerateMessage": "Rerate Message"
+      "rerateMessage": "Rerate Message",
+      "lastUpdated": "Last updated",
+      "updatedAt": "Updated: "
     },
     "tooltips": {
-      "expandReason": "Click to expand"
+      "expandReason": "Click to expand",
+      "deleteRating": "Delete rating",
+      "lastUpdated": "Last time this rating was modified"
     },
     "buttons": {
       "viewDetails": "View Details",

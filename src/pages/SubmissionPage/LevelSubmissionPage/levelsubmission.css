@@ -229,3 +229,42 @@
   padding: 1.1rem;
   z-index: 15;
 }
+
+
+.level-submission-page .result-message {
+  position: fixed;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  background-color: #4caf50;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  z-index: 1000; /* Ensure it stays on top */
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  opacity: 0; /* Start hidden */
+  visibility: hidden; /* Hidden initially */
+}
+
+.level-submission-page .result-message.visible {
+  opacity: 1; /* Show the message */
+  visibility: visible; /* Make it visible */
+}
+
+.level-submission-page .result-message p {
+  margin:0;
+  padding-right: 10px;
+}
+
+.level-submission-page .result-message .close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.level-submission-page .result-message .close-btn:hover {
+  color: #ffdddd;
+}

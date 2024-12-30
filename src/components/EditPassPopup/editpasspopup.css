@@ -38,6 +38,8 @@
 .edit-pass-popup-overlay .form-container form {
   width:85%;
   margin: 0 auto;
+  overflow-x: hidden;
+  z-index: 1;
 }
 
 .edit-pass-popup-overlay .form-container form .img-wrapper {
@@ -393,3 +395,44 @@
 .announcement-status .checkbox-container span:not(.checkmark) {
   font-weight: 500;
 }/*# sourceMappingURL=editpasspopup.css.map */
+
+
+.edit-pass-popup-overlay .result-message {
+  position: absolute;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  background-color: #4caf50;
+  color: white;
+  padding: 10px;
+  left: 50%;
+  transform: translate(-50%);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  z-index: 1000; /* Ensure it stays on top */
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  opacity: 0; /* Start hidden */
+  visibility: hidden; /* Hidden initially */
+}
+
+.edit-pass-popup-overlay .result-message.visible {
+  opacity: 1; /* Show the message */
+  visibility: visible; /* Make it visible */
+}
+
+.edit-pass-popup-overlay .result-message p {
+  margin:0;
+  padding-right: 10px;
+}
+
+.edit-pass-popup-overlay .result-message .close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.edit-pass-popup-overlay .result-message .close-btn:hover {
+  color: #ffdddd;
+}

@@ -75,22 +75,22 @@ const PassDetailPage = () => {
     }, Math.random() * 300); // Small random delay before regenerating
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const passData = await api.get(`${import.meta.env.VITE_PASSES}/${id}`);
-        setRes(prevRes => ({
-          ...prevRes,
-          pass: passData.data
-        }));
-        setInfoLoading(false);
-      } catch (error) {
-        console.error("Error fetching pass data:", error);
-        setInfoLoading(false);
-      }
-    };
+  const fetchPassData = async () => {
+    try {
+      const passData = await api.get(`${import.meta.env.VITE_PASSES}/${id}`);
+      setRes(prevRes => ({
+        ...prevRes,
+        pass: passData.data
+      }));
+      setInfoLoading(false);
+    } catch (error) {
+      console.error("Error fetching pass data:", error);
+      setInfoLoading(false);
+    }
+  };
 
-    fetchData();
+  useEffect(() => {
+    fetchPassData();
   }, [id]);
 
   useEffect(() => {
@@ -369,11 +369,9 @@ const PassDetailPage = () => {
           <EditPassPopup
             pass={pass}
             onClose={() => setOpenEditDialog(false)}
-            onUpdate={(updatedPass) => {
-              setRes(prev => ({
-                ...prev,
-                pass: updatedPass
-              }));
+            onUpdate={() => {
+              setOpenEditDialog(false);
+              fetchPassData();
             }}
           />
         )}

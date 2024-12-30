@@ -10,6 +10,7 @@ import MetaTags from './MetaTags/MetaTags';
 import StateDisplay from "./StateDisplay/StateDisplay";
 import AccessDenied from "./StateDisplay/AccessDenied";
 import ScrollButton from "./ScrollButton/ScrollButton";
+import CustomSelect from './Select/Select';
 
 export { 
   Card, 
@@ -23,5 +24,6 @@ export {
   ReferencesPopup, 
   MetaTags, 
   StateDisplay,
-  AccessDenied 
+  AccessDenied,
+  CustomSelect 
 };

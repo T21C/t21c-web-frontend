@@ -52,12 +52,14 @@
 }
 .level-page .level-body .sort .sort-option .recent p,
 .level-page .level-body .sort .sort-option .diff p,
-.level-page .level-body .sort .sort-option .random p {
+.level-page .level-body .sort .sort-option .random p,
+.level-page .level-body .sort .sort-option .clears p {
   margin-bottom: 0.5rem;
 }
 .level-page .level-body .sort .sort-option .recent svg,
 .level-page .level-body .sort .sort-option .diff svg,
-.level-page .level-body .sort .sort-option .random svg {
+.level-page .level-body .sort .sort-option .random svg,
+.level-page .level-body .sort .sort-option .clears svg {
   height: 2rem;
   width: 2rem;
   background-color: var(--color-white-t20);
@@ -68,7 +70,8 @@
 }
 .level-page .level-body .sort .sort-option .recent svg:focus,
 .level-page .level-body .sort .sort-option .diff svg:focus,
-.level-page .level-body .sort .sort-option .random svg:focus {
+.level-page .level-body .sort .sort-option .random svg:focus,
+.level-page .level-body .sort .sort-option .clears svg:focus {
   outline: none;
 }
 .level-page .level-body .settings-class {
@@ -389,5 +392,49 @@
   font-weight: bold;
   justify-content: center;
   text-align: center;
+}
+
+.level-page .level-body .sort .sort-option .clears {
+  overflow: hidden;
+  max-width: 0;
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-left: 0;
+  visibility: hidden;
+}
+
+.level-page .level-body .sort .sort-option .clears.visible {
+  max-width: 200px;
+  opacity: 1;
+  transform: translateX(0);
+  margin-left: 0;
+  visibility: visible;
+}
+
+.level-page .level-body .sort .sort-option .clears .wrapper {
+  min-width: 4.5rem;
+  display: flex;
+  gap: 0.5rem;
+  white-space: nowrap;
+}
+
+.level-page .level-body .sort .sort-option .clears p {
+  white-space: nowrap;
+}
+
+.level-page .level-body .sort .sort-option {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  align-items: flex-start;
+  flex-wrap: nowrap;
+}
+
+.level-page .level-body .sort .sort-option > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0rem;
+  min-width: fit-content;
 }
 /*# sourceMappingURL=levelpage.css.map */

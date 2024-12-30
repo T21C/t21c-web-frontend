@@ -8,6 +8,22 @@ const trimString = (str, maxLength = 40) => {
   return str.length > maxLength ? str.substring(0, maxLength - 3) + '...' : str;
 };
 
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const formattedDate = date.toLocaleDateString(undefined, { 
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+  const formattedTime = date.toLocaleTimeString(undefined, {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  });
+  return `${formattedDate} ${formattedTime}`;
+};
+
 export const RatingCard = ({ 
   rating, 
   index, 
@@ -52,12 +68,20 @@ export const RatingCard = ({
       >
         <div className="rating-card-content">
           <div className="rating-card-header">
-            <h3 title={fullTitle}>
-              <span className="song-title">{songTitle}</span>
-              <span className="title-separator"> - </span>
-              <span className="song-creator">{creator}</span>
-            </h3>
-            <p className="artist">{rating.level.artist}</p>
+            <div className="header-content">
+              <h3 title={fullTitle}>
+                <span className="song-title">{songTitle}</span>
+                <span className="title-separator"> - </span>
+                <span className="song-creator">{creator}</span>
+              </h3>
+              <p className="artist">{rating.level.artist}</p>
+            </div>
+            <span 
+              className="updated-at" 
+              title={tRating('tooltips.lastUpdated')}
+            >
+              {tRating('labels.updatedAt')} {formatDate(rating.updatedAt)}
+            </span>
           </div>
           
           <div className="rating-card-details">

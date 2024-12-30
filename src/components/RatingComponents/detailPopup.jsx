@@ -9,6 +9,9 @@ import api from '@/utils/api';
 import { useTranslation } from 'react-i18next';
 import ReferencesButton from "../ReferencesButton/ReferencesButton";
 
+// Cache for video data
+const videoCache = new Map();
+
 async function updateRating(id, rating, comment) {
   try {
     const response = await api.put(`${import.meta.env.VITE_RATING_API}/${id}`, {
@@ -34,6 +37,7 @@ export const DetailPopup = ({
   ratings, 
   setRatings, 
   user, 
+  isSuperAdmin
 }) => {
   const { t } = useTranslation('components');
   const tRating = (key) => t(`rating.detailPopup.${key}`);
@@ -109,8 +113,19 @@ export const DetailPopup = ({
   useEffect(() => {
     if (selectedRating?.level?.videoLink) {
       setIsVideoLoading(true);
+      
+      // Check if video data is already cached
+      const cachedData = videoCache.get(selectedRating.level.videoLink);
+      if (cachedData) {
+        setVideoData(cachedData);
+        setIsVideoLoading(false);
+        return;
+      }
+
+      // If not cached, fetch and cache the data
       getVideoDetails(selectedRating.level.videoLink)
         .then(data => {
+          videoCache.set(selectedRating.level.videoLink, data);
           setVideoData(data);
         })
         .catch(error => console.error('Error fetching video details:', error))
@@ -118,7 +133,7 @@ export const DetailPopup = ({
           setIsVideoLoading(false);
         });
     }
-  }, [selectedRating]);
+  }, [selectedRating?.level?.videoLink]);
 
   useEffect(() => {
     const handleEscKey = (event) =>  {
@@ -223,6 +238,32 @@ export const DetailPopup = ({
     const iframe = document.querySelector('.video-iframe');
     if (iframe) {
       iframe.classList.add('loaded');
+    }
+  };
+
+  const handleDeleteRating = async (username) => {
+    try {
+      const response = await api.delete(`${import.meta.env.VITE_RATING_API}/${selectedRating.id}/detail/${username}`);
+      
+      if (response.status === 200) {
+        // Update the local state
+        const updatedDetails = otherRatings.filter(detail => detail.username !== username);
+        setOtherRatings(updatedDetails);
+        
+        // Update the ratings context
+        setRatings(prevRatings => prevRatings.map(rating => {
+          if (rating.id === selectedRating.id) {
+            return {
+              ...rating,
+              details: rating.details.filter(detail => detail.username !== username)
+            };
+          }
+          return rating;
+        }));
+      }
+    } catch (error) {
+      console.error('Error deleting rating:', error);
+      alert(tRating('errors.deleteFailed'));
     }
   };
 
@@ -350,7 +391,9 @@ export const DetailPopup = ({
                       key={username} 
                       username={username} 
                       rating={rating} 
-                      comment={comment} 
+                      comment={comment}
+                      isSuperAdmin={isSuperAdmin}
+                      onDelete={handleDeleteRating}
                     />
                   ))}
                 </div>

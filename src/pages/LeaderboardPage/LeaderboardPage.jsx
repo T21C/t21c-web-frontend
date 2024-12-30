@@ -3,7 +3,7 @@ import "./leaderboardpage.css";
 import { useContext, useEffect, useState } from "react";
 import { CompleteNav, PlayerCard, StateDisplay } from "../../components";
 import { Tooltip } from "react-tooltip";
-import Select from "react-select";
+import CustomSelect from "../../components/Select/Select";
 import InfiniteScroll from "react-infinite-scroll-component";
 import api from '../../utils/api';
 import { PlayerContext } from "../../contexts/PlayerContext";
@@ -20,17 +20,10 @@ const limit = 30;
 const LeaderboardPage = () => {
   const { t } = useTranslation('pages');
   const tLeaderboard = (key, params = {}) => t(`leaderboard.${key}`, params);
-  const { isSuperadmin } = useAuth();
-
+  const { isSuperAdmin } = useAuth();
   const [error, setError] = useState(false);
   const [filteredData, setFilteredData] = useState([]);
   const location = useLocation();
-
-  const bannedOptions = [
-    { value: 'show', label: tLeaderboard('bannedPlayers.options.show') },
-    { value: 'hide', label: tLeaderboard('bannedPlayers.options.hide') },
-    { value: 'only', label: tLeaderboard('bannedPlayers.options.only') }
-  ];
 
   const sortOptions = [
     { value: 'rankedScore', label: tLeaderboard('sortOptions.rankedScore') },
@@ -393,81 +386,27 @@ const LeaderboardPage = () => {
               </div>
               <div className="recent">
                 <p>{tLeaderboard('settings.sort.sortBy')}</p>
-                <Select
+                <CustomSelect
                   value={sortOptions.find(option => option.value === sortBy)}
                   onChange={handleSortBy}
                   options={sortOptions}
-                  menuPortalTarget={document.body}
-                  styles={{
-                    input: (base) => ({
-                      ...base, 
-                      color: "#fff"
-                    }),
-                    menuPortal: (base) => ({
-                      ...base,
-                      zIndex: 9999 
-                    }),
-                    container: (provided) => ({
-                      ...provided,
-                      zIndex: 20,
-                    }),
-                    control: (provided, state) => ({
-                      ...provided,
-                      width: "11rem",
-                      backgroundColor: "rgba(255, 255, 255, 0.3)",
-                      border: "none",
-                      outline: "none",
-                      color: "#fff",
-                      boxShadow: 
-                        state.isFocused
-                        && "0 0 0 2px #757575"
-                    }),
-                    singleValue: (provided) => ({
-                      ...provided,
-                      color: "#FFFFFF !important",
-                    }),
-                    indicatorSeparator: (provided) => ({
-                      ...provided,
-                      backgroundColor: "#000000aa",
-                    }),
-                    menu: (provided) => ({
-                      ...provided,
-                      width: "11rem",
-                      backgroundColor: "#070711ef",
-                      borderRadius: "3px",
-                      border: "none",
-                      boxShadow: "none",
-                      textDecoration: "bold",
-                      color: "#fff",
-                      zIndex: 9999,
-                    }),
-                    option: (provided, state) => ({
-                      ...provided,
-                      backgroundColor: state.isSelected
-                        ? "#303040ee"
-                        : "transparent",
-                      zIndex: 9999,
-                      "&:hover": {
-                        backgroundColor: "#555555",
-                      }
-                    }),
-                  }}
+                  width="11rem"
                 />
               </div>
-              {isSuperadmin && (
+              {isSuperAdmin && (
                 <div className="recent" style={{ display: "grid", alignItems: "end" }}>
                   <StateDisplay
-                    currentState={showBanned}
+                    label={tLeaderboard('bannedPlayers.label')}
+                  currentState={showBanned}
                   onChange={(newState) => {
                     setShowBanned(newState);
                     setDisplayedPlayers([]);
                     setForceUpdate(prev => !prev);
                   }}
-                  label={tLeaderboard('bannedPlayers.label')}
+                  states={['show', 'hide', 'only']}
                   width={60}
                   height={24}
                   padding={3}
-                  showLabel={true}
                 />
               </div>
               )}

@@ -97,11 +97,22 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const handleBaseScoreChange = (value, isFromDropdown) => {
     if (isFromDropdown) {
       const selectedDiff = difficulties.find(d => d.name === value);
+      console.log(selectedDiff);
       if (selectedDiff) {
         setFormData(prev => ({
           ...prev,
           baseScore: selectedDiff.baseScore
         }));
+        setHasUnsavedChanges(true);
+      } else {
+        const numericValue = parseFloat(value);
+        if (!isNaN(numericValue)) {
+          setFormData(prev => ({
+            ...prev,
+            baseScore: numericValue
+          }));
+          setHasUnsavedChanges(true);
+        }
       }
     } else {
       setFormData(prev => ({
@@ -109,7 +120,6 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         baseScore: value === "" ? null : value
       }));
     }
-    setHasUnsavedChanges(true);
   };
 
   const handleSubmit = async (e) => {
@@ -237,6 +247,15 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     return diff ? diff.name : '';
   }, [difficulties]);
 
+  const getBaseScoreDisplay = useCallback(() => {
+    if (formData.baseScore === null) {
+      return "";
+    }
+    const baseScore = parseFloat(formData.baseScore);
+    const matchingDiff = difficulties.find(d => d.baseScore === baseScore);
+    return matchingDiff ? matchingDiff.name : formData.baseScore.toString();
+  }, [formData.baseScore, difficulties]);
+
   return (
     <div className="edit-level-popup-overlay" onClick={(e) => {
       if (e.target === e.currentTarget) {
@@ -321,15 +340,18 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                     if (formData.baseScore === null) {
                       return "";
                     }
-                    const baseScore = parseFloat(formData.baseScore);
-                    const matchingDiff = difficulties.find(d => d.baseScore === baseScore);
-                    return matchingDiff ? matchingDiff.name : formData.baseScore.toString();
+                    return formData.baseScore.toString();
                   })()}
                   onChange={handleBaseScoreChange}
                   difficulties={difficulties}
                   allowCustomInput={true}
                   placeholder={tLevel('form.placeholders.baseScore')}
                 />
+                {getBaseScoreDisplay() !== "" && (
+                  <div className="base-score-display">
+                    Equal to {getBaseScoreDisplay()}
+                  </div>
+                )}
               </div>
 
               <div className="form-group">
