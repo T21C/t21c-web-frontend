@@ -10,6 +10,7 @@ import i18next from 'i18next';
 import { isoToEmoji } from "../../Repository/RemoteRepository";
 import { useAuth } from "../../contexts/AuthContext";
 import { useNotification } from "@/contexts/NotificationContext";
+import Profile from "../Profile/Profile";
 
 const Navigation = ({ children }) => {
   const { t } = useTranslation('components');
@@ -277,21 +278,33 @@ const Navigation = ({ children }) => {
             {children}
           </ul>
 
-          <svg
-            className="nav-mobile-menu svg-stroke"
-            onClick={changeNavState}
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-            />
-          </svg>
+          <div className="nav-mobile-controls">
+            <div className="nav-language-selector mobile">
+              <div className="nav-language-selector__button" onClick={changeDialogState}>
+                <img 
+                  className="nav-language-selector__flag" 
+                  src={isoToEmoji(getCurrentCountryCode())} 
+                  alt={languages[language]?.display || ''} 
+                />
+              </div>
+            </div>
+
+            <svg
+              className="nav-mobile-menu svg-stroke"
+              onClick={changeNavState}
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              strokeWidth={1.5}
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+              />
+            </svg>
+          </div>
         </div>
       </nav>
 
@@ -314,8 +327,115 @@ const Navigation = ({ children }) => {
 
         <ul className="nav-mobile__list">
           {children}
+          {isAdminView ? (
+            // Admin Links for mobile
+            <>
+              <li className="nav-list-item">
+                <NavLink to="/admin/rating" onClick={changeNavState}>
+                  {tNav('links.admin.rating')}
+                </NavLink>
+                {pendingRatings > 0 && (
+                  <span className="nav-notification-badge">
+                    {pendingRatings > 99 ? "99+" : pendingRatings}
+                  </span>
+                )}
+              </li>
+              <li className="nav-list-item">
+                <NavLink to="/admin/submissions" onClick={changeNavState}>
+                  {tNav('links.admin.submissions')}
+                </NavLink>
+                {pendingSubmissions > 0 && (
+                  <span className="nav-notification-badge">
+                    {pendingSubmissions > 99 ? "99+" : pendingSubmissions}
+                  </span>
+                )}
+              </li>
+              <li className="nav-list-item">
+                <NavLink to="/admin/announcements" onClick={changeNavState}>
+                  {tNav('links.admin.announcements')}
+                </NavLink>
+              </li>
+              <li className="nav-list-item">
+                <NavLink to="/admin/difficulties" onClick={changeNavState}>
+                  {tNav('links.admin.difficulties')}
+                </NavLink>
+              </li>
+              <li className="nav-list-item">
+                <NavLink to="/admin/backups" onClick={changeNavState}>
+                  {tNav('links.admin.backups')}
+                </NavLink>
+              </li>
+            </>
+          ) : (
+            // Regular Links for mobile
+            <>
+              <li className="nav-list-item">
+                <NavLink to="/levels" onClick={changeNavState}>
+                  {tNav('links.levels')}
+                </NavLink>
+              </li>
+              <li className="nav-list-item">
+                <NavLink to="/leaderboard" onClick={changeNavState}>
+                  {tNav('links.leaderboard')}
+                </NavLink>
+              </li>
+              <li className="nav-list-item">
+                <NavLink to="/passes" onClick={changeNavState}>
+                  {tNav('links.pass')}
+                </NavLink>
+              </li>
+              {(isAdmin || isSuperAdmin) && (
+                <li className="nav-list-item">
+                  <NavLink to="/admin/rating" onClick={changeNavState}>
+                    {tNav('links.rating')}
+                  </NavLink>
+                  {pendingRatings > 0 && (
+                    <span className="nav-notification-badge">
+                      {pendingRatings > 99 ? "99+" : pendingRatings}
+                    </span>
+                  )}
+                </li>
+              )}
+            </>
+          )}
+          <li className="nav-list-item">
+            <NavLink to="/submission" onClick={changeNavState}>
+              {tNav('links.submission')}
+            </NavLink>
+          </li>
         </ul>
       </div>
+
+      <div className={`nav-language-select ${openDialog ? 'open' : ''}`}>
+        <ul className="nav-language-select__list">
+          {Object.entries(languages).map(([code, { display, countryCode, implemented }]) => (
+            <li
+              key={code}
+              className={`nav-language-select__option ${
+                !implemented ? 'not-implemented' : ''
+              } ${
+                (language === code || (language === 'en' && code === 'us')) ? 'selected' : ''
+              }`}
+              onClick={(e) => handleChangeLanguage(code, e)}
+            >
+              <img 
+                className="nav-language-select__option-flag" 
+                src={isoToEmoji(countryCode)} 
+                alt={display} 
+              />
+              <div className="nav-language-select__option-content">
+                <span>{display}</span>
+                {!implemented && (
+                  <span className="nav-language-select__option-status">
+                    {tLang('comingSoon')}
+                  </span>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+      
     </>
   );
 };

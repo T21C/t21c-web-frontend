@@ -48,7 +48,7 @@ function Profile() {
           ) : (
             <DefaultAvatar className="profile-avatar" />
           )}
-          <button className="btn-login profile-button" onClick={logout}>
+          <button className="btn-logout profile-button" onClick={logout}>
             <svg fill="#ffffff" viewBox="-9.6 -9.6 51.20 51.20" version="1.1" xmlns="http://www.w3.org/2000/svg" transform="rotate(180)" stroke="#ffffff" strokeWidth="1.536">
               <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
               <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
