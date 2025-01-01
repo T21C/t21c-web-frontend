@@ -67,6 +67,16 @@ const DifficultyCard = ({ name, passCount }) => (
 
 const DifficultyGraph = ({ data, mode }) => {
   const { difficultyDict } = useDifficultyContext();
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   
   const chartData = data.map(diff => {
     const difficultyInfo = difficultyDict[diff.id] || {};
@@ -81,8 +91,17 @@ const DifficultyGraph = ({ data, mode }) => {
     };
   });
 
+  const containerProps = isMobile ? {
+    width: "124%",
+    height: 200,
+    style: { position: "relative", left: "-12%" }
+  } : {
+    width: "100%",
+    height: 300
+  };
+
   return (
-    <ResponsiveContainer width="100%" height={300}>
+    <ResponsiveContainer {...containerProps}>
       <BarChart 
         data={chartData} 
         margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -99,12 +118,17 @@ const DifficultyGraph = ({ data, mode }) => {
           stroke="#ffffff" 
           fontSize={12}
           tickLine={false}
+          interval={isMobile ? 3 : 1}
+          angle={isMobile ? 45 : 0}
+          textAnchor={isMobile ? "start" : "middle"}
+          height={isMobile ? 60 : 30}
         />
         <YAxis 
           stroke="#ffffff" 
-          fontSize={12}
+          fontSize={isMobile ? 10 : 12}
           tickLine={false}
           axisLine={false}
+          width={isMobile ? 35 : 45}
         />
         <Tooltip 
           content={<CustomTooltip />}

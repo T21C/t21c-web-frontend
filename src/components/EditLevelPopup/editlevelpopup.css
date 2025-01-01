@@ -360,3 +360,120 @@
 .edit-level-popup-overlay .rating-input-wrapper{
   margin-bottom: 3px;
 }
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .edit-level-popup-overlay .edit-level-popup {
+    width: 95%;
+    padding: 16px;
+    margin-top: 44px;
+    max-height: 85vh;
+  }
+
+  .edit-level-popup-overlay .form-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .edit-level-popup-overlay .form-group {
+    margin-bottom: 6px;
+  }
+
+  .edit-level-popup-overlay .form-group input,
+  .edit-level-popup-overlay .form-group textarea,
+  .edit-level-popup-overlay .form-group .rating-input {
+    padding: 10px;
+    font-size: 16px; /* Prevents iOS zoom on focus */
+  }
+
+  .edit-level-popup-overlay .button-group {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .edit-level-popup-overlay .save-button,
+  .edit-level-popup-overlay .delete-button,
+  .edit-level-popup-overlay .restore-button {
+    max-width: none;
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+  }
+
+  .edit-level-popup-overlay .to-rate-group {
+    grid-template-columns: 1fr auto;
+    width: 100%;
+  }
+
+  .edit-level-popup-overlay .to-rate-checkbox {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .edit-level-popup-overlay .rerate-num.show {
+    width: 100px;
+  }
+
+  .edit-level-popup-overlay .close-popup-btn {
+    top: 12px;
+    right: 12px;
+    font-size: 1.5rem;
+    z-index: 1001;
+  }
+
+  .edit-level-popup-overlay .popup-content h2 {
+    font-size: 1.5rem;
+    margin-top: 0;
+  }
+}
+
+/* Small Phone Adjustments */
+@media (max-width: 360px) {
+  .edit-level-popup-overlay .edit-level-popup {
+    padding: 12px;
+    margin-top: 44px;
+  }
+
+  .edit-level-popup-overlay .form-group input,
+  .edit-level-popup-overlay .form-group textarea,
+  .edit-level-popup-overlay .form-group .rating-input {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  .edit-level-popup-overlay .popup-content h2 {
+    font-size: 1.25rem;
+  }
+
+  .edit-level-popup-overlay .to-rate-checkbox {
+    font-size: 13px;
+  }
+
+  .edit-level-popup-overlay .rerate-num.show {
+    width: 80px;
+  }
+
+  .edit-level-popup-overlay .save-button,
+  .edit-level-popup-overlay .delete-button,
+  .edit-level-popup-overlay .restore-button {
+    padding: 12px;
+    font-size: 14px;
+  }
+}
+
+/* Landscape Mode Adjustments */
+@media (max-height: 600px) and (orientation: landscape) {
+  .edit-level-popup-overlay .edit-level-popup {
+    max-height: 80vh;
+    padding: 12px 20px;
+    margin-top: 60px;
+  }
+
+  .edit-level-popup-overlay .form-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .edit-level-popup-overlay .button-group {
+    flex-direction: row;
+  }
+}

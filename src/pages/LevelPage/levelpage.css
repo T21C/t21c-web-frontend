@@ -50,11 +50,48 @@
   position: relative;
   z-index: 90;
 }
+.level-page .level-body .sort .sort-option {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  align-items: flex-start;
+  justify-content: unset;
+  width: 100%;
+}
+.level-page .level-body .sort .sort-option .recent,
+.level-page .level-body .sort .sort-option .diff,
+.level-page .level-body .sort .sort-option .random,
+.level-page .level-body .sort .sort-option .clears {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  flex: 0 0 auto;
+  width: fit-content;
+}
+.level-page .level-body .sort .sort-option .clears {
+  overflow: hidden;
+  max-width: 0;
+  opacity: 0;
+  transform: translateX(-20px);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  margin-left: 0;
+  visibility: hidden;
+}
+.level-page .level-body .sort .sort-option .clears.visible {
+  max-width: 200px;
+  opacity: 1;
+  transform: translateX(0);
+  margin-left: 0;
+  visibility: visible;
+}
 .level-page .level-body .sort .sort-option .recent p,
 .level-page .level-body .sort .sort-option .diff p,
 .level-page .level-body .sort .sort-option .random p,
 .level-page .level-body .sort .sort-option .clears p {
   margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
 }
 .level-page .level-body .sort .sort-option .recent svg,
 .level-page .level-body .sort .sort-option .diff svg,
@@ -66,32 +103,30 @@
   padding: 0.1rem;
   border-radius: 3px;
   cursor: pointer;
-  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.2s ease;
 }
-.level-page .level-body .sort .sort-option .recent svg:focus,
-.level-page .level-body .sort .sort-option .diff svg:focus,
-.level-page .level-body .sort .sort-option .random svg:focus,
-.level-page .level-body .sort .sort-option .clears svg:focus {
-  outline: none;
-}
-.level-page .level-body .settings-class {
+.level-page .level-body .settings-class,
+.level-page .level-body .sort-class {
   padding: 1rem 2rem;
   position: relative;
-  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   overflow: visible;
   margin-bottom: 1rem;
   opacity: 1;
-  max-height: 500px;
+  max-height: 300px;
 }
-.level-page .level-body .settings-class.hidden {
+.level-page .level-body .settings-class.hidden,
+.level-page .level-body .sort-class.hidden {
   max-height: 0;
   opacity: 0;
-  padding: 0;
-  margin: 0;
+  padding-top: 0;
   overflow: hidden;
+  padding-bottom: 0;
+  margin: 0;
   pointer-events: none;
 }
-.level-page .level-body .settings-class.visible {
+.level-page .level-body .settings-class.visible,
+.level-page .level-body .sort-class.visible {
   opacity: 1;
   pointer-events: auto;
 }
@@ -276,8 +311,11 @@
 
 .level-page .sort-option {
   display: flex;
-  flex-direction: row;
+  flex-wrap: wrap;
   gap: 2rem;
+  align-items: flex-start;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .level-page .sort-option > div {
@@ -394,47 +432,210 @@
   text-align: center;
 }
 
-.level-page .level-body .sort .sort-option .clears {
-  overflow: hidden;
-  max-width: 0;
-  opacity: 0;
-  transform: translateX(-20px);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  margin-left: 0;
-  visibility: hidden;
+@media (max-width: 768px) {
+  .level-page .level-body .sort .sort-option {
+    gap: 1.5rem;
+    justify-content: center;
+  }
 }
 
-.level-page .level-body .sort .sort-option .clears.visible {
-  max-width: 200px;
-  opacity: 1;
-  transform: translateX(0);
-  margin-left: 0;
-  visibility: visible;
+@media (max-width: 480px) {
+  .level-page .level-body .sort .sort-option {
+    gap: 1rem;
+  }
+
+  .level-page .level-body .sort .sort-option .recent svg,
+  .level-page .level-body .sort .sort-option .diff svg,
+  .level-page .level-body .sort .sort-option .random svg,
+  .level-page .level-body .sort .sort-option .clears svg {
+    height: 1.75rem;
+    width: 1.75rem;
+  }
 }
 
-.level-page .level-body .sort .sort-option .clears .wrapper {
-  min-width: 4.5rem;
-  display: flex;
-  gap: 0.5rem;
-  white-space: nowrap;
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .level-page .level-body {
+    padding: 4.5rem 1rem 2rem 1rem;
+  }
+
+  .level-page .level-body .input-option {
+    gap: 0.35rem;
+  }
+
+  .level-page .level-body .input-option input {
+    font-size: 0.9rem;
+  }
+
+  .level-page .level-body .input-option svg {
+    width: 2rem;
+    padding: 0.25rem;
+  }
+
+  /* Filter and Sort Adjustments */
+  .level-page .level-body .settings-class {
+    padding: 1rem;
+    max-height: 380px;
+  }
+
+  .level-page .level-body .sort-class {
+    padding: 1rem;
+    max-height: 200px;
+  }
+
+  .level-page .level-body .filter {
+    border-radius: 0.75rem;
+  }
+
+  .level-page .level-body .sort {
+    border-radius: 0.75rem;
+  }
+
+  .level-page .level-body .sort-option {
+    gap: 1.5rem;
+    justify-content: center;
+  }
+
+  .level-page .level-body .sort-option > div {
+    width: 100%;
+  }
+
+  .level-page .level-body .sort-option .wrapper {
+    justify-content: flex-start;
+  }
+
+  .level-page .level-body .filter-section {
+    gap: 0.75rem;
+  }
+
+  .level-page .level-body .filter-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  /* Special Difficulties Section */
+  .level-page .level-body .special-difficulties {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .level-page .level-body .special-buttons {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.5rem;
+  }
+
+  /* State Display Adjustments */
+  .level-page .level-body .three-state-slider-container {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--color-white-t6);
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    gap: 1rem;
+  }
+
+  .level-page .level-body .three-state-slider {
+    flex: 1;
+    max-width: 120px;
+  }
+
+
+  .level-page .level-body .sort .sort-option .wrapper {
+    justify-content: flex-start;
+  }
+
+  .level-page .level-body .sort .sort-option > div p {
+    margin-bottom: 0.25rem;
+  }
+
+  /* Tooltip Adjustments */
+  .level-page .level-body .tooltip {
+    max-width: 90vw;
+  }
+
+  /* End Message */
+  .level-page .end-message {
+    font-size: 1.2rem;
+    margin-top: 1.5rem;
+  }
 }
 
-.level-page .level-body .sort .sort-option .clears p {
-  white-space: nowrap;
+/* Small Phone Adjustments */
+@media (max-width: 360px) {
+  .level-page .level-body {
+    padding: 4rem 0.75rem 1.5rem 0.75rem;
+  }
+
+  .level-page .level-body .input-option {
+    height: 1.75rem;
+  }
+
+  .level-page .level-body .input-option input {
+    font-size: 0.85rem;
+  }
+
+  .level-page .level-body .input-option svg {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+
+  .level-page .level-body .settings-class {
+    padding: 0.75rem;
+  }
+
+  .level-page .level-body .setting-title {
+    font-size: 1.1rem;
+  }
+
+  .level-page .level-body .special-difficulties {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+
+  .level-page .level-body .special-buttons {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  }
+
+  .level-page .level-body .three-state-slider-container {
+    padding: 0.4rem 0.75rem;
+  }
+
+  .level-page .end-message {
+    font-size: 1rem;
+  }
 }
 
-.level-page .level-body .sort .sort-option {
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
-  align-items: flex-start;
-  flex-wrap: nowrap;
-}
+/* Landscape Mode Adjustments */
+@media (max-height: 600px) and (orientation: landscape) {
+  .level-page .level-body {
+    padding-top: 4rem;
+  }
 
-.level-page .level-body .sort .sort-option > div {
-  display: flex;
-  flex-direction: column;
-  gap: 0rem;
-  min-width: fit-content;
+  .level-page .level-body .sort-option {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .level-page .level-body .sort-option > div {
+    width: auto;
+    min-width: 150px;
+  }
+
+  .level-page .level-body .filter-row {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+
+  .level-page .level-body .special-difficulties,
+  .level-page .level-body .special-buttons {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  }
+
+  .level-page .level-body .three-state-slider-container {
+    width: auto;
+    min-width: 200px;
+  }
 }
 /*# sourceMappingURL=levelpage.css.map */

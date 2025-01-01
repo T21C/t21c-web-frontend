@@ -331,6 +331,11 @@ const Navigation = ({ children }) => {
             // Admin Links for mobile
             <>
               <li className="nav-list-item">
+                <NavLink to="/" onClick={changeNavState}>
+                  {tNav('links.home')}
+                </NavLink>
+              </li>
+              <li className="nav-list-item">
                 <NavLink to="/admin/rating" onClick={changeNavState}>
                   {tNav('links.admin.rating')}
                 </NavLink>
@@ -369,6 +374,11 @@ const Navigation = ({ children }) => {
           ) : (
             // Regular Links for mobile
             <>
+              <li className="nav-list-item">
+                <NavLink to="/" onClick={changeNavState}>
+                  {tNav('links.home')}
+                </NavLink>
+              </li>
               <li className="nav-list-item">
                 <NavLink to="/levels" onClick={changeNavState}>
                   {tNav('links.levels')}

@@ -4,6 +4,7 @@
   position: relative;
   user-select: none;
   -webkit-user-select: none;
+  touch-action: none;
 }
 
 .difficulty-slider-container .slider-track {
@@ -44,6 +45,7 @@
   z-index: 3;
   cursor: grab;
   padding: 10px;
+  touch-action: none;
 }
 
 .difficulty-slider-container .knob-container:active {

@@ -1,10 +1,11 @@
 {
   "main": {
     "links": {
+      "home": "Home",
       "levels": "Levels",
       "leaderboard": "Leaderboard",
       "pass": "Passes",
-      "submission": "Submission",
+      "submission": "Submit",
       "rating": "Rating",
       "admin": {
         "rating": "Rating",

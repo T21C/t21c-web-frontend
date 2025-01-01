@@ -67,14 +67,15 @@ const DifficultySlider = ({
   const rangeLeft = ((Math.min(...values) - min) / (max - min)) * 100;
   const rangeWidth = ((Math.max(...values) - Math.min(...values)) / (max - min)) * 100;
 
-  // Handle mouse move during drag
-  const handleMouseMove = useCallback((e) => {
+  // Handle pointer move during drag (works for both mouse and touch)
+  const handlePointerMove = useCallback((e) => {
     if (!isDragging || activeKnob === null || !trackRef.current) return;
 
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const rect = trackRef.current.getBoundingClientRect();
     const pixelRange = rect.width;
     const valueRange = max - min;
-    const pixelMoved = e.clientX - dragStartX;
+    const pixelMoved = clientX - dragStartX;
     const valueMoved = Math.round((pixelMoved / pixelRange) * valueRange);
     const newValue = Math.max(min, Math.min(max, dragStartValue + valueMoved));
 
@@ -83,8 +84,8 @@ const DifficultySlider = ({
     onChange(newValues);
   }, [isDragging, activeKnob, dragStartX, dragStartValue, min, max, values, onChange]);
 
-  // Handle mouse up
-  const handleMouseUp = useCallback(() => {
+  // Handle pointer up (works for both mouse and touch)
+  const handlePointerUp = useCallback(() => {
     if (isDragging) {
       const newValues = [
         Math.min(values[0], values[1]),
@@ -102,21 +103,26 @@ const DifficultySlider = ({
   // Add and remove event listeners
   useEffect(() => {
     if (isDragging) {
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('mouseup', handleMouseUp);
+      window.addEventListener('mousemove', handlePointerMove);
+      window.addEventListener('mouseup', handlePointerUp);
+      window.addEventListener('touchmove', handlePointerMove);
+      window.addEventListener('touchend', handlePointerUp);
     }
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('mousemove', handlePointerMove);
+      window.removeEventListener('mouseup', handlePointerUp);
+      window.removeEventListener('touchmove', handlePointerMove);
+      window.removeEventListener('touchend', handlePointerUp);
     };
-  }, [isDragging, handleMouseMove, handleMouseUp]);
+  }, [isDragging, handlePointerMove, handlePointerUp]);
 
-  // Handle click on the slider track
+  // Handle click/tap on the slider track
   const handleTrackClick = useCallback((e) => {
     if (!trackRef.current || isDragging) return;
 
     const rect = trackRef.current.getBoundingClientRect();
-    const clickPosition = Math.min(Math.max(0, e.clientX - rect.left), rect.width);
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clickPosition = Math.min(Math.max(0, clientX - rect.left), rect.width);
     const percentage = clickPosition / rect.width;
     const clickedValue = Math.round(Math.min(Math.max(min, min + (max - min) * percentage), max));
 
@@ -131,12 +137,13 @@ const DifficultySlider = ({
     onChangeComplete?.(newValues);
   }, [isDragging, values, onChange, onChangeComplete, min, max]);
 
-  // Handle drag start
+  // Handle drag/touch start
   const handleDragStart = useCallback((index, e) => {
     e.preventDefault();
     setIsDragging(true);
     setActiveKnob(index);
-    setDragStartX(e.clientX);
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    setDragStartX(clientX);
     setDragStartValue(values[index]);
   }, [values]);
 
@@ -145,6 +152,7 @@ const DifficultySlider = ({
     e.preventDefault();
     return false;
   };
+
   const getGlowColor = (diff) => {
     if (!diff) return "#FFFFFF";
     if (diff.name[0] === "U") {
@@ -156,7 +164,6 @@ const DifficultySlider = ({
     }
     return diff.color;
   }
-
 
   if (difficulties.length === 0) {
     return null;
@@ -191,13 +198,10 @@ const DifficultySlider = ({
         </div>
       </div>
 
-
-
       <div 
         ref={trackRef}
         className="slider-track" 
-        style={{ background: getSliderBackground()
-         }}
+        style={{ background: getSliderBackground() }}
       >
         <div 
           className="range-highlight"
@@ -207,14 +211,17 @@ const DifficultySlider = ({
             background: getSliderBackground(true)
           }}
         />
-              <div className="slider-track-clickable" 
-        onClick={handleTrackClick}
-      />
+        <div 
+          className="slider-track-clickable" 
+          onClick={handleTrackClick}
+          onTouchStart={handleTrackClick}
+        />
         <div className="slider-knobs">
           <div 
             className="knob-container" 
             style={{ left: `${((values[0] - min) / (max - min)) * 100}%` }}
             onMouseDown={(e) => handleDragStart(0, e)}
+            onTouchStart={(e) => handleDragStart(0, e)}
           >
             {minDiff?.icon && (
               <img 
@@ -230,6 +237,7 @@ const DifficultySlider = ({
             className="knob-container" 
             style={{ left: `${((values[1] - min) / (max - min)) * 100}%` }}
             onMouseDown={(e) => handleDragStart(1, e)}
+            onTouchStart={(e) => handleDragStart(1, e)}
           >
             {maxDiff?.icon && (
               <img 
@@ -243,7 +251,7 @@ const DifficultySlider = ({
           </div>
         </div>
       </div>
-      </div>
+    </div>
   );
 };
 

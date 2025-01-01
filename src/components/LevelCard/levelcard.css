@@ -195,3 +195,18 @@
 .level-card .edit-button:hover {
   background-color: var(--color-primary-dark);
 }
+
+.level-card .restore-button {
+  margin-left: 1rem;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.level-card .restore-button:hover {
+  background-color: #218838;
+}

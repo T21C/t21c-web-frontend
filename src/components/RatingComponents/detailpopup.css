@@ -1,17 +1,19 @@
 .rating-popup-overlay {
     position: fixed;
-    top: 1.5rem;
+    top: 0;
     left: 0;
     right: 0;
     bottom: 0;
     background-color: rgba(0, 0, 0, 0.75);
     display: flex;
     justify-content: center;
-    align-items: center;
-    padding-top: 0;
+    align-items: flex-start;
+    padding: 1.5rem 0;
     z-index: 1000;
     animation: fadeInBackground-rating-popup 0.2s ease-out forwards;
     will-change: opacity;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
 }
 
 .rating-popup-overlay.exiting {
@@ -24,15 +26,14 @@
     border-radius: 8px;
     padding: 1.5rem 1.75rem;
     width: 90%;
-    top: 1rem;
     max-width: 800px;
-    max-height: 86.5vh;
-    overflow-y: hidden;
     position: relative;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     animation: slideInPopup-rating-popup 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     transform-origin: center;
     will-change: transform, opacity, clip-path;
+    overflow-y: auto;
+    max-height: calc(100vh - 3rem);
 }
 
 .rating-popup.exiting {
@@ -122,6 +123,7 @@
 .rating-popup .popup-content {
     display: flex;
     flex-direction: column;
+    height: 100%;
 }
 
 .rating-popup .popup-content h2 {
@@ -564,4 +566,180 @@
 .rating-popup .required-mark:hover::after {
     opacity: 1;
     transform: translateY(0);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .rating-popup-overlay {
+    padding: 0;
+    overflow-y: hidden;
+  }
+
+  .rating-popup {
+    width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    margin: 0;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    padding-top: 4rem;
+  }
+
+  .rating-popup .close-popup-btn {
+    top: 6rem;
+    background: var(--color-white-t20);
+  }
+
+  .rating-popup .popup-content {
+    flex: 1;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .rating-popup .popup-main-content {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .rating-popup .video-container {
+    min-height: 200px;
+  }
+
+  .rating-popup .details-container {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.75rem;
+  }
+
+  .rating-popup .detail-field {
+    flex: 1;
+    min-width: 150px;
+    justify-content: space-between;
+  }
+
+  .rating-popup .rating-columns {
+    grid-template-columns: 1fr;
+    height: auto;
+    gap: 1.5rem;
+  }
+
+  .rating-popup .rating-field-group {
+    gap: 0.75rem;
+  }
+
+  .rating-popup .rating-field textarea {
+    height: 3rem;
+  }
+
+  .rating-popup .other-ratings-content {
+    height: 100%;
+    min-height: 250px;
+  }
+
+  .rating-popup .rating-comment {
+    width: 100%;
+  }
+
+  .rating-popup .save-rating-changes-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* Small phone adjustments */
+@media (max-width: 480px) {
+  .rating-popup {
+    padding: 4.5rem 1rem 1rem 1rem;
+  }
+
+  .rating-popup .close-popup-btn {
+    top: 5rem;
+    right: 1.5rem;
+  }
+
+  .rating-popup .other-ratings {
+    min-height: 350px;
+  }
+
+  .rating-popup .other-ratings-content {
+    min-height: 300px;
+  }
+
+  .rating-popup .popup-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .rating-popup .popup-header .artist {
+    font-size: 0.9rem;
+  }
+
+  .rating-popup .video-container {
+    min-height: 160px;
+  }
+
+  .rating-popup .detail-field {
+    min-width: 120px;
+    font-size: 0.9rem;
+  }
+
+  .rating-popup .rating-field label {
+    font-size: 0.85rem;
+  }
+
+  .rating-popup .rating-field input,
+  .rating-popup .rating-field textarea {
+    font-size: 0.9rem;
+  }
+
+  .rating-popup .other-ratings-content {
+    height: 120px;
+  }
+
+  .rating-popup .save-rating-changes-btn {
+    font-size: 0.9rem;
+    padding: 0.4rem 0.75rem;
+  }
+}
+
+/* Landscape mode adjustments */
+@media (max-height: 600px) and (orientation: landscape) {
+  .rating-popup-overlay {
+    padding: 0;
+  }
+
+  .rating-popup {
+    height: 100vh;
+    max-height: 100vh;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .rating-popup .popup-main-content {
+    flex-direction: row;
+  }
+
+  .rating-popup .video-container {
+    flex: 1.5;
+  }
+
+  .rating-popup .details-container {
+    flex: 1;
+    flex-direction: column;
+  }
+
+  .rating-popup .rating-columns {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .rating-popup .other-ratings {
+    min-height: 150px;
+  }
+
+  .rating-popup .other-ratings-content {
+    min-height: 120px;
+  }
 }

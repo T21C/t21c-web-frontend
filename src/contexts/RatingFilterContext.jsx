@@ -14,7 +14,7 @@ export const RatingFilterProvider = ({ children }) => {
   const [sortOrder, setSortOrder] = useState('desc');
   const [hideRated, setHideRated] = useState(false);
   const [lowDiffFilter, setLowDiffFilter] = useState('show');
-  const [fourVoteFilter, setFourVoteFilter] = useState('hide');
+  const [fourVoteFilter, setFourVoteFilter] = useState('show');
   const [sortType, setSortType] = useState('date');
 
   const value = {

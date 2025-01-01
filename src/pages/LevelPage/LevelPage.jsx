@@ -430,7 +430,7 @@ const LevelPage = () => {
           </div>
 
           <div
-            className={`sort settings-class ${sortOpen ? 'visible' : 'hidden'}`}
+            className={`sort sort-class ${sortOpen ? 'visible' : 'hidden'}`}
           >
             <h2 className="setting-title">
               {tLevel('settingExp.headerSort')}

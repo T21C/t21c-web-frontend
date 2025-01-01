@@ -1,11 +1,12 @@
 .home {
-  overflow: auto;
+  overflow: visible;
   position: relative;
-  z-index: 1;
   color: var(--color-white);
+  background-color: #000;
 }
 
 .home .home-container {
+  z-index: 1;
   padding: 5.5rem 4rem 5rem 4rem;
 }
 
@@ -319,6 +320,8 @@
 }
 
 .home .stats-container {
+  position: relative;
+  z-index: 10;
   margin-top: 4rem;
   display: flex;
   flex-direction: column;
@@ -521,4 +524,172 @@
 .home .recharts-bar {
   will-change: transform;
   transform-origin: bottom;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .home .home-container {
+    padding: 5rem 1rem 2rem 1rem;
+  }
+
+  .home .logo-container {
+    height: clamp(4rem, 12vw, 8rem);
+  }
+
+  .home .main-title {
+    font-size: clamp(3rem, 7vw, 4rem);
+    margin: -40px 0;
+    height: 160px;
+  }
+
+  .home .action-buttons {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 0 1rem;
+  }
+
+  .home .action-button {
+    width: 100%;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .home .stats-container {
+    margin-top: 2rem;
+    padding: 0 1rem;
+    gap: 2rem;
+  }
+
+  .home .stats-section {
+    padding: 1.5rem;
+  }
+
+  .home .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+  }
+
+  .home .stat-card {
+    padding: 1rem;
+  }
+
+  .home .difficulty-type-section {
+    padding: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .home .graph-controls {
+    flex-wrap: wrap;
+  }
+
+  .home .graph-mode {
+    flex: 1;
+    min-width: 120px;
+    text-align: center;
+  }
+
+  /* Tooltip adjustments for mobile */
+  .home .custom-tooltip {
+    max-width: 90vw;
+    padding: 0.5rem;
+  }
+
+  .home .tooltip-content {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+
+  .home .tooltip-left {
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .home .tooltip-right {
+    padding-left: 0;
+    border-left: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 0.5rem;
+    width: 100%;
+  }
+}
+
+/* Small phone adjustments */
+@media (max-width: 360px) {
+  .home .home-container {
+    padding: 4.5rem 0.75rem 1.5rem 0.75rem;
+  }
+
+  .home .logo-container {
+    height: clamp(3.5rem, 10vw, 6rem);
+  }
+
+  .home .main-title {
+    font-size: clamp(2rem, 7vw, 3rem);
+    margin: -30px 0;
+    height: 120px;
+  }
+
+  .home .action-button {
+    font-size: 0.9rem;
+    padding: 0.75rem;
+  }
+
+  .home .stats-section {
+    padding: 1rem;
+  }
+
+  .home .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .home .stat-value {
+    font-size: 1.5rem;
+  }
+
+  .home .stat-label {
+    font-size: 0.85rem;
+  }
+
+  .home .graph-mode {
+    padding: 0.4rem 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .home .difficulty-type-section h3 {
+    font-size: 1.1rem;
+  }
+}
+
+/* Landscape mode adjustments */
+@media (max-height: 600px) and (orientation: landscape) {
+  .home .home-container {
+    padding-top: 4rem;
+  }
+
+  .home .logo-container {
+    height: clamp(3rem, 8vh, 5rem);
+  }
+
+  .home .main-title {
+    font-size: clamp(2rem, 6vw, 3rem);
+    margin: -10px 0;
+    height: 100px;
+  }
+
+  .home .action-buttons {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .home .action-button {
+    width: auto;
+    min-width: 200px;
+  }
+
+  .home .stats-grid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
 }

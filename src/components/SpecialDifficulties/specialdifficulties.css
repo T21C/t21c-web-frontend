@@ -38,6 +38,21 @@
   margin-right: 0.5rem;
 }
 
+.special-difficulties-dropdown .difficulties-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  cursor: pointer;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
 .special-difficulties-dropdown .difficulties-grid {
   position: absolute;
   top: calc(100% + 0.5rem);
@@ -132,4 +147,97 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .special-difficulties-dropdown {
+    width: 100%;
+    margin-bottom: 1rem;
+  }
+
+  .special-difficulties-dropdown .difficulties-grid {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px;
+    max-height: 80vh;
+    border-radius: 8px;
+    background: var(--color-black);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+
+  .special-difficulties-dropdown .difficulties-list {
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.75rem;
+  }
+
+  .special-difficulties-dropdown .difficulty-item {
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    touch-action: manipulation;
+  }
+
+  .special-difficulties-dropdown .difficulty-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .special-difficulties-dropdown .difficulty-name {
+    font-size: 1rem;
+  }
+
+  .special-difficulties-dropdown .select-all-button {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .special-difficulties-dropdown .difficulties-grid {
+    width: 95%;
+    padding: 0.75rem;
+  }
+
+  .special-difficulties-dropdown .difficulties-list {
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .special-difficulties-dropdown .difficulty-item {
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+
+  .special-difficulties-dropdown .difficulty-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .special-difficulties-dropdown .difficulty-name {
+    font-size: 0.9rem;
+  }
+
+  .special-difficulties-dropdown .group-title {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .special-difficulties-dropdown .difficulties-header h3 {
+    font-size: 1rem;
+  }
+
+  .special-difficulties-dropdown .select-all-button {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Mobile Styles */
+@media (max-width: 768px) {
+  .special-difficulties-dropdown::before {
+    display: none;
+  }
 } 

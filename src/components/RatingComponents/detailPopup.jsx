@@ -67,7 +67,21 @@ export const DetailPopup = ({
       const timer = setTimeout(() => {
         setIsAnimating(false);
       }, 400); // Match the animation duration
-      return () => clearTimeout(timer);
+
+      // Handle back button
+      const handlePopState = (event) => {
+        event.preventDefault();
+        handleClose();
+      };
+
+      // Push a new state to handle back button
+      window.history.pushState({ popup: true }, '');
+      window.addEventListener('popstate', handlePopState);
+
+      return () => {
+        clearTimeout(timer);
+        window.removeEventListener('popstate', handlePopState);
+      };
     }
   }, [selectedRating]);
 
