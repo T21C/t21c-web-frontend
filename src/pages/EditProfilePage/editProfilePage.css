@@ -1,0 +1,166 @@
+.edit-profile-page {
+  min-height: 100vh;
+  background-color: var(--background);
+  color: var(--text);
+  padding: 2rem;
+}
+
+.edit-profile-page .edit-profile-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: var(--surface);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.edit-profile-page .edit-profile-container h1 {
+  margin-bottom: 2rem;
+  color: var(--primary);
+  font-size: 2rem;
+  text-align: center;
+}
+
+.edit-profile-page .edit-profile-container h2 {
+  margin: 1.5rem 0;
+  color: var(--primary);
+  font-size: 1.5rem;
+}
+
+.edit-profile-page .error-message {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.edit-profile-page .success-message {
+  background-color: var(--success-bg);
+  color: var(--success-text);
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.edit-profile-page .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.edit-profile-page .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.edit-profile-page .form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background-color: var(--input-bg);
+  color: var(--text);
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.edit-profile-page .form-group input:focus {
+  outline: none;
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+.edit-profile-page .save-button,
+.edit-profile-page .change-password-button,
+.edit-profile-page .link-button,
+.edit-profile-page .unlink-button {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.edit-profile-page .save-button {
+  background-color: var(--primary);
+  color: white;
+}
+
+.edit-profile-page .save-button:hover {
+  background-color: var(--primary-dark);
+}
+
+.edit-profile-page .change-password-button {
+  background-color: var(--secondary);
+  color: white;
+}
+
+.edit-profile-page .change-password-button:hover {
+  background-color: var(--secondary-dark);
+}
+
+.edit-profile-page .link-button {
+  background-color: #5865F2; /* Discord color */
+  color: white;
+}
+
+.edit-profile-page .link-button:hover {
+  background-color: #4752C4;
+}
+
+.edit-profile-page .unlink-button {
+  background-color: var(--error);
+  color: white;
+}
+
+.edit-profile-page .unlink-button:hover {
+  background-color: var(--error-dark);
+}
+
+.edit-profile-page .section-divider {
+  height: 1px;
+  background-color: var(--border);
+  margin: 2rem 0;
+}
+
+.edit-profile-page .linked-accounts {
+  margin-top: 1rem;
+}
+
+.edit-profile-page .provider-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: var(--surface-light);
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.edit-profile-page .provider-info span {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .edit-profile-page {
+    padding: 1rem;
+  }
+
+  .edit-profile-page .edit-profile-container {
+    padding: 1.5rem;
+    margin: 1rem;
+  }
+
+  .edit-profile-page .edit-profile-container h1 {
+    font-size: 1.75rem;
+  }
+
+  .edit-profile-page .edit-profile-container h2 {
+    font-size: 1.25rem;
+  }
+}

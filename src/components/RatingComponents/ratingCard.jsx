@@ -97,7 +97,7 @@ export const RatingCard = ({
                 {userRating}
               </p>
               
-              {isSuperAdmin && showDetailedView ? (
+              {user.isSuperAdmin && showDetailedView ? (
                 <p className="rating-info-item" data-label={tRating('labels.allRatings')}>
                   {rating.details.map(detail => detail.rating).join(', ')}
                 </p>
@@ -136,7 +136,7 @@ export const RatingCard = ({
             >
               {tRating('buttons.viewDetails')}
             </button>
-            {user && isSuperAdmin && (
+            {user && user.isSuperAdmin && (
               <button 
                 onClick={handleEditClick} 
                 className={`edit-level-btn ${isEditing ? 'loading' : ''}`}

@@ -24,12 +24,12 @@ export const NotificationProvider = ({ children }) => {
   const [pendingRatings, setPendingRatings] = useState(0);
   const [pendingLevelSubmissions, setPendingLevelSubmissions] = useState(0);
   const [pendingPassSubmissions, setPendingPassSubmissions] = useState(0);
-  const { isSuperAdmin, isAdmin } = useAuth();
+  const { user } = useAuth();
   const lastFetchTimeRef = useRef(null);
   const fetchTimeoutRef = useRef(null);
 
   const fetchNotificationCounts = async () => {
-    if (!isSuperAdmin && !isAdmin) return;
+    if (!user.isSuperAdmin && !user.isRater) return;
     
     try {
       const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/admin/statistics`);
@@ -65,7 +65,7 @@ export const NotificationProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (!isSuperAdmin && !isAdmin) return;
+    if (!user?.isSuperAdmin && !user?.isRater) return;
 
     // Initial fetch
     fetchNotificationCounts();
@@ -146,7 +146,7 @@ export const NotificationProvider = ({ children }) => {
         clearTimeout(fetchTimeoutRef.current);
       }
     };
-  }, [isSuperAdmin, isAdmin]);
+  }, [user]);
 
   const totalNotifications = pendingSubmissions + pendingRatings;
   const displayCount = totalNotifications > 9 ? '9+' : totalNotifications.toString();

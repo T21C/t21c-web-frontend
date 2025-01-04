@@ -1,0 +1,150 @@
+.register-page-wrapper .register-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1a1a1a;
+  padding: 1rem;
+}
+
+.register-page-wrapper .register-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  background-color: #2d2d2d;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.register-page-wrapper .register-container h1 {
+  color: #4a9eff;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+.register-page-wrapper .error-message {
+  background-color: rgba(255, 0, 0, 0.1);
+  color: #ff6b6b;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.register-page-wrapper .success-message {
+  background-color: rgba(39, 174, 96, 0.1);
+  color: #2ecc71;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.register-page-wrapper .register-form {
+  margin-bottom: 1.5rem;
+}
+
+.register-page-wrapper .form-group {
+  margin-bottom: 1rem;
+}
+
+.register-page-wrapper .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.register-page-wrapper .form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #404040;
+  border-radius: 4px;
+  background-color: #363636;
+  color: #ffffff;
+  transition: border-color 0.2s;
+}
+
+.register-page-wrapper .form-group input:focus {
+  outline: none;
+  border-color: #4a9eff;
+}
+
+.register-page-wrapper .register-button,
+.register-page-wrapper .discord-button {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.register-page-wrapper .register-button {
+  background-color: #4a9eff;
+  color: white;
+}
+
+.register-page-wrapper .register-button:hover {
+  background-color: #3d84d5;
+}
+
+.register-page-wrapper .discord-button {
+  background-color: #5865F2;
+  color: white;
+}
+
+.register-page-wrapper .discord-button:hover {
+  background-color: #4752C4;
+}
+
+.register-page-wrapper .divider {
+  text-align: center;
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+.register-page-wrapper .divider::before,
+.register-page-wrapper .divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: calc(50% - 1.5rem);
+  height: 1px;
+  background-color: #404040;
+}
+
+.register-page-wrapper .divider::before {
+  left: 0;
+}
+
+.register-page-wrapper .divider::after {
+  right: 0;
+}
+
+.register-page-wrapper .divider span {
+  background-color: #2d2d2d;
+  padding: 0 1rem;
+  color: #a0a0a0;
+  font-size: 0.875rem;
+}
+
+.register-page-wrapper .links {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.register-page-wrapper .login-link {
+  color: #4a9eff;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color 0.2s;
+}
+
+.register-page-wrapper .login-link:hover {
+  color: #3d84d5;
+  text-decoration: underline;
+}

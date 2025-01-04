@@ -25,14 +25,14 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
     try {
       setIsLoading(true);
       const payload = {
-        isSuperAdmin: !rater.isSuperAdmin,
+        isSuperAdmin: !rater.user.isSuperAdmin,
         superAdminPassword
       };
 
       await api.put(`${import.meta.env.VITE_RATERS}/${rater.id}/super-admin`, payload);
       onUpdate({
         ...rater,
-        isSuperAdmin: !rater.isSuperAdmin
+        isSuperAdmin: !rater.user.isSuperAdmin
       });
     } catch (error) {
       console.error('Error updating admin status:', error);
@@ -95,7 +95,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
       return;
     }
 
-    if (rater.isSuperAdmin && !superAdminPassword) {
+    if (rater.user.isSuperAdmin && !superAdminPassword) {
       onError(tError('passwordRequired'));
       return;
     }
@@ -108,7 +108,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
         discordAvatar: pendingDiscordInfo.avatarUrl
       };
 
-      if (rater.isSuperAdmin) {
+      if (rater.user.isSuperAdmin) {
         payload.superAdminPassword = superAdminPassword;
       }
 
@@ -148,7 +148,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
           <div className="rater-text">
             <span className="rater-name">
               {rater.discordUsername || tRater('unknown')}
-              {rater.isSuperAdmin && (
+              {rater.user.isSuperAdmin && (
                 <span className="super-admin-icon" title={tRater('adminBadge')}>
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M8 0L10.2 4.8L15.2 5.6L11.6 9.2L12.4 14.4L8 12L3.6 14.4L4.4 9.2L0.8 5.6L5.8 4.8L8 0Z" fill="#FFD700"/>
@@ -162,7 +162,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
           </div>
         </div>
         <div className="rater-actions">
-          {rater.isSuperAdmin ? (
+          {rater.user.isSuperAdmin ? (
             <button 
               className={`remove-admin-button ${!superAdminPassword ? 'hidden' : ''}`}
               onClick={(e) => {
@@ -243,7 +243,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
                   <div className="confirm-buttons">
                     <button 
                       onClick={() => handleDiscordConfirm(true)}
-                      disabled={rater.isSuperAdmin && !superAdminPassword}
+                      disabled={rater.user.isSuperAdmin && !superAdminPassword}
                     >
                       {tRater('discord.confirmButton')}
                     </button>

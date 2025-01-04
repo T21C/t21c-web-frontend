@@ -479,7 +479,7 @@ export const DetailPopup = ({
                       username={username} 
                       rating={rating} 
                       comment={comment}
-                      isSuperAdmin={isSuperAdmin}
+                      isSuperAdmin={user.isSuperAdmin}
                       onDelete={handleDeleteRating}
                     />
                   ))}

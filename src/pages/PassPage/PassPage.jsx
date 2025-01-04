@@ -25,7 +25,7 @@ const PassPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const location = useLocation();
-  const { isSuperAdmin } = useAuth();
+  const { user } = useAuth();
   const { difficulties } = useContext(DifficultyContext);
 
   // Filter difficulties by type
@@ -157,7 +157,7 @@ const PassPage = () => {
     // Reset 12k filter
     setHide12k(false);
     // Reset deleted filter if admin
-    if (isSuperAdmin) {
+    if (user.isSuperAdmin) {
       setDeletedFilter("hide");
     }
     // Clear and reload data
@@ -431,7 +431,7 @@ const PassPage = () => {
                   />
                   {tPass('settings.filter.options.only12k')}
                 </label>
-                {isSuperAdmin && (
+                {user.isSuperAdmin && (
                   <StateDisplay
                     currentState={deletedFilter}
                     onChange={(newState) => {

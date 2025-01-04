@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import './profile.css';
@@ -6,45 +6,29 @@ import { useTranslation } from 'react-i18next';
 import DefaultAvatar from '../Icons/DefaultAvatar';
 
 function Profile() {
-  const { user, loginDiscord, logout } = useAuth();
-  const [imageSrc, setImageSrc] = useState(null);
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation('components');
   const tProfile = (key) => t(`profile.${key}`);
 
-  useEffect(() => {
-    if (user && user.imageBlob) {
-      fetch(user.imageBlob)
-        .then((response) => response.blob())
-        .then((blob) => {
-          if (blob.type !== "text/html; charset=utf-8") {
-            const objectURL = URL.createObjectURL(blob);
-            setImageSrc(objectURL);
-          } else {
-            setImageSrc('failed');
-          }
-        })
-        .catch((error) => {
-          console.error('Error fetching the image:', error);
-          setImageSrc('failed');
-        });
-    }
-  }, [user]);
+  const login = () => {
+    navigate('/login');
+  };
 
+  const openProfile = () => {
+    navigate('/profile');
+  };
+  
   return (
-    <div className="profile-container">
+    <div className="profile-inline-container">
       {user ? (
         <div className="profile-details">
-          <div className="profile-content">
-            <h3>{user.global_name}</h3>
+          <div className="profile-content" onClick={openProfile}>
+            <h3>{user.nickname}</h3>
             <h5>@{user.username}</h5>
           </div>
-          {imageSrc ? (
-            imageSrc === "failed" ? (
-              <p>{tProfile('noImg')}</p>
-            ) : (
-              <img src={imageSrc} alt="Profile" className="profile-avatar" />
-            )
+          {user.avatarUrl ? (
+            <img src={user.avatarUrl} alt="Profile" className="profile-avatar" />
           ) : (
             <DefaultAvatar className="profile-avatar" />
           )}
@@ -61,7 +45,7 @@ function Profile() {
       ) : (
         <div className="landing-container">
           <div className="landing-icon"></div>
-          <button onClick={loginDiscord} className="btn-login">
+          <button onClick={login} className="btn-login">
             <div className="svg-container">
               <svg viewBox="0 -28.5 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" preserveAspectRatio="xMidYMid" fill="#000000">
                 <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>

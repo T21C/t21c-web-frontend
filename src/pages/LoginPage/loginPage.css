@@ -1,0 +1,145 @@
+.login-page-wrapper .login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1a1a1a;
+  padding: 1rem;
+}
+
+.login-page-wrapper .login-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  background-color: #2d2d2d;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.login-page-wrapper .login-container h1 {
+  color: #4a9eff;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+.login-page-wrapper .error-message {
+  background-color: rgba(255, 0, 0, 0.1);
+  color: #ff6b6b;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.login-page-wrapper .login-form {
+  margin-bottom: 1.5rem;
+}
+
+.login-page-wrapper .form-group {
+  margin-bottom: 1rem;
+}
+
+.login-page-wrapper .form-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #ffffff;
+  font-weight: 500;
+}
+
+.login-page-wrapper .form-group input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #404040;
+  border-radius: 4px;
+  background-color: #363636;
+  color: #ffffff;
+  transition: border-color 0.2s;
+}
+
+.login-page-wrapper .form-group input:focus {
+  outline: none;
+  border-color: #4a9eff;
+}
+
+.login-page-wrapper .login-button,
+.login-page-wrapper .discord-button {
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.login-page-wrapper .login-button {
+  background-color: #4a9eff;
+  color: white;
+}
+
+.login-page-wrapper .login-button:hover {
+  background-color: #3b7fd6;
+}
+
+.login-page-wrapper .discord-button {
+  background-color: #5865F2;
+  color: white;
+}
+
+.login-page-wrapper .discord-button:hover {
+  background-color: #4752C4;
+}
+
+.login-page-wrapper .divider {
+  text-align: center;
+  margin: 1.5rem 0;
+  position: relative;
+}
+
+.login-page-wrapper .divider::before,
+.login-page-wrapper .divider::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: calc(50% - 1.5rem);
+  height: 1px;
+  background-color: #404040;
+}
+
+.login-page-wrapper .divider::before {
+  left: 0;
+}
+
+.login-page-wrapper .divider::after {
+  right: 0;
+}
+
+.login-page-wrapper .divider span {
+  background-color: #2d2d2d;
+  padding: 0 1rem;
+  color: #a0a0a0;
+  font-size: 0.875rem;
+}
+
+.login-page-wrapper .links {
+  margin-top: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.login-page-wrapper .register-link,
+.login-page-wrapper .forgot-password-link {
+  color: #4a9eff;
+  text-decoration: none;
+  font-size: 0.875rem;
+  transition: color 0.2s;
+}
+
+.login-page-wrapper .register-link:hover,
+.login-page-wrapper .forgot-password-link:hover {
+  color: #3b7fd6;
+  text-decoration: underline;
+}

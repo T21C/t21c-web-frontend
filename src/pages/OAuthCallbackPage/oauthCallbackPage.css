@@ -1,0 +1,43 @@
+.oauth-callback-page-wrapper .oauth-callback-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #1a1a1a;
+  padding: 1rem;
+}
+
+.oauth-callback-page-wrapper .callback-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  background-color: #2d2d2d;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  text-align: center;
+}
+
+.oauth-callback-page-wrapper .callback-container h1 {
+  color: #4a9eff;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+.oauth-callback-page-wrapper .status-message {
+  color: #ffffff;
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.oauth-callback-page-wrapper .error-message {
+  background-color: rgba(255, 0, 0, 0.1);
+  color: #ff6b6b;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.oauth-callback-page-wrapper .redirect-message {
+  color: #a0a0a0;
+  font-size: 0.875rem;
+}

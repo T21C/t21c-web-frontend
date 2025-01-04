@@ -41,7 +41,7 @@ const ReferencesPopup = ({ onClose }) => {
   const { t } = useTranslation('components');
   const tRef = (key, params = {}) => t(`references.popup.${key}`, params);
 
-  const { isSuperAdmin } = useAuth();
+  const { user } = useAuth();
   const { difficultyDict } = useDifficultyContext();
   const [references, setReferences] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -398,7 +398,7 @@ const ReferencesPopup = ({ onClose }) => {
             </button>
           )}
 
-          {isSuperAdmin && (
+          {user.isSuperAdmin && (
             <button 
               className="edit-mode-btn"
               onClick={handleEditModeToggle}

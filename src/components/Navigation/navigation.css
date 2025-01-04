@@ -129,7 +129,7 @@ nav {
 /* Language Select Dropdown */
 .nav-language-select {
   position: absolute;
-  top: calc(100% + 0.5rem);
+  top: 100%;
   right: 0;
   width: 15rem;
   background: #ffffff06;

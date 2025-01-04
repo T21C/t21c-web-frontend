@@ -13,7 +13,7 @@ const SubmissionManagementPage = () => {
   const { t } = useTranslation('pages');
   const tSubmission = (key, params = {}) => t(`submissionManagement.${key}`, params);
   const currentUrl = window.location.origin + location.pathname;
-  const { isSuperAdmin } = useAuth();
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('levels'); // 'levels' or 'passes'
   const [isLoading, setIsLoading] = useState(false);
   const { pendingLevelSubmissions, pendingPassSubmissions } = useNotification();
@@ -37,7 +37,7 @@ const SubmissionManagementPage = () => {
     };
   }, []);
 
-  if (isSuperAdmin === undefined) {
+  if (user.isSuperAdmin === undefined) {
     return (
       <>
         <MetaTags
@@ -58,7 +58,7 @@ const SubmissionManagementPage = () => {
     );
   }
 
-  if (!isSuperAdmin) {
+  if (!user.isSuperAdmin) {
     return (
       <AccessDenied 
         metaTitle={tSubmission('meta.title')}

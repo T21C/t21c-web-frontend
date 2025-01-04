@@ -28,7 +28,7 @@ const RatingPage = () => {
   const { t } = useTranslation('pages');
   const tRating = (key, params = {}) => t(`rating.${key}`, params);
   const currentUrl = window.location.origin + location.pathname;
-  const { user, isSuperAdmin, isAdmin } = useAuth();
+  const { user } = useAuth();
   const { 
     sortOrder, 
     hideRated, 
@@ -184,7 +184,7 @@ const RatingPage = () => {
     [sortOptions, sortType]
   );
 
-  if (isSuperAdmin === undefined && isAdmin === undefined) {
+  if (user.isSuperAdmin === undefined && user.isRater === undefined) {
     return (
       <div className="admin-rating-page">
         <MetaTags
@@ -203,7 +203,7 @@ const RatingPage = () => {
     );
   }
 
-  if (!isSuperAdmin && !isAdmin) {
+  if (!user?.isSuperAdmin && !user?.isRater) {
     return (
       <AccessDenied 
         metaTitle={tRating('meta.title')}
@@ -227,7 +227,7 @@ const RatingPage = () => {
       <div className="admin-rating-body">
         <ScrollButton />
         <div className="admin-buttons">
-            {isSuperAdmin && (
+            {user.isSuperAdmin && (
               <>
                 <button 
                   className="admin-button"
@@ -274,7 +274,7 @@ const RatingPage = () => {
               />
             </div>
           </div>
-          {isSuperAdmin && (
+          {user.isSuperAdmin && (
             <div className="view-mode-toggle">
               <span className="toggle-label">{tRating('toggles.detailedView.label')}</span>
               <label className="switch">
@@ -314,7 +314,7 @@ const RatingPage = () => {
             />
         </div>
 
-        {ratings ? (
+        {ratings && ratings.length > 0 ? (
           <>
             <div className="ratings-header">
               <div className="ratings-header-container">
@@ -360,7 +360,7 @@ const RatingPage = () => {
                     index={index}
                     setSelectedRating={setSelectedRating}
                     user={user}
-                    isSuperAdmin={isSuperAdmin}
+                    isSuperAdmin={user.isSuperAdmin}
                     showDetailedView={showDetailedView}
                     onEditLevel={() => handleEditLevel(rating.level.id)}
                   />
@@ -375,11 +375,11 @@ const RatingPage = () => {
                 ratings={ratings}
                 setRatings={setRatings}
                 user={user}
-                isSuperAdmin={isSuperAdmin}
+                isSuperAdmin={user.isSuperAdmin}
               />
             )}
 
-            {openEditDialog && selectedLevel && isSuperAdmin && (
+            {openEditDialog && selectedLevel && user.isSuperAdmin && (
               <EditLevelPopup
                 level={selectedLevel}
                 onClose={() => {
@@ -418,7 +418,7 @@ const RatingPage = () => {
           <ReferencesPopup onClose={() => setShowReferences(false)} />
         )}
 
-        {showRaterManagement && isSuperAdmin && (
+        {showRaterManagement && user.isSuperAdmin && (
           <RaterManagementPopup 
             onClose={() => setShowRaterManagement(false)}
             currentUser={user}

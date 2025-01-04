@@ -19,7 +19,7 @@ const AboutUsPage = () => {
     const fetchRaters = async () => {
       try {
         const response = await api.get(import.meta.env.VITE_RATERS_API);
-        setRaters(response.data.sort((a, b) => !a.isSuperAdmin - !b.isSuperAdmin));
+        setRaters(response.data.sort((a, b) => !a.user.isSuperAdmin - !b.user.isSuperAdmin));
       } catch (error) {
         console.error('Failed to fetch raters:', error);
       }
@@ -151,10 +151,10 @@ const AboutUsPage = () => {
                             <span className="credit-name">
                               <span className="at">@</span>
                               {rater.discordUsername}
-                              {rater.isSuperAdmin ? ' ⭐' : ''}
+                              {rater.user.isSuperAdmin ? ' ⭐' : ''}
                             </span>
                             <span className="credit-role">
-                              {rater.isSuperAdmin ? 'Manager' : 'Rater'}
+                              {rater.user.isSuperAdmin ? 'Manager' : 'Rater'}
                             </span>
                           </div>
                         </div>

@@ -7,7 +7,7 @@ import { EditLevelPopup } from "@/components/EditLevelPopup/EditLevelPopup";
 import { useDifficultyContext } from "../../contexts/DifficultyContext";
 import { EditIcon } from "../Icons/EditIcon";
 
-const LevelCard = ({index, level: initialLevel, legacyMode, isSuperAdmin}) => {
+const LevelCard = ({index, level: initialLevel, legacyMode, user}) => {
   const { t } = useTranslation('components');
   const tCard = (key) => t(`cards.level.${key}`);
   
@@ -78,7 +78,7 @@ const LevelCard = ({index, level: initialLevel, legacyMode, isSuperAdmin}) => {
 
   return (
     <div className='level-card' style={{ backgroundColor: level.isDeleted ? "#f0000099" : level.isHidden ? "#88888899" : "none" }}>
-      {isSuperAdmin && (
+      {user.isSuperAdmin && (
         <div className="toRate-checkbox">
           <label>
             <input
@@ -188,13 +188,13 @@ const LevelCard = ({index, level: initialLevel, legacyMode, isSuperAdmin}) => {
           )}
         </div>
 
-        {isSuperAdmin && (
+        {user.isSuperAdmin && (
           <button className="edit-button" onClick={handleEditClick}>
             <EditIcon size={32} />
           </button>
         )}
 
-        {isSuperAdmin && level.isDeleted && (
+        {user.isSuperAdmin && level.isDeleted && (
           <button className="restore-button" onClick={(e) => { e.stopPropagation(); handleRestore(); }}>
             {tCard('buttons.restore')}
           </button>

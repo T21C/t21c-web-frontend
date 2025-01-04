@@ -11,7 +11,7 @@ import { TrashIcon } from '../../components/Icons/TrashIcon';
 import { useTranslation } from 'react-i18next';
 
 const DifficultyPage = () => {
-  const { isSuperAdmin } = useAuth();
+  const { user } = useAuth();
   const { difficulties, loading: contextLoading, reloadDifficulties } = useDifficultyContext();
   const { t } = useTranslation('pages');
   const tDiff = (key, params = {}) => t(`difficulty.${key}`, params);
@@ -174,7 +174,7 @@ const DifficultyPage = () => {
     }
   };
 
-  if (isSuperAdmin === undefined) {
+  if (user.isSuperAdmin === undefined) {
     return (
       <div className="difficulty-page">
         <MetaTags
@@ -193,7 +193,7 @@ const DifficultyPage = () => {
     );
   }
 
-  if (!isSuperAdmin) {
+  if (!user.isSuperAdmin) {
     return (
       <AccessDenied 
         metaTitle={tDiff('meta.title')}

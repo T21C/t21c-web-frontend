@@ -47,7 +47,7 @@ const LevelDetailPage = () => {
   const [infoLoading, setInfoLoading] = useState(true);
   const [videoDetail, setVideoDetail] = useState(null);
 
-  const { user, isSuperAdmin } = useAuth();
+  const { user } = useAuth();
   const [passCount, setPassCount] = useState(0)
 
   const [openDialog, setOpenDialog] = useState(false)
@@ -249,7 +249,7 @@ const LevelDetailPage = () => {
               </p>
             </div>
           </div>
-          {isSuperAdmin && (
+          {user.isSuperAdmin && (
             <button 
               className="edit-button svg-stroke"
               onClick={() => setOpenEditDialog(true)}
@@ -460,7 +460,7 @@ const LevelDetailPage = () => {
       </div>
     </div>
 
-    {openEditDialog && isSuperAdmin && (
+    {openEditDialog && user.isSuperAdmin && (
       <EditLevelPopup
         level={res.level}
         onClose={() => setOpenEditDialog(false)}

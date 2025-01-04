@@ -21,7 +21,7 @@ const Navigation = ({ children }) => {
   const { language, setLanguage } = useContext(UserContext);
   const [openDialog, setOpenDialog] = useState(false);
   const [isAdminView, setIsAdminView] = useState(false);
-  const { isAdmin, isSuperAdmin } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const { pendingRatings, pendingSubmissions } = useNotification();
@@ -68,7 +68,7 @@ const Navigation = ({ children }) => {
 
   useEffect(() => {
     const isAdminPath = location.pathname.startsWith('/admin');
-    setIsAdminView(isAdminPath && isSuperAdmin);
+    setIsAdminView(isAdminPath && user.isSuperAdmin);
   }, [location]);
 
   useEffect(() => {
@@ -123,7 +123,7 @@ const Navigation = ({ children }) => {
         onClick={changeNavState}
       />
 
-      <nav className={isAdminView && isSuperAdmin ? 'nav--admin' : ''}>
+      <nav className={isAdminView && user.isSuperAdmin ? 'nav--admin' : ''}>
         <div className="nav-wrapper">
           {/* Left side: Logo and main navigation links */}
           <div className="nav-left">
@@ -197,7 +197,7 @@ const Navigation = ({ children }) => {
                     to="/passes">
                     <li className="nav-list-item">{tNav('links.pass')}</li>
                   </NavLink>
-                  {(isAdmin || isSuperAdmin) && (
+                  {(user?.isRater || user?.isSuperAdmin) && (
                   <NavLink className={({ isActive }) =>
                     "nav-link " + (isActive ? "active" : "")}
                     to="/admin/rating">
@@ -218,7 +218,7 @@ const Navigation = ({ children }) => {
 
           {/* Right side: Language switcher and profile */}
           <ul className="nav-list">
-            {isSuperAdmin && (
+            {user?.isSuperAdmin && (
               <li className="nav-list-item" onClick={toggleAdminView}>
                 {isAdminView ? tNav('links.admin.back') : tNav('links.admin.admin')}
               </li>
@@ -394,7 +394,7 @@ const Navigation = ({ children }) => {
                   {tNav('links.pass')}
                 </NavLink>
               </li>
-              {(isAdmin || isSuperAdmin) && (
+              {(user?.isRater || user?.isSuperAdmin) && (
                 <li className="nav-list-item">
                   <NavLink to="/admin/rating" onClick={changeNavState}>
                     {tNav('links.rating')}

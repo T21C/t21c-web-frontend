@@ -31,7 +31,7 @@ const LevelPage = () => {
   const [error, setError] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(false);
   const location = useLocation();
-  const { isSuperAdmin } = useAuth();
+  const { user } = useAuth();
   const { difficulties } = useContext(DifficultyContext);
   const {
     levelsData,
@@ -215,7 +215,7 @@ const LevelPage = () => {
     // Reset special difficulties
     setSelectedSpecialDiffs([]);
     // Reset filters
-    if (isSuperAdmin) {
+    if (user.isSuperAdmin) {
       setDeletedFilter("hide");
     }
     setClearedFilter("show");
@@ -411,7 +411,7 @@ const LevelPage = () => {
                   label="Cleared Levels"
                   states={['show', 'hide', 'only']}
                 />
-                {isSuperAdmin && (
+                {user.isSuperAdmin && (
                   <StateDisplay
                     currentState={deletedFilter}
                     onChange={(newState) => {
@@ -572,7 +572,7 @@ const LevelPage = () => {
               key={index}
               level={l}
               legacyMode={legacyDiff}
-              isSuperAdmin={isSuperAdmin}
+              isSuperAdmin={user.isSuperAdmin}
             />
           ))}
         </InfiniteScroll>

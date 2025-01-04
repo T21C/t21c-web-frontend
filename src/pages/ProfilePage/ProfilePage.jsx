@@ -22,18 +22,30 @@ const parseRankColor = (rank) => {
 }
 
 const ProfilePage = () => {
-    const {playerId} = useParams()
+    let {playerId} = useParams()
     const [playerData, setPlayerData] = useState(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
     const { t } = useTranslation('pages');
     const tProfile = (key, params = {}) => t(`profile.${key}`, params);
-    const { isSuperAdmin } = useAuth();
+    const { user } = useAuth();
     const { difficultyList } = useDifficultyContext();
     const [showAdminPopup, setShowAdminPopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
     const location = useLocation();
     const currentUrl = window.location.origin + location.pathname;
+    if (!playerId && !user) {
+      return (
+        <div className="player-page">
+          <CompleteNav />
+          <div className="background-level"></div>
+          <h1 className="player-notfound">{tProfile('notFound')}</h1>
+        </div>
+      );
+    }
+    if (!playerId) {
+      playerId = user.playerId;
+    }
 
     var valueLabels = {
       rankedScore: tProfile('valueLabels.rankedScore'),
@@ -149,7 +161,7 @@ const ProfilePage = () => {
                       />
                     </div>
                   </div>
-                  {isSuperAdmin && (
+                  {user.isSuperAdmin && (
                   <button 
                     className="admin-edit-button"
                     onClick={handleEditClick}

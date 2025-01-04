@@ -20,7 +20,7 @@ const limit = 30;
 const LeaderboardPage = () => {
   const { t } = useTranslation('pages');
   const tLeaderboard = (key, params = {}) => t(`leaderboard.${key}`, params);
-  const { isSuperAdmin } = useAuth();
+  const { user } = useAuth();
   const [error, setError] = useState(false);
   const [filteredData, setFilteredData] = useState([]);
   const location = useLocation();
@@ -105,7 +105,8 @@ const LeaderboardPage = () => {
     if (playerData && playerData.length > 0) {
       setLoading(true);
       var filteredPlayers = playerData.filter(player => {
-        const matchesQuery = player.name.toLowerCase().includes(query.toLowerCase());
+        const matchesQuery = player.name.toLowerCase().includes(query.toLowerCase()) 
+        || player.discordUsername?.toLowerCase().includes(query.toLowerCase());
         const matchesBannedFilter = 
           (showBanned === 'show') ? true :
           (showBanned === 'hide') ? !player.isBanned :
@@ -393,7 +394,7 @@ const LeaderboardPage = () => {
                   width="11rem"
                 />
               </div>
-              {isSuperAdmin && (
+              {user.isSuperAdmin && (
                 <div className="recent" style={{ display: "grid", alignItems: "end" }}>
                   <StateDisplay
                     label={tLeaderboard('bannedPlayers.label')}

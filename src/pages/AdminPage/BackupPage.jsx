@@ -355,7 +355,7 @@ const formatFileSize = (bytes) => {
 const BackupPage = () => {
   const { t } = useTranslation('pages');
   const tBackup = (key, params = {}) => t(`backup.${key}`, params);
-  const { user, isSuperAdmin } = useAuth();
+  const { user } = useAuth();
   const currentUrl = window.location.origin + location.pathname;
   const [activeTab, setActiveTab] = useState('mysql');
   const [loading, setLoading] = useState(false);
@@ -472,7 +472,7 @@ const BackupPage = () => {
     return backups[activeTab].reduce((total, backup) => total + backup.size, 0);
   }, [backups, activeTab]);
 
-  if (isSuperAdmin === undefined) {
+  if (user.isSuperAdmin === undefined) {
     return (
       <div className="admin-backup-page">
         <MetaTags
@@ -491,7 +491,7 @@ const BackupPage = () => {
     );
   }
 
-  if (!isSuperAdmin) {
+  if (!user.isSuperAdmin) {
     return (
       <AccessDenied 
         metaTitle={tBackup('meta.title')}

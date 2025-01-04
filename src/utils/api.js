@@ -8,13 +8,11 @@ const api = axios.create({
 // Request interceptor to add auth header
 api.interceptors.request.use(
   (config) => {
-    // Get token directly from localStorage instead of using the hook
-    const user = localStorage.getItem('user') 
-      ? JSON.parse(localStorage.getItem('user'))
-      : null;
+    // Get token from localStorage
+    const token = localStorage.getItem('token');
     
-    if (user?.access_token) {
-      config.headers.Authorization = `Bearer ${user.access_token}`;
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },

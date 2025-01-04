@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { AccessDenied } from '../../components';
 
 const AnnouncementPage = () => {
-  const { isSuperAdmin } = useAuth();
+  const { user } = useAuth();
   const { t } = useTranslation('pages');
   const tAnnounce = (key) => t(`announcement.${key}`);
   const currentUrl = window.location.origin + location.pathname;
@@ -201,7 +201,7 @@ const AnnouncementPage = () => {
     }
   };
 
-  if (isSuperAdmin === undefined) {
+  if (user.isSuperAdmin === undefined) {
     return (
       <>
         <MetaTags
@@ -222,7 +222,7 @@ const AnnouncementPage = () => {
     );
   }
 
-  if (!isSuperAdmin) {
+  if (!user.isSuperAdmin) {
     return (
       <AccessDenied 
         metaTitle={tAnnounce('meta.title')}
