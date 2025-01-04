@@ -87,14 +87,6 @@ const LoginPage = () => {
           Login with Discord
         </button>
 
-        <div className="links">
-          <Link to="/register" className="register-link">
-            Don't have an account? Sign up
-          </Link>
-          <Link to="/forgot-password" className="forgot-password-link">
-            Forgot your password?
-          </Link>
-        </div>
       </div>
     </div>
     </div>

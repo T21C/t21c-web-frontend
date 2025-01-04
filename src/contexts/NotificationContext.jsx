@@ -29,7 +29,7 @@ export const NotificationProvider = ({ children }) => {
   const fetchTimeoutRef = useRef(null);
 
   const fetchNotificationCounts = async () => {
-    if (!user.isSuperAdmin && !user.isRater) return;
+    if (!user?.isSuperAdmin && !user?.isRater) return;
     
     try {
       const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/admin/statistics`);

@@ -97,7 +97,6 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const handleBaseScoreChange = (value, isFromDropdown) => {
     if (isFromDropdown) {
       const selectedDiff = difficulties.find(d => d.name === value);
-      console.log(selectedDiff);
       if (selectedDiff) {
         setFormData(prev => ({
           ...prev,

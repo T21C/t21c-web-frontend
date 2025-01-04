@@ -37,7 +37,7 @@ export const RatingCard = ({
     const tRating = (key) => t(`rating.ratingCard.${key}`);
     const [isEditing, setIsEditing] = useState(false);
 
-    const userRating = rating.details?.find(detail => detail.username === user.username)?.rating || "";
+    const userRating = rating.details?.find(detail => detail.username === user?.username)?.rating || "";
     const processedRatings = rating.details
         .map(({rating}) => calculateRatingValue(rating))
         .filter(rating => rating !== null);
@@ -97,7 +97,7 @@ export const RatingCard = ({
                 {userRating}
               </p>
               
-              {user.isSuperAdmin && showDetailedView ? (
+              {user?.isSuperAdmin && showDetailedView ? (
                 <p className="rating-info-item" data-label={tRating('labels.allRatings')}>
                   {rating.details.map(detail => detail.rating).join(', ')}
                 </p>
@@ -136,7 +136,7 @@ export const RatingCard = ({
             >
               {tRating('buttons.viewDetails')}
             </button>
-            {user && user.isSuperAdmin && (
+            {user && user?.isSuperAdmin && (
               <button 
                 onClick={handleEditClick} 
                 className={`edit-level-btn ${isEditing ? 'loading' : ''}`}

@@ -14,6 +14,23 @@
   z-index: 2;
 }
 
+.player-page .player-search-for-other {
+  color: #fffa;
+  position: absolute;
+  white-space: nowrap;
+  top: calc(50% + 3rem);          /* Position from the top */
+  left: 50%;         /* Position from the left */
+  transition: all 0.2s;
+  transform: translate(-50%, -50%); /* Center the element */
+  z-index: 2;
+}
+
+.player-page .player-search-for-other:hover {
+  color: #ffffff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 
 .player-page .player-body {
   position: relative;
@@ -169,17 +186,15 @@
   border-bottom: 1px solid #ccc;
 }
 
-.admin-edit-button {
+.edit-button-container {
   position: absolute;
   right: -60px; /* Position it outside the header */
   top: 20px;
-  background-color: var(--color-white-t10);
-  color: var(--color-white);
   border: none;
-  width: 50px;
-  height: 50px;
   padding: 2px;
   border-radius: 4px;
+  flex-direction: column;
+  gap: 10px;
   cursor: pointer;
   transition: background-color 0.2s;
   display: flex;
@@ -187,11 +202,22 @@
   justify-content: center;
 }
 
-.admin-edit-button:hover {
+.edit-button {
+  background-color: var(--color-white-t10); 
+  border: none;
+  width: 50px;
+  height: 50px;
+  padding: 2px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.edit-button:hover {
   background-color: var(--color-white-t20);
 }
 
-.admin-edit-button svg {
+.edit-button svg {
   width: 36px;
   height: 36px;
 }

@@ -398,7 +398,7 @@ const ReferencesPopup = ({ onClose }) => {
             </button>
           )}
 
-          {user.isSuperAdmin && (
+          {user?.isSuperAdmin && (
             <button 
               className="edit-mode-btn"
               onClick={handleEditModeToggle}

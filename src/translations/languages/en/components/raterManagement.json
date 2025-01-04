@@ -32,12 +32,14 @@
   },
   "errors": {
     "passwordRequired": "Password is required",
+    "invalidPassword": "Invalid super admin password",
     "deleteConfirm": "Are you sure you want to delete this rater?",
     "updateAdminFailed": "Failed to update admin status",
     "deleteFailed": "Failed to delete rater",
     "discordFetchFailed": "Failed to fetch Discord ID",
     "updateDiscordFailed": "Failed to update Discord info",
     "loadFailed": "Failed to load raters",
-    "addFailed": "Failed to add rater"
+    "addFailed": "Failed to add rater",
+    "userNotFound": "User not found"
   }
 } 

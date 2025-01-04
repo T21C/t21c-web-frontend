@@ -1,5 +1,6 @@
 .edit-level-popup-overlay {
   position: fixed;
+  padding-top: 4rem;
   top: 0;
   left: 0;
   right: 0;

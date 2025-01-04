@@ -25,18 +25,24 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
     try {
       setIsLoading(true);
       const payload = {
-        isSuperAdmin: !rater.user.isSuperAdmin,
+        discordId: rater.discordId,
+        role: 'superadmin',
         superAdminPassword
       };
 
-      await api.put(`${import.meta.env.VITE_RATERS}/${rater.id}/super-admin`, payload);
-      onUpdate({
-        ...rater,
-        isSuperAdmin: !rater.user.isSuperAdmin
-      });
+      if (rater.isSuperAdmin) {
+        await api.post(`/v2/admin/users/revoke-role`, payload);
+      } else {
+        await api.post(`/v2/admin/users/grant-role`, payload);
+      }
+      onUpdate();
     } catch (error) {
       console.error('Error updating admin status:', error);
-      onError(error.response?.data?.error || tError('updateAdminFailed'));
+      if (error.response?.data?.message === 'Invalid super admin password') {
+        onError(tError('invalidPassword'));
+      } else {
+        onError(error.response?.data?.error || tError('updateAdminFailed'));
+      }
     } finally {
       setIsLoading(false);
     }
@@ -54,12 +60,20 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
 
     try {
       setIsLoading(true);
-      const payload = { superAdminPassword };
-      await api.delete(`${import.meta.env.VITE_RATERS}/${rater.id}`, { data: payload });
-      onDelete(rater.id);
+      const payload = { 
+        discordId: rater.discordId,
+        role: rater.isSuperAdmin ? 'superadmin' : 'rater',
+        superAdminPassword 
+      };
+      await api.post(`/v2/admin/users/revoke-role`, payload);
+      onDelete();
     } catch (error) {
       console.error('Error deleting rater:', error);
-      onError(error.response?.data?.error || tError('deleteFailed'));
+      if (error.response?.data?.error === 'Invalid super admin password') {
+        onError(tError('invalidPassword'));
+      } else {
+        onError(error.response?.data?.error || tError('deleteFailed'));
+      }
     } finally {
       setIsLoading(false);
     }
@@ -70,7 +84,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
 
     try {
       setIsLoading(true);
-      const response = await api.get(`${import.meta.env.VITE_DISCORD_API}/users/${discordId}`);
+      const response = await api.get(`/v2/discord/users/${discordId}`);
       const discordUser = response.data;
 
       setPendingDiscordInfo({
@@ -82,7 +96,11 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
       setShowDiscordConfirm(true);
     } catch (error) {
       console.error('Error fetching Discord ID:', error);
-      onError(tError('discordFetchFailed'));
+      if (error.response?.status === 404) {
+        onError(tError('userNotFound'));
+      } else {
+        onError(tError('discordFetchFailed'));
+      }
     } finally {
       setIsLoading(false);
     }
@@ -95,7 +113,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
       return;
     }
 
-    if (rater.user.isSuperAdmin && !superAdminPassword) {
+    if (rater.isSuperAdmin && !superAdminPassword) {
       onError(tError('passwordRequired'));
       return;
     }
@@ -104,22 +122,12 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
       setIsLoading(true);
       const payload = {
         discordId: pendingDiscordInfo.id,
-        discordUsername: pendingDiscordInfo.username,
-        discordAvatar: pendingDiscordInfo.avatarUrl
+        role: rater.isSuperAdmin ? 'superadmin' : 'rater',
+        superAdminPassword: rater.isSuperAdmin ? superAdminPassword : undefined
       };
 
-      if (rater.user.isSuperAdmin) {
-        payload.superAdminPassword = superAdminPassword;
-      }
-
-      await api.put(`${import.meta.env.VITE_RATERS}/${rater.id}/discord`, payload);
-
-      onUpdate({
-        ...rater,
-        discordId: pendingDiscordInfo.id,
-        discordUsername: pendingDiscordInfo.username,
-        discordAvatar: pendingDiscordInfo.avatarUrl
-      });
+      await api.post(`/v2/admin/users/grant-role`, payload);
+      onUpdate();
 
       setDiscordId('');
     } catch (error) {
@@ -147,8 +155,8 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
           )}
           <div className="rater-text">
             <span className="rater-name">
-              {rater.discordUsername || tRater('unknown')}
-              {rater.user.isSuperAdmin && (
+              {rater.nickname || tRater('unknown')}
+              {rater.isSuperAdmin && (
                 <span className="super-admin-icon" title={tRater('adminBadge')}>
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M8 0L10.2 4.8L15.2 5.6L11.6 9.2L12.4 14.4L8 12L3.6 14.4L4.4 9.2L0.8 5.6L5.8 4.8L8 0Z" fill="#FFD700"/>
@@ -162,7 +170,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
           </div>
         </div>
         <div className="rater-actions">
-          {rater.user.isSuperAdmin ? (
+          {rater.isSuperAdmin ? (
             <button 
               className={`remove-admin-button ${!superAdminPassword ? 'hidden' : ''}`}
               onClick={(e) => {
@@ -243,7 +251,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
                   <div className="confirm-buttons">
                     <button 
                       onClick={() => handleDiscordConfirm(true)}
-                      disabled={rater.user.isSuperAdmin && !superAdminPassword}
+                      disabled={rater.isSuperAdmin && !superAdminPassword}
                     >
                       {tRater('discord.confirmButton')}
                     </button>
@@ -315,42 +323,46 @@ const RaterManagementPopup = ({ onClose, currentUser }) => {
     };
   }, [handleClickOutside, handleEscapeKey]);
 
-  useEffect(() => {
-    const fetchRaters = async () => {
-      try {
-        const response = await api.get(import.meta.env.VITE_RATERS);
-        setRaters(response.data);
-      } catch (error) {
-        console.error('Error fetching raters:', error);
-        setErrorMessage(tError('loadFailed'));
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchRaters();
+  const fetchRaters = useCallback(async () => {
+    try {
+      const response = await api.get('/v2/admin/users');
+      setRaters(response.data);
+    } catch (error) {
+      console.error('Error fetching raters:', error);
+      setErrorMessage('Failed to fetch users');
+    } finally {
+      setIsLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchRaters();
+  }, [fetchRaters]);
 
   const handleAddRater = async () => {
     if (!newRaterDiscordId.trim()) return;
 
     try {
-      const response = await api.post(import.meta.env.VITE_RATERS, { discordId: newRaterDiscordId });
-      setRaters([...raters, response.data]);
+      const payload = { 
+        discordId: newRaterDiscordId,
+        role: 'rater'
+      };
+      await api.post('/v2/admin/users/grant-role', payload);
+      await fetchRaters();
       setNewRaterDiscordId('');
     } catch (error) {
       console.error('Error adding rater:', error);
-      setErrorMessage(tError('addFailed'));
+      if (error.response?.data?.error?.includes('Failed to fetch Discord user info: Not Found')) {
+        setErrorMessage(tError('userNotFound'));
+      } else {
+        setErrorMessage(error.response?.data?.error || tError('addFailed'));
+      }
     }
   };
 
-  const handleUpdateRater = (updatedRater) => {
-    setRaters(raters.map(r => r.id === updatedRater.id ? updatedRater : r));
-  };
+  const handleUpdateRater = useCallback(() => fetchRaters(), [fetchRaters]);
 
-  const handleDeleteRater = (raterId) => {
-    setRaters(raters.filter(r => r.id !== raterId));
-  };
+  const handleDeleteRater = useCallback(() => fetchRaters(), [fetchRaters]);
 
   const handleError = (message) => {
     setErrorMessage(message);

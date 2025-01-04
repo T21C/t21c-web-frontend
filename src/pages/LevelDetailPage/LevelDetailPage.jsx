@@ -249,7 +249,7 @@ const LevelDetailPage = () => {
               </p>
             </div>
           </div>
-          {user.isSuperAdmin && (
+          {user?.isSuperAdmin && (
             <button 
               className="edit-button svg-stroke"
               onClick={() => setOpenEditDialog(true)}
@@ -460,7 +460,7 @@ const LevelDetailPage = () => {
       </div>
     </div>
 
-    {openEditDialog && user.isSuperAdmin && (
+    {openEditDialog && user?.isSuperAdmin && (
       <EditLevelPopup
         level={res.level}
         onClose={() => setOpenEditDialog(false)}

@@ -19,7 +19,13 @@ const AboutUsPage = () => {
     const fetchRaters = async () => {
       try {
         const response = await api.get(import.meta.env.VITE_RATERS_API);
-        setRaters(response.data.sort((a, b) => !a.user.isSuperAdmin - !b.user.isSuperAdmin));
+        // Sort raters with super admins first
+        setRaters(response.data.sort((a, b) => {
+          if (a.isSuperAdmin === b.isSuperAdmin) {
+            return a.discordUsername?.localeCompare(b.discordUsername) || 0;
+          }
+          return b.isSuperAdmin - a.isSuperAdmin;
+        }));
       } catch (error) {
         console.error('Failed to fetch raters:', error);
       }
@@ -151,10 +157,10 @@ const AboutUsPage = () => {
                             <span className="credit-name">
                               <span className="at">@</span>
                               {rater.discordUsername}
-                              {rater.user.isSuperAdmin ? ' ⭐' : ''}
+                              {rater.isSuperAdmin ? ' ⭐' : ''}
                             </span>
                             <span className="credit-role">
-                              {rater.user.isSuperAdmin ? 'Manager' : 'Rater'}
+                              {tAbout('sections.credits.categories.rating.roles.' + (rater.isSuperAdmin ? 'manager' : 'rater'))}
                             </span>
                           </div>
                         </div>

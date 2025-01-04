@@ -174,7 +174,7 @@ const DifficultyPage = () => {
     }
   };
 
-  if (user.isSuperAdmin === undefined) {
+  if (user?.isSuperAdmin === undefined) {
     return (
       <div className="difficulty-page">
         <MetaTags
@@ -193,7 +193,7 @@ const DifficultyPage = () => {
     );
   }
 
-  if (!user.isSuperAdmin) {
+  if (!user?.isSuperAdmin) {
     return (
       <AccessDenied 
         metaTitle={tDiff('meta.title')}

@@ -472,7 +472,7 @@ const BackupPage = () => {
     return backups[activeTab].reduce((total, backup) => total + backup.size, 0);
   }, [backups, activeTab]);
 
-  if (user.isSuperAdmin === undefined) {
+  if (user?.isSuperAdmin === undefined) {
     return (
       <div className="admin-backup-page">
         <MetaTags
@@ -491,7 +491,7 @@ const BackupPage = () => {
     );
   }
 
-  if (!user.isSuperAdmin) {
+  if (!user?.isSuperAdmin) {
     return (
       <AccessDenied 
         metaTitle={tBackup('meta.title')}

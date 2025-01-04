@@ -394,7 +394,7 @@ const LeaderboardPage = () => {
                   width="11rem"
                 />
               </div>
-              {user.isSuperAdmin && (
+              {user?.isSuperAdmin && (
                 <div className="recent" style={{ display: "grid", alignItems: "end" }}>
                   <StateDisplay
                     label={tLeaderboard('bannedPlayers.label')}

@@ -166,7 +166,7 @@ export const DetailPopup = ({
 
   useEffect(() => {
     if (selectedRating) {
-      const userDetail = selectedRating.details?.find(detail => detail.username === user.username);
+      const userDetail = selectedRating.details?.find(detail => detail.username === user?.username);
       const rating = userDetail?.rating || "";
       const comment = userDetail?.comment || "";
       
@@ -180,7 +180,7 @@ export const DetailPopup = ({
       setHasUnsavedChanges(false);
       setOtherRatings(selectedRating.details || []);
     }
-  }, [selectedRating, user.username]);
+  }, [selectedRating, user?.username]);
 
   useEffect(() => {
     const hasChanges = pendingRating !== initialRating || pendingComment !== initialComment;
@@ -188,17 +188,14 @@ export const DetailPopup = ({
   }, [pendingRating, pendingComment, initialRating, initialComment]);
 
   const validateRating = (rating) => {
-    console.log(`\n🔍 Validating rating: "${rating}"`);
     
     if (!rating) {
-      console.log('  ↳ Empty rating, no comment required');
       setIsCommentRequired(false);
       return true;
     }
 
     // Handle bare -2 case first
     if (rating.trim() === '-2') {
-      console.log('  ↳ Found bare -2');
       setIsCommentRequired(true);
       return true;
     }
@@ -206,30 +203,23 @@ export const DetailPopup = ({
     // Find the first separator and split only once
     const match = rating.match(/^([^-~\s]+)([-~\s])(.+)$/);
     if (!match) {
-      console.log('  ↳ No separator found, treating as single rating');
       setIsCommentRequired(false);
       return true;
     }
 
     const [_, firstPart, separator, secondPart] = match;
     const parts = [firstPart, secondPart];
-    console.log(`  ↳ Split by "${separator}" into:`, parts);
     
     // Check if any part is exactly "-2"
     const containsMinusTwo = parts.some(part => {
       // Exclude cases like -21 or other negative numbers
       if (part.startsWith('-') && part !== '-2') {
-        console.log(`    Skipping "${part}" (negative number but not -2)`);
         return false;
       }
       const isMinusTwo = part === '-2';
-      if (isMinusTwo) {
-        console.log(`    Found exact "-2" match in "${part}"`);
-      }
       return isMinusTwo;
     });
 
-    console.log(`  ↳ Comment required: ${containsMinusTwo}`);
     setIsCommentRequired(containsMinusTwo);
     return true;
   };
@@ -479,7 +469,7 @@ export const DetailPopup = ({
                       username={username} 
                       rating={rating} 
                       comment={comment}
-                      isSuperAdmin={user.isSuperAdmin}
+                      isSuperAdmin={user?.isSuperAdmin}
                       onDelete={handleDeleteRating}
                     />
                   ))}

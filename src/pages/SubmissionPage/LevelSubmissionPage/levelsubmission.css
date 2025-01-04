@@ -268,3 +268,13 @@
 .level-submission-page .result-message .close-btn:hover {
   color: #ffdddd;
 }
+
+.level-submission-page .dl-links-or {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  left: 50%;
+
+  transform: translate(-50%, 50%);
+  z-index: 10;
+}

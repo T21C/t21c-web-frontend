@@ -37,6 +37,7 @@ const ScoreCard = ({scoreData}) => {
     videoLink: "\nhttps://www.youtube.com/watch?v=H7SHcejTyYY"
     */
 
+    
 
   return (
     <div className='score-card'>
@@ -47,6 +48,7 @@ const ScoreCard = ({scoreData}) => {
           <p className="score-exp">{scoreData.level.artist}</p>
           <p className='score-desc'>{scoreData.level.song}</p>
       </div>
+      {scoreData.isWorldsFirst && <div className="wf-badge">🏆<div className="wf-text">WF</div></div>}
       <div className="score-wrapper">
           <p className="score-exp">{tScore('labels.score')}</p>
           <p className='score-desc'>{formatScore(scoreData.scoreV2)}</p>

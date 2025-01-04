@@ -316,7 +316,7 @@ const LevelSubmissionPage = () => {
                 onChange={handleInputChange}
                 style={{ borderColor: isFormValidDisplay.directLink ? "" : "red" }}
               />
-              <span style={{display: "flex", alignItems: "center"}}>{tLevel("submInfo.dlLinksOr")}</span>
+              <span className="dl-links-or">{tLevel("submInfo.dlLinksOr")}</span>
               <input
                 type="text"
                 placeholder={tLevel("submInfo.workshop")}

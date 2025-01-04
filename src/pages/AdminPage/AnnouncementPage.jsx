@@ -201,7 +201,7 @@ const AnnouncementPage = () => {
     }
   };
 
-  if (user.isSuperAdmin === undefined) {
+  if (user?.isSuperAdmin === undefined) {
     return (
       <>
         <MetaTags
@@ -222,7 +222,7 @@ const AnnouncementPage = () => {
     );
   }
 
-  if (!user.isSuperAdmin) {
+  if (!user?.isSuperAdmin) {
     return (
       <AccessDenied 
         metaTitle={tAnnounce('meta.title')}

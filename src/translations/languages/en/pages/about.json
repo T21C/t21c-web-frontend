@@ -57,7 +57,11 @@
       },
       "categories": {
         "rating": {
-          "title": "Rating Team"
+          "title": "Rating Team",
+          "roles": {
+            "manager": "Manager",
+            "rater": "Rater"
+          }
         }
       }
     }

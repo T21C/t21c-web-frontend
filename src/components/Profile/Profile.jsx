@@ -24,11 +24,11 @@ function Profile() {
       {user ? (
         <div className="profile-details">
           <div className="profile-content" onClick={openProfile}>
-            <h3>{user.nickname}</h3>
-            <h5>@{user.username}</h5>
+            <h3>{user?.nickname}</h3>
+            <h5>@{user?.username}</h5>
           </div>
-          {user.avatarUrl ? (
-            <img src={user.avatarUrl} alt="Profile" className="profile-avatar" />
+          {user?.avatarUrl ? (
+            <img src={user?.avatarUrl} alt="Profile" className="profile-avatar" />
           ) : (
             <DefaultAvatar className="profile-avatar" />
           )}

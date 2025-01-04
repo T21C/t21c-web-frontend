@@ -157,7 +157,7 @@ const PassPage = () => {
     // Reset 12k filter
     setHide12k(false);
     // Reset deleted filter if admin
-    if (user.isSuperAdmin) {
+    if (user?.isSuperAdmin) {
       setDeletedFilter("hide");
     }
     // Clear and reload data
@@ -431,7 +431,7 @@ const PassPage = () => {
                   />
                   {tPass('settings.filter.options.only12k')}
                 </label>
-                {user.isSuperAdmin && (
+                {user?.isSuperAdmin && (
                   <StateDisplay
                     currentState={deletedFilter}
                     onChange={(newState) => {

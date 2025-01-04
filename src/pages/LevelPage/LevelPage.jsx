@@ -215,7 +215,7 @@ const LevelPage = () => {
     // Reset special difficulties
     setSelectedSpecialDiffs([]);
     // Reset filters
-    if (user.isSuperAdmin) {
+    if (user?.isSuperAdmin) {
       setDeletedFilter("hide");
     }
     setClearedFilter("show");
@@ -411,7 +411,7 @@ const LevelPage = () => {
                   label="Cleared Levels"
                   states={['show', 'hide', 'only']}
                 />
-                {user.isSuperAdmin && (
+                {user?.isSuperAdmin && (
                   <StateDisplay
                     currentState={deletedFilter}
                     onChange={(newState) => {
@@ -572,7 +572,7 @@ const LevelPage = () => {
               key={index}
               level={l}
               legacyMode={legacyDiff}
-              isSuperAdmin={user.isSuperAdmin}
+              user={user}
             />
           ))}
         </InfiniteScroll>

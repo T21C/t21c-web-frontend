@@ -37,7 +37,7 @@ const SubmissionManagementPage = () => {
     };
   }, []);
 
-  if (user.isSuperAdmin === undefined) {
+  if (user?.isSuperAdmin === undefined) {
     return (
       <>
         <MetaTags
@@ -58,7 +58,7 @@ const SubmissionManagementPage = () => {
     );
   }
 
-  if (!user.isSuperAdmin) {
+  if (!user?.isSuperAdmin) {
     return (
       <AccessDenied 
         metaTitle={tSubmission('meta.title')}

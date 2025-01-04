@@ -68,7 +68,7 @@ const Navigation = ({ children }) => {
 
   useEffect(() => {
     const isAdminPath = location.pathname.startsWith('/admin');
-    setIsAdminView(isAdminPath && user.isSuperAdmin);
+    setIsAdminView(isAdminPath && user?.isSuperAdmin);
   }, [location]);
 
   useEffect(() => {
@@ -123,7 +123,7 @@ const Navigation = ({ children }) => {
         onClick={changeNavState}
       />
 
-      <nav className={isAdminView && user.isSuperAdmin ? 'nav--admin' : ''}>
+      <nav className={isAdminView && user?.isSuperAdmin ? 'nav--admin' : ''}>
         <div className="nav-wrapper">
           {/* Left side: Logo and main navigation links */}
           <div className="nav-left">

@@ -5,6 +5,8 @@
     "defaultTitle": "Profile"
   },
   "notFound": "Player not found",
+  "notLoggedIn": "You are not logged in",
+  "searchForOther": "Can't display your profile, search for another player",
   "valueLabels": {
     "rankedScore": "Ranked Score",
     "generalScore": "General Score",
