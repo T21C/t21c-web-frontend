@@ -68,8 +68,8 @@ const LeaderboardPage = () => {
     return data.sort((a, b) => {
       if (sortBy === "topDiff" || sortBy === "top12kDiff") {
         // Use the difficulty object's sort order directly, treating null as 0
-        const diffA = a[sortBy]?.sortOrder || 0;
-        const diffB = b[sortBy]?.sortOrder || 0;
+        const diffA = a[sortBy] || 0;
+        const diffB = b[sortBy] || 0;
         
         // Compare sort orders
         return diffB - diffA;
@@ -104,7 +104,10 @@ const LeaderboardPage = () => {
   useEffect(() => {
     if (playerData && playerData.length > 0) {
       setLoading(true);
-      var filteredPlayers = playerData.filter(player => {
+      var filteredPlayers = playerData.filter(playerStat => {
+        const player = playerStat.player;
+        if (!player) return false;
+
         const matchesQuery = player.name.toLowerCase().includes(query.toLowerCase()) 
         || player.discordUsername?.toLowerCase().includes(query.toLowerCase());
         const matchesBannedFilter = 
@@ -441,12 +444,17 @@ const LeaderboardPage = () => {
               )
             }
           >
-            {displayedPlayers.map((l, index) => (
+            {displayedPlayers.map((playerStat, index) => (
               <PlayerCard
                 key={index}
                 currSort={sortBy}
-                player={l}
-                pfp={l.pfp}
+                player={{
+                  ...playerStat,
+                  name: playerStat.player.name,
+                  country: playerStat.player.country,
+                  isBanned: playerStat.player.isBanned,
+                  pfp: playerStat.player.pfp,
+                }}
               />
             ))}
           </InfiniteScroll>

@@ -156,11 +156,11 @@ const ProfilePage = () => {
                         </div>
                         <h2
                           style={{
-                            color: parseRankColor(playerData.ranks.rankedScoreRank), 
-                            backgroundColor: `${parseRankColor(playerData.ranks.rankedScoreRank)}27`,
+                            color: parseRankColor(playerData.stats.rankedScoreRank), 
+                            backgroundColor: `${parseRankColor(playerData.stats.rankedScoreRank)}27`,
                             transform: playerData.discordUsername ? "translateY(-0.45rem)" : "translateY(0)"
                         }}
-                        >#{playerData.ranks.rankedScoreRank}</h2>
+                        >#{playerData.stats.rankedScoreRank}</h2>
                       </div>
                       <img
                         src={isoToEmoji(playerData.country)}
