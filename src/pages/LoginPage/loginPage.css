@@ -1,9 +1,10 @@
 .login-page-wrapper .login-page {
   min-height: 100vh;
   display: flex;
+  position: relative;
   align-items: center;
   justify-content: center;
-  background-color: #1a1a1a;
+  z-index: 1;
   padding: 1rem;
 }
 
@@ -142,4 +143,31 @@
 .login-page-wrapper .forgot-password-link:hover {
   color: #3b7fd6;
   text-decoration: underline;
+}
+
+/* Add captcha styles */
+.captcha-container {
+  margin: 20px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 78px;  /* Height of normal reCAPTCHA widget */
+  z-index: 1000;
+  position: relative;
+}
+
+.captcha-container > div {
+  transform: scale(0.9);
+  transform-origin: center;
+}
+
+/* Add styles for reCAPTCHA iframe */
+.grecaptcha-badge {
+  z-index: 1000 !important;
+}
+
+@media (max-width: 350px) {
+  .captcha-container > div {
+    transform: scale(0.8);
+  }
 }

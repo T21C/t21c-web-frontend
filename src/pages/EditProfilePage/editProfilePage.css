@@ -1,43 +1,45 @@
 .edit-profile-page {
   min-height: 100vh;
-  background-color: var(--background);
-  color: var(--text);
+  color: #ffffff;
+  position: relative;
+  z-index: 1;
   padding: 2rem;
+  padding-top: 3rem;
 }
 
 .edit-profile-page .edit-profile-container {
   max-width: 600px;
   margin: 2rem auto;
   padding: 2rem;
-  background-color: var(--surface);
+  background-color: #2a2a2a;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .edit-profile-page .edit-profile-container h1 {
   margin-bottom: 2rem;
-  color: var(--primary);
+  color: #4a9eff;
   font-size: 2rem;
   text-align: center;
 }
 
 .edit-profile-page .edit-profile-container h2 {
   margin: 1.5rem 0;
-  color: var(--primary);
+  color: #4a9eff;
   font-size: 1.5rem;
 }
 
 .edit-profile-page .error-message {
-  background-color: var(--error-bg);
-  color: var(--error-text);
+  background-color: rgba(255, 0, 0, 0.1);
+  color: #ff6b6b;
   padding: 1rem;
   border-radius: 4px;
   margin-bottom: 1rem;
 }
 
 .edit-profile-page .success-message {
-  background-color: var(--success-bg);
-  color: var(--success-text);
+  background-color: rgba(0, 255, 0, 0.1);
+  color: #51cf66;
   padding: 1rem;
   border-radius: 4px;
   margin-bottom: 1rem;
@@ -50,25 +52,25 @@
 .edit-profile-page .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: var(--text-secondary);
+  color: #a0a0a0;
   font-weight: 500;
 }
 
 .edit-profile-page .form-group input {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid var(--border);
+  border: 1px solid #404040;
   border-radius: 4px;
-  background-color: var(--input-bg);
-  color: var(--text);
+  background-color: #333333;
+  color: #ffffff;
   font-size: 1rem;
   transition: border-color 0.2s ease;
 }
 
 .edit-profile-page .form-group input:focus {
   outline: none;
-  border-color: var(--primary);
-  box-shadow: 0 0 0 2px var(--primary-light);
+  border-color: #4a9eff;
+  box-shadow: 0 0 0 2px rgba(74, 158, 255, 0.2);
 }
 
 .edit-profile-page .save-button,
@@ -82,29 +84,30 @@
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
+  flex-grow: 0;
   transition: background-color 0.2s ease;
 }
 
 .edit-profile-page .save-button {
-  background-color: var(--primary);
+  background-color: #4a9eff;
   color: white;
 }
 
 .edit-profile-page .save-button:hover {
-  background-color: var(--primary-dark);
+  background-color: #3b7ecc;
 }
 
 .edit-profile-page .change-password-button {
-  background-color: var(--secondary);
+  background-color: #6c757d;
   color: white;
 }
 
 .edit-profile-page .change-password-button:hover {
-  background-color: var(--secondary-dark);
+  background-color: #5a6268;
 }
 
 .edit-profile-page .link-button {
-  background-color: #5865F2; /* Discord color */
+  background-color: #5865F2;
   color: white;
 }
 
@@ -113,17 +116,19 @@
 }
 
 .edit-profile-page .unlink-button {
-  background-color: var(--error);
+  background-color: #dc3545;
+  width: unset;
+  padding: 0.75rem 1rem;
   color: white;
 }
 
 .edit-profile-page .unlink-button:hover {
-  background-color: var(--error-dark);
+  background-color: #c82333;
 }
 
 .edit-profile-page .section-divider {
   height: 1px;
-  background-color: var(--border);
+  background-color: #404040;
   margin: 2rem 0;
 }
 
@@ -136,13 +141,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background-color: var(--surface-light);
+  background-color: #333333;
   border-radius: 4px;
   margin-bottom: 1rem;
 }
 
 .edit-profile-page .provider-info span {
-  color: var(--text-secondary);
+  color: #a0a0a0;
   font-weight: 500;
 }
 
@@ -163,4 +168,90 @@
   .edit-profile-page .edit-profile-container h2 {
     font-size: 1.25rem;
   }
+}
+
+.readonly {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.provider-info {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: #2a2a2a;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+.provider-details {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.unlink-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.unlink-button:hover {
+  background-color: #cc0000;
+}
+
+.link-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background-color: #7289da;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+  justify-content: center;
+}
+
+.link-button:hover {
+  background-color: #5b6eae;
+}
+
+.provider-username {
+  color: #a0a0a0;
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+}
+
+.unlink-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.unlink-warning {
+  color: #ffd700;
+  font-size: 1.2rem;
+  cursor: help;
+}
+
+.unlink-button.disabled {
+  background-color: #666;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.unlink-button.disabled:hover {
+  background-color: #666;
 }

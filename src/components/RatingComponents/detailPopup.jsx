@@ -39,6 +39,7 @@ export const DetailPopup = ({
   user, 
   isSuperAdmin
 }) => {
+  const currentUser = user;
   const { t } = useTranslation('components');
   const tRating = (key) => t(`rating.detailPopup.${key}`);
 
@@ -57,6 +58,7 @@ export const DetailPopup = ({
   const [isExiting, setIsExiting] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
   const [isCommentRequired, setIsCommentRequired] = useState(false);
+  const [isDetailsCollapsed, setIsDetailsCollapsed] = useState(false);
 
   const popupRef = useRef(null);
 
@@ -166,7 +168,7 @@ export const DetailPopup = ({
 
   useEffect(() => {
     if (selectedRating) {
-      const userDetail = selectedRating.details?.find(detail => detail.username === user?.username);
+      const userDetail = selectedRating.details?.find(detail => detail.userId === currentUser?.id);
       const rating = userDetail?.rating || "";
       const comment = userDetail?.comment || "";
       
@@ -178,9 +180,10 @@ export const DetailPopup = ({
       validateRating(rating);
       
       setHasUnsavedChanges(false);
+      console.log(selectedRating.details);
       setOtherRatings(selectedRating.details || []);
     }
-  }, [selectedRating, user?.username]);
+  }, [selectedRating, currentUser?.id]);
 
   useEffect(() => {
     const hasChanges = pendingRating !== initialRating || pendingComment !== initialComment;
@@ -302,13 +305,14 @@ export const DetailPopup = ({
     }
   };
 
-  const handleDeleteRating = async (username) => {
+  const handleDeleteRating = async (userId) => {
     try {
-      const response = await api.delete(`${import.meta.env.VITE_RATING_API}/${selectedRating.id}/detail/${username}`);
+      const response = await api.delete(`${import.meta.env.VITE_RATING_API}/${selectedRating.id}/detail/${userId}`);
       
       if (response.status === 200) {
         // Update the local state
-        const updatedDetails = otherRatings.filter(detail => detail.username !== username);
+        const updatedDetails = otherRatings.filter(detail => detail.userId !== userId);
+        console.log(updatedDetails);
         setOtherRatings(updatedDetails);
         
         // Update the ratings context
@@ -316,7 +320,7 @@ export const DetailPopup = ({
           if (rating.id === selectedRating.id) {
             return {
               ...rating,
-              details: rating.details.filter(detail => detail.username !== username)
+              details: rating.details.filter(detail => detail.userId !== userId)
             };
           }
           return rating;
@@ -362,6 +366,7 @@ export const DetailPopup = ({
             <p className="artist">{selectedRating.level.artist}</p>
           </div>
           
+          <div className="popup-main-content-container">
           <div className="popup-main-content">
             <div className="video-container">
               <div className="video-aspect-ratio">
@@ -383,10 +388,22 @@ export const DetailPopup = ({
                     onLoad={handleVideoLoad}
                   />
                 )}
+                
+                <button 
+                    className={`toggle-details-btn ${isDetailsCollapsed ? 'collapsed' : ''}`}
+                    onClick={() => setIsDetailsCollapsed(!isDetailsCollapsed)}
+                    aria-label={isDetailsCollapsed ? 'Show details' : 'Hide details'}
+                  >
+                <span>{isDetailsCollapsed ? 'Show' : 'Hide'} Details</span>
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M15 6L9 12L15 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
               </div>
+
             </div>
 
-            <div className="details-container">
+            <div className={`details-container ${isDetailsCollapsed ? 'collapsed' : ''}`}>
               <div className="detail-field">
                 <span className="detail-label">{tRating('labels.creator')}</span>
                 <span className="detail-value">{selectedRating.level.creator}</span>
@@ -463,16 +480,17 @@ export const DetailPopup = ({
               <div className="rating-field other-ratings">
                 <label>{tRating('labels.otherRatings')}</label>
                 <div className="other-ratings-content">
-                  {otherRatings.map(({username, rating, comment}) => (
+                  {otherRatings.map(({user, rating, comment}) => (
                     <RatingItem 
-                      key={username} 
-                      username={username} 
+                      key={user} 
+                      user={user} 
                       rating={rating} 
                       comment={comment}
-                      isSuperAdmin={user?.isSuperAdmin}
+                      isSuperAdmin={currentUser?.isSuperAdmin}
                       onDelete={handleDeleteRating}
                     />
                   ))}
+                </div>
                 </div>
               </div>
             </div>

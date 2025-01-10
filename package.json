@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@discordapp/twemoji": "^15.1.0",
+    "@google-cloud/recaptcha-enterprise": "^5.13.0",
     "@react-oauth/google": "^0.12.1",
     "@splinetool/react-spline": "^2.2.6",
     "axios": "^1.7.9",
@@ -22,6 +23,7 @@
     "lodash": "^4.17.21",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-google-recaptcha": "^3.1.0",
     "react-helmet-async": "^2.0.5",
     "react-hot-toast": "^2.4.1",
     "react-i18next": "^14.1.3",

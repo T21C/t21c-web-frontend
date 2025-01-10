@@ -1,12 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import './editProfilePage.css';
+import { CompleteNav } from '../../components';
+import { DiscordIcon } from '../../components/Icons/DiscordIcon';
+import { UnlinkIcon } from '../../components/Icons/UnlinkIcon';
+import { Tooltip } from 'react-tooltip';
+
+const ProviderIcon = ({ provider, size, color }) => {
+  switch(provider) {
+    case 'discord':
+      return <DiscordIcon size={size} color={color} />;
+    default:
+      return null;
+  }
+};
 
 const EditProfilePage = () => {
   const { user, updateProfile, changePassword, linkProvider, unlinkProvider } = useAuth();
   const [formData, setFormData] = useState({
     username: user?.username || '',
     email: user?.email || '',
+    nickname: user?.nickname || '',
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
@@ -14,6 +28,8 @@ const EditProfilePage = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const hasNoPassword = user?.password === null;
+  const isLastProvider = user?.providers?.length === 1;
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -32,6 +48,7 @@ const EditProfilePage = () => {
       await updateProfile({
         username: formData.username,
         email: formData.email,
+        nickname: formData.nickname,
       });
       setSuccess('Profile updated successfully!');
     } catch (err) {
@@ -86,6 +103,9 @@ const EditProfilePage = () => {
   };
 
   return (
+    <>
+    <div className="background-level"/> 
+      <CompleteNav/>
     <div className="edit-profile-page">
       <div className="edit-profile-container">
         <h1>Edit Profile</h1>
@@ -107,6 +127,17 @@ const EditProfilePage = () => {
           </div>
 
           <div className="form-group">
+            <label htmlFor="nickname">Nickname</label>
+            <input
+              type="text"
+              id="nickname"
+              name="nickname"
+              value={formData.nickname}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          <div className="form-group">
             <label htmlFor="email">Email</label>
             <input
               type="email"
@@ -114,7 +145,8 @@ const EditProfilePage = () => {
               name="email"
               value={formData.email}
               onChange={handleInputChange}
-              required
+              readOnly
+              className="readonly"
             />
           </div>
 
@@ -125,8 +157,38 @@ const EditProfilePage = () => {
 
         <div className="section-divider" />
 
-        <h2>Password</h2>
-        {!isChangingPassword ? (
+        <h2>{hasNoPassword ? 'Add Password' : 'Password'}</h2>
+        {hasNoPassword ? (
+          <form onSubmit={handlePasswordChange}>
+            <div className="form-group">
+              <label htmlFor="newPassword">New Password</label>
+              <input
+                type="password"
+                id="newPassword"
+                name="newPassword"
+                value={formData.newPassword}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="confirmPassword">Confirm Password</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                required
+              />
+            </div>
+
+            <button type="submit" className="save-button">
+              Create Password
+            </button>
+          </form>
+        ) : !isChangingPassword ? (
           <button
             className="change-password-button"
             onClick={() => setIsChangingPassword(true)}
@@ -189,27 +251,51 @@ const EditProfilePage = () => {
 
         <h2>Linked Accounts</h2>
         <div className="linked-accounts">
-          {user?.providers?.includes('discord') ? (
+          {user?.providers?.some(p => p.name === 'discord') ? (
             <div className="provider-info">
-              <span>Discord</span>
-              <button
-                className="unlink-button"
-                onClick={() => handleProviderUnlink('discord')}
-              >
-                Unlink
-              </button>
+              <div className="provider-details">
+                <ProviderIcon provider="discord" size={32}/>
+                <span>Discord</span>
+                {user?.providers?.find(p => p.name === 'discord')?.profile?.username && (
+                  <span className="provider-username">
+                    @{user.providers.find(p => p.name === 'discord').profile.username}
+                  </span>
+                )}
+              </div>
+              <div className="unlink-container">
+                {isLastProvider && (
+                  <span 
+                    className="unlink-warning"
+                    data-tooltip-id="unlink-tooltip"
+                    data-tooltip-content="Cannot remove last authentication provider"
+                  >
+                    ⚠️
+                  </span>
+                )}
+                 <button
+                  className={`unlink-button ${isLastProvider ? 'disabled' : ''}`}
+                  onClick={() => !isLastProvider && handleProviderUnlink('discord')}
+                  disabled={isLastProvider}
+                >
+                  Unlink
+                  <UnlinkIcon color="#fff" size={24} />
+                </button>
+                <Tooltip id="unlink-tooltip" />
+              </div>
             </div>
           ) : (
             <button
               className="link-button"
               onClick={() => handleProviderLink('discord')}
             >
+              <DiscordIcon size={16} />
               Link Discord Account
             </button>
           )}
         </div>
       </div>
     </div>
+    </>
   );
 };
 

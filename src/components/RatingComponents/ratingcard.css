@@ -261,3 +261,17 @@
 .rating-card .rerate-reason:not(:empty)::after {
   display: none;
 } 
+
+
+  
+.rating-card .updated-at {
+  font-size: 0.8rem;
+  margin-right: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.rating-card .level-id {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: monospace;
+} 

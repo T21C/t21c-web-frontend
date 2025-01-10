@@ -86,7 +86,7 @@ const LevelDetailPage = () => {
     const fetchData = async () => {
       try {
         const levelData = await api.get(`${import.meta.env.VITE_LEVELS}/${id}`);
-        const passesData = await api.get(`${import.meta.env.VITE_PASSES}//level/${id}`);
+        const passesData = await api.get(`${import.meta.env.VITE_PASSES}/level/${id}`);
         setRes(prevRes => ({
           ...prevRes,
           level: levelData.data,

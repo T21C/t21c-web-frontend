@@ -23,6 +23,7 @@ import VerifyEmailPage from './pages/VerifyEmailPage/VerifyEmailPage';
 import OAuthCallbackPage from './pages/OAuthCallbackPage/OAuthCallbackPage';
 import EditProfilePage from './pages/EditProfilePage/EditProfilePage';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
+import CreatorManagementPage from './pages/CreatorManagementPage/CreatorManagementPage';
 
 const HomePage = lazy(() => import("./pages/HomePage/HomePage.jsx"));
 const LevelDetailPage = lazy(() => import("./pages/LevelDetailPage/LevelDetailPage.jsx"));
@@ -79,6 +80,14 @@ function App() {
           <Route path='admin/announcements' element={<PrivateRoute><AnnouncementPage /></PrivateRoute>} />
           <Route path='admin/backups' element={<PrivateRoute><BackupPage /></PrivateRoute>} />
           <Route path='admin/difficulties' element={<PrivateRoute><DifficultyPage /></PrivateRoute>} />
+          <Route
+            path="/admin/creators"
+            element={
+              <PrivateRoute>
+                <CreatorManagementPage />
+              </PrivateRoute>
+            }
+          />
           
           <Route path='about' element={<AboutUsPage />} />
           

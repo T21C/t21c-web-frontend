@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { RatingInput } from '../RatingComponents/RatingInput';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { useTranslation } from 'react-i18next';
+import AliasManagementPopup from './AliasManagementPopup';
 
 export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPage = false }) => {
   const { t } = useTranslation('components');
@@ -37,6 +38,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const navigate = useNavigate();
   const { difficulties } = useDifficultyContext();
+  const [showAliasManagement, setShowAliasManagement] = useState(false);
 
   useEffect(() => {
     if (level) {
@@ -62,6 +64,17 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
       });
       setHasUnsavedChanges(false);
     }
+
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') {
+        handleClose();
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+    };
   }, [level]);
 
   const handleInputChange = (e) => {
@@ -255,16 +268,44 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     return matchingDiff ? matchingDiff.name : formData.baseScore.toString();
   }, [formData.baseScore, difficulties]);
 
+  const handleOverlayClick = (e) => {
+    if (e.target === e.currentTarget) {
+      handleClose();
+    }
+  };
+
+  const handleContentClick = (e) => {
+    e.stopPropagation();
+  };
+
   return (
-    <div className="edit-level-popup-overlay" onClick={(e) => {
-      if (e.target === e.currentTarget) {
-        handleClose();
-      }
-    }}>
-      <div className="edit-level-popup">
-        <button className="close-popup-btn" onClick={handleClose}>{tLevel('close')}</button>
-        <div className="popup-content">
+    <div className="edit-level-popup-overlay" onClick={handleOverlayClick}>
+      <div className="edit-level-popup" onClick={handleContentClick}>
+        <div className="popup-header">
           <h2>{tLevel('title')}</h2>
+          <div className="popup-actions">
+            <button 
+              className="manage-aliases-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowAliasManagement(true);
+              }}
+              title={tLevel('manageAliases')}
+            >
+              {tLevel('manageAliases')}
+            </button>
+            <button 
+              className="close-popup-btn" 
+              onClick={(e) => {
+                e.stopPropagation();
+                handleClose();
+              }}
+            >
+              {tLevel('close')}
+            </button>
+          </div>
+        </div>
+        <div className="popup-content">
           <form onSubmit={handleSubmit}>
             <div className="form-grid">
               <div className="form-group">
@@ -486,6 +527,13 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
           </form>
         </div>
       </div>
+
+      {showAliasManagement && (
+        <AliasManagementPopup
+          levelId={level.id}
+          onClose={() => setShowAliasManagement(false)}
+        />
+      )}
     </div>
   );
 }; 

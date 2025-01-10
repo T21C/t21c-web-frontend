@@ -92,6 +92,10 @@ nav {
   align-items: center;
 }
 
+.nav-language-selector.mobile {
+  display: none;  /* Hide by default on desktop */
+}
+
 .nav-language-selector__button {
   display: flex;
   align-items: center;
@@ -129,7 +133,7 @@ nav {
 /* Language Select Dropdown */
 .nav-language-select {
   position: absolute;
-  top: 100%;
+  top: 99%;
   right: 0;
   width: 15rem;
   background: #ffffff06;
@@ -562,6 +566,71 @@ nav {
     transform: translate(-50%, -50%) scale(1);
   }
 
+  .nav-mobile .nav-language-selector {
+    display: none;
+  }
+
+  .nav-list .nav-language-selector {
+    display: none;  /* Hide desktop language selector */
+  }
+
+  .nav-mobile-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .nav-mobile-controls .nav-language-selector.mobile {
+    display: flex;  /* Show mobile language selector */
+  }
+
+  .nav-mobile-controls .nav-language-selector__button {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 8px;
+    background: var(--color-white-t6);
+    border: 1px solid var(--color-white-t10);
+    transition: all 0.3s ease;
+  }
+
+  .nav-mobile-controls .nav-language-selector__button:hover {
+    background: var(--color-white-t10);
+    transform: scale(1.05);
+  }
+
+  .nav-mobile-controls .nav-language-selector__flag {
+    width: 1.75rem;
+    height: 1.75rem;
+    margin: 0;
+  }
+
+  /* Fix mobile language select positioning */
+  .nav-language-select {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.95);
+    width: 90%;
+    max-width: 20rem;
+    background: var(--color-white-t10);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--color-white-t10);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1100;
+  }
+
+  .nav-language-select.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translate(-50%, -50%) scale(1);
+  }
+
+  /* Hide duplicate mobile language selector in nav-mobile */
   .nav-mobile .nav-language-selector {
     display: none;
   }

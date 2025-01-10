@@ -9,6 +9,8 @@ const CustomSelect = ({
   label,
   width = "12rem",
   menuPortalTarget = document.body,
+  backgroundColor = "rgba(255, 255, 255, 0.2)",
+  placeholderColor = "#fff8",
   ...props
 }) => {
   const [isClosing, setIsClosing] = useState(false);
@@ -67,14 +69,14 @@ const CustomSelect = ({
     control: (provided, state) => ({
       ...provided,
       width: width,
-      backgroundColor: "rgba(255, 255, 255, 0.3)",
+      backgroundColor: backgroundColor,
       border: "none",
       outline: "none",
       color: "#fff",
       cursor: "pointer",
       transition: "all 0.2s ease-in-out",
       "&:hover": {
-        backgroundColor: "rgba(255, 255, 255, 0.4)",
+        backgroundColor: "rgba(255, 255, 255, 0.3)",
         transform: "translateY(-1px)",
         boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)"
       }
@@ -141,7 +143,12 @@ const CustomSelect = ({
           background: "rgba(255, 255, 255, 0.3)"
         }
       }
+    }),
+    placeholder: (provided) => ({
+      ...provided,
+      color: placeholderColor
     })
+
   };
 
   return (

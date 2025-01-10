@@ -102,12 +102,31 @@ const LevelPage = () => {
     });
   }
 
+  function handleQueryChange(e) {
+    console.log('Search query changed:', e.target.value);
+    setQuery(e.target.value);
+    setPageNumber(0);
+    setLevelsData([]);
+  }
+
   useEffect(() => {
     let cancel;
     
     const fetchLevels = async () => {
       setLoading(true);
       try {
+        console.log('Fetching levels with query:', query);
+        console.log('Current filters:', {
+          pguRange: {
+            from: selectedLowFilterDiff,
+            to: selectedHighFilterDiff
+          },
+          specialDifficulties: selectedSpecialDiffs,
+          deletedFilter,
+          clearedFilter,
+          sort
+        });
+
         // Query parameters for pagination and basic filtering
         const params = {
           limit,
@@ -136,6 +155,11 @@ const LevelPage = () => {
           }
         );
 
+        console.log('Received response:', {
+          count: response.data.count,
+          resultsCount: response.data.results.length
+        });
+
         const newLevels = response.data.results;
         
         const existingIds = new Set(levelsData.map((level) => level.id));
@@ -143,10 +167,14 @@ const LevelPage = () => {
           (level) => !existingIds.has(level.id)
         );
 
+        console.log('Adding unique levels:', uniqueLevels.length);
         setLevelsData((prev) => [...prev, ...uniqueLevels]);
         setHasMore(response.data.count > levelsData.length + newLevels.length);
       } catch (error) {
-        if (!axios.isCancel(error)) setError(true);
+        if (!axios.isCancel(error)) {
+          console.error('Error fetching levels:', error);
+          setError(true);
+        }
       } finally {
         setLoading(false);
       }
@@ -155,6 +183,7 @@ const LevelPage = () => {
     const fetchLevelById = async () => {
       setLoading(true);
       try {
+        console.log('Fetching level by ID:', query.slice(1));
         const response = await api.get(
           `${import.meta.env.VITE_LEVELS}/byId/${query.slice(1)}`,
           {
@@ -162,10 +191,14 @@ const LevelPage = () => {
           }
         );
 
-       setLevelsData([response.data]);
+        console.log('Received level by ID:', response.data?.id);
+        setLevelsData([response.data]);
         setHasMore(false);
       } catch (error) {
-        if (!axios.isCancel(error)) setError(true);
+        if (!axios.isCancel(error)) {
+          console.error('Error fetching level by ID:', error);
+          setError(true);
+        }
       } finally {
         setLoading(false);
       }
@@ -183,11 +216,6 @@ const LevelPage = () => {
     setLegacyDiff(!legacyDiff);
   }
 
-  function handleQueryChange(e) {
-    setQuery(e.target.value);
-    setPageNumber(0);
-    setLevelsData([]);
-  }
   function handleFilterOpen() {
     setFilterOpen(!filterOpen);
   }

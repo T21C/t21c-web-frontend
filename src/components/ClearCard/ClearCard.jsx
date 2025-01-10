@@ -59,8 +59,8 @@ const ClearCard = ({scoreData, index}) => {
                       <b>#{index + 1}</b>
                     </span>
                     &nbsp;
-                    {scoreData.pfp? (
-                    <img src={scoreData.pfp} referrerPolicy="no-referrer" className="pfp" alt="" />)
+                    {scoreData.player.user?.avatarUrl? (
+                    <img src={scoreData.player.user.avatarUrl} referrerPolicy="no-referrer" className="pfp" alt="" />)
                       :(
                       <DefaultAvatar />
                       )

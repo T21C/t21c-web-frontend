@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import './oauthCallbackPage.css';
+import { CompleteNav } from '../../components';
 
 const OAuthCallbackPage = () => {
   const [searchParams] = useSearchParams();
@@ -45,6 +46,8 @@ const OAuthCallbackPage = () => {
 
   return (
     <div className="oauth-callback-page-wrapper">
+      <div className="background-level"/>
+      <CompleteNav/>
       <div className="oauth-callback-page">
         <div className="callback-container">
           {error ? (

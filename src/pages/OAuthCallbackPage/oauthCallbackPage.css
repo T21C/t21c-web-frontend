@@ -1,9 +1,10 @@
 .oauth-callback-page-wrapper .oauth-callback-page {
   min-height: 100vh;
   display: flex;
+  position: relative;
+  z-index: 1;
   align-items: center;
   justify-content: center;
-  background-color: #1a1a1a;
   padding: 1rem;
 }
 

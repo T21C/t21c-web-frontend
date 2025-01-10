@@ -186,7 +186,7 @@
   border-bottom: 1px solid #ccc;
 }
 
-.edit-button-container {
+.player-page .edit-button-container {
   position: absolute;
   right: -60px; /* Position it outside the header */
   top: 20px;
@@ -202,7 +202,7 @@
   justify-content: center;
 }
 
-.edit-button {
+.player-page .edit-button {
   background-color: var(--color-white-t10); 
   border: none;
   width: 50px;
@@ -213,11 +213,11 @@
   transition: background-color 0.2s;
 }
 
-.edit-button:hover {
+.player-page .edit-button:hover {
   background-color: var(--color-white-t20);
 }
 
-.edit-button svg {
+.player-page .edit-button svg {
   width: 36px;
   height: 36px;
 }

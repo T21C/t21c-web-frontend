@@ -309,6 +309,36 @@ const Navigation = ({ children }) => {
       </nav>
 
       <div className={`nav-mobile ${openNav ? "open" : ""}`}>
+
+      <div className={`nav-language-select ${openDialog ? 'open' : ''}`}>
+        <ul className="nav-language-select__list">
+          {Object.entries(languages).map(([code, { display, countryCode, implemented }]) => (
+            <li
+              key={code}
+              className={`nav-language-select__option ${
+                !implemented ? 'not-implemented' : ''
+              } ${
+                (language === code || (language === 'en' && code === 'us')) ? 'selected' : ''
+              }`}
+              onClick={(e) => handleChangeLanguage(code, e)}
+            >
+              <img 
+                className="nav-language-select__option-flag" 
+                src={isoToEmoji(countryCode)} 
+                alt={display} 
+              />
+              <div className="nav-language-select__option-content">
+                <span>{display}</span>
+                {!implemented && (
+                  <span className="nav-language-select__option-status">
+                    {tLang('comingSoon')}
+                  </span>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
         <svg
           className="nav-mobile__close svg-stroke"
           onClick={changeNavState}
@@ -413,36 +443,6 @@ const Navigation = ({ children }) => {
               {tNav('links.submission')}
             </NavLink>
           </li>
-        </ul>
-      </div>
-
-      <div className={`nav-language-select ${openDialog ? 'open' : ''}`}>
-        <ul className="nav-language-select__list">
-          {Object.entries(languages).map(([code, { display, countryCode, implemented }]) => (
-            <li
-              key={code}
-              className={`nav-language-select__option ${
-                !implemented ? 'not-implemented' : ''
-              } ${
-                (language === code || (language === 'en' && code === 'us')) ? 'selected' : ''
-              }`}
-              onClick={(e) => handleChangeLanguage(code, e)}
-            >
-              <img 
-                className="nav-language-select__option-flag" 
-                src={isoToEmoji(countryCode)} 
-                alt={display} 
-              />
-              <div className="nav-language-select__option-content">
-                <span>{display}</span>
-                {!implemented && (
-                  <span className="nav-language-select__option-status">
-                    {tLang('comingSoon')}
-                  </span>
-                )}
-              </div>
-            </li>
-          ))}
         </ul>
       </div>
       

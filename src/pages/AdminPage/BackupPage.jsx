@@ -70,12 +70,6 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
   };
 
   const handleAction = async (action, backup) => {
-    if (action === 'restore' && !window.confirm(tBackup('passwordModal.restoreMessage'))) {
-      return;
-    }
-    if (action === 'delete' && !window.confirm(tBackup('passwordModal.deleteMessage'))) {
-      return;
-    }
     setSelectedAction({ type: action, backup });
     setShowPasswordInput(true);
     setError('');

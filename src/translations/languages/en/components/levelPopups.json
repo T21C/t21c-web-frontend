@@ -2,6 +2,7 @@
   "edit": {
     "title": "Edit Level Details",
     "close": "×",
+    "manageAliases": "Manage Aliases",
     "form": {
       "labels": {
         "song": "Song",

@@ -2,16 +2,18 @@ import './ratingitem.css';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
+import DefaultAvatar from '../Icons/DefaultAvatar';
 
-export const RatingItem = ({ username, rating, comment, isSuperAdmin, onDelete }) => {
+export const RatingItem = ({ user, rating, comment, isSuperAdmin, onDelete }) => {
+  console.log(user);
     const [isExpanded, setIsExpanded] = useState(false);
     const { t } = useTranslation('components');
     const tRating = (key, params = {}) => t(`rating.ratingCard.${key}`, params);
     
     const handleDelete = (e) => {
       e.stopPropagation();
-      if (window.confirm(t('rating.detailPopup.confirmations.deleteRating', { username }))) {
-        onDelete(username);
+      if (window.confirm(t('rating.detailPopup.confirmations.deleteRating', {user: user?.username}))) {
+          onDelete(user?.id);
       }
     };
 
@@ -22,7 +24,12 @@ export const RatingItem = ({ username, rating, comment, isSuperAdmin, onDelete }
           onClick={() => comment && setIsExpanded(!isExpanded)}
         >
           <div className="rating-item-header">
-            <span className="rater-name">{username}:</span>
+            {user?.avatarUrl ? (
+              <img src={user?.avatarUrl} alt={user?.username} className="rater-avatar" />
+            ) : (
+              <DefaultAvatar />
+            )}
+            <span className="rater-name">{user?.username}:</span>
             <span className="rater-rating">{rating}</span>
             <div className="rating-item-icons">
               {comment && (

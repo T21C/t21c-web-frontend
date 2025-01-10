@@ -17,6 +17,11 @@
 /* Profile Content */
 .profile-content {
   text-align: right;
+  cursor: pointer;
+}
+
+.profile-content h3:hover {
+  text-decoration: underline;
 }
 
 .profile-content h3 {
@@ -46,7 +51,7 @@
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
-  margin: 0 0.5rem;
+  margin-left: 0.5rem;
   border: 2px solid transparent;
   transition: border-color 0.3s ease;
 }
@@ -105,11 +110,22 @@
 
 .btn-logout {
   background: transparent;
+  transition: all 0.2s ease-out;
+  border-radius: 15%;
   border: none;
   box-shadow: none;
   width: 2.5rem;
   height: 2.5rem;
   margin: 0;
+}
+
+.btn-logout > svg {
+  transform: translateX(0.1rem) rotate(180deg);
+}
+
+.btn-logout:hover {
+  transform: scale(1.2);
+  background: var(--color-white-t10);
 }
 
 /* Profile Button */

@@ -1,7 +1,7 @@
 import "./profilePage.css"
 import api from "../../utils/api";
 import { useEffect, useState } from "react";
-import { useParams, useLocation } from "react-router-dom"
+import { useParams, useLocation, useNavigate } from "react-router-dom"
 import { isoToEmoji } from "../../Repository/RemoteRepository";
 import { CompleteNav, ScoreCard, MetaTags } from "../../components";
 import { useTranslation } from "react-i18next";
@@ -36,6 +36,7 @@ const ProfilePage = () => {
     const [showEditPopup, setShowEditPopup] = useState(false);
     const location = useLocation();
     const currentUrl = window.location.origin + location.pathname;
+    const navigate = useNavigate();
 
 
     if (!playerId) {
@@ -190,16 +191,19 @@ const ProfilePage = () => {
                     </div>
                   </div>
                   <div className="edit-button-container">
-                  <button 
-                    className="edit-button"
-                  >
-                    <EditIcon color="#fff" size={24} />
-                  </button>
+                  {user && user.id && (
+                    <button 
+                      className="edit-button"
+                      onClick={() => navigate('/profile/edit')}
+                    >
+                      <EditIcon color="#fff" size={24} />
+                    </button>
+                  )}
                   {user?.isSuperAdmin && (
-                  <button 
-                    className="edit-button"
-                    onClick={handleAdminEditClick}
-                  >
+                    <button 
+                      className="edit-button"
+                      onClick={handleAdminEditClick}
+                    >
                       <ShieldIcon color="#fff" size={24} />
                     </button>
                   )}

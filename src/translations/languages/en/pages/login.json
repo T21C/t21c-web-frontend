@@ -1,0 +1,20 @@
+{
+  "title": "Login",
+  "fields": {
+    "emailOrUsername": "Email or Username",
+    "password": "Password"
+  },
+  "placeholders": {
+    "emailOrUsername": "Enter your email or username",
+    "password": "Enter your password"
+  },
+  "buttons": {
+    "login": "Login",
+    "discord": "Login with Discord"
+  },
+  "divider": "or",
+  "errors": {
+    "invalidCredentials": "Invalid email/username or password",
+    "discordFailed": "Failed to login with Discord"
+  }
+} 

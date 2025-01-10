@@ -35,16 +35,22 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const login = async (email, password) => {
-    const response = await axios.post(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_LOGIN}`, {
-      email,
-      password,
-    });
+  const login = async (emailOrUsername, password, captchaToken = null) => {
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_LOGIN}`, {
+        emailOrUsername,
+        password,
+        captchaToken
+      });
 
-    const { token } = response.data;
-    localStorage.setItem('token', token);
-    axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-    await fetchUser();
+      const { token } = response.data;
+      localStorage.setItem('token', token);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      await fetchUser();
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
   };
 
   const register = async (userData) => {
@@ -87,6 +93,26 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const updateProfile = async (data) => {
+    try {
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/v2/auth/profile/me`, data);
+      setUser(response.data.user);
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.error || 'Failed to update profile');
+    }
+  };
+
+  const changePassword = async (data) => {
+    try {
+      const response = await axios.put(`${import.meta.env.VITE_API_URL}/v2/auth/profile/password`, data);
+      await fetchUser();
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.error || 'Failed to update password');
+    }
+  };
+
   const value = {
     user,
     isAuthenticated: !!user,
@@ -97,7 +123,9 @@ export const AuthProvider = ({ children }) => {
     loginWithDiscord,
     linkDiscord,
     unlinkProvider,
-    fetchUser
+    fetchUser,
+    updateProfile,
+    changePassword
   };
 
   return (

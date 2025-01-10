@@ -59,7 +59,7 @@ const ReferencesPopup = ({ onClose }) => {
     setLoading(true);
     setError(null);
     try {
-      const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/data/references`);
+      const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/references`);
       setReferences(response.data);
     } catch (err) {
       console.error('Error fetching references:', err);
@@ -145,7 +145,7 @@ const ReferencesPopup = ({ onClose }) => {
 
         // Handle additions
         for (const levelId of toAdd) {
-          await api.post(`${import.meta.env.VITE_API_URL}/v2/data/references`, {
+          await api.post(`${import.meta.env.VITE_API_URL}/v2/database/references`, {
             difficultyId: parseInt(diffId),
             levelId
           });
@@ -154,11 +154,11 @@ const ReferencesPopup = ({ onClose }) => {
         // Handle removals
         for (const levelId of toRemove) {
           const response = await api.get(
-            `${import.meta.env.VITE_API_URL}/v2/data/references/level/${levelId}`
+            `${import.meta.env.VITE_API_URL}/v2/database/references/level/${levelId}`
           );
           const refId = response.data.find(r => r.difficultyId === parseInt(diffId))?.id;
           if (refId) {
-            await api.delete(`${import.meta.env.VITE_API_URL}/v2/data/references/${refId}`);
+            await api.delete(`${import.meta.env.VITE_API_URL}/v2/database/references/${refId}`);
           }
         }
       }
