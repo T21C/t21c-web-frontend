@@ -2,7 +2,7 @@
 // eslint-disable-next-line no-unused-vars
 import "./leveldetailpage.css"
 import placeholder from "../../assets/placeholder/3.png";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useLocation, useParams } from 'react-router-dom';
 import { CompleteNav } from "../../components";
 import {
@@ -19,6 +19,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import api from "../../utils/api";
 import { useDifficultyContext } from "../../contexts/DifficultyContext";
 import { MetaTags } from '../../components';
+import { SteamIcon } from "../../components/Icons/SteamIcon";
 
 const getHighScores = (players) => {
   if (!players?.length) return null;
@@ -33,6 +34,42 @@ const getHighScores = (players) => {
     highestSpeed: players.some(p => p.speed) ? 
       players.reduce((a, b) => (b.speed || 0) > (a.speed || 0) ? b : a) : null
   };
+};
+
+const AliasesDropdown = ({ field, aliases, show, onClose }) => {
+  const { t } = useTranslation('pages');
+  const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [onClose]);
+
+  const handleDropdownClick = (e) => {
+    e.stopPropagation();
+  };
+
+  if (!show || !aliases?.length) return null;
+
+  return (
+    <div className="aliases-dropdown" ref={dropdownRef} onClick={handleDropdownClick}>
+      <div className="aliases-header">{tLevel('aliases.header')}</div>
+      <div className="aliases-list">
+        {aliases.map((alias, index) => (
+          <div key={index} className="alias-item">
+            <span className="alias-label">{alias.alias}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
 };
 
 const LevelDetailPage = () => {
@@ -58,11 +95,29 @@ const LevelDetailPage = () => {
   const location = useLocation();
   const currentUrl = window.location.origin + location.pathname;
 
+  const [showSongAliases, setShowSongAliases] = useState(false);
+  const [showArtistAliases, setShowArtistAliases] = useState(false);
+  const songAliasButtonRef = useRef(null);
+  const artistAliasButtonRef = useRef(null);
+
+  const [activeAliasDropdown, setActiveAliasDropdown] = useState(null);
+
+  const handleAliasButtonClick = (e, field) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setActiveAliasDropdown(current => current === field ? null : field);
+  };
+
+  const handleDropdownClose = () => {
+    setActiveAliasDropdown(null);
+  };
+
   const reloadLevelData = async () => {
     try {
       setInfoLoading(true);
       const levelData = await api.get(`${import.meta.env.VITE_LEVELS}/${id}`);
       const passesData = await api.get(`${import.meta.env.VITE_PASSES}/level/${id}`);
+      
       setRes(prevRes => ({
         ...prevRes,
         level: levelData.data,
@@ -70,7 +125,6 @@ const LevelDetailPage = () => {
       }));
       setDisplayedPlayers(sortLeaderboard(passesData.data));
       
-      // Reload video details if needed
       if (levelData.data.videoLink) {
         const videoData = await getVideoDetails(levelData.data.videoLink);
         setVideoDetail(videoData);
@@ -181,6 +235,37 @@ const LevelDetailPage = () => {
     return placeholder;
   };
 
+  const renderTitleWithAliases = (title, field) => {
+    const aliases = res?.level?.aliases?.filter(a => a.field === field) || [];
+    const isOpen = activeAliasDropdown === field;
+
+    return (
+      <div className="level-title">
+        {title}
+        {aliases.length > 0 && (
+          <>
+            <span 
+              className={`alias-arrow ${isOpen ? 'open' : ''}`}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              onClick={(e) => handleAliasButtonClick(e, field)}
+            >
+              ▼
+            </span>
+            <AliasesDropdown 
+              field={field}
+              aliases={aliases}
+              show={isOpen}
+              onClose={handleDropdownClose}
+            />
+          </>
+        )}
+      </div>
+    );
+  };
+
   //if (!res || player.length === 0 || highSpeed === null || highAcc === null || highScore === null || displayedPlayers.length === 0)
  if (res == null)
     return (
@@ -241,11 +326,12 @@ const LevelDetailPage = () => {
             </div>
 
             <div className="title">
-              <h1>{res.level.song}</h1>
+              {renderTitleWithAliases(res.level.song, 'song')}
               <p>
                 #{id}&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
                 {res.level.team ? res.level.team : res.level.creator}
-                &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;{res.level.artist}
+                &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
+                {renderTitleWithAliases(res.level.artist, 'artist')}
               </p>
             </div>
           </div>
@@ -271,9 +357,7 @@ const LevelDetailPage = () => {
             )}
             {res.level.workshopLink && (
               <a href={res.level.workshopLink} target="_blank" title={tLevel('links.workshop')}>
-                <svg className="svg-fill" fill="#ffffff" viewBox="3 3 26 26" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M20 10.875C20.3013 10.875 20.5733 10.6948 20.6907 10.4173C20.8081 10.1399 20.7482 9.81916 20.5384 9.60289L16.5384 5.47789C16.3972 5.33222 16.2029 5.25 16 5.25C15.7971 5.25 15.6029 5.33222 15.4616 5.47789L11.4616 9.60289C11.2519 9.81916 11.1919 10.1399 11.3093 10.4173C11.4268 10.6948 11.6988 10.875 12 10.875H15.25V18C15.25 18.4142 15.5858 18.75 16 18.75C16.4142 18.75 16.75 18.4142 16.75 18L16.75 10.875H20Z"/>
-                </svg>
+                <SteamIcon color="#ffffff" size={24} />
               </a>
             )}
           </div>
@@ -460,13 +544,20 @@ const LevelDetailPage = () => {
       </div>
     </div>
 
-    {openEditDialog && user?.isSuperAdmin && (
+    {openEditDialog && (
       <EditLevelPopup
         level={res.level}
         onClose={() => setOpenEditDialog(false)}
-        onUpdate={async (updatedLevel) => {
-          await reloadLevelData();
-          setOpenEditDialog(false);
+        onUpdate={(updatedLevel) => {
+          const newLevel = updatedLevel.level || updatedLevel;
+          setRes(prevRes => ({
+            ...prevRes,
+            level: {
+              ...prevRes.level,
+              ...newLevel,
+              aliases: newLevel.aliases || prevRes.level.aliases
+            }
+          }));
         }}
       />
     )}

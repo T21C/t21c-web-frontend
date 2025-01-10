@@ -532,6 +532,11 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         <AliasManagementPopup
           levelId={level.id}
           onClose={() => setShowAliasManagement(false)}
+          onAliasesUpdate={(updatedLevel) => {
+            if (onUpdate) {
+              onUpdate(updatedLevel);
+            }
+          }}
         />
       )}
     </div>

@@ -66,6 +66,26 @@
   color: #ddd;
 }
 
+.alias-management-popup .form-group .selected-value {
+  color: #4a90e2;
+  font-weight: 500;
+  font-family: monospace;
+  background-color: rgba(74, 144, 226, 0.1);
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-left: 4px;
+}
+
+.alias-management-popup .field-select {
+  font-family: monospace;
+  padding: 10px !important;
+}
+
+.alias-management-popup .field-select option {
+  padding: 8px;
+  font-family: monospace;
+}
+
 .alias-management-popup .form-group.checkbox {
   display: flex;
   align-items: center;
@@ -159,4 +179,25 @@
 
 .alias-management-popup .delete-button:hover:not(:disabled) {
   background-color: #cc3333;
+}
+
+.alias-management-popup .affected-levels-notice {
+  background-color: rgba(0, 123, 255, 0.1);
+  border: 1px solid #007bff;
+  border-radius: 4px;
+  padding: 10px;
+  margin: 10px 0;
+  color: #007bff;
+  font-size: 0.9em;
+  text-align: center;
+}
+
+.alias-management-popup .form-group input[type="text"],
+.alias-management-popup .form-group select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 4px;
+  border: 1px solid #444;
+  background-color: #333;
+  color: #fff;
 } 

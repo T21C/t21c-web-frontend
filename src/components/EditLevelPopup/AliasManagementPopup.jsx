@@ -7,8 +7,20 @@ const AliasManagementPopup = ({ levelId, onClose }) => {
   const [newAlias, setNewAlias] = useState({ field: 'song', alias: '', propagate: false, matchType: 'exact' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [affectedLevelsCount, setAffectedLevelsCount] = useState(null);
+  const [levelData, setLevelData] = useState(null);
 
   useEffect(() => {
+    const fetchLevelData = async () => {
+      try {
+        const response = await api.get(`${import.meta.env.VITE_LEVELS}/byId/${levelId}`);
+        setLevelData(response.data);
+      } catch (err) {
+        console.error('Error fetching level data:', err);
+      }
+    };
+
+    fetchLevelData();
     fetchAliases();
 
     // Add ESC key handler
@@ -24,6 +36,39 @@ const AliasManagementPopup = ({ levelId, onClose }) => {
       window.removeEventListener('keydown', handleEsc);
     };
   }, [levelId, onClose]);
+
+  // Add effect to fetch affected levels count when propagation settings change
+  useEffect(() => {
+    const fetchAffectedLevelsCount = async () => {
+      if (!newAlias.propagate) {
+        setAffectedLevelsCount(null);
+        return;
+      }
+
+      try {
+        const params = new URLSearchParams({
+          field: newAlias.field,
+          matchType: newAlias.matchType
+        });
+
+        const response = await api.get(`${import.meta.env.VITE_LEVELS}/alias-propagation-count/${levelId}?${params}`);
+        setAffectedLevelsCount(response.data.count);
+
+        // Update the error state if needed
+        if (response.data.count === 0) {
+          setError(`No other levels found with ${newAlias.field} "${response.data.fieldValue}"`);
+        } else {
+          setError(null);
+        }
+      } catch (err) {
+        console.error('Error fetching affected levels count:', err);
+        setAffectedLevelsCount(null);
+        setError('Failed to check affected levels');
+      }
+    };
+
+    fetchAffectedLevelsCount();
+  }, [newAlias.propagate, newAlias.field, newAlias.matchType, levelId]);
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
@@ -114,14 +159,15 @@ const AliasManagementPopup = ({ levelId, onClose }) => {
             <select
               value={newAlias.field}
               onChange={(e) => setNewAlias({ ...newAlias, field: e.target.value })}
+              className="field-select"
             >
-              <option value="song">Song</option>
-              <option value="artist">Artist</option>
+              <option value="song">Song ({levelData?.song || 'Loading...'})</option>
+              <option value="artist">Artist ({levelData?.artist || 'Loading...'})</option>
             </select>
           </div>
 
           <div className="form-group">
-            <label>Alias:</label>
+            <label>Alias for: <span className="selected-value">{levelData?.[newAlias.field]}</span></label>
             <input
               type="text"
               value={newAlias.alias}
@@ -143,16 +189,24 @@ const AliasManagementPopup = ({ levelId, onClose }) => {
           </div>
 
           {newAlias.propagate && (
-            <div className="form-group">
-              <label>Match Type:</label>
-              <select
-                value={newAlias.matchType}
-                onChange={(e) => setNewAlias({ ...newAlias, matchType: e.target.value })}
-              >
-                <option value="exact">Exact Match</option>
-                <option value="partial">Partial Match</option>
-              </select>
-            </div>
+            <>
+              <div className="form-group">
+                <label>Match Type:</label>
+                <select
+                  value={newAlias.matchType}
+                  onChange={(e) => setNewAlias({ ...newAlias, matchType: e.target.value })}
+                >
+                  <option value="exact">Exact Match</option>
+                  <option value="partial">Partial Match</option>
+                </select>
+              </div>
+
+              {affectedLevelsCount !== null && (
+                <div className="affected-levels-notice">
+                  This will affect {affectedLevelsCount} other level{affectedLevelsCount !== 1 ? 's' : ''}
+                </div>
+              )}
+            </>
           )}
 
           <button type="submit" disabled={loading}>

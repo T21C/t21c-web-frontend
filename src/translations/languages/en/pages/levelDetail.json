@@ -18,6 +18,9 @@
       "goToVideo": "Go to video"
     }
   },
+  "aliases": {
+    "header": "Known aliases:"
+  },
   "stats": {
     "firstClear": {
       "label": "First Clear",
