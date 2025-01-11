@@ -81,14 +81,6 @@ const CreatorManagementPage = () => {
         scrollPositionRef.current = window.scrollY;
       }
 
-      // Cancel any in-flight request
-      if (cancelTokenRef.current) {
-        cancelTokenRef.current.cancel('New request initiated');
-      }
-
-      // Create new cancel token
-      cancelTokenRef.current = api.CancelToken.source();
-      
       // Only clear results when not preserving scroll (i.e. pagination changes)
       if (!preserveScroll) {
         setCreators([]);
@@ -103,6 +95,14 @@ const CreatorManagementPage = () => {
         excludeAliases: excludeAliases,
         sort
       });
+
+      // Cancel any in-flight request
+      if (cancelTokenRef.current) {
+        cancelTokenRef.current.cancel('New request initiated');
+      }
+
+      // Create new cancel token
+      cancelTokenRef.current = api.CancelToken.source();
 
       const response = await api.get(`/v2/database/creators?${params}`, {
         cancelToken: cancelTokenRef.current.token
@@ -136,6 +136,7 @@ const CreatorManagementPage = () => {
     fetchLevelsAudit();
     fetchTeams();
 
+    // Cleanup function to cancel any pending requests
     return () => {
       if (cancelTokenRef.current) {
         cancelTokenRef.current.cancel('Component unmounted');
@@ -147,6 +148,17 @@ const CreatorManagementPage = () => {
   useEffect(() => {
     fetchCreators();
   }, [creatorPage, creatorListSearchQuery, hideVerifiedCreators, sort]);
+
+  useEffect(() => {
+    fetchLevelsAudit();
+
+    // Cleanup function to cancel any pending requests when dependencies change
+    return () => {
+      if (cancelTokenRef.current) {
+        cancelTokenRef.current.cancel('Dependencies changed');
+      }
+    };
+  }, [currentPage, searchQuery, hideVerified, excludeAliases]);
 
   useEffect(() => {
     // Prevent scrolling when modals are open
@@ -182,11 +194,15 @@ const CreatorManagementPage = () => {
     return () => document.removeEventListener('keydown', handleEscape);
   }, [showMergeWarning, showSplitDialog]);
 
-  useEffect(() => {
-    fetchLevelsAudit();
-  }, [currentPage, searchQuery, hideVerified, excludeAliases]);
-
   const fetchLevelsAudit = async (preserveScroll = false) => {
+    // Cancel any in-flight request
+    if (cancelTokenRef.current) {
+      cancelTokenRef.current.cancel('New request initiated');
+    }
+
+    // Create new cancel token
+    cancelTokenRef.current = api.CancelToken.source();
+
     if (!preserveScroll) {
       setLevels([]);
     }
@@ -200,7 +216,9 @@ const CreatorManagementPage = () => {
         excludeAliases: excludeAliases
       });
 
-      const response = await api.get(`/v2/database/creators/levels-audit?${params}`);
+      const response = await api.get(`/v2/database/creators/levels-audit?${params}`, {
+        cancelToken: cancelTokenRef.current.token
+      });
       if (response.data) {
         setLevels(response.data.results);
         const totalPages = Math.ceil(response.data.count / levelsPerPage);
@@ -220,10 +238,14 @@ const CreatorManagementPage = () => {
         }
       }
     } catch (error) {
-      console.error('Error fetching levels:', error);
-      setError('Failed to fetch levels');
+      if (!api.isCancel(error)) {
+        console.error('Error fetching levels:', error);
+        setError('Failed to fetch levels');
+      }
     } finally {
-      setLoading(false);
+      if (!api.isCancel(error)) {
+        setLoading(false);
+      }
     }
   };
 

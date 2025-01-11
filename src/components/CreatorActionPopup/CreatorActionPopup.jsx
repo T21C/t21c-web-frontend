@@ -44,6 +44,15 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
   const [availableCreators, setAvailableCreators] = useState([]);
   const [hasPendingChanges, setHasPendingChanges] = useState(false);
   const [splitRoles, setSplitRoles] = useState([]);
+  const [defaultRole, setDefaultRole] = useState(CreditRole.CHARTER);
+
+  useEffect(() => {
+    // Determine default role if creator has exactly one level
+    if (creator?.createdLevels?.length === 1) {
+      const singleLevel = creator.createdLevels[0];
+      setDefaultRole(singleLevel.LevelCredit?.role || CreditRole.CHARTER);
+    }
+  }, [creator]);
 
   useEffect(() => {
     const handleEscapeKey = (event) => {
@@ -528,10 +537,10 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                           />
                           <Select
                             options={roleOptions}
-                            value={roleOptions.find(option => option.value === (splitRoles?.[index] || CreditRole.CREATOR))}
+                            value={roleOptions.find(option => option.value === (splitRoles?.[index] || defaultRole))}
                             onChange={(option) => {
-                              const newRoles = [...(splitRoles || splitNames.map(() => CreditRole.CREATOR))];
-                              newRoles[index] = option ? option.value : CreditRole.CREATOR;
+                              const newRoles = [...(splitRoles || splitNames.map(() => defaultRole))];
+                              newRoles[index] = option ? option.value : defaultRole;
                               setSplitRoles(newRoles);
                             }}
                             placeholder="Select role"
@@ -543,7 +552,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                             onClick={() => {
                               setSplitNames(splitNames.filter((_, i) => i !== index));
                               setSplitRoles((prevRoles) => {
-                                const newRoles = [...(prevRoles || splitNames.map(() => CreditRole.CREATOR))];
+                                const newRoles = [...(prevRoles || splitNames.map(() => defaultRole))];
                                 newRoles.splice(index, 1);
                                 return newRoles;
                               });
@@ -558,7 +567,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                     <button
                       onClick={() => {
                         setSplitNames([...splitNames, '']);
-                        setSplitRoles((prevRoles) => [...(prevRoles || splitNames.map(() => CreditRole.CREATOR)), CreditRole.CREATOR]);
+                        setSplitRoles((prevRoles) => [...(prevRoles || splitNames.map(() => defaultRole)), defaultRole]);
                       }}
                       className="add-name-button"
                     >
