@@ -4,6 +4,9 @@ import Select from '../Select/Select';
 import api from '../../utils/api';
 import './creatorActionPopup.css';
 import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
+import { useDifficultyContext } from '../../contexts/DifficultyContext';
+import { ExternalLinkIcon } from '../Icons/ExternalLinkIcon';
 
 const CreditRole = {
   CHARTER: 'charter',
@@ -19,8 +22,10 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
   const { t } = useTranslation('components');
   const tCreator = (key) => t(`creator.actionPopup.${key}`);
   const popupRef = useRef(null);
+  const navigate = useNavigate();
+  const { difficultyDict } = useDifficultyContext();
 
-  const [mode, setMode] = useState('update'); // update, merge, split, discord
+  const [mode, setMode] = useState('update'); // update, merge, split, discord, levels
   const [name, setName] = useState(creator?.name || '');
   const [aliases, setAliases] = useState(creator?.aliases || []);
   const [newAlias, setNewAlias] = useState('');
@@ -401,6 +406,12 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
               >
                 Split
               </button>
+              <button 
+                className={`mode-btn ${mode === 'levels' ? 'active' : ''}`}
+                onClick={() => setMode('levels')}
+              >
+                Levels
+              </button>
             </div>
           </div>
 
@@ -700,6 +711,49 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                     </div>
                   </div>
                 )}
+              </div>
+            )}
+
+            {mode === 'levels' && (
+              <div className="levels-list">
+                {creator.createdLevels?.map(level => {
+                  const difficultyInfo = difficultyDict[level.diffId];
+                  return (
+                    <div 
+                      key={level.id}
+                      className="level-item"
+                      onClick={() => {
+                        window.open(`/levels/${level.id}`, '_blank');
+                      }}
+                    >
+                      <div className="level-item-icon">
+                        <img 
+                          src={difficultyInfo?.icon} 
+                          alt={difficultyInfo?.name || 'Difficulty'} 
+                          className="difficulty-icon"
+                        />
+                      </div>
+                      <div className="level-item-info">
+                        <div className="level-id">#{level.id}</div>
+                        <div className="level-title">{level.song}</div>
+                        <div className="level-artist">{level.artist}</div>
+                        <div className="level-legacy-creators">
+                          {
+                            level.charter && <span>Charter: <b>{level.charter}</b></span>
+                          }
+                          <br/>
+                          {
+                            level.vfxer && <span>VFX: <b>{level.vfxer}</b></span>
+                          }
+                        </div>
+                      </div>
+                      <div className="level-item-role">
+                        {level.LevelCredit?.role}
+                      </div>
+                      <ExternalLinkIcon color="#fff" size={32} className="external-link-icon"/>
+                    </div>
+                  );
+                })}
               </div>
             )}
           </div>

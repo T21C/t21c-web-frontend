@@ -7,7 +7,7 @@ import { formatScore } from "../Misc/Utility";
 import DefaultAvatar from "../Icons/DefaultAvatar";
 
 const nonRoundable = ["topDiff", "top12kDiff"];
-const passes = ["totalPasses", "universalPasses", "WFPasses"];
+const passes = ["totalPasses", "universalPasses", "worldsFirstCount"];
 
 const PlayerCard = ({player}) => {
   const { sortBy } = useContext(PlayerContext);
@@ -21,10 +21,10 @@ const PlayerCard = ({player}) => {
     ppScore: tCard('stats.ppScore'),
     wfScore: tCard('stats.wfScore'),
     score12k: tCard('stats.score12k'),
-    avgXacc: tCard('stats.avgXacc'),
+    averageXacc: tCard('stats.averageXacc'),
     totalPasses: tCard('stats.totalPasses'),
     universalPasses: tCard('stats.universalPasses'),
-    WFPasses: tCard('stats.WFPasses'),
+    worldsFirstCount: tCard('stats.worldsFirstCount'),
     topDiff: tCard('stats.topDiff'),
     top12kDiff: tCard('stats.top12kDiff')
   };
@@ -48,9 +48,9 @@ const PlayerCard = ({player}) => {
       label: sortLabels.generalScore,
       value: formatScore(player.generalScore),
     },
-    avgXacc: {
-      label: sortLabels.avgXacc,
-      value: `${(player.avgXacc * 100).toFixed(2)}%`,
+    averageXacc: {
+      label: sortLabels.averageXacc,
+      value: `${(player.averageXacc * 100).toFixed(2)}%`,
     },
   };
     
@@ -76,7 +76,7 @@ const PlayerCard = ({player}) => {
 
   if (!nonRoundable.includes(sortBy)) {
     if (!passes.includes(sortBy)) {
-      if (sortBy === "avgXacc") {
+      if (sortBy === "averageXacc") {
         primaryField.value = (parseFloat(primaryField.value)*100).toFixed(2).toString()+"%";
       } else {
         primaryField.value = formatScore(parseFloat(primaryField.value));

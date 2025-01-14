@@ -112,30 +112,6 @@ const LevelDetailPage = () => {
     setActiveAliasDropdown(null);
   };
 
-  const reloadLevelData = async () => {
-    try {
-      setInfoLoading(true);
-      const levelData = await api.get(`${import.meta.env.VITE_LEVELS}/${id}`);
-      const passesData = await api.get(`${import.meta.env.VITE_PASSES}/level/${id}`);
-      
-      setRes(prevRes => ({
-        ...prevRes,
-        level: levelData.data,
-        passes: passesData.data
-      }));
-      setDisplayedPlayers(sortLeaderboard(passesData.data));
-      
-      if (levelData.data.videoLink) {
-        const videoData = await getVideoDetails(levelData.data.videoLink);
-        setVideoDetail(videoData);
-      }
-    } catch (error) {
-      console.error("Error reloading level data:", error);
-    } finally {
-      setInfoLoading(false);
-    }
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       try {

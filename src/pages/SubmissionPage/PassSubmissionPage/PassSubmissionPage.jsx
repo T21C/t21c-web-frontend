@@ -397,7 +397,7 @@ const PassSubmissionPage = () => {
         {
           params: {
             query,
-            limit: 10,
+            limit: 50,
             offset: 0
           },
           cancelToken: searchCancelTokenRef.current.token

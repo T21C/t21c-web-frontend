@@ -31,10 +31,10 @@ const LeaderboardPage = () => {
     { value: 'ppScore', label: tLeaderboard('sortOptions.ppScore') },
     { value: 'wfScore', label: tLeaderboard('sortOptions.wfScore') },
     { value: 'score12k', label: tLeaderboard('sortOptions.score12k') },
-    { value: 'avgXacc', label: tLeaderboard('sortOptions.avgXacc') },
+    { value: 'averageXacc', label: tLeaderboard('sortOptions.averageXacc') },
     { value: 'totalPasses', label: tLeaderboard('sortOptions.totalPasses') },
     { value: 'universalPasses', label: tLeaderboard('sortOptions.universalPasses') },
-    { value: 'WFPasses', label: tLeaderboard('sortOptions.WFPasses') },
+    { value: 'worldsFirstCount', label: tLeaderboard('sortOptions.worldsFirstCount') },
     { value: 'topDiff', label: tLeaderboard('sortOptions.topDiff') },
     { value: 'top12kDiff', label: tLeaderboard('sortOptions.top12kDiff') }
   ];

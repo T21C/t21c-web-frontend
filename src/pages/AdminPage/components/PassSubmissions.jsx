@@ -380,7 +380,7 @@ const PassSubmissions = () => {
                     currentPlayer={submissions.find(s => s.id === submission.id)?.assignedPlayerId}
                   />
 
-                  <div className={`discord-assignment ${discordAssignmentStatus[submission.id] || ''}`}>
+                  <div className="discord-assignment">
                     {discordAssignmentError[submission.id] && (
                       <div className="assignment-error">{discordAssignmentError[submission.id]}</div>
                     )}
@@ -410,19 +410,21 @@ const PassSubmissions = () => {
                             </button>
                           </div>
                         ) : (
-                          <button 
-                            className="assign-discord-btn"
-                            onClick={() => startDiscordAssignment(submission.id)}
-                            disabled={discordAssignmentStatus[submission.id] === 'assigning'}
-                          >
-                            {tPass('playerAssignment.discord.assignButton')}
-                            <span className="assignment-tooltip">
+                          <div className="discord-assignment-container">
+                            <button 
+                              className="assign-discord-btn"
+                              onClick={() => startDiscordAssignment(submission.id)}
+                              disabled={discordAssignmentStatus[submission.id] === 'assigning'}
+                            >
+                              {tPass('playerAssignment.discord.assignButton')}
+                            </button>
+                            <div className="assignment-tooltip">
                               {tPass('playerAssignment.discord.tooltip', {
                                 discordUsername: submission.submitterDiscordUsername,
                                 playerName: submission.assignedPlayerName || 'Unknown Player'
                               })}
-                            </span>
-                          </button>
+                            </div>
+                          </div>
                         )}
                       </div>
                     )}

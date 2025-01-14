@@ -821,3 +821,55 @@
       transform: rotate(360deg);
     }
   }
+
+  .submission-admin-page .discord-assignment-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  .submission-admin-page .assign-discord-btn {
+    padding: 4px 12px;
+    border-radius: 4px;
+    border: none;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+    background-color: var(--color-white-t20);
+    color: var(--color-white);
+  }
+
+  .submission-admin-page .assignment-tooltip {
+    visibility: hidden;
+    position: absolute;
+    bottom: calc(100% + 5px);
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: visible;
+    height: fit-content;
+    max-width: 200px;
+    z-index: 1000;
+    pointer-events: none; /* Prevents tooltip from interfering with button clicks */
+  }
+
+  /* Add a small arrow to the tooltip */
+  .submission-admin-page .assignment-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.9) transparent transparent transparent;
+  }
+
+  .submission-admin-page .discord-assignment-container:hover .assignment-tooltip {
+    visibility: visible;
+  }

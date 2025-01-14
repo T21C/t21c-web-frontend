@@ -38,10 +38,10 @@
       "ppScore": "PP Score",
       "wfScore": "WF Score",
       "score12k": "12k Score",
-      "avgXacc": "Average X-acc",
+      "averageXacc": "Average X-acc",
       "totalPasses": "Total Passes",
       "universalPasses": "Universal Passes",
-      "WFPasses": "WF Passes",
+      "worldsFirstCount": "WF Passes",
       "topDiff": "Top Difficulty",
       "top12kDiff": "Top 12k Difficulty"
     }
@@ -55,10 +55,10 @@
       "12k": "12k Score"
     },
     "stats": {
-      "avgXacc": "Average XAcc",
+      "averageXacc": "Average XAcc",
       "totalPasses": "Total Passes",
       "universalPasses": "Universal Passes",
-      "WFPasses": "WF Passes",
+      "worldsFirstCount": "WF Passes",
       "topDiff": "Top Difficulty",
       "top12kDiff": "Top 12k Difficulty"
     }

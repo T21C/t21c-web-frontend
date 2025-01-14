@@ -11,10 +11,10 @@
     "ppScore": "PP Score",
     "wfScore": "WF Score",
     "score12k": "12K Score",
-    "avgXacc": "Average X-Accuracy",
+    "averageXacc": "Average X-Accuracy",
     "totalPasses": "Total Passes",
     "universalPasses": "Universal Passes",
-    "WFPasses": "World's First Passes",
+    "worldsFirstCount": "World's First Passes",
     "topDiff": "Top Difficulty",
     "top12kDiff": "Top 12K Difficulty"
   },

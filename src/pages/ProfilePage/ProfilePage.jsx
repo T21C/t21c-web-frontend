@@ -49,10 +49,10 @@ const ProfilePage = () => {
       ppScore: tProfile('valueLabels.ppScore'),
       wfScore: tProfile('valueLabels.wfScore'),
       score12k: tProfile('valueLabels.score12k'),
-      avgXacc: tProfile('valueLabels.avgXacc'),
+      averageXacc: tProfile('valueLabels.averageXacc'),
       totalPasses: tProfile('valueLabels.totalPasses'),
       universalPasses: tProfile('valueLabels.universalPasses'),
-      WFPasses: tProfile('valueLabels.WFPasses'),
+      worldsFirstCount: tProfile('valueLabels.worldsFirstCount'),
       topDiff: tProfile('valueLabels.topDiff'),
       top12kDiff: tProfile('valueLabels.top12kDiff')
     };
@@ -240,12 +240,12 @@ const ProfilePage = () => {
             
                 <div className="passes-container">
                   <div className="score-item">
-                    <p className="score-name">{valueLabels.WFPasses}</p>
-                    <p className="score-value">{playerData.WFPasses}</p>
+                    <p className="score-name">{valueLabels.worldsFirstCount}</p>
+                    <p className="score-value">{playerData.worldsFirstCount}</p>
                   </div>
                   <div className="score-item">
-                    <p className="score-name">{valueLabels.avgXacc}</p>
-                    <p className="score-value">{(playerData.avgXacc*100).toFixed(2)}%</p>
+                    <p className="score-name">{valueLabels.averageXacc}</p>
+                    <p className="score-value">{(playerData.averageXacc*100).toFixed(2)}%</p>
                   </div>
                   <div className="score-item">
                     <p className="score-name">{valueLabels.totalPasses}</p>

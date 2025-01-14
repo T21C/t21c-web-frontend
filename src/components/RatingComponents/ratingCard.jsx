@@ -37,7 +37,7 @@ export const RatingCard = ({
     const tRating = (key) => t(`rating.ratingCard.${key}`);
     const [isEditing, setIsEditing] = useState(false);
 
-    const userRating = rating.details?.find(detail => detail.username === user?.username)?.rating || "";
+    const userRating = rating.details?.find(detail => detail.userId === user?.id)?.rating || "";
     const processedRatings = rating.details
         .map(({rating}) => calculateRatingValue(rating))
         .filter(rating => rating !== null);

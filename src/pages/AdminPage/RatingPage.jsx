@@ -345,7 +345,7 @@ const RatingPage = () => {
               {sortedRatings
                 ?.filter(rating => {
                   if (hideRated) {
-                    const userDetail = rating.details?.find(detail => detail.username === user?.username);
+                    const userDetail = rating.details?.find(detail => detail.userId === user?.id);
                     if (userDetail) return false;
                   }
                   if (lowDiffFilter === 'hide' && rating.lowDiff) return false;

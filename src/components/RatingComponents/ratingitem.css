@@ -16,6 +16,11 @@
     gap: 0.5rem;
   }
 
+  .rating-item-header > svg {
+    height: 2rem;
+    width: 2rem;
+  }
+
   .rating-item-icons {
     display: flex;
     align-items: center;
