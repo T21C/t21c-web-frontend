@@ -15,9 +15,7 @@ export default defineConfig(({ command, mode }) => {
       : env.VITE_API_URL
 
   return {
-    plugins: [
-      react()
-    ],
+    plugins: [react()],
     logLevel: 'info',
     resolve: {
       alias: {
@@ -45,49 +43,43 @@ export default defineConfig(({ command, mode }) => {
       devSourcemap: mode === 'development',
     },
     server: {
-      sourcemap: mode === 'development',
-      host: '0.0.0.0',
+      host: true,
+      port: 5173,
+      strictPort: true,
+      cors: true,
+      hmr: {
+        protocol: 'wss',
+        host: 'tufstaging.online'
+      },
+      watch: {
+        usePolling: true
+      },
       proxy: {
-        // API routes go directly to backend
         '/v2': {
           target: apiUrl || 'http://localhost:3002',
           changeOrigin: true,
+          secure: false,
           ws: true
         },
-        // Only proxy exact pass/level number routes to Express for meta tags
         '^/passes/\\d+$': {
           target: apiUrl || 'http://localhost:3002',
           changeOrigin: true,
-          ws: false,
-          configure: (proxy, _options) => {
-            proxy.on('error', (err, _req, _res) => {
-              console.log('proxy error', err);
-            });
-          }
+          secure: false,
+          ws: false
         },
         '^/levels/\\d+$': {
           target: apiUrl || 'http://localhost:3002',
           changeOrigin: true,
-          ws: false,
-          configure: (proxy, _options) => {
-            proxy.on('error', (err, _req, _res) => {
-              console.log('proxy error', err);
-            });
-          }
+          secure: false,
+          ws: false
         },
         '^/player/\\d+$': {
           target: apiUrl || 'http://localhost:3002',
           changeOrigin: true,
-          ws: false,
-          configure: (proxy, _options) => {
-            proxy.on('error', (err, _req, _res) => {
-              console.log('proxy error', err);
-            });
-          }
+          secure: false,
+          ws: false
         }
-      },
-      strictPort: true,
-      cors: true
+      }
     }
   }
 })
