@@ -4,7 +4,7 @@ import { useEffect, useState, useCallback, useMemo } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import { useRatingFilter } from "../../contexts/RatingFilterContext";
 import { useTranslation } from "react-i18next";
-import { DetailPopup } from "../../components/RatingComponents/detailPopup";
+import { DetailPopup } from "../../components/RatingComponents/DetailPopup";
 import { RatingCard } from "../../components/RatingComponents/RatingCard";
 import { EditLevelPopup } from "../../components/EditLevelPopup/EditLevelPopup";
 import ScrollButton from "../../components/ScrollButton/ScrollButton";
