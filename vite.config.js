@@ -43,13 +43,14 @@ export default defineConfig(({ command, mode }) => {
       devSourcemap: mode === 'development',
     },
     server: {
-      host: true,
+      host: '0.0.0.0',
       port: 5173,
       strictPort: true,
       cors: true,
       hmr: {
         protocol: 'wss',
-        host: 'tufstaging.online'
+        host: 'tufstaging.online',
+        clientPort: 443
       },
       watch: {
         usePolling: true
