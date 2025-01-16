@@ -161,7 +161,6 @@ const HomePage = () => {
   const [stats, setStats] = useState(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [boundingRect, setBoundingRect] = useState(null);
-  const [isVisible, setIsVisible] = useState(false);
   const [graphMode, setGraphMode] = useState('passes'); // 'passes' or 'levels'
   const location = useLocation();
   const currentUrl = window.location.origin + location.pathname;
@@ -200,14 +199,23 @@ const HomePage = () => {
     };
   }, [updateBoundingRect]);
 
-  // Update to track mouse position globally
+  // Update to track mouse position only when near the title
   useEffect(() => {
     const handleMouseMove = (e) => {
       if (boundingRect) {
-        setMousePosition({ 
-          x: e.clientX - boundingRect.left, 
-          y: e.clientY - boundingRect.top 
-        });
+        // Check if mouse is within or near the title area (adding some padding)
+        const padding = 100; // pixels of padding around the title
+        if (
+          e.clientX >= boundingRect.left - padding &&
+          e.clientX <= boundingRect.right + padding &&
+          e.clientY >= boundingRect.top - padding &&
+          e.clientY <= boundingRect.bottom + padding
+        ) {
+          setMousePosition({ 
+            x: e.clientX - boundingRect.left, 
+            y: e.clientY - boundingRect.top 
+          });
+        }
       }
     };
 
@@ -234,7 +242,7 @@ const HomePage = () => {
               <img src="/src/assets/tuf-logo/logo-full.png" alt="TUForums" className="logo" />
             </div>
             <h1 
-              className={`main-title ${isVisible ? 'visible' : ''}`}
+              className={`main-title`}
               id="main-title"
               style={{
                 '--mouse-x': `${mousePosition.x}px`,
@@ -283,13 +291,18 @@ const HomePage = () => {
               <div className="graph-controls">
                 <button 
                   className={`graph-mode ${graphMode === 'passes' ? 'active' : ''}`}
-                  onClick={() => setGraphMode('passes')}
+                  onClick={() => {
+                    setGraphMode('passes');
+                  }}
                 >
                   {tHome('stats.difficulties.graphModes.passes')}
                 </button>
                 <button 
                   className={`graph-mode ${graphMode === 'levels' ? 'active' : ''}`}
-                  onClick={() => setGraphMode('levels')}
+                  onClick={() => {
+                    setGraphMode('levels');
+                  }}
+                  
                 >
                   {tHome('stats.difficulties.graphModes.levels')}
                 </button>
