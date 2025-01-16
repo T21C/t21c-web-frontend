@@ -4,7 +4,7 @@ import { getVideoDetails } from "../../Repository/RemoteRepository";
 import "./card.css"
 import { useTranslation } from "react-i18next";
 // eslint-disable-next-line react/prop-types
-const Card = ({ id,  creator, song, artist, image: vidLink }) => {
+const Card = ({ id,  creator, song, artist, image: videoLink }) => {
   const {t} = useTranslation()
   const cardRef = useRef(null);
   const imageContainerRef = useRef(null);
@@ -12,7 +12,7 @@ const Card = ({ id,  creator, song, artist, image: vidLink }) => {
   
 
   useEffect(() => {
-    getVideoDetails(vidLink).then((res) => {
+    getVideoDetails(videoLink).then((res) => {
       setVideoDetail(
         res
           ? res
@@ -21,12 +21,12 @@ const Card = ({ id,  creator, song, artist, image: vidLink }) => {
     });
 
 
-  }, [vidLink]);
+  }, [videoLink]);
 
   let navigate = useNavigate();
 
   const redirect = () => {
-    navigate(`/leveldetail?id=${id}`);
+    navigate(`/levels/${id}`);
   };
 
   useEffect(() => {

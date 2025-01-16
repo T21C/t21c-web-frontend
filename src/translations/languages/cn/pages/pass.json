@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "title": "通关记录列表",
+    "description": "浏览并发掘玩家们的成就"
+  },
+  "loading": {
+    "difficulties": "正在加载难度列表……"
+  },
+  "input": {
+    "placeholder": "按曲名、曲师或谱师搜索……"
+  },
+  "toolTip": {
+    "filter": "筛选结果",
+    "sort": "排序结果",
+    "reset": "重置筛选条件"
+  },
+  "settings": {
+    "filter": {
+      "title": "筛选条件",
+      "options": {
+        "only12k": "仅12键以下",
+        "deletedPasses": "已被删除的通关记录"
+      }
+    },
+    "sort": {
+      "title": "排序",
+      "label": "排序依据",
+      "options": {
+        "newest": "最新",
+        "oldest": "最早",
+        "highestScore": "分数最高",
+        "lowestScore": "分数最低",
+        "highestAccuracy": "精准度最高",
+        "lowestAccuracy": "精准度最低",
+        "highestDifficulty": "难度最高",
+        "lowestDifficulty": "难度最低",
+        "random": "随机排序"
+      }
+    }
+  },
+  "infScroll": {
+    "end": "已经到底啦！"
+  }
+} 

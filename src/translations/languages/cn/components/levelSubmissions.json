@@ -1,0 +1,23 @@
+{
+  "noSubmissions": "没有待审核的关卡提交",
+  "details": {
+    "artist": "曲师：",
+    "charter": "谱师：",
+    "difficulty": "评级：",
+    "download": {
+      "label": "下载：",
+      "directLink": "直接链接",
+      "notAvailable": "无"
+    },
+    "workshop": {
+      "label": "创意工坊：",
+      "link": "创意工坊链接"
+    },
+    "team": "团队：",
+    "vfxer": "特效师："
+  },
+  "buttons": {
+    "allow": "允许",
+    "decline": "拒绝"
+  }
+} 

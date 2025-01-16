@@ -1,0 +1,100 @@
+{
+  "detailPopup": {
+    "closeButton": "Close popup",
+    "labels": {
+      "creator": "Creator:",
+      "currentDifficulty": "Current Difficulty:",
+      "averageRating": "Average Rating:",
+      "yourRating": "Your Rating:",
+      "yourComment": "Your Comment:",
+      "otherRatings": "Other Ratings:"
+    },
+    "buttons": {
+      "saveChanges": "Save Changes",
+      "saving": "Saving..."
+    },
+    "errors": {
+      "commentLength": "Comment must be less than 1000 characters",
+      "commentRequired": "Comment is required for -2 ratings",
+      "saveFailed": "Failed to save changes",
+      "updateFailed": "Failed to update rating",
+      "unsavedChanges": "You have unsaved changes. Are you sure you want to close?",
+      "deleteFailed": "Failed to delete rating"
+    },
+    "tooltips": {
+      "lastUpdated": "Last updated time",
+      "requiredComment": "A comment is required when rating -2"
+    },
+    "placeholders": {
+      "requiredComment": "Please explain why you're rating this -2..."
+    },
+    "confirmations": {
+      "deleteRating": "Are you sure you want to delete this rating from {{username}}?"
+    }
+  },
+  "ratingCard": {
+    "labels": {
+      "yourRating": "Your Rating",
+      "allRatings": "All Ratings",
+      "average": "Average",
+      "rerateNumber": "Rerate Number",
+      "requestedRating": "Requested Rating",
+      "rerateMessage": "Rerate Message",
+      "lastUpdated": "Last updated",
+      "updatedAt": "Updated: "
+    },
+    "tooltips": {
+      "expandReason": "Click to expand",
+      "deleteRating": "Delete rating",
+      "lastUpdated": "Last time this rating was modified"
+    },
+    "buttons": {
+      "viewDetails": "View Details",
+      "editLevel": "Edit Level"
+    }
+  },
+  "helpPopup": {
+    "title": "Rating System Guide",
+    "closeButton": "Close guide",
+    "sections": {
+      "rating": {
+        "title": "Rating Format",
+        "description": "Ratings can be entered in various formats, including single ratings, ranges, and special cases.",
+        "examples": {
+          "title": "Examples",
+          "simple": "Simple rating",
+          "range": "Range with full notation",
+          "shortRange": "The same (P prefix is implied for both)",
+          "special": "Rating with special case",
+          "negative": "Rating with negative special case"
+        }
+      },
+      "averaging": {
+        "title": "Rating Averaging",
+        "description": "The system uses a weighted average calculation that takes into account several factors:",
+        "points": {
+          "special": "Special ratings (-2, -21, etc.) override the average if they receive 4 or more votes",
+          "ranges": "Ranges (like U12~U14) are averaged before contributing to the final rating",
+          "order": "PGU ratings are averaged based on their difficulty order, not their numerical values"
+        }
+      },
+      "filters": {
+        "title": "Available Filters",
+        "hideRated": "Hide Rated",
+        "hideRatedDesc": "Hides levels you have already rated",
+        "lowDiff": "Low Difficulty",
+        "lowDiffDesc": "Filter levels marked as low difficulty",
+        "fourVote": "4+ Rated",
+        "fourVoteDesc": "Filter levels that have 4 or more ratings"
+      },
+      "requirements": {
+        "title": "Requirements",
+        "points": {
+          "comment": "A comment is required when rating a level as -2",
+          "format": "Ratings must follow the PGU format (P1-P20, G1-G20, U1-U20) or be a valid special rating",
+          "special": "Special ratings are predefined and cannot be customized"
+        }
+      }
+    }
+  }
+} 

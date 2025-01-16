@@ -1,0 +1,279 @@
+.pass-page {
+  background-color: var(--color-black);
+  color: var(--color-white);
+  min-height: 100vh;
+}
+
+.pass-page .pass-body {
+  position: relative;
+  z-index: 2;
+  padding: 0 1.5rem;
+  padding-top: 6rem;
+  min-height: 100vh;
+  max-width: 70rem;
+  margin: 0 auto;
+}
+
+/* Input and filter styles */
+.pass-page .pass-body .input-option {
+  display: flex;
+  gap: 0.5rem;
+  height: 2rem;
+}
+
+.pass-page .pass-body .input-option input {
+  width: 100%;
+  background-color: var(--color-white-t20);
+  border: none;
+  border-radius: 3px;
+  padding: 0.5rem;
+  color: var(--white-color);
+}
+
+.pass-page .pass-body .input-option input:focus {
+  outline: none;
+}
+
+.pass-page .pass-body .input-option svg {
+  height: 2rem;
+  width: 2.2rem;
+  background-color: var(--color-white-t20);
+  padding: 0.1rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s linear;
+}
+
+.pass-page .pass-body .input-option svg:focus {
+  outline: none;
+}
+
+/* Filter and sort sections */
+.pass-page .pass-body .filter {
+  position: relative;
+  z-index: 100;
+  background-color: #0004;
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+.pass-page .pass-body .sort {
+  position: relative;
+  z-index: 90;
+  background-color: #0004;
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+
+/* Settings animations */
+.pass-page .pass-body .settings-class {
+  padding: 1rem 2rem;
+  position: relative;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: visible;
+  margin-bottom: 1rem;
+  opacity: 1;
+  max-height: 500px;
+}
+
+.pass-page .pass-body .settings-class.hidden {
+  max-height: 0;
+  opacity: 0;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.pass-page .pass-body .settings-class.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Sort options */
+.pass-page .pass-body .sort .sort-option {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+}
+
+.pass-page .pass-body .sort .sort-option > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0rem;
+}
+
+.pass-page .pass-body .sort .sort-option .wrapper {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Filter section */
+.pass-page .pass-body .filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pass-page .pass-body .filter-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* State display styles */
+.pass-page .pass-body .state-display-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.pass-page .pass-body .state-display {
+  background: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  position: relative;
+  overflow: visible;
+  box-sizing: border-box;
+}
+
+/* Transitions and animations */
+.pass-page .pass-body .sort .sort-option svg {
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.pass-page .pass-body .settings-class {
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.background-pass {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('../../assets/important/dark/theme-background.jpg');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.1;
+  z-index: 1;
+}
+
+/* Loader styles */
+.pass-page .loader-pass-page {
+  margin: 2rem auto;
+}
+
+/* Add these styles to match levelpage.css */
+.pass-page .pass-body .diff-filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.pass-page .pass-body .filter-container {
+  flex: 1;
+}
+
+.pass-page .pass-body .filter-container .rating-input-container {
+  position: relative;
+  background-color: rgb(42, 42, 42, 0.8);
+  border-radius: 3px;
+}
+
+.pass-page .pass-body .filter-container .rating-input-container input {
+  background: transparent;
+  color: var(--color-white);
+  border: none;
+  padding: 0.5rem;
+  width: 100%;
+}
+
+.pass-page .pass-body .filter-container .rating-input-container input:focus {
+  outline: none;
+}
+
+.pass-page .pass-body .filter-container .rating-dropdown {
+  background: #2a2a2a;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.pass-page .pass-body .filter-container .rating-option {
+  padding: 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.pass-page .pass-body .filter-container .rating-option:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.pass-page .pass-body .checkbox-filters {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  flex-wrap: wrap;
+  position: relative;
+  z-index: 80;
+}
+
+.pass-page .pass-body .checkbox-filters label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+  background: var(--color-white-t20);
+  padding: 0.5rem 1rem;
+  border-radius: 3px;
+}
+
+.pass-page .pass-body .checkbox-filters input[type="checkbox"] {
+  margin: 0;
+  width: 16px;
+  height: 16px;
+  accent-color: #4a90e2;
+  cursor: pointer;
+}
+
+.pass-page .pass-body .input-setting {
+  margin-top: 1rem;
+}
+
+.pass-page .pass-body .setting-title {
+  margin-bottom: 1rem;
+}
+
+.pass-page .pass-body .setting-description {
+  margin-bottom: 0.5rem;
+}
+
+.pass-page .pass-body .spacer-setting {
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-white);
+  margin-bottom: 0.5rem;
+}
+
+/* Select element styling */
+.pass-page .pass-body .sort-option .recent {
+  position: relative;
+}
+
+.pass-page .pass-body .sort-option .recent p {
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+/* Focus state */
+.pass-page .pass-body .sort-option .css-t3ipsp-control {
+  border-color: #4a90e2 !important;
+  box-shadow: 0 0 0 1px #4a90e2 !important;
+  background-color: rgba(255, 255, 255, 0.4) !important;
+} 

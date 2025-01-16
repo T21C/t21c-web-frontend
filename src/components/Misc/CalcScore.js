@@ -74,13 +74,12 @@ const getSpeedMtp = (SPEED, isDesBus=false)=>{
     return 1
 }
 
-const getScore = (passData, chartData) => {
+const getScore = (passData, levelData) => {
     const speed = passData['speed']
-    const legacyDiff = chartData['diff']
+    const legacyDiff = levelData['diff']
     const inputs = passData['judgements']
-    const base = chartData['baseScore']
+    const base = levelData['baseScore'] !== null ? levelData['baseScore'] : (levelData.difficulty?.baseScore || 0)
     const xaccMtp = getXaccMtp(inputs)
-
 
     var speedMtp = 0
     var score = 0
@@ -96,12 +95,10 @@ const getScore = (passData, chartData) => {
 }
 
 
-export const getScoreV2 = (passData, chartData) => {
+export const getScoreV2 = (passData, levelData) => {
     
-    
-    console.log(passData)
     const inputs = passData['judgements'];
-    const scoreOrig = getScore(passData, chartData);
+    const scoreOrig = getScore(passData, levelData);
     var mtp = getScoreV2Mtp(inputs);
     if (passData['isNoHoldTap']) 
        {

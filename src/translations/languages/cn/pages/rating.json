@@ -1,0 +1,29 @@
+{
+  "meta": {
+    "title": "管理评级 | TUF",
+    "description": "管理论坛上的关卡并为其评级"
+  },
+  "buttons": {
+    "references": "参考关卡列表",
+    "manageRaters": "管理评级员"
+  },
+  "toggles": {
+    "detailedView": {
+      "label": "详细视图"
+    },
+    "hideRated": {
+      "label": "隐藏已评级关卡"
+    },
+    "lowDiff": {
+      "label": "低难度"
+    }
+  },
+  "messages": {
+    "loading": "正在加载评级……",
+    "error": "加载评级时出错",
+    "noRatings": {
+      "title": "没有需要评级的关卡",
+      "subtitle": "已全部评完！"
+    }
+  }
+} 

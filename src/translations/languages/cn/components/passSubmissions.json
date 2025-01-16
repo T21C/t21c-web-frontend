@@ -1,0 +1,84 @@
+{
+  "noSubmissions": "没有要审核的通关记录",
+  "details": {
+    "levelId": "关卡 ID：",
+    "player": "玩家：",
+    "feelingDiff": "体感难度：",
+    "judgements": {
+      "label": "判定：",
+      "types": {
+        "earlyDouble": "太快！！",
+        "earlySingle": "太快！",
+        "ePerfect": "稍快！",
+        "perfect": "完美！",
+        "lPerfect": "稍慢！",
+        "lateSingle": "太慢！",
+        "lateDouble": "太慢！！"
+      }
+    },
+    "flags": {
+      "label": "标签：",
+      "types": {
+        "12k": "12键",
+        "nht": "非默认长按设置",
+        "16k": "16键"
+      }
+    },
+    "submitter": "提交者：",
+    "uploadTime": "上传时间："
+  },
+  "playerAssignment": {
+    "title": "分配玩家",
+    "discord": {
+      "assignButton": "分配 Discord 信息",
+      "confirmMessage": "将把 @{{username}} 分配给 {{playerName}}。继续？",
+      "buttons": {
+        "confirm": "确认",
+        "cancel": "取消"
+      },
+      "tooltip": "{{discordUsername}} → {{playerName}}"
+    }
+  },
+  "buttons": {
+    "allow": "允许",
+    "decline": "拒绝",
+    "save": "保存",
+    "cancel": "取消",
+    "reset": "重置",
+    "clear": "清除",
+    "selectAll": "全选",
+    "autoAllow": "自动允许",
+    "autoReject": "自动拒绝"
+  },
+  "errors": {
+    "noPlayer": "未分配玩家",
+    "processing": "处理提交项目时出错",
+    "autoAllow": "自动通过提交项目失败",
+    "loading": "加载提交项目失败",
+    "saving": "保存提交项目失败"
+  },
+  "success": {
+    "autoAllow": "已自动通过 {{count}} 项通关记录"
+  },
+  "loading": "加载项目中……",
+  "noItems": "未找到项目",
+  "search": {
+    "placeholder": "搜索项目……"
+  },
+  "stats": {
+    "selected": "已选中",
+    "total": "总计"
+  },
+  "modal": {
+    "title": "确认操作",
+    "confirmMessage": "将把 @{{username}} 分配给 {{playerName}}。继续？",
+    "buttons": {
+      "confirm": "确认",
+      "cancel": "取消"
+    },
+    "tooltip": "{{discordUsername}} → {{playerName}}"
+  },
+  "notifications": {
+    "autoAllow": "已自动通过 {{count}} 项通关记录"
+  }
+} 

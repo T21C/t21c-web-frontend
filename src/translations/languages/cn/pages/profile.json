@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "title": "{{name}} | TUF",
+    "description": "查看 {{name}} 的档案与成就",
+    "defaultTitle": "档案"
+  },
+  "notFound": "未找到玩家",
+  "valueLabels": {
+    "rankedScore": "排位分数",
+    "generalScore": "常规分数",
+    "ppScore": "PP 分数",
+    "wfScore": "世界首通分数",
+    "score12k": "12键分数",
+    "averageXacc": "平均X-精准度",
+    "totalPasses": "总通关数",
+    "universalPasses": "U级通关数",
+    "worldsFirstCount": "世界首通数",
+    "topDiff": "最高通关难度",
+    "top12kDiff": "最高12键通关难度"
+  },
+  "sections": {
+    "scores": {
+      "title": "分数列表"
+    }
+  }
+} 

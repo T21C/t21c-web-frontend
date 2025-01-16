@@ -1,0 +1,60 @@
+{
+  "edit": {
+    "title": "编辑关卡信息",
+    "close": "×",
+    "form": {
+      "labels": {
+        "song": "曲名",
+        "artist": "曲师",
+        "creator": "制作者",
+        "charter": "谱师",
+        "vfxer": "特效师",
+        "team": "制作团队",
+        "baseScore": "基础分",
+        "videoLink": "视频链接",
+        "dlLink": "下载链接",
+        "workshopLink": "创意工坊链接",
+        "publicComments": "公开注释",
+        "previousDifficulty": "先前评级"
+      },
+      "placeholders": {
+        "baseScore": "基础分",
+        "rerateNumber": "重评评级",
+        "rerateReason": "重评原因"
+      },
+      "checkboxes": {
+        "toRate": "标记为待评级"
+      },
+      "buttons": {
+        "save": {
+          "default": "保存更改",
+          "saving": "保存中……"
+        },
+        "delete": {
+          "default": "删除",
+          "deleting": "删除中……",
+          "hide": "隐藏",
+          "unhide": "取消隐藏",
+          "processing": "处理中……"
+        },
+        "restore": {
+          "default": "恢复关卡",
+          "restoring": "恢复中……"
+        }
+      }
+    },
+    "confirmations": {
+      "unsavedChanges": "你有未保存的更改，确定要退出吗？",
+      "delete": "确认删除本关卡？删除后可以恢复。",
+      "hide": "确认隐藏本关卡？",
+      "unhide": "确认取消隐藏本关卡？",
+      "restore": "确认恢复本关卡？"
+    },
+    "errors": {
+      "update": "更新关卡失败",
+      "delete": "软删除失败",
+      "toggleHidden": "切换隐藏状态失败",
+      "restore": "恢复失败"
+    }
+  }
+} 

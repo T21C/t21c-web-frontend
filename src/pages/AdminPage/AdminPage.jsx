@@ -1,212 +1,74 @@
-import { CompleteNav } from "../../components";
-import "./adminpage.css";
-import placeholder from "../../assets/placeholder/3.png";
-import { FormManager } from "../../components/FormManager/FormManager";
-import { useEffect, useState } from "react";
-import { getDriveFromYt, getVideoDetails } from "../../Repository/RemoteRepository";
-import { useAuth } from "../../context/AuthContext";
-import { validateFeelingRating } from "../../components/Misc/Utility";
+import "./css/adminpage.css"
+import { CompleteNav } from "../../components"
+import { useNavigate, useLocation } from "react-router-dom"
 import { useTranslation } from "react-i18next";
-
-const FIXED_COLUMNS = ["ID", "Song", "Artist(s)", "Charter(s)", "Video link", "DL link"];
-
-const truncateString = (str, maxLength) => {
-  if (!str) return "";
-  return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
-};
+import { MetaTags } from '../../components';
 
 const AdminPage = () => {
-
   const {t} = useTranslation()
-  const { user } = useAuth();
-  const [ratings, setRatings] = useState([]);
-  const [showMessage, setShowMessage] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
-  const [isSuperAdmin, setIsSuperAdmin] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const currentUrl = window.location.origin + location.pathname;
 
-  const handleCloseSuccessMessage = () => {
-    setShowMessage(false);
-    setSuccess(false);
-    setError(false);
+  const handleRatingClick = () => {
+    navigate('/admin/rating');
   };
 
-  useEffect(() => {
-    const fetchRatings = async () => {
-      try {
-        if (user) {
-          setIsSuperAdmin(["teo_72", "v0w4n"].includes(user.username));
-          console.log("fetching ratings", user);
-          const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/rating`, {
-            headers: {authorization: `Bearer ${user.access_token}`}
-          });
-          const data = await response.json();
-          
-          // Find the user's column index
-          const userColumnIndex = data[0].findIndex((header, index) => 
-            index >= 4 && header === user.username
-          );
-          console.log("User column index:", userColumnIndex);
-
-          if (userColumnIndex !== -1) {
-            const swappedData = data.map(row => {
-              const newRow = [...row];
-              [newRow[userColumnIndex], newRow[14]] = [newRow[14], newRow[userColumnIndex]];
-              return newRow;
-            });
-            
-            const namedData = [...FIXED_COLUMNS, ...swappedData[0].slice(FIXED_COLUMNS.length)];
-            setRatings([namedData, ...swappedData.slice(1)]);
-          } else {
-            const namedData = [...FIXED_COLUMNS, ...data[0].slice(FIXED_COLUMNS.length)];
-            setRatings([namedData, ...data.slice(1)]);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching ratings:", error);
-      }
-    };
-
-    fetchRatings();
-  }, [user]);
-
-  const isEditableCell = (cellIndex) => {
-    if (isSuperAdmin) {
-      // Make all cells except ID, Video and Download links editable
-      return cellIndex !== 0 && cellIndex !== 4 && cellIndex !== 5 && cellIndex !== 13;
-    }
-    // Regular admin can only edit rating and comment
-    return cellIndex === 12 || cellIndex === 14;
-  };
-
-  const renderCell = (cell, cellIndex, rowIndex) => {
-    // Links remain the same
-    if (cellIndex === 4 || cellIndex === 5) {
-      return (
-        <a href={cell} key={`cell-${rowIndex}-${cellIndex}`} className={`column-${cellIndex}`}>
-          {cellIndex === 4 ? "Video" : "Direct download"}
-        </a>
-      );
-    }
-    
-    // Editable cells
-    if (isEditableCell(cellIndex)) {
-      return (
-        <textarea
-          key={`cell-${rowIndex}-${cellIndex}`}
-          className={`column-${cellIndex}`}
-          value={typeof cell === 'object' ? JSON.stringify(cell) : String(cell)}
-          onChange={(e) => {
-            // Update ratings state
-            const newRatings = [...ratings];
-            newRatings[rowIndex + 1][cellIndex] = e.target.value;
-            setRatings(newRatings);
-            
-            // Only auto-resize column 12 (comment column)
-            if (cellIndex === 12) {
-              requestAnimationFrame(() => {
-                const textarea = e.target;
-                textarea.style.height = 'auto';
-                textarea.style.height = textarea.scrollHeight + 'px';
-              });
-            }
-          }}
-          // Only apply onFocus auto-resize to column 12
-          onFocus={(e) => {
-            if (cellIndex === 12) {
-              const textarea = e.target;
-              textarea.style.height = 'auto';
-              textarea.style.height = textarea.scrollHeight + 'px';
-            }
-          }}
-        />
-      );
-    }
-    
-    // Non-editable cells
-    return (
-      <p key={`cell-${rowIndex}-${cellIndex}`} className={`column-${cellIndex}`}>
-        {typeof cell === 'object' ? JSON.stringify(cell) : String(cell)}
-      </p>
-    );
+  const handleSubmissionsClick = () => {
+    navigate('/admin/submissions');
   };
 
   return (
-    <div className="admin-rating-page">
-      <CompleteNav />
+    <div className="admin-page">
+      <MetaTags
+        title="Admin Dashboard"
+        description="Site Administration"
+        url={currentUrl}
+        type="website"
+      />
+      <CompleteNav/>
       <div className="background-level"></div>
-      <div className="admin-body">
-        <div className={`result-message ${showMessage ? 'visible' : ''}`} 
-        style={{backgroundColor: 
-        ( success? "#2b2" :
-          error? "#b22":
-          "#888"
-        )}}>
-          {success? (<p>{t("levelSubmission.alert.success")}</p>) :
-          error? (<p>{t("levelSubmission.alert.error")}{truncateString(error, 27)}</p>):
-          (<p>{t("levelSubmission.alert.loading")}</p>)}
-          <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
-        </div>
-        <button 
-          className="submit-button"
-          onClick={async () => {
-            try {
-              // Get all editable rows (skip header row)
-              const editableRows = ratings.slice(1);
-              
-              // Create array of updates
-              const updates = editableRows.map((row, index) => ({
-                index: index,
-                rating: row[14], // Column 14 value
-                comment: row[12] // Column 12 value  
-              }));
-
-              // Submit request
-              const response = await fetch(`${import.meta.env.VITE_API_URL}/api/admin/rating`, {
-                method: 'PUT',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': `Bearer ${user.access_token}`
-                },
-                body: JSON.stringify({ updates })
-              });
-
-              if (!response.ok) {
-                throw new Error('Failed to update ratings');
-              }
-
-              setSuccess(true);
-              setShowMessage(true);
-
-            } catch (err) {
-              setError(err.message);
-              setShowMessage(true);
-            }
-          }}
-        >
-          Submit Changes
-        </button>
-        <div className="rating-list">
-          {/* Headers */}
-          <div className="rating-header">
-            {ratings[0]?.map((header, index) => (
-              <p className={`column-${index}`} key={`header-${index}`}>{String(header)}</p>
-            ))}
+      
+      <div className="admin-container">
+          <div className="admin-ratings wrapper-body wrapper-top">
+              <h2>{t("adminPage.header.headerRating")}</h2>
+              {/* Rating SVG - you can use the same SVG from submission page or find a new one */}
+              <svg className="admin-svg"  version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="-23 -23 374.60 374.60" xmlSpace="preserve"><g id="SVGRepo_bgCarrier" strokeWidth="0" stroke="#your_color_here"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" stroke="#your_color_here">
+                  </g>
+                  <g id="SVGRepo_iconCarrier"> 
+                      <g> 
+                          <g> 
+                              <path fill="#fff" d="M8.1,176.679h312.398c4.473,0,8.101-3.623,8.101-8.1V58.101c0-4.478-3.628-8.101-8.101-8.101H8.1 C3.628,50,0,53.623,0,58.101v110.479C0,173.056,3.628,176.679,8.1,176.679z M16.2,66.2h296.198v94.278H16.2V66.2z">
+                                  </path> 
+                              <path fill="#fff" d="M8.1,210.655h312.398c4.473,0,8.101-3.622,8.101-8.1s-3.628-8.101-8.101-8.101H8.1c-4.472,0-8.1,3.623-8.1,8.101 S3.628,210.655,8.1,210.655z">
+                                  </path> 
+                              <path fill="#666" d="M8.1,244.627h312.398c4.473,0,8.101-3.623,8.101-8.1c0-4.478-3.628-8.101-8.101-8.101H8.1c-4.472,0-8.1,3.623-8.1,8.101 C0,241.004,3.628,244.627,8.1,244.627z">
+                                  </path> 
+                              <path fill="#111" d="M8.1,278.599h312.398c4.473,0,8.101-3.623,8.101-8.1c0-4.478-3.628-8.101-8.101-8.101H8.1c-4.472,0-8.1,3.623-8.1,8.101 C0,274.976,3.628,278.599,8.1,278.599z">
+                                  </path> 
+                              <path fill="#fff" d="M260.486,79.526c-4.472,0-8.1,3.625-8.1,8.1v51.432c0,4.475,3.628,8.1,8.1,8.1c4.473,0,8.101-3.625,8.101-8.1V87.626 C268.587,83.152,264.969,79.526,260.486,79.526z">
+                                  </path> 
+                              <path fill="#fff" d="M226.209,79.526c-4.472,0-8.1,3.625-8.1,8.1v51.432c0,4.475,3.628,8.1,8.1,8.1c4.473,0,8.101-3.625,8.101-8.1V87.626 C234.31,83.152,230.682,79.526,226.209,79.526z">
+                                  </path> 
+                          </g> 
+                      </g> 
+                  </g>
+              </svg>
+              <button className="admin-button" onClick={handleRatingClick}>
+                  {t("adminPage.button.buttonRating")}
+              </button>
           </div>
-          
-          {/* Data rows */}
-          {ratings.slice(1).map((row, rowIndex) => (
-            <div className={`rating-item row-${rowIndex}`} key={`row-${rowIndex}`}>
-              {row.map((cell, cellIndex) => renderCell(cell, cellIndex, rowIndex))}
-            </div>
-          ))}
-        </div>
 
-          
+          <div className="admin-submissions wrapper-body wrapper-top">
+              <h2>{t("adminPage.header.headerSubmissions")}</h2>
+              {/* Submissions SVG - you can use the same SVG from submission page or find a new one */}
+              <svg className="admin-svg" fill="#ffffff" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="-9.87 -9.87 348.89 348.89" xmlSpace="preserve" stroke="#ffffff"><g id="SVGRepo_bgCarrier" strokeWidth="0" stroke="#your_color_here"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" stroke="#your_color_here"></g><g id="SVGRepo_iconCarrier"> <g> <g> <path d="M329.053,170.25c-0.264-1.407-1.081-2.652-2.263-3.459l-60.407-41.204l17.45-71.007c0.712-2.9-1.05-5.819-3.95-6.534 l-7.44-1.83l0.363-2.511c0.211-1.416-0.147-2.858-1.013-4.008c-0.854-1.149-2.136-1.911-3.549-2.117l-68.217-9.985L189.243,4.222 c-0.602-1.303-1.693-2.312-3.038-2.809c-1.334-0.493-2.821-0.438-4.129,0.161l-21.821,10.067l-6.837-8.928 c-1.814-2.365-5.194-2.813-7.57-1.004l-1.308,1.01c-1.962-1.469-4.704-1.543-6.668,0.113l-4.533,3.834l-1.083-1.084 c-2.025-2.025-5.611-2.025-7.636,0l-3.457,3.467l-4.751-1.168c-1.376-0.334-2.858-0.118-4.082,0.628 c-0.148,0.087-0.232,0.237-0.369,0.335c-1.548,0.026-3.077,0.638-4.124,1.938l-2.389,2.959l-3.763-0.551 c-1.242-0.187-2.397,0.137-3.401,0.709c-0.968,0.382-1.87,0.954-2.5,1.877l-25.489,37.37L29.223,72.094 c-2.706,1.247-3.895,4.461-2.642,7.167l4.709,10.204l-19.076,14.613c-1.134,0.87-1.88,2.162-2.07,3.581 c-0.134,1.015,0.119,2.004,0.536,2.922l-1.248,1.065c-1.091,0.923-1.771,2.251-1.896,3.675c-0.113,1.427,0.335,2.843,1.263,3.937 l0.989,1.168l-4.19,4.195c-2.112,2.112-2.112,5.524,0,7.636l2.423,2.424l-5.788,7.182c-0.901,1.118-1.318,2.544-1.165,3.963 c0.15,1.421,0.862,2.729,1.98,3.631l1.01,0.815l-3.122,4.574c-0.804,1.182-1.11,2.64-0.841,4.045 c0.264,1.408,1.081,2.65,2.262,3.459l60.41,41.204l-17.453,71.002c-0.712,2.896,1.052,5.816,3.953,6.534l7.44,1.829l-0.366,2.511 c-0.211,1.413,0.15,2.858,1.015,4.008c0.854,1.149,2.133,1.909,3.546,2.114l68.22,9.999l10.784,23.371 c0.599,1.303,1.69,2.315,3.035,2.812c0.599,0.221,1.236,0.332,1.867,0.332c0.778,0,1.545-0.164,2.262-0.496l21.821-10.066 l6.84,8.928c1.065,1.387,2.668,2.12,4.293,2.12c1.144,0,2.299-0.364,3.274-1.113l1.334-1.022c0.949,0.701,2.02,1.181,3.159,1.181 c1.233,0,2.468-0.422,3.491-1.276l4.529-3.833l1.087,1.081c1.012,1.018,2.378,1.582,3.817,1.582c1.435,0,2.806-0.564,3.818-1.582 l3.459-3.46l4.752,1.166c0.422,0.105,0.854,0.158,1.286,0.158c0.976,0,1.946-0.264,2.795-0.786c0.116-0.068,0.18-0.18,0.29-0.259 c1.582,0,3.144-0.686,4.203-2.009l2.389-2.958l3.766,0.554c0.264,0.036,0.527,0.058,0.785,0.058c0.823,0,1.577-0.237,2.284-0.58 c1.112-0.348,2.13-1.033,2.831-2.072l25.487-37.368l41.074-18.947c2.705-1.25,3.892-4.461,2.643-7.166l-4.71-10.205l19.074-14.612 c1.134-0.87,1.883-2.162,2.072-3.581c0.132-1.018-0.121-2.004-0.537-2.921l1.255-1.065c1.092-0.923,1.771-2.252,1.893-3.676 c0.116-1.429-0.332-2.842-1.26-3.939l-0.991-1.165l4.197-4.197c2.109-2.109,2.109-5.521,0-7.636l-2.426-2.421l5.79-7.183 c0.902-1.118,1.318-2.547,1.166-3.966c-0.153-1.418-0.865-2.726-1.983-3.628l-1.007-0.817l3.122-4.572 C329.016,173.115,329.321,171.654,329.053,170.25z M270.87,56.964l1.192,0.29l-3.059,12.442L270.87,56.964z M58.28,272.176 l-1.192-0.29l3.056-12.445L58.28,272.176z M181.696,13.648l5.348,11.591l-19.873-4.888L181.696,13.648z M94.374,27.847v0.01 l-1.625,2.17L76.02,50.542l-0.124,0.107L94.374,27.847z M52.4,73.298L40.081,82.73l-1.424-3.093L52.4,73.298z M21.21,115.818 l4.124-3.494l1.236-1.049l0.952-0.804l8.72-7.386l0.962-0.817l4.277-3.623l4.276-3.623l3.602-3.051l2.365-2.004L67.208,76.85 l3.989-3.38l5.329-4.514l6.563-5.556l6.607-5.6l-0.084,0.604L76.576,147.38l-2.318,9.429l-2.067,8.416l-1.54,6.26l-0.53,2.151 l-0.248,1.008l-37.676-44.479l-0.743-0.88l-2.674-3.154l-0.952-1.123l-2.603-3.072l-0.765-0.902l-0.255-0.298l-2.537-2.995 l-0.715-0.844l-0.419-0.501L21.21,115.818z M33.3,159.957l-14.7-11.841l-4.216-3.396l-0.351-0.287l1.674-2.072l1.896-2.35 l1.511-1.875l2.771-3.44l3.256,3.847l31.168,36.798l8.44,9.962L33.3,159.957z M147.451,315.492l-5.348-11.591l19.873,4.889 L147.451,315.492z M227.364,278.567l-0.174,1.582l-0.227,1.746l-0.433,3.053l-0.216,1.54l-0.19,1.329l-0.316,2.157l-0.189,1.35 l-0.063,0.427l-0.538,3.676l-0.005,0.048l-0.195,1.329l-0.185,1.244l-0.369,2.547l-0.554,3.776l-0.016,0.105l-0.074-0.011 l-1.144-0.169l-3.032-0.443l-0.274-0.036l-1.145-0.169l-0.918-0.138l-0.152-0.021l-2.025-0.296l-3.19-0.469l-0.833-0.248 l-0.622-0.206h-0.026l-2.79-0.284l-0.237,0.026l-3.459-0.475l-0.27-0.026l-3.485-0.501l-0.274-0.037l-6.022-0.881l-4.498-0.659 l-1.371-0.2l-3.918-0.569l-5.025-0.738l-5.236-0.765l-3.713-0.543l-3.889-0.575l-0.48-0.068l-7.183-1.055l-0.901-0.127 l-6.766-0.996l-11.119-1.63l-3.138-0.459l-6.376-0.934l-6.383-0.933l-40.139-5.886l-15.773-2.31l0.222-1.514l0.788-5.363 l8.936-60.997l0.541-3.691l0.33-2.252l0.324-2.221l0.253-1.734l0.189-1.287l0.103-0.701l0.134-0.912l0.298-2.02l0.188-1.282 l0.266-1.798l0.058-0.411l0.287-1.951l0.177-1.224l1.458-3.95l1.21-2.246v-0.032l0.551-9.756l3.499-26.87l7.992-56.049 l6.167-42.82l0.177-1.585l0.227-1.743l0.433-3.056l0.216-1.54l0.19-1.329l0.314-2.16l0.192-1.35l0.061-0.427l0.541-3.675 l0.005-0.045l0.195-1.334l0.182-1.239l0.372-2.55l0.551-3.776l0.016-0.103l0.077,0.011l1.144,0.169l3.03,0.442l0.277,0.037 l1.145,0.169l0.917,0.134l0.15,0.021l2.025,0.298l3.193,0.47l0.83,0.248l0.623,0.216h0.026l2.792,0.285l0.237-0.026l3.457,0.475 l0.269,0.023l3.488,0.501l0.274,0.04l6.022,0.878l4.499,0.659l1.371,0.201l3.915,0.572l5.028,0.735l5.236,0.765l3.71,0.546 l3.89,0.572l0.479,0.071l7.183,1.052l0.901,0.129l6.769,0.994l11.116,1.632l3.138,0.458l6.376,0.934l6.386,0.934l40.142,5.882 l15.768,2.31l-0.222,1.513l-0.785,5.366l-8.938,60.995l-0.538,3.694l-0.332,2.252l-0.322,2.217l-0.253,1.735l-0.189,1.289 l-0.105,0.702l-0.132,0.913l-0.301,2.02l-0.185,1.281l-0.269,1.798l-0.059,0.409l-0.284,1.951l-0.18,1.226l-1.455,3.947 l-1.213,2.247v0.031l-0.549,9.759l-3.502,26.871l-7.989,56.04L227.364,278.567z M234.773,301.291v-0.011l1.625-2.162 l16.732-20.514l0.121-0.11L234.773,301.291z M276.75,255.838l12.319-9.429l1.424,3.091L276.75,255.838z M307.938,213.319 l-4.124,3.496l-1.233,1.05l-0.949,0.802l-8.718,7.388l-0.965,0.817l-4.276,3.623l-4.277,3.623l-3.602,3.048l-2.357,2.004 l-15.482,13.12l-3.992,3.381l-5.326,4.514l-6.565,5.553l-6.607,5.601l0.084-0.602l13.036-88.979l2.32-9.429l2.067-8.411 l1.54-6.262l0.527-2.154l0.248-1.004l37.679,44.479l0.743,0.881l2.674,3.153l0.949,1.123l2.604,3.069l0.765,0.901l0.254,0.301 l2.536,2.996l0.717,0.844l0.417,0.5L307.938,213.319z M313.448,186.778l-1.898,2.352l-1.508,1.872l-2.774,3.443l-3.254-3.85 L272.838,153.8l-8.433-9.956l31.445,25.331l14.697,11.844l4.219,3.396l0.348,0.284L313.448,186.778z"></path> <path d="M223.974,107.231c0-0.016,0-0.037,0-0.053c0-0.18,1.118-0.346,1.118-0.52c0-0.172,0.564-0.346,0.549-0.517 c-0.074-0.633,0.047-1.205-0.222-1.761c-0.665-1.35-1.693-2.37-3.212-2.798c-0.037-0.01,0.006-0.026-0.031-0.037 c-0.18-0.045-0.285-0.158-0.475-0.185l-0.438-0.069l-0.122-0.023l-0.98-0.145l-0.216-0.032l-5.385-0.804l-1.376-0.206 l-1.993-0.298l-1.81-0.269l-0.501-0.077l-87.842-13.112c-2.938-0.414-5.698,1.601-6.141,4.548 c-0.435,2.948,1.601,5.698,4.548,6.141l100.699,15.026c0.269,0.037,0.543,0.061,0.802,0.061c0.722,0,1.407-0.174,2.046-0.438 c0.016-0.005,0.026-0.021,0.042-0.026c0.053-0.023,0.101-0.066,0.147-0.087c0.232-0.108,0.443-0.25,0.654-0.385 c0.369-0.243,0.696-0.512,0.996-0.836c0.349-0.372,0.659-0.762,0.892-1.227c0.248-0.495-0.686-1.025-0.596-1.603 C225.145,107.405,223.974,107.323,223.974,107.231z"></path> <path d="M215.727,137.434l-100.702-15.029c-2.95-0.414-5.698,1.598-6.141,4.549c-0.438,2.947,1.598,5.695,4.546,6.138 l100.698,15.029c0.274,0.037,0.544,0.059,0.802,0.059c2.632,0,4.937-1.923,5.337-4.606 C220.71,140.625,218.674,137.877,215.727,137.434z"></path> <path d="M209.709,173.509l-100.701-15.031c-2.927-0.411-5.698,1.598-6.139,4.548c-0.438,2.948,1.598,5.695,4.546,6.139 l100.701,15.029c0.27,0.037,0.538,0.058,0.797,0.058c2.631,0,4.936-1.919,5.337-4.604 C214.692,176.701,212.657,173.942,209.709,173.509z"></path> </g> </g> </g></svg><button className="admin-button" onClick={handleSubmissionsClick}>
+                  {t("adminPage.button.buttonSubmissions")}
+              </button>
+          </div>
+      </div>
     </div>
-    </div>
-  
-  );
-};
+  )
+}
 
-export default AdminPage;
+export default AdminPage

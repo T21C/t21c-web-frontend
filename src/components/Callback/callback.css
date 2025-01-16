@@ -1,0 +1,43 @@
+.callback-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--background);
+  padding: 1rem;
+}
+
+.callback-container {
+  width: 100%;
+  max-width: 400px;
+  padding: 2rem;
+  background-color: var(--surface);
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.callback-container h1 {
+  color: var(--primary);
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+.status-message {
+  color: var(--text);
+  margin-bottom: 1rem;
+  line-height: 1.5;
+}
+
+.error-message {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+}
+
+.redirect-message {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+} 

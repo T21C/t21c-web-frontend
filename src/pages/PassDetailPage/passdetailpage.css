@@ -1,0 +1,653 @@
+.pass-detail {
+  background-color: var(--color-black);
+  color: var(--color-white);
+  min-height: 100vh;
+  padding: 6rem 3rem 5rem 3rem;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+}
+
+.pass-detail .background-level {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--color-black);
+  z-index: 1;
+}
+
+.pass-detail .deletion-banner-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.pass-detail .deletion-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: rgba(220, 53, 69, 0.9);
+  padding: 0.75rem 2rem;
+  border-radius: 4px;
+  max-width: 70rem;
+  z-index: 2;
+}
+
+.pass-detail .deletion-banner svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: white;
+}
+
+.pass-detail .deletion-banner span {
+  color: white;
+  font-weight: 500;
+}
+
+.pass-detail .pass-content {
+  position: relative;
+  z-index: 2;
+  max-width: 70rem;
+  align-self: center;
+  width: 100%;
+}
+
+.pass-detail .header {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.pass-detail .level-card,
+.pass-detail .pass-player-card {
+  background-color: var(--color-white-t10);
+  border-radius: 5px;
+  padding: 1rem;
+  display: flex;
+  gap: 1rem;
+}
+
+.pass-detail .difficulty-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  flex-shrink: 0;
+}
+
+.pass-detail .difficulty-icon {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+}
+
+.pass-detail .difficulty-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.pass-detail .base-score {
+  color: var(--color-white-t80);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.pass-detail .level-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pass-detail .level-title {
+  text-decoration: none;
+  color: var(--color-white);
+  display: block;
+}
+
+.pass-detail .level-title:hover {
+  opacity: 0.8;
+}
+
+.pass-detail .level-title h1 {
+  font-size: 1.5rem;
+  margin: 0;
+  margin-bottom: 0.15rem;
+}
+
+.pass-detail .level-title .artist {
+  color: var(--color-white-t80);
+  margin: 0;
+}
+
+.pass-detail .credits {
+  color: var(--color-white-t80);
+  font-size: 0.9rem;
+  padding: 0.35rem 0;
+  border-top: 1px solid var(--color-white-t20);
+  border-bottom: 1px solid var(--color-white-t20);
+}
+
+.pass-detail .credits p {
+  margin: 0.15rem 0;
+}
+
+.pass-detail .player-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.pass-detail .player-avatar img,
+.pass-detail .player-avatar svg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pass-detail .player-info {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.pass-detail .player-name {
+  text-decoration: none;
+  color: var(--color-white);
+  display: block;
+}
+
+.pass-detail .player-name:hover {
+  opacity: 0.8;
+}
+
+.pass-detail .player-name-rank {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.pass-detail .player-name-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pass-detail .player-rank-flag {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pass-detail .country-flag {
+  width: 1.75rem;
+  height: 1.75rem;
+  object-fit: contain;
+}
+
+.pass-detail .player-name-container h2 {
+  font-size: 1.5rem;
+  margin: 0;
+  margin-bottom: 0.15rem;
+}
+
+.pass-detail .player-name-rank h2:last-child {
+  font-size: 1.5rem;
+  margin: 0;
+  padding: 0.25rem 0.75rem;
+  border-radius: 4px;
+}
+
+.pass-detail .discord-tag {
+  color: var(--color-white-t80);
+  font-size: 0.9rem;
+}
+
+.pass-detail .score-impact {
+  color: var(--color-white);
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
+.pass-detail .score-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.pass-detail .current-score {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pass-detail .score-value {
+  font-weight: bold;
+}
+
+.pass-detail .score-difference.positive {
+  background-color: rgba(40, 167, 69, 0.2);
+  color: #29e555;
+  padding: 0.15rem 0.5rem;
+  border-radius: 3px;
+  font-size: 0.9rem;
+}
+
+.pass-detail .previous-score {
+  color: var(--color-white-t60);
+  font-size: 0.85rem;
+}
+
+.pass-detail .pass-date {
+  color: var(--color-white-t60);
+  font-size: 0.9rem;
+  margin-top: 0.35rem;
+}
+
+.pass-detail .body {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.pass-detail .info {
+  flex: 1;
+  background-color: var(--color-white-t10);
+  border-radius: 5px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  align-items: center;
+}
+
+.pass-detail .info > * {
+  width: 100%;
+}
+
+.pass-detail .info-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--color-white-t20);
+}
+
+.pass-detail .info-item {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pass-detail .info-item p {
+  margin: 0;
+  color: var(--color-white-t80);
+}
+
+.pass-detail .info-desc {
+  font-weight: bold;
+  background-color: rgba(175, 175, 175, 0.299);
+  padding: 0.5rem 1rem;
+  border-radius: 3px;
+  min-width: 5rem;
+  text-align: center;
+}
+
+.pass-detail .info-desc.perfect-shine {
+  text-shadow: 0 0 10px #c3ff00b8;
+  color: #fcff4e;
+}
+
+.pass-detail .flags-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--color-white-t20);
+}
+
+.pass-detail .worlds-first {
+  color: gold;
+  font-weight: bold;
+  font-size: 1.3rem;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  margin-bottom: 0.35rem;
+}
+
+.pass-detail .flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: center;
+}
+
+.pass-detail .flag {
+  background-color: var(--color-white-t20);
+  padding: 0.25rem 0.75rem;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+.pass-detail .judgements {
+  margin-top: 1rem;
+  background-color: #0005;
+  border-radius: 5px;
+  padding: 0.5rem;
+  width: fit-content;
+}
+
+.pass-detail .judgements h3 {
+  margin: 0 0 0.35rem;
+  text-align: center;
+  color: var(--color-white-t80);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pass-detail .judgement-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.pass-detail .judgement-grid .top,
+.pass-detail .judgement-grid .bottom {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.pass-detail .judgement-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  text-align: center;
+  min-width: 55px;
+}
+
+.pass-detail .judgement-item label {
+  color: var(--color-white-t60);
+  font-size: 0.7rem;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pass-detail .judgement-item span {
+  font-weight: bold;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.pass-detail .judgement-item.perfect span {
+  color: #5FFF4E;
+}
+
+.pass-detail .judgement-item.perfect.perfect-shine {
+  position: relative;
+}
+
+.pass-detail .value-container {
+  position: relative;
+  display: inline-block;
+}
+
+.pass-detail .judgement-item.perfect.perfect-shine span {
+  color: #5FFF4E;
+  text-shadow: 0 0 10px rgba(95, 255, 78, 0.8),
+               0 0 20px rgba(95, 255, 78, 0.4),
+               0 0 30px rgba(95, 255, 78, 0.2);
+  animation: pulse 2s ease-in-out infinite;
+  position: relative;
+  z-index: 2;
+}
+
+.pass-detail .particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.pass-detail .particle {
+  position: absolute;
+  width: var(--size);
+  height: var(--size);
+  background: #5FFF4E;
+  border-radius: 50%;
+  top: var(--start-y);
+  left: var(--start-x);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  animation: 
+    particle-fade-out var(--move-duration) linear var(--delay) forwards,
+    particle-move var(--move-duration) ease-out var(--delay) forwards;
+}
+
+@keyframes particle-fade-out {
+  0% {
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.2;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes particle-move {
+  0% {
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+  100% {
+    transform: 
+      translate(
+        calc(-50% + cos(var(--angle)) * var(--distance)),
+        calc(-50% + sin(var(--angle)) * var(--distance))
+      ) 
+      scale(0.3);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    text-shadow: 
+      0 0 5px #000a,
+      0 0 10px rgba(95, 255, 78, 0.8),
+      0 0 20px rgba(95, 255, 78, 0.4),
+      0 0 30px rgba(95, 255, 78, 0.2);
+  }
+  
+  50% {
+    text-shadow: 
+    0 0 5px #0009,
+    0 0 15px rgba(95, 255, 78, 0.9),
+    0 0 25px rgba(95, 255, 78, 0.5),
+    0 0 35px rgba(95, 255, 78, 0.3);
+  }
+}
+
+.pass-detail .judgement-item.early-perfect span,
+.pass-detail .judgement-item.late-perfect span {
+  color: #FCFF4D;
+}
+
+.pass-detail .judgement-item.early span,
+.pass-detail .judgement-item.late span {
+  color: #FF6F4D;
+}
+
+.pass-detail .judgement-item.too-early span,
+.pass-detail .judgement-item.too-late span {
+  color: #FF0000;
+}
+
+.pass-detail .judgement-item.too-early.zero-shine span {
+  color: #FF0000;
+  text-shadow: 
+    0 0px 4px #000,
+    0 2px 10px rgba(255, 0, 0, 0.8),
+    0 4px 15px rgba(255, 0, 0, 0.6),
+    0 6px 20px rgba(255, 0, 0, 0.4);
+  animation: zero-pulse 5s ease-in-out infinite;
+}
+
+@keyframes zero-pulse {
+  0%, 100% {
+    text-shadow: 
+      0 0px 4px #000,
+      0 0px 5px rgba(255, 0, 0, 0.8),
+      0 2px 7px rgba(255, 0, 0, 0.5),
+      0 4px 10px rgba(255, 0, 0, 0.3);
+  }
+  
+  50% {
+    text-shadow: 
+      0 0px 4px #000,
+      0 1px 10px rgba(255, 0, 0, 1),
+      0 2px 15px rgba(255, 0, 0, 0.8),
+      0 4px 20px rgba(255, 0, 0, 0.5);
+  }
+}
+
+.pass-detail .youtube {
+  flex: 1.4;
+  aspect-ratio: 16/9;
+  background-color: var(--color-white-t10);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.pass-detail .youtube iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.pass-detail .thumbnail-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-white-t10);
+}
+
+.pass-detail .thumbnail-text {
+  color: var(--color-white-t80);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.pass-detail .thumbnail-text a {
+  color: var(--color-purple-3);
+  text-decoration: none;
+}
+
+.pass-detail .thumbnail-text a:hover {
+  text-decoration: underline;
+}
+
+.pass-detail .edit-button {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  height: 3.5rem;
+  width: 3.5rem;
+  background-color: var(--color-purple-3);
+  border: none;
+  border-radius: 50%;
+  color: var(--color-white);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  z-index: 10;
+}
+
+.pass-detail .edit-button:hover {
+  transform: scale(1.1);
+}
+
+.pass-detail .edit-button svg {
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 1024px) {
+  .pass-detail {
+    padding: 5rem 1.5rem 1.5rem;
+  }
+
+  .pass-detail .header {
+    grid-template-columns: 1fr;
+  }
+
+  .pass-detail .body {
+    flex-direction: column;
+  }
+
+  .pass-detail .youtube {
+    order: -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .pass-detail {
+    padding: 5rem 1rem 1rem;
+  }
+
+  .pass-detail .level-card,
+  .pass-detail .pass-player-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .pass-detail .difficulty-info {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .pass-detail .player-name-rank {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .pass-detail .judgement-grid .top,
+  .pass-detail .judgement-grid .bottom {
+    flex-wrap: wrap;
+  }
+
+  .pass-detail .judgement-item {
+    min-width: 70px;
+  }
+
+  .pass-detail .edit-button {
+    bottom: 1rem;
+    right: 1rem;
+    height: 3rem;
+    width: 3rem;
+  }
+}
+

@@ -1,0 +1,342 @@
+.about-us {
+  background-color: var(--color-black);
+  color: var(--color-white);
+  min-height: 100vh;
+  padding: 6rem 3rem 5rem 3rem;
+}
+
+.about-us .about-us-container {
+  max-width: 70rem;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+.about-us .about-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.about-us .about-logo {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 1rem;
+}
+
+.about-us .about-header h1 {
+  font-size: 2.5rem;
+  margin: 0;
+  background: linear-gradient(45deg, #ff2ad1, #a82bff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.about-us .about-content {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+.about-us .about-section {
+  background-color: var(--color-white-t10);
+  border-radius: 5px;
+  padding: 2rem;
+}
+
+.about-us .about-section h2 {
+  color: var(--color-white);
+  font-size: 1.8rem;
+  margin: 0 0 1rem 0;
+}
+
+.about-us .about-section p {
+  color: var(--color-white-t80);
+  line-height: 1.6;
+  margin: 0;
+}
+
+.about-us .about-section ul {
+  color: var(--color-white-t80);
+  line-height: 1.6;
+  margin: 1rem 0;
+  padding-left: 1.5rem;
+}
+
+.about-us .about-section li {
+  margin: 0.5rem 0;
+}
+
+.about-us .values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.about-us .value-card {
+  background-color: var(--color-white-t10);
+  border-radius: 4px;
+  padding: 1.5rem;
+  transition: transform 0.2s ease;
+}
+
+.about-us .value-card:hover {
+  transform: translateY(-5px);
+}
+
+.about-us .value-card h3 {
+  color: #fff;
+  margin: 0 0 0.75rem 0;
+  font-size: 1.2rem;
+}
+
+.about-us .value-card p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.about-us .community-links {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.about-us .community-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  text-decoration: none;
+  color: var(--color-white);
+  font-weight: 500;
+  transition: transform 0.2s ease;
+}
+
+.about-us .community-link:hover {
+  transform: translateY(-2px);
+}
+
+.about-us .community-link.discord {
+  background-color: #5865F2;
+}
+
+.about-us .community-link.github {
+  background-color: #24292e;
+}
+
+.about-us .credits-section {
+  background-color: var(--color-white-t10);
+  border-radius: 5px;
+  padding: 2rem;
+}
+
+.about-us .version-info {
+  text-align: center;
+  margin: 1.5rem 0 2.5rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  position: relative;
+}
+
+.about-us .version-original {
+  text-align: center;
+  font-size: 1.8rem;
+  margin: 0.5rem 0;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.about-us .credits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.about-us .credit-category h3 {
+  font-size: 1.5rem;
+  margin: 0 0 1rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-white-t20);
+  color: #fff;
+  animation: gradientRaters 8s linear infinite forwards;
+}
+
+.about-us .credit-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.about-us .credit-item {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 0.85rem 1rem;
+  background: #ffffff10;
+  border-radius: 0.75rem;
+  transition: background-color 0.2s ease;
+}
+
+.about-us .credit-item:hover {
+  background: var(--color-white-t10);
+}
+
+.about-us .credit-item .rater-avatar {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  background: var(--color-white-t10);
+}
+
+.about-us .credit-item .rater-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.about-us .credit-name {
+  font-weight: 600;
+  font-size: 1.2rem;
+  color: var(--color-white);
+}
+
+.about-us .credit-name .at {
+  font-size: 0.7rem;
+  position: relative;  
+  display: inline-block;
+  opacity: 0.4;
+  width: 0;
+  left: -0.7rem;
+  bottom: 1px;
+}
+
+.about-us .credit-role {
+  font-size: 1rem;
+  color: var(--color-white-t50);
+}
+
+@media (max-width: 768px) {
+  .about-us {
+    padding: 5rem 1.5rem 3rem;
+  }
+
+  .about-us .about-header h1 {
+    font-size: 2rem;
+  }
+
+  .about-us .about-section {
+    padding: 1.5rem;
+  }
+
+  .about-us .values-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .about-us .community-links {
+    flex-direction: column;
+  }
+
+  .about-us .community-link {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .about-us .credits-section {
+    padding: 1.5rem;
+  }
+
+  .about-us .version-info {
+    margin: 1rem 0 2rem;
+    padding: 0.75rem;
+  }
+
+}
+
+@keyframes gradientMove {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 150% 50%;
+  }
+} 
+
+@keyframes gradientRaters {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+
+.about-us .main-title {
+  font-size: 4.5rem;
+  margin: -50px 0;
+  letter-spacing: 1px;
+  position: relative;
+  cursor: default;
+  display: inline-block;
+  animation: slideDown 0.8s ease-out forwards;
+  animation-delay: 0.5s;
+  display:grid;
+  font-weight: 600;
+}
+
+.about-us .title-mask {
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(to right, #ce78ff, #ff2ad1, #d800aa, #ad1e66, #b700ff, #ce78ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-size: 300% 300%;
+  animation: gradientMove 8s ease-in-out infinite;
+  filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.4));
+}
+
+.about-us .title-glow {
+  position: absolute;
+  justify-content: center;
+  display:grid;
+  width: 100%;
+  height: 100%;
+  align-content: center;
+  top: 0;
+  left: 0;
+  color: rgb(255, 255, 255, 0.5);
+  z-index: 3;
+  pointer-events: none;
+  opacity: 0.75;
+  text-shadow: 
+    0 0 10px rgba(162, 0, 255, 0.721),
+    0 0 40px rgba(255, 42, 209, 0.621);
+  mask-image: radial-gradient(
+    circle 20rem at var(--mouse-x) var(--mouse-y),
+    rgb(255, 255, 255) 0,
+    transparent 50%
+  );
+  -webkit-mask-image: radial-gradient(
+    circle 20rem at var(--mouse-x) var(--mouse-y),
+    rgb(255, 255, 255) 0,
+    transparent 50%
+  );
+  transition: mask-image 1s ease, -webkit-mask-image 1s ease;
+}
+
+.about-us .main-title {
+  width: 100%;
+  height: 220px;
+  align-content: center;
+  justify-content: center;
+}

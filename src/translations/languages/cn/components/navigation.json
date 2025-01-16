@@ -1,0 +1,23 @@
+{
+  "main": {
+    "links": {
+      "levels": "关卡列表",
+      "leaderboard": "排行榜",
+      "pass": "通关列表",
+      "submission": "提交",
+      "rating": "待评级列表",
+      "admin": {
+        "rating": "待评级列表",
+        "submissions": "提交列表",
+        "announcements": "公告列表",
+        "difficulties": "难度列表",
+        "backups": "备份列表",
+        "back": "返回",
+        "admin": "管理员视图"
+      }
+    }
+  },
+  "languages": {
+    "comingSoon": "（尚未推出）"
+  }
+} 

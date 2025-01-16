@@ -1,0 +1,40 @@
+{
+  "detailPopup": {
+    "closeButton": "关闭弹窗",
+    "labels": {
+      "creator": "制作者：",
+      "currentDifficulty": "当前难度：",
+      "averageRating": "平均评级：",
+      "yourRating": "你的评级：",
+      "yourComment": "你的注释：",
+      "otherRatings": "其他评级："
+    },
+    "buttons": {
+      "saveChanges": "保存更改",
+      "saving": "保存中……"
+    },
+    "errors": {
+      "commentLength": "注释必须少于1000个字符",
+      "saveFailed": "保存更改失败",
+      "updateFailed": "更新评级失败",
+      "unsavedChanges": "你有未保存的更改，确定要退出吗？"
+    }
+  },
+  "ratingCard": {
+    "labels": {
+      "yourRating": "你的评级",
+      "allRatings": "所有评级",
+      "average": "平均数",
+      "rerateNumber": "重评评级",
+      "requestedRating": "请求评级",
+      "rerateMessage": "重评信息"
+    },
+    "tooltips": {
+      "expandReason": "点击展开"
+    },
+    "buttons": {
+      "viewDetails": "查看详情",
+      "editLevel": "编辑关卡"
+    }
+  }
+} 

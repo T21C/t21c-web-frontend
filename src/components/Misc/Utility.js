@@ -1,4 +1,72 @@
-export function validateFeelingRating (value) {
+// Define difficulty levels and their numeric values
+const DIFFICULTY_LEVELS = {
+  'P': { base: 0, max: 20 },    // P1-P20
+  'G': { base: 20, max: 20 },   // G1-G10 (values 21-30)
+  'U': { base: 40, max: 20 },   // U1-U10 (values 31-40)
+};
+
+export function trimString(str, maxLength = 40) {
+  if (!str) return '';
+  return str.length > maxLength ? str.substring(0, maxLength - 3) + '...' : str;
+}
+
+export function getRatingValue(rating) {
+  if (!rating || typeof rating !== 'string') return null;
+  const prefix = rating.charAt(0);
+  const number = parseInt(rating.slice(1));
+  
+  if (!DIFFICULTY_LEVELS[prefix] || isNaN(number)) return null;
+  return DIFFICULTY_LEVELS[prefix].base + number;
+}
+
+export function getValueAsRating(value) {
+  if (value === null || isNaN(value)) return null;
+  
+  // Find the appropriate difficulty level
+  for (const [prefix, level] of Object.entries(DIFFICULTY_LEVELS)) {
+    if (value > level.base && value <= level.base + level.max) {
+      return `${prefix}${value - level.base}`;
+    }
+  }
+  return null;
+}
+
+export function calculateRatingValue(rating) {
+  // If not a string, return null
+  if (typeof rating !== 'string' || rating === "") return null;
+  
+  // Clean the input
+  const cleanRating = rating.trim().toUpperCase();
+  
+  // Handle feeling ratings first
+  if (validateFeelingRating(cleanRating, false)) {
+    return cleanRating;
+  }
+  
+  // Check if it's a range (contains hyphen)
+  if (cleanRating.includes('-')) {
+    const [start, end] = cleanRating.split('-');
+    // Validate both parts exist
+    if (!start || !end) return null;
+    
+    // Convert both ratings to numeric values
+    const startValue = getRatingValue(start);
+    const endValue = getRatingValue(end);
+    
+    // Validate conversion
+    if (startValue === null || endValue === null) return null;
+    if (startValue > endValue) return null;
+    
+    // Calculate average and convert back to rating
+    const avg = Math.round((startValue + endValue) / 2);
+    return getValueAsRating(avg);
+  }
+  
+  return null;
+}
+
+export function validateFeelingRating(value, range = true) {
+    // Define regex patterns
     const exprPattern1 = "[PGUpgu][1-9]";     // Handles single letters followed by 1-9
     const exprPattern2 = "[PGUpgu]1[0-9]";    // Handles single letters followed by 10-19
     const exprPattern3 = "[PGUpgu]20";        // Handles single letters followed by 20
@@ -11,15 +79,18 @@ export function validateFeelingRating (value) {
     
     const legacyRange = `^(([1-9]|1[0-7])|(1[8-9]\\+?)|(20(\\.[0-9])?\\+?)|(21(\\.[0-4])?\\+?))(~|-)(([1-9]|1[0-7])|(1[8-9]\\+?)|(20(\\.[0-9])?\\+?)|(21(\\.[0-4])?\\+?))$`;
     
-    const regex = new RegExp(`^$|^${pguRegex}$|^-2$|^${rangeRegex}$|^${legacyRegex}$|^${legacyRange}$`);
+    // Create the appropriate regex based on range flag
+    const regex = range 
+        ? new RegExp(`^$|^${pguRegex}$|^-2$|^-21$|^${rangeRegex}$|^${legacyRegex}$|^${legacyRange}$`)
+        : new RegExp(`^$|^${pguRegex}$|^-2$|^-21$|^${legacyRegex}$`);
     
     return regex.test(value);
-};
+}
 
-
-export function validateSpeed (value) {
-    const regex = new RegExp("^$|^1(\.[0-9]+)?$")
-    return regex.test(value)
+export function validateSpeed(value) {
+    // Matches empty string or numbers >= 1.0
+    const regex = /^$|^[1-9]\d*(\.\d+)?$|^1\.0+$/;
+    return regex.test(value);
 }
 
 export function validateNumber ( value){
@@ -27,6 +98,7 @@ export function validateNumber ( value){
     return regex.test(value)
 }
 export function formatSpeed (speed) {
+    if (speed === null) return "1.0";
     const speedTwoDecimals = speed.toFixed(2);
     if (speedTwoDecimals[speedTwoDecimals.length - 1] !== '0') {
       return speedTwoDecimals;

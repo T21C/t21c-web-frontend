@@ -76,6 +76,22 @@
   min-width: 50px; /* Smooth scaling */
 }
 
+.score-card .wf-badge {
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  text-shadow: 0 0 10px #ffd70099;
+}
+
+.score-card .wf-text {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: gold;
+  text-shadow: 0 0 0px #000;
+}
+
 
 @media (max-width: 400px) {
   .score-card .score-exp {

@@ -1,0 +1,48 @@
+{
+  "meta": {
+    "title": "Rating Management",
+    "description": "Manage ratings for levels"
+  },
+  "buttons": {
+    "references": "Reference Levels",
+    "manageRaters": "Manage Raters",
+    "help": "Rating Guide"
+  },
+  "toggles": {
+    "detailedView": {
+      "label": "Detailed View"
+    },
+    "hideRated": {
+      "label": "Hide Rated"
+    },
+    "lowDiff": {
+      "label": "Low Difficulty"
+    },
+    "fourVote": {
+      "label": "4+ Rated"
+    }
+  },
+  "sort": {
+    "byId": "Level ID",
+    "byRatings": "Rating Count",
+    "byRatingsFull": "Sort by Number of Ratings",
+    "byDate": "Last Updated"
+  },
+  "labels": {
+    "totalRatings": "Total Ratings: {{count}}"
+  },
+  "tooltips": {
+    "sortAsc": "Sort ascending",
+    "sortDesc": "Sort descending",
+    "lastUpdated": "Last updated time",
+    "levelId": "Level ID"
+  },
+  "messages": {
+    "loading": "Loading ratings...",
+    "error": "Error loading ratings",
+    "noRatings": {
+      "title": "No ratings available",
+      "subtitle": "All rated!"
+    }
+  }
+} 

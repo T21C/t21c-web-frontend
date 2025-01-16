@@ -1,0 +1,10 @@
+{
+  "header": {
+    "headerRating": "Manage Ratings",
+    "headerSubmissions": "Manage Submissions"
+  },
+  "button": {
+    "buttonRating": "Go to Ratings",
+    "buttonSubmissions": "Go to Submissions"
+  }
+} 

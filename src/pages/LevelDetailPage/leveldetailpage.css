@@ -28,9 +28,9 @@
 .level-detail .header {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
   max-width: 70rem;
   margin: 0 auto;
+  gap: 0.5rem;
   margin-bottom: 2rem;
   min-height: 8rem;
 }
@@ -41,6 +41,7 @@
   position: relative;
   padding: 0.5rem;
   border-radius: 5px;
+  margin-right: 0.5rem;
   flex: 15;
   align-items: center;
   background-position: center;
@@ -79,16 +80,95 @@
      object-fit: contain;
 }
 .level-detail .header .left .title {
-  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 1;
+  position: relative;
 }
-.level-detail .header .left .title h1,
+.level-detail .header .left .title .level-title {
+  font-size: 2em;
+  font-weight: 600;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+}
 .level-detail .header .left .title p {
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  white-space: normal;
-  text-overflow: ellipsis;
-  overflow-wrap: break-word;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 1em;
+  opacity: 1;
+  color: rgba(255, 255, 255, 0.85);
+}
+.level-detail .header .left .title p .level-title {
+  font-size: 1em;
+  font-weight: normal;
+}
+.level-detail .header .left .title .alias-arrow {
+  font-size: 0.5em;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: all 0.2s ease;
+  padding: 2px 4px;
+  background: #2a2a2a;
+  border-radius: 3px;
+  border: 1px solid #3a3a3a;
+  transform: rotate(0deg);
+}
+.level-detail .header .left .title .alias-arrow.open {
+  transform: rotate(180deg);
+}
+.level-detail .header .left .title .alias-arrow:hover {
+  opacity: 1;
+  background: #3a3a3a;
+}
+.level-detail .header .left .title .aliases-dropdown {
+  position: absolute;
+  opacity: 1;
+  top: calc(100% + 4px);
+  left: 0;
+  background: #1a1a1a;
+  border: 1px solid #3a3a3a;
+  border-radius: 4px;
+  padding: 8px;
+  min-width: 200px;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  font-size: 0.9em;
+}
+.level-detail .header .left .title .aliases-dropdown .aliases-header {
+  color: #888;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid #3a3a3a;
+}
+.level-detail .header .left .title .aliases-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.level-detail .header .left .title .alias-item {
+  padding: 3px 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #fff;
+  font-size: 1.2rem;
+}
+.level-detail .header .left .title .alias-item:not(:last-child) {
+  border-bottom: 1px solid #2a2a2a;
+}
+.level-detail .header .left .title .alias-label {
+  opacity: 1;
+  font-weight: 600;
+  font-size: 1rem;
+  color: #ddd;
 }
 .level-detail .header .right {
   flex: 1;
@@ -132,6 +212,7 @@
   background-color: var(--color-white-t10);
   border-radius: 5px;
   align-self: stretch;
+  min-width: 40%;
 }
 .level-detail .body .info .info-item {
   display: grid;
@@ -431,6 +512,23 @@
   animation: scaleUpAnimation 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 }
 
+.level-detail .edit-button {
+  height: 3rem;
+  width: 3rem;
+  background-color: transparent;
+  border: none;
+  color: var(--color-white);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  transform: scale(0.8);
+  margin: 0 auto;
+}
+
+.level-detail .edit-button:hover {
+  transform: scale(1);
+}
+
 @keyframes scaleUpAnimation {
   from {
     transform: translate(-50%, -50%) scale(0);
@@ -440,4 +538,88 @@
     transform: translate(-50%, -50%) scale(1);
     opacity: 1;
   }
+}
+
+.level-detail .deletion-banner-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.level-detail .deletion-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: rgba(220, 53, 69, 0.9);
+  padding: 0.75rem 2rem;
+  border-radius: 4px;
+  max-width: 70rem;
+  margin-bottom: 1rem;
+}
+
+.level-detail .deletion-banner svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: white;
+}
+
+.level-detail .deletion-banner span {
+  color: white;
+  font-weight: 500;
+}
+
+.level-detail-page .level-info .level-title {
+  position: relative;
+}
+
+.level-detail-page .level-info .alias-arrow {
+  cursor: pointer;
+  margin-left: 8px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.level-detail-page .level-info .alias-arrow:hover {
+  opacity: 1;
+}
+
+.level-detail-page .level-info .aliases-dropdown {
+  position: absolute;
+  top: 100%;
+  opacity: 1;
+  left: 0;
+  background: var(--background-color);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 8px;
+  min-width: 200px;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.level-detail-page .level-info .aliases-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.level-detail-page .level-info .alias-item {
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.level-detail-page .level-info .alias-item:not(:last-child) {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.level-detail-page .level-info .alias-label {
+  font-size: 0.8em;
+  opacity: 0.7;
+  margin-right: 4px;
+}
+
+.level-detail-page .level-info .alias-value {
+  font-weight: 500;
 }/*# sourceMappingURL=leveldetailpage.css.map */

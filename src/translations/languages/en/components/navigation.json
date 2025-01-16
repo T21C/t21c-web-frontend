@@ -1,0 +1,24 @@
+{
+  "main": {
+    "links": {
+      "home": "Home",
+      "levels": "Levels",
+      "leaderboard": "Leaderboard",
+      "pass": "Passes",
+      "submission": "Submit",
+      "rating": "Rating",
+      "admin": {
+        "rating": "Rating",
+        "submissions": "Submissions",
+        "announcements": "Announcements",
+        "difficulties": "Difficulties",
+        "backups": "Backups",
+        "back": "Back",
+        "admin": "Admin"
+      }
+    }
+  },
+  "languages": {
+    "comingSoon": "(Coming Soon)"
+  }
+} 

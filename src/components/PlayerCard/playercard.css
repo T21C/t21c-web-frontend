@@ -2,39 +2,62 @@
   position: relative;
   display: flex;
   justify-content: left;
-  gap: 1rem;
+  gap: 1.5rem;
   min-height: 4rem;
-  padding: 0.5rem;
-  border-radius: 0px;
-  margin-bottom: 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
   cursor: pointer;
   align-items: center;
   flex-wrap: wrap;
-  border-bottom: 1px solid;
-  border-color: var(--color-gray-3);
-  transition: all 0.1s ease-in-out;
+  background: rgba(30, 30, 30, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  margin-bottom: 0.5rem;
+  transition: all 0.2s ease-in-out;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 .player-card:hover {
-  background-color: var(--color-white-t30);
+  background: rgba(40, 40, 40, 0.6);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
+
 .player-card .player-exp {
-  width: -moz-fit-content;
   width: fit-content;
-  font-size: 0.9rem;
-  color: var(--color-white-t80);
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.2rem;
 }
+
 .player-card .player-desc {
-  font-size: 1.2rem;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #ffffff;
+  padding: 0; 
+  border-radius: 4px;
 }
+
 .player-card .player-id {
-  color: var(--color-white-t30);
+  color: rgba(255, 255, 255, 0.3);
   font-size: 0.6rem;
 }
+
 .player-card .id {
   position: absolute;
   top: 3px;
   left: 3px;
 }
+
+.player-card .info-wrapper {
+  display: flex;
+  gap: 1.5rem;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
+}
+
 .player-card .player-exp,
 .player-card .player-desc,
 .player-card .player-id {
@@ -42,36 +65,109 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+
 .player-card .img-wrapper {
-  width: 3rem;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.2);
 }
+
+.player-card .img-wrapper .image-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 1;
+}
+
 .player-card .img-wrapper img {
-  -o-object-fit: contain;
-     object-fit: contain;
+  object-fit: cover;
   height: 100%;
   width: 100%;
-  border-radius: 100%;
+  border-radius: 50%;
 }
+
 .player-card .score-wrapper {
   overflow: hidden;
   min-width: 200px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.8rem 1rem;
+  border-radius: 6px;
 }
+
+.player-card .score-wrapper.secondary {
+  min-width: 120px;
+  font-size: 0.8rem;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 0.8rem 1rem;
+  border-radius: 6px;
+}
+
+.player-card .score-wrapper.secondary .player-exp {
+  font-size: 0.7rem;
+  margin-bottom: 0.1rem;
+}
+
+.player-card .score-wrapper.secondary .player-desc {
+  font-size: 1.1rem;
+  font-weight: 500;
+}
+
 .player-card .acc-wrapper {
   overflow: hidden;
-  min-width: 100px;
+  min-width: 150px;
+  background: rgba(0, 0, 0, 0.2);
+  padding: 0.8rem 1rem;
+  border-radius: 6px;
 }
+
 .player-card .name-wrapper {
   flex: 2;
   overflow: hidden;
   min-width: 200px;
-  padding-right: 50px;
+  padding: 0.8rem 1rem;
+  border-radius: 6px;
 }
+
+.player-card .name-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.player-card .player-name {
+  margin: 0;
+  font-weight: 600;
+  font-size: 1.3rem;
+  color: #ffffff;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+}
+
+.player-card .player-discord-handle {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 0.2rem;
+  margin-left: 0.8rem;
+}
+
+.player-card .name-wrapper {
+  background: none;
+}
+
 .player-card .creator-wrapper .group {
   width: 100%;
   align-items: center;
   display: flex;
   gap: 0.3rem;
 }
+
 .player-card .downloads-wrapper {
   flex: 1;
   display: flex;
@@ -80,11 +176,13 @@
   cursor: pointer;
   justify-content: flex-end;
 }
+
 .player-card .downloads-wrapper a {
   display: block;
   height: 2.5rem;
   width: 2.5rem;
 }
+
 .player-card .downloads-wrapper a svg {
   height: 100%;
   width: 100%;
@@ -92,74 +190,71 @@
   cursor: pointer;
   transition: all 0.2s;
 }
+
 .player-card .downloads-wrapper a svg:hover {
   transform: scale(1.3);
 }
 
+.player-card .rank-display {
+  position: relative;
+  left: 80%;
+  bottom: 25%;
+  font-weight: bold;
+  color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 0.1rem 0.2rem;
+  border-radius: 4px;
+  width: 55%;
+}
+
+.player-card .rank-display.rank-1 {
+  color: #ffd700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+  background: rgba(255, 215, 0, 0.1);
+  border-color: rgba(255, 215, 0, 0.3);
+}
+
+.player-card .rank-display.rank-2 {
+  color: #c0c0c0;
+  text-shadow: 0 0 10px rgba(192, 192, 192, 0.5);
+  background: rgba(192, 192, 192, 0.1);
+  border-color: rgba(192, 192, 192, 0.3);
+}
+
+.player-card .rank-display.rank-3 {
+  color: #cd7f32;
+  text-shadow: 0 0 10px rgba(205, 127, 50, 0.5);
+  background: rgba(205, 127, 50, 0.1);
+  border-color: rgba(205, 127, 50, 0.3);
+}
+
 @media (max-width: 795px) {
-  .player-card .downloads-wrapper {
-    min-width: 200px;
+  .player-card {
+    gap: 1rem;
+    padding: 0.8rem 1rem;
+  }
+  
+  .player-card .rank-display {
+    min-width: 2.8rem;
   }
 }
+
 @media (max-width: 545px) {
-  .player-card .downloads-wrapper {
-    min-width: 100px;
+  .player-card .player-desc {
+    font-size: 1.2rem;
+    padding: 0.2rem 0.6rem;
   }
-  .player-card .artist-wrapper {
-    overflow: hidden;
-    width: 150px;
+  
+  .player-card .img-wrapper {
+    width: 3.5rem;
+    height: 3.5rem;
   }
 }
+
 @media (max-width: 400px) {
-  .player-card .player-exp {
-    font-size: 0.8rem;
-  }
-  .player-card .player-desc {
-    font-size: 1rem;
-  }
-  .player-card .player-id {
-    font-size: 0.6rem;
-  }
-  .player-card .downloads-wrapper {
-    min-width: 70px;
-  }
-  .player-card .artist-wrapper {
-    overflow: hidden;
-    width: 120px;
-  }
-  .player-card .img-wrapper {
-    width: 2rem;
-  }
-  .player-card .downloads-wrapper a {
-    height: 2rem;
-    width: 2rem;
+  .player-card .rank-display {
+    font-size: 1.2rem;
+    min-width: 2.5rem;
   }
 }
-@media (max-width: 380px) {
-  .player-card .player-exp {
-    font-size: 0.6rem;
-  }
-  .player-card .player-desc {
-    font-size: 0.9rem;
-  }
-  .player-card .player-id {
-    font-size: 0.5rem;
-  }
-  .player-card .downloads-wrapper {
-    min-width: 60px;
-  }
-  .player-card .artist-wrapper {
-    overflow: hidden;
-    width: 110px;
-  }
-  .player-card .img-wrapper {
-    width: 1.5rem;
-  }
-  .player-card .creator-wrapper {
-    min-width: 100px;
-  }
-  .player-card .downloads-wrapper a {
-    height: 2rem;
-    width: 2rem;
-  }
-}/*# sourceMappingURL=playercard.css.map */

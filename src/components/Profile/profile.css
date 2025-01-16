@@ -1,5 +1,62 @@
+/* Profile Container */
+.profile-inline-container {
+  margin: 0;
+  padding: 0;
+}
 
-/* CSS */
+/* Profile Details */
+.profile-details {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  gap: 0.5rem;
+}
+
+/* Profile Content */
+.profile-content {
+  text-align: right;
+  cursor: pointer;
+}
+
+.profile-content h3:hover {
+  text-decoration: underline;
+}
+
+.profile-content h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--color-white);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: visible;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+.profile-content h5 {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--color-white-t80);
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+/* Profile Avatar */
+.profile-avatar {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  margin-left: 0.5rem;
+  border: 2px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+/* Login Button */
 .btn-login {
   align-items: center;
   background-color: #FFFFFF;
@@ -51,58 +108,192 @@
   transform: translateY(0);
 }
 
+.btn-logout {
+  background: transparent;
+  transition: all 0.2s ease-out;
+  border-radius: 15%;
+  border: none;
+  box-shadow: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin: 0;
+}
+
+.btn-logout > svg {
+  transform: translateX(0.1rem) rotate(180deg);
+}
+
+.btn-logout:hover {
+  transform: scale(1.2);
+  background: var(--color-white-t10);
+}
+
+/* Profile Button */
 .btn-login.profile-button {
-    padding: 0; /* Remove padding so the button wraps tightly around the image */
-    width: 50px; /* Adjust the button size to your needs */
-    height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: transparent;
-    margin-left: 0.4rem;
-  }
-  
-  .btn-icon {
-    width: 70%; /* Adjust the size relative to the button */
-    height: 70%;
-    object-fit: contain; /* Ensure the image fits within the bounds without stretching */
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0.5rem;
+  width: auto;
+  height: auto;
+  margin: 0;
+}
+
+.btn-login.profile-button svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+.btn-login.profile-button:hover {
+  background: var(--color-white-t10);
+  transform: none;
+  border: none;
+  box-shadow: none;
+}
+
+/* Discord Login Button */
+.landing-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.svg-container {
+  width: 32px;
+  height: 32px;
+  margin-right: 4px;
+  flex-shrink: 0;
+}
+
+.svg-container svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Mobile Adjustments */
+@media (max-width: 580px) {
+  .nav-mobile .profile-inline-container {
+    margin: 1rem;
+    padding: 0.75rem;
+    background: var(--color-white-t6);
+    border-radius: 12px;
+    border: 1px solid var(--color-white-t10);
+    transition: all 0.3s ease;
   }
 
-.profile-details {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .profile-content {
-    margin-right: 15px;
-    text-align: right/* Add spacing between content and avatar */
-  }
-  
-  .profile-avatar {
-    width: 50px; /* Adjust the size of the avatar */
-    height: 50px;
-    border-radius: 50%;
-  }
-  
-  .profile-button {
-    margin-left: 20px; /* Spacing between the avatar and the logout button */
+  .nav-mobile .profile-inline-container:hover {
+    background: var(--color-white-t10);
+    transform: translateX(-4px);
   }
 
-  .btn-login {
-    display: flex;
-    align-items: center;
-  }
-  
-  .svg-container {
-    width: 32px; /* Set the fixed width of the SVG */
-    height: 32px; /* Set the fixed height of the SVG */
-    margin-right: 4px; /* Add some space between the SVG and the text */
-    flex-shrink: 0; /* Prevent the SVG from shrinking */
-  }
-  
-  .svg-container svg {
+  .nav-mobile .profile-details {
+    padding: 0;
     width: 100%;
-    height: 100%;
+    justify-content: flex-start;
   }
+
+  .nav-mobile .profile-content {
+    text-align: left;
+    flex: 1;
+  }
+
+  .nav-mobile .profile-content h3 {
+    font-size: 1.1rem;
+    max-width: none;
+  }
+
+  .nav-mobile .profile-content h5 {
+    font-size: 0.75rem;
+    max-width: none;
+    opacity: 0.8;
+  }
+
+  .nav-mobile .profile-avatar {
+    width: 2.75rem;
+    height: 2.75rem;
+    margin: 0 0.75rem 0 0;
+    order: -1;
+    border-color: var(--color-white-t10);
+  }
+
+  .nav-mobile .profile-avatar:hover {
+    border-color: var(--color-white-t80);
+  }
+
+  .nav-mobile .btn-logout.profile-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 0.5rem;
+    background: var(--color-white-t10);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+  }
+
+  .nav-mobile .btn-logout.profile-button:hover {
+    background: var(--color-white-t20);
+    transform: scale(1.1);
+  }
+
+  .nav-mobile .btn-logout.profile-button svg {
+    width: 75%;
+    height: 75%;
+  }
+
+  /* Discord login button mobile adjustments */
+  .nav-mobile .landing-container {
+    padding: 0.75rem;
+    border-radius: 12px;
+  }
+
+  .nav-mobile .btn-login {
+    background: var(--color-white-t10);
+    color: var(--color-white);
+    border: none;
+    padding: 0.75rem 1rem;
+  }
+
+  .nav-mobile .btn-login:hover {
+    background: var(--color-white-t20);
+    transform: translateX(-4px);
+  }
+
+  .nav-mobile .svg-container {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* Small phone adjustments */
+@media (max-width: 360px) {
+  .nav-mobile .profile-inline-container,
+  .nav-mobile .landing-container {
+    margin: 0.75rem;
+    padding: 0.5rem;
+  }
+
+  .nav-mobile .profile-content h3 {
+    font-size: 1rem;
+  }
+
+  .nav-mobile .profile-content h5 {
+    font-size: 0.7rem;
+  }
+
+  .nav-mobile .profile-avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .nav-mobile .btn-logout.profile-button {
+    justify-content: center;
+    align-items: center;
+  }
+
+  .nav-mobile .btn-logout.profile-button svg {
+    width: 1.1rem;
+    height: 1.1rem;
+  }
+}
   

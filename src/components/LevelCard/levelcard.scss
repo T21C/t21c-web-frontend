@@ -1,5 +1,5 @@
 
-.level-card-rev {
+.level-card {
     position: relative;
     display: flex;
     justify-content: left;
@@ -117,7 +117,7 @@
   }
 
   @media (max-width: 795px){
-    .level-card-rev{
+    .level-card{
 
 
       .downloads-wrapper{
@@ -127,7 +127,7 @@
   }
   
   @media (max-width: 545px) {
-    .level-card-rev {
+    .level-card {
 
 
       .downloads-wrapper{
@@ -142,7 +142,7 @@
 }
   
 @media (max-width: 400px) {
-  .level-card-rev{
+  .level-card{
 
 
     .level-exp {
@@ -183,7 +183,7 @@
 }
 
 @media (max-width: 380px) {
-  .level-card-rev{
+  .level-card{
 
 
     .level-exp {

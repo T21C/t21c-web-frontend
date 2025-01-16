@@ -1,0 +1,47 @@
+.access-denied-page {
+  background-color: var(--color-black);
+  width: 100%;
+  color: var(--color-white);
+  min-height: 100vh;
+  position: relative;
+  padding-top: 7rem;
+}
+
+.access-denied-page .background-level {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.9));
+  z-index: 1;
+}
+
+.access-denied-page .access-denied-container {
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  position: relative;
+  z-index: 10;
+  text-align: center;
+}
+
+.access-denied-page h1 {
+  font-size: 2rem;
+  color: var(--color-white);
+  margin-bottom: 1rem;
+}
+
+.access-denied-page p {
+  font-size: 1.1rem;
+  color: var(--color-white-t80);
+}
+
+@media (max-width: 768px) {
+  .access-denied-page .access-denied-container {
+    width: 95%;
+    padding: 1rem;
+    padding-top: 6rem;
+  }
+} 

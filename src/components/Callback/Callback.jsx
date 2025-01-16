@@ -1,44 +1,80 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../contexts/AuthContext";
+import axios from 'axios';
+import './callback.css';
 
 const CallbackPage = () => {
   const navigate = useNavigate();
-  const { handleAccessToken } = useAuth(); // Access setUser and handleAccessToken from AuthContext
-  const [codeFetched, setCodeFetched] = useState(false); // Track if the code has been processed
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
+  const { fetchUser } = useAuth();
 
   useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const code = urlParams.get('code');
+    const handleCallback = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code');
+      const error = urlParams.get('error');
 
-    if (code && !codeFetched) { // Ensure the code is processed only once
+      if (error) {
+        setError('Authentication failed');
+        setTimeout(() => navigate('/login'), 3000);
+        return;
+      }
 
-      // Set codeFetched to true to prevent multiple fetch calls
-      setCodeFetched(true);
-      
-      fetch(`${import.meta.env.VITE_API_URL}/api/discord-auth`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ code }),
-      })
-        .then((response) => response.json())
-        .then((data) => {
+      if (!code) {
+        setError('No authorization code received');
+        setTimeout(() => navigate('/login'), 3000);
+        return;
+      }
 
-          // Set the access token in AuthContext
-          handleAccessToken(data.access_token);
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_DISCORD_CALLBACK}`,
+          { code }
+        );
 
-          // Redirect back to the root
-          navigate('/');
-        })
-        .catch((error) => {
-          console.error('Error during Discord login process:', error);
-        });
-    }
-  }, [codeFetched, handleAccessToken, navigate]);
+        const { token } = response.data;
+        if (token) {
+          localStorage.setItem('token', token);
+          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          await fetchUser();
+          navigate('/profile');
+        } else {
+          throw new Error('No token received from server');
+        }
+      } catch (err) {
+        console.error('OAuth callback error:', err);
+        setError(err.response?.data?.message || 'Authentication failed');
+        setTimeout(() => navigate('/login'), 3000);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    handleCallback();
+  }, [navigate, fetchUser]);
 
   return (
-    <div style={{ backgroundColor: 'black', height: '100vh', color: 'white', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      <h2>Processing Discord login...</h2>
+    <div className="callback-page">
+      <div className="callback-container">
+        {error ? (
+          <>
+            <h1>Authentication Failed</h1>
+            <p className="error-message">{error}</p>
+            <p className="redirect-message">Redirecting to login page...</p>
+          </>
+        ) : (
+          <>
+            <h1>Authenticating</h1>
+            <p className="status-message">
+              {loading
+                ? "Please wait while we complete the authentication process..."
+                : "Authentication successful! Redirecting..."}
+            </p>
+          </>
+        )}
+      </div>
     </div>
   );
 };

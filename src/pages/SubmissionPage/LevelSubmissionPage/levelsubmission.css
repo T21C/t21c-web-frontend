@@ -1,0 +1,280 @@
+.level-submission-page {
+  background-color: var(--color-black);
+  width: 100vw;
+  min-height: 100vh;
+  position: relative;
+  flex-direction: column;
+  place-items: center;
+  overflow-x: hidden;
+}
+
+.level-submission-page .form-container {
+  place-items: center;
+  overflow: hidden;
+  display: flex;
+  z-index: 10;
+  transition: height 0.4s ease, transform 0.4s ease; 
+  transform-origin: top;
+  flex-direction: column;
+  margin: 4rem;
+  margin-top: 5rem;
+  margin-bottom: 2rem;
+}
+
+
+.level-submission-page .form-container form {
+  border-radius: 8px;
+  margin-top: 2rem;
+  max-width: 47rem;
+  background-color: #000010d6;
+  color: var(--color-white);
+  background-size: contain;
+  background-position: center -80px;
+  background-repeat: no-repeat;
+  flex-direction: column;
+}
+
+.level-submission-page .form-container form input::placeholder {
+  color: var(--color-white);
+  opacity: 0.5;
+}
+
+.level-submission-page .form-container form input {
+  caret-color: var(--color-white);
+  color: var(--color-white);
+}
+
+
+.level-submission-page form .img-wrapper {
+  flex: 2;
+}
+.level-submission-page form .img-wrapper img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: center;
+     object-position: center;
+}
+.level-submission-page form .info h1 {
+  margin-bottom: 1rem;
+}
+.level-submission-page form .info input {
+  background-color: transparent;
+  border: 0;
+  border-bottom: 3px solid var(--color-purple-2);
+  outline: none;
+  padding: 0.5rem 0.2rem 0.2rem 0.5rem;
+  font-size: 1rem;
+}
+.level-submission-page form .info .youtube-input {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  padding: 0 1rem;
+}
+
+.level-submission-page form .info .youtube-input .youtube-info {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+.level-submission-page form .info .information {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+  padding: 0 2rem;
+  margin-bottom: 1rem;
+}
+
+
+.level-submission-page form .info .info-group {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  margin: 0.5rem 0;
+  padding: 0 2rem;
+}
+
+.level-submission-page form .info .info-group .diff-tooltip {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+} 
+
+.level-submission-page form .info .info-group .diff-tooltip input {
+  width: 100%;
+}
+
+.level-submission-page form .info .info-group .diff-tooltip .tooltip-container {
+  position: absolute;
+  right: -1.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.level-submission-page form .info .submit {
+  width: 100%;
+  background-color: #8f7dea;
+  border: none;
+  border-radius: 3px;
+  color: var(--color-white);
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-shadow: 0px 0px 4px #0005;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  max-width: 70rem;
+  margin: 1rem auto auto auto;
+  transition: all 100ms linear;
+}
+.level-submission-page form .info .submit:hover {
+  background-color: #7763c2;
+}
+.level-submission-page form .info .submit:active {
+  background-color: #7763c2;
+}/*# sourceMappingURL=levelsubmission.css.map */
+
+.level-submission-page .tooltip-container {
+  position: relative;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+  display: flex; /* Allow inline display for other elements */
+}
+
+.tooltip {
+  visibility: hidden;
+  width: 170px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 5px;
+  padding: 5px;
+  position: absolute;
+  font-size: 0.8rem;
+  z-index: 1;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+
+.tooltip-container:hover .tooltip {
+  visibility: visible;
+  opacity: 0.95;
+}
+
+.level-submission-page .thumbnail-container {
+  gap: 20px; /* Space between thumbnail and form */
+  z-index: 10;
+  aspect-ratio: 16/9;
+  height: 350px; /* Fixed height */
+  place-content: center;
+  text-shadow: 0px 0px 4px black;
+  overflow: hidden; /* Hide any overflow */
+  transition: box-shadow 0.3s ease; /* Smooth transition for shadow */
+}
+
+.level-submission-page .thumbnail-container.shadow {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8); /* Shadow effect */
+}
+
+@media (max-width: 900px) {
+  .thumbnail-container {
+    height: 300px; /* Fixed height */
+  }
+}
+
+.level-submission-page .thumbnail-container img {
+  height: 100%; /* Make the image height match the container */
+  width: auto; /* Keep the width proportional */
+  object-fit: fill; /* Allow the image to deform if necessary */
+}
+
+.level-submission-page .thumbnail-container iframe {
+  height: 100%; /* Make iframe height match the container */
+  width: 100%; /* Ensure iframe fills the container */
+}
+
+.level-submission-page .thumbnail-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center; /* Center text */
+  color: white;
+}
+
+.level-submission-page .thumbnail-text img {
+  position:relative;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+  z-index: -2;
+}
+
+.level-submission-page .thumbnail-container h2 {
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+}
+
+.level-submission-page .info {
+  flex: 3;
+  padding: 1.1rem;
+  z-index: 15;
+}
+
+
+.level-submission-page .result-message {
+  position: fixed;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  background-color: #4caf50;
+  color: white;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  z-index: 1000; /* Ensure it stays on top */
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  opacity: 0; /* Start hidden */
+  visibility: hidden; /* Hidden initially */
+}
+
+.level-submission-page .result-message.visible {
+  opacity: 1; /* Show the message */
+  visibility: visible; /* Make it visible */
+}
+
+.level-submission-page .result-message p {
+  margin:0;
+  padding-right: 10px;
+}
+
+.level-submission-page .result-message .close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.level-submission-page .result-message .close-btn:hover {
+  color: #ffdddd;
+}
+
+.level-submission-page .dl-links-or {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  left: 50%;
+
+  transform: translate(-50%, 50%);
+  z-index: 10;
+}

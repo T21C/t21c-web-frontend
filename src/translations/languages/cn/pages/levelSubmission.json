@@ -1,0 +1,32 @@
+{
+  "title": "提交关卡",
+  "thumbnailInfo": "视频信息会显示在此处",
+  "submInfo": {
+    "song": "曲名",
+    "artist": "曲师",
+    "videoLink": "视频链接",
+    "charter": "谱师",
+    "diff": "难度",
+    "vfxer": "特效师（选填）",
+    "team": "团队（选填）",
+    "dlLink": "下载链接",
+    "workshop": "创意工坊链接",
+    "dlLinksOr": "或"
+  },
+  "videoInfo": {
+    "title": "视频标题",
+    "channel": "频道名称",
+    "timestamp": "上传时间",
+    "nolink": "未提供链接"
+  },
+  "tooltip": "未知难度。仍然可以提交，但请确保管理员能够读懂。正确的难度格式范例：G13；P7~P13；21.1+；19~20.0+",
+  "submit": "提交",
+  "submitWait": "……",
+  "alert": {
+    "success": "关卡提交成功！",
+    "error": "错误：",
+    "loading": "提交中……",
+    "login": "提交关卡前请先登录",
+    "form": "请正确填写所有必填项"
+  }
+} 

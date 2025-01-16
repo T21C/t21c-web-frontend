@@ -1,0 +1,66 @@
+.admin-page {
+    min-height: 100vh;
+    background-color: var(--color-black);
+    color: var(--color-white);
+}
+
+.admin-container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+    padding: 2rem;
+    padding-top: 7rem;
+}
+
+.admin-ratings,
+.admin-submissions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    background: var(--color-grey);
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.admin-ratings:hover,
+.admin-submissions:hover {
+    transform: none;
+}
+
+.admin-svg {
+    width: 300px;
+    height: 300px;
+    margin: 2rem 0;
+}
+
+.admin-button {
+    padding: 1rem 2rem;
+    background-color: var(--color-black-t60);
+    color: var(--white);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    font-weight: bold;
+}
+
+.admin-button:hover {
+    background-color: var(--color-white-t20);
+    transform: translateY(-5px);
+}
+
+@media screen and (max-width: 768px) {
+    .admin-container {
+        flex-direction: column;
+    }
+
+    .admin-svg {
+        width: 200px;
+        height: 200px;
+    }
+}

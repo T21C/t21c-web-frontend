@@ -2,13 +2,10 @@
 // eslint-disable-next-line no-unused-vars
 import "./leveldetailpage.css"
 import placeholder from "../../assets/placeholder/3.png";
-import React, { useEffect, useState } from "react";
-import { useLocation } from 'react-router-dom';
+import React, { useEffect, useState, useRef } from "react";
+import { useLocation, useParams } from 'react-router-dom';
 import { CompleteNav } from "../../components";
 import {
-  fetchLevelInfo,
-  fetchPassPlayerInfo,
-  getLevelImage,
   getVideoDetails,
   isoToEmoji,
 } from "../../Repository/RemoteRepository";
@@ -17,208 +14,186 @@ import { Tooltip } from "react-tooltip";
 import { useTranslation } from "react-i18next";
 import { use } from "i18next";
 import ClearCard from "../../components/ClearCard/ClearCard";
+import { EditLevelPopup } from "../../components/EditLevelPopup/EditLevelPopup";
+import { useAuth } from "../../contexts/AuthContext";
+import api from "../../utils/api";
+import { useDifficultyContext } from "../../contexts/DifficultyContext";
+import { MetaTags } from '../../components';
+import { SteamIcon } from "../../components/Icons/SteamIcon";
 
-const LevelDetailPage = () => {
-  const {t} = useTranslation()
-  const { detailPage } = useLocation();
-  // cange how to get param
-  const id = new URLSearchParams(window.location.search).get("id");
-  const [res, setRes] = useState(null);
-  const [player, setPlayer] = useState([]);
-  const [initialPlayer, setInitialPlayer] = useState([])
-  const [videoDetail, setVideoDetail] = useState(null)
-  const [vidLink, setVidLink] = useState("")
-  const [comment, setComment] = useState("")
+const getHighScores = (players) => {
+  if (!players?.length) return null;
+  
+  return {
+    firstClear: players.reduce((a, b) => 
+      new Date(a.vidUploadTime) < new Date(b.vidUploadTime) ? a : b),
+    highestScore: players.reduce((a, b) => 
+      b.scoreV2 > a.scoreV2 ? b : a),
+    highestAcc: players.reduce((a, b) => 
+      b.accuracy > a.accuracy ? b : a),
+    highestSpeed: players.some(p => p.speed) ? 
+      players.reduce((a, b) => (b.speed || 0) > (a.speed || 0) ? b : a) : null
+  };
+};
 
-  const [highSpeed, setHighSpeed] = useState(null);
-  const [highAcc, setHighAcc] = useState(null);
-  const [highScore, setHighScore] = useState(null);
-  const [highDate, setHighDate] = useState(null)
-  const [passCount, setPassCount] = useState(0)
-
-  const [displayedPlayers, setDisplayedPlayers] = useState([]);
-
-  const [leaderboardSort, setLeaderboardSort] = useState("SCR");
-
-  const [infoLoading, setInfoLoading] = useState(true);
-  const [openDialog, setOpenDialog] = useState(false)
+const AliasesDropdown = ({ field, aliases, show, onClose }) => {
+  const { t } = useTranslation('pages');
+  const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
+  const dropdownRef = useRef(null);
 
   useEffect(() => {
-    
-    getVideoDetails(vidLink).then((res) => {
-      setVideoDetail(
-        res
-          ? res
-          : null
-      );
-    });
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
 
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [onClose]);
 
-  }, [vidLink]);
+  const handleDropdownClick = (e) => {
+    e.stopPropagation();
+  };
+
+  if (!show || !aliases?.length) return null;
+
+  return (
+    <div className="aliases-dropdown" ref={dropdownRef} onClick={handleDropdownClick}>
+      <div className="aliases-header">{tLevel('aliases.header')}</div>
+      <div className="aliases-list">
+        {aliases.map((alias, index) => (
+          <div key={index} className="alias-item">
+            <span className="alias-label">{alias.alias}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const LevelDetailPage = () => {
+  const { t } = useTranslation('pages');
+  const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
+  
+  const { detailPage } = useLocation();
+  const {id} = useParams()
+  const [res, setRes] = useState(null);
+  const [displayedPlayers, setDisplayedPlayers] = useState([]);
+  const [leaderboardSort, setLeaderboardSort] = useState("SCR");
+  const [infoLoading, setInfoLoading] = useState(true);
+  const [videoDetail, setVideoDetail] = useState(null);
+
+  const { user } = useAuth();
+  const [passCount, setPassCount] = useState(0)
+
+  const [openDialog, setOpenDialog] = useState(false)
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+
+  const { difficultyDict } = useDifficultyContext();
+
+  const location = useLocation();
+  const currentUrl = window.location.origin + location.pathname;
+
+  const [showSongAliases, setShowSongAliases] = useState(false);
+  const [showArtistAliases, setShowArtistAliases] = useState(false);
+  const songAliasButtonRef = useRef(null);
+  const artistAliasButtonRef = useRef(null);
+
+  const [activeAliasDropdown, setActiveAliasDropdown] = useState(null);
+
+  const handleAliasButtonClick = (e, field) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setActiveAliasDropdown(current => current === field ? null : field);
+  };
+
+  const handleDropdownClose = () => {
+    setActiveAliasDropdown(null);
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const levelData = await api.get(`${import.meta.env.VITE_LEVELS}/${id}`);
+        const passesData = await api.get(`${import.meta.env.VITE_PASSES}/level/${id}`);
+        setRes(prevRes => ({
+          ...prevRes,
+          level: levelData.data,
+          passes: passesData.data
+        }));
+        setDisplayedPlayers(sortLeaderboard(passesData.data));
+        
+        setInfoLoading(false);
+      } catch (error) {
+        console.error("Error fetching level data:", error);
+        setInfoLoading(false);
+      }
+    };
+    fetchData();
+  }, [id]);
+
+  useEffect(() => {
+    if (res?.level?.videoLink) {
+      getVideoDetails(res.level.videoLink).then(setVideoDetail);
+    }
+  }, [res?.level?.videoLink]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [detailPage]);
 
   useEffect(() => {
-    fetchLevelInfo(id)
-      .then((res) => {
-        setRes(res);
-        const fetchedPlayers = res?.passes.player.results || [];
-        const passCount = res?.passes.player.count || 0 ;
-        const vLink = res?.level.vidLink || "" ;
-        const comment = res?.level.publicComments || "";
-        
-        setInitialPlayer(fetchedPlayers);
-        setPassCount(passCount)
-        setVidLink(vLink)
-        setComment(comment)
-        if(passCount == 0){
-          setInfoLoading(false)
-        }
-      })
-      .catch((error) => {
-        console.error("Error fetching level info:", error);
-      });
-  }, [id]);
-
-  useEffect(() => {
-    if (player.length > 0) {
-      const maxSpeedIndex = (() => {
-        const speeds = player.map(p => p.speed);
-        const minSpeed = Math.min(...speeds);
-        const maxSpeed = Math.max(...speeds);
-      
-        if (minSpeed === maxSpeed) {
-          return 999; 
-        } else {
-          return player.reduce((maxIdx, curr, idx, arr) =>
-            curr.speed > arr[maxIdx].speed ? idx : maxIdx, 0
-          );
-        }
-      })();
-    const maxScoreIndex = player.reduce((maxIndex, player, index, array) =>
-      player.scoreV2 > array[maxIndex].scoreV2 ? index : maxIndex, 0);
-    
-    const maxAccIndex = player.reduce((maxIndex, player, index, array) =>
-      player.accuracy > array[maxIndex].accuracy ? index : maxIndex, 0);
-
-      const maxDateIndex = player.reduce((earliestIdx, curr, idx, arr) => {
-        const currDate = new Date(curr.vidUploadTime).getTime();
-        const earliestDate = new Date(arr[earliestIdx].vidUploadTime).getTime();
-        return currDate < earliestDate ? idx : earliestIdx;
-      }, 0);
-
-
-      setHighSpeed(maxSpeedIndex);
-      setHighAcc(maxAccIndex);
-      setHighScore(maxScoreIndex);
-      setHighDate(maxDateIndex)
+    if (res?.level) {
+      document.title = `${res.level.song} - ${res.level.artist} | TUF`;
     } else {
-      setHighSpeed(null);
-      setHighAcc(null);
-      setHighScore(null);
-      setHighDate(null)
+      document.title = 'Loading Level... | TUF';
     }
-    //console.log(player)
-    //setInfoLoading(false)
-    //console.log(res)
+  }, [res?.level]);
 
-  }, [player]);
-
-
-
-  useEffect(() => {
-    const enrichPlayers = async () => {
-      try {
-        const playerNames = initialPlayer.map(p => p.player);
-        const fetchedPlayersInfo = await fetchPassPlayerInfo(playerNames); 
-
-        
-        const enrichedPlayers = initialPlayer
-        .map(player => {
-          const additionalInfo = fetchedPlayersInfo.find(info => info.name === player.player);
-          
-          if (additionalInfo && !additionalInfo.isBanned) {
-            return {
-              ...player,
-              country: additionalInfo.country,
-            };
-          }
-          return null; 
-        })
-        .filter(player => player !== null);
-  
-  
-      setPlayer(enrichedPlayers);
-     
-      } catch (error) {
-        console.error('Failed to fetch or update player info:', error);
-      }finally{
-        setInfoLoading(false);
-      }
-  
-
-    };
-  
-    if (initialPlayer.length > 0 && passCount) {
-      enrichPlayers();
+  function handleSort(sort) {
+    setLeaderboardSort(sort);
+    if (res?.passes) {
+      const newSortedPlayers = sortLeaderboard([...res.passes]);
+      setDisplayedPlayers(newSortedPlayers);
     }
-  }, [initialPlayer, passCount]);
-
-  useEffect(() => {
-
-    const sortedPlayers = sortLeaderboard(player); 
-    setDisplayedPlayers(sortedPlayers);
-    //console.log(sortedPlayers) 
-    //console.log(player)
-  }, [player, leaderboardSort]);
-
-
-
-  function handleSort(sort){
-    setLeaderboardSort(sort)
   }
 
-  const sortByVidUploadTime = (players) => {
-    return [...players].sort((a, b) => new Date(a.vidUploadTime) - new Date(b.vidUploadTime));
-  };
-  
-  const sortByScoreV2 = (players) => {
-    return [...players].sort((a, b) => b.scoreV2 - a.scoreV2);
-  };
-  
-  const sortByAccuracy = (players) => {
-    return [...players].sort((a, b) => b.accuracy - a.accuracy);
-  };
-
   const sortLeaderboard = (players) => {
+    if (!players) return [];
+    
+    const sortedPlayers = [...players];
+
     switch (leaderboardSort) {
       case 'TIME':
-        return sortByVidUploadTime(players);
+        return sortedPlayers.sort((a, b) => 
+          new Date(b.vidUploadTime) - new Date(a.vidUploadTime)
+        );
       case 'ACC':
-        return sortByAccuracy(players);
+        return sortedPlayers.sort((a, b) => 
+          (b.accuracy || 0) - (a.accuracy || 0)
+        );
       case 'SCR':
-        return sortByScoreV2(players);
+        return sortedPlayers.sort((a, b) => 
+          (b.scoreV2 || 0) - (a.scoreV2 || 0)
+        );
       default:
-        return players;
+        return sortedPlayers;
     }
   };
+
+  useEffect(() => {
+    if (res?.passes) {
+      setDisplayedPlayers(sortLeaderboard(res.passes));
+    }
+  }, [leaderboardSort, res?.passes]);
 
   function changeDialogState(){
     setOpenDialog(!openDialog)
   }
 
-  useEffect(()=>{
-    //console.log(res)
-    //console.log(passCount)
-  }, [res, passCount])
-
   function formatString(input) {
-    const regex = / & | but /g;
-    const parts = input.split(regex);
-    const formattedParts = parts.map(part => `${part}`);
-    return formattedParts.join(" - ");
+    return input.split(/ & | but /g).join(" - ");
   }
 
   function formatDiff(value) {
@@ -230,8 +205,44 @@ const LevelDetailPage = () => {
     }
   }
 
+  const getMetaImage = () => {
+    if (videoDetail?.image) return videoDetail.image;
+    if (res?.level?.videoLink) return `https://img.youtube.com/vi/${res.level.videoLink.split('v=')[1]}/maxresdefault.jpg`;
+    return placeholder;
+  };
 
-//if (!res || player.length === 0 || highSpeed === null || highAcc === null || highScore === null || displayedPlayers.length === 0)
+  const renderTitleWithAliases = (title, field) => {
+    const aliases = res?.level?.aliases?.filter(a => a.field === field) || [];
+    const isOpen = activeAliasDropdown === field;
+
+    return (
+      <div className="level-title">
+        {title}
+        {aliases.length > 0 && (
+          <>
+            <span 
+              className={`alias-arrow ${isOpen ? 'open' : ''}`}
+              onMouseDown={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              onClick={(e) => handleAliasButtonClick(e, field)}
+            >
+              ▼
+            </span>
+            <AliasesDropdown 
+              field={field}
+              aliases={aliases}
+              show={isOpen}
+              onClose={handleDropdownClose}
+            />
+          </>
+        )}
+      </div>
+    );
+  };
+
+  //if (!res || player.length === 0 || highSpeed === null || highAcc === null || highScore === null || displayedPlayers.length === 0)
  if (res == null)
     return (
       <div
@@ -245,266 +256,202 @@ const LevelDetailPage = () => {
 
   return (
   <>
-    <div className="close-outer close-outer-levels" style={{ 
-      display: openDialog ? 'block' : 'none'}} onClick={changeDialogState}></div>
-      
-      <div className={`levels-dialog ${openDialog ? 'dialog-scale-up' : ''}`} style={{ display: openDialog ? 'block' : 'none' }}>
-        <div className="dialog">
-
-          <div className="header" style={{
-              backgroundImage: `url(${res && videoDetail ? videoDetail.image: "defaultImageURL"})`, backgroundPosition : "center"}}>
-            <h2>{res.level.song}</h2>
-            <p> <b>{t("detailPage.dialog.artist")} :</b> {res.level.artist}</p>
-            
-            <p>
-              <b>{t(res.level.team ? "detailPage.dialog.team" : "detailPage.dialog.creator")} :</b>
-              {formatString(res.level.team ? res.level.team : res.level.creator)}
-            </p>
-
-
-            <p> <b>{t("detailPage.dialog.id")} :</b> #{res.level.id}</p>
-
-          </div>
-
-          <div className="body">
-            
-            <div className="diff">
-              
-              <div className="each-diff">
-                <h3>PGU</h3>
-                <p>{formatDiff(res.level.pguDiff)}</p>
-              </div>
-
-
-              <div className="each-diff">
-                <h3>Legacy</h3>
-                <p>{formatDiff(res.level.diff)}</p>
-              </div>
-
-              <div className="each-diff">
-                <h3>NEW</h3>
-                <p>{formatDiff(res.level.newDiff)}</p>
-              </div>
-            
-            </div>
-            <div className="team-info">
-
-              {res.level.team && (
-                <div className="each-info">
-                  <h3>{t("detailPage.dialog.team")}</h3>
-                  <p>{formatString(res.level.team)}</p>
-                </div>
-                )}
-
-              {res.level.charter && (
-                <div className="each-info">
-                  <h3>{t("detailPage.dialog.charter")}</h3>
-                  <p>{formatString(res.level.charter)}</p>
-                </div>
-                )}
-                
-                {res.level.vfxer && (
-                <div className="each-info">
-                  <h3>{t("detailPage.dialog.vfxer")}</h3>
-                  <p>{formatString(res.level.vfxer)}</p>
-                </div>
-                )}
-
-                
-             </div> 
-
-              <div className="links" style={{borderBottom: comment? "2px solid #fff": "transparent", paddingBottom: comment? "8px": "0"}}>
-
-                {res.level.dlLink && (
-                  <a href={res.level.dlLink} target="_blank">
-                    <svg className="svg-stroke" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                      <path d="M17 17H17.01M17.4 14H18C18.9319 14 19.3978 14 19.7654 14.1522C20.2554 14.3552 20.6448 14.7446 20.8478 15.2346C21 15.6022 21 16.0681 21 17C21 17.9319 21 18.3978 20.8478 18.7654C20.6448 19.2554 20.2554 19.6448 19.7654 19.8478C19.3978 20 18.9319 20 18 20H6C5.06812 20 4.60218 20 4.23463 19.8478C3.74458 19.6448 3.35523 19.2554 3.15224 18.7654C3 18.3978 3 17.9319 3 17C3 16.0681 3 15.6022 3.15224 15.2346C3.35523 14.7446 3.74458 14.3552 4.23463 14.1522C4.60218 14 5.06812 14 6 14H6.6M12 15V4M12 15L9 12M12 15L15 12" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
-                  </a>
-                )}
-
-                {res.level.workshopLink && (
-                  <a href={res.level.workshopLink} target="_blank">
-                    <svg className="svg-fill" fill="#ffffff" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" >
-                      <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                      <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
-                      <g id="SVGRepo_iconCarrier">
-                        <path d="M 22 6 C 18.745659 6 16.09469 8.6041857 16.007812 11.837891 L 12.337891 17.083984 C 12.065931 17.032464 11.786701 17 11.5 17 C 10.551677 17 9.673638 17.297769 8.9472656 17.800781 L 4 15.84375 L 4 21.220703 L 7.1054688 22.449219 C 7.5429388 24.475474 9.3449541 26 11.5 26 C 13.703628 26 15.534282 24.405137 15.917969 22.310547 L 21.691406 17.984375 C 21.794183 17.989633 21.895937 18 22 18 C 25.309 18 28 15.309 28 12 C 28 8.691 25.309 6 22 6 z M 22 8 C 24.206 8 26 9.794 26 12 C 26 14.206 24.206 16 22 16 C 19.794 16 18 14.206 18 12 C 18 9.794 19.794 8 22 8 z M 22 9 A 3 3 0 0 0 22 15 A 3 3 0 0 0 22 9 z M 11.5 18 C 13.43 18 15 19.57 15 21.5 C 15 23.43 13.43 25 11.5 25 C 10.078718 25 8.8581368 24.145398 8.3105469 22.925781 L 10.580078 23.824219 C 10.882078 23.944219 11.192047 24.001953 11.498047 24.001953 C 12.494047 24.001953 13.436219 23.403875 13.824219 22.421875 C 14.333219 21.137875 13.703922 19.683781 12.419922 19.175781 L 10.142578 18.273438 C 10.560118 18.097145 11.019013 18 11.5 18 z"></path>
-                      </g>
-                    </svg>
-                  </a>
-                )}
-
-                {res.level.vidLink && (
-                  <a className="svg-fill" href={res.level.vidLink} target="_blank">
-                    <svg viewBox="0 -3 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <title>youtube [#168]</title> <desc>Created with Sketch.</desc> <defs> </defs> <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd"> <g id="Dribbble-Light-Preview" transform="translate(-300.000000, -7442.000000)" fill="#ffffff"> <g id="icons" transform="translate(56.000000, 160.000000)"> <path d="M251.988432,7291.58588 L251.988432,7285.97425 C253.980638,7286.91168 255.523602,7287.8172 257.348463,7288.79353 C255.843351,7289.62824 253.980638,7290.56468 251.988432,7291.58588 M263.090998,7283.18289 C262.747343,7282.73013 262.161634,7282.37809 261.538073,7282.26141 C259.705243,7281.91336 248.270974,7281.91237 246.439141,7282.26141 C245.939097,7282.35515 245.493839,7282.58153 245.111335,7282.93357 C243.49964,7284.42947 244.004664,7292.45151 244.393145,7293.75096 C244.556505,7294.31342 244.767679,7294.71931 245.033639,7294.98558 C245.376298,7295.33761 245.845463,7295.57995 246.384355,7295.68865 C247.893451,7296.0008 255.668037,7296.17532 261.506198,7295.73552 C262.044094,7295.64178 262.520231,7295.39147 262.895762,7295.02447 C264.385932,7293.53455 264.28433,7285.06174 263.090998,7283.18289" id="youtube-[#168]"> </path> </g> </g> </g> </g></svg>
-                  </a>
-                )}
-              </div>
-              <br/>
-              {comment && (
-                <p style={{marginBottom: "5px"}}>Comment: <b>{comment? comment : ""}</b></p>
-                )}
-          </div>
-          
-      </div>
-    </div>
-
+    <MetaTags
+      title={res?.level?.song}
+      description={tLevel('meta.description', { song: res?.level?.song, creator: res?.level?.creator })}
+      url={currentUrl}
+      image={''}
+      type="article"
+    />
     <div className="level-detail">
       <CompleteNav />
       <div className="background-level"></div>
 
       <div className="wrapper-level wrapper-level-top">
+      {res?.level?.isDeleted ? (
+        <div className="deletion-banner-wrapper">
+          <div className="deletion-banner">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span>{tLevel('banners.deleted')}</span>
+          </div>
+        </div>
+      ) : res?.level?.isHidden ? (
+        <div className="deletion-banner-wrapper">
+          <div className="deletion-banner">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+            </svg>
+            <span>{tLevel('banners.hidden')}</span>
+          </div>
+        </div>
+      ) : null}
+    
         <div className="header">
-
           <div className="left"
             style={{
               backgroundImage: `url(${res && videoDetail ? videoDetail.image: "defaultImageURL"})`}}>
 
             <div className="diff">
-              <img src={getLevelImage(res.level.newDiff, res.level.pdnDiff, res.level.pguDiff)} alt="" />
+              <img 
+                src={difficultyDict[res.level.difficulty.id]?.icon} 
+                alt={difficultyDict[res.level.difficulty.id]?.name || 'Difficulty icon'} 
+                className="difficulty-icon"
+              />
             </div>
 
             <div className="title">
-              <h1>{res.level.song}</h1>
+              {renderTitleWithAliases(res.level.song, 'song')}
               <p>
                 #{id}&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
                 {res.level.team ? res.level.team : res.level.creator}
-                &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;{res.level.artist}
+                &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
+                {renderTitleWithAliases(res.level.artist, 'artist')}
               </p>
-              
             </div>
           </div>
-
-          <div className="right">
+          {user?.isSuperAdmin && (
+            <button 
+              className="edit-button svg-stroke"
+              onClick={() => setOpenEditDialog(true)}
+              title={tLevel('buttons.edit')}
+            >
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.4374 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          )}
+          <div className="right"> 
             {res.level.dlLink && (
-              <a className="svg-stroke" href={res.level.dlLink} target="_blank">
+              <a className="svg-stroke" href={res.level.dlLink} target="_blank" title={tLevel('links.download')}>
                 <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                   <path d="M17 17H17.01M17.4 14H18C18.9319 14 19.3978 14 19.7654 14.1522C20.2554 14.3552 20.6448 14.7446 20.8478 15.2346C21 15.6022 21 16.0681 21 17C21 17.9319 21 18.3978 20.8478 18.7654C20.6448 19.2554 20.2554 19.6448 19.7654 19.8478C19.3978 20 18.9319 20 18 20H6C5.06812 20 4.60218 20 4.23463 19.8478C3.74458 19.6448 3.35523 19.2554 3.15224 18.7654C3 18.3978 3 17.9319 3 17C3 16.0681 3 15.6022 3.15224 15.2346C3.35523 14.7446 3.74458 14.3552 4.23463 14.1522C4.60218 14 5.06812 14 6 14H6.6M12 15V4M12 15L9 12M12 15L15 12" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </a>
             )}
-
             {res.level.workshopLink && (
-              <a href={res.level.workshopLink} target="_blank">
-                <svg className="svg-fill" fill="#ffffff" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" >
-                  <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                  <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
-                  <g id="SVGRepo_iconCarrier">
-                    <path d="M 22 6 C 18.745659 6 16.09469 8.6041857 16.007812 11.837891 L 12.337891 17.083984 C 12.065931 17.032464 11.786701 17 11.5 17 C 10.551677 17 9.673638 17.297769 8.9472656 17.800781 L 4 15.84375 L 4 21.220703 L 7.1054688 22.449219 C 7.5429388 24.475474 9.3449541 26 11.5 26 C 13.703628 26 15.534282 24.405137 15.917969 22.310547 L 21.691406 17.984375 C 21.794183 17.989633 21.895937 18 22 18 C 25.309 18 28 15.309 28 12 C 28 8.691 25.309 6 22 6 z M 22 8 C 24.206 8 26 9.794 26 12 C 26 14.206 24.206 16 22 16 C 19.794 16 18 14.206 18 12 C 18 9.794 19.794 8 22 8 z M 22 9 A 3 3 0 0 0 22 15 A 3 3 0 0 0 22 9 z M 11.5 18 C 13.43 18 15 19.57 15 21.5 C 15 23.43 13.43 25 11.5 25 C 10.078718 25 8.8581368 24.145398 8.3105469 22.925781 L 10.580078 23.824219 C 10.882078 23.944219 11.192047 24.001953 11.498047 24.001953 C 12.494047 24.001953 13.436219 23.403875 13.824219 22.421875 C 14.333219 21.137875 13.703922 19.683781 12.419922 19.175781 L 10.142578 18.273438 C 10.560118 18.097145 11.019013 18 11.5 18 z"></path>
-                  </g>
-                </svg>
+              <a href={res.level.workshopLink} target="_blank" title={tLevel('links.workshop')}>
+                <SteamIcon color="#ffffff" size={24} />
               </a>
-            )} 
-
-            {!res.level.workshopLink && !res.level.dlLink &&(
-              <svg className="svg-fill" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" fill="none"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill="#ffffff" fillRule="evenodd" d="M5.781 4.414a7 7 0 019.62 10.039l-9.62-10.04zm-1.408 1.42a7 7 0 009.549 9.964L4.373 5.836zM10 1a9 9 0 100 18 9 9 0 000-18z"></path> </g></svg>
             )}
           </div>
         </div>
 
         <div className="body">
           <div className="info">
-
             <div className="info-item">
-              <p>
-                {/* <span className="one">#1</span> Clear */}
-                {t("detailPage.#1Clears.clear")}
-              </p>
+              <p>{tLevel('stats.firstClear.label')}</p>
               <span className="info-desc">
-              {!infoLoading ? 
-                (player && player[highDate] ? `${player[highDate].player} | ${player[highDate].vidUploadTime.slice(0, 10)}` : "-")
-                : t("detailPage.waiting")}
+                {!infoLoading ? 
+                  (displayedPlayers.length > 0 ? 
+                    tLevel('stats.firstClear.value', {
+                      player: getHighScores(displayedPlayers).firstClear.player.name,
+                      date: getHighScores(displayedPlayers).firstClear.vidUploadTime.slice(0, 10)
+                    })
+                    : "-")
+                  : tLevel('stats.waiting')}
               </span>
             </div>
 
             <div className="info-item">
-              <p>
-                {/* <span className="one">#1</span> Score */}
-                {t("detailPage.#1Clears.score")}
-              </p>
+              <p>{tLevel('stats.highestScore.label')}</p>
               <span className="info-desc">
-              {!infoLoading ? 
-                (player && player[highScore] ? `${player[highScore].player} | ${player[highScore].scoreV2.toFixed(2)}` : "-")
-                : t("detailPage.waiting")}
+                {!infoLoading ? 
+                  (displayedPlayers.length > 0 ? 
+                    tLevel('stats.highestScore.value', {
+                      player: getHighScores(displayedPlayers).highestScore.player.name,
+                      score: getHighScores(displayedPlayers).highestScore.scoreV2.toFixed(2)
+                    })
+                    : "-")
+                  : tLevel('stats.waiting')}
               </span>
             </div>
 
             <div className="info-item">
-              <p>
-                {t("detailPage.#1Clears.speed")}
-              </p>
+              <p>{tLevel('stats.highestSpeed.label')}</p>
               <span className="info-desc">
-              {!infoLoading ? 
-                (player && highSpeed !== 999 && player[highSpeed] ? `${player[highSpeed].player} | ${player[highSpeed].speed || 1}×` 
-                : highSpeed === 999 ? "-" : "-")
-                : t("detailPage.waiting")}
+                {!infoLoading ? 
+                  (displayedPlayers.length > 0 && getHighScores(displayedPlayers).highestSpeed ? 
+                    tLevel('stats.highestSpeed.value', {
+                      player: getHighScores(displayedPlayers).highestSpeed.player.name,
+                      speed: getHighScores(displayedPlayers).highestSpeed.speed || 1
+                    })
+                    : tLevel('stats.highestSpeed.noSpeed'))
+                  : tLevel('stats.waiting')}
               </span>
             </div>
 
             <div className="info-item">
-              <p>
-                {/* <span className="one">#1</span> Accuracy */}
-                {t("detailPage.#1Clears.accuracy")}
-
-                
-              </p>
+              <p>{tLevel('stats.highestAccuracy.label')}</p>
               <span className="info-desc">
-              {!infoLoading ? 
-                (player && player[highAcc] ? `${player[highAcc].player} | ${(player[highAcc].accuracy * 100).toFixed(2)}%` : "-")
-                : t("detailPage.waiting")}
+                {!infoLoading ? 
+                  (displayedPlayers.length > 0 ? 
+                    tLevel('stats.highestAccuracy.value', {
+                      player: getHighScores(displayedPlayers).highestAcc.player.name,
+                      accuracy: (getHighScores(displayedPlayers).highestAcc.accuracy * 100).toFixed(2)
+                    })
+                    : "-")
+                  : tLevel('stats.waiting')}
               </span>
             </div>
 
             <div className="info-item">
-              <p>{t("detailPage.#1Clears.numOClear")}</p>
+              <p>{tLevel('stats.totalClears.label')}</p>
               <span className="info-desc">
-                {!infoLoading ? (player ? player.length : "0") : t("detailPage.waiting")}
+                {!infoLoading ? 
+                  tLevel('stats.totalClears.value', { count: displayedPlayers.length }) 
+                  : tLevel('stats.waiting')}
               </span>
             </div>
 
-            <button className="info-button" onClick={changeDialogState}>{t("detailPage.dialog.fullInfo")}</button>
+            <button className="info-button" onClick={changeDialogState}>
+              {tLevel('dialog.fullInfo')}
+            </button>
           </div>
 
           <div className="youtube">
             {videoDetail ? 
               <iframe
-              src={videoDetail.embed}
-              title="Video player"
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              referrerPolicy="strict-origin-when-cross-origin"
-              allowFullScreen
-            ></iframe>
-          :
-          <div
-            className="thumbnail-container"
-            style={{
-              backgroundImage: `url(${videoDetail? videoDetail.image: placeholder})`,
-            }}
-          >
-            <div className="thumbnail-text">
-              <p>Thumbnail not found</p>
-              {res.level.vidLink && <a href={res.level.vidLink}>Go to video</a>}
-            </div>
-          </div>
-          }
+                src={videoDetail.embed}
+                title="Video player"
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerPolicy="strict-origin-when-cross-origin"
+                allowFullScreen
+              ></iframe>
+            :
+              <div
+                className="thumbnail-container"
+                style={{
+                  backgroundImage: `url(${videoDetail? videoDetail.image: placeholder})`,
+                }}
+              >
+                <div className="thumbnail-text">
+                  <p>{tLevel('links.thumbnailNotFound.text')}</p>
+                  {res.level.videoLink && 
+                    <a href={res.level.videoLink}>{tLevel('links.thumbnailNotFound.goToVideo')}</a>
+                  }
+                </div>
+              </div>
+            }
           </div>
         </div>
 
         <div className="rank">
-          <h1>{t("detailPage.leaderboard.header")}</h1>
-          {player && player.length > 0 ? (
+          <h1>{tLevel('leaderboard.header')}</h1>
+          {displayedPlayers && displayedPlayers.length > 0 ? (
             <div className="sort">
-                <Tooltip id="tm" place="top" noArrow>
-                {t("detailPage.leaderboard.toolTip.time")}
-                </Tooltip>
-                <Tooltip id="ac" place="top" noArrow>
-                {t("detailPage.leaderboard.toolTip.accuracy")}
-                </Tooltip>
-                <Tooltip id="sc" place="top" noArrow>
-                {t("detailPage.leaderboard.toolTip.score")}
-                </Tooltip>
+              <Tooltip id="tm" place="top" noArrow>
+                {tLevel('leaderboard.tooltips.time')}
+              </Tooltip>
+              <Tooltip id="ac" place="top" noArrow>
+                {tLevel('leaderboard.tooltips.accuracy')}
+              </Tooltip>
+              <Tooltip id="sc" place="top" noArrow>
+                {tLevel('leaderboard.tooltips.score')}
+              </Tooltip>
 
               <svg className="svg-stroke" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
               data-tooltip-id = "tm"
@@ -558,25 +505,38 @@ const LevelDetailPage = () => {
           ) : <></>}
           <div className="rank-list">
             {!infoLoading ? 
-            
-              
-            displayedPlayers && displayedPlayers.length > 0 ? (
-              displayedPlayers.map((each, index) => (
-                <ClearCard scoreData={each} index={index}/>
-              ))
-            ) : (
-              <h3>{t("detailPage.leaderboard.notBeaten")}</h3>
-            )
-
-            :
-
-            <div className="loader loader-level-detail-rank"></div>
-
-          }
+              displayedPlayers && displayedPlayers.length > 0 ? (
+                displayedPlayers.map((each, index) => (
+                  <ClearCard scoreData={each} index={index} key={index}/>
+                ))
+              ) : (
+                <h3>{tLevel('leaderboard.notBeaten')}</h3>
+              )
+              :
+              <div className="loader loader-level-detail-rank"></div>
+            }
           </div>
         </div>
       </div>
     </div>
+
+    {openEditDialog && (
+      <EditLevelPopup
+        level={res.level}
+        onClose={() => setOpenEditDialog(false)}
+        onUpdate={(updatedLevel) => {
+          const newLevel = updatedLevel.level || updatedLevel;
+          setRes(prevRes => ({
+            ...prevRes,
+            level: {
+              ...prevRes.level,
+              ...newLevel,
+              aliases: newLevel.aliases || prevRes.level.aliases
+            }
+          }));
+        }}
+      />
+    )}
   </>
   );
 };

@@ -1,0 +1,53 @@
+{
+  "button": {
+    "label": "Open References",
+    "text": "References"
+  },
+  "popup": {
+    "title": "{{tab}} Difficulties",
+    "buttons": {
+      "close": "Close",
+      "expandAll": "Expand All",
+      "collapseAll": "Collapse All",
+      "editMode": "Edit Mode",
+      "viewMode": "View Mode",
+      "saveChanges": "Save Changes",
+      "saving": "Saving...",
+      "cancel": "Cancel"
+    },
+    "loading": "Loading references...",
+    "errors": {
+      "loadFailed": "Failed to load references",
+      "saveFailed": "Failed to save changes"
+    },
+    "levelCount": {
+      "singular": "1 level",
+      "plural": "{{count}} levels"
+    },
+    "editMode": {
+      "placeholder": "Enter level IDs separated by commas"
+    }
+  },
+  "errors": {
+    "loading": "Failed to load difficulties",
+    "saving": "Failed to save difficulties"
+  },
+  "title": "{{tab}} Difficulties",
+  "buttons": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "reset": "Reset",
+    "clear": "Clear",
+    "selectAll": "Select All"
+  },
+  "loading": "Loading difficulties...",
+  "noItems": "No difficulties found",
+  "search": {
+    "placeholder": "Search difficulties..."
+  },
+  "stats": {
+    "selected": "Selected",
+    "total": "Total",
+    "plural": "{{count}} levels"
+  }
+} 

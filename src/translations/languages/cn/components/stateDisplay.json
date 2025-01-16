@@ -1,0 +1,11 @@
+{
+  "states": {
+    "hide": "隐藏",
+    "show": "显示",
+    "only": "仅"
+  },
+  "accessDenied": {
+    "title": "拒绝访问",
+    "message": "您需要适当的权限才能访问此页面。"
+  }
+} 

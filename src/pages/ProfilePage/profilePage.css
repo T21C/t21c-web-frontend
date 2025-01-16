@@ -14,6 +14,23 @@
   z-index: 2;
 }
 
+.player-page .player-search-for-other {
+  color: #fffa;
+  position: absolute;
+  white-space: nowrap;
+  top: calc(50% + 3rem);          /* Position from the top */
+  left: 50%;         /* Position from the left */
+  transition: all 0.2s;
+  transform: translate(-50%, -50%); /* Center the element */
+  z-index: 2;
+}
+
+.player-page .player-search-for-other:hover {
+  color: #ffffff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
 
 .player-page .player-body {
   position: relative;
@@ -37,12 +54,20 @@
   align-items: center;        /* Full viewport height */
 }
 .player-page .player-header {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  min-width: 600px;
+  justify-content: space-evenly;
+  padding: 20px;
+}
+
+.player-page .player-header-content {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  min-width: 600px; /* Fixed min-width */
-  padding: 20px;
 }
+
 .player-page .player-info-container {
   display: flex;
   align-items: center;
@@ -73,8 +98,8 @@
 }
 
 .player-page .player-info .player-name-rank h2 {
-  padding: 10px;
-  border-radius: 40px;
+  padding: 7px 10px;
+  border-radius: 10px;
   margin-left: 10px;
   font-size: 20px;
 }
@@ -82,19 +107,20 @@
 .player-page .country-flag {
   width: 40px;
   height: 40px;
-  margin-top: 10px;
+  margin-top: 0px;
 }
 
 .player-page .score-container {
   display: flex;
   justify-content: space-between; /* Spread out the scores */
-  gap: 1rem; /* Add space between items */
+  gap: 0.75rem; /* Add space between items */
 }
 
 .player-page .passes-container {
-  display: flex;
+  display: flex;  
   justify-content: space-between; /* Spread out the scores */
   gap: 1rem; /* Add space between items */
+  margin-top: 0.5rem;
 }
 
 .player-page .score-item {
@@ -158,5 +184,77 @@
   margin: 10px inherit ;
   padding: 10px;
   border-bottom: 1px solid #ccc;
+}
+
+.player-page .edit-button-container {
+  position: absolute;
+  right: -60px; /* Position it outside the header */
+  top: 20px;
+  border: none;
+  padding: 2px;
+  border-radius: 4px;
+  flex-direction: column;
+  gap: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.player-page .edit-button {
+  background-color: var(--color-white-t10); 
+  border: none;
+  width: 50px;
+  height: 50px;
+  padding: 2px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.player-page .edit-button:hover {
+  background-color: var(--color-white-t20);
+}
+
+.player-page .edit-button svg {
+  width: 36px;
+  height: 36px;
+}
+
+.player-page .scores-section {
+  margin-top: 20px;
+  padding: 20px;
+  width: 800px; /* Reduced from 65% to a fixed width */
+  max-width: 90%; /* Fallback for smaller screens */
+  background-color: #00000057;
+}
+
+.player-page .scores-section h2 {
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.player-page .scores-list {
+  list-style: none; /* Remove bullets */
+  padding: 0;
+  margin: 0;
+}
+
+.player-page .scores-list li {
+  padding: 0.25rem;
+  border-bottom: 1px solid var(--color-white-t10);
+}
+
+.player-page .player-name-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.player-page .player-discord-handle {
+  font-size: 0.9em;
+  color: var(--color-white-t60);
+  margin-top: -5px;
 }
 

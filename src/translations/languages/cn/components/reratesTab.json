@@ -1,0 +1,17 @@
+{
+  "noRerates": "没有要公布的重评项目",
+  "errors": {
+    "removeLevel": "移除 {{song}} 失败，请重试。"
+  },
+  "card": {
+    "title": "{{song}} - {{artist}}",
+    "subtitle": {
+      "difficulty": "{{oldDifficulty}} ➔ {{newDifficulty}}",
+      "team": " • {{team}}"
+    }
+  },
+  "buttons": {
+    "edit": "编辑关卡",
+    "remove": "移除关卡"
+  }
+} 

@@ -1,0 +1,40 @@
+{
+  "detailPopup": {
+    "closeButton": "Close popup",
+    "labels": {
+      "creator": "Creator:",
+      "currentDifficulty": "Current Difficulty:",
+      "averageRating": "Average Rating:",
+      "yourRating": "Your Rating:",
+      "yourComment": "Your Comment:",
+      "otherRatings": "Other Ratings:"
+    },
+    "buttons": {
+      "saveChanges": "Save Changes",
+      "saving": "Saving..."
+    },
+    "errors": {
+      "commentLength": "Comment must be less than 1000 characters",
+      "saveFailed": "Failed to save changes",
+      "updateFailed": "Failed to update rating",
+      "unsavedChanges": "You have unsaved changes. Are you sure you want to close?"
+    }
+  },
+  "ratingCard": {
+    "labels": {
+      "yourRating": "Your Rating",
+      "allRatings": "All Ratings",
+      "average": "Average",
+      "rerateNumber": "Rerate Number",
+      "requestedRating": "Requested Rating",
+      "rerateMessage": "Rerate Message"
+    },
+    "tooltips": {
+      "expandReason": "Click to expand"
+    },
+    "buttons": {
+      "viewDetails": "View Details",
+      "editLevel": "Edit Level"
+    }
+  }
+} 

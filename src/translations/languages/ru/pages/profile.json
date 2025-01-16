@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "title": "{{name}} | TUF",
+    "description": "Check out {{name}}'s profile and achievements",
+    "defaultTitle": "Profile"
+  },
+  "notFound": "Player not found",
+  "valueLabels": {
+    "rankedScore": "Ranked Score",
+    "generalScore": "General Score",
+    "ppScore": "PP Score",
+    "wfScore": "WF Score",
+    "score12k": "12K Score",
+    "averageXacc": "Average X-Accuracy",
+    "totalPasses": "Total Passes",
+    "universalPasses": "Universal Passes",
+    "worldsFirstCount": "World's First Passes",
+    "topDiff": "Top Difficulty",
+    "top12kDiff": "Top 12K Difficulty"
+  },
+  "sections": {
+    "scores": {
+      "title": "Scores"
+    }
+  }
+} 

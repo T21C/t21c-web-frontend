@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "title": "排行榜",
+    "description": "查看顶尖玩家排名"
+  },
+  "input": {
+    "placeholder": "按玩家名称搜索……"
+  },
+  "tooltips": {
+    "filter": "筛选结果",
+    "sort": "排序结果",
+    "reset": "重置筛选条件",
+    "recentAsc": "升序",
+    "recentDesc": "降序"
+  },
+  "settings": {
+    "filter": {
+      "header": "筛选设置"
+    },
+    "sort": {
+      "header": "排序设置",
+      "sortOrder": "排序方式",
+      "sortBy": "排序依据"
+    }
+  },
+  "bannedPlayers": {
+    "label": "已封禁玩家",
+    "options": {
+      "show": "显示",
+      "hide": "隐藏",
+      "only": "仅"
+    }
+  },
+  "sortOptions": {
+    "rankedScore": "排位分数",
+    "generalScore": "常规分数",
+    "ppScore": "PP 分数",
+    "wfScore": "世界首通分数",
+    "score12k": "12键分数",
+    "averageXacc": "平均X-精准度",
+    "totalPasses": "总通关数",
+    "universalPasses": "U级通关数",
+    "worldsFirstCount": "世界首通数",
+    "topDiff": "最高通关难度",
+    "top12kDiff": "最高12键通关难度"
+  },
+  "infiniteScroll": {
+    "end": "已经到底啦！"
+  }
+} 

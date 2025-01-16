@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "title": "提交内容",
+    "description": "向社区提交新的关卡或通关记录",
+    "type": "website"
+  },
+  "header": {
+    "headerPass": "提交通关记录",
+    "headerLevel": "提交关卡"
+  },
+  "button": {
+    "buttonPass": "提交通关记录",
+    "buttonLevel": "提交关卡"
+  }
+} 

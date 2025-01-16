@@ -10,9 +10,9 @@
   --color-black: #090909;
   --color-white: #f9fafb;
   --color-purple: #6d23ce;
-  --color-purple-1: #5c588d;
-  --color-purple-2: #807fa8;
-  --color-purple-3: #a3a2d8;
+  --color-purple-1: #8d70ff;
+  --color-purple-2: #7c5cff;
+  --color-purple-3: #643dff;
   --color-gray-3: #838383;
   --color-gray-2: #cacaca;
   --color-gray-3: #e9e9ea;
@@ -67,13 +67,30 @@ body {
   background-size: cover;
 }
 
+.new-loader {
+  position: relative;
+  z-index: 10000;
+  height: 200px;
+  width: 200px;
+}
+
+.new-loader:before {
+  transform: scale(1, 1) rotate(90deg);
+  content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><radialGradient id="a12" cx=".66" fx=".66" cy=".3125" fy=".3125" gradientTransform="scale(1.5)"><stop offset="0" stop-color="%23FF156D"></stop><stop offset=".3" stop-color="%23FF156D" stop-opacity=".9"></stop><stop offset=".6" stop-color="%23FF156D" stop-opacity=".6"></stop><stop offset=".8" stop-color="%23FF156D" stop-opacity=".3"></stop><stop offset="1" stop-color="%23FF156D" stop-opacity="0"></stop></radialGradient><circle transform-origin="center" fill="none" stroke="url(%23a12)" stroke-width="15" stroke-linecap="round" stroke-dasharray="200 1000" stroke-dashoffset="0" cx="100" cy="100" r="70"><animateTransform type="rotate" attributeName="transform" calcMode="spline" dur="1.8" values="360;0" keyTimes="0;1" keySplines="0 0 1 1" repeatCount="indefinite"></animateTransform></circle><circle transform-origin="center" fill="none" opacity="0" stroke="%23FF156D" stroke-width="11" stroke-linecap="round" cx="100" cy="100" r="70"></circle></svg>')
+}
+.new-loader:after {
+  transform: scale(-1,1);
+  content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><radialGradient id="a12" cx=".66" fx=".66" cy=".3125" fy=".3125" gradientTransform="scale(1.5)"><stop offset="0" stop-color="%23152CFF"></stop><stop offset=".3" stop-color="%23152CFF" stop-opacity=".9"></stop><stop offset=".6" stop-color="%23152CFF" stop-opacity=".6"></stop><stop offset=".8" stop-color="%23152CFF" stop-opacity=".3"></stop><stop offset="1" stop-color="%23152CFF" stop-opacity="0"></stop></radialGradient><circle transform-origin="center" fill="none" stroke="url(%23a12)" stroke-width="15" stroke-linecap="round" stroke-dasharray="200 1000" stroke-dashoffset="0" cx="100" cy="100" r="70"><animateTransform type="rotate" attributeName="transform" calcMode="spline" dur="2.1" values="360;0" keyTimes="0;1" keySplines="0 0 1 1" repeatCount="indefinite"></animateTransform></circle><circle transform-origin="center" fill="none" opacity="0" stroke="%23152CFF" stroke-width="11" stroke-linecap="round" cx="100" cy="100" r="70"></circle></svg>')
+}
+
+
 .loader {
   position: absolute;
   left: 50%;
   top: 56%;
   z-index: 100;
 }
-.loader:before, .loader:after {
+.loader:before, .loader:after, .new-loader:before, .new-loader:after {
   position: absolute;
   height: 200px;
   width: 200px;
@@ -88,12 +105,12 @@ body {
   content: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200"><radialGradient id="a12" cx=".66" fx=".66" cy=".3125" fy=".3125" gradientTransform="scale(1.5)"><stop offset="0" stop-color="%23152CFF"></stop><stop offset=".3" stop-color="%23152CFF" stop-opacity=".9"></stop><stop offset=".6" stop-color="%23152CFF" stop-opacity=".6"></stop><stop offset=".8" stop-color="%23152CFF" stop-opacity=".3"></stop><stop offset="1" stop-color="%23152CFF" stop-opacity="0"></stop></radialGradient><circle transform-origin="center" fill="none" stroke="url(%23a12)" stroke-width="15" stroke-linecap="round" stroke-dasharray="200 1000" stroke-dashoffset="0" cx="100" cy="100" r="70"><animateTransform type="rotate" attributeName="transform" calcMode="spline" dur="2.1" values="360;0" keyTimes="0;1" keySplines="0 0 1 1" repeatCount="indefinite"></animateTransform></circle><circle transform-origin="center" fill="none" opacity="0" stroke="%23152CFF" stroke-width="11" stroke-linecap="round" cx="100" cy="100" r="70"></circle></svg>')
 }
 .background-level {
-  height: 100vh;
-  width: 100vw;
+  height: 110vh;
+  width: 110vw;
   z-index: 1;
   position: fixed;
-  top: 0;
-  left: 0;
+  top: -30px;
+  left: -30px;
   background-image: url("https://images.rawpixel.com/image_social_landscape/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTM2NjcxMC1pbWFnZS1rd3Z4eGVxcC5qcGc.jpg");
   background-size: cover;
   filter: blur(15px);
@@ -111,6 +128,14 @@ body {
   transform: translateX(-50%) translateY(-50%) scale(-0.5,0.5);
 }
 
+.loader-level-page {
+  position: relative;
+  height: 0px;
+  width: 0;
+  left: 50%;
+  top: 100px;
+  transform: translateX(0%) translateY(0%);
+}
 .vid-logo-wrapper .svg-fill:hover svg {
   transition: transform 0.3s ease;
   transform: scale(1.2); /* Adjust scale factor as needed */
@@ -118,68 +143,6 @@ body {
 .vid-logo-wrapper .svg-fill svg:not(:hover) {
   transition: transform 0.3s ease;
   transform: scale(1); /* Default scale */
-}
-
-.form-container {
-  place-items: center;
-  overflow: hidden;
-  display: flex;
-  z-index: 10;
-  transition: height 0.4s ease, transform 0.4s ease; 
-  transform-origin: top;
-  flex-direction: column;
-  margin: 4rem;
-  margin-top: 5rem;
-  margin-bottom: 2rem;
-}
-
-
-.form-container form {
-  border-radius: 8px;
-  margin-top: 2rem;
-  max-width: 47rem;
-  background-color: var(--color-white);
-  background-size: contain;
-  background-position: center -80px;
-  background-repeat: no-repeat;
-  flex-direction: column;
-}
-.result-message {
-  position: fixed;
-  margin-top: 0px;
-  margin-bottom: 0px;
-  background-color: #4caf50;
-  color: white;
-  padding: 10px;
-  border-radius: 5px;
-  display: flex;
-  align-items: center;
-  z-index: 1000; /* Ensure it stays on top */
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-  opacity: 0; /* Start hidden */
-  visibility: hidden; /* Hidden initially */
-}
-
-.result-message.visible {
-  opacity: 1; /* Show the message */
-  visibility: visible; /* Make it visible */
-}
-
-.result-message p {
-  margin:0;
-  padding-right: 10px;
-}
-
-.result-message .close-btn {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 1.2rem;
-  cursor: pointer;
-}
-
-.result-message .close-btn:hover {
-  color: #ffdddd;
 }
 
 
@@ -321,77 +284,6 @@ select:-moz-focusring {
 }
 
 
-.tooltip-container {
-  position: relative;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
-  display: flex; /* Allow inline display for other elements */
-}
 
-.tooltip {
-  visibility: hidden;
-  width: 170px;
-  background-color: black;
-  color: #fff;
-  text-align: center;
-  border-radius: 5px;
-  padding: 5px;
-  position: absolute;
-  font-size: 0.8rem;
-  z-index: 1;
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-
-.tooltip-container:hover .tooltip {
-  visibility: visible;
-  opacity: 0.95;
-}
-
-.thumbnail-container {
-  gap: 20px; /* Space between thumbnail and form */
-  z-index: 10;
-  aspect-ratio: 16/9;
-  height: 350px; /* Fixed height */
-  place-content: center;
-  text-shadow: 0px 0px 4px black;
-  overflow: hidden; /* Hide any overflow */
-  transition: box-shadow 0.3s ease; /* Smooth transition for shadow */
-}
-
-.thumbnail-container.shadow {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8); /* Shadow effect */
-}
-
-@media (max-width: 900px) {
-  .thumbnail-container {
-    height: 300px; /* Fixed height */
-  }
-}
-
-.thumbnail-container img {
-  height: 100%; /* Make the image height match the container */
-  width: auto; /* Keep the width proportional */
-  object-fit: fill; /* Allow the image to deform if necessary */
-}
-
-.thumbnail-container iframe {
-  height: 100%; /* Make iframe height match the container */
-  width: 100%; /* Ensure iframe fills the container */
-}
-
-.thumbnail-text {
-  text-align: center; /* Center text */
-  color: white;
-}
-
-.info {
-  flex: 3;
-  padding: 1.1rem;
-  background-color: white;
-  z-index: 15;
-}
 
 

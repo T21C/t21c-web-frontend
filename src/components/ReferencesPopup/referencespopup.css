@@ -1,0 +1,500 @@
+/* Wrapper class to encapsulate all styles */
+.references-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  z-index: 1000;
+  padding: 2rem;
+  padding-top: calc(4rem + 1.2rem);
+}
+
+.references-popup-overlay .references-popup {
+  background: var(--color-black);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 8px;
+  width: 90%;
+  max-width: 900px;
+  height: calc(95vh - 4rem);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.references-popup-overlay .popup-header {
+  padding: 1.5rem;
+  padding-bottom: 0;
+  flex-shrink: 0;
+}
+
+.references-popup-overlay .tabs-container {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  flex: 1;
+  padding: 0 1.5rem 1.5rem;
+}
+
+.references-popup-overlay .tabs-slider {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.3s ease-in-out;
+}
+
+.references-popup-overlay .tab-content {
+  width: 100%;
+  flex-shrink: 0;
+  overflow-y: auto;
+  height: 100%;
+  padding-right: 0.5rem;
+}
+
+.references-popup-overlay .tab-content.edit-mode {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.references-popup-overlay .tab-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.references-popup-overlay .tab-content::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.references-popup-overlay .tab-content::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+}
+
+.references-popup-overlay .tab-content:not(:first-child) {
+  margin-left: 25%;
+}
+
+.references-popup-overlay .tab-navigation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.references-popup-overlay .tab-navigation h2 {
+  color: var(--color-white);
+  font-size: 1.5rem;
+  margin: 0;
+  min-width: 150px;
+  text-align: center;
+}
+
+.references-popup-overlay .nav-arrow {
+  background: none;
+  border: none;
+  color: var(--color-white);
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+}
+
+.references-popup-overlay .nav-arrow svg {
+  transition: transform 0.2s ease;
+}
+
+.references-popup-overlay .nav-arrow:hover {
+  opacity: 1;
+}
+
+.references-popup-overlay .nav-arrow.left:hover svg {
+  transform: scale(1.25);
+}
+
+.references-popup-overlay .nav-arrow.right:hover svg {
+  transform: scale(1.25);
+}
+
+.references-popup-overlay .references-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.references-popup-overlay .tab-P,
+.references-popup-overlay .tab-G,
+.references-popup-overlay .tab-U {
+  transform: none;
+}
+
+.references-popup-overlay .difficulty-section {
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  animation: fadeSlideIn 0.3s ease forwards;
+}
+
+.references-popup-overlay .difficulty-section.expanded {
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.references-popup-overlay .difficulty-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.references-popup-overlay .difficulty-header:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.references-popup-overlay .difficulty-info {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.references-popup-overlay .difficulty-icon {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.references-popup-overlay .difficulty-name {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.references-popup-overlay .header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.references-popup-overlay .level-count {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  color: var(--color-white);
+}
+
+.references-popup-overlay .expand-icon {
+  color: var(--color-white);
+  opacity: 0.6;
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+}
+
+.references-popup-overlay .expanded .expand-icon {
+  transform: rotate(0deg);
+}
+
+.references-popup-overlay .levels-list {
+  padding: 0.5rem;
+}
+
+.references-popup-overlay .level-row {
+  display: grid;
+  grid-template-columns: 60px 2fr 1.5fr 1.5fr 40px;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  margin-bottom: 0.25rem;
+  color: var(--color-white);
+}
+
+.references-popup-overlay .level-row .level-id {
+  opacity: 0.7;
+}
+
+.references-popup-overlay .level-row .level-song {
+  color: var(--color-white);
+  text-decoration: none;
+}
+
+.references-popup-overlay .level-row .level-song:hover {
+  text-decoration: underline;
+}
+
+.references-popup-overlay .level-row .level-artist,
+.references-popup-overlay .level-row .level-creator {
+  opacity: 0.9;
+}
+
+.references-popup-overlay .level-row .video-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.references-popup-overlay .level-row .youtube-icon {
+  width: 20px;
+  height: 20px;
+  fill: #ff0000;
+  transition: transform 0.2s;
+}
+
+.references-popup-overlay .level-row .youtube-icon:hover {
+  transform: scale(1.2);
+}
+
+.references-popup-overlay .loading,
+.references-popup-overlay .error {
+  color: var(--color-white);
+  text-align: center;
+  padding: 20px;
+}
+
+.references-popup-overlay .error {
+  color: #ff4444;
+}
+
+.references-popup-overlay .close-popup-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--color-white);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: opacity 0.2s;
+  z-index: 2;
+}
+
+.references-popup-overlay .close-popup-btn:hover {
+  opacity: 0.7;
+}
+
+.references-popup-overlay .toggle-all-btn {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  color: var(--color-white);
+  padding: 0.5rem 1rem 0.5rem 0.65rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  backdrop-filter: blur(5px);
+}
+
+.references-popup-overlay .toggle-all-btn:hover {
+  background: var(--color-white-t20);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.references-popup-overlay .toggle-all-btn::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M7 7h10v2H7zm0 4h10v2H7zm0 4h10v2H7z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.8;
+}
+
+.references-popup-overlay .external-link-icon {
+  margin-left: 4px;
+  vertical-align: middle;
+  opacity: 0.6;
+}
+
+.references-popup-overlay .level-song:hover .external-link-icon {
+  opacity: 1;
+}
+
+.references-popup-overlay .edit-mode-content {
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.references-popup-overlay .edit-difficulty-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 0.5rem;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.references-popup-overlay .edit-difficulty-name {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  min-width: 200px;
+  font-weight: 600;
+}
+
+.references-popup-overlay .edit-level-ids {
+  flex: 1;
+}
+
+.references-popup-overlay .edit-level-ids input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  color: var(--color-white);
+  padding: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.references-popup-overlay .edit-level-ids input:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.references-popup-overlay .edit-level-ids input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.references-popup-overlay .edit-mode-btn,
+.references-popup-overlay .save-changes-btn,
+.references-popup-overlay .cancel-edit-btn {
+  background: var(--color-primary);
+  border: none;
+  border-radius: 4px;
+  color: var(--color-white);
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.references-popup-overlay .edit-mode-btn::before,
+.references-popup-overlay .save-changes-btn::before,
+.references-popup-overlay .cancel-edit-btn::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.references-popup-overlay .edit-mode-btn:disabled,
+.references-popup-overlay .save-changes-btn:disabled,
+.references-popup-overlay .cancel-edit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.references-popup-overlay .edit-mode-btn:hover:not(:disabled),
+.references-popup-overlay .save-changes-btn:hover:not(:disabled),
+.references-popup-overlay .cancel-edit-btn:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.references-popup-overlay .edit-mode-btn:active:not(:disabled),
+.references-popup-overlay .save-changes-btn:active:not(:disabled),
+.references-popup-overlay .cancel-edit-btn:active:not(:disabled) {
+  transform: scale(1);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.references-popup-overlay .edit-mode-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 4rem;
+}
+
+.references-popup-overlay .save-changes-btn {
+  background: var(--color-success, #4caf50);
+  min-width: 135px;
+  position: relative;
+}
+
+.references-popup-overlay .save-changes-btn::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z'/%3E%3C/svg%3E");
+}
+
+.references-popup-overlay .save-changes-btn::after {
+  content: '';
+  position: absolute;
+  right: 0.75rem;
+  width: 16px;
+  height: 16px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.references-popup-overlay .save-changes-btn.saving::after {
+  opacity: 1;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+.references-popup-overlay .cancel-edit-btn {
+  background: #972222;
+}
+
+.references-popup-overlay .cancel-edit-btn::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z'/%3E%3C/svg%3E");
+}
+
+.references-popup-overlay .edit-actions {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+  z-index: 2;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "title": "主页 | TUF",
+    "description": "欢迎来到 The Universal Forums (TUF) ——一个由社区驱动的，致力于收集、评级并整理《冰与火之舞》自制关卡的组织"
+  },
+  "title": {
+    "revamped": "翻新版"
+  },
+  "buttons": {
+    "browseLevels": "浏览关卡",
+    "browsePasses": "浏览通关记录",
+    "leaderboard": "排行榜"
+  },
+  "stats": {
+    "overview": {
+      "title": "总览",
+      "totalLevels": "关卡数",
+      "totalPasses": "通关记录数",
+      "totalPlayers": "玩家数",
+      "passesLast30Days": "通关记录数（过去30天）"
+    },
+    "difficulties": {
+      "title": "难度统计",
+      "graphModes": {
+        "passes": "个通关记录",
+        "levels": "个关卡"
+      }
+    },
+    "comingSoon": "还有更多有趣的内容即将到来……"
+  },
+  "footer": {
+    "about": {
+      "title": "TUF",
+      "description": "The Universal Forums 是一个由社区驱动的，致力于收集、评级并整理《冰与火之舞》自制关卡的组织。"
+    },
+    "quickLinks": {
+      "title": "链接",
+      "browseLevels": "浏览关卡",
+      "browsePasses": "浏览通关记录",
+      "leaderboard": "排行榜",
+      "aboutUs": "关于我们"
+    },
+    "community": {
+      "title": "社区",
+      "discord": "Discord",
+      "github": "GitHub"
+    },
+    "copyright": {
+      "main": "© {{year}} TUF。与 7th Beat Games 无关。",
+      "credit": "由 V0W4N 用 ❤️ 制作"
+    }
+  }
+} 

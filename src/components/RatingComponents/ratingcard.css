@@ -1,0 +1,277 @@
+.rating-card {
+  background: #222;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.rating-card.low-diff {
+  background: #182318;
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.1);
+}
+
+.rating-card.four-rated {
+  background: #231818;
+  box-shadow: 0 0 10px rgba(255, 0, 0, 0.1);
+}
+
+.rating-card .rating-card-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.rating-card .rating-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.rating-card .header-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.rating-card .updated-at {
+  font-size: 0.8rem;
+  color: #777;
+  white-space: nowrap;
+}
+
+.rating-card .rating-card-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.song-title {
+  color: #fff;
+  flex-shrink: 0;
+}
+
+.title-separator {
+  color: #777;
+  flex-shrink: 0;
+}
+
+.song-creator {
+  color: #aaa;
+  font-size: 1rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: normal;
+}
+
+.rating-card .rating-card-header {
+  margin-bottom: 0;
+}
+
+.rating-card .rating-card-header .artist {
+  margin: 0.25rem 0 0;
+  color: #aaa;
+  font-size: 0.9rem;
+}
+
+.rating-card .rating-card-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.rating-info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.rating-info-item {
+  margin: 0;
+  padding: 0.5rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  height: 3.5rem;
+}
+
+.rating-info-item::before {
+  content: attr(data-label);
+  display: block;
+  font-size: 0.8rem;
+  color: #aaa;
+  margin-bottom: 0.25rem;
+}
+
+.rating-info-full {
+  width: 100%;
+}
+
+.rating-card .rating-card-actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.view-details-btn,
+.edit-level-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.view-details-btn {
+  background: #2196F3;
+  color: white;
+}
+
+.edit-level-btn {
+  background: #4CAF50;
+  color: white;
+  min-width: 100px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.edit-level-btn.loading {
+  background: #3d8c40;
+  cursor: not-allowed;
+}
+
+.edit-level-btn .spinner {
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+}
+
+.edit-level-btn .spinner circle {
+  stroke: #ffffff;
+  stroke-linecap: round;
+  animation: dash 1.5s ease-in-out infinite;
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}
+
+.view-details-btn:hover {
+  background: #1976D2;
+}
+
+.edit-level-btn:hover {
+  background: #45a049;
+}
+
+.rating-card .rerate-reason {
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  height:100%;
+}
+
+.rating-card .rerate-reason .reason-content {
+  position: relative;
+  max-height: 1.5em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  transition: max-height 0.3s ease;
+  padding-right: 24px;
+  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;  /* IE and Edge */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.rating-card .rerate-reason .reason-content::-webkit-scrollbar {
+  display: none;
+}
+
+.rating-card .rerate-reason.expanded .reason-content {
+  white-space: normal;
+  max-height: 300px;
+  overflow-y: auto;
+  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: auto;  /* IE and Edge */
+}
+
+/* Optional: Style the scrollbar when expanded for Chrome, Safari and Opera */
+.rating-card .rerate-reason.expanded .reason-content::-webkit-scrollbar {
+  display: block;
+  width: 0;
+}
+
+.rating-card .rerate-reason.expanded .reason-content::-webkit-scrollbar-track {
+  background: transparent;
+  color: transparent;
+}
+
+.rating-card .rerate-reason.expanded .reason-content::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  color: transparent;
+}
+
+.rating-card .rerate-reason .expand-indicator {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%) rotate(45deg);
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid #aaa;
+  border-bottom: 2px solid #aaa;
+  transition: transform 0.3s ease;
+}
+
+.rating-card .rerate-reason.expanded .expand-indicator {
+  top: 16px;
+  transform: rotate(-135deg);
+}
+
+.rating-card .rerate-reason:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.rating-card .rerate-reason:not(:empty)::after {
+  display: none;
+} 
+
+
+  
+.rating-card .updated-at {
+  font-size: 0.8rem;
+  margin-right: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.rating-card .level-id {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: monospace;
+} 

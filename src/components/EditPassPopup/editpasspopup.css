@@ -1,0 +1,438 @@
+.edit-pass-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  color: black;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.edit-pass-popup-overlay .form-container {
+  position: relative;
+  max-width: 1200px;
+  max-height: 90vh;
+  overflow-y: auto;
+  margin: auto;
+  border-radius: 8px;
+  z-index: 10000;
+}
+
+.edit-pass-popup-overlay .form-container::-webkit-scrollbar {
+  width: 8px;
+}
+
+.edit-pass-popup-overlay .form-container::-webkit-scrollbar-track {
+  background: var(--color-black);
+}
+
+.edit-pass-popup-overlay .form-container::-webkit-scrollbar-thumb {
+  background: var(--color-purple-2);
+  border-radius: 4px;
+}
+
+.edit-pass-popup-overlay .form-container form {
+  width:85%;
+  margin: 0 auto;
+  overflow-x: hidden;
+  z-index: 1;
+}
+
+.edit-pass-popup-overlay .form-container form .img-wrapper {
+  flex: 2;
+}
+.edit-pass-popup-overlay .form-container form .img-wrapper img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+     object-fit: cover;
+  -o-object-position: center;
+     object-position: center;
+}
+.edit-pass-popup-overlay .form-container form .info {
+  flex: 3;
+  padding: 1rem;
+  background-color: white;
+  position: relative;
+  z-index: 10001;
+}
+.edit-pass-popup-overlay .form-container form .info h1 {
+  margin-bottom: 1rem;
+}
+.edit-pass-popup-overlay .form-container form .info input {
+  background-color: transparent;
+  border: 0;
+  border-bottom: 3px solid var(--color-purple-2);
+  outline: none;
+  padding: 0.5rem 0.2rem 0.2rem 0.5rem;
+  font-size: 1rem;
+}
+
+
+.edit-pass-popup-overlay .form-container form .info .youtube-input {
+  display: flex;
+  flex-direction: column;
+  justify-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  margin-top: 0.5rem;
+}
+.edit-pass-popup-overlay .form-container form .info .youtube-input .yt-info {
+  min-width: 7rem
+}
+.edit-pass-popup-overlay .form-container form .info .youtube-input .youtube-info {
+  display: flex;
+  gap:20px
+}
+
+.edit-pass-popup-overlay .form-container form .info .id-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+.edit-pass-popup-overlay .form-container form .info .id-input .information {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.edit-pass-popup-overlay .form-container form .info .id-input .information .level-info {
+  text-align: center;
+  align-items: center;
+  font-weight: bold;
+  width: 140%
+}
+.edit-pass-popup-overlay .form-container form .info .id-input .information .level-info .level-info-sub {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.edit-pass-popup-overlay .form-container form .info .id-input .information .verified {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+}
+.edit-pass-popup-overlay .form-container form .info .id-input .information .button-goto {
+  border-radius: 3px;
+  border: none;
+  padding: 0.5rem;
+  font-weight: bold;
+  width: 100%;
+  color: var(--color-white);
+  text-decoration: none;
+  text-align: center;
+}
+.edit-pass-popup-overlay .form-container form .info .youtube-input {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+.edit-pass-popup-overlay .form-container form .info .youtube-input .information {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.8rem;
+  margin-bottom: 0.25rem;
+}
+
+.edit-pass-popup-overlay .form-container form .info .info-input {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.25rem;
+  justify-content: space-around;
+}
+
+.edit-pass-popup-overlay .form-container form .info .info-input > * {
+  flex: 1 1 150px; /* Flex-grow, flex-shrink, and base size (width of 150px) */
+  min-width: 100px; /* Minimum width to avoid shrinking too small */
+  max-width: 300px; /* Maximum width to control expansion */
+  height: 40px; /* Fixed height */
+  box-sizing: border-box; /* To include padding and borders in width/height calculation */
+}
+.edit-pass-popup-overlay .form-container form .info .info-input-container {
+  overflow: hidden;
+  max-height: 0; /* Collapsed height */
+  transition: max-height 0.4s ease; /* Transition for smooth sliding */
+  display: flex;
+  margin-top: 1rem;
+  padding-right: 1.5rem;
+  flex-direction: row;
+}
+
+.edit-pass-popup-overlay .form-container form .info .info-input-container.expand {
+  overflow:visible;
+  max-height: 200px; /* Set a maximum value, or use a value that comfortably fits the content */
+}
+
+
+.edit-pass-popup-overlay .form-container form .info .info-input .keycount-checkbox {
+  max-width: 130px;
+}
+
+.edit-pass-popup-overlay .form-container form .info .info-input .keycount-checkbox .tooltip{
+  right: -15%;
+}
+
+.edit-pass-popup-overlay .form-container form .info .info-input input {
+  width: auto;
+  color: var(--color-black);
+}
+.edit-pass-popup-overlay .form-container form .info .accuracy {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  font-size: 1rem;
+  border: 2px solid var(--color-purple-2);
+  padding: 1rem;
+  border-radius: 5px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+.edit-pass-popup-overlay .form-container form .info .accuracy .top, .form-container form .info .accuracy .bottom {
+  display: flex;
+  gap: 2rem;
+  justify-content: space-around;
+}
+.edit-pass-popup-overlay .form-container form .info .accuracy .top input, .form-container form .info .accuracy .bottom input {
+  padding: 0;
+  width: 100%;
+}
+.edit-pass-popup-overlay .form-container form .info .accuracy .top .each-accuracy {
+  display: flex;
+  align-items: center;
+  text-wrap: nowrap;
+  gap: 0.5rem;
+}
+.edit-pass-popup-overlay .form-container form .info .accuracy .top .each-accuracy:nth-child(1) {
+  flex: 4;
+}
+.edit-pass-popup-overlay .form-container form .info .accuracy .top .each-accuracy:nth-child(2) {
+  flex: 5;
+}
+.edit-pass-popup-overlay .form-container form .info .accuracy .top .each-accuracy:nth-child(3) {
+  flex: 4;
+}
+.edit-pass-popup-overlay .form-container form .info .accuracy .top .each-accuracy input {
+  font-size: 1rem;
+  font-weight: bold;
+}
+.edit-pass-popup-overlay .form-container form .info .accuracy .bottom {
+  justify-content: center;
+}
+.edit-pass-popup-overlay .form-container form .info .accuracy .bottom .each-accuracy {
+  display: flex;
+  align-items: center;
+  text-wrap: nowrap;
+  gap: 0.5rem;
+}
+.edit-pass-popup-overlay .form-container form .info .accuracy .bottom .each-accuracy input {
+  font-size: 1rem;
+  font-weight: bold;
+}
+.edit-pass-popup-overlay .form-container form .info .accuracy .bottom .each-accuracy:nth-child(1) {
+  max-width: 7rem;
+  flex: 1;
+}
+.edit-pass-popup-overlay .form-container form .info .accuracy .bottom .each-accuracy:nth-child(2) {
+  max-width: 7rem;
+  flex: 1;
+}
+.edit-pass-popup-overlay .form-container form .info .accuracy .bottom .each-accuracy:nth-child(3) {
+  max-width: 7rem;
+  flex: 1;
+}
+.edit-pass-popup-overlay .form-container form .info .accuracy .acc-score {
+  display: flex;
+  gap: 2rem;
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+.edit-pass-popup-overlay .form-container form .info .submit {
+  width: auto;
+  flex: 1;
+  background-color: var(--color-purple-3);
+  border: none;
+  border-radius: 3px;
+  color: var(--color-white);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  max-width: 70rem;
+  margin: 0 auto;
+  transition: all 100ms linear;
+}
+.edit-pass-popup-overlay .form-container form .info .submit:hover {
+  background-color: var(--color-purple-2);
+}
+.edit-pass-popup-overlay .form-container form .info .submit:active {
+  background-color: var(--color-purple-1);
+}
+
+.edit-pass-popup-overlay .close-button {
+  position: absolute;
+  width: 2.2rem;
+  height: 2.2rem;
+  top: 1rem;
+  right: 10%;
+  background: rgba(0, 0, 0, 0.75);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 1.75rem;
+  cursor: pointer;
+  z-index: 10002;
+}
+
+.edit-pass-popup-overlay .thumbnail-container {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 Aspect Ratio */
+  background-color: var(--color-black);
+  overflow: hidden;
+}
+
+.edit-pass-popup-overlay .thumbnail-container iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.edit-pass-popup-overlay .thumbnail-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: var(--color-white);
+  text-align: center;
+  padding: 1rem;
+}
+
+.edit-pass-popup-overlay .form-container {
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: all 0.3s ease;
+}
+
+.edit-pass-popup-overlay .form-container.shadow {
+  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.9);
+}
+
+.edit-pass-popup-overlay .form-container form {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: transparent;
+}
+
+.button-group {
+  display: flex;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.button-group button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background 0.2s ease;
+}
+
+.delete-button {
+  background: #c64141;
+  color: white;
+  max-width: 13rem;
+}
+
+.delete-button:hover:not(:disabled) {
+  background: #a13535;
+}
+
+.delete-button:disabled {
+  background: #8d7373;
+  cursor: not-allowed;
+}
+
+.announcement-status {
+  margin: 1rem 0;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  align-items: center;
+}
+
+.announcement-status .checkbox-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 1rem;
+  grid-column: 2;
+  color: var(--color-black);
+}
+
+.announcement-status .checkbox-container input[type="checkbox"] {
+  width: auto;
+  margin-right: 0.5rem;
+}
+
+.announcement-status .checkbox-container span:not(.checkmark) {
+  font-weight: 500;
+}/*# sourceMappingURL=editpasspopup.css.map */
+
+
+.edit-pass-popup-overlay .result-message {
+  position: absolute;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  background-color: #4caf50;
+  color: white;
+  padding: 10px;
+  left: 50%;
+  transform: translate(-50%);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  z-index: 1000; /* Ensure it stays on top */
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  opacity: 0; /* Start hidden */
+  visibility: hidden; /* Hidden initially */
+}
+
+.edit-pass-popup-overlay .result-message.visible {
+  opacity: 1; /* Show the message */
+  visibility: visible; /* Make it visible */
+}
+
+.edit-pass-popup-overlay .result-message p {
+  margin:0;
+  padding-right: 10px;
+}
+
+.edit-pass-popup-overlay .result-message .close-btn {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.edit-pass-popup-overlay .result-message .close-btn:hover {
+  color: #ffdddd;
+}

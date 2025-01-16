@@ -1,0 +1,66 @@
+{
+  "featured": {
+    "by": "关卡设计 {{creator}}",
+    "button": "查看关卡"
+  },
+  "level": {
+    "creator": "关卡设计",
+    "clears": "通关总数",
+    "buttons": {
+      "edit": "编辑"
+    },
+    "links": {
+      "workshop": "创意工坊链接",
+      "download": "下载链接",
+      "unavailable": "无可用链接"
+    }
+  },
+  "pass": {
+    "stats": {
+      "xAccuracy": "X-精准度",
+      "score": "分数",
+      "speed": "飙速"
+    },
+    "flags": {
+      "worldsFirst": "世界首通",
+      "twelveKey": "12键",
+      "noHoldTap": "非默认长按设置"
+    },
+    "links": {
+      "video": "观看视频"
+    }
+  },
+  "player": {
+    "title": "玩家",
+    "stats": {
+      "rankedScore": "排位分数",
+      "generalScore": "常规分数",
+      "ppScore": "PP 分数",
+      "wfScore": "世界首通分数",
+      "score12k": "12键分数",
+      "averageXacc": "平均X-精准度",
+      "totalPasses": "总通关数",
+      "universalPasses": "U级通关数",
+      "worldsFirstCount": "世界首通数",
+      "topDiff": "最高通关难度",
+      "top12kDiff": "最高12键通关难度"
+    }
+  },
+  "clear": {
+    "score": {
+      "ranked": "排位分数",
+      "general": "常规分数",
+      "pp": "PP 分数",
+      "wf": "世界首通分数",
+      "12k": "12键分数"
+    },
+    "stats": {
+      "averageXacc": "平均X-精准度",
+      "totalPasses": "总通关数",
+      "universalPasses": "U级通关数",
+      "worldsFirstCount": "世界首通数",
+      "topDiff": "最高通关难度",
+      "top12kDiff": "最高12键通关难度"
+    }
+  }
+} 

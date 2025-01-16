@@ -1,0 +1,875 @@
+.submission-admin-page {
+    background-color: var(--color-black);
+    width: 100%;
+    color: var(--color-white);
+    min-height: 100vh;
+    font-size: 1.3rem;
+    position: relative;
+  }
+
+  .submission-admin-page .notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    background-color: #ff4444;
+    color: white;
+    border-radius: 50%;
+    padding: 1px 7px;
+    font-size: 1rem;
+  }
+
+  .submission-admin-page .submissions-admin-list {
+    position: relative;
+    z-index: 2;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    padding-top: 6rem;
+    max-width: 70rem;
+  }
+  .submission-admin-page .submissions-admin-list .input-option {
+    display: flex;
+    gap: 0.5rem;
+    height: 2rem;
+  }
+  .submission-admin-page .submissions-admin-list .input-option input {
+    width: 100%;
+    background-color: var(--color-white-t20);
+    border: none;
+    border-radius: 3px;
+    padding: 0.5rem;
+    color: var(--white-color);
+  }
+  .submission-admin-page .submissions-admin-list .input-option input:focus {
+    outline: none;
+  }
+  .submission-admin-page .submissions-admin-list .input-option svg {
+    height: 2rem;
+    width: 2.2rem;
+    background-color: var(--color-white-t20);
+    padding: 0.1rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s linear;
+  }
+  .submission-admin-page .submissions-admin-list .input-option svg:focus {
+    outline: none;
+  }
+  .submission-admin-page .submissions-admin-list .filter {
+    position: relative;
+    z-index: 2;
+    overflow: visible;
+  }
+  .submission-admin-page .submissions-admin-list .sort {
+    position: relative;
+    z-index: 1;
+  }
+  .submission-admin-page .submissions-admin-list .sort .sort-option {
+    display: flex;
+    gap: 2rem;
+  }
+  .submission-admin-page .submissions-admin-list .sort .sort-option .recent p,
+  .submission-admin-page .submissions-admin-list .sort .sort-option .diff p,
+  .submission-admin-page .submissions-admin-list .sort .sort-option .random p {
+    margin-bottom: 0.5rem;
+  }
+  .submission-admin-page .submissions-admin-list .sort .sort-option .recent .wrapper,
+  .submission-admin-page .submissions-admin-list .sort .sort-option .diff .wrapper,
+  .submission-admin-page .submissions-admin-list .sort .sort-option .random .wrapper {
+    display: flex;
+    gap: 1rem;
+  }
+  .submission-admin-page .submissions-admin-list .sort .sort-option .recent svg,
+  .submission-admin-page .submissions-admin-list .sort .sort-option .diff svg,
+  .submission-admin-page .submissions-admin-list .sort .sort-option .random svg {
+    height: 2rem;
+    width: 2rem;
+    background-color: var(--color-white-t20);
+    padding: 0.1rem;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.2s linear;
+  }
+  .submission-admin-page .submissions-admin-list .sort .sort-option .recent svg:focus,
+  .submission-admin-page .submissions-admin-list .sort .sort-option .diff svg:focus,
+  .submission-admin-page .submissions-admin-list .sort .sort-option .random svg:focus {
+    outline: none;
+  }
+  .submission-admin-page .submissions-admin-list .settings-class {
+    transition: height 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), opacity 1s ease-in-out;
+    height: 10rem;
+    overflow: hidden;
+  }
+  .submission-admin-page .submissions-admin-list .spacer-setting {
+    width: 100%;
+    height: 1px;
+    background-color: var(--color-white);
+    margin-bottom: 0.5rem;
+  }
+  .submission-admin-page .submissions-admin-list .diff-filters {
+    display: flex;
+    flex-direction: row; /* Stacks items vertically */
+    gap: 1rem; /* Adds space between the filter containers */
+  }
+  
+  .submission-admin-page .submissions-admin-list .filter-container {
+    display: flex;
+    flex-direction: column; /* Stack the label and select vertically */
+  }
+  
+  .submission-admin-page .submissions-admin-list .input-setting {
+    margin-top: 1rem;
+  }
+  .submission-admin-page .submissions-admin-list .setting-title {
+    margin-bottom: 1rem;
+  }
+  .submission-admin-page .submissions-admin-list .setting-description {
+    margin-bottom: 0.5rem;
+  }
+
+  .submission-admin-page .submissions-admin-list .rating-list {
+    z-index: 2;
+    margin-top: 2rem;
+    background-color: rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto; /* Enable horizontal scrolling */
+  }
+
+  .submission-admin-page .submissions-admin-list .rating-header {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    font-weight: bold;
+    border-bottom: 1px solid var(--color-white);
+    margin-bottom: 0.5rem;
+    min-width: max-content; /* Prevent header wrapping */
+  }
+
+  .submission-admin-page .submissions-admin-list .rating-header p {
+    flex: 1;
+    min-width: 150px; /* Set minimum column width */
+    text-align: left;
+  }
+
+  .submission-admin-page .submissions-admin-list .rating-item {
+    display: flex;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid var(--color-white-t20);
+    transition: background-color 0.2s ease;
+    min-width: max-content; /* Prevent row wrapping */
+  }
+
+  .submission-admin-page .submissions-admin-list .rating-item:hover {
+    background-color: var(--color-white-t20);
+  }
+
+  .submission-admin-page .submissions-admin-list .rating-item {
+    flex: 1;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }/*# sourceMappingURL=levelpage.css.map */
+
+  .submission-admin-page .submissions-admin-list .rating-list [class^="column-"] {
+    width: 150px; /* default width for all columns */
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .submission-admin-page .submissions-admin-list .rating-header p {
+    flex: unset;  /* Remove the flex: 1 if it exists */
+    min-width: unset;  /* Remove the min-width if it exists */
+  }
+  .submission-admin-page .submissions-admin-list .rating-list .column-0 {
+    width: 40px;
+  }
+
+  .submission-admin-page .submissions-admin-list .rating-list .rating-item input {
+    background: transparent;
+    border: 1px solid #ccc;
+    color: inherit;
+    padding: 2px 4px;
+  }
+
+  .submission-admin-page .submissions-admin-list .rating-list .rating-item input:focus {
+    outline: none;
+    border-color: #fff;
+  }
+
+  .submission-admin-page .submissions-admin-list .rating-list .rating-item textarea {
+    white-space: normal;
+    background: transparent;
+    border: 1px solid #999;
+    color: inherit;
+    resize:vertical;
+    min-height: 2em;
+    padding: 2px 4px;
+    font-family: inherit; /* Maintains consistent font */
+    font-size: inherit;   /* Maintains consistent font size */
+    line-height: 1.2;     /* Comfortable line height for reading */
+    overflow-y: hidden;   /* Hides scrollbar */
+  }
+
+  .submission-admin-page .submissions-admin-list .rating-list .rating-item textarea:focus {
+    outline: none;
+    border-color: #fff;
+  }
+
+  /* Optional: Auto-resize height based on content */
+  .submission-admin-page .submissions-admin-list .rating-list .rating-item textarea {
+    overflow: hidden;
+  }
+
+  .submission-admin-page .admin-page {
+    padding: 20px;
+  }
+
+  
+  .submission-admin-page .submission-card {
+    background: rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    margin-bottom: 1rem;
+    color: var(--color-white);
+    border: 1px solid var(--color-white-t20);
+    display: grid;
+    grid-template-columns: repeat(11, 1fr);
+    gap: 15px;
+    transition: all 0.5s ease-out;
+    max-height: 700px;
+    opacity: 1;
+    position: relative;
+    z-index: 1;
+    overflow: visible;
+  }
+
+  .submission-admin-page .submission-card.approve {
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background-color: rgba(0, 255, 8, 0.3); /* Green tint */
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .submission-admin-page .submission-card.decline {
+    max-height:0;
+    opacity: 0;
+    padding: 0;
+    margin:0;
+    border: none;
+    background-color: rgba(244, 67, 54, 0.3); /* Red tint */
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .submission-admin-page .submission-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--color-white-t20);
+    grid-column: 1 / -1;
+  }
+
+  .submission-admin-page .submissions-admin-list h1 {
+    margin: 1rem 0 0.5rem 2.5rem;
+    font-size: 2.5rem;
+    color: var(--color-white);
+  }
+
+  .submission-admin-page .submission-header h3 {
+    margin: 0;
+    margin-left: 0.5rem;
+    height: 45px;
+    font-size: 1.6rem;
+    color: var(--color-white);
+  }
+
+  .submission-admin-page .submission-date {
+    color: #bbb;
+    font-size: 1.2rem;
+  }
+
+  .submission-admin-page .submission-details {
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    display: grid;
+    gap: 0.25rem;
+    text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    grid-column: 1 / span 5;
+  }
+
+  .submission-admin-page .detail-row {
+    display: flex;
+    margin-left: 1rem;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .submission-admin-page .detail-label {
+    min-width: 100px;
+    color: rgb(232, 232, 255);
+    font-size: 1rem;
+  }
+
+  .submission-admin-page .detail-value {
+    font-weight: 600;
+    color: var(--color-white);
+    font-size: 1.1rem;
+  }
+
+  .submission-admin-page .detail-link {
+    font-weight: 600;
+    color: rgb(180, 175, 255);
+    text-decoration: none;
+  }
+
+  .submission-admin-page .detail-link:hover {
+    text-decoration: underline;
+  }
+
+  .submission-admin-page .action-buttons {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--color-white-t20);
+  }
+
+  .submission-admin-page .approve-btn, .submission-admin-page .decline-btn {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: opacity 0.2s;
+    font-size: 1.1rem;
+  }
+
+  .submission-admin-page .approve-btn {
+    background-color: #4CAF50;
+    color: white;
+  }
+
+  .submission-admin-page .decline-btn {
+    background-color: #f44336;
+    color: white;
+  }
+
+  .submission-admin-page .approve-btn:hover, .submission-admin-page .decline-btn:hover {
+    opacity: 0.9;
+  }
+
+  .submission-admin-page .video-embed {
+    margin: 15px 0;
+    width: 100%;
+  }
+
+  .submission-admin-page .embed-container {
+    position: relative; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    max-width: 100%;
+    grid-column: 6 / span 6;
+    height: 300px;
+    min-height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .submission-admin-page .embed-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    margin-bottom: 15px;
+  }
+
+  .submission-admin-page .youtube {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    margin: 15px 0;
+    flex: 1;
+  }
+
+  .submission-admin-page .youtube iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 50%;
+    height: 50%;
+    border: none;
+  }
+
+  .submission-admin-page .thumbnail-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+
+  .submission-admin-page .card-content {
+    display: contents; /* This makes the card-content div transparent to the grid */
+  }
+
+  .submission-admin-page .submission-card:hover {
+    background: var(--color-white-t20);
+  }
+
+  .submission-admin-page .no-submissions {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.2rem;
+    margin-top: 2rem;
+  }
+
+  .submission-admin-page .submissions-admin-container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    padding-top: 6rem;
+    position: relative;
+    z-index: 10;
+    padding-bottom: 10rem;
+  }
+
+  .submission-admin-page .submission-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 0.5rem;
+    padding-bottom: 1rem;
+    position: relative;
+    z-index: 10;
+  }
+
+  .submission-admin-page .tab-button {
+    padding: 0.75rem 1.5rem;
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 4px;
+    position: relative;
+    z-index: 11;
+  }
+
+  .submission-admin-page .tab-button:hover {
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .submission-admin-page .tab-button.active {
+    background: rgba(255, 255, 255, 0.2);
+    font-weight: 500;
+  }
+
+  .submission-admin-page .submissions-list {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 0;
+  }
+
+  .submission-admin-page .pass-submission-card .judgements-details {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 3px;
+    border-radius: 4px;
+    display: flex;
+    margin-top: 3px;
+    align-items: center;
+    font-size: 1.1rem;
+  }
+
+  .submission-admin-page .submission-card .judgement {
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 4px;
+    min-width: 30px;
+    text-align: center;
+    color: white;
+  }
+
+  .submission-admin-page .pass-submission-card {
+    color: var(--color-white);
+    min-height: auto;
+    margin-bottom: 2rem;
+  }
+
+  /* Colors matching submission page */
+  .submission-admin-page .pass-submission-card .early-double {
+    color: #FF0000;  /* Too Early - Red */
+  }
+
+  .submission-admin-page .pass-submission-card .early-single {
+    color: #FF6F4D;  /* Early - Orange-Red */
+  }
+
+  .submission-admin-page .pass-submission-card .e-perfect {
+    color: #FCFF4D;  /* EPerfect - Yellow */
+  }
+
+  .submission-admin-page .pass-submission-card .perfect {
+    color: #5FFF4E;  /* Perfect - Green */
+  }
+
+  .submission-admin-page .pass-submission-card .l-perfect {
+    color: #FCFF4D;  /* LPerfect - Yellow */
+  }
+
+  .submission-admin-page .pass-submission-card .late-single {
+    color: #FF6F4D;  /* Late - Orange-Red */
+  }
+
+  .submission-admin-page .pass-submission-card .late-double {
+    color: #FF0000;  /* Too Late - Red */
+  }
+
+  .submission-admin-page .pass-submission-card .flags-details {
+    display: flex;
+    gap: 6px;
+    margin-top: 3px;
+  }
+
+  .submission-admin-page .pass-submission-card .flags-details span {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 1.05rem;
+  }
+
+  .submission-admin-page .pass-submission-card .detail-row {
+    margin-bottom: 7px;
+  }
+
+  .submission-admin-page .pass-submission-card .detail-label {
+    font-weight: bold;
+    margin-right: 8px;
+    color: #aaa;
+  }
+
+  .submission-admin-page .pass-submission-card .detail-value {
+    color: #fff;
+  }
+
+  .submission-admin-page .pass-submission-card .embed-container {
+    grid-column: 7 / span 5; /* Takes up last 5 columns */
+    height:70%
+  }
+
+  .submission-admin-page .loader-submission-detail {
+    margin: 0 auto;
+    margin-top: 10rem;
+  }
+
+  .submission-admin-page .discord-assignment {
+    display: flex;
+    align-items: center;
+    margin-top: 5px;
+    gap: 8px;
+  }
+
+  .submission-admin-page .discord-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+    max-width: 100%;
+  }
+
+  .submission-admin-page .assign-discord-btn {
+    position: relative;
+    white-space: nowrap;
+  }
+
+  .submission-admin-page .assignment-tooltip {
+    visibility: hidden;
+    position: absolute;
+    top: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+    z-index: 1000;
+  }
+
+  .submission-admin-page .assign-discord-btn:hover .assignment-tooltip {
+    visibility: visible;
+  }
+
+  .submission-admin-page .assignment-info {
+    background-color: rgba(0, 0, 0, 0.6);
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 1.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 200px;
+    margin: 0;
+  }
+
+  .submission-admin-page .confirm-discord-btn, .submission-admin-page .cancel-discord-btn {
+    white-space: nowrap;
+    padding: 4px 8px;
+    font-size: 1rem;
+  }
+
+  .assign-discord-btn, .confirm-discord-btn, .cancel-discord-btn {
+    padding: 4px 12px;
+    border-radius: 4px;
+    border: none;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+
+  .assign-discord-btn {
+    background-color: var(--color-white-t20);
+    color: var(--color-white);
+  }
+
+  .assign-discord-btn:hover {
+    background-color: var(--color-white-t30);
+  }
+
+  .confirm-discord-btn {
+    background-color: #4CAF50;
+    color: white;
+  }
+
+  .confirm-discord-btn:hover {
+    opacity: 0.9;
+  }
+
+  .cancel-discord-btn {
+    background-color: #f44336;
+    color: white;
+  }
+
+  .cancel-discord-btn:hover {
+    opacity: 0.9;
+  }
+
+  .assignment-info {
+    background-color: var(--color-white-t10);
+    color: var(--color-white);
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+  }
+
+  .submission-admin-page .player-assignment {
+    position: relative;
+    z-index: 2;
+  }
+
+  .submission-admin-page .discord-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+    max-width: 100%;
+  }
+
+  .submission-admin-page .confirm-discord-btn,
+  .submission-admin-page .cancel-discord-btn {
+    padding: 4px 12px;
+    border-radius: 4px;
+    border: none;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+  }
+
+  .submission-admin-page .confirm-discord-btn {
+    background-color: #4CAF50;
+    color: white;
+  }
+
+  .submission-admin-page .cancel-discord-btn {
+    background-color: #f44336;
+    color: white;
+  }
+
+  .submission-admin-page .confirm-discord-btn:hover,
+  .submission-admin-page .cancel-discord-btn:hover {
+    opacity: 0.9;
+  }
+
+  .submission-admin-page .confirm-discord-btn:disabled,
+  .submission-admin-page .cancel-discord-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .submission-admin-page .assignment-confirmation {
+    color: var(--color-white);
+    font-size: 0.9rem;
+    margin-right: 8px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .submission-admin-page .discord-buttons {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+    max-width: 100%;
+    margin-top: 4px;
+  }
+
+  .submission-admin-page .auto-allow-button {
+    margin-left: auto;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-white-t20);
+    border: none;
+    color: white;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 4px;
+    position: relative;
+    z-index: 11;
+  }
+
+  .submission-admin-page .auto-allow-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+
+  .submission-admin-page .auto-allow-button:active {
+    transform: scale(0.98);
+  }
+
+  .submission-admin-page .header-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    margin-bottom: 2rem;
+  }
+
+  .submission-admin-page .header-container h1 {
+    margin: 0;
+  }
+
+  .submission-admin-page .refresh-button {
+    position: absolute;
+    right: 0;
+    background: none;
+    border: none;
+    color: var(--color-white);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .submission-admin-page .refresh-button:hover {
+    opacity: 1;
+    transform: rotate(180deg);
+  }
+
+  .submission-admin-page .refresh-button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .submission-admin-page .discord-assignment-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  .submission-admin-page .assign-discord-btn {
+    padding: 4px 12px;
+    border-radius: 4px;
+    border: none;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+    background-color: var(--color-white-t20);
+    color: var(--color-white);
+  }
+
+  .submission-admin-page .assignment-tooltip {
+    visibility: hidden;
+    position: absolute;
+    bottom: calc(100% + 5px);
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: visible;
+    height: fit-content;
+    max-width: 200px;
+    z-index: 1000;
+    pointer-events: none; /* Prevents tooltip from interfering with button clicks */
+  }
+
+  /* Add a small arrow to the tooltip */
+  .submission-admin-page .assignment-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.9) transparent transparent transparent;
+  }
+
+  .submission-admin-page .discord-assignment-container:hover .assignment-tooltip {
+    visibility: visible;
+  }

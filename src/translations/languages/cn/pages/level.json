@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "title": "关卡列表",
+    "description": "探索并发掘《冰与火之舞》的自制关卡"
+  },
+  "loading": {
+    "difficulties": "正在加载难度列表……"
+  },
+  "input": {
+    "placeholder": "按曲名、曲师或谱师搜索……"
+  },
+  "toolTip": {
+    "legacy": "切换旧版难度显示",
+    "filter": "筛选结果",
+    "sort": "排序结果",
+    "reset": "重置筛选条件",
+    "recentAsc": "最早",
+    "recentDesc": "最新",
+    "difficultyAsc": "难度升序",
+    "difficultyDesc": "难度降序",
+    "random": "随机排序"
+  },
+  "settingExp": {
+    "headerFilter": "筛选设置",
+    "headerSort": "排序设置",
+    "sortRecent": "按时间",
+    "filterDiffs": "按难度",
+    "sortRandom": "随机"
+  },
+  "infScroll": {
+    "end": "已经到底啦！"
+  }
+} 

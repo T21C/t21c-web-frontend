@@ -1,0 +1,60 @@
+{
+  "meta": {
+    "title": "{{song}} | TUF",
+    "description": "Chart of {{song}} by {{creator}}"
+  },
+  "banners": {
+    "deleted": "This level has been deleted",
+    "hidden": "This level has been hidden"
+  },
+  "buttons": {
+    "edit": "Edit level details"
+  },
+  "links": {
+    "download": "Download level",
+    "workshop": "View on Workshop",
+    "thumbnailNotFound": {
+      "text": "Thumbnail not found",
+      "goToVideo": "Go to video"
+    }
+  },
+  "aliases": {
+    "header": "Known aliases:"
+  },
+  "stats": {
+    "firstClear": {
+      "label": "First Clear",
+      "value": "{{player}} | {{date}}"
+    },
+    "highestScore": {
+      "label": "Highest Score",
+      "value": "{{player}} | {{score}}"
+    },
+    "highestSpeed": {
+      "label": "Highest Speed",
+      "value": "{{player}} | {{speed}}×",
+      "noSpeed": "-"
+    },
+    "highestAccuracy": {
+      "label": "Highest Accuracy",
+      "value": "{{player}} | {{accuracy}}%"
+    },
+    "totalClears": {
+      "label": "Total Clears",
+      "value": "{{count}}"
+    },
+    "waiting": "Loading..."
+  },
+  "leaderboard": {
+    "header": "Leaderboard",
+    "notBeaten": "This level hasn't been beaten yet!",
+    "tooltips": {
+      "time": "Sort by clear date",
+      "accuracy": "Sort by accuracy",
+      "score": "Sort by score"
+    }
+  },
+  "dialog": {
+    "fullInfo": "View Full Info"
+  }
+} 

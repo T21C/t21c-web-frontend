@@ -1,0 +1,10 @@
+{
+  "header": {
+    "headerRating": "管理关卡评级",
+    "headerSubmissions": "管理提交项目"
+  },
+  "button": {
+    "buttonRating": "跳转到关卡评级页面",
+    "buttonSubmissions": "跳转到提交项目页面"
+  }
+} 

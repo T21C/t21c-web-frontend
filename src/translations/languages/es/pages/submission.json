@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "title": "Submit Content",
+    "description": "Submit new levels and passes to the community",
+    "type": "website"
+  },
+  "header": {
+    "headerPass": "Submit Pass",
+    "headerLevel": "Submit Level"
+  },
+  "button": {
+    "buttonPass": "Submit Pass",
+    "buttonLevel": "Submit Level"
+  }
+} 

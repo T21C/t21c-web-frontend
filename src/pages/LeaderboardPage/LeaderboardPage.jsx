@@ -1,77 +1,78 @@
 /* eslint-disable no-unused-vars */
 import "./leaderboardpage.css";
 import { useContext, useEffect, useState } from "react";
-import { CompleteNav, PlayerCard } from "../../components";
+import { CompleteNav, PlayerCard, StateDisplay } from "../../components";
 import { Tooltip } from "react-tooltip";
-import Select from "react-select";
+import CustomSelect from "../../components/Select/Select";
 import InfiniteScroll from "react-infinite-scroll-component";
-import axios from "axios";
-import { PlayerContext } from "../../context/PlayerContext";
+import api from '../../utils/api';
+import { PlayerContext } from "../../contexts/PlayerContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import bgImgDark from "../../assets/important/dark/theme-background.jpg";
+import ScrollButton from "../../components/ScrollButton/ScrollButton";
+import { MetaTags } from "../../components";
+import { useAuth } from "../../contexts/AuthContext";
 
-
-
-
-const limit = 10;
+const currentUrl = window.location.origin + location.pathname;
+const limit = 30;
 
 const LeaderboardPage = () => {
-  const { t } = useTranslation();
-  const [loading, setLoading] = useState(true);
+  const { t } = useTranslation('pages');
+  const tLeaderboard = (key, params = {}) => t(`leaderboard.${key}`, params);
+  const { user } = useAuth();
   const [error, setError] = useState(false);
-  const [forceUpdate, setForceUpdate] = useState(false);
+  const [filteredData, setFilteredData] = useState([]);
   const location = useLocation();
-  const [displayedPlayers, setDisplayedPlayers] = useState([])
-  const [playerList, setPlayerList] = useState([])
+
+  const sortOptions = [
+    { value: 'rankedScore', label: tLeaderboard('sortOptions.rankedScore') },
+    { value: 'generalScore', label: tLeaderboard('sortOptions.generalScore') },
+    { value: 'ppScore', label: tLeaderboard('sortOptions.ppScore') },
+    { value: 'wfScore', label: tLeaderboard('sortOptions.wfScore') },
+    { value: 'score12k', label: tLeaderboard('sortOptions.score12k') },
+    { value: 'averageXacc', label: tLeaderboard('sortOptions.averageXacc') },
+    { value: 'totalPasses', label: tLeaderboard('sortOptions.totalPasses') },
+    { value: 'universalPasses', label: tLeaderboard('sortOptions.universalPasses') },
+    { value: 'worldsFirstCount', label: tLeaderboard('sortOptions.worldsFirstCount') },
+    { value: 'topDiff', label: tLeaderboard('sortOptions.topDiff') },
+    { value: 'top12kDiff', label: tLeaderboard('sortOptions.top12kDiff') }
+  ];
+
   const {
     playerData,
     setPlayerData,
-    sortBy,
-    setSortBy,
+    displayedPlayers,
+    setDisplayedPlayers,
+    filterOpen,
+    setFilterOpen,
     sortOpen,
     setSortOpen,
     query,
     setQuery,
     sort,
     setSort,
+    sortBy,
+    setSortBy,
+    showBanned,
+    setShowBanned,
+    loading,
+    setLoading,
+    initialLoading,
+    setInitialLoading,
+    forceUpdate,
+    setForceUpdate
   } = useContext(PlayerContext);
-  var sortOptions = [
-    { value: 'rankedScore', label:  t("valueLabels.rankedScore") },
-    { value: 'generalScore', label: t("valueLabels.generalScore") },
-    { value: 'ppScore', label: t("valueLabels.ppScore") },
-    { value: 'wfScore', label: t("valueLabels.wfScore") },
-    { value: '12kScore', label: t("valueLabels.12kScore") },
-    { value: 'avgXacc', label: t("valueLabels.avgXacc") },
-    { value: 'totalPasses', label: t("valueLabels.totalPasses") },
-    { value: 'universalPasses', label: t("valueLabels.universalPasses") },
-    { value: 'WFPasses', label: t("valueLabels.WFPasses") },
-    { value: 'topDiff', label: t("valueLabels.topDiff") },
-    { value: 'top12kDiff', label: t("valueLabels.top12kDiff") },
-  ];
 
   function sortByField(data) {
-    console.log("sorting by", sortBy);
-    
     return data.sort((a, b) => {
       if (sortBy === "topDiff" || sortBy === "top12kDiff") {
-        // Extract letter and number from diff fields
-        const parseDiff = (value) => {
-          const letter = value[0];
-          const num = parseInt(value.slice(1), 10);
-          // Assign order priority for letters P < G < U
-          const priority = { "P": 1, "G": 2, "U": 3 };
-          return { letterOrder: priority[letter], num };
-        };
-        const diffA = parseDiff(a[sortBy]);
-        const diffB = parseDiff(b[sortBy]);
+        // Use the difficulty object's sort order directly, treating null as 0
+        const diffA = a[sortBy] || 0;
+        const diffB = b[sortBy] || 0;
         
-        // Sort by letter order first, then by number if letters are the same
-        if (diffA.letterOrder !== diffB.letterOrder) {
-          return diffB.letterOrder - diffA.letterOrder;
-        } else {
-          return diffB.num - diffA.num;
-        }
+        // Compare sort orders
+        return diffB - diffA;
       } else {
         // For all other fields, simple numeric sort in descending order
         return b[sortBy] - a[sortBy];
@@ -81,42 +82,59 @@ const LeaderboardPage = () => {
   
   useEffect(() => {
     const fetchPlayers = async () => {
-      setLoading(true);
+      setInitialLoading(true);
       try {
-        const response = await axios.get(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_FULL_LEADERBOARD}`);
+        setPlayerData([])
+        const response = await api.get(`${import.meta.env.VITE_FULL_LEADERBOARD}`, {
+        });
         
         setPlayerData(response.data);
-        setPlayerList(response.data);
-        setDisplayedPlayers(response.data.slice(0,10))
+        setDisplayedPlayers(response.data.slice(0, limit))
       } catch (error) {
         setError(true);
         console.error('Error fetching leaderboard data:', error);
       } finally {
-        setLoading(false);
+        setInitialLoading(false);
       }
     };
   
     fetchPlayers();
-  }, []);
+  }, [forceUpdate]);
   
   useEffect(() => {
     if (playerData && playerData.length > 0) {
-      var filteredPlayers = playerData.filter(player =>
-        player.player.toLowerCase().includes(query.toLowerCase())
-      );
-      filteredPlayers = sortByField(filteredPlayers)
+      setLoading(true);
+      var filteredPlayers = playerData.filter(playerStat => {
+        const player = playerStat.player;
+        if (!player) return false;
+
+        const matchesQuery = player.name.toLowerCase().includes(query.toLowerCase()) 
+        || player.discordUsername?.toLowerCase().includes(query.toLowerCase());
+        const matchesBannedFilter = 
+          (showBanned === 'show') ? true :
+          (showBanned === 'hide') ? !player.isBanned :
+          (showBanned === 'only') ? player.isBanned :
+          true;
+        
+        return matchesQuery && matchesBannedFilter;
+      });
+
+      filteredPlayers = sortByField(filteredPlayers);
       if(sort === "ASC"){
-        filteredPlayers = filteredPlayers.reverse()
+        filteredPlayers = filteredPlayers.reverse();
       }
-      setPlayerList(filteredPlayers);
-      setDisplayedPlayers(filteredPlayers.slice(0,10))
+      
+      // Store filtered data separately
+      setFilteredData(filteredPlayers);
+      // Only show the first 'limit' players initially
+      setDisplayedPlayers(filteredPlayers.slice(0, limit));
+      setLoading(false);
     } else {
-      setPlayerList([]);
+      setFilteredData([]);
+      setDisplayedPlayers([]);
+      setLoading(false);
     }
-    setLoading(false);
-    console.log(displayedPlayers);
-    
-  }, [playerData, query, sort, sortBy, forceUpdate, t]);
+  }, [playerData, query, sort, sortBy, showBanned, t]);
 
   function handleQueryChange(e) {
     setLoading(true);
@@ -135,14 +153,12 @@ const LeaderboardPage = () => {
   function handleSortBy(selectedOption) {
     setLoading(true); 
     setSortBy(selectedOption.value);
-    setForceUpdate((f) => !f);
   }
 
 
   function handleSort(value) {
     setLoading(true);
     setSort(value);
-    setForceUpdate((f) => !f);
   }
 
   function resetAll() {
@@ -151,6 +167,7 @@ const LeaderboardPage = () => {
     setSortBy(sortOptions[0].value)
     setSort("DESC");
     setQuery("");
+    setShowBanned('hide');
     setForceUpdate((f) => !f);
   }
 
@@ -167,29 +184,37 @@ const LeaderboardPage = () => {
 
   return (
     <div className="leaderboard-page">
+      <MetaTags
+        title={tLeaderboard('meta.title')}
+        description={tLeaderboard('meta.description')}
+        url={currentUrl}
+        image="/leaderboard-preview.jpg"
+        type="website"
+      />
       <CompleteNav />
 
       <div className="background-level"></div>
 
       <div className="leaderboard-body">
+        <ScrollButton />  
         <div className="input-option">
 
 
           <input
             value={query}
             type="text"
-            placeholder={t("leaderboardPage.inputPlaceholder")}
+            placeholder={tLeaderboard('input.placeholder')}
             onChange={handleQueryChange}
           />
 
           <Tooltip id="filter" place="bottom" noArrow>
-            {t("leaderboardPage.toolTip.filter")}
+            {tLeaderboard('tooltips.filter')}
           </Tooltip>
           <Tooltip id="sort" place="bottom" noArrow>
-            {t("leaderboardPage.toolTip.sort")}
+            {tLeaderboard('tooltips.sort')}
           </Tooltip>
           <Tooltip id="reset" place="bottom" noArrow>
-            {t("leaderboardPage.toolTip.reset")}
+            {tLeaderboard('tooltips.reset')}
           </Tooltip>
 
           <svg
@@ -261,25 +286,30 @@ const LeaderboardPage = () => {
         </div>
         <div className="input-setting">
           <div
-            className="sort settings-class"
-            style={{
-              height: sortOpen ? "10rem" : "0",
-              opacity: sortOpen ? "1" : "0",
-            }}
+            className={`filter settings-class ${filterOpen ? 'visible' : 'hidden'}`}
+          >
+            <h2 className="setting-title">
+              {tLeaderboard('settings.filter.header')}
+            </h2>
+            {/* ... rest of filter content ... */}
+          </div>
+
+          <div
+            className={`sort settings-class ${sortOpen ? 'visible' : 'hidden'}`}
           >
             <div className="spacer-setting"></div>
             <h2 className="setting-title">
-              {t("leaderboardPage.settingExp.headerSort")}
+              {tLeaderboard('settings.sort.header')}
             </h2>
 
             <div className="sort-option">
               <div className="recent">
-                <p>{t("leaderboardPage.settingExp.sortOrder")}</p>
+                <p>{tLeaderboard('settings.sort.sortOrder')}</p>
                 <Tooltip id="ra" place="top" noArrow>
-                  {t("leaderboardPage.toolTip.recentAsc")}
+                  {tLeaderboard('tooltips.recentAsc')}
                 </Tooltip>
                 <Tooltip id="rd" place="top" noArrow>
-                  {t("leaderboardPage.toolTip.recentDesc")}
+                  {tLeaderboard('tooltips.recentDesc')}
                 </Tooltip>
 
                 <div className="wrapper">
@@ -310,7 +340,7 @@ const LeaderboardPage = () => {
                       ></path>
                       {/* AZ */}
                       <path
-                        d="M14 11.21C14.39 11.35 14.82 11.15 14.96 10.76L15.24 9.98001H17.27L17.55 10.76C17.66 11.07 17.95 11.26 18.26 11.26C18.34 11.26 18.43 11.25 18.51 11.22C18.9 11.08 19.1 10.65 18.96 10.26L17.25 5.47001C17.08 5.04001 16.69 4.76001 16.25 4.76001C15.81 4.76001 15.42 5.04001 15.25 5.49001L13.55 10.26C13.41 10.65 13.61 11.08 14 11.22V11.21ZM16.73 8.48001H15.77L16.25 7.14001L16.73 8.48001Z"
+                        d="M14 11.21C14.39 11.35 14.82 11.15 14.96 10.76L15.24 9.98001H17.27L17.55 10.76C17.66 11.07 17.95 11.26 18.26 11.26C18.34 11.26 18.43 11.25 18.51 11.22C18.9 11.08 19.1 10.65 18.96 10.26L17.25 5.47001C17.08 5.04001 16.69 4.76001 16.25 4.76001C15.81 4.76001 15.42 5.04001 15.25 5.49001L13.55 10.26C13.41 10.65 13.61 11.08 14 11.22V11.21Z"
                         fill="#ffffff"
                       ></path>
                       <path
@@ -356,114 +386,79 @@ const LeaderboardPage = () => {
                       ></path>
                     </g>
                   </svg>
-
-                 
                 </div>
-                
               </div>
               <div className="recent">
-                
-              <p>{t("leaderboardPage.settingExp.sortBy")}</p>
-              <Select
-                      id="sort-select"
-                      onChange={handleSortBy}
-                      value={sortOptions.find(option => option.value === sortBy)}
-                      options={sortOptions}
-                      menuPortalTarget={document.body}
-                      styles={{
-                        input: (base) => ({
-                          ...base, 
-                          color: "#fff"
-                        }),
-                        menuPortal: (base) => ({
-                           ...base,
-                            zIndex: 9999 
-                          }),
-                        container: (provided) => ({
-                          ...provided,
-                          zIndex: 20,
-                        }),
-                        control: (provided, state) => ({
-                          ...provided,
-                          width: "11rem",
-                          backgroundColor: "rgba(255, 255, 255, 0.3)",
-                          border: "none",
-                          outline: "none",
-                          color: "#fff",
-                          boxShadow: 
-                            state.isFocused
-                            && "0 0 0 2px #757575"
-                        }),
-                        singleValue: (provided) => ({
-                          ...provided,
-                          color: "#FFFFFF !important",
-                        }),
-                        indicatorSeparator: (provided) => ({
-                          ...provided,
-                          backgroundColor: "#000000aa",
-                        }),
-                        menu: (provided) => ({
-                          ...provided,
-                          width: "11rem",
-                          backgroundColor: "#070711ef",
-                          borderRadius: "3px",
-                          border: "none",
-                          boxShadow: "none",
-                          textDecoration: "bold",
-                          color: "#fff",
-                          zIndex: 9999,
-                        }),
-                        option: (provided, state) => ({
-                          ...provided,
-                          backgroundColor: state.isSelected
-                            ? "#303040ee"
-                            : "transparent",
-                          zIndex: 9999,
-                          "&:hover": {
-                            backgroundColor: "#555555",
-                          }
-                        }),
-                      }}
-                      placeholder="Select Sort Option"
-                      isSearchable
-                    /> 
-                    </div>   
+                <p>{tLeaderboard('settings.sort.sortBy')}</p>
+                <CustomSelect
+                  value={sortOptions.find(option => option.value === sortBy)}
+                  onChange={handleSortBy}
+                  options={sortOptions}
+                  width="11rem"
+                />
+              </div>
+              {user?.isSuperAdmin && (
+                <div className="recent" style={{ display: "grid", alignItems: "end" }}>
+                  <StateDisplay
+                    label={tLeaderboard('bannedPlayers.label')}
+                  currentState={showBanned}
+                  onChange={(newState) => {
+                    setShowBanned(newState);
+                    setDisplayedPlayers([]);
+                    setForceUpdate(prev => !prev);
+                  }}
+                  states={['show', 'hide', 'only']}
+                  width={60}
+                  height={24}
+                  padding={3}
+                />
+              </div>
+              )}
             </div>
           </div>
         </div>
 
-        {!loading ? (
+        {initialLoading ? (
+          <div className="loader"></div>
+        ) : (
           <InfiniteScroll
-        style={{ paddingBottom: "5rem" }}
-        dataLength={displayedPlayers.length} // number of players displayed so far
+            style={{ paddingBottom: "4rem", overflow: "visible" }}
+            dataLength={displayedPlayers.length}
             next={() => {
-              const newPagePlayers = playerList.slice(
-                displayedPlayers.length,
-                displayedPlayers.length + limit
+              const currentLength = displayedPlayers.length;
+              const newPagePlayers = filteredData.slice(
+                currentLength,
+                currentLength + limit
               );
-              setDisplayedPlayers((prev) => [...prev, ...newPagePlayers]);
+              if (newPagePlayers.length > 0) {
+                setDisplayedPlayers(prev => [...prev, ...newPagePlayers]);
+              }
             }}
-            hasMore={displayedPlayers.length < playerList.length}
-        loader={<h1>{t("leaderboardPage.infScroll.loading")}</h1>}
-        endMessage={
-          <p style={{ textAlign: "center" }}>
-            <b>{t("leaderboardPage.infScroll.end")}</b>
-          </p>
-        }
-      >
-          {displayedPlayers.map((l, index) => (
-            <PlayerCard
-              key={index}
-              currSort={sortBy}
-              player={l}
-              pfp={l.pfp}
-            />
-          ))}
-        </InfiniteScroll>)
-        :
-          
-        <div className="loader"></div>
-      }
+            hasMore={displayedPlayers.length < filteredData.length}
+            loader={loading && <div className="loader"></div>}
+            endMessage={
+              !loading && displayedPlayers.length > 0 && (
+                <p style={{ textAlign: "center" }}>
+                  <b>{tLeaderboard('infiniteScroll.end')}</b>
+                </p>
+              )
+            }
+          >
+            {displayedPlayers.map((playerStat, index) => (
+              <PlayerCard
+                key={index}
+                currSort={sortBy}
+                player={{
+                  ...playerStat,
+                  name: playerStat.player.name,
+                  country: playerStat.player.country,
+                  isBanned: playerStat.player.isBanned,
+                  pfp: playerStat.player.pfp,
+                }}
+              />
+            ))}
+          </InfiniteScroll>
+        )}
       </div>
     </div>
   );

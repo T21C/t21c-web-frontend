@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "title": "{{song}} | TUF",
+    "description": "查看 {{playerName}} 通关 {{song}} - {{artist}} 的记录"
+  },
+  "banners": {
+    "deleted": "该通关记录已被删除"
+  },
+  "level": {
+    "baseScore": "{{score}}PP",
+    "credits": {
+      "team": "{{team}}",
+      "charter": "由 {{charter}} 制作谱面",
+      "vfxer": "由 {{vfxer}} 制作特效"
+    }
+  },
+  "player": {
+    "rank": "#{{rank}}",
+    "score": {
+      "current": "{{score}}",
+      "difference": {
+        "positive": "+{{score}}"
+      },
+      "previous": "{{score}}"
+    },
+    "clearDate": "通关于 {{date}}"
+  },
+  "stats": {
+    "score": {
+      "label": "分数",
+      "value": "{{score}}"
+    },
+    "accuracy": {
+      "label": "精准度",
+      "value": "{{accuracy}}%"
+    },
+    "speed": {
+      "label": "飙速",
+      "value": "{{speed}}x"
+    },
+    "feelingRating": {
+      "label": "体感难度",
+      "value": "{{rating}}",
+      "none": "无"
+    }
+  },
+  "flags": {
+    "worldsFirst": "🏆 世界首通！ 🏆",
+    "12k": "12键",
+    "16k": "16键",
+    "noHoldTap": "非默认长按设置"
+  },
+  "judgements": {
+    "title": "判定",
+    "types": {
+      "earlyPerfect": {
+        "label": "稍快！",
+        "value": "{{count}}"
+      },
+      "perfect": {
+        "label": "完美！",
+        "value": "{{count}}"
+      },
+      "latePerfect": {
+        "label": "稍慢！",
+        "value": "{{count}}"
+      },
+      "tooEarly": {
+        "label": "太快！！",
+        "value": "{{count}}"
+      },
+      "early": {
+        "label": "太快！",
+        "value": "{{count}}"
+      },
+      "late": {
+        "label": "太慢！",
+        "value": "{{count}}"
+      },
+      "tooLate": {
+        "label": "太慢！！",
+        "value": "{{count}}"
+      }
+    }
+  },
+  "video": {
+    "notAvailable": {
+      "text": "无视频",
+      "watchOnYoutube": "在 YouTube 上观看"
+    }
+  },
+  "buttons": {
+    "edit": "编辑通关记录"
+  }
+} 

@@ -1,0 +1,60 @@
+{
+  "title": "提交通关记录",
+  "thumbnailInfo": "视频信息会显示在此处",
+  "submInfo": {
+    "levelId": "关卡 ID",
+    "altname": "排行榜名称（选填）",
+    "nohold": "非默认长按设置",
+    "speed": "飙速（选填；需大于等于1.0）",
+    "feelDiff": "体感难度",
+    "is12K": "12键",
+    "is16K": "16键"
+  },
+  "levelInfo": {
+    "song": "曲名",
+    "artist": "曲师",
+    "charter": "谱师"
+  },
+  "levelFetching": {
+    "input": "输入 ID",
+    "fetching": "获取中……",
+    "goto": "跳转到关卡",
+    "notfound": "未找到关卡"
+  },
+  "videoInfo": {
+    "videoLink": "YouTube 视频链接",
+    "title": "视频标题",
+    "channel": "频道名称",
+    "timestamp": "上传时间",
+    "nolink": "请输入正确的 YouTube 视频链接。"
+  },
+  "judgements": {
+    "ePerfect": "稍快！",
+    "perfect": "完美！",
+    "lPerfect": "稍慢！",
+    "tooearly": "太快！！",
+    "early": "太快！",
+    "late": "太慢！"
+  },
+  "acc": "精准度：",
+  "scoreCalc": "分数：",
+  "submit": "提交",
+  "submitWait": "……",
+  "holdTooltip": "如果你使用了“标准”长按设置，请勾选此项",
+  "12kTooltip": "如果你使用了12键及以下通过本关卡，请勾选此项",
+  "16kTooltip": "如果你使用了16键及以上通过本关卡，请勾选此项",
+  "tooltip": "输入1到10之间的任意整数",
+  "alert": {
+    "success": "通关记录提交成功！",
+    "error": "错误：",
+    "loading": "提交中……",
+    "login": "上传通关记录前请先登录",
+    "form": "请正确填写所有必填项"
+  },
+  "score": {
+    "needId": "输入关卡 ID",
+    "needJudg": "输入判定",
+    "needInfo": "输入所有必填项",
+    "noInfo": "无可用信息"
+  }
+} 
