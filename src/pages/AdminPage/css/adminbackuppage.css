@@ -731,4 +731,73 @@
 .admin-backup-page .download-btn.downloading .svg-stroke {
   transform: none;
 }
+
+.upload-zone {
+  border: 2px dashed var(--color-white-t30);
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  transition: all 0.3s ease;
+  background-color: var(--color-white-t05);
+  cursor: pointer;
+  position: relative;
+}
+
+.upload-zone.drag-over {
+  border-color: var(--color-white);
+  background-color: var(--color-white-t10);
+}
+
+.upload-zone p {
+  margin: 0;
+  color: var(--color-white-t80);
+  font-size: 1.1rem;
+}
+
+.upload-zone .icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--color-white-t60);
+}
+
+.upload-zone input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.upload-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 4px;
+  background-color: #2196f3;
+  transition: width 0.3s ease;
+}
+
+.upload-error {
+  color: #ff4444;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+@media screen and (max-width: 768px) {
+  .upload-zone {
+    padding: 1rem;
+  }
+  
+  .upload-zone p {
+    font-size: 1rem;
+  }
+  
+  .upload-zone .icon {
+    font-size: 1.5rem;
+  }
+}
  

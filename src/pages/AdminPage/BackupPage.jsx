@@ -9,6 +9,153 @@ import { EditIcon } from "../../components/Icons/EditIcon";
 import { RefreshIcon } from "../../components/Icons/RefreshIcon";
 import AccessDenied from "../../components/StateDisplay/AccessDenied";
 
+const UploadZone = ({ type, onUploadComplete, addNotification }) => {
+  const { t } = useTranslation('pages');
+  const tBackup = (key, params = {}) => t(`backup.${key}`, params);
+  const [isDragOver, setIsDragOver] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadError, setUploadError] = useState('');
+  const [isUploading, setIsUploading] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [password, setPassword] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragOver(false);
+  };
+
+  const handleUpload = async () => {
+    if (!selectedFile) return;
+
+    try {
+      setIsUploading(true);
+      setUploadError('');
+      
+      const formData = new FormData();
+      formData.append('backup', selectedFile);
+      
+      const response = await api.post(
+        `${import.meta.env.VITE_BACKUP_API}/upload/${type}`,
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'X-Super-Admin-Password': password
+          },
+          onUploadProgress: (progressEvent) => {
+            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
+            setUploadProgress(percentCompleted);
+          },
+        }
+      );
+
+      if (response.data.success) {
+        addNotification(tBackup('notifications.uploadSuccess'));
+        onUploadComplete();
+        setShowPasswordModal(false);
+        setPassword('');
+        setSelectedFile(null);
+        setUploadProgress(0);
+      }
+    } catch (error) {
+      console.error('Upload failed:', error);
+      setUploadError(error.response?.status === 403 
+        ? tBackup('passwordModal.errors.invalid')
+        : tBackup('notifications.uploadFailed')
+      );
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    
+    const file = e.dataTransfer.files[0];
+    if (file) {
+      setSelectedFile(file);
+      setShowPasswordModal(true);
+    }
+  };
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setSelectedFile(file);
+      setShowPasswordModal(true);
+    }
+  };
+
+  return (
+    <>
+      <div
+        className={`upload-zone ${isDragOver ? 'drag-over' : ''}`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+      >
+        <div className="icon">📤</div>
+        <p>{tBackup('upload.dragDropMessage')}</p>
+        <input
+          type="file"
+          onChange={handleFileSelect}
+          accept=".sql,.zip,.tar.gz"
+        />
+        {isUploading && (
+          <div 
+            className="upload-progress"
+            style={{ width: `${uploadProgress}%` }}
+          />
+        )}
+        {uploadError && <p className="upload-error">{uploadError}</p>}
+      </div>
+
+      {showPasswordModal && (
+        <div className="password-modal">
+          <div className="password-modal-content">
+            <h3>{tBackup('passwordModal.title')}</h3>
+            <p>{tBackup('passwordModal.uploadMessage')}</p>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder={tBackup('passwordModal.placeholder')}
+            />
+            {uploadError && <p className="error-message">{uploadError}</p>}
+            <div className="password-modal-actions">
+              <button 
+                className="confirm-btn"
+                onClick={handleUpload}
+                disabled={!password || isUploading}
+              >
+                {isUploading ? tBackup('buttons.uploading') : tBackup('buttons.upload')}
+              </button>
+              <button 
+                className="cancel-btn"
+                onClick={() => {
+                  setShowPasswordModal(false);
+                  setPassword('');
+                  setSelectedFile(null);
+                  setUploadError('');
+                }}
+                disabled={isUploading}
+              >
+                {tBackup('buttons.cancel')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
 const TimeAgo = ({ date }) => {
   const [timeAgo, setTimeAgo] = useState('');
   const { t } = useTranslation('pages');
@@ -569,6 +716,12 @@ const BackupPage = () => {
             </button>
           </div>
         </div>
+
+        <UploadZone 
+          type={activeTab}
+          onUploadComplete={loadBackups}
+          addNotification={addNotification}
+        />
 
         <BackupList
           backups={sortedBackups}

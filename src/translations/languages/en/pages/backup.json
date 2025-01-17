@@ -26,7 +26,12 @@
     "save": "Save",
     "saving": "Saving...",
     "cancel": "Cancel",
-    "confirm": "Confirm"
+    "confirm": "Confirm",
+    "upload": "Upload",
+    "uploading": "Uploading..."
+  },
+  "upload": {
+    "dragDropMessage": "Drag and drop a backup file here, or click to select"
   },
   "noBackups": {
     "title": "No {{type}} backups available",
@@ -52,6 +57,7 @@
     "restoreMessage": "Please enter your super admin password to restore the backup.",
     "deleteMessage": "Please enter your super admin password to delete the backup.",
     "renameMessage": "Please enter your super admin password to rename the backup.",
+    "uploadMessage": "Please enter your super admin password to upload the backup.",
     "placeholder": "Enter password",
     "errors": {
       "invalid": "Invalid password",
@@ -66,7 +72,9 @@
     "loadFailed": "Failed to load backups",
     "createFailed": "Failed to create backup",
     "restoreFailed": "Failed to restore backup",
-    "deleteFailed": "Failed to delete backup"
+    "deleteFailed": "Failed to delete backup",
+    "uploadSuccess": "Backup uploaded successfully",
+    "uploadFailed": "Failed to upload backup"
   },
   "fileInfo": {
     "created": "Created: {{date}}",

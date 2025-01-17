@@ -14,6 +14,13 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // Don't modify content-type if it's multipart/form-data
+    // Let the browser set the correct boundary
+    if (config.headers['Content-Type']?.includes('multipart/form-data')) {
+      delete config.headers['Content-Type'];
+    }
+
     return config;
   },
   (error) => {
