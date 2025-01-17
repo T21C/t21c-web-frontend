@@ -20,25 +20,6 @@ const ScoreCard = ({scoreData}) => {
       e.stopPropagation();
     };
 
-    /*
-  #  Xacc: 0.9865883166263395
-    levelId: 3569
-    date: "2024-08-07T03:12:46"
-    is12K: false
-    isNoHold: false
-    isWorldsFirst: true
-    judgements: Array(7) [ 8, 60, 71, … ]
-    passId: 10751
-  #  pguDiff: "U14"
-  #  player: "Jipper"
-  #  score: 21431.06075461851
-  #  song: "Hello (BPM) 2024"
-    speed: 1
-    videoLink: "\nhttps://www.youtube.com/watch?v=H7SHcejTyYY"
-    */
-
-    
-
   return (
     <div className='score-card'>
       <div className="img-wrapper">

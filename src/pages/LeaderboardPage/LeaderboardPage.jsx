@@ -30,7 +30,7 @@ const LeaderboardPage = () => {
     { value: 'generalScore', label: tLeaderboard('sortOptions.generalScore') },
     { value: 'ppScore', label: tLeaderboard('sortOptions.ppScore') },
     { value: 'wfScore', label: tLeaderboard('sortOptions.wfScore') },
-    { value: 'score12k', label: tLeaderboard('sortOptions.score12k') },
+    { value: 'score12K', label: tLeaderboard('sortOptions.score12K') },
     { value: 'averageXacc', label: tLeaderboard('sortOptions.averageXacc') },
     { value: 'totalPasses', label: tLeaderboard('sortOptions.totalPasses') },
     { value: 'universalPasses', label: tLeaderboard('sortOptions.universalPasses') },

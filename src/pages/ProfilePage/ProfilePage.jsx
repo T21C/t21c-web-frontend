@@ -48,7 +48,7 @@ const ProfilePage = () => {
       generalScore: tProfile('valueLabels.generalScore'),
       ppScore: tProfile('valueLabels.ppScore'),
       wfScore: tProfile('valueLabels.wfScore'),
-      score12k: tProfile('valueLabels.score12k'),
+      score12K: tProfile('valueLabels.score12K'),
       averageXacc: tProfile('valueLabels.averageXacc'),
       totalPasses: tProfile('valueLabels.totalPasses'),
       universalPasses: tProfile('valueLabels.universalPasses'),
@@ -63,6 +63,7 @@ const ProfilePage = () => {
           try {
             const response = await api.get(import.meta.env.VITE_PLAYERS+"/"+playerId);
             setPlayerData(response.data);
+            console.log(response.data);
           } catch (error) {
             setError(true);
             console.error('Error fetching player data:', error);
@@ -233,8 +234,8 @@ const ProfilePage = () => {
                   </div>
                   <br />
                   <div className="score-item">
-                    <p className="score-name">{valueLabels.score12k}</p>
-                    <p className="score-value">{playerData.score12k.toFixed(2)}</p>
+                    <p className="score-name">{valueLabels.score12K}</p>
+                    <p className="score-value">{playerData.score12K.toFixed(2)}</p>
                   </div>
                 </div>
             

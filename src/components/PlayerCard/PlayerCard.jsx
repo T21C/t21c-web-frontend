@@ -20,7 +20,7 @@ const PlayerCard = ({player}) => {
     generalScore: tCard('stats.generalScore'),
     ppScore: tCard('stats.ppScore'),
     wfScore: tCard('stats.wfScore'),
-    score12k: tCard('stats.score12k'),
+    score12K: tCard('stats.score12K'),
     averageXacc: tCard('stats.averageXacc'),
     totalPasses: tCard('stats.totalPasses'),
     universalPasses: tCard('stats.universalPasses'),
