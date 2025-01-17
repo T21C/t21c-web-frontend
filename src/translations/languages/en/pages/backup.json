@@ -31,7 +31,10 @@
     "uploading": "Uploading..."
   },
   "upload": {
-    "dragDropMessage": "Drag and drop a backup file here, or click to select"
+    "dragDropMessage": "Drag and drop a backup file here, or click to select",
+    "errors": {
+      "fileTooBig": "File size exceeds maximum limit of {{size}}"
+    }
   },
   "noBackups": {
     "title": "No {{type}} backups available",

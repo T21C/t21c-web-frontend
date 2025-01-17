@@ -9,6 +9,8 @@ import { EditIcon } from "../../components/Icons/EditIcon";
 import { RefreshIcon } from "../../components/Icons/RefreshIcon";
 import AccessDenied from "../../components/StateDisplay/AccessDenied";
 
+const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB in bytes
+
 const UploadZone = ({ type, onUploadComplete, addNotification }) => {
   const { t } = useTranslation('pages');
   const tBackup = (key, params = {}) => t(`backup.${key}`, params);
@@ -27,6 +29,16 @@ const UploadZone = ({ type, onUploadComplete, addNotification }) => {
 
   const handleDragLeave = () => {
     setIsDragOver(false);
+  };
+
+  const validateFile = (file) => {
+    if (file.size > MAX_FILE_SIZE) {
+      setUploadError(tBackup('upload.errors.fileTooBig', { 
+        size: formatFileSize(MAX_FILE_SIZE) 
+      }));
+      return false;
+    }
+    return true;
   };
 
   const handleUpload = async () => {
@@ -78,7 +90,7 @@ const UploadZone = ({ type, onUploadComplete, addNotification }) => {
     setIsDragOver(false);
     
     const file = e.dataTransfer.files[0];
-    if (file) {
+    if (file && validateFile(file)) {
       setSelectedFile(file);
       setShowPasswordModal(true);
     }
@@ -86,7 +98,7 @@ const UploadZone = ({ type, onUploadComplete, addNotification }) => {
 
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
-    if (file) {
+    if (file && validateFile(file)) {
       setSelectedFile(file);
       setShowPasswordModal(true);
     }

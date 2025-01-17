@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 
 const DifficultyPage = () => {
   const { user } = useAuth();
-  const { difficulties, loading: contextLoading, reloadDifficulties } = useDifficultyContext();
+  const { difficulties, rawDifficulties, loading: contextLoading, reloadDifficulties } = useDifficultyContext();
   const { t } = useTranslation('pages');
   const tDiff = (key, params = {}) => t(`difficulty.${key}`, params);
   const currentUrl = window.location.origin + location.pathname;
@@ -174,6 +174,12 @@ const DifficultyPage = () => {
     }
   };
 
+  const handleEditClick = (difficulty) => {
+    // Find the raw difficulty data when editing
+    const rawDifficulty = rawDifficulties.find(d => d.id === difficulty.id);
+    setEditingDifficulty(rawDifficulty);
+  };
+
   if (user?.isSuperAdmin === undefined) {
     return (
       <div className="difficulty-page">
@@ -261,7 +267,7 @@ const DifficultyPage = () => {
                   <div className="difficulty-actions">
                     <button
                       className="edit-button"
-                      onClick={() => setEditingDifficulty(difficulty)}
+                      onClick={() => handleEditClick(difficulty)}
                       disabled={isLoading}
                     >
                       <EditIcon color="#fff" size="24px" />
