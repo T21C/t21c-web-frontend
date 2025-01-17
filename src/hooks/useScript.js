@@ -1,7 +1,11 @@
 import { useState, useEffect } from 'react';
 
 export const useScript = (src) => {
-  const [status, setStatus] = useState(src ? 'loading' : 'idle');
+  const [status, setStatus] = useState(() => {
+    if (!src) return 'idle';
+    const existingScript = document.querySelector(`script[src="${src}"]`);
+    return existingScript ? existingScript.getAttribute('data-status') || 'loading' : 'loading';
+  });
 
   useEffect(() => {
     if (!src) {
@@ -30,7 +34,7 @@ export const useScript = (src) => {
       script.addEventListener('load', setAttributeFromEvent);
       script.addEventListener('error', setAttributeFromEvent);
     } else {
-      setStatus(script.getAttribute('data-status'));
+      setStatus(script.getAttribute('data-status') || 'loading');
     }
 
     const setStateFromEvent = (event) => {
