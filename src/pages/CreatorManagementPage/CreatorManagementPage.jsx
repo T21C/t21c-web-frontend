@@ -70,17 +70,13 @@ const CreatorManagementPage = () => {
   const [verifyingLevelId, setVerifyingLevelId] = useState(null);
   const [totalCreatorPages, setTotalCreatorPages] = useState(0);
   const [loadingCreators, setLoadingCreators] = useState(true);
-  const cancelTokenRef = useRef();
+  const creatorsCancelTokenRef = useRef();
+  const levelsCancelTokenRef = useRef();
   const scrollPositionRef = useRef(0);
   const [excludeAliases, setExcludeAliases] = useState(false);
 
   const fetchCreators = async (preserveScroll = false) => {
     try {
-      // Store scroll position if needed
-      if (preserveScroll) {
-        scrollPositionRef.current = window.scrollY;
-      }
-
       // Only clear results when not preserving scroll (i.e. pagination changes)
       if (!preserveScroll) {
         setCreators([]);
@@ -96,16 +92,15 @@ const CreatorManagementPage = () => {
         sort
       });
 
-      // Cancel any in-flight request
-      if (cancelTokenRef.current) {
-        cancelTokenRef.current.cancel('New request initiated');
+      // Cancel any in-flight creators request
+      if (creatorsCancelTokenRef.current) {
+        creatorsCancelTokenRef.current.cancel('New creators request initiated');
       }
 
-      // Create new cancel token
-      cancelTokenRef.current = api.CancelToken.source();
-
+      // Create new cancel token for creators
+      creatorsCancelTokenRef.current = api.CancelToken.source();
       const response = await api.get(`/v2/database/creators?${params}`, {
-        cancelToken: cancelTokenRef.current.token
+        cancelToken: creatorsCancelTokenRef.current.token
       });
 
       if (response.status !== 200) throw new Error(response.data.error || 'Failed to fetch creators');
@@ -115,17 +110,66 @@ const CreatorManagementPage = () => {
       setTotalCreatorPages(totalPages);
       setLoadingCreators(false);
 
-      // Restore scroll position if needed
-      if (preserveScroll) {
-        setTimeout(() => {
-          window.scrollTo(0, scrollPositionRef.current);
-        }, 0);
-      }
     } catch (err) {
       if (!api.isCancel(err)) {
         setError('Failed to load creators');
         console.error(err);
         setLoadingCreators(false);
+      }
+    }
+  };
+
+  const fetchLevelsAudit = async (preserveScroll = false) => {
+    // Cancel any in-flight levels request
+    if (levelsCancelTokenRef.current) {
+      levelsCancelTokenRef.current.cancel('New levels request initiated');
+    }
+
+    // Create new cancel token for levels
+    levelsCancelTokenRef.current = api.CancelToken.source();
+
+    if (!preserveScroll) {
+      setLevels([]);
+    }
+    setLoading(true);
+    try {
+      const params = new URLSearchParams({
+        offset: (currentPage - 1) * levelsPerPage,
+        limit: levelsPerPage,
+        search: searchQuery,
+        hideVerified: hideVerified,
+        excludeAliases: excludeAliases
+      });
+
+      const response = await api.get(`/v2/database/creators/levels-audit?${params}`, {
+        cancelToken: levelsCancelTokenRef.current.token
+      });
+      if (response.data) {
+        setLevels(response.data.results);
+        const totalPages = Math.ceil(response.data.count / levelsPerPage);
+        setTotalPages(totalPages);
+
+        // Update selected level if one is selected
+        if (selectedLevel) {
+          const updatedLevel = response.data.results.find(l => l.id === selectedLevel.id);
+          if (updatedLevel) {
+            setSelectedLevel(updatedLevel);
+            if (updatedLevel.team) {
+              setTeamName(updatedLevel.team.name);
+              setTeamDescription(updatedLevel.team.description || '');
+              setTeamMembers(updatedLevel.team.members || []);
+            }
+          }
+        }
+      }
+    } catch (error) {
+      if (!api.isCancel(error)) {
+        console.error('Error fetching levels:', error);
+        setError('Failed to fetch levels');
+      }
+    } finally {
+      if (!api.isCancel(error)) {
+        setLoading(false);
       }
     }
   };
@@ -138,8 +182,11 @@ const CreatorManagementPage = () => {
 
     // Cleanup function to cancel any pending requests
     return () => {
-      if (cancelTokenRef.current) {
-        cancelTokenRef.current.cancel('Component unmounted');
+      if (creatorsCancelTokenRef.current) {
+        creatorsCancelTokenRef.current.cancel('Component unmounted');
+      }
+      if (levelsCancelTokenRef.current) {
+        levelsCancelTokenRef.current.cancel('Component unmounted');
       }
     };
   }, []);
@@ -154,11 +201,19 @@ const CreatorManagementPage = () => {
 
     // Cleanup function to cancel any pending requests when dependencies change
     return () => {
-      if (cancelTokenRef.current) {
-        cancelTokenRef.current.cancel('Dependencies changed');
+      if (levelsCancelTokenRef.current) {
+        levelsCancelTokenRef.current.cancel('Dependencies changed');
       }
     };
-  }, [currentPage, searchQuery, hideVerified, excludeAliases]);
+  }, [currentPage, searchQuery, hideVerified]);
+
+  useEffect(() => {
+    Promise.all([
+      fetchCreators(),
+      fetchLevelsAudit()
+    ]).catch(console.error);
+  }, [excludeAliases]);
+
 
   useEffect(() => {
     // Prevent scrolling when modals are open
@@ -193,61 +248,6 @@ const CreatorManagementPage = () => {
     document.addEventListener('keydown', handleEscape);
     return () => document.removeEventListener('keydown', handleEscape);
   }, [showMergeWarning, showSplitDialog]);
-
-  const fetchLevelsAudit = async (preserveScroll = false) => {
-    // Cancel any in-flight request
-    if (cancelTokenRef.current) {
-      cancelTokenRef.current.cancel('New request initiated');
-    }
-
-    // Create new cancel token
-    cancelTokenRef.current = api.CancelToken.source();
-
-    if (!preserveScroll) {
-      setLevels([]);
-    }
-    setLoading(true);
-    try {
-      const params = new URLSearchParams({
-        offset: (currentPage - 1) * levelsPerPage,
-        limit: levelsPerPage,
-        search: searchQuery,
-        hideVerified: hideVerified,
-        excludeAliases: excludeAliases
-      });
-
-      const response = await api.get(`/v2/database/creators/levels-audit?${params}`, {
-        cancelToken: cancelTokenRef.current.token
-      });
-      if (response.data) {
-        setLevels(response.data.results);
-        const totalPages = Math.ceil(response.data.count / levelsPerPage);
-        setTotalPages(totalPages);
-
-        // Update selected level if one is selected
-        if (selectedLevel) {
-          const updatedLevel = response.data.results.find(l => l.id === selectedLevel.id);
-          if (updatedLevel) {
-            setSelectedLevel(updatedLevel);
-            if (updatedLevel.team) {
-              setTeamName(updatedLevel.team.name);
-              setTeamDescription(updatedLevel.team.description || '');
-              setTeamMembers(updatedLevel.team.members || []);
-            }
-          }
-        }
-      }
-    } catch (error) {
-      if (!api.isCancel(error)) {
-        console.error('Error fetching levels:', error);
-        setError('Failed to fetch levels');
-      }
-    } finally {
-      if (!api.isCancel(error)) {
-        setLoading(false);
-      }
-    }
-  };
 
   const fetchTeams = async (search = '') => {
     try {
@@ -356,12 +356,7 @@ const CreatorManagementPage = () => {
   };
 
   const handleTeamInputChange = (input, isUserInput = true) => {
-    console.log('Team Input Change:', {
-      input,
-      currentTeam: pendingTeam?.name,
-      hasMatch: teams.some(t => t.name.toLowerCase() === input?.toLowerCase()),
-      isUserInput
-    });
+
 
     // If input is empty, it means we want to remove the team
     if (!input) {
@@ -621,18 +616,11 @@ const CreatorManagementPage = () => {
                 label: pendingTeam.name 
               } : null}
               onChange={(selected) => {
-                console.log('Team Select Change:', {
-                  selected: selected?.value,
-                  currentTeam: pendingTeam?.name
-                });
+
                 handleTeamInputChange(selected?.value || '');
               }}
               onInputChange={(input, { action }) => {
-                console.log('Team Input Type:', {
-                  input,
-                  action,
-                  currentTeam: pendingTeam?.name
-                });
+
                 if (action === 'input-change') {
                   handleTeamInputChange(input);
                 }
@@ -652,7 +640,6 @@ const CreatorManagementPage = () => {
         <div className="credits-section">
           <div className="creator-list">
             {pendingCreators.map(creator => {
-              console.log(creator); 
               return (
               <div key={creator.id} className="creator-item">
                 <span className="creator-name">
