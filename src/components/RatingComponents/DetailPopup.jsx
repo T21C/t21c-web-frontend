@@ -180,7 +180,6 @@ export const DetailPopup = ({
       validateRating(rating);
       
       setHasUnsavedChanges(false);
-      console.log(selectedRating.details);
       setOtherRatings(selectedRating.details || []);
     }
   }, [selectedRating, currentUser?.id]);
@@ -312,7 +311,6 @@ export const DetailPopup = ({
       if (response.status === 200) {
         // Update the local state
         const updatedDetails = otherRatings.filter(detail => detail.userId !== userId);
-        console.log(updatedDetails);
         setOtherRatings(updatedDetails);
         
         // Update the ratings context
@@ -481,12 +479,12 @@ export const DetailPopup = ({
                 <label>{tRating('labels.otherRatings')}</label>
                 <div className="other-ratings-content">
                   {otherRatings.map(({user, rating, comment}) => (
-                    <RatingItem 
-                      key={user} 
-                      user={user} 
-                      rating={rating} 
+                    <RatingItem
+                      key={user?.id}
+                      user={user}
+                      rating={rating}
                       comment={comment}
-                      isSuperAdmin={currentUser?.isSuperAdmin}
+                      isSuperAdmin={isSuperAdmin}
                       onDelete={handleDeleteRating}
                     />
                   ))}

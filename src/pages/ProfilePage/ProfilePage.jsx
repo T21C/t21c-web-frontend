@@ -63,7 +63,7 @@ const ProfilePage = () => {
           try {
             const response = await api.get(import.meta.env.VITE_PLAYERS+"/"+playerId);
             setPlayerData(response.data);
-            console.log(response.data);
+
           } catch (error) {
             setError(true);
             console.error('Error fetching player data:', error);
