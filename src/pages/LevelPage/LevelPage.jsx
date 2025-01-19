@@ -547,7 +547,7 @@ const LevelPage = () => {
                 </div>
               </div>
 
-              <div className={`clears ${clearedFilter === 'only' ? 'visible' : ''}`}>
+              <div className={`clears ${clearedFilter !== 'hide' ? 'visible' : ''}`}>
                 <p>{tLevel('settingExp.sortClears')}</p>
                 <Tooltip id="ca" place="top" noArrow>
                   {tLevel('toolTip.clearsAsc')}

@@ -84,6 +84,7 @@
   transform: translateX(0);
   margin-left: 0;
   visibility: visible;
+  overflow: visible;
 }
 .level-page .level-body .sort .sort-option .recent p,
 .level-page .level-body .sort .sort-option .diff p,

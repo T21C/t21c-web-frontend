@@ -156,10 +156,10 @@ const FullInfoPopup = ({ level, onClose }) => {
                 <span>{tLevel('info.difficulty')}:</span>
                 <span>{level.difficulty.name}</span>
               </div>
-              {level.baseScore && (
+              {level.baseScore || level.difficulty.baseScore && (
                 <div className="each-info">
                   <span>{tLevel('info.baseScore')}:</span>
-                  <span>{level.baseScore}</span>
+                  <span>{level.baseScore || level.difficulty.baseScore}PP</span>
                 </div>
               )}
               {level.aliases && level.aliases.length > 0 && (
