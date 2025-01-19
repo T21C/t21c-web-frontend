@@ -1,199 +1,281 @@
 .clear-card {
-    position: relative;
-    display: flex;
-    justify-content: left;
-    gap: 1rem;
-    min-height: 4rem;
-    padding: 0.5rem;
-    border-radius: 0px;
-    align-items: center;
-    flex-wrap: wrap;
-    transition: all 0.1s ease-in-out;
-  }
-  .clear-card:hover {
-    background-color: var(--color-white-t30);
-  }
-  .clear-card .clear-exp {
-    width: -moz-fit-content;
-    width: fit-content;
-    font-size: 0.9rem;
-    color: var(--color-white-t80);
-  }
-  .clear-card .clear-desc {
-    font-size: 1.2rem;
-  }
-  .clear-card .clear-id {
-    color: var(--color-white-t30);
-    font-size: 0.6rem;
-  }
-  .clear-card .id {
-    position: absolute;
-    top: 3px;
-    left: 3px;
-  }
-  .clear-card .clear-exp,
-  .clear-card .clear-desc,
-  .clear-card .clear-id {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .clear-card .img-wrapper {
-    width: 3rem;
-  }
-  .clear-card .clear-wrapper {
-    overflow: hidden;
-    min-width: 200px;
-  }
-  .clear-card .acc-wrapper {
-    overflow: hidden;
-    min-width: 100px;
-  }
-  .clear-card .name-wrapper {
-    flex: 2;
-    overflow: hidden;
-    min-width: 200px;
-    padding-right: 50px;
-  }
-  @media (max-width: 400px) {
-    .clear-card .clear-exp {
-      font-size: 0.8rem;
-    }
-    .clear-card .clear-desc {
-      font-size: 1rem;
-    }
-    .clear-card .clear-id {
-      font-size: 0.6rem;
-    }
-    .clear-card .downloads-wrapper {
-      min-width: 70px;
-    }
-    .clear-card .artist-wrapper {
-      overflow: hidden;
-      width: 120px;
-    }
-    .clear-card .img-wrapper {
-      width: 2rem;
-    }
-    .clear-card .downloads-wrapper a {
-      height: 2rem;
-      width: 2rem;
-    }
-  }
-  @media (max-width: 380px) {
-    .clear-card .clear-exp {
-      font-size: 0.6rem;
-    }
-    .clear-card .clear-desc {
-      font-size: 0.9rem;
-    }
-    .clear-card .clear-id {
-      font-size: 0.5rem;
-    }
-    .clear-card .downloads-wrapper {
-      min-width: 60px;
-    }
-    .clear-card .artist-wrapper {
-      overflow: hidden;
-      width: 110px;
-    }
-    .clear-card .img-wrapper {
-      width: 1.5rem;
-    }
-    .clear-card .creator-wrapper {
-      min-width: 100px;
-    }
-    .clear-card .downloads-wrapper a {
-      height: 2rem;
-      width: 2rem;
-    }
-  }/*# sourceMappingURL=scorecard.css.map */
-
-  
-.clear-card {
   position: relative;
   display: flex;
   justify-content: space-between;
   background-color: var(--color-white-t10);
-  padding: 0.5rem;
+  padding: 1rem;
   margin-bottom: 1rem;
-  border-radius: 3px;
+  border-radius: 8px;
+  gap: 1rem;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 10px #0006;
+}
+
+.clear-card:hover {
+  background-color: var(--color-white-t20);
+}
+
+/* Card Sections */
+.card-section {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  min-width: 12rem;
+}
+
+.rank-display {
+  font-size: 9rem;
+  height: 0;
+  width: 0;
+  opacity: 0.07;
+  text-align: center;
+  z-index: -100;
+
+}
+
+.rank-display > span {
+  position: absolute;
+  transform: translate(-60px, -50%);
+}
+
+.player-info {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 1rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.player-info:hover {
+  background-color: var(--color-white-t10);
+}
+
+.avatar-container {
+  flex-shrink: 0;
+}
+
+.avatar-container .pfp {
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+}
+
+.name-container {
+  display: flex;
   align-items: center;
   gap: 0.5rem;
-  flex-wrap: wrap;
-}
-.clear-card .name, .clear-card .general, .clear-card .acc {
-  flex: 1;
-  flex-basis: 0;
-  overflow: hidden;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-.clear-card a {
-  display: flex;
-  align-items: center;
-  margin-left: 10px;
-  min-width: 40px;
-}
-.clear-card .name {
-  min-width: 18rem;
-  display: flex;
-  align-items: center;
-  gap: 0.1rem;
-  cursor: pointer;
 }
 
-.clear-card .player-name {
-  margin-left:3px
+.player-name {
+  font-weight: 500;
+  transition: transform 0.2s ease;
 }
 
-.clear-card .name:hover .player-name {
+.player-info:hover .player-name {
   text-decoration: underline;
-  transition: transform 0.3s ease;
-  transform: scale(1.07);
-}
-.clear-card .name:not(:hover) .player-name {
-  transition: transform 0.3s ease;
-  transform: scale(1);
 }
 
-.clear-card .name img {
-  width: 2rem;
+.country {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
+/* Details Section - Score Info & Judgements */
+.details-section {
+  flex: 2;
+  min-width: 400px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
 
-.clear-card .name svg {
-  width: 2.75rem;
+.collapsible-fields {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  transition: all 0.3s ease;
 }
-.clear-card .name .pfp{
-  border-radius: 50%;
-  width: 2.75rem;
+
+.collapsible-fields.hidden {
+  max-height: 0;
+  opacity: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
-.clear-card .general, .clear-card .acc {
-  text-align: center;
+
+.score-info {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.score-value {
+  font-size: 1.2rem;
+  font-weight: bold;
+  min-width: 5rem;
+}
+
+.score-accuracy {
+  color: var(--color-white-t80);
+  min-width: 4.5rem;
+  margin-left: auto;
+}
+
+.score-speed {
+  color: var(--color-white-t80);
   min-width: 3rem;
 }
-.clear-card .judgements {
+
+.judgements {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--color-purple-1);
+  border-radius: 4px;
+}
+
+.judgements span {
+  font-weight: bold;
+  font-size: 1.2rem;
+  text-shadow: 0 0 6px #0005;
+}
+
+.early-double, .late-double { color: red; }
+.early-single, .late-single { color: orange; }
+.e-perfect, .l-perfect { color: yellow; }
+.perfect { color: lightgreen; }
+
+.bottom-row {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.time-info {
+  color: var(--color-white-t60);
+  font-size: 0.9rem;
+  min-width: 5rem;
+  text-align: right;
+}
+
+.video-link {
   display: flex;
   align-items: center;
-  justify-content: space-around;
-  flex: 1;
-  height: 100%;
-  background-color: var(--color-purple-1);
-  border: none;
-  border-radius: 3px;
-  color: var(--color-white);
-  margin: 0;
-  text-align: center;
   padding: 0.5rem;
-  flex-wrap: wrap;
-  min-width: 13rem;
-  width: 13rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
 }
-.clear-card .judgements span {
-  display: inline-block;
-  color: var(--color-white);
-  font-weight: bold;
-  font-size: 0.9rem;
-  padding: 0 0.1rem;
+
+.video-link:hover {
+  background-color: var(--color-white-t10);
+}
+
+.video-link svg {
+  width: 1.5rem;
+  height: 1.5rem;
+}
+
+/* Feeling Rating */
+.feeling-rating {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+.feeling-label {
+  color: var(--color-white-t80);
+}
+
+.feeling-container {
+  position: relative;
+  flex: 1;
+}
+
+.feeling-content {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.feeling-content:hover {
+  background-color: var(--color-white-t10);
+}
+
+.feeling-text {
+  transition: color 0.2s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.clear-card.expanded .feeling-text {
+  white-space: normal;
+}
+
+.expand-arrow {
+  font-size: 0.8rem;
+  color: var(--color-white-t60);
+  transition: transform 0.3s ease;
+}
+
+.expand-arrow.collapse {
+  transform: rotate(180deg);
+}
+
+
+@media (max-width: 768px) {
+
+  .card-section {
+    flex-direction: column;
+  }
+  
+  .score-info {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .judgements {
+    flex-wrap: wrap;
+    justify-content: center;
+    margin: 0.5rem 0;
+    width: 100%;
+  }
+
+  .time-info {
+    text-align: left;
+  }
+}
+
+@media (max-width: 480px) {
+  .clear-card {
+    padding: 0.75rem;
+    gap: 0.75rem;
+  }
+  
+  .player-info {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+  
+  .name-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .score-info {
+    gap: 0.75rem;
+  }
 }

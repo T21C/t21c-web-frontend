@@ -74,6 +74,10 @@
 }
 .player-page .player-picture-container {
   flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
 }
 
 .player-page .player-picture {
@@ -256,5 +260,11 @@
   font-size: 0.9em;
   color: var(--color-white-t60);
   margin-top: -5px;
+}
+
+.player-page .player-id {
+  font-size: 0.8rem;
+  color: var(--color-white-t60);
+  text-align: center;
 }
 

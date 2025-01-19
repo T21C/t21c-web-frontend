@@ -145,7 +145,8 @@ const ProfilePage = () => {
                         <img src={playerData.pfp} referrerPolicy="no-referrer" className="player-picture" alt="" />
                       ) : (
                         <DefaultAvatar className="player-picture" />
-                        )}
+                      )}
+                      <div className="player-id">ID: {playerData.id}</div>
                     </div>
                     <div className="player-info">
                       <div className="player-name-rank">
@@ -192,7 +193,7 @@ const ProfilePage = () => {
                     </div>
                   </div>
                   <div className="edit-button-container">
-                  {user && user.id && (
+                  {user && ((!playerId && user.playerId) || playerId === user.playerId) && (
                     <button 
                       className="edit-button"
                       onClick={() => navigate('/profile/edit')}
