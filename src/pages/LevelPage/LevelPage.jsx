@@ -190,10 +190,14 @@ const LevelPage = () => {
             cancelToken: new axios.CancelToken((c) => (cancel = c)),
           }
         );
-
-        console.log('Received level by ID:', response.data?.id);
-        setLevelsData([response.data]);
-        setHasMore(false);
+        if (response.data) {
+          console.log('Received level by ID:', response.data?.id);
+          setLevelsData([response.data]);
+          setHasMore(false);
+        } else {
+          setLevelsData([]);
+          setHasMore(false);
+        }
       } catch (error) {
         if (!axios.isCancel(error)) {
           console.error('Error fetching level by ID:', error);
