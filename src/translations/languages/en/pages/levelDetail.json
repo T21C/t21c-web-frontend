@@ -1,25 +1,26 @@
 {
   "meta": {
     "title": "{{song}} | TUF",
-    "description": "Chart of {{song}} by {{creator}}"
+    "description": "{{song}} by {{creator}}"
   },
   "banners": {
     "deleted": "This level has been deleted",
-    "hidden": "This level has been hidden"
+    "hidden": "This level is currently hidden"
   },
   "buttons": {
-    "edit": "Edit level details"
+    "edit": "Edit Level",
+    "close": "Close"
   },
   "links": {
-    "download": "Download level",
-    "workshop": "View on Workshop",
+    "download": "Download Level",
+    "workshop": "Steam Workshop",
     "thumbnailNotFound": {
-      "text": "Thumbnail not found",
+      "text": "Video thumbnail not found",
       "goToVideo": "Go to video"
     }
   },
   "aliases": {
-    "header": "Known aliases:"
+    "header": "Alternative Names"
   },
   "stats": {
     "firstClear": {
@@ -32,8 +33,8 @@
     },
     "highestSpeed": {
       "label": "Highest Speed",
-      "value": "{{player}} | {{speed}}×",
-      "noSpeed": "-"
+      "value": "{{player}} | {{speed}}x",
+      "noSpeed": "No speed mods used"
     },
     "highestAccuracy": {
       "label": "Highest Accuracy",
@@ -45,6 +46,19 @@
     },
     "waiting": "Loading..."
   },
+  "info": {
+    "title": "Level Information",
+    "team": "Team",
+    "creator": "Creator",
+    "roles": {
+      "charter": "Charter(s)",
+      "vfxer": "VFXer(s)"
+    },
+    "difficulty": "Difficulty",
+    "baseScore": "Base Score",
+    "aliases": "Aliases",
+    "comments": "Comments"
+  },
   "leaderboard": {
     "header": "Leaderboard",
     "notBeaten": "This level hasn't been beaten yet!",
@@ -55,6 +69,6 @@
     }
   },
   "dialog": {
-    "fullInfo": "View Full Info"
+    "fullInfo": "Full Info"
   }
 } 

@@ -72,6 +72,142 @@ const AliasesDropdown = ({ field, aliases, show, onClose }) => {
   );
 };
 
+const FullInfoPopup = ({ level, onClose }) => {
+  const { t } = useTranslation('pages');
+  const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
+
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [onClose]);
+
+  const formatCredits = () => {
+    if (!level.levelCredits || level.levelCredits.length === 0) {
+      return (
+        <div className="each-info">
+          <span>{tLevel('info.creator')}:</span>
+          <span>{level.creator}</span>
+        </div>
+      );
+    }
+
+    const creditsByRole = level.levelCredits.reduce((acc, credit) => {
+      const role = credit.role.toLowerCase();
+      if (!acc[role]) {
+        acc[role] = [];
+      }
+      const creatorName = credit.creator.aliases?.length > 0 
+        ? `${credit.creator.name} (${credit.creator.aliases.join(', ')})`
+        : credit.creator.name;
+      acc[role].push(creatorName);
+      return acc;
+    }, {});
+
+    const charters = creditsByRole['charter'] || [];
+    const vfxers = creditsByRole['vfxer'] || [];
+
+    return (
+      <div className="credits-grid">
+        <div className="credits-column">
+          <div className="role-header">{tLevel('info.roles.charter')}</div>
+          {charters.map((charter, index) => (
+            <div key={`charter-${index}`} className="creator-name">{charter}</div>
+          ))}
+        </div>
+        <div className="credits-column">
+          <div className="role-header">{tLevel('info.roles.vfxer')}</div>
+          {vfxers.map((vfxer, index) => (
+            <div key={`vfxer-${index}`} className="creator-name">{vfxer}</div>
+          ))}
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <>
+      <div className="close-outer-levels" onClick={onClose}></div>
+      <div className="levels-dialog dialog-scale-up">
+        <div className="dialog">
+          <div className="header">
+            <h2>{level.song}</h2>
+            <p>{level.artist}</p>
+            <button className="close-button" onClick={onClose} title={tLevel('buttons.close')}>
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            </button>
+          </div>
+          <div className="body">
+            <div className="team-info">
+              {level.teamObject ? (
+                <div className="each-info">
+                  <span>{tLevel('info.team')}:</span>
+                  <span>{level.teamObject.name}</span>
+                </div>
+              ) : null}
+              {formatCredits()}
+              <div className="each-info">
+                <span>{tLevel('info.difficulty')}:</span>
+                <span>{level.difficulty.name}</span>
+              </div>
+              {level.baseScore && (
+                <div className="each-info">
+                  <span>{tLevel('info.baseScore')}:</span>
+                  <span>{level.baseScore}</span>
+                </div>
+              )}
+              {level.aliases && level.aliases.length > 0 && (
+                <div className="each-info">
+                  <span>{tLevel('info.aliases')}:</span>
+                  <span>
+                    {level.aliases.map(alias => 
+                      `${alias.field}: ${alias.alias}`
+                    ).join(', ')}
+                  </span>
+                </div>
+              )}
+              {level.publicComments && (
+                <div className="each-info">
+                  <span>{tLevel('info.comments')}:</span>
+                  <span>{level.publicComments}</span>
+                </div>
+              )}
+            </div>
+            <div className="links">
+              {level.videoLink && (
+                <a href={level.videoLink} target="_blank" rel="noopener noreferrer" title={tLevel('links.thumbnailNotFound.goToVideo')}>
+                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#ffffff" strokeWidth="1.5"/>
+                    <path d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112z" stroke="#ffffff" strokeWidth="1.5"/>
+                  </svg>
+                </a>
+              )}
+              {level.dlLink && (
+                <a href={level.dlLink} target="_blank" rel="noopener noreferrer" title={tLevel('links.download')}>
+                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M17 17H17.01M17.4 14H18C18.9319 14 19.3978 14 19.7654 14.1522C20.2554 14.3552 20.6448 14.7446 20.8478 15.2346C21 15.6022 21 16.0681 21 17C21 17.9319 21 18.3978 20.8478 18.7654C20.6448 19.2554 20.2554 19.6448 19.7654 19.8478C19.3978 20 18.9319 20 18 20H6C5.06812 20 4.60218 20 4.23463 19.8478C3.74458 19.6448 3.35523 19.2554 3.15224 18.7654C3 18.3978 3 17.9319 3 17C3 16.0681 3 15.6022 3.15224 15.2346C3.35523 14.7446 3.74458 14.3552 4.23463 14.1522C4.60218 14 5.06812 14 6 14H6.6M12 15V4M12 15L9 12M12 15L15 12" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                </a>
+              )}
+              {level.workshopLink && (
+                <a href={level.workshopLink} target="_blank" rel="noopener noreferrer" title={tLevel('links.workshop')}>
+                  <SteamIcon color="#ffffff" size={50} />
+                </a>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+};
+
 const LevelDetailPage = () => {
   const { t } = useTranslation('pages');
   const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
@@ -242,6 +378,61 @@ const LevelDetailPage = () => {
     );
   };
 
+  const formatCreatorDisplay = () => {
+    // If team exists, it takes priority
+    if (res.level.teamObject) {
+      return res.level.teamObject.name;
+    }
+
+    // If no credits, fall back to creator field
+    if (!res.level.levelCredits || res.level.levelCredits.length === 0) {
+      return res.level.creator;
+    }
+
+    // Group credits by role
+    const creditsByRole = res.level.levelCredits.reduce((acc, credit) => {
+      const role = credit.role.toLowerCase();
+      if (!acc[role]) {
+        acc[role] = [];
+      }
+      // Use the creator's first alias if available, otherwise use name
+      const creatorName = credit.creator.aliases?.length > 0 
+        ? credit.creator.aliases[0]
+        : credit.creator.name;
+      acc[role].push(creatorName);
+      return acc;
+    }, {});
+
+    const charters = creditsByRole['charter'] || [];
+    const vfxers = creditsByRole['vfxer'] || [];
+
+    // Handle different cases based on number of credits
+    if (res.level.levelCredits.length >= 3) {
+      const parts = [];
+      if (charters.length > 0) {
+        parts.push(charters.length === 1 
+          ? charters[0] 
+          : `${charters[0]} & ${charters.length - 1} more`);
+      }
+      if (vfxers.length > 0) {
+        parts.push(vfxers.length === 1
+          ? vfxers[0]
+          : `${vfxers[0]} & ${vfxers.length - 1} more`);
+      }
+      return parts.join(' | ');
+    } else if (res.level.levelCredits.length === 2) {
+      if (charters.length === 2) {
+        return `${charters[0]} & ${charters[1]}`;
+      }
+      if (charters.length === 1 && vfxers.length === 1) {
+        return `${charters[0]} | ${vfxers[0]}`;
+      }
+    }
+
+    // Single credit or fallback
+    return res.level.levelCredits[0]?.creator.name || res.level.creator;
+  };
+
   //if (!res || player.length === 0 || highSpeed === null || highAcc === null || highScore === null || displayedPlayers.length === 0)
  if (res == null)
     return (
@@ -305,7 +496,7 @@ const LevelDetailPage = () => {
               {renderTitleWithAliases(res.level.song, 'song')}
               <p>
                 #{id}&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
-                {res.level.team ? res.level.team : res.level.creator}
+                {formatCreatorDisplay()}
                 &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
                 {renderTitleWithAliases(res.level.artist, 'artist')}
               </p>
@@ -535,6 +726,13 @@ const LevelDetailPage = () => {
             }
           }));
         }}
+      />
+    )}
+
+    {openDialog && (
+      <FullInfoPopup
+        level={res.level}
+        onClose={changeDialogState}
       />
     )}
   </>

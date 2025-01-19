@@ -18,6 +18,61 @@ const LevelCard = ({index, level: initialLevel, legacyMode, user}) => {
   const { difficultyDict } = useDifficultyContext();
   const difficultyInfo = difficultyDict[level.difficulty.id];
 
+  const formatCreatorDisplay = () => {
+    // If team exists, it takes priority
+    if (level.team) {
+      return level.team;
+    }
+
+    // If no credits, fall back to creator field
+    if (!level.levelCredits || level.levelCredits.length === 0) {
+      return level.creator;
+    }
+
+    // Group credits by role
+    const creditsByRole = level.levelCredits.reduce((acc, credit) => {
+      const role = credit.role.toLowerCase();
+      if (!acc[role]) {
+        acc[role] = [];
+      }
+      // Use the creator's first alias if available, otherwise use name
+      const creatorName = credit.creator.aliases?.length > 0 
+        ? credit.creator.aliases[0]
+        : credit.creator.name;
+      acc[role].push(creatorName);
+      return acc;
+    }, {});
+
+    const charters = creditsByRole['charter'] || [];
+    const vfxers = creditsByRole['vfxer'] || [];
+
+    // Handle different cases based on number of credits
+    if (level.levelCredits.length >= 3) {
+      const parts = [];
+      if (charters.length > 0) {
+        parts.push(charters.length === 1 
+          ? charters[0] 
+          : `${charters[0]} & ${charters.length - 1} more`);
+      }
+      if (vfxers.length > 0) {
+        parts.push(vfxers.length === 1
+          ? vfxers[0]
+          : `${vfxers[0]} & ${vfxers.length - 1} more`);
+      }
+      return parts.join(' | ');
+    } else if (level.levelCredits.length === 2) {
+      if (charters.length === 2) {
+        return `${charters[0]} & ${charters[1]}`;
+      }
+      if (charters.length === 1 && vfxers.length === 1) {
+        return `${charters[0]} | ${vfxers[0]}`;
+      }
+    }
+
+    // Single credit or fallback
+    return level.levelCredits[0]?.creator.name || level.creator;
+  };
+
   const handleCheckboxChange = async (e) => {
     const newToRate = e.target.checked;
     setToRate(newToRate);
@@ -105,7 +160,7 @@ const LevelCard = ({index, level: initialLevel, legacyMode, user}) => {
 
         <div className="artist-wrapper">
           <p className="level-exp">{tCard('creator')}</p>
-          <div className="level-desc">{level.team ? level.team : level.creator}</div>
+          <div className="level-desc">{formatCreatorDisplay()}</div>
         </div>
 
         {(level.clears || level.clears === 0) && (

@@ -427,33 +427,70 @@
   }
 }
 .close-outer-levels {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: rgba(0, 0, 0, 0.5);
-  z-index: 500;
+  z-index: 499;
 }
 
 .levels-dialog {
-  color: var(--color-black);
-  color: var(--color-white);
   position: fixed;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 1000;
-  max-width: 30rem;
-  width: 100%;
-  animation: none;
+  z-index: 500;
+  max-width: 40rem;
+  width: 90%;
 }
+
 .levels-dialog .dialog {
   background-color: var(--color-purple-2);
   border-radius: 5px;
-  margin: 0 1rem;
   overflow: hidden;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 501;
 }
+
 .levels-dialog .dialog .header {
   word-wrap: break-word;
   padding: 1rem;
   position: relative;
+  background-size: cover;
+  background-position: center;
+  background-color: var(--color-purple-3);
 }
+
+.levels-dialog .dialog .header .close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: var(--color-white);
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.levels-dialog .dialog .header .close-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.levels-dialog .dialog .header .close-button svg {
+  width: 24px;
+  height: 24px;
+}
+
 .levels-dialog .dialog .header:before {
   content: "";
   position: absolute;
@@ -465,27 +502,63 @@
   background-color: var(--color-black-t60);
   z-index: 1;
 }
-.levels-dialog .dialog .header h2, .levels-dialog .dialog .header p {
+
+.levels-dialog .dialog .header h2,
+.levels-dialog .dialog .header p {
   position: relative;
   z-index: 2;
+  margin: 0;
 }
+
+.levels-dialog .dialog .header h2 {
+  font-size: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
 .levels-dialog .dialog .body {
   padding: 1rem;
   color: var(--color-white);
+  overflow-y: auto;
+  background-color: var(--color-purple-2);
 }
-.levels-dialog .dialog .body .diff {
-  text-align: center;
+
+.levels-dialog .dialog .body .credits-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+  padding: 1rem;
+  background-color: var(--color-white-t10);
+  border-radius: 4px;
+}
+
+.levels-dialog .dialog .body .credits-column {
   display: flex;
-  justify-content: space-around;
-  margin-bottom: 0.5rem;
-  border-bottom: 2px solid var(--color-white);
-  padding: 0.5rem;
+  flex-direction: column;
+  gap: 0.5rem;
 }
+
+.levels-dialog .dialog .body .role-header {
+  font-weight: bold;
+  color: var(--color-white);
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--color-white-t20);
+  margin-bottom: 0.5rem;
+}
+
+.levels-dialog .dialog .body .creator-name {
+  padding: 0.25rem 0.5rem;
+  background-color: var(--color-white-t10);
+  border-radius: 3px;
+  font-size: 0.9rem;
+}
+
 .levels-dialog .dialog .body .team-info {
   margin-bottom: 1rem;
-  border-bottom: 2px solid var(--color-white);
+  border-bottom: 2px solid var(--color-white-t20);
   padding: 0.5rem;
 }
+
 .levels-dialog .dialog .body .team-info .each-info {
   margin-bottom: 0.5rem;
   display: grid;
@@ -493,19 +566,35 @@
   grid-template-columns: 1fr 5fr;
   align-items: center;
 }
+
+.levels-dialog .dialog .body .team-info .each-info span:first-child {
+  font-weight: bold;
+  color: var(--color-white-t80);
+}
+
 .levels-dialog .dialog .body .links {
   display: flex;
   justify-content: center;
   gap: 2rem;
   align-items: center;
+  padding-top: 1rem;
+  border-top: 2px solid var(--color-white-t20);
 }
+
+.levels-dialog .dialog .body .links a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s;
+}
+
+.levels-dialog .dialog .body .links a:hover {
+  transform: scale(1.1);
+}
+
 .levels-dialog .dialog .body .links svg {
   width: 50px;
   height: 50px;
-  transition: all 0.1s linear;
-}
-.levels-dialog .dialog .body .links svg:hover {
-  transform: scale(1.2);
 }
 
 .dialog-scale-up {
@@ -622,4 +711,15 @@
 
 .level-detail-page .level-info .alias-value {
   font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .levels-dialog .dialog .body .credits-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .levels-dialog .dialog .body .team-info .each-info {
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
 }/*# sourceMappingURL=leveldetailpage.css.map */
