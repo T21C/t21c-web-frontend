@@ -29,7 +29,7 @@ const Navigation = ({ children }) => {
   let languages = {
     en: { display: "English", countryCode: "us", implemented: true },
     kr: { display: "한국어", countryCode: "kr", implemented: false },
-    cn: { display: "中文", countryCode: "cn", implemented: false },
+    cn: { display: "中文 (partially)", countryCode: "cn", implemented: true },
     jp: { display: "日本語", countryCode: "jp", implemented: false },
     id: { display: "Bahasa Indonesia", countryCode: "id", implemented: false },
     ru: { display: "Русский", countryCode: "ru", implemented: false },
