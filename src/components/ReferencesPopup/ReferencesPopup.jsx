@@ -226,6 +226,9 @@ const ReferencesPopup = ({ onClose }) => {
                   >
                     {difficultyInfo.name}
                   </h3>
+                  <h4>
+                    {difficultyInfo.id < 53 ? `${difficultyInfo.baseScore}PP` : ''}
+                  </h4>
                 </div>
                 <div className="header-right">
                   <span className="level-count">
