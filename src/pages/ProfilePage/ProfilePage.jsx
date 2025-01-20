@@ -265,7 +265,7 @@ const ProfilePage = () => {
                   <div className="scores-list">
                     {playerData.passes.filter(score => !score.isDeleted && !score.level?.isHidden).sort((a, b) => b.scoreV2 - a.scoreV2).map((score, index) => (
                       <li key={index}>
-                        <ScoreCard scoreData={score} />
+                        <ScoreCard scoreData={score} topScores={playerData.topScores} />
                       </li>
                     ))}
                   </div>

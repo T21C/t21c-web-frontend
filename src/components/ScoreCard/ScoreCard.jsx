@@ -7,7 +7,7 @@ import { formatSpeed, formatScore } from "../../components/Misc/Utility"
 
 
 // eslint-disable-next-line react/prop-types
-const ScoreCard = ({scoreData}) => {
+const ScoreCard = ({scoreData, topScores}) => {
   const {t} = useTranslation('components');
   const tScore = (key) => t(`score.card.${key}`);
   const navigate = useNavigate()
@@ -33,6 +33,7 @@ const ScoreCard = ({scoreData}) => {
       <div className="score-wrapper">
           <p className="score-exp">{tScore('labels.score')}</p>
           <p className='score-desc'>{formatScore(scoreData.scoreV2)}</p>
+          {topScores.find(score => score.id === scoreData.id) && <p className="score-impact">+{topScores.find(score => score.id === scoreData.id).impact.toFixed(2)}</p>}
       </div>
       <div className="acc-wrapper">
           <p className="score-exp">{tScore('labels.accuracy')}</p>

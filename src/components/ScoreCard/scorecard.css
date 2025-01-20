@@ -92,6 +92,16 @@
   text-shadow: 0 0 0px #000;
 }
 
+.score-card .score-impact {
+  width: fit-content;
+  padding: 0.2rem 0.5rem;
+  background-color: #00ff0033;
+  border-radius: 10px;
+  color: #0f0;
+  margin-top: 0.2rem;
+  font-weight: 700;
+  opacity: 0.9;
+}
 
 @media (max-width: 400px) {
   .score-card .score-exp {
