@@ -42,6 +42,30 @@
 .level-page .level-body .input-option svg:focus {
   outline: none;
 }
+.level-page .level-body .input-option .help-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2rem;
+  white-space: nowrap;
+}
+.level-page .level-body .input-option .help-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.level-page .level-body .input-option .help-button svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  background: none;
+  padding: 0;
+}
 .level-page .level-body .filter {
   position: relative;
   z-index: 100;
@@ -637,6 +661,22 @@
   .level-page .level-body .three-state-slider-container {
     width: auto;
     min-width: 200px;
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .level-page .level-body .input-option .help-button {
+    padding: 0.5rem;
+  }
+  
+  .level-page .level-body .input-option .help-button span {
+    display: none;
+  }
+  
+  .level-page .level-body .input-option .help-button svg {
+    width: 1.4rem;
+    height: 1.4rem;
   }
 }
 /*# sourceMappingURL=levelpage.css.map */

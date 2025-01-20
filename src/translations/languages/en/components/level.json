@@ -1,0 +1,38 @@
+{
+  "helpPopup": {
+    "title": "Search Help",
+    "closeButton": "Close",
+    "sections": {
+      "search": {
+        "title": "Field-Specific Search",
+        "description": "You can search for specific fields using two different operators: colon (:) for partial matches and equals (=) for exact matches.",
+        "examples": {
+          "title": "Field Examples",
+          "songField": "Use 'song:Ex' for partial match or 'song=Example' for exact match",
+          "artistField": "Use 'artist:Art' for partial match or 'artist=Artist' for exact match",
+          "charterField": "Use 'charter:Char' for partial match or 'charter=Charter' for exact match"
+        }
+      },
+      "operators": {
+        "title": "Search Operators",
+        "description": "You can combine multiple search conditions using operators.",
+        "examples": {
+          "title": "Operator Examples",
+          "and": "Search for levels that match both conditions (AND)",
+          "or": "Search for levels that match either condition (OR)",
+          "complex": "Complex search combining AND and OR conditions"
+        }
+      },
+      "tips": {
+        "title": "Search Tips",
+        "points": {
+          "caseSensitive": "Searches are case-insensitive - 'SONG' and 'song' will give the same results",
+          "partial": "Colon (:) allows partial matches - 'song:Ex' will match 'Example'",
+          "exact": "Equals (=) requires exact matches - 'song=Example' will only match 'Example'",
+          "spaces": "Spaces are allowed in search terms - 'song:Example Song' works",
+          "order": "The order of conditions doesn't matter within each group"
+        }
+      }
+    }
+  }
+} 

@@ -20,6 +20,7 @@ import adminPopups from './adminPopups.json';
 import levelPopups from './levelPopups.json';
 import passPopups from './passPopups.json';
 import raterManagement from './raterManagement.json';
+import level from './level.json';
 
 const translations = {
   navigation,
@@ -43,7 +44,8 @@ const translations = {
   adminPopups,
   levelPopups,
   passPopups,
-  raterManagement
+  raterManagement,
+  level
 };
 
 export default translations; 

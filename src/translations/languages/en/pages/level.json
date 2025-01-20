@@ -1,36 +1,32 @@
 {
   "meta": {
-    "title": "Level List",
-    "description": "Browse and discover ADOFAI custom levels"
+    "title": "Levels - TUF",
+    "description": "Browse and search through TUF levels"
   },
-  "loading": {
-    "difficulties": "Loading difficulties..."
+  "buttons": {
+    "searchHelp": "Search Help"
   },
   "input": {
-    "placeholder": "Search by song name, artist, or charter..."
+    "placeholder": "Search levels..."
   },
   "toolTip": {
-    "legacy": "Toggle legacy difficulty display",
-    "filter": "Filter results",
-    "sort": "Sort results",
-    "reset": "Reset all filters",
-    "recentAsc": "Sort by oldest first",
-    "recentDesc": "Sort by newest first",
-    "difficultyAsc": "Sort by difficulty ascending",
-    "difficultyDesc": "Sort by difficulty descending",
-    "random": "Random sort",
-    "clearsAsc": "Sort by least cleared",
-    "clearsDesc": "Sort by most cleared"
+    "search": "Learn how to use advanced search",
+    "filter": "Filter levels",
+    "sort": "Sort levels",
+    "reset": "Reset all filters"
   },
   "settingExp": {
     "headerFilter": "Filter Settings",
     "headerSort": "Sort Settings",
-    "sortRecent": "Recent",
-    "filterDiffs": "Difficulty",
-    "sortRandom": "Random",
-    "sortClears": "Clears"
+    "filterDiffs": "Sort by Difficulty",
+    "sortRecent": "Sort by Date",
+    "sortRandom": "Random Sort",
+    "sortClears": "Sort by Clears"
   },
   "infScroll": {
-    "end": "You've reached the end!"
+    "end": "No more levels to load"
+  },
+  "loading": {
+    "difficulties": "Loading difficulties..."
   }
 } 
