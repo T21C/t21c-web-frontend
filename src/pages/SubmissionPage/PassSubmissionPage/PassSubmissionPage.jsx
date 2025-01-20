@@ -13,6 +13,7 @@ import { validateFeelingRating, validateSpeed, validateNumber } from "@/componen
 import { useTranslation } from "react-i18next";
 import api from "@/utils/api";
 import axios from 'axios';
+import StagingModeWarning from "../../../components/StagingModeWarning/StagingModeWarning";
 
 
 const PassSubmissionPage = () => {
@@ -461,6 +462,7 @@ const PassSubmissionPage = () => {
       <CompleteNav />
       <div className="background-level"></div>
       <div className="form-container">
+        <StagingModeWarning />
         <div className={`result-message ${showMessage ? 'visible' : ''}`} 
           style={{backgroundColor: 
           ( success? "#2b2" :

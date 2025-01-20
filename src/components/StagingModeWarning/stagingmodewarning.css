@@ -1,0 +1,36 @@
+.staging-mode-warning {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  gap: 12px;
+  padding: 16px;
+  background-color: rgba(255, 193, 7, 0.1);
+  border: 1px solid #ffc107;
+  border-radius: 8px;
+  margin-top: 16px;
+  z-index: 1;
+}
+
+.staging-mode-warning .warning-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.staging-mode-warning .warning-content {
+  flex: 1;
+}
+
+.staging-mode-warning h4 {
+  margin: 0 0 8px 0;
+  color: #ffc107;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.staging-mode-warning p {
+  margin: 0;
+  color: #bbb;
+  font-size: 14px;
+  line-height: 1.5;
+}

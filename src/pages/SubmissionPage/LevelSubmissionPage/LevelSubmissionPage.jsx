@@ -7,6 +7,7 @@ import { getDriveFromYt, getVideoDetails } from "@/Repository/RemoteRepository";
 import { useAuth } from "@/contexts/AuthContext";
 import { validateFeelingRating } from "@/components/Misc/Utility";
 import { useTranslation } from "react-i18next";
+import StagingModeWarning from "../../../components/StagingModeWarning/StagingModeWarning";
 
 const LevelSubmissionPage = () => {
   const initialFormState = {
@@ -160,6 +161,7 @@ const LevelSubmissionPage = () => {
       <CompleteNav />
       <div className="background-level"></div>
       <div className="form-container">
+        <StagingModeWarning />
         <div className={`result-message ${showMessage ? 'visible' : ''}`} 
         style={{backgroundColor: 
         ( success? "#2b2" :

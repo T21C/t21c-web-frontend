@@ -171,7 +171,7 @@
   z-index: 10;
   aspect-ratio: 16/9;
   height: 350px; /* Fixed height */
-  place-content: center;
+  display:grid;
   text-shadow: 0px 0px 4px black;
   overflow: hidden; /* Hide any overflow */
   transition: box-shadow 0.3s ease; /* Smooth transition for shadow */
@@ -218,10 +218,14 @@
 
 .level-submission-page .thumbnail-container h2 {
   position: absolute;
-  top: 30%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translateY(-15px);
   z-index: 10;
+  height: 0;
+  align-content: center;
+  justify-content: center;
+  display: flex;
+  justify-self: center;
+  align-self: center;
 }
 
 .level-submission-page .info {
