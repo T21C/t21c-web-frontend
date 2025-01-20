@@ -66,6 +66,8 @@ const LevelPage = () => {
   } = useContext(LevelContext);
 
   const [showHelpPopup, setShowHelpPopup] = useState(false);
+  const [viewMode, setViewMode] = useState('normal');
+  const [cardSize, setCardSize] = useState('medium');
 
   // Filter difficulties by type
   const pguDifficulties = difficulties.filter(d => d.type === 'PGU');
@@ -585,6 +587,72 @@ const LevelPage = () => {
           </div>
         </div>
 
+        <div className="view-mode-section">
+          <p>{tLevel('settingExp.viewMode')}</p>
+          <div className="view-mode-buttons">
+            <button 
+              className={`view-mode-button ${viewMode === 'normal' ? 'active' : ''}`}
+              onClick={() => {
+                setViewMode('normal');
+                setPageNumber(0);
+                setLevelsData([]);
+                setForceUpdate(f => !f);
+              }}
+              title={tLevel('toolTip.normalView')}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 5h18v2H3V5zm0 6h18v2H3v-2zm0 6h18v2H3v-2z"/>
+              </svg>
+            </button>
+            <button 
+              className={`view-mode-button ${viewMode === 'compact' ? 'active' : ''}`}
+              onClick={() => {
+                setViewMode('compact');
+                setPageNumber(0);
+                setLevelsData([]);
+                setForceUpdate(f => !f);
+              }}
+              title={tLevel('toolTip.compactView')}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 4h18v1H3V4zm0 7h18v1H3v-1zm0 7h18v1H3v-1z"/>
+              </svg>
+            </button>
+            <button 
+              className={`view-mode-button ${viewMode === 'grid' ? 'active' : ''}`}
+              onClick={() => {
+                setViewMode('grid');
+                setPageNumber(0);
+                setLevelsData([]);
+                setForceUpdate(f => !f);
+              }}
+              title={tLevel('toolTip.gridView')}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zm0 11h7v7h-7v-7zm-11 0h7v7H3v-7z"/>
+              </svg>
+            </button>
+          </div>
+
+          {viewMode === 'grid' && (
+            <div className="size-slider-container">
+              <p>{tLevel('settingExp.cardSize')}</p>
+              <input
+                type="range"
+                min="0"
+                max="2"
+                step="1"
+                className="size-slider"
+                value={cardSize === 'small' ? 0 : cardSize === 'medium' ? 1 : 2}
+                onChange={(e) => {
+                  const sizes = ['small', 'medium', 'large'];
+                  setCardSize(sizes[e.target.value]);
+                }}
+              />
+            </div>
+          )}
+        </div>
+
         <InfiniteScroll
           style={{ paddingBottom: "25rem", overflow: "visible" }}
           dataLength={levelsData.length}
@@ -596,14 +664,18 @@ const LevelPage = () => {
               <b>{tLevel('infScroll.end')}</b>
             </p>}
         >
-          {levelsData.map((l, index) => (
-            <LevelCard
-              key={index}
-              level={l}
-              legacyMode={legacyDiff}
-              user={user}
-            />
-          ))}
+          <div className={viewMode === 'grid' ? 'level-cards-grid' : ''}>
+            {levelsData.map((l, index) => (
+              <LevelCard
+                key={index}
+                level={l}
+                legacyMode={legacyDiff}
+                user={user}
+                displayMode={viewMode}
+                size={cardSize}
+              />
+            ))}
+          </div>
         </InfiniteScroll>
 
         {showHelpPopup && (

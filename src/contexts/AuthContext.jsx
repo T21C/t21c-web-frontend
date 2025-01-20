@@ -11,6 +11,25 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
+  // Listen for auth events
+  useEffect(() => {
+    const handlePermissionChange = () => {
+      fetchUser();
+    };
+
+    const handleLogout = () => {
+      setUser(null);
+    };
+
+    window.addEventListener('auth:permission-changed', handlePermissionChange);
+    window.addEventListener('auth:logout', handleLogout);
+
+    return () => {
+      window.removeEventListener('auth:permission-changed', handlePermissionChange);
+      window.removeEventListener('auth:logout', handleLogout);
+    };
+  }, []);
+
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
@@ -35,6 +54,15 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  // Update token utility function
+  const updateToken = (token) => {
+    if (token) {
+      localStorage.setItem('token', token);
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+      fetchUser();
+    }
+  };
+
   const login = async (emailOrUsername, password, captchaToken = null) => {
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_LOGIN}`, {
@@ -44,9 +72,7 @@ export const AuthProvider = ({ children }) => {
       });
 
       const { token } = response.data;
-      localStorage.setItem('token', token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      await fetchUser();
+      updateToken(token);
       return response.data;
     } catch (error) {
       throw error;
@@ -125,7 +151,8 @@ export const AuthProvider = ({ children }) => {
     unlinkProvider,
     fetchUser,
     updateProfile,
-    changePassword
+    changePassword,
+    updateToken
   };
 
   return (

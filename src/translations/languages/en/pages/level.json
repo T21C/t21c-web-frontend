@@ -13,7 +13,17 @@
     "search": "Learn how to use advanced search",
     "filter": "Filter levels",
     "sort": "Sort levels",
-    "reset": "Reset all filters"
+    "reset": "Reset all filters",
+    "normalView": "Normal View",
+    "compactView": "Compact View",
+    "gridView": "Grid View",
+    "recentAsc": "Sort by oldest first",
+    "recentDesc": "Sort by newest first",
+    "diffAsc": "Sort by easiest first",
+    "diffDesc": "Sort by hardest first",
+    "clearsAsc": "Sort by least clears first",
+    "clearsDesc": "Sort by most clears first",
+    "random": "Random sort"
   },
   "settingExp": {
     "headerFilter": "Filter Settings",
@@ -21,7 +31,9 @@
     "filterDiffs": "Sort by Difficulty",
     "sortRecent": "Sort by Date",
     "sortRandom": "Random Sort",
-    "sortClears": "Sort by Clears"
+    "sortClears": "Sort by Clears",
+    "viewMode": "View Mode",
+    "cardSize": "Card Size"
   },
   "infScroll": {
     "end": "No more levels to load"

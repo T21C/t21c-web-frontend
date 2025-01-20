@@ -1,7 +1,8 @@
 .level-card {
   position: relative;
-  display:flex;
+  display: flex;
   flex-direction: row;
+  transition: all 0.2s ease-in-out;
 }
 
 .level-card-wrapper {
@@ -16,7 +17,7 @@
   align-items: center;
   flex-wrap: wrap;
   border-bottom: 1px solid;
-  border-color: var(--color-gray-3);
+  border-color: #aaa;
   transition: all 0.1s ease-in-out;
   justify-items: space-between;
   flex-grow: 1;
@@ -208,4 +209,222 @@
 
 .level-card .restore-button:hover {
   background-color: #218838;
+}
+
+/* Normal mode - existing styles remain the same */
+.level-card.normal {
+  width: 100%;
+}
+
+/* Compact mode */
+.level-card.compact {
+  font-size: 0.9rem;
+}
+
+.level-card.compact .level-card-wrapper {
+  padding: 0.15rem 0.5rem;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+
+}
+
+.level-card.compact .img-wrapper {
+  width: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.level-card.compact .level-exp {
+  display: none;
+}
+
+.level-card.compact .downloads-wrapper a {
+  height: 1.8rem;
+  width: 1.8rem;
+}
+
+.level-card.compact .toRate-checkbox {
+  margin: 0.5rem;
+}
+
+.level-card.compact .toRate-checkbox input {
+  width: 1.2rem;
+  height: 1.2rem;
+}
+
+/* Grid mode */
+.level-card.grid {
+  width: 300px;
+  margin: 0.5rem;
+  border-radius: 8px;
+  overflow: visible;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.7);
+  transition: transform 0.2s ease;
+  position: relative;
+}
+
+.level-card.grid .level-card-wrapper {
+  flex-direction: column;
+  padding: 0;
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 8px;
+  overflow: hidden;
+  border-bottom: unset;
+  display: flex;
+}
+
+.level-card.grid .difficulty-icon-wrapper {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+}
+
+.level-card.grid .difficulty-icon-wrapper img {
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+
+.level-card.grid::before {
+  content: '';
+  position: absolute;
+  left: 40px;
+  top: 0;
+  height: 100%;
+  width: 4px;
+  background-color: var(--difficulty-color, #fff);
+  z-index: 2;
+}
+
+.level-card.grid .content-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 40px;
+  right: 0;
+  background: rgba(0, 0, 0, 0.8);
+  padding: 0.75rem;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height:100%;
+}
+
+.level-card.grid .title-section {
+  font-size: 1.1rem;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+.level-card.grid .creator-section {
+  font-size: 0.9rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  opacity: 0.8;
+}
+
+.level-card.grid .dropdown-tongue {
+  position: absolute;
+  left: 4px;
+  right: 4px;
+  top: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  padding: 0;
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 10;
+}
+
+.level-card.grid:hover .dropdown-tongue {
+  max-height: 100px;
+  padding: 0.75rem;
+}
+
+.level-card.grid .dropdown-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.level-card.grid .info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.level-card.grid .downloads-wrapper {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.level-card.grid .downloads-wrapper a {
+  height: 1.8rem;
+  width: 1.8rem;
+  padding: 0.2rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.level-card.grid .downloads-wrapper a:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Size variations for grid mode */
+.level-card.grid.size-small {
+  width: 250px;
+  font-size: 0.9rem;
+}
+
+
+.level-card.grid.size-medium {
+  width: 300px;
+}
+
+.level-card.grid.size-large {
+  width: 350px;
+  font-size: 1.1rem;
+}
+
+
+/* Grid container */
+.level-cards-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  padding: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .level-card.grid {
+    width: calc(50% - 1rem);
+  }
+}
+
+@media (max-width: 480px) {
+  .level-card.grid {
+    width: 100%;
+  }
 }

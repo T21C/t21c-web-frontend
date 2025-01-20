@@ -34,14 +34,36 @@ api.interceptors.request.use(
 
 // Response interceptor to handle errors
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    // Check for new token in headers
+    const newToken = response.headers['x-new-token'];
+    const permissionChanged = response.headers['x-permission-changed'];
+
+    if (newToken) {
+      localStorage.setItem('token', newToken);
+      api.defaults.headers.Authorization = `Bearer ${newToken}`;
+    }
+
+    // Emit a custom event for permission changes that AuthContext can listen to
+    if (permissionChanged === 'true') {
+      window.dispatchEvent(new Event('auth:permission-changed'));
+    }
+
+    return response;
+  },
   (error) => {
     // Don't transform cancel errors, just pass them through
     if (axios.isCancel(error)) {
       return Promise.reject(error);
     }
     
-    // Handle other errors here
+    // Handle 401 responses
+    if (error.response?.status === 401) {
+      localStorage.removeItem('token');
+      delete api.defaults.headers.Authorization;
+      window.dispatchEvent(new Event('auth:logout'));
+    }
+    
     return Promise.reject(error);
   }
 );

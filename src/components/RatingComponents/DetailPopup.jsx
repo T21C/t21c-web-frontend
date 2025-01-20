@@ -331,7 +331,7 @@ export const DetailPopup = ({
   };
 
   const canEditRatings = () => {
-    return user && (isSuperAdmin || user.isAdmin);
+    return user && (user.isSuperAdmin || user.isRater);
   };
 
   if (!selectedRating) return null;
