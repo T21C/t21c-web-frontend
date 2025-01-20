@@ -108,7 +108,6 @@ const LevelPage = () => {
   }
 
   function handleQueryChange(e) {
-    console.log('Search query changed:', e.target.value);
     setQuery(e.target.value);
     setPageNumber(0);
     setLevelsData([]);
@@ -120,17 +119,6 @@ const LevelPage = () => {
     const fetchLevels = async () => {
       setLoading(true);
       try {
-        console.log('Fetching levels with query:', query);
-        console.log('Current filters:', {
-          pguRange: {
-            from: selectedLowFilterDiff,
-            to: selectedHighFilterDiff
-          },
-          specialDifficulties: selectedSpecialDiffs,
-          deletedFilter,
-          clearedFilter,
-          sort
-        });
 
         // Query parameters for pagination and basic filtering
         const params = {
@@ -160,10 +148,6 @@ const LevelPage = () => {
           }
         );
 
-        console.log('Received response:', {
-          count: response.data.count,
-          resultsCount: response.data.results.length
-        });
 
         const newLevels = response.data.results;
         
@@ -172,7 +156,6 @@ const LevelPage = () => {
           (level) => !existingIds.has(level.id)
         );
 
-        console.log('Adding unique levels:', uniqueLevels.length);
         setLevelsData((prev) => [...prev, ...uniqueLevels]);
         setHasMore(response.data.count > levelsData.length + newLevels.length);
       } catch (error) {
@@ -188,7 +171,6 @@ const LevelPage = () => {
     const fetchLevelById = async () => {
       setLoading(true);
       try {
-        console.log('Fetching level by ID:', query.slice(1));
         const response = await api.get(
           `${import.meta.env.VITE_LEVELS}/byId/${query.slice(1)}`,
           {
@@ -196,7 +178,6 @@ const LevelPage = () => {
           }
         );
         if (response.data) {
-          console.log('Received level by ID:', response.data?.id);
           setLevelsData([response.data]);
           setHasMore(false);
         } else {

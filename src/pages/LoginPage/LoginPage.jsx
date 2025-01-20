@@ -28,7 +28,6 @@ const LoginPage = () => {
   useEffect(() => {
     if (recaptchaStatus === 'ready' && window.grecaptcha && requireCaptcha && !isRecaptchaRendered) {
       try {
-        console.log('Attempting to render reCAPTCHA with site key:', import.meta.env.VITE_RECAPTCHA_SITE_KEY);
         window.grecaptcha.render(recaptchaContainer.current, {
           sitekey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
           theme: 'light',
@@ -76,7 +75,6 @@ const LoginPage = () => {
 
             const response = window.grecaptcha.getResponse();
             if (response) {
-              console.log('Using reCAPTCHA token:', response.substring(0, 20) + '...');
               resolve(response);
             } else {
               reject(new Error('Please complete the reCAPTCHA verification'));
