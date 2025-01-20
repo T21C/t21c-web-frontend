@@ -78,14 +78,7 @@ const RatingPage = () => {
   }, []);
 
   useEffect(() => {
-    if (user) {
-      fetchRatings();
-    }
-  }, [user, fetchRatings]);
-
-  useEffect(() => {
-    if (!user) return;
-
+    fetchRatings();
     const eventSource = new EventSource(`${import.meta.env.VITE_API_URL}/events`, {
       withCredentials: true
     });
@@ -111,7 +104,7 @@ const RatingPage = () => {
     return () => {
       eventSource.close();
     };
-  }, [user, fetchRatings]);
+  }, []);
 
   useEffect(() => {
     if (!ratings) return;
@@ -184,7 +177,7 @@ const RatingPage = () => {
     [sortOptions, sortType]
   );
 
-  if (user?.isSuperAdmin === undefined && user?.isRater === undefined) {
+  if (user?.isSuperAdmin === undefined && user?.isRater === undefined && user) {
     return (
       <div className="admin-rating-page">
         <MetaTags
@@ -200,16 +193,6 @@ const RatingPage = () => {
           <div className="loader loader-level-detail"/>
         </div>
       </div>
-    );
-  }
-
-  if (!user?.isSuperAdmin && !user?.isRater) {
-    return (
-      <AccessDenied 
-        metaTitle={tRating('meta.title')}
-        metaDescription={tRating('meta.description')}
-        currentUrl={currentUrl}
-      />
     );
   }
 
@@ -409,7 +392,7 @@ const RatingPage = () => {
             )}
           </>
         ) : (
-          <div className="no-ratings-message">
+          <div className="all-rated-message">
             <h2>{tRating('messages.noRatings.title')}</h2>
             <p>{tRating('messages.noRatings.subtitle')}</p>
           </div>

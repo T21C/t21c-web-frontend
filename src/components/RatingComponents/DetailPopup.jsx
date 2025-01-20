@@ -330,8 +330,11 @@ export const DetailPopup = ({
     }
   };
 
-  if (!selectedRating) return null;
+  const canEditRatings = () => {
+    return user && (isSuperAdmin || user.isAdmin);
+  };
 
+  if (!selectedRating) return null;
   return (
     <div className={`rating-popup-overlay ${isExiting ? 'exiting' : ''}`}>
       <div className="references-button-container">
@@ -364,132 +367,163 @@ export const DetailPopup = ({
             <p className="artist">{selectedRating.level.artist}</p>
           </div>
           
-          <div className="popup-main-content-container">
-          <div className="popup-main-content">
-            <div className="video-container">
-              <div className="video-aspect-ratio">
-                {isVideoLoading ? (
-                  <div className="video-placeholder">
-                    <div className="video-loading" />
-                  </div>
-                ) : !videoData ? (
-                  <div className="video-placeholder">
-                    No video available
-                  </div>
-                ) : (
-                  <iframe 
-                    src={videoData.embed}
-                    title="Video"
-                    className="video-iframe"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    onLoad={handleVideoLoad}
-                  />
-                )}
-                
-                <button 
-                    className={`toggle-details-btn ${isDetailsCollapsed ? 'collapsed' : ''}`}
-                    onClick={() => setIsDetailsCollapsed(!isDetailsCollapsed)}
-                    aria-label={isDetailsCollapsed ? 'Show details' : 'Hide details'}
-                  >
-                <span>{isDetailsCollapsed ? 'Show' : 'Hide'} Details</span>
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M15 6L9 12L15 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                </svg>
-              </button>
-              </div>
-
-            </div>
-
-            <div className={`details-container ${isDetailsCollapsed ? 'collapsed' : ''}`}>
-              <div className="detail-field">
-                <span className="detail-label">{tRating('labels.creator')}</span>
-                <span className="detail-value">{selectedRating.level.creator}</span>
-              </div>
-              <div className="detail-field">
-                <span className="detail-label">{tRating('labels.currentDifficulty')}</span>
-                <img src={selectedRating.level.difficulty.icon} alt="" className="detail-value lv-icon" />
-              </div>
-              <div className="detail-field">
-                <span className="detail-label">{tRating('labels.averageRating')}</span>
-                <img src={selectedRating.averageDifficulty?.icon} alt="" className="detail-value lv-icon" />
-              </div>
-            </div>
-          </div>
-
-          <div className="rating-section">
-            <div className="rating-columns">
-              <div className="rating-field-group">
-                <div className="rating-field">
-                  <label>{tRating('labels.yourRating')}</label>
-                  <div className="rating-input-container">
-                    <RatingInput
-                      value={pendingRating}
-                      onChange={(value) => {
-                        setPendingRating(value);
-                        validateRating(value);
-                      }}
-                      showDiff={false}
-                      difficulties={difficulties}
-                      allowCustomInput={true}
+          <div className={`popup-main-content-container ${!canEditRatings() ? 'viewer-only' : ''}`}>
+            <div className="popup-main-content">
+              <div className="video-container">
+                <div className="video-aspect-ratio">
+                  {isVideoLoading ? (
+                    <div className="video-placeholder">
+                      <div className="video-loading" />
+                    </div>
+                  ) : !videoData ? (
+                    <div className="video-placeholder">
+                      No video available
+                    </div>
+                  ) : (
+                    <iframe 
+                      src={videoData.embed}
+                      title="Video"
+                      className="video-iframe"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      onLoad={handleVideoLoad}
                     />
-                    {(pendingRating && difficulties?.find(d => d.name === pendingRating)) && 
-                      <img src={difficulties?.find(d => d.name === pendingRating)?.icon} alt="" className="detail-value lv-icon" />}
-                  </div>
+                  )}
+                  
+                  <button 
+                      className={`toggle-details-btn ${isDetailsCollapsed ? 'collapsed' : ''}`}
+                      onClick={() => setIsDetailsCollapsed(!isDetailsCollapsed)}
+                      aria-label={isDetailsCollapsed ? 'Show details' : 'Hide details'}
+                    >
+                    <span>{isDetailsCollapsed ? 'Show' : 'Hide'} Details</span>
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M15 6L9 12L15 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </button>
                 </div>
-                <div className="rating-field">
-                  <label>
-                    {tRating('labels.yourComment')}
-                    {isCommentRequired && (
-                      <span 
-                        className="required-mark" 
-                        data-tooltip={tRating('tooltips.requiredComment')}
+              </div>
+
+              <div className={`details-container ${isDetailsCollapsed ? 'collapsed' : ''}`}>
+                <div className="detail-field">
+                  <span className="detail-label">{tRating('labels.creator')}</span>
+                  <span className="detail-value">{selectedRating.level.creator}</span>
+                </div>
+                <div className="detail-field">
+                  <span className="detail-label">{tRating('labels.currentDifficulty')}</span>
+                  <img src={selectedRating.level.difficulty.icon} alt="" className="detail-value lv-icon" />
+                </div>
+                <div className="detail-field">
+                  <span className="detail-label">{tRating('labels.averageRating')}</span>
+                  <img src={selectedRating.averageDifficulty?.icon} alt="" className="detail-value lv-icon" />
+                </div>
+              </div>
+            </div>
+
+            <div className={`rating-section ${!canEditRatings() ? 'viewer-only' : ''}`}>
+              <div className="rating-columns">
+                {canEditRatings() ? (
+                  <>
+                    <div className="rating-field-group">
+                      <div className="rating-field">
+                        <label>{tRating('labels.yourRating')}</label>
+                        <div className="rating-input-container">
+                          <RatingInput
+                            value={pendingRating}
+                            onChange={(value) => {
+                              setPendingRating(value);
+                              validateRating(value);
+                            }}
+                            showDiff={false}
+                            difficulties={difficulties}
+                            allowCustomInput={true}
+                          />
+                          {(pendingRating && difficulties?.find(d => d.name === pendingRating)) && 
+                            <img src={difficulties?.find(d => d.name === pendingRating)?.icon} alt="" className="detail-value lv-icon" />}
+                        </div>
+                      </div>
+                      <div className="rating-field">
+                        <label>
+                          {tRating('labels.yourComment')}
+                          {isCommentRequired && (
+                            <span 
+                              className="required-mark" 
+                              data-tooltip={tRating('tooltips.requiredComment')}
+                            >
+                              *
+                            </span>
+                          )}
+                        </label>
+                        <textarea
+                          value={pendingComment}
+                          onChange={(e) => {
+                            setPendingComment(e.target.value);
+                            setCommentError(false);
+                          }}
+                          style={{ 
+                            borderColor: commentError ? 'red' : '',
+                            backgroundColor: isCommentRequired ? 'rgba(255, 0, 0, 0.05)' : ''
+                          }}
+                          placeholder={isCommentRequired ? tRating('placeholders.requiredComment') : ''}
+                        />
+                      </div>
+                      <button 
+                        className={`save-rating-changes-btn ${isSaving ? 'saving' : ''}`}
+                        disabled={!hasUnsavedChanges || isSaving || (isCommentRequired && !pendingComment.trim())}
+                        onClick={handleSaveChanges}
                       >
-                        *
-                      </span>
-                    )}
-                  </label>
-                  <textarea
-                    value={pendingComment}
-                    onChange={(e) => {
-                      setPendingComment(e.target.value);
-                      setCommentError(false);
-                    }}
-                    style={{ 
-                      borderColor: commentError ? 'red' : '',
-                      backgroundColor: isCommentRequired ? 'rgba(255, 0, 0, 0.05)' : ''
-                    }}
-                    placeholder={isCommentRequired ? tRating('placeholders.requiredComment') : ''}
-                  />
-                </div>
-                <button 
-                  className={`save-rating-changes-btn ${isSaving ? 'saving' : ''}`}
-                  disabled={!hasUnsavedChanges || isSaving || (isCommentRequired && !pendingComment.trim())}
-                  onClick={handleSaveChanges}
-                >
-                  {isSaving ? tRating('buttons.saving') : tRating('buttons.saveChanges')}
-                </button>
-                {saveError && (
-                  <div className="save-error-message">
-                    {saveError}
+                        {isSaving ? tRating('buttons.saving') : tRating('buttons.saveChanges')}
+                      </button>
+                      {saveError && (
+                        <div className="save-error-message">
+                          {saveError}
+                        </div>
+                      )}
+                    </div>
+                    <div className="rating-field other-ratings">
+                      <label>{tRating('labels.otherRatings')}</label>
+                      <div className="other-ratings-content">
+                        {otherRatings.length > 0 ? (
+                          otherRatings.map(({user, rating, comment}) => (
+                            <RatingItem
+                              key={user?.id}
+                              user={user}
+                              rating={rating}
+                              comment={comment}
+                              isSuperAdmin={isSuperAdmin}
+                              onDelete={handleDeleteRating}
+                            />
+                          ))
+                        ) : (
+                          <div className="no-ratings-message">
+                            {tRating('labels.noRatings')}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="rating-field other-ratings full-width">
+                    <label>{tRating('labels.otherRatings')}</label>
+                    <div className="other-ratings-content">
+                      {otherRatings.length > 0 ? (
+                        otherRatings.map(({user, rating, comment}) => (
+                          <RatingItem
+                            key={user?.id}
+                            user={user}
+                            rating={rating}
+                            comment={comment}
+                          isSuperAdmin={isSuperAdmin}
+                          onDelete={handleDeleteRating}
+                        />
+                      ))
+                      ) : (
+                        <div className="no-ratings-message">
+                          {tRating('labels.noRatings')}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
-              </div>
-              <div className="rating-field other-ratings">
-                <label>{tRating('labels.otherRatings')}</label>
-                <div className="other-ratings-content">
-                  {otherRatings.map(({user, rating, comment}) => (
-                    <RatingItem
-                      key={user?.id}
-                      user={user}
-                      rating={rating}
-                      comment={comment}
-                      isSuperAdmin={isSuperAdmin}
-                      onDelete={handleDeleteRating}
-                    />
-                  ))}
-                </div>
-                </div>
               </div>
             </div>
           </div>

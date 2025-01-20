@@ -33,7 +33,7 @@
     transform-origin: center;
     will-change: transform, opacity, clip-path;
     overflow-y: auto;
-    max-height: calc(100vh - 3rem);
+    max-height: 87vh;
 }
 
 .rating-popup.exiting {
@@ -411,7 +411,6 @@
     white-space: pre-wrap;
     overflow: hidden;
     transition: all 0.2s;
-    width: 300px;
 }
 
 .rating-popup .rating-comment.hidden {
@@ -728,6 +727,11 @@
     width: 100%;
     justify-content: center;
   }
+
+  .rating-section.viewer-only .rating-columns {
+    grid-template-columns: 1fr;
+  }
+
 }
 
 /* Small phone adjustments */
@@ -780,6 +784,7 @@
     font-size: 0.9rem;
     padding: 0.4rem 0.75rem;
   }
+
 }
 
 /* Landscape mode adjustments */
@@ -822,3 +827,21 @@
     min-height: 120px;
   }
 }
+
+/* Add these new styles */
+.rating-section.viewer-only .rating-columns {
+  grid-template-columns: 1fr;
+  gap: 0;
+}
+
+.rating-field.other-ratings.full-width {
+  width: 100%;
+}
+
+.rating-popup .no-ratings-message {
+  color: #aaa;
+  text-align: center;
+  padding: 1rem;
+  font-style: italic;
+}
+

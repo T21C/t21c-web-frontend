@@ -76,7 +76,7 @@ function App() {
 
           {/* Admin Routes - Protected */}
           <Route path='admin/submissions' element={<PrivateRoute><SubmissionManagementPage /></PrivateRoute>} />
-          <Route path='admin/rating' element={<PrivateRoute><RatingPage /></PrivateRoute>} />
+          <Route path='admin/rating' element={<RatingPage />} />
           <Route path='admin/announcements' element={<PrivateRoute><AnnouncementPage /></PrivateRoute>} />
           <Route path='admin/backups' element={<PrivateRoute><BackupPage /></PrivateRoute>} />
           <Route path='admin/difficulties' element={<PrivateRoute><DifficultyPage /></PrivateRoute>} />

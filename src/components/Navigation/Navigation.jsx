@@ -29,7 +29,7 @@ const Navigation = ({ children }) => {
   let languages = {
     en: { display: "English", countryCode: "us", implemented: true },
     kr: { display: "한국어", countryCode: "kr", implemented: false },
-    cn: { display: "中文", countryCode: "cn", implemented: true },
+    cn: { display: "中文", countryCode: "cn", implemented: false },
     jp: { display: "日本語", countryCode: "jp", implemented: false },
     id: { display: "Bahasa Indonesia", countryCode: "id", implemented: false },
     ru: { display: "Русский", countryCode: "ru", implemented: false },
@@ -197,7 +197,6 @@ const Navigation = ({ children }) => {
                     to="/passes">
                     <li className="nav-list-item">{tNav('links.pass')}</li>
                   </NavLink>
-                  {(user?.isRater || user?.isSuperAdmin) && (
                   <NavLink className={({ isActive }) =>
                     "nav-link " + (isActive ? "active" : "")}
                     to="/admin/rating">
@@ -210,7 +209,6 @@ const Navigation = ({ children }) => {
                       )}
                     </li>
                   </NavLink>
-                  )}
                 </>
               )}
             </ul>
@@ -424,7 +422,6 @@ const Navigation = ({ children }) => {
                   {tNav('links.pass')}
                 </NavLink>
               </li>
-              {(user?.isRater || user?.isSuperAdmin) && (
                 <li className="nav-list-item">
                   <NavLink to="/admin/rating" onClick={changeNavState}>
                     {tNav('links.rating')}
@@ -435,7 +432,6 @@ const Navigation = ({ children }) => {
                     </span>
                   )}
                 </li>
-              )}
             </>
           )}
           <li className="nav-list-item">

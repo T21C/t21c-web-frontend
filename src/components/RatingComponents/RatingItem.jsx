@@ -5,14 +5,13 @@ import { Tooltip } from 'react-tooltip';
 import DefaultAvatar from '../Icons/DefaultAvatar';
 
 export const RatingItem = ({ user, rating, comment, isSuperAdmin, onDelete }) => {
-  console.log(user);
     const [isExpanded, setIsExpanded] = useState(false);
     const { t } = useTranslation('components');
     const tRating = (key, params = {}) => t(`rating.ratingCard.${key}`, params);
     
     const handleDelete = (e) => {
       e.stopPropagation();
-      if (window.confirm(t('rating.detailPopup.confirmations.deleteRating', {user: user?.username}))) {
+      if (window.confirm(t('rating.detailPopup.confirmations.deleteRating', {username: user?.username}))) {
           onDelete(user?.id);
       }
     };

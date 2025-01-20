@@ -7,7 +7,8 @@
       "averageRating": "Average Rating:",
       "yourRating": "Your Rating:",
       "yourComment": "Your Comment:",
-      "otherRatings": "Other Ratings:"
+      "otherRatings": "Other Ratings:",
+      "noRatings": "No ratings yet"
     },
     "buttons": {
       "saveChanges": "Save Changes",
