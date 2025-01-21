@@ -218,7 +218,11 @@
 
 /* Compact mode */
 .level-card.compact {
-  font-size: 0.9rem;
+  font-size: 1rem;
+}
+
+.level-card.compact .level-desc {
+  font-size: 1rem;
 }
 
 .level-card.compact .level-card-wrapper {
@@ -395,7 +399,6 @@
   width: 200px;
   font-size: 0.9rem;
 }
-
 
 .level-card.grid.size-medium {
   width: 300px;

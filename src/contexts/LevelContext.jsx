@@ -6,7 +6,7 @@ const LevelContext = createContext()
 const LevelContextProvider = (props) => {
     const [levelsData, setLevelsData] = useState([])
     const [legacyDiff, setLegacyDiff] = useState(false);
-    const [filterOpen, setFilterOpen] = useState(false);
+    const [filterOpen, setFilterOpen] = useState(true);
     const [sortOpen, setSortOpen] = useState(true);
     const [query, setQuery] = useState("");
     // Initialize with full PGU range

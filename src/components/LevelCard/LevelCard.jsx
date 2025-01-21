@@ -63,10 +63,6 @@ const LevelCard = ({
     const charters = creditsByRole['charter'] || [];
     const vfxers = creditsByRole['vfxer'] || [];
 
-    if (displayMode === 'compact') {
-      return charters[0] || level.creator;
-    }
-
     // Handle different cases based on number of credits
     if (level.levelCredits.length >= 3) {
       const parts = [];
