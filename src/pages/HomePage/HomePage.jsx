@@ -17,6 +17,9 @@ import {
 } from 'recharts';
 import { useLocation } from 'react-router-dom';
 import ScrollButton from "../../components/ScrollButton/ScrollButton";
+import { PassIcon } from "../../components/Icons/PassIcon";
+import { LevelIcon } from "../../components/Icons/LevelIcon";
+import { LeaderboardIcon } from "../../components/Icons/LeaderboardIcon";
 
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
@@ -258,16 +261,17 @@ const HomePage = () => {
             <Link to="/levels" className="action-button">
               <span>{tHome('buttons.browseLevels')}</span>
               &nbsp;
-              <img width="32px" src="/src/assets/icons/chart.png" alt="arrow-right" className="arrow-right" />
+              <LevelIcon size={32} />
             </Link>
             <Link to="/passes" className="action-button">
               <span>{tHome('buttons.browsePasses')}</span>
               &nbsp;
-              <svg width="32px" version="1.1" id="Uploaded to svgrepo.com" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" viewBox="-3.2 -3.2 38.40 38.40" xmlSpace="preserve" fill="#ffffff" stroke="#ffffff" strokeWidth="0.8320000000000001"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M30.745,20.386L25,13l3.375-7.594C28.669,4.745,28.185,4,27.461,4H17.5l-0.361-2.164 C17.059,1.353,16.642,1,16.153,1H2.014L1.986,0.835c-0.09-0.544-0.604-0.914-1.15-0.822C0.347,0.095,0.02,0.521,0.019,1H0 l0.016,0.096C0.018,1.119,0.01,1.141,0.014,1.165l5,30C5.095,31.653,5.519,32,5.999,32c0.055,0,0.109-0.004,0.165-0.014 c0.545-0.091,0.913-0.606,0.822-1.151L5.014,19H14.5l0.361,2.164C14.941,21.647,15.358,22,15.847,22h14.108 C30.788,22,31.256,21.043,30.745,20.386z M15.306,3l2.342,14H4.694L2.361,3H15.306z M16.633,19.384L16.361,18h1.253L16.633,19.384z M17.436,20l1.391-1.983L16.827,6h9.095l-3.237,7.282L27.911,20C27.911,20,17.472,20.004,17.436,20z"></path> </g></svg></Link>
+              <PassIcon size={32} />
+            </Link>
             <Link to="/leaderboard" className="action-button">
               <span>{tHome('buttons.leaderboard')}</span>
               &nbsp;
-              <svg width="32px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M15 19H9V12.5V8.6C9 8.26863 9.26863 8 9.6 8H14.4C14.7314 8 15 8.26863 15 8.6V14.5V19Z" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M15 5H9" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M20.4 19H15V15.1C15 14.7686 15.2686 14.5 15.6 14.5H20.4C20.7314 14.5 21 14.7686 21 15.1V18.4C21 18.7314 20.7314 19 20.4 19Z" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> <path d="M9 19V13.1C9 12.7686 8.73137 12.5 8.4 12.5H3.6C3.26863 12.5 3 12.7686 3 13.1V18.4C3 18.7314 3.26863 19 3.6 19H9Z" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path> </g></svg>
+              <LeaderboardIcon size={32} />
             </Link>
           </div>
         </div>

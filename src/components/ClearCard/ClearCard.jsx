@@ -4,6 +4,7 @@ import "./clearcard.css"
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import DefaultAvatar from "../Icons/DefaultAvatar";
+import { PassIcon } from "../Icons/PassIcon";
 
 const ClearCard = ({scoreData, index}) => {
   const {t} = useTranslation()  
@@ -84,6 +85,15 @@ const ClearCard = ({scoreData, index}) => {
               <span className="late-single">{scoreData.judgements.lateSingle}</span>
               <span className="late-double">{scoreData.judgements.lateDouble}</span>
             </div>
+            <PassIcon 
+            size={40}
+            className="video-link"
+            onClick={() => {
+              navigate(`/passes/${scoreData.id}`);
+            }} 
+            style={{
+              cursor: "pointer"
+            }}/>
             {scoreData.videoLink && (
               <a className="video-link" href={scoreData.videoLink} target="_blank" rel="noopener noreferrer">
                 <svg viewBox="0 -3 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg">

@@ -24,6 +24,11 @@ const PassCard = ({ pass }) => {
 
   return (
     <div className='pass-card' onClick={() => redirect()} style={{ backgroundColor: pass.isDeleted ? "#f0000099" : "none" }}>
+              <img 
+          src={difficultyInfo?.icon} 
+          alt={difficultyInfo?.name || 'Difficulty icon'} 
+          className="difficulty-icon"
+        />
       <div className="pass-info-wrapper">
         <div className="group">
           <p className="pass-exp">#{pass.id} - {pass.player.name}</p>
@@ -54,11 +59,6 @@ const PassCard = ({ pass }) => {
       <div className="flags-wrapper">
         {pass.is12K && <div className="flag">{tCard('flags.twelveKey')}</div>}
         {pass.isNoHoldTap && <div className="flag">{tCard('flags.noHoldTap')}</div>}
-        <img 
-          src={difficultyInfo?.icon} 
-          alt={difficultyInfo?.name || 'Difficulty icon'} 
-          className="difficulty-icon"
-        />
       </div>
 
       <div className="video-wrapper">

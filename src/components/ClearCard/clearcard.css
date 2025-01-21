@@ -17,24 +17,23 @@
 }
 
 /* Card Sections */
-.card-section {
+.clear-card .card-section {
   display: flex;
   flex-direction: row;
   align-items: center;
   min-width: 12rem;
 }
 
-.rank-display {
+.clear-card .rank-display {
   font-size: 9rem;
   height: 0;
   width: 0;
   opacity: 0.07;
   text-align: center;
   z-index: -100;
-
 }
 
-.rank-display > span {
+.clear-card .rank-display > span {
   position: absolute;
   transform: translate(-60px, -50%);
 }
@@ -235,26 +234,24 @@
   transform: rotate(180deg);
 }
 
-
 @media (max-width: 768px) {
-
-  .card-section {
+  .clear-card .card-section {
     flex-direction: column;
   }
   
-  .score-info {
+  .clear-card .score-info {
     flex-wrap: wrap;
     gap: 1rem;
   }
   
-  .judgements {
+  .clear-card .judgements {
     flex-wrap: wrap;
     justify-content: center;
     margin: 0.5rem 0;
     width: 100%;
   }
 
-  .time-info {
+  .clear-card .time-info {
     text-align: left;
   }
 }
@@ -265,17 +262,17 @@
     gap: 0.75rem;
   }
   
-  .player-info {
+  .clear-card .player-info {
     flex-direction: row;
     align-items: flex-start;
   }
   
-  .name-container {
+  .clear-card .name-container {
     flex-direction: column;
     align-items: flex-start;
   }
 
-  .score-info {
+  .clear-card .score-info {
     gap: 0.75rem;
   }
 }
