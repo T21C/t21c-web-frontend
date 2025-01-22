@@ -6,13 +6,15 @@ import path from 'path'
 export default defineConfig(({ command, mode }) => {
   // Load env file based on mode
   const env = loadEnv(mode, process.cwd(), '')
-  
   // Determine API URL based on environment
   const apiUrl = mode === 'production' 
     ? env.VITE_PROD_API_URL 
     : mode === 'staging' 
       ? env.VITE_STAGING_API_URL 
-      : env.VITE_API_URL
+      : env.VITE_DEV_API_URL
+
+  console.log(apiUrl)
+  const port = mode === 'production' ? 3000 : 3002
 
   return {
     plugins: [react()],
@@ -44,12 +46,12 @@ export default defineConfig(({ command, mode }) => {
     },
     server: {
       host: '127.0.0.1',
-      port: 5173,
+      port: port,
       strictPort: true,
       cors: true,
       hmr: {
         protocol: 'wss',
-        host: 'tufstaging.online',
+        host: env.VITE_OWN_URL,
         clientPort: 443
       },
       watch: {
