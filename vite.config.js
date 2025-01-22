@@ -13,9 +13,8 @@ export default defineConfig(({ command, mode }) => {
       ? env.VITE_STAGING_API_URL 
       : env.VITE_DEV_API_URL
 
-  console.log(apiUrl)
-  const port = mode === 'production' ? 3000 : 3002
-
+  const port = mode === 'production' ? 5000 : 5173
+  console.log(env.VITE_OWN_URL, ":", port)
   return {
     plugins: [react()],
     logLevel: 'info',
