@@ -81,7 +81,7 @@ const LevelPage = () => {
     const lowDiff = pguDifficulties.find(d => d.sortOrder === newRange[0]) || 
                    pguDifficulties.find(d => d.sortOrder >= newRange[0]);
     const highDiff = pguDifficulties.find(d => d.sortOrder === newRange[1]) || 
-                    pguDifficulties.reverse().find(d => d.sortOrder <= newRange[1]);
+                    [...pguDifficulties].reverse().find(d => d.sortOrder <= newRange[1]);
     
     console.log(newRange);
     console.log(lowDiff, highDiff);
@@ -92,12 +92,23 @@ const LevelPage = () => {
 
   // Handle slider changes complete (after drag or click)
   const handleSliderChangeComplete = useCallback((newRange) => {
-    handleSliderChange(newRange);
+    // Don't call handleSliderChange here, do the logic directly
+    setSliderRange(newRange);
+    
+    // Find difficulties corresponding to slider values
+    const lowDiff = pguDifficulties.find(d => d.sortOrder === newRange[0]) || 
+                   pguDifficulties.find(d => d.sortOrder >= newRange[0]);
+    const highDiff = pguDifficulties.find(d => d.sortOrder === newRange[1]) || 
+                    [...pguDifficulties].reverse().find(d => d.sortOrder <= newRange[1]);
+
+    setSelectedLowFilterDiff(lowDiff?.name || "P1");
+    setSelectedHighFilterDiff(highDiff?.name || "U20");
+    
     // Only reset page and trigger fetch when dragging is complete
     setPageNumber(0);
     setLevelsData([]);
     setForceUpdate(f => !f);
-  }, []);
+  }, [pguDifficulties]); // Add pguDifficulties to dependencies
 
   function toggleSpecialDifficulty(diffName) {
     setSelectedSpecialDiffs(prev => {
