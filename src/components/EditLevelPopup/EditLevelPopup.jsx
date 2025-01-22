@@ -50,8 +50,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         vfxer: level.vfxer || '',
         team: level.team || '',
         diffId: level.diffId !== null ? level.diffId : 0,
-        previousDiffId: level.previousDiffId !== null ? level.previousDiffId : null,
-        baseScore: level.baseScore || '',
+        baseScore: level.baseScore || 0,
         videoLink: level.videoLink || '',
         dlLink: level.dlLink || '',
         workshopLink: level.workshopLink || '',
@@ -61,6 +60,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         rerateReason: level.rerateReason || '',
         isDeleted: level.isDeleted || false,
         isHidden: level.isHidden || false,
+        previousDiffId: level.previousDiffId,
       });
       setHasUnsavedChanges(false);
     }
@@ -140,6 +140,9 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     setError(null);
 
     try {
+      if (!isFromAnnouncementPage) {
+        formData.previousDiffId = null;
+      }
       const response = await api.put(
         `${import.meta.env.VITE_LEVELS}/${level.id}`,
         formData
