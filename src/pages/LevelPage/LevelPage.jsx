@@ -82,10 +82,7 @@ const LevelPage = () => {
                    pguDifficulties.find(d => d.sortOrder >= newRange[0]);
     const highDiff = pguDifficulties.find(d => d.sortOrder === newRange[1]) || 
                     [...pguDifficulties].reverse().find(d => d.sortOrder <= newRange[1]);
-    
-    console.log(newRange);
-    console.log(lowDiff, highDiff);
-
+                    
     setSelectedLowFilterDiff(lowDiff?.name || "P1");  // Fallback to P1
     setSelectedHighFilterDiff(highDiff?.name || "U20"); // Fallback to U20
   }
