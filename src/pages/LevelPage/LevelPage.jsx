@@ -78,11 +78,13 @@ const LevelPage = () => {
     setSliderRange(newRange);
     
     // Find difficulties corresponding to slider values
-    const lowDiff = pguDifficulties.find(d => d.sortOrder === newRange[0]);
-    const highDiff = pguDifficulties.find(d => d.sortOrder === newRange[1]);
-    
-    setSelectedLowFilterDiff(lowDiff?.name || null);
-    setSelectedHighFilterDiff(highDiff?.name || null);
+    const lowDiff = pguDifficulties.find(d => d.sortOrder === newRange[0]) || 
+                   pguDifficulties.find(d => d.sortOrder >= newRange[0]);
+    const highDiff = pguDifficulties.find(d => d.sortOrder === newRange[1]) || 
+                    pguDifficulties.reverse().find(d => d.sortOrder <= newRange[1]);
+
+    setSelectedLowFilterDiff(lowDiff?.name || "P1");  // Fallback to P1
+    setSelectedHighFilterDiff(highDiff?.name || "U20"); // Fallback to U20
   }
 
   // Handle slider changes complete (after drag or click)

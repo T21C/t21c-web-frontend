@@ -49,9 +49,7 @@ export default defineConfig(({ command, mode }) => {
       strictPort: true,
       cors: true,
       hmr: {
-        protocol: 'wss',
-        host: env.VITE_OWN_URL,
-        clientPort: 443
+        overlay: true,
       },
       watch: {
         usePolling: true
