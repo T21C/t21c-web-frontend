@@ -154,9 +154,9 @@ const PassSubmissions = () => {
 
     try {
       await api.put(`${import.meta.env.VITE_PLAYERS}/${submission.assignedPlayerId}/discord`, {
-        discordId: submission.submitterDiscordId,
-        discordUsername: submission.submitterDiscordUsername,
-        discordAvatar: submission.submitterDiscordPfp,
+        id: submission.submitterDiscordId,
+        username: submission.submitterDiscordUsername,
+        avatar: submission.submitterDiscordPfp,
       });
       
       setSubmissions(prev => prev.map(sub => 
