@@ -3,7 +3,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--background);
+  background-color: #121212; /* Dark mode background */
   padding: 1rem;
 }
 
@@ -11,33 +11,34 @@
   width: 100%;
   max-width: 400px;
   padding: 2rem;
-  background-color: var(--surface);
+  background-color: #1E1E1E; /* Dark mode surface */
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-align: center;
 }
 
 .callback-container h1 {
-  color: var(--primary);
+  color: #dfdfdf; /* Dark mode primary color */
   margin-bottom: 1.5rem;
   font-size: 2rem;
 }
 
 .status-message {
-  color: var(--text);
+  color: #E0E0E0; /* Dark mode text color */
   margin-bottom: 1rem;
   line-height: 1.5;
 }
 
 .error-message {
-  background-color: var(--error-bg);
-  color: var(--error-text);
+  background-color: #de6060; /* Dark mode error background */
+  color: #FFFFFF; /* Dark mode error text */
   padding: 1rem;
   border-radius: 4px;
   margin-bottom: 1rem;
+  text-shadow: 0 0 5px #000c;
 }
 
 .redirect-message {
-  color: var(--text-secondary);
+  color: #B0B0B0; /* Dark mode secondary text color */
   font-size: 0.875rem;
 } 
