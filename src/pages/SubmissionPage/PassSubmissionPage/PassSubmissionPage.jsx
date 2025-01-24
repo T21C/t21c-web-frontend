@@ -462,7 +462,7 @@ const PassSubmissionPage = () => {
       <CompleteNav />
       <div className="background-level"></div>
       <div className="form-container">
-        <StagingModeWarning />
+        {import.meta.env.MODE !== "production" && <StagingModeWarning />}
         <div className={`result-message ${showMessage ? 'visible' : ''}`} 
           style={{backgroundColor: 
           ( success? "#2b2" :
