@@ -10,12 +10,12 @@ export const PassContextProvider = ({ children }) => {
   const [sort, setSort] = useState('RECENT_DESC');
   const [hasMore, setHasMore] = useState(true);
   const [pageNumber, setPageNumber] = useState(0);
-  const [hide12k, setHide12k] = useState(false);
   const [deletedFilter, setDeletedFilter] = useState('hide');
   const [selectedLowFilterDiff, setSelectedLowFilterDiff] = useState("P1");
   const [selectedHighFilterDiff, setSelectedHighFilterDiff] = useState("U20");
   const [forceUpdate, setForceUpdate] = useState(false);
   const [sliderRange, setSliderRange] = useState([1, 60]);
+  const [keyFlag, setKeyFlag] = useState('all'); // 'all' for any flag, '12k' for 12k only, '16k' for 16k only
 
   return (
     <PassContext.Provider
@@ -34,8 +34,6 @@ export const PassContextProvider = ({ children }) => {
         setHasMore,
         pageNumber,
         setPageNumber,
-        hide12k,
-        setHide12k,
         deletedFilter,
         setDeletedFilter,
         selectedLowFilterDiff,
@@ -45,7 +43,9 @@ export const PassContextProvider = ({ children }) => {
         forceUpdate,
         setForceUpdate,
         sliderRange,
-        setSliderRange
+        setSliderRange,
+        keyFlag,
+        setKeyFlag
       }}
     >
       {children}

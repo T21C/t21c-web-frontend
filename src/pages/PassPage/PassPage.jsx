@@ -57,7 +57,9 @@ const PassPage = () => {
     forceUpdate,
     setForceUpdate,
     sliderRange,
-    setSliderRange
+    setSliderRange,
+    keyFlag,
+    setKeyFlag
   } = useContext(PassContext);
 
   const sortOptions = [
@@ -96,15 +98,13 @@ const PassPage = () => {
           }
         }
 
-
-
         const requestBody = {
           limit,
           offset: pageNumber * limit,
           query,
           sort,
           deletedFilter,
-          hide12k,
+          keyFlag,
           minDiff: selectedLowFilterDiff !== 0 ? selectedLowFilterDiff : undefined,
           maxDiff: selectedHighFilterDiff !== 0 ? selectedHighFilterDiff : undefined
         };
@@ -419,18 +419,6 @@ const PassPage = () => {
               </div>
 
               <div className="checkbox-filters">
-                <label>
-                  <input
-                    type="checkbox"
-                    checked={hide12k}
-                    onChange={() => {
-                      setHide12k(!hide12k);
-                      setPageNumber(0);
-                      setPassesData([]);
-                    }}
-                  />
-                  {tPass('settings.filter.options.only12k')}
-                </label>
                 {user?.isSuperAdmin && (
                   <StateDisplay
                     currentState={deletedFilter}
@@ -447,6 +435,21 @@ const PassPage = () => {
                     showLabel={true}
                   />
                 )}
+                <StateDisplay
+                  currentState={keyFlag}
+                  states={['all', '12k', '16k']}
+                  onChange={(newState) => {
+                    setKeyFlag(newState);
+                    setPageNumber(0);
+                    setPassesData([]);
+                    setForceUpdate(prev => !prev);
+                  }}
+                  label={tPass('settings.filter.options.keyFlags')}
+                  width={60}
+                  height={24}
+                  padding={3}
+                  showLabel={true}
+                />
               </div>
             </div>
           </div>

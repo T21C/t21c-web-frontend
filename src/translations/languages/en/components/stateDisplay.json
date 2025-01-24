@@ -2,7 +2,10 @@
   "states": {
     "hide": "Hide",
     "show": "Show",
-    "only": "Only"
+    "only": "Only",
+    "all": "All",
+    "12k": "12K",
+    "16k": "16K"
   },
   "accessDenied": {
     "title": "Access Denied",
