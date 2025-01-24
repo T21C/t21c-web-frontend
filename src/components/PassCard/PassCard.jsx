@@ -58,6 +58,7 @@ const PassCard = ({ pass }) => {
 
       <div className="flags-wrapper">
         {pass.is12K && <div className="flag">{tCard('flags.twelveKey')}</div>}
+        {pass.is16K && <div className="flag">{tCard('flags.sixteenKey')}</div>}
         {pass.isNoHoldTap && <div className="flag">{tCard('flags.noHoldTap')}</div>}
       </div>
 

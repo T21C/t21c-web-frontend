@@ -24,6 +24,7 @@
     "flags": {
       "worldsFirst": "WF",
       "twelveKey": "12K",
+      "sixteenKey": "16K",
       "noHoldTap": "NHT"
     },
     "links": {
