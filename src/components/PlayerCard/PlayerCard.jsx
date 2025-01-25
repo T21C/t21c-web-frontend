@@ -3,6 +3,7 @@ import "./playercard.css"
 import { useTranslation } from "react-i18next";
 import { useContext, useEffect, useState } from "react";
 import { PlayerContext } from "@/contexts/PlayerContext";
+import { DifficultyContext } from "@/contexts/DifficultyContext";
 import { formatScore } from "../Misc/Utility";
 import DefaultAvatar from "../Icons/DefaultAvatar";
 
@@ -11,6 +12,7 @@ const passes = ["totalPasses", "universalPasses", "worldsFirstCount"];
 
 const PlayerCard = ({player}) => {
   const { sortBy } = useContext(PlayerContext);
+  const { difficultyDict } = useContext(DifficultyContext);
   const { t } = useTranslation('components');
   const tCard = (key) => t(`cards.player.${key}`);
   const navigate = useNavigate();
@@ -39,6 +41,11 @@ const PlayerCard = ({player}) => {
     
   const prioritizedField = sortBy || 'rankedScore';
 
+  const getDifficultyName = (diffId) => {
+    if (!diffId || diffId === 0) return '-';
+    return difficultyDict[diffId]?.name || diffId.toString();
+  };
+
   const scoreFields = {
     rankedScore: {
       label: sortLabels.rankedScore,
@@ -57,8 +64,8 @@ const PlayerCard = ({player}) => {
   const primaryField = {
     label: sortLabels[sortBy],
     value: player[sortBy] !== undefined ? 
-      (player[sortBy] && typeof player[sortBy] === 'object' && player[sortBy].name) 
-        ? player[sortBy].name 
+      nonRoundable.includes(sortBy) 
+        ? getDifficultyName(player[sortBy])
         : player[sortBy]
     : player.generalScore,
   };

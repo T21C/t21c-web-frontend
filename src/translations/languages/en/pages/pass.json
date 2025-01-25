@@ -12,7 +12,11 @@
   "toolTip": {
     "filter": "Filter results",
     "sort": "Sort results",
-    "reset": "Reset all filters"
+    "reset": "Reset all filters",
+    "search": "Learn how to use advanced search"
+  },
+  "buttons": {
+    "searchHelp": "Search Help"
   },
   "settings": {
     "filter": {

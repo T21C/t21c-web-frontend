@@ -48,6 +48,34 @@
   outline: none;
 }
 
+/* Help button styles */
+.pass-page .pass-body .input-option .help-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2rem;
+  padding: 0 0.75rem;
+  background-color: var(--color-white-t20);
+  border: none;
+  border-radius: 3px;
+  color: var(--color-white);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+  font-size: 0.9rem;
+}
+
+.pass-page .pass-body .input-option .help-button:hover {
+  background-color: var(--color-white-t30);
+}
+
+.pass-page .pass-body .input-option .help-button svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  background: none;
+  padding: 0;
+}
+
 /* Filter and sort sections */
 .pass-page .pass-body .filter {
   position: relative;

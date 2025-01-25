@@ -119,6 +119,9 @@ const CustomSelect = ({
       cursor: "pointer",
       transition: "all 0.15s ease-in-out",
       padding: "8px 12px",
+      whiteSpace: "nowrap",
+      overflow: "hidden",
+      textOverflow: "ellipsis",
       "&:hover": {
         backgroundColor: "rgba(85, 85, 85, 0.8)",
         paddingLeft: "1.5rem"
@@ -127,8 +130,6 @@ const CustomSelect = ({
     menuList: (base) => ({
       ...base,
       padding: "4px",
-      maxHeight: "none",
-      overflowY: "visible",
       "&::-webkit-scrollbar": {
         width: "8px",
         height: "0px",

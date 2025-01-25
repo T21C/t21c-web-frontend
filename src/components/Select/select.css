@@ -17,13 +17,12 @@
 .custom-select-menu {
   animation: dropdownExpand 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   transform-origin: top;
-  max-height: 0;
-  overflow: hidden;
 }
 
 /* Override react-select's default max-height */
 .custom-select__menu-list {
-  overflow: hidden !important;
+  max-height: 300px !important;
+  overflow-y: auto !important;
 }
 
 .custom-select-menu.closing {
@@ -31,25 +30,23 @@
   pointer-events: none;
 }
 
-
 @keyframes dropdownExpand {
   from {
-    max-height: 0;
+    opacity: 0;
     transform: scaleY(0.96);
   }
   to {
-    max-height: 20.5rem;
+    opacity: 1;
     transform: scaleY(1);
   }
 }
 
 @keyframes dropdownCollapse {
   from {
-    max-height: 20.5rem;
+    opacity: 1;
     transform: scaleY(1);
   }
   to {
-    max-height: 0;
     opacity: 0;
     transform: scaleY(0.96);
   }
@@ -57,7 +54,6 @@
 
 /* Focus state */
 .custom-select__control--is-focused {
-
   box-shadow: 0 0 0 1px #ffffff58 !important;
   background-color: rgba(255, 255, 255, 0.1) !important;
 }

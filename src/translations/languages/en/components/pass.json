@@ -1,0 +1,37 @@
+{
+  "helpPopup": {
+    "title": "Search Help",
+    "closeButton": "Close",
+    "sections": {
+      "search": {
+        "title": "Field-Specific Search",
+        "description": "You can search for specific fields using two different operators: colon (:) for partial matches and equals (=) for exact matches.",
+        "examples": {
+          "title": "Field Examples",
+          "playerField": "Use 'player:Name' for partial match or 'player=Name' for exact match",
+          "videoField": "Use 'video:Link' for partial match or 'video=Link' for exact match"
+        }
+      },
+      "operators": {
+        "title": "Search Operators",
+        "description": "You can combine multiple search conditions using operators.",
+        "examples": {
+          "title": "Operator Examples",
+          "and": "Search for passes that match both conditions (AND)",
+          "or": "Search for passes that match either condition (OR)",
+          "complex": "Complex search combining AND and OR conditions"
+        }
+      },
+      "tips": {
+        "title": "Search Tips",
+        "points": {
+          "caseSensitive": "Searches are case-insensitive - 'PLAYER' and 'player' will give the same results",
+          "partial": "Colon (:) allows partial matches - 'player:yo' will match 'yoonsu' and 'yoon'",
+          "exact": "Equals (=) requires exact matches - 'player=yoon' will only match 'yoon'",
+          "spaces": "Spaces are allowed in search terms - 'player:Epic player' works",
+          "order": "The order of conditions doesn't matter within each group"
+        }
+      }
+    }
+  }
+} 

@@ -30,7 +30,6 @@ const LeaderboardPage = () => {
     { value: 'generalScore', label: tLeaderboard('sortOptions.generalScore') },
     { value: 'ppScore', label: tLeaderboard('sortOptions.ppScore') },
     { value: 'wfScore', label: tLeaderboard('sortOptions.wfScore') },
-    { value: 'score12K', label: tLeaderboard('sortOptions.score12K') },
     { value: 'averageXacc', label: tLeaderboard('sortOptions.averageXacc') },
     { value: 'totalPasses', label: tLeaderboard('sortOptions.totalPasses') },
     { value: 'universalPasses', label: tLeaderboard('sortOptions.universalPasses') },
@@ -56,89 +55,71 @@ const LeaderboardPage = () => {
     setSortBy,
     showBanned,
     setShowBanned,
-    loading,
-    setLoading,
-    initialLoading,
-    setInitialLoading,
     forceUpdate,
     setForceUpdate
   } = useContext(PlayerContext);
 
-  function sortByField(data) {
-    return data.sort((a, b) => {
-      if (sortBy === "topDiff" || sortBy === "top12kDiff") {
-        // Use the difficulty object's sort order directly, treating null as 0
-        const diffA = a[sortBy] || 0;
-        const diffB = b[sortBy] || 0;
-        
-        // Compare sort orders
-        return diffB - diffA;
-      } else {
-        // For all other fields, simple numeric sort in descending order
-        return b[sortBy] - a[sortBy];
-      }
-    });
-  }
-  
   useEffect(() => {
+    let cancelToken = api.CancelToken.source();
+
     const fetchPlayers = async () => {
-      setInitialLoading(true);
       try {
-        setPlayerData([])
-        const response = await api.get(`${import.meta.env.VITE_FULL_LEADERBOARD}`, {
+        setPlayerData(null); // Set to null to indicate loading
+        // If query starts with #, it's a Discord ID search
+        const endpoint = query.startsWith('#') 
+          ? `${import.meta.env.VITE_FULL_LEADERBOARD}?query=${encodeURIComponent(query)}&sortBy=${sortBy}&order=${sort.toLowerCase()}`
+          : `${import.meta.env.VITE_FULL_LEADERBOARD}?sortBy=${sortBy}&order=${sort.toLowerCase()}`;
+        
+        const response = await api.get(endpoint, {
+          cancelToken: cancelToken.token
         });
         
         setPlayerData(response.data);
-        setDisplayedPlayers(response.data.slice(0, limit))
+        setDisplayedPlayers(response.data.slice(0, limit));
       } catch (error) {
-        setError(true);
-        console.error('Error fetching leaderboard data:', error);
-      } finally {
-        setInitialLoading(false);
+        if (!api.isCancel(error)) {
+          setError(true);
+          console.error('Error fetching leaderboard data:', error);
+        }
       }
     };
   
     fetchPlayers();
-  }, [forceUpdate]);
+
+    // Cleanup function to cancel pending requests
+    return () => {
+      cancelToken.cancel('Request cancelled due to component update');
+    };
+  }, [forceUpdate, query, sort, sortBy]);
   
   useEffect(() => {
-    if (playerData && playerData.length > 0) {
-      setLoading(true);
-      var filteredPlayers = playerData.filter(playerStat => {
-        const player = playerStat.player;
-        if (!player) return false;
+    if (playerData && playerData.length >= 0) {
+      // Only filter by name if not doing a Discord ID search
+      const filteredPlayers = !query.startsWith('#') 
+        ? playerData.filter(playerStat => {
+            const player = playerStat.player;
+            if (!player) return false;
 
-        const matchesQuery = player.name.toLowerCase().includes(query.toLowerCase()) 
-        || player.discordUsername?.toLowerCase().includes(query.toLowerCase());
-        const matchesBannedFilter = 
-          (showBanned === 'show') ? true :
-          (showBanned === 'hide') ? !player.isBanned :
-          (showBanned === 'only') ? player.isBanned :
-          true;
-        
-        return matchesQuery && matchesBannedFilter;
-      });
-
-      filteredPlayers = sortByField(filteredPlayers);
-      if(sort === "ASC"){
-        filteredPlayers = filteredPlayers.reverse();
-      }
+            const matchesQuery = player.name.toLowerCase().includes(query.toLowerCase()) 
+              || player.discordUsername?.toLowerCase().includes(query.toLowerCase());
+            const matchesBannedFilter = 
+              (showBanned === 'show') ? true :
+              (showBanned === 'hide') ? !player.isBanned :
+              (showBanned === 'only') ? player.isBanned :
+              true;
+            
+            return matchesQuery && matchesBannedFilter;
+          })
+        : playerData;
       
       // Store filtered data separately
       setFilteredData(filteredPlayers);
       // Only show the first 'limit' players initially
       setDisplayedPlayers(filteredPlayers.slice(0, limit));
-      setLoading(false);
-    } else {
-      setFilteredData([]);
-      setDisplayedPlayers([]);
-      setLoading(false);
     }
-  }, [playerData, query, sort, sortBy, showBanned, t]);
+  }, [playerData, query, showBanned, t]);
 
   function handleQueryChange(e) {
-    setLoading(true);
-    setDisplayedPlayers([]);
     setQuery(e.target.value);
   }
 
@@ -151,36 +132,20 @@ const LeaderboardPage = () => {
   }
 
   function handleSortBy(selectedOption) {
-    setLoading(true); 
     setSortBy(selectedOption.value);
   }
 
-
   function handleSort(value) {
-    setLoading(true);
     setSort(value);
   }
 
   function resetAll() {
-    setLoading(true)
-    setDisplayedPlayers([]);
     setSortBy(sortOptions[0].value)
     setSort("DESC");
     setQuery("");
     setShowBanned('hide');
     setForceUpdate((f) => !f);
   }
-
-  if (playerData == null)
-    return (
-      <div
-        style={{ height: "100vh", width: "100vw", backgroundColor: "#090909" }}
-      >
-        <CompleteNav />
-        <div className="background-level"></div>
-        <div className="loader loader-level-detail"></div>
-      </div>
-    );
 
   return (
     <div className="leaderboard-page">
@@ -198,8 +163,6 @@ const LeaderboardPage = () => {
       <div className="leaderboard-body">
         <ScrollButton />  
         <div className="input-option">
-
-
           <input
             value={query}
             type="text"
@@ -418,47 +381,49 @@ const LeaderboardPage = () => {
           </div>
         </div>
 
-        {initialLoading ? (
-          <div className="loader"></div>
-        ) : (
-          <InfiniteScroll
-            style={{ paddingBottom: "4rem", overflow: "visible" }}
-            dataLength={displayedPlayers.length}
-            next={() => {
-              const currentLength = displayedPlayers.length;
-              const newPagePlayers = filteredData.slice(
-                currentLength,
-                currentLength + limit
-              );
-              if (newPagePlayers.length > 0) {
-                setDisplayedPlayers(prev => [...prev, ...newPagePlayers]);
+        <div style={{ minHeight: "200px" }}>
+          {playerData === null ? (
+            <div className="loader"></div>
+          ) : (
+            <InfiniteScroll
+              style={{ paddingBottom: "4rem", overflow: "visible" }}
+              dataLength={displayedPlayers.length}
+              next={() => {
+                const currentLength = displayedPlayers.length;
+                const newPagePlayers = filteredData.slice(
+                  currentLength,
+                  currentLength + limit
+                );
+                if (newPagePlayers.length > 0) {
+                  setDisplayedPlayers(prev => [...prev, ...newPagePlayers]);
+                }
+              }}
+              hasMore={displayedPlayers.length < filteredData.length}
+              loader={<div className="loader"></div>}
+              endMessage={
+                displayedPlayers.length > 0 && (
+                  <p style={{ textAlign: "center" }}>
+                    <b>{tLeaderboard('infiniteScroll.end')}</b>
+                  </p>
+                )
               }
-            }}
-            hasMore={displayedPlayers.length < filteredData.length}
-            loader={loading && <div className="loader"></div>}
-            endMessage={
-              !loading && displayedPlayers.length > 0 && (
-                <p style={{ textAlign: "center" }}>
-                  <b>{tLeaderboard('infiniteScroll.end')}</b>
-                </p>
-              )
-            }
-          >
-            {displayedPlayers.map((playerStat, index) => (
-              <PlayerCard
-                key={index}
-                currSort={sortBy}
-                player={{
-                  ...playerStat,
-                  name: playerStat.player.name,
-                  country: playerStat.player.country,
-                  isBanned: playerStat.player.isBanned,
-                  pfp: playerStat.player.pfp,
-                }}
-              />
-            ))}
-          </InfiniteScroll>
-        )}
+            >
+              {displayedPlayers.map((playerStat, index) => (
+                <PlayerCard
+                  key={index}
+                  currSort={sortBy}
+                  player={{
+                    ...playerStat,
+                    name: playerStat.player.name,
+                    country: playerStat.player.country,
+                    isBanned: playerStat.player.isBanned,
+                    pfp: playerStat.player.pfp,
+                  }}
+                />
+              ))}
+            </InfiniteScroll>
+          )}
+        </div>
       </div>
     </div>
   );
