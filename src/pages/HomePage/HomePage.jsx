@@ -168,8 +168,6 @@ const HomePage = () => {
   const location = useLocation();
   const currentUrl = window.location.origin + location.pathname;
 
-  console.log("env api:",import.meta.env.VITE_API_URL);
-  console.log("env current environment:",import.meta.env.MODE);
   // Fetch stats on mount
   useEffect(() => {
     const fetchStats = async () => {

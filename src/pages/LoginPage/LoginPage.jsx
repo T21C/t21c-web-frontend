@@ -32,9 +32,6 @@ const LoginPage = () => {
           sitekey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
           theme: 'light',
           size: 'normal',
-          callback: (token) => {
-            console.log('reCAPTCHA solved:', token.substring(0, 20) + '...');
-          }
         });
         setIsRecaptchaRendered(true);
       } catch (error) {
