@@ -74,6 +74,7 @@ const CreatorManagementPage = () => {
   const levelsCancelTokenRef = useRef();
   const scrollPositionRef = useRef(0);
   const [excludeAliases, setExcludeAliases] = useState(false);
+  const [availableCreators, setAvailableCreators] = useState(null);
 
   const fetchCreators = async (preserveScroll = false) => {
     try {
@@ -214,6 +215,55 @@ const CreatorManagementPage = () => {
     ]).catch(console.error);
   }, [excludeAliases]);
 
+  useEffect(() => {
+    let cancelToken;
+
+    const fetchAvailableCreators = async () => {
+      try {
+        // Cancel any in-flight request
+        if (cancelToken) {
+          cancelToken.cancel('New search initiated');
+        }
+
+        // Create new cancel token
+        cancelToken = api.CancelToken.source();
+        
+        // Clear current results while loading
+        setAvailableCreators(null);
+        
+        const params = new URLSearchParams({
+          page: 1,
+          limit: maxCreatorResults,
+          search: creatorListSearchQuery,
+          excludeAliases: excludeAliases
+        });
+
+        const response = await api.get(`/v2/database/creators?${params}`, {
+          cancelToken: cancelToken.token
+        });
+
+        // Filter out creators that are already added
+        setAvailableCreators(response.data.results.filter(
+          creator => !pendingCreators.some(pc => pc.id === creator.id)
+        ));
+      } catch (error) {
+        if (!api.isCancel(error)) {
+          console.error('Error fetching creators:', error);
+          setAvailableCreators([]);
+        }
+      }
+    };
+
+    if (selectedLevel) {
+      fetchAvailableCreators();
+    }
+
+    return () => {
+      if (cancelToken) {
+        cancelToken.cancel('Component unmounted or search changed');
+      }
+    };
+  }, [creatorListSearchQuery, selectedLevel, pendingCreators, excludeAliases]);
 
   useEffect(() => {
     // Prevent scrolling when modals are open
@@ -672,21 +722,24 @@ const CreatorManagementPage = () => {
           
           <div className="add-creator">
             <Select
-              options={creators
-                .filter(creator => !pendingCreators.some(sc => sc.id === creator.id))
-                .map(creator => ({
-                  value: creator.id,
-                  label: creator.name
-                }))}
+              options={availableCreators === null ? [] : availableCreators.map(creator => ({
+                value: creator.id,
+                label: `${creator.name} (ID: ${creator.id}, Charts: ${creator.createdLevels?.length || 0})${creator.aliases?.length > 0 ? ` [${creator.aliases.join(', ')}]` : ''}`
+              }))}
               value={null}
-              onChange={(selected) => {
-                const creator = creators.find(c => c.id === selected.value);
+              onChange={(option) => {
+                const creator = availableCreators?.find(c => c.id === option?.value);
                 if (creator) {
                   handleAddCreator(creator);
                 }
               }}
-              placeholder="Add creator..."
+              placeholder="Search and select creator..."
+              onInputChange={(value) => setCreatorListSearchQuery(value)}
+              isSearchable={true}
               className="creator-select"
+              width="50%"
+              isLoading={availableCreators === null}
+              noOptionsMessage={() => availableCreators === null ? "Loading..." : "Type to search creators..."}
             />
           </div>
 
