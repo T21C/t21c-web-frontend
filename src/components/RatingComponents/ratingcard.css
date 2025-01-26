@@ -5,8 +5,8 @@
   margin-bottom: 1rem;
   transition: background-color 0.3s ease;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
-
 .rating-card.low-diff {
   background: #182318;
   box-shadow: 0 0 10px rgba(0, 255, 0, 0.1);
@@ -21,6 +21,19 @@
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  position: relative;
+  z-index: 10;
+}
+
+.rating-card .vote-tag {
+  position: relative;
+  background: #231818;
+  font-weight: 1000;
+  font-size: 25rem;
+  height: 0;
+  width: 0;
+  opacity: 0.05;
+  transform: translate(-20px, -7.5rem) skew(-15deg) scaleX(80%);
 }
 
 .rating-card .rating-card-header {

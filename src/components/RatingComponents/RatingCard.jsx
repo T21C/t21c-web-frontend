@@ -36,7 +36,7 @@ export const RatingCard = ({
     const { t } = useTranslation('components');
     const tRating = (key) => t(`rating.ratingCard.${key}`);
     const [isEditing, setIsEditing] = useState(false);
-
+    const isVote = /^vote/i.test(rating.level.rerateNum);
     const userRating = rating.details?.find(detail => detail.userId === user?.id)?.rating || "";
     const processedRatings = rating.details
         .map(({rating}) => calculateRatingValue(rating))
@@ -65,9 +65,14 @@ export const RatingCard = ({
     return (
       <div
         className={`rating-card ${
-          rating.details.length >= 4 ? 'four-rated' : 
+          rating.details.length >= 4 || isVote ? 'four-rated' : 
           rating.lowDiff ? 'low-diff' : ''}`}
       >
+        {isVote && (
+        <div className="vote-tag">
+          <span>VOTE</span>
+        </div>
+        )}
         <div className="rating-card-content">
           <div className="rating-card-header">
             <div className="header-content">
