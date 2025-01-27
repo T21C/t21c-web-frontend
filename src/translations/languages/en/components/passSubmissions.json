@@ -1,23 +1,14 @@
 {
-  "noSubmissions": "No pending pass submissions to review",
+  "noSubmissions": "No pending submissions",
   "details": {
-    "levelId": "Level ID:",
-    "player": "Player:",
-    "feelingDiff": "Feeling Diff:",
+    "levelId": "Level ID",
+    "player": "Player",
+    "feelingDiff": "Feeling Difficulty",
     "judgements": {
-      "label": "Judgements:",
-      "types": {
-        "earlyDouble": "Early Double",
-        "earlySingle": "Early Single",
-        "ePerfect": "E-Perfect",
-        "perfect": "Perfect",
-        "lPerfect": "L-Perfect",
-        "lateSingle": "Late Single",
-        "lateDouble": "Late Double"
-      }
+      "label": "Judgements"
     },
     "flags": {
-      "label": "Flags:",
+      "label": "Flags",
       "types": {
         "12k": "12K",
         "nht": "NHT",
@@ -25,18 +16,13 @@
       }
     },
     "submitter": "Submitter:",
-    "uploadTime": "Upload Time:"
+    "uploadTime": "Upload Time"
   },
   "playerAssignment": {
-    "title": "Assign player",
+    "title": "Assign Player",
+    "current": "Currently Assigned Player",
     "discord": {
-      "assignButton": "Assign Discord Info",
-      "confirmMessage": "Will assign @{{username}} to {{playerName}}. Proceed?",
-      "buttons": {
-        "confirm": "Confirm",
-        "cancel": "Cancel"
-      },
-      "tooltip": "{{discordUsername}} → {{playerName}}"
+      "assignButton": "Assign Discord"
     }
   },
   "buttons": {
@@ -51,14 +37,14 @@
     "autoReject": "Auto-Reject"
   },
   "errors": {
-    "noPlayer": "No player assigned",
+    "noPlayer": "Please assign a player before approving",
+    "playerAssignment": "Failed to assign player",
     "processing": "Error processing submission",
-    "autoAllow": "Failed to auto-allow submissions",
-    "loading": "Failed to load submissions",
-    "saving": "Failed to save submissions"
+    "autoAllow": "Error auto-allowing submissions"
   },
   "success": {
-    "autoAllow": "Auto-approved {{count}} submissions"
+    "playerAssigned": "Successfully assigned to {{playerName}}",
+    "autoAllow": "Auto-allowed {{count}} submissions"
   },
   "loading": "Loading submissions...",
   "noItems": "No submissions found",

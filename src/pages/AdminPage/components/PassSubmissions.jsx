@@ -110,36 +110,25 @@ const PassSubmissions = () => {
         return;
       }
 
-      await api.put(`${import.meta.env.VITE_SUBMISSION_API}/passes/${submissionId}/assign-player`, 
+      const response = await api.put(`${import.meta.env.VITE_SUBMISSION_API}/passes/${submissionId}/assign-player`, 
         { playerId: player.id },
         { headers: { 'Content-Type': 'application/json' } }
       );
 
-      // Update submission with new player info
-      setSubmissions(prev => prev.map(sub => 
-        sub.id === submissionId ? { 
-          ...sub, 
-          assignedPlayerId: player.id,
-          assignedPlayerDiscordId: player.discordId,
-          assignedPlayerName: player.name
-        } : sub
-      ));
+      // Update submission with new player info from response
+      if (response.data.submission) {
+        setSubmissions(prev => prev.map(sub => 
+          sub.id === submissionId ? response.data.submission : sub
+        ));
+      }
 
-      // Clear any existing discord assignment states
-      setDiscordAssignmentStatus(prev => {
-        const newState = { ...prev };
-        delete newState[submissionId];
-        return newState;
-      });
-      setDiscordAssignmentError(prev => {
-        const newState = { ...prev };
-        delete newState[submissionId];
-        return newState;
-      });
+      toast.success(tPass('success.playerAssigned', { 
+        playerName: player.name 
+      }));
 
     } catch (error) {
       console.error('Error assigning player:', error);
-      alert("Error assigning player");
+      toast.error(tPass('errors.playerAssignment'));
     }
   };
 
@@ -357,11 +346,6 @@ const PassSubmissions = () => {
                 </div>
 
                 <div className="detail-row">
-                  <span className="detail-label">{tPass('details.submitter')}</span>
-                  <span className="detail-value">{submission.submitterDiscordUsername}</span>
-                </div>
-
-                <div className="detail-row">
                   <span className="detail-label">{tPass('details.uploadTime')}</span>
                   <span className="detail-value">
                     {new Date(submission.rawTime).toLocaleString()}
@@ -377,64 +361,24 @@ const PassSubmissions = () => {
                       [submission.id]: value
                     }))}
                     onSelect={(player) => handlePlayerSelect(submission.id, player)}
-                    currentPlayer={submissions.find(s => s.id === submission.id)?.assignedPlayerId}
+                    currentPlayer={submission.assignedPlayerId}
                   />
 
-                  <div className="discord-assignment">
-                    {discordAssignmentError[submission.id] && (
-                      <div className="assignment-error">{discordAssignmentError[submission.id]}</div>
-                    )}
-                    
-                    {submission.assignedPlayerId && !submission.assignedPlayerDiscordId && (
-                      <div className="discord-buttons">
-                        {pendingAssignments[submission.id] ? (
-                          <div className="discord-buttons">
-                            <span className="assignment-confirmation">
-                              {tPass('playerAssignment.discord.confirmMessage', {
-                                username: submission.submitterDiscordUsername,
-                                playerName: submission.assignedPlayerName
-                              })}
-                            </span>
-                            <button 
-                              className="confirm-discord-btn"
-                              onClick={() => handleDiscordAssignment(submission.id)}
-                              disabled={discordAssignmentStatus[submission.id] === 'assigning'}
-                            >
-                              {tPass('playerAssignment.discord.buttons.confirm')}
-                            </button>
-                            <button 
-                              className="cancel-discord-btn"
-                              onClick={() => cancelDiscordAssignment(submission.id)}
-                            >
-                              {tPass('playerAssignment.discord.buttons.cancel')}
-                            </button>
-                          </div>
-                        ) : (
-                          <div className="discord-assignment-container">
-                            <button 
-                              className="assign-discord-btn"
-                              onClick={() => startDiscordAssignment(submission.id)}
-                              disabled={discordAssignmentStatus[submission.id] === 'assigning'}
-                            >
-                              {tPass('playerAssignment.discord.assignButton')}
-                            </button>
-                            <div className="assignment-tooltip">
-                              {tPass('playerAssignment.discord.tooltip', {
-                                discordUsername: submission.submitterDiscordUsername,
-                                playerName: submission.assignedPlayerName || 'Unknown Player'
-                              })}
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
+                  {submission.assignedPlayer && (
+                    <div className="assigned-player-info">
+                      <span className="assigned-player-label">{tPass('playerAssignment.current')}</span>
+                      <span className="assigned-player-name">
+                        {submission.assignedPlayer.name} (ID: {submission.assignedPlayerId})
+                      </span>
+                    </div>
+                  )}
 
                   <div className="action-buttons">
                     <button
                       onClick={() => handleSubmission(submission.id, 'approve')}
                       className="approve-btn"
-                      disabled={disabledButtons[submission.id]}
+                      disabled={disabledButtons[submission.id] || !submission.assignedPlayerId}
+                      title={!submission.assignedPlayerId ? tPass('errors.noPlayer') : ''}
                     >
                       {tPass('buttons.allow')}
                     </button>

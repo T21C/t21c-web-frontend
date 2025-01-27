@@ -873,3 +873,53 @@
   .submission-admin-page .discord-assignment-container:hover .assignment-tooltip {
     visibility: visible;
   }
+
+  .submission-admin-page .item-assigned {
+    font-size: 0.9rem;
+    color: var(--color-white-t80);
+    margin-top: 0.25rem;
+    padding: 0.25rem 0.5rem;
+    background-color: var(--color-white-t10);
+    border-radius: 3px;
+    display: inline-block;
+  }
+
+  .submission-admin-page .assigned-player-info {
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background-color: var(--color-white-t10);
+    border-radius: 4px;
+    font-size: 0.95rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .submission-admin-page .assigned-player-label {
+    color: var(--color-white-t80);
+    font-size: 0.9rem;
+  }
+
+  .submission-admin-page .assigned-player-name {
+    color: var(--color-white);
+    font-weight: 500;
+  }
+
+  .submission-admin-page .player-assignment {
+    margin-top: 1rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--color-white-t20);
+  }
+
+  .submission-admin-page .action-buttons {
+    margin-top: 1rem;
+  }
+
+  .submission-admin-page .approve-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .submission-admin-page .approve-btn[title] {
+    position: relative;
+  }
