@@ -98,7 +98,7 @@ const RatingPage = () => {
     };
 
     eventSource.onerror = (error) => {
-      console.error('SSE: Connection error:', error);
+      console.error('SSE: Rating Page Connection error:', error);
     };
 
     return () => {

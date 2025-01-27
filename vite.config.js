@@ -78,6 +78,12 @@ export default defineConfig(({ command, mode }) => {
           changeOrigin: true,
           secure: false,
           ws: false
+        },
+        '/events': {
+          target: apiUrl || 'http://localhost:3002',
+          changeOrigin: true,
+          secure: false,
+          ws: false
         }
       }
     }
