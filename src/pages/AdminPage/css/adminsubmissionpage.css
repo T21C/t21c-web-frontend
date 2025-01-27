@@ -923,3 +923,14 @@
   .submission-admin-page .approve-btn[title] {
     position: relative;
   }
+
+  .submission-admin-page .submitter-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .submission-admin-page .detail-subvalue {
+    font-size: 0.8rem;
+    color: var(--color-white-t80);
+  }

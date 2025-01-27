@@ -132,66 +132,6 @@ const PassSubmissions = () => {
     }
   };
 
-  const handleDiscordAssignment = async (submissionId) => {
-    const submission = submissions.find(s => s.id === submissionId);
-    if (!submission.assignedPlayerId) return;
-
-    setDiscordAssignmentStatus(prev => ({
-      ...prev,
-      [submissionId]: 'assigning'
-    }));
-
-    try {
-      await api.put(`${import.meta.env.VITE_PLAYERS}/${submission.assignedPlayerId}/discord`, {
-        id: submission.submitterDiscordId,
-        username: submission.submitterDiscordUsername,
-        avatar: submission.submitterDiscordPfp,
-      });
-      
-      setSubmissions(prev => prev.map(sub => 
-        sub.id === submissionId 
-          ? { ...sub, assignedPlayerDiscordId: submission.submitterDiscordId }
-          : sub
-      ));
-      
-      setDiscordAssignmentStatus(prev => ({
-        ...prev,
-        [submissionId]: 'success'
-      }));
-
-      setTimeout(() => {
-        setDiscordAssignmentStatus(prev => {
-          const newState = { ...prev };
-          delete newState[submissionId];
-          return newState;
-        });
-      }, 1500);
-
-    } catch (error) {
-      console.error('[PassSubmissions] Discord assignment failed:', error);
-      setDiscordAssignmentError(prev => ({
-        ...prev,
-        [submissionId]: error.response?.data?.details || 'Failed to assign discord info'
-      }));
-      setDiscordAssignmentStatus(prev => ({
-        ...prev,
-        [submissionId]: 'error'
-      }));
-
-      setTimeout(() => {
-        setDiscordAssignmentStatus(prev => {
-          const newState = { ...prev };
-          delete newState[submissionId];
-          return newState;
-        });
-        setDiscordAssignmentError(prev => {
-          const newState = { ...prev };
-          delete newState[submissionId];
-          return newState;
-        });
-      }, 1500);
-    }
-  };
 
   const handleSubmission = async (submissionId, action) => {
     const submission = submissions.find(s => s.id === submissionId);
@@ -321,6 +261,14 @@ const PassSubmissions = () => {
                 <div className="detail-row">
                   <span className="detail-label">{tPass('details.feelingDiff')}</span>
                   <span className="detail-value">{submission.feelingDifficulty}</span>
+                </div>
+
+                <div className="detail-row">
+                  <span className="detail-label">{tPass('details.submitter')}</span>
+                  <div className="submitter-details">
+                    <span className="detail-value">@{submission.submitterDiscordUsername}</span>
+                    <span className="detail-subvalue">{submission.submitterDiscordId}</span>
+                  </div>
                 </div>
 
                 <div className="detail-row">
