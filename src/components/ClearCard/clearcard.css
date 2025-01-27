@@ -38,7 +38,7 @@
   transform: translate(-60px, -50%);
 }
 
-.player-info {
+.clear-card .player-info {
   display: flex;
   align-items: center;
   flex-direction: row;
@@ -49,42 +49,42 @@
   transition: background-color 0.2s ease;
 }
 
-.player-info:hover {
+.clear-card .player-info:hover {
   background-color: var(--color-white-t10);
 }
 
-.avatar-container {
+.clear-card .avatar-container {
   flex-shrink: 0;
 }
 
-.avatar-container .pfp {
+.clear-card .avatar-container .pfp {
   width: 2.75rem;
   height: 2.75rem;
   border-radius: 50%;
 }
 
-.name-container {
+.clear-card .name-container {
   display: flex;
   flex-direction: column;
 }
 
-.player-name {
+.clear-card .player-name {
   font-weight: 500;
   font-size: 1.2rem;
   transition: transform 0.2s ease;
 }
 
-.player-info:hover .player-name {
+.clear-card .player-info:hover .player-name {
   text-decoration: underline;
 }
 
-.country {
+.clear-card .country {
   width: 1.5rem;
   height: 1.5rem;
 }
 
 /* Details Section - Score Info & Judgements */
-.details-section {
+.clear-card .details-section {
   flex: 2;
   min-width: 400px;
   flex-direction: column;
@@ -92,14 +92,14 @@
   gap: 0.5rem;
 }
 
-.collapsible-fields {
+.clear-card .collapsible-fields {
   display: flex;
   justify-content: space-between;
   width: 100%;
   transition: all 0.3s ease;
 }
 
-.collapsible-fields.hidden {
+.clear-card .collapsible-fields.hidden {
   max-height: 0;
   opacity: 0;
   margin: 0;
@@ -107,7 +107,7 @@
   overflow: hidden;
 }
 
-.score-info {
+.clear-card .score-info {
   display: flex;
   align-items: center;
   gap: 1.5rem;
@@ -115,24 +115,24 @@
   width: 100%;
 }
 
-.score-value {
+.clear-card .score-value {
   font-size: 1.2rem;
   font-weight: bold;
   min-width: 5rem;
 }
 
-.score-accuracy {
+.clear-card .score-accuracy {
   color: var(--color-white-t80);
   min-width: 4.5rem;
   margin-left: auto;
 }
 
-.score-speed {
+.clear-card .score-speed {
   color: var(--color-white-t80);
   min-width: 3rem;
 }
 
-.judgements {
+.clear-card .judgements {
   display: flex;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
@@ -140,31 +140,31 @@
   border-radius: 4px;
 }
 
-.judgements span {
+.clear-card .judgements span {
   font-weight: bold;
   font-size: 1.2rem;
   text-shadow: 0 0 6px #0005;
 }
 
-.early-double, .late-double { color: red; }
-.early-single, .late-single { color: orange; }
-.e-perfect, .l-perfect { color: yellow; }
-.perfect { color: lightgreen; }
+.clear-card .early-double, .clear-card .late-double { color: red; }
+.clear-card .early-single, .clear-card .late-single { color: orange; }
+.clear-card .e-perfect, .clear-card .l-perfect { color: yellow; }
+.clear-card .perfect { color: lightgreen; }
 
-.bottom-row {
+.clear-card .bottom-row {
   display: flex;
   justify-content: space-between;
   width: 100%;
 }
 
-.time-info {
+.clear-card .time-info {
   color: var(--color-white-t60);
   font-size: 0.9rem;
   min-width: 5rem;
   text-align: right;
 }
 
-.video-link {
+.clear-card .video-link {
   display: flex;
   align-items: center;
   padding: 0.5rem;
@@ -172,17 +172,17 @@
   transition: background-color 0.2s ease;
 }
 
-.video-link:hover {
+.clear-card .video-link:hover {
   background-color: var(--color-white-t10);
 }
 
-.video-link svg {
+.clear-card .video-link svg {
   width: 1.5rem;
   height: 1.5rem;
 }
 
 /* Feeling Rating */
-.feeling-rating {
+.clear-card .feeling-rating {
   display: flex;
   align-items: flex-start;
   gap: 0.5rem;
@@ -190,16 +190,16 @@
   width: 100%;
 }
 
-.feeling-label {
+.clear-card .feeling-label {
   color: var(--color-white-t80);
 }
 
-.feeling-container {
+.clear-card .feeling-container {
   position: relative;
   flex: 1;
 }
 
-.feeling-content {
+.clear-card .feeling-content {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -209,11 +209,11 @@
   transition: background-color 0.2s ease;
 }
 
-.feeling-content:hover {
+.clear-card .feeling-content:hover {
   background-color: var(--color-white-t10);
 }
 
-.feeling-text {
+.clear-card .feeling-text {
   transition: color 0.2s ease;
   white-space: nowrap;
   overflow: hidden;
@@ -224,13 +224,13 @@
   white-space: normal;
 }
 
-.expand-arrow {
+.clear-card .expand-arrow {
   font-size: 0.8rem;
   color: var(--color-white-t60);
   transition: transform 0.3s ease;
 }
 
-.expand-arrow.collapse {
+.clear-card .expand-arrow.collapse {
   transform: rotate(180deg);
 }
 

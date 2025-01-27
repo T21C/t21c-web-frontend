@@ -46,7 +46,7 @@ const ClearCard = ({scoreData, index}) => {
       <div className="card-section player-section">
         <div className="rank-display">
           <span className="index" style={{ 
-            color: index === 0 ? "gold" : index === 1 ? "silver" : index === 2 ? "brown" : "inherit"
+            color: index === 0 ? "gold" : index === 1 ? "silver" : index === 2 ? "#f66" : "inherit"
           }}>
             <b>#{index + 1}</b>
           </span>

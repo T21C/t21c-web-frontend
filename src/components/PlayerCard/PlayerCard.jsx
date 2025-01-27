@@ -92,13 +92,13 @@ const PlayerCard = ({player}) => {
       primaryField.value = Math.round(parseFloat(primaryField.value));
     }
   }
-
+  console.log(player);
   return (
     <div className='player-card' onClick={() => redirect()} style={{backgroundColor: player.isBanned ? "#ff000099" : ""}}>
       <div className="img-wrapper">
         <div className="image-container">
-          {player.discordAvatar ? (
-            <img src={player.discordAvatar} referrerPolicy="no-referrer" alt="" />
+          {player.user?.avatarUrl ? (
+            <img src={player.user.avatarUrl} referrerPolicy="no-referrer" alt="" />
           ) : (player.pfp && player.pfp !== "none") ? (
             <img src={player.pfp} referrerPolicy="no-referrer" alt="" />
           ) : (
@@ -116,12 +116,12 @@ const PlayerCard = ({player}) => {
 
       <div className="name-wrapper">
         <div className="group">
-          <p className="player-exp">{tCard('title')}</p>
+          <p className="player-exp">{tCard('title')} | ID: {player.id}</p>
         </div>
         <div className="name-container">
           <p className='player-name'>{player.name}</p>
-          {player.discordUsername && (
-            <span className="player-discord-handle">@{player.discordUsername}</span>
+          {player.player.user?.username && (
+            <span className="player-discord-handle">@{player.player.user?.username}</span>
           )}
         </div>
       </div>

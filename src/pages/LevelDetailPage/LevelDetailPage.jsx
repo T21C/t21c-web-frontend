@@ -145,18 +145,17 @@ const FullInfoPopup = ({ level, onClose }) => {
           </div>
           <div className="body">
             <div className="team-info">
-              {level.teamObject ? (
-                <div className="each-info">
+              {level.teamObject && (
+                <div className="each-info team-name">
                   <span>{tLevel('info.team')}:</span>
                   <span>{level.teamObject.name}</span>
                 </div>
-              ) : null}
-              {formatCredits()}
+              )}
               <div className="each-info">
                 <span>{tLevel('info.difficulty')}:</span>
                 <span>{level.difficulty.name}</span>
               </div>
-              {level.baseScore || level.difficulty.baseScore && (
+              {(level.baseScore || level.difficulty.baseScore) && (
                 <div className="each-info">
                   <span>{tLevel('info.baseScore')}:</span>
                   <span>{level.baseScore || level.difficulty.baseScore}PP</span>
@@ -179,6 +178,7 @@ const FullInfoPopup = ({ level, onClose }) => {
                 </div>
               )}
             </div>
+            {formatCredits()}
             <div className="links">
               {level.videoLink && (
                 <a href={level.videoLink} target="_blank" rel="noopener noreferrer" title={tLevel('links.thumbnailNotFound.goToVideo')}>
