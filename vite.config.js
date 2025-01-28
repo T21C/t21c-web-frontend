@@ -49,7 +49,9 @@ export default defineConfig(({ command, mode }) => {
       strictPort: true,
       cors: true,
       hmr: {
-        overlay: true,
+        host: mode === 'production' ? 'tuforums.com' : '127.0.0.1',
+        clientPort: mode === 'production' ? 443 : port,
+        protocol: mode === 'production' ? 'wss' : 'ws'
       },
       watch: {
         usePolling: true

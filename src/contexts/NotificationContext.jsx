@@ -75,9 +75,12 @@ export const NotificationProvider = ({ children }) => {
     let isFirstConnection = true;
 
     // Set up SSE connection
-    const eventSource = new EventSource(`${import.meta.env.VITE_API_URL}/events`, {
-      withCredentials: true
-    });
+    const eventSource = new EventSource(
+      `${import.meta.env.VITE_API_URL}/events`, 
+      {
+        withCredentials: true
+      }
+    );
 
     eventSource.onopen = () => {
       if (isFirstConnection) {
