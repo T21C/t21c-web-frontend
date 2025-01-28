@@ -67,32 +67,28 @@ export const NotificationProvider = ({ children }) => {
   useEffect(() => {
     if (!user?.isSuperAdmin && !user?.isRater) return;
 
-    // Initial fetch
-    fetchNotificationCounts();
-
-    let retryCount = 0;
-    const maxRetries = 3;
-    let isFirstConnection = true;
-
+    console.log('Setting up SSE connection to:', `${import.meta.env.VITE_API_URL}/events`);
+    
     // Set up SSE connection
-    const eventSource = new EventSource(
-      `${import.meta.env.VITE_API_URL}/events`, 
-      {
-        withCredentials: true
-      }
-    );
+    const eventSource = new EventSource(`${import.meta.env.VITE_API_URL}/events`, {
+      withCredentials: true
+    });
 
     eventSource.onopen = () => {
-      if (isFirstConnection) {
-        console.debug('SSE: Initial connection established');
-        isFirstConnection = false;
-      } else {
-        console.debug('SSE: Reconnected successfully');
-      }
-      retryCount = 0;
+      console.log('SSE: Connection established');
+    };
+
+    eventSource.onerror = (error) => {
+      console.error('SSE: Connection error:', error);
+      // Log the readyState
+      console.log('SSE: ReadyState:', eventSource.readyState);
+      // 0 = CONNECTING
+      // 1 = OPEN
+      // 2 = CLOSED
     };
 
     eventSource.onmessage = (event) => {
+      console.log('SSE: Received message:', event.data);
       try {
         const data = JSON.parse(event.data);
         if (data.type === 'submissionUpdate') {
@@ -124,32 +120,11 @@ export const NotificationProvider = ({ children }) => {
       }
     };
 
-    eventSource.onerror = (error) => {
-      // Check if it's a normal reconnection attempt
-      if (eventSource.readyState === EventSource.CONNECTING) {
-        retryCount++;
-        if (retryCount <= maxRetries) {
-          // Don't log anything for normal reconnection attempts
-          return;
-        }
-        console.warn(`SSE: Reconnection attempt ${retryCount}/${maxRetries}`);
-      } else if (eventSource.readyState === EventSource.CLOSED) {
-        console.error('SSE: Connection closed', error);
-        eventSource.close();
-      }
-    };
-
     return () => {
-      console.debug('SSE: Cleaning up connection');
-      if (eventSource) {
-        eventSource.close();
-      }
-      // Clear any pending fetch timeout
-      if (fetchTimeoutRef.current) {
-        clearTimeout(fetchTimeoutRef.current);
-      }
+      console.log('Closing SSE connection');
+      eventSource.close();
     };
-  }, [user]);
+  }, [user?.isSuperAdmin, user?.isRater]);
 
   const totalNotifications = pendingSubmissions + pendingRatings;
   const displayCount = totalNotifications > 9 ? '9+' : totalNotifications.toString();
