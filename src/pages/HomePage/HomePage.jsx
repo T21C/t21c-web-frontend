@@ -21,6 +21,9 @@ import { PassIcon } from "../../components/Icons/PassIcon";
 import { LevelIcon } from "../../components/Icons/LevelIcon";
 import { LeaderboardIcon } from "../../components/Icons/LeaderboardIcon";
 
+// Import the logo
+import logoFull from '@/assets/tuf-logo/logo-full.png';
+
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     const difficulty = payload[0].payload;
@@ -242,7 +245,7 @@ const HomePage = () => {
         <div className="content-container">
           <div className="title-section">
             <div className="logo-container">
-              <img src="/src/assets/tuf-logo/logo-full.png" alt="TUForums" className="logo" />
+              <img src={logoFull} alt="TUForums" className="logo" />
             </div>
             <h1 
               className={`main-title`}
