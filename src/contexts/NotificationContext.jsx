@@ -86,87 +86,108 @@ export const NotificationProvider = ({ children }) => {
     .then(response => {
       console.log('SSE: Initial endpoint test response:', response.status, response.statusText);
       console.log('SSE: Response headers:', Object.fromEntries([...response.headers]));
+      
+      // If the test was successful, establish SSE connection immediately
+      if (response.ok) {
+        setupEventSource();
+      }
     })
     .catch(error => {
       console.error('SSE: Initial endpoint test failed:', error);
-    });
-    
-    // Set up SSE connection
-    const eventSource = new EventSource(eventsEndpoint, {
-      withCredentials: true
+      // Still try to establish SSE connection even if the test fails
+      setupEventSource();
     });
 
-    eventSource.onopen = (event) => {
-      console.log('SSE: Connection established successfully', event);
-      console.log('SSE: ReadyState after open:', eventSource.readyState);
-    };
+    let eventSource = null;
+    let reconnectTimeout = null;
 
-    eventSource.onerror = (error) => {
-      console.error('SSE: Connection error:', {
-        error,
-        readyState: eventSource.readyState,
-        url: eventsEndpoint,
-        timestamp: new Date().toISOString()
+    const setupEventSource = () => {
+      // Clear any existing connection
+      if (eventSource) {
+        eventSource.close();
+      }
+      
+      // Clear any pending reconnection
+      if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+      }
+
+      eventSource = new EventSource(eventsEndpoint, {
+        withCredentials: true
       });
 
-      // Check if the error is due to CORS
-      if (error.target?.status === 0) {
-        console.error('SSE: Possible CORS or network error');
-      }
+      eventSource.onopen = (event) => {
+        console.log('SSE: Connection established successfully', event);
+        console.log('SSE: ReadyState after open:', eventSource.readyState);
+      };
 
-      // Close and retry connection if in error state
-      if (eventSource.readyState === EventSource.CLOSED) {
-        console.log('SSE: Connection closed, attempting to reconnect in 5s...');
-        eventSource.close();
-        
-        // Attempt to reconnect after 5 seconds
-        setTimeout(() => {
-          console.log('SSE: Attempting to reconnect...');
-          const newEventSource = new EventSource(eventsEndpoint, {
-            withCredentials: true
-          });
-          // Update the eventSource reference
-          Object.assign(eventSource, newEventSource);
-        }, 5000);
-      }
-    };
+      eventSource.onerror = (error) => {
+        console.error('SSE: Connection error:', {
+          error,
+          readyState: eventSource.readyState,
+          url: eventsEndpoint,
+          timestamp: new Date().toISOString()
+        });
 
-    eventSource.onmessage = (event) => {
-      console.log('SSE: Received message:', event.data);
-      try {
-        const data = JSON.parse(event.data);
-        if (data.type === 'submissionUpdate') {
-          // For submission updates, fetch immediately and reset the timer
-          if (fetchTimeoutRef.current) {
-            clearTimeout(fetchTimeoutRef.current);
-          }
-          
-          // Log submission update details if available
-          if (data.data) {
-            console.debug('SSE: Submission update received:', {
-              action: data.data.action,
-              type: data.data.submissionType,
-              id: data.data.submissionId,
-              count: data.data.count
-            });
-          }
-          
-          fetchNotificationCounts();
-        } else if (data.type === 'ratingUpdate') {
-          // For rating updates, fetch immediately and reset the timer
-          if (fetchTimeoutRef.current) {
-            clearTimeout(fetchTimeoutRef.current);
-          }
-          fetchNotificationCounts();
+        if (error.target?.status === 0) {
+          console.error('SSE: Possible CORS or network error');
         }
-      } catch (error) {
-        console.error('Error parsing SSE message:', error);
-      }
+
+        if (eventSource.readyState === EventSource.CLOSED) {
+          console.log('SSE: Connection closed, attempting to reconnect in 1s...');
+          eventSource.close();
+          
+          // Reduced timeout to 1 second for faster recovery
+          reconnectTimeout = setTimeout(() => {
+            console.log('SSE: Attempting to reconnect...');
+            setupEventSource(); // Recursively try to establish connection
+          }, 1000);
+        }
+      };
+
+      eventSource.onmessage = (event) => {
+        console.log('SSE: Received message:', event.data);
+        try {
+          const data = JSON.parse(event.data);
+          if (data.type === 'submissionUpdate') {
+            // For submission updates, fetch immediately and reset the timer
+            if (fetchTimeoutRef.current) {
+              clearTimeout(fetchTimeoutRef.current);
+            }
+            
+            // Log submission update details if available
+            if (data.data) {
+              console.debug('SSE: Submission update received:', {
+                action: data.data.action,
+                type: data.data.submissionType,
+                id: data.data.submissionId,
+                count: data.data.count
+              });
+            }
+            
+            fetchNotificationCounts();
+          } else if (data.type === 'ratingUpdate') {
+            // For rating updates, fetch immediately and reset the timer
+            if (fetchTimeoutRef.current) {
+              clearTimeout(fetchTimeoutRef.current);
+            }
+            fetchNotificationCounts();
+          }
+        } catch (error) {
+          console.error('Error parsing SSE message:', error);
+        }
+      };
     };
 
+    // Cleanup function
     return () => {
-      console.log('Closing SSE connection');
-      eventSource.close();
+      console.log('Cleaning up SSE connection');
+      if (eventSource) {
+        eventSource.close();
+      }
+      if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+      }
     };
   }, [user?.isSuperAdmin, user?.isRater]);
 
