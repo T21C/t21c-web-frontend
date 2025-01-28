@@ -13,7 +13,6 @@ export default defineConfig(({ command, mode }) => {
       ? env.VITE_STAGING_API_URL 
       : env.VITE_DEV_API_URL
 
-
   const port = mode === 'production' ? 5000 : 5173
   return {
     plugins: [react()],
@@ -49,9 +48,10 @@ export default defineConfig(({ command, mode }) => {
       strictPort: true,
       cors: true,
       hmr: {
-        host: mode === 'production' ? 'tuforums.com' : '127.0.0.1',
+        host: mode === 'production' ? 'api.tuforums.com' : '127.0.0.1',
         clientPort: mode === 'production' ? 443 : port,
-        protocol: mode === 'production' ? 'wss' : 'ws'
+        protocol: mode === 'production' ? 'wss' : 'ws',
+        timeout: 120000
       },
       watch: {
         usePolling: true
@@ -85,7 +85,7 @@ export default defineConfig(({ command, mode }) => {
           target: apiUrl || 'http://localhost:3002',
           changeOrigin: true,
           secure: false,
-          ws: false
+          ws: true
         }
       }
     }
