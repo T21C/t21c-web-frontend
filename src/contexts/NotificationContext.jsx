@@ -67,24 +67,48 @@ export const NotificationProvider = ({ children }) => {
   useEffect(() => {
     if (!user?.isSuperAdmin && !user?.isRater) return;
 
-    console.log('Setting up SSE connection to:', `${import.meta.env.VITE_API_URL}/events`);
+    const apiUrl = import.meta.env.VITE_API_URL;
+    const eventsEndpoint = `${apiUrl}/events`;
+    
+    console.log('Environment:', import.meta.env.MODE);
+    console.log('API URL:', apiUrl);
+    console.log('Setting up SSE connection to:', eventsEndpoint);
     
     // Set up SSE connection
-    const eventSource = new EventSource(`${import.meta.env.VITE_API_URL}/events`, {
+    const eventSource = new EventSource(eventsEndpoint, {
       withCredentials: true
     });
 
     eventSource.onopen = () => {
-      console.log('SSE: Connection established');
+      console.log('SSE: Connection established successfully');
     };
 
     eventSource.onerror = (error) => {
       console.error('SSE: Connection error:', error);
-      // Log the readyState
       console.log('SSE: ReadyState:', eventSource.readyState);
-      // 0 = CONNECTING
-      // 1 = OPEN
-      // 2 = CLOSED
+      
+      // Log additional connection details
+      console.log('SSE: Connection details:', {
+        url: eventsEndpoint,
+        readyState: eventSource.readyState,
+        withCredentials: true,
+        mode: import.meta.env.MODE
+      });
+
+      // Close and retry connection if in error state
+      if (eventSource.readyState === EventSource.CLOSED) {
+        console.log('SSE: Connection closed, attempting to reconnect...');
+        eventSource.close();
+        // Attempt to reconnect after 5 seconds
+        setTimeout(() => {
+          console.log('SSE: Attempting to reconnect...');
+          const newEventSource = new EventSource(eventsEndpoint, {
+            withCredentials: true
+          });
+          // Update the eventSource reference
+          eventSource = newEventSource;
+        }, 5000);
+      }
     };
 
     eventSource.onmessage = (event) => {
