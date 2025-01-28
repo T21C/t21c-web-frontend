@@ -74,31 +74,51 @@ export const NotificationProvider = ({ children }) => {
     console.log('API URL:', apiUrl);
     console.log('Setting up SSE connection to:', eventsEndpoint);
     
+    // Test the endpoint first with a regular fetch
+    fetch(eventsEndpoint, {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Accept': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+      }
+    })
+    .then(response => {
+      console.log('SSE: Initial endpoint test response:', response.status, response.statusText);
+      console.log('SSE: Response headers:', Object.fromEntries([...response.headers]));
+    })
+    .catch(error => {
+      console.error('SSE: Initial endpoint test failed:', error);
+    });
+    
     // Set up SSE connection
     const eventSource = new EventSource(eventsEndpoint, {
       withCredentials: true
     });
 
-    eventSource.onopen = () => {
-      console.log('SSE: Connection established successfully');
+    eventSource.onopen = (event) => {
+      console.log('SSE: Connection established successfully', event);
+      console.log('SSE: ReadyState after open:', eventSource.readyState);
     };
 
     eventSource.onerror = (error) => {
-      console.error('SSE: Connection error:', error);
-      console.log('SSE: ReadyState:', eventSource.readyState);
-      
-      // Log additional connection details
-      console.log('SSE: Connection details:', {
-        url: eventsEndpoint,
+      console.error('SSE: Connection error:', {
+        error,
         readyState: eventSource.readyState,
-        withCredentials: true,
-        mode: import.meta.env.MODE
+        url: eventsEndpoint,
+        timestamp: new Date().toISOString()
       });
+
+      // Check if the error is due to CORS
+      if (error.target?.status === 0) {
+        console.error('SSE: Possible CORS or network error');
+      }
 
       // Close and retry connection if in error state
       if (eventSource.readyState === EventSource.CLOSED) {
-        console.log('SSE: Connection closed, attempting to reconnect...');
+        console.log('SSE: Connection closed, attempting to reconnect in 5s...');
         eventSource.close();
+        
         // Attempt to reconnect after 5 seconds
         setTimeout(() => {
           console.log('SSE: Attempting to reconnect...');
@@ -106,7 +126,7 @@ export const NotificationProvider = ({ children }) => {
             withCredentials: true
           });
           // Update the eventSource reference
-          eventSource = newEventSource;
+          Object.assign(eventSource, newEventSource);
         }, 5000);
       }
     };

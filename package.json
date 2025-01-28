@@ -9,7 +9,7 @@
     "prod": "vite --mode production --host",
     "build": "vite build",
     "build:staging": "vite build --mode staging",
-    "build:prod": "vite build --mode production",
+    "build:prod": "vite build --mode production && serve -s dist -l 5000",
     "preview": "vite preview",
     "preview:staging": "vite preview --mode staging",
     "preview:prod": "vite preview --mode production",
