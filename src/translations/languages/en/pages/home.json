@@ -26,6 +26,9 @@
         "levels": "Levels"
       }
     },
+    "discord": {
+      "title": "Join our Discord!"
+    },
     "comingSoon": "More fun stuff coming soon..."
   },
   "footer": {

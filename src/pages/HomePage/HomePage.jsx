@@ -321,10 +321,25 @@ const HomePage = () => {
                 </div>
               ))}
             </section>
+            <section className="stats-section discord-section">
+              <div className="discord-container">
+                <span className="discord-title">{tHome('stats.discord.title')}</span>
+                <iframe 
+                src="https://discord.com/widget?id=1024941834373439509&theme=dark" 
+                width="83.333%" 
+                height="300"
+                allowtransparency="true" 
+                frameborder="0" 
+                sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+                style={{position: "relative", zIndex: "1", transform: "scale(1.2)", transformOrigin: "0 0", paddingBottom: "50px"}}
+                />
+              </div>
+            </section>
             <p style={{textAlign: "center", opacity: "0.5"}}>{tHome('stats.comingSoon')}</p>
           </div>
         )}
       </div>
+      
       <Footer />
     </div>
   </>);
