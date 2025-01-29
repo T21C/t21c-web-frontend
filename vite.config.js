@@ -13,7 +13,6 @@ export default defineConfig(({ command, mode }) => {
       ? env.VITE_STAGING_API_URL 
       : env.VITE_DEV_API_URL
 
-
   const port = mode === 'production' ? 5000 : 5173
   return {
     plugins: [react()],
@@ -33,6 +32,9 @@ export default defineConfig(({ command, mode }) => {
       assetsDir: 'assets',
       rollupOptions: {
         output: {
+          entryFileNames: 'assets/[name].js',
+          chunkFileNames: 'assets/[name].js',
+          assetFileNames: 'assets/[name].[ext]',
           manualChunks: {
             vendor: ['react', 'react-dom', 'react-router-dom'],
             ui: ['react-select', 'react-tooltip', 'recharts']
