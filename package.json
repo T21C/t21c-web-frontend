@@ -7,8 +7,8 @@
     "dev": "vite --host",
     "staging": "vite --mode staging --host",
     "prod": "vite --mode production --host",
-    "build": "vite build",
-    "build:staging": "vite build --mode staging",
+    "build:dev": "vite build --mode development && serve -s dist -l 5173",
+    "build:staging": "vite build --mode staging && serve -s dist -l 5173",
     "build:prod": "vite build --mode production && serve -s dist -l 5000",
     "preview": "vite preview",
     "preview:staging": "vite preview --mode staging",
@@ -38,6 +38,7 @@
     "react-select": "^5.9.0",
     "react-tooltip": "^5.28.0",
     "recharts": "^2.15.0",
+    "serve": "^14.2.4",
     "shuffle-seed": "^1.1.6",
     "socket.io-client": "^4.8.1"
   },
