@@ -18,13 +18,13 @@ const CallbackPage = () => {
 
       if (error) {
         setError('Authentication failed');
-        setTimeout(() => navigate('/login'), 30000);
+        setTimeout(() => navigate('/login'), 3000);
         return;
       }
 
       if (!code) {
         setError('No authorization code received');
-        setTimeout(() => navigate('/login'), 30000);
+        setTimeout(() => navigate('/login'), 3000);
         return;
       }
 
@@ -46,7 +46,7 @@ const CallbackPage = () => {
       } catch (err) {
         console.error('OAuth callback error:', err);
         setError(err.response?.data?.message || 'Authentication failed');
-        setTimeout(() => navigate('/login'), 30000);
+        setTimeout(() => navigate('/login'), 3000);
       } finally {
         setLoading(false);
       }
