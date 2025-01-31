@@ -569,7 +569,7 @@ const LevelDetailPage = () => {
                       player: getHighScores(displayedPlayers).highestSpeed.player.name,
                       speed: getHighScores(displayedPlayers).highestSpeed.speed || 1
                     })
-                    : tLevel('stats.highestSpeed.noSpeed'))
+                    : "-")
                   : tLevel('stats.waiting')}
               </span>
             </div>

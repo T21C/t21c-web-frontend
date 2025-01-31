@@ -33,8 +33,7 @@
     },
     "highestSpeed": {
       "label": "Highest Speed",
-      "value": "{{player}} | {{speed}}x",
-      "noSpeed": "-"
+      "value": "{{player}} | {{speed}}x"
     },
     "highestAccuracy": {
       "label": "Highest Accuracy",
