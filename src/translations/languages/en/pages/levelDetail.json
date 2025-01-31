@@ -34,7 +34,7 @@
     "highestSpeed": {
       "label": "Highest Speed",
       "value": "{{player}} | {{speed}}x",
-      "noSpeed": "No speed mods used"
+      "noSpeed": "-"
     },
     "highestAccuracy": {
       "label": "Highest Accuracy",
