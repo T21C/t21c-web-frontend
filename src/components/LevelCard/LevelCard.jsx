@@ -166,17 +166,6 @@ const LevelCard = ({
             <img src={lvImage} alt={difficultyInfo?.name || 'Difficulty icon'} />
           </div>
 
-          {user?.isSuperAdmin && (
-            <div className="toRate-checkbox">
-              <input
-                type="checkbox"
-                checked={toRate}
-                onChange={handleCheckboxChange}
-                onClick={(e) => e.stopPropagation()}
-              />
-            </div>
-          )}
-
           <div className="content-overlay">
             <div className="title-section">
               {level.song}

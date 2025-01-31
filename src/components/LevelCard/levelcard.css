@@ -326,7 +326,6 @@
 }
 
 .level-card.grid .title-section {
-  font-size: 1.1rem;
   font-weight: bold;
   white-space: nowrap;
   overflow: hidden;
@@ -340,6 +339,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   opacity: 0.8;
+}
+
+.level-card.grid.size-large .creator-section {
+  font-size: 1rem;
+}
+
+.level-card.grid.size-small .creator-section {
+  font-size: 0.8rem;
 }
 
 .level-card.grid .dropdown-tongue {
@@ -397,16 +404,18 @@
 /* Size variations for grid mode */
 .level-card.grid.size-small {
   width: 200px;
-  font-size: 0.9rem;
+  font-size: 1rem;
 }
 
 .level-card.grid.size-medium {
   width: 300px;
+  font-size: 1.1rem;
 }
 
 .level-card.grid.size-large {
   width: 400px;
-  font-size: 1.1rem;
+  font-size: 1.4rem;
+  height: 80px;
 }
 
 
@@ -414,7 +423,6 @@
 .level-cards-grid {
   display: flex;
   flex-wrap: wrap;
-  gap: 1rem;
   justify-content: center;
   padding: 1rem;
 }

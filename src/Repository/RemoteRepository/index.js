@@ -3,19 +3,19 @@ import api from "../../utils/api";
 
 
 function getYouTubeThumbnailUrl(url) {
-  const shortUrlRegex = /youtu\.be\/([a-zA-Z0-9_-]{11})/;
-  const longUrlRegex = /youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})/;
+  const patterns = {
+    short: /youtu\.be\/([a-zA-Z0-9_-]{11})/,
+    long: /youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})/,
+    live: /youtube\.com\/live\/([a-zA-Z0-9_-]{11})/
+  };
 
-  const shortMatch = url.match(shortUrlRegex);
-  const longMatch = url.match(longUrlRegex);
-
-  const videoId = shortMatch ? shortMatch[1] : (longMatch ? longMatch[1] : null);
-
-  if (videoId) {
-    return `https://img.youtube.com/vi/${videoId}/0.jpg`;
-  } else {
-    return; 
+  for (const pattern of Object.values(patterns)) {
+    const match = url.match(pattern);
+    if (match) {
+      return `https://img.youtube.com/vi/${match[1]}/0.jpg`;
+    }
   }
+  return null;
 }
 
 function getBilibiliEmbedUrl(data) {
@@ -31,19 +31,23 @@ function getBilibiliEmbedUrl(data) {
   }
 }
 function getYouTubeEmbedUrl(url) {
-  const shortUrlRegex = /youtu\.be\/([a-zA-Z0-9_-]{11})/;
-  const longUrlRegex = /youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})/;
-  const livestreamRegex = /youtube\.com\/live\/([a-zA-Z0-9_-]{11})/;
+  const patterns = {
+    short: /youtu\.be\/([a-zA-Z0-9_-]{11})/,
+    long: /youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})/,
+    live: /youtube\.com\/live\/([a-zA-Z0-9_-]{11})/
+  };
   const timestampRegex = /[?&]t=(\d+)s/;
 
-  const shortMatch = url.match(shortUrlRegex);
-  const longMatch = url.match(longUrlRegex);
-  const livestreamMatch = url.match(livestreamRegex);
-  const timestampMatch = url.match(timestampRegex);
+  let videoId = null;
+  for (const pattern of Object.values(patterns)) {
+    const match = url.match(pattern);
+    if (match) {
+      videoId = match[1];
+      break;
+    }
+  }
 
-  const videoId = shortMatch ? shortMatch[1] : 
-                 longMatch ? longMatch[1] : 
-                 livestreamMatch ? livestreamMatch[1] : null;
+  const timestampMatch = url.match(timestampRegex);
   const timestamp = timestampMatch ? timestampMatch[1] : null;
 
   if (videoId) {
@@ -52,25 +56,31 @@ function getYouTubeEmbedUrl(url) {
       embedUrl += `?start=${timestamp}`;
     }
     return embedUrl;
-  } else {
-    return null;
   }
+  return null;
 }
 
 
 async function getBilibiliVideoDetails(url) {
-  
-  const urlRegex = /https?:\/\/(www\.)?bilibili\.com\/video\/(BV[a-zA-Z0-9]+)\/?/;
+  const patterns = [
+    /https?:\/\/(?:www\.)?bilibili\.com\/video\/(BV[a-zA-Z0-9]+)/,
+    /https?:\/\/(?:www\.)?b23\.tv\/(BV[a-zA-Z0-9]+)/,
+    /https?:\/\/(?:www\.)?bilibili\.com\/.*?(BV[a-zA-Z0-9]+)/
+  ];
 
-  const match = url.match(urlRegex);
-
-  const videoId = match ? match[2] : null;
+  let videoId = null;
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) {
+      videoId = match[1];
+      break;
+    }
+  }
 
   if (!videoId) {
     return null;
   }
 
-  
   const apiUrl = `${import.meta.env.VITE_BILIBILI_API}?bvid=${videoId}`;
 
   try {
@@ -79,13 +89,13 @@ async function getBilibiliVideoDetails(url) {
       throw new Error(`HTTP error! Status: ${response.status}`);
     }
 
-    if (response.code === -400){
+    if (response.code === -400) {
       return null;
     }
     const data = response.data.data;
 
-    const unix = data.pubdate; // Start with a Unix timestamp
-    const date = new Date(unix * 1000); // Convert timestamp to milliseconds
+    const unix = data.pubdate;
+    const date = new Date(unix * 1000);
     const imageUrl = `${import.meta.env.VITE_IMAGE}?url=${encodeURIComponent(data.pic)}`;
     const pfpUrl = `${import.meta.env.VITE_IMAGE}?url=${encodeURIComponent(data.owner.face)}`;
 
@@ -98,36 +108,44 @@ async function getBilibiliVideoDetails(url) {
       pfp: pfpUrl
     };
 
-    
     return details;
   } catch (error) {
     console.error('Error fetching Bilibili video details:', error);
-    return null; 
+    return null;
   }
 }
 
 async function getYouTubeVideoDetails(url) {
-  
-  const shortUrlRegex = /youtu\.be\/([a-zA-Z0-9_-]{11})/;
-  const longUrlRegex = /youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})/;
+  const patterns = {
+    short: /youtu\.be\/([a-zA-Z0-9_-]{11})/,
+    long: /youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})/,
+    live: /youtube\.com\/live\/([a-zA-Z0-9_-]{11})/
+  };
 
-  const shortMatch = url.match(shortUrlRegex);
-  const longMatch = url.match(longUrlRegex);
-
-  const videoId = shortMatch ? shortMatch[1] : (longMatch ? longMatch[1] : null);
+  let videoId = null;
+  for (const pattern of Object.values(patterns)) {
+    const match = url.match(pattern);
+    if (match) {
+      videoId = match[1];
+      break;
+    }
+  }
 
   if (!videoId) {
     return null;
   }
 
-  const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY; 
+  const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY;
   const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=snippet,contentDetails`;
   var channelApiUrl = `https://www.googleapis.com/youtube/v3/channels`;
 
-
-   try {
+  try {
     const response = await fetch(apiUrl);
     const data = await response.json();
+
+    if (data.items.length === 0) {
+      return null;
+    }
 
     const channelId = data.items[0].snippet.channelId;
     channelApiUrl = `${channelApiUrl}?${new URLSearchParams({
@@ -137,10 +155,6 @@ async function getYouTubeVideoDetails(url) {
     }).toString()}`;
     const channelResponse = await fetch(channelApiUrl);
     const channelData = await channelResponse.json();
-
-    if (data.items.length === 0) {
-      return null;
-    }
 
     const details = {
       title: data.items[0].snippet.title,
@@ -154,7 +168,7 @@ async function getYouTubeVideoDetails(url) {
     return details;
   } catch (error) {
     console.error('Error fetching YouTube video details:', error);
-    return null; 
+    return null;
   }
 }
 

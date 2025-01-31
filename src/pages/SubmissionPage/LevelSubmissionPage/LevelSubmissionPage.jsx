@@ -39,6 +39,39 @@ const LevelSubmissionPage = () => {
 
   const [videoDetail, setVideoDetail] = useState(null)
 
+  // Helper function to clean video URLs
+  const cleanVideoUrl = (url) => {
+    // Match various video URL formats
+    const patterns = [
+      // YouTube patterns
+      /https?:\/\/(?:www\.)?youtube\.com\/watch\?v=([a-zA-Z0-9_-]+)/,
+      /https?:\/\/(?:www\.)?youtu\.be\/([a-zA-Z0-9_-]+)/,
+      /https?:\/\/(?:www\.)?youtube\.com\/live\/([a-zA-Z0-9_-]+)/,
+      // Bilibili patterns
+      /https?:\/\/(?:www\.)?bilibili\.com\/video\/(BV[a-zA-Z0-9]+)/,
+      /https?:\/\/(?:www\.)?b23\.tv\/(BV[a-zA-Z0-9]+)/,
+      /https?:\/\/(?:www\.)?bilibili\.com\/.*?(BV[a-zA-Z0-9]+)/
+    ];
+
+    // Try each pattern
+    for (const pattern of patterns) {
+      const match = url.match(pattern);
+      if (match) {
+        // For Bilibili links, construct the standard URL format
+        if (match[1] && match[1].startsWith('BV')) {
+          return `https://www.bilibili.com/video/${match[1]}`;
+        }
+        // For YouTube links, construct based on the first pattern
+        if (match[1]) {
+          return `https://www.youtube.com/watch?v=${match[1]}`;
+        }
+      }
+    }
+
+    // If no pattern matches, return the original URL
+    return url;
+  };
+
   const truncateString = (str, maxLength) => {
     if (!str) return "";
     return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
@@ -75,13 +108,15 @@ const LevelSubmissionPage = () => {
   
     const fetchData = async () => {
       try {
-        const videoDetails = await getVideoDetails(videoLink);
+        // Clean the video URL before fetching details
+        const cleanedVideoLink = cleanVideoUrl(videoLink);
+        const videoDetails = await getVideoDetails(cleanedVideoLink);
         setVideoDetail(videoDetails ? videoDetails : null);
         if (videoDetails){
           form.charter = videoDetails.channelName
         }
   
-        const driveDetails = await getDriveFromYt(videoLink);
+        const driveDetails = await getDriveFromYt(cleanedVideoLink);
         if (driveDetails.drive) {
           setForm((prevForm) => ({
             ...prevForm,
@@ -127,13 +162,17 @@ const LevelSubmissionPage = () => {
 
     setSubmission(true)
     setError(null);
+
+    // Clean the video URL before submission
+    const cleanedVideoUrl = cleanVideoUrl(form.videoLink);
+
     submissionForm.setDetail('artist', form.artist);
     submissionForm.setDetail('charter', form.charter);
     submissionForm.setDetail('diff', form.diff);
     submissionForm.setDetail('song', form.song);
     submissionForm.setDetail('team', form.team);
     submissionForm.setDetail('vfxer', form.vfxer);
-    submissionForm.setDetail('videoLink', form.videoLink);
+    submissionForm.setDetail('videoLink', cleanedVideoUrl);
     submissionForm.setDetail('directDL', form.dlLink);
     submissionForm.setDetail('wsLink', form.workshopLink);
   
