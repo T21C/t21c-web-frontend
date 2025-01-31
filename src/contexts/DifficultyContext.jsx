@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { createContext, useState, useEffect, useContext } from "react";
+import { createContext, useState, useEffect, useContext, useCallback } from "react";
 import api from '../utils/api';
 import axios from "axios";
 
@@ -19,6 +19,62 @@ const DifficultyContextProvider = (props) => {
     const [rawDifficulties, setRawDifficulties] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [iconCache, setIconCache] = useState(new Map());
+
+    // Function to cache a single difficulty's icons
+    const cacheDifficultyIcons = useCallback(async (diff) => {
+        try {
+            const iconUrl = diff.icon;
+            const legacyIconUrl = diff.legacyIcon;
+            let blobUrl = iconCache.get(iconUrl);
+            let legacyBlobUrl = iconCache.get(legacyIconUrl);
+
+            if (iconUrl && !blobUrl) {
+                const iconResponse = await axios.get(iconUrl, {
+                    responseType: 'blob'
+                });
+                const blob = iconResponse.data;
+                blobUrl = URL.createObjectURL(blob);
+                setIconCache(prev => new Map(prev).set(iconUrl, blobUrl));
+            }
+
+            if (legacyIconUrl && !legacyBlobUrl) {
+                const legacyIconResponse = await axios.get(legacyIconUrl, {
+                    responseType: 'blob'
+                });
+                const legacyBlob = legacyIconResponse.data;
+                legacyBlobUrl = URL.createObjectURL(legacyBlob);
+                setIconCache(prev => new Map(prev).set(legacyIconUrl, legacyBlobUrl));
+            }
+
+            return {
+                ...diff,
+                icon: blobUrl || iconUrl,
+                legacyIcon: legacyBlobUrl || legacyIconUrl
+            };
+        } catch (err) {
+            console.error(`Failed to load icons for ${diff.name}:`, err);
+            return diff;
+        }
+    }, [iconCache]);
+
+    // Function to get a cached difficulty with icons
+    const getCachedDifficulty = useCallback(async (diffId) => {
+        const diff = difficultyDict[diffId];
+        if (!diff) return null;
+        
+        // If the difficulty exists but doesn't have cached icons, cache them
+        if (!iconCache.has(diff.icon) || (diff.legacyIcon && !iconCache.has(diff.legacyIcon))) {
+            const cachedDiff = await cacheDifficultyIcons(diff);
+            setDifficultyDict(prev => ({
+                ...prev,
+                [diffId]: cachedDiff
+            }));
+            return cachedDiff;
+        }
+        
+        return diff;
+    }, [difficultyDict, iconCache, cacheDifficultyIcons]);
 
     const fetchDifficulties = async () => {
         try {
@@ -29,51 +85,9 @@ const DifficultyContextProvider = (props) => {
             // Store raw difficulties
             setRawDifficulties(diffsArray);
             
-            // Cleanup old blob URLs
-            difficulties.forEach(diff => {
-                if (diff.icon && diff.icon.startsWith('blob:')) {
-                    URL.revokeObjectURL(diff.icon);
-                }
-                if (diff.legacyIcon && diff.legacyIcon.startsWith('blob:')) {
-                    URL.revokeObjectURL(diff.legacyIcon);
-                }
-            });
-            
             // Preload all icons and create blob URLs
             const preloadIcons = async (difficulties) => {
-                return Promise.all(difficulties.map(async (diff) => {
-                    try {
-                        const iconUrl = diff.icon;
-                        const legacyIconUrl = diff.legacyIcon;
-                        let blobUrl = null;
-                        let legacyBlobUrl = null;
-
-                        if (iconUrl) {
-                            const iconResponse = await axios.get(iconUrl, {
-                                responseType: 'blob'
-                            });
-                            const blob = iconResponse.data;
-                            blobUrl = URL.createObjectURL(blob);
-                        }
-
-                        if (legacyIconUrl) {
-                            const legacyIconResponse = await axios.get(legacyIconUrl, {
-                                responseType: 'blob'
-                            });
-                            const legacyBlob = legacyIconResponse.data;
-                            legacyBlobUrl = URL.createObjectURL(legacyBlob);
-                        }
-
-                        return { 
-                            ...diff, 
-                            icon: blobUrl || iconUrl,
-                            legacyIcon: legacyBlobUrl || legacyIconUrl
-                        };
-                    } catch (err) {
-                        console.error(`Failed to load icons for ${diff.name}:`, err);
-                        return diff;
-                    }
-                }));
+                return Promise.all(difficulties.map(cacheDifficultyIcons));
             };
 
             // Load icons and update state
@@ -101,12 +115,9 @@ const DifficultyContextProvider = (props) => {
 
         // Cleanup blob URLs on unmount
         return () => {
-            difficulties.forEach(diff => {
-                if (diff.icon && diff.icon.startsWith('blob:')) {
-                    URL.revokeObjectURL(diff.icon);
-                }
-                if (diff.legacyIcon && diff.legacyIcon.startsWith('blob:')) {
-                    URL.revokeObjectURL(diff.legacyIcon);
+            iconCache.forEach((blobUrl) => {
+                if (blobUrl && blobUrl.startsWith('blob:')) {
+                    URL.revokeObjectURL(blobUrl);
                 }
             });
         };
@@ -120,7 +131,9 @@ const DifficultyContextProvider = (props) => {
                 rawDifficulties,
                 loading,
                 error,
-                reloadDifficulties: fetchDifficulties
+                reloadDifficulties: fetchDifficulties,
+                getCachedDifficulty,
+                cacheDifficultyIcons
             }}
         >
             {props.children}
