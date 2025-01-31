@@ -21,36 +21,46 @@ const DifficultyContextProvider = (props) => {
     const [error, setError] = useState(null);
     const [iconCache, setIconCache] = useState(new Map());
 
+    // Function to convert blob to data URL
+    const blobToDataUrl = (blob) => {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(blob);
+        });
+    };
+
     // Function to cache a single difficulty's icons
     const cacheDifficultyIcons = useCallback(async (diff) => {
         try {
             const iconUrl = diff.icon;
             const legacyIconUrl = diff.legacyIcon;
-            let blobUrl = iconCache.get(iconUrl);
-            let legacyBlobUrl = iconCache.get(legacyIconUrl);
+            let dataUrl = iconCache.get(iconUrl);
+            let legacyDataUrl = iconCache.get(legacyIconUrl);
 
-            if (iconUrl && !blobUrl) {
+            if (iconUrl && !dataUrl) {
                 const iconResponse = await axios.get(iconUrl, {
                     responseType: 'blob'
                 });
                 const blob = iconResponse.data;
-                blobUrl = URL.createObjectURL(blob);
-                setIconCache(prev => new Map(prev).set(iconUrl, blobUrl));
+                dataUrl = await blobToDataUrl(blob);
+                setIconCache(prev => new Map(prev).set(iconUrl, dataUrl));
             }
 
-            if (legacyIconUrl && !legacyBlobUrl) {
+            if (legacyIconUrl && !legacyDataUrl) {
                 const legacyIconResponse = await axios.get(legacyIconUrl, {
                     responseType: 'blob'
                 });
                 const legacyBlob = legacyIconResponse.data;
-                legacyBlobUrl = URL.createObjectURL(legacyBlob);
-                setIconCache(prev => new Map(prev).set(legacyIconUrl, legacyBlobUrl));
+                legacyDataUrl = await blobToDataUrl(legacyBlob);
+                setIconCache(prev => new Map(prev).set(legacyIconUrl, legacyDataUrl));
             }
 
             return {
                 ...diff,
-                icon: blobUrl || iconUrl,
-                legacyIcon: legacyBlobUrl || legacyIconUrl
+                icon: dataUrl || iconUrl,
+                legacyIcon: legacyDataUrl || legacyIconUrl
             };
         } catch (err) {
             console.error(`Failed to load icons for ${diff.name}:`, err);
@@ -85,7 +95,7 @@ const DifficultyContextProvider = (props) => {
             // Store raw difficulties
             setRawDifficulties(diffsArray);
             
-            // Preload all icons and create blob URLs
+            // Preload all icons and create data URLs
             const preloadIcons = async (difficulties) => {
                 return Promise.all(difficulties.map(cacheDifficultyIcons));
             };
@@ -112,15 +122,7 @@ const DifficultyContextProvider = (props) => {
 
     useEffect(() => {
         fetchDifficulties();
-
-        // Cleanup blob URLs on unmount
-        return () => {
-            iconCache.forEach((blobUrl) => {
-                if (blobUrl && blobUrl.startsWith('blob:')) {
-                    URL.revokeObjectURL(blobUrl);
-                }
-            });
-        };
+        // No need for cleanup since we're using data URLs now
     }, []);
 
     return (
