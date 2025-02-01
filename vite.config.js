@@ -40,12 +40,27 @@ export default defineConfig(({ command, mode }) => {
           entryFileNames: 'assets/[name].[hash].js',
           chunkFileNames: 'assets/[name].[hash].js',
           assetFileNames: 'assets/[name].[hash].[ext]',
-          manualChunks: {
-            vendor: ['react', 'react-dom', 'react-router-dom'],
-            ui: ['react-select', 'react-tooltip', 'recharts'],
-            translations: [/translations/],
-            components: [/components/],
-            pages: [/pages/]
+          manualChunks(id) {
+            // Vendor chunks
+            if (id.includes('node_modules')) {
+              if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
+                return 'vendor-react';
+              }
+              if (id.includes('react-select') || id.includes('react-tooltip') || id.includes('recharts')) {
+                return 'vendor-ui';
+              }
+              return 'vendor-other';
+            }
+            // App chunks
+            if (id.includes('/src/translations/')) {
+              return 'app-translations';
+            }
+            if (id.includes('/src/components/')) {
+              return 'app-components';
+            }
+            if (id.includes('/src/pages/')) {
+              return 'app-pages';
+            }
           }
         }
       }
