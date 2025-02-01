@@ -34,14 +34,18 @@ export default defineConfig(({ command, mode }) => {
       minify: mode !== 'development',
       outDir: 'dist',
       assetsDir: 'assets',
+      manifest: true,
       rollupOptions: {
         output: {
-          entryFileNames: 'assets/[name].js',
-          chunkFileNames: 'assets/[name].js',
-          assetFileNames: 'assets/[name].[ext]',
+          entryFileNames: 'assets/[name].[hash].js',
+          chunkFileNames: 'assets/[name].[hash].js',
+          assetFileNames: 'assets/[name].[hash].[ext]',
           manualChunks: {
             vendor: ['react', 'react-dom', 'react-router-dom'],
-            ui: ['react-select', 'react-tooltip', 'recharts']
+            ui: ['react-select', 'react-tooltip', 'recharts'],
+            translations: [/translations/],
+            components: [/components/],
+            pages: [/pages/]
           }
         }
       }
