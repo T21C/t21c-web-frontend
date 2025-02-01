@@ -284,11 +284,6 @@ const LevelCard = ({
           </button>
         )}
 
-        {user?.isSuperAdmin && level.isDeleted && (
-          <button className="restore-button" onClick={(e) => { e.stopPropagation(); handleRestore(); }}>
-            {tCard('buttons.restore')}
-          </button>
-        )}
       </div>
 
       {showEditPopup && (

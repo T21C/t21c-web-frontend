@@ -5,7 +5,8 @@
   },
   "banners": {
     "deleted": "This level has been deleted",
-    "hidden": "This level is currently hidden"
+    "hidden": "This level is currently hidden",
+    "notFound": "Level not found"
   },
   "buttons": {
     "edit": "Edit Level",

@@ -213,17 +213,18 @@ const LevelDetailPage = () => {
   const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
   
   const { detailPage } = useLocation();
-  const {id} = useParams()
+  const {id} = useParams();
   const [res, setRes] = useState(null);
   const [displayedPlayers, setDisplayedPlayers] = useState([]);
   const [leaderboardSort, setLeaderboardSort] = useState("SCR");
   const [infoLoading, setInfoLoading] = useState(true);
   const [videoDetail, setVideoDetail] = useState(null);
+  const [notFound, setNotFound] = useState(false);
 
   const { user } = useAuth();
-  const [passCount, setPassCount] = useState(0)
+  const [passCount, setPassCount] = useState(0);
 
-  const [openDialog, setOpenDialog] = useState(false)
+  const [openDialog, setOpenDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
 
   const { difficultyDict } = useDifficultyContext();
@@ -259,10 +260,14 @@ const LevelDetailPage = () => {
           passes: passesData.data
         }));
         setDisplayedPlayers(sortLeaderboard(passesData.data));
+        setNotFound(false);
         
-        setInfoLoading(false);
       } catch (error) {
         console.error("Error fetching level data:", error);
+        if (error.response?.status === 404 || error.response?.status === 403) {
+          setNotFound(true);
+        }
+      } finally {
         setInfoLoading(false);
       }
     };
@@ -433,8 +438,26 @@ const LevelDetailPage = () => {
     return res.level.levelCredits[0]?.creator.name || res.level.creator;
   };
 
-  //if (!res || player.length === 0 || highSpeed === null || highAcc === null || highScore === null || displayedPlayers.length === 0)
- if (res == null)
+  if (notFound) {
+    return (
+      <div className="level-detail">
+        <CompleteNav />
+        <div className="background-level"></div>
+        <div className="wrapper-level wrapper-level-top">
+          <div className="deletion-banner-wrapper">
+            <div className="deletion-banner">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+              <span>{tLevel('banners.notFound')}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (res == null)
     return (
       <div
         style={{ height: "100vh", width: "100vw", backgroundColor: "#090909" }}
