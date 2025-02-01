@@ -1,20 +1,30 @@
 {
-  "title": "Logowanie",
-  "fields": {
-    "emailOrUsername": "Adres e-mail lub nazwa użytkownika",
-    "password": "Hasło"
+  "meta": {
+    "title": "Logowanie | TUF",
+    "description": "Zaloguj się do The Universal Forums (TUF)"
   },
-  "placeholders": {
-    "emailOrUsername": "Wpisz swój adres e-mail lub nazwę użytkownika",
-    "password": "Wpisz swoje hasło"
+  "header": {
+    "title": "Logowanie"
   },
-  "buttons": {
-    "login": "Zaloguj się",
-    "discord": "Zaloguj się z Discord"
+  "form": {
+    "labels": {
+      "emailOrUsername": "Adres e-mail lub nazwa użytkownika",
+      "password": "Hasło"
+    },
+    "buttons": {
+      "login": "Zaloguj się",
+      "loggingIn": "Logowanie...",
+      "discordLogin": "Zaloguj się z Discord"
+    },
+    "divider": "lub"
   },
-  "divider": "lub",
   "errors": {
-    "invalidCredentials": "Niepoprawny adres e-mail/nazwa użytkownika lub hasło",
-    "discordFailed": "Nie udało się zalogować z Discord"
+    "generic": "Nie udało się zalogować. Spróbuj ponownie",
+    "discordFailed": "Nie udało się zainicjować logowania z Discord. Spróbuj ponownie; w razie dalszych problemów skontaktuj się z deweloperem.",
+    "captcha": {
+      "notLoaded": "reCAPTCHA nie została załadowana",
+      "incomplete": "Dokończ weryfikację reCAPTCHA",
+      "failed": "Nie udało się zweryfikować reCAPTCHA. Spróbuj ponownie."
+    }
   }
 } 

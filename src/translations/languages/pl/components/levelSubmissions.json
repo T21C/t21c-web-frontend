@@ -2,7 +2,7 @@
   "noSubmissions": "Brak zgłoszeń oczekujących sprawdzenia",
   "details": {
     "artist": "Artysta/ści:",
-    "charter": "Charter/Charterzy:",
+    "charter": "Charter(zy):",
     "difficulty": "Poziom trudności:",
     "download": {
       "label": "Link do pobrania:",
@@ -14,7 +14,7 @@
       "link": "Link do Warsztatu Steam"
     },
     "team": "Drużyna:",
-    "vfxer": "VFXer/VFXerzy:"
+    "vfxer": "VFXer(zy):"
   },
   "buttons": {
     "allow": "Akceptuj",

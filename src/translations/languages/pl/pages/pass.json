@@ -37,8 +37,8 @@
         "lowestScore": "Wyniku rosnąco",
         "highestAccuracy": "Dokładności malejąco",
         "lowestAccuracy": "Dokładności rosnąco",
-        "highestDifficulty": "Poziomu trudności malejąco",
-        "lowestDifficulty": "Poziomu trudności rosnąco",
+        "highestDifficulty": "Poz. trud. malejąco",
+        "lowestDifficulty": "Poz. trud. rosnąco",
         "random": "Losowo"
       }
     }

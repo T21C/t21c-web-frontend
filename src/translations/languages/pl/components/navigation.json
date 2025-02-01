@@ -6,15 +6,15 @@
       "leaderboard": "Lista rankingowa",
       "pass": "Przejścia",
       "submission": "Prześlij",
-      "rating": "Oceny",
+      "rating": "Ocena",
       "admin": {
-        "rating": "Oceny",
+        "rating": "Ocena",
         "submissions": "Zgłoszenia",
         "announcements": "Ogłoszenia",
         "difficulties": "Poziomy trudności",
         "backups": "Kopie zapasowe",
         "back": "Wstecz",
-        "admin": "Administracja"
+        "admin": "Admin"
       }
     }
   },

@@ -17,7 +17,7 @@
       "points": [
         "Zapewnia precyzyjne oceny trudności poziomów tworzonych przez graczy",
         "Organizuje rzetelną listę rankingową dla kochających rywalizację",
-        "Rozwija wspierającą społeczność",
+        "Rozwija wspierającą każdego społeczność",
         "Przechowuje i promuje osiągnięcia graczy"
       ]
     },
@@ -25,7 +25,7 @@
       "title": "Nasze wartości",
       "cards": {
         "accuracy": {
-          "title": "Dokładność",
+          "title": "Skrupulatność",
           "content": "Zachowujemy wysokie standardy przy ocenianiu poziomów i przejść, aby zapewnić uczciwą rywalizację."
         },
         "transparency": {
@@ -46,13 +46,13 @@
       "title": "Dołącz do naszej społeczności",
       "links": {
         "discord": "Dołącz do nas na Discord",
-        "github": "Wnieś swój wkład poprzez GitHub"
+        "github": "Wnieś wkład poprzez GitHub"
       }
     },
     "credits": {
       "title": "O twórcach",
       "version": {
-        "current": "v2.0 rozwijana przez V0W4N",
+        "current": "v2.0 rozwijane przez V0W4N",
         "original": "Oryginalna strona stworzona przez Adrian"
       },
       "categories": {

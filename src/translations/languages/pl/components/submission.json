@@ -29,9 +29,9 @@
       "song": "Utwór",
       "artist": "Artysta/ści",
       "videoLink": "Link do wideo",
-      "charter": "Charter/Charterzy",
+      "charter": "Charter(zy)",
       "diff": "Poziom trudności",
-      "vfxer": "VFXer/VFXerzy (opcj.)",
+      "vfxer": "VFXer(zy) (opcj.)",
       "team": "Nazwa drużyny (opcj.)",
       "dlLink": "Link do pobrania",
       "workshop": "Link do Warsztatu Steam",
@@ -65,12 +65,12 @@
     },
     "levelInfo": {
       "song": "Utwór",
-      "charter": "Charter/Charterzy",
+      "charter": "Charter(zy)",
       "artist": "Artysta/ści"
     },
     "holdTooltip": "Zaznacz w przypadku użycia innych ustawień holder'ów niż \"Normalne\" (0.9x wyniku)",
     "12kTooltip": "Zaznacz w przypadku przejścia przy użyciu 12 klawiszy lub mniej",
-    "16kTooltip": "Zaznacz w przypadku przejścia przy użyciu 16 klaiwszy lub więcej",
+    "16kTooltip": "Zaznacz w przypadku przejścia przy użyciu 13 klaiwszy lub więcej",
     "tooltip": "Nieznany poziom trudności, upewnij się, że będzie on czytelny dla manager'ów. Przykłady poprawnego zapisu: G13; P7~P13; 21.1+; 19~20.0+",
     "levelFetching": {
       "input": "Wpisz ID poziomu",

@@ -3,7 +3,7 @@
     "closeButton": "Zamknij okienko",
     "labels": {
       "creator": "Twórca/y:",
-      "currentDifficulty": "Obecny poziom trudności:",
+      "currentDifficulty": "Obecny poz. trudności:",
       "averageRating": "Średnia ocena:",
       "yourRating": "Twoja ocena:",
       "yourComment": "Twój komentarz:",
@@ -27,7 +27,8 @@
       "requiredComment": "Komentarz jest wymagany dla oceny -2"
     },
     "placeholders": {
-      "requiredComment": "Powiedz, dlaczego oceniasz ten poziom na -2..."
+      "requiredComment": "Powiedz, dlaczego oceniasz ten poziom na -2...",
+      "difficultyInput": "Wybierz poziom trudności..."
     },
     "confirmations": {
       "deleteRating": "Czy na pewno chcesz usunąć tą ocenę gracza {{username}}?"
@@ -35,7 +36,7 @@
   },
   "ratingCard": {
     "labels": {
-      "yourRating": "Twoje oceny",
+      "yourRating": "Twoja ocena",
       "allRatings": "Wszystkie oceny",
       "average": "Średnia",
       "rerateNumber": "Numer rerate'u",

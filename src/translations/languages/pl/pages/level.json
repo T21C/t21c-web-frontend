@@ -28,12 +28,14 @@
   "settingExp": {
     "headerFilter": "Ustawienia filtrowania",
     "headerSort": "Ustawienia sortowania",
-    "filterDiffs": "Sortuj według poziomu trudności",
-    "sortRecent": "Sort według daty",
+    "filterDiffs": "Sortuj wg. poziomu trudności",
+    "sortRecent": "Sortuj według daty",
     "sortRandom": "Losowe sortowanie",
     "sortClears": "Sortuj według ilości przejść",
     "viewMode": "Tryb przeglądania",
-    "cardSize": "Rozmiar kart"
+    "cardSize": "Rozmiar kart",
+    "clearedLevels": "Poziomy z przejściami",
+    "deletedLevels": "Usunięte poziomy"
   },
   "infScroll": {
     "end": "Koniec listy poziomów"

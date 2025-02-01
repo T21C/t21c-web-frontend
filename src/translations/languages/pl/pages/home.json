@@ -29,7 +29,7 @@
     "discord": {
       "title": "Dołącz do naszego serwera Discord!"
     },
-    "comingSoon": "Więcej ciekawych rzeczy wkrótce..."
+    "comingSoon": "Więcej ciekawych rzeczy już wkrótce..."
   },
   "footer": {
     "about": {
@@ -49,7 +49,7 @@
       "github": "GitHub"
     },
     "copyright": {
-      "main": "© {{year}} TUF. Nie ma powiązania z 7th Beat Games.",
+      "main": "© {{year}} TUF. Strona nie jest powiązana z 7th Beat Games.",
       "credit": "Stworzone z ❤️ przez V0W4N"
     }
   }

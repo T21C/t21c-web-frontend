@@ -28,12 +28,14 @@
     "cancel": "Anuluj",
     "confirm": "Potwierdź",
     "upload": "Prześlij",
-    "uploading": "Przesyłanie..."
+    "uploading": "Przesyłanie...",
+    "download": "Pobierz"
   },
   "upload": {
-    "dragDropMessage": "Przeciągnij i upuść tutaj plik kopii zpasowej, lub naciśnij, aby wybrać z plików",
+    "dragDropMessage": "Przeciągnij i upuść tutaj plik kopii zpasowej lub naciśnij, aby wybrać z plików",
     "errors": {
-      "fileTooBig": "Rozmiar pliku przekracza maksymalny limit {{size}}"
+      "fileTooBig": "Rozmiar pliku przekracza maksymalny limit {{size}}",
+      "validationFailed": "Nie udało się zatwierdzić kwalifikacji do przesłania kopii zapasowej"
     }
   },
   "noBackups": {
@@ -61,10 +63,12 @@
     "deleteMessage": "Wpisz swoje hasło superadministratora, aby usunąć kopię zapasową.",
     "renameMessage": "Wpisz swoje hasło superadministratora, aby zmienić nazwę kopii zapasowej.",
     "uploadMessage": "Wpisz swoje hasło superadministratora, aby przesłać kopię zapasową.",
+    "downloadMessage": "Wpisz swoje hasło superadministratora, aby pobrać kopię zapasową.",
     "placeholder": "Wpisz hasło",
     "errors": {
       "invalid": "Nieprawidłowe hasło",
-      "generic": "Wystąpił błąd podczas wykonywania tej czynności"
+      "generic": "Wystąpił błąd podczas wykonywania tej czynności",
+      "validation": "Nie udało się zatwierdzić hasła"
     }
   },
   "notifications": {
@@ -77,7 +81,8 @@
     "restoreFailed": "Nie udało się odzyskać kopii zapasowej",
     "deleteFailed": "Nie udało się usunąć kopii zapasowej",
     "uploadSuccess": "Pomyślnie przesłano kopię zapasową",
-    "uploadFailed": "Nie udało się przesłać kopii zapasowej"
+    "uploadFailed": "Nie udało się przesłać kopii zapasowej",
+    "validationFailed": "Nie udało się zatwierdzić hasła"
   },
   "fileInfo": {
     "created": "Stworzono: {{date}}",

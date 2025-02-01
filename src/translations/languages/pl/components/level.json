@@ -5,7 +5,7 @@
     "sections": {
       "search": {
         "title": "Wyszukiwanie zaawansowane",
-        "description": "Możesz wyszukiwać w konkretnych obszarach używając dwóch operatów: dwukropka (:) dla częściowej zgodności oraz znaku równości (=) dla całkowitej zgodności.",
+        "description": "Możesz dokonywać wyszukiwań w konkretnych obszarach używając dwóch operatów: dwukropka (:) dla częściowej zgodności oraz znaku równości (=) dla całkowitej zgodności.",
         "examples": {
           "title": "Przykładowe obszary wyszukiwań",
           "songField": "Użyj 'song:Ex' dla wyszukiwania o częściowej zgodności lub 'song=Example' dla dokładnego wyszukiwania",
@@ -14,7 +14,7 @@
         }
       },
       "operators": {
-        "title": "Operatory wyszukiwania",
+        "title": "Operator wyszukiwania",
         "description": "Możesz łączyć ze sobą wiele warunków wyszukiwania przy pomocy operatorów.",
         "examples": {
           "title": "Przykłady operatorów",
