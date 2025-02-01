@@ -34,33 +34,14 @@ export default defineConfig(({ command, mode }) => {
       minify: mode !== 'development',
       outDir: 'dist',
       assetsDir: 'assets',
-      manifest: true,
       rollupOptions: {
         output: {
-          entryFileNames: 'assets/[name].[hash].js',
-          chunkFileNames: 'assets/[name].[hash].js',
-          assetFileNames: 'assets/[name].[hash].[ext]',
-          manualChunks(id) {
-            // Vendor chunks
-            if (id.includes('node_modules')) {
-              if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
-                return 'vendor-react';
-              }
-              if (id.includes('react-select') || id.includes('react-tooltip') || id.includes('recharts')) {
-                return 'vendor-ui';
-              }
-              return 'vendor-other';
-            }
-            // App chunks
-            if (id.includes('/src/translations/')) {
-              return 'app-translations';
-            }
-            if (id.includes('/src/components/')) {
-              return 'app-components';
-            }
-            if (id.includes('/src/pages/')) {
-              return 'app-pages';
-            }
+          entryFileNames: 'assets/[name].js',
+          chunkFileNames: 'assets/[name].js',
+          assetFileNames: 'assets/[name].[ext]',
+          manualChunks: {
+            vendor: ['react', 'react-dom', 'react-router-dom'],
+            ui: ['react-select', 'react-tooltip', 'recharts']
           }
         }
       }
