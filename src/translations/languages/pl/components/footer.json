@@ -1,0 +1,16 @@
+{
+  "aboutUs": {
+    "header": "O nas",
+    "paragraph": "The Universal Forums to prowadzona przez społeczność organizacja, która skupia się na zbieraniu i ocenianiu poziomów w grze A Dance of Fire and Ice."
+  },
+  "links": {
+    "header": "Linki",
+    "levels": "Poziomy",
+    "submission": "Prześlij"
+  },
+  "shoutOut": {
+    "header": "O twórcach",
+    "paragraph": "Strona stworzona przez Zespół Deweloperski TUF pod przewodnictwem Adrian i t3ww, przerobiona przez V0W4N. Kod źródłowy tej strony jest dostępny na GitHub."
+  },
+  "copyRight": "2024 TUF Dev Team, All Rights Reserved. Version - 1.1.0"
+} 

@@ -1,0 +1,38 @@
+{
+  "helpPopup": {
+    "title": "Pomoc w wyszukiwaniu",
+    "closeButton": "Zamknij",
+    "sections": {
+      "search": {
+        "title": "Wyszukiwanie zaawansowane",
+        "description": "Możesz wyszukiwać w konkretnych obszarach używając dwóch operatów: dwukropka (:) dla częściowej zgodności oraz znaku równości (=) dla całkowitej zgodności.",
+        "examples": {
+          "title": "Przykładowe obszary wyszukiwań",
+          "songField": "Użyj 'song:Ex' dla wyszukiwania o częściowej zgodności lub 'song=Example' dla dokładnego wyszukiwania",
+          "artistField": "Użyj 'artist:Art' dla wyszukiwania o częściowej zgodności lub 'artist=Artist' dla dokładnego wyszukiwania",
+          "charterField": "Użyj 'charter:Char' dla wyszukiwania o częściowej zgodności lub 'charter=Charter' dla dokładnego wyszukiwania"
+        }
+      },
+      "operators": {
+        "title": "Operatory wyszukiwania",
+        "description": "Możesz łączyć ze sobą wiele warunków wyszukiwania przy pomocy operatorów.",
+        "examples": {
+          "title": "Przykłady operatorów",
+          "and": "Wyszukiwanie poziomów, które spełniają oba warunki (AND)",
+          "or": "Wyszukiwanie poziomów, które spełniają jeden z warunków (OR)",
+          "complex": "Możliwe jest kompleksowe wyszukiwanie poprzez łączenie AND i OR"
+        }
+      },
+      "tips": {
+        "title": "Wskazówki dotyczące wyszukiwania",
+        "points": {
+          "caseSensitive": "Wyszukiwania nie uwzględniają wielkości liter - 'SONG' oraz 'song' dadzą ten sam wynik",
+          "partial": "Dwukropek (:) pozwala na wyszukiwania o częściowej zgodności - 'song:Ex' dopasuje wyszukiwanie do 'Example'",
+          "exact": "Znak równości (=) wymaga dokładnego wpisania nazwy - 'song=Example' dopasuje się jedynie do 'Example'",
+          "spaces": "Spacje są dozwolone w wyszukiwaniach - można wpisać np. 'song:Example Song'",
+          "order": "Kolejność warunków nie ma znaczenia"
+        }
+      }
+    }
+  }
+} 

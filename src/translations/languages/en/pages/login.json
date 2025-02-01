@@ -1,20 +1,30 @@
 {
-  "title": "Login",
-  "fields": {
-    "emailOrUsername": "Email or Username",
-    "password": "Password"
+  "meta": {
+    "title": "Login | TUF",
+    "description": "Login to The Universal Forums (TUF)"
   },
-  "placeholders": {
-    "emailOrUsername": "Enter your email or username",
-    "password": "Enter your password"
+  "header": {
+    "title": "Login"
   },
-  "buttons": {
-    "login": "Login",
-    "discord": "Login with Discord"
+  "form": {
+    "labels": {
+      "emailOrUsername": "Email or Username",
+      "password": "Password"
+    },
+    "buttons": {
+      "login": "Login",
+      "loggingIn": "Logging in...",
+      "discordLogin": "Login with Discord"
+    },
+    "divider": "or"
   },
-  "divider": "or",
   "errors": {
-    "invalidCredentials": "Invalid email/username or password",
-    "discordFailed": "Failed to login with Discord"
+    "generic": "Login failed. Please try again.",
+    "discordFailed": "Failed to initiate Discord login. Please try again, if the issue persists, contact the developer.",
+    "captcha": {
+      "notLoaded": "reCAPTCHA not loaded",
+      "incomplete": "Please complete the reCAPTCHA verification",
+      "failed": "Failed to verify reCAPTCHA. Please try again."
+    }
   }
 } 

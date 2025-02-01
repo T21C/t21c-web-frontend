@@ -1,0 +1,23 @@
+{
+  "noSubmissions": "Brak zgłoszeń oczekujących sprawdzenia",
+  "details": {
+    "artist": "Artysta/ści:",
+    "charter": "Charter/Charterzy:",
+    "difficulty": "Poziom trudności:",
+    "download": {
+      "label": "Link do pobrania:",
+      "directLink": "Link bezpośredni",
+      "notAvailable": "Niedostępny"
+    },
+    "workshop": {
+      "label": "Warsztat Steam:",
+      "link": "Link do Warsztatu Steam"
+    },
+    "team": "Drużyna:",
+    "vfxer": "VFXer/VFXerzy:"
+  },
+  "buttons": {
+    "allow": "Akceptuj",
+    "decline": "Odrzuć"
+  }
+} 

@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "title": "Poziomy - TUF",
+    "description": "Przeglądaj i wyszukuj poziomy dostępne w TUF"
+  },
+  "buttons": {
+    "searchHelp": "Pomoc w wyszukiwaniu"
+  },
+  "input": {
+    "placeholder": "Szukaj poziomów..."
+  },
+  "toolTip": {
+    "search": "Naucz się, jak korzystać z wyszukiwania zaawansowanego",
+    "filter": "Filtruj poziomy",
+    "sort": "Sortuj poziomy",
+    "reset": "Resetuj wszystkie filtry",
+    "normalView": "Widok normalny",
+    "compactView": "Widok kompaktowy",
+    "gridView": "Widok siatki",
+    "recentAsc": "Sortuj od najstarszych",
+    "recentDesc": "Sortuj od najnowszych",
+    "diffAsc": "Sortuj od najłatwiejszych",
+    "diffDesc": "Sortuj od najtrudniejszych",
+    "clearsAsc": "Sortuj od najmniejszej ilości przejść",
+    "clearsDesc": "Sortuj od największej ilości przejść",
+    "random": "Losowe sortowanie"
+  },
+  "settingExp": {
+    "headerFilter": "Ustawienia filtrowania",
+    "headerSort": "Ustawienia sortowania",
+    "filterDiffs": "Sortuj według poziomu trudności",
+    "sortRecent": "Sort według daty",
+    "sortRandom": "Losowe sortowanie",
+    "sortClears": "Sortuj według ilości przejść",
+    "viewMode": "Tryb przeglądania",
+    "cardSize": "Rozmiar kart"
+  },
+  "infScroll": {
+    "end": "Koniec listy poziomów"
+  },
+  "loading": {
+    "difficulties": "Problemy z ładowaniem..."
+  }
+} 

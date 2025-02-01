@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "title": "Prześlij treści",
+    "description": "Prześlij nowe poziomy i przejścia do The Universal Forums (TUF)",
+    "type": "website"
+  },
+  "header": {
+    "headerPass": "Prześlij przejście",
+    "headerLevel": "Prześlij poziom"
+  },
+  "button": {
+    "buttonPass": "Prześlij przejście",
+    "buttonLevel": "Prześlij poziom"
+  }
+} 

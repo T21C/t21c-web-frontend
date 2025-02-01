@@ -17,6 +17,7 @@ import profile from './profile.json';
 import rating from './rating.json';
 import submission from './submission.json';
 import submissionManagement from './submissionManagement.json';
+import login from './login.json';
 
 const translations = {
   about,
@@ -37,7 +38,8 @@ const translations = {
   profile,
   rating,
   submission,
-  submissionManagement
+  submissionManagement,
+  login
 };
 
 export default translations; 

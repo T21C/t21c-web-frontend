@@ -1,0 +1,73 @@
+{
+  "meta": {
+    "title": "{{song}} | TUF",
+    "description": "{{song}} autorstwa {{creator}}"
+  },
+  "banners": {
+    "deleted": "Ten poziom został usunięty",
+    "hidden": "Ten poziom jest aktualnie ukryty"
+  },
+  "buttons": {
+    "edit": "Edytuj poziom",
+    "close": "Zamknij"
+  },
+  "links": {
+    "download": "Pobierz poziom",
+    "workshop": "Warsztat steam",
+    "thumbnailNotFound": {
+      "text": "Nie znaleziono miniaturki",
+      "goToVideo": "Przejdź do wideo"
+    }
+  },
+  "aliases": {
+    "header": "Alternatywne nazwy"
+  },
+  "stats": {
+    "firstClear": {
+      "label": "Pierwsze przejście",
+      "value": "{{player}} | {{date}}"
+    },
+    "highestScore": {
+      "label": "Najwyższy wynik",
+      "value": "{{player}} | {{score}}"
+    },
+    "highestSpeed": {
+      "label": "Najwyższa prędkość",
+      "value": "{{player}} | {{speed}}x"
+    },
+    "highestAccuracy": {
+      "label": "Najwyższa dokładność",
+      "value": "{{player}} | {{accuracy}}%"
+    },
+    "totalClears": {
+      "label": "Łącznie przejść",
+      "value": "{{count}}"
+    },
+    "waiting": "Ładowanie..."
+  },
+  "info": {
+    "title": "Informacje o poziomie",
+    "team": "Drużyna",
+    "creator": "Twórca",
+    "roles": {
+      "charter": "Charter(zy)",
+      "vfxer": "VFXer(zy)"
+    },
+    "difficulty": "Poziom trudności",
+    "baseScore": "Wynik podstawowy",
+    "aliases": "Inne nazwy",
+    "comments": "Komentarze"
+  },
+  "leaderboard": {
+    "header": "Lista rankingowa",
+    "notBeaten": "Nikt nie przeszedł jeszcze tego poziomu!",
+    "tooltips": {
+      "time": "Sortuj według daty",
+      "accuracy": "Sortuj według dokładności",
+      "score": "Sortuj według wyniku"
+    }
+  },
+  "dialog": {
+    "fullInfo": "Wszystkie informacje"
+  }
+} 

@@ -1,0 +1,45 @@
+{
+  "title": "Zarządzaj rater'ami",
+  "loading": "Ładowanie rater'ów...",
+  "search": {
+    "placeholder": "Szukaj po nazwie/ID..."
+  },
+  "superAdmin": {
+    "password": {
+      "placeholder": "Wpisz hasło superadministratora"
+    }
+  },
+  "addRater": {
+    "placeholder": "Wpisz Discord ID",
+    "button": "Dodaj rater'a"
+  },
+  "raterEntry": {
+    "unknown": "Nieznany",
+    "adminBadge": "Administrator",
+    "buttons": {
+      "makeAdmin": "Nadaj uprawnienia administratora",
+      "removeAdmin": "Odbierz uprawnienia administratora",
+      "delete": "Usuń"
+    },
+    "discord": {
+      "idInput": "Wpisz Discord ID",
+      "validateButton": "Zatwierdź",
+      "confirmMessage": "Zaaktualizuj dane Discord dla @{{username}}?",
+      "confirmButton": "Potwierdź",
+      "cancelButton": "Anuluj",
+      "idLabel": "ID: {{id}}"
+    }
+  },
+  "errors": {
+    "passwordRequired": "Hasło jest wymagane",
+    "invalidPassword": "Niepoprawne hasło superadministratora",
+    "deleteConfirm": "Czy na pewno chcesz usunąć tego rater'a?",
+    "updateAdminFailed": "Nie udało się zaaktualizować statusu administratora",
+    "deleteFailed": "Nie udało się usunąć rater'a",
+    "discordFetchFailed": "Nie udało się pozyskać Discord ID",
+    "updateDiscordFailed": "Nie udało się zaaktualizować danych Discord",
+    "loadFailed": "Nie udało się załadować rater'ów",
+    "addFailed": "Nie udało się dodać rater'a",
+    "userNotFound": "Nie udało się znaleźć użytkownika"
+  }
+} 

@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "title": "{{name}} | TUF",
+    "description": "Sprawdź profil i osiągnięcia gracza {{name}}",
+    "defaultTitle": "Profil"
+  },
+  "notFound": "Nie znaleziono gracza",
+  "notLoggedIn": "Musisz się zalogować",
+  "searchForOther": "Nie można wyświetlić profilu, wyszukaj innego gracza",
+  "valueLabels": {
+    "rankedScore": "Wynik rankingowy",
+    "generalScore": "Wynik ogólny",
+    "ppScore": "Wynik PP",
+    "wfScore": "Wynik WF",
+    "score12K": "Wynik 12K",
+    "averageXacc": "Średnia dokładność",
+    "totalPasses": "Łącznie przejść",
+    "universalPasses": "Przejścia Universal",
+    "worldsFirstCount": "Pierwsze przejścia (WF)",
+    "topDiff": "Najwyższy poziom trudności",
+    "top12kDiff": "Najwyższy poziom trudności z 12K"
+  },
+  "sections": {
+    "scores": {
+      "title": "Wyniki"
+    }
+  }
+} 

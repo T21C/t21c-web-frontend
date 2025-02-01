@@ -31,11 +31,12 @@ const Navigation = ({ children }) => {
     kr: { display: "한국어", countryCode: "kr", implemented: false },
     cn: { display: "中文 (partially)", countryCode: "cn", implemented: true },
     jp: { display: "日本語", countryCode: "jp", implemented: false },
-    id: { display: "Bahasa Indonesia", countryCode: "id", implemented: false },
+    //id: { display: "Bahasa Indonesia", countryCode: "id", implemented: false },
     ru: { display: "Русский", countryCode: "ru", implemented: false },
-    de: { display: "Deutsch", countryCode: "de", implemented: false },
-    fr: { display: "Français", countryCode: "fr", implemented: false },
-    es: { display: "Español", countryCode: "es", implemented: false }
+    //de: { display: "Deutsch", countryCode: "de", implemented: false },
+    //fr: { display: "Français", countryCode: "fr", implemented: false },
+    //es: { display: "Español", countryCode: "es", implemented: false },
+    pl: { display: "Polski", countryCode: "pl", implemented: true }
   };
 
   // Convert to array and sort

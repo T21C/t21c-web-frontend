@@ -1,0 +1,67 @@
+{
+  "featured": {
+    "by": "Poziom gracza {{creator}}",
+    "button": "Sprawdź poziom"
+  },
+  "level": {
+    "creator": "Twórca",
+    "clears": "Przejścia",
+    "buttons": {
+      "edit": "Edytuj"
+    },
+    "links": {
+      "workshop": "Link do Warsztatu Steam",
+      "download": "Link do pobrania",
+      "unavailable": "Brak dostępnego linku"
+    }
+  },
+  "pass": {
+    "stats": {
+      "xAccuracy": "Dokładność",
+      "score": "Wynik",
+      "speed": "Prędkość"
+    },
+    "flags": {
+      "worldsFirst": "WF",
+      "twelveKey": "12K",
+      "sixteenKey": "16K",
+      "noHoldTap": "NHT"
+    },
+    "links": {
+      "video": "Obejrzyj wideo"
+    }
+  },
+  "player": {
+    "title": "Gracz",
+    "stats": {
+      "rankedScore": "Wynik rankingowy",
+      "generalScore": "Wynik ogólny",
+      "ppScore": "Wynik PP",
+      "wfScore": "Wynik WF",
+      "score12K": "Wynik 12k",
+      "averageXacc": "Średnia dokładność",
+      "totalPasses": "Łącznie przejść",
+      "universalPasses": "Przejścia Universal",
+      "worldsFirstCount": "Przejścia WF",
+      "topDiff": "Najwyższy poziom trudności",
+      "top12kDiff": "Najwyższy poziom trudności z 12K"
+    }
+  },
+  "clear": {
+    "score": {
+      "ranked": "Wynik rankingowy",
+      "general": "Wynik ogólny",
+      "pp": "Wynik PP",
+      "wf": "Wynik WF",
+      "12k": "Wynik 12K"
+    },
+    "stats": {
+      "averageXacc": "Średnia dokładność",
+      "totalPasses": "Łącznie przejść",
+      "universalPasses": "Przejścia Universal",
+      "worldsFirstCount": "Przejścia WF",
+      "topDiff": "Najwyższy poziom trudności",
+      "top12kDiff": "Najwyższy poziom trudności z 12K"
+    }
+  }
+} 

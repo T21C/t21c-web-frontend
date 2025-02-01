@@ -1,0 +1,106 @@
+{
+  "header": {
+    "headerPass": "Chcę przesłać przejście",
+    "headerLevel": "Chcę przesłać poziom do oceny"
+  },
+  "button": {
+    "buttonPass": "Prześlij przejście",
+    "buttonLevel": "Prześlij poziom"
+  },
+  "RulesAGuide": "Sprawdź zasady i wytyczne",
+  "level": {
+    "alert": {
+      "login": "Musisz być zalogowany",
+      "form": "Formularz niekompletny",
+      "success": "Pomyślnie przesłano formularz!",
+      "error": "Błąd: ",
+      "loading": "Przesyłanie..."
+    },
+    "thumbnailInfo": "Nie znaleziono wideo",
+    "title": "Prześlij poziom",
+    "videoInfo": {
+      "title": "Tytuł wideo",
+      "channel": "Nazwa kanału",
+      "timestamp": "Oznaczenie czasu",
+      "nolink": "Nie podano linku"
+    },
+    "tooltip": "Nieznany poziom trudności, upewnij się, że będzie on czytelny dla rater'ów. Przykłady poprawnego zapisu: G13; P7~P13; 21.1+",
+    "submInfo": {
+      "song": "Utwór",
+      "artist": "Artysta/ści",
+      "videoLink": "Link do wideo",
+      "charter": "Charter/Charterzy",
+      "diff": "Poziom trudności",
+      "vfxer": "VFXer/VFXerzy (opcj.)",
+      "team": "Nazwa drużyny (opcj.)",
+      "dlLink": "Link do pobrania",
+      "workshop": "Link do Warsztatu Steam",
+      "dlLinksOr": "lub"
+    },
+    "submit": "Prześlij",
+    "submitWait": " proszę czekać..."
+  },
+  "pass": {
+    "alert": {
+      "login": "Musisz być zalogowany",
+      "form": "Formularz niekompletny",
+      "success": "Pomyślnie przesłano formularz!",
+      "error": "Błąd: ",
+      "loading": "Przesyłanie..."
+    },
+    "score": {
+      "needId": "ID poziomu jest wymagane",
+      "needJudg": "Nie wszystkie judgment'y zostały wpisane",
+      "needInfo": "Niewystarczająco dużo informacji o przejściu",
+      "noInfo": "Niewystarczająco dużo danych, aby obliczyć wynik"
+    },
+    "thumbnailInfo": "Nie znaleziono wideo",
+    "title": "Prześlij przejście",
+    "videoInfo": {
+      "videoLink": "Link do wideo",
+      "title": "Tytuł wideo",
+      "channel": "Nazwa kanału",
+      "timestamp": "Oznaczenie czasu",
+      "nolink": "Nie podano linku"
+    },
+    "levelInfo": {
+      "song": "Utwór",
+      "charter": "Charter/Charterzy",
+      "artist": "Artysta/ści"
+    },
+    "holdTooltip": "Zaznacz w przypadku użycia innych ustawień holder'ów niż \"Normalne\" (0.9x wyniku)",
+    "12kTooltip": "Zaznacz w przypadku przejścia przy użyciu 12 klawiszy lub mniej",
+    "16kTooltip": "Zaznacz w przypadku przejścia przy użyciu 16 klaiwszy lub więcej",
+    "tooltip": "Nieznany poziom trudności, upewnij się, że będzie on czytelny dla manager'ów. Przykłady poprawnego zapisu: G13; P7~P13; 21.1+; 19~20.0+",
+    "levelFetching": {
+      "input": "Wpisz ID poziomu",
+      "fetching": "Pozyskiwanie",
+      "goto": "Przejdź do poziomu",
+      "notfound": "Nie znaleziono"
+    },
+    "submInfo": {
+      "levelId": "ID poziomu",
+      "altname": "Alternatywna nazwa na liście rankingowej",
+      "nohold": "Użyto alternatywnych holder'ów",
+      "speed": "Prędkość (opcjonalnie; np. 1.2)",
+      "feelDiff": "Szacowany poziom trudności (np. G12)",
+      "team": "Nazwa drużyny (opcjonalnie)",
+      "dlLink": "Link do pobrania",
+      "workshop": "Link do Warsztatu Steam",
+      "is16K": "16K+",
+      "is12K": "12K"
+    },
+    "judgements": {
+      "tooearly": "Za wcześnie",
+      "early": "Wcześnie",
+      "ePerfect": "WPerfekcyjnie",
+      "perfect": "Perfekcyjnie",
+      "lPerfect": "PPerfekcyjnie",
+      "late": "Późno"
+    },
+    "acc": "Dokładność: ",
+    "scoreCalc": "Wynik: ",
+    "submit": "Prześlij",
+    "submitWait": " proszę czekać..."
+  }
+} 

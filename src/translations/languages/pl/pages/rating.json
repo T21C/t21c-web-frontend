@@ -1,0 +1,48 @@
+{
+  "meta": {
+    "title": "Zarządzanie ocenami",
+    "description": "Zarządzaj ocenami poziomów"
+  },
+  "buttons": {
+    "references": "Odniesienia",
+    "manageRaters": "Zarządzaj rater'ami",
+    "help": "Poradnik systemu oceniania"
+  },
+  "toggles": {
+    "detailedView": {
+      "label": "Widok szczegółowy"
+    },
+    "hideRated": {
+      "label": "Ukryj ocenione"
+    },
+    "lowDiff": {
+      "label": "Niski poziom trudności"
+    },
+    "fourVote": {
+      "label": "4+ ocen"
+    }
+  },
+  "sort": {
+    "byId": "ID poziomu",
+    "byRatings": "Numer oceny",
+    "byRatingsFull": "Sortuj według liczby ocen",
+    "byDate": "Ostatnio zaktualizowane"
+  },
+  "labels": {
+    "totalRatings": "Łącznie ocen: {{count}}"
+  },
+  "tooltips": {
+    "sortAsc": "Sortuj rosnąco",
+    "sortDesc": "Sortuj malejąco",
+    "lastUpdated": "Ostatnio zaktualizowane",
+    "levelId": "ID poziomu"
+  },
+  "messages": {
+    "loading": "Ładowanie ocen...",
+    "error": "Wystąpił błąd podczas ładowania ocen",
+    "noRatings": {
+      "title": "Brak dostępnych ocen",
+      "subtitle": "Wszystko ocenione!"
+    }
+  }
+} 

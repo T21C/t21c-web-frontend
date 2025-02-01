@@ -1,0 +1,19 @@
+{
+  "noPasses": "Brak przejść do ogłoszenia",
+  "errors": {
+    "removePass": "Nie udało się przenieść przejścia gracza {{playerName}}. Spróbuj ponownie.",
+    "invalidPass": "Niepoprawne dane przejścia:"
+  },
+  "card": {
+    "title": "Przejście {{songName}} gracza {{playerName}}",
+    "stats": {
+      "score": "Wynik: {{score}}",
+      "scoreNA": "Wynik: N/A",
+      "accuracy": "Dokładność: {{accuracy}}%",
+      "difficulty": " • {{difficultyName}}"
+    }
+  },
+  "buttons": {
+    "remove": "Usuń przejście"
+  }
+} 

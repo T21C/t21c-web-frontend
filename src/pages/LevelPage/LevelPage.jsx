@@ -433,7 +433,7 @@ const LevelPage = () => {
                     setLevelsData([]);
                     setForceUpdate(prev => !prev);
                   }}
-                  label="Cleared Levels"
+                  label={tLevel('settingExp.clearedLevels')}
                   states={['show', 'hide', 'only']}
                 />
                 {user?.isSuperAdmin && (
@@ -445,7 +445,8 @@ const LevelPage = () => {
                       setLevelsData([]);
                       setForceUpdate(prev => !prev);
                     }}
-                    label="Deleted Levels"
+                    label={tLevel('settingExp.deletedLevels')}
+                    states={['show', 'hide', 'only']}
                   />
                 )}
               </div>

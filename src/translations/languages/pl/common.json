@@ -1,0 +1,42 @@
+{
+  "validation": {
+    "required": "To pole jest wymagane",
+    "min_length": "Wymagane jest co najmniej {{length}} znaków",
+    "max_length": "Można wpisać maksymalnie {{length}} znaków",
+    "email": "Adres e-mail musi być poprawny",
+    "password": {
+      "match": "Hasła muszą się zgadzać",
+      "requirements": "Hasło musi zawierać co najmniej 8 znaków"
+    }
+  },
+  "errors": {
+    "generic": "Wystąpił błąd. Spróbuj ponownie.",
+    "network": "Błąd sieci. Sprawdź swoje połączenie z internetem.",
+    "unauthorized": "Nie masz uprawnień do wykonania tej czynności.",
+    "notFound": "Nie znaleziono szukanego zasobu.",
+    "validation": "Sprawdź, czy wprowadzone dane są poprawne i spróbuj ponownie."
+  },
+  "loading": {
+    "generic": "Ładowanie...",
+    "submitting": "Przesyłanie...",
+    "saving": "Zapisywanie...",
+    "deleting": "Usuwanie..."
+  },
+  "buttons": {
+    "submit": "Prześlij",
+    "cancel": "Anuluj",
+    "save": "Zapisz",
+    "delete": "Usuń",
+    "edit": "Edytuj",
+    "close": "Zamknij",
+    "back": "Wstecz",
+    "next": "Dalej",
+    "previous": "Poprzednie"
+  },
+  "pagination": {
+    "previous": "Poprzednia strona",
+    "next": "Następna strona",
+    "page": "Strona {{page}} z {{total}}",
+    "showing": "{{start}}-{{end}} z {{total}}"
+  }
+} 

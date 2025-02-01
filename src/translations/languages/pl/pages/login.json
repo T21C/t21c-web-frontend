@@ -1,0 +1,20 @@
+{
+  "title": "Logowanie",
+  "fields": {
+    "emailOrUsername": "Adres e-mail lub nazwa użytkownika",
+    "password": "Hasło"
+  },
+  "placeholders": {
+    "emailOrUsername": "Wpisz swój adres e-mail lub nazwę użytkownika",
+    "password": "Wpisz swoje hasło"
+  },
+  "buttons": {
+    "login": "Zaloguj się",
+    "discord": "Zaloguj się z Discord"
+  },
+  "divider": "lub",
+  "errors": {
+    "invalidCredentials": "Niepoprawny adres e-mail/nazwa użytkownika lub hasło",
+    "discordFailed": "Nie udało się zalogować z Discord"
+  }
+} 

@@ -1,0 +1,13 @@
+{
+  "noLevels": "Brak nowych poziomów do ogłoszenia",
+  "errors": {
+    "removeLevel": "Nie udało się usunąć piosenki {{song}}. Spróbuj ponownie."
+  },
+  "card": {
+    "team": " • {{team}}"
+  },
+  "buttons": {
+    "edit": "Edytuj poziom",
+    "remove": "Usuń poziom"
+  }
+} 

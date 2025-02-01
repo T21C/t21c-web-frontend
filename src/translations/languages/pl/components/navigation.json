@@ -1,0 +1,24 @@
+{
+  "main": {
+    "links": {
+      "home": "Strona główna",
+      "levels": "Poziomy",
+      "leaderboard": "Lista rankingowa",
+      "pass": "Przejścia",
+      "submission": "Prześlij",
+      "rating": "Oceny",
+      "admin": {
+        "rating": "Oceny",
+        "submissions": "Zgłoszenia",
+        "announcements": "Ogłoszenia",
+        "difficulties": "Poziomy trudności",
+        "backups": "Kopie zapasowe",
+        "back": "Wstecz",
+        "admin": "Administracja"
+      }
+    }
+  },
+  "languages": {
+    "comingSoon": "(wkrótce)"
+  }
+} 

@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "title": "O nas | TUF",
+    "description": "Dowiedz się więcej o The Universal Forums (TUF) - Organizacji prowadzonej przez społeczność gry ADOFAI"
+  },
+  "header": {
+    "title": "O TUF"
+  },
+  "sections": {
+    "whoWeAre": {
+      "title": "Kim jesteśmy",
+      "content": "The Universal Forums (TUF) to prowadzona przez społeczność gry A Dance of Fire and Ice organizacja, skupiająca się na zbieraniu, ocenianiu i organizowaniu poziomów stworzonych przez graczy. Nasza platforma jest miejscem, w którym gracze mogą dzielić się swoimi osiągnięciami, odkrywać nowe poziomy i poznawać innych entuzjastów ADOFAI."
+    },
+    "mission": {
+      "title": "Nasza misja",
+      "intro": "Pragniemy stworzyć obszerną i dostępną dla każdego platformę, która:",
+      "points": [
+        "Zapewnia precyzyjne oceny trudności poziomów tworzonych przez graczy",
+        "Organizuje rzetelną listę rankingową dla kochających rywalizację",
+        "Rozwija wspierającą społeczność",
+        "Przechowuje i promuje osiągnięcia graczy"
+      ]
+    },
+    "values": {
+      "title": "Nasze wartości",
+      "cards": {
+        "accuracy": {
+          "title": "Dokładność",
+          "content": "Zachowujemy wysokie standardy przy ocenianiu poziomów i przejść, aby zapewnić uczciwą rywalizację."
+        },
+        "transparency": {
+          "title": "Przejrzystość",
+          "content": "Nasz proces oceny i decyzje społeczności są otwarte i jasne dla wszystkich członków."
+        },
+        "inclusivity": {
+          "title": "Inkluzywność",
+          "content": "Wszyscy gracze są mile widziani w naszej społeczności, niezależnie od poziomu umiejętności, pochodzenia, wiary itp."
+        },
+        "innovation": {
+          "title": "Innowacja",
+          "content": "Cały czas polepszamy naszą platformę, aby służyła ona najlepiej społeczności ADOFAI."
+        }
+      }
+    },
+    "join": {
+      "title": "Dołącz do naszej społeczności",
+      "links": {
+        "discord": "Dołącz do nas na Discord",
+        "github": "Wnieś swój wkład poprzez GitHub"
+      }
+    },
+    "credits": {
+      "title": "O twórcach",
+      "version": {
+        "current": "v2.0 rozwijana przez V0W4N",
+        "original": "Oryginalna strona stworzona przez Adrian"
+      },
+      "categories": {
+        "rating": {
+          "title": "Raterzy i Managerzy",
+          "roles": {
+            "manager": "Manager",
+            "rater": "Rater"
+          }
+        }
+      }
+    }
+  }
+} 

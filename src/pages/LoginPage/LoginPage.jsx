@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 import './loginPage.css';
-import { CompleteNav } from '../../components';
+import { CompleteNav, MetaTags } from '../../components';
 import { useScript } from '../../hooks/useScript';
+const currentUrl = window.location.origin + location.pathname;
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -15,6 +17,8 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { login, loginWithDiscord } = useAuth();
+  const { t } = useTranslation('pages');
+  const tLogin = (key, params = {}) => t(`login.${key}`, params);
 
   // Load reCAPTCHA script
   const recaptchaStatus = useScript(
@@ -63,10 +67,9 @@ const LoginPage = () => {
       
       if (requireCaptcha) {
         try {
-          // Get the token from the rendered widget
           captchaToken = await new Promise((resolve, reject) => {
             if (!window.grecaptcha) {
-              reject(new Error('reCAPTCHA not loaded'));
+              reject(new Error(tLogin('errors.captcha.notLoaded')));
               return;
             }
 
@@ -74,12 +77,12 @@ const LoginPage = () => {
             if (response) {
               resolve(response);
             } else {
-              reject(new Error('Please complete the reCAPTCHA verification'));
+              reject(new Error(tLogin('errors.captcha.incomplete')));
             }
           });
         } catch (captchaError) {
           console.error('reCAPTCHA error:', captchaError);
-          setError(captchaError.message || 'Failed to verify reCAPTCHA. Please try again.');
+          setError(captchaError.message || tLogin('errors.captcha.failed'));
           setLoading(false);
           return;
         }
@@ -90,14 +93,13 @@ const LoginPage = () => {
       navigate(from);
     } catch (err) {
       const response = err.response?.data;
-      setError(response?.error || 'Login failed. Please try again.');
+      setError(response?.error || tLogin('errors.generic'));
       if (response?.requireCaptcha) {
         setRequireCaptcha(true);
       }
-      // Reset reCAPTCHA on failed login attempt
       if (requireCaptcha && window.grecaptcha) {
         window.grecaptcha.reset();
-        setIsRecaptchaRendered(false); // This will trigger re-render of the widget
+        setIsRecaptchaRendered(false);
       }
     } finally {
       setLoading(false);
@@ -108,22 +110,29 @@ const LoginPage = () => {
     try {
       await loginWithDiscord();
     } catch (err) {
-      setError('Failed to initiate Discord login. Please try again, if the issue persists, contact the developer.');
+      setError(tLogin('errors.discordFailed'));
     }
   };
 
   return (
     <div className="login-page-wrapper">
+       <MetaTags
+          title={tLogin('meta.title')}
+          description={tLogin('meta.description')}
+          url={currentUrl}
+          image={''}
+          type="article"
+      />
       <div className="background-level"/>
       <CompleteNav/>
       <div className="login-page">
         <div className="login-container">
-          <h1>Login</h1>
+          <h1>{tLogin('header.title')}</h1>
           {error && <div className="error-message">{error}</div>}
         
           <form onSubmit={handleEmailLogin} className="login-form">
             <div className="form-group">
-              <label htmlFor="email">Email or Username</label>
+              <label htmlFor="email">{tLogin('form.labels.emailOrUsername')}</label>
               <input
                 type="text"
                 id="email"
@@ -135,7 +144,7 @@ const LoginPage = () => {
             </div>
             
             <div className="form-group">
-              <label htmlFor="password">Password</label>
+              <label htmlFor="password">{tLogin('form.labels.password')}</label>
               <input
                 type="password"
                 id="password"
@@ -155,12 +164,12 @@ const LoginPage = () => {
               className="login-button" 
               disabled={loading || (requireCaptcha && recaptchaStatus !== 'ready')}
             >
-              {loading ? 'Logging in...' : 'Login'}
+              {loading ? tLogin('form.buttons.loggingIn') : tLogin('form.buttons.login')}
             </button>
           </form>
 
           <div className="divider">
-            <span>or</span>
+            <span>{tLogin('form.divider')}</span>
           </div>
 
           <button
@@ -169,7 +178,7 @@ const LoginPage = () => {
             onClick={handleDiscordLogin}
             disabled={loading}
           >
-            Login with Discord
+            {tLogin('form.buttons.discordLogin')}
           </button>
 
         </div>

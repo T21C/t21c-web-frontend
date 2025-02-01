@@ -1,0 +1,71 @@
+{
+  "edit": {
+    "title": "Edytuj przejście",
+    "close": "×",
+    "thumbnailInfo": "Informacje o wideo pojawią się tutaj",
+    "form": {
+      "submInfo": {
+        "levelId": "ID poziomu",
+        "videoLink": "Link do wideo",
+        "speed": "Prędkość",
+        "feelDiff": "Szacowany poziom trudności",
+        "nohold": "Bez holder'ów",
+        "is12K": "12K",
+        "is16K": "16K"
+      },
+      "levelInfo": {
+        "song": "Piosenka",
+        "artist": "Artysta/ści",
+        "charter": "Charter/Charterzy"
+      },
+      "levelFetching": {
+        "input": "Wpisz ID poziomu",
+        "fetching": "Pozyskiwanie...",
+        "goto": "Przejdź to poziomu",
+        "notfound": "Nie znaleziono"
+      },
+      "videoInfo": {
+        "videoLink": "Link do wideo",
+        "title": "Tytuł",
+        "channel": "Kanał",
+        "timestamp": "Data upublicznienia",
+        "nolink": "Nie podano linku do wideo"
+      },
+      "judgements": {
+        "ePerfect": "WPerfekcyjnie",
+        "perfect": "Perfekcyjnie",
+        "lPerfect": "PPerfekcyjnie",
+        "tooearly": "Za wcześnie",
+        "early": "Wcześnie",
+        "late": "Późno"
+      },
+      "buttons": {
+        "submit": "Prześlij",
+        "submitWait": "Przesyłanie...",
+        "delete": {
+          "default": "Usuń",
+          "deleting": "Usuwanie...",
+          "restore": "Odzyskaj",
+          "restoring": "Odzyskiwanie..."
+        }
+      }
+    },
+    "acc": "Dokładność: ",
+    "scoreCalc": "Wynik: ",
+    "holdTooltip": "Bez holder'ów",
+    "12kTooltip": "Wariant 12K",
+    "16kTooltip": "Wariant 16K",
+    "tooltip": "Wpisz numer 1-10",
+    "alert": {
+      "success": "Pomyślnie zaaktualizowano przejście!",
+      "error": "Błąd: ",
+      "loading": "Przetwarzanie...",
+      "login": "Zaloguj się, aby przesłać przejście",
+      "form": "Wypełnij poprawnie wszystkie wymagane pola"
+    },
+    "confirmations": {
+      "delete": "Czy chcesz usunąć to przejście? Tej czynności nie można cofnąć.",
+      "restore": "Czy chcesz odzyskać do przejście?"
+    }
+  }
+} 

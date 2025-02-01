@@ -1,0 +1,92 @@
+{
+  "meta": {
+    "title": "Zarządzaj poziomami trudności | TUF",
+    "description": "Zarządzaj poziomami trudności w The Universal Forums (TUF)"
+  },
+  "header": {
+    "title": "Zarządzaj poziomami trudności",
+    "refresh": "Odśwież poziomy trudności"
+  },
+  "access": {
+    "denied": {
+      "title": "Odmowa dostępu",
+      "message": "Potrzebujesz uprawnien superadministratora, aby mieć dostęp do tej strony."
+    }
+  },
+  "buttons": {
+    "create": "Stwórz nowy poziom trudności",
+    "creating": "Tworzenie...",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "confirm": "Potwierdź",
+    "understand": "Rozumiem ryzyko"
+  },
+  "loading": {
+    "difficulties": "Ładowanie poziomów trudności..."
+  },
+  "noItems": {
+    "message": "Nie znaleziono poziomów trudności."
+  },
+  "difficultyTypes": {
+    "PGU": "PGU",
+    "SPECIAL": "SPECIAL"
+  },
+  "form": {
+    "labels": {
+      "id": "ID:",
+      "name": "Nazwa:",
+      "type": "Typ:",
+      "icon": "Adres URL ikony:",
+      "legacyIcon": "Adres URL ikony Legacy:",
+      "emoji": "Emoji:",
+      "legacyEmoji": "Emoji Legacy:",
+      "color": "Kolor:",
+      "baseScore": "Wynik podstawowy:",
+      "sortOrder": "Kolejność sortowania:",
+      "legacy": "Legacy:",
+      "fallbackId": "ID zastępczego poziomu trudności:"
+    },
+    "placeholders": {
+      "fallbackId": "Wpisz ID zastępczego poziomu trudności"
+    },
+    "helpText": {
+      "fallbackId": "Wszystkie poziomy korzystające z {{name}} zaczną używać tego poziomu trudności."
+    }
+  },
+  "modal": {
+    "create": {
+      "title": "Utwórz nowy poziom trudności"
+    },
+    "edit": {
+      "title": "Edytuj poziom trudności"
+    },
+    "delete": {
+      "title": "Usuń poziom trudności",
+      "warning": {
+        "title": "⚠️ Uwaga: Niebezpieczny Proceder ⚠️",
+        "message": "Za chwilę usuniesz poziom trudności: {{name}}",
+        "description": "Ta czynność:",
+        "points": [
+          "Nie może zostać cofnięta",
+          "Wpłynie na wszystkie poziomy korzystające z tego poziomu trudności",
+          "Wymaga utworzenia kopii zapasowej przed dokonaniem"
+        ],
+        "highlight": "Upewnij się, że utworzyłeś kopię zapasową, zanim dokonasz tej czynności!"
+      }
+    }
+  },
+  "passwordModal": {
+    "title": "Wymagane jest hasło superadministratora",
+    "message": "Wpisz swoje hasło superadministratora, aby wykonać czynność na poziomie trudności.",
+    "placeholder": "Wpisz hasło",
+    "errors": {
+      "invalid": "Niepoprawne hasło",
+      "generic": "Wystąpił błąd poczas wykonywania tej czynności"
+    }
+  },
+  "notifications": {
+    "created": "Pomyślnie utworzono poziom trudności",
+    "updated": "Pomyślnie zaktualizowano poziom trudności",
+    "deleted": "Pomyślnie usunięto poziom trudności"
+  }
+} 

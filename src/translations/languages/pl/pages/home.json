@@ -1,0 +1,56 @@
+{
+  "meta": {
+    "title": "Strona główna | TUF",
+    "description": "Witaj w The Universal Forums (TUF) - Organizacji prowadzonej przez społeczność gry ADOFAI"
+  },
+  "title": {
+    "revamped": "Reaktywacja"
+  },
+  "buttons": {
+    "browseLevels": "Przeglądaj poziomy",
+    "browsePasses": "Przeglądaj przejścia",
+    "leaderboard": "Lista rankingowa"
+  },
+  "stats": {
+    "overview": {
+      "title": "Przegląd",
+      "totalLevels": "Łącznie poziomów",
+      "totalPasses": "Łącznie przejść",
+      "totalPlayers": "Razem graczy",
+      "passesLast30Days": "Przejść (30 dni)"
+    },
+    "difficulties": {
+      "title": "Statystyki poziomów trudności",
+      "graphModes": {
+        "passes": "Przejścia",
+        "levels": "Poziomy"
+      }
+    },
+    "discord": {
+      "title": "Dołącz do naszego serwera Discord!"
+    },
+    "comingSoon": "Więcej ciekawych rzeczy wkrótce..."
+  },
+  "footer": {
+    "about": {
+      "title": "TUF",
+      "description": "The Universal Forums to prowadzona przez społeczność organizacja, która skupia się na zbieraniu i ocenianiu poziomów w grze A Dance of Fire and Ice."
+    },
+    "quickLinks": {
+      "title": "Szybki dostęp",
+      "browseLevels": "Przeglądaj poziomy",
+      "browsePasses": "Przeglądaj przejścia",
+      "leaderboard": "Lista rankingowa",
+      "aboutUs": "O nas"
+    },
+    "community": {
+      "title": "Społeczność",
+      "discord": "Discord",
+      "github": "GitHub"
+    },
+    "copyright": {
+      "main": "© {{year}} TUF. Nie ma powiązania z 7th Beat Games.",
+      "credit": "Stworzone z ❤️ przez V0W4N"
+    }
+  }
+} 

@@ -1,0 +1,75 @@
+{
+  "player": {
+    "title": "Edytuj Gracza",
+    "close": "×",
+    "form": {
+      "name": {
+        "label": "Nazwa Gracza",
+        "placeholder": "Wpisz nazwę gracza",
+        "button": "Zapisz"
+      },
+      "country": {
+        "label": "Kraj",
+        "button": "Zapisz"
+      },
+      "ban": {
+        "label": "Zbanuj gracza",
+        "confirm": {
+          "ban": "Czy na pewno chcesz zbanować tego gracza?",
+          "unban": "Czy na pewno chcesz odbanować tego gracza?",
+          "buttons": {
+            "confirm": "Potwierdź",
+            "cancel": "Anuluj"
+          }
+        }
+      },
+      "merge": {
+        "label": "Połącz Graczy",
+        "placeholder": "Wpisz Identyfikator (ID) docelowego gracza",
+        "button": "Połącz",
+        "confirm": {
+          "message": "Czy na pewno chcesz połączyć przejścia tego gracza? Tej czynności nie można cofnąć.",
+          "warning": "Wszystkie przejścia zostaną przeniesione do gracza docelowego, a przejścia tego gracza zostaną usunięte.",
+          "buttons": {
+            "understand": "Rozumiem",
+            "confirm": "Zatwierdź połączenie",
+            "cancel": "Anuluj"
+          }
+        }
+      },
+      "discord": {
+        "label": "Discord ID",
+        "placeholder": "Wpisz Discord ID, aby zatwierdzić",
+        "buttons": {
+          "validate": "Zatwierdź",
+          "remove": "Usuń"
+        },
+        "confirm": {
+          "message": "Czy na pewno chcesz zmienić dane Discord tego gracza?",
+          "buttons": {
+            "confirm": "Potwierdź",
+            "cancel": "Anuluj"
+          }
+        }
+      }
+    },
+    "buttons": {
+      "done": "Gotowe"
+    },
+    "errors": {
+      "nameUpdate": "Nie udało się zmienić nazwy gracza",
+      "countryUpdate": "Nie udało się zmienić kraju",
+      "banUpdate": "Nie udało się zmienić statusu bana",
+      "discordFetch": "Nie udało się pozyskać Discord ID",
+      "discordUpdate": "Nie udało się zmienić danych Discord gracza",
+      "discordRemove": "Nie udało się usunąć danych Discord gracza",
+      "mergePlayer": "Nie udało się połączyć graczy",
+      "invalidTargetId": "Niepoprawne ID gracza docelowego"
+    },
+    "success": {
+      "discordUpdate": "Pomyślnie zmieniono dane Discord gracza",
+      "discordRemove": "Pomyślnie usunięto dane Discord gracza",
+      "mergePlayer": "Pomyślnie połączono graczy"
+    }
+  }
+} 

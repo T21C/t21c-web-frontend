@@ -27,7 +27,8 @@
       "requiredComment": "A comment is required when rating -2"
     },
     "placeholders": {
-      "requiredComment": "Please explain why you're rating this -2..."
+      "requiredComment": "Please explain why you're rating this -2...",
+      "difficultyInput": "Enter difficulty..."
     },
     "confirmations": {
       "deleteRating": "Are you sure you want to delete this rating from {{username}}?"

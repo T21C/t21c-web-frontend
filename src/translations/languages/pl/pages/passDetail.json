@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "title": "{{song}} | TUF",
+    "description": "Zobacz przejście {{song}} - {{artist}} gracza {{playerName}}"
+  },
+  "banners": {
+    "deleted": "To przejście zostało usunięte"
+  },
+  "level": {
+    "baseScore": "{{score}}PP",
+    "credits": {
+      "team": "{{team}}",
+      "charter": "Chart autorstwa {{charter}}",
+      "vfxer": "VFX autorstwa {{vfxer}}"
+    }
+  },
+  "player": {
+    "rank": "#{{rank}}",
+    "score": {
+      "current": "{{score}}",
+      "difference": {
+        "positive": "+{{score}}"
+      },
+      "previous": "{{score}}"
+    },
+    "clearDate": "Data przejścia: {{date}}"
+  },
+  "stats": {
+    "score": {
+      "label": "Wynik",
+      "value": "{{score}}"
+    },
+    "accuracy": {
+      "label": "Dokładność",
+      "value": "{{accuracy}}%"
+    },
+    "speed": {
+      "label": "Prędkość",
+      "value": "{{speed}}x"
+    },
+    "feelingRating": {
+      "label": "Szacowany poziom trudności",
+      "value": "{{rating}}",
+      "none": "Brak"
+    }
+  },
+  "flags": {
+    "worldsFirst": "🏆 Pierwsze przejście! 🏆",
+    "12k": "12K",
+    "16k": "16K",
+    "noHoldTap": "Bez wciśnięcia przy przytrzymaniu (NHT)"
+  },
+  "judgements": {
+    "title": "Judgment'y",
+    "types": {
+      "earlyPerfect": {
+        "label": "WPerfekcyjnie",
+        "value": "{{count}}"
+      },
+      "perfect": {
+        "label": "Perfekcyjnie",
+        "value": "{{count}}"
+      },
+      "latePerfect": {
+        "label": "PPerfekcyjnie",
+        "value": "{{count}}"
+      },
+      "tooEarly": {
+        "label": "Za wcześnie",
+        "value": "{{count}}"
+      },
+      "early": {
+        "label": "Wcześnie",
+        "value": "{{count}}"
+      },
+      "late": {
+        "label": "Późno",
+        "value": "{{count}}"
+      },
+      "tooLate": {
+        "label": "Za późno",
+        "value": "{{count}}"
+      }
+    }
+  },
+  "video": {
+    "notAvailable": {
+      "text": "Wideo niedostępne",
+      "watchOnYoutube": "Obejrz na YouTube"
+    }
+  },
+  "buttons": {
+    "edit": "Edytuj informacje o przejściu"
+  }
+} 

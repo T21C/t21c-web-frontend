@@ -1,0 +1,37 @@
+{
+  "helpPopup": {
+    "title": "Pomoc w wyszukiwaniu",
+    "closeButton": "Zamknij",
+    "sections": {
+      "search": {
+        "title": "Wyszukiwanie zaawansowane",
+        "description": "Możesz wyszukiwać w konkretnych obszarach używając dwóch operatów: dwukropka (:) dla częściowej zgodności oraz znaku równości (=) dla całkowitej zgodności.",
+        "examples": {
+          "title": "Przykładowe obszary wyszukiwań",
+          "playerField": "Użyj 'player:Name' dla wyszukiwania o częściowej zgodności lub 'player=Name' dla dokładnego wyszukiwania",
+          "videoField": "Użyj 'video:Link' dla wyszukiwania o częściowej zgodności lub 'video=Link' dla dokładnego wyszukiwania"
+        }
+      },
+      "operators": {
+        "title": "Operatory wyszukiwania",
+        "description": "Możesz łączyć ze sobą wiele warunków wyszukiwania przy pomocy operatorów.",
+        "examples": {
+          "title": "Przykłady operatorów",
+          "and": "Wyszukiwanie przejść, które spełniają oba warunki (AND)",
+          "or": "Wyszukiwanie przejść, które spełniają jeden z warunków (OR)",
+          "complex": "Możliwe jest kompleksowe wyszukiwanie poprzez łączenie AND i OR"
+        }
+      },
+      "tips": {
+        "title": "Wskazówki dotyczące wyszukiwania",
+        "points": {
+          "caseSensitive": "Wyszukiwania nie uwzględniają wielkości liter - 'PLAYER' oraz 'player' dadzą ten sam wynik",
+          "partial": "Dwukropek (:) pozwala na wyszukiwania o częściowej zgodności - 'player:yo' dopasuje wyszukiwanie do 'yoonsu' i 'yoon'",
+          "exact": "Znak równości (=) wymaga dokładnego wpisania nazwy - 'player=yoon' dopasuje się jedynie do 'yoon'",
+          "spaces": "Spacje są dozwolone w wyszukiwaniach - można wpisać np. 'player:Epic player'",
+          "order": "Kolejność warunków nie ma znaczenia"
+        }
+      }
+    }
+  }
+} 

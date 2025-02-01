@@ -1,0 +1,60 @@
+{
+  "title": "Prześlij przejście",
+  "thumbnailInfo": "Informacje o wideo pojawią się tutaj",
+  "submInfo": {
+    "levelId": "ID poziomu",
+    "altname": "Alternatywna nazwa (opcj.)",
+    "nohold": "No Hold Tap (NHT)",
+    "speed": "Prędkość (opcj., >=1.0)",
+    "feelDiff": "Szacowany poziom trudności",
+    "is12K": "12K",
+    "is16K": "16K"
+  },
+  "levelInfo": {
+    "song": "Utwór",
+    "artist": "Artysta",
+    "charter": "Charter"
+  },
+  "levelFetching": {
+    "input": "Wpisz ID",
+    "fetching": "Pozyskiwanie...",
+    "goto": "Przejdź do poziomu",
+    "notfound": "Nie znaleziono"
+  },
+  "videoInfo": {
+    "videoLink": "Link do wideo na YouTube",
+    "title": "Tytuł",
+    "channel": "Kanał",
+    "timestamp": "Czas przesłania",
+    "nolink": "Wpisz poprawny link do wideo na YouTube"
+  },
+  "judgements": {
+    "ePerfect": "WPerfekcyjnie",
+    "perfect": "Perfekcyjnie",
+    "lPerfect": "PPerfekcyjnie",
+    "tooearly": "Za wcześnie",
+    "early": "Wcześnie",
+    "late": "Późno"
+  },
+  "acc": "Dokładność: ",
+  "scoreCalc": "Wynik: ",
+  "submit": "Prześlij",
+  "submitWait": "...",
+  "holdTooltip": "Zaznacz, jeśli nie użyłeś wciśnięcia przy przytrzymaniu (NHT)",
+  "12kTooltip": "Zaznacz, jeśli użyłeś 12 lub mniej klawiszy",
+  "16kTooltip": "Zaznacz, jeśli użyłeś 13 lub więcej klawiszy",
+  "tooltip": "Wpisz numer 1-10",
+  "alert": {
+    "success": "Pomyślnie przesłano przejście!",
+    "error": "Błąd: ",
+    "loading": "Przesyłanie...",
+    "login": "Zaloguj się, aby przesłać przejście",
+    "form": "Wypełnij poprawnie wszystkie wymagane pola"
+  },
+  "score": {
+    "needId": "Wpisz ID poziomu",
+    "needJudg": "Wpisz judgment'y",
+    "needInfo": "Wpisz wszystkie wymagane informacje",
+    "noInfo": "Brak dostępnych informacji"
+  }
+} 

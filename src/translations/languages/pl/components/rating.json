@@ -1,0 +1,101 @@
+{
+  "detailPopup": {
+    "closeButton": "Zamknij okienko",
+    "labels": {
+      "creator": "Twórca/y:",
+      "currentDifficulty": "Obecny poziom trudności:",
+      "averageRating": "Średnia ocena:",
+      "yourRating": "Twoja ocena:",
+      "yourComment": "Twój komentarz:",
+      "otherRatings": "Inne oceny:",
+      "noRatings": "Brak ocen"
+    },
+    "buttons": {
+      "saveChanges": "Zapisz zmiany",
+      "saving": "Zapisywanie..."
+    },
+    "errors": {
+      "commentLength": "Komentarz musi być krótszy niż 1000 znaków",
+      "commentRequired": "Komentarz jest wymagany dla oceny -2",
+      "saveFailed": "Nie udało się zapisać zmian",
+      "updateFailed": "Nie udało się zaaktualizować oceny",
+      "unsavedChanges": "Masz niezapisane zmiany. Czy na pewno chcesz zamknąć?",
+      "deleteFailed": "Nie udało się usunąć oceny"
+    },
+    "tooltips": {
+      "lastUpdated": "Ostatnio zaktualizowane",
+      "requiredComment": "Komentarz jest wymagany dla oceny -2"
+    },
+    "placeholders": {
+      "requiredComment": "Powiedz, dlaczego oceniasz ten poziom na -2..."
+    },
+    "confirmations": {
+      "deleteRating": "Czy na pewno chcesz usunąć tą ocenę gracza {{username}}?"
+    }
+  },
+  "ratingCard": {
+    "labels": {
+      "yourRating": "Twoje oceny",
+      "allRatings": "Wszystkie oceny",
+      "average": "Średnia",
+      "rerateNumber": "Numer rerate'u",
+      "requestedRating": "Żądana ocena",
+      "rerateMessage": "Komentarz do rerate'u",
+      "lastUpdated": "Ostatnio zaktualizowane",
+      "updatedAt": "Zaktualizowano: "
+    },
+    "tooltips": {
+      "expandReason": "Kliknij, aby rozwinąć",
+      "deleteRating": "Usuń ocenę",
+      "lastUpdated": "Ostatnio zmodyfikowane"
+    },
+    "buttons": {
+      "viewDetails": "Szczegóły",
+      "editLevel": "Edytuj poziom"
+    }
+  },
+  "helpPopup": {
+    "title": "Poradnik systemu oceniania",
+    "closeButton": "Zamknij poradnik",
+    "sections": {
+      "rating": {
+        "title": "Format oceniania",
+        "description": "Oceny mogą być wpisywane w różnych formatach - oceny pojedyncze, specjalne, przedziały ocen",
+        "examples": {
+          "title": "Przykłady",
+          "simple": "Ocena pojedyncza",
+          "range": "Przedział w pełnym zapisie",
+          "shortRange": "Przedział skrócony (Przyjmuje się przedrostek 'P' dla obu liczb)",
+          "special": "Ocena specjalna",
+          "negative": "Ocena specjalna z wartością ujemną"
+        }
+      },
+      "averaging": {
+        "title": "Uśrednianie ocen",
+        "description": "Do uzyskania średniej system oceniania wykorzystuje średnią ważoną, biorącą pod uwagę kilka czynników:",
+        "points": {
+          "special": "Oceny specjalne (-2, -21, itp.) zastępują średnią ocen, jeśli otrzymają 4 lub więcej głosów",
+          "ranges": "Przedziały (np. U12~U14) są uśredniane przed uwzględnieniem w ocenie",
+          "order": "Oceny w formacie PGU są przy uśrednianiu sortowane w zależności od ich poziomu trudności, a nie wartości liczbowej"
+        }
+      },
+      "filters": {
+        "title": "Dostępne filtry",
+        "hideRated": "Ukryj ocenione",
+        "hideRatedDesc": "Ukrywa poziomy, które zostały już przez ciebie ocenione",
+        "lowDiff": "Niski poziom trudności",
+        "lowDiffDesc": "Filtruje poziomy z oznaczeniem niskiego poziomu trudności",
+        "fourVote": "4+ ocen",
+        "fourVoteDesc": "Filtruje poziomy, które mają 4 lub więcej ocen"
+      },
+      "requirements": {
+        "title": "Wymagania",
+        "points": {
+          "comment": "Komentarz jest wymagany dla oceny -2",
+          "format": "Oceny muszą być zgodne z formatem PGU (P1-P20, G1-G20, U1-U20) lub być jedną z istniejących ocen specjalnych",
+          "special": "Oceny specjalne są uprzednio zdefiniowane i nie można ich przerabiać"
+        }
+      }
+    }
+  }
+} 

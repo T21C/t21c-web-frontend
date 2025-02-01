@@ -28,12 +28,14 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "upload": "Upload",
-    "uploading": "Uploading..."
+    "uploading": "Uploading...",
+    "download": "Download"
   },
   "upload": {
     "dragDropMessage": "Drag and drop a backup file here, or click to select",
     "errors": {
-      "fileTooBig": "File size exceeds maximum limit of {{size}}"
+      "fileTooBig": "File size exceeds maximum limit of {{size}}",
+      "validationFailed": "Failed to validate upload credentials"
     }
   },
   "noBackups": {
@@ -61,10 +63,12 @@
     "deleteMessage": "Please enter your super admin password to delete the backup.",
     "renameMessage": "Please enter your super admin password to rename the backup.",
     "uploadMessage": "Please enter your super admin password to upload the backup.",
+    "downloadMessage": "Please enter your super admin password to download the backup.",
     "placeholder": "Enter password",
     "errors": {
       "invalid": "Invalid password",
-      "generic": "An error occurred while performing the action"
+      "generic": "An error occurred while performing the action",
+      "validation": "Password validation failed"
     }
   },
   "notifications": {
@@ -77,7 +81,8 @@
     "restoreFailed": "Failed to restore backup",
     "deleteFailed": "Failed to delete backup",
     "uploadSuccess": "Backup uploaded successfully",
-    "uploadFailed": "Failed to upload backup"
+    "uploadFailed": "Failed to upload backup",
+    "validationFailed": "Password validation failed"
   },
   "fileInfo": {
     "created": "Created: {{date}}",

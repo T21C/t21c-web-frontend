@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "title": "The Universal Forums",
+    "description": "The Universal Forums (TUF) to prowadzona przez społeczność platforma stworzona dla graczy ADOFAI, którzy chcą między sobą rywalizować i dzeilić się własnymi poziomami."
+  },
+  "header": {
+    "title": "The Universal Forums",
+    "subtitle": "Prowadzona przez społeczność platforma dla graczy ADOFAI"
+  },
+  "sections": {
+    "featured": {
+      "title": "Wyróżnione poziomy",
+      "empty": "Brak wyróżnionych poziomów"
+    },
+    "recent": {
+      "title": "Najnowsze poziomy",
+      "empty": "Brak ostatnio dodanych poziomów"
+    }
+  },
+  "card": {
+    "by": "autorstwa {{creator}}"
+  },
+  "loading": {
+    "featured": "Ładowanie wyróżnionych poziomów...",
+    "recent": "Ładowanie najnowszych poziomów..."
+  }
+} 

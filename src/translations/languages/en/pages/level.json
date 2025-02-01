@@ -33,7 +33,9 @@
     "sortRandom": "Random Sort",
     "sortClears": "Sort by Clears",
     "viewMode": "View Mode",
-    "cardSize": "Card Size"
+    "cardSize": "Card Size",
+    "clearedLevels": "Cleared Levels",
+    "deletedLevels": "Deleted Levels"
   },
   "infScroll": {
     "end": "No more levels to load"

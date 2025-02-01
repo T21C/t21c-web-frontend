@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "title": "Lista rankingowa",
+    "description": "Przeglądaj najlepszych graczy i rankingi"
+  },
+  "input": {
+    "placeholder": "Szukaj po nazwie gracza..."
+  },
+  "tooltips": {
+    "filter": "Filtruj wyszukiwania",
+    "sort": "Sortuj wyszukiwania",
+    "reset": "Resetuj wszystkie filtry",
+    "recentAsc": "Sortuj rosnąco",
+    "recentDesc": "Sortuj malejąco"
+  },
+  "settings": {
+    "filter": {
+      "header": "Ustawienia filtrowania"
+    },
+    "sort": {
+      "header": "Ustawienia sortowania",
+      "sortOrder": "Kolejność sortowania",
+      "sortBy": "Sortuj według"
+    }
+  },
+  "bannedPlayers": {
+    "label": "Zbanowani gracze",
+    "options": {
+      "show": "Pokaż",
+      "hide": "Ukryj",
+      "only": "Tylko"
+    }
+  },
+  "sortOptions": {
+    "rankedScore": "Wyniku rankingowego",
+    "generalScore": "Wyniku ogólnego",
+    "ppScore": "Wyniku PP",
+    "wfScore": "Wyniku WF",
+    "score12K": "Wyniku 12K",
+    "averageXacc": "Średniej dokładności",
+    "totalPasses": "Ilości przejść",
+    "universalPasses": "Ilości przejść Universal",
+    "worldsFirstCount": "Przejść WF",
+    "topDiff": "Najwyższego poziomu trudności",
+    "top12kDiff": "Najwyższego poziomu trudności z 12K"
+  },
+  "infiniteScroll": {
+    "end": "Koniec listy rankingowej!"
+  }
+} 

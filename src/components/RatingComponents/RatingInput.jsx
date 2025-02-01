@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import "./ratinginput.css";
+import { useTranslation } from 'react-i18next';
 
 export const RatingInput = ({ 
   value, 
@@ -8,8 +9,9 @@ export const RatingInput = ({
   difficulties,
   diffId,
   allowCustomInput=false,
-  placeholder="Enter difficulty..."
+  placeholder
 }) => {
+  const { t } = useTranslation('rating');
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedRating, setSelectedRating] = useState([null,null]);
   const [inputValue, setInputValue] = useState(value);
@@ -105,7 +107,7 @@ export const RatingInput = ({
           onChange={handleInputChange}
           onFocus={() => setShowDropdown(true)}
           onKeyDown={handleKeyDown}
-          placeholder={placeholder}
+          placeholder={placeholder || t('placeholders.difficultyInput')}
         />
         <button 
           className="dropdown-toggle"

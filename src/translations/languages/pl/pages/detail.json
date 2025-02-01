@@ -1,0 +1,28 @@
+{
+  "waiting": "Proszę czekać",
+  "#1Clears": {
+    "clear": "Przejście #1",
+    "score": "Wynik #1",
+    "speed": "Prędkość #1",
+    "accuracy": "Dokładność #1",
+    "numOClear": "Ilość przejść"
+  },
+  "dialog": {
+    "fullInfo": "Wszystkie informacje",
+    "artist": "Artysta",
+    "creator": "Twórca",
+    "team": "Drużyna",
+    "charter": "Charter",
+    "vfxer": "VFXer",
+    "id": "ID"
+  },
+  "leaderboard": {
+    "header": "Lista rankingowa",
+    "notBeaten": "Nikt nie przeszedł jeszcze tego poziomu...",
+    "toolTip": {
+      "time": "Data",
+      "accuracy": "Dokładność",
+      "score": "Wynik"
+    }
+  }
+} 

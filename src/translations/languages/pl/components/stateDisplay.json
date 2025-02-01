@@ -1,0 +1,14 @@
+{
+  "states": {
+    "hide": "Ukryj",
+    "show": "Pokaż",
+    "only": "Tylko",
+    "all": "Wszystko",
+    "12k": "12K",
+    "16k": "16K"
+  },
+  "accessDenied": {
+    "title": "Brak dostępu",
+    "message": "Potrzebujesz odpowiednich uprawnień, aby mieć dostęp do tej strony."
+  }
+} 

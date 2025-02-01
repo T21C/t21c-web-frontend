@@ -1,0 +1,49 @@
+{
+  "meta": {
+    "title": "Lista przejść",
+    "description": "Przeglądaj i odkrywaj osiągnięcia graczy"
+  },
+  "loading": {
+    "difficulties": "Ładowanie poziomów trudności..."
+  },
+  "input": {
+    "placeholder": "Szukaj według nazwy gracza, piosenki albo artysty..."
+  },
+  "toolTip": {
+    "filter": "Filtruj wyniki",
+    "sort": "Sortuj wyniki",
+    "reset": "Resetuj wszystkie filtry",
+    "search": "Naucz się, jak korzystać z wyszukiwania zaawansowanego"
+  },
+  "buttons": {
+    "searchHelp": "Pomoc w wyszukiwaniu"
+  },
+  "settings": {
+    "filter": {
+      "title": "Filtruj",
+      "options": {
+        "only12k": "Tylko 12K",
+        "deletedPasses": "Usunięte przejścia",
+        "keyFlags": "Ilość klawiszy"
+      }
+    },
+    "sort": {
+      "title": "Ustawienia sortowania",
+      "label": "Sortuj według",
+      "options": {
+        "newest": "Daty malejąco",
+        "oldest": "Daty rosnąco",
+        "highestScore": "Wyniku malejąco",
+        "lowestScore": "Wyniku rosnąco",
+        "highestAccuracy": "Dokładności malejąco",
+        "lowestAccuracy": "Dokładności rosnąco",
+        "highestDifficulty": "Poziomu trudności malejąco",
+        "lowestDifficulty": "Poziomu trudności rosnąco",
+        "random": "Losowo"
+      }
+    }
+  },
+  "infScroll": {
+    "end": "Koniec listy"
+  }
+} 

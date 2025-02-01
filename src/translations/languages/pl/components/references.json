@@ -1,0 +1,53 @@
+{
+  "button": {
+    "label": "Otwórz odniesienia",
+    "text": "Odniesienia"
+  },
+  "popup": {
+    "title": "{{tab}}",
+    "buttons": {
+      "close": "Zamknij",
+      "expandAll": "Rozwiń wszystkie",
+      "collapseAll": "Zwiń wszystkie",
+      "editMode": "Tryb edycji",
+      "viewMode": "Tryb przeglądania",
+      "saveChanges": "Zapisz zmiany",
+      "saving": "Zapisywanie...",
+      "cancel": "Anuluj"
+    },
+    "loading": "Ładowanie odniesień...",
+    "errors": {
+      "loadFailed": "Nie udało się załadować odniesień",
+      "saveFailed": "Nie udało się zapisać zmian"
+    },
+    "levelCount": {
+      "singular": "1 poziom",
+      "plural": "{{count}} poziomy/ów"
+    },
+    "editMode": {
+      "placeholder": "Wpisz ID poziomów (przedzielone przecinkami)"
+    }
+  },
+  "errors": {
+    "loading": "Nie udało się załadować poziomów trudności",
+    "saving": "Nie udało się zapisać poziomów trudności"
+  },
+  "title": "{{tab}}",
+  "buttons": {
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "reset": "Resetuj",
+    "clear": "Wyczyść",
+    "selectAll": "Zaznacz wszystkie"
+  },
+  "loading": "Ładowanie poziomów trudności...",
+  "noItems": "Nie znaleziono poziomów trudności",
+  "search": {
+    "placeholder": "Szukaj poziomów trudności..."
+  },
+  "stats": {
+    "selected": "Zaznaczono",
+    "total": "Razem",
+    "plural": "{{count}} poziomy/ów"
+  }
+} 

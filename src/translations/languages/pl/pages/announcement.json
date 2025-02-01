@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "title": "Ogłoszenia | TUF",
+    "description": "Zarządzaj i ogłaszaj nowe poziomy, rerate'y i przejścia w The Universal Forums (TUF)"
+  },
+  "header": {
+    "title": "Ogłoszenia"
+  },
+  "tabs": {
+    "newLevels": "Nowe poziomy",
+    "rerates": "Rerate'y",
+    "passes": "Przejścia"
+  },
+  "buttons": {
+    "retry": "Spróbuj ponownie",
+    "refresh": "Odśwież",
+    "selectAll": "Zaznaczz wszystko",
+    "deselectAll": "Odznacz wszystko",
+    "announce": "Ogłoś zaznaczone",
+    "announcing": "Ogłaszanie..."
+  },
+  "errors": {
+    "fetchFailed": "Nie udało się pozyskać przedmiotów. Spróbuj ponownie.",
+    "announceFailed": "Nie udało się ogłosić przedmiotów. Spróbuj ponownie.",
+    "invalidIds": "Niektóre z zaznaczonych przedmiotów mają niewłaściwe ID"
+  }
+} 

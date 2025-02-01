@@ -1,0 +1,61 @@
+{
+  "edit": {
+    "title": "Edytuj informacje o poziomie",
+    "close": "×",
+    "manageAliases": "Zarządzaj aliasami poziomów",
+    "form": {
+      "labels": {
+        "song": "Utwór",
+        "artist": "Artysta/ści",
+        "creator": "Twórca/y",
+        "charter": "Charter/Charterzy",
+        "vfxer": "VFXer/VFXerzy",
+        "team": "Drużyna",
+        "baseScore": "Wynik podstawowy",
+        "videoLink": "Link do wideo",
+        "dlLink": "Link do pobrania",
+        "workshopLink": "Link do Warsztatu Steam",
+        "publicComments": "Publiczne komentarze",
+        "previousDifficulty": "Wcześniejszy poziom trudności"
+      },
+      "placeholders": {
+        "baseScore": "Wynik podstawowy",
+        "rerateNumber": "Numer rerate'u",
+        "rerateReason": "Powód rerate'u"
+      },
+      "checkboxes": {
+        "toRate": "Do oceny"
+      },
+      "buttons": {
+        "save": {
+          "default": "Zapisz zmiany",
+          "saving": "Zapisywanie..."
+        },
+        "delete": {
+          "default": "Usuń",
+          "deleting": "Usuwanie...",
+          "hide": "Schowaj",
+          "unhide": "Ujawnij",
+          "processing": "Przetwarzanie..."
+        },
+        "restore": {
+          "default": "Odzyskaj poziom",
+          "restoring": "Odzyskiwanie..."
+        }
+      }
+    },
+    "confirmations": {
+      "unsavedChanges": "Masz niezapisane zmiany. Czy na pewno chcesz zamknąć?",
+      "delete": "Czy chcesz usunąć ten poziom? Tej czynności nie można cofnąć.",
+      "hide": "Czy chcesz ukryć ten poziom?",
+      "unhide": "Czy chcesz ponownie ujawnić ten poziom?",
+      "restore": "Czy chcesz odzyskać ten poziom?"
+    },
+    "errors": {
+      "update": "Nie udało się zaaktualizować poziomu",
+      "delete": "Nie udało się usunąć poziomu",
+      "toggleHidden": "Nie udało się zmienić statusu ukrycia",
+      "restore": "Nie udało się odzyskać poziomu"
+    }
+  }
+} 

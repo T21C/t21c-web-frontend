@@ -7,7 +7,7 @@
   padding: 1rem;
 }
 
-.callback-container {
+.callback-page .callback-container {
   width: 100%;
   max-width: 400px;
   padding: 2rem;
@@ -17,19 +17,19 @@
   text-align: center;
 }
 
-.callback-container h1 {
+.callback-page .callback-container h1 {
   color: #dfdfdf; /* Dark mode primary color */
   margin-bottom: 1.5rem;
   font-size: 2rem;
 }
 
-.status-message {
+.callback-page .status-message {
   color: #E0E0E0; /* Dark mode text color */
   margin-bottom: 1rem;
   line-height: 1.5;
 }
 
-.error-message {
+.callback-page .error-message {
   background-color: #de6060; /* Dark mode error background */
   color: #FFFFFF; /* Dark mode error text */
   padding: 1rem;
@@ -37,8 +37,7 @@
   margin-bottom: 1rem;
   text-shadow: 0 0 5px #000c;
 }
-
-.redirect-message {
+.callback-page .redirect-message {
   color: #B0B0B0; /* Dark mode secondary text color */
   font-size: 0.875rem;
 } 

@@ -1,0 +1,32 @@
+{
+  "title": "Prześlij poziom",
+  "thumbnailInfo": "Informacje o wideo pojawią się tutaj",
+  "submInfo": {
+    "song": "Piosenka",
+    "artist": "Artysta/ści",
+    "videoLink": "Link do wideo",
+    "charter": "Charter/Charterzy",
+    "diff": "Poziom trudności",
+    "vfxer": "VFXer/VFXerzy (opcj.)",
+    "team": "Nazwa drużyny (opcj.)",
+    "dlLink": "Link do pobrania",
+    "workshop": "Link do Warsztatu Steam",
+    "dlLinksOr": "lub"
+  },
+  "videoInfo": {
+    "title": "Tytuł wideo",
+    "channel": "Nazwa kanału",
+    "timestamp": "Czas przesłania",
+    "nolink": "Nie podano linku"
+  },
+  "tooltip": "Nieznany poziom trudności, upewnij się, że będzie on czytelny dla manager'ów. Przykłady poprawnego zapisu: G13; P7~P13; 21.1+; 19~20.0+",
+  "submit": "Prześlij",
+  "submitWait": "...",
+  "alert": {
+    "success": "Pomyślnie przesłano poziom!",
+    "error": "Błąd: ",
+    "loading": "Przesyłanie...",
+    "login": "Zaloguj się, aby przesłać poziom",
+    "form": "Wypełnij poprawnie wszystkie wymagane pola"
+  }
+} 

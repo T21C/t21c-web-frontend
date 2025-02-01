@@ -1,0 +1,32 @@
+{
+  "countrySelect": {
+    "placeholder": "Wybierz kraj",
+    "search": {
+      "placeholder": "Szukaj kraju..."
+    }
+  },
+  "playerInput": {
+    "placeholder": "Szukaj gracza...",
+    "loading": "Ładowanie...",
+    "minChars": "Wpisz co najmniej 2 znaki aby wyszukać",
+    "noResults": "Nie znaleziono graczy",
+    "creation": {
+      "button": "Stwórz nowego gracza \"{{name}}\"",
+      "loading": "Tworzenie gracza \"{{name}}\"...",
+      "error": "Nie udało się stworzyć gracza"
+    }
+  },
+  "errors": {
+    "loading": "Nie udało się załadować informacji o graczu",
+    "saving": "Nie udało się zapisać informacji o graczu",
+    "notFound": "Nie znaleziono gracza",
+    "duplicate": "Ten gracz już istnieje",
+    "invalid": "Dane gracza są niepoprawne"
+  },
+  "buttons": {
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "create": "Stwórz nowego gracza \"{{name}}\"",
+    "loading": "Tworzenie gracza \"{{name}}\"..."
+  }
+} 

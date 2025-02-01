@@ -1,0 +1,12 @@
+{
+  "card": {
+    "labels": {
+      "score": "Wynik",
+      "accuracy": "Dokładność",
+      "speed": "Prędkość"
+    },
+    "tooltips": {
+      "watchVideo": "Obejrz wideo"
+    }
+  }
+} 

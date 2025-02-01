@@ -1,0 +1,72 @@
+{
+  "noSubmissions": "Brak przejść oczekujących sprawdzenia",
+  "details": {
+    "levelId": "ID poziomu:",
+    "player": "Gracz:",
+    "feelingDiff": "Szacowany poziom trudności:",
+    "judgements": {
+      "label": "Judgment'y:",
+      "types": {
+      }
+    },
+    "flags": {
+      "label": "Oznaczenia:",
+      "types": {
+        "12k": "12K",
+        "nht": "NHT",
+        "16k": "16K"
+      }
+    },
+    "submitter": "Przesyłający:",
+    "uploadTime": "Czas przesłania:"
+  },
+  "playerAssignment": {
+    "title": "Przypisz gracza",
+    "current": "Obecnie przypisany gracz",
+    "discord": {
+      "assignButton": "Przypisz Discord"
+    }
+  },
+  "buttons": {
+    "allow": "Akceptuj",
+    "decline": "Odrzuć",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "reset": "Resetuj",
+    "clear": "Wyczyść",
+    "selectAll": "Zaznacz wszystko",
+    "autoAllow": "Automatycznie akceptuj",
+    "autoReject": "Automatycznie odrzucaj"
+  },
+  "errors": {
+    "noPlayer": "Przypisz gracza przed zatwierdzeniem",
+    "playerAssignment": "Nie udało się przypisać gracza",
+    "processing": "Błąd podczas przetwarzania zgłoszenia",
+    "autoAllow": "Nie udało się automatycznie zaakceptować zgłoszeń"
+  },
+  "success": {
+    "playerAssigned": "Pomyślnie przypisano do {{playerName}}",
+    "autoAllow": "Zaakceptowano automatycznie {{count}} zgłoszenia/eń"
+  },
+  "loading": "Ładowanie zgłoszeń...",
+  "noItems": "Nie znaleziono zgłoszeń",
+  "search": {
+    "placeholder": "Szukaj zgłoszeń..."
+  },
+  "stats": {
+    "selected": "Zaznaczono",
+    "total": "Razem"
+  },
+  "modal": {
+    "title": "Potwierdź czynność",
+    "confirmMessage": "@{{username}} zostanie przypisane do {{playerName}}. Kontynuować?",
+    "buttons": {
+      "confirm": "Potwierdź",
+      "cancel": "Anuluj"
+    },
+    "tooltip": "{{discordUsername}} → {{playerName}}"
+  },
+  "notifications": {
+    "autoAllow": "Zaakceptowano automatycznie {{count}} zgłoszenia/eń"
+  }
+} 

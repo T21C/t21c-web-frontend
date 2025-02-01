@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "title": "Zarządzanie zgłoszeniami | TUF",
+    "description": "Zarządzaj zgłoszeniami poziomów i przejść do The Universal Forums (TUF)"
+  },
+  "header": {
+    "title": "Zarządzanie zgłoszeniami",
+    "refresh": "Odśwież zgłoszenia"
+  },
+  "tabs": {
+    "levels": "Zgłoszenia poziomów",
+    "passes": "Zgłoszenia przejść",
+    "autoAllow": "Automatycznie akceptuj poprawne przejścia"
+  }
+} 

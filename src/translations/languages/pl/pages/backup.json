@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "title": "Kopie zapasowe | TUF",
+    "description": "Zarządzaj bazą danych i kopiami zapasowymi w The Universal Forums (TUF)"
+  },
+  "header": {
+    "title": "Kopie zapasowe",
+    "refresh": "Odśwież kopie zapasowe"
+  },
+  "tabs": {
+    "mysql": "Kopie zapasowe MySQL",
+    "files": "Kopie zapasowe plików"
+  },
+  "stats": {
+    "totalSize": "Całkowity rozmiar: {{size}}"
+  },
+  "sort": {
+    "newest": "Najnowsze",
+    "oldest": "Najstarsze"
+  },
+  "buttons": {
+    "create": "Utwórz kopię zapasową {{type}}",
+    "creating": "Tworzenie...",
+    "restore": "Przywróć",
+    "delete": "Usuń",
+    "save": "Zapisz",
+    "saving": "Zapisywanie...",
+    "cancel": "Anuluj",
+    "confirm": "Potwierdź",
+    "upload": "Prześlij",
+    "uploading": "Przesyłanie..."
+  },
+  "upload": {
+    "dragDropMessage": "Przeciągnij i upuść tutaj plik kopii zpasowej, lub naciśnij, aby wybrać z plików",
+    "errors": {
+      "fileTooBig": "Rozmiar pliku przekracza maksymalny limit {{size}}"
+    }
+  },
+  "noBackups": {
+    "title": "Brak dostępnych kopii zapasowych {{type}}",
+    "message": "Stwórz swoją pierwszą kopię zapasową używając powyższego przycisku"
+  },
+  "timeAgo": {
+    "second": "{{count}} sekundę temu",
+    "seconds": "{{count}} sekund/y temu",
+    "minute": "{{count}} minutę temu",
+    "minutes": "{{count}} minut/y temu",
+    "hour": "{{count}} godzinę temu",
+    "hours": "{{count}} godzin/y temu",
+    "day": "{{count}} dzień temu",
+    "days": "{{count}} dni temu",
+    "month": "{{count}} miesiąc temu",
+    "months": "{{count}} miesięcy/ące temu",
+    "year": "{{count}} rok temu",
+    "years": "{{count}} lat/a temu"
+  },
+  "passwordModal": {
+    "title": "Wymagane jest hasło superadministratora",
+    "createMessage": "Wpisz swoje hasło superadministratora, aby stworzyć nową kopię zapasową.",
+    "restoreMessage": "Wpisz swoje hasło superadministratora, aby odzyskać kopię zapasową.",
+    "deleteMessage": "Wpisz swoje hasło superadministratora, aby usunąć kopię zapasową.",
+    "renameMessage": "Wpisz swoje hasło superadministratora, aby zmienić nazwę kopii zapasowej.",
+    "uploadMessage": "Wpisz swoje hasło superadministratora, aby przesłać kopię zapasową.",
+    "placeholder": "Wpisz hasło",
+    "errors": {
+      "invalid": "Nieprawidłowe hasło",
+      "generic": "Wystąpił błąd podczas wykonywania tej czynności"
+    }
+  },
+  "notifications": {
+    "backupCreated": "Pomyślnie utworzono kopię zapasową {{type}}",
+    "backupRestored": "Pomyślnie przywrócono kopię zapasową",
+    "backupDeleted": "Pomyślnie usunięto kopię zapasową",
+    "downloadFailed": "Nie udało się pobrać kopii zapasowej",
+    "loadFailed": "Nie udało się załadować kopii zapasowej",
+    "createFailed": "Nie udało się utworzyć kopii zapasowej",
+    "restoreFailed": "Nie udało się odzyskać kopii zapasowej",
+    "deleteFailed": "Nie udało się usunąć kopii zapasowej",
+    "uploadSuccess": "Pomyślnie przesłano kopię zapasową",
+    "uploadFailed": "Nie udało się przesłać kopii zapasowej"
+  },
+  "fileInfo": {
+    "created": "Stworzono: {{date}}",
+    "size": "Rozmiar: {{size}}",
+    "newName": "Wpisz nową nazwę"
+  }
+} 

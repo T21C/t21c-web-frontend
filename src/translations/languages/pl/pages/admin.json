@@ -1,0 +1,10 @@
+{
+  "header": {
+    "headerRating": "Zarządzaj ocenami",
+    "headerSubmissions": "Zarządzaj zgłoszeniami"
+  },
+  "button": {
+    "buttonRating": "Przejdź do ocen",
+    "buttonSubmissions": "Przejdź do zgłoszeń"
+  }
+} 
