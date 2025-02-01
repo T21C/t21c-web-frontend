@@ -34,6 +34,7 @@ export default defineConfig(({ command, mode }) => {
       minify: mode !== 'development',
       outDir: 'dist',
       assetsDir: 'assets',
+      manifest: true,
       rollupOptions: {
         output: {
           entryFileNames: 'assets/[name].[hash].js',
