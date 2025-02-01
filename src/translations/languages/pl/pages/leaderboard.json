@@ -39,10 +39,10 @@
     "score12K": "Wyniku 12K",
     "averageXacc": "Średniej dokładności",
     "totalPasses": "Ilości przejść",
-    "universalPasses": "Ilości przejść Universal",
+    "universalPassCount": "Ilości przejść Universal",
     "worldsFirstCount": "Przejść WF",
     "topDiff": "Najw. poz. trudności",
-    "top12kDiff": "N.p.trud. 12K"
+    "top12kDiff": "Najw. p. t. 12K"
   },
   "infiniteScroll": {
     "end": "Koniec listy rankingowej!"

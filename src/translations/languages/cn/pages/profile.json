@@ -13,7 +13,7 @@
     "score12K": "12键分数",
     "averageXacc": "平均X-精准度",
     "totalPasses": "总通关数",
-    "universalPasses": "U级通关数",
+    "universalPassCount": "U级通关数",
     "worldsFirstCount": "世界首通数",
     "topDiff": "最高通关难度",
     "top12kDiff": "最高12键通关难度"

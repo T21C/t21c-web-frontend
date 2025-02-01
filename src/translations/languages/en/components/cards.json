@@ -41,7 +41,7 @@
       "score12K": "12k Score",
       "averageXacc": "Average X-acc",
       "totalPasses": "Total Passes",
-      "universalPasses": "Universal Passes",
+      "universalPassCount": "Universal Passes",
       "worldsFirstCount": "WF Passes",
       "topDiff": "Top Difficulty",
       "top12kDiff": "Top 12k Difficulty"
@@ -58,7 +58,7 @@
     "stats": {
       "averageXacc": "Average XAcc",
       "totalPasses": "Total Passes",
-      "universalPasses": "Universal Passes",
+      "universalPassCount": "Universal Passes",
       "worldsFirstCount": "WF Passes",
       "topDiff": "Top Difficulty",
       "top12kDiff": "Top 12k Difficulty"

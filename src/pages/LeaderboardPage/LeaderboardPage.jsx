@@ -32,7 +32,7 @@ const LeaderboardPage = () => {
     { value: 'wfScore', label: tLeaderboard('sortOptions.wfScore') },
     { value: 'averageXacc', label: tLeaderboard('sortOptions.averageXacc') },
     { value: 'totalPasses', label: tLeaderboard('sortOptions.totalPasses') },
-    { value: 'universalPasses', label: tLeaderboard('sortOptions.universalPasses') },
+    { value: 'universalPassCount', label: tLeaderboard('sortOptions.universalPassCount') },
     { value: 'worldsFirstCount', label: tLeaderboard('sortOptions.worldsFirstCount') },
     { value: 'topDiff', label: tLeaderboard('sortOptions.topDiff') },
     { value: 'top12kDiff', label: tLeaderboard('sortOptions.top12kDiff') }

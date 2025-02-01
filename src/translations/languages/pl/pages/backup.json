@@ -32,7 +32,7 @@
     "download": "Pobierz"
   },
   "upload": {
-    "dragDropMessage": "Przeciągnij i upuść tutaj plik kopii zpasowej lub naciśnij, aby wybrać z plików",
+    "dragDropMessage": "Przeciągnij i upuść tutaj  lub naciśnij i wybierz plik kopii zpasowej",
     "errors": {
       "fileTooBig": "Rozmiar pliku przekracza maksymalny limit {{size}}",
       "validationFailed": "Nie udało się zatwierdzić kwalifikacji do przesłania kopii zapasowej"

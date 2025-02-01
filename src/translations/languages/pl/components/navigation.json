@@ -10,11 +10,11 @@
       "admin": {
         "rating": "Ocena",
         "submissions": "Zgłoszenia",
-        "announcements": "Ogłoszenia",
+        "announcements": "Ogłaszanie",
         "difficulties": "Poziomy trudności",
         "backups": "Kopie zapasowe",
         "back": "Wstecz",
-        "admin": "Admin"
+        "admin": "Zarządzaj"
       }
     }
   },

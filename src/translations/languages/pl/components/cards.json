@@ -41,7 +41,7 @@
       "score12K": "Wynik 12k",
       "averageXacc": "Średnia dokładność",
       "totalPasses": "Łącznie przejść",
-      "universalPasses": "Przejścia Universal",
+      "universalPassCount": "Przejścia Universal",
       "worldsFirstCount": "Przejścia WF",
       "topDiff": "Najwyższy poziom trudności",
       "top12kDiff": "Najwyższy poziom trudności 12K"
@@ -58,7 +58,7 @@
     "stats": {
       "averageXacc": "Średnia dokładność",
       "totalPasses": "Łącznie przejść",
-      "universalPasses": "Przejścia Universal",
+      "universalPassCount": "Przejścia Universal",
       "worldsFirstCount": "Przejścia WF",
       "topDiff": "Najwyższy poziom trudności",
       "top12kDiff": "Najwyższy poziom trudności 12K"

@@ -1,10 +1,10 @@
 {
   "meta": {
-    "title": "Ogłoszenia | TUF",
+    "title": "Ogłaszanie | TUF",
     "description": "Zarządzaj i ogłaszaj nowe poziomy, rerate'y i przejścia w The Universal Forums (TUF)"
   },
   "header": {
-    "title": "Ogłoszenia"
+    "title": "Ogłaszanie"
   },
   "tabs": {
     "newLevels": "Nowe poziomy",

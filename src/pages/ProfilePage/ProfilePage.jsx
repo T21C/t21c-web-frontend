@@ -51,7 +51,7 @@ const ProfilePage = () => {
       score12K: tProfile('valueLabels.score12K'),
       averageXacc: tProfile('valueLabels.averageXacc'),
       totalPasses: tProfile('valueLabels.totalPasses'),
-      universalPasses: tProfile('valueLabels.universalPasses'),
+      universalPassCount: tProfile('valueLabels.universalPassCount'),
       worldsFirstCount: tProfile('valueLabels.worldsFirstCount'),
       topDiff: tProfile('valueLabels.topDiff'),
       top12kDiff: tProfile('valueLabels.top12kDiff')
@@ -256,8 +256,8 @@ const ProfilePage = () => {
                     <p className="score-value">{playerData.totalPasses}</p>
                   </div>
                   <div className="score-item">
-                    <p className="score-name">{valueLabels.universalPasses}</p>
-                    <p className="score-value">{playerData.universalPasses}</p>
+                    <p className="score-name">{valueLabels.universalPassCount}</p>
+                    <p className="score-value">{playerData.universalPassCount}</p>
                   </div>
                 </div>
               </div>

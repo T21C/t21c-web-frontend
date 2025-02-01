@@ -8,7 +8,7 @@ import { formatScore } from "../Misc/Utility";
 import DefaultAvatar from "../Icons/DefaultAvatar";
 
 const nonRoundable = ["topDiff", "top12kDiff"];
-const passes = ["totalPasses", "universalPasses", "worldsFirstCount"];
+const passes = ["totalPasses", "universalPassCount", "worldsFirstCount"];
 
 const PlayerCard = ({player}) => {
   const { sortBy } = useContext(PlayerContext);
@@ -25,7 +25,7 @@ const PlayerCard = ({player}) => {
     score12K: tCard('stats.score12K'),
     averageXacc: tCard('stats.averageXacc'),
     totalPasses: tCard('stats.totalPasses'),
-    universalPasses: tCard('stats.universalPasses'),
+    universalPassCount: tCard('stats.universalPassCount'),
     worldsFirstCount: tCard('stats.worldsFirstCount'),
     topDiff: tCard('stats.topDiff'),
     top12kDiff: tCard('stats.top12kDiff')

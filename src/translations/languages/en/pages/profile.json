@@ -15,7 +15,7 @@
     "score12K": "12K Score",
     "averageXacc": "Average X-Accuracy",
     "totalPasses": "Total Passes",
-    "universalPasses": "Universal Passes",
+    "universalPassCount": "Universal Passes",
     "worldsFirstCount": "World's First Passes",
     "topDiff": "Top Difficulty",
     "top12kDiff": "Top 12K Difficulty"

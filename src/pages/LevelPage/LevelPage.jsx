@@ -500,6 +500,13 @@ const LevelPage = () => {
               <div className="diff">
                 <p>{tLevel('settingExp.filterDiffs')}</p>
 
+                <Tooltip id="da" place="top" noArrow>
+                  {tLevel('toolTip.diffAsc')}
+                </Tooltip>
+                <Tooltip id="dd" place="top" noArrow>
+                  {tLevel('toolTip.diffDesc')}
+                </Tooltip>
+
                 <div className="wrapper">
                   <SortAscIcon
                     className="svg-fill"
@@ -518,8 +525,8 @@ const LevelPage = () => {
                       backgroundColor:
                         sort == "DIFF_DESC" ? "rgba(255, 255, 255, 0.7)" : "",
                     }}
-                    onClick={() => handleSort("DIFF_DESC")}
                     value="DIFF_DESC"
+                    onClick={() => handleSort("DIFF_DESC")}
                     data-tooltip-id="dd"
                   />
                 </div>
