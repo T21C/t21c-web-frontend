@@ -70,5 +70,10 @@
   },
   "dialog": {
     "fullInfo": "Wszystkie informacje"
+  },
+  "components": {
+    "clearCard": {
+      "feeling": "Szacowany poz. trudności:"
+    }
   }
 } 

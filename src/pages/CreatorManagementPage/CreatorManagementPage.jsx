@@ -10,6 +10,8 @@ import SortDescIcon from '../../components/Icons/SortDescIcon';
 import SortAscIcon from '../../components/Icons/SortAscIcon';
 import AccessDenied from "../../components/StateDisplay/AccessDenied";
 import MetaTags from "../../components/MetaTags/MetaTags";
+const currentUrl = window.location.origin + location.pathname;
+
 
 const CreditRole = {
   CHARTER: 'charter',
@@ -53,7 +55,8 @@ const CreatorManagementPage = () => {
   const [splitCreatorName, setSplitCreatorName] = useState('');
   const [selectedCreator, setSelectedCreator] = useState(null);
   const [selectedCreatorForAction, setSelectedCreatorForAction] = useState(null);
-  const { t } = useTranslation();
+  const { t } = useTranslation('pages');
+  const tCreator = (key, params = {}) => t(`creatorManagement.${key}`, params);
   const [sort, setSort] = useState('NAME_ASC');
   const [teamName, setTeamName] = useState('');
   const [teamDescription, setTeamDescription] = useState('');
@@ -75,6 +78,13 @@ const CreatorManagementPage = () => {
   const scrollPositionRef = useRef(0);
   const [excludeAliases, setExcludeAliases] = useState(false);
   const [availableCreators, setAvailableCreators] = useState(null);
+  const [showAddCreatorForm, setShowAddCreatorForm] = useState(false);
+  const [newCreatorData, setNewCreatorData] = useState({
+    name: '',
+    aliases: []
+  });
+  const [newCreatorAlias, setNewCreatorAlias] = useState('');
+  const [isCreatingCreator, setIsCreatingCreator] = useState(false);
 
   const fetchCreators = async (preserveScroll = false) => {
     try {
@@ -406,8 +416,6 @@ const CreatorManagementPage = () => {
   };
 
   const handleTeamInputChange = (input, isUserInput = true) => {
-
-
     // If input is empty, it means we want to remove the team
     if (!input) {
       setPendingTeam(null);
@@ -666,11 +674,9 @@ const CreatorManagementPage = () => {
                 label: pendingTeam.name 
               } : null}
               onChange={(selected) => {
-
                 handleTeamInputChange(selected?.value || '');
               }}
               onInputChange={(input, { action }) => {
-
                 if (action === 'input-change') {
                   handleTeamInputChange(input);
                 }
@@ -818,6 +824,13 @@ const CreatorManagementPage = () => {
   return (
     <>
       <div className="background-level"/>
+      <MetaTags
+          title={tCreator('meta.title')}
+          description={tCreator('meta.description')}
+          url={currentUrl}
+          image={''}
+          type="article"
+      />
       <CompleteNav/>
       <div className="creator-management-page">
         <div className="creator-management-container">
@@ -937,75 +950,81 @@ const CreatorManagementPage = () => {
             </>
           ) : (
             <>
-            
             <div className="sort-controls">
-                  <div className="sort-group">
-                    <p>Sort by Name</p>
-                    <div className="sort-buttons">
-                      <button 
-                        className={`sort-button ${sort === 'NAME_ASC' ? 'active' : ''}`}
-                        onClick={() => handleSort('NAME_ASC')}
-                        title="Sort by name ascending"
-                      >
-                        <SortAscIcon color="#aaa" />
-                      </button>
-                      <button 
-                        className={`sort-button ${sort === 'NAME_DESC' ? 'active' : ''}`}
-                        onClick={() => handleSort('NAME_DESC')}
-                        title="Sort by name descending"
-                      >
-                        <SortDescIcon color="#aaa" />
-                      </button>
-                    </div>
-                  </div>
+              <button 
+                className="add-creator-button"
+                onClick={() => setShowAddCreatorForm(true)}
+              >
+                {tCreator('buttons.addCreator')}
+              </button>
 
-                  <div className="sort-group">
-                    <p>Sort by ID</p>
-                    <div className="sort-buttons">
-                      <button 
-                        className={`sort-button ${sort === 'ID_ASC' ? 'active' : ''}`}
-                        onClick={() => handleSort('ID_ASC')}
-                        title="Sort by ID ascending"
-                      >
-                        <SortAscIcon color="#aaa" />
-                      </button>
-                      <button 
-                        className={`sort-button ${sort === 'ID_DESC' ? 'active' : ''}`}
-                        onClick={() => handleSort('ID_DESC')}
-                        title="Sort by ID descending"
-                      >
-                        <SortDescIcon color="#aaa" />
-                      </button>
-                    </div>
-                  </div>
-
-                  <div className="sort-group">
-                    <p>Sort by Charts</p>
-                    <div className="sort-buttons">
-                      <button 
-                        className={`sort-button ${sort === 'CHARTS_ASC' ? 'active' : ''}`}
-                        onClick={() => handleSort('CHARTS_ASC')}
-                        title="Sort by number of charts ascending"
-                      >
-                        <SortAscIcon color="#aaa" />
-                      </button>
-                      <button 
-                        className={`sort-button ${sort === 'CHARTS_DESC' ? 'active' : ''}`}
-                        onClick={() => handleSort('CHARTS_DESC')}
-                        title="Sort by number of charts descending"
-                      >
-                        <SortDescIcon color="#aaa" />
-                      </button>
-                    </div>
-                  </div>
+              <div className="sort-group">
+                <p>{tCreator('sort.byName')}</p>
+                <div className="sort-buttons">
+                  <button 
+                    className={`sort-button ${sort === 'NAME_ASC' ? 'active' : ''}`}
+                    onClick={() => handleSort('NAME_ASC')}
+                    title={tCreator('sort.byName')}
+                  >
+                    <SortAscIcon color="#aaa" />
+                  </button>
+                  <button 
+                    className={`sort-button ${sort === 'NAME_DESC' ? 'active' : ''}`}
+                    onClick={() => handleSort('NAME_DESC')}
+                    title={tCreator('sort.byName')}
+                  >
+                    <SortDescIcon color="#aaa" />
+                  </button>
                 </div>
+              </div>
+
+              <div className="sort-group">
+                <p>{tCreator('sort.byId')}</p>
+                <div className="sort-buttons">
+                  <button 
+                    className={`sort-button ${sort === 'ID_ASC' ? 'active' : ''}`}
+                    onClick={() => handleSort('ID_ASC')}
+                    title="Sort by ID ascending"
+                  >
+                    <SortAscIcon color="#aaa" />
+                  </button>
+                  <button 
+                    className={`sort-button ${sort === 'ID_DESC' ? 'active' : ''}`}
+                    onClick={() => handleSort('ID_DESC')}
+                    title="Sort by ID descending"
+                  >
+                    <SortDescIcon color="#aaa" />
+                  </button>
+                </div>
+              </div>
+
+              <div className="sort-group">
+                <p>{tCreator('sort.byCharts')}</p>
+                <div className="sort-buttons">
+                  <button 
+                    className={`sort-button ${sort === 'CHARTS_ASC' ? 'active' : ''}`}
+                    onClick={() => handleSort('CHARTS_ASC')}
+                    title="Sort by number of charts ascending"
+                  >
+                    <SortAscIcon color="#aaa" />
+                  </button>
+                  <button 
+                    className={`sort-button ${sort === 'CHARTS_DESC' ? 'active' : ''}`}
+                    onClick={() => handleSort('CHARTS_DESC')}
+                    title="Sort by number of charts descending"
+                  >
+                    <SortDescIcon color="#aaa" />
+                  </button>
+                </div>
+              </div>
+            </div>
             <section className="manage-creators-section">
 
               <div className="creators-controls">
                 <div className="search-box">
                   <input
                     type="text"
-                    placeholder="Search creators by name or alias..."
+                    placeholder={tCreator('filters.searchPlaceholder')}
                     value={creatorListSearchQuery}
                     onChange={(e) => {
                       setCreatorListSearchQuery(e.target.value);
@@ -1021,7 +1040,7 @@ const CreatorManagementPage = () => {
                       checked={hideVerifiedCreators}
                       onChange={(e) => setHideVerifiedCreators(e.target.checked)}
                     />
-                    Hide Verified Creators
+                    {tCreator('filters.hideVerified')}
                   </label>
                   <label className={excludeAliases ? 'active' : ''}>
                     <input
@@ -1029,7 +1048,7 @@ const CreatorManagementPage = () => {
                       checked={excludeAliases}
                       onChange={(e) => setExcludeAliases(e.target.checked)}
                     />
-                    Exclude Aliases from Search
+                    {tCreator('filters.excludeAliases')}
                   </label>
                 </div>
 
@@ -1069,20 +1088,20 @@ const CreatorManagementPage = () => {
                 {!loadingCreators && currentCreators.length === 0 ? (
                   <div className="no-results-message">
                     {creatorListSearchQuery 
-                      ? `No creators found matching "${creatorListSearchQuery}"`
-                      : 'No creators found'}
+                      ? tCreator('messages.noResultsSearch', { query: creatorListSearchQuery })
+                      : tCreator('messages.noResults')}
                   </div>
                 ) : (
                   currentCreators.map(creator => (
                     <div key={creator.id} className={`creator-item ${creator.isVerified ? 'verified' : ''}`}>
                       <div className="creator-info">
                         <h3>
-                          {creator.name} (ID: {creator.id})
-                          {creator.isVerified && <span className="verified-badge" title="Verified Creator">✓</span>}
+                          {creator.name} ({tCreator('creatorInfo.id')}: {creator.id})
+                          {creator.isVerified && <span className="verified-badge" title={tCreator('creatorInfo.verifiedBadge')}>✓</span>}
                         </h3>
-                        <p>Charts: {creator.createdLevels?.length || 0}</p>
+                        <p>{tCreator('creatorInfo.charts')}: {creator.createdLevels?.length || 0}</p>
                         {creator.aliases?.length > 0 && (
-                          <p>Aliases: {creator.aliases.join(', ')}</p>
+                          <p>{tCreator('creatorInfo.aliases')}: {creator.aliases.join(', ')}</p>
                         )}
                       </div>
                       <div className="creator-actions">
@@ -1090,7 +1109,7 @@ const CreatorManagementPage = () => {
                           onClick={() => handleCreatorAction(creator)}
                           className="action-button"
                         >
-                          Manage Creator
+                          {tCreator('buttons.manageCreator')}
                         </button>
                       </div>
                     </div>
@@ -1112,6 +1131,98 @@ const CreatorManagementPage = () => {
           onClose={handleCloseCreatorAction}
           onUpdate={handleCreatorUpdate}
         />
+      )}
+
+      {showAddCreatorForm && (
+        <div className="add-creator-form-overlay">
+          <div className="add-creator-form">
+            <h3>{tCreator('form.title')}</h3>
+            <div className="form-group">
+              <label>{tCreator('form.labels.creatorName')}</label>
+              <input
+                type="text"
+                value={newCreatorData.name}
+                onChange={(e) => setNewCreatorData(prev => ({...prev, name: e.target.value}))}
+                placeholder={tCreator('form.placeholders.enterName')}
+              />
+            </div>
+            <div className="form-group">
+              <label>{tCreator('form.labels.aliases')}</label>
+              <div className="alias-input-group">
+                <input
+                  type="text"
+                  value={newCreatorAlias}
+                  onChange={(e) => setNewCreatorAlias(e.target.value)}
+                  placeholder={tCreator('form.placeholders.enterAlias')}
+                />
+                <button 
+                  onClick={() => {
+                    if (newCreatorAlias.trim()) {
+                      setNewCreatorData(prev => ({
+                        ...prev,
+                        aliases: [...prev.aliases, newCreatorAlias.trim()]
+                      }));
+                      setNewCreatorAlias('');
+                    }
+                  }}
+                >
+                  {tCreator('form.buttons.addAlias')}
+                </button>
+              </div>
+              <div className="aliases-list">
+                {newCreatorData.aliases.map((alias, index) => (
+                  <div key={index} className="alias-tag">
+                    {alias}
+                    <button
+                      onClick={() => setNewCreatorData(prev => ({
+                        ...prev,
+                        aliases: prev.aliases.filter((_, i) => i !== index)
+                      }))}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="form-actions">
+              <button
+                className={`submit-button ${isCreatingCreator ? 'loading' : ''}`}
+                onClick={async () => {
+                  if (!newCreatorData.name.trim()) {
+                    setError(tCreator('messages.nameRequired'));
+                    return;
+                  }
+                  setIsCreatingCreator(true);
+                  try {
+                    await api.post('/v2/database/creators', newCreatorData);
+                    await fetchCreators();
+                    setShowAddCreatorForm(false);
+                    setNewCreatorData({ name: '', aliases: [] });
+                    setSuccess(tCreator('messages.creatorCreated'));
+                  } catch (error) {
+                    setError(error.response?.data?.error || tCreator('errors.createFailed'));
+                  } finally {
+                    setIsCreatingCreator(false);
+                  }
+                }}
+                disabled={isCreatingCreator || !newCreatorData.name.trim()}
+              >
+                {isCreatingCreator ? tCreator('buttons.creating') : tCreator('buttons.create')}
+              </button>
+              <button
+                className="cancel-button"
+                onClick={() => {
+                  setShowAddCreatorForm(false);
+                  setNewCreatorData({ name: '', aliases: [] });
+                  setNewCreatorAlias('');
+                }}
+              >
+                {tCreator('buttons.cancel')}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

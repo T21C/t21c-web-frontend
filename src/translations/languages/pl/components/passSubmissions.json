@@ -4,6 +4,7 @@
     "levelId": "ID poziomu:",
     "player": "Gracz:",
     "feelingDiff": "Szacowany poziom trudności:",
+    "speed": "Prędkość",
     "judgements": {
       "label": "Judgment'y:",
       "types": {
