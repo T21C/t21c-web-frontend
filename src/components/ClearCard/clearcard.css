@@ -184,7 +184,7 @@
 /* Feeling Rating */
 .clear-card .feeling-rating {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.5rem;
   transition: all 0.3s ease;
   width: 100%;

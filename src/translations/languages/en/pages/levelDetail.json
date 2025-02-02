@@ -70,5 +70,10 @@
   },
   "dialog": {
     "fullInfo": "Full Info"
+  },
+  "components": {
+    "clearCard": {
+      "feeling": "Feeling:"
+    }
   }
 } 

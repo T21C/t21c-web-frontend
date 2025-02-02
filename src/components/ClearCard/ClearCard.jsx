@@ -7,7 +7,8 @@ import DefaultAvatar from "../Icons/DefaultAvatar";
 import { PassIcon } from "../Icons/PassIcon";
 
 const ClearCard = ({scoreData, index}) => {
-  const {t} = useTranslation()  
+  const { t } = useTranslation('pages');
+  const tClearCard = (key) => t(`levelDetail.components.clearCard.${key}`);
   const navigate = useNavigate()
   const [isExpanded, setIsExpanded] = useState(false);
   
@@ -114,7 +115,7 @@ const ClearCard = ({scoreData, index}) => {
 
         <div className="bottom-row">
           <div className="feeling-rating">
-            <span className="feeling-label">Feeling:</span>
+            <span className="feeling-label">{tClearCard('feeling')}</span>
             {renderFeeling()}
           </div>
           <div className="time-info">{scoreData.vidUploadTime.slice(0, 10)}</div>

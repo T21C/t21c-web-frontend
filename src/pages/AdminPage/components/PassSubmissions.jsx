@@ -262,6 +262,11 @@ const PassSubmissions = () => {
                   <span className="detail-label">{tPass('details.feelingDiff')}</span>
                   <span className="detail-value">{submission.feelingDifficulty}</span>
                 </div>
+              
+                <div className="detail-row">
+                  <span className="detail-label">{tPass('details.speed')}</span>
+                  <span className="detail-value">{submission.speed}</span>
+                </div>
 
                 <div className="detail-row">
                   <span className="detail-label">{tPass('details.submitter')}</span>

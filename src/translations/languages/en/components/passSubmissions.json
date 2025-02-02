@@ -4,6 +4,7 @@
     "levelId": "Level ID",
     "player": "Player",
     "feelingDiff": "Feeling Difficulty",
+    "speed": "Speed",
     "judgements": {
       "label": "Judgements"
     },
