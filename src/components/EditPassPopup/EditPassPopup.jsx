@@ -33,7 +33,8 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
     isNoHold: pass.isNoHoldTap || false,
     is12K: pass.is12K || false,
     is16K: pass.is16K || false,
-    isAnnounced: pass.isAnnounced || false
+    isAnnounced: pass.isAnnounced || false,
+    isDuplicate: pass.isDuplicate || false
   };
   const { user } = useAuth();
   const [form, setForm] = useState(initialFormState);
@@ -271,6 +272,7 @@ const handleSubmit = async (e) => {
       is16K: IsUDiff && form.is16K,
       isNoHoldTap: form.isNoHold,
       isAnnounced: form.isAnnounced,
+      isDuplicate: form.isDuplicate,
 
       // Judgements in the exact format expected by the API
       judgements: {
@@ -653,6 +655,16 @@ const handleSubmit = async (e) => {
                   />
                   <span className="checkmark"></span>
                   <span>Is Announced</span>
+                </label>
+                <label className="checkbox-container">
+                  <input
+                    type="checkbox"
+                    name="isDuplicate"
+                    checked={form.isDuplicate}
+                    onChange={handleInputChange}
+                  />
+                  <span className="checkmark"></span>
+                  <span>Is Duplicate</span>
                 </label>
               </div>
               <div className="accuracy" style={{backgroundColor: "#222", color: "#fff"}}>
