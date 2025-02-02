@@ -312,8 +312,8 @@ const RatingPage = () => {
               <div className="ratings-count">
                 {tRating('labels.totalRatings', { count: sortedRatings?.filter(rating => {
                   if (hideRated) {
-                    const userDetail = rating.details?.find(detail => detail.username === user?.username);
-                    if (userDetail) return false;
+                    const userDetail = rating.details?.find(detail => detail.userId === user?.id);
+                    if (userDetail || /^vote/i.test(rating.level.rerateNum)) return false;
                   }
                   if (lowDiffFilter === 'hide' && rating.lowDiff) return false;
                   if (lowDiffFilter === 'only' && !rating.lowDiff) return false;
@@ -329,7 +329,7 @@ const RatingPage = () => {
                 ?.filter(rating => {
                   if (hideRated) {
                     const userDetail = rating.details?.find(detail => detail.userId === user?.id);
-                    if (userDetail) return false;
+                    if (userDetail || /^vote/i.test(rating.level.rerateNum)) return false;
                   }
                   if (lowDiffFilter === 'hide' && rating.lowDiff) return false;
                   if (lowDiffFilter === 'only' && !rating.lowDiff) return false;
