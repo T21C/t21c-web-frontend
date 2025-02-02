@@ -9,6 +9,9 @@
   "input": {
     "placeholder": "Szukaj poziomów..."
   },
+  "banners": {
+    "noLevelsFound": "Nie znaleziono poziomów"
+  },
   "toolTip": {
     "search": "Naucz się, jak korzystać z wyszukiwania zaawansowanego",
     "filter": "Filtruj poziomy",
@@ -34,7 +37,7 @@
     "sortClears": "Sortuj według ilości przejść",
     "viewMode": "Tryb przeglądania",
     "cardSize": "Rozmiar kart",
-    "clearedLevels": "Poziomy z przejściami",
+    "clearedLevels": "Z przejściami",
     "deletedLevels": "Usunięte poziomy"
   },
   "infScroll": {

@@ -5,7 +5,8 @@
   },
   "banners": {
     "deleted": "Ten poziom został usunięty",
-    "hidden": "Ten poziom jest aktualnie ukryty"
+    "hidden": "Ten poziom jest aktualnie ukryty",
+    "notFound": "Nie znaleziono poziomu"
   },
   "buttons": {
     "edit": "Edytuj poziom",
