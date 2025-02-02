@@ -109,7 +109,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
     setError(null);
 
     try {
-      await api.put(`${import.meta.env.VITE_PLAYERS}/${player.id}/ban`, {
+      await api.patch(`${import.meta.env.VITE_PLAYERS}/${player.id}/ban`, {
         isBanned: pendingBanState
       });
 
