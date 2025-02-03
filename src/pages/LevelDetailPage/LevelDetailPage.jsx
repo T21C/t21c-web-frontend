@@ -26,7 +26,7 @@ const getHighScores = (players) => {
   
   return {
     firstClear: players.reduce((a, b) => 
-      new Date(a.vidUploadTime) > new Date(b.vidUploadTime) ? a : b),
+      new Date(a.vidUploadTime) < new Date(b.vidUploadTime) ? a : b),
     highestScore: players.reduce((a, b) => 
       b.scoreV2 > a.scoreV2 ? b : a),
     highestAcc: players.reduce((a, b) => 
