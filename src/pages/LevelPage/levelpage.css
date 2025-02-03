@@ -31,17 +31,18 @@
   outline: none;
 }
 .level-page .level-body .input-option svg {
-  height: 2rem;
-  width: 2.2rem;
   background-color: var(--color-white-t20);
   padding: 0.1rem;
   border-radius: 3px;
   cursor: pointer;
   transition: all 0.2s linear;
+  width: 2.5rem;
+  height: 2rem;
 }
 .level-page .level-body .input-option svg:focus {
   outline: none;
 }
+
 .level-page .level-body .input-option .help-button {
   background: rgba(255, 255, 255, 0.1);
   border: none;

@@ -15,6 +15,9 @@ import { RatingInput } from '@/components/RatingComponents/RatingInput';
 import { DifficultyContext } from "../../contexts/DifficultyContext";
 import DifficultySlider from '@/components/DifficultySlider/DifficultySlider';
 import { PassHelpPopup } from "../../components/PassComponents/PassHelpPopup";
+import { ResetIcon } from "../../components/Icons/ResetIcon";
+import { SortIcon } from "../../components/Icons/SortIcon";
+import { FilterIcon } from "../../components/Icons/FilterIcon";
 const currentUrl = window.location.origin + location.pathname;
 
 const limit = 30;
@@ -352,58 +355,31 @@ const PassPage = () => {
             {tPass('toolTip.reset')}
           </Tooltip>
 
-          <svg
-            className="svg-fill-stroke"
+          <FilterIcon
+            color="#ffffff"
+            onClick={() => handleFilterOpen()}
             data-tooltip-id="filter"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
             style={{
               backgroundColor: filterOpen ? "rgba(255, 255, 255, 0.7)" : "",
               padding: ".2rem",
             }}
-            onClick={() => handleFilterOpen()}
-          >
-            <path d="M5.05 3C3.291 3 2.352 5.024 3.51 6.317l5.422 6.059v4.874c0 .472.227.917.613 1.2l3.069 2.25c1.01.742 2.454.036 2.454-1.2v-7.124l5.422-6.059C21.647 5.024 20.708 3 18.95 3H5.05Z" />
-          </svg>
+          />
 
-          <svg
-            className="svg-fill-stroke"
+          <SortIcon
+            color="#ffffff"
+            onClick={() => handleSortOpen()}
             data-tooltip-id="sort"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
             style={{
               backgroundColor: sortOpen ? "rgba(255, 255, 255, 0.7)" : "",
-              padding: ".2rem",
             }}
-            onClick={() => handleSortOpen()}
-          >
-            <path d="M3 7c0-.28.22-.5.5-.5h17a.5.5 0 0 1 0 1h-17A.5.5 0 0 1 3 7Zm0 5c0-.28.22-.5.5-.5h17a.5.5 0 0 1 0 1h-17A.5.5 0 0 1 3 12Zm.5 4.5a.5.5 0 0 0 0 1h17a.5.5 0 0 0 0-1h-17Z" />
-          </svg>
+          />
 
-          <svg
-            className="svg-stroke"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
+          <ResetIcon
             strokeWidth="1.5"
             stroke="currentColor"
             onClick={() => resetAll()}
             data-tooltip-id="reset"
-          >
-            <path
-              stroke="currentCcolor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"
-            />
-          </svg>
+          />
         </div>
 
         <div className="input-setting">

@@ -13,7 +13,11 @@ import bgImgDark from "../../assets/important/dark/theme-background.jpg";
 import ScrollButton from "../../components/ScrollButton/ScrollButton";
 import { MetaTags } from "../../components";
 import { useAuth } from "../../contexts/AuthContext";
-
+import SortDescIcon from "../../components/Icons/SortDescIcon";
+import SortAscIcon from "../../components/Icons/SortAscIcon";
+import { SortIcon } from "../../components/Icons/SortIcon";
+import { FilterIcon } from "../../components/Icons/FilterIcon";
+import { ResetIcon } from "../../components/Icons/ResetIcon";
 const currentUrl = window.location.origin + location.pathname;
 const limit = 30;
 
@@ -180,74 +184,36 @@ const LeaderboardPage = () => {
             {tLeaderboard('tooltips.reset')}
           </Tooltip>
 
-          <svg
-            className="svg-fill-stroke"
+          <FilterIcon
             data-tooltip-id="filter"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
+            color="#ffffff"
+            onClick={() => handleFilterOpen()}
             style={{
               //backgroundColor: filterOpen ? "rgba(255, 255, 255, 0.7)" : "",
               padding: ".2rem",
             }}
-            onClick={() => handleFilterOpen()}
-          >
-            <path d="M5.05 3C3.291 3 2.352 5.024 3.51 6.317l5.422 6.059v4.874c0 .472.227.917.613 1.2l3.069 2.25c1.01.742 2.454.036 2.454-1.2v-7.124l5.422-6.059C21.647 5.024 20.708 3 18.95 3H5.05Z" />
-          </svg>
+          />
 
-          <svg
-            className="svg-fill"
+          <SortIcon
             data-tooltip-id="sort"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
+
+            color="#ffffff"
             style={{
               backgroundColor: sortOpen ? "rgba(255, 255, 255, 0.7)" : "",
             }}
             onClick={() => handleSortOpen()}
-          >
-            <g id="SVGRepo_bgCarrier" strokeWidth="0" />
-            <g
-              id="SVGRepo_tracerCarrier"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            <g id="SVGRepo_iconCarrier">
-              <path
-                d="M20 10.875C20.3013 10.875 20.5733 10.6948 20.6907 10.4173C20.8081 10.1399 20.7482 9.81916 20.5384 9.60289L16.5384 5.47789C16.3972 5.33222 16.2029 5.25 16 5.25C15.7971 5.25 15.6029 5.33222 15.4616 5.47789L11.4616 9.60289C11.2519 9.81916 11.1919 10.1399 11.3093 10.4173C11.4268 10.6948 11.6988 10.875 12 10.875H15.25V18C15.25 18.4142 15.5858 18.75 16 18.75C16.4142 18.75 16.75 18.4142 16.75 18L16.75 10.875H20Z"
-                fill="#ffffff"
-              />
-              <path
-                opacity="0.5"
-                d="M12 13.125C12.3013 13.125 12.5733 13.3052 12.6907 13.5827C12.8081 13.8601 12.7482 14.1808 12.5384 14.3971L8.53844 18.5221C8.39719 18.6678 8.20293 18.75 8.00002 18.75C7.79711 18.75 7.60285 18.6678 7.46159 18.5221L3.46159 14.3971C3.25188 14.1808 3.19192 13.8601 3.30934 13.5827C3.42676 13.3052 3.69877 13.125 4.00002 13.125H7.25002L7.25002 6C7.25002 5.58579 7.5858 5.25 8.00002 5.25C8.41423 5.25 8.75002 5.58579 8.75002 6L8.75002 13.125L12 13.125Z"
-                fill="#ffffff"
-              />
-            </g>
-          </svg>
 
-          <svg
-            className="svg-stroke"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="1.5"
-            stroke="currentColor"
+          />
+          
+          <ResetIcon
+            color="#ffffff"
             onClick={() => resetAll()}
             data-tooltip-id="reset"
-          >
-            <path
-              stroke="currentColor"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M17.651 7.65a7.131 7.131 0 0 0-12.68 3.15M18.001 4v4h-4m-7.652 8.35a7.13 7.13 0 0 0 12.68-3.15M6 20v-4h4"
-            />
-          </svg>
-          
+          />
+
         </div>
         <div className="input-setting">
+
           <div
             className={`filter settings-class ${filterOpen ? 'visible' : 'hidden'}`}
           >
@@ -276,79 +242,24 @@ const LeaderboardPage = () => {
                 </Tooltip>
 
                 <div className="wrapper">
-                  <svg
-                    className="svg-fill"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    style={{
-                      backgroundColor:
-                        sort == "ASC" ? "rgba(255, 255, 255, 0.7)" : "",
-                    }}
-                    value="ASC"
-                    onClick={() => handleSort("ASC")}
-                    data-tooltip-id="ra"
-                  >
-                    <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                    <g
-                      id="SVGRepo_tracerCarrier"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    ></g>
-                    <g id="SVGRepo_iconCarrier">
-                      {/* arrow */}
-                      <path
-                        d="M10.22 15.97L9 17.19V5C9 4.59 8.66 4.25 8.25 4.25C7.84 4.25 7.5 4.59 7.5 5V17.19L6.28 15.97C5.99 15.68 5.51 15.68 5.22 15.97C4.93 16.26 4.93 16.74 5.22 17.03L7.72 19.53C7.79 19.6 7.87 19.65 7.96 19.69C8.05 19.73 8.15 19.75 8.25 19.75C8.35 19.75 8.45 19.73 8.54 19.69C8.63 19.65 8.71 19.6 8.78 19.53L11.28 17.03C11.57 16.74 11.57 16.26 11.28 15.97C10.99 15.68 10.51 15.68 10.22 15.97Z"
-                        fill="#ffffff"
-                      ></path>
-                      {/* AZ */}
-                      <path
-                        d="M14 11.21C14.39 11.35 14.82 11.15 14.96 10.76L15.24 9.98001H17.27L17.55 10.76C17.66 11.07 17.95 11.26 18.26 11.26C18.34 11.26 18.43 11.25 18.51 11.22C18.9 11.08 19.1 10.65 18.96 10.26L17.25 5.47001C17.08 5.04001 16.69 4.76001 16.25 4.76001C15.81 4.76001 15.42 5.04001 15.25 5.49001L13.55 10.26C13.41 10.65 13.61 11.08 14 11.22V11.21Z"
-                        fill="#ffffff"
-                      ></path>
-                      <path
-                        d="M18.67 13.46C18.48 13.02 18.08 12.75 17.62 12.75H14.51C14.1 12.75 13.76 13.09 13.76 13.5C13.76 13.91 14.1 14.25 14.51 14.25H16.9L14.07 17.2C13.73 17.56 13.64 18.08 13.83 18.54C14.02 18.98 14.42 19.25 14.88 19.25H18.01C18.42 19.25 18.76 18.91 18.76 18.5C18.76 18.09 18.42 17.75 18.01 17.75H15.62L18.44 14.82C18.78 14.46 18.88 13.93 18.68 13.47L18.67 13.46Z"
-                        fill="#ffffff"
-                      ></path>
-                    </g>
-                  </svg>
+                  <SortAscIcon 
+                  data-tooltip-id="ra"
+                  style={{
+                    backgroundColor:
+                      sort == "ASC" ? "rgba(255, 255, 255, 0.7)" : "",
+                  }}
+                  onClick={() => handleSort("ASC")}
+                  value="ASC"
+                  />
 
-                  <svg
-                    className="svg-fill"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    style={{
-                      backgroundColor:
-                        sort == "DESC" ? "rgba(255, 255, 255, 0.7)" : "",
-                    }}
-                    onClick={() => handleSort("DESC")}
-                    value="DESC"
-                    data-tooltip-id="rd"
-                  >
-                    <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                    <g
-                      id="SVGRepo_tracerCarrier"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    ></g>
-                    <g id="SVGRepo_iconCarrier">
-                      {/* arrow */}
-                      <path
-                        d="M10.22 15.97L9 17.19V5C9 4.59 8.66 4.25 8.25 4.25C7.84 4.25 7.5 4.59 7.5 5V17.19L6.28 15.97C5.99 15.68 5.51 15.68 5.22 15.97C4.93 16.26 4.93 16.74 5.22 17.03L7.72 19.53C7.79 19.6 7.87 19.65 7.96 19.69C8.05 19.73 8.15 19.75 8.25 19.75C8.35 19.75 8.45 19.73 8.54 19.69C8.63 19.65 8.71 19.6 8.78 19.53L11.28 17.03C11.57 16.74 11.57 16.26 11.28 15.97C10.99 15.68 10.51 15.68 10.22 15.97Z"
-                        fill="#ffffff"
-                      ></path>
-                      {/* ZA */}
-                      <path
-                        d="M13.83 10.54C14.02 10.98 14.42 11.25 14.88 11.25H18.01C18.42 11.25 18.76 10.91 18.76 10.5C18.76 10.09 18.42 9.75001 18.01 9.75001H15.62L18.44 6.82001C18.78 6.46001 18.88 5.93001 18.68 5.47001C18.49 5.03001 18.09 4.76001 17.63 4.76001H14.52C14.11 4.76001 13.77 5.10001 13.77 5.51001C13.77 5.92001 14.11 6.26001 14.52 6.26001H16.91L14.08 9.21001C13.74 9.57001 13.65 10.09 13.84 10.55L13.83 10.54Z"
-                        fill="#ffffff"
-                      ></path>
-                      <path
-                        d="M18.96 18.25L17.25 13.46C17.08 13.03 16.69 12.75 16.25 12.75C15.81 12.75 15.42 13.03 15.25 13.48L13.55 18.25C13.41 18.64 13.61 19.07 14 19.21C14.39 19.35 14.82 19.15 14.96 18.76L15.24 17.98H17.27L17.55 18.76C17.66 19.07 17.95 19.26 18.26 19.26C18.34 19.26 18.43 19.25 18.51 19.22C18.9 19.08 19.1 18.65 18.96 18.26V18.25ZM15.77 16.48L16.25 15.14L16.73 16.48H15.77Z"
-                        fill="#ffffff"
-                      ></path>
-                    </g>
-                  </svg>
+                  <SortDescIcon
+                  data-tooltip-id="rd"
+                  style={{
+                    backgroundColor:
+                      sort == "DESC" ? "rgba(255, 255, 255, 0.7)" : "",
+                  }}
+                  onClick={() => handleSort("DESC")}
+                  value="DESC" />
                 </div>
               </div>
               <div className="recent">

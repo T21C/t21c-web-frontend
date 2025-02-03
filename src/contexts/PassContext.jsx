@@ -4,7 +4,7 @@ export const PassContext = createContext();
 
 export const PassContextProvider = ({ children }) => {
   const [passesData, setPassesData] = useState(null);
-  const [filterOpen, setFilterOpen] = useState(false);
+  const [filterOpen, setFilterOpen] = useState(true);
   const [sortOpen, setSortOpen] = useState(true);
   const [query, setQuery] = useState('');
   const [sort, setSort] = useState('RECENT_DESC');

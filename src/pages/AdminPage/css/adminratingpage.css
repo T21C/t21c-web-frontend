@@ -441,7 +441,6 @@
 .admin-rating-page .admin-rating-body .sort-buttons svg {
   width: 2rem;
   height: 2rem;
-  padding: 0.25rem;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.2s ease;
