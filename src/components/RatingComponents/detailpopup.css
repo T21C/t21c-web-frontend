@@ -145,12 +145,23 @@
 
 .rating-popup .popup-header h2 {
     margin: 0;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
 }
+
+
+.rating-popup .popup-header h2:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}   
 
 .rating-popup .popup-header .artist {
     margin: 0.25rem 0 0;
     color: #aaa;
 }
+
 
 .rating-popup .popup-main-content {
     display: flex;

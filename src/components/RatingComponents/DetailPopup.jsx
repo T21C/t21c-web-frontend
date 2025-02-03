@@ -8,9 +8,11 @@ import { DifficultyContext } from "@/contexts/DifficultyContext";
 import api from '@/utils/api';
 import { useTranslation } from 'react-i18next';
 import ReferencesButton from "../ReferencesButton/ReferencesButton";
-
+import { useNavigate } from 'react-router-dom';
+import { ExternalLinkIcon } from '../Icons/ExternalLinkIcon';
 // Cache for video data
 const videoCache = new Map();
+
 
 async function updateRating(id, rating, comment) {
   try {
@@ -43,6 +45,7 @@ export const DetailPopup = ({
   const { t } = useTranslation('components');
   const tRating = (key) => t(`rating.detailPopup.${key}`);
 
+  const navigate = useNavigate();
   const { difficulties } = useContext(DifficultyContext);
   const [videoData, setVideoData] = useState(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -334,6 +337,10 @@ export const DetailPopup = ({
     return user && (user.isSuperAdmin || user.isRater);
   };
 
+  const navigateToLevel = () => {
+    window.open(`/levels/${selectedRating.level.id}`, '_blank');
+  }
+
   if (!selectedRating) return null;
   return (
     <div className={`rating-popup-overlay ${isExiting ? 'exiting' : ''}`}>
@@ -363,7 +370,7 @@ export const DetailPopup = ({
         </button>
         <div className="popup-content">
           <div className="popup-header">
-            <h2>{selectedRating.level.song}</h2>
+            <h2 onClick={navigateToLevel}>{selectedRating.level.song} <ExternalLinkIcon /></h2>
             <p className="artist">{selectedRating.level.artist}</p>
           </div>
           
