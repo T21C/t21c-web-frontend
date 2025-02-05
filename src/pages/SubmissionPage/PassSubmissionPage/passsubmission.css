@@ -343,9 +343,6 @@
   color: #ff4444;
 }
 
-.pass-submission-page form .info .info-input input {
-  width: auto;
-}
 .pass-submission-page form .info .accuracy {
   display: flex;
   flex-direction: column;

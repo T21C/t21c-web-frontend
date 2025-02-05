@@ -28,5 +28,9 @@
     "loading": "Submitting...",
     "login": "Please log in to submit a level",
     "form": "Please fill in all required fields correctly"
+  },
+  
+  "warnings": {
+    "pendingProfiles": "The following profiles need to be created before submission:"
   }
 } 

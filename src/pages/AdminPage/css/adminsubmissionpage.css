@@ -934,3 +934,18 @@
     font-size: 0.8rem;
     color: var(--color-white-t80);
   }
+
+  .pending-profile {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .profile-request-badge {
+    background-color: var(--warning-color);
+    color: var(--text-color-dark);
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 500;
+  }

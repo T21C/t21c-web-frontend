@@ -19,5 +19,8 @@
   "buttons": {
     "allow": "Allow",
     "decline": "Decline"
+  },
+  "badges": {
+    "newProfile": "New Profile"
   }
 } 

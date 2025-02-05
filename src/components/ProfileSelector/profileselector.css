@@ -1,0 +1,113 @@
+.profile-selector {
+  position: relative;
+  width: 100%;
+}
+
+.profile-selector-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.profile-selector-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.2s ease;
+}
+
+.profile-selector-input:focus {
+  outline: none;
+  border-color: #6d23ce;
+}
+
+.profile-selector-input.requesting-new {
+  border-color: #ffa500;
+  padding-right: 100px;
+}
+
+.profile-selector-new-badge {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: #ffa500;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.profile-selector-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 200px;
+  overflow-y: auto;
+  background: #001;
+  border: 1px solid #333;
+  border-top: none;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+}
+
+.profile-selector-option {
+  padding: 8px 12px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile-selector-option:hover {
+  background-color: #222;
+}
+
+.profile-selector-option .profile-type {
+  font-size: 12px;
+  color: #666;
+  background: #eee;
+  padding: 2px 6px;
+  border-radius: 12px;
+}
+
+.profile-selector-loading {
+  padding: 12px;
+  text-align: center;
+  color: #666;
+}
+
+.profile-selector-request {
+  padding: 12px;
+  text-align: center;
+  border-top: 1px solid #333;
+}
+
+.profile-selector-no-results {
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.profile-selector-request-new {
+  padding: 6px 12px;
+  background-color: #6d23ce;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  width: 100%;
+}
+
+.profile-selector-request-new:hover {
+  background-color: #5a1ea8;
+}
+
+.profile-selector-request-new:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(109, 35, 206, 0.3);
+} 

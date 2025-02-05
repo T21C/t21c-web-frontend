@@ -56,5 +56,8 @@
     "needJudg": "Enter judgements",
     "needInfo": "Enter all required info",
     "noInfo": "No info available"
+  },
+  "warnings": {
+    "pendingProfiles": "The following profiles need to be created before submission:"
   }
 } 

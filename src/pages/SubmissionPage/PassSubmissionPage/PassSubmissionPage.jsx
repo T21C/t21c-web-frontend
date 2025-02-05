@@ -14,13 +14,14 @@ import { useTranslation } from "react-i18next";
 import api from "@/utils/api";
 import axios from 'axios';
 import StagingModeWarning from "../../../components/StagingModeWarning/StagingModeWarning";
+import { ProfileSelector } from "@/components/ProfileSelector/ProfileSelector";
 
 
 const PassSubmissionPage = () => {
   const initialFormState = {
     levelId: '',
     videoLink: '',
-    leaderboardName: '',
+    player: null,
     speed: '',
     feelingRating: '',
     ePerfect: '',
@@ -67,6 +68,8 @@ const PassSubmissionPage = () => {
   const dropdownRef = useRef(null);
   const searchContainerRef = useRef(null);
 
+  const [pendingProfiles, setPendingProfiles] = useState([]);
+
   // Add color logic for FetchIcon
   const getIconColor = () => {
     if (!form.levelId) return "#ffc107";
@@ -95,6 +98,7 @@ const PassSubmissionPage = () => {
     });
 
     validationResult["levelId"] = !(level === null || level === undefined);
+    validationResult["player"] = form.player !== null;
     
     // Add validation for 12K/16K selection when IsUDiff is true
     if (IsUDiff) {
@@ -106,14 +110,23 @@ const PassSubmissionPage = () => {
     validationResult.speed = speedValid
     validationResult["videoLink"] = videoDetail && true;
 
+    // Check for pending profile creation
+    const newPendingProfiles = [];
+    if (form.player?.isNewRequest) {
+      newPendingProfiles.push({
+        type: 'player',
+        name: form.player.name
+      });
+    }
+    setPendingProfiles(newPendingProfiles);
 
     for (const field in validationResult) {
       displayValidationRes[field] = submitAttempt ? validationResult[field] : true;
     }
     
     setIsValidFeelingRating(frValid);
-    setIsValidSpeed(speedValid); // Update validation state
-    setIsFormValidDisplay(displayValidationRes); // Set the validity object
+    setIsValidSpeed(speedValid);
+    setIsFormValidDisplay(displayValidationRes);
     setIsFormValid(validationResult)
   };
 
@@ -219,11 +232,11 @@ const PassSubmissionPage = () => {
     getVideoDetails(videoLink, videoDetailsCancelTokenRef.current.token)
       .then((res) => {
         setVideoDetail(res ? res : null);
-        if (res) {
-          setForm(prev => ({
-            ...prev,
-            leaderboardName: res.channelName
-          }));
+        if (res && !form.player) {
+          handleProfileChange('player', {
+            name: res.channelName,
+            isNewRequest: true
+          });
         }
       })
       .catch((error) => {
@@ -360,6 +373,12 @@ const PassSubmissionPage = () => {
       return
     };
 
+    // Check for pending profiles
+    if (pendingProfiles.length > 0) {
+      setError(tPass("alert.pendingProfiles"));
+      return;
+    }
+
     setSubmission(true)
     setError(null);
 
@@ -368,7 +387,9 @@ const PassSubmissionPage = () => {
 
     submissionForm.setDetail('levelId', form.levelId);
     submissionForm.setDetail('videoLink', cleanedVideoUrl);
-    submissionForm.setDetail('passer', form.leaderboardName);
+    submissionForm.setDetail('passer', form.player?.name || '');
+    submissionForm.setDetail('passerId', form.player?.id);
+    submissionForm.setDetail('passerRequest', form.player?.isNewRequest || false);
     submissionForm.setDetail('speed', form.speed);
     submissionForm.setDetail('feelingDifficulty', form.feelingRating);
     submissionForm.setDetail('title', videoDetail?.title || '');
@@ -390,21 +411,21 @@ const PassSubmissionPage = () => {
     submissionForm.setDetail('is16K', IsUDiff && form.is16K);
 
     submissionForm.submit(user.access_token)
-  .then(result => {
-    if (result === "ok") {
-      setSuccess(true);
-      setForm(initialFormState)
-    } else {
-      setError(result);
-    }
-  })
-  .catch(err => {
-    setError(err.message || "Unknown");
-  })
-  .finally(()=>{
-    setSubmission(false)
-    setSubmitAttempt(false);
-  })
+      .then(result => {
+        if (result === "ok") {
+          setSuccess(true);
+          setForm(initialFormState)
+        } else {
+          setError(result);
+        }
+      })
+      .catch(err => {
+        setError(err.message || "Unknown");
+      })
+      .finally(()=>{
+        setSubmission(false)
+        setSubmitAttempt(false);
+      })
   }
 
   const handleCloseSuccessMessage = () => {
@@ -492,6 +513,14 @@ const PassSubmissionPage = () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  // Add handler for profile changes
+  const handleProfileChange = (field, value) => {
+    setForm(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
 
   return (
     <div className="pass-submission-page">
@@ -662,12 +691,13 @@ const PassSubmissionPage = () => {
             </div>
 
             <div className="info-input">
-              <input
-                type="text"
+              <ProfileSelector
+                type="player"
+                value={form.player}
+                onChange={(value) => handleProfileChange('player', value)}
+                required
                 placeholder={tPass("submInfo.altname")}
-                name="leaderboardName"
-                value={form.leaderboardName}
-                onChange={handleInputChange}
+                className={isFormValidDisplay.player ? "" : "error"}
               />
               <div className="tooltip-container">
                 <input
@@ -857,7 +887,24 @@ const PassSubmissionPage = () => {
               </div>
             </div>
 
-            <button disabled={submission} className="submit" onClick={handleSubmit}>
+            {pendingProfiles.length > 0 && (
+              <div className="pending-profiles-warning">
+                {tPass("warnings.pendingProfiles")}
+                <ul>
+                  {pendingProfiles.map((profile, index) => (
+                    <li key={index}>
+                      {profile.type}: {profile.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <button 
+              disabled={submission || pendingProfiles.length > 0} 
+              className="submit" 
+              onClick={handleSubmit}
+            >
               {tPass("submit")}{submission && (<>{tPass("submitWait")}</>)}
             </button>
           </div>

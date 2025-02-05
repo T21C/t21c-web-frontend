@@ -8,16 +8,17 @@ import { useAuth } from "@/contexts/AuthContext";
 import { validateFeelingRating } from "@/components/Misc/Utility";
 import { useTranslation } from "react-i18next";
 import StagingModeWarning from "../../../components/StagingModeWarning/StagingModeWarning";
+import { ProfileSelector } from "@/components/ProfileSelector/ProfileSelector";
 
 const LevelSubmissionPage = () => {
   const initialFormState = {
     artist: '',
-    charter: '',
+    charter: null,
     diff: '',
     dlLink: '',
     song: '',
-    team: '',
-    vfxer: '',
+    team: null,
+    vfxer: null,
     videoLink: '',
     workshopLink: ''
   };
@@ -37,7 +38,8 @@ const LevelSubmissionPage = () => {
   const [submitAttempt, setSubmitAttempt] = useState(false);
   const [submission, setSubmission] = useState(false);
 
-  const [videoDetail, setVideoDetail] = useState(null)
+  const [videoDetail, setVideoDetail] = useState(null);
+  const [pendingProfiles, setPendingProfiles] = useState([]);
 
   // Helper function to clean video URLs
   const cleanVideoUrl = (url) => {
@@ -78,22 +80,47 @@ const LevelSubmissionPage = () => {
   };
 
   const validateForm = () => {
-    const requiredFields = ['artist','charter', 'diff', 'dlLink', 'song', 'videoLink', 'workshopLink'];
+    const requiredFields = ['artist', 'diff', 'song', 'videoLink'];
     const validationResult = {};
     const displayValidationRes = {};
     
     requiredFields.forEach(field => {
       validationResult[field] = (form[field].trim() !== '');
     });
-    validationResult.directLink = validationResult["dlLink"] || validationResult["workshopLink"]
+
+    // Validate charter
+    validationResult.charter = form.charter !== null;
+
+    // Validate download links
+    validationResult.directLink = form.dlLink.trim() !== '' || form.workshopLink.trim() !== '';
     
-    delete validationResult["dlLink"];
-    delete validationResult["workshopLink"];
+    // Check for pending profile creations
+    const newPendingProfiles = [];
+    if (form.charter?.isNewRequest) {
+      newPendingProfiles.push({
+        type: 'charter',
+        name: form.charter.name
+      });
+    }
+    if (form.vfxer?.isNewRequest) {
+      newPendingProfiles.push({
+        type: 'vfx',
+        name: form.vfxer.name
+      });
+    }
+    if (form.team?.isNewRequest) {
+      newPendingProfiles.push({
+        type: 'team',
+        name: form.team.name
+      });
+    }
+    setPendingProfiles(newPendingProfiles);
+
     for (const field in validationResult) {
       displayValidationRes[field] = submitAttempt ? validationResult[field] : true;
     }
     
-    const frValid = validateFeelingRating(form["diff"])
+    const frValid = validateFeelingRating(form.diff);
     setIsInvalidFeelingRating(!frValid);
     setIsFormValidDisplay(displayValidationRes);
     setIsFormValid(validationResult);
@@ -112,9 +139,6 @@ const LevelSubmissionPage = () => {
         const cleanedVideoLink = cleanVideoUrl(videoLink);
         const videoDetails = await getVideoDetails(cleanedVideoLink);
         setVideoDetail(videoDetails ? videoDetails : null);
-        if (videoDetails){
-          form.charter = videoDetails.channelName
-        }
   
         const driveDetails = await getDriveFromYt(cleanedVideoLink);
         if (driveDetails.drive) {
@@ -139,6 +163,13 @@ const LevelSubmissionPage = () => {
     }));
   };
 
+  const handleProfileChange = (field, value) => {
+    setForm(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
   const handleCloseSuccessMessage = () => {
     setShowMessage(false)
   };
@@ -160,6 +191,12 @@ const LevelSubmissionPage = () => {
       return
     };
 
+    // Check for pending profiles
+    if (pendingProfiles.length > 0) {
+      setError(tLevel("alert.pendingProfiles"));
+      return;
+    }
+
     setSubmission(true)
     setError(null);
 
@@ -167,11 +204,17 @@ const LevelSubmissionPage = () => {
     const cleanedVideoUrl = cleanVideoUrl(form.videoLink);
 
     submissionForm.setDetail('artist', form.artist);
-    submissionForm.setDetail('charter', form.charter);
+    submissionForm.setDetail('charter', form.charter?.name || '');
+    submissionForm.setDetail('charterId', form.charter?.id);
+    submissionForm.setDetail('charterRequest', form.charter?.isNewRequest || false);
     submissionForm.setDetail('diff', form.diff);
     submissionForm.setDetail('song', form.song);
-    submissionForm.setDetail('team', form.team);
-    submissionForm.setDetail('vfxer', form.vfxer);
+    submissionForm.setDetail('team', form.team?.name || '');
+    submissionForm.setDetail('teamId', form.team?.id);
+    submissionForm.setDetail('teamRequest', form.team?.isNewRequest || false);
+    submissionForm.setDetail('vfxer', form.vfxer?.name || '');
+    submissionForm.setDetail('vfxerId', form.vfxer?.id);
+    submissionForm.setDetail('vfxerRequest', form.vfxer?.isNewRequest || false);
     submissionForm.setDetail('videoLink', cleanedVideoUrl);
     submissionForm.setDetail('directDL', form.dlLink);
     submissionForm.setDetail('wsLink', form.workshopLink);
@@ -292,13 +335,13 @@ const LevelSubmissionPage = () => {
             </div>
 
             <div className="info-group">
-              <input
-                type="text"
-                placeholder={tLevel("submInfo.charter")}
-                name="charter"
+              <ProfileSelector
+                type="charter"
                 value={form.charter}
-                onChange={handleInputChange}
-                style={{ borderColor: isFormValidDisplay.directLink ? "" : "red" }}
+                onChange={(value) => handleProfileChange('charter', value)}
+                required
+                placeholder={tLevel("submInfo.charter")}
+                className={isFormValidDisplay.charter ? "" : "error"}
               />
               <div className="diff-tooltip">
                 <div className="tooltip-container">
@@ -332,19 +375,17 @@ const LevelSubmissionPage = () => {
             </div>
 
             <div className="info-group">
-              <input
-                type="text"
-                placeholder={tLevel("submInfo.vfxer")}
-                name="vfxer"
+              <ProfileSelector
+                type="vfx"
                 value={form.vfxer}
-                onChange={handleInputChange}
+                onChange={(value) => handleProfileChange('vfxer', value)}
+                placeholder={tLevel("submInfo.vfxer")}
               />
-              <input
-                type="text"
-                placeholder={tLevel("submInfo.team")}
-                name="team"
+              <ProfileSelector
+                type="team"
                 value={form.team}
-                onChange={handleInputChange}
+                onChange={(value) => handleProfileChange('team', value)}
+                placeholder={tLevel("submInfo.team")}
               />
             </div>
             
@@ -368,7 +409,24 @@ const LevelSubmissionPage = () => {
               />
             </div>
 
-            <button disabled={submission} className="submit" onClick={handleSubmit}>
+            {pendingProfiles.length > 0 && (
+              <div className="pending-profiles-warning">
+                {tLevel("warnings.pendingProfiles")}
+                <ul>
+                  {pendingProfiles.map((profile, index) => (
+                    <li key={index}>
+                      {profile.type}: {profile.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <button 
+              disabled={submission || pendingProfiles.length > 0} 
+              className="submit" 
+              onClick={handleSubmit}
+            >
               {tLevel("submit")}{submission && (<>{tLevel("submitWait")}</>)}
             </button>
           </div>
