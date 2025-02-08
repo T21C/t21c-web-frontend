@@ -395,12 +395,13 @@ const PassSubmissionPage = () => {
       setSuccess(true);
       setForm(initialFormState)
     } else {
-      setError(result);
+      setError(result.response.data.error || result || "(Unknown)");
     }
   })
   .catch(err => {
-    setError(err.message || "Unknown");
+    setError(err.response.data.error || "(Unknown)");
   })
+
   .finally(()=>{
     setSubmission(false)
     setSubmitAttempt(false);
