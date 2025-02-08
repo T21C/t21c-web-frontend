@@ -56,9 +56,9 @@ function App() {
           <Route path="/verify-email" element={<VerifyEmailPage />} />
           */}
           <Route path="/auth/callback" element={<OAuthCallbackPage />} />
-          {/*
+          
           <Route path="/profile/edit" element={<PrivateRoute><EditProfilePage /></PrivateRoute>} />
-          */}
+          
           {/* Existing Routes */}
           <Route index path="/" element={<HomePage />} />
           <Route path="levels" element={<LevelPage />} />

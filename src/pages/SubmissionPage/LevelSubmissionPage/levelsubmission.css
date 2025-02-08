@@ -282,3 +282,58 @@
   transform: translate(-50%, 50%);
   z-index: 10;
 }
+
+.level-submission-page form .info .creators-section {
+  margin: 1rem 0;
+  padding: 0 2rem;
+}
+
+.level-submission-page form .info .creator-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.level-submission-page form .info .creator-action-btn {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  line-height: 1;
+}
+
+.level-submission-page form .info .add-creator-btn {
+  background-color: #4a4a4a;
+  color: white;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.level-submission-page form .info .add-creator-btn:hover {
+  background-color: #5a5a5a;
+}
+
+.level-submission-page form .info .remove-creator-btn {
+  background-color: #8b0000;
+  color: white;
+  padding: 0.5rem;
+  min-width: 2.5rem;
+  font-size: 1.2rem;
+  justify-content: center;
+}
+
+.level-submission-page form .info .remove-creator-btn:hover {
+  background-color: #a00000;
+}
+
+.level-submission-page form .info .creator-action-btn:disabled {
+  background-color: #666;
+  cursor: not-allowed;
+  opacity: 0.7;
+}

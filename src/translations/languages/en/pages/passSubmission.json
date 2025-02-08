@@ -3,7 +3,7 @@
   "thumbnailInfo": "Video information will appear here",
   "submInfo": {
     "levelId": "Level ID",
-    "altname": "Alternative Name (opt.)",
+    "altname": "Leaderboard Name",
     "nohold": "No Hold Tap",
     "speed": "Speed (opt., >=1.0)",
     "feelDiff": "Feeling Difficulty",

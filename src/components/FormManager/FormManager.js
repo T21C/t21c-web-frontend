@@ -20,25 +20,13 @@ class FormManager {
         return this.details[key]; // Retrieve the details using the key
     }
 
-    prepareFormBody() {
-        let formBody = [];
-        for (const each in this.details) {
-            const encodeKey = encodeURIComponent(each);
-            const encodeValue = encodeURIComponent(this.details[each]);
-            formBody.push(encodeKey + "=" + encodeValue);
-        }
-        return formBody.join("&"); // Prepare the form body for submission
-    }
-
     async submit(accessToken) {
-        const body = this.prepareFormBody()
-        
         try {
             const response = await api.post(this.apiUrl, 
-                body,  // This is the data payload
-                {     // This is the config object
+                this.details,  // Send the details object directly as JSON
+                {
                     headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'Content-Type': 'application/json',
                         'X-Form-Type': this.type,
                     }
                 }

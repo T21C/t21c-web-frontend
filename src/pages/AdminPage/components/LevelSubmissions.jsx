@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import api from "../../../utils/api";
 import { ProfileCreationModal } from './ProfileCreationModal';
+import { toast } from "react-hot-toast";
 
 const LevelSubmissions = () => {
   const { t } = useTranslation('components');
@@ -75,35 +76,37 @@ const LevelSubmissions = () => {
       const submission = submissions.find(s => s.id === submissionId);
       if (!submission) return;
 
-      // Check for profile creation requests
-      const pendingProfiles = [];
-      if (submission.charterRequest) {
-        pendingProfiles.push({
-          type: 'charter',
-          name: submission.charter
+      // Check for profile creation requests when approving
+      if (action === 'approve') {
+        const pendingProfiles = [];
+        
+        // Check for pending creator requests
+        submission.creatorRequests?.forEach(request => {
+          if (request.isNewRequest && !request.creatorId) {
+            pendingProfiles.push({
+              type: request.role,
+              name: request.creatorName
+            });
+          }
         });
-      }
-      if (submission.vfxerRequest) {
-        pendingProfiles.push({
-          type: 'vfx',
-          name: submission.vfxer
-        });
-      }
-      if (submission.teamRequest) {
-        pendingProfiles.push({
-          type: 'team',
-          name: submission.team
-        });
-      }
 
-      // If there are pending profiles and trying to approve
-      if (pendingProfiles.length > 0 && action === 'approve') {
-        setProfileCreation({
-          show: true,
-          submission,
-          profiles: pendingProfiles
-        });
-        return;
+        // Check for pending team request
+        if (submission.teamRequestData?.isNewRequest && !submission.teamRequestData.teamId) {
+          pendingProfiles.push({
+            type: 'team',
+            name: submission.teamRequestData.teamName
+          });
+        }
+
+        // If there are pending profiles and trying to approve
+        if (pendingProfiles.length > 0) {
+          setProfileCreation({
+            show: true,
+            submission,
+            profiles: pendingProfiles
+          });
+          return;
+        }
       }
 
       // Disable buttons for this card
@@ -123,7 +126,7 @@ const LevelSubmissions = () => {
         const response = await api.put(`${import.meta.env.VITE_SUBMISSION_API}/levels/${submissionId}/${action}`);
         
         if (response.ok) {
-          setSubmissions(prev => prev.filter(sub => sub._id !== submissionId));
+          setSubmissions(prev => prev.filter(sub => sub.id !== submissionId));
           setAnimatingCards(prev => {
             const newState = { ...prev };
             delete newState[submissionId];
@@ -164,20 +167,23 @@ const LevelSubmissions = () => {
 
     try {
       // Update submission with created profile IDs
-      const updateData = {};
-      createdProfiles.forEach(profile => {
-        switch (profile.type) {
-          case 'charter':
-            updateData.charterId = profile.id;
-            break;
-          case 'vfx':
-            updateData.vfxerId = profile.id;
-            break;
-          case 'team':
-            updateData.teamId = profile.id;
-            break;
+      const updateData = {
+        creatorRequests: submission.creatorRequests.map(request => {
+          const createdProfile = createdProfiles.find(
+            profile => profile.type === request.role && profile.name === request.creatorName
+          );
+          return {
+            ...request,
+            creatorId: createdProfile?.id || request.creatorId
+          };
+        }),
+        teamRequestData: submission.teamRequestData && {
+          ...submission.teamRequestData,
+          teamId: createdProfiles.find(
+            profile => profile.type === 'team' && profile.name === submission.teamRequestData.teamName
+          )?.id || submission.teamRequestData.teamId
         }
-      });
+      };
 
       await api.put(`${import.meta.env.VITE_SUBMISSION_API}/levels/${submission.id}/profiles`, updateData);
 
@@ -185,6 +191,7 @@ const LevelSubmissions = () => {
       await handleSubmission(submission.id, 'approve');
     } catch (error) {
       console.error('Error updating submission with profiles:', error);
+      toast.error(tLevel('errors.profileUpdate'));
     } finally {
       setProfileCreation({
         show: false,
@@ -283,26 +290,28 @@ const LevelSubmissions = () => {
                     </div>
                   )}
 
-                  {(submission.team || submission.teamRequest) && (
-                    <div className="detail-row">
-                      <span className="detail-label">{tLevel('details.team')}</span>
-                      <span className={`detail-value ${submission.teamRequest ? 'pending-profile' : ''}`}>
-                        {submission.team}
-                        {submission.teamRequest && (
+                  {/* Creator Requests */}
+                  {submission.creatorRequests?.map((request, index) => (
+                    <div key={index} className="detail-row">
+                      <span className="detail-label">{tLevel(`details.${request.role}`)}</span>
+                      <span className={`detail-value ${request.isNewRequest ? 'pending-profile' : ''}`}>
+                        {request.creatorName}
+                        {request.isNewRequest && (
                           <span className="profile-request-badge">
                             {tLevel('badges.newProfile')}
                           </span>
                         )}
                       </span>
                     </div>
-                  )}
+                  ))}
 
-                  {(submission.vfxer || submission.vfxerRequest) && (
+                  {/* Team Request */}
+                  {submission.teamRequestData && (
                     <div className="detail-row">
-                      <span className="detail-label">{tLevel('details.vfxer')}</span>
-                      <span className={`detail-value ${submission.vfxerRequest ? 'pending-profile' : ''}`}>
-                        {submission.vfxer}
-                        {submission.vfxerRequest && (
+                      <span className="detail-label">{tLevel('details.team')}</span>
+                      <span className={`detail-value ${submission.teamRequestData.isNewRequest ? 'pending-profile' : ''}`}>
+                        {submission.teamRequestData.teamName}
+                        {submission.teamRequestData.isNewRequest && (
                           <span className="profile-request-badge">
                             {tLevel('badges.newProfile')}
                           </span>
@@ -315,7 +324,10 @@ const LevelSubmissions = () => {
                     <button 
                       onClick={() => handleSubmission(submission.id, 'approve')}
                       className="approve-btn"
-                      disabled={disabledButtons[submission.id]}
+                      disabled={disabledButtons[submission.id] || 
+                        submission.creatorRequests?.some(r => r.isNewRequest && !r.creatorId) ||
+                        (submission.teamRequestData?.isNewRequest && !submission.teamRequestData.teamId)}
+                      title={tLevel('errors.needProfiles')}
                     >
                       {tLevel('buttons.allow')}
                     </button>

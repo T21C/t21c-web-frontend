@@ -6,6 +6,8 @@ import "@/pages/AdminPage/css/adminsubmissionpage.css";
 import api from "@/utils/api";
 import { PlayerInput } from '@/components/PlayerComponents/PlayerInput';
 import { toast } from 'react-hot-toast';
+import { ProfileCreationModal } from './ProfileCreationModal';
+
 
 const PassSubmissions = () => {
   const { t } = useTranslation('components');
@@ -24,6 +26,11 @@ const PassSubmissions = () => {
   const [discordAssignmentError, setDiscordAssignmentError] = useState({});
   const [pendingAssignments, setPendingAssignments] = useState({});
   const [loading, setLoading] = useState(false);
+  const [profileCreation, setProfileCreation] = useState({
+    show: false,
+    submission: null,
+    profiles: []
+  });
 
   useEffect(() => {
     fetchPendingSubmissions();
@@ -134,14 +141,29 @@ const PassSubmissions = () => {
 
 
   const handleSubmission = async (submissionId, action) => {
-    const submission = submissions.find(s => s.id === submissionId);
-    
-    if (action === 'approve' && !submission.assignedPlayerId) {
-      alert(tPass('errors.noPlayer'));
-      return;
-    }
-
     try {
+      const submission = submissions.find(s => s.id === submissionId);
+      if (!submission) {
+        console.error('[PassSubmissions] Submission not found:', submissionId);
+        return;
+      }
+
+      if (action === 'approve') {
+        // Check if this is a new profile request that hasn't been created yet
+        if (submission.passerRequest && !submission.assignedPlayerId) {
+          // Show profile creation modal
+          setProfileCreation({
+            show: true,
+            submission,
+            profiles: [{
+              type: 'player',
+              name: submission.passer
+            }]
+          });
+          return;
+        }
+      }
+
       setDisabledButtons(prev => ({
         ...prev,
         [submissionId]: true
@@ -151,7 +173,7 @@ const PassSubmissions = () => {
         ...prev,
         [submissionId]: action
       }));
-  
+
       setTimeout(async () => {
         const response = await api.put(`${import.meta.env.VITE_SUBMISSION_API}/passes/${submissionId}/${action}`);
         
@@ -177,10 +199,63 @@ const PassSubmissions = () => {
           });
         }
       }, 500);
-  
+
     } catch (error) {
       console.error('Error processing submission:', error);
-      alert(tPass('errors.processing'));
+      toast.error(tPass('errors.processing'));
+      setDisabledButtons(prev => {
+        const newState = { ...prev };
+        delete newState[submissionId];
+        return newState;
+      });
+    }
+  };
+
+  const handleProfileCreationComplete = async (createdProfiles) => {
+    const { submission } = profileCreation;
+    if (!submission) return;
+
+    try {
+      // Get the created player profile
+      const playerProfile = createdProfiles.find(p => p.type === 'player');
+      if (!playerProfile) {
+        throw new Error('No player profile created');
+      }
+
+      // Assign the created profile to the submission
+      await handlePlayerSelect(submission.id, {
+        id: playerProfile.id,
+        name: playerProfile.name
+      });
+
+      // Now proceed with approval
+      await handleSubmission(submission.id, 'approve');
+    } catch (error) {
+      console.error('Error updating submission with profile:', error);
+      toast.error(tPass('errors.profileUpdate'));
+    } finally {
+      setProfileCreation({
+        show: false,
+        submission: null,
+        profiles: []
+      });
+    }
+  };
+
+  // Add a function to handle player creation
+  const handlePlayerCreate = async (submissionId, playerData) => {
+    try {
+      const response = await api.post(`${import.meta.env.VITE_PLAYERS}/create`, playerData);
+      if (response.data) {
+        // Update submission with new player ID
+        await handlePlayerSelect(submissionId, response.data);
+        toast.success(tPass('success.playerCreated', { 
+          playerName: response.data.name 
+        }));
+      }
+    } catch (error) {
+      console.error('Error creating player:', error);
+      toast.error(tPass('errors.playerCreation'));
     }
   };
 
@@ -233,143 +308,158 @@ const PassSubmissions = () => {
   }
 
   return (
-    <div className="submissions-list">
-      {isLoading ? (
-        <div className="loader loader-submission-detail"/>
-      ) : (
-        submissions.map((submission) => (
-          <div key={submission.id} className={`submission-card pass-submission-card ${animatingCards[submission.id] || ''}`}>
-            <div className="submission-header">
-              <h3>{submission.title}</h3>
-              <span className="submission-date">
-                {new Date(submission.createdAt).toLocaleDateString()}
-              </span>
-            </div>
-            
-            <div className="card-content">
-              <div className="submission-details">
-                <div className="detail-row">
-                  <span className="detail-label">{tPass('details.levelId')}</span>
-                  <span className="detail-value">{submission.levelId}</span>
-                </div>
-
-                <div className="detail-row">
-                  <span className="detail-label">{tPass('details.player')}</span>
-                  <span className="detail-value">{submission.passer}</span>
-                </div>
-
-                <div className="detail-row">
-                  <span className="detail-label">{tPass('details.feelingDiff')}</span>
-                  <span className="detail-value">{submission.feelingDifficulty}</span>
-                </div>
+    <>
+      <div className="submissions-list">
+        {isLoading ? (
+          <div className="loader loader-submission-detail"/>
+        ) : (
+          submissions.map((submission) => (
+            <div key={submission.id} className={`submission-card pass-submission-card ${animatingCards[submission.id] || ''}`}>
+              <div className="submission-header">
+                <h3>{submission.title}</h3>
+                <span className="submission-date">
+                  {new Date(submission.createdAt).toLocaleDateString()}
+                </span>
+              </div>
               
-                <div className="detail-row">
-                  <span className="detail-label">{tPass('details.speed')}</span>
-                  <span className="detail-value">{submission.speed}</span>
-                </div>
-
-                <div className="detail-row">
-                  <span className="detail-label">{tPass('details.submitter')}</span>
-                  <div className="submitter-details">
-                    <span className="detail-value">@{submission.submitterDiscordUsername}</span>
-                    <span className="detail-subvalue">{submission.submitterDiscordId}</span>
+              <div className="card-content">
+                <div className="submission-details">
+                  <div className="detail-row">
+                    <span className="detail-label">{tPass('details.levelId')}</span>
+                    <span className="detail-value">{submission.levelId}</span>
                   </div>
-                </div>
 
-                <div className="detail-row">
-                  <span className="detail-label">{tPass('details.judgements.label')}</span>
-                  <div className="judgements-details">
-                    <span className="judgement early-double">{submission.judgements.earlyDouble}</span>
-                    <span className="judgement early-single">{submission.judgements.earlySingle}</span>
-                    <span className="judgement e-perfect">{submission.judgements.ePerfect}</span>
-                    <span className="judgement perfect">{submission.judgements.perfect}</span>
-                    <span className="judgement l-perfect">{submission.judgements.lPerfect}</span>
-                    <span className="judgement late-single">{submission.judgements.lateSingle}</span>
-                    <span className="judgement late-double">{submission.judgements.lateDouble}</span>
+                  <div className="detail-row">
+                    <span className="detail-label">{tPass('details.player')}</span>
+                    <span className="detail-value">{submission.passer}</span>
                   </div>
-                </div>
 
-                <div className="detail-row">
-                  <span className="detail-label">{tPass('details.flags.label')}</span>
-                  <div className="flags-details">
-                    {submission.flags.is12K && <span>{tPass('details.flags.types.12k')}</span>}
-                    {submission.flags.isNoHoldTap && <span>{tPass('details.flags.types.nht')}</span>}
-                    {submission.flags.is16K && <span>{tPass('details.flags.types.16k')}</span>}
+                  <div className="detail-row">
+                    <span className="detail-label">{tPass('details.feelingDiff')}</span>
+                    <span className="detail-value">{submission.feelingDifficulty}</span>
                   </div>
-                </div>
+                
+                  <div className="detail-row">
+                    <span className="detail-label">{tPass('details.speed')}</span>
+                    <span className="detail-value">{submission.speed}</span>
+                  </div>
 
-                <div className="detail-row">
-                  <span className="detail-label">{tPass('details.uploadTime')}</span>
-                  <span className="detail-value">
-                    {new Date(submission.rawTime).toLocaleString()}
-                  </span>
-                </div>
-
-                <div className="player-assignment">
-                  <h4 style={{marginBottom: "5px", fontSize: "0.95rem"}}>{tPass('playerAssignment.title')}</h4>
-                  <PlayerInput
-                    value={playerSearchValues[submission.id] || ''}
-                    onChange={(value) => setPlayerSearchValues(prev => ({
-                      ...prev,
-                      [submission.id]: value
-                    }))}
-                    onSelect={(player) => handlePlayerSelect(submission.id, player)}
-                    currentPlayer={submission.assignedPlayerId}
-                  />
-
-                  {submission.assignedPlayer && (
-                    <div className="assigned-player-info">
-                      <span className="assigned-player-label">{tPass('playerAssignment.current')}</span>
-                      <span className="assigned-player-name">
-                        {submission.assignedPlayer.name} (ID: {submission.assignedPlayerId})
-                      </span>
+                  <div className="detail-row">
+                    <span className="detail-label">{tPass('details.submitter')}</span>
+                    <div className="submitter-details">
+                      <span className="detail-value">@{submission.submitterDiscordUsername}</span>
+                      <span className="detail-subvalue">{submission.submitterDiscordId}</span>
                     </div>
-                  )}
+                  </div>
 
-                  <div className="action-buttons">
-                    <button
-                      onClick={() => handleSubmission(submission.id, 'approve')}
-                      className="approve-btn"
-                      disabled={disabledButtons[submission.id] || !submission.assignedPlayerId}
-                      title={!submission.assignedPlayerId ? tPass('errors.noPlayer') : ''}
-                    >
-                      {tPass('buttons.allow')}
-                    </button>
-                    <button
-                      onClick={() => handleSubmission(submission.id, 'decline')}
-                      className="decline-btn"
-                      disabled={disabledButtons[submission.id]}
-                    >
-                      {tPass('buttons.decline')}
-                    </button>
+                  <div className="detail-row">
+                    <span className="detail-label">{tPass('details.judgements.label')}</span>
+                    <div className="judgements-details">
+                      <span className="judgement early-double">{submission.judgements.earlyDouble}</span>
+                      <span className="judgement early-single">{submission.judgements.earlySingle}</span>
+                      <span className="judgement e-perfect">{submission.judgements.ePerfect}</span>
+                      <span className="judgement perfect">{submission.judgements.perfect}</span>
+                      <span className="judgement l-perfect">{submission.judgements.lPerfect}</span>
+                      <span className="judgement late-single">{submission.judgements.lateSingle}</span>
+                      <span className="judgement late-double">{submission.judgements.lateDouble}</span>
+                    </div>
+                  </div>
+
+                  <div className="detail-row">
+                    <span className="detail-label">{tPass('details.flags.label')}</span>
+                    <div className="flags-details">
+                      {submission.flags.is12K && <span>{tPass('details.flags.types.12k')}</span>}
+                      {submission.flags.isNoHoldTap && <span>{tPass('details.flags.types.nht')}</span>}
+                      {submission.flags.is16K && <span>{tPass('details.flags.types.16k')}</span>}
+                    </div>
+                  </div>
+
+                  <div className="detail-row">
+                    <span className="detail-label">{tPass('details.uploadTime')}</span>
+                    <span className="detail-value">
+                      {new Date(submission.rawTime).toLocaleString()}
+                    </span>
+                  </div>
+
+                  <div className="player-assignment">
+                    <h4 style={{marginBottom: "5px", fontSize: "0.95rem"}}>{tPass('playerAssignment.title')}</h4>
+                    <PlayerInput
+                      value={playerSearchValues[submission.id] || ''}
+                      onChange={(value) => setPlayerSearchValues(prev => ({
+                        ...prev,
+                        [submission.id]: value
+                      }))}
+                      onSelect={(player) => handlePlayerSelect(submission.id, player)}
+                      onCreateRequest={() => handlePlayerCreate(submission.id, {
+                        name: playerSearchValues[submission.id]
+                      })}
+                      currentPlayer={submission.assignedPlayerId}
+                      showCreateOption={submission.passerRequest}
+                    />
+
+                    {submission.assignedPlayer && (
+                      <div className="assigned-player-info">
+                        <span className="assigned-player-label">{tPass('playerAssignment.current')}</span>
+                        <span className="assigned-player-name">
+                          {submission.assignedPlayer.name} (ID: {submission.assignedPlayerId})
+                        </span>
+                      </div>
+                    )}
+
+                    <div className="action-buttons">
+                      <button
+                        onClick={() => handleSubmission(submission.id, 'approve')}
+                        className="approve-btn"
+                        disabled={disabledButtons[submission.id] || !submission.assignedPlayerId || (submission.passerRequest && !submission.assignedPlayerId)}
+                        title={!submission.assignedPlayerId ? tPass('errors.noPlayer') : 
+                               (submission.passerRequest && !submission.assignedPlayerId) ? tPass('errors.needProfileCreation') : ''}
+                      >
+                        {tPass('buttons.allow')}
+                      </button>
+                      <button
+                        onClick={() => handleSubmission(submission.id, 'decline')}
+                        className="decline-btn"
+                        disabled={disabledButtons[submission.id]}
+                      >
+                        {tPass('buttons.decline')}
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="embed-container">
-                {videoEmbeds[submission.id] ? (
-                  <iframe
-                    src={videoEmbeds[submission.id].embed}
-                    title="Video player"
-                    frameBorder="0"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    allowFullScreen
-                  ></iframe>
-                ) : (
-                  <div
-                    className="thumbnail-container"
-                    style={{
-                      backgroundImage: `url(${videoEmbeds[submission.id]?.image || placeholder})`,
-                    }}
-                  />
-                )}
+                <div className="embed-container">
+                  {videoEmbeds[submission.id] ? (
+                    <iframe
+                      src={videoEmbeds[submission.id].embed}
+                      title="Video player"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                      allowFullScreen
+                    ></iframe>
+                  ) : (
+                    <div
+                      className="thumbnail-container"
+                      style={{
+                        backgroundImage: `url(${videoEmbeds[submission.id]?.image || placeholder})`,
+                      }}
+                    />
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        ))
+          ))
+        )}
+      </div>
+
+      {profileCreation.show && (
+        <ProfileCreationModal
+          profiles={profileCreation.profiles}
+          onComplete={handleProfileCreationComplete}
+          onCancel={() => setProfileCreation({ show: false, submission: null, profiles: [] })}
+        />
       )}
-    </div>
+    </>
   );
 };
 

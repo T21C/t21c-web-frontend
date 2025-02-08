@@ -357,76 +357,82 @@ const PassSubmissionPage = () => {
     return url;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setShowMessage(true)
+    console.log("Submit button clicked");
+    setShowMessage(true);
     setSuccess(false);
+    
     if(!user){
-      console.error("no user");
+      console.error("No user logged in");
       setError(tPass("alert.login"));
-      return 
-    }
-    if (!Object.values(isFormValid).every(Boolean)) {
-      setSubmitAttempt(true)
-      setError(tPass("alert.form"));
-      console.error("incomplete form, returning")
-      return
-    };
-
-    // Check for pending profiles
-    if (pendingProfiles.length > 0) {
-      setError(tPass("alert.pendingProfiles"));
       return;
     }
 
-    setSubmission(true)
+    console.log("Form validation state:", isFormValid);
+    console.log("Form data:", form);
+    
+    if (!Object.values(isFormValid).every(Boolean)) {
+      console.log("Form validation failed. Invalid fields:", 
+        Object.entries(isFormValid)
+          .filter(([key, value]) => !value)
+          .map(([key]) => key)
+      );
+      setSubmitAttempt(true);
+      setError(tPass("alert.form"));
+      return;
+    }
+
+    setSubmission(true);
     setError(null);
 
-    // Clean the video URL before submission
-    const cleanedVideoUrl = cleanVideoUrl(form.videoLink);
+    try {
+      // Clean the video URL before submission
+      const cleanedVideoUrl = cleanVideoUrl(form.videoLink);
 
-    submissionForm.setDetail('levelId', form.levelId);
-    submissionForm.setDetail('videoLink', cleanedVideoUrl);
-    submissionForm.setDetail('passer', form.player?.name || '');
-    submissionForm.setDetail('passerId', form.player?.id);
-    submissionForm.setDetail('passerRequest', form.player?.isNewRequest || false);
-    submissionForm.setDetail('speed', form.speed);
-    submissionForm.setDetail('feelingDifficulty', form.feelingRating);
-    submissionForm.setDetail('title', videoDetail?.title || '');
-    submissionForm.setDetail('videoLink', cleanedVideoUrl);
-    submissionForm.setDetail('rawTime', videoDetail?.timestamp || new Date().toISOString());
+      submissionForm.setDetail('levelId', form.levelId);
+      submissionForm.setDetail('videoLink', cleanedVideoUrl);
+      submissionForm.setDetail('passer', form.player?.name || '');
+      submissionForm.setDetail('passerId', form.player?.id);
+      submissionForm.setDetail('passerRequest', form.player?.isNewRequest || false);
+      submissionForm.setDetail('speed', form.speed);
+      submissionForm.setDetail('feelingDifficulty', form.feelingRating);
+      submissionForm.setDetail('title', videoDetail?.title || '');
+      submissionForm.setDetail('videoLink', cleanedVideoUrl);
+      submissionForm.setDetail('rawTime', videoDetail?.timestamp || new Date().toISOString());
 
-    // Add judgements directly to form
-    submissionForm.setDetail('earlyDouble', parseInt(form.tooEarly) || 0);
-    submissionForm.setDetail('earlySingle', parseInt(form.early) || 0);
-    submissionForm.setDetail('ePerfect', parseInt(form.ePerfect) || 0);
-    submissionForm.setDetail('perfect', parseInt(form.perfect) || 0);
-    submissionForm.setDetail('lPerfect', parseInt(form.lPerfect) || 0);
-    submissionForm.setDetail('lateSingle', parseInt(form.late) || 0);
-    submissionForm.setDetail('lateDouble', 0);
+      // Add judgements directly to form
+      submissionForm.setDetail('earlyDouble', parseInt(form.tooEarly) || 0);
+      submissionForm.setDetail('earlySingle', parseInt(form.early) || 0);
+      submissionForm.setDetail('ePerfect', parseInt(form.ePerfect) || 0);
+      submissionForm.setDetail('perfect', parseInt(form.perfect) || 0);
+      submissionForm.setDetail('lPerfect', parseInt(form.lPerfect) || 0);
+      submissionForm.setDetail('lateSingle', parseInt(form.late) || 0);
+      submissionForm.setDetail('lateDouble', 0);
 
-    // Add flags directly to form
-    submissionForm.setDetail('is12K', IsUDiff && form.is12K);
-    submissionForm.setDetail('isNoHoldTap', form.isNoHold);
-    submissionForm.setDetail('is16K', IsUDiff && form.is16K);
+      // Add flags directly to form
+      submissionForm.setDetail('is12K', IsUDiff && form.is12K);
+      submissionForm.setDetail('isNoHoldTap', form.isNoHold);
+      submissionForm.setDetail('is16K', IsUDiff && form.is16K);
 
-    submissionForm.submit(user.access_token)
-      .then(result => {
-        if (result === "ok") {
-          setSuccess(true);
-          setForm(initialFormState)
-        } else {
-          setError(result);
-        }
-      })
-      .catch(err => {
-        setError(err.message || "Unknown");
-      })
-      .finally(()=>{
-        setSubmission(false)
-        setSubmitAttempt(false);
-      })
-  }
+      const result = await submissionForm.submit(user.access_token);
+      console.log("Submission result:", result);
+      if (result === "ok") {
+        setSuccess(true);
+        setForm(initialFormState);
+        setPendingProfiles([]); // Clear pending profiles after successful submission
+      } else {
+        console.error("Submission error:", result);
+        setError(result);
+      }
+    } catch (err) {
+      console.error("Submission error:", err);
+      setError(err.message || "Unknown error occurred");
+    } finally {
+      setSubmission(false);
+      setSubmitAttempt(false);
+    }
+  };
 
   const handleCloseSuccessMessage = () => {
     setShowMessage(false)
@@ -520,6 +526,18 @@ const PassSubmissionPage = () => {
       ...prev,
       [field]: value
     }));
+
+    // Reset pending profiles when profile selection changes
+    if (field === 'player') {
+      const newPendingProfiles = [];
+      if (value?.isNewRequest) {
+        newPendingProfiles.push({
+          type: 'player',
+          name: value.name
+        });
+      }
+      setPendingProfiles(newPendingProfiles);
+    }
   };
 
   return (
@@ -698,6 +716,7 @@ const PassSubmissionPage = () => {
                 required
                 placeholder={tPass("submInfo.altname")}
                 className={isFormValidDisplay.player ? "" : "error"}
+                allowNewRequest={true}
               />
               <div className="tooltip-container">
                 <input
@@ -901,9 +920,9 @@ const PassSubmissionPage = () => {
             )}
 
             <button 
-              disabled={submission || pendingProfiles.length > 0} 
               className="submit" 
               onClick={handleSubmit}
+              disabled={submission}
             >
               {tPass("submit")}{submission && (<>{tPass("submitWait")}</>)}
             </button>

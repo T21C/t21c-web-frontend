@@ -196,8 +196,8 @@ const ProfilePage = () => {
                   {user && ((!playerId && user.playerId) || playerId === user.playerId) && (
                     <button 
                       className="edit-button"
-                      style={{cursor: "not-allowed", pointerEvents: "none"}}
-                      //onClick={() => navigate('/profile/edit')}
+                      //style={{cursor: "not-allowed", pointerEvents: "none"}}
+                      onClick={() => navigate('/profile/edit')}
                     >
                       <EditIcon color="#777" size={24} />
                       <span style={{color: "#777"}}>Disabled</span>
