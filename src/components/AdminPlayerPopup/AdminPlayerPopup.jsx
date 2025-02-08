@@ -17,8 +17,11 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
 
   const [selectedCountry, setSelectedCountry] = useState(player.country || 'XX');
   const [isBanned, setIsBanned] = useState(player.isBanned || false);
+  const [isSubmissionsPaused, setIsSubmissionsPaused] = useState(player.isSubmissionsPaused || false);
   const [showBanConfirm, setShowBanConfirm] = useState(false);
+  const [showPauseConfirm, setShowPauseConfirm] = useState(false);
   const [pendingBanState, setPendingBanState] = useState(false);
+  const [pendingPauseState, setPendingPauseState] = useState(false);
   const [playerName, setPlayerName] = useState(player.name || '');
   const [discordId, setDiscordId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -125,6 +128,41 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
     } finally {
       setIsLoading(false);
       setShowBanConfirm(false);
+    }
+  };
+
+  const handlePauseChange = (newPauseState) => {
+    setPendingPauseState(newPauseState);
+    setShowPauseConfirm(true);
+  };
+
+  const handlePauseUpdate = async (confirmed) => {
+    if (!confirmed) {
+      setShowPauseConfirm(false);
+      setPendingPauseState(isSubmissionsPaused);
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await api.patch(`${import.meta.env.VITE_PLAYERS}/${player.id}/pause-submissions`, {
+        isSubmissionsPaused: pendingPauseState
+      });
+
+      setIsSubmissionsPaused(pendingPauseState);
+      onUpdate?.({
+        ...player,
+        isSubmissionsPaused: pendingPauseState
+      });
+    } catch (err) {
+      setError(err.response?.data?.details || tAdmin('errors.pauseUpdate'));
+      setPendingPauseState(isSubmissionsPaused);
+      console.error('Error updating pause status:', err);
+    } finally {
+      setIsLoading(false);
+      setShowPauseConfirm(false);
     }
   };
 
@@ -361,6 +399,45 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
             )}
           </div>
 
+          <div className="form-group pause-section">
+            <div className="pause-checkbox-container">
+              <label className="pause-label">
+                <input
+                  type="checkbox"
+                  checked={showPauseConfirm ? pendingPauseState : isSubmissionsPaused}
+                  onChange={(e) => handlePauseChange(e.target.checked)}
+                  disabled={isLoading || showPauseConfirm}
+                />
+                {tAdmin('form.pause.label')}
+              </label>
+            </div>
+            {showPauseConfirm && (
+              <div className="pause-confirm-container">
+                <p className="pause-confirm-message">
+                  {pendingPauseState ? tAdmin('form.pause.confirm.pause') : tAdmin('form.pause.confirm.resume')}
+                </p>
+                <div className="pause-confirm-buttons">
+                  <button
+                    type="button"
+                    onClick={() => handlePauseUpdate(true)}
+                    disabled={isLoading}
+                    className="pause-confirm-button"
+                  >
+                    {tAdmin('form.pause.confirm.buttons.confirm')}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handlePauseUpdate(false)}
+                    disabled={isLoading}
+                    className="pause-cancel-button"
+                  >
+                    {tAdmin('form.pause.confirm.buttons.cancel')}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
           <div className="form-group discord-section">
             <label htmlFor="discordId">{tAdmin('form.discord.label')}</label>
             <div className="discord-input-group">
@@ -532,6 +609,7 @@ AdminPlayerPopup.propTypes = {
     name: PropTypes.string,
     country: PropTypes.string,
     isBanned: PropTypes.bool,
+    isSubmissionsPaused: PropTypes.bool,
     discordUsername: PropTypes.string,
     discordAvatar: PropTypes.string,
     discordAvatarId: PropTypes.string,
@@ -546,6 +624,7 @@ AdminPlayerPopup.defaultProps = {
     name: '',
     country: 'XX',
     isBanned: false,
+    isSubmissionsPaused: false,
     discordUsername: '',
     discordAvatar: null,
     discordAvatarId: null,

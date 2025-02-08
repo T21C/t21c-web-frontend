@@ -183,11 +183,11 @@ const LevelSubmissionPage = () => {
         setForm(initialFormState)
         setSubmitAttempt(false);
       } else {
-        setError(result);
+        setError(result.response.data.error || result || "(Unknown)");
       }
     })
     .catch(err => {
-      setError(err.message || "(Unknown)");
+      setError(err.response.data.error || "(Unknown)");
     })
     .finally(()=>{
       setSubmission(false)
@@ -208,7 +208,7 @@ const LevelSubmissionPage = () => {
           "#888"
         )}}>
           {success ? <p>{tLevel("alert.success")}</p> :
-           error ? <p>{tLevel("alert.error")} {truncateString(error?.message || error?.toString() || error, 27)}</p> :
+           error ? <p>{tLevel("alert.error")} {truncateString(error?.message || error?.toString() || error, 60)}</p> :
            <p>{tLevel("alert.loading")}</p>}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div>
