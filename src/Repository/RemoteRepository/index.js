@@ -25,7 +25,7 @@ function getBilibiliEmbedUrl(data) {
 
   if (bvid) {
     // Construct the iframe src URL
-    return `//player.bilibili.com/player.html?isOutside=true&aid=${aid}&bvid=${bvid}&cid=${cid}&p=1`;
+    return `//player.bilibili.com/player.html?isOutside=true&aid=${aid}&bvid=${bvid}&cid=${cid}&p=1&autoplay=0`;
   } else {
     return null; // Return null if bvid is not found
   }
