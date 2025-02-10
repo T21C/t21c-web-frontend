@@ -598,4 +598,93 @@
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.6);
   margin-top: 0.5rem;
+}
+
+.admin-player-popup .pause-section {
+  border-bottom: 1px solid var(--color-white-t20);
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+}
+
+.admin-player-popup .pause-checkbox-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+}
+
+.admin-player-popup .form-group .pause-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1.1em;
+  color: var(--color-white);
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+.admin-player-popup .pause-label input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: #ff9800;
+}
+
+.admin-player-popup .pause-confirm-container {
+  margin-top: 0;
+  margin-bottom: 15px;
+  padding: 15px;
+  background-color: var(--color-white-t10);
+  border-radius: 4px;
+  text-align: center;
+}
+
+.admin-player-popup .pause-confirm-message {
+  color: var(--color-white);
+  margin: 0 0 15px 0;
+  font-size: 1em;
+}
+
+.admin-player-popup .pause-confirm-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.admin-player-popup .pause-confirm-button {
+  padding: 8px 16px;
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  min-width: 80px;
+  transition: background-color 0.2s;
+}
+
+.admin-player-popup .pause-confirm-button:hover {
+  background-color: #f57c00;
+}
+
+.admin-player-popup .pause-cancel-button {
+  padding: 8px 16px;
+  background-color: var(--color-white-t20);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  min-width: 80px;
+  transition: background-color 0.2s;
+}
+
+.admin-player-popup .pause-cancel-button:hover {
+  background-color: var(--color-white-t30);
+}
+
+.admin-player-popup .pause-confirm-button:disabled,
+.admin-player-popup .pause-cancel-button:disabled {
+  background-color: #888;
+  cursor: not-allowed;
 } 
