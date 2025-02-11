@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import api from "../../../utils/api";
 import { ProfileCreationModal } from './ProfileCreationModal';
+import { SubmissionCreatorPopup } from '../../../components/SubmissionCreatorPopup/SubmissionCreatorPopup';
 import { toast } from "react-hot-toast";
 
 const LevelSubmissions = () => {
@@ -21,6 +22,10 @@ const LevelSubmissions = () => {
     submission: null,
     profiles: []
   });
+  const [showCreatorPopup, setShowCreatorPopup] = useState(false);
+  const [selectedSubmission, setSelectedSubmission] = useState(null);
+  const [selectedCreatorRequest, setSelectedCreatorRequest] = useState(null);
+  const [selectedRole, setSelectedRole] = useState(null);
 
   useEffect(() => {
     fetchPendingSubmissions();
@@ -58,6 +63,10 @@ const LevelSubmissions = () => {
   const fetchPendingSubmissions = async () => {
     try {
       setIsLoading(true);
+      // Reset animation and disabled states when fetching new data
+      setAnimatingCards({});
+      setDisabledButtons({});
+      
       const response = await api.get(`${import.meta.env.VITE_SUBMISSION_API}/levels/pending`);
       const data = await response.data;
       
@@ -66,7 +75,6 @@ const LevelSubmissions = () => {
       console.error('Error fetching submissions:', error);
     } finally {
       setIsLoading(false);
-      // Dispatch event to notify parent that loading is complete
       window.dispatchEvent(new Event('submissionsLoadingComplete'));
     }
   };
@@ -209,6 +217,35 @@ const LevelSubmissions = () => {
     });
   };
 
+  const handleCreatorAction = (submission, request, role) => {
+    // Ensure we have the correct credit stats format
+    if (request?.creator?.credits) {
+      const credits = request.creator.credits;
+      request.creator.credits = {
+        charterCount: credits.charterCount || 0,
+        vfxerCount: credits.vfxerCount || 0,
+        totalCredits: credits.totalCredits || 0
+      };
+    }
+    setSelectedSubmission(submission);
+    setSelectedCreatorRequest(request);
+    setSelectedRole(role);
+    setShowCreatorPopup(true);
+  };
+
+  const handleCreatorPopupClose = () => {
+    setSelectedSubmission(null);
+    setSelectedCreatorRequest(null);
+    setSelectedRole(null);
+    setShowCreatorPopup(false);
+  };
+
+  const handleCreatorUpdate = async () => {
+    await fetchPendingSubmissions();
+    setShowCreatorPopup(false);
+    setSelectedSubmission(null);
+  };
+
   if (submissions?.length === 0 && !isLoading) {
     return <p className="no-submissions">{tLevel('noSubmissions')}</p>;
   }
@@ -236,18 +273,6 @@ const LevelSubmissions = () => {
                   <div className="detail-row">
                     <span className="detail-label">{tLevel('details.artist')}</span>
                     <span className="detail-value">{submission.artist}</span>
-                  </div>
-                  
-                  <div className="detail-row">
-                    <span className="detail-label">{tLevel('details.charter')}</span>
-                    <span className={`detail-value ${submission.charterRequest ? 'pending-profile' : ''}`}>
-                      {submission.charter}
-                      {submission.charterRequest && (
-                        <span className="profile-request-badge">
-                          {tLevel('badges.newProfile')}
-                        </span>
-                      )}
-                    </span>
                   </div>
                   
                   <div className="detail-row">
@@ -290,33 +315,70 @@ const LevelSubmissions = () => {
                     </div>
                   )}
 
-                  {/* Creator Requests */}
-                  {submission.creatorRequests?.map((request, index) => (
-                    <div key={index} className="detail-row">
-                      <span className="detail-label">{tLevel(`details.${request.role}`)}</span>
-                      <span className={`detail-value ${request.isNewRequest ? 'pending-profile' : ''}`}>
-                        {request.creatorName}
-                        {request.isNewRequest && (
-                          <span className="profile-request-badge">
-                            {tLevel('badges.newProfile')}
-                          </span>
-                        )}
-                      </span>
-                    </div>
-                  ))}
+                  {/* Group Creator Requests by Role */}
+                  {(() => {
+                    // Group creators by role
+                    const creatorsByRole = submission.creatorRequests?.reduce((acc, request) => {
+                      if (!acc[request.role]) {
+                        acc[request.role] = [];
+                      }
+                      acc[request.role].push(request);
+                      return acc;
+                    }, {});
+
+                    return Object.entries(creatorsByRole || {}).map(([role, creators]) => (
+                      <div key={role} className="creator-group">
+                        <div className="creator-group-header">
+                          {tLevel(`details.${role}`)}
+                        </div>
+                        <div className="creator-list">
+                          {creators.map((request, index) => (
+                            <div key={index} className="creator-item">
+                              <span className={`creator-name ${request.isNewRequest ? 'pending' : ''}`}>
+                                {request.creatorName}
+                                {request.isNewRequest && (
+                                  <span className="profile-request-badge">
+                                    {tLevel('badges.newRequest')}
+                                  </span>
+                                )}
+                              </span>
+                              <button
+                                className="manage-creator-button"
+                                onClick={() => handleCreatorAction(submission, request, request.role)}
+                              >
+                                {tLevel('buttons.manageCreator')}
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ));
+                  })()}
 
                   {/* Team Request */}
                   {submission.teamRequestData && (
-                    <div className="detail-row">
-                      <span className="detail-label">{tLevel('details.team')}</span>
-                      <span className={`detail-value ${submission.teamRequestData.isNewRequest ? 'pending-profile' : ''}`}>
-                        {submission.teamRequestData.teamName}
-                        {submission.teamRequestData.isNewRequest && (
-                          <span className="profile-request-badge">
-                            {tLevel('badges.newProfile')}
+                    <div className="creator-group">
+                      <div className="creator-group-header">
+                        {tLevel('details.team')}
+                      </div>
+                      <div className="creator-list">
+                        <div className="creator-item">
+                          <span className={`creator-name ${submission.teamRequestData.isNewRequest ? 'pending' : ''}`}>
+                            {submission.teamRequestData.teamName}
+                            {submission.teamRequestData.isNewRequest && (
+                              <span className="profile-request-badge">
+                                {tLevel('badges.newRequest')}
+                              </span>
+                            )}
                           </span>
-                        )}
-                      </span>
+                          <button
+                            className="manage-creator-button"
+                            onClick={() => handleCreatorAction(submission, null, null)}
+                          >
+                            {tLevel('buttons.manageCreator')}
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   )}
 
@@ -364,6 +426,16 @@ const LevelSubmissions = () => {
             </div>
           )))}
       </div>
+
+      {showCreatorPopup && selectedSubmission && (
+        <SubmissionCreatorPopup
+          submission={selectedSubmission}
+          onClose={handleCreatorPopupClose}
+          onUpdate={handleCreatorUpdate}
+          initialRole={selectedRole}
+          initialRequest={selectedCreatorRequest}
+        />
+      )}
 
       {profileCreation.show && (
         <ProfileCreationModal

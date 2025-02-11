@@ -8,6 +8,7 @@ const CustomSelect = ({
   onChange,
   label,
   width = "12rem",
+  maxHeight = "",
   menuPortalTarget = document.body,
   backgroundColor = "rgba(255, 255, 255, 0.2)",
   placeholderColor = "#fff8",
@@ -108,7 +109,8 @@ const CustomSelect = ({
       boxShadow: "0 4px 12px rgba(0, 0, 0, 0.2)",
       overflow: "hidden",
       zIndex: 9999,
-      margin: "4px 0"
+      margin: "4px 0",
+      maxHeight: maxHeight
     }),
     option: (provided, state) => ({
       ...provided,
@@ -145,6 +147,7 @@ const CustomSelect = ({
         }
       }
     }),
+
     placeholder: (provided) => ({
       ...provided,
       color: placeholderColor

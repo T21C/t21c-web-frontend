@@ -89,6 +89,10 @@ const PassSubmissions = () => {
   const fetchPendingSubmissions = async () => {
     try {
       setIsLoading(true);
+      // Reset animation and disabled states when fetching new data
+      setAnimatingCards({});
+      setDisabledButtons({});
+      
       const response = await api.get(`${import.meta.env.VITE_SUBMISSION_API}/passes/pending`);
       const data = await response.data;
       

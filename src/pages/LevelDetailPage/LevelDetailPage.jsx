@@ -401,9 +401,7 @@ const LevelDetailPage = () => {
         acc[role] = [];
       }
       // Use the creator's first alias if available, otherwise use name
-      const creatorName = credit.creator.aliases?.length > 0 
-        ? credit.creator.aliases[0]
-        : credit.creator.name;
+      const creatorName = credit.creator.name;
       acc[role].push(creatorName);
       return acc;
     }, {});

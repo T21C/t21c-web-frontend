@@ -1,0 +1,438 @@
+.submission-creator-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.submission-creator-popup {
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.submission-creator-popup .popup-header {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.submission-creator-popup .popup-header h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.25em;
+}
+
+.submission-creator-popup .close-button {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.5em;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.submission-creator-popup .popup-content {
+  padding: 16px;
+}
+
+.submission-creator-popup .role-selector {
+  margin-bottom: 20px;
+}
+
+.submission-creator-popup .role-selector label {
+  display: block;
+  margin-bottom: 8px;
+  color: #ffffff;
+}
+
+.submission-creator-popup .creator-selection {
+  margin-top: 20px;
+  padding: 16px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.submission-creator-popup .current-creator {
+  margin-bottom: 16px;
+}
+
+.submission-creator-popup .current-creator-header {
+  color: #aaa;
+  font-size: 0.9em;
+  margin-bottom: 8px;
+}
+
+.submission-creator-popup .current-creator-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.submission-creator-popup .creator-name-display {
+  color: #fff;
+  font-size: 1.1em;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.submission-creator-popup .aliases {
+  color: #aaa;
+  font-size: 0.9em;
+  margin-left: 8px;
+}
+
+.submission-creator-popup .creator-discord {
+  color: #7289DA; /* Discord blue color */
+  font-size: 0.9em;
+  margin-left: 8px;
+}
+
+.submission-creator-popup .verified-status {
+  color: #4CAF50; /* Green color */
+  font-weight: 600;
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.submission-creator-popup .creator-stats {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.submission-creator-popup .creator-stats h3 {
+  color: #fff;
+  font-size: 1em;
+  margin: 0 0 12px 0;
+}
+
+.submission-creator-popup .stats-content {
+  color: #aaa;
+  font-size: 0.9em;
+}
+
+.submission-creator-popup .stats-content p {
+  margin: 4px 0;
+}
+
+.submission-creator-popup .action-buttons {
+  margin-top: 24px;
+  display: flex;
+  gap: 12px;
+}
+
+.submission-creator-popup .action-button,
+.submission-creator-popup .confirm-button,
+.submission-creator-popup .cancel-button {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submission-creator-popup .action-button,
+.submission-creator-popup .confirm-button {
+  background-color: #4CAF50;
+  color: #ffffff;
+}
+
+.submission-creator-popup .cancel-button {
+  background-color: #666;
+  color: #ffffff;
+}
+
+.submission-creator-popup .action-button:hover:not(:disabled),
+.submission-creator-popup .confirm-button:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+.submission-creator-popup .cancel-button:hover:not(:disabled) {
+  background-color: #777;
+}
+
+.submission-creator-popup .action-button:disabled,
+.submission-creator-popup .confirm-button:disabled,
+.submission-creator-popup .cancel-button:disabled {
+  background-color: #888;
+  cursor: not-allowed;
+}
+
+.submission-creator-popup .error-message {
+  color: #f44336;
+  margin-top: 12px;
+  font-size: 0.9em;
+  text-align: center;
+}
+
+.submission-creator-popup .success-message {
+  color: #4CAF50;
+  margin-top: 12px;
+  font-size: 0.9em;
+  text-align: center;
+}
+
+.submission-creator-popup-overlay .mode-selector {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.submission-creator-popup-overlay .mode-button {
+  flex: 1;
+  padding: 10px 16px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.submission-creator-popup-overlay .mode-button.active {
+  background-color: #4CAF50;
+  border-color: #4CAF50;
+}
+
+.submission-creator-popup-overlay .mode-button:hover:not(.active) {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.submission-creator-popup-overlay .role-select {
+  width: 100%;
+}
+
+.submission-creator-popup-overlay .assign-section,
+.submission-creator-popup-overlay .create-section {
+  margin-top: 24px;
+}
+
+.submission-creator-popup-overlay .form-group {
+  margin-bottom: 20px;
+}
+
+.submission-creator-popup-overlay .form-group label {
+  display: block;
+  color: #ffffff;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.submission-creator-popup-overlay .form-group input {
+  width: 100%;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: #ffffff;
+  font-size: 1em;
+}
+
+.submission-creator-popup-overlay .alias-input {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.submission-creator-popup-overlay .alias-input input {
+  flex: 1;
+}
+
+.submission-creator-popup-overlay .alias-input button {
+  padding: 10px 16px;
+  background-color: #4CAF50;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submission-creator-popup-overlay .aliases-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.submission-creator-popup-overlay .alias-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: #ffffff;
+}
+
+.submission-creator-popup-overlay .alias-tag button {
+  background: none;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 2px;
+  font-size: 1.1em;
+}
+
+.submission-creator-popup-overlay .creator-search-section {
+  margin-top: 16px;
+}
+
+.submission-creator-popup-overlay .search-input-wrapper {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.submission-creator-popup-overlay .search-input {
+  width: 100%;
+  padding: 10px;
+  padding-right: 36px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 1em;
+}
+
+.submission-creator-popup-overlay .search-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.submission-creator-popup-overlay .search-results {
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: #2a2a2a;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.submission-creator-popup-overlay .creator-result-item {
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.submission-creator-popup-overlay .creator-result-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.submission-creator-popup-overlay .creator-result-item .aliases {
+  color: #aaa;
+  font-size: 0.9em;
+  margin-left: 8px;
+}
+
+.submission-creator-popup-overlay .no-results {
+  padding: 12px;
+  text-align: center;
+  color: #aaa;
+}
+
+/* Creator Search Section */
+.submission-creator-popup .creator-search-section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.submission-creator-popup .search-input-wrapper {
+  position: relative;
+  margin-bottom: 12px;
+}
+
+.submission-creator-popup .search-input {
+  width: 100%;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 1em;
+}
+
+.submission-creator-popup .search-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.submission-creator-popup .search-status {
+  color: #aaa;
+  font-size: 0.9em;
+  text-align: center;
+  padding: 8px;
+}
+
+.submission-creator-popup .search-results {
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.submission-creator-popup .creator-result {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: #fff;
+}
+
+.submission-creator-popup .creator-result:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.submission-creator-popup .creator-result .creator-name {
+  font-weight: 500;
+}
+
+.submission-creator-popup .creator-result .creator-aliases {
+  color: #aaa;
+  font-size: 0.9em;
+  margin-left: 8px;
+}
+
+/* Scrollbar Styles */
+.submission-creator-popup .search-results::-webkit-scrollbar {
+  width: 8px;
+}
+
+.submission-creator-popup .search-results::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.submission-creator-popup .search-results::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.submission-creator-popup .search-results::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+} 
