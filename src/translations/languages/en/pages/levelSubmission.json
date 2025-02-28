@@ -30,5 +30,9 @@
     "loading": "Submitting...",
     "login": "Please log in to submit a level",
     "form": "Please fill in all required fields correctly"
+  },
+  "buttons": {
+    "addCharter": "Add Charter",
+    "addVfxer": "Add VFX-er"
   }
 } 
