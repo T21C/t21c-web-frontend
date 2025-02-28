@@ -16,6 +16,14 @@
     "loading": "Searching...",
     "noResults": "No creators found"
   },
+  "createForm": {
+    "title": "Create New Creator",
+    "name": "Creator Name",
+    "namePlaceholder": "Enter creator name",
+    "aliases": "Aliases (Optional)",
+    "aliasesPlaceholder": "Enter aliases separated by commas",
+    "aliasesHelp": "Add multiple aliases separated by commas (e.g. alias1, alias2)"
+  },
   "form": {
     "name": "Creator Name",
     "namePlaceholder": "Enter creator name",
@@ -40,14 +48,18 @@
     "assign": "Assign Creator",
     "confirm": "Confirm Assignment",
     "cancel": "Cancel",
-    "create": "Create & Assign",
+    "create": "Create Creator",
+    "creating": "Creating...",
+    "createNew": "Create New",
     "addAlias": "Add Alias",
     "change": "Change",
     "select": "Select Creator"
   },
   "messages": {
-    "creatorCreated": "Creator created successfully",
-    "creatorAssigned": "Creator assigned successfully",
+    "success": {
+      "creatorCreated": "Creator created successfully",
+      "creatorAssigned": "Creator assigned successfully"
+    },
     "error": {
       "createFailed": "Failed to create creator",
       "assignFailed": "Failed to assign creator",

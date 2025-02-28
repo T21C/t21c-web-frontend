@@ -435,4 +435,105 @@
 
 .submission-creator-popup .search-results::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
+}
+
+.submission-creator-popup  .search-input-wrapper {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.submission-creator-popup  .search-input {
+  flex: 1;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.submission-creator-popup  .create-creator-button {
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.submission-creator-popup  .create-creator-button:hover {
+  background-color: #45a049;
+}
+
+.submission-creator-popup  .create-creator-form {
+  background-color: #ffffff0f;
+  padding: 20px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+.submission-creator-popup  .create-creator-form h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #e1e1e1;
+}
+
+.submission-creator-popup  .form-group {
+  margin-bottom: 15px;
+}
+
+.submission-creator-popup  .form-group label {
+  display: block;
+  margin-bottom: 5px;
+  color: #c6c6c6;
+}
+
+.submission-creator-popup  .form-group input {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.submission-creator-popup  .form-group small {
+  display: block;
+  margin-top: 5px;
+  color: #666;
+  font-size: 0.85em;
+}
+
+.submission-creator-popup  .form-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.submission-creator-popup  .cancel-button {
+  padding: 8px 16px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submission-creator-popup  .cancel-button:hover {
+  background-color: #da190b;
+}
+
+.submission-creator-popup  .submit-button {
+  padding: 8px 16px;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.submission-creator-popup  .submit-button:hover {
+  background-color: #0b7dda;
+}
+
+.submission-creator-popup  .submit-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
 } 

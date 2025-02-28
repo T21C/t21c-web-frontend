@@ -33,6 +33,12 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
 
+  // Create creator state
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [newCreatorName, setNewCreatorName] = useState('');
+  const [newCreatorAliases, setNewCreatorAliases] = useState('');
+  const [isCreating, setIsCreating] = useState(false);
+
   // Initialize with selected creator if one exists
   useEffect(() => {
     if (initialRequest?.creatorId) {
@@ -55,7 +61,6 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
         setSearchResults(Array.isArray(response.data) ? response.data : []);
       } catch (error) {
         console.error('Error searching creators:', error);
-
         setError(tCreator('messages.error.searchFailed'));
         setSearchResults([]);
       } finally {
@@ -91,6 +96,37 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
     fetchCreatorDetails(creator.id);
     setSearchQuery('');
     setSearchResults([]);
+    setShowCreateForm(false);
+  };
+
+  const handleCreateCreator = async (e) => {
+    e.preventDefault();
+    setIsCreating(true);
+    setError('');
+
+    try {
+      const aliases = newCreatorAliases
+        .split(',')
+        .map(alias => alias.trim())
+        .filter(alias => alias.length > 0);
+
+      const response = await api.post(`${import.meta.env.VITE_CREATORS}`, {
+        name: newCreatorName.trim(),
+        aliases
+      });
+
+      const newCreator = response.data;
+      handleSelectCreator(newCreator);
+      setShowCreateForm(false);
+      setNewCreatorName('');
+      setNewCreatorAliases('');
+      toast.success(tCreator('messages.success.creatorCreated'));
+    } catch (error) {
+      console.error('Error creating creator:', error);
+      setError(error.response?.data?.error || tCreator('messages.error.createFailed'));
+    } finally {
+      setIsCreating(false);
+    }
   };
 
   const handleAssignCreator = async () => {
@@ -210,38 +246,88 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
             </div>
 
             <div className="creator-search-section">
-              <div className="search-input-wrapper">
-                <input
-                  type="text"
-                  className="search-input"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={tCreator('search.placeholder')}
-                />
-              </div>
-              {isSearching ? (
-                <div className="search-status">{tCreator('search.loading')}</div>
-              ) : searchQuery && (!Array.isArray(searchResults) || searchResults.length === 0) ? (
-                <div className="search-status">{tCreator('search.noResults')}</div>
-              ) : (
-                <div className="search-results">
-                  {Array.isArray(searchResults) && searchResults.map((creator) => (
-                    <div
-                      key={creator.id}
-                      className="creator-result"
-                      onClick={() => handleSelectCreator(creator)}
+              {!showCreateForm ? (
+                <>
+                  <div className="search-input-wrapper">
+                    <input
+                      type="text"
+                      className="search-input"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      placeholder={tCreator('search.placeholder')}
+                    />
+                    <button 
+                      className="create-creator-button"
+                      onClick={() => setShowCreateForm(true)}
                     >
-                      <span className="creator-name">
-                        {creator.name} (ID: {creator.id})
-                      </span>
-                      {creator.aliases?.length > 0 && (
-                        <span className="creator-aliases">
-                          [{creator.aliases.join(', ')}]
-                        </span>
-                      )}
+                      {tCreator('buttons.createNew')}
+                    </button>
+                  </div>
+                  {isSearching ? (
+                    <div className="search-status">{tCreator('search.loading')}</div>
+                  ) : searchQuery && (!Array.isArray(searchResults) || searchResults.length === 0) ? (
+                    <div className="search-status">{tCreator('search.noResults')}</div>
+                  ) : (
+                    <div className="search-results">
+                      {Array.isArray(searchResults) && searchResults.map((creator) => (
+                        <div
+                          key={creator.id}
+                          className="creator-result"
+                          onClick={() => handleSelectCreator(creator)}
+                        >
+                          <span className="creator-name">
+                            {creator.name} (ID: {creator.id})
+                          </span>
+                          {creator.aliases?.length > 0 && (
+                            <span className="creator-aliases">
+                              [{creator.aliases.join(', ')}]
+                            </span>
+                          )}
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  )}
+                </>
+              ) : (
+                <form onSubmit={handleCreateCreator} className="create-creator-form">
+                  <h3>{tCreator('createForm.title')}</h3>
+                  <div className="form-group">
+                    <label>{tCreator('createForm.name')}</label>
+                    <input
+                      type="text"
+                      value={newCreatorName}
+                      onChange={(e) => setNewCreatorName(e.target.value)}
+                      placeholder={tCreator('createForm.namePlaceholder')}
+                      required
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label>{tCreator('createForm.aliases')}</label>
+                    <input
+                      type="text"
+                      value={newCreatorAliases}
+                      onChange={(e) => setNewCreatorAliases(e.target.value)}
+                      placeholder={tCreator('createForm.aliasesPlaceholder')}
+                    />
+                    <small>{tCreator('createForm.aliasesHelp')}</small>
+                  </div>
+                  <div className="form-buttons">
+                    <button
+                      type="button"
+                      onClick={() => setShowCreateForm(false)}
+                      className="cancel-button"
+                    >
+                      {tCreator('buttons.cancel')}
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isCreating || !newCreatorName.trim()}
+                      className="submit-button"
+                    >
+                      {isCreating ? tCreator('buttons.creating') : tCreator('buttons.create')}
+                    </button>
+                  </div>
+                </form>
               )}
             </div>
 
