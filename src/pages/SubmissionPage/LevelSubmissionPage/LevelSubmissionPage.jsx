@@ -287,30 +287,54 @@ const LevelSubmissionPage = () => {
   };
 
   const addCharter = () => {
+    if (!Array.isArray(charters)) {
+      setCharters([{ name: '', id: null, isNewRequest: false }]);
+      return;
+    }
     setCharters([...charters, { name: '', id: null, isNewRequest: false }]);
   };
 
   const removeCharter = (index) => {
+    if (!Array.isArray(charters)) {
+      setCharters([{ name: '', id: null, isNewRequest: false }]);
+      return;
+    }
     setCharters(charters.filter((_, i) => i !== index));
   };
 
   const addVfxer = () => {
+    if (!Array.isArray(vfxers)) {
+      setVfxers([{ name: '', id: null, isNewRequest: false }]);
+      return;
+    }
     setVfxers([...vfxers, { name: '', id: null, isNewRequest: false }]);
   };
 
   const removeVfxer = (index) => {
+    if (!Array.isArray(vfxers)) {
+      setVfxers([{ name: '', id: null, isNewRequest: false }]);
+      return;
+    }
     setVfxers(vfxers.filter((_, i) => i !== index));
   };
 
   const handleCharterChange = (index, value) => {
+    if (!Array.isArray(charters)) {
+      setCharters([{ name: '', id: null, isNewRequest: false }]);
+      return;
+    }
     setCharters(prev => prev.map((charter, i) => 
-      i === index ? value : charter
+      i === index ? (value || { name: '', id: null, isNewRequest: false }) : charter
     ));
   };
 
   const handleVfxerChange = (index, value) => {
+    if (!Array.isArray(vfxers)) {
+      setVfxers([{ name: '', id: null, isNewRequest: false }]);
+      return;
+    }
     setVfxers(prev => prev.map((vfxer, i) => 
-      i === index ? value : vfxer
+      i === index ? (value || { name: '', id: null, isNewRequest: false }) : vfxer
     ));
   };
 
@@ -485,11 +509,11 @@ const LevelSubmissionPage = () => {
 
             <div className="creators-section">
               <h3>{tLevel("submInfo.charters")}</h3>
-              {charters.map((charter, index) => (
+              {Array.isArray(charters) && charters.map((charter, index) => (
                 <div key={index} className="creator-row">
                   <ProfileSelector
                     type="charter"
-                    value={charter}
+                    value={charter || { name: '', id: null, isNewRequest: false }}
                     onChange={(value) => handleCharterChange(index, value)}
                     allowNewRequest
                     required={index === 0}
@@ -517,11 +541,11 @@ const LevelSubmissionPage = () => {
 
             <div className="creators-section">
               <h3>{tLevel("submInfo.vfxers")}</h3>
-              {vfxers.map((vfxer, index) => (
+              {Array.isArray(vfxers) && vfxers.map((vfxer, index) => (
                 <div key={index} className="creator-row">
                   <ProfileSelector
                     type="vfx"
-                    value={vfxer}
+                    value={vfxer || { name: '', id: null, isNewRequest: false }}
                     onChange={(value) => handleVfxerChange(index, value)}
                     allowNewRequest
                     required={index === 0}
