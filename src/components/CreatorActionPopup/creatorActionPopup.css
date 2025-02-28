@@ -1,5 +1,4 @@
-.creator-action-popup-container {
-  /* CreatorActionPopup styles */
+
   .creator-action-popup-overlay {
     position: fixed;
     top: 0;
@@ -16,7 +15,7 @@
     -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
   }
 
-  .creator-action-popup {
+  .creator-action-popup-overlay .creator-action-popup {
     background-color: #1a1a1a;
     border-radius: 8px;
     padding: 24px;
@@ -31,22 +30,22 @@
     scrollbar-color: #404040 #1a1a1a;
   }
 
-  .creator-action-popup::-webkit-scrollbar {
+  .creator-action-popup-overlay .creator-action-popup::-webkit-scrollbar {
     width: 8px;
   }
 
-  .creator-action-popup::-webkit-scrollbar-track {
+  .creator-action-popup-overlay  .creator-action-popup::-webkit-scrollbar-track {
     background: #1a1a1a;
     border-radius: 4px;
   }
 
-  .creator-action-popup::-webkit-scrollbar-thumb {
+  .creator-action-popup-overlay .creator-action-popup::-webkit-scrollbar-thumb {
     background-color: #404040;
     border-radius: 4px;
     border: 2px solid #1a1a1a;
   }
 
-  .close-popup-btn {
+  .creator-action-popup-overlay .close-popup-btn {
     position: absolute;
     top: 16px;
     right: 16px;
@@ -67,17 +66,17 @@
     transform: scale(1.1);
   }
 
-  .popup-header {
+  .creator-action-popup-overlay .popup-header {
     margin-bottom: 24px;
   }
 
-  .popup-header h2 {
+  .creator-action-popup-overlay .popup-header h2 {
     margin: 0 0 16px 0;
     font-size: 1.5rem;
     color: #ffffff;
   }
 
-  .mode-selector {
+  .creator-action-popup-overlay .mode-selector {
     display: flex;
     gap: 8px;
     margin-bottom: 24px;
@@ -85,7 +84,7 @@
     justify-content: center;
   }
 
-  .mode-btn {
+  .creator-action-popup-overlay .mode-btn {
     padding: 8px 16px;
     border: none;
     border-radius: 4px;
@@ -99,29 +98,29 @@
     text-align: center;
   }
 
-  .mode-btn.active {
+  .creator-action-popup-overlay .mode-btn.active {
     background-color: #007bff;
     color: #ffffff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   }
 
-  .mode-btn:hover:not(.active) {
+  .creator-action-popup-overlay .mode-btn:hover:not(.active) {
     background-color: #3a3a3a;
     transform: translateY(-1px);
   }
 
-  .form-group {
+  .creator-action-popup-overlay .form-group {
     margin-bottom: 24px;
   }
 
-  .form-group label {
+  .creator-action-popup-overlay .form-group label {
     display: block;
     margin-bottom: 8px;
     color: #a0a0a0;
     font-weight: 500;
   }
 
-  .form-group input[type="text"] {
+  .creator-action-popup-overlay .form-group input[type="text"] {
     width: 100%;
     padding: 10px 12px;
     border: 1px solid #404040;
@@ -131,13 +130,13 @@
     transition: all 0.2s ease;
   }
 
-  .form-group input[type="text"]:focus {
+  .creator-action-popup-overlay .form-group input[type="text"]:focus {
     outline: none;
     border-color: #007bff;
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
   }
 
-  .form-group .checkbox-label {
+  .creator-action-popup-overlay .form-group .checkbox-label {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -147,23 +146,23 @@
     transition: background-color 0.2s ease;
   }
 
-  .form-group .checkbox-label:hover {
+  .creator-action-popup-overlay .form-group .checkbox-label:hover {
     background-color: #2a2a2a;
   }
 
-  .form-group .checkbox-label input[type="checkbox"] {
+  .creator-action-popup-overlay .form-group .checkbox-label input[type="checkbox"] {
     margin: 0;
     width: 16px;
     height: 16px;
   }
 
-  .alias-input-group {
+  .creator-action-popup-overlay .alias-input-group {
     display: flex;
     gap: 8px;
     margin-bottom: 12px;
   }
 
-  .alias-input-group button {
+  .creator-action-popup-overlay .alias-input-group button {
     padding: 8px 16px;
     background-color: #007bff;
     color: #ffffff;
@@ -174,19 +173,19 @@
     font-weight: 500;
   }
 
-  .alias-input-group button:hover {
+  .creator-action-popup-overlay .alias-input-group button:hover {
     background-color: #0056b3;
     transform: translateY(-1px);
   }
 
-  .aliases-list {
+  .creator-action-popup-overlay .aliases-list {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     padding: 4px;
   }
 
-  .alias-tag {
+  .creator-action-popup-overlay .alias-tag {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -196,11 +195,11 @@
     transition: all 0.2s ease;
   }
 
-  .alias-tag:hover {
+  .creator-action-popup-overlay .alias-tag:hover {
     background-color: #3a3a3a;
   }
 
-  .alias-tag button {
+  .creator-action-popup-overlay .alias-tag button {
     background: none;
     border: none;
     color: #a0a0a0;
@@ -213,12 +212,12 @@
     justify-content: center;
   }
 
-  .alias-tag button:hover {
+  .creator-action-popup-overlay .alias-tag button:hover {
     background-color: rgba(255, 0, 0, 0.1);
     color: #ff4444;
   }
 
-  .action-button {
+  .creator-action-popup-overlay .action-button {
     width: 100%;
     padding: 12px;
     background-color: #007bff;
@@ -232,22 +231,22 @@
     overflow: hidden;
   }
 
-  .action-button:not(:disabled):hover {
+  .creator-action-popup-overlay .action-button:not(:disabled):hover {
     background-color: #0056b3;
     transform: translateY(-1px);
   }
 
-  .action-button:disabled {
+  .creator-action-popup-overlay .action-button:disabled {
     background-color: #2a2a2a;
     cursor: not-allowed;
     opacity: 0.7;
   }
 
-  .action-button.loading {
+  .creator-action-popup-overlay .action-button.loading {
     color: transparent;
   }
 
-  .spinner {
+  .creator-action-popup-overlay .spinner {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -257,31 +256,31 @@
     animation: spin 1s linear infinite;
   }
 
-  .spinner circle {
+  .creator-action-popup-overlay .spinner circle {
     stroke: #ffffff;
     stroke-linecap: round;
     animation: dash 1.5s ease-in-out infinite;
   }
 
   /* Discord section specific styles */
-  .discord-form {
+  .creator-action-popup-overlay .discord-form {
     background-color: #2a2a2a;
     border-radius: 6px;
     padding: 16px;
     margin-bottom: 16px;
   }
 
-  .discord-input-group {
+  .creator-action-popup-overlay .discord-input-group {
     display: flex;
     gap: 8px;
     margin-bottom: 16px;
   }
 
-  .discord-input-group input {
+  .creator-action-popup-overlay .discord-input-group input {
     flex: 1;
   }
 
-  .fetch-discord-button {
+  .creator-action-popup-overlay .fetch-discord-button {
     padding: 8px 16px;
     background-color: #007bff;
     color: #ffffff;
@@ -293,17 +292,17 @@
     white-space: nowrap;
   }
 
-  .fetch-discord-button:hover:not(:disabled) {
+  .creator-action-popup-overlay .fetch-discord-button:hover:not(:disabled) {
     background-color: #0056b3;
     transform: translateY(-1px);
   }
 
-  .fetch-discord-button:disabled {
+  .creator-action-popup-overlay .fetch-discord-button:disabled {
     opacity: 0.7;
     cursor: not-allowed;
   }
 
-  .discord-info {
+  .creator-action-popup-overlay .discord-info {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -314,14 +313,14 @@
     border: 1px solid #404040;
   }
 
-  .discord-avatar {
+  .creator-action-popup-overlay .discord-avatar {
     width: 48px;
     height: 48px;
     border-radius: 50%;
     border: 2px solid #007bff;
   }
 
-  .discord-info-header {
+  .creator-action-popup-overlay .discord-info-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -329,25 +328,25 @@
     gap: 12px;
   }
 
-  .discord-info-header-content {
+  .creator-action-popup-overlay .discord-info-header-content {
     display: flex;
     flex-direction: column;
     gap: 4px;
   }
 
-  .discord-username {
+  .creator-action-popup-overlay .discord-username {
     font-weight: 600;
     margin: 0;
     color: #ffffff;
   }
 
-  .discord-id {
+  .creator-action-popup-overlay .discord-id {
     color: #a0a0a0;
     font-size: 0.9em;
     margin: 0;
   }
 
-  .discord-delete-button {
+  .creator-action-popup-overlay .discord-delete-button {
     padding: 8px 16px;
     background-color: #dc3545;
     color: #ffffff;
@@ -358,12 +357,12 @@
     font-weight: 500;
   }
 
-  .discord-delete-button:hover:not(:disabled) {
+  .creator-action-popup-overlay .discord-delete-button:hover:not(:disabled) {
     background-color: #c82333;
     transform: translateY(-1px);
   }
 
-  .discord-confirm-container {
+  .creator-action-popup-overlay .discord-confirm-container {
     margin-top: 16px;
     padding: 20px;
     background-color: #1a1a1a;
@@ -371,7 +370,7 @@
     border: 1px solid #404040;
   }
 
-  .discord-preview {
+  .creator-action-popup-overlay .discord-preview {
     display: flex;
     align-items: center;
     gap: 16px;
@@ -381,21 +380,21 @@
     border-radius: 4px;
   }
 
-  .discord-confirm-message {
+  .creator-action-popup-overlay .discord-confirm-message {
     margin: 16px 0;
     color: #a0a0a0;
     text-align: center;
     font-weight: 500;
   }
 
-  .discord-confirm-buttons {
+  .creator-action-popup-overlay .discord-confirm-buttons {
     display: flex;
     gap: 12px;
     justify-content: center;
   }
 
-  .discord-confirm-button,
-  .discord-cancel-button {
+  .creator-action-popup-overlay .discord-confirm-button,
+  .creator-action-popup-overlay .discord-cancel-button {
     padding: 10px 20px;
     border: none;
     border-radius: 4px;
@@ -405,27 +404,27 @@
     min-width: 100px;
   }
 
-  .discord-confirm-button {
+  .creator-action-popup-overlay .discord-confirm-button {
     background-color: #007bff;
     color: #ffffff;
   }
 
-  .discord-confirm-button:hover:not(:disabled) {
+  .creator-action-popup-overlay .discord-confirm-button:hover:not(:disabled) {
     background-color: #0056b3;
     transform: translateY(-1px);
   }
 
-  .discord-cancel-button {
+  .creator-action-popup-overlay .discord-cancel-button {
     background-color: #3a3a3a;
     color: #ffffff;
   }
 
-  .discord-cancel-button:hover:not(:disabled) {
+  .creator-action-popup-overlay .discord-cancel-button:hover:not(:disabled) {
     background-color: #2a2a2a;
     transform: translateY(-1px);
   }
 
-  .error-message {
+  .creator-action-popup-overlay .error-message {
     color: #ff4444;
     margin-bottom: 16px;
     padding: 12px;
@@ -437,7 +436,7 @@
     gap: 8px;
   }
 
-  .success-message {
+  .creator-action-popup-overlay .success-message {
     color: #28a745;
     margin-bottom: 16px;
     padding: 12px;
@@ -449,11 +448,11 @@
     gap: 8px;
   }
 
-  .popup-content {
+  .creator-action-popup-overlay .popup-content {
     min-height: 300px;
   }
 
-  .warning-notice {
+  .creator-action-popup-overlay .warning-notice {
     background-color: rgba(255, 193, 7, 0.1);
     border: 1px solid #ffc107;
     border-radius: 6px;
@@ -464,76 +463,76 @@
     align-items: flex-start;
   }
 
-  .warning-notice-icon {
+  .creator-action-popup-overlay .warning-notice-icon {
     color: #ffc107;
     font-size: 20px;
     flex-shrink: 0;
   }
 
-  .warning-notice-content {
+  .creator-action-popup-overlay .warning-notice-content {
     color: #ffd54f;
     font-size: 0.95rem;
     line-height: 1.5;
   }
 
-  .warning-notice-content strong {
+  .creator-action-popup-overlay .warning-notice-content strong {
     color: #ffc107;
     font-weight: 600;
   }
 
-  .tab-content {
+  .creator-action-popup-overlay .tab-content {
     opacity: 1;
     transform: translateY(0);
     transition: opacity 0.3s ease, transform 0.3s ease, height 0.3s ease-in-out;
   }
 
-  .tab-content.entering {
+  .creator-action-popup-overlay .tab-content.entering {
     opacity: 0;
     transform: translateY(10px);
   }
 
-  .tab-content.exiting {
+  .creator-action-popup-overlay .tab-content.exiting {
     opacity: 0;
     transform: translateY(-10px);
   }
 
   /* Split form specific styles */
-  .split-form {
+  .creator-action-popup-overlay .split-form {
     background-color: #2a2a2a;
     border-radius: 6px;
     padding: 16px;
     margin-bottom: 16px;
   }
 
-  .split-names-list {
+  .creator-action-popup-overlay .split-names-list {
     display: flex;
     flex-direction: column;
     gap: 12px;
     margin-bottom: 16px;
   }
 
-  .split-name-input {
+  .creator-action-popup-overlay .split-name-input {
     display: flex;
     gap: 8px;
     align-items: center;
   }
 
-  .split-name-role-container {
+  .creator-action-popup-overlay .split-name-role-container {
     display: flex;
     gap: 8px;
     flex: 1;
   }
 
-  .split-name-role-container input {
+  .creator-action-popup-overlay .split-name-role-container input {
     flex: 2;
   }
 
-  .split-name-role-container > div {
+  .creator-action-popup-overlay .split-name-role-container > div {
     flex: 1;
     min-width: 120px;
   }
 
-  .split-name-input input {
+  .creator-action-popup-overlay .split-name-input input {
     padding: 10px 12px;
     border: 1px solid #404040;
     border-radius: 4px;
@@ -542,13 +541,13 @@
     transition: all 0.2s ease;
   }
 
-  .split-name-input input:focus {
+  .creator-action-popup-overlay .split-name-input input:focus {
     outline: none;
     border-color: #007bff;
     box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.1);
   }
 
-  .remove-name-button {
+  .creator-action-popup-overlay .remove-name-button {
     background: none;
     border: none;
     color: #ff4444;
@@ -562,12 +561,12 @@
     font-size: 18px;
   }
 
-  .remove-name-button:hover {
+  .creator-action-popup-overlay .remove-name-button:hover {
     background-color: rgba(255, 68, 68, 0.1);
     transform: scale(1.1);
   }
 
-  .add-name-button {
+  .creator-action-popup-overlay .add-name-button {
     width: 100%;
     padding: 10px;
     background-color: #2a2a2a;
@@ -579,7 +578,7 @@
     margin-top: 8px;
   }
 
-  .add-name-button:hover {
+  .creator-action-popup-overlay .add-name-button:hover {
     background-color: rgba(0, 123, 255, 0.1);
     border-color: #007bff;
   }
@@ -591,50 +590,50 @@
       margin: 16px;
     }
 
-    .popup-content {
+    .creator-action-popup-overlay .popup-content {
       min-height: 350px;
     }
 
-    .mode-selector {
+    .creator-action-popup-overlay .mode-selector {
       flex-direction: column;
     }
 
-    .mode-btn {
+    .creator-action-popup-overlay .mode-btn {
       width: 100%;
       min-width: unset;
     }
 
-    .discord-info-header {
+    .creator-action-popup-overlay .discord-info-header {
       flex-direction: column;
       align-items: flex-start;
     }
 
-    .discord-delete-button {
+    .creator-action-popup-overlay .discord-delete-button {
       width: 100%;
     }
 
-    .discord-confirm-buttons {
+    .creator-action-popup-overlay .discord-confirm-buttons {
       flex-direction: column;
     }
 
-    .discord-confirm-button,
-    .discord-cancel-button {
+    .creator-action-popup-overlay .discord-confirm-button,
+    .creator-action-popup-overlay .discord-cancel-button {
       width: 100%;
     }
 
-    .split-name-input {
+    .creator-action-popup-overlay .split-name-input {
       flex-direction: row;
     }
 
-    .add-name-button {
+    .creator-action-popup-overlay .add-name-button {
       padding: 12px;
     }
 
-    .split-name-role-container {
+    .creator-action-popup-overlay .split-name-role-container {
       flex-direction: column;
     }
 
-    .split-name-role-container > div {
+    .creator-action-popup-overlay .split-name-role-container > div {
       width: 100%;
       min-width: unset;
     }
@@ -665,7 +664,7 @@
   }
 
   /* Linked User styles */
-  .linked-user-info {
+  .creator-action-popup-overlay .linked-user-info {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -675,33 +674,33 @@
     border: 1px solid #404040;
   }
 
-  .user-avatar {
+  .creator-action-popup-overlay .user-avatar {
     width: 40px;
     height: 40px;
     border-radius: 50%;
     border: 2px solid #007bff;
   }
 
-  .user-info-content {
+  .creator-action-popup-overlay .user-info-content {
     display: flex;
     flex-direction: column;
     gap: 8px;
     flex-grow: 1;
   }
 
-  .user-username {
+  .creator-action-popup-overlay .user-username {
     margin: 0;
     font-weight: 500;
     color: #ffffff;
   }
 
-  .user-id {
+  .creator-action-popup-overlay .user-id {
     margin: 0;
     font-size: 0.85em;
     color: #a0a0a0;
   }
 
-  .unlink-button {
+  .creator-action-popup-overlay .unlink-button {
     padding: 6px 12px;
     background-color: #dc3545;
     color: #ffffff;
@@ -713,19 +712,19 @@
     align-self: flex-start;
   }
 
-  .unlink-button:hover {
+  .creator-action-popup-overlay .unlink-button:hover {
     background-color: #c82333;
     transform: translateY(-1px);
   }
 
-  .no-user-text {
+  .creator-action-popup-overlay .no-user-text {
     color: #a0a0a0;
     font-style: italic;
     margin: 8px 0;
   }
 
   /* Confirmation Dialog styles */
-  .confirm-dialog {
+  .creator-action-popup-overlay .confirm-dialog {
     position: fixed;
     top: 0;
     left: 0;
@@ -739,7 +738,7 @@
     backdrop-filter: blur(3px);
   }
 
-  .confirm-content {
+  .creator-action-popup-overlay .confirm-content {
     background-color: #2a2a2a;
     padding: 24px;
     border-radius: 8px;
@@ -749,20 +748,20 @@
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   }
 
-  .confirm-content p {
+  .creator-action-popup-overlay .confirm-content p {
     margin: 0 0 20px 0;
     color: #ffffff;
     font-size: 1.1em;
   }
 
-  .confirm-buttons {
+  .creator-action-popup-overlay .confirm-buttons {
     display: flex;
     gap: 12px;
     justify-content: center;
   }
 
-  .confirm-yes,
-  .confirm-no {
+  .creator-action-popup-overlay .confirm-yes,
+  .creator-action-popup-overlay .confirm-no {
     padding: 10px 20px;
     border: none;
     border-radius: 4px;
@@ -772,51 +771,51 @@
     min-width: 100px;
   }
 
-  .confirm-yes {
+  .creator-action-popup-overlay .confirm-yes {
     background-color: #dc3545;
     color: #ffffff;
   }
 
-  .confirm-yes:hover:not(:disabled) {
+  .creator-action-popup-overlay .confirm-yes:hover:not(:disabled) {
     background-color: #c82333;
     transform: translateY(-1px);
   }
 
-  .confirm-no {
+  .creator-action-popup-overlay .confirm-no {
     background-color: #6c757d;
     color: #ffffff;
   }
 
-  .confirm-no:hover:not(:disabled) {
+  .creator-action-popup-overlay .confirm-no:hover:not(:disabled) {
     background-color: #5a6268;
     transform: translateY(-1px);
   }
 
-  .confirm-yes:disabled,
-  .confirm-no:disabled {
+  .creator-action-popup-overlay .confirm-yes:disabled,
+  .creator-action-popup-overlay .confirm-no:disabled {
     opacity: 0.7;
     cursor: not-allowed;
     transform: none;
   }
 
   @media (max-width: 768px) {
-    .confirm-content {
+    .creator-action-popup-overlay .confirm-content {
       width: 95%;
       margin: 16px;
       padding: 20px;
     }
 
-    .confirm-buttons {
+    .creator-action-popup-overlay .confirm-buttons {
       flex-direction: column;
     }
 
-    .confirm-yes,
-    .confirm-no {
+    .creator-action-popup-overlay .confirm-yes,
+    .creator-action-popup-overlay .confirm-no {
       width: 100%;
     }
   }
 
-  .levels-list {
+  .creator-action-popup-overlay .levels-list {
     max-height: 500px;
     overflow-y: auto;
     padding: 8px;
@@ -825,7 +824,7 @@
     gap: 8px;
   }
 
-  .level-item {
+  .creator-action-popup-overlay .level-item {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -836,12 +835,12 @@
     transition: all 0.2s ease;
   }
 
-  .level-item:hover {
+  .creator-action-popup-overlay .level-item:hover {
     background-color: #3a3a3a;
     transform: translateY(-1px);
   }
 
-  .level-item-icon {
+  .creator-action-popup-overlay .level-item-icon {
     flex-shrink: 0;
     width: 40px;
     height: 40px;
@@ -850,13 +849,13 @@
     justify-content: center;
   }
 
-  .level-item-icon img {
+  .creator-action-popup-overlay .level-item-icon img {
     width: 32px;
     height: 32px;
     object-fit: contain;
   }
 
-  .level-item-info {
+  .creator-action-popup-overlay .level-item-info {
     flex-grow: 1;
     min-width: 0;
     display: flex;
@@ -864,12 +863,12 @@
     gap: 2px;
   }
 
-  .level-id {
+  .creator-action-popup-overlay .level-id {
     color: #a0a0a0;
     font-size: 0.9em;
   }
 
-  .level-title {
+  .creator-action-popup-overlay .level-title {
     color: #ffffff;
     font-weight: 500;
     margin: 2px 0;
@@ -878,7 +877,7 @@
     text-overflow: ellipsis;
   }
 
-  .level-artist {
+  .creator-action-popup-overlay .level-artist {
     color: #a0a0a0;
     font-size: 0.9em;
     white-space: nowrap;
@@ -886,7 +885,7 @@
     text-overflow: ellipsis;
   }
 
-  .level-legacy-creators {
+  .creator-action-popup-overlay .level-legacy-creators {
     color: #888;
     font-size: 0.85em;
     display: -webkit-box;
@@ -899,7 +898,7 @@
     line-height: 1.3;
   }
 
-  .level-item-role {
+  .creator-action-popup-overlay .level-item-role {
     color: #007bff;
     font-size: 0.9em;
     text-transform: capitalize;
@@ -911,32 +910,31 @@
   }
 
   @media (max-width: 768px) {
-    .levels-list {
+    .creator-action-popup-overlay .levels-list {
       max-height: 400px;
     }
 
-    .level-item {
+    .creator-action-popup-overlay .level-item {
       padding: 10px;
     }
 
-    .level-item-icon {
+    .creator-action-popup-overlay .level-item-icon {
       width: 32px;
       height: 32px;
     }
 
-    .level-item-icon img {
+    .creator-action-popup-overlay .level-item-icon img {
       width: 24px;
       height: 24px;
     }
   }
 
-  .external-link-icon {
+  .creator-action-popup-overlay .external-link-icon {
     transition: all 0.2s ease;
     flex-shrink: 0;
   }
 
-  .external-link-icon:hover {
+  .creator-action-popup-overlay .external-link-icon:hover {
     cursor: pointer;
     transform: scale(1.2);
   }
-}

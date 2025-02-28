@@ -312,7 +312,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 1.1em;
+  font-size: 1em;
   color: var(--color-white);
   margin-bottom: 0;
   cursor: pointer;
@@ -602,7 +602,6 @@
 
 .admin-player-popup .pause-section {
   border-bottom: 1px solid var(--color-white-t20);
-  padding-bottom: 20px;
   margin-bottom: 20px;
 }
 
@@ -618,7 +617,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 1.1em;
+  font-size: 1em;
   color: var(--color-white);
   margin-bottom: 0;
   cursor: pointer;

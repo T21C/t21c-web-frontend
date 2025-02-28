@@ -7,6 +7,7 @@ import api from "@/utils/api";
 import { PlayerInput } from '@/components/PlayerComponents/PlayerInput';
 import { toast } from 'react-hot-toast';
 import { ProfileCreationModal } from './ProfileCreationModal';
+import AdminPlayerPopup from '../../../components/AdminPlayerPopup/AdminPlayerPopup';
 
 
 const PassSubmissions = () => {
@@ -19,22 +20,29 @@ const PassSubmissions = () => {
   const [animatingCards, setAnimatingCards] = useState({});
   const [disabledButtons, setDisabledButtons] = useState({});
   const [playerSearchValues, setPlayerSearchValues] = useState({});
-  const [showCreatePlayer, setShowCreatePlayer] = useState({});
-  const [newPlayerData, setNewPlayerData] = useState({});
-  const [discordAssignments, setDiscordAssignments] = useState({});
-  const [discordAssignmentStatus, setDiscordAssignmentStatus] = useState({});
-  const [discordAssignmentError, setDiscordAssignmentError] = useState({});
-  const [pendingAssignments, setPendingAssignments] = useState({});
   const [loading, setLoading] = useState(false);
+  const [playerData, setPlayerData] = useState(null);
+
   const [profileCreation, setProfileCreation] = useState({
     show: false,
     submission: null,
     profiles: []
   });
+  const [showPlayerPopup, setShowPlayerPopup] = useState(false);
+  const [selectedSubmission, setSelectedSubmission] = useState(null);
 
   useEffect(() => {
     fetchPendingSubmissions();
   }, []);
+
+
+  const getPlayerData = async (playerId) => {
+    const response = await api.get(`${import.meta.env.VITE_PLAYERS}/${playerId}`);
+    return response.data;
+  };
+
+
+
 
   useEffect(() => {
     // Add event listener for refresh button
@@ -246,36 +254,30 @@ const PassSubmissions = () => {
     }
   };
 
-  // Add a function to handle player creation
-  const handlePlayerCreate = async (submissionId, playerData) => {
+  const handleManagePlayer = async (submission) => {
+    console.log(submission);
+    const playerData = await getPlayerData(submission.assignedPlayerId);
+    setPlayerData(playerData);
+
+    setSelectedSubmission(submission);
+    setShowPlayerPopup(true);
+  };
+
+  const handlePlayerCreated = async (newPlayer) => {
+    if (!selectedSubmission) return;
+
     try {
-      const response = await api.post(`${import.meta.env.VITE_PLAYERS}/create`, playerData);
-      if (response.data) {
-        // Update submission with new player ID
-        await handlePlayerSelect(submissionId, response.data);
-        toast.success(tPass('success.playerCreated', { 
-          playerName: response.data.name 
-        }));
-      }
+      // Use the existing player assignment endpoint
+      await handlePlayerSelect(selectedSubmission.id, newPlayer);
+      setShowPlayerPopup(false);
+      setSelectedSubmission(null);
+      toast.success(tPass('success.playerCreated', { 
+        playerName: newPlayer.name 
+      }));
     } catch (error) {
-      console.error('Error creating player:', error);
-      toast.error(tPass('errors.playerCreation'));
+      console.error('Error assigning new player:', error);
+      toast.error(tPass('errors.playerAssignment'));
     }
-  };
-
-  const startDiscordAssignment = (submissionId) => {
-    setPendingAssignments(prev => ({
-      ...prev,
-      [submissionId]: true
-    }));
-  };
-
-  const cancelDiscordAssignment = (submissionId) => {
-    setPendingAssignments(prev => {
-      const newState = { ...prev };
-      delete newState[submissionId];
-      return newState;
-    });
   };
 
   const handleAutoAllow = async () => {
@@ -386,20 +388,24 @@ const PassSubmissions = () => {
                   </div>
 
                   <div className="player-assignment">
-                    <h4 style={{marginBottom: "5px", fontSize: "0.95rem"}}>{tPass('playerAssignment.title')}</h4>
-                    <PlayerInput
-                      value={playerSearchValues[submission.id] || ''}
-                      onChange={(value) => setPlayerSearchValues(prev => ({
-                        ...prev,
-                        [submission.id]: value
-                      }))}
-                      onSelect={(player) => handlePlayerSelect(submission.id, player)}
-                      onCreateRequest={() => handlePlayerCreate(submission.id, {
-                        name: playerSearchValues[submission.id]
-                      })}
-                      currentPlayer={submission.assignedPlayerId}
-                      showCreateOption={submission.passerRequest}
-                    />
+                    <h4>{tPass('playerAssignment.title')}</h4>
+                      <div className="profile-request-section" style={{display: submission.passerRequest ? 'block' : 'none'}}>
+                        <span className="profile-request-badge">
+                          {tPass('playerAssignment.newProfile')}
+                        </span>
+                        
+                      </div>
+                     
+                      <PlayerInput
+                        value={playerSearchValues[submission.id] || ''}
+                        onChange={(value) => setPlayerSearchValues(prev => ({
+                          ...prev,
+                          [submission.id]: value
+                        }))}
+                        onSelect={(player) => handlePlayerSelect(submission.id, player)}
+                        currentPlayer={submission.assignedPlayerId}
+                      />
+                    
 
                     {submission.assignedPlayer && (
                       <div className="assigned-player-info">
@@ -407,6 +413,13 @@ const PassSubmissions = () => {
                         <span className="assigned-player-name">
                           {submission.assignedPlayer.name} (ID: {submission.assignedPlayerId})
                         </span>
+                        <button
+                          className="manage-profile-button"
+                          onClick={() => handleManagePlayer(submission)}
+                          disabled={!submission.assignedPlayerId}
+                        >
+                          {tPass('playerAssignment.manageProfile')}
+                        </button>
                       </div>
                     )}
 
@@ -455,6 +468,18 @@ const PassSubmissions = () => {
           ))
         )}
       </div>
+
+      {showPlayerPopup && selectedSubmission && (
+        <AdminPlayerPopup
+          player={playerData}
+          onClose={() => {
+            setShowPlayerPopup(false);
+            setSelectedSubmission(null);
+          }}
+          onUpdate={handlePlayerCreated}
+          isNewProfile={true}
+        />
+      )}
 
       {profileCreation.show && (
         <ProfileCreationModal

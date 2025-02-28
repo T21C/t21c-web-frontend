@@ -1042,3 +1042,49 @@
     position: relative;
     margin: 20px 0;
   }
+
+  .submission-admin-page .profile-request-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 0.5rem 0;
+  }
+
+  .submission-admin-page .manage-profile-button {
+    padding: 0.5rem 1rem;
+    background-color: #9370DB;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+  }
+
+  .submission-admin-page .manage-profile-button:hover {
+    background-color: #8A2BE2;
+    transform: translateY(-1px);
+  }
+
+  .submission-admin-page .manage-profile-button:disabled {
+    background-color: #666;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .submission-admin-page .profile-request-badge {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background-color: #9370DB;
+    color: white;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+
+  /* Update player assignment section */
+  .submission-admin-page .player-assignment h4 {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+    color: var(--color-white-t80);
+  }

@@ -11,7 +11,7 @@
   z-index: 1000;
 }
 
-.modal-content {
+.profile-creation-modal .modal-content {
   background-color: var(--background-color);
   border-radius: 8px;
   padding: 2rem;
@@ -21,50 +21,50 @@
   position: relative;
 }
 
-.modal-content h2 {
+.profile-creation-modal .modal-content h2 {
   margin: 0 0 1rem;
   color: var(--text-color);
   font-size: 1.5rem;
 }
 
-.progress {
+.profile-creation-modal .progress {
   color: var(--text-color-secondary);
   margin-bottom: 1.5rem;
   font-size: 0.9rem;
 }
 
-.profile-info {
+.profile-creation-modal .profile-info {
   background-color: var(--background-color-secondary);
   padding: 1rem;
   border-radius: 6px;
   margin-bottom: 1.5rem;
 }
 
-.profile-info h3 {
+.profile-creation-modal .profile-info h3 {
   margin: 0;
   color: var(--text-color);
   font-size: 1.1rem;
 }
 
-.profile-name {
+.profile-creation-modal .profile-name {
   margin: 0.5rem 0 0;
   color: var(--text-color-secondary);
   font-size: 1rem;
 }
 
-.form-group {
+.profile-creation-modal .form-group {
   margin-bottom: 1.5rem;
 }
 
-.form-group label {
+.profile-creation-modal .form-group label {
   display: block;
   margin-bottom: 0.5rem;
   color: var(--text-color);
   font-size: 0.9rem;
 }
 
-.form-group input,
-.form-group textarea {
+.profile-creation-modal .form-group input,
+.profile-creation-modal .form-group textarea {
   width: 100%;
   padding: 0.75rem;
   border: 1px solid var(--border-color);
@@ -75,18 +75,18 @@
   transition: border-color 0.2s ease;
 }
 
-.form-group textarea {
+.profile-creation-modal .form-group textarea {
   min-height: 100px;
   resize: vertical;
 }
 
-.form-group input:focus,
-.form-group textarea:focus {
+.profile-creation-modal .form-group input:focus,
+.profile-creation-modal .form-group textarea:focus {
   outline: none;
   border-color: var(--primary-color);
 }
 
-.error-message {
+.profile-creation-modal .error-message {
   color: var(--error-color);
   margin: 1rem 0;
   padding: 0.75rem;
@@ -95,14 +95,14 @@
   font-size: 0.9rem;
 }
 
-.modal-actions {
+.profile-creation-modal .modal-actions {
   display: flex;
   justify-content: flex-end;
   gap: 1rem;
   margin-top: 2rem;
 }
 
-.modal-actions button {
+.profile-creation-modal .modal-actions button {
   padding: 0.75rem 1.5rem;
   border-radius: 4px;
   font-size: 0.9rem;
@@ -111,37 +111,37 @@
   transition: all 0.2s ease;
 }
 
-.cancel-btn {
+.profile-creation-modal .cancel-btn {
   background-color: transparent;
   border: 1px solid var(--border-color);
   color: var(--text-color);
 }
 
-.cancel-btn:hover:not(:disabled) {
+.profile-creation-modal .cancel-btn:hover:not(:disabled) {
   background-color: var(--background-color-secondary);
 }
 
-.submit-btn {
+.profile-creation-modal .submit-btn {
   background-color: var(--primary-color);
   border: none;
   color: white;
 }
 
-.submit-btn:hover:not(:disabled) {
+.profile-creation-modal .submit-btn:hover:not(:disabled) {
   background-color: var(--primary-color-dark);
 }
 
-.modal-actions button:disabled {
+.profile-creation-modal .modal-actions button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
 /* Animation */
-.profile-creation-modal {
+.profile-creation-modal .profile-creation-modal {
   animation: fadeIn 0.2s ease-out;
 }
 
-.modal-content {
+.profile-creation-modal .modal-content {
   animation: slideIn 0.3s ease-out;
 }
 

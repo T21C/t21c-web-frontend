@@ -24,7 +24,9 @@
     "current": "Currently Assigned Player",
     "discord": {
       "assignButton": "Assign Discord"
-    }
+    },
+    "newProfile": "New Profile request",
+    "manageProfile": "Manage Player"
   },
   "buttons": {
     "allow": "Allow",
