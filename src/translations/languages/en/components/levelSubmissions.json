@@ -52,7 +52,7 @@
   },
   
   "warnings": {
-    "pendingProfiles": "The following profiles need to be created before submission:",
+    "pendingProfiles": "This profile will be requested for creation:",
     "creatorExists": "A creator with this name already exists",
     "invalidCreator": "Invalid creator name",
     "duplicateCreator": "This creator has already been added"

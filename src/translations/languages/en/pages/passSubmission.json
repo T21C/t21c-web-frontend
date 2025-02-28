@@ -58,6 +58,6 @@
     "noInfo": "No info available"
   },
   "warnings": {
-    "pendingProfiles": "The following profiles need to be created before submission:"
+    "pendingProfiles": "This profile will be requested for creation:"
   }
 } 

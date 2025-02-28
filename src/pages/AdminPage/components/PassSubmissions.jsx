@@ -322,9 +322,9 @@ const PassSubmissions = () => {
           submissions.map((submission) => (
             <div key={submission.id} className={`submission-card pass-submission-card ${animatingCards[submission.id] || ''}`}>
               <div className="submission-header">
-                <h3>{submission.title}</h3>
+                <h3>{submission.title || "Null"}</h3>
                 <span className="submission-date">
-                  {new Date(submission.createdAt).toLocaleDateString()}
+                  {new Date(submission.createdAt || Date.now()).toLocaleDateString()}
                 </span>
               </div>
               
@@ -332,58 +332,58 @@ const PassSubmissions = () => {
                 <div className="submission-details">
                   <div className="detail-row">
                     <span className="detail-label">{tPass('details.levelId')}</span>
-                    <span className="detail-value">{submission.levelId}</span>
+                    <span className="detail-value">{submission.levelId || "Null"}</span>
                   </div>
 
                   <div className="detail-row">
                     <span className="detail-label">{tPass('details.player')}</span>
-                    <span className="detail-value">{submission.passer}</span>
+                    <span className="detail-value">{submission.passer || "Null"}</span>
                   </div>
 
                   <div className="detail-row">
                     <span className="detail-label">{tPass('details.feelingDiff')}</span>
-                    <span className="detail-value">{submission.feelingDifficulty}</span>
+                    <span className="detail-value">{submission.feelingDifficulty || "Null"}</span>
                   </div>
                 
                   <div className="detail-row">
                     <span className="detail-label">{tPass('details.speed')}</span>
-                    <span className="detail-value">{submission.speed}</span>
+                    <span className="detail-value">{submission.speed || "1.0"}</span>
                   </div>
 
                   <div className="detail-row">
                     <span className="detail-label">{tPass('details.submitter')}</span>
                     <div className="submitter-details">
-                      <span className="detail-value">@{submission.submitterDiscordUsername}</span>
-                      <span className="detail-subvalue">{submission.submitterDiscordId}</span>
+                      <span className="detail-value">@{submission.submitterDiscordUsername || "Null"}</span>
+                      <span className="detail-subvalue">{submission.submitterDiscordId || "Null"}</span>
                     </div>
                   </div>
 
                   <div className="detail-row">
                     <span className="detail-label">{tPass('details.judgements.label')}</span>
                     <div className="judgements-details">
-                      <span className="judgement early-double">{submission.judgements.earlyDouble}</span>
-                      <span className="judgement early-single">{submission.judgements.earlySingle}</span>
-                      <span className="judgement e-perfect">{submission.judgements.ePerfect}</span>
-                      <span className="judgement perfect">{submission.judgements.perfect}</span>
-                      <span className="judgement l-perfect">{submission.judgements.lPerfect}</span>
-                      <span className="judgement late-single">{submission.judgements.lateSingle}</span>
-                      <span className="judgement late-double">{submission.judgements.lateDouble}</span>
+                      <span className="judgement early-double">{submission.judgements?.earlyDouble || "NULL"}</span>
+                      <span className="judgement early-single">{submission.judgements?.earlySingle || "NULL"}</span>
+                      <span className="judgement e-perfect">{submission.judgements?.ePerfect || "NULL"}</span>
+                      <span className="judgement perfect">{submission.judgements?.perfect || "NULL"}</span>
+                      <span className="judgement l-perfect">{submission.judgements?.lPerfect || "NULL"}</span>
+                      <span className="judgement late-single">{submission.judgements?.lateSingle || "NULL"}</span>
+                      <span className="judgement late-double">{submission.judgements?.lateDouble || "NULL"}</span>
                     </div>
                   </div>
 
                   <div className="detail-row">
                     <span className="detail-label">{tPass('details.flags.label')}</span>
                     <div className="flags-details">
-                      {submission.flags.is12K && <span>{tPass('details.flags.types.12k')}</span>}
-                      {submission.flags.isNoHoldTap && <span>{tPass('details.flags.types.nht')}</span>}
-                      {submission.flags.is16K && <span>{tPass('details.flags.types.16k')}</span>}
+                      {submission.flags?.is12K && <span>{tPass('details.flags.types.12k')}</span>}
+                      {submission.flags?.isNoHoldTap && <span>{tPass('details.flags.types.nht')}</span>}
+                      {submission.flags?.is16K && <span>{tPass('details.flags.types.16k')}</span>}
                     </div>
                   </div>
 
                   <div className="detail-row">
                     <span className="detail-label">{tPass('details.uploadTime')}</span>
                     <span className="detail-value">
-                      {new Date(submission.rawTime).toLocaleString()}
+                      {new Date(submission.rawTime || Date.now()).toLocaleString()}
                     </span>
                   </div>
 
@@ -411,7 +411,7 @@ const PassSubmissions = () => {
                       <div className="assigned-player-info">
                         <span className="assigned-player-label">{tPass('playerAssignment.current')}</span>
                         <span className="assigned-player-name">
-                          {submission.assignedPlayer.name} (ID: {submission.assignedPlayerId})
+                          {submission.assignedPlayer.name || "Null"} (ID: {submission.assignedPlayerId || "Null"})
                         </span>
                         <button
                           className="manage-profile-button"

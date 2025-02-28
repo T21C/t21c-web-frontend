@@ -912,7 +912,7 @@ const PassSubmissionPage = () => {
                 <ul>
                   {pendingProfiles.map((profile, index) => (
                     <li key={index}>
-                      {profile.type}: {profile.name}
+                      {profile.type}: <b>{profile.name}</b>
                     </li>
                   ))}
                 </ul>

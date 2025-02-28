@@ -583,3 +583,18 @@
 .pass-submission-page .result-message .close-btn:hover {
   color: #ffdddd;
 }
+
+.pass-submission-page .pending-profiles-warning {
+  padding: 15px;
+  border-radius: 4px;
+  color: #ffd650;
+}
+
+.pass-submission-page .pending-profiles-warning ul {
+  margin: 10px 0 0;
+  padding-left: 20px;
+}
+
+.pass-submission-page .pending-profiles-warning li {
+  margin-bottom: 5px;
+}
