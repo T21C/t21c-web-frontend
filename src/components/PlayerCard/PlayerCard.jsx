@@ -92,7 +92,6 @@ const PlayerCard = ({player}) => {
       primaryField.value = Math.round(parseFloat(primaryField.value));
     }
   }
-  console.log(player);
   return (
     <div className='player-card' onClick={() => redirect()} style={{backgroundColor: player.isBanned ? "#ff000099" : ""}}>
       <div className="img-wrapper">

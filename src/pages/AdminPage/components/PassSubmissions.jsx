@@ -255,7 +255,6 @@ const PassSubmissions = () => {
   };
 
   const handleManagePlayer = async (submission) => {
-    console.log(submission);
     const playerData = await getPlayerData(submission.assignedPlayerId);
     setPlayerData(playerData);
 
