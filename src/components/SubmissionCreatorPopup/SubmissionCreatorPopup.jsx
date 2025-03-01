@@ -31,6 +31,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
 
   // Search state
   const [searchQuery, setSearchQuery] = useState('');
@@ -55,12 +56,22 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
       if (initialRequest) {
         setEditingRequestId(initialRequest.id);
         
-        if (initialRequest.creatorId) {
-          setSelectedCreatorId(initialRequest.creatorId);
-          await fetchCreatorDetails(initialRequest.creatorId);
-        } else if (initialRequest.teamId) {
-          setSelectedTeamId(initialRequest.teamId);
-          await fetchTeamDetails(initialRequest.teamId);
+        if (initialRequest.creatorId || initialRequest.teamId) {
+          setIsLoadingDetails(true);
+          try {
+            if (initialRequest.creatorId) {
+              setSelectedCreatorId(initialRequest.creatorId);
+              await fetchCreatorDetails(initialRequest.creatorId);
+            } else if (initialRequest.teamId) {
+              setSelectedTeamId(initialRequest.teamId);
+              await fetchTeamDetails(initialRequest.teamId);
+            }
+          } catch (error) {
+            console.error('Error loading initial details:', error);
+            setError(tCreator('messages.error.loadDetailsFailed'));
+          } finally {
+            setIsLoadingDetails(false);
+          }
         } else if (initialRequest.isNewRequest) {
           setNewName(initialRequest.creatorName || initialRequest.teamName || '');
           setShowCreateForm(true);
@@ -156,10 +167,18 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
 
   const handleCreate = async (e) => {
     e.preventDefault();
+    if (isCreating) return; // Prevent multiple simultaneous submissions
     setIsCreating(true);
     setError('');
 
     try {
+      // Add loading state to UI
+      setSuccess('');
+      setError('');
+
+      // Wait for any pending state updates
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       const response = await api.post(
         `${import.meta.env.VITE_SUBMISSION_API}/levels/${submission.id}/creators`,
         {
@@ -173,6 +192,9 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
         }
       );
 
+      // Wait for response to be fully processed
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       setShowCreateForm(false);
       setNewName('');
       setNewAliases('');
@@ -182,7 +204,10 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
 
       // Notify parent with complete updated data
       onUpdate(response.data);
-      setTimeout(onClose, 1500);
+      
+      // Add delay before closing to ensure state is updated
+      await new Promise(resolve => setTimeout(resolve, 500));
+      onClose();
     } catch (error) {
       console.error('Error in creation process:', error);
       setError(error.response?.data?.error ||
@@ -333,6 +358,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
                 }}
                 className="role-select"
                 width="100%"
+                isDisabled={isLoadingDetails}
               />
             </div>
           )}
@@ -343,30 +369,37 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
                 {isTeamMode ? tCreator('currentTeam.label') : tCreator('currentCreator.label')}
               </div>
               <div className="current-creator-info">
-                <div className="creator-name-display">
-                  {selectedDetails ? (
-                    <>
-                      {selectedDetails.name} (ID: {isTeamMode ? selectedTeamId : selectedCreatorId})
-                      {selectedDetails.aliases?.length > 0 && (
-                        <span className="aliases">
-                          [{selectedDetails.aliases.join(', ')}]
-                        </span>
-                      )}
-                      {!isTeamMode && selectedDetails.user && (
-                        <span className="creator-discord">
-                          ({selectedDetails.user.username})
-                        </span>
-                      )}
-                      {selectedDetails.isVerified && (
-                        <span className="verified-status">
-                          {isTeamMode ? tCreator('status.verifiedTeam') : tCreator('status.verified')}
-                        </span>
-                      )}
-                    </>
-                  ) : (
-                    isTeamMode ? tCreator('currentTeam.none') : tCreator('currentCreator.none')
-                  )}
-                </div>
+                {isLoadingDetails ? (
+                  <div className="current-creator-loading">
+                    {tCreator('loading')}
+                    <div className="loading-spinner" />
+                  </div>
+                ) : (
+                  <div className="creator-name-display">
+                    {selectedDetails ? (
+                      <>
+                        {selectedDetails.name} (ID: {isTeamMode ? selectedTeamId : selectedCreatorId})
+                        {selectedDetails.aliases?.length > 0 && (
+                          <span className="aliases">
+                            [{selectedDetails.aliases.join(', ')}]
+                          </span>
+                        )}
+                        {!isTeamMode && selectedDetails.user && (
+                          <span className="creator-discord">
+                            ({selectedDetails.user.username})
+                          </span>
+                        )}
+                        {selectedDetails.isVerified && (
+                          <span className="verified-status">
+                            {isTeamMode ? tCreator('status.verifiedTeam') : tCreator('status.verified')}
+                          </span>
+                        )}
+                      </>
+                    ) : (
+                      isTeamMode ? tCreator('currentTeam.none') : tCreator('currentCreator.none')
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 
@@ -428,6 +461,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
                       onChange={(e) => setNewName(e.target.value)}
                       placeholder={isTeamMode ? tCreator('teamForm.namePlaceholder') : tCreator('createForm.namePlaceholder')}
                       required
+                      disabled={isCreating}
                     />
                   </div>
                   <div className="form-group">
@@ -437,6 +471,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
                       value={newAliases}
                       onChange={(e) => setNewAliases(e.target.value)}
                       placeholder={isTeamMode ? tCreator('teamForm.aliasesPlaceholder') : tCreator('createForm.aliasesPlaceholder')}
+                      disabled={isCreating}
                     />
                     <small>{isTeamMode ? tCreator('teamForm.aliasesHelp') : tCreator('createForm.aliasesHelp')}</small>
                   </div>
@@ -445,13 +480,14 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
                       type="button"
                       onClick={() => setShowCreateForm(false)}
                       className="cancel-button"
+                      disabled={isCreating}
                     >
                       {tCreator('buttons.cancel')}
                     </button>
                     <button
                       type="submit"
                       disabled={isCreating || !newName.trim()}
-                      className="submit-button"
+                      className={`submit-button ${isCreating ? 'loading' : ''}`}
                     >
                       {isCreating ? tCreator('buttons.creating') : 
                         (isTeamMode ? tCreator('buttons.createTeam') : tCreator('buttons.create'))}
@@ -492,11 +528,12 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
 
           <div className="action-buttons">
             <button
-              className="action-button"
+              className={`action-button ${isLoading || isLoadingDetails ? 'loading' : ''}`}
               onClick={handleAssign}
-              disabled={(!selectedCreatorId && !isTeamMode) || (!selectedTeamId && isTeamMode) || isLoading}
+              disabled={(!selectedCreatorId && !isTeamMode) || (!selectedTeamId && isTeamMode) || isLoading || isLoadingDetails}
             >
               {isTeamMode ? tCreator('buttons.assignTeam') : tCreator('buttons.assign')}
+              {(isLoading || isLoadingDetails) && <div className="loading-spinner" />}
             </button>
           </div>
 

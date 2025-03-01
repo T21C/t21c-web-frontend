@@ -1,5 +1,6 @@
 {
   "title": "Manage Creator/Team",
+  "loading": "Loading...",
   "modes": {
     "assign": "Assign Existing",
     "create": "Create New"

@@ -178,6 +178,7 @@
 .submission-creator-popup .cancel-button:disabled {
   background-color: #888;
   cursor: not-allowed;
+  position: relative;
 }
 
 .submission-creator-popup .error-message {
@@ -536,4 +537,35 @@
 .submission-creator-popup  .submit-button:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
+}
+
+.submission-creator-popup .loading-spinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s linear infinite;
+  position: relative;
+  transform: translate(50%, 50%);
+  top: 8px;
+  left: 10px;
+}
+
+.submission-creator-popup .current-creator-loading {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #aaa;
+  font-style: italic;
+}
+
+@keyframes spin {
+  to {
+    transform: translateY(-50%) rotate(360deg);
+  }
+}
+
+.submission-creator-popup .action-button.loading {
+  padding-right: 40px;
 } 
