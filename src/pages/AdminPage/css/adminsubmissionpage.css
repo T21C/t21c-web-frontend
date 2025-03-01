@@ -380,7 +380,6 @@
     max-width: 100%;
     grid-column: 6 / span 6;
     height: 300px;
-    min-height: auto;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -513,7 +512,6 @@
 
   .submission-admin-page .pass-submission-card {
     color: var(--color-white);
-    min-height: auto;
     margin-bottom: 2rem;
   }
 

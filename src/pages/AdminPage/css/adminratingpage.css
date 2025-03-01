@@ -262,6 +262,7 @@
     align-items: center;
     gap: 10px;
     margin-left: auto;
+    -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
     border: transparent;
     padding: 0.5rem 1rem;
@@ -366,6 +367,7 @@
     display: flex;
     align-items: center;
     gap: 10px;
+    -webkit-backdrop-filter: blur(5px);
     backdrop-filter: blur(5px);
     border: transparent;
     padding: 0.5rem 1rem;
@@ -413,7 +415,8 @@
   padding: 0.75rem;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 8px;
-  margin-right: auto;
+  margin-right: auto; 
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.2s ease;
@@ -478,6 +481,7 @@
 
 .admin-rating-page .admin-rating-body .custom-select__menu {
   background: rgba(20, 20, 20, 0.95) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
   backdrop-filter: blur(10px) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3) !important;
@@ -520,6 +524,7 @@
   border-radius: 6px;
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.9);
+  -webkit-backdrop-filter: blur(8px);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   transition: all 0.2s ease;

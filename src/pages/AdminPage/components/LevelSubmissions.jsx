@@ -218,15 +218,62 @@ const LevelSubmissions = () => {
   };
 
   const handleCreatorAction = (submission, request, role) => {
-    // Ensure we have the correct credit stats format
-    if (request?.creator?.credits) {
-      const credits = request.creator.credits;
-      request.creator.credits = {
-        charterCount: credits.charterCount || 0,
-        vfxerCount: credits.vfxerCount || 0,
-        totalCredits: credits.totalCredits || 0
-      };
+    // For team requests, handle differently than creator requests
+    if (role === 'team') {
+      // If there's a team request, format the team data properly
+      if (submission.teamRequestData?.team) {
+        const team = submission.teamRequestData.team;
+        request = {
+          team: {
+            id: team.id,
+            name: team.name,
+            aliases: team.aliases || [],
+            description: team.description || '',
+            members: team.members || [],
+            createdAt: team.createdAt,
+            updatedAt: team.updatedAt,
+            credits: {
+              totalLevels: team.levels?.length || 0,
+              verifiedLevels: team.levels?.filter(l => l.isVerified).length || 0,
+              memberCount: team.members?.length || 0
+            }
+          },
+          teamId: team.id,
+          teamName: team.name
+        };
+      } else if (submission.teamRequestData?.isNewRequest) {
+        // For new team requests, pass the requested team name
+        request = {
+          teamName: submission.teamRequestData.teamName,
+          isNewRequest: true
+        };
+      }
+    } else {
+      // For creator requests
+      if (request?.creator) {
+        // Ensure we have the correct credit stats format for existing creators
+        const credits = request.creator.credits || {};
+        request.creator = {
+          ...request.creator,
+          credits: {
+            charterCount: credits.charterCount || 0,
+            vfxerCount: credits.vfxerCount || 0,
+            totalCredits: credits.totalCredits || 0,
+            totalLevels: request.creator.createdLevels?.length || 0,
+            verifiedLevels: request.creator.createdLevels?.filter(l => l.isVerified).length || 0
+          },
+          aliases: request.creator.aliases || [],
+          isVerified: request.creator.isVerified || false
+        };
+      } else if (request?.isNewRequest) {
+        // For new creator requests, pass the requested creator name
+        request = {
+          creatorName: request.creatorName,
+          isNewRequest: true
+        };
+      }
     }
+    
     setSelectedSubmission(submission);
     setSelectedCreatorRequest(request);
     setSelectedRole(role);
@@ -237,13 +284,60 @@ const LevelSubmissions = () => {
     setSelectedSubmission(null);
     setSelectedCreatorRequest(null);
     setSelectedRole(null);
-    setShowCreatorPopup(false);
+    setShowCreatorPopup(null);
   };
 
-  const handleCreatorUpdate = async () => {
-    await fetchPendingSubmissions();
+  const handleCreatorUpdate = async (updatedEntity) => {
+    if (!selectedSubmission) return;
+
+    // Update the submission in the list
+    setSubmissions(prevSubmissions => prevSubmissions.map(submission => {
+      if (submission.id !== selectedSubmission.id) return submission;
+
+      // Create a new submission object with updated data
+      const updatedSubmission = { ...submission };
+
+      if (updatedEntity.type === 'team') {
+        updatedSubmission.teamRequestData = {
+          ...submission.teamRequestData,
+          teamId: updatedEntity.id,
+          isNewRequest: false,
+          teamName: updatedEntity.name,
+          team: {
+            id: updatedEntity.id,
+            name: updatedEntity.name,
+            aliases: updatedEntity.aliases || [],
+            description: updatedEntity.description || '',
+            members: updatedEntity.members || [],
+            createdAt: updatedEntity.createdAt,
+            updatedAt: updatedEntity.updatedAt
+          }
+        };
+      } else {
+        updatedSubmission.creatorRequests = submission.creatorRequests.map(request => {
+          if (request.role !== selectedRole) return request;
+          return {
+            ...request,
+            creatorId: updatedEntity.id,
+            isNewRequest: false,
+            creatorName: updatedEntity.name,
+            creator: {
+              id: updatedEntity.id,
+              name: updatedEntity.name,
+              aliases: updatedEntity.aliases || []
+            }
+          };
+        });
+      }
+
+      return updatedSubmission;
+    }));
+
+    // Close the creator popup
     setShowCreatorPopup(false);
     setSelectedSubmission(null);
+    setSelectedCreatorRequest(null);
+    setSelectedRole(null);
   };
 
   if (submissions?.length === 0 && !isLoading) {
@@ -373,9 +467,9 @@ const LevelSubmissions = () => {
                           </span>
                           <button
                             className="manage-creator-button"
-                            onClick={() => handleCreatorAction(submission, null, null)}
+                            onClick={() => handleCreatorAction(submission, submission.teamRequestData, 'team')}
                           >
-                            {tLevel('buttons.manageCreator')}
+                            {tLevel('buttons.manageTeam')}
                           </button>
                         </div>
                       </div>

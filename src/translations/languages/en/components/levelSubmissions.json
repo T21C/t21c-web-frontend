@@ -21,6 +21,7 @@
   },
   "buttons": {
     "manageCreator": "Manage Creator",
+    "manageTeam": "Manage Team",
     "allow": "Allow",
     "decline": "Decline",
     "addCharter": "Add Charter",

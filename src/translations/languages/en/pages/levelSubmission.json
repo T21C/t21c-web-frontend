@@ -33,6 +33,30 @@
   },
   "buttons": {
     "addCharter": "Add Charter",
-    "addVfxer": "Add VFX-er"
+    "addVfxer": "Add VFX-er",
+    "removeCreator": "Remove"
+  },
+  "warnings": {
+    "pendingProfiles": "The following profiles will be created:"
+  },
+  "roles": {
+    "charters": "Charters",
+    "vfxers": "VFX-ers",
+    "teams": "Teams"
+  },
+  "badges": {
+    "newProfile": "New Profile"
+  },
+  "validation": {
+    "required": "Required",
+    "invalidDifficulty": "Invalid difficulty format",
+    "needDownloadLink": "Please provide either a download link or workshop link",
+    "needCharter": "At least one charter is required"
+  },
+  "placeholders": {
+    "searchCreator": "Search for a creator...",
+    "searchTeam": "Search for a team...",
+    "newCreator": "Enter new creator name",
+    "newTeam": "Enter new team name"
   }
 } 

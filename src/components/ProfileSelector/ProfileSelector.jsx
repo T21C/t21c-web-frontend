@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
 import api from '../../utils/api';
 import './profileselector.css';
@@ -15,6 +15,7 @@ export const ProfileSelector = ({
 }) => {
   const { t } = useTranslation('components');
   const tSelector = (key) => t(`profileSelector.${key}`);
+  const selectorRef = useRef(null);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [profiles, setProfiles] = useState([]);
@@ -22,6 +23,29 @@ export const ProfileSelector = ({
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isRequestingNew, setIsRequestingNew] = useState(false);
+
+  // Reset internal state when value is cleared externally
+  useEffect(() => {
+    if (!value || (!value.id && !value.name && !value.isNewRequest)) {
+      setSearchTerm('');
+      setSelectedProfile(null);
+      setIsRequestingNew(false);
+    }
+  }, [value]);
+
+  // Handle click outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (selectorRef.current && !selectorRef.current.contains(event.target)) {
+        setShowDropdown(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   // Get API endpoint based on type
   const getEndpoint = () => {
@@ -91,7 +115,7 @@ export const ProfileSelector = ({
   };
 
   return (
-    <div className={`profile-selector ${className || ''}`}>
+    <div className={`profile-selector ${className || ''}`} ref={selectorRef}>
       <div className="profile-selector-input-container">
         <input
           type="text"

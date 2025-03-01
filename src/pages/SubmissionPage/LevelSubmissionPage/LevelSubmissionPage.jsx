@@ -107,34 +107,45 @@ const LevelSubmissionPage = () => {
       validationResult[field] = form[field]?.trim?.() !== '';
     });
 
-    // Validate that at least one charter is selected with valid data
-    validationResult.charter = charters.length > 0 && charters[0].name && (charters[0].id !== null || charters[0].isNewRequest);
+    // Validate creators
+    validationResult.charter = charters.some(charter => 
+      charter.name && (charter.id !== null || charter.isNewRequest)
+    );
 
     // Validate download links
     validationResult.directLink = form.dlLink?.trim?.() !== '' || form.workshopLink?.trim?.() !== '';
     
     // Check for pending profile creations
     const newPendingProfiles = [];
+    
+    // Add charter profiles
     charters.forEach(charter => {
-      if (charter.isNewRequest) {
+      if (charter.name && charter.isNewRequest) {
         newPendingProfiles.push({
           type: 'charter',
           name: charter.name
         });
       }
     });
-    if (form.vfxer?.isNewRequest) {
-      newPendingProfiles.push({
-        type: 'vfx',
-        name: form.vfxer.name
-      });
-    }
-    if (form.team?.isNewRequest) {
+
+    // Add VFX-er profiles
+    vfxers.forEach(vfxer => {
+      if (vfxer.name && vfxer.isNewRequest) {
+        newPendingProfiles.push({
+          type: 'vfxer',
+          name: vfxer.name
+        });
+      }
+    });
+
+    // Add team profile if needed
+    if (team.name && team.isNewRequest) {
       newPendingProfiles.push({
         type: 'team',
-        name: form.team.name
+        name: team.name
       });
     }
+
     setPendingProfiles(newPendingProfiles);
 
     for (const field in validationResult) {
@@ -149,7 +160,7 @@ const LevelSubmissionPage = () => {
 
   useEffect(() => {
     validateForm();
-  }, [form, submitAttempt]);
+  }, [form, submitAttempt, charters, vfxers, team]);
 
   useEffect(() => {
     const { videoLink } = form;
@@ -230,57 +241,66 @@ const LevelSubmissionPage = () => {
       // Clean the video URL before submission
       const cleanedVideoUrl = cleanVideoUrl(form.videoLink);
 
-      // Prepare creator requests
+      // Prepare creator requests - only include non-empty entries
       const creatorRequests = [
-        ...charters.map(charter => ({
-          role: 'charter',
-          creatorName: charter.name,
-          creatorId: charter.id,
-          isNewRequest: charter.isNewRequest
-        })),
-        ...vfxers.map(vfxer => ({
-          role: 'vfxer',
-          creatorName: vfxer.name,
-          creatorId: vfxer.id,
-          isNewRequest: vfxer.isNewRequest
-        }))
+        ...charters
+          .filter(charter => charter.name)
+          .map(charter => ({
+            role: 'charter',
+            creatorName: charter.name,
+            creatorId: charter.id,
+            isNewRequest: charter.isNewRequest
+          })),
+        ...vfxers
+          .filter(vfxer => vfxer.name)
+          .map(vfxer => ({
+            role: 'vfxer',
+            creatorName: vfxer.name,
+            creatorId: vfxer.id,
+            isNewRequest: vfxer.isNewRequest
+          }))
       ];
+
+      // Prepare team request if present
+      const teamRequest = team.name ? {
+        teamName: team.name,
+        teamId: team.id,
+        isNewRequest: team.isNewRequest
+      } : null;
 
       submissionForm.setDetail('artist', form.artist);
       submissionForm.setDetail('diff', form.diff);
       submissionForm.setDetail('song', form.song);
       submissionForm.setDetail('videoLink', cleanedVideoUrl);
       submissionForm.setDetail('directDL', form.dlLink);
-      submissionForm.setDetail('wsLink', form.workshopLink || '');
+      submissionForm.setDetail('wsLink', form.workshopLink);
       submissionForm.setDetail('creatorRequests', creatorRequests);
-      
-      // Team request
-      if (team.name) {
-        submissionForm.setDetail('teamRequest', {
-          teamName: team.name,
-          teamId: team.id,
-          isNewRequest: team.isNewRequest
-        });
-      }
+      submissionForm.setDetail('teamRequest', teamRequest);
 
-      const result = await submissionForm.submit(user.access_token);
-      if (result === "ok") {
+      const response = await submissionForm.submit();
+      
+      if (response == "ok") {
         setSuccess(true);
+        // Reset all form state
         setForm(initialFormState);
+        setPendingProfiles([]);
+        setVideoDetail(null);
+        
+        // Reset creator states with empty values
         setCharters([{ name: '', id: null, isNewRequest: false }]);
         setVfxers([{ name: '', id: null, isNewRequest: false }]);
         setTeam({ name: '', id: null, isNewRequest: false });
-        setPendingProfiles([]);
-        setVideoDetail(null);
+        
+        // Reset validation states
         setSubmitAttempt(false);
+        setIsInvalidFeelingRating(false);
         setIsFormValidDisplay({});
       } else {
-        console.error("Submission error:", result);
-        setError(result.response.data.error || result || "(Unknown)");
+        throw new Error(response.statusText);
       }
-    } catch (err) {
-      console.error("Submission error:", err);
-      setError(err.message || "Unknown error occurred");
+    } catch (error) {
+      console.error('Submission error:', error);
+      setError(tLevel("alert.error"));
     } finally {
       setSubmission(false);
     }
@@ -494,18 +514,7 @@ const LevelSubmissionPage = () => {
               />
             </div>
 
-            {pendingProfiles.length > 0 && (
-              <div className="pending-profiles-warning">
-                {tLevel("warnings.pendingProfiles")}
-                <ul>
-                  {pendingProfiles.map((profile, index) => (
-                    <li key={index}>
-                      {profile.type}: {profile.name}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+
 
             <div className="creators-section">
               <h3>{tLevel("submInfo.charters")}</h3>
@@ -570,6 +579,39 @@ const LevelSubmissionPage = () => {
                 ➕ {tLevel("buttons.addVfxer")}
               </button>
             </div>
+
+
+                          {/* Display pending profiles warning */}
+            {pendingProfiles.length > 0 && (
+              <div className="pending-profiles-warning">
+                <h3>{tLevel('warnings.pendingProfiles')}</h3>
+                
+                {/* Group profiles by type */}
+                {['charter', 'vfxer', 'team'].map(type => {
+                  const profiles = pendingProfiles.filter(p => 
+                    type === 'charter' ? p.type === 'charter' :
+                    type === 'vfxer' ? p.type === 'vfxer' :
+                    p.type === 'team'
+                  );
+                  
+                  if (profiles.length === 0) return null;
+                  
+                  return (
+                    <div key={type} className="profile-group">
+                      <h4>{tLevel(`roles.${type}s`)}</h4>
+                      {profiles.map((profile, index) => (
+                        <div key={index} className="profile-item">
+                          <span>{profile.name}</span>
+                          <span className="new-profile-badge">
+                            {tLevel('badges.newProfile')}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
 
             <button 
               className="submit" 
