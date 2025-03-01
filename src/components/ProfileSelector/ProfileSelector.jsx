@@ -24,16 +24,7 @@ export const ProfileSelector = ({
   const [showDropdown, setShowDropdown] = useState(false);
   const [isRequestingNew, setIsRequestingNew] = useState(false);
 
-  // Reset internal state when value is cleared externally
-  useEffect(() => {
-    if (!value || (!value.id && !value.name && !value.isNewRequest)) {
-      setSearchTerm('');
-      setSelectedProfile(null);
-      setIsRequestingNew(false);
-    }
-  }, [value]);
-
-  // Handle click outside
+  // Add click outside handler
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (selectorRef.current && !selectorRef.current.contains(event.target)) {
@@ -42,10 +33,16 @@ export const ProfileSelector = ({
     };
 
     document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Sync searchTerm with external value changes
+  useEffect(() => {
+    if (value?.name) {
+      setSearchTerm(value.name);
+      setIsRequestingNew(value.isNewRequest || false);
+    }
+  }, [value]);
 
   // Get API endpoint based on type
   const getEndpoint = () => {

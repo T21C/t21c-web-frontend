@@ -215,9 +215,11 @@ const PassSubmissionPage = () => {
 
   useEffect(() => {
     const { videoLink } = form;
+    console.log('[Video Details] Starting video details fetch for:', videoLink);
     
     // Cancel previous video details request if it exists
     if (videoDetailsCancelTokenRef.current) {
+      console.log('[Video Details] Canceling previous request');
       videoDetailsCancelTokenRef.current.cancel('New video details fetch initiated');
     }
 
@@ -225,34 +227,86 @@ const PassSubmissionPage = () => {
     videoDetailsCancelTokenRef.current = axios.CancelToken.source();
 
     if (!videoLink) {
+      console.log('[Video Details] No video link provided, resetting video detail');
       setVideoDetail(null);
       return;
     }
     
-    getVideoDetails(videoLink, videoDetailsCancelTokenRef.current.token)
-      .then((res) => {
-        setVideoDetail(res ? res : null);
-        if (res && !form.player) {
-          handleProfileChange('player', {
-            name: res.channelName,
-            isNewRequest: true
-          });
-        }
-      })
-      .catch((error) => {
-        if (!axios.isCancel(error)) {
-          setVideoDetail(null);
-          console.error('Error fetching video details:', error);
-        }
-      });
+    const searchAndSetProfile = async (channelName) => {
+      console.log('[Profile Search] Starting profile search for channel:', channelName);
+      try {
+        // Search for profiles matching the channel name
+        const searchUrl = `${import.meta.env.VITE_PLAYERS}/search/${encodeURIComponent(channelName)}`;
+        console.log('[Profile Search] Making API call to:', searchUrl);
+        
+        const response = await api.get(searchUrl);
+        const profiles = response.data;
+        console.log('[Profile Search] Found profiles:', profiles);
+        
+        // Find exact match (case insensitive)
+        const exactMatch = profiles.find(p => 
+          p.name.toLowerCase() === channelName.toLowerCase()
+        );
+        console.log('[Profile Search] Exact match found:', exactMatch);
 
-    // Cleanup function
+        // Directly set the form state with the profile data
+        setForm(prev => ({
+          ...prev,
+          player: exactMatch ? {
+            id: exactMatch.id,
+            name: exactMatch.name,
+            isNewRequest: false
+          } : {
+            name: channelName,
+            isNewRequest: true
+          }
+        }));
+      } catch (error) {
+        console.error('[Profile Search] Error searching profiles:', error);
+        // Set as new request on error
+        setForm(prev => ({
+          ...prev,
+          player: {
+            name: channelName,
+            isNewRequest: true
+          }
+        }));
+      }
+    };
+
+    const fetchVideoDetails = async () => {
+      console.log('[Video Details] Starting fetchVideoDetails');
+      try {
+        const details = await getVideoDetails(videoLink);
+        console.log('[Video Details] Received video details:', details);
+        setVideoDetail(details);
+        
+        if (details?.channelName) {
+          console.log('[Video Details] Channel name found:', details.channelName);
+          await searchAndSetProfile(details.channelName);
+        } else {
+          console.log('[Video Details] No channel name in video details');
+        }
+      } catch (error) {
+        console.error('[Video Details] Error fetching video details:', error);
+        setVideoDetail(null);
+      }
+    };
+
+    fetchVideoDetails();
+
     return () => {
       if (videoDetailsCancelTokenRef.current) {
-        videoDetailsCancelTokenRef.current.cancel('Component unmounted or video link changed');
+        console.log('[Video Details] Cleanup: Canceling request on unmount');
+        videoDetailsCancelTokenRef.current.cancel('Component unmounted');
       }
     };
   }, [form.videoLink]);
+
+  // Add logging to form state changes
+  useEffect(() => {
+    console.log('[Form State] Form state updated:', form);
+  }, [form]);
 
   const handleInputChange = (e) => {
     const { name, type, value, checked } = e.target;
@@ -522,10 +576,17 @@ const PassSubmissionPage = () => {
 
   // Add handler for profile changes
   const handleProfileChange = (field, value) => {
-    setForm(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    console.log('[Profile Change] Updating profile:', { field, value });
+    console.log('[Profile Change] Previous form state:', form);
+    
+    setForm(prev => {
+      const newForm = {
+        ...prev,
+        [field]: value
+      };
+      console.log('[Profile Change] New form state:', newForm);
+      return newForm;
+    });
 
     // Reset pending profiles when profile selection changes
     if (field === 'player') {
