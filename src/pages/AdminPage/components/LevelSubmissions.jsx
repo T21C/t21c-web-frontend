@@ -287,52 +287,14 @@ const LevelSubmissions = () => {
     setShowCreatorPopup(null);
   };
 
-  const handleCreatorUpdate = async (updatedEntity) => {
+  const handleCreatorUpdate = async (updatedData) => {
     if (!selectedSubmission) return;
 
-    // Update the submission in the list
+    // Update the submission in the list with the returned data
     setSubmissions(prevSubmissions => prevSubmissions.map(submission => {
       if (submission.id !== selectedSubmission.id) return submission;
-
-      // Create a new submission object with updated data
-      const updatedSubmission = { ...submission };
-
-      if (updatedEntity.type === 'team') {
-        updatedSubmission.teamRequestData = {
-          ...submission.teamRequestData,
-          teamId: updatedEntity.id,
-          isNewRequest: false,
-          teamName: updatedEntity.name,
-          team: {
-            id: updatedEntity.id,
-            name: updatedEntity.name,
-            aliases: updatedEntity.aliases || [],
-            description: updatedEntity.description || '',
-            members: updatedEntity.members || [],
-            createdAt: updatedEntity.createdAt,
-            updatedAt: updatedEntity.updatedAt
-          }
-        };
-      } else {
-        updatedSubmission.creatorRequests = submission.creatorRequests.map(request => {
-          if (request.role !== selectedRole) return request;
-          return {
-            ...request,
-            creatorId: updatedEntity.id,
-            isNewRequest: false,
-            creatorName: updatedEntity.name,
-            creator: {
-              id: updatedEntity.id,
-              name: updatedEntity.name,
-              aliases: updatedEntity.aliases || []
-            }
-          };
-        });
-      }
-
-      return updatedSubmission;
+      return updatedData;
     }));
-
     // Close the creator popup
     setShowCreatorPopup(false);
     setSelectedSubmission(null);

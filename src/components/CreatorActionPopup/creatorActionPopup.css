@@ -10,9 +10,10 @@
     justify-content: center;
     align-items: center;
     z-index: 1000;
+    -webkit-backdrop-filter: blur(2px);
     backdrop-filter: blur(2px);
     overflow-y: auto;
-    -webkit-overflow-scrolling: touch; /* For smooth scrolling on iOS */
+    
   }
 
   .creator-action-popup-overlay .creator-action-popup {
@@ -26,8 +27,6 @@
     overflow-y: auto;
     position: relative;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    scrollbar-width: thin;
-    scrollbar-color: #404040 #1a1a1a;
   }
 
   .creator-action-popup-overlay .creator-action-popup::-webkit-scrollbar {
@@ -735,6 +734,7 @@
     justify-content: center;
     align-items: center;
     z-index: 1100;
+    -webkit-backdrop-filter: blur(2px);
     backdrop-filter: blur(3px);
   }
 

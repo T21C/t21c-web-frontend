@@ -4,6 +4,7 @@ import Select from '../Select/Select';
 import api from '../../utils/api';
 import './submissionCreatorPopup.css';
 import { toast } from 'react-hot-toast';
+import axios from 'axios';
 
 const CreditRole = {
   CHARTER: 'charter',
@@ -42,19 +43,32 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
   const [newAliases, setNewAliases] = useState('');
   const [isCreating, setIsCreating] = useState(false);
 
-  // Initialize with selected entity if one exists
+  // Track if we're in team mode
+  const isTeamMode = initialRole === CreditRole.TEAM;
+
+  // Track the request being edited
+  const [editingRequestId, setEditingRequestId] = useState(initialRequest?.id || null);
+
+  // Load initial creator/team details if they exist
   useEffect(() => {
-    if (initialRequest?.creatorId) {
-      setSelectedCreatorId(initialRequest.creatorId);
-      fetchCreatorDetails(initialRequest.creatorId);
-    } else if (initialRequest?.teamId) {
-      setSelectedTeamId(initialRequest.teamId);
-      fetchTeamDetails(initialRequest.teamId);
-    } else if (initialRequest?.isNewRequest) {
-      // Pre-fill name and show create form for new requests
-      setNewName(initialRequest.creatorName || initialRequest.teamName || '');
-      setShowCreateForm(true);
-    }
+    const loadInitialDetails = async () => {
+      if (initialRequest) {
+        setEditingRequestId(initialRequest.id);
+        
+        if (initialRequest.creatorId) {
+          setSelectedCreatorId(initialRequest.creatorId);
+          await fetchCreatorDetails(initialRequest.creatorId);
+        } else if (initialRequest.teamId) {
+          setSelectedTeamId(initialRequest.teamId);
+          await fetchTeamDetails(initialRequest.teamId);
+        } else if (initialRequest.isNewRequest) {
+          setNewName(initialRequest.creatorName || initialRequest.teamName || '');
+          setShowCreateForm(true);
+        }
+      }
+    };
+
+    loadInitialDetails();
   }, [initialRequest]);
 
   // Handle search
@@ -88,7 +102,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
   }, [searchQuery, selectedRole]);
 
   const fetchCreatorDetails = async (creatorId) => {
-    if (!creatorId) return;
+    if (!creatorId) return null;
 
     try {
       const response = await api.get(`${import.meta.env.VITE_CREATORS}/byId/${creatorId}`);
@@ -96,13 +110,15 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
       
       if (!creator) {
         setError(tCreator('messages.error.creatorNotFound'));
-        return;
+        return null;
       }
 
       setCreatorDetails(creator);
+      return creator;
     } catch (error) {
       console.error('Error fetching creator details:', error);
       setError(tCreator('messages.error.loadDetailsFailed'));
+      return null;
     }
   };
 
@@ -125,13 +141,13 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
     }
   };
 
-  const handleSelect = (entity) => {
+  const handleSelect = async (entity) => {
     if (selectedRole === CreditRole.TEAM) {
       setSelectedTeamId(entity.id);
-      fetchTeamDetails(entity.id);
+      await fetchTeamDetails(entity.id);
     } else {
       setSelectedCreatorId(entity.id);
-      fetchCreatorDetails(entity.id);
+      await fetchCreatorDetails(entity.id);
     }
     setSearchQuery('');
     setSearchResults([]);
@@ -144,103 +160,35 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
     setError('');
 
     try {
-      const aliases = newAliases
-        .split(',')
-        .map(alias => alias.trim())
-        .filter(alias => alias.length > 0);
-
-      let response;
-      if (selectedRole === CreditRole.TEAM) {
-        response = await api.post(`${import.meta.env.VITE_TEAMS}`, {
+      const response = await api.post(
+        `${import.meta.env.VITE_SUBMISSION_API}/levels/${submission.id}/creators`,
+        {
           name: newName.trim(),
-          aliases,
-          description: ''  // Include empty description for new teams
-        });
-        toast.success(tCreator('messages.success.teamCreated'));
-      } else {
-        response = await api.post(`${import.meta.env.VITE_CREATORS}`, {
-          name: newName.trim(),
-          aliases
-        });
-        toast.success(tCreator('messages.success.creatorCreated'));
-      }
-
-      const newEntity = response.data;
-
-      // Update submission with the new entity ID
-      try {
-        const updateData = selectedRole === CreditRole.TEAM
-          ? {
-              teamRequestData: {
-                teamId: newEntity.id,
-                teamName: newEntity.name,
-                isNewRequest: false,
-                team: {
-                  id: newEntity.id,
-                  name: newEntity.name,
-                  aliases: newEntity.aliases || [],
-                  description: newEntity.description || '',
-                  members: newEntity.members || [],
-                  createdAt: newEntity.createdAt,
-                  updatedAt: newEntity.updatedAt
-                }
-              }
-            }
-          : {
-              creatorRequests: submission.creatorRequests.map(request => 
-                request.role === selectedRole
-                  ? { 
-                      ...request, 
-                      creatorId: newEntity.id, 
-                      creatorName: newEntity.name,
-                      isNewRequest: false,
-                      creator: {
-                        id: newEntity.id,
-                        name: newEntity.name,
-                        aliases: newEntity.aliases || []
-                      }
-                    }
-                  : request
-              )
-            };
-
-        const updatedSubmission = await api.put(`${import.meta.env.VITE_SUBMISSION_API}/levels/${submission.id}/profiles`, updateData);
-
-        // Update local state
-        if (selectedRole === CreditRole.TEAM) {
-          setSelectedTeamId(newEntity.id);
-          setTeamDetails({
-            ...newEntity,
-            members: newEntity.members || [],
-            description: newEntity.description || ''
-          });
-        } else {
-          setSelectedCreatorId(newEntity.id);
-          setCreatorDetails(newEntity);
+          aliases: newAliases
+            .split(',')
+            .map(alias => alias.trim())
+            .filter(alias => alias.length > 0),
+          role: selectedRole,
+          creditRequestId: editingRequestId
         }
+      );
 
-        setShowCreateForm(false);
-        setNewName('');
-        setNewAliases('');
-        setSuccess(selectedRole === CreditRole.TEAM 
-          ? tCreator('messages.success.teamAssigned')
-          : tCreator('messages.success.creatorAssigned'));
+      setShowCreateForm(false);
+      setNewName('');
+      setNewAliases('');
+      setSuccess(selectedRole === CreditRole.TEAM
+        ? tCreator('messages.success.teamCreatedAndAssigned')
+        : tCreator('messages.success.creatorCreatedAndAssigned'));
 
-        // Notify parent component with the updated entity
-        onUpdate(updatedSubmission.data);
-
-        // Close after a delay
-        setTimeout(onClose, 1500);
-      } catch (error) {
-        console.error('Error updating submission:', error);
-        setError(tCreator('messages.error.assignFailed'));
-      }
+      // Notify parent with complete updated data
+      onUpdate(response.data);
+      setTimeout(onClose, 1500);
     } catch (error) {
-      console.error('Error creating:', error);
-      setError(error.response?.data?.error || 
-        (selectedRole === CreditRole.TEAM ? 
-          tCreator('messages.error.teamCreateFailed') : 
-          tCreator('messages.error.createFailed')));
+      console.error('Error in creation process:', error);
+      setError(error.response?.data?.error ||
+        (selectedRole === CreditRole.TEAM
+          ? tCreator('messages.error.teamCreateFailed')
+          : tCreator('messages.error.createFailed')));
     } finally {
       setIsCreating(false);
     }
@@ -255,57 +203,46 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
     setSuccess('');
 
     try {
+      // Step 1: Update the submission
       const updateData = selectedRole === CreditRole.TEAM
         ? {
             teamRequestData: {
               ...submission.teamRequestData,
               teamId: selectedTeamId,
-              isNewRequest: false,
               teamName: teamDetails.name,
-              team: {
-                id: selectedTeamId,
-                name: teamDetails.name,
-                aliases: teamDetails.aliases,
-                members: teamDetails.members
-              }
+              isNewRequest: false
             }
           }
         : {
             creatorRequests: submission.creatorRequests.map(request => 
-              request.role === selectedRole
-                ? { 
-                    ...request, 
-                    creatorId: selectedCreatorId, 
-                    isNewRequest: false,
+              request.id === editingRequestId
+                ? {
+                    ...request,
+                    creatorId: selectedCreatorId,
                     creatorName: creatorDetails.name,
-                    creator: {
-                      id: selectedCreatorId,
-                      name: creatorDetails.name,
-                      aliases: creatorDetails.aliases
-                    }
+                    isNewRequest: false
                   }
                 : request
             )
           };
 
-      await api.put(`${import.meta.env.VITE_SUBMISSION_API}/levels/${submission.id}/profiles`, updateData);
+      const finalSubmission = await api.put(
+        `${import.meta.env.VITE_SUBMISSION_API}/levels/${submission.id}/profiles`,
+        updateData
+      );
+
+      // Step 2: Get the updated submission with all associations
+
 
       setSuccess(selectedRole === CreditRole.TEAM 
         ? tCreator('messages.success.teamAssigned')
         : tCreator('messages.success.creatorAssigned'));
 
-      // Notify parent component with the updated entity
+      // Notify parent with complete updated data
       onUpdate({
-        type: selectedRole,
-        id: selectedRole === CreditRole.TEAM ? selectedTeamId : selectedCreatorId,
-        name: selectedRole === CreditRole.TEAM ? teamDetails.name : creatorDetails.name,
-        aliases: selectedRole === CreditRole.TEAM ? teamDetails.aliases : creatorDetails.aliases,
-        isNewRequest: false,
-        ...(selectedRole === CreditRole.TEAM ? {
-          members: teamDetails.members || []
-        } : {})
+        ...submission,
+        ...finalSubmission.data
       });
-
       setTimeout(onClose, 1500);
     } catch (error) {
       console.error('Error assigning:', error);
@@ -313,6 +250,32 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
         ? tCreator('messages.error.teamAssignFailed')
         : tCreator('messages.error.assignFailed'));
     } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleConfirm = async () => {
+    if (!selectedEntity || !submissionId) return;
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const response = await axios.put(`/v2/admin/submissions/levels/${submissionId}/profiles`, {
+        creatorRequests: [{
+          id: creditRequestId,
+          creatorId: selectedEntity.id,
+          creatorName: selectedEntity.name,
+          isNewRequest: false
+        }]
+      });
+
+      // Pass the updated submission data back to the parent
+      onUpdate(response.data);
+      setIsLoading(false);
+      setSelectedEntity(null);
+      setShowConfirmation(false);
+    } catch (err) {
+      setError(err.response?.data?.error || 'Failed to update submission');
       setIsLoading(false);
     }
   };
@@ -344,9 +307,6 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
     };
   }, [onClose]);
 
-  const isTeamMode = selectedRole === CreditRole.TEAM;
-  console.log(teamDetails);
-  console.log(creatorDetails);
   const selectedDetails = isTeamMode ? teamDetails : creatorDetails;
   
   return (
@@ -358,22 +318,24 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
         </div>
 
         <div className="popup-content">
-          <div className="role-selector">
-            <label>{tCreator('role.label')}</label>
-            <Select
-              options={roleOptions}
-              value={roleOptions.find(opt => opt.value === selectedRole)}
-              onChange={(selected) => {
-                setSelectedRole(selected.value);
-                setSearchQuery('');
-                setSearchResults([]);
-                setShowCreateForm(false);
-                setError('');
-              }}
-              className="role-select"
-              width="100%"
-            />
-          </div>
+          {!isTeamMode && (
+            <div className="role-selector">
+              <label>{tCreator('role.label')}</label>
+              <Select
+                options={roleOptions}
+                value={roleOptions.find(opt => opt.value === selectedRole)}
+                onChange={(selected) => {
+                  setSelectedRole(selected.value);
+                  setSearchQuery('');
+                  setSearchResults([]);
+                  setShowCreateForm(false);
+                  setError('');
+                }}
+                className="role-select"
+                width="100%"
+              />
+            </div>
+          )}
 
           <div className="creator-selection">
             <div className="current-creator">
