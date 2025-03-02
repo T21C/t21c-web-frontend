@@ -62,6 +62,7 @@ export const DetailPopup = ({
   const [isAnimating, setIsAnimating] = useState(false);
   const [isCommentRequired, setIsCommentRequired] = useState(false);
   const [isDetailsCollapsed, setIsDetailsCollapsed] = useState(false);
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const popupRef = useRef(null);
 
@@ -79,7 +80,6 @@ export const DetailPopup = ({
         handleClose();
       };
 
-      // Push a new state to handle back button
       window.history.pushState({ popup: true }, '');
       window.addEventListener('popstate', handlePopState);
 
@@ -175,11 +175,14 @@ export const DetailPopup = ({
       const rating = userDetail?.rating || "";
       const comment = userDetail?.comment || "";
       
-      setPendingRating(rating);
-      setPendingComment(comment);
+      if (isInitialLoad) {
+        setPendingRating(rating);
+        setPendingComment(comment);
+        setIsInitialLoad(false);
+      }
+      
       setInitialRating(rating);
       setInitialComment(comment);
-      
       validateRating(rating);
       
       setHasUnsavedChanges(false);
@@ -232,12 +235,19 @@ export const DetailPopup = ({
   const handleSaveChanges = async () => {
     if (!selectedRating || !hasUnsavedChanges) return;
     
+    console.log('[DetailPopup] Attempting to save changes:', {
+      pendingRating,
+      pendingComment,
+      isCommentRequired
+    });
+    
     setIsSaving(true);
     setSaveError(null);
     setCommentError(false);
 
     try {
       if (pendingComment.length > 1000) {
+        console.log('[DetailPopup] Error: Comment too long');
         setCommentError(true);
         setSaveError(tRating('errors.commentLength'));
         setIsSaving(false);
@@ -245,6 +255,7 @@ export const DetailPopup = ({
       }
 
       if (isCommentRequired && !pendingComment.trim()) {
+        console.log('[DetailPopup] Error: Comment required but missing');
         setCommentError(true);
         setSaveError(tRating('errors.commentRequired'));
         setIsSaving(false);
@@ -252,18 +263,26 @@ export const DetailPopup = ({
       }
 
       const updatedRating = await updateRating(selectedRating.id, pendingRating, pendingComment);
+      console.log('[DetailPopup] Save successful:', updatedRating);
 
       setRatings(prevRatings => prevRatings.map(rating => 
         rating.id === updatedRating.id ? updatedRating : rating
       ));
 
-      setSelectedRating(updatedRating);
-      setOtherRatings(updatedRating.details || []);
+      // Update only the details in selectedRating to avoid re-initialization
+      setSelectedRating(prev => ({
+        ...prev,
+        details: updatedRating.details,
+        averageDifficulty: updatedRating.averageDifficulty
+      }));
       
+      setOtherRatings(updatedRating.details || []);
       setInitialRating(pendingRating);
       setInitialComment(pendingComment);
       setHasUnsavedChanges(false);
+      setIsInitialLoad(false); // Ensure we don't reset pending states after save
     } catch (error) {
+      console.error('[DetailPopup] Save failed:', error);
       setSaveError(error.message || tRating('errors.saveFailed'));
     } finally {
       setIsSaving(false);
@@ -297,6 +316,7 @@ export const DetailPopup = ({
       setCommentError(false);
       setOtherRatings([]);
       setIsExiting(false);
+      setIsInitialLoad(true); // Reset initial load state when closing
     }, 200); // Match the exit animation duration
   };
 
