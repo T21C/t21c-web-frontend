@@ -1139,3 +1139,114 @@
     font-size: 0.95rem;
     color: var(--color-white-t80);
   }
+
+  .submission-admin-page .add-creator-button-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    padding: 5px 0;
+  }
+
+  .submission-admin-page .creator-group {
+    position: relative;
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: rgba(230, 230, 250, 0.133);
+    border-radius: 8px;
+    border: 1px solid var(--color-white-t20);
+  }
+
+  .submission-admin-page .creator-list {
+    margin-bottom: 10px;
+  }
+
+  .submission-admin-page .creator-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-left: auto;
+  }
+
+  .submission-admin-page .manage-creator-button,
+  .submission-admin-page .remove-creator-button,
+  .submission-admin-page .add-creator-button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .submission-admin-page .manage-creator-button {
+    background-color: #9370DB;
+    color: white;
+  }
+
+  .submission-admin-page .manage-creator-button:hover {
+    background-color: #8A2BE2;
+    transform: translateY(-1px);
+  }
+
+  .submission-admin-page .remove-creator-button {
+    background-color: #f44336;
+    color: white;
+  }
+
+  .submission-admin-page .remove-creator-button:hover {
+    background-color: #d32f2f;
+    transform: translateY(-1px);
+  }
+
+  .submission-admin-page .add-creator-button {
+    background-color: #4CAF50;
+    color: white;
+    min-width: 120px;
+  }
+
+  .submission-admin-page .add-creator-button:hover {
+    background-color: #45a049;
+    transform: translateY(-1px);
+  }
+
+  .submission-admin-page .creator-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    background-color: rgba(230, 230, 250, 0.133);
+    border-radius: 4px;
+    margin-bottom: 8px;
+    border: 1px solid var(--color-white-t20);
+  }
+
+  .submission-admin-page .creator-name {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--color-white);
+    font-size: 1em;
+    font-weight: 500;
+  }
+
+
+  .submission-admin-page .manage-creator-button:disabled,
+  .submission-admin-page .remove-creator-button:disabled,
+  .submission-admin-page .add-creator-button:disabled {
+    background-color: #666;
+    cursor: not-allowed;
+    transform: none;
+    opacity: 0.7;
+  }
+
+  .submission-admin-page .creator-group-header {
+    margin-bottom: 15px;
+    font-size: 1.1em;
+    font-weight: 600;
+    color: var(--color-white);
+    text-transform: capitalize;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--color-white-t20);
+  }

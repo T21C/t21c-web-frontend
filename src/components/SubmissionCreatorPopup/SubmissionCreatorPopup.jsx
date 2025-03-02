@@ -8,8 +8,7 @@ import axios from 'axios';
 
 const CreditRole = {
   CHARTER: 'charter',
-  VFXER: 'vfxer',
-  TEAM: 'team'
+  VFXER: 'vfxer'
 };
 
 const roleOptions = Object.entries(CreditRole).map(([key, value]) => ({
@@ -179,6 +178,11 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
       // Wait for any pending state updates
       await new Promise(resolve => setTimeout(resolve, 100));
 
+      // Ensure we have the credit request ID
+      if (!initialRequest?.id) {
+        throw new Error('Credit request ID is missing');
+      }
+
       const response = await api.post(
         `${import.meta.env.VITE_SUBMISSION_API}/levels/${submission.id}/creators`,
         {
@@ -188,7 +192,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
             .map(alias => alias.trim())
             .filter(alias => alias.length > 0),
           role: selectedRole,
-          creditRequestId: editingRequestId
+          creditRequestId: initialRequest.id // Ensure this is passed correctly
         }
       );
 
@@ -210,10 +214,14 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
       onClose();
     } catch (error) {
       console.error('Error in creation process:', error);
-      setError(error.response?.data?.error ||
-        (selectedRole === CreditRole.TEAM
-          ? tCreator('messages.error.teamCreateFailed')
-          : tCreator('messages.error.createFailed')));
+      if (error.message === 'Credit request ID is missing') {
+        setError(tCreator('messages.error.creditRequestIdMissing'));
+      } else {
+        setError(error.response?.data?.error ||
+          (selectedRole === CreditRole.TEAM
+            ? tCreator('messages.error.teamCreateFailed')
+            : tCreator('messages.error.createFailed')));
+      }
     } finally {
       setIsCreating(false);
     }
@@ -228,6 +236,11 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
     setSuccess('');
 
     try {
+      // Ensure we have the credit request ID for creator assignments
+      if (selectedRole !== CreditRole.TEAM && !initialRequest?.id) {
+        throw new Error('Credit request ID is missing');
+      }
+
       // Step 1: Update the submission
       const updateData = selectedRole === CreditRole.TEAM
         ? {
@@ -240,7 +253,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
           }
         : {
             creatorRequests: submission.creatorRequests.map(request => 
-              request.id === editingRequestId
+              request.id === initialRequest.id
                 ? {
                     ...request,
                     creatorId: selectedCreatorId,
@@ -256,24 +269,22 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
         updateData
       );
 
-      // Step 2: Get the updated submission with all associations
-
-
       setSuccess(selectedRole === CreditRole.TEAM 
         ? tCreator('messages.success.teamAssigned')
         : tCreator('messages.success.creatorAssigned'));
 
       // Notify parent with complete updated data
-      onUpdate({
-        ...submission,
-        ...finalSubmission.data
-      });
+      onUpdate(finalSubmission.data);
       setTimeout(onClose, 1500);
     } catch (error) {
       console.error('Error assigning:', error);
-      setError(selectedRole === CreditRole.TEAM 
-        ? tCreator('messages.error.teamAssignFailed')
-        : tCreator('messages.error.assignFailed'));
+      if (error.message === 'Credit request ID is missing') {
+        setError(tCreator('messages.error.creditRequestIdMissing'));
+      } else {
+        setError(selectedRole === CreditRole.TEAM 
+          ? tCreator('messages.error.teamAssignFailed')
+          : tCreator('messages.error.assignFailed'));
+      }
     } finally {
       setIsLoading(false);
     }

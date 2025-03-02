@@ -26,10 +26,12 @@
     "decline": "Decline",
     "addCharter": "Add Charter",
     "addVfxer": "Add VFX-er",
-    "removeCreator": "Remove",
+    "remove": "Remove",
     "searchCreator": "Search",
     "createCreator": "Create New",
-    "assignCreator": "Assign Existing"
+    "assignCreator": "Assign Existing",
+    "addTeam": "Add Team",
+    "addCreator": "Add Creator"
   },
   "labels": {
     "levelName": "Level",

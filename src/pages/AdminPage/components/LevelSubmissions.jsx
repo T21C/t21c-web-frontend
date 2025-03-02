@@ -224,6 +224,7 @@ const LevelSubmissions = () => {
       if (submission.teamRequestData?.team) {
         const team = submission.teamRequestData.team;
         request = {
+          id: submission.teamRequestData.id,
           team: {
             id: team.id,
             name: team.name,
@@ -242,8 +243,9 @@ const LevelSubmissions = () => {
           teamName: team.name
         };
       } else if (submission.teamRequestData?.isNewRequest) {
-        // For new team requests, pass the requested team name
+        // For new team requests, pass the requested team name and request ID
         request = {
+          id: submission.teamRequestData.id,
           teamName: submission.teamRequestData.teamName,
           isNewRequest: true
         };
@@ -253,26 +255,33 @@ const LevelSubmissions = () => {
       if (request?.creator) {
         // Ensure we have the correct credit stats format for existing creators
         const credits = request.creator.credits || {};
-        request.creator = {
-          ...request.creator,
-          credits: {
-            charterCount: credits.charterCount || 0,
-            vfxerCount: credits.vfxerCount || 0,
-            totalCredits: credits.totalCredits || 0,
-            totalLevels: request.creator.createdLevels?.length || 0,
-            verifiedLevels: request.creator.createdLevels?.filter(l => l.isVerified).length || 0
-          },
-          aliases: request.creator.aliases || [],
-          isVerified: request.creator.isVerified || false
+        request = {
+          ...request,
+          creator: {
+            ...request.creator,
+            credits: {
+              charterCount: credits.charterCount || 0,
+              vfxerCount: credits.vfxerCount || 0,
+              totalCredits: credits.totalCredits || 0,
+              totalLevels: request.creator.createdLevels?.length || 0,
+              verifiedLevels: request.creator.createdLevels?.filter(l => l.isVerified).length || 0
+            },
+            aliases: request.creator.aliases || [],
+            isVerified: request.creator.isVerified || false
+          }
         };
       } else if (request?.isNewRequest) {
-        // For new creator requests, pass the requested creator name
+        // For new creator requests, ensure we pass the ID
         request = {
+          ...request,
           creatorName: request.creatorName,
           isNewRequest: true
         };
       }
     }
+    
+    // Log the request to verify the ID is present
+    console.log('Opening creator popup with request:', request);
     
     setSelectedSubmission(submission);
     setSelectedCreatorRequest(request);
@@ -300,6 +309,49 @@ const LevelSubmissions = () => {
     setSelectedSubmission(null);
     setSelectedCreatorRequest(null);
     setSelectedRole(null);
+  };
+
+  const handleAddCreator = async (submissionId, role) => {
+    try {
+      const response = await api.post(
+        `${import.meta.env.VITE_SUBMISSION_API}/levels/${submissionId}/creator-requests`,
+        { role }
+      );
+      
+      // Update the submissions list with the new data
+      setSubmissions(prevSubmissions => prevSubmissions.map(submission => {
+        if (submission.id === submissionId) {
+          return response.data;
+        }
+        return submission;
+      }));
+    } catch (error) {
+      console.error('Error adding creator:', error);
+      toast.error(tLevel('errors.addCreatorFailed'));
+    }
+  };
+
+  const handleRemoveCreator = async (submissionId, requestId) => {
+    try {
+      const response = await api.delete(
+        `${import.meta.env.VITE_SUBMISSION_API}/levels/${submissionId}/creator-requests/${requestId}`
+      );
+      
+      // Update the submissions list with the new data
+      setSubmissions(prevSubmissions => prevSubmissions.map(submission => {
+        if (submission.id === submissionId) {
+          return response.data;
+        }
+        return submission;
+      }));
+    } catch (error) {
+      console.error('Error removing creator:', error);
+      if (error.response?.status === 400) {
+        toast.error(tLevel('errors.cannotRemoveLastCharter'));
+      } else {
+        toast.error(tLevel('errors.removeCreatorFailed'));
+      }
+    }
   };
 
   if (submissions?.length === 0 && !isLoading) {
@@ -398,26 +450,50 @@ const LevelSubmissions = () => {
                                   </span>
                                 )}
                               </span>
-                              <button
-                                className="manage-creator-button"
-                                onClick={() => handleCreatorAction(submission, request, request.role)}
-                              >
-                                {tLevel('buttons.manageCreator')}
-                              </button>
+                              <div className="creator-actions">
+                                <button
+                                  className="manage-creator-button"
+                                  onClick={() => handleCreatorAction(submission, request, request.role)}
+                                >
+                                  {tLevel('buttons.manageCreator')}
+                                </button>
+                                {/* Show remove button for vfxers or if there's more than one charter */}
+                                {(request.role === 'vfxer' || 
+                                  (request.role === 'charter' && 
+                                    creators.filter(r => r.role === 'charter').length > 1)) && (
+                                  <button
+                                    className="remove-creator-button"
+                                    onClick={() => handleRemoveCreator(submission.id, request.id)}
+                                  >
+                                    {tLevel('buttons.remove')}
+                                  </button>
+                                )}
+                              </div>
                             </div>
                           ))}
                         </div>
+                        {/* Only show add button for charter and vfxer roles */}
+                        {role !== 'team' && (
+                          <div className="add-creator-button-container">
+                            <button
+                              className="add-creator-button"
+                              onClick={() => handleAddCreator(submission.id, role)}
+                            >
+                              {tLevel('buttons.addCreator', { role })}
+                            </button>
+                          </div>
+                        )}
                       </div>
                     ));
                   })()}
 
                   {/* Team Request */}
-                  {submission.teamRequestData && (
-                    <div className="creator-group">
-                      <div className="creator-group-header">
-                        {tLevel('details.team')}
-                      </div>
-                      <div className="creator-list">
+                  <div className="creator-group">
+                    <div className="creator-group-header">
+                      {tLevel('details.team')}
+                    </div>
+                    <div className="creator-list">
+                      {submission.teamRequestData ? (
                         <div className="creator-item">
                           <span className={`creator-name ${submission.teamRequestData.isNewRequest ? 'pending' : ''}`}>
                             {submission.teamRequestData.teamName}
@@ -427,16 +503,33 @@ const LevelSubmissions = () => {
                               </span>
                             )}
                           </span>
+                          <div className="creator-actions">
+                            <button
+                              className="manage-creator-button"
+                              onClick={() => handleCreatorAction(submission, submission.teamRequestData, 'team')}
+                            >
+                              {tLevel('buttons.manageTeam')}
+                            </button>
+                            <button
+                              className="remove-creator-button"
+                              onClick={() => handleRemoveCreator(submission.id, submission.teamRequestData.id)}
+                            >
+                              {tLevel('buttons.remove')}
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="add-creator-button-container">
                           <button
-                            className="manage-creator-button"
-                            onClick={() => handleCreatorAction(submission, submission.teamRequestData, 'team')}
+                            className="add-creator-button"
+                            onClick={() => handleAddCreator(submission.id, 'team')}
                           >
-                            {tLevel('buttons.manageTeam')}
+                            {tLevel('buttons.addTeam')}
                           </button>
                         </div>
-                      </div>
+                      )}
                     </div>
-                  )}
+                  </div>
 
                   <div className="action-buttons">
                     <button 
