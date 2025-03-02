@@ -46,8 +46,6 @@ const EditProfilePage = () => {
 
     try {
       await updateProfile({
-        username: formData.username,
-        email: formData.email,
         nickname: formData.nickname,
       });
       setSuccess('Profile updated successfully!');
@@ -122,7 +120,8 @@ const EditProfilePage = () => {
               name="username"
               value={formData.username}
               onChange={handleInputChange}
-              required
+              readOnly
+              className="readonly"
             />
           </div>
 
@@ -134,6 +133,7 @@ const EditProfilePage = () => {
               name="nickname"
               value={formData.nickname}
               onChange={handleInputChange}
+              required
             />
           </div>
 
