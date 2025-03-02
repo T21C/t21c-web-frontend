@@ -199,8 +199,7 @@ const ProfilePage = () => {
                       //style={{cursor: "not-allowed", pointerEvents: "none"}}
                       onClick={() => navigate('/profile/edit')}
                     >
-                      <EditIcon color="#777" size={24} />
-                      <span style={{color: "#777"}}>Disabled</span>
+                      <EditIcon color="#fff" size={24} />
                     </button>
                   )}
                   {user?.isSuperAdmin && (
