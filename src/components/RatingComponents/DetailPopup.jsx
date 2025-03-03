@@ -208,10 +208,25 @@ export const DetailPopup = ({
 
   useEffect(() => {
     const hasChanges = pendingRating !== initialRating || pendingComment !== initialComment;
-    setHasUnsavedChanges(hasChanges);
+    const hasValidChanges = 
+      // Check if we have a pending rating that's different from initial
+      (pendingRating && pendingRating !== initialRating) ||
+      // Check if we have a pending comment that's different from initial
+      (pendingComment && pendingComment !== initialComment) ||
+      // Check if we're removing a rating
+      (pendingRating === "" && initialRating) ||
+      // Check if we're removing a comment
+      (pendingComment === "" && initialComment);
+    
+    setHasUnsavedChanges(hasChanges || hasValidChanges);
   }, [pendingRating, pendingComment, initialRating, initialComment]);
 
   const validateRating = (rating) => {
+    // Always require comment for non-admin users
+    if (!isAdminRater()) {
+      setIsCommentRequired(true);
+      return true;
+    }
     
     if (!rating) {
       setIsCommentRequired(false);
@@ -264,12 +279,7 @@ export const DetailPopup = ({
 
   const handleSaveChanges = async () => {
     if (!selectedRating || !hasUnsavedChanges) return;
-    
-    console.log('[DetailPopup] Attempting to save changes:', {
-      pendingRating,
-      pendingComment,
-      isCommentRequired
-    });
+  
     
     setIsSaving(true);
     setSaveError(null);
@@ -277,7 +287,6 @@ export const DetailPopup = ({
 
     try {
       if (pendingComment.length > 1000) {
-        console.log('[DetailPopup] Error: Comment too long');
         setCommentError(true);
         setSaveError(tRating('errors.commentLength'));
         setIsSaving(false);
@@ -285,7 +294,6 @@ export const DetailPopup = ({
       }
 
       if (isCommentRequired && !pendingComment.trim()) {
-        console.log('[DetailPopup] Error: Comment required but missing');
         setCommentError(true);
         setSaveError(tRating('errors.commentRequired'));
         setIsSaving(false);
@@ -294,7 +302,6 @@ export const DetailPopup = ({
 
       const isCommunityRating = !isAdminRater();
       const updatedRating = await updateRating(selectedRating.id, pendingRating, pendingComment, isCommunityRating);
-      console.log('[DetailPopup] Save successful:', updatedRating);
 
       setRatings(prevRatings => prevRatings.map(rating => 
         rating.id === updatedRating.id ? updatedRating : rating
@@ -614,7 +621,10 @@ export const DetailPopup = ({
                           borderColor: commentError ? 'red' : '',
                           backgroundColor: isCommentRequired ? 'rgba(255, 0, 0, 0.05)' : ''
                         }}
-                        placeholder={isCommentRequired ? tRating('placeholders.requiredComment') : ''}
+                        placeholder={isAdminRater() 
+                          ? (isCommentRequired ? tRating('placeholders.requiredComment') : '')
+                          : tRating('placeholders.communityComment')
+                        }
                       />
                     </div>
                     <button 

@@ -37,7 +37,8 @@
     },
     "placeholders": {
       "requiredComment": "Please explain why you're rating this -2...",
-      "difficultyInput": "Enter difficulty..."
+      "difficultyInput": "Enter difficulty...",
+      "communityComment": "Please provide a reason for your rating..."
     },
     "confirmations": {
       "deleteRating": "Are you sure you want to delete this rating from {{username}}?"

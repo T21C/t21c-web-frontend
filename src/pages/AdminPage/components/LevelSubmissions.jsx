@@ -280,8 +280,6 @@ const LevelSubmissions = () => {
       }
     }
     
-    // Log the request to verify the ID is present
-    console.log('Opening creator popup with request:', request);
     
     setSelectedSubmission(submission);
     setSelectedCreatorRequest(request);

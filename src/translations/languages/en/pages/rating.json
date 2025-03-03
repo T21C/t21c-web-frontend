@@ -29,7 +29,9 @@
     "byDate": "Last Updated"
   },
   "labels": {
-    "totalRatings": "Total Ratings: {{count}}"
+    "totalRatings": "{{count}} ratings",
+    "connectedUsers": "{{count}} online",
+    "disconnected": "Disconnected"
   },
   "tooltips": {
     "sortAsc": "Sort ascending",

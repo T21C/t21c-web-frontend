@@ -55,6 +55,8 @@ const RatingPage = () => {
   const [showReferences, setShowReferences] = useState(false);
   const [showRaterManagement, setShowRaterManagement] = useState(false);
   const [showHelpPopup, setShowHelpPopup] = useState(false);
+  const [connectedUsers, setConnectedUsers] = useState(0);
+  const [isConnected, setIsConnected] = useState(true);
 
   const handleCloseSuccessMessage = () => {
     setShowMessage(false);
@@ -91,14 +93,23 @@ const RatingPage = () => {
             data.type === 'submissionUpdate') {
           console.debug('SSE: Received update event:', data.type);
           fetchRatings();
+        } else if (data.type === 'userCount') {
+          setConnectedUsers(data.data.count);
         }
+        setIsConnected(true);
       } catch (error) {
         console.error('Error parsing SSE message:', error);
+        setIsConnected(false);
       }
     };
 
     eventSource.onerror = (error) => {
       console.error('SSE: Rating Page Connection error:', error);
+      setIsConnected(false);
+    };
+
+    eventSource.onopen = () => {
+      setIsConnected(true);
     };
 
     return () => {
@@ -321,6 +332,11 @@ const RatingPage = () => {
                   if (fourVoteFilter === 'only' && rating.details.length < 4) return false;
                   return true;
                 }).length || 0 })}
+              </div>
+              <div className={`connected-users ${isConnected ? 'connected' : 'disconnected'}`}>
+                <div className={`indicator`} />
+                {isConnected ? tRating('labels.connectedUsers', { count: connectedUsers }) 
+                : tRating('labels.disconnected')}
               </div>
               </div>
             </div>

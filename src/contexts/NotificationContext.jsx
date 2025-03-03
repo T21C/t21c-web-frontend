@@ -35,7 +35,6 @@ export const NotificationProvider = ({ children }) => {
   const reconnectTimeoutRef = useRef(null);
 
   const resetCounts = () => {
-    console.log('[Notifications] Resetting all notification counts to 0');
     setPendingSubmissions(0);
     setPendingRatings(0);
     setPendingLevelSubmissions(0);
@@ -44,7 +43,6 @@ export const NotificationProvider = ({ children }) => {
 
   const fetchNotificationCounts = async (force = false) => {
     if (!force && !user?.isSuperAdmin && !user?.isRater) {
-      console.log('[Notifications] User lacks permissions, resetting counts');
       resetCounts();
       return;
     }
@@ -52,7 +50,6 @@ export const NotificationProvider = ({ children }) => {
     const now = Date.now();
     // Throttle fetches to once every 30 seconds unless forced
     if (!force && lastFetchTimeRef.current && now - lastFetchTimeRef.current < 30000) {
-      console.log('[Notifications] Throttling fetch, scheduling retry');
       if (fetchTimeoutRef.current) {
         clearTimeout(fetchTimeoutRef.current);
       }
@@ -60,10 +57,8 @@ export const NotificationProvider = ({ children }) => {
       return;
     }
 
-    console.log('[Notifications] Fetching notification counts');
     try {
       const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/admin/statistics`);
-      console.log('[Notifications] Received counts:', response.data);
       const { unratedRatings, totalPendingSubmissions, pendingLevelSubmissions, pendingPassSubmissions } = response.data;
       
       setPendingSubmissions(totalPendingSubmissions);
@@ -78,7 +73,6 @@ export const NotificationProvider = ({ children }) => {
   };
 
   const cleanup = () => {
-    console.log('[Notifications] Cleaning up SSE connections and timeouts');
     if (eventSourceRef.current) {
       eventSourceRef.current.close();
       eventSourceRef.current = null;
@@ -97,11 +91,9 @@ export const NotificationProvider = ({ children }) => {
     cleanup(); // Clean up any existing connections first
 
     if (!force && !user?.isSuperAdmin && !user?.isRater) {
-      console.log('[Notifications] User lacks permissions, skipping SSE setup');
       return;
     }
 
-    console.log('[Notifications] Setting up SSE connection');
     const apiUrl = import.meta.env.VITE_API_URL;
     const eventsEndpoint = `${apiUrl}/events`;
 
@@ -110,12 +102,10 @@ export const NotificationProvider = ({ children }) => {
     });
 
     eventSourceRef.current.onerror = () => {
-      console.log('[Notifications] SSE connection error');
       if (eventSourceRef.current?.readyState === EventSource.CLOSED) {
         eventSourceRef.current.close();
         
         reconnectTimeoutRef.current = setTimeout(() => {
-          console.log('[Notifications] Attempting to reconnect SSE');
           setupEventSource(force);
         }, 1000);
       }
@@ -160,7 +150,6 @@ export const NotificationProvider = ({ children }) => {
   };
 
   const restartNotifications = (force = false) => {
-    console.log('[Notifications] Restarting notifications system', force ? '(forced)' : '');
     cleanup();
     setupEventSource(force);
     fetchNotificationCounts(force);
