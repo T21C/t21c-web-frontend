@@ -2,6 +2,7 @@ import { CompleteNav, MetaTags, StateDisplay } from "../../components";
 import "./css/adminratingpage.css";
 import { useEffect, useState, useCallback, useMemo } from "react";
 import { useAuth } from "../../contexts/AuthContext";
+import { useNotification } from "../../contexts/NotificationContext";
 import { useRatingFilter } from "../../contexts/RatingFilterContext";
 import { useTranslation } from "react-i18next";
 import { DetailPopup } from "../../components/RatingComponents/DetailPopup";
@@ -56,7 +57,8 @@ const RatingPage = () => {
   const [showRaterManagement, setShowRaterManagement] = useState(false);
   const [showHelpPopup, setShowHelpPopup] = useState(false);
   const [connectedUsers, setConnectedUsers] = useState(0);
-  const [isConnected, setIsConnected] = useState(true);
+  const [isConnected, setIsConnected] = useState(false);
+  const [connectedManagers, setConnectedManagers] = useState(0);
 
   const handleCloseSuccessMessage = () => {
     setShowMessage(false);
@@ -79,43 +81,102 @@ const RatingPage = () => {
     }
   }, []);
 
-  useEffect(() => {
-    fetchRatings();
-    const eventSource = new EventSource(`${import.meta.env.VITE_API_URL}/events`, {
-      withCredentials: true
-    });
+  const logUserCountChange = useCallback((total, managers) => {
+    console.debug('SSE Client: User count update:', { total, managers });
+    setConnectedUsers(total);
+    setConnectedManagers(managers);
+  }, []);
 
-    eventSource.onmessage = (event) => {
+  useEffect(() => {
+    // Initial fetch
+    fetchRatings();
+    
+    const handleMessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        if (data.type === 'ratingUpdate' || 
-            data.type === 'levelUpdate' || 
-            data.type === 'submissionUpdate') {
-          console.debug('SSE: Received update event:', data.type);
-          fetchRatings();
-        } else if (data.type === 'userCount') {
-          setConnectedUsers(data.data.count);
+        console.debug('SSE Client: Received message:', data);
+
+        switch (data.type) {
+          case 'userCount':
+            logUserCountChange(data.data.total, data.data.managers);
+            break;
+          case 'ratingUpdate':
+          case 'levelUpdate':
+          case 'submissionUpdate':
+            console.debug('SSE Client: Received update event:', data.type);
+            fetchRatings();
+            break;
+          case 'ping':
+            console.debug('SSE Client: Received ping');
+            break;
+          default:
+            console.debug('SSE Client: Received unknown event type:', data.type);
         }
-        setIsConnected(true);
       } catch (error) {
-        console.error('Error parsing SSE message:', error);
-        setIsConnected(false);
+        console.error('SSE Client: Error processing message:', error);
       }
     };
 
-    eventSource.onerror = (error) => {
-      console.error('SSE: Rating Page Connection error:', error);
-      setIsConnected(false);
+    let eventSource = null;
+    let reconnectTimeout = null;
+    
+    const connect = () => {
+      // Only set up SSE for authenticated users
+        const params = new URLSearchParams({
+          source: 'rating',
+        });
+        
+        if (user) {
+          params.set('userId', user.id);
+        }
+
+        const url = `${import.meta.env.VITE_API_URL}/events?${params.toString()}`;
+        console.debug('SSE Client: Connecting to', url);
+
+        eventSource = new EventSource(url, {
+          withCredentials: true
+        });
+
+        eventSource.onopen = () => {
+          console.debug('SSE Client: Connection opened');
+          setIsConnected(true);
+          if (reconnectTimeout) {
+            clearTimeout(reconnectTimeout);
+            reconnectTimeout = null;
+          }
+        };
+
+        eventSource.onerror = (error) => {
+          console.error('SSE Client: Connection error:', error);
+          setIsConnected(false);
+          
+          // Only attempt reconnect if component is still mounted
+          if (eventSource) {
+            eventSource.close();
+            console.debug('SSE Client: Attempting reconnect in 5s...');
+            reconnectTimeout = setTimeout(connect, 5000);
+          }
+        };
+
+        eventSource.onmessage = handleMessage;
+      
     };
 
-    eventSource.onopen = () => {
-      setIsConnected(true);
-    };
+    connect();
 
     return () => {
-      eventSource.close();
+      if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+      }
+      if (eventSource) {
+        console.debug('SSE Client: Cleaning up connection');
+        eventSource.close();
+        setIsConnected(false);
+        setConnectedUsers(0);
+        setConnectedManagers(0);
+      }
     };
-  }, []);
+  }, [fetchRatings, logUserCountChange, user]);
 
   useEffect(() => {
     if (!ratings) return;
@@ -335,8 +396,16 @@ const RatingPage = () => {
               </div>
               <div className={`connected-users ${isConnected ? 'connected' : 'disconnected'}`}>
                 <div className={`indicator`} />
-                {isConnected ? tRating('labels.connectedUsers', { count: connectedUsers }) 
-                : tRating('labels.disconnected')}
+                {isConnected ? (
+                  <>
+                    {tRating('labels.connectedUsers', { count: connectedUsers })}
+                    {connectedManagers > 0 && (
+                      <span className="manager-count">
+                        {tRating('labels.connectedManagers', { count: connectedManagers })}
+                      </span>
+                    )}
+                  </>
+                ) : tRating('labels.disconnected')}
               </div>
               </div>
             </div>

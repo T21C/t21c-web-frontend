@@ -9,6 +9,7 @@ const NotificationContext = createContext({
   pendingLevelSubmissions: 0,
   pendingPassSubmissions: 0,
   displayCount: '0',
+  isConnected: false,
   restartNotifications: () => {},
   resetNotifications: () => {},
   cleanup: () => {}
@@ -27,12 +28,16 @@ export const NotificationProvider = ({ children }) => {
   const [pendingRatings, setPendingRatings] = useState(0);
   const [pendingLevelSubmissions, setPendingLevelSubmissions] = useState(0);
   const [pendingPassSubmissions, setPendingPassSubmissions] = useState(0);
+  const [isConnected, setIsConnected] = useState(false);
   const auth = useAuth();
   const user = auth?.user;
   const lastFetchTimeRef = useRef(null);
   const fetchTimeoutRef = useRef(null);
   const eventSourceRef = useRef(null);
   const reconnectTimeoutRef = useRef(null);
+  const reconnectAttempts = useRef(0);
+  const MAX_RECONNECT_ATTEMPTS = 5;
+  const RECONNECT_DELAY = 5000;
 
   const resetCounts = () => {
     setPendingSubmissions(0);
@@ -73,6 +78,7 @@ export const NotificationProvider = ({ children }) => {
   };
 
   const cleanup = () => {
+    console.debug('SSE: Cleaning up connections and timeouts');
     if (eventSourceRef.current) {
       eventSourceRef.current.close();
       eventSourceRef.current = null;
@@ -85,35 +91,72 @@ export const NotificationProvider = ({ children }) => {
       clearTimeout(fetchTimeoutRef.current);
       fetchTimeoutRef.current = null;
     }
+    setIsConnected(false);
+    reconnectAttempts.current = 0;
   };
 
   const setupEventSource = (force = false) => {
-    cleanup(); // Clean up any existing connections first
+    // Don't create new connection if one exists
+    if (eventSourceRef.current) {
+      console.debug('SSE: Connection already exists, skipping setup');
+      return;
+    }
 
     if (!force && !user?.isSuperAdmin && !user?.isRater) {
+      console.debug('SSE: User not authorized for notifications');
       return;
     }
 
     const apiUrl = import.meta.env.VITE_API_URL;
     const eventsEndpoint = `${apiUrl}/events`;
 
+    console.debug('SSE: Setting up new connection');
     eventSourceRef.current = new EventSource(eventsEndpoint, {
       withCredentials: true
     });
 
-    eventSourceRef.current.onerror = () => {
-      if (eventSourceRef.current?.readyState === EventSource.CLOSED) {
+    eventSourceRef.current.onopen = () => {
+      console.debug('SSE: Connection established');
+      setIsConnected(true);
+      reconnectAttempts.current = 0;
+    };
+
+    eventSourceRef.current.onerror = (error) => {
+      console.error('SSE: Connection error', error);
+      setIsConnected(false);
+
+      if (eventSourceRef.current) {
         eventSourceRef.current.close();
+        eventSourceRef.current = null;
+      }
+
+      // Only attempt reconnect if under max attempts
+      if (reconnectAttempts.current < MAX_RECONNECT_ATTEMPTS) {
+        reconnectAttempts.current++;
+        console.debug(`SSE: Scheduling reconnect attempt ${reconnectAttempts.current}/${MAX_RECONNECT_ATTEMPTS}`);
+        
+        if (reconnectTimeoutRef.current) {
+          clearTimeout(reconnectTimeoutRef.current);
+        }
         
         reconnectTimeoutRef.current = setTimeout(() => {
           setupEventSource(force);
-        }, 1000);
+        }, RECONNECT_DELAY);
+      } else {
+        console.debug('SSE: Max reconnection attempts reached');
       }
     };
 
     eventSourceRef.current.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
+        console.debug('SSE: Received message:', data);
+
+        // Dispatch event to components
+        const sseEvent = new CustomEvent('sse-message', { detail: data });
+        document.dispatchEvent(sseEvent);
+
+        // Handle notification updates
         if (data.type === 'submissionUpdate' || data.type === 'ratingUpdate') {
           if (fetchTimeoutRef.current) {
             clearTimeout(fetchTimeoutRef.current);
@@ -121,32 +164,9 @@ export const NotificationProvider = ({ children }) => {
           fetchNotificationCounts(force);
         }
       } catch (error) {
-        // Silent error handling
+        console.error('SSE: Error processing message:', error);
       }
     };
-
-    // Test the endpoint first
-    fetch(eventsEndpoint, {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        'Accept': 'text/event-stream',
-        'Cache-Control': 'no-cache',
-      }
-    })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('SSE connection failed');
-      }
-    })
-    .catch(() => {
-      if (reconnectTimeoutRef.current) {
-        clearTimeout(reconnectTimeoutRef.current);
-      }
-      reconnectTimeoutRef.current = setTimeout(() => {
-        setupEventSource(force);
-      }, 1000);
-    });
   };
 
   const restartNotifications = (force = false) => {
@@ -176,6 +196,7 @@ export const NotificationProvider = ({ children }) => {
     displayCount,
     pendingLevelSubmissions,
     pendingPassSubmissions,
+    isConnected,
     restartNotifications,
     resetNotifications: resetCounts,
     cleanup

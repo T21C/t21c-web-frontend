@@ -31,6 +31,7 @@
   "labels": {
     "totalRatings": "{{count}} ratings",
     "connectedUsers": "{{count}} online",
+    "connectedManagers": "({{count}} managers)",
     "disconnected": "Disconnected"
   },
   "tooltips": {

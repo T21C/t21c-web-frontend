@@ -584,13 +584,18 @@
   gap: 0.6rem;
 }
 
-
 .connected-users.connected {
   color: rgba(125, 255, 125);
 }
 
 .connected-users.disconnected {
   color: rgba(255, 70, 70);
+}
+
+.connected-users .manager-count {
+  font-size: 0.9rem;
+  opacity: 0.9;
+  margin-left: 0.3rem;
 }
 
 .connected-users .indicator {
