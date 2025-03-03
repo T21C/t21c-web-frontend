@@ -71,7 +71,8 @@ export const ProfileSelector = ({
       setLoading(true);
       try {
         const endpoint = getEndpoint();
-        const response = await api.get(`${endpoint}/search/${searchTerm}`);
+        const encodedSearchTerm = encodeURIComponent(searchTerm);
+        const response = await api.get(`${endpoint}/search/${encodedSearchTerm}`);
         setProfiles(response.data);
       } catch (error) {
         console.error('Error searching profiles:', error);

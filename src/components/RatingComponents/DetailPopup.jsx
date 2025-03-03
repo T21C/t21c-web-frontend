@@ -559,7 +559,7 @@ export const DetailPopup = ({
               <div className={`details-container ${isDetailsCollapsed ? 'collapsed' : ''}`}>
                 <div className="detail-field rerate-field">
                   <span className="detail-label">{tRating('labels.rerateNum')}</span>
-                  <span className="detail-value">{selectedRating.level.rerateNum}</span>
+                  <span className="detail-value">{selectedRating.level.rerateNum || selectedRating.requesterFR}</span>
                 </div>
                 <div className="detail-field">
                   <span className="detail-label">{tRating('labels.currentDifficulty')}</span>
