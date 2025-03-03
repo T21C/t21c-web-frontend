@@ -43,11 +43,8 @@
   padding: 0;
 }
 
-
-.admin-player-popup .form-group label {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--color-white);
+.admin-player-popup .form-group label span {
+  font-size: 1em;
 }
 
 .admin-player-popup .form-group select {
@@ -430,43 +427,36 @@
   cursor: not-allowed;
 }
 
-.admin-player-popup .discord-confirm-button {
+.admin-player-popup .discord-confirm-button,
+.admin-player-popup .discord-cancel-button {
   padding: 8px 16px;
-  background-color: #5865F2;
-  color: white;
+  margin: 0 5px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
   min-width: 80px;
   transition: background-color 0.2s;
+}
+.admin-player-popup .discord-confirm-button {
+  background-color: #4caf50;
+  color: white;
 }
 
 .admin-player-popup .discord-confirm-button:hover {
-  background-color: #4752c4;
-}
-
-.admin-player-popup .discord-confirm-button:disabled {
-  background-color: #888;
-  cursor: not-allowed;
+  background-color: #388e3c;
 }
 
 .admin-player-popup .discord-cancel-button {
-  padding: 8px 16px;
-  background-color: var(--color-white-t20);
+  background-color: var(--color-white-t10);
   color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  min-width: 80px;
-  transition: background-color 0.2s;
 }
 
 .admin-player-popup .discord-cancel-button:hover {
   background-color: var(--color-white-t30);
 }
 
+.admin-player-popup .discord-confirm-button:disabled,
 .admin-player-popup .discord-cancel-button:disabled {
   background-color: #888;
   cursor: not-allowed;
@@ -686,4 +676,126 @@
 .admin-player-popup .pause-cancel-button:disabled {
   background-color: #888;
   cursor: not-allowed;
-} 
+}
+
+.admin-player-popup .checkboxes-section {
+  margin-bottom: 20px;
+  padding: 20px 0;
+  border-top: 1px solid var(--color-white-t20);
+  border-bottom: 1px solid var(--color-white-t20);
+}
+
+.admin-player-popup .checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.admin-player-popup .checkbox-container {
+  position: relative;
+}
+
+.admin-player-popup .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 1em;
+  color: var(--color-white);
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+.admin-player-popup .checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+}
+
+/* Style checkboxes based on their function */
+.admin-player-popup .checkbox-container:nth-child(1) input[type="checkbox"] {
+  accent-color: #f44336; /* Ban checkbox - Red */
+}
+
+.admin-player-popup .checkbox-container:nth-child(2) input[type="checkbox"] {
+  accent-color: #ff9800; /* Pause checkbox - Orange */
+}
+
+.admin-player-popup .checkbox-container:nth-child(3) input[type="checkbox"] {
+  accent-color: #9c27b0; /* Rating ban checkbox - Purple */
+}
+
+.admin-player-popup .confirm-container {
+  margin-top: 10px;
+  padding: 12px;
+  background-color: var(--color-white-t10);
+  border-radius: 4px;
+  text-align: center;
+}
+
+.admin-player-popup .confirm-message {
+  color: var(--color-white);
+  margin: 0 0 12px 0;
+  font-size: 0.9em;
+}
+
+.admin-player-popup .confirm-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.admin-player-popup .confirm-button,
+.admin-player-popup .cancel-button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.9em;
+  min-width: 70px;
+  transition: background-color 0.2s;
+}
+
+.admin-player-popup .confirm-button {
+  color: white;
+}
+
+.admin-player-popup .confirm-button.ban-confirm {
+  background-color: #f44336;
+}
+
+.admin-player-popup .confirm-button.pause-confirm {
+  background-color: #ff9800;
+}
+
+.admin-player-popup .confirm-button.rating-ban-confirm {
+  background-color: #9c27b0;
+}
+
+.admin-player-popup .cancel-button {
+  background-color: var(--color-white-t20);
+  color: white;
+}
+
+.admin-player-popup .confirm-button:hover.ban-confirm {
+  background-color: #d32f2f;
+}
+
+.admin-player-popup .confirm-button:hover.pause-confirm {
+  background-color: #f57c00;
+}
+
+.admin-player-popup .confirm-button:hover.rating-ban-confirm {
+  background-color: #7b1fa2;
+}
+
+.admin-player-popup .cancel-button:hover {
+  background-color: var(--color-white-t30);
+}
+
+.admin-player-popup .confirm-button:disabled,
+.admin-player-popup .cancel-button:disabled {
+  background-color: #888;
+  cursor: not-allowed;
+}
+

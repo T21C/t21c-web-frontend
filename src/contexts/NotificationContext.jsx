@@ -8,7 +8,10 @@ const NotificationContext = createContext({
   totalNotifications: 0,
   pendingLevelSubmissions: 0,
   pendingPassSubmissions: 0,
-  displayCount: '0'
+  displayCount: '0',
+  restartNotifications: () => {},
+  resetNotifications: () => {},
+  cleanup: () => {}
 });
 
 export const useNotification = () => {
@@ -24,15 +27,43 @@ export const NotificationProvider = ({ children }) => {
   const [pendingRatings, setPendingRatings] = useState(0);
   const [pendingLevelSubmissions, setPendingLevelSubmissions] = useState(0);
   const [pendingPassSubmissions, setPendingPassSubmissions] = useState(0);
-  const { user } = useAuth();
+  const auth = useAuth();
+  const user = auth?.user;
   const lastFetchTimeRef = useRef(null);
   const fetchTimeoutRef = useRef(null);
+  const eventSourceRef = useRef(null);
+  const reconnectTimeoutRef = useRef(null);
 
-  const fetchNotificationCounts = async () => {
-    if (!user?.isSuperAdmin && !user?.isRater) return;
-    
+  const resetCounts = () => {
+    console.log('[Notifications] Resetting all notification counts to 0');
+    setPendingSubmissions(0);
+    setPendingRatings(0);
+    setPendingLevelSubmissions(0);
+    setPendingPassSubmissions(0);
+  };
+
+  const fetchNotificationCounts = async (force = false) => {
+    if (!force && !user?.isSuperAdmin && !user?.isRater) {
+      console.log('[Notifications] User lacks permissions, resetting counts');
+      resetCounts();
+      return;
+    }
+
+    const now = Date.now();
+    // Throttle fetches to once every 30 seconds unless forced
+    if (!force && lastFetchTimeRef.current && now - lastFetchTimeRef.current < 30000) {
+      console.log('[Notifications] Throttling fetch, scheduling retry');
+      if (fetchTimeoutRef.current) {
+        clearTimeout(fetchTimeoutRef.current);
+      }
+      fetchTimeoutRef.current = setTimeout(() => fetchNotificationCounts(force), 30000);
+      return;
+    }
+
+    console.log('[Notifications] Fetching notification counts');
     try {
       const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/admin/statistics`);
+      console.log('[Notifications] Received counts:', response.data);
       const { unratedRatings, totalPendingSubmissions, pendingLevelSubmissions, pendingPassSubmissions } = response.data;
       
       setPendingSubmissions(totalPendingSubmissions);
@@ -40,28 +71,71 @@ export const NotificationProvider = ({ children }) => {
       setPendingLevelSubmissions(pendingLevelSubmissions);
       setPendingPassSubmissions(pendingPassSubmissions);
       
-      lastFetchTimeRef.current = Date.now();
-      scheduleFetch();
+      lastFetchTimeRef.current = now;
     } catch (error) {
-      scheduleFetch();
+      console.error('[Notifications] Failed to fetch counts:', error);
     }
   };
 
-  const scheduleFetch = () => {
+  const cleanup = () => {
+    console.log('[Notifications] Cleaning up SSE connections and timeouts');
+    if (eventSourceRef.current) {
+      eventSourceRef.current.close();
+      eventSourceRef.current = null;
+    }
+    if (reconnectTimeoutRef.current) {
+      clearTimeout(reconnectTimeoutRef.current);
+      reconnectTimeoutRef.current = null;
+    }
     if (fetchTimeoutRef.current) {
       clearTimeout(fetchTimeoutRef.current);
+      fetchTimeoutRef.current = null;
     }
-    fetchTimeoutRef.current = setTimeout(() => {
-      fetchNotificationCounts();
-    }, 30000);
   };
 
-  useEffect(() => {
-    if (!user?.isSuperAdmin && !user?.isRater) return;
+  const setupEventSource = (force = false) => {
+    cleanup(); // Clean up any existing connections first
 
+    if (!force && !user?.isSuperAdmin && !user?.isRater) {
+      console.log('[Notifications] User lacks permissions, skipping SSE setup');
+      return;
+    }
+
+    console.log('[Notifications] Setting up SSE connection');
     const apiUrl = import.meta.env.VITE_API_URL;
     const eventsEndpoint = `${apiUrl}/events`;
-    
+
+    eventSourceRef.current = new EventSource(eventsEndpoint, {
+      withCredentials: true
+    });
+
+    eventSourceRef.current.onerror = () => {
+      console.log('[Notifications] SSE connection error');
+      if (eventSourceRef.current?.readyState === EventSource.CLOSED) {
+        eventSourceRef.current.close();
+        
+        reconnectTimeoutRef.current = setTimeout(() => {
+          console.log('[Notifications] Attempting to reconnect SSE');
+          setupEventSource(force);
+        }, 1000);
+      }
+    };
+
+    eventSourceRef.current.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
+        if (data.type === 'submissionUpdate' || data.type === 'ratingUpdate') {
+          if (fetchTimeoutRef.current) {
+            clearTimeout(fetchTimeoutRef.current);
+          }
+          fetchNotificationCounts(force);
+        }
+      } catch (error) {
+        // Silent error handling
+      }
+    };
+
+    // Test the endpoint first
     fetch(eventsEndpoint, {
       method: 'GET',
       credentials: 'include',
@@ -71,73 +145,40 @@ export const NotificationProvider = ({ children }) => {
       }
     })
     .then(response => {
-      if (response.ok) {
-        setupEventSource();
+      if (!response.ok) {
+        throw new Error('SSE connection failed');
       }
     })
     .catch(() => {
-      setupEventSource();
+      if (reconnectTimeoutRef.current) {
+        clearTimeout(reconnectTimeoutRef.current);
+      }
+      reconnectTimeoutRef.current = setTimeout(() => {
+        setupEventSource(force);
+      }, 1000);
     });
+  };
 
-    let eventSource = null;
-    let reconnectTimeout = null;
-
-    const setupEventSource = () => {
-      if (eventSource) {
-        eventSource.close();
-      }
-      
-      if (reconnectTimeout) {
-        clearTimeout(reconnectTimeout);
-      }
-
-      eventSource = new EventSource(eventsEndpoint, {
-        withCredentials: true
-      });
-
-      eventSource.onerror = () => {
-        if (eventSource.readyState === EventSource.CLOSED) {
-          eventSource.close();
-          
-          reconnectTimeout = setTimeout(() => {
-            setupEventSource();
-          }, 1000);
-        }
-      };
-
-      eventSource.onmessage = (event) => {
-        try {
-          const data = JSON.parse(event.data);
-          if (data.type === 'submissionUpdate' || data.type === 'ratingUpdate') {
-            if (fetchTimeoutRef.current) {
-              clearTimeout(fetchTimeoutRef.current);
-            }
-            fetchNotificationCounts();
-          }
-        } catch (error) {
-          // Silent error handling
-        }
-      };
-    };
-
-    return () => {
-      if (eventSource) {
-        eventSource.close();
-      }
-      if (reconnectTimeout) {
-        clearTimeout(reconnectTimeout);
-      }
-    };
-  }, [user?.isSuperAdmin, user?.isRater]);
-
-  const totalNotifications = pendingSubmissions + pendingRatings;
-  const displayCount = totalNotifications > 9 ? '9+' : totalNotifications.toString();
+  const restartNotifications = (force = false) => {
+    console.log('[Notifications] Restarting notifications system', force ? '(forced)' : '');
+    cleanup();
+    setupEventSource(force);
+    fetchNotificationCounts(force);
+  };
 
   useEffect(() => {
     if (user?.isSuperAdmin || user?.isRater) {
+      setupEventSource();
       fetchNotificationCounts();
+    } else {
+      cleanup();
+      resetCounts();
     }
-  }, [user?.isSuperAdmin, user?.isRater]);
+    return cleanup;
+  }, [user]); // Add user as a dependency to react to auth changes
+
+  const totalNotifications = pendingSubmissions + pendingRatings;
+  const displayCount = totalNotifications > 9 ? '9+' : totalNotifications.toString();
 
   const value = {
     pendingSubmissions,
@@ -145,7 +186,10 @@ export const NotificationProvider = ({ children }) => {
     totalNotifications,
     displayCount,
     pendingLevelSubmissions,
-    pendingPassSubmissions
+    pendingPassSubmissions,
+    restartNotifications,
+    resetNotifications: resetCounts,
+    cleanup
   };
 
   return (

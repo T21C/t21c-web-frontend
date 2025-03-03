@@ -10,15 +10,17 @@ import { useTranslation } from 'react-i18next';
 import ReferencesButton from "../ReferencesButton/ReferencesButton";
 import { useNavigate } from 'react-router-dom';
 import { ExternalLinkIcon } from '../Icons/ExternalLinkIcon';
+import DownloadIcon from "../Icons/DownloadIcon";
 // Cache for video data
 const videoCache = new Map();
 
 
-async function updateRating(id, rating, comment) {
+async function updateRating(id, rating, comment, isCommunityRating = false) {
   try {
     const response = await api.put(`${import.meta.env.VITE_RATING_API}/${id}`, {
       rating,
-      comment
+      comment,
+      isCommunityRating
     });
 
     if (!response.data.rating) {
@@ -63,8 +65,22 @@ export const DetailPopup = ({
   const [isCommentRequired, setIsCommentRequired] = useState(false);
   const [isDetailsCollapsed, setIsDetailsCollapsed] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
+  const [showSecondRatings, setShowSecondRatings] = useState(false);
 
   const popupRef = useRef(null);
+
+  useEffect(() => {
+    // Store original body style
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    
+    // Lock scrolling
+    document.body.style.overflow = 'hidden';
+
+    // Cleanup function to restore original scroll state
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, []); // Empty dependency array since we only want this on mount/unmount
 
   useEffect(() => {
     if (selectedRating) {
@@ -188,7 +204,7 @@ export const DetailPopup = ({
       setHasUnsavedChanges(false);
       setOtherRatings(selectedRating.details || []);
     }
-  }, [selectedRating, currentUser?.id]);
+  }, [selectedRating, currentUser?.id, selectedRating?.details]);
 
   useEffect(() => {
     const hasChanges = pendingRating !== initialRating || pendingComment !== initialComment;
@@ -232,6 +248,20 @@ export const DetailPopup = ({
     return true;
   };
 
+  // Split ratings into admin and community
+  const adminRatings = otherRatings.filter(r => !r.isCommunityRating);
+  const communityRatings = otherRatings.filter(r => r.isCommunityRating);
+
+  const canRate = () => {
+    if (!user) return false;
+    if (user.isRatingBanned) return false;
+    return true; // Allow all logged-in users to rate unless banned
+  };
+
+  const isAdminRater = () => {
+    return user && (user.isSuperAdmin || user.isRater);
+  };
+
   const handleSaveChanges = async () => {
     if (!selectedRating || !hasUnsavedChanges) return;
     
@@ -262,25 +292,26 @@ export const DetailPopup = ({
         return;
       }
 
-      const updatedRating = await updateRating(selectedRating.id, pendingRating, pendingComment);
+      const isCommunityRating = !isAdminRater();
+      const updatedRating = await updateRating(selectedRating.id, pendingRating, pendingComment, isCommunityRating);
       console.log('[DetailPopup] Save successful:', updatedRating);
 
       setRatings(prevRatings => prevRatings.map(rating => 
         rating.id === updatedRating.id ? updatedRating : rating
       ));
 
-      // Update only the details in selectedRating to avoid re-initialization
       setSelectedRating(prev => ({
         ...prev,
         details: updatedRating.details,
-        averageDifficulty: updatedRating.averageDifficulty
+        averageDifficulty: updatedRating.averageDifficulty,
+        communityDifficulty: updatedRating.communityDifficulty
       }));
       
       setOtherRatings(updatedRating.details || []);
       setInitialRating(pendingRating);
       setInitialComment(pendingComment);
       setHasUnsavedChanges(false);
-      setIsInitialLoad(false); // Ensure we don't reset pending states after save
+      setIsInitialLoad(false);
     } catch (error) {
       console.error('[DetailPopup] Save failed:', error);
       setSaveError(error.message || tRating('errors.saveFailed'));
@@ -361,6 +392,87 @@ export const DetailPopup = ({
     window.open(`/levels/${selectedRating.level.id}`, '_blank');
   }
 
+  const renderRatingsContent = (ratings, type) => (
+    <div className={`other-ratings-section ${ratings.length === 0 ? 'empty' : ''}`}>
+      {ratings.length > 0 ? (
+        <div className="other-ratings-content">
+          {ratings.map(({user, rating, comment, isCommunityRating}) => (
+            <RatingItem
+              key={user?.id}
+              user={user}
+              rating={rating}
+              comment={comment}
+              isSuperAdmin={isSuperAdmin}
+              onDelete={handleDeleteRating}
+              isCommunityRating={isCommunityRating}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="no-ratings-message">
+          {type === 'admin' ? tRating('labels.noAdminRatings') : tRating('labels.noCommunityRatings')}
+        </div>
+      )}
+    </div>
+  );
+
+  const formatCreatorDisplay = () => {
+    // If team exists, it takes priority
+    const level = selectedRating.level;
+    if (!level) return "";
+
+    if (level.team) {
+      return level.team;
+    }
+
+    // If no credits, fall back to creator field
+    if (!level.levelCredits || level.levelCredits.length === 0) {
+      return level.creator;
+    }
+
+    // Group credits by role
+    const creditsByRole = level.levelCredits.reduce((acc, credit) => {
+      const role = credit.role.toLowerCase();
+      if (!acc[role]) {
+        acc[role] = [];
+      }
+      const creatorName = credit.creator.aliases?.length > 0 
+        ? credit.creator.aliases[0]
+        : credit.creator.name;
+      acc[role].push(creatorName);
+      return acc;
+    }, {});
+
+    const charters = creditsByRole['charter'] || [];
+    const vfxers = creditsByRole['vfxer'] || [];
+
+    // Handle different cases based on number of credits
+    if (level.levelCredits.length >= 3) {
+      const parts = [];
+      if (charters.length > 0) {
+        parts.push(charters.length === 1 
+          ? charters[0] 
+          : `${charters[0]} & ${charters.length - 1} more`);
+      }
+      if (vfxers.length > 0) {
+        parts.push(vfxers.length === 1
+          ? vfxers[0]
+          : `${vfxers[0]} & ${vfxers.length - 1} more`);
+      }
+      return parts.join(' | ');
+    } else if (level.levelCredits.length === 2) {
+      if (charters.length === 2) {
+        return `${charters[0]} & ${charters[1]}`;
+      }
+      if (charters.length === 1 && vfxers.length === 1) {
+        return `${charters[0]} | ${vfxers[0]}`;
+      }
+    }
+
+    return level.levelCredits[0]?.creator.name || level.creator;
+  };
+
+
   if (!selectedRating) return null;
   return (
     <div className={`rating-popup-overlay ${isExiting ? 'exiting' : ''}`}>
@@ -390,11 +502,25 @@ export const DetailPopup = ({
         </button>
         <div className="popup-content">
           <div className="popup-header">
-            <h2 onClick={navigateToLevel}>{selectedRating.level.song} <ExternalLinkIcon /></h2>
+            <div className="top-header-content">
+              <h2 onClick={navigateToLevel}>{selectedRating.level.song} <ExternalLinkIcon /></h2>
+              {selectedRating.level.dlLink && (
+              <a 
+                href={selectedRating.level.dlLink} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="download-link"
+              >
+                <DownloadIcon color="#ffffff" size={24} strokeWidth={2.5} />
+              </a>
+            )}
+            </div>
+
             <p className="artist">{selectedRating.level.artist}</p>
+            <span className="creator">{formatCreatorDisplay()}</span>
           </div>
           
-          <div className={`popup-main-content-container ${!canEditRatings() ? 'viewer-only' : ''}`}>
+          <div className="popup-main-content-container">
             <div className="popup-main-content">
               <div className="video-container">
                 <div className="video-aspect-ratio">
@@ -431,126 +557,105 @@ export const DetailPopup = ({
               </div>
 
               <div className={`details-container ${isDetailsCollapsed ? 'collapsed' : ''}`}>
-                <div className="detail-field">
-                  <span className="detail-label">{tRating('labels.creator')}</span>
-                  <span className="detail-value">{selectedRating.level.creator}</span>
+                <div className="detail-field rerate-field">
+                  <span className="detail-label">{tRating('labels.rerateNum')}</span>
+                  <span className="detail-value">{selectedRating.level.rerateNum}</span>
                 </div>
                 <div className="detail-field">
                   <span className="detail-label">{tRating('labels.currentDifficulty')}</span>
                   <img src={selectedRating.level.difficulty.icon} alt="" className="detail-value lv-icon" />
                 </div>
-                <div className="detail-field">
+                <div className="detail-field" style={{visibility: selectedRating.averageDifficulty ? 'visible' : 'hidden'}}>
                   <span className="detail-label">{tRating('labels.averageRating')}</span>
                   <img src={selectedRating.averageDifficulty?.icon} alt="" className="detail-value lv-icon" />
                 </div>
+                <div className="detail-field" style={{visibility: selectedRating.communityDifficulty ? 'visible' : 'hidden'}}>
+                  <span className="detail-label">{tRating('labels.communityRating')}</span>
+                  <img src={selectedRating.communityDifficulty?.icon} alt="" className="detail-value lv-icon" />
+                </div>
+
               </div>
             </div>
 
-            <div className={`rating-section ${!canEditRatings() ? 'viewer-only' : ''}`}>
+            <div className="rating-section">
               <div className="rating-columns">
-                {canEditRatings() ? (
-                  <>
-                    <div className="rating-field-group">
-                      <div className="rating-field">
-                        <label>{tRating('labels.yourRating')}</label>
-                        <div className="rating-input-container">
-                          <RatingInput
-                            value={pendingRating}
-                            onChange={(value) => {
-                              setPendingRating(value);
-                              validateRating(value);
-                            }}
-                            showDiff={false}
-                            difficulties={difficulties}
-                            allowCustomInput={true}
-                          />
-                          {(pendingRating && difficulties?.find(d => d.name === pendingRating)) && 
-                            <img src={difficulties?.find(d => d.name === pendingRating)?.icon} alt="" className="detail-value lv-icon" />}
-                        </div>
-                      </div>
-                      <div className="rating-field">
-                        <label>
-                          {tRating('labels.yourComment')}
-                          {isCommentRequired && (
-                            <span 
-                              className="required-mark" 
-                              data-tooltip={tRating('tooltips.requiredComment')}
-                            >
-                              *
-                            </span>
-                          )}
-                        </label>
-                        <textarea
-                          value={pendingComment}
-                          onChange={(e) => {
-                            setPendingComment(e.target.value);
-                            setCommentError(false);
+                {user && user.isRatingBanned ? (
+                  <div className="rating-banned-message">
+                    {tRating('messages.ratingBanned')}
+                  </div>
+                ) : user ? (
+                  <div className="rating-field-group">
+                    <div className="rating-field">
+                      <label>{tRating('labels.yourRating')}</label>
+                      <div className="rating-input-container">
+                        <RatingInput
+                          value={pendingRating}
+                          onChange={(value) => {
+                            setPendingRating(value);
+                            validateRating(value);
                           }}
-                          style={{ 
-                            borderColor: commentError ? 'red' : '',
-                            backgroundColor: isCommentRequired ? 'rgba(255, 0, 0, 0.05)' : ''
-                          }}
-                          placeholder={isCommentRequired ? tRating('placeholders.requiredComment') : ''}
+                          showDiff={false}
+                          difficulties={difficulties}
+                          allowCustomInput={true}
                         />
-                      </div>
-                      <button 
-                        className={`save-rating-changes-btn ${isSaving ? 'saving' : ''}`}
-                        disabled={!hasUnsavedChanges || isSaving || (isCommentRequired && !pendingComment.trim())}
-                        onClick={handleSaveChanges}
-                      >
-                        {isSaving ? tRating('buttons.saving') : tRating('buttons.saveChanges')}
-                      </button>
-                      {saveError && (
-                        <div className="save-error-message">
-                          {saveError}
-                        </div>
-                      )}
-                    </div>
-                    <div className="rating-field other-ratings">
-                      <label>{tRating('labels.otherRatings')}</label>
-                      <div className="other-ratings-content">
-                        {otherRatings.length > 0 ? (
-                          otherRatings.map(({user, rating, comment}) => (
-                            <RatingItem
-                              key={user?.id}
-                              user={user}
-                              rating={rating}
-                              comment={comment}
-                              isSuperAdmin={isSuperAdmin}
-                              onDelete={handleDeleteRating}
-                            />
-                          ))
-                        ) : (
-                          <div className="no-ratings-message">
-                            {tRating('labels.noRatings')}
-                          </div>
-                        )}
+                        {(pendingRating && difficulties?.find(d => d.name === pendingRating)) && 
+                          <img src={difficulties?.find(d => d.name === pendingRating)?.icon} alt="" className="detail-value lv-icon" />}
                       </div>
                     </div>
-                  </>
-                ) : (
-                  <div className="rating-field other-ratings full-width">
-                    <label>{tRating('labels.otherRatings')}</label>
-                    <div className="other-ratings-content">
-                      {otherRatings.length > 0 ? (
-                        otherRatings.map(({user, rating, comment}) => (
-                          <RatingItem
-                            key={user?.id}
-                            user={user}
-                            rating={rating}
-                            comment={comment}
-                          isSuperAdmin={isSuperAdmin}
-                          onDelete={handleDeleteRating}
-                        />
-                      ))
-                      ) : (
-                        <div className="no-ratings-message">
-                          {tRating('labels.noRatings')}
-                        </div>
-                      )}
+                    <div className="rating-field">
+                      <label>
+                        {tRating('labels.yourComment')}
+                        {isCommentRequired && <span className="required-mark" data-tooltip-id="required-tooltip" />}
+                      </label>
+                      <textarea
+                        value={pendingComment}
+                        onChange={(e) => setPendingComment(e.target.value)}
+                        style={{
+                          borderColor: commentError ? 'red' : '',
+                          backgroundColor: isCommentRequired ? 'rgba(255, 0, 0, 0.05)' : ''
+                        }}
+                        placeholder={isCommentRequired ? tRating('placeholders.requiredComment') : ''}
+                      />
+                    </div>
+                    <button 
+                      className={`save-rating-changes-btn ${isSaving ? 'saving' : ''}`}
+                      disabled={!hasUnsavedChanges || isSaving || (isCommentRequired && !pendingComment.trim())}
+                      onClick={handleSaveChanges}
+                    >
+                      {isSaving ? tRating('buttons.saving') : tRating('buttons.saveChanges')}
+                    </button>
+                    {saveError && (
+                      <div className="save-error-message">
+                        {saveError}
+                      </div>
+                    )}
+                  </div>
+                ) : null}
+
+                <div className="rating-field other-ratings">
+                  <div className="other-ratings-header">
+                    <label className="rating-field-label">
+                      {showSecondRatings ? tRating('labels.communityRatings') : tRating('labels.adminRatings')}
+                    </label>
+                    <button 
+                      className={`ratings-toggle-btn ${showSecondRatings ? 'show-second' : ''}`}
+                      onClick={() => setShowSecondRatings(!showSecondRatings)}
+                    >
+                      <span>
+                        {showSecondRatings ? tRating('buttons.viewAdminRatings') : tRating('buttons.viewCommunityRatings')}
+                      </span>
+                      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 6L15 12L9 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </button>
+                  </div>
+                  <div className="other-ratings-container">
+                    <div className={`other-ratings-slider ${showSecondRatings ? 'show-second' : ''}`}>
+                      {renderRatingsContent(adminRatings, 'admin')}
+                      {renderRatingsContent(communityRatings, 'community')}
                     </div>
                   </div>
-                )}
+                </div>
               </div>
             </div>
           </div>

@@ -7,6 +7,8 @@ import { EditLevelPopup } from "@/components/EditLevelPopup/EditLevelPopup";
 import { useDifficultyContext } from "../../contexts/DifficultyContext";
 import { EditIcon } from "../Icons/EditIcon";
 import { SteamIcon } from "../Icons/SteamIcon";
+import DownloadIcon from "../Icons/DownloadIcon";
+import VideoIcon from "../Icons/VideoIcon";
 
 const LevelCard = ({
   index,
@@ -183,17 +185,12 @@ const LevelCard = ({
               <div className="downloads-wrapper">
                 {level.videoLink && (
                   <a href={level.videoLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#ffffff">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112z" />
-                    </svg>
+                    <VideoIcon color="#ffffff" size={24} />
                   </a>
                 )}
                 {level.dlLink && (
                   <a href={level.dlLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#ffffff">
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-                    </svg>
+                    <DownloadIcon color="#ffffff" size={24} />
                   </a>
                 )}
                 {level.wsLink && (
@@ -258,17 +255,12 @@ const LevelCard = ({
         <div className="downloads-wrapper">
           {level.videoLink && (
             <a href={level.videoLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#ffffff">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112z" />
-              </svg>
+              <VideoIcon color="#ffffff" size={24} />
             </a>
           )}
           {level.dlLink && (
             <a href={level.dlLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="#ffffff">
-                <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
-              </svg>
+              <DownloadIcon color="#ffffff" size={64} />
             </a>
           )}
           {level.wsLink && (

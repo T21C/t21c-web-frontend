@@ -34,6 +34,17 @@
           }
         }
       },
+      "ratingBan": {
+        "label": "Ban from Rating",
+        "confirm": {
+          "ban": "Are you sure you want to ban this player from rating?",
+          "unban": "Are you sure you want to allow this player to rate again?",
+          "buttons": {
+            "confirm": "Confirm",
+            "cancel": "Cancel"
+          }
+        }
+      },
       "merge": {
         "label": "Merge Player",
         "placeholder": "Enter target player ID",
@@ -72,6 +83,7 @@
       "countryUpdate": "Failed to update country",
       "banUpdate": "Failed to update ban status",
       "pauseUpdate": "Failed to update submission pause status",
+      "ratingBanUpdate": "Failed to update rating ban status",
       "discordFetch": "Failed to fetch Discord ID",
       "discordUpdate": "Failed to update Discord info",
       "discordRemove": "Failed to remove Discord info",

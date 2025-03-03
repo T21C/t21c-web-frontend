@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNotification } from './NotificationContext';
 
 const AuthContext = createContext();
 
@@ -10,6 +11,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { restartNotifications, resetNotifications, cleanup } = useNotification();
 
   // Listen for auth events
   useEffect(() => {
@@ -33,19 +35,29 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     if (token) {
+      console.log('[Auth] Found token in localStorage, setting axios header');
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       fetchUser();
     } else {
+      console.log('[Auth] No token found in localStorage');
       setLoading(false);
     }
   }, []);
 
   const fetchUser = async () => {
+    console.log('[Auth] Fetching user data...');
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_ME}`);
+      console.log('[Auth] User data fetched:', response.data.user);
       setUser(response.data.user);
+      if (response.data.user?.isSuperAdmin || response.data.user?.isRater) {
+        console.log('[Auth] User has admin/rater permissions, force restarting notifications');
+        restartNotifications(true);
+      } else {
+        console.log('[Auth] User does not have admin/rater permissions');
+      }
     } catch (error) {
-      console.error('Error fetching user:', error);
+      console.error('[Auth] Error fetching user:', error);
       localStorage.removeItem('token');
       delete axios.defaults.headers.common['Authorization'];
       setUser(null);
@@ -56,14 +68,19 @@ export const AuthProvider = ({ children }) => {
 
   // Update token utility function
   const updateToken = (token) => {
+    console.log('[Auth] Updating token');
     if (token) {
+      console.log('[Auth] Setting new token in localStorage and axios header');
       localStorage.setItem('token', token);
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
       fetchUser();
+    } else {
+      console.log('[Auth] No token provided to update');
     }
   };
 
   const login = async (emailOrUsername, password, captchaToken = null) => {
+    console.log('[Auth] Attempting login...');
     try {
       const response = await axios.post(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_LOGIN}`, {
         emailOrUsername,
@@ -71,10 +88,12 @@ export const AuthProvider = ({ children }) => {
         captchaToken
       });
 
+      console.log('[Auth] Login successful, updating token');
       const { token } = response.data;
       updateToken(token);
       return response.data;
     } catch (error) {
+      console.error('[Auth] Login failed:', error);
       throw error;
     }
   };
@@ -86,6 +105,8 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('token');
     delete axios.defaults.headers.common['Authorization'];
+    cleanup();
+    resetNotifications();
     setUser(null);
   };
 

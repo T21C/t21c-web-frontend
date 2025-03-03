@@ -5,6 +5,7 @@ import { CountrySelect } from '../PlayerComponents/CountrySelect';
 import { toast } from 'react-hot-toast';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
+import axios from 'axios';
 
 const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
   const { t } = useTranslation('components');
@@ -18,10 +19,13 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
   const [selectedCountry, setSelectedCountry] = useState(player.country || 'XX');
   const [isBanned, setIsBanned] = useState(player.isBanned || false);
   const [isSubmissionsPaused, setIsSubmissionsPaused] = useState(player.isSubmissionsPaused || false);
+  const [isRatingBanned, setIsRatingBanned] = useState(player.isRatingBanned || false);
   const [showBanConfirm, setShowBanConfirm] = useState(false);
   const [showPauseConfirm, setShowPauseConfirm] = useState(false);
+  const [showRatingBanConfirm, setShowRatingBanConfirm] = useState(false);
   const [pendingBanState, setPendingBanState] = useState(false);
   const [pendingPauseState, setPendingPauseState] = useState(false);
+  const [pendingRatingBanState, setPendingRatingBanState] = useState(false);
   const [playerName, setPlayerName] = useState(player.name || '');
   const [discordId, setDiscordId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -171,14 +175,15 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
 
     try {
       setIsLoading(true);
-      const fetchResponse = await api.get(`${import.meta.env.VITE_PLAYERS}/${player.id}/discord/${discordId}`);
+      // Create a new axios instance without the global auth header
+      const validationApi = axios.create();
+      // Keep the auth header only for this request
+      validationApi.defaults.headers.common['Authorization'] = axios.defaults.headers.common['Authorization'];
       
-      if (fetchResponse.status !== 200) {
-        const error = await fetchResponse.data;
-        toast.error(error.details || tAdmin('errors.discordFetch'));
-        return;
-      }
-
+      const fetchResponse = await validationApi.get(
+        `${import.meta.env.VITE_API_URL}/v2/database/players/${player.id}/discord/${discordId}`
+      );
+      
       const discordUser = fetchResponse.data.discordUser;
       setPendingDiscordInfo({
         username: discordUser.username,
@@ -189,7 +194,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
       setShowDiscordConfirm(true);
     } catch (error) {
       console.error('Error fetching Discord ID:', error);
-      toast.error(tAdmin('errors.discordFetch'));
+      toast.error(error.response?.data?.details || tAdmin('errors.discordFetch'));
     } finally {
       setIsLoading(false);
     }
@@ -308,6 +313,41 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
     }
   };
 
+  const handleRatingBanChange = (newRatingBanState) => {
+    setPendingRatingBanState(newRatingBanState);
+    setShowRatingBanConfirm(true);
+  };
+
+  const handleRatingBanUpdate = async (confirmed) => {
+    if (!confirmed) {
+      setShowRatingBanConfirm(false);
+      setPendingRatingBanState(isRatingBanned);
+      return;
+    }
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      await api.patch(`${import.meta.env.VITE_USERS}/${player.id}/rating-ban`, {
+        isRatingBanned: pendingRatingBanState
+      });
+
+      setIsRatingBanned(pendingRatingBanState);
+      onUpdate?.({
+        ...player,
+        isRatingBanned: pendingRatingBanState
+      });
+    } catch (err) {
+      setError(err.response?.data?.details || tAdmin('errors.ratingBanUpdate'));
+      setPendingRatingBanState(isRatingBanned);
+      console.error('Error updating rating ban status:', err);
+    } finally {
+      setIsLoading(false);
+      setShowRatingBanConfirm(false);
+    }
+  };
+
   return (
     <div className="admin-player-popup-overlay" onClick={handleClose}>
       <div className="admin-player-popup" onClick={(e) => e.stopPropagation()}>
@@ -360,82 +400,119 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
             </div>
           </div>
 
-          <div className="form-group ban-section">
-            <div className="ban-checkbox-container">
-              <label className="ban-label">
-                <input
-                  type="checkbox"
-                  checked={showBanConfirm ? pendingBanState : isBanned}
-                  onChange={(e) => handleBanChange(e.target.checked)}
-                  disabled={isLoading || showBanConfirm}
-                />
-                {tAdmin('form.ban.label')}
-              </label>
-            </div>
-            {showBanConfirm && (
-              <div className="ban-confirm-container">
-                <p className="ban-confirm-message">
-                  {pendingBanState ? tAdmin('form.ban.confirm.ban') : tAdmin('form.ban.confirm.unban')}
-                </p>
-                <div className="ban-confirm-buttons">
-                  <button
-                    type="button"
-                    onClick={() => handleBanUpdate(true)}
-                    disabled={isLoading}
-                    className="ban-confirm-button"
-                  >
-                    {tAdmin('form.ban.confirm.buttons.confirm')}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleBanUpdate(false)}
-                    disabled={isLoading}
-                    className="ban-cancel-button"
-                  >
-                    {tAdmin('form.ban.confirm.buttons.cancel')}
-                  </button>
-                </div>
+          <div className="form-group checkboxes-section">
+            <div className="checkbox-group">
+              <div className="checkbox-container">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={showBanConfirm ? pendingBanState : isBanned}
+                    onChange={(e) => handleBanChange(e.target.checked)}
+                    disabled={isLoading || showBanConfirm}
+                  />
+                  <span>{tAdmin('form.ban.label')}</span>
+                </label>
+                {showBanConfirm && (
+                  <div className="confirm-container">
+                    <p className="confirm-message">
+                      {pendingBanState ? tAdmin('form.ban.confirm.ban') : tAdmin('form.ban.confirm.unban')}
+                    </p>
+                    <div className="confirm-buttons">
+                      <button
+                        type="button"
+                        onClick={() => handleBanUpdate(true)}
+                        disabled={isLoading}
+                        className="confirm-button ban-confirm"
+                      >
+                        {tAdmin('form.ban.confirm.buttons.confirm')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleBanUpdate(false)}
+                        disabled={isLoading}
+                        className="cancel-button"
+                      >
+                        {tAdmin('form.ban.confirm.buttons.cancel')}
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
 
-          <div className="form-group pause-section">
-            <div className="pause-checkbox-container">
-              <label className="pause-label">
-                <input
-                  type="checkbox"
-                  checked={showPauseConfirm ? pendingPauseState : isSubmissionsPaused}
-                  onChange={(e) => handlePauseChange(e.target.checked)}
-                  disabled={isLoading || showPauseConfirm}
-                />
-                {tAdmin('form.pause.label')}
-              </label>
-            </div>
-            {showPauseConfirm && (
-              <div className="pause-confirm-container">
-                <p className="pause-confirm-message">
-                  {pendingPauseState ? tAdmin('form.pause.confirm.pause') : tAdmin('form.pause.confirm.resume')}
-                </p>
-                <div className="pause-confirm-buttons">
-                  <button
-                    type="button"
-                    onClick={() => handlePauseUpdate(true)}
-                    disabled={isLoading}
-                    className="pause-confirm-button"
-                  >
-                    {tAdmin('form.pause.confirm.buttons.confirm')}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handlePauseUpdate(false)}
-                    disabled={isLoading}
-                    className="pause-cancel-button"
-                  >
-                    {tAdmin('form.pause.confirm.buttons.cancel')}
-                  </button>
-                </div>
+              <div className="checkbox-container">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={showPauseConfirm ? pendingPauseState : isSubmissionsPaused}
+                    onChange={(e) => handlePauseChange(e.target.checked)}
+                    disabled={isLoading || showPauseConfirm}
+                  />
+                  <span>{tAdmin('form.pause.label')}</span>
+                </label>
+                {showPauseConfirm && (
+                  <div className="confirm-container">
+                    <p className="confirm-message">
+                      {pendingPauseState ? tAdmin('form.pause.confirm.pause') : tAdmin('form.pause.confirm.resume')}
+                    </p>
+                    <div className="confirm-buttons">
+                      <button
+                        type="button"
+                        onClick={() => handlePauseUpdate(true)}
+                        disabled={isLoading}
+                        className="confirm-button pause-confirm"
+                      >
+                        {tAdmin('form.pause.confirm.buttons.confirm')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handlePauseUpdate(false)}
+                        disabled={isLoading}
+                        className="cancel-button"
+                      >
+                        {tAdmin('form.pause.confirm.buttons.cancel')}
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
-            )}
+
+              <div className="checkbox-container">
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    checked={showRatingBanConfirm ? pendingRatingBanState : isRatingBanned}
+                    onChange={(e) => handleRatingBanChange(e.target.checked)}
+                    disabled={isLoading || showRatingBanConfirm}
+                  />
+                  <span>{tAdmin('form.ratingBan.label')}</span>
+                </label>
+                {showRatingBanConfirm && (
+                  <div className="confirm-container">
+                    <p className="confirm-message">
+                      {pendingRatingBanState ? tAdmin('form.ratingBan.confirm.ban') : tAdmin('form.ratingBan.confirm.unban')}
+                    </p>
+                    <div className="confirm-buttons">
+                      <button
+                        type="button"
+                        onClick={() => handleRatingBanUpdate(true)}
+                        disabled={isLoading}
+                        className="confirm-button rating-ban-confirm"
+                      >
+                        {tAdmin('form.ratingBan.confirm.buttons.confirm')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleRatingBanUpdate(false)}
+                        disabled={isLoading}
+                        className="cancel-button"
+                      >
+                        {tAdmin('form.ratingBan.confirm.buttons.cancel')}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
           <div className="form-group discord-section">
@@ -610,6 +687,7 @@ AdminPlayerPopup.propTypes = {
     country: PropTypes.string,
     isBanned: PropTypes.bool,
     isSubmissionsPaused: PropTypes.bool,
+    isRatingBanned: PropTypes.bool,
     discordUsername: PropTypes.string,
     discordAvatar: PropTypes.string,
     discordAvatarId: PropTypes.string,
@@ -625,6 +703,7 @@ AdminPlayerPopup.defaultProps = {
     country: 'XX',
     isBanned: false,
     isSubmissionsPaused: false,
+    isRatingBanned: false,
     discordUsername: '',
     discordAvatar: null,
     discordAvatarId: null,

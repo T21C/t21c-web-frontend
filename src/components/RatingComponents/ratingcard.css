@@ -217,7 +217,6 @@
   white-space: nowrap;
   transition: max-height 0.3s ease;
   padding-right: 24px;
-  scrollbar-width: none;  /* Firefox */
   -ms-overflow-style: none;  /* IE and Edge */
 }
 
@@ -230,7 +229,6 @@
   white-space: normal;
   max-height: 300px;
   overflow-y: auto;
-  scrollbar-width: none;  /* Firefox */
   -ms-overflow-style: auto;  /* IE and Edge */
 }
 
