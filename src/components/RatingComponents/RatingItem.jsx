@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
 import DefaultAvatar from '../Icons/DefaultAvatar';
-
+import { CommentFormatter } from './CommentFormatter';
 export const RatingItem = ({ user, rating, comment, isSuperAdmin, onDelete }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const { t } = useTranslation('components');
@@ -78,7 +78,9 @@ export const RatingItem = ({ user, rating, comment, isSuperAdmin, onDelete }) =>
             </div>
           </div>
           {comment && (
-            <div className={`rating-comment ${!isExpanded ? 'hidden' : ''}`}>{comment}</div>
+            <div className={`rating-comment ${!isExpanded ? 'hidden' : ''}`}>
+              <CommentFormatter>{comment}</CommentFormatter>
+            </div>
           )}
         </div>
       </div>

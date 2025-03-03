@@ -1,10 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 import './ratinghelppopup.css';
 import { useTranslation } from 'react-i18next';
+import { CommentFormatter } from './CommentFormatter';
 
 export const RatingHelpPopup = ({ onClose }) => {
   const { t } = useTranslation('components');
-  const tHelp = (key) => t(`rating.helpPopup.${key}`);
+  const tHelp = (key, options = {}) => t(`rating.helpPopup.${key}`, options);
   const popupRef = useRef(null);
 
   useEffect(() => {
@@ -67,6 +68,23 @@ export const RatingHelpPopup = ({ onClose }) => {
                 <li><b><code>P12-14</code></b> - {tHelp('sections.rating.examples.shortRange')}</li>
                 <li><b><code>U12~-2</code> / <code>U12--21</code></b> - {tHelp('sections.rating.examples.special')}</li>
               </ul>
+            </div>
+          </section>
+
+          <section>
+            <h3>{tHelp('sections.extras.title')}</h3>
+            <div className="features">
+              {tHelp('sections.extras.features', { returnObjects: true }).map((feature, index) => (
+                <div key={index} className="feature-item">
+                  <h4>{feature.title}</h4>
+                  <CommentFormatter prefix={"idPrefixDontChange"}>{feature.description}</CommentFormatter>
+                  {feature.example && (
+                    <div className="feature-example">
+                      <code>{feature.example}</code>
+                    </div>
+                  )}
+                </div>
+              ))}
             </div>
           </section>
 
