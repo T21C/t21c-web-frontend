@@ -5,6 +5,12 @@ const DIFFICULTY_LEVELS = {
   'U': { base: 40, max: 20 },   // U1-U10 (values 31-40)
 };
 
+// Special ratings that can override if they appear 4 or more times (2 for community)
+const SPECIAL_RATINGS = new Set([
+  'Qq', 'Q1+', 'Q2', 'Q2+', 'Q3', 'Q3+', 'Q4', 
+  'Bus', 'Grande', 'MA', 'MP', '-21', '-2', '0'
+]);
+
 export function trimString(str, maxLength = 40) {
   if (!str) return '';
   return str.length > maxLength ? str.substring(0, maxLength - 3) + '...' : str;
@@ -12,7 +18,13 @@ export function trimString(str, maxLength = 40) {
 
 export function getRatingValue(rating) {
   if (!rating || typeof rating !== 'string') return null;
-  const prefix = rating.charAt(0);
+  
+  // Check for special ratings first
+  if (SPECIAL_RATINGS.has(rating)) {
+    return rating;
+  }
+
+  const prefix = rating.charAt(0).toUpperCase();
   const number = parseInt(rating.slice(1));
   
   if (!DIFFICULTY_LEVELS[prefix] || isNaN(number)) return null;
@@ -31,25 +43,36 @@ export function getValueAsRating(value) {
   return null;
 }
 
-export function calculateRatingValue(rating) {
+export function calculateRatingValue(rating, isCommunity = false) {
   // If not a string, return null
   if (typeof rating !== 'string' || rating === "") return null;
   
   // Clean the input
-  const cleanRating = rating.trim().toUpperCase();
+  const cleanRating = rating.trim().toUpperCase().replace(/ /g, '');
   
-  // Handle feeling ratings first
-  if (validateFeelingRating(cleanRating, false)) {
+  // Handle special ratings first
+  if (SPECIAL_RATINGS.has(cleanRating)) {
     return cleanRating;
   }
   
   // Check if it's a range (contains hyphen)
-  if (cleanRating.includes('-')) {
-    const [start, end] = cleanRating.split('-');
+  if (cleanRating.includes('-') || cleanRating.includes('~')) {
+    const [start, end] = cleanRating.split(/[-~]/);
     // Validate both parts exist
     if (!start || !end) return null;
     
+    const startPrefix = start.charAt(0);
     // Convert both ratings to numeric values
+    if (/[PGUpgu]/.test(startPrefix) && /^\d+/.test(end)) {
+      console.log(startPrefix + end);
+      const startValue = getRatingValue(start);
+      const endValue = getRatingValue(startPrefix + end);
+      if (startValue === null || endValue === null) return null;
+      if (startValue > endValue) return null;
+      const avg = Math.round((startValue + endValue) / 2);
+      return getValueAsRating(avg);
+    };
+
     const startValue = getRatingValue(start);
     const endValue = getRatingValue(end);
     
@@ -62,6 +85,48 @@ export function calculateRatingValue(rating) {
     return getValueAsRating(avg);
   }
   
+  // If not a range, normalize and return the rating
+  const prefix = cleanRating.charAt(0);
+  const number = parseInt(cleanRating.slice(1));
+  
+  if (!DIFFICULTY_LEVELS[prefix] || isNaN(number)) {
+    return null;
+  }
+  
+  return cleanRating;
+}
+
+export function calculateAverageRating(ratings, isCommunity = false) {
+  if (!ratings || !Array.isArray(ratings) || ratings.length === 0) return null;
+
+  // Count special ratings
+  const specialCounts = {};
+  const numericRatings = [];
+
+  for (const rating of ratings) {
+    const value = calculateRatingValue(rating);
+    
+    if (typeof value === 'string' && SPECIAL_RATINGS.has(value)) {
+      specialCounts[value] = (specialCounts[value] || 0) + 1;
+    } else if (typeof value === 'number') {
+      numericRatings.push(value);
+    }
+  }
+
+  // Check for special ratings with enough votes
+  const requiredVotes = isCommunity ? 2 : 4;
+  for (const [rating, count] of Object.entries(specialCounts)) {
+    if (count >= requiredVotes) {
+      return rating;
+    }
+  }
+
+  // Calculate average of numeric ratings
+  if (numericRatings.length > 0) {
+    const avg = Math.round(numericRatings.reduce((a, b) => a + b, 0) / numericRatings.length);
+    return getValueAsRating(avg);
+  }
+
   return null;
 }
 

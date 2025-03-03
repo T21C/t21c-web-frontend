@@ -50,6 +50,10 @@
   "ratingCard": {
     "labels": {
       "yourRating": "Your Rating",
+      "managerAverage": "Manager Average",
+      "managerRatings": "Manager Ratings",
+      "communityAverage": "Community Average",
+      "communityRatings": "Community Ratings",
       "allRatings": "All Ratings",
       "average": "Average",
       "rerateNumber": "Rerate Number",

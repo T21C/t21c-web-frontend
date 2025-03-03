@@ -280,7 +280,6 @@ export const DetailPopup = ({
   const handleSaveChanges = async () => {
     if (!selectedRating || !hasUnsavedChanges) return;
   
-    
     setIsSaving(true);
     setSaveError(null);
     setCommentError(false);
@@ -303,6 +302,11 @@ export const DetailPopup = ({
       const isCommunityRating = !isAdminRater();
       const updatedRating = await updateRating(selectedRating.id, pendingRating, pendingComment, isCommunityRating);
 
+      // If rating is empty or whitespace, also clear the comment
+      if (!pendingRating || pendingRating.trim() === '') {
+        setPendingComment('');
+      }
+
       setRatings(prevRatings => prevRatings.map(rating => 
         rating.id === updatedRating.id ? updatedRating : rating
       ));
@@ -316,7 +320,7 @@ export const DetailPopup = ({
       
       setOtherRatings(updatedRating.details || []);
       setInitialRating(pendingRating);
-      setInitialComment(pendingComment);
+      setInitialComment(!pendingRating || pendingRating.trim() === '' ? '' : pendingComment);
       setHasUnsavedChanges(false);
       setIsInitialLoad(false);
     } catch (error) {
