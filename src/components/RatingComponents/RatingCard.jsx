@@ -82,7 +82,7 @@ export const RatingCard = ({
     return (
       <div
         className={`rating-card ${
-          rating.details.length >= 4 || isVote ? 'four-rated' : 
+          rating.details.filter(detail => !detail.isCommunityRating).length >= 4 || isVote ? 'four-rated' : 
           rating.lowDiff ? 'low-diff' : ''}`}
       >
         {isVote && (

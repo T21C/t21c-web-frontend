@@ -64,7 +64,6 @@ export function calculateRatingValue(rating, isCommunity = false) {
     const startPrefix = start.charAt(0);
     // Convert both ratings to numeric values
     if (/[PGUpgu]/.test(startPrefix) && /^\d+/.test(end)) {
-      console.log(startPrefix + end);
       const startValue = getRatingValue(start);
       const endValue = getRatingValue(startPrefix + end);
       if (startValue === null || endValue === null) return null;
