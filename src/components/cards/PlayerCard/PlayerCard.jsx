@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useContext, useEffect, useState } from "react";
 import { PlayerContext } from "@/contexts/PlayerContext";
 import { DifficultyContext } from "@/contexts/DifficultyContext";
-import { formatScore } from "@/components/misc/Utility";
+import { formatScore } from "@/components/miscrename/Utility";
 import DefaultAvatar from "@/components/common/icons/DefaultAvatar";
 
 const nonRoundable = ["topDiff", "top12kDiff"];

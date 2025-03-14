@@ -2,7 +2,7 @@ import "./detailpopup.css";
 import { useEffect, useState, useContext, useRef } from 'react';
 import { getVideoDetails } from "@/Repository/RemoteRepository";
 import { RatingItem } from './RatingItem/RatingItem';
-import { validateFeelingRating } from '@/components/misc/Utility';
+import { validateFeelingRating } from '@/components/miscrename/Utility';
 import { RatingInput } from '../../common/selectors/RatingInput/RatingInput';
 import { DifficultyContext } from "@/contexts/DifficultyContext";
 import api from '@/utils/api';
