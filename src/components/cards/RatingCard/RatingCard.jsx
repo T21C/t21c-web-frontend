@@ -1,5 +1,5 @@
 import './ratingcard.css';
-import { calculateRatingValue, calculateAverageRating } from '@/components/Misc/Utility';
+import { calculateRatingValue, calculateAverageRating } from '@/components/miscrename/Utility';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
