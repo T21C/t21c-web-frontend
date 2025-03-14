@@ -1,13 +1,13 @@
-import { CompleteNav, MetaTags } from "../../components";
+import { CompleteNav } from "@/components/layout";
+import { MetaTags } from "@/components/common/display";
 import "./css/adminbackuppage.css";
 import { useEffect, useState, useMemo } from "react";
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
-import ScrollButton from "../../components/ScrollButton/ScrollButton";
-import api from "../../utils/api";
-import { EditIcon } from "../../components/Icons/EditIcon";
-import { RefreshIcon } from "../../components/Icons/RefreshIcon";
-import AccessDenied from "../../components/StateDisplay/AccessDenied";
+import { ScrollButton } from "@/components/common/buttons";
+import api from "@/utils/api";
+import { EditIcon, RefreshIcon } from "@/components/common/icons";
+import { AccessDenied } from "@/components/common/display";
 
 const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB in bytes
 

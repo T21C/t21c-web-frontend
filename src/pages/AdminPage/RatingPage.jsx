@@ -1,24 +1,18 @@
-import { CompleteNav, MetaTags, StateDisplay } from "../../components";
+import { CompleteNav} from "@/components/layout";
+import { MetaTags } from "@/components/common/display";
+import { StateDisplay } from "@/components/common/selectors";
 import "./css/adminratingpage.css";
 import { useEffect, useState, useCallback, useMemo } from "react";
-import { useAuth } from "../../contexts/AuthContext";
-import { useNotification } from "../../contexts/NotificationContext";
-import { useRatingFilter } from "../../contexts/RatingFilterContext";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRatingFilter } from "@/contexts/RatingFilterContext";
 import { useTranslation } from "react-i18next";
-import { DetailPopup } from "../../components/RatingComponents/DetailPopup";
-import { RatingCard } from "../../components/RatingComponents/RatingCard";
-import { EditLevelPopup } from "../../components/EditLevelPopup/EditLevelPopup";
-import ScrollButton from "../../components/ScrollButton/ScrollButton";
-import CustomSelect from "../../components/Select/Select";
-import api from "../../utils/api";
-import ReferencesPopup from "../../components/ReferencesPopup/ReferencesPopup";
-import RaterManagementPopup from "../../components/RaterManagementPopup/RaterManagementPopup";
-import AccessDenied from "../../components/StateDisplay/AccessDenied";
-import ReferencesButton from "../../components/ReferencesButton/ReferencesButton";
-import SortAscIcon from "../../components/Icons/SortAscIcon";
-import SortDescIcon from "../../components/Icons/SortDescIcon";
+import { RatingCard } from "@/components/cards";
+import { EditLevelPopup, RaterManagementPopup, ReferencesPopup, DetailPopup } from "@/components/popups";
+import { ScrollButton, ReferencesButton } from "@/components/common/buttons";
+import { CustomSelect } from "@/components/common/selectors";
+import api from "@/utils/api";
+import { SortAscIcon, SortDescIcon } from "@/components/common/icons";
 import { Tooltip } from "react-tooltip";
-import { RatingHelpPopup } from "../../components/RatingComponents/RatingHelpPopup";
 
 const truncateString = (str, maxLength) => {
   if (!str) return "";

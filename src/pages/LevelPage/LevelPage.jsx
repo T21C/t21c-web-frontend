@@ -1,7 +1,9 @@
 /* eslint-disable no-unused-vars */
 import "./levelpage.css";
 import { useContext, useEffect, useState, useCallback } from "react";
-import { CompleteNav, LevelCard, StateDisplay } from "@/components";
+import { CompleteNav } from "@/components/layout";
+import { LevelCard } from "@/components/cards";
+import { StateDisplay } from "@/components/common/selectors";
 import { Tooltip } from "react-tooltip";
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
@@ -9,20 +11,13 @@ import api from '@/utils/api';
 import { LevelContext } from "@/contexts/LevelContext";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import ScrollButton from "@/components/ScrollButton/ScrollButton";
 import { useAuth } from "@/contexts/AuthContext";
 import { DifficultyContext } from "@/contexts/DifficultyContext";
-import ReferencesButton from "../../components/ReferencesButton/ReferencesButton";
-import { MetaTags } from "../../components";
-import DifficultySlider from '@/components/DifficultySlider/DifficultySlider';
-import SpecialDifficulties from '@/components/SpecialDifficulties/SpecialDifficulties';
-import SortAscIcon from '@/components/Icons/SortAscIcon';
-import SortDescIcon from '@/components/Icons/SortDescIcon';
-import RandomIcon from '@/components/Icons/RandomIcon';
-import { LevelHelpPopup } from "../../components/LevelComponents/LevelHelpPopup";
-import { ResetIcon } from "../../components/Icons/ResetIcon";
-import { SortIcon } from "../../components/Icons/SortIcon";
-import { FilterIcon } from "../../components/Icons/FilterIcon";
+import { ReferencesButton, ScrollButton } from "@/components/common/buttons";
+import { MetaTags } from "@/components/common/display";
+import { DifficultySlider, SpecialDifficulties } from "@/components/common/selectors";
+import { SortAscIcon, SortDescIcon, RandomIcon, ResetIcon, SortIcon , FilterIcon} from "@/components/common/icons";
+import { LevelHelpPopup } from "@/components/popups";
 const currentUrl = window.location.origin + location.pathname;
 
 const limit = 30;

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import './oauthCallbackPage.css';
-import { CompleteNav } from '../../components';
+import { CompleteNav } from '@/components/layout';
 
 const OAuthCallbackPage = () => {
   const [searchParams] = useSearchParams();

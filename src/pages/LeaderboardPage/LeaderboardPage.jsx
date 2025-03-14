@@ -1,23 +1,21 @@
 /* eslint-disable no-unused-vars */
 import "./leaderboardpage.css";
 import { useContext, useEffect, useState } from "react";
-import { CompleteNav, PlayerCard, StateDisplay } from "../../components";
+import { CompleteNav, } from "@/components/layout";
+import { PlayerCard } from "@/components/cards";
+import { StateDisplay } from "@/components/common/selectors";
 import { Tooltip } from "react-tooltip";
-import CustomSelect from "../../components/Select/Select";
+import { CustomSelect } from "@/components/common/selectors";
 import InfiniteScroll from "react-infinite-scroll-component";
-import api from '../../utils/api';
-import { PlayerContext } from "../../contexts/PlayerContext";
+import api from '@/utils/api';
+import { PlayerContext } from "@/contexts/PlayerContext";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import bgImgDark from "../../assets/important/dark/theme-background.jpg";
-import ScrollButton from "../../components/ScrollButton/ScrollButton";
-import { MetaTags } from "../../components";
-import { useAuth } from "../../contexts/AuthContext";
-import SortDescIcon from "../../components/Icons/SortDescIcon";
-import SortAscIcon from "../../components/Icons/SortAscIcon";
-import { SortIcon } from "../../components/Icons/SortIcon";
-import { FilterIcon } from "../../components/Icons/FilterIcon";
-import { ResetIcon } from "../../components/Icons/ResetIcon";
+import { ScrollButton } from "@/components/common/buttons";
+import { MetaTags } from "@/components/common/display";
+import { useAuth } from "@/contexts/AuthContext";
+import { SortDescIcon, SortAscIcon, SortIcon, FilterIcon, ResetIcon } from "@/components/common/icons";
+
 const currentUrl = window.location.origin + location.pathname;
 const limit = 30;
 

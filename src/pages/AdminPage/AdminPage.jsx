@@ -1,8 +1,8 @@
 import "./css/adminpage.css"
-import { CompleteNav } from "../../components"
+import { CompleteNav } from "@/components/layout";
 import { useNavigate, useLocation } from "react-router-dom"
 import { useTranslation } from "react-i18next";
-import { MetaTags } from '../../components';
+import { MetaTags } from "@/components/common/display";
 
 const AdminPage = () => {
   const {t} = useTranslation()

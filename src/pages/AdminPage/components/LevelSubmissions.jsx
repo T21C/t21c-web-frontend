@@ -1,11 +1,11 @@
-import { getVideoDetails } from "../../../Repository/RemoteRepository";
-import placeholder from "../../../assets/placeholder/1.png"
+import { getVideoDetails } from "@/Repository/RemoteRepository";
+import placeholder from "@/assets/placeholder/1.png"
 import "../css/adminsubmissionpage.css";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import api from "../../../utils/api";
+import api from "@/utils/api";
 import { ProfileCreationModal } from './ProfileCreationModal';
-import { SubmissionCreatorPopup } from '../../../components/SubmissionCreatorPopup/SubmissionCreatorPopup';
+import { SubmissionCreatorPopup } from '@/components/popups';
 import { toast } from "react-hot-toast";
 
 const LevelSubmissions = () => {

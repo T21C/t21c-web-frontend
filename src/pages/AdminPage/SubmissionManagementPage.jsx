@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
-import { useAuth } from "../../contexts/AuthContext";
+import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import "./css/adminsubmissionpage.css";
-import { AccessDenied, CompleteNav, MetaTags } from '../../components';
-import ScrollButton from '../../components/ScrollButton/ScrollButton';
+import { AccessDenied, MetaTags } from '@/components/common/display';
+import { CompleteNav } from '@/components/layout';
+import { ScrollButton } from '@/components/common/buttons';
 import LevelSubmissions from './components/LevelSubmissions';
 import PassSubmissions from './components/PassSubmissions';
-import { RefreshIcon } from '../../components/Icons/RefreshIcon';
-import { useNotification } from '../../contexts/NotificationContext';
+import { RefreshIcon } from '@/components/common/icons';
+import { useNotification } from '@/contexts/NotificationContext';
 
 const SubmissionManagementPage = () => {
   const { t } = useTranslation('pages');

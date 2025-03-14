@@ -1,15 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useAuth } from '../../contexts/AuthContext';
-import { CompleteNav } from '../../components';
-import Select from '../../components/Select/Select';
+import { useAuth } from '@/contexts/AuthContext';
+import { CompleteNav } from '@/components/layout';
+import { CustomSelect } from '@/components/common/selectors';
 import './creatorManagement.css';
-import api from '../../utils/api';
+import api from '@/utils/api';
 import { useTranslation } from 'react-i18next';
-import { CreatorActionPopup } from '../../components/CreatorActionPopup/CreatorActionPopup';
-import SortDescIcon from '../../components/Icons/SortDescIcon';
-import SortAscIcon from '../../components/Icons/SortAscIcon';
-import AccessDenied from "../../components/StateDisplay/AccessDenied";
-import MetaTags from "../../components/MetaTags/MetaTags";
+import { CreatorActionPopup } from '@/components/popups';
+import { SortDescIcon, SortAscIcon } from '@/components/common/icons';
+import { AccessDenied, MetaTags } from '@/components/common/display';
 const currentUrl = window.location.origin + location.pathname;
 
 
@@ -664,7 +662,7 @@ const CreatorManagementPage = () => {
     return (
         <div className="team-header">
           <div className="team-input-group">
-            <Select
+            <CustomSelect
               options={teams.map(team => ({
                 value: team.name,
                 label: team.name
@@ -705,7 +703,7 @@ const CreatorManagementPage = () => {
                   </span>
                 </span>
                 <div className="creator-controls">
-                  <Select
+                  <CustomSelect
                     value={roleOptions.find(opt => opt.value === creator.role)}
                     options={roleOptions.filter(opt => 
                       opt.value === CreditRole.CHARTER || 
@@ -727,7 +725,7 @@ const CreatorManagementPage = () => {
           </div>
           
           <div className="add-creator">
-            <Select
+            <CustomSelect
               options={availableCreators === null ? [] : availableCreators.map(creator => ({
                 value: creator.id,
                 label: `${creator.name} (ID: ${creator.id}, Charts: ${creator.createdLevels?.length || 0})${creator.aliases?.length > 0 ? ` [${creator.aliases.join(', ')}]` : ''}`

@@ -1,12 +1,11 @@
 import React, { useState} from 'react';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 import './editProfilePage.css';
-import { CompleteNav } from '../../components';
-import { DiscordIcon } from '../../components/Icons/DiscordIcon';
-import { UnlinkIcon } from '../../components/Icons/UnlinkIcon';
+import { CompleteNav } from '@/components/layout';
+import { DiscordIcon, UnlinkIcon } from '@/components/common/icons';
 import { Tooltip } from 'react-tooltip';
 
-const ProviderIcon = ({ provider, size, color }) => {
+const ProviderIcon = ({ provider, size, color="#fff" }) => {
   switch(provider) {
     case 'discord':
       return <DiscordIcon size={size} color={color} />;
@@ -278,7 +277,7 @@ const EditProfilePage = () => {
                   disabled={isLastProvider}
                 >
                   Unlink
-                  <UnlinkIcon color="#fff" size={24} />
+                  <UnlinkIcon color="#fff" size={"24px"} />
                 </button>
                 <Tooltip id="unlink-tooltip" />
               </div>

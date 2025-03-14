@@ -1,9 +1,10 @@
 import { useEffect, useState, useCallback } from "react";
 import "./homepage.css"
-import { CompleteNav, Footer, MetaTags } from "../../components";
-import api from "../../utils/api";
+import { CompleteNav, Footer } from "@/components/layout";
+import { MetaTags } from "@/components/common/display";
+import api from "@/utils/api";
 import { Link } from 'react-router-dom';
-import { useDifficultyContext } from "../../contexts/DifficultyContext";
+import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { useTranslation } from "react-i18next";
 import {
   BarChart,
@@ -16,10 +17,8 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import { useLocation } from 'react-router-dom';
-import ScrollButton from "../../components/ScrollButton/ScrollButton";
-import { PassIcon } from "../../components/Icons/PassIcon";
-import { LevelIcon } from "../../components/Icons/LevelIcon";
-import { LeaderboardIcon } from "../../components/Icons/LeaderboardIcon";
+import { ScrollButton } from "@/components/common/buttons";
+import { PassIcon, LevelIcon, LeaderboardIcon } from "@/components/common/icons";
 
 // Import the logo
 import logoFull from '@/assets/tuf-logo/logo-full.png';
@@ -328,8 +327,6 @@ const HomePage = () => {
                 src="https://discord.com/widget?id=1024941834373439509&theme=dark" 
                 width="83.333%" 
                 height="300"
-                allowtransparency="true" 
-                frameborder="0" 
                 sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
                 style={{position: "relative", zIndex: "1", transform: "scale(1.2)", transformOrigin: "0 0", paddingBottom: "50px"}}
                 />

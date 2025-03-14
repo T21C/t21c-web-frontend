@@ -1,8 +1,8 @@
 import "./submissionpage.css"
-import { CompleteNav } from "../../components"
+import { CompleteNav } from "@/components/layout";
 import { Link, useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next";
-import { MetaTags } from '../../components';
+import { MetaTags } from "@/components/common/display";
 import { useLocation } from 'react-router-dom';
 
 const SubmissionPage = () => {

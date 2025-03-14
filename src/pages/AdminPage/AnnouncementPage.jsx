@@ -1,21 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
-import { CompleteNav, MetaTags } from '@/components';
-import ScrollButton from '@/components/ScrollButton/ScrollButton';
-import { EditLevelPopup } from '@/components/EditLevelPopup/EditLevelPopup';
+import { CompleteNav } from '@/components/layout';
+import { ScrollButton } from '@/components/common/buttons';
+import { EditLevelPopup } from '@/components/popups';
 import api from '@/utils/api';
 import './css/announcementpage.css';
 import NewLevelsTab from './components/NewLevelsTab';
 import ReratesTab from './components/ReratesTab';
 import PassesTab from './components/PassesTab';
-import { RefreshIcon } from '../../components/Icons/RefreshIcon';
+import { RefreshIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
-import { AccessDenied } from '../../components';
+import { AccessDenied, MetaTags } from '@/components/common/display';
 
 const AnnouncementPage = () => {
   const { user } = useAuth();
   const { t } = useTranslation('pages');
-  const tAnnounce = (key) => t(`announcement.${key}`);
+  const tAnnounce = (key) => t(`announcement.${key}`) || key;
   const currentUrl = window.location.origin + location.pathname;
 
   const [activeTab, setActiveTab] = useState('newLevels');

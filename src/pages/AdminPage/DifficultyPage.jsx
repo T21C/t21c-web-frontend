@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { CompleteNav, MetaTags, AccessDenied } from '@/components';
-import ScrollButton from '@/components/ScrollButton/ScrollButton';
+import { CompleteNav } from '@/components/layout';
+import { MetaTags, AccessDenied } from '@/components/common/display';
+import { ScrollButton } from '@/components/common/buttons';
 import api from '@/utils/api';
 import './css/difficultypage.css';
-import { EditIcon } from '../../components/Icons/EditIcon';
-import { RefreshIcon } from '../../components/Icons/RefreshIcon';
-import { TrashIcon } from '../../components/Icons/TrashIcon';
+import { EditIcon, RefreshIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 
 const DifficultyPage = () => {

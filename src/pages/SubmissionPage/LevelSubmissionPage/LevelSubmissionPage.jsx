@@ -1,14 +1,14 @@
-import { CompleteNav } from "@/components";
+import { CompleteNav } from "@/components/layout";
 import "./levelsubmission.css";
 import placeholder from "@/assets/placeholder/3.png";
-import { FormManager } from "@/components/FormManager/FormManager";
+import { FormManager } from "@/components/Misc/FormManager/FormManager";
 import { useEffect, useState } from "react";
 import { getDriveFromYt, getVideoDetails } from "@/Repository/RemoteRepository";
 import { useAuth } from "@/contexts/AuthContext";
 import { validateFeelingRating } from "@/components/Misc/Utility";
 import { useTranslation } from "react-i18next";
-import StagingModeWarning from "../../../components/StagingModeWarning/StagingModeWarning";
-import { ProfileSelector } from "@/components/ProfileSelector/ProfileSelector";
+import { StagingModeWarning } from "@/components/common/display";
+import { ProfileSelector } from "@/components/common/selectors";
 import { useNavigate } from 'react-router-dom';
 
 const LevelSubmissionPage = () => {

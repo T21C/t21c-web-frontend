@@ -1,16 +1,16 @@
 import "./profilePage.css"
-import api from "../../utils/api";
+import api from "@/utils/api";
 import { useEffect, useState } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom"
-import { isoToEmoji } from "../../Repository/RemoteRepository";
-import { CompleteNav, ScoreCard, MetaTags } from "../../components";
+import { isoToEmoji } from "@/Repository/RemoteRepository";
+import { CompleteNav } from "@/components/layout";
+import { MetaTags } from "@/components/common/display";
+import { ScoreCard } from "@/components/cards";
 import { useTranslation } from "react-i18next";
-import { useAuth } from "../../contexts/AuthContext";
-import { useDifficultyContext } from "../../contexts/DifficultyContext";
-import AdminPlayerPopup from "../../components/AdminPlayerPopup/AdminPlayerPopup";
-import DefaultAvatar from "../../components/Icons/DefaultAvatar";
-import { ShieldIcon } from "../../components/Icons/ShieldIcon";
-import { EditIcon } from "../../components/Icons/EditIcon";
+import { useAuth } from "@/contexts/AuthContext";
+import { useDifficultyContext } from "@/contexts/DifficultyContext";
+import { AdminPlayerPopup } from "@/components/popups";
+import { DefaultAvatar, ShieldIcon, EditIcon } from "@/components/common/icons";
 
 const parseRankColor = (rank) => {
   var clr;
@@ -199,7 +199,7 @@ const ProfilePage = () => {
                       //style={{cursor: "not-allowed", pointerEvents: "none"}}
                       onClick={() => navigate('/profile/edit')}
                     >
-                      <EditIcon color="#fff" size={24} />
+                      <EditIcon color="#fff" size={"24px"} />
                     </button>
                   )}
                   {user?.isSuperAdmin && (
@@ -207,7 +207,7 @@ const ProfilePage = () => {
                       className="edit-button"
                       onClick={handleAdminEditClick}
                     >
-                      <ShieldIcon color="#fff" size={24} />
+                      <ShieldIcon color="#fff" size={"24px"} />
                     </button>
                   )}
                   </div>

@@ -1,11 +1,10 @@
 import "./aboutuspage.css";
-import { CompleteNav, Footer } from "../../components";
-import { MetaTags } from "../../components";
+import { CompleteNav, Footer } from "@/components/layout";
+import { MetaTags } from "@/components/common/display";
 import { useTranslation } from "react-i18next";
 import { useState, useEffect, useCallback } from "react";
-import axios from "axios";
-import api from "../../utils/api";
-import DefaultAvatar from "../../components/Icons/DefaultAvatar";
+import api from "@/utils/api";
+import { DefaultAvatar } from "@/components/common/icons";
 
 const AboutUsPage = () => {
   const { t } = useTranslation('pages');

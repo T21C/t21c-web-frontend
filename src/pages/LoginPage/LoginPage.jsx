@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../../contexts/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import './loginPage.css';
-import { CompleteNav, MetaTags } from '../../components';
-import { useScript } from '../../hooks/useScript';
+import { CompleteNav } from '@/components/layout';
+import { MetaTags } from '@/components/common/display';
+import { useScript } from '@/hooks/useScript';
 const currentUrl = window.location.origin + location.pathname;
 
 const LoginPage = () => {

@@ -1,25 +1,25 @@
 /* eslint-disable no-unused-vars */
 // eslint-disable-next-line no-unused-vars
 import "./leveldetailpage.css"
-import placeholder from "../../assets/placeholder/3.png";
+import placeholder from "@/assets/placeholder/3.png";
 import React, { useEffect, useState, useRef } from "react";
 import { useLocation, useParams } from 'react-router-dom';
-import { CompleteNav } from "../../components";
+import { CompleteNav } from "@/components/layout";
 import {
   getVideoDetails,
   isoToEmoji,
-} from "../../Repository/RemoteRepository";
+} from "@/Repository/RemoteRepository";
 
 import { Tooltip } from "react-tooltip";
 import { useTranslation } from "react-i18next";
 import { use } from "i18next";
-import ClearCard from "../../components/ClearCard/ClearCard";
-import { EditLevelPopup } from "../../components/EditLevelPopup/EditLevelPopup";
-import { useAuth } from "../../contexts/AuthContext";
-import api from "../../utils/api";
-import { useDifficultyContext } from "../../contexts/DifficultyContext";
-import { MetaTags } from '../../components';
-import { SteamIcon } from "../../components/Icons/SteamIcon";
+import { ClearCard } from "@/components/cards";
+import { EditLevelPopup } from "@/components/popups";
+import { useAuth } from "@/contexts/AuthContext";
+import api from "@/utils/api";
+import { useDifficultyContext } from "@/contexts/DifficultyContext";
+import { MetaTags } from "@/components/common/display";
+import { SteamIcon } from "@/components/common/icons";
 
 const getHighScores = (players) => {
   if (!players?.length) return null;
@@ -545,7 +545,7 @@ const LevelDetailPage = () => {
             )}
             {res.level.workshopLink && (
               <a href={res.level.workshopLink} target="_blank" title={tLevel('links.workshop')}>
-                <SteamIcon color="#ffffff" size={24} />
+                <SteamIcon color="#ffffff" size={"24px"} />
               </a>
             )}
           </div>

@@ -1,34 +1,33 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
 import { Suspense, lazy } from "react";
-import LevelSubmissionPage from "./pages/SubmissionPage/LevelSubmissionPage/LevelSubmissionPage.jsx";
-import PassSubmissionPage from "./pages/SubmissionPage/PassSubmissionPage/PassSubmissionPage.jsx";
-import CallbackPage from "./components/Callback/Callback.jsx";
-import LeaderboardPage from "./pages/LeaderboardPage/LeaderboardPage.jsx";
-import ProfilePage from "./pages/ProfilePage/ProfilePage.jsx";
-import RatingPage from "./pages/AdminPage/RatingPage.jsx";
-import SubmissionManagementPage from "./pages/AdminPage/SubmissionManagementPage.jsx";
-import AdminPage from "./pages/AdminPage/AdminPage.jsx";
-import PassPage from "./pages/PassPage/PassPage.jsx";
-import PassDetailPage from "./pages/PassDetailPage/PassDetailPage.jsx";
-import AnnouncementPage from "./pages/AdminPage/AnnouncementPage.jsx";
-import BackupPage from "./pages/AdminPage/BackupPage.jsx";
-import AboutUsPage from "./pages/AboutUsPage/AboutUsPage.jsx";
-import DifficultyPage from "./pages/AdminPage/DifficultyPage.jsx";
-import { CompleteNav } from "./components/index.js";
+import LevelSubmissionPage from "./pages/SubmissionPage/LevelSubmissionPage/LevelSubmissionPage";
+import PassSubmissionPage from "./pages/SubmissionPage/PassSubmissionPage/PassSubmissionPage";
+import CallbackPage from "./components/auth/Callback/Callback";
+import LeaderboardPage from "./pages/LeaderboardPage/LeaderboardPage";
+import ProfilePage from "./pages/ProfilePage/ProfilePage";
+import RatingPage from "./pages/AdminPage/RatingPage";
+import SubmissionManagementPage from "./pages/AdminPage/SubmissionManagementPage";
+import AdminPage from "./pages/AdminPage/AdminPage";
+import PassPage from "./pages/PassPage/PassPage";
+import PassDetailPage from "./pages/PassDetailPage/PassDetailPage";
+import AnnouncementPage from "./pages/AdminPage/AnnouncementPage";
+import BackupPage from "./pages/AdminPage/BackupPage";
+import AboutUsPage from "./pages/AboutUsPage/AboutUsPage";
+import DifficultyPage from "./pages/AdminPage/DifficultyPage";
+import { CompleteNav } from "./components/layout";
 import { AuthProvider } from './contexts/AuthContext';
 import LoginPage from './pages/LoginPage/LoginPage';
 import RegisterPage from './pages/RegisterPage/RegisterPage';
 import VerifyEmailPage from './pages/VerifyEmailPage/VerifyEmailPage';
 import OAuthCallbackPage from './pages/OAuthCallbackPage/OAuthCallbackPage';
 import EditProfilePage from './pages/EditProfilePage/EditProfilePage';
-import PrivateRoute from './components/PrivateRoute/PrivateRoute';
+import PrivateRoute from './components/auth/PrivateRoute/PrivateRoute';
 import CreatorManagementPage from './pages/CreatorManagementPage/CreatorManagementPage';
-
-const HomePage = lazy(() => import("./pages/HomePage/HomePage.jsx"));
-const LevelDetailPage = lazy(() => import("./pages/LevelDetailPage/LevelDetailPage.jsx"));
-const SubmissionPage = lazy(() => import("./pages/SubmissionPage/SubmissionPage.jsx"));
-const LevelPage = lazy(() => import("./pages/LevelPage/LevelPage.jsx"));
+import HomePage from './pages/HomePage/HomePage';
+import LevelPage from './pages/LevelPage/LevelPage';
+import LevelDetailPage from './pages/LevelDetailPage/LevelDetailPage';
+import SubmissionPage from "./pages/SubmissionPage/SubmissionPage";
 
 function App() {
   return (

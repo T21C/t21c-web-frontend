@@ -4,10 +4,10 @@ import placeholder from '@/assets/placeholder/1.png';
 import { getVideoDetails } from "@/Repository/RemoteRepository";
 import "@/pages/AdminPage/css/adminsubmissionpage.css";
 import api from "@/utils/api";
-import { PlayerInput } from '@/components/PlayerComponents/PlayerInput';
+import { PlayerInput } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
 import { ProfileCreationModal } from './ProfileCreationModal';
-import AdminPlayerPopup from '../../../components/AdminPlayerPopup/AdminPlayerPopup';
+import { AdminPlayerPopup } from '@/components/popups';
 
 
 const PassSubmissions = () => {

@@ -1,7 +1,7 @@
 import '../css/announcementpage.css';
 import api from '@/utils/api';
 import { useState } from 'react';
-import { TrashIcon } from '../../../components/Icons/TrashIcon';
+import { TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
   
 const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemove }) => {

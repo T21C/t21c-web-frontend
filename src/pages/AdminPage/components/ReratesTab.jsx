@@ -1,8 +1,7 @@
 import api from '@/utils/api';
 import '../css/announcementpage.css';
 import { useState } from 'react';
-import { EditIcon } from '../../../components/Icons/EditIcon';
-import { TrashIcon } from '../../../components/Icons/TrashIcon';
+import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 
 const ReratesTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRemove, onEdit }) => {
