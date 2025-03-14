@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import './ratinghelppopup.css';
 import { useTranslation } from 'react-i18next';
-import { CommentFormatter } from '@/components/miscrename';
+import { CommentFormatter } from '@/components/misc';
 
 export const RatingHelpPopup = ({ onClose }) => {
   const { t } = useTranslation('components');
