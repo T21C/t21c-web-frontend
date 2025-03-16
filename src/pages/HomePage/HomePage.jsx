@@ -328,7 +328,14 @@ const HomePage = () => {
                 width="83.333%" 
                 height="300"
                 sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
-                style={{position: "relative", zIndex: "1", transform: "scale(1.2)", transformOrigin: "0 0", paddingBottom: "50px"}}
+                style={{
+                  position: "relative", 
+                  zIndex: "1", 
+                  transform: "scale(1.2)", 
+                  transformOrigin: "0 0", 
+                  paddingBottom: "50px",
+                  border: "none"
+                }}
                 />
               </div>
             </section>
