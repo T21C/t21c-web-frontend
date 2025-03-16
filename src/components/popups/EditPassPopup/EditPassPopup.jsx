@@ -12,7 +12,7 @@ import placeholder from '@/assets/placeholder/4.png';
 import { FetchIcon } from '@/components/common/icons';
 import { useNavigate } from 'react-router-dom';
 import { PlayerInput } from '@/components/common/selectors';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
   const { t } = useTranslation('components');
