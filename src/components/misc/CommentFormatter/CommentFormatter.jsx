@@ -1,10 +1,10 @@
 import React from 'react';
 import './commentFormatter.css';
 
-export const CommentFormatter = ({ prefix = "id", children }) => {
+export const CommentFormatter = ({ prefix = "#", children }) => {
   const formatComment = (text) => {
-    // Match pattern: id:1234 or ID:1234 or any other prefix
-    const idPattern = new RegExp(`\\b(${prefix}:)(\\d+)\\b`, 'gi');
+    
+    const idPattern = new RegExp(`${prefix}(\\d+)`, 'gi');
     
     // Split the text into parts based on the pattern
     const parts = [];
@@ -18,7 +18,7 @@ export const CommentFormatter = ({ prefix = "id", children }) => {
       }
 
       // Add the formatted link
-      const levelId = match[2];
+      const levelId = match[1];
       parts.push(
         <a
           key={match.index}

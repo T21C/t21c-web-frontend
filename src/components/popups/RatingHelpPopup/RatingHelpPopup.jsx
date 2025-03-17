@@ -77,7 +77,7 @@ export const RatingHelpPopup = ({ onClose }) => {
               {tHelp('sections.extras.features', { returnObjects: true }).map((feature, index) => (
                 <div key={index} className="feature-item">
                   <h4>{feature.title}</h4>
-                  <CommentFormatter prefix={"idPrefixDontChange"}>{feature.description}</CommentFormatter>
+                  <CommentFormatter prefix={"idPrefixDontChange:"}>{feature.description}</CommentFormatter>
                   {feature.example && (
                     <div className="feature-example">
                       <code>{feature.example}</code>

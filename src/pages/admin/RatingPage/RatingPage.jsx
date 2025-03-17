@@ -13,6 +13,7 @@ import { CustomSelect } from "@/components/common/selectors";
 import api from "@/utils/api";
 import { SortAscIcon, SortDescIcon } from "@/components/common/icons";
 import { Tooltip } from "react-tooltip";
+import { RatingHelpPopup } from "@/components/popups";
 
 const truncateString = (str, maxLength) => {
   if (!str) return "";

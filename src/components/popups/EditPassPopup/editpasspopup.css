@@ -207,7 +207,6 @@
 .edit-pass-popup-overlay .form-container form .info .accuracy .top .each-accuracy {
   display: flex;
   align-items: center;
-  text-wrap: nowrap;
   gap: 0.5rem;
 }
 .edit-pass-popup-overlay .form-container form .info .accuracy .top .each-accuracy:nth-child(1) {
@@ -229,7 +228,6 @@
 .edit-pass-popup-overlay .form-container form .info .accuracy .bottom .each-accuracy {
   display: flex;
   align-items: center;
-  text-wrap: nowrap;
   gap: 0.5rem;
 }
 .edit-pass-popup-overlay .form-container form .info .accuracy .bottom .each-accuracy input {

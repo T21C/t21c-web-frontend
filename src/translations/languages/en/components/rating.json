@@ -93,7 +93,7 @@
         "features": [
           {
             "title": "ID Link in comments",
-            "description": "In comment section you can include an ID direction to a level like \"id:1527\". This will automatically convert it to idPrefixDontChange:1527"
+            "description": "In comment section you can include an ID direction to a level like \"#1527\". This will automatically convert it to idPrefixDontChange:1527"
           }
         ]
       },
