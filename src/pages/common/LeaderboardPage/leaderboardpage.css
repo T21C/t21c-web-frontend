@@ -1,0 +1,189 @@
+.leaderboard-page {
+  background-color: var(--color-black);
+  color: var(--color-white);
+  min-height: 100vh;
+}
+.leaderboard-page .leaderboard-body {
+  position: relative;
+  z-index: 2;
+  padding: 0 1.5rem;
+  padding-top: 6rem;
+  min-height: 100vh;
+  max-width: 70rem;
+  margin: 0 auto;
+}
+.leaderboard-page .leaderboard-body .input-option {
+  display: flex;
+  gap: 0.5rem;
+  height: 2rem;
+}
+.leaderboard-page .leaderboard-body .input-option input {
+  width: 100%;
+  background-color: var(--color-white-t20);
+  border: none;
+  border-radius: 3px;
+  padding: 0.5rem;
+  color: var(--white-color);
+}
+.leaderboard-page .leaderboard-body .input-option input:focus {
+  outline: none;
+}
+.leaderboard-page .leaderboard-body .input-option svg {
+  height: 2rem;
+  width: 2.2rem;
+  background-color: var(--color-white-t20);
+  padding: 0.1rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s linear;
+}
+.leaderboard-page .leaderboard-body .input-option svg:focus {
+  outline: none;
+}
+.leaderboard-page .leaderboard-body .filter {
+  position: relative;
+  z-index: 100;
+  background-color: #0004;
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+.leaderboard-page .leaderboard-body .sort {
+  position: relative;
+  z-index: 90;
+  background-color: #0004;
+  border-radius: 1rem;
+  padding: 1rem;
+  margin-top: 1rem;
+}
+.leaderboard-page .leaderboard-body .sort .sort-option {
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+}
+.leaderboard-page .leaderboard-body .sort .sort-option > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0rem;
+}
+.leaderboard-page .leaderboard-body .sort .sort-option .wrapper{
+  display: flex;
+  gap: 0.5rem;
+}
+.leaderboard-page .leaderboard-body .sort .sort-option svg {
+  height: 2rem;
+  width: 2rem;  
+  background-color: var(--color-white-t20);
+  padding: 0.1rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s linear;
+}
+.leaderboard-page .leaderboard-body .sort .sort-option svg:focus {
+  outline: none;
+}
+.leaderboard-page .leaderboard-body .settings-class {
+  padding: 1rem 2rem;
+  position: relative;
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: visible;
+  margin-bottom: 1rem;
+  opacity: 1;
+  max-height: 500px;
+}
+.leaderboard-page .leaderboard-body .settings-class.hidden {
+  max-height: 0;
+  opacity: 0;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.leaderboard-page .leaderboard-body .settings-class.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+.leaderboard-page .leaderboard-body .spacer-setting {
+  width: 100%;
+  height: 1px;
+  background-color: var(--color-white);
+  margin-bottom: 0.5rem;
+}
+.leaderboard-page .leaderboard-body .diff-filters {
+  display: flex;
+  flex-direction: row; /* Stacks items vertically */
+  gap: 1rem; /* Adds space between the filter containers */
+}
+
+.leaderboard-page .leaderboard-body .filter-container {
+  display: flex;
+  flex-direction: column; /* Stack the label and select vertically */
+}
+
+.leaderboard-page .leaderboard-body .input-setting {
+  margin-top: 1rem;
+}
+.leaderboard-page .leaderboard-body .setting-title {
+  margin-bottom: 1rem;
+}
+.leaderboard-page .leaderboard-body .setting-description {
+  margin-bottom: 0.5rem;
+}
+
+.leaderboard-page .leaderboard-body .sort .sort-option .banned-toggle {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.leaderboard-page .leaderboard-body .sort .sort-option .banned-toggle p {
+  margin-bottom: 0.5rem;
+}
+
+.leaderboard-page .leaderboard-body .sort .sort-option .recent {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.leaderboard-page .leaderboard-body .sort .sort-option .recent p {
+  margin: 0;
+}
+
+/* Filter section */
+.leaderboard-page .leaderboard-body .filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.leaderboard-page .leaderboard-body .filter-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+/* State display styles */
+.leaderboard-page .leaderboard-body .state-display-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.leaderboard-page .leaderboard-body .state-display {
+  background: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  position: relative;
+  overflow: visible;
+  box-sizing: border-box;
+}
+
+/* Transitions and animations */
+.leaderboard-page .leaderboard-body .sort .sort-option svg {
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.leaderboard-page .leaderboard-body .settings-class {
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}

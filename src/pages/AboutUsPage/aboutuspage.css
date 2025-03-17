@@ -320,12 +320,12 @@
   text-shadow: 
     0 0 10px rgba(162, 0, 255, 0.721),
     0 0 40px rgba(255, 42, 209, 0.621);
-  mask-image: radial-gradient(
+  -webkit-mask-image: radial-gradient(
     circle 20rem at var(--mouse-x) var(--mouse-y),
     rgb(255, 255, 255) 0,
     transparent 50%
   );
-  -webkit-mask-image: radial-gradient(
+  mask-image: radial-gradient(
     circle 20rem at var(--mouse-x) var(--mouse-y),
     rgb(255, 255, 255) 0,
     transparent 50%

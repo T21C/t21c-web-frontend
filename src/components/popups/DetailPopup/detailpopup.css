@@ -407,6 +407,10 @@
     resize: none; /* Disable resize */
 }
 
+.rating-popup .rating-field textarea::placeholder {
+    color: #999;
+}
+
 .rating-field-group > div:nth-child(2) {
     flex-grow: 1;
   }

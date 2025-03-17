@@ -1,0 +1,804 @@
+.admin-backup-page {
+  background-color: var(--color-black);
+  color: var(--color-white);
+  min-height: 100vh;
+}
+
+.admin-backup-page .admin-backup-body {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  padding-top: 6rem;
+  padding-bottom: 10rem;
+}
+
+.admin-backup-page .backup-tabs-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 0.5rem;
+  padding-bottom: 1rem;
+  position: relative;
+  z-index: 10;
+}
+
+.admin-backup-page .backup-tabs {
+  display: flex;
+  gap: 1rem;
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.admin-backup-page .tab-button {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: none;
+  color: white;
+  font-size: 1.3rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 4px;
+  position: relative;
+  z-index: 11;
+}
+
+.admin-backup-page .tab-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.admin-backup-page .tab-button.active {
+  background: rgba(255, 255, 255, 0.2);
+  font-weight: 500;
+}
+
+.admin-backup-page .backup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.admin-backup-page .header-left {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.admin-backup-page .backup-header h2 {
+  font-size: 1.8rem;
+  color: var(--color-white-t80);
+  margin: 0;
+}
+
+.admin-backup-page .create-backup-btn {
+  background-color: var(--color-white-t20);
+  color: var(--color-white);
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 1.1rem;
+}
+
+.admin-backup-page .create-backup-btn:hover {
+  background-color: var(--color-white-t30);
+}
+
+.admin-backup-page .create-backup-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-backup-page .backup-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-backup-page .backup-item {
+  background-color: rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  transition: all 0.3s ease;
+  border: 1px solid var(--color-white-t20);
+  position: relative;
+}
+
+.admin-backup-page .backup-item:hover {
+  background-color: var(--color-white-t20);
+}
+
+.admin-backup-page .backup-info {
+  flex: 1;
+  margin-right: 3rem;
+  min-width: 0;
+}
+
+.admin-backup-page .filename-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.admin-backup-page .filename-container h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--color-white);
+}
+
+.admin-backup-page .backup-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.admin-backup-page .backup-date,
+.admin-backup-page .backup-size {
+  margin: 0;
+  color: var(--color-white-t80);
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-backup-page .time-ago {
+  color: var(--color-white-t60);
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-left: 0.5rem;
+}
+
+.admin-backup-page .backup-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.admin-backup-page .restore-btn,
+.admin-backup-page .delete-btn,
+.admin-backup-page .download-btn {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.admin-backup-page .restore-btn {
+  background-color: var(--color-white-t20);
+  color: var(--color-white);
+}
+
+.admin-backup-page .download-btn {
+  background-color: rgba(33, 150, 243, 0.3);
+  color: var(--color-white);
+}
+
+.admin-backup-page .delete-btn {
+  background-color: rgba(244, 67, 54, 0.3);
+  color: var(--color-white);
+}
+
+.admin-backup-page .restore-btn:hover {
+  background-color: var(--color-white-t30);
+}
+
+.admin-backup-page .download-btn:hover {
+  background-color: rgba(33, 150, 243, 0.4);
+}
+
+.admin-backup-page .delete-btn:hover {
+  background-color: rgba(244, 67, 54, 0.4);
+}
+
+.admin-backup-page .restore-btn:disabled,
+.admin-backup-page .delete-btn:disabled,
+.admin-backup-page .download-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-backup-page .edit-btn {
+  background: none;
+  border: none;
+  color: var(--color-white-t80);
+  font-size: 1.1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.admin-backup-page .edit-btn:hover:not(:disabled) {
+  color: var(--color-white);
+  background-color: var(--color-white-t10);
+}
+
+.admin-backup-page .edit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-backup-page .rename-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.admin-backup-page .rename-input-container {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: 100%;
+  background: var(--color-white-t10);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.admin-backup-page .rename-input {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  background: transparent;
+  color: var(--color-white);
+  font-size: 1rem;
+  min-width: 0;
+}
+
+.admin-backup-page .file-extension {
+  padding: 8px;
+  color: var(--color-white-t60);
+  font-size: 1rem;
+  background: var(--color-white-t10);
+  border-left: 1px solid var(--color-white-t20);
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.admin-backup-page .rename-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.admin-backup-page .save-rename-btn,
+.admin-backup-page .cancel-rename-btn {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.admin-backup-page .save-rename-btn {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.admin-backup-page .save-rename-btn:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+.admin-backup-page .cancel-rename-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.admin-backup-page .cancel-rename-btn:hover:not(:disabled) {
+  background-color: #da190b;
+}
+
+.admin-backup-page .save-rename-btn:disabled,
+.admin-backup-page .cancel-rename-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.admin-backup-page .notifications {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 400px;
+}
+
+.admin-backup-page .notification {
+  padding: 1rem;
+  border-radius: 8px;
+  color: var(--color-white);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  animation: slideIn 0.3s ease;
+}
+
+.admin-backup-page .notification.error {
+  background-color: rgba(244, 67, 54, 0.9);
+}
+
+.admin-backup-page .notification.success {
+  background-color: rgba(76, 175, 80, 0.9);
+}
+
+.admin-backup-page .close-notification {
+  background: none;
+  border: none;
+  color: var(--color-white);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0 0.5rem;
+  margin-left: 1rem;
+  opacity: 0.8;
+  transition: opacity 0.3s ease;
+}
+
+.admin-backup-page .close-notification:hover {
+  opacity: 1;
+}
+
+.admin-backup-page .no-backups-message {
+  text-align: center;
+  color: var(--color-white-t80);
+  margin-top: 4rem;
+  background-color: rgba(255, 255, 255, 0.12);
+  padding: 2rem;
+  border-radius: 8px;
+  border: 1px solid var(--color-white-t20);
+}
+
+.admin-backup-page .no-backups-message h2 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+}
+
+.admin-backup-page .no-backups-message p {
+  font-size: 1.1rem;
+}
+
+.admin-backup-page .loader-backup-detail {
+  margin: 0 auto;
+  margin-top: 4rem;
+  text-align: center;
+  font-size: 1.2rem;
+  color: var(--color-white-t80);
+}
+
+.admin-backup-page .sort-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-backup-page .sort-btn {
+  background: transparent;
+  border: none;
+  color: var(--color-white);
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.admin-backup-page .sort-btn:hover {
+  background-color: var(--color-white-t20);
+}
+
+.admin-backup-page .sort-btn.active {
+  background-color: var(--color-white-t30);
+  font-weight: 500;
+}
+
+.admin-backup-page .header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.admin-backup-page .reload-btn {
+  background-color: var(--color-white-t20);
+  border: none;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.admin-backup-page .reload-btn:hover {
+  background-color: var(--color-white-t30);
+}
+
+.admin-backup-page .reload-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-backup-page .total-size {
+  color: var(--color-white-t80);
+  font-size: 1.1rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+}
+
+.admin-backup-page .header-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-bottom: 1em;
+}
+
+.admin-backup-page .header-container h1 {
+  text-align: center;
+  margin-bottom: 0;
+  font-size: 2rem;
+  color: var(--color-white);
+}
+
+.admin-backup-page .refresh-button {
+  position: absolute;
+  right: 0;
+  background: none;
+  border: none;
+  color: var(--color-white);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.7;
+  transition: opacity 0.2s, transform 0.2s;
+}
+
+.admin-backup-page .refresh-button:hover {
+  opacity: 1;
+  transform: rotate(180deg);
+}
+
+.admin-backup-page .refresh-button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .admin-backup-page .admin-backup-body {
+    padding: 1rem;
+    padding-top: 5rem;
+  }
+
+  .admin-backup-page .backup-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .admin-backup-page .header-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .admin-backup-page .header-right {
+    width: 100%;
+  }
+
+  .admin-backup-page .backup-tabs-container {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: stretch;
+  }
+
+  .admin-backup-page .backup-tabs {
+    justify-content: center;
+  }
+
+  .admin-backup-page .total-size {
+    text-align: center;
+  }
+
+  .admin-backup-page .backup-item {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .admin-backup-page .backup-info {
+    text-align: center;
+    margin-right: 0;
+  }
+
+  .admin-backup-page .backup-details {
+    align-items: center;
+  }
+
+  .admin-backup-page .backup-actions {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .admin-backup-page .edit-btn {
+    padding: 12px;
+    font-size: 1.4rem;
+  }
+}
+
+.password-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.password-modal-content {
+  background-color: #1a1a1a;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  width: 90%;
+}
+
+.password-modal-content h3 {
+  margin: 0 0 1rem;
+  color: #ffffff;
+}
+
+.password-modal-content p {
+  margin: 0 0 1.5rem;
+  color: #cccccc;
+}
+
+.password-modal-content input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid #333333;
+  border-radius: 4px;
+  background-color: #2a2a2a;
+  color: #ffffff;
+}
+
+.password-modal-content input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+.password-modal-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}
+
+.password-modal-actions button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.password-modal-actions .confirm-btn {
+  background-color: #007bff;
+  color: #ffffff;
+}
+
+.password-modal-actions .confirm-btn:hover {
+  background-color: #0056b3;
+}
+
+.password-modal-actions .confirm-btn:disabled {
+  background-color: #4a4a4a;
+  cursor: not-allowed;
+}
+
+.password-modal-actions .cancel-btn {
+  background-color: #2a2a2a;
+  color: #ffffff;
+}
+
+.password-modal-actions .cancel-btn:hover {
+  background-color: #3a3a3a;
+}
+
+.password-modal-content .error-message {
+  color: #ff4444;
+  margin: -0.5rem 0 1rem;
+  font-size: 0.9rem;
+}
+
+.password-modal-content .error-message {
+  color: #ff4444;
+  margin: -0.5rem 0 1rem;
+  font-size: 0.9rem;
+}
+
+.admin-backup-page .download-wrapper {
+  position: absolute;
+  top: 0.75rem;
+  right: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-backup-page .download-btn {
+  background: none;
+  border: none;
+  padding: 0.3rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.admin-backup-page .download-btn:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.admin-backup-page .download-btn .svg-stroke {
+  width: 32px;
+  height: 32px;
+  transition: all 0.2s ease;
+}
+
+.admin-backup-page .download-btn:hover .svg-stroke {
+  transform: scale(1.1);
+}
+
+.admin-backup-page .download-btn:active .svg-stroke {
+  transform: scale(1.1);
+}
+
+.admin-backup-page .download-progress {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.admin-backup-page .download-progress.visible {
+  opacity: 1;
+}
+
+.admin-backup-page .progress-circle {
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+}
+
+.admin-backup-page .progress-background {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.1);
+  stroke-width: 2.5;
+}
+
+.admin-backup-page .progress-bar {
+  fill: none;
+  stroke: #2196f3;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.3s ease;
+}
+
+.admin-backup-page .download-btn.downloading {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.admin-backup-page .download-btn.downloading .svg-stroke {
+  transform: none;
+}
+
+.upload-zone {
+  border: 2px dashed var(--color-white-t30);
+  border-radius: 8px;
+  padding: 2rem;
+  text-align: center;
+  margin-bottom: 2rem;
+  transition: all 0.3s ease;
+  background-color: var(--color-white-t05);
+  cursor: pointer;
+  position: relative;
+}
+
+.upload-zone.drag-over {
+  border-color: var(--color-white);
+  background-color: var(--color-white-t10);
+}
+
+.upload-zone p {
+  margin: 0;
+  color: var(--color-white-t80);
+  font-size: 1.1rem;
+}
+
+.upload-zone .icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--color-white-t60);
+}
+
+.upload-zone input[type="file"] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.upload-progress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 4px;
+  background-color: #2196f3;
+  transition: width 0.3s ease;
+}
+
+.upload-error {
+  color: #ff4444;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+@media screen and (max-width: 768px) {
+  .upload-zone {
+    padding: 1rem;
+  }
+  
+  .upload-zone p {
+    font-size: 1rem;
+  }
+  
+  .upload-zone .icon {
+    font-size: 1.5rem;
+  }
+}
+ 

@@ -1,33 +1,10 @@
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
-import { Suspense, lazy } from "react";
-import LevelSubmissionPage from "./pages/SubmissionPage/LevelSubmissionPage/LevelSubmissionPage";
-import PassSubmissionPage from "./pages/SubmissionPage/PassSubmissionPage/PassSubmissionPage";
-import CallbackPage from "./components/auth/Callback/Callback";
-import LeaderboardPage from "./pages/LeaderboardPage/LeaderboardPage";
-import ProfilePage from "./pages/ProfilePage/ProfilePage";
-import RatingPage from "./pages/AdminPage/RatingPage";
-import SubmissionManagementPage from "./pages/AdminPage/SubmissionManagementPage";
-import AdminPage from "./pages/AdminPage/AdminPage";
-import PassPage from "./pages/PassPage/PassPage";
-import PassDetailPage from "./pages/PassDetailPage/PassDetailPage";
-import AnnouncementPage from "./pages/AdminPage/AnnouncementPage";
-import BackupPage from "./pages/AdminPage/BackupPage";
-import AboutUsPage from "./pages/AboutUsPage/AboutUsPage";
-import DifficultyPage from "./pages/AdminPage/DifficultyPage";
+import { Suspense } from "react";
 import { CompleteNav } from "./components/layout";
 import { AuthProvider } from './contexts/AuthContext';
-import LoginPage from './pages/LoginPage/LoginPage';
-import RegisterPage from './pages/RegisterPage/RegisterPage';
-import VerifyEmailPage from './pages/VerifyEmailPage/VerifyEmailPage';
-import OAuthCallbackPage from './pages/OAuthCallbackPage/OAuthCallbackPage';
-import EditProfilePage from './pages/EditProfilePage/EditProfilePage';
-import PrivateRoute from './components/auth/PrivateRoute/PrivateRoute';
-import CreatorManagementPage from './pages/CreatorManagementPage/CreatorManagementPage';
-import HomePage from './pages/HomePage/HomePage';
-import LevelPage from './pages/LevelPage/LevelPage';
-import LevelDetailPage from './pages/LevelDetailPage/LevelDetailPage';
-import SubmissionPage from "./pages/SubmissionPage/SubmissionPage";
+import { PrivateRoute } from "./components/auth";
+import * as Pages from './pages/index';
 
 function App() {
   return (
@@ -49,47 +26,47 @@ function App() {
       >
         <Routes>
           {/* Auth Routes */}
-          <Route path="/login" element={<LoginPage />} />
+          <Route path="/login" element={<Pages.LoginPage />} />
           {/*
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/verify-email" element={<VerifyEmailPage />} />
           */}
-          <Route path="/auth/callback" element={<OAuthCallbackPage />} />
+          <Route path="/auth/callback" element={<Pages.OAuthCallbackPage />} />
           
-          <Route path="/profile/edit" element={<PrivateRoute><EditProfilePage /></PrivateRoute>} />
+          <Route path="/profile/edit" element={<PrivateRoute><Pages.EditProfilePage /></PrivateRoute>} />
           
           {/* Existing Routes */}
-          <Route index path="/" element={<HomePage />} />
-          <Route path="levels" element={<LevelPage />} />
-          <Route path="levels/:id" element={<LevelDetailPage />} />
-          <Route path="passes/:id" element={<PassDetailPage />} />
+          <Route index path="/" element={<Pages.HomePage />} />
+          <Route path="levels" element={<Pages.LevelPage />} />
+          <Route path="levels/:id" element={<Pages.LevelDetailPage />} />
+          <Route path="passes/:id" element={<Pages.PassDetailPage />} />
 
-          <Route path="submission" element={<PrivateRoute><SubmissionPage /></PrivateRoute>} />
-          <Route path="submission/level" element={<PrivateRoute><LevelSubmissionPage /></PrivateRoute>} />
-          <Route path="submission/pass" element={<PrivateRoute><PassSubmissionPage /></PrivateRoute>} />
-          <Route path="callback" element={<CallbackPage />} />
-          <Route path="profile/:playerId" element={<ProfilePage />} />
-          <Route path="profile" element={<ProfilePage />} />
+          <Route path="submission" element={<PrivateRoute><Pages.SubmissionPage /></PrivateRoute>} />
+          <Route path="submission/level" element={<PrivateRoute><Pages.LevelSubmissionPage /></PrivateRoute>} />
+          <Route path="submission/pass" element={<PrivateRoute><Pages.PassSubmissionPage /></PrivateRoute>} />
+          <Route path="callback" element={<Pages.CallbackPage />} />
+          <Route path="profile/:playerId" element={<Pages.ProfilePage />} />
+          <Route path="profile" element={<Pages.ProfilePage />} />
 
-          <Route path='leaderboard' element={<LeaderboardPage />} />
-          <Route path='passes' element={<PassPage />} />
+          <Route path='leaderboard' element={<Pages.LeaderboardPage />} />
+          <Route path='passes' element={<Pages.PassPage />} />
 
           {/* Admin Routes - Protected */}
-          <Route path='admin/submissions' element={<PrivateRoute><SubmissionManagementPage /></PrivateRoute>} />
-          <Route path='admin/rating' element={<RatingPage />} />
-          <Route path='admin/announcements' element={<PrivateRoute><AnnouncementPage /></PrivateRoute>} />
-          <Route path='admin/backups' element={<PrivateRoute><BackupPage /></PrivateRoute>} />
-          <Route path='admin/difficulties' element={<PrivateRoute><DifficultyPage /></PrivateRoute>} />
+          <Route path='admin/submissions' element={<PrivateRoute><Pages.SubmissionManagementPage /></PrivateRoute>} />
+          <Route path='admin/rating' element={<Pages.RatingPage />} />
+          <Route path='admin/announcements' element={<PrivateRoute><Pages.AnnouncementPage /></PrivateRoute>} />
+          <Route path='admin/backups' element={<PrivateRoute><Pages.BackupPage /></PrivateRoute>} />
+          <Route path='admin/difficulties' element={<PrivateRoute><Pages.DifficultyPage /></PrivateRoute>} />
           <Route
             path="/admin/creators"
             element={
               <PrivateRoute>
-                <CreatorManagementPage />
+                <Pages.CreatorManagementPage />
               </PrivateRoute>
             }
           />
           
-          <Route path='about' element={<AboutUsPage />} />
+          <Route path='about' element={<Pages.AboutUsPage />} />
           
           {/* Fallback Route */}
         </Routes>

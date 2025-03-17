@@ -218,12 +218,9 @@ export const DetailPopup = ({
   }, [pendingRating, pendingComment, initialRating, initialComment]);
 
   const validateRating = (rating) => {
-    // Always require comment for non-admin users
-    if (!isAdminRater()) {
       setIsCommentRequired(true);
       return true;
-    }
-    
+    /*
     if (!rating) {
       setIsCommentRequired(false);
       return true;
@@ -257,6 +254,7 @@ export const DetailPopup = ({
 
     setIsCommentRequired(containsMinusTwo);
     return true;
+    */
   };
 
   // Split ratings into admin and community
@@ -618,11 +616,9 @@ export const DetailPopup = ({
                         onChange={(e) => setPendingComment(e.target.value)}
                         style={{
                           borderColor: commentError ? 'red' : '',
-                          backgroundColor: isCommentRequired ? 'rgba(255, 0, 0, 0.05)' : ''
+                          backgroundColor: isCommentRequired && commentError ? 'rgba(255, 0, 0, 0.05)' : ''
                         }}
-                        placeholder={isAdminRater() 
-                          ? (isCommentRequired ? tRating('placeholders.requiredComment') : '')
-                          : tRating('placeholders.communityComment')
+                        placeholder={tRating('placeholders.communityComment')
                         }
                       />
                     </div>
