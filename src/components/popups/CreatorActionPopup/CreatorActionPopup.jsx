@@ -490,7 +490,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
 
                 <div className="form-group">
                   <label>Select Target Creator</label>
-                  <Select
+                  <CustomSelect
                     options={availableCreators === null ? [] : availableCreators.map(c => ({
                       value: c.id,
                       label: `${c.name} (ID: ${c.id}, Charts: ${c.createdLevels?.length || 0})${c.aliases?.length > 0 ? ` [${c.aliases.join(', ')}]` : ''}`
@@ -546,7 +546,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                             }}
                             placeholder={`Enter creator name ${index + 1}`}
                           />
-                          <Select
+                          <CustomSelect
                             options={roleOptions}
                             value={roleOptions.find(option => option.value === (splitRoles?.[index] || defaultRole))}
                             onChange={(option) => {
