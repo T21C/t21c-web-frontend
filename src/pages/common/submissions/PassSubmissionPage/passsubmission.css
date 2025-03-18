@@ -365,7 +365,6 @@
 .pass-submission-page form .info .accuracy .top .each-accuracy {
   display: flex;
   align-items: center;
-  text-wrap: nowrap;
   gap: 0.5rem;
   padding: 0.15rem;
 }
@@ -401,7 +400,6 @@
 .pass-submission-page form .info .accuracy .bottom .each-accuracy {
   display: flex;
   align-items: center;
-  text-wrap: nowrap;
   gap: 0.5rem;
 }
 .pass-submission-page form .info .accuracy .bottom .each-accuracy input {

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './adminplayerpopup.css';
-import api from '../../../utils/api';
-import { CountrySelect } from '../../common/selectors/CountrySelect/CountrySelect';
+import api from '@/utils/api';
+import { CountrySelect } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';

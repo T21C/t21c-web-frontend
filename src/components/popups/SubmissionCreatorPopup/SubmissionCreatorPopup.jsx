@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import Select from '../../common/selectors/Select/Select';
-import api from '../../../utils/api';
+import Select from '@/components/common/selectors';
+import api from '@/utils/api';
 import './submissionCreatorPopup.css';
-import { toast } from 'react-hot-toast';
 import axios from 'axios';
 
 const CreditRole = {

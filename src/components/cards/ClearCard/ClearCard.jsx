@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { isoToEmoji } from "../../../Repository/RemoteRepository";
+import { isoToEmoji } from "@/utils/Repository/RemoteRepository";
 import "./clearcard.css"
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import DefaultAvatar from "../../common/icons/DefaultAvatar";
-import { PassIcon } from "../../common/icons/PassIcon";
+import DefaultAvatar from "@/components/common/icons/DefaultAvatar";
+import { PassIcon } from "@/components/common/icons/PassIcon";
 
 const ClearCard = ({scoreData, index}) => {
   const { t } = useTranslation('pages');

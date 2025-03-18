@@ -1,5 +1,5 @@
 import twemoji from '@discordapp/twemoji';
-import api from "../../utils/api";
+import api from "@/utils/api";
 
 
 function getYouTubeThumbnailUrl(url) {

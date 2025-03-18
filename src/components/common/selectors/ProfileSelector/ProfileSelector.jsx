@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PropTypes from 'prop-types';
-import api from '../../../../utils/api';
+import api from '@/utils/api';
 import './profileselector.css';
 import { useTranslation } from 'react-i18next';
 

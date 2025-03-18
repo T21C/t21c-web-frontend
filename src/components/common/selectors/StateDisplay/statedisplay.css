@@ -48,6 +48,7 @@
   color: rgba(255, 255, 255, 0.8);
   font-size: 0.9rem;
   font-weight: 500;
+  -webkit-user-select: none;
   user-select: none;
 }
 
@@ -56,5 +57,6 @@
   font-size: 0.9rem;
   text-align: center;
   min-width: 40px;
+  -webkit-user-select: none;
   user-select: none;
 } 

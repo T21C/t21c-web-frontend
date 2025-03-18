@@ -1,8 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import './editlevelpopup.css';
-import api from '../../../utils/api';
+import api from '@/utils/api';
 import { useNavigate } from 'react-router-dom';
-import { RatingInput } from '../../common/selectors/RatingInput/RatingInput';
+import { RatingInput } from '@/components/common/selectors';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { useTranslation } from 'react-i18next';
 import AliasManagementPopup from './AliasManagementPopup';

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import './ratermanagementpopup.css';
-import api from '../../../utils/api';
+import api from '@/utils/api';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import DefaultAvatar from '../../common/icons/DefaultAvatar';
+import DefaultAvatar from '@/common/icons/DefaultAvatar';
 
 const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) => {
   const { t } = useTranslation('components');

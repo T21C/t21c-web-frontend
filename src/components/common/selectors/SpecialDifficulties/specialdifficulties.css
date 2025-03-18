@@ -49,8 +49,8 @@
   cursor: pointer;
   touch-action: none;
   -webkit-tap-highlight-color: transparent;
-  user-select: none;
   -webkit-user-select: none;
+  user-select: none;
 }
 
 .special-difficulties-dropdown .difficulties-grid {

@@ -1,10 +1,9 @@
 import { Route, Routes } from "react-router-dom";
-import "./App.css";
 import { Suspense } from "react";
-import { CompleteNav } from "./components/layout";
-import { AuthProvider } from './contexts/AuthContext';
-import { PrivateRoute } from "./components/auth";
-import * as Pages from './pages/index';
+import { CompleteNav } from "@/components/layout";
+import { AuthProvider } from '@/contexts/AuthContext';
+import { PrivateRoute } from "@/components/auth";
+import * as Pages from '@/pages/index';
 
 function App() {
   return (
