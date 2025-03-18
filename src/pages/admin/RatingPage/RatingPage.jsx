@@ -384,8 +384,12 @@ const RatingPage = () => {
                   }
                   if (lowDiffFilter === 'hide' && rating.lowDiff) return false;
                   if (lowDiffFilter === 'only' && !rating.lowDiff) return false;
-                  if (fourVoteFilter === 'hide' && rating.details.length >= 4) return false;
-                  if (fourVoteFilter === 'only' && rating.details.length < 4) return false;
+                  if (fourVoteFilter === 'hide' && 
+                    rating.details.filter(detail => !detail.isCommunityRating).length >= 4
+                  ) return false;
+                  if (fourVoteFilter === 'only' && 
+                    rating.details.filter(detail => !detail.isCommunityRating).length < 4)
+                     return false;
                   return true;
                 }).length || 0 })}
               </div>
@@ -413,8 +417,12 @@ const RatingPage = () => {
                   }
                   if (lowDiffFilter === 'hide' && rating.lowDiff) return false;
                   if (lowDiffFilter === 'only' && !rating.lowDiff) return false;
-                  if (fourVoteFilter === 'hide' && rating.details.length >= 4) return false;
-                  if (fourVoteFilter === 'only' && rating.details.length < 4) return false;
+                  if (fourVoteFilter === 'hide' && 
+                    rating.details.filter(detail => !detail.isCommunityRating).length >= 4
+                  ) return false;
+                  if (fourVoteFilter === 'only' && 
+                    rating.details.filter(detail => !detail.isCommunityRating).length < 4)
+                     return false;
                   return true;
                 })
                 .map((rating, index) => (
