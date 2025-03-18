@@ -1,6 +1,6 @@
 import AdminPlayerPopup from "./AdminPlayerPopup/AdminPlayerPopup";
 import { CreatorActionPopup } from "./CreatorActionPopup/CreatorActionPopup";
-import { DetailPopup } from "./DetailPopup/DetailPopup";
+import { DetailPopup } from "../cards/DetailPopup/DetailPopup";
 import { EditLevelPopup } from "./EditLevelPopup/EditLevelPopup";
 import { EditPassPopup } from "./EditPassPopup/EditPassPopup";
 import { LevelHelpPopup } from "./LevelHelpPopup/LevelHelpPopup";
