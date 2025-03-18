@@ -7,7 +7,7 @@
   padding: 1rem;
 }
 
-.verification-container {
+.email-verification-page .verification-container {
   width: 100%;
   max-width: 400px;
   padding: 2rem;
@@ -17,19 +17,19 @@
   text-align: center;
 }
 
-.verification-container h1 {
+.email-verification-page .verification-container h1 {
   color: var(--primary);
   margin-bottom: 1.5rem;
   font-size: 2rem;
 }
 
-.status-message {
+.email-verification-page .status-message {
   color: var(--text);
   margin-bottom: 2rem;
   line-height: 1.5;
 }
 
-.error-message {
+.email-verification-page .error-message {
   background-color: var(--error-bg);
   color: var(--error-text);
   padding: 1rem;
@@ -37,7 +37,7 @@
   margin-bottom: 2rem;
 }
 
-.action-button {
+.email-verification-page .action-button {
   width: 100%;
   padding: 0.75rem;
   border: none;
@@ -50,6 +50,6 @@
   transition: background-color 0.2s ease;
 }
 
-.action-button:hover {
+.email-verification-page .action-button:hover {
   background-color: var(--primary-dark);
 } 
