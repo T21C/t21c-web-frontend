@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import Select from '@/components/common/selectors';
+import { CustomSelect } from '@/components/common/selectors';
 import api from '@/utils/api';
 import './submissionCreatorPopup.css';
 import axios from 'axios';
@@ -356,7 +356,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
           {!isTeamMode && (
             <div className="role-selector">
               <label>{tCreator('role.label')}</label>
-              <Select
+              <CustomSelect
                 options={roleOptions}
                 value={roleOptions.find(opt => opt.value === selectedRole)}
                 onChange={(selected) => {

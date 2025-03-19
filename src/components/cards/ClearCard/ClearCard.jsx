@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { isoToEmoji } from "@/utils/Repository/RemoteRepository";
+import { isoToEmoji } from "@/Repository/RemoteRepository";
 import "./clearcard.css"
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
