@@ -4,6 +4,7 @@ import api from '@/utils/api';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import DefaultAvatar from '@/components/common/icons/DefaultAvatar';
+import { UserAvatar } from '@/components/layout';
 
 const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) => {
   const { t } = useTranslation('components');
@@ -144,15 +145,10 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
     <div className="rater-entry">
       <div className="rater-header" onClick={() => setIsExpanded(!isExpanded)}>
         <div className="rater-info">
-          {rater.discordAvatar ? (
-            <img 
-              src={rater.discordAvatar}
-              alt="Discord Avatar"
-              className="discord-avatar"
-            />
-          ) : (
-            <DefaultAvatar />
-          )}
+          <UserAvatar 
+            primaryUrl={rater.avatarUrl}
+            fallbackUrl={rater.pfp}
+          />
           <div className="rater-text">
             <span className="rater-name">
               {rater.nickname || tRater('unknown')}
@@ -229,15 +225,10 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
             {showDiscordConfirm && pendingDiscordInfo && (
               <div className="discord-confirm">
                 <div className="discord-preview">
-                  {pendingDiscordInfo.avatarUrl ? (
-                    <img 
-                      src={pendingDiscordInfo.avatarUrl}
-                      alt="Discord Avatar"
-                      className="discord-avatar"
-                    />
-                  ) : (
-                    <DefaultAvatar />
-                  )}
+                  <UserAvatar 
+                    primaryUrl={pendingDiscordInfo.avatarUrl}
+                    fallbackUrl={pendingDiscordInfo.pfp}
+                  />
                   <div>
                     <p className="discord-username">@{pendingDiscordInfo.username}</p>
                     <p className="discord-id">{tRater('discord.idLabel', { id: pendingDiscordInfo.id })}</p>
@@ -265,15 +256,10 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
 
             {rater.discordUsername && !showDiscordConfirm && (
               <div className="current-discord-info">
-                {rater.discordAvatar ? (
-                  <img 
-                    src={rater.discordAvatar}
-                    alt="Discord Avatar"
-                    className="discord-avatar"
-                  />
-                ) : (
-                  <DefaultAvatar />
-                )}
+                <UserAvatar 
+                  primaryUrl={rater.avatarUrl}
+                  fallbackUrl={rater.pfp}
+                />
                 <div>
                   <p className="discord-username">@{rater.discordUsername}</p>
                   <p className="discord-id">{tRater('discord.idLabel', { id: rater.discordId })}</p>

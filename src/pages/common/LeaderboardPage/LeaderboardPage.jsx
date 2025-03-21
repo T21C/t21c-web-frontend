@@ -24,21 +24,9 @@ const LeaderboardPage = () => {
   const tLeaderboard = (key, params = {}) => t(`leaderboard.${key}`, params);
   const { user } = useAuth();
   const [error, setError] = useState(false);
-  const [filteredData, setFilteredData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
   const location = useLocation();
-
-  const sortOptions = [
-    { value: 'rankedScore', label: tLeaderboard('sortOptions.rankedScore') },
-    { value: 'generalScore', label: tLeaderboard('sortOptions.generalScore') },
-    { value: 'ppScore', label: tLeaderboard('sortOptions.ppScore') },
-    { value: 'wfScore', label: tLeaderboard('sortOptions.wfScore') },
-    { value: 'averageXacc', label: tLeaderboard('sortOptions.averageXacc') },
-    { value: 'totalPasses', label: tLeaderboard('sortOptions.totalPasses') },
-    { value: 'universalPassCount', label: tLeaderboard('sortOptions.universalPassCount') },
-    { value: 'worldsFirstCount', label: tLeaderboard('sortOptions.worldsFirstCount') },
-    { value: 'topDiff', label: tLeaderboard('sortOptions.topDiff') },
-    { value: 'top12kDiff', label: tLeaderboard('sortOptions.top12kDiff') }
-  ];
 
   const {
     playerData,
@@ -61,68 +49,61 @@ const LeaderboardPage = () => {
     setForceUpdate
   } = useContext(PlayerContext);
 
+  const sortOptions = [
+    { value: 'rankedScore', label: tLeaderboard('sortOptions.rankedScore') },
+    { value: 'generalScore', label: tLeaderboard('sortOptions.generalScore') },
+    { value: 'ppScore', label: tLeaderboard('sortOptions.ppScore') },
+    { value: 'wfScore', label: tLeaderboard('sortOptions.wfScore') },
+    { value: 'averageXacc', label: tLeaderboard('sortOptions.averageXacc') },
+    { value: 'totalPasses', label: tLeaderboard('sortOptions.totalPasses') },
+    { value: 'universalPassCount', label: tLeaderboard('sortOptions.universalPassCount') },
+    { value: 'worldsFirstCount', label: tLeaderboard('sortOptions.worldsFirstCount') },
+    { value: 'topDiff', label: tLeaderboard('sortOptions.topDiff') },
+    { value: 'top12kDiff', label: tLeaderboard('sortOptions.top12kDiff') }
+  ];
+
+  const fetchPlayers = async (offset = 0) => {
+    try {
+      setLoading(true);
+      const endpoint = `${import.meta.env.VITE_FULL_LEADERBOARD}?query=${encodeURIComponent(query)}&sortBy=${sortBy}&order=${sort.toLowerCase()}&offset=${offset}&limit=${limit}&showBanned=${showBanned}`;
+
+      const response = await api.get(endpoint);
+      
+      if (offset === 0) {
+        // First page, replace all data
+        setPlayerData(response.data.results);
+        setDisplayedPlayers(response.data.results);
+      } else {
+        // Subsequent pages, append data
+        setPlayerData(prev => [...prev, ...response.data.results]);
+        setDisplayedPlayers(prev => [...prev, ...response.data.results]);
+      }
+      
+      setHasMore(displayedPlayers.length < response.data.count);
+    } catch (error) {
+      if (!api.isCancel(error)) {
+        setError(true);
+        console.error('Error fetching leaderboard data:', error);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
     let cancelToken = api.CancelToken.source();
+    setDisplayedPlayers([]);
+    fetchPlayers(0);
 
-    const fetchPlayers = async () => {
-      try {
-        setPlayerData(null); // Set to null to indicate loading
-        // If query starts with #, it's a Discord ID search
-        const endpoint = query.startsWith('#') 
-          ? `${import.meta.env.VITE_FULL_LEADERBOARD}?query=${encodeURIComponent(query)}&sortBy=${sortBy}&order=${sort.toLowerCase()}`
-          : `${import.meta.env.VITE_FULL_LEADERBOARD}?sortBy=${sortBy}&order=${sort.toLowerCase()}`;
-        
-        const response = await api.get(endpoint, {
-          cancelToken: cancelToken.token
-        });
-        
-        setPlayerData(response.data);
-        setDisplayedPlayers(response.data.slice(0, limit));
-      } catch (error) {
-        if (!api.isCancel(error)) {
-          setError(true);
-          console.error('Error fetching leaderboard data:', error);
-        }
-      }
-    };
-  
-    fetchPlayers();
-
-    // Cleanup function to cancel pending requests
     return () => {
       cancelToken.cancel('Request cancelled due to component update');
     };
-  }, [forceUpdate, query, sort, sortBy]);
-  
-  useEffect(() => {
-    if (playerData && playerData.length >= 0) {
-      // Only filter by name if not doing a Discord ID search
-      const filteredPlayers = !query.startsWith('#') 
-        ? playerData.filter(playerStat => {
-            const player = playerStat.player;
-            if (!player) return false;
-
-            const matchesQuery = player.name.toLowerCase().includes(query.toLowerCase()) 
-              || player.discordUsername?.toLowerCase().includes(query.toLowerCase());
-            const matchesBannedFilter = 
-              (showBanned === 'show') ? true :
-              (showBanned === 'hide') ? !player.isBanned :
-              (showBanned === 'only') ? player.isBanned :
-              true;
-            
-            return matchesQuery && matchesBannedFilter;
-          })
-        : playerData;
-      
-      // Store filtered data separately
-      setFilteredData(filteredPlayers);
-      // Only show the first 'limit' players initially
-      setDisplayedPlayers(filteredPlayers.slice(0, limit));
-    }
-  }, [playerData, query, showBanned, t]);
+  }, [forceUpdate, query, sort, sortBy, showBanned]);
 
   function handleQueryChange(e) {
     setQuery(e.target.value);
+    setDisplayedPlayers([]);
+    setForceUpdate(prev => !prev);
   }
 
   function handleFilterOpen() {
@@ -291,23 +272,14 @@ const LeaderboardPage = () => {
         </div>
 
         <div style={{ minHeight: "200px" }}>
-          {playerData === null ? (
+          {!playerData ? (
             <div className="loader"></div>
           ) : (
             <InfiniteScroll
               style={{ paddingBottom: "4rem", overflow: "visible" }}
               dataLength={displayedPlayers.length}
-              next={() => {
-                const currentLength = displayedPlayers.length;
-                const newPagePlayers = filteredData.slice(
-                  currentLength,
-                  currentLength + limit
-                );
-                if (newPagePlayers.length > 0) {
-                  setDisplayedPlayers(prev => [...prev, ...newPagePlayers]);
-                }
-              }}
-              hasMore={displayedPlayers.length < filteredData.length}
+              next={() => fetchPlayers(displayedPlayers.length)}
+              hasMore={hasMore}
               loader={<div className="loader"></div>}
               endMessage={
                 displayedPlayers.length > 0 && (
@@ -319,7 +291,7 @@ const LeaderboardPage = () => {
             >
               {displayedPlayers.map((playerStat, index) => (
                 <PlayerCard
-                  key={index}
+                  key={playerStat.id}
                   currSort={sortBy}
                   player={{
                     ...playerStat,

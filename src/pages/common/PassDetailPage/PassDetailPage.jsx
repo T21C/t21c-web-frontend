@@ -1,7 +1,7 @@
 import "./passdetailpage.css";
 import { useEffect, useState } from "react";
 import { useLocation, useParams, Link } from 'react-router-dom';
-import { CompleteNav } from "@/components/layout";
+import { CompleteNav, UserAvatar } from "@/components/layout";
 import { getVideoDetails, isoToEmoji } from "@/Repository/RemoteRepository";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -172,13 +172,10 @@ const PassDetailPage = () => {
 
             <div className="pass-player-card">
               <div className="player-avatar">
-                {pass.player?.discordAvatar ? (
-                  <img src={pass.player.discordAvatar} referrerPolicy="no-referrer" alt="" />
-                ) : (pass.player?.pfp && pass.player?.pfp !== "none") ? (
-                  <img src={pass.player.pfp} referrerPolicy="no-referrer" alt="" />
-                ) : (
-                  <DefaultAvatar />
-                )}
+                <UserAvatar 
+                  primaryUrl={pass.player?.avatarUrl}
+                  fallbackUrl={pass.player?.pfp}
+                />
               </div>
               <div className="player-info">
                 <Link to={`/profile/${pass.player?.id}`} className="player-name">

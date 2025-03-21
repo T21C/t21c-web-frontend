@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from "react";
 import { PlayerContext } from "@/contexts/PlayerContext";
 import { DifficultyContext } from "@/contexts/DifficultyContext";
 import { formatScore } from "@/components/misc/Utility";
-import DefaultAvatar from "@/components/common/icons/DefaultAvatar";
+import { UserAvatar } from "@/components/layout";
 
 const nonRoundable = ["topDiff", "top12kDiff"];
 const passes = ["totalPasses", "universalPassCount", "worldsFirstCount"];
@@ -96,13 +96,10 @@ const PlayerCard = ({player}) => {
     <div className='player-card' onClick={() => redirect()} style={{backgroundColor: player.isBanned ? "#ff000099" : ""}}>
       <div className="img-wrapper">
         <div className="image-container">
-          {player.user?.avatarUrl ? (
-            <img src={player.user.avatarUrl} referrerPolicy="no-referrer" alt="" />
-          ) : (player.pfp && player.pfp !== "none") ? (
-            <img src={player.pfp} referrerPolicy="no-referrer" alt="" />
-          ) : (
-            <DefaultAvatar />
-          )}
+          <UserAvatar  
+            primaryUrl={player.avatarUrl}
+            fallbackUrl={player.pfp}
+          />
         </div>
         
         <div style={{fontSize: `${Math.max(0.8, 1.3 - (player.rank.toString().length * 0.15))}rem`}} className={`rank-display ${player.rank <= 3 ? `rank-${player.rank}` : ''}`}>

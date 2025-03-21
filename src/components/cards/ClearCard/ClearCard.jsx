@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useState } from "react";
 import DefaultAvatar from "@/components/common/icons/DefaultAvatar";
 import { PassIcon } from "@/components/common/icons/PassIcon";
+import { UserAvatar } from "@/components/layout";
 
 const ClearCard = ({scoreData, index}) => {
   const { t } = useTranslation('pages');
@@ -55,13 +56,11 @@ const ClearCard = ({scoreData, index}) => {
         
         <div className="player-info" onClick={redirect}>
           <div className="avatar-container">
-            {scoreData.player.user?.avatarUrl ? (
-              <img src={scoreData.player.user.avatarUrl} referrerPolicy="no-referrer" className="pfp" alt="" />
-            ) : scoreData.player.pfp ? (
-              <img src={scoreData.player.pfp} referrerPolicy="no-referrer" className="pfp" alt="" />
-            ) : (
-              <DefaultAvatar className="pfp" />
-            )}
+            <UserAvatar 
+              primaryUrl={scoreData.player.user?.avatarUrl}
+              fallbackUrl={scoreData.player.pfp}
+              className="pfp"
+            />
           </div>
           <div className="name-container">
             <span className="player-name">{scoreData.player.name}</span>

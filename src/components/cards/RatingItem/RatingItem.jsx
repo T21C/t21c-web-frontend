@@ -23,11 +23,10 @@ export const RatingItem = ({ user, rating, comment, isSuperAdmin, onDelete }) =>
           onClick={() => comment && setIsExpanded(!isExpanded)}
         >
           <div className="rating-item-header">
-            {user?.avatarUrl ? (
-              <img src={user?.avatarUrl} alt={user?.username} className="rater-avatar" />
-            ) : (
-              <DefaultAvatar />
-            )}
+            <UserAvatar 
+              primaryUrl={user?.avatarUrl}
+              fallbackUrl={user?.pfp}
+            />
             <span className="rater-name">{user?.username}:</span>
             <span className="rater-rating">{rating}</span>
             <div className="rating-item-icons">

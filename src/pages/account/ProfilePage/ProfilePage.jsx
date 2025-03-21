@@ -3,7 +3,7 @@ import api from "@/utils/api";
 import { useEffect, useState } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom"
 import { isoToEmoji } from "@/Repository/RemoteRepository";
-import { CompleteNav } from "@/components/layout";
+import { CompleteNav, UserAvatar } from "@/components/layout";
 import { MetaTags } from "@/components/common/display";
 import { ScoreCard } from "@/components/cards";
 import { useTranslation } from "react-i18next";
@@ -139,13 +139,11 @@ const ProfilePage = () => {
 
                     <div className="player-info-container">
                       <div className="player-picture-container">
-                      {playerData.discordAvatar ? (
-                        <img src={playerData.discordAvatar} referrerPolicy="no-referrer" className="player-picture" alt="" />
-                      ) : (playerData.pfp && playerData.pfp !== "none") ? (
-                        <img src={playerData.pfp} referrerPolicy="no-referrer" className="player-picture" alt="" />
-                      ) : (
-                        <DefaultAvatar className="player-picture" />
-                      )}
+                      <UserAvatar 
+                        primaryUrl={playerData.avatarUrl}
+                        fallbackUrl={playerData.pfp}
+                        className="player-picture"
+                      />
                       <div className="player-id">ID: {playerData.id}</div>
                     </div>
                     <div className="player-info">

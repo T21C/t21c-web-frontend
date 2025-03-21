@@ -1,5 +1,5 @@
 import "./aboutuspage.css";
-import { CompleteNav, Footer } from "@/components/layout";
+import { CompleteNav, Footer, UserAvatar } from "@/components/layout";
 import { MetaTags } from "@/components/common/display";
 import { useTranslation } from "react-i18next";
 import { useState, useEffect, useCallback } from "react";
@@ -143,15 +143,11 @@ const AboutUsPage = () => {
                     <div className="credit-list">
                       {raters.map((rater) => (
                         <div key={rater.discordId} className="credit-item">
-                          {rater.discordAvatar ? (
-                            <img 
-                              src={rater.discordAvatar}
-                              alt={`${rater.discordUsername}'s avatar`}
-                              className="rater-avatar"
-                            />
-                          ) : (
-                            <DefaultAvatar className="rater-avatar" />
-                          )}
+                          <UserAvatar 
+                            primaryUrl={rater.avatarUrl}
+                            fallbackUrl={rater.player.pfp}
+                            className="rater-avatar"
+                          />
                           <div className="rater-info">
                             <span className="credit-name">
                               <span className="at">@</span>

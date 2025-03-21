@@ -3,7 +3,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import './profile.css';
 import { useTranslation } from 'react-i18next';
-import { DefaultAvatar } from '@/components/common/icons';
+import { UserAvatar } from '@/components/layout';
 
 function Profile() {
   const { user, logout } = useAuth();
@@ -18,7 +18,7 @@ function Profile() {
   const openProfile = () => {
     navigate('/profile');
   };
-  
+  console.log(user);
   return (
     <div className="profile-inline-container">
       {user ? (
@@ -27,11 +27,11 @@ function Profile() {
             <h3>{user?.nickname}</h3>
             <h5>@{user?.username}</h5>
           </div>
-          {user?.avatarUrl ? (
-            <img src={user?.avatarUrl} alt="Profile" className="profile-avatar" />
-          ) : (
-            <DefaultAvatar className="profile-avatar" />
-          )}
+          <UserAvatar 
+            primaryUrl={user?.avatarUrl}
+            fallbackUrl={user?.pfp}
+            className="profile-avatar"
+          />
           <button className="btn-logout profile-button" onClick={logout}>
             <svg fill="#ffffff" viewBox="-9.6 -9.6 51.20 51.20" version="1.1" xmlns="http://www.w3.org/2000/svg" transform="rotate(180)" stroke="#ffffff" strokeWidth="1.536">
               <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
