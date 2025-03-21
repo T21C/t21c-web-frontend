@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
 import DefaultAvatar from '@/components/common/icons/DefaultAvatar';
 import { CommentFormatter } from '@/components/misc';
+import { UserAvatar } from '@/components/layout';
 export const RatingItem = ({ user, rating, comment, isSuperAdmin, onDelete }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const { t } = useTranslation('components');
@@ -23,9 +24,10 @@ export const RatingItem = ({ user, rating, comment, isSuperAdmin, onDelete }) =>
           onClick={() => comment && setIsExpanded(!isExpanded)}
         >
           <div className="rating-item-header">
-            <UserAvatar 
+            <UserAvatar
               primaryUrl={user?.avatarUrl}
               fallbackUrl={user?.pfp}
+              className="rater-avatar"
             />
             <span className="rater-name">{user?.username}:</span>
             <span className="rater-rating">{rating}</span>
