@@ -360,13 +360,13 @@ const PassSubmissions = () => {
                   <div className="detail-row">
                     <span className="detail-label">{tPass('details.judgements.label')}</span>
                     <div className="judgements-details">
-                      <span className="judgement early-double">{submission.judgements?.earlyDouble || "NULL"}</span>
-                      <span className="judgement early-single">{submission.judgements?.earlySingle || "NULL"}</span>
-                      <span className="judgement e-perfect">{submission.judgements?.ePerfect || "NULL"}</span>
-                      <span className="judgement perfect">{submission.judgements?.perfect || "NULL"}</span>
-                      <span className="judgement l-perfect">{submission.judgements?.lPerfect || "NULL"}</span>
-                      <span className="judgement late-single">{submission.judgements?.lateSingle || "NULL"}</span>
-                      <span className="judgement late-double">{submission.judgements?.lateDouble || "NULL"}</span>
+                      <span className="judgement early-double">{submission.judgements?.earlyDouble || "0"}</span>
+                      <span className="judgement early-single">{submission.judgements?.earlySingle || "0"}</span>
+                      <span className="judgement e-perfect">{submission.judgements?.ePerfect || "0"}</span>
+                      <span className="judgement perfect">{submission.judgements?.perfect || "0"}</span>
+                      <span className="judgement l-perfect">{submission.judgements?.lPerfect || "0"}</span>
+                      <span className="judgement late-single">{submission.judgements?.lateSingle || "0"}</span>
+                      <span className="judgement late-double">{submission.judgements?.lateDouble || "0"}</span>
                     </div>
                   </div>
 
