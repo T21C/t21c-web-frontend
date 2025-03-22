@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useContext, useEffect, useState } from "react";
 import { PlayerContext } from "@/contexts/PlayerContext";
 import { DifficultyContext } from "@/contexts/DifficultyContext";
-import { formatScore } from "@/components/misc/Utility";
+import { formatNumber } from "@/Repository/RemoteRepository";
 import { UserAvatar } from "@/components/layout";
 
 const nonRoundable = ["topDiff", "top12kDiff"];
@@ -49,11 +49,11 @@ const PlayerCard = ({player}) => {
   const scoreFields = {
     rankedScore: {
       label: sortLabels.rankedScore,
-      value: formatScore(player.rankedScore),
+      value: formatNumber(player.rankedScore),
     },
     generalScore: {
       label: sortLabels.generalScore,
-      value: formatScore(player.generalScore),
+      value: formatNumber(player.generalScore),
     },
     averageXacc: {
       label: sortLabels.averageXacc,
@@ -86,7 +86,7 @@ const PlayerCard = ({player}) => {
       if (sortBy === "averageXacc") {
         primaryField.value = (parseFloat(primaryField.value)*100).toFixed(2).toString()+"%";
       } else {
-        primaryField.value = formatScore(parseFloat(primaryField.value));
+        primaryField.value = formatNumber(parseFloat(primaryField.value));
       }
     } else {
       primaryField.value = Math.round(parseFloat(primaryField.value));

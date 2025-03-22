@@ -2,7 +2,7 @@ import "./passdetailpage.css";
 import { useEffect, useState } from "react";
 import { useLocation, useParams, Link } from 'react-router-dom';
 import { CompleteNav, UserAvatar } from "@/components/layout";
-import { getVideoDetails, isoToEmoji } from "@/Repository/RemoteRepository";
+import { formatNumber, getVideoDetails, isoToEmoji } from "@/Repository/RemoteRepository";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import api from "@/utils/api";
@@ -207,15 +207,15 @@ const PassDetailPage = () => {
                   {pass.scoreInfo && (
                     <div className="score-container">
                       <div className="current-score">
-                        <span className="score-value">{tPass('player.score.current', { score: pass.scoreInfo.currentRankedScore.toFixed(2) })}</span>
-                        {pass.scoreInfo.scoreDifference > 0 && (
+                        <span className="score-value">{tPass('player.score.current', { score: formatNumber(pass.scoreInfo.currentRankedScore) })}</span>
+                        {pass.scoreInfo.impact > 0 && (
                           <span className="score-difference positive">
-                            {tPass('player.score.difference.positive', { score: pass.scoreInfo.scoreDifference.toFixed(2) })}
+                            {tPass('player.score.difference.positive', { score: formatNumber(pass.scoreInfo.impact) })}
                           </span>
                         )}
                       </div>
                       <div className="previous-score">
-                        {tPass('player.score.previous', { score: pass.scoreInfo.previousRankedScore.toFixed(2) })}
+                        {tPass('player.score.previous', { score: formatNumber(pass.scoreInfo.previousRankedScore) })}
                       </div>
                     </div>
                   )}
@@ -230,7 +230,7 @@ const PassDetailPage = () => {
               <div className="info-items">
                 <div className="info-item">
                   <p>{tPass('stats.score.label')}</p>
-                  <span className="info-desc">{tPass('stats.score.value', { score: pass.scoreV2.toFixed(2) })}</span>
+                  <span className="info-desc">{tPass('stats.score.value', { score: formatNumber(pass.scoreV2) })}</span>
                 </div>
                 <div className="info-item">
                   <p>{tPass('stats.accuracy.label')}</p>

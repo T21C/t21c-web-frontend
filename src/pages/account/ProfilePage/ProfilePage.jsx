@@ -2,7 +2,7 @@ import "./profilePage.css"
 import api from "@/utils/api";
 import { useEffect, useState } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom"
-import { isoToEmoji } from "@/Repository/RemoteRepository";
+import { isoToEmoji, formatNumber } from "@/Repository/RemoteRepository";
 import { CompleteNav, UserAvatar } from "@/components/layout";
 import { MetaTags } from "@/components/common/display";
 import { ScoreCard } from "@/components/cards";
@@ -215,27 +215,27 @@ const ProfilePage = () => {
                 <div className="score-container">
                   <div className="score-item">
                     <p className="score-name">{valueLabels.rankedScore}</p>
-                    <p className="score-value">{playerData.rankedScore.toFixed(2)}</p>
+                    <p className="score-value">{formatNumber(playerData.rankedScore)}</p>
                   </div>
                   <br />
                   <div className="score-item">
                     <p className="score-name">{valueLabels.generalScore}</p>
-                    <p className="score-value">{playerData.generalScore.toFixed(2)}</p>
+                    <p className="score-value">{formatNumber(playerData.generalScore)}</p>
                   </div>
                   <br />
                   <div className="score-item">
                     <p className="score-name">{valueLabels.ppScore}</p>
-                    <p className="score-value">{playerData.ppScore.toFixed(2)}</p>
+                    <p className="score-value">{formatNumber(playerData.ppScore)}</p>
                   </div>
                   <br />
                   <div className="score-item">
                     <p className="score-name">{valueLabels.wfScore}</p>
-                    <p className="score-value">{playerData.wfScore.toFixed(2)}</p>
+                    <p className="score-value">{formatNumber(playerData.wfScore)}</p>
                   </div>
                   <br />
                   <div className="score-item">
                     <p className="score-name">{valueLabels.score12K}</p>
-                    <p className="score-value">{playerData.score12K.toFixed(2)}</p>
+                    <p className="score-value">{formatNumber(playerData.score12K)}</p>
                   </div>
                 </div>
             

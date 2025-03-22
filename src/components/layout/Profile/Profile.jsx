@@ -18,7 +18,6 @@ function Profile() {
   const openProfile = () => {
     navigate('/profile');
   };
-  console.log(user);
   return (
     <div className="profile-inline-container">
       {user ? (

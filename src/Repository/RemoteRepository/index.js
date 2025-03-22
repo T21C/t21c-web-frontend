@@ -1,6 +1,12 @@
 import twemoji from '@discordapp/twemoji';
 import api from "@/utils/api";
 
+export function formatNumber(num, digits = 2) {
+  return num.toLocaleString('en-US', {
+    minimumFractionDigits: digits,
+    maximumFractionDigits: digits
+  });
+}
 
 function getYouTubeThumbnailUrl(url) {
   const patterns = {

@@ -4,6 +4,7 @@ import "@/index.css"
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { formatSpeed, formatScore } from "@/components/misc/Utility"
+import { formatNumber } from "@/Repository/RemoteRepository";
 
 
 // eslint-disable-next-line react/prop-types
@@ -33,7 +34,7 @@ const ScoreCard = ({scoreData, topScores}) => {
       <div className="score-wrapper">
           <p className="score-exp">{tScore('labels.score')}</p>
           <p className='score-desc'>{formatScore(scoreData.scoreV2)}</p>
-          {topScores.find(score => score.id === scoreData.id) && <p className="score-impact">+{topScores.find(score => score.id === scoreData.id).impact.toFixed(2)}</p>}
+          {topScores.find(score => score.id === scoreData.id) && <p className="score-impact">+{formatNumber(topScores.find(score => score.id === scoreData.id).impact)}</p>}
       </div>
       <div className="acc-wrapper">
           <p className="score-exp">{tScore('labels.accuracy')}</p>

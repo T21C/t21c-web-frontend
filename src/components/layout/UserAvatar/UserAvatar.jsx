@@ -23,7 +23,6 @@ const UserAvatar = ({
       
       // Try fallback URL if primary fails
       if (fallback && fallback !== 'none') {
-        console.log('fallback', fallback);
         const response = await fetch(fallback);
         if (response.ok) {
           setImgSrc(fallback);
