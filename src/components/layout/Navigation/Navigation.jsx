@@ -175,6 +175,11 @@ const Navigation = ({ children }) => {
                   </NavLink>
                   <NavLink className={({ isActive }) =>
                     "nav-link " + (isActive ? "active" : "")}
+                    to="/admin/creators">
+                    <li className="nav-list-item">{tNav('links.admin.creators')}</li>
+                  </NavLink>
+                  <NavLink className={({ isActive }) =>
+                    "nav-link " + (isActive ? "active" : "")}
                     to="/admin/backups">
                     <li className="nav-list-item">{tNav('links.admin.backups')}</li>
                   </NavLink>

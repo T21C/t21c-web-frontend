@@ -1,7 +1,7 @@
 import HomePage from "./common/HomePage/HomePage";
 import LevelDetailPage from "./common/LevelDetailPage/LevelDetailPage";
 import LevelPage from "./common/LevelPage/LevelPage";
-import SubmissionPage from "./common/submissions/SubmissionPage";
+import SubmissionPage from "./submissions/SubmissionPage";
 import PassPage from "./common/PassPage/PassPage";
 import PassDetailPage from "./common/PassDetailPage/PassDetailPage";
 import LeaderboardPage from "./common/LeaderboardPage/LeaderboardPage";
@@ -9,8 +9,8 @@ import CreatorManagementPage from "./admin/CreatorManagementPage/CreatorManageme
 import SubmissionManagementPage from "./admin/SubmissionManagementPage/SubmissionManagementPage";
 import RatingPage from "./admin/RatingPage/RatingPage";
 import DifficultyPage from "./admin/DifficultyPage/DifficultyPage";
-import LevelSubmissionPage from "./common/submissions/LevelSubmissionPage/LevelSubmissionPage";
-import PassSubmissionPage from "./common/submissions/PassSubmissionPage/PassSubmissionPage";
+import LevelSubmissionPage from "./submissions/LevelSubmissionPage/LevelSubmissionPage";
+import PassSubmissionPage from "./submissions/PassSubmissionPage/PassSubmissionPage";
 import CallbackPage from "@/components/auth/Callback/Callback";
 // Account pages
 import ProfilePage from "./account/ProfilePage/ProfilePage";

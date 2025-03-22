@@ -189,7 +189,7 @@ const PassSubmissions = () => {
       setTimeout(async () => {
         const response = await api.put(`${import.meta.env.VITE_SUBMISSION_API}/passes/${submissionId}/${action}`);
         
-        if (response.ok) {
+        if (response.status === 200) {
           setSubmissions(prev => prev.filter(sub => sub.id !== submissionId));
           setAnimatingCards(prev => {
             const newState = { ...prev };
