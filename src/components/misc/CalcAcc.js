@@ -1,4 +1,11 @@
-import { arraySum } from "./HelperFns";
+
+function arraySum(arr) {
+    return arr.reduce(add, 0);
+}
+
+function add(accumulator, a) {
+  return accumulator + a;
+}
 
 export default function calcAcc (inp, raw=false)
     {

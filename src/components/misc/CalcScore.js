@@ -1,5 +1,4 @@
 import calcAcc from "./CalcAcc"
-import { arraySum } from "./HelperFns"
 
 const gmConst = 315
 const start = 1
@@ -7,6 +6,14 @@ const end = 50
 const startDeduc = 10
 const endDeduc = 50
 const pwr = 0.7
+
+function arraySum(arr) {
+    return arr.reduce(add, 0);
+}
+
+function add(accumulator, a) {
+  return accumulator + a;
+}
 
 const getScoreV2Mtp = (inputs) => {
     const misses = inputs[0]
