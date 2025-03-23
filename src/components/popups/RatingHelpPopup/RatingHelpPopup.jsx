@@ -9,6 +9,20 @@ export const RatingHelpPopup = ({ onClose }) => {
   const popupRef = useRef(null);
 
   useEffect(() => {
+    // Store original body style
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    
+    // Lock scrolling
+    document.body.style.overflow = 'hidden';
+
+    // Cleanup function to restore original scroll state
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, []); // Empty dependency array since we only want this on mount/unmount
+
+
+  useEffect(() => {
     const handleEscapeKey = (event) => {
       if (event.key === 'Escape') {
         onClose();
@@ -120,7 +134,7 @@ export const RatingHelpPopup = ({ onClose }) => {
             <h3>{tHelp('sections.shortcuts.title')}</h3>
             <ul>
               <li><KeyCombo keys={['Ctrl', 'Enter ↵']} /> {tHelp('sections.shortcuts.points.submit')}</li>
-              
+
             </ul>
           </section>
         </div>

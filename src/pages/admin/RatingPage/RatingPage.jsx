@@ -14,6 +14,7 @@ import api from "@/utils/api";
 import { SortAscIcon, SortDescIcon } from "@/components/common/icons";
 import { Tooltip } from "react-tooltip";
 import { RatingHelpPopup } from "@/components/popups";
+import { useDifficultyContext } from "@/contexts/DifficultyContext";
 
 const truncateString = (str, maxLength) => {
   if (!str) return "";
@@ -38,6 +39,7 @@ const RatingPage = () => {
     setSortOrder
   } = useRatingFilter();
 
+  const { difficultyDict } = useDifficultyContext();
   const [ratings, setRatings] = useState(null);
   const [sortedRatings, setSortedRatings] = useState(null);
   const [showMessage, setShowMessage] = useState(false);
@@ -53,12 +55,8 @@ const RatingPage = () => {
   const [connectedUsers, setConnectedUsers] = useState(0);
   const [isConnected, setIsConnected] = useState(false);
   const [connectedManagers, setConnectedManagers] = useState(0);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const handleCloseSuccessMessage = () => {
-    setShowMessage(false);
-    setSuccess(false);
-    setError(false);
-  };
 
   const fetchRatings = useCallback(async () => {
     try {
@@ -241,6 +239,75 @@ const RatingPage = () => {
     [sortOptions, sortType]
   );
 
+  // Add search filter function
+  const filteredRatings = useMemo(() => {
+    if (!sortedRatings) return [];
+    
+    return sortedRatings.filter(rating => {
+      if (hideRated) {
+        const userDetail = rating.details?.find(detail => detail.userId === user?.id);
+        if (userDetail || /^vote/i.test(rating.level.rerateNum)) return false;
+      }
+      if (lowDiffFilter === 'hide' && rating.lowDiff) return false;
+      if (lowDiffFilter === 'only' && !rating.lowDiff) return false;
+      if (fourVoteFilter === 'hide' && 
+        rating.details.filter(detail => !detail.isCommunityRating).length >= 4
+      ) return false;
+      if (fourVoteFilter === 'only' && 
+        rating.details.filter(detail => !detail.isCommunityRating).length < 4)
+         return false;
+
+      // Search functionality
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        
+        // Basic level info search
+        const basicMatch = 
+          rating.level.song?.toLowerCase().includes(query) ||
+          rating.level.artist?.toLowerCase().includes(query) ||
+          rating.level.id?.toString().includes(query) ||
+          rating.level.difficulty?.name?.toLowerCase().includes(query) ||
+          difficultyDict[rating.averageDifficultyId]?.name?.toLowerCase().includes(query) ||
+          difficultyDict[rating.communityDifficultyId]?.name?.toLowerCase().includes(query)
+          //  || difficultyDict[rating.level.difficultyId]?.name?.toLowerCase().includes(query); idk about this one
+
+        if (basicMatch) return true;
+
+        // Search in level credits (creators)
+        const creatorMatch = rating.level.levelCredits?.some(credit => 
+          credit.creator?.name?.toLowerCase().includes(query) ||
+          credit.creator?.aliases?.some(alias => 
+            alias.toLowerCase().includes(query)
+          )
+        );
+
+        if (creatorMatch) return true;
+
+        // Search in team
+        const teamMatch = rating.level.teamObject && (
+          rating.level.teamObject.name?.toLowerCase().includes(query) ||
+          rating.level.teamObject.aliases?.some(alias => 
+            alias.toLowerCase().includes(query)
+          )
+        );
+
+        if (teamMatch) return true;
+
+        // Search in level aliases
+        const aliasMatch = rating.level.aliases?.some(alias =>
+          (alias.field === 'song' && alias.alias.toLowerCase().includes(query)) ||
+          (alias.field === 'artist' && alias.alias.toLowerCase().includes(query))
+        );
+
+        if (aliasMatch) return true;
+
+        return false;
+      }
+      
+      return true;
+    });
+  }, [sortedRatings, hideRated, lowDiffFilter, fourVoteFilter, searchQuery, user?.id]);
+
   if (user?.isSuperAdmin === undefined && user?.isRater === undefined && user) {
     return (
       <div className="admin-rating-page">
@@ -365,6 +432,19 @@ const RatingPage = () => {
         {ratings && ratings.length > 0 ? (
           <>
             <div className="ratings-header">
+              <div className="search-container">
+                <svg className="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input
+                  type="text"
+                  className="search-input"
+                  placeholder={tRating('search.placeholder')}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </div>
               <div className="ratings-header-container">
               <button 
                 className="help-button"
@@ -374,21 +454,7 @@ const RatingPage = () => {
                 {tRating('buttons.help')}
               </button>
               <div className="ratings-count">
-                {tRating('labels.totalRatings', { count: sortedRatings?.filter(rating => {
-                  if (hideRated) {
-                    const userDetail = rating.details?.find(detail => detail.userId === user?.id);
-                    if (userDetail || /^vote/i.test(rating.level.rerateNum)) return false;
-                  }
-                  if (lowDiffFilter === 'hide' && rating.lowDiff) return false;
-                  if (lowDiffFilter === 'only' && !rating.lowDiff) return false;
-                  if (fourVoteFilter === 'hide' && 
-                    rating.details.filter(detail => !detail.isCommunityRating).length >= 4
-                  ) return false;
-                  if (fourVoteFilter === 'only' && 
-                    rating.details.filter(detail => !detail.isCommunityRating).length < 4)
-                     return false;
-                  return true;
-                }).length || 0 })}
+                {tRating('labels.totalRatings', { count: filteredRatings?.length || 0 })}
               </div>
               <div className={`connected-users ${isConnected ? 'connected' : 'disconnected'}`}>
                 <div className={`indicator`} />
@@ -406,22 +472,7 @@ const RatingPage = () => {
               </div>
             </div>
             <div className="rating-cards">
-              {sortedRatings
-                ?.filter(rating => {
-                  if (hideRated) {
-                    const userDetail = rating.details?.find(detail => detail.userId === user?.id);
-                    if (userDetail || /^vote/i.test(rating.level.rerateNum)) return false;
-                  }
-                  if (lowDiffFilter === 'hide' && rating.lowDiff) return false;
-                  if (lowDiffFilter === 'only' && !rating.lowDiff) return false;
-                  if (fourVoteFilter === 'hide' && 
-                    rating.details.filter(detail => !detail.isCommunityRating).length >= 4
-                  ) return false;
-                  if (fourVoteFilter === 'only' && 
-                    rating.details.filter(detail => !detail.isCommunityRating).length < 4)
-                     return false;
-                  return true;
-                })
+              {filteredRatings
                 .map((rating, index) => (
                   <RatingCard
                     key={rating.id}

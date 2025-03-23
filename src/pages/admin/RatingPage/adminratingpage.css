@@ -345,6 +345,7 @@
   .admin-rating-page .admin-buttons {
     display: flex;
     gap: 10px;
+    margin-bottom: 0.75rem;
   }
 
   .admin-rating-page .admin-button {
@@ -514,7 +515,8 @@
 
 .admin-rating-page .admin-rating-body .ratings-header {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 1rem;
 }
 
@@ -573,6 +575,61 @@
   color: #fff;
 }
 
+.admin-rating-page .admin-rating-body .search-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  margin-right: auto;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+  flex: 1;
+  max-width: 400px;
+}
+
+.admin-rating-page .admin-rating-body .search-container:focus-within {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.admin-rating-page .admin-rating-body .search-input {
+  background: transparent;
+  border: none;
+  color: var(--color-white);
+  font-size: 0.95rem;
+  width: 100%;
+  padding: 0.25rem;
+}
+
+.admin-rating-page .admin-rating-body .search-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.admin-rating-page .admin-rating-body .search-input:focus {
+  outline: none;
+}
+
+.admin-rating-page .admin-rating-body .search-icon {
+  width: 18px;
+  height: 18px;
+  opacity: 0.7;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .admin-rating-page .admin-rating-body .ratings-header {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .admin-rating-page .admin-rating-body .search-container {
+    max-width: 100%;
+  }
+}
 
 .connected-users {
   font-size: 1rem;

@@ -1,5 +1,5 @@
 import './ratingcard.css';
-import { calculateRatingValue, calculateAverageRating } from '@/components/misc/Utility';
+import { calculateRatingValue, calculateAverageRating, formatCreatorDisplay } from '@/components/misc/Utility';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -39,8 +39,7 @@ export const RatingCard = ({
     const [isReasonExpanded, setIsReasonExpanded] = useState(false);
     const isVote = /^vote/i.test(rating.level.rerateNum);
     const userRating = rating.details?.find(detail => detail.userId === user?.id)?.rating || "";
-    const shouldOffset = (rating.communityDifficulty || rating.averageDifficulty || userRating) 
-    
+
     // Calculate averages
     const managerRatings = 
     trimString(
@@ -96,7 +95,7 @@ export const RatingCard = ({
               <h3 title={fullTitle}>
                 <span className="song-title">{songTitle}</span>
                 <span className="title-separator"> - </span>
-                <span className="song-creator">{creator}</span>
+                <span className="song-creator">{formatCreatorDisplay(rating.level)}</span>
               </h3>
               <p className="artist">{rating.level.artist}</p>
             </div>

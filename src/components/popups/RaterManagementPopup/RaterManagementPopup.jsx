@@ -3,7 +3,6 @@ import './ratermanagementpopup.css';
 import api from '@/utils/api';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import DefaultAvatar from '@/components/common/icons/DefaultAvatar';
 import { UserAvatar } from '@/components/layout';
 
 const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) => {

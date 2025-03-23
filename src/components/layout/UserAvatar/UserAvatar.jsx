@@ -58,7 +58,7 @@ const UserAvatar = ({
           }}
         />
       ) : (
-        <DefaultAvatar className="default-avatar" />
+        <DefaultAvatar className="avatar-image" />
       )}
     </div>
   );

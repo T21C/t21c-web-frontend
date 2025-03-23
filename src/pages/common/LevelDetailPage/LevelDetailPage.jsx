@@ -20,6 +20,7 @@ import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { MetaTags } from "@/components/common/display";
 import { SteamIcon } from "@/components/common/icons";
+import { formatCreatorDisplay } from "@/components/misc/Utility";
 
 const getHighScores = (players) => {
   if (!players?.length) return null;
@@ -383,58 +384,6 @@ const LevelDetailPage = () => {
     );
   };
 
-  const formatCreatorDisplay = () => {
-    // If team exists, it takes priority
-    if (res.level.teamObject) {
-      return res.level.teamObject.name;
-    }
-
-    // If no credits, fall back to creator field
-    if (!res.level.levelCredits || res.level.levelCredits.length === 0) {
-      return res.level.creator;
-    }
-
-    // Group credits by role
-    const creditsByRole = res.level.levelCredits.reduce((acc, credit) => {
-      const role = credit.role.toLowerCase();
-      if (!acc[role]) {
-        acc[role] = [];
-      }
-      // Use the creator's first alias if available, otherwise use name
-      const creatorName = credit.creator.name;
-      acc[role].push(creatorName);
-      return acc;
-    }, {});
-
-    const charters = creditsByRole['charter'] || [];
-    const vfxers = creditsByRole['vfxer'] || [];
-
-    // Handle different cases based on number of credits
-    if (res.level.levelCredits.length >= 3) {
-      const parts = [];
-      if (charters.length > 0) {
-        parts.push(charters.length === 1 
-          ? charters[0] 
-          : `${charters[0]} & ${charters.length - 1} more`);
-      }
-      if (vfxers.length > 0) {
-        parts.push(vfxers.length === 1
-          ? vfxers[0]
-          : `${vfxers[0]} & ${vfxers.length - 1} more`);
-      }
-      return parts.join(' | ');
-    } else if (res.level.levelCredits.length === 2) {
-      if (charters.length === 2) {
-        return `${charters[0]} & ${charters[1]}`;
-      }
-      if (charters.length === 1 && vfxers.length === 1) {
-        return `${charters[0]} | ${vfxers[0]}`;
-      }
-    }
-
-    // Single credit or fallback
-    return res.level.levelCredits[0]?.creator.name || res.level.creator;
-  };
 
   if (notFound) {
     return (
@@ -517,7 +466,7 @@ const LevelDetailPage = () => {
               {renderTitleWithAliases(res.level.song, 'song')}
               <p>
                 #{id}&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
-                {formatCreatorDisplay()}
+                {formatCreatorDisplay(res.level)}
                 &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
                 {renderTitleWithAliases(res.level.artist, 'artist')}
               </p>
