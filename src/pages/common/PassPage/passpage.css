@@ -176,19 +176,6 @@
   transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.background-pass {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-image: url('../../assets/important/dark/theme-background.jpg');
-  background-size: cover;
-  background-position: center;
-  opacity: 0.1;
-  z-index: 1;
-}
-
 /* Loader styles */
 .pass-page .loader-pass-page {
   margin: 2rem auto;
