@@ -19,6 +19,7 @@ import { SteamIcon } from './SteamIcon';
 import { TrashIcon } from './TrashIcon';
 import { UnlinkIcon } from './UnlinkIcon';
 import VideoIcon from './VideoIcon';
+import { CheckmarkIcon } from './CheckmarkIcon';
 
 export {
     DefaultAvatar,
@@ -41,5 +42,6 @@ export {
     SteamIcon,
     TrashIcon,
     UnlinkIcon,
-    VideoIcon
+    VideoIcon,
+    CheckmarkIcon
 }

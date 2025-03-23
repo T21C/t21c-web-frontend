@@ -1,20 +1,46 @@
-.comboContainer {
+.combo-container {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  position: relative;
 }
 
-.comboContainer .plus {
-  color: #666;
-  font-weight: 600;
+.combo-container .plus {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9em;
   margin: 0 2px;
   -webkit-user-select: none;
   user-select: none;
 }
 
+.combo-container .success-indicator {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(46, 204, 113, 0.9);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+
+.combo-container .success-indicator.visible {
+  opacity: 1;
+}
+
+@media (prefers-color-scheme: light) {
+  .combo-container .plus {
+    color: rgba(0, 0, 0, 0.6);
+  }
+}
+
 /* Dark theme support */
 @media (prefers-color-scheme: dark) {
-  .comboContainer .plus {
+  .combo-container .plus {
     color: #999;
   }
 } 

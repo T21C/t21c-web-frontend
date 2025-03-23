@@ -42,9 +42,6 @@ const RatingPage = () => {
   const { difficultyDict } = useDifficultyContext();
   const [ratings, setRatings] = useState(null);
   const [sortedRatings, setSortedRatings] = useState(null);
-  const [showMessage, setShowMessage] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(false);
   const [selectedRating, setSelectedRating] = useState(null);
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [selectedLevel, setSelectedLevel] = useState(null);
@@ -61,13 +58,12 @@ const RatingPage = () => {
   const fetchRatings = useCallback(async () => {
     try {
       const response = await api.get(import.meta.env.VITE_RATING_API);
+      await new Promise(resolve => setTimeout(resolve, 1000));
       const data = response.data;
       setRatings(data);
       setSortedRatings(data);
     } catch (error) {
       console.error("Error fetching ratings:", error);
-      setError("Failed to fetch ratings");
-      setShowMessage(true);
     }
   }, []);
 
@@ -223,8 +219,6 @@ const RatingPage = () => {
       }
     } catch (error) {
       console.error("Error fetching level data:", error);
-      setError("Failed to load level data");
-      setShowMessage(true);
     }
   };
 
@@ -307,6 +301,25 @@ const RatingPage = () => {
       return true;
     });
   }, [sortedRatings, hideRated, lowDiffFilter, fourVoteFilter, searchQuery, user?.id]);
+
+  // Add keyboard shortcut handler for force-refresh
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Don't trigger if help popup is open
+      if (showHelpPopup) return;
+
+      // Check for Ctrl + Alt + R
+      if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'r') {
+        e.preventDefault(); // Prevent browser refresh
+        console.log('Force refreshing ratings...');
+        setRatings(null); 
+        fetchRatings();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [fetchRatings, showHelpPopup]);
 
   if (user?.isSuperAdmin === undefined && user?.isRater === undefined && user) {
     return (

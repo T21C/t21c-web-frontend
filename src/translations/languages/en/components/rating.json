@@ -127,7 +127,9 @@
       "shortcuts": {
         "title": "Shortcuts",
         "points": {
-          "submit": "to rate a level"
+          "submit": "Save your rating",
+          "reset": "Force-refresh ratings",
+          "close": "Close currently open popup"
         }
       }
     }

@@ -88,6 +88,24 @@
   color: #ddd;
 }
 
+.rating-help-popup .shortcuts {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.rating-help-popup li.keycombo {
+  margin: 0.125rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-white);
+  line-height: 1.5;
+}
+
 .rating-help-popup code {
   background: rgba(255, 255, 255, 0.1);
   padding: 0.2rem 0.4rem;
@@ -145,4 +163,25 @@
 .rating-help-popup strong {
   color: #fff;
   font-weight: 600;
+}
+
+/* Ensure consistent spacing between shortcut items */
+.rating-help-popup .shortcuts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Style for the shortcut description text */
+.rating-help-popup .shortcut-description {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+/* Ensure KeyCombo components have consistent width */
+.rating-help-popup li.keycombo > div {
+  min-width: -webkit-fill-available;
+  display: flex;
+  align-items: center;
 } 

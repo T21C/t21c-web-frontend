@@ -15,16 +15,32 @@ export const RatingHelpPopup = ({ onClose }) => {
     // Lock scrolling
     document.body.style.overflow = 'hidden';
 
-    // Cleanup function to restore original scroll state
+    // Capture and stop propagation of keyboard events
+    const handleKeyEvents = (event) => {
+      // Only stop propagation if the event originated within the popup
+      if (popupRef.current?.contains(event.target)) {
+        event.stopPropagation();
+      }
+    };
+
+    // Add capture phase event listeners for all keyboard events
+    document.addEventListener('keydown', handleKeyEvents, true);
+    document.addEventListener('keyup', handleKeyEvents, true);
+    document.addEventListener('keypress', handleKeyEvents, true);
+
+    // Cleanup function
     return () => {
       document.body.style.overflow = originalStyle;
+      document.removeEventListener('keydown', handleKeyEvents, true);
+      document.removeEventListener('keyup', handleKeyEvents, true);
+      document.removeEventListener('keypress', handleKeyEvents, true);
     };
   }, []); // Empty dependency array since we only want this on mount/unmount
-
 
   useEffect(() => {
     const handleEscapeKey = (event) => {
       if (event.key === 'Escape') {
+        event.stopPropagation(); // Prevent other listeners from handling Escape
         onClose();
       }
     };
@@ -35,11 +51,11 @@ export const RatingHelpPopup = ({ onClose }) => {
       }
     };
 
-    document.addEventListener('keydown', handleEscapeKey);
+    document.addEventListener('keydown', handleEscapeKey, true); // Use capture phase
     document.addEventListener('mousedown', handleClickOutside);
 
     return () => {
-      document.removeEventListener('keydown', handleEscapeKey);
+      document.removeEventListener('keydown', handleEscapeKey, true);
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [onClose]);
@@ -132,9 +148,39 @@ export const RatingHelpPopup = ({ onClose }) => {
 
           <section>
             <h3>{tHelp('sections.shortcuts.title')}</h3>
-            <ul>
-              <li><KeyCombo keys={['Ctrl', 'Enter ↵']} /> {tHelp('sections.shortcuts.points.submit')}</li>
-
+            <ul className="shortcuts">
+              <li className='keycombo'>
+                <KeyCombo 
+                  keys={["Ctrl", "Enter"]} 
+                  actualKeys={["Control", "Enter"]}
+                  onComboTriggered={() => console.log("Save changes triggered")}
+                />
+                <span className="shortcut-description">
+                  {tHelp('sections.shortcuts.points.submit')}
+                </span>
+              </li>
+              
+              <li className='keycombo'>
+                <KeyCombo 
+                  keys={["Esc"]} 
+                  actualKeys={["Escape"]}
+                  onComboTriggered={() => console.log("Close popup triggered")}
+                />
+                <span className="shortcut-description">
+                  {tHelp('sections.shortcuts.points.close')}
+                </span>
+              </li>
+              
+              <li className='keycombo'>
+                <KeyCombo 
+                  keys={['Ctrl', 'Alt', 'R']} 
+                  actualKeys={['Control', 'Alt', 'r']}
+                  onComboTriggered={() => console.log("Reset ratings triggered")}
+                />
+                <span className="shortcut-description">
+                  {tHelp('sections.shortcuts.points.reset')}
+                </span>
+              </li>
             </ul>
           </section>
         </div>

@@ -28,6 +28,9 @@
     "byRatingsFull": "Sort by Number of Ratings",
     "byDate": "Last Updated"
   },
+  "search": {
+    "placeholder": "Search by level name, creator, or difficulty"
+  },
   "labels": {
     "totalRatings": "{{count}} ratings",
     "connectedUsers": "{{count}} online",
