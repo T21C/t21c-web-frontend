@@ -1,0 +1,20 @@
+.comboContainer {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.comboContainer .plus {
+  color: #666;
+  font-weight: 600;
+  margin: 0 2px;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  .comboContainer .plus {
+    color: #999;
+  }
+} 

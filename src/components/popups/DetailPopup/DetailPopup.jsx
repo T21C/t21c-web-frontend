@@ -205,16 +205,37 @@ export const DetailPopup = ({
   }, [selectedRating, currentUser?.id, selectedRating?.details]);
 
   useEffect(() => {
-    const hasChanges = pendingRating !== initialRating || pendingComment !== initialComment;
     const hasValidChanges = Boolean(
-      (pendingRating !== null && pendingRating !== initialRating) ||
-      (pendingComment !== null && pendingComment !== initialComment) ||
-      (pendingRating === "" && initialRating) ||
-      (pendingComment === "" && initialComment)
+      (initialRating !== "" && pendingRating === "")
+      ||
+      (
+        pendingRating !== "" && pendingComment !== ""
+        &&
+        (
+          initialRating !== pendingRating
+          ||
+          initialComment !== pendingComment
+        )
+      )
     );
     
-    setHasUnsavedChanges(Boolean(hasChanges || hasValidChanges));
+    setHasUnsavedChanges(hasValidChanges);
   }, [pendingRating, pendingComment, initialRating, initialComment]);
+
+  useEffect(() => {
+    const handleKeyPress = (event) => {
+      // Check for Ctrl+Enter
+      if ((event.ctrlKey || event.metaKey) && event.key === 'Enter') {
+        event.preventDefault();
+        if (!isSaving && ((hasUnsavedChanges && (!isCommentRequired || pendingComment.trim())) || (!pendingRating && initialRating))) {
+          handleSaveChanges();
+        }
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyPress);
+    return () => document.removeEventListener('keydown', handleKeyPress);
+  }, [hasUnsavedChanges, isSaving, pendingRating, pendingComment, isCommentRequired, initialRating]);
 
   const validateRating = (rating) => {
       setIsCommentRequired(true);
@@ -259,12 +280,6 @@ export const DetailPopup = ({
   // Split ratings into admin and community
   const adminRatings = otherRatings.filter(r => !r.isCommunityRating);
   const communityRatings = otherRatings.filter(r => r.isCommunityRating);
-
-  const canRate = () => {
-    if (!user) return false;
-    if (user.isRatingBanned) return false;
-    return true; // Allow all logged-in users to rate unless banned
-  };
 
   const isAdminRater = () => {
     return user && (user.isSuperAdmin || user.isRater);
@@ -475,6 +490,18 @@ export const DetailPopup = ({
     return level.levelCredits[0]?.creator.name || level.creator;
   };
 
+  const getSaveButtonText = () => {
+    if (isSaving) return tRating('buttons.saving');
+    if (!pendingRating && initialRating) return tRating('buttons.removeRating');
+    return tRating('buttons.saveChanges');
+  };
+
+  const getSaveButtonClass = () => {
+    const baseClass = 'save-rating-changes-btn';
+    if (isSaving) return `${baseClass} saving`;
+    if (!pendingRating && initialRating) return `${baseClass} remove`;
+    return baseClass;
+  };
 
   if (!selectedRating) return null;
   return (
@@ -617,17 +644,18 @@ export const DetailPopup = ({
                           borderColor: commentError ? 'red' : '',
                           backgroundColor: isCommentRequired && commentError ? 'rgba(255, 0, 0, 0.05)' : ''
                         }}
-                        placeholder={tRating('placeholders.communityComment')
-                        }
+                        placeholder={tRating('placeholders.communityComment')}
                       />
                     </div>
-                    <button 
-                      className={`save-rating-changes-btn ${isSaving ? 'saving' : ''}`}
-                      disabled={!hasUnsavedChanges || isSaving || (isCommentRequired && !pendingComment.trim())}
-                      onClick={handleSaveChanges}
-                    >
-                      {isSaving ? tRating('buttons.saving') : tRating('buttons.saveChanges')}
-                    </button>
+                    <div className="save-button-container">
+                      <button 
+                        className={getSaveButtonClass()}
+                        disabled={!hasUnsavedChanges || isSaving || (isCommentRequired && !pendingComment.trim())}
+                        onClick={handleSaveChanges}
+                      >
+                        {getSaveButtonText()}
+                      </button>
+                    </div>
                     {saveError && (
                       <div className="save-error-message">
                         {saveError}

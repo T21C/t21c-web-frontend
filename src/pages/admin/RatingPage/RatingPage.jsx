@@ -41,7 +41,6 @@ const RatingPage = () => {
   const [ratings, setRatings] = useState(null);
   const [sortedRatings, setSortedRatings] = useState(null);
   const [showMessage, setShowMessage] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
   const [selectedRating, setSelectedRating] = useState(null);
@@ -67,12 +66,10 @@ const RatingPage = () => {
       const data = response.data;
       setRatings(data);
       setSortedRatings(data);
-      setLoading(false);
     } catch (error) {
       console.error("Error fetching ratings:", error);
       setError("Failed to fetch ratings");
       setShowMessage(true);
-      setLoading(false);
     }
   }, []);
 
@@ -479,11 +476,14 @@ const RatingPage = () => {
               />
             )}
           </>
-        ) : (
+        ) : 
+        ratings && ratings.length === 0 ? (
           <div className="all-rated-message">
             <h2>{tRating('messages.noRatings.title')}</h2>
             <p>{tRating('messages.noRatings.subtitle')}</p>
           </div>
+        ) : (
+          <div className="loader"/>
         )}
 
         {showReferences && (

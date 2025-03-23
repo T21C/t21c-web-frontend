@@ -1,0 +1,54 @@
+.keyContainer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f5f5f5;
+  border: 1px solid #d1d1d1;
+  border-radius: 4px;
+  box-shadow: 0 2px 0 #d1d1d1;
+  color: #333;
+  font-family: monospace;
+  font-weight: 600;
+  padding: 0.25em 0.5em;
+  min-width: 1.5em;
+  text-align: center;
+  -webkit-user-select: none;
+  user-select: none;
+  vertical-align: middle;
+  margin: 0 2px;
+}
+
+.keyContainer:active {
+  transform: translateY(1px);
+  box-shadow: 0 1px 0 #d1d1d1;
+}
+
+/* Size variants */
+.keyContainer .small {
+  font-size: 0.75rem;
+  padding: 0.15em 0.3em;
+}
+
+.keyContainer .medium {
+  font-size: 0.875rem;
+  padding: 0.25em 0.5em;
+}
+
+.keyContainer .large {
+  font-size: 1rem;
+  padding: 0.35em 0.7em;
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  .keyContainer {
+    background-color: #2a2a2a;
+    border-color: #404040;
+    box-shadow: 0 2px 0 #404040;
+    color: #ffffff;
+  }
+
+  .keyContainer:active {
+    box-shadow: 0 1px 0 #404040;
+  }
+} 

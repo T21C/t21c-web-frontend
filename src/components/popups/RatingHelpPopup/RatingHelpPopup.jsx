@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import './ratinghelppopup.css';
 import { useTranslation } from 'react-i18next';
-import { CommentFormatter } from '@/components/misc';
+import { CommentFormatter, KeyCombo, KeyDisplay } from '@/components/misc';
 
 export const RatingHelpPopup = ({ onClose }) => {
   const { t } = useTranslation('components');
@@ -72,23 +72,6 @@ export const RatingHelpPopup = ({ onClose }) => {
           </section>
 
           <section>
-            <h3>{tHelp('sections.extras.title')}</h3>
-            <div className="features">
-              {tHelp('sections.extras.features', { returnObjects: true }).map((feature, index) => (
-                <div key={index} className="feature-item">
-                  <h4>{feature.title}</h4>
-                  <CommentFormatter prefix={"idPrefixDontChange:"}>{feature.description}</CommentFormatter>
-                  {feature.example && (
-                    <div className="feature-example">
-                      <code>{feature.example}</code>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section>
             <h3>{tHelp('sections.averaging.title')}</h3>
             <p>{tHelp('sections.averaging.description')}</p>
             <ul>
@@ -113,6 +96,31 @@ export const RatingHelpPopup = ({ onClose }) => {
               <li>{tHelp('sections.requirements.points.comment')}</li>
               <li>{tHelp('sections.requirements.points.format')}</li>
               <li>{tHelp('sections.requirements.points.special')}</li>
+            </ul>
+          </section>
+          
+          <section>
+            <h3>{tHelp('sections.extras.title')}</h3>
+            <div className="features">
+              {tHelp('sections.extras.features', { returnObjects: true }).map((feature, index) => (
+                <div key={index} className="feature-item">
+                  <h4>{feature.title}</h4>
+                  <CommentFormatter prefix={"idPrefixDontChange:"}>{feature.description}</CommentFormatter>
+                  {feature.example && (
+                    <div className="feature-example">
+                      <code>{feature.example}</code>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </section>
+
+          <section>
+            <h3>{tHelp('sections.shortcuts.title')}</h3>
+            <ul>
+              <li><KeyCombo keys={['Ctrl', 'Enter ↵']} /> {tHelp('sections.shortcuts.points.submit')}</li>
+              
             </ul>
           </section>
         </div>

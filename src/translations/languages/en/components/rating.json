@@ -19,6 +19,7 @@
     },
     "buttons": {
       "saveChanges": "Save Changes",
+      "removeRating": "Remove Rating",
       "saving": "Saving...",
       "viewAdminRatings": "View Manager Ratings",
       "viewCommunityRatings": "View Community Ratings"
@@ -121,6 +122,12 @@
           "comment": "A comment is required when rating a level as -2",
           "format": "Ratings must follow the PGU format (P1-P20, G1-G20, U1-U20) or be a valid special rating",
           "special": "Special ratings are predefined and cannot be customized"
+        }
+      },
+      "shortcuts": {
+        "title": "Shortcuts",
+        "points": {
+          "submit": "to rate a level"
         }
       }
     }
