@@ -180,12 +180,12 @@ const PassSubmissionPage = () => {
       cancelToken: levelFetchCancelTokenRef.current.token
     })
       .then((response) => {
-        if (response.data.isDeleted) {
+        if (response.data.level.isDeleted) {
           setLevel(null);
           setLevelLoading(false);
           return;
         }
-        setLevel(response.data ? response.data : null);
+        setLevel(response.data.level ? response.data.level : null);
         setLevelLoading(false);
       })
       .catch((error) => {
