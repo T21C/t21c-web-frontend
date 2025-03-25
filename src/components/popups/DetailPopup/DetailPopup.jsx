@@ -35,12 +35,11 @@ async function updateRating(id, rating, comment, isCommunityRating = false) {
 
 export const DetailPopup = ({ 
   selectedRating, 
-  setSelectedRating, 
-  setShowReferences,
-  ratings, 
-  setRatings, 
-  user, 
-  isSuperAdmin
+  setSelectedRating = () => {},
+  setShowReferences = () => {},
+  setRatings = () => {}, 
+  user = null, 
+  isSuperAdmin = false
 }) => {
   const currentUser = user;
   const { t } = useTranslation('components');
@@ -595,7 +594,21 @@ export const DetailPopup = ({
                     <div className="save-button-container">
                       <button 
                         className={getSaveButtonClass()}
-                        disabled={!hasUnsavedChanges || isSaving || (isCommentRequired && !pendingComment.trim())}
+                        disabled={
+                          (
+                            !hasUnsavedChanges 
+                            || 
+                            isSaving 
+                            || 
+                            (
+                              isCommentRequired 
+                              && 
+                              !pendingComment.trim()
+                            )
+                          )
+                          ^
+                          (!pendingRating && initialRating)
+                        }
                         onClick={handleSaveChanges}
                       >
                         {getSaveButtonText()}

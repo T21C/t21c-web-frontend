@@ -21,6 +21,7 @@ import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { MetaTags } from "@/components/common/display";
 import { SteamIcon } from "@/components/common/icons";
 import { formatCreatorDisplay } from "@/components/misc/Utility";
+import { DetailPopup } from "@/components/popups";
 
 const getHighScores = (players) => {
   if (!players?.length) return null;
@@ -223,7 +224,6 @@ const LevelDetailPage = () => {
   const [notFound, setNotFound] = useState(false);
 
   const { user } = useAuth();
-  const [passCount, setPassCount] = useState(0);
 
   const [openDialog, setOpenDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
@@ -233,12 +233,10 @@ const LevelDetailPage = () => {
   const location = useLocation();
   const currentUrl = window.location.origin + location.pathname;
 
-  const [showSongAliases, setShowSongAliases] = useState(false);
-  const [showArtistAliases, setShowArtistAliases] = useState(false);
-  const songAliasButtonRef = useRef(null);
-  const artistAliasButtonRef = useRef(null);
 
   const [activeAliasDropdown, setActiveAliasDropdown] = useState(null);
+
+  const [showRatingPopup, setShowRatingPopup] = useState(false);
 
   const handleAliasButtonClick = (e, field) => {
     e.preventDefault();
@@ -257,7 +255,8 @@ const LevelDetailPage = () => {
         const passesData = await api.get(`${import.meta.env.VITE_PASSES}/level/${id}`);
         setRes(prevRes => ({
           ...prevRes,
-          level: levelData.data,
+          level: levelData.data.level,
+          rating: levelData.data.ratings,
           passes: passesData.data
         }));
         setDisplayedPlayers(sortLeaderboard(passesData.data));
@@ -497,6 +496,18 @@ const LevelDetailPage = () => {
                 <SteamIcon color="#ffffff" size={"24px"} />
               </a>
             )}
+            {res.rating && (
+              <button 
+                className="rating-button svg-stroke"
+                onClick={() => setShowRatingPopup(true)}
+                title={tLevel('buttons.viewRating')}
+              >
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M7 12L10 15L17 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            )}
           </div>
         </div>
 
@@ -697,6 +708,16 @@ const LevelDetailPage = () => {
           }));
         }}
       />
+    )}
+
+    {showRatingPopup && res.rating && (
+        <DetailPopup
+          selectedRating={{
+            ...res.rating,
+            level: res.level
+          }}
+          setSelectedRating={() => setShowRatingPopup(false)}
+        />
     )}
 
     {openDialog && (
