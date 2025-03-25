@@ -137,6 +137,8 @@ export function validateFeelingRating(value, range = true) {
     
     const pguRegex = `(${exprPattern1}|${exprPattern2}|${exprPattern3})`;
     
+    const pguExtendedRegex = `([pguPGU]([1-9]|1[0-9]|20))((-|~)([1-9]|1[0-9]|20))?`;
+
     const rangeRegex = `^${pguRegex}(~|-)${pguRegex}$`;
     
     const legacyRegex = `^([1-9]|1[0-7])$|^(1[8-9]\\+?)$|^(20(\\.[0-9])?\\+?)$|^(21(\\.[0-4])?\\+?)$`;
@@ -145,7 +147,7 @@ export function validateFeelingRating(value, range = true) {
     
     // Create the appropriate regex based on range flag
     const regex = range 
-        ? new RegExp(`^$|^${pguRegex}$|^-2$|^-21$|^${rangeRegex}$|^${legacyRegex}$|^${legacyRange}$`)
+        ? new RegExp(`^$|^${pguRegex}$|^-2$|^-21$|^${rangeRegex}$|^${legacyRegex}$|^${legacyRange}$|^${pguExtendedRegex}$`)
         : new RegExp(`^$|^${pguRegex}$|^-2$|^-21$|^${legacyRegex}$`);
     
     return regex.test(value);
