@@ -27,8 +27,6 @@ const PassPage = () => {
   const tPass = (key, params = {}) => t(`pass.${key}`, params);
 
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const location = useLocation();
   const { user } = useAuth();
   const { difficulties } = useContext(DifficultyContext);
   const [showHelpPopup, setShowHelpPopup] = useState(false);
@@ -135,7 +133,6 @@ const PassPage = () => {
       } catch (error) {
         if (!axios.isCancel(error)) {
           console.error('Fetch error:', error);
-          setError(true);
         }
       } finally {
         setLoading(false);

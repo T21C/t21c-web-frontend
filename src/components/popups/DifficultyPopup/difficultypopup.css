@@ -1,0 +1,1664 @@
+.difficulty-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.difficulty-modal__content {
+    background-color: #000000;
+    padding: 1.5rem;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    max-height: calc(100vh - 7rem);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    margin: 2rem;
+    margin-top: 6rem;
+}
+
+.difficulty-modal__close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #FFFFFF;
+  cursor: pointer;
+  padding: 0.5rem;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1010;
+}
+
+.difficulty-modal__close-button:hover {
+  opacity: 1;
+}
+
+.difficulty-modal__tabs {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  gap: 0.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.difficulty-modal__content-scroll {
+  padding-top: 1.5rem;
+  overflow-y: auto;
+  flex: 1;
+  padding-right: 0.5rem;
+  margin-right: -0.5rem;
+}
+
+.difficulty-modal__content-scroll::-webkit-scrollbar {
+  width: 8px;
+}
+
+.difficulty-modal__content-scroll::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.difficulty-modal__content-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.difficulty-modal__content-scroll::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.4);
+}
+
+.difficulty-modal__tab-button {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  transition: color 0.2s, border-color 0.2s;
+  position: relative;
+}
+
+.difficulty-modal__tab-button::after {
+  content: '';
+  position: absolute;
+  bottom: -25%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background-color: transparent;
+  transition: background-color 0.2s;
+}
+
+.difficulty-modal__tab-button--active {
+  color: #FFFFFF;
+}
+
+.difficulty-modal__tab-button--active::after {
+  background-color: #FFFFFF;
+}
+
+.difficulty-modal__tab-button:hover {
+  color: #FFFFFF;
+}
+
+.difficulty-modal__title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.3rem;
+}
+
+.difficulty-modal__form-group {
+  margin-top: 1rem;
+}
+
+.difficulty-modal__form-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  align-items: center;
+  color: #FFFFFF;
+}
+
+.difficulty-modal__form-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  font-size: 0.9rem;
+}
+
+.difficulty-modal__form-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.difficulty-modal__form-group-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.difficulty-modal__form-input-checkbox {
+  width: 1rem;
+  height: 1rem;
+}
+
+.difficulty-modal__form-select {
+  width: fit-content;
+  padding: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  font-size: 0.9rem;
+}
+
+.difficulty-modal__form-select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.difficulty-modal__form-select option {
+  background-color: #000000;
+  color: #FFFFFF;
+}
+
+.difficulty-modal__color-input-container {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.difficulty-modal__color-picker {
+  width: 50px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+}
+
+.difficulty-modal__color-text-input {
+  flex: 1;
+}
+
+.difficulty-modal__form-input:focus,
+.difficulty-modal__form-select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.difficulty-modal__form-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.difficulty-modal__form-input:invalid {
+  border-color: #FF4444;
+}
+
+.difficulty-modal__actions {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.difficulty-modal__button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.difficulty-modal__button--save {
+  background-color: #4A9EFF;
+  color: #FFFFFF;
+}
+
+.difficulty-modal__button--save:hover {
+  background-color: #6CB0FF;
+}
+
+.difficulty-modal__button--cancel {
+  background-color: transparent;
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.difficulty-modal__button--cancel:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.difficulty-modal__button--delete {
+  background-color: #FF4444;
+  color: #FFFFFF;
+  margin-right: auto;
+}
+
+.difficulty-modal__button--delete:hover {
+  background-color: #FF6666;
+}
+
+.difficulty-modal__button--delete:active {
+  background-color: #CC3333;
+}
+
+.difficulty-modal__error-message {
+  color: #FF4444;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+/* Announcement Directives Styles */
+.difficulty-modal__announcements {
+  padding-top: 1rem;
+}
+
+.difficulty-modal__directives-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.difficulty-modal__directive-item {
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.difficulty-modal__directive-item:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.difficulty-modal__directive-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.difficulty-modal__directive-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.difficulty-modal__directive-title {
+  margin: 0;
+  font-size: 1.2rem;
+  color: var(--color-white);
+}
+
+.difficulty-modal__directive-status {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.difficulty-modal__directive-copy-button {
+  background: none;
+  border: none;
+  color: #4A9EFF;
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.difficulty-modal__directive-copy-button:hover {
+  color: #6CB0FF;
+}
+
+.difficulty-modal__directive-paste-container {
+  position: relative;
+  margin: 0 0.5rem;
+}
+
+.difficulty-modal__directive-paste-input {
+  width: 200px;
+  padding: 0.25rem 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  font-size: 0.8rem;
+  transition: all 0.2s ease;
+}
+
+.difficulty-modal__directive-paste-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.difficulty-modal__directive-paste-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.difficulty-modal__paste-error {
+  color: #FF4444;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+  text-align: center;
+}
+
+.difficulty-modal__directive-edit-icon {
+  color: #4A9EFF;
+  width: 24px;
+  height: 24px;
+}
+
+.difficulty-modal__directive-check-icon {
+  color: #4CAF50;
+  width: 24px;
+  height: 24px;
+}
+
+.difficulty-modal__directive-remove-button {
+  background: none;
+  border: none;
+  color: #FF4444;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  line-height: 1;
+}
+
+.difficulty-modal__directive-remove-button:hover {
+  color: #FF6666;
+}
+
+.difficulty-modal__actions-section {
+  margin: 1.5rem 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.difficulty-modal__actions-title {
+  margin: 0 0 1rem;
+  font-size: 1.1rem;
+  color: var(--color-white);
+}
+
+.difficulty-modal__action-item {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  position: relative;
+  transition: background-color 0.2s ease;
+}
+
+.difficulty-modal__action-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.difficulty-modal__action-remove-button {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  color: #FF4444;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.difficulty-modal__action-remove-button:hover {
+  color: #FF6666;
+}
+
+.difficulty-modal__action-remove-button:active {
+  color: #CC3333;
+}
+
+.difficulty-modal__action-remove-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.difficulty-modal__action-add-button {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  color: var(--color-white);
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 1rem;
+  transition: all 0.2s ease;
+}
+
+.difficulty-modal__action-add-button:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.difficulty-modal__directive-add-button {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  color: var(--color-white);
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom: 1.5rem;
+  transition: all 0.2s ease;
+}
+
+.difficulty-modal__directive-add-button:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.difficulty-modal__form-textarea {
+  width: 100%;
+  min-height: 50px;
+  padding: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: var(--color-white);
+  font-family: inherit;
+  resize: vertical;
+}
+
+.difficulty-modal__form-textarea:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.difficulty-modal__form-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.difficulty-modal__loading-message {
+  text-align: center;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 2rem;
+  font-size: 1.1rem;
+}
+
+.difficulty-modal__mode-selector {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: var(--background-secondary);
+  border-radius: 8px;
+}
+
+.difficulty-modal__mode-selector-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.difficulty-modal__mode-selector-select {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--background-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.difficulty-modal__mode-selector-select:hover {
+  border-color: var(--accent-color);
+}
+
+.difficulty-modal__mode-selector-select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.2);
+}
+
+.difficulty-modal__select-with-edit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.difficulty-modal__select-with-edit-container {
+  flex: 1;
+}
+
+.difficulty-modal__select-edit-button {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.7);
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.difficulty-modal__select-edit-button:hover {
+  color: #fff;
+}
+
+.difficulty-modal__select-edit-button-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.difficulty-modal__button--disabled {
+  background-color: #666;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.difficulty-modal__button--disabled:hover {
+  background-color: #666;
+}
+
+/* Channel Modal Styles */
+.difficulty-modal__channel-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 1100;
+}
+
+.difficulty-modal__channel-modal--show {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.difficulty-modal__channel-modal-content {
+  background-color: #000000;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 1);
+  border-radius: 8px;
+  padding: 24px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: modalFadeIn 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.difficulty-modal__channel-modal-title {
+  margin: 0 0 20px 0;
+  color: #FFFFFF;
+  font-size: 1.5rem;
+}
+
+.difficulty-modal__channel-modal-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.difficulty-modal__channel-modal-delete-button {
+  background-color: #FF4444;
+  color: #FFFFFF;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  margin-right: auto;
+}
+
+.difficulty-modal__channel-modal-delete-button:hover {
+  background-color: #FF6666;
+}
+
+.difficulty-modal__channel-modal-delete-button:active {
+  background-color: #CC3333;
+}
+
+.difficulty-modal__channel-modal-delete-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Role Modal Styles */
+.difficulty-modal__role-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1101;
+}
+
+.difficulty-modal__role-modal--show {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.difficulty-modal__role-modal-content {
+  background-color: #000000;
+  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 1);
+  border-radius: 8px;
+  padding: 24px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: modalFadeIn 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.difficulty-modal__role-modal-title {
+  margin: 0 0 20px 0;
+  color: #FFFFFF;
+  font-size: 1.5rem;
+}
+
+.difficulty-modal__role-modal-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.difficulty-modal__role-modal-delete-button {
+  background-color: #FF4444;
+  color: #FFFFFF;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  margin-right: auto;
+}
+
+.difficulty-modal__role-modal-delete-button:hover {
+  background-color: #FF6666;
+}
+
+.difficulty-modal__role-modal-delete-button:active {
+  background-color: #CC3333;
+}
+
+.difficulty-modal__role-modal-delete-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .difficulty-modal__content {
+    width: 95%;
+    padding: 1rem;
+  }
+
+  .difficulty-modal__tabs {
+    gap: 0.5rem;
+  }
+
+  .difficulty-modal__tab-button {
+    padding: 0.5rem;
+    font-size: 0.9rem;
+  }
+
+  .difficulty-modal__directive-header {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .difficulty-modal__directive-header-left {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .difficulty-modal__directive-title {
+    font-size: 1.1rem;
+  }
+}
+
+.difficulty-modal .password-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+}
+
+.difficulty-modal .password-modal-content {
+  background-color: #000000;
+  padding: 2rem;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+.difficulty-modal .password-modal-content h3 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+  color: #FFFFFF;
+}
+
+.difficulty-modal .form-group {
+  margin-bottom: 1.5rem;
+}
+
+.difficulty-modal .password-modal input[type="password"] {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  font-size: 1rem;
+}
+
+.difficulty-modal .password-modal input[type="password"]:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.difficulty-modal .channel-select-group {
+  position: relative;
+}
+
+.difficulty-modal .channel-select-container {
+  align-items: center;
+}
+
+.difficulty-modal .channel-select-container select {
+  flex: 1;
+}
+
+.difficulty-modal .edit-channel-button {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.6);
+  transition: color 0.2s ease;
+}
+
+.difficulty-modal .edit-channel-button:hover {
+  color: #4A9EFF;
+}
+
+.difficulty-modal .edit-channel-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.difficulty-modal .role-select-group {
+  position: relative;
+  margin-top: 1rem;
+}
+
+.difficulty-modal .role-select-container {
+  align-items: center;
+}
+
+.difficulty-modal .role-select-container select {
+  flex: 1;
+}
+
+.difficulty-modal .edit-role-button {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255, 255, 255, 0.6);
+  transition: color 0.2s ease;
+}
+
+.difficulty-modal .edit-role-button:hover {
+  color: #4A9EFF;
+}
+
+.difficulty-modal .edit-role-button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.difficulty-modal .role-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1100;
+}
+
+.difficulty-modal .role-modal-content {
+  background-color: #000000;
+  border-radius: 8px;
+  padding: 24px;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  animation: modalFadeIn 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.difficulty-modal .role-modal-content h3 {
+  margin: 0 0 20px 0;
+  color: #FFFFFF;
+  font-size: 1.5rem;
+}
+
+.difficulty-modal .role-modal-content .form-group {
+  margin-bottom: 16px;
+}
+
+.difficulty-modal .role-modal-content .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #FFFFFF;
+}
+
+.difficulty-modal .role-modal-content .form-group input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+}
+
+.difficulty-modal .role-modal-content .form-group input:focus {
+  border-color: #4A9EFF;
+  outline: none;
+}
+
+.difficulty-modal .role-modal-content .modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 24px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.difficulty-modal .role-modal-content .delete-button {
+  background-color: #FF4444;
+  color: #FFFFFF;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  margin-left: auto;
+}
+
+.difficulty-modal .role-modal-content .delete-button:hover {
+  background-color: #FF6666;
+}
+
+.difficulty-modal .role-modal-content .delete-button:active {
+  background-color: #CC3333;
+}
+
+/* Disabled state for all buttons */
+.difficulty-modal .save-button:disabled,
+.difficulty-modal .delete-button:disabled,
+.difficulty-modal .cancel-button:disabled,
+.channel-modal-content .delete-button:disabled,
+.role-modal-content .delete-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* Update existing channel modal styles */
+.difficulty-modal .channel-modal {
+  background-color: rgba(0, 0, 0, 0.9);
+}
+
+/* Ensure modals stack properly */
+.difficulty-modal .channel-modal { z-index: 1100; }
+.difficulty-modal .role-modal { z-index: 1101; }
+.difficulty-modal .password-modal { z-index: 1102; }
+
+.channel-modal-content .form-group select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.channel-modal-content .form-group select:focus {
+  border-color: #4A9EFF;
+  outline: none;
+}
+
+.channel-modal-content .form-group select option {
+  background-color: #000000;
+  color: #FFFFFF;
+  padding: 8px;
+}
+
+.channel-modal-content .form-group input[type="text"],
+.channel-modal-content .form-group input[type="url"] {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  font-size: 1rem;
+}
+
+.channel-modal-content .form-group input[type="text"]:focus,
+.channel-modal-content .form-group input[type="url"]:focus {
+  border-color: #4A9EFF;
+  outline: none;
+}
+
+.channel-modal-content .form-group input[type="text"]::placeholder,
+.channel-modal-content .form-group input[type="url"]::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.role-modal-content .form-group input[type="text"] {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  font-size: 1rem;
+}
+
+.role-modal-content .form-group input[type="text"]:focus {
+  border-color: #4A9EFF;
+  outline: none;
+}
+
+.role-modal-content .form-group input[type="text"]::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.difficulty-modal .modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.difficulty-modal .modal.show {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.difficulty-modal .modal-content {
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  padding: 24px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.difficulty-modal .modal-content h2 {
+  margin: 0 0 20px;
+  color: #ffffff;
+  font-size: 1.5rem;
+}
+
+.difficulty-modal .form-group {
+  margin-bottom: 16px;
+}
+
+.difficulty-modal .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+.difficulty-modal .form-group input {
+  width: fit-content;
+  padding: 8px 12px;
+  border: 1px solid #333;
+  border-radius: 4px;
+  background-color: #2a2a2a;
+  color: #ffffff;
+  font-size: 0.9rem;
+}
+
+.difficulty-modal .form-group input:focus {
+  outline: none;
+  border-color: #4a90e2;
+}
+
+.difficulty-modal .modal-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.difficulty-modal .modal-buttons button {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.difficulty-modal .modal-buttons button[type="button"] {
+  background-color: #333;
+  color: #ffffff;
+}
+
+.difficulty-modal .modal-buttons button[type="button"]:hover {
+  background-color: #444;
+}
+
+.difficulty-modal .modal-buttons button[type="submit"] {
+  background-color: #4a90e2;
+  color: #ffffff;
+}
+
+.difficulty-modal .modal-buttons button[type="submit"]:hover {
+  background-color: #357abd;
+}
+
+.difficulty-modal .directive-mode-selector {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: var(--background-secondary);
+  border-radius: 8px;
+}
+
+.difficulty-modal .directive-mode-selector label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.difficulty-modal .directive-mode-selector select {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--background-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  color: var(--text-primary);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+}
+
+.difficulty-modal .directive-mode-selector select:hover {
+  border-color: var(--accent-color);
+}
+
+.difficulty-modal .directive-mode-selector select:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.2);
+}
+
+.difficulty-modal .select-with-edit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.difficulty-modal .select-with-edit .custom-select-container {
+  flex: 1;
+}
+
+.difficulty-modal .select-with-edit .edit-button {
+  background: none;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.7);
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.difficulty-modal .select-with-edit .edit-button:hover {
+  color: #fff;
+}
+
+.difficulty-modal .select-with-edit .edit-button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.difficulty-modal .save-button:disabled {
+  background-color: #666;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.difficulty-modal .save-button:disabled:hover {
+  background-color: #666;
+}
+
+/* Channel Modal Form Styles */
+.difficulty-modal__channel-form-group {
+  margin-bottom: 1rem;
+}
+
+.difficulty-modal__channel-form-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  align-items: center;
+  color: #FFFFFF;
+}
+
+.difficulty-modal__channel-form-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  font-size: 0.9rem;
+}
+
+.difficulty-modal__channel-form-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.difficulty-modal__channel-form-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.difficulty-modal__channel-form-input:invalid {
+  border-color: #FF4444;
+}
+
+.difficulty-modal__channel-error-message {
+  color: #FF4444;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.difficulty-modal__channel-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.difficulty-modal__channel-button--submit {
+  background-color: #4A9EFF;
+  color: #FFFFFF;
+}
+
+.difficulty-modal__channel-button--submit:hover {
+  background-color: #6CB0FF;
+}
+
+.difficulty-modal__channel-button--cancel {
+  background-color: transparent;
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.difficulty-modal__channel-button--cancel:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Role Modal Form Styles */
+.difficulty-modal__role-form-group {
+  margin-bottom: 1rem;
+}
+
+.difficulty-modal__role-form-label {
+  display: block;
+  margin-bottom: 0.25rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  align-items: center;
+  color: #FFFFFF;
+}
+
+.difficulty-modal__role-form-input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  font-size: 0.9rem;
+}
+
+.difficulty-modal__role-form-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.difficulty-modal__role-form-input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.difficulty-modal__role-form-input:invalid {
+  border-color: #FF4444;
+}
+
+.difficulty-modal__role-error-message {
+  color: #FF4444;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.difficulty-modal__role-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.difficulty-modal__role-button--submit {
+  background-color: #4A9EFF;
+  color: #FFFFFF;
+}
+
+.difficulty-modal__role-button--submit:hover {
+  background-color: #6CB0FF;
+}
+
+.difficulty-modal__role-button--cancel {
+  background-color: transparent;
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.difficulty-modal__role-button--cancel:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.difficulty-modal__trigger-type {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.difficulty-modal__trigger-type .state-display {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.25rem;
+  background-color: var(--background-secondary);
+  border-radius: 4px;
+}
+
+.difficulty-modal__trigger-type .state-display__option {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  text-align: center;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.difficulty-modal__trigger-type .state-display__option--selected {
+  background-color: var(--primary);
+  color: var(--text-light);
+}
+
+/* Help Button and Modal Styles */
+.difficulty-modal__custom-function-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.difficulty-modal__help-button {
+  background: none;
+  border: none;
+  color: #4A9EFF;
+  cursor: pointer;
+  padding: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.difficulty-modal__help-button:hover {
+  color: #6CB0FF;
+}
+
+.difficulty-modal__help-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 1200;
+}
+
+.difficulty-modal__help-modal--show {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.difficulty-modal__help-modal-content {
+  background-color: #000000;
+  border-radius: 8px;
+  margin-top: 4rem;
+  padding: 2rem;
+  width: 90%;
+  max-width: 800px;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  animation: modalFadeIn 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.difficulty-modal__help-modal-title {
+  margin: 0 0 1.5rem;
+  color: #FFFFFF;
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.difficulty-modal__help-content {
+  color: #FFFFFF;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.difficulty-modal__help-content h3 {
+  color: #4A9EFF;
+  margin: 1.5rem 0 0.75rem;
+  font-size: 1.1rem;
+}
+
+.difficulty-modal__help-content h3:first-child {
+  margin-top: 0;
+}
+
+.difficulty-modal__help-content p {
+  margin: 0 0 0.75rem;
+}
+
+.difficulty-modal__help-content ul {
+  margin: 0 0 1.5rem;
+  padding-left: 1.5rem;
+}
+
+.difficulty-modal__help-content li {
+  margin-bottom: 0.5rem;
+}
+
+.difficulty-modal__help-content code {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+  font-family: monospace;
+  font-size: 0.9em;
+  color: #4A9EFF;
+}
+
+.difficulty-modal__help-modal-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.difficulty-modal__help-button--close {
+  background-color: #4A9EFF;
+  color: #FFFFFF;
+  padding: 0.75rem 2rem;
+  border-radius: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.difficulty-modal__help-button--close:hover {
+  background-color: #6CB0FF;
+}
+
+@media (max-width: 768px) {
+  .difficulty-modal__help-modal-content {
+    padding: 1.5rem;
+    width: 95%;
+  }
+
+  .difficulty-modal__help-content {
+    font-size: 0.9rem;
+  }
+}
+
+/* Directive Header Styles */
+.difficulty-modal__directive-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.difficulty-modal__expand-button {
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  color: rgba(255, 255, 255, 0.7);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.difficulty-modal__expand-button:hover {
+  color: #fff;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.difficulty-modal__expand-button.expanded svg {
+  transform: rotate(180deg);
+}
+
+.difficulty-modal__expand-button svg {
+  transition: transform 0.2s ease;
+}
+
+/* Directive Content Styles */
+.difficulty-modal__directive-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  opacity: 0;
+}
+
+.difficulty-modal__directive-content.expanded {
+  max-height: 2000px;
+  opacity: 1;
+  transition: max-height 0.5s ease-in, opacity 0.2s ease-in;
+}
+
+/* Actions Section Styles */
+.difficulty-modal__actions-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.difficulty-modal__actions-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  opacity: 0;
+}
+
+.difficulty-modal__actions-content.expanded {
+  max-height: 1000px;
+  opacity: 1;
+  transition: max-height 0.5s ease-in, opacity 0.2s ease-in;
+}
+
+.difficulty-modal__directive-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+  padding: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.difficulty-modal__directive-copy-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem;
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.difficulty-modal__directive-copy-button:hover {
+  color: #4CAF50;
+}
+
+.difficulty-modal__directive-paste-container {
+  flex: 1;
+}
+
+.difficulty-modal__directive-paste-input {
+  width: 100%;
+  padding: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.difficulty-modal__directive-paste-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.difficulty-modal__paste-error {
+  color: #f44336;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+} 

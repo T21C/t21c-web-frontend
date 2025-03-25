@@ -4,6 +4,7 @@ import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { CompleteNav } from '@/components/layout';
 import { MetaTags, AccessDenied } from '@/components/common/display';
 import { ScrollButton } from '@/components/common/buttons';
+import { DifficultyPopup } from '@/components/popups';
 import api from '@/utils/api';
 import './difficultypage.css';
 import { EditIcon, RefreshIcon, TrashIcon } from '@/components/common/icons';
@@ -40,6 +41,26 @@ const DifficultyPage = () => {
   const [deletingDifficulty, setDeletingDifficulty] = useState(null);
   const [showDeleteInput, setShowDeleteInput] = useState(false);
   const [fallbackId, setFallbackId] = useState('');
+  const [verifiedPassword, setVerifiedPassword] = useState('');
+  const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null);
+  const [isAnyPopupOpen, setIsAnyPopupOpen] = useState(false);
+
+  // Add effect to handle body scrolling
+  useEffect(() => {
+    const isAnyOpen = isCreating || editingDifficulty !== null || 
+                          deletingDifficulty !== null || showPasswordPrompt;
+    setIsAnyPopupOpen(isAnyOpen);
+    if (isAnyOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isCreating, editingDifficulty, deletingDifficulty, showPasswordPrompt]);
 
   const handlePasswordSubmit = async () => {
     try {
@@ -173,10 +194,67 @@ const DifficultyPage = () => {
     }
   };
 
+  const verifyPassword = async (password) => {
+    try {
+      await api.head(`${import.meta.env.VITE_DIFFICULTIES}/verify-password`, {
+        headers: {
+          'X-Super-Admin-Password': password
+        }
+      });
+      setVerifiedPassword(password);
+      setShowPasswordPrompt(false);
+      return true;
+    } catch (error) {
+      setError(tDiff('passwordModal.errors.invalid'));
+      addNotification(tDiff('passwordModal.errors.invalid'), 'error');
+      return false;
+    }
+  };
+
+  const handlePasswordPromptSubmit = async () => {
+    const isValid = await verifyPassword(superAdminPassword);
+    if (isValid) {
+      const { type, data } = pendingAction;
+      switch (type) {
+        case 'edit':
+          const rawDifficulty = rawDifficulties.find(d => d.id === data.id);
+          setEditingDifficulty(rawDifficulty);
+          break;
+        case 'create':
+          setIsCreating(true);
+          break;
+        case 'delete':
+          setDeletingDifficulty(data);
+          break;
+      }
+      setPendingAction(null);
+    }
+    setSuperAdminPassword('');
+  };
+
   const handleEditClick = (difficulty) => {
-    // Find the raw difficulty data when editing
-    const rawDifficulty = rawDifficulties.find(d => d.id === difficulty.id);
-    setEditingDifficulty(rawDifficulty);
+    setPendingAction({ type: 'edit', data: difficulty });
+    setShowPasswordPrompt(true);
+  };
+
+  const handleCreateClick = () => {
+    setPendingAction({ type: 'create' });
+    setShowPasswordPrompt(true);
+  };
+
+  const handleDeleteClick = (difficulty) => {
+    setPendingAction({ type: 'delete', data: difficulty });
+    setShowPasswordPrompt(true);
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (isCreating) {
+      setSelectedAction({ type: 'create', data: null });
+    } else {
+      setSelectedAction({ type: 'edit', data: editingDifficulty });
+    }
+    setShowPasswordModal(true);
   };
 
   if (user?.isSuperAdmin === undefined) {
@@ -220,7 +298,7 @@ const DifficultyPage = () => {
       <CompleteNav />
       <div className="background-level"></div>
       <div className="difficulty-page">
-        <ScrollButton />
+        {!isAnyPopupOpen && <ScrollButton />}
         <div className="difficulty-container">
           <div className="header-container">
             <h1>{tDiff('header.title')}</h1>
@@ -369,266 +447,11 @@ const DifficultyPage = () => {
             </div>
           )}
 
-          {(isCreating || editingDifficulty) && (
-            <div 
-              className="difficulty-modal"
-              onClick={(e) => {
-                if (e.target.className === 'difficulty-modal') {
-                  if (isCreating) {
-                    handleCloseCreateModal();
-                  } else {
-                    handleCloseEditModal();
-                  }
-                }
-              }}
-            >
-              <div className="difficulty-modal-content">
-                <button 
-                  className="modal-close-button"
-                  onClick={() => {
-                    if (isCreating) {
-                      handleCloseCreateModal();
-                    } else {
-                      handleCloseEditModal();
-                    }
-                  }}
-                >
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </button>
-                <h2>{isCreating ? tDiff('modal.create.title') : tDiff('modal.edit.title')}</h2>
-                <form onSubmit={(e) => {
-                  e.preventDefault();
-                  if (isCreating) {
-                    setSelectedAction({ type: 'create', data: null });
-                  } else {
-                    setSelectedAction({ type: 'edit', data: editingDifficulty });
-                  }
-                  setShowPasswordModal(true);
-                }}>
-                  <div className="form-group">
-                    <label>{tDiff('form.labels.id')}</label>
-                    <input
-                      type="number"
-                      value={isCreating ? newDifficulty.id : editingDifficulty.id}
-                      onChange={(e) => {
-                        if (isCreating) {
-                          setNewDifficulty(prev => ({ ...prev, id: parseInt(e.target.value) }));
-                        } else {
-                          setEditingDifficulty(prev => ({ ...prev, id: parseInt(e.target.value) }));
-                        }
-                      }}
-                      disabled={!isCreating}
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>{tDiff('form.labels.name')}</label>
-                    <input
-                      type="text"
-                      value={isCreating ? newDifficulty.name : editingDifficulty.name}
-                      onChange={(e) => {
-                        if (isCreating) {
-                          setNewDifficulty(prev => ({ ...prev, name: e.target.value }));
-                        } else {
-                          setEditingDifficulty(prev => ({ ...prev, name: e.target.value }));
-                        }
-                      }}
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>{tDiff('form.labels.type')}</label>
-                    <select
-                      value={isCreating ? newDifficulty.type : editingDifficulty.type}
-                      onChange={(e) => {
-                        if (isCreating) {
-                          setNewDifficulty(prev => ({ ...prev, type: e.target.value }));
-                        } else {
-                          setEditingDifficulty(prev => ({ ...prev, type: e.target.value }));
-                        }
-                      }}
-                      required
-                    >
-                      <option value="PGU">{tDiff('difficultyTypes.PGU')}</option>
-                      <option value="SPECIAL">{tDiff('difficultyTypes.SPECIAL')}</option>
-                    </select>
-                  </div>
-
-                  <div className="form-group">
-                    <label>{tDiff('form.labels.icon')}</label>
-                    <input
-                      type="text"
-                      value={isCreating ? newDifficulty.icon : editingDifficulty.icon}
-                      onChange={(e) => {
-                        if (isCreating) {
-                          setNewDifficulty(prev => ({ ...prev, icon: e.target.value }));
-                        } else {
-                          setEditingDifficulty(prev => ({ ...prev, icon: e.target.value }));
-                        }
-                      }}
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>{tDiff('form.labels.legacyIcon')}</label>
-                    <input
-                      type="text"
-                      value={isCreating ? newDifficulty.legacyIcon : editingDifficulty.legacyIcon}
-                      onChange={(e) => {
-                        if (isCreating) {
-                          setNewDifficulty(prev => ({ ...prev, legacyIcon: e.target.value }));
-                        } else {
-                          setEditingDifficulty(prev => ({ ...prev, legacyIcon: e.target.value }));
-                        }
-                      }}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>{tDiff('form.labels.emoji')}</label>
-                    <input
-                      type="text"
-                      value={isCreating ? newDifficulty.emoji : editingDifficulty.emoji}
-                      onChange={(e) => {
-                        if (isCreating) {
-                          setNewDifficulty(prev => ({ ...prev, emoji: e.target.value }));
-                        } else {
-                          setEditingDifficulty(prev => ({ ...prev, emoji: e.target.value }));
-                        }
-                      }}
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>{tDiff('form.labels.legacyEmoji')}</label>
-                    <input
-                      type="text"
-                      value={isCreating ? newDifficulty.legacyEmoji : editingDifficulty.legacyEmoji}
-                      onChange={(e) => {
-                        if (isCreating) {
-                          setNewDifficulty(prev => ({ ...prev, legacyEmoji: e.target.value }));
-                        } else {
-                          setEditingDifficulty(prev => ({ ...prev, legacyEmoji: e.target.value }));
-                        }
-                      }}
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>{tDiff('form.labels.color')}</label>
-                    <div className="color-input-container">
-                      <input
-                        type="color"
-                        value={isCreating ? newDifficulty.color : editingDifficulty.color}
-                        onChange={(e) => {
-                          if (isCreating) {
-                            setNewDifficulty(prev => ({ ...prev, color: e.target.value }));
-                          } else {
-                            setEditingDifficulty(prev => ({ ...prev, color: e.target.value }));
-                          }
-                        }}
-                        required
-                      />
-                      <input
-                        type="text"
-                        value={isCreating ? newDifficulty.color : editingDifficulty.color}
-                        onChange={(e) => {
-                          if (isCreating) {
-                            setNewDifficulty(prev => ({ ...prev, color: e.target.value }));
-                          } else {
-                            setEditingDifficulty(prev => ({ ...prev, color: e.target.value }));
-                          }
-                        }}
-                        pattern="^#[0-9A-Fa-f]{6}$"
-                        placeholder="#RRGGBB"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <div className="form-group">
-                    <label>{tDiff('form.labels.baseScore')}</label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      value={isCreating ? newDifficulty.baseScore : editingDifficulty.baseScore}
-                      onChange={(e) => {
-                        if (isCreating) {
-                          setNewDifficulty(prev => ({ ...prev, baseScore: parseFloat(e.target.value) }));
-                        } else {
-                          setEditingDifficulty(prev => ({ ...prev, baseScore: parseFloat(e.target.value) }));
-                        }
-                      }}
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>{tDiff('form.labels.sortOrder')}</label>
-                    <input
-                      type="number"
-                      value={isCreating ? newDifficulty.sortOrder : editingDifficulty.sortOrder}
-                      onChange={(e) => {
-                        if (isCreating) {
-                          setNewDifficulty(prev => ({ ...prev, sortOrder: parseInt(e.target.value) }));
-                        } else {
-                          setEditingDifficulty(prev => ({ ...prev, sortOrder: parseInt(e.target.value) }));
-                        }
-                      }}
-                      required
-                    />
-                  </div>
-
-                  <div className="form-group">
-                    <label>{tDiff('form.labels.legacy')}</label>
-                    <input
-                      type="text"
-                      value={isCreating ? newDifficulty.legacy : editingDifficulty.legacy}
-                      onChange={(e) => {
-                        if (isCreating) {
-                          setNewDifficulty(prev => ({ ...prev, legacy: e.target.value }));
-                        } else {
-                          setEditingDifficulty(prev => ({ ...prev, legacy: e.target.value }));
-                        }
-                      }}
-                      required
-                    />
-                  </div>
-
-                  <div className="modal-actions">
-                    <button type="submit" className="save-button">
-                      {isCreating ? tDiff('buttons.create') : tDiff('buttons.save')}
-                    </button>
-                    <button
-                      type="button"
-                      className="cancel-button"
-                      onClick={() => {
-                        if (isCreating) {
-                          handleCloseCreateModal();
-                        } else {
-                          handleCloseEditModal();
-                        }
-                      }}
-                    >
-                      {tDiff('buttons.cancel')}
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
-
-          {showPasswordModal && (
+          {showPasswordPrompt && (
             <div className="password-modal">
               <div className="password-modal-content">
                 <h3>{tDiff('passwordModal.title')}</h3>
-                <p>{tDiff('passwordModal.message', { action: selectedAction.type })}</p>
+                <p>{tDiff('passwordModal.message', { action: pendingAction?.type })}</p>
                 <input
                   type="password"
                   value={superAdminPassword}
@@ -639,14 +462,18 @@ const DifficultyPage = () => {
                 <div className="password-modal-actions">
                   <button 
                     className="confirm-btn"
-                    onClick={handlePasswordSubmit}
+                    onClick={handlePasswordPromptSubmit}
                     disabled={!superAdminPassword}
                   >
                     {tDiff('buttons.confirm')}
                   </button>
                   <button 
                     className="cancel-btn"
-                    onClick={handleCancel}
+                    onClick={() => {
+                      setShowPasswordPrompt(false);
+                      setSuperAdminPassword('');
+                      setPendingAction(null);
+                    }}
                   >
                     {tDiff('buttons.cancel')}
                   </button>
@@ -654,6 +481,29 @@ const DifficultyPage = () => {
               </div>
             </div>
           )}
+
+          <DifficultyPopup
+            isOpen={isCreating || editingDifficulty !== null}
+            onClose={() => {
+              if (isCreating) {
+                handleCloseCreateModal();
+              } else {
+                handleCloseEditModal();
+              }
+            }}
+            isCreating={isCreating}
+            difficulty={isCreating ? newDifficulty : editingDifficulty || {}}
+            onSubmit={handleSubmit}
+            onChange={(updatedDifficulty) => {
+              if (isCreating) {
+                setNewDifficulty(updatedDifficulty);
+              } else {
+                setEditingDifficulty(updatedDifficulty);
+              }
+            }}
+            error={error}
+            verifiedPassword={verifiedPassword}
+          />
 
           <div className="notifications">
             {notifications.map(({ id, message, type }) => (

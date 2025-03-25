@@ -20,6 +20,8 @@ import { TrashIcon } from './TrashIcon';
 import { UnlinkIcon } from './UnlinkIcon';
 import VideoIcon from './VideoIcon';
 import { CheckmarkIcon } from './CheckmarkIcon';
+import { PencilIcon } from './PencilIcon';
+import { QuestionmarkCircleIcon } from './QuestionmarkCircleIcon';
 
 export {
     DefaultAvatar,
@@ -43,5 +45,7 @@ export {
     TrashIcon,
     UnlinkIcon,
     VideoIcon,
-    CheckmarkIcon
+    CheckmarkIcon,
+    PencilIcon,
+    QuestionmarkCircleIcon
 }

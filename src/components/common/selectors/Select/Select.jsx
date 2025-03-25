@@ -156,7 +156,7 @@ const CustomSelect = ({
   };
 
   return (
-    <div className="custom-select-container">
+    <div className="custom-select-container" style={{ width: width }}>
       {label && <p className="custom-select-label">{label}</p>}
       <div className="custom-select-wrapper">
         <ReactSelect

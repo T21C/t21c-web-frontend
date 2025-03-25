@@ -1,0 +1,166 @@
+{
+  "tabs": {
+    "details": "Details",
+    "announcement": "Announcement"
+  },
+  "modal": {
+    "create": {
+      "title": "Create New Difficulty"
+    },
+    "edit": {
+      "title": "Edit Difficulty"
+    },
+    "close": "Close",
+    "password": {
+      "title": "Super Admin Password Required",
+      "placeholder": "Enter super admin password",
+      "confirm": "Confirm Changes"
+    }
+  },
+  "form": {
+    "labels": {
+      "id": "ID",
+      "name": "Name",
+      "type": "Type",
+      "icon": "Icon URL",
+      "legacyIcon": "Legacy Icon URL",
+      "emoji": "Emoji",
+      "legacyEmoji": "Legacy Emoji",
+      "color": "Color",
+      "baseScore": "Base Score",
+      "sortOrder": "Sort Order",
+      "legacy": "Legacy Name"
+    },
+    "placeholders": {
+      "color": "#RRGGBB"
+    }
+  },
+  "difficultyTypes": {
+    "PGU": "PGU",
+    "SPECIAL": "Special"
+  },
+  "announcements": {
+    "title": "Announcement Directives",
+    "mode": {
+      "label": "Directive Mode",
+      "static": "Static",
+      "conditional": "Conditional"
+    },
+    "directive": {
+      "name": "Name",
+      "description": "Description",
+      "add": "Add Directive",
+      "remove": "Remove Directive",
+      "isActive": "Active",
+      "triggerType": "Trigger Type",
+      "copy": "Copy Directive Settings",
+      "paste": "Paste Directive Settings",
+      "copySuccess": "Directive settings copied to clipboard",
+      "copyError": "Failed to copy directive settings",
+      "pasteSuccess": "Directive settings pasted from clipboard",
+      "pasteError": "Invalid directive format. Please paste a valid directive JSON.",
+      "addSuccess": "New directive added",
+      "removeSuccess": "Directive removed",
+      "saveSuccess": "Directives saved successfully",
+      "saveError": "Failed to save directives",
+      "channelAddSuccess": "Channel added successfully",
+      "channelUpdateSuccess": "Channel updated successfully",
+      "channelDeleteSuccess": "Channel deleted successfully",
+      "roleAddSuccess": "Role added successfully",
+      "roleUpdateSuccess": "Role updated successfully",
+      "roleDeleteSuccess": "Role deleted successfully"
+    },
+    "triggerType": {
+      "PASS": "Pass Announcement",
+      "LEVEL": "Level Announcement"
+    },
+    "condition": {
+      "type": {
+        "label": "Condition Type",
+        "options": {
+          "ACCURACY": "Accuracy",
+          "WORLDS_FIRST": "World's First",
+          "BASE_SCORE": "Base Score",
+          "CUSTOM": "Custom"
+        }
+      },
+      "operator": {
+        "label": "Operator",
+        "options": {
+          "EQUAL": "Equal to",
+          "GREATER_THAN": "Greater than",
+          "LESS_THAN": "Less than",
+          "GREATER_THAN_EQUAL": "Greater than or equal to",
+          "LESS_THAN_EQUAL": "Less than or equal to"
+        }
+      },
+      "value": "Value",
+      "customFunction": "Custom Function"
+    },
+    "actions": {
+      "title": "Actions",
+      "add": "Add Action",
+      "remove": "Remove Action",
+      "channel": {
+        "create": "Create Channel",
+        "label": "Channel",
+        "add": "Add Channel",
+        "edit": "Edit Channel",
+        "delete": "Delete Channel"
+      },
+      "pingType": {
+        "label": "Ping Type",
+        "options": {
+          "NONE": "No Ping",
+          "ROLE": "Role Ping",
+          "EVERYONE": "@everyone"
+        }
+      },
+      "role": {
+        "create": "Create Role",
+        "label": "Role",
+        "add": "Add Role",
+        "edit": "Edit Role",
+        "delete": "Delete Role"
+      }
+    }
+  },
+  "channels": {
+    "form": {
+      "id": "Channel ID",
+      "idPlaceholder": "Enter Discord channel ID",
+      "label": "Display Label",
+      "labelPlaceholder": "Enter display name for the channel",
+      "webhookUrl": "Discord Webhook URL",
+      "webhookUrlPlaceholder": "Enter Discord webhook URL"
+    }
+  },
+  "roles": {
+    "form": {
+      "id": "Role ID",
+      "idPlaceholder": "Enter Discord role ID",
+      "name": "Role Name",
+      "namePlaceholder": "Enter role name",
+      "label": "Display Label",
+      "labelPlaceholder": "Enter display name for the role"
+    }
+  },
+  "buttons": {
+    "create": "Create",
+    "save": "Save",
+    "delete": "Delete",
+    "cancel": "Cancel"
+  },
+  "errors": {
+    "invalidPassword": "Invalid super admin password",
+    "loadDirectives": "Failed to load announcement directives",
+    "saveDirectives": "Failed to save announcement directives",
+    "channelSaveFailed": "Failed to save channel",
+    "channelDeleteFailed": "Failed to delete channel",
+    "roleSaveFailed": "Failed to save role",
+    "roleDeleteFailed": "Failed to delete role"
+  },
+  "loading": {
+    "directives": "Loading announcement directives..."
+  }
+}

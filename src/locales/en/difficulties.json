@@ -1,0 +1,19 @@
+{
+  "announcements": {
+    "directive": {
+      "name": "Directive Name",
+      "triggerType": "Trigger Type",
+      "mode": "Mode",
+      "condition": "Condition",
+      "actions": "Actions"
+    },
+    "triggerType": {
+      "pass": "Pass Announcement",
+      "level": "Level Announcement"
+    },
+    "mode": {
+      "static": "Static",
+      "conditional": "Conditional"
+    }
+  }
+} 

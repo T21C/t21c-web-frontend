@@ -145,8 +145,8 @@
   gap: 0.5rem;
 }
 
-.difficulty-page .edit-button,
-.difficulty-page .delete-button {
+.difficulty-page .difficulty-actions .edit-button,
+.difficulty-page .difficulty-actions .delete-button {
   background: none;
   border: none;
   color: var(--color-white);
@@ -156,13 +156,13 @@
   transition: opacity 0.2s;
 }
 
-.difficulty-page .edit-button:hover,
-.difficulty-page .delete-button:hover {
+.difficulty-page .difficulty-actions .edit-button:hover,
+.difficulty-page .difficulty-actions .delete-button:hover {
   opacity: 1;
 }
 
-.difficulty-page .edit-button:disabled,
-.difficulty-page .delete-button:disabled {
+.difficulty-page .difficulty-actions .edit-button:disabled,
+.difficulty-page .difficulty-actions .delete-button:disabled {
   opacity: 0.3;
   cursor: not-allowed;
 }
@@ -207,35 +207,7 @@
   position: relative;
 }
 
-.difficulty-page .difficulty-modal-content h2 {
-  text-align: center;
-  margin-bottom: 2rem;
-  font-size: 1.5rem;
-}
 
-.difficulty-page .form-group {
-  margin-bottom: 1.5rem;
-}
-
-.difficulty-page .form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-}
-
-.difficulty-page .form-group input {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid var(--color-white-t20);
-  border-radius: 4px;
-  background-color: var(--color-white-t10);
-  color: var(--color-white);
-}
-
-.difficulty-page .form-group input:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
 
 .difficulty-page .modal-actions {
   display: flex;
@@ -307,74 +279,17 @@
   }
 }
 
-.difficulty-page .form-group select {
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid var(--color-white-t20);
-  border-radius: 4px;
-  background-color: var(--color-white-t10);
-  color: var(--color-white);
-  cursor: pointer;
-}
-
-.difficulty-page .form-group select:focus {
-  outline: none;
-  border-color: var(--color-white-t40);
-}
-
-.difficulty-page .form-group select option {
-  background-color: var(--color-black);
-  color: var(--color-white);
-}
-
-.difficulty-page .color-input-container {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-}
-
-.difficulty-page .color-input-container input[type="color"] {
-  width: 50px;
-  height: 40px;
-  padding: 0;
-  border: 1px solid var(--color-white-t20);
-  border-radius: 4px;
-  background-color: var(--color-white-t10);
-  cursor: pointer;
-}
-
-.difficulty-page .color-input-container input[type="text"] {
-  flex: 1;
-}
-
-.difficulty-page .form-group input:focus,
-.difficulty-page .form-group select:focus {
-  outline: none;
-  border-color: var(--color-white-t40);
-}
-
-.difficulty-page .form-group input::placeholder {
-  color: var(--color-white-t60);
-}
-
-.difficulty-page .form-group input:invalid {
-  border-color: var(--color-red);
-}
-
-.difficulty-page .form-group input:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
 
 .difficulty-page .modal-close-button {
   position: absolute;
-  top: 1rem;
-  right: 1rem;
+  z-index: 1000;
+  top: 2%;
+  right: 2%;
+  width: fit-content;
   background: none;
   border: none;
   color: var(--color-white);
   cursor: pointer;
-  padding: 0.5rem;
   opacity: 0.6;
   transition: opacity 0.2s;
   display: flex;
@@ -399,12 +314,12 @@
 
 }
 
-.difficulty-page .delete-warning,
-.difficulty-page .delete-input {
+.difficulty-page .delete-modal .delete-warning,
+.difficulty-page .delete-modal .delete-input {
   transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 }
 
-.difficulty-page .delete-warning.fade-out {
+.difficulty-page .delete-modal .delete-warning.fade-out {
   opacity: 0;
   transform: translateY(-20px);
   position: absolute;
@@ -412,45 +327,45 @@
   pointer-events: none;
 }
 
-.difficulty-page .delete-input {
+.difficulty-page .delete-modal .delete-input {
   opacity: 0;
   transform: translateY(20px);
   pointer-events: none;
 }
 
-.difficulty-page .delete-input.fade-in {
+.difficulty-page .delete-modal .delete-input.fade-in {
   opacity: 1;
   transform: translateY(0);
   pointer-events: auto;
 }
 
-.difficulty-page .warning-content {
+.difficulty-page .delete-modal .warning-content {
   margin: 1.5rem 0;
   font-size: 1.2rem;
 }
 
-.difficulty-page .warning-content p {
+.difficulty-page .delete-modal .warning-content p {
   margin: 0.5rem 0;
 }
 
-.difficulty-page .warning-content ul {
+.difficulty-page .delete-modal .warning-content ul {
   margin: 0.5rem 0;
   padding-left: 1.5rem;
 }
 
-.difficulty-page .warning-content li {
+.difficulty-page .delete-modal .warning-content li {
   margin: 0.25rem 0;
   color: var(--color-white-t80);
 }
 
-.difficulty-page .warning-highlight {
+.difficulty-page .delete-modal .warning-highlight {
   color: var(--color-red);
   font-weight: 600;
   text-align: center;
   margin-top: 1.5rem !important;
 }
 
-.difficulty-page .understand-button {
+.difficulty-page .delete-modal .understand-button {
   width: 100%;
   padding: 0.75rem;
   margin-top: 1rem;
@@ -464,12 +379,12 @@
   transition: background-color 0.2s;
 }
 
-.difficulty-page .understand-button:hover {
+.difficulty-page .delete-modal .understand-button:hover {
     border: 1px solid #F00F;
     background-color: rgba(255, 0, 0, 0.3);
 }
 
-.difficulty-page .delete-confirm-button {
+.difficulty-page .delete-modal .delete-confirm-button {
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
   font-weight: 600;
@@ -481,7 +396,7 @@
   transition: background-color 0.2s;
 }
 
-.difficulty-page .delete-confirm-button:hover {
+.difficulty-page .delete-modal .delete-confirm-button:hover {
   background-color: rgba(255, 0, 0, 0.3);
 }
 

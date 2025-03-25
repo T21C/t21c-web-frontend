@@ -337,13 +337,13 @@
   background-color: transparent;
 }
 
-.button-group {
+.edit-pass-popup-overlay .button-group {
   display: flex;
   gap: 16px;
   margin-top: 16px;
 }
 
-.button-group button {
+.edit-pass-popup-overlay .button-group button {
   flex: 1;
   padding: 12px;
   border: none;
@@ -353,29 +353,29 @@
   transition: background 0.2s ease;
 }
 
-.delete-button {
+.edit-pass-popup-overlay .delete-button {
   background: #c64141;
   color: white;
   max-width: 13rem;
 }
 
-.delete-button:hover:not(:disabled) {
+.edit-pass-popup-overlay .delete-button:hover:not(:disabled) {
   background: #a13535;
 }
 
-.delete-button:disabled {
+.edit-pass-popup-overlay .delete-button:disabled {
   background: #8d7373;
   cursor: not-allowed;
 }
 
-.announcement-status {
+.edit-pass-popup-overlay .announcement-status {
   margin: 1rem 0;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   align-items: center;
 }
 
-.announcement-status .checkbox-container {
+.edit-pass-popup-overlay .announcement-status .checkbox-container {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -385,12 +385,12 @@
   color: var(--color-black);
 }
 
-.announcement-status .checkbox-container input[type="checkbox"] {
+.edit-pass-popup-overlay .announcement-status .checkbox-container input[type="checkbox"] {
   width: auto;
   margin-right: 0.5rem;
 }
 
-.announcement-status .checkbox-container span:not(.checkmark) {
+.edit-pass-popup-overlay .announcement-status .checkbox-container span:not(.checkmark) {
   font-weight: 500;
 }
 
