@@ -311,7 +311,6 @@ const RatingPage = () => {
       // Check for Ctrl + Alt + R
       if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'r') {
         e.preventDefault(); // Prevent browser refresh
-        console.log('Force refreshing ratings...');
         setRatings(null); 
         fetchRatings();
       }

@@ -153,7 +153,6 @@ export const RatingHelpPopup = ({ onClose }) => {
                 <KeyCombo 
                   keys={["Ctrl", "Enter"]} 
                   actualKeys={["Control", "Enter"]}
-                  onComboTriggered={() => console.log("Save changes triggered")}
                 />
                 <span className="shortcut-description">
                   {tHelp('sections.shortcuts.points.submit')}
@@ -164,7 +163,6 @@ export const RatingHelpPopup = ({ onClose }) => {
                 <KeyCombo 
                   keys={["Esc"]} 
                   actualKeys={["Escape"]}
-                  onComboTriggered={() => console.log("Close popup triggered")}
                 />
                 <span className="shortcut-description">
                   {tHelp('sections.shortcuts.points.close')}
@@ -175,7 +173,6 @@ export const RatingHelpPopup = ({ onClose }) => {
                 <KeyCombo 
                   keys={['Ctrl', 'Alt', 'R']} 
                   actualKeys={['Control', 'Alt', 'r']}
-                  onComboTriggered={() => console.log("Reset ratings triggered")}
                 />
                 <span className="shortcut-description">
                   {tHelp('sections.shortcuts.points.reset')}
