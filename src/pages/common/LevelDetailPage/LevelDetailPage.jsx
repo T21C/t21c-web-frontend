@@ -459,6 +459,9 @@ const LevelDetailPage = () => {
                 alt={difficultyDict[res.level.difficulty.id]?.name || 'Difficulty icon'} 
                 className="difficulty-icon"
               />
+              <div className="pp-display">
+                {(res.level.baseScore || res.level.difficulty.baseScore || 0).toFixed(1)}PP
+              </div>
             </div>
 
             <div className="title">
