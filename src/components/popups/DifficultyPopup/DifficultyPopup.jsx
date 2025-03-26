@@ -652,7 +652,8 @@ const DifficultyPopup = ({
           pingType: action.pingType,
           roleId: action.pingType === 'ROLE' ? Number(action.roleId) : null
         })),
-        isActive: pastedDirective.isActive ?? true
+        isActive: pastedDirective.isActive ?? true,
+        firstOfKind: pastedDirective.firstOfKind ?? false
       };
       
       setDirectives(newDirectives);
