@@ -610,7 +610,8 @@ const DifficultyPopup = ({
         pingType: action.pingType,
         roleId: action.roleId
       })),
-      isActive: directive.isActive
+      isActive: directive.isActive,
+      firstOfKind: directive.firstOfKind ?? false
     };
     
     navigator.clipboard.writeText(JSON.stringify(directiveToCopy))
