@@ -41,6 +41,7 @@
   },
   "announcements": {
     "title": "Announcement Directives",
+    "firstOfKind": "First of Kind",
     "mode": {
       "label": "Directive Mode",
       "static": "Static",

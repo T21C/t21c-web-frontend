@@ -6,6 +6,7 @@ import { CustomSelect, StateDisplay } from '@/components/common/selectors';
 import api from '@/utils/api';
 import './difficultypopup.css';
 import toast, { Toaster } from 'react-hot-toast';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const DIRECTIVE_MODES = {
   STATIC: 'STATIC',
@@ -113,13 +114,19 @@ const DifficultyPopup = ({
             pingType: 'NONE'
           }],
           sortOrder: 0,
-          isActive: true
+          isActive: true,
+          firstOfKind: false
         };
         setDirectives([defaultDirective]);
         setOriginalDirectives([defaultDirective]);
       } else {
-        setDirectives(loadedDirectives);
-        setOriginalDirectives(loadedDirectives);
+        // Ensure firstOfKind is included for each directive
+        const directivesWithFirstOfKind = loadedDirectives.map(directive => ({
+          ...directive,
+          firstOfKind: directive.firstOfKind ?? false
+        }));
+        setDirectives(directivesWithFirstOfKind);
+        setOriginalDirectives(directivesWithFirstOfKind);
       }
     } catch (err) {
       setDirectivesError(tDiff('errors.loadDirectives'));
@@ -670,6 +677,22 @@ const DifficultyPopup = ({
     }));
   };
 
+  const handleDragEnd = (result) => {
+    if (!result.destination) return;
+
+    const items = Array.from(directives);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    // Update sortOrder for all items
+    const updatedItems = items.map((item, index) => ({
+      ...item,
+      sortOrder: index
+    }));
+
+    setDirectives(updatedItems);
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -906,349 +929,391 @@ const DifficultyPopup = ({
               ) : (
                 <form onSubmit={handleSaveDirectives}>
                   <div className="difficulty-modal__directives-list">
-                    {directives.map((directive, index) => (
-                      <div key={index} className="difficulty-modal__directive-item">
-                        <div className="difficulty-modal__directive-header">
-                          <div className="difficulty-modal__directive-header-left">
-                            <button
-                              type="button"
-                              className={`difficulty-modal__expand-button ${expandedDirectives[index] ? 'expanded' : ''}`}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                toggleDirective(index);
-                              }}
-                              aria-label={expandedDirectives[index] ? 'Collapse directive' : 'Expand directive'}
-                            >
-                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                              </svg>
-                            </button>
-                            <h3 className="difficulty-modal__directive-title">{directive.name}</h3>
-                          </div>
-                          <div className="difficulty-modal__directive-status">
-                            {hasDirectiveChanges(directive, index) ? (
-                              <>
-                                <PencilIcon className="difficulty-modal__directive-edit-icon" />
-                              </>
-                            ) : (
-                              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="difficulty-modal__directive-check-icon">
-                                <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                              </svg>
-                            )}
-                            {directives.length > 1 && (
-                              <button
-                                type="button"
-                                className="difficulty-modal__directive-remove-button"
-                                onClick={() => handleRemoveDirective(index)}
-                                aria-label={tDiff('announcements.directive.remove')}
+                    <DragDropContext onDragEnd={handleDragEnd}>
+                      <Droppable droppableId="directives">
+                        {(provided) => (
+                          <div
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                            className="difficulty-modal__directives-container"
+                          >
+                            {directives.map((directive, index) => (
+                              <Draggable
+                                key={index}
+                                draggableId={`directive-${index}`}
+                                index={index}
                               >
-                                <TrashIcon color="#f55" size="1.5rem" />
-                              </button>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className={`difficulty-modal__directive-content ${expandedDirectives[index] ? 'expanded' : ''}`}>
-                          <div className="difficulty-modal__directive-actions">
-                            <button
-                              type="button"
-                              className="difficulty-modal__directive-copy-button"
-                              onClick={() => handleCopyDirective(directive)}
-                              aria-label={tDiff('announcements.directive.copy')}
-                            >
-                              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M8 4V16C8 17.1046 8.89543 18 10 18H18C19.1046 18 20 17.1046 20 16V7.24162C20 6.7034 19.7831 6.18861 19.4 5.8L16.2 2.6C15.8114 2.21687 15.2966 2 14.7584 2H10C8.89543 2 8 2.89543 8 4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                <path d="M16 18V20C16 21.1046 15.1046 22 14 22H6C4.89543 22 4 21.1046 4 20V8C4 6.89543 4.89543 6 6 6H8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                              </svg>
-                            </button>
-                            <div className="difficulty-modal__directive-paste-container">
-                              <input
-                                type="text"
-                                className="difficulty-modal__directive-paste-input"
-                                placeholder={tDiff('announcements.directive.paste')}
-                                onPaste={(e) => handlePasteDirective(index, e)}
-                              />
-                            </div>
-                            {pasteError && <div className="difficulty-modal__paste-error">{pasteError}</div>}
-                          </div>
-
-                          <div className="difficulty-modal__form-group">
-                            <label className="difficulty-modal__form-label">{tDiff('announcements.directive.name')}</label>
-                            <input
-                              type="text"
-                              value={directive.name}
-                              onChange={(e) => handleDirectiveChange(index, 'name', e.target.value)}
-                              required
-                              className="difficulty-modal__form-input"
-                            />
-                          </div>
-
-                          <div className="difficulty-modal__form-group">
-                            <label className="difficulty-modal__form-label">{tDiff('announcements.mode.label')}</label>
-                            <select
-                              value={directive.mode}
-                              onChange={(e) => {
-                                const newMode = e.target.value;
-                                const updatedDirective = {
-                                  ...directive,
-                                  mode: newMode,
-                                  ...(newMode === DIRECTIVE_MODES.CONDITIONAL && !directive.condition ? {
-                                    condition: {
-                                      type: 'ACCURACY',
-                                      value: 0,
-                                      operator: 'GREATER_THAN_EQUAL'
-                                    }
-                                  } : {})
-                                };
-                                setDirectives(prevDirectives => {
-                                  const newDirectives = [...prevDirectives];
-                                  newDirectives[index] = updatedDirective;
-                                  return newDirectives;
-                                });
-                              }}
-                              className="difficulty-modal__form-select"
-                            >
-                              <option value={DIRECTIVE_MODES.STATIC}>
-                                {tDiff('announcements.mode.static')}
-                              </option>
-                              <option value={DIRECTIVE_MODES.CONDITIONAL}>
-                                {tDiff('announcements.mode.conditional')}
-                              </option>
-                            </select>
-                          </div>
-
-                          <div className="difficulty-modal__form-group">
-                            <StateDisplay
-                              currentState={directive.triggerType || TRIGGER_TYPES.PASS}
-                              states={[TRIGGER_TYPES.PASS, TRIGGER_TYPES.LEVEL]}
-                              onChange={(value) => handleDirectiveChange(index, 'triggerType', value)}
-                              width={60}
-                              label={tDiff('announcements.directive.triggerType')}
-                            />
-                          </div>
-
-                          <div className="difficulty-modal__form-group">
-                            <label className="difficulty-modal__form-label">{tDiff('announcements.directive.description')}</label>
-                            <textarea
-                              value={directive.description}
-                              onChange={(e) => handleDirectiveChange(index, 'description', e.target.value)}
-                              className="difficulty-modal__form-textarea"
-                            />
-                          </div>
-
-                          {directive.mode === DIRECTIVE_MODES.CONDITIONAL && (
-                            <>
-                              <div className="difficulty-modal__form-group">
-                                <label className="difficulty-modal__form-label">{tDiff('announcements.condition.type.label')}</label>
-                                <select
-                                  value={directive.condition?.type || 'ACCURACY'}
-                                  onChange={(e) => handleDirectiveChange(index, 'condition.type', e.target.value)}
-                                  required
-                                  className="difficulty-modal__form-select"
-                                >
-                                  {['ACCURACY', 'WORLDS_FIRST', 'BASE_SCORE', 'CUSTOM'].map(type => (
-                                    <option key={type} value={type}>
-                                      {getConditionTypeOption(type)}
-                                    </option>
-                                  ))}
-                                </select>
-                              </div>
-
-                              {(directive.condition?.type === 'ACCURACY' || directive.condition?.type === 'BASE_SCORE') && (
-                                <>
-                                  <div className="difficulty-modal__form-group">
-                                    <label className="difficulty-modal__form-label">{tDiff('announcements.condition.operator.label')}</label>
-                                    <select
-                                      value={directive.condition?.operator || 'GREATER_THAN_EQUAL'}
-                                      onChange={(e) => handleDirectiveChange(index, 'condition.operator', e.target.value)}
-                                      required
-                                      className="difficulty-modal__form-select"
-                                    >
-                                      {['EQUAL', 'GREATER_THAN', 'LESS_THAN', 'GREATER_THAN_EQUAL', 'LESS_THAN_EQUAL'].map(operator => (
-                                        <option key={operator} value={operator}>
-                                          {getOperatorOption(operator)}
-                                        </option>
-                                      ))}
-                                    </select>
-                                  </div>
-
-                                  <div className="difficulty-modal__form-group">
-                                    <label className="difficulty-modal__form-label">{tDiff('announcements.condition.value')}</label>
-                                    <input
-                                      type="number"
-                                      step="0.01"
-                                      value={directive.condition?.value}
-                                      onChange={(e) => handleDirectiveChange(index, 'condition.value', parseFloat(e.target.value))}
-                                      required
-                                      className="difficulty-modal__form-input"
-                                    />
-                                  </div>
-                                </>
-                              )}
-
-                              {directive.condition?.type === 'CUSTOM' && (
-                                <div className="difficulty-modal__form-group">
-                                  <div className="difficulty-modal__custom-function-header">
-                                    <label className="difficulty-modal__form-label">{tDiff('announcements.condition.customFunction')}</label>
-                                    <button
-                                      type="button"
-                                      className="difficulty-modal__help-button"
-                                      onClick={() => setShowHelpModal(true)}
-                                      aria-label="Show custom function help"
-                                    >
-                                      <QuestionmarkCircleIcon color="#fff" size="24px" />
-                                    </button>
-                                  </div>
-                                  <textarea
-                                    value={directive.condition?.customFunction || ''}
-                                    onChange={(e) => handleDirectiveChange(index, 'condition.customFunction', e.target.value)}
-                                    required
-                                    className="difficulty-modal__form-textarea"
-                                  />
-                                </div>
-                              )}
-                            </>
-                          )}
-
-                          <div className="difficulty-modal__actions-section">
-                            <div className="difficulty-modal__actions-header">
-                              <h4 className="difficulty-modal__actions-title">{tDiff('announcements.actions.title')}</h4>
-                              <button
-                                type="button"
-                                className={`difficulty-modal__expand-button ${expandedActions[index] ? 'expanded' : ''}`}
-                                onClick={(e) => {
-                                  e.preventDefault();
-                                  e.stopPropagation();
-                                  toggleActions(index);
-                                }}
-                                aria-label={expandedActions[index] ? 'Collapse actions' : 'Expand actions'}
-                              >
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                  <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                </svg>
-                              </button>
-                            </div>
-                            <div className={`difficulty-modal__actions-content ${expandedActions[index] ? 'expanded' : ''}`}>
-                              {directive?.actions?.map((action, actionIndex) => (
-                                <div key={actionIndex} className="difficulty-modal__action-item">
-                                  <button
-                                    type="button"
-                                    className="difficulty-modal__action-remove-button"
-                                    onClick={() => handleRemoveAction(index, actionIndex)}
-                                    aria-label={tDiff('announcements.actions.remove')}
+                                {(provided, snapshot) => (
+                                  <div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    className={`difficulty-modal__directive-item ${snapshot.isDragging ? 'difficulty-modal__directive-item--dragging' : ''}`}
                                   >
-                                    <TrashIcon color="#f55" size="1.2rem" />
-                                  </button>
-                                  <div className="difficulty-modal__form-group">
-                                    <label className="difficulty-modal__form-label">{tDiff('announcements.actions.channel', { returnObjects: true })["label"]}</label>
-                                    <div className="difficulty-modal__select-with-edit">
-                                      <CustomSelect
-                                        width="100%"
-                                        value={availableChannels.find(c => c.id === action.channelId) || null}
-                                        onChange={(option) => {
-                                          if (option.value === 'add_new') {
-                                            handleAddNewChannel();
-                                          } else {
-                                            handleDirectiveChange(index, `actions.${actionIndex}.channelId`, option.value);
-                                          }
-                                        }}
-                                        options={[
-                                          ...availableChannels.map(channel => ({
-                                            value: channel.id,
-                                            label: channel.label
-                                          })),
-                                          { value: 'add_new', label: `+ ${tDiff('announcements.actions.channel.add')}` }
-                                        ]}
-                                      />
-                                      {action.channelId && !['EVERYONE', 'NONE'].includes(action.channelId) && (
+                                    <div className="difficulty-modal__directive-header">
+                                      <div className="difficulty-modal__directive-header-left">
+                                        <div {...provided.dragHandleProps} className="difficulty-modal__drag-handle">
+                                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M8 6H16M8 12H16M8 18H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                          </svg>
+                                        </div>
                                         <button
                                           type="button"
-                                          className="difficulty-modal__select-edit-button"
-                                          onClick={() => handleEditChannel(availableChannels.find(c => c.id === action.channelId))}
-                                          aria-label={tDiff('announcements.actions.channel.edit')}
-                                        >
-                                          <EditIcon className="difficulty-modal__select-edit-button-icon" />
-                                        </button>
-                                      )}
-                                    </div>
-                                  </div>
-
-                                  <div className="difficulty-modal__form-group">
-                                    <label className="difficulty-modal__form-label">{tDiff('announcements.actions.pingType', { returnObjects: true })["label"]}</label>
-                                    <CustomSelect
-                                      value={{ value: action.pingType, label: getPingTypeOption(action.pingType) }}
-                                      onChange={(option) => handleDirectiveChange(index, `actions.${actionIndex}.pingType`, option.value)}
-                                      options={['NONE', 'ROLE', 'EVERYONE'].map(type => ({
-                                        value: type,
-                                        label: getPingTypeOption(type)
-                                      }))}
-                                      width="100%"
-                                    />
-                                  </div>
-
-                                  {action.pingType === 'ROLE' && (
-                                    <div className="difficulty-modal__form-group">
-                                      <label className="difficulty-modal__form-label">{tDiff('announcements.actions.role', { returnObjects: true })["label"]}</label>
-                                      <div className="difficulty-modal__select-with-edit">
-                                        <CustomSelect
-                                          value={availableRoles.find(r => r.id === action.roleId) || null}
-                                          onChange={(option) => {
-                                            if (option.value === 'add_new') {
-                                              handleAddNewRole();
-                                            } else {
-                                              handleDirectiveChange(index, `actions.${actionIndex}.roleId`, option.value);
-                                            }
+                                          className={`difficulty-modal__expand-button ${expandedDirectives[index] ? 'expanded' : ''}`}
+                                          onClick={(e) => {
+                                            e.preventDefault();
+                                            e.stopPropagation();
+                                            toggleDirective(index);
                                           }}
-                                          options={[
-                                            ...availableRoles.map(role => ({
-                                              value: role.id,
-                                              label: role.label
-                                            })),
-                                            { value: 'add_new', label: `+ ${tDiff('announcements.actions.role.add')}` }
-                                          ]}
-                                          width="100%"
-                                        />
-                                        {action.roleId && action.roleId !== 'EVERYONE' && (
+                                          aria-label={expandedDirectives[index] ? 'Collapse directive' : 'Expand directive'}
+                                        >
+                                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                          </svg>
+                                        </button>
+                                        <h3 className="difficulty-modal__directive-title">{directive.name}</h3>
+                                      </div>
+                                      <div className="difficulty-modal__directive-status">
+                                        {hasDirectiveChanges(directive, index) ? (
+                                          <>
+                                            <PencilIcon className="difficulty-modal__directive-edit-icon" />
+                                          </>
+                                        ) : (
+                                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="difficulty-modal__directive-check-icon">
+                                            <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                          </svg>
+                                        )}
+                                        {directives.length > 1 && (
                                           <button
                                             type="button"
-                                            className="difficulty-modal__select-edit-button"
-                                            onClick={() => handleEditRole(availableRoles.find(r => r.id === action.roleId))}
-                                            aria-label={tDiff('announcements.actions.role.edit')}
+                                            className="difficulty-modal__directive-remove-button"
+                                            onClick={() => handleRemoveDirective(index)}
+                                            aria-label={tDiff('announcements.directive.remove')}
                                           >
-                                            <EditIcon className="difficulty-modal__select-edit-button-icon" />
+                                            <TrashIcon color="#f55" size="1.5rem" />
                                           </button>
                                         )}
                                       </div>
                                     </div>
-                                  )}
-                                </div>
-                              ))}
 
-                              <button
-                                type="button"
-                                className="difficulty-modal__action-add-button"
-                                onClick={() => handleAddAction(index)}
-                              >
-                                {tDiff('announcements.actions.add')}
-                              </button>
-                            </div>
-                          </div>
+                                    <div className={`difficulty-modal__directive-content ${expandedDirectives[index] ? 'expanded' : ''}`}>
+                                      <div className="difficulty-modal__directive-actions">
+                                        <button
+                                          type="button"
+                                          className="difficulty-modal__directive-copy-button"
+                                          onClick={() => handleCopyDirective(directive)}
+                                          aria-label={tDiff('announcements.directive.copy')}
+                                        >
+                                          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M8 4V16C8 17.1046 8.89543 18 10 18H18C19.1046 18 20 17.1046 20 16V7.24162C20 6.7034 19.7831 6.18861 19.4 5.8L16.2 2.6C15.8114 2.21687 15.2966 2 14.7584 2H10C8.89543 2 8 2.89543 8 4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                            <path d="M16 18V20C16 21.1046 15.1046 22 14 22H6C4.89543 22 4 21.1046 4 20V8C4 6.89543 4.89543 6 6 6H8" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                          </svg>
+                                        </button>
+                                        <div className="difficulty-modal__directive-paste-container">
+                                          <input
+                                            type="text"
+                                            className="difficulty-modal__directive-paste-input"
+                                            placeholder={tDiff('announcements.directive.paste')}
+                                            onPaste={(e) => handlePasteDirective(index, e)}
+                                          />
+                                        </div>
+                                        {pasteError && <div className="difficulty-modal__paste-error">{pasteError}</div>}
+                                      </div>
 
-                          <div className="difficulty-modal__form-group-checkbox">
-                            <input
-                              type="checkbox"
-                              checked={directive.isActive}
-                              onChange={(e) => handleDirectiveChange(index, 'isActive', e.target.checked)}
-                              className="difficulty-modal__form-input-checkbox"
-                            />
-                            <label>
-                              {tDiff('announcements.directive.isActive')}
-                            </label>
+                                      <div className="difficulty-modal__form-group">
+                                        <label className="difficulty-modal__form-label">{tDiff('announcements.directive.name')}</label>
+                                        <input
+                                          type="text"
+                                          value={directive.name}
+                                          onChange={(e) => handleDirectiveChange(index, 'name', e.target.value)}
+                                          required
+                                          className="difficulty-modal__form-input"
+                                        />
+                                      </div>
+
+                                      <div className="difficulty-modal__form-group">
+                                        <label className="difficulty-modal__form-label">{tDiff('announcements.mode.label')}</label>
+                                        <select
+                                          value={directive.mode}
+                                          onChange={(e) => {
+                                            const newMode = e.target.value;
+                                            const updatedDirective = {
+                                              ...directive,
+                                              mode: newMode,
+                                              ...(newMode === DIRECTIVE_MODES.CONDITIONAL && !directive.condition ? {
+                                                condition: {
+                                                  type: 'ACCURACY',
+                                                  value: 0,
+                                                  operator: 'GREATER_THAN_EQUAL'
+                                                }
+                                              } : {})
+                                            };
+                                            setDirectives(prevDirectives => {
+                                              const newDirectives = [...prevDirectives];
+                                              newDirectives[index] = updatedDirective;
+                                              return newDirectives;
+                                            });
+                                          }}
+                                          className="difficulty-modal__form-select"
+                                        >
+                                          <option value={DIRECTIVE_MODES.STATIC}>
+                                            {tDiff('announcements.mode.static')}
+                                          </option>
+                                          <option value={DIRECTIVE_MODES.CONDITIONAL}>
+                                            {tDiff('announcements.mode.conditional')}
+                                          </option>
+                                        </select>
+                                      </div>
+
+                                      <div className="difficulty-modal__form-group">
+                                        <StateDisplay
+                                          currentState={directive.triggerType || TRIGGER_TYPES.PASS}
+                                          states={[TRIGGER_TYPES.PASS, TRIGGER_TYPES.LEVEL]}
+                                          onChange={(value) => handleDirectiveChange(index, 'triggerType', value)}
+                                          width={60}
+                                          label={tDiff('announcements.directive.triggerType')}
+                                        />
+                                      </div>
+
+                                      <div className="difficulty-modal__form-group">
+                                        <label className="difficulty-modal__form-label">{tDiff('announcements.directive.description')}</label>
+                                        <textarea
+                                          value={directive.description}
+                                          onChange={(e) => handleDirectiveChange(index, 'description', e.target.value)}
+                                          className="difficulty-modal__form-textarea"
+                                        />
+                                      </div>
+
+                                      {directive.mode === DIRECTIVE_MODES.CONDITIONAL && (
+                                        <>
+                                          <div className="difficulty-modal__form-group">
+                                            <label className="difficulty-modal__form-label">{tDiff('announcements.condition.type.label')}</label>
+                                            <select
+                                              value={directive.condition?.type || 'ACCURACY'}
+                                              onChange={(e) => handleDirectiveChange(index, 'condition.type', e.target.value)}
+                                              required
+                                              className="difficulty-modal__form-select"
+                                            >
+                                              {['ACCURACY', 'WORLDS_FIRST', 'BASE_SCORE', 'CUSTOM'].map(type => (
+                                                <option key={type} value={type}>
+                                                  {getConditionTypeOption(type)}
+                                                </option>
+                                              ))}
+                                            </select>
+                                          </div>
+
+                                          {(directive.condition?.type === 'ACCURACY' || directive.condition?.type === 'BASE_SCORE') && (
+                                            <>
+                                              <div className="difficulty-modal__form-group">
+                                                <label className="difficulty-modal__form-label">{tDiff('announcements.condition.operator.label')}</label>
+                                                <select
+                                                  value={directive.condition?.operator || 'GREATER_THAN_EQUAL'}
+                                                  onChange={(e) => handleDirectiveChange(index, 'condition.operator', e.target.value)}
+                                                  required
+                                                  className="difficulty-modal__form-select"
+                                                >
+                                                  {['EQUAL', 'GREATER_THAN', 'LESS_THAN', 'GREATER_THAN_EQUAL', 'LESS_THAN_EQUAL'].map(operator => (
+                                                    <option key={operator} value={operator}>
+                                                      {getOperatorOption(operator)}
+                                                    </option>
+                                                  ))}
+                                                </select>
+                                              </div>
+
+                                              <div className="difficulty-modal__form-group">
+                                                <label className="difficulty-modal__form-label">{tDiff('announcements.condition.value')}</label>
+                                                <input
+                                                  type="number"
+                                                  step="0.01"
+                                                  value={directive.condition?.value}
+                                                  onChange={(e) => handleDirectiveChange(index, 'condition.value', parseFloat(e.target.value))}
+                                                  required
+                                                  className="difficulty-modal__form-input"
+                                                />
+                                              </div>
+                                            </>
+                                          )}
+
+                                          {directive.condition?.type === 'CUSTOM' && (
+                                            <div className="difficulty-modal__form-group">
+                                              <div className="difficulty-modal__custom-function-header">
+                                                <label className="difficulty-modal__form-label">{tDiff('announcements.condition.customFunction')}</label>
+                                                <button
+                                                  type="button"
+                                                  className="difficulty-modal__help-button"
+                                                  onClick={() => setShowHelpModal(true)}
+                                                  aria-label="Show custom function help"
+                                                >
+                                                  <QuestionmarkCircleIcon color="#fff" size="24px" />
+                                                </button>
+                                              </div>
+                                              <textarea
+                                                value={directive.condition?.customFunction || ''}
+                                                onChange={(e) => handleDirectiveChange(index, 'condition.customFunction', e.target.value)}
+                                                required
+                                                className="difficulty-modal__form-textarea"
+                                              />
+                                            </div>
+                                          )}
+                                        </>
+                                      )}
+
+                                      <div className="difficulty-modal__actions-section">
+                                        <div className="difficulty-modal__actions-header">
+                                          <h4 className="difficulty-modal__actions-title">{tDiff('announcements.actions.title')}</h4>
+                                          <button
+                                            type="button"
+                                            className={`difficulty-modal__expand-button ${expandedActions[index] ? 'expanded' : ''}`}
+                                            onClick={(e) => {
+                                              e.preventDefault();
+                                              e.stopPropagation();
+                                              toggleActions(index);
+                                            }}
+                                            aria-label={expandedActions[index] ? 'Collapse actions' : 'Expand actions'}
+                                          >
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                              <path d="M6 9L12 15L18 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                                            </svg>
+                                          </button>
+                                        </div>
+                                        <div className={`difficulty-modal__actions-content ${expandedActions[index] ? 'expanded' : ''}`}>
+                                          {directive?.actions?.map((action, actionIndex) => (
+                                            <div key={actionIndex} className="difficulty-modal__action-item">
+                                              <button
+                                                type="button"
+                                                className="difficulty-modal__action-remove-button"
+                                                onClick={() => handleRemoveAction(index, actionIndex)}
+                                                aria-label={tDiff('announcements.actions.remove')}
+                                              >
+                                                <TrashIcon color="#f55" size="1.2rem" />
+                                              </button>
+                                              <div className="difficulty-modal__form-group">
+                                                <label className="difficulty-modal__form-label">{tDiff('announcements.actions.channel', { returnObjects: true })["label"]}</label>
+                                                <div className="difficulty-modal__select-with-edit">
+                                                  <CustomSelect
+                                                    width="100%"
+                                                    value={availableChannels.find(c => c.id === action.channelId) || null}
+                                                    onChange={(option) => {
+                                                      if (option.value === 'add_new') {
+                                                        handleAddNewChannel();
+                                                      } else {
+                                                        handleDirectiveChange(index, `actions.${actionIndex}.channelId`, option.value);
+                                                      }
+                                                    }}
+                                                    options={[
+                                                      ...availableChannels.map(channel => ({
+                                                        value: channel.id,
+                                                        label: channel.label
+                                                      })),
+                                                      { value: 'add_new', label: `+ ${tDiff('announcements.actions.channel.add')}` }
+                                                    ]}
+                                                  />
+                                                  {action.channelId && !['EVERYONE', 'NONE'].includes(action.channelId) && (
+                                                    <button
+                                                      type="button"
+                                                      className="difficulty-modal__select-edit-button"
+                                                      onClick={() => handleEditChannel(availableChannels.find(c => c.id === action.channelId))}
+                                                      aria-label={tDiff('announcements.actions.channel.edit')}
+                                                    >
+                                                      <EditIcon className="difficulty-modal__select-edit-button-icon" />
+                                                    </button>
+                                                  )}
+                                                </div>
+                                              </div>
+
+                                              <div className="difficulty-modal__form-group">
+                                                <label className="difficulty-modal__form-label">{tDiff('announcements.actions.pingType', { returnObjects: true })["label"]}</label>
+                                                <CustomSelect
+                                                  value={{ value: action.pingType, label: getPingTypeOption(action.pingType) }}
+                                                  onChange={(option) => handleDirectiveChange(index, `actions.${actionIndex}.pingType`, option.value)}
+                                                  options={['NONE', 'ROLE', 'EVERYONE'].map(type => ({
+                                                    value: type,
+                                                    label: getPingTypeOption(type)
+                                                  }))}
+                                                  width="100%"
+                                                />
+                                              </div>
+
+                                              {action.pingType === 'ROLE' && (
+                                                <div className="difficulty-modal__form-group">
+                                                  <label className="difficulty-modal__form-label">{tDiff('announcements.actions.role', { returnObjects: true })["label"]}</label>
+                                                  <div className="difficulty-modal__select-with-edit">
+                                                    <CustomSelect
+                                                      value={availableRoles.find(r => r.id === action.roleId) || null}
+                                                      onChange={(option) => {
+                                                        if (option.value === 'add_new') {
+                                                          handleAddNewRole();
+                                                        } else {
+                                                          handleDirectiveChange(index, `actions.${actionIndex}.roleId`, option.value);
+                                                        }
+                                                      }}
+                                                      options={[
+                                                        ...availableRoles.map(role => ({
+                                                          value: role.id,
+                                                          label: role.label
+                                                        })),
+                                                        { value: 'add_new', label: `+ ${tDiff('announcements.actions.role.add')}` }
+                                                      ]}
+                                                      width="100%"
+                                                    />
+                                                    {action.roleId && action.roleId !== 'EVERYONE' && (
+                                                      <button
+                                                        type="button"
+                                                        className="difficulty-modal__select-edit-button"
+                                                        onClick={() => handleEditRole(availableRoles.find(r => r.id === action.roleId))}
+                                                        aria-label={tDiff('announcements.actions.role.edit')}
+                                                      >
+                                                        <EditIcon className="difficulty-modal__select-edit-button-icon" />
+                                                      </button>
+                                                    )}
+                                                  </div>
+                                                </div>
+                                              )}
+                                            </div>
+                                          ))}
+
+                                          <button
+                                            type="button"
+                                            className="difficulty-modal__action-add-button"
+                                            onClick={() => handleAddAction(index)}
+                                          >
+                                            {tDiff('announcements.actions.add')}
+                                          </button>
+                                        </div>
+                                      </div>
+
+                                      <div className="difficulty-modal__form-group-checkbox">
+                                        <input
+                                          type="checkbox"
+                                          checked={directive.isActive}
+                                          onChange={(e) => handleDirectiveChange(index, 'isActive', e.target.checked)}
+                                          className="difficulty-modal__form-input-checkbox"
+                                        />
+                                        <label>
+                                          {tDiff('announcements.directive.isActive')}
+                                        </label>
+                                      </div>
+
+                                      <div className="difficulty-modal__form-group-checkbox">
+                                        <input
+                                          type="checkbox"
+                                          checked={directive.firstOfKind}
+                                          onChange={(e) => handleDirectiveChange(index, 'firstOfKind', e.target.checked)}
+                                          className="difficulty-modal__form-input-checkbox"
+                                        />
+                                        <label>
+                                          {tDiff('announcements.firstOfKind')}
+                                        </label>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))}
+                            {provided.placeholder}
                           </div>
-                        </div>
-                      </div>
-                    ))}
+                        )}
+                      </Droppable>
+                    </DragDropContext>
                   </div>
 
                   <button
@@ -1421,6 +1486,7 @@ const DifficultyPopup = ({
                 <li><code>IS_16K</code> - Whether it's a 16K pass (true/false)</li>
                 <li><code>SPEED</code> - The speed value</li>
                 <li><code>ACCURACY</code> - The accuracy value</li>
+                <li><code>NO_MISS</code> - Whether there are no misses in judgements (true/false)</li>
               </ul>
 
               <h3>Available Operators</h3>

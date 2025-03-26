@@ -155,11 +155,18 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  font-size: 0.9rem;
+  color: #666;
 }
 
 .difficulty-modal__form-input-checkbox {
   width: 1rem;
   height: 1rem;
+  cursor: pointer;
+}
+
+.difficulty-modal__form-input-checkbox:checked {
+  accent-color: #4CAF50;
 }
 
 .difficulty-modal__form-select {
@@ -287,16 +294,37 @@
   margin-bottom: 2rem;
 }
 
-.difficulty-modal__directive-item {
-  background-color: rgba(255, 255, 255, 0.05);
-  border-radius: 8px;
-  padding: 1.5rem;
-  margin-bottom: 1rem;
-  transition: background-color 0.2s ease;
+.difficulty-modal__directives-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.difficulty-modal__directive-item:hover {
-  background-color: rgba(255, 255, 255, 0.08);
+.difficulty-modal__directive-item {
+  background: #2a2a2a;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  padding: 1rem;
+}
+
+.difficulty-modal__directive-item--dragging {
+  background: #3a3a3a;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.difficulty-modal__drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  cursor: grab;
+  color: #666;
+  transition: color 0.2s ease;
+}
+
+.difficulty-modal__drag-handle:hover {
+  color: #999;
 }
 
 .difficulty-modal__directive-header {
@@ -319,8 +347,8 @@
 
 .difficulty-modal__directive-status {
   display: flex;
+  gap: 1rem;
   align-items: center;
-  gap: 0.5rem;
 }
 
 .difficulty-modal__directive-copy-button {
