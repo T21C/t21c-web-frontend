@@ -116,9 +116,9 @@ const AnnouncementPage = () => {
     setError(null);
     try {
       if (validLevelIds.length > 0) {
-        // await api.post(`${import.meta.env.VITE_LEVELS}/announce`, {
-        //   levelIds: validLevelIds
-        // });
+        await api.post(`${import.meta.env.VITE_LEVELS}/announce`, {
+          levelIds: validLevelIds
+        });
         
         await api.post(`${import.meta.env.VITE_WEBHOOK}/${activeTab === 'newLevels' ? 'levels' : 'rerates'}`, {
           levelIds: validLevelIds
@@ -129,9 +129,9 @@ const AnnouncementPage = () => {
       }
 
       if (validPassIds.length > 0) {
-        // await api.post(`${import.meta.env.VITE_PASSES}/announce`, {
-        //   passIds: validPassIds
-        // });
+        await api.post(`${import.meta.env.VITE_PASSES}/announce`, {
+          passIds: validPassIds
+        });
 
         await api.post(`${import.meta.env.VITE_WEBHOOK}/passes`, {
           passIds: validPassIds
