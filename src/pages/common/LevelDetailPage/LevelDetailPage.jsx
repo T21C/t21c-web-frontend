@@ -251,7 +251,7 @@ const LevelDetailPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const levelData = await api.get(`${import.meta.env.VITE_LEVELS}/${id}`);
+        const levelData = await api.get(`${import.meta.env.VITE_LEVELS}/withRatings/${id}`);
         const passesData = await api.get(`${import.meta.env.VITE_PASSES}/level/${id}`);
         setRes(prevRes => ({
           ...prevRes,
