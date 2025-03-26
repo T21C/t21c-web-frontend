@@ -40,7 +40,7 @@
     "SPECIAL": "Special"
   },
   "announcements": {
-    "title": "Announcement Directives",
+    "title": "Announcement Directives For {{diffName}}",
     "firstOfKind": "First of Kind",
     "mode": {
       "label": "Directive Mode",
