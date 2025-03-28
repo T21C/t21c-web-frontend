@@ -15,7 +15,7 @@ import api from '@/utils/api';
 import { ScrollButton } from "@/components/common/buttons";
 import { useAuth } from "@/contexts/AuthContext";
 import { DifficultyContext } from "@/contexts/DifficultyContext";
-import { DifficultySlider } from "@/components/common/selectors";
+import { DifficultySlider, SpecialDifficulties } from "@/components/common/selectors";
 import { PassHelpPopup } from "@/components/popups";
 import { ResetIcon, SortIcon, FilterIcon } from "@/components/common/icons";
 const currentUrl = window.location.origin + location.pathname;
@@ -30,9 +30,11 @@ const PassPage = () => {
   const { user } = useAuth();
   const { difficulties } = useContext(DifficultyContext);
   const [showHelpPopup, setShowHelpPopup] = useState(false);
+  const [selectedSpecialDiffs, setSelectedSpecialDiffs] = useState([]);
 
   // Filter difficulties by type
   const pguDifficulties = difficulties.filter(d => d.type === 'PGU');
+  const specialDifficulties = difficulties.filter(d => d.type === 'SPECIAL');
 
   const {
     passesData,
@@ -109,7 +111,8 @@ const PassPage = () => {
           deletedFilter,
           keyFlag,
           minDiff: selectedLowFilterDiff !== 0 ? selectedLowFilterDiff : undefined,
-          maxDiff: selectedHighFilterDiff !== 0 ? selectedHighFilterDiff : undefined
+          maxDiff: selectedHighFilterDiff !== 0 ? selectedHighFilterDiff : undefined,
+          specialDifficulties: selectedSpecialDiffs
         };
 
         const response = await api.post(
@@ -142,7 +145,7 @@ const PassPage = () => {
     fetchPasses();
 
     return () => cancel && cancel();
-  }, [query, pageNumber, forceUpdate, deletedFilter, hide12k]);
+  }, [query, pageNumber, forceUpdate, deletedFilter, hide12k, selectedSpecialDiffs]);
 
 
 
@@ -220,6 +223,18 @@ const PassPage = () => {
     setForceUpdate(f => !f);
   }, [pguDifficulties]);
 
+  function toggleSpecialDifficulty(diffName) {
+    setSelectedSpecialDiffs(prev => {
+      const newSelection = prev.includes(diffName)
+        ? prev.filter(d => d !== diffName)
+        : [...prev, diffName];
+      
+      setPageNumber(0);
+      setPassesData([]);
+      setForceUpdate(f => !f);
+      return newSelection;
+    });
+  }
 
   const renderContent = () => {
     // Initial difficulties loading
@@ -396,38 +411,45 @@ const PassPage = () => {
                 />
               </div>
 
-              <div className="checkbox-filters">
-                {user?.isSuperAdmin && (
+              <div className="filter-row">
+                <SpecialDifficulties
+                  difficulties={specialDifficulties}
+                  selectedDiffs={selectedSpecialDiffs}
+                  onToggle={toggleSpecialDifficulty}
+                />
+                <div className="checkbox-filters">
+                  {user?.isSuperAdmin && (
+                    <StateDisplay
+                      currentState={deletedFilter}
+                      onChange={(newState) => {
+                        setDeletedFilter(newState);
+                        setPageNumber(0);
+                        setPassesData([]);
+                        setForceUpdate(prev => !prev);
+                      }}
+                      label={tPass('settings.filter.options.deletedPasses')}
+                      width={60}
+                      height={24}
+                      padding={3}
+                      showLabel={true}
+                    />
+                  )}
                   <StateDisplay
-                    currentState={deletedFilter}
+                    currentState={keyFlag}
+                    states={['all', '12k', '16k']}
                     onChange={(newState) => {
-                      setDeletedFilter(newState);
+                      setKeyFlag(newState);
                       setPageNumber(0);
                       setPassesData([]);
                       setForceUpdate(prev => !prev);
                     }}
-                    label={tPass('settings.filter.options.deletedPasses')}
+                    label={tPass('settings.filter.options.keyFlags')}
                     width={60}
                     height={24}
                     padding={3}
                     showLabel={true}
                   />
-                )}
-                <StateDisplay
-                  currentState={keyFlag}
-                  states={['all', '12k', '16k']}
-                  onChange={(newState) => {
-                    setKeyFlag(newState);
-                    setPageNumber(0);
-                    setPassesData([]);
-                    setForceUpdate(prev => !prev);
-                  }}
-                  label={tPass('settings.filter.options.keyFlags')}
-                  width={60}
-                  height={24}
-                  padding={3}
-                  showLabel={true}
-                />
+                </div>
               </div>
             </div>
           </div>
