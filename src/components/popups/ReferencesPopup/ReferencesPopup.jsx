@@ -148,40 +148,48 @@ const TYPE_PRIORITY = {
   'KEYCOUNT_PLUS': 4
 };
 
+// Helper function to sort types by priority
+const sortTypesByPriority = (types) => {
+  return [...types].sort((a, b) => TYPE_PRIORITY[a] - TYPE_PRIORITY[b]);
+};
+
+// Helper function to generate combinations of a specific size
+const generateCombinationsOfSize = (types, size) => {
+  if (size === 1) return types.map(type => [type]);
+  
+  const combinations = [];
+  for (let i = 0; i <= types.length - size; i++) {
+    const head = types[i];
+    const tailCombos = generateCombinationsOfSize(types.slice(i + 1), size - 1);
+    combinations.push(...tailCombos.map(combo => [head, ...combo]));
+  }
+  return combinations;
+};
+
 // Generate all possible combinations of reference types
 const generateTypeCombinations = () => {
-  const combinations = new Set(); // Use Set to automatically handle uniqueness
   const baseTypes = ['ROLLING', 'INDEXING', 'TECH', 'KEYCOUNT', 'KEYCOUNT_PLUS'];
+  const combinations = new Set();
   
   // Add single types
   baseTypes.forEach(type => combinations.add(type));
   
-  // Add combinations (2-4 types)
-  for (let i = 0; i < baseTypes.length; i++) {
-    for (let j = i + 1; j < baseTypes.length; j++) {
-      // Skip if either type is KEYCOUNT_PLUS (it should only be used alone)
-      // Add 2-type combinations
-      combinations.add(`${baseTypes[i]}+${baseTypes[j]}`);
-      
-      // Add 3-type combinations
-      for (let k = j + 1; k < baseTypes.length; k++) {
-        combinations.add(`${baseTypes[i]}+${baseTypes[j]}+${baseTypes[k]}`);
-        
-        // Add 4-type combinations
-        for (let l = k + 1; l < baseTypes.length; l++) {
-          combinations.add(`${baseTypes[i]}+${baseTypes[j]}+${baseTypes[k]}+${baseTypes[l]}`);
-        }
-      }
-    }
+  // Generate combinations of size 2-4
+  for (let size = 2; size <= 5; size++) {
+    const sizeCombos = generateCombinationsOfSize(baseTypes, size);
+    sizeCombos.forEach(combo => {
+      // Sort the combination by priority and join
+      const sortedCombo = sortTypesByPriority(combo);
+      combinations.add(sortedCombo.join('+'));
+    });
   }
   
-  // Convert Set to Array and sort based on priority
+  // Convert to array and sort by length (descending) and first type priority
   return Array.from(combinations).sort((a, b) => {
-    // Split combinations into arrays of types
     const typesA = a.split('+');
     const typesB = b.split('+');
     
-    // Compare lengths first (shorter combinations come first)
+    // Compare lengths first (longer combinations come first)
     if (typesA.length !== typesB.length) {
       return typesB.length - typesA.length;
     }
@@ -200,18 +208,20 @@ const compareTypes = (a, b) => {
   if (!a) return 1;
   if (!b) return -1;
   
-  // Get the index from our sorted combinations array
-  const indexA = REFERENCE_TYPE_COMBINATIONS.indexOf(a);
-  const indexB = REFERENCE_TYPE_COMBINATIONS.indexOf(b);
+  // Split and sort both types by priority
+  const typesA = a.split('+').sort((x, y) => TYPE_PRIORITY[x] - TYPE_PRIORITY[y]);
+  const typesB = b.split('+').sort((x, y) => TYPE_PRIORITY[x] - TYPE_PRIORITY[y]);
   
-  // If both types are in our combinations array, use their indices
-  if (indexA !== -1 && indexB !== -1) {
-    return indexA - indexB;
+  // Compare lengths first (longer combinations come first)
+  if (typesA.length !== typesB.length) {
+    return typesB.length - typesA.length;
   }
   
-  // If one type is not in our combinations array, put it at the end
-  if (indexA === -1) return 1;
-  if (indexB === -1) return -1;
+  // If lengths are equal, compare each type in order
+  for (let i = 0; i < typesA.length; i++) {
+    const diff = TYPE_PRIORITY[typesA[i]] - TYPE_PRIORITY[typesB[i]];
+    if (diff !== 0) return diff;
+  }
   
   return 0;
 };
