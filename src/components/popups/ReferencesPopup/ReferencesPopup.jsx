@@ -63,6 +63,7 @@ const TYPE_DISPLAY = {
   'KEYCOUNT_PLUS': 'K+'
 };
 
+
 // Helper functions for type validation and conversion
 const isValidTypeFormat = (type) => {
   if (!type) return true; // Empty type is valid
@@ -138,50 +139,84 @@ const DEFAULT_TYPE_ICONS = {
   'KEYCOUNT_PLUS': keycountPlusIcon
 };
 
+// Define type priority for sorting
+const TYPE_PRIORITY = {
+  'ROLLING': 0,
+  'INDEXING': 1,
+  'TECH': 2,
+  'KEYCOUNT': 3,
+  'KEYCOUNT_PLUS': 4
+};
+
 // Generate all possible combinations of reference types
 const generateTypeCombinations = () => {
-  const combinations = new Set();
-  const baseTypes = ['R', 'I', 'T', 'K', 'K+']; // K+ is now a base type
+  const combinations = new Set(); // Use Set to automatically handle uniqueness
+  const baseTypes = ['ROLLING', 'INDEXING', 'TECH', 'KEYCOUNT', 'KEYCOUNT_PLUS'];
   
   // Add single types
-  baseTypes.forEach(type => {
-    combinations.add(TYPE_IDENTIFIERS[type]);
-  });
+  baseTypes.forEach(type => combinations.add(type));
   
-  // Add combinations (2-4 letters)
+  // Add combinations (2-4 types)
   for (let i = 0; i < baseTypes.length; i++) {
-    for (let j = 0; j < baseTypes.length; j++) {
-      // Add 2-letter combinations
-      const combo2 = TYPE_IDENTIFIERS[baseTypes[i]] + '+' + TYPE_IDENTIFIERS[baseTypes[j]];
-      combinations.add(combo2);
+    for (let j = i + 1; j < baseTypes.length; j++) {
+      // Skip if either type is KEYCOUNT_PLUS (it should only be used alone)
+      // Add 2-type combinations
+      combinations.add(`${baseTypes[i]}+${baseTypes[j]}`);
       
-      // Add 3-letter combinations
-      for (let k = 0; k < baseTypes.length; k++) {
-        const combo3 = TYPE_IDENTIFIERS[baseTypes[i]] + '+' + TYPE_IDENTIFIERS[baseTypes[j]] + '+' + TYPE_IDENTIFIERS[baseTypes[k]];
-        combinations.add(combo3);
+      // Add 3-type combinations
+      for (let k = j + 1; k < baseTypes.length; k++) {
+        combinations.add(`${baseTypes[i]}+${baseTypes[j]}+${baseTypes[k]}`);
         
-        // Add 4-letter combinations
-        for (let l = 0; l < baseTypes.length; l++) {
-          const combo4 = TYPE_IDENTIFIERS[baseTypes[i]] + '+' + TYPE_IDENTIFIERS[baseTypes[j]] + '+' + TYPE_IDENTIFIERS[baseTypes[k]] + '+' + TYPE_IDENTIFIERS[baseTypes[l]];
-          combinations.add(combo4);
+        // Add 4-type combinations
+        for (let l = k + 1; l < baseTypes.length; l++) {
+          combinations.add(`${baseTypes[i]}+${baseTypes[j]}+${baseTypes[k]}+${baseTypes[l]}`);
         }
       }
     }
   }
   
-  // Sort combinations by length (descending) and then by type order
-  const sortedCombos = Array.from(combinations).sort((a, b) => {
-    if (a.length !== b.length) return b.length - a.length;
-    return TYPE_ORDER[a.split('+')[0]] - TYPE_ORDER[b.split('+')[0]];
+  // Convert Set to Array and sort based on priority
+  return Array.from(combinations).sort((a, b) => {
+    // Split combinations into arrays of types
+    const typesA = a.split('+');
+    const typesB = b.split('+');
+    
+    // Compare lengths first (shorter combinations come first)
+    if (typesA.length !== typesB.length) {
+      return typesB.length - typesA.length;
+    }
+    
+    // If lengths are equal, compare by priority of first type
+    return TYPE_PRIORITY[typesA[0]] - TYPE_PRIORITY[typesB[0]];
   });
-  
-  return sortedCombos;
 };
 
 const REFERENCE_TYPE_COMBINATIONS = generateTypeCombinations();
 
+// Update compareTypes function to use the new priority system
+const compareTypes = (a, b) => {
+  // Handle empty types (put them at the end)
+  if (!a && !b) return 0;
+  if (!a) return 1;
+  if (!b) return -1;
+  
+  // Get the index from our sorted combinations array
+  const indexA = REFERENCE_TYPE_COMBINATIONS.indexOf(a);
+  const indexB = REFERENCE_TYPE_COMBINATIONS.indexOf(b);
+  
+  // If both types are in our combinations array, use their indices
+  if (indexA !== -1 && indexB !== -1) {
+    return indexA - indexB;
+  }
+  
+  // If one type is not in our combinations array, put it at the end
+  if (indexA === -1) return 1;
+  if (indexB === -1) return -1;
+  
+  return 0;
+};
+
 const parseReferenceString = (str) => {
-  console.log('Parsing reference string:', str);
   const lines = str.split('\n').map(line => line.trim()).filter(Boolean);
   const references = [];
 
@@ -191,10 +226,6 @@ const parseReferenceString = (str) => {
       const [typePart, ...levelParts] = line.split(':').map(part => part.trim());
       if (!typePart || !levelParts.length) continue;
 
-      console.log('Processing line with type:', {
-        original: typePart,
-        levelIds: levelParts[0]
-      });
 
       // First validate the type format
       if (!isValidTypeFormat(typePart.toUpperCase())) {
@@ -203,10 +234,7 @@ const parseReferenceString = (str) => {
 
       // Then convert to internal format
       const type = toInternalType(typePart.toUpperCase());
-      console.log('Converted type to internal format:', {
-        original: typePart,
-        internal: type
-      });
+
 
       // Finally validate against allowed combinations
       if (!REFERENCE_TYPE_COMBINATIONS.includes(type)) {
@@ -228,8 +256,6 @@ const parseReferenceString = (str) => {
       });
     }
   }
-
-  console.log('Final parsed references:', references);
   return references;
 };
 
@@ -292,11 +318,7 @@ const ReferencesPopup = ({ onClose }) => {
         }, {});
 
         // Sort types alphabetically, putting empty type at the end
-        const sortedTypes = Object.keys(groupedByType).sort((a, b) => {
-          if (a === '') return 1;
-          if (b === '') return -1;
-          return -a.localeCompare(b);
-        });
+        const sortedTypes = Object.keys(groupedByType).sort(compareTypes);
 
         // Format each group
         initialIds[ref.difficulty.id] = sortedTypes
@@ -378,11 +400,7 @@ const ReferencesPopup = ({ onClose }) => {
         
 
         // Sort types alphabetically, putting empty type at the end
-        const sortedTypes = Object.keys(groupedByType).sort((a, b) => {
-          if (a === '') return 1;
-          if (b === '') return -1;
-          return a.localeCompare(b);
-        });
+        const sortedTypes = Object.keys(groupedByType).sort(compareTypes);
         
         // Format each group
         initialIds[ref.difficulty.id] = sortedTypes
@@ -562,11 +580,7 @@ const ReferencesPopup = ({ onClose }) => {
           }, {});
 
           // Sort types, placing untyped references last
-          const sortedTypes = Object.keys(levelsByType).sort((a, b) => {
-            if (a === '') return 1;
-            if (b === '') return -1;
-            return -a.localeCompare(b);
-          });
+          const sortedTypes = Object.keys(levelsByType).sort(compareTypes);
 
           return (
             <div 
