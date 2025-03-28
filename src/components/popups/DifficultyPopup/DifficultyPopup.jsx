@@ -5,7 +5,7 @@ import { EditIcon, PencilIcon, QuestionmarkCircleIcon, TrashIcon } from '@/compo
 import { CustomSelect, StateDisplay } from '@/components/common/selectors';
 import api from '@/utils/api';
 import './difficultypopup.css';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const DIRECTIVE_MODES = {
@@ -193,23 +193,10 @@ const DifficultyPopup = ({
   };
 
   const showToast = (message, type = 'success') => {
-    const toastOptions = {
-      duration: 3000,
-      position: 'bottom-right',
-      style: {
-        background: type === 'success' ? '#4CAF50' : '#f44336',
-        color: '#fff',
-        padding: '12px 24px',
-        borderRadius: '4px',
-        boxShadow: '0 2px 4px rgba(0,0,0,0.2)',
-      },
-      className: 'difficulty-toast',
-    };
-
     if (type === 'success') {
-      toast.success(message, toastOptions);
+      toast.success(message);
     } else {
-      toast.error(message, toastOptions);
+      toast.error(message);
     }
   };
 
@@ -702,7 +689,6 @@ const DifficultyPopup = ({
       className="difficulty-modal"
       ref={modalRef}
     >
-      <Toaster />
       <div className="difficulty-modal__content">
         <button 
           className="difficulty-modal__close-button"

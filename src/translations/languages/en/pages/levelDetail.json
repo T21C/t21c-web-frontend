@@ -10,7 +10,8 @@
   },
   "buttons": {
     "edit": "Edit Level",
-    "close": "Close"
+    "close": "Close",
+    "viewRating": "View Previous Ratings"
   },
   "links": {
     "download": "Download Level",

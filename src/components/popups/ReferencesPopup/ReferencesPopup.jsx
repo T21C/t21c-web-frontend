@@ -1,10 +1,18 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './referencespopup.css';
 import api from '@/utils/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { useTranslation } from 'react-i18next';
+import { toast } from 'react-hot-toast';
+import rollingIcon from '@/assets/icons/Rolling RITK.png';
+import indexingIcon from '@/assets/icons/Indexing RITK.png';
+import techIcon from '@/assets/icons/Tech RITK.png';
+import keycountIcon from '@/assets/icons/Keycount RITK.png';
+import keycountPlusIcon from '@/assets/icons/Kplus RITK.png';
+import hideIcons from '@/assets/icons/RITK hidden.png'
+import showIcons from '@/assets/icons/RITK visible.png'
 
 const hexToRgb = (hex) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -37,6 +45,194 @@ const getContrastColor = (backgroundColor) => {
   return backgroundColor;
 };
 
+// Define unique identifiers for each type
+const TYPE_IDENTIFIERS = {
+  'R': 'ROLLING',
+  'I': 'INDEXING',
+  'T': 'TECH',
+  'K': 'KEYCOUNT',
+  'K+': 'KEYCOUNT_PLUS'
+};
+
+// Reverse mapping for display
+const TYPE_DISPLAY = {
+  'ROLLING': 'R',
+  'INDEXING': 'I',
+  'TECH': 'T',
+  'KEYCOUNT': 'K',
+  'KEYCOUNT_PLUS': 'K+'
+};
+
+// Helper functions for type validation and conversion
+const isValidTypeFormat = (type) => {
+  if (!type) return true; // Empty type is valid
+  
+  // Check if the type contains only valid characters (including K+ as a single unit)
+  const validChars = /^[RITK]+$|^[RITK]*K\+[RITK]*$/;
+  return validChars.test(type);
+};
+
+const toInternalType = (type) => {
+  if (!type) return '';
+  
+  // Handle K+ as a special case first
+  if (type === 'K+') return 'KEYCOUNT_PLUS';
+  
+  // Split into individual characters, but keep K+ as a unit
+  const types = [];
+  let i = 0;
+  while (i < type.length) {
+    if (type[i] === 'K' && type[i + 1] === '+') {
+      types.push('K+');
+      i += 2;
+    } else {
+      types.push(type[i]);
+      i++;
+    }
+  }
+  
+  // Convert each character to internal format
+  const internalTypes = types.map(t => {
+    const internal = TYPE_IDENTIFIERS[t];
+    if (!internal) {
+      throw new Error(`Invalid reference type character: ${t}`);
+    }
+    return internal;
+  });
+  
+  // Sort by type order
+  return internalTypes.sort((a, b) => TYPE_ORDER[a] - TYPE_ORDER[b]).join('+');
+};
+
+const toDisplayType = (type) => {
+  if (!type) return '';
+  
+  // Handle KEYCOUNT_PLUS as a special case
+  if (type === 'KEYCOUNT_PLUS') return 'K+';
+  
+  // Split by + and convert each part
+  return type.split('+')
+    .map(part => TYPE_DISPLAY[part] || part)
+    .join('');
+};
+
+const TYPE_ORDER = { 
+  'ROLLING': 0, 
+  'INDEXING': 1, 
+  'TECH': 2, 
+  'KEYCOUNT': 3, 
+  'KEYCOUNT_PLUS': 4 
+};
+const TYPE_LABELS = {
+  'ROLLING': 'Rolling',
+  'INDEXING': 'Indexing',
+  'TECH': 'Tech',
+  'KEYCOUNT': 'Keycount',
+  'KEYCOUNT_PLUS': 'Keycount+'
+};
+const DEFAULT_TYPE_ICONS = {
+  'ROLLING': rollingIcon,
+  'INDEXING': indexingIcon,
+  'TECH': techIcon,
+  'KEYCOUNT': keycountIcon,
+  'KEYCOUNT_PLUS': keycountPlusIcon
+};
+
+// Generate all possible combinations of reference types
+const generateTypeCombinations = () => {
+  const combinations = new Set();
+  const baseTypes = ['R', 'I', 'T', 'K', 'K+']; // K+ is now a base type
+  
+  // Add single types
+  baseTypes.forEach(type => {
+    combinations.add(TYPE_IDENTIFIERS[type]);
+  });
+  
+  // Add combinations (2-4 letters)
+  for (let i = 0; i < baseTypes.length; i++) {
+    for (let j = 0; j < baseTypes.length; j++) {
+      // Add 2-letter combinations
+      const combo2 = TYPE_IDENTIFIERS[baseTypes[i]] + '+' + TYPE_IDENTIFIERS[baseTypes[j]];
+      combinations.add(combo2);
+      
+      // Add 3-letter combinations
+      for (let k = 0; k < baseTypes.length; k++) {
+        const combo3 = TYPE_IDENTIFIERS[baseTypes[i]] + '+' + TYPE_IDENTIFIERS[baseTypes[j]] + '+' + TYPE_IDENTIFIERS[baseTypes[k]];
+        combinations.add(combo3);
+        
+        // Add 4-letter combinations
+        for (let l = 0; l < baseTypes.length; l++) {
+          const combo4 = TYPE_IDENTIFIERS[baseTypes[i]] + '+' + TYPE_IDENTIFIERS[baseTypes[j]] + '+' + TYPE_IDENTIFIERS[baseTypes[k]] + '+' + TYPE_IDENTIFIERS[baseTypes[l]];
+          combinations.add(combo4);
+        }
+      }
+    }
+  }
+  
+  // Sort combinations by length (descending) and then by type order
+  const sortedCombos = Array.from(combinations).sort((a, b) => {
+    if (a.length !== b.length) return b.length - a.length;
+    return TYPE_ORDER[a.split('+')[0]] - TYPE_ORDER[b.split('+')[0]];
+  });
+  
+  return sortedCombos;
+};
+
+const REFERENCE_TYPE_COMBINATIONS = generateTypeCombinations();
+
+const parseReferenceString = (str) => {
+  console.log('Parsing reference string:', str);
+  const lines = str.split('\n').map(line => line.trim()).filter(Boolean);
+  const references = [];
+
+  for (const line of lines) {
+    // Check if line contains a type (has a colon)
+    if (line.includes(':')) {
+      const [typePart, ...levelParts] = line.split(':').map(part => part.trim());
+      if (!typePart || !levelParts.length) continue;
+
+      console.log('Processing line with type:', {
+        original: typePart,
+        levelIds: levelParts[0]
+      });
+
+      // First validate the type format
+      if (!isValidTypeFormat(typePart.toUpperCase())) {
+        throw new Error(`Invalid reference type format: ${typePart}`);
+      }
+
+      // Then convert to internal format
+      const type = toInternalType(typePart.toUpperCase());
+      console.log('Converted type to internal format:', {
+        original: typePart,
+        internal: type
+      });
+
+      // Finally validate against allowed combinations
+      if (!REFERENCE_TYPE_COMBINATIONS.includes(type)) {
+        throw new Error(`Invalid reference type combination: ${typePart}`);
+      }
+
+      // Parse level IDs
+      const levelIds = levelParts[0].split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
+
+      // Add each level ID with the type
+      levelIds.forEach(levelId => {
+        references.push({ type, levelId });
+      });
+    } else {
+      // Handle untyped references (no colon)
+      const levelIds = line.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
+      levelIds.forEach(levelId => {
+        references.push({ type: '', levelId });
+      });
+    }
+  }
+
+  console.log('Final parsed references:', references);
+  return references;
+};
+
 const ReferencesPopup = ({ onClose }) => {
   const { t } = useTranslation('components');
   const tRef = (key, params = {}) => t(`references.popup.${key}`, params);
@@ -51,9 +247,16 @@ const ReferencesPopup = ({ onClose }) => {
   const [isEditMode, setIsEditMode] = useState(false);
   const [saving, setSaving] = useState(false);
   const [editedLevelIds, setEditedLevelIds] = useState({});
+  const [initialLevelIds, setInitialLevelIds] = useState({});
   const [isAllExpanded, setIsAllExpanded] = useState(false);
   const navigate = useNavigate();
   const popupRef = useRef(null);
+  const [referenceTypeIcons, setReferenceTypeIcons] = useState(DEFAULT_TYPE_ICONS);
+  const [parseError, setParseError] = useState(null);
+  const [changedDifficulties, setChangedDifficulties] = useState(new Set());
+  const [showHelp, setShowHelp] = useState(false);
+  const helpRef = useRef(null);
+  const [viewFormat, setViewFormat] = useState('extended'); // 'extended' or 'compact'
 
   const fetchReferences = async () => {
     setLoading(true);
@@ -78,9 +281,35 @@ const ReferencesPopup = ({ onClose }) => {
       // Initialize editedLevelIds with current references
       const initialIds = {};
       references.forEach(ref => {
-        initialIds[ref.difficulty.id] = ref.levels.map(level => level.id.toString()).join(', ');
+        // Group levels by type
+        const groupedByType = ref.levels.reduce((acc, level) => {
+          const type = level.type || '';
+          if (!acc[type]) {
+            acc[type] = [];
+          }
+          acc[type].push(level.id);
+          return acc;
+        }, {});
+
+        // Sort types alphabetically, putting empty type at the end
+        const sortedTypes = Object.keys(groupedByType).sort((a, b) => {
+          if (a === '') return 1;
+          if (b === '') return -1;
+          return -a.localeCompare(b);
+        });
+
+        // Format each group
+        initialIds[ref.difficulty.id] = sortedTypes
+          .map(type => {
+            const levelIds = groupedByType[type].sort((a, b) => a - b);
+            // Convert internal type back to display format for edit mode
+            const displayType = toDisplayType(type);
+            return displayType ? `${displayType}: ${levelIds.join(', ')}` : levelIds.join(', ');
+          })
+          .join('\n');
       });
       setEditedLevelIds(initialIds);
+      setInitialLevelIds(initialIds);
     }
   }, [references]);
 
@@ -122,72 +351,197 @@ const ReferencesPopup = ({ onClose }) => {
     setIsAllExpanded(!isAllExpanded);
   };
 
-  const handleSaveChanges = async () => {
+  const handleEditModeToggle = () => {
+    if (isEditMode) {
+      setIsEditMode(false);
+      setEditedLevelIds({});
+      setInitialLevelIds({});
+      setChangedDifficulties(new Set());
+    } else {
+      setIsEditMode(true);
+      const initialIds = {};
+      references.forEach(ref => {
+        // Add logging for P1 difficulty
+        if (ref.difficulty.name === 'P1') {
+          console.log('Processing P1 difficulty:', ref);
+        }
+
+        // Group levels by type
+        const groupedByType = ref.levels.reduce((acc, level) => {
+          const type = level.type || '';
+          if (!acc[type]) {
+            acc[type] = [];
+          }
+          acc[type].push(level.id);
+          return acc;
+        }, {});
+        
+
+        // Sort types alphabetically, putting empty type at the end
+        const sortedTypes = Object.keys(groupedByType).sort((a, b) => {
+          if (a === '') return 1;
+          if (b === '') return -1;
+          return a.localeCompare(b);
+        });
+        
+        // Format each group
+        initialIds[ref.difficulty.id] = sortedTypes
+          .map(type => {
+            const levelIds = groupedByType[type].sort((a, b) => a - b);
+            // Convert internal type back to display format for edit mode
+            const displayType = toDisplayType(type);
+            if (ref.difficulty.name === 'P1') {
+              console.log('Converting type for P1:', {
+                internal: type,
+                display: displayType,
+                levelIds
+              });
+            }
+            return displayType ? `${displayType}: ${levelIds.join(', ')}` : levelIds.join(', ');
+          })
+          .join('\n');
+
+        if (ref.difficulty.name === 'P1') {
+          console.log('Final P1 edit text:', initialIds[ref.difficulty.id]);
+        }
+      });
+      setEditedLevelIds(initialIds);
+      setInitialLevelIds(initialIds);
+      setChangedDifficulties(new Set());
+    }
+  };
+
+  const handleLevelIdsChange = (diffId, value) => {
+    setEditedLevelIds(prev => ({
+      ...prev,
+      [diffId]: value
+    }));
+    setChangedDifficulties(prev => {
+      const newSet = new Set(prev);
+      newSet.add(diffId);
+      return newSet;
+    });
+  };
+
+  const handleSaveChanges = async (diffId) => {
     setSaving(true);
     try {
-      for (const diffId in editedLevelIds) {
-        const originalLevels = new Set(
-          references
-            .find(ref => ref.difficulty.id === parseInt(diffId))
-            ?.levels.map(l => l.id) || []
-        );
+      try {
+        const newReferences = parseReferenceString(editedLevelIds[diffId]);
         
-        const newLevels = new Set(
-          editedLevelIds[diffId]
-            .split(',')
-            .map(id => parseInt(id.trim()))
-            .filter(id => !isNaN(id))
-        );
+        // Send bulk update request
+        await api.put(`${import.meta.env.VITE_API_URL}/v2/database/references/bulk/${diffId}`, {
+          references: newReferences
+        });
 
-        // Find levels to add and remove
-        const toAdd = [...newLevels].filter(id => !originalLevels.has(id));
-        const toRemove = [...originalLevels].filter(id => !newLevels.has(id));
+        // Update changedDifficulties
+        setChangedDifficulties(prev => {
+          const newSet = new Set(prev);
+          newSet.delete(diffId);
+          return newSet;
+        });
 
-        // Handle additions
-        for (const levelId of toAdd) {
-          await api.post(`${import.meta.env.VITE_API_URL}/v2/database/references`, {
-            difficultyId: parseInt(diffId),
-            levelId
-          });
-        }
-
-        // Handle removals
-        for (const levelId of toRemove) {
-          const response = await api.get(
-            `${import.meta.env.VITE_API_URL}/v2/database/references/level/${levelId}`
-          );
-          const refId = response.data.find(r => r.difficultyId === parseInt(diffId))?.id;
-          if (refId) {
-            await api.delete(`${import.meta.env.VITE_API_URL}/v2/database/references/${refId}`);
-          }
-        }
+        await fetchReferences();
+        toast.success(tRef('messages.saveSuccess'));
+      } catch (error) {
+        console.error('Error saving references:', error);
+        toast.error(tRef('errors.saveFailed'));
+        throw error;
       }
-
-      await fetchReferences();
-      setIsEditMode(false);
     } catch (err) {
-      setError(tRef('errors.saveFailed'));
-      console.error('Error saving references:', err);
+      console.error('Error in handleSaveChanges:', err);
+      toast.error(tRef('errors.saveFailed'));
     } finally {
       setSaving(false);
     }
   };
 
-  const handleEditModeToggle = () => {
-    if (isEditMode) {
-      // If leaving edit mode, reset changes
-      setIsEditMode(false);
-      setEditedLevelIds({});
-    } else {
-      // If entering edit mode, initialize editable data
-      setIsEditMode(true);
-      // Initialize editedLevelIds with current references
-      const initialIds = {};
-      references.forEach(ref => {
-        initialIds[ref.difficulty.id] = ref.levels.map(level => level.id.toString()).join(', ');
-      });
-      setEditedLevelIds(initialIds);
-    }
+  const renderLevelRow = (level, type) => (
+    <div key={level.id} className="level-row">
+      <span className="level-id">#{level.id}</span>
+      <div className="level-info">
+        <a 
+          href={`/levels/${level.id}`}
+          onClick={(e) => {
+            e.preventDefault();
+            navigate(`/levels/${level.id}`);
+          }}
+          className="level-song"
+        >
+          {level.song}
+          <svg className="external-link-icon" viewBox="0 0 24 24" width="12" height="12">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" fill="none" stroke="currentColor" strokeWidth="2"/>
+          </svg>
+        </a>
+        {type && (
+          <div className="level-type-badges">
+            {type.split('+').map((t, index) => (
+              <span key={t} className="level-type-badge" style={{ backgroundColor: getTypeColor(t) }}>
+                {TYPE_LABELS[t]}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+      <span className="level-artist">{level.artist}</span>
+      <span className="level-creator">{level.creator}</span>
+      {level.videoLink && (
+        <a 
+          href={level.videoLink} 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="video-link"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <svg className="youtube-icon" viewBox="0 0 24 24">
+            <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+          </svg>
+        </a>
+      )}
+    </div>
+  );
+
+  const renderReferenceTypeSection = (type, levels) => {
+    if (!levels || levels.length === 0) return null;
+
+
+    return (
+      <div className="reference-type-section">
+        <div className="reference-type-header" style={{ paddingBottom: type.length > 0 ? '' : '0.5rem' }}>
+          {type ? (
+            <div className="reference-type-icons">
+              {type.split('+').map((t, index, array) => {
+                return (
+                  <div key={t} className="reference-type-icon-container">
+                    <img 
+                      src={referenceTypeIcons[t] || DEFAULT_TYPE_ICONS[t]} 
+                      alt={t}
+                      className="reference-type-icon"
+                    />
+                    <div className="reference-type-icon-label-container">
+                      <span className="reference-type-icon-label">{TYPE_LABELS[t]}</span>
+                    </div>
+                    {index < array.length - 1 && (
+                      <span className="reference-type-separator">+</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          ) : (
+            <span className="no-type-label">{tRef('noType')}</span>
+          )}
+          <span className="reference-type-count">
+            {levels.length === 1 
+              ? tRef('levelCount.singular')
+              : tRef('levelCount.plural', { count: levels.length })}
+          </span>
+        </div>
+        <div className="reference-type-levels">
+          {levels.map(level => renderLevelRow(level, type))}
+        </div>
+      </div>
+    );
   };
 
   const renderTabContent = (tabPrefix) => (
@@ -196,6 +550,24 @@ const ReferencesPopup = ({ onClose }) => {
         .filter(ref => ref.difficulty.name.startsWith(tabPrefix))
         .map((ref) => {
           const difficultyInfo = difficultyDict[ref.difficulty.id] || ref.difficulty;
+          
+          // Group levels by reference type
+          const levelsByType = ref.levels.reduce((acc, level) => {
+            const type = level.type || ''; // Empty string for no type
+            if (!acc[type]) {
+              acc[type] = [];
+            }
+            acc[type].push(level);
+            return acc;
+          }, {});
+
+          // Sort types, placing untyped references last
+          const sortedTypes = Object.keys(levelsByType).sort((a, b) => {
+            if (a === '') return 1;
+            if (b === '') return -1;
+            return -a.localeCompare(b);
+          });
+
           return (
             <div 
               key={ref.difficulty.id} 
@@ -244,39 +616,19 @@ const ReferencesPopup = ({ onClose }) => {
               
               {expandedDiffs.has(ref.difficulty.id) && (
                 <div className="levels-list">
-                  {ref.levels.map((level) => (
-                    <div key={level.id} className="level-row">
-                      <span className="level-id">#{level.id}</span>
-                      <a 
-                        href={`/levels/${level.id}`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          navigate(`/levels/${level.id}`);
-                        }}
-                        className="level-song"
-                      >
-                        {level.song}
-                        <svg className="external-link-icon" viewBox="0 0 24 24" width="12" height="12">
-                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3" fill="none" stroke="currentColor" strokeWidth="2"/>
-                        </svg>
-                      </a>
-                      <span className="level-artist">{level.artist}</span>
-                      <span className="level-creator">{level.creator}</span>
-                      {level.videoLink && (
-                        <a 
-                          href={level.videoLink} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="video-link"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <svg className="youtube-icon" viewBox="0 0 24 24">
-                            <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
-                          </svg>
-                        </a>
+                  {viewFormat === 'compact' ? (
+                    // In compact view, show all levels in a single list
+                    sortedTypes.map(type => 
+                      levelsByType[type] && levelsByType[type].map(level => renderLevelRow(level, level.type))
+                    )
+                  ) : (
+                    // In extended view, group by type
+                    <>
+                      {sortedTypes.map(type => 
+                        levelsByType[type] && renderReferenceTypeSection(type, levelsByType[type])
                       )}
-                    </div>
-                  ))}
+                    </>
+                  )}
                 </div>
               )}
             </div>
@@ -291,6 +643,8 @@ const ReferencesPopup = ({ onClose }) => {
         .filter(ref => ref.difficulty.name.startsWith(tabPrefix))
         .map((ref) => {
           const difficultyInfo = difficultyDict[ref.difficulty.id] || ref.difficulty;
+          const hasChanges = changedDifficulties.has(ref.difficulty.id);
+          
           return (
             <div key={ref.difficulty.id} className="edit-difficulty-row">
               <div 
@@ -309,15 +663,39 @@ const ReferencesPopup = ({ onClose }) => {
                 {difficultyInfo.name}
               </div>
               <div className="edit-level-ids">
-                <input
-                  type="text"
+                <textarea
                   value={editedLevelIds[ref.difficulty.id] || ''}
-                  onChange={(e) => setEditedLevelIds(prev => ({
-                    ...prev,
-                    [ref.difficulty.id]: e.target.value
-                  }))}
+                  onChange={(e) => handleLevelIdsChange(ref.difficulty.id, e.target.value)}
                   placeholder={tRef('editMode.placeholder')}
                 />
+                {hasChanges && (
+                  <div className="difficulty-actions">
+                    <button 
+                      className={`save-changes-btn ${saving ? 'saving' : ''}`}
+                      onClick={() => handleSaveChanges(ref.difficulty.id)}
+                      disabled={saving}
+                    >
+                      {saving ? tRef('buttons.saving') : tRef('buttons.saveChanges')}
+                    </button>
+                    <button 
+                      className="cancel-edit-btn"
+                      onClick={() => {
+                        setEditedLevelIds(prev => ({
+                          ...prev,
+                          [ref.difficulty.id]: initialLevelIds[ref.difficulty.id]
+                        }));
+                        setChangedDifficulties(prev => {
+                          const newSet = new Set(prev);
+                          newSet.delete(ref.difficulty.id);
+                          return newSet;
+                        });
+                      }}
+                      disabled={saving}
+                    >
+                      {tRef('buttons.cancel')}
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           );
@@ -328,6 +706,9 @@ const ReferencesPopup = ({ onClose }) => {
   // Add useEffect for keyboard listeners
   useEffect(() => {
     const handleKeyPress = (e) => {
+      // Don't handle keyboard events when in edit mode
+      if (isEditMode) return;
+
       switch (e.key) {
         case 'ArrowLeft':
           handleTabChange(-1);
@@ -350,7 +731,7 @@ const ReferencesPopup = ({ onClose }) => {
     return () => {
       window.removeEventListener('keydown', handleKeyPress);
     };
-  }, [onClose, activeTab, handleTabChange]); // Add activeTab and handleTabChange to dependencies
+  }, [onClose, activeTab, handleTabChange, isEditMode]); // Add isEditMode to dependencies
 
   // Add click outside handler
   useEffect(() => {
@@ -368,6 +749,35 @@ const ReferencesPopup = ({ onClose }) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [onClose]);
+
+  // Add click outside handler for help popup
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (helpRef.current && !helpRef.current.contains(event.target)) {
+        setShowHelp(false);
+      }
+    };
+
+    if (showHelp) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showHelp]);
+
+  // Add helper function for type colors
+  const getTypeColor = (type) => {
+    switch (type) {
+      case 'ROLLING': return '#ff4444';
+      case 'INDEXING': return '#44ff44';
+      case 'TECH': return '#4444ff';
+      case 'KEYCOUNT': return '#ffff44';
+      case 'KEYCOUNT_PLUS': return '#ff8844';
+      default: return '#888888';
+    }
+  };
 
   return (
     <div className="references-popup-overlay">
@@ -392,16 +802,35 @@ const ReferencesPopup = ({ onClose }) => {
             </button>
           </div>
 
-          {!isEditMode && (
+          <div className="header-buttons">
             <button 
-              className="toggle-all-btn"
-              onClick={toggleAllDifficulties}
+              className="help-button"
+              onClick={() => setShowHelp(!showHelp)}
+              title={tRef('buttons.help')}
             >
-              {isAllExpanded ? tRef('buttons.collapseAll') : tRef('buttons.expandAll')}
+              ?
             </button>
-          )}
-
-          {user?.isSuperAdmin && (
+            {!isEditMode && (
+              <>
+                <button 
+                  className="toggle-all-btn"
+                  onClick={toggleAllDifficulties}
+                >
+                  {isAllExpanded ? tRef('buttons.collapseAll') : tRef('buttons.expandAll')}
+                </button>
+                <button 
+                  className="view-format-btn"
+                  onClick={() => setViewFormat(prev => prev === 'extended' ? 'compact' : 'extended')}
+                  title={viewFormat === 'extended' ? tRef('buttons.switchToCompact') : tRef('buttons.switchToExtended')}
+                >
+                  <img 
+                    src={viewFormat === 'extended' ? showIcons : hideIcons} 
+                    alt={viewFormat === 'extended' ? 'Switch to compact view' : 'Switch to extended view'}
+                  />
+                </button>
+              </>
+            )}
+                      {user?.isSuperAdmin && (
             <button 
               className="edit-mode-btn"
               onClick={handleEditModeToggle}
@@ -410,28 +839,9 @@ const ReferencesPopup = ({ onClose }) => {
               {isEditMode ? tRef('buttons.viewMode') : tRef('buttons.editMode')}
             </button>
           )}
+          </div>
 
-          {isEditMode && (
-            <div className="edit-actions">
-              <button 
-                className={`save-changes-btn ${saving ? 'saving' : ''}`}
-                onClick={handleSaveChanges}
-                disabled={saving}
-              >
-                {saving ? tRef('buttons.saving') : tRef('buttons.saveChanges')}
-              </button>
-              <button 
-                className="cancel-edit-btn"
-                onClick={() => {
-                  setIsEditMode(false);
-                  setEditedLevelIds({});
-                }}
-                disabled={saving}
-              >
-                {tRef('buttons.cancel')}
-              </button>
-            </div>
-          )}
+
         </div>
 
         {loading ? (
@@ -439,28 +849,64 @@ const ReferencesPopup = ({ onClose }) => {
         ) : error ? (
           <div className="error">{error}</div>
         ) : (
-          <div className="tabs-container">
-            <div 
-              className="tabs-slider" 
-              style={{ 
-                transform: `translateX(${activeTab === 'P' ? '0' : activeTab === 'G' ? '-125%' : '-250%'})` 
-              }}
-            >
-              {!isEditMode ? (
-                <>
-                  <div className="tab-content">{renderTabContent('P')}</div>
-                  <div className="tab-content">{renderTabContent('G')}</div>
-                  <div className="tab-content">{renderTabContent('U')}</div>
-                </>
-              ) : (
-                <>
-                  <div className="tab-content edit-mode">{renderEditModeContent('P')}</div>
-                  <div className="tab-content edit-mode">{renderEditModeContent('G')}</div>
-                  <div className="tab-content edit-mode">{renderEditModeContent('U')}</div>
-                </>
-              )}
+          <>
+            {showHelp && (
+              <div className="help-popup" ref={helpRef}>
+                <div className="help-content">
+                  <h3>{tRef(isEditMode ? 'editMode.help.title' : 'help.title')}</h3>
+                  <p>{tRef(isEditMode ? 'editMode.help.description' : 'help.description')}</p>
+                  
+                  <h4>{tRef(isEditMode ? 'editMode.help.types.title' : 'help.types.title')}</h4>
+                  <ul>
+                    <li><strong>R:</strong> {tRef(isEditMode ? 'editMode.help.types.R' : 'help.types.R')}</li>
+                    <li><strong>I:</strong> {tRef(isEditMode ? 'editMode.help.types.I' : 'help.types.I')}</li>
+                    <li><strong>T:</strong> {tRef(isEditMode ? 'editMode.help.types.T' : 'help.types.T')}</li>
+                    <li><strong>K:</strong> {tRef(isEditMode ? 'editMode.help.types.K' : 'help.types.K')}</li>
+                  </ul>
+
+                  {isEditMode && (
+                    <>
+                      <h4>{tRef('editMode.help.format.title')}</h4>
+                      <ul>
+                        <li>{tRef('editMode.help.format.single')}</li>
+                        <li>{tRef('editMode.help.format.multiple')}</li>
+                        <li>{tRef('editMode.help.format.noType')}</li>
+                      </ul>
+
+                      <h4>{tRef('editMode.help.rules.title')}</h4>
+                      <ul>
+                        {tRef('editMode.help.rules.list', { returnObjects: true }).map((rule, index) => (
+                          <li key={index}>{rule}</li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+            <div className="tabs-container">
+              <div 
+                className={`tabs-slider ${viewFormat === 'compact' ? 'compact-view' : ''}`}
+                style={{ 
+                  transform: `translateX(${activeTab === 'P' ? '0' : activeTab === 'G' ? '-125%' : '-250%'})` 
+                }}
+              >
+                {!isEditMode ? (
+                  <>
+                    <div className="tab-content">{renderTabContent('P')}</div>
+                    <div className="tab-content">{renderTabContent('G')}</div>
+                    <div className="tab-content">{renderTabContent('U')}</div>
+                  </>
+                ) : (
+                  <>
+                    <div className="tab-content edit-mode">{renderEditModeContent('P')}</div>
+                    <div className="tab-content edit-mode">{renderEditModeContent('G')}</div>
+                    <div className="tab-content edit-mode">{renderEditModeContent('U')}</div>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
+          </>
         )}
       </div>
     </div>

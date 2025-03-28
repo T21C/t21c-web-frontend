@@ -8,10 +8,11 @@ import { ScrollButton } from "@/components/common/buttons";
 import api from "@/utils/api";
 import { EditIcon, RefreshIcon } from "@/components/common/icons";
 import { AccessDenied } from "@/components/common/display";
+import { toast } from "react-hot-toast";
 
 const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB in bytes
 
-const UploadZone = ({ type, onUploadComplete, addNotification }) => {
+const UploadZone = ({ type, onUploadComplete }) => {
   const { t } = useTranslation('pages');
   const tBackup = (key, params = {}) => t(`backup.${key}`, params);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -78,7 +79,7 @@ const UploadZone = ({ type, onUploadComplete, addNotification }) => {
       );
 
       if (response.data.success) {
-        addNotification(tBackup('notifications.uploadSuccess'));
+        toast.success(tBackup('notifications.uploadSuccess'));
         onUploadComplete();
         setShowPasswordModal(false);
         setPassword('');
@@ -88,6 +89,10 @@ const UploadZone = ({ type, onUploadComplete, addNotification }) => {
     } catch (error) {
       console.error('Upload failed:', error);
       setUploadError(error.response?.status === 403 
+        ? tBackup('passwordModal.errors.invalid')
+        : tBackup('notifications.uploadFailed')
+      );
+      toast.error(error.response?.status === 403 
         ? tBackup('passwordModal.errors.invalid')
         : tBackup('notifications.uploadFailed')
       );
@@ -387,7 +392,7 @@ const BackupList = ({ backups, type, onRestore, onDelete, loading }) => {
       }, 1000);
     } catch (error) {
       console.error('Failed to download backup:', error);
-      addNotification(tBackup('notifications.downloadFailed'), 'error');
+      toast.error(tBackup('notifications.downloadFailed'));
       setDownloading(prev => ({ ...prev, [backup.filename]: false }));
       setDownloadProgress(prev => ({ ...prev, [backup.filename]: 0 }));
     }
@@ -582,18 +587,9 @@ const BackupPage = () => {
   const [loading, setLoading] = useState(false);
   const [backups, setBackups] = useState({ mysql: [], files: [] });
   const [sortOrder, setSortOrder] = useState('newest');
-  const [notifications, setNotifications] = useState([]);
   const [showCreatePasswordModal, setShowCreatePasswordModal] = useState(false);
   const [createPassword, setCreatePassword] = useState('');
   const [createError, setCreateError] = useState('');
-
-  const addNotification = (message, type = 'success') => {
-    const id = Date.now();
-    setNotifications(prev => [...prev, { id, message, type }]);
-    setTimeout(() => {
-      setNotifications(prev => prev.filter(n => n.id !== id));
-    }, 5000);
-  };
 
   const loadBackups = async () => {
     try {
@@ -602,7 +598,7 @@ const BackupPage = () => {
       setBackups(response.data);
     } catch (error) {
       console.error('Failed to load backups:', error);
-      addNotification(tBackup('notifications.loadFailed'), 'error');
+      toast.error(tBackup('notifications.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -624,7 +620,7 @@ const BackupPage = () => {
         superAdminPassword: createPassword
       });
       if (response.data.success) {
-        addNotification(tBackup('notifications.backupCreated', { type: activeTab.toUpperCase() }));
+        toast.success(tBackup('notifications.backupCreated', { type: activeTab.toUpperCase() }));
         await loadBackups();
         setShowCreatePasswordModal(false);
         setCreatePassword('');
@@ -633,6 +629,10 @@ const BackupPage = () => {
     } catch (error) {
       console.error('Failed to create backup:', error);
       setCreateError(error.response?.status === 403 
+        ? tBackup('passwordModal.errors.invalid') 
+        : tBackup('notifications.createFailed')
+      );
+      toast.error(error.response?.status === 403 
         ? tBackup('passwordModal.errors.invalid') 
         : tBackup('notifications.createFailed')
       );
@@ -649,11 +649,11 @@ const BackupPage = () => {
         { superAdminPassword }
       );
       if (response.data.success) {
-        addNotification(tBackup('notifications.backupRestored'));
+        toast.success(tBackup('notifications.backupRestored'));
       }
     } catch (error) {
       console.error('Failed to restore backup:', error);
-      addNotification(tBackup('notifications.restoreFailed'), 'error');
+      toast.error(tBackup('notifications.restoreFailed'));
     } finally {
       setLoading(false);
     }
@@ -669,12 +669,12 @@ const BackupPage = () => {
         }
       );
       if (response.data.success) {
-        addNotification(tBackup('notifications.backupDeleted'));
+        toast.success(tBackup('notifications.backupDeleted'));
         await loadBackups();
       }
     } catch (error) {
       console.error('Failed to delete backup:', error);
-      addNotification(tBackup('notifications.deleteFailed'), 'error');
+      toast.error(tBackup('notifications.deleteFailed'));
     } finally {
       setLoading(false);
     }
@@ -800,7 +800,6 @@ const BackupPage = () => {
         <UploadZone 
           type={activeTab}
           onUploadComplete={loadBackups}
-          addNotification={addNotification}
         />
 
         <BackupList
@@ -810,20 +809,6 @@ const BackupPage = () => {
           onDelete={handleDelete}
           loading={loading}
         />
-
-        <div className="notifications">
-          {notifications.map(({ id, message, type }) => (
-            <div key={id} className={`notification ${type}`}>
-              {message}
-              <button
-                className="close-notification"
-                onClick={() => setNotifications(prev => prev.filter(n => n.id !== id))}
-              >
-                ×
-              </button>
-            </div>
-          ))}
-        </div>
       </div>
       <ScrollButton />
       
