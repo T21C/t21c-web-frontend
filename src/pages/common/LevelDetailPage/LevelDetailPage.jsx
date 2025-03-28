@@ -133,19 +133,19 @@ const FullInfoPopup = ({ level, onClose }) => {
 
   return (
     <>
-      <div className="close-outer-levels" onClick={onClose}></div>
-      <div className="levels-dialog dialog-scale-up">
-        <div className="dialog">
-          <div className="header">
+      <div className="level-detail-popup-overlay" onClick={onClose}></div>
+      <div className="level-detail-popup popup-scale-up">
+        <div className="popup-content">
+          <div className="popup-header">
             <h2>{level.song}</h2>
             <p>{level.artist}</p>
-            <button className="close-button" onClick={onClose} title={tLevel('buttons.close')}>
+            <button className="popup-close-button" onClick={onClose} title={tLevel('buttons.close')}>
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
           </div>
-          <div className="body">
+          <div className="popup-body">
             <div className="team-info">
               {level.teamObject && (
                 <div className="each-info team-name">
@@ -692,10 +692,7 @@ const LevelDetailPage = () => {
             }
           </div>
         </div>
-      </div>
-    </div>
-
-    {openEditDialog && (
+        {openEditDialog && (
       <EditLevelPopup
         level={res.level}
         onClose={() => setOpenEditDialog(false)}
@@ -720,6 +717,7 @@ const LevelDetailPage = () => {
             level: res.level
           }}
           setSelectedRating={() => setShowRatingPopup(false)}
+          enableReferences={false}
         />
     )}
 
@@ -729,6 +727,11 @@ const LevelDetailPage = () => {
         onClose={changeDialogState}
       />
     )}
+      </div>
+      
+    </div>
+
+
   </>
   );
 };

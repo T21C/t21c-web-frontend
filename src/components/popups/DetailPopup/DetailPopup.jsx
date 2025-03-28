@@ -39,7 +39,8 @@ export const DetailPopup = ({
   setShowReferences = () => {},
   setRatings = () => {}, 
   user = null, 
-  isSuperAdmin = false
+  isSuperAdmin = false,
+  enableReferences = true
 }) => {
   const currentUser = user;
   const { t } = useTranslation('components');
@@ -450,9 +451,11 @@ export const DetailPopup = ({
   if (!selectedRating) return null;
   return (
     <div className={`rating-popup-overlay ${isExiting ? 'exiting' : ''}`}>
-      <div className="references-button-container">
-        <ReferencesButton onClick={() => setShowReferences(true)} />
-      </div>
+      {enableReferences && (
+        <div className="references-button-container">
+          <ReferencesButton onClick={() => setShowReferences(true)} />
+        </div>
+      )}
       <div className={`rating-popup ${isExiting ? 'exiting' : ''}`} ref={popupRef}>
         <button 
           className="close-popup-btn"
