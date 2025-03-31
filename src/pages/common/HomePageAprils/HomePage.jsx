@@ -831,7 +831,7 @@ const HomePage = () => {
           key={`wheel-${showWheel}`}
           items={wheelData.items}
           seed={wheelData.seed}
-          onSelect={handleWheelSelect}
+          onSelect={() => {}}
           onClose={() => setShowWheel(false)}
           handleTimeout={handleTimeout}
         />
