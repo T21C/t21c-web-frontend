@@ -249,7 +249,7 @@ export const CaseOpenSelector = ({ targetPlayerId }) => {
       case 'ranked_add':
         return `+${modifier.value.toFixed(2)} to ranked score`;
       case 'ranked_multiply':
-        return `${modifier.value.toFixed(2)}x ranked score`;
+        return `${modifier.value?.toFixed(2)}x ranked score`;
       case 'score_combine':
         return 'Combines all scores';
       case 'player_swap':
@@ -270,11 +270,33 @@ export const CaseOpenSelector = ({ targetPlayerId }) => {
   };
 
   const formatExpiration = (expiresAt) => {
+    if (!expiresAt) return null;
+    
     const expires = new Date(expiresAt);
     const now = new Date();
-    const hours = Math.max(0, Math.floor((expires.getTime() - now.getTime()) / (1000 * 60 * 60)));
-    return `${hours}h remaining`;
+    const diff = expires.getTime() - now.getTime();
+    
+    if (diff <= 0) return null;
+    
+    const hours = Math.floor(diff / (1000 * 60 * 60));
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+    
+    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
+
+  // Add effect to handle modifier expiration
+  useEffect(() => {
+    if (!modifiers.length) return;
+
+    const interval = setInterval(() => {
+      const now = new Date();
+      const activeModifiers = modifiers.filter(mod => new Date(mod.expiresAt) > now);
+      setModifiers(activeModifiers);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [modifiers]);
 
   const getItemStyle = (item) => {
     let style = { ...baseItemStyle };
@@ -352,18 +374,23 @@ export const CaseOpenSelector = ({ targetPlayerId }) => {
           <p>No active modifiers</p>
         ) : (
           <ul className="case-open-selector__modifier-list">
-            {modifiers.map(modifier => (
-              <li key={modifier.id} className="case-open-selector__modifier-item">
-                <div className="case-open-selector__modifier-info">
-                  <span className="case-open-selector__modifier-type">
-                    {formatModifierValue(modifier)}
-                  </span>
-                  <span className="case-open-selector__modifier-expiry">
-                    {formatExpiration(modifier.expiresAt)}
-                  </span>
-                </div>
-              </li>
-            ))}
+            {modifiers.map(modifier => {
+              const timeRemaining = formatExpiration(modifier.expiresAt);
+              if (!timeRemaining) return null;
+              
+              return (
+                <li key={modifier.id} className="case-open-selector__modifier-item">
+                  <div className="case-open-selector__modifier-info">
+                    <span className="case-open-selector__modifier-type">
+                      {formatModifierValue(modifier)}
+                    </span>
+                    <span className="case-open-selector__modifier-expiry">
+                      {timeRemaining}
+                    </span>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         )}
       </div>
