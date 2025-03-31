@@ -318,7 +318,7 @@ const WheelPopup = ({ items, seed, onSelect, onClose, handleTimeout }) => {
 
   useEffect(() => {
     const img = new Image();
-    img.src = `${import.meta.env.VITE_API_URL}/${import.meta.env.VITE_WHEEL_IMAGE}/${seed}`;
+    img.src = `${import.meta.env.VITE_API_URL}${import.meta.env.VITE_WHEEL_IMAGE}/${seed}`;
     img.onload = () => setImageLoaded(true);
   }, [seed]);
 
@@ -452,7 +452,7 @@ const WheelPopup = ({ items, seed, onSelect, onClose, handleTimeout }) => {
                 }}
               >
                 <img 
-                  src={`${import.meta.env.VITE_API_URL}/${import.meta.env.VITE_WHEEL_IMAGE}/${seed}`}
+                  src={`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_WHEEL_IMAGE}/${seed}`}
                   alt="Roulette Wheel"
                 />
               </div>
