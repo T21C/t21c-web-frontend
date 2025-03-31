@@ -6,6 +6,9 @@ import CustomSelect from "./Select/Select";
 import SpecialDifficulties from "./SpecialDifficulties/SpecialDifficulties";
 import StateDisplay from "./StateDisplay/StateDisplay";
 import { RatingInput } from "./RatingInput/RatingInput";
+import { RouletteWheel } from "./RouletteWheel/RouletteWheel";
+import { SlotMachine } from "./SlotMachine/SlotMachine";
+import { CaseOpenSelector } from "./CaseOpenSelector/CaseOpenSelector";
 
 export {
     CountrySelect,
@@ -15,5 +18,8 @@ export {
     CustomSelect,
     SpecialDifficulties,
     StateDisplay,
-    RatingInput
+    RatingInput,
+    RouletteWheel,
+    SlotMachine,
+    CaseOpenSelector
 }

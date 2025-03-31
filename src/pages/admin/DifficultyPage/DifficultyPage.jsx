@@ -68,13 +68,21 @@ const DifficultyPage = () => {
       setError('');
       
       if (type === 'create') {
-        await handleCreateDifficulty();
+        const response = await api.post(`${import.meta.env.VITE_DIFFICULTIES}`, {
+          ...data,
+          superAdminPassword: verifiedPassword
+        });
         addNotification(tDiff('notifications.created'));
       } else if (type === 'edit') {
-        await handleUpdateDifficulty(data);
+        const response = await api.put(`${import.meta.env.VITE_DIFFICULTIES}/${data.id}`, {
+          ...data,
+          superAdminPassword: verifiedPassword
+        });
         addNotification(tDiff('notifications.updated'));
       } else if (type === 'delete') {
-        await handleDeleteDifficulty(data.id, data.fallbackId);
+        await api.delete(`${import.meta.env.VITE_DIFFICULTIES}/${data.id}?fallbackId=${data.fallbackId}`, {
+          data: { superAdminPassword: verifiedPassword }
+        });
         addNotification(tDiff('notifications.deleted'));
       }
       
@@ -164,7 +172,7 @@ const DifficultyPage = () => {
     try {
       const response = await api.post(`${import.meta.env.VITE_DIFFICULTIES}`, {
         ...newDifficulty,
-        superAdminPassword
+        superAdminPassword: verifiedPassword
       });
       return response.data;
     } catch (err) {
@@ -176,7 +184,7 @@ const DifficultyPage = () => {
     try {
       const response = await api.put(`${import.meta.env.VITE_DIFFICULTIES}/${difficulty.id}`, {
         ...difficulty,
-        superAdminPassword
+        superAdminPassword: verifiedPassword
       });
       return response.data;
     } catch (err) {
@@ -187,7 +195,7 @@ const DifficultyPage = () => {
   const handleDeleteDifficulty = async (difficultyId, fallbackId) => {
     try {
       await api.delete(`${import.meta.env.VITE_DIFFICULTIES}/${difficultyId}?fallbackId=${fallbackId}`, {
-        data: { superAdminPassword }
+        data: { superAdminPassword: verifiedPassword }
       });
     } catch (err) {
       throw err;
@@ -250,11 +258,11 @@ const DifficultyPage = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (isCreating) {
-      setSelectedAction({ type: 'create', data: null });
+      setSelectedAction({ type: 'create', data: newDifficulty });
     } else {
       setSelectedAction({ type: 'edit', data: editingDifficulty });
     }
-    setShowPasswordModal(true);
+    handlePasswordSubmit();
   };
 
   if (user?.isSuperAdmin === undefined) {
@@ -316,7 +324,7 @@ const DifficultyPage = () => {
 
           <button
             className="create-button"
-            onClick={() => setIsCreating(true)}
+            onClick={handleCreateClick}
             disabled={isLoading || contextLoading}
           >
             {tDiff('buttons.create')}
@@ -501,6 +509,7 @@ const DifficultyPage = () => {
                 setEditingDifficulty(updatedDifficulty);
               }
             }}
+            refreshDifficulties={reloadDifficulties}
             error={error}
             verifiedPassword={verifiedPassword}
           />

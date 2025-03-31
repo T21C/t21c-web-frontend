@@ -25,6 +25,7 @@ const DifficultyPopup = ({
   difficulty,
   onSubmit,
   onChange,
+  refreshDifficulties,
   error,
   verifiedPassword
 }) => {
@@ -84,12 +85,12 @@ const DifficultyPopup = ({
   }, [isOpen, mouseDownOutside]);
 
   useEffect(() => {
-    if (isOpen) {
+    if (isOpen && !isCreating) {
       loadDirectives();
       loadAvailableRoles();
       loadAvailableChannels();
     }
-  }, [isOpen]);
+  }, [isOpen, isCreating]);
 
   const loadDirectives = async () => {
     if (!difficulty?.id) return;
@@ -682,6 +683,58 @@ const DifficultyPopup = ({
     setDirectives(updatedItems);
   };
 
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    
+    if (activeTab === 'details') {
+      if (!verifiedPassword) {
+        showToast(tDiff('errors.passwordRequired'), 'error');
+        return;
+      }
+
+      // For details tab, make API call based on whether creating or editing
+      const updateDifficulty = async () => {
+        try {
+          const difficultyData = {
+            id: difficulty.id,
+            name: difficulty.name,
+            type: difficulty.type,
+            icon: difficulty.icon,
+            emoji: difficulty.emoji,
+            color: difficulty.color,
+            baseScore: difficulty.baseScore,
+            sortOrder: difficulty.sortOrder,
+            legacy: difficulty.legacy,
+            legacyIcon: difficulty.legacyIcon,
+            legacyEmoji: difficulty.legacyEmoji
+          };
+
+          const response = await api[isCreating ? 'post' : 'put'](
+            `${import.meta.env.VITE_DIFFICULTIES}${isCreating ? '' : `/${difficulty.id}`}`,
+            difficultyData,
+            {
+              headers: {
+                'X-Super-Admin-Password': verifiedPassword
+              }
+            }
+          );
+          
+          showToast(tDiff(isCreating ? 'notifications.created' : 'notifications.updated'), 'success');
+          onClose();
+          refreshDifficulties();
+        } catch (err) {
+          const errorMessage = err.response?.data?.error || tDiff(isCreating ? 'errors.createFailed' : 'errors.updateFailed');
+          showToast(errorMessage, 'error');
+          console.error(err);
+        }
+      };
+
+      updateDifficulty();
+    } else if (activeTab === 'announcements') {
+      handleSaveDirectives(e);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -758,7 +811,7 @@ const DifficultyPopup = ({
 
         <div className="difficulty-modal__content-scroll">
           {activeTab === 'details' ? (
-            <form onSubmit={onSubmit}>
+            <form onSubmit={handleFormSubmit}>
               <h2 className="difficulty-modal__title">{isCreating ? tDiff('modal.create.title') : tDiff('modal.edit.title')}</h2>
               <div className="difficulty-modal__form-group">
                 <label className="difficulty-modal__form-label">{tDiff('form.labels.id')}</label>
@@ -915,7 +968,7 @@ const DifficultyPopup = ({
               {isLoadingDirectives ? (
                 <div className="difficulty-modal__loading-message">{tDiff('loading.directives')}</div>
               ) : (
-                <form onSubmit={handleSaveDirectives}>
+                <form onSubmit={handleFormSubmit}>
                   <div className="difficulty-modal__directives-list">
                     <DragDropContext onDragEnd={handleDragEnd}>
                       <Droppable droppableId="directives">
@@ -1316,7 +1369,6 @@ const DifficultyPopup = ({
                     <button 
                       type="submit" 
                       className={`difficulty-modal__button difficulty-modal__button--save ${!hasAnyChanges() ? 'difficulty-modal__button--disabled' : ''}`}
-                      disabled={!hasAnyChanges()}
                     >
                       {tDiff('buttons.save')}
                     </button>
@@ -1333,188 +1385,9 @@ const DifficultyPopup = ({
             </div>
           )}
         </div>
-
-        {/* Channel Modal */}
-        <div className={`difficulty-modal__channel-modal ${showChannelModal ? 'difficulty-modal__channel-modal--show' : ''}`}>
-          <div className="difficulty-modal__channel-modal-content">
-            <h2 className="difficulty-modal__channel-modal-title">
-              {channelModalSource === 'edit' 
-                ? tDiff('announcements.actions.channel.edit') 
-                : tDiff('announcements.actions.channel.create')}
-            </h2>
-            <form onSubmit={handleChannelSubmit}>
-              <div className="difficulty-modal__channel-form-group">
-                <label className="difficulty-modal__channel-form-label">{tDiff('channels.form.label')}</label>
-                <input
-                  type="text"
-                  value={channelLabel}
-                  onChange={(e) => setChannelLabel(e.target.value)}
-                  placeholder={tDiff('channels.form.labelPlaceholder')}
-                  required
-                  className="difficulty-modal__channel-form-input"
-                />
-              </div>
-              <div className="difficulty-modal__channel-form-group">
-                <label className="difficulty-modal__channel-form-label">{tDiff('channels.form.webhookUrl')}</label>
-                <input
-                  type="url"
-                  value={channelWebhookUrl}
-                  onChange={(e) => setChannelWebhookUrl(e.target.value)}
-                  placeholder={tDiff('channels.form.webhookUrlPlaceholder')}
-                  required
-                  className="difficulty-modal__channel-form-input"
-                />
-              </div>
-              {channelError && <div className="difficulty-modal__channel-error-message">{channelError}</div>}
-              <div className="difficulty-modal__channel-modal-buttons">
-                {channelModalSource === 'edit' && selectedChannel && (
-                  <button
-                    type="button"
-                    className="difficulty-modal__channel-modal-delete-button"
-                    onClick={handleDeleteChannel}
-                  >
-                    {tDiff('buttons.delete')}
-                  </button>
-                )}
-                <button type="submit" className="difficulty-modal__channel-button difficulty-modal__channel-button--submit">
-                  {channelModalSource === 'edit' ? tDiff('buttons.save') : tDiff('buttons.create')}
-                </button>
-                <button
-                  type="button"
-                  className="difficulty-modal__channel-button difficulty-modal__channel-button--cancel"
-                  onClick={() => {
-                    setShowChannelModal(false);
-                    setSelectedChannel(null);
-                    setChannelLabel('');
-                    setChannelWebhookUrl('');
-                    setChannelError('');
-                  }}
-                >
-                  {tDiff('buttons.cancel')}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        {/* Role Modal */}
-        <div className={`difficulty-modal__role-modal ${showRoleModal ? 'difficulty-modal__role-modal--show' : ''}`}>
-          <div className="difficulty-modal__role-modal-content">
-            <h2 className="difficulty-modal__role-modal-title">
-              {roleModalSource === 'edit' 
-                ? tDiff('announcements.actions.role.edit') 
-                : tDiff('announcements.actions.role.create')}
-            </h2>
-            <form onSubmit={handleRoleSubmit}>
-            <div className="difficulty-modal__role-form-group">
-                <label className="difficulty-modal__role-form-label">{tDiff('roles.form.label')}</label>
-                <input
-                  type="text"
-                  value={selectedRole?.label || ''}
-                  onChange={(e) => setSelectedRole({...selectedRole, label: e.target.value})}
-                  placeholder={tDiff('roles.form.labelPlaceholder')}
-                  required
-                  className="difficulty-modal__role-form-input"
-                />
-              </div>
-              <div className="difficulty-modal__role-form-group">
-                <label className="difficulty-modal__role-form-label">{tDiff('roles.form.id')}</label>
-                <input
-                  type="text"
-                  value={selectedRole?.roleId || ''}
-                  onChange={(e) => setSelectedRole({...selectedRole, roleId: e.target.value})}
-                  placeholder={tDiff('roles.form.idPlaceholder')}
-                  required
-                  className="difficulty-modal__role-form-input"
-                />
-              </div>
-              {roleError && <div className="difficulty-modal__role-error-message">{roleError}</div>}
-              <div className="difficulty-modal__role-modal-buttons">
-                {roleModalSource === 'edit' && selectedRole && (
-                  <button
-                    type="button"
-                    className="difficulty-modal__role-modal-delete-button"
-                    onClick={handleDeleteRole}
-                  >
-                    {tDiff('buttons.delete')}
-                  </button>
-                )}
-                <button type="submit" className="difficulty-modal__role-button difficulty-modal__role-button--submit">
-                  {roleModalSource === 'edit' ? tDiff('buttons.save') : tDiff('buttons.create')}
-                </button>
-                <button
-                  type="button"
-                  className="difficulty-modal__role-button difficulty-modal__role-button--cancel"
-                  onClick={() => {
-                    setShowRoleModal(false);
-                    setSelectedRole(null);
-                    setRoleError('');
-                  }}
-                >
-                  {tDiff('buttons.cancel')}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-
-        {/* Help Modal */}
-        <div className={`difficulty-modal__help-modal ${showHelpModal ? 'difficulty-modal__help-modal--show' : ''}`}>
-          <div className="difficulty-modal__help-modal-content">
-            <h2 className="difficulty-modal__help-modal-title">Custom Function Help</h2>
-            <div className="difficulty-modal__help-content">
-              <h3>Available Fields</h3>
-              <p>You can use the following fields in your expressions:</p>
-              <ul>
-                <li><code>BASESCORE</code> - The base score of the pass/level</li>
-                <li><code>SCORE</code> - The actual score achieved</li>
-                <li><code>IS_WF</code> - Whether it's a world's first (true/false)</li>
-                <li><code>IS_NHT</code> - Whether it's a no hold tap (true/false)</li>
-                <li><code>IS_12K</code> - Whether it's a 12K pass (true/false)</li>
-                <li><code>IS_16K</code> - Whether it's a 16K pass (true/false)</li>
-                <li><code>SPEED</code> - The speed value</li>
-                <li><code>ACCURACY</code> - The accuracy value</li>
-                <li><code>NO_MISS</code> - Whether there are no misses in judgements (true/false)</li>
-              </ul>
-
-              <h3>Available Operators</h3>
-              <p>You can use the following operators:</p>
-              <ul>
-                <li>Comparison: <code>==</code>, <code>!=</code>, <code>{'>'}</code>, <code>{'<'}</code>, <code>{'>='}</code>, <code>{'<='}</code></li>
-                <li>Logical: <code>&&</code> (AND), <code>||</code> (OR), <code>!</code> (NOT)</li>
-                <li>Parentheses: <code>(</code>, <code>)</code> for grouping expressions</li>
-              </ul>
-
-              <h3>Examples</h3>
-              <ul>
-                <li><code>BASESCORE {`>= 450`}</code> - Checks if base score is greater than or equal to 450</li>
-                <li><code>IS_WF || ACCURACY {`>= 95`}</code> - Checks if it's a world's first OR accuracy is at least 95%</li>
-                <li><code>!(IS_NHT && IS_12K)</code> - Checks if it's NOT both a no hold tap AND a 12K pass</li>
-                <li><code>(BASESCORE {`>= 400`} && SPEED {`>= 1.2`}) || IS_WF</code> - Complex condition with grouping</li>
-              </ul>
-
-              <h3>Notes</h3>
-              <ul>
-                <li>All field names are case-sensitive and must be in UPPERCASE</li>
-                <li>Boolean values (IS_WF, IS_NHT, etc.) can be used directly in conditions</li>
-                <li>Numbers can be used directly (no quotes needed)</li>
-                <li>Use parentheses to group complex conditions</li>
-              </ul>
-            </div>
-            <div className="difficulty-modal__help-modal-buttons">
-              <button
-                type="button"
-                className="difficulty-modal__help-button difficulty-modal__help-button--close"
-                onClick={() => setShowHelpModal(false)}
-              >
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
 };
 
-export default DifficultyPopup; 
+export default DifficultyPopup;

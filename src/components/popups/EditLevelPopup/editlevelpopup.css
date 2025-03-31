@@ -227,6 +227,7 @@
   cursor: pointer;
   color: #fff;
   font-size: 14px;
+  -webkit-user-select: none;
   user-select: none;
   white-space: nowrap;
 }

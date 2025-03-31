@@ -20,8 +20,131 @@ import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { MetaTags } from "@/components/common/display";
 import { SteamIcon } from "@/components/common/icons";
-import { formatCreatorDisplay } from "@/components/misc/Utility";
+import { createEventSystem, formatCreatorDisplay } from "@/components/misc/Utility";
 import { DetailPopup } from "@/components/popups";
+import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
+import { toast } from 'react-hot-toast';
+
+const minus2Reasons = [
+  ':(',
+  '🗣️',
+  '8k pseudos',
+  'all 3ball',
+  'angle perfect/diff spike',
+  'anti pp gimmick',
+  'bad gimmick',
+  'basic',
+  'beep beep',
+  'blackhole? / basic charting',
+  'camera',
+  'charter requested to be -2',
+  'cool',
+  'copyright',
+  'diff spike',
+  'different from original',
+  'remade from the ground up',
+  'different from original ',
+  'fast straight part was changed into a slow straight with midspins',
+  'different from original ',
+  'fast triangles were removed for balancing',
+  'different from original ',
+  'minor parts of the chart were recharted',
+  'difffspiek',
+  'diffspikes',
+  'eepy',
+  'eugh',
+  'ew',
+  'Free roam',
+  'gimmick abuse',
+  'god',
+  'hand play balance',
+  'hidden twirls',
+  'hold offsync',
+  'holds',
+  'incomplete',
+  'inconsistent',
+  'inconsistent, offsync, certain sections are similar to other MCCXVI charts',
+  'invis speedchange',
+  'kamisis is pending',
+  'L keylimit',
+  'lmao',
+  'math free roam',
+  'me when i have a concussion',
+  'me when the alarm is peaceful and waking',
+  'mischarted',
+  'mmmmm',
+  'mrbeast',
+  'multitap abuse',
+  'need ysmod',
+  'no',
+  'no dl no vid',
+  'no lmao',
+  'NO PERMS',
+  'no song',
+  'no speedup on existing charts',
+  'no vid',
+  'no vid L',
+  'no vid no DL',
+  'no ysmod',
+  'not complete',
+  'not consistant',
+  'offset',
+  'offsync',
+  'old version',
+  'osu! original with verification error',
+  'overcharted',
+  'p sure camellia does not give perm for this',
+  'pauses broken in download',
+  'permission',
+  'pi',
+  'poor recording (no audio)',
+  'poor recording, doubt theres permission for background, level by sprout?',
+  'poor recording, doubt you have permission for the background',
+  'probably copyright lmao',
+  'readability',
+  'recording',
+  'removing MP',
+  'requested by charter',
+  'requested to be -2',
+  'same chart',
+  'sans',
+  'short',
+  'similar chart',
+  'THIS HAd POTIENTAL DAM NIT',
+  'tuyu',
+  'uh',
+  'unbalanced',
+  'unfinished',
+  'unreadable',
+  'unverified',
+  'upgrade your windows, also stop putting those images as background',
+  'vid dead',
+  'what the hell did you do to make the channel terminated',
+  'will be rated after official level is out',
+  'wooaa',
+  'would be nice if recreated, dl wont work',
+  'wrong offset',
+  'yummy',
+  'zzzzz',
+  'zzzzzzzzzzzzzzzzzzzzzzzz',
+];
+
+const gimmickReasons = [
+  'Angle Perfect',
+  'Beep Beep',
+  'Camera',
+  'Free Roam',
+  'Hidden Twirls',
+  'Hold Offsync',
+  'Invis Speedchange',
+  'Math Free Roam',
+  'Multitap',
+  'Offset',
+  'Offsync',
+  'Readability',
+  'Unreadable',
+  'YS Mod Required'
+];
 
 const getHighScores = (players) => {
   if (!players?.length) return null;
@@ -238,6 +361,28 @@ const LevelDetailPage = () => {
 
   const [showRatingPopup, setShowRatingPopup] = useState(false);
 
+  const [levelTimeout, setLevelTimeout] = useState(null);
+  const [showWheel, setShowWheel] = useState(false);
+  const [showSlotMachine, setShowSlotMachine] = useState(false);
+  const [selectedDifficulty, setSelectedDifficulty] = useState(null);
+  const [slots, setSlots] = useState(3);
+  const [showMinus2Reason, setShowMinus2Reason] = useState(false);
+  const [showGimmickReason, setShowGimmickReason] = useState(false);
+
+  // Handle timeout updates in an effect
+
+  useEffect(() => {
+    const modifiedSlots = createEventSystem({
+      "3": 20,
+      "4": 30,
+      "5": 20,
+      "6": 20,
+      "7": 10
+    });
+    setSlots(parseInt(modifiedSlots() || 3));
+  }, []);
+
+
   const handleAliasButtonClick = (e, field) => {
     e.preventDefault();
     e.stopPropagation();
@@ -249,10 +394,31 @@ const LevelDetailPage = () => {
   };
 
   useEffect(() => {
+    let interval;
+    if (levelTimeout > 0) {
+      interval = setInterval(() => {
+        setLevelTimeout(prev => {
+          if (prev <= 1) {
+            clearInterval(interval);
+            return null;
+          }
+          return prev - 1;
+        });
+      }, 1000);
+    }
+    return () => clearInterval(interval);
+  }, [levelTimeout]);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
         const levelData = await api.get(`${import.meta.env.VITE_LEVELS}/withRatings/${id}`);
         const passesData = await api.get(`${import.meta.env.VITE_PASSES}/level/${id}`);
+        
+        if (levelData.data.timeout) {
+          setLevelTimeout(levelData.data.timeout);
+        }
+        
         setRes(prevRes => ({
           ...prevRes,
           level: levelData.data.level,
@@ -261,7 +427,6 @@ const LevelDetailPage = () => {
         }));
         setDisplayedPlayers(sortLeaderboard(passesData.data));
         setNotFound(false);
-        
       } catch (error) {
         console.error("Error fetching level data:", error);
         if (error.response?.status === 404 || error.response?.status === 403) {
@@ -333,25 +498,6 @@ const LevelDetailPage = () => {
     setOpenDialog(!openDialog)
   }
 
-  function formatString(input) {
-    return input.split(/ & | but /g).join(" - ");
-  }
-
-  function formatDiff(value) {
-    const valueStr = String(value);
-      if (valueStr.endsWith('.05')) {
-      return valueStr.slice(0, -3) + '+';
-    } else {
-      return valueStr;
-    }
-  }
-
-  const getMetaImage = () => {
-    if (videoDetail?.image) return videoDetail.image;
-    if (res?.level?.videoLink) return `https://img.youtube.com/vi/${res.level.videoLink.split('v=')[1]}/maxresdefault.jpg`;
-    return placeholder;
-  };
-
   const renderTitleWithAliases = (title, field) => {
     const aliases = res?.level?.aliases?.filter(a => a.field === field) || [];
     const isOpen = activeAliasDropdown === field;
@@ -383,6 +529,86 @@ const LevelDetailPage = () => {
     );
   };
 
+  const handleDifficultySelect = async (difficulty) => {
+    setSelectedDifficulty(difficulty);
+    setShowWheel(false);
+
+    // Check if difficulty name is "-2"
+    if (difficulty.name === "-2") {
+      setShowMinus2Reason(true);
+      return;
+    }
+
+    // Check if difficulty name is "Gimmick"
+    if (difficulty.name === "Gimmick") {
+      setShowGimmickReason(true);
+      return;
+    }
+
+    // If difficulty has base score of 0 or any other case, show the slot machine
+    if (difficulty.baseScore === 0) {
+      setShowSlotMachine(true);
+    }
+    else {
+      handleSubmitConfig(null, null, difficulty);
+    }
+  };
+
+  const handleMinus2ReasonSelect = (reason) => {
+    setShowMinus2Reason(false);
+    handleSubmitConfig(0, reason);
+  };
+
+  const handleGimmickReasonSelect = (reason) => {
+    setShowGimmickReason(false);
+    setShowSlotMachine(true);
+  };
+
+  const handleBaseScoreComplete = (score) => {
+    setShowSlotMachine(false);
+    setBaseScore(score);
+    handleSubmitConfig(score);
+  };
+
+  const handleSubmitConfig = async (baseScore, publicComments = null, difficulty = null) => {
+    if (!difficulty) difficulty = selectedDifficulty;
+    
+    try {
+      const requestData = {
+        diffId: difficulty.id,
+        baseScore: baseScore
+      };
+
+      // Add publicComment if minus2 reason or gimmick reason is selected
+      if (publicComments) {
+        requestData.publicComments = publicComments;
+      }
+
+      const response = await api.put(`${import.meta.env.VITE_LEVELS}/${id}/timeout`, requestData);
+      
+      if (response.data.timeout) {
+        setLevelTimeout(response.data.timeout);
+      }
+
+      if (response.data.level) {
+        setRes(prevRes => ({
+          ...prevRes,
+          level: {
+            ...prevRes.level,
+            ...response.data.level,
+            difficulty: response.data.level.difficulty,
+            baseScore: response.data.level.baseScore,
+            publicComments: response.data.level.publicComments
+          }
+        }));
+      }
+
+      toast.success('Level updated successfully!');
+    } catch (error) {
+      console.error('Failed to update level:', error);
+      toast.error('Failed to update level');
+    }
+  };
 
   if (notFound) {
     return (
@@ -475,16 +701,34 @@ const LevelDetailPage = () => {
             </div>
           </div>
           {user?.isSuperAdmin && (
-            <button 
-              className="edit-button svg-stroke"
-              onClick={() => setOpenEditDialog(true)}
-              title={tLevel('buttons.edit')}
-            >
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.4374 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
+            <>
+              <button 
+                className="edit-button svg-stroke"
+                onClick={() => setOpenEditDialog(true)}
+                title={tLevel('buttons.edit')}
+              >
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.4374 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+              <button 
+                className="update-button svg-stroke"
+                onClick={() => setShowWheel(true)}
+                disabled={levelTimeout !== null}
+                title={tLevel('buttons.update')}
+              >
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" strokeWidth="2"/>
+                  <path d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" stroke="currentColor" strokeWidth="2"/>
+                </svg>
+                {levelTimeout !== null && (
+                  <span className="timeout-text">
+                    {levelTimeout} s
+                  </span>
+                )}
+              </button>
+            </>
           )}
           <div className="right"> 
             {res.level.dlLink && (
@@ -725,6 +969,43 @@ const LevelDetailPage = () => {
       <FullInfoPopup
         level={res.level}
         onClose={changeDialogState}
+      />
+    )}
+
+    {showWheel && (
+      <RouletteWheel
+        items={Object.values(difficultyDict)}
+        onSelect={handleDifficultySelect}
+        onClose={() => setShowWheel(false)}
+        enableGimmicks={true}
+      />
+    )}
+
+    {showMinus2Reason && (
+      <RouletteWheel
+        items={minus2Reasons}
+        onSelect={handleMinus2ReasonSelect}
+        onClose={() => setShowMinus2Reason(false)}
+        mode="text"
+        colors={['#e74c3c', '#c0392b']}
+      />
+    )}
+
+    {showGimmickReason && (
+      <RouletteWheel
+        items={gimmickReasons}
+        onSelect={handleGimmickReasonSelect}
+        onClose={() => setShowGimmickReason(false)}
+        mode="text"
+        colors={['#f39c12', '#d35400']}
+      />
+    )}
+
+    {showSlotMachine && (
+      <SlotMachine
+        onComplete={handleBaseScoreComplete}
+        onClose={() => setShowSlotMachine(false)}
+        slots={slots}
       />
     )}
       </div>

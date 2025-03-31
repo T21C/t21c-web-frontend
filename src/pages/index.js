@@ -1,4 +1,4 @@
-import HomePage from "./common/HomePage/HomePage";
+import HomePage from "./common/HomePageAprils/HomePage";
 import LevelDetailPage from "./common/LevelDetailPage/LevelDetailPage";
 import LevelPage from "./common/LevelPage/LevelPage";
 import SubmissionPage from "./submissions/SubmissionPage";

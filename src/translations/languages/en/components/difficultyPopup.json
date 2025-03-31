@@ -153,8 +153,8 @@
     "cancel": "Cancel"
   },
   "errors": {
-    "invalidPassword": "Invalid super admin password",
-    "loadDirectives": "Failed to load announcement directives",
+    "passwordRequired": "Super admin password is required",
+    "loadDirectives": "Failed to load directives",
     "saveDirectives": "Failed to save announcement directives",
     "channelSaveFailed": "Failed to save channel",
     "channelDeleteFailed": "Failed to delete channel",

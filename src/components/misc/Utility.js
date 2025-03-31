@@ -237,3 +237,62 @@ export const formatCreatorDisplay = (level) => {
 
     return level.levelCredits[0]?.creator.name || level.creator;
   };
+
+
+  export function gaussianRandom(mean=0, stdev=1) {
+    const u = 1 - Math.random(); // Converting [0,1) to (0,1]
+    const v = Math.random();
+    const z = Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+    // Transform to the desired mean and standard deviation:
+    return z * stdev + mean;
+}
+
+/**
+ * Creates a probability-based event system
+ * @param {Object} events - Object containing event names and their probabilities (0-100)
+ * @returns {string|null} - Returns the triggered event name or null if no event triggered
+ * @example
+ * const events = {
+ *   'eventA': 5,  // 5% chance
+ *   'eventB': 10, // 10% chance
+ *   'eventC': 15  // 15% chance
+ * };
+ * const result = triggerEvent(events);
+ */
+export function triggerEvent(events) {
+  // Generate random number between 0 and 100
+  const roll = Math.random() * 100;
+  let cumulativeProbability = 0;
+
+  // Check each event in order
+  for (const [eventName, probability] of Object.entries(events)) {
+    cumulativeProbability += probability;
+    if (roll < cumulativeProbability) {
+      return eventName;
+    }
+  }
+
+  // No event triggered
+  return null;
+}
+
+/**
+ * Creates a reusable event system with predefined events
+ * @param {Object} events - Object containing event names and their probabilities
+ * @returns {Function} - Function that can be called to trigger events
+ * @example
+ * const eventSystem = createEventSystem({
+ *   'eventA': 5,
+ *   'eventB': 10
+ * });
+ * const result = eventSystem(); // Returns triggered event or null
+ */
+export function createEventSystem(events) {
+  // Validate probabilities sum to 100 or less
+  const totalProbability = Object.values(events).reduce((sum, prob) => sum + prob, 0);
+  if (totalProbability > 100) {
+    throw new Error('Total probability cannot exceed 100%');
+  }
+
+  return () => triggerEvent(events);
+}

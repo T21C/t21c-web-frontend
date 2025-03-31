@@ -70,7 +70,9 @@ const DifficultyContextProvider = (props) => {
                             legacyIcon: legacyBlobUrl || legacyIconUrl
                         };
                     } catch (err) {
-                        console.error(`Failed to load icons for ${diff.name}:`, err);
+                        if (err.message !== 'Network Error') {
+                            console.error(`Failed to load icons for ${diff.name}:`, err);
+                        }
                         return diff;
                     }
                 }));

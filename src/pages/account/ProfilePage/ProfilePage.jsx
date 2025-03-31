@@ -11,6 +11,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { AdminPlayerPopup } from "@/components/popups";
 import { DefaultAvatar, ShieldIcon, EditIcon } from "@/components/common/icons";
+import { CaseOpenSelector } from "@/components/common/selectors";
+import caseOpen from "@/assets/icons/case.png";
 
 const parseRankColor = (rank) => {
   var clr;
@@ -28,6 +30,7 @@ const ProfilePage = () => {
     const [playerData, setPlayerData] = useState(null)
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(false)
+    const [showCaseOpen, setShowCaseOpen] = useState(false);
     const { t } = useTranslation('pages');
     const tProfile = (key, params = {}) => t(`profile.${key}`, params);
     const { user } = useAuth();
@@ -91,6 +94,14 @@ const ProfilePage = () => {
         navigate('/leaderboard');
       }
 
+      const handleCaseOpenClick = () => {
+        setShowCaseOpen(true);
+      };
+
+      const handleCaseOpenClose = () => {
+        setShowCaseOpen(false);
+      };
+
       if (playerId && !playerData) {
         return (
           <div className="player-page">
@@ -135,6 +146,13 @@ const ProfilePage = () => {
             <div className="player-body">
               <div className="player-content">
                 <div className="player-header">
+                  <button 
+                    className="case-open-button" 
+                    onClick={handleCaseOpenClick}
+                    disabled={!user && !playerId}
+                  >
+                    <img src={caseOpen} alt="Case Open" />
+                  </button>
                   <div className="player-header-content">
 
                     <div className="player-info-container">
@@ -280,6 +298,16 @@ const ProfilePage = () => {
               onClose={() => setShowEditPopup(false)}
               onUpdate={handlePlayerUpdate}
             />
+          )}
+
+          {showCaseOpen && (
+            <div className="case-open-popup">
+              <div className="case-open-popup__overlay" onClick={handleCaseOpenClose}></div>
+              <div className="case-open-popup__content">
+                <button className="case-open-popup__close" onClick={handleCaseOpenClose}>×</button>
+                <CaseOpenSelector targetPlayerId={playerId || user?.playerId} />
+              </div>
+            </div>
           )}
         </div>
       );

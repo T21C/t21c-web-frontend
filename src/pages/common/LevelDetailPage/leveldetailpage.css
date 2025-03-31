@@ -223,6 +223,63 @@
   background-color: var(--color-white-t20);
   padding: 0.5rem;
 }
+.level-detail .update-button {
+  height: 3rem;
+  width: 3rem;
+  background-color: transparent;
+  border: none;
+  color: var(--color-white);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  transform: scale(0.8);
+  margin: 0 auto;
+}
+
+.level-detail .header .right .update-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  position: relative;
+  margin-left: 1rem;
+}
+.level-detail .header .right .update-button svg {
+  background-color: var(--color-white-t20);
+  padding: 0.5rem;
+  transition: all 0.2s;
+}
+.level-detail .header .right .update-button:hover:not(:disabled) svg {
+  background-color: var(--color-white-t30);
+  transform: scale(1.1);
+}
+.level-detail .header .right .update-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.level-detail .header .right .update-button .timeout-text {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #ff2ad1;
+  color: white;
+  font-size: 0.8rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+  font-weight: bold;
+  animation: pulse 1s infinite;
+}
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
 .level-detail .body {
   display: flex;
   align-items: center;
