@@ -72,14 +72,12 @@ export const CaseOpenSelector = ({ targetPlayerId }) => {
     if (Object.keys(probabilities).length > 0) {
       // Create event system when probabilities are loaded
       eventSystemRef.current = createEventSystem(probabilities);
-      console.log('Event system created with probabilities:', probabilities);
       // Generate initial items
       generateInitialItems();
     }
   }, [probabilities]);
 
   const generateInitialItems = () => {
-    console.log('Generating initial items display');
     const initialItems = [];
     
     // Generate initial items with shift
@@ -94,7 +92,6 @@ export const CaseOpenSelector = ({ targetPlayerId }) => {
     }
 
     setItems(initialItems);
-    console.log('Generated initial items:', initialItems.length);
   };
 
   const fetchModifiers = async () => {
@@ -102,7 +99,6 @@ export const CaseOpenSelector = ({ targetPlayerId }) => {
       const response = await api.get(`${import.meta.env.VITE_PLAYERS}/${targetPlayerId}/modifiers`);
       setModifiers(response.data.modifiers);
       setProbabilities(response.data.probabilities);
-      console.log('Fetched modifiers:', response.data);
     } catch (error) {
       console.error('Error fetching modifiers:', error);
       toast.error('Failed to fetch modifiers');
@@ -110,8 +106,6 @@ export const CaseOpenSelector = ({ targetPlayerId }) => {
   };
 
   const completeStripWithWinningItem = (winningItem) => {
-    console.log('Completing strip with winning item:', winningItem);
-    console.log(`Winning position will be: ${WINNING_POSITION} out of ${TOTAL_ITEMS} total items`);
     
     // Keep the initial items
     const completeStrip = [...items];
@@ -152,7 +146,6 @@ export const CaseOpenSelector = ({ targetPlayerId }) => {
       });
     }
 
-    console.log('Completed strip with total items:', completeStrip.length);
     return completeStrip;
   };
 
@@ -160,8 +153,6 @@ export const CaseOpenSelector = ({ targetPlayerId }) => {
     if (isSpinning || !eventSystemRef.current || cooldownSeconds > 0) return;
     
     setIsSpinning(true);
-    console.log('Starting spin animation');
-
     // Reset strip position and regenerate items immediately
     if (!isInitialSpin) {
       setStripTransition('none');
@@ -179,7 +170,6 @@ export const CaseOpenSelector = ({ targetPlayerId }) => {
       const newModifier = response.data.modifier;
       
       if (newModifier) {
-        console.log('Received winning modifier:', newModifier);
         
         // Force a reflow to ensure the reset is applied
         if (stripRef.current) {

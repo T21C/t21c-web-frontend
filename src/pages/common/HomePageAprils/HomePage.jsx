@@ -687,9 +687,6 @@ const HomePage = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [boundingRect]);
 
-  const handleWheelSelect = (selectedItem) => {
-    console.log('Selected level:', selectedItem);
-  };
 
   return (<>
     <MetaTags

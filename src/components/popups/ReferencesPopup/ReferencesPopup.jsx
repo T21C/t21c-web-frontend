@@ -393,10 +393,6 @@ const ReferencesPopup = ({ onClose }) => {
       setIsEditMode(true);
       const initialIds = {};
       references.forEach(ref => {
-        // Add logging for P1 difficulty
-        if (ref.difficulty.name === 'P1') {
-          console.log('Processing P1 difficulty:', ref);
-        }
 
         // Group levels by type
         const groupedByType = ref.levels.reduce((acc, level) => {
@@ -418,20 +414,12 @@ const ReferencesPopup = ({ onClose }) => {
             const levelIds = groupedByType[type].sort((a, b) => a - b);
             // Convert internal type back to display format for edit mode
             const displayType = toDisplayType(type);
-            if (ref.difficulty.name === 'P1') {
-              console.log('Converting type for P1:', {
-                internal: type,
-                display: displayType,
-                levelIds
-              });
-            }
+
             return displayType ? `${displayType}: ${levelIds.join(', ')}` : levelIds.join(', ');
           })
           .join('\n');
 
-        if (ref.difficulty.name === 'P1') {
-          console.log('Final P1 edit text:', initialIds[ref.difficulty.id]);
-        }
+
       });
       setEditedLevelIds(initialIds);
       setInitialLevelIds(initialIds);
