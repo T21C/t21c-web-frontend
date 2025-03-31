@@ -15,7 +15,6 @@ export const RouletteWheel = ({
   const [isSpinning, setIsSpinning] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [showResult, setShowResult] = useState(false);
-  const [currentRotation, setCurrentRotation] = useState(0);
   const [hue, setHue] = useState(0);
   const [activeGimmick, setActiveGimmick] = useState(null);
   const [mode, setMode] = useState(initialMode);
@@ -122,7 +121,6 @@ export const RouletteWheel = ({
   useEffect(() => {
     if (isSpinning) {
       const gimmick = enableGimmicks ? gimmickEvents() : null;
-      const currentItems = temporaryItems || items;
       const randomIndex = Math.floor(Math.random() * filteredItems.length);
       
       let duration = defaultSpinDuration;
@@ -156,7 +154,7 @@ export const RouletteWheel = ({
       
       setActiveGimmick(gimmick);
     }
-  }, [isSpinning, items.length, enableGimmicks]);
+  }, [isSpinning, filteredItems.length, enableGimmicks]);
 
   // Effect to handle spin animation after configuration is set
   useEffect(() => {
@@ -182,7 +180,6 @@ export const RouletteWheel = ({
             element.style.transform = `rotate(${spinConfig.finalRotation}deg)`;
           }
           
-          setCurrentRotation(spinConfig.finalRotation);
         }
       });
 
@@ -190,7 +187,7 @@ export const RouletteWheel = ({
       const totalDuration = spinConfig.duration;
 
       setTimeout(() => {
-        const currentItems = temporaryItems || items;
+        const currentItems = temporaryItems || filteredItems;
         if (activeGimmick === 'bus') {
           setSelectedItem(items.find(item => item.name === 'bus'));
         } else if (activeGimmick === 'epic') {

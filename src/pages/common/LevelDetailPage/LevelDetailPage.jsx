@@ -566,7 +566,6 @@ const LevelDetailPage = () => {
 
   const handleBaseScoreComplete = (score) => {
     setShowSlotMachine(false);
-    setBaseScore(score);
     handleSubmitConfig(score);
   };
 

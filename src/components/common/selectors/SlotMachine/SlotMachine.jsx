@@ -68,7 +68,7 @@ export const SlotMachine = ({ onComplete, onClose, slots }) => {
       <div className="slot-machine-container">
         <div className="slot-machine-content">
             <h3>
-              {"Generate Base Score".split('').map((letter, index) => (
+              {"BASESCORE TIME".split('').map((letter, index) => (
                 <span key={index}>{letter === ' ' ? '\u00A0' : letter}</span>
               ))}
             </h3>
