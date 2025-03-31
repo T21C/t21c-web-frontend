@@ -46,6 +46,7 @@ const stripStyle = {
 
 export const CaseOpenSelector = ({ targetPlayerId }) => {
   const { user } = useAuth();
+  const [isInitialSpin, setIsInitialSpin] = useState(true);
   const [modifiers, setModifiers] = useState([]);
   const [probabilities, setProbabilities] = useState({});
   const [isSpinning, setIsSpinning] = useState(false);
@@ -161,6 +162,16 @@ export const CaseOpenSelector = ({ targetPlayerId }) => {
     setIsSpinning(true);
     console.log('Starting spin animation');
 
+    // Reset strip position and regenerate items immediately
+    if (!isInitialSpin) {
+      setStripTransition('none');
+      setStripTransform(`translateX(${-ITEM_WIDTH * INITIAL_SHIFT}px)`);
+      generateInitialItems();
+    }
+    else {
+      setIsInitialSpin(false);
+    }
+
     try {
       const response = await api.post(`${import.meta.env.VITE_PLAYERS}/modifiers/generate`, {
         targetPlayerId
@@ -170,44 +181,44 @@ export const CaseOpenSelector = ({ targetPlayerId }) => {
       if (newModifier) {
         console.log('Received winning modifier:', newModifier);
         
+        // Force a reflow to ensure the reset is applied
+        if (stripRef.current) {
+          stripRef.current.offsetHeight;
+        }
+
         const completeStrip = completeStripWithWinningItem({
           type: newModifier.type,
           value: newModifier.value
         });
         setItems(completeStrip);
 
-        setTimeout(() => {
-          if (stripRef.current) {
-            const initialOffset = -(ITEM_WIDTH * INITIAL_SHIFT);
-            const finalOffset = -(ITEM_WIDTH * WINNING_POSITION) + STRIP_OFFSET;
-            
-            setStripTransition('none');
-            setStripTransform(`translateX(${initialOffset}px)`);
-            
-            stripRef.current.offsetHeight; // Force reflow
-            
-            setStripTransition(`transform ${ANIMATION_DURATION}ms cubic-bezier(0.1, 0.6, 0.2, 1)`);
-            setStripTransform(`translateX(${finalOffset}px)`);
+        // Force another reflow to ensure the new items are rendered
+        if (stripRef.current) {
+          stripRef.current.offsetHeight;
+        }
 
-            setTimeout(() => {
-              setIsSpinning(false);
-              setSelectedItem(newModifier);
-              setModifiers(prev => [...prev, newModifier]);
-              toast.success(`You got a ${newModifier.type.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}!`);
-              
-              setCooldownSeconds(COOLDOWN_SECONDS);
-              cooldownIntervalRef.current = setInterval(() => {
-                setCooldownSeconds(prev => {
-                  if (prev <= 1) {
-                    clearInterval(cooldownIntervalRef.current);
-                    return 0;
-                  }
-                  return prev - 1;
-                });
-              }, 1000);
-            }, ANIMATION_DURATION);
-          }
-        }, 100);
+        // Start the animation
+        const finalOffset = -(ITEM_WIDTH * WINNING_POSITION) + STRIP_OFFSET;
+        setStripTransition(`transform ${ANIMATION_DURATION}ms cubic-bezier(0.1, 0.6, 0.2, 1)`);
+        setStripTransform(`translateX(${finalOffset}px)`);
+
+        setTimeout(() => {
+          setIsSpinning(false);
+          setSelectedItem(newModifier);
+          setModifiers(prev => [...prev, newModifier]);
+          toast.success(`You got a ${newModifier.type.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}!`);
+          
+          setCooldownSeconds(COOLDOWN_SECONDS);
+          cooldownIntervalRef.current = setInterval(() => {
+            setCooldownSeconds(prev => {
+              if (prev <= 1) {
+                clearInterval(cooldownIntervalRef.current);
+                return 0;
+              }
+              return prev - 1;
+            });
+          }, 1000);
+        }, ANIMATION_DURATION);
       } else {
         setIsSpinning(false);
         toast.info('Better luck next time!');
