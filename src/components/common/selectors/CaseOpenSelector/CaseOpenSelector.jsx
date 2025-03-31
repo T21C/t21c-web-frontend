@@ -12,7 +12,7 @@ const ITEM_WIDTH = 160; // Width of each item in pixels
 const ANIMATION_DURATION = 12000; // 6 seconds
 const STRIP_OFFSET = -Math.floor(VISIBLE_ITEMS/3) * ITEM_WIDTH+20-(Math.random()*ITEM_WIDTH); // Center the winning item
 const WINNING_POSITION = Math.floor(TOTAL_ITEMS * 0.7); // Position where winning item will land
-const COOLDOWN_SECONDS = 15; // Cooldown between spins
+const COOLDOWN_SECONDS = 300; // Cooldown between spins
 const INITIAL_SHIFT = 6; // Number of items to shift initially
 
 const baseItemStyle = {
