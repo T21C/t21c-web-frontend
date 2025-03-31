@@ -291,7 +291,7 @@ export const CaseOpenSelector = ({ targetPlayerId, onClose, isSpinning: parentIs
       case 'player_swap':
         return 'Swap identity with another player';
       case 'oops_all_miss':
-        return 'Add 10+ misses to all clears';
+        return 'Add 25 misses to all clears';
       case 'ban_hammer':
         return 'Temporary ban';
       case 'super_admin':
