@@ -971,11 +971,13 @@ const LevelDetailPage = () => {
       />
     )}
 
-    {showWheel && (
+
+      </div>
+      {showWheel && (
       <RouletteWheel
         items={Object.values(difficultyDict)}
         onSelect={handleDifficultySelect}
-        onClose={() => setShowWheel(false)}
+        onClose={() => !isSpinning && setShowWheel(false)}
         enableGimmicks={true}
       />
     )}
@@ -984,7 +986,7 @@ const LevelDetailPage = () => {
       <RouletteWheel
         items={minus2Reasons}
         onSelect={handleMinus2ReasonSelect}
-        onClose={() => setShowMinus2Reason(false)}
+        onClose={() => !isSpinning && setShowMinus2Reason(false)}
         mode="text"
         colors={['#e74c3c', '#c0392b']}
       />
@@ -994,7 +996,7 @@ const LevelDetailPage = () => {
       <RouletteWheel
         items={gimmickReasons}
         onSelect={handleGimmickReasonSelect}
-        onClose={() => setShowGimmickReason(false)}
+        onClose={() => !isSpinning && setShowGimmickReason(false)}
         mode="text"
         colors={['#f39c12', '#d35400']}
       />
@@ -1007,8 +1009,6 @@ const LevelDetailPage = () => {
         slots={slots}
       />
     )}
-      </div>
-      
     </div>
 
 

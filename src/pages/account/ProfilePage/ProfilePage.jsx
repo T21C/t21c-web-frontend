@@ -40,6 +40,7 @@ const ProfilePage = () => {
     const location = useLocation();
     const currentUrl = window.location.origin + location.pathname;
     const navigate = useNavigate();
+    const [isSpinning, setIsSpinning] = useState(false);
 
 
     if (!playerId) {
@@ -301,11 +302,14 @@ const ProfilePage = () => {
           )}
 
           {showCaseOpen && (
-            <div className="case-open-popup">
-              <div className="case-open-popup__overlay" onClick={handleCaseOpenClose}></div>
+            <div className={`case-open-popup ${isSpinning ? 'case-open-popup--spinning' : ''}`}>
+              <div className="case-open-popup__overlay" onClick={!isSpinning ? handleCaseOpenClose : undefined}></div>
               <div className="case-open-popup__content">
-                <button className="case-open-popup__close" onClick={handleCaseOpenClose}>×</button>
-                <CaseOpenSelector targetPlayerId={playerId || user?.playerId} />
+                <CaseOpenSelector 
+                  targetPlayerId={playerId || user?.playerId} 
+                  onClose={handleCaseOpenClose}
+                  isSpinning={setIsSpinning}
+                />
               </div>
             </div>
           )}

@@ -218,3 +218,42 @@
   background: rgba(255, 255, 255, 0.1);
   border-radius: 4px;
 }
+
+.case-open-selector__close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.case-open-selector__close-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.case-open-selector__close-button:active {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.case-open-selector--spinning {
+  pointer-events: none;
+}
+
+.case-open-selector--spinning .case-open-selector__spin-button {
+  pointer-events: none;
+}
+
+.case-open-selector--spinning .case-open-selector__close-button {
+  pointer-events: none;
+}
+
+.case-open-popup--spinning .case-open-popup__overlay {
+  pointer-events: none;
+}

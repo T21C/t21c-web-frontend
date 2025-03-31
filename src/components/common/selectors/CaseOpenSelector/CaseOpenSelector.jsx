@@ -44,7 +44,7 @@ const stripStyle = {
   WebkitBackfaceVisibility: 'hidden',
 };
 
-export const CaseOpenSelector = ({ targetPlayerId }) => {
+export const CaseOpenSelector = ({ targetPlayerId, onClose, isSpinning: parentIsSpinning }) => {
   const { user } = useAuth();
   const [isInitialSpin, setIsInitialSpin] = useState(true);
   const [modifiers, setModifiers] = useState([]);
@@ -52,12 +52,20 @@ export const CaseOpenSelector = ({ targetPlayerId }) => {
   const [isSpinning, setIsSpinning] = useState(false);
   const [items, setItems] = useState([]);
   const [cooldownSeconds, setCooldownSeconds] = useState(0);
+  const [isSelfRoll, setIsSelfRoll] = useState(false);
   const stripRef = useRef(null);
   const [selectedItem, setSelectedItem] = useState(null);
   const eventSystemRef = useRef(null);
   const cooldownIntervalRef = useRef(null);
   const [stripTransform, setStripTransform] = useState(`translateX(${-ITEM_WIDTH * INITIAL_SHIFT}px)`);
   const [stripTransition, setStripTransition] = useState('none');
+
+  // Update parent's spinning state
+  useEffect(() => {
+    if (typeof parentIsSpinning === 'function') {
+      parentIsSpinning(isSpinning);
+    }
+  }, [isSpinning, parentIsSpinning]);
 
   useEffect(() => {
     fetchModifiers();
@@ -99,6 +107,32 @@ export const CaseOpenSelector = ({ targetPlayerId }) => {
       const response = await api.get(`${import.meta.env.VITE_PLAYERS}/${targetPlayerId}/modifiers`);
       setModifiers(response.data.modifiers);
       setProbabilities(response.data.probabilities);
+      
+      // Handle cooldown from response
+      if (response.data.cooldown) {
+        const { remainingSeconds, isSelfRoll: serverIsSelfRoll } = response.data.cooldown;
+        setIsSelfRoll(serverIsSelfRoll);
+        
+        if (remainingSeconds > 0) {
+          setCooldownSeconds(remainingSeconds);
+          
+          // Clear any existing interval
+          if (cooldownIntervalRef.current) {
+            clearInterval(cooldownIntervalRef.current);
+          }
+          
+          // Start new interval
+          cooldownIntervalRef.current = setInterval(() => {
+            setCooldownSeconds(prev => {
+              if (prev <= 1) {
+                clearInterval(cooldownIntervalRef.current);
+                return 0;
+              }
+              return prev - 1;
+            });
+          }, 1000);
+        }
+      }
     } catch (error) {
       console.error('Error fetching modifiers:', error);
       toast.error('Failed to fetch modifiers');
@@ -170,7 +204,6 @@ export const CaseOpenSelector = ({ targetPlayerId }) => {
       const newModifier = response.data.modifier;
       
       if (newModifier) {
-        
         // Force a reflow to ensure the reset is applied
         if (stripRef.current) {
           stripRef.current.offsetHeight;
@@ -198,7 +231,9 @@ export const CaseOpenSelector = ({ targetPlayerId }) => {
           setModifiers(prev => [...prev, newModifier]);
           toast.success(`You got a ${newModifier.type.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}!`);
           
-          setCooldownSeconds(COOLDOWN_SECONDS);
+          // Set cooldown based on whether it's a self-roll or not
+          const cooldownTime = isSelfRoll ? 60 : 600; // 1 minute for self-roll, 10 minutes for others
+          setCooldownSeconds(cooldownTime);
           cooldownIntervalRef.current = setInterval(() => {
             setCooldownSeconds(prev => {
               if (prev <= 1) {
@@ -218,7 +253,16 @@ export const CaseOpenSelector = ({ targetPlayerId }) => {
       setIsSpinning(false);
       
       if (error.response?.status === 429 && error.response?.data?.remainingSeconds) {
-        setCooldownSeconds(error.response.data.remainingSeconds);
+        const { remainingSeconds, isSelfRoll: serverIsSelfRoll } = error.response.data;
+        setIsSelfRoll(serverIsSelfRoll);
+        setCooldownSeconds(remainingSeconds);
+        
+        // Clear any existing interval
+        if (cooldownIntervalRef.current) {
+          clearInterval(cooldownIntervalRef.current);
+        }
+        
+        // Start new interval
         cooldownIntervalRef.current = setInterval(() => {
           setCooldownSeconds(prev => {
             if (prev <= 1) {
@@ -228,6 +272,8 @@ export const CaseOpenSelector = ({ targetPlayerId }) => {
             return prev - 1;
           });
         }, 1000);
+        
+        toast.error(`Spin cooldown active (${remainingSeconds}s remaining)`);
       } else {
         toast.error('Failed to generate modifier');
       }
@@ -313,7 +359,7 @@ export const CaseOpenSelector = ({ targetPlayerId }) => {
   };
 
   return (
-    <div className="case-open-selector">
+    <div className={`case-open-selector ${isSpinning ? 'case-open-selector--spinning' : ''}`}>
       <div className="case-open-selector__container">
         <div className="case-open-selector__viewport">
           <div className="case-open-selector__marker"></div>
@@ -354,7 +400,9 @@ export const CaseOpenSelector = ({ targetPlayerId }) => {
           onClick={handleSpin}
           disabled={isSpinning || !eventSystemRef.current || cooldownSeconds > 0}
         >
-          {isSpinning ? 'Opening...' : cooldownSeconds > 0 ? `Wait ${cooldownSeconds}s` : 'Open Case'}
+          {isSpinning ? 'Opening...' : cooldownSeconds > 0 ? 
+            `Wait ${cooldownSeconds}s (${isSelfRoll ? 'Self Roll' : 'Other Roll'})` : 
+            'Open Case'}
         </button>
       </div>
 
@@ -384,6 +432,15 @@ export const CaseOpenSelector = ({ targetPlayerId }) => {
           </ul>
         )}
       </div>
+
+      {!isSpinning && onClose && (
+        <button 
+          className="case-open-selector__close-button"
+          onClick={onClose}
+        >
+          ✖
+        </button>
+      )}
     </div>
   );
 };

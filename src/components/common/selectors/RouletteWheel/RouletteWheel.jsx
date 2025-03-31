@@ -264,7 +264,15 @@ export const RouletteWheel = ({
   return (
     <div className="roulette-wheel-popup">
       <div className="roulette-wheel-container">
-        <button className="close-button" onClick={onClose}>×</button>
+        <button 
+          className="close-button" 
+          onClick={onClose}
+          disabled={isSpinning}
+          style={{ 
+            opacity: isSpinning ? 0.5 : 1,
+            cursor: isSpinning ? 'not-allowed' : 'pointer'
+          }}
+        >×</button>
         <div className="roulette-wheel-content">
           <div className="wheel-container">
             <div className="wheel-pointer"></div>
@@ -390,7 +398,7 @@ export const RouletteWheel = ({
                 disabled={isSpinning}
               >
                 {isSpinning ? 'Spinning...' : 'Spin!'}
-              </button>
+                </button>
             ) : (
               <button 
                 className="confirm-button"

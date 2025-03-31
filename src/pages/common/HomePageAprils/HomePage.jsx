@@ -439,7 +439,15 @@ const WheelPopup = ({ items, seed, onSelect, onClose, handleTimeout }) => {
   return (
     <div className="level-wheel-popup">
       <div className="level-wheel-container">
-        <button className="level-close-button" onClick={onClose}>×</button>
+        <button 
+          className="level-close-button" 
+          onClick={onClose}
+          disabled={isSpinning}
+          style={{ 
+            opacity: isSpinning ? 0.5 : 1,
+            cursor: isSpinning ? 'not-allowed' : 'pointer'
+          }}
+        >×</button>
         
         <div className="level-wheel-content">
           <div className="level-wheel-image-container" style={{paddingBottom: selectedItem ? "60%" : "80%"}}>
