@@ -55,6 +55,8 @@ interface ImportMetaEnv {
   // External API Keys
   readonly VITE_YOUTUBE_API_KEY: string;
   readonly VITE_RECAPTCHA_SITE_KEY: string;
+
+  readonly VITE_APRIL_FOOLS: boolean;
 }
 
 interface ImportMeta {

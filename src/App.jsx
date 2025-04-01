@@ -50,7 +50,9 @@ function App() {
           <Route path="/profile/edit" element={<PrivateRoute><Pages.EditProfilePage /></PrivateRoute>} />
           
           {/* Existing Routes */}
-          <Route index path="/" element={<Pages.HomePage />} />
+          <Route index path="/" element={
+            import.meta.env.VITE_APRIL_FOOLS === "true" ? <Pages.HomePageAprils /> : <Pages.HomePage />
+          } />
           <Route path="levels" element={<Pages.LevelPage />} />
           <Route path="levels/:id" element={<Pages.LevelDetailPage />} />
           <Route path="passes/:id" element={<Pages.PassDetailPage />} />

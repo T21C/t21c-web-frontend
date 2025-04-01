@@ -20,131 +20,14 @@ import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { MetaTags } from "@/components/common/display";
 import { SteamIcon } from "@/components/common/icons";
-import { createEventSystem, formatCreatorDisplay } from "@/components/misc/Utility";
+import { createEventSystem, formatCreatorDisplay, minus2Reasons, gimmickReasons } from "@/components/misc/Utility";
 import { DetailPopup } from "@/components/popups";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
 
-const minus2Reasons = [
-  ':(',
-  '🗣️',
-  '8k pseudos',
-  'all 3ball',
-  'angle perfect/diff spike',
-  'anti pp gimmick',
-  'bad gimmick',
-  'basic',
-  'beep beep',
-  'blackhole? / basic charting',
-  'camera',
-  'charter requested to be -2',
-  'cool',
-  'copyright',
-  'diff spike',
-  'different from original',
-  'remade from the ground up',
-  'different from original ',
-  'fast straight part was changed into a slow straight with midspins',
-  'different from original ',
-  'fast triangles were removed for balancing',
-  'different from original ',
-  'minor parts of the chart were recharted',
-  'difffspiek',
-  'diffspikes',
-  'eepy',
-  'eugh',
-  'ew',
-  'Free roam',
-  'gimmick abuse',
-  'god',
-  'hand play balance',
-  'hidden twirls',
-  'hold offsync',
-  'holds',
-  'incomplete',
-  'inconsistent',
-  'inconsistent, offsync, certain sections are similar to other MCCXVI charts',
-  'invis speedchange',
-  'kamisis is pending',
-  'L keylimit',
-  'lmao',
-  'math free roam',
-  'me when i have a concussion',
-  'me when the alarm is peaceful and waking',
-  'mischarted',
-  'mmmmm',
-  'mrbeast',
-  'multitap abuse',
-  'need ysmod',
-  'no',
-  'no dl no vid',
-  'no lmao',
-  'NO PERMS',
-  'no song',
-  'no speedup on existing charts',
-  'no vid',
-  'no vid L',
-  'no vid no DL',
-  'no ysmod',
-  'not complete',
-  'not consistant',
-  'offset',
-  'offsync',
-  'old version',
-  'osu! original with verification error',
-  'overcharted',
-  'p sure camellia does not give perm for this',
-  'pauses broken in download',
-  'permission',
-  'pi',
-  'poor recording (no audio)',
-  'poor recording, doubt theres permission for background, level by sprout?',
-  'poor recording, doubt you have permission for the background',
-  'probably copyright lmao',
-  'readability',
-  'recording',
-  'removing MP',
-  'requested by charter',
-  'requested to be -2',
-  'same chart',
-  'sans',
-  'short',
-  'similar chart',
-  'THIS HAd POTIENTAL DAM NIT',
-  'tuyu',
-  'uh',
-  'unbalanced',
-  'unfinished',
-  'unreadable',
-  'unverified',
-  'upgrade your windows, also stop putting those images as background',
-  'vid dead',
-  'what the hell did you do to make the channel terminated',
-  'will be rated after official level is out',
-  'wooaa',
-  'would be nice if recreated, dl wont work',
-  'wrong offset',
-  'yummy',
-  'zzzzz',
-  'zzzzzzzzzzzzzzzzzzzzzzzz',
-];
 
-const gimmickReasons = [
-  'Angle Perfect',
-  'Beep Beep',
-  'Camera',
-  'Free Roam',
-  'Hidden Twirls',
-  'Hold Offsync',
-  'Invis Speedchange',
-  'Math Free Roam',
-  'Multitap',
-  'Offset',
-  'Offsync',
-  'Readability',
-  'Unreadable',
-  'YS Mod Required'
-];
+const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
+
 
 const getHighScores = (players) => {
   if (!players?.length) return null;
@@ -711,6 +594,7 @@ const LevelDetailPage = () => {
                   <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.4374 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </button>
+              {ENABLE_ROULETTE && (
               <button 
                 className="update-button svg-stroke"
                 onClick={() => setShowWheel(true)}
@@ -727,6 +611,7 @@ const LevelDetailPage = () => {
                   </span>
                 )}
               </button>
+              )}
             </>
           )}
           <div className="right"> 
@@ -973,7 +858,7 @@ const LevelDetailPage = () => {
 
 
       </div>
-      {showWheel && (
+      {showWheel && ENABLE_ROULETTE && (
       <RouletteWheel
         items={Object.values(difficultyDict)}
         onSelect={handleDifficultySelect}
@@ -982,7 +867,7 @@ const LevelDetailPage = () => {
       />
     )}
 
-    {showMinus2Reason && (
+    {showMinus2Reason && ENABLE_ROULETTE && (
       <RouletteWheel
         items={minus2Reasons}
         onSelect={handleMinus2ReasonSelect}
@@ -992,7 +877,7 @@ const LevelDetailPage = () => {
       />
     )}
 
-    {showGimmickReason && (
+    {showGimmickReason && ENABLE_ROULETTE && (
       <RouletteWheel
         items={gimmickReasons}
         onSelect={handleGimmickReasonSelect}
@@ -1002,7 +887,7 @@ const LevelDetailPage = () => {
       />
     )}
 
-    {showSlotMachine && (
+    {showSlotMachine && ENABLE_ROULETTE && (
       <SlotMachine
         onComplete={handleBaseScoreComplete}
         onClose={() => setShowSlotMachine(false)}

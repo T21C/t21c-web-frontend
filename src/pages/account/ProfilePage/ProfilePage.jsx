@@ -14,6 +14,8 @@ import { DefaultAvatar, ShieldIcon, EditIcon } from "@/components/common/icons";
 import { CaseOpenSelector } from "@/components/common/selectors";
 import caseOpen from "@/assets/icons/case.png";
 
+const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
+
 const parseRankColor = (rank) => {
   var clr;
   switch(rank) {
@@ -147,13 +149,15 @@ const ProfilePage = () => {
             <div className="player-body">
               <div className="player-content">
                 <div className="player-header">
-                  <button 
-                    className="case-open-button" 
-                    onClick={handleCaseOpenClick}
-                    disabled={!user && !playerId}
+                  {ENABLE_ROULETTE && (
+                    <button 
+                      className="case-open-button" 
+                      onClick={handleCaseOpenClick}
+                      disabled={!user && !playerId}
                   >
                     <img src={caseOpen} alt="Case Open" />
                   </button>
+                  )}
                   <div className="player-header-content">
 
                     <div className="player-info-container">
@@ -301,7 +305,7 @@ const ProfilePage = () => {
             />
           )}
 
-          {showCaseOpen && (
+          {showCaseOpen && ENABLE_ROULETTE && (
             <div className={`case-open-popup ${isSpinning ? 'case-open-popup--spinning' : ''}`}>
               <div className="case-open-popup__overlay" onClick={!isSpinning ? handleCaseOpenClose : undefined}></div>
               <div className="case-open-popup__content">
