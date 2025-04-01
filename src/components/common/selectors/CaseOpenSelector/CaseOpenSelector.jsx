@@ -61,7 +61,6 @@ export const CaseOpenSelector = ({ targetPlayerId, onClose, isSpinning: parentIs
   const [cooldownSeconds, setCooldownSeconds] = useState(0);
   const [isSelfRoll, setIsSelfRoll] = useState(false);
   const stripRef = useRef(null);
-  const [selectedItem, setSelectedItem] = useState(null);
   const eventSystemRef = useRef(null);
   const cooldownIntervalRef = useRef(null);
   const [stripTransform, setStripTransform] = useState(`translateX(${-ITEM_WIDTH * INITIAL_SHIFT}px)`);
@@ -245,7 +244,6 @@ export const CaseOpenSelector = ({ targetPlayerId, onClose, isSpinning: parentIs
 
         setTimeout(() => {
           setIsSpinning(false);
-          setSelectedItem(newModifier);
           reloadModifiers();
           
           toast.success(`You got a ${newModifier.type.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}!`);
@@ -407,11 +405,17 @@ export const CaseOpenSelector = ({ targetPlayerId, onClose, isSpinning: parentIs
         <button 
           className="case-open-selector__spin-button" 
           onClick={handleSpin}
-          disabled={isSpinning || !eventSystemRef.current || cooldownSeconds > 0}
+          disabled={isSpinning || !eventSystemRef.current || cooldownSeconds > 0 || !user}
         >
-          {isSpinning ? 'Opening...' : cooldownSeconds > 0 ? 
-            `Wait ${cooldownSeconds}s (${isSelfRoll ? 'Self Roll' : 'Other Roll'})` : 
-            'Open Case'}
+          {user ? (
+            <>
+              {isSpinning ? 'Opening...' : cooldownSeconds > 0 ? 
+                `Wait ${cooldownSeconds}s (${isSelfRoll ? 'Self Roll' : 'Other Roll'})` : 
+                'Open Case'}
+            </>
+          ) : (
+            'Login Required'
+          )}
         </button>
       </div>
 

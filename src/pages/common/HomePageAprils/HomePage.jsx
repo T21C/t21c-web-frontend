@@ -21,7 +21,7 @@ import { ScrollButton } from "@/components/common/buttons";
 import { PassIcon, LevelIcon, LeaderboardIcon } from "@/components/common/icons";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { createEventSystem } from "@/components/misc/Utility";
-
+import { useAuth } from "@/contexts/AuthContext";
 // Import the logo
 import logoFull from '@/assets/tuf-logo/logo-full.png';
 import toast from "react-hot-toast";
@@ -497,6 +497,7 @@ const WheelPopup = ({ items, seed, onSelect, onClose, handleTimeout }) => {
                   <span className="level-result-name">{selectedItem.name}</span>
                   <span className="level-result-id">(ID: {selectedItem.id})</span>
                 </div>
+                
                 {!isConfigComplete && (
                   <button 
                     className="level-difficulty-roulette-button"
@@ -607,6 +608,7 @@ const HomePage = () => {
   const [timeout, setTimeoutState] = useState(null);
   const [remainingTime, setRemainingTime] = useState(null);
 
+  const { user } = useAuth();
   const handleTimeout = (timeoutValue) => {
     if (timeoutValue > 0) {
       setTimeoutState(true);
@@ -731,11 +733,20 @@ const HomePage = () => {
             <button 
               className="action-button roulette-button"
               onClick={() => setShowWheel(true)}
-              disabled={!wheelData || timeout}
+              disabled={!wheelData || timeout || !user}
             >
-              <span>Random Level</span>
+              <span>
+                {user ? "Random Level" : "Login Required"}
+              </span>
               &nbsp;
-              <div className="roulette-icon">🎲</div>
+              <div className="roulette-icon" 
+              style={
+                {
+                  animation: !user || timeout ? `spin ${!user?16:8}s linear infinite reverse` : ""
+                  }
+                }>
+                  🎲
+                </div>
               {timeout && remainingTime > 0 && remainingTime < 60 ? (
                 <span className="timeout-text">
                   {remainingTime} s
