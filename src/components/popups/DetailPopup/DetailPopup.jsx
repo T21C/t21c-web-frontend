@@ -2,7 +2,7 @@ import "./detailpopup.css";
 import { useEffect, useState, useContext, useRef } from 'react';
 import { getVideoDetails } from "@/Repository/RemoteRepository";
 import { RatingItem } from '@/components/cards';
-import { RatingInput, RouletteWheel } from '@/components/common/selectors';
+import { RatingInput } from '@/components/common/selectors';
 import { DifficultyContext } from "@/contexts/DifficultyContext";
 import api from '@/utils/api';
 import { useTranslation } from 'react-i18next';
@@ -65,7 +65,6 @@ export const DetailPopup = ({
   const [isDetailsCollapsed, setIsDetailsCollapsed] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [showSecondRatings, setShowSecondRatings] = useState(false);
-  const [showRoulette, setShowRoulette] = useState(false);
 
   const popupRef = useRef(null);
 
@@ -449,11 +448,6 @@ export const DetailPopup = ({
     return baseClass;
   };
 
-  const handleRouletteSelect = (difficulty) => {
-    setPendingRating(difficulty.name);
-    validateRating(difficulty.name);
-  };
-
   if (!selectedRating) return null;
   return (
     <div className={`rating-popup-overlay ${isExiting ? 'exiting' : ''}`}>
@@ -571,15 +565,16 @@ export const DetailPopup = ({
                     <div className="rating-field">
                       <label>{tRating('labels.yourRating')}</label>
                       <div className="rating-input-container">
-                        <button 
-                          className="roulette-button"
-                          onClick={() => setShowRoulette(true)}
-                        >
-                          <span>Spin for Rating</span>
-                          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h2v6h-2zm0 8h2v2h-2z" fill="currentColor"/>
-                          </svg>
-                        </button>
+                        <RatingInput
+                          value={pendingRating}
+                          onChange={(value) => {
+                            setPendingRating(value);
+                            validateRating(value);
+                          }}
+                          showDiff={false}
+                          difficulties={difficulties}
+                          allowCustomInput={true}
+                        />
                         {(pendingRating && difficulties?.find(d => d.name === pendingRating)) && 
                           <img src={difficulties?.find(d => d.name === pendingRating)?.icon} alt="" className="detail-value lv-icon" />}
                       </div>
@@ -659,13 +654,6 @@ export const DetailPopup = ({
           </div>
         </div>
       </div>
-      {showRoulette && (
-        <RouletteWheel
-          items={difficulties}
-          onSelect={handleRouletteSelect}
-          onClose={() => setShowRoulette(false)}
-        />
-      )}
     </div>
   );
 };
