@@ -15,6 +15,13 @@ const WINNING_POSITION = Math.floor(TOTAL_ITEMS * 0.7); // Position where winnin
 const COOLDOWN_SECONDS = 300; // Cooldown between spins
 const INITIAL_SHIFT = 6; // Number of items to shift initially
 
+const isNonStackable = [
+  'player_swap',
+  'ban_hammer',
+  'super_admin',
+  'king_of_castle'
+]
+
 const baseItemStyle = {
   flex: '0 0 160px',
   height: '100%',
@@ -100,6 +107,17 @@ export const CaseOpenSelector = ({ targetPlayerId, onClose, isSpinning: parentIs
     }
 
     setItems(initialItems);
+  };
+
+  const reloadModifiers = async () => {
+    try {
+      const response = await api.get(`${import.meta.env.VITE_PLAYERS}/${targetPlayerId}/modifiers`);
+      setModifiers(response.data.modifiers);
+      
+    } catch (error) {
+      console.error('Error fetching modifiers:', error);
+      toast.error('Failed to fetch modifiers');
+    }
   };
 
   const fetchModifiers = async () => {
@@ -228,7 +246,8 @@ export const CaseOpenSelector = ({ targetPlayerId, onClose, isSpinning: parentIs
         setTimeout(() => {
           setIsSpinning(false);
           setSelectedItem(newModifier);
-          setModifiers(prev => [...prev, newModifier]);
+          reloadModifiers();
+          
           toast.success(`You got a ${newModifier.type.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')}!`);
           
           // Set cooldown based on whether it's a self-roll or not
@@ -289,7 +308,7 @@ export const CaseOpenSelector = ({ targetPlayerId, onClose, isSpinning: parentIs
       case 'score_combine':
         return 'Combines all scores';
       case 'player_swap':
-        return 'Swap identity with another player';
+        return `Swap identity with #${parseInt(targetPlayerId) === modifier.playerId? modifier.value : modifier.playerId}`;
       case 'oops_all_miss':
         return 'Add 25 misses to all clears';
       case 'ban_hammer':
@@ -337,22 +356,12 @@ export const CaseOpenSelector = ({ targetPlayerId, onClose, isSpinning: parentIs
   const getItemStyle = (item) => {
     let style = { ...baseItemStyle };
 
-    // First apply rarity background
-    switch (item.type) {
-      case 'ranked_add':
-        style.background = 'linear-gradient(to bottom, rgba(0, 100, 255, 0.1), rgba(0, 100, 255, 0.2))';
-        break;
-      case 'ranked_multiply':
-        style.background = 'linear-gradient(to bottom, rgba(255, 0, 100, 0.1), rgba(255, 0, 100, 0.2))';
-        break;
-      case 'score_combine':
-        style.background = 'linear-gradient(to bottom, rgba(255, 100, 0, 0.1), rgba(255, 100, 0, 0.2))';
-        break;
-      case 'score_flip':
-        style.background = 'linear-gradient(to bottom, rgba(255, 200, 0, 0.1), rgba(255, 200, 0, 0.2))';
-        break;
-      default:
-        style.background = 'rgba(255, 255, 255, 0.05)';
+    // Add rarity-based class
+    const itemClass = item.type.toLowerCase();
+    style.className = `case-open-selector__item ${itemClass}`;
+    
+    if (item.isWinning) {
+      style.className += ' winning';
     }
 
     return style;
@@ -374,7 +383,7 @@ export const CaseOpenSelector = ({ targetPlayerId, onClose, isSpinning: parentIs
             {items.map(item => (
               <div 
                 key={item.id} 
-                style={getItemStyle(item)}
+                {...getItemStyle(item)}
               >
                 <span style={{ 
                   fontSize: '1rem', 

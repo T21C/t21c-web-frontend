@@ -87,26 +87,26 @@
   margin: 0 2px;
   transition: all 0.3s ease;
   position: relative;
+  overflow: hidden;
 }
 
-.case-open-selector__item.winning {
-  background: rgba(255, 215, 0, 0.15);
-  border-color: rgba(255, 215, 0, 0.3);
-  box-shadow: 0 0 15px rgba(255, 215, 0, 0.2);
-}
-
-.case-open-selector__item.winning::before {
-  content: '★';
+.case-open-selector__item::before {
+  content: '';
   position: absolute;
-  top: 5px;
-  right: 5px;
-  color: rgba(255, 215, 0, 0.8);
-  font-size: 16px;
+  top: -50px;
+  left: -50px;
+  right: -50px;
+  bottom: -50px;
+  background: linear-gradient(0, transparent, rgba(255, 255, 255, 0.05), transparent);
+  animation: shine 6s infinite ease-in-out;
 }
 
-.case-open-selector__item.generated {
-  background: rgba(255, 255, 255, 0.02);
+@keyframes shine {
+  0% { transform: translate(-100%, -100%) rotate(-45deg); }
+  100% { transform: translate(100%, 100%) rotate(-45deg); }
 }
+
+
 
 .case-open-selector__item-label {
   font-size: 1rem;
@@ -121,21 +121,99 @@
   font-family: monospace;
 }
 
-/* Rarity colors */
+/* Rarity-based styles */
+.case-open-selector__item {
+  position: relative;
+  overflow: hidden;
+}
+
+.case-open-selector__item::after {
+  content: '';
+  position: absolute;
+  top: 6%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+
+/* Common (40%) - Blue */
+.case-open-selector__item {
+  font-size: 4.5rem;
+  padding-top: 8rem;
+}
+
 .case-open-selector__item.ranked_add {
-  background: linear-gradient(to bottom, rgba(0, 100, 255, 0.1), rgba(0, 100, 255, 0.2));
+  background: linear-gradient(135deg, rgba(0, 100, 255, 0.2), rgba(0, 50, 255, 0.3));
+  border-color: rgba(0, 100, 255, 0.4);
+  text-shadow: 0 0 50px rgba(0, 100, 255, 0.6);
 }
 
-.case-open-selector__item.ranked_multiply {
-  background: linear-gradient(to bottom, rgba(255, 0, 100, 0.1), rgba(255, 0, 100, 0.2));
+.case-open-selector__item.ranked_add::after {
+  content: '⚡';
+  color: rgba(0, 100, 255, 0.8);
 }
 
-.case-open-selector__item.score_combine {
-  background: linear-gradient(to bottom, rgba(255, 100, 0, 0.1), rgba(255, 100, 0, 0.2));
+/* Low chance (43%) - Purple */
+.case-open-selector__item.ranked_multiply,
+.case-open-selector__item.oops_all_miss {
+  background: linear-gradient(135deg, rgba(147, 51, 234, 0.2), rgba(126, 34, 206, 0.3));
+  border-color: rgba(147, 51, 234, 0.4);
+  text-shadow: 0 0 50px rgba(132, 0, 255, 0.6);
 }
 
-.case-open-selector__item.score_flip {
-  background: linear-gradient(to bottom, rgba(255, 200, 0, 0.1), rgba(255, 200, 0, 0.2));
+.case-open-selector__item.ranked_multiply::after {
+  content: '✨';
+  color: rgba(147, 51, 234, 0.8);
+}
+
+.case-open-selector__item.oops_all_miss::after {
+  content: '❌';
+  color: rgba(147, 51, 234, 0.8);
+}
+
+
+/* Very low chance (12%) - Gold */
+.case-open-selector__item.score_flip,
+.case-open-selector__item.king_of_castle,
+.case-open-selector__item.score_combine  {
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.2), rgba(202, 138, 4, 0.3));
+  border-color: rgba(234, 179, 8, 0.4);
+  text-shadow: 0 0 50px rgba(234, 179, 8, 0.6);
+}
+
+.case-open-selector__item.score_flip::after {
+  content: '🔄';
+  color: rgba(234, 179, 8, 0.8);
+}
+
+.case-open-selector__item.king_of_castle::after {
+  content: '👑';
+  color: rgba(234, 179, 8, 0.8);
+}
+
+.case-open-selector__item.score_combine::after {
+  content: '⏭⏮';
+  color: rgba(255, 255, 255, 0.8);
+}
+
+/* Super low chance (5%) - Red */
+.case-open-selector__item.player_swap,
+.case-open-selector__item.ban_hammer,
+c {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.3));
+  border-color: rgba(239, 68, 68, 0.4);
+  text-shadow: 0 0 50px rgba(239, 68, 68, 0.6);
+}
+
+.case-open-selector__item.player_swap::after {
+  content: '🔄';
+  color: rgba(239, 68, 68, 0.8);
+}
+
+.case-open-selector__item.ban_hammer::after {
+  content: '🔨';
+  color: rgba(239, 68, 68, 0.8);
 }
 
 .case-open-selector__spin-button {
