@@ -449,12 +449,6 @@ const LevelSubmissions = () => {
                                 )}
                               </span>
                               <div className="creator-actions">
-                                <button
-                                  className="manage-creator-button"
-                                  onClick={() => handleCreatorAction(submission, request, request.role)}
-                                >
-                                  {tLevel('buttons.manageCreator')}
-                                </button>
                                 {/* Show remove button for vfxers or if there's more than one charter */}
                                 {(request.role === 'vfxer' || 
                                   (request.role === 'charter' && 
@@ -466,6 +460,12 @@ const LevelSubmissions = () => {
                                     {tLevel('buttons.remove')}
                                   </button>
                                 )}
+                                <button
+                                  className="manage-creator-button"
+                                  onClick={() => handleCreatorAction(submission, request, request.role)}
+                                >
+                                  {tLevel('buttons.manageCreator')}
+                                </button>
                               </div>
                             </div>
                           ))}
@@ -503,16 +503,16 @@ const LevelSubmissions = () => {
                           </span>
                           <div className="creator-actions">
                             <button
-                              className="manage-creator-button"
-                              onClick={() => handleCreatorAction(submission, submission.teamRequestData, 'team')}
-                            >
-                              {tLevel('buttons.manageTeam')}
-                            </button>
-                            <button
                               className="remove-creator-button"
                               onClick={() => handleRemoveCreator(submission.id, submission.teamRequestData.id)}
                             >
                               {tLevel('buttons.remove')}
+                            </button>
+                            <button
+                              className="manage-creator-button"
+                              onClick={() => handleCreatorAction(submission, submission.teamRequestData, 'team')}
+                            >
+                              {tLevel('buttons.manageTeam')}
                             </button>
                           </div>
                         </div>
