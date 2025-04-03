@@ -73,14 +73,7 @@ function App() {
           <Route path='admin/announcements' element={<PrivateRoute><Pages.AnnouncementPage /></PrivateRoute>} />
           <Route path='admin/backups' element={<PrivateRoute><Pages.BackupPage /></PrivateRoute>} />
           <Route path='admin/difficulties' element={<PrivateRoute><Pages.DifficultyPage /></PrivateRoute>} />
-          <Route
-            path="/admin/creators"
-            element={
-              <PrivateRoute>
-                <Pages.CreatorManagementPage />
-              </PrivateRoute>
-            }
-          />
+          <Route path="/admin/creators" element={<PrivateRoute><Pages.CreatorManagementPage /></PrivateRoute>} />
           
           <Route path='about' element={<Pages.AboutUsPage />} />
           
