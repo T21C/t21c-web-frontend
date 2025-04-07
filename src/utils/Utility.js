@@ -267,13 +267,17 @@ export function validateFeelingRating(value, range = true) {
     
     const legacyRange = `(([1-9]|1[0-7])|(1[8-9]\\+?)|(20(\\.[0-9])?\\+?)|(21(\\.[0-4])?\\+?))(~|-)(([1-9]|1[0-7])|(1[8-9]\\+?)|(20(\\.[0-9])?\\+?)|(21(\\.[0-4])?\\+?))$`;
     
-    const extras = ['-2', '-21', 'Marathon', 'MA'];
+    const qDiff = `[qQ][2-4](\\+)?`;
+
+    const qDiffRange = `(${qDiff}(~|-)${qDiff})`;
+
+    const extras = ['-2', '-21', 'Marathon', 'MA', 'U'];
     const extrasRegex = extras.join('$|^')
 
     // Create the appropriate regex based on range flag
     const regex = range 
-        ? new RegExp(`^$|^${pguRegex}$|^${extrasRegex}$|^${rangeRegex}$|^${legacyRegex}$|^${legacyRange}$|^${pguExtendedRegex}$`)
-        : new RegExp(`^$|^${pguRegex}$|^${extrasRegex}$|^${legacyRegex}$`);
+        ? new RegExp(`^$|^${pguRegex}$|^${extrasRegex}$|^${qDiff}$|^${qDiffRange}$|^${rangeRegex}$|^${legacyRegex}$|^${legacyRange}$|^${pguExtendedRegex}$`)
+        : new RegExp(`^$|^${pguRegex}$|^${extrasRegex}$|^${qDiff}$|^${legacyRegex}$`);
     
     return regex.test(value);
 }
