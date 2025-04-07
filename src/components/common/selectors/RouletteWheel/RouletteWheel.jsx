@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './roulettewheel.css';
-import { createEventSystem } from '@/components/misc/Utility';
+import { createEventSystem } from '@/utils/Utility';
 
 
 export const RouletteWheel = ({ 

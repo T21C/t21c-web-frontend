@@ -3,7 +3,7 @@ import "./scorecard.css"
 import "@/index.css"
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
-import { formatSpeed, formatScore } from "@/components/misc/Utility"
+import { formatSpeed, formatScore } from "@/utils/Utility"
 import { formatNumber } from "@/Repository/RemoteRepository";
 
 

@@ -20,7 +20,7 @@ import { useLocation } from 'react-router-dom';
 import { ScrollButton } from "@/components/common/buttons";
 import { PassIcon, LevelIcon, LeaderboardIcon } from "@/components/common/icons";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
-import { createEventSystem } from "@/components/misc/Utility";
+import { createEventSystem } from "@/utils/Utility";
 import { useAuth } from "@/contexts/AuthContext";
 // Import the logo
 import logoFull from '@/assets/tuf-logo/logo-full.png';

@@ -6,7 +6,7 @@ import api from "@/utils/api";
 import { EditLevelPopup } from "@/components/popups";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { EditIcon, SteamIcon, DownloadIcon, VideoIcon } from "@/components/common/icons";
-import { formatCreatorDisplay } from "@/components/misc/Utility";
+import { formatCreatorDisplay } from "@/utils/Utility";
 
 const LevelCard = ({
   index,

@@ -5,7 +5,7 @@ import { FormManager } from "@/components/misc/FormManager/FormManager";
 import { useEffect, useState } from "react";
 import { getDriveFromYt, getVideoDetails } from "@/Repository/RemoteRepository";
 import { useAuth } from "@/contexts/AuthContext";
-import { validateFeelingRating } from "@/components/misc/Utility";
+import { validateFeelingRating } from "@/utils/Utility";
 import { useTranslation } from "react-i18next";
 import { StagingModeWarning } from "@/components/common/display";
 import { ProfileSelector } from "@/components/common/selectors";

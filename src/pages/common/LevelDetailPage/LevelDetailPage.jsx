@@ -20,7 +20,7 @@ import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { MetaTags } from "@/components/common/display";
 import { SteamIcon } from "@/components/common/icons";
-import { createEventSystem, formatCreatorDisplay, minus2Reasons, gimmickReasons } from "@/components/misc/Utility";
+import { createEventSystem, formatCreatorDisplay, minus2Reasons, gimmickReasons } from "@/utils/Utility";
 import { DetailPopup } from "@/components/popups";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';

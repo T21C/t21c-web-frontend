@@ -1,13 +1,13 @@
 
 import './editpasspopup.css';
 import api from '@/utils/api';
-import { getScoreV2 } from '@/components/misc/CalcScore';
-import calcAcc from '@/components/misc/CalcAcc';
+import { getScoreV2 } from '@/utils/CalcScore';
+import calcAcc from '@/utils/CalcAcc';
 import { getVideoDetails } from "@/Repository/RemoteRepository";
 import { useTranslation } from 'react-i18next'; 
 import { useAuth } from '@/contexts/AuthContext';
-import { parseJudgements } from '@/components/misc/ParseJudgements';
-import { validateFeelingRating, validateSpeed, validateNumber } from '@/components/misc/Utility';
+import { parseJudgements } from '@/utils/ParseJudgements';
+import { validateFeelingRating, validateSpeed, validateNumber } from '@/utils/Utility';
 import placeholder from '@/assets/placeholder/4.png';
 import { FetchIcon } from '@/components/common/icons';
 import { useNavigate } from 'react-router-dom';

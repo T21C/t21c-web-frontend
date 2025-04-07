@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import './caseopenselector.css';
 import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
-import { createEventSystem } from '@/components/misc/Utility';
+import { createEventSystem } from '@/utils/Utility';
 import { useAuth } from '@/contexts/AuthContext';
 
 const TOTAL_ITEMS = 50; // Total items in the strip

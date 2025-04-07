@@ -261,16 +261,19 @@ export function validateFeelingRating(value, range = true) {
     
     const pguExtendedRegex = `([pguPGU]([1-9]|1[0-9]|20))((-|~)([1-9]|1[0-9]|20))?`;
 
-    const rangeRegex = `^${pguRegex}(~|-)${pguRegex}$`;
+    const rangeRegex = `${pguRegex}(~|-)${pguRegex}`;
     
-    const legacyRegex = `^([1-9]|1[0-7])$|^(1[8-9]\\+?)$|^(20(\\.[0-9])?\\+?)$|^(21(\\.[0-4])?\\+?)$`;
+    const legacyRegex = `([1-9]|1[0-7])$|^(1[8-9]\\+?)$|^(20(\\.[0-9])?\\+?)$|^(21(\\.[0-4])?\\+?)`;
     
-    const legacyRange = `^(([1-9]|1[0-7])|(1[8-9]\\+?)|(20(\\.[0-9])?\\+?)|(21(\\.[0-4])?\\+?))(~|-)(([1-9]|1[0-7])|(1[8-9]\\+?)|(20(\\.[0-9])?\\+?)|(21(\\.[0-4])?\\+?))$`;
+    const legacyRange = `(([1-9]|1[0-7])|(1[8-9]\\+?)|(20(\\.[0-9])?\\+?)|(21(\\.[0-4])?\\+?))(~|-)(([1-9]|1[0-7])|(1[8-9]\\+?)|(20(\\.[0-9])?\\+?)|(21(\\.[0-4])?\\+?))$`;
     
+    const extras = ['-2', '-21', 'Marathon', 'MA'];
+    const extrasRegex = extras.join('$|^')
+
     // Create the appropriate regex based on range flag
     const regex = range 
-        ? new RegExp(`^$|^${pguRegex}$|^-2$|^-21$|^${rangeRegex}$|^${legacyRegex}$|^${legacyRange}$|^${pguExtendedRegex}$`)
-        : new RegExp(`^$|^${pguRegex}$|^-2$|^-21$|^${legacyRegex}$`);
+        ? new RegExp(`^$|^${pguRegex}$|^${extrasRegex}$|^${rangeRegex}$|^${legacyRegex}$|^${legacyRange}$|^${pguExtendedRegex}$`)
+        : new RegExp(`^$|^${pguRegex}$|^${extrasRegex}$|^${legacyRegex}$`);
     
     return regex.test(value);
 }

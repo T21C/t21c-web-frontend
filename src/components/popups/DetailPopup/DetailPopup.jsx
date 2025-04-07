@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { ReferencesButton } from '@/components/common/buttons';
 import { useNavigate } from 'react-router-dom';
 import { ExternalLinkIcon, DownloadIcon } from '@/components/common/icons';
-import { formatCreatorDisplay } from "@/components/misc/Utility";
+import { formatCreatorDisplay } from "@/utils/Utility";
 // Cache for video data
 const videoCache = new Map();
 
