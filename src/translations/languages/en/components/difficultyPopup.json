@@ -15,6 +15,22 @@
       "title": "Super Admin Password Required",
       "placeholder": "Enter super admin password",
       "confirm": "Confirm Changes"
+    },
+    "channel": {
+      "editTitle": "Edit Channel",
+      "addTitle": "Add New Channel",
+      "label": "Channel Label",
+      "labelPlaceholder": "Enter channel label",
+      "webhookUrl": "Webhook URL",
+      "webhookUrlPlaceholder": "Enter webhook URL"
+    },
+    "role": {
+      "editTitle": "Edit Role",
+      "addTitle": "Add New Role",
+      "roleId": "Role ID",
+      "roleIdPlaceholder": "Enter role ID",
+      "label": "Role Label",
+      "labelPlaceholder": "Enter role label"
     }
   },
   "form": {

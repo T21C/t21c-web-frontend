@@ -621,150 +621,202 @@
 
 /* Channel Modal Styles */
 .difficulty-modal__channel-modal {
-  display: none;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   background-color: rgba(0, 0, 0, 0.9);
-  z-index: 1100;
-}
-
-.difficulty-modal__channel-modal--show {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1100;
 }
 
 .difficulty-modal__channel-modal-content {
   background-color: #000000;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 1);
+  padding: 2rem;
   border-radius: 8px;
-  padding: 24px;
-  width: 100%;
+  width: 90%;
   max-width: 500px;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  animation: modalFadeIn 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+.difficulty-modal__channel-modal-content h3 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+  color: #FFFFFF;
+}
+
+.difficulty-modal__channel-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.difficulty-modal__channel-form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #FFFFFF;
+}
+
+.difficulty-modal__channel-form-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  font-size: 1rem;
+}
+
+.difficulty-modal__channel-form-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.difficulty-modal__channel-error-message {
+  color: #FF4444;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.difficulty-modal__channel-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.difficulty-modal__channel-button--submit {
+  background-color: #4A9EFF;
+  color: #FFFFFF;
+}
+
+.difficulty-modal__channel-button--submit:hover {
+  background-color: #6CB0FF;
+}
+
+.difficulty-modal__channel-button--cancel {
+  background-color: transparent;
+  color: #FFFFFF;
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.difficulty-modal__channel-modal-title {
-  margin: 0 0 20px 0;
-  color: #FFFFFF;
-  font-size: 1.5rem;
-}
-
-.difficulty-modal__channel-modal-buttons {
-  display: flex;
-  gap: 12px;
-  margin-top: 24px;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-.difficulty-modal__channel-modal-delete-button {
-  background-color: #FF4444;
-  color: #FFFFFF;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: all 0.2s ease;
-  margin-right: auto;
-}
-
-.difficulty-modal__channel-modal-delete-button:hover {
-  background-color: #FF6666;
-}
-
-.difficulty-modal__channel-modal-delete-button:active {
-  background-color: #CC3333;
-}
-
-.difficulty-modal__channel-modal-delete-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  pointer-events: none;
+.difficulty-modal__channel-button--cancel:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Role Modal Styles */
 .difficulty-modal__role-modal {
-  display: none;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1101;
-}
-
-.difficulty-modal__role-modal--show {
+  background-color: rgba(0, 0, 0, 0.9);
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 1101;
 }
 
 .difficulty-modal__role-modal-content {
   background-color: #000000;
-  box-shadow: 0 0 10px 0 rgba(0, 0, 0, 1);
+  padding: 2rem;
   border-radius: 8px;
-  padding: 24px;
-  width: 100%;
+  width: 90%;
   max-width: 500px;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  animation: modalFadeIn 0.3s ease;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  animation: modalFadeIn 0.2s ease-out;
+}
+
+.difficulty-modal__role-modal-content h3 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+  color: #FFFFFF;
+}
+
+.difficulty-modal__role-form-group {
+  margin-bottom: 1.5rem;
+}
+
+.difficulty-modal__role-form-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: #FFFFFF;
+}
+
+.difficulty-modal__role-form-input {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #FFFFFF;
+  font-size: 1rem;
+}
+
+.difficulty-modal__role-form-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.difficulty-modal__role-error-message {
+  color: #FF4444;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.difficulty-modal__role-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.difficulty-modal__role-button--submit {
+  background-color: #4A9EFF;
+  color: #FFFFFF;
+}
+
+.difficulty-modal__role-button--submit:hover {
+  background-color: #6CB0FF;
+}
+
+.difficulty-modal__role-button--cancel {
+  background-color: transparent;
+  color: #FFFFFF;
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.difficulty-modal__role-modal-title {
-  margin: 0 0 20px 0;
-  color: #FFFFFF;
-  font-size: 1.5rem;
+.difficulty-modal__role-button--cancel:hover {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
-.difficulty-modal__role-modal-buttons {
-  display: flex;
-  gap: 12px;
-  margin-top: 24px;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: center;
-}
+/* Ensure modals stack properly */
+.difficulty-modal__channel-modal { z-index: 1100; }
+.difficulty-modal__role-modal { z-index: 1101; }
+.difficulty-modal__password-modal { z-index: 1102; }
 
-.difficulty-modal__role-modal-delete-button {
-  background-color: #FF4444;
-  color: #FFFFFF;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-  font-weight: 600;
-  transition: all 0.2s ease;
-  margin-right: auto;
-}
-
-.difficulty-modal__role-modal-delete-button:hover {
-  background-color: #FF6666;
-}
-
-.difficulty-modal__role-modal-delete-button:active {
-  background-color: #CC3333;
-}
-
-.difficulty-modal__role-modal-delete-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-  pointer-events: none;
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 768px) {
@@ -844,17 +896,6 @@
 .difficulty-modal .password-modal input[type="password"]:focus {
   outline: none;
   border-color: rgba(255, 255, 255, 0.4);
-}
-
-@keyframes modalFadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
 }
 
 .difficulty-modal .channel-select-group {
@@ -1024,244 +1065,6 @@
 /* Update existing channel modal styles */
 .difficulty-modal .channel-modal {
   background-color: rgba(0, 0, 0, 0.9);
-}
-
-/* Ensure modals stack properly */
-.difficulty-modal .channel-modal { z-index: 1100; }
-.difficulty-modal .role-modal { z-index: 1101; }
-.difficulty-modal .password-modal { z-index: 1102; }
-
-.channel-modal-content .form-group select {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #FFFFFF;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.channel-modal-content .form-group select:focus {
-  border-color: #4A9EFF;
-  outline: none;
-}
-
-.channel-modal-content .form-group select option {
-  background-color: #000000;
-  color: #FFFFFF;
-  padding: 8px;
-}
-
-.channel-modal-content .form-group input[type="text"],
-.channel-modal-content .form-group input[type="url"] {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #FFFFFF;
-  font-size: 1rem;
-}
-
-.channel-modal-content .form-group input[type="text"]:focus,
-.channel-modal-content .form-group input[type="url"]:focus {
-  border-color: #4A9EFF;
-  outline: none;
-}
-
-.channel-modal-content .form-group input[type="text"]::placeholder,
-.channel-modal-content .form-group input[type="url"]::placeholder {
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.role-modal-content .form-group input[type="text"] {
-  width: 100%;
-  padding: 8px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  background-color: rgba(255, 255, 255, 0.1);
-  color: #FFFFFF;
-  font-size: 1rem;
-}
-
-.role-modal-content .form-group input[type="text"]:focus {
-  border-color: #4A9EFF;
-  outline: none;
-}
-
-.role-modal-content .form-group input[type="text"]::placeholder {
-  color: rgba(255, 255, 255, 0.6);
-}
-
-.difficulty-modal .modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 1000;
-}
-
-.difficulty-modal .modal.show {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.difficulty-modal .modal-content {
-  background-color: #1a1a1a;
-  border-radius: 8px;
-  padding: 24px;
-  width: 100%;
-  max-width: 500px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.difficulty-modal .modal-content h2 {
-  margin: 0 0 20px;
-  color: #ffffff;
-  font-size: 1.5rem;
-}
-
-.difficulty-modal .form-group {
-  margin-bottom: 16px;
-}
-
-.difficulty-modal .form-group label {
-  display: block;
-  margin-bottom: 8px;
-  color: #ffffff;
-  font-size: 0.9rem;
-}
-
-.difficulty-modal .form-group input {
-  width: fit-content;
-  padding: 8px 12px;
-  border: 1px solid #333;
-  border-radius: 4px;
-  background-color: #2a2a2a;
-  color: #ffffff;
-  font-size: 0.9rem;
-}
-
-.difficulty-modal .form-group input:focus {
-  outline: none;
-  border-color: #4a90e2;
-}
-
-.difficulty-modal .modal-buttons {
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
-  margin-top: 24px;
-}
-
-.difficulty-modal .modal-buttons button {
-  padding: 8px 16px;
-  border: none;
-  border-radius: 4px;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.difficulty-modal .modal-buttons button[type="button"] {
-  background-color: #333;
-  color: #ffffff;
-}
-
-.difficulty-modal .modal-buttons button[type="button"]:hover {
-  background-color: #444;
-}
-
-.difficulty-modal .modal-buttons button[type="submit"] {
-  background-color: #4a90e2;
-  color: #ffffff;
-}
-
-.difficulty-modal .modal-buttons button[type="submit"]:hover {
-  background-color: #357abd;
-}
-
-.difficulty-modal .directive-mode-selector {
-  margin-bottom: 1.5rem;
-  padding: 1rem;
-  background-color: var(--background-secondary);
-  border-radius: 8px;
-}
-
-.difficulty-modal .directive-mode-selector label {
-  display: block;
-  margin-bottom: 0.5rem;
-  color: var(--text-primary);
-  font-weight: 500;
-}
-
-.difficulty-modal .directive-mode-selector select {
-  width: 100%;
-  padding: 0.75rem;
-  background-color: var(--background-primary);
-  border: 1px solid var(--border-color);
-  border-radius: 4px;
-  color: var(--text-primary);
-  font-size: 1rem;
-  cursor: pointer;
-  transition: border-color 0.2s ease;
-}
-
-.difficulty-modal .directive-mode-selector select:hover {
-  border-color: var(--accent-color);
-}
-
-.difficulty-modal .directive-mode-selector select:focus {
-  outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 2px rgba(var(--accent-rgb), 0.2);
-}
-
-.difficulty-modal .select-with-edit {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  width: 100%;
-}
-
-.difficulty-modal .select-with-edit .custom-select-container {
-  flex: 1;
-}
-
-.difficulty-modal .select-with-edit .edit-button {
-  background: none;
-  border: none;
-  padding: 4px;
-  cursor: pointer;
-  color: rgba(255, 255, 255, 0.7);
-  transition: color 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.difficulty-modal .select-with-edit .edit-button:hover {
-  color: #fff;
-}
-
-.difficulty-modal .select-with-edit .edit-button svg {
-  width: 16px;
-  height: 16px;
-}
-
-.difficulty-modal .save-button:disabled {
-  background-color: #666;
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
-.difficulty-modal .save-button:disabled:hover {
-  background-color: #666;
 }
 
 /* Channel Modal Form Styles */

@@ -347,17 +347,57 @@ const DifficultyPopup = ({
   };
 
   const handleEditChannel = (channel) => {
-    setChannelModalSource('edit');
-    setSelectedChannel(channel);
-    setChannelLabel(channel.label || '');
-    setChannelWebhookUrl(channel.webhookUrl || '');
-    setShowChannelModal(true);
+    console.log('Edit channel button clicked:', channel);
+    
+    if (!channel) {
+      console.error('Cannot edit channel: channel object is null or undefined');
+      showToast(tDiff('errors.channelEditFailed'), 'error');
+      return;
+    }
+    
+    if (!channel.id) {
+      console.error('Cannot edit channel: channel ID is missing', channel);
+      showToast(tDiff('errors.channelEditFailed'), 'error');
+      return;
+    }
+    
+    try {
+      setChannelModalSource('edit');
+      setSelectedChannel(channel);
+      setChannelLabel(channel.label || '');
+      setChannelWebhookUrl(channel.webhookUrl || '');
+      setShowChannelModal(true);
+      console.log('Channel modal opened successfully for channel:', channel.id);
+    } catch (error) {
+      console.error('Error opening channel modal:', error);
+      showToast(tDiff('errors.channelEditFailed'), 'error');
+    }
   };
 
   const handleEditRole = (role) => {
-    setRoleModalSource('edit');
-    setSelectedRole(role);
-    setShowRoleModal(true);
+    console.log('Edit role button clicked:', role);
+    
+    if (!role) {
+      console.error('Cannot edit role: role object is null or undefined');
+      showToast(tDiff('errors.roleEditFailed'), 'error');
+      return;
+    }
+    
+    if (!role.id) {
+      console.error('Cannot edit role: role ID is missing', role);
+      showToast(tDiff('errors.roleEditFailed'), 'error');
+      return;
+    }
+    
+    try {
+      setRoleModalSource('edit');
+      setSelectedRole(role);
+      setShowRoleModal(true);
+      console.log('Role modal opened successfully for role:', role.id);
+    } catch (error) {
+      console.error('Error opening role modal:', error);
+      showToast(tDiff('errors.roleEditFailed'), 'error');
+    }
   };
 
   const handleAddNewChannel = () => {
@@ -537,9 +577,19 @@ const DifficultyPopup = ({
 
   useEffect(() => {
     if (showChannelModal) {
-      setChannelError('');
+      console.log('Channel modal state changed to true');
+      console.log('Selected channel:', selectedChannel);
+      console.log('Channel label:', channelLabel);
+      console.log('Channel webhook URL:', channelWebhookUrl);
     }
-  }, [showChannelModal]);
+  }, [showChannelModal, selectedChannel, channelLabel, channelWebhookUrl]);
+
+  useEffect(() => {
+    if (showRoleModal) {
+      console.log('Role modal state changed to true');
+      console.log('Selected role:', selectedRole);
+    }
+  }, [showRoleModal, selectedRole]);
 
   // Helper function to get translation for condition type options
   const getConditionTypeOption = (type) => tDiff(`announcements.condition.type.options.${type}`);
@@ -782,6 +832,126 @@ const DifficultyPopup = ({
                       setPassword('');
                       setPasswordError('');
                       setPendingDirectives(null);
+                    }}
+                  >
+                    {tDiff('buttons.cancel')}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Channel Modal */}
+        {showChannelModal && (
+          <div className="difficulty-modal__channel-modal">
+            <div className="difficulty-modal__channel-modal-content">
+              <h3>{channelModalSource === 'edit' ? tDiff('modal.channel.editTitle') : tDiff('modal.channel.addTitle')}</h3>
+              <form onSubmit={handleChannelSubmit}>
+                <div className="difficulty-modal__form-group">
+                  <label className="difficulty-modal__form-label">{tDiff('modal.channel.label')}</label>
+                  <input
+                    type="text"
+                    value={channelLabel}
+                    onChange={(e) => setChannelLabel(e.target.value)}
+                    placeholder={tDiff('modal.channel.labelPlaceholder')}
+                    required
+                    className="difficulty-modal__form-input"
+                  />
+                </div>
+                <div className="difficulty-modal__form-group">
+                  <label className="difficulty-modal__form-label">{tDiff('modal.channel.webhookUrl')}</label>
+                  <input
+                    type="text"
+                    value={channelWebhookUrl}
+                    onChange={(e) => setChannelWebhookUrl(e.target.value)}
+                    placeholder={tDiff('modal.channel.webhookUrlPlaceholder')}
+                    required
+                    className="difficulty-modal__form-input"
+                  />
+                </div>
+                {channelError && <div className="difficulty-modal__error-message">{channelError}</div>}
+                <div className="difficulty-modal__actions">
+                  <button type="submit" className="difficulty-modal__button difficulty-modal__button--save">
+                    {channelModalSource === 'edit' ? tDiff('buttons.save') : tDiff('buttons.add')}
+                  </button>
+                  {channelModalSource === 'edit' && (
+                    <button
+                      type="button"
+                      className="difficulty-modal__button difficulty-modal__button--delete"
+                      onClick={handleDeleteChannel}
+                    >
+                      {tDiff('buttons.delete')}
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className="difficulty-modal__button difficulty-modal__button--cancel"
+                    onClick={() => {
+                      setShowChannelModal(false);
+                      setSelectedChannel(null);
+                      setChannelLabel('');
+                      setChannelWebhookUrl('');
+                      setChannelError('');
+                    }}
+                  >
+                    {tDiff('buttons.cancel')}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Role Modal */}
+        {showRoleModal && (
+          <div className="difficulty-modal__role-modal">
+            <div className="difficulty-modal__role-modal-content">
+              <h3>{roleModalSource === 'edit' ? tDiff('modal.role.editTitle') : tDiff('modal.role.addTitle')}</h3>
+              <form onSubmit={handleRoleSubmit}>
+                <div className="difficulty-modal__form-group">
+                  <label className="difficulty-modal__form-label">{tDiff('modal.role.roleId')}</label>
+                  <input
+                    type="text"
+                    value={selectedRole?.roleId || ''}
+                    onChange={(e) => setSelectedRole({...selectedRole, roleId: e.target.value})}
+                    placeholder={tDiff('modal.role.roleIdPlaceholder')}
+                    required
+                    className="difficulty-modal__form-input"
+                  />
+                </div>
+                <div className="difficulty-modal__form-group">
+                  <label className="difficulty-modal__form-label">{tDiff('modal.role.label')}</label>
+                  <input
+                    type="text"
+                    value={selectedRole?.label || ''}
+                    onChange={(e) => setSelectedRole({...selectedRole, label: e.target.value})}
+                    placeholder={tDiff('modal.role.labelPlaceholder')}
+                    required
+                    className="difficulty-modal__form-input"
+                  />
+                </div>
+                {roleError && <div className="difficulty-modal__error-message">{roleError}</div>}
+                <div className="difficulty-modal__actions">
+                  <button type="submit" className="difficulty-modal__button difficulty-modal__button--save">
+                    {roleModalSource === 'edit' ? tDiff('buttons.save') : tDiff('buttons.add')}
+                  </button>
+                  {roleModalSource === 'edit' && (
+                    <button
+                      type="button"
+                      className="difficulty-modal__button difficulty-modal__button--delete"
+                      onClick={handleDeleteRole}
+                    >
+                      {tDiff('buttons.delete')}
+                    </button>
+                  )}
+                  <button
+                    type="button"
+                    className="difficulty-modal__button difficulty-modal__button--cancel"
+                    onClick={() => {
+                      setShowRoleModal(false);
+                      setSelectedRole(null);
+                      setRoleError('');
                     }}
                   >
                     {tDiff('buttons.cancel')}
@@ -1252,7 +1422,14 @@ const DifficultyPopup = ({
                                                     <button
                                                       type="button"
                                                       className="difficulty-modal__select-edit-button"
-                                                      onClick={() => handleEditChannel(availableChannels.find(c => c.id === action.channelId))}
+                                                      onClick={(e) => {
+                                                        e.preventDefault();
+                                                        e.stopPropagation();
+                                                        console.log('Channel edit button clicked for channelId:', action.channelId);
+                                                        const channelToEdit = availableChannels.find(c => c.id === action.channelId);
+                                                        console.log('Found channel to edit:', channelToEdit);
+                                                        handleEditChannel(channelToEdit);
+                                                      }}
                                                       aria-label={tDiff('announcements.actions.channel.edit')}
                                                     >
                                                       <EditIcon className="difficulty-modal__select-edit-button-icon" />
@@ -1300,7 +1477,14 @@ const DifficultyPopup = ({
                                                       <button
                                                         type="button"
                                                         className="difficulty-modal__select-edit-button"
-                                                        onClick={() => handleEditRole(availableRoles.find(r => r.id === action.roleId))}
+                                                        onClick={(e) => {
+                                                          e.preventDefault();
+                                                          e.stopPropagation();
+                                                          console.log('Role edit button clicked for roleId:', action.roleId);
+                                                          const roleToEdit = availableRoles.find(r => r.id === action.roleId);
+                                                          console.log('Found role to edit:', roleToEdit);
+                                                          handleEditRole(roleToEdit);
+                                                        }}
                                                         aria-label={tDiff('announcements.actions.role.edit')}
                                                       >
                                                         <EditIcon className="difficulty-modal__select-edit-button-icon" />
