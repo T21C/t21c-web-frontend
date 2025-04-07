@@ -252,33 +252,66 @@ export function calculateAverageRating(ratings, isCommunity = false) {
 }
 
 export function validateFeelingRating(value, range = true) {
-    // Define regex patterns
-    const exprPattern1 = "[PGUpgu][1-9]";     // Handles single letters followed by 1-9
-    const exprPattern2 = "[PGUpgu]1[0-9]";    // Handles single letters followed by 10-19
-    const exprPattern3 = "[PGUpgu]20";        // Handles single letters followed by 20
+    // Base patterns
+    const numbers = {
+        single: '[1-9]',
+        teens: '1[0-2]',
+        teensJ: '1[3-9][jJ]?',
+        twenty: '20[jJ]?'
+    };
     
-    const pguRegex = `(${exprPattern1}|${exprPattern2}|${exprPattern3})`;
+    const prefixes = '[PGUpgu]';
     
-    const pguExtendedRegex = `([pguPGU]([1-9]|1[0-9]|20))((-|~)([1-9]|1[0-9]|20))?`;
-
+    // Build PGU patterns
+    const pguPatterns = [
+        `${prefixes}${numbers.single}`,
+        `${prefixes}${numbers.teens}`,
+        `${prefixes}${numbers.teensJ}`,
+        `${prefixes}${numbers.twenty}`
+    ];
+    const pguRegex = `(${pguPatterns.join('|')})`;
+    
+    // Build extended PGU pattern
+    const numberPattern = `(${numbers.single}|${numbers.teens}|${numbers.twenty})`;
+    const pguExtendedRegex = `${prefixes}${numberPattern}((-|~)${numberPattern})?`;
+    
+    // Build range pattern
     const rangeRegex = `${pguRegex}(~|-)${pguRegex}`;
     
-    const legacyRegex = `([1-9]|1[0-7])$|^(1[8-9]\\+?)$|^(20(\\.[0-9])?\\+?)$|^(21(\\.[0-4])?\\+?)`;
+    // Legacy patterns
+    const legacyNumbers = [
+        '([1-9]|1[0-7])',
+        '(1[8-9]\\+?)',
+        '(20(\\.[0-9])?\\+?)',
+        '(21(\\.[0-4])?\\+?)'
+    ];
+    const legacyRegex = `^(${legacyNumbers.join('|')})$`;
+    const legacyRange = `(${legacyNumbers.join('|')})(~|-)(${legacyNumbers.join('|')})$`;
     
-    const legacyRange = `(([1-9]|1[0-7])|(1[8-9]\\+?)|(20(\\.[0-9])?\\+?)|(21(\\.[0-4])?\\+?))(~|-)(([1-9]|1[0-7])|(1[8-9]\\+?)|(20(\\.[0-9])?\\+?)|(21(\\.[0-4])?\\+?))$`;
-    
-    const qDiff = `[qQ][2-4](\\+)?`;
-
+    // Q-diff patterns
+    const qDiff = '[qQ][2-4](\\+)?';
     const qDiffRange = `(${qDiff}(~|-)${qDiff})`;
-
-    const extras = ['-2', '-21', 'Marathon', 'MA', 'U'];
-    const extrasRegex = extras.join('$|^')
-
-    // Create the appropriate regex based on range flag
-    const regex = range 
-        ? new RegExp(`^$|^${pguRegex}$|^${extrasRegex}$|^${qDiff}$|^${qDiffRange}$|^${rangeRegex}$|^${legacyRegex}$|^${legacyRange}$|^${pguExtendedRegex}$`)
-        : new RegExp(`^$|^${pguRegex}$|^${extrasRegex}$|^${qDiff}$|^${legacyRegex}$`);
     
+    // Special patterns
+
+
+    const extras = ['-2', '-21', 'Marathon', 'MA'];
+    const extrasRegex = extras.join('$|^');
+    
+    // Combine all patterns based on range flag
+    const patterns = [
+        '^$',
+        `^${pguRegex}$`,
+        `^${legacyRegex}$`,
+        `^${extrasRegex}$`,
+        `^${qDiff}$`,
+        range ? `^${pguExtendedRegex}$` : '',
+        range ? `^${rangeRegex}$` : '',
+        range ? `^${legacyRange}$` : '',
+        range ? `^${qDiffRange}$` : '',
+    ].filter(Boolean); // Remove empty strings
+    
+    const regex = new RegExp(patterns.join('|'));
     return regex.test(value);
 }
 
