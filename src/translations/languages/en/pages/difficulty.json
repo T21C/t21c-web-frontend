@@ -76,6 +76,8 @@
     }
   },
   "passwordModal": {
+    "initialTitle": "Super Admin Password Required",
+    "initialMessage": "Please enter your super admin password to access this page.",
     "title": "Super Admin Password Required",
     "message": "Please enter your super admin password to {{action}} the difficulty.",
     "placeholder": "Enter password",
