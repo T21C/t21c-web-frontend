@@ -9,10 +9,11 @@ import api from '@/utils/api';
 import './difficultypage.css';
 import { EditIcon, RefreshIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const DifficultyPage = () => {
   const { user } = useAuth();
-  const { difficulties, rawDifficulties, loading: contextLoading, reloadDifficulties } = useDifficultyContext();
+  const { difficulties, rawDifficulties, loading: contextLoading, reloadDifficulties, setDifficulties, setRawDifficulties } = useDifficultyContext();
   const { t } = useTranslation('pages');
   const tDiff = (key, params = {}) => t(`difficulty.${key}`, params);
   const currentUrl = window.location.origin + location.pathname;
@@ -45,11 +46,13 @@ const DifficultyPage = () => {
   const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
   const [pendingAction, setPendingAction] = useState(null);
   const [isAnyPopupOpen, setIsAnyPopupOpen] = useState(false);
+  const [showInitialPasswordPrompt, setShowInitialPasswordPrompt] = useState(true);
+  const [isReordering, setIsReordering] = useState(false);
 
   // Add effect to handle body scrolling
   useEffect(() => {
     const isAnyOpen = isCreating || editingDifficulty !== null || 
-                          deletingDifficulty !== null || showPasswordPrompt;
+                          deletingDifficulty !== null || showPasswordPrompt || showInitialPasswordPrompt;
     setIsAnyPopupOpen(isAnyOpen);
     if (isAnyOpen) {
       document.body.style.overflow = 'hidden';
@@ -60,7 +63,15 @@ const DifficultyPage = () => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [isCreating, editingDifficulty, deletingDifficulty, showPasswordPrompt]);
+  }, [isCreating, editingDifficulty, deletingDifficulty, showPasswordPrompt, showInitialPasswordPrompt]);
+
+  // Initial password verification
+  useEffect(() => {
+    if (user?.isSuperAdmin && showInitialPasswordPrompt) {
+      // Show initial password prompt
+      setShowInitialPasswordPrompt(true);
+    }
+  }, [user?.isSuperAdmin]);
 
   const handlePasswordSubmit = async () => {
     try {
@@ -72,17 +83,34 @@ const DifficultyPage = () => {
           ...data,
           superAdminPassword: verifiedPassword
         });
+        
+        // Update context state directly
+        const newDifficulty = response.data;
+        setDifficulties(prev => [...prev, newDifficulty]);
+        setRawDifficulties(prev => [...prev, newDifficulty]);
+        
         addNotification(tDiff('notifications.created'));
       } else if (type === 'edit') {
         const response = await api.put(`${import.meta.env.VITE_DIFFICULTIES}/${data.id}`, {
           ...data,
           superAdminPassword: verifiedPassword
         });
+        
+        // Update context state directly
+        const updatedDifficulty = response.data;
+        setDifficulties(prev => prev.map(diff => diff.id === updatedDifficulty.id ? updatedDifficulty : diff));
+        setRawDifficulties(prev => prev.map(diff => diff.id === updatedDifficulty.id ? updatedDifficulty : diff));
+        
         addNotification(tDiff('notifications.updated'));
       } else if (type === 'delete') {
         await api.delete(`${import.meta.env.VITE_DIFFICULTIES}/${data.id}?fallbackId=${data.fallbackId}`, {
           data: { superAdminPassword: verifiedPassword }
         });
+        
+        // Update context state directly
+        setDifficulties(prev => prev.filter(diff => diff.id !== data.id));
+        setRawDifficulties(prev => prev.filter(diff => diff.id !== data.id));
+        
         addNotification(tDiff('notifications.deleted'));
       }
       
@@ -111,9 +139,6 @@ const DifficultyPage = () => {
         legacyIcon: '',
         legacyEmoji: ''
       });
-
-      // Reload difficulties in context
-      await reloadDifficulties();
     } catch (err) {
       const errorMessage = err.response?.status === 403 
         ? tDiff('passwordModal.errors.invalid') 
@@ -211,11 +236,19 @@ const DifficultyPage = () => {
       });
       setVerifiedPassword(password);
       setShowPasswordPrompt(false);
+      setShowInitialPasswordPrompt(false);
       return true;
     } catch (error) {
       setError(tDiff('passwordModal.errors.invalid'));
       addNotification(tDiff('passwordModal.errors.invalid'), 'error');
       return false;
+    }
+  };
+
+  const handleInitialPasswordSubmit = async () => {
+    const isValid = await verifyPassword(superAdminPassword);
+    if (isValid) {
+      setSuperAdminPassword('');
     }
   };
 
@@ -241,8 +274,8 @@ const DifficultyPage = () => {
   };
 
   const handleEditClick = (difficulty) => {
-    setPendingAction({ type: 'edit', data: difficulty });
-    setShowPasswordPrompt(true);
+    // Directly set the editing difficulty without showing password prompt
+    setEditingDifficulty(difficulty);
   };
 
   const handleCreateClick = () => {
@@ -255,7 +288,51 @@ const DifficultyPage = () => {
     setShowPasswordPrompt(true);
   };
 
-  const handleSubmit = (e) => {
+  const handleDragEnd = async (result) => {
+    if (!result.destination) return;
+    
+    setIsReordering(true);
+    
+    try {
+      // Immediately update the UI state to prevent animation
+      const items = Array.from(difficulties);
+      const [reorderedItem] = items.splice(result.source.index, 1);
+      items.splice(result.destination.index, 0, reorderedItem);
+      
+      // Update sortOrder for all items
+      const updatedItems = items.map((item, index) => ({
+        ...item,
+        sortOrder: index
+      }));
+      
+      // Update the context state immediately to prevent animation
+      setDifficulties(updatedItems);
+      setRawDifficulties(updatedItems);
+      
+      // Send the updated sort orders to the server in the background
+      await api.put(`${import.meta.env.VITE_DIFFICULTIES}/sort-orders`, {
+        sortOrders: updatedItems.map(item => ({
+          id: item.id,
+          sortOrder: item.sortOrder
+        }))
+      }, {
+        headers: {
+          'X-Super-Admin-Password': verifiedPassword
+        }
+      });
+      
+      addNotification(tDiff('notifications.reordered'), 'success');
+    } catch (err) {
+      console.error('Error updating sort orders:', err);
+      addNotification(tDiff('notifications.reorderFailed'), 'error');
+      // Revert the state on error
+      await reloadDifficulties();
+    } finally {
+      setIsReordering(false);
+    }
+  };
+
+  const handleFormSubmit = (e) => {
     e.preventDefault();
     if (isCreating) {
       setSelectedAction({ type: 'create', data: newDifficulty });
@@ -264,6 +341,9 @@ const DifficultyPage = () => {
     }
     handlePasswordSubmit();
   };
+
+  // Sort difficulties by sortOrder instead of id
+  const sortedDifficulties = [...difficulties].sort((a, b) => a.sortOrder - b.sortOrder);
 
   if (user?.isSuperAdmin === undefined) {
     return (
@@ -313,7 +393,7 @@ const DifficultyPage = () => {
             <button
               className="refresh-button"
               onClick={reloadDifficulties}
-              disabled={isLoading || contextLoading}
+              disabled={isLoading || contextLoading || isReordering}
               aria-label={tDiff('header.refresh')}
             >
               <RefreshIcon color="#fff" size="36px" />
@@ -325,50 +405,75 @@ const DifficultyPage = () => {
           <button
             className="create-button"
             onClick={handleCreateClick}
-            disabled={isLoading || contextLoading}
+            disabled={isLoading || contextLoading || isReordering}
           >
             {tDiff('buttons.create')}
           </button>
 
-          <div className="difficulties-list">
-            {isLoading || contextLoading ? (
-              <div className="loading-message">{tDiff('loading.difficulties')}</div>
-            ) : difficulties.length === 0 ? (
-              <div className="no-items-message">{tDiff('noItems.message')}</div>
-            ) : (
-              difficulties.map(difficulty => (
-                <div key={difficulty.id} className="difficulty-item">
-                  <div className="difficulty-info">
-                    <img 
-                      src={difficulty.icon} 
-                      alt={difficulty.name} 
-                      className="difficulty-icon"
-                    />
-                    <div className="difficulty-details">
-                      <span className="difficulty-name">{difficulty.name}</span>
-                      <span className="difficulty-type">{tDiff(`difficultyTypes.${difficulty.type}`)}</span>
-                    </div>
-                  </div>
-                  <div className="difficulty-actions">
-                    <button
-                      className="edit-button"
-                      onClick={() => handleEditClick(difficulty)}
-                      disabled={isLoading}
-                    >
-                      <EditIcon color="#fff" size="24px" />
-                    </button>
-                    <button
-                      className="delete-button"
-                      onClick={() => setDeletingDifficulty(difficulty)}
-                      disabled={isLoading}
-                    >
-                      <TrashIcon color="#fff" size="24px"/>
-                    </button>
-                  </div>
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable droppableId="difficulties">
+              {(provided) => (
+                <div 
+                  className="difficulties-list"
+                  {...provided.droppableProps}
+                  ref={provided.innerRef}
+                >
+                  {isLoading || contextLoading ? (
+                    <div className="loading-message">{tDiff('loading.difficulties')}</div>
+                  ) : sortedDifficulties.length === 0 ? (
+                    <div className="no-items-message">{tDiff('noItems.message')}</div>
+                  ) : (
+                    sortedDifficulties.map((difficulty, index) => (
+                      <Draggable 
+                        key={difficulty.id} 
+                        draggableId={difficulty.id.toString()} 
+                        index={index}
+                        isDragDisabled={isReordering}
+                      >
+                        {(provided, snapshot) => (
+                          <div 
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className={`difficulty-item ${snapshot.isDragging ? 'dragging' : ''}`}
+                          >
+                            <div className="difficulty-info">
+                              <img 
+                                src={difficulty.icon} 
+                                alt={difficulty.name} 
+                                className="difficulty-icon"
+                              />
+                              <div className="difficulty-details">
+                                <span className="difficulty-name">{difficulty.name}</span>
+                                <span className="difficulty-type">{tDiff(`difficultyTypes.${difficulty.type}`)}</span>
+                              </div>
+                            </div>
+                            <div className="difficulty-actions">
+                              <button
+                                className="edit-button"
+                                onClick={() => handleEditClick(difficulty)}
+                                disabled={isLoading || isReordering}
+                              >
+                                <EditIcon color="#fff" size="24px" />
+                              </button>
+                              <button
+                                className="delete-button"
+                                onClick={() => setDeletingDifficulty(difficulty)}
+                                disabled={isLoading || isReordering}
+                              >
+                                <TrashIcon color="#fff" size="24px"/>
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))
+                  )}
+                  {provided.placeholder}
                 </div>
-              ))
-            )}
-          </div>
+              )}
+            </Droppable>
+          </DragDropContext>
 
           {deletingDifficulty && (
             <div 
@@ -490,6 +595,31 @@ const DifficultyPage = () => {
             </div>
           )}
 
+          {showInitialPasswordPrompt && (
+            <div className="password-modal">
+              <div className="password-modal-content">
+                <h3>{tDiff('passwordModal.initialTitle')}</h3>
+                <p>{tDiff('passwordModal.initialMessage')}</p>
+                <input
+                  type="password"
+                  value={superAdminPassword}
+                  onChange={(e) => setSuperAdminPassword(e.target.value)}
+                  placeholder={tDiff('passwordModal.placeholder')}
+                />
+                {error && <p className="error-message">{error}</p>}
+                <div className="password-modal-actions">
+                  <button 
+                    className="confirm-btn"
+                    onClick={handleInitialPasswordSubmit}
+                    disabled={!superAdminPassword}
+                  >
+                    {tDiff('buttons.confirm')}
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           <DifficultyPopup
             isOpen={isCreating || editingDifficulty !== null}
             onClose={() => {
@@ -501,7 +631,7 @@ const DifficultyPage = () => {
             }}
             isCreating={isCreating}
             difficulty={isCreating ? newDifficulty : editingDifficulty || {}}
-            onSubmit={handleSubmit}
+            onSubmit={handleFormSubmit}
             onChange={(updatedDifficulty) => {
               if (isCreating) {
                 setNewDifficulty(updatedDifficulty);

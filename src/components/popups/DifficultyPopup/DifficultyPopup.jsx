@@ -263,26 +263,31 @@ const DifficultyPopup = ({
 
   const handleSaveDirectives = async (e) => {
     e.preventDefault();
-    if (!difficulty?.id) return;
-
-    // Ensure all directives have required fields
-    const formattedDirectives = directives.map((dir, index) => ({
-      ...dir,
-      triggerType: dir.triggerType || TRIGGER_TYPES.PASS,
-      condition: dir.mode === DIRECTIVE_MODES.CONDITIONAL ? (dir.condition || {
-        type: 'ACCURACY',
-        value: 0,
-        operator: 'GREATER_THAN_EQUAL'
-      }) : null,
-      actions: dir.actions.map(action => ({
-        ...action,
-        channelId: Number(action.channelId),
-        roleId: action.pingType === 'ROLE' ? Number(action.roleId) : null
-      })),
-      sortOrder: index
-    }));
-
+    
+    if (!verifiedPassword) {
+      showToast(tDiff('errors.passwordRequired'), 'error');
+      return;
+    }
+    
+    setIsLoadingDirectives(true);
     try {
+      // Format directives for API
+      const formattedDirectives = directives.map(directive => ({
+        name: directive.name,
+        description: directive.description || '',
+        mode: directive.mode,
+        triggerType: directive.triggerType,
+        condition: directive.condition,
+        actions: directive.actions.map(action => ({
+          channelId: action.channelId,
+          pingType: action.pingType,
+          roleId: action.roleId
+        })),
+        isActive: directive.isActive,
+        firstOfKind: directive.firstOfKind
+      }));
+      
+      // Send to API
       const response = await api.post(
         `${import.meta.env.VITE_DIFFICULTIES}/${difficulty.id}/directives`,
         { directives: formattedDirectives },
@@ -293,23 +298,15 @@ const DifficultyPopup = ({
         }
       );
       
-      setDirectivesError('');
-      setOriginalDirectives([...formattedDirectives]);
-      setDirectives([...formattedDirectives]);
-      showToast(tDiff('announcements.directive.saveSuccess'));
+      setDirectives(response.data);
+      setOriginalDirectives(response.data);
+      showToast(tDiff('announcements.notifications.saved'), 'success');
     } catch (err) {
-      const errorMessage = err.response?.data?.error || tDiff('announcements.directive.saveError');
-      const errorDetails = err.response?.data?.details;
-      
-      // If it's a custom directive validation error, show the specific error message
-      if (errorMessage === 'Invalid custom directive format' && errorDetails) {
-        setDirectivesError(`${errorMessage}: ${errorDetails}`);
-        showToast(`${errorMessage}: ${errorDetails}`, 'error');
-      } else {
-        setDirectivesError(errorMessage);
-        showToast(errorMessage, 'error');
-      }
-      console.error(err);
+      console.error('Failed to save directives:', err);
+      setDirectivesError(tDiff('announcements.errors.saveFailed'));
+      showToast(tDiff('announcements.errors.saveFailed'), 'error');
+    } finally {
+      setIsLoadingDirectives(false);
     }
   };
 
@@ -419,99 +416,125 @@ const DifficultyPopup = ({
 
   const handleChannelSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!verifiedPassword) {
+      showToast(tDiff('errors.passwordRequired'), 'error');
+      return;
+    }
+    
     setChannelError('');
     
     try {
-      const channelData = {
-        webhookUrl: channelWebhookUrl,
-        label: channelLabel
-      };
-
-      if (selectedChannel?.id) {
+      if (channelModalSource === 'edit' && selectedChannel) {
         // Update existing channel
         await api.put(
           `${import.meta.env.VITE_DIFFICULTIES}/channels/${selectedChannel.id}`,
-          channelData,
+          {
+            label: channelLabel,
+            webhookUrl: channelWebhookUrl
+          },
           {
             headers: {
               'X-Super-Admin-Password': verifiedPassword
             }
           }
         );
-        showToast(tDiff('announcements.directive.channelUpdateSuccess'));
+        showToast(tDiff('announcements.channel.notifications.updated'), 'success');
       } else {
         // Create new channel
         await api.post(
           `${import.meta.env.VITE_DIFFICULTIES}/channels`,
-          channelData,
+          {
+            label: channelLabel,
+            webhookUrl: channelWebhookUrl
+          },
           {
             headers: {
               'X-Super-Admin-Password': verifiedPassword
             }
           }
         );
-        showToast(tDiff('announcements.directive.channelAddSuccess'));
+        showToast(tDiff('announcements.channel.notifications.created'), 'success');
       }
-
-      // Refresh available channels
+      
+      // Reload channels
       await loadAvailableChannels();
       
-      // Only close modal and reset state on success
-      setShowChannelModal(false);
-      setSelectedChannel(null);
+      // Reset form and close modal
       setChannelLabel('');
       setChannelWebhookUrl('');
-    } catch (error) {
-      console.error('Error saving channel:', error);
-      setChannelError(tDiff('errors.channelSaveFailed'));
-      showToast(tDiff('errors.channelSaveFailed'), 'error');
+      setShowChannelModal(false);
+    } catch (err) {
+      console.error('Failed to save channel:', err);
+      setChannelError(tDiff('announcements.channel.errors.saveFailed'));
+      showToast(tDiff('announcements.channel.errors.saveFailed'), 'error');
     }
   };
 
   const handleRoleSubmit = async (e) => {
     e.preventDefault();
+    
+    if (!verifiedPassword) {
+      showToast(tDiff('errors.passwordRequired'), 'error');
+      return;
+    }
+    
     setRoleError('');
-
+    
     try {
-      const roleData = {
-        roleId: selectedRole.roleId,
-        label: selectedRole.label
-      };
-
-      if (selectedRole.id) {
+      if (roleModalSource === 'edit' && selectedRole) {
         // Update existing role
-        await api.put(`${import.meta.env.VITE_DIFFICULTIES}/roles/${selectedRole.id}`, roleData, {
-          headers: {
-            'X-Super-Admin-Password': verifiedPassword
+        await api.put(
+          `${import.meta.env.VITE_DIFFICULTIES}/roles/${selectedRole.id}`,
+          {
+            roleId: selectedRole.roleId,
+            label: selectedRole.label
+          },
+          {
+            headers: {
+              'X-Super-Admin-Password': verifiedPassword
+            }
           }
-        });
-        showToast(tDiff('announcements.directive.roleUpdateSuccess'));
+        );
+        showToast(tDiff('announcements.role.notifications.updated'), 'success');
       } else {
         // Create new role
-        await api.post(`${import.meta.env.VITE_DIFFICULTIES}/roles`, roleData, {
-          headers: {
-            'X-Super-Admin-Password': verifiedPassword
+        await api.post(
+          `${import.meta.env.VITE_DIFFICULTIES}/roles`,
+          {
+            roleId: selectedRole.roleId,
+            label: selectedRole.label
+          },
+          {
+            headers: {
+              'X-Super-Admin-Password': verifiedPassword
+            }
           }
-        });
-        showToast(tDiff('announcements.directive.roleAddSuccess'));
+        );
+        showToast(tDiff('announcements.role.notifications.created'), 'success');
       }
-
-      // Refresh available roles
+      
+      // Reload roles
       await loadAvailableRoles();
       
-      // Only close modal and reset state on success
-      setShowRoleModal(false);
+      // Reset form and close modal
       setSelectedRole(null);
-    } catch (error) {
-      console.error('Error saving role:', error);
-      setRoleError(tDiff('errors.roleSaveFailed'));
-      showToast(tDiff('errors.roleSaveFailed'), 'error');
+      setShowRoleModal(false);
+    } catch (err) {
+      console.error('Failed to save role:', err);
+      setRoleError(tDiff('announcements.role.errors.saveFailed'));
+      showToast(tDiff('announcements.role.errors.saveFailed'), 'error');
     }
   };
 
   const handleDeleteChannel = async () => {
-    if (!selectedChannel?.type) return;
-
+    if (!verifiedPassword) {
+      showToast(tDiff('errors.passwordRequired'), 'error');
+      return;
+    }
+    
+    if (!selectedChannel) return;
+    
     try {
       await api.delete(
         `${import.meta.env.VITE_DIFFICULTIES}/channels/${selectedChannel.id}`,
@@ -521,21 +544,24 @@ const DifficultyPopup = ({
           }
         }
       );
-
+      
+      showToast(tDiff('announcements.channel.notifications.deleted'), 'success');
+      await loadAvailableChannels();
       setShowChannelModal(false);
-      setSelectedChannel(null);
-      await loadDirectives();
-      showToast(tDiff('announcements.directive.channelDeleteSuccess'));
     } catch (err) {
-      setChannelError('Failed to delete channel');
-      showToast(tDiff('errors.channelDeleteFailed'), 'error');
-      console.error(err);
+      console.error('Failed to delete channel:', err);
+      showToast(tDiff('announcements.channel.errors.deleteFailed'), 'error');
     }
   };
 
   const handleDeleteRole = async () => {
-    if (!selectedRole?.id) return;
-
+    if (!verifiedPassword) {
+      showToast(tDiff('errors.passwordRequired'), 'error');
+      return;
+    }
+    
+    if (!selectedRole) return;
+    
     try {
       await api.delete(
         `${import.meta.env.VITE_DIFFICULTIES}/roles/${selectedRole.id}`,
@@ -545,15 +571,13 @@ const DifficultyPopup = ({
           }
         }
       );
-
-      setShowRoleModal(false);
-      setSelectedRole(null);
+      
+      showToast(tDiff('announcements.role.notifications.deleted'), 'success');
       await loadAvailableRoles();
-      showToast(tDiff('announcements.directive.roleDeleteSuccess'));
+      setShowRoleModal(false);
     } catch (err) {
-      setRoleError('Failed to delete role');
-      showToast(tDiff('errors.roleDeleteFailed'), 'error');
-      console.error(err);
+      console.error('Failed to delete role:', err);
+      showToast(tDiff('announcements.role.errors.deleteFailed'), 'error');
     }
   };
 
@@ -803,8 +827,8 @@ const DifficultyPopup = ({
           </svg>
         </button>
 
-        {/* Password Modal */}
-        {showPasswordModal && (
+        {/* Password Modal - Only show if needed and not using verifiedPassword */}
+        {showPasswordModal && !verifiedPassword && (
           <div className="difficulty-modal__password-modal">
             <div className="difficulty-modal__password-modal-content">
               <h3>{tDiff('modal.password.title')}</h3>

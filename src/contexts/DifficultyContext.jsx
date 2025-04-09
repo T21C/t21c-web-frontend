@@ -118,10 +118,15 @@ const DifficultyContextProvider = (props) => {
         <DifficultyContext.Provider 
             value={{ 
                 difficulties,
+                setDifficulties,
                 difficultyDict,
+                setDifficultyDict,
                 rawDifficulties,
+                setRawDifficulties,
                 loading,
+                setLoading,
                 error,
+                setError,
                 reloadDifficulties: fetchDifficulties
             }}
         >

@@ -198,8 +198,8 @@ const ProfilePage = () => {
                     <div className="diff-info">
                       <p>{valueLabels.topDiff}</p>
                       <img
-                        src={playerData.topDiff?.icon}
-                        alt={playerData.topDiff?.name || 'None'}
+                        src={playerData.stats.topDiff?.icon}
+                        alt={playerData.stats.topDiff?.name || 'None'}
                         className="diff-image"
                       />
                     </div>
@@ -207,8 +207,8 @@ const ProfilePage = () => {
                     <div className="diff-info">
                       <p>{valueLabels.top12kDiff}</p>
                       <img
-                        src={playerData.top12kDiff?.icon}
-                        alt={playerData.top12kDiff?.name || 'None'}
+                        src={playerData.stats.top12kDiff?.icon}
+                        alt={playerData.stats.top12kDiff?.name || 'None'}
                         className="diff-image"
                       />
                     </div>

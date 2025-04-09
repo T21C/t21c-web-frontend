@@ -258,3 +258,15 @@
     min-width: 2.5rem;
   }
 }
+
+.difficulty-display {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.difficulty-display .difficulty-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}

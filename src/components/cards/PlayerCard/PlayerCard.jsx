@@ -7,7 +7,7 @@ import { DifficultyContext } from "@/contexts/DifficultyContext";
 import { formatNumber } from "@/Repository/RemoteRepository";
 import { UserAvatar } from "@/components/layout";
 
-const nonRoundable = ["topDiff", "top12kDiff"];
+const diffFields = ["topDiff", "top12kDiff"];
 const passes = ["totalPasses", "universalPassCount", "worldsFirstCount"];
 
 const PlayerCard = ({player}) => {
@@ -41,11 +41,6 @@ const PlayerCard = ({player}) => {
     
   const prioritizedField = sortBy || 'rankedScore';
 
-  const getDifficultyName = (diffId) => {
-    if (!diffId || diffId === 0) return '-';
-    return difficultyDict[diffId]?.name || diffId.toString();
-  };
-
   const scoreFields = {
     rankedScore: {
       label: sortLabels.rankedScore,
@@ -64,8 +59,8 @@ const PlayerCard = ({player}) => {
   const primaryField = {
     label: sortLabels[sortBy],
     value: player[sortBy] !== undefined ? 
-      nonRoundable.includes(sortBy) 
-        ? getDifficultyName(player[sortBy])
+      diffFields.includes(sortBy) 
+        ? player[sortBy].name
         : player[sortBy]
     : player.generalScore,
   };
@@ -81,7 +76,7 @@ const PlayerCard = ({player}) => {
     secondaryFields = secondaryFields.filter(field => field.label !== sortLabels.generalScore);
   }
 
-  if (!nonRoundable.includes(sortBy)) {
+  if (!diffFields.includes(sortBy)) {
     if (!passes.includes(sortBy)) {
       if (sortBy === "averageXacc") {
         primaryField.value = (parseFloat(primaryField.value)*100).toFixed(2).toString()+"%";
@@ -92,6 +87,10 @@ const PlayerCard = ({player}) => {
       primaryField.value = Math.round(parseFloat(primaryField.value));
     }
   }
+
+  // Add difficulty icons if the sort field is a difficulty type
+  const difficultyIcon = diffFields.includes(sortBy) ? player[sortBy].icon : null;
+
   return (
     <div className='player-card' onClick={() => redirect()} style={{backgroundColor: player.isBanned ? "#ff000099" : ""}}>
       <div className="img-wrapper">
@@ -125,7 +124,16 @@ const PlayerCard = ({player}) => {
       <div className="info-wrapper">
         <div className="score-wrapper">
           <p className="player-exp">{primaryField.label}</p>
-          <div className="player-desc">{primaryField.value}</div>
+          <div className="player-desc">
+            {difficultyIcon ? (
+              <div className="difficulty-display">
+                <img src={difficultyIcon} alt={primaryField.value} className="difficulty-icon" />
+                <span>{primaryField.value}</span>
+              </div>
+            ) : (
+              primaryField.value
+            )}
+          </div>
         </div>
         
         {secondaryFields.map((field, index) => (
