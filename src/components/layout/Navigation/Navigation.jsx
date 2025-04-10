@@ -7,7 +7,7 @@ import logo from "@/assets/tuf-logo/logo-full.png";
 import { useTranslation } from "react-i18next";
 import { UserContext } from "@/contexts/UserContext";
 import i18next from 'i18next';
-import { isoToEmoji } from "@/Repository/RemoteRepository";
+import { isoToEmoji } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotification } from "@/contexts/NotificationContext";
 

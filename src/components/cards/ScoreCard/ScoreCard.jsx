@@ -4,7 +4,7 @@ import "@/index.css"
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { formatSpeed, formatScore } from "@/utils/Utility"
-import { formatNumber } from "@/Repository/RemoteRepository";
+import { formatNumber } from "@/utils";
 
 
 // eslint-disable-next-line react/prop-types

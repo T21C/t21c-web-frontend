@@ -1,6 +1,6 @@
 import "./detailpopup.css";
 import { useEffect, useState, useContext, useRef } from 'react';
-import { getVideoDetails } from "@/Repository/RemoteRepository";
+import { getVideoDetails } from "@/utils";
 import { RatingItem } from '@/components/cards';
 import { RatingInput } from '@/components/common/selectors';
 import { DifficultyContext } from "@/contexts/DifficultyContext";

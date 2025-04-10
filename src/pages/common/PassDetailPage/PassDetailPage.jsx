@@ -2,7 +2,7 @@ import "./passdetailpage.css";
 import { useEffect, useState } from "react";
 import { useLocation, useParams, Link } from 'react-router-dom';
 import { CompleteNav, UserAvatar } from "@/components/layout";
-import { formatNumber, getVideoDetails, isoToEmoji } from "@/Repository/RemoteRepository";
+import { formatNumber, getVideoDetails, isoToEmoji } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import api from "@/utils/api";

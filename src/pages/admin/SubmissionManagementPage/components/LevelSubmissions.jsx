@@ -1,4 +1,4 @@
-import { getVideoDetails } from "@/Repository/RemoteRepository";
+import { getVideoDetails } from "@/utils";
 import placeholder from "@/assets/placeholder/1.png"
 import "../adminsubmissionpage.css";
 import { useState, useEffect } from "react";

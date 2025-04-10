@@ -3,7 +3,7 @@ import "./passsubmission.css";
 import placeholder from "@/assets/placeholder/3.png";
 import { FormManager } from "@/components/misc/FormManager/FormManager";
 import { useEffect, useState, useRef } from "react";
-import { getVideoDetails } from "@/Repository/RemoteRepository";
+import { getVideoDetails } from "@/utils";
 import calcAcc from "@/utils/CalcAcc";
 import { getScoreV2 } from "@/utils/CalcScore";
 import { parseJudgements } from "@/utils/ParseJudgements";

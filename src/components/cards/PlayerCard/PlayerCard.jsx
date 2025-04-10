@@ -4,7 +4,7 @@ import { useTranslation } from "react-i18next";
 import { useContext, useEffect, useState } from "react";
 import { PlayerContext } from "@/contexts/PlayerContext";
 import { DifficultyContext } from "@/contexts/DifficultyContext";
-import { formatNumber } from "@/Repository/RemoteRepository";
+import { formatNumber } from "@/utils";
 import { UserAvatar } from "@/components/layout";
 
 const diffFields = ["topDiff", "top12kDiff"];

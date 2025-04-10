@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import placeholder from '@/assets/placeholder/1.png';
-import { getVideoDetails } from "@/Repository/RemoteRepository";
+import { getVideoDetails } from "@/utils";
 import "../adminsubmissionpage.css";
 import api from "@/utils/api";
 import { PlayerInput } from '@/components/common/selectors';

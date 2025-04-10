@@ -3,7 +3,7 @@ import './editpasspopup.css';
 import api from '@/utils/api';
 import { getScoreV2 } from '@/utils/CalcScore';
 import calcAcc from '@/utils/CalcAcc';
-import { getVideoDetails } from "@/Repository/RemoteRepository";
+import { getVideoDetails } from "@/utils";
 import { useTranslation } from 'react-i18next'; 
 import { useAuth } from '@/contexts/AuthContext';
 import { parseJudgements } from '@/utils/ParseJudgements';

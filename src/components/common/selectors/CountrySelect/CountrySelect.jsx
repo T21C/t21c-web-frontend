@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { isoToEmoji } from '@/Repository/RemoteRepository';
+import { isoToEmoji } from '@/utils';
 import "./countryselect.css";
 import { COUNTRY_CODES } from "@/utils/countryCodes";
 import { useTranslation } from 'react-i18next';

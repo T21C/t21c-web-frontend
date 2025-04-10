@@ -3,7 +3,7 @@ import "./levelsubmission.css";
 import placeholder from "@/assets/placeholder/3.png";
 import { FormManager } from "@/components/misc/FormManager/FormManager";
 import { useEffect, useState } from "react";
-import { getDriveFromYt, getVideoDetails } from "@/Repository/RemoteRepository";
+import { getDriveFromYt, getVideoDetails } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { validateFeelingRating } from "@/utils/Utility";
 import { useTranslation } from "react-i18next";

@@ -8,7 +8,7 @@ import { CompleteNav } from "@/components/layout";
 import {
   getVideoDetails,
   isoToEmoji,
-} from "@/Repository/RemoteRepository";
+} from "@/utils";
 
 import { Tooltip } from "react-tooltip";
 import { useTranslation } from "react-i18next";

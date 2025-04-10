@@ -2,7 +2,7 @@ import "./profilePage.css"
 import api from "@/utils/api";
 import { useEffect, useState } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom"
-import { isoToEmoji, formatNumber } from "@/Repository/RemoteRepository";
+import { isoToEmoji, formatNumber } from "@/utils";
 import { CompleteNav, UserAvatar } from "@/components/layout";
 import { MetaTags } from "@/components/common/display";
 import { ScoreCard } from "@/components/cards";
