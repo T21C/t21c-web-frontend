@@ -262,7 +262,7 @@ const DifficultySlider = ({
         return "#FFFFFF";
       }
     }
-    if (!/^Q2$/.test(diff.name)) {
+    if (diff.name.startsWith('Q') && !/^Q2$/.test(diff.name)) {
       return "#FFFFFF";
     }
     return diff.color;

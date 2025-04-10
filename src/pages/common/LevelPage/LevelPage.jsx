@@ -125,7 +125,7 @@ const LevelPage = () => {
     // newrange = ["Q1", "Q2", "Q3"]
 
     if (!newRange) {
-      setSliderQRange(qDifficulties);
+      setSliderQRange(qDifficulties.map(d => d.name));
       setSliderQRangeDrag([qDifficulties[0]?.sortOrder || 1, qDifficulties[qDifficulties.length - 1]?.sortOrder || 1]);
       return;
     }
@@ -307,12 +307,10 @@ const LevelPage = () => {
     
     // Reset Q range to first and last Q difficulty
     if (qDifficulties.length > 0) {
-      const firstQ = qDifficulties[0].name;
-      const lastQ = qDifficulties[qDifficulties.length - 1].name;
-      setSliderQRange([firstQ, lastQ]);
+      setSliderQRange(qDifficulties.map(d => d.name));
       setSliderQRangeDrag([qDifficulties[0].sortOrder, qDifficulties[qDifficulties.length - 1].sortOrder]);
     } else {
-      setSliderQRange(["Q1", "Q1"]);
+      setSliderQRange([]);
       setSliderQRangeDrag([1, 1]);
     }
     
@@ -323,6 +321,7 @@ const LevelPage = () => {
       setDeletedFilter("hide");
     }
     setClearedFilter("show");
+    setQSliderVisible(false);
     // Clear and reload data
     setLevelsData([]);
     setLoading(true);
