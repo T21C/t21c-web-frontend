@@ -5,16 +5,15 @@ const DifficultySlider = ({
   values,  // [min, max]
   onChange,
   onChangeComplete,  // New callback for when changes are complete
-  difficulties,
-  min = 1,
-  max = 60
+  difficulties
 }) => {
   const trackRef = useRef(null);
   const [isDragging, setIsDragging] = useState(false);
   const [activeKnob, setActiveKnob] = useState(null);
   const [dragStartX, setDragStartX] = useState(null);
   const [dragStartValue, setDragStartValue] = useState(null);
-
+  const min = difficulties.find(d => d.name === "P1")?.sortOrder;
+  const max = difficulties.find(d => d.name === "U20")?.sortOrder;
   // Find the current difficulties based on the values
   const [minDiff, maxDiff] = values.map(value => 
     difficulties.find(d => d.sortOrder === value)

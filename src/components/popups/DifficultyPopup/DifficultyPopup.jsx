@@ -343,9 +343,7 @@ const DifficultyPopup = ({
     }
   };
 
-  const handleEditChannel = (channel) => {
-    console.log('Edit channel button clicked:', channel);
-    
+  const handleEditChannel = (channel) => {    
     if (!channel) {
       console.error('Cannot edit channel: channel object is null or undefined');
       showToast(tDiff('errors.channelEditFailed'), 'error');
@@ -364,7 +362,6 @@ const DifficultyPopup = ({
       setChannelLabel(channel.label || '');
       setChannelWebhookUrl(channel.webhookUrl || '');
       setShowChannelModal(true);
-      console.log('Channel modal opened successfully for channel:', channel.id);
     } catch (error) {
       console.error('Error opening channel modal:', error);
       showToast(tDiff('errors.channelEditFailed'), 'error');
@@ -372,7 +369,6 @@ const DifficultyPopup = ({
   };
 
   const handleEditRole = (role) => {
-    console.log('Edit role button clicked:', role);
     
     if (!role) {
       console.error('Cannot edit role: role object is null or undefined');
@@ -390,7 +386,6 @@ const DifficultyPopup = ({
       setRoleModalSource('edit');
       setSelectedRole(role);
       setShowRoleModal(true);
-      console.log('Role modal opened successfully for role:', role.id);
     } catch (error) {
       console.error('Error opening role modal:', error);
       showToast(tDiff('errors.roleEditFailed'), 'error');
@@ -598,22 +593,6 @@ const DifficultyPopup = ({
     newDirectives[directiveIndex].actions = newDirectives[directiveIndex].actions.filter((_, i) => i !== actionIndex);
     setDirectives(newDirectives);
   };
-
-  useEffect(() => {
-    if (showChannelModal) {
-      console.log('Channel modal state changed to true');
-      console.log('Selected channel:', selectedChannel);
-      console.log('Channel label:', channelLabel);
-      console.log('Channel webhook URL:', channelWebhookUrl);
-    }
-  }, [showChannelModal, selectedChannel, channelLabel, channelWebhookUrl]);
-
-  useEffect(() => {
-    if (showRoleModal) {
-      console.log('Role modal state changed to true');
-      console.log('Selected role:', selectedRole);
-    }
-  }, [showRoleModal, selectedRole]);
 
   // Helper function to get translation for condition type options
   const getConditionTypeOption = (type) => tDiff(`announcements.condition.type.options.${type}`);
@@ -1449,9 +1428,7 @@ const DifficultyPopup = ({
                                                       onClick={(e) => {
                                                         e.preventDefault();
                                                         e.stopPropagation();
-                                                        console.log('Channel edit button clicked for channelId:', action.channelId);
                                                         const channelToEdit = availableChannels.find(c => c.id === action.channelId);
-                                                        console.log('Found channel to edit:', channelToEdit);
                                                         handleEditChannel(channelToEdit);
                                                       }}
                                                       aria-label={tDiff('announcements.actions.channel.edit')}
@@ -1504,9 +1481,7 @@ const DifficultyPopup = ({
                                                         onClick={(e) => {
                                                           e.preventDefault();
                                                           e.stopPropagation();
-                                                          console.log('Role edit button clicked for roleId:', action.roleId);
                                                           const roleToEdit = availableRoles.find(r => r.id === action.roleId);
-                                                          console.log('Found role to edit:', roleToEdit);
                                                           handleEditRole(roleToEdit);
                                                         }}
                                                         aria-label={tDiff('announcements.actions.role.edit')}

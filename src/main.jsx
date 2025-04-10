@@ -20,23 +20,23 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <GoogleOAuthProvider clientId='886035995245-8735p49ljpm17btvst50pp8qbg73t7s4.apps.googleusercontent.com'>
         <AuthProvider>
+        <DifficultyContextProvider>
           <LevelContextProvider>
             <NotificationProvider>
               <I18nextProvider i18n={i18next}>
                 <UserContextProvider>
                   <PlayerContextProvider>
-                    <DifficultyContextProvider>
                       <RatingFilterProvider>
                         <PassContextProvider>
                           <App />
                         </PassContextProvider>
                       </RatingFilterProvider>
-                    </DifficultyContextProvider>  
                   </PlayerContextProvider>
                 </UserContextProvider>
               </I18nextProvider>
             </NotificationProvider>
           </LevelContextProvider>
+        </DifficultyContextProvider>  
         </AuthProvider>
       </GoogleOAuthProvider>
     </BrowserRouter>

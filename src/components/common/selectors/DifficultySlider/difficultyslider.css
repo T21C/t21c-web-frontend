@@ -85,7 +85,7 @@
   gap: 0.5rem;
   transform: translateX(-50%);
   padding: 0.2rem 0.5rem;
-  min-width: fit-content;
+  min-width: -webkit-fill-available;
 }
 
 .difficulty-slider-container .difficulty-name {
@@ -94,9 +94,9 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   white-space: nowrap;
   text-align: center;
-  bottom: 10px;
-  user-select: none;
+  top: 10px;
   -webkit-user-select: none;
+  user-select: none;
   position: relative;
 }
 

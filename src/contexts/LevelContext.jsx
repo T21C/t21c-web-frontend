@@ -1,9 +1,16 @@
 /* eslint-disable react/prop-types */
-import { createContext, useState } from "react"
-
+import { createContext, useState, useEffect } from "react"
+import { useDifficultyContext } from "./DifficultyContext";
 const LevelContext = createContext()
 
 const LevelContextProvider = (props) => {
+
+    const { difficulties } = useDifficultyContext();
+
+    useEffect(() => {
+        setSliderRange([1, difficulties.find(d => d.name === "U20")?.sortOrder || 60]);
+    }, [difficulties]);
+
     const [levelsData, setLevelsData] = useState([])
     const [legacyDiff, setLegacyDiff] = useState(false);
     const [filterOpen, setFilterOpen] = useState(true);
@@ -17,9 +24,8 @@ const LevelContextProvider = (props) => {
     const [pageNumber, setPageNumber] = useState(0);
     const [deletedFilter, setDeletedFilter] = useState("hide");
     const [clearedFilter, setClearedFilter] = useState("show");
-    // Add new states for difficulty filtering with full PGU range
-    const [sliderRange, setSliderRange] = useState([1, 60]); // P1 to U20
-    const [selectedSpecialDiffs, setSelectedSpecialDiffs] = useState([]); // Empty array for no special difficulties
+    const [sliderRange, setSliderRange] = useState([1, 60]);
+    const [selectedSpecialDiffs, setSelectedSpecialDiffs] = useState([]);
 
     return (
         <LevelContext.Provider 

@@ -1,8 +1,15 @@
-import React, { createContext, useState } from 'react';
-
+import React, { createContext, useState, useEffect } from 'react';
+import { useDifficultyContext } from './DifficultyContext';
 export const PassContext = createContext();
 
 export const PassContextProvider = ({ children }) => {
+
+  const { difficulties } = useDifficultyContext();
+
+  useEffect(() => {
+    setSliderRange([1, difficulties.find(d => d.name === "U20")?.sortOrder || 60]);
+  }, [difficulties]);
+
   const [passesData, setPassesData] = useState(null);
   const [filterOpen, setFilterOpen] = useState(true);
   const [sortOpen, setSortOpen] = useState(true);

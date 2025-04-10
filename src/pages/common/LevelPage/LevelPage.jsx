@@ -68,7 +68,7 @@ const LevelPage = () => {
   const [cardSize, setCardSize] = useState('medium');
 
   // Filter difficulties by type
-  const pguDifficulties = difficulties.filter(d => d.type === 'PGU');
+  const pguDifficulties = difficulties.filter(d => d.type === 'PGU').sort((a, b) => a.sortOrder - b.sortOrder);
   const specialDifficulties = difficulties.filter(d => d.type === 'SPECIAL');
 
   // Handle slider value updates without triggering immediate fetches
@@ -240,7 +240,7 @@ const LevelPage = () => {
     // Reset to initial PGU range
     setSelectedLowFilterDiff("P1");
     setSelectedHighFilterDiff("U20");
-    setSliderRange([1, 60]);
+    setSliderRange([1, difficulties.find(d => d.name === "U20").sortOrder]);
     // Reset special difficulties
     setSelectedSpecialDiffs([]);
     // Reset filters
