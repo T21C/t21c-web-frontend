@@ -139,8 +139,6 @@ const LevelPage = () => {
     
     setSliderQRangeDrag([sortOrderValues[0], sortOrderValues[sortOrderValues.length - 1]]);
     setSliderQRange(newRange);
-    console.log(`sortOrderValues:`, sortOrderValues);
-    console.log(`newRange:`, newRange);
     // Only reset page and trigger fetch when dragging is complete
     setPageNumber(0);
     setLevelsData([]);
@@ -210,7 +208,6 @@ const LevelPage = () => {
         ? [...new Set([...sliderQRange, ...selectedSpecialDiffs])]
         : [...new Set([...selectedSpecialDiffs])];
 
-        console.log(`allSpecialDiffs:`, allSpecialDiffs);
 
         // Request body for difficulty filtering
         const requestBody = {
