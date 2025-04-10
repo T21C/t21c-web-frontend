@@ -250,7 +250,8 @@ const RatingPage = () => {
       if (fourVoteFilter === 'only' && 
         rating.details.filter(detail => !detail.isCommunityRating).length < 4)
          return false;
-
+      if (searchQuery === "vote") 
+        return /^vote/i.test(rating.level.rerateNum);
       // Search functionality
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
