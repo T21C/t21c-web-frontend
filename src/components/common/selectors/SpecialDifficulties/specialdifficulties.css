@@ -71,9 +71,7 @@
 .special-difficulties-dropdown .difficulties-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 1rem;
   padding-bottom: 0.5rem;
-  border-bottom: 1px solid var(--color-white-t20);
 }
 
 .special-difficulties-dropdown .select-all-button {

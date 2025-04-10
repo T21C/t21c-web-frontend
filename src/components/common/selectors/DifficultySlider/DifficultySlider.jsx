@@ -1,30 +1,99 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import './difficultyslider.css';
+import { useDifficultyContext } from '@/contexts/DifficultyContext';
 
 const DifficultySlider = ({ 
-  values,  // [min, max]
+  values,  // [min, max] or a list
   onChange,
   onChangeComplete,  // New callback for when changes are complete
-  difficulties
+  mode = "pgu"
 }) => {
+  
   const trackRef = useRef(null);
+  const { difficulties } = useDifficultyContext();
   const [isDragging, setIsDragging] = useState(false);
   const [activeKnob, setActiveKnob] = useState(null);
   const [dragStartX, setDragStartX] = useState(null);
   const [dragStartValue, setDragStartValue] = useState(null);
-  const min = difficulties.find(d => d.name === "P1")?.sortOrder;
-  const max = difficulties.find(d => d.name === "U20")?.sortOrder;
+  
+  // Get min and max based on mode
+  const getMinMax = () => {
+    if (mode === "pgu") {
+      return {
+        min: difficulties.find(d => d.name === "P1")?.sortOrder,
+        max: difficulties.find(d => d.name === "U20")?.sortOrder
+      };
+    } else if (mode === "q") {
+      const qDifficulties = difficulties
+        .filter(d => d.name.startsWith('Q'))
+        .sort((a, b) => a.sortOrder - b.sortOrder);
+      return {
+        min: qDifficulties[0]?.sortOrder,
+        max: qDifficulties[qDifficulties.length - 1]?.sortOrder
+      };
+    }
+    return { min: 0, max: 0 };
+  };
+
+  const { min, max } = getMinMax();
+  
+  // Convert values to sortOrder values if they're difficulty names
+  const convertToSortOrders = React.useCallback((vals) => {
+    if (!vals || vals.length === 0) return [min, min];
+    
+    // Check if the first value is a string (difficulty name) or number (sortOrder)
+    const isDifficultyNames = typeof vals[0] === 'string';
+    
+    if (isDifficultyNames) {
+      // Convert difficulty names to sortOrder values
+      return vals.map(name => {
+        const diff = difficulties.find(d => d.name === name);
+        return diff ? diff.sortOrder : min;
+      });
+    } else {
+      // Already sortOrder values
+      return vals;
+    }
+  }, [difficulties, min]);
+
+  // Ensure values is always an array with at least two elements
+  const safeValues = React.useMemo(() => {
+    const sortOrderValues = convertToSortOrders(values);
+    
+    if (sortOrderValues.length === 0) {
+      // If no values provided, use min for both
+      return [min, min];
+    } else if (sortOrderValues.length === 1) {
+      // If only one value, duplicate it
+      return [sortOrderValues[0], sortOrderValues[0]];
+    } else {
+      // If two or more values, use first two
+      return [sortOrderValues[0], sortOrderValues[1]];
+    }
+  }, [values, min, convertToSortOrders]);
+
   // Find the current difficulties based on the values
-  const [minDiff, maxDiff] = values.map(value => 
+  const [minDiff, maxDiff] = safeValues.map(value => 
     difficulties.find(d => d.sortOrder === value)
   );
   
   // Calculate background gradient based on surrounding difficulties
   const getSliderBackground = (selectedRange = false) => {
-    const sortedDiffs = difficulties
-      .filter(d => d.type === 'PGU')
-      .sort((a, b) => a.sortOrder - b.sortOrder);
-    
+    let sortedDiffs;
+    if (mode === "pgu") {
+      sortedDiffs = difficulties
+        .filter(d => d.type === 'PGU')
+        .sort((a, b) => a.sortOrder - b.sortOrder);
+    }
+    else if (mode === "q") {
+      sortedDiffs = difficulties
+        .filter(d => d.name.startsWith('Q'))
+        .sort((a, b) => a.sortOrder - b.sortOrder);
+    }
+    else {
+      sortedDiffs = difficulties
+        .sort((a, b) => a.sortOrder - b.sortOrder);
+    }
     if (!selectedRange) {
       // Full gradient for the track
       const gradientStops = sortedDiffs.map(diff => {
@@ -34,7 +103,7 @@ const DifficultySlider = ({
       return `linear-gradient(to right, ${gradientStops.join(', ')})`;
     } else {
       // Partial gradient for the selected range
-      const [rangeMin, rangeMax] = [Math.min(...values), Math.max(...values)];
+      const [rangeMin, rangeMax] = [Math.min(...safeValues), Math.max(...safeValues)];
       const rangeWidth = rangeMax - rangeMin;
       
       // Filter and adjust difficulties within the selected range
@@ -63,8 +132,8 @@ const DifficultySlider = ({
   };
 
   // Calculate the range highlight position and width
-  const rangeLeft = ((Math.min(...values) - min) / (max - min)) * 100;
-  const rangeWidth = ((Math.max(...values) - Math.min(...values)) / (max - min)) * 100;
+  const rangeLeft = ((Math.min(...safeValues) - min) / (max - min)) * 100;
+  const rangeWidth = ((Math.max(...safeValues) - Math.min(...safeValues)) / (max - min)) * 100;
 
   // Handle pointer move during drag (works for both mouse and touch)
   const handlePointerMove = useCallback((e) => {
@@ -78,26 +147,43 @@ const DifficultySlider = ({
     const valueMoved = Math.round((pixelMoved / pixelRange) * valueRange);
     const newValue = Math.max(min, Math.min(max, dragStartValue + valueMoved));
 
-    const newValues = [...values];
+    const newValues = [...safeValues];
     newValues[activeKnob] = newValue;
     onChange(newValues);
-  }, [isDragging, activeKnob, dragStartX, dragStartValue, min, max, values, onChange]);
+  }, [isDragging, activeKnob, dragStartX, dragStartValue, min, max, safeValues, onChange]);
 
   // Handle pointer up (works for both mouse and touch)
   const handlePointerUp = useCallback(() => {
     if (isDragging) {
       const newValues = [
-        Math.min(values[0], values[1]),
-        Math.max(values[0], values[1])
+        Math.min(safeValues[0], safeValues[1]),
+        Math.max(safeValues[0], safeValues[1])
       ];
-      onChange(newValues);
-      onChangeComplete?.(newValues);
+      
+      if (mode === "q") {
+        // For Q mode, return all Q difficulties within the range
+        const qDifficulties = difficulties
+          .filter(d => d.name.startsWith('Q'))
+          .filter(d => d.sortOrder >= newValues[0] && d.sortOrder <= newValues[1])
+          .map(d => d.name);
+        
+        // First call onChange with the sortOrder values to update the slider position
+        onChange(newValues);
+        
+        // Then call onChangeComplete with the difficulty names for the API request
+
+        onChangeComplete?.(qDifficulties);
+      } else {
+        onChange(newValues);
+        onChangeComplete?.(newValues);
+      }
+      
       setIsDragging(false);
       setActiveKnob(null);
       setDragStartX(null);
       setDragStartValue(null);
     }
-  }, [isDragging, values, onChange, onChangeComplete]);
+  }, [isDragging, safeValues, onChange, onChangeComplete, mode, difficulties]);
 
   // Add and remove event listeners
   useEffect(() => {
@@ -126,15 +212,30 @@ const DifficultySlider = ({
     const clickedValue = Math.round(Math.min(Math.max(min, min + (max - min) * percentage), max));
 
     // Find which knob is closer to the clicked position
-    const distanceToFirst = Math.abs(values[0] - clickedValue);
-    const distanceToSecond = Math.abs(values[1] - clickedValue);
+    const distanceToFirst = Math.abs(safeValues[0] - clickedValue);
+    const distanceToSecond = Math.abs(safeValues[1] - clickedValue);
     const closerKnobIndex = distanceToFirst <= distanceToSecond ? 0 : 1;
 
-    const newValues = [...values];
+    const newValues = [...safeValues];
     newValues[closerKnobIndex] = clickedValue;
-    onChange(newValues);
-    onChangeComplete?.(newValues);
-  }, [isDragging, values, onChange, onChangeComplete, min, max]);
+    
+    if (mode === "q") {
+      // For Q mode, return all Q difficulties within the range
+      const qDifficulties = difficulties
+        .filter(d => d.name.startsWith('Q'))
+        .filter(d => d.sortOrder >= Math.min(...newValues) && d.sortOrder <= Math.max(...newValues))
+        .map(d => d.name);
+      
+      // First call onChange with the sortOrder values to update the slider position
+      onChange(newValues);
+      
+      // Then call onChangeComplete with the difficulty names for the API request
+      onChangeComplete?.(qDifficulties);
+    } else {
+      onChange(newValues);
+      onChangeComplete?.(newValues);
+    }
+  }, [isDragging, safeValues, onChange, onChangeComplete, min, max, mode, difficulties]);
 
   // Handle drag/touch start
   const handleDragStart = useCallback((index, e) => {
@@ -143,8 +244,8 @@ const DifficultySlider = ({
     setActiveKnob(index);
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     setDragStartX(clientX);
-    setDragStartValue(values[index]);
-  }, [values]);
+    setDragStartValue(safeValues[index]);
+  }, [safeValues]);
 
   // Prevent default drag behavior
   const preventDrag = (e) => {
@@ -161,6 +262,9 @@ const DifficultySlider = ({
         return "#FFFFFF";
       }
     }
+    if (!/^Q2$/.test(diff.name)) {
+      return "#FFFFFF";
+    }
     return diff.color;
   }
 
@@ -171,7 +275,7 @@ const DifficultySlider = ({
   return (
     <div className="difficulty-slider-container">
       <div className="difficulty-display">
-        <div className="difficulty-value" style={{ left: `${((values[0] - min) / (max - min)) * 100}%` }}>
+        <div className="difficulty-value" style={{ left: `${((safeValues[0] - min) / (max - min)) * 100}%` }}>
           <span 
             className="difficulty-name" 
             style={{ 
@@ -183,7 +287,7 @@ const DifficultySlider = ({
             {minDiff?.name}
           </span>
         </div>
-        <div className="difficulty-value" style={{ left: `${((values[1] - min) / (max - min)) * 100}%` }}>
+        <div className="difficulty-value" style={{ left: `${((safeValues[1] - min) / (max - min)) * 100}%` }}>
           <span 
             className="difficulty-name" 
             style={{ 
@@ -218,7 +322,7 @@ const DifficultySlider = ({
         <div className="slider-knobs">
           <div 
             className="knob-container" 
-            style={{ left: `${((values[0] - min) / (max - min)) * 100}%` }}
+            style={{ left: `${((safeValues[0] - min) / (max - min)) * 100}%` }}
             onMouseDown={(e) => handleDragStart(0, e)}
             onTouchStart={(e) => handleDragStart(0, e)}
           >
@@ -234,7 +338,7 @@ const DifficultySlider = ({
           </div>
           <div 
             className="knob-container" 
-            style={{ left: `${((values[1] - min) / (max - min)) * 100}%` }}
+            style={{ left: `${((safeValues[1] - min) / (max - min)) * 100}%` }}
             onMouseDown={(e) => handleDragStart(1, e)}
             onTouchStart={(e) => handleDragStart(1, e)}
           >

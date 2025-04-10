@@ -12,14 +12,17 @@ const GROUP_ORDER = {
 const SpecialDifficulties = ({ 
   difficulties, 
   selectedDiffs, 
-  onToggle 
+  onToggle,
+  disableQuantum = false 
 }) => {
   const { t } = useTranslation('components');
   const tDiff = (key, params = {}) => t(`difficulties.special.${key}`, params);
 
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
-
+  const filteredDifficulties = disableQuantum 
+    ? difficulties.filter(diff => !diff.name.startsWith('Q'))
+    : difficulties;
   // Handle click/touch outside to close dropdown
   useEffect(() => {
     const handleOutsideEvent = (event) => {
@@ -40,7 +43,7 @@ const SpecialDifficulties = ({
   }, [isOpen]);
 
   // Group difficulties by type with ordering
-  const difficultyGroups = difficulties.reduce((groups, diff) => {
+  const difficultyGroups = filteredDifficulties.reduce((groups, diff) => {
     let group;
     if (diff.name.startsWith('Q')) {
       group = 'Quantum';
@@ -61,13 +64,13 @@ const SpecialDifficulties = ({
   // Handle select/deselect all
   const handleSelectAll = () => {
     if (selectedDiffs.length > 0) {
-      difficulties.forEach(diff => {
+      filteredDifficulties.forEach(diff => {
         if (selectedDiffs.includes(diff.name)) {
           onToggle(diff.name);
         }
       });
     } else {
-      difficulties.forEach(diff => {
+      filteredDifficulties.forEach(diff => {
         if (!selectedDiffs.includes(diff.name)) {
           onToggle(diff.name);
         }

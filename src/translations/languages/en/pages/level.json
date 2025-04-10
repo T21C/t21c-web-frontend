@@ -23,7 +23,8 @@
     "diffDesc": "Sort by hardest first",
     "clearsAsc": "Sort by least clears first",
     "clearsDesc": "Sort by most clears first",
-    "random": "Random sort"
+    "random": "Random sort",
+    "toggleQSlider": "Toggle Q Difficulty Slider"
   },
   "settingExp": {
     "headerFilter": "Filter Settings",

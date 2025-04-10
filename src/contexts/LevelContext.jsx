@@ -7,9 +7,8 @@ const LevelContextProvider = (props) => {
 
     const { difficulties } = useDifficultyContext();
 
-    useEffect(() => {
-        setSliderRange([1, difficulties.find(d => d.name === "U20")?.sortOrder || 60]);
-    }, [difficulties]);
+
+
 
     const [levelsData, setLevelsData] = useState([])
     const [legacyDiff, setLegacyDiff] = useState(false);
@@ -25,7 +24,31 @@ const LevelContextProvider = (props) => {
     const [deletedFilter, setDeletedFilter] = useState("hide");
     const [clearedFilter, setClearedFilter] = useState("show");
     const [sliderRange, setSliderRange] = useState([1, 60]);
+    const [sliderQRange, setSliderQRange] = useState(["Q1", "Q1"]);
+    const [sliderQRangeDrag, setSliderQRangeDrag] = useState([1, 1]);
     const [selectedSpecialDiffs, setSelectedSpecialDiffs] = useState([]);
+    const [qSliderVisible, setQSliderVisible] = useState(false);
+
+    useEffect(() => {
+        // Initialize with full PGU range
+        setSliderRange([1, difficulties.find(d => d.name === "U20")?.sortOrder || 60]);
+        
+        // Initialize Q range with first and last Q difficulty
+        const qDifficulties = difficulties
+            .filter(d => d.name.startsWith('Q'))
+            .sort((a, b) => a.sortOrder - b.sortOrder);
+            
+        if (qDifficulties.length > 0) {
+            const firstQ = qDifficulties[0].name;
+            const lastQ = qDifficulties[qDifficulties.length - 1].name;
+            setSliderQRange([firstQ, lastQ]);
+            setSliderQRangeDrag([qDifficulties[0].sortOrder, qDifficulties[qDifficulties.length - 1].sortOrder]);
+        } else {
+            // Fallback if no Q difficulties exist
+            setSliderQRange(["Q1", "Q1"]);
+            setSliderQRangeDrag([1, 1]);
+        }
+    }, [difficulties]);
 
     return (
         <LevelContext.Provider 
@@ -42,9 +65,11 @@ const LevelContextProvider = (props) => {
                 pageNumber, setPageNumber,
                 deletedFilter, setDeletedFilter,
                 clearedFilter, setClearedFilter,
-                // Add new states to context value
                 sliderRange, setSliderRange,
-                selectedSpecialDiffs, setSelectedSpecialDiffs
+                sliderQRange, setSliderQRange,
+                sliderQRangeDrag, setSliderQRangeDrag,
+                selectedSpecialDiffs, setSelectedSpecialDiffs,
+                qSliderVisible, setQSliderVisible
             }}
         >
             {props.children}

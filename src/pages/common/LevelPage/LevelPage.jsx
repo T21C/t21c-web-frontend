@@ -60,7 +60,13 @@ const LevelPage = () => {
     sliderRange,
     setSliderRange,
     selectedSpecialDiffs,
-    setSelectedSpecialDiffs
+    sliderQRange,
+    setSliderQRange,
+    sliderQRangeDrag,
+    setSliderQRangeDrag,
+    setSelectedSpecialDiffs,
+    qSliderVisible,
+    setQSliderVisible
   } = useContext(LevelContext);
 
   const [showHelpPopup, setShowHelpPopup] = useState(false);
@@ -69,6 +75,7 @@ const LevelPage = () => {
 
   // Filter difficulties by type
   const pguDifficulties = difficulties.filter(d => d.type === 'PGU').sort((a, b) => a.sortOrder - b.sortOrder);
+  const qDifficulties = difficulties.filter(d => d.name.startsWith('Q')).sort((a, b) => a.sortOrder - b.sortOrder);
   const specialDifficulties = difficulties.filter(d => d.type === 'SPECIAL');
 
   // Handle slider value updates without triggering immediate fetches
@@ -85,9 +92,83 @@ const LevelPage = () => {
     setSelectedHighFilterDiff(highDiff?.name || "U20"); // Fallback to U20
   }
 
+  function handleSliderQChange(newRange) {
+    // If newRange is a list of difficulty names, keep it as is
+    if (newRange && newRange.length > 0 && typeof newRange[0] === 'string') {
+      // For display purposes, convert to sortOrder values
+      const sortOrderValues = newRange.map(name => {
+        const diff = difficulties.find(d => d.name === name);
+        return diff ? diff.sortOrder : 1;
+      });
+      
+      // Ensure we have at least two values for the slider display
+      if (sortOrderValues.length === 1) {
+        setSliderQRangeDrag([sortOrderValues[0], sortOrderValues[0]]);
+      } else {
+        setSliderQRangeDrag([sortOrderValues[0], sortOrderValues[sortOrderValues.length - 1]]);
+      }
+    } else if (newRange && newRange.length === 2) {
+      // Already sortOrder values
+      setSliderQRangeDrag(newRange);
+    } else if (newRange && newRange.length === 1) {
+      // If we only have one value, duplicate it
+      setSliderQRangeDrag([newRange[0], newRange[0]]);
+    } else {
+      // If we have no values, use the first Q difficulty
+      const firstQ = qDifficulties[0]?.sortOrder || 1;
+      setSliderQRangeDrag([firstQ, firstQ]);
+    }
+  }
+
+  const handleSliderQChangeComplete = useCallback((newRange) => {
+    // If newRange is a list of difficulty names, keep it as is
+    if (newRange && newRange.length > 0 && typeof newRange[0] === 'string') {
+      // Keep the list of difficulty names
+      setSliderQRange(newRange);
+      
+      // For display purposes, convert to sortOrder values
+      const sortOrderValues = newRange.map(name => {
+        const diff = difficulties.find(d => d.name === name);
+        return diff ? diff.sortOrder : 1;
+      });
+      
+      // Ensure we have at least two values for the slider display
+      if (sortOrderValues.length === 1) {
+        setSliderQRangeDrag([sortOrderValues[0], sortOrderValues[0]]);
+      } else {
+        setSliderQRangeDrag([sortOrderValues[0], sortOrderValues[sortOrderValues.length - 1]]);
+      }
+    } else if (newRange && newRange.length === 2) {
+      // If we received sortOrder values, convert them to difficulty names
+      const difficultyNames = newRange.map(sortOrder => {
+        const diff = difficulties.find(d => d.sortOrder === sortOrder);
+        return diff ? diff.name : "Q1";
+      });
+      
+      setSliderQRange(difficultyNames);
+      setSliderQRangeDrag(newRange);
+    } else if (newRange && newRange.length === 1) {
+      // If we only have one value, duplicate it
+      const diff = difficulties.find(d => d.sortOrder === newRange[0]);
+      const diffName = diff ? diff.name : "Q1";
+      setSliderQRange([diffName, diffName]);
+      setSliderQRangeDrag([newRange[0], newRange[0]]);
+    } else {
+      // If we have no values, use the first Q difficulty
+      const firstQ = qDifficulties[0]?.name || "Q1";
+      setSliderQRange([firstQ, firstQ]);
+      setSliderQRangeDrag([qDifficulties[0]?.sortOrder || 1, qDifficulties[0]?.sortOrder || 1]);
+    }
+    
+    // Only reset page and trigger fetch when dragging is complete
+    setPageNumber(0);
+    setLevelsData([]);
+    setForceUpdate(f => !f);
+  }, [qDifficulties, difficulties]);
+
   // Handle slider changes complete (after drag or click)
   const handleSliderChangeComplete = useCallback((newRange) => {
-    // Don't call handleSliderChange here, do the logic directly
+     // Don't call handleSliderChange here, do the logic directly
     setSliderRange(newRange);
     
     // Find difficulties corresponding to slider values
@@ -103,7 +184,7 @@ const LevelPage = () => {
     setPageNumber(0);
     setLevelsData([]);
     setForceUpdate(f => !f);
-  }, [pguDifficulties]); // Add pguDifficulties to dependencies
+  }, [pguDifficulties]);
 
   function toggleSpecialDifficulty(diffName) {
     setSelectedSpecialDiffs(prev => {
@@ -130,7 +211,6 @@ const LevelPage = () => {
     const fetchLevels = async () => {
       setLoading(true);
       try {
-
         // Query parameters for pagination and basic filtering
         const params = {
           limit,
@@ -141,15 +221,25 @@ const LevelPage = () => {
           clearedFilter
         };
 
+        // Get all special difficulties from the slider range
+
+
+        // Combine slider special diffs with manually selected ones
+        const allSpecialDiffs = qSliderVisible
+        ? [...new Set([...sliderQRange, ...selectedSpecialDiffs])]
+        : [...new Set([...selectedSpecialDiffs])];
+
+        console.log(`allSpecialDiffs:`, allSpecialDiffs);
+
         // Request body for difficulty filtering
         const requestBody = {
           pguRange: {
             from: selectedLowFilterDiff,
             to: selectedHighFilterDiff
-          },
-          specialDifficulties: selectedSpecialDiffs
+          }, // Add Q difficulties to the request
+          specialDifficulties: allSpecialDiffs // Use combined special difficulties
         };
-
+        
         const response = await api.post(
           `${import.meta.env.VITE_LEVELS}/filter`,
           requestBody,
@@ -158,7 +248,6 @@ const LevelPage = () => {
             cancelToken: new axios.CancelToken((c) => (cancel = c)),
           }
         );
-
 
         const newLevels = response.data.results;
         
@@ -211,11 +300,7 @@ const LevelPage = () => {
       fetchLevels();
     }
     return () => cancel && cancel();
-  }, [query, sort, pageNumber, forceUpdate, deletedFilter]);
-
-  function toggleLegacyDiff() {
-    setLegacyDiff(!legacyDiff);
-  }
+  }, [query, sort, pageNumber, forceUpdate, deletedFilter, sliderQRange, qSliderVisible]);
 
   function handleFilterOpen() {
     setFilterOpen(!filterOpen);
@@ -241,6 +326,18 @@ const LevelPage = () => {
     setSelectedLowFilterDiff("P1");
     setSelectedHighFilterDiff("U20");
     setSliderRange([1, difficulties.find(d => d.name === "U20").sortOrder]);
+    
+    // Reset Q range to first and last Q difficulty
+    if (qDifficulties.length > 0) {
+      const firstQ = qDifficulties[0].name;
+      const lastQ = qDifficulties[qDifficulties.length - 1].name;
+      setSliderQRange([firstQ, lastQ]);
+      setSliderQRangeDrag([qDifficulties[0].sortOrder, qDifficulties[qDifficulties.length - 1].sortOrder]);
+    } else {
+      setSliderQRange(["Q1", "Q1"]);
+      setSliderQRangeDrag([1, 1]);
+    }
+    
     // Reset special difficulties
     setSelectedSpecialDiffs([]);
     // Reset filters
@@ -374,17 +471,23 @@ const LevelPage = () => {
                   values={sliderRange}
                   onChange={handleSliderChange}
                   onChangeComplete={handleSliderChangeComplete}
-                  difficulties={pguDifficulties}
-                  min={1}
-                  max={60}
+                  mode="pgu"
                 />
               </div>
-              
+              <div className={`q-slider-wrapper ${qSliderVisible ? 'visible' : 'hidden'}`}>
+                <DifficultySlider
+                  values={sliderQRangeDrag}
+                  onChange={handleSliderQChange}
+                  onChangeComplete={handleSliderQChangeComplete}
+                  mode="q"
+                />
+              </div>
               <div className="filter-row">
                 <SpecialDifficulties
                   difficulties={specialDifficulties}
                   selectedDiffs={selectedSpecialDiffs}
                   onToggle={toggleSpecialDifficulty}
+                  disableQuantum={true}
                 />
                 <StateDisplay
                   currentState={clearedFilter}
@@ -392,7 +495,7 @@ const LevelPage = () => {
                     setClearedFilter(newState);
                     setPageNumber(0);
                     setLevelsData([]);
-                    setForceUpdate(prev => !prev);
+                    setForceUpdate(f => !f);
                   }}
                   label={tLevel('settingExp.clearedLevels')}
                   states={['show', 'hide', 'only']}
@@ -404,14 +507,29 @@ const LevelPage = () => {
                       setDeletedFilter(newState);
                       setPageNumber(0);
                       setLevelsData([]);
-                      setForceUpdate(prev => !prev);
+                      setForceUpdate(f => !f);
                     }}
                     label={tLevel('settingExp.deletedLevels')}
                     states={['show', 'hide', 'only']}
                   />
                 )}
+                <button 
+                  className={`q-toggle-button ${qSliderVisible ? 'active' : ''}`}
+                  onClick={() => {
+                    setQSliderVisible(!qSliderVisible);
+                    setPageNumber(0);
+                    setLevelsData([]);
+                    setForceUpdate(f => !f);
+                  }}
+                  title={tLevel('toolTip.toggleQSlider')}
+                  data-tooltip-id="q-toggle"
+                >
+                  <img src={difficulties.find(d => d.name === "Qq").icon} alt="Q Slider" />
+                </button>
+                <Tooltip id="q-toggle" place="bottom" noArrow>
+                  {tLevel('toolTip.toggleQSlider')}
+                </Tooltip>
               </div>
-
 
             </div>
           </div>

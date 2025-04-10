@@ -2,8 +2,8 @@
   width: 100%;
   padding: 0rem 1rem;
   position: relative;
-  user-select: none;
   -webkit-user-select: none;
+  user-select: none;
   touch-action: none;
 }
 
@@ -59,9 +59,8 @@
   transition: all 0.2s ease;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
   pointer-events: none;
-  user-select: none;
   -webkit-user-select: none;
-  -webkit-user-drag: none;
+  user-select: none;
 }
 
 .difficulty-slider-container .knob-container:hover .difficulty-icon.knob {
