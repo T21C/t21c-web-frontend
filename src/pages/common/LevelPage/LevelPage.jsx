@@ -122,44 +122,25 @@ const LevelPage = () => {
 
   const handleSliderQChangeComplete = useCallback((newRange) => {
     // If newRange is a list of difficulty names, keep it as is
-    if (newRange && newRange.length > 0 && typeof newRange[0] === 'string') {
-      // Keep the list of difficulty names
-      setSliderQRange(newRange);
-      
-      // For display purposes, convert to sortOrder values
-      const sortOrderValues = newRange.map(name => {
-        const diff = difficulties.find(d => d.name === name);
-        return diff ? diff.sortOrder : 1;
-      });
-      
-      // Ensure we have at least two values for the slider display
-      if (sortOrderValues.length === 1) {
-        setSliderQRangeDrag([sortOrderValues[0], sortOrderValues[0]]);
-      } else {
-        setSliderQRangeDrag([sortOrderValues[0], sortOrderValues[sortOrderValues.length - 1]]);
-      }
-    } else if (newRange && newRange.length === 2) {
-      // If we received sortOrder values, convert them to difficulty names
-      const difficultyNames = newRange.map(sortOrder => {
-        const diff = difficulties.find(d => d.sortOrder === sortOrder);
-        return diff ? diff.name : "Q1";
-      });
-      
-      setSliderQRange(difficultyNames);
-      setSliderQRangeDrag(newRange);
-    } else if (newRange && newRange.length === 1) {
-      // If we only have one value, duplicate it
-      const diff = difficulties.find(d => d.sortOrder === newRange[0]);
-      const diffName = diff ? diff.name : "Q1";
-      setSliderQRange([diffName, diffName]);
-      setSliderQRangeDrag([newRange[0], newRange[0]]);
-    } else {
-      // If we have no values, use the first Q difficulty
-      const firstQ = qDifficulties[0]?.name || "Q1";
-      setSliderQRange([firstQ, firstQ]);
-      setSliderQRangeDrag([qDifficulties[0]?.sortOrder || 1, qDifficulties[0]?.sortOrder || 1]);
+    // newrange = ["Q1", "Q2", "Q3"]
+
+    if (!newRange) {
+      setSliderQRange(qDifficulties);
+      setSliderQRangeDrag([qDifficulties[0]?.sortOrder || 1, qDifficulties[qDifficulties.length - 1]?.sortOrder || 1]);
+      return;
     }
+    // Keep the list of difficulty names
     
+    // For display purposes, convert to sortOrder values
+    const sortOrderValues = newRange.map(name => {
+      const diff = difficulties.find(d => d.name === name);
+      return diff ? diff.sortOrder : 1;
+    }).sort((a, b) => a - b);
+    
+    setSliderQRangeDrag([sortOrderValues[0], sortOrderValues[sortOrderValues.length - 1]]);
+    setSliderQRange(newRange);
+    console.log(`sortOrderValues:`, sortOrderValues);
+    console.log(`newRange:`, newRange);
     // Only reset page and trigger fetch when dragging is complete
     setPageNumber(0);
     setLevelsData([]);

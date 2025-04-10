@@ -24,7 +24,7 @@ const LevelContextProvider = (props) => {
     const [deletedFilter, setDeletedFilter] = useState("hide");
     const [clearedFilter, setClearedFilter] = useState("show");
     const [sliderRange, setSliderRange] = useState([1, 60]);
-    const [sliderQRange, setSliderQRange] = useState(["Q1", "Q1"]);
+    const [sliderQRange, setSliderQRange] = useState(["Qq"]);
     const [sliderQRangeDrag, setSliderQRangeDrag] = useState([1, 1]);
     const [selectedSpecialDiffs, setSelectedSpecialDiffs] = useState([]);
     const [qSliderVisible, setQSliderVisible] = useState(false);
@@ -39,13 +39,11 @@ const LevelContextProvider = (props) => {
             .sort((a, b) => a.sortOrder - b.sortOrder);
             
         if (qDifficulties.length > 0) {
-            const firstQ = qDifficulties[0].name;
-            const lastQ = qDifficulties[qDifficulties.length - 1].name;
-            setSliderQRange([firstQ, lastQ]);
+            setSliderQRange(qDifficulties);
             setSliderQRangeDrag([qDifficulties[0].sortOrder, qDifficulties[qDifficulties.length - 1].sortOrder]);
         } else {
             // Fallback if no Q difficulties exist
-            setSliderQRange(["Q1", "Q1"]);
+            setSliderQRange([]);
             setSliderQRangeDrag([1, 1]);
         }
     }, [difficulties]);
