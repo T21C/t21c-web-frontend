@@ -30,7 +30,6 @@ const CallbackPage = () => {
       const linking = urlParams.get('linking') === 'true';
       setIsLinking(linking);
       const provider = urlParams.get('provider') || 'discord';
-      console.log(urlParams.get('linking'));
       if (error) {
         setError('Authentication failed');
         setLoading(false);
@@ -46,7 +45,7 @@ const CallbackPage = () => {
       try {
         // Handle login flow
         const link = linking ? `/v2/auth/oauth/link/${provider}` : `/v2/auth/oauth/callback/${provider}`;
-        console.log(link);
+
         const response = await axios.post(
           `${import.meta.env.VITE_API_URL}${link}`,
           { 

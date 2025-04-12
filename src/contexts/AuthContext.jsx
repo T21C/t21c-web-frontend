@@ -133,20 +133,17 @@ export const AuthProvider = ({ children }) => {
 
   const linkProvider = async (provider) => {
     try {
-      console.log('Initiating provider linking:', provider);
       
       if (provider !== 'discord') {
         console.error('Unsupported provider:', provider);
         throw new Error('Unsupported provider');
       }
 
-      console.log('Getting authorization URL from server');
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/v2/auth/oauth/link/${provider}`
       );
       
       const { url } = response.data;
-      console.log('Received authorization URL:', url);
 
       // Open Discord auth in a new window
       window.location.href = response.data.url;
