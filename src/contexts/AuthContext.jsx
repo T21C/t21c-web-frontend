@@ -86,7 +86,28 @@ export const AuthProvider = ({ children }) => {
   };
 
   const register = async (userData) => {
-    await axios.post(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_REGISTER}`, userData);
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_REGISTER}`, userData);
+      
+      // If registration is successful and we get a token, update the auth state
+      if (response.data.token) {
+        updateToken(response.data.token);
+        await fetchUser();
+      }
+      
+      return response.data;
+    } catch (error) {
+      // Create a structured error object with all relevant information
+      const errorData = {
+        message: error.response?.data?.message || 'Registration failed',
+        retryAfter: error.response?.data?.retryAfter,
+        status: error.response?.status,
+        data: error.response?.data
+      };
+      
+      // Throw the structured error object
+      throw errorData;
+    }
   };
 
   const logout = () => {
@@ -103,23 +124,42 @@ export const AuthProvider = ({ children }) => {
       window.location.href = response.data.url;
     } catch (error) {
       console.error('Discord login error:', error);
+      if (error.response) {
+        console.error('Server response:', error.response.data);
+      }
       throw error;
     }
   };
 
-  const linkDiscord = async () => {
+  const linkProvider = async (provider) => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_LINK_PROVIDER}/discord`);
+      console.log('Initiating provider linking:', provider);
+      
+      if (provider !== 'discord') {
+        console.error('Unsupported provider:', provider);
+        throw new Error('Unsupported provider');
+      }
+
+      console.log('Getting authorization URL from server');
+      const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/v2/auth/oauth/link/${provider}`
+      );
+      
+      const { url } = response.data;
+      console.log('Received authorization URL:', url);
+
+      // Open Discord auth in a new window
       window.location.href = response.data.url;
+      
     } catch (error) {
-      console.error('Discord linking error:', error);
+      console.error('Error linking provider:', error);
       throw error;
     }
   };
 
   const unlinkProvider = async (provider) => {
     try {
-      await axios.post(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_UNLINK_PROVIDER}/${provider}`);
+      await axios.post(`${import.meta.env.VITE_API_URL}/v2/auth/oauth/unlink/${provider}`);
       await fetchUser();
     } catch (error) {
       console.error('Provider unlinking error:', error);
@@ -147,6 +187,25 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const verifyEmail = async (token) => {
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_VERIFY_EMAIL}`, { token });
+      await fetchUser();
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Failed to verify email');
+    }
+  };
+
+  const resendVerification = async (email) => {
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_RESEND_VERIFICATION}`, { email });
+      return response.data;
+    } catch (error) {
+      throw new Error(error.response?.data?.message || 'Failed to resend verification email');
+    }
+  };
+
   const value = {
     user,
     isAuthenticated: !!user,
@@ -155,12 +214,14 @@ export const AuthProvider = ({ children }) => {
     register,
     logout,
     loginWithDiscord,
-    linkDiscord,
+    linkProvider,
     unlinkProvider,
     fetchUser,
     updateProfile,
     changePassword,
-    updateToken
+    updateToken,
+    verifyEmail,
+    resendVerification
   };
 
   return (

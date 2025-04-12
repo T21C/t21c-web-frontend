@@ -364,3 +364,35 @@
   }
 }
 
+.email-verification-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #ff4444;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 4px;
+  margin-top: 16px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.email-verification-banner:hover {
+  background-color: #ff6666;
+}
+
+.email-verification-text {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.email-verification-arrow {
+  font-size: 16px;
+  transition: transform 0.2s ease;
+}
+
+.email-verification-banner:hover .email-verification-arrow {
+  transform: translateX(4px);
+}
+

@@ -38,7 +38,7 @@ const ScoreCard = ({scoreData, topScores}) => {
       </div>
       <div className="acc-wrapper">
           <p className="score-exp">{tScore('labels.accuracy')}</p>
-          <div className="score-desc">{(scoreData.accuracy*100).toFixed(2)}%</div>
+          <div className={`score-desc ${scoreData.accuracy == 1 ? 'pure-perfect' : ''}`}>{(scoreData.accuracy*100).toFixed(2)}%</div>
       </div>
 
       <div className="speed-wrapper">

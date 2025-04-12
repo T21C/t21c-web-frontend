@@ -4,6 +4,7 @@ import './editProfilePage.css';
 import { CompleteNav } from '@/components/layout';
 import { DiscordIcon, UnlinkIcon } from '@/components/common/icons';
 import { Tooltip } from 'react-tooltip';
+import { useNavigate } from 'react-router-dom';
 
 const ProviderIcon = ({ provider, size, color="#fff" }) => {
   switch(provider) {
@@ -29,6 +30,7 @@ const EditProfilePage = () => {
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const hasNoPassword = user?.password === null;
   const isLastProvider = user?.providers?.length === 1;
+  const navigate = useNavigate();
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -83,10 +85,12 @@ const EditProfilePage = () => {
 
   const handleProviderLink = async (provider) => {
     try {
+      setError('');
+      setSuccess('');
       await linkProvider(provider);
       setSuccess(`${provider} account linked successfully!`);
     } catch (err) {
-      setError(err.message || `Failed to link ${provider} account`);
+      setError(err.response?.data?.error || `Failed to link ${provider} account`);
     }
   };
 
@@ -147,6 +151,12 @@ const EditProfilePage = () => {
               readOnly
               className="readonly"
             />
+            {user && !user.isEmailVerified && (
+              <div className="email-verification-message" onClick={() => navigate('/profile/verify-email')}>
+                <span className="email-verification-text">You need to verify your email</span>
+                <span className="email-verification-arrow">→</span>
+              </div>
+            )}
           </div>
 
           <button type="submit" className="save-button">
@@ -262,19 +272,9 @@ const EditProfilePage = () => {
                 )}
               </div>
               <div className="unlink-container">
-                {isLastProvider && (
-                  <span 
-                    className="unlink-warning"
-                    data-tooltip-id="unlink-tooltip"
-                    data-tooltip-content="Cannot remove last authentication provider"
-                  >
-                    ⚠️
-                  </span>
-                )}
                  <button
-                  className={`unlink-button ${isLastProvider ? 'disabled' : ''}`}
-                  onClick={() => !isLastProvider && handleProviderUnlink('discord')}
-                  disabled={isLastProvider}
+                  className={`unlink-button`}
+                    onClick={() => handleProviderUnlink('discord')}
                 >
                   Unlink
                   <UnlinkIcon color="#fff" size={"24px"} />

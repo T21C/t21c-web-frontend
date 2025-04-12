@@ -14,6 +14,7 @@
   background-color: #2d2d2d;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  z-index: 1;
 }
 
 .register-page-wrapper .register-container h1 {
@@ -72,6 +73,25 @@
   border-color: #4a9eff;
 }
 
+.register-page-wrapper .username-input {
+  display: flex;
+  gap: 0.5rem;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
+}
+
+.register-page-wrapper .username-tooltip {
+  display: flex;
+  width:fit-content;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.register-page-wrapper .username-tooltip .form-help-text {
+  max-width: 400px;
+}
+
 .register-page-wrapper .register-button,
 .register-page-wrapper .discord-button {
   width: 100%;
@@ -98,7 +118,7 @@
 }
 
 .register-page-wrapper .discord-button:hover {
-  background-color: #4752C4;
+  background-color: #5865F2;
 }
 
 .register-page-wrapper .divider {
@@ -138,13 +158,178 @@
 }
 
 .register-page-wrapper .login-link {
-  color: #4a9eff;
+  color: var(--primary-color);
   text-decoration: none;
-  font-size: 0.875rem;
+  font-size: 0.9rem;
   transition: color 0.2s;
 }
 
 .register-page-wrapper .login-link:hover {
-  color: #3d84d5;
+  color: var(--primary-color-dark);
   text-decoration: underline;
+}
+
+.username-modified-message {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: #f8f9fa;
+  border-left: 4px solid #4a6cf7;
+  border-radius: 4px;
+  color: #333;
+}
+
+.username-modified-message strong {
+  color: #4a6cf7;
+  font-weight: 600;
+}
+
+.form-help-text {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.validation-error {
+  color: #dc3545;
+  font-size: 0.8rem;
+  margin-top: 0.25rem;
+}
+
+.input-error {
+  border-color: #dc3545 !important;
+}
+
+.input-error:focus {
+  box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
+}
+
+.username-tooltip-error {
+  color: #dc3545;
+}
+
+.username-tooltip-error svg {
+  color: #dc3545;
+}
+
+/* Success page styling */
+.register-page .success-container {
+  text-align: center;
+  padding: 2rem;
+  background-color: rgba(39, 174, 96, 0.1);
+  border-radius: 8px;
+  border: 1px solid rgba(39, 174, 96, 0.2);
+  margin-bottom: 1.5rem;
+}
+
+.register-page .success-container h1 {
+  color: #2ecc71;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+}
+
+.register-page .success-message {
+  background-color: rgba(39, 174, 96, 0.1);
+  color: #2ecc71;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+  line-height: 1.5;
+}
+
+.register-page .username-modified-message {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background-color: rgba(74, 108, 247, 0.1);
+  border-left: 4px solid #4a6cf7;
+  border-radius: 4px;
+  color: #333;
+  text-align: left;
+}
+
+.register-page .username-modified-message strong {
+  color: #4a6cf7;
+  font-weight: 600;
+}
+
+.register-page .profile-button {
+  background-color: #4a6cf7;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 1rem;
+  display: inline-block;
+}
+
+.register-page .profile-button:hover {
+  background-color: #3a5ce5;
+}
+
+.register-page .profile-button:active {
+  transform: translateY(1px);
+}
+
+.register-page .success-container {
+  text-align: center;
+  padding: 2rem;
+  border-radius: 8px;
+  margin: 2rem 0;
+}
+
+.register-page .success-message {
+  font-size: 1.1rem;
+  color: #e0e0e0;
+  margin: 1rem 0;
+  line-height: 1.5;
+}
+
+.register-page .username-modified-message {
+  font-size: 1rem;
+  color: #ffd700;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  background-color: rgba(255, 215, 0, 0.1);
+  border-radius: 4px;
+}
+
+.register-page .profile-button {
+  background-color: #4a6cf7;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: 1rem;
+}
+
+.register-page .profile-button:hover {
+  background-color: #3a5ce5;
+  transform: translateY(-1px);
+}
+
+.register-page .profile-button:active {
+  transform: translateY(1px);
+}
+
+.register-page .error-message {
+  background-color: rgba(255, 68, 68, 0.1);
+  color: #ff4444;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.register-page .retry-countdown {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: #ff4444;
+  font-weight: 500;
 }

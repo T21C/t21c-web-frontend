@@ -334,7 +334,7 @@ export const DetailPopup = ({
       setIsInitialLoad(false);
     } catch (error) {
       console.error('[DetailPopup] Save failed:', error);
-      setSaveError(error.message || tRating('errors.saveFailed'));
+      setSaveError(error.response?.data?.error || error.response?.data?.message || error.message || error.error || tRating('errors.saveFailed'));
     } finally {
       setIsSaving(false);
     }

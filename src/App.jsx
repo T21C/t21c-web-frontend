@@ -40,16 +40,13 @@ function App() {
       >
         <Routes>
           {/* Auth Routes */}
-          <Route path="/login" element={<Pages.LoginPage />} />
-          {/*
-          <Route path="/register" element={<RegisterPage />} />
-          <Route path="/verify-email" element={<VerifyEmailPage />} />
-          */}
-          <Route path="/auth/callback" element={<Pages.OAuthCallbackPage />} />
+          <Route path="login" element={<Pages.LoginPage />} />
+          <Route path="register" element={<Pages.RegisterPage />} />
+          <Route path="auth/callback" element={<Pages.OAuthCallbackPage />} />
           
-          <Route path="/profile/edit" element={<PrivateRoute><Pages.EditProfilePage /></PrivateRoute>} />
+          <Route path="profile/edit" element={<PrivateRoute><Pages.EditProfilePage /></PrivateRoute>} />
+          <Route path="profile/verify-email" element={<PrivateRoute><Pages.EmailVerificationPage /></PrivateRoute>} />
           
-          {/* Existing Routes */}
           <Route index path="/" element={
             import.meta.env.VITE_APRIL_FOOLS === "true" ? <Pages.HomePageAprils /> : <Pages.HomePage />
           } />
@@ -73,11 +70,10 @@ function App() {
           <Route path='admin/announcements' element={<PrivateRoute><Pages.AnnouncementPage /></PrivateRoute>} />
           <Route path='admin/backups' element={<PrivateRoute><Pages.BackupPage /></PrivateRoute>} />
           <Route path='admin/difficulties' element={<PrivateRoute><Pages.DifficultyPage /></PrivateRoute>} />
-          <Route path="/admin/creators" element={<PrivateRoute><Pages.CreatorManagementPage /></PrivateRoute>} />
+          <Route path="admin/creators" element={<PrivateRoute><Pages.CreatorManagementPage /></PrivateRoute>} />
           
           <Route path='about' element={<Pages.AboutUsPage />} />
           
-          {/* Fallback Route */}
         </Routes>
       </Suspense>
     </AuthProvider>

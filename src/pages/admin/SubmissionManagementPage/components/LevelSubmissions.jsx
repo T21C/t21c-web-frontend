@@ -7,6 +7,7 @@ import api from "@/utils/api";
 import { ProfileCreationModal } from './ProfileCreationModal';
 import { SubmissionCreatorPopup } from '@/components/popups';
 import { toast } from "react-hot-toast";
+import { WarningIcon } from "@/components/common/icons";
 
 const LevelSubmissions = () => {
   const { t } = useTranslation('components');
@@ -447,6 +448,11 @@ const LevelSubmissions = () => {
                                     {tLevel('badges.newRequest')}
                                   </span>
                                 )}
+                                {!request.creatorId && !request.isNewRequest && (
+                                  <span className="profile-request-unassigned" title={tLevel('badges.unassigned')}>
+                                    <WarningIcon className="warning-icon" color="#f00" />
+                                  </span>
+                                )}
                               </span>
                               <div className="creator-actions">
                                 {/* Show remove button for vfxers or if there's more than one charter */}
@@ -500,6 +506,11 @@ const LevelSubmissions = () => {
                                 {tLevel('badges.newRequest')}
                               </span>
                             )}
+                            {!submission.teamRequestData.teamId && (
+                              <span className="profile-request-badge unassigned" title={tLevel('badges.unassigned')}>
+                                <QuestionmarkCircleIcon className="question-icon" />
+                              </span>
+                            )}
                           </span>
                           <div className="creator-actions">
                             <button
@@ -535,7 +546,8 @@ const LevelSubmissions = () => {
                       className="approve-btn"
                       disabled={disabledButtons[submission.id] || 
                         submission.creatorRequests?.some(r => r.isNewRequest && !r.creatorId) ||
-                        (submission.teamRequestData?.isNewRequest && !submission.teamRequestData.teamId)}
+                        (submission.teamRequestData?.isNewRequest && !submission.teamRequestData.teamId) ||
+                        submission.creatorRequests?.some(r => !r.creatorId)}
                       title={tLevel('errors.needProfiles')}
                     >
                       {tLevel('buttons.allow')}

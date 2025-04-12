@@ -107,7 +107,7 @@
 }
 
 .edit-profile-page .link-button {
-  background-color: #5865F2;
+  background-color: rgb(44, 57, 202);
   color: white;
 }
 
@@ -224,6 +224,10 @@
   justify-content: center;
 }
 
+.link-button > svg {
+  filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
+}
+
 .link-button:hover {
   background-color: #5b6eae;
 }
@@ -254,4 +258,31 @@
 
 .unlink-button.disabled:hover {
   background-color: #666;
+}
+
+.email-verification-message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ff4444;
+  font-size: 14px;
+  margin-top: 8px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.email-verification-message:hover {
+  color: #ff6666;
+}
+
+.email-verification-text {
+  font-weight: 500;
+}
+
+.email-verification-arrow {
+  transition: transform 0.2s ease;
+}
+
+.email-verification-message:hover .email-verification-arrow {
+  transform: translateX(4px);
 }

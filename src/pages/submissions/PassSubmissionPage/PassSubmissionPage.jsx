@@ -445,7 +445,7 @@ const PassSubmissionPage = () => {
       submissionForm.setDetail('isNoHoldTap', form.isNoHold);
       submissionForm.setDetail('is16K', IsUDiff && form.is16K);
 
-      const result = await submissionForm.submit(user.access_token);
+      const result = await submissionForm.submit();
       if (result === "ok") {
         setSuccess(true);
         setForm(initialFormState);
@@ -456,7 +456,7 @@ const PassSubmissionPage = () => {
       }
     } catch (err) {
       console.error("Submission error:", err);
-      setError(err.message || "Unknown error occurred");
+      setError(err.response?.data?.error || err.message || err.error || "Unknown error occurred");
     } finally {
       setSubmission(false);
       setSubmitAttempt(false);

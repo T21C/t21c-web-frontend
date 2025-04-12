@@ -308,7 +308,7 @@ const handleSubmit = async (e) => {
     }
   } catch (err) {
     console.error("Error updating pass:", err);
-    setError(err.response?.data?.error || err.message || "Unknown error occurred");
+    setError(err.response?.data?.error || err.message || err.error || "Unknown error occurred");
   } finally {
     setSubmission(false);
     setSubmitAttempt(false);

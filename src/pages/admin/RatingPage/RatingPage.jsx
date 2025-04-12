@@ -175,8 +175,8 @@ const RatingPage = () => {
           const levelIdCompare = sortOrder === 'ASC' ? levelIdA - levelIdB : levelIdB - levelIdA;
           return levelIdCompare;
         case 'ratings':
-          const ratingCountA = a.details?.length || 0;
-          const ratingCountB = b.details?.length || 0;
+          const ratingCountA = a.details?.filter(detail => !detail.isCommunityRating).length || 0;
+          const ratingCountB = b.details?.filter(detail => !detail.isCommunityRating).length || 0;
           const ratingCompare = sortOrder === 'ASC' 
             ? ratingCountA - ratingCountB
             : ratingCountB - ratingCountA;

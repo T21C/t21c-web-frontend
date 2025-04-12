@@ -16,12 +16,20 @@
 .score-card .score-exp {
   width: -moz-fit-content;
   width: fit-content;
+  overflow:visible;
   font-size: 0.9rem;
   color: var(--color-white-t80);
 }
 .score-card .score-desc {
   font-size: 1.2rem;
 }
+
+.score-card .score-desc.pure-perfect {
+  color: rgb(255, 255, 0);
+  text-shadow: 0 0 10px rgba(255, 255, 0, 0.7);
+  font-weight: 700;
+}
+
 .score-card .score-id {
   color: var(--color-white-t30);
   font-size: 0.6rem;
@@ -34,7 +42,7 @@
 .score-card .score-exp,
 .score-card .score-desc,
 .score-card .score-id {
-  overflow: hidden;
+  overflow: visible;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -59,8 +67,8 @@
   overflow: hidden;
   min-width: 120px;
 }
-.score-card .acc-wrapper {
-  overflow: hidden;
+  .score-card .acc-wrapper {
+    overflow: visible;
   min-width: 80px;
 }
 .score-card .speed-wrapper {

@@ -16,7 +16,10 @@
       "loggingIn": "Logging in...",
       "discordLogin": "Login with Discord"
     },
-    "divider": "or"
+    "divider": "or",
+    "links": {
+      "register": "Don't have an account? Register"
+    }
   },
   "errors": {
     "generic": "Login failed. Please try again.",

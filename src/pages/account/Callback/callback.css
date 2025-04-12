@@ -15,18 +15,21 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   text-align: center;
+  transition: all 0.3s ease-in-out;
 }
 
 .callback-page .callback-container h1 {
   color: #dfdfdf; /* Dark mode primary color */
   margin-bottom: 1.5rem;
   font-size: 2rem;
+  transition: color 0.3s ease-in-out;
 }
 
 .callback-page .status-message {
   color: #E0E0E0; /* Dark mode text color */
   margin-bottom: 1rem;
   line-height: 1.5;
+  transition: color 0.3s ease-in-out;
 }
 
 .callback-page .error-message {
@@ -36,8 +39,31 @@
   border-radius: 4px;
   margin-bottom: 1rem;
   text-shadow: 0 0 5px #000c;
+  transition: all 0.3s ease-in-out;
 }
+
 .callback-page .redirect-message {
   color: #B0B0B0; /* Dark mode secondary text color */
   font-size: 0.875rem;
+  transition: color 0.3s ease-in-out;
+}
+
+.continue-button {
+  background-color: #4a6cf7;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 1rem;
+}
+
+.continue-button:hover {
+  background-color: #3a5ce5;
+}
+
+.continue-button:active {
+  transform: translateY(1px);
 } 

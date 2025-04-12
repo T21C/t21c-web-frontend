@@ -296,11 +296,11 @@ const LevelSubmissionPage = () => {
         setIsInvalidFeelingRating(false);
         setIsFormValidDisplay({});
       } else {
-        throw new Error(response.statusText);
+        throw new Error(response);
       }
     } catch (error) {
       console.error('Submission error:', error);
-      setError(tLevel("alert.error"));
+      setError(error.response?.data?.error || error.message || error.error || "Unknown error occurred");
     } finally {
       setSubmission(false);
     }

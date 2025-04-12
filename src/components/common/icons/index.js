@@ -22,6 +22,7 @@ import VideoIcon from './VideoIcon';
 import { CheckmarkIcon } from './CheckmarkIcon';
 import { PencilIcon } from './PencilIcon';
 import { QuestionmarkCircleIcon } from './QuestionmarkCircleIcon';
+import { WarningIcon } from './WarningIcon';
 
 export {
     DefaultAvatar,
@@ -47,5 +48,6 @@ export {
     VideoIcon,
     CheckmarkIcon,
     PencilIcon,
-    QuestionmarkCircleIcon
+    QuestionmarkCircleIcon,
+    WarningIcon
 }

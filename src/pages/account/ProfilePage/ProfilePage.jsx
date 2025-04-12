@@ -193,6 +193,12 @@ const ProfilePage = () => {
                     </div>
                   </div>
                   </div>
+                  {user && user.id === playerData.id && !user.isEmailVerified && (
+                    <div className="email-verification-banner" onClick={() => navigate('/profile/verify-email')}>
+                      <span className="email-verification-text">You need to verify your email</span>
+                      <span className="email-verification-arrow">→</span>
+                    </div>
+                  )}
             
                   <div className="diff-container">
                     <div className="diff-info">

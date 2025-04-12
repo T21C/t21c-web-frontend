@@ -12,14 +12,13 @@ import RatingPage from "./admin/RatingPage/RatingPage";
 import DifficultyPage from "./admin/DifficultyPage/DifficultyPage";
 import LevelSubmissionPage from "./submissions/LevelSubmissionPage/LevelSubmissionPage";
 import PassSubmissionPage from "./submissions/PassSubmissionPage/PassSubmissionPage";
-import CallbackPage from "@/components/auth/Callback/Callback";
+import CallbackPage from "@/pages/account/Callback/Callback";
 // Account pages
 import ProfilePage from "./account/ProfilePage/ProfilePage";
 import LoginPage from "./account/LoginPage/LoginPage";
 import RegisterPage from "./account/RegisterPage/RegisterPage";
 import EditProfilePage from "./account/EditProfilePage/EditProfilePage";
 import EmailVerificationPage from "./account/EmailVerificationPage/EmailVerificationPage";
-import OAuthCallbackPage from "./account/OAuthCallbackPage/OAuthCallbackPage";
 import VerifyEmailPage from "./account/VerifyEmailPage/VerifyEmailPage";
 
 // Admin pages
@@ -49,7 +48,6 @@ export {
     RegisterPage,
     EditProfilePage,
     EmailVerificationPage,
-    OAuthCallbackPage,
     VerifyEmailPage,
     
     // Admin pages

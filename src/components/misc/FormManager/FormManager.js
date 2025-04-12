@@ -19,7 +19,7 @@ class FormManager {
         return this.details[key]; // Retrieve the details using the key
     }
 
-    async submit(accessToken) {
+    async submit() {
         try {
             const response = await api.post(this.apiUrl, 
                 this.details,  // Send the details object directly as JSON
@@ -39,8 +39,8 @@ class FormManager {
                 return data.error;
             }
         } catch (error) {
-            console.error("Error during form submission", error);
-            return error
+            console.error("Error during form submission", error.response?.data?.error || error.message || error.error || "Unknown error occurred");
+            return error.response?.data?.error || error.message || error.error || "Unknown error occurred";
         }
     }
 }

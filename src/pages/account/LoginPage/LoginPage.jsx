@@ -109,6 +109,7 @@ const LoginPage = () => {
 
   const handleDiscordLogin = async () => {
     try {
+      setError('');
       await loginWithDiscord();
     } catch (err) {
       setError(tLogin('errors.discordFailed'));
@@ -181,6 +182,12 @@ const LoginPage = () => {
           >
             {tLogin('form.buttons.discordLogin')}
           </button>
+
+          <div className="links">
+            <Link to="/register" className="register-link">
+              {tLogin('form.links.register')}
+            </Link>
+          </div>
 
         </div>
       </div>
