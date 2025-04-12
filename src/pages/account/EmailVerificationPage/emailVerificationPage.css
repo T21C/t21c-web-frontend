@@ -122,6 +122,15 @@
   color: #ff4444;
 }
 
+.login-required-message {
+  color: #4a6cf7;
+  font-weight: 500;
+  margin: 1rem 0;
+  padding: 0.75rem 1rem;
+  background-color: rgba(74, 108, 247, 0.1);
+  border-radius: 4px;
+  text-align: center;
+}
 
 @media (max-width: 768px) {
   .email-verification-page .verification-container {

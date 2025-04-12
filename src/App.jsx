@@ -45,7 +45,7 @@ function App() {
           <Route path="auth/callback" element={<Pages.OAuthCallbackPage />} />
           
           <Route path="profile/edit" element={<PrivateRoute><Pages.EditProfilePage /></PrivateRoute>} />
-          <Route path="profile/verify-email" element={<PrivateRoute><Pages.EmailVerificationPage /></PrivateRoute>} />
+          <Route path="profile/verify-email" element={<Pages.EmailVerificationPage />} />
           
           <Route index path="/" element={
             import.meta.env.VITE_APRIL_FOOLS === "true" ? <Pages.HomePageAprils /> : <Pages.HomePage />

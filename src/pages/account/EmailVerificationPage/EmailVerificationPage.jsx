@@ -9,6 +9,7 @@ const EmailVerificationPage = () => {
   const [status, setStatus] = useState('verifying');
   const [error, setError] = useState('');
   const [resending, setResending] = useState(false);
+  const [verificationEmail, setVerificationEmail] = useState('');
   const { user, verifyEmail, resendVerification, fetchUser } = useAuth();
   const navigate = useNavigate();
   const verificationAttempted = useRef(false);
@@ -37,8 +38,21 @@ const EmailVerificationPage = () => {
     
     const verifyToken = async () => {
       try {
-        await verifyEmail(token);
-        // Don't fetch user here to avoid race conditions
+        // Try to verify the email regardless of login status
+        const response = await verifyEmail(token);
+        
+        // If we got an email back from the verification, store it
+        if (response && response.email) {
+          setVerificationEmail(response.email);
+        }
+        
+        // If user is not logged in, show the login prompt
+        if (!user) {
+          setStatus('verify-success-login-required');
+          return;
+        }
+        
+        // Otherwise proceed with normal success flow
         setStatus('success');
       } catch (err) {
         setStatus('error');
@@ -57,14 +71,16 @@ const EmailVerificationPage = () => {
   }, [status, fetchUser]);
 
   const handleResendVerification = async () => {
-    if (!user?.email) {
+    const emailToUse = user?.email || verificationEmail;
+    
+    if (!emailToUse) {
       setError('Unable to determine your email address');
       return;
     }
 
     try {
       setResending(true);
-      await resendVerification(user.email);
+      await resendVerification(emailToUse);
       setStatus('resent');
       setError('');
     } catch (err) {
@@ -75,6 +91,52 @@ const EmailVerificationPage = () => {
   };
 
   const renderContent = () => {
+    // For non-logged in users with a token, show simplified content
+    if (!user && searchParams.get('token')) {
+      switch (status) {
+        case 'verifying':
+          return (
+            <>
+              <h1>Verifying Email</h1>
+              <div className="loader"></div>
+              <p className="status-message">Please wait while we verify your email address...</p>
+            </>
+          );
+        case 'verify-success-login-required':
+          return (
+            <>
+              <div className="success-icon">✓</div>
+              <h1>Email Verified!</h1>
+              <p className="status-message">Your email has been successfully verified.</p>
+              <p className="login-required-message">Please log in to access your account.</p>
+              <button
+                className="action-button"
+                onClick={() => navigate('/login')}
+              >
+                Log In
+              </button>
+            </>
+          );
+        case 'error':
+          return (
+            <>
+              <div className="error-icon">✕</div>
+              <h1>Verification Failed</h1>
+              <p className="error-message">{error}</p>
+              <button
+                className="action-button"
+                onClick={() => navigate('/login')}
+              >
+                Go to Login
+              </button>
+            </>
+          );
+        default:
+          return null;
+      }
+    }
+
+    // For logged-in users or manual visits, show full content
     switch (status) {
       case 'verifying':
         return (
@@ -145,7 +207,7 @@ const EmailVerificationPage = () => {
             <p className="error-message">{error}</p>
             <div className="resend-section">
               <p className="resend-info">We'll send a new verification email to:</p>
-              <p className="email-display">{user?.email || 'your email address'}</p>
+              <p className="email-display">{user?.email || verificationEmail || 'your email address'}</p>
               <button
                 className="action-button"
                 onClick={handleResendVerification}
@@ -168,7 +230,7 @@ const EmailVerificationPage = () => {
             <div className="success-icon">✓</div>
             <h1>Verification Email Sent</h1>
             <p className="status-message">A new verification email has been sent to your inbox.</p>
-            <p className="email-display">{user?.email}</p>
+            <p className="email-display">{user?.email || verificationEmail}</p>
             <button
               className="action-button"
               onClick={() => navigate('/profile')}
