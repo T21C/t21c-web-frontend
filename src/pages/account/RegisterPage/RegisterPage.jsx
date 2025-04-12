@@ -19,6 +19,7 @@ const RegisterPage = () => {
   const [success, setSuccess] = useState(false);
   const [modifiedUsername, setModifiedUsername] = useState('');
   const [retryAfter, setRetryAfter] = useState(null);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
   const timerRef = useRef(null);
   const [validationErrors, setValidationErrors] = useState({
     email: '',
@@ -133,21 +134,26 @@ const RegisterPage = () => {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    const { name, value, type, checked } = e.target;
     
-    // Clear validation error for this field when user types
-    setValidationErrors(prev => ({
-      ...prev,
-      [name]: '',
-    }));
-
-    // Update username validation state
-    if (name === 'username') {
-      setUsernameValidationState(validateUsername(value));
+    if (type === 'checkbox') {
+      setAgreedToTerms(checked);
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+      
+      // Clear validation error for this field when user types
+      setValidationErrors(prev => ({
+        ...prev,
+        [name]: '',
+      }));
+  
+      // Update username validation state
+      if (name === 'username') {
+        setUsernameValidationState(validateUsername(value));
+      }
     }
   };
 
@@ -437,7 +443,27 @@ const RegisterPage = () => {
             {validationErrors.confirmPassword && <div className="validation-error">{validationErrors.confirmPassword}</div>}
           </div>
 
-          <button type="submit" className="register-button">
+            <label className="checkbox-label">
+              <input
+                type="checkbox"
+                name="agreedToTerms"
+                checked={agreedToTerms}
+                onChange={handleChange}
+                required
+              />
+              <span>
+                I have read and agree with the{' '}
+                <Link to="/privacy-policy" className="terms-link"><b>Privacy Policy</b></Link>
+                {' '}and{' '}
+                <Link to="/terms-of-service" className="terms-link"><b>Terms of Service</b></Link>
+              </span>
+            </label>
+
+          <button 
+            type="submit" 
+            className={`register-button ${!agreedToTerms ? 'disabled' : ''}`}
+            disabled={!agreedToTerms}
+          >
             Create Account
           </button>
         </form>

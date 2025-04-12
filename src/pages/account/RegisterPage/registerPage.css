@@ -333,3 +333,41 @@
   color: #ff4444;
   font-weight: 500;
 }
+
+.register-page-wrapper .terms-checkbox {
+  margin-bottom: 1.5rem;
+}
+
+.register-page-wrapper .checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: #e0e0e0;
+  margin-bottom: 0.5rem;
+}
+
+.register-page-wrapper .checkbox-label input[type="checkbox"] {
+  margin-top: 0.25rem;
+  margin-bottom: 0.25rem;
+  margin-left: 0.25rem;
+  cursor: pointer;
+}
+
+.register-page-wrapper .terms-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.register-page-wrapper .terms-link:hover {
+  color: var(--primary-color-dark);
+  text-decoration: underline;
+}
+
+.register-page-wrapper .register-button.disabled {
+  background-color: #4a6cf7;
+  opacity: 0.5;
+  cursor: not-allowed;
+}
