@@ -44,6 +44,7 @@
       "legacyEmoji": "Legacy Emoji",
       "color": "Color",
       "baseScore": "Base Score",
+      "previousBaseScore": "Previous Base Score",
       "sortOrder": "Sort Order",
       "legacy": "Legacy Name"
     },

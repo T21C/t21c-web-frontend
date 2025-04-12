@@ -27,7 +27,9 @@ import AnnouncementPage from "./admin/AnnouncementPage/AnnouncementPage";
 import BackupPage from "./admin/BackupPage/BackupPage";
 
 // About page
-import AboutUsPage from "./misc/AboutUsPage";
+import AboutUsPage from "./misc/AboutUsPage/AboutUsPage";
+import PrivacyPolicyPage from "./misc/PrivacyPolicyPage/PrivacyPolicyPage";
+import TermsOfServicePage from "./misc/TermsOfServicePage/TermsOfServicePage";
 
 export {
     // Common pages
@@ -49,6 +51,7 @@ export {
     EditProfilePage,
     EmailVerificationPage,
     VerifyEmailPage,
+    CallbackPage,
     
     // Admin pages
     AdminPage,
@@ -61,5 +64,6 @@ export {
     
     // Other pages
     AboutUsPage,
-    CallbackPage
+    PrivacyPolicyPage,
+    TermsOfServicePage
 };

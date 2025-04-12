@@ -35,6 +35,18 @@ const ReratesTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRem
     }
   };
 
+  const shouldShowDifficulty = (level) => {
+    return level.previousDiffId !== level.diffId;
+  };
+
+  const shouldShowBaseScore = (level) => {
+    return (
+      (level.baseScore || level.difficulty.basescore) 
+      && level.previousBaseScore
+      && level.previousBaseScore !== level.baseScore
+    );
+  };
+
   return (
     <div className="announcement-section">
       {error && <div className="error-message">{error}</div>}
@@ -55,10 +67,21 @@ const ReratesTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRem
                     {tRerate('card.title', { song: level.song, artist: level.artist })}
                   </div>
                   <div className="item-subtitle">
-                    {tRerate('card.subtitle.difficulty', { 
-                      oldDifficulty: level.previousDifficulty?.name,
-                      newDifficulty: level.difficulty?.name
-                    })}
+                    <div className="rerate-values">
+                      <span className="rerate-value">
+                        {shouldShowDifficulty(level) ? tRerate('card.subtitle.difficulty', { 
+                          oldDifficulty: level.previousDifficulty?.name,
+                          newDifficulty: level.difficulty?.name
+                        }) : level.difficulty?.name}
+
+                      </span>
+                      <span className="rerate-value">
+                      {shouldShowBaseScore(level) && tRerate('card.subtitle.baseScore', { 
+                        oldBaseScore: level.previousBaseScore || level.difficulty.basescore,
+                        newBaseScore: level.baseScore 
+                      })}
+                      </span>
+                    </div>
                     {level.team && tRerate('card.subtitle.team', { team: level.team })}
                   </div>
                 </div>

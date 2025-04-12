@@ -19,10 +19,9 @@ const Footer = () => {
         </div>
         <div className="footer-section links">
           <h4>{tHome('quickLinks.title')}</h4>
-          <Link to="/levels">{tHome('quickLinks.browseLevels')}</Link>
-          <Link to="/passes">{tHome('quickLinks.browsePasses')}</Link>
-          <Link to="/leaderboard">{tHome('quickLinks.leaderboard')}</Link>
           <Link to="/about">{tHome('quickLinks.aboutUs')}</Link>
+          <Link to="/privacy-policy">{tHome('quickLinks.privacyPolicy')}</Link>
+          <Link to="/terms-of-service">{tHome('quickLinks.termsOfService')}</Link>
         </div>
         <div className="footer-section">
           <h4>{tHome('community.title')}</h4>

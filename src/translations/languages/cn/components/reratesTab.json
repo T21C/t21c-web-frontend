@@ -7,6 +7,7 @@
     "title": "{{song}} - {{artist}}",
     "subtitle": {
       "difficulty": "{{oldDifficulty}} ➔ {{newDifficulty}}",
+      "baseScore": "{{oldBaseScore}}PP ➔ {{newBaseScore}}PP",
       "team": " • {{team}}"
     }
   },

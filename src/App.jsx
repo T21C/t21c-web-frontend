@@ -73,7 +73,8 @@ function App() {
           <Route path="admin/creators" element={<PrivateRoute><Pages.CreatorManagementPage /></PrivateRoute>} />
           
           <Route path='about' element={<Pages.AboutUsPage />} />
-          
+          <Route path='privacy-policy' element={<Pages.PrivacyPolicyPage />} />
+          <Route path='terms-of-service' element={<Pages.TermsOfServicePage />} />
         </Routes>
       </Suspense>
     </AuthProvider>

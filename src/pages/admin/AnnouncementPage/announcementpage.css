@@ -125,6 +125,12 @@
   color: var(--color-white-t80);
 }
 
+.announcement-page .rerate-values {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
 .announcement-page .difficulty-icon {
   width: 24px;
   height: 24px;

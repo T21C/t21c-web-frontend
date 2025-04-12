@@ -36,7 +36,6 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const [error, setError] = useState(null);
   const [isHideMode, setIsHideMode] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
-  const navigate = useNavigate();
   const { difficulties } = useDifficultyContext();
   const [showAliasManagement, setShowAliasManagement] = useState(false);
 
@@ -50,7 +49,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         vfxer: level.vfxer || '',
         team: level.team || '',
         diffId: level.diffId !== null ? level.diffId : 0,
-        baseScore: level.baseScore || 0,
+        baseScore: level.baseScore,
         videoLink: level.videoLink || '',
         dlLink: level.dlLink || '',
         workshopLink: level.workshopLink || '',
@@ -61,6 +60,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         isDeleted: level.isDeleted || false,
         isHidden: level.isHidden || false,
         previousDiffId: level.previousDiffId,
+        previousBaseScore: level.previousBaseScore,
       });
       setHasUnsavedChanges(false);
     }
@@ -82,6 +82,14 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
+    }));
+    setHasUnsavedChanges(true);
+  };
+
+  const handlePreviousBaseScoreChange = (value) => {
+    setFormData(prev => ({
+      ...prev,
+      previousBaseScore: value
     }));
     setHasUnsavedChanges(true);
   };
@@ -142,6 +150,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     try {
       if (!isFromAnnouncementPage) {
         formData.previousDiffId = null;
+        formData.previousBaseScore = null;
       }
       const response = await api.put(
         `${import.meta.env.VITE_LEVELS}/${level.id}`,
@@ -262,14 +271,16 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     return diff ? diff.name : '';
   }, [difficulties]);
 
-  const getBaseScoreDisplay = useCallback(() => {
-    if (formData.baseScore === null) {
+  const getBaseScoreDisplay = useCallback((field = "baseScore") => {
+    if (formData[field] === null) {
       return "";
     }
-    const baseScore = parseFloat(formData.baseScore);
+    const baseScore = parseFloat(formData[field]);
     const matchingDiff = difficulties.find(d => d.baseScore === baseScore);
-    return matchingDiff ? matchingDiff.name : formData.baseScore.toString();
-  }, [formData.baseScore, difficulties]);
+    return matchingDiff ? matchingDiff.name : formData[field]?.toString();
+  }, [formData, difficulties]);
+
+  
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
@@ -344,6 +355,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                 />
               </div>
 
+              {!isFromAnnouncementPage ? (
               <div className="form-group">
                 <label htmlFor="charter">{tLevel('form.labels.charter')}</label>
                 <input
@@ -354,6 +366,27 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   onChange={handleInputChange}
                 />
               </div>
+              ):
+              <div className="form-group">
+                <label htmlFor="baseScore">{tLevel('form.labels.previousBaseScore')}</label>
+              <RatingInput
+                value={(() => {
+                  if (formData.previousBaseScore === null) {
+                    return "";
+                  }
+                  return formData.previousBaseScore?.toString();
+                })()}
+                onChange={handlePreviousBaseScoreChange}
+                difficulties={difficulties}
+                allowCustomInput={true}
+                placeholder={tLevel('form.placeholders.baseScore')}
+              />
+                {getBaseScoreDisplay('previousBaseScore') !== "" && (
+                  <div className="base-score-display">
+                    Equal to {getBaseScoreDisplay('previousBaseScore')}
+                  </div>
+                )}
+            </div>}
 
               <div className="form-group">
                 <label htmlFor="vfxer">{tLevel('form.labels.vfxer')}</label>
@@ -405,6 +438,11 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   difficulties={difficulties}
                   showDiff={true}
                 />
+                {isFromAnnouncementPage && (
+                  <div className="base-score-display">
+                    Current
+                  </div>
+                )}
               </div>
 
               {isFromAnnouncementPage ? (
@@ -417,6 +455,9 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                     showDiff={true}
                     placeholder={tLevel('form.labels.previousDifficulty')}
                   />
+                  <div className="base-score-display">
+                    Previous
+                  </div>
                 </div>
               ) : (
                 <div className="to-rate-checkbox-container">

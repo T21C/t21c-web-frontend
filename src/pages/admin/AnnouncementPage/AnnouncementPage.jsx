@@ -29,6 +29,8 @@ const AnnouncementPage = () => {
   const [error, setError] = useState(null);
   const [editingLevel, setEditingLevel] = useState(null);
 
+  const removeAnnouncedLevels = false || import.meta.env.MODE === 'production';
+
   useEffect(() => {
     fetchItems();
   }, []);
@@ -116,9 +118,11 @@ const AnnouncementPage = () => {
     setError(null);
     try {
       if (validLevelIds.length > 0) {
-        await api.post(`${import.meta.env.VITE_LEVELS}/announce`, {
-          levelIds: validLevelIds
-        });
+        if (removeAnnouncedLevels) {
+          await api.post(`${import.meta.env.VITE_LEVELS}/announce`, {
+            levelIds: validLevelIds
+          });
+        }
         
         await api.post(`${import.meta.env.VITE_WEBHOOK}/${activeTab === 'newLevels' ? 'levels' : 'rerates'}`, {
           levelIds: validLevelIds
@@ -129,9 +133,11 @@ const AnnouncementPage = () => {
       }
 
       if (validPassIds.length > 0) {
-        await api.post(`${import.meta.env.VITE_PASSES}/announce`, {
-          passIds: validPassIds
-        });
+        if (removeAnnouncedLevels) {
+          await api.post(`${import.meta.env.VITE_PASSES}/announce`, {
+            passIds: validPassIds
+          });
+        }
 
         await api.post(`${import.meta.env.VITE_WEBHOOK}/passes`, {
           passIds: validPassIds
@@ -161,9 +167,6 @@ const AnnouncementPage = () => {
         api.get(`${import.meta.env.VITE_LEVELS}/unannounced/new`),
         api.get(`${import.meta.env.VITE_LEVELS}/unannounced/rerates`)
       ]);
-
-      const currentNewLevels = new Set(newLevels.map(l => l.id));
-      const currentRerates = new Set(rerates.map(l => l.id));
 
       setNewLevels(newLevelsResponse.data);
       setRerates(reratesResponse.data);

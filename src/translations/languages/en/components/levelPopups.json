@@ -12,6 +12,7 @@
         "vfxer": "VFXer",
         "team": "Team",
         "baseScore": "Base Score",
+        "previousBaseScore": "Previous Base Score",
         "videoLink": "Video Link",
         "dlLink": "Download Link",
         "workshopLink": "Workshop Link",
@@ -20,6 +21,7 @@
       },
       "placeholders": {
         "baseScore": "Base Score",
+        "previousBaseScore": "Previous Base Score",
         "rerateNumber": "Rerate Number",
         "rerateReason": "Rerate Reason"
       },

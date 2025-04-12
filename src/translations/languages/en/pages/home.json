@@ -41,7 +41,9 @@
       "browseLevels": "Browse Levels",
       "browsePasses": "Browse Passes",
       "leaderboard": "Leaderboard",
-      "aboutUs": "About Us"
+      "aboutUs": "About Us",
+      "privacyPolicy": "Privacy Policy",
+      "termsOfService": "Terms of Service"
     },
     "community": {
       "title": "Community",
