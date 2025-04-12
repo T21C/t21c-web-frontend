@@ -42,7 +42,6 @@ function App() {
           {/* Auth Routes */}
           <Route path="login" element={<Pages.LoginPage />} />
           <Route path="register" element={<Pages.RegisterPage />} />
-          <Route path="auth/callback" element={<Pages.OAuthCallbackPage />} />
           
           <Route path="profile/edit" element={<PrivateRoute><Pages.EditProfilePage /></PrivateRoute>} />
           <Route path="profile/verify-email" element={<Pages.EmailVerificationPage />} />
