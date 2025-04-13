@@ -25,12 +25,19 @@
 }
 
 .login-page-wrapper .error-message {
-  background-color: rgba(255, 0, 0, 0.1);
-  color: #ff6b6b;
-  padding: 1rem;
+  color: #ff4d4d;
+  background-color: rgba(255, 77, 77, 0.1);
+  padding: 10px;
   border-radius: 4px;
-  margin-bottom: 1rem;
+  margin-bottom: 15px;
   text-align: center;
+  font-size: 14px;
+}
+
+.login-page-wrapper .retry-countdown {
+  margin-top: 8px;
+  font-weight: bold;
+  color: #ff6b6b;
 }
 
 .login-page-wrapper .login-form {
@@ -61,6 +68,12 @@
 .login-page-wrapper .form-group input:focus {
   outline: none;
   border-color: #4a9eff;
+}
+
+.login-page-wrapper .login-input.rate-limit {
+  border-color: #ff4d4d;
+  background-color: #361111;
+  cursor: not-allowed;
 }
 
 .login-page-wrapper .login-button,
