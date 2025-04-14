@@ -728,7 +728,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                     >
                       <div className="level-item-icon">
                         <img 
-                          src={difficultyInfo?.icon} 
+                          src={difficultyDict[difficultyInfo?.id]?.icon} 
                           alt={difficultyInfo?.name || 'Difficulty'} 
                           className="difficulty-icon"
                         />

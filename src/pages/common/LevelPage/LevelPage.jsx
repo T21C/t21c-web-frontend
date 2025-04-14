@@ -191,14 +191,7 @@ const LevelPage = () => {
       setLoading(true);
       try {
         // Query parameters for pagination and basic filtering
-        const params = {
-          limit,
-          offset: pageNumber * limit,
-          query,
-          sort,
-          deletedFilter,
-          clearedFilter
-        };
+
 
         // Get all special difficulties from the slider range
 
@@ -208,19 +201,19 @@ const LevelPage = () => {
         ? [...new Set([...sliderQRange, ...selectedSpecialDiffs])]
         : [...new Set([...selectedSpecialDiffs])];
 
-
-        // Request body for difficulty filtering
-        const requestBody = {
-          pguRange: {
-            from: selectedLowFilterDiff,
-            to: selectedHighFilterDiff
-          }, // Add Q difficulties to the request
-          specialDifficulties: allSpecialDiffs // Use combined special difficulties
+        const params = {
+          limit,
+          offset: pageNumber * limit,
+          query,
+          sort,
+          deletedFilter,
+          clearedFilter,
+          pguRange: `${selectedLowFilterDiff},${selectedHighFilterDiff}`,
+          specialDifficulties: allSpecialDiffs.join(',')
         };
         
-        const response = await api.post(
-          `${import.meta.env.VITE_LEVELS}/filter`,
-          requestBody,
+        const response = await api.get(
+          `${import.meta.env.VITE_LEVELS}`,
           {
             params,
             cancelToken: new axios.CancelToken((c) => (cancel = c)),

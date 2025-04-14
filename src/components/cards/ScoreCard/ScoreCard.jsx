@@ -5,14 +5,15 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { formatSpeed, formatScore } from "@/utils/Utility"
 import { formatNumber } from "@/utils";
-
+import { useDifficultyContext } from "@/contexts/DifficultyContext";
 
 // eslint-disable-next-line react/prop-types
 const ScoreCard = ({scoreData, topScores}) => {
   const {t} = useTranslation('components');
   const tScore = (key) => t(`score.card.${key}`) || key;
   const navigate = useNavigate()
-  
+  const { difficultyDict } = useDifficultyContext();
+
     const redirect = () => {
       navigate(`/passes/${scoreData.id}`);
     };
@@ -24,7 +25,7 @@ const ScoreCard = ({scoreData, topScores}) => {
   return (
     <div className='score-card'>
       <div className="img-wrapper">
-        <img src={scoreData.level.difficulty.icon} referrerPolicy="no-referrer" alt="" />
+        <img src={difficultyDict[scoreData.level.difficulty.id]?.icon} referrerPolicy="no-referrer" alt="" />
       </div>
       <div className="name-wrapper" onClick={() => redirect()}>
           <p className="score-exp">{scoreData.level.artist}</p>

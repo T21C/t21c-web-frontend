@@ -595,7 +595,7 @@ const ReferencesPopup = ({ onClose }) => {
               >
                 <div className="difficulty-info">
                   <img 
-                    src={difficultyInfo.icon} 
+                    src={difficultyDict[difficultyInfo.id]?.icon} 
                     alt={difficultyInfo.name}
                     className="difficulty-icon"
                   />
@@ -668,7 +668,7 @@ const ReferencesPopup = ({ onClose }) => {
                 }}
               >
                 <img 
-                  src={difficultyInfo.icon} 
+                  src={difficultyDict[difficultyInfo.id]?.icon} 
                   alt={difficultyInfo.name} 
                   className="difficulty-icon"
                 />

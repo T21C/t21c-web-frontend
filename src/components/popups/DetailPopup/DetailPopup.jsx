@@ -10,6 +10,7 @@ import { ReferencesButton } from '@/components/common/buttons';
 import { useNavigate } from 'react-router-dom';
 import { ExternalLinkIcon, DownloadIcon } from '@/components/common/icons';
 import { formatCreatorDisplay } from "@/utils/Utility";
+import { useDifficultyContext } from "@/contexts/DifficultyContext";
 // Cache for video data
 const videoCache = new Map();
 
@@ -46,8 +47,7 @@ export const DetailPopup = ({
   const { t } = useTranslation('components');
   const tRating = (key) => t(`rating.detailPopup.${key}`) || key;
 
-  const navigate = useNavigate();
-  const { difficulties } = useContext(DifficultyContext);
+  const { difficulties, difficultyDict } = useDifficultyContext();
   const [videoData, setVideoData] = useState(null);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [pendingRating, setPendingRating] = useState("");
@@ -540,15 +540,15 @@ export const DetailPopup = ({
                 </div>
                 <div className="detail-field">
                   <span className="detail-label">{tRating('labels.currentDifficulty')}</span>
-                  <img src={selectedRating.level.difficulty.icon} alt="" className="detail-value lv-icon" />
+                  <img src={difficultyDict[selectedRating.level.difficulty.id]?.icon} alt="" className="detail-value lv-icon" />
                 </div>
                 <div className="detail-field" style={{visibility: selectedRating.averageDifficulty ? 'visible' : 'hidden'}}>
                   <span className="detail-label">{tRating('labels.averageRating')}</span>
-                  <img src={selectedRating.averageDifficulty?.icon} alt="" className="detail-value lv-icon" />
+                  <img src={difficultyDict[selectedRating.averageDifficulty?.id]?.icon} alt="" className="detail-value lv-icon" />
                 </div>
                 <div className="detail-field" style={{visibility: selectedRating.communityDifficulty ? 'visible' : 'hidden'}}>
                   <span className="detail-label">{tRating('labels.communityRating')}</span>
-                  <img src={selectedRating.communityDifficulty?.icon} alt="" className="detail-value lv-icon" />
+                  <img src={difficultyDict[selectedRating.communityDifficulty?.id]?.icon} alt="" className="detail-value lv-icon" />
                 </div>
 
               </div>

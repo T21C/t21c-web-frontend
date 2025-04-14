@@ -36,7 +36,7 @@ const ProfilePage = () => {
     const { t } = useTranslation('pages');
     const tProfile = (key, params = {}) => t(`profile.${key}`, params);
     const { user } = useAuth();
-    const { difficultyList } = useDifficultyContext();
+    const { difficultyDict } = useDifficultyContext();
     const [showAdminPopup, setShowAdminPopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
     const location = useLocation();
@@ -204,7 +204,7 @@ const ProfilePage = () => {
                     <div className="diff-info">
                       <p>{valueLabels.topDiff}</p>
                       <img
-                        src={playerData.stats.topDiff?.icon}
+                        src={difficultyDict[playerData.stats.topDiff?.id]?.icon}
                         alt={playerData.stats.topDiff?.name || 'None'}
                         className="diff-image"
                       />
@@ -213,7 +213,7 @@ const ProfilePage = () => {
                     <div className="diff-info">
                       <p>{valueLabels.top12kDiff}</p>
                       <img
-                        src={playerData.stats.top12kDiff?.icon}
+                        src={difficultyDict[playerData.stats.top12kDiff?.id]?.icon}
                         alt={playerData.stats.top12kDiff?.name || 'None'}
                         className="diff-image"
                       />

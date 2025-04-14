@@ -25,7 +25,7 @@ const PassCard = ({ pass }) => {
   return (
     <div className='pass-card' onClick={() => redirect()} style={{ backgroundColor: pass.isDeleted ? "#f0000099" : "none" }}>
               <img 
-          src={difficultyInfo?.icon} 
+          src={difficultyDict[difficultyInfo?.id]?.icon} 
           alt={difficultyInfo?.name || 'Difficulty icon'} 
           className="difficulty-icon"
         />

@@ -34,7 +34,7 @@ const UserAvatar = ({
       setImgSrc(null);
       onError();
     } catch (error) {
-      console.error('Error loading avatar:', error);
+      //console.error('Error loading avatar:', error);
       setImgSrc(null);
       onError();
     }

@@ -61,26 +61,16 @@ const LevelCard = ({
     setToRate(!!updatedLevel.toRate);
     setShowEditPopup(false);
   };
-
-  const handleRestore = async () => {
-    if (!window.confirm(tCard('confirmations.restore'))) {
-      return;
-    }
-
-    try {
-      const response = await api.patch(`${import.meta.env.VITE_LEVELS}/${level.id}/restore`);
-      if (response.data) {
-        handleLevelUpdate(response.data);
-      }
-    } catch (error) {
-      console.error(`Failed to restore level ${level.id}:`, error);
-    }
-  };
   
   level.wsLink = level.ws ? level.ws : level.wsLink ? level.wsLink : level.workshopLink;
   level.dlLink = level.dl ? level.dl : level.dlLink;
 
-  const lvImage = (legacyMode ? difficultyInfo?.legacyIcon : difficultyInfo?.icon) || difficultyInfo?.icon;
+  const lvImage = (
+    legacyMode ? 
+    difficultyDict[difficultyInfo?.id]?.legacyIcon 
+    : difficultyDict[difficultyInfo?.id]?.icon
+  ) 
+    || difficultyDict[difficultyInfo?.id]?.icon;
 
   const navigate = useNavigate();
   const redirect = () => {
