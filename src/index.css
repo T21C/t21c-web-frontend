@@ -91,6 +91,11 @@ body {
   top: 50%;
   z-index: 100;
 }
+
+.loader-offset {
+  top: 62%;
+}
+
 .loader:before, .loader:after, .new-loader:before, .new-loader:after {
   position: absolute;
   height: 200px;

@@ -36,7 +36,17 @@ const RatingPage = () => {
     setFourVoteFilter,
     sortType,
     setSortType,
-    setSortOrder
+    setSortOrder,
+    searchQuery,
+    setSearchQuery,
+    showDetailedView,
+    setShowDetailedView,
+    showReferences,
+    setShowReferences,
+    showRaterManagement,
+    setShowRaterManagement,
+    showHelpPopup,
+    setShowHelpPopup
   } = useRatingFilter();
 
   const { difficultyDict } = useDifficultyContext();
@@ -45,15 +55,9 @@ const RatingPage = () => {
   const [selectedRating, setSelectedRating] = useState(null);
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [selectedLevel, setSelectedLevel] = useState(null);
-  const [showDetailedView, setShowDetailedView] = useState(false);
-  const [showReferences, setShowReferences] = useState(false);
-  const [showRaterManagement, setShowRaterManagement] = useState(false);
-  const [showHelpPopup, setShowHelpPopup] = useState(false);
   const [connectedUsers, setConnectedUsers] = useState(0);
   const [isConnected, setIsConnected] = useState(false);
   const [connectedManagers, setConnectedManagers] = useState(0);
-  const [searchQuery, setSearchQuery] = useState("");
-
 
   const fetchRatings = useCallback(async () => {
     try {
@@ -442,8 +446,7 @@ const RatingPage = () => {
             />
         </div>
 
-        {ratings && ratings.length > 0 ? (
-          <>
+
             <div className="ratings-header">
               <div className="search-container">
                 <svg className="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -484,6 +487,8 @@ const RatingPage = () => {
               </div>
               </div>
             </div>
+          {ratings && ratings.length > 0 ? (
+          <>
             <div className="rating-cards">
               {filteredRatings
                 .map((rating, index) => (
@@ -547,7 +552,7 @@ const RatingPage = () => {
             <p>{tRating('messages.noRatings.subtitle')}</p>
           </div>
         ) : (
-          <div className="loader"/>
+          <div className="loader loader-offset"/>
         )}
 
         {showReferences && (
