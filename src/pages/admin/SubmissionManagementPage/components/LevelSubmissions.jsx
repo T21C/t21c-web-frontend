@@ -7,7 +7,7 @@ import api from "@/utils/api";
 import { ProfileCreationModal } from './ProfileCreationModal';
 import { SubmissionCreatorPopup } from '@/components/popups';
 import { toast } from "react-hot-toast";
-import { WarningIcon, QuestionmarkCircleIcon } from "@/components/common/icons";
+import { WarningIcon } from "@/components/common/icons";
 
 
 const LevelSubmissions = () => {
@@ -507,9 +507,9 @@ const LevelSubmissions = () => {
                                 {tLevel('badges.newRequest')}
                               </span>
                             )}
-                            {!submission.teamRequestData.teamId && (
+                            {!submission.teamRequestData.teamId && !submission.teamRequestData.isNewRequest && (
                               <span className="profile-request-badge unassigned" title={tLevel('badges.unassigned')}>
-                                <QuestionmarkCircleIcon className="question-icon" />
+                                <WarningIcon className="warning-icon" color="#f00" />
                               </span>
                             )}
                           </span>
