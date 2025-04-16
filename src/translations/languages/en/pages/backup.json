@@ -29,7 +29,8 @@
     "confirm": "Confirm",
     "upload": "Upload",
     "uploading": "Uploading...",
-    "download": "Download"
+    "download": "Download",
+    "verifying": "Verifying..."
   },
   "upload": {
     "dragDropMessage": "Drag and drop a backup file here, or click to select",
@@ -58,18 +59,19 @@
   },
   "passwordModal": {
     "title": "Super Admin Password Required",
-    "createMessage": "Please enter your super admin password to create a new backup.",
-    "restoreMessage": "Please enter your super admin password to restore the backup.",
-    "deleteMessage": "Please enter your super admin password to delete the backup.",
-    "renameMessage": "Please enter your super admin password to rename the backup.",
-    "uploadMessage": "Please enter your super admin password to upload the backup.",
-    "downloadMessage": "Please enter your super admin password to download the backup.",
+    "initialMessage": "Please enter your super admin password to continue",
     "placeholder": "Enter password",
     "errors": {
       "invalid": "Invalid password",
       "generic": "An error occurred while performing the action",
       "validation": "Password validation failed"
     }
+  },
+  "confirmation": {
+    "title": "Confirm Action",
+    "createMessage": "Are you sure you want to create a new backup?",
+    "deleteMessage": "Are you sure you want to delete this backup? This action cannot be undone.",
+    "restoreMessage": "Are you sure you want to restore this backup? This will overwrite current data."
   },
   "notifications": {
     "backupCreated": "{{type}} backup created successfully",
@@ -82,7 +84,9 @@
     "deleteFailed": "Failed to delete backup",
     "uploadSuccess": "Backup uploaded successfully",
     "uploadFailed": "Failed to upload backup",
-    "validationFailed": "Password validation failed"
+    "validationFailed": "Password validation failed",
+    "renameSuccess": "Backup renamed successfully",
+    "renameFailed": "Failed to rename backup"
   },
   "fileInfo": {
     "created": "Created: {{date}}",

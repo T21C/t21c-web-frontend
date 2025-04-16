@@ -12,6 +12,7 @@ interface ImportMetaEnv {
   readonly VITE_OWN_URL: string;
 
   // Authentication Endpoints
+  readonly VITE_VERIFY_PASSWORD: string;
   readonly VITE_AUTH_LOGIN: string;
   readonly VITE_AUTH_REGISTER: string;
   readonly VITE_AUTH_VERIFY_EMAIL: string;
