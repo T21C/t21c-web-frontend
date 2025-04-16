@@ -51,8 +51,10 @@
 }
 .level-card .img-wrapper {
   width: 3rem;
+  display: flex;
+  align-items: center;
 }
-.level-card .img-wrapper img {
+.level-card .img-wrapper .difficulty-icon {
   -o-object-fit: contain;
      object-fit: contain;
   height: 100%;
@@ -113,6 +115,15 @@
 .level-card .toRate-checkbox input {
   width: 1.5rem;
   height: 1.5rem;
+}
+
+.level-card .first-pass-pfp {
+  bottom: 10%;
+  left: 0;
+  position: absolute;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
 }
 
 @media (max-width: 795px) {

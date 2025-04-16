@@ -7,6 +7,7 @@ import { EditLevelPopup } from "@/components/popups";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { EditIcon, SteamIcon, DownloadIcon, VideoIcon } from "@/components/common/icons";
 import { formatCreatorDisplay } from "@/utils/Utility";
+import { UserAvatar } from "@/components/layout";
 
 const LevelCard = ({
   index,
@@ -168,6 +169,13 @@ const LevelCard = ({
       <div className="level-card-wrapper" onClick={() => redirect()}>
         <div className="img-wrapper">
           <img src={lvImage} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
+          {level.firstPass && false && ( // disabled for now
+            <UserAvatar 
+              primaryUrl={level.firstPass.player.avatarUrl}
+              fallbackUrl={level.firstPass.player.pfp}
+              className="first-pass-pfp"
+            />
+          )}
         </div>
 
         <div className="song-wrapper">
