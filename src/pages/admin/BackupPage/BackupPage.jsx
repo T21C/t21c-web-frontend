@@ -790,6 +790,7 @@ const BackupPage = () => {
               <button 
                 className="confirm-btn"
                 onClick={handleInitialPasswordSubmit}
+                style={{pointerEvents: !initialPassword || isVerifyingPassword ? 'none' : 'auto'}}
                 disabled={!initialPassword || isVerifyingPassword}
               >
                 {isVerifyingPassword ? tBackup('buttons.verifying') : tBackup('buttons.confirm')}
