@@ -1,29 +1,19 @@
 .health-check-page {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
   background-color: #121212;
   color: #f5f5f5;
   position: relative;
   overflow-x: hidden;
+  min-height: 100vh;
 }
 
-.background-level {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle at top right, rgba(76, 175, 80, 0.1), transparent 40%),
-              radial-gradient(circle at bottom left, rgba(33, 150, 243, 0.1), transparent 40%);
-  z-index: 1;
-  pointer-events: none;
-}
 
 .health-check-container {
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
+  margin-top: 5rem;
   padding: 2rem;
   z-index: 2;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -38,7 +28,7 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-.health-refresh {
+.health-check-page .health-refresh {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -46,7 +36,7 @@
   gap: 1rem;
 }
 
-.refresh-button {
+.health-check-page .refresh-button {
   background-color: #4CAF50;
   color: white;
   border: none;
@@ -58,30 +48,83 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
-.refresh-button:hover {
+.health-check-page .refresh-button:hover {
   background-color: #45a049;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
-.refresh-button:active {
+.health-check-page .refresh-button:active {
   transform: translateY(0);
   box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
 }
 
-.refresh-button:disabled {
+.health-check-page .refresh-button:disabled {
   background-color: #555;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
 }
 
-.last-updated {
+/* Fixed circle refresh button */
+.health-check-page .fixed-refresh-button {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  z-index: 100;
+}
+
+.health-check-page .fixed-refresh-button:hover {
+  background-color: #45a049;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
+}
+
+.health-check-page .fixed-refresh-button:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.health-check-page .fixed-refresh-button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.health-check-page .fixed-refresh-button .refresh-icon {
+  font-size: 24px;
+}
+
+.health-check-page .fixed-refresh-button .refresh-spinner {
+  width: 24px;
+  height: 24px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-radius: 50%;
+  border-top-color: white;
+  animation: spin 1s linear infinite;
+}
+
+.health-check-page .last-updated {
+  display: flex;
+  justify-content: center;
   color: #aaa;
   font-size: 0.9rem;
 }
 
-.error-message {
+.health-check-page .error-message {
   background-color: rgba(198, 40, 40, 0.2);
   color: #ff8a80;
   padding: 1rem;
@@ -91,7 +134,7 @@
   border-left: 4px solid #c62828;
 }
 
-.loading-spinner {
+.health-check-page .loading-spinner {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -99,7 +142,7 @@
   margin: 3rem 0;
 }
 
-.spinner {
+.health-check-page .spinner {
   border: 4px solid rgba(255, 255, 255, 0.1);
   border-radius: 50%;
   border-top: 4px solid #4CAF50;
@@ -114,10 +157,9 @@
   100% { transform: rotate(360deg); }
 }
 
-.health-dashboard {
+.health-check-page .health-dashboard {
   display: grid;
   grid-template-rows: 1fr;
-  gap: 1.5rem;
   background-color: rgba(30, 30, 30, 0.7);
   border-radius: 12px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -127,7 +169,7 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.health-summary {
+.health-check-page .health-summary {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -136,7 +178,7 @@
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.status-badge {
+.health-check-page .status-badge {
   display: flex;
   align-items: center;
   padding: 0.6rem 1.2rem;
@@ -146,24 +188,24 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.status-icon {
+.health-check-page .status-icon {
   margin-right: 0.5rem;
   font-size: 1.2rem;
 }
 
-.timestamp {
+.health-check-page .timestamp {
   color: #aaa;
   font-size: 0.9rem;
 }
 
-.health-grid {
+.health-check-page .health-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
   margin-bottom: 2rem;
 }
 
-.health-card {
+.health-check-page .health-card {
   background-color: rgba(40, 40, 40, 0.7);
   border-radius: 8px;
   padding: 1.5rem;
@@ -172,11 +214,11 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.health-card:hover {
+.health-check-page .health-card:hover {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
-.health-card h3 {
+.health-check-page .health-card h3 {
   margin-top: 0;
   margin-bottom: 1rem;
   color: #f5f5f5;
@@ -184,7 +226,7 @@
   font-weight: 500;
 }
 
-.status-indicator {
+.health-check-page .status-indicator {
   padding: 0.6rem;
   border-radius: 6px;
   text-align: center;
@@ -192,28 +234,27 @@
   margin-bottom: 0.8rem;
 }
 
-.status-indicator.healthy {
+.health-check-page .status-indicator.healthy {
   background-color: rgba(76, 175, 80, 0.2);
   color: #81c784;
   border: 1px solid rgba(76, 175, 80, 0.3);
 }
 
-.status-indicator.unhealthy {
+.health-check-page .status-indicator.unhealthy {
   background-color: rgba(244, 67, 54, 0.2);
   color: #e57373;
   border: 1px solid rgba(244, 67, 54, 0.3);
 }
 
-.server-details {
+.health-check-page .server-details {
   background-color: rgba(40, 40, 40, 0.7);
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  margin-top: 2rem;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.server-details h2 {
+.health-check-page .server-details h2 {
   margin-top: 0;
   margin-bottom: 1.5rem;
   color: #f5f5f5;
@@ -223,7 +264,7 @@
   font-weight: 500;
 }
 
-.server-status {
+.health-check-page .server-status {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -233,11 +274,11 @@
   border-radius: 6px;
 }
 
-.server-checks, .server-info, .memory-usage {
+.health-check-page .server-checks, .health-check-page .server-info, .health-check-page .memory-usage {
   margin-bottom: 1.5rem;
 }
 
-.server-checks h3, .server-info h3, .memory-usage h3 {
+.health-check-page .server-checks h3, .health-check-page .server-info h3, .health-check-page .memory-usage h3 {
   margin-top: 0;
   margin-bottom: 1rem;
   color: #f5f5f5;
@@ -245,13 +286,13 @@
   font-weight: 500;
 }
 
-.check-grid, .info-grid, .memory-grid {
+.health-check-page .check-grid, .health-check-page .info-grid, .health-check-page .memory-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 1rem;
 }
 
-.check-item, .info-item, .memory-item {
+.health-check-page .check-item, .health-check-page .info-item, .health-check-page .memory-item {
   background-color: rgba(30, 30, 30, 0.5);
   border-radius: 6px;
   padding: 1rem;
@@ -259,44 +300,44 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.check-item:hover, .info-item:hover, .memory-item:hover {
+.health-check-page .check-item:hover, .health-check-page .info-item:hover, .health-check-page .memory-item:hover {
   transform: translateY(-3px);
   background-color: rgba(40, 40, 40, 0.7);
 }
 
-.check-label, .info-label, .memory-label {
+.health-check-page .check-label, .health-check-page .info-label, .health-check-page .memory-label {
   font-weight: bold;
   color: #aaa;
   margin-bottom: 0.5rem;
   font-size: 0.9rem;
 }
 
-.check-status {
+.health-check-page .check-status {
   font-weight: bold;
   margin-bottom: 0.5rem;
   font-size: 1.1rem;
 }
 
-.check-status.healthy {
+.health-check-page .check-status.healthy {
   color: #81c784;
 }
 
-.check-status.unhealthy {
+.health-check-page .check-status.unhealthy {
   color: #e57373;
 }
 
-.check-message {
+.health-check-page .check-message {
   font-size: 0.9rem;
   color: #ddd;
   margin-top: 0.5rem;
 }
 
-.info-value, .memory-value {
+.health-check-page .info-value, .health-check-page .memory-value {
   color: #f5f5f5;
   font-size: 1.1rem;
 }
 
-.memory-bar {
+.health-check-page .memory-bar {
   width: 100%;
   height: 6px;
   background-color: rgba(255, 255, 255, 0.1);
@@ -305,10 +346,86 @@
   overflow: hidden;
 }
 
-.memory-bar-fill {
+.health-check-page .memory-bar-fill {
   height: 100%;
   border-radius: 3px;
   transition: width 0.5s ease, background-color 0.5s ease;
+}
+
+.health-check-page .memory-limit {
+  font-size: 0.8rem;
+  color: #aaa;
+  margin-top: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.health-check-page .memory-limit span {
+  display: inline-block;
+  padding: 2px 6px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 3px;
+  font-size: 0.75rem;
+}
+
+.health-check-page .memory-limits {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.health-check-page .memory-limits h3 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #f5f5f5;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.health-check-page .limits-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.health-check-page .limit-item {
+  background-color: rgba(30, 30, 30, 0.5);
+  border-radius: 6px;
+  padding: 1rem;
+  transition: transform 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.health-check-page .limit-item:hover {
+  transform: translateY(-3px);
+  background-color: rgba(40, 40, 40, 0.7);
+}
+
+.health-check-page .limit-item::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background-color: #4CAF50;
+  opacity: 0.7;
+}
+
+.health-check-page .limit-label {
+  font-weight: bold;
+  color: #aaa;
+  margin-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.health-check-page .limit-value {
+  color: #f5f5f5;
+  font-size: 1.1rem;
+  font-weight: 500;
 }
 
 @media (max-width: 768px) {
@@ -316,21 +433,21 @@
     padding: 1rem;
   }
   
-  .health-summary {
+  .health-check-page .health-summary {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;
   }
   
-  .health-grid, .check-grid, .info-grid, .memory-grid {
+  .health-check-page .health-grid, .health-check-page .check-grid, .health-check-page .info-grid, .health-check-page .memory-grid, .health-check-page .limits-grid {
     grid-template-columns: 1fr;
   }
   
-  .health-dashboard {
+  .health-check-page .health-dashboard {
     padding: 1.5rem;
   }
   
-  .server-status {
+  .health-check-page .server-status {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;

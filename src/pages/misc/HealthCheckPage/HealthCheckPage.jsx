@@ -10,12 +10,13 @@ const HealthCheckPage = () => {
   const [lastUpdated, setLastUpdated] = useState(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
 
+  const development = process.env.NODE_ENV === 'development';
   const fetchHealthData = async () => {
     setIsRefreshing(true);
     setError(null);
     
     try {
-      const response = await fetch('https://api.tuforums.com/health/api');
+      const response = await fetch(development ? 'http://localhost:3883/health/api' : 'https://api.tuforums.com/health/api');
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -61,8 +62,21 @@ const HealthCheckPage = () => {
   const formatMemory = (bytes) => {
     if (!bytes) return 'N/A';
     
+    // Convert to GB if over 1GB, otherwise show in MB
+    if (bytes >= 1024 * 1024 * 1024) {
+      const gb = bytes / (1024 * 1024 * 1024);
+      return `${gb.toFixed(2)} GB`;
+    }
+    
     const mb = bytes / (1024 * 1024);
     return `${mb.toFixed(2)} MB`;
+  };
+
+  const formatMemoryForComparison = (bytes) => {
+    if (!bytes) return 0;
+    
+    // Always convert to bytes for comparison
+    return bytes;
   };
 
   const getStatusColor = (status) => {
@@ -93,7 +107,12 @@ const HealthCheckPage = () => {
 
   const calculateMemoryPercentage = (used, total) => {
     if (!used || !total) return 0;
-    return Math.round((used / total) * 100);
+    
+    // Convert both values to the same unit (bytes) for accurate percentage calculation
+    const usedBytes = formatMemoryForComparison(used);
+    const totalBytes = formatMemoryForComparison(total);
+    
+    return Math.round((usedBytes / totalBytes) * 100);
   };
 
   return (
@@ -110,18 +129,9 @@ const HealthCheckPage = () => {
       <div className="health-check-container">
         <h1>System Health Status</h1>
         
-        <div className="health-refresh">
-          <button 
-            className="refresh-button" 
-            onClick={fetchHealthData} 
-            disabled={isRefreshing}
-          >
-            {isRefreshing ? 'Refreshing...' : 'Refresh Data'}
-          </button>
-          {lastUpdated && (
-            <span className="last-updated">Last updated: {lastUpdated}</span>
-          )}
-        </div>
+        {lastUpdated && (
+          <div className="last-updated">Last updated: {lastUpdated}</div>
+        )}
         
         {error && (
           <div className="error-message">
@@ -240,30 +250,52 @@ const HealthCheckPage = () => {
                 <div className="memory-grid">
                   <div className="memory-item">
                     <div className="memory-label">RSS Memory</div>
-                    <div className="memory-value">{formatMemory(healthData.mainServerInfo?.system?.memory?.rss)}</div>
+                    <div className="memory-value">{formatMemory(healthData.memoryUsage?.rss)}</div>
+                    {healthData.memoryLimits?.rssLimit && (
+                      <div className="memory-limit">
+                        <span>Max: {formatMemory(healthData.memoryLimits.rssLimit)}</span>
+                        <div className="memory-bar">
+                          <div 
+                            className="memory-bar-fill" 
+                            style={{ 
+                              width: `${calculateMemoryPercentage(healthData.memoryUsage?.rss, healthData.memoryLimits?.rssLimit)}%`,
+                              backgroundColor: calculateMemoryPercentage(healthData.memoryUsage?.rss, healthData.memoryLimits?.rssLimit) > 80 ? '#F44336' : '#4CAF50'
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   
                   <div className="memory-item">
                     <div className="memory-label">Heap Total</div>
-                    <div className="memory-value">{formatMemory(healthData.mainServerInfo?.system?.memory?.heapTotal)}</div>
+                    <div className="memory-value">{formatMemory(healthData.memoryUsage?.heapTotal)}</div>
+                    {healthData.memoryLimits?.heapSizeLimit && (
+                      <div className="memory-limit">
+                        <span>Max: {formatMemory(healthData.memoryLimits.heapSizeLimit)}</span>
+                        <div className="memory-bar">
+                          <div 
+                            className="memory-bar-fill" 
+                            style={{ 
+                              width: `${calculateMemoryPercentage(healthData.memoryUsage?.heapTotal, healthData.memoryLimits?.heapSizeLimit)}%`,
+                              backgroundColor: calculateMemoryPercentage(healthData.memoryUsage?.heapTotal, healthData.memoryLimits?.heapSizeLimit) > 80 ? '#F44336' : '#4CAF50'
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   
                   <div className="memory-item">
                     <div className="memory-label">Heap Used</div>
-                    <div className="memory-value">{formatMemory(healthData.mainServerInfo?.system?.memory?.heapUsed)}</div>
-                    {healthData.mainServerInfo?.system?.memory?.heapTotal && healthData.mainServerInfo?.system?.memory?.heapUsed && (
+                    <div className="memory-value">{formatMemory(healthData.memoryUsage?.heapUsed)}</div>
+                    {healthData.memoryUsage?.heapTotal && healthData.memoryUsage?.heapUsed && (
                       <div className="memory-bar">
                         <div 
                           className="memory-bar-fill" 
                           style={{ 
-                            width: `${calculateMemoryPercentage(
-                              healthData.mainServerInfo.system.memory.heapUsed, 
-                              healthData.mainServerInfo.system.memory.heapTotal
-                            )}%`,
-                            backgroundColor: calculateMemoryPercentage(
-                              healthData.mainServerInfo.system.memory.heapUsed, 
-                              healthData.mainServerInfo.system.memory.heapTotal
-                            ) > 80 ? '#F44336' : '#4CAF50'
+                            width: `${calculateMemoryPercentage(healthData.memoryUsage.heapUsed, healthData.memoryUsage.heapTotal)}%`,
+                            backgroundColor: calculateMemoryPercentage(healthData.memoryUsage.heapUsed, healthData.memoryUsage.heapTotal) > 80 ? '#F44336' : '#4CAF50'
                           }}
                         ></div>
                       </div>
@@ -272,19 +304,65 @@ const HealthCheckPage = () => {
                   
                   <div className="memory-item">
                     <div className="memory-label">External Memory</div>
-                    <div className="memory-value">{formatMemory(healthData.mainServerInfo?.system?.memory?.external)}</div>
+                    <div className="memory-value">{formatMemory(healthData.memoryUsage?.external)}</div>
                   </div>
                   
                   <div className="memory-item">
                     <div className="memory-label">Array Buffers</div>
-                    <div className="memory-value">{formatMemory(healthData.mainServerInfo?.system?.memory?.arrayBuffers)}</div>
+                    <div className="memory-value">{formatMemory(healthData.memoryUsage?.arrayBuffers)}</div>
                   </div>
                 </div>
               </div>
+              
+              {healthData.memoryLimits && (
+                <div className="memory-limits">
+                  <h3>Memory Limits</h3>
+                  <div className="limits-grid">
+                    <div className="limit-item">
+                      <div className="limit-label">Heap Size Limit</div>
+                      <div className="limit-value">{formatMemory(healthData.memoryLimits.heapSizeLimit)}</div>
+                    </div>
+                    
+                    <div className="limit-item">
+                      <div className="limit-label">Total Available Size</div>
+                      <div className="limit-value">{formatMemory(healthData.memoryLimits.totalAvailableSize)}</div>
+                    </div>
+                    
+                    <div className="limit-item">
+                      <div className="limit-label">Total Heap Size Executable</div>
+                      <div className="limit-value">{formatMemory(healthData.memoryLimits.totalHeapSizeExecutable)}</div>
+                    </div>
+                    
+                    <div className="limit-item">
+                      <div className="limit-label">Total Physical Size</div>
+                      <div className="limit-value">{formatMemory(healthData.memoryLimits.totalPhysicalSize)}</div>
+                    </div>
+                    
+                    <div className="limit-item">
+                      <div className="limit-label">Max RSS</div>
+                      <div className="limit-value">{formatMemory(healthData.memoryLimits.rssLimit)}</div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         )}
       </div>
+      
+      {/* Fixed circle refresh button */}
+      <button 
+        className="fixed-refresh-button" 
+        onClick={fetchHealthData} 
+        disabled={isRefreshing}
+        aria-label="Refresh health data"
+      >
+        {isRefreshing ? (
+          <div className="refresh-spinner"></div>
+        ) : (
+          <span className="refresh-icon">↻</span>
+        )}
+      </button>
     </div>
   );
 };
