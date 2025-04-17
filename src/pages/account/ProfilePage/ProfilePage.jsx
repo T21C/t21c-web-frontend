@@ -291,7 +291,7 @@ const ProfilePage = () => {
                 <div className="scores-section">
                   <h2>{tProfile('sections.scores.title')}</h2>
                   <div className="scores-list">
-                    {playerData.passes.filter(score => !score.isDeleted && !score.level?.isHidden).sort((a, b) => b.scoreV2 - a.scoreV2).map((score, index) => (
+                    {playerData.passes.filter(score => !score.isDeleted).sort((a, b) => b.scoreV2 - a.scoreV2).map((score, index) => (
                       <li key={index}>
                         <ScoreCard scoreData={score} topScores={playerData.topScores} />
                       </li>

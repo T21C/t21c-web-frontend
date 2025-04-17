@@ -48,6 +48,9 @@
 }
 .score-card .img-wrapper {
   width: 3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .score-card .img-wrapper img {
   -o-object-fit: contain;
@@ -55,6 +58,11 @@
   height: 100%;
   width: 100%;
   border-radius: 100%;
+}
+.score-card .hidden-level-icon {
+  font-size: 1.5rem;
+  color: var(--color-white-t80);
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 .score-card .name-wrapper {
   flex: 2;
@@ -67,8 +75,8 @@
   overflow: hidden;
   min-width: 120px;
 }
-  .score-card .acc-wrapper {
-    overflow: visible;
+.score-card .acc-wrapper {
+  overflow: visible;
   min-width: 80px;
 }
 .score-card .speed-wrapper {
