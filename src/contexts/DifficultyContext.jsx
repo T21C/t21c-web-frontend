@@ -32,7 +32,6 @@ const DifficultyContextProvider = (props) => {
             const storedHash = localStorage.getItem(HASH_KEY);
             
             if (!storedHash) {
-                console.log('No stored hash found in localStorage');
                 return false;
             }
             
@@ -45,7 +44,6 @@ const DifficultyContextProvider = (props) => {
             
             // Compare the hashes
             const isMatch = storedHash === serverHash;
-            console.log(`Hash check: stored=${storedHash}, server=${serverHash}, match=${isMatch}`);
             return isMatch;
         } catch (err) {
             console.error('Error checking hash:', err);
@@ -93,8 +91,6 @@ const DifficultyContextProvider = (props) => {
 
     const saveToCache = async (data, hash) => {
         try {
-            console.log(`Saving ${data.difficulties.length} difficulties to cache with hash: ${hash}`);
-            
             // Convert blob URLs to base64 before saving to cache
             const difficultiesWithBase64 = await Promise.all(data.difficulties.map(async diff => {
                 let iconBase64 = null;
@@ -103,11 +99,9 @@ const DifficultyContextProvider = (props) => {
                 // Convert icon to base64 if it's a blob URL
                 if (diff.icon && diff.icon.startsWith('blob:')) {
                     try {
-                        console.log(`Converting blob URL to base64 for ${diff.name} icon`);
                         const response = await fetch(diff.icon);
                         const blob = await response.blob();
                         iconBase64 = await blobToBase64(blob);
-                        console.log(`Successfully converted icon to base64 for ${diff.name}`);
                     } catch (err) {
                         console.error(`Error converting icon to base64 for ${diff.name}:`, err);
                     }
@@ -119,12 +113,10 @@ const DifficultyContextProvider = (props) => {
                 // Convert legacy icon to base64 if it's a blob URL
                 if (diff.legacyIcon && diff.legacyIcon.startsWith('blob:')) {
                     try {
-                        console.log(`Converting blob URL to base64 for ${diff.name} legacy icon`);
                         const response = await fetch(diff.legacyIcon);
                         const blob = await response.blob();
                         legacyIconBase64 = await blobToBase64(blob);
-                        console.log(`Successfully converted legacy icon to base64 for ${diff.name}`);
-                    } catch (err) {
+                        } catch (err) {
                         console.error(`Error converting legacy icon to base64 for ${diff.name}:`, err);
                     }
                 } else if (diff.legacyIcon && diff.legacyIcon.startsWith('data:')) {
@@ -157,8 +149,7 @@ const DifficultyContextProvider = (props) => {
             if (cachedData) {
                 const parsedData = JSON.parse(cachedData);
                 if (parsedData.difficulties && parsedData.difficulties.length > 0) {
-                    console.log(`Loading ${parsedData.difficulties.length} difficulties from cache`);
-                    
+
                     // Convert base64 data to blob URLs
                     const difficultiesWithBlobs = parsedData.difficulties.map(diff => {
                         let iconBlobUrl = null;
@@ -167,11 +158,9 @@ const DifficultyContextProvider = (props) => {
                         // Convert icon base64 to blob URL
                         if (diff.icon && diff.icon.startsWith('data:')) {
                             try {
-                                console.log(`Converting base64 to blob URL for ${diff.name} icon`);
                                 const blob = base64ToBlob(diff.icon);
                                 if (blob) {
                                     iconBlobUrl = URL.createObjectURL(blob);
-                                    console.log(`Created blob URL for ${diff.name} icon: ${iconBlobUrl}`);
                                 }
                             } catch (err) {
                                 console.error(`Error converting base64 to blob for ${diff.name} icon:`, err);
@@ -181,12 +170,10 @@ const DifficultyContextProvider = (props) => {
                         // Convert legacy icon base64 to blob URL
                         if (diff.legacyIcon && diff.legacyIcon.startsWith('data:')) {
                             try {
-                                console.log(`Converting base64 to blob URL for ${diff.name} legacy icon`);
                                 const blob = base64ToBlob(diff.legacyIcon);
                                 if (blob) {
                                     legacyIconBlobUrl = URL.createObjectURL(blob);
-                                    console.log(`Created blob URL for ${diff.name} legacy icon: ${legacyIconBlobUrl}`);
-                                }
+                                    }
                             } catch (err) {
                                 console.error(`Error converting base64 to blob for ${diff.name} legacy icon:`, err);
                             }
@@ -210,11 +197,7 @@ const DifficultyContextProvider = (props) => {
                     setDifficultyDict(diffsDict);
                     
                     return true;
-                } else {
-                    console.log('Cache exists but contains no difficulties');
                 }
-            } else {
-                console.log('No cached data found');
             }
             return false;
         } catch (err) {
@@ -228,20 +211,16 @@ const DifficultyContextProvider = (props) => {
             setLoading(true);
             setError(null);
             
-            console.log(`Fetching difficulties (forceRefresh=${forceRefresh})`);
-            
             // If not forcing refresh, try to load from cache first
             if (!forceRefresh) {
                 const isCacheValid = await checkHash();
                 if (isCacheValid && loadCachedData()) {
-                    console.log('Using cached data');
                     setLoading(false);
                     return;
                 }
             }
             
             // Fetch fresh data from server
-            console.log('Fetching fresh data from server');
             const response = await api.get(import.meta.env.VITE_DIFFICULTIES);
             const diffsArray = response.data;
             
@@ -249,15 +228,11 @@ const DifficultyContextProvider = (props) => {
                 throw new Error('Invalid server response format');
             }
             
-            console.log(`Received ${diffsArray.length} difficulties from server`);
-            
             // Get the hash from the server
             const hashResponse = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/hash`);
             const hash = hashResponse.data.hash;
-            console.log(`Server hash: ${hash}`);
             
             // Cleanup old blob URLs to prevent memory leaks
-            console.log('Cleaning up old blob URLs');
             difficulties.forEach(diff => {
                 if (diff.icon && diff.icon.startsWith('blob:')) {
                     URL.revokeObjectURL(diff.icon);
@@ -268,7 +243,6 @@ const DifficultyContextProvider = (props) => {
             });
             
             // Process icons and create blob URLs
-            console.log('Processing icons and creating blob URLs');
             const diffsWithIcons = await Promise.all(diffsArray.map(async (diff) => {
                 try {
                     const iconUrl = diff.icon;
@@ -279,41 +253,33 @@ const DifficultyContextProvider = (props) => {
                     if (iconUrl) {
                         if (iconUrl.startsWith('data:')) {
                             // Already a base64 string, convert to blob
-                            console.log(`Converting base64 to blob for ${diff.name} icon`);
                             blobUrl = URL.createObjectURL(base64ToBlob(iconUrl));
                         } else if (iconUrl.startsWith('blob:')) {
                             // Already a blob URL, keep it
-                            console.log(`Using existing blob URL for ${diff.name} icon`);
                             blobUrl = iconUrl;
                         } else {
                             // Fetch from URL
-                            console.log(`Fetching icon from URL for ${diff.name}: ${iconUrl}`);
                             const iconResponse = await axios.get(iconUrl, {
                                 responseType: 'blob'
                             });
                             blobUrl = URL.createObjectURL(iconResponse.data);
-                            console.log(`Created blob URL for ${diff.name} icon: ${blobUrl}`);
                         }
                     }
 
                     if (legacyIconUrl) {
                         if (legacyIconUrl.startsWith('data:')) {
                             // Already a base64 string, convert to blob
-                            console.log(`Converting base64 to blob for ${diff.name} legacy icon`);
                             legacyBlobUrl = URL.createObjectURL(base64ToBlob(legacyIconUrl));
                         } else if (legacyIconUrl.startsWith('blob:')) {
                             // Already a blob URL, keep it
-                            console.log(`Using existing blob URL for ${diff.name} legacy icon`);
                             legacyBlobUrl = legacyIconUrl;
                         } else {
                             // Fetch from URL
-                            console.log(`Fetching legacy icon from URL for ${diff.name}: ${legacyIconUrl}`);
                             const legacyIconResponse = await axios.get(legacyIconUrl, {
                                 responseType: 'blob'
                             });
                             legacyBlobUrl = URL.createObjectURL(legacyIconResponse.data);
-                            console.log(`Created blob URL for ${diff.name} legacy icon: ${legacyBlobUrl}`);
-                        }
+                            }
                     }
 
                     return { 
@@ -328,19 +294,16 @@ const DifficultyContextProvider = (props) => {
             }));
             
             // Create and set difficulty dictionary
-            console.log('Creating difficulty dictionary');
             const diffsDict = {};
             diffsWithIcons.forEach(diff => {
                 diffsDict[diff.id] = diff;
             });
             
             // Update state
-            console.log('Updating state with processed difficulties');
             setDifficulties(diffsWithIcons);
             setDifficultyDict(diffsDict);
             
             // Save to cache with the correct hash
-            console.log('Saving to cache');
             saveToCache({ difficulties: diffsWithIcons }, hash);
             
         } catch (err) {
