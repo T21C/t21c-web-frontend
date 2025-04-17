@@ -34,7 +34,7 @@ const ScoreCard = ({scoreData, topScores}) => {
         )}
       </div>
       <div className="name-wrapper" onClick={() => redirect()}>
-          <p className="score-exp">{scoreData.level.artist || 'Hidden level'}</p>
+          <p className="score-exp">{scoreData.level.artist ?? 'Hidden level'}</p>
           <p className='score-desc'>{scoreData.level.song}</p>
       </div>
       {scoreData.isWorldsFirst && <div className="wf-badge">🏆<div className="wf-text">WF</div></div>}
