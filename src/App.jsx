@@ -76,6 +76,7 @@ function App() {
           <Route path='about' element={<Pages.AboutUsPage />} />
           <Route path='privacy-policy' element={<Pages.PrivacyPolicyPage />} />
           <Route path='terms-of-service' element={<Pages.TermsOfServicePage />} />
+          <Route path='health' element={<Pages.HealthCheckPage />} />
         </Routes>
       </Suspense>
     </AuthProvider>

@@ -31,6 +31,7 @@ import ProfilingPage from "./admin/ProfilingPage/ProfilingPage";
 import AboutUsPage from "./misc/AboutUsPage/AboutUsPage";
 import PrivacyPolicyPage from "./misc/PrivacyPolicyPage/PrivacyPolicyPage";
 import TermsOfServicePage from "./misc/TermsOfServicePage/TermsOfServicePage";
+import HealthCheckPage from "./misc/HealthCheckPage/HealthCheckPage";
 
 export {
     // Common pages
@@ -67,5 +68,6 @@ export {
     // Other pages
     AboutUsPage,
     PrivacyPolicyPage,
-    TermsOfServicePage
+    TermsOfServicePage,
+    HealthCheckPage
 };
