@@ -25,6 +25,7 @@ import VerifyEmailPage from "./account/VerifyEmailPage/VerifyEmailPage";
 import AdminPage from "./admin/AdminPage/AdminPage";
 import AnnouncementPage from "./admin/AnnouncementPage/AnnouncementPage";
 import BackupPage from "./admin/BackupPage/BackupPage";
+import ProfilingPage from "./admin/ProfilingPage/ProfilingPage";
 
 // About page
 import AboutUsPage from "./misc/AboutUsPage/AboutUsPage";
@@ -61,6 +62,7 @@ export {
     CreatorManagementPage,
     SubmissionManagementPage,
     RatingPage,
+    ProfilingPage,
     
     // Other pages
     AboutUsPage,
