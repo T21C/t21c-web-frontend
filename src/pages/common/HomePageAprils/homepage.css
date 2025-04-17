@@ -1,29 +1,29 @@
-.home {
+.home-aprils {
   overflow: visible;
   position: relative;
   color: var(--color-white);
   background-color: #000;
 }
 
-.home .home-container {
+.home-aprils .home-container {
   z-index: 1;
   padding: 5.5rem 4rem 5rem 4rem;
 }
 
-.home .spacer-svg {
+.home-aprils .spacer-svg {
   position: absolute;
   z-index: 2;
   bottom: 0;
 }
 
-.home .logo-container {
+.home-aprils .logo-container {
   width: 100%;
   height: clamp(6rem, 15vw, 12rem);
   opacity: 0;
   animation: fadeInLogo 0.8s ease-out forwards;
 }
 
-.home .logo {
+.home-aprils .logo {
   width: auto;
   height: 100%;
 }
@@ -40,13 +40,13 @@
   }
 }
 
-.home .title-section {
+.home-aprils .title-section {
   text-align: center;
   position: relative;
   z-index: 3;
 }
 
-.home .main-title {
+.home-aprils .main-title {
   font-size: clamp(4rem, 5vw, 5rem);
   margin: -50px 0;
   letter-spacing: 1px;
@@ -59,7 +59,7 @@
   display:grid;
 }
 
-.home .title-mask {
+.home-aprils .title-mask {
   position: relative;
   z-index: 2;
   background: linear-gradient(to right, #ce78ff, #ff2ad1, #a1007e, #a51d61, #b700ff);
@@ -71,7 +71,7 @@
   filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.41));
 }
 
-.home .title-glow {
+.home-aprils .title-glow {
   position: absolute;
   display:grid;
   width: 100%;
@@ -99,19 +99,19 @@
   transition: mask-image 1s ease, -webkit-mask-image 1s ease;
 }
 
-.home .main-title {
+.home-aprils .main-title {
   width: 100%;
   height: 220px;
   align-content: center;
 }
 
-.home .subtitle {
+.home-aprils .subtitle {
   font-size: clamp(1rem, 2vw, 1.5rem);
   opacity: 0.8;
   color: var(--color-white);
 }
 
-.home .action-buttons {
+.home-aprils .action-buttons {
   display: flex;
   justify-content: center;
   gap: 2rem;
@@ -123,7 +123,7 @@
   z-index: 21;
 }
 
-.home .action-button {
+.home-aprils .action-button {
   align-items: center;
   display: flex;
   padding: 0.8rem 1.5rem;
@@ -139,13 +139,13 @@
   backdrop-filter: blur(5px);
 }
 
-.home .action-button:hover {
+.home-aprils .action-button:hover {
   background: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
   border-color: var(--color-white);
 }
 
-.home .action-button.roulette-button {
+.home-aprils .action-button.roulette-button {
   background: linear-gradient(45deg, #2a0845, #6441A5);
   border: none;
   color: white;
@@ -156,14 +156,14 @@
   position: relative;
 }
 
-.home .action-button.roulette-button:disabled {
+.home-aprils .action-button.roulette-button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
   background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
   box-shadow: none;
 }
 
-.home .action-button.roulette-button .timeout-text {
+.home-aprils .action-button.roulette-button .timeout-text {
   position: absolute;
   top: -8px;
   right: -8px;
@@ -189,7 +189,7 @@
   }
 }
 
-.home .roulette-icon {
+.home-aprils .roulette-icon {
   font-size: 1.5em;
   display: inline-flex;
   align-items: center;
@@ -208,17 +208,17 @@
   }
 }
 
-.home .content-container {
+.home-aprils .content-container {
   position: relative;
   z-index: 20;
 }
 
-.home .complete-nav {
+.home-aprils .complete-nav {
   position: relative;
   z-index: 10;
 }
 
-.home .title-section {
+.home-aprils .title-section {
   position: relative;
   z-index: 21;
   text-align: center;
@@ -246,7 +246,7 @@
   }
 }
 
-.home .stats-container {
+.home-aprils .stats-container {
   position: relative;
   z-index: 10;
   margin-top: 4rem;
@@ -258,7 +258,7 @@
   padding: 0 2rem;
 }
 
-.home .stats-section {
+.home-aprils .stats-section {
   background: rgba(13, 13, 13, 0.95);
   border-radius: 48px;
   padding: 2rem;
@@ -268,20 +268,20 @@
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
 }
 
-.home .stats-section h2 {
+.home-aprils .stats-section h2 {
   font-size: clamp(1.5rem, 3vw, 2rem);
   margin-bottom: 2rem;
   color: #ffffff;
   text-align: center;
 }
 
-.home .stats-grid {
+.home-aprils .stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 2rem;
 }
 
-.home .stat-card {
+.home-aprils .stat-card {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -292,11 +292,11 @@
   transition: transform 0.3s ease;
 }
 
-.home .stat-card:hover {
+.home-aprils .stat-card:hover {
   transform: translateY(-5px);
 }
 
-.home .stat-value {
+.home-aprils .stat-value {
   font-size: clamp(1.5rem, 4vw, 2.5rem);
   font-weight: bold;
   background: linear-gradient(to right, #ce78ff, #ff2ad1);
@@ -305,20 +305,20 @@
   -webkit-text-fill-color: transparent;
 }
 
-.home .stat-label {
+.home-aprils .stat-label {
   font-size: clamp(0.9rem, 2vw, 1.1rem);
 }
 
 
 /* Graph Controls */
-.home .graph-controls {
+.home-aprils .graph-controls {
   display: flex;
   justify-content: center;
   gap: 1rem;
   margin-bottom: 2rem;
 }
 
-.home .graph-mode {
+.home-aprils .graph-mode {
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 20px;
@@ -329,17 +329,17 @@
   font-weight: 500;
 }
 
-.home .graph-mode:hover {
+.home-aprils .graph-mode:hover {
   background: rgba(255, 255, 255, 0.1);
   box-shadow: 0 0 15px rgba(206, 120, 255, 0.3);
 }
 
-.home .graph-mode.active {
+.home-aprils .graph-mode.active {
   background: linear-gradient(to right, #ce78ff, #ff2ad1);
   box-shadow: 0 0 20px rgba(255, 42, 209, 0.4);
 }
 
-.home .difficulty-type-section {
+.home-aprils .difficulty-type-section {
   margin-bottom: 3rem;
   padding: 2rem;
   background: rgba(255, 255, 255, 0.02);
@@ -347,7 +347,7 @@
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.home .difficulty-type-section h3 {
+.home-aprils .difficulty-type-section h3 {
   font-size: clamp(1.2rem, 2.5vw, 1.8rem);
   margin-bottom: 1.5rem;
   color: #ffffff;
@@ -356,29 +356,29 @@
 }
 
 /* Tooltip customization for charts */
-.home .recharts-tooltip-wrapper {
+.home-aprils .recharts-tooltip-wrapper {
   filter: drop-shadow(0 0 10px rgba(0, 0, 0, 0.5));
 }
 
-.home .recharts-default-tooltip {
+.home-aprils .recharts-default-tooltip {
   background-color: rgba(13, 13, 13, 0.95) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
   border-radius: 12px !important;
   padding: 1rem !important;
 }
 
-.home .recharts-tooltip-label {
+.home-aprils .recharts-tooltip-label {
   color: #ffffff !important;
   margin-bottom: 0.5rem !important;
 }
 
-.home .recharts-tooltip-item {
+.home-aprils .recharts-tooltip-item {
   color: rgba(255, 255, 255, 0.8) !important;
   padding: 0.25rem 0 !important;
 }
 
 /* Custom tooltip styles */
-.home .custom-tooltip {
+.home-aprils .custom-tooltip {
   background-color: rgba(13, 13, 13, 0.95);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
@@ -389,51 +389,51 @@
   pointer-events: none;
 }
 
-.home .tooltip-content {
+.home-aprils .tooltip-content {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-.home .tooltip-left {
+.home-aprils .tooltip-left {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 0.35rem;
 }
 
-.home .difficulty-icon {
+.home-aprils .difficulty-icon {
   width: 32px;
   height: 32px;
   object-fit: contain;
 }
 
-.home .tooltip-label {
+.home-aprils .tooltip-label {
   font-size: 0.9rem;
   font-weight: 600;
   text-align: center;
   text-shadow: 0 0 8px currentColor;
 }
 
-.home .tooltip-right {
+.home-aprils .tooltip-right {
   flex: 1;
   padding-left: 0.5rem;
   border-left: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.home .tooltip-stats {
+.home-aprils .tooltip-stats {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
 
-.home .tooltip-value {
+.home-aprils .tooltip-value {
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.8);
 }
 
 
-.home .recharts-default-tooltip {
+.home-aprils .recharts-default-tooltip {
   background: none !important;
   border: none !important;
   padding: 0 !important;
@@ -441,105 +441,105 @@
 }
 
 /* Bar chart animations */
-.home .recharts-bar-rectangle {
+.home-aprils .recharts-bar-rectangle {
   transition: fill 0.3s ease-out;
 }
 
 /* Ensure animations reset */
-.home .recharts-bar {
+.home-aprils .recharts-bar {
   will-change: transform;
   transform-origin: bottom;
 }
 
 /* Mobile Adjustments */
 @media (max-width: 768px) {
-  .home .home-container {
+  .home-aprils .home-container {
     padding: 5rem 1rem 2rem 1rem;
   }
 
-  .home .logo-container {
+  .home-aprils .logo-container {
     height: clamp(4rem, 12vw, 8rem);
   }
 
-  .home .main-title {
+  .home-aprils .main-title {
     font-size: clamp(3rem, 7vw, 4rem);
     margin: -40px 0;
     height: 160px;
   }
 
-  .home .action-buttons {
+  .home-aprils .action-buttons {
     flex-direction: column;
     gap: 1rem;
     padding: 0 1rem;
   }
 
-  .home .action-button {
+  .home-aprils .action-button {
     width: 100%;
     justify-content: center;
     padding: 1rem;
   }
 
-  .home .action-button.roulette-button {
+  .home-aprils .action-button.roulette-button {
     width: 100%;
     margin-bottom: 1rem;
   }
 
-  .home .roulette-icon {
+  .home-aprils .roulette-icon {
     font-size: 1.2em;
   }
 
-  .home .stats-container {
+  .home-aprils .stats-container {
     margin-top: 2rem;
     padding: 0 1rem;
     gap: 2rem;
   }
 
-  .home .stats-section {
+  .home-aprils .stats-section {
     padding: 1.5rem;
   }
 
-  .home .stats-grid {
+  .home-aprils .stats-grid {
     grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
     gap: 1rem;
   }
 
-  .home .stat-card {
+  .home-aprils .stat-card {
     padding: 1rem;
   }
 
-  .home .difficulty-type-section {
+  .home-aprils .difficulty-type-section {
     padding: 1rem;
     margin-bottom: 2rem;
   }
 
-  .home .graph-controls {
+  .home-aprils .graph-controls {
     flex-wrap: wrap;
   }
 
-  .home .graph-mode {
+  .home-aprils .graph-mode {
     flex: 1;
     min-width: 120px;
     text-align: center;
   }
 
   /* Tooltip adjustments for mobile */
-  .home .custom-tooltip {
+  .home-aprils .custom-tooltip {
     max-width: 90vw;
     padding: 0.5rem;
   }
 
-  .home .tooltip-content {
+  .home-aprils .tooltip-content {
     flex-direction: column;
     gap: 0.5rem;
     align-items: flex-start;
   }
 
-  .home .tooltip-left {
+  .home-aprils .tooltip-left {
     flex-direction: row;
     width: 100%;
   }
 
-  .home .tooltip-right {
+  .home-aprils .tooltip-right {
     padding-left: 0;
     border-left: none;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -550,106 +550,106 @@
 
 /* Small phone adjustments */
 @media (max-width: 360px) {
-  .home .home-container {
+  .home-aprils .home-container {
     padding: 4.5rem 0.75rem 1.5rem 0.75rem;
   }
 
-  .home .logo-container {
+  .home-aprils .logo-container {
     height: clamp(3.5rem, 10vw, 6rem);
   }
 
-  .home .main-title {
+  .home-aprils .main-title {
     font-size: clamp(2rem, 7vw, 3rem);
     margin: -30px 0;
     height: 120px;
   }
 
-  .home .action-button {
+  .home-aprils .action-button {
     font-size: 0.9rem;
     padding: 0.75rem;
   }
 
-  .home .action-button.roulette-button {
+  .home-aprils .action-button.roulette-button {
     font-size: 0.9rem;
     padding: 0.75rem;
   }
 
-  .home .stats-section {
+  .home-aprils .stats-section {
     padding: 1rem;
   }
 
-  .home .stats-grid {
+  .home-aprils .stats-grid {
     grid-template-columns: 1fr;
   }
 
-  .home .stat-value {
+  .home-aprils .stat-value {
     font-size: 1.5rem;
   }
 
-  .home .stat-label {
+  .home-aprils .stat-label {
     font-size: 0.85rem;
   }
 
-  .home .graph-mode {
+  .home-aprils .graph-mode {
     padding: 0.4rem 0.75rem;
     font-size: 0.9rem;
   }
 
-  .home .difficulty-type-section h3 {
+  .home-aprils .difficulty-type-section h3 {
     font-size: 1.1rem;
   }
 
-  .home .roulette-icon {
+  .home-aprils .roulette-icon {
     font-size: 1.1em;
   }
 }
 
 /* Landscape mode adjustments */
 @media (max-height: 600px) and (orientation: landscape) {
-  .home .home-container {
+  .home-aprils .home-container {
     padding-top: 4rem;
   }
 
-  .home .logo-container {
+  .home-aprils .logo-container {
     height: clamp(3rem, 8vh, 5rem);
   }
 
-  .home .main-title {
+  .home-aprils .main-title {
     font-size: clamp(2rem, 6vw, 3rem);
     margin: -10px 0;
     height: 100px;
   }
 
-  .home .action-buttons {
+  .home-aprils .action-buttons {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
     gap: 1rem;
   }
 
-  .home .action-button {
+  .home-aprils .action-button {
     width: auto;
     min-width: 200px;
   }
 
-  .home .action-button.roulette-button {
+  .home-aprils .action-button.roulette-button {
     width: auto;
     min-width: 200px;
   }
 
-  .home .stats-grid {
+  .home-aprils .stats-grid {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 }
 
-.home .discord-container {
+.home-aprils .discord-container {
   display: flex;
   justify-content: start;
   align-items: start;
   flex-direction: column;
 }
 
-.home .discord-title {
+.home-aprils .discord-title {
   font-size: 1.5rem;
   font-weight: 600;
   margin-bottom: 1rem;

@@ -289,17 +289,6 @@ const HealthCheckPage = () => {
                   <div className="memory-item">
                     <div className="memory-label">Heap Used</div>
                     <div className="memory-value">{formatMemory(healthData.memoryUsage?.heapUsed)}</div>
-                    {healthData.memoryUsage?.heapTotal && healthData.memoryUsage?.heapUsed && (
-                      <div className="memory-bar">
-                        <div 
-                          className="memory-bar-fill" 
-                          style={{ 
-                            width: `${calculateMemoryPercentage(healthData.memoryUsage.heapUsed, healthData.memoryUsage.heapTotal)}%`,
-                            backgroundColor: calculateMemoryPercentage(healthData.memoryUsage.heapUsed, healthData.memoryUsage.heapTotal) > 80 ? '#F44336' : '#4CAF50'
-                          }}
-                        ></div>
-                      </div>
-                    )}
                   </div>
                   
                   <div className="memory-item">
