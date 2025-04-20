@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import './loginPage.css';
 import { CompleteNav } from '@/components/layout';
 import { MetaTags } from '@/components/common/display';
-import { useScript } from '@/hooks/useScript';
+import ReCAPTCHA from '@/components/auth/ReCaptcha/ReCaptcha';
 const currentUrl = window.location.origin + location.pathname;
 
 const LoginPage = () => {
@@ -15,50 +15,14 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [requireCaptcha, setRequireCaptcha] = useState(false);
   const [retryAfter, setRetryAfter] = useState(null);
-  const recaptchaContainer = useRef(null);
+  const [captchaToken, setCaptchaToken] = useState(null);
+  const [captchaKey, setCaptchaKey] = useState(0); // Key to force re-render of ReCaptcha
   const timerRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
   const { login, loginWithDiscord } = useAuth();
   const { t } = useTranslation('pages');
   const tLogin = (key, params = {}) => t(`login.${key}`, params);
-
-  // Load reCAPTCHA script
-  const recaptchaStatus = useScript(
-    'https://www.google.com/recaptcha/api.js'
-  );
-
-  // Keep track of whether reCAPTCHA has been rendered
-  const [isRecaptchaRendered, setIsRecaptchaRendered] = useState(false);
-
-  // Initialize reCAPTCHA when script is loaded
-  useEffect(() => {
-    if (recaptchaStatus === 'ready' && window.grecaptcha && requireCaptcha && !isRecaptchaRendered) {
-      try {
-        window.grecaptcha.render(recaptchaContainer.current, {
-          sitekey: import.meta.env.VITE_RECAPTCHA_SITE_KEY,
-          theme: 'light',
-          size: 'normal',
-        });
-        setIsRecaptchaRendered(true);
-      } catch (error) {
-        console.error('Error rendering reCAPTCHA:', error);
-        if (error.message.includes('already been rendered')) {
-          setIsRecaptchaRendered(true);
-        }
-      }
-    }
-  }, [recaptchaStatus, requireCaptcha, isRecaptchaRendered]);
-
-  // Reset reCAPTCHA when it's no longer required
-  useEffect(() => {
-    if (!requireCaptcha && isRecaptchaRendered) {
-      setIsRecaptchaRendered(false);
-      if (window.grecaptcha) {
-        window.grecaptcha.reset();
-      }
-    }
-  }, [requireCaptcha]);
 
   // Handle countdown timer for rate limiting
   useEffect(() => {
@@ -116,6 +80,19 @@ const LoginPage = () => {
     return result;
   };
 
+  const handleCaptchaVerify = (token) => {
+    setCaptchaToken(token);
+  };
+
+  // Reset captcha when it's required again
+  useEffect(() => {
+    if (requireCaptcha) {
+      setCaptchaToken(null);
+      // Force re-render of ReCaptcha component by changing its key
+      setCaptchaKey(prev => prev + 1);
+    }
+  }, [requireCaptcha]);
+
   const handleEmailLogin = async (e) => {
     e.preventDefault();
     setError('');
@@ -123,29 +100,10 @@ const LoginPage = () => {
     setLoading(true);
 
     try {
-      let captchaToken = null;
-      
-      if (requireCaptcha) {
-        try {
-          captchaToken = await new Promise((resolve, reject) => {
-            if (!window.grecaptcha) {
-              reject(new Error(tLogin('errors.captcha.notLoaded')));
-              return;
-            }
-
-            const response = window.grecaptcha.getResponse();
-            if (response) {
-              resolve(response);
-            } else {
-              reject(new Error(tLogin('errors.captcha.incomplete')));
-            }
-          });
-        } catch (captchaError) {
-          console.error('reCAPTCHA error:', captchaError);
-          setError(captchaError.message || tLogin('errors.captcha.failed'));
-          setLoading(false);
-          return;
-        }
+      if (requireCaptcha && !captchaToken) {
+        setError(tLogin('errors.captcha.incomplete'));
+        setLoading(false);
+        return;
       }
 
       await login(email, password, captchaToken);
@@ -157,6 +115,7 @@ const LoginPage = () => {
       // Extract error message from various possible response formats
       let errorMessage = '';
       let retryAfterValue = null;
+      let captchaRequired = false;
       
       if (err.response) {
         const response = err.response.data;
@@ -168,12 +127,13 @@ const LoginPage = () => {
         } 
         // Handle captcha requirement
         else if (response?.requireCaptcha) {
-          setRequireCaptcha(true);
+          captchaRequired = true;
           errorMessage = response.message || response.error || tLogin('errors.generic');
         }
         // Handle specific error messages
         else if (response?.message) {
           errorMessage = response.message;
+          captchaRequired = response.requireCaptcha || false;
         }
         else if (response?.error) {
           errorMessage = response.error;
@@ -181,6 +141,7 @@ const LoginPage = () => {
         // Handle specific status codes
         else if (err.response.status === 401) {
           errorMessage = tLogin('errors.invalidCredentials');
+          captchaRequired = response?.requireCaptcha || false;
         }
         else if (err.response.status === 403) {
           errorMessage = tLogin('errors.emailNotVerified');
@@ -204,16 +165,17 @@ const LoginPage = () => {
         errorMessage = err.message || tLogin('errors.generic');
       }
       
-      // Set the error message and retry after value
+      // Set the error message, retry after value, and captcha requirement
       setError(errorMessage);
       if (retryAfterValue) {
         setRetryAfter(retryAfterValue);
       }
-      
-      // Reset captcha if needed
-      if (requireCaptcha && window.grecaptcha) {
-        window.grecaptcha.reset();
-        setIsRecaptchaRendered(false);
+      if (captchaRequired) {
+        setRequireCaptcha(true);
+        // Reset captcha token to force user to complete it again
+        setCaptchaToken(null);
+        // Force re-render of ReCaptcha component
+        setCaptchaKey(prev => prev + 1);
       }
     } finally {
       setLoading(false);
@@ -282,13 +244,15 @@ const LoginPage = () => {
             </div>
 
             {requireCaptcha && (
-              <div className="captcha-container" ref={recaptchaContainer}></div>
+              <div className="captcha-container">
+                <ReCAPTCHA key={captchaKey} onVerify={handleCaptchaVerify} />
+              </div>
             )}
 
             <button 
               type="submit" 
               className="login-button" 
-              disabled={loading || retryAfter || (requireCaptcha && recaptchaStatus !== 'ready')}
+              disabled={loading || retryAfter || (requireCaptcha && !captchaToken)}
             >
               {loading ? tLogin('form.buttons.loggingIn') : tLogin('form.buttons.login')}
             </button>

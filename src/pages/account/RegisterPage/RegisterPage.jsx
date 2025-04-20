@@ -20,6 +20,7 @@ const RegisterPage = () => {
   const [modifiedUsername, setModifiedUsername] = useState('');
   const [retryAfter, setRetryAfter] = useState(null);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const timerRef = useRef(null);
   const [validationErrors, setValidationErrors] = useState({
     email: '',
@@ -248,6 +249,12 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Prevent multiple submissions
+    if (isSubmitting) {
+      return;
+    }
+    
     setError('');
     setRetryAfter(null);
     
@@ -255,6 +262,9 @@ const RegisterPage = () => {
     if (!validateForm()) {
       return;
     }
+
+    // Set submitting state to true
+    setIsSubmitting(true);
 
     try {
       const response = await register({
@@ -280,6 +290,9 @@ const RegisterPage = () => {
       else {
         setError(err.message || 'Registration failed. Please try again.');
       }
+    } finally {
+      // Reset submitting state regardless of success or failure
+      setIsSubmitting(false);
     }
   };
 
@@ -461,10 +474,10 @@ const RegisterPage = () => {
 
           <button 
             type="submit" 
-            className={`register-button ${!agreedToTerms ? 'disabled' : ''}`}
-            disabled={!agreedToTerms}
+            className={`register-button ${!agreedToTerms || isSubmitting ? 'disabled' : ''}`}
+            disabled={!agreedToTerms || isSubmitting}
           >
-            Create Account
+            {isSubmitting ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
 
