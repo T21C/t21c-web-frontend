@@ -22,11 +22,17 @@
 .level-page .level-body .input-option input {
   width: 100%;
   background-color: var(--color-white-t20);
-  border: none;
   border-radius: 3px;
   padding: 0.5rem;
   color: var(--white-color);
+  border: 1px solid transparent;
+  transition: all 0.2s linear;
 }
+
+.level-page .level-body .input-option input.search-pending {
+  border: 1px solid #fff4;
+}
+
 .level-page .level-body .input-option input:focus {
   outline: none;
 }

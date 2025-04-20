@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import "./levelpage.css";
-import { useContext, useEffect, useState, useCallback } from "react";
+import { useContext, useEffect, useState, useCallback, useRef } from "react";
 import { CompleteNav } from "@/components/layout";
 import { LevelCard } from "@/components/cards";
 import { StateDisplay } from "@/components/common/selectors";
@@ -72,6 +72,11 @@ const LevelPage = () => {
   const [showHelpPopup, setShowHelpPopup] = useState(false);
   const [viewMode, setViewMode] = useState('normal');
   const [cardSize, setCardSize] = useState('medium');
+  const [searchCooldown, setSearchCooldown] = useState(false);
+  const [searchInput, setSearchInput] = useState(query);
+  const searchTimeoutRef = useRef(null);
+  const [pendingSearch, setPendingSearch] = useState(false);
+  const lastSearchValueRef = useRef(query);
 
   // Filter difficulties by type
   const pguDifficulties = difficulties.filter(d => d.type === 'PGU').sort((a, b) => a.sortOrder - b.sortOrder);
@@ -179,10 +184,47 @@ const LevelPage = () => {
   }
 
   function handleQueryChange(e) {
-    setQuery(e.target.value);
-    setPageNumber(0);
-    setLevelsData([]);
+    const newValue = e.target.value;
+    setSearchInput(newValue);
+    
+    // Clear any existing timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+    
+    // Set a new timeout to trigger search after 500ms of inactivity
+    searchTimeoutRef.current = setTimeout(() => {
+      // Only update if the value has changed since the last search
+      if (newValue !== lastSearchValueRef.current) {
+        lastSearchValueRef.current = newValue;
+        setPendingSearch(true);
+        setQuery(newValue);
+        setPageNumber(0);
+        setLevelsData([]);
+        
+        // Set cooldown after search is initiated
+        setSearchCooldown(true);
+        setTimeout(() => {
+          setSearchCooldown(false);
+          setPendingSearch(false);
+        }, 1000);
+      }
+    }, 500);
   }
+
+  // Update lastSearchValueRef when query changes from other sources
+  useEffect(() => {
+    lastSearchValueRef.current = query;
+  }, [query]);
+
+  // Clean up the timeout when component unmounts
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     let cancel;
@@ -378,12 +420,13 @@ const LevelPage = () => {
             {tLevel('buttons.searchHelp')}
           </button>
 
-          <input
-            value={query}
-            type="text"
-            placeholder={tLevel('input.placeholder')}
-            onChange={handleQueryChange}
-          />
+            <input
+              value={searchInput}
+              type="text"
+              placeholder={tLevel('input.placeholder')}
+              onChange={handleQueryChange}
+              className={searchInput != query ? 'search-pending' : ''}
+            />
 
           <Tooltip id="search" place="bottom" noArrow>
             {tLevel('toolTip.search')}
