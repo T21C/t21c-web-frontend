@@ -25,7 +25,7 @@ const LevelCard = ({
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [thumbnailUrl, setThumbnailUrl] = useState('');
   const { difficultyDict } = useDifficultyContext();
-  const difficultyInfo = difficultyDict[level.difficulty.id];
+  const difficultyInfo = difficultyDict[level.diffId];
 
   useEffect(() => {
     if (displayMode === 'grid' && level.videoLink) {
