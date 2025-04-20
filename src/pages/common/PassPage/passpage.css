@@ -24,7 +24,8 @@
 .pass-page .pass-body .input-option input {
   width: 100%;
   background-color: var(--color-white-t20);
-  border: none;
+  border: transparent 1px solid;
+  transition: all 0.2s linear;
   border-radius: 3px;
   padding: 0.5rem;
   color: var(--white-color);
@@ -32,6 +33,10 @@
 
 .pass-page .pass-body .input-option input:focus {
   outline: none;
+}
+
+.pass-page .pass-body .input-option input.search-pending {
+  border: 1px solid #fff4;
 }
 
 .pass-page .pass-body .input-option svg {

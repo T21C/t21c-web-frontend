@@ -31,6 +31,7 @@ const PassPage = () => {
   const { difficulties } = useContext(DifficultyContext);
   const [showHelpPopup, setShowHelpPopup] = useState(false);
   const [selectedSpecialDiffs, setSelectedSpecialDiffs] = useState([]);
+  const [pendingQuery, setPendingQuery] = useState("");
 
   // Filter difficulties by type
   const pguDifficulties = difficulties.filter(d => d.type === 'PGU');
@@ -147,14 +148,31 @@ const PassPage = () => {
     return () => cancel && cancel();
   }, [query, pageNumber, forceUpdate, deletedFilter, hide12k, selectedSpecialDiffs]);
 
+  // Debounced search effect
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (pendingQuery !== query) {
+        setPageNumber(0);
+        setPassesData(null);
+        setQuery(pendingQuery);
+        setLoading(true);
+        setForceUpdate((f) => !f);
+      }
+    }, 500);
 
+    return () => clearTimeout(timer);
+  }, [pendingQuery]);
 
+  // Initialize pendingQuery with query value
+  useEffect(() => {
+    setPendingQuery(query);
+  }, []);
 
-  
   function resetAll() {
     setPageNumber(0);
     setSort("SCORE_DESC");
     setQuery("");
+    setPendingQuery("");
     // Reset to initial PGU range
     setSelectedLowFilterDiff("P1");
     setSelectedHighFilterDiff("U20");
@@ -172,10 +190,7 @@ const PassPage = () => {
   }
 
   function handleQueryChange(e) {
-    setPageNumber(0);
-    setPassesData(null);
-    setQuery(e.target.value);
-    setLoading(true);
+    setPendingQuery(e.target.value);
   }
 
   function handleFilterOpen() {
@@ -348,10 +363,11 @@ const PassPage = () => {
           </button>
 
           <input
-            value={query}
+            value={pendingQuery}
             type="text"
             placeholder={tPass('input.placeholder')}
             onChange={handleQueryChange}
+            className={pendingQuery !== query ? 'search-pending' : ''}
           />
 
           <Tooltip id="search" place="bottom" noArrow>
