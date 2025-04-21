@@ -47,7 +47,8 @@ function App() {
           <Route path="profile/verify-email" element={<Pages.EmailVerificationPage />} />
           
           <Route index path="/" element={
-            import.meta.env.VITE_APRIL_FOOLS === "true" ? <Pages.HomePageAprils /> : <Pages.HomePage />
+            //import.meta.env.VITE_APRIL_FOOLS === "true" ? <Pages.HomePageAprils /> : 
+            <Pages.HomePage />
           } />
           <Route path="levels" element={<Pages.LevelPage />} />
           <Route path="levels/:id" element={<Pages.LevelDetailPage />} />

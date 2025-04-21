@@ -1,4 +1,4 @@
-import HomePageAprils from "./common/HomePageAprils/HomePage";
+//import HomePageAprils from "./common/HomePageAprils/HomePage";
 import HomePage from "./common/HomePage/HomePage";
 import LevelDetailPage from "./common/LevelDetailPage/LevelDetailPage";
 import LevelPage from "./common/LevelPage/LevelPage";
@@ -36,7 +36,7 @@ import HealthCheckPage from "./misc/HealthCheckPage/HealthCheckPage";
 export {
     // Common pages
     HomePage,
-    HomePageAprils,
+    //HomePageAprils,
     LevelDetailPage,
     LevelPage,
     SubmissionPage,

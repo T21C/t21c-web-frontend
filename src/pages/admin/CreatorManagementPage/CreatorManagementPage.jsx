@@ -349,7 +349,7 @@ const CreatorManagementPage = () => {
       await fetchCreators();
       setSuccess('Creator created successfully');
       setNewCreator({ name: '', aliases: [] });
-      setNewAlias('');
+      setNewCreatorAlias('');
     } catch (err) {
       setError(err.message || 'Failed to create creator');
     }
@@ -357,12 +357,12 @@ const CreatorManagementPage = () => {
 
   const handleAddAlias = (e) => {
     e.preventDefault();
-    if (newAlias && !newCreator.aliases.includes(newAlias)) {
+    if (newCreatorAlias && !newCreator.aliases.includes(newCreatorAlias)) {
       setNewCreator(prev => ({
         ...prev,
-        aliases: [...prev.aliases, newAlias]
+        aliases: [...prev.aliases, newCreatorAlias]
       }));
-      setNewAlias('');
+      setNewCreatorAlias('');
     }
   };
 
@@ -408,7 +408,7 @@ const CreatorManagementPage = () => {
       role: c.role || CreditRole.CREATOR,
       isVerified: c.isVerified,
       levelCount: c.levelCount || 0,
-      aliases: c.aliases
+      aliases: c.creatorAliases?.map(alias => alias.name) || []
     })) || []);
     setHasUnsavedChanges(false);
   };
@@ -434,7 +434,7 @@ const CreatorManagementPage = () => {
       role: CreditRole.CHARTER,
       isVerified: creator.isVerified,
       levelCount: creator.createdLevels?.length || 0,
-      aliases: creator.aliases
+      aliases: creator.creatorAliases?.map(alias => alias.name) || []
     }]);
     setHasUnsavedChanges(true);
   };
@@ -497,7 +497,7 @@ const CreatorManagementPage = () => {
           role: c.role || CreditRole.CREATOR,
           isVerified: c.isVerified,
           createdLevels: c.createdLevels,
-          aliases: c.aliases
+          aliases: c.creatorAliases?.map(alias => alias.name) || []
         })) || []);
         setHasUnsavedChanges(false);
       }
@@ -605,6 +605,9 @@ const CreatorManagementPage = () => {
           {level.currentCreators?.map(creator => (
             <span key={creator.id} className="creator-tag">
               {creator.name} ({creator.role})
+              {creator.aliases && creator.aliases.length > 0 && (
+                <span className="creator-aliases"> [{creator.aliases.join(', ')}]</span>
+              )}
             </span>
           ))}
         </div>
@@ -700,6 +703,9 @@ const CreatorManagementPage = () => {
                   {creator.name.length > 25 ? `${creator.name.substring(0, 25)}...` : creator.name}
                   <span className="creator-details">
                     (ID: {creator.id} • {creator.levelCount} {creator.levelCount.toString().endsWith('1') ? 'level' : 'levels'})
+                    {creator.aliases && creator.aliases.length > 0 && (
+                      <span className="creator-aliases"> • Aliases: {creator.aliases.join(', ')}</span>
+                    )}
                   </span>
                 </span>
                 <div className="creator-controls">
@@ -728,7 +734,7 @@ const CreatorManagementPage = () => {
             <CustomSelect
               options={availableCreators === null ? [] : availableCreators.map(creator => ({
                 value: creator.id,
-                label: `${creator.name} (ID: ${creator.id}, Charts: ${creator.createdLevels?.length || 0})${creator.aliases?.length > 0 ? ` [${creator.aliases.join(', ')}]` : ''}`
+                label: `${creator.name} (ID: ${creator.id}, Charts: ${creator.createdLevels?.length || 0})${creator.creatorAliases?.length > 0 ? ` [${creator.creatorAliases.map(alias => alias.name).join(', ')}]` : ''}`
               }))}
               value={null}
               onChange={(option) => {
@@ -1098,8 +1104,8 @@ const CreatorManagementPage = () => {
                           {creator.isVerified && <span className="verified-badge" title={tCreator('creatorInfo.verifiedBadge')}>✓</span>}
                         </h3>
                         <p>{tCreator('creatorInfo.charts')}: {creator.createdLevels?.length || 0}</p>
-                        {creator.aliases?.length > 0 && (
-                          <p>{tCreator('creatorInfo.aliases')}: {creator.aliases.join(', ')}</p>
+                        {creator.creatorAliases?.length > 0 && (
+                          <p>{tCreator('creatorInfo.aliases')}: {creator.creatorAliases.map(alias => alias.name).join(', ')}</p>
                         )}
                       </div>
                       <div className="creator-actions">

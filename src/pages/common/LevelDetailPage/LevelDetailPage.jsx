@@ -109,8 +109,9 @@ const FullInfoPopup = ({ level, onClose }) => {
       if (!acc[role]) {
         acc[role] = [];
       }
-      const creatorName = credit.creator.aliases?.length > 0 
-        ? `${credit.creator.name} (${credit.creator.aliases.join(', ')})`
+      
+      const creatorName = credit.creator.creatorAliases?.length > 0 
+        ? `${credit.creator.name} (${credit.creator.creatorAliases.map(alias => alias.name).join(', ')})`
         : credit.creator.name;
       acc[role].push(creatorName);
       return acc;

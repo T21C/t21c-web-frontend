@@ -268,7 +268,7 @@ const LevelSubmissions = () => {
               totalLevels: request.creator.createdLevels?.length || 0,
               verifiedLevels: request.creator.createdLevels?.filter(l => l.isVerified).length || 0
             },
-            aliases: request.creator.aliases || [],
+            aliases: request.creator.creatorAliases?.map(alias => alias.name) || [],
             isVerified: request.creator.isVerified || false
           }
         };

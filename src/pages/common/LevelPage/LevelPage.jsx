@@ -20,7 +20,7 @@ import { SortAscIcon, SortDescIcon, RandomIcon, ResetIcon, SortIcon , FilterIcon
 import { LevelHelpPopup } from "@/components/popups";
 const currentUrl = window.location.origin + location.pathname;
 
-const limit = 30;
+const limit = 50;
 
 const LevelPage = () => {
   const { t } = useTranslation('pages');

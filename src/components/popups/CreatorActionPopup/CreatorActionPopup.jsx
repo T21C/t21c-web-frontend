@@ -27,7 +27,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
 
   const [mode, setMode] = useState('update'); // update, merge, split, discord, levels
   const [name, setName] = useState(creator?.name || '');
-  const [aliases, setAliases] = useState(creator?.aliases || []);
+  const [aliases, setAliases] = useState(creator?.creatorAliases?.map(alias => alias.name) || []);
   const [newAlias, setNewAlias] = useState('');
   const [discordId, setDiscordId] = useState('');
   const [isVerified, setIsVerified] = useState(creator?.isVerified || false);
@@ -161,15 +161,19 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
         }
       }
 
-      await api.put(`/v2/database/creators/${creator.id}`, {
+      const response = await api.put(`/v2/database/creators/${creator.id}`, {
         name,
         aliases,
         userId,
         isVerified
       });
 
-      setSuccess('Creator updated successfully');
-      onUpdate();
+      if (response.status === 200) {
+        setSuccess('Creator updated successfully');
+        onUpdate();
+      } else {
+        setError(response.data?.error || 'Failed to update creator');
+      }
     } catch (error) {
       setError('Failed to update creator');
       console.error('Error updating creator:', error);
@@ -339,7 +343,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
 
   useEffect(() => {
     const nameChanged = name !== creator?.name;
-    const aliasesChanged = JSON.stringify(aliases) !== JSON.stringify(creator?.aliases || []);
+    const aliasesChanged = JSON.stringify(aliases) !== JSON.stringify(creator?.creatorAliases?.map(alias => alias.name) || []);
     const verificationChanged = isVerified !== creator?.isVerified;
     setHasPendingChanges(nameChanged || aliasesChanged || verificationChanged);
   }, [name, aliases, creator, isVerified]);
