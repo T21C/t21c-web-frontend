@@ -1,6 +1,7 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import sitemapPlugin from 'vite-plugin-sitemap'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
@@ -19,7 +20,26 @@ export default defineConfig(({ command, mode }) => {
   console.log('port', port);
 
   return {
-    plugins: [react()],
+    plugins: [
+      react(),
+      sitemapPlugin({
+        hostname: mode === 'production' 
+          ? env.VITE_PROD_API_URL 
+          : mode === 'staging' 
+            ? env.VITE_STAGING_API_URL 
+            : env.VITE_DEV_API_URL,
+        dynamicRoutes: [
+          '/',
+          '/about',
+          '/contact',
+          '/levels',
+          '/passes',
+          '/leaderboard',
+          '/player',
+          '/admin/rating'
+        ],
+      }),
+    ],
     logLevel: 'info',
     resolve: {
       alias: {

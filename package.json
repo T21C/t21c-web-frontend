@@ -2,7 +2,7 @@
   "name": "client",
   "private": true,
   "version": "0.0.0",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "dev": "vite --host",
     "staging": "vite --mode staging --host",
@@ -41,7 +41,8 @@
     "recharts": "^2.15.0",
     "serve": "^14.2.4",
     "shuffle-seed": "^1.1.6",
-    "socket.io-client": "^4.8.1"
+    "socket.io-client": "^4.8.1",
+    "vite-plugin-sitemap": "^0.7.1"
   },
   "devDependencies": {
     "@babel/core": "^7.26.10",
@@ -58,6 +59,7 @@
     "eslint-plugin-react-refresh": "^0.4.16",
     "vite": "^5.4.11",
     "vite-plugin-html": "^3.2.2",
-    "vite-plugin-prerender": "^1.0.8"
+    "vite-plugin-prerender": "^1.0.8",
+    "vite-plugin-static-copy": "^2.3.1"
   }
 }
