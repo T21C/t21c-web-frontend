@@ -14,6 +14,12 @@ export default defineConfig(({ command, mode }) => {
       ? env.VITE_STAGING_API_URL 
       : env.VITE_DEV_API_URL
   
+  const ownUrl = mode === 'production' 
+    ? env.VITE_OWN_PROD_URL 
+    : mode === 'staging' 
+      ? env.VITE_OWN_STAGING_URL 
+      : env.VITE_OWN_DEV_URL
+
   const port = mode === 'production' ? 5000 : 5173
 
   console.log('apiUrl', apiUrl);
@@ -23,11 +29,7 @@ export default defineConfig(({ command, mode }) => {
     plugins: [
       react(),
       sitemapPlugin({
-        hostname: mode === 'production' 
-          ? env.VITE_PROD_API_URL 
-          : mode === 'staging' 
-            ? env.VITE_STAGING_API_URL 
-            : env.VITE_DEV_API_URL,
+        hostname: ownUrl,
         dynamicRoutes: [
           '/',
           '/about',
@@ -50,7 +52,7 @@ export default defineConfig(({ command, mode }) => {
       include: ['react-helmet-async']
     },
     build: {
-      sourcemap: mode === 'development',
+      sourcemap: true,
       minify: mode !== 'development',
       outDir: 'dist',
       assetsDir: 'assets',
