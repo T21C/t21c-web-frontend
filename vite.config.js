@@ -52,7 +52,7 @@ export default defineConfig(({ command, mode }) => {
       include: ['react-helmet-async']
     },
     build: {
-      sourcemap: true,
+      sourcemap: mode === 'development',
       minify: mode !== 'development',
       outDir: 'dist',
       assetsDir: 'assets',
