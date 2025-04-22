@@ -84,10 +84,9 @@ const LoginPage = () => {
     setCaptchaToken(token);
   };
 
-  // Reset captcha when it's required again
+  // Only reset captcha when it's first required
   useEffect(() => {
-    if (requireCaptcha) {
-      setCaptchaToken(null);
+    if (requireCaptcha && captchaToken === null) {
       // Force re-render of ReCaptcha component by changing its key
       setCaptchaKey(prev => prev + 1);
     }
@@ -172,10 +171,12 @@ const LoginPage = () => {
       }
       if (captchaRequired) {
         setRequireCaptcha(true);
-        // Reset captcha token to force user to complete it again
-        setCaptchaToken(null);
-        // Force re-render of ReCaptcha component
         setCaptchaKey(prev => prev + 1);
+        if (!requireCaptcha) { 
+          // delay render to allow captcha to load
+          await new Promise(resolve => setTimeout(resolve, 500))
+        };
+        setCaptchaToken(null);
       }
     } finally {
       setLoading(false);
