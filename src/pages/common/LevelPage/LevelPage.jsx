@@ -275,7 +275,7 @@ const LevelPage = () => {
           clearedFilter,
           pguRange: `${selectedLowFilterDiff},${selectedHighFilterDiff}`,
           specialDifficulties: allSpecialDiffs.join(','),
-          onlyMyLikes
+          onlyMyLikes: user ? onlyMyLikes : undefined
         };
         
         const response = await api.get(
@@ -627,12 +627,14 @@ const LevelPage = () => {
                 </div>
               </div>
               
+              {user && (
               <div className="order" >
                 <div className={`wrapper-like ${onlyMyLikes ? 'active' : ''}`} onClick={() => handleLikeToggle()}>
                   <LikeIcon color={onlyMyLikes ? "var(--color-white)" : "none"} size={"22px"} />
                   <p>{tLevel('settingExp.myLikes')}</p>
                 </div>
               </div>
+              )}
             </div>
           </div>
         </div>
