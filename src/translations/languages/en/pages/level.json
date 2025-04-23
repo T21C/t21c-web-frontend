@@ -17,26 +17,31 @@
     "normalView": "Normal View",
     "compactView": "Compact View",
     "gridView": "Grid View",
-    "recentAsc": "Sort by oldest first",
-    "recentDesc": "Sort by newest first",
-    "diffAsc": "Sort by easiest first",
-    "diffDesc": "Sort by hardest first",
-    "clearsAsc": "Sort by least clears first",
-    "clearsDesc": "Sort by most clears first",
-    "random": "Random sort",
-    "toggleQSlider": "Toggle Q Difficulty Slider"
+    "toggleQSlider": "Toggle Q Difficulty Slider",
+    "orderAsc": "Ascending",
+    "orderDesc": "Descending"
   },
+  "settings": {
+    "sort": {
+      "header": "Sort Levels By...",
+      "recent": "Date",
+      "difficulty": "Difficulty",
+      "clears": "Clears",
+      "likes": "Likes",
+      "random": "Random"
+    }
+  },
+
   "settingExp": {
     "headerFilter": "Filter Settings",
     "headerSort": "Sort Settings",
     "filterDiffs": "Sort by Difficulty",
-    "sortRecent": "Sort by Date",
-    "sortRandom": "Random Sort",
-    "sortClears": "Sort by Clears",
+    "sortOrder": "Sort Order",
     "viewMode": "View Mode",
     "cardSize": "Card Size",
     "clearedLevels": "Cleared Levels",
-    "deletedLevels": "Deleted Levels"
+    "deletedLevels": "Deleted Levels",
+    "myLikes": "My Likes"
   },
   "infScroll": {
     "end": "No more levels to load"

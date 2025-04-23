@@ -1015,3 +1015,51 @@
     gap: 0.25rem;
   }
 }
+
+.level-detail .left .like-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+  z-index: 10;
+  margin-left: auto;
+  margin-right: 1rem;
+}
+
+.level-detail .left .like-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  transition: all 0.2s ease;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.level-detail .left .like-button.available:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+.level-detail .left .like-button.available.liked {
+  color: #ff4d4d;
+}
+
+.level-detail .left .like-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.level-detail .left .like-button svg {
+  width: 24px;
+  height: 24px;
+}
+
+.level-detail .left .like-count {
+  font-size: 1em;
+  font-weight: 600;
+  color: #fff;
+  opacity: 0.8;
+}

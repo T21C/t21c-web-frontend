@@ -23,6 +23,7 @@ import { CheckmarkIcon } from './CheckmarkIcon';
 import { PencilIcon } from './PencilIcon';
 import { QuestionmarkCircleIcon } from './QuestionmarkCircleIcon';
 import { WarningIcon } from './WarningIcon';
+import LikeIcon from './LikeIcon';
 
 export {
     DefaultAvatar,
@@ -49,5 +50,6 @@ export {
     CheckmarkIcon,
     PencilIcon,
     QuestionmarkCircleIcon,
-    WarningIcon
+    WarningIcon,
+    LikeIcon
 }

@@ -3,7 +3,7 @@ import "./levelpage.css";
 import { useContext, useEffect, useState, useCallback, useRef } from "react";
 import { CompleteNav } from "@/components/layout";
 import { LevelCard } from "@/components/cards";
-import { StateDisplay } from "@/components/common/selectors";
+import { StateDisplay, CustomSelect } from "@/components/common/selectors";
 import { Tooltip } from "react-tooltip";
 import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
@@ -16,7 +16,7 @@ import { DifficultyContext } from "@/contexts/DifficultyContext";
 import { ReferencesButton, ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
 import { DifficultySlider, SpecialDifficulties } from "@/components/common/selectors";
-import { SortAscIcon, SortDescIcon, RandomIcon, ResetIcon, SortIcon , FilterIcon} from "@/components/common/icons";
+import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon , FilterIcon, LikeIcon} from "@/components/common/icons";
 import { LevelHelpPopup } from "@/components/popups";
 const currentUrl = window.location.origin + location.pathname;
 
@@ -29,7 +29,6 @@ const LevelPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(false);
-  const location = useLocation();
   const { user } = useAuth();
   const { difficulties } = useContext(DifficultyContext);
   const {
@@ -49,6 +48,8 @@ const LevelPage = () => {
     setSelectedHighFilterDiff,
     sort,
     setSort,
+    order,
+    setOrder,
     hasMore,
     setHasMore,
     pageNumber,
@@ -66,7 +67,9 @@ const LevelPage = () => {
     setSliderQRangeDrag,
     setSelectedSpecialDiffs,
     qSliderVisible,
-    setQSliderVisible
+    setQSliderVisible,
+    onlyMyLikes,
+    setOnlyMyLikes
   } = useContext(LevelContext);
 
   const [showHelpPopup, setShowHelpPopup] = useState(false);
@@ -82,6 +85,26 @@ const LevelPage = () => {
   const pguDifficulties = difficulties.filter(d => d.type === 'PGU').sort((a, b) => a.sortOrder - b.sortOrder);
   const qDifficulties = difficulties.filter(d => d.name.startsWith('Q')).sort((a, b) => a.sortOrder - b.sortOrder);
   const specialDifficulties = difficulties.filter(d => d.type === 'SPECIAL');
+
+  // Add sort options similar to PassPage
+  const sortOptions = [
+    { value: 'RECENT', label: tLevel('settings.sort.recent') },
+    { value: 'DIFF', label: tLevel('settings.sort.difficulty') },
+    { value: 'CLEARS', label: tLevel('settings.sort.clears') },
+    { value: 'LIKES', label: tLevel('settings.sort.likes') },
+    { value: 'RANDOM', label: tLevel('settings.sort.random') }
+  ];
+
+  function handleLikeToggle() {
+    if (!user) {
+      toast.error(tLevel('errors.loginRequired'));
+      return;
+    }
+    setOnlyMyLikes(!onlyMyLikes);
+    setPageNumber(0);
+    setLevelsData([]);
+    setForceUpdate(f => !f);
+  }
 
   // Handle slider value updates without triggering immediate fetches
   function handleSliderChange(newRange) {
@@ -247,11 +270,12 @@ const LevelPage = () => {
           limit,
           offset: pageNumber * limit,
           query,
-          sort,
+          sort: sort + "_" + order,
           deletedFilter,
           clearedFilter,
           pguRange: `${selectedLowFilterDiff},${selectedHighFilterDiff}`,
-          specialDifficulties: allSpecialDiffs.join(',')
+          specialDifficulties: allSpecialDiffs.join(','),
+          onlyMyLikes
         };
         
         const response = await api.get(
@@ -323,8 +347,16 @@ const LevelPage = () => {
     setSortOpen(!sortOpen);
   }
 
-  function handleSort(value) {
+  function handleSortType(value) {
     setSort(value);
+    setPageNumber(0);
+    setLevelsData([]);
+    setLoading(true);
+    setForceUpdate((f) => !f);
+  }
+
+  function handleSortOrder(value) {
+    setOrder(value);
     setPageNumber(0);
     setLevelsData([]);
     setLoading(true);
@@ -553,15 +585,21 @@ const LevelPage = () => {
             <h2 className="setting-title">
               {tLevel('settingExp.headerSort')}
             </h2>
-
             <div className="sort-option">
-              <div className="recent">
-                <p>{tLevel('settingExp.sortRecent')}</p>
-                <Tooltip id="ra" place="top" noArrow>
-                  {tLevel('toolTip.recentAsc')}
+            <CustomSelect
+                  value={sortOptions.find(option => sort.startsWith(option.value))}
+                  onChange={(option) => handleSortType(option.value)}
+                  options={sortOptions}
+                  label={tLevel('settings.sort.header')}
+                />
+                
+                <div className="order">
+                <p>{tLevel('settingExp.sortOrder')}</p>
+                <Tooltip id="ascending" place="bottom" noArrow>
+                  {tLevel('toolTip.orderAsc')}
                 </Tooltip>
-                <Tooltip id="rd" place="top" noArrow>
-                  {tLevel('toolTip.recentDesc')}
+                <Tooltip id="descending" place="bottom" noArrow>
+                  {tLevel('toolTip.orderDesc')}
                 </Tooltip>
 
                 <div className="wrapper">
@@ -569,112 +607,30 @@ const LevelPage = () => {
                     className="svg-fill"
                     style={{
                       backgroundColor:
-                        sort == "RECENT_ASC" ? "rgba(255, 255, 255, 0.7)" : "",
+                        order === 'ASC' ? "rgba(255, 255, 255, 0.7)" : "",
                     }}
                     value="RECENT_ASC"
-                    onClick={() => handleSort("RECENT_ASC")}
-                    data-tooltip-id="ra"
+                    onClick={() => handleSortOrder("ASC")}
+                    data-tooltip-id="ascending"
                   />
 
                   <SortDescIcon
                     className="svg-fill"
                     style={{
                       backgroundColor:
-                        sort == "RECENT_DESC" ? "rgba(255, 255, 255, 0.7)" : "",
+                        order === 'DESC' ? "rgba(255, 255, 255, 0.7)" : "",
                     }}
-                    onClick={() => handleSort("RECENT_DESC")}
+                    onClick={() => handleSortOrder("DESC")}
                     value="RECENT_DESC"
-                    data-tooltip-id="rd"
+                    data-tooltip-id="descending"
                   />
                 </div>
               </div>
-
-              <div className="diff">
-                <p>{tLevel('settingExp.filterDiffs')}</p>
-
-                <Tooltip id="da" place="top" noArrow>
-                  {tLevel('toolTip.diffAsc')}
-                </Tooltip>
-                <Tooltip id="dd" place="top" noArrow>
-                  {tLevel('toolTip.diffDesc')}
-                </Tooltip>
-
-                <div className="wrapper">
-                  <SortAscIcon
-                    className="svg-fill"
-                    style={{
-                      backgroundColor:
-                        sort == "DIFF_ASC" ? "rgba(255, 255, 255, 0.7)" : "",
-                    }}
-                    value="DIFF_ASC"
-                    onClick={() => handleSort("DIFF_ASC")}
-                    data-tooltip-id="da"
-                  />
-
-                  <SortDescIcon
-                    className="svg-fill"
-                    style={{
-                      backgroundColor:
-                        sort == "DIFF_DESC" ? "rgba(255, 255, 255, 0.7)" : "",
-                    }}
-                    value="DIFF_DESC"
-                    onClick={() => handleSort("DIFF_DESC")}
-                    data-tooltip-id="dd"
-                  />
-                </div>
-              </div>
-
-              <div className="random">
-                <p>{tLevel('settingExp.sortRandom')}</p>
-                <Tooltip id="rnd" place="top" noArrow>
-                  {tLevel('toolTip.random')}
-                </Tooltip>
-
-                <div className="wrapper">
-                  <RandomIcon
-                    className="svg-fill-stroke"
-                    style={{
-                      backgroundColor:
-                        sort == "RANDOM" ? "rgba(255, 255, 255, 0.7)" : "",
-                    }}
-                    onClick={() => handleSort("RANDOM")}
-                    value="RANDOM"
-                    data-tooltip-id="rnd"
-                  />
-                </div>
-              </div>
-
-              <div className={`clears ${clearedFilter !== 'hide' ? 'visible' : ''}`}>
-                <p>{tLevel('settingExp.sortClears')}</p>
-                <Tooltip id="ca" place="top" noArrow>
-                  {tLevel('toolTip.clearsAsc')}
-                </Tooltip>
-                <Tooltip id="cd" place="top" noArrow>
-                  {tLevel('toolTip.clearsDesc')}
-                </Tooltip>
-
-                <div className="wrapper">
-                  <SortAscIcon
-                    className="svg-fill"
-                    style={{
-                      backgroundColor:
-                        sort == "CLEARS_ASC" ? "rgba(255, 255, 255, 0.7)" : "",
-                    }}
-                    value="CLEARS_ASC"
-                    onClick={() => handleSort(sort === "CLEARS_ASC" ? "" : "CLEARS_ASC")}
-                    data-tooltip-id="ca"
-                  />
-
-                  <SortDescIcon
-                    className="svg-fill"
-                    style={{
-                      backgroundColor:
-                        sort == "CLEARS_DESC" ? "rgba(255, 255, 255, 0.7)" : "",
-                    }}
-                    onClick={() => handleSort(sort === "CLEARS_DESC" ? "" : "CLEARS_DESC")}
-                    value="CLEARS_DESC"
-                    data-tooltip-id="cd"
-                  />
+              
+              <div className="order" >
+                <div className={`wrapper-like ${onlyMyLikes ? 'active' : ''}`} onClick={() => handleLikeToggle()}>
+                  <LikeIcon color={onlyMyLikes ? "var(--color-white)" : "none"} size={"22px"} />
+                  <p>{tLevel('settingExp.myLikes')}</p>
                 </div>
               </div>
             </div>
@@ -748,7 +704,7 @@ const LevelPage = () => {
         </div>
 
         <InfiniteScroll
-          style={{ paddingBottom: "25rem", overflow: "visible" }}
+          style={{ paddingBottom: "7rem", minHeight: "100vh", overflow: "visible" }}
           dataLength={levelsData.length}
           next={() => setPageNumber((prevPageNumber) => prevPageNumber + 1)}
           hasMore={hasMore}

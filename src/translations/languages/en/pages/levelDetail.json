@@ -8,11 +8,17 @@
     "hidden": "This level is currently hidden",
     "notFound": "Level not found"
   },
+  
   "buttons": {
     "edit": "Edit Level",
     "close": "Close",
     "viewRating": "View Previous Ratings",
-    "update": "MASSIVE WINS 💎🤑💰"
+    "like": "Like",
+    "unlike": "Unlike",
+    "update": "Update Level"
+  },
+  "tooltips": {
+    "loginRequired": "Login to like this level"
   },
   "links": {
     "download": "Download Level",
@@ -77,5 +83,13 @@
     "clearCard": {
       "feeling": "Feeling:"
     }
+  },
+  "errors": {
+    "loginRequired": "You need to be logged in to like this level",
+    "likeFailed": "Failed to update like status"
+  },
+  "messages": {
+    "liked": "Liked!",
+    "unliked": "Unliked"
   }
 } 

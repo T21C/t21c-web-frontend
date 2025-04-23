@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import api from "@/utils/api";
 import { EditLevelPopup } from "@/components/popups";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { EditIcon, SteamIcon, DownloadIcon, VideoIcon } from "@/components/common/icons";
+import { EditIcon, SteamIcon, DownloadIcon, VideoIcon, PassIcon, LikeIcon } from "@/components/common/icons";
 import { formatCreatorDisplay } from "@/utils/Utility";
 import { UserAvatar } from "@/components/layout";
 
@@ -190,10 +190,17 @@ const LevelCard = ({
           <div className="level-desc">{formatCreatorDisplay(level)}</div>
         </div>
 
-        {(level.clears || level.clears === 0) && (
-          <div className="clears-wrapper">
-            <p className="level-exp">{tCard('clears')}</p>
-            <div className="level-desc">{level.clears}</div>
+        {(
+          <div className="icon-wrapper">
+            <div className="icon-value">{level.clears || 0}</div>
+            <PassIcon color="#ffffff" size={"24px"} />
+          </div>
+        )}
+
+        {(
+          <div className="icon-wrapper">
+            <div className="icon-value">{level.likes || 0}</div>
+            <LikeIcon color={"none"} size={"22px"}/>
           </div>
         )}
     

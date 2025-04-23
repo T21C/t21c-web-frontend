@@ -17,13 +17,15 @@ const LevelContextProvider = (props) => {
         LOW_FILTER_DIFF: 'level_low_filter_diff',
         HIGH_FILTER_DIFF: 'level_high_filter_diff',
         SORT: 'level_sort',
+        ORDER: 'level_order',
         DELETED_FILTER: 'level_deleted_filter',
         CLEARED_FILTER: 'level_cleared_filter',
         SLIDER_RANGE: 'level_slider_range',
         SLIDER_Q_RANGE: 'level_slider_q_range',
         SLIDER_Q_RANGE_DRAG: 'level_slider_q_range_drag',
         SELECTED_SPECIAL_DIFFS: 'level_selected_special_diffs',
-        Q_SLIDER_VISIBLE: 'level_q_slider_visible'
+        Q_SLIDER_VISIBLE: 'level_q_slider_visible',
+        ONLY_MY_LIKES: 'level_only_my_likes'
     };
 
     const [levelsData, setLevelsData] = useState([])
@@ -34,6 +36,7 @@ const LevelContextProvider = (props) => {
     const [selectedLowFilterDiff, setSelectedLowFilterDiff] = useState(() => Cookies.get(COOKIE_KEYS.LOW_FILTER_DIFF) || "P1");
     const [selectedHighFilterDiff, setSelectedHighFilterDiff] = useState(() => Cookies.get(COOKIE_KEYS.HIGH_FILTER_DIFF) || "U20");
     const [sort, setSort] = useState(() => Cookies.get(COOKIE_KEYS.SORT) || "RECENT_DESC");
+    const [order, setOrder] = useState(() => Cookies.get(COOKIE_KEYS.ORDER) || "ASC");
     const [hasMore, setHasMore] = useState(true);
     const [pageNumber, setPageNumber] = useState(0);
     const [deletedFilter, setDeletedFilter] = useState(() => Cookies.get(COOKIE_KEYS.DELETED_FILTER) || "hide");
@@ -55,6 +58,7 @@ const LevelContextProvider = (props) => {
         return saved ? JSON.parse(saved) : [];
     });
     const [qSliderVisible, setQSliderVisible] = useState(() => Cookies.get(COOKIE_KEYS.Q_SLIDER_VISIBLE) === 'true');
+    const [onlyMyLikes, setOnlyMyLikes] = useState(() => Cookies.get(COOKIE_KEYS.ONLY_MY_LIKES) === 'true');
 
     // Effect to validate and adjust ranges based on difficulties
     useEffect(() => {
@@ -138,6 +142,10 @@ const LevelContextProvider = (props) => {
     }, [sort]);
 
     useEffect(() => {
+        Cookies.set(COOKIE_KEYS.ORDER, order);
+    }, [order]);
+
+    useEffect(() => {
         Cookies.set(COOKIE_KEYS.DELETED_FILTER, deletedFilter);
     }, [deletedFilter]);
 
@@ -165,6 +173,10 @@ const LevelContextProvider = (props) => {
         Cookies.set(COOKIE_KEYS.Q_SLIDER_VISIBLE, qSliderVisible);
     }, [qSliderVisible]);
 
+    useEffect(() => {
+        Cookies.set(COOKIE_KEYS.ONLY_MY_LIKES, onlyMyLikes);
+    }, [onlyMyLikes]);
+
     return (
         <LevelContext.Provider 
             value={{ 
@@ -175,7 +187,8 @@ const LevelContextProvider = (props) => {
                 query, setQuery, 
                 selectedLowFilterDiff, setSelectedLowFilterDiff, 
                 selectedHighFilterDiff, setSelectedHighFilterDiff, 
-                sort, setSort, 
+                sort, setSort,
+                order, setOrder,
                 hasMore, setHasMore, 
                 pageNumber, setPageNumber,
                 deletedFilter, setDeletedFilter,
@@ -184,7 +197,8 @@ const LevelContextProvider = (props) => {
                 sliderQRange, setSliderQRange,
                 sliderQRangeDrag, setSliderQRangeDrag,
                 selectedSpecialDiffs, setSelectedSpecialDiffs,
-                qSliderVisible, setQSliderVisible
+                qSliderVisible, setQSliderVisible,
+                onlyMyLikes, setOnlyMyLikes
             }}
         >
             {props.children}

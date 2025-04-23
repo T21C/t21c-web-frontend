@@ -13,7 +13,9 @@
     "filter": "Filter results",
     "sort": "Sort results",
     "reset": "Reset all filters",
-    "search": "Learn how to use advanced search"
+    "search": "Learn how to use advanced search",
+    "orderAsc": "Ascending",
+    "orderDesc": "Descending"
   },
   "buttons": {
     "searchHelp": "Search Help"
@@ -29,16 +31,13 @@
     },
     "sort": {
       "title": "Sort",
-      "label": "Sort by",
+      "header": "Sort Passes By...",
+      "order": "Sort Order",
       "options": {
-        "newest": "Newest",
-        "oldest": "Oldest",
-        "highestScore": "Highest Score",
-        "lowestScore": "Lowest Score",
-        "highestAccuracy": "Highest Accuracy",
-        "lowestAccuracy": "Lowest Accuracy",
-        "highestDifficulty": "Highest Difficulty",
-        "lowestDifficulty": "Lowest Difficulty",
+        "date": "Date",
+        "score": "Score",
+        "accuracy": "Accuracy",
+        "difficulty": "Difficulty",
         "random": "Random"
       }
     }

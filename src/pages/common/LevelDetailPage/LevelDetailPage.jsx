@@ -19,7 +19,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { MetaTags } from "@/components/common/display";
-import { SteamIcon } from "@/components/common/icons";
+import { LikeIcon, SteamIcon } from "@/components/common/icons";
 import { createEventSystem, formatCreatorDisplay, minus2Reasons, gimmickReasons } from "@/utils/Utility";
 import { DetailPopup } from "@/components/popups";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
@@ -229,6 +229,7 @@ const LevelDetailPage = () => {
   const [infoLoading, setInfoLoading] = useState(true);
   const [videoDetail, setVideoDetail] = useState(null);
   const [notFound, setNotFound] = useState(false);
+  const [isLiking, setIsLiking] = useState(false);
 
   const { user } = useAuth();
 
@@ -296,7 +297,7 @@ const LevelDetailPage = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const levelData = await api.get(`${import.meta.env.VITE_LEVELS}/withRatings/${id}`);
+        const levelData = await api.get(`${import.meta.env.VITE_LEVELS}/${id}?includeRatings=true`);
         const passesData = await api.get(`${import.meta.env.VITE_PASSES}/level/${id}`);
         
         if (levelData.data.timeout) {
@@ -307,7 +308,8 @@ const LevelDetailPage = () => {
           ...prevRes,
           level: levelData.data.level,
           rating: levelData.data.ratings,
-          passes: passesData.data
+          passes: passesData.data,
+          isLiked: levelData.data.isLiked
         }));
         setDisplayedPlayers(sortLeaderboard(passesData.data));
         setNotFound(false);
@@ -493,6 +495,39 @@ const LevelDetailPage = () => {
     }
   };
 
+  const handleLikeToggle = async () => {
+    if (!user) {
+      toast.error(tLevel('errors.loginRequired'));
+      return;
+    }
+
+    if (isLiking) return;
+    
+    setIsLiking(true);
+    try {
+      const action = res.isLiked ? 'unlike' : 'like';
+      const response = await api.put(`${import.meta.env.VITE_LEVELS}/${id}/like`, { action });
+      
+      if (response.data.success) {
+        setRes(prevRes => ({
+          ...prevRes,
+          isLiked: action === 'like',
+          level: {
+            ...prevRes.level,
+            likes: response.data.likes
+          }
+        }));
+        
+        toast.success(action === 'like' ? tLevel('messages.liked') : tLevel('messages.unliked'));
+      }
+    } catch (error) {
+      console.error('Error toggling like:', error);
+      toast.error(tLevel('errors.likeFailed'));
+    } finally {
+      setIsLiking(false);
+    }
+  };
+
   if (notFound) {
     return (
       <div className="level-detail">
@@ -581,6 +616,27 @@ const LevelDetailPage = () => {
                 &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
                 {renderTitleWithAliases(res.level.artist, 'artist')}
               </p>
+            </div>
+            
+            <div className="like-container">
+            <span className="like-count">{res.level.likes || 0}</span>
+              <button 
+                data-tooltip-id="like-tooltip"
+                data-tooltip-content={
+                  user ?
+                    res.isLiked ? tLevel('buttons.unlike') : tLevel('buttons.like')
+                  : tLevel('tooltips.loginRequired')
+                }
+                className={
+                  `like-button 
+                  ${res.isLiked ? 'liked' : ''} 
+                  ${user ? 'available' : ''}`} 
+                onClick={handleLikeToggle}
+                disabled={isLiking || !user}
+              >
+                <LikeIcon color={res.isLiked ? "#ff2222" : "none"} size={"24px"}/>
+              </button>
+              <Tooltip id="like-tooltip" place="bottom" noArrow />
             </div>
           </div>
           {user?.isSuperAdmin && (

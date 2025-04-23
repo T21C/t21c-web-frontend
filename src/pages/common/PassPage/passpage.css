@@ -91,15 +91,6 @@
   margin-top: 1rem;
 }
 
-.pass-page .pass-body .sort {
-  position: relative;
-  z-index: 90;
-  background-color: #0004;
-  border-radius: 1rem;
-  padding: 1rem;
-  margin-top: 1rem;
-}
-
 /* Settings animations */
 .pass-page .pass-body .settings-class {
   padding: 1rem 2rem;
@@ -125,23 +116,6 @@
   pointer-events: auto;
 }
 
-/* Sort options */
-.pass-page .pass-body .sort .sort-option {
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
-}
-
-.pass-page .pass-body .sort .sort-option > div {
-  display: flex;
-  flex-direction: column;
-  gap: 0rem;
-}
-
-.pass-page .pass-body .sort .sort-option .wrapper {
-  display: flex;
-  gap: 0.5rem;
-}
 
 /* Filter section */
 .pass-page .pass-body .filter-section {
@@ -173,10 +147,6 @@
   box-sizing: border-box;
 }
 
-/* Transitions and animations */
-.pass-page .pass-body .sort .sort-option svg {
-  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
 
 .pass-page .pass-body .settings-class {
   transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
@@ -283,45 +253,9 @@
   margin-bottom: 0.5rem;
 }
 
-/* Select element styling */
-.pass-page .pass-body .sort-option .recent {
-  position: relative;
-}
-
-.pass-page .pass-body .sort-option .recent p {
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-}
-
-/* Focus state */
-.pass-page .pass-body .sort-option .css-t3ipsp-control {
-  border-color: #4a90e2 !important;
-  box-shadow: 0 0 0 1px #4a90e2 !important;
-  background-color: rgba(255, 255, 255, 0.4) !important;
-}
-
 .pass-page .pass-body .special-difficulties-dropdown {
   position: relative;
   z-index: 100;
-}
-
-.pass-page .pass-body .special-difficulties-dropdown .dropdown-toggle {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: var(--color-white-t20);
-  border: none;
-  border-radius: 3px;
-  color: var(--color-white);
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  white-space: nowrap;
-  font-size: 0.9rem;
-}
-
-.pass-page .pass-body .special-difficulties-dropdown .dropdown-toggle:hover {
-  background: var(--color-white-t30);
 }
 
 .pass-page .pass-body .special-difficulties-dropdown .selected-count {
@@ -329,15 +263,7 @@
   font-size: 0.8rem;
 }
 
-.pass-page .pass-body .special-difficulties-dropdown .dropdown-arrow {
-  width: 1rem;
-  height: 1rem;
-  transition: transform 0.2s ease;
-}
 
-.pass-page .pass-body .special-difficulties-dropdown .dropdown-arrow.open {
-  transform: rotate(180deg);
-}
 
 .pass-page .pass-body .special-difficulties-dropdown .difficulties-backdrop {
   position: fixed;

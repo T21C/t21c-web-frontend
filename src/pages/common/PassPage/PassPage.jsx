@@ -17,7 +17,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { DifficultyContext } from "@/contexts/DifficultyContext";
 import { DifficultySlider, SpecialDifficulties } from "@/components/common/selectors";
 import { PassHelpPopup } from "@/components/popups";
-import { ResetIcon, SortIcon, FilterIcon } from "@/components/common/icons";
+import { ResetIcon, SortIcon, FilterIcon, SortAscIcon, SortDescIcon } from "@/components/common/icons";
 const currentUrl = window.location.origin + location.pathname;
 
 const limit = 30;
@@ -69,14 +69,10 @@ const PassPage = () => {
   } = useContext(PassContext);
 
   const sortOptions = [
-    { value: 'RECENT_DESC', label: tPass('settings.sort.options.newest') },
-    { value: 'RECENT_ASC', label: tPass('settings.sort.options.oldest') },
-    { value: 'SCORE_DESC', label: tPass('settings.sort.options.highestScore') },
-    { value: 'SCORE_ASC', label: tPass('settings.sort.options.lowestScore') },
-    { value: 'XACC_DESC', label: tPass('settings.sort.options.highestAccuracy') },
-    { value: 'XACC_ASC', label: tPass('settings.sort.options.lowestAccuracy') },
-    { value: 'DIFF_DESC', label: tPass('settings.sort.options.highestDifficulty') },
-    { value: 'DIFF_ASC', label: tPass('settings.sort.options.lowestDifficulty') },
+    { value: 'RECENT', label: tPass('settings.sort.options.date') },
+    { value: 'SCORE', label: tPass('settings.sort.options.score') },
+    { value: 'XACC', label: tPass('settings.sort.options.accuracy') },
+    { value: 'DIFF', label: tPass('settings.sort.options.difficulty') },
     { value: 'RANDOM', label: tPass('settings.sort.options.random') }
   ];
 
@@ -197,12 +193,20 @@ const PassPage = () => {
     setFilterOpen(!filterOpen);
   }
 
-  function handleSort(value) {
-    setPassesData([]);
-    setSort(value);
+  function handleSortType(value) {
+    setSort(value + "_" +(sort.endsWith('ASC') ? 'ASC' : 'DESC'));
     setPageNumber(0);
-    setLoading(true); 
-    setForceUpdate(f => !f);
+    setPassesData([]);
+    setLoading(true);
+    setForceUpdate((f) => !f);
+  }
+
+  function handleSortOrder(value) {
+    setSort(prev => prev.replace(/ASC|DESC/g, value));
+    setPageNumber(0);
+    setPassesData([]);
+    setLoading(true);
+    setForceUpdate((f) => !f);
   }
 
 
@@ -276,7 +280,7 @@ const PassPage = () => {
     // Data loaded (passesData is an array)
     return (
       <InfiniteScroll
-        style={{ paddingBottom: "4rem", overflow: "visible" }}
+        style={{paddingBottom: "6rem", minHeight: "90vh", overflow: "visible" }}
         dataLength={passesData.length}
         next={() => {
           const newPage = pageNumber + 1;
@@ -284,13 +288,13 @@ const PassPage = () => {
         }}
         hasMore={hasMore && !loading}
         loader={
-          <div style={{ paddingTop: "2rem" }}>
+          <div style={{ paddingTop: "6rem" }}>
             <div className="loader loader-level-page"></div>
           </div>
         }
         endMessage={
           !loading && (
-            <p style={{ textAlign: "center" , paddingTop: "2rem"}}>
+            <p className="end-message">
               <b>{tPass('infScroll.end')}</b>
             </p>
           )
@@ -446,7 +450,6 @@ const PassPage = () => {
                       label={tPass('settings.filter.options.deletedPasses')}
                       width={60}
                       height={24}
-                      padding={3}
                       showLabel={true}
                     />
                   )}
@@ -462,7 +465,6 @@ const PassPage = () => {
                     label={tPass('settings.filter.options.keyFlags')}
                     width={60}
                     height={24}
-                    padding={3}
                     showLabel={true}
                   />
                 </div>
@@ -471,18 +473,54 @@ const PassPage = () => {
           </div>
 
           <div
-            className={`sort settings-class ${sortOpen ? 'visible' : 'hidden'}`}
+            className={`sort sort-class ${sortOpen ? 'visible' : 'hidden'}`}
           >
-            <h2 className="setting-title">{tPass('settings.sort.title')}</h2>
-
+            <h2 className="setting-title">
+              {tPass('settings.sort.title')}
+            </h2>
             <div className="sort-option">
-              <div className="recent">
-                <CustomSelect
-                  value={sortOptions.find(option => option.value === sort)}
-                  onChange={(option) => handleSort(option.value)}
+            <CustomSelect
+                  value={sortOptions.find(option => sort.startsWith(option.value))}
+                  onChange={(option) => handleSortType(option.value)}
                   options={sortOptions}
-                  label={tPass('settings.sort.label')}
+                  label={tPass('settings.sort.header')}
                 />
+                
+                <div className="order" style={{
+                  opacity: sort.startsWith('RANDOM') ? "0.4" : "",
+                  pointerEvents: sort.startsWith('RANDOM') ? "none" : "auto"
+                  }}>
+                <p>{tPass('settings.sort.order')}</p>
+                <Tooltip id="ascending" place="bottom" noArrow>
+                  {tPass('toolTip.orderAsc')}
+                </Tooltip>
+                <Tooltip id="descending" place="bottom" noArrow>
+                  {tPass('toolTip.orderDesc')}
+                </Tooltip>
+
+                <div className="wrapper">
+                  <SortAscIcon
+                    className="svg-fill"
+                    style={{
+                      backgroundColor:
+                        sort.endsWith('ASC') ? "rgba(255, 255, 255, 0.7)" : "",
+                    }}
+                    value="RECENT_ASC"
+                    onClick={() => handleSortOrder("ASC")}
+                    data-tooltip-id="ascending"
+                  />
+
+                  <SortDescIcon
+                    className="svg-fill"
+                    style={{
+                      backgroundColor:
+                        sort.endsWith('DESC') ? "rgba(255, 255, 255, 0.7)" : "",
+                    }}
+                    onClick={() => handleSortOrder("DESC")}
+                    value="RECENT_DESC"
+                    data-tooltip-id="descending"
+                  />
+                </div>
               </div>
             </div>
           </div>
