@@ -24,7 +24,7 @@
   "settings": {
     "sort": {
       "header": "Sort Levels By...",
-      "recent": "Date",
+      "recent": "ID",
       "difficulty": "Difficulty",
       "clears": "Clears",
       "likes": "Likes",
