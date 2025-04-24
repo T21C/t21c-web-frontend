@@ -519,7 +519,7 @@ const RatingPage = () => {
 
             {openEditDialog && selectedLevel && user?.isSuperAdmin && (
               <EditLevelPopup
-                level={selectedLevel}
+                level={selectedLevel.level}
                 onClose={() => {
                   setOpenEditDialog(false);
                   setSelectedLevel(null);
