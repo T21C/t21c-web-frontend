@@ -871,9 +871,10 @@ const LevelDetailPage = () => {
             </div>
             
             {/* Rating Accuracy Display */}
-            <div className="rating-accuracy-container">
-              <div className="rating-accuracy-display-title">Rating Accuracy</div>
-              <div 
+            {difficultyDict[res.level.difficulty.id].type === "PGU" && (
+              <div className="rating-accuracy-container">
+                <div className="rating-accuracy-display-title">Rating Accuracy</div>
+                <div 
                 className="rating-accuracy-display-scale"
               >
                 <div 
@@ -909,8 +910,13 @@ const LevelDetailPage = () => {
               <span className="rating-accuracy-vote-count">Votes: {res.totalVotes || 0}</span>
               <Tooltip id="rating-accuracy-tooltip" place="bottom" noArrow />
             </div>
+            )}
             
-            <div className="like-container">
+            <div className="like-container"
+              style={{
+                marginLeft: difficultyDict[res.level.difficulty.id].type === "PGU" ? "" : "auto"
+              }}
+            >
               <span className="like-count">{res.level.likes || 0}</span>
               <button 
                 data-tooltip-id="like-tooltip"
