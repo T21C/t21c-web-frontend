@@ -766,7 +766,8 @@ const LevelDetailPage = () => {
           level: {
             ...prevRes.level,
             ratingAccuracy: response.data.level.ratingAccuracy
-          }
+          },
+          totalVotes: response.data.totalVotes
         }));
         
         toast.success(tLevel('messages.voteSubmitted'));
