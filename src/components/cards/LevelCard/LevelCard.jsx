@@ -191,14 +191,14 @@ const LevelCard = ({
         </div>
 
         {(
-          <div className="icon-wrapper">
+          <div className="icon-wrapper" style={{ opacity: level.clears ? 1 : 0 }}>
             <div className="icon-value">{level.clears || 0}</div>
             <PassIcon color="#ffffff" size={"24px"} />
           </div>
         )}
 
         {(
-          <div className="icon-wrapper">
+          <div className="icon-wrapper" style={{ opacity: level.likes ? 1 : 0 }}>
             <div className="icon-value">{level.likes || 0}</div>
             <LikeIcon color={"none"} size={"22px"}/>
           </div>

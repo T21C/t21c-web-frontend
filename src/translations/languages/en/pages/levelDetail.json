@@ -15,10 +15,12 @@
     "viewRating": "View Previous Ratings",
     "like": "Like",
     "unlike": "Unlike",
-    "update": "Update Level"
+    "update": "Update Level",
+    "saveRating": "Save Rating"
   },
   "tooltips": {
-    "loginRequired": "Login to like this level"
+    "loginRequired": "Login to like this level",
+    "clearRequired": "You need to clear this level to vote on its rating accuracy"
   },
   "links": {
     "download": "Download Level",
@@ -82,14 +84,23 @@
   "components": {
     "clearCard": {
       "feeling": "Feeling:"
+    },
+    "ratingAccuracy": {
+      "title": "Rating Accuracy",
+      "description": "How accurate is this level's difficulty rating?",
+      "voteButton": "Vote on Accuracy",
+      "saveButton": "Save Vote",
+      "cancelButton": "Cancel"
     }
   },
   "errors": {
     "loginRequired": "You need to be logged in to like this level",
-    "likeFailed": "Failed to update like status"
+    "likeFailed": "Failed to update like status",
+    "voteFailed": "Failed to submit rating accuracy vote"
   },
   "messages": {
     "liked": "Liked!",
-    "unliked": "Unliked"
+    "unliked": "Unliked",
+    "voteSubmitted": "Rating accuracy vote submitted successfully"
   }
 } 
