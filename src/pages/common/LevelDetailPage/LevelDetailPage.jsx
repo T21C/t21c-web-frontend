@@ -890,7 +890,7 @@ const LevelDetailPage = () => {
                 <span style={{
                   color: getRatingAccuracyColor(res.level.ratingAccuracy || 0),
                   textShadow: `0 0 10px ${getRatingAccuracyColor(res.level.ratingAccuracy || 0)}66`
-                }}>{accuracyLabel[Math.abs(res.level.ratingAccuracy || 0).toString()[0]]}</span>
+                }}>{accuracyLabel[Math.round(res.level.ratingAccuracy || 0).toString()]}</span>
               </div>
               <button 
                 className="rating-accuracy-vote-button"

@@ -14,6 +14,7 @@ const LevelCard = ({
   level: initialLevel,
   legacyMode,
   user,
+  sortBy,
   displayMode = 'normal',
   size = 'medium'
 }) => {
@@ -175,6 +176,29 @@ const LevelCard = ({
               fallbackUrl={level.firstPass.player.pfp}
               className="first-pass-pfp"
             />
+          )}
+          {difficultyDict[level.diffId].type === "PGU" /*&& sortBy === "RATING_ACCURACY"*/ && (
+            <>
+              <div className={`rating-accuracy-wrapper ${displayMode === 'compact' ? 'compact' : ''}`}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" className="rating-accuracy-circle">
+                  <linearGradient id="a12" gradientTransform="scale(1.5) rotate(47)">
+            <stop offset="0.3" stop-color="#ff0000"></stop>
+            <stop offset="0.45" stop-color="#66ff00"></stop>
+            <stop offset="0.55" stop-color="#66ff00"></stop>
+            <stop offset="0.7" stop-color="#ff0000"></stop>
+            </linearGradient>
+            <circle transform-origin="center" fill="none" stroke="url(#a12)" stroke-width="5" stroke-linecap="round" stroke-dasharray="125 1000" stroke-dashoffset="-100" cx="100" cy="100" r="70" />
+          </svg>
+          </div>
+          
+          <svg className="rating-accuracy-arrow" viewBox="0 0 200 200">
+            <polygon 
+            transform-origin="50% 50%" 
+            transform={`rotate(${level.ratingAccuracy*10-45}) translate(0, -15)`} 
+            points="0 100, 0 130, 15 115" 
+            fill="#fff" />
+          </svg>
+            </>
           )}
         </div>
 

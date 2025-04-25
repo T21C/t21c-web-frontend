@@ -92,6 +92,7 @@ const LevelPage = () => {
     { value: 'DIFF', label: tLevel('settings.sort.difficulty') },
     { value: 'CLEARS', label: tLevel('settings.sort.clears') },
     { value: 'LIKES', label: tLevel('settings.sort.likes') },
+    { value: 'RATING_ACCURACY', label: tLevel('settings.sort.ratingAccuracy') },
     { value: 'RANDOM', label: tLevel('settings.sort.random') }
   ];
 
@@ -723,6 +724,7 @@ const LevelPage = () => {
                 level={l}
                 legacyMode={legacyDiff}
                 user={user}
+                sortBy={sort}
                 displayMode={viewMode}
                 size={cardSize}
               />
