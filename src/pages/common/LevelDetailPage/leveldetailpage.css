@@ -1586,7 +1586,7 @@
 
 .rating-votes-dropdown {
   position: absolute;
-  top: 15%;
+  top: 20%;
   right: 0;
   background-color: #333;
   border: 1px solid #333;
@@ -1634,11 +1634,4 @@
 
 .rating-vote-value {
   font-weight: 600;
-}
-
-.rating-accuracy-container {
-  position: relative;
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
