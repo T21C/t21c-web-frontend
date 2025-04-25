@@ -194,7 +194,7 @@ const LevelCard = ({
           <svg className="rating-accuracy-arrow" viewBox="0 0 200 200">
             <polygon 
             transform-origin="50% 50%" 
-            transform={`rotate(${level.ratingAccuracy*10-45}) translate(0, -15)`} 
+            transform={`rotate(${-level.ratingAccuracy*10-45}) translate(0, -15)`} 
             points="0 100, 0 130, 15 115" 
             fill="#fff" />
           </svg>
