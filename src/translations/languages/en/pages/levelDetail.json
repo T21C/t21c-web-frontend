@@ -105,6 +105,7 @@
   },
   "ratingAccuracy": {
     "votesHeader": "Votes",
+    "loginToVote": "Login to vote",
     "viewAllVotes": "View all votes",
     "noVotes": "No votes yet"
   }

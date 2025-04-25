@@ -946,7 +946,7 @@ const LevelDetailPage = () => {
                 data-tooltip-id="rating-accuracy-tooltip"
                 data-tooltip-content={
                   !user 
-                    ? tLevel('tooltips.loginRequired')
+                    ? tLevel('ratingAccuracy.loginToVote')
                     : !res?.isCleared 
                       ? tLevel('tooltips.clearRequired')
                       : tLevel('components.ratingAccuracy.voteButton')
