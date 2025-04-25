@@ -29,17 +29,17 @@ import { toast } from 'react-hot-toast';
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
 
 const accuracyLabel = {
-  "-5": "Extremely overrated",
-  "-4": "Very overrated",
-  "-3": "Significantly overrated",
-  "-2": "Overrated",
-  "-1": "Slightly overrated",
+  "-5": "Extremely underrated",
+  "-4": "Very underrated",
+  "-3": "Significantly underrated",
+  "-2": "Underrated",
+  "-1": "Slightly underrated",
   "0": "Perfect",
-  "1": "Slightly underrated",
-  "2": "Underrated",
-  "3": "Significantly underrated",
-  "4": "Very underrated",
-  "5": "Extremely underrated"
+  "1": "Slightly overrated",
+  "2": "Overrated",
+  "3": "Significantly overrated",
+  "4": "Very overrated",
+  "5": "Extremely overrated"
 };
 
 const getRatingAccuracyColor = (value) => {
@@ -871,7 +871,7 @@ const LevelDetailPage = () => {
             </div>
             
             {/* Rating Accuracy Display */}
-            {difficultyDict[res.level.difficulty.id].type === "PGU" && (
+            {difficultyDict[res.level.difficulty.id].type === "PGU" && res.level.clears > 0 && (
               <div className="rating-accuracy-container">
                 <div className="rating-accuracy-display-title">Rating Accuracy</div>
                 <div 
@@ -914,7 +914,10 @@ const LevelDetailPage = () => {
             
             <div className="like-container"
               style={{
-                marginLeft: difficultyDict[res.level.difficulty.id].type === "PGU" ? "" : "auto"
+                marginLeft:
+                 difficultyDict[res.level.difficulty.id].type === "PGU"
+                 && res.level.clears > 0
+                 ? "" : "auto"
               }}
             >
               <span className="like-count">{res.level.likes || 0}</span>

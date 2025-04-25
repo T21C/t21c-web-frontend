@@ -177,7 +177,10 @@ const LevelCard = ({
               className="first-pass-pfp"
             />
           )}
-          {difficultyDict[level.diffId].type === "PGU" /*&& sortBy === "RATING_ACCURACY"*/ && (
+          {difficultyDict[level.diffId].type === "PGU" 
+          // && sortBy === "RATING_ACCURACY"
+          && level.clears > 0
+          && (
             <>
               <div className={`rating-accuracy-wrapper ${displayMode === 'compact' ? 'compact' : ''}`}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" className="rating-accuracy-circle">
@@ -194,7 +197,7 @@ const LevelCard = ({
           <svg className="rating-accuracy-arrow" viewBox="0 0 200 200">
             <polygon 
             transform-origin="50% 50%" 
-            transform={`rotate(${-level.ratingAccuracy*10-45}) translate(0, -15)`} 
+            transform={`rotate(${level.ratingAccuracy*10-45}) translate(0, -15)`} 
             points="0 100, 0 130, 15 115" 
             fill="#fff" />
           </svg>
