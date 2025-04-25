@@ -1609,6 +1609,13 @@
   padding: 4px 0;
 }
 
+.rating-votes-empty {
+  padding: 8px 12px;
+  text-align: center;
+  font-size: 0.8rem;
+  color: #ccc;
+}
+
 .rating-vote-item {
   padding: 8px 12px;
   display: flex;

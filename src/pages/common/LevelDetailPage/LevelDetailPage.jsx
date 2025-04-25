@@ -124,13 +124,13 @@ const RatingVotesDropdown = ({ votes, show, onClose }) => {
     e.stopPropagation();
   };
 
-  if (!show || !votes?.length) return null;
+  if (!show) return null;
 
   return (
     <div className="rating-votes-dropdown" ref={dropdownRef} onClick={handleDropdownClick}>
       <div className="rating-votes-header">{tLevel('ratingAccuracy.votesHeader')}</div>
       <div className="rating-votes-list">
-        {votes.map((vote, index) => (
+        {votes.length > 0 ? votes.map((vote, index) => (
           <div key={index} className="rating-vote-item">
             <span className="rating-vote-user">{vote.user.name}</span>
             <span 
@@ -144,7 +144,7 @@ const RatingVotesDropdown = ({ votes, show, onClose }) => {
                 }}>{accuracyLabel[vote.vote.toString()]}</span>
             </span>
           </div>
-        ))}
+        )) : <div className="rating-votes-empty">{tLevel('ratingAccuracy.noVotes')}</div>}
       </div>
     </div>
   );
@@ -955,6 +955,8 @@ const LevelDetailPage = () => {
                 {tLevel('components.ratingAccuracy.voteButton')}
               </button>
               <span className="rating-accuracy-vote-count">Votes: {res.totalVotes || 0}</span>
+              {user?.isSuperAdmin && (
+                <>
               <InfoIcon 
               className="rating-accuracy-info-button"  
               size={"20px"} 
@@ -978,8 +980,11 @@ const LevelDetailPage = () => {
                 }}
                 onClose={handleCloseRatingAccuracyInfo} 
               />
+              </>
+              )}
               <Tooltip id="rating-accuracy-tooltip" place="bottom" noArrow />
               <Tooltip id="rating-accuracy-info-tooltip" place="bottom" noArrow />
+
             </div>
             )}
             
