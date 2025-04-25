@@ -208,7 +208,7 @@ const FullInfoPopup = ({ level, onClose }) => {
     );
   };
 
-  return res.votes.length > 0 && (
+  return (
     <>
       <div className="level-detail-popup-overlay" onClick={onClose}></div>
       <div className="level-detail-popup popup-scale-up">
