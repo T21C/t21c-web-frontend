@@ -19,7 +19,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { MetaTags } from "@/components/common/display";
-import { LikeIcon, SteamIcon } from "@/components/common/icons";
+import { InfoIcon, LikeIcon, SteamIcon } from "@/components/common/icons";
 import { createEventSystem, formatCreatorDisplay, minus2Reasons, gimmickReasons } from "@/utils/Utility";
 import { DetailPopup } from "@/components/popups";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
@@ -104,6 +104,52 @@ const AliasesDropdown = ({ field, aliases, show, onClose }) => {
   );
 };
 
+const RatingVotesDropdown = ({ votes, show, onClose }) => {
+  const { t } = useTranslation('pages');
+  const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [onClose]);
+
+  const handleDropdownClick = (e) => {
+    e.stopPropagation();
+  };
+
+  if (!show || !votes?.length) return null;
+
+  return (
+    <div className="rating-votes-dropdown" ref={dropdownRef} onClick={handleDropdownClick}>
+      <div className="rating-votes-header">{tLevel('ratingAccuracy.votesHeader')}</div>
+      <div className="rating-votes-list">
+        {votes.map((vote, index) => (
+          <div key={index} className="rating-vote-item">
+            <span className="rating-vote-user">{vote.user.name}</span>
+            <span 
+              className="rating-vote-value"
+            >
+              {vote.user.player.name} - <span 
+                style={{ 
+                  color: getRatingAccuracyColor(vote.vote),
+                  textShadow: `0 0 5px ${getRatingAccuracyColor(vote.vote)}66`,
+                  whiteSpace: 'nowrap'
+                }}>{accuracyLabel[vote.vote.toString()]}</span>
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const FullInfoPopup = ({ level, onClose }) => {
   const { t } = useTranslation('pages');
   const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
@@ -162,7 +208,7 @@ const FullInfoPopup = ({ level, onClose }) => {
     );
   };
 
-  return (
+  return res.votes.length > 0 && (
     <>
       <div className="level-detail-popup-overlay" onClick={onClose}></div>
       <div className="level-detail-popup popup-scale-up">
@@ -437,11 +483,17 @@ const LevelDetailPage = () => {
   const [showGimmickReason, setShowGimmickReason] = useState(false);
 
   const [isRatingAccuracyDialogOpen, setIsRatingAccuracyDialogOpen] = useState(false);
-  const [isSubmittingVote, setIsSubmittingVote] = useState(false);
+  const [isAllVotesOpen, setIsAllVotesOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const sliderRef = useRef(null);
 
-  // Handle timeout updates in an effect
+  const handleOpenRatingAccuracyInfo = () => {
+    setIsAllVotesOpen(!isAllVotesOpen);
+  };
+
+  const handleCloseRatingAccuracyInfo = () => {
+    setIsAllVotesOpen(false);
+  };
 
   useEffect(() => {
     const modifiedSlots = createEventSystem({
@@ -495,9 +547,7 @@ const LevelDetailPage = () => {
     };
   }, [isDragging]);
 
-  const handleAliasButtonClick = (e, field) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleAliasButtonClick = (field) => {
     setActiveAliasDropdown(current => current === field ? null : field);
   };
 
@@ -624,7 +674,7 @@ const LevelDetailPage = () => {
                 e.preventDefault();
                 e.stopPropagation();
               }}
-              onClick={(e) => handleAliasButtonClick(e, field)}
+              onClick={() => handleAliasButtonClick(field)}
             >
               ▼
             </span>
@@ -755,8 +805,6 @@ const LevelDetailPage = () => {
 
   const handleRatingAccuracyVote = async (vote) => {
     if (!user || !res?.isCleared) return;
-    
-    setIsSubmittingVote(true);
     try {
       const response = await api.put(`${import.meta.env.VITE_LEVELS}/${id}/rating-accuracy-vote`, { vote });
       
@@ -767,7 +815,8 @@ const LevelDetailPage = () => {
             ...prevRes.level,
             ratingAccuracy: response.data.level.ratingAccuracy
           },
-          totalVotes: response.data.totalVotes
+          totalVotes: response.data.totalVotes,
+          votes: response.data.votes ? response.data.votes : prevRes.votes
         }));
         
         toast.success(tLevel('messages.voteSubmitted'));
@@ -775,8 +824,6 @@ const LevelDetailPage = () => {
     } catch (error) {
       console.error('Error submitting rating accuracy vote:', error);
       toast.error(tLevel('errors.voteFailed'));
-    } finally {
-      setIsSubmittingVote(false);
     }
   };
 
@@ -908,7 +955,31 @@ const LevelDetailPage = () => {
                 {tLevel('components.ratingAccuracy.voteButton')}
               </button>
               <span className="rating-accuracy-vote-count">Votes: {res.totalVotes || 0}</span>
+              <InfoIcon 
+              className="rating-accuracy-info-button"  
+              size={"20px"} 
+              
+              onMouseDown={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }}
+              onClick={handleOpenRatingAccuracyInfo} 
+              data-tooltip-id="rating-accuracy-info-tooltip"
+              data-tooltip-content={
+                tLevel('ratingAccuracy.viewAllVotes')
+              }
+              />
+              <RatingVotesDropdown 
+                votes={res.votes} 
+                show={isAllVotesOpen} 
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                onClose={handleCloseRatingAccuracyInfo} 
+              />
               <Tooltip id="rating-accuracy-tooltip" place="bottom" noArrow />
+              <Tooltip id="rating-accuracy-info-tooltip" place="bottom" noArrow />
             </div>
             )}
             

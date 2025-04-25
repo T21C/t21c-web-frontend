@@ -1072,6 +1072,7 @@
   width: 100%;
   max-width: 200px;
   z-index: 10;
+  position: relative;
 }
 
 .level-detail .left .rating-accuracy-title {
@@ -1156,6 +1157,21 @@
   height: 32px;
 }
 
+.level-detail .left .rating-accuracy-info-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 10;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: opacity 0.2s;
+}
+
+
+.level-detail .left .rating-accuracy-info-button:hover {
+  opacity: 1;
+}
+
 .level-detail .left .rating-accuracy-display-title {
   font-size: 1rem;
   margin-bottom: 8px;
@@ -1180,19 +1196,6 @@
   white-space: nowrap;
   pointer-events: none;
 }
-
-.level-detail .left .rating-accuracy-label-5 { left: 0%; }
-.level-detail .left .rating-accuracy-label-4 { left: 10%; }
-.level-detail .left .rating-accuracy-label-3 { left: 20%; }
-.level-detail .left .rating-accuracy-label-2 { left: 30%; }
-.level-detail .left .rating-accuracy-label-1 { left: 40%; }
-.level-detail .left .rating-accuracy-label-0 { left: 50%; }
-.level-detail .left .rating-accuracy-label-1 { left: 60%; }
-.level-detail .left .rating-accuracy-label-2 { left: 70%; }
-.level-detail .left .rating-accuracy-label-3 { left: 80%; }
-.level-detail .left .rating-accuracy-label-4 { left: 90%; }
-.level-detail .left .rating-accuracy-label-5 { left: 100%; }
-
 
 /* Rating Accuracy Vote Dialog */
 .level-detail .rating-accuracy-dialog {
@@ -1579,4 +1582,56 @@
   height: 6px;
   font-size: 0.7rem;
   opacity: 0.7;
+}
+
+.rating-votes-dropdown {
+  position: absolute;
+  top: 15%;
+  right: 0;
+  background-color: #333;
+  border: 1px solid #333;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  min-width: 250px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.rating-votes-header {
+  padding: 8px 12px;
+  font-weight: bold;
+  border-bottom: 1px solid #333;
+  background-color: #2a2a2a;
+}
+
+.rating-votes-list {
+  padding: 4px 0;
+}
+
+.rating-vote-item {
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.rating-vote-item:last-child {
+  border-bottom: none;
+}
+
+.rating-vote-user {
+  font-weight: 500;
+}
+
+.rating-vote-value {
+  font-weight: 600;
+}
+
+.rating-accuracy-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
