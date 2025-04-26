@@ -93,6 +93,7 @@ const LevelPage = () => {
     { value: 'CLEARS', label: tLevel('settings.sort.clears') },
     { value: 'LIKES', label: tLevel('settings.sort.likes') },
     { value: 'RATING_ACCURACY', label: tLevel('settings.sort.ratingAccuracy') },
+    { value: 'RATING_ACCURACY_VOTES', label: tLevel('settings.sort.ratingAccuracyVotes') },
     { value: 'RANDOM', label: tLevel('settings.sort.random') }
   ];
 
@@ -256,12 +257,6 @@ const LevelPage = () => {
     const fetchLevels = async () => {
       setLoading(true);
       try {
-        // Query parameters for pagination and basic filtering
-
-
-        // Get all special difficulties from the slider range
-
-
         // Combine slider special diffs with manually selected ones
         const allSpecialDiffs = qSliderVisible
         ? [...new Set([...sliderQRange, ...selectedSpecialDiffs])]
@@ -295,7 +290,7 @@ const LevelPage = () => {
         );
 
         setLevelsData((prev) => [...prev, ...uniqueLevels]);
-        setHasMore(response.data.count > levelsData.length + newLevels.length);
+        setHasMore(response.data.hasMore);
       } catch (error) {
         if (!axios.isCancel(error)) {
           console.error('Error fetching levels:', error);
@@ -349,6 +344,7 @@ const LevelPage = () => {
   }
 
   function handleSortType(value) {
+    console.log("setting sort type to", value);
     setSort(value);
     setPageNumber(0);
     setLevelsData([]);
@@ -588,7 +584,7 @@ const LevelPage = () => {
             </h2>
             <div className="sort-option">
             <CustomSelect
-                  value={sortOptions.find(option => sort.startsWith(option.value))}
+                  value={sortOptions.find(option => sort === option.value)}
                   onChange={(option) => handleSortType(option.value)}
                   options={sortOptions}
                   label={tLevel('settings.sort.header')}

@@ -918,7 +918,7 @@ const LevelDetailPage = () => {
             </div>
             
             {/* Rating Accuracy Display */}
-            {difficultyDict[res.level.difficulty.id].type === "PGU" && res.level.clears > 0 && (
+            {res.level.difficulty.type === "PGU" && res.level.clears > 0 && (
               <div className="rating-accuracy-container">
                 <div className="rating-accuracy-display-title">Rating Accuracy</div>
                 <div 
@@ -991,7 +991,7 @@ const LevelDetailPage = () => {
             <div className="like-container"
               style={{
                 marginLeft:
-                 difficultyDict[res.level.difficulty.id].type === "PGU"
+                 res.level.difficulty.type === "PGU"
                  && res.level.clears > 0
                  ? "" : "auto"
               }}

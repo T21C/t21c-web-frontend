@@ -29,6 +29,7 @@
       "clears": "Clears",
       "likes": "Likes",
       "ratingAccuracy": "Rating Accuracy",
+      "ratingAccuracyVotes": "Total Votes",
       "random": "Random"
     }
   },

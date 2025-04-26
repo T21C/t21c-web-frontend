@@ -177,9 +177,10 @@ const LevelCard = ({
               className="first-pass-pfp"
             />
           )}
-          {difficultyDict[level.diffId].type === "PGU" 
+          {level.difficulty.type === "PGU" 
           // && sortBy === "RATING_ACCURACY"
           && level.clears > 0
+          && level.totalRatingAccuracyVotes > 0
           && (
             <>
               <div className={`rating-accuracy-wrapper ${displayMode === 'compact' ? 'compact' : ''}`}>
@@ -201,8 +202,18 @@ const LevelCard = ({
             points="0 100, 0 130, 15 115" 
             fill="#fff" />
           </svg>
-            </>
+          {sortBy === "RATING_ACCURACY_VOTES"
+          &&
+          (
+            <div className="rating-accuracy-votes-wrapper">
+              <p>
+                {level.totalRatingAccuracyVotes.toString().length === 1 && (<>&nbsp;</>)} 
+                {level.totalRatingAccuracyVotes.toString() || 0}
+              </p>
+            </div>
           )}
+            </>
+        )}
         </div>
 
         <div className="song-wrapper">

@@ -75,9 +75,6 @@ const PassCard = ({ pass }) => {
               <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
               <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
               <g id="SVGRepo_iconCarrier">
-                <title>youtube [#168]</title>
-                <desc>Created with Sketch.</desc>
-                <defs></defs>
                 <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd">
                   <g id="Dribbble-Light-Preview" transform="translate(-300.000000, -7442.000000)" fill="#ffffff">
                     <g id="icons" transform="translate(56.000000, 160.000000)">
