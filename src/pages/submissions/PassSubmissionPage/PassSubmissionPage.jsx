@@ -15,6 +15,7 @@ import api from "@/utils/api";
 import axios from 'axios';
 import { StagingModeWarning } from "@/components/common/display";
 import { ProfileSelector } from "@/components/common/selectors";
+import { useDifficultyContext } from "@/contexts/DifficultyContext";
 
 
 const PassSubmissionPage = () => {
@@ -36,6 +37,7 @@ const PassSubmissionPage = () => {
   };
 
   const { t } = useTranslation('pages');
+  const { difficultyDict } = useDifficultyContext();
   const tPass = (key, params = {}) => t(`passSubmission.${key}`, params);
   const { user } = useAuth();
   const [form, setForm] = useState(initialFormState);
@@ -142,7 +144,7 @@ const PassSubmissionPage = () => {
     }
 
     if(level){
-      setIsUDiff(level.difficulty?.name[0] === "U" || level.difficulty?.name[0] === "Q");
+      setIsUDiff(difficultyDict[level.difficulty?.id]?.name[0] === "U" || difficultyDict[level.difficulty?.id]?.name[0] === "Q");
     }
     if(!form.levelId){
       setIsUDiff(false)
@@ -645,8 +647,8 @@ const PassSubmissionPage = () => {
                     onClick={() => handleLevelSelect(result)}
                   >
                     <img 
-                      src={result.difficulty?.icon} 
-                      alt={result.difficulty?.name}
+                      src={difficultyDict[result.difficulty.id]?.icon} 
+                      alt={difficultyDict[result.difficulty.id]?.name}
                       className="difficulty-icon"
                     />
                     <div className="level-content">
@@ -665,7 +667,7 @@ const PassSubmissionPage = () => {
               <div className="information">
                 {(level && form.levelId) ? 
                 (<>
-                  <img src={level.difficulty?.icon} alt={level.difficulty?.name} className="level-icon" />
+                  <img src={difficultyDict[level.difficulty.id]?.icon} alt={difficultyDict[level.difficulty.id]?.name} className="level-icon" />
                   <div className="level-info">
                     <h2 className="level-info-sub">{truncateString(level["song"], 30)}</h2>
                     <div className="level-info-sub">
