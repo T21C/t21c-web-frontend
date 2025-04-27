@@ -856,7 +856,6 @@ const LevelDetailPage = () => {
         <div className="loader loader-level-detail"></div>
       </div>
     );
-
   return (
   <>
     <MetaTags
@@ -1061,7 +1060,7 @@ const LevelDetailPage = () => {
                 <SteamIcon color="#ffffff" size={"24px"} />
               </a>
             )}
-            {res.rating && (
+            {res.ratings && (
               <button 
                 className="rating-button svg-stroke"
                 onClick={() => setShowRatingPopup(true)}
@@ -1272,10 +1271,10 @@ const LevelDetailPage = () => {
       />
     )}
 
-    {showRatingPopup && res.rating && (
+    {showRatingPopup && res.ratings && (
         <DetailPopup
           selectedRating={{
-            ...res.rating,
+            ...res.ratings,
             level: res.level
           }}
           setSelectedRating={() => setShowRatingPopup(false)}

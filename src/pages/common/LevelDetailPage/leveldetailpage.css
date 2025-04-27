@@ -211,7 +211,7 @@
 }
 .level-detail .header .right a svg:hover,
 .level-detail .header .right button svg:hover {
-  scale: 1.3;
+  scale: 1.15;
 }
 .level-detail .header .right .rating-button {
   background: none;
