@@ -95,9 +95,9 @@ export const RatingCard = ({
               <h3 title={fullTitle}>
                 <span className="song-title">{songTitle}</span>
                 <span className="title-separator"> - </span>
-                <span className="song-creator">{formatCreatorDisplay(rating.level)}</span>
+                <span className="song-creator">{rating.level.artist}</span>
               </h3>
-              <p className="artist">{rating.level.artist}</p>
+              <p className="artist">{formatCreatorDisplay(rating.level)}</p>
             </div>
             <div className="header-meta">
               <span 
