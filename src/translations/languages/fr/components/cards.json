@@ -1,0 +1,66 @@
+{
+  "featured": {
+    "by": "Niveau par {{creator}}",
+    "button": "Voir le niveau"
+  },
+  "level": {
+    "creator": "Créateur",
+    "clears": "Complétions",
+    "buttons": {
+      "edit": "Modifier"
+    },
+    "links": {
+      "workshop": "Lien Workshop",
+      "download": "Lien de téléchargement",
+      "unavailable": "Pas de lien disponible"
+    }
+  },
+  "pass": {
+    "stats": {
+      "xAccuracy": "Précision-X",
+      "score": "Score",
+      "speed": "Vitesse"
+    },
+    "flags": {
+      "worldsFirst": "WF",
+      "twelveKey": "12K",
+      "noHoldTap": "NHT"
+    },
+    "links": {
+      "video": "Voir la vidéo"
+    }
+  },
+  "player": {
+    "title": "Joueur",
+    "stats": {
+      "rankedScore": "Score Classement",
+      "generalScore": "Score Général",
+      "ppScore": "Score PP",
+      "wfScore": "Score WF",
+      "score12k": "Score 12k",
+      "avgXacc": "Précision-X Moyenne",
+      "totalPasses": "Total Complétions",
+      "universalPasses": "Complétions Universelles",
+      "WFPasses": "Complétions WF",
+      "topDiff": "Difficulté Max",
+      "top12kDiff": "Difficulté 12k Max"
+    }
+  },
+  "clear": {
+    "score": {
+      "ranked": "Score Classement",
+      "general": "Score Général",
+      "pp": "Score PP",
+      "wf": "Score WF",
+      "12k": "Score 12k"
+    },
+    "stats": {
+      "avgXacc": "Précision-X Moyenne",
+      "totalPasses": "Total Complétions",
+      "universalPasses": "Complétions Universelles",
+      "WFPasses": "Complétions WF",
+      "topDiff": "Difficulté Max",
+      "top12kDiff": "Difficulté 12k Max"
+    }
+  }
+} 

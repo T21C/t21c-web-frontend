@@ -1,0 +1,106 @@
+{
+  "header": {
+    "headerPass": "Je veux envoyer une complétion",
+    "headerLevel": "Je veux faire évaluer mon niveau"
+  },
+  "button": {
+    "buttonPass": "Soumettre une complétion",
+    "buttonLevel": "Soumettre un niveau"
+  },
+  "RulesAGuide": "Voir les règles",
+  "level": {
+    "alert": {
+      "login": "Vous devez être connecté(e)",
+      "form": "Réponse incomplète",
+      "success": "Réponse envoyée!",
+      "error": "Erreur: ",
+      "loading": "Envoi..."
+    },
+    "thumbnailInfo": "Vidéo non trouvée",
+    "title": "Soumettre un niveau",
+    "videoInfo": {
+      "title": "Titre de la vidéo",
+      "channel": "Nom de la chaine",
+      "timestamp": "Horodatage",
+      "nolink": "Aucun lien fourni"
+    },
+    "tooltip": "Difficulté innconue, le formulaire va être envoyé mais faites en sorte que les évaluateurs puisse le lire. Exemple de difficultés correctes.: G13; P7~P13; 21.1+; 19~20.0+",
+    "submInfo": {
+      "song": "Chanson",
+      "artist": "Artiste",
+      "videoLink": "Lien vidéo",
+      "charter": "Charteur",
+      "diff": "Difficulté",
+      "vfxer": "Effecteurs (opt.)",
+      "team": "Nom de l'équipe (opt.)",
+      "dlLink": "Lien de téléchargement",
+      "workshop": "Lien Workshop",
+      "dlLinksOr": "ou"
+    },
+    "submit": "Soumettre",
+    "submitWait": " veuillez patienter..."
+  },
+  "pass": {
+    "alert": {
+      "login": "Vous devez être connecté",
+      "form": "Réponse incomplète",
+      "success": "Réponse envoyée!",
+      "error": "Erreur: ",
+      "loading": "Envoi..."
+    },
+    "score": {
+      "needId": "L'identifiant du niveau est requis",
+      "needJudg": "Jugements non remplis",
+      "needInfo": "Pas assez d'informations sur la complétion",
+      "noInfo": "Pas assez d'informations pour calculer le score"
+    },
+    "thumbnailInfo": "Vidéo non trouvée",
+    "title": "Soumettre une complétion",
+    "videoInfo": {
+      "videoLink": "Lien vidéo",
+      "title": "Titre de la vidéo",
+      "channel": "Nom de la chaîne",
+      "timestamp": "Horodatage",
+      "nolink": "Aucun lien fourni"
+    },
+    "levelInfo": {
+      "song": "Chanson",
+      "charter": "Charteur",
+      "artist": "Artiste"
+    },
+    "holdTooltip": "Cochez ceci si vous avez utilisé une autre option pour les maintiens de touche que \"Normal hold\" (0.9x score)",
+    "12kTooltip": "Cochez ceci si vous avez complété le niveau avec 12 touches ou moins",
+    "16kTooltip": "Cochez ceci si vous avez complété le niveau avec 16 touches ou plus",
+    "tooltip": "Difficulté innconue, le formulaire va être envoyé mais faites en sorte que les évaluateurs puisse le lire. Exemple de difficultés correctes.: G13; P7~P13; 21.1+; 19~20.0+",
+    "levelFetching": {
+      "input": "Saisir l'identifiant du niveau",
+      "fetching": "Recherche",
+      "goto": "Aller au niveau",
+      "notfound": "Aucun résultat"
+    },
+    "submInfo": {
+      "levelId": "Identifiant du niveau",
+      "altname": "Nom alternatif dans le classement",
+      "nohold": "A utilisé les maintients alternatifs",
+      "speed": "Vitesse (opt; ex: 1.2)",
+      "feelDiff": "Difficulté ressentie (ex. G12)",
+      "team": "Nom de l'équipe (opt.)",
+      "dlLink": "Lien de Téléchargement",
+      "workshop": "Lien Workshop",
+      "is16K": "Complétion 16K+",
+      "is12K": "Complétion 12K"
+    },
+    "judgements": {
+      "tooearly": "Trop tôt",
+      "early": "Tôt",
+      "ePerfect": "Parfait-tôt",
+      "perfect": "Parfait",
+      "lPerfect": "Parfait-tard",
+      "late": "Tard"
+    },
+    "acc": "Précision: ",
+    "scoreCalc": "Score: ",
+    "submit": "Soumettre",
+    "submitWait": " Veuillez patienter..."
+  }
+} 

@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "title": "A propos de nous | TUF",
+    "description": "En apprendre plus sur The Universal Forums (TUF) - Une organisation de la communauté pour les niveaux personnalisés d'ADOFAI"
+  },
+  "header": {
+    "title": "A propos de TUF"
+  },
+  "sections": {
+    "whoWeAre": {
+      "title": "Qui sommes nous",
+      "content": "The Universal Forums (TUF) est une organisation communautaire qui a pour but de recenser et évaluer la difficulté des niveaux personnalisés sur le jeu A Dance of Fire and Ice (ADOFAI). Notre plateforme sers de hub pour les joueurs qui veulent partager leurs accomplissements, découvrir des nouveaux niveaux, et partager avec d'autres passionés(es)."
+    },
+    "mission": {
+      "title": "Notre mission",
+      "intro": "Nous essayons de créer une plateforme comprehensible et accessible qui:",
+      "points": [
+        "Fournit des difficultés précises pour les niveaux personnalisés",
+        "Maintient un classement fiable",
+        "Favorise une communauté supportive pour les joueurs",
+        "Conserves et met en valeurs les accomplissements des joueurs"
+      ]
+    },
+    "values": {
+      "title": "Valeurs de la communauté",
+      "cards": {
+        "accuracy": {
+          "title": "Précision",
+          "content": "Nous preservons des normes élevées pour les évaluations de niveau et le score pour assurer une compétition équitable."
+        },
+        "transparency": {
+          "title": "Transparence",
+          "content": "Nos processus d'évaluation et de décision communautaire sont ouverte et claire pour tous les membres."
+        },
+        "inclusivity": {
+          "title": "Inclusivité",
+          "content": "Nous accueillons les joueurs de tout niveau de jeu dans la communauté."
+        },
+        "innovation": {
+          "title": "Innovations",
+          "content": "Nous ameliorons en permanence notre plateforme pour mieux servir la communauté d'ADOFAI."
+        }
+      }
+    },
+    "join": {
+      "title": "Rejoindre notre communauté",
+      "links": {
+        "discord": "Rejoinez nous sur Discord",
+        "github": "Contribuez sur GitHub"
+      }
+    }
+  }
+} 

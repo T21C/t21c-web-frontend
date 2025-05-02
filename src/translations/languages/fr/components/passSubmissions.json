@@ -1,0 +1,84 @@
+{
+  "noSubmissions": "No pending pass submissions to review",
+  "details": {
+    "levelId": "ID de niveau :",
+    "player": "Joueur.se :",
+    "feelingDiff": "Diff. Ressentie :",
+    "judgements": {
+      "label": "Jugements:",
+      "types": {
+        "earlyDouble": "Double Tôt",
+        "earlySingle": "Simple Tôt",
+        "ePerfect": "Parfait-Tôt",
+        "perfect": "Parfait",
+        "lPerfect": "Parfait-Tard",
+        "lateSingle": "Simple Tard",
+        "lateDouble": "Double Tard"
+      }
+    },
+    "flags": {
+      "label": "Flags:",
+      "types": {
+        "12k": "12K",
+        "nht": "NHT",
+        "16k": "16K"
+      }
+    },
+    "submitter": "Envoyeur :",
+    "uploadTime": "Upload Time:"
+  },
+  "playerAssignment": {
+    "title": "Attribuer Joueur.se",
+    "discord": {
+      "assignButton": "Attribuer les Info Discord",
+      "confirmMessage": "Cela va attribuer @{{username}} à {{playerName}}. Continuer ?",
+      "buttons": {
+        "confirm": "Confirmer",
+        "cancel": "Annuler"
+      },
+      "tooltip": "{{discordUsername}} → {{playerName}}"
+    }
+  },
+  "buttons": {
+    "allow": "Approver",
+    "decline": "Refuser",
+    "save": "Sauvegarder",
+    "cancel": "Annuler",
+    "reset": "Réinitialiser",
+    "clear": "Effacer",
+    "selectAll": "Tout sélectionner",
+    "autoAllow": "Approver Auto.",
+    "autoReject": "Rejeter Auto."
+  },
+  "errors": {
+    "noPlayer": "Aucun joueur attribué",
+    "processing": "Erreur lors du traitement de la soumission",
+    "autoAllow": "Échec de l'approbation Auto des soumissions",
+    "loading": "Échec du chargement des soumissions",
+    "saving": "Échec de la sauvegarde des soumissions"
+  },
+  "success": {
+    "autoAllow": "Approbation auto de {{count}} soumission"
+  },
+  "loading": "Chargement des soumissions ...",
+  "noItems": "Aucune soumission trouvée",
+  "search": {
+    "placeholder": "Recherche de soumissions ..."
+  },
+  "stats": {
+    "selected": "Sélectionnée",
+    "total": "Total"
+  },
+  "modal": {
+    "title": "Confirmer l'Action",
+    "confirmMessage": "Cela va attribuer @{{username}} à {{playerName}}. Continuer ?",
+    "buttons": {
+      "confirm": "Confirmer",
+      "cancel": "Annuler"
+    },
+    "tooltip": "{{discordUsername}} → {{playerName}}"
+  },
+  "notifications": {
+    "autoAllow": "Approbation auto de {{count}} soumissions"
+  }
+} 

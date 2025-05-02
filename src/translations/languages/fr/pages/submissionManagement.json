@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "title": "Gérer les envois | TUF",
+    "description": "Gérer les envois de niveaux et de complétions pour The Universal Forums (TUF)"
+  },
+  "header": {
+    "title": "Gérer les envois",
+    "refresh": "Rafraîchir les envois"
+  },
+  "tabs": {
+    "levels": "Envois de niveaux",
+    "passes": "Envois de complétions",
+    "autoAllow": "Approuver automatiquement les complétions valides"
+  }
+} 

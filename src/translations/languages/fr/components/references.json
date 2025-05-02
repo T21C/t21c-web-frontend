@@ -1,0 +1,53 @@
+{
+  "button": {
+    "label": "Ouvrir les Références",
+    "text": "Références"
+  },
+  "popup": {
+    "title": "{{tab}} Difficultées",
+    "buttons": {
+      "close": "Fermer",
+      "expandAll": "Tout agrandir",
+      "collapseAll": "Tout réduire",
+      "editMode": "Mode édition",
+      "viewMode": "Mode vision",
+      "saveChanges": "Enregistrer",
+      "saving": "Enregistrement...",
+      "cancel": "Annuler"
+    },
+    "loading": "Chargement des références...",
+    "errors": {
+      "loadFailed": "Echec du chargement des références",
+      "saveFailed": "Echec de l'enregistrement"
+    },
+    "levelCount": {
+      "singular": "1 niveau",
+      "plural": "{{count}} niveaux"
+    },
+    "editMode": {
+      "placeholder": "Entrer les identifiants des niveaux séparés par des virgules"
+    }
+  },
+  "errors": {
+    "loading": "Echec du chargement des difficultés",
+    "saving": "Echec de l'enregistrement des difficultés"
+  },
+  "title": "{{tab}} Difficultés",
+  "buttons": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "reset": "Réinitialiser",
+    "clear": "Effacer",
+    "selectAll": "Tout séléctionner"
+  },
+  "loading": "Chargement des difficultés...",
+  "noItems": "Aucune difficulté trouvée",
+  "search": {
+    "placeholder": "Rechercher des difficultés..."
+  },
+  "stats": {
+    "selected": "Sélectionnées",
+    "total": "Total",
+    "plural": "{{count}} niveaux"
+  }
+} 

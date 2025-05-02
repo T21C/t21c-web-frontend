@@ -1,0 +1,23 @@
+{
+  "noSubmissions": "Aucune soumission de niveau en attente de classement",
+  "details": {
+    "artist": "Artiste :",
+    "charter": "Charteur :",
+    "difficulty": "Difficulté :",
+    "download": {
+      "label": "Téléchargement :",
+      "directLink": "Lien Direct",
+      "notAvailable": "Non Disponible"
+    },
+    "workshop": {
+      "label": "Workshop :",
+      "link": "Lien Workshop"
+    },
+    "team": "Équipe:",
+    "vfxer": "Effecteur :"
+  },
+  "buttons": {
+    "allow": "Autoriser",
+    "decline": "Refuser"
+  }
+} 

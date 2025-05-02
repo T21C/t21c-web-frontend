@@ -1,0 +1,16 @@
+{
+  "aboutUs": {
+    "header": "A propos de nous",
+    "paragraph": "The Universal Forums est une organisation communautaire qui a pour but de recenser et évaluer la difficulté des niveaux personnalisés sur le jeu ADOFAI."
+  },
+  "links": {
+    "header": "Liens",
+    "levels": "Niveaux",
+    "submission": "Soumettre"
+  },
+  "shoutOut": {
+    "header": "Crédits",
+    "paragraph": "Site créé par l'équipe de dev TUF dirigée par Adrian et t3ww. Le code de ce site est disponible sur GitHub."
+  },
+  "copyRight": "2024 TUF Dev Team, Tous droits réservés. Version - 1.1.0"
+} 

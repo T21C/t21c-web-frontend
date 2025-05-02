@@ -1,0 +1,76 @@
+{
+  "meta": {
+    "title": "Backups | TUF",
+    "description": "Gérer la database et les fichiers de backups pour The Universal Forums (TUF)"
+  },
+  "header": {
+    "title": "Backups",
+    "refresh": "Rafraîchir les backup"
+  },
+  "tabs": {
+    "mysql": "Backup MySQL",
+    "files": "Backup des fichiers"
+  },
+  "stats": {
+    "totalSize": "Taille totale: {{size}}"
+  },
+  "sort": {
+    "newest": "Le plus récent",
+    "oldest": "Le plus ancien"
+  },
+  "buttons": {
+    "create": "Créer une backup {{type}}",
+    "creating": "Création...",
+    "restore": "Restaurer",
+    "delete": "Supprimer",
+    "save": "Sauvegarder",
+    "saving": "Sauvergarde...",
+    "cancel": "Annuler",
+    "confirm": "Confirmer"
+  },
+  "noBackups": {
+    "title": "Aucune backup {{type}} disponible",
+    "message": "Créez une première backup avec le bouton au dessus"
+  },
+  "timeAgo": {
+    "second": "Il y a {{count}} seconde",
+    "seconds": "Il y a {{count}} secondes",
+    "minute": "Il y a {{count}} minute",
+    "minutes": "Il y a {{count}} minutes",
+    "hour": "Il y a {{count}} heure",
+    "hours": "Il y a {{count}} heures",
+    "day": "Il y a {{count}} jour",
+    "days": "Il y a {{count}} jours",
+    "month": "Il y a {{count}} mois",
+    "months": "Il y a {{count}} mois",
+    "year": "Il y a {{count}} an",
+    "years": "Il y a {{count}} ans"
+  },
+  "passwordModal": {
+    "title": "Mot de passe super-admin requis",
+    "createMessage": "Veulliez entrer le mot de passe super-admin afin de créer une backup.",
+    "restoreMessage": "Veulliez entrer le mot de passe super-admin afin de restaurer la backup.",
+    "deleteMessage": "Veulliez entrer le mot de passe super-admin afin de supprimer la backup.",
+    "renameMessage": "Veulliez entrer le mot de passe super-admin afin de renommer la backup.",
+    "placeholder": "Entrer le mot de passe",
+    "errors": {
+      "invalid": "Mot de passe invalide",
+      "generic": "Une erreur est survenue lors de l'action"
+    }
+  },
+  "notifications": {
+    "backupCreated": "Backup {{type}} créée avec succès",
+    "backupRestored": "Backup restaurée avec succès",
+    "backupDeleted": "Backup supprimée avec succès",
+    "downloadFailed": "Echec du téléchargement de la backup",
+    "loadFailed": "Echec du chargement des backups",
+    "createFailed": "Echec de la création de la backup",
+    "restoreFailed": "Echec de la restauration de la backup",
+    "deleteFailed": "Echec de la suppression de la backup"
+  },
+  "fileInfo": {
+    "created": "Crée le: {{date}}",
+    "size": "Taille: {{size}}",
+    "newName": "Entrer le nouveau nom"
+  }
+} 

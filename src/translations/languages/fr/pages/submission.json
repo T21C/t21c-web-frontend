@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "title": "Soumettre",
+    "description": "Soumettre des nouveaux niveaux et complétions",
+    "type": "website"
+  },
+  "header": {
+    "headerPass": "Envoyer une complétion",
+    "headerLevel": "Envoyer un niveau"
+  },
+  "button": {
+    "buttonPass": "Envoyer une complétion",
+    "buttonLevel": "Envoyer un niveau"
+  }
+} 

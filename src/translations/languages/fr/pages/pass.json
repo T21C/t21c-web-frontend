@@ -1,0 +1,44 @@
+{
+  "meta": {
+    "title": "Liste des complétions",
+    "description": "Explorer et découvrir les complétions des joueurs"
+  },
+  "loading": {
+    "difficulties": "Chargement des difficultés..."
+  },
+  "input": {
+    "placeholder": "Rechercher Nom, Chanson, ou artiste..."
+  },
+  "toolTip": {
+    "filter": "Filtrer les resultats",
+    "sort": "Trier resultats",
+    "reset": "Réinitialiser tous les filtres"
+  },
+  "settings": {
+    "filter": {
+      "title": "Filtrer",
+      "options": {
+        "only12k": "12K seulement",
+        "deletedPasses": "Complétions supprimées"
+      }
+    },
+    "sort": {
+      "title": "Trier",
+      "label": "Trier",
+      "options": {
+        "newest": "Le plus récent",
+        "oldest": "Le plus ancien",
+        "highestScore": "Meilleur Score",
+        "lowestScore": "Score le plus bas",
+        "highestAccuracy": "Meilleure précision",
+        "lowestAccuracy": "Précision la plus basse",
+        "highestDifficulty": "Meilleure difficulté",
+        "lowestDifficulty": "Difficulté la plus basse",
+        "random": "Aléatoire"
+      }
+    }
+  },
+  "infScroll": {
+    "end": "Fin de la liste"
+  }
+} 

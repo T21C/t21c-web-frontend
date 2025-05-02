@@ -1,0 +1,56 @@
+{
+  "edit": {
+    "title": "Modifier les détails du niveaux",
+    "close": "×",
+    "form": {
+      "labels": {
+        "song": "Chanson",
+        "artist": "Artiste",
+        "creator": "Créateur",
+        "charter": "Charteur",
+        "vfxer": "Effecteur",
+        "team": "Équipe",
+        "baseScore": "Score de base",
+        "videoLink": "Lien vidéo",
+        "dlLink": "Lien de téléchargement",
+        "workshopLink": "Lien Workshop",
+        "publicComments": "Commentaires publics",
+        "previousDifficulty": "Difficulté précédente"
+      },
+      "placeholders": {
+        "baseScore": "Score de base",
+        "rerateNumber": "Numéro de reclassement",
+        "rerateReason": "Raison de reclassement"
+      },
+      "checkboxes": {
+        "toRate": "À classer"
+      },
+      "buttons": {
+        "save": {
+          "default": "Sauvegarder les changements",
+          "saving": "Sauvegarde ..."
+        },
+        "delete": {
+          "default": "Su^pprimer",
+          "deleting": "Suppression ...",
+          "hide": "Cacher",
+          "unhide": "Révéler",
+          "processing": "Traitement ..."
+        }
+      }
+    },
+    "confirmations": {
+      "unsavedChanges": "Les modifications ne sont pas enregistrées. Voulez-vous vraiment fermer ?",
+      "delete": "Voulez-vous supprimer ce niveau ? Il pourra être restauré plus tard.",
+      "hide": "Voulez-vous cacher ce niveau ?",
+      "unhide": "Voulez-vous révéler ce niveau ?",
+      "restore": "Voulez-vous restaurer ce niveau ?"
+    },
+    "errors": {
+      "update": "Échec de la mise à jour du niveau",
+      "delete": "Échec de la suppression",
+      "toggleHidden": "Échec du changement de statu caché",
+      "restore": "Échec de la restauration"
+    }
+  }
+} 

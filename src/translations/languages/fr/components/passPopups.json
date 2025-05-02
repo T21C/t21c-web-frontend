@@ -1,0 +1,71 @@
+{
+  "edit": {
+    "title": "Modifier la complétion",
+    "close": "×",
+    "thumbnailInfo": "Les informations vidéo apparaitront ici",
+    "form": {
+      "submInfo": {
+        "levelId": "ID de niveau",
+        "videoLink": "Lien Vidéo",
+        "speed": "Vitesse",
+        "feelDiff": "Difficulté Ressentie",
+        "nohold": "Pas de maintien",
+        "is12K": "12K",
+        "is16K": "16K"
+      },
+      "levelInfo": {
+        "song": "Chanson",
+        "artist": "Artiste",
+        "charter": "Charteur"
+      },
+      "levelFetching": {
+        "input": "Entrer l'ID de niveau",
+        "fetching": "Recherche ...",
+        "goto": "Aller au niveau",
+        "notfound": "Introuvable"
+      },
+      "videoInfo": {
+        "videoLink": "Lien vidéo",
+        "title": "Titre",
+        "channel": "Chaine",
+        "timestamp": "Date de publication",
+        "nolink": "Pas de lien vidéo fourni"
+      },
+      "judgements": {
+        "ePerfect": "Parfait-Tôt",
+        "perfect": "Parfait",
+        "lPerfect": "Parfait-Tard",
+        "tooearly": "Trop tôt",
+        "early": "Tôt",
+        "late": "Tard"
+      },
+      "buttons": {
+        "submit": "Soumettre",
+        "submitWait": "Envoi ...",
+        "delete": {
+          "default": "Supprimer",
+          "deleting": "Suppression ...",
+          "restore": "Restaurer",
+          "restoring": "Restauration ..."
+        }
+      }
+    },
+    "acc": "Précision : ",
+    "scoreCalc": "Score : ",
+    "holdTooltip": "Notes tapées seulement, pas de note maintenue",
+    "12kTooltip": "Variante 12 touches",
+    "16kTooltip": "Variante 16 touches",
+    "tooltip": "Entrez un nombre entre 1 et 10",
+    "alert": {
+      "success": "Complétion mise à jour avec succès !",
+      "error": "Erreur : ",
+      "loading": "Traitement ...",
+      "login": "Veuillez vous connecter pour soumettre une complétion",
+      "form": "Veuillez remplir les champs requis correctement"
+    },
+    "confirmations": {
+      "delete": "Voulez-vous supprimer cette complétion ? Elle pourra être restauré plus tard.",
+      "restore": "Voulez-vous restaurer cette complétion ?"
+    }
+  }
+} 

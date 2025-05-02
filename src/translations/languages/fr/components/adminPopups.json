@@ -1,0 +1,58 @@
+{
+  "player": {
+    "title": "Modifier Joueur",
+    "close": "×",
+    "form": {
+      "name": {
+        "label": "Pseudonyme",
+        "placeholder": "Entrer le pseudonyme",
+        "button": "Mettre à jour"
+      },
+      "country": {
+        "label": "Pays",
+        "button": "Mettre à jour"
+      },
+      "ban": {
+        "label": "Bannir Joueur",
+        "confirm": {
+          "ban": "Êtes vous sûr de vouloir bannir ce joueur ?",
+          "unban": "Êtes vous sûr de vouloir débannir ce joueur ?",
+          "buttons": {
+            "confirm": "Confirmer",
+            "cancel": "Annuler"
+          }
+        }
+      },
+      "discord": {
+        "label": "ID Discord",
+        "placeholder": "Entrer l'ID Discord pour valider",
+        "buttons": {
+          "validate": "Valider",
+          "remove": "Retirer"
+        },
+        "confirm": {
+          "message": "Êtes vous sûr de vouloir mettre à jour les info Discord de ce joueur ?",
+          "buttons": {
+            "confirm": "Confirmer",
+            "cancel": "Annuler"
+          }
+        }
+      }
+    },
+    "buttons": {
+      "done": "Terminer"
+    },
+    "errors": {
+      "nameUpdate": "Échec du changement de pseudonyme",
+      "countryUpdate": "Échec du changement de pays",
+      "banUpdate": "Échec du changement de bannissement",
+      "discordFetch": "Échec de la recherche d'ID Discord",
+      "discordUpdate": "Échec du changement des info Discord",
+      "discordRemove": "Échec de la suppression des info Discord"
+    },
+    "success": {
+      "discordUpdate": "Info Discord mises à jour avec succès",
+      "discordRemove": "Info Discord supprimées avec succès"
+    }
+  }
+} 

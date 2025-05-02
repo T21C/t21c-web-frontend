@@ -1,0 +1,10 @@
+{
+  "header": {
+    "headerRating": "Gérer les évaluations",
+    "headerSubmissions": "Gérer les envois"
+  },
+  "button": {
+    "buttonRating": "Aller aux évaluations",
+    "buttonSubmissions": "Aller au envois"
+  }
+} 

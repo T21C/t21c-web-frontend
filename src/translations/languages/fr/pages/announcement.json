@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "title": "Annonce | TUF",
+    "description": "Gérer et annoncer les nouveaux niveaux, les réévaluations, et les complétions pour The Universal Forums (TUF)"
+  },
+  "header": {
+    "title": "Annonces"
+  },
+  "tabs": {
+    "newLevels": "Nouveaux niveaux",
+    "rerates": "Réévaluations",
+    "passes": "Complétions"
+  },
+  "buttons": {
+    "retry": "Rééssayez",
+    "refresh": "Rafraîchissez",
+    "selectAll": "Tout séléctionner",
+    "deselectAll": "Tout déséléctionner",
+    "announce": "Annoncer les séléctionnés",
+    "announcing": "Annonce en cours..."
+  },
+  "errors": {
+    "fetchFailed": "Echec de la récupération des éléments séléctionnés. Veuillez rééssayer.",
+    "announceFailed": "Echec de l'annonce des éléments séléctionnés. Veuillez rééssayer.",
+    "invalidIds": "Un ou plusieurs éléments ont un identifiant invalide"
+  }
+} 

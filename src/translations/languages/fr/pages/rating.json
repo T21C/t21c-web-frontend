@@ -1,0 +1,26 @@
+{
+  "meta": {
+    "title": "Evaluation | TUF",
+    "description": "Gérer et évaluer les niveaux pour The Universal Forums (TUF)"
+  },
+  "buttons": {
+    "references": "Niveaux références",
+    "manageRaters": "Gérer les évaluateurs"
+  },
+  "toggles": {
+    "detailedView": {
+      "label": "Mode détaillé"
+    },
+    "hideRated": {
+      "label": "Cacher évalués"
+    }
+  },
+  "messages": {
+    "loading": "Chargement des évaluations...",
+    "error": "Erreur pendant le chargement des évaluations",
+    "noRatings": {
+      "title": "Aucune évaluation disponible",
+      "subtitle": "Vous avez tout évalué!"
+    }
+  }
+} 

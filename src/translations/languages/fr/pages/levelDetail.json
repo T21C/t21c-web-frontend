@@ -1,0 +1,57 @@
+{
+  "meta": {
+    "title": "{{song}} | TUF",
+    "description": "Chart de {{song}} par {{creator}}"
+  },
+  "banners": {
+    "deleted": "Ce niveau a été supprimé",
+    "hidden": "This level a été caché"
+  },
+  "buttons": {
+    "edit": "Modifier les details du niveau"
+  },
+  "links": {
+    "download": "Télécharger le niveau",
+    "workshop": "Voir sur le Workshop",
+    "thumbnailNotFound": {
+      "text": "Miniature indisponible",
+      "goToVideo": "Aller sur la vidéo"
+    }
+  },
+  "stats": {
+    "firstClear": {
+      "label": "Première complétion",
+      "value": "{{player}} | {{date}}"
+    },
+    "highestScore": {
+      "label": "Meilleur Score",
+      "value": "{{player}} | {{score}}"
+    },
+    "highestSpeed": {
+      "label": "Meilleure vitesse",
+      "value": "{{player}} | {{speed}}×",
+      "noSpeed": "-"
+    },
+    "highestAccuracy": {
+      "label": "Meilleure précision",
+      "value": "{{player}} | {{accuracy}}%"
+    },
+    "totalClears": {
+      "label": "Total complétions",
+      "value": "{{count}}"
+    },
+    "waiting": "Chargement..."
+  },
+  "leaderboard": {
+    "header": "Classement",
+    "notBeaten": "Ce niveau n'as pas encore été complété!",
+    "tooltips": {
+      "time": "Trier par date de complétion",
+      "accuracy": "Trier par précision",
+      "score": "Trier par score"
+    }
+  },
+  "dialog": {
+    "fullInfo": "Voir plus d'infos"
+  }
+} 

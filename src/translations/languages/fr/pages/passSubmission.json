@@ -1,0 +1,60 @@
+{
+  "title": "Soumettre une complétion",
+  "thumbnailInfo": "Les infomations de la vidéo seront affichées ici",
+  "submInfo": {
+    "levelId": "Identifiant du niveau",
+    "altname": "Nom alternatif (opt.)",
+    "nohold": "Pas de maintient alternatif",
+    "speed": "Vitesse (opt., >=1.0)",
+    "feelDiff": "Difficulté ressentie",
+    "is12K": "12K",
+    "is16K": "16K"
+  },
+  "levelInfo": {
+    "song": "Chanson",
+    "artist": "Artiste",
+    "charter": "Charteur"
+  },
+  "levelFetching": {
+    "input": "Entrez l'identifiant",
+    "fetching": "Recherche...",
+    "goto": "Aller au niveau",
+    "notfound": "Aucun résultat"
+  },
+  "videoInfo": {
+    "videoLink": "Lien youtube",
+    "title": "Titre",
+    "channel": "Chaîne",
+    "timestamp": "Upload Time",
+    "nolink": "Veuillez entrer un lien valide"
+  },
+  "judgements": {
+    "ePerfect": "Parfait tôt",
+    "perfect": "Parfait",
+    "lPerfect": "Parfait tard",
+    "tooearly": "Trop tôt",
+    "early": "Tôt",
+    "late": "Tard"
+  },
+  "acc": "Précision: ",
+  "scoreCalc": "Score: ",
+  "submit": "Envoyer",
+  "submitWait": "...",
+  "holdTooltip": "Cochez ceci si vous n'avez pas utilisé les maintients alternatifs",
+  "12kTooltip": "Cochez ceci si vous avez utilisé 12 touches",
+  "16kTooltip": "Cochez ceci si vous avez utilisé 16 touches",
+  "tooltip": "Entrez un numéro entre 1 et 10",
+  "alert": {
+    "success": "Complétion envoyée!",
+    "error": "Erreur: ",
+    "loading": "Envoi...",
+    "login": "Vous devez être connecté pour envoyer une complétion",
+    "form": "Veuillez remplir les champs obligatoires"
+  },
+  "score": {
+    "needId": "Entrez l'identifiant du niveau",
+    "needJudg": "Entrez les jugements",
+    "needInfo": "Entrez toute les informations requises",
+    "noInfo": "Aucune information disponible"
+  }
+} 

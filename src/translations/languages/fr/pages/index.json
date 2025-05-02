@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "title": "The Universal Forums",
+    "description": "The Universal Forums (TUF) Une organisation de la communauté pour les joueurs de jeu de rythme pour partager et s'affronter sur les niveaux personnalisés."
+  },
+  "header": {
+    "title": "The Universal Forums",
+    "subtitle": "Une organisation de la communauté pour les joueurs de jeu de rythme"
+  },
+  "sections": {
+    "featured": {
+      "title": "Niveaux en vedette",
+      "empty": "Aucun niveau en vedette disponible"
+    },
+    "recent": {
+      "title": "Niveaux récents",
+      "empty": "Aucun niveau récent disponible"
+    }
+  },
+  "card": {
+    "by": "Par {{creator}}"
+  },
+  "loading": {
+    "featured": "Chargement des niveaux en vedette...",
+    "recent": "Chargements des niveaux récents..."
+  }
+} 

@@ -1,0 +1,26 @@
+{
+  "main": {
+    "links": {
+      "levels": "Niveaux",
+      "leaderboard": "Classement",
+      "pass": "Complétions",
+      "submission": "Soumission",
+      "rating": "Notation",
+      "admin": {
+        "rating": "Notation",
+        "submissions": "Soumission",
+        "announcements": "Annonces",
+        "difficulties": "Difficultés",
+        "backups": "Backups",
+        "back": "Retour",
+        "admin": "Administrateur"
+      }
+    },
+    "notifications": {
+      "moreThanNine": "9+"
+    }
+  },
+  "languages": {
+    "comingSoon": "(À venir)"
+  }
+} 

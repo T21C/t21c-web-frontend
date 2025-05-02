@@ -1,0 +1,92 @@
+{
+  "meta": {
+    "title": "Gérer les difficultés | TUF",
+    "description": "Gérer les difficultés des niveaux de The Universal Forums (TUF)"
+  },
+  "header": {
+    "title": "Gérer les difficultés",
+    "refresh": "Rafraîchir les difficultés"
+  },
+  "access": {
+    "denied": {
+      "title": "Accès refusé",
+      "message": "Vous n'avez pas les permissions suffisantes pour accéder à cette page."
+    }
+  },
+  "buttons": {
+    "create": "Créer une nouvelle Difficulté",
+    "creating": "Création...",
+    "save": "Sauvegarder",
+    "cancel": "Annuler",
+    "confirm": "Confirmer",
+    "understand": "J'ai pris conscience des risques"
+  },
+  "loading": {
+    "difficulties": "Chargement des difficultés..."
+  },
+  "noItems": {
+    "message": "Aucune difficulté trouvée."
+  },
+  "difficultyTypes": {
+    "PGU": "PGU",
+    "SPECIAL": "SPECIALES"
+  },
+  "form": {
+    "labels": {
+      "id": "Identifiant:",
+      "name": "Nom:",
+      "type": "Type:",
+      "icon": "Icon URL:",
+      "legacyIcon": "Legacy Icon URL:",
+      "emoji": "Emoji:",
+      "legacyEmoji": "Legacy Emoji:",
+      "color": "Couleur:",
+      "baseScore": "Score de Base:",
+      "sortOrder": "Ordre de Filtre:",
+      "legacy": "Legacy:",
+      "fallbackId": "Enter Fallback Difficulty ID:"
+    },
+    "placeholders": {
+      "fallbackId": "Enter the ID of the replacement difficulty"
+    },
+    "helpText": {
+      "fallbackId": "All levels using {{name}} will be updated to use this difficulty instead."
+    }
+  },
+  "modal": {
+    "create": {
+      "title": "Créer une difficulté"
+    },
+    "edit": {
+      "title": "Modifier une difficulté"
+    },
+    "delete": {
+      "title": "Supprimer une difficulté",
+      "warning": {
+        "title": "⚠️ ATTENTION: Action Destructrice ⚠️",
+        "message": "Vous êtes sur le point de supprimer la difficulté: {{name}}",
+        "description": "Cette Action:",
+        "points": [
+          "Est irréversible",
+          "Affectera tout les niveaux utilisant cette difficulté",
+          "Requiert une backup avant d'être éffectuée"
+        ],
+        "highlight": "Assurez-vous d'avoir créé une backup avant de d'éffectuer cette action!"
+      }
+    }
+  },
+  "passwordModal": {
+    "title": "Super Admin Password Required",
+    "message": "Veuillez entrer le mot de passe super-admin pour {{action}} la difficulté.",
+    "placeholder": "Entrer le mot de passe",
+    "errors": {
+      "invalid": "Mot de passe invalide",
+      "generic": "Une erreur s'est produite pendant l'action"
+    }
+  },
+  "notifications": {
+    "created": "Difficulté créé avec succès",
+    "updated": "Difficulté modifiée avec succès",
+    "deleted": "Difficulté supprimée avec succès"
+  }
+} 

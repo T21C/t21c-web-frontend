@@ -1,0 +1,33 @@
+{
+  "meta": {
+    "title": "Liste des niveaux",
+    "description": "Explorez et decouvrez des niveaux customisés pour ADOFAI"
+  },
+  "loading": {
+    "difficulties": "Chargement des difficultés..."
+  },
+  "input": {
+    "placeholder": "Rechercher par chanson, artiste, ou charteur..."
+  },
+  "toolTip": {
+    "legacy": "Basculer sur les difficultés legacy",
+    "filter": "Filtrer les resultats",
+    "sort": "Trier les resultats",
+    "reset": "Réinitialiser tous filtres",
+    "recentAsc": "Le plus ancien en premier",
+    "recentDesc": "Le plus récent en premier",
+    "difficultyAsc": "Trier par difficultés ascendante",
+    "difficultyDesc": "Trier par difficultés descendante",
+    "random": "Trier aléatoirement"
+  },
+  "settingExp": {
+    "headerFilter": "Paramètres des filtres",
+    "headerSort": "Paramètres de triage",
+    "sortRecent": "Récent",
+    "filterDiffs": "Difficulté",
+    "sortRandom": "Aléatoire"
+  },
+  "infScroll": {
+    "end": "Vous avez atteint la fin!"
+  }
+} 

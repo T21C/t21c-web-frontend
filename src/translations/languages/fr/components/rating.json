@@ -1,0 +1,40 @@
+{
+  "detailPopup": {
+    "closeButton": "Fermer le popup",
+    "labels": {
+      "creator": "Createur:",
+      "currentDifficulty": "Difficulté actuelle:",
+      "averageRating": "Evaluation moyenne:",
+      "yourRating": "Votre évaluation:",
+      "yourComment": "Votre commentaire:",
+      "otherRatings": "Autres évaluations:"
+    },
+    "buttons": {
+      "saveChanges": "Enregistrer",
+      "saving": "Enregistrement..."
+    },
+    "errors": {
+      "commentLength": "Le commentaire doit faire moins de 1000 caractères",
+      "saveFailed": "Echec de l'enregistrement",
+      "updateFailed": "Echec de la mise à jour de l'évaluation",
+      "unsavedChanges": "Vous avez des changements non enregistrés. Etes-vous sûr de vouloir fermer?"
+    }
+  },
+  "ratingCard": {
+    "labels": {
+      "yourRating": "Votre évaluation",
+      "allRatings": "Toutes les évaluations",
+      "average": "Moyenne",
+      "rerateNumber": "Réévaluation",
+      "requestedRating": "Evaluation estimée",
+      "rerateMessage": "Message de réévaluation"
+    },
+    "tooltips": {
+      "expandReason": "Cliquez pour agrandir"
+    },
+    "buttons": {
+      "viewDetails": "Voir les détails",
+      "editLevel": "Editer le niveau"
+    }
+  }
+} 

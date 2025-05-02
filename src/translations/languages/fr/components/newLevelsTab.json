@@ -1,0 +1,13 @@
+{
+  "noLevels": "Aucun nouveau niveau à annoncer",
+  "errors": {
+    "removeLevel": "Échec du retrait de {{song}}. Veuillez réessayer."
+  },
+  "card": {
+    "team": " • {{team}}"
+  },
+  "buttons": {
+    "edit": "Modifier le niveau",
+    "remove": "Retirer le niveau"
+  }
+} 

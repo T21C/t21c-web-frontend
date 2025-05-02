@@ -1,0 +1,43 @@
+{
+  "title": "Gérer les évaluateurs",
+  "loading": "Chargement des évaluateurs...",
+  "search": {
+    "placeholder": "Rechercher par nom d'utilisateur ou identifiant..."
+  },
+  "superAdmin": {
+    "password": {
+      "placeholder": "Entrer le mot de passe super-administrateur"
+    }
+  },
+  "addRater": {
+    "placeholder": "Entrer l'indentifiant Discord",
+    "button": "Ajouter un évaluateur"
+  },
+  "raterEntry": {
+    "unknown": "Inconnu(e)",
+    "adminBadge": "Administrateur",
+    "buttons": {
+      "makeAdmin": "Ajouter en tant qu'Administrateur",
+      "removeAdmin": "Enlever des Administrateurs",
+      "delete": "Supprimer"
+    },
+    "discord": {
+      "idInput": "Entrer l'indentifiant Discord",
+      "validateButton": "Valider",
+      "confirmMessage": "Mettre a jour les infos Discord de @{{username}}?",
+      "confirmButton": "Confirmer",
+      "cancelButton": "Annuler",
+      "idLabel": "Identifiant: {{id}}"
+    }
+  },
+  "errors": {
+    "passwordRequired": "Le mot de passe est requis",
+    "deleteConfirm": "Etes-vous sûr de vouloir supprimer cet évaluateur?",
+    "updateAdminFailed": "Echec de la mise à jour du status administrateur",
+    "deleteFailed": "Echec de la suppression de l'évaluateur",
+    "discordFetchFailed": "Echec de la récupération de l'identifiant Discord",
+    "updateDiscordFailed": "Echec de la mise à jour des infos Discord",
+    "loadFailed": "Echec du chargement des évaluateurs",
+    "addFailed": "Echec de l'ajout de l'évaluateur"
+  }
+} 

@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "title": "Classement",
+    "description": "Voir les meilleurs joueurs et les classements"
+  },
+  "input": {
+    "placeholder": "Rechercher par nom de joueur..."
+  },
+  "tooltips": {
+    "filter": "Filtrer les resultats",
+    "sort": "Trier les resultats",
+    "reset": "Reinitialiser tous les filtres",
+    "recentAsc": "Trier par ordre ascendant",
+    "recentDesc": "Trier par ordre descendant"
+  },
+  "settings": {
+    "filter": {
+      "header": "Paramètres de filtres"
+    },
+    "sort": {
+      "header": "Paramètres de triage",
+      "sortOrder": "Ordre de triage",
+      "sortBy": "Trier par"
+    }
+  },
+  "bannedPlayers": {
+    "label": "Joueurs bannis",
+    "options": {
+      "show": "Montrer",
+      "hide": "Cacher",
+      "only": "Seulement"
+    }
+  },
+  "sortOptions": {
+    "rankedScore": "Score Classement",
+    "generalScore": "Score Général",
+    "ppScore": "Score PP",
+    "wfScore": "Score WF",
+    "score12k": "Score 12k",
+    "avgXacc": "Précision-X Moyenne",
+    "totalPasses": "Total Complétions",
+    "universalPasses": "Complétions Universelles",
+    "WFPasses": "Complétions WF",
+    "topDiff": "Difficulté Max",
+    "top12kDiff": "Difficulté 12k Max"
+  },
+  "infiniteScroll": {
+    "end": "Vous avez atteint la fin!"
+  }
+} 

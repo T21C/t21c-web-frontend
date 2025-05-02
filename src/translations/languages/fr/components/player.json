@@ -1,0 +1,32 @@
+{
+  "countrySelect": {
+    "placeholder": "Sélectionner le pays",
+    "search": {
+      "placeholder": "Cherche le pays ..."
+    }
+  },
+  "playerInput": {
+    "placeholder": "Recherche de joueur.se ...",
+    "loading": "Chargement...",
+    "minChars": "Entrez au moins 2 caractères pour rechercher",
+    "noResults": "Aucun joueur trouvé",
+    "creation": {
+      "button": "Créer un.e joueur.se \"{{name}}\"",
+      "loading": "Création du joueur \"{{name}}\"...",
+      "error": "Echec de la création du joueur"
+    }
+  },
+  "errors": {
+    "loading": "Echec du chargement des données",
+    "saving": "Echec de la sauvegarde des données",
+    "notFound": "Aucun joueur.se trouvé(e)",
+    "duplicate": "Le joueur éxiste déja",
+    "invalid": "Données invalides"
+  },
+  "buttons": {
+    "save": "Sauvegarder",
+    "cancel": "Annuler",
+    "create": "Créer un.e joueur.se \"{{name}}\"",
+    "loading": "Création du joueur \"{{name}}\"..."
+  }
+} 

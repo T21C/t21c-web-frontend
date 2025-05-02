@@ -1,0 +1,11 @@
+{
+  "states": {
+    "hide": "Cacher",
+    "show": "Montrer",
+    "only": "Seulement"
+  },
+  "accessDenied": {
+    "title": "Accès refusé",
+    "message": "Vous n'avez pas les permissions suffisantes pour accéder à cette page."
+  }
+} 

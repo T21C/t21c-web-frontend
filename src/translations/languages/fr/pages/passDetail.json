@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "title": "{{song}} | TUF",
+    "description": "Voir la complétion de  {{song}} - {{artist}} par {{playerName}}"
+  },
+  "banners": {
+    "deleted": "Cette complétion a été supprimée"
+  },
+  "level": {
+    "baseScore": "{{score}}PP",
+    "credits": {
+      "team": "{{team}}",
+      "charter": "Chart par {{charter}}",
+      "vfxer": "Effets par {{vfxer}}"
+    }
+  },
+  "player": {
+    "rank": "#{{rank}}",
+    "score": {
+      "current": "{{score}}",
+      "difference": {
+        "positive": "+{{score}}"
+      },
+      "previous": "{{score}}"
+    },
+    "clearDate": "Complété le {{date}}"
+  },
+  "stats": {
+    "score": {
+      "label": "Score",
+      "value": "{{score}}"
+    },
+    "accuracy": {
+      "label": "Précision",
+      "value": "{{accuracy}}%"
+    },
+    "speed": {
+      "label": "Vitesse",
+      "value": "{{speed}}x"
+    },
+    "feelingRating": {
+      "label": "Difficulté ressentie",
+      "value": "{{rating}}",
+      "none": "Aucune"
+    }
+  },
+  "flags": {
+    "worldsFirst": "🏆 Première mondiale! 🏆",
+    "12k": "12K",
+    "16k": "16K",
+    "noHoldTap": "Pas de maintients alternatifs"
+  },
+  "judgements": {
+    "title": "Jugements",
+    "types": {
+      "earlyPerfect": {
+        "label": "Parfait tôt",
+        "value": "{{count}}"
+      },
+      "perfect": {
+        "label": "Parfait",
+        "value": "{{count}}"
+      },
+      "latePerfect": {
+        "label": "Parfait tard",
+        "value": "{{count}}"
+      },
+      "tooEarly": {
+        "label": "Trop tôt",
+        "value": "{{count}}"
+      },
+      "early": {
+        "label": "Tôt",
+        "value": "{{count}}"
+      },
+      "late": {
+        "label": "Tard",
+        "value": "{{count}}"
+      },
+      "tooLate": {
+        "label": "Trop tard",
+        "value": "{{count}}"
+      }
+    }
+  },
+  "video": {
+    "notAvailable": {
+      "text": "Vidéo indisonible",
+      "watchOnYoutube": "Regarder sur Youtube"
+    }
+  },
+  "buttons": {
+    "edit": "Gérer les détails de la complétion"
+  }
+} 

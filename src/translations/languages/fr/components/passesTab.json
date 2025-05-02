@@ -1,0 +1,19 @@
+{
+  "noPasses": "Aucune complétion à annoncer",
+  "errors": {
+    "removePass": "Échec du retrait de la complétion de {{playerName}}. Veuillez réessayer.",
+    "invalidPass": "Données de complétion invalides :"
+  },
+  "card": {
+    "title": "Complétion par {{playerName}} de {{songName}}",
+    "stats": {
+      "score": "Score : {{score}}",
+      "scoreNA": "Score : N/A",
+      "accuracy": "Précision : {{accuracy}}%",
+      "difficulty": " • {{difficultyName}}"
+    }
+  },
+  "buttons": {
+    "remove": "Retirer la complétion"
+  }
+} 

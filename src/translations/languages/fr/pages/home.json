@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "title": "Page d'accueil | TUF",
+    "description": "Bienvenue sur The Universal Forums (TUF) - Une organisation de la communauté pour les niveaux personnalisés d'ADOFAI"
+  },
+  "title": {
+    "revamped": "Revamped"
+  },
+  "buttons": {
+    "browseLevels": "Explorer les niveaux",
+    "browsePasses": "Explorer les complétions",
+    "leaderboard": "Classement"
+  },
+  "stats": {
+    "overview": {
+      "title": "Aperçu",
+      "totalLevels": "Nombre de niveaux",
+      "totalPasses": "Nombre de complétions",
+      "totalPlayers": "Nombre de joueurs",
+      "passesLast30Days": "Complétions (30 dernier jours)"
+    },
+    "difficulties": {
+      "title": "Statistiques des Difficultés",
+      "graphModes": {
+        "passes": "Complétions",
+        "levels": "Niveaux"
+      }
+    },
+    "comingSoon": "D'autres trucs amusants arrivent bientot..."
+  },
+  "footer": {
+    "about": {
+      "title": "TUF",
+      "description": "The Universal Forums est une organisation communautaire qui a pour but de recenser et évaluer la difficulté des niveaux personnalisés sur ADOFAI."
+    },
+    "quickLinks": {
+      "title": "Liens Rapides",
+      "browseLevels": "Explorer les niveaux",
+      "browsePasses": "Explorer les complétions",
+      "leaderboard": "Classement",
+      "aboutUs": "A propos de nous"
+    },
+    "community": {
+      "title": "Communauté",
+      "discord": "Discord",
+      "github": "GitHub"
+    },
+    "copyright": {
+      "main": "© {{year}} TUF. Non affilié à 7th Beat Games.",
+      "credit": "Fait avec ❤️ par V0W4N"
+    }
+  }
+} 

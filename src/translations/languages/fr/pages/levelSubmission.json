@@ -1,0 +1,32 @@
+{
+  "title": "Soumettre un niveau",
+  "thumbnailInfo": "Les informations de la vidéo apparaîtront ici",
+  "submInfo": {
+    "song": "Chanson",
+    "artist": "Artiste",
+    "videoLink": "Lien Vidéo",
+    "charter": "Charteur",
+    "diff": "Difficulté",
+    "vfxer": "Effecteur (optionnel)",
+    "team": "Nom de l'équipe (optionnel)",
+    "dlLink": "Lien de téléchargement",
+    "workshop": "Lien Workshop",
+    "dlLinksOr": "ou"
+  },
+  "videoInfo": {
+    "title": "Titre de la vidéo",
+    "channel": "Nom de la chaîne",
+    "timestamp": "Upload Time",
+    "nolink": "Aucun lien fourni"
+  },
+  "tooltip": "Difficulté innconue, le formulaire va être envoyé mais faites en sorte que les évaluateurs puisse le lire. Exemple de difficultés correctes.: G13; P7~P13; 21.1+; 19~20.0+",
+  "submit": "Soumettre",
+  "submitWait": "...",
+  "alert": {
+    "success": "Niveau envoyé!",
+    "error": "Erreur: ",
+    "loading": "Envoi...",
+    "login": "Vous devez être connecté pour soumettre un niveau ",
+    "form": "Veuillez remplir tous les champs obligatoires"
+  }
+} 

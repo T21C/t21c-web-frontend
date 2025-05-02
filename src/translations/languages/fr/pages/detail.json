@@ -1,0 +1,28 @@
+{
+  "waiting": "Chargement",
+  "#1Clears": {
+    "clear": "Meilleure complétion",
+    "score": "Meilleur score",
+    "speed": "Meilleur vitesse",
+    "accuracy": "Meilleure précision",
+    "numOClear": "Nombre de complétion"
+  },
+  "dialog": {
+    "fullInfo": "Plus d'informations",
+    "artist": "Artiste",
+    "creator": "Createur",
+    "team": "Equipe",
+    "charter": "Charteur",
+    "vfxer": "Effecteur",
+    "id": "Identifiant"
+  },
+  "leaderboard": {
+    "header": "Rangs",
+    "notBeaten": "Ce niveau n'as pas encore été complété...",
+    "toolTip": {
+      "time": "Date",
+      "accuracy": "Précision",
+      "score": "Score"
+    }
+  }
+} 
