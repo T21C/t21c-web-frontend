@@ -1,37 +1,41 @@
-//import HomePageAprils from "./common/HomePageAprils/HomePage";
-import HomePage from "./common/HomePage/HomePage";
-import LevelDetailPage from "./common/LevelDetailPage/LevelDetailPage";
-import LevelPage from "./common/LevelPage/LevelPage";
-import SubmissionPage from "./submissions/SubmissionPage";
-import PassPage from "./common/PassPage/PassPage";
-import PassDetailPage from "./common/PassDetailPage/PassDetailPage";
-import LeaderboardPage from "./common/LeaderboardPage/LeaderboardPage";
-import CreatorManagementPage from "./admin/CreatorManagementPage/CreatorManagementPage";
-import SubmissionManagementPage from "./admin/SubmissionManagementPage/SubmissionManagementPage";
-import RatingPage from "./admin/RatingPage/RatingPage";
-import DifficultyPage from "./admin/DifficultyPage/DifficultyPage";
-import LevelSubmissionPage from "./submissions/LevelSubmissionPage/LevelSubmissionPage";
-import PassSubmissionPage from "./submissions/PassSubmissionPage/PassSubmissionPage";
-import CallbackPage from "@/pages/account/Callback/Callback";
+import { lazy } from 'react';
+
+// Common pages
+const HomePage = lazy(() => import('./common/HomePage/HomePage'));
+//const HomePageAprils = lazy(() => import('./common/HomePageAprils/HomePage'));
+const LevelDetailPage = lazy(() => import('./common/LevelDetailPage/LevelDetailPage'));
+const LevelPage = lazy(() => import('./common/LevelPage/LevelPage'));
+const SubmissionPage = lazy(() => import('./submissions/SubmissionPage'));
+const PassPage = lazy(() => import('./common/PassPage/PassPage'));
+const PassDetailPage = lazy(() => import('./common/PassDetailPage/PassDetailPage'));
+const LeaderboardPage = lazy(() => import('./common/LeaderboardPage/LeaderboardPage'));
+const LevelSubmissionPage = lazy(() => import('./submissions/LevelSubmissionPage/LevelSubmissionPage'));
+const PassSubmissionPage = lazy(() => import('./submissions/PassSubmissionPage/PassSubmissionPage'));
+
 // Account pages
-import ProfilePage from "./account/ProfilePage/ProfilePage";
-import LoginPage from "./account/LoginPage/LoginPage";
-import RegisterPage from "./account/RegisterPage/RegisterPage";
-import EditProfilePage from "./account/EditProfilePage/EditProfilePage";
-import EmailVerificationPage from "./account/EmailVerificationPage/EmailVerificationPage";
-import VerifyEmailPage from "./account/VerifyEmailPage/VerifyEmailPage";
+const ProfilePage = lazy(() => import('./account/ProfilePage/ProfilePage'));
+const LoginPage = lazy(() => import('./account/LoginPage/LoginPage'));
+const RegisterPage = lazy(() => import('./account/RegisterPage/RegisterPage'));
+const EditProfilePage = lazy(() => import('./account/EditProfilePage/EditProfilePage'));
+const EmailVerificationPage = lazy(() => import('./account/EmailVerificationPage/EmailVerificationPage'));
+const VerifyEmailPage = lazy(() => import('./account/VerifyEmailPage/VerifyEmailPage'));
+const CallbackPage = lazy(() => import('./account/Callback/Callback'));
 
 // Admin pages
-import AdminPage from "./admin/AdminPage/AdminPage";
-import AnnouncementPage from "./admin/AnnouncementPage/AnnouncementPage";
-import BackupPage from "./admin/BackupPage/BackupPage";
-import ProfilingPage from "./admin/ProfilingPage/ProfilingPage";
+const AdminPage = lazy(() => import('./admin/AdminPage/AdminPage'));
+const AnnouncementPage = lazy(() => import('./admin/AnnouncementPage/AnnouncementPage'));
+const BackupPage = lazy(() => import('./admin/BackupPage/BackupPage'));
+const ProfilingPage = lazy(() => import('./admin/ProfilingPage/ProfilingPage'));
+const DifficultyPage = lazy(() => import('./admin/DifficultyPage/DifficultyPage'));
+const CreatorManagementPage = lazy(() => import('./admin/CreatorManagementPage/CreatorManagementPage'));
+const SubmissionManagementPage = lazy(() => import('./admin/SubmissionManagementPage/SubmissionManagementPage'));
+const RatingPage = lazy(() => import('./admin/RatingPage/RatingPage'));
 
-// About page
-import AboutUsPage from "./misc/AboutUsPage/AboutUsPage";
-import PrivacyPolicyPage from "./misc/PrivacyPolicyPage/PrivacyPolicyPage";
-import TermsOfServicePage from "./misc/TermsOfServicePage/TermsOfServicePage";
-import HealthCheckPage from "./misc/HealthCheckPage/HealthCheckPage";
+// Misc pages
+const AboutUsPage = lazy(() => import('./misc/AboutUsPage/AboutUsPage'));
+const PrivacyPolicyPage = lazy(() => import('./misc/PrivacyPolicyPage/PrivacyPolicyPage'));
+const TermsOfServicePage = lazy(() => import('./misc/TermsOfServicePage/TermsOfServicePage'));
+const HealthCheckPage = lazy(() => import('./misc/HealthCheckPage/HealthCheckPage'));
 
 export {
     // Common pages
