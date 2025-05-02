@@ -14,14 +14,14 @@ import { Tooltip } from "react-tooltip";
 import { useTranslation } from "react-i18next";
 import { use } from "i18next";
 import { ClearCard } from "@/components/cards";
-import { EditLevelPopup } from "@/components/popups";
+import { EditLevelPopup } from "@/components/popups/EditLevelPopup/EditLevelPopup";
+import { DetailPopup } from "@/components/popups/DetailPopup/DetailPopup";
 import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { MetaTags } from "@/components/common/display";
 import { InfoIcon, LikeIcon, SteamIcon } from "@/components/common/icons";
 import { createEventSystem, formatCreatorDisplay, minus2Reasons, gimmickReasons } from "@/utils/Utility";
-import { DetailPopup } from "@/components/popups";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
 

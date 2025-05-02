@@ -66,69 +66,11 @@ export default defineConfig(({ command, mode }) => {
           entryFileNames: 'assets/[name].[hash].js',
           chunkFileNames: 'assets/[name].[hash].js',
           assetFileNames: 'assets/[name].[hash].[ext]',
-          manualChunks: (id) => {
-            
-            if (id.includes('node_modules/react-select/') || 
-              id.includes('node_modules/react-tooltip/') || 
-              id.includes('node_modules/recharts/') ||
-              id.includes('node_modules/react-hot-toast/')) {
-               return 'ui-libs';
-            }
-
-            const reactDependencies = [
-              'react', 
-              'emotion',
-              'use'
-            ]
-            if (reactDependencies.some(dep => id.includes(dep))) {
-              return 'react-core';
-            }
-            
-
-            
-            // Data utilities
-            if (id.includes('node_modules/axios/') || 
-                id.includes('node_modules/js-cookie/') || 
-                id.includes('node_modules/date-fns/') ||
-                id.includes('node_modules/prop-types/')) {
-              return 'data-utils';
-            }
-            
-            // i18n libraries
-            if (id.includes('node_modules/i18next/') || 
-                id.includes('node_modules/react-i18next/')) {
-              return 'i18n';
-            }
-            
-            // UI interaction libraries
-            if (id.includes('node_modules/react-infinite-scroll-component/') ||
-                id.includes('node_modules/@react-oauth/google/')) {
-              return 'ui-interaction';
-            }
-            
-            // App components
-            if (id.includes('/src/contexts/')) return 'app-contexts';
-            if (id.includes('/src/components/common/')) return 'common-components';
-            if (id.includes('/src/components/cards/')) return 'card-components';
-            if (id.includes('/src/components/layout/')) return 'layout-components';
-            if (id.includes('/src/components/popups/')) return 'popup-components';
-            if (id.includes('/src/components/misc/')) return 'misc-components';
-            if (id.includes('/src/utils/') && !id.includes('api.js')) return 'utilities';
-            
-            // Pages
-            if (id.includes('/src/pages/common/')) return 'page-common';
-            if (id.includes('/src/pages/account/')) return 'page-account';
-            if (id.includes('/src/pages/admin/')) return 'page-admin';
-            if (id.includes('/src/pages/misc/')) return 'page-misc';
-            if (id.includes('/src/pages/submissions/')) return 'page-submissions';
-            
-            // Create a vendor chunk for remaining node_modules
-            if (id.includes('node_modules')) {
-              return 'vendor-deps';
-            }
-            
-            // Default case - let Vite decide
-            return undefined;
+          manualChunks: {
+            react: ['react', 'react-dom'],
+            reactRouter: ['react-router', 'react-router-dom'],
+            recharts: ['recharts'],
+            i18n: ['i18next', 'react-i18next'],
           }
         }
       }
