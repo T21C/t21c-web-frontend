@@ -10,6 +10,7 @@ import i18next from 'i18next';
 import { isoToEmoji } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotification } from "@/contexts/NotificationContext";
+import api from "@/utils/api";
 
 const Navigation = ({ children }) => {
   const { t } = useTranslation('components');
@@ -25,25 +26,42 @@ const Navigation = ({ children }) => {
   const location = useLocation();
   const { pendingRatings, pendingSubmissions } = useNotification();
 
-  let languages = {
-    en: { display: "English", countryCode: "us", implemented: true },
-    kr: { display: "한국어", countryCode: "kr", implemented: false },
-    cn: { display: "中文 (partially)", countryCode: "cn", implemented: true },
-    jp: { display: "日本語", countryCode: "jp", implemented: false },
-    //id: { display: "Bahasa Indonesia", countryCode: "id", implemented: false },
-    ru: { display: "Русский", countryCode: "ru", implemented: false },
-    //de: { display: "Deutsch", countryCode: "de", implemented: false },
-    //fr: { display: "Français", countryCode: "fr", implemented: false },
-    //es: { display: "Español", countryCode: "es", implemented: false },
-    pl: { display: "Polski", countryCode: "pl", implemented: true }
-  };
+  // Language configuration with implementation status
+  const [languages, setLanguages] = useState({
+    en: { display: "English", countryCode: "us", status: 100 },
+    pl: { display: "Polski", countryCode: "pl", status: 0 },
+    kr: { display: "한국어", countryCode: "kr", status: 0 },
+    cn: { display: "中文", countryCode: "cn", status: 0 },
+    id: { display: "Bahasa Indonesia", countryCode: "id", status: 0 },
+    jp: { display: "日本語", countryCode: "jp", status: 0 },
+    ru: { display: "Русский", countryCode: "ru", status: 0 },
+    de: { display: "Deutsch", countryCode: "de", status: 0 },
+    fr: { display: "Français", countryCode: "fr", status: 0 },
+    es: { display: "Español", countryCode: "es", status: 0 }
+  });
+
+  // Fetch language implementation status on mount
+  useEffect(() => {
+    const fetchLanguageStatus = async () => {
+      try {
+        const response = await api.get('/v2/utils/languages');
+        // The response is already in the correct format, just update the state
+        console.log(response.data);
+        setLanguages(response.data);
+      } catch (error) {
+        console.error('Error fetching language status:', error);
+      }
+    };
+    
+    fetchLanguageStatus();
+  }, []);
 
   // Convert to array and sort
-  languages = Object.entries(languages)
+  const sortedLanguages = Object.entries(languages)
     .sort(([keyA, a], [keyB, b]) => {
-      // First sort by implemented status (true first)
-      if (a.implemented !== b.implemented) {
-        return b.implemented - a.implemented;
+      // First sort by implementation status (higher first)
+      if (a.status !== b.status) {
+        return b.status - a.status;
       }
       // Then sort alphabetically by display name
       return a.display.localeCompare(b.display);
@@ -97,10 +115,10 @@ const Navigation = ({ children }) => {
   }
 
   function handleChangeLanguage(newLanguage, e) {
-    e.stopPropagation(); // Prevent event from bubbling
+    e.stopPropagation();
     
-    // Only allow changing to implemented languages
-    if (!languages[newLanguage].implemented) {
+    // Only allow changing to languages with some implementation
+    if (languages[newLanguage].status === 0) {
       return;
     }
     
@@ -249,11 +267,11 @@ const Navigation = ({ children }) => {
 
               <div className={`nav-language-select ${openDialog ? 'open' : ''}`}>
                 <ul className="nav-language-select__list">
-                  {Object.entries(languages).map(([code, { display, countryCode, implemented }]) => (
+                  {Object.entries(sortedLanguages).map(([code, { display, countryCode, status }]) => (
                     <li
                       key={code}
                       className={`nav-language-select__option ${
-                        !implemented ? 'not-implemented' : ''
+                        status === 0 ? 'not-implemented' : ''
                       } ${
                         (language === code || (language === 'en' && code === 'us')) ? 'selected' : ''
                       }`}
@@ -266,9 +284,17 @@ const Navigation = ({ children }) => {
                       />
                       <div className="nav-language-select__option-content">
                         <span>{display}</span>
-                        {!implemented && (
+                        {status === 0 ? (
                           <span className="nav-language-select__option-status">
                             {tLang('comingSoon')}
+                          </span>
+                        ) : status < 100 ? (
+                          <span className="nav-language-select__option-status partially-implemented">
+                            {status.toFixed(1)}% ✔
+                          </span>
+                        ) : (
+                          <span className="nav-language-select__option-status fully-implemented">
+                            100% ✔
                           </span>
                         )}
                       </div>
@@ -315,11 +341,11 @@ const Navigation = ({ children }) => {
 
       <div className={`nav-language-select ${openDialog ? 'open' : ''}`}>
         <ul className="nav-language-select__list">
-          {Object.entries(languages).map(([code, { display, countryCode, implemented }]) => (
+          {Object.entries(sortedLanguages).map(([code, { display, countryCode, status }]) => (
             <li
               key={code}
               className={`nav-language-select__option ${
-                !implemented ? 'not-implemented' : ''
+                status === 0 ? 'not-implemented' : ''
               } ${
                 (language === code || (language === 'en' && code === 'us')) ? 'selected' : ''
               }`}
@@ -332,11 +358,15 @@ const Navigation = ({ children }) => {
               />
               <div className="nav-language-select__option-content">
                 <span>{display}</span>
-                {!implemented && (
+                {status === 0 ? (
                   <span className="nav-language-select__option-status">
                     {tLang('comingSoon')}
                   </span>
-                )}
+                ) : status < 100 ? (
+                  <span className="nav-language-select__option-status">
+                    {status.toFixed(1)}% ✔
+                  </span>
+                ) : null}
               </div>
             </li>
           ))}

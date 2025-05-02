@@ -119,7 +119,7 @@ const AnnouncementPage = () => {
     try {
       if (validLevelIds.length > 0) {
         if (removeAnnouncedLevels) {
-          await api.post(`${import.meta.env.VITE_LEVELS}/announce`, {
+          await api.post(`${import.meta.env.VITE_LEVELS}/markAnnounced`, {
             levelIds: validLevelIds
           });
         }
@@ -134,7 +134,7 @@ const AnnouncementPage = () => {
 
       if (validPassIds.length > 0) {
         if (removeAnnouncedLevels) {
-          await api.post(`${import.meta.env.VITE_PASSES}/announce`, {
+          await api.post(`${import.meta.env.VITE_PASSES}/markAnnounced`, {
             passIds: validPassIds
           });
         }
