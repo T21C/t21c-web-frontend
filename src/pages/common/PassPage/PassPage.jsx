@@ -1,4 +1,5 @@
 import "./passpage.css";
+import "../sort.css";
 import { useContext, useEffect, useState, useCallback } from "react";
 import { CompleteNav } from "@/components/layout";
 import { MetaTags } from "@/components/common/display";

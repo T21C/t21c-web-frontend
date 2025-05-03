@@ -276,69 +276,6 @@
   margin-top: 1rem;
 }
 
-.sort .sort-option {
-  display: flex;
-  gap: 2rem;
-  align-items: flex-end;
-  width: 100%;
-  flex-direction: row;
-}
-
-.sort .sort-option .wrapper svg {
-  height: 2.1rem;
-  width: 2.1rem;
-  background-color: var(--color-white-t20);
-  padding: 0.1rem;
-  margin: 0.15rem;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: all 0.2s linear;
-}
-
-.sort .sort-option svg:focus {
-  outline: none;
-}
-
-.sort .sort-option .order {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  flex: 0 0 auto;
-  width: fit-content;
-  transition: all 0.2s linear;
-}
-
-.sort .sort-option .order .wrapper {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.sort .sort-option .order .wrapper-like {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
-  background-color: var(--color-white-t10);
-  transition: all 0.2s ease-out;
-  padding: 0.5rem 1rem;
-  border-radius: 3px;
-  cursor: pointer;
-  border: 2px solid transparent;
-  -webkit-user-select: none;
-  user-select: none;
-}
-
-.sort .sort-option .order .wrapper-like:hover {
-  background-color: #fff2;
-}
-
-.sort .sort-option .order .wrapper-like.active {
-  background-color: #fff3;
-  border: 2px solid #fff1;
-}
 
 .level-page .level-body .three-state-slider-container {
   display: flex;
@@ -429,23 +366,7 @@
   text-align: center;
 }
 
-@media (max-width: 768px) {
-  .sort .sort-option {
-    gap: 1.5rem;
-    justify-content: center;
-  }
-}
 
-@media (max-width: 480px) {
-  .sort .sort-option {
-    gap: 1rem;
-  }
-
-  .sort .sort-option .order svg {
-    height: 1.75rem;
-    width: 1.75rem;
-  }
-}
 
 /* Mobile Adjustments */
 @media (max-width: 768px) {
@@ -481,22 +402,7 @@
     border-radius: 0.75rem;
   }
 
-  .sort {
-    border-radius: 0.75rem;
-  }
 
-  .sort .sort-option {
-    gap: 1.5rem;
-    justify-content: center;
-  }
-
-  .sort .sort-option > div {
-    width: 100%;
-  }
-
-  .sort .sort-option .wrapper {
-    justify-content: flex-start;
-  }
 
   .level-page .level-body .filter-section {
     gap: 0.75rem;
@@ -534,11 +440,6 @@
   .level-page .level-body .three-state-slider {
     flex: 1;
     max-width: 120px;
-  }
-
-
-  .sort .sort-option .wrapper {
-    justify-content: flex-start;
   }
 
 
@@ -604,15 +505,7 @@
     padding-top: 4rem;
   }
 
-  .sort .sort-option {
-    flex-direction: row;
-    flex-wrap: wrap;
-  }
 
-  .sort .sort-option > div {
-    width: auto;
-    min-width: 150px;
-  }
 
   .level-page .level-body .filter-row {
     flex-direction: row;
@@ -815,23 +708,7 @@
   }
 }
 
-/* Sort dropdown styles */
-.sort {
-  position: relative;
-  z-index: 90;
-  background-color: #0004;
-  border-radius: 1rem;
-  padding: 1.25rem 1.75rem;
-}
 
 
-.sort .sort-option .wrapper {
-  width: 100%;
-}
 
-/* Focus state */
-.sort .sort-option .css-t3ipsp-control {
-  border-color: #4a90e2 !important;
-  box-shadow: 0 0 0 1px #4a90e2 !important;
-  background-color: rgba(255, 255, 255, 0.4) !important;
-}
+

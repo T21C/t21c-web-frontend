@@ -1,5 +1,6 @@
-/* eslint-disable no-unused-vars */
+
 import "./levelpage.css";
+import "../sort.css";
 import { useContext, useEffect, useState, useCallback, useRef } from "react";
 import { CompleteNav } from "@/components/layout";
 import { LevelCard } from "@/components/cards";
