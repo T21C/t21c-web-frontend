@@ -345,7 +345,6 @@ const LevelPage = () => {
   }
 
   function handleSortType(value) {
-    console.log("setting sort type to", value);
     setSort(value);
     setPageNumber(0);
     setLevelsData([]);

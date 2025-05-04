@@ -46,7 +46,6 @@ const Navigation = ({ children }) => {
       try {
         const response = await api.get('/v2/utils/languages');
         // The response is already in the correct format, just update the state
-        console.log(response.data);
         setLanguages(response.data);
       } catch (error) {
         console.error('Error fetching language status:', error);
