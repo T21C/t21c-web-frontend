@@ -13,6 +13,7 @@ import { FetchIcon } from '@/components/common/icons';
 import { useNavigate } from 'react-router-dom';
 import { PlayerInput } from '@/components/common/selectors';
 import { useState, useEffect } from 'react';
+import { Tooltip } from 'react-tooltip';
 
 export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
   const { t } = useTranslation('components');
@@ -139,7 +140,7 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
     api.get(`${import.meta.env.VITE_LEVELS}/${levelId}`)
       .then((data) => {
         
-        setLevel(data.data ? data.data : null);
+        setLevel(data.data ? data.data.level : null);
         setLevelLoading(false);
         
       })
@@ -534,7 +535,11 @@ const handleSubmit = async (e) => {
                     }));
                   }}
                 />
-                <div className="tooltip-container">
+                <div className="hold-checkbox" 
+                  data-tooltip-id="holdTooltip"
+                  data-tooltip-content={tPass('holdTooltip')}
+                  >
+                  <Tooltip id="holdTooltip" place="top-end" effect="solid"/>
                   <input
                    type="checkbox" 
                    value={form.isNoHold} 
@@ -542,13 +547,7 @@ const handleSubmit = async (e) => {
                    name="isNoHold" 
                    checked={form.isNoHold}
                    />
-                  <span style={{
-                      margin: '0 15px 0 10px',
-                      position: 'relative',
-                    }}>{tPass('form.submInfo.nohold')}</span>
-                  <span className="tooltip" style={{
-                     bottom: "110%",
-                      right: "10%"}}>{tPass('holdTooltip')}</span>
+                  <span>{tPass('form.submInfo.nohold')}</span>
 
                 </div>
               </div>
@@ -578,16 +577,12 @@ const handleSubmit = async (e) => {
                   backgroundColor: !isValidFeelingRating ? "yellow" : ""
                 }} 
               />
-              <div className="tooltip-container">
+              <div data-tooltip-id={!isValidFeelingRating ? "fr-tooltip" : ""} data-tooltip-content={tPass('tooltip')}>
                 <span style={{
                     color: 'red',
                     visibility: `${!isValidFeelingRating? '' : 'hidden'}`
                   }}>?</span>
-                <span className="tooltip" 
-                      style={{
-                        visibility: `${!isValidFeelingRating? '' : 'hidden'}`,
-                       bottom: "115%",
-                        right: "-15%"}}>{tPass('tooltip')}</span>
+                  <Tooltip className='tooltip' id="fr-tooltip" place="bottom-end" effect="solid"/>
               </div>
             </div>
           </div>
@@ -595,7 +590,9 @@ const handleSubmit = async (e) => {
           className={`info-input-container ${IsUDiff ? 'expand' : ''}`}
           style={{ justifyContent: 'end', marginRight: '2.5rem' }}
         >
-              <div className="tooltip-container keycount-checkbox">
+              <div className="keycount-checkbox" 
+                data-tooltip-id="12kTooltip"
+                data-tooltip-content={tPass('12kTooltip')}>
                 <input
                   type="checkbox"
                   value={form.is12K}
@@ -611,16 +608,11 @@ const handleSubmit = async (e) => {
                 >
                   {tPass('form.submInfo.is12K')}
                 </span>
-                <span
-                  className="tooltip"
-                  style={{
-                    bottom: '110%'
-                  }}
-                >
-                  {tPass('12kTooltip')}
-                </span>
+                <Tooltip className='tooltip' id="12kTooltip" place="bottom-end" effect="solid"/>
               </div>
-              <div className="tooltip-container keycount-checkbox">
+              <div className="keycount-checkbox" 
+                data-tooltip-id="16kTooltip"
+                data-tooltip-content={tPass('16kTooltip')}>
                 <input
                   type="checkbox"
                   value={form.is16K}
@@ -636,14 +628,7 @@ const handleSubmit = async (e) => {
                 >
                   {tPass('form.submInfo.is16K')}
                 </span>
-                <span
-                  className="tooltip"
-                  style={{
-                    bottom: '110%'
-                  }}
-                >
-                  {tPass('16kTooltip')}
-                </span>
+                <Tooltip className='tooltip' id="16kTooltip" place="bottom-end" effect="solid"/>
               </div>
         </div>
         <div className="announcement-status">

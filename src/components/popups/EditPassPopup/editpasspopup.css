@@ -55,10 +55,13 @@
 }
 .edit-pass-popup-overlay .form-container form .info {
   flex: 3;
-  padding: 1rem;
+  padding: 1rem 2rem;
   background-color: white;
   position: relative;
   z-index: 10001;
+}
+.edit-pass-popup-overlay .form-container form .info .tooltip {
+  max-width: 300px;
 }
 .edit-pass-popup-overlay .form-container form .info h1 {
   margin-bottom: 1rem;
@@ -149,13 +152,14 @@
   justify-content: space-around;
 }
 
-.edit-pass-popup-overlay .form-container form .info .info-input > * {
-  flex: 1 1 150px; /* Flex-grow, flex-shrink, and base size (width of 150px) */
-  min-width: 100px; /* Minimum width to avoid shrinking too small */
-  max-width: 300px; /* Maximum width to control expansion */
-  height: 40px; /* Fixed height */
-  box-sizing: border-box; /* To include padding and borders in width/height calculation */
+.edit-pass-popup-overlay .form-container form .info .hold-checkbox {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  white-space: nowrap;
+  gap: 0.5rem;
 }
+
 .edit-pass-popup-overlay .form-container form .info .info-input-container {
   overflow: hidden;
   max-height: 0; /* Collapsed height */
