@@ -81,11 +81,11 @@ const HealthCheckPage = () => {
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'healthy':
+      case 'online':
         return '#4CAF50';
       case 'degraded':
         return '#FF9800';
-      case 'unhealthy':
+      case 'offline':
         return '#F44336';
       default:
         return '#9E9E9E';
@@ -94,11 +94,11 @@ const HealthCheckPage = () => {
 
   const getStatusIcon = (status) => {
     switch (status) {
-      case 'healthy':
+      case 'online':
         return '✓';
       case 'degraded':
         return '⚠';
-      case 'unhealthy':
+      case 'offline':
         return '✗';
       default:
         return '?';
@@ -164,8 +164,8 @@ const HealthCheckPage = () => {
             <div className="health-grid">
               <div className="health-card">
                 <h3>Database</h3>
-                <div className={`status-indicator ${healthData.checks.database ? 'healthy' : 'unhealthy'}`}>
-                  {healthData.checks.database ? 'Healthy' : 'Unhealthy'}
+                <div className={`status-indicator ${healthData.checks.database ? 'online' : 'offline'}`}>
+                  {healthData.checks.database ? 'online' : 'offline'}
                 </div>
                 {healthData.mainServerInfo?.checks?.database?.message && (
                   <p>{healthData.mainServerInfo.checks.database.message}</p>
@@ -174,8 +174,8 @@ const HealthCheckPage = () => {
               
               <div className="health-card">
                 <h3>Socket Server</h3>
-                <div className={`status-indicator ${healthData.mainServerInfo?.checks?.socket?.connected ? 'healthy' : 'unhealthy'}`}>
-                  {healthData.mainServerInfo?.checks?.socket?.connected ? 'Healthy' : 'Unhealthy'}
+                <div className={`status-indicator ${healthData.mainServerInfo?.checks?.socket?.connected ? 'online' : 'offline'}`}>
+                  {healthData.mainServerInfo?.checks?.socket?.connected ? 'online' : 'offline'}
                 </div>
                 {healthData.mainServerInfo?.checks?.socket?.message && (
                   <p>{healthData.mainServerInfo.checks.socket.message}</p>
@@ -200,8 +200,8 @@ const HealthCheckPage = () => {
                 <div className="check-grid">
                   <div className="check-item">
                     <div className="check-label">Database</div>
-                    <div className={`check-status ${healthData.checks.database ? 'healthy' : 'unhealthy'}`}>
-                      {healthData.checks.database ? 'Healthy' : 'Unhealthy'}
+                    <div className={`check-status ${healthData.checks.database ? 'online' : 'offline'}`}>
+                      {healthData.checks.database ? 'online' : 'offline'}
                     </div>
                     {healthData.mainServerInfo?.checks?.database?.message && (
                       <div className="check-message">{healthData.mainServerInfo.checks.database.message}</div>
@@ -210,8 +210,8 @@ const HealthCheckPage = () => {
                   
                   <div className="check-item">
                     <div className="check-label">Socket Server</div>
-                    <div className={`check-status ${healthData.mainServerInfo?.checks?.socket?.connected ? 'healthy' : 'unhealthy'}`}>
-                      {healthData.mainServerInfo?.checks?.socket?.connected ? 'Healthy' : 'Unhealthy'}
+                    <div className={`check-status ${healthData.mainServerInfo?.checks?.socket?.connected ? 'online' : 'offline'}`}>
+                      {healthData.mainServerInfo?.checks?.socket?.connected ? 'online' : 'offline'}
                     </div>
                     {healthData.mainServerInfo?.checks?.socket?.message && (
                       <div className="check-message">{healthData.mainServerInfo.checks.socket.message}</div>

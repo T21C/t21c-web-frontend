@@ -234,13 +234,13 @@
   margin-bottom: 0.8rem;
 }
 
-.health-check-page .status-indicator.healthy {
+.health-check-page .status-indicator.online {
   background-color: rgba(76, 175, 80, 0.2);
   color: #81c784;
   border: 1px solid rgba(76, 175, 80, 0.3);
 }
 
-.health-check-page .status-indicator.unhealthy {
+.health-check-page .status-indicator.offline {
   background-color: rgba(244, 67, 54, 0.2);
   color: #e57373;
   border: 1px solid rgba(244, 67, 54, 0.3);
@@ -318,11 +318,11 @@
   font-size: 1.1rem;
 }
 
-.health-check-page .check-status.healthy {
+.health-check-page .check-status.online {
   color: #81c784;
 }
 
-.health-check-page .check-status.unhealthy {
+.health-check-page .check-status.offline {
   color: #e57373;
 }
 
