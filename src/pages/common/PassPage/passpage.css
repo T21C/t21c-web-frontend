@@ -14,73 +14,6 @@
   margin: 0 auto;
 }
 
-/* Input and filter styles */
-.pass-page .pass-body .input-option {
-  display: flex;
-  gap: 0.5rem;
-  height: 2rem;
-}
-
-.pass-page .pass-body .input-option input {
-  width: 100%;
-  background-color: var(--color-white-t20);
-  border: transparent 1px solid;
-  transition: all 0.2s linear;
-  border-radius: 3px;
-  padding: 0.5rem;
-  color: var(--white-color);
-}
-
-.pass-page .pass-body .input-option input:focus {
-  outline: none;
-}
-
-.pass-page .pass-body .input-option input.search-pending {
-  border: 1px solid #fff4;
-}
-
-.pass-page .pass-body .input-option svg {
-  height: 2rem;
-  width: 2.5rem;
-  background-color: var(--color-white-t20);
-  padding: 0.1rem;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: all 0.2s linear;
-}
-
-.pass-page .pass-body .input-option svg:focus {
-  outline: none;
-}
-
-/* Help button styles */
-.pass-page .pass-body .input-option .help-button {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  height: 2rem;
-  padding: 0 0.75rem;
-  background-color: var(--color-white-t20);
-  border: none;
-  border-radius: 3px;
-  color: var(--color-white);
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  white-space: nowrap;
-  font-size: 0.9rem;
-}
-
-.pass-page .pass-body .input-option .help-button:hover {
-  background-color: var(--color-white-t30);
-}
-
-.pass-page .pass-body .input-option .help-button svg {
-  width: 1.25rem;
-  height: 1.25rem;
-  background: none;
-  padding: 0;
-}
-
 /* Filter and sort sections */
 .pass-page .pass-body .filter {
   position: relative;
@@ -114,14 +47,6 @@
 .pass-page .pass-body .settings-class.visible {
   opacity: 1;
   pointer-events: auto;
-}
-
-
-/* Filter section */
-.pass-page .pass-body .filter-section {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
 }
 
 .pass-page .pass-body .filter-row {
@@ -236,10 +161,6 @@
 
 .pass-page .pass-body .input-setting {
   margin-top: 1rem;
-}
-
-.pass-page .pass-body .setting-title {
-  margin-bottom: 1rem;
 }
 
 .pass-page .pass-body .setting-description {

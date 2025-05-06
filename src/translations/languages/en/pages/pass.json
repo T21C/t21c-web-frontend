@@ -22,7 +22,7 @@
   },
   "settings": {
     "filter": {
-      "title": "Filter",
+      "title": "Filter Settings",
       "options": {
         "only12k": "Only 12K",
         "deletedPasses": "Deleted Passes",
@@ -30,7 +30,7 @@
       }
     },
     "sort": {
-      "title": "Sort",
+      "title": "Sort Settings",
       "header": "Sort Passes By...",
       "order": "Sort Order",
       "options": {

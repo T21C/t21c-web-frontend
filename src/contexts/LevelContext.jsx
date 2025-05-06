@@ -35,7 +35,7 @@ const LevelContextProvider = (props) => {
     const [query, setQuery] = useState(() => Cookies.get(COOKIE_KEYS.QUERY) || "");
     const [selectedLowFilterDiff, setSelectedLowFilterDiff] = useState(() => Cookies.get(COOKIE_KEYS.LOW_FILTER_DIFF) || "P1");
     const [selectedHighFilterDiff, setSelectedHighFilterDiff] = useState(() => Cookies.get(COOKIE_KEYS.HIGH_FILTER_DIFF) || "U20");
-    const [sort, setSort] = useState(() => Cookies.get(COOKIE_KEYS.SORT) || "RECENT_DESC");
+    const [sort, setSort] = useState(() => Cookies.get(COOKIE_KEYS.SORT) || "RECENT");
     const [order, setOrder] = useState(() => Cookies.get(COOKIE_KEYS.ORDER) || "ASC");
     const [hasMore, setHasMore] = useState(true);
     const [pageNumber, setPageNumber] = useState(0);

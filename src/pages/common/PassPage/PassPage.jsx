@@ -173,9 +173,8 @@ const PassPage = () => {
     // Reset to initial PGU range
     setSelectedLowFilterDiff("P1");
     setSelectedHighFilterDiff("U20");
-    setSliderRange([1, 60]);
-    // Reset 12k filter
-    setHide12k(false);
+    setSliderRange([1, difficulties.find(d => d.name === "U20")?.sortOrder || 61]);
+    setKeyFlag("all");
     // Reset deleted filter if admin
     if (user?.isSuperAdmin) {
       setDeletedFilter("hide");
