@@ -72,6 +72,10 @@ const PassSubmissionPage = () => {
 
   const [pendingProfiles, setPendingProfiles] = useState([]);
 
+  const [searchInput, setSearchInput] = useState('');
+  const [pendingSearch, setPendingSearch] = useState(false);
+  const searchTimeoutRef = useRef(null);
+
   // Add color logic for FetchIcon
   const getIconColor = () => {
     if (!form.levelId) return "#ffc107";
@@ -522,12 +526,22 @@ const PassSubmissionPage = () => {
       ...prev,
       levelId: value
     }));
+    setSearchInput(value);
     
-    if (value) {
-      searchLevels(value);
-    } else {
-      setSearchResults([]);
+    // Clear any existing timeout
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
     }
+
+    // Set new timeout for search
+    searchTimeoutRef.current = setTimeout(() => {
+      if (value) {
+        setPendingSearch(true);
+        searchLevels(value);
+      } else {
+        setSearchResults([]);
+      }
+    }, 500);
   };
 
   const toggleExpand = () => {
@@ -574,6 +588,15 @@ const PassSubmissionPage = () => {
       setPendingProfiles(newPendingProfiles);
     }
   };
+
+  // Add cleanup effect
+  useEffect(() => {
+    return () => {
+      if (searchTimeoutRef.current) {
+        clearTimeout(searchTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="pass-submission-page">
@@ -622,7 +645,7 @@ const PassSubmissionPage = () => {
                   type="text"
                   placeholder={tPass("submInfo.levelId")}
                   name="levelId"
-                  value={form.levelId}
+                  value={searchInput}
                   onChange={handleLevelInputChange}
                   style={{ borderColor: isFormValidDisplay.levelId ? "" : "red" }}
                 />
