@@ -66,11 +66,14 @@
     "tooltips": {
       "expandReason": "Click to expand",
       "deleteRating": "Delete rating",
-      "lastUpdated": "Last time this rating was modified"
+      "lastUpdated": "Last time this rating was modified",
+      "copyLink": "Copy Link"
     },
     "buttons": {
       "viewDetails": "View Details",
-      "editLevel": "Edit Level"
+      "editLevel": "Edit Level",
+      "copied": "Copied!",
+      "copyLink": "Copy link"
     }
   },
   "helpPopup": {

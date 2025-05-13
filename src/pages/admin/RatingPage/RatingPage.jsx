@@ -201,6 +201,22 @@ const RatingPage = () => {
     setSortedRatings(newSortedRatings);
   }, [sortOrder, sortType, ratings]);
 
+  // Add rating parsing from URL hash
+  useEffect(() => {
+    if (!ratings) return;
+
+    const hash = window.location.hash;
+    const ratingMatch = hash.match(/#(\d+)/)
+    if (ratingMatch) {
+      const ratingId = parseInt(ratingMatch[1]);
+      const targetRating = ratings.find(r => r.level?.id === ratingId);
+      
+      if (targetRating) {
+        setSelectedRating(targetRating);
+      }
+    }
+  }, [ratings]);
+
   const handleLocalSort = (order) => {
     setSortOrder(order);
   };

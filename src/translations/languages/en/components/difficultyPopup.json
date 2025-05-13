@@ -180,5 +180,8 @@
   },
   "loading": {
     "directives": "Loading announcement directives..."
+  },
+  "notifications": {
+    "updated": "Difficulty updated successfully"
   }
 }

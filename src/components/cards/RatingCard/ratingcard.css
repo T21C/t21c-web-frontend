@@ -310,4 +310,33 @@
   font-size: 1rem;
   color: rgba(255, 255, 255, 0.7);
   font-family: monospace;
+}
+
+.rating-card .copy-link-btn {
+  background-color: #ffffff08;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: #ccc;
+  border: 1px solid #231818;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  margin-left: auto;
+  opacity: 0.7;
+}
+
+.rating-card .copy-link-btn:hover {
+  background-color: #ffffff14;
+  opacity: 1;
+}
+
+.rating-card .copy-link-btn.success {
+  background-color: #4CAF5055;
+  opacity: 1;
+  color: #88FF88;
 } 

@@ -1,3 +1,4 @@
+import { LinkIcon } from '@/components/common/icons/LinkIcon';
 import './ratingcard.css';
 import { calculateRatingValue, calculateAverageRating, formatCreatorDisplay } from '@/utils/Utility';
 import { useState } from 'react';
@@ -37,6 +38,7 @@ export const RatingCard = ({
     const tRating = (key) => t(`rating.ratingCard.${key}`) || key;
     const [isEditing, setIsEditing] = useState(false);
     const [isReasonExpanded, setIsReasonExpanded] = useState(false);
+    const [copySuccess, setCopySuccess] = useState(false);
     const isVote = /^vote/i.test(rating.level.rerateNum);
     const userRating = rating.details?.find(detail => detail.userId === user?.id)?.rating || "";
 
@@ -75,6 +77,17 @@ export const RatingCard = ({
         await onEditLevel();
       } finally {
         setIsEditing(false);
+      }
+    };
+
+    const handleCopyLink = async () => {
+      const url = `${window.location.origin}${window.location.pathname}#${rating.level.id}`;
+      try {
+        await navigator.clipboard.writeText(url);
+        setCopySuccess(true);
+        setTimeout(() => setCopySuccess(false), 2000);
+      } catch (err) {
+        console.error('Failed to copy link:', err);
       }
     };
 
@@ -192,6 +205,14 @@ export const RatingCard = ({
                 )}
               </button>
             )}
+            <button
+              onClick={handleCopyLink}
+              className={`copy-link-btn ${copySuccess ? 'success' : ''}`}
+              title={tRating('tooltips.copyLink')}
+            >
+              {copySuccess ? tRating('buttons.copied') : tRating('buttons.copyLink')}
+              <LinkIcon size={20} color={copySuccess ? "#4CAF50" : "#ccc"} />
+            </button>
           </div>
         </div>
       </div>

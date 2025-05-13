@@ -41,7 +41,6 @@ export const PassContextProvider = ({ children }) => {
   useEffect(() => {
     if (difficulties.length > 0) {
       const maxDifficulty = difficulties.find(d => d.name === "U20")?.sortOrder || 61;
-      console.log(maxDifficulty);
       // Validate and adjust sliderRange if needed
       const currentRange = [...sliderRange];
       if (currentRange[0] < 1 || currentRange[1] > maxDifficulty) {

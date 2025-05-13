@@ -89,6 +89,7 @@
   "notifications": {
     "created": "Difficulty created successfully",
     "updated": "Difficulty updated successfully",
-    "deleted": "Difficulty deleted successfully"
+    "deleted": "Difficulty deleted successfully",
+    "reordered": "Difficulties reordered successfully"
   }
 } 
