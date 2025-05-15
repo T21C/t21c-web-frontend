@@ -22,7 +22,8 @@
     }
   },
   "errors": {
-    "generic": "Login failed. Please try again.",
+    "generic": "Unspecified error. Please try again later.",
+    "network": "Network connection error. Please try again later.",
     "discordFailed": "Failed to initiate Discord login. Please try again, if the issue persists, contact the developer.",
     "captcha": {
       "notLoaded": "reCAPTCHA not loaded",

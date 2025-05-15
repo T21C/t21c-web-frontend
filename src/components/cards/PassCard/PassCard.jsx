@@ -9,7 +9,7 @@ const PassCard = ({ pass }) => {
   
   const navigate = useNavigate();
   const { difficultyDict } = useDifficultyContext();
-  const difficultyInfo = difficultyDict[pass.level.difficulty.id];
+  const difficultyInfo = difficultyDict[pass.level.diffId];
   
   const redirect = () => {
     navigate(`/passes/${pass.id}`);
