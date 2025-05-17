@@ -762,6 +762,9 @@
     border-radius: 4px;
     position: relative;
     z-index: 11;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 
   .submission-admin-page .auto-allow-button:hover {
@@ -770,6 +773,27 @@
 
   .submission-admin-page .auto-allow-button:active {
     transform: scale(0.98);
+  }
+
+  .submission-admin-page .auto-allow-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    background: var(--color-white-t10);
+  }
+
+  .submission-admin-page .auto-allow-button .loading-spinner {
+    animation: spinnerSpin 1s linear infinite;
+    display: flex;
+  }
+
+
+  @keyframes spinnerSpin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
   }
 
   .submission-admin-page .header-container {
@@ -808,16 +832,7 @@
   .submission-admin-page .refresh-button:disabled {
     opacity: 0.3;
     cursor: not-allowed;
-    animation: spin 1s linear infinite;
-  }
-
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+    animation: spinnerSpin 1s linear infinite;
   }
 
   .submission-admin-page .discord-assignment-container {

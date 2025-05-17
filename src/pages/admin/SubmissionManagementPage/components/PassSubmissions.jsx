@@ -10,7 +10,7 @@ import { ProfileCreationModal } from './ProfileCreationModal';
 import { AdminPlayerPopup } from '@/components/popups';
 
 
-const PassSubmissions = () => {
+const PassSubmissions = ({ setIsAutoAllowing }) => {
   const { t } = useTranslation('components');
   const tPass = (key, params = {}) => t(`passSubmissions.${key}`, params);
 
@@ -22,6 +22,7 @@ const PassSubmissions = () => {
   const [playerSearchValues, setPlayerSearchValues] = useState({});
   const [loading, setLoading] = useState(false);
   const [playerData, setPlayerData] = useState(null);
+  const [autoAllowing, setAutoAllowing] = useState(false);
 
   const [profileCreation, setProfileCreation] = useState({
     show: false,
@@ -281,20 +282,31 @@ const PassSubmissions = () => {
 
   const handleAutoAllow = async () => {
     try {
-      setLoading(true);
+      setIsAutoAllowing(true);
       const response = await api.post(`${import.meta.env.VITE_SUBMISSION_API}/auto-approve/passes`);
       
       if (response.data.results) {
+        const successCount = response.data.results.filter(r => r.success).length || 0;
         await fetchPendingSubmissions();
+        
+        // Dispatch completion event with count
+        window.dispatchEvent(new CustomEvent('autoAllowComplete', {
+          detail: { count: successCount }
+        }));
         toast.success(tPass('success.autoAllow', { 
-          count: response.data.results.filter(r => r.success).length 
+          count: successCount 
         }));
       }
     } catch (error) {
       console.error('Error auto-allowing submissions:', error);
       toast.error(tPass('errors.autoAllow'));
+      
+      // Dispatch completion event with error
+      window.dispatchEvent(new CustomEvent('autoAllowComplete', {
+        detail: { count: 0 }
+      }));
     } finally {
-      setLoading(false);
+      setIsAutoAllowing(false);
     }
   };
 

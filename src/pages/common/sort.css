@@ -226,3 +226,11 @@
 .sort-class .setting-title {
   margin-bottom: 1rem;
 }
+.end-message {
+  text-align: center;
+  font-size: 1.5rem;
+  margin-top: 2rem;
+  font-weight: bold;
+  justify-content: center;
+  text-align: center;
+}

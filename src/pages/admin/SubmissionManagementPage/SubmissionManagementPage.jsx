@@ -16,6 +16,7 @@ const SubmissionManagementPage = () => {
   const currentUrl = window.location.origin + location.pathname;
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('levels'); // 'levels' or 'passes'
+  const [isAutoAllowing, setIsAutoAllowing] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { pendingLevelSubmissions, pendingPassSubmissions } = useNotification();
   const handleRefresh = () => {
@@ -123,8 +124,14 @@ const SubmissionManagementPage = () => {
               <button 
                 className="auto-allow-button"
                 onClick={() => window.dispatchEvent(new Event('autoAllowPasses'))}
+                disabled={isAutoAllowing}
               >
                 {tSubmission('tabs.autoAllow')}
+                {isAutoAllowing && (
+                  <div className="loading-spinner">
+                    <RefreshIcon color="#fff" size="20px" />
+                  </div>
+                )}
               </button>
             )}
           </div>
@@ -132,7 +139,7 @@ const SubmissionManagementPage = () => {
           {activeTab === 'levels' ? (
             <LevelSubmissions />
           ) : (
-            <PassSubmissions />
+            <PassSubmissions setIsAutoAllowing={setIsAutoAllowing} />
           )}
         </div>
       </div>
