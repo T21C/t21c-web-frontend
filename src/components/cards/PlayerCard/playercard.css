@@ -98,7 +98,7 @@
 }
 
 .player-card .score-wrapper.secondary {
-  min-width: 120px;
+  min-width: 150px;
   font-size: 0.8rem;
   background: rgba(0, 0, 0, 0.1);
   padding: 0.8rem 1rem;
