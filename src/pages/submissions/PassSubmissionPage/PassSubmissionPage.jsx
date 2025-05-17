@@ -488,16 +488,12 @@ const PassSubmissionPage = () => {
     searchCancelTokenRef.current = api.CancelToken.source();
 
     try {
-      const response = await api.post(`${import.meta.env.VITE_LEVELS}/filter`, 
-        {
-          pguRange: { from: null, to: null },
-          specialDifficulties: []
-        },
+      const response = await api.get(`${import.meta.env.VITE_LEVELS}`, 
         {
           params: {
             query,
             limit: 50,
-            offset: 0
+            offset: 0,
           },
           cancelToken: searchCancelTokenRef.current.token
         }
