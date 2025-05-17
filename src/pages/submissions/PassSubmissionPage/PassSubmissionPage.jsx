@@ -607,7 +607,7 @@ const PassSubmissionPage = () => {
             "#888"
           )}}>
           {success? (<p>{tPass("alert.success")}</p>) :
-          error? (<p>{tPass("alert.error")}{truncateString(error?.message || error?.toString() || error, 50)}</p>):
+          error? (<p>{tPass("alert.error")}{truncateString(error?.message || error?.toString() || error, 120)}</p>):
           (<p>{tPass("alert.loading")}</p>)}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div>
