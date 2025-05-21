@@ -5,62 +5,76 @@
 }
 
 .admin-page .admin-container {
+    position: relative;
+    z-index: 1;
     height: 100%;
     width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 2rem;
-    padding: 2rem;
-    padding-top: 7rem;
-}
-
-.admin-page .admin-ratings,
-.admin-page .admin-submissions {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: 2rem;
+    padding-top: 7rem;
+}
+
+.admin-page .admin-title {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.admin-page .admin-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    width: 100%;
+    max-width: 1200px;
+}
+
+.admin-page .admin-card {
     background: var(--color-grey);
     border-radius: 10px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
-.admin-page .admin-ratings:hover,
-.admin-page .admin-submissions:hover {
-    transform: none;
-}
-
-.admin-page .admin-svg {
-    width: 300px;
-    height: 300px;
-    margin: 2rem 0;
-}
-
-.admin-page .admin-button {
-    padding: 1rem 2rem;
-    background-color: var(--color-black-t60);
-    color: var(--white);
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: all 0.3s ease;
-    font-weight: bold;
-}
-
-.admin-page .admin-button:hover {
-    background-color: var(--color-white-t20);
+.admin-page .admin-card:hover {
     transform: translateY(-5px);
+    background: var(--color-grey-t80);
+}
+
+.admin-page .admin-card-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.admin-page .admin-card-title {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.admin-page .admin-card-description {
+    color: var(--color-white-t60);
+    font-size: 1rem;
+    line-height: 1.5;
 }
 
 @media screen and (max-width: 768px) {
     .admin-page .admin-container {
-        flex-direction: column;
+        padding: 1rem;
+        padding-top: 6rem;
     }
 
-    .admin-page .admin-svg {
-        width: 200px;
-        height: 200px;
+    .admin-page .admin-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-page .admin-title {
+        font-size: 2rem;
     }
 }

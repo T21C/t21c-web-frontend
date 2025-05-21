@@ -65,6 +65,7 @@ function App() {
           <Route path='passes' element={<Pages.PassPage />} />
 
           {/* Admin Routes - Protected */}
+          <Route path='admin' element={<PrivateRoute><Pages.AdminPage /></PrivateRoute>} />
           <Route path='admin/submissions' element={<PrivateRoute><Pages.SubmissionManagementPage /></PrivateRoute>} />
           <Route path='admin/rating' element={<Pages.RatingPage />} />
           <Route path='admin/announcements' element={<PrivateRoute><Pages.AnnouncementPage /></PrivateRoute>} />
@@ -72,7 +73,6 @@ function App() {
           <Route path='admin/difficulties' element={<PrivateRoute><Pages.DifficultyPage /></PrivateRoute>} />
           <Route path="admin/creators" element={<PrivateRoute><Pages.CreatorManagementPage /></PrivateRoute>} />
           <Route path="/admin/backup" element={<PrivateRoute><Pages.BackupPage /></PrivateRoute>} />
-          <Route path="/admin/profiling" element={<PrivateRoute><Pages.ProfilingPage /></PrivateRoute>} />
           
           <Route path='about' element={<Pages.AboutUsPage />} />
           <Route path='privacy-policy' element={<Pages.PrivacyPolicyPage />} />

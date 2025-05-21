@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "title": "Admin Dashboard",
+    "description": "Site Administration Dashboard"
+  },
+  "title": "Admin Dashboard",
+  "links": {
+    "rating": "Rating",
+    "ratingDesc": "Rate levels and edit ratings",
+    "submissions": "Submissions",
+    "submissionsDesc": "Review and manage level and pass submissions",
+    "announcements": "Announcements",
+    "announcementsDesc": "Announce new levels, rerates, and passes",
+    "difficulties": "Difficulties",
+    "difficultiesDesc": "Manage difficulty settings and announcement directives",
+    "creators": "Creators",
+    "creatorsDesc": "Assign creators and teams to levels",
+    "backups": "Backups",
+    "backupsDesc": "Manage database backups and system maintenance"
+  }
+} 

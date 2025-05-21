@@ -186,19 +186,14 @@ const Navigation = ({ children }) => {
                     <li className="nav-list-item">{tNav('links.admin.announcements')}</li>
                   </NavLink>
                   <NavLink className={({ isActive }) =>
-                    "nav-link " + (isActive ? "active" : "")}
-                    to="/admin/difficulties">
-                    <li className="nav-list-item">{tNav('links.admin.difficulties')}</li>
-                  </NavLink>
-                  <NavLink className={({ isActive }) =>
-                    "nav-link " + (isActive ? "active" : "")}
-                    to="/admin/creators">
-                    <li className="nav-list-item">{tNav('links.admin.creators')}</li>
-                  </NavLink>
-                  <NavLink className={({ isActive }) =>
-                    "nav-link " + (isActive ? "active" : "")}
-                    to="/admin/backups">
-                    <li className="nav-list-item">{tNav('links.admin.backups')}</li>
+                  {
+                    if (location.pathname === '/admin') {
+                      return "nav-link active"
+                    }
+                    return "nav-link"
+                  }}
+                    to="/admin">
+                    <li className="nav-list-item">{tNav('links.admin.dashboard')}</li>
                   </NavLink>
                 </>
               ) : (
@@ -423,13 +418,8 @@ const Navigation = ({ children }) => {
                 </NavLink>
               </li>
               <li className="nav-list-item">
-                <NavLink to="/admin/difficulties" onClick={changeNavState}>
-                  {tNav('links.admin.difficulties')}
-                </NavLink>
-              </li>
-              <li className="nav-list-item">
-                <NavLink to="/admin/backups" onClick={changeNavState}>
-                  {tNav('links.admin.backups')}
+                <NavLink to="/admin" onClick={changeNavState}>
+                  {tNav('links.admin.dashboard')}
                 </NavLink>
               </li>
             </>
