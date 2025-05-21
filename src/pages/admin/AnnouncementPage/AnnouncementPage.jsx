@@ -290,19 +290,31 @@ const AnnouncementPage = () => {
             <div className="submission-tabs">
               <button
                 className={`tab-button ${activeTab === 'newLevels' ? 'active' : ''}`}
-                onClick={() => setActiveTab('newLevels')}
+                onClick={() => {
+                  setActiveTab('newLevels');
+                  setSelectedLevels([]);
+                  setSelectedPasses([]);
+                }}
               >
                 {tAnnounce('tabs.newLevels')}
               </button>
               <button
                 className={`tab-button ${activeTab === 'rerates' ? 'active' : ''}`}
-                onClick={() => setActiveTab('rerates')}
+                onClick={() => {
+                  setActiveTab('rerates');
+                  setSelectedLevels([]);
+                  setSelectedPasses([]);
+                }}
               >
                 {tAnnounce('tabs.rerates')}
               </button>
               <button
                 className={`tab-button ${activeTab === 'passes' ? 'active' : ''}`}
-                onClick={() => setActiveTab('passes')}
+                onClick={() => {
+                  setActiveTab('passes');
+                  setSelectedLevels([]);
+                  setSelectedPasses([]);
+                }}
               >
                 {tAnnounce('tabs.passes')}
               </button>
