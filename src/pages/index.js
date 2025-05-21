@@ -25,7 +25,6 @@ const CallbackPage = lazy(() => import('./account/Callback/Callback'));
 const AdminPage = lazy(() => import('./admin/AdminPage/AdminPage'));
 const AnnouncementPage = lazy(() => import('./admin/AnnouncementPage/AnnouncementPage'));
 const BackupPage = lazy(() => import('./admin/BackupPage/BackupPage'));
-const ProfilingPage = lazy(() => import('./admin/ProfilingPage/ProfilingPage'));
 const DifficultyPage = lazy(() => import('./admin/DifficultyPage/DifficultyPage'));
 const CreatorManagementPage = lazy(() => import('./admin/CreatorManagementPage/CreatorManagementPage'));
 const SubmissionManagementPage = lazy(() => import('./admin/SubmissionManagementPage/SubmissionManagementPage'));
@@ -67,7 +66,6 @@ export {
     CreatorManagementPage,
     SubmissionManagementPage,
     RatingPage,
-    ProfilingPage,
     
     // Other pages
     AboutUsPage,
