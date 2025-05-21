@@ -65,6 +65,8 @@ export const LevelHelpPopup = ({ onClose }) => {
                 <li><b><code>song:Example</code></b> - {tHelp('sections.search.examples.songField')}</li>
                 <li><b><code>artist:Artist</code></b> - {tHelp('sections.search.examples.artistField')}</li>
                 <li><b><code>charter:Charter</code></b> - {tHelp('sections.search.examples.charterField')}</li>
+                <li><b><code>vfxer:Vfxer</code></b> - {tHelp('sections.search.examples.vfxerField')}</li>
+                <li><b><code>creator:Creator</code></b> - {tHelp('sections.search.examples.creatorField')}</li>
               </ul>
             </div>
           </section>
@@ -75,9 +77,9 @@ export const LevelHelpPopup = ({ onClose }) => {
             <div className="examples">
               <h4>{tHelp('sections.operators.examples.title')}</h4>
               <ul>
-                <li><b><code>song:Example, artist:Artist</code></b> - {tHelp('sections.operators.examples.and')}</li>
-                <li><b><code>song=Exact | song:Other</code></b> - {tHelp('sections.operators.examples.or')}</li>
-                <li><b><code>song:Example, artist:Artist | song=Exact</code></b> - {tHelp('sections.operators.examples.complex')}</li>
+                <li><b><code>song:hello, artist:camellia</code></b> - {tHelp('sections.operators.examples.and')}</li>
+                <li><b><code>song=goTe | song:xnor</code></b> - {tHelp('sections.operators.examples.or')}</li>
+                <li><b><code>charter:gazizi, artist:onus | artist=ludicin</code></b> - {tHelp('sections.operators.examples.complex')}</li>
               </ul>
             </div>
           </section>
