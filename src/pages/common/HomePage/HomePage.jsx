@@ -83,7 +83,34 @@ const DifficultyGraph = ({ data, mode }) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
   
-  const chartData = data.map(diff => {
+  // Combine difficulties with "J" variants
+  const combinedData = data.reduce((acc, diff) => {
+    // Skip if it's a J variant
+    if (diff.name.endsWith('J')) {
+      // Find the parent difficulty
+      const parentName = diff.name.slice(0, -1); // Remove the J
+      const parentDiff = acc.find(d => d.name === parentName);
+      
+      if (parentDiff) {
+        // Add the J variant's counts to the parent
+        parentDiff.passCount += diff.passCount;
+        parentDiff.levelCount += diff.levelCount;
+      }
+      return acc;
+    }
+    
+    // For non-J variants, add them to the accumulator
+    acc.push({
+      name: diff.name,
+      passCount: diff.passCount,
+      levelCount: diff.levelCount,
+      id: diff.id
+    });
+    
+    return acc;
+  }, []);
+
+  const chartData = combinedData.map(diff => {
     const difficultyInfo = difficultyDict[diff.id] || {};
     return {
       name: diff.name,
