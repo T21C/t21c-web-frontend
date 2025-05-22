@@ -67,7 +67,7 @@ const CreatorManagementPage = () => {
   const [pendingCreators, setPendingCreators] = useState([]);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const [totalPages, setTotalPages] = useState(0);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState('1');
   const [verifyingLevelId, setVerifyingLevelId] = useState(null);
   const [totalCreatorPages, setTotalCreatorPages] = useState(0);
   const [loadingCreators, setLoadingCreators] = useState(true);
@@ -509,25 +509,6 @@ const CreatorManagementPage = () => {
     }
   };
 
-  const handleVerifyCredits = async (levelId) => {
-    setError('');
-    setSuccess('');
-    setIsVerifying(true);
-
-    try {
-      const response = await api.post(`/v2/database/creators/level/${levelId}/verify`);
-      const data = response.data;
-      if (response.status !== 200) throw new Error(data.error || 'Failed to verify credits');
-      
-      await fetchLevelsAudit();
-      setSuccess('Credits verified successfully');
-      setSelectedLevel(null);
-    } catch (err) {
-      setError(err.message || 'Failed to verify credits');
-    } finally {
-      setIsVerifying(false);
-    }
-  };
 
   const handleVerifyLevel = async (levelId, e) => {
     // Prevent the click from bubbling up to the level item
@@ -702,7 +683,7 @@ const CreatorManagementPage = () => {
                 <span className="creator-name">
                   {creator.name.length > 25 ? `${creator.name.substring(0, 25)}...` : creator.name}
                   <span className="creator-details">
-                    (ID: {creator.id} • {creator.levelCount} {creator.levelCount.toString().endsWith('1') ? 'level' : 'levels'})
+                    (ID: {creator.id} • {creator.levelCount} {creator.levelCount?.toString().endsWith('1') ? 'level' : 'levels'})
                     {creator.aliases && creator.aliases.length > 0 && (
                       <span className="creator-aliases"> • Aliases: {creator.aliases.join(', ')}</span>
                     )}
@@ -773,10 +754,6 @@ const CreatorManagementPage = () => {
     );
   };
 
-
-  const findMatchingTeam = (input) => {
-    return teams.find(team => team.name.toLowerCase() === input.toLowerCase());
-  };
 
   const handleCreatorAction = (creator) => {
     setSelectedCreatorForAction(creator);
@@ -895,7 +872,12 @@ const CreatorManagementPage = () => {
 
                   <div className="pagination">
                     <button 
-                      onClick={() => paginate(currentPage - 1)} 
+                      onClick={() => {
+                        paginate(currentPage - 1)
+                        if (currentPage <= 2) {
+                          setInputValue('1')
+                        }
+                      }} 
                       disabled={currentPage === 1}
                     >
                       Previous

@@ -113,10 +113,10 @@ const PassPage = () => {
           specialDifficulties: selectedSpecialDiffs
         };
 
-        const response = await api.post(
+        const response = await api.get(
           `${import.meta.env.VITE_PASSES}`,
-          requestBody,
           {
+            params: requestBody,
             cancelToken: new axios.CancelToken((c) => (cancel = c)),
           }
         );
