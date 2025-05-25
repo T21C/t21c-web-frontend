@@ -175,10 +175,8 @@ const PassPage = () => {
     setSelectedHighFilterDiff("U20");
     setSliderRange([1, difficulties.find(d => d.name === "U20")?.sortOrder || 61]);
     setKeyFlag("all");
-    // Reset deleted filter if admin
-    if (user?.isSuperAdmin) {
-      setDeletedFilter("hide");
-    }
+    setDeletedFilter("hide");
+
     // Clear and reload data
     setPassesData([]);
     setLoading(true);

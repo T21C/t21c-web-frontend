@@ -363,6 +363,7 @@ const LevelPage = () => {
   function resetAll() {
     setPageNumber(0);
     setSort("RECENT_DESC");
+    setSearchInput("");
     setQuery("");
     // Reset to initial PGU range
     setSelectedLowFilterDiff("P1");
@@ -381,9 +382,7 @@ const LevelPage = () => {
     // Reset special difficulties
     setSelectedSpecialDiffs([]);
     // Reset filters
-    if (user?.isSuperAdmin) {
-      setDeletedFilter("hide");
-    }
+    setDeletedFilter("hide");
     setClearedFilter("show");
     setQSliderVisible(false);
     // Clear and reload data
