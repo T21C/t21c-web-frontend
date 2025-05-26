@@ -8,7 +8,7 @@ const DIFFICULTY_LEVELS = {
 // Special ratings that can override if they appear 4 or more times (2 for community)
 const SPECIAL_RATINGS = new Set([
   'Qq', 'Q1+', 'Q2', 'Q2+', 'Q3', 'Q3+', 'Q4', 
-  'Bus', 'Grande', 'MA', 'MP', '-21', '-2', '0'
+  'Bus', 'Grande', 'MA', 'MP', '-21', '-2', '0', 'Impossible', 'Censor'
 ]);
 
 

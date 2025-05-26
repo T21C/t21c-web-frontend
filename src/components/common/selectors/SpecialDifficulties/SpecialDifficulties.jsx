@@ -47,7 +47,7 @@ const SpecialDifficulties = ({
     let group;
     if (diff.name.startsWith('Q')) {
       group = 'Quantum';
-    } else if (['-2', '-21', 'Unranked'].includes(diff.name)) {
+    } else if (['-2', '-21', 'Unranked', 'Impossible', 'Censor'].includes(diff.name)) {
       group = 'Hidden';
     } else {
       group = 'Extra';
