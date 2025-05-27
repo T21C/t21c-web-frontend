@@ -23,6 +23,18 @@ const SpecialDifficulties = ({
   const filteredDifficulties = disableQuantum 
     ? difficulties.filter(diff => !diff.name.startsWith('Q'))
     : difficulties;
+
+  // Filter out non-existent difficulties from selectedDiffs
+  useEffect(() => {
+    const validDifficulties = filteredDifficulties.map(diff => diff.name);
+    const invalidSelections = selectedDiffs.filter(diff => !validDifficulties.includes(diff));
+    
+    if (invalidSelections.length > 0) {
+      // Remove invalid selections
+      invalidSelections.forEach(diff => onToggle(diff));
+    }
+  }, [difficulties, selectedDiffs, onToggle]);
+
   // Handle click/touch outside to close dropdown
   useEffect(() => {
     const handleOutsideEvent = (event) => {
@@ -47,7 +59,7 @@ const SpecialDifficulties = ({
     let group;
     if (diff.name.startsWith('Q')) {
       group = 'Quantum';
-    } else if (['-2', '-21', 'Unranked', 'Impossible', 'Censored'].includes(diff.name)) {
+    } else if (['Unranked', 'Impossible', 'Censored'].includes(diff.name)) {
       group = 'Hidden';
     } else {
       group = 'Extra';

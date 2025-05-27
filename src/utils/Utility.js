@@ -295,7 +295,7 @@ export function validateFeelingRating(value, range = true) {
     // Special patterns
 
 
-    const extras = ['-2', '-21', 'Marathon', 'MA'];
+    const extras = ['-2', '-21', 'Marathon', 'MA', 'Impossible', 'Censored'];
     const extrasRegex = extras.join('$|^');
     
     // Combine all patterns based on range flag

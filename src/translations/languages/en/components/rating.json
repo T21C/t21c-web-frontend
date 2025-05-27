@@ -105,7 +105,7 @@
         "title": "Rating Averaging",
         "description": "The system uses a weighted average calculation that takes into account several factors:",
         "points": {
-          "special": "Special ratings (-2, -21, etc.) override the average if they receive 4 or more votes",
+          "special": "Special ratings (Censored, Impossible, etc.) override the average if they receive 4 or more votes",
           "ranges": "Ranges (like U12~U14) are averaged before contributing to the final rating",
           "order": "PGU ratings are averaged based on their difficulty order, not their numerical values"
         }
