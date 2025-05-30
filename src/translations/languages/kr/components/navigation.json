@@ -1,26 +1,26 @@
 {
   "main": {
     "links": {
-      "home": "Home",
-      "levels": "Levels",
-      "leaderboard": "Leaderboard",
-      "pass": "Passes",
-      "submission": "Submit",
-      "rating": "Rating",
+      "home": "홈",
+      "levels": "레벨",
+      "leaderboard": "순위표",
+      "pass": "클리어",
+      "submission": "제출",
+      "rating": "난이도 책정",
       "admin": {
-        "rating": "Rating",
-        "submissions": "Submissions",
-        "announcements": "Announcements",
-        "dashboard": "Dashboard",
-        "difficulties": "Difficulties",
-        "backups": "Backups",
-        "back": "Back",
-        "admin": "Admin",
-        "creators": "Creators"
+        "rating": "난이도 책정",
+        "submissions": "제출물",
+        "announcements": "공지사항",
+        "dashboard": "대시보드",
+        "difficulties": "난이도",
+        "backups": "백업",
+        "back": "뒤로",
+        "admin": "관리자",
+        "creators": "제작자"
       }
     }
   },
   "languages": {
-    "comingSoon": "(Coming Soon)"
+    "comingSoon": "(곧 제공 예정)"
   }
-} 
+}

@@ -1,73 +1,73 @@
 {
-  "noSubmissions": "No pending submissions",
+  "noSubmissions": "보류 중인 제출물이 없습니다",
   "details": {
-    "levelId": "Level ID",
-    "player": "Player",
-    "feelingDiff": "Feeling Difficulty",
-    "speed": "Speed",
+    "levelId": "레벨 ID",
+    "player": "플레이어",
+    "feelingDiff": "체감 난이도",
+    "speed": "배속",
     "judgements": {
-      "label": "Judgements"
+      "label": "판정"
     },
     "flags": {
-      "label": "Flags",
+      "label": "플래그",
       "types": {
         "12k": "12K",
         "nht": "NHT",
         "16k": "16K"
       }
     },
-    "submitter": "Submitter:",
-    "uploadTime": "Upload Time"
+    "submitter": "제출자:",
+    "uploadTime": "업로드 시간"
   },
   "playerAssignment": {
-    "title": "Assign Player",
-    "current": "Currently Assigned Player",
+    "title": "플레이어 지정",
+    "current": "현재 지정된 플레이어",
     "discord": {
-      "assignButton": "Assign Discord"
+      "assignButton": "Discord 지정"
     },
-    "newProfile": "New Profile request",
-    "manageProfile": "Manage Player"
+    "newProfile": "새 프로필 요청",
+    "manageProfile": "플레이어 관리"
   },
   "buttons": {
-    "allow": "Allow",
-    "decline": "Decline",
-    "save": "Save",
-    "cancel": "Cancel",
-    "reset": "Reset",
-    "clear": "Clear",
-    "selectAll": "Select All",
-    "autoAllow": "Auto-Allow",
-    "autoReject": "Auto-Reject"
+    "allow": "허용",
+    "decline": "거부",
+    "save": "저장",
+    "cancel": "취소",
+    "reset": "초기화",
+    "clear": "지우기",
+    "selectAll": "전체 선택",
+    "autoAllow": "자동 허용",
+    "autoReject": "자동 거부"
   },
   "errors": {
-    "noPlayer": "Please assign a player before approving",
-    "playerAssignment": "Failed to assign player",
-    "processing": "Error processing submission",
-    "autoAllow": "Error auto-allowing submissions"
+    "noPlayer": "승인 전에 플레이어를 지정해 주세요",
+    "playerAssignment": "플레이어 지정에 실패했습니다",
+    "processing": "제출물 처리 중 오류가 발생했습니다",
+    "autoAllow": "자동 허용 중 오류가 발생했습니다"
   },
   "success": {
-    "playerAssigned": "Successfully assigned to {{playerName}}",
-    "autoAllow": "Auto-allowed {{count}} submissions"
+    "playerAssigned": "{{playerName}}(으)로 성공적으로 지정되었습니다",
+    "autoAllow": "{{count}}개의 제출물을 자동 허용했습니다"
   },
-  "loading": "Loading submissions...",
-  "noItems": "No submissions found",
+  "loading": "제출물 불러오는 중...",
+  "noItems": "제출물이 없습니다",
   "search": {
-    "placeholder": "Search submissions..."
+    "placeholder": "제출물 검색..."
   },
   "stats": {
-    "selected": "Selected",
-    "total": "Total"
+    "selected": "선택됨",
+    "total": "전체"
   },
   "modal": {
-    "title": "Confirm Action",
-    "confirmMessage": "Will assign @{{username}} to {{playerName}}. Proceed?",
+    "title": "작업 확인",
+    "confirmMessage": "@{{username}}을(를) {{playerName}}으로 지정합니다. 계속하시겠습니까?",
     "buttons": {
-      "confirm": "Confirm",
-      "cancel": "Cancel"
+      "confirm": "확인",
+      "cancel": "취소"
     },
     "tooltip": "{{discordUsername}} → {{playerName}}"
   },
   "notifications": {
-    "autoAllow": "Auto-approved {{count}} submissions"
+    "autoAllow": "{{count}}개의 제출물이 자동 승인되었습니다"
   }
-} 
+}

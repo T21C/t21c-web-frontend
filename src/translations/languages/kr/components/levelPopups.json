@@ -1,63 +1,63 @@
 {
   "edit": {
-    "title": "Edit Level Details",
+    "title": "레벨 정보 편집",
     "close": "×",
-    "manageAliases": "Manage Aliases",
+    "manageAliases": "별칭 관리",
     "form": {
       "labels": {
-        "song": "Song",
-        "artist": "Artist",
-        "creator": "Creator",
-        "charter": "Charter",
-        "vfxer": "VFXer",
-        "team": "Team",
-        "baseScore": "Base Score",
-        "previousBaseScore": "Previous Base Score",
-        "videoLink": "Video Link",
-        "dlLink": "Download Link",
-        "workshopLink": "Workshop Link",
-        "publicComments": "Public Comments",
-        "previousDifficulty": "Previous Difficulty"
+        "song": "곡",
+        "artist": "아티스트",
+        "creator": "제작자",
+        "charter": "채보자",
+        "vfxer": "이펙터",
+        "team": "팀",
+        "baseScore": "기본 점수",
+        "previousBaseScore": "이전 기본 점수",
+        "videoLink": "영상 링크",
+        "dlLink": "다운로드 링크",
+        "workshopLink": "워크숍 링크",
+        "publicComments": "공개 코멘트",
+        "previousDifficulty": "이전 난이도"
       },
       "placeholders": {
-        "baseScore": "Base Score",
-        "previousBaseScore": "Previous Base Score",
-        "rerateNumber": "Rerate Number",
-        "rerateReason": "Rerate Reason"
+        "baseScore": "기본 점수",
+        "previousBaseScore": "이전 기본 점수",
+        "rerateNumber": "재평가 수치",
+        "rerateReason": "재평가 사유"
       },
       "checkboxes": {
-        "toRate": "To Rate"
+        "toRate": "평가 대상"
       },
       "buttons": {
         "save": {
-          "default": "Save Changes",
-          "saving": "Saving..."
+          "default": "변경 사항 저장",
+          "saving": "저장 중..."
         },
         "delete": {
-          "default": "Delete",
-          "deleting": "Deleting...",
-          "hide": "Hide",
-          "unhide": "Unhide",
-          "processing": "Processing..."
+          "default": "삭제",
+          "deleting": "삭제 중...",
+          "hide": "숨기기",
+          "unhide": "표시",
+          "processing": "처리 중..."
         },
         "restore": {
-          "default": "Restore Level",
-          "restoring": "Restoring..."
+          "default": "레벨 복구",
+          "restoring": "복구 중..."
         }
       }
     },
     "confirmations": {
-      "unsavedChanges": "You have unsaved changes. Are you sure you want to close?",
-      "delete": "Do you want to delete this level? This can be undone later.",
-      "hide": "Do you want to hide this level?",
-      "unhide": "Do you want to unhide this level?",
-      "restore": "Do you want to restore this level?"
+      "unsavedChanges": "저장되지 않은 변경 사항이 있습니다. 닫으시겠습니까?",
+      "delete": "이 레벨을 삭제하시겠습니까? 나중에 복구할 수 있습니다.",
+      "hide": "이 레벨을 숨기시겠습니까?",
+      "unhide": "이 레벨을 다시 표시하시겠습니까?",
+      "restore": "이 레벨을 복구하시겠습니까?"
     },
     "errors": {
-      "update": "Failed to update level",
-      "delete": "Soft deletion failed",
-      "toggleHidden": "Failed to toggle hidden status",
-      "restore": "Failed to restore level"
+      "update": "레벨 업데이트 실패",
+      "delete": "소프트 삭제 실패",
+      "toggleHidden": "숨김 상태 전환 실패",
+      "restore": "레벨 복구 실패"
     }
   }
-} 
+}

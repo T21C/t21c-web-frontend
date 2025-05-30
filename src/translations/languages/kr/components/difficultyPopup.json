@@ -1,52 +1,52 @@
 {
   "tabs": {
-    "details": "Details",
-    "announcement": "Announcement"
+    "details": "세부 정보",
+    "announcement": "공지"
   },
   "modal": {
     "create": {
-      "title": "Create New Difficulty"
+      "title": "새 난이도 생성"
     },
     "edit": {
-      "title": "Edit Difficulty"
+      "title": "난이도 수정"
     },
-    "close": "Close",
+    "close": "닫기",
     "password": {
-      "title": "Super Admin Password Required",
-      "placeholder": "Enter super admin password",
-      "confirm": "Confirm Changes"
+      "title": "슈퍼 관리자 비밀번호 필요",
+      "placeholder": "슈퍼 관리자 비밀번호 입력",
+      "confirm": "변경사항 확인"
     },
     "channel": {
-      "editTitle": "Edit Channel",
-      "addTitle": "Add New Channel",
-      "label": "Channel Label",
-      "labelPlaceholder": "Enter channel label",
+      "editTitle": "채널 수정",
+      "addTitle": "새 채널 추가",
+      "label": "채널 이름",
+      "labelPlaceholder": "채널 이름 입력",
       "webhookUrl": "Webhook URL",
-      "webhookUrlPlaceholder": "Enter webhook URL"
+      "webhookUrlPlaceholder": "Webhook URL 입력"
     },
     "role": {
-      "editTitle": "Edit Role",
-      "addTitle": "Add New Role",
-      "roleId": "Role ID",
-      "roleIdPlaceholder": "Enter role ID",
-      "label": "Role Label",
-      "labelPlaceholder": "Enter role label"
+      "editTitle": "역할 수정",
+      "addTitle": "새 역할 추가",
+      "roleId": "역할 ID",
+      "roleIdPlaceholder": "역할 ID 입력",
+      "label": "역할 이름",
+      "labelPlaceholder": "역할 이름 입력"
     }
   },
   "form": {
     "labels": {
       "id": "ID",
-      "name": "Name",
-      "type": "Type",
-      "icon": "Icon URL",
-      "legacyIcon": "Legacy Icon URL",
-      "emoji": "Emoji",
-      "legacyEmoji": "Legacy Emoji",
-      "color": "Color",
-      "baseScore": "Base Score",
-      "previousBaseScore": "Previous Base Score",
-      "sortOrder": "Sort Order",
-      "legacy": "Legacy Name"
+      "name": "이름",
+      "type": "유형",
+      "icon": "아이콘 URL",
+      "legacyIcon": "레거시 아이콘 URL",
+      "emoji": "이모지",
+      "legacyEmoji": "레거시 이모지",
+      "color": "색상",
+      "baseScore": "기본 점수",
+      "previousBaseScore": "이전 기본 점수",
+      "sortOrder": "정렬 순서",
+      "legacy": "레거시 이름"
     },
     "placeholders": {
       "color": "#RRGGBB"
@@ -54,134 +54,134 @@
   },
   "difficultyTypes": {
     "PGU": "PGU",
-    "SPECIAL": "Special"
+    "SPECIAL": "특수"
   },
   "announcements": {
-    "title": "Announcement Directives For {{diffName}}",
-    "firstOfKind": "First of Kind",
+    "title": "{{diffName}}의 공지 지시어",
+    "firstOfKind": "최초",
     "mode": {
-      "label": "Directive Mode",
-      "static": "Static",
-      "conditional": "Conditional"
+      "label": "지시어 모드",
+      "static": "정적",
+      "conditional": "조건부"
     },
     "directive": {
-      "name": "Name",
-      "description": "Description",
-      "add": "Add Directive",
-      "remove": "Remove Directive",
-      "isActive": "Active",
-      "triggerType": "Trigger Type",
-      "copy": "Copy Directive Settings",
-      "paste": "Paste Directive Settings",
-      "copySuccess": "Directive settings copied to clipboard",
-      "copyError": "Failed to copy directive settings",
-      "pasteSuccess": "Directive settings pasted from clipboard",
-      "pasteError": "Invalid directive format. Please paste a valid directive JSON.",
-      "addSuccess": "New directive added",
-      "removeSuccess": "Directive removed",
-      "saveSuccess": "Directives saved successfully",
-      "saveError": "Failed to save directives",
-      "channelAddSuccess": "Channel added successfully",
-      "channelUpdateSuccess": "Channel updated successfully",
-      "channelDeleteSuccess": "Channel deleted successfully",
-      "roleAddSuccess": "Role added successfully",
-      "roleUpdateSuccess": "Role updated successfully",
-      "roleDeleteSuccess": "Role deleted successfully"
+      "name": "이름",
+      "description": "설명",
+      "add": "지시어 추가",
+      "remove": "지시어 제거",
+      "isActive": "활성화",
+      "triggerType": "트리거 유형",
+      "copy": "지시어 설정 복사",
+      "paste": "지시어 설정 붙여넣기",
+      "copySuccess": "지시어 설정이 클립보드에 복사되었습니다",
+      "copyError": "지시어 설정 복사에 실패했습니다",
+      "pasteSuccess": "지시어 설정이 붙여넣기되었습니다",
+      "pasteError": "잘못된 지시어 형식입니다. 올바른 JSON을 붙여넣어 주세요.",
+      "addSuccess": "새 지시어가 추가되었습니다",
+      "removeSuccess": "지시어가 제거되었습니다",
+      "saveSuccess": "지시어가 성공적으로 저장되었습니다",
+      "saveError": "지시어 저장에 실패했습니다",
+      "channelAddSuccess": "채널이 추가되었습니다",
+      "channelUpdateSuccess": "채널이 수정되었습니다",
+      "channelDeleteSuccess": "채널이 삭제되었습니다",
+      "roleAddSuccess": "역할이 추가되었습니다",
+      "roleUpdateSuccess": "역할이 수정되었습니다",
+      "roleDeleteSuccess": "역할이 삭제되었습니다"
     },
     "triggerType": {
-      "PASS": "Pass Announcement",
-      "LEVEL": "Level Announcement"
+      "PASS": "클리어 공지",
+      "LEVEL": "채보 공지"
     },
     "condition": {
       "type": {
-        "label": "Condition Type",
+        "label": "조건 유형",
         "options": {
-          "ACCURACY": "Accuracy",
-          "WORLDS_FIRST": "World's First",
-          "BASE_SCORE": "Base Score",
-          "CUSTOM": "Custom"
+          "ACCURACY": "정확도",
+          "WORLDS_FIRST": "최초",
+          "BASE_SCORE": "기본 점수",
+          "CUSTOM": "사용자 지정"
         }
       },
       "operator": {
-        "label": "Operator",
+        "label": "연산자",
         "options": {
-          "EQUAL": "Equal to",
-          "GREATER_THAN": "Greater than",
-          "LESS_THAN": "Less than",
-          "GREATER_THAN_EQUAL": "Greater than or equal to",
-          "LESS_THAN_EQUAL": "Less than or equal to"
+          "EQUAL": "같음",
+          "GREATER_THAN": "보다 큼",
+          "LESS_THAN": "보다 작음",
+          "GREATER_THAN_EQUAL": "이상",
+          "LESS_THAN_EQUAL": "이하"
         }
       },
-      "value": "Value",
-      "customFunction": "Custom Function"
+      "value": "값",
+      "customFunction": "사용자 지정 함수"
     },
     "actions": {
-      "title": "Actions",
-      "add": "Add Action",
-      "remove": "Remove Action",
+      "title": "동작",
+      "add": "동작 추가",
+      "remove": "동작 제거",
       "channel": {
-        "create": "Create Channel",
-        "label": "Channel",
-        "add": "Add Channel",
-        "edit": "Edit Channel",
-        "delete": "Delete Channel"
+        "create": "채널 생성",
+        "label": "채널",
+        "add": "채널 추가",
+        "edit": "채널 수정",
+        "delete": "채널 삭제"
       },
       "pingType": {
-        "label": "Ping Type",
+        "label": "핑 유형",
         "options": {
-          "NONE": "No Ping",
-          "ROLE": "Role Ping",
+          "NONE": "핑 없음",
+          "ROLE": "역할 핑",
           "EVERYONE": "@everyone"
         }
       },
       "role": {
-        "create": "Create Role",
-        "label": "Role",
-        "add": "Add Role",
-        "edit": "Edit Role",
-        "delete": "Delete Role"
+        "create": "역할 생성",
+        "label": "역할",
+        "add": "역할 추가",
+        "edit": "역할 수정",
+        "delete": "역할 삭제"
       }
     }
   },
   "channels": {
     "form": {
-      "id": "Channel ID",
-      "idPlaceholder": "Enter Discord channel ID",
-      "label": "Display Label",
-      "labelPlaceholder": "Enter display name for the channel",
+      "id": "채널 ID",
+      "idPlaceholder": "Discord 채널 ID 입력",
+      "label": "표시 이름",
+      "labelPlaceholder": "채널 표시 이름 입력",
       "webhookUrl": "Discord Webhook URL",
-      "webhookUrlPlaceholder": "Enter Discord webhook URL"
+      "webhookUrlPlaceholder": "Discord Webhook URL 입력"
     }
   },
   "roles": {
     "form": {
-      "id": "Role ID",
-      "idPlaceholder": "Enter Discord role ID",
-      "name": "Role Name",
-      "namePlaceholder": "Enter role name",
-      "label": "Display Label",
-      "labelPlaceholder": "Enter display name for the role"
+      "id": "역할 ID",
+      "idPlaceholder": "Discord 역할 ID 입력",
+      "name": "역할 이름",
+      "namePlaceholder": "역할 이름 입력",
+      "label": "표시 이름",
+      "labelPlaceholder": "역할 표시 이름 입력"
     }
   },
   "buttons": {
-    "create": "Create",
-    "save": "Save",
-    "delete": "Delete",
-    "cancel": "Cancel"
+    "create": "생성",
+    "save": "저장",
+    "delete": "삭제",
+    "cancel": "취소"
   },
   "errors": {
-    "passwordRequired": "Super admin password is required",
-    "loadDirectives": "Failed to load directives",
-    "saveDirectives": "Failed to save announcement directives",
-    "channelSaveFailed": "Failed to save channel",
-    "channelDeleteFailed": "Failed to delete channel",
-    "roleSaveFailed": "Failed to save role",
-    "roleDeleteFailed": "Failed to delete role"
+    "passwordRequired": "슈퍼 관리자 비밀번호가 필요합니다",
+    "loadDirectives": "지시어 로드에 실패했습니다",
+    "saveDirectives": "공지 지시어 저장에 실패했습니다",
+    "channelSaveFailed": "채널 저장에 실패했습니다",
+    "channelDeleteFailed": "채널 삭제에 실패했습니다",
+    "roleSaveFailed": "역할 저장에 실패했습니다",
+    "roleDeleteFailed": "역할 삭제에 실패했습니다"
   },
   "loading": {
-    "directives": "Loading announcement directives..."
+    "directives": "공지 지시어를 불러오는 중..."
   },
   "notifications": {
-    "updated": "Difficulty updated successfully"
+    "updated": "난이도가 성공적으로 수정되었습니다"
   }
 }

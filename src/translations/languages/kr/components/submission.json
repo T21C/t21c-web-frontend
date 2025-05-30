@@ -1,106 +1,106 @@
 {
   "header": {
-    "headerPass": "I want to submit a pass",
-    "headerLevel": "I want my level to be rated"
+    "headerPass": "클리어 제출하기",
+    "headerLevel": "채보 제출하기"
   },
   "button": {
-    "buttonPass": "Submit a pass",
-    "buttonLevel": "Submit a level"
+    "buttonPass": "클리어 제출",
+    "buttonLevel": "채보 제출"
   },
-  "RulesAGuide": "View rules and guidelines",
+  "RulesAGuide": "규칙 및 가이드 보기",
   "level": {
     "alert": {
-      "login": "You must be logged in",
-      "form": "Incomplete form",
-      "success": "Form submitted successfully!",
-      "error": "Error: ",
-      "loading": "Submitting..."
+      "login": "로그인이 필요합니다",
+      "form": "작성되지 않은 항목이 있습니다",
+      "success": "폼이 성공적으로 제출되었습니다!",
+      "error": "오류: ",
+      "loading": "제출 중..."
     },
-    "thumbnailInfo": "Video not found",
-    "title": "Submit a Level",
+    "thumbnailInfo": "동영상을 찾을 수 없습니다",
+    "title": "채보 제출하기",
     "videoInfo": {
-      "title": "Video title",
-      "channel": "Channel name",
-      "timestamp": "Timestamp",
-      "nolink": "No link provided"
+      "title": "영상 제목",
+      "channel": "채널 이름",
+      "timestamp": "타임스탬프",
+      "nolink": "링크가 제공되지 않음"
     },
-    "tooltip": "Unknown difficulty, will submit but please make sure it's readable by the managers. Correct diff ex.: G13; P7~P13; 21.1+; 19~20.0+",
+    "tooltip": "알 수 없는 난이도입니다. 제출은 되지만 관리자들이 읽을 수 있도록 확인해주세요. 올바른 난이도 예시: G13; P7~P13; 21.1+; 19~20.0+",
     "submInfo": {
-      "song": "Song",
-      "artist": "Artist",
-      "videoLink": "Video Link",
-      "charter": "Charter",
-      "diff": "Difficulty",
-      "vfxer": "VFX-ers (opt.)",
-      "team": "Team Name (opt.)",
-      "dlLink": "Download link",
-      "workshop": "Workshop link",
-      "dlLinksOr": "or"
+      "song": "곡명",
+      "artist": "아티스트",
+      "videoLink": "영상 링크",
+      "charter": "제작자",
+      "diff": "난이도",
+      "vfxer": "이펙터 (선택)",
+      "team": "팀 이름 (선택)",
+      "dlLink": "다운로드 링크",
+      "workshop": "워크숍 링크",
+      "dlLinksOr": "또는"
     },
-    "submit": "Submit",
-    "submitWait": " please wait..."
+    "submit": "제출",
+    "submitWait": " 잠시만 기다려주세요..."
   },
   "pass": {
     "alert": {
-      "login": "You must be logged in",
-      "form": "Incomplete form",
-      "success": "Form submitted successfully!",
-      "error": "Error: ",
-      "loading": "Submitting..."
+      "login": "로그인이 필요합니다",
+      "form": "작성되지 않은 항목이 있습니다",
+      "success": "폼이 성공적으로 제출되었습니다!",
+      "error": "오류: ",
+      "loading": "제출 중..."
     },
     "score": {
-      "needId": "Level ID is required",
-      "needJudg": "Not all judgements are filled",
-      "needInfo": "Not enough pass info",
-      "noInfo": "Insufficient data to calculate score"
+      "needId": "레벨 ID가 필요합니다",
+      "needJudg": "모든 판정이 입력되지 않았습니다",
+      "needInfo": "클리어 정보가 부족합니다",
+      "noInfo": "점수 계산에 충분한 데이터가 없습니다"
     },
-    "thumbnailInfo": "Video not found",
-    "title": "Submit a Pass",
+    "thumbnailInfo": "동영상을 찾을 수 없습니다",
+    "title": "클리어 제출하기",
     "videoInfo": {
-      "videoLink": "Video link",
-      "title": "Video title",
-      "channel": "Channel name",
-      "timestamp": "Timestamp",
-      "nolink": "No link provided"
+      "videoLink": "영상 링크",
+      "title": "영상 제목",
+      "channel": "채널 이름",
+      "timestamp": "타임스탬프",
+      "nolink": "링크가 제공되지 않음"
     },
     "levelInfo": {
-      "song": "Song name",
-      "charter": "Charter",
-      "artist": "Artist"
+      "song": "곡명",
+      "charter": "제작자",
+      "artist": "아티스트"
     },
-    "holdTooltip": "Tick if you have used hold option other than \"Normal hold\" (0.9x score)",
-    "12kTooltip": "Tick if you have cleared the level with 12 keys or less",
-    "16kTooltip": "Tick if you have cleared the level with 16 keys or more",
-    "tooltip": "Unknown difficulty, will submit but please make sure it's readable by the managers. Correct diff ex.: G13; P7~P13; 21.1+; 19~20.0+",
+    "holdTooltip": "\"기본 홀드\"(0.9배 점수) 외 홀드 옵션 사용 시 체크하세요",
+    "12kTooltip": "12키 이하로 클리어한 경우 체크하세요",
+    "16kTooltip": "16키 이상으로 클리어한 경우 체크하세요",
+    "tooltip": "알 수 없는 난이도입니다. 제출은 되지만 관리자들이 읽을 수 있도록 확인해주세요. 올바른 난이도 예시: G13; P7~P13; 21.1+; 19~20.0+",
     "levelFetching": {
-      "input": "Input Level ID",
-      "fetching": "Fetching",
-      "goto": "Go to level",
-      "notfound": "Level not found"
+      "input": "레벨 ID 입력",
+      "fetching": "검색 중",
+      "goto": "레벨로 이동",
+      "notfound": "레벨을 찾을 수 없습니다"
     },
     "submInfo": {
-      "levelId": "Level Id",
-      "altname": "Alt leaderboard name",
-      "nohold": "Used alternate holds",
-      "speed": "Speed (opt; ex: 1.2)",
-      "feelDiff": "Feeling rating (ex. G12)",
-      "team": "Team Name (opt.)",
-      "dlLink": "Download link",
-      "workshop": "Workshop link",
-      "is16K": "16K+ clear",
-      "is12K": "12K clear"
+      "levelId": "레벨 ID",
+      "altname": "대체 리더보드 이름",
+      "nohold": "대체 홀드 사용",
+      "speed": "배속 (선택; 예: 1.2)",
+      "feelDiff": "체감 난이도 (예: G12)",
+      "team": "팀 이름 (선택)",
+      "dlLink": "다운로드 링크",
+      "workshop": "워크숍 링크",
+      "is16K": "16키 이상 클리어",
+      "is12K": "12키 이하 클리어"
     },
     "judgements": {
-      "tooearly": "Too Early",
-      "early": "Early",
-      "ePerfect": "EPerfect",
-      "perfect": "Perfect",
-      "lPerfect": "LPerfect",
-      "late": "Late"
+      "tooearly": "너무 빠름",
+      "early": "빠름!",
+      "ePerfect": "빠름",
+      "perfect": "완벽",
+      "lPerfect": "느림",
+      "late": "느림!"
     },
-    "acc": "Accuracy: ",
-    "scoreCalc": "Score: ",
-    "submit": "Submit",
-    "submitWait": " please wait..."
+    "acc": "정확도: ",
+    "scoreCalc": "점수: ",
+    "submit": "제출",
+    "submitWait": " 잠시만 기다려주세요..."
   }
-} 
+}

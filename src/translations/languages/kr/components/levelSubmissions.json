@@ -1,81 +1,79 @@
 {
-  "title": "Level Submissions",
-  "noSubmissions": "No pending submissions",
-  "loading": "Loading submissions...",
-  "error": "Error loading submissions",
+  "title": "레벨 제출",
+  "noSubmissions": "대기 중인 제출물이 없습니다",
+  "loading": "제출물 불러오는 중...",
+  "error": "제출물 불러오기 오류",
   "details": {
-    "artist": "Artist:",
-    "charter": "Charter:",
-    "difficulty": "Difficulty:",
+    "artist": "아티스트:",
+    "charter": "채보자:",
+    "difficulty": "난이도:",
     "download": {
-      "label": "Download:",
-      "directLink": "Direct Link",
-      "notAvailable": "Not Available"
+      "label": "다운로드:",
+      "directLink": "직접 링크",
+      "notAvailable": "이용 불가"
     },
     "workshop": {
-      "label": "Workshop:",
-      "link": "Workshop Link"
+      "label": "워크숍:",
+      "link": "워크숍 링크"
     },
-    "team": "Team:",
-    "vfxer": "VFXer:"
+    "team": "팀:",
+    "vfxer": "이펙터:"
   },
   "buttons": {
-    "manageCreator": "Manage Creator",
-    "manageTeam": "Manage Team",
-    "allow": "Allow",
-    "decline": "Decline",
-    "addCharter": "Add Charter",
-    "addVfxer": "Add VFX-er",
-    "remove": "Remove",
-    "searchCreator": "Search",
-    "createCreator": "Create New",
-    "assignCreator": "Assign Existing",
-    "addTeam": "Add Team",
-    "addCreator": "Add Creator"
+    "manageCreator": "제작자 관리",
+    "manageTeam": "팀 관리",
+    "allow": "허용",
+    "decline": "거부",
+    "addCharter": "채보자 추가",
+    "addVfxer": "이펙터 추가",
+    "remove": "제거",
+    "searchCreator": "검색",
+    "createCreator": "새로 만들기",
+    "assignCreator": "기존 제작자 지정",
+    "addTeam": "팀 추가",
+    "addCreator": "제작자 추가"
   },
   "labels": {
-    "levelName": "Level",
-
-    "creatorName": "Creator",
-    "submittedOn": "Submitted"
+    "levelName": "레벨",
+    "creatorName": "제작자",
+    "submittedOn": "제출일"
   },
   "badges": {
-    "newRequest": "New"
+    "newRequest": "신규"
   },
   "messages": {
     "success": {
-      "approved": "Submission approved successfully",
-      "rejected": "Submission rejected successfully"
+      "approved": "제출물이 성공적으로 승인되었습니다",
+      "rejected": "제출물이 성공적으로 거부되었습니다"
     },
     "error": {
-      "generic": "An error occurred",
-      "approve": "Failed to approve submission",
-      "reject": "Failed to reject submission"
+      "generic": "오류가 발생했습니다",
+      "approve": "승인에 실패했습니다",
+      "reject": "거부에 실패했습니다"
     }
   },
-  
   "warnings": {
-    "pendingProfiles": "This profile will be requested for creation:",
-    "creatorExists": "A creator with this name already exists",
-    "invalidCreator": "Invalid creator name",
-    "duplicateCreator": "This creator has already been added"
+    "pendingProfiles": "이 프로필이 생성 요청됩니다:",
+    "creatorExists": "이 이름의 제작자가 이미 존재합니다",
+    "invalidCreator": "유효하지 않은 제작자 이름입니다",
+    "duplicateCreator": "이 제작자는 이미 추가되었습니다"
   },
   "creators": {
     "search": {
-      "placeholder": "Search for existing creators...",
-      "noResults": "No creators found",
-      "loading": "Searching..."
+      "placeholder": "기존 제작자 검색...",
+      "noResults": "제작자를 찾을 수 없습니다",
+      "loading": "검색 중..."
     },
     "create": {
-      "title": "Create New Creator",
-      "namePlaceholder": "Enter creator name",
-      "success": "Creator created successfully",
-      "error": "Failed to create creator"
+      "title": "새 제작자 생성",
+      "namePlaceholder": "제작자 이름 입력",
+      "success": "제작자가 성공적으로 생성되었습니다",
+      "error": "제작자 생성에 실패했습니다"
     },
     "assign": {
-      "title": "Assign Creator",
-      "success": "Creator assigned successfully",
-      "error": "Failed to assign creator"
+      "title": "제작자 지정",
+      "success": "제작자가 성공적으로 지정되었습니다",
+      "error": "제작자 지정에 실패했습니다"
     }
   }
-} 
+}

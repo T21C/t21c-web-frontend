@@ -1,16 +1,16 @@
 {
   "states": {
-    "hide": "Hide",
-    "show": "Show",
-    "only": "Only",
-    "all": "All",
-    "12k": "12K",
-    "16k": "16K",
-    "PASS": "Pass",
-    "LEVEL": "New Level"
+    "hide": "숨기기",
+    "show": "보기",
+    "only": "보기만",
+    "all": "전체",
+    "12k": "12키",
+    "16k": "16키",
+    "PASS": "클리어",
+    "LEVEL": "신규 채보"
   },
   "accessDenied": {
-    "title": "Access Denied",
-    "message": "You need appropriate privileges to access this page."
+    "title": "접근 거부",
+    "message": "이 페이지에 접근하려면 적절한 권한이 필요합니다."
   }
-} 
+}

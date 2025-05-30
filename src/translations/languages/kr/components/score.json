@@ -1,12 +1,12 @@
 {
   "card": {
     "labels": {
-      "score": "Score",
-      "accuracy": "Accuracy",
-      "speed": "Speed"
+      "score": "점수",
+      "accuracy": "정확도",
+      "speed": "배속"
     },
     "tooltips": {
-      "watchVideo": "Watch video"
+      "watchVideo": "영상 보기"
     }
   }
-} 
+}

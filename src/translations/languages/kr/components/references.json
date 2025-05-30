@@ -1,102 +1,102 @@
 {
   "button": {
-    "label": "Open References",
-    "text": "References"
+    "label": "참조 열기",
+    "text": "참조"
   },
   "popup": {
-    "title": "{{tab}} Difficulties",
+    "title": "{{tab}} 난이도",
     "buttons": {
-      "close": "Close",
-      "expandAll": "Expand All",
-      "collapseAll": "Collapse All",
-      "editMode": "Edit Mode",
-      "viewMode": "View Mode",
-      "saveChanges": "Save Changes",
-      "saving": "Saving...",
-      "cancel": "Cancel",
-      "help": "Help",
-      "switchToExtended": "Switch to extended view",
-      "switchToCompact": "Switch to compact view"
+      "close": "닫기",
+      "expandAll": "모두 펼치기",
+      "collapseAll": "모두 접기",
+      "editMode": "편집 모드",
+      "viewMode": "보기 모드",
+      "saveChanges": "변경 사항 저장",
+      "saving": "저장 중...",
+      "cancel": "취소",
+      "help": "도움말",
+      "switchToExtended": "확장 보기로 전환",
+      "switchToCompact": "간략 보기로 전환"
     },
-    "loading": "Loading references...",
+    "loading": "참조 불러오는 중...",
     "errors": {
-      "loadFailed": "Failed to load references",
-      "saveFailed": "Failed to save changes",
-      "invalidType": "Invalid reference type: {{type}}"
+      "loadFailed": "참조 불러오기 실패",
+      "saveFailed": "변경 사항 저장 실패",
+      "invalidType": "잘못된 참조 유형: {{type}}"
     },
     "messages": {
-      "saveSuccess": "References saved successfully",
-      "parseError": "Error parsing references: {{error}}"
+      "saveSuccess": "참조가 성공적으로 저장되었습니다",
+      "parseError": "참조 구문 분석 오류: {{error}}"
     },
     "levelCount": {
-      "singular": "1 level",
-      "plural": "{{count}} levels"
+      "singular": "1개 레벨",
+      "plural": "{{count}}개 레벨"
     },
-    "noType": "No Type",
+    "noType": "유형 없음",
     "help": {
-      "title": "Reference Type System",
-      "description": "The reference system uses a combination of letters to categorize references:",
+      "title": "참조 유형 시스템",
+      "description": "참조 시스템은 여러 글자 조합을 사용하여 참조를 분류합니다:",
       "types": {
-        "title": "Types",
-        "R": "Rolling - Levels where the primary technique in difficult sections is rolling.",
-        "I": "Indexing - Levels that require high speed (>= 190 BPM) indexing and/or long periods of indexing.",
-        "T": "Tech - Levels that require unique or non-traditional methods of hitting patterns, usually as a result of complex polyrhythms, long accelerations / decelerations, or unintuitive rhythms",
-        "K": "Keycount - Levels that contain a significant amount of high keycount (12K and 16K) play. Typically comes in conjunction with another tag.",
-        "K+": "Keycount+ - Levels that contain an extremely high amount of keycount (16K+) play or complex keycount patterns."
+        "title": "유형",
+        "R": "Rolling - 어려운 구간에서 주요 기법이 롤링인 레벨입니다.",
+        "I": "Indexing - 고속(>= 190 BPM) 인덱싱 또는 긴 시간 인덱싱이 필요한 레벨입니다.",
+        "T": "Tech - 복잡한 폴리리듬, 긴 가속/감속, 직관적이지 않은 리듬 등으로 독특하거나 비전통적인 패턴 타법이 필요한 레벨입니다.",
+        "K": "Keycount - 12키 및 16키 플레이가 많은 레벨로, 보통 다른 태그와 함께 사용됩니다.",
+        "K+": "Keycount+ - 16키 이상 플레이 또는 복잡한 키카운트 패턴이 매우 많은 레벨입니다."
       }
     },
     "editMode": {
-      "placeholder": "Enter level IDs separated by commas",
+      "placeholder": "쉼표로 구분된 레벨 ID를 입력하세요",
       "help": {
-        "title": "Reference Type System - Edit Mode",
-        "description": "The reference system uses a combination of letters to categorize references:",
+        "title": "참조 유형 시스템 - 편집 모드",
+        "description": "참조 시스템은 여러 글자 조합을 사용하여 참조를 분류합니다:",
         "types": {
-          "title": "Types",
-          "R": "Rolling - Levels where the primary technique in difficult sections is rolling.",
-          "I": "Indexing - Levels that require high speed (>= 190 BPM) indexing and/or long periods of indexing.",
-          "T": "Tech - Levels that require unique or non-traditional methods of hitting patterns, usually as a result of complex polyrhythms, long accelerations / decelerations, or unintuitive rhythms",
-          "K": "Keycount - Levels that contain a significant amount of high keycount (12K and 16K) play. Typically comes in conjunction with another tag.",
-          "K+": "Keycount+ - Levels that contain an extremely high amount of keycount (16K+) play or complex keycount patterns."
+          "title": "유형",
+          "R": "Rolling - 어려운 구간에서 주요 기법이 롤링인 레벨입니다.",
+          "I": "Indexing - 고속(>= 190 BPM) 인덱싱 또는 긴 시간 인덱싱이 필요한 레벨입니다.",
+          "T": "Tech - 복잡한 폴리리듬, 긴 가속/감속, 직관적이지 않은 리듬 등으로 독특하거나 비전통적인 패턴 타법이 필요한 레벨입니다.",
+          "K": "Keycount - 12키 및 16키 플레이가 많은 레벨로, 보통 다른 태그와 함께 사용됩니다.",
+          "K+": "Keycount+ - 16키 이상 플레이 또는 복잡한 키카운트 패턴이 매우 많은 레벨입니다."
         },
         "format": {
-          "title": "Format",
-          "single": "Single type: R: 123, 456",
-          "multiple": "Multiple types: RI: 789, 101",
-          "noType": "No type: 123, 456"
+          "title": "형식",
+          "single": "단일 유형: R: 123, 456",
+          "multiple": "복수 유형: RI: 789, 101",
+          "noType": "유형 없음: 123, 456"
         },
         "rules": {
-          "title": "Rules",
+          "title": "규칙",
           "list": [
-            "Each line can have one type prefix",
-            "Types can be combined (e.g., RI, TK)",
-            "Level IDs must be separated by commas",
-            "Empty lines are ignored",
-            "Untyped references go on their own line"
+            "한 줄당 하나의 유형 접두어만 허용",
+            "유형은 조합 가능(e.g., RI, TK)",
+            "레벨 ID는 쉼표로 구분",
+            "빈 줄은 무시됨",
+            "유형 없는 참조는 별도 줄에 작성"
           ]
         }
       }
     }
   },
   "errors": {
-    "loading": "Failed to load difficulties",
-    "saving": "Failed to save difficulties"
+    "loading": "난이도 불러오기 실패",
+    "saving": "난이도 저장 실패"
   },
-  "title": "{{tab}} Difficulties",
+  "title": "{{tab}} 난이도",
   "buttons": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "reset": "Reset",
-    "clear": "Clear",
-    "selectAll": "Select All"
+    "save": "저장",
+    "cancel": "취소",
+    "reset": "초기화",
+    "clear": "지우기",
+    "selectAll": "전체 선택"
   },
-  "loading": "Loading difficulties...",
-  "noItems": "No difficulties found",
+  "loading": "난이도 불러오는 중...",
+  "noItems": "난이도가 없습니다",
   "search": {
-    "placeholder": "Search difficulties..."
+    "placeholder": "난이도 검색..."
   },
   "stats": {
-    "selected": "Selected",
-    "total": "Total",
-    "plural": "{{count}} levels"
+    "selected": "선택됨",
+    "total": "전체",
+    "plural": "{{count}}개 레벨"
   }
-} 
+}

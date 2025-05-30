@@ -1,7 +1,7 @@
 {
-  "noRerates": "No rerates to announce",
+  "noRerates": "알릴 재평가가 없습니다",
   "errors": {
-    "removeLevel": "Failed to remove {{song}}. Please try again."
+    "removeLevel": "{{song}} 제거 실패했습니다. 다시 시도해 주세요."
   },
   "card": {
     "title": "{{song}} - {{artist}}",
@@ -12,7 +12,7 @@
     }
   },
   "buttons": {
-    "edit": "Edit level",
-    "remove": "Remove level"
+    "edit": "레벨 수정",
+    "remove": "레벨 제거"
   }
-} 
+}

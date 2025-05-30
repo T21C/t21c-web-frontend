@@ -1,108 +1,108 @@
 {
-  "title": "Manage Creator/Team",
-  "loading": "Loading...",
+  "title": "제작자/팀 관리",
+  "loading": "로딩 중...",
   "modes": {
-    "assign": "Assign Existing",
-    "create": "Create New"
+    "assign": "기존 할당",
+    "create": "새로 만들기"
   },
   "role": {
-    "label": "Role"
+    "label": "역할"
   },
   "currentCreator": {
-    "label": "Currently Selected Creator",
-    "none": "No creator selected"
+    "label": "현재 선택된 제작자",
+    "none": "선택된 제작자가 없습니다"
   },
   "currentTeam": {
-    "label": "Currently Selected Team",
-    "none": "No team selected"
+    "label": "현재 선택된 팀",
+    "none": "선택된 팀이 없습니다"
   },
   "search": {
-    "placeholder": "Search for creators...",
-    "loading": "Searching...",
-    "noResults": "No creators found",
-    "teamPlaceholder": "Search for teams...",
-    "noTeamsFound": "No teams found"
+    "placeholder": "제작자 검색...",
+    "loading": "검색 중...",
+    "noResults": "제작자를 찾을 수 없습니다",
+    "teamPlaceholder": "팀 검색...",
+    "noTeamsFound": "팀을 찾을 수 없습니다"
   },
   "createForm": {
-    "title": "Create New Creator",
-    "name": "Creator Name",
-    "namePlaceholder": "Enter creator name",
-    "aliases": "Aliases (Optional)",
-    "aliasesPlaceholder": "Enter aliases separated by commas",
-    "aliasesHelp": "Add multiple aliases separated by commas (e.g. alias1, alias2)"
+    "title": "새 제작자 만들기",
+    "name": "제작자 이름",
+    "namePlaceholder": "제작자 이름 입력",
+    "aliases": "별명 (선택)",
+    "aliasesPlaceholder": "쉼표로 구분하여 별명 입력",
+    "aliasesHelp": "여러 별명을 쉼표로 구분하여 입력하세요 (예: 별명1, 별명2)"
   },
   "teamForm": {
-    "title": "Create New Team",
-    "name": "Team Name",
-    "namePlaceholder": "Enter team name",
-    "aliases": "Team Aliases (Optional)",
-    "aliasesPlaceholder": "Enter team aliases separated by commas",
-    "aliasesHelp": "Add multiple aliases separated by commas (e.g. alias1, alias2)"
+    "title": "새 팀 만들기",
+    "name": "팀 이름",
+    "namePlaceholder": "팀 이름 입력",
+    "aliases": "팀 별명 (선택)",
+    "aliasesPlaceholder": "쉼표로 구분하여 팀 별명 입력",
+    "aliasesHelp": "여러 별명을 쉼표로 구분하여 입력하세요 (예: 별명1, 별명2)"
   },
   "form": {
-    "name": "Creator Name",
-    "namePlaceholder": "Enter creator name",
-    "aliases": "Aliases",
-    "aliasPlaceholder": "Enter alias"
+    "name": "제작자 이름",
+    "namePlaceholder": "제작자 이름 입력",
+    "aliases": "별명",
+    "aliasPlaceholder": "별명 입력"
   },
   "stats": {
-    "title": "Creator Statistics",
-    "totalLevels": "Total Levels",
-    "verifiedLevels": "Verified",
-    "charterCount": "Charter Count",
-    "vfxerCount": "VFXer Count",
-    "selectedRole": "Selected Role Count"
+    "title": "제작자 통계",
+    "totalLevels": "전체 채보 수",
+    "verifiedLevels": "검증된 채보",
+    "charterCount": "제작자 수",
+    "vfxerCount": "이펙터 수",
+    "selectedRole": "선택된 역할 수"
   },
   "teamStats": {
-    "title": "Team Statistics",
-    "totalLevels": "Total Levels",
-    "verifiedLevels": "Verified",
-    "memberCount": "Member Count"
+    "title": "팀 통계",
+    "totalLevels": "전체 채보 수",
+    "verifiedLevels": "검증된 채보",
+    "memberCount": "멤버 수"
   },
   "status": {
-    "verified": "✓ Verified Creator",
-    "verifiedTeam": "✓ Verified Team"
+    "verified": "✓ 검증된 제작자",
+    "verifiedTeam": "✓ 검증된 팀"
   },
   "badges": {
-    "newRequest": "New Request"
+    "newRequest": "새 요청"
   },
   "buttons": {
-    "assign": "Assign Creator",
-    "assignTeam": "Assign Team",
-    "confirm": "Confirm Assignment",
-    "cancel": "Cancel",
-    "create": "Create Creator",
-    "createTeam": "Create Team",
-    "creating": "Creating...",
-    "createNew": "Create New",
-    "addAlias": "Add Alias",
-    "change": "Change",
-    "select": "Select Creator",
-    "selectTeam": "Select Team",
-    "manageTeam": "Manage Team",
-    "manageCreator": "Manage Creator"
+    "assign": "제작자 할당",
+    "assignTeam": "팀 할당",
+    "confirm": "할당 확인",
+    "cancel": "취소",
+    "create": "제작자 생성",
+    "createTeam": "팀 생성",
+    "creating": "생성 중...",
+    "createNew": "새로 만들기",
+    "addAlias": "별명 추가",
+    "change": "변경",
+    "select": "제작자 선택",
+    "selectTeam": "팀 선택",
+    "manageTeam": "팀 관리",
+    "manageCreator": "제작자 관리"
   },
   "messages": {
     "success": {
-      "creatorCreated": "Creator created successfully",
-      "creatorAssigned": "Creator assigned successfully",
-      "teamCreated": "Team created successfully",
-      "teamAssigned": "Team assigned successfully",
-      "teamUpdated": "Team updated successfully"
+      "creatorCreated": "제작자가 성공적으로 생성되었습니다",
+      "creatorAssigned": "제작자가 성공적으로 할당되었습니다",
+      "teamCreated": "팀이 성공적으로 생성되었습니다",
+      "teamAssigned": "팀이 성공적으로 할당되었습니다",
+      "teamUpdated": "팀이 성공적으로 업데이트되었습니다"
     },
     "error": {
-      "createFailed": "Failed to create creator",
-      "assignFailed": "Failed to assign creator",
-      "loadFailed": "Failed to load creators",
-      "loadDetailsFailed": "Failed to load creator details",
-      "searchFailed": "Failed to search creators",
-      "noCreditRequest": "No credit request found for this role",
-      "creatorNotFound": "Creator not found",
-      "teamCreateFailed": "Failed to create team",
-      "teamAssignFailed": "Failed to assign team",
-      "teamLoadFailed": "Failed to load teams",
-      "teamNotFound": "Team not found",
-      "invalidTeamData": "Invalid team data provided"
+      "createFailed": "제작자 생성에 실패했습니다",
+      "assignFailed": "제작자 할당에 실패했습니다",
+      "loadFailed": "제작자 불러오기에 실패했습니다",
+      "loadDetailsFailed": "제작자 상세 불러오기에 실패했습니다",
+      "searchFailed": "제작자 검색에 실패했습니다",
+      "noCreditRequest": "이 역할에 대한 크레딧 요청이 없습니다",
+      "creatorNotFound": "제작자를 찾을 수 없습니다",
+      "teamCreateFailed": "팀 생성에 실패했습니다",
+      "teamAssignFailed": "팀 할당에 실패했습니다",
+      "teamLoadFailed": "팀 불러오기에 실패했습니다",
+      "teamNotFound": "팀을 찾을 수 없습니다",
+      "invalidTeamData": "잘못된 팀 데이터가 제공되었습니다"
     }
   }
-} 
+}

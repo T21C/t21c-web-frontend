@@ -1,99 +1,99 @@
 {
   "player": {
-    "title": "Edit Player",
+    "title": "플레이어 편집",
     "close": "×",
     "form": {
       "name": {
-        "label": "Player Name",
-        "placeholder": "Enter player name",
-        "button": "Update"
+        "label": "플레이어 이름",
+        "placeholder": "플레이어 이름 입력",
+        "button": "업데이트"
       },
       "country": {
-        "label": "Country",
-        "button": "Update"
+        "label": "국가",
+        "button": "업데이트"
       },
       "ban": {
-        "label": "Ban Player",
+        "label": "플레이어 차단",
         "confirm": {
-          "ban": "Are you sure you want to ban this player?",
-          "unban": "Are you sure you want to unban this player?",
+          "ban": "이 플레이어를 차단하시겠습니까?",
+          "unban": "이 플레이어 차단을 해제하시겠습니까?",
           "buttons": {
-            "confirm": "Confirm",
-            "cancel": "Cancel"
+            "confirm": "확인",
+            "cancel": "취소"
           }
         }
       },
       "pause": {
-        "label": "Pause Submissions",
+        "label": "제출 일시중지",
         "confirm": {
-          "pause": "Are you sure you want to pause submissions for this player?",
-          "resume": "Are you sure you want to resume submissions for this player?",
+          "pause": "이 플레이어의 제출을 일시중지하시겠습니까?",
+          "resume": "이 플레이어의 제출을 재개하시겠습니까?",
           "buttons": {
-            "confirm": "Confirm",
-            "cancel": "Cancel"
+            "confirm": "확인",
+            "cancel": "취소"
           }
         }
       },
       "ratingBan": {
-        "label": "Ban from Rating",
+        "label": "평가 차단",
         "confirm": {
-          "ban": "Are you sure you want to ban this player from rating?",
-          "unban": "Are you sure you want to allow this player to rate again?",
+          "ban": "이 플레이어의 평가 권한을 차단하시겠습니까?",
+          "unban": "이 플레이어의 평가 권한을 다시 허용하시겠습니까?",
           "buttons": {
-            "confirm": "Confirm",
-            "cancel": "Cancel"
+            "confirm": "확인",
+            "cancel": "취소"
           }
         }
       },
       "merge": {
-        "label": "Merge Player",
-        "placeholder": "Enter target player ID",
-        "button": "Merge",
+        "label": "플레이어 병합",
+        "placeholder": "대상 플레이어 ID 입력",
+        "button": "병합",
         "confirm": {
-          "message": "Are you sure you want to merge this player's passes? This action cannot be undone.",
-          "warning": "All passes will be transferred to the target player and this player entry will be deleted.",
+          "message": "이 플레이어의 클리어 기록을 병합하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+          "warning": "모든 클리어 기록이 대상 플레이어에게 이전되며, 이 플레이어 정보는 삭제됩니다.",
           "buttons": {
-            "understand": "I understand",
-            "confirm": "Confirm Merge",
-            "cancel": "Cancel"
+            "understand": "이해했습니다",
+            "confirm": "병합 확인",
+            "cancel": "취소"
           }
         }
       },
       "discord": {
-        "label": "Discord ID",
-        "placeholder": "Enter Discord ID to validate",
+        "label": "디스코드 ID",
+        "placeholder": "확인할 디스코드 ID 입력",
         "buttons": {
-          "validate": "Validate",
-          "remove": "Remove"
+          "validate": "확인",
+          "remove": "삭제"
         },
         "confirm": {
-          "message": "Are you sure you want to update this player's Discord info?",
+          "message": "이 플레이어의 디스코드 정보를 업데이트하시겠습니까?",
           "buttons": {
-            "confirm": "Confirm",
-            "cancel": "Cancel"
+            "confirm": "확인",
+            "cancel": "취소"
           }
         }
       }
     },
     "buttons": {
-      "done": "Done"
+      "done": "완료"
     },
     "errors": {
-      "nameUpdate": "Failed to update player name",
-      "countryUpdate": "Failed to update country",
-      "banUpdate": "Failed to update ban status",
-      "pauseUpdate": "Failed to update submission pause status",
-      "ratingBanUpdate": "Failed to update rating ban status",
-      "discordFetch": "Failed to fetch Discord ID",
-      "discordUpdate": "Failed to update Discord info",
-      "discordRemove": "Failed to remove Discord info",
-      "mergePlayer": "Failed to merge player",
-      "invalidTargetId": "Invalid target player ID"
+      "nameUpdate": "플레이어 이름 업데이트 실패",
+      "countryUpdate": "국가 업데이트 실패",
+      "banUpdate": "차단 상태 업데이트 실패",
+      "pauseUpdate": "제출 일시중지 상태 업데이트 실패",
+      "ratingBanUpdate": "평가 차단 상태 업데이트 실패",
+      "discordFetch": "디스코드 ID 불러오기 실패",
+      "discordUpdate": "디스코드 정보 업데이트 실패",
+      "discordRemove": "디스코드 정보 삭제 실패",
+      "mergePlayer": "플레이어 병합 실패",
+      "invalidTargetId": "잘못된 대상 플레이어 ID"
     },
     "success": {
-      "discordUpdate": "Discord info updated successfully",
-      "discordRemove": "Discord info removed successfully",
-      "mergePlayer": "Player merged successfully"
+      "discordUpdate": "디스코드 정보가 성공적으로 업데이트되었습니다",
+      "discordRemove": "디스코드 정보가 성공적으로 삭제되었습니다",
+      "mergePlayer": "플레이어가 성공적으로 병합되었습니다"
     }
   }
-} 
+}

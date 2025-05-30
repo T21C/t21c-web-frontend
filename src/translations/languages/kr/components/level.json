@@ -1,41 +1,41 @@
 {
   "helpPopup": {
-    "title": "Search Help",
-    "closeButton": "Close",
+    "title": "검색 도움말",
+    "closeButton": "닫기",
     "sections": {
       "search": {
-        "title": "Field-Specific Search",
-        "description": "You can search for specific fields using two different operators: colon (:) for partial matches and equals (=) for exact matches.",
+        "title": "필드별 검색",
+        "description": "콜론(:)은 부분 일치, 등호(=)는 정확한 일치를 위한 연산자로 필드별 검색이 가능합니다.",
         "examples": {
-          "title": "Available Fields",
-          "songField": "Search by song name (e.g., 'song:go' or 'song=goTe')",
-          "artistField": "Search by artist name (e.g., 'artist:cam' or 'artist=Camellia')",
-          "charterField": "Search by charter name (e.g., 'charter:zag' or 'charter=Zagon')",
-          "vfxerField": "Search by VFXer name (e.g., 'vfxer:Asa' or 'vfxer=Asansis')",
-          "creatorField": "Search by creator name across all roles (e.g., 'creator:Nep' or 'creator=Nephrolepis')"
+          "title": "사용 가능한 필드",
+          "songField": "곡 이름으로 검색 (예: 'song:go' 또는 'song=goTe')",
+          "artistField": "아티스트 이름으로 검색 (예: 'artist:cam' 또는 'artist=Camellia')",
+          "charterField": "채보자 이름으로 검색 (예: 'charter:zag' 또는 'charter=Zagon')",
+          "vfxerField": "VFX 담당자 이름으로 검색 (예: 'vfxer:Asa' 또는 'vfxer=Asansis')",
+          "creatorField": "모든 역할의 제작자 이름으로 검색 (예: 'creator:Nep' 또는 'creator=Nephrolepis')"
         }
       },
       "operators": {
-        "title": "Search Operators",
-        "description": "You can combine multiple search conditions using operators.",
+        "title": "검색 연산자",
+        "description": "여러 검색 조건을 연산자를 사용해 조합할 수 있습니다.",
         "examples": {
-          "title": "Operator Examples",
-          "and": "Search for levels that match both conditions (AND). This will look for charts of 'hello' by 'camellia'",
-          "or": "Search for levels that match either condition (OR). This searches for either goTe charts (without EX) or any XNOR charts",
-          "complex": "Complex search combining AND and OR conditions. This looks for 'onus' charts by 'gazizi' or any charts with song by 'ludicin'"
+          "title": "연산자 예시",
+          "and": "'hello'라는 곡명과 'camellia'라는 아티스트를 모두 만족하는 채보를 검색합니다 (AND 조건)",
+          "or": "goTe 채보(단 EX 제외) 또는 XNOR 채보를 검색합니다 (OR 조건)",
+          "complex": "'onus' 채보 중 'gazizi'가 제작한 것 또는 'ludicin'이 작곡한 곡의 채보를 검색합니다 (AND/OR 복합 조건)"
         }
       },
       "tips": {
-        "title": "Search Tips",
+        "title": "검색 팁",
         "points": {
-          "caseSensitive": "Searches are case-insensitive - 'SONG' and 'song' will give the same results",
-          "partial": "Colon (:) allows partial matches - 'song:Ex' will match 'Example'",
-          "exact": "Equals (=) requires exact matches - 'song=Example' will only match 'Example'",
-          "spaces": "Spaces are allowed in search terms - 'song:Example Song' works",
-          "order": "The order of conditions doesn't matter within each group",
-          "roles": "Use 'creator' to search across all roles, or 'charter'/'vfxer' for specific roles"
+          "caseSensitive": "대소문자를 구분하지 않습니다 - 'SONG'과 'song'은 동일한 결과를 반환합니다",
+          "partial": "콜론(:)은 부분 일치를 허용합니다 - 'song:Ex'는 'Example'과 일치합니다",
+          "exact": "등호(=)는 정확한 일치를 요구합니다 - 'song=Example'은 'Example'만 일치합니다",
+          "spaces": "검색어에 공백을 포함할 수 있습니다 - 'song:Example Song'도 작동합니다",
+          "order": "조건의 순서는 각 그룹 내에서 중요하지 않습니다",
+          "roles": "'creator'는 모든 역할을 포함한 제작자 검색에, 'charter' 또는 'vfxer'는 특정 역할로 제한된 검색에 사용합니다"
         }
       }
     }
   }
-} 
+}

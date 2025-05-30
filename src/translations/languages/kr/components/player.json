@@ -1,32 +1,32 @@
 {
   "countrySelect": {
-    "placeholder": "Select Country",
+    "placeholder": "국가 선택",
     "search": {
-      "placeholder": "Search countries..."
+      "placeholder": "국가 검색..."
     }
   },
   "playerInput": {
-    "placeholder": "Search player...",
-    "loading": "Loading...",
-    "minChars": "Type at least 2 characters to search",
-    "noResults": "No players found",
+    "placeholder": "플레이어 검색...",
+    "loading": "불러오는 중...",
+    "minChars": "검색하려면 최소 2자 이상 입력하세요",
+    "noResults": "플레이어를 찾을 수 없습니다",
     "creation": {
-      "button": "Create new player \"{{name}}\"",
-      "loading": "Creating player \"{{name}}\"...",
-      "error": "Failed to create player"
+      "button": "새 플레이어 \"{{name}}\" 생성",
+      "loading": "\"{{name}}\" 플레이어 생성 중...",
+      "error": "플레이어 생성에 실패했습니다"
     }
   },
   "errors": {
-    "loading": "Failed to load player data",
-    "saving": "Failed to save player data",
-    "notFound": "Player not found",
-    "duplicate": "Player already exists",
-    "invalid": "Invalid player data"
+    "loading": "플레이어 데이터를 불러오지 못했습니다",
+    "saving": "플레이어 데이터를 저장하지 못했습니다",
+    "notFound": "플레이어를 찾을 수 없습니다",
+    "duplicate": "플레이어가 이미 존재합니다",
+    "invalid": "잘못된 플레이어 데이터입니다"
   },
   "buttons": {
-    "save": "Save",
-    "cancel": "Cancel",
-    "create": "Create new player \"{{name}}\"",
-    "loading": "Creating player \"{{name}}\"..."
+    "save": "저장",
+    "cancel": "취소",
+    "create": "새 플레이어 \"{{name}}\" 생성",
+    "loading": "\"{{name}}\" 플레이어 생성 중..."
   }
-} 
+}

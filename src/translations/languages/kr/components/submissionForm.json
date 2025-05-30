@@ -1,41 +1,41 @@
 {
   "sections": {
-    "common": "Basic Information",
-    "levelDetails": "Level Details",
-    "passDetails": "Pass Details",
-    "judgements": "Judgements"
+    "common": "기본 정보",
+    "levelDetails": "채보 상세",
+    "passDetails": "클리어 상세",
+    "judgements": "판정"
   },
   "fields": {
-    "videoLink": "Video Link",
-    "song": "Song Name",
-    "artist": "Artist",
-    "charter": "Charter",
-    "vfxer": "VFX Artist",
-    "team": "Team",
-    "diff": "Difficulty",
-    "dlLink": "Download Link",
-    "workshopLink": "Workshop Link",
-    "levelId": "Level ID",
-    "speed": "Speed",
-    "feelingRating": "Feeling Rating",
-    "ePerfect": "Early Perfect",
-    "perfect": "Perfect",
-    "lPerfect": "Late Perfect",
-    "tooEarly": "Too Early",
-    "early": "Early",
-    "late": "Late",
-    "isNoHold": "No Hold",
-    "is12K": "12K",
-    "is16K": "16K"
+    "videoLink": "영상 링크",
+    "song": "곡명",
+    "artist": "아티스트",
+    "charter": "제작자",
+    "vfxer": "이펙터",
+    "team": "팀",
+    "diff": "난이도",
+    "dlLink": "다운로드 링크",
+    "workshopLink": "워크샵 링크",
+    "levelId": "레벨  ID",
+    "speed": "배속",
+    "feelingRating": "체감 난이도",
+    "ePerfect": "빠름",
+    "perfect": "완벽",
+    "lPerfect": "느림",
+    "tooEarly": "너무 빠름",
+    "early": "빠름!",
+    "late": "느림!",
+    "isNoHold": "홀드 없음",
+    "is12K": "12키",
+    "is16K": "16키"
   },
   "errors": {
-    "required": "This field is required",
-    "requiredEither": "Either Download Link or Workshop Link is required",
-    "pendingProfiles": "Please wait for profile creation",
-    "submitFailed": "Submission failed"
+    "required": "필수 입력 항목입니다",
+    "requiredEither": "다운로드 링크 또는 워크샵 링크 중 하나는 필수입니다",
+    "pendingProfiles": "프로필 생성 대기 중입니다",
+    "submitFailed": "제출에 실패했습니다"
   },
-  "submit": "Submit",
+  "submit": "제출",
   "warnings": {
-    "pendingProfiles": "This profile will be requested for creation:"
+    "pendingProfiles": "이 프로필은 생성 요청 중입니다:"
   }
-} 
+}

@@ -1,10 +1,10 @@
 {
-  "placeholder": "Search...",
-  "loading": "Searching...",
-  "noResults": "No profiles found",
-  "noTeamsResults": "No teams found",
-  "requestNew": "Request new profile",
-  "requestNewTeam": "Create new team",
-  "newRequest": "New Profile",
-  "newTeamRequest": "New Team"
-} 
+  "placeholder": "검색...",
+  "loading": "검색 중...",
+  "noResults": "프로필을 찾을 수 없습니다",
+  "noTeamsResults": "팀을 찾을 수 없습니다",
+  "requestNew": "새 프로필 요청",
+  "requestNewTeam": "새 팀 요청",
+  "newRequest": "새 프로필",
+  "newTeamRequest": "새 팀"
+}

@@ -1,13 +1,13 @@
 {
-  "noLevels": "No new levels to announce",
+  "noLevels": "새로 발표할 레벨이 없습니다",
   "errors": {
-    "removeLevel": "Failed to remove {{song}}. Please try again."
+    "removeLevel": "{{song}} 삭제에 실패했습니다. 다시 시도해주세요."
   },
   "card": {
     "team": " • {{team}}"
   },
   "buttons": {
-    "edit": "Edit level",
-    "remove": "Remove level"
+    "edit": "레벨 수정",
+    "remove": "레벨 삭제"
   }
-} 
+}

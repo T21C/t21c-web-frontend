@@ -1,19 +1,19 @@
 {
-  "noPasses": "No passes to announce",
+  "noPasses": "발표할 클리어가 없습니다",
   "errors": {
-    "removePass": "Failed to remove {{playerName}}'s pass. Please try again.",
-    "invalidPass": "Invalid pass data:"
+    "removePass": "{{playerName}}의 클리어 삭제에 실패했습니다. 다시 시도해주세요.",
+    "invalidPass": "유효하지 않은 클리어 데이터:"
   },
   "card": {
-    "title": "{{playerName}}'s clear of {{songName}}",
+    "title": "{{playerName}}님의 {{songName}} 클리어",
     "stats": {
-      "score": "Score: {{score}}",
-      "scoreNA": "Score: N/A",
-      "accuracy": "Accuracy: {{accuracy}}%",
+      "score": "점수: {{score}}",
+      "scoreNA": "점수: N/A",
+      "accuracy": "정확도: {{accuracy}}%",
       "difficulty": " • {{difficultyName}}"
     }
   },
   "buttons": {
-    "remove": "Remove pass"
+    "remove": "클리어 삭제"
   }
-} 
+}

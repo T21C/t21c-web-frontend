@@ -1,5 +1,5 @@
 {
-  "signIn": "Sign in",
-  "loadingImg": "Loading",
-  "noImg": "No image"
-} 
+  "signIn": "로그인",
+  "loadingImg": "불러오는 중",
+  "noImg": "이미지 없음"
+}

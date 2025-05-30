@@ -1,16 +1,16 @@
 {
   "aboutUs": {
-    "header": "About Us",
-    "paragraph": "The Universal Forums is a community-driven organization focused on collecting and rating difficulties on custom levels of the game ADOFAI."
+    "header": "소개",
+    "paragraph": "Universal Forums는 얼불춤의 커스텀 채보 난이도를 수집하고 평가하는 것을 목표로 하는 커뮤니티 중심의 조직입니다."
   },
   "links": {
-    "header": "Links",
-    "levels": "Levels",
-    "submission": "Submissions"
+    "header": "링크",
+    "levels": "채보",
+    "submission": "제출"
   },
   "shoutOut": {
-    "header": "Credits",
-    "paragraph": "Website made by the TUF Dev Team, development led by Adrian and t3ww. Rework by V0W4N. Code of this website is made available on GitHub."
+    "header": "제작진",
+    "paragraph": "웹사이트는 TUF 개발팀이 제작하였으며, Adrian과 t3ww가 개발을 주도하였습니다. V0W4N이 리워크를 담당했습니다. 이 웹사이트의 코드는 GitHub에 공개되어 있습니다."
   },
-  "copyRight": "2024 TUF Dev Team, All Rights Reserved. Version - 1.1.0"
-} 
+  "copyRight": "2024 TUF 개발팀, 판권 소유. 버전 - 1.1.0"
+}
