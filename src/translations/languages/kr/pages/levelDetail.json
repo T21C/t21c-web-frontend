@@ -1,0 +1,112 @@
+{
+  "meta": {
+    "title": "{{song}} | TUF",
+    "description": "{{song}} by {{creator}}"
+  },
+  "banners": {
+    "deleted": "This level has been deleted",
+    "hidden": "This level is currently hidden",
+    "notFound": "Level not found"
+  },
+  
+  "buttons": {
+    "edit": "Edit Level",
+    "close": "Close",
+    "viewRating": "View Previous Ratings",
+    "like": "Like",
+    "unlike": "Unlike",
+    "update": "Update Level",
+    "saveRating": "Save Rating"
+  },
+  "tooltips": {
+    "loginRequired": "Login to like this level",
+    "clearRequired": "You need to clear this level to vote on its rating accuracy"
+  },
+  "links": {
+    "download": "Download Level",
+    "workshop": "Steam Workshop",
+    "thumbnailNotFound": {
+      "text": "Video thumbnail not found",
+      "goToVideo": "Go to video"
+    }
+  },
+  "aliases": {
+    "header": "Alternative Names"
+  },
+  "stats": {
+    "firstClear": {
+      "label": "First Clear",
+      "value": "{{player}} | {{date}}"
+    },
+    "highestScore": {
+      "label": "Highest Score",
+      "value": "{{player}} | {{score}}"
+    },
+    "highestSpeed": {
+      "label": "Highest Speed",
+      "value": "{{player}} | {{speed}}x"
+    },
+    "highestAccuracy": {
+      "label": "Highest Accuracy",
+      "value": "{{player}} | {{accuracy}}%"
+    },
+    "totalClears": {
+      "label": "Total Clears",
+      "value": "{{count}}"
+    },
+    "waiting": "Loading..."
+  },
+  "info": {
+    "title": "Level Information",
+    "team": "Team",
+    "creator": "Creator",
+    "roles": {
+      "charter": "Charter(s)",
+      "vfxer": "VFXer(s)"
+    },
+    "difficulty": "Difficulty",
+    "baseScore": "Base Score",
+    "aliases": "Aliases",
+    "comments": "Comments"
+  },
+  "leaderboard": {
+    "header": "Leaderboard",
+    "notBeaten": "This level hasn't been beaten yet!",
+    "tooltips": {
+      "time": "Sort by clear date",
+      "accuracy": "Sort by accuracy",
+      "score": "Sort by score"
+    }
+  },
+  "dialog": {
+    "fullInfo": "Full Info"
+  },
+  "components": {
+    "clearCard": {
+      "feeling": "Feeling:"
+    },
+    "ratingAccuracy": {
+      "title": "Rating Accuracy",
+      "description": "How accurate is this level's difficulty rating?",
+      "voteButton": "Vote on Accuracy",
+      "saveButton": "Save Vote",
+      "cancelButton": "Cancel"
+    }
+  },
+  "errors": {
+    "loginRequired": "You need to be logged in to like this level",
+    "likeFailed": "Failed to update like status",
+    "voteFailed": "Failed to submit rating accuracy vote"
+  },
+  "messages": {
+    "liked": "Liked!",
+    "unliked": "Unliked",
+    "voteSubmitted": "Rating accuracy vote submitted successfully"
+  },
+  "ratingAccuracy": {
+    "votesHeader": "Votes",
+    "loginToVote": "Login to vote",
+    "viewAllVotes": "View all votes",
+    "noVotes": "No votes yet"
+  }
+} 

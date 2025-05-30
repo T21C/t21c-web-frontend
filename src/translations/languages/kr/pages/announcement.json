@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "title": "공지사항 | TUF",
+    "description": "The Universal Forums (TUF)의 새 레벨, 재평가, 클리어 공지 및 관리"
+  },
+  "header": {
+    "title": "공지사항"
+  },
+  "tabs": {
+    "newLevels": "새 레벨",
+    "rerates": "난이도 재책정 ",
+    "passes": "클리어"
+  },
+  "buttons": {
+    "retry": "재시도",
+    "refresh": "새로고침",
+    "selectAll": "전체 선택",
+    "deselectAll": "전체 해제",
+    "announce": "선택 공지",
+    "announcing": "공지 중..."
+  },
+  "errors": {
+    "fetchFailed": "항목을 불러오지 못했습니다. 다시 시도해 주세요.",
+    "announceFailed": "공지에 실패했습니다. 다시 시도해 주세요.",
+    "invalidIds": "선택한 항목 중 일부에 잘못된 ID가 있습니다"
+  }
+}

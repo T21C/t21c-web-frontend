@@ -1,0 +1,16 @@
+{
+  "states": {
+    "hide": "Hide",
+    "show": "Show",
+    "only": "Only",
+    "all": "All",
+    "12k": "12K",
+    "16k": "16K",
+    "PASS": "Pass",
+    "LEVEL": "New Level"
+  },
+  "accessDenied": {
+    "title": "Access Denied",
+    "message": "You need appropriate privileges to access this page."
+  }
+} 

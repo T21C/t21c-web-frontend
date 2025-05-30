@@ -1,0 +1,27 @@
+{
+  "meta": {
+    "title": "The Universal Forums",
+    "description": "The Universal Forums (TUF)는 리듬게임 플레이어들이 커스텀 채보를 공유하고 경쟁하는 커뮤니티 중심 플랫폼입니다."
+  },
+  "header": {
+    "title": "The Universal Forums",
+    "subtitle": "리듬게임 플레이어를 위한 커뮤니티 중심 플랫폼"
+  },
+  "sections": {
+    "featured": {
+      "title": "추천 채보",
+      "empty": "추천 채보가 없습니다"
+    },
+    "recent": {
+      "title": "최근 채보",
+      "empty": "최근 채보가 없습니다"
+    }
+  },
+  "card": {
+    "by": "{{creator}} 제작"
+  },
+  "loading": {
+    "featured": "추천 채보 불러오는 중...",
+    "recent": "최근 채보 불러오는 중..."
+  }
+}

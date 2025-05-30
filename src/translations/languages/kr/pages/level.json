@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "title": "레벨 - TUF",
+    "description": "TUF 레벨을 탐색하고 검색하세요"
+  },
+  "buttons": {
+    "searchHelp": "검색 도움말"
+  },
+  "input": {
+    "placeholder": "레벨 검색..."
+  },
+  "toolTip": {
+    "search": "고급 검색 사용법 배우기",
+    "filter": "레벨 필터",
+    "sort": "레벨 정렬",
+    "reset": "모든 필터 초기화",
+    "normalView": "일반 보기",
+    "compactView": "간략 보기",
+    "gridView": "그리드 보기",
+    "toggleQSlider": "Q(퀀텀) 난이도 슬라이더 토글",
+    "orderAsc": "오름차순",
+    "orderDesc": "내림차순"
+  },
+  "settings": {
+    "sort": {
+      "header": "레벨 정렬 기준...",
+      "recent": "ID",
+      "difficulty": "난이도",
+      "clears": "클리어 수",
+      "likes": "좋아요 수",
+      "ratingAccuracy": "난이도 정확도",
+      "ratingAccuracyVotes": "난이도 정확도 투표 수",
+      "random": "무작위"
+    }
+  },
+
+  "settingExp": {
+    "headerFilter": "필터 설정",
+    "headerSort": "정렬 설정",
+    "filterDiffs": "난이도별 정렬",
+    "sortOrder": "정렬 순서",
+    "viewMode": "보기 모드",
+    "cardSize": "카드 크기",
+    "clearedLevels": "클리어한 레벨",
+    "deletedLevels": "삭제된 레벨",
+    "myLikes": "내가 좋아요한 레벨"
+  },
+  "infScroll": {
+    "end": "불러올 레벨이 더 이상 없습니다"
+  },
+  "loading": {
+    "difficulties": "난이도 로딩 중..."
+  }
+}

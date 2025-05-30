@@ -1,0 +1,48 @@
+{
+  "meta": {
+    "title": "클리어 리스트",
+    "description": "플레이어 업적을 탐색하고 발견하세요"
+  },
+  "loading": {
+    "difficulties": "난이도 로딩 중..."
+  },
+  "input": {
+    "placeholder": "플레이어 이름, 곡명 또는 아티스트로 검색..."
+  },
+  "toolTip": {
+    "filter": "결과 필터",
+    "sort": "결과 정렬",
+    "reset": "모든 필터 초기화",
+    "search": "고급 검색 사용법 배우기",
+    "orderAsc": "오름차순",
+    "orderDesc": "내림차순"
+  },
+  "buttons": {
+    "searchHelp": "검색 도움말"
+  },
+  "settings": {
+    "filter": {
+      "title": "필터 설정",
+      "options": {
+        "only12k": "12키만",
+        "deletedPasses": "삭제된 클리어",
+        "keyFlags": "키 개수"
+      }
+    },
+    "sort": {
+      "title": "정렬 설정",
+      "header": "클리어 정렬 기준...",
+      "order": "정렬 순서",
+      "options": {
+        "date": "날짜",
+        "score": "점수",
+        "accuracy": "정확도",
+        "difficulty": "난이도",
+        "random": "무작위"
+      }
+    }
+  },
+  "infScroll": {
+    "end": "목록 끝"
+  }
+}

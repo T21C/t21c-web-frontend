@@ -1,0 +1,28 @@
+{
+  "meta": {
+    "title": "{{name}} | TUF",
+    "description": "{{name}}님의 프로필과 업적 보기",
+    "defaultTitle": "프로필"
+  },
+  "notFound": "플레이어를 찾을 수 없습니다",
+  "notLoggedIn": "로그인되어 있지 않습니다",
+  "searchForOther": "프로필을 표시할 수 없습니다, 다른 플레이어를 검색하세요",
+  "valueLabels": {
+    "rankedScore": "랭크 점수",
+    "generalScore": "일반 점수",
+    "ppScore": "완벽한 플레이 점수",
+    "wfScore": "세계 최초 점수",
+    "score12K": "12키 점수",
+    "averageXacc": "평균 절대정확도",
+    "totalPasses": "총 클리어 횟수",
+    "universalPassCount": "21 / U 클리어",
+    "worldsFirstCount": "세계 최초 클리어",
+    "topDiff": "최고 난이도",
+    "top12kDiff": "최고 12키 난이도"
+  },
+  "sections": {
+    "scores": {
+      "title": "점수"
+    }
+  }
+}

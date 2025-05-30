@@ -1,0 +1,63 @@
+{
+  "title": "클리어 제출",
+  "thumbnailInfo": "여기에 영상 정보가 표시됩니다",
+  "submInfo": {
+    "levelId": "레벨 ID",
+    "altname": "리더보드 이름",
+    "nohold": "기본 홀드 동작",
+    "speed": "배속 (선택, 1.0 이상)",
+    "feelDiff": "체감 난이도",
+    "is12K": "12키",
+    "is16K": "16키"
+  },
+  "levelInfo": {
+    "song": "곡 이름",
+    "artist": "아티스트",
+    "charter": "제작자"
+  },
+  "levelFetching": {
+    "input": "ID 입력",
+    "fetching": "불러오는 중...",
+    "goto": "레벨로 이동",
+    "notfound": "찾을 수 없음"
+  },
+  "videoInfo": {
+    "videoLink": "유튜브 영상 링크",
+    "title": "제목",
+    "channel": "채널",
+    "timestamp": "업로드 시간",
+    "nolink": "유효한 유튜브 영상 링크를 입력하세요"
+  },
+  "judgements": {
+    "ePerfect": "빠름",
+    "perfect": "완벽",
+    "lPerfect": "느림",
+    "tooearly": "너무 빠름",
+    "early": "빠름!",
+    "late": "느림!"
+  },
+  "acc": "정확도: ",
+  "scoreCalc": "점수: ",
+  "submit": "제출",
+  "submitWait": "...",
+  "holdTooltip": "기본 홀드 동작이 사용된 경우 체크하세요",
+  "12kTooltip": "12키가 사용된 경우 체크하세요 (키 12개 이하)",
+  "16kTooltip": "16키가 사용된 경우 체크하세요 (키 13개 이상)",
+  "tooltip": "알 수 없는 난이도입니다. 관리자가 이해할 수 있도록 작성해주세요. 예: G1-G5, 17~18+, U1 등",
+  "alert": {
+    "success": "클리어가 성공적으로 제출되었습니다!",
+    "error": "오류: ",
+    "loading": "제출 중...",
+    "login": "클리어 제출을 위해 로그인하세요",
+    "form": "필수 항목을 모두 올바르게 작성하세요"
+  },
+  "score": {
+    "needId": "레벨 ID를 입력하세요",
+    "needJudg": "판정을 입력하세요",
+    "needInfo": "모든 필요한 정보를 입력하세요",
+    "noInfo": "정보가 없습니다"
+  },
+  "warnings": {
+    "pendingProfiles": "다음 프로필이 생성 요청됩니다:"
+  }
+}

@@ -1,0 +1,95 @@
+{
+  "meta": {
+    "title": "난이도 관리 | TUF",
+    "description": "The Universal Forums (TUF)의 난이도 단계를 관리합니다"
+  },
+  "header": {
+    "title": "난이도 관리",
+    "refresh": "난이도 새로고침"
+  },
+  "access": {
+    "denied": {
+      "title": "접근 거부됨",
+      "message": "이 페이지에 접근하려면 슈퍼 관리자 권한이 필요합니다."
+    }
+  },
+  "buttons": {
+    "create": "새 난이도 생성",
+    "creating": "생성 중...",
+    "save": "저장",
+    "cancel": "취소",
+    "confirm": "확인",
+    "understand": "위험을 이해했습니다"
+  },
+  "loading": {
+    "difficulties": "난이도 불러오는 중..."
+  },
+  "noItems": {
+    "message": "등록된 난이도가 없습니다."
+  },
+  "difficultyTypes": {
+    "PGU": "PGU",
+    "SPECIAL": "SPECIAL"
+  },
+  "form": {
+    "labels": {
+      "id": "ID:",
+      "name": "이름:",
+      "type": "유형:",
+      "icon": "아이콘 URL:",
+      "legacyIcon": "레거시 아이콘 URL:",
+      "emoji": "이모지:",
+      "legacyEmoji": "레거시 이모지:",
+      "color": "색상:",
+      "baseScore": "기본 점수:",
+      "sortOrder": "정렬 순서:",
+      "legacy": "레거시:",
+      "fallbackId": "대체 난이도 ID 입력:"
+    },
+    "placeholders": {
+      "fallbackId": "대체할 난이도의 ID를 입력하세요"
+    },
+    "helpText": {
+      "fallbackId": "{{name}}을(를) 사용하는 모든 레벨이 이 난이도로 업데이트됩니다."
+    }
+  },
+  "modal": {
+    "create": {
+      "title": "새 난이도 생성"
+    },
+    "edit": {
+      "title": "난이도 편집"
+    },
+    "delete": {
+      "title": "난이도 삭제",
+      "warning": {
+        "title": "⚠️ 경고: 파괴적인 작업 ⚠️",
+        "message": "다음 난이도를 삭제하려고 합니다: {{name}}",
+        "description": "이 작업은:",
+        "points": [
+          "되돌릴 수 없습니다",
+          "이 난이도를 사용하는 모든 레벨에 영향을 줍니다",
+          "진행 전 백업이 필요합니다"
+        ],
+        "highlight": "진행하기 전에 반드시 백업을 생성했는지 확인하세요!"
+      }
+    }
+  },
+  "passwordModal": {
+    "initialTitle": "슈퍼 관리자 비밀번호 필요",
+    "initialMessage": "이 페이지에 접근하려면 슈퍼 관리자 비밀번호를 입력하세요.",
+    "title": "슈퍼 관리자 비밀번호 필요",
+    "message": "난이도를 {{action}}하려면 슈퍼 관리자 비밀번호를 입력하세요.",
+    "placeholder": "비밀번호 입력",
+    "errors": {
+      "invalid": "비밀번호가 잘못되었습니다",
+      "generic": "작업 중 오류가 발생했습니다"
+    }
+  },
+  "notifications": {
+    "created": "난이도가 성공적으로 생성되었습니다",
+    "updated": "난이도가 성공적으로 업데이트되었습니다",
+    "deleted": "난이도가 성공적으로 삭제되었습니다",
+    "reordered": "난이도 순서가 성공적으로 변경되었습니다"
+  }
+}

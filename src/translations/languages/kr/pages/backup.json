@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "title": "백업 | TUF",
+    "description": "The Universal Forums (TUF)의 데이터베이스 및 파일 백업을 관리합니다"
+  },
+  "header": {
+    "title": "백업",
+    "refresh": "백업 새로고침"
+  },
+  "tabs": {
+    "mysql": "MySQL 백업",
+    "files": "파일 백업"
+  },
+  "stats": {
+    "totalSize": "총 크기: {{size}}"
+  },
+  "sort": {
+    "newest": "최신순",
+    "oldest": "오래된순"
+  },
+  "buttons": {
+    "create": "{{type}} 백업 생성",
+    "creating": "생성 중...",
+    "restore": "복원",
+    "delete": "삭제",
+    "save": "저장",
+    "saving": "저장 중...",
+    "cancel": "취소",
+    "confirm": "확인",
+    "upload": "업로드",
+    "uploading": "업로드 중...",
+    "download": "다운로드",
+    "verifying": "검증 중..."
+  },
+  "upload": {
+    "dragDropMessage": "백업 파일을 여기로 끌어다 놓거나 클릭하여 선택하세요",
+    "errors": {
+      "fileTooBig": "파일 크기가 최대 제한 {{size}}을(를) 초과합니다",
+      "validationFailed": "업로드 자격 증명 검증 실패"
+    }
+  },
+  "noBackups": {
+    "title": "{{type}} 백업이 없습니다",
+    "message": "위 버튼을 사용하여 첫 번째 백업을 생성하세요"
+  },
+  "timeAgo": {
+    "second": "{{count}}초 전",
+    "seconds": "{{count}}초 전",
+    "minute": "{{count}}분 전",
+    "minutes": "{{count}}분 전",
+    "hour": "{{count}}시간 전",
+    "hours": "{{count}}시간 전",
+    "day": "{{count}}일 전",
+    "days": "{{count}}일 전",
+    "month": "{{count}}개월 전",
+    "months": "{{count}}개월 전",
+    "year": "{{count}}년 전",
+    "years": "{{count}}년 전"
+  },
+  "passwordModal": {
+    "title": "슈퍼 관리자 비밀번호 필요",
+    "initialMessage": "계속하려면 슈퍼 관리자 비밀번호를 입력하세요",
+    "placeholder": "비밀번호 입력",
+    "errors": {
+      "invalid": "비밀번호가 잘못되었습니다",
+      "generic": "작업 수행 중 오류가 발생했습니다",
+      "validation": "비밀번호 검증 실패"
+    }
+  },
+  "confirmation": {
+    "title": "작업 확인",
+    "createMessage": "새 백업을 생성하시겠습니까?",
+    "deleteMessage": "이 백업을 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.",
+    "restoreMessage": "이 백업을 복원하시겠습니까? 현재 데이터가 덮어씌워집니다."
+  },
+  "notifications": {
+    "backupCreated": "{{type}} 백업이 성공적으로 생성되었습니다",
+    "backupRestored": "백업이 성공적으로 복원되었습니다",
+    "backupDeleted": "백업이 성공적으로 삭제되었습니다",
+    "downloadFailed": "백업 다운로드 실패",
+    "loadFailed": "백업 불러오기 실패",
+    "createFailed": "백업 생성 실패",
+    "restoreFailed": "백업 복원 실패",
+    "deleteFailed": "백업 삭제 실패",
+    "uploadSuccess": "백업이 성공적으로 업로드되었습니다",
+    "uploadFailed": "백업 업로드 실패",
+    "validationFailed": "비밀번호 검증 실패",
+    "renameSuccess": "백업 이름 변경 성공",
+    "renameFailed": "백업 이름 변경 실패"
+  },
+  "fileInfo": {
+    "created": "생성일: {{date}}",
+    "size": "크기: {{size}}",
+    "newName": "새 이름 입력"
+  }
+}

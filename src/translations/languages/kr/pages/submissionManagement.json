@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "title": "제출 관리 | TUF",
+    "description": "The Universal Forums (TUF)의 레벨 및 클리어 기록 제출 관리"
+  },
+  "header": {
+    "title": "제출 관리",
+    "refresh": "제출 목록 새로고침"
+  },
+  "tabs": {
+    "levels": "레벨 제출",
+    "passes": "클리어 제출",
+    "autoAllow": "유효한 클리어 기록 자동 허용"
+  }
+}

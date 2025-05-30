@@ -1,0 +1,50 @@
+{
+  "meta": {
+    "title": "리더보드",
+    "description": "상위 플레이어 및 순위를 확인하세요"
+  },
+  "input": {
+    "placeholder": "플레이어 이름으로 검색..."
+  },
+  "tooltips": {
+    "filter": "결과 필터링",
+    "sort": "결과 정렬",
+    "reset": "모든 필터 초기화",
+    "recentAsc": "오름차순 정렬",
+    "recentDesc": "내림차순 정렬"
+  },
+  "settings": {
+    "filter": {
+      "header": "필터 설정"
+    },
+    "sort": {
+      "header": "정렬 설정",
+      "sortOrder": "정렬 순서",
+      "sortBy": "정렬 기준"
+    }
+  },
+  "bannedPlayers": {
+    "label": "제재된 플레이어",
+    "options": {
+      "show": "표시",
+      "hide": "숨기기",
+      "only": "제재된 플레이어만"
+    }
+  },
+  "sortOptions": {
+    "rankedScore": "랭크 점수",
+    "generalScore": "일반 점수",
+    "ppScore": "완벽한 플레이 점수",
+    "wfScore": "최초 점수",
+    "score12K": "12키 점수",
+    "averageXacc": "평균 X-정확도",
+    "totalPasses": "총 클리어 수",
+    "universalPassCount": "전체 클리어 수",
+    "worldsFirstCount": "최초 클리어 수",
+    "topDiff": "최고 난이도",
+    "top12kDiff": "12키 최고 난이도"
+  },
+  "infiniteScroll": {
+    "end": "마지막까지 도달했습니다!"
+  }
+}

@@ -1,0 +1,96 @@
+{
+  "meta": {
+    "title": "{{song}} | TUF",
+    "description": "{{playerName}}의 {{song}} - {{artist}} 클리어 기록 보기"
+  },
+  "banners": {
+    "deleted": "이 클리어 기록은 삭제되었습니다"
+  },
+  "level": {
+    "baseScore": "{{score}}PP",
+    "credits": {
+      "team": "{{team}}",
+      "charter": "{{charter}} 제작",
+      "vfxer": "{{vfxer}} 이펙트"
+    }
+  },
+  "player": {
+    "rank": "#{{rank}}",
+    "score": {
+      "current": "{{score}}",
+      "difference": {
+        "positive": "+{{score}}"
+      },
+      "previous": "{{score}}"
+    },
+    "clearDate": "{{date}} 클리어"
+  },
+  "stats": {
+    "score": {
+      "label": "점수",
+      "value": "{{score}}"
+    },
+    "accuracy": {
+      "label": "정확도",
+      "value": "{{accuracy}}%"
+    },
+    "speed": {
+      "label": "스피드",
+      "value": "{{speed}}x"
+    },
+    "feelingRating": {
+      "label": "느낌 평점",
+      "value": "{{rating}}",
+      "none": "없음"
+    }
+  },
+  "flags": {
+    "worldsFirst": "🏆 세계 최초! 🏆",
+    "12k": "12키",
+    "16k": "16키",
+    "noHoldTap": "기본 홀드 동작"
+  },
+  "judgements": {
+    "title": "판정",
+    "types": {
+      "earlyPerfect": {
+        "label": "빠름",
+        "value": "{{count}}"
+      },
+      "perfect": {
+        "label": "완벽",
+        "value": "{{count}}"
+      },
+      "latePerfect": {
+        "label": "느림",
+        "value": "{{count}}"
+      },
+      "tooEarly": {
+        "label": "너무 빠름",
+        "value": "{{count}}"
+      },
+      "early": {
+        "label": "빠름!",
+        "value": "{{count}}"
+      },
+      "late": {
+        "label": "느림!",
+        "value": "{{count}}"
+      },
+      "tooLate": {
+        "label": "너무 느림",
+        "value": "{{count}}"
+      }
+    }
+  },
+  "video": {
+    "notAvailable": {
+      "text": "비디오를 사용할 수 없습니다",
+      "watchOnYoutube": "YouTube에서 보기"
+    }
+  },
+  "buttons": {
+    "edit": "클리어 정보 수정"
+  }
+}
+

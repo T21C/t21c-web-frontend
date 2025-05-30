@@ -1,0 +1,56 @@
+{
+  "meta": {
+    "title": "제작자 관리 - TUF",
+    "description": "TUF 데이터베이스에서 제작자와 그들의 별칭을 관리합니다"
+  },
+  "header": {
+    "title": "제작자 관리"
+  },
+  "sort": {
+    "byName": "이름순 정렬",
+    "byId": "ID순 정렬",
+    "byCharts": "채보순 정렬"
+  },
+  "buttons": {
+    "addCreator": "새 제작자 추가",
+    "manageCreator": "제작자 관리",
+    "cancel": "취소",
+    "create": "제작자 생성",
+    "creating": "생성 중..."
+  },
+  "form": {
+    "title": "새 제작자 추가",
+    "labels": {
+      "creatorName": "제작자 이름",
+      "aliases": "별칭"
+    },
+    "placeholders": {
+      "enterName": "제작자 이름 입력",
+      "enterAlias": "별칭 입력"
+    },
+    "buttons": {
+      "addAlias": "별칭 추가"
+    }
+  },
+  "filters": {
+    "hideVerified": "인증된 제작자 숨기기",
+    "excludeAliases": "검색에서 별칭 제외",
+    "searchPlaceholder": "이름 또는 별칭으로 제작자 검색..."
+  },
+  "creatorInfo": {
+    "id": "ID",
+    "charts": "채보",
+    "aliases": "별칭",
+    "verifiedBadge": "인증된 제작자"
+  },
+  "messages": {
+    "noResults": "제작자를 찾을 수 없습니다",
+    "noResultsSearch": "\"{query}\"(와)과 일치하는 제작자가 없습니다",
+    "creatorCreated": "제작자가 성공적으로 생성되었습니다",
+    "nameRequired": "제작자 이름은 필수입니다"
+  },
+  "errors": {
+    "createFailed": "제작자 생성에 실패했습니다",
+    "generic": "오류가 발생했습니다"
+  }
+}

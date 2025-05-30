@@ -1,0 +1,18 @@
+{
+  "noRerates": "No rerates to announce",
+  "errors": {
+    "removeLevel": "Failed to remove {{song}}. Please try again."
+  },
+  "card": {
+    "title": "{{song}} - {{artist}}",
+    "subtitle": {
+      "difficulty": "{{oldDifficulty}} ➔ {{newDifficulty}}",
+      "baseScore": "{{oldBaseScore}}PP ➔ {{newBaseScore}}PP",
+      "team": " • {{team}}"
+    }
+  },
+  "buttons": {
+    "edit": "Edit level",
+    "remove": "Remove level"
+  }
+} 

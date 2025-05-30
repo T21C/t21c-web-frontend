@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "title": "TUF 소개",
+    "description": "The Universal Forums (TUF)에 대해 알아보세요 - 불과 얼음의 춤 커스텀 레벨을 위한 커뮤니티 중심 조직"
+  },
+  "header": {
+    "title": "TUF 소개"
+  },
+  "sections": {
+    "whoWeAre": {
+      "title": "우리에 대해",
+      "content": "The Universal Forums (TUF)는 얼불춤 커스텀 레벨을 수집, 평가, 그리고 정리하는 커뮤니티 중심의 조직입니다. 저희 플랫폼은 플레이어들이 자신의 클리어를 공유하고, 새로운 레벨을 발견하며, 다른 열정가들과 소통할 수 있는 중심 역할을 합니다."
+    },
+    "mission": {
+      "title": "우리의 목표",
+      "intro": "저희는 다음과 같은 포괄적이고 접근성 좋은 플랫폼을 만들기 위해 노력합니다:",
+      "points": [
+        "커스텀 레벨에 대한 정확한 난이도 평가 제공",
+        "신뢰할 수 있는 리더보드 시스템 유지",
+        "플레이어를 위한 지원 커뮤니티 조성",
+        "플레이어 클리어 기록 보존 및 전시"
+      ]
+    },
+    "values": {
+      "title": "커뮤니티 가치",
+      "cards": {
+        "accuracy": {
+          "title": "정확성",
+          "content": "공정한 경쟁을 위해 레벨 평가와 점수에 높은 기준을 유지합니다."
+        },
+        "transparency": {
+          "title": "투명성",
+          "content": "평가 과정과 커뮤니티 결정은 모든 회원에게 공개적이고 명확합니다."
+        },
+        "inclusivity": {
+          "title": "포용성",
+          "content": "모든 수준과 배경의 플레이어들이 커뮤니티에 환영받습니다."
+        },
+        "innovation": {
+          "title": "혁신",
+          "content": "얼불춤 커뮤니티를 더 잘 지원하기 위해 플랫폼을 지속적으로 개선합니다."
+        }
+      }
+    },
+    "join": {
+      "title": "커뮤니티에 참여하세요",
+      "links": {
+        "discord": "Discord에서 참여하기",
+        "github": "GitHub에서 기여하기"
+      }
+    },
+    "credits": {
+      "title": "제작진",
+      "version": {
+        "current": "v2.1 V0W4N 개발",
+        "original": "원작 Adrian"
+      },
+      "categories": {
+        "rating": {
+          "title": "난이도 평가 팀",
+          "roles": {
+            "manager": "매니저",
+            "rater": "평가자"
+          }
+        }
+      }
+    }
+  }
+}

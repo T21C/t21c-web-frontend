@@ -1,0 +1,15 @@
+{
+  "meta": {
+    "title": "콘텐츠 제출",
+    "description": "새 레벨과 클리어 기록을 커뮤니티에 제출하세요",
+    "type": "website"
+  },
+  "header": {
+    "headerPass": "클리어 제출",
+    "headerLevel": "레벨 제출"
+  },
+  "button": {
+    "buttonPass": "클리어 제출",
+    "buttonLevel": "레벨 제출"
+  }
+}

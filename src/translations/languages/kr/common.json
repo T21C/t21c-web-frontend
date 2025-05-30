@@ -1,0 +1,42 @@
+{
+  "validation": {
+    "required": "이 필드는 필수입니다",
+    "min_length": "{{length}}자 이상이어야 합니다",
+    "max_length": "{{length}}자 이하여야 합니다",
+    "email": "유효한 이메일 주소여야 합니다",
+    "password": {
+      "match": "비밀번호가 일치해야 합니다",
+      "requirements": "비밀번호는 최소 8자 이상이어야 합니다"
+    }
+  },
+  "errors": {
+    "generic": "오류가 발생했습니다. 다시 시도해 주세요.",
+    "network": "네트워크 오류입니다. 연결 상태를 확인해 주세요.",
+    "unauthorized": "이 작업을 수행할 권한이 없습니다.",
+    "notFound": "요청한 리소스를 찾을 수 없습니다.",
+    "validation": "입력을 확인하고 다시 시도해 주세요."
+  },
+  "loading": {
+    "generic": "로딩 중...",
+    "submitting": "제출 중...",
+    "saving": "저장 중...",
+    "deleting": "삭제 중..."
+  },
+  "buttons": {
+    "submit": "제출",
+    "cancel": "취소",
+    "save": "저장",
+    "delete": "삭제",
+    "edit": "편집",
+    "close": "닫기",
+    "back": "뒤로",
+    "next": "다음",
+    "previous": "이전"
+  },
+  "pagination": {
+    "previous": "이전",
+    "next": "다음",
+    "page": "{{total}} 중 {{page}}페이지",
+    "showing": "{{total}}개 항목 중 {{start}}-{{end}} 표시 중"
+  }
+}

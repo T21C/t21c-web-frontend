@@ -1,0 +1,81 @@
+{
+  "title": "Level Submissions",
+  "noSubmissions": "No pending submissions",
+  "loading": "Loading submissions...",
+  "error": "Error loading submissions",
+  "details": {
+    "artist": "Artist:",
+    "charter": "Charter:",
+    "difficulty": "Difficulty:",
+    "download": {
+      "label": "Download:",
+      "directLink": "Direct Link",
+      "notAvailable": "Not Available"
+    },
+    "workshop": {
+      "label": "Workshop:",
+      "link": "Workshop Link"
+    },
+    "team": "Team:",
+    "vfxer": "VFXer:"
+  },
+  "buttons": {
+    "manageCreator": "Manage Creator",
+    "manageTeam": "Manage Team",
+    "allow": "Allow",
+    "decline": "Decline",
+    "addCharter": "Add Charter",
+    "addVfxer": "Add VFX-er",
+    "remove": "Remove",
+    "searchCreator": "Search",
+    "createCreator": "Create New",
+    "assignCreator": "Assign Existing",
+    "addTeam": "Add Team",
+    "addCreator": "Add Creator"
+  },
+  "labels": {
+    "levelName": "Level",
+
+    "creatorName": "Creator",
+    "submittedOn": "Submitted"
+  },
+  "badges": {
+    "newRequest": "New"
+  },
+  "messages": {
+    "success": {
+      "approved": "Submission approved successfully",
+      "rejected": "Submission rejected successfully"
+    },
+    "error": {
+      "generic": "An error occurred",
+      "approve": "Failed to approve submission",
+      "reject": "Failed to reject submission"
+    }
+  },
+  
+  "warnings": {
+    "pendingProfiles": "This profile will be requested for creation:",
+    "creatorExists": "A creator with this name already exists",
+    "invalidCreator": "Invalid creator name",
+    "duplicateCreator": "This creator has already been added"
+  },
+  "creators": {
+    "search": {
+      "placeholder": "Search for existing creators...",
+      "noResults": "No creators found",
+      "loading": "Searching..."
+    },
+    "create": {
+      "title": "Create New Creator",
+      "namePlaceholder": "Enter creator name",
+      "success": "Creator created successfully",
+      "error": "Failed to create creator"
+    },
+    "assign": {
+      "title": "Assign Creator",
+      "success": "Creator assigned successfully",
+      "error": "Failed to assign creator"
+    }
+  }
+} 

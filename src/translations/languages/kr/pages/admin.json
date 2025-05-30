@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "title": "관리자 대시보드",
+    "description": "사이트 관리자 대시보드"
+  },
+  "title": "관리자 대시보드",
+  "links": {
+    "rating": "난이도 평가",
+    "ratingDesc": "레벨 평가 및 평가 수정",
+    "submissions": "제출 관리",
+    "submissionsDesc": "레벨 및 클리어 제출 검토 및 관리",
+    "announcements": "공지사항",
+    "announcementsDesc": "새 레벨, 재평가, 클리어 공지",
+    "difficulties": "난이도",
+    "difficultiesDesc": "난이도 설정 및 공지 지침 관리",
+    "creators": "제작자",
+    "creatorsDesc": "레벨에 제작자 및 팀 할당",
+    "backups": "백업",
+    "backupsDesc": "데이터베이스 백업 및 시스템 유지 관리"
+  }
+}

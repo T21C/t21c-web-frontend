@@ -1,0 +1,58 @@
+{
+  "meta": {
+    "title": "홈 | TUF",
+    "description": "The Universal Forums (TUF)에 오신 것을 환영합니다 - 얼불춤 커스텀 채보를 위한 커뮤니티 기반 조직"
+  },
+  "title": {
+    "revamped": "리뉴얼됨"
+  },
+  "buttons": {
+    "browseLevels": "채보 둘러보기",
+    "browsePasses": "클리어 기록 보기",
+    "leaderboard": "리더보드"
+  },
+  "stats": {
+    "overview": {
+      "title": "개요",
+      "totalLevels": "총 채보 수",
+      "totalPasses": "총 클리어 수",
+      "totalPlayers": "총 플레이어 수",
+      "passesLast30Days": "최근 30일 클리어 수"
+    },
+    "difficulties": {
+      "title": "난이도 통계",
+      "graphModes": {
+        "passes": "클리어 수",
+        "levels": "채보 수"
+      }
+    },
+    "discord": {
+      "title": "우리의 Discord에 참여하세요!"
+    },
+    "comingSoon": "더 재미있는 기능이 곧 추가됩니다..."
+  },
+  "footer": {
+    "about": {
+      "title": "TUF",
+      "description": "The Universal Forums는 불과 얼음의 춤(얼불춤) 커스텀 채보의 난이도 수집 및 평가에 중점을 둔 커뮤니티 기반 조직입니다."
+    },
+    "quickLinks": {
+      "title": "빠른 링크",
+      "browseLevels": "채보 둘러보기",
+      "browsePasses": "클리어 기록 보기",
+      "leaderboard": "리더보드",
+      "aboutUs": "소개",
+      "privacyPolicy": "개인정보처리방침",
+      "termsOfService": "서비스 이용약관"
+    },
+    "community": {
+      "title": "커뮤니티",
+      "discord": "Discord",
+      "github": "GitHub"
+    },
+    "copyright": {
+      "main": "© {{year}} TUF. 7th Beat Games와는 무관합니다.",
+      "credit": "❤️를 담아 V0W4N이 제작"
+    }
+  }
+}

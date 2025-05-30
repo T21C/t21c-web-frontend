@@ -1,0 +1,67 @@
+{
+  "featured": {
+    "by": "Level by {{creator}}",
+    "button": "Check Level"
+  },
+  "level": {
+    "creator": "Creator",
+    "clears": "Clears",
+    "buttons": {
+      "edit": "Edit"
+    },
+    "links": {
+      "workshop": "Workshop Link",
+      "download": "Download Link",
+      "unavailable": "No links available"
+    }
+  },
+  "pass": {
+    "stats": {
+      "xAccuracy": "XAccuracy",
+      "score": "Score",
+      "speed": "Speed"
+    },
+    "flags": {
+      "worldsFirst": "WF",
+      "twelveKey": "12K",
+      "sixteenKey": "16K",
+      "noHoldTap": "NHT"
+    },
+    "links": {
+      "video": "Watch video"
+    }
+  },
+  "player": {
+    "title": "Player",
+    "stats": {
+      "rankedScore": "Ranked Score",
+      "generalScore": "General Score",
+      "ppScore": "PP Score",
+      "wfScore": "WF Score",
+      "score12K": "12k Score",
+      "averageXacc": "Average X-acc",
+      "totalPasses": "Total Passes",
+      "universalPassCount": "Universal Passes",
+      "worldsFirstCount": "WF Passes",
+      "topDiff": "Top Difficulty",
+      "top12kDiff": "Top 12k Difficulty"
+    }
+  },
+  "clear": {
+    "score": {
+      "ranked": "Ranked Score",
+      "general": "General Score",
+      "pp": "PP Score",
+      "wf": "WF Score",
+      "12k": "12k Score"
+    },
+    "stats": {
+      "averageXacc": "Average XAcc",
+      "totalPasses": "Total Passes",
+      "universalPassCount": "Universal Passes",
+      "worldsFirstCount": "WF Passes",
+      "topDiff": "Top Difficulty",
+      "top12kDiff": "Top 12k Difficulty"
+    }
+  }
+} 

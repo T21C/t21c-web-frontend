@@ -1,0 +1,54 @@
+{
+  "meta": {
+    "title": "난이도 책정 관리",
+    "description": "레벨 난이도 책정 관리"
+  },
+  "buttons": {
+    "references": "참고 레벨",
+    "manageRaters": "평가자 관리",
+    "help": "난이도 책정 가이드"
+  },
+  "toggles": {
+    "detailedView": {
+      "label": "상세 보기"
+    },
+    "hideRated": {
+      "label": "책정 완료 숨기기"
+    },
+    "lowDiff": {
+      "label": "낮은 난이도"
+    },
+    "fourVote": {
+      "label": "4명 이상 평가됨"
+    }
+  },
+  "sort": {
+    "byId": "레벨 ID",
+    "byRatings": "평가 수",
+    "byRatingsFull": "평가 수로 정렬",
+    "byDate": "최종 업데이트"
+  },
+  "search": {
+    "placeholder": "레벨 이름, 제작자, 난이도로 검색"
+  },
+  "labels": {
+    "totalRatings": "{{count}}개의 평가",
+    "connectedUsers": "{{count}}명 온라인",
+    "connectedManagers": "({{count}}명 관리자)",
+    "disconnected": "연결 끊김"
+  },
+  "tooltips": {
+    "sortAsc": "오름차순 정렬",
+    "sortDesc": "내림차순 정렬",
+    "lastUpdated": "최종 업데이트 시간",
+    "levelId": "레벨 ID"
+  },
+  "messages": {
+    "loading": "평가 불러오는 중...",
+    "error": "평가 불러오기 실패",
+    "noRatings": {
+      "title": "평가가 없습니다",
+      "subtitle": "모두 평가 완료!"
+    }
+  }
+}
