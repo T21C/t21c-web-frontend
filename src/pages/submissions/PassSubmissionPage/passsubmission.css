@@ -353,6 +353,10 @@
   border-radius: 5px;
   margin-top: 1rem;
 }
+.pass-submission-page form .info .accuracy .each-accuracy > p {
+  white-space: nowrap;
+}
+
 .pass-submission-page form .info .accuracy .top, .pass-submission-page form .info .accuracy .bottom {
   display: flex;
   gap: 2rem;
