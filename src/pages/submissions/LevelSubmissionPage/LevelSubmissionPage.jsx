@@ -20,8 +20,8 @@ const LevelSubmissionPage = () => {
     is16K: false,
     isNoHoldTap: false,
     isWorldsFirst: false,
-    accuracy: 100,
-    scoreV2: 1000000,
+    accuracy: 0,
+    scoreV2: 0,
     feelingDifficulty: 1.0,
     title: '',
     rawTime: '',
@@ -39,6 +39,7 @@ const LevelSubmissionPage = () => {
   const tLevel = (key, params = {}) => t(`levelSubmission.${key}`, params);
   const { user } = useAuth();
   const [form, setForm] = useState(initialFormState);
+  const [formStateKey, setFormStateKey] = useState(0);
   const [isInvalidFeelingRating, setIsInvalidFeelingRating] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [isFormValidDisplay, setIsFormValidDisplay] = useState({});
@@ -57,8 +58,6 @@ const LevelSubmissionPage = () => {
   const [charters, setCharters] = useState([{ name: '', id: null, isNewRequest: false }]);
   const [vfxers, setVfxers] = useState([{ name: '', id: null, isNewRequest: false }]);
   const [team, setTeam] = useState({ name: '', id: null, isNewRequest: false });
-
-  const navigate = useNavigate();
 
   // Helper function to clean video URLs
   const cleanVideoUrl = (url) => {
@@ -195,23 +194,6 @@ const LevelSubmissionPage = () => {
     }));
   };
 
-  const handleProfileChange = (field, value) => {
-    setForm(prev => ({
-      ...prev,
-      [field]: value
-    }));
-
-    // Update pending profiles when profile selection changes
-    const newPendingProfiles = [...pendingProfiles.filter(p => p.type !== field)];
-    if (value?.isNewRequest) {
-      newPendingProfiles.push({
-        type: field,
-        name: value.name
-      });
-    }
-    setPendingProfiles(newPendingProfiles);
-  };
-
   const handleCloseSuccessMessage = () => {
     setShowMessage(false)
   };
@@ -281,6 +263,7 @@ const LevelSubmissionPage = () => {
       
       if (response == "ok") {
         setSuccess(true);
+        setFormStateKey(formStateKey + 1);
         // Reset all form state
         setForm(initialFormState);
         setPendingProfiles([]);
@@ -485,6 +468,7 @@ const LevelSubmissionPage = () => {
                 />
               </div>
               <ProfileSelector
+                key={`team-${formStateKey}`}
                 type="team"
                 value={team}
                 onChange={setTeam}
@@ -521,6 +505,7 @@ const LevelSubmissionPage = () => {
               {Array.isArray(charters) && charters.map((charter, index) => (
                 <div key={index} className="creator-row">
                   <ProfileSelector
+                    key={`charter-${formStateKey}`}
                     type="charter"
                     value={charter || { name: '', id: null, isNewRequest: false }}
                     onChange={(value) => handleCharterChange(index, value)}
@@ -553,6 +538,7 @@ const LevelSubmissionPage = () => {
               {Array.isArray(vfxers) && vfxers.map((vfxer, index) => (
                 <div key={index} className="creator-row">
                   <ProfileSelector
+                    key={`vfxer-${formStateKey}`}
                     type="vfx"
                     value={vfxer || { name: '', id: null, isNewRequest: false }}
                     onChange={(value) => handleVfxerChange(index, value)}

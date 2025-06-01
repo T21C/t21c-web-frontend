@@ -43,7 +43,6 @@ const PassSubmissionPage = () => {
   const [form, setForm] = useState(initialFormState);
   const [accuracy, setAccuracy] = useState(null);
   const [score, setScore] = useState("");
-  const [judgements, setJudgements] = useState([]);
   const [isValidFeelingRating, setIsValidFeelingRating] = useState(true); // Track validation
   const [isValidSpeed, setIsValidSpeed] = useState(true)
   const [isFormValid, setIsFormValid] = useState(false);
@@ -59,7 +58,6 @@ const PassSubmissionPage = () => {
   const [level, setLevel] = useState(null);
   const [levelLoading, setLevelLoading] = useState(true);
   const [searchResults, setSearchResults] = useState([]);
-  const [showDropdown, setShowDropdown] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
 
   const [videoDetail, setVideoDetail] = useState(null)
@@ -73,7 +71,6 @@ const PassSubmissionPage = () => {
   const [pendingProfiles, setPendingProfiles] = useState([]);
 
   const [searchInput, setSearchInput] = useState('');
-  const [pendingSearch, setPendingSearch] = useState(false);
   const searchTimeoutRef = useRef(null);
 
   // Add color logic for FetchIcon
@@ -330,7 +327,6 @@ const PassSubmissionPage = () => {
   const updateAccuracy = (updatedForm) => {
     
     const newJudgements = parseJudgements(updatedForm);
-    setJudgements(newJudgements)
 
       // Calculate accuracy if all elements are valid integers
     if (newJudgements.every(Number.isInteger)) {
@@ -532,7 +528,6 @@ const PassSubmissionPage = () => {
     // Set new timeout for search
     searchTimeoutRef.current = setTimeout(() => {
       if (value) {
-        setPendingSearch(true);
         searchLevels(value);
       } else {
         setSearchResults([]);
