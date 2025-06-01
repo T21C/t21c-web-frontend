@@ -287,8 +287,6 @@ const ReferencesPopup = ({ onClose }) => {
   const [isAllExpanded, setIsAllExpanded] = useState(false);
   const navigate = useNavigate();
   const popupRef = useRef(null);
-  const [referenceTypeIcons, setReferenceTypeIcons] = useState(DEFAULT_TYPE_ICONS);
-  const [parseError, setParseError] = useState(null);
   const [changedDifficulties, setChangedDifficulties] = useState(new Set());
   const [showHelp, setShowHelp] = useState(false);
   const helpRef = useRef(null);
@@ -530,7 +528,7 @@ const ReferencesPopup = ({ onClose }) => {
                 return (
                   <div key={t} className="reference-type-icon-container">
                     <img 
-                      src={referenceTypeIcons[t] || DEFAULT_TYPE_ICONS[t]} 
+                      src={DEFAULT_TYPE_ICONS[t]} 
                       alt={t}
                       className="reference-type-icon"
                     />
@@ -563,7 +561,7 @@ const ReferencesPopup = ({ onClose }) => {
   const renderTabContent = (tabPrefix) => (
     <div className="tab-content">
       {references
-        .filter(ref => ref.difficulty.name.startsWith(tabPrefix))
+        .filter(ref => ref.difficulty.name.startsWith(tabPrefix) && !ref.difficulty.name.endsWith('J'))
         .map((ref) => {
           const difficultyInfo = difficultyDict[ref.difficulty.id] || ref.difficulty;
           
