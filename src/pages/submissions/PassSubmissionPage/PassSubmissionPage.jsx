@@ -40,6 +40,7 @@ const PassSubmissionPage = () => {
   const { difficultyDict } = useDifficultyContext();
   const tPass = (key, params = {}) => t(`passSubmission.${key}`, params);
   const { user } = useAuth();
+  const [formStateKey, setFormStateKey] = useState(0);
   const [form, setForm] = useState(initialFormState);
   const [accuracy, setAccuracy] = useState(null);
   const [score, setScore] = useState("");
@@ -450,6 +451,7 @@ const PassSubmissionPage = () => {
       const result = await submissionForm.submit();
       if (result === "ok") {
         setSuccess(true);
+        setFormStateKey(prevKey => prevKey + 1);
         setForm(initialFormState);
         setPendingProfiles([]); // Clear pending profiles after successful submission
       } else {
@@ -759,6 +761,7 @@ const PassSubmissionPage = () => {
 
             <div className="info-input">
               <ProfileSelector
+                key={formStateKey}
                 type="player"
                 value={form.player}
                 onChange={(value) => handleProfileChange('player', value)}
