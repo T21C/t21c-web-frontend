@@ -1,0 +1,262 @@
+.profile-picture-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.profile-picture-popup {
+    background: #1a1a1a;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.profile-picture-popup-header {
+    padding: 16px;
+    border-bottom: 1px solid #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.profile-picture-popup-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #fff;
+}
+
+.close-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #fff;
+    padding: 0;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.close-button:hover {
+    opacity: 1;
+}
+
+.profile-picture-popup-content {
+    padding: 16px;
+    flex: 1;
+    overflow: auto;
+}
+
+.cropper-container {
+    width: 100%;
+    height: 400px;
+    background: #2a2a2a;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.cropper {
+    width: 100%;
+    height: 100%;
+}
+
+.stencil {
+    border: 2px solid #fff;
+    box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.75);
+}
+
+.upload-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    color: #fff;
+    background: #2a2a2a;
+    border: 2px dashed #444;
+    border-radius: 4px;
+    transition: border-color 0.2s;
+}
+
+.upload-placeholder:hover {
+    border-color: #666;
+}
+
+.upload-placeholder i {
+    font-size: 48px;
+    margin-bottom: 16px;
+    color: #666;
+}
+
+.upload-placeholder span {
+    font-size: 16px;
+    color: #999;
+}
+
+.profile-picture-popup-footer {
+    padding: 16px;
+    border-top: 1px solid #333;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+}
+
+.rotation-control {
+    flex: 1;
+    max-width: 300px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.rotation-control label {
+    color: #fff;
+    font-size: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.rotation-slider {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    height: 4px;
+    background: #444;
+    border-radius: 2px;
+    outline: none;
+}
+
+.rotation-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background: #9d4edd;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.rotation-slider::-webkit-slider-thumb:hover {
+    background: #7b2cbf;
+}
+
+.rotation-slider::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    background: #9d4edd;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border: none;
+}
+
+.rotation-slider::-moz-range-thumb:hover {
+    background: #7b2cbf;
+}
+
+.rotation-slider::-moz-range-track {
+    background: #444;
+    height: 4px;
+    border-radius: 2px;
+}
+
+.footer-buttons {
+    display: flex;
+    gap: 12px;
+}
+
+.cancel-button,
+.save-button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.cancel-button {
+    background: none;
+    border: 1px solid #444;
+    color: #fff;
+}
+
+.cancel-button:hover {
+    background: #333;
+    border-color: #555;
+}
+
+.save-button {
+    background: #9d4edd;
+    border: none;
+    color: white;
+}
+
+.save-button:hover {
+    background: #7b2cbf;
+}
+
+.save-button:disabled {
+    background: #444;
+    cursor: not-allowed;
+}
+
+/* Cropper custom styles */
+.cropper-view-box,
+.cropper-face {
+    border-radius: 50%;
+}
+
+.cropper-view-box {
+    box-shadow: 0 0 0 1px #9d4edd;
+    outline: 0;
+}
+
+.cropper-point {
+    background-color: #9d4edd;
+}
+
+.cropper-line {
+    background-color: #9d4edd;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .profile-picture-popup {
+        width: 95%;
+        max-height: 95vh;
+    }
+
+    .cropper-container {
+        height: 300px;
+    }
+
+    .profile-picture-popup-footer {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .rotation-control {
+        max-width: none;
+    }
+
+    .footer-buttons {
+        justify-content: flex-end;
+    }
+} 

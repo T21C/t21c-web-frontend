@@ -112,7 +112,7 @@ body {
 }
 .background-level {
   height: 110vh;
-  width: 110vw;
+  width: 120vw;
   z-index: 1;
   position: fixed;
   top: -30px;

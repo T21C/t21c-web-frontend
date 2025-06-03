@@ -218,7 +218,8 @@ export const AuthProvider = ({ children }) => {
     changePassword,
     updateToken,
     verifyEmail,
-    resendVerification
+    resendVerification,
+    setUser
   };
 
   return (

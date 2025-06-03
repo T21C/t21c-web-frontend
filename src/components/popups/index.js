@@ -10,6 +10,7 @@ import { RatingHelpPopup } from "./RatingHelpPopup/RatingHelpPopup";
 import ReferencesPopup from "./ReferencesPopup/ReferencesPopup";
 import SubmissionCreatorPopup from "./SubmissionCreatorPopup/SubmissionCreatorPopup";
 import DifficultyPopup from "./DifficultyPopup/DifficultyPopup";
+import ProfilePicturePopup from "./ProfilePicturePopup/ProfilePicturePopup";
 
 export {
     AdminPlayerPopup,
@@ -23,5 +24,6 @@ export {
     SubmissionCreatorPopup,
     DetailPopup,
     RatingHelpPopup,
-    DifficultyPopup
+    DifficultyPopup,
+    ProfilePicturePopup
 }

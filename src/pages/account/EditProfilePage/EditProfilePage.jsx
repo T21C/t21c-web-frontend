@@ -1,10 +1,13 @@
-import React, { useState} from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import './editProfilePage.css';
 import { CompleteNav } from '@/components/layout';
 import { DiscordIcon, UnlinkIcon } from '@/components/common/icons';
 import { Tooltip } from 'react-tooltip';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import api from '@/utils/api';
+import { ProfilePicturePopup } from '@/components/popups';
 
 const ProviderIcon = ({ provider, size, color="#fff" }) => {
   switch(provider) {
@@ -16,7 +19,7 @@ const ProviderIcon = ({ provider, size, color="#fff" }) => {
 };
 
 const EditProfilePage = () => {
-  const { user, updateProfile, changePassword, linkProvider, unlinkProvider } = useAuth();
+  const { user, updateProfile, changePassword, linkProvider, unlinkProvider, setUser } = useAuth();
   const [formData, setFormData] = useState({
     username: user?.username || '',
     email: user?.email || '',
@@ -29,8 +32,34 @@ const EditProfilePage = () => {
   const [success, setSuccess] = useState('');
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const hasNoPassword = user?.password === null;
-  const isLastProvider = user?.providers?.length === 1;
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [avatarPreview, setAvatarPreview] = useState(user?.avatarUrl ? user.avatarUrl : null);
+  const [tempAvatar, setTempAvatar] = useState(null);
+  const [isConfirming, setIsConfirming] = useState(false);
+  const [uploadError, setUploadError] = useState(null);
+  const fileInputRef = useRef(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [initialImage, setInitialImage] = useState(null);
+
+  useEffect(() => {
+    if (isPopupOpen) {
+      // Lock scrolling
+      document.body.style.overflow = 'hidden';
+      document.body.style.paddingRight = `${window.innerWidth - document.documentElement.clientWidth}px`;
+    } else {
+      // Restore scrolling
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    }
+
+    return () => {
+      // Cleanup: ensure scrolling is restored
+      document.body.style.overflow = '';
+      document.body.style.paddingRight = '';
+    };
+  }, [isPopupOpen]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -103,6 +132,133 @@ const EditProfilePage = () => {
     }
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      const response = await api.put(`${import.meta.env.VITE_PROFILE}/me`, {
+        username: formData.username,
+        nickname: formData.nickname,
+      });
+
+      setUser(response.data.user);
+      toast.success('Profile updated successfully');
+      navigate('/profile');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Failed to update profile');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error('Invalid file type. Please upload a JPEG, PNG, or WebP image.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setInitialImage(reader.result);
+      setIsPopupOpen(true);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handlePopupClose = () => {
+    setIsPopupOpen(false);
+    setInitialImage(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  const handlePopupSave = async (file) => {
+    setIsLoading(true);
+    const formData = new FormData();
+    formData.append('avatar', file);
+
+    try {
+      const response = await api.post(`${import.meta.env.VITE_PROFILE}/avatar`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const avatarUrl = response.data.avatar.urls.medium;
+      setAvatarPreview(avatarUrl);
+      setUser({ ...user, avatarUrl});
+      toast.success('Avatar uploaded successfully');
+    } catch (error) {
+      const errorData = error.response?.data;
+      
+      if (errorData?.code === 'VALIDATION_ERROR') {
+        errorData.details.errors.forEach(err => toast.error(err));
+        setUploadError(errorData.details.errors.join(', '));
+      } else {
+        setUploadError(errorData?.error || 'Failed to upload avatar');
+        toast.error(errorData?.error || 'Failed to upload avatar');
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleAvatarRemove = async () => {
+    if (!user?.avatarUrl) return;
+
+    setIsLoading(true);
+    try {
+      await api.delete(`${import.meta.env.VITE_PROFILE}/avatar`);
+
+      setAvatarPreview(null);
+      setUser({ ...user, avatarUrl: null, avatarId: null });
+      toast.success('Avatar removed successfully');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Failed to remove avatar');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDragOver = useCallback((e) => {
+    e.preventDefault();
+    setIsDragging(true);
+  }, []);
+
+  const handleDragLeave = useCallback((e) => {
+    e.preventDefault();
+    setIsDragging(false);
+  }, []);
+
+  const handleDrop = useCallback((e) => {
+    e.preventDefault();
+    setIsDragging(false);
+    
+    const file = e.dataTransfer.files[0];
+    if (!file) return;
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    if (!allowedTypes.includes(file.type)) {
+      toast.error('Invalid file type. Please upload a JPEG, PNG, or WebP image.');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setInitialImage(reader.result);
+      setIsPopupOpen(true);
+    };
+    reader.readAsDataURL(file);
+  }, []);
+
   return (
     <>
     <div className="background-level"/> 
@@ -114,7 +270,47 @@ const EditProfilePage = () => {
         {error && <div className="error-message">{error}</div>}
         {success && <div className="success-message">{success}</div>}
 
-        <form onSubmit={handleProfileUpdate}>
+        <div className="avatar-section">
+          <div 
+            className={`avatar-upload-area ${isDragging ? 'dragging' : ''} ${uploadError ? 'error' : ''}`}
+            onDragOver={handleDragOver}
+            onDragLeave={handleDragLeave}
+            onDrop={handleDrop}
+            onClick={() => fileInputRef.current?.click()}
+          >
+            {avatarPreview ? (
+              <img 
+                src={avatarPreview} 
+                alt="Profile" 
+                className="avatar-preview"
+              />
+            ) : (
+              <div className="avatar-placeholder">
+                <i className="fas fa-user"></i>
+                <span>Drag & drop or click to upload</span>
+              </div>
+            )}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              onChange={handleFileSelect}
+              style={{ display: 'none' }}
+            />
+          </div>
+          
+          {avatarPreview && (
+            <button 
+              className="remove-avatar-btn"
+              onClick={handleAvatarRemove}
+              disabled={isLoading}
+            >
+              {isLoading ? 'Removing...' : 'Remove Avatar'}
+            </button>
+          )}
+        </div>
+
+        <form onSubmit={handleSubmit} className="edit-profile-form">
           <div className="form-group">
             <label htmlFor="username">Username</label>
             <input
@@ -123,7 +319,7 @@ const EditProfilePage = () => {
               name="username"
               value={formData.username}
               onChange={handleInputChange}
-              readOnly
+              disabled
               className="readonly"
             />
           </div>
@@ -159,9 +355,21 @@ const EditProfilePage = () => {
             )}
           </div>
 
-          <button type="submit" className="save-button">
-            Save Changes
-          </button>
+          <div className="form-actions">
+            <button 
+              type="button" 
+              onClick={() => navigate('/profile')}
+              disabled={isLoading}
+            >
+              Cancel
+            </button>
+            <button 
+              type="submit" 
+              disabled={isLoading}
+            >
+              {isLoading ? 'Saving...' : 'Save Changes'}
+            </button>
+          </div>
         </form>
 
         <div className="section-divider" />
@@ -294,6 +502,14 @@ const EditProfilePage = () => {
         </div>
       </div>
     </div>
+
+    <ProfilePicturePopup
+      isOpen={isPopupOpen}
+      onClose={handlePopupClose}
+      onSave={handlePopupSave}
+      currentAvatar={avatarPreview}
+      initialImage={initialImage}
+    />
     </>
   );
 };
