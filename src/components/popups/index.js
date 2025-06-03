@@ -11,6 +11,7 @@ import ReferencesPopup from "./ReferencesPopup/ReferencesPopup";
 import SubmissionCreatorPopup from "./SubmissionCreatorPopup/SubmissionCreatorPopup";
 import DifficultyPopup from "./DifficultyPopup/DifficultyPopup";
 import ProfilePicturePopup from "./ProfilePicturePopup/ProfilePicturePopup";
+import LevelSelectionPopup from "./LevelSelectionPopup/LevelSelectionPopup";
 
 export {
     AdminPlayerPopup,
@@ -25,5 +26,6 @@ export {
     DetailPopup,
     RatingHelpPopup,
     DifficultyPopup,
-    ProfilePicturePopup
+    ProfilePicturePopup,
+    LevelSelectionPopup
 }

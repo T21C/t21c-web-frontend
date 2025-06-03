@@ -449,15 +449,11 @@ const PassSubmissionPage = () => {
       submissionForm.setDetail('is16K', IsUDiff && form.is16K);
 
       const result = await submissionForm.submit();
-      if (result === "ok") {
-        setSuccess(true);
-        setFormStateKey(prevKey => prevKey + 1);
-        setForm(initialFormState);
-        setPendingProfiles([]); // Clear pending profiles after successful submission
-      } else {
-        console.error("Submission error:", result);
-        setError(result);
-      }
+      setSuccess(true);
+      setFormStateKey(prevKey => prevKey + 1);
+      setForm(initialFormState);
+      setPendingProfiles([]); // Clear pending profiles after successful submission
+
     } catch (err) {
       console.error("Submission error:", err);
       setError(err.response?.data?.error || err.message || err.error || "Unknown error occurred");

@@ -9,7 +9,9 @@ import { validateFeelingRating } from "@/utils/Utility";
 import { useTranslation } from "react-i18next";
 import { StagingModeWarning } from "@/components/common/display";
 import { ProfileSelector } from "@/components/common/selectors";
+import { LevelSelectionPopup } from "@/components/popups";
 import { useNavigate } from 'react-router-dom';
+import api from "@/utils/api";
 
 const LevelSubmissionPage = () => {
   const initialFormState = {
@@ -32,7 +34,8 @@ const LevelSubmissionPage = () => {
     workshopLink: '',
     charter: null,
     vfxer: null,
-    team: null
+    team: null,
+    levelZip: null
   };
 
   const { t } = useTranslation('pages');
@@ -58,6 +61,12 @@ const LevelSubmissionPage = () => {
   const [charters, setCharters] = useState([{ name: '', id: null, isNewRequest: false }]);
   const [vfxers, setVfxers] = useState([{ name: '', id: null, isNewRequest: false }]);
   const [team, setTeam] = useState({ name: '', id: null, isNewRequest: false });
+
+  const [levelZipInfo, setLevelZipInfo] = useState(null);
+  const [showLevelSelection, setShowLevelSelection] = useState(false);
+  const [levelFiles, setLevelFiles] = useState([]);
+  const [selectedFileId, setSelectedFileId] = useState(null);
+  const [showCancelWarning, setShowCancelWarning] = useState(false);
 
   // Helper function to clean video URLs
   const cleanVideoUrl = (url) => {
@@ -111,8 +120,8 @@ const LevelSubmissionPage = () => {
       charter.name && (charter.id !== null || charter.isNewRequest)
     );
 
-    // Validate download links
-    validationResult.directLink = form.dlLink?.trim?.() !== '' || form.workshopLink?.trim?.() !== '';
+    // Validate download links - only required if no zip is uploaded
+    validationResult.directLink = form.levelZip || form.dlLink?.trim?.() !== '' || form.workshopLink?.trim?.() !== '';
     
     // Check for pending profile creations
     const newPendingProfiles = [];
@@ -172,7 +181,7 @@ const LevelSubmissionPage = () => {
         setVideoDetail(videoDetails ? videoDetails : null);
   
         const driveDetails = await getDriveFromYt(cleanedVideoLink);
-        if (driveDetails.drive) {
+        if (driveDetails.drive && !form.levelZip) {
           setForm((prevForm) => ({
             ...prevForm,
             dlLink: driveDetails.drive ? driveDetails.drive : "",
@@ -199,6 +208,27 @@ const LevelSubmissionPage = () => {
   };
 
   const submissionForm = new FormManager("level")
+  const resetForm = () => {
+    return; // debugging
+    setSuccess(true);
+    setFormStateKey(formStateKey + 1);
+    // Reset all form state
+    setForm(initialFormState);
+    setPendingProfiles([]);
+    setVideoDetail(null);
+    setLevelZipInfo(null);
+    
+    // Reset creator states with empty values
+    setCharters([{ name: '', id: null, isNewRequest: false }]);
+    setVfxers([{ name: '', id: null, isNewRequest: false }]);
+    setTeam({ name: '', id: null, isNewRequest: false });
+    
+    // Reset validation states
+    setSubmitAttempt(false);
+    setIsInvalidFeelingRating(false);
+    setIsFormValidDisplay({});
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setShowMessage(true);
@@ -258,28 +288,22 @@ const LevelSubmissionPage = () => {
       submissionForm.setDetail('wsLink', form.workshopLink);
       submissionForm.setDetail('creatorRequests', creatorRequests);
       submissionForm.setDetail('teamRequest', teamRequest);
+      submissionForm.setDetail('levelZip', form.levelZip);
 
       const response = await submissionForm.submit();
       
-      if (response == "ok") {
-        setSuccess(true);
-        setFormStateKey(formStateKey + 1);
-        // Reset all form state
-        setForm(initialFormState);
-        setPendingProfiles([]);
-        setVideoDetail(null);
-        
-        // Reset creator states with empty values
-        setCharters([{ name: '', id: null, isNewRequest: false }]);
-        setVfxers([{ name: '', id: null, isNewRequest: false }]);
-        setTeam({ name: '', id: null, isNewRequest: false });
-        
-        // Reset validation states
-        setSubmitAttempt(false);
-        setIsInvalidFeelingRating(false);
-        setIsFormValidDisplay({});
+      if (response.requiresLevelSelection) {
+        setLevelFiles(response.levelFiles);
+        setSelectedFileId(response.fileId);
+        setShowLevelSelection(true);
+        setSubmission(false); // Reset submission state since we're waiting for level selection
+        return;
+      }
+      
+      if (response.success) {
+        resetForm();
       } else {
-        throw new Error(response);
+        throw new Error(response.error || 'Failed to submit form');
       }
     } catch (error) {
       console.error('Submission error:', error);
@@ -287,6 +311,69 @@ const LevelSubmissionPage = () => {
     } finally {
       setSubmission(false);
     }
+  };
+
+  const handleLevelSelect = async (selectedLevel) => {
+    try {
+      setSubmission(true); // Show loading state during level selection
+      const response = await api.post(import.meta.env.VITE_SELECT_LEVEL, {
+        fileId: selectedFileId,
+        selectedLevel
+      });
+
+      if (response.data.success) {
+        resetForm();
+      } else {
+        throw new Error(response.data.error || 'Failed to select level');
+      }
+    } catch (error) {
+      console.error('Level selection error:', error);
+      setError(error.message || 'Failed to select level');
+    } finally {
+      setShowLevelSelection(false);
+      setShowCancelWarning(false);
+      setLevelFiles([]);
+      setSelectedFileId(null);
+      setSubmission(false);
+    }
+  };
+
+  const handleLevelSelectionClose = () => {
+    setShowCancelWarning(true);
+  };
+
+  const handleCancelConfirm = async () => {
+    try {
+      setSubmission(true);
+      // Find the largest .adofai file
+      const largestFile = levelFiles.reduce((largest, current) => 
+        current.size > largest.size ? current : largest
+      );
+      
+      const response = await api.post(import.meta.env.VITE_SELECT_LEVEL, {
+        fileId: selectedFileId,
+        selectedLevel: largestFile.name
+      });
+
+      if (response.data.success) {
+        resetForm();
+      } else {
+        throw new Error(response.data.error || 'Failed to select level');
+      }
+    } catch (error) {
+      console.error('Level selection error:', error);
+      setError(error.message || 'Failed to select level');
+    } finally {
+      setShowLevelSelection(false);
+      setShowCancelWarning(false);
+      setLevelFiles([]);
+      setSelectedFileId(null);
+      setSubmission(false);
+    }
+  };
+
+  const handleCancelReject = () => {
+    setShowCancelWarning(false);
   };
 
   const addCharter = () => {
@@ -341,6 +428,35 @@ const LevelSubmissionPage = () => {
     ));
   };
 
+  const handleZipUpload = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    if (file.type !== 'application/zip' && file.type !== 'application/x-zip-compressed') {
+      setError(tLevel("alert.invalidZip"));
+      return;
+    }
+
+    setLevelZipInfo({
+      name: file.name,
+      size: file.size,
+      type: file.type
+    });
+    setForm(prev => ({
+      ...prev,
+      levelZip: file,
+      dlLink: '', // Clear DL link when zip is uploaded
+    }));
+  };
+
+  const handleRemoveZip = () => {
+    setLevelZipInfo(null);
+    setForm(prev => ({
+      ...prev,
+      levelZip: null
+    }));
+  };
+
   return (
     <div className="level-submission-page">
       <CompleteNav />
@@ -358,6 +474,31 @@ const LevelSubmissionPage = () => {
            <p>{tLevel("alert.loading")}</p>}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div>
+
+        {showLevelSelection && (
+          <LevelSelectionPopup
+            levelFiles={levelFiles}
+            onSelect={handleLevelSelect}
+            onClose={handleLevelSelectionClose}
+          />
+        )}
+
+        {showCancelWarning && (
+          <div className="warning-popup">
+            <div className="warning-content">
+              <h3>Warning: Level Selection Required</h3>
+              <p>If you close this window, the system will automatically select the largest .adofai file from your zip and proceed with the submission. Are you sure you want to continue?</p>
+              <div className="warning-buttons">
+                <button onClick={handleCancelConfirm} className="confirm-btn">
+                  Proceed with Largest File
+                </button>
+                <button onClick={handleCancelReject} className="cancel-btn">
+                  Return to Selection
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         <form className={`form-container ${videoDetail ? 'shadow' : ''}`}>
           <div className="thumbnail-container">
@@ -437,6 +578,38 @@ const LevelSubmissionPage = () => {
               </div>)}
             </div>
 
+            <div className="zip-upload-section">
+              <h3>{tLevel("submInfo.levelZip")}</h3>
+              {!levelZipInfo ? (
+                <div className="zip-upload-container">
+                  <input
+                    type="file"
+                    accept=".zip"
+                    onChange={handleZipUpload}
+                    id="levelZip"
+                    style={{ display: 'none' }}
+                  />
+                  <label htmlFor="levelZip" className="zip-upload-button">
+                    {tLevel("buttons.uploadZip")}
+                  </label>
+                </div>
+              ) : (
+                <div className="zip-info">
+                  <div className="zip-details">
+                    <span className="zip-name">{levelZipInfo.name}</span>
+                    <span className="zip-size">{(levelZipInfo.size / 1024 / 1024).toFixed(2)} MB</span>
+                  </div>
+                  <button 
+                    type="button" 
+                    className="remove-zip-btn"
+                    onClick={handleRemoveZip}
+                  >
+                    🗑️
+                  </button>
+                </div>
+              )}
+            </div>
+
             <div className="info-group">
               <div className="diff-tooltip">
                 <div className="tooltip-container">
@@ -485,7 +658,12 @@ const LevelSubmissionPage = () => {
                 name="dlLink"
                 value={form.dlLink}
                 onChange={handleInputChange}
-                style={{ borderColor: isFormValidDisplay.directLink ? "" : "red" }}
+                style={{ 
+                  borderColor: isFormValidDisplay.directLink ? "" : "red",
+                  opacity: form.levelZip ? 0.5 : 1,
+                  cursor: form.levelZip ? 'not-allowed' : 'text'
+                }}
+                disabled={!!form.levelZip}
               />
               <span className="dl-links-or">{tLevel("submInfo.dlLinksOr")}</span>
               <input
@@ -494,7 +672,9 @@ const LevelSubmissionPage = () => {
                 name="workshopLink"
                 value={form.workshopLink}
                 onChange={handleInputChange}
-                style={{ borderColor: isFormValidDisplay.directLink ? "" : "red" }}
+                style={{ 
+                  borderColor: isFormValidDisplay.directLink ? "" : "red",
+                }}
               />
             </div>
 
