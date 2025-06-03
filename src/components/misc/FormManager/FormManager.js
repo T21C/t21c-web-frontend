@@ -5,7 +5,7 @@ function gIT(i) {
 }
 
 class FormManager {
-    constructor(type) {``
+    constructor(type) {
         this.apiUrl = `${import.meta.env.VITE_FORM_SUBMIT}`; // Read the API URL from the environment variable
         this.details = {};
         this.type = type;

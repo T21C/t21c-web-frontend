@@ -209,8 +209,8 @@ const LevelSubmissionPage = () => {
 
   const submissionForm = new FormManager("level")
   const resetForm = () => {
-    return; // debugging
     setSuccess(true);
+    return;
     setFormStateKey(formStateKey + 1);
     // Reset all form state
     setForm(initialFormState);
@@ -286,6 +286,11 @@ const LevelSubmissionPage = () => {
       submissionForm.setDetail('videoLink', cleanedVideoUrl);
       submissionForm.setDetail('directDL', form.dlLink);
       submissionForm.setDetail('wsLink', form.workshopLink);
+      
+      // Add logging for creator requests
+      console.log('Creator Requests:', creatorRequests);
+      console.log('Team Request:', teamRequest);
+      
       submissionForm.setDetail('creatorRequests', creatorRequests);
       submissionForm.setDetail('teamRequest', teamRequest);
       submissionForm.setDetail('levelZip', form.levelZip);
