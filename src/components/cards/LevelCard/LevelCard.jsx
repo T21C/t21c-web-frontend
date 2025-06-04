@@ -28,6 +28,19 @@ const LevelCard = ({
   const { difficultyDict } = useDifficultyContext();
   const difficultyInfo = difficultyDict[level.diffId];
 
+  // Add effect to handle body overflow when edit popup is open
+  useEffect(() => {
+    if (showEditPopup) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showEditPopup]);
+
   useEffect(() => {
     if (displayMode === 'grid' && level.videoLink) {
       // Extract video ID from YouTube URL

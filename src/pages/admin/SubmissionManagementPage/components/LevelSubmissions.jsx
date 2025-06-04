@@ -7,7 +7,8 @@ import api from "@/utils/api";
 import { ProfileCreationModal } from './ProfileCreationModal';
 import { SubmissionCreatorPopup } from '@/components/popups';
 import { toast } from "react-hot-toast";
-import { WarningIcon } from "@/components/common/icons";
+import { ServerCloudIcon, WarningIcon } from "@/components/common/icons";
+import { Tooltip } from "react-tooltip";
 
 
 const LevelSubmissions = () => {
@@ -398,6 +399,14 @@ const LevelSubmissions = () => {
                         className="detail-link"
                       >
                         {tLevel('details.download.directLink')}
+                        {submission.directDL.includes(import.meta.env.VITE_CDN_URL) && (
+                          <ServerCloudIcon size="24px" color="#aaffaa" 
+                            data-tooltip-id="cdn-tooltip"
+                          />
+                        )}
+                        <Tooltip className="cdn-tooltip" id="cdn-tooltip" place="right">
+                          {tLevel('details.download.cdnLink')}
+                        </Tooltip>
                       </a>
                     </div>
                   ) : (

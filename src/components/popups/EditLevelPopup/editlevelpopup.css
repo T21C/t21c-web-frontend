@@ -481,7 +481,7 @@
 
 .manage-aliases-button {
   background-color: #4a90e2;
-  color: white;
+  color: #ffffff;
   border: none;
   padding: 8px 16px;
   border-radius: 4px;
@@ -506,7 +506,7 @@
 
 .edit-level-popup .popup-header h2 {
   margin: 0;
-  color: #fff;
+  color: #ffffff;
 }
 
 .edit-level-popup .popup-actions {
@@ -517,7 +517,7 @@
 
 .edit-level-popup .manage-aliases-btn {
   background-color: #4a90e2;
-  color: white;
+  color: #ffffff;
   margin-right: 2rem;
   border: none;
   padding: 8px 16px;
@@ -534,7 +534,7 @@
 .edit-level-popup .close-popup-btn {
   background: none;
   border: none;
-  color: #fff;
+  color: #ffffff;
   cursor: pointer;
   padding: 4px;
   font-size: 1.5rem;
@@ -570,7 +570,7 @@
   flex-direction: column;
   gap: 10px;
   padding: 10px;
-  background-color: var(--background-color-secondary);
+  background-color: #2a2a2a;
   border-radius: 4px;
 }
 
@@ -582,11 +582,11 @@
 
 .edit-level-popup__cdn-info span {
   font-size: 0.9rem;
-  color: var(--text-color-secondary);
+  color: #a0a0a0;
 }
 
 .edit-level-popup__cdn-info a {
-  color: var(--primary-color);
+  color: #4a90e2;
   text-decoration: none;
   word-break: break-all;
 }
@@ -601,8 +601,8 @@
 
 .edit-level-popup__manage-button {
   padding: 8px 16px;
-  background-color: var(--primary-color);
-  color: white;
+  background-color: #4a90e2;
+  color: #ffffff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -611,7 +611,7 @@
 }
 
 .edit-level-popup__manage-button:hover {
-  background-color: var(--primary-color-hover);
+  background-color: #357abd;
 }
 
 .edit-level-popup__dl-link-container {
@@ -629,8 +629,8 @@
   align-items: center;
   justify-content: center;
   padding: 8px;
-  background-color: var(--primary-color);
-  color: white;
+  background-color: #4a90e2;
+  color: #ffffff;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -640,7 +640,7 @@
 }
 
 .edit-level-popup__upload-button:hover {
-  background-color: var(--primary-color-hover);
+  background-color: #357abd;
 }
 
 /* Mobile Adjustments */

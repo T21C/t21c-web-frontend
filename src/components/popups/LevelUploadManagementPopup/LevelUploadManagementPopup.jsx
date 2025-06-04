@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import api from '@/utils/api';
 import './leveluploadmanagementpopup.css';
 import axios from 'axios';
+import { useTranslation } from 'react-i18next';
+import { prepareZipForUpload, validateZipSize, formatFileSize } from '@/utils/zipUtils';
 
 const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose }) => {
   const [isUploading, setIsUploading] = useState(false);
@@ -13,6 +15,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose }) =
   const [originalZip, setOriginalZip] = useState(null);
   const [songFiles, setSongFiles] = useState({});
   const fileInputRef = useRef(null);
+  const { t } = useTranslation();
 
   const fetchLevelFiles = async () => {
     if (formData.dlLink && formData.dlLink !== 'removed') {
@@ -37,7 +40,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose }) =
 
           // Set target level
           const targetPath = data.metadata.targetLevel;
-          setTargetLevel(targetPath ? targetPath.split('\\').pop() : null);
+          setTargetLevel(targetPath ? targetPath.split(/\\|\//).pop() : null);
         }
       } catch (error) {
         console.error('Error fetching level files:', error);
@@ -50,18 +53,31 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose }) =
     fetchLevelFiles();
   }, [formData]);
 
-  const handleFileSelect = async (event) => {
+  const handleZipUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
-    setIsUploading(true);
-    setError(null);
-    setUploadProgress(0);
-
-    const formData = new FormData();
-    formData.append('levelZip', file);
-
     try {
+      // Validate file type and size
+      if (!validateZipSize(file)) {
+        setError(t('levelUpload.alert.invalidZip'));
+        return;
+      }
+
+      // Prepare zip file for upload
+      const preparedZip = prepareZipForUpload(file);
+      if (!preparedZip) {
+        setError(t('levelUpload.alert.invalidZip'));
+        return;
+      }
+
+      setIsUploading(true);
+      setError(null);
+      setUploadProgress(0);
+
+      const formData = new FormData();
+      formData.append('levelZip', preparedZip.file);
+
       const response = await api.post(`${import.meta.env.VITE_LEVELS}/${level.id}/upload`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -71,13 +87,14 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose }) =
           setUploadProgress(progress);
         },
       });
-      
-      setFormData(prev => ({ ...prev, dlLink: response.data.level.dlLink }));
-      if (response.data.levelFiles?.length > 1) {
-        setLevelFiles(response.data.levelFiles);
-        setTargetLevel(null);
-      } else {
-        onClose();
+
+      console.log(response.data);
+      if (response.data.success) {
+        setFormData(prev => ({
+          ...prev,
+          dlLink: response.data.level.dlLink
+        }));
+        fetchLevelFiles();
       }
     } catch (error) {
       setError(error.response?.data?.error || 'Failed to upload level file');
@@ -96,7 +113,6 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose }) =
 
       if (result.data.success) {
         setTargetLevel(selectedLevel);
-        onClose();
       } else {
         setError(result.data.error || 'Failed to select level file');
       }
@@ -211,6 +227,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose }) =
                 </div>
               ))}
             </div>
+            {selectedLevel && (
             <button 
               className="select-button"
               onClick={handleLevelSelect}
@@ -218,13 +235,14 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose }) =
             >
               {selectedLevel === targetLevel ? 'Currently Selected' : 'Select Level'}
             </button>
+            )}
           </div>
           <br />
           <div className="upload-actions">
             <input
               type="file"
               accept=".zip"
-              onChange={handleFileSelect}
+              onChange={handleZipUpload}
               ref={fileInputRef}
               style={{ display: 'none' }}
             />

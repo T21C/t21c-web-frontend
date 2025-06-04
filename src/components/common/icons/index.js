@@ -26,6 +26,7 @@ import { WarningIcon } from './WarningIcon';
 import LikeIcon from './LikeIcon';
 import { InfoIcon } from './InfoIcon';
 import { UploadIcon } from './UploadIcon';
+import ServerCloudIcon from './ServerCloudIcon';
 
 export {
     DefaultAvatar,
@@ -55,5 +56,6 @@ export {
     WarningIcon,
     LikeIcon,
     InfoIcon,
-    UploadIcon
+    UploadIcon,
+    ServerCloudIcon
 }

@@ -13,7 +13,8 @@
     "workshop": "Workshop link",
     "dlLinksOr": "or",
     "charters": "Charters",
-    "vfxers": "VFX-ers"
+    "vfxers": "VFX-ers",
+    "levelZip": "Level Zip"
   },
   "videoInfo": {
     "title": "Video title",
@@ -22,19 +23,21 @@
     "nolink": "No link provided"
   },
   "tooltip": "Unknown difficulty, will submit but please make sure it's readable by the managers. Correct diff ex.: G13; P7~P13; 21.1+; 19~20.0+",
-  "submit": "Submit",
-  "submitWait": "...",
+  "buttons": {
+    "addCharter": "Add Charter",
+    "addVfxer": "Add VFX-er",
+    "removeCreator": "Remove",
+    "uploadZip": "Upload Zip",
+    "submit": "Submit",
+    "submitWait": "..."
+  },
   "alert": {
     "success": "Level submitted successfully!",
     "error": "Error: ",
     "loading": "Submitting...",
     "login": "Please log in to submit a level",
-    "form": "Please fill in all required fields correctly"
-  },
-  "buttons": {
-    "addCharter": "Add Charter",
-    "addVfxer": "Add VFX-er",
-    "removeCreator": "Remove"
+    "form": "Please fill in all required fields correctly",
+    "invalidZip": "Please upload a valid zip file"
   },
   "warnings": {
     "pendingProfiles": "The following profiles will be created:"

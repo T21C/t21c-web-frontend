@@ -12,6 +12,7 @@ import { ProfileSelector } from "@/components/common/selectors";
 import { LevelSelectionPopup } from "@/components/popups";
 import { useNavigate } from 'react-router-dom';
 import api from "@/utils/api";
+import { prepareZipForUpload, validateZipSize, formatFileSize } from '@/utils/zipUtils';
 
 const encodeFilename = (str) => {
   // Convert string to UTF-8 bytes, then to hex
@@ -46,7 +47,6 @@ const LevelSubmissionPage = () => {
   };
 
   const { t } = useTranslation('pages');
-  const tLevel = (key, params = {}) => t(`levelSubmission.${key}`, params);
   const { user } = useAuth();
   const [form, setForm] = useState(initialFormState);
   const [formStateKey, setFormStateKey] = useState(0);
@@ -243,13 +243,13 @@ const LevelSubmissionPage = () => {
     
     if(!user){
       console.error("No user logged in");
-      setError(tLevel("alert.login"));
+      setError(t('levelSubmission.alert.login'));
       return;
     }
 
     if (!Object.values(isFormValid).every(Boolean)) {
       setSubmitAttempt(true);
-      setError(tLevel("alert.form"));
+      setError(t('levelSubmission.alert.form'));
       return;
     }
 
@@ -445,25 +445,38 @@ const LevelSubmissionPage = () => {
     ));
   };
 
-  const handleZipUpload = (e) => {
-    const file = e.target.files[0];
+  const handleZipUpload = async (event) => {
+    const file = event.target.files[0];
     if (!file) return;
 
-    if (file.type !== 'application/zip' && file.type !== 'application/x-zip-compressed') {
-      setError(tLevel("alert.invalidZip"));
-      return;
-    }
+    try {
+      // Validate file type and size
+      if (!validateZipSize(file)) {
+        setError(t('levelSubmission.alert.invalidZip'));
+        return;
+      }
 
-    setLevelZipInfo({
-      name: file.name,
-      size: file.size,
-      type: file.type
-    });
-    setForm(prev => ({
-      ...prev,
-      levelZip: file,
-      dlLink: '', // Clear DL link when zip is uploaded
-    }));
+      // Prepare zip file for upload
+      const preparedZip = prepareZipForUpload(file);
+      if (!preparedZip) {
+        setError(t('levelSubmission.alert.invalidZip'));
+        return;
+      }
+
+      setLevelZipInfo({
+        name: preparedZip.originalName,
+        size: preparedZip.size
+      });
+
+      setForm(prev => ({
+        ...prev,
+        levelZip: preparedZip.file
+      }));
+
+    } catch (error) {
+      console.error('Error preparing zip file:', error);
+      setError(t('levelSubmission.alert.invalidZip'));
+    }
   };
 
   const handleRemoveZip = () => {
@@ -486,9 +499,9 @@ const LevelSubmissionPage = () => {
           error? "#b22":
           "#888"
         )}}>
-          {success ? <p>{tLevel("alert.success")}</p> :
-           error ? <p>{tLevel("alert.error")} {truncateString(error?.message || error?.toString() || error, 60)}</p> :
-           <p>{tLevel("alert.loading")}</p>}
+          {success ? <p>{t('levelSubmission.alert.success')}</p> :
+           error ? <p>{t('levelSubmission.alert.error')} {truncateString(error?.message || error?.toString() || error, 60)}</p> :
+           <p>{t('levelSubmission.alert.loading')}</p>}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div>
 
@@ -539,17 +552,17 @@ const LevelSubmissionPage = () => {
               <div className="thumbnail-text">
                 <img src={placeholder} alt="placeholder" />
               </div>
-              <h2>{tLevel("thumbnailInfo")}</h2>
+              <h2>{t('levelSubmission.thumbnailInfo')}</h2>
             </>)}
           </div>
 
           <div className="info">
-            <h1>{tLevel("title")}</h1>
+            <h1>{t('levelSubmission.title')}</h1>
 
             <div className="information">
               <input
                 type="text"
-                placeholder={tLevel("submInfo.song")}
+                placeholder={t('levelSubmission.submInfo.song')}
                 name="song"
                 value={form.song}
                 onChange={handleInputChange}
@@ -557,7 +570,7 @@ const LevelSubmissionPage = () => {
               />
               <input
                 type="text"
-                placeholder={tLevel("submInfo.artist")}
+                placeholder={t('levelSubmission.submInfo.artist')}
                 name="artist"
                 value={form.artist}
                 onChange={handleInputChange}
@@ -568,7 +581,7 @@ const LevelSubmissionPage = () => {
             <div className="youtube-input">
               <input
                 type="text"
-                placeholder={tLevel("submInfo.videoLink")}
+                placeholder={t('levelSubmission.submInfo.videoLink')}
                 name="videoLink"
                 value={form.videoLink}
                 onChange={handleInputChange}
@@ -577,26 +590,26 @@ const LevelSubmissionPage = () => {
               {videoDetail ? 
               (<div className="youtube-info">
                 <div className="yt-info">
-                  <h4>{tLevel("videoInfo.title")}</h4>
+                  <h4>{t('levelSubmission.videoInfo.title')}</h4>
                   <p>{videoDetail.title}</p>
                 </div>
                 <div className="yt-info">
-                  <h4>{tLevel("videoInfo.channel")}</h4>
+                  <h4>{t('levelSubmission.videoInfo.channel')}</h4>
                   <p>{videoDetail.channelName}</p>
                 </div>
                 <div className="yt-info">
-                  <h4>{tLevel("videoInfo.timestamp")}</h4>
+                  <h4>{t('levelSubmission.videoInfo.timestamp')}</h4>
                   <p>{videoDetail.timestamp.replace("T", " ").replace("Z", "")}</p>
                 </div>
               </div>) : 
               (<div className="yt-info">
-                <p style={{color: "#aaa"}}>{tLevel("videoInfo.nolink")}</p>
+                <p style={{color: "#aaa"}}>{t('levelSubmission.videoInfo.nolink')}</p>
                 <br />
               </div>)}
             </div>
 
             <div className="zip-upload-section">
-              <h3>{tLevel("submInfo.levelZip")}</h3>
+              <h3>{t('levelSubmission.submInfo.levelZip')}</h3>
               {!levelZipInfo ? (
                 <div className="zip-upload-container">
                   <input
@@ -607,7 +620,7 @@ const LevelSubmissionPage = () => {
                     style={{ display: 'none' }}
                   />
                   <label htmlFor="levelZip" className="zip-upload-button">
-                    {tLevel("buttons.uploadZip")}
+                    {t('levelSubmission.buttons.uploadZip')}
                   </label>
                 </div>
               ) : (
@@ -643,11 +656,11 @@ const LevelSubmissionPage = () => {
                       visibility: `${isInvalidFeelingRating ? '' : 'hidden'}`,
                       bottom: "115%",
                       left: "-2rem"
-                    }}>{tLevel("tooltip")}</span>
+                    }}>{t('levelSubmission.tooltip')}</span>
                 </div>
                 <input
                   type="text"
-                  placeholder={tLevel("submInfo.diff")}
+                  placeholder={t('levelSubmission.submInfo.diff')}
                   name="diff"
                   value={form.diff}
                   onChange={handleInputChange}
@@ -663,7 +676,7 @@ const LevelSubmissionPage = () => {
                 value={team}
                 onChange={setTeam}
                 allowNewRequest
-                placeholder={tLevel("submInfo.team")}
+                placeholder={t('levelSubmission.submInfo.team')}
               />
             </div>
 
@@ -671,7 +684,7 @@ const LevelSubmissionPage = () => {
             <div className="info-group" style={{marginTop: "2rem"}}>
               <input
                 type="text"
-                placeholder={tLevel("submInfo.dlLink")}
+                placeholder={t('levelSubmission.submInfo.dlLink')}
                 name="dlLink"
                 value={form.dlLink}
                 onChange={handleInputChange}
@@ -682,10 +695,10 @@ const LevelSubmissionPage = () => {
                 }}
                 disabled={!!form.levelZip}
               />
-              <span className="dl-links-or">{tLevel("submInfo.dlLinksOr")}</span>
+              <span className="dl-links-or">{t('levelSubmission.submInfo.dlLinksOr')}</span>
               <input
                 type="text"
-                placeholder={tLevel("submInfo.workshop")}
+                placeholder={t('levelSubmission.submInfo.workshop')}
                 name="workshopLink"
                 value={form.workshopLink}
                 onChange={handleInputChange}
@@ -698,7 +711,7 @@ const LevelSubmissionPage = () => {
 
 
             <div className="creators-section">
-              <h3>{tLevel("submInfo.charters")}</h3>
+              <h3>{t('levelSubmission.submInfo.charters')}</h3>
               {Array.isArray(charters) && charters.map((charter, index) => (
                 <div key={index} className="creator-row">
                   <ProfileSelector
@@ -708,7 +721,7 @@ const LevelSubmissionPage = () => {
                     onChange={(value) => handleCharterChange(index, value)}
                     allowNewRequest
                     required={index === 0}
-                    placeholder={tLevel("submInfo.charter")}
+                    placeholder={t('levelSubmission.submInfo.charter')}
                   />
                   {index > 0 && (
                     <button 
@@ -726,12 +739,12 @@ const LevelSubmissionPage = () => {
                 onClick={addCharter}
                 type="button"
               >
-                ➕ {tLevel("buttons.addCharter")}
+                ➕ {t('levelSubmission.buttons.addCharter')}
               </button>
             </div>
 
             <div className="creators-section">
-              <h3>{tLevel("submInfo.vfxers")}</h3>
+              <h3>{t('levelSubmission.submInfo.vfxers')}</h3>
               {Array.isArray(vfxers) && vfxers.map((vfxer, index) => (
                 <div key={index} className="creator-row">
                   <ProfileSelector
@@ -741,7 +754,7 @@ const LevelSubmissionPage = () => {
                     onChange={(value) => handleVfxerChange(index, value)}
                     allowNewRequest
                     required={index === 0}
-                    placeholder={tLevel("submInfo.vfxer")}
+                    placeholder={t('levelSubmission.submInfo.vfxer')}
                   />
                   {index > 0 && (
                     <button 
@@ -759,7 +772,7 @@ const LevelSubmissionPage = () => {
                 onClick={addVfxer}
                 type="button"
               >
-                ➕ {tLevel("buttons.addVfxer")}
+                ➕ {t('levelSubmission.buttons.addVfxer')}
               </button>
             </div>
 
@@ -767,7 +780,7 @@ const LevelSubmissionPage = () => {
                           {/* Display pending profiles warning */}
             {pendingProfiles.length > 0 && (
               <div className="pending-profiles-warning">
-                <h3>{tLevel('warnings.pendingProfiles')}</h3>
+                <h3>{t('levelSubmission.warnings.pendingProfiles')}</h3>
                 
                 {/* Group profiles by type */}
                 {['charter', 'vfxer', 'team'].map(type => {
@@ -781,12 +794,12 @@ const LevelSubmissionPage = () => {
                   
                   return (
                     <div key={type} className="profile-group">
-                      <h4>{tLevel(`roles.${type}s`)}</h4>
+                      <h4>{t(`levelSubmission.roles.${type}s`)}</h4>
                       {profiles.map((profile, index) => (
                         <div key={index} className="profile-item">
                           <span>{profile.name}</span>
                           <span className="new-profile-badge">
-                            {tLevel('badges.newProfile')}
+                            {t('levelSubmission.badges.newProfile')}
                           </span>
                         </div>
                       ))}
@@ -801,7 +814,7 @@ const LevelSubmissionPage = () => {
               onClick={handleSubmit}
               disabled={submission}
             >
-              {tLevel("submit")}{submission && (<>{tLevel("submitWait")}</>)}
+              {t('levelSubmission.buttons.submit')}{submission && (<>{t('levelSubmission.buttons.submitWait')}</>)}
             </button>
           </div>
         </form>      

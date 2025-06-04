@@ -5,6 +5,7 @@
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.75);
+  padding: 5rem 0 2rem 0;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -17,7 +18,7 @@
   padding: 20px;
   width: 500px;
   max-width: 90vw;
-  max-height: 90vh;
+  max-height: 100%;
   overflow-y: auto;
   position: relative;
 }

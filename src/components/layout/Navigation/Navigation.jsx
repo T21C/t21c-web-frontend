@@ -135,6 +135,7 @@ const Navigation = ({ children }) => {
 
   return (
     <>
+      <div className="nav-spacer" />
       <div 
         className={`nav-mobile-overlay ${openNav ? 'visible' : ''}`} 
         onClick={changeNavState}

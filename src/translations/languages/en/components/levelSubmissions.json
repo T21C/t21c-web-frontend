@@ -10,7 +10,8 @@
     "download": {
       "label": "Download:",
       "directLink": "Direct Link",
-      "notAvailable": "Not Available"
+      "notAvailable": "Not Available",
+      "cdnLink": "Local CDN Link"
     },
     "workshop": {
       "label": "Workshop:",

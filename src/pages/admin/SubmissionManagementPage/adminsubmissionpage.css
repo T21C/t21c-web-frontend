@@ -327,6 +327,9 @@
   }
 
   .submission-admin-page .detail-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-weight: 600;
     color: rgb(180, 175, 255);
     text-decoration: none;
@@ -334,6 +337,13 @@
 
   .submission-admin-page .detail-link:hover {
     text-decoration: underline;
+  }
+
+  .submission-admin-page .cdn-tooltip {
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 1rem;
   }
 
   .submission-admin-page .action-buttons {
