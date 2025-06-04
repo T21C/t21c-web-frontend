@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import './LevelSelectionPopup.css';
+import { useTranslation } from 'react-i18next';
 
 const LevelSelectionPopup = ({ levelFiles, onSelect, onClose }) => {
     const [selectedLevel, setSelectedLevel] = useState(null);
+    const { t } = useTranslation(['components']);
+    const tSelection = (key, params = {}) => t(`levelSelection.${key}`, params);
 
     useEffect(() => {
         // Set the default selection to the largest file
@@ -31,8 +34,8 @@ const LevelSelectionPopup = ({ levelFiles, onSelect, onClose }) => {
     return (
         <div className="level-selection-popup-overlay">
             <div className="level-selection-popup">
-                <h2>Select Level File</h2>
-                <p>Multiple level files were found in the zip. Please select the main level file:</p>
+                <h2>{tSelection('title')}</h2>
+                <p>{tSelection('description')}</p>
                 
                 <div className="level-selection-list">
                     {levelFiles.map((file) => (
@@ -54,15 +57,15 @@ const LevelSelectionPopup = ({ levelFiles, onSelect, onClose }) => {
                                 <div className="level-selection-details">
                                     {file.songFilename && (
                                         <div className="level-selection-song">
-                                            Song: {file.songFilename}
+                                            {tSelection('fileInfo.song', { song: file.songFilename })}
                                         </div>
                                     )}
                                     <div className="level-selection-size">
-                                        Size: {formatFileSize(file.size)}
+                                        {tSelection('fileInfo.size', { size: formatFileSize(file.size) })}
                                     </div>
                                     {file.hasYouTubeStream && (
                                         <div className="level-selection-youtube">
-                                            Has YouTube Stream
+                                            {tSelection('fileInfo.youtube')}
                                         </div>
                                     )}
                                 </div>
@@ -76,14 +79,14 @@ const LevelSelectionPopup = ({ levelFiles, onSelect, onClose }) => {
                         className="level-selection-cancel"
                         onClick={onClose}
                     >
-                        Cancel
+                        {tSelection('buttons.cancel')}
                     </button>
                     <button 
                         className="level-selection-submit"
                         onClick={handleSubmit}
                         disabled={!selectedLevel}
                     >
-                        Submit
+                        {tSelection('buttons.submit')}
                     </button>
                 </div>
             </div>

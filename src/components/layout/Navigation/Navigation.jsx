@@ -135,12 +135,13 @@ const Navigation = ({ children }) => {
 
   return (
     <>
-      <div className="nav-spacer" />
       <div 
         className={`nav-mobile-overlay ${openNav ? 'visible' : ''}`} 
         onClick={changeNavState}
       />
 
+      <div className="nav-spacer" />
+      
       <nav className={isAdminView && user?.isSuperAdmin ? 'nav--admin' : ''}>
         <div className="nav-wrapper">
           {/* Left side: Logo and main navigation links */}
@@ -330,6 +331,7 @@ const Navigation = ({ children }) => {
             </svg>
           </div>
         </div>
+      
       </nav>
 
       <div className={`nav-mobile ${openNav ? "open" : ""}`}>
