@@ -13,6 +13,13 @@ import { LevelSelectionPopup } from "@/components/popups";
 import { useNavigate } from 'react-router-dom';
 import api from "@/utils/api";
 
+const encodeFilename = (str) => {
+  // Convert string to UTF-8 bytes, then to hex
+  return Array.from(new TextEncoder().encode(str))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
+};
+
 const LevelSubmissionPage = () => {
   const initialFormState = {
     levelId: '',
@@ -294,6 +301,11 @@ const LevelSubmissionPage = () => {
       submissionForm.setDetail('creatorRequests', creatorRequests);
       submissionForm.setDetail('teamRequest', teamRequest);
       submissionForm.setDetail('levelZip', form.levelZip);
+      
+      // Encode the original filename using our UTF-8 to hex encoding
+      if (form.levelZip) {
+        submissionForm.setDetail('originalname', encodeFilename(form.levelZip.name));
+      }
 
       const response = await submissionForm.submit();
       
