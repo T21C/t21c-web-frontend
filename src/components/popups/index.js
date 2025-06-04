@@ -12,6 +12,7 @@ import SubmissionCreatorPopup from "./SubmissionCreatorPopup/SubmissionCreatorPo
 import DifficultyPopup from "./DifficultyPopup/DifficultyPopup";
 import ProfilePicturePopup from "./ProfilePicturePopup/ProfilePicturePopup";
 import LevelSelectionPopup from "./LevelSelectionPopup/LevelSelectionPopup";
+import LevelUploadManagementPopup from './LevelUploadManagementPopup/LevelUploadManagementPopup';
 
 export {
     AdminPlayerPopup,
@@ -27,5 +28,6 @@ export {
     RatingHelpPopup,
     DifficultyPopup,
     ProfilePicturePopup,
-    LevelSelectionPopup
+    LevelSelectionPopup,
+    LevelUploadManagementPopup
 }

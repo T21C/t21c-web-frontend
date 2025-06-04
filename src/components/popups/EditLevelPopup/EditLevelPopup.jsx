@@ -1,11 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
 import './editlevelpopup.css';
 import api from '@/utils/api';
-import { useNavigate } from 'react-router-dom';
 import { RatingInput } from '@/components/common/selectors';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { useTranslation } from 'react-i18next';
 import AliasManagementPopup from './AliasManagementPopup';
+import { LevelUploadManagementPopup } from '@/components/popups';
+import { UploadIcon } from '@/components/common/icons';
+
+// Helper function to check if a URL is from our CDN
+const isCdnUrl = (url) => {
+  return url?.startsWith(import.meta.env.VITE_CDN_URL);
+};
 
 export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPage = false }) => {
   const { t } = useTranslation('components');
@@ -30,6 +36,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     rerateReason: '',
     isDeleted: false,
     isHidden: false,
+    isAnnounced: false,
   });
 
   const [isSaving, setIsSaving] = useState(false);
@@ -38,6 +45,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
   const { difficulties } = useDifficultyContext();
   const [showAliasManagement, setShowAliasManagement] = useState(false);
+  const [showUploadManagement, setShowUploadManagement] = useState(false);
 
   useEffect(() => {
     if (level) {
@@ -61,6 +69,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         isHidden: level.isHidden || false,
         previousDiffId: level.previousDiffId,
         previousBaseScore: level.previousBaseScore,
+        isAnnounced: level.isAnnounced || false,
       });
       setHasUnsavedChanges(false);
     }
@@ -280,7 +289,11 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     return matchingDiff ? matchingDiff.name : formData[field]?.toString();
   }, [formData, difficulties]);
 
-  
+  const handleOpenUploadManagement = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowUploadManagement(true);
+  };
 
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
@@ -507,13 +520,40 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
 
             <div className="form-group">
               <label htmlFor="dlLink">{tLevel('form.labels.dlLink')}</label>
-              <input
-                type="text"
-                id="dlLink"
-                name="dlLink"
-                value={formData.dlLink}
-                onChange={handleInputChange}
-              />
+              {isCdnUrl(formData.dlLink) ? (
+                <div className="edit-level-popup__cdn-managed">
+                  <div className="edit-level-popup__cdn-info">
+                    <span>CDN Managed File</span>
+                    <a href={formData.dlLink} target="_blank" rel="noopener noreferrer">
+                      {formData.dlLink}
+                    </a>
+                  </div>
+                  <button
+                    className="edit-level-popup__manage-button"
+                    onClick={handleOpenUploadManagement}
+                  >
+                    Manage Upload
+                  </button>
+                </div>
+              ) : (
+                <div className="edit-level-popup__dl-link-container">
+                  <input
+                    type="text"
+                    id="dlLink"
+                    name="dlLink"
+                    value={formData.dlLink}
+                    onChange={handleInputChange}
+                    placeholder="Download Link"
+                  />
+                  <button
+                    className="edit-level-popup__upload-button"
+                    onClick={handleOpenUploadManagement}
+                    title="Upload Level File"
+                  >
+                    <UploadIcon color="white" size={20} />
+                  </button>
+                </div>
+              )}
             </div>
 
             <div className="form-group">
@@ -581,6 +621,15 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               onUpdate(updatedLevel);
             }
           }}
+        />
+      )}
+
+      {showUploadManagement && (
+        <LevelUploadManagementPopup
+          level={level}
+          onClose={() => setShowUploadManagement(false)}
+          setFormData={setFormData}
+          formData={formData}
         />
       )}
     </div>

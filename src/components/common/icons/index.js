@@ -25,6 +25,7 @@ import { QuestionmarkCircleIcon } from './QuestionmarkCircleIcon';
 import { WarningIcon } from './WarningIcon';
 import LikeIcon from './LikeIcon';
 import { InfoIcon } from './InfoIcon';
+import { UploadIcon } from './UploadIcon';
 
 export {
     DefaultAvatar,
@@ -53,5 +54,6 @@ export {
     QuestionmarkCircleIcon,
     WarningIcon,
     LikeIcon,
-    InfoIcon
+    InfoIcon,
+    UploadIcon
 }

@@ -137,7 +137,6 @@
   color: white;
   max-width: 13rem;
   position: relative;
-  padding-right: 3.5rem;
   transition: background-color 0.3s ease;
 }
 
@@ -563,5 +562,101 @@
   .edit-level-popup .manage-aliases-btn {
     font-size: 13px;
     padding: 6px 12px;
+  }
+}
+
+.edit-level-popup__cdn-managed {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 10px;
+  background-color: var(--background-color-secondary);
+  border-radius: 4px;
+}
+
+.edit-level-popup__cdn-info {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.edit-level-popup__cdn-info span {
+  font-size: 0.9rem;
+  color: var(--text-color-secondary);
+}
+
+.edit-level-popup__cdn-info a {
+  color: var(--primary-color);
+  text-decoration: none;
+  word-break: break-all;
+}
+
+.edit-level-popup__cdn-info a:hover {
+  text-decoration: underline;
+}
+
+.edit-level-popup__cdn-info a:hover {
+  text-decoration: underline;
+}
+
+.edit-level-popup__manage-button {
+  padding: 8px 16px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.edit-level-popup__manage-button:hover {
+  background-color: var(--primary-color-hover);
+}
+
+.edit-level-popup__dl-link-container {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.edit-level-popup__dl-link-container input {
+  flex: 1;
+}
+
+.edit-level-popup__upload-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  min-width: 36px;
+  height: 36px;
+}
+
+.edit-level-popup__upload-button:hover {
+  background-color: var(--primary-color-hover);
+}
+
+/* Mobile Adjustments */
+@media (max-width: 768px) {
+  .edit-level-popup__upload-button {
+    padding: 6px;
+    min-width: 32px;
+    height: 32px;
+  }
+}
+
+/* Small Phone Adjustments */
+@media (max-width: 360px) {
+  .edit-level-popup__upload-button {
+    padding: 4px;
+    min-width: 28px;
+    height: 28px;
   }
 }
