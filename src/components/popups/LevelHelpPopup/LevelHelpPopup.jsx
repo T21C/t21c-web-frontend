@@ -80,6 +80,7 @@ export const LevelHelpPopup = ({ onClose }) => {
                 <li><b><code>song:hello, artist:camellia</code></b> - {tHelp('sections.operators.examples.and')}</li>
                 <li><b><code>song=goTe | song:xnor</code></b> - {tHelp('sections.operators.examples.or')}</li>
                 <li><b><code>charter:gazizi, artist:onus | artist=ludicin</code></b> - {tHelp('sections.operators.examples.complex')}</li>
+                <li><b><code>song:onus, \!nerfed</code></b> - {tHelp('sections.operators.examples.not')}</li>
               </ul>
             </div>
           </section>

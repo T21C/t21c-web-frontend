@@ -22,7 +22,8 @@
           "title": "Operator Examples",
           "and": "Search for levels that match both conditions (AND). This will look for charts of 'hello' by 'camellia'",
           "or": "Search for levels that match either condition (OR). This searches for either goTe charts (without EX) or any XNOR charts",
-          "complex": "Complex search combining AND and OR conditions. This looks for 'onus' charts by 'gazizi' or any charts with song by 'ludicin'"
+          "complex": "Complex search combining AND and OR conditions. This looks for 'onus' charts by 'gazizi' or any charts with song by 'ludicin'",
+          "not": "Usage of '\\!' will exclude results containing the term - this expression will exclude 'nerfed' onus charts"
         }
       },
       "tips": {
