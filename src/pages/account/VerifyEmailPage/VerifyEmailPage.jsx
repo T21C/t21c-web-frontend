@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import './verifyEmailPage.css';
-
+import { useAuth } from '@/contexts/AuthContext';
 const VerifyEmailPage = () => {
   const [searchParams] = useSearchParams();
   const [status, setStatus] = useState('verifying');
@@ -10,7 +10,7 @@ const VerifyEmailPage = () => {
   const [retryAfter, setRetryAfter] = useState(null);
   const timerRef = useRef(null);
   const navigate = useNavigate();
-
+  const { initiateLogin } = useAuth();
   // Handle countdown timer for rate limiting
   useEffect(() => {
     // Clear any existing timer
@@ -80,7 +80,7 @@ const VerifyEmailPage = () => {
         await axios.post(import.meta.env.VITE_AUTH_VERIFY_EMAIL, { token });
         setStatus('success');
         setTimeout(() => {
-          navigate('/login');
+          initiateLogin();
         }, 3000);
       } catch (err) {
         console.error('Email verification error:', err);

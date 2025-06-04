@@ -2,6 +2,7 @@
   background-color: var(--color-black);
   color: var(--color-white);
   min-height: 100vh;
+  position: relative;
 }
 
 .player-notfound {
@@ -46,7 +47,6 @@
   position: relative;
   z-index: 2;
   padding: 0 1.5rem;
-  padding-top: 6rem;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -365,17 +365,21 @@
 }
 
 .email-verification-banner {
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   background-color: #ff4444;
   color: white;
-  padding: 8px 16px;
-  border-radius: 4px;
-  margin-top: 16px;
+  padding: 12px 16px;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  z-index: 1000;
+  text-align: center;
 }
 
 .email-verification-banner:hover {

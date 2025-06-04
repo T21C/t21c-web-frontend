@@ -6,13 +6,14 @@ import { useTranslation } from 'react-i18next';
 import { UserAvatar } from '@/components/layout';
 
 function Profile() {
-  const { user, logout } = useAuth();
+  const { user, logout, initiateLogin } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation('components');
   const tProfile = (key) => t(`profile.${key}`) || key;
 
   const login = () => {
-    navigate('/login');
+    console.log(window.location.pathname);
+    initiateLogin(window.location.pathname);
   };
 
   const openProfile = () => {

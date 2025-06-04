@@ -10,7 +10,7 @@ const EmailVerificationPage = () => {
   const [error, setError] = useState('');
   const [resending, setResending] = useState(false);
   const [verificationEmail, setVerificationEmail] = useState('');
-  const { user, verifyEmail, resendVerification, fetchUser } = useAuth();
+  const { user, verifyEmail, resendVerification, fetchUser, initiateLogin } = useAuth();
   const navigate = useNavigate();
   const verificationAttempted = useRef(false);
 
@@ -80,11 +80,17 @@ const EmailVerificationPage = () => {
 
     try {
       setResending(true);
+      setError(''); // Clear any existing errors before attempting
       await resendVerification(emailToUse);
       setStatus('resent');
-      setError('');
     } catch (err) {
-      setError(err.message);
+      // Handle specific error cases
+      if (err.response?.status === 500 && err.response?.data?.message === "Failed to send verification email") {
+        setError("Unable to send verification email. Please try again later.");
+      } else {
+        setError(err.message || "An unexpected error occurred");
+      }
+      setStatus('error');
     } finally {
       setResending(false);
     }
@@ -111,7 +117,7 @@ const EmailVerificationPage = () => {
               <p className="login-required-message">Please log in to access your account.</p>
               <button
                 className="action-button"
-                onClick={() => navigate('/login')}
+                onClick={() => initiateLogin()}
               >
                 Log In
               </button>
@@ -122,10 +128,10 @@ const EmailVerificationPage = () => {
             <>
               <div className="error-icon">✕</div>
               <h1>Verification Failed</h1>
-              <p className="error-message">{error}</p>
+              {error && <p className="error-message">{error}</p>}
               <button
                 className="action-button"
-                onClick={() => navigate('/login')}
+                onClick={() => initiateLogin()}
               >
                 Go to Login
               </button>
@@ -190,6 +196,7 @@ const EmailVerificationPage = () => {
               >
                 {resending ? 'Sending...' : 'Resend Verification Email'}
               </button>
+              {error && <p className="error-message">{error}</p>}
             </div>
             <button
               className="action-button secondary"
@@ -204,7 +211,7 @@ const EmailVerificationPage = () => {
           <>
             <div className="error-icon">✕</div>
             <h1>Verification Failed</h1>
-            <p className="error-message">{error}</p>
+            {error && <p className="error-message">{error}</p>}
             <div className="resend-section">
               <p className="resend-info">We'll send a new verification email to:</p>
               <p className="email-display">{user?.email || verificationEmail || 'your email address'}</p>

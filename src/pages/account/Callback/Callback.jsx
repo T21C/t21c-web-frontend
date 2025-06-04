@@ -10,7 +10,7 @@ const CallbackPage = () => {
   const [loading, setLoading] = useState(true);
   const [isLinking, setIsLinking] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
-  const { fetchUser } = useAuth();
+  const { fetchUser, getOriginUrl, clearOriginUrl } = useAuth();
 
   const handleContinue = () => {
     setRedirecting(true);
@@ -20,6 +20,11 @@ const CallbackPage = () => {
     } else {
       navigate('/login');
     }
+  };
+
+  const handleSuccessfulAuth = () => {
+    setRedirecting(true);
+    setTimeout(() => navigate(getOriginUrl() || '/profile'), 2000);
   };
 
   useEffect(() => {
@@ -61,8 +66,7 @@ const CallbackPage = () => {
           if (response.status === 200) {
             // Refresh user data to get updated linked accounts
             await fetchUser();
-            setRedirecting(true);
-            setTimeout(() => navigate('/profile'), 2000);
+            handleSuccessfulAuth();
           } else {
             throw new Error('Linking failed');
           }
@@ -73,8 +77,7 @@ const CallbackPage = () => {
             localStorage.setItem('token', token);
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             await fetchUser();
-            setRedirecting(true);
-            setTimeout(() => navigate('/profile'), 2000);
+            handleSuccessfulAuth();
           } else {
             throw new Error('No token received from server');
           }

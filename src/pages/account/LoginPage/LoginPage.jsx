@@ -20,7 +20,7 @@ const LoginPage = () => {
   const timerRef = useRef(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const { login, loginWithDiscord } = useAuth();
+  const { login, loginWithDiscord, getOriginUrl } = useAuth();
   const { t } = useTranslation('pages');
   const tLogin = (key, params = {}) => t(`login.${key}`, params);
 
@@ -106,7 +106,7 @@ const LoginPage = () => {
       }
 
       await login(email, password, captchaToken);
-      const from = location.state?.from?.pathname || '/profile';
+      const from = getOriginUrl() || '/profile';
       navigate(from);
     } catch (err) {
       console.error('Login error:', err);

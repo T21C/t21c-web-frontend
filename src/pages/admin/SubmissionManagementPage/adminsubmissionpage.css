@@ -23,7 +23,7 @@
     z-index: 2;
     margin: 0 auto;
     padding: 1rem 1.5rem;
-    padding-top: 6rem;
+    padding-top: 2rem;
     max-width: 70rem;
   }
   .submission-admin-page .submissions-admin-list .input-option {
@@ -445,7 +445,7 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
-    padding-top: 6rem;
+    padding-top: 2rem;
     position: relative;
     z-index: 10;
     padding-bottom: 10rem;

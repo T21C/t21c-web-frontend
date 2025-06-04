@@ -8,7 +8,7 @@ nav {
   box-shadow: 0 4px 6px var(--color-black-t10);
   color: var(--color-white);
   z-index: 100;
-  position: fixed;
+  position: relative;
   top: 0;
   overflow: visible;
 }

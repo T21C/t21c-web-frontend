@@ -4,7 +4,7 @@
   color: var(--color-white);
   min-height: 100vh;
   position: relative;
-  padding-top: 7rem;
+  padding-top: 2rem;
 }
 
 .access-denied-page .background-level {
@@ -42,6 +42,6 @@
   .access-denied-page .access-denied-container {
     width: 95%;
     padding: 1rem;
-    padding-top: 6rem;
+    padding-top: 2rem;
   }
 } 

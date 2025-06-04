@@ -13,7 +13,7 @@
     flex-direction: column;
     align-items: center;
     padding: 2rem;
-    padding-top: 7rem;
+    padding-top: 2rem;
 }
 
 .admin-page .admin-title {
@@ -31,7 +31,7 @@
 }
 
 .admin-page .admin-card {
-    background: var(--color-grey);
+    background: #0003;
     border-radius: 10px;
     padding: 2rem;
     display: flex;
@@ -45,7 +45,7 @@
 
 .admin-page .admin-card:hover {
     transform: translateY(-5px);
-    background: var(--color-grey-t80);
+    background: #0008;
 }
 
 .admin-page .admin-card-icon {
@@ -67,7 +67,7 @@
 @media screen and (max-width: 768px) {
     .admin-page .admin-container {
         padding: 1rem;
-        padding-top: 6rem;
+        padding-top: 2rem;
     }
 
     .admin-page .admin-grid {

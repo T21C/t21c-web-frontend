@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNotification } from './NotificationContext';
+import { useNavigate } from 'react-router-dom';
+import Cookies from 'js-cookie';
 
 const AuthContext = createContext();
 
@@ -12,6 +14,29 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const { restartNotifications, resetNotifications, cleanup } = useNotification();
+  const navigate = useNavigate();
+
+  // Cookie management for origin URL
+  const getOriginUrl = () => {
+    return Cookies.get('originUrl') || null;
+  };
+
+  const setOriginUrl = (url) => {
+    if (url) {
+      // Set cookie with 5 minute expiration
+      Cookies.set('originUrl', url, { 
+        expires: 1/288, // 5 minutes (1/288 of a day)
+        secure: true,
+        sameSite: 'strict'
+      });
+    } else {
+      Cookies.remove('originUrl');
+    }
+  };
+
+  const clearOriginUrl = () => {
+    Cookies.remove('originUrl');
+  };
 
   // Listen for auth events
   useEffect(() => {
@@ -21,6 +46,7 @@ export const AuthProvider = ({ children }) => {
 
     const handleLogout = () => {
       setUser(null);
+      clearOriginUrl();
     };
 
     window.addEventListener('auth:permission-changed', handlePermissionChange);
@@ -57,6 +83,11 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const initiateLogin = (originUrl = "") => {
+    setOriginUrl(originUrl);
+    navigate('/login');
   };
 
   // Update token utility function
@@ -219,7 +250,11 @@ export const AuthProvider = ({ children }) => {
     updateToken,
     verifyEmail,
     resendVerification,
-    setUser
+    setUser,
+    getOriginUrl,
+    setOriginUrl,
+    clearOriginUrl,
+    initiateLogin
   };
 
   return (

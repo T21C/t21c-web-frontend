@@ -170,13 +170,13 @@
   }
 }
 
-.readonly {
+.edit-profile-page .readonly {
   background-color: #f5f5f5;
   cursor: not-allowed;
   opacity: 0.7;
 }
 
-.provider-info {
+.edit-profile-page .provider-info {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -186,13 +186,13 @@
   margin-bottom: 1rem;
 }
 
-.provider-details {
+.edit-profile-page .provider-details {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.unlink-button {
+.edit-profile-page .unlink-button {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -205,11 +205,11 @@
   transition: background-color 0.2s;
 }
 
-.unlink-button:hover {
+.edit-profile-page .unlink-button:hover {
   background-color: #cc0000;
 }
 
-.link-button {
+.edit-profile-page .link-button {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -224,43 +224,43 @@
   justify-content: center;
 }
 
-.link-button > svg {
+.edit-profile-page .link-button > svg {
   filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
 }
 
-.link-button:hover {
+.edit-profile-page .link-button:hover {
   background-color: #5b6eae;
 }
 
-.provider-username {
+.edit-profile-page .provider-username {
   color: #a0a0a0;
   font-size: 0.9rem;
   margin-left: 0.5rem;
 }
 
-.unlink-container {
+.edit-profile-page .unlink-container {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.unlink-warning {
+.edit-profile-page .unlink-warning {
   color: #ffd700;
   font-size: 1.2rem;
   cursor: help;
 }
 
-.unlink-button.disabled {
+.edit-profile-page .unlink-button.disabled {
   background-color: #666;
   cursor: not-allowed;
   opacity: 0.7;
 }
 
-.unlink-button.disabled:hover {
+.edit-profile-page .unlink-button.disabled:hover {
   background-color: #666;
 }
 
-.email-verification-message {
+.edit-profile-page .email-verification-message {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -271,28 +271,28 @@
   transition: color 0.2s ease;
 }
 
-.email-verification-message:hover {
+.edit-profile-page .email-verification-message:hover {
   color: #ff6666;
 }
 
-.email-verification-text {
+.edit-profile-page .email-verification-text {
   font-weight: 500;
 }
 
-.email-verification-arrow {
+.edit-profile-page .email-verification-arrow {
   transition: transform 0.2s ease;
 }
 
-.email-verification-message:hover .email-verification-arrow {
+.edit-profile-page .email-verification-message:hover .email-verification-arrow {
   transform: translateX(4px);
 }
 
-.avatar-section {
+.edit-profile-page .avatar-section {
   margin-bottom: 2rem;
   text-align: center;
 }
 
-.avatar-upload-area {
+.edit-profile-page .avatar-upload-area {
   width: 150px;
   height: 150px;
   margin: 0 auto;
@@ -307,42 +307,42 @@
   position: relative;
 }
 
-.avatar-upload-area:hover {
+.edit-profile-page .avatar-upload-area:hover {
   border-color: #9d4edd;
   background: #333333;
 }
 
-.avatar-upload-area.dragging {
+.edit-profile-page .avatar-upload-area.dragging {
   border-color: #9d4edd;
   background: #333333;
   transform: scale(1.05);
 }
 
-.avatar-preview {
+.edit-profile-page .avatar-preview {
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.avatar-placeholder {
+.edit-profile-page .avatar-placeholder {
   display: flex;
   flex-direction: column;
   align-items: center;
   color: #a0a0a0;
 }
 
-.avatar-placeholder i {
+.edit-profile-page .avatar-placeholder i {
   font-size: 2rem;
   margin-bottom: 0.5rem;
 }
 
-.avatar-placeholder span {
+.edit-profile-page .avatar-placeholder span {
   font-size: 0.8rem;
   text-align: center;
   padding: 0 1rem;
 }
 
-.remove-avatar-btn {
+.edit-profile-page .remove-avatar-btn {
   margin-top: 1rem;
   padding: 0.5rem 1rem;
   background: #dc3545;
@@ -353,29 +353,29 @@
   transition: background 0.3s ease;
 }
 
-.remove-avatar-btn:hover {
+.edit-profile-page .remove-avatar-btn:hover {
   background: #c82333;
 }
 
-.remove-avatar-btn:disabled {
+.edit-profile-page .remove-avatar-btn:disabled {
   background: #6c757d;
   cursor: not-allowed;
 }
 
-.edit-profile-form {
+.edit-profile-page .edit-profile-form {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
 }
 
-.form-actions {
+.edit-profile-page .form-actions {
   display: flex;
   gap: 1rem;
   justify-content: flex-end;
   margin-top: 1rem;
 }
 
-.form-actions button {
+.edit-profile-page .form-actions button {
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 4px;
@@ -384,32 +384,32 @@
   font-weight: 500;
 }
 
-.form-actions button[type="submit"] {
+.edit-profile-page .form-actions button[type="submit"] {
   background: #9d4edd;
   color: white;
 }
 
-.form-actions button[type="submit"]:hover {
+.edit-profile-page .form-actions button[type="submit"]:hover {
   background: #7b2cbf;
 }
 
-.form-actions button[type="button"] {
+.edit-profile-page .form-actions button[type="button"] {
   background: #333333;
   color: #ffffff;
   border: 1px solid #404040;
 }
 
-.form-actions button[type="button"]:hover {
+.edit-profile-page .form-actions button[type="button"]:hover {
   background: #404040;
 }
 
-.form-actions button:disabled {
+.edit-profile-page .form-actions button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
 }
 
 /* Error and success messages */
-.error-message {
+.edit-profile-page .error-message {
   color: #ff6b6b;
   margin-bottom: 1rem;
   padding: 0.75rem;
@@ -417,7 +417,7 @@
   border-radius: 4px;
 }
 
-.success-message {
+.edit-profile-page .success-message {
   color: #51cf66;
   margin-bottom: 1rem;
   padding: 0.75rem;
@@ -425,7 +425,7 @@
   border-radius: 4px;
 }
 
-.avatar-preview-container {
+.edit-profile-page .avatar-preview-container {
   position: relative;
   width: 100%;
   height: 100%;
@@ -433,7 +433,7 @@
   overflow: hidden;
 }
 
-.avatar-preview-overlay {
+.edit-profile-page .avatar-preview-overlay {
   position: absolute;
   bottom: 0;
   left: 0;
@@ -445,25 +445,25 @@
   transition: opacity 0.3s ease;
 }
 
-.avatar-preview-container:hover .avatar-preview-overlay {
+.edit-profile-page .avatar-preview-container:hover .avatar-preview-overlay {
   opacity: 1;
 }
 
-.avatar-preview-info {
+.edit-profile-page .avatar-preview-info {
   color: white;
   font-size: 12px;
   font-weight: 500;
 }
 
-.avatar-actions {
+.edit-profile-page .avatar-actions {
   display: flex;
   gap: 10px;
   margin-top: 15px;
   justify-content: center;
 }
 
-.confirm-avatar-btn,
-.cancel-avatar-btn {
+.edit-profile-page .confirm-avatar-btn,
+.edit-profile-page .cancel-avatar-btn {
   padding: 8px 16px;
   border-radius: 4px;
   font-weight: 500;
@@ -471,32 +471,32 @@
   transition: all 0.3s ease;
 }
 
-.confirm-avatar-btn {
+.edit-profile-page .confirm-avatar-btn {
   background-color: var(--primary-color);
   color: white;
   border: none;
 }
 
-.confirm-avatar-btn:hover {
+.edit-profile-page .confirm-avatar-btn:hover {
   background-color: var(--primary-color-dark);
 }
 
-.confirm-avatar-btn:disabled {
+.edit-profile-page .confirm-avatar-btn:disabled {
   background-color: var(--disabled-color);
   cursor: not-allowed;
 }
 
-.cancel-avatar-btn {
+.edit-profile-page .cancel-avatar-btn {
   background-color: transparent;
   color: var(--text-color);
   border: 1px solid var(--border-color);
 }
 
-.cancel-avatar-btn:hover {
+.edit-profile-page .cancel-avatar-btn:hover {
   background-color: var(--hover-color);
 }
 
-.cancel-avatar-btn:disabled {
+.edit-profile-page .cancel-avatar-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

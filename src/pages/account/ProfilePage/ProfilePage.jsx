@@ -44,10 +44,12 @@ const ProfilePage = () => {
     const navigate = useNavigate();
     const [isSpinning, setIsSpinning] = useState(false);
 
+    const isOwnProfile = !playerId || playerId === user?.playerId;
 
     if (!playerId) {
       playerId = user?.playerId;
     }
+    
 
     var valueLabels = {
       rankedScore: tProfile('valueLabels.rankedScore'),
@@ -133,7 +135,6 @@ const ProfilePage = () => {
         );
       }
 
-      
       return (
         <div className="player-page">
           <MetaTags
@@ -144,6 +145,12 @@ const ProfilePage = () => {
             type="profile"
           />
           <CompleteNav />
+          {user && !user.isEmailVerified && isOwnProfile ? (
+            <div className="email-verification-banner" onClick={() => navigate('/profile/verify-email')}>
+              <span className="email-verification-text">Please verify your email address to access all features</span>
+              <span className="email-verification-arrow">→</span>
+            </div>
+          ): <br />}
           <div className="background-level"></div>
           {playerData != null ? (Object.keys(playerData).length > 0 ? (
             <div className="player-body">
@@ -193,34 +200,8 @@ const ProfilePage = () => {
                     </div>
                   </div>
                   </div>
-                  {user && user.id === playerData.id && !user.isEmailVerified && (
-                    <div className="email-verification-banner" onClick={() => navigate('/profile/verify-email')}>
-                      <span className="email-verification-text">You need to verify your email</span>
-                      <span className="email-verification-arrow">→</span>
-                    </div>
-                  )}
-            
-                  <div className="diff-container">
-                    <div className="diff-info">
-                      <p>{valueLabels.topDiff}</p>
-                      <img
-                        src={difficultyDict[playerData.stats.topDiff?.id]?.icon}
-                        alt={playerData.stats.topDiff?.name || 'None'}
-                        className="diff-image"
-                      />
-                    </div>
-            
-                    <div className="diff-info">
-                      <p>{valueLabels.top12kDiff}</p>
-                      <img
-                        src={difficultyDict[playerData.stats.top12kDiff?.id]?.icon}
-                        alt={playerData.stats.top12kDiff?.name || 'None'}
-                        className="diff-image"
-                      />
-                    </div>
-                  </div>
                   <div className="edit-button-container">
-                  {user && ((!playerId && user.playerId) || playerId === user.playerId) && (
+                  {user && isOwnProfile && (
                     <button 
                       className="edit-button"
                       //style={{cursor: "not-allowed", pointerEvents: "none"}}
