@@ -831,19 +831,14 @@ const LevelDetailPage = () => {
   };
 
   // Add this function to check if a URL is from the local CDN
-  const isLocalCdnUrl = (url) => {
-    try {
-        const urlObj = new URL(url);
-        return urlObj.hostname === window.location.hostname;
-    } catch {
-        return false;
-    }
+  const isCdnUrl = (url) => {
+    return url?.startsWith(import.meta.env.VITE_CDN_URL);
   };
 
   // Find the download button click handler and replace it with:
   const handleDownloadClick = (e) => {
     e.preventDefault();
-    if (isLocalCdnUrl(res.level.dlLink)) {
+    if (isCdnUrl(res.level.dlLink)) {
         setShowDownloadPopup(true);
     } else {
         window.location.href = res.level.dlLink;
