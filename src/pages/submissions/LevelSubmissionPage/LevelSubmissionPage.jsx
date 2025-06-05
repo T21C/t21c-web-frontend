@@ -217,7 +217,6 @@ const LevelSubmissionPage = () => {
   const submissionForm = new FormManager("level")
   const resetForm = () => {
     setSuccess(true);
-    return;
     setFormStateKey(formStateKey + 1);
     // Reset all form state
     setForm(initialFormState);
