@@ -40,6 +40,17 @@ export default defineConfig(({ command, mode }) => {
           '/player',
           '/admin/rating'
         ],
+        robots: {
+          policy: [
+            {
+              userAgent: '*',
+              allow: '/',
+              disallow: ['/admin/*']
+            }
+          ]
+        },
+        outDir: 'dist',
+        generateRobotsTxt: true
       }),
     ],
     logLevel: 'info',
