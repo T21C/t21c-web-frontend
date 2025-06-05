@@ -1,0 +1,189 @@
+.level-download-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.level-download-content {
+    background-color: #111;
+    border-radius: 8px;
+    padding: 24px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    color: #ffffff;
+}
+
+.close-popup-btn {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: none;
+    color: #ffffff;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.close-popup-btn:hover {
+    color: #ff4444;
+}
+
+.level-download-content h2 {
+    margin: 0 0 24px 0;
+    font-size: 24px;
+    color: #ffffff;
+}
+
+.download-step {
+    text-align: center;
+}
+
+.download-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 24px;
+}
+
+.download-buttons button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    background-color: #2a2a2a;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 16px;
+}
+
+.download-buttons button:hover {
+    background-color: #3a3a3a;
+}
+
+.transform-step {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.transform-step h3 {
+    margin: 0;
+    font-size: 20px;
+    color: #ffffff;
+}
+
+.transform-options {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.selection-mode-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.selection-mode-toggle button {
+    flex: 1;
+    padding: 8px 16px;
+    border: 1px solid #333333;
+    border-radius: 4px;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.selection-mode-toggle button.active {
+    background-color: #2a2a2a;
+    border-color: #444444;
+}
+
+.option-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.option-group label {
+    color: #cccccc;
+    font-size: 14px;
+}
+
+.option-group input[type="number"] {
+    padding: 8px 12px;
+    border: 1px solid #333333;
+    border-radius: 4px;
+    background-color: #1a1a1a;
+    color: #ffffff;
+    width: 100%;
+}
+
+.option-group input[type="color"] {
+    width: 100%;
+    height: 40px;
+    padding: 4px;
+    border: 1px solid #333333;
+    border-radius: 4px;
+    background-color: #1a1a1a;
+    cursor: pointer;
+}
+
+.option-group input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.transform-buttons {
+    display: flex;
+    gap: 16px;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+.transform-buttons button {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 4px;
+    background-color: #2a2a2a;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    font-size: 16px;
+}
+
+.transform-buttons button:hover {
+    background-color: #3a3a3a;
+}
+
+/* Scrollbar styles */
+.level-download-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.level-download-content::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+.level-download-content::-webkit-scrollbar-thumb {
+    background: #333333;
+    border-radius: 4px;
+}
+
+.level-download-content::-webkit-scrollbar-thumb:hover {
+    background: #444444;
+} 

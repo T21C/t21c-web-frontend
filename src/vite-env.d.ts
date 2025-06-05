@@ -58,6 +58,8 @@ interface ImportMetaEnv {
   readonly VITE_RECAPTCHA_SITE_KEY: string;
 
   readonly VITE_APRIL_FOOLS: boolean;
+
+  readonly VITE_CDN_URL: string;
 }
 
 interface ImportMeta {
