@@ -1,7 +1,6 @@
 import { defineConfig, loadEnv } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
-import sitemapPlugin from 'vite-plugin-sitemap'
 
 // https://vitejs.dev/config/
 export default defineConfig(({ command, mode }) => {
@@ -27,31 +26,7 @@ export default defineConfig(({ command, mode }) => {
 
   return {
     plugins: [
-      react(),
-      sitemapPlugin({
-        hostname: ownUrl,
-        dynamicRoutes: [
-          '/',
-          '/about',
-          '/contact',
-          '/levels',
-          '/passes',
-          '/leaderboard',
-          '/player',
-          '/admin/rating'
-        ],
-        robots: {
-          policy: [
-            {
-              userAgent: '*',
-              allow: '/',
-              disallow: ['/admin/*']
-            }
-          ]
-        },
-        outDir: 'dist',
-        generateRobotsTxt: true
-      }),
+      react()
     ],
     logLevel: 'info',
     resolve: {
