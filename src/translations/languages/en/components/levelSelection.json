@@ -6,8 +6,8 @@
     "submit": "Submit"
   },
   "fileInfo": {
-    "song": "Song: {song}",
-    "size": "Size: {size}",
+    "song": "Song: {{song}}",
+    "size": "Size: {{size}}",
     "youtube": "Has YouTube Stream"
   }
 } 

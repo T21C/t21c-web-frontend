@@ -20,6 +20,9 @@ const EnhancedSelect = ({
     const containerRef = useRef(null);
     const dropdownRef = useRef(null);
 
+    const hasOptions = options.length > 0;
+    const isDisabled = disabled || !hasOptions;
+
     const filteredOptions = options.filter(option => 
         option.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -197,33 +200,37 @@ const EnhancedSelect = ({
     };
 
     return (
-        <div className="enhanced-select" ref={containerRef}>
+        <div className={`enhanced-select ${isDisabled ? 'disabled' : ''}`} ref={containerRef}>
             <div 
                 className="enhanced-select-header"
-                onClick={() => !disabled && setIsOpen(!isOpen)}
+                onClick={() => !isDisabled && setIsOpen(!isOpen)}
             >
                 <div className="enhanced-select-value">
                     {value.length > 0 ? (
                         <span>{value.length} selected</span>
                     ) : (
-                        <span className="placeholder">{placeholder}</span>
+                        <span className="placeholder">
+                            {hasOptions ? placeholder : `No ${searchField} available!`}
+                        </span>
                     )}
                 </div>
                 <div className="enhanced-select-controls">
-                    <button 
-                        className="enhanced-select-reset"
-                        onClick={handleResetClick}
-                        title={value.length === 0 ? "Select All" : "Deselect All"}
-                    >
-                        {value.length === 0 ? "✓" : "✖"}
-                    </button>
+                    {hasOptions && (
+                        <button 
+                            className="enhanced-select-reset"
+                            onClick={handleResetClick}
+                            title={value.length === 0 ? "Select All" : "Deselect All"}
+                        >
+                            {value.length === 0 ? "✓" : "✖"}
+                        </button>
+                    )}
                     <div className="enhanced-select-arrow">
                         {isOpen ? '▲' : '▼'}
                     </div>
                 </div>
             </div>
             
-            {isOpen && createPortal(
+            {isOpen && hasOptions && createPortal(
                 <div 
                     className="enhanced-select-dropdown" 
                     ref={dropdownRef}

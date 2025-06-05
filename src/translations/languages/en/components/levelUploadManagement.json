@@ -11,14 +11,14 @@
     "levelSelection": {
       "title": "Select Level File",
       "originalZip": {
-        "title": "Original Zip: {name}",
-        "size": "Size: {size} MB"
+        "title": "Original Zip: {{name}}",
+        "size": "Size: {{size}} MB"
       },
       "songFiles": {
         "title": "Song Files",
-        "size": "({size} MB)"
+        "size": "({{size}} MB)"
       },
-      "currentTarget": "Current Target: {name}"
+      "currentTarget": "Current Target: {{name}}"
     }
   },
   "buttons": {
@@ -26,10 +26,10 @@
     "currentlySelected": "Currently Selected",
     "uploadNew": "Upload New Level",
     "deleteCurrent": "Delete Current Level",
-    "close": "×"
+    "close": "✖"
   },
   "upload": {
-    "progress": "Uploading... {progress}%"
+    "progress": "Uploading... {{progress}}%"
   },
   "confirmDelete": "Are you sure you want to delete this level file? This action cannot be undone."
 } 

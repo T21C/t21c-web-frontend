@@ -93,6 +93,7 @@
 }
 
 .selection-mode-toggle {
+    z-index: 1;
     display: flex;
     gap: 8px;
     margin-bottom: 16px;
@@ -110,8 +111,8 @@
 }
 
 .selection-mode-toggle button.active {
-    background-color: #2a2a2a;
-    border-color: #444444;
+    background-color: #333;
+    border-color: #444;
 }
 
 .option-group {

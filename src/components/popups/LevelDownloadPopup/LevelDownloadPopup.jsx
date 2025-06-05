@@ -2,10 +2,12 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import './LevelDownloadPopup.css';
 import EnhancedSelect from './EnhancedSelect';
+import { Tooltip } from 'react-tooltip';
 
 const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink }) => {
     const [step, setStep] = useState(1);
-    const [selectionMode, setSelectionMode] = useState('keep'); // 'keep' or 'drop'
+    const [selectionMode, setSelectionMode] = useState('drop'); // 'keep' or 'drop'
+    const [availableFilters, setAvailableFilters] = useState([]);
     const [transformOptions, setTransformOptions] = useState({
         keepEvents: [],
         dropEvents: [],
@@ -85,6 +87,19 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink }) => {
         };
     }, [onClose]);
 
+    useEffect(() => {
+        if (!availableOptions) return;
+        const basicToBeDropped = transformOptions.dropEvents.includes('SetFilter') && selectionMode === 'drop' 
+        || !transformOptions.keepEvents.includes('SetFilter') && selectionMode === 'keep';
+        
+        const advancedToBeDropped = transformOptions.dropEvents.includes('SetFilterAdvanced') && selectionMode === 'drop' 
+        || !transformOptions.keepEvents.includes('SetFilterAdvanced') && selectionMode === 'keep';
+
+        const filters = [!basicToBeDropped ? availableOptions.filterTypes : [], !advancedToBeDropped ? availableOptions.advancedFilterTypes : []].flat();
+        setAvailableFilters(filters);
+        
+    }, [transformOptions.dropEvents, transformOptions.keepEvents, availableOptions, selectionMode]);
+
     const handleSelectionChange = (selectedEvents) => {
         setTransformOptions(prev => ({
             ...prev,
@@ -102,10 +117,10 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink }) => {
 
         // Build query string for transform options
         const queryParams = new URLSearchParams();
-        if (transformOptions.keepEvents.length > 0) {
+        if (transformOptions.keepEvents.length > 0 && selectionMode === 'keep') {
             queryParams.append('keepEvents', transformOptions.keepEvents.join(','));
         }
-        if (transformOptions.dropEvents.length > 0) {
+        if (transformOptions.dropEvents.length > 0 && selectionMode === 'drop') {
             queryParams.append('dropEvents', transformOptions.dropEvents.join(','));
         }
         if (transformOptions.baseCameraZoom !== 1) {
@@ -132,7 +147,7 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink }) => {
     };
 
     if (!isOpen) return null;
-
+    
     return (
         <div className="level-download-popup">
             <div className="level-download-content" ref={popupRef}>
@@ -177,17 +192,25 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink }) => {
                             <div className="transform-options">
                                 <div className="selection-mode-toggle">
                                     <button 
-                                        className={selectionMode === 'keep' ? 'active' : ''}
-                                        onClick={() => setSelectionMode('keep')}
-                                    >
-                                        Keep Events
-                                    </button>
-                                    <button 
                                         className={selectionMode === 'drop' ? 'active' : ''}
                                         onClick={() => setSelectionMode('drop')}
+                                        data-tooltip-id='drop-events-tooltip'
                                     >
                                         Drop Events
                                     </button>
+                                    <button 
+                                        className={selectionMode === 'keep' ? 'active' : ''}
+                                        onClick={() => setSelectionMode('keep')}
+                                        data-tooltip-id='keep-events-tooltip'
+                                    >
+                                        Keep Events
+                                    </button>
+                                    <Tooltip id='drop-events-tooltip' place="bottom"> 
+                                        Remove selected events and filters from the level
+                                    </Tooltip>
+                                    <Tooltip id='keep-events-tooltip' place="bottom">
+                                        Keep only the selected events and remove filters``
+                                    </Tooltip>
                                 </div>
 
                                 <div className="option-group">
@@ -280,12 +303,11 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink }) => {
                                     </label>
                                 </div>
 
-                                {(!transformOptions.dropEvents.includes('SetFilter') && 
-                                  !transformOptions.dropEvents.includes('SetFilterAdvanced')) && (
+                                {(
                                     <div className="option-group">
                                         <label>Drop Filters:</label>
                                         <EnhancedSelect
-                                            options={availableOptions.filterTypes}
+                                            options={availableFilters}
                                             value={transformOptions.dropFilters}
                                             onChange={(value) => setTransformOptions(prev => ({
                                                 ...prev,
