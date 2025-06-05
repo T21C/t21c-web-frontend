@@ -10,7 +10,9 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink }) => {
         keepEvents: [],
         dropEvents: [],
         baseCameraZoom: 1,
-        constantBackgroundColor: '',
+        constantBackgroundColor: '#000000',
+        backgroundColorOpacity: 1,
+        useCustomBackground: false,
         removeForegroundFlash: false,
         dropFilters: []
     });
@@ -109,8 +111,10 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink }) => {
         if (transformOptions.baseCameraZoom !== 1) {
             queryParams.append('baseCameraZoom', transformOptions.baseCameraZoom);
         }
-        if (transformOptions.constantBackgroundColor) {
-            queryParams.append('constantBackgroundColor', transformOptions.constantBackgroundColor.replace('#', ''));
+        if (transformOptions.useCustomBackground && transformOptions.constantBackgroundColor) {
+            // Convert opacity to hex (0-255)
+            const opacityHex = Math.round(transformOptions.backgroundColorOpacity * 255).toString(16).padStart(2, '0');
+            queryParams.append('constantBackgroundColor', transformOptions.constantBackgroundColor.replace('#', '') + opacityHex);
         }
         if (transformOptions.removeForegroundFlash) {
             queryParams.append('removeForegroundFlash', 'true');
@@ -163,7 +167,7 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink }) => {
                                 Download Original
                             </button>
                             <button onClick={() => setStep(2)}>
-                                Transform & Download
+                                Convert & Download
                             </button>
                         </div>
                     </div>
@@ -212,15 +216,54 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink }) => {
                                 </div>
 
                                 <div className="option-group">
-                                    <label>Background Color:</label>
-                                    <input 
-                                        type="color" 
-                                        value={transformOptions.constantBackgroundColor}
-                                        onChange={(e) => setTransformOptions(prev => ({
-                                            ...prev,
-                                            constantBackgroundColor: e.target.value
-                                        }))}
-                                    />
+                                    <label>
+                                        <input 
+                                            type="checkbox"
+                                            checked={transformOptions.useCustomBackground}
+                                            onChange={(e) => setTransformOptions(prev => ({
+                                                ...prev,
+                                                useCustomBackground: e.target.checked
+                                            }))}
+                                        />
+                                        Use Custom Background Color
+                                    </label>
+                                    {transformOptions.useCustomBackground && (
+                                        <div className="color-picker-group">
+                                            <div className="color-selection">
+                                                <label>Color:</label>
+                                                <input 
+                                                    type="color" 
+                                                    value={transformOptions.constantBackgroundColor}
+                                                    onChange={(e) => setTransformOptions(prev => ({
+                                                        ...prev,
+                                                        constantBackgroundColor: e.target.value
+                                                    }))}
+                                                />
+                                                <div 
+                                                    className="color-preview"
+                                                    style={{
+                                                        '--preview-color': transformOptions.constantBackgroundColor,
+                                                        '--preview-opacity': transformOptions.backgroundColorOpacity
+                                                    }}
+                                                />
+                                            </div>
+                                            <div className="opacity-control">
+                                                <label>Opacity:</label>
+                                                <input 
+                                                    type="range"
+                                                    min="0"
+                                                    max="1"
+                                                    step="0.01"
+                                                    value={transformOptions.backgroundColorOpacity}
+                                                    onChange={(e) => setTransformOptions(prev => ({
+                                                        ...prev,
+                                                        backgroundColorOpacity: parseFloat(e.target.value)
+                                                    }))}
+                                                />
+                                                <span>{Math.round(transformOptions.backgroundColorOpacity * 100)}%</span>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <div className="option-group">
@@ -260,7 +303,7 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink }) => {
                         <div className="transform-buttons">
                             <button onClick={() => setStep(1)}>Back</button>
                             <button onClick={() => handleDownload('transformed')}>
-                                Download Transformed
+                                Download Converted
                             </button>
                         </div>
                     </div>

@@ -215,7 +215,7 @@ const EnhancedSelect = ({
                         onClick={handleResetClick}
                         title={value.length === 0 ? "Select All" : "Deselect All"}
                     >
-                        {value.length === 0 ? "✓" : "×"}
+                        {value.length === 0 ? "✓" : "✖"}
                     </button>
                     <div className="enhanced-select-arrow">
                         {isOpen ? '▲' : '▼'}
@@ -241,7 +241,7 @@ const EnhancedSelect = ({
                             />
                         )}
                         <div 
-                            className="enhanced-select-options"
+                            className={`enhanced-select-options ${isOpen ? 'open' : ''}`}
                             onMouseUp={handleMouseUp}
                         >
                             {filteredOptions.map((option, index) => (
