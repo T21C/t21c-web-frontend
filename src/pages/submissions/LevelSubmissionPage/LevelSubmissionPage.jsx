@@ -53,7 +53,8 @@ const LevelSubmissionPage = () => {
   const [isInvalidFeelingRating, setIsInvalidFeelingRating] = useState(false);
   const [isFormValid, setIsFormValid] = useState(false);
   const [isFormValidDisplay, setIsFormValidDisplay] = useState({});
-  
+  const [finalSubmissionId, setFinalSubmissionId] = useState(null);
+
   const [showMessage, setShowMessage] = useState(false)
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
@@ -312,6 +313,7 @@ const LevelSubmissionPage = () => {
         setLevelFiles(response.levelFiles);
         setSelectedFileId(response.fileId);
         setShowLevelSelection(true);
+        setFinalSubmissionId(response.submissionId);
         setSubmission(false); // Reset submission state since we're waiting for level selection
         return;
       }
@@ -333,7 +335,7 @@ const LevelSubmissionPage = () => {
     try {
       setSubmission(true); // Show loading state during level selection
       const response = await api.post(import.meta.env.VITE_SELECT_LEVEL, {
-        fileId: selectedFileId,
+        submissionId: finalSubmissionId,
         selectedLevel
       });
 
@@ -367,7 +369,7 @@ const LevelSubmissionPage = () => {
       );
       
       const response = await api.post(import.meta.env.VITE_SELECT_LEVEL, {
-        fileId: selectedFileId,
+        submissionId: finalSubmissionId,
         selectedLevel: largestFile.name
       });
 
