@@ -57,6 +57,13 @@ export default defineConfig(({ command, mode }) => {
             reactRouter: ['react-router', 'react-router-dom'],
             recharts: ['recharts'],
             i18n: ['i18next', 'react-i18next'],
+            popups: [
+              'src/components/popups/EditLevelPopup/EditLevelPopup.jsx',
+            ],
+            admin: [
+              'src/pages/admin/AnnouncementPage/AnnouncementPage.jsx',
+              'src/pages/admin/RatingPage/RatingPage.jsx'
+            ]
           }
         }
       }
