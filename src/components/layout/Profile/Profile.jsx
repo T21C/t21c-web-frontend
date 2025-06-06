@@ -12,7 +12,6 @@ function Profile() {
   const tProfile = (key) => t(`profile.${key}`) || key;
 
   const login = () => {
-    console.log(window.location.pathname);
     initiateLogin(window.location.pathname);
   };
 

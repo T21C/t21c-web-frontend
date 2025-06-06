@@ -6,11 +6,6 @@ export const uploadFileInChunks = async (file, uploadUrl, onProgress) => {
   const totalChunks = Math.ceil(file.size / CHUNK_SIZE);
   const fileId = Math.random().toString(36).substring(7);
   
-  console.log('Starting chunked upload:', {
-    fileSize: file.size,
-    totalChunks,
-    fileId
-  });
   
   for (let chunkIndex = 0; chunkIndex < totalChunks; chunkIndex++) {
     const start = chunkIndex * CHUNK_SIZE;
@@ -19,15 +14,6 @@ export const uploadFileInChunks = async (file, uploadUrl, onProgress) => {
     
     const formData = new FormData();
     formData.append('chunk', chunk);
-    
-    // Log form data contents
-    console.log(`Uploading chunk ${chunkIndex + 1}/${totalChunks}:`, {
-      chunkSize: chunk.size,
-      formDataEntries: Array.from(formData.entries()).map(([key, value]) => ({
-        key,
-        value: value instanceof File ? `File: ${value.name} (${value.size} bytes)` : value
-      }))
-    });
     
     try {
       const response = await api.post(uploadUrl, formData, {
@@ -44,7 +30,6 @@ export const uploadFileInChunks = async (file, uploadUrl, onProgress) => {
         },
       });
       
-      console.log(`Chunk ${chunkIndex + 1}/${totalChunks} uploaded successfully:`, response.data);
     } catch (error) {
       console.error(`Failed to upload chunk ${chunkIndex + 1}/${totalChunks}:`, {
         error: error.message,

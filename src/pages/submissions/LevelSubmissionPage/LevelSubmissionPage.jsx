@@ -294,9 +294,6 @@ const LevelSubmissionPage = () => {
       submissionForm.setDetail('directDL', form.dlLink);
       submissionForm.setDetail('wsLink', form.workshopLink);
       
-      // Add logging for creator requests
-      console.log('Creator Requests:', creatorRequests);
-      console.log('Team Request:', teamRequest);
       
       submissionForm.setDetail('creatorRequests', creatorRequests);
       submissionForm.setDetail('teamRequest', teamRequest);

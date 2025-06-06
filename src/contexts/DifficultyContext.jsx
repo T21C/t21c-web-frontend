@@ -44,9 +44,6 @@ const preloadImage = async (url) => {
             cache: 'force-cache',
         });
 
-        console.log(response);
-
-        
         // In normal mode, we can check response status
         if (!response.ok) {
             throw new Error(`Failed to load image: ${response.statusText}`);
