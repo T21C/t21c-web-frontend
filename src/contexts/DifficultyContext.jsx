@@ -1,8 +1,7 @@
 /* eslint-disable react/prop-types */
 import { createContext, useState, useEffect, useContext } from "react";
 import axios from "axios";
-
-const isDevelopment = import.meta.env.VITE_OWN_URL === 'https://localhost:5173';
+import api from "@/utils/api";
 
 const DifficultyContext = createContext();
 
@@ -43,16 +42,10 @@ const preloadImage = async (url) => {
     try {
         const response = await fetch(url, {
             cache: 'force-cache',
-            mode: isDevelopment ? 'no-cors' : 'cors'
         });
 
         console.log(response);
-        
-        // In no-cors mode, response is opaque and we can't check response.ok
-        if (isDevelopment) {
-            // Just check if we got a response
-            return { url, success: true };
-        }
+
         
         // In normal mode, we can check response status
         if (!response.ok) {
@@ -79,24 +72,18 @@ const DifficultyContextProvider = (props) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const fetchDifficulties = async (forceRefresh = false) => {
+    const fetchDifficulties = async () => {
         try {
             setLoading(true);
             setError(null);
             
             // Fetch fresh data from server
-            const response = await fetch(import.meta.env.VITE_DIFFICULTIES, {
+            const response = await api.get(import.meta.env.VITE_DIFFICULTIES, {
                 headers: {
                     'Cache-Control': 'no-cache',
-                    'Pragma': 'no-cache'
-                },
-                // Add no-cors mode in development
-                ...(isDevelopment && {
-                    mode: 'no-cors',
-                    credentials: 'omit'
-                })
+                }
             });
-            const diffsArray = await response.json();
+            const diffsArray = response.data;
             
             if (!diffsArray || !Array.isArray(diffsArray)) {
                 throw new Error('Invalid server response format');
@@ -123,19 +110,6 @@ const DifficultyContextProvider = (props) => {
             const preloadPromises = iconUrls.map(url => preloadImage(url));
             const preloadResults = await Promise.all(preloadPromises);
 
-            // Log cache status for all icons (development only)
-            if (isDevelopment) {
-                console.group('Icon Cache Status');
-                const cacheStatusPromises = preloadResults
-                    .filter(result => result.success)
-                    .map(result => checkImageCacheStatus(result.url));
-                
-                const cacheStatuses = await Promise.all(cacheStatusPromises);
-                cacheStatuses.forEach(status => {
-                    console.log(`Icon ${status.url}:`, status);
-                });
-                console.groupEnd();
-            }
             
         } catch (err) {
             console.error('Error fetching difficulties:', err);
