@@ -1,9 +1,69 @@
 /* eslint-disable react/prop-types */
 import { createContext, useState, useEffect, useContext } from "react";
-import api from '@/utils/api';
 import axios from "axios";
 
+const isDevelopment = import.meta.env.VITE_OWN_URL === 'https://localhost:5173';
+
 const DifficultyContext = createContext();
+
+// Utility function to check if an image was loaded from cache
+const checkImageCacheStatus = async (imageUrl) => {
+    try {
+        const startTime = performance.now();
+        const response = await fetch(imageUrl, { 
+            cache: 'force-cache',
+            mode: isDevelopment ? 'no-cors' : 'cors'
+        });
+        const endTime = performance.now();
+        
+        // Get cache status from response
+        const cacheStatus = response.headers.get('x-cache') || 
+                          (response.headers.get('cf-cache-status') || 'unknown');
+        
+        // Check if it was a 304 Not Modified response
+        const fromCache = response.status === 304 || 
+                         cacheStatus.toLowerCase().includes('hit') ||
+                         endTime - startTime < 50; // Very fast response likely from cache
+        
+        return {
+            url: imageUrl,
+            fromCache,
+            cacheStatus,
+            loadTime: endTime - startTime,
+            status: response.status
+        };
+    } catch (error) {
+        console.error('Error checking cache status:', error);
+        return { url: imageUrl, error: error.message };
+    }
+};
+
+// Function to preload an image
+const preloadImage = async (url) => {
+    try {
+        const response = await fetch(url, {
+            cache: 'force-cache',
+            mode: isDevelopment ? 'no-cors' : 'cors'
+        });
+
+        console.log(response);
+        
+        // In no-cors mode, response is opaque and we can't check response.ok
+        if (isDevelopment) {
+            // Just check if we got a response
+            return { url, success: true };
+        }
+        
+        // In normal mode, we can check response status
+        if (!response.ok) {
+            throw new Error(`Failed to load image: ${response.statusText}`);
+        }
+        return { url, success: true };
+    } catch (error) {
+        console.error(`Failed to preload image ${url}:`, error);
+        return { url, success: false, error: error.message };
+    }
+};
 
 export const useDifficultyContext = () => {
     const context = useContext(DifficultyContext);
@@ -16,183 +76,66 @@ export const useDifficultyContext = () => {
 const DifficultyContextProvider = (props) => {
     const [difficultyDict, setDifficultyDict] = useState({});
     const [difficulties, setDifficulties] = useState([]);
-    const [rawDifficulties, setRawDifficulties] = useState([]);
-    const [currentHash, setCurrentHash] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-
-    // Function to check if the current hash matches the server hash
-    const checkHash = async () => {
-        try {
-            // Get the current hash from the server
-            const response = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/hash`);
-            const serverHash = response.data.hash;
-            
-            // Update the current hash state
-            setCurrentHash(serverHash);
-            
-            // Compare with stored hash
-            const storedHash = localStorage.getItem('difficulties_hash');
-            return storedHash === serverHash;
-        } catch (err) {
-            console.error('Error checking hash:', err);
-            return false;
-        }
-    };
-
-    const blobToBase64 = (blob) => {
-        return new Promise((resolve, reject) => {
-            const reader = new FileReader();
-            reader.onloadend = () => resolve(reader.result);
-            reader.onerror = reject;
-            reader.readAsDataURL(blob);
-        });
-    };
-    
-    const base64ToBlob = (base64) => {
-        try {
-            // Handle data URLs (e.g., "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAA...")
-            if (base64.startsWith('data:')) {
-                const parts = base64.split(',');
-                const mimeType = parts[0].split(':')[1].split(';')[0];
-                const binaryString = atob(parts[1]);
-                const ab = new ArrayBuffer(binaryString.length);
-                const ia = new Uint8Array(ab);
-                for (let i = 0; i < binaryString.length; i++) {
-                    ia[i] = binaryString.charCodeAt(i);
-                }
-                return new Blob([ab], { type: mimeType });
-            }
-            
-            // Handle raw base64 strings
-            const binaryString = atob(base64);
-            const ab = new ArrayBuffer(binaryString.length);
-            const ia = new Uint8Array(ab);
-            for (let i = 0; i < binaryString.length; i++) {
-                ia[i] = binaryString.charCodeAt(i);
-            }
-            return new Blob([ab], { type: 'image/png' }); // Default to PNG if no mime type
-        } catch (err) {
-            console.error('Error converting base64 to blob:', err);
-            return null;
-        }
-    };  
 
     const fetchDifficulties = async (forceRefresh = false) => {
         try {
             setLoading(true);
             setError(null);
             
-            // If not forcing refresh, check hash first
-            if (!forceRefresh) {
-                const isHashValid = await checkHash();
-                if (isHashValid) {
-                    // Load from localStorage if hash matches
-                    const cachedData = localStorage.getItem('difficulties_data');
-                    if (cachedData) {
-                        const parsedData = JSON.parse(cachedData);
-                        setDifficulties(parsedData);
-                        
-                        // Create and set difficulty dictionary
-                        const diffsDict = {};
-                        parsedData.forEach(diff => {
-                            diffsDict[diff.id] = diff;
-                        });
-                        setDifficultyDict(diffsDict);
-                        setLoading(false);
-                        return;
-                    }
-                }
-            }
-            
             // Fetch fresh data from server
-            const response = await api.get(import.meta.env.VITE_DIFFICULTIES);
-            const diffsArray = response.data;
+            const response = await fetch(import.meta.env.VITE_DIFFICULTIES, {
+                headers: {
+                    'Cache-Control': 'no-cache',
+                    'Pragma': 'no-cache'
+                },
+                // Add no-cors mode in development
+                ...(isDevelopment && {
+                    mode: 'no-cors',
+                    credentials: 'omit'
+                })
+            });
+            const diffsArray = await response.json();
             
             if (!diffsArray || !Array.isArray(diffsArray)) {
                 throw new Error('Invalid server response format');
             }
             
-            // Get the hash from the server
-            const hashResponse = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/hash`);
-            const hash = hashResponse.data.hash;
-            
-            // Cleanup old blob URLs to prevent memory leaks
-            difficulties.forEach(diff => {
-                if (diff.icon && diff.icon.startsWith('blob:')) {
-                    URL.revokeObjectURL(diff.icon);
-                }
-                if (diff.legacyIcon && diff.legacyIcon.startsWith('blob:')) {
-                    URL.revokeObjectURL(diff.legacyIcon);
-                }
-            });
-            
-            // Process icons and create blob URLs
-            const diffsWithIcons = await Promise.all(diffsArray.map(async (diff) => {
-                try {
-                    const iconUrl = diff.icon;
-                    const legacyIconUrl = diff.legacyIcon;
-                    let blobUrl = null;
-                    let legacyBlobUrl = null;
-
-                    if (iconUrl) {
-                        if (iconUrl.startsWith('data:')) {
-                            // Already a base64 string, convert to blob
-                            blobUrl = URL.createObjectURL(base64ToBlob(iconUrl));
-                        } else if (iconUrl.startsWith('blob:')) {
-                            // Already a blob URL, keep it
-                            blobUrl = iconUrl;
-                        } else {
-                            // Fetch from URL with cache control
-                            const iconResponse = await fetch(iconUrl, {
-                                cache: 'force-cache' // Use browser's cache
-                            });
-                            const blob = await iconResponse.blob();
-                            blobUrl = URL.createObjectURL(blob);
-                        }
-                    }
-
-                    if (legacyIconUrl) {
-                        if (legacyIconUrl.startsWith('data:')) {
-                            // Already a base64 string, convert to blob
-                            legacyBlobUrl = URL.createObjectURL(base64ToBlob(legacyIconUrl));
-                        } else if (legacyIconUrl.startsWith('blob:')) {
-                            // Already a blob URL, keep it
-                            legacyBlobUrl = legacyIconUrl;
-                        } else {
-                            // Fetch from URL with cache control
-                            const legacyIconResponse = await fetch(legacyIconUrl, {
-                                cache: 'force-cache' // Use browser's cache
-                            });
-                            const blob = await legacyIconResponse.blob();
-                            legacyBlobUrl = URL.createObjectURL(blob);
-                        }
-                    }
-
-                    return { 
-                        ...diff, 
-                        icon: blobUrl || iconUrl,
-                        legacyIcon: legacyBlobUrl || legacyIconUrl
-                    };
-                } catch (err) {
-                    console.error(`Failed to load icons for ${diff.name}:`, err);
-                    return diff;
-                }
-            }));
-            
             // Create and set difficulty dictionary
             const diffsDict = {};
-            diffsWithIcons.forEach(diff => {
+            diffsArray.forEach(diff => {
                 diffsDict[diff.id] = diff;
             });
             
             // Update state
-            setDifficulties(diffsWithIcons);
+            setDifficulties(diffsArray);
             setDifficultyDict(diffsDict);
-            
-            // Save to localStorage
-            localStorage.setItem('difficulties_data', JSON.stringify(diffsWithIcons));
-            localStorage.setItem('difficulties_hash', hash);
+
+            // Preload all icons in parallel
+            const iconUrls = diffsArray.reduce((urls, diff) => {
+                if (diff.icon) urls.push(diff.icon);
+                if (diff.legacyIcon) urls.push(diff.legacyIcon);
+                return urls;
+            }, []);
+
+            // Load all icons in parallel
+            const preloadPromises = iconUrls.map(url => preloadImage(url));
+            const preloadResults = await Promise.all(preloadPromises);
+
+            // Log cache status for all icons (development only)
+            if (isDevelopment) {
+                console.group('Icon Cache Status');
+                const cacheStatusPromises = preloadResults
+                    .filter(result => result.success)
+                    .map(result => checkImageCacheStatus(result.url));
+                
+                const cacheStatuses = await Promise.all(cacheStatusPromises);
+                cacheStatuses.forEach(status => {
+                    console.log(`Icon ${status.url}:`, status);
+                });
+                console.groupEnd();
+            }
             
         } catch (err) {
             console.error('Error fetching difficulties:', err);
@@ -204,18 +147,6 @@ const DifficultyContextProvider = (props) => {
 
     useEffect(() => {
         fetchDifficulties();
-
-        // Cleanup blob URLs on unmount
-        return () => {
-            difficulties.forEach(diff => {
-                if (diff.icon && diff.icon.startsWith('blob:')) {
-                    URL.revokeObjectURL(diff.icon);
-                }
-                if (diff.legacyIcon && diff.legacyIcon.startsWith('blob:')) {
-                    URL.revokeObjectURL(diff.legacyIcon);
-                }
-            });
-        };
     }, []);
 
     return (
@@ -225,13 +156,12 @@ const DifficultyContextProvider = (props) => {
                 setDifficulties,
                 difficultyDict,
                 setDifficultyDict,
-                rawDifficulties,
-                setRawDifficulties,
                 loading,
                 setLoading,
                 error,
                 setError,
-                reloadDifficulties: fetchDifficulties
+                reloadDifficulties: fetchDifficulties,
+                checkImageCacheStatus
             }}
         >
             {props.children}
