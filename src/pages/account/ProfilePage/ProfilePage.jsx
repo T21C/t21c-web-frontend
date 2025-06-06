@@ -199,6 +199,25 @@ const ProfilePage = () => {
                       />
                     </div>
                   </div>
+                  <div className="diff-container">
+                    <div className="diff-info">
+                      <p>{valueLabels.topDiff}</p>
+                      <img
+                        src={playerData.stats.topDiff?.icon}
+                        alt={playerData.stats.topDiff?.name || 'None'}
+                        className="diff-image"
+                      />
+                    </div>
+
+                    <div className="diff-info">
+                      <p>{valueLabels.top12kDiff}</p>
+                      <img
+                        src={playerData.stats.top12kDiff?.icon}
+                        alt={playerData.stats.top12kDiff?.name || 'None'}
+                        className="diff-image"
+                      />
+                    </div>
+                  </div>
                   </div>
                   <div className="edit-button-container">
                   {user && isOwnProfile && (

@@ -627,6 +627,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
       {showUploadManagement && (
         <LevelUploadManagementPopup
           level={level}
+          setLevel={onUpdate}
           onClose={() => setShowUploadManagement(false)}
           setFormData={setFormData}
           formData={formData}

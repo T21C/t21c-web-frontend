@@ -6,7 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { prepareZipForUpload, validateZipSize, formatFileSize, encodeFilename } from '@/utils/zipUtils';
 import { uploadFileInChunks, validateChunkedUpload } from '@/utils/chunkedUpload';
 
-const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose }) => {
+const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, setLevel }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState(null);
@@ -94,6 +94,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose }) =
         });
 
         if (response.data.success) {
+          setLevel(response.data.level);
           setFormData(prev => ({
             ...prev,
             dlLink: response.data.level.dlLink
@@ -180,7 +181,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose }) =
               />
             </div>
             <div className="progress-text">
-              {tUpload('upload.progress', { progress: uploadProgress })}
+              {tUpload('upload.progress', { progress: uploadProgress.toFixed(2) })}
             </div>
           </div>
         ) : (
