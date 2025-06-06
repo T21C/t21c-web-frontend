@@ -22,8 +22,9 @@ const DifficultyContextProvider = (props) => {
     const [error, setError] = useState(null);
 
     // Constants for cache keys
-    const CACHE_KEY = 'difficulties_cache';
+    const CACHE_KEY_PREFIX = 'difficulties_cache_';
     const HASH_KEY = 'difficulties_hash';
+    const CHUNK_SIZE = 20; // Number of difficulties per chunk
 
     // Function to check if the current hash matches the server hash
     const checkHash = async () => {
@@ -116,7 +117,7 @@ const DifficultyContextProvider = (props) => {
                         const response = await fetch(diff.legacyIcon);
                         const blob = await response.blob();
                         legacyIconBase64 = await blobToBase64(blob);
-                        } catch (err) {
+                    } catch (err) {
                         console.error(`Error converting legacy icon to base64 for ${diff.name}:`, err);
                     }
                 } else if (diff.legacyIcon && diff.legacyIcon.startsWith('data:')) {
@@ -131,9 +132,22 @@ const DifficultyContextProvider = (props) => {
                     legacyIcon: legacyIconBase64 || diff.legacyIcon
                 };
             }));
+
+            // Split difficulties into chunks
+            const chunks = [];
+            for (let i = 0; i < difficultiesWithBase64.length; i += CHUNK_SIZE) {
+                chunks.push(difficultiesWithBase64.slice(i, i + CHUNK_SIZE));
+            }
+
+            // Save each chunk separately
+            chunks.forEach((chunk, index) => {
+                localStorage.setItem(`${CACHE_KEY_PREFIX}${index}`, JSON.stringify(chunk));
+            });
+
+            // Save the number of chunks
+            localStorage.setItem(`${CACHE_KEY_PREFIX}count`, chunks.length.toString());
             
-            // Save the data to localStorage
-            localStorage.setItem(CACHE_KEY, JSON.stringify({ difficulties: difficultiesWithBase64 }));
+            // Save the hash
             localStorage.setItem(HASH_KEY, hash);
             
             // Update the current hash state
@@ -145,64 +159,90 @@ const DifficultyContextProvider = (props) => {
 
     const loadCachedData = () => {  
         try {
-            const cachedData = localStorage.getItem(CACHE_KEY);
-            if (cachedData) {
-                const parsedData = JSON.parse(cachedData);
-                if (parsedData.difficulties && parsedData.difficulties.length > 0) {
+            // Get the number of chunks
+            const chunkCount = parseInt(localStorage.getItem(`${CACHE_KEY_PREFIX}count`) || '0');
+            
+            if (chunkCount === 0) {
+                return false;
+            }
 
-                    // Convert base64 data to blob URLs
-                    const difficultiesWithBlobs = parsedData.difficulties.map(diff => {
-                        let iconBlobUrl = null;
-                        let legacyIconBlobUrl = null;
-                        
-                        // Convert icon base64 to blob URL
-                        if (diff.icon && diff.icon.startsWith('data:')) {
-                            try {
-                                const blob = base64ToBlob(diff.icon);
-                                if (blob) {
-                                    iconBlobUrl = URL.createObjectURL(blob);
-                                }
-                            } catch (err) {
-                                console.error(`Error converting base64 to blob for ${diff.name} icon:`, err);
-                            }
-                        }
-                        
-                        // Convert legacy icon base64 to blob URL
-                        if (diff.legacyIcon && diff.legacyIcon.startsWith('data:')) {
-                            try {
-                                const blob = base64ToBlob(diff.legacyIcon);
-                                if (blob) {
-                                    legacyIconBlobUrl = URL.createObjectURL(blob);
-                                    }
-                            } catch (err) {
-                                console.error(`Error converting base64 to blob for ${diff.name} legacy icon:`, err);
-                            }
-                        }
-                        
-                        // Return the difficulty with blob URLs
-                        return {
-                            ...diff,
-                            icon: iconBlobUrl || diff.icon,
-                            legacyIcon: legacyIconBlobUrl || diff.legacyIcon
-                        };
-                    });
-                    
-                    setDifficulties(difficultiesWithBlobs);
-                    
-                    // Create and set difficulty dictionary
-                    const diffsDict = {};
-                    difficultiesWithBlobs.forEach(diff => {
-                        diffsDict[diff.id] = diff;
-                    });
-                    setDifficultyDict(diffsDict);
-                    
-                    return true;
+            // Load all chunks
+            const allDifficulties = [];
+            for (let i = 0; i < chunkCount; i++) {
+                const chunkData = localStorage.getItem(`${CACHE_KEY_PREFIX}${i}`);
+                if (chunkData) {
+                    const parsedChunk = JSON.parse(chunkData);
+                    allDifficulties.push(...parsedChunk);
                 }
+            }
+
+            if (allDifficulties.length > 0) {
+                // Convert base64 data to blob URLs
+                const difficultiesWithBlobs = allDifficulties.map(diff => {
+                    let iconBlobUrl = null;
+                    let legacyIconBlobUrl = null;
+                    
+                    // Convert icon base64 to blob URL
+                    if (diff.icon && diff.icon.startsWith('data:')) {
+                        try {
+                            const blob = base64ToBlob(diff.icon);
+                            if (blob) {
+                                iconBlobUrl = URL.createObjectURL(blob);
+                            }
+                        } catch (err) {
+                            console.error(`Error converting base64 to blob for ${diff.name} icon:`, err);
+                        }
+                    }
+                    
+                    // Convert legacy icon base64 to blob URL
+                    if (diff.legacyIcon && diff.legacyIcon.startsWith('data:')) {
+                        try {
+                            const blob = base64ToBlob(diff.legacyIcon);
+                            if (blob) {
+                                legacyIconBlobUrl = URL.createObjectURL(blob);
+                            }
+                        } catch (err) {
+                            console.error(`Error converting base64 to blob for ${diff.name} legacy icon:`, err);
+                        }
+                    }
+                    
+                    // Return the difficulty with blob URLs
+                    return {
+                        ...diff,
+                        icon: iconBlobUrl || diff.icon,
+                        legacyIcon: legacyIconBlobUrl || diff.legacyIcon
+                    };
+                });
+                
+                setDifficulties(difficultiesWithBlobs);
+                
+                // Create and set difficulty dictionary
+                const diffsDict = {};
+                difficultiesWithBlobs.forEach(diff => {
+                    diffsDict[diff.id] = diff;
+                });
+                setDifficultyDict(diffsDict);
+                
+                return true;
             }
             return false;
         } catch (err) {
             console.error('Error loading cached data:', err);
             return false;
+        }
+    };
+
+    // Add cleanup function for cache
+    const clearCache = () => {
+        try {
+            const chunkCount = parseInt(localStorage.getItem(`${CACHE_KEY_PREFIX}count`) || '0');
+            for (let i = 0; i < chunkCount; i++) {
+                localStorage.removeItem(`${CACHE_KEY_PREFIX}${i}`);
+            }
+            localStorage.removeItem(`${CACHE_KEY_PREFIX}count`);
+            localStorage.removeItem(HASH_KEY);
+        } catch (err) {
+            console.error('Error clearing cache:', err);
         }
     };
 
@@ -343,7 +383,8 @@ const DifficultyContextProvider = (props) => {
                 setLoading,
                 error,
                 setError,
-                reloadDifficulties: fetchDifficulties
+                reloadDifficulties: fetchDifficulties,
+                clearCache
             }}
         >
             {props.children}
