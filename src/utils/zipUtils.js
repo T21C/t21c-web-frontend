@@ -57,7 +57,7 @@ export const decodeFilename = (encodedFilename) => {
  * @param {number} maxSizeMB - Maximum size in megabytes
  * @returns {boolean} Whether the file size is valid
  */
-export const validateZipSize = (file, maxSizeMB = 1000) => {
+export const validateZipSize = (file, maxSizeMB = 500) => {
   const maxSizeBytes = maxSizeMB * 1024 * 1024;
   return file.size <= maxSizeBytes;
 };
