@@ -24,7 +24,7 @@ const DifficultyContextProvider = (props) => {
     // Constants for cache keys
     const CACHE_KEY_PREFIX = 'difficulties_cache_';
     const HASH_KEY = 'difficulties_hash';
-    const CHUNK_SIZE = 20; // Number of difficulties per chunk
+    const CHUNK_SIZE = 5; // Number of difficulties per chunk
 
     // Function to check if the current hash matches the server hash
     const checkHash = async () => {
@@ -139,9 +139,30 @@ const DifficultyContextProvider = (props) => {
                 chunks.push(difficultiesWithBase64.slice(i, i + CHUNK_SIZE));
             }
 
-            // Save each chunk separately
+            // Save each chunk separately and log its size
             chunks.forEach((chunk, index) => {
-                localStorage.setItem(`${CACHE_KEY_PREFIX}${index}`, JSON.stringify(chunk));
+                const chunkData = JSON.stringify(chunk);
+                const chunkSize = new Blob([chunkData]).size;
+                const chunkSizeMB = (chunkSize / (1024 * 1024)).toFixed(2);
+                
+                console.log(`Saving chunk ${index + 1}/${chunks.length}:`, {
+                    difficulties: chunk.length,
+                    size: `${chunkSizeMB} MB`,
+                    firstDifficulty: chunk[0]?.name,
+                    lastDifficulty: chunk[chunk.length - 1]?.name
+                });
+
+                localStorage.setItem(`${CACHE_KEY_PREFIX}${index}`, chunkData);
+            });
+
+            // Log total size
+            const totalSize = chunks.reduce((acc, chunk) => acc + new Blob([JSON.stringify(chunk)]).size, 0);
+            const totalSizeMB = (totalSize / (1024 * 1024)).toFixed(2);
+            console.log('Cache storage summary:', {
+                totalChunks: chunks.length,
+                totalDifficulties: difficultiesWithBase64.length,
+                totalSize: `${totalSizeMB} MB`,
+                averageChunkSize: `${(totalSizeMB / chunks.length).toFixed(2)} MB`
             });
 
             // Save the number of chunks
