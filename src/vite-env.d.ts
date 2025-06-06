@@ -60,6 +60,8 @@ interface ImportMetaEnv {
   readonly VITE_APRIL_FOOLS: boolean;
 
   readonly VITE_CDN_URL: string;
+
+  readonly VITE_CHUNK_UPLOAD_URL: string;
 }
 
 interface ImportMeta {

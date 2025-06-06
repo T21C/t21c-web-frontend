@@ -3,7 +3,8 @@ import api from '@/utils/api';
 import './leveluploadmanagementpopup.css';
 import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { prepareZipForUpload, validateZipSize, formatFileSize } from '@/utils/zipUtils';
+import { prepareZipForUpload, validateZipSize, formatFileSize, encodeFilename } from '@/utils/zipUtils';
+import { uploadFileInChunks, validateChunkedUpload } from '@/utils/chunkedUpload';
 
 const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose }) => {
   const [isUploading, setIsUploading] = useState(false);
@@ -65,37 +66,42 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose }) =
         return;
       }
 
-      // Prepare zip file for upload
-      const preparedZip = prepareZipForUpload(file);
-      if (!preparedZip) {
-        setError(tUpload('errors.invalidZip'));
-        return;
-      }
-
       setIsUploading(true);
       setError(null);
       setUploadProgress(0);
 
-      const formData = new FormData();
-      formData.append('levelZip', preparedZip.file);
+      // Upload file in chunks
+      const fileId = await uploadFileInChunks(
+        file,
+        `${import.meta.env.VITE_CHUNK_UPLOAD_URL}/chunk`,
+        (progress) => setUploadProgress(progress)
+      );
 
-      const response = await api.post(`${import.meta.env.VITE_LEVELS}/${level.id}/upload`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-        onUploadProgress: (progressEvent) => {
-          const progress = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-          setUploadProgress(progress);
-        },
-      });
+      // Validate the upload
+      const validationResult = await validateChunkedUpload(
+        fileId,
+        `${import.meta.env.VITE_CHUNK_UPLOAD_URL}/validate`
+      );
 
-      console.log(response.data);
-      if (response.data.success) {
-        setFormData(prev => ({
-          ...prev,
-          dlLink: response.data.level.dlLink
-        }));
-        fetchLevelFiles();
+      if (validationResult.success) {
+        // Encode filename to hex string array
+
+        // Now submit the level with the fileId and encoded filename
+        const response = await api.post(`${import.meta.env.VITE_LEVELS}/${level.id}/upload`, {
+          fileId,
+          fileName: encodeFilename(file.name),
+          fileSize: file.size
+        });
+
+        if (response.data.success) {
+          setFormData(prev => ({
+            ...prev,
+            dlLink: response.data.level.dlLink
+          }));
+          fetchLevelFiles();
+        }
+      } else {
+        throw new Error('Upload validation failed');
       }
     } catch (error) {
       setError(error.response?.data?.error || tUpload('errors.uploadFailed'));
