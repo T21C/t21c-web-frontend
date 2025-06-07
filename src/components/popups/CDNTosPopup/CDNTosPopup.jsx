@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import Cookies from 'js-cookie';
-import './CDNTosPopup.css';
+import './cdntospopup.css';
 import { useState } from 'react';
 
 const CDNTosPopup = ({ onAgree, onDecline }) => {
