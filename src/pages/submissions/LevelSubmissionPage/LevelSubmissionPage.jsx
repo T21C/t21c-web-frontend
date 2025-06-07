@@ -9,10 +9,11 @@ import { validateFeelingRating } from "@/utils/Utility";
 import { useTranslation } from "react-i18next";
 import { StagingModeWarning } from "@/components/common/display";
 import { ProfileSelector } from "@/components/common/selectors";
-import { LevelSelectionPopup } from "@/components/popups";
-import { useNavigate } from 'react-router-dom';
+import { LevelSelectionPopup, CDNTosPopup } from "@/components/popups";
+
 import api from "@/utils/api";
 import { prepareZipForUpload, validateZipSize, formatFileSize } from '@/utils/zipUtils';
+import Cookies from 'js-cookie';
 
 const encodeFilename = (str) => {
   // Convert string to UTF-8 bytes, then to hex
@@ -75,6 +76,9 @@ const LevelSubmissionPage = () => {
   const [levelFiles, setLevelFiles] = useState([]);
   const [selectedFileId, setSelectedFileId] = useState(null);
   const [showCancelWarning, setShowCancelWarning] = useState(false);
+
+  const [showCdnTos, setShowCdnTos] = useState(false);
+  const [pendingZipFile, setPendingZipFile] = useState(null);
 
   // Helper function to clean video URLs
   const cleanVideoUrl = (url) => {
@@ -443,10 +447,25 @@ const LevelSubmissionPage = () => {
     ));
   };
 
-  const handleZipUpload = async (event) => {
-    const file = event.target.files[0];
-    if (!file) return;
+  // Check if user has agreed to CDN ToS
+  const hasAgreedToCdnTos = () => {
+    return Cookies.get('cdn_tos_agreed') === 'true';
+  };
 
+  const handleCdnTosAgree = () => {
+    setShowCdnTos(false);
+    if (pendingZipFile) {
+      processZipUpload(pendingZipFile);
+      setPendingZipFile(null);
+    }
+  };
+
+  const handleCdnTosDecline = () => {
+    setShowCdnTos(false);
+    setPendingZipFile(null);
+  };
+
+  const processZipUpload = async (file) => {
     try {
       // Validate file type and size
       if (!validateZipSize(file)) {
@@ -475,6 +494,19 @@ const LevelSubmissionPage = () => {
       console.error('Error preparing zip file:', error);
       setError(t('levelSubmission.alert.invalidZip'));
     }
+  };
+
+  const handleZipUpload = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    if (!hasAgreedToCdnTos()) {
+      setPendingZipFile(file);
+      setShowCdnTos(true);
+      return;
+    }
+
+    processZipUpload(file);
   };
 
   const handleRemoveZip = () => {
@@ -526,6 +558,14 @@ const LevelSubmissionPage = () => {
               </div>
             </div>
           </div>
+        )}
+
+        {/* CDN ToS Agreement Prompt */}
+        {showCdnTos && (
+          <CDNTosPopup 
+            onAgree={handleCdnTosAgree}
+            onDecline={handleCdnTosDecline}
+          />
         )}
 
         <form className={`form-container ${videoDetail ? 'shadow' : ''}`}>

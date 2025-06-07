@@ -77,6 +77,7 @@ const AboutUsPage = () => {
         type="website"
       />
         <CompleteNav />
+        <div className="background-level" />
         <div className="about-us">
         <div className="about-us-container">
           <div className="about-content">

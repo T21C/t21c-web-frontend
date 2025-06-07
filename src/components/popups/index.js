@@ -13,6 +13,7 @@ import DifficultyPopup from "./DifficultyPopup/DifficultyPopup";
 import ProfilePicturePopup from "./ProfilePicturePopup/ProfilePicturePopup";
 import LevelSelectionPopup from "./LevelSelectionPopup/LevelSelectionPopup";
 import LevelUploadManagementPopup from './LevelUploadManagementPopup/LevelUploadManagementPopup';
+import CDNTosPopup from './CDNTosPopup/CDNTosPopup';
 
 export {
     AdminPlayerPopup,
@@ -29,5 +30,6 @@ export {
     DifficultyPopup,
     ProfilePicturePopup,
     LevelSelectionPopup,
-    LevelUploadManagementPopup
+    LevelUploadManagementPopup,
+    CDNTosPopup
 }

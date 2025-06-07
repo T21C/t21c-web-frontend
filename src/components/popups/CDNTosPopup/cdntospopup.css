@@ -1,0 +1,143 @@
+.cdn-tos-popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.cdn-tos-content {
+    background-color: #090909;
+    padding: 2rem;
+    border-radius: 8px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    border: 1px solid #333;
+    font-size: 1.1rem;
+}
+
+.cdn-tos-content h3 {
+    margin: 0 0 1.5rem;
+    color: #fff;
+    font-size: 2rem;
+    text-align: center;
+}
+
+.cdn-tos-text {
+    margin-bottom: 2rem;
+}
+
+.cdn-tos-text p {
+    margin: 0 0 1rem;
+    line-height: 1.6;
+    color: #ccc;
+}
+
+.cdn-tos-text .confirmation-text {
+    font-weight: 500;
+    color: #fff;
+    margin: 1.5rem 0 1rem;
+}
+
+.cdn-tos-text ul {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.cdn-tos-text li {
+    margin-bottom: 0.5rem;
+    line-height: 1.5;
+    color: #ccc;
+}
+
+.tos-link {
+    color: #4a9eff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.tos-link:hover {
+    text-decoration: underline;
+    color: #6bb4ff;
+}
+
+.cdn-tos-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.dont-show-again {
+    display: flex;
+    -webkit-user-select: none;
+    user-select: none;
+    margin-right: auto;
+    align-items: center;
+    gap: 0.5rem;
+    color: #999;
+    font-size: 0.9rem;
+}
+
+.dont-show-again input[type="checkbox"] {
+    margin: 0;
+    width: 0.9rem; 
+    height: 0.9rem;
+    accent-color: #4a9eff;
+}
+
+.cdn-tos-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.cdn-tos-buttons button {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.decline-btn {
+    background-color: #333;
+    color: #fff;
+}
+
+.decline-btn:hover {
+    background-color: #444;
+}
+
+.agree-btn {
+    background-color: #4a9eff;
+    color: white;
+}
+
+.agree-btn:hover {
+    background-color: #6bb4ff;
+}
+
+@media (max-width: 480px) {
+    .cdn-tos-content {
+        padding: 1.5rem;
+        width: 95%;
+    }
+
+    .cdn-tos-buttons {
+        flex-direction: column;
+    }
+
+    .cdn-tos-buttons button {
+        width: 100%;
+    }
+}
+  

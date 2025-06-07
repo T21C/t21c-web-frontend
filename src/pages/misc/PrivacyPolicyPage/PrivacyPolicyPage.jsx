@@ -15,6 +15,7 @@ const PrivacyPolicyPage = () => {
         type="website"
       />
       <CompleteNav />
+      <div className="background-level" />
       <div className="privacy-policy">
         <div className="privacy-container">
           <div className="privacy-content">
@@ -122,7 +123,7 @@ const PrivacyPolicyPage = () => {
 
             <section className="privacy-section">
               <h2>Contact Us</h2>
-              <p>If you have any questions about this Privacy Policy, please contact on our Discord server:</p>
+              <p>If you have any questions about our Privacy Policy, please contact managers on our Discord server:</p>
 
                 <p>Discord: <button className="discord-button" onClick={() => window.open("https://discord.gg/MaW353r8xg", "_blank")}>Join</button></p>
 

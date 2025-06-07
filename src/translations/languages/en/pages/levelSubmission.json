@@ -61,5 +61,18 @@
     "searchTeam": "Search for a team...",
     "newCreator": "Enter new creator name",
     "newTeam": "Enter new team name"
+  },
+  "cdnTos": {
+    "title": "CDN Upload Confirmation",
+    "content": "Before uploading your level to the CDN, please confirm that your zip file meets all requirements specified in our",
+    "tosLink": "CDN Terms of Service",
+    "confirmation": "I confirm that my level zip file:",
+    "terms": {
+      "1": "Contains only original content or content I have permission to use and distribute",
+      "2": "Does not contain any malicious or harmful content"
+    },
+    "dontShowAgain": "Don't show this again",
+    "agree": "I Confirm",
+    "decline": "Cancel"
   }
 } 

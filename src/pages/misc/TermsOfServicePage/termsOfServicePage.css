@@ -1,5 +1,4 @@
 .terms-of-service {
-  background-color: var(--color-black);
   color: var(--color-white);
   min-height: 100vh;
   padding: 2rem 3rem 5rem 3rem;
@@ -41,13 +40,13 @@
 }
 
 .terms-of-service .terms-section p {
-  color: var(--color-white-t80);
+  color: #fffe;
   line-height: 1.6;
   margin: 0 0 1rem 0;
 }
 
 .terms-of-service .terms-section ul {
-  color: var(--color-white-t80);
+  color: #fffe;
   line-height: 1.6;
   margin: 1rem 0;
   padding-left: 1.5rem;
@@ -55,6 +54,15 @@
 
 .terms-of-service .terms-section li {
   margin: 0.5rem 0;
+  border-radius: 5px;
+}
+
+.terms-of-service .important {
+  padding: 0.25rem 0.5rem;
+  font-weight: 600;
+  font-size: 1.1rem;
+  background: linear-gradient(45deg, rgb(114, 0, 0), #000000 );
+  font-style: italic;
 }
 
 .terms-of-service .last-updated {
@@ -116,6 +124,14 @@
 
 .terms-of-service .discord-button:hover {
   background-color: rgba(0,0,0,0.5);
+}
+
+.tos-link {
+  color: #4a9eff;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  font-weight: 500;
 }
 
 @media (max-width: 768px) {

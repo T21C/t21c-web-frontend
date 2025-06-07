@@ -1,6 +1,7 @@
 import "./termsOfServicePage.css";
 import { CompleteNav, Footer } from "@/components/layout";
 import { MetaTags } from "@/components/common/display";
+import { ExternalLinkIcon } from "@/components/common/icons";
 
 const TermsOfServicePage = () => {
   const currentUrl = window.location.origin + location.pathname;
@@ -15,13 +16,15 @@ const TermsOfServicePage = () => {
         type="website"
       />
       <CompleteNav />
+      
+      <div className="background-level" />
       <div className="terms-of-service">
         <div className="terms-container">
           <div className="terms-content">
             <section className="terms-section">
               <h1>Terms of Service</h1>
               <p>Welcome to The Universal Forums (TUF). By accessing or using our website, you agree to be bound by these Terms of Service. Please read these terms carefully before using our services.</p>
-              <p className="last-updated">Last Updated: April 12, 2025</p>
+              <p className="last-updated">Last Updated: June 7, 2025</p>
             </section>
 
             <section className="terms-section">
@@ -70,8 +73,9 @@ const TermsOfServicePage = () => {
               <p>The content on our website, including text, graphics, and logos,
                 is the property of TUF or its content suppliers and is protected
                 by international copyright and other intellectual property laws.
-                The code for the website is open source and can be found <a href="https://github.com/orgs/T21C/repositories" target="_blank" rel="noopener noreferrer">
+                The code for the website is open source and can be found <a href="https://github.com/orgs/T21C/repositories" className="tos-link" target="_blank" rel="noopener noreferrer">
                 here
+                <ExternalLinkIcon size={16} color="#4a9eff" className="tos-link-icon" />
                 </a>
                 .</p>
             </section>
@@ -100,14 +104,25 @@ const TermsOfServicePage = () => {
                 to or use of or inability to access or use our website.</p>
             </section>
 
-            <section className="terms-section">
-              <h2>Content Delivery Network (To be implemented)</h2>
-              <p>In future we will implement our own Content Delivery Network (CDN) for distributing level data. 
-                Once it is implemented, creators will be prompted to agree to the terms of service of the CDN.
-                Agreeing to it will enable us to download, use, and store .zip files of levels you provided the links for.
-                This will allow us to more persistently serve your levels and use them for analytics and mods.
-                Declining it will not affect your ability to use our website.
-              </p>
+            <section className="terms-section cdn-terms">
+              <h2>Content Delivery Network</h2>
+              <h3>By using our Content Delivery Network (CDN), you accept that:</h3>
+              <ul>
+                <li>Your zip file will be stored as original and can be requested for deletion by you or by other eligible parties</li>
+                <li>Your zip file will be publicly available for download</li>
+                <li>Song and level files will be extracted for non-vfx conversion</li>
+                <li>The level files will be used for analysis and general analytics</li>
+              </ul>
+              <h3><b><u>By uploading a zip file, you hereby confirm that:</u></b></h3>
+              <ul>
+                <li>You have read and understood the terms of service of the CDN</li>
+                <li>The file is not of malicious nature, contains any harmful content or personal data</li>
+                <li className="important"><u>All files</u> in the zip are allowed to be distributed by their respective owners</li>
+                <li className="important">You are uploading a level that you created yourself or acquired explicit rights to</li>
+              </ul>
+              <p><b>If you agree to these terms and fail to comply, <u>we will suspend you from further use of the CDN upload feature.</u></b></p>
+              <p>If you do not agree to these terms, you must not upload your files to our servers and instead use external file sharing websites.</p>
+
             </section>
 
             <section className="terms-section">
@@ -121,7 +136,7 @@ const TermsOfServicePage = () => {
 
             <section className="terms-section">
             <h2>Contact Us</h2>
-              <p>If you have any questions about this Privacy Policy, please contact on our Discord server:</p>
+              <p>If you have any questions about our Terms of Service, please contact managers on our Discord server:</p>
 
                 <p>Discord: <button className="discord-button" onClick={() => window.open("https://discord.gg/MaW353r8xg", "_blank")}>Join</button></p>
 
