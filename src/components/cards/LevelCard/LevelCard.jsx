@@ -190,7 +190,7 @@ const LevelCard = ({
               className="first-pass-pfp"
             />
           )}
-          {level.difficulty.type === "PGU" 
+          {difficultyDict[level.diffId]?.type === "PGU" 
           // && sortBy === "RATING_ACCURACY"
           && level.clears > 0
           && level.totalRatingAccuracyVotes > 0
