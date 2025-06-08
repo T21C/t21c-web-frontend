@@ -69,7 +69,6 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         isHidden: level.isHidden || false,
         previousDiffId: level.previousDiffId,
         previousBaseScore: level.previousBaseScore,
-        isAnnounced: level.isAnnounced || false,
       });
       setHasUnsavedChanges(false);
     }
@@ -157,13 +156,16 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     setError(null);
 
     try {
+      const submitData = { ...formData };
+      
       if (!isFromAnnouncementPage) {
-        formData.previousDiffId = null;
-        formData.previousBaseScore = null;
+        delete submitData.previousDiffId;
+        delete submitData.previousBaseScore;
       }
+
       const response = await api.put(
         `${import.meta.env.VITE_LEVELS}/${level.id}`,
-        formData
+        submitData
       );
 
       if (response.data && response.data.level) {

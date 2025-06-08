@@ -6,13 +6,11 @@ import React, { useEffect, useState, useRef, useCallback } from "react";
 import { useLocation, useParams } from 'react-router-dom';
 import { CompleteNav } from "@/components/layout";
 import {
-  getVideoDetails,
-  isoToEmoji,
+  getVideoDetails
 } from "@/utils";
 
 import { Tooltip } from "react-tooltip";
 import { useTranslation } from "react-i18next";
-import { use } from "i18next";
 import { ClearCard } from "@/components/cards";
 import { EditLevelPopup } from "@/components/popups/EditLevelPopup/EditLevelPopup";
 import { DetailPopup } from "@/components/popups/DetailPopup/DetailPopup";
@@ -1033,8 +1031,8 @@ const LevelDetailPage = () => {
                 <Tooltip id="like-tooltip" place="bottom" noArrow />
               </div>
             </div>
+            <div className="right"> 
             {user?.isSuperAdmin && (
-              <>
                 <button 
                   className="edit-button svg-stroke"
                   onClick={() => setOpenEditDialog(true)}
@@ -1045,38 +1043,18 @@ const LevelDetailPage = () => {
                     <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.4374 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </button>
-                {ENABLE_ROULETTE && (
-                <button 
-                  className="update-button svg-stroke"
-                  onClick={() => setShowWheel(true)}
-                  disabled={levelTimeout !== null}
-                  title={tLevel('buttons.update')}
-                >
+              )}
+              {res.level.dlLink && res.level.dlLink.startsWith("https://") && (
+                <button className="svg-stroke" href={res.level.dlLink} target="_blank" title={tLevel('links.download')} onClick={handleDownloadClick}>
                   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="currentColor" strokeWidth="2"/>
-                    <path d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z" stroke="currentColor" strokeWidth="2"/>
-                  </svg>
-                  {levelTimeout !== null && (
-                    <span className="timeout-text">
-                      {levelTimeout} s
-                    </span>
-                  )}
-                </button>
-                )}
-              </>
-            )}
-            <div className="right"> 
-              {res.level.dlLink && (
-                <a className="svg-stroke" href={res.level.dlLink} target="_blank" title={tLevel('links.download')} onClick={handleDownloadClick}>
-                  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M17 17H17.01M17.4 14H18C18.9319 14 19.3978 14 19.7654 14.1522C20.2554 14.3552 20.6448 14.7446 20.8478 15.2346C21 15.6022 21 16.0681 21 17C21 17.9319 21 18.3978 20.8478 18.7654C20.6448 19.2554 20.2554 19.6448 19.7654 19.8478C19.3978 20 18.9319 20 18 20H6C5.06812 20 4.60218 20 4.23463 19.8478C3.74458 19.6448 3.35523 19.2554 3.15224 18.7654C3 18.3978 3 17.9319 3 17C3 16.0681 3 15.6022 3.15224 15.2346C3.35523 14.7446 3.74458 14.3552 4.23463 14.1522C4.60218 14 5.06812 14 6 14H6.6M12 15V4M12 15L9 12M12 15L15 12" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
-                </a>
+                </button>
               )}
               {res.level.workshopLink && (
-                <a href={res.level.workshopLink} target="_blank" title={tLevel('links.workshop')}>
+                <button href={res.level.workshopLink} target="_blank" title={tLevel('links.workshop')}>
                   <SteamIcon color="#ffffff" size={"24px"} />
-                </a>
+                </button>
               )}
               {res.ratings && (
                 <button 
@@ -1085,8 +1063,8 @@ const LevelDetailPage = () => {
                   title={tLevel('buttons.viewRating')}
                 >
                   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="3" y="3" width="18" height="18" rx="3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M7 12L10 15L17 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <rect x="3" y="3" width="18" height="18" rx="3" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    <path d="M7 12L10 15L17 9" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
                 </button>
               )}
