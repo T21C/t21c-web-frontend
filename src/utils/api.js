@@ -3,6 +3,11 @@ import axios from 'axios';
 // Create a custom axios instance
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
+  headers: {
+    'Cache-Control': 'no-cache, no-store, must-revalidate',
+    'Pragma': 'no-cache',
+    'Expires': '0'
+  }
 });
 
 // Request interceptor to add auth header
@@ -14,6 +19,11 @@ api.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // Ensure cache prevention headers are always set
+    config.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate';
+    config.headers['Pragma'] = 'no-cache';
+    config.headers['Expires'] = '0';
 
     // Don't modify content-type if it's multipart/form-data
     // Let the browser set the correct boundary
