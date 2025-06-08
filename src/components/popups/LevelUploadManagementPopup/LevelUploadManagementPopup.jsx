@@ -93,11 +93,12 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
           fileSize: file.size
         });
 
+        
         if (response.data.success) {
-          setLevel(response.data.level);
+          setLevel(response.data.level.dataValues);
           setFormData(prev => ({
             ...prev,
-            dlLink: response.data.level.dlLink
+            dlLink: response.data.dlLink
           }));
           fetchLevelFiles();
         }
@@ -137,6 +138,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
     try {
       await api.delete(`${import.meta.env.VITE_LEVELS}/${level.id}/upload`);
       setFormData(prev => ({ ...prev, dlLink: "removed" }));
+      setLevel(prev => ({ ...prev, dlLink: "removed" }));
       onClose();
     } catch (error) {
       setError(error.response?.data?.error || tUpload('errors.deleteFailed'));
