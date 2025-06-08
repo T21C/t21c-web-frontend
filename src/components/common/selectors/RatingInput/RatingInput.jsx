@@ -58,7 +58,13 @@ export const RatingInput = ({
       if (allowCustomInput) {
         onChange(inputValue, true);
       } else if (filteredOptions.length > 0) {
-        handleSelect(filteredOptions[0][0]);
+        // First try to find an exact match (case-insensitive)
+        const exactMatch = filteredOptions.find(([rating]) => 
+          rating.toLowerCase() === inputValue.toLowerCase()
+        );
+        
+        // If exact match found, use it, otherwise use first item
+        handleSelect(exactMatch ? exactMatch[0] : filteredOptions[0][0]);
       }
     }
     setShowDropdown(false);
