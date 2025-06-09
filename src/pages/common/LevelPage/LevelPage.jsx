@@ -57,6 +57,8 @@ const LevelPage = () => {
     setPageNumber,
     deletedFilter,
     setDeletedFilter,
+    availableDlFilter,
+    setAvailableDlFilter,
     clearedFilter,
     setClearedFilter,
     sliderRange,
@@ -272,7 +274,8 @@ const LevelPage = () => {
           clearedFilter,
           pguRange: `${selectedLowFilterDiff},${selectedHighFilterDiff}`,
           specialDifficulties: allSpecialDiffs.join(','),
-          onlyMyLikes: user ? onlyMyLikes : undefined
+          onlyMyLikes: user ? onlyMyLikes : undefined,
+          availableDlFilter: availableDlFilter
         };
         
         const response = await api.get(
@@ -384,6 +387,7 @@ const LevelPage = () => {
     // Reset filters
     setDeletedFilter("hide");
     setClearedFilter("show");
+    setAvailableDlFilter("show");
     setQSliderVisible(false);
     // Clear and reload data
     setLevelsData([]);
@@ -539,6 +543,17 @@ const LevelPage = () => {
                     setForceUpdate(f => !f);
                   }}
                   label={tLevel('settingExp.clearedLevels')}
+                  states={['show', 'hide', 'only']}
+                />
+                <StateDisplay
+                  currentState={availableDlFilter}
+                  onChange={(newState) => {
+                    setAvailableDlFilter(newState);
+                    setPageNumber(0);
+                    setLevelsData([]);
+                    setForceUpdate(f => !f);
+                  }}
+                  label={tLevel('settingExp.availableDl')}
                   states={['show', 'hide', 'only']}
                 />
                 {user?.isSuperAdmin && (

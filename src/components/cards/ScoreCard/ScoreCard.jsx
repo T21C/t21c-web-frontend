@@ -6,22 +6,15 @@ import { useEffect, useState } from "react";
 import { formatSpeed, formatScore } from "@/utils/Utility"
 import { formatNumber } from "@/utils";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
+import { Tooltip } from "react-tooltip";
 
 // eslint-disable-next-line react/prop-types
-const ScoreCard = ({scoreData, topScores}) => {
+const ScoreCard = ({scoreData, topScores, potentialTopScores}) => {
+  const navigate = useNavigate()
   const {t} = useTranslation('components');
   const isHiddenLevel = scoreData.level?.isHidden || false;
   const tScore = (key) => t(`score.card.${key}`) || key;
-  const navigate = useNavigate()
   const { difficultyDict } = useDifficultyContext();
-
-    const redirect = () => {
-      navigate(`/passes/${scoreData.id}`);
-    };
-
-    const onAnchorClick = (e) => {
-      e.stopPropagation();
-    };
 
   return (
     <div className='score-card' style={{pointerEvents: isHiddenLevel ? 'none' : 'auto'}}>
@@ -33,7 +26,9 @@ const ScoreCard = ({scoreData, topScores}) => {
           <div className="hidden-level-icon">🔒</div>
         )}
       </div>
-      <div className="name-wrapper" onClick={() => redirect()}>
+      <div className="name-wrapper" onClick={() => 
+        navigate(`/passes/${scoreData.id}`)
+      }>
           <p className="score-exp">{scoreData.level.artist ?? 'Hidden level'}</p>
           <p className='score-desc'>{scoreData.level.song}</p>
       </div>
@@ -41,7 +36,20 @@ const ScoreCard = ({scoreData, topScores}) => {
       <div className="score-wrapper">
           <p className="score-exp">{tScore('labels.score')}</p>
           <p className='score-desc'>{formatScore(scoreData.scoreV2)}</p>
-          {topScores.find(score => score.id === scoreData.id) && <p className="score-impact">+{formatNumber(topScores.find(score => score.id === scoreData.id).impact)}</p>}
+          {
+          topScores.find(score => score.id === scoreData.id) ? 
+          <p className="score-impact">+{formatNumber(
+            topScores.find(score => score.id === scoreData.id).impact)
+          }</p> : 
+          potentialTopScores.find(score => score.id === scoreData.id) &&
+           <p className="score-impact potential"
+           data-tooltip-id="potential-score-tooltip">+{formatNumber(
+            potentialTopScores.find(score => score.id === scoreData.id).impact)
+          }</p>
+          }
+          <Tooltip id="potential-score-tooltip" place="bottom" style={{maxWidth: '400px'}}>
+            {tScore('tooltips.potentialScore')}
+          </Tooltip>
       </div>
       <div className="acc-wrapper">
           <p className="score-exp">{tScore('labels.accuracy')}</p>

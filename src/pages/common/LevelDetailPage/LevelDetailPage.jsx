@@ -1052,7 +1052,7 @@ const LevelDetailPage = () => {
                 </button>
               )}
               {res.level.workshopLink && (
-                <button href={res.level.workshopLink} target="_blank" title={tLevel('links.workshop')}>
+                <button onClick={() => window.open(res.level.workshopLink, '_blank')} target="_blank" title={tLevel('links.workshop')}>
                   <SteamIcon color="#ffffff" size={"24px"} />
                 </button>
               )}

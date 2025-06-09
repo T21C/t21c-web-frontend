@@ -8,7 +8,6 @@ import { MetaTags } from "@/components/common/display";
 import { ScoreCard } from "@/components/cards";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
-import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { AdminPlayerPopup } from "@/components/popups";
 import { DefaultAvatar, ShieldIcon, EditIcon } from "@/components/common/icons";
 import { CaseOpenSelector } from "@/components/common/selectors";
@@ -285,7 +284,7 @@ const ProfilePage = () => {
                   <div className="scores-list">
                     {playerData.passes.filter(score => !score.isDeleted).sort((a, b) => b.scoreV2 - a.scoreV2).map((score, index) => (
                       <li key={index}>
-                        <ScoreCard scoreData={score} topScores={playerData.topScores} />
+                        <ScoreCard scoreData={score} topScores={playerData.topScores} potentialTopScores={playerData.potentialTopScores} />
                       </li>
                     ))}
                   </div>

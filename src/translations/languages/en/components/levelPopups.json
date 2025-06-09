@@ -17,6 +17,7 @@
         "dlLink": "Download Link",
         "workshopLink": "Workshop Link",
         "publicComments": "Public Comments",
+        "isExternallyAvailable": "Is Externally Available",
         "previousDifficulty": "Previous Difficulty"
       },
       "placeholders": {

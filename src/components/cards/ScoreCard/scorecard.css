@@ -119,6 +119,12 @@
   opacity: 0.9;
 }
 
+.score-card .score-impact.potential {
+  opacity: 0.7;
+  background-color: #ff03;
+  color: #ff0;
+}
+
 @media (max-width: 400px) {
   .score-card .score-exp {
     font-size: 0.8rem;

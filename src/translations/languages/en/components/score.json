@@ -6,7 +6,8 @@
       "speed": "Speed"
     },
     "tooltips": {
-      "watchVideo": "Watch video"
+      "watchVideo": "Watch video",
+      "potentialScore": "The cleared level is not accessible, this is a potential score increase if it was."
     }
   }
 } 

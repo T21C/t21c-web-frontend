@@ -46,6 +46,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const { difficulties } = useDifficultyContext();
   const [showAliasManagement, setShowAliasManagement] = useState(false);
   const [showUploadManagement, setShowUploadManagement] = useState(false);
+  const [isExternallyAvailable, setIsExternallyAvailable] = useState(false);
 
   useEffect(() => {
     if (level) {
@@ -71,6 +72,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         previousBaseScore: level.previousBaseScore,
       });
       setHasUnsavedChanges(false);
+      setIsExternallyAvailable(level.isExternallyAvailable);
     }
 
     const handleEsc = (e) => {
@@ -163,9 +165,14 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         delete submitData.previousBaseScore;
       }
 
+      const levelData = {
+        ...submitData,
+        isExternallyAvailable,
+      };
+
       const response = await api.put(
         `${import.meta.env.VITE_LEVELS}/${level.id}`,
-        submitData
+        levelData
       );
 
       if (response.data && response.data.level) {
@@ -538,6 +545,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   </button>
                 </div>
               ) : (
+                <>
                 <div className="edit-level-popup__dl-link-container">
                   <input
                     type="text"
@@ -555,6 +563,16 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                     <UploadIcon color="white" size={20} />
                   </button>
                 </div>
+                <div className="checkbox-group"
+                  onClick={() => setIsExternallyAvailable(!isExternallyAvailable)}
+                  style={{ opacity: isExternallyAvailable ? 1 : 0.5 }}>
+                <input
+                  type="checkbox"
+                  checked={isExternallyAvailable}
+                />
+                {tLevel('form.labels.isExternallyAvailable')}
+            </div> 
+                </>
               )}
             </div>
 

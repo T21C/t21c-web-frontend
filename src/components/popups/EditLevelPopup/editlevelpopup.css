@@ -243,6 +243,19 @@
   background: #333;
 }
 
+
+.edit-level-popup-overlay .form-group .checkbox-group {
+  display: flex;
+  margin-top: 4px;
+  font-size: 12px;
+  flex-direction: row;
+  cursor: pointer;
+  -webkit-user-select: none;
+  user-select: none;
+  align-items: center;
+  gap: 5px;
+} 
+
 .edit-level-popup-overlay .rerate-num {
   width: 0;
   overflow: hidden;
