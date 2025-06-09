@@ -30,21 +30,17 @@ const parseRankColor = (rank) => {
 const ProfilePage = () => {
     let {playerId} = useParams()
     const [playerData, setPlayerData] = useState(null)
-    const [loading, setLoading] = useState(false)
-    const [error, setError] = useState(false)
     const [showCaseOpen, setShowCaseOpen] = useState(false);
     const { t } = useTranslation('pages');
     const tProfile = (key, params = {}) => t(`profile.${key}`, params);
     const { user } = useAuth();
-    const { difficultyDict } = useDifficultyContext();
-    const [showAdminPopup, setShowAdminPopup] = useState(false);
     const [showEditPopup, setShowEditPopup] = useState(false);
     const location = useLocation();
     const currentUrl = window.location.origin + location.pathname;
     const navigate = useNavigate();
     const [isSpinning, setIsSpinning] = useState(false);
 
-    const isOwnProfile = !playerId || playerId === user?.playerId;
+    const isOwnProfile = !playerId || Number(playerId) === user?.playerId;
 
     if (!playerId) {
       playerId = user?.playerId;
@@ -67,16 +63,12 @@ const ProfilePage = () => {
 
     useEffect(() => {
         const fetchPlayer = async () => {
-          setLoading(true);
           try {
             const response = await api.get(import.meta.env.VITE_PLAYERS+"/"+playerId);
             setPlayerData(response.data);
 
           } catch (error) {
-            setError(true);
             console.error('Error fetching player data:', error);
-          } finally {
-            setLoading(false);
           }
         };
       
