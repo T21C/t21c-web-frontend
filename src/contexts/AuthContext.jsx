@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useNotification } from './NotificationContext';
 import { useNavigate } from 'react-router-dom';
@@ -13,6 +13,7 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [lastFetchTime, setLastFetchTime] = useState(0);
   const { restartNotifications, resetNotifications, cleanup } = useNotification();
   const navigate = useNavigate();
 
@@ -68,11 +69,41 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  const fetchUser = async () => {
+  // Add verification state check
+  const checkVerificationState = useCallback(async () => {
+    if (!user) return;
+    
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_ME}`);
-     setUser(response.data.user);
-      if (response.data.user?.isSuperAdmin || response.data.user?.isRater) {
+      const currentVerificationState = response.data.user?.isEmailVerified;
+      
+      // If verification state has changed, update user
+      if (currentVerificationState !== user.isEmailVerified) {
+        setUser(response.data.user);
+        return true; // State changed
+      }
+      return false; // No change
+    } catch (error) {
+      console.error('[Auth] Error checking verification state:', error);
+      return false;
+    }
+  }, [user]);
+
+  const fetchUser = async (force = false) => {
+    // Prevent multiple simultaneous fetches
+    const now = Date.now();
+    if (!force && now - lastFetchTime < 1000) { // 1 second cooldown
+      return;
+    }
+    setLastFetchTime(now);
+
+    try {
+      setLoading(true);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_ME}`);
+      const newUser = response.data.user;
+      
+      setUser(newUser);
+      if (newUser?.isSuperAdmin || newUser?.isRater) {
         restartNotifications(true);
       }
     } catch (error) {
@@ -84,6 +115,17 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
+  // Add periodic verification check
+  useEffect(() => {
+    if (!user) return;
+
+    const checkInterval = setInterval(async () => {
+      await checkVerificationState();
+    }, 30000); // Check every 30 seconds
+
+    return () => clearInterval(checkInterval);
+  }, [user, checkVerificationState]);
 
   const initiateLogin = (originUrl = "") => {
     setOriginUrl(originUrl);
@@ -254,7 +296,8 @@ export const AuthProvider = ({ children }) => {
     getOriginUrl,
     setOriginUrl,
     clearOriginUrl,
-    initiateLogin
+    initiateLogin,
+    checkVerificationState // Expose this for manual checks
   };
 
   return (
