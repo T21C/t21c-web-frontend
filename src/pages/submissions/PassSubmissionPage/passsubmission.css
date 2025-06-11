@@ -1,6 +1,5 @@
 .pass-submission-page {
   background-color: var(--color-black);
-  width: 100vw;
   min-height: 100vh;
   position: relative;
   flex-direction: column;
