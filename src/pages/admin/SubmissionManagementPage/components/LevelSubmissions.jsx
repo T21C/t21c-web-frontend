@@ -432,6 +432,14 @@ const LevelSubmissions = () => {
                     </div>
                   )}
 
+                  <div className="detail-row">
+                    <span className="detail-label">{tLevel('details.submitter')}</span>
+                    <div className="submitter-details">
+                      <span className="detail-value">{submission.submitterDiscordUsername? `@${submission.submitterDiscordUsername}` : submission.levelSubmitter?.username || "Null"}</span>
+                      <span className="detail-subvalue">#{submission.levelSubmitter?.playerId || "Null"}</span>
+                    </div>
+                  </div>
+
                   {/* Group Creator Requests by Role */}
                   {(() => {
                     // Group creators by role

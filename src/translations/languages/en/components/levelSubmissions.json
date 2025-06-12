@@ -18,7 +18,8 @@
       "link": "Workshop Link"
     },
     "team": "Team:",
-    "vfxer": "VFXer:"
+    "vfxer": "VFXer:",
+    "submitter": "Submitter:"
   },
   "buttons": {
     "manageCreator": "Manage Creator",

@@ -20,9 +20,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
   const [animatingCards, setAnimatingCards] = useState({});
   const [disabledButtons, setDisabledButtons] = useState({});
   const [playerSearchValues, setPlayerSearchValues] = useState({});
-  const [loading, setLoading] = useState(false);
   const [playerData, setPlayerData] = useState(null);
-  const [autoAllowing, setAutoAllowing] = useState(false);
 
   const [profileCreation, setProfileCreation] = useState({
     show: false,
@@ -73,27 +71,6 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
       }
     });
   }, [submissions]);
-
-  const autoAssignPlayers = async (submissions) => {
-    for (const submission of submissions) {
-      try {
-        // Search for player matching the passer name
-        const response = await api.get(`${import.meta.env.VITE_PLAYERS}/search/${encodeURIComponent(submission.passer)}`);
-        const players = await response.data;
-        
-        // Find exact match (case insensitive)
-        const exactMatch = players.find(p => 
-          p.name.toLowerCase() === submission.passer.toLowerCase()
-        );
-
-        if (exactMatch) {
-          await handlePlayerSelect(submission.id, exactMatch);
-        }
-      } catch (error) {
-        console.error('[PassSubmissions] Error auto-assigning player for submission:', submission.id, error);
-      }
-    }
-  };
 
   const fetchPendingSubmissions = async () => {
     try {
@@ -364,8 +341,8 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                   <div className="detail-row">
                     <span className="detail-label">{tPass('details.submitter')}</span>
                     <div className="submitter-details">
-                      <span className="detail-value">@{submission.submitterDiscordUsername || "Null"}</span>
-                      <span className="detail-subvalue">{submission.submitterDiscordId || "Null"}</span>
+                      <span className="detail-value">{submission.submitterDiscordUsername? `@${submission.submitterDiscordUsername}` : submission.passSubmitter?.username || "Null"}</span>
+                      <span className="detail-subvalue">#{submission.passSubmitter?.playerId || "Null"}</span>
                     </div>
                   </div>
 

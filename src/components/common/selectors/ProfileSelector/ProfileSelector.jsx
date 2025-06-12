@@ -63,7 +63,7 @@ export const ProfileSelector = ({
   // Search profiles
   useEffect(() => {
     const searchProfiles = async () => {
-      if (!searchTerm || searchTerm.length < 2) {
+      if (!searchTerm || searchTerm.length < 1) {
         setProfiles([]);
         return;
       }

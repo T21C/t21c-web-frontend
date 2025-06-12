@@ -16,7 +16,7 @@ export const PlayerInput = ({ value, onChange, onSelect, currentPlayer }) => {
   const [creationError, setCreationError] = useState(null);
 
   const searchPlayers = async (searchTerm) => {
-    if (searchTerm.length < 2) {
+    if (searchTerm.length < 1) {
       setSearchResults([]);
       return;
     }
@@ -68,7 +68,6 @@ export const PlayerInput = ({ value, onChange, onSelect, currentPlayer }) => {
         const response = await api.post(`${import.meta.env.VITE_PLAYERS}/create`, {
           name: player.name
         });
-        
         const newPlayer = response.data;
         await onSelect(newPlayer);
         await searchPlayers(value);
@@ -87,8 +86,8 @@ export const PlayerInput = ({ value, onChange, onSelect, currentPlayer }) => {
         }, 1500);
       }
     } else {
-      onChange(player.name);
-      onSelect(player);
+      onChange(player.player.user?.nickname || player.player.name);
+      onSelect(player.player);
       closeDropdown();
     }
   };
@@ -185,18 +184,16 @@ export const PlayerInput = ({ value, onChange, onSelect, currentPlayer }) => {
                       className="player-option"
                       onClick={() => handleSelect(player)}
                     >
-                      <img src={player.discordAvatar} alt={player.name} className="player-pfp" />
+                      <img src={player.player.user?.avatarUrl || player.player.pfp} alt={player.player.name} className="player-pfp" />
                       <div className="player-info-container">
                         <div className="player-info">
                           <span className="player-name">
-                            {player.name} 
-                            {player.discordUsername && (
-                              <span className="player-handle">
-                                (@{player.discordUsername})
-                              </span>
-                            )}
+                            {player.player.user?.nickname || player.player.name}
                           </span>
-                          <span className="player-country">{player.country}</span>
+                          <span className="player-handle">
+                            {player.player.user?.username && `@${player.player.user.username}`}
+                          </span> 
+                          <span className="player-country">{player.player.country}</span>
                         </div>
                         <span className="player-score">{(player.rankedScore || 0).toFixed(2)}</span>
                       </div>

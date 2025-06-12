@@ -36,8 +36,6 @@ const EditProfilePage = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState(user?.avatarUrl ? user.avatarUrl : null);
-  const [tempAvatar, setTempAvatar] = useState(null);
-  const [isConfirming, setIsConfirming] = useState(false);
   const [uploadError, setUploadError] = useState(null);
   const fileInputRef = useRef(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -67,21 +65,6 @@ const EditProfilePage = () => {
       ...prev,
       [name]: value,
     }));
-  };
-
-  const handleProfileUpdate = async (e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
-
-    try {
-      await updateProfile({
-        nickname: formData.nickname,
-      });
-      setSuccess('Profile updated successfully!');
-    } catch (err) {
-      setError(err.message || 'Failed to update profile');
-    }
   };
 
   const handlePasswordChange = async (e) => {
@@ -138,11 +121,11 @@ const EditProfilePage = () => {
 
     try {
       const response = await api.put(`${import.meta.env.VITE_PROFILE}/me`, {
-        username: formData.username,
+        // username: formData.username,
         nickname: formData.nickname,
       });
 
-      setUser(response.data.user);
+      setUser(prev => ({...prev, nickname: response.data.user.nickname}));
       toast.success('Profile updated successfully');
       navigate('/profile');
     } catch (error) {
@@ -364,7 +347,7 @@ const EditProfilePage = () => {
               Cancel
             </button>
             <button 
-              type="submit" 
+              onClick={handleSubmit}
               disabled={isLoading}
             >
               {isLoading ? 'Saving...' : 'Save Changes'}

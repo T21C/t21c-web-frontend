@@ -8,7 +8,7 @@
   "playerInput": {
     "placeholder": "搜索玩家……",
     "loading": "加载中……",
-    "minChars": "输入至少2个字符以搜索",
+    "minChars": "输入至少1个字符以搜索",
     "noResults": "未找到玩家",
     "creation": {
       "button": "创建新玩家 \"{{name}}\"",

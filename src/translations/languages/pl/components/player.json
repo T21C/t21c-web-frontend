@@ -8,7 +8,7 @@
   "playerInput": {
     "placeholder": "Szukaj gracza...",
     "loading": "Ładowanie...",
-    "minChars": "Wpisz co najmniej 2 znaki aby wyszukać",
+    "minChars": "Wpisz co najmniej 1 znaki aby wyszukać",
     "noResults": "Nie znaleziono graczy",
     "creation": {
       "button": "Stwórz nowego gracza \"{{name}}\"",

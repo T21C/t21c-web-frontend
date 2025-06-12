@@ -8,7 +8,7 @@
   "playerInput": {
     "placeholder": "Recherche de joueur.se ...",
     "loading": "Chargement...",
-    "minChars": "Entrez au moins 2 caractères pour rechercher",
+    "minChars": "Entrez au moins 1 caractères pour rechercher",
     "noResults": "Aucun joueur trouvé",
     "creation": {
       "button": "Créer un.e joueur.se \"{{name}}\"",

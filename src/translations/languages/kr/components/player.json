@@ -8,7 +8,7 @@
   "playerInput": {
     "placeholder": "플레이어 검색...",
     "loading": "불러오는 중...",
-    "minChars": "검색하려면 최소 2자 이상 입력하세요",
+    "minChars": "검색하려면 최소 1자 이상 입력하세요",
     "noResults": "플레이어를 찾을 수 없습니다",
     "creation": {
       "button": "새 플레이어 \"{{name}}\" 생성",
