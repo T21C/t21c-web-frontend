@@ -11,5 +11,12 @@
   "button": {
     "buttonPass": "Submit Pass",
     "buttonLevel": "Submit Level"
+  },
+    "banner": {
+    "submissionSuspended": "Your submissions are currently suspended",
+    "banned": "Your account has been banned",
+    "emailVerification": "You need to verify your email, click the button below to go to the verification page",
+    "contact": "Please contact us on discord if you believe this is an error",
+    "verifyEmail": "Verify Email"
   }
 } 

@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
 import { ProfilePicturePopup } from '@/components/popups';
+import { CountrySelect } from '@/components/common/selectors';
 
 const ProviderIcon = ({ provider, size, color="#fff" }) => {
   switch(provider) {
@@ -19,7 +20,7 @@ const ProviderIcon = ({ provider, size, color="#fff" }) => {
 };
 
 const EditProfilePage = () => {
-  const { user, updateProfile, changePassword, linkProvider, unlinkProvider, setUser } = useAuth();
+  const { user, changePassword, linkProvider, unlinkProvider, setUser, fetchUser } = useAuth();
   const [formData, setFormData] = useState({
     username: user?.username || '',
     email: user?.email || '',
@@ -27,7 +28,9 @@ const EditProfilePage = () => {
     currentPassword: '',
     newPassword: '',
     confirmPassword: '',
+    country: user?.player?.country || '',
   });
+  console.log(user)
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isChangingPassword, setIsChangingPassword] = useState(false);
@@ -123,9 +126,10 @@ const EditProfilePage = () => {
       const response = await api.put(`${import.meta.env.VITE_PROFILE}/me`, {
         // username: formData.username,
         nickname: formData.nickname,
+        country: formData.country,
       });
 
-      setUser(prev => ({...prev, nickname: response.data.user.nickname}));
+      fetchUser();
       toast.success('Profile updated successfully');
       navigate('/profile');
     } catch (error) {
@@ -242,6 +246,12 @@ const EditProfilePage = () => {
     reader.readAsDataURL(file);
   }, []);
 
+  const handleCountryChange = (country) => {
+    setFormData((prev) => ({
+      ...prev,
+      country,
+    }));
+  };
   return (
     <>
     <div className="background-level"/> 
@@ -303,7 +313,7 @@ const EditProfilePage = () => {
               value={formData.username}
               onChange={handleInputChange}
               disabled
-              className="readonly"
+              className="input-field readonly"
             />
           </div>
 
@@ -316,6 +326,7 @@ const EditProfilePage = () => {
               value={formData.nickname}
               onChange={handleInputChange}
               required
+              className="input-field"
             />
           </div>
 
@@ -328,18 +339,28 @@ const EditProfilePage = () => {
               value={formData.email}
               onChange={handleInputChange}
               readOnly
-              className="readonly"
+              className="input-field readonly"
             />
             {user && !user.isEmailVerified && (
               <div className="email-verification-message" onClick={() => navigate('/profile/verify-email')}>
-                <span className="email-verification-text">You need to verify your email</span>
+                <span className="profile-banner-text">You need to verify your email</span>
                 <span className="email-verification-arrow">→</span>
               </div>
             )}
           </div>
 
+          <div className="form-group">
+            <label htmlFor="country">Country</label>
+            <CountrySelect 
+              value={formData.country}
+              onChange={handleCountryChange}
+              required
+            />
+          </div>
+
           <div className="form-actions">
             <button 
+              className="button"
               type="button" 
               onClick={() => navigate('/profile')}
               disabled={isLoading}
@@ -347,6 +368,7 @@ const EditProfilePage = () => {
               Cancel
             </button>
             <button 
+              className="button submit-button"
               onClick={handleSubmit}
               disabled={isLoading}
             >
@@ -363,6 +385,7 @@ const EditProfilePage = () => {
             <div className="form-group">
               <label htmlFor="newPassword">New Password</label>
               <input
+                className="input-field"
                 type="password"
                 id="newPassword"
                 name="newPassword"
@@ -375,6 +398,7 @@ const EditProfilePage = () => {
             <div className="form-group">
               <label htmlFor="confirmPassword">Confirm Password</label>
               <input
+                className="input-field"
                 type="password"
                 id="confirmPassword"
                 name="confirmPassword"
@@ -400,6 +424,7 @@ const EditProfilePage = () => {
             <div className="form-group">
               <label htmlFor="currentPassword">Current Password</label>
               <input
+                className="input-field"
                 type="password"
                 id="currentPassword"
                 name="currentPassword"
@@ -412,6 +437,7 @@ const EditProfilePage = () => {
             <div className="form-group">
               <label htmlFor="newPassword">New Password</label>
               <input
+                className="input-field"
                 type="password"
                 id="newPassword"
                 name="newPassword"
@@ -424,6 +450,7 @@ const EditProfilePage = () => {
             <div className="form-group">
               <label htmlFor="confirmPassword">Confirm New Password</label>
               <input
+                className="input-field"
                 type="password"
                 id="confirmPassword"
                 name="confirmPassword"

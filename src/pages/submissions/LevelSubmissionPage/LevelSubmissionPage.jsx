@@ -12,8 +12,9 @@ import { ProfileSelector } from "@/components/common/selectors";
 import { LevelSelectionPopup, CDNTosPopup } from "@/components/popups";
 
 import api from "@/utils/api";
-import { prepareZipForUpload, validateZipSize, formatFileSize } from '@/utils/zipUtils';
+import { prepareZipForUpload, validateZipSize } from '@/utils/zipUtils';
 import Cookies from 'js-cookie';
+import { useNavigate } from "react-router-dom";
 
 const encodeFilename = (str) => {
   // Convert string to UTF-8 bytes, then to hex
@@ -49,6 +50,14 @@ const LevelSubmissionPage = () => {
 
   const { t } = useTranslation('pages');
   const { user } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user.player.isSubmissionsPaused || user.player.isBanned || !user.isEmailVerified) {
+      navigate('/submission')
+    }
+  }, [user]);
+
   const [form, setForm] = useState(initialFormState);
   const [formStateKey, setFormStateKey] = useState(0);
   const [isInvalidFeelingRating, setIsInvalidFeelingRating] = useState(false);

@@ -6,6 +6,9 @@
   },
   "notFound": "Player not found",
   "notLoggedIn": "You are not logged in",
+  "emailVerification": "Please verify your email address to access all features",
+  "banned": "Your account has been banned",
+  "submissionSuspended": "Your submissions have been suspended",
   "searchForOther": "Can't display your profile, search for another player",
   "valueLabels": {
     "rankedScore": "Ranked Score",

@@ -364,7 +364,7 @@
   }
 }
 
-.email-verification-banner {
+.profile-banner {
   position: relative;
   top: 0;
   left: 0;
@@ -372,31 +372,44 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
   gap: 8px;
-  background-color: #ff4444;
   color: white;
   padding: 12px 16px;
-  cursor: pointer;
   transition: background-color 0.2s ease;
   z-index: 1000;
   text-align: center;
 }
 
-.email-verification-banner:hover {
-  background-color: #ff6666;
+.profile-banner.banned {
+  background-color: #ff2222;
 }
 
-.email-verification-text {
-  font-size: 14px;
-  font-weight: 500;
+.profile-banner.submissions-paused {
+  background-color: #b89900;
+} 
+
+.profile-banner.email-verification {
+  background-color: #8d00a9;
+  cursor: pointer;
 }
 
-.email-verification-arrow {
+.profile-banner.email-verification:hover {
+  background-color: #ab16c9;
+}
+
+.profile-banner-text {
   font-size: 16px;
+  font-weight: 600;
+}
+
+.profile-banner.email-verification .email-verification-arrow {
+  font-size: 16px;
+  font-weight: 600;
   transition: transform 0.2s ease;
 }
 
-.email-verification-banner:hover .email-verification-arrow {
+.profile-banner.email-verification:hover .email-verification-arrow {
   transform: translateX(4px);
 }
 

@@ -16,6 +16,7 @@ import axios from 'axios';
 import { StagingModeWarning } from "@/components/common/display";
 import { ProfileSelector } from "@/components/common/selectors";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
+import { useNavigate } from "react-router-dom";
 
 
 const PassSubmissionPage = () => {
@@ -40,6 +41,14 @@ const PassSubmissionPage = () => {
   const { difficultyDict } = useDifficultyContext();
   const tPass = (key, params = {}) => t(`passSubmission.${key}`, params);
   const { user } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user.player.isSubmissionsPaused || user.player.isBanned || !user.isEmailVerified) {
+      navigate('/submission')
+    }
+  }, [user]);
+
   const [formStateKey, setFormStateKey] = useState(0);
   const [form, setForm] = useState(initialFormState);
   const [accuracy, setAccuracy] = useState(null);

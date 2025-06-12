@@ -12,7 +12,6 @@ import { AdminPlayerPopup } from "@/components/popups";
 import { DefaultAvatar, ShieldIcon, EditIcon } from "@/components/common/icons";
 import { CaseOpenSelector } from "@/components/common/selectors";
 import caseOpen from "@/assets/icons/case.png";
-
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
 
 const parseRankColor = (rank) => {
@@ -136,11 +135,21 @@ const ProfilePage = () => {
             type="profile"
           />
           <CompleteNav />
-          {user && !user.isEmailVerified && isOwnProfile ? (
-            <div className="email-verification-banner" onClick={() => navigate('/profile/verify-email')}>
-              <span className="email-verification-text">Please verify your email address to access all features</span>
-              <span className="email-verification-arrow">→</span>
+          {user && isOwnProfile ? (
+            user.player.isBanned ? (
+              <div className="profile-banner banned">
+                <span className="profile-banner-text">{tProfile('banned')}</span>
+              </div>
+            ) : user.player.isSubmissionsPaused ? (
+            <div className="profile-banner submissions-paused">
+              <span className="profile-banner-text">{tProfile('submissionSuspended')}</span>
             </div>
+            ) : !user.isEmailVerified ? (
+              <div className="profile-banner email-verification" onClick={() => navigate('/profile/verify-email')}>
+                <span className="profile-banner-text">{tProfile('emailVerification')}</span>
+                <span className="email-verification-arrow">→</span>
+              </div>
+            ) : <br />
           ): <br />}
           <div className="background-level"></div>
           {playerData != null ? (Object.keys(playerData).length > 0 ? (

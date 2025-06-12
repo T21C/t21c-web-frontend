@@ -13,6 +13,77 @@
   position: relative;
 }
 
+.submission-page .banner-container {
+  z-index: 10;
+  width: 100vw;
+  height:100%;
+  padding: 0 4%;
+  display: flex;
+  position: fixed;
+  border-radius: 10px;
+  padding: 1rem;
+  top:0;
+}
+
+.submission-page .banner-container .banner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: 600;
+  transform: translate(-50%, -50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  padding: 2rem;
+  z-index: 10;
+}
+
+.submission-page .banner-container .submissions-paused {
+  color: rgb(255, 255, 40);
+  text-shadow: 0 0 10px rgb(255, 255, 0, 0.5);
+}
+
+.submission-page .banner-container .banned {
+  color: rgb(255, 40, 40);
+  text-shadow: 0 0 10px rgb(255, 0, 0, 0.5);
+}
+
+.submission-page .banner-container .banner .verify-email {
+  color: rgb(255, 255, 255);
+  display: flex;
+  font-size: 1.4rem;
+  font-weight: 500;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.submission-page .banner-container .banner .verify-email .button {
+  color: rgb(255, 255, 255);
+  text-shadow: 0 0 7px rgba(0, 0, 0, 0.5);
+  border-radius: 10px;
+  cursor: pointer;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  margin-top: 1rem;
+  background-color: rgb(166, 0, 255, 0.5);
+  transition: all 0.2s ease-out;
+  border: none;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submission-page .banner-container .banner .verify-email .button:hover {
+  background-color: rgb(166, 0, 255, 0.8);
+}
+
+.submission-page .banner-container .banner .contact {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
 .submission-page .wrapper-body button {
   font-size: 1.3rem;
   margin-top: 0.7rem;
