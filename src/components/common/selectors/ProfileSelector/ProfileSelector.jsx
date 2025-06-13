@@ -73,7 +73,11 @@ export const ProfileSelector = ({
         const endpoint = getEndpoint();
         const encodedSearchTerm = encodeURIComponent(searchTerm);
         const response = await api.get(`${endpoint}/search/${encodedSearchTerm}`);
-        setProfiles(response.data);
+        if (type === 'player') {
+          setProfiles(response.data.map(user => user.player));
+        } else {
+          setProfiles(response.data);
+        }
       } catch (error) {
         console.error('Error searching profiles:', error);
       } finally {
@@ -154,7 +158,7 @@ export const ProfileSelector = ({
                   {profile.type && <span className="profile-type">{profile.type}</span>}
                 </div>
               ))}
-              {searchTerm.length >= 2 && (
+              {searchTerm.length >= 1 && (
                 <div className="profile-selector-request">
                   {profiles.length === 0 && (
                     <div className="profile-selector-no-results">
