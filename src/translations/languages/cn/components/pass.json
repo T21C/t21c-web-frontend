@@ -1,0 +1,37 @@
+{
+  "helpPopup": {
+    "title": "搜索帮助",
+    "closeButton": "关闭",
+    "sections": {
+      "search": {
+        "title": "特定字段搜索",
+        "description": "你可以使用两个不同的运算符搜索特定字段：冒号（:）表示部分匹配，等号（=）表示完全匹配。",
+        "examples": {
+          "title": "字段示例",
+          "playerField": "使用“player:Name”进行部分匹配或使用“player=Name”进行完全匹配",
+          "videoField": "使用“video:Link”进行部分匹配或使用“video=Link”进行完全匹配"
+        }
+      },
+      "operators": {
+        "title": "搜索运算符",
+        "description": "您可以使用运算符组合多个搜索条件。",
+        "examples": {
+          "title": "运算符示例",
+          "and": "搜索同时符合两个条件（和）的通关记录",
+          "or": "搜索符合任一条件（或）的通关记录",
+          "complex": "结合 AND 和 OR 条件的复杂搜索"
+        }
+      },
+      "tips": {
+        "title": "搜索技巧",
+        "points": {
+          "caseSensitive": "搜索不区分大小写 - “PLAYER”和“player”将给出相同的结果",
+          "partial": "冒号（:）允许部分匹配 - “player:yo”将匹配“yoonsu”和“yoon”",
+          "exact": "等号（=）要求完全匹配 - “player=yoon” 只会匹配 “yoon”",
+          "spaces": "搜索词中允许使用空格 - “player:Epic player” 有效",
+          "order": "每个组中的条件顺序并不重要"
+        }
+      }
+    }
+  }
+} 

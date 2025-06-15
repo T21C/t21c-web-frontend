@@ -6,9 +6,9 @@
       "deselectAll": "取消全选"
     },
     "groups": {
-      "Quantum": "Quantum",
-      "Extra": "Extra",
-      "Hidden": "Hidden"
+      "Quantum": "Q等级",
+      "Extra": "额外等级",
+      "Hidden": "隐藏等级"
     },
     "selectedCount": "（{{count}}）"
   }

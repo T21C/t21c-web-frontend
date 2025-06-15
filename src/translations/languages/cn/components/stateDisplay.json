@@ -2,7 +2,12 @@
   "states": {
     "hide": "隐藏",
     "show": "显示",
-    "only": "仅"
+    "only": "仅",
+    "all": "所有",
+    "12k": "12键",
+    "16k": "16K",
+    "PASS": "已通过",
+    "LEVEL": "新关卡"
   },
   "accessDenied": {
     "title": "拒绝访问",

@@ -21,7 +21,7 @@
     "saving": "保存玩家数据失败",
     "notFound": "未找到玩家",
     "duplicate": "玩家已存在",
-    "invalid": "无效玩家数据"
+    "invalid": "玩家数据无效"
   },
   "buttons": {
     "save": "保存",

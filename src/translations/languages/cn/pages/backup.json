@@ -26,7 +26,18 @@
     "save": "保存",
     "saving": "保存中……",
     "cancel": "取消",
-    "confirm": "确认"
+    "confirm": "确认",
+    "upload": "上传",
+    "uploading": "上传中……",
+    "download": "下载",
+    "verifying": "验证中……"
+  },
+  "upload": {
+    "dragDropMessage": "拖动备份文件至此，或点击选择",
+    "errors": {
+      "fileTooBig": "文件大小超过最大文件大小 {{size}} 限制",
+      "validationFailed": "上传凭证验证失败"
+    }
   },
   "noBackups": {
     "title": "无 {{type}} 备份",
@@ -48,15 +59,19 @@
   },
   "passwordModal": {
     "title": "需要超管密码",
-    "createMessage": "请输入你的超管密码以创建新备份。",
-    "restoreMessage": "请输入你的超管密码以恢复该备份。",
-    "deleteMessage": "输入你的超管密码以删除该备份。",
-    "renameMessage": "输入你的超管密码以重命名该备份。",
+    "initialMessage": "请输入超管密码以继续",
     "placeholder": "输入密码",
     "errors": {
       "invalid": "密码无效",
-      "generic": "执行操作时出错"
+      "generic": "执行此动作时发生错误",
+      "validation": "密码验证失败"
     }
+  },
+    "confirmation": {
+    "title": "确认动作",
+    "createMessage": "确认新建备份？",
+    "deleteMessage": "确认删除此备份？此行为不可撤销。",
+    "restoreMessage": "确认恢复此备份？这将覆写当前数据。"
   },
   "notifications": {
     "backupCreated": "{{type}} 备份创建成功",
@@ -66,7 +81,12 @@
     "loadFailed": "备份加载失败",
     "createFailed": "备份创建失败",
     "restoreFailed": "备份恢复失败",
-    "deleteFailed": "备份删除失败"
+    "deleteFailed": "备份删除失败",
+    "uploadSuccess": "备份上传成功",
+    "uploadFailed": "备份上传失败",
+    "validationFailed": "密码验证失败",
+    "renameSuccess": "备份重命名成功",
+    "renameFailed": "备份重命名失败"
   },
   "fileInfo": {
     "created": "创建日期：{{date}}",

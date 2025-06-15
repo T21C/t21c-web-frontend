@@ -1,0 +1,35 @@
+{
+  "title": "管理已上传关卡",
+  "errors": {
+    "invalidZip": "压缩文件无效",
+    "fetchFailed": "获取关卡文件失败",
+    "uploadFailed": "上传关卡文件失败",
+    "selectFailed": "选择关卡文件失败",
+    "deleteFailed": "删除关卡文件失败"
+  },
+  "sections": {
+    "levelSelection": {
+      "title": "选择关卡文件",
+      "originalZip": {
+        "title": "原始压缩文件：{{name}}",
+        "size": "大小：{{size}} MB"
+      },
+      "songFiles": {
+        "title": "音乐文件",
+        "size": "({{size}} MB)"
+      },
+      "currentTarget": "当前选中：{{name}}"
+    }
+  },
+  "buttons": {
+    "select": "选择关卡",
+    "currentlySelected": "当前选中",
+    "uploadNew": "上传新关卡",
+    "deleteCurrent": "删除当前关卡",
+    "close": "✖"
+  },
+  "upload": {
+    "progress": "上传中…… {{progress}}%"
+  },
+  "confirmDelete": "你确定要删除此关卡文件吗？此操作无法撤消。"
+} 

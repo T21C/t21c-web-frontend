@@ -4,37 +4,138 @@
     "labels": {
       "creator": "制作者：",
       "currentDifficulty": "当前难度：",
-      "averageRating": "平均评级：",
+      "averageRating": "管理员评级：",
+      "communityRating": "社区评级：",
+      "rerateNum": "请求评级：",
+      "rerateReason": "重评级原因：",
       "yourRating": "你的评级：",
       "yourComment": "你的注释：",
-      "otherRatings": "其他评级："
+      "otherRatings": "其他评级：",
+      "noRatings": "没有评级",
+      "adminRatings": "管理员评级",
+      "communityRatings": "社区评级",
+      "noAdminRatings": "没有管理员评级",
+      "noCommunityRatings": "没有社区评级"
     },
     "buttons": {
       "saveChanges": "保存更改",
-      "saving": "保存中……"
+      "removeRating": "移除评级",
+      "saving": "保存中……",
+      "viewAdminRatings": "查看管理员评级",
+      "viewCommunityRatings": "查看社区评级"
     },
     "errors": {
       "commentLength": "注释必须少于1000个字符",
+      "commentRequired": "-2 评级需要评论",
       "saveFailed": "保存更改失败",
       "updateFailed": "更新评级失败",
-      "unsavedChanges": "你有未保存的更改，确定要退出吗？"
+      "unsavedChanges": "你有未保存的更改，确定要退出吗？",
+      "deleteFailed": "删除评级失败"
+    },
+    "tooltips": {
+      "lastUpdated": "上次更新时间",
+      "requiredComment": "为 -2 等级评级时需要评论"
+    },
+    "placeholders": {
+      "requiredComment": "请解释为什么你给这个关卡评 -2 ……",
+      "difficultyInput": "输入难度……",
+      "communityComment": "请提供一个你的评级的理由……"
+    },
+    "confirmations": {
+      "deleteRating": "你确定删除 {{username}} 的评级吗？"
+    }, 
+    "messages": {
+      "ratingBanned": "你不被允许评级"
     }
   },
   "ratingCard": {
     "labels": {
       "yourRating": "你的评级",
+      "managerAverage": "管理员平均评级",
+      "managerRatings": "管理员评级",
+      "communityAverage": "社区平均评级",
+      "communityRatings": "社区评级",
       "allRatings": "所有评级",
-      "average": "平均数",
+      "average": "平均评级",
       "rerateNumber": "重评评级",
       "requestedRating": "请求评级",
-      "rerateMessage": "重评信息"
+      "rerateMessage": "重评信息",
+      "lastUpdated": "最新上传",
+      "updatedAt": "已上传："
     },
     "tooltips": {
-      "expandReason": "点击展开"
+      "expandReason": "点击展开",
+      "deleteRating": "删除评级",
+      "lastUpdated": "上次修改此评级的时间",
+      "copyLink": "复制链接"
     },
     "buttons": {
       "viewDetails": "查看详情",
-      "editLevel": "编辑关卡"
+      "editLevel": "编辑关卡",
+      "copied": "已复制！",
+      "copyLink": "复制链接"
+    }
+  },
+  "helpPopup": {
+    "title": "评级系统指南",
+    "closeButton": "关闭指南",
+    "sections": {
+      "rating": {
+        "title": "评级格式",
+        "description": "评级可以采用多种格式输入，包括单一评级、范围和特殊情况。",
+        "examples": {
+          "title": "示例",
+          "simple": "简单的评级",
+          "range": "完整符号范围",
+          "shortRange": "相同（两者都隐含 P 前缀）",
+          "special": "特殊情况评级",
+          "negative": "负面特殊情况评级"
+        }
+      },
+      "extras": {
+        "title": "额外评级功能",
+        "features": [
+          {
+            "title": "评论中的ID链接",
+            "description": "你可以在评论区添加 ID 指示，例如“#1527”。这将自动将其转换为 idPrefixDontChange:1527"
+          }
+        ]
+      },
+      "averaging": {
+        "title": "平均评分",
+        "description": "系统采用加权平均计算，其中考虑了以下几个因素：",
+        "points": {
+          "special": "如果特殊评级（Censored（-2）、Impossible（-21）等）获得 4 票或更多投票，则会覆盖平均值",
+          "ranges": "范围（如 U12~U14）在计入最终评分之前会进行平均",
+          "order": "PGU 评分是根据难度顺序而非数值进行平均的"
+        }
+      },
+      "filters": {
+        "title": "可用过滤器",
+        "hideRated": "隐藏已评级",
+        "hideRatedDesc": "隐藏你已评级的关卡",
+        "lowDiff": "低难度",
+        "lowDiffDesc": "过滤被标记为低难度的关卡",
+        "fourVote": "4+ 评级",
+        "fourVoteDesc": "过滤拥有超过4个评级的关卡"
+      },
+      "requirements": {
+        "title": "需求",
+        "points": {
+          "comment": "当评级为 -2 时需要评论",
+          "format": "评级必须遵循 PGU 格式（P1-P20、G1-G20、U1-U20）或为有效的特殊评级",
+          "special": "特殊评级是预先定义的，无法自定义"
+        }
+      },
+      "shortcuts": {
+        "title": "快捷键",
+        "points": {
+          "submit": "保存你的评级",
+          "reset": "强制刷新评级",
+          "close": "关闭当前打开的弹出窗口"
+        }
+      }
+
     }
   }
 } 

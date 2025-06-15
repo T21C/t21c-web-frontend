@@ -5,6 +5,11 @@
     "defaultTitle": "档案"
   },
   "notFound": "未找到玩家",
+  "notLoggedIn": "未登录",
+  "emailVerification": "请验证邮箱地址以访问所有功能",
+  "banned": "你的账号已被封禁",
+  "submissionSuspended": "你的提交功能已被暂停",
+  "searchForOther": "无法显示你的个人资料，搜索其他玩家",
   "valueLabels": {
     "rankedScore": "排位分数",
     "generalScore": "常规分数",

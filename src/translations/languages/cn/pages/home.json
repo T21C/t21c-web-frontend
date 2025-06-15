@@ -26,6 +26,9 @@
         "levels": "个关卡"
       }
     },
+    "discord": {
+      "title": "加入我们的Discord！"
+    },
     "comingSoon": "还有更多有趣的内容即将到来……"
   },
   "footer": {
@@ -38,7 +41,9 @@
       "browseLevels": "浏览关卡",
       "browsePasses": "浏览通关记录",
       "leaderboard": "排行榜",
-      "aboutUs": "关于我们"
+      "aboutUs": "关于我们",
+      "privacyPolicy": "隐私政策",
+      "termsOfService": "服务条款"
     },
     "community": {
       "title": "社区",

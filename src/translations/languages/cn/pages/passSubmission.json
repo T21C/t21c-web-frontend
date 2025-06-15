@@ -56,5 +56,8 @@
     "needJudg": "输入判定",
     "needInfo": "输入所有必填项",
     "noInfo": "无可用信息"
+  },
+  "warnings": {
+    "pendingProfiles": "将请求创建此个人资料："
   }
 } 

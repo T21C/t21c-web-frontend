@@ -5,11 +5,22 @@
   },
   "banners": {
     "deleted": "本关卡已被删除",
-    "hidden": "本关卡已被隐藏"
+    "hidden": "本关卡已被隐藏",
+    "notFound": "未找到关卡"
   },
   "buttons": {
-    "edit": "编辑关卡信息"
+    "edit": "编辑关卡信息",
+    "close": "关闭",
+    "viewRating": "浏览先前评级",
+    "like": "收藏",
+    "unlike": "取消收藏",
+    "update": "上传关卡",
+    "saveRating": "保存评级"
   },
+  "tooltips": {
+    "loginRequired": "登录以收藏此关卡",
+    "clearRequired": "你需要通过该关卡以评价其评级准确度"
+    },
   "links": {
     "download": "下载关卡",
     "workshop": "在创意工坊上查看",
@@ -17,6 +28,9 @@
       "text": "未找到视频封面",
       "goToVideo": "跳转到视频"
     }
+  },
+    "aliases": {
+    "header": "别名"
   },
   "stats": {
     "firstClear": {
@@ -29,8 +43,7 @@
     },
     "highestSpeed": {
       "label": "最高飙速",
-      "value": "{{player}} | {{speed}}×",
-      "noSpeed": "-"
+      "value": "{{player}} | {{speed}}×"
     },
     "highestAccuracy": {
       "label": "最高精准度",
@@ -41,6 +54,19 @@
       "value": "{{count}}"
     },
     "waiting": "加载中……"
+  },
+  "info": {
+    "title": "关卡信息",
+    "team": "团队",
+    "creator": "创作者",
+    "roles": {
+      "charter": "踩音师",
+      "vfxer": "特效师"
+    },
+    "difficulty": "等级",
+    "baseScore": "基础分数",
+    "aliases": "别名",
+    "comments": "评论"
   },
   "leaderboard": {
     "header": "排行榜",
@@ -53,5 +79,33 @@
   },
   "dialog": {
     "fullInfo": "查看完整信息"
+  },
+  "components": {
+    "clearCard": {
+      "feeling": "体感难度："
+    },
+    "ratingAccuracy": {
+      "title": "评级准确度",
+      "description": "此关卡的评级有多准确？",
+      "voteButton": "评价准确度",
+      "saveButton": "保存评价",
+      "cancelButton": "取消"
+    }
+  },
+  "errors": {
+    "loginRequired": "你需要登录以收藏此关卡",
+    "likeFailed": "更新收藏状态失败",
+    "voteFailed": "提交评级准确度投票失败"
+  },
+  "messages": {
+    "liked": "已收藏！",
+    "unliked": "取消收藏",
+    "voteSubmitted": "评级准确度投票提交成功"
+  },
+  "ratingAccuracy": {
+    "votesHeader": "评价",
+    "loginToVote": "登录以投票",
+    "viewAllVotes": "浏览全部投票",
+    "noVotes": "无评价"
   }
 } 

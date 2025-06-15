@@ -2,6 +2,7 @@
   "edit": {
     "title": "编辑关卡信息",
     "close": "×",
+    "manageAliases": "管理别名",
     "form": {
       "labels": {
         "song": "曲名",
@@ -11,14 +12,17 @@
         "vfxer": "特效师",
         "team": "制作团队",
         "baseScore": "基础分",
+        "previousBaseScore": "先前基础分",
         "videoLink": "视频链接",
         "dlLink": "下载链接",
         "workshopLink": "创意工坊链接",
         "publicComments": "公开注释",
+        "isExternallyAvailable": "是否外部可用",
         "previousDifficulty": "先前评级"
       },
       "placeholders": {
         "baseScore": "基础分",
+        "previousBaseScore": "先前基础分",
         "rerateNumber": "重评评级",
         "rerateReason": "重评原因"
       },

@@ -6,7 +6,9 @@
       "speed": "飙速"
     },
     "tooltips": {
-      "watchVideo": "观看视频"
+      "watchVideo": "观看视频",
+      "potentialScore": "已通过的关卡无法访问，如果可以的话，这可能会增加分数。"
+
     }
   }
 } 

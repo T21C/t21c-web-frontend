@@ -1,11 +1,11 @@
 {
   "meta": {
-    "title": "管理难度 | TUF",
-    "description": "管理论坛上的关卡难度类型"
+    "title": "管理等级 | TUF",
+    "description": "管理论坛上的关卡等级类型"
   },
   "header": {
-    "title": "管理难度",
-    "refresh": "刷新难度列表"
+    "title": "管理等级",
+    "refresh": "刷新等级列表"
   },
   "access": {
     "denied": {
@@ -14,7 +14,7 @@
     }
   },
   "buttons": {
-    "create": "创建新难度",
+    "create": "创建新等级",
     "creating": "创建中……",
     "save": "保存",
     "cancel": "取消",
@@ -22,14 +22,14 @@
     "understand": "我了解此操作的风险"
   },
   "loading": {
-    "difficulties": "正在加载难度列表……"
+    "difficulties": "正在加载等级列表……"
   },
   "noItems": {
-    "message": "未找到难度"
+    "message": "未找到等级"
   },
   "difficultyTypes": {
     "PGU": "PGU",
-    "SPECIAL": "SPECIAL"
+    "SPECIAL": "特殊等级"
   },
   "form": {
     "labels": {
@@ -44,31 +44,31 @@
       "baseScore": "基础分：",
       "sortOrder": "排序方式：",
       "legacy": "旧版图标：",
-      "fallbackId": "回退难度 ID："
+      "fallbackId": "回退等级 ID："
     },
     "placeholders": {
-      "fallbackId": "输入该难度被删除时，分配给该难度下关卡的新难度 ID"
+      "fallbackId": "输入该等级被删除时，分配给该等级下关卡的新等级 ID"
     },
     "helpText": {
-      "fallbackId": "{{name}} 难度被删除时，所有该难度下的关卡将会更新为此难度。"
+      "fallbackId": "{{name}} 等级被删除时，所有该等级下的关卡将会更新为此等级。"
     }
   },
   "modal": {
     "create": {
-      "title": "创建新难度"
+      "title": "创建新等级"
     },
     "edit": {
-      "title": "编辑难度"
+      "title": "编辑等级"
     },
     "delete": {
-      "title": "删除难度",
+      "title": "删除等级",
       "warning": {
         "title": "⚠️ 警告：危险操作 ⚠️",
-        "message": "你将要删除此难度：{{name}}",
+        "message": "你将要删除此等级：{{name}}",
         "description": "此操作：",
         "points": [
           "无法恢复",
-          "将影响该难度下的所有关卡",
+          "将影响该等级下的所有关卡",
           "在删除之前必须做好备份"
         ],
         "highlight": "请确保你已经做好了备份！"
@@ -76,8 +76,10 @@
     }
   },
   "passwordModal": {
+    "initialTitle": "需要超管密码",
+    "initialMessage": "请输入超管密码以访问此界面",
     "title": "需要超管密码",
-    "message": "请输入超管密码以{{action}}该难度。",
+    "message": "请输入超管密码以{{action}}该等级。",
     "placeholder": "输入密码",
     "errors": {
       "invalid": "密码无效",
@@ -85,8 +87,9 @@
     }
   },
   "notifications": {
-    "created": "难度创建成功",
-    "updated": "难度更新成功",
-    "deleted": "难度删除成功"
+    "created": "等级创建成功",
+    "updated": "等级更新成功",
+    "deleted": "等级删除成功",
+    "reordered": "等级重新排序成功"
   }
 } 

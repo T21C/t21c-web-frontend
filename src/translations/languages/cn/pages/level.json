@@ -3,31 +3,53 @@
     "title": "关卡列表",
     "description": "探索并发掘《冰与火之舞》的自制关卡"
   },
-  "loading": {
-    "difficulties": "正在加载难度列表……"
+  "buttons": {
+    "searchHelp": "搜索帮助"
   },
   "input": {
-    "placeholder": "按曲名、曲师或谱师搜索……"
+    "placeholder": "搜索关卡……"
   },
   "toolTip": {
-    "legacy": "切换旧版难度显示",
-    "filter": "筛选结果",
-    "sort": "排序结果",
+    "search": "了解如何使用高级搜索",
+    "filter": "筛选关卡",
+    "sort": "排序关卡",
     "reset": "重置筛选条件",
-    "recentAsc": "最早",
-    "recentDesc": "最新",
-    "difficultyAsc": "难度升序",
-    "difficultyDesc": "难度降序",
-    "random": "随机排序"
+    "normalView": "正常视角",
+    "compactView": "简介视角",
+    "gridView": "网格视角",
+    "toggleQSlider": "切换Q等级滑块",
+    "orderAsc": "升序",
+    "orderDesc": "降序"
   },
+  "settings": {
+    "sort": {
+      "header": "按……排列关卡",
+      "recent": "ID",
+      "difficulty": "等级",
+      "clears": "通关记录",
+      "likes": "收藏",
+      "ratingAccuracy": "评级准确度",
+      "ratingAccuracyVotes": "总投票",
+      "random": "随机"
+    }
+  },
+
   "settingExp": {
     "headerFilter": "筛选设置",
     "headerSort": "排序设置",
-    "sortRecent": "按时间",
-    "filterDiffs": "按难度",
-    "sortRandom": "随机"
+    "filterDiffs": "按难度排序",
+    "sortOrder": "排序顺序",
+    "viewMode": "预览模式",
+    "cardSize": "卡片大小",
+    "clearedLevels": "已通过关卡",
+    "deletedLevels": "已删除关卡",
+    "availableDl": "可下载",
+    "myLikes": "我的收藏"
   },
   "infScroll": {
-    "end": "已经到底啦！"
+    "end": "没有更多关卡"
+  },
+  "loading": {
+    "difficulties": "正在加载等级……"
   }
 } 

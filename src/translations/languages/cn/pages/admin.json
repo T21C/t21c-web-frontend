@@ -1,10 +1,21 @@
 {
-  "header": {
-    "headerRating": "管理关卡评级",
-    "headerSubmissions": "管理提交项目"
+  "meta": {
+    "title": "管理员数据",
+    "description": "网站管理数据"
   },
-  "button": {
-    "buttonRating": "跳转到关卡评级页面",
-    "buttonSubmissions": "跳转到提交项目页面"
+  "title": "管理员数据",
+  "links": {
+    "rating": "评级",
+    "ratingDesc": "为关卡评级、编辑评级",
+    "submissions": "提交",
+    "submissionsDesc": "审核并管理提交的关卡和通关记录",
+    "announcements": "公告",
+    "announcementsDesc": "公布新关卡、评级和通关记录",
+    "difficulties": "等级",
+    "difficultiesDesc": "管理等级设置和公告指令",
+    "creators": "创作者",
+    "creatorsDesc": "为关卡分配创作者和团队",
+    "backups": "备份",
+    "backupsDesc": "管理数据库备份和系统维护"
   }
 } 

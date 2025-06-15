@@ -48,6 +48,23 @@
         "discord": "在 Discord 上加入我们",
         "github": "在 GitHub 上贡献"
       }
+    },
+    "credits": {
+      "title": "制作人员",
+      "version": {
+        "current": "v2.2 由 V0W4N 开发",
+        "original": "由 Adrian 制作原始版本"
+      },
+      "categories": {
+        "rating": {
+          "title": "评级团队",
+          "roles": {
+            "manager": "管理员",
+            "rater": "评级员"
+          }
+        }
+      }
     }
   }
 } 
+ 

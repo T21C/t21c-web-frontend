@@ -249,12 +249,14 @@ const PassSubmissionPage = () => {
 
         const response = await api.get(searchUrl);
         const profiles = response.data;
+
  
         // Find exact match (case insensitive)
         const exactMatch = profiles.find(p => 
-          p.name.toLowerCase() === channelName.toLowerCase()
-        );
+          p.player.name.toLowerCase() === channelName.toLowerCase()
+        ).player;
 
+        console.log(exactMatch)
         // Directly set the form state with the profile data
         setForm(prev => ({
           ...prev,

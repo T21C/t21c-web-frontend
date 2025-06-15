@@ -4,17 +4,9 @@
     "levelId": "关卡 ID：",
     "player": "玩家：",
     "feelingDiff": "体感难度：",
+    "speed": "Speed",
     "judgements": {
-      "label": "判定：",
-      "types": {
-        "earlyDouble": "太快！！",
-        "earlySingle": "太快！",
-        "ePerfect": "稍快！",
-        "perfect": "完美！",
-        "lPerfect": "稍慢！",
-        "lateSingle": "太慢！",
-        "lateDouble": "太慢！！"
-      }
+      "label": "判定："
     },
     "flags": {
       "label": "标签：",
@@ -25,19 +17,16 @@
       }
     },
     "submitter": "提交者：",
-    "uploadTime": "上传时间："
+    "uploadTime": "上传时间"
   },
   "playerAssignment": {
     "title": "分配玩家",
+    "current": "目前分配的玩家",
     "discord": {
-      "assignButton": "分配 Discord 信息",
-      "confirmMessage": "将把 @{{username}} 分配给 {{playerName}}。继续？",
-      "buttons": {
-        "confirm": "确认",
-        "cancel": "取消"
-      },
-      "tooltip": "{{discordUsername}} → {{playerName}}"
-    }
+      "assignButton": "分配 Discord 信息"
+    },
+    "newProfile": "请求新个人资料",
+    "manageProfile": "管理玩家"
   },
   "buttons": {
     "allow": "允许",
@@ -51,13 +40,13 @@
     "autoReject": "自动拒绝"
   },
   "errors": {
-    "noPlayer": "未分配玩家",
-    "processing": "处理提交项目时出错",
-    "autoAllow": "自动通过提交项目失败",
-    "loading": "加载提交项目失败",
-    "saving": "保存提交项目失败"
+    "noPlayer": "请在批准前分配一名玩家",
+    "playerAssignment": "分配玩家失败",
+    "processing": "提交项目处理失败",
+    "autoAllow": "自动通过提交项目失败"
   },
   "success": {
+    "playerAssigned": "成功分配给 {{playerName}}",
     "autoAllow": "已自动通过 {{count}} 项通关记录"
   },
   "loading": "加载项目中……",

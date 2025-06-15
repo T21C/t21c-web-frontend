@@ -23,6 +23,28 @@
           }
         }
       },
+      "pause": {
+        "label": "暂停提交申请",
+        "confirm": {
+          "pause": "确认暂停该玩家的提交申请？",
+          "resume": "确认恢复该玩家的提交申请？",
+          "buttons": {
+            "confirm": "确认",
+            "cancel": "取消"
+          }
+        }
+      },
+      "ratingBan": {
+        "label": "禁止评级",
+        "confirm": {
+          "ban": "确认禁止该玩家评级？",
+          "unban": "确认再次允许该玩家评级？",
+          "buttons": {
+            "confirm": "确认",
+            "cancel": "取消"
+          }
+        }
+      },
       "merge": {
         "label": "合并玩家",
         "placeholder": "输入目标玩家 ID",
@@ -60,6 +82,8 @@
       "nameUpdate": "更新玩家名称失败",
       "countryUpdate": "更新国家失败",
       "banUpdate": "更新封禁状态失败",
+      "pauseUpdate": "更新提交暂停状态失败",
+      "ratingBanUpdate": "更新禁止评级状态失败",
       "discordFetch": "获取 Discord ID 失败",
       "discordUpdate": "更新 Discord 信息失败",
       "discordRemove": "移除 Discord 信息失败",

@@ -1,5 +1,8 @@
 {
+  "title": "关卡提交",
   "noSubmissions": "没有待审核的关卡提交",
+  "loading": "正在加载提交……",
+  "error": "加载提交时出错",
   "details": {
     "artist": "曲师：",
     "charter": "谱师：",
@@ -7,17 +10,74 @@
     "download": {
       "label": "下载：",
       "directLink": "直接链接",
-      "notAvailable": "无"
+      "notAvailable": "无",
+      "cdnLink": "本地 CDN 链接"
     },
     "workshop": {
       "label": "创意工坊：",
       "link": "创意工坊链接"
     },
     "team": "团队：",
-    "vfxer": "特效师："
+    "vfxer": "特效师：",
+    "submitter": "提交者："
   },
   "buttons": {
+    "manageCreator": "管理创作者",
+    "manageTeam": "管理团队",
     "allow": "允许",
-    "decline": "拒绝"
+    "decline": "拒绝",
+    "addCharter": "添加踩音师",
+    "addVfxer": "添加特效师",
+    "remove": "删除",
+    "searchCreator": "搜索",
+    "createCreator": "新建",
+    "assignCreator": "分配现有",
+    "addTeam": "添加团队",
+    "addCreator": "添加创作者"
+  },
+  "labels": {
+    "levelName": "关卡",
+
+    "creatorName": "创作者",
+    "submittedOn": "已提交"
+  },
+  "badges": {
+    "newRequest": "新建"
+  },
+  "messages": {
+    "success": {
+      "approved": "提交批准成功",
+      "rejected": "提交拒绝成功"
+    },
+    "error": {
+      "generic": "发生错误",
+      "approve": "提交批准失败",
+      "reject": "提交拒绝失败"
+    }
+  },
+  
+  "warnings": {
+    "pendingProfiles": "将申请创建下列个人资料：",
+    "creatorExists": "同名创作者已存在",
+    "invalidCreator": "无效的创作者名称",
+    "duplicateCreator": "此创作者已被添加"
+  },
+  "creators": {
+    "search": {
+      "placeholder": "正在搜索现有创作者……",
+      "noResults": "未找到创作者",
+      "loading": "搜索中……"
+    },
+    "create": {
+      "title": "创建新创作者",
+      "namePlaceholder": "输入创作者名称",
+      "success": "创建创作者成功",
+      "error": "创建创作者失败"
+    },
+    "assign": {
+      "title": "指定创建者",
+      "success": "指定创建者成功",
+      "error": "指定创建者失败"
+    }
   }
 } 
