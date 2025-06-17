@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { CompleteNav } from '@/components/layout';
 import { MetaTags } from '@/components/common/display';
+import { useTranslation } from 'react-i18next';
 import './healthcheckpage.css';
 
 const HealthCheckPage = () => {
+  const { t } = useTranslation('pages');
   const [healthData, setHealthData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -26,7 +28,7 @@ const HealthCheckPage = () => {
       setHealthData(data);
       setLastUpdated(new Date().toLocaleString());
     } catch (err) {
-      setError(`Failed to fetch health data: ${err.message}`);
+      setError(t('healthCheck.error', { error: err.message }));
       console.error('Error fetching health data:', err);
     } finally {
       setLoading(false);
@@ -118,7 +120,7 @@ const HealthCheckPage = () => {
   return (
     <div className="health-check-page">
       <MetaTags
-        title="System Health Status | TUF"
+        title={t('healthCheck.title') + " | TUF"}
         description="Monitor the health status of TUF servers and services"
         url={window.location.origin + '/health'}
         image="/og-image.jpg"
@@ -127,10 +129,10 @@ const HealthCheckPage = () => {
       <CompleteNav />
       <div className="background-level" />
       <div className="health-check-container">
-        <h1>System Health Status</h1>
+        <h1>{t('healthCheck.title')}</h1>
         
         {lastUpdated && (
-          <div className="last-updated">Last updated: {lastUpdated}</div>
+          <div className="last-updated">{t('healthCheck.lastUpdated', { time: lastUpdated })}</div>
         )}
         
         {error && (
@@ -142,7 +144,7 @@ const HealthCheckPage = () => {
         {loading && !healthData && (
           <div className="loading-spinner">
             <div className="spinner"></div>
-            <p>Loading health data...</p>
+            <p>{t('healthCheck.loading')}</p>
           </div>
         )}
         
@@ -154,18 +156,18 @@ const HealthCheckPage = () => {
                 style={{ backgroundColor: getStatusColor(healthData.status) }}
               >
                 <span className="status-icon">{getStatusIcon(healthData.status)}</span>
-                <span>{healthData.status.toUpperCase()}</span>
+                <span>{t(`healthCheck.status.${healthData.status}`)}</span>
               </div>
               <div className="timestamp">
-                Uptime: {formatUptime(healthData.uptime)}
+                {t('healthCheck.serverInfo.uptime')}: {formatUptime(healthData.uptime)}
               </div>
             </div>
             
             <div className="health-grid">
               <div className="health-card">
-                <h3>Database</h3>
+                <h3>{t('healthCheck.serviceChecks.database')}</h3>
                 <div className={`status-indicator ${healthData.checks.database ? 'online' : 'offline'}`}>
-                  {healthData.checks.database ? 'online' : 'offline'}
+                  {healthData.checks.database ? t('healthCheck.status.online') : t('healthCheck.status.offline')}
                 </div>
                 {healthData.mainServerInfo?.checks?.database?.message && (
                   <p>{healthData.mainServerInfo.checks.database.message}</p>
@@ -173,9 +175,9 @@ const HealthCheckPage = () => {
               </div>
               
               <div className="health-card">
-                <h3>Socket Server</h3>
+                <h3>{t('healthCheck.serviceChecks.socketServer')}</h3>
                 <div className={`status-indicator ${healthData.mainServerInfo?.checks?.socket?.connected ? 'online' : 'offline'}`}>
-                  {healthData.mainServerInfo?.checks?.socket?.connected ? 'online' : 'offline'}
+                  {healthData.mainServerInfo?.checks?.socket?.connected ? t('healthCheck.status.online') : t('healthCheck.status.offline')}
                 </div>
                 {healthData.mainServerInfo?.checks?.socket?.message && (
                   <p>{healthData.mainServerInfo.checks.socket.message}</p>
@@ -184,24 +186,24 @@ const HealthCheckPage = () => {
             </div>
             
             <div className="server-details">
-              <h2>Server Information</h2>
+              <h2>{t('healthCheck.serverInfo.title')}</h2>
               
               <div className="server-status">
                 <div>
-                  <strong>Status:</strong> {healthData.status}
+                  <strong>{t('healthCheck.serverInfo.status')}:</strong> {t(`status.${healthData.status}`)}
                 </div>
                 <div>
-                  <strong>Uptime:</strong> {formatUptime(healthData.uptime)}
+                  <strong>{t('healthCheck.serverInfo.uptime')}:</strong> {formatUptime(healthData.uptime)}
                 </div>
               </div>
               
               <div className="server-checks">
-                <h3>Service Checks</h3>
+                <h3>{t('healthCheck.serviceChecks.title')}</h3>
                 <div className="check-grid">
                   <div className="check-item">
-                    <div className="check-label">Database</div>
+                    <div className="check-label">{t('healthCheck.serviceChecks.database')}</div>
                     <div className={`check-status ${healthData.checks.database ? 'online' : 'offline'}`}>
-                      {healthData.checks.database ? 'online' : 'offline'}
+                      {healthData.checks.database ? t('healthCheck.status.online') : t('healthCheck.status.offline')}
                     </div>
                     {healthData.mainServerInfo?.checks?.database?.message && (
                       <div className="check-message">{healthData.mainServerInfo.checks.database.message}</div>
@@ -209,9 +211,9 @@ const HealthCheckPage = () => {
                   </div>
                   
                   <div className="check-item">
-                    <div className="check-label">Socket Server</div>
+                    <div className="check-label">{t('healthCheck.serviceChecks.socketServer')}</div>
                     <div className={`check-status ${healthData.mainServerInfo?.checks?.socket?.connected ? 'online' : 'offline'}`}>
-                      {healthData.mainServerInfo?.checks?.socket?.connected ? 'online' : 'offline'}
+                      {healthData.mainServerInfo?.checks?.socket?.connected ? t('healthCheck.status.online') : t('healthCheck.status.offline')}
                     </div>
                     {healthData.mainServerInfo?.checks?.socket?.message && (
                       <div className="check-message">{healthData.mainServerInfo.checks.socket.message}</div>
@@ -221,39 +223,39 @@ const HealthCheckPage = () => {
               </div>
               
               <div className="server-info">
-                <h3>System Information</h3>
+                <h3>{t('healthCheck.systemInfo.title')}</h3>
                 <div className="info-grid">
                   <div className="info-item">
-                    <div className="info-label">Node Version</div>
+                    <div className="info-label">{t('healthCheck.systemInfo.nodeVersion')}</div>
                     <div className="info-value">{healthData.mainServerInfo?.system?.nodeVersion || 'N/A'}</div>
                   </div>
                   
                   <div className="info-item">
-                    <div className="info-label">Platform</div>
+                    <div className="info-label">{t('healthCheck.systemInfo.platform')}</div>
                     <div className="info-value">{healthData.mainServerInfo?.system?.platform || 'N/A'}</div>
                   </div>
                   
                   <div className="info-item">
-                    <div className="info-label">Environment</div>
+                    <div className="info-label">{t('healthCheck.systemInfo.environment')}</div>
                     <div className="info-value">{healthData.mainServerInfo?.system?.env || 'N/A'}</div>
                   </div>
                   
                   <div className="info-item">
-                    <div className="info-label">Main Server Status</div>
+                    <div className="info-label">{t('healthCheck.systemInfo.mainServerStatus')}</div>
                     <div className="info-value">{healthData.mainServerInfo?.status || 'N/A'}</div>
                   </div>
                 </div>
               </div>
               
               <div className="memory-usage">
-                <h3>Memory Usage</h3>
+                <h3>{t('healthCheck.memoryUsage.title')}</h3>
                 <div className="memory-grid">
                   <div className="memory-item">
-                    <div className="memory-label">RSS Memory</div>
+                    <div className="memory-label">{t('healthCheck.memoryUsage.rssMemory')}</div>
                     <div className="memory-value">{formatMemory(healthData.memoryUsage?.rss)}</div>
                     {healthData.memoryLimits?.rssLimit && (
                       <div className="memory-limit">
-                        <span>Max: {formatMemory(healthData.memoryLimits.rssLimit)}</span>
+                        <span>{t('healthCheck.memoryUsage.max', { value: formatMemory(healthData.memoryLimits.rssLimit) })}</span>
                         <div className="memory-bar">
                           <div 
                             className="memory-bar-fill" 
@@ -268,11 +270,11 @@ const HealthCheckPage = () => {
                   </div>
                   
                   <div className="memory-item">
-                    <div className="memory-label">Heap Total</div>
+                    <div className="memory-label">{t('healthCheck.memoryUsage.heapTotal')}</div>
                     <div className="memory-value">{formatMemory(healthData.memoryUsage?.heapTotal)}</div>
                     {healthData.memoryLimits?.heapSizeLimit && (
                       <div className="memory-limit">
-                        <span>Max: {formatMemory(healthData.memoryLimits.heapSizeLimit)}</span>
+                        <span>{t('healthCheck.memoryUsage.max', { value: formatMemory(healthData.memoryLimits.heapSizeLimit) })}</span>
                         <div className="memory-bar">
                           <div 
                             className="memory-bar-fill" 
@@ -287,17 +289,17 @@ const HealthCheckPage = () => {
                   </div>
                   
                   <div className="memory-item">
-                    <div className="memory-label">Heap Used</div>
+                    <div className="memory-label">{t('healthCheck.memoryUsage.heapUsed')}</div>
                     <div className="memory-value">{formatMemory(healthData.memoryUsage?.heapUsed)}</div>
                   </div>
                   
                   <div className="memory-item">
-                    <div className="memory-label">External Memory</div>
+                    <div className="memory-label">{t('healthCheck.memoryUsage.externalMemory')}</div>
                     <div className="memory-value">{formatMemory(healthData.memoryUsage?.external)}</div>
                   </div>
                   
                   <div className="memory-item">
-                    <div className="memory-label">Array Buffers</div>
+                    <div className="memory-label">{t('healthCheck.memoryUsage.arrayBuffers')}</div>
                     <div className="memory-value">{formatMemory(healthData.memoryUsage?.arrayBuffers)}</div>
                   </div>
                 </div>
@@ -305,30 +307,30 @@ const HealthCheckPage = () => {
               
               {healthData.memoryLimits && (
                 <div className="memory-limits">
-                  <h3>Memory Limits</h3>
+                  <h3>{t('healthCheck.memoryLimits.title')}</h3>
                   <div className="limits-grid">
                     <div className="limit-item">
-                      <div className="limit-label">Heap Size Limit</div>
+                      <div className="limit-label">{t('healthCheck.memoryLimits.heapSizeLimit')}</div>
                       <div className="limit-value">{formatMemory(healthData.memoryLimits.heapSizeLimit)}</div>
                     </div>
                     
                     <div className="limit-item">
-                      <div className="limit-label">Total Available Size</div>
+                      <div className="limit-label">{t('healthCheck.memoryLimits.totalAvailableSize')}</div>
                       <div className="limit-value">{formatMemory(healthData.memoryLimits.totalAvailableSize)}</div>
                     </div>
                     
                     <div className="limit-item">
-                      <div className="limit-label">Total Heap Size Executable</div>
+                      <div className="limit-label">{t('healthCheck.memoryLimits.totalHeapSizeExecutable')}</div>
                       <div className="limit-value">{formatMemory(healthData.memoryLimits.totalHeapSizeExecutable)}</div>
                     </div>
                     
                     <div className="limit-item">
-                      <div className="limit-label">Total Physical Size</div>
+                      <div className="limit-label">{t('healthCheck.memoryLimits.totalPhysicalSize')}</div>
                       <div className="limit-value">{formatMemory(healthData.memoryLimits.totalPhysicalSize)}</div>
                     </div>
                     
                     <div className="limit-item">
-                      <div className="limit-label">Max RSS</div>
+                      <div className="limit-label">{t('healthCheck.memoryLimits.maxRSS')}</div>
                       <div className="limit-value">{formatMemory(healthData.memoryLimits.rssLimit)}</div>
                     </div>
                   </div>
@@ -339,12 +341,11 @@ const HealthCheckPage = () => {
         )}
       </div>
       
-      {/* Fixed circle refresh button */}
       <button 
         className="fixed-refresh-button" 
         onClick={fetchHealthData} 
         disabled={isRefreshing}
-        aria-label="Refresh health data"
+        aria-label={t('healthCheck.refresh.ariaLabel')}
       >
         {isRefreshing ? (
           <div className="refresh-spinner"></div>

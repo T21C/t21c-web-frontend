@@ -1,0 +1,48 @@
+{
+  "title": "System Health Status",
+  "lastUpdated": "Last updated: {{time}}",
+  "loading": "Loading health data...",
+  "error": "Failed to fetch health data: {{error}}",
+  "status": {
+    "online": "ONLINE",
+    "degraded": "DEGRADED",
+    "offline": "OFFLINE"
+  },
+  "serverInfo": {
+    "title": "Server Information",
+    "status": "Status",
+    "uptime": "Uptime"
+  },
+  "serviceChecks": {
+    "title": "Service Checks",
+    "database": "Database",
+    "socketServer": "Socket Server"
+  },
+  "systemInfo": {
+    "title": "System Information",
+    "nodeVersion": "Node Version",
+    "platform": "Platform",
+    "environment": "Environment",
+    "mainServerStatus": "Main Server Status"
+  },
+  "memoryUsage": {
+    "title": "Memory Usage",
+    "rssMemory": "RSS Memory",
+    "heapTotal": "Heap Total",
+    "heapUsed": "Heap Used",
+    "externalMemory": "External Memory",
+    "arrayBuffers": "Array Buffers",
+    "max": "Max: {{value}}"
+  },
+  "memoryLimits": {
+    "title": "Memory Limits",
+    "heapSizeLimit": "Heap Size Limit",
+    "totalAvailableSize": "Total Available Size",
+    "totalHeapSizeExecutable": "Total Heap Size Executable",
+    "totalPhysicalSize": "Total Physical Size",
+    "maxRSS": "Max RSS"
+  },
+  "refresh": {
+    "ariaLabel": "Refresh health data"
+  }
+} 

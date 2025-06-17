@@ -7,7 +7,7 @@
 
 .home .home-container {
   z-index: 1;
-  padding: 3.5rem 4rem 5rem 4rem;
+  padding: 2rem 4rem;
 }
 
 .home .spacer-svg {
@@ -348,6 +348,77 @@
   font-size: clamp(0.9rem, 2vw, 1.1rem);
 }
 
+.home .support-button {
+  position: relative;
+  margin: 0.5rem 0;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: fit-content;
+  z-index: 1000;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  color: #ffffff;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.home .support-text {
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.6);
+}
+
+.home .rainbow-box {
+  border-radius: 10px;
+  padding: 5px 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+.rainbow-box .rainbow-background {
+  position: absolute;
+  opacity: 0;
+  z-index: -1;
+  top: 0;
+  left: 0;
+  width: 150%;
+  height: 500%;
+  background: linear-gradient(
+      90deg,
+      rgba(255, 0, 0, 1) 0%,
+      rgba(255, 154, 0, 1) 10%,
+      rgba(208, 222, 33, 1) 20%,
+      rgba(79, 220, 74, 1) 30%,
+      rgba(63, 218, 216, 1) 40%,
+      rgba(47, 201, 226, 1) 50%,
+      rgba(28, 127, 238, 1) 60%,
+      rgba(95, 21, 242, 1) 70%,
+      rgba(186, 12, 248, 1) 80%,
+      rgba(251, 7, 217, 1) 90%,
+      rgba(255, 0, 0, 1) 100%
+  );
+  background-size: 200% 200%;
+  transition: opacity 0.5s ease, background-position-x 4s cubic-bezier(0.16, 1, 0.7, 1);
+  transform-origin: center;
+  background-position-x: 30%;
+  transform: rotate(-45deg) translateY(-50%);
+}
+
+.rainbow-box:hover .rainbow-background {
+  opacity: 1;
+  background-position-x: 150%;
+}
+
+.home .support-icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+}
 
 /* Graph Controls */
 .home .graph-controls {

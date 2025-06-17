@@ -23,6 +23,20 @@ import { PassIcon, LevelIcon, LeaderboardIcon } from "@/components/common/icons"
 // Import the logo
 import logoFull from '@/assets/tuf-logo/logo-full.png';
 
+const SupportButton = () => {
+  const { t } = useTranslation('pages');
+  const tHome = (key, params = {}) => t(`home.${key}`, params);
+  return (
+    <button onClick={() => window.open('https://ko-fi.com/v0w4n', '_blank')} className="support-button rainbow-box">
+
+        <span className="support-text">{tHome('stats.donate')}</span>
+        <img className="support-icon" src="https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/670f5a01229bf8a18f97a3c1_favion.png" alt="Ko-fi" />
+        <div className="rainbow-background" />
+    </button>
+  )
+}
+
+
 const CustomTooltip = ({ active, payload, label }) => {
   if (active && payload && payload.length) {
     const difficulty = payload[0].payload;
@@ -429,11 +443,10 @@ const HomePage = () => {
                 />
               </div>
             </section>
-            <p style={{textAlign: "center", opacity: "0.5"}}>{tHome('stats.comingSoon')}</p>
           </div>
         )}
       </div>
-      
+      <SupportButton />
       <Footer />
     </div>
   </>);
