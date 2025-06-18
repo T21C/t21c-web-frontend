@@ -24,7 +24,7 @@ const TermsOfServicePage = () => {
             <section className="terms-section">
               <h1>Terms of Service</h1>
               <p>Welcome to The Universal Forums (TUF). By accessing or using our website, you agree to be bound by these Terms of Service. Please read these terms carefully before using our services.</p>
-              <p className="last-updated">Last Updated: June 7, 2025</p>
+              <p className="last-updated">Last Updated: June 18, 2025</p>
             </section>
 
             <section className="terms-section">
@@ -116,7 +116,7 @@ const TermsOfServicePage = () => {
               <h3><b><u>By uploading a zip file, you hereby confirm that:</u></b></h3>
               <ul>
                 <li>You have read and understood the terms of service of the CDN</li>
-                <li>The file is not of malicious nature, contains any harmful content or personal data</li>
+                <li>The file is not of malicious nature, does not contain any harmful content or personal data</li>
                 <li className="important"><u>All files</u> in the zip are allowed to be distributed by their respective owners</li>
                 <li className="important">You are uploading a level that you created yourself or acquired explicit rights to</li>
               </ul>

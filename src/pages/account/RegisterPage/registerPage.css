@@ -371,3 +371,13 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+.register-page-wrapper .captcha-container {
+  display: flex;
+  justify-content: center;
+  margin: 1rem;
+}
+
+.register-page-wrapper .captcha-container .grecaptcha-badge {
+  margin-top: 1rem;
+}

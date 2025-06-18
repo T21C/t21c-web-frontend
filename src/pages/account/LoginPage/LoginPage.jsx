@@ -19,7 +19,6 @@ const LoginPage = () => {
   const [captchaKey, setCaptchaKey] = useState(0); // Key to force re-render of ReCaptcha
   const timerRef = useRef(null);
   const navigate = useNavigate();
-  const location = useLocation();
   const { login, loginWithDiscord, getOriginUrl } = useAuth();
   const { t } = useTranslation('pages');
   const tLogin = (key, params = {}) => t(`login.${key}`, params);

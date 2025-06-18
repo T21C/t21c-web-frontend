@@ -63,6 +63,12 @@ const LevelSubmissions = () => {
     });
   }, [submissions]);
 
+  const canBeApproved = (submission) => {
+    return !(submission.creatorRequests?.some(r => r.isNewRequest && !r.creatorId) ||
+           (submission.teamRequestData?.isNewRequest && !submission.teamRequestData.teamId) ||
+           submission.creatorRequests?.some(r => !r.creatorId))
+  }
+
   const fetchPendingSubmissions = async () => {
     try {
       setIsLoading(true);
@@ -562,11 +568,8 @@ const LevelSubmissions = () => {
                     <button 
                       onClick={() => handleSubmission(submission.id, 'approve')}
                       className="approve-btn"
-                      disabled={disabledButtons[submission.id] || 
-                        submission.creatorRequests?.some(r => r.isNewRequest && !r.creatorId) ||
-                        (submission.teamRequestData?.isNewRequest && !submission.teamRequestData.teamId) ||
-                        submission.creatorRequests?.some(r => !r.creatorId)}
-                      title={tLevel('errors.needProfiles')}
+                      disabled={disabledButtons[submission.id] || !canBeApproved(submission)}
+                      title={!canBeApproved(submission) ? tLevel('errors.needProfiles') : ''}
                     >
                       {tLevel('buttons.allow')}
                     </button>

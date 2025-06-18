@@ -37,12 +37,12 @@
   },
   "labels": {
     "levelName": "Level",
-
     "creatorName": "Creator",
     "submittedOn": "Submitted"
   },
   "badges": {
-    "newRequest": "New"
+    "newRequest": "New",
+    "unassigned": "Unassigned"
   },
   "messages": {
     "success": {
@@ -55,7 +55,6 @@
       "reject": "Failed to reject submission"
     }
   },
-  
   "warnings": {
     "pendingProfiles": "This profile will be requested for creation:",
     "creatorExists": "A creator with this name already exists",
@@ -79,5 +78,12 @@
       "success": "Creator assigned successfully",
       "error": "Failed to assign creator"
     }
+  },
+  "errors": {
+    "profileUpdate": "Failed to update submission with profiles",
+    "addCreatorFailed": "Failed to add creator",
+    "removeCreatorFailed": "Failed to remove creator",
+    "cannotRemoveLastCharter": "Cannot remove the last charter",
+    "needProfiles": "All creator profiles must be assigned before approval"
   }
 } 

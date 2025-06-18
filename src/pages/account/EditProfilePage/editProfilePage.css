@@ -364,7 +364,6 @@
 .edit-profile-page .edit-profile-form {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
 }
 
 .edit-profile-page .form-actions {

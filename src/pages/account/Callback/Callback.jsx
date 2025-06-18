@@ -26,7 +26,12 @@ const CallbackPage = () => {
     setRedirecting(true);
     console.log("callback successful auth")
     console.log(getOriginUrl())
-    navigate(getOriginUrl() || '/profile');
+    const origin = getOriginUrl()
+    if (origin && origin !== '/register' && origin !== '/login') {
+      navigate(origin);
+    } else {
+      navigate('/profile');
+    }
   };
 
   useEffect(() => {

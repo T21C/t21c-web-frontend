@@ -1,0 +1,61 @@
+{
+  "title": "Create Account",
+  "form": {
+    "email": {
+      "label": "Email",
+      "error": "Invalid email format"
+    },
+    "username": {
+      "label": "Username",
+      "error": {
+        "length": "Username must be between 3 and 20 characters",
+        "characters": "Username can only contain alphanumeric characters, underscores _ and hyphens -"
+      },
+      "tooltip": {
+        "default": "If your username collides with other player's name (not users!), a random number will be added to make it unique: Jipper ➔ Jipper_123456",
+        "length": "Username must be between 3 and 20 characters. Your username is currently {{length}} characters.",
+        "characters": "Invalid character \"{{char}}\" at position {{position}}. Username can only contain alphanumeric characters, underscores _ and hyphens -."
+      }
+    },
+    "password": {
+      "label": "Password",
+      "confirmLabel": "Confirm Password",
+      "error": {
+        "length": "Password must be at least 8 characters long",
+        "mismatch": "Passwords do not match"
+      }
+    },
+    "terms": {
+      "label": "I have read and agree with the",
+      "privacyPolicy": "Privacy Policy",
+      "and": "and",
+      "termsOfService": "Terms of Service"
+    },
+    "captcha": {
+      "error": "Captcha is required"
+    },
+    "submit": {
+      "default": "Create Account",
+      "loading": "Creating Account..."
+    }
+  },
+  "success": {
+    "title": "Registration Successful!",
+    "message": "Please check your email to verify your account. You can go to your profile now.",
+    "usernameModified": "Your username was modified to {{username}} because the original username was already taken.",
+    "goToProfile": "Go to Profile"
+  },
+  "errors": {
+    "rateLimit": "Too many new accounts created. IP temporarily blocked.",
+    "timeRemaining": "Time remaining: {{time}}",
+    "generic": "Registration failed. Please try again.",
+    "discordFailed": "Failed to connect with Discord"
+  },
+  "divider": "or",
+  "discord": {
+    "register": "Register with Discord"
+  },
+  "login": {
+    "link": "Already have an account? Log in"
+  }
+} 

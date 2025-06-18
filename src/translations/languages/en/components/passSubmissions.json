@@ -43,11 +43,14 @@
     "noPlayer": "Please assign a player before approving",
     "playerAssignment": "Failed to assign player",
     "processing": "Error processing submission",
-    "autoAllow": "Error auto-allowing submissions"
+    "autoAllow": "Error auto-allowing submissions",
+    "profileUpdate": "Failed to update submission with profile",
+    "needProfileCreation": "Profile needs to be created before approval"
   },
   "success": {
     "playerAssigned": "Successfully assigned to {{playerName}}",
-    "autoAllow": "Auto-allowed {{count}} submissions"
+    "autoAllow": "Auto-allowed {{count}} submissions",
+    "playerCreated": "Successfully created and assigned {{playerName}}"
   },
   "loading": "Loading submissions...",
   "noItems": "No submissions found",
