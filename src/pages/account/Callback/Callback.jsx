@@ -24,7 +24,9 @@ const CallbackPage = () => {
 
   const handleSuccessfulAuth = () => {
     setRedirecting(true);
-    setTimeout(() => navigate(getOriginUrl() || '/profile'), 2000);
+    console.log("callback successful auth")
+    console.log(getOriginUrl())
+    navigate(getOriginUrl() || '/profile');
   };
 
   useEffect(() => {
@@ -51,6 +53,7 @@ const CallbackPage = () => {
         // Handle login flow
         const link = linking ? `/v2/auth/oauth/link/${provider}` : `/v2/auth/oauth/callback/${provider}`;
 
+        console.log("callback link", link)
         const response = await axios.post(
           `${import.meta.env.VITE_API_URL}${link}`,
           { 
