@@ -16,6 +16,8 @@
     "creators": "Creators",
     "creatorsDesc": "Assign creators and teams to levels",
     "backups": "Backups",
-    "backupsDesc": "Manage database backups and system maintenance"
+    "backupsDesc": "Manage database backups and system maintenance",
+    "auditLog": "Audit Log",
+    "auditLogDesc": "View audit logs for all admin actions"
   }
 } 
