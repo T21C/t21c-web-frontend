@@ -29,6 +29,7 @@ const DifficultyPage = lazy(() => import('./admin/DifficultyPage/DifficultyPage'
 const CreatorManagementPage = lazy(() => import('./admin/CreatorManagementPage/CreatorManagementPage'));
 const SubmissionManagementPage = lazy(() => import('./admin/SubmissionManagementPage/SubmissionManagementPage'));
 const RatingPage = lazy(() => import('./admin/RatingPage/RatingPage'));
+const AuditLogPage = lazy(() => import('./admin/AuditLogPage/AuditLogPage'));
 
 // Misc pages
 const AboutUsPage = lazy(() => import('./misc/AboutUsPage/AboutUsPage'));
@@ -66,7 +67,7 @@ export {
     CreatorManagementPage,
     SubmissionManagementPage,
     RatingPage,
-    
+    AuditLogPage,
     // Other pages
     AboutUsPage,
     PrivacyPolicyPage,

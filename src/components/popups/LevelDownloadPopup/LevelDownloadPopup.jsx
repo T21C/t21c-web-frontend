@@ -209,7 +209,7 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink }) => {
                                         Remove selected events and filters from the level
                                     </Tooltip>
                                     <Tooltip id='keep-events-tooltip' place="bottom">
-                                        Keep only the selected events and remove filters``
+                                        Keep only the selected events and remove filters
                                     </Tooltip>
                                 </div>
 
