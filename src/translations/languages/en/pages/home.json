@@ -44,7 +44,8 @@
       "leaderboard": "Leaderboard",
       "aboutUs": "About Us",
       "privacyPolicy": "Privacy Policy",
-      "termsOfService": "Terms of Service"
+      "termsOfService": "Terms of Service",
+      "apiDocs": "API Documentation"
     },
     "community": {
       "title": "Community",

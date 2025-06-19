@@ -22,6 +22,9 @@ const Footer = () => {
           <Link to="/about">{tHome('quickLinks.aboutUs')}</Link>
           <Link to="/privacy-policy">{tHome('quickLinks.privacyPolicy')}</Link>
           <Link to="/terms-of-service">{tHome('quickLinks.termsOfService')}</Link>
+          <a href="https://api.tuforums.com/docs/" target="_blank" rel="noopener noreferrer">
+            {tHome('quickLinks.apiDocs')}
+          </a>
         </div>
         <div className="footer-section">
           <h4>{tHome('community.title')}</h4>
