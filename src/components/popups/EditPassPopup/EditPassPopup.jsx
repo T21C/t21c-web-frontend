@@ -1,4 +1,3 @@
-
 import './editpasspopup.css';
 import api from '@/utils/api';
 import { getScoreV2 } from '@/utils/CalcScore';
@@ -36,7 +35,8 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
     is12K: pass.is12K || false,
     is16K: pass.is16K || false,
     isAnnounced: pass.isAnnounced || false,
-    isDuplicate: pass.isDuplicate || false
+    isDuplicate: pass.isDuplicate || false,
+    vidUploadTime: pass.vidUploadTime || videoDetail?.timestamp || new Date().toISOString()
   };
   const { user } = useAuth();
   const [form, setForm] = useState(initialFormState);
@@ -45,6 +45,7 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
   const [judgements, setJudgements] = useState([]);
   const [isValidFeelingRating, setIsValidFeelingRating] = useState(true); // Track validation
   const [isValidSpeed, setIsValidSpeed] = useState(true)
+  const [isValidTimestamp, setIsValidTimestamp] = useState(true); // Track timestamp validation
   const [isFormValid, setIsFormValid] = useState(false);
   const [isFormValidDisplay, setIsFormValidDisplay] = useState({});
   const [IsUDiff, setIsUDiff] = useState(false)
@@ -85,7 +86,9 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
     
     const frValid = validateFeelingRating(form["feelingRating"])
     const speedValid = validateSpeed(form["speed"])
+    const timestampValid = validateTimestamp(form["vidUploadTime"])
     validationResult.speed = speedValid
+    validationResult.vidUploadTime = timestampValid
     validationResult["videoLink"] = videoDetail && true;
 
     for (const field in validationResult) {
@@ -94,8 +97,16 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
     
     setIsValidFeelingRating(frValid);
     setIsValidSpeed(speedValid); // Update validation state
+    setIsValidTimestamp(timestampValid); // Update timestamp validation state
     setIsFormValidDisplay(displayValidationRes); // Set the validity object
     setIsFormValid(validationResult)
+  };
+
+  const validateTimestamp = (timestamp) => {
+    if (!timestamp || timestamp.trim() === '') return false;
+    // Regex to match ISO 8601 format like "2025-06-26T06:10:21.000Z"
+    const isoRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}(\.\d{3})?Z?$/;
+    return isoRegex.test(timestamp.trim());
   };
 
   useEffect(() => {
@@ -269,7 +280,7 @@ const handleSubmit = async (e) => {
       feelingRating: form.feelingRating,
       vidTitle: videoDetail?.title || level?.song || '',
       videoLink: form.videoLink,
-      vidUploadTime: videoDetail?.timestamp || new Date().toISOString(),
+      vidUploadTime: form.vidUploadTime,
       is12K: IsUDiff && form.is12K,
       is16K: IsUDiff && form.is16K,
       isNoHoldTap: form.isNoHold,
@@ -509,7 +520,14 @@ const handleSubmit = async (e) => {
 
                     <div className="yt-info">
                       <h4>{tPass('form.videoInfo.timestamp')}</h4>
-                      <p>{videoDetail.timestamp.replace("T", " ").replace("Z", "")}</p>
+                      <input
+                        type="text"
+                        placeholder="YYYY-MM-DDTHH:MM:SS"
+                        name="vidUploadTime"
+                        value={form.vidUploadTime}
+                        onChange={handleInputChange}
+                        style={{ borderColor: isFormValidDisplay.vidUploadTime ? "" : "red" }}
+                      />
                     </div>
                   </div>)
                   :(
@@ -535,21 +553,6 @@ const handleSubmit = async (e) => {
                     }));
                   }}
                 />
-                <div className="hold-checkbox" 
-                  data-tooltip-id="holdTooltip"
-                  data-tooltip-content={tPass('holdTooltip')}
-                  >
-                  <Tooltip id="holdTooltip" place="top-end" effect="solid"/>
-                  <input
-                   type="checkbox" 
-                   value={form.isNoHold} 
-                   onChange={handleInputChange} 
-                   name="isNoHold" 
-                   checked={form.isNoHold}
-                   />
-                  <span>{tPass('form.submInfo.nohold')}</span>
-
-                </div>
               </div>
           
           
@@ -573,23 +576,59 @@ const handleSubmit = async (e) => {
                 value={form.feelingRating}
                 onChange={handleInputChange}
                 style={{ 
-                  borderColor: isFormValidDisplay.feelingRating ? "" : "red",
-                  backgroundColor: !isValidFeelingRating ? "yellow" : ""
+                  borderColor: isFormValidDisplay.feelingRating ? "" : "#ff000044",
+                  backgroundColor: !isValidFeelingRating ? "#ffff0044" : ""
                 }} 
               />
-              <div data-tooltip-id={!isValidFeelingRating ? "fr-tooltip" : ""} data-tooltip-content={tPass('tooltip')}>
+              <div className="fr-tooltip-icon" data-tooltip-id={!isValidFeelingRating ? "fr-tooltip" : ""} data-tooltip-content={tPass('tooltip')}>
                 <span style={{
-                    color: 'red',
-                    visibility: `${!isValidFeelingRating? '' : 'hidden'}`
+                    visibility: `${!isValidFeelingRating? '' : 'hidden'}`,
                   }}>?</span>
                   <Tooltip className='tooltip' id="fr-tooltip" place="bottom-end" effect="solid"/>
               </div>
             </div>
           </div>
-          <div
-          className={`info-input-container ${IsUDiff ? 'expand' : ''}`}
-          style={{ justifyContent: 'end', marginRight: '2.5rem' }}
-        >
+
+          <div className="checkbox-row">
+            <div className="announcement-status">
+              <label className="checkbox-container">
+                <input
+                  type="checkbox"
+                  name="isAnnounced"
+                  checked={form.isAnnounced}
+                  onChange={handleInputChange}
+                />
+                <span className="checkmark"></span>
+                <span>Is Announced</span>
+              </label>
+              <label className="checkbox-container">
+                <input
+                  type="checkbox"
+                  name="isDuplicate"
+                  checked={form.isDuplicate}
+                  onChange={handleInputChange}
+                />
+                <span className="checkmark"></span>
+                <span>Is Duplicate</span>
+              </label>
+            </div>
+
+            <div className="gameplay-checkboxes">
+              <div className="hold-checkbox" 
+                data-tooltip-id="holdTooltip"
+                data-tooltip-content={tPass('holdTooltip')}
+                >
+                <Tooltip id="holdTooltip" place="top-end" effect="solid"/>
+                <input
+                 type="checkbox" 
+                 value={form.isNoHold} 
+                 onChange={handleInputChange} 
+                 name="isNoHold" 
+                 checked={form.isNoHold}
+                 />
+                <span>{tPass('form.submInfo.nohold')}</span>
+              </div>
+
               <div className="keycount-checkbox" 
                 data-tooltip-id="12kTooltip"
                 data-tooltip-content={tPass('12kTooltip')}>
@@ -600,16 +639,12 @@ const handleSubmit = async (e) => {
                   name="is12K"
                   checked={form.is12K}
                 />
-                <span
-                  style={{
-                    margin: '0 15px 0 10px',
-                    position: 'relative',
-                  }}
-                >
+                <span>
                   {tPass('form.submInfo.is12K')}
                 </span>
                 <Tooltip className='tooltip' id="12kTooltip" place="bottom-end" effect="solid"/>
               </div>
+
               <div className="keycount-checkbox" 
                 data-tooltip-id="16kTooltip"
                 data-tooltip-content={tPass('16kTooltip')}>
@@ -620,40 +655,15 @@ const handleSubmit = async (e) => {
                   name="is16K"
                   checked={form.is16K}
                 />
-                <span
-                  style={{
-                    margin: '0 15px 0 10px',
-                    position: 'relative',
-                  }}
-                >
+                <span>
                   {tPass('form.submInfo.is16K')}
                 </span>
                 <Tooltip className='tooltip' id="16kTooltip" place="bottom-end" effect="solid"/>
               </div>
-        </div>
-        <div className="announcement-status">
-                <label className="checkbox-container">
-                  <input
-                    type="checkbox"
-                    name="isAnnounced"
-                    checked={form.isAnnounced}
-                    onChange={handleInputChange}
-                  />
-                  <span className="checkmark"></span>
-                  <span>Is Announced</span>
-                </label>
-                <label className="checkbox-container">
-                  <input
-                    type="checkbox"
-                    name="isDuplicate"
-                    checked={form.isDuplicate}
-                    onChange={handleInputChange}
-                  />
-                  <span className="checkmark"></span>
-                  <span>Is Duplicate</span>
-                </label>
-              </div>
-              <div className="accuracy" style={{backgroundColor: "#222", color: "#fff"}}>
+            </div>
+          </div>
+
+              <div className="accuracy">
                 <div className="top">
                   <div className="each-accuracy">
                     <p>{tPass('form.judgements.ePerfect')}</p>
@@ -748,7 +758,7 @@ const handleSubmit = async (e) => {
                   className="submit" 
                   onClick={handleSubmit}
                 >
-                  {submission ? tPass('form.buttons.submitWait') : tPass('form.buttons.submit')}
+                  {tPass('form.buttons.submit')}
                 </button>
                 
                 <button 
@@ -757,9 +767,7 @@ const handleSubmit = async (e) => {
                   onClick={pass.isDeleted ? handleRestore : handleDelete}
                   disabled={submission}
                 >
-                  {submission ? 
-                    (pass.isDeleted ? tPass('form.buttons.delete.restoring') : tPass('form.buttons.delete.deleting')) : 
-                    (pass.isDeleted ? tPass('form.buttons.delete.restore') : tPass('form.buttons.delete.default'))}
+                  {pass.isDeleted ? tPass('form.buttons.delete.restore') : tPass('form.buttons.delete.default')}
                 </button>
               </div>
             </div>

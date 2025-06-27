@@ -4,9 +4,9 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.75);
+  background-color: rgba(0, 0, 0, 0.85);
   display: flex;
-  color: black;
+  color: #ffffff;
   justify-content: center;
   align-items: center;
   z-index: 9999;
@@ -27,11 +27,11 @@
 }
 
 .edit-pass-popup-overlay .form-container::-webkit-scrollbar-track {
-  background: var(--color-black);
+  background: #2a2a2a;
 }
 
 .edit-pass-popup-overlay .form-container::-webkit-scrollbar-thumb {
-  background: var(--color-purple-2);
+  background: #4a4a4a;
   border-radius: 4px;
 }
 
@@ -40,6 +40,7 @@
   margin: 0 auto;
   overflow-x: hidden;
   z-index: 1;
+  background-color: #1a1a1a;
 }
 
 .edit-pass-popup-overlay .form-container form .img-wrapper {
@@ -56,8 +57,10 @@
 .edit-pass-popup-overlay .form-container form .info {
   flex: 3;
   padding: 1rem 2rem;
-  background-color: white;
+  background-color: #1a1a1a;
+  color: #ffffff;
   position: relative;
+  border-radius: 0;
   z-index: 10001;
 }
 .edit-pass-popup-overlay .form-container form .info .tooltip {
@@ -65,16 +68,27 @@
 }
 .edit-pass-popup-overlay .form-container form .info h1 {
   margin-bottom: 1rem;
+  color: #ffffff;
 }
 .edit-pass-popup-overlay .form-container form .info input {
-  background-color: transparent;
+  background-color: #2a2a2a;
   border: 0;
-  border-bottom: 3px solid var(--color-purple-2);
+  border-bottom: 3px solid #4a4a4a;
   outline: none;
   padding: 0.5rem 0.2rem 0.2rem 0.5rem;
   font-size: 1rem;
+  color: #ffffff;
 }
 
+
+.edit-pass-popup-overlay .form-container form .info input::placeholder {
+  color: #888888;
+}
+
+.edit-pass-popup-overlay .form-container form .info input:focus {
+  border-bottom-color: #6a6a6a;
+  background-color: #333333;
+}
 
 .edit-pass-popup-overlay .form-container form .info .youtube-input {
   display: flex;
@@ -85,7 +99,8 @@
   margin-top: 0.5rem;
 }
 .edit-pass-popup-overlay .form-container form .info .youtube-input .yt-info {
-  min-width: 7rem
+  min-width: 7rem;
+  max-width: 25rem;
 }
 .edit-pass-popup-overlay .form-container form .info .youtube-input .youtube-info {
   display: flex;
@@ -152,30 +167,6 @@
   justify-content: space-around;
 }
 
-.edit-pass-popup-overlay .form-container form .info .hold-checkbox {
-  display: flex;
-  align-items: center;
-  width: fit-content;
-  white-space: nowrap;
-  gap: 0.5rem;
-}
-
-.edit-pass-popup-overlay .form-container form .info .info-input-container {
-  overflow: hidden;
-  max-height: 0; /* Collapsed height */
-  transition: max-height 0.4s ease; /* Transition for smooth sliding */
-  display: flex;
-  margin-top: 1rem;
-  padding-right: 1.5rem;
-  flex-direction: row;
-}
-
-.edit-pass-popup-overlay .form-container form .info .info-input-container.expand {
-  overflow:visible;
-  max-height: 200px; /* Set a maximum value, or use a value that comfortably fits the content */
-}
-
-
 .edit-pass-popup-overlay .form-container form .info .info-input .keycount-checkbox {
   max-width: 130px;
 }
@@ -186,18 +177,20 @@
 
 .edit-pass-popup-overlay .form-container form .info .info-input input {
   width: auto;
-  color: var(--color-black);
+  color: white;
 }
 .edit-pass-popup-overlay .form-container form .info .accuracy {
   display: flex;
   flex-direction: column;
   gap: 1rem;
   font-size: 1rem;
-  border: 2px solid var(--color-purple-2);
+  border: 2px solid #4a4a4a;
   padding: 1rem;
   border-radius: 5px;
   margin-top: 1rem;
   margin-bottom: 1rem;
+  background-color: #2a2a2a;
+  color: #ffffff;
 }
 .edit-pass-popup-overlay .form-container form .info .accuracy .top, .form-container form .info .accuracy .bottom {
   display: flex;
@@ -207,6 +200,9 @@
 .edit-pass-popup-overlay .form-container form .info .accuracy .top input, .form-container form .info .accuracy .bottom input {
   padding: 0;
   width: 100%;
+  background-color: #333333;
+  border: 1px solid #555555;
+  color: #ffffff;
 }
 .edit-pass-popup-overlay .form-container form .info .accuracy .top .each-accuracy {
   display: flex;
@@ -252,75 +248,67 @@
 }
 .edit-pass-popup-overlay .form-container form .info .accuracy .acc-score {
   display: flex;
-  gap: 2rem;
+  justify-content: space-around;
   font-weight: bold;
-  font-size: 0.9rem;
+  color: #ffffff;
 }
 .edit-pass-popup-overlay .form-container form .info .submit {
-  width: auto;
-  flex: 1;
-  background-color: var(--color-purple-3);
+  background-color: #2d41a9;
+  color: #ffffff;
   border: none;
-  border-radius: 3px;
-  color: var(--color-white);
+  padding: 0.75rem 1.5rem;
+  border-radius: 5px;
   font-size: 1rem;
+  font-weight: bold;
   cursor: pointer;
-  padding: 0.5rem 1rem;
-  max-width: 70rem;
-  margin: 0 auto;
-  transition: all 100ms linear;
+  transition: background-color 0.3s ease;
 }
 .edit-pass-popup-overlay .form-container form .info .submit:hover {
-  background-color: var(--color-purple-2);
-}
-.edit-pass-popup-overlay .form-container form .info .submit:active {
-  background-color: var(--color-purple-1);
+  background-color: #3e57d6;
 }
 
 .edit-pass-popup-overlay .close-button {
   position: absolute;
-  width: 2.2rem;
-  height: 2.2rem;
   top: 1rem;
-  right: 10%;
-  background: rgba(0, 0, 0, 0.75);
+  right: 1rem;
+  height: 2.5rem;
+  width: 2.5rem;
+  background-color: #4a4a4a;
+  color: #ffffff;
   border: none;
   border-radius: 50%;
-  color: white;
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   cursor: pointer;
   z-index: 10002;
+  transition: background-color 0.3s ease;
+}
+
+.edit-pass-popup-overlay .close-button:hover {
+  background-color: #5a5a5a;
 }
 
 .edit-pass-popup-overlay .thumbnail-container {
   position: relative;
   width: 100%;
-  padding-top: 56.25%; /* 16:9 Aspect Ratio */
-  background-color: var(--color-black);
-  overflow: hidden;
+  background-color: #2a2a2a;
 }
 
 .edit-pass-popup-overlay .thumbnail-container iframe {
-  position: absolute;
-  top: 0;
-  left: 0;
   width: 100%;
-  height: 100%;
+  height: 400px;
   border: none;
 }
 
 .edit-pass-popup-overlay .thumbnail-text {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
   display: flex;
-  justify-content: center;
   align-items: center;
-  color: var(--color-white);
+  justify-content: center;
+  height: 100%;
+  background-color: #2a2a2a;
+  color: #888888;
+  font-size: 1.2rem;
   text-align: center;
-  padding: 1rem;
+  padding: 2rem;
 }
 
 .edit-pass-popup-overlay .form-container {
@@ -331,7 +319,7 @@
 }
 
 .edit-pass-popup-overlay .form-container.shadow {
-  box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
 }
 
 .edit-pass-popup-overlay .form-container form {
@@ -343,98 +331,140 @@
 
 .edit-pass-popup-overlay .button-group {
   display: flex;
-  gap: 16px;
-  margin-top: 16px;
+  gap: 1rem;
+  margin-top: 1rem;
 }
 
 .edit-pass-popup-overlay .button-group button {
   flex: 1;
-  padding: 12px;
+  padding: 0.75rem 1.5rem;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
   cursor: pointer;
-  font-size: 16px;
-  transition: background 0.2s ease;
+  transition: background-color 0.3s ease;
+  color: #ffffff;
 }
 
 .edit-pass-popup-overlay .delete-button {
-  background: #c64141;
-  color: white;
-  max-width: 13rem;
+  background-color: #8b0000;
+  color: #ffffff;
 }
 
 .edit-pass-popup-overlay .delete-button:hover:not(:disabled) {
-  background: #a13535;
+  background-color: #a00000;
 }
 
 .edit-pass-popup-overlay .delete-button:disabled {
-  background: #8d7373;
+  background-color: #555555;
   cursor: not-allowed;
 }
 
-.edit-pass-popup-overlay .announcement-status {
-  margin: 1rem 0;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  align-items: center;
-}
-
-.edit-pass-popup-overlay .announcement-status .checkbox-container {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-size: 1rem;
-  grid-column: 2;
-  color: var(--color-black);
-}
-
-.edit-pass-popup-overlay .announcement-status .checkbox-container input[type="checkbox"] {
-  width: auto;
-  margin-right: 0.5rem;
-}
-
-.edit-pass-popup-overlay .announcement-status .checkbox-container span:not(.checkmark) {
-  font-weight: 500;
-}
-
-
 .edit-pass-popup-overlay .result-message {
-  position: absolute;
-  margin-top: 0px;
-  margin-bottom: 0px;
-  background-color: #4caf50;
-  color: white;
-  padding: 10px;
-  left: 50%;
-  transform: translate(-50%);
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  padding: 0.75rem 1.5rem;
   border-radius: 5px;
+  color: #ffffff;
+  font-weight: bold;
+  z-index: 10003;
+  opacity: 0;
+  transform: translateX(100%);
+  transition: all 0.3s ease;
+  max-width: 300px;
+  word-wrap: break-word;
   display: flex;
   align-items: center;
-  z-index: 1000; /* Ensure it stays on top */
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-  opacity: 0; /* Start hidden */
-  visibility: hidden; /* Hidden initially */
 }
 
 .edit-pass-popup-overlay .result-message.visible {
-  opacity: 1; /* Show the message */
-  visibility: visible; /* Make it visible */
+  opacity: 1;
+  transform: translateX(0);
 }
 
 .edit-pass-popup-overlay .result-message p {
-  margin:0;
-  padding-right: 10px;
+  margin: 0;
+  font-size: 0.9rem;
 }
 
 .edit-pass-popup-overlay .result-message .close-btn {
   background: none;
   border: none;
-  color: white;
-  font-size: 1.2rem;
+  color: #ffffff;
   cursor: pointer;
+  margin-left: 1rem;
+  font-size: 1.2rem;
 }
 
 .edit-pass-popup-overlay .result-message .close-btn:hover {
-  color: #ffdddd;
+  opacity: 0.7;
+}
+
+.edit-pass-popup-overlay .form-container form .info .checkbox-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1rem 0;
+  gap: 1rem;
+}
+
+.edit-pass-popup-overlay .form-container form .info .checkbox-row .announcement-status {
+  display: flex;
+  gap: 2rem;
+  color: #ffffff;
+}
+
+.edit-pass-popup-overlay .form-container form .info .checkbox-row .announcement-status .checkbox-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: #ffffff;
+}
+
+.edit-pass-popup-overlay .form-container form .info .checkbox-row .gameplay-checkboxes {
+  display: flex;
+  gap: 1rem;
+  margin-left: auto;
+  align-items: center;
+}
+
+.edit-pass-popup-overlay .form-container form .info .checkbox-row .hold-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ffffff;
+}
+
+.edit-pass-popup-overlay .form-container form .info .checkbox-row .keycount-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #ffffff;
+}
+
+.edit-pass-popup-overlay .form-container form .info .checkbox-row .keycount-checkbox .tooltip {
+  right: -15%;
+}
+
+.edit-pass-popup-overlay .form-container form .info .checkbox-row input[type="checkbox"] {
+  width: 1.2rem;
+  height: 1.2rem;
+  accent-color: #2450ff;
+}
+
+.edit-pass-popup-overlay .form-container form .info .checkbox-row span {
+  font-size: 0.9rem;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+.edit-pass-popup-overlay .form-container form .info .fr-tooltip-icon {
+  color: red;
+  font-size: 1.1rem;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
 }
