@@ -47,6 +47,7 @@
 body {
   overflow-x: hidden;
   color: var(--text-color);
+  background-color: var(--color-black);
 }
 
 .wrapper-body {
@@ -149,6 +150,15 @@ body {
 .vid-logo-wrapper .svg-fill svg:not(:hover) {
   transition: transform 0.3s ease;
   transform: scale(1); /* Default scale */
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 

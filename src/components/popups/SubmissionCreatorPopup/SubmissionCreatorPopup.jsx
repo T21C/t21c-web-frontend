@@ -7,13 +7,29 @@ import axios from 'axios';
 
 const CreditRole = {
   CHARTER: 'charter',
-  VFXER: 'vfxer'
+  VFXER: 'vfxer',
+  TEAM: 'team'
 };
 
 const roleOptions = Object.entries(CreditRole).map(([key, value]) => ({
   value,
   label: value.charAt(0).toUpperCase() + value.slice(1)
 }));
+
+// Helper function to get unique level count from credits
+const getUniqueLevelCount = (credits) => {
+  if (!credits || !Array.isArray(credits)) return 0;
+  
+  // Extract unique level IDs using Set for better performance
+  const uniqueLevelIds = new Set(credits.map(credit => credit.levelId));
+  return uniqueLevelIds.size;
+};
+
+// Helper function to get role-specific credit count
+const getRoleCreditCount = (credits, role) => {
+  if (!credits || !Array.isArray(credits)) return 0;
+  return credits.filter(credit => credit.role === role).length;
+};
 
 export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialRole, initialRequest }) => {
   const { t } = useTranslation('components');
@@ -43,7 +59,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
   const [isCreating, setIsCreating] = useState(false);
 
   // Track if we're in team mode
-  const isTeamMode = initialRole === CreditRole.TEAM;
+  const isTeamMode = selectedRole === CreditRole.TEAM;
 
   // Track the request being edited
   const [editingRequestId, setEditingRequestId] = useState(initialRequest?.id || null);
@@ -91,7 +107,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
       setIsSearching(true);
       try {
         let response;
-        if (selectedRole === CreditRole.TEAM) {
+        if (isTeamMode) {
           response = await api.get(`${import.meta.env.VITE_TEAMS}/search/${encodeURIComponent(searchQuery)}`);
         } else {
           response = await api.get(`${import.meta.env.VITE_CREATORS}/search/${encodeURIComponent(searchQuery)}`);
@@ -108,7 +124,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
 
     const timeoutId = setTimeout(searchEntities, 300);
     return () => clearTimeout(timeoutId);
-  }, [searchQuery, selectedRole]);
+  }, [searchQuery, isTeamMode]);
 
   const fetchCreatorDetails = async (creatorId) => {
     if (!creatorId) return null;
@@ -151,7 +167,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
   };
 
   const handleSelect = async (entity) => {
-    if (selectedRole === CreditRole.TEAM) {
+    if (isTeamMode) {
       setSelectedTeamId(entity.id);
       await fetchTeamDetails(entity.id);
     } else {
@@ -201,7 +217,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
       setShowCreateForm(false);
       setNewName('');
       setNewAliases('');
-      setSuccess(selectedRole === CreditRole.TEAM
+      setSuccess(isTeamMode
         ? tCreator('messages.success.teamCreatedAndAssigned')
         : tCreator('messages.success.creatorCreatedAndAssigned'));
 
@@ -217,7 +233,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
         setError(tCreator('messages.error.creditRequestIdMissing'));
       } else {
         setError(error.response?.data?.error ||
-          (selectedRole === CreditRole.TEAM
+          (isTeamMode
             ? tCreator('messages.error.teamCreateFailed')
             : tCreator('messages.error.createFailed')));
       }
@@ -227,8 +243,8 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
   };
 
   const handleAssign = async () => {
-    if ((!selectedCreatorId && selectedRole !== CreditRole.TEAM) || 
-        (!selectedTeamId && selectedRole === CreditRole.TEAM)) return;
+    if ((!selectedCreatorId && !isTeamMode) || 
+        (!selectedTeamId && isTeamMode)) return;
     
     setIsLoading(true);
     setError('');
@@ -236,12 +252,12 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
 
     try {
       // Ensure we have the credit request ID for creator assignments
-      if (selectedRole !== CreditRole.TEAM && !initialRequest?.id) {
+      if (!initialRequest?.id) {
         throw new Error('Credit request ID is missing');
       }
 
       // Step 1: Update the submission
-      const updateData = selectedRole === CreditRole.TEAM
+      const updateData = isTeamMode
         ? {
             teamRequestData: {
               ...submission.teamRequestData,
@@ -257,6 +273,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
                     ...request,
                     creatorId: selectedCreatorId,
                     creatorName: creatorDetails.name,
+                    role: selectedRole,
                     isNewRequest: false
                   }
                 : request
@@ -268,7 +285,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
         updateData
       );
 
-      setSuccess(selectedRole === CreditRole.TEAM 
+      setSuccess(isTeamMode 
         ? tCreator('messages.success.teamAssigned')
         : tCreator('messages.success.creatorAssigned'));
 
@@ -280,37 +297,11 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
       if (error.message === 'Credit request ID is missing') {
         setError(tCreator('messages.error.creditRequestIdMissing'));
       } else {
-        setError(selectedRole === CreditRole.TEAM 
+        setError(isTeamMode 
           ? tCreator('messages.error.teamAssignFailed')
           : tCreator('messages.error.assignFailed'));
       }
     } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleConfirm = async () => {
-    if (!selectedEntity || !submissionId) return;
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const response = await axios.put(`/v2/admin/submissions/levels/${submissionId}/profiles`, {
-        creatorRequests: [{
-          id: creditRequestId,
-          creatorId: selectedEntity.id,
-          creatorName: selectedEntity.name,
-          isNewRequest: false
-        }]
-      });
-
-      // Pass the updated submission data back to the parent
-      onUpdate(response.data);
-      setIsLoading(false);
-      setSelectedEntity(null);
-      setShowConfirmation(false);
-    } catch (err) {
-      setError(err.response?.data?.error || 'Failed to update submission');
       setIsLoading(false);
     }
   };
@@ -353,25 +344,28 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
         </div>
 
         <div className="popup-content">
-          {!isTeamMode && (
-            <div className="role-selector">
-              <label>{tCreator('role.label')}</label>
-              <CustomSelect
-                options={roleOptions}
-                value={roleOptions.find(opt => opt.value === selectedRole)}
-                onChange={(selected) => {
-                  setSelectedRole(selected.value);
-                  setSearchQuery('');
-                  setSearchResults([]);
-                  setShowCreateForm(false);
-                  setError('');
-                }}
-                className="role-select"
-                width="100%"
-                isDisabled={isLoadingDetails}
-              />
-            </div>
-          )}
+          <div className="role-selector">
+            <label>{tCreator('role.label')}</label>
+            <CustomSelect
+              options={roleOptions}
+              value={roleOptions.find(opt => opt.value === selectedRole)}
+              onChange={(selected) => {
+                setSelectedRole(selected.value);
+                setSearchQuery('');
+                setSearchResults([]);
+                setShowCreateForm(false);
+                setError('');
+                // Clear selected entities when switching roles
+                setSelectedCreatorId(null);
+                setSelectedTeamId(null);
+                setCreatorDetails(null);
+                setTeamDetails(null);
+              }}
+              className="role-select"
+              width="100%"
+              isDisabled={isLoadingDetails}
+            />
+          </div>
 
           <div className="creator-selection">
             <div className="current-creator">
@@ -397,6 +391,11 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
                         {!isTeamMode && selectedDetails.user && (
                           <span className="creator-discord">
                             ({selectedDetails.user.username})
+                          </span>
+                        )}
+                        {isTeamMode && selectedDetails.members && (
+                          <span className="team-members">
+                            ({selectedDetails.members.length} {tCreator('teamStats.members')})
                           </span>
                         )}
                         {selectedDetails.isVerified && (
@@ -433,7 +432,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
                   </div>
                   {isSearching ? (
                     <div className="search-status">
-                      {isTeamMode ? tCreator('search.noTeamsFound') : tCreator('search.loading')}
+                      {isTeamMode ? tCreator('search.searchingTeams') : tCreator('search.loading')}
                     </div>
                   ) : searchQuery && (!Array.isArray(searchResults) || searchResults.length === 0) ? (
                     <div className="search-status">
@@ -513,22 +512,14 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
                 <div className="stats-content">
                   {isTeamMode ? (
                     <>
-                      <p>{tCreator('teamStats.totalLevels')}: {selectedDetails.levels?.length || 0}
-                        &nbsp;({selectedDetails.levels?.filter(level => level.isVerified).length || 0} {tCreator('teamStats.verifiedLevels')})
-                      </p>
+                      <p>{tCreator('teamStats.totalLevels')}: {selectedDetails.levels?.length || 0}</p>
                       <p>{tCreator('teamStats.memberCount')}: {selectedDetails.members?.length || 0}</p>
                     </>
                   ) : (
                     <>
-                      <p>{tCreator('stats.totalLevels')}: {selectedDetails.createdLevels?.length || 0}
-                        &nbsp;({selectedDetails.createdLevels?.filter(level => level.isVerified).length || 0} {tCreator('stats.verifiedLevels')})
-                      </p>
-                      <p>{tCreator('stats.charterCount')}: {
-                        selectedDetails.credits?.filter(credit => credit.role === 'charter').length || 0
-                      }</p>
-                      <p>{tCreator('stats.vfxerCount')}: {
-                        selectedDetails.credits?.filter(credit => credit.role === 'vfxer').length || 0
-                      }</p>
+                      <p>{tCreator('stats.totalLevels')}: {getUniqueLevelCount(selectedDetails.credits)}</p>
+                      <p>{tCreator('stats.charterCount')}: {getRoleCreditCount(selectedDetails.credits, 'charter')}</p>
+                      <p>{tCreator('stats.vfxerCount')}: {getRoleCreditCount(selectedDetails.credits, 'vfxer')}</p>
                     </>
                   )}
                 </div>

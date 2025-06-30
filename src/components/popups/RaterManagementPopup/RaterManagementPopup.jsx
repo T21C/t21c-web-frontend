@@ -11,10 +11,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
   const tError = (key) => t(`raterManagement.errors.${key}`) || key;
 
   const [isExpanded, setIsExpanded] = useState(false);
-  const [discordId, setDiscordId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [pendingDiscordInfo, setPendingDiscordInfo] = useState(null);
-  const [showDiscordConfirm, setShowDiscordConfirm] = useState(false);
 
   const handleAdminStatusChange = async () => {
     if (!superAdminPassword) {
@@ -25,7 +22,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
     try {
       setIsLoading(true);
       const payload = {
-        discordId: rater.discordId,
+        userId: rater.id,
         role: 'superadmin',
         superAdminPassword
       };
@@ -33,7 +30,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
       if (rater.isSuperAdmin) {
         await api.post(`/v2/admin/users/revoke-role`, payload);
       } else {
-        await api.post(`/v2/admin/users/grant-role`, payload);
+        await api.post(`/v2/admin/users/grant-role`, { username: rater.username, role: 'superadmin', superAdminPassword });
       }
       onUpdate();
     } catch (error) {
@@ -61,7 +58,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
     try {
       setIsLoading(true);
       const payload = { 
-        discordId: rater.discordId,
+        userId: rater.id,
         role: rater.isSuperAdmin ? 'superadmin' : 'rater',
         superAdminPassword 
       };
@@ -76,67 +73,6 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
       }
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleDiscordIdSubmit = async () => {
-    if (!discordId) return;
-
-    try {
-      setIsLoading(true);
-      const response = await api.get(`/v2/discord/users/${discordId}`);
-      const discordUser = response.data;
-
-      setPendingDiscordInfo({
-        username: discordUser.username,
-        avatar: discordUser.avatar,
-        id: discordUser.id,
-        avatarUrl: discordUser.avatarUrl
-      });
-      setShowDiscordConfirm(true);
-    } catch (error) {
-      console.error('Error fetching Discord ID:', error);
-      if (error.response?.status === 404) {
-        onError(tError('userNotFound'));
-      } else {
-        onError(tError('discordFetchFailed'));
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDiscordConfirm = async (confirmed) => {
-    if (!confirmed || !pendingDiscordInfo) {
-      setShowDiscordConfirm(false);
-      setPendingDiscordInfo(null);
-      return;
-    }
-
-    if (rater.isSuperAdmin && !superAdminPassword) {
-      onError(tError('passwordRequired'));
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      const payload = {
-        discordId: pendingDiscordInfo.id,
-        role: rater.isSuperAdmin ? 'superadmin' : 'rater',
-        superAdminPassword: rater.isSuperAdmin ? superAdminPassword : undefined
-      };
-
-      await api.post(`/v2/admin/users/grant-role`, payload);
-      onUpdate();
-
-      setDiscordId('');
-    } catch (error) {
-      console.error('Error updating Discord info:', error);
-      onError(error.response?.data?.error || tError('updateDiscordFailed'));
-    } finally {
-      setIsLoading(false);
-      setShowDiscordConfirm(false);
-      setPendingDiscordInfo(null);
     }
   };
 
@@ -159,9 +95,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
                 </span>
               )}
             </span>
-            {rater.discordUsername && (
-              <span className="discord-tag">@{rater.discordUsername}</span>
-            )}
+            <span className="internal-username">@{rater.username}</span>
           </div>
         </div>
         <div className="rater-actions">
@@ -201,70 +135,18 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
           )}
         </div>
       </div>
-
       {isExpanded && (
         <div className="rater-details">
-          <div className="discord-section">
-            <div className="discord-input-group">
-              <input
-                type="text"
-                value={discordId}
-                onChange={(e) => setDiscordId(e.target.value)}
-                placeholder={tRater('discord.idInput')}
-                disabled={isLoading || showDiscordConfirm}
+          <div className="internal-section">
+            <div className="current-internal-info">
+              <UserAvatar 
+                primaryUrl={rater.avatarUrl}
+                fallbackUrl={rater.pfp}
               />
-              <button
-                onClick={handleDiscordIdSubmit}
-                disabled={isLoading || showDiscordConfirm}
-              >
-                {tRater('discord.validateButton')}
-              </button>
+              <div>
+                <p className="internal-username">@{rater.username}</p>
+              </div>
             </div>
-
-            {showDiscordConfirm && pendingDiscordInfo && (
-              <div className="discord-confirm">
-                <div className="discord-preview">
-                  <UserAvatar 
-                    primaryUrl={pendingDiscordInfo.avatarUrl}
-                    fallbackUrl={pendingDiscordInfo.pfp}
-                  />
-                  <div>
-                    <p className="discord-username">@{pendingDiscordInfo.username}</p>
-                    <p className="discord-id">{tRater('discord.idLabel', { id: pendingDiscordInfo.id })}</p>
-                  </div>
-                </div>
-
-                <div className="confirm-section">
-                  <p className="confirm-message">
-                    {tRater('discord.confirmMessage', { username: pendingDiscordInfo.username })}
-                  </p>
-                  <div className="confirm-buttons">
-                    <button 
-                      onClick={() => handleDiscordConfirm(true)}
-                      disabled={rater.isSuperAdmin && !superAdminPassword}
-                    >
-                      {tRater('discord.confirmButton')}
-                    </button>
-                    <button onClick={() => handleDiscordConfirm(false)}>
-                      {tRater('discord.cancelButton')}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {rater.discordUsername && !showDiscordConfirm && (
-              <div className="current-discord-info">
-                <UserAvatar 
-                  primaryUrl={rater.avatarUrl}
-                  fallbackUrl={rater.pfp}
-                />
-                <div>
-                  <p className="discord-username">@{rater.discordUsername}</p>
-                  <p className="discord-id">{tRater('discord.idLabel', { id: rater.discordId })}</p>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       )}
@@ -279,7 +161,7 @@ const RaterManagementPopup = ({ onClose, currentUser }) => {
 
   const [raters, setRaters] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [newRaterDiscordId, setNewRaterDiscordId] = useState('');
+  const [newRaterUsername, setNewRaterUsername] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [superAdminPassword, setSuperAdminPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -325,23 +207,19 @@ const RaterManagementPopup = ({ onClose, currentUser }) => {
   }, [fetchRaters]);
 
   const handleAddRater = async () => {
-    if (!newRaterDiscordId.trim()) return;
+    if (!newRaterUsername.trim()) return;
 
     try {
       const payload = { 
-        discordId: newRaterDiscordId,
+        username: newRaterUsername,
         role: 'rater'
       };
       await api.post('/v2/admin/users/grant-role', payload);
       await fetchRaters();
-      setNewRaterDiscordId('');
+      setNewRaterUsername('');
     } catch (error) {
       console.error('Error adding rater:', error);
-      if (error.response?.data?.error?.includes('Failed to fetch Discord user info: Not Found')) {
-        setErrorMessage(tError('userNotFound'));
-      } else {
-        setErrorMessage(error.response?.data?.error || tError('addFailed'));
-      }
+      setErrorMessage(error.response?.data?.error || tError('addFailed'));
     }
   };
 
@@ -356,8 +234,8 @@ const RaterManagementPopup = ({ onClose, currentUser }) => {
   const filteredRaters = raters.filter(rater => {
     const searchLower = searchQuery.toLowerCase();
     return (
-      rater.discordUsername?.toLowerCase().includes(searchLower) ||
-      rater.discordId?.toLowerCase().includes(searchLower)
+      rater.username?.toLowerCase().includes(searchLower) ||
+      rater.nickname?.toLowerCase().includes(searchLower)
     );
   });
 
@@ -407,8 +285,8 @@ const RaterManagementPopup = ({ onClose, currentUser }) => {
         <div className="add-rater-section">
           <input
             type="text"
-            value={newRaterDiscordId}
-            onChange={(e) => setNewRaterDiscordId(e.target.value)}
+            value={newRaterUsername}
+            onChange={(e) => setNewRaterUsername(e.target.value)}
             placeholder={tRater('addRater.placeholder')}
           />
           <button onClick={handleAddRater}>{tRater('addRater.button')}</button>

@@ -560,12 +560,13 @@
   font-style: italic;
 }
 
-@keyframes spin {
-  to {
-    transform: translateY(-50%) rotate(360deg);
-  }
-}
 
 .submission-creator-popup .action-button.loading {
   padding-right: 40px;
 } 
+
+.submission-creator-popup .team-members {
+  color: rgb(139, 151, 221);
+  font-size: 0.9em;
+  margin-left: 8px;
+}

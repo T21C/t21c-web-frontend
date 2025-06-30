@@ -246,14 +246,6 @@
   background-color: var(--color-white-t10);
 }
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
 
 @media (max-width: 768px) {
   .difficulty-page .difficulty-container {

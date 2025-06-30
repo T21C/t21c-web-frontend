@@ -16,6 +16,7 @@ import { SortAscIcon, SortDescIcon } from "@/components/common/icons";
 import { Tooltip } from "react-tooltip";
 import { RatingHelpPopup } from "@/components/popups";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
+import { filterRatingsByUserTopDiff } from "@/utils/Utility";
 
 const truncateString = (str, maxLength) => {
   if (!str) return "";
@@ -258,7 +259,7 @@ const RatingPage = () => {
   const filteredRatings = useMemo(() => {
     if (!sortedRatings) return [];
     
-    return sortedRatings.filter(rating => {
+    let filtered = sortedRatings.filter(rating => {
       if (hideRated) {
         const userDetail = rating.details?.find(detail => detail.userId === user?.id);
         if (userDetail || /^vote/i.test(rating.level.rerateNum)) return false;
@@ -322,7 +323,12 @@ const RatingPage = () => {
       
       return true;
     });
-  }, [sortedRatings, hideRated, lowDiffFilter, fourVoteFilter, searchQuery, user?.id]);
+
+    // Apply user top difficulty filter
+    filtered = filterRatingsByUserTopDiff(filtered, user, difficultyDict);
+    
+    return filtered;
+  }, [sortedRatings, hideRated, lowDiffFilter, fourVoteFilter, searchQuery, user, difficultyDict]);
 
   // Add keyboard shortcut handler for force-refresh
   useEffect(() => {

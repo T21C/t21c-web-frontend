@@ -442,15 +442,6 @@
   animation: spin 1s linear infinite;
 }
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
 @media screen and (max-width: 768px) {
   .admin-backup-page .admin-backup-body {
     padding: 1rem;

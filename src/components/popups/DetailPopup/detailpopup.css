@@ -549,9 +549,9 @@
 }
 
 .rating-popup .rating-level-image {
-    height: 38px; /* Match your input height */
-    width: auto;
-    object-fit: contain;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-left: 0.5rem;
 }
 
 .rating-popup .rating-images {
@@ -697,10 +697,6 @@
     animation: spin 0.8s linear infinite;
 }
 
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
 .rating-popup .save-error-message {
     color: #ff4444;
     font-size: 0.9rem;
@@ -715,8 +711,9 @@
 }
 
 .rating-popup .lv-icon {
-    height: 32px;
-    width: auto;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-left: 0.5rem;
 }
 
 .rating-popup .required-mark {

@@ -17,6 +17,12 @@
   box-shadow: 0 0 10px rgba(255, 0, 0, 0.1);
 }
 
+.rating-card.beyond-capability {
+  background: #231823;
+  box-shadow: 0 0 10px rgba(255, 0, 255, 0.1);
+  opacity: 0.7;
+}
+
 .rating-card .rating-card-content {
   display: flex;
   flex-direction: column;
@@ -197,12 +203,6 @@
   animation: dash 1.5s ease-in-out infinite;
 }
 
-@keyframes spin {
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
 @keyframes dash {
   0% {
     stroke-dasharray: 1, 150;
@@ -339,4 +339,27 @@
   background-color: #4CAF5055;
   opacity: 1;
   color: #88FF88;
+}
+
+.rating-card .capability-warning {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: rgba(255, 165, 0, 0.9);
+  color: #000;
+  border-radius: 50%;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1rem;
+  z-index: 20;
+  cursor: help;
+}
+
+.rating-card .capability-warning:hover {
+  background: rgba(255, 165, 0, 1);
+  transform: scale(1.1);
+  transition: all 0.2s ease;
 } 

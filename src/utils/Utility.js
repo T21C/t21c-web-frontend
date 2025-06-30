@@ -458,3 +458,165 @@ export function createEventSystem(events) {
 
   return () => triggerEvent(events);
 }
+
+/**
+ * Filters difficulties based on user's top difficulty for rating restrictions
+ * @param {Array} difficulties - Array of all difficulties
+ * @param {Object} user - User object with player and topDiff
+ * @returns {Array} Filtered difficulties that the user can rate
+ */
+export const filterDifficultiesByUserTopDiff = (difficulties, user) => {
+  if (!difficulties || !user?.player?.stats?.topDiffId) {
+    return difficulties;
+  }
+
+  const userTopDiff = user.player.stats.topDiffId;
+  
+  // Find the user's top difficulty
+  const topDifficulty = difficulties.find(d => d.id === userTopDiff);
+  if (!topDifficulty || topDifficulty.type !== 'PGU') {
+    return difficulties;
+  }
+
+  // Find P16 and G20 difficulties to compare against
+  const p16Difficulty = difficulties.find(d => d.name === 'P16');
+  const g20Difficulty = difficulties.find(d => d.name === 'G20');
+  const u1Difficulty = difficulties.find(d => d.name === 'U1');
+  
+  if (!p16Difficulty || !g20Difficulty || !u1Difficulty) {
+    return difficulties;
+  }
+
+  // Filter PGU difficulties based on user's top difficulty
+  return difficulties.filter(diff => {
+    // Allow all SPECIAL difficulties
+    if (diff.type === 'SPECIAL') {
+      return true;
+    }
+    
+    // For PGU difficulties
+    if (diff.type === 'PGU') {
+      // If user's top difficulty is U1 or higher (by sortOrder)
+      if (topDifficulty.sortOrder >= u1Difficulty.sortOrder) {
+        // Allow all difficulties
+        return true;
+      }
+      // If user's top difficulty is P16 or lower (by sortOrder)
+      else if (topDifficulty.sortOrder <= p16Difficulty.sortOrder) {
+        // Only allow difficulties up to their top difficulty
+        return diff.sortOrder <= topDifficulty.sortOrder;
+      } else {
+        // For users between P17 and G20, only allow P and G difficulties up to G20
+        if (diff.name.startsWith('P') || diff.name.startsWith('G')) {
+          return diff.sortOrder <= g20Difficulty.sortOrder;
+        }
+        return false;
+      }
+    }
+    
+    return true;
+  });
+};
+
+/**
+ * Filters ratings based on user's top difficulty to hide ratings the user shouldn't access
+ * @param {Array} ratings - Array of ratings
+ * @param {Object} user - User object with player and topDiff
+ * @param {Object} difficultyDict - Dictionary of difficulties by ID
+ * @returns {Array} Filtered ratings that the user can access
+ */
+export const filterRatingsByUserTopDiff = (ratings, user, difficultyDict) => {
+  if (!ratings || !user?.player?.stats?.topDiffId || !difficultyDict) {
+    return ratings;
+  }
+
+  const userTopDiff = user.player.stats.topDiffId;
+  const topDifficulty = difficultyDict[userTopDiff];
+  
+  if (!topDifficulty || topDifficulty.type !== 'PGU') {
+    return ratings;
+  }
+
+  // Find P16, G20, and U1 difficulties to compare against
+  const p16Difficulty = Object.values(difficultyDict).find(d => d.name === 'P16');
+  const g20Difficulty = Object.values(difficultyDict).find(d => d.name === 'G20');
+  const u1Difficulty = Object.values(difficultyDict).find(d => d.name === 'U1');
+  
+  if (!p16Difficulty || !g20Difficulty || !u1Difficulty) {
+    return ratings;
+  }
+
+  return ratings.filter(rating => {
+    // Calculate requestedDiffId for this rating synchronously
+    const input = rating.level?.rerateNum || rating.requesterFR;
+    if (!input || input.trim() === '') {
+      return true; // Allow if no requestedDiffId
+    }
+
+    // Simple parsing for ranges (similar to server's parseRatingRange)
+    const parts = input.trim().split(/[-~\s]/);
+    let requestedDiffId = null;
+
+    // Check for legacy 1-21.3 system using simple regex patterns
+    const legacyConvertedParts = parts.map((part) => {
+      if (/^1?[0-9](\.[0-9]+)?$/.test(part)) {
+        return 'P5';
+      } else if (/^20(\.[0-9]+)?$/.test(part)) {
+        return 'G5';
+      } else if (/^21(\.[0-9]+)?$/.test(part)) {
+        return 'U5';
+      }
+      return part; // Return original if not legacy format
+    });
+
+    // If it's not a range, just get the difficulty ID
+    if (legacyConvertedParts.length === 1) {
+      const difficulty = Object.values(difficultyDict).find(d => d.name === legacyConvertedParts[0]);
+      requestedDiffId = difficulty?.id || null;
+    } else {
+      // For ranges, find the minimum difficulty by sortOrder
+      const difficulties = legacyConvertedParts
+        .map((part) => Object.values(difficultyDict).find(d => d.name === part))
+        .filter((diff) => diff !== undefined);
+
+      if (difficulties.length > 0) {
+        // Find the difficulty with the lowest sortOrder (minimum difficulty)
+        const minDifficulty = difficulties.reduce((min, current) => 
+          current.sortOrder < min.sortOrder ? current : min
+        );
+        requestedDiffId = minDifficulty.id;
+      }
+    }
+
+    // If requestedDiffId is null or the difficulty doesn't exist in the map, allow it
+    if (!requestedDiffId) {
+      return true; // Allow if no requestedDiffId
+    }
+
+    const requestedDifficulty = difficultyDict[requestedDiffId];
+    // If the requested difficulty doesn't correspond to anything in the map, allow it
+    if (!requestedDifficulty) {
+      return true; // Allow if difficulty not found in map
+    }
+    
+    if (requestedDifficulty.type !== 'PGU') {
+      return true; // Allow special difficulties
+    }
+
+    // If user's top difficulty is U1 or higher (by sortOrder)
+    if (topDifficulty.sortOrder >= u1Difficulty.sortOrder) {
+      return true; // Allow all ratings
+    }
+    // If user's top difficulty is P16 or lower (by sortOrder)
+    else if (topDifficulty.sortOrder <= p16Difficulty.sortOrder) {
+      // Only allow ratings up to their top difficulty
+      return requestedDifficulty.sortOrder <= topDifficulty.sortOrder;
+    } else {
+      // For users between P17 and G20, only allow P and G ratings up to G20
+      if (requestedDifficulty.name.startsWith('P') || requestedDifficulty.name.startsWith('G')) {
+        return requestedDifficulty.sortOrder <= g20Difficulty.sortOrder;
+      }
+      return false; // Block U difficulties for P17-G20 users
+    }
+  });
+};

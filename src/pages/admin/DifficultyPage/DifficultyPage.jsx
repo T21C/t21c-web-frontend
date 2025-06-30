@@ -13,7 +13,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const DifficultyPage = () => {
   const { user } = useAuth();
-  const { difficulties, rawDifficulties, loading: contextLoading, reloadDifficulties, setDifficulties, setRawDifficulties } = useDifficultyContext();
+  const { difficulties, loading: contextLoading, reloadDifficulties, setDifficulties } = useDifficultyContext();
   const { t } = useTranslation('pages');
   const tDiff = (key, params = {}) => t(`difficulty.${key}`, params);
   const currentUrl = window.location.origin + location.pathname;
@@ -87,7 +87,6 @@ const DifficultyPage = () => {
         // Update context state directly
         const newDifficulty = response.data;
         setDifficulties(prev => [...prev, newDifficulty]);
-        setRawDifficulties(prev => [...prev, newDifficulty]);
         
         addNotification(tDiff('notifications.created'));
       } else if (type === 'edit') {
@@ -99,7 +98,6 @@ const DifficultyPage = () => {
         // Update context state directly
         const updatedDifficulty = response.data;
         setDifficulties(prev => prev.map(diff => diff.id === updatedDifficulty.id ? updatedDifficulty : diff));
-        setRawDifficulties(prev => prev.map(diff => diff.id === updatedDifficulty.id ? updatedDifficulty : diff));
         
         addNotification(tDiff('notifications.updated'));
       } else if (type === 'delete') {
@@ -109,7 +107,6 @@ const DifficultyPage = () => {
         
         // Update context state directly
         setDifficulties(prev => prev.filter(diff => diff.id !== data.id));
-        setRawDifficulties(prev => prev.filter(diff => diff.id !== data.id));
         
         addNotification(tDiff('notifications.deleted'));
       }
@@ -258,7 +255,7 @@ const DifficultyPage = () => {
       const { type, data } = pendingAction;
       switch (type) {
         case 'edit':
-          const rawDifficulty = rawDifficulties.find(d => d.id === data.id);
+          const rawDifficulty = difficulties.find(d => d.id === data.id);
           setEditingDifficulty(rawDifficulty);
           break;
         case 'create':
@@ -307,7 +304,6 @@ const DifficultyPage = () => {
       
       // Update the context state immediately to prevent animation
       setDifficulties(updatedItems);
-      setRawDifficulties(updatedItems);
       
       // Send the updated sort orders to the server in the background
       await api.put(`${import.meta.env.VITE_DIFFICULTIES}/sort-orders`, {

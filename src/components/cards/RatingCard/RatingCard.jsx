@@ -3,6 +3,7 @@ import './ratingcard.css';
 import { calculateRatingValue, calculateAverageRating, formatCreatorDisplay } from '@/utils/Utility';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDifficultyContext } from '@/contexts/DifficultyContext';
 
 const trimString = (str, maxLength = 40) => {
   if (!str || typeof str !== 'string') return '';
@@ -36,11 +37,54 @@ export const RatingCard = ({
 }) => {
     const { t } = useTranslation('components');
     const tRating = (key) => t(`rating.ratingCard.${key}`) || key;
+    const { difficultyDict } = useDifficultyContext();
     const [isEditing, setIsEditing] = useState(false);
     const [isReasonExpanded, setIsReasonExpanded] = useState(false);
     const [copySuccess, setCopySuccess] = useState(false);
     const isVote = /^vote/i.test(rating.level.rerateNum);
     const userRating = rating.details?.find(detail => detail.userId === user?.id)?.rating || "";
+
+    // Check if rating is beyond user's capability
+    const isBeyondUserCapability = () => {
+      if (!user?.player?.stats?.topDiffId || !difficultyDict || !rating.requestedDiffId) {
+        return false;
+      }
+      
+      const userTopDiff = difficultyDict[user.player.stats.topDiffId];
+      const requestedDiff = difficultyDict[rating.requestedDiffId];
+      
+      if (!userTopDiff || !requestedDiff || userTopDiff.type !== 'PGU' || requestedDiff.type !== 'PGU') {
+        return false;
+      }
+
+      // Find P16, G20, and U1 difficulties to compare against
+      const p16Difficulty = Object.values(difficultyDict).find(d => d.name === 'P16');
+      const g20Difficulty = Object.values(difficultyDict).find(d => d.name === 'G20');
+      const u1Difficulty = Object.values(difficultyDict).find(d => d.name === 'U1');
+      
+      if (!p16Difficulty || !g20Difficulty || !u1Difficulty) {
+        return false;
+      }
+      
+      // If user's top difficulty is U1 or higher (by sortOrder)
+      if (userTopDiff.sortOrder >= u1Difficulty.sortOrder) {
+        // Allow all ratings
+        return false;
+      }
+      // If user's top difficulty is P16 or lower (by sortOrder)
+      else if (userTopDiff.sortOrder <= p16Difficulty.sortOrder) {
+        // Only allow ratings up to their top difficulty
+        return requestedDiff.sortOrder > userTopDiff.sortOrder;
+      } else {
+        // For users between P17 and G20, only allow P and G ratings up to G20
+        if (requestedDiff.name.startsWith('P') || requestedDiff.name.startsWith('G')) {
+          return requestedDiff.sortOrder > g20Difficulty.sortOrder;
+        }
+        return true; // Block U difficulties for P17-G20 users
+      }
+    };
+
+    const beyondCapability = isBeyondUserCapability();
 
     // Calculate averages
     const managerRatings = 
@@ -95,11 +139,16 @@ export const RatingCard = ({
       <div
         className={`rating-card ${
           rating.details.filter(detail => !detail.isCommunityRating).length >= 4 || isVote ? 'four-rated' : 
-          rating.lowDiff ? 'low-diff' : ''}`}
+          rating.lowDiff ? 'low-diff' : ''} ${beyondCapability ? 'beyond-capability' : ''}`}
       >
         {isVote && (
           <div className="vote-tag">
             <span>VOTE</span>
+          </div>
+        )}
+        {beyondCapability && (
+          <div className="capability-warning" title="This rating is beyond your capability">
+            <span>⚠️</span>
           </div>
         )}
         <div className="rating-card-content">

@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 import { ReferencesButton } from '@/components/common/buttons';
 import { useNavigate } from 'react-router-dom';
 import { ExternalLinkIcon, DownloadIcon } from '@/components/common/icons';
-import { formatCreatorDisplay } from "@/utils/Utility";
+import { formatCreatorDisplay, filterDifficultiesByUserTopDiff } from "@/utils/Utility";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 // Cache for video data
 const videoCache = new Map();
@@ -572,11 +572,11 @@ export const DetailPopup = ({
                             validateRating(value);
                           }}
                           showDiff={false}
-                          difficulties={difficulties}
+                          difficulties={filterDifficultiesByUserTopDiff(difficulties, user)}
                           allowCustomInput={true}
                         />
-                        {(pendingRating && difficulties?.find(d => d.name === pendingRating)) && 
-                          <img src={difficulties?.find(d => d.name === pendingRating)?.icon} alt="" className="detail-value lv-icon" />}
+                        {(pendingRating && difficulties.find(d => d.name === pendingRating)) && 
+                          <img src={difficulties.find(d => d.name === pendingRating)?.icon} alt="" className="detail-value lv-icon" />}
                       </div>
                     </div>
                     <div className="rating-field">

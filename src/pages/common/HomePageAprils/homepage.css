@@ -199,14 +199,6 @@
   margin-bottom: 0.2rem;
 }
 
-@keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
 
 .home-aprils .content-container {
   position: relative;
@@ -1017,12 +1009,6 @@
   color: white;
   font-size: 1rem;
   text-shadow: 0 0 10px rgba(255, 42, 209, 0.5);
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 

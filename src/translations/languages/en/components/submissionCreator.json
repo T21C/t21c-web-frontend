@@ -21,7 +21,8 @@
     "loading": "Searching...",
     "noResults": "No creators found",
     "teamPlaceholder": "Search for teams...",
-    "noTeamsFound": "No teams found"
+    "noTeamsFound": "No teams found",
+    "searchingTeams": "Searching teams..."
   },
   "createForm": {
     "title": "Create New Creator",
@@ -57,7 +58,8 @@
     "title": "Team Statistics",
     "totalLevels": "Total Levels",
     "verifiedLevels": "Verified",
-    "memberCount": "Member Count"
+    "memberCount": "Member Count",
+    "members": "members"
   },
   "status": {
     "verified": "✓ Verified Creator",
@@ -86,8 +88,10 @@
     "success": {
       "creatorCreated": "Creator created successfully",
       "creatorAssigned": "Creator assigned successfully",
+      "creatorCreatedAndAssigned": "Creator created and assigned successfully",
       "teamCreated": "Team created successfully",
       "teamAssigned": "Team assigned successfully",
+      "teamCreatedAndAssigned": "Team created and assigned successfully",
       "teamUpdated": "Team updated successfully"
     },
     "error": {
@@ -102,7 +106,8 @@
       "teamAssignFailed": "Failed to assign team",
       "teamLoadFailed": "Failed to load teams",
       "teamNotFound": "Team not found",
-      "invalidTeamData": "Invalid team data provided"
+      "invalidTeamData": "Invalid team data provided",
+      "creditRequestIdMissing": "Credit request ID is missing"
     }
   }
 } 
