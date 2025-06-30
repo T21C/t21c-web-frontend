@@ -256,7 +256,6 @@ const PassSubmissionPage = () => {
           p.player.name.toLowerCase() === channelName.toLowerCase()
         ).player;
 
-        console.log(exactMatch)
         // Directly set the form state with the profile data
         setForm(prev => ({
           ...prev,

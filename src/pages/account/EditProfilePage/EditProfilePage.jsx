@@ -30,7 +30,6 @@ const EditProfilePage = () => {
     confirmPassword: '',
     country: user?.player?.country || '',
   });
-  console.log(user)
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [isChangingPassword, setIsChangingPassword] = useState(false);

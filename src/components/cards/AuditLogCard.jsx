@@ -1,8 +1,6 @@
 import { useState } from "react";
 
 function PrettyJSON({ value }) {
-  console.log(value);
-  console.log(typeof value);
   let parsedValue = value;
   if (typeof value === "string") {
     try {
