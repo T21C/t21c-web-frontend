@@ -325,7 +325,9 @@ const RatingPage = () => {
     });
 
     // Apply user top difficulty filter
-    filtered = filterRatingsByUserTopDiff(filtered, user, difficultyDict);
+    if (!user.isSuperAdmin) {
+      filtered = filterRatingsByUserTopDiff(filtered, user, difficultyDict);
+    }
     
     return filtered;
   }, [sortedRatings, hideRated, lowDiffFilter, fourVoteFilter, searchQuery, user, difficultyDict]);
