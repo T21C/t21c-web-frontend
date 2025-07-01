@@ -10,7 +10,7 @@
     }
   },
   "addRater": {
-    "placeholder": "Wpisz Discord ID",
+    "placeholder": "Wpisz username",
     "button": "Dodaj rater'a"
   },
   "raterEntry": {
@@ -22,7 +22,7 @@
       "delete": "Usuń"
     },
     "discord": {
-      "idInput": "Wpisz Discord ID",
+      "idInput": "Wpisz username",
       "validateButton": "Zatwierdź",
       "confirmMessage": "Zaaktualizuj dane Discord dla @{{username}}?",
       "confirmButton": "Potwierdź",

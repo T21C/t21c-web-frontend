@@ -10,7 +10,7 @@
     }
   },
   "addRater": {
-    "placeholder": "Discord ID 입력",
+    "placeholder": "Username 입력",
     "button": "관리자 추가"
   },
   "raterEntry": {
@@ -22,7 +22,7 @@
       "delete": "삭제"
     },
     "discord": {
-      "idInput": "Discord ID 입력",
+      "idInput": "Username 입력",
       "validateButton": "검증",
       "confirmMessage": "@{{username}}로 Discord 정보 업데이트 하시겠습니까?",
       "confirmButton": "확인",

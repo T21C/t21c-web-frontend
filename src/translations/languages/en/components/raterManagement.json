@@ -10,7 +10,7 @@
     }
   },
   "addRater": {
-    "placeholder": "Enter Discord ID",
+    "placeholder": "Enter username",
     "button": "Add Rater"
   },
   "raterEntry": {
@@ -22,7 +22,7 @@
       "delete": "Delete"
     },
     "discord": {
-      "idInput": "Enter Discord ID",
+      "idInput": "Enter username",
       "validateButton": "Validate",
       "confirmMessage": "Update Discord info to @{{username}}?",
       "confirmButton": "Confirm",
