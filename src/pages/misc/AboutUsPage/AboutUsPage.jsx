@@ -152,7 +152,7 @@ const AboutUsPage = () => {
                           <div className="rater-info">
                             <span className="credit-name">
                               <span className="at">@</span>
-                              {rater.discordUsername}
+                              {rater.username}
                               {rater.isSuperAdmin ? ' ⭐' : ''}
                             </span>
                             <span className="credit-role">

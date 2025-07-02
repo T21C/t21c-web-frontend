@@ -325,7 +325,7 @@ const RatingPage = () => {
     });
 
     // Apply user top difficulty filter
-    if (!user.isSuperAdmin) {
+    if (!user?.isSuperAdmin) {
       filtered = filterRatingsByUserTopDiff(filtered, user, difficultyDict);
     }
     
