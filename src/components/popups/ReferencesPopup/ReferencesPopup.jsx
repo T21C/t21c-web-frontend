@@ -10,6 +10,7 @@ import rollingIcon from '@/assets/icons/Rolling RITK.png';
 import indexingIcon from '@/assets/icons/Indexing RITK.png';
 import techIcon from '@/assets/icons/Tech RITK.png';
 import keycountIcon from '@/assets/icons/Keycount RITK.png';
+import pseudoIcon from '@/assets/icons/Pseudo.png';
 import keycountPlusIcon from '@/assets/icons/Kplus RITK.png';
 import hideIcons from '@/assets/icons/RITK hidden.png'
 import showIcons from '@/assets/icons/RITK visible.png'
@@ -51,7 +52,8 @@ const TYPE_IDENTIFIERS = {
   'I': 'INDEXING',
   'T': 'TECH',
   'K': 'KEYCOUNT',
-  'K+': 'KEYCOUNT_PLUS'
+  'K+': 'KEYCOUNT_PLUS',
+  'P': 'PSEUDO'
 };
 
 // Reverse mapping for display
@@ -60,7 +62,8 @@ const TYPE_DISPLAY = {
   'INDEXING': 'I',
   'TECH': 'T',
   'KEYCOUNT': 'K',
-  'KEYCOUNT_PLUS': 'K+'
+  'KEYCOUNT_PLUS': 'K+',
+  'PSEUDO': 'P'
 };
 
 
@@ -69,7 +72,7 @@ const isValidTypeFormat = (type) => {
   if (!type) return true; // Empty type is valid
   
   // Check if the type contains only valid characters (including K+ as a single unit)
-  const validChars = /^[RITK]+$|^[RITK]*K\+[RITK]*$/;
+  const validChars = /^[RITKP]+$|^[RITKP]*K\+[RITKP]*$/;
   return validChars.test(type);
 };
 
@@ -122,21 +125,24 @@ const TYPE_ORDER = {
   'INDEXING': 1, 
   'TECH': 2, 
   'KEYCOUNT': 3, 
-  'KEYCOUNT_PLUS': 4 
+  'KEYCOUNT_PLUS': 4,
+  'PSEUDO': 5,
 };
 const TYPE_LABELS = {
   'ROLLING': 'Rolling',
   'INDEXING': 'Indexing',
   'TECH': 'Tech',
   'KEYCOUNT': 'Keycount',
-  'KEYCOUNT_PLUS': 'Keycount+'
+  'KEYCOUNT_PLUS': 'Keycount+',
+  'PSEUDO': 'Pseudo'
 };
 const DEFAULT_TYPE_ICONS = {
   'ROLLING': rollingIcon,
   'INDEXING': indexingIcon,
   'TECH': techIcon,
   'KEYCOUNT': keycountIcon,
-  'KEYCOUNT_PLUS': keycountPlusIcon
+  'KEYCOUNT_PLUS': keycountPlusIcon,
+  'PSEUDO': pseudoIcon
 };
 
 // Define type priority for sorting
@@ -145,7 +151,8 @@ const TYPE_PRIORITY = {
   'INDEXING': 1,
   'TECH': 2,
   'KEYCOUNT': 3,
-  'KEYCOUNT_PLUS': 4
+  'KEYCOUNT_PLUS': 4,
+  'PSEUDO': 5,
 };
 
 // Helper function to sort types by priority
@@ -168,7 +175,7 @@ const generateCombinationsOfSize = (types, size) => {
 
 // Generate all possible combinations of reference types
 const generateTypeCombinations = () => {
-  const baseTypes = ['ROLLING', 'INDEXING', 'TECH', 'KEYCOUNT', 'KEYCOUNT_PLUS'];
+  const baseTypes = ['ROLLING', 'INDEXING', 'TECH', 'KEYCOUNT', 'KEYCOUNT_PLUS', 'PSEUDO'];
   const combinations = new Set();
   
   // Add single types
@@ -785,6 +792,7 @@ const ReferencesPopup = ({ onClose }) => {
       case 'TECH': return '#4444ff';
       case 'KEYCOUNT': return '#ffff44';
       case 'KEYCOUNT_PLUS': return '#ff8844';
+      case 'PSEUDO': return '#ccc';
       default: return '#888888';
     }
   };
