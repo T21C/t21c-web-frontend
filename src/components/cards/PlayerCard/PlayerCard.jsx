@@ -6,16 +6,17 @@ import { PlayerContext } from "@/contexts/PlayerContext";
 import { DifficultyContext } from "@/contexts/DifficultyContext";
 import { formatNumber } from "@/utils";
 import { UserAvatar } from "@/components/layout";
+import { useAuth } from "@/contexts/AuthContext";
 
 const diffFields = ["topDiff", "top12kDiff"];
 const passes = ["totalPasses", "universalPassCount", "worldsFirstCount"];
 
-const PlayerCard = ({player}) => {
+const PlayerCard = ({player, onCreatorAssignmentClick}) => {
   const { sortBy } = useContext(PlayerContext);
-  const { difficultyDict } = useContext(DifficultyContext);
   const { t } = useTranslation('components');
   const tCard = (key) => t(`cards.player.${key}`) || key;
   const navigate = useNavigate();
+  const { user } = useAuth();
 
   const sortLabels = {
     rankedScore: tCard('stats.rankedScore'),
@@ -37,6 +38,24 @@ const PlayerCard = ({player}) => {
 
   const onAnchorClick = (e) => {
     e.stopPropagation();
+  };
+
+  const handleCreatorAssignmentClick = (e) => {
+    e.stopPropagation();
+    if (onCreatorAssignmentClick && player.player?.user) {
+      onCreatorAssignmentClick(player.player.user);
+    }
+  };
+
+  const handleCreatorAssignmentClose = () => {
+    setShowCreatorAssignment(false);
+  };
+
+  const handleCreatorAssignmentUpdate = () => {
+    // Refresh the page data by triggering a context update
+    // This will cause the leaderboard to refetch data
+    window.dispatchEvent(new CustomEvent('auth:permission-changed'));
+    setShowCreatorAssignment(false);
   };
     
   const prioritizedField = sortBy || 'rankedScore';
@@ -114,7 +133,24 @@ const PlayerCard = ({player}) => {
           <p className="player-exp">{tCard('title')} | ID: {player.id}</p>
         </div>
         <div className="name-container">
-          <p className='player-name'>{player.name}</p>
+          <p className='player-name'>
+            {player.name}
+            
+        {user?.isSuperAdmin && player.player?.user && (
+          <button
+            className="creator-assignment-btn"
+            onClick={handleCreatorAssignmentClick}
+            title="Assign Creator"
+          >
+            <span 
+              className="creator-assignment-icon"
+              style={{
+                color: player.player.user.creator ? '#5f5' : '#fff'
+              }}
+            >🛠</span>
+          </button>
+        )}
+            </p>
           {player.player.user?.username && (
             <span className="player-discord-handle">@{player.player.user?.username}</span>
           )}

@@ -148,6 +148,9 @@
   background: rgba(0, 0, 0, 0.1);
   padding: 0.3rem 0.8rem;
   border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .player-card .player-discord-handle {
@@ -158,7 +161,47 @@
 }
 
 .player-card .name-wrapper {
-  background: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  position: relative;
+}
+
+.player-card .creator-assignment-btn {
+  margin-left: auto;
+  background-color: var(--color-white-t10); 
+  border: none;
+  width: 32px;
+  height: 32px;
+  padding: 2px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.player-card .creator-assignment-btn:hover {
+  background-color: var(--color-white-t20);
+}
+
+.player-card .creator-assignment-icon {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  font-size: 18px;
+  padding: 0 2px 2px 0;
+  color: #fff;
+}
+
+.player-card .info-wrapper {
+  display: flex;
+  gap: 1.5rem;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
 }
 
 .player-card .creator-wrapper .group {

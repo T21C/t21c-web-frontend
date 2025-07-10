@@ -15,6 +15,7 @@ import { ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
 import { useAuth } from "@/contexts/AuthContext";
 import { SortDescIcon, SortAscIcon, SortIcon, FilterIcon, ResetIcon } from "@/components/common/icons";
+import { CreatorAssignmentPopup } from "@/components/popups";
 
 const currentUrl = window.location.origin + location.pathname;
 const limit = 30;
@@ -26,6 +27,8 @@ const LeaderboardPage = () => {
   const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
+  const [showCreatorAssignment, setShowCreatorAssignment] = useState(false);
+  const [selectedPlayerUser, setSelectedPlayerUser] = useState(null);
   const location = useLocation();
 
   const {
@@ -129,6 +132,23 @@ const LeaderboardPage = () => {
     setShowBanned('hide');
     setForceUpdate((f) => !f);
   }
+
+  const handleCreatorAssignmentClick = (playerUser) => {
+    setSelectedPlayerUser(playerUser);
+    setShowCreatorAssignment(true);
+  };
+
+  const handleCreatorAssignmentClose = () => {
+    setShowCreatorAssignment(false);
+    setSelectedPlayerUser(null);
+  };
+
+  const handleCreatorAssignmentUpdate = () => {
+    // Refresh the leaderboard data to reflect any changes
+    setForceUpdate(prev => !prev);
+    setShowCreatorAssignment(false);
+    setSelectedPlayerUser(null);
+  };
 
   return (
     <div className="leaderboard-page">
@@ -300,12 +320,21 @@ const LeaderboardPage = () => {
                     isBanned: playerStat.player.isBanned,
                     pfp: playerStat.player.pfp,
                   }}
+                  onCreatorAssignmentClick={handleCreatorAssignmentClick}
                 />
               ))}
             </InfiniteScroll>
           )}
         </div>
       </div>
+
+      {showCreatorAssignment && selectedPlayerUser && (
+        <CreatorAssignmentPopup
+          user={selectedPlayerUser}
+          onClose={handleCreatorAssignmentClose}
+          onUpdate={handleCreatorAssignmentUpdate}
+        />
+      )}
     </div>
   );
 };
