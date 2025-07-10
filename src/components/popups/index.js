@@ -1,5 +1,6 @@
 import AdminPlayerPopup from "./AdminPlayerPopup/AdminPlayerPopup";
 import { CreatorActionPopup } from "./CreatorActionPopup/CreatorActionPopup";
+import { CreatorAssignmentPopup } from "./CreatorAssignmentPopup/CreatorAssignmentPopup";
 import { DetailPopup } from "./DetailPopup/DetailPopup";
 import { EditLevelPopup } from "./EditLevelPopup/EditLevelPopup";
 import { EditPassPopup } from "./EditPassPopup/EditPassPopup";
@@ -18,6 +19,7 @@ import CDNTosPopup from './CDNTosPopup/CDNTosPopup';
 export {
     AdminPlayerPopup,
     CreatorActionPopup,
+    CreatorAssignmentPopup,
     EditLevelPopup,
     EditPassPopup,
     LevelHelpPopup,

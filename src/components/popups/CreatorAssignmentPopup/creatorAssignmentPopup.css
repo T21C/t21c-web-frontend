@@ -1,0 +1,344 @@
+.creator-assignment-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  overflow-y: auto;
+}
+
+.creator-assignment-popup-overlay .creator-assignment-popup {
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  padding: 24px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  margin: 20px auto;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.creator-assignment-popup-overlay .creator-assignment-popup::-webkit-scrollbar {
+  width: 8px;
+}
+
+.creator-assignment-popup-overlay .creator-assignment-popup::-webkit-scrollbar-track {
+  background: #1a1a1a;
+  border-radius: 4px;
+}
+
+.creator-assignment-popup-overlay .creator-assignment-popup::-webkit-scrollbar-thumb {
+  background-color: #404040;
+  border-radius: 4px;
+  border: 2px solid #1a1a1a;
+}
+
+.creator-assignment-popup-overlay .close-popup-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.creator-assignment-popup-overlay .close-popup-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  transform: scale(1.1);
+}
+
+.creator-assignment-popup-overlay .popup-header {
+  margin-bottom: 24px;
+}
+
+.creator-assignment-popup-overlay .popup-header h2 {
+  margin: 0 0 16px 0;
+  font-size: 1.5rem;
+  color: #ffffff;
+}
+
+.creator-assignment-popup-overlay .user-info {
+  background-color: #2a2a2a;
+  padding: 16px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.creator-assignment-popup-overlay .user-info p {
+  margin: 8px 0;
+  color: #ffffff;
+}
+
+.creator-assignment-popup-overlay .user-info strong {
+  color: #007bff;
+}
+
+.creator-assignment-popup-overlay .form-group {
+  margin-bottom: 24px;
+}
+
+.creator-assignment-popup-overlay .form-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #a0a0a0;
+  font-weight: 500;
+}
+
+.creator-assignment-popup-overlay .action-button {
+  width: 100%;
+  padding: 12px 24px;
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.creator-assignment-popup-overlay .action-button:not(:disabled):hover {
+  background-color: #0056b3;
+  transform: translateY(-1px);
+}
+
+.creator-assignment-popup-overlay .action-button:disabled {
+  background-color: #404040;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.creator-assignment-popup-overlay .action-button.loading {
+  cursor: not-allowed;
+}
+
+.creator-assignment-popup-overlay .spinner {
+  width: 20px;
+  height: 20px;
+  animation: spin 1s linear infinite;
+}
+
+.creator-assignment-popup-overlay .spinner circle {
+  stroke: #ffffff;
+  stroke-linecap: round;
+  animation: dash 1.5s ease-in-out infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes dash {
+  0% {
+    stroke-dasharray: 1, 150;
+    stroke-dashoffset: 0;
+  }
+  50% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -35;
+  }
+  100% {
+    stroke-dasharray: 90, 150;
+    stroke-dashoffset: -124;
+  }
+}
+
+.creator-assignment-popup-overlay .popup-content {
+  margin-top: 16px;
+}
+
+.creator-assignment-popup-overlay .current-creator-section {
+  text-align: center;
+}
+
+.creator-assignment-popup-overlay .current-creator-info h3 {
+  color: #ffffff;
+  margin-bottom: 16px;
+  font-size: 1.2rem;
+}
+
+.creator-assignment-popup-overlay .creator-card {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  background-color: #2a2a2a;
+  padding: 16px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  border: 1px solid #404040;
+}
+
+.creator-assignment-popup-overlay .creator-card-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  margin-right: 16px;
+}
+
+.creator-assignment-popup-overlay .creator-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.creator-assignment-popup-overlay .creator-id {
+  color: #a0a0a0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.creator-assignment-popup-overlay .creator-verified {
+  color: #28a745;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.creator-assignment-popup-overlay .unassign-button {
+  background-color: #dc3545;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.creator-assignment-popup-overlay .unassign-button:hover:not(:disabled) {
+  background-color: #c82333;
+  transform: translateY(-1px);
+}
+
+.creator-assignment-popup-overlay .unassign-button:disabled {
+  background-color: #6c757d;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.creator-assignment-popup-overlay .assign-creator-section {
+  text-align: center;
+}
+
+.creator-assignment-popup-overlay .confirm-dialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1100;
+}
+
+.creator-assignment-popup-overlay .confirm-content {
+  background-color: #1a1a1a;
+  padding: 24px;
+  border-radius: 8px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+}
+
+.creator-assignment-popup-overlay .confirm-content p {
+  color: #ffffff;
+  margin-bottom: 20px;
+  font-size: 1rem;
+}
+
+.creator-assignment-popup-overlay .confirm-buttons {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.creator-assignment-popup-overlay .confirm-yes,
+.creator-assignment-popup-overlay .confirm-no {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  min-width: 100px;
+}
+
+.creator-assignment-popup-overlay .confirm-yes {
+  background-color: #dc3545;
+  color: #ffffff;
+}
+
+.creator-assignment-popup-overlay .confirm-yes:hover:not(:disabled) {
+  background-color: #c82333;
+  transform: translateY(-1px);
+}
+
+.creator-assignment-popup-overlay .confirm-no {
+  background-color: #6c757d;
+  color: #ffffff;
+}
+
+.creator-assignment-popup-overlay .confirm-no:hover:not(:disabled) {
+  background-color: #5a6268;
+  transform: translateY(-1px);
+}
+
+.creator-assignment-popup-overlay .confirm-yes:disabled,
+.creator-assignment-popup-overlay .confirm-no:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+@media (max-width: 768px) {
+  .creator-assignment-popup-overlay .creator-assignment-popup {
+    width: 95%;
+    padding: 16px;
+    margin: 10px auto;
+  }
+
+  .creator-assignment-popup-overlay .popup-content {
+    margin-top: 12px;
+  }
+
+  .creator-assignment-popup-overlay .confirm-content {
+    padding: 20px;
+    margin: 20px;
+  }
+
+  .creator-assignment-popup-overlay .confirm-buttons {
+    flex-direction: column;
+  }
+
+  .creator-assignment-popup-overlay .confirm-yes,
+  .creator-assignment-popup-overlay .confirm-no {
+    width: 100%;
+  }
+} 

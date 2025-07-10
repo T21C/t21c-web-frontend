@@ -8,7 +8,7 @@ import { MetaTags } from "@/components/common/display";
 import { ScoreCard } from "@/components/cards";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
-import { AdminPlayerPopup } from "@/components/popups";
+import { AdminPlayerPopup, CreatorAssignmentPopup } from "@/components/popups";
 import { DefaultAvatar, ShieldIcon, EditIcon } from "@/components/common/icons";
 import { CaseOpenSelector } from "@/components/common/selectors";
 import caseOpen from "@/assets/icons/case.png";
@@ -33,6 +33,7 @@ const ProfilePage = () => {
     const tProfile = (key, params = {}) => t(`profile.${key}`, params);
     const { user } = useAuth();
     const [showEditPopup, setShowEditPopup] = useState(false);
+    const [showCreatorAssignment, setShowCreatorAssignment] = useState(false);
     const location = useLocation();
     const currentUrl = window.location.origin + location.pathname;
     const navigate = useNavigate();
@@ -83,6 +84,33 @@ const ProfilePage = () => {
           return;
         }
         setShowEditPopup(true);
+      };
+
+      const handleCreatorAssignmentClick = () => {
+        setShowCreatorAssignment(true);
+      };
+
+      const handleCreatorAssignmentClose = () => {
+        setShowCreatorAssignment(false);
+      };
+
+      const handleCreatorAssignmentUpdate = () => {
+        // Refresh player data to get updated creator information
+        if (playerId) {
+          const fetchPlayer = async () => {
+            try {
+              const response = await api.get(import.meta.env.VITE_PLAYERS+"/"+playerId);
+              setPlayerData(response.data);
+            } catch (error) {
+              console.error('Error fetching updated player data:', error);
+            }
+          };
+          fetchPlayer();
+        }
+        
+        if (isOwnProfile && user) {
+          window.dispatchEvent(new CustomEvent('auth:permission-changed'));
+        }
       };
 
       const handleSearchForOther = () => {
@@ -180,15 +208,15 @@ const ProfilePage = () => {
                       <div className="player-name-rank">
                         <div className="player-name-container">
                           <h1>{playerData.name}</h1>
-                          {playerData.discordUsername && (
-                            <span className="player-discord-handle">@{playerData.discordUsername}</span>
+                          {playerData.username && (
+                            <span className="player-discord-handle">@{playerData.username}</span>
                           )}
                         </div>
                         <h2
                           style={{
                             color: parseRankColor(playerData.stats.rankedScoreRank), 
                             backgroundColor: `${parseRankColor(playerData.stats.rankedScoreRank)}27`,
-                            transform: playerData.discordUsername ? "translateY(-0.45rem)" : "translateY(0)"
+                            transform: playerData.username ? "translateY(-0.45rem)" : "translateY(0)"
                         }}
                         >#{playerData.stats.rankedScoreRank}</h2>
                       </div>
@@ -235,6 +263,19 @@ const ProfilePage = () => {
                       onClick={handleAdminEditClick}
                     >
                       <ShieldIcon color="#fff" size={"24px"} />
+                    </button>
+                  )}
+                  {user?.isSuperAdmin && (
+                    <button 
+                      className="edit-button"
+                      onClick={handleCreatorAssignmentClick}
+                      title="Assign Creator"
+                    >
+                      <span className="creator-assignment-icon"
+                        style={{
+                          color: playerData.user.creator ? '#5f5' : '#fff'
+                        }}
+                      >🛠</span>
                     </button>
                   )}
                   </div>
@@ -322,6 +363,14 @@ const ProfilePage = () => {
                 />
               </div>
             </div>
+          )}
+
+          {showCreatorAssignment && playerData?.user && (
+            <CreatorAssignmentPopup
+              user={playerData.user}
+              onClose={handleCreatorAssignmentClose}
+              onUpdate={handleCreatorAssignmentUpdate}
+            />
           )}
         </div>
       );

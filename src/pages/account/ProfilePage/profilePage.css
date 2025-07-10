@@ -215,6 +215,9 @@
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .player-page .edit-button:hover {
@@ -224,6 +227,15 @@
 .player-page .edit-button svg {
   width: 36px;
   height: 36px;
+}
+
+.player-page .creator-assignment-icon {
+  text-align: center;
+  display: flex;
+  align-items: center;
+  font-size: 32px;
+  padding: 0 2px 5px 0;
+  color: #fff;
 }
 
 .player-page .scores-section {
