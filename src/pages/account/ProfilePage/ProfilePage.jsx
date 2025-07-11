@@ -273,7 +273,7 @@ const ProfilePage = () => {
                     >
                       <span className="creator-assignment-icon"
                         style={{
-                          color: playerData.user.creator ? '#5f5' : '#fff'
+                          color: playerData.user?.creator ? '#5f5' : '#fff'
                         }}
                       >🛠</span>
                     </button>
