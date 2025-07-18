@@ -18,7 +18,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { MetaTags } from "@/components/common/display";
-import { DownloadIcon, InfoIcon, LikeIcon, SteamIcon } from "@/components/common/icons";
+import { DownloadIcon, HistoryListIcon, InfoIcon, LikeIcon, SteamIcon } from "@/components/common/icons";
 import { createEventSystem, formatCreatorDisplay, minus2Reasons, gimmickReasons } from "@/utils/Utility";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
@@ -444,6 +444,62 @@ const RatingAccuracyDialog = ({ isOpen, onClose, onSave, initialValue = 0 }) => 
   );
 };
 
+// Refactor RerateHistoryDropdown to match AliasesDropdown pattern
+const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict }) => {
+  const { t } = useTranslation('pages');
+  const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        onClose();
+      }
+      event.stopPropagation();
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [onClose]);
+
+
+  const handleDropdownClick = (e) => {
+    e.stopPropagation();
+  };
+
+  if (!show || !rerateHistory?.length) return null;
+
+  return (
+    <div className="rerate-history-dropdown" ref={dropdownRef} onClick={handleDropdownClick}>
+      <div className="rerate-history-header">{tLevel('rerateHistory.header', { defaultValue: 'Rerate History' })}</div>
+      <div className="rerate-history-sequence">
+        {rerateHistory.slice().reverse().map((entry, idx) => {
+          const prevDiff = difficultyDict[entry.previousDiffId];
+          const newDiff = difficultyDict[entry.newDiffId];
+          return (
+            <div className="rerate-history-row" key={entry.id || idx}>
+              <div className="rerate-history-step">
+                <div className="rerate-history-icon" title={prevDiff?.name || entry.previousDiffId}>
+                  {prevDiff?.icon ? <img src={prevDiff.icon} alt={prevDiff.name} /> : <span>{prevDiff?.name || entry.previousDiffId}</span>}
+                  <div className="rerate-history-basescore">{entry.previousBaseScore || difficultyDict[entry.previousDiffId]?.baseScore}PP</div>
+                </div>
+                <span className="rerate-history-arrow">➔</span>
+                <div className="rerate-history-icon" title={newDiff?.name || entry.newDiffId}>
+                  {newDiff?.icon ? <img src={newDiff.icon} alt={newDiff.name} /> : <span>{newDiff?.name || entry.newDiffId}</span>}
+                  <div className="rerate-history-basescore">{entry.newBaseScore || difficultyDict[entry.newDiffId]?.baseScore}PP</div>
+                </div>
+                <div className="rerate-history-meta">
+                  <span className="rerate-history-date">{new Date(entry.createdAt).toLocaleDateString()}</span>
+                  {entry.user && <span className="rerate-history-user">{entry.user.username || entry.reratedBy}</span>}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
 const LevelDetailPage = () => {
   const { t } = useTranslation('pages');
   const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
@@ -487,6 +543,24 @@ const LevelDetailPage = () => {
   const sliderRef = useRef(null);
 
   const [showDownloadPopup, setShowDownloadPopup] = useState(false);
+  const [showRerateDropdown, setShowRerateDropdown] = useState(false);
+  const [rerateArrowEnabled, setRerateArrowEnabled] = useState(true);
+
+  const handleRerateDropdownToggle = () => {
+    if (!rerateArrowEnabled) return;
+    setShowRerateDropdown(true);
+    setRerateArrowEnabled(false);
+  };
+
+  const handleRerateDropdownClose = () => {
+    setShowRerateDropdown(false);
+    // Wait for mouseup before re-enabling the arrow
+    const enableArrow = () => {
+      setRerateArrowEnabled(true);
+      window.removeEventListener('mouseup', enableArrow);
+    };
+    window.addEventListener('mouseup', enableArrow);
+  };
 
   const handleOpenRatingAccuracyInfo = () => {
     setIsAllVotesOpen(!isAllVotesOpen);
@@ -911,11 +985,28 @@ const LevelDetailPage = () => {
               style={{
                 backgroundImage: `url(${res && videoDetail ? videoDetail.image: "defaultImageURL"})`}}>
 
-              <div className="diff">
+              <div className="diff rerate-history-container" style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <img 
                   src={difficultyDict[res.level.difficulty.id]?.icon} 
                   alt={difficultyDict[res.level.difficulty.id]?.name || 'Difficulty icon'} 
                   className="difficulty-icon"
+                />
+                {res?.rerateHistory?.length > 0 && (
+                  <span
+                    className={`rerate-arrow ${showRerateDropdown ? 'open' : ''}`}
+                    onClick={handleRerateDropdownToggle}
+                    title={tLevel('rerateHistory.header', { defaultValue: 'Show rerate history' })}
+                    style={{ pointerEvents: rerateArrowEnabled ? 'auto' : 'none', opacity: rerateArrowEnabled ? 1 : 0.5 }}
+                  >
+                    <HistoryListIcon className="rerate-history-icon" size={"24px"}/>
+                    <span className="rerate-arrow-icon">&#9660;</span>
+                  </span>
+                )}
+                <RerateHistoryDropdown
+                  rerateHistory={res?.rerateHistory}
+                  show={showRerateDropdown}
+                  onClose={handleRerateDropdownClose}
+                  difficultyDict={difficultyDict}
                 />
                 <div className="pp-display">
                   {(res.level.baseScore || res.level.difficulty.baseScore || 0).toFixed(1)}PP
@@ -1259,7 +1350,8 @@ const LevelDetailPage = () => {
                 ...prevRes.level,
                 ...newLevel,
                 aliases: newLevel.aliases || prevRes.level.aliases
-              }
+              },
+              rerateHistory: updatedLevel.rerateHistory || prevRes.rerateHistory // ensure rerateHistory is updated
             }));
           }}
         />

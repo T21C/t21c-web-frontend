@@ -108,5 +108,16 @@
     "loginToVote": "Login to vote",
     "viewAllVotes": "View all votes",
     "noVotes": "No votes yet"
+  },
+  "rerateHistory": {
+    "header": "Rerate History",
+    "open": "Show rerate history",
+    "close": "Close rerate history",
+    "noHistory": "No rerate history available",
+    "previous": "Previous",
+    "current": "Current",
+    "baseScore": "Base Score",
+    "date": "Date",
+    "user": "User"
   }
 } 
