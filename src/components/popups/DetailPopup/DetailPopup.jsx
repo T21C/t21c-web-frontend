@@ -404,10 +404,6 @@ export const DetailPopup = ({
     }
   };
 
-  const canEditRatings = () => {
-    return user && (user.isSuperAdmin || user.isRater);
-  };
-
   const navigateToLevel = () => {
     window.open(`/levels/${selectedRating.level.id}`, '_blank');
   }

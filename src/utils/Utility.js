@@ -504,13 +504,10 @@ export const filterDifficultiesByUserTopDiff = (difficulties, user) => {
       // If user's top difficulty is P16 or lower (by sortOrder)
       else if (topDifficulty.sortOrder <= p16Difficulty.sortOrder) {
         // Only allow difficulties up to their top difficulty
-        return diff.sortOrder <= topDifficulty.sortOrder;
+        return diff.name.startsWith('P');
       } else {
         // For users between P17 and G20, only allow P and G difficulties up to G20
-        if (diff.name.startsWith('P') || diff.name.startsWith('G')) {
-          return diff.sortOrder <= g20Difficulty.sortOrder;
-        }
-        return false;
+        return diff.name.startsWith('P') || diff.name.startsWith('G');
       }
     }
     
