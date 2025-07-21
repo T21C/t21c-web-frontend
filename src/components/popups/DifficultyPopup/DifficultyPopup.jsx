@@ -1019,6 +1019,7 @@ const DifficultyPopup = ({
                 >
                   <option value="PGU">{tDiff('difficultyTypes.PGU')}</option>
                   <option value="SPECIAL">{tDiff('difficultyTypes.SPECIAL')}</option>
+                  <option value="LEGACY">{tDiff('difficultyTypes.LEGACY')}</option>
                 </select>
               </div>
 

@@ -1,6 +1,6 @@
 import { LinkIcon } from '@/components/common/icons/LinkIcon';
 import './ratingcard.css';
-import { calculateRatingValue, calculateAverageRating, formatCreatorDisplay } from '@/utils/Utility';
+import { calculateRatingValue, formatCreatorDisplay } from '@/utils/Utility';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';

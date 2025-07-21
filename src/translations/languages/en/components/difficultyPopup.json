@@ -54,7 +54,8 @@
   },
   "difficultyTypes": {
     "PGU": "PGU",
-    "SPECIAL": "Special"
+    "SPECIAL": "Special",
+    "LEGACY": "Legacy"
   },
   "announcements": {
     "title": "Announcement Directives For {{diffName}}",

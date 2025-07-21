@@ -482,7 +482,7 @@ const DifficultyPage = () => {
                               />
                               <div className="difficulty-details">
                                 <span className="difficulty-name">{difficulty.name}</span>
-                                <span className="difficulty-type">{tDiff(`difficultyTypes.${difficulty.type}`)}</span>
+                                <span className="difficulty-type">{difficulty.type}</span>
                               </div>
                             </div>
                             <div className="difficulty-actions">

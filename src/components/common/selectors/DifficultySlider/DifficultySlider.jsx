@@ -10,180 +10,133 @@ const DifficultySlider = ({
 }) => {
   
   const trackRef = useRef(null);
-  const { difficulties } = useDifficultyContext();
+  const { noLegacyDifficulties: difficulties } = useDifficultyContext();
   const [isDragging, setIsDragging] = useState(false);
   const [activeKnob, setActiveKnob] = useState(null);
   const [dragStartX, setDragStartX] = useState(null);
   const [dragStartValue, setDragStartValue] = useState(null);
   
-  // Get min and max based on mode
-  const getMinMax = () => {
-    if (mode === "pgu") {
-      return {
-        min: difficulties.find(d => d.name === "P1")?.sortOrder,
-        max: difficulties.find(d => d.name === "U20")?.sortOrder
-      };
-    } else if (mode === "q") {
-      const qDifficulties = difficulties
-        .filter(d => d.name.startsWith('Q'))
-        .sort((a, b) => a.sortOrder - b.sortOrder);
-      return {
-        min: qDifficulties[0]?.sortOrder,
-        max: qDifficulties[qDifficulties.length - 1]?.sortOrder
-      };
-    }
-    return { min: 0, max: 0 };
-  };
+  // Filter difficulties by mode and always sort by sortOrder
+  let filteredDifficulties = difficulties;
+  if (mode === "pgu") {
+    filteredDifficulties = difficulties.filter(d => d.type === 'PGU');
+  } else if (mode === "q") {
+    filteredDifficulties = difficulties.filter(d => d.name.startsWith('Q'));
+  }
+  filteredDifficulties = filteredDifficulties.slice().sort((a, b) => a.sortOrder - b.sortOrder);
 
-  const { min, max } = getMinMax();
-  
-  // Convert values to sortOrder values if they're difficulty names
-  const convertToSortOrders = React.useCallback((vals) => {
-    if (!vals || vals.length === 0) return [min, min];
-    
-    // Check if the first value is a string (difficulty name) or number (sortOrder)
+  // Build a sorted array of available sortOrders for the filtered set
+  const availableSortOrders = filteredDifficulties.map(d => d.sortOrder);
+
+  // Map from index to sortOrder and vice versa for the filtered set
+  const indexToSortOrder = (index) => availableSortOrders[index];
+  const sortOrderToIndex = (sortOrder) => availableSortOrders.indexOf(sortOrder);
+
+  // Use index-based values for slider logic
+  const convertToIndices = React.useCallback((vals) => {
+    if (!vals || vals.length === 0) return [0, 0];
     const isDifficultyNames = typeof vals[0] === 'string';
-    
     if (isDifficultyNames) {
-      // Convert difficulty names to sortOrder values
       return vals.map(name => {
-        const diff = difficulties.find(d => d.name === name);
-        return diff ? diff.sortOrder : min;
+        const diff = filteredDifficulties.find(d => d.name === name);
+        return diff ? sortOrderToIndex(diff.sortOrder) : 0;
       });
     } else {
-      // Already sortOrder values
-      return vals;
+      return vals.map(sortOrder => sortOrderToIndex(sortOrder));
     }
-  }, [difficulties, min]);
+  }, [filteredDifficulties, availableSortOrders]);
 
-  // Ensure values is always an array with at least two elements
-  const safeValues = React.useMemo(() => {
-    const sortOrderValues = convertToSortOrders(values);
-    
-    if (sortOrderValues.length === 0) {
-      // If no values provided, use min for both
-      return [min, min];
-    } else if (sortOrderValues.length === 1) {
-      // If only one value, duplicate it
-      return [sortOrderValues[0], sortOrderValues[0]];
+  // Ensure values is always an array with at least two elements (indices)
+  const safeIndices = React.useMemo(() => {
+    const idxValues = convertToIndices(values);
+    if (idxValues.length === 0) {
+      return [0, 0];
+    } else if (idxValues.length === 1) {
+      return [idxValues[0], idxValues[0]];
     } else {
-      // If two or more values, use first two
-      return [sortOrderValues[0], sortOrderValues[1]];
+      return [idxValues[0], idxValues[1]];
     }
-  }, [values, min, convertToSortOrders]);
+  }, [values, convertToIndices]);
 
-  // Find the current difficulties based on the values
-  const [minDiff, maxDiff] = safeValues.map(value => 
-    difficulties.find(d => d.sortOrder === value)
-  );
+  // Find the current difficulties based on the indices (filtered set)
+  const [minDiff, maxDiff] = safeIndices.map(idx => filteredDifficulties[idx]);
   
   // Calculate background gradient based on surrounding difficulties
   const getSliderBackground = (selectedRange = false) => {
-    let sortedDiffs;
-    if (mode === "pgu") {
-      sortedDiffs = difficulties
-        .filter(d => d.type === 'PGU')
-        .sort((a, b) => a.sortOrder - b.sortOrder);
-    }
-    else if (mode === "q") {
-      sortedDiffs = difficulties
-        .filter(d => d.name.startsWith('Q'))
-        .sort((a, b) => a.sortOrder - b.sortOrder);
-    }
-    else {
-      sortedDiffs = difficulties
-        .sort((a, b) => a.sortOrder - b.sortOrder);
-    }
+    let sortedDiffs = filteredDifficulties;
     if (!selectedRange) {
       // Full gradient for the track
-      const gradientStops = sortedDiffs.map(diff => {
-        const position = ((diff.sortOrder - min) / (max - min)) * 100;
+      const gradientStops = sortedDiffs.map((diff, i) => {
+        const position = (i / (sortedDiffs.length - 1)) * 100;
         return `${diff.color} ${position}%`;
       });
       return `linear-gradient(to right, ${gradientStops.join(', ')})`;
     } else {
       // Partial gradient for the selected range
-      const [rangeMin, rangeMax] = [Math.min(...safeValues), Math.max(...safeValues)];
+      const [rangeMin, rangeMax] = [Math.min(...safeIndices), Math.max(...safeIndices)];
       const rangeWidth = rangeMax - rangeMin;
-      
-      // Filter and adjust difficulties within the selected range
       const rangeStops = sortedDiffs
-        .filter(diff => diff.sortOrder >= rangeMin && diff.sortOrder <= rangeMax)
-        .map(diff => {
-          const position = ((diff.sortOrder - rangeMin) / rangeWidth) * 100;
+        .map((diff, i) => {
+          if (i < rangeMin || i > rangeMax) return null;
+          const position = ((i - rangeMin) / (rangeWidth || 1)) * 100;
           return `${diff.color} ${position}%`;
-        });
-
-      // Add boundary colors if needed
+        })
+        .filter(Boolean);
       if (rangeStops.length === 0) return 'transparent';
-      
-      const firstDiff = sortedDiffs.find(d => d.sortOrder >= rangeMin);
-      const lastDiff = sortedDiffs.reverse().find(d => d.sortOrder <= rangeMax);
-      
-      if (firstDiff && !rangeStops[0].startsWith(firstDiff.color)) {
-        rangeStops.unshift(`${firstDiff.color} 0%`);
+      if (!rangeStops[0].startsWith(sortedDiffs[rangeMin].color)) {
+        rangeStops.unshift(`${sortedDiffs[rangeMin].color} 0%`);
       }
-      if (lastDiff && !rangeStops[rangeStops.length - 1].startsWith(lastDiff.color)) {
-        rangeStops.push(`${lastDiff.color} 100%`);
+      if (!rangeStops[rangeStops.length - 1].startsWith(sortedDiffs[rangeMax].color)) {
+        rangeStops.push(`${sortedDiffs[rangeMax].color} 100%`);
       }
-
       return `linear-gradient(to right, ${rangeStops.join(', ')})`;
     }
   };
 
-  // Calculate the range highlight position and width
-  const rangeLeft = ((Math.min(...safeValues) - min) / (max - min)) * 100;
-  const rangeWidth = ((Math.max(...safeValues) - Math.min(...safeValues)) / (max - min)) * 100;
+  // Calculate the range highlight position and width (in %)
+  const rangeLeft = (Math.min(...safeIndices) / (availableSortOrders.length - 1)) * 100;
+  const rangeWidth = ((Math.max(...safeIndices) - Math.min(...safeIndices)) / (availableSortOrders.length - 1)) * 100;
 
   // Handle pointer move during drag (works for both mouse and touch)
   const handlePointerMove = useCallback((e) => {
     if (!isDragging || activeKnob === null || !trackRef.current) return;
-
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const rect = trackRef.current.getBoundingClientRect();
     const pixelRange = rect.width;
-    const valueRange = max - min;
+    const valueRange = availableSortOrders.length - 1;
     const pixelMoved = clientX - dragStartX;
     const valueMoved = Math.round((pixelMoved / pixelRange) * valueRange);
-    const newValue = Math.max(min, Math.min(max, dragStartValue + valueMoved));
-
-    const newValues = [...safeValues];
-    newValues[activeKnob] = newValue;
-    onChange(newValues);
-  }, [isDragging, activeKnob, dragStartX, dragStartValue, min, max, safeValues, onChange]);
+    const newIndex = Math.max(0, Math.min(availableSortOrders.length - 1, dragStartValue + valueMoved));
+    const newIndices = [...safeIndices];
+    newIndices[activeKnob] = newIndex;
+    // Map indices back to sortOrders for onChange
+    onChange(newIndices.map(idx => indexToSortOrder(idx)));
+  }, [isDragging, activeKnob, dragStartX, dragStartValue, availableSortOrders.length, safeIndices, onChange, indexToSortOrder]);
 
   // Handle pointer up (works for both mouse and touch)
   const handlePointerUp = useCallback(() => {
     if (isDragging) {
-      const newValues = [
-        Math.min(safeValues[0], safeValues[1]),
-        Math.max(safeValues[0], safeValues[1])
+      const newIndices = [
+        Math.min(safeIndices[0], safeIndices[1]),
+        Math.max(safeIndices[0], safeIndices[1])
       ];
-      
       if (mode === "q") {
         // For Q mode, return all Q difficulties within the range
-        const qDifficulties = difficulties
-          .filter(d => d.name.startsWith('Q'))
-          .filter(d => d.sortOrder >= newValues[0] && d.sortOrder <= newValues[1])
+        const qDifficulties = filteredDifficulties
+          .filter((_, i) => i >= newIndices[0] && i <= newIndices[1])
           .map(d => d.name);
-        
-        // First call onChange with the sortOrder values to update the slider position
-        onChange(newValues);
-        
-        // Then call onChangeComplete with the difficulty names for the API request
-
+        onChange(newIndices.map(idx => indexToSortOrder(idx)));
         onChangeComplete?.(qDifficulties);
       } else {
-        onChange(newValues);
-        onChangeComplete?.(newValues);
+        onChange(newIndices.map(idx => indexToSortOrder(idx)));
+        onChangeComplete?.(newIndices.map(idx => indexToSortOrder(idx)));
       }
-      
       setIsDragging(false);
       setActiveKnob(null);
       setDragStartX(null);
       setDragStartValue(null);
     }
-  }, [isDragging, safeValues, onChange, onChangeComplete, mode, difficulties]);
+  }, [isDragging, safeIndices, onChange, onChangeComplete, mode, filteredDifficulties, indexToSortOrder]);
 
   // Add and remove event listeners
   useEffect(() => {
@@ -204,38 +157,28 @@ const DifficultySlider = ({
   // Handle click/tap on the slider track
   const handleTrackClick = useCallback((e) => {
     if (!trackRef.current || isDragging) return;
-
     const rect = trackRef.current.getBoundingClientRect();
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clickPosition = Math.min(Math.max(0, clientX - rect.left), rect.width);
     const percentage = clickPosition / rect.width;
-    const clickedValue = Math.round(Math.min(Math.max(min, min + (max - min) * percentage), max));
-
+    const clickedIndex = Math.round(Math.min(Math.max(0, (availableSortOrders.length - 1) * percentage), availableSortOrders.length - 1));
     // Find which knob is closer to the clicked position
-    const distanceToFirst = Math.abs(safeValues[0] - clickedValue);
-    const distanceToSecond = Math.abs(safeValues[1] - clickedValue);
+    const distanceToFirst = Math.abs(safeIndices[0] - clickedIndex);
+    const distanceToSecond = Math.abs(safeIndices[1] - clickedIndex);
     const closerKnobIndex = distanceToFirst <= distanceToSecond ? 0 : 1;
-
-    const newValues = [...safeValues];
-    newValues[closerKnobIndex] = clickedValue;
-    
+    const newIndices = [...safeIndices];
+    newIndices[closerKnobIndex] = clickedIndex;
     if (mode === "q") {
-      // For Q mode, return all Q difficulties within the range
-      const qDifficulties = difficulties
-        .filter(d => d.name.startsWith('Q'))
-        .filter(d => d.sortOrder >= Math.min(...newValues) && d.sortOrder <= Math.max(...newValues))
+      const qDifficulties = filteredDifficulties
+        .filter((_, i) => i >= Math.min(...newIndices) && i <= Math.max(...newIndices))
         .map(d => d.name);
-      
-      // First call onChange with the sortOrder values to update the slider position
-      onChange(newValues);
-      
-      // Then call onChangeComplete with the difficulty names for the API request
+      onChange(newIndices.map(idx => indexToSortOrder(idx)));
       onChangeComplete?.(qDifficulties);
     } else {
-      onChange(newValues);
-      onChangeComplete?.(newValues);
+      onChange(newIndices.map(idx => indexToSortOrder(idx)));
+      onChangeComplete?.(newIndices.map(idx => indexToSortOrder(idx)));
     }
-  }, [isDragging, safeValues, onChange, onChangeComplete, min, max, mode, difficulties]);
+  }, [isDragging, safeIndices, onChange, onChangeComplete, availableSortOrders.length, mode, filteredDifficulties, indexToSortOrder]);
 
   // Handle drag/touch start
   const handleDragStart = useCallback((index, e) => {
@@ -244,8 +187,8 @@ const DifficultySlider = ({
     setActiveKnob(index);
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     setDragStartX(clientX);
-    setDragStartValue(safeValues[index]);
-  }, [safeValues]);
+    setDragStartValue(safeIndices[index]);
+  }, [safeIndices]);
 
   // Prevent default drag behavior
   const preventDrag = (e) => {
@@ -268,14 +211,14 @@ const DifficultySlider = ({
     return diff.color;
   }
 
-  if (difficulties.length === 0) {
+  if (filteredDifficulties.length === 0) {
     return null;
   }
 
   return (
     <div className="difficulty-slider-container">
       <div className="difficulty-display">
-        <div className="difficulty-value" style={{ left: `${((safeValues[0] - min) / (max - min)) * 100}%` }}>
+        <div className="difficulty-value" style={{ left: `${((safeIndices[0] / (availableSortOrders.length - 1)) * 100)}%` }}>
           <span 
             className="difficulty-name" 
             style={{ 
@@ -287,7 +230,7 @@ const DifficultySlider = ({
             {minDiff?.name}
           </span>
         </div>
-        <div className="difficulty-value" style={{ left: `${((safeValues[1] - min) / (max - min)) * 100}%` }}>
+        <div className="difficulty-value" style={{ left: `${((safeIndices[1] / (availableSortOrders.length - 1)) * 100)}%` }}>
           <span 
             className="difficulty-name" 
             style={{ 
@@ -322,7 +265,7 @@ const DifficultySlider = ({
         <div className="slider-knobs">
           <div 
             className="knob-container" 
-            style={{ left: `${((safeValues[0] - min) / (max - min)) * 100}%` }}
+            style={{ left: `${((safeIndices[0] / (availableSortOrders.length - 1)) * 100)}%` }}
             onMouseDown={(e) => handleDragStart(0, e)}
             onTouchStart={(e) => handleDragStart(0, e)}
           >
@@ -338,7 +281,7 @@ const DifficultySlider = ({
           </div>
           <div 
             className="knob-container" 
-            style={{ left: `${((safeValues[1] - min) / (max - min)) * 100}%` }}
+            style={{ left: `${((safeIndices[1] / (availableSortOrders.length - 1)) * 100)}%` }}
             onMouseDown={(e) => handleDragStart(1, e)}
             onTouchStart={(e) => handleDragStart(1, e)}
           >

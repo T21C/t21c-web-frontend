@@ -5,7 +5,7 @@ import Cookies from 'js-cookie';
 export const PassContext = createContext();
 
 export const PassContextProvider = ({ children }) => {
-  const { difficulties } = useDifficultyContext();
+  const { noLegacyDifficulties: difficulties } = useDifficultyContext();
 
   // Cookie keys
   const COOKIE_KEYS = {

@@ -99,7 +99,8 @@ export const RatingInput = ({
 
   // Filter options based on input
   const filteredOptions = difficulties
-    ?.sort((a, b) => a.sortOrder - b.sortOrder)
+    ?.filter(diff => diff.type !== 'LEGACY')
+    .sort((a, b) => a.sortOrder - b.sortOrder)
     .filter(diff => 
       diff.name.toLowerCase().includes(inputValue.toLowerCase())
     )

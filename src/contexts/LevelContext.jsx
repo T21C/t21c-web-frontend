@@ -6,7 +6,7 @@ import Cookies from 'js-cookie';
 const LevelContext = createContext()
 
 const LevelContextProvider = (props) => {
-    const { difficulties } = useDifficultyContext();
+    const { noLegacyDifficulties: difficulties } = useDifficultyContext();
 
     // Cookie keys
     const COOKIE_KEYS = {
@@ -59,9 +59,11 @@ const LevelContextProvider = (props) => {
         const saved = Cookies.get(COOKIE_KEYS.SELECTED_SPECIAL_DIFFS);
         return saved ? JSON.parse(saved) : [];
     });
-    const [qSliderVisible, setQSliderVisible] = useState(() => Cookies.get(COOKIE_KEYS.Q_SLIDER_VISIBLE) === 'true');
+    const [qSliderVisible, setQSliderVisible] = useState(() => 
+        Cookies.get(COOKIE_KEYS.Q_SLIDER_VISIBLE) ?
+        Cookies.get(COOKIE_KEYS.Q_SLIDER_VISIBLE) === 'true'
+        : true);
     const [onlyMyLikes, setOnlyMyLikes] = useState(() => Cookies.get(COOKIE_KEYS.ONLY_MY_LIKES) === 'true');
-
     // Effect to validate and adjust ranges based on difficulties
     useEffect(() => {
         if (difficulties.length > 0) {

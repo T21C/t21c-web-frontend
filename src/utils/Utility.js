@@ -217,40 +217,6 @@ export function calculateRatingValue(rating, isCommunity = false) {
   return cleanRating;
 }
 
-export function calculateAverageRating(ratings, isCommunity = false) {
-  if (!ratings || !Array.isArray(ratings) || ratings.length === 0) return null;
-
-  // Count special ratings
-  const specialCounts = {};
-  const numericRatings = [];
-
-  for (const rating of ratings) {
-    const value = calculateRatingValue(rating);
-    
-    if (typeof value === 'string' && SPECIAL_RATINGS.has(value)) {
-      specialCounts[value] = (specialCounts[value] || 0) + 1;
-    } else if (typeof value === 'number') {
-      numericRatings.push(value);
-    }
-  }
-
-  // Check for special ratings with enough votes
-  const requiredVotes = isCommunity ? 2 : 4;
-  for (const [rating, count] of Object.entries(specialCounts)) {
-    if (count >= requiredVotes) {
-      return rating;
-    }
-  }
-
-  // Calculate average of numeric ratings
-  if (numericRatings.length > 0) {
-    const avg = Math.round(numericRatings.reduce((a, b) => a + b, 0) / numericRatings.length);
-    return getValueAsRating(avg);
-  }
-
-  return null;
-}
-
 export function validateFeelingRating(value, range = true) {
     // Base patterns
     const numbers = {

@@ -66,6 +66,7 @@ export const useDifficultyContext = () => {
 const DifficultyContextProvider = (props) => {
     const [difficultyDict, setDifficultyDict] = useState({});
     const [difficulties, setDifficulties] = useState([]);
+    const [noLegacyDifficulties, setNoLegacyDifficulties] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -95,7 +96,7 @@ const DifficultyContextProvider = (props) => {
             // Update state
             setDifficulties(diffsArray);
             setDifficultyDict(diffsDict);
-
+            setNoLegacyDifficulties(diffsArray.filter(d => d.type !== 'LEGACY'));
             // Preload all icons in parallel
             const iconUrls = diffsArray.reduce((urls, diff) => {
                 if (diff.icon) urls.push(diff.icon);
@@ -124,6 +125,7 @@ const DifficultyContextProvider = (props) => {
         <DifficultyContext.Provider 
             value={{ 
                 difficulties,
+                noLegacyDifficulties,
                 setDifficulties,
                 difficultyDict,
                 setDifficultyDict,
