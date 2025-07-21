@@ -47,16 +47,20 @@ const DifficultySlider = ({
   }, [filteredDifficulties, availableSortOrders]);
 
   // Ensure values is always an array with at least two elements (indices)
+  const clampIndex = (idx) => Math.max(0, Math.min(filteredDifficulties.length - 1, idx));
   const safeIndices = React.useMemo(() => {
     const idxValues = convertToIndices(values);
+    let indices;
     if (idxValues.length === 0) {
-      return [0, 0];
+      indices = [0, 0];
     } else if (idxValues.length === 1) {
-      return [idxValues[0], idxValues[0]];
+      indices = [idxValues[0], idxValues[0]];
     } else {
-      return [idxValues[0], idxValues[1]];
+      indices = [idxValues[0], idxValues[1]];
     }
-  }, [values, convertToIndices]);
+    // Clamp both indices
+    return indices.map(clampIndex);
+  }, [values, convertToIndices, filteredDifficulties.length]);
 
   // Find the current difficulties based on the indices (filtered set)
   const [minDiff, maxDiff] = safeIndices.map(idx => filteredDifficulties[idx]);
@@ -106,12 +110,12 @@ const DifficultySlider = ({
     const valueRange = availableSortOrders.length - 1;
     const pixelMoved = clientX - dragStartX;
     const valueMoved = Math.round((pixelMoved / pixelRange) * valueRange);
-    const newIndex = Math.max(0, Math.min(availableSortOrders.length - 1, dragStartValue + valueMoved));
+    const newIndex = clampIndex(dragStartValue + valueMoved);
     const newIndices = [...safeIndices];
     newIndices[activeKnob] = newIndex;
     // Map indices back to sortOrders for onChange
     onChange(newIndices.map(idx => indexToSortOrder(idx)));
-  }, [isDragging, activeKnob, dragStartX, dragStartValue, availableSortOrders.length, safeIndices, onChange, indexToSortOrder]);
+  }, [isDragging, activeKnob, dragStartX, dragStartValue, availableSortOrders.length, safeIndices, onChange, indexToSortOrder, clampIndex]);
 
   // Handle pointer up (works for both mouse and touch)
   const handlePointerUp = useCallback(() => {
@@ -161,7 +165,7 @@ const DifficultySlider = ({
     const clientX = e.touches ? e.touches[0].clientX : e.clientX;
     const clickPosition = Math.min(Math.max(0, clientX - rect.left), rect.width);
     const percentage = clickPosition / rect.width;
-    const clickedIndex = Math.round(Math.min(Math.max(0, (availableSortOrders.length - 1) * percentage), availableSortOrders.length - 1));
+    const clickedIndex = clampIndex(Math.round(Math.min(Math.max(0, (availableSortOrders.length - 1) * percentage), availableSortOrders.length - 1)));
     // Find which knob is closer to the clicked position
     const distanceToFirst = Math.abs(safeIndices[0] - clickedIndex);
     const distanceToSecond = Math.abs(safeIndices[1] - clickedIndex);
@@ -178,7 +182,7 @@ const DifficultySlider = ({
       onChange(newIndices.map(idx => indexToSortOrder(idx)));
       onChangeComplete?.(newIndices.map(idx => indexToSortOrder(idx)));
     }
-  }, [isDragging, safeIndices, onChange, onChangeComplete, availableSortOrders.length, mode, filteredDifficulties, indexToSortOrder]);
+  }, [isDragging, safeIndices, onChange, onChangeComplete, availableSortOrders.length, mode, filteredDifficulties, indexToSortOrder, clampIndex]);
 
   // Handle drag/touch start
   const handleDragStart = useCallback((index, e) => {

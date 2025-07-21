@@ -96,7 +96,6 @@ const DifficultyContextProvider = (props) => {
             // Update state
             setDifficulties(diffsArray);
             setDifficultyDict(diffsDict);
-            setNoLegacyDifficulties(diffsArray.filter(d => d.type !== 'LEGACY'));
             // Preload all icons in parallel
             const iconUrls = diffsArray.reduce((urls, diff) => {
                 if (diff.icon) urls.push(diff.icon);
@@ -120,6 +119,11 @@ const DifficultyContextProvider = (props) => {
     useEffect(() => {
         fetchDifficulties();
     }, []);
+
+    // Ensure noLegacyDifficulties is always in sync with difficulties
+    useEffect(() => {
+        setNoLegacyDifficulties(difficulties.filter(d => d.type !== 'LEGACY'));
+    }, [difficulties]);
 
     return (
         <DifficultyContext.Provider 

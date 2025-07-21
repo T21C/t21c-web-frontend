@@ -19,10 +19,12 @@
     "save": "Save",
     "cancel": "Cancel",
     "confirm": "Confirm",
-    "understand": "I understand the risks"
+    "understand": "I understand the risks",
+    "delete": "Delete"
   },
   "loading": {
-    "difficulties": "Loading difficulties..."
+    "difficulties": "Loading difficulties...",
+    "deleting": "Deleting..."
   },
   "noItems": {
     "message": "No difficulties found."
@@ -44,13 +46,16 @@
       "baseScore": "Base Score:",
       "sortOrder": "Sort Order:",
       "legacy": "Legacy:",
-      "fallbackId": "Enter Fallback Difficulty ID:"
+      "fallbackId": "Enter Fallback Difficulty ID:",
+      "fallbackDiff": "Fallback Difficulty:"
     },
     "placeholders": {
-      "fallbackId": "Enter the ID of the replacement difficulty"
+      "fallbackId": "Enter the ID of the replacement difficulty",
+      "fallbackDiff": "Select the replacement difficulty"
     },
     "helpText": {
-      "fallbackId": "All levels using {{name}} will be updated to use this difficulty instead."
+      "fallbackId": "All levels using {{name}} will be updated to use this difficulty instead.",
+      "fallbackDiff": "All levels using {{name}} will be updated to use this difficulty instead."
     }
   },
   "modal": {

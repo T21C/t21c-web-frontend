@@ -369,7 +369,7 @@ const DifficultyPage = () => {
       await api.delete(`${import.meta.env.VITE_DIFFICULTIES}/${deletingDifficulty.id}?fallbackId=${difficulties.find(d => d.name === fallbackDiff)?.id}`, {
         data: { superAdminPassword: verifiedPassword }
       });
-      setDifficulties(prev => prev.filter(diff => diff.id !== deletingDifficulty.id));
+      await reloadDifficulties();
       addNotification(tDiff('notifications.deleted'));
       setDeletingDifficulty(null);
       setShowDeleteInput(false);
