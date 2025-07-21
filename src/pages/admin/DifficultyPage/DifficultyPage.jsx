@@ -10,6 +10,7 @@ import './difficultypage.css';
 import { EditIcon, RefreshIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { RatingInput } from '@/components/common/selectors';
 
 const DifficultyPage = () => {
   const { user } = useAuth();
@@ -34,14 +35,13 @@ const DifficultyPage = () => {
     emoji: '',
     color: '#ffffff',
     baseScore: 0,
-    sortOrder: 0,
     legacy: '',
     legacyIcon: '',
     legacyEmoji: ''
   });
   const [deletingDifficulty, setDeletingDifficulty] = useState(null);
   const [showDeleteInput, setShowDeleteInput] = useState(false);
-  const [fallbackId, setFallbackId] = useState('');
+  const [fallbackDiff, setFallbackDiff] = useState('');
   const [verifiedPassword, setVerifiedPassword] = useState('');
   const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
   const [pendingAction, setPendingAction] = useState(null);
@@ -101,7 +101,7 @@ const DifficultyPage = () => {
         
         addNotification(tDiff('notifications.updated'));
       } else if (type === 'delete') {
-        await api.delete(`${import.meta.env.VITE_DIFFICULTIES}/${data.id}?fallbackId=${data.fallbackId}`, {
+        await api.delete(`${import.meta.env.VITE_DIFFICULTIES}/${data.id}?fallbackId=${difficulties.find(d => d.name === data.fallbackDiff)?.id}`, {
           data: { superAdminPassword: verifiedPassword }
         });
         
@@ -120,7 +120,7 @@ const DifficultyPage = () => {
       setEditingDifficulty(null);
       setDeletingDifficulty(null);
       setShowDeleteInput(false);
-      setFallbackId('');
+      setFallbackDiff('');
       
       // Reset form states
       setNewDifficulty({
@@ -131,7 +131,6 @@ const DifficultyPage = () => {
         emoji: '',
         color: '#ffffff',
         baseScore: 0,
-        sortOrder: 0,
         legacy: '',
         legacyIcon: '',
         legacyEmoji: ''
@@ -171,7 +170,6 @@ const DifficultyPage = () => {
       emoji: '',
       color: '#ffffff',
       baseScore: 0,
-      sortOrder: 0,
       legacy: '',
       legacyIcon: '',
       legacyEmoji: ''
@@ -186,7 +184,7 @@ const DifficultyPage = () => {
   const handleCloseDeleteModal = () => {
     setDeletingDifficulty(null);
     setShowDeleteInput(false);
-    setFallbackId('');
+    setFallbackDiff('');
     setError('');
   };
 
@@ -209,16 +207,6 @@ const DifficultyPage = () => {
         superAdminPassword: verifiedPassword
       });
       return response.data;
-    } catch (err) {
-      throw err;
-    }
-  };
-
-  const handleDeleteDifficulty = async (difficultyId, fallbackId) => {
-    try {
-      await api.delete(`${import.meta.env.VITE_DIFFICULTIES}/${difficultyId}?fallbackId=${fallbackId}`, {
-        data: { superAdminPassword: verifiedPassword }
-      });
     } catch (err) {
       throw err;
     }
@@ -291,8 +279,21 @@ const DifficultyPage = () => {
     setIsReordering(true);
     
     try {
+      // Log the drag operation details
+      const sourceIndex = result.source.index;
+      const destinationIndex = result.destination.index;
+      const movedDifficulty = difficulties[sourceIndex];
+      
+      console.log('Difficulty reorder started:', {
+        difficultyId: movedDifficulty.id,
+        difficultyName: movedDifficulty.name,
+        fromIndex: sourceIndex,
+        toIndex: destinationIndex,
+        oldSortOrder: movedDifficulty.sortOrder
+      });
+      
       // Immediately update the UI state to prevent animation
-      const items = Array.from(difficulties);
+      const items = Array.from(sortedDifficulties); // Use the sorted array!
       const [reorderedItem] = items.splice(result.source.index, 1);
       items.splice(result.destination.index, 0, reorderedItem);
       
@@ -302,11 +303,18 @@ const DifficultyPage = () => {
         sortOrder: index
       }));
       
+      // Log the new sort orders
+      console.log('Updated sort orders:', updatedItems.map(item => ({
+        id: item.id,
+        name: item.name,
+        sortOrder: item.sortOrder
+      })));
+      
       // Update the context state immediately to prevent animation
       setDifficulties(updatedItems);
       
       // Send the updated sort orders to the server in the background
-      await api.put(`${import.meta.env.VITE_DIFFICULTIES}/sort-orders`, {
+      const response = await api.put(`${import.meta.env.VITE_DIFFICULTIES}/sort-orders`, {
         sortOrders: updatedItems.map(item => ({
           id: item.id,
           sortOrder: item.sortOrder
@@ -317,9 +325,21 @@ const DifficultyPage = () => {
         }
       });
       
+      console.log('Sort order update successful:', {
+        difficultyId: movedDifficulty.id,
+        difficultyName: movedDifficulty.name,
+        newSortOrder: updatedItems.find(item => item.id === movedDifficulty.id)?.sortOrder,
+        responseStatus: response.status
+      });
+      
       addNotification(tDiff('notifications.reordered'), 'success');
     } catch (err) {
-      console.error('Error updating sort orders:', err);
+      console.error('Error updating sort orders:', {
+        error: err.message,
+        status: err.response?.status,
+        difficultyId: movedDifficulty?.id,
+        difficultyName: movedDifficulty?.name
+      });
       addNotification(tDiff('notifications.reorderFailed'), 'error');
       // Revert the state on error
       await reloadDifficulties();
@@ -340,6 +360,27 @@ const DifficultyPage = () => {
 
   // Sort difficulties by sortOrder instead of id
   const sortedDifficulties = [...difficulties].sort((a, b) => a.sortOrder - b.sortOrder);
+
+  // Add back a direct deletion handler for the modal
+  const handleDirectDelete = async () => {
+    if (!fallbackDiff || fallbackDiff === String(deletingDifficulty?.id)) return;
+    try {
+      setIsLoading(true);
+      await api.delete(`${import.meta.env.VITE_DIFFICULTIES}/${deletingDifficulty.id}?fallbackId=${difficulties.find(d => d.name === fallbackDiff)?.id}`, {
+        data: { superAdminPassword: verifiedPassword }
+      });
+      setDifficulties(prev => prev.filter(diff => diff.id !== deletingDifficulty.id));
+      addNotification(tDiff('notifications.deleted'));
+      setDeletingDifficulty(null);
+      setShowDeleteInput(false);
+      setFallbackDiff('');
+    } catch (err) {
+      setError(tDiff('passwordModal.errors.generic'));
+      addNotification(tDiff('passwordModal.errors.generic'), 'error');
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   if (user?.isSuperAdmin === undefined) {
     return (
@@ -514,33 +555,34 @@ const DifficultyPage = () => {
                   <h2>{tDiff('modal.delete.title')}</h2>
                   <form onSubmit={(e) => {
                     e.preventDefault();
-                    if (fallbackId) {
+                    if (fallbackDiff) {
                       setSelectedAction({ 
                         type: 'delete', 
                         data: { 
                           id: deletingDifficulty.id, 
-                          fallbackId 
+                          fallbackDiff 
                         } 
                       });
                       setShowPasswordModal(true);
                     }
                   }}>
                     <div className="form-group">
-                      <label>{tDiff('form.labels.fallbackId')}</label>
-                      <input
-                        type="number"
-                        value={fallbackId}
-                        onChange={(e) => setFallbackId(e.target.value)}
-                        placeholder={tDiff('form.placeholders.fallbackId')}
-                        required
+                      <label>{tDiff('form.labels.fallbackDiff')}</label>
+                      <RatingInput
+                        value={fallbackDiff || ''}
+                        onChange={(val) => setFallbackDiff(val || '')}
+                        showDiff={true}
+                        difficulties={difficulties.filter(d => d.id !== deletingDifficulty?.id)}
+                        allowCustomInput={false}
+                        placeholder={tDiff('form.placeholders.fallbackDiff')}
                       />
                       <p className="help-text">
-                        {tDiff('form.helpText.fallbackId', { name: deletingDifficulty?.name })}
+                        {tDiff('form.helpText.fallbackDiff', { name: deletingDifficulty?.name })}
                       </p>
                     </div>
                     <div className="modal-actions">
-                      <button type="submit" className="delete-confirm-button">
-                        {tDiff('buttons.delete')}
+                      <button type="button" className="delete-confirm-button" onClick={handleDirectDelete} disabled={!fallbackDiff || fallbackDiff === String(deletingDifficulty?.id) || isLoading}>
+                        {isLoading ? tDiff('loading.deleting') || 'Deleting...' : tDiff('buttons.delete')}
                       </button>
                       <button
                         type="button"

@@ -1099,17 +1099,6 @@ const DifficultyPopup = ({
               </div>
 
               <div className="difficulty-modal__form-group">
-                <label className="difficulty-modal__form-label">{tDiff('form.labels.sortOrder')}</label>
-                <input
-                  type="number"
-                  value={difficulty.sortOrder}
-                  onChange={(e) => onChange({ ...difficulty, sortOrder: parseInt(e.target.value) })}
-                  required
-                  className="difficulty-modal__form-input"
-                />
-              </div>
-
-              <div className="difficulty-modal__form-group">
                 <label className="difficulty-modal__form-label">{tDiff('form.labels.legacy')}</label>
                 <input
                   type="text"
