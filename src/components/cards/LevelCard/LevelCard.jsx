@@ -155,7 +155,8 @@ const LevelCard = ({
           <img src={lvImage} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
           {(level.rating?.currentDifficultyId && 
            difficultyDict[level.rating.averageDifficultyId]?.icon &&
-           difficultyDict[level.rating.averageDifficultyId]?.type == "PGU") ?
+           difficultyDict[level.rating.averageDifficultyId]?.type == "PGU" &&
+           difficultyDict[level.diffId]?.name.startsWith("Q")) ?
           <img 
               className="rating-icon"
               src={difficultyDict[level.rating.averageDifficultyId]?.icon}
