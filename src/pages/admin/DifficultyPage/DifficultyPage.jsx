@@ -278,42 +278,18 @@ const DifficultyPage = () => {
     
     setIsReordering(true);
     
-    try {
-      // Log the drag operation details
-      const sourceIndex = result.source.index;
-      const destinationIndex = result.destination.index;
-      const movedDifficulty = difficulties[sourceIndex];
-      
-      console.log('Difficulty reorder started:', {
-        difficultyId: movedDifficulty.id,
-        difficultyName: movedDifficulty.name,
-        fromIndex: sourceIndex,
-        toIndex: destinationIndex,
-        oldSortOrder: movedDifficulty.sortOrder
-      });
-      
-      // Immediately update the UI state to prevent animation
-      const items = Array.from(sortedDifficulties); // Use the sorted array!
+    try {      
+      const items = Array.from(sortedDifficulties);
       const [reorderedItem] = items.splice(result.source.index, 1);
       items.splice(result.destination.index, 0, reorderedItem);
       
-      // Update sortOrder for all items
       const updatedItems = items.map((item, index) => ({
         ...item,
         sortOrder: index
       }));
       
-      // Log the new sort orders
-      console.log('Updated sort orders:', updatedItems.map(item => ({
-        id: item.id,
-        name: item.name,
-        sortOrder: item.sortOrder
-      })));
-      
-      // Update the context state immediately to prevent animation
       setDifficulties(updatedItems);
       
-      // Send the updated sort orders to the server in the background
       const response = await api.put(`${import.meta.env.VITE_DIFFICULTIES}/sort-orders`, {
         sortOrders: updatedItems.map(item => ({
           id: item.id,
@@ -324,13 +300,7 @@ const DifficultyPage = () => {
           'X-Super-Admin-Password': verifiedPassword
         }
       });
-      
-      console.log('Sort order update successful:', {
-        difficultyId: movedDifficulty.id,
-        difficultyName: movedDifficulty.name,
-        newSortOrder: updatedItems.find(item => item.id === movedDifficulty.id)?.sortOrder,
-        responseStatus: response.status
-      });
+
       
       addNotification(tDiff('notifications.reordered'), 'success');
     } catch (err) {
@@ -341,7 +311,6 @@ const DifficultyPage = () => {
         difficultyName: movedDifficulty?.name
       });
       addNotification(tDiff('notifications.reorderFailed'), 'error');
-      // Revert the state on error
       await reloadDifficulties();
     } finally {
       setIsReordering(false);
@@ -358,10 +327,8 @@ const DifficultyPage = () => {
     handlePasswordSubmit();
   };
 
-  // Sort difficulties by sortOrder instead of id
   const sortedDifficulties = [...difficulties].sort((a, b) => a.sortOrder - b.sortOrder);
 
-  // Add back a direct deletion handler for the modal
   const handleDirectDelete = async () => {
     if (!fallbackDiff || fallbackDiff === String(deletingDifficulty?.id)) return;
     try {
