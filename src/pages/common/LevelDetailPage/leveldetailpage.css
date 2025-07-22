@@ -82,6 +82,16 @@
   -o-object-fit: contain;
      object-fit: contain;
 }
+
+.level-detail .header .left .diff .rating-icon {
+  top: -10%;
+  left: -10%;
+  position: absolute;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+}
+
 .level-detail .header .left .diff .pp-display {
   font-size: 0.85rem;
   color: var(--color-white);

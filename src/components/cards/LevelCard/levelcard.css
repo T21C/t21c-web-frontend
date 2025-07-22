@@ -164,12 +164,12 @@
   height: 1.5rem;
 }
 
-.level-card .first-pass-pfp {
-  bottom: 10%;
-  left: 0;
+.level-card .rating-icon {
+  top: -10%;
+  left: -10%;
   position: absolute;
-  width: 1.75rem;
-  height: 1.75rem;
+  width: 1.5rem;
+  height: 1.5rem;
   border-radius: 50%;
 }
 

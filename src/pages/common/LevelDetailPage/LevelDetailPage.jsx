@@ -991,6 +991,14 @@ const LevelDetailPage = () => {
                   alt={difficultyDict[res.level.difficulty.id]?.name || 'Difficulty icon'} 
                   className="difficulty-icon"
                 />
+                {(res.ratings?.currentDifficultyId && 
+                 difficultyDict[res.ratings.averageDifficultyId]?.icon) ?
+                <img 
+                    className="rating-icon"
+                    src={difficultyDict[res.ratings.averageDifficultyId]?.icon}
+                    alt="Rating icon" />
+                : null
+                }
                 {res?.rerateHistory?.length > 0 && (
                   <span
                     className={`rerate-arrow ${showRerateDropdown ? 'open' : ''}`}

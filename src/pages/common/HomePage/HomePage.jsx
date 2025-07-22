@@ -416,7 +416,7 @@ const HomePage = () => {
                     {tHome('stats.difficulties.graphModes.levels')}
                   </button>
                 </div>
-                {Object.entries(stats.difficulties.byType).filter(([type]) => type !== 'SPECIAL').map(([type, difficulties]) => (
+                {Object.entries(stats.difficulties.byType).filter(([type]) => type == 'PGU').map(([type, difficulties]) => (
                   <div key={type} className="difficulty-type-section">
                     <h3>{type}</h3>
                     <DifficultyGraph data={difficulties} mode={graphMode} />

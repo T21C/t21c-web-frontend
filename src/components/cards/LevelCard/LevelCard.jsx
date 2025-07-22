@@ -52,24 +52,6 @@ const LevelCard = ({
   }, [level.videoLink, displayMode]);
 
 
-  const handleCheckboxChange = async (e) => {
-    const newToRate = e.target.checked;
-    setToRate(newToRate);
-
-    try {
-      const response = await api.put(`${import.meta.env.VITE_LEVELS}/${level.id}/toRate`, { toRate: newToRate });
-      if (response.data) {
-        setLevel(prev => ({
-          ...prev,
-          toRate: newToRate
-        }));
-      }
-    } catch (error) {
-      setToRate(!newToRate);
-      console.error(`Failed to update level ${level.id}:`, error);
-    }
-  };
-
   const handleLevelUpdate = (updatedData) => {
     const updatedLevel = updatedData.level || updatedData;
     setLevel(updatedLevel);
@@ -168,28 +150,19 @@ const LevelCard = ({
 
   return (
     <div className={`level-card ${displayMode}`} style={{ backgroundColor: level.isDeleted ? "#f0000099" : level.isHidden ? "#88888899" : "none" }}>
-      {user?.isSuperAdmin && (
-        <div className="toRate-checkbox">
-          <label>
-            <input
-              type="checkbox"
-              checked={toRate}
-              onChange={handleCheckboxChange}
-              onClick={(e) => e.stopPropagation()}
-            />
-          </label>
-        </div>
-      )}
       <div className="level-card-wrapper" onClick={() => redirect()}>
         <div className="img-wrapper">
           <img src={lvImage} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
-          {level.firstPass && false && ( // disabled for now
-            <UserAvatar 
-              primaryUrl={level.firstPass.player.avatarUrl}
-              fallbackUrl={level.firstPass.player.pfp}
-              className="first-pass-pfp"
-            />
-          )}
+          {(level.rating?.currentDifficultyId && 
+           difficultyDict[level.rating.averageDifficultyId]?.icon &&
+           difficultyDict[level.rating.averageDifficultyId]?.name.startsWith("Q") &&
+           difficultyDict[level.rating.averageDifficultyId]?.type == "PGU") ?
+          <img 
+              className="rating-icon"
+              src={difficultyDict[level.rating.averageDifficultyId]?.icon}
+              alt="Rating icon" />
+          : null
+          }
           {difficultyDict[level.diffId]?.type === "PGU" 
           // && sortBy === "RATING_ACCURACY"
           && level.clears > 0
