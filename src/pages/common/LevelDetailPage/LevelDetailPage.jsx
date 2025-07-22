@@ -992,7 +992,9 @@ const LevelDetailPage = () => {
                   className="difficulty-icon"
                 />
                 {(res.ratings?.currentDifficultyId && 
-                 difficultyDict[res.ratings.averageDifficultyId]?.icon) ?
+                 difficultyDict[res.ratings.averageDifficultyId]?.icon) &&
+                 difficultyDict[res.ratings.averageDifficultyId]?.name.startsWith("Q") &&
+                 difficultyDict[res.ratings.averageDifficultyId]?.type == "PGU" ?
                 <img 
                     className="rating-icon"
                     src={difficultyDict[res.ratings.averageDifficultyId]?.icon}
