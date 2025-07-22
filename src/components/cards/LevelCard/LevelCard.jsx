@@ -153,7 +153,7 @@ const LevelCard = ({
       <div className="level-card-wrapper" onClick={() => redirect()}>
         <div className="img-wrapper">
           <img src={lvImage} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
-          {(level.rating?.currentDifficultyId && 
+          {(level.rating?.averageDifficultyId && 
            difficultyDict[level.rating.averageDifficultyId]?.icon &&
            difficultyDict[level.rating.averageDifficultyId]?.type == "PGU" &&
            difficultyDict[level.diffId]?.name.startsWith("Q")) ?

@@ -5,7 +5,7 @@ import { Tooltip } from 'react-tooltip';
 import DefaultAvatar from '@/components/common/icons/DefaultAvatar';
 import { CommentFormatter } from '@/components/misc';
 import { UserAvatar } from '@/components/layout';
-export const RatingItem = ({ user, rating, comment, isSuperAdmin, onDelete }) => {
+export const RatingItem = ({key, user, rating, comment, isSuperAdmin, onDelete }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const { t } = useTranslation('components');
     const tRating = (key, params = {}) => t(`rating.ratingCard.${key}`, params) || key;

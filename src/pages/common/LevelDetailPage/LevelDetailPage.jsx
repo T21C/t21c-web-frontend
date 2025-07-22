@@ -991,7 +991,7 @@ const LevelDetailPage = () => {
                   alt={difficultyDict[res.level.difficulty.id]?.name || 'Difficulty icon'} 
                   className="difficulty-icon"
                 />
-                {(res.ratings?.currentDifficultyId && 
+                {(res.ratings?.averageDifficultyId && 
                  difficultyDict[res.ratings.averageDifficultyId]?.icon) &&
                  difficultyDict[res.ratings.averageDifficultyId]?.type == "PGU" &&
                  difficultyDict[res.level.diffId]?.name.startsWith("Q") ?
@@ -1025,12 +1025,12 @@ const LevelDetailPage = () => {
 
               <div className="title">
                 {renderTitleWithAliases(res.level.song, 'song')}
-                <p>
+                <div className="level-info">
                   #{id}&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
                   {formatCreatorDisplay(res.level)}
                   &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
                   {renderTitleWithAliases(res.level.artist, 'artist')}
-                </p>
+                </div>
               </div>
               
               {/* Rating Accuracy Display */}

@@ -118,7 +118,7 @@
   gap: 8px;
   position: relative;
 }
-.level-detail .header .left .title p {
+.level-detail .header .left .title .level-info {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -127,7 +127,7 @@
   opacity: 1;
   color: rgba(255, 255, 255, 0.85);
 }
-.level-detail .header .left .title p .level-title {
+.level-detail .header .left .title .level-info .level-title {
   font-size: 1em;
   font-weight: normal;
 }
