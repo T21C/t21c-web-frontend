@@ -8,7 +8,7 @@ import { useRatingFilter } from "@/contexts/RatingFilterContext";
 import { useTranslation } from "react-i18next";
 import { RatingCard } from "@/components/cards";
 import { EditLevelPopup, RaterManagementPopup, ReferencesPopup } from "@/components/popups";
-import { DetailPopup } from "@/components/popups/DetailPopup/DetailPopup";
+import { RatingDetailPopup } from "@/components/popups/RatingDetailPopup/RatingDetailPopup";
 import { ScrollButton, ReferencesButton } from "@/components/common/buttons";
 import { CustomSelect } from "@/components/common/selectors";
 import api from "@/utils/api";
@@ -531,7 +531,7 @@ const RatingPage = () => {
             </div>
 
             {selectedRating && (
-              <DetailPopup
+              <RatingDetailPopup
                 selectedRating={selectedRating}
                 setSelectedRating={setSelectedRating}
                 setShowReferences={setShowReferences}

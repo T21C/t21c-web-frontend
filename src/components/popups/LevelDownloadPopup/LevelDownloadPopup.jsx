@@ -117,10 +117,10 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink }) => {
 
         // Build query string for transform options
         const queryParams = new URLSearchParams();
-        if (transformOptions.keepEvents.length > 0 && selectionMode === 'keep') {
+        if (selectionMode === 'keep') {
             queryParams.append('keepEvents', transformOptions.keepEvents.join(','));
         }
-        if (transformOptions.dropEvents.length > 0 && selectionMode === 'drop') {
+        if (selectionMode === 'drop') {
             queryParams.append('dropEvents', transformOptions.dropEvents.join(','));
         }
         if (transformOptions.baseCameraZoom !== 1) {

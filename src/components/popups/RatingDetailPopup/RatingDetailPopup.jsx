@@ -1,4 +1,4 @@
-import "./detailpopup.css";
+import "./ratingdetailpopup.css";
 import { useEffect, useState, useContext, useRef } from 'react';
 import { getVideoDetails } from "@/utils";
 import { RatingItem } from '@/components/cards';
@@ -7,7 +7,6 @@ import { DifficultyContext } from "@/contexts/DifficultyContext";
 import api from '@/utils/api';
 import { useTranslation } from 'react-i18next';
 import { ReferencesButton } from '@/components/common/buttons';
-import { useNavigate } from 'react-router-dom';
 import { ExternalLinkIcon, DownloadIcon } from '@/components/common/icons';
 import { formatCreatorDisplay, filterDifficultiesByUserTopDiff } from "@/utils/Utility";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
@@ -34,7 +33,7 @@ async function updateRating(id, rating, comment, isCommunityRating = false) {
   }
 }
 
-export const DetailPopup = ({ 
+export const RatingDetailPopup = ({ 
   selectedRating, 
   setSelectedRating = () => {},
   setShowReferences = () => {},
@@ -333,7 +332,7 @@ export const DetailPopup = ({
       setHasUnsavedChanges(false);
       setIsInitialLoad(false);
     } catch (error) {
-      console.error('[DetailPopup] Save failed:', error);
+      console.error('[RatingDetailPopup] Save failed:', error);
       setSaveError(error.response?.data?.error || error.response?.data?.message || error.message || error.error || tRating('errors.saveFailed'));
     } finally {
       setIsSaving(false);

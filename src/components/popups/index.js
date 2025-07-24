@@ -1,7 +1,7 @@
 import AdminPlayerPopup from "./AdminPlayerPopup/AdminPlayerPopup";
 import { CreatorActionPopup } from "./CreatorActionPopup/CreatorActionPopup";
 import { CreatorAssignmentPopup } from "./CreatorAssignmentPopup/CreatorAssignmentPopup";
-import { DetailPopup } from "./DetailPopup/DetailPopup";
+import { RatingDetailPopup } from "./RatingDetailPopup/RatingDetailPopup";
 import { EditLevelPopup } from "./EditLevelPopup/EditLevelPopup";
 import { EditPassPopup } from "./EditPassPopup/EditPassPopup";
 import { LevelHelpPopup } from "./LevelHelpPopup/LevelHelpPopup";
@@ -27,7 +27,7 @@ export {
     RaterManagementPopup,
     ReferencesPopup,
     SubmissionCreatorPopup,
-    DetailPopup,
+    RatingDetailPopup,
     RatingHelpPopup,
     DifficultyPopup,
     ProfilePicturePopup,

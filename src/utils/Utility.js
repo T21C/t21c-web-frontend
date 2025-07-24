@@ -7,7 +7,7 @@ const DIFFICULTY_LEVELS = {
 
 // Special ratings that can override if they appear 4 or more times (2 for community)
 const SPECIAL_RATINGS = new Set([
-  'Qq', 'Q1+', 'Q2', 'Q2+', 'Q3', 'Q3+', 'Q4', 
+  'Qq', 'Q0', 'Q1', 'Q2', 'Q3', 'Q4', 
   'Bus', 'Grande', 'MA', 'MP', '-21', '-2', '0', 'Impossible', 'Censored'
 ]);
 
@@ -455,7 +455,9 @@ export const filterDifficultiesByUserTopDiff = (difficulties, user) => {
 
   // Filter PGU difficulties based on user's top difficulty
   return difficulties.filter(diff => {
-    // Allow all SPECIAL difficulties
+    if (diff.name.startsWith('Q')) {
+      return false;
+    }
     if (diff.type === 'SPECIAL') {
       return true;
     }

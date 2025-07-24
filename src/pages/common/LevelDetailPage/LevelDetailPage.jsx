@@ -13,7 +13,7 @@ import { Tooltip } from "react-tooltip";
 import { useTranslation } from "react-i18next";
 import { ClearCard } from "@/components/cards";
 import { EditLevelPopup } from "@/components/popups/EditLevelPopup/EditLevelPopup";
-import { DetailPopup } from "@/components/popups/DetailPopup/DetailPopup";
+import { RatingDetailPopup } from "@/components/popups/RatingDetailPopup/RatingDetailPopup";
 import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
@@ -1368,7 +1368,7 @@ const LevelDetailPage = () => {
       )}
 
       {showRatingPopup && res.ratings && (
-          <DetailPopup
+          <RatingDetailPopup
             selectedRating={{
               ...res.ratings,
               level: res.level
