@@ -55,6 +55,8 @@ const getScoreV2Mtp = (inputs) => {
             return (-0.027 / (xacc - 1.0054) + 0.513)
         }
         if (xacc_percentage == 100){
+            return 10;
+            // wait for announcement
             const a = 2100;
             const k = 14;
             const h = -a / (k - 6);
