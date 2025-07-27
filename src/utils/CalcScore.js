@@ -43,7 +43,7 @@ const getScoreV2Mtp = (inputs) => {
     }
     }
 
-    const getXaccMtp = (inp) => {
+    const getXaccMtp = (inp, baseScore) => {
 
         const xacc = calcAcc(inp, true)
         const xacc_percentage = xacc * 100
@@ -89,7 +89,7 @@ const getScore = (passData, levelData) => {
     const speed = passData['speed']
     const inputs = passData['judgements']
     const base = levelData['baseScore'] || levelData.difficulty?.baseScore || 0
-    const xaccMtp = getXaccMtp(inputs)
+    const xaccMtp = getXaccMtp(inputs, base)
     var speedMtp = 0
     var score = 0
     if (levelData?.difficulty?.name == "Marathon"){
