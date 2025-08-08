@@ -11,7 +11,7 @@ const NewLevelsTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onR
   const [removingIds, setRemovingIds] = useState(new Set());
   const [error, setError] = useState('');
 
-  const handleRemove = async (level) => {
+  const handleSilentRemove = async (level) => {
     try {
       setRemovingIds(prev => new Set([...prev, level.id]));
       setError('');
@@ -19,11 +19,13 @@ const NewLevelsTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onR
       // Optimistically remove from UI
       onRemove(level.id);
       
-      // Then make the server request
-      await api.post(`${import.meta.env.VITE_LEVELS}/markAnnounced/${level.id}`);
+      // Silently remove from announcement list without announcing
+      await api.post(`${import.meta.env.VITE_WEBHOOK}/silent-remove/levels`, {
+        levelIds: [level.id]
+      });
     } catch (err) {
-      console.error('Error marking level as announced:', err);
-      setError(tLevel('errors.removeLevel', { song: level.song }));
+      console.error('Error silently removing level:', err);
+      setError(tLevel('errors.silentRemoveLevel', { song: level.song }));
       // Refetch the data to ensure UI is in sync
       window.location.reload();
     } finally {
@@ -71,10 +73,11 @@ const NewLevelsTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onR
                 </button>
                 <button 
                   className="trash-button"
-                  onClick={() => handleRemove(level)}
+                  onClick={() => handleSilentRemove(level)}
                   disabled={isLoading || removingIds.has(level.id)}
                   style ={{width: '40px', height: '40px'}}
                   aria-label={tLevel('buttons.remove')}
+                  title={tLevel('buttons.removeTooltip')}
                 >
                   {removingIds.has(level.id) ? (
                     <svg className="spinner" viewBox="0 0 50 50">
@@ -82,7 +85,7 @@ const NewLevelsTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onR
                     </svg>
                   ) : (
                     <TrashIcon color="#fff"/>
-                    )}
+                  )}
                 </button>
               </div>
             </div>

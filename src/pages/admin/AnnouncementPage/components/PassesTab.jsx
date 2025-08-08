@@ -11,7 +11,7 @@ const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemo
   const [removingIds, setRemovingIds] = useState(new Set());
   const [error, setError] = useState('');
 
-  const handleRemove = async (pass) => {
+  const handleSilentRemove = async (pass) => {
     try {
       setRemovingIds(prev => new Set([...prev, pass.id]));
       setError('');
@@ -19,11 +19,13 @@ const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemo
       // Optimistically remove from UI
       onRemove(pass.id);
       
-      // Then make the server request
-      await api.post(`${import.meta.env.VITE_PASSES}/markAnnounced/${pass.id}`);
+      // Silently remove from announcement list without announcing
+      await api.post(`${import.meta.env.VITE_WEBHOOK}/silent-remove/passes`, {
+        passIds: [pass.id]
+      });
     } catch (err) {
-      console.error('Error marking pass as announced:', err);
-      setError(tPass('errors.removePass', { playerName: pass.player?.name }));
+      console.error('Error silently removing pass:', err);
+      setError(tPass('errors.silentRemovePass', { playerName: pass.player?.name }));
       // Refetch the data to ensure UI is in sync
       window.location.reload();
     } finally {
@@ -79,10 +81,11 @@ const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemo
                 </label>
                 <button 
                   className="trash-button"
-                  onClick={() => handleRemove(pass)}
+                  onClick={() => handleSilentRemove(pass)}
                   disabled={isLoading || removingIds.has(pass.id)}
                   style ={{width: '40px', height: '40px'}}
                   aria-label={tPass('buttons.remove')}
+                  title={tPass('buttons.removeTooltip')}
                 >
                   {removingIds.has(pass.id) ? (
                     <svg className="spinner" viewBox="0 0 50 50">

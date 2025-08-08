@@ -29,8 +29,6 @@ const AnnouncementPage = () => {
   const [error, setError] = useState(null);
   const [editingLevel, setEditingLevel] = useState(null);
 
-  const removeAnnouncedLevels = false || import.meta.env.MODE === 'production';
-
   useEffect(() => {
     fetchItems();
   }, []);
@@ -118,12 +116,6 @@ const AnnouncementPage = () => {
     setError(null);
     try {
       if (validLevelIds.length > 0) {
-        if (removeAnnouncedLevels) {
-          await api.post(`${import.meta.env.VITE_LEVELS}/markAnnounced`, {
-            levelIds: validLevelIds
-          });
-        }
-        
         await api.post(`${import.meta.env.VITE_WEBHOOK}/${activeTab === 'newLevels' ? 'levels' : 'rerates'}`, {
           levelIds: validLevelIds
         });
@@ -133,12 +125,6 @@ const AnnouncementPage = () => {
       }
 
       if (validPassIds.length > 0) {
-        if (removeAnnouncedLevels) {
-          await api.post(`${import.meta.env.VITE_PASSES}/markAnnounced`, {
-            passIds: validPassIds
-          });
-        }
-
         await api.post(`${import.meta.env.VITE_WEBHOOK}/passes`, {
           passIds: validPassIds
         });
