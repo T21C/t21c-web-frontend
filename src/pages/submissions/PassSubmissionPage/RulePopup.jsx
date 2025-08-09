@@ -58,9 +58,9 @@ return (
           <div className="rules-section high-importance">
             <h3>{tRules("rules.rule1.title")}</h3>
             <ul>
-              <li><span className="offense-level first">{tRules("rules.rule1.offenses.first")}</span> {tRules("rules.rule1.penalties.first")}</li>
+              <li><span className="offense-level third">{tRules("rules.rule1.offenses.first")}</span> {tRules("rules.rule1.penalties.first")}</li>
               <li><span className="offense-level second">{tRules("rules.rule1.offenses.second")}</span> {tRules("rules.rule1.penalties.second")}</li>
-              <li><span className="offense-level third">{tRules("rules.rule1.offenses.third")}</span> {tRules("rules.rule1.penalties.third")}</li>
+              <li><span className="offense-level first">{tRules("rules.rule1.offenses.third")}</span> {tRules("rules.rule1.penalties.third")}</li>
             </ul>
             <div className="explanation">
               <strong>Explanation:</strong> {tRules("rules.rule1.explanation")}
@@ -70,9 +70,9 @@ return (
           <div className="rules-section high-importance">
             <h3>{tRules("rules.rule2.title")}</h3>
             <ul>
-              <li><span className="offense-level first">{tRules("rules.rule2.offenses.first")}</span> {tRules("rules.rule2.penalties.first")}</li>
+              <li><span className="offense-level third">{tRules("rules.rule2.offenses.first")}</span> {tRules("rules.rule2.penalties.first")}</li>
               <li><span className="offense-level second">{tRules("rules.rule2.offenses.second")}</span> {tRules("rules.rule2.penalties.second")}</li>
-              <li><span className="offense-level third">{tRules("rules.rule2.offenses.third")}</span> {tRules("rules.rule2.penalties.third")}</li>
+              <li><span className="offense-level first">{tRules("rules.rule2.offenses.third")}</span> {tRules("rules.rule2.penalties.third")}</li>
             </ul>
             <div className="explanation">
               <strong>Explanation:</strong> {tRules("rules.rule2.explanation")}
@@ -82,8 +82,8 @@ return (
           <div className="rules-section critical">
             <h3>{tRules("rules.rule3.title")}</h3>
             <ul>
-              <li><span className="offense-level first">{tRules("rules.rule3.offenses.first")}</span> {tRules("rules.rule3.penalties.first")}</li>
-              <li><span className="offense-level second">{tRules("rules.rule3.offenses.second")}</span> {tRules("rules.rule3.penalties.second")}</li>
+              <li><span className="offense-level second">{tRules("rules.rule3.offenses.first")}</span> {tRules("rules.rule3.penalties.first")}</li>
+              <li><span className="offense-level first">{tRules("rules.rule3.offenses.second")}</span> {tRules("rules.rule3.penalties.second")}</li>
             </ul>
             <div className="explanation">
               <strong>Explanation:</strong> {tRules("rules.rule3.explanation")}
