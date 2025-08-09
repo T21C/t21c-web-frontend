@@ -28,6 +28,8 @@ import { InfoIcon } from './InfoIcon';
 import { UploadIcon } from './UploadIcon';
 import ServerCloudIcon from './ServerCloudIcon';
 import HistoryListIcon from './HistoryListIcon';
+import { CrossIcon } from './CrossIcon';
+import { CrossedPhoneIcon } from './CrossedPhoneIcon';
 
 export {
     DefaultAvatar,
@@ -59,5 +61,7 @@ export {
     InfoIcon,
     UploadIcon,
     ServerCloudIcon,
-    HistoryListIcon
+    HistoryListIcon,
+    CrossIcon,
+    CrossedPhoneIcon
 }

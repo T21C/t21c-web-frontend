@@ -59,5 +59,9 @@
   },
   "warnings": {
     "pendingProfiles": "This profile will be requested for creation:"
+  },
+  "rules": {
+    "checkbox": "I've read and confirm that I have followed the",
+    "rulesLink": "rules and guidelines"
   }
 } 

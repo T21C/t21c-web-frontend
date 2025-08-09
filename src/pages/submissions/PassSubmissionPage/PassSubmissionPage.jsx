@@ -17,6 +17,8 @@ import { StagingModeWarning } from "@/components/common/display";
 import { ProfileSelector } from "@/components/common/selectors";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { useNavigate } from "react-router-dom";
+import RulePopup from "./RulePopup";
+import { getCookie, setCookie } from "@/utils/cookieUtils";
 
 
 const PassSubmissionPage = () => {
@@ -48,6 +50,7 @@ const PassSubmissionPage = () => {
       navigate('/submission')
     }
   }, [user]);
+
 
   const [formStateKey, setFormStateKey] = useState(0);
   const [form, setForm] = useState(initialFormState);
@@ -83,6 +86,14 @@ const PassSubmissionPage = () => {
   const [searchInput, setSearchInput] = useState('');
   const searchTimeoutRef = useRef(null);
 
+  // Add state for rules checkbox and popup
+  const [hasReadPassRules, setHasReadRules] = useState(() => {
+    // Initialize from cookie if available
+    const savedRulesState = getCookie('hasReadPassRules');
+    return savedRulesState === 'true';
+  });
+  const [showRulesPopup, setShowRulesPopup] = useState(false);
+
   // Add color logic for FetchIcon
   const getIconColor = () => {
     if (!form.levelId) return "#ffc107";
@@ -112,6 +123,7 @@ const PassSubmissionPage = () => {
 
     validationResult["levelId"] = !(level === null || level === undefined);
     validationResult["player"] = form.player !== null;
+    validationResult["rulesAccepted"] = hasReadPassRules;
     
     // Add validation for 12K/16K selection when IsUDiff is true
     if (IsUDiff) {
@@ -145,7 +157,14 @@ const PassSubmissionPage = () => {
 
   useEffect(() => {
     validateForm(); // Run validation on every form change
-  }, [form, level, submitAttempt, videoDetail]);
+  }, [form, level, submitAttempt, videoDetail, hasReadPassRules]);
+
+  // Save hasReadPassRules state to cookie whenever it changes
+  useEffect(() => {
+    if (hasReadPassRules) {
+      setCookie('hasReadPassRules', 'true', 30); // Save for 30 days
+    }
+  }, [hasReadPassRules]);
 
   useEffect(() => {
     if (level) {
@@ -977,6 +996,28 @@ const PassSubmissionPage = () => {
               </div>
             )}
 
+            <div className="rules-checkbox-container">
+              <div className="rules-checkbox">
+                <input
+                  type="checkbox"
+                  id="rules-checkbox"
+                  checked={hasReadPassRules}
+                  onChange={(e) => setHasReadRules(e.target.checked)}
+                  style={{ outline: submitAttempt && !isFormValid.rulesAccepted ? '2px solid red' : 'none' }}
+                />
+                <label htmlFor="rules-checkbox">
+                  {tPass("rules.checkbox")}{" "}
+                  <button
+                    type="button"
+                    className="rules-link"
+                    onClick={() => setShowRulesPopup(true)}
+                  >
+                    {tPass("rules.rulesLink")}
+                  </button>
+                </label>
+              </div>
+            </div>
+
             <button 
               className="submit" 
               onClick={handleSubmit}
@@ -987,6 +1028,8 @@ const PassSubmissionPage = () => {
           </div>
         </form>
       </div>
+
+      {showRulesPopup && <RulePopup setShowRulesPopup={setShowRulesPopup} />}
     </div>
   );
 };
