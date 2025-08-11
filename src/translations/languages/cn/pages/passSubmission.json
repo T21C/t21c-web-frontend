@@ -59,5 +59,9 @@
   },
   "warnings": {
     "pendingProfiles": "将请求创建此个人资料："
+  },
+  "rules": {
+    "checkbox": "我已阅读并确认已遵守",
+    "rulesLink": "提交规则和指南"
   }
 } 

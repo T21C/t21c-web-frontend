@@ -29,7 +29,7 @@
     "close": "✖"
   },
   "upload": {
-    "progress": "上传中…… {{progress}}%"
+    "progress": "上传中……{{progress}}%"
   },
   "confirmDelete": "你确定要删除此关卡文件吗？此操作无法撤消。"
 } 

@@ -33,7 +33,7 @@
   },
   "sortOptions": {
     "rankedScore": "排位分数",
-    "generalScore": "常规分数",
+    "generalScore": "全局分数",
     "ppScore": "PP 分数",
     "wfScore": "世界首通分数",
     "score12K": "12键分数",

@@ -60,7 +60,7 @@
     "team": "团队",
     "creator": "创作者",
     "roles": {
-      "charter": "踩音师",
+      "charter": "采音师",
       "vfxer": "特效师"
     },
     "difficulty": "等级",
@@ -106,6 +106,17 @@
     "votesHeader": "评价",
     "loginToVote": "登录以投票",
     "viewAllVotes": "浏览全部投票",
-    "noVotes": "无评价"
+    "noVotes": "无投票"
+  },
+  "rerateHistory": {
+    "header": "重评历史",
+    "open": "显示重评历史",
+    "close": "关闭重评历史",
+    "noHistory": "重评历史不可用",
+    "previous": "先前",
+    "current": "当前",
+    "baseScore": "基础分",
+    "date": "日期",
+    "user": "用户"
   }
 } 

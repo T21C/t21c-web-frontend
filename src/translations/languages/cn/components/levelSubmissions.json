@@ -26,7 +26,7 @@
     "manageTeam": "管理团队",
     "allow": "允许",
     "decline": "拒绝",
-    "addCharter": "添加踩音师",
+    "addCharter": "添加采音师",
     "addVfxer": "添加特效师",
     "remove": "删除",
     "searchCreator": "搜索",
@@ -37,12 +37,12 @@
   },
   "labels": {
     "levelName": "关卡",
-
     "creatorName": "创作者",
     "submittedOn": "已提交"
   },
   "badges": {
-    "newRequest": "新建"
+    "newRequest": "新建",
+    "unassigned": "未分配"
   },
   "messages": {
     "success": {
@@ -55,7 +55,6 @@
       "reject": "提交拒绝失败"
     }
   },
-  
   "warnings": {
     "pendingProfiles": "将申请创建下列个人资料：",
     "creatorExists": "同名创作者已存在",
@@ -79,5 +78,12 @@
       "success": "指定创建者成功",
       "error": "指定创建者失败"
     }
+  },
+  "errors": {
+    "profileUpdate": "无法使用个人资料更新提交内容",
+    "addCreatorFailed": "添加创作者失败",
+    "removeCreatorFailed": "移除创作者失败",
+    "cannotRemoveLastCharter": "无法删除最后一位采音师",
+    "needProfiles": "所有创作者资料必须在批准前分配"
   }
 } 

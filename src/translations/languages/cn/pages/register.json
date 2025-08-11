@@ -1,0 +1,61 @@
+{
+  "title": "创建账户",
+  "form": {
+    "email": {
+      "label": "邮箱",
+      "error": "无效邮箱格式"
+    },
+    "username": {
+      "label": "用户名",
+      "error": {
+        "length": "用户名必须介于 3 到 20 个字符之间",
+        "characters": "用户名只能包含字母或数字、下划线 “_” 和连字符 “-”"
+      },
+      "tooltip": {
+        "default": "如果您的用户名与其他玩家（非用户）的名称冲突，则会添加一个随机数以使其唯一。例如：Jipper ➔ Jipper_123456",
+        "length": "用户名必须介于 3 到 20 个字符之间。你当前的用户名为{{length}}个字符。",
+        "characters": "第{{position}}个字符\"{{char}}\"无效。用户名只能包含字母或数字、下划线 “_” 和连字符 “-”。"
+      }
+    },
+    "password": {
+      "label": "密码",
+      "confirmLabel": "确认密码",
+      "error": {
+        "length": "密码必须至少8字符长",
+        "mismatch": "密码不匹配"
+      }
+    },
+    "terms": {
+      "label": "我已阅读并同意",
+      "privacyPolicy": "隐私政策",
+      "and": "和",
+      "termsOfService": "服务条框"
+    },
+    "captcha": {
+      "error": "需要Captcha人机验证"
+    },
+    "submit": {
+      "default": "创建账户",
+      "loading": "正在创建账户..."
+    }
+  },
+  "success": {
+    "title": "注册成功！",
+    "message": "请检查邮箱以验证账户。现在可以跳转至你的个人资料页面。",
+    "usernameModified": "由于原名已使用，你的用户名已修改为{{username}}。",
+    "goToProfile": "跳转至个人资料页面"
+  },
+  "errors": {
+    "rateLimit": "新账户创建过多。IP 暂时封禁。",
+    "timeRemaining": "剩余时间：{{time}}",
+    "generic": "注册失败。请重试。",
+    "discordFailed": "连接Discord失败"
+  },
+  "divider": "或者",
+  "discord": {
+    "register": "使用Discord账户注册"
+  },
+  "login": {
+    "link": "已有账户？登录"
+  }
+} 

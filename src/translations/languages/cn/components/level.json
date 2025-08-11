@@ -8,11 +8,11 @@
         "description": "你可以使用两个不同的运算符搜索特定字段：冒号（:） 表示部分匹配，等号（=）表示完全匹配。",
         "examples": {
           "title": "可用字段",
-          "songField": "按歌曲名称搜索（例：“song:go”或“song=goTe”）",
-          "artistField": "按曲师名称搜索（例：“artist:cam”或“artist=Camellia”）",
-          "charterField": "按踩音师名称搜索（例：“charter:zag”或“charter=Zagon”）",
-          "vfxerField": "按特效师名称搜索（例：“vfxer:Asa”或“vfxer=Asansis”）",
-          "creatorField": "按创作者名称搜索所有角色（示例：“creator:Nep”或“creator=Nephrolepis”）"
+          "songField": "按歌曲名称搜索（示例：“song:go” 或 “song=goTe”）",
+          "artistField": "按曲师名称搜索（示例：“artist:cam” 或 “artist=Camellia”）",
+          "charterField": "按采音师名称搜索（示例：“charter:zag” 或“charter=Zagon”）",
+          "vfxerField": "按特效师名称搜索（示例：“vfxer:Asa” 或 “vfxer=Asansis”）",
+          "creatorField": "按创作者名称搜索所有角色（示例：“creator:Nep” 或 “creator=Nephrolepis”）"
         }
       },
       "operators": {
@@ -32,7 +32,7 @@
           "caseSensitive": "搜索不区分大小写 - “SONG”和“song”将给出相同的结果",
           "partial": "冒号（:）允许部分匹配 - “song:Ex”将匹配“Example”",
           "exact": "等号（=）要求完全匹配 - “song=Example” 将仅匹配“Example”",
-          "spaces": "搜索词中允许使用空格 - “song:Example Song”有效",
+          "spaces": "搜索词中允许使用空格 - “song:Example Song” 有效",
           "order": "每个组中的条件顺序并不重要",
           "roles": "使用“creator”搜索所有身份，或使用“charter”/“vfxer”搜索特定身份"
         }

@@ -16,6 +16,8 @@
     "creators": "创作者",
     "creatorsDesc": "为关卡分配创作者和团队",
     "backups": "备份",
-    "backupsDesc": "管理数据库备份和系统维护"
+    "backupsDesc": "管理数据库备份和系统维护",
+    "auditLog": "审核日志",
+    "auditLogDesc": "查看所有管理员操作的审核日志"
   }
 } 

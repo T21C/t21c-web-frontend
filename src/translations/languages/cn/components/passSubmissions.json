@@ -4,7 +4,7 @@
     "levelId": "关卡 ID：",
     "player": "玩家：",
     "feelingDiff": "体感难度：",
-    "speed": "Speed",
+    "speed": "飙速",
     "judgements": {
       "label": "判定："
     },
@@ -43,11 +43,14 @@
     "noPlayer": "请在批准前分配一名玩家",
     "playerAssignment": "分配玩家失败",
     "processing": "提交项目处理失败",
-    "autoAllow": "自动通过提交项目失败"
+    "autoAllow": "自动通过提交项目失败",
+    "profileUpdate": "无法通过个人资料更新通关记录",
+    "needProfileCreation": "批准前需创建个人资料"
   },
   "success": {
     "playerAssigned": "成功分配给 {{playerName}}",
-    "autoAllow": "已自动通过 {{count}} 项通关记录"
+    "autoAllow": "已自动通过 {{count}} 项通关记录",
+    "playerCreated": "成功创建并分配{{playerName}}"
   },
   "loading": "加载项目中……",
   "noItems": "未找到项目",

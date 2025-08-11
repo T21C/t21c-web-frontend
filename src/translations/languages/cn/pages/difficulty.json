@@ -19,10 +19,12 @@
     "save": "保存",
     "cancel": "取消",
     "confirm": "确认",
-    "understand": "我了解此操作的风险"
+    "understand": "我了解此操作的风险",
+    "delete": "删除"
   },
   "loading": {
-    "difficulties": "正在加载等级列表……"
+    "difficulties": "正在加载等级列表……",
+    "deleting": "正在删除……"
   },
   "noItems": {
     "message": "未找到等级"
@@ -44,13 +46,16 @@
       "baseScore": "基础分：",
       "sortOrder": "排序方式：",
       "legacy": "旧版图标：",
-      "fallbackId": "回退等级 ID："
+      "fallbackId": "回退等级 ID：",
+      "fallbackDiff": "回退等级："
     },
     "placeholders": {
-      "fallbackId": "输入该等级被删除时，分配给该等级下关卡的新等级 ID"
+      "fallbackId": "输入该等级被删除时，分配给该等级下关卡的新等级 ID",
+      "fallbackDiff": "选择替换等级"
     },
     "helpText": {
-      "fallbackId": "{{name}} 等级被删除时，所有该等级下的关卡将会更新为此等级。"
+      "fallbackId": "{{name}} 等级被删除时，所有该等级下的关卡将会更新为此等级。",
+      "fallbackDiff": "{{name}} 等级被删除时，所有该等级下的关卡将会更新为此等级。"
     }
   },
   "modal": {

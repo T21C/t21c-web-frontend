@@ -35,7 +35,7 @@
     "title": "玩家",
     "stats": {
       "rankedScore": "排位分数",
-      "generalScore": "常规分数",
+      "generalScore": "全局分数",
       "ppScore": "PP 分数",
       "wfScore": "世界首通分数",
       "score12K": "12键分数",
@@ -50,7 +50,7 @@
   "clear": {
     "score": {
       "ranked": "排位分数",
-      "general": "常规分数",
+      "general": "全局分数",
       "pp": "PP 分数",
       "wf": "世界首通分数",
       "12k": "12键分数"

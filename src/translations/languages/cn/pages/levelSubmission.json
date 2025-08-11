@@ -12,7 +12,7 @@
     "dlLink": "下载链接",
     "workshop": "创意工坊链接",
     "dlLinksOr": "或",
-    "charters": "踩音师",
+    "charters": "采音师",
     "vfxers": "特效师",
     "levelZip": "关卡压缩文件"
   },
@@ -24,7 +24,7 @@
   },
   "tooltip": "未知难度。仍然可以提交，但请确保管理员能够读懂。正确的难度格式范例：G13；P7~P13；21.1+；19~20.0+",
   "buttons": {
-    "addCharter": "添加踩音师",
+    "addCharter": "添加采音师",
     "addVfxer": "添加特效师",
     "removeCreator": "移除",
     "uploadZip": "上传压缩文件",
@@ -43,7 +43,7 @@
     "pendingProfiles": "下列个人资料将被创建："
   },
   "roles": {
-    "charters": "踩音师",
+    "charters": "采音师",
     "vfxers": "特效师",
     "teams": "团队"
   },
@@ -54,7 +54,7 @@
     "required": "必填",
     "invalidDifficulty": "无效等级格式",
     "needDownloadLink": "请提供下载链接或工坊链接",
-    "needCharter": "至少需要一个踩音师"
+    "needCharter": "至少需要一个采音师"
   },
   "placeholders": {
     "searchCreator": "搜索创作者……",

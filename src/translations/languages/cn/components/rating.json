@@ -26,7 +26,7 @@
     },
     "errors": {
       "commentLength": "注释必须少于1000个字符",
-      "commentRequired": "-2 评级需要评论",
+      "commentRequired": "Censored 评级需要评论",
       "saveFailed": "保存更改失败",
       "updateFailed": "更新评级失败",
       "unsavedChanges": "你有未保存的更改，确定要退出吗？",
@@ -34,10 +34,10 @@
     },
     "tooltips": {
       "lastUpdated": "上次更新时间",
-      "requiredComment": "为 -2 等级评级时需要评论"
+      "requiredComment": "为 Censored 等级评级时需要评论"
     },
     "placeholders": {
-      "requiredComment": "请解释为什么你给这个关卡评 -2 ……",
+      "requiredComment": "请解释为什么你给这个关卡评 Censored ……",
       "difficultyInput": "输入难度……",
       "communityComment": "请提供一个你的评级的理由……"
     },
@@ -105,7 +105,7 @@
         "title": "平均评分",
         "description": "系统采用加权平均计算，其中考虑了以下几个因素：",
         "points": {
-          "special": "如果特殊评级（Censored（-2）、Impossible（-21）等）获得 4 票或更多投票，则会覆盖平均值",
+          "special": "如果特殊评级（Censored、Impossible等）获得 4 票或更多投票，则会覆盖平均值",
           "ranges": "范围（如 U12~U14）在计入最终评分之前会进行平均",
           "order": "PGU 评分是根据难度顺序而非数值进行平均的"
         }
@@ -122,7 +122,7 @@
       "requirements": {
         "title": "需求",
         "points": {
-          "comment": "当评级为 -2 时需要评论",
+          "comment": "当评级为 Censored 时需要评论",
           "format": "评级必须遵循 PGU 格式（P1-P20、G1-G20、U1-U20）或为有效的特殊评级",
           "special": "特殊评级是预先定义的，无法自定义"
         }

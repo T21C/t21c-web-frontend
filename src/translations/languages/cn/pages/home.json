@@ -20,16 +20,17 @@
       "passesLast30Days": "通关记录数（过去30天）"
     },
     "difficulties": {
-      "title": "难度统计",
+      "title": "关卡统计",
       "graphModes": {
-        "passes": "个通关记录",
-        "levels": "个关卡"
+        "passes": "按通关记录",
+        "levels": "按关卡数量"
       }
     },
     "discord": {
       "title": "加入我们的Discord！"
     },
-    "comingSoon": "还有更多有趣的内容即将到来……"
+    "comingSoon": "还有更多有趣的内容即将到来……",
+    "donate": "在 Ko-fi 上支持我！"
   },
   "footer": {
     "about": {
@@ -43,7 +44,8 @@
       "leaderboard": "排行榜",
       "aboutUs": "关于我们",
       "privacyPolicy": "隐私政策",
-      "termsOfService": "服务条款"
+      "termsOfService": "服务条款",
+      "apiDocs": "API 文档"
     },
     "community": {
       "title": "社区",
@@ -51,7 +53,7 @@
       "github": "GitHub"
     },
     "copyright": {
-      "main": "© {{year}} TUF。与 7th Beat Games 无关。",
+      "main": "© {{year}} TUF团队。与 7th Beat Games 无关。",
       "credit": "由 V0W4N 用 ❤️ 制作"
     }
   }

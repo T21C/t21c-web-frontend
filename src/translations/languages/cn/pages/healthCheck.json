@@ -1,0 +1,48 @@
+{
+  "title": "系统健康状态",
+  "lastUpdated": "上次更新：{{time}}",
+  "loading": "正在加载健康数据...",
+  "error": "获取健康数据失败： {{error}}",
+  "status": {
+    "online": "在线",
+    "degraded": "已降级",
+    "offline": "离线"
+  },
+  "serverInfo": {
+    "title": "服务器信息",
+    "status": "状态",
+    "uptime": "正常运行时间"
+  },
+  "serviceChecks": {
+    "title": "服务检查",
+    "database": "数据库",
+    "socketServer": "套接字服务器"
+  },
+  "systemInfo": {
+    "title": "系统信息",
+    "nodeVersion": "节点版本",
+    "platform": "平台",
+    "environment": "环境",
+    "mainServerStatus": "主服务器状态"
+  },
+  "memoryUsage": {
+    "title": "已使用内存",
+    "rssMemory": "RSS内存",
+    "heapTotal": "总堆大小",
+    "heapUsed": "已使用堆大小",
+    "externalMemory": "外部内存",
+    "arrayBuffers": "数组缓冲区",
+    "max": "最大值：{{value}}"
+  },
+  "memoryLimits": {
+    "title": "内存限制",
+    "heapSizeLimit": "堆大小限制",
+    "totalAvailableSize": "总可用大小",
+    "totalHeapSizeExecutable": "总可执行堆大小",
+    "totalPhysicalSize": "总物理内存大小",
+    "maxRSS": "最大RSS内存"
+  },
+  "refresh": {
+    "ariaLabel": "刷新健康数据"
+  }
+} 

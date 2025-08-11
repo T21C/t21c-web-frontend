@@ -25,12 +25,12 @@
       "webhookUrlPlaceholder": "输入 Webhook 链接"
     },
     "role": {
-      "editTitle": "编辑身份组",
-      "addTitle": "添加新身份组",
-      "roleId": "身份组 ID",
-      "roleIdPlaceholder": "输入身份组 ID",
-      "label": "身份组图标",
-      "labelPlaceholder": "输入身份组图标"
+      "editTitle": "编辑身份",
+      "addTitle": "添加新身份",
+      "roleId": "身份 ID",
+      "roleIdPlaceholder": "输入身份 ID",
+      "label": "身份标签",
+      "labelPlaceholder": "输入身份标签"
     }
   },
   "form": {
@@ -38,15 +38,15 @@
       "id": "ID",
       "name": "名称",
       "type": "类型",
-      "icon": "图标链接",
-      "legacyIcon": "原始图标链接",
+      "icon": "图标 链接",
+      "legacyIcon": "传统图标 链接",
       "emoji": "表情",
-      "legacyEmoji": "原始表情",
+      "legacyEmoji": "传统表情",
       "color": "颜色",
       "baseScore": "基础分",
       "previousBaseScore": "先前的基础分",
-      "sortOrder": "排列顺序",
-      "legacy": "原始名称"
+      "sortOrder": "排序顺序",
+      "legacy": "传统名称"
     },
     "placeholders": {
       "color": "#RRGGBB"
@@ -54,15 +54,16 @@
   },
   "difficultyTypes": {
     "PGU": "PGU",
-    "SPECIAL": "特殊等级"
+    "SPECIAL": "特殊等级",
+    "LEGACY": "传统等级"
   },
   "announcements": {
     "title": "{{diffName}} 的公告指令",
     "firstOfKind": "首创",
     "mode": {
       "label": "指令模式",
-      "static": "无条件",
-      "conditional": "有条件"
+      "static": "不变的",
+      "conditional": "有条件的"
     },
     "directive": {
       "name": "名称",
@@ -76,7 +77,7 @@
       "copySuccess": "已复制指令设置至剪贴板",
       "copyError": "复制指令设置失败",
       "pasteSuccess": "已从剪贴板粘贴指令设置",
-      "pasteError": "指令格式无效。请粘贴有效的指令 JSON 文件。",
+      "pasteError": "无效指令格式。请粘贴有效的指令 JSON 文件。",
       "addSuccess": "新指令已添加",
       "removeSuccess": "已移除指令",
       "saveSuccess": "指令保存成功",
@@ -90,7 +91,7 @@
     },
     "triggerType": {
       "PASS": "通关公告",
-      "LEVEL": "新关卡公告"
+      "LEVEL": "关卡公告"
     },
     "condition": {
       "type": {
@@ -103,17 +104,17 @@
         }
       },
       "operator": {
-        "label": "运算符",
+        "label": "操作员",
         "options": {
           "EQUAL": "等于",
           "GREATER_THAN": "大于",
           "LESS_THAN": "小于",
-          "GREATER_THAN_EQUAL": "大于等于",
-          "LESS_THAN_EQUAL": "小于等于"
+          "GREATER_THAN_EQUAL": "不小于",
+          "LESS_THAN_EQUAL": "不大于"
         }
       },
       "value": "值",
-      "customFunction": "自定义函数"
+      "customFunction": "自定义功能"
     },
     "actions": {
       "title": "动作",
@@ -127,19 +128,19 @@
         "delete": "删除频道"
       },
       "pingType": {
-        "label": "提及成员类型",
+        "label": "提醒类型",
         "options": {
-          "NONE": "不提及",
-          "ROLE": "提及特定身份组",
-          "EVERYONE": "提及所有人"
+          "NONE": "没有提醒",
+          "ROLE": "身份组提醒",
+          "EVERYONE": "@所有人"
         }
       },
       "role": {
-        "create": "创建身份组",
-        "label": "身份组",
-        "add": "添加身份组",
-        "edit": "编辑身份组",
-        "delete": "删除身份组"
+        "create": "创建身份",
+        "label": "身份",
+        "add": "添加身份",
+        "edit": "编辑身份",
+        "delete": "删除身份"
       }
     }
   },
@@ -175,8 +176,8 @@
     "saveDirectives": "保存公告指令失败",
     "channelSaveFailed": "保存频道失败",
     "channelDeleteFailed": "删除频道失败",
-    "roleSaveFailed": "保存身份组失败",
-    "roleDeleteFailed": "删除身份组失败"
+    "roleSaveFailed": "保存身份失败",
+    "roleDeleteFailed": "删除身份失败"
   },
   "loading": {
     "directives": "正在加载公告指令……"
