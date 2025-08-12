@@ -1,4 +1,4 @@
-.avatar-container {
+.user-avatar-container {
   position: relative;
   overflow: hidden;
   display: flex;
@@ -8,7 +8,7 @@
   background-color: var(--bg-secondary);
 }
 
-.avatar-image {
+.user-avatar-container .avatar-image {
   width: 100%;
   height: 100%;
   object-fit: cover;

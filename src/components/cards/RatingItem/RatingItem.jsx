@@ -5,10 +5,20 @@ import { Tooltip } from 'react-tooltip';
 import DefaultAvatar from '@/components/common/icons/DefaultAvatar';
 import { CommentFormatter } from '@/components/misc';
 import { UserAvatar } from '@/components/layout';
-export const RatingItem = ({key, user, rating, comment, isSuperAdmin, onDelete }) => {
+import { CrownIcon } from '@/components/common/icons';
+
+export const RatingItem = ({key, user, rating, comment, isSuperAdmin, onDelete, weeklyRaterActivity = [] }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const { t } = useTranslation('components');
     const tRating = (key, params = {}) => t(`rating.ratingCard.${key}`, params) || key;
+    
+    // Find user's weekly activity
+    const userActivity = weeklyRaterActivity.find(rater => rater.userId === user?.id);
+    const averagePerDay = userActivity?.averagePerDay || 0;
+    
+    // Determine visual indicators based on average per day
+    const hasCircleOrnament = averagePerDay >= 5;
+    const hasCrown = averagePerDay >= 15;
     
     const handleDelete = (e) => {
       e.stopPropagation();
@@ -24,11 +34,21 @@ export const RatingItem = ({key, user, rating, comment, isSuperAdmin, onDelete }
           onClick={() => comment && setIsExpanded(!isExpanded)}
         >
           <div className="rating-item-header">
-            <UserAvatar
-              primaryUrl={user?.avatarUrl}
-              fallbackUrl={user?.pfp}
-              className="rater-avatar"
-            />
+            <div className="rater-avatar-container">
+              <UserAvatar
+                primaryUrl={user?.avatarUrl}
+                fallbackUrl={user?.pfp}
+                className="rater-avatar"
+              />
+              {hasCircleOrnament && (
+                <div className="circle-ornament"></div>
+              )}
+              {hasCrown && (
+                <div className="crown-ornament-container">
+                  <CrownIcon className="crown-ornament" size="24px" />
+                </div>
+              )}
+            </div>
             <span className="rater-name">{user?.username}:</span>
             <span className="rater-rating">{rating}</span>
             <div className="rating-item-icons">

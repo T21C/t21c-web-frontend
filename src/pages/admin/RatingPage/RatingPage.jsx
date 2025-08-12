@@ -7,21 +7,16 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRatingFilter } from "@/contexts/RatingFilterContext";
 import { useTranslation } from "react-i18next";
 import { RatingCard } from "@/components/cards";
-import { EditLevelPopup, RaterManagementPopup, ReferencesPopup } from "@/components/popups";
+import { EditLevelPopup, RaterManagementPopup, ReferencesPopup, TopRatersPopup } from "@/components/popups";
 import { RatingDetailPopup } from "@/components/popups/RatingDetailPopup/RatingDetailPopup";
 import { ScrollButton, ReferencesButton } from "@/components/common/buttons";
 import { CustomSelect } from "@/components/common/selectors";
 import api from "@/utils/api";
-import { SortAscIcon, SortDescIcon } from "@/components/common/icons";
+import { LeaderboardIcon, SortAscIcon, SortDescIcon } from "@/components/common/icons";
 import { Tooltip } from "react-tooltip";
 import { RatingHelpPopup } from "@/components/popups";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { filterRatingsByUserTopDiff } from "@/utils/Utility";
-
-const truncateString = (str, maxLength) => {
-  if (!str) return "";
-  return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
-};
 
 const RatingPage = () => {
   const { t } = useTranslation('pages');
@@ -60,14 +55,27 @@ const RatingPage = () => {
   const [connectedUsers, setConnectedUsers] = useState(0);
   const [isConnected, setIsConnected] = useState(false);
   const [connectedManagers, setConnectedManagers] = useState(0);
+  const [showTopRaters, setShowTopRaters] = useState(false);
+  const [weeklyRaterActivity, setWeeklyRaterActivity] = useState([]);
 
   const fetchRatings = useCallback(async () => {
     try {
-      const response = await api.get(import.meta.env.VITE_RATING_API);
+      // Calculate date 7 days ago
+      const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+      
+      const [ratingsResponse, weeklyActivityResponse] = await Promise.all([
+        api.get(import.meta.env.VITE_RATING_API),
+        api.get(`/v2/admin/statistics/ratings-per-user?date=${weekAgo}&limit=1000`)
+      ]);
+      
       await new Promise(resolve => setTimeout(resolve, 1000));
-      const data = response.data;
-      setRatings(data);
-      setSortedRatings(data);
+      
+      const ratingsData = ratingsResponse.data;
+      const weeklyActivityData = weeklyActivityResponse.data;
+      
+      setRatings(ratingsData);
+      setSortedRatings(ratingsData);
+      setWeeklyRaterActivity(weeklyActivityData.ratingsPerUser || []);
     } catch (error) {
       console.error("Error fetching ratings:", error);
     }
@@ -387,13 +395,19 @@ const RatingPage = () => {
             {user?.isSuperAdmin && (
               <>
                 <button 
-                  className="admin-button"
+                  className="admin-button rater-management-button"
                   onClick={() => setShowRaterManagement(true)}
                 >
                   {tRating('buttons.manageRaters')}
                 </button>
               </>
             )}
+            <button 
+              className="admin-button top-rater-button"
+              onClick={() => setShowTopRaters(true)}
+            >
+              {tRating('buttons.topRaters')} <LeaderboardIcon />
+            </button>
           </div>
         <div className="view-controls">
           
@@ -482,6 +496,8 @@ const RatingPage = () => {
                   type="text"
                   className="search-input"
                   placeholder={tRating('search.placeholder')}
+                  name="search"
+                  autoComplete="off"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -539,6 +555,7 @@ const RatingPage = () => {
                 setRatings={setRatings}
                 user={user}
                 isSuperAdmin={user?.isSuperAdmin}
+                weeklyRaterActivity={weeklyRaterActivity}
               />
             )}
 
@@ -593,6 +610,10 @@ const RatingPage = () => {
 
         {showHelpPopup && (
           <RatingHelpPopup onClose={() => setShowHelpPopup(false)} />
+        )}
+
+        {showTopRaters && (
+          <TopRatersPopup onClose={() => setShowTopRaters(false)} />
         )}
       </div>
     </div>

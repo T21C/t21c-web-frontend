@@ -7,6 +7,7 @@ import { EditPassPopup } from "./EditPassPopup/EditPassPopup";
 import { LevelHelpPopup } from "./LevelHelpPopup/LevelHelpPopup";
 import { PassHelpPopup } from "./PassHelpPopup/PassHelpPopup";
 import RaterManagementPopup from "./RaterManagementPopup/RaterManagementPopup";
+import TopRatersPopup from "./TopRatersPopup/TopRatersPopup";
 import { RatingHelpPopup } from "./RatingHelpPopup/RatingHelpPopup";
 import ReferencesPopup from "./ReferencesPopup/ReferencesPopup";
 import SubmissionCreatorPopup from "./SubmissionCreatorPopup/SubmissionCreatorPopup";
@@ -25,6 +26,7 @@ export {
     LevelHelpPopup,
     PassHelpPopup,
     RaterManagementPopup,
+    TopRatersPopup,
     ReferencesPopup,
     SubmissionCreatorPopup,
     RatingDetailPopup,

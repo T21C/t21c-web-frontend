@@ -1,0 +1,30 @@
+{
+  "title": "Top Raters",
+  "loading": "Loading top raters...",
+  "noRaters": "No raters found for the selected period",
+  "dateSelector": {
+    "startDate": "Start Date",
+    "endDate": "End Date"
+  },
+  "stats": {
+    "totalUsers": "Total Users",
+    "averageRatingsPerDay": "Avg Ratings/Day",
+    "totalRatings": "Total Ratings"
+  },
+  "legend": {
+    "circleOrnament": "5+ ratings/day",
+    "crownOrnament": "20+ ratings/day"
+  },
+  "raterEntry": {
+    "unknown": "Unknown User",
+    "stats": {
+      "totalRatings": "Total",
+      "averagePerDay": "Avg/Day"
+    }
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "pageInfo": "Page {{current}} of {{total}}"
+  }
+}

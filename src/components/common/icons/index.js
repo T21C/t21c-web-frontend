@@ -30,6 +30,7 @@ import ServerCloudIcon from './ServerCloudIcon';
 import HistoryListIcon from './HistoryListIcon';
 import { CrossIcon } from './CrossIcon';
 import { CrossedPhoneIcon } from './CrossedPhoneIcon';
+import CrownIcon from './CrownIcon';
 
 export {
     DefaultAvatar,
@@ -63,5 +64,6 @@ export {
     ServerCloudIcon,
     HistoryListIcon,
     CrossIcon,
-    CrossedPhoneIcon
+    CrossedPhoneIcon,
+    CrownIcon
 }

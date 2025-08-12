@@ -1,0 +1,530 @@
+.top-raters-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.top-raters-overlay .top-raters-popup {
+  background-color: var(--color-black);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 8px;
+  padding: 20px;
+  width: 90%;
+  max-width: 700px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.top-raters-overlay .popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--color-white-t20);
+}
+
+.top-raters-overlay .popup-header h2 {
+  margin: 0;
+  color: var(--color-white);
+  font-size: 1.5em;
+}
+
+.top-raters-overlay .close-button {
+  background: none;
+  border: none;
+  color: var(--color-white);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.top-raters-overlay .date-selection {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--color-white-t20);
+}
+
+.top-raters-overlay .date-inputs {
+  display: flex;
+  gap: 15px;
+  align-items: flex-end;
+}
+
+.top-raters-overlay .date-input-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.top-raters-overlay .date-selection label {
+  display: block;
+  color: var(--color-white);
+  margin-bottom: 8px;
+  font-weight: bold;
+  font-size: 0.9em;
+}
+
+.top-raters-overlay .date-input {
+  width: 100%;
+  padding: 8px 12px;
+  background-color: var(--color-white-t20);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  color: var(--color-white);
+  font-size: 1em;
+}
+
+/* Style the calendar button to be white */
+.top-raters-overlay .date-input::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.top-raters-overlay .date-input::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* For Firefox */
+.top-raters-overlay .date-input::-moz-calendar-picker-indicator {
+  filter: invert(1);
+  cursor: pointer;
+  opacity: 0.8;
+  transition: opacity 0.2s ease;
+}
+
+.top-raters-overlay .date-input::-moz-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+.top-raters-overlay .overall-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  position: relative;
+}
+
+.top-raters-overlay .stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  border: 1px solid var(--color-white-t10);
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.top-raters-overlay .stat-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.top-raters-overlay .stat-item:nth-child(1) {
+  border-left: 3px solid #4CAF50;
+}
+
+.top-raters-overlay .stat-item:nth-child(2) {
+  border-left: 3px solid #2196F3;
+}
+
+.top-raters-overlay .stat-item:nth-child(3) {
+  border-left: 3px solid #FF9800;
+}
+
+.top-raters-overlay .stat-item .stat-label {
+  color: var(--color-white-t70);
+  font-size: 0.9em;
+  margin-bottom: 4px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.top-raters-overlay .stat-item .stat-value {
+  color: var(--color-white);
+  font-size: 1.5em;
+  font-weight: bold;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.1);
+}
+
+.top-raters-overlay .raters-list {
+  overflow-y: auto;
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+.top-raters-overlay .top-rater-entry {
+  display: flex;
+  align-items: center;
+  background-color: var(--color-white-t10);
+  border-radius: 6px;
+  margin-bottom: 12px;
+  padding: 16px;
+  gap: 15px;
+}
+
+.top-raters-overlay .rater-rank {
+  color: var(--color-white);
+  font-size: 1.2em;
+  font-weight: bold;
+  min-width: 40px;
+  text-align: center;
+}
+
+.top-raters-overlay .rater-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+}
+
+.top-raters-overlay .avatar-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.top-raters-overlay .avatar-container .avatar-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  z-index: 2;
+  position: relative;
+}
+
+.circle-ornament {
+  margin-left: -0.5px;
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  border: 2px solid #4CAF50;
+  border-radius: 50%;
+  z-index: 1;
+  animation: pulse 6s infinite;
+}
+
+.avatar-container .crown-ornament-container {
+  position: absolute;
+  top: -20px;
+  left: 14px;
+  transform: rotate(-20deg);
+  
+  z-index: 3;
+}
+
+.avatar-container .crown-ornament {
+  transform: translateX(-50%) scaleY(0.8);
+}
+
+.top-raters-overlay .rater-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.top-raters-overlay .rater-name {
+  color: var(--color-white);
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+.top-raters-overlay .internal-username {
+  color: var(--color-white-t70);
+  font-size: 0.9em;
+}
+
+.top-raters-overlay .rater-stats {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  min-width: 240px;
+}
+
+.top-raters-overlay .total-ratings,
+.top-raters-overlay .average-per-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 6px;
+  background: linear-gradient(135deg, var(--color-white-t15) 0%, var(--color-white-t10) 100%);
+  border: 1px solid var(--color-white-t20);
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  min-width: 100px;
+}
+
+.top-raters-overlay .total-ratings,
+.top-raters-overlay .average-per-day {
+  border-left: 3px solid var(--color-white-t20);
+}
+
+
+.top-raters-overlay .total-ratings.high-value {
+  border-left: 3px solid #4CAF50;
+}
+
+.top-raters-overlay .average-per-day.high-value {
+  border-left: 3px solid #2196F3;
+}
+
+.top-raters-overlay .total-ratings .stat-value,
+.top-raters-overlay .average-per-day .stat-value {
+  color: #ccc;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+}
+
+.top-raters-overlay .total-ratings.high-value .stat-value {
+  color: #4CAF50;
+  text-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+}
+
+.top-raters-overlay .average-per-day.high-value .stat-value {
+  color: #2196F3;
+  text-shadow: 0 0 8px rgba(33, 150, 243, 0.3);
+}
+
+.top-raters-overlay .stat-label {
+  color: var(--color-white-t70);
+  font-size: 0.8em;
+  margin-bottom: 2px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.top-raters-overlay .stat-value {
+  color: var(--color-white);
+  font-weight: bold;
+  font-size: 1.1em;
+  position: relative;
+}
+
+/* Add hover effects for the stat containers */
+.top-raters-overlay .total-ratings:hover,
+.top-raters-overlay .average-per-day:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+}
+
+/* Add pulse animation for high values */
+.top-raters-overlay .total-ratings.top-value .stat-value,
+.top-raters-overlay .average-per-day.top-value .stat-value {
+  animation: valuePulse 2s infinite;
+}
+
+@keyframes valuePulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+/* Add special styling for top performers */
+.top-raters-overlay .top-rater-entry.top-performer .total-ratings,
+.top-raters-overlay .top-rater-entry.top-performer .average-per-day {
+  background: linear-gradient(135deg, rgba(255, 215, 0, 0.1) 0%, rgba(255, 215, 0, 0.05) 100%);
+  border-color: rgba(255, 215, 0, 0.3);
+}
+
+.top-raters-overlay .top-rater-entry.top-performer .total-ratings::before,
+.top-raters-overlay .top-rater-entry.top-performer .average-per-day::before {
+  background: linear-gradient(90deg, #FFD700, #FFA500);
+}
+
+.top-raters-overlay .top-rater-entry.top-performer .stat-value {
+  color: #FFD700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.top-raters-overlay .loading {
+  color: var(--color-white);
+  text-align: center;
+  padding: 40px;
+  font-size: 1.1em;
+}
+
+.top-raters-overlay .no-raters {
+  color: var(--color-white-t70);
+  text-align: center;
+  padding: 40px;
+  font-style: italic;
+}
+
+.top-raters-overlay .legend {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  padding-top: 15px;
+  border-top: 1px solid var(--color-white-t20);
+}
+
+.top-raters-overlay .legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-white-t70);
+  font-size: 0.9em;
+}
+
+.top-raters-overlay .legend-icon {
+  margin-left: -25px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #4CAF50;
+}
+
+
+.top-raters-overlay .error-message-container {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #f44336;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 1001;
+  max-width: 90%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.top-raters-overlay .error-message-container .close-error {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.top-raters-overlay .error-message-container .error-text {
+  margin: 0;
+  font-size: 0.9em;
+  flex: 1;
+}
+
+/* Animations */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .top-raters-overlay .top-raters-popup {
+    width: 95%;
+    padding: 15px;
+  }
+  
+  .top-raters-overlay .date-inputs {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .top-raters-overlay .overall-stats {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .top-raters-overlay .top-rater-entry {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+  
+  .top-raters-overlay .rater-stats {
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    min-width: 120px;
+  }
+  
+  .top-raters-overlay .total-ratings,
+  .top-raters-overlay .average-per-day {
+    flex: none;
+    min-width: auto;
+  }
+  
+  .top-raters-overlay .legend {
+    flex-direction: column;
+    gap: 15px;
+    align-items: center;
+  }
+}
+
+/* Pagination styles */
+.top-raters-overlay .pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  padding: 15px 0;
+  border-top: 1px solid var(--color-white-t20);
+}
+
+.top-raters-overlay .pagination-button {
+  padding: 8px 16px;
+  background-color: var(--color-white-t20);
+  border: 1px solid var(--color-white-t30);
+  border-radius: 4px;
+  color: var(--color-white);
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: background-color 0.2s ease;
+}
+
+.top-raters-overlay .pagination-button:hover:not(:disabled) {
+  background-color: var(--color-white-t30);
+}
+
+.top-raters-overlay .pagination-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.top-raters-overlay .pagination-info {
+  color: var(--color-white-t70);
+  font-size: 0.9em;
+  min-width: 80px;
+  text-align: center;
+}

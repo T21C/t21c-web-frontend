@@ -40,7 +40,8 @@ export const RatingDetailPopup = ({
   setRatings = () => {}, 
   user = null, 
   isSuperAdmin = false,
-  enableReferences = true
+  enableReferences = true,
+  weeklyRaterActivity = []
 }) => {
   const currentUser = user;
   const { t } = useTranslation('components');
@@ -419,6 +420,7 @@ export const RatingDetailPopup = ({
               comment={comment}
               isSuperAdmin={isSuperAdmin}
               onDelete={handleDeleteRating}
+              weeklyRaterActivity={weeklyRaterActivity}
             />
           ))}
         </div>

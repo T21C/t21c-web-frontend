@@ -45,7 +45,7 @@ const UserAvatar = ({
   }, [primaryUrl, fallbackUrl]);
 
   return (
-    <div className={`avatar-container ${className}`}>
+    <div className={`user-avatar-container ${className}`}>
       {imgSrc ? (
         <img 
           src={imgSrc} 
