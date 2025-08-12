@@ -7,9 +7,9 @@
     "endDate": "截止日期"
   },
   "stats": {
-    "totalUsers": "总用户",
+    "totalUsers": "总用户数",
     "averageRatingsPerDay": "平均每天评级数",
-    "totalRatings": "总评级员"
+    "totalRatings": "总评级员数"
   },
   "legend": {
     "circleOrnament": "每天 5+ 个评级",
@@ -19,12 +19,12 @@
     "unknown": "未知用户",
     "stats": {
       "totalRatings": "合计",
-      "averagePerDay": "平均每天"
+      "averagePerDay": "平均每天评级数"
     }
   },
   "pagination": {
     "previous": "上一页",
     "next": "下一页",
-    "pageInfo": "第{{current}}页，共{total}}页"
+    "pageInfo": "第{{current}}页，共{{total}}页"
   }
 }
