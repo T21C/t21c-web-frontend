@@ -6,7 +6,8 @@
   "buttons": {
     "references": "参考关卡列表",
     "manageRaters": "管理评级员",
-    "help": "评级指南"
+    "help": "评级指南",
+    "topRaters": "评级员排行榜"
   },
   "toggles": {
     "detailedView": {

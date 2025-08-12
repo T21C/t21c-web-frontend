@@ -1,0 +1,60 @@
+{
+  "title": "Edit Profile",
+  "error": {
+    "newPasswordsDoNotMatch": "New passwords do not match",
+    "failedToChangePassword": "Failed to change password",
+    "failedToLinkAccount": "Failed to link {provider} account",
+    "failedToUnlinkAccount": "Failed to unlink {provider} account",
+    "failedToUpdateProfile": "Failed to update profile",
+    "invalidFileType": "Invalid file type. Please upload a JPEG, PNG, or WebP image.",
+    "failedToUploadAvatar": "Failed to upload avatar",
+    "failedToRemoveAvatar": "Failed to remove avatar"
+  },
+  "success": {
+    "passwordChanged": "Password changed successfully!",
+    "accountLinked": "{provider} account linked successfully!",
+    "accountUnlinked": "{provider} account unlinked successfully!",
+    "profileUpdated": "Profile updated successfully",
+    "avatarUploaded": "Avatar uploaded successfully",
+    "avatarRemoved": "Avatar removed successfully"
+  },
+  "avatar": {
+    "dragDropOrClick": "Drag & drop or click to upload",
+    "removeAvatar": "Remove Avatar",
+    "removing": "Removing..."
+  },
+  "form": {
+    "labels": {
+      "username": "Username",
+      "nickname": "Nickname",
+      "email": "Email",
+      "country": "Country or Region"
+    },
+    "emailVerification": {
+      "message": "You need to verify your email",
+      "arrow": "→"
+    },
+    "buttons": {
+      "cancel": "Cancel",
+      "saveChanges": "Save Changes",
+      "saving": "Saving..."
+    }
+  },
+  "password": {
+    "title": "Password",
+    "addPassword": "Add Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "currentPassword": "Current Password",
+    "confirmNewPassword": "Confirm New Password",
+    "createPassword": "Create Password",
+    "changePassword": "Change Password",
+    "updatePassword": "Update Password"
+  },
+  "linkedAccounts": {
+    "title": "Linked Accounts",
+    "discord": "Discord",
+    "linkDiscord": "Link Discord Account",
+    "unlink": "Unlink"
+  }
+}
