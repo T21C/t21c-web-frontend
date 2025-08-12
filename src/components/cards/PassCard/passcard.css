@@ -24,7 +24,16 @@
   width: 2.75rem;
 }
 
+.pass-card .user-avatar {
+  margin-left: 0.1rem;
+  height: 1.6rem;
+  width: 1.6rem;
+}
+
 .pass-card .pass-exp {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
   width: fit-content;
   font-size: 0.9rem;
   color: var(--color-white-t80);
@@ -72,6 +81,20 @@
   min-width: 50px;
 }
 
+.pass-card .wf-badge {
+  margin-left: 0.1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffd70022;
+  padding: 2px 0.4rem;
+  border-radius: 4px;
+  flex-direction: column;
+  text-shadow: 0 0 5px #ffd70077;
+  color: gold;
+}
 
 .pass-card .flags-wrapper {
   display: flex;

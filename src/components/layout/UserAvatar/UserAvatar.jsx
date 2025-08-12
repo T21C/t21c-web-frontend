@@ -4,7 +4,7 @@ import './useravatar.css';
 
 const UserAvatar = ({ 
   primaryUrl, 
-  fallbackUrl, 
+  fallbackUrl = '', 
   className = '', 
   onError = () => {} 
 }) => {
