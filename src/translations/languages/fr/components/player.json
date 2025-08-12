@@ -1,8 +1,8 @@
 {
   "countrySelect": {
-    "placeholder": "Sélectionner le pays",
+    "placeholder": "Sélectionner le pays ou la région",
     "search": {
-      "placeholder": "Cherche le pays ..."
+      "placeholder": "Cherche le pays ou la région ..."
     }
   },
   "playerInput": {

@@ -1,8 +1,8 @@
 {
   "countrySelect": {
-    "placeholder": "국가 선택",
+    "placeholder": "국가 또는 지역 선택",
     "search": {
-      "placeholder": "국가 검색..."
+      "placeholder": "국가 또는 지역 검색..."
     }
   },
   "playerInput": {
