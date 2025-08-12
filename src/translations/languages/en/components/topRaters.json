@@ -13,7 +13,7 @@
   },
   "legend": {
     "circleOrnament": "5+ ratings/day",
-    "crownOrnament": "20+ ratings/day"
+    "crownOrnament": "15+ ratings/day"
   },
   "raterEntry": {
     "unknown": "Unknown User",
