@@ -18,7 +18,8 @@ const LoginPage = lazy(() => import('./account/LoginPage/LoginPage'));
 const RegisterPage = lazy(() => import('./account/RegisterPage/RegisterPage'));
 const EditProfilePage = lazy(() => import('./account/EditProfilePage/EditProfilePage'));
 const EmailVerificationPage = lazy(() => import('./account/EmailVerificationPage/EmailVerificationPage'));
-const VerifyEmailPage = lazy(() => import('./account/VerifyEmailPage/VerifyEmailPage'));
+const ForgotPasswordPage = lazy(() => import('./account/ForgotPasswordPage/ForgotPasswordPage'));
+
 const CallbackPage = lazy(() => import('./account/Callback/Callback'));
 
 // Admin pages
@@ -56,7 +57,7 @@ export {
     RegisterPage,
     EditProfilePage,
     EmailVerificationPage,
-    VerifyEmailPage,
+    ForgotPasswordPage,
     CallbackPage,
     
     // Admin pages

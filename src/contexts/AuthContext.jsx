@@ -143,7 +143,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (emailOrUsername, password, captchaToken = null) => { 
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_LOGIN}`, {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/v2/auth/login`, {
         emailOrUsername,
         password,
         captchaToken
@@ -160,7 +160,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_REGISTER}`, userData);
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/v2/auth/register`, userData);
       
       // If registration is successful and we get a token, update the auth state
       if (response.data.token) {
@@ -193,7 +193,7 @@ export const AuthProvider = ({ children }) => {
 
   const loginWithDiscord = async () => {
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_DISCORD_LOGIN}`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/v2/auth/login/discord`);
       window.location.href = response.data.url;
     } catch (error) {
       console.error('Discord login error:', error);
@@ -259,7 +259,7 @@ export const AuthProvider = ({ children }) => {
 
   const verifyEmail = async (token) => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_VERIFY_EMAIL}`, { token });
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/v2/auth/verify/email`, { token });
       await fetchUser();
       return response.data;
     } catch (error) {
@@ -269,10 +269,34 @@ export const AuthProvider = ({ children }) => {
 
   const resendVerification = async (email) => {
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_RESEND_VERIFICATION}`, { email });
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/v2/auth/verify/resend`, { email });
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Failed to resend verification email');
+    }
+  };
+
+  const requestPasswordReset = async (email, captchaToken = null) => {
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/v2/auth/forgot-password/request`, {
+        email,
+        captchaToken
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const resetPassword = async (token, password) => {
+    try {
+      const response = await axios.post(`${import.meta.env.VITE_API_URL}/v2/auth/forgot-password/reset`, {
+        token,
+        password
+      });
+      return response.data;
+    } catch (error) {
+      throw error;
     }
   };
 
@@ -292,6 +316,8 @@ export const AuthProvider = ({ children }) => {
     updateToken,
     verifyEmail,
     resendVerification,
+    requestPasswordReset,
+    resetPassword,
     setUser,
     getOriginUrl,
     setOriginUrl,

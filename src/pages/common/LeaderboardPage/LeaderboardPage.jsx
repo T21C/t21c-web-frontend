@@ -68,7 +68,7 @@ const LeaderboardPage = () => {
   const fetchPlayers = async (offset = 0) => {
     try {
       setLoading(true);
-      const endpoint = `${import.meta.env.VITE_FULL_LEADERBOARD}?query=${encodeURIComponent(query)}&sortBy=${sortBy}&order=${sort.toLowerCase()}&offset=${offset}&limit=${limit}&showBanned=${showBanned}`;
+      const endpoint = `/v2/database/leaderboard?query=${encodeURIComponent(query)}&sortBy=${sortBy}&order=${sort.toLowerCase()}&offset=${offset}&limit=${limit}&showBanned=${showBanned}`;
 
       const response = await api.get(endpoint);
       

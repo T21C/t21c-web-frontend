@@ -13,16 +13,7 @@ interface ImportMetaEnv {
 
   // Authentication Endpoints
   readonly VITE_VERIFY_PASSWORD: string;
-  readonly VITE_AUTH_LOGIN: string;
-  readonly VITE_AUTH_REGISTER: string;
-  readonly VITE_AUTH_VERIFY_EMAIL: string;
-  readonly VITE_AUTH_RESEND_VERIFICATION: string;
   readonly VITE_AUTH_ME: string;
-  readonly VITE_AUTH_DISCORD_LOGIN: string;
-  readonly VITE_AUTH_DISCORD_CALLBACK: string;
-  readonly VITE_AUTH_LINK_PROVIDER: string;
-  readonly VITE_AUTH_UNLINK_PROVIDER: string;
-  readonly VITE_AUTH_REFRESH_TOKEN: string;
 
   // Core Endpoints
   readonly VITE_LEVELS: string;
@@ -39,19 +30,13 @@ interface ImportMetaEnv {
   // Statistics and Other Endpoints
   readonly VITE_STATISTICS: string;
   readonly VITE_FORM_SUBMIT: string;
-  readonly VITE_FULL_LEADERBOARD: string;
-  readonly VITE_PFP: string;
   readonly VITE_PROFILE: string;
   readonly VITE_IMAGE: string;
   readonly VITE_BILIBILI_API: string;
   readonly VITE_DIFFICULTIES: string;
-  readonly VITE_DISCORD_AUTH: string;
-  readonly VITE_CHECK_ADMIN: string;
-  readonly VITE_THUMBNAIL: string;
   readonly VITE_WEBHOOK: string;
   readonly VITE_BACKUP_API: string;
   readonly VITE_RATERS_API: string;
-  readonly VITE_DISCORD_API: string;
 
   // External API Keys
   readonly VITE_YOUTUBE_API_KEY: string;

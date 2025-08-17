@@ -241,6 +241,11 @@ const LoginPage = () => {
                 disabled={loading || retryAfter}
                 className={`login-input ${retryAfter ? 'rate-limit' : ''}`}
               />
+              <div className="forgot-password-link">
+                <Link to="/forgot-password" className="forgot-password-text">
+                  Forgot your password?
+                </Link>
+              </div>
             </div>
 
             {requireCaptcha && (

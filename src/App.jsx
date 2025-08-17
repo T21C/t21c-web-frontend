@@ -42,6 +42,7 @@ function App() {
           {/* Auth Routes */}
           <Route path="login" element={<Pages.LoginPage />} />
           <Route path="register" element={<Pages.RegisterPage />} />
+          <Route path="forgot-password" element={<Pages.ForgotPasswordPage />} />
           
           <Route path="profile/edit" element={<PrivateRoute><Pages.EditProfilePage /></PrivateRoute>} />
           <Route path="profile/verify-email" element={<Pages.EmailVerificationPage />} />

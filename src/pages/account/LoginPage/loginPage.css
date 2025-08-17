@@ -153,6 +153,23 @@
   text-decoration: underline;
 }
 
+.forgot-password-link {
+  text-align: right;
+  margin-top: 0.5rem;
+}
+
+.forgot-password-text {
+  color: #4a9eff;
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: color 0.2s;
+}
+
+.forgot-password-text:hover {
+  color: #3b7fd6;
+  text-decoration: underline;
+}
+
 /* Add captcha styles */
 .captcha-container {
   margin: 20px 0;
