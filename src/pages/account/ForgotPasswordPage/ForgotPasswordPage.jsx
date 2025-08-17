@@ -21,7 +21,6 @@ const ForgotPasswordPage = () => {
   const timerRef = useRef(null);
   const { requestPasswordReset, resetPassword, initiateLogin } = useAuth();
   const navigate = useNavigate();
-  const resetAttempted = useRef(false);
 
   // Handle countdown timer for rate limiting
   useEffect(() => {
