@@ -1,0 +1,180 @@
+.curation-preview-page {
+  min-height: 100vh;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
+
+.curation-preview-page__content {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.curation-preview-page__header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.curation-preview-page__type-badge {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 1rem;
+}
+
+.curation-preview-page__header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--text-primary);
+}
+
+.curation-preview-page__artist {
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.curation-preview-page__creator {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.curation-preview-page__preview {
+  margin-bottom: 3rem;
+  text-align: center;
+}
+
+.curation-preview-page__preview-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.curation-preview-page__description {
+  margin-bottom: 3rem;
+  padding: 2rem;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  border: 2px solid var(--border-color);
+}
+
+.curation-preview-page__description h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: var(--text-primary);
+}
+
+.curation-preview-page__description p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.curation-preview-page__level-info {
+  margin-bottom: 3rem;
+}
+
+.curation-preview-page__level-info h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+.curation-preview-page__level-details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.curation-preview-page__detail {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+}
+
+.curation-preview-page__detail-label {
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.curation-preview-page__detail-value {
+  color: var(--text-secondary);
+}
+
+.curation-preview-page__detail-link {
+  color: var(--accent-color);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.curation-preview-page__detail-link:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+}
+
+.curation-preview-page__footer {
+  text-align: center;
+  padding: 2rem;
+  background: var(--bg-secondary);
+  border-radius: 12px;
+  border: 2px solid var(--border-color);
+}
+
+.curation-preview-page__assigned-by {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.curation-preview-page__date {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  opacity: 0.8;
+}
+
+.curation-preview-page__loading,
+.curation-preview-page__error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  font-size: 1.25rem;
+  color: var(--text-secondary);
+}
+
+.curation-preview-page__error {
+  color: var(--error-color);
+}
+
+@media (max-width: 768px) {
+  .curation-preview-page__content {
+    padding: 1rem;
+  }
+  
+  .curation-preview-page__header h1 {
+    font-size: 2rem;
+  }
+  
+  .curation-preview-page__artist {
+    font-size: 1.1rem;
+  }
+  
+  .curation-preview-page__level-details {
+    grid-template-columns: 1fr;
+  }
+  
+  .curation-preview-page__description {
+    padding: 1.5rem;
+  }
+}

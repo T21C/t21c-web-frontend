@@ -29,6 +29,9 @@
   --color-white-t30: rgba(249, 250, 251, 0.3);
   --color-white-t60: rgba(249, 250, 251, 0.6);
   --color-white-t80: rgba(249, 250, 251, 0.8);
+  --color-white-t90: rgba(249, 250, 251, 0.9);
+  --bg-color: #000;
+  --bg-secondary: #111;
 }
 
 .svg-fill path {

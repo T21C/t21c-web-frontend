@@ -59,6 +59,13 @@ const AdminPage = () => {
       title: t("admin.links.auditLog"),
       description: t("admin.links.auditLogDesc"),
       icon: "🔍"
+    },
+    {
+      id: 'curation',
+      path: '/admin/curation',
+      title: t("admin.links.curation"),
+      description: t("admin.links.curationDesc"),
+      icon: "🏆"
     }
   ];
 

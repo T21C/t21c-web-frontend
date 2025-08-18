@@ -1,0 +1,50 @@
+{
+  "title": "Manage Curation Types",
+  "description": "View and manage all curation types",
+  "create": {
+    "title": "Create New Curation Type",
+    "description": "Add a new curation type to the system"
+  },
+  "edit": {
+    "title": "Edit Curation Type",
+    "description": "Modify the curation type settings"
+  },
+  "loading": "Loading types...",
+  "empty": "No curation types found",
+  "hasAbilities": "Has customization abilities",
+  "noAbilities": "No customization abilities",
+  "actions": {
+    "create": "Create New Type",
+    "edit": "Edit Type",
+    "delete": "Delete Type"
+  },
+  "confirmations": {
+    "deleteType": "Are you sure you want to delete the curation type \"{{name}}\"? This action cannot be undone."
+  },
+  "notifications": {
+    "created": "Curation type created successfully",
+    "updated": "Curation type updated successfully",
+    "deleted": "Curation type deleted successfully"
+  },
+  "form": {
+    "name": "Type Name",
+    "namePlaceholder": "Enter curation type name",
+    "color": "Color",
+    "icon": "Icon",
+    "iconHelp": "Upload an icon for this curation type (JPEG, PNG, WebP, SVG, max 1MB)",
+    "selectIcon": "Select Icon",
+    "changeIcon": "Change Icon",
+    "abilities": "Customization Abilities"
+  },
+  "abilities": {
+    "customCSS": "Custom CSS (2^0)",
+    "customColor": "Custom Color (2^1)",
+    "previewLink": "Preview Link (2^2)"
+  },
+  "buttons": {
+    "cancel": "Cancel",
+    "create": "Create Type",
+    "update": "Update Type",
+    "submitting": "Submitting..."
+  }
+}

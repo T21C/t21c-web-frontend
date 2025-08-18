@@ -1,0 +1,47 @@
+{
+  "meta": {
+    "title": "Curation Management",
+    "description": "Manage level curations and quality tiers"
+  },
+  "title": "Curation Management",
+  "description": "Assign quality tiers to levels and manage curation schedules",
+  "filters": {
+    "type": "Curation Type",
+    "allTypes": "All Types",
+    "search": "Search",
+    "searchPlaceholder": "Search by song, artist, or creator..."
+  },
+  "loading": "Loading curations...",
+  "empty": "No curations found",
+  "password": {
+    "title": "Super Admin Password Required",
+    "description": "Please enter your super admin password to continue",
+    "placeholder": "Enter password",
+    "submit": "Submit",
+    "cancel": "Cancel"
+  },
+  "initialPassword": {
+    "title": "Super Admin Access Required",
+    "description": "This page requires super admin privileges. Please enter your password to continue.",
+    "placeholder": "Enter super admin password",
+    "continue": "Continue"
+  },
+  "notifications": {
+    "created": "Curation created successfully",
+    "updated": "Curation updated successfully",
+    "deleted": "Curation deleted successfully",
+    "typeCreated": "Curation type created successfully",
+    "typeUpdated": "Curation type updated successfully",
+    "levelAdded": "Level added to curation successfully",
+    "levelUpdated": "Curation updated successfully"
+  },
+  "actions": {
+    "addLevel": "Add Level",
+    "manageTypes": "Manage Types",
+    "editCuration": "Edit Curation",
+    "deleteCuration": "Delete Curation"
+  },
+  "confirmations": {
+    "deleteCuration": "Are you sure you want to delete this curation?"
+  }
+}

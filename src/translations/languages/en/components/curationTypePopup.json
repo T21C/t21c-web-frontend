@@ -1,0 +1,38 @@
+{
+  "title": {
+    "create": "Create Curation Type",
+    "edit": "Edit Curation Type"
+  },
+  "description": {
+    "create": "Create a new curation type to categorize levels",
+    "edit": "Modify the curation type settings"
+  },
+  "form": {
+    "name": "Name",
+    "namePlaceholder": "Enter curation type name",
+    "icon": "Icon",
+    "iconPlaceholder": "Enter icon name or emoji",
+    "iconHelp": "Upload an image file (JPEG, PNG, WebP, SVG) for the curation type icon. The icon will be uploaded when you save the form.",
+    "color": "Color",
+    "abilitiesTitle": "Customization",
+    "abilities": {
+      "Custom CSS": "Custom CSS",
+      "Custom Color": "Custom Color"
+    }
+  },
+  "actions": {
+    "cancel": "Cancel",
+    "create": "Create",
+    "update": "Update",
+    "submitting": "Submitting..."
+  },
+
+  "errors": {
+    "nameRequired": "Name is required",
+    "submitFailed": "Failed to submit. Please try again."
+  },
+  "notifications": {
+    "created": "Curation type created successfully",
+    "updated": "Curation type updated successfully"
+  }
+}
