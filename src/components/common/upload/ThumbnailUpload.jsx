@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import toast from 'react-hot-toast';
 import './thumbnailupload.css';
 
 const ThumbnailUpload = ({
-  levelId,
   currentThumbnail,
   onThumbnailUpdate,
+  onThumbnailRemove,
+  uploadEndpoint,
   className = '',
   disabled = false
 }) => {
@@ -17,20 +18,33 @@ const ThumbnailUpload = ({
   const [thumbnailFile, setThumbnailFile] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(currentThumbnail || '');
   const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef(null);
+
+  // Update preview when currentThumbnail changes
+  React.useEffect(() => {
+    setThumbnailPreview(currentThumbnail || '');
+    
+    // If currentThumbnail is cleared, also reset the file input and file state
+    if (!currentThumbnail) {
+      setThumbnailFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  }, [currentThumbnail]);
 
   const handleThumbnailChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       // Validate file type
-      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif', 'image/svg'];
       if (!allowedTypes.includes(file.type)) {
-        toast.error('Invalid file type. Please select a JPEG, PNG, or WebP file.');
+        toast.error('Invalid file type. Please select a JPEG, PNG, WebP, GIF, or SVG file.');
         return;
       }
 
-      // Validate file size (3MB limit)
-      if (file.size > 3 * 1024 * 1024) {
-        toast.error('File size too large. Please select a file smaller than 3MB.');
+      if (file.size > 10 * 1024 * 1024) {
+        toast.error('File size too large. Please select a file smaller than 10MB.');
         return;
       }
 
@@ -46,32 +60,35 @@ const ThumbnailUpload = ({
   };
 
   const uploadThumbnail = async () => {
-    if (!thumbnailFile || !levelId) return;
+    if (!thumbnailFile || !uploadEndpoint) return;
 
     setIsUploading(true);
     try {
       const formData = new FormData();
       formData.append('thumbnail', thumbnailFile);
 
-      const response = await api.post(
-        `${import.meta.env.VITE_CURATIONS}/${levelId}/thumbnail`,
-        formData,
-        {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      );
+      const response = await api.post(uploadEndpoint, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
 
       if (response.data.success) {
         setThumbnailPreview(response.data.previewLink);
         if (onThumbnailUpdate) {
           onThumbnailUpdate(response.data.previewLink);
         }
-        toast.success('Thumbnail uploaded successfully');
+        setThumbnailFile(null);
+        
+        // Reset the file input element
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+        
+        toast.success(tCur('uploadSuccess'));
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.error || 'Failed to upload thumbnail';
+      const errorMessage = error.response?.data?.error || tCur('uploadError');
       toast.error(errorMessage);
     } finally {
       setIsUploading(false);
@@ -79,26 +96,33 @@ const ThumbnailUpload = ({
   };
 
   const removeThumbnail = async () => {
-    if (!levelId) return;
+    if (!uploadEndpoint) return;
 
     try {
-      await api.delete(`${import.meta.env.VITE_CURATIONS}/${levelId}/thumbnail`);
+      await api.delete(uploadEndpoint);
       setThumbnailPreview('');
       setThumbnailFile(null);
-      if (onThumbnailUpdate) {
-        onThumbnailUpdate('');
+      
+      // Reset the file input element
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
       }
-      toast.success('Thumbnail removed successfully');
+      
+      if (onThumbnailRemove) {
+        onThumbnailRemove();
+      }
+      toast.success(tCur('removeSuccess'));
     } catch (error) {
-      const errorMessage = error.response?.data?.error || 'Failed to remove thumbnail';
+      const errorMessage = error.response?.data?.error || tCur('removeError');
       toast.error(errorMessage);
     }
   };
 
+  // Generate unique ID for file input
+  const fileInputId = `thumbnail-file-${Math.random().toString(36).substr(2, 9)}`;
+
   return (
     <div className={`thumbnail-upload ${className}`}>
-      <label className="thumbnail-upload__label">{tCur('label')}</label>
-      
       {/* Thumbnail Preview */}
       {thumbnailPreview && (
         <div className="thumbnail-upload__preview">
@@ -122,15 +146,16 @@ const ThumbnailUpload = ({
       {/* Thumbnail Upload */}
       <div className="thumbnail-upload__controls">
         <input
-          id={`thumbnail-file-${levelId}`}
+          ref={fileInputRef}
+          id={fileInputId}
           type="file"
-          accept="image/jpeg,image/jpg,image/png,image/webp"
+          accept="image/jpeg,image/jpg,image/png,image/webp,image/gif,image/svg"
           onChange={handleThumbnailChange}
           className="thumbnail-upload__file-input"
           disabled={disabled}
         />
         <label 
-          htmlFor={`thumbnail-file-${levelId}`} 
+          htmlFor={fileInputId} 
           className="thumbnail-upload__file-label"
         >
           {thumbnailFile ? thumbnailFile.name : tCur('chooseFile')}

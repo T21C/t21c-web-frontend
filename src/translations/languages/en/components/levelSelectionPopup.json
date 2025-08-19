@@ -1,25 +1,16 @@
 {
   "title": "Add Level to Curation",
   "titleAdd": "Select Level to Add",
-  "titleEdit": "Edit Curation",
-  "description": "Select a level and curation type to add to the curation list",
+  "description": "Select a level to add to the curation list",
   "descriptionAdd": "Select a level to add to curation with default settings",
-  "descriptionEdit": "Change the curation type for this level",
   "filters": {
-    "type": "Curation Type",
-    "selectType": "Select a curation type",
     "search": "Search Levels",
     "searchPlaceholder": "Search by song, artist, or creator..."
   },
   "loading": "Loading levels...",
   "empty": "No levels found",
-  "select": "Select",
   "create": "Create",
-  "selectTypeFirst": "Please select a curation type first",
   "selectLevel": "Select this level",
   "createLevel": "Create curation for this level",
-  "creator": "Creator",
-  "currentType": "Current Type",
-  "update": "Update",
-  "updateCuration": "Update curation type"
+  "creator": "Creator"
 }

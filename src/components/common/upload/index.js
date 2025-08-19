@@ -1,5 +1,1 @@
-import ThumbnailUpload from './ThumbnailUpload';
-
-export {
-    ThumbnailUpload
-};
+export { default as ThumbnailUpload } from './ThumbnailUpload.jsx';

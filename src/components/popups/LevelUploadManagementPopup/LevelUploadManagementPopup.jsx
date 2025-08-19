@@ -60,11 +60,6 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
     if (!file) return;
 
     try {
-      // Validate file type and size
-      if (!validateZipSize(file)) {
-        setError(tUpload('errors.invalidZip'));
-        return;
-      }
 
       setIsUploading(true);
       setError(null);

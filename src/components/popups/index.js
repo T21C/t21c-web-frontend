@@ -18,6 +18,7 @@ import LevelUploadManagementPopup from './LevelUploadManagementPopup/LevelUpload
 import CDNTosPopup from './CDNTosPopup/CDNTosPopup';
 import CurationTypePopup from './CurationTypePopup/CurationTypePopup';
 import TypeManagementPopup from './TypeManagementPopup/TypeManagementPopup';
+import CurationEditPopup from './CurationEditPopup/CurationEditPopup';
 
 export {
     AdminPlayerPopup,
@@ -39,5 +40,6 @@ export {
     LevelUploadManagementPopup,
     CDNTosPopup,
     CurationTypePopup,
-    TypeManagementPopup
+    TypeManagementPopup,
+    CurationEditPopup
 }

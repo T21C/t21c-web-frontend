@@ -7,7 +7,7 @@ import api from '@/utils/api';
 import './curationpage.css';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
-import { LevelSelectionPopup, TypeManagementPopup } from '@/components/popups';
+import { LevelSelectionPopup, TypeManagementPopup, CurationEditPopup } from '@/components/popups';
 import { toast } from 'react-hot-toast';
 
 const CurationPage = () => {
@@ -31,13 +31,13 @@ const CurationPage = () => {
   const [pendingAction, setPendingAction] = useState(null);
   const [showLevelSelectionPopup, setShowLevelSelectionPopup] = useState(false);
   const [showTypeManagementPopup, setShowTypeManagementPopup] = useState(false);
+  const [showCurationEditPopup, setShowCurationEditPopup] = useState(false);
   const [editingCuration, setEditingCuration] = useState(null);
-  const [popupMode, setPopupMode] = useState('add'); // 'add' or 'edit'
 
 
   // Add effect to handle body scrolling
   useEffect(() => {
-    const isAnyOpen = showPasswordPrompt || showLevelSelectionPopup || showTypeManagementPopup;
+    const isAnyOpen = showPasswordPrompt || showLevelSelectionPopup || showTypeManagementPopup || showCurationEditPopup;
     if (isAnyOpen) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -47,7 +47,7 @@ const CurationPage = () => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [showPasswordPrompt, showLevelSelectionPopup, showTypeManagementPopup]);
+  }, [showPasswordPrompt, showLevelSelectionPopup, showTypeManagementPopup, showCurationEditPopup]);
 
   const verifyPassword = async (password) => {
     try {
@@ -83,64 +83,48 @@ const CurationPage = () => {
   };
 
   const handleAddNewLevel = () => {
-    setPopupMode('add');
     setEditingCuration(null);
     setShowLevelSelectionPopup(true);
   };
 
   const handleEditCuration = (curation) => {
-    setPopupMode('edit');
     setEditingCuration(curation);
-    setShowLevelSelectionPopup(true);
+    setShowCurationEditPopup(true);
   };
 
   const handleLevelSelect = async (selection) => {
     try {
-      if (popupMode === 'add') {
-        // Create a default curation with the first available type
-        const defaultType = curationTypes[0];
-        if (!defaultType) {
-          toast.error('No curation types available');
-          return;
-        }
-
-        const response = await api.post(`${import.meta.env.VITE_CURATIONS}`, {
-          levelId: selection.levelId,
-          typeId: defaultType.id,
-          assignedBy: user?.id
-        });
-        
-        toast.success(tCur('notifications.levelAdded'));
-        
-        // Add the new curation to the list manually
-        const newCuration = response.data.curation;
-        setCurations(prev => [newCuration, ...prev]);
-        
-        // Immediately open edit mode with the newly created curation
-        setEditingCuration(newCuration);
-        setPopupMode('edit');
-        // Keep the popup open for editing
-      } else if (popupMode === 'edit' && editingCuration) {
-        const response = await api.put(`${import.meta.env.VITE_CURATIONS}/${editingCuration.id}`, {
-          typeId: selection.typeId,
-          assignedBy: user?.id
-        });
-        toast.success(tCur('notifications.levelUpdated'));
-        
-        // Update the curation in the list with the new data
-        const updatedCuration = response.data.curation;
-        setCurations(prev => prev.map(cur => 
-          cur.id === editingCuration.id ? updatedCuration : cur
-        ));
-        
-        // Close popup and reset state
-        setShowLevelSelectionPopup(false);
-        setEditingCuration(null);
-        setPopupMode('add');
+      // Create a default curation with the first available type
+      const defaultType = curationTypes[0];
+      if (!defaultType) {
+        toast.error('No curation types available');
+        return;
       }
+
+      const response = await api.post(`${import.meta.env.VITE_CURATIONS}`, {
+        levelId: selection.levelId,
+        typeId: defaultType.id,
+        assignedBy: user?.id
+      });
+      
+      toast.success(tCur('notifications.levelAdded'));
+      
+      // Add the new curation to the list manually
+      const newCuration = response.data.curation;
+      setCurations(prev => [newCuration, ...prev]);
+      
+      // Close popup and reset state
+      setShowLevelSelectionPopup(false);
+      setEditingCuration(null);
     } catch (error) {
-      toast.error(error.response?.data?.error || `Failed to ${popupMode} level curation`);
+      toast.error(error.response?.data?.error || 'Failed to add level curation');
     }
+  };
+
+  const handleCurationUpdate = (updatedCuration) => {
+    setCurations(prev => prev.map(cur => 
+      cur.id === updatedCuration.id ? updatedCuration : cur
+    ));
   };
 
   const handleTypeManagementUpdate = () => {
@@ -206,7 +190,11 @@ const CurationPage = () => {
   const handleClosePopup = () => {
     setShowLevelSelectionPopup(false);
     setEditingCuration(null);
-    setPopupMode('add');
+  };
+
+  const handleCloseCurationEditPopup = () => {
+    setShowCurationEditPopup(false);
+    setEditingCuration(null);
   };
 
 
@@ -390,8 +378,6 @@ const CurationPage = () => {
           onClose={handleClosePopup}
           onLevelSelect={handleLevelSelect}
           curationTypes={curationTypes}
-          editingCuration={editingCuration}
-          popupMode={popupMode}
         />
 
         {/* Type Management Popup */}
@@ -401,6 +387,15 @@ const CurationPage = () => {
           curationTypes={curationTypes}
           onTypeUpdate={handleTypeManagementUpdate}
           verifiedPassword={verifiedPassword}
+        />
+
+        {/* Curation Edit Popup */}
+        <CurationEditPopup
+          isOpen={showCurationEditPopup}
+          onClose={handleCloseCurationEditPopup}
+          curation={editingCuration}
+          curationTypes={curationTypes}
+          onUpdate={handleCurationUpdate}
         />
 
       {/* Notifications */}

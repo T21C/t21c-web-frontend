@@ -6,7 +6,7 @@
 
 .thumbnail-upload__label {
   font-weight: 600;
-  color: var(--text-primary);
+  color: #ffffff;
   font-size: 0.9rem;
 }
 
@@ -20,7 +20,7 @@
   width: 120px;
   height: 80px;
   border-radius: 8px;
-  border: 2px solid var(--border-color);
+  border: 2px solid #404040;
   object-fit: cover;
 }
 
@@ -63,10 +63,10 @@
 
 .thumbnail-upload__file-label {
   padding: 0.5rem 1rem;
-  background: var(--bg-secondary);
-  border: 2px solid var(--border-color);
+  background: #2a2a2a;
+  border: 2px solid #404040;
   border-radius: 8px;
-  color: var(--text-primary);
+  color: #ffffff;
   cursor: pointer;
   font-size: 0.9rem;
   transition: all 0.2s;
@@ -77,8 +77,8 @@
 }
 
 .thumbnail-upload__file-label:hover:not(:disabled) {
-  border-color: var(--accent-color);
-  background: var(--bg-tertiary);
+  border-color: #4a9eff;
+  background: #1a1a1a;
 }
 
 .thumbnail-upload__file-label:disabled {
@@ -88,7 +88,7 @@
 
 .thumbnail-upload__upload-btn {
   padding: 0.5rem 1rem;
-  background: var(--accent-color);
+  background: #4a9eff;
   color: white;
   border: none;
   border-radius: 8px;
@@ -100,7 +100,7 @@
 }
 
 .thumbnail-upload__upload-btn:hover:not(:disabled) {
-  background: var(--accent-hover);
+  background: #3a8eef;
   transform: translateY(-1px);
 }
 
@@ -111,7 +111,7 @@
 }
 
 .thumbnail-upload__help {
-  color: var(--text-secondary);
+  color: #a0a0a0;
   font-size: 0.8rem;
   line-height: 1.3;
 }
