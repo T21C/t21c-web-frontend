@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import './curationeditpopup.css';
 import toast from 'react-hot-toast';
-import { ThumbnailUpload } from '@/components/common/upload';
+import ThumbnailUpload from '@/components/common/upload/ThumbnailUpload';
 
 const CurationEditPopup = ({
   isOpen,

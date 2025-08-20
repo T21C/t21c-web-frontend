@@ -82,7 +82,7 @@ function App() {
           <Route path='health' element={<Pages.HealthCheckPage />} />
           <Route path='admin/curation' element={<PrivateRoute><Pages.CurationPage /></PrivateRoute>} />
           <Route path='admin/curation/preview' element={<PrivateRoute><Pages.CurationPreviewPage /></PrivateRoute>} />
-          <Route path='admin/curation/schedule' element={<PrivateRoute><Pages.CurationSchedulePage /></PrivateRoute>} />
+          <Route path='admin/curation/schedules' element={<PrivateRoute><Pages.CurationSchedulePage /></PrivateRoute>} />
         </Routes>
       </Suspense>
     </AuthProvider>

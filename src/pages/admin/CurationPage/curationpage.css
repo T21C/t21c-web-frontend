@@ -83,6 +83,27 @@
   transform: translateY(-1px);
 }
 
+.curation-page .curation-schedule-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #ff9800;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.curation-page .curation-schedule-btn:hover {
+  background: #f57c00;
+  transform: translateY(-1px);
+}
+
 .curation-page .curation-filter-group {
   display: flex;
   flex-direction: column;
@@ -389,7 +410,8 @@
   }
 
   .curation-page .curation-add-level-btn,
-  .curation-page .curation-manage-types-btn {
+  .curation-page .curation-manage-types-btn,
+  .curation-page .curation-schedule-btn {
     justify-content: center;
   }
   

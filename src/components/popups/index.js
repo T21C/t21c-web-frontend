@@ -19,6 +19,7 @@ import CDNTosPopup from './CDNTosPopup/CDNTosPopup';
 import CurationTypePopup from './CurationTypePopup/CurationTypePopup';
 import TypeManagementPopup from './TypeManagementPopup/TypeManagementPopup';
 import CurationEditPopup from './CurationEditPopup/CurationEditPopup';
+import CurationSelectionPopup from './CurationSelectionPopup/CurationSelectionPopup';
 
 export {
     AdminPlayerPopup,
@@ -41,5 +42,6 @@ export {
     CDNTosPopup,
     CurationTypePopup,
     TypeManagementPopup,
-    CurationEditPopup
+    CurationEditPopup,
+    CurationSelectionPopup
 }

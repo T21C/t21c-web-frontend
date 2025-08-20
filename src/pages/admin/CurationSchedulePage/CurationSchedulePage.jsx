@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { CompleteNav } from '@/components/layout';
 import { MetaTags, AccessDenied } from '@/components/common/display';
@@ -8,6 +8,8 @@ import './curationschedulepage.css';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
+import { NavLink } from 'react-router-dom';
+import { CurationSelectionPopup } from '@/components/popups';
 
 const CurationSchedulePage = () => {
   const { user } = useAuth();
@@ -17,106 +19,62 @@ const CurationSchedulePage = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [schedules, setSchedules] = useState([]);
-  const [curationTypes, setCurationTypes] = useState([]);
-  const [currentWeek, setCurrentWeek] = useState(new Date());
-  const [superAdminPassword, setSuperAdminPassword] = useState('');
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
-  const [selectedAction, setSelectedAction] = useState({ type: '', data: null });
-  const [isAnyPopupOpen, setIsAnyPopupOpen] = useState(false);
-  const [showInitialPasswordPrompt, setShowInitialPasswordPrompt] = useState(true);
+  const [currentMonday, setCurrentMonday] = useState(getNextMonday(new Date()));
+  const [showCurationSelection, setShowCurationSelection] = useState(false);
+  const [selectionMode, setSelectionMode] = useState({ type: '', position: null }); // 'primary' or 'secondary'
+  
+  const primaryScrollRef = useRef(null);
+  const secondaryScrollRef = useRef(null);
 
-  // Add effect to handle body scrolling
-  useEffect(() => {
-    const isAnyOpen = showPasswordModal || showInitialPasswordPrompt;
-    setIsAnyPopupOpen(isAnyOpen);
-    if (isAnyOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+  // Get the next Monday from a given date
+  function getNextMonday(date) {
+    const day = date.getDay();
+    const daysUntilMonday = day === 0 ? 1 : 8 - day; // If Sunday (0), get next Monday (1 day), otherwise 8 - current day
+    const monday = new Date(date);
+    monday.setDate(date.getDate() + daysUntilMonday);
+    return monday;
+  }
 
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [showPasswordModal, showInitialPasswordPrompt]);
+  // Get Monday of current week
+  function getMondayOfWeek(date) {
+    const day = date.getDay();
+    const diff = date.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
+    const monday = new Date(date);
+    monday.setDate(diff);
+    return monday;
+  }
 
-  // Initial password verification
-  useEffect(() => {
-    if (user?.isSuperAdmin && showInitialPasswordPrompt) {
-      setShowInitialPasswordPrompt(true);
-    }
-  }, [user?.isSuperAdmin]);
-
-  const getWeekDates = (date) => {
-    const start = new Date(date);
-    start.setDate(start.getDate() - start.getDay() + 1); // Monday
-    
-    const dates = [];
-    for (let i = 0; i < 7; i++) {
-      const day = new Date(start);
-      day.setDate(start.getDate() + i);
-      dates.push(day);
-    }
-    return dates;
-  };
-
+  // Format date for display
   const formatDate = (date) => {
     return date.toLocaleDateString('en-US', { 
-      weekday: 'short', 
-      month: 'short', 
-      day: 'numeric' 
+      month: 'long', 
+      day: 'numeric', 
+      year: 'numeric' 
     });
   };
 
-  const getSchedulesForDate = (date) => {
-    return schedules.filter(schedule => {
-      const scheduleDate = new Date(schedule.targetDate);
-      return scheduleDate.toDateString() === date.toDateString();
-    });
+  // Get week label
+  const getWeekLabel = (monday) => {
+    const weekEnd = new Date(monday);
+    weekEnd.setDate(monday.getDate() + 6);
+    return `${formatDate(monday)} - ${formatDate(weekEnd)}`;
   };
 
-  const handlePasswordSubmit = async () => {
-    try {
-      const { type, data } = selectedAction;
-      
-      if (type === 'create') {
-        const response = await api.post(`${import.meta.env.VITE_CURATIONS}/schedules`, {
-          ...data,
-          superAdminPassword: superAdminPassword
-        });
-        
-        setSchedules(prev => [...prev, response.data]);
-        toast.success(tSch('notifications.created'));
-      } else if (type === 'edit') {
-        const response = await api.put(`${import.meta.env.VITE_CURATIONS}/schedules/${data.id}`, {
-          ...data,
-          superAdminPassword: superAdminPassword
-        });
-        
-        setSchedules(prev => prev.map(sch => sch.id === response.data.id ? response.data : sch));
-        toast.success(tSch('notifications.updated'));
-      } else if (type === 'delete') {
-        await api.delete(`${import.meta.env.VITE_CURATIONS}/schedules/${data.id}`, {
-          data: { superAdminPassword: superAdminPassword }
-        });
-        
-        setSchedules(prev => prev.filter(sch => sch.id !== data.id));
-        toast.success(tSch('notifications.deleted'));
-      }
-      
-      setSuperAdminPassword('');
-      setShowPasswordModal(false);
-      setSelectedAction({ type: '', data: null });
-    } catch (error) {
-      toast.error(error.response?.data?.error || 'An error occurred');
+  useEffect(() => {
+    if (user?.role === 'admin' || user?.isSuperAdmin) {
+      fetchSchedules();
     }
-  };
+  }, [user, currentMonday]);
 
   const fetchSchedules = async () => {
     try {
       setIsLoading(true);
-      const response = await api.get(`${import.meta.env.VITE_CURATIONS}/schedules`);
-      setSchedules(response.data.schedules);
+      const response = await api.get(`${import.meta.env.VITE_CURATIONS}/schedules`, {
+        params: {
+          weekStart: currentMonday.toISOString().split('T')[0]
+        }
+      });
+      setSchedules(response.data.schedules || []);
     } catch (error) {
       toast.error(error.response?.data?.error || 'Failed to fetch schedules');
     } finally {
@@ -124,33 +82,77 @@ const CurationSchedulePage = () => {
     }
   };
 
-  const fetchCurationTypes = async () => {
-    try {
-      const response = await api.get(`${import.meta.env.VITE_CURATIONS}/types`);
-      setCurationTypes(response.data);
-    } catch (error) {
-      console.error('Failed to fetch curation types:', error);
-    }
-  };
-
-  useEffect(() => {
-    if (user?.isSuperAdmin) {
-      fetchSchedules();
-      fetchCurationTypes();
-    }
-  }, [user?.isSuperAdmin]);
-
   const handleWeekChange = (direction) => {
-    const newWeek = new Date(currentWeek);
-    newWeek.setDate(newWeek.getDate() + (direction * 7));
-    setCurrentWeek(newWeek);
+    const newMonday = new Date(currentMonday);
+    newMonday.setDate(currentMonday.getDate() + (direction * 7));
+    setCurrentMonday(newMonday);
   };
 
-  if (!user?.isSuperAdmin) {
+  const handleAddCuration = (type, position = null) => {
+    setSelectionMode({ type, position });
+    setShowCurationSelection(true);
+  };
+
+  const handleCurationSelect = async (curation) => {
+    try {
+      const response = await api.post(`${import.meta.env.VITE_CURATIONS}/schedules`, {
+        curationId: curation.id,
+        weekStart: currentMonday.toISOString().split('T')[0],
+        listType: selectionMode.type, // 'primary' or 'secondary'
+        position: selectionMode.position
+      });
+
+      toast.success(tSch('notifications.added'));
+      fetchSchedules();
+      setShowCurationSelection(false);
+      setSelectionMode({ type: '', position: null });
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Failed to add curation to schedule');
+    }
+  };
+
+  const handleRemoveCuration = async (scheduleId) => {
+    try {
+      await api.delete(`${import.meta.env.VITE_CURATIONS}/schedules/${scheduleId}`);
+      toast.success(tSch('notifications.removed'));
+      fetchSchedules();
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Failed to remove curation');
+    }
+  };
+
+  const handleReorderCuration = async (scheduleId, newPosition) => {
+    try {
+      await api.put(`${import.meta.env.VITE_CURATIONS}/schedules/${scheduleId}`, {
+        position: newPosition
+      });
+      fetchSchedules();
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Failed to reorder curation');
+    }
+  };
+
+  // Scroll functions for horizontal lists
+  const scrollList = (ref, direction) => {
+    if (ref.current) {
+      const scrollAmount = 300;
+      ref.current.scrollBy({
+        left: direction === 'left' ? -scrollAmount : scrollAmount,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  // Filter schedules by type
+  const primarySchedules = schedules.filter(s => s.listType === 'primary').slice(0, 10);
+  const secondarySchedules = schedules.filter(s => s.listType === 'secondary').slice(0, 10);
+
+  // Get excluded curation IDs for the popup
+  const excludedIds = schedules.map(s => s.curationId || s.curation?.id).filter(Boolean);
+
+  if (!user || (user.role !== 'admin' && !user.isSuperAdmin)) {
     return <AccessDenied />;
   }
-
-  const weekDates = getWeekDates(currentWeek);
 
   return (
     <div className="curation-schedule-page">
@@ -164,7 +166,16 @@ const CurationSchedulePage = () => {
       
       <div className="curation-schedule-page__content">
         <div className="curation-schedule-page__header">
-          <h1>{tSch('title')}</h1>
+          <div className="curation-schedule-page__header-top">
+            <NavLink
+              className="curation-schedule-page__back-btn"
+              to="/admin/curation"
+              title={tSch('actions.backToCuration')}
+            >
+              ← {tSch('actions.backToCuration')}
+            </NavLink>
+            <h1>{tSch('title')}</h1>
+          </div>
           <p>{tSch('description')}</p>
         </div>
 
@@ -177,7 +188,7 @@ const CurationSchedulePage = () => {
             ← {tSch('previousWeek')}
           </button>
           <h2 className="curation-schedule-page__week-title">
-            {formatDate(weekDates[0])} - {formatDate(weekDates[6])}
+            {getWeekLabel(currentMonday)}
           </h2>
           <button 
             className="curation-schedule-page__week-btn"
@@ -187,121 +198,189 @@ const CurationSchedulePage = () => {
           </button>
         </div>
 
-        {/* Weekly Grid */}
-        <div className="curation-schedule-page__grid">
-          {weekDates.map((date, index) => {
-            const daySchedules = getSchedulesForDate(date);
-            return (
-              <div key={index} className="curation-schedule-page__day">
-                <div className="curation-schedule-page__day-header">
-                  <h3>{formatDate(date)}</h3>
-                  <button 
-                    className="curation-schedule-page__add-btn"
-                    onClick={() => {
-                      setSelectedAction({ 
-                        type: 'create', 
-                        data: { targetDate: date.toISOString().split('T')[0] }
-                      });
-                      setShowPasswordModal(true);
-                    }}
-                  >
-                    ➕
-                  </button>
-                </div>
-                
-                <div className="curation-schedule-page__day-content">
-                  {daySchedules.length === 0 ? (
-                    <p className="curation-schedule-page__empty-day">{tSch('noSchedules')}</p>
-                  ) : (
-                    daySchedules.map(schedule => (
-                      <div key={schedule.id} className="curation-schedule-page__schedule-item">
-                        <div className="curation-schedule-page__schedule-info">
-                          <h4>{schedule.level?.song || 'Unknown Level'}</h4>
-                          <p>{schedule.level?.artist || 'Unknown Artist'}</p>
-                          <span className={`curation-schedule-page__status ${schedule.isActive ? 'active' : 'inactive'}`}>
-                            {schedule.isActive ? tSch('status.active') : tSch('status.inactive')}
-                          </span>
+        {/* Primary Hall of Fame */}
+        <div className="curation-schedule-page__hall-section">
+          <div className="curation-schedule-page__hall-header">
+            <h3>{tSch('primaryHall.title')}</h3>
+            <p>{tSch('primaryHall.description')}</p>
+            <span className="curation-schedule-page__count">
+              {primarySchedules.length}/10
+            </span>
+          </div>
+          
+          <div className="curation-schedule-page__hall-container">
+            <button 
+              className="curation-schedule-page__scroll-btn curation-schedule-page__scroll-btn--left"
+              onClick={() => scrollList(primaryScrollRef, 'left')}
+              disabled={primarySchedules.length === 0}
+            >
+              ‹
+            </button>
+            
+            <div className="curation-schedule-page__hall-scroll" ref={primaryScrollRef}>
+              <div className="curation-schedule-page__hall-list">
+                {primarySchedules.map((schedule, index) => (
+                  <div key={schedule.id} className="curation-schedule-page__hall-item">
+                    <div className="curation-schedule-page__hall-position">
+                      {index + 1}
+                    </div>
+                    <div className="curation-schedule-page__hall-preview">
+                      {schedule.scheduledCuration?.previewLink ? (
+                        <img 
+                          src={schedule.scheduledCuration.previewLink} 
+                          alt="Level thumbnail"
+                          className="curation-schedule-page__hall-thumbnail"
+                        />
+                      ) : (
+                        <div className="curation-schedule-page__hall-no-thumbnail">
+                          🎵
                         </div>
-                        
-                        <div className="curation-schedule-page__schedule-actions">
-                          <button 
-                            className="curation-schedule-page__action-btn"
-                            onClick={() => {
-                              setSelectedAction({ type: 'edit', data: schedule });
-                              setShowPasswordModal(true);
-                            }}
-                          >
-                            <EditIcon />
-                          </button>
-                          <button 
-                            className="curation-schedule-page__action-btn curation-schedule-page__action-btn--delete"
-                            onClick={() => {
-                              setSelectedAction({ type: 'delete', data: schedule });
-                              setShowPasswordModal(true);
-                            }}
-                          >
-                            <TrashIcon />
-                          </button>
-                        </div>
+                      )}
+                    </div>
+                    <div className="curation-schedule-page__hall-info">
+                      <h4>{schedule.scheduledCuration?.level?.song || 'Unknown Song'}</h4>
+                      <p>{schedule.scheduledCuration?.level?.artist || 'Unknown Artist'}</p>
+                      <div 
+                        className="curation-schedule-page__hall-type"
+                        style={{ backgroundColor: schedule.scheduledCuration?.type?.color + '80' || '#60606080' }}
+                      >
+                        {schedule.scheduledCuration?.type?.name || 'Unknown Type'}
                       </div>
-                    ))
-                  )}
-                </div>
+                    </div>
+                    <div className="curation-schedule-page__hall-actions">
+                      <button
+                        onClick={() => handleRemoveCuration(schedule.id)}
+                        className="curation-schedule-page__remove-btn"
+                        title={tSch('actions.remove')}
+                      >
+                        <TrashIcon />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                
+                {primarySchedules.length < 10 && (
+                  <button 
+                    className="curation-schedule-page__add-slot"
+                    onClick={() => handleAddCuration('primary', primarySchedules.length)}
+                  >
+                    <div className="curation-schedule-page__add-icon">+</div>
+                    <span>{tSch('actions.addCuration')}</span>
+                  </button>
+                )}
               </div>
-            );
-          })}
+            </div>
+            
+            <button 
+              className="curation-schedule-page__scroll-btn curation-schedule-page__scroll-btn--right"
+              onClick={() => scrollList(primaryScrollRef, 'right')}
+              disabled={primarySchedules.length === 0}
+            >
+              ›
+            </button>
+          </div>
         </div>
+
+        {/* Secondary Hall of Fame */}
+        <div className="curation-schedule-page__hall-section">
+          <div className="curation-schedule-page__hall-header">
+            <h3>{tSch('secondaryHall.title')}</h3>
+            <p>{tSch('secondaryHall.description')}</p>
+            <span className="curation-schedule-page__count">
+              {secondarySchedules.length}/10
+            </span>
+          </div>
+          
+          <div className="curation-schedule-page__hall-container">
+            <button 
+              className="curation-schedule-page__scroll-btn curation-schedule-page__scroll-btn--left"
+              onClick={() => scrollList(secondaryScrollRef, 'left')}
+              disabled={secondarySchedules.length === 0}
+            >
+              ‹
+            </button>
+            
+            <div className="curation-schedule-page__hall-scroll" ref={secondaryScrollRef}>
+              <div className="curation-schedule-page__hall-list">
+                {secondarySchedules.map((schedule, index) => (
+                  <div key={schedule.id} className="curation-schedule-page__hall-item">
+                    <div className="curation-schedule-page__hall-position">
+                      {index + 1}
+                    </div>
+                    <div className="curation-schedule-page__hall-preview">
+                      {schedule.scheduledCuration?.previewLink ? (
+                        <img 
+                          src={schedule.curation.previewLink} 
+                          alt="Level thumbnail"
+                          className="curation-schedule-page__hall-thumbnail"
+                        />
+                      ) : (
+                        <div className="curation-schedule-page__hall-no-thumbnail">
+                          🎵
+                        </div>
+                      )}
+                    </div>
+                    <div className="curation-schedule-page__hall-info">
+                      <h4>{schedule.scheduledCuration?.level?.song || 'Unknown Song'}</h4>
+                      <p>{schedule.scheduledCuration?.level?.artist || 'Unknown Artist'}</p>
+                      <div 
+                        className="curation-schedule-page__hall-type"
+                        style={{ backgroundColor: schedule.scheduledCuration?.type?.color || '#666' }}
+                      >
+                        {schedule.scheduledCuration?.type?.name || 'Unknown Type'}
+                      </div>
+                    </div>
+                    <div className="curation-schedule-page__hall-actions">
+                      <button
+                        onClick={() => handleRemoveCuration(schedule.id)}
+                        className="curation-schedule-page__remove-btn"
+                        title={tSch('actions.remove')}
+                      >
+                        <TrashIcon />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                
+                {secondarySchedules.length < 10 && (
+                  <button 
+                    className="curation-schedule-page__add-slot"
+                    onClick={() => handleAddCuration('secondary', secondarySchedules.length)}
+                  >
+                    <div className="curation-schedule-page__add-icon">+</div>
+                    <span>{tSch('actions.addCuration')}</span>
+                  </button>
+                )}
+              </div>
+            </div>
+            
+            <button 
+              className="curation-schedule-page__scroll-btn curation-schedule-page__scroll-btn--right"
+              onClick={() => scrollList(secondaryScrollRef, 'right')}
+              disabled={secondarySchedules.length === 0}
+            >
+              ›
+            </button>
+          </div>
+        </div>
+
+        {isLoading && (
+          <div className="curation-schedule-page__loading">
+            {tSch('loading')}
+          </div>
+        )}
       </div>
 
-      {/* Password Modal */}
-      {showPasswordModal && (
-        <div className="curation-schedule-page__modal-overlay">
-          <div className="curation-schedule-page__modal">
-            <h3>{tSch('password.title')}</h3>
-            <p>{tSch('password.description')}</p>
-            <input
-              type="password"
-              value={superAdminPassword}
-              onChange={(e) => setSuperAdminPassword(e.target.value)}
-              placeholder={tSch('password.placeholder')}
-            />
-            <div className="curation-schedule-page__modal-actions">
-              <button onClick={handlePasswordSubmit}>{tSch('password.submit')}</button>
-              <button onClick={() => {
-                setShowPasswordModal(false);
-                setSelectedAction({ type: '', data: null });
-                setSuperAdminPassword('');
-              }}>
-                {tSch('password.cancel')}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Initial Password Prompt */}
-      {showInitialPasswordPrompt && (
-        <div className="curation-schedule-page__modal-overlay">
-          <div className="curation-schedule-page__modal">
-            <h3>{tSch('initialPassword.title')}</h3>
-            <p>{tSch('initialPassword.description')}</p>
-            <input
-              type="password"
-              value={superAdminPassword}
-              onChange={(e) => setSuperAdminPassword(e.target.value)}
-              placeholder={tSch('initialPassword.placeholder')}
-            />
-            <div className="curation-schedule-page__modal-actions">
-              <button onClick={() => {
-                setShowInitialPasswordPrompt(false);
-                setSuperAdminPassword('');
-              }}>
-                {tSch('initialPassword.continue')}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Curation Selection Popup */}
+      <CurationSelectionPopup
+        isOpen={showCurationSelection}
+        onClose={() => {
+          setShowCurationSelection(false);
+          setSelectionMode({ type: '', position: null });
+        }}
+        onCurationSelect={handleCurationSelect}
+        excludeIds={excludedIds}
+      />
 
       <ScrollButton />
     </div>

@@ -31,6 +31,7 @@ import HistoryListIcon from './HistoryListIcon';
 import { CrossIcon } from './CrossIcon';
 import { CrossedPhoneIcon } from './CrossedPhoneIcon';
 import CrownIcon from './CrownIcon';
+import { ArrowIcon } from './ArrowIcon';
 
 export {
     DefaultAvatar,
@@ -65,5 +66,6 @@ export {
     HistoryListIcon,
     CrossIcon,
     CrossedPhoneIcon,
-    CrownIcon
+    CrownIcon,
+    ArrowIcon
 }

@@ -9,8 +9,10 @@ import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { LevelSelectionPopup, TypeManagementPopup, CurationEditPopup } from '@/components/popups';
 import { toast } from 'react-hot-toast';
+import { NavLink, useNavigate } from 'react-router-dom';
 
 const CurationPage = () => {
+  const navigate = useNavigate();
   const { user } = useAuth();
   const { t } = useTranslation('pages');
   const tCur = (key, params = {}) => t(`curation.${key}`, params);
@@ -258,6 +260,14 @@ const CurationPage = () => {
             ⚙️
             {tCur('actions.manageTypes')}
           </button>
+          <NavLink
+            className="curation-schedule-btn"
+            to="/admin/curation/schedules"
+            title={tCur('actions.manageSchedule')}
+          >
+            📅
+            {tCur('actions.manageSchedule')}
+          </NavLink>
         </div>
 
         {/* Curations List */}

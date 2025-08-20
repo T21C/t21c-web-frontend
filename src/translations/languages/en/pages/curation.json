@@ -38,6 +38,7 @@
   "actions": {
     "addLevel": "Add Level",
     "manageTypes": "Manage Types",
+    "manageSchedule": "Manage Schedule",
     "editCuration": "Edit Curation",
     "deleteCuration": "Delete Curation"
   },

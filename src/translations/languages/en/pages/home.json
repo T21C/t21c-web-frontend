@@ -32,6 +32,15 @@
     "comingSoon": "More fun stuff coming soon...",
     "donate": "Support me on Ko-fi!"
   },
+  "weeklies": {
+    "title": "Weekly Levels",
+    "description": "Featured curations for the current week",
+    "primary": "Legendary",
+    "secondary": "Loved",
+    "loading": "Loading weeklies...",
+    "error": "Failed to load weeklies",
+    "empty": "No weeklies scheduled for this week"
+  },
   "footer": {
     "about": {
       "title": "TUF",
