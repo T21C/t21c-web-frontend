@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import './WeeklyGallery.css';
 import { ArrowIcon } from '../../icons';
+import { formatCreatorDisplay } from '@/utils/Utility';
+import { NavLink } from 'react-router-dom';
 
 const WeeklyGallery = ({ 
   curations = [], 
@@ -16,6 +18,7 @@ const WeeklyGallery = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoScrolling, setIsAutoScrolling] = useState(autoScroll);
   const autoScrollRef = useRef(null);
+  const pauseTimeoutRef = useRef(null);
   const containerRef = useRef(null);
   
   // Handle auto-scroll
@@ -33,6 +36,9 @@ const WeeklyGallery = ({
       if (autoScrollRef.current) {
         clearInterval(autoScrollRef.current);
       }
+      if (pauseTimeoutRef.current) {
+        clearTimeout(pauseTimeoutRef.current);
+      }
     };
   }, [isAutoScrolling, curations.length, autoScrollInterval]);
 
@@ -41,14 +47,50 @@ const WeeklyGallery = ({
     setIsAutoScrolling(autoScroll);
   }, [autoScroll]);
 
+  // Unified pause mechanism to prevent race conditions
+  const pauseWithTimeout = useCallback(() => {
+    if (!autoScroll || curations.length <= 1) return;
+    
+    // Clear any existing timeout
+    if (pauseTimeoutRef.current) {
+      clearTimeout(pauseTimeoutRef.current);
+      pauseTimeoutRef.current = null;
+    }
+    
+    // Pause auto-scrolling
+    setIsAutoScrolling(false);
+    
+    // Resume after 10 seconds
+    pauseTimeoutRef.current = setTimeout(() => {
+      setIsAutoScrolling(true);
+      pauseTimeoutRef.current = null;
+    }, 10000);
+  }, [autoScroll, curations.length]);
+
   // Pause auto-scroll on user interaction
   const pauseAutoScroll = useCallback(() => {
     if (isAutoScrolling) {
-      setIsAutoScrolling(false);
-      // Resume after 10 seconds of inactivity
-      setTimeout(() => setIsAutoScrolling(true), 10000);
+      pauseWithTimeout();
     }
-  }, [isAutoScrolling]);
+  }, [isAutoScrolling, pauseWithTimeout]);
+
+  // Handle hover to pause auto-scroll
+  const handleMouseEnter = useCallback(() => {
+    if (autoScroll && curations.length > 1) {
+      // Clear any existing timeout and pause immediately
+      if (pauseTimeoutRef.current) {
+        clearTimeout(pauseTimeoutRef.current);
+        pauseTimeoutRef.current = null;
+      }
+      setIsAutoScrolling(false);
+    }
+  }, [autoScroll, curations.length]);
+
+  const handleMouseLeave = useCallback(() => {
+    if (autoScroll && curations.length > 1) {
+      pauseWithTimeout();
+    }
+  }, [autoScroll, curations.length, pauseWithTimeout]);
 
   const goToIndex = useCallback((index) => {
     setCurrentIndex(index);
@@ -84,7 +126,7 @@ const WeeklyGallery = ({
     
     // Left side items (up to 2) - now move right when going to previous
     if (relativeIndex <= 2) {
-      const rightOffset = 120 + (relativeIndex - 1) * 80;
+      const rightOffset = 160 + (relativeIndex - 1) * 120;
       const scale = 1 - (relativeIndex * 0.15);
       const opacity = 1 - (relativeIndex * 0.3);
       return {
@@ -98,7 +140,7 @@ const WeeklyGallery = ({
     // Right side items (up to 2) - now move left when going to next
     if (relativeIndex >= totalItems - 2) {
       const leftRelativeIndex = totalItems - relativeIndex;
-      const leftOffset = -120 - (leftRelativeIndex - 1) * 80;
+      const leftOffset = -160 - (leftRelativeIndex - 1) * 120;
       const scale = 1 - (leftRelativeIndex * 0.15);
       const opacity = 1 - (leftRelativeIndex * 0.3);
       return {
@@ -130,7 +172,12 @@ const WeeklyGallery = ({
   }
 
   return (
-    <div className={`weekly-gallery ${className}`} ref={containerRef}>
+    <div 
+      className={`weekly-gallery ${className}`} 
+      ref={containerRef}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       {/* Gallery Container */}
       <div className="weekly-gallery__container">
         {/* Navigation Arrows */}
@@ -158,7 +205,8 @@ const WeeklyGallery = ({
           {curations.map((curation, index) => {
             const position = getCurationPosition(index);
             return (
-              <div
+              <NavLink
+                to={`/levels/${curation.scheduledCuration?.level?.id || curation.level?.id}`}
                 key={curation.id}
                 className={`weekly-gallery__item ${position.zIndex === 0 ? 'active' : ''}`}
                 style={{
@@ -185,24 +233,56 @@ const WeeklyGallery = ({
                 </div>
                 
                 <div className="weekly-gallery__item-overlay">
-                  <div className="weekly-gallery__item-info">
-                    <h3 className="weekly-gallery__item-title">
-                      {curation.level?.song || 'Unknown Song'}
-                    </h3>
-                    <p className="weekly-gallery__item-artist">
-                      {curation.level?.artist || 'Unknown Artist'}
-                    </p>
-                    <div 
-                      className="weekly-gallery__item-type"
-                      style={{ 
-                        backgroundColor: curation.type?.color + '80' || '#60606080'
-                      }}
-                    >
-                      {curation.type?.name || 'Unknown Type'}
+                  {/* Top Left: Level Info */}
+                  <div className="weekly-gallery__item-info-top-left">
+                    <div className="weekly-gallery__level-id-container">
+                      <div className="weekly-gallery__level-id">#{curation.scheduledCuration?.level?.id || curation.level?.id || '?'} </div>
+                      <div className="weekly-gallery__charter-name">By {formatCreatorDisplay(curation.scheduledCuration?.level || curation.level)}</div>
+                    </div>
+                    <div className="weekly-gallery__song-title">{curation.scheduledCuration?.level?.song || curation.level?.song || 'Unknown Song'}</div>
+                    <div className="weekly-gallery__artist-name">{curation.scheduledCuration?.level?.artist || curation.level?.artist || 'Unknown Artist'}</div>
+                    
+                  </div>
+
+                  {/* Top Right: Icons */}
+                  <div className="weekly-gallery__item-icons-top-right">
+                    {/* Curation Type Icon */}
+                    <div className="weekly-gallery__curation-icon">
+                      {(curation.scheduledCuration?.type?.icon || curation.type?.icon) ? (
+                        <img 
+                          src={curation.scheduledCuration?.type?.icon || curation.type?.icon} 
+                          alt={curation.scheduledCuration?.type?.name || curation.type?.name || 'Curation Type'} 
+                          className="weekly-gallery__type-icon"
+                        />
+                      ) : (
+                        <div className="weekly-gallery__type-icon-placeholder">🎵</div>
+                      )}
+                    </div>
+                    
+                    {/* Difficulty Icon */}
+                    <div className="weekly-gallery__difficulty-icon">
+                      {(curation.scheduledCuration?.level?.difficulty?.icon || curation.level?.difficulty?.icon) ? (
+                        <img 
+                          src={curation.scheduledCuration?.level?.difficulty?.icon || curation.level?.difficulty?.icon} 
+                          alt={curation.scheduledCuration?.level?.difficulty?.name || curation.level?.difficulty?.name || 'Difficulty'} 
+                          className="weekly-gallery__difficulty-icon-img"
+                        />
+                      ) : (
+                        <div className="weekly-gallery__difficulty-icon-placeholder">?</div>
+                      )}
                     </div>
                   </div>
+
+                  {/* Bottom Center: Short Description */}
+                  <div className="weekly-gallery__item-short-description">
+                    {(curation.scheduledCuration?.shortDescription || curation.shortDescription) && (
+                      <p className="weekly-gallery__short-description-text">
+                        {curation.scheduledCuration?.shortDescription || curation.shortDescription}
+                      </p>
+                    )}
+                  </div>
                 </div>
-              </div>
+              </NavLink>
             );
           })}
         </div>

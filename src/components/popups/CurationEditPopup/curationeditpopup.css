@@ -119,6 +119,7 @@
 }
 
 .curation-edit-modal__select,
+.curation-edit-modal__input,
 .curation-edit-modal__textarea,
 .curation-edit-modal__color-text {
   padding: 0.75rem;
@@ -131,6 +132,7 @@
 }
 
 .curation-edit-modal__select:focus,
+.curation-edit-modal__input:focus,
 .curation-edit-modal__textarea:focus,
 .curation-edit-modal__color-text:focus {
   outline: none;

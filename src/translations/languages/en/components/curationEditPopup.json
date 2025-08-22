@@ -4,6 +4,9 @@
   "form": {
     "type": "Curation Type",
     "selectType": "Select a curation type",
+    "shortDescription": "Short Description",
+    "shortDescriptionPlaceholder": "Brief description (max 255 characters)...",
+    "shortDescriptionHelp": "A brief description that will be displayed in gallery views and previews",
     "description": "Description",
     "descriptionPlaceholder": "Enter a description for this curation...",
     "customColor": "Custom Color",

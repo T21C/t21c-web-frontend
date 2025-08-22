@@ -17,6 +17,7 @@ const CurationEditPopup = ({
 
   const [formData, setFormData] = useState({
     typeId: '',
+    shortDescription: '',
     description: '',
     customCSS: '',
     customColor: '#ffffff'
@@ -47,6 +48,7 @@ const CurationEditPopup = ({
       if (curation) {
         setFormData({
           typeId: curation.typeId?.toString() || '',
+          shortDescription: curation.shortDescription || '',
           description: curation.description || '',
           customCSS: curation.customCSS || '',
           customColor: curation.customColor || '#ffffff'
@@ -80,6 +82,7 @@ const CurationEditPopup = ({
       
       const response = await api.put(`${import.meta.env.VITE_CURATIONS}/${curation.id}`, {
         typeId: parseInt(formData.typeId),
+        shortDescription: formData.shortDescription,
         description: formData.description,
         customCSS: formData.customCSS,
         customColor: formData.customColor
@@ -150,6 +153,23 @@ const CurationEditPopup = ({
                 </option>
               ))}
             </select>
+          </div>
+
+          {/* Short Description */}
+          <div className="curation-edit-modal__form-group">
+            <label htmlFor="short-description">{tCur('form.shortDescription')}</label>
+            <input
+              id="short-description"
+              type="text"
+              value={formData.shortDescription}
+              onChange={(e) => handleInputChange('shortDescription', e.target.value)}
+              placeholder={tCur('form.shortDescriptionPlaceholder')}
+              className="curation-edit-modal__input"
+              maxLength={255}
+            />
+            <p className="curation-edit-modal__help-text">
+              {tCur('form.shortDescriptionHelp')} ({formData.shortDescription.length}/255)
+            </p>
           </div>
 
           {/* Description */}

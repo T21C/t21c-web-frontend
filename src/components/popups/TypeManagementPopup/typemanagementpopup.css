@@ -12,14 +12,14 @@
 }
 
 .type-management-modal__content {
-  background-color: var(--bg-secondary);
+  background-color: #2a2a2a;
   border-radius: 12px;
   padding: 2rem;
   width: 90%;
   max-width: 800px;
   max-height: 80vh;
   overflow-y: auto;
-  border: 1px solid var(--border-color);
+  border: 2px solid #404040;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
   position: relative;
 }
@@ -31,7 +31,7 @@
   background: none;
   border: none;
   font-size: 1.5rem;
-  color: var(--text-secondary);
+  color: #a0a0a0;
   cursor: pointer;
   padding: 0.5rem;
   border-radius: 4px;
@@ -39,8 +39,8 @@
 }
 
 .type-management-modal__close-button:hover {
-  color: var(--text-primary);
-  background: var(--bg-tertiary);
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .type-management-modal__header {
@@ -51,22 +51,22 @@
 .type-management-modal__header h2 {
   font-size: 1.5rem;
   margin-bottom: 0.5rem;
-  color: var(--text-primary);
+  color: #ffffff;
 }
 
 .type-management-modal__header p {
-  color: var(--text-secondary);
+  color: #a0a0a0;
   font-size: 0.9rem;
 }
 
 .type-management-modal__error {
-  color: var(--error-color);
+  color: #ff6b6b;
   margin-bottom: 1rem;
   font-size: 0.875rem;
   padding: 0.75rem;
   background: rgba(255, 107, 107, 0.1);
   border-radius: 8px;
-  border: 1px solid var(--error-color);
+  border: 1px solid #ff6b6b;
 }
 
 /* List Mode Styles */
@@ -81,7 +81,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: var(--accent-color);
+  background: #4a9eff;
   color: white;
   border: none;
   border-radius: 8px;
@@ -92,7 +92,7 @@
 }
 
 .type-management-modal__create-btn:hover {
-  background: var(--accent-hover);
+  background: #3a8eef;
   transform: translateY(-1px);
 }
 
@@ -107,16 +107,16 @@
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem;
-  background: var(--bg-primary);
-  border: 2px solid var(--border-color);
+  background: #1a1a1a;
+  border: 2px solid #404040;
   border-radius: 12px;
   transition: all 0.2s ease;
 }
 
 .type-management-modal__type-item:hover {
-  border-color: var(--accent-color);
+  border-color: #4a9eff;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .type-management-modal__type-info {
@@ -139,7 +139,7 @@
 
 .type-management-modal__type-header h3 {
   font-size: 1.25rem;
-  color: var(--text-primary);
+  color: #ffffff;
   margin: 0;
 }
 
@@ -162,7 +162,7 @@
 
 .type-management-modal__type-abilities {
   font-size: 0.875rem;
-  color: var(--text-secondary);
+  color: #a0a0a0;
 }
 
 .type-management-modal__type-actions {
@@ -178,19 +178,19 @@
   height: 40px;
   border: none;
   border-radius: 8px;
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
+  background: #333333;
+  color: #ffffff;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .type-management-modal__action-btn:hover {
-  background: var(--accent-color);
+  background: #4a9eff;
   color: white;
 }
 
 .type-management-modal__action-btn--delete:hover {
-  background: var(--error-color);
+  background: #ff6b6b;
 }
 
 .type-management-modal__action-btn:disabled {
@@ -202,7 +202,7 @@
 .type-management-modal__empty {
   text-align: center;
   padding: 3rem;
-  color: var(--text-secondary);
+  color: #a0a0a0;
   font-size: 1.1rem;
 }
 
@@ -221,22 +221,22 @@
 
 .type-management-modal__form-group label {
   font-weight: 600;
-  color: var(--text-primary);
+  color: #ffffff;
   font-size: 0.9rem;
 }
 
 .type-management-modal__input {
   padding: 0.75rem;
-  border: 2px solid var(--border-color);
+  border: 2px solid #404040;
   border-radius: 8px;
-  background: var(--bg-primary);
-  color: var(--text-primary);
+  background: #1a1a1a;
+  color: #ffffff;
   font-size: 1rem;
 }
 
 .type-management-modal__input:focus {
   outline: none;
-  border-color: var(--accent-color);
+  border-color: #4a9eff;
 }
 
 .type-management-modal__color-input {
@@ -257,17 +257,17 @@
 .type-management-modal__color-text {
   flex: 1;
   padding: 0.75rem;
-  border: 2px solid var(--border-color);
+  border: 2px solid #404040;
   border-radius: 8px;
-  background: var(--bg-primary);
-  color: var(--text-primary);
+  background: #1a1a1a;
+  color: #ffffff;
   font-size: 1rem;
   font-family: monospace;
 }
 
 .type-management-modal__color-text:focus {
   outline: none;
-  border-color: var(--accent-color);
+  border-color: #4a9eff;
 }
 
 .type-management-modal__icon-upload {
@@ -287,7 +287,7 @@
   height: 64px;
   border-radius: 8px;
   object-fit: cover;
-  border: 2px solid var(--border-color);
+  border: 2px solid #404040;
 }
 
 .type-management-modal__icon-remove {
@@ -298,7 +298,7 @@
   height: 24px;
   border: none;
   border-radius: 50%;
-  background: var(--error-color);
+  background: #ff6b6b;
   color: white;
   cursor: pointer;
   display: flex;
@@ -322,9 +322,9 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
-  border: 2px solid var(--border-color);
+  background: #333333;
+  color: #ffffff;
+  border: 2px solid #404040;
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
@@ -333,13 +333,13 @@
 }
 
 .type-management-modal__file-label:hover {
-  background: var(--bg-primary);
-  border-color: var(--accent-color);
+  background: #1a1a1a;
+  border-color: #4a9eff;
 }
 
 .type-management-modal__help-text {
   font-size: 0.8rem;
-  color: var(--text-secondary);
+  color: #a0a0a0;
   margin: 0;
 }
 
@@ -360,7 +360,7 @@
 }
 
 .type-management-modal__ability-item:hover {
-  background: var(--bg-tertiary);
+  background: #333333;
 }
 
 .type-management-modal__ability-item input[type="checkbox"] {
@@ -387,22 +387,22 @@
 }
 
 .type-management-modal__btn--cancel {
-  background: var(--bg-tertiary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-color);
+  background: #333333;
+  color: #ffffff;
+  border: 1px solid #404040;
 }
 
 .type-management-modal__btn--cancel:hover {
-  background: var(--bg-primary);
+  background: #1a1a1a;
 }
 
 .type-management-modal__btn--submit {
-  background: var(--accent-color);
+  background: #4a9eff;
   color: white;
 }
 
 .type-management-modal__btn--submit:hover:not(:disabled) {
-  background: var(--accent-hover);
+  background: #3a8eef;
   transform: translateY(-1px);
 }
 

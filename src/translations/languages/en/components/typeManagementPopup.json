@@ -37,9 +37,9 @@
     "abilities": "Customization Abilities"
   },
   "abilities": {
-    "customCSS": "Custom CSS (2^0)",
-    "customColor": "Custom Color (2^1)",
-    "previewLink": "Preview Link (2^2)"
+    "customCSS": "Custom CSS",
+    "customColor": "Custom Color",
+    "previewLink": "Preview Link"
   },
   "buttons": {
     "cancel": "Cancel",

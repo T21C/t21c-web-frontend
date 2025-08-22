@@ -144,8 +144,8 @@ const CurationSchedulePage = () => {
   };
 
   // Filter schedules by type
-  const primarySchedules = schedules.filter(s => s.listType === 'primary').slice(0, 10);
-  const secondarySchedules = schedules.filter(s => s.listType === 'secondary').slice(0, 10);
+  const primarySchedules = schedules.filter(s => s.listType === 'primary').slice(0, 20);
+  const secondarySchedules = schedules.filter(s => s.listType === 'secondary').slice(0, 20);
 
   // Get excluded curation IDs for the popup
   const excludedIds = schedules.map(s => s.curationId || s.curation?.id).filter(Boolean);
@@ -204,7 +204,7 @@ const CurationSchedulePage = () => {
             <h3>{tSch('primaryHall.title')}</h3>
             <p>{tSch('primaryHall.description')}</p>
             <span className="curation-schedule-page__count">
-              {primarySchedules.length}/10
+              {primarySchedules.length}/20
             </span>
           </div>
           
@@ -259,7 +259,7 @@ const CurationSchedulePage = () => {
                   </div>
                 ))}
                 
-                {primarySchedules.length < 10 && (
+                {primarySchedules.length < 20 && (
                   <button 
                     className="curation-schedule-page__add-slot"
                     onClick={() => handleAddCuration('primary', primarySchedules.length)}
@@ -287,7 +287,7 @@ const CurationSchedulePage = () => {
             <h3>{tSch('secondaryHall.title')}</h3>
             <p>{tSch('secondaryHall.description')}</p>
             <span className="curation-schedule-page__count">
-              {secondarySchedules.length}/10
+              {secondarySchedules.length}/20
             </span>
           </div>
           
@@ -342,7 +342,7 @@ const CurationSchedulePage = () => {
                   </div>
                 ))}
                 
-                {secondarySchedules.length < 10 && (
+                {secondarySchedules.length < 20 && (
                   <button 
                     className="curation-schedule-page__add-slot"
                     onClick={() => handleAddCuration('secondary', secondarySchedules.length)}
