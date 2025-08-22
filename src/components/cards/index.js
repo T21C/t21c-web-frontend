@@ -6,6 +6,7 @@ import PassCard from "./PassCard/PassCard";
 import ClearCard from "./ClearCard/ClearCard";
 import { RatingCard } from "./RatingCard/RatingCard";
 import { RatingItem } from "./RatingItem/RatingItem";
+import AuditLogCard from "./AuditLogCard/AuditLogCard";
 
 export {
     LevelCard,
@@ -14,5 +15,6 @@ export {
     PassCard,
     ClearCard,
     RatingCard,
-    RatingItem
+    RatingItem,
+    AuditLogCard
 }

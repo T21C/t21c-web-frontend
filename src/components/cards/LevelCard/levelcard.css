@@ -165,8 +165,17 @@
 }
 
 .level-card .rating-icon {
-  top: -10%;
-  left: -10%;
+  top: -11%;
+  left: -11%;
+  position: absolute;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+}
+
+.level-card .curation-icon {
+  bottom: -11%;
+  right: -11%;
   position: absolute;
   width: 1.5rem;
   height: 1.5rem;

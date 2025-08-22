@@ -163,6 +163,13 @@ const LevelCard = ({
               alt="Rating icon" />
           : null
           }
+          {(level.curation?.typeId) ?
+          <img 
+              className="curation-icon"
+              src={level.curation.type.icon}
+              alt="Curation icon" />
+          : null
+          }
           {difficultyDict[level.diffId]?.type === "PGU" 
           // && sortBy === "RATING_ACCURACY"
           && level.clears > 0

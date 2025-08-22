@@ -5,7 +5,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import api from "@/utils/api";
 import "./auditlogpage.css";
-import AuditLogCard from "@/components/cards/AuditLogCard";
+import { AuditLogCard } from "@/components/cards";
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
 
