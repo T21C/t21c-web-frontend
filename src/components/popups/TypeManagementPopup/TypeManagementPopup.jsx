@@ -313,7 +313,7 @@ const TypeManagementPopup = ({
                         onClick={() => handleEditType(type)}
                         title={tCur('actions.edit')}
                       >
-                        <EditIcon />
+                        <EditIcon size={30}/>
                       </button>
                       <button
                         className="type-management-modal__action-btn type-management-modal__action-btn--delete"
@@ -321,7 +321,7 @@ const TypeManagementPopup = ({
                         title={tCur('actions.delete')}
                         disabled={isLoading}
                       >
-                        <TrashIcon />
+                        <TrashIcon size={34}/>
                       </button>
                     </div>
                   </div>
