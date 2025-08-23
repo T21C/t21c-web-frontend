@@ -3,11 +3,7 @@ import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import './curationtypepopup.css';
 import toast from 'react-hot-toast';
-
-const ABILITIES = {
-  CUSTOM_CSS: 0,
-  CUSTOM_COLOR: 1
-};
+import { ABILITIES, hasBit, setBit } from '@/utils/Abilities';
 
 
 const CurationTypePopup = ({
@@ -24,13 +20,9 @@ const CurationTypePopup = ({
   const tCur = (key, params = {}) => t(`curationTypePopup.${key}`, params);
 
   // Helper functions for bitwise ability management
-  const checkAbility = (input, exp) => {
-    return (input & Math.pow(2, exp)) === Math.pow(2, exp);
-  };
 
   const updateAbility = (input, exp, enabled) => {
-    const bitValue = Math.pow(2, exp);
-    return enabled ? input | bitValue : input & ~bitValue;
+    return enabled ? setBit(input, exp) : input & ~exp;
   };
   
   const [formData, setFormData] = useState({

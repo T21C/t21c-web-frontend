@@ -7,7 +7,9 @@ import { EditLevelPopup } from "@/components/popups";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { EditIcon, SteamIcon, DownloadIcon, VideoIcon, PassIcon, LikeIcon } from "@/components/common/icons";
 import { formatCreatorDisplay } from "@/utils/Utility";
+import { ABILITIES, hasBit } from "@/utils/Abilities";
 import { UserAvatar } from "@/components/layout";
+
 
 const LevelCard = ({
   index,
@@ -149,7 +151,11 @@ const LevelCard = ({
   }
 
   return (
-    <div className={`level-card ${displayMode}`} style={{ backgroundColor: level.isDeleted ? "#f0000099" : level.isHidden ? "#88888899" : "none" }}>
+    <div className={`level-card ${displayMode} ${hasBit(level.curation?.type.abilities, ABILITIES.CUSTOM_COLOR) ? 'legendary' : ''}`} 
+    style={{ 
+      backgroundColor: level.isDeleted ? "#f0000099"
+      : level.isHidden ? "#88888899" 
+      : "none" }}>
       <div className="level-card-wrapper" onClick={() => redirect()}>
         <div className="img-wrapper">
           <img src={lvImage} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
