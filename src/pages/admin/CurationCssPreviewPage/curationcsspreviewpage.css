@@ -182,10 +182,12 @@
 }
 
 .css-editor-help {
+  display: none;
   background: #2a2a2a;
   border: 1px solid #404040;
   border-radius: 6px;
   padding: 0.75rem;
+  
 }
 
 .css-editor-help p {
@@ -193,6 +195,7 @@
   margin: 0;
   font-size: 0.8rem;
   line-height: 1.4;
+  text-align: center;
 }
 
 /* CSS Editor Actions */

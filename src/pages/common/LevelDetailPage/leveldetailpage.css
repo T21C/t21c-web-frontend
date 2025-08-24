@@ -263,7 +263,7 @@
   font-size: 0.6em;
   opacity: 1;
   color: var(--secondary-text);
-  font-weight: normal;
+  font-weight: 500;
 }
 
 .level-detail .title-container .level-info .level-title {
@@ -272,9 +272,8 @@
 }
 
 .level-detail .title-container .level-info .level-separator {
-  font-size: 0.6em;
+  font-size: 0.8em;
   font-weight: normal;
-  opacity: 0.5;
   margin: 0 0.25em;
 }
 
@@ -1111,9 +1110,7 @@
 /* ============================================
    CURATED LEVEL ENHANCEMENTS
    ============================================ */
-.level-detail.curated .header .left {
-  position: relative;
-}
+
 
 .level-detail.curated .header .left::after {
   content: '';
@@ -1786,7 +1783,30 @@
   3. Use the --curation-primary and --curation-type-color variables
   4. Utility classes are available: .curation-highlight, .curation-glow, etc.
   
+  CUSTOM STYLES OVERRIDE SYSTEM:
+  
+  When custom CSS is provided (via preview system or curation settings), the
+  .custom-curated class is automatically applied. This class has higher CSS
+  specificity than .curated, ensuring your custom styles always take precedence.
+  
   Examples:
+  
+  // Custom styles will automatically override predefined curated styles
+  .header .left {
+    background: linear-gradient(45deg, #ff0000, #00ff00);
+  }
+  
+  .title-container {
+    color: #ffffff;
+    text-shadow: 0 0 20px #ff0000;
+  }
+  
+  // These rules target .level-detail.custom-curated and will override:
+  // - .level-detail.curated .header .left
+  // - .level-detail.curated .title-container
+  // - Any other predefined curated styles
+  
+  STANDARD CURATED STYLES (for reference):
   
   // Change header background for curated levels
   .level-detail.curated .header .left {
@@ -1800,7 +1820,7 @@
   }
   
   // Custom title styling
-  .level-detail.curated .title-container {
+  .level-detail.curated .title {
     background: linear-gradient(45deg, var(--curation-primary), #ffffff);
     -webkit-background-clip: text;
     background-clip: text;

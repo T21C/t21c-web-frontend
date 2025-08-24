@@ -525,6 +525,9 @@ const LevelDetailPage = ({ mockData = null }) => {
   // Add support for external CSS overrides (for preview system)
   const [externalCssOverride, setExternalCssOverride] = useState(null);
   const [externalStyleElement, setExternalStyleElement] = useState(null);
+  
+  // Flag to disable default styling (for preview mode)
+  const [disableDefaultStyling, setDisableDefaultStyling] = useState(false);
 
   const { user } = useAuth();
 
@@ -536,13 +539,11 @@ const LevelDetailPage = ({ mockData = null }) => {
   const location = useLocation();
   const currentUrl = window.location.origin + location.pathname;
 
-  // Helper function to convert hex to RGB
-  const hexToRgb = useCallback((hex) => {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? 
-      `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : 
-      '255, 255, 255';
-  }, []);
+
+
+
+
+
 
   // Simple CSS sanitizer - remove dangerous content
   const sanitizeCSS = useCallback((css) => {
@@ -551,42 +552,33 @@ const LevelDetailPage = ({ mockData = null }) => {
     return css
       .replace(/@import/gi, '')
       .replace(/javascript:/gi, '')
-      .replace(/expression\(/gi, '')
+      .replace(/expression\(/gi, '') 
       .replace(/behavior:/gi, '')
       .replace(/-moz-binding/gi, '')
       .replace(/url\s*\(/gi, '');
   }, []);
 
-  // Scope CSS to level-detail.curated
+  // Scope CSS to level-detail.curated with higher specificity
   const scopeCSS = useCallback((css) => {
     if (!css) return '';
-    // Simple scoping - prepend .level-detail.curated to selectors
-    return css.replace(/([^{}]+){/g, '.level-detail.curated $1{');
+    // Use higher specificity selectors to override predefined styles
+    return css.replace(/([^{}]+){/g, '.level-detail.curated[data-custom-styles="true"] $1{');
   }, []);
 
   // Custom CSS injection system for curations
   const createCurationStyleSheet = useCallback((curation) => {
-    if (!curation || (!curation.customCSS && !curation.customColor && !hasBit(curation.type?.abilities, ABILITIES.CUSTOM_COLOR))) {
+    if (!curation || !curation.customCSS) {
       return null;
     }
 
-    let css = `/* Curation styles for ${curation.type?.name || 'Unknown'} */\n`;
-    
+    const sanitizedCSS = sanitizeCSS(curation.customCSS);
+    const scopedCSS = scopeCSS(sanitizedCSS);
+    return scopedCSS;
+  }, [sanitizeCSS, scopeCSS]);
 
-
-    // Apply custom CSS rules with proper scoping and sanitization
-    if (curation.customCSS) {
-      const sanitizedCSS = sanitizeCSS(curation.customCSS);
-      const scopedCSS = scopeCSS(sanitizedCSS);
-      css += scopedCSS;
-    }
-
-    return css;
-  }, [hexToRgb, sanitizeCSS, scopeCSS]);
-
-  // Function to handle external CSS overrides (for preview system)
-  const applyExternalCssOverride = useCallback((css) => {
-    // Remove existing external override
+  // Simple setter for external CSS overrides (for preview system)
+  const setExternalCssOverrideValue = useCallback((css) => {
+    // Remove existing external override styles
     if (externalStyleElement && externalStyleElement.parentNode) {
       externalStyleElement.parentNode.removeChild(externalStyleElement);
       setExternalStyleElement(null);
@@ -597,33 +589,41 @@ const LevelDetailPage = ({ mockData = null }) => {
       return;
     }
 
-    // Create new external style element with higher specificity
+    // Create new external style element
     const style = document.createElement('style');
     style.type = 'text/css';
-    style.innerHTML = css;
+    
+    // Apply scoping for external overrides
+    const sanitizedCSS = sanitizeCSS(css);
+    const scopedCSS = scopeCSS(sanitizedCSS);
+    
+    // Add !important to all CSS rules to ensure they override everything
+    const cssWithImportant = scopedCSS.replace(/;/g, ' !important;');
+    
+    style.innerHTML = cssWithImportant;
     style.setAttribute('data-external-override', 'true');
     style.setAttribute('data-level-id', effectiveId);
+    style.setAttribute('data-hmr-id', `external-${effectiveId}-${Date.now()}`);
     
-    // Add to document head with higher priority
+    // Add to document head
     document.head.appendChild(style);
     setExternalStyleElement(style);
     setExternalCssOverride(css);
-  }, [effectiveId]);
+  }, [effectiveId, externalStyleElement, sanitizeCSS, scopeCSS]);
 
-  // Expose the override function globally for the preview system
+  // Expose the setter function globally for the preview system
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      window.applyCurationCssOverride = applyExternalCssOverride;
+      window.setCurationCssOverride = setExternalCssOverrideValue;
+      window.setDisableDefaultStyling = setDisableDefaultStyling;
       
       // Cleanup function
       return () => {
-        delete window.applyCurationCssOverride;
-        if (externalStyleElement && externalStyleElement.parentNode) {
-          externalStyleElement.parentNode.removeChild(externalStyleElement);
-        }
+        delete window.setCurationCssOverride;
+        delete window.setDisableDefaultStyling;
       };
     }
-  }, [applyExternalCssOverride]);
+  }, [setExternalCssOverrideValue]);
 
   const [activeAliasDropdown, setActiveAliasDropdown] = useState(null);
 
@@ -645,6 +645,8 @@ const LevelDetailPage = ({ mockData = null }) => {
   const [showDownloadPopup, setShowDownloadPopup] = useState(false);
   const [showRerateDropdown, setShowRerateDropdown] = useState(false);
   const [rerateArrowEnabled, setRerateArrowEnabled] = useState(true);
+
+
 
   const handleRerateDropdownToggle = () => {
     if (!rerateArrowEnabled) return;
@@ -792,15 +794,21 @@ const LevelDetailPage = ({ mockData = null }) => {
 
   // Apply curation styles when level data changes
   useEffect(() => {
-    // Don't apply default curation styles if external CSS override is active
-    if (externalCssOverride) {
+    // Don't apply default curation styles if disabled or external CSS override is active
+    if (disableDefaultStyling || externalCssOverride) {
+      // Remove custom curation styles
+      if (customStyleElement && customStyleElement.parentNode) {
+        customStyleElement.parentNode.removeChild(customStyleElement);
+        setCustomStyleElement(null);
+      }
+      setCurationStyles(null);
       return;
     }
 
     if (!res?.level?.curation) {
       // Remove custom styles if no curation
-      if (customStyleElement) {
-        document.head.removeChild(customStyleElement);
+      if (customStyleElement && customStyleElement.parentNode) {
+        customStyleElement.parentNode.removeChild(customStyleElement);
         setCustomStyleElement(null);
       }
       setCurationStyles(null);
@@ -811,16 +819,22 @@ const LevelDetailPage = ({ mockData = null }) => {
     const styleSheet = createCurationStyleSheet(curation);
     
     if (styleSheet) {
-      // Remove existing custom styles
-      if (customStyleElement) {
-        document.head.removeChild(customStyleElement);
+      // Remove existing custom styles before creating new ones
+      if (customStyleElement && customStyleElement.parentNode) {
+        customStyleElement.parentNode.removeChild(customStyleElement);
+        setCustomStyleElement(null);
       }
 
-      // Create new style element
+      // Create new style element with !important declarations
       const style = document.createElement('style');
       style.type = 'text/css';
-      style.innerHTML = styleSheet;
+      
+      // Add !important to all CSS rules to ensure they override predefined styles
+      const styleSheetWithImportant = styleSheet.replace(/;/g, ' !important;');
+      
+      style.innerHTML = styleSheetWithImportant;
       style.setAttribute('data-curation-styles', `level-${effectiveId}`);
+      style.setAttribute('data-hmr-id', `curation-${effectiveId}-${Date.now()}`);
       
       // Add to document head
       document.head.appendChild(style);
@@ -828,25 +842,33 @@ const LevelDetailPage = ({ mockData = null }) => {
       setCurationStyles(curation);
     }
 
-    // Cleanup on component unmount
+    // Cleanup on component unmount or when dependencies change
     return () => {
       if (customStyleElement && customStyleElement.parentNode) {
         customStyleElement.parentNode.removeChild(customStyleElement);
       }
     };
-  }, [res?.level?.curation, createCurationStyleSheet, effectiveId, externalCssOverride]);
+  }, [res?.level?.curation, createCurationStyleSheet, effectiveId, externalCssOverride, disableDefaultStyling]);
+
+
 
   // Cleanup external overrides when component unmounts
   useEffect(() => {
     return () => {
+      // Clean up only the styles we created
       if (externalStyleElement && externalStyleElement.parentNode) {
         externalStyleElement.parentNode.removeChild(externalStyleElement);
       }
-      if (typeof window !== 'undefined' && window.applyCurationCssOverride) {
-        delete window.applyCurationCssOverride;
+      if (customStyleElement && customStyleElement.parentNode) {
+        customStyleElement.parentNode.removeChild(customStyleElement);
+      }
+      // Remove global functions
+      if (typeof window !== 'undefined') {
+        delete window.setCurationCssOverride;
+        delete window.setDisableDefaultStyling;
       }
     };
-  }, [externalStyleElement]);
+  }, []);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -906,7 +928,7 @@ const LevelDetailPage = ({ mockData = null }) => {
     const isOpen = activeAliasDropdown === field;
 
     return (
-      <div>
+      <>
         {title}
         {aliases.length > 0 && (
           <>
@@ -928,7 +950,7 @@ const LevelDetailPage = ({ mockData = null }) => {
             />
           </>
         )}
-      </div>
+      </>
     );
   };
 
@@ -1122,7 +1144,10 @@ const LevelDetailPage = ({ mockData = null }) => {
         image={''}
         type="article"
       />
-      <div className={`level-detail ${(res?.level?.curation && !externalCssOverride) || externalCssOverride ? 'curated' : ''}`}>
+      <div 
+        className={`level-detail ${(res?.level?.curation && !externalCssOverride) || externalCssOverride ? 'curated' : ''}`}
+        data-custom-styles={(externalCssOverride || curationStyles) ? "true" : undefined}
+      >
         <CompleteNav />
         <div className="background-level"></div>
 

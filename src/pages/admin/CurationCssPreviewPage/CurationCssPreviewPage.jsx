@@ -20,7 +20,7 @@ const CurationCssPreviewPage = () => {
         'editor.collapse': 'Collapse',
         'editor.cssLabel': 'Custom CSS',
         'editor.placeholder': 'Enter your custom CSS here...',
-        'editor.help': 'CSS changes are applied immediately. Use .level-detail.curated to target this page.',
+        'editor.help': 'CSS changes are applied in real time',
         'actions.backToEdit': 'Back to Edit',
         'actions.discard': 'Discard',
         'actions.save': 'Save',
@@ -104,51 +104,11 @@ const CurationCssPreviewPage = () => {
     }
   }, [levelId]);
 
-  // Apply CSS to the page - this will override any existing curation CSS
+    // Apply CSS to the page
   useEffect(() => {
-    const applyCssOverride = () => {
-      // Use the global override function from LevelDetailPage
-      if (typeof window !== 'undefined' && window.applyCurationCssOverride) {
-        const scopedCSS = `
-          .level-detail.curated {
-            ${customCSS}
-          }
-        `;
-        window.applyCurationCssOverride(scopedCSS);
-        return true;
-      } else {
-        // Fallback to direct style injection if global function is not available
-        let styleElement = document.getElementById('curation-preview-css');
-        if (!styleElement) {
-          styleElement = document.createElement('style');
-          styleElement.id = 'curation-preview-css';
-          document.head.appendChild(styleElement);
-        }
-
-        const scopedCSS = `
-          .level-detail.curated {
-            ${customCSS}
-          }
-        `;
-        styleElement.textContent = scopedCSS;
-        return false;
-      }
-    };
-
-    // Try to apply immediately
-    const success = applyCssOverride();
-    
-    // If the global function isn't available yet, retry after a short delay
-    if (!success) {
-      const retryInterval = setInterval(() => {
-        if (typeof window !== 'undefined' && window.applyCurationCssOverride) {
-          applyCssOverride();
-          clearInterval(retryInterval);
-        }
-      }, 100);
-
-      // Clear interval after 5 seconds to prevent infinite retries
-      setTimeout(() => clearInterval(retryInterval), 5000);
+    if (typeof window !== 'undefined' && window.setCurationCssOverride && window.setDisableDefaultStyling) {
+      window.setDisableDefaultStyling(true);
+      window.setCurationCssOverride(customCSS || '');
     }
   }, [customCSS]);
 
@@ -157,15 +117,9 @@ const CurationCssPreviewPage = () => {
   // Cleanup CSS when component unmounts
   useEffect(() => {
     return () => {
-      // Use the global override function to clear styles
-      if (typeof window !== 'undefined' && window.applyCurationCssOverride) {
-        window.applyCurationCssOverride('');
-      } else {
-        // Fallback cleanup
-        const existingStyle = document.getElementById('curation-preview-css');
-        if (existingStyle) {
-          existingStyle.remove();
-        }
+      if (typeof window !== 'undefined' && window.setCurationCssOverride && window.setDisableDefaultStyling) {
+        window.setCurationCssOverride('');
+        window.setDisableDefaultStyling(false);
       }
     };
   }, []);
@@ -278,6 +232,8 @@ const CurationCssPreviewPage = () => {
             />
             <div className="css-editor-help">
               <p>{tCur('editor.help')}</p>
+              <p><strong>Note:</strong> Write CSS as if targeting <code>.level-detail.curated</code>. The system will automatically scope it properly.</p>
+              <p><strong>Example:</strong> <code>.left {'{'} box-shadow: 0 0 10px; {'}'}</code> will target the left section.</p>
             </div>
           </div>
           

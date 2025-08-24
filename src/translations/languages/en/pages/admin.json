@@ -19,7 +19,7 @@
     "backupsDesc": "Manage database backups and system maintenance",
     "auditLog": "Audit Log",
     "auditLogDesc": "View audit logs for all admin actions",
-    "curation": "Curation",
-    "curationDesc": "Assign quality tiers to levels and schedule weeklies"
+    "curations": "Curation",
+    "curationsDesc": "Assign quality tiers to levels and schedule weeklies"
   }
 } 
