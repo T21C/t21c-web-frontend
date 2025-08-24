@@ -7,33 +7,8 @@ import LevelDetailPage from '@/pages/common/LevelDetailPage/LevelDetailPage';
 import './curationcsspreviewpage.css';
 
 const CurationCssPreviewPage = () => {
-  const { t } = useTranslation('components');
-  const tCur = (key, params = {}) => {
-    const translation = t(`curationCssPreview.${key}`, params);
-    // Fallback to default text if translation is not found
-    if (translation === `curationCssPreview.${key}`) {
-      const fallbacks = {
-        'loading': 'Loading...',
-        'editor.title': 'CSS Editor',
-        'editor.subtitle': 'Live preview of custom CSS',
-        'editor.expand': 'Expand',
-        'editor.collapse': 'Collapse',
-        'editor.cssLabel': 'Custom CSS',
-        'editor.placeholder': 'Enter your custom CSS here...',
-        'editor.help': 'CSS changes are applied in real time',
-        'actions.backToEdit': 'Back to Edit',
-        'actions.discard': 'Discard',
-        'actions.save': 'Save',
-        'actions.saving': 'Saving...',
-        'notifications.saved': 'CSS saved successfully!',
-        'errors.levelNotFound': 'Level not found',
-        'errors.saveFailed': 'Failed to save CSS',
-        'actions.backToCurations': 'Back to Curations'
-      };
-      return fallbacks[key] || key;
-    }
-    return translation;
-  };
+  const { t } = useTranslation('pages');
+  const tCur = (key, params = {}) => t(`curationCssPreview.${key}`, params);
   
   const { levelId } = useParams();
   const navigate = useNavigate();

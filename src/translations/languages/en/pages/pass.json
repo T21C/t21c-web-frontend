@@ -15,7 +15,8 @@
     "reset": "Reset all filters",
     "search": "Learn how to use advanced search",
     "orderAsc": "Ascending",
-    "orderDesc": "Descending"
+    "orderDesc": "Descending",
+    "stateDisplay": "Display options"
   },
   "buttons": {
     "searchHelp": "Search Help"
@@ -40,6 +41,9 @@
         "difficulty": "Difficulty",
         "random": "Random"
       }
+    },
+    "stateDisplay": {
+      "title": "Display Options"
     }
   },
   "infScroll": {

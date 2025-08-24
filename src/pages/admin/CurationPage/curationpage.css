@@ -231,12 +231,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 120px;
+  background-color: #404040;
+  border-radius: 8px;
+  padding: 0.5rem 2rem;
 }
 
 .curation-page .curation-type-name {
-  font-size: 0.9rem;
+  font-size: 1.2em;
   font-weight: 600;
+  filter: brightness(1.2);
+  text-shadow: 0 0 10px #0009;
   text-align: center;
 }
 
