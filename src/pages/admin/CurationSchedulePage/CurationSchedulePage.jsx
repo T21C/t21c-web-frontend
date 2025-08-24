@@ -169,7 +169,7 @@ const CurationSchedulePage = () => {
           <div className="curation-schedule-page__header-top">
             <NavLink
               className="curation-schedule-page__back-btn"
-              to="/admin/curation"
+              to="/admin/curations"
               title={tSch('actions.backToCuration')}
             >
               ← {tSch('actions.backToCuration')}

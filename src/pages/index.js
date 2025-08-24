@@ -33,6 +33,7 @@ const RatingPage = lazy(() => import('./admin/RatingPage/RatingPage'));
 const AuditLogPage = lazy(() => import('./admin/AuditLogPage/AuditLogPage'));
 const CurationPage = lazy(() => import('./admin/CurationPage/CurationPage'));
 const CurationSchedulePage = lazy(() => import('./admin/CurationSchedulePage/CurationSchedulePage'));
+const CurationCssPreviewPage = lazy(() => import('./admin/CurationCssPreviewPage/CurationCssPreviewPage'));
 
 // Common pages
 const CurationPreviewPage = lazy(() => import('./common/CurationPreviewPage/CurationPreviewPage'));
@@ -76,6 +77,7 @@ export {
     AuditLogPage,
     CurationPage,
     CurationSchedulePage,
+    CurationCssPreviewPage,
     CurationPreviewPage,
     // Other pages
     AboutUsPage,

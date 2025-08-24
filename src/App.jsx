@@ -80,9 +80,10 @@ function App() {
           <Route path='privacy-policy' element={<Pages.PrivacyPolicyPage />} />
           <Route path='terms-of-service' element={<Pages.TermsOfServicePage />} />
           <Route path='health' element={<Pages.HealthCheckPage />} />
-          <Route path='admin/curation' element={<PrivateRoute><Pages.CurationPage /></PrivateRoute>} />
-          <Route path='admin/curation/preview' element={<PrivateRoute><Pages.CurationPreviewPage /></PrivateRoute>} />
-          <Route path='admin/curation/schedules' element={<PrivateRoute><Pages.CurationSchedulePage /></PrivateRoute>} />
+          <Route path='admin/curations' element={<PrivateRoute><Pages.CurationPage /></PrivateRoute>} />
+          <Route path='admin/curations/preview' element={<PrivateRoute><Pages.CurationPreviewPage /></PrivateRoute>} />
+          <Route path='admin/curations/preview/:levelId' element={<PrivateRoute><Pages.CurationCssPreviewPage /></PrivateRoute>} />
+          <Route path='admin/curations/schedules' element={<PrivateRoute><Pages.CurationSchedulePage /></PrivateRoute>} />
         </Routes>
       </Suspense>
     </AuthProvider>

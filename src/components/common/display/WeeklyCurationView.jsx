@@ -75,7 +75,7 @@ const WeeklyCurationView = () => {
         {curations.map(curation => (
           <Link 
             key={curation.id} 
-            to={`/curation/${curation.id}`}
+            to={`/curations/${curation.id}`}
             className="weekly-curation-view__item"
           >
             <div className="weekly-curation-view__item-content">

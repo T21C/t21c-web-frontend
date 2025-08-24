@@ -520,26 +520,18 @@
   position: absolute;
   inset: -3px;
   background: linear-gradient(90deg,
-    #A200FF,
-    #8B00FF,
-    #6400FF,
+    #FF00FF,
     #4200FF,
-    #6400FF,
-    #8B00FF,
     #A200FF,
-    #8B00FF,
-    #6400FF,
     #4200FF,
-    #6400FF,
-    #8B00FF,
-    #A200FF
+    #FF00FF
   );
   background-size: 400% 400%;
   border-radius: inherit;
   z-index: -2;
   animation: legendaryGlow 10s ease-in-out infinite;
-  opacity: 0.9;
-  filter: blur(1px);
+  opacity: 1;
+  filter: brightness(1.5);
 }
 
 .level-card.legendary::after {
@@ -570,22 +562,22 @@
 }
 
 .level-card.legendary:hover::after {
-  opacity: 0.7;
+  opacity: 1;
   filter: brightness(1.2);
 }
 
 .level-card.legendary .level-card-wrapper {
-  background: rgba(0, 0, 0, 0.75);
+  background: rgba(0, 0, 0, 0.6);
   -webkit-backdrop-filter: blur(2px);
   backdrop-filter: blur(2px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   position: relative;
   z-index: 1;
-  transition: all 0.3s ease;
+  transition: all 0s ease;
 }
 
 .level-card.legendary:hover .level-card-wrapper {
-  background: rgba(0, 0, 0, 0.6);
+  background: rgba(5, 5, 5, 0.5);
   border-color: rgba(255, 255, 255, 0.3);
   box-shadow: 0 8px 32px rgba(0, 255, 255, 0.2);
 }

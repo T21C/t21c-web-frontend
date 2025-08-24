@@ -1,0 +1,372 @@
+/* ============================================
+   CURATION CSS PREVIEW PAGE
+   ============================================ */
+
+.curation-css-preview-page {
+  position: relative;
+  min-height: 100vh;
+  background-color: var(--color-black);
+}
+
+/* Loading and Error States */
+.curation-css-preview-loading,
+.curation-css-preview-error {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  color: var(--color-white);
+  gap: 1rem;
+}
+
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 3px solid rgba(255, 255, 255, 0.3);
+  border-top: 3px solid var(--color-purple-3);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.curation-css-preview-error button {
+  padding: 0.75rem 1.5rem;
+  background: var(--color-purple-3);
+  color: var(--color-white);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.curation-css-preview-error button:hover {
+  background: var(--color-purple-2);
+}
+
+/* CSS Editor Overlay */
+.css-editor-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 400px;
+  height: 100vh;
+  background: #1a1a1a;
+  border-left: 2px solid #404040;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.3s ease;
+  box-shadow: -5px 0 15px rgba(0, 0, 0, 0.3);
+}
+
+.css-editor-overlay.collapsed {
+  transform: translateX(calc(100% - 50px));
+}
+
+.css-editor-overlay.collapsed .css-editor-content {
+  display: none;
+}
+
+.css-editor-overlay.collapsed .css-editor-actions {
+  display: none;
+}
+
+.css-editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: #2a2a2a;
+  border-bottom: 1px solid #404040;
+  min-height: 80px;
+  position: relative;
+  z-index: 1001;
+}
+
+.css-editor-title h3 {
+  color: var(--color-white);
+  margin: 0 0 0.25rem 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.css-editor-title p {
+  color: #a0a0a0;
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.css-editor-controls {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+/* Fixed Collapse Button */
+.fixed-collapse-button {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #2a2a2a;
+  border: 2px solid #404040;
+  color: var(--color-white);
+  padding: 0.75rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  font-weight: bold;
+  z-index: 1003;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  min-width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.fixed-collapse-button:hover {
+  background: #404040;
+  border-color: #505050;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* CSS Editor Content */
+.css-editor-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  gap: 1rem;
+  overflow: hidden;
+}
+
+.css-editor-textarea-container {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.css-editor-textarea-container label {
+  color: var(--color-white);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.css-editor-textarea {
+  flex: 1;
+  background: #0a0a0a;
+  border: 2px solid #404040;
+  border-radius: 8px;
+  color: var(--color-white);
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  padding: 1rem;
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s ease;
+  min-height: 300px;
+}
+
+.css-editor-textarea:focus {
+  border-color: var(--color-purple-3);
+}
+
+.css-editor-help {
+  background: #2a2a2a;
+  border: 1px solid #404040;
+  border-radius: 6px;
+  padding: 0.75rem;
+}
+
+.css-editor-help p {
+  color: #a0a0a0;
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+/* CSS Editor Actions */
+.css-editor-actions {
+  display: flex;
+  gap: 0.75rem;
+  padding-top: 1rem;
+  border-top: 1px solid #404040;
+  flex-wrap: wrap;
+}
+
+.discard-button,
+.save-button,
+.back-to-edit-button {
+  flex: 1;
+  min-width: 120px;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+}
+
+.back-to-edit-button {
+  background: #2a2a2a;
+  color: var(--color-white);
+}
+
+.back-to-edit-button:hover:not(:disabled) {
+  background: #404040;
+  border-color: #505050;
+}
+
+.discard-button {
+  background: #404040;
+  color: var(--color-white);
+  border: 1px solid #505050;
+}
+
+.discard-button:hover:not(:disabled) {
+  background: #505050;
+}
+
+.save-button {
+  background: var(--color-purple-3);
+  color: var(--color-white);
+}
+
+.save-button:hover:not(:disabled) {
+  background: var(--color-purple-2);
+  transform: translateY(-1px);
+}
+
+.discard-button:disabled,
+.save-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Level Detail Page Wrapper */
+.level-detail-wrapper {
+  margin-right: 400px;
+  transition: margin-right 0.3s ease;
+}
+
+.level-detail-wrapper.collapsed {
+  margin-right: 50px;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+  .css-editor-overlay {
+    width: 350px;
+  }
+  
+  .level-detail-wrapper {
+    margin-right: 350px;
+  }
+  
+  .level-detail-wrapper.collapsed {
+    margin-right: 50px;
+  }
+}
+
+@media (max-width: 768px) {
+  .fixed-collapse-button {
+    top: 15px;
+    right: 15px;
+    min-width: 45px;
+    height: 45px;
+    font-size: 1.1rem;
+  }
+  
+  .css-editor-overlay {
+    width: 100%;
+    height: 50vh;
+    top: auto;
+    bottom: 0;
+    right: 0;
+    transform: translateY(100%);
+    border-left: none;
+    border-top: 2px solid #404040;
+  }
+  
+  .css-editor-overlay.collapsed {
+    transform: translateY(calc(100% - 50px));
+  }
+  
+  .css-editor-overlay.collapsed .css-editor-content {
+    display: none;
+  }
+  
+  .css-editor-overlay.collapsed .css-editor-actions {
+    display: none;
+  }
+  
+  .level-detail-wrapper {
+    margin-right: 0;
+    margin-bottom: 50vh;
+  }
+  
+  .level-detail-wrapper.collapsed {
+    margin-bottom: 50px;
+  }
+  
+  .css-editor-header {
+    min-height: 60px;
+  }
+  
+  .css-editor-title h3 {
+    font-size: 1rem;
+  }
+  
+  .css-editor-title p {
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .fixed-collapse-button {
+    top: 10px;
+    right: 10px;
+    min-width: 40px;
+    height: 40px;
+    font-size: 1rem;
+    padding: 0.5rem;
+  }
+  
+  .css-editor-overlay {
+    height: 60vh;
+  }
+  
+  .level-detail-wrapper {
+    margin-bottom: 60vh;
+  }
+  
+  .css-editor-content {
+    padding: 0.75rem;
+  }
+  
+  .css-editor-textarea {
+    min-height: 200px;
+    font-size: 0.8rem;
+  }
+  
+  .css-editor-actions {
+    flex-direction: column;
+  }
+  
+  .discard-button,
+  .save-button {
+    width: 100%;
+  }
+}

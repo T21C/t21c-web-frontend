@@ -792,6 +792,7 @@
   color: #ffffff;
   text-align: center;
   background: linear-gradient(to bottom, #c359ff, #ff00c8);
+  filter: drop-shadow(0 0 6px #ff00c888);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;

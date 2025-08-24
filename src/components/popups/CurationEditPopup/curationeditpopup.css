@@ -151,6 +151,37 @@
   line-height: 1.4;
   background: #0a0a0a;
   border-color: #333333;
+  resize: vertical;
+  min-height: 200px;
+  max-height: 600px;
+}
+
+.curation-edit-modal__preview-button {
+  background: #2a5a8a;
+  color: var(--color-white);
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.curation-edit-modal__preview-button:hover:not(:disabled) {
+  background: #1e4a7a;
+  transform: translateY(-1px);
+}
+
+.curation-edit-modal__preview-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .curation-edit-modal__help-text {

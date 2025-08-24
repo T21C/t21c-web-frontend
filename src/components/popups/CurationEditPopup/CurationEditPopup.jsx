@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate, useLocation } from 'react-router-dom';
 import api from '@/utils/api';
 import './curationeditpopup.css';
 import toast from 'react-hot-toast';
@@ -13,7 +14,38 @@ const CurationEditPopup = ({
   onUpdate
 }) => {
   const { t } = useTranslation('components');
-  const tCur = (key, params = {}) => t(`curationEditPopup.${key}`, params);
+  const tCur = (key, params = {}) => {
+    const translation = t(`curationEditPopup.${key}`, params);
+    // Fallback to default text if translation is not found
+    if (translation === `curationEditPopup.${key}`) {
+      const fallbacks = {
+        'form.previewCSS': 'Preview CSS',
+        'title': 'Edit Curation',
+        'description': 'Modify the curation settings for this level',
+        'form.type': 'Curation Type',
+        'form.selectType': 'Select a curation type',
+        'form.shortDescription': 'Short Description',
+        'form.shortDescriptionPlaceholder': 'Brief description of the curation',
+        'form.shortDescriptionHelp': 'A short description that will be displayed',
+        'form.description': 'Description',
+        'form.descriptionPlaceholder': 'Detailed description of the curation',
+        'form.customColor': 'Custom Color',
+        'form.customCSS': 'Custom CSS',
+        'form.customCSSPlaceholder': 'Enter custom CSS rules...',
+        'form.customCSSHelp': 'Custom CSS will be applied to the level detail page',
+        'form.thumbnail': 'Thumbnail',
+        'actions.cancel': 'Cancel',
+        'actions.save': 'Save',
+        'actions.saving': 'Saving...',
+        'notifications.updated': 'Curation updated successfully!',
+        'errors.updateFailed': 'Failed to update curation'
+      };
+      return fallbacks[key] || key;
+    }
+    return translation;
+  };
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [formData, setFormData] = useState({
     typeId: '',
@@ -61,6 +93,19 @@ const CurationEditPopup = ({
       document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [isOpen, mouseDownOutside, curation]);
+
+  // Handle customCSS updates from preview page
+  useEffect(() => {
+    if (location.state?.customCSS !== undefined) {
+      setFormData(prev => ({
+        ...prev,
+        customCSS: location.state.customCSS
+      }));
+      
+      // Clear the state to prevent re-processing
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, navigate, location.pathname]);
 
   const handleInputChange = (field, value) => {
     setFormData(prev => ({
@@ -218,6 +263,21 @@ const CurationEditPopup = ({
               rows={8}
             />
             <p className="curation-edit-modal__help-text">{tCur('form.customCSSHelp')}</p>
+            
+            {/* Preview Button */}
+            <button
+              type="button"
+              className="curation-edit-modal__preview-button"
+              onClick={() => {
+                // Navigate to the preview page with the current CSS
+                navigate(`/admin/curations/preview/${curation.levelId}`, {
+                  state: { customCSS: formData.customCSS }
+                });
+              }}
+              disabled={!curation?.levelId}
+            >
+              {tCur('form.previewCSS')}
+            </button>
           </div>
 
           {/* Thumbnail Upload */}

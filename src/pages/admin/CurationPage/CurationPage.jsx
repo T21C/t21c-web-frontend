@@ -9,10 +9,11 @@ import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { LevelSelectionPopup, TypeManagementPopup, CurationEditPopup } from '@/components/popups';
 import { toast } from 'react-hot-toast';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 
 const CurationPage = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user } = useAuth();
   const { t } = useTranslation('pages');
   const tCur = (key, params = {}) => t(`curation.${key}`, params);
@@ -180,6 +181,41 @@ const CurationPage = () => {
     fetchCurationTypes();
   }, [currentPage, filters]);
 
+  // Handle state updates from preview page
+  useEffect(() => {
+    if (location.state?.updatedCuration) {
+      const { updatedCuration, action } = location.state;
+      
+      // Update the curations list with the new data
+      setCurations(prev => {
+        const existingIndex = prev.findIndex(cur => cur.id === updatedCuration.id);
+        if (existingIndex >= 0) {
+          // Update existing curation
+          const updated = [...prev];
+          updated[existingIndex] = updatedCuration;
+          return updated;
+        } else {
+          // Add new curation (shouldn't happen from preview, but just in case)
+          return [updatedCuration, ...prev];
+        }
+      });
+
+      // Show appropriate message
+      if (action === 'saved') {
+        toast.success(tCur('notifications.updated'));
+      } else if (action === 'discarded') {
+        toast.success(tCur('notifications.discarded'));
+      } else if (action === 'backToEdit') {
+        // Open the CurationEditPopup with the updated curation
+        setEditingCuration(updatedCuration);
+        setShowCurationEditPopup(true);
+      }
+
+      // Clear the state to prevent re-processing
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, navigate, location.pathname, tCur]);
+
   const handleFilterChange = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value }));
     setCurrentPage(1);
@@ -262,7 +298,7 @@ const CurationPage = () => {
           </button>
           <NavLink
             className="curation-schedule-btn"
-            to="/admin/curation/schedules"
+            to="/admin/curations/schedules"
             title={tCur('actions.manageSchedule')}
           >
             📅

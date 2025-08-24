@@ -38,9 +38,6 @@
   fill: var(--color-white) !important;
 }
 
-.svg-stroke path {
-  stroke: var(--color-white) !important;
-}
 
 .svg-fill-stroke path {
   stroke: var(--color-white) !important;
@@ -121,6 +118,7 @@ body {
   position: fixed;
   top: -30px;
   left: -30px;
+  opacity: 0.9;
   background-image: url("https://images.rawpixel.com/image_social_landscape/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTM2NjcxMC1pbWFnZS1rd3Z4eGVxcC5qcGc.jpg");
   background-size: cover;
   filter: blur(15px);

@@ -18,11 +18,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { MetaTags } from "@/components/common/display";
-import { DownloadIcon, HistoryListIcon, InfoIcon, LikeIcon, SteamIcon } from "@/components/common/icons";
+import { DownloadIcon, EditIcon, HistoryListIcon, InfoIcon, LikeIcon, SteamIcon } from "@/components/common/icons";
 import { createEventSystem, formatCreatorDisplay, minus2Reasons, gimmickReasons } from "@/utils/Utility";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
 import LevelDownloadPopup from '../../../components/popups/LevelDownloadPopup/LevelDownloadPopup';
+import { ABILITIES, hasBit } from '@/utils/Abilities';
 
 
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
@@ -63,7 +64,7 @@ const getHighScores = (players) => {
     highestAcc: players.reduce((a, b) => 
       b.accuracy > a.accuracy ? b : a),
     highestSpeed: players.some(p => p.speed) ? 
-      players.reduce((a, b) => (b.speed || 0) > (a.speed || 0) ? b : a) : null
+      players.sort((a, b) => (b.scoreV2 || 0) - (a.scoreV2 || 0)).reduce((a, b) => (b.speed || 0) > (a.speed || 0) ? b : a) : null
   };
 };
 
@@ -206,13 +207,13 @@ const FullInfoPopup = ({ level, onClose }) => {
       </div>
     );
   };
-
+  console.log(level);
   return (
     <>
       <div className="level-detail-popup-overlay" onClick={onClose}></div>
       <div className="level-detail-popup popup-scale-up">
         <div className="popup-content">
-          <div className="popup-header">
+          <div className="popup-header" style={{ backgroundColor: `#${level.difficulty.color}ff` }}>
             <h2>{level.song}</h2>
             <p>{level.artist}</p>
             <button className="popup-close-button" onClick={onClose} title={tLevel('buttons.close')}>
@@ -500,19 +501,30 @@ const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict })
   );
 };
 
-const LevelDetailPage = () => {
+const LevelDetailPage = ({ mockData = null }) => {
   const { t } = useTranslation('pages');
   const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
+  const { id } = useParams();
+  const detailPage = useLocation();
   
-  const { detailPage } = useLocation();
-  const {id} = useParams();
+  // Use previewLevelId if in preview mode, otherwise use URL parameter
+  const effectiveId = id || mockData?.level.id;
+  console.log(mockData);
   const [res, setRes] = useState(null);
   const [displayedPlayers, setDisplayedPlayers] = useState([]);
   const [leaderboardSort, setLeaderboardSort] = useState("SCR");
   const [infoLoading, setInfoLoading] = useState(true);
   const [videoDetail, setVideoDetail] = useState(null);
+  
+  // Custom styling state for curations
+  const [curationStyles, setCurationStyles] = useState(null);
+  const [customStyleElement, setCustomStyleElement] = useState(null);
   const [notFound, setNotFound] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
+
+  // Add support for external CSS overrides (for preview system)
+  const [externalCssOverride, setExternalCssOverride] = useState(null);
+  const [externalStyleElement, setExternalStyleElement] = useState(null);
 
   const { user } = useAuth();
 
@@ -524,6 +536,94 @@ const LevelDetailPage = () => {
   const location = useLocation();
   const currentUrl = window.location.origin + location.pathname;
 
+  // Helper function to convert hex to RGB
+  const hexToRgb = useCallback((hex) => {
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? 
+      `${parseInt(result[1], 16)}, ${parseInt(result[2], 16)}, ${parseInt(result[3], 16)}` : 
+      '255, 255, 255';
+  }, []);
+
+  // Simple CSS sanitizer - remove dangerous content
+  const sanitizeCSS = useCallback((css) => {
+    if (!css) return '';
+    // Remove potentially dangerous CSS
+    return css
+      .replace(/@import/gi, '')
+      .replace(/javascript:/gi, '')
+      .replace(/expression\(/gi, '')
+      .replace(/behavior:/gi, '')
+      .replace(/-moz-binding/gi, '')
+      .replace(/url\s*\(/gi, '');
+  }, []);
+
+  // Scope CSS to level-detail.curated
+  const scopeCSS = useCallback((css) => {
+    if (!css) return '';
+    // Simple scoping - prepend .level-detail.curated to selectors
+    return css.replace(/([^{}]+){/g, '.level-detail.curated $1{');
+  }, []);
+
+  // Custom CSS injection system for curations
+  const createCurationStyleSheet = useCallback((curation) => {
+    if (!curation || (!curation.customCSS && !curation.customColor && !hasBit(curation.type?.abilities, ABILITIES.CUSTOM_COLOR))) {
+      return null;
+    }
+
+    let css = `/* Curation styles for ${curation.type?.name || 'Unknown'} */\n`;
+    
+
+
+    // Apply custom CSS rules with proper scoping and sanitization
+    if (curation.customCSS) {
+      const sanitizedCSS = sanitizeCSS(curation.customCSS);
+      const scopedCSS = scopeCSS(sanitizedCSS);
+      css += scopedCSS;
+    }
+
+    return css;
+  }, [hexToRgb, sanitizeCSS, scopeCSS]);
+
+  // Function to handle external CSS overrides (for preview system)
+  const applyExternalCssOverride = useCallback((css) => {
+    // Remove existing external override
+    if (externalStyleElement && externalStyleElement.parentNode) {
+      externalStyleElement.parentNode.removeChild(externalStyleElement);
+      setExternalStyleElement(null);
+    }
+
+    if (!css || !css.trim()) {
+      setExternalCssOverride(null);
+      return;
+    }
+
+    // Create new external style element with higher specificity
+    const style = document.createElement('style');
+    style.type = 'text/css';
+    style.innerHTML = css;
+    style.setAttribute('data-external-override', 'true');
+    style.setAttribute('data-level-id', effectiveId);
+    
+    // Add to document head with higher priority
+    document.head.appendChild(style);
+    setExternalStyleElement(style);
+    setExternalCssOverride(css);
+  }, [effectiveId]);
+
+  // Expose the override function globally for the preview system
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.applyCurationCssOverride = applyExternalCssOverride;
+      
+      // Cleanup function
+      return () => {
+        delete window.applyCurationCssOverride;
+        if (externalStyleElement && externalStyleElement.parentNode) {
+          externalStyleElement.parentNode.removeChild(externalStyleElement);
+        }
+      };
+    }
+  }, [applyExternalCssOverride]);
 
   const [activeAliasDropdown, setActiveAliasDropdown] = useState(null);
 
@@ -648,9 +748,18 @@ const LevelDetailPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      // Use mock data if provided - completely override everything
+      if (mockData) {
+        setRes(mockData);
+        setDisplayedPlayers(sortLeaderboard(mockData.passes || []));
+        setNotFound(false);
+        setInfoLoading(false);
+        return;
+      }
+      
       try {
-        const levelData = await api.get(`${import.meta.env.VITE_LEVELS}/${id}?includeRatings=true`);
-        const passesData = await api.get(`${import.meta.env.VITE_PASSES}/level/${id}`);
+        const levelData = await api.get(`${import.meta.env.VITE_LEVELS}/${effectiveId}?includeRatings=true`);
+        const passesData = await api.get(`${import.meta.env.VITE_PASSES}/level/${effectiveId}`);
         
         if (levelData.data.timeout) {
           setLevelTimeout(levelData.data.timeout);
@@ -673,13 +782,71 @@ const LevelDetailPage = () => {
       }
     };
     fetchData();
-  }, [id]);
+  }, [effectiveId, mockData]);
 
   useEffect(() => {
     if (res?.level?.videoLink) {
       getVideoDetails(res.level.videoLink).then(setVideoDetail);
     }
   }, [res?.level?.videoLink]);
+
+  // Apply curation styles when level data changes
+  useEffect(() => {
+    // Don't apply default curation styles if external CSS override is active
+    if (externalCssOverride) {
+      return;
+    }
+
+    if (!res?.level?.curation) {
+      // Remove custom styles if no curation
+      if (customStyleElement) {
+        document.head.removeChild(customStyleElement);
+        setCustomStyleElement(null);
+      }
+      setCurationStyles(null);
+      return;
+    }
+
+    const curation = res.level.curation;
+    const styleSheet = createCurationStyleSheet(curation);
+    
+    if (styleSheet) {
+      // Remove existing custom styles
+      if (customStyleElement) {
+        document.head.removeChild(customStyleElement);
+      }
+
+      // Create new style element
+      const style = document.createElement('style');
+      style.type = 'text/css';
+      style.innerHTML = styleSheet;
+      style.setAttribute('data-curation-styles', `level-${effectiveId}`);
+      
+      // Add to document head
+      document.head.appendChild(style);
+      setCustomStyleElement(style);
+      setCurationStyles(curation);
+    }
+
+    // Cleanup on component unmount
+    return () => {
+      if (customStyleElement && customStyleElement.parentNode) {
+        customStyleElement.parentNode.removeChild(customStyleElement);
+      }
+    };
+  }, [res?.level?.curation, createCurationStyleSheet, effectiveId, externalCssOverride]);
+
+  // Cleanup external overrides when component unmounts
+  useEffect(() => {
+    return () => {
+      if (externalStyleElement && externalStyleElement.parentNode) {
+        externalStyleElement.parentNode.removeChild(externalStyleElement);
+      }
+      if (typeof window !== 'undefined' && window.applyCurationCssOverride) {
+        delete window.applyCurationCssOverride;
+      }
+    };
+  }, [externalStyleElement]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -739,7 +906,7 @@ const LevelDetailPage = () => {
     const isOpen = activeAliasDropdown === field;
 
     return (
-      <div className="level-title">
+      <div>
         {title}
         {aliases.length > 0 && (
           <>
@@ -819,7 +986,7 @@ const LevelDetailPage = () => {
         requestData.publicComments = publicComments;
       }
 
-      const response = await api.put(`${import.meta.env.VITE_LEVELS}/${id}/timeout`, requestData);
+      const response = await api.put(`${import.meta.env.VITE_LEVELS}/${effectiveId}/timeout`, requestData);
       
       if (response.data.timeout) {
         setLevelTimeout(response.data.timeout);
@@ -856,7 +1023,7 @@ const LevelDetailPage = () => {
     setIsLiking(true);
     try {
       const action = res.isLiked ? 'unlike' : 'like';
-      const response = await api.put(`${import.meta.env.VITE_LEVELS}/${id}/like`, { action });
+      const response = await api.put(`${import.meta.env.VITE_LEVELS}/${effectiveId}/like`, { action });
       
       if (response.data.success) {
         setRes(prevRes => ({
@@ -881,7 +1048,7 @@ const LevelDetailPage = () => {
   const handleRatingAccuracyVote = async (vote) => {
     if (!user || !res?.isCleared) return;
     try {
-      const response = await api.put(`${import.meta.env.VITE_LEVELS}/${id}/rating-accuracy-vote`, { vote });
+      const response = await api.put(`${import.meta.env.VITE_LEVELS}/${effectiveId}/rating-accuracy-vote`, { vote });
       
       if (response.data.level) {
         setRes(prevRes => ({
@@ -955,7 +1122,7 @@ const LevelDetailPage = () => {
         image={''}
         type="article"
       />
-      <div className="level-detail">
+      <div className={`level-detail ${(res?.level?.curation && !externalCssOverride) || externalCssOverride ? 'curated' : ''}`}>
         <CompleteNav />
         <div className="background-level"></div>
 
@@ -1021,15 +1188,21 @@ const LevelDetailPage = () => {
                 <div className="pp-display">
                   {(res.level.baseScore || res.level.difficulty.baseScore || 0).toFixed(1)}PP
                 </div>
+                <div className="level-id">#{effectiveId}</div>
               </div>
 
-              <div className="title">
-                {renderTitleWithAliases(res.level.song, 'song')}
+              <div className="title-container">
+                <div className="level-title">
+                  {renderTitleWithAliases(res.level.song, 'song')}
+                </div>
                 <div className="level-info">
-                  #{id}&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
-                  {formatCreatorDisplay(res.level)}
-                  &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
+                  <div className="level-creator">
+                    {formatCreatorDisplay(res.level)}
+                  </div>
+                  <div className="level-separator">-</div>
+                  <div className="level-artist">
                   {renderTitleWithAliases(res.level.artist, 'artist')}
+                  </div>
                 </div>
               </div>
               
@@ -1139,20 +1312,17 @@ const LevelDetailPage = () => {
                   onClick={() => setOpenEditDialog(true)}
                   title={tLevel('buttons.edit')}
                 >
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.4374 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
+                  <EditIcon size={"34px"}/>
                 </button>
               )}
               {res.level.dlLink && res.level.dlLink.match(/http[s]?:\/\//) && (
                 <button className="svg-stroke" href={res.level.dlLink} target="_blank" title={tLevel('links.download')} onClick={handleDownloadClick}>
-                  <DownloadIcon size={"24px"}/>
+                  <DownloadIcon size={"36px"}/>
                 </button>
               )}
               {res.level.workshopLink && (
-                <button onClick={() => window.open(res.level.workshopLink, '_blank')} target="_blank" title={tLevel('links.workshop')}>
-                  <SteamIcon color="#ffffff" size={"24px"} />
+                <button className="svg-stroke" onClick={() => window.open(res.level.workshopLink, '_blank')} target="_blank" title={tLevel('links.workshop')}>
+                  <SteamIcon color="#ffffff" size={"34px"} />
                 </button>
               )}
               {res.ratings && (
@@ -1161,7 +1331,7 @@ const LevelDetailPage = () => {
                   onClick={() => setShowRatingPopup(true)}
                   title={tLevel('buttons.viewRating')}
                 >
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="3" y="3" width="18" height="18" rx="3" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     <path d="M7 12L10 15L17 9" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>
