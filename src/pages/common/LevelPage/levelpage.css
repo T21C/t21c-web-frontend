@@ -610,6 +610,19 @@
   width: 100%;
 }
 
+.level-page .level-body .curation-types-wrapper {
+  transition: opacity 0.3s ease;
+}
+
+.level-page .level-body .curation-types-wrapper.hidden {
+  opacity: 0.5;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
+  overflow: hidden;
+  margin-top: 0;
+}
+
 /* Mobile adjustments for Q slider */
 @media (max-width: 768px) {
   .level-page .level-body .q-toggle-button {

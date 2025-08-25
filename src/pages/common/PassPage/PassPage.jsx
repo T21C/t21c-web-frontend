@@ -18,7 +18,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { DifficultyContext } from "@/contexts/DifficultyContext";
 import { DifficultySlider, SpecialDifficulties } from "@/components/common/selectors";
 import { PassHelpPopup } from "@/components/popups";
-import { ResetIcon, SortIcon, FilterIcon, SortAscIcon, SortDescIcon } from "@/components/common/icons";
+import { ResetIcon, SortIcon, FilterIcon, SortAscIcon, SortDescIcon, SwitchIcon } from "@/components/common/icons";
 const currentUrl = window.location.origin + location.pathname;
 
 const limit = 30;
@@ -407,7 +407,7 @@ const PassPage = () => {
             }}
           />
 
-          <FilterIcon
+          <SwitchIcon
             color="#ffffff"
             onClick={() => handleStateDisplayOpen()}
             data-tooltip-id="state-display"

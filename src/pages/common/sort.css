@@ -302,7 +302,7 @@
   border-radius: 3px;
   cursor: pointer;
   transition: all 0.2s linear;
-  width: 2.5rem;
+  min-width: 2rem;
   height: 2rem;
 }
 .input-option svg:focus {

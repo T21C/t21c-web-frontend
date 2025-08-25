@@ -17,7 +17,7 @@ import { DifficultyContext } from "@/contexts/DifficultyContext";
 import { ReferencesButton, ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
 import { DifficultySlider, SpecialDifficulties } from "@/components/common/selectors";
-import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon , FilterIcon, LikeIcon} from "@/components/common/icons";
+import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon , FilterIcon, LikeIcon, SwitchIcon} from "@/components/common/icons";
 import { LevelHelpPopup } from "@/components/popups";
 import toast from 'react-hot-toast';
 const currentUrl = window.location.origin + location.pathname;
@@ -87,6 +87,7 @@ const LevelPage = () => {
   const searchTimeoutRef = useRef(null);
   const [pendingSearch, setPendingSearch] = useState(false);
   const lastSearchValueRef = useRef(query);
+  const [selectedCurationTypes, setSelectedCurationTypes] = useState([]);
 
   // Filter difficulties by type
   const pguDifficulties = difficulties.filter(d => d.type === 'PGU').sort((a, b) => a.sortOrder - b.sortOrder);
@@ -214,6 +215,17 @@ const LevelPage = () => {
     });
   }
 
+  function toggleCurationType(typeName) {
+    setSelectedCurationTypes(prev => {
+      const newSelection = prev.includes(typeName)
+        ? prev.filter(name => name !== typeName)
+        : [...prev, typeName];
+      
+      triggerRefresh();
+      return newSelection;
+    });
+  }
+
   function handleQueryChange(e) {
     const newValue = e.target.value;
     setSearchInput(newValue);
@@ -247,6 +259,13 @@ const LevelPage = () => {
     lastSearchValueRef.current = query;
   }, [query]);
 
+  // Clear selected curation types when filter changes to hide
+  useEffect(() => {
+    if (curatedTypesFilter === 'hide') {
+      setSelectedCurationTypes([]);
+    }
+  }, [curatedTypesFilter]);
+
   // Clean up the timeout when component unmounts
   useEffect(() => {
     return () => {
@@ -278,7 +297,7 @@ const LevelPage = () => {
           specialDifficulties: allSpecialDiffs.join(','),
           onlyMyLikes: user ? onlyMyLikes : undefined,
           availableDlFilter: availableDlFilter,
-          curatedTypesFilter: curatedTypesFilter
+          curatedTypesFilter: curatedTypesFilter === "only" && selectedCurationTypes.length > 0 ? selectedCurationTypes.join(',') : curatedTypesFilter
         };
         
         const response = await api.get(
@@ -340,7 +359,7 @@ const LevelPage = () => {
       fetchLevels();
     }
     return () => cancel && cancel();
-  }, [query, sort, pageNumber, forceUpdate, deletedFilter, sliderQRange, qSliderVisible, curatedTypesFilter]);
+  }, [query, sort, pageNumber, forceUpdate, deletedFilter, sliderQRange, qSliderVisible, curatedTypesFilter, selectedCurationTypes]);
 
   function handleFilterOpen() {
     setFilterOpen(!filterOpen);
@@ -391,6 +410,7 @@ const LevelPage = () => {
     setClearedFilter("show");
     setAvailableDlFilter("show");
     setCuratedTypesFilter("show");
+    setSelectedCurationTypes([]);
     setQSliderVisible(false);
     // Clear and reload data
     setLoading(true);
@@ -499,7 +519,7 @@ const LevelPage = () => {
             }}
           />
 
-          <FilterIcon
+          <SwitchIcon
             color="#ffffff"
             onClick={() => handleStateDisplayOpen()}
             data-tooltip-id="state-display"
@@ -548,14 +568,23 @@ const LevelPage = () => {
                   onToggle={toggleSpecialDifficulty}
                   disableQuantum={true}
                 />
-                <span className="state-switches-label"></span>
-                <StateDisplay
+                <div className={`curation-types-wrapper ${curatedTypesFilter === "only" ? 'visible' : 'hidden'}`}>
+                <SpecialDifficulties
+                  difficulties={curationTypes}
+                  selectedDiffs={selectedCurationTypes}
+                  onToggle={toggleCurationType}
+                  curationMode={true}
+                  title={tLevel('settingExp.curationTypes')}
+                />
+                
+              </div>
+              <StateDisplay
                   currentState={curatedTypesFilter}
                   onChange={(newState) => {
                     setCuratedTypesFilter(newState);
                     triggerRefresh();
                   }}
-                  states={["Legendary", "Loved", "None"]}
+                  states={['show', 'hide', 'only']}
                 />
                 <button 
                   className={`q-toggle-button ${qSliderVisible ? 'active' : ''}`}

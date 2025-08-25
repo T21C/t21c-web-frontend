@@ -13,14 +13,16 @@ const SpecialDifficulties = ({
   difficulties, 
   selectedDiffs, 
   onToggle,
-  disableQuantum = false 
+  disableQuantum = false,
+  curationMode = false,
+  title
 }) => {
   const { t } = useTranslation('components');
   const tDiff = (key, params = {}) => t(`difficulties.special.${key}`, params);
 
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const filteredDifficulties = disableQuantum 
+  const filteredDifficulties = disableQuantum
     ? difficulties.filter(diff => !diff.name.startsWith('Q'))
     : difficulties;
 
@@ -116,9 +118,9 @@ const SpecialDifficulties = ({
         className="dropdown-toggle"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span>{tDiff('title')}</span>
+        <span>{title || tDiff('title')}</span>
         <span className="selected-count">
-          {selectedDiffs.length > 0 && tDiff('selectedCount', { count: selectedDiffs.length })}
+          &nbsp;{selectedDiffs.length > 0 && <>({selectedDiffs.length})</>}
         </span>
         <svg 
           className={`dropdown-arrow ${isOpen ? 'open' : ''}`}
@@ -146,7 +148,7 @@ const SpecialDifficulties = ({
           />
           <div className="difficulties-grid" ref={dropdownRef}>
             <div className="difficulties-header">
-              <h3>{tDiff('title')}</h3>
+              <h3>{title || tDiff('title')}</h3>
               <button 
                 className="select-all-button"
                 onClick={handleSelectAll}
@@ -156,7 +158,7 @@ const SpecialDifficulties = ({
             </div>
             {orderedGroups.map(([group, diffs]) => (
               <div key={group} className="difficulty-group">
-                <h3 className="group-title">{tDiff(`groups.${group}`)}</h3>
+                {!curationMode && <h3 className="group-title">{tDiff(`groups.${group}`)}</h3>}
                 <div className="difficulties-list">
                   {diffs.map(diff => (
                     <button
