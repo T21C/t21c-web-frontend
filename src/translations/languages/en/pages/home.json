@@ -39,7 +39,7 @@
     "secondary": "Loved",
     "loading": "Loading weeklies...",
     "error": "Failed to load weeklies",
-    "empty": "No weeklies scheduled for this week"
+    "empty": "No levels scheduled for this week"
   },
   "footer": {
     "about": {

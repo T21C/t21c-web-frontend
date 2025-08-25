@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
+import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { CompleteNav } from '@/components/layout';
 import { MetaTags, AccessDenied } from '@/components/common/display';
 import { ScrollButton } from '@/components/common/buttons';
@@ -15,13 +16,13 @@ const CurationPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+  const { curationTypes, reloadCurationTypes } = useDifficultyContext();
   const { t } = useTranslation('pages');
   const tCur = (key, params = {}) => t(`curation.${key}`, params);
   const currentUrl = window.location.origin + location.pathname;
 
   const [isLoading, setIsLoading] = useState(false);
   const [curations, setCurations] = useState([]);
-  const [curationTypes, setCurationTypes] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [filters, setFilters] = useState({
@@ -73,7 +74,7 @@ const CurationPage = () => {
     if (isValid) {
       const { type } = pendingAction;
       if (type === 'manage') {
-        setShowTypeManagementPopup(true);
+        handleOpenTypeManagement();
       }
       setPendingAction(null);
     }
@@ -83,6 +84,12 @@ const CurationPage = () => {
   const handleManageTypes = () => {
     setPendingAction({ type: 'manage' });
     setShowPasswordPrompt(true);
+  };
+
+  const handleOpenTypeManagement = () => {
+    // Refetch curation types to ensure we have the latest data
+    reloadCurationTypes();
+    setShowTypeManagementPopup(true);
   };
 
   const handleAddNewLevel = () => {
@@ -131,7 +138,8 @@ const CurationPage = () => {
   };
 
   const handleTypeManagementUpdate = () => {
-    fetchCurationTypes();
+    // Reload curation types from the context to get the latest data after modifications
+    reloadCurationTypes();
   };
 
   const handleDeleteCuration = async (curation) => {
@@ -153,10 +161,10 @@ const CurationPage = () => {
       setIsLoading(true);
       const params = new URLSearchParams({
         page: currentPage,
-        limit: 20,
-        ...filters
+        ...(filters.typeId && { typeId: filters.typeId }),
+        ...(filters.search && { search: filters.search }),
       });
-      
+
       const response = await api.get(`${import.meta.env.VITE_CURATIONS}?${params}`);
       setCurations(response.data.curations);
       setTotalPages(response.data.totalPages);
@@ -167,18 +175,8 @@ const CurationPage = () => {
     }
   };
 
-  const fetchCurationTypes = async () => {
-    try {
-      const response = await api.get(`${import.meta.env.VITE_CURATIONS}/types`);
-      setCurationTypes(response.data);
-    } catch (error) {
-      console.error('Failed to fetch curation types:', error);
-    }
-  };
-
   useEffect(() => {
     fetchCurations();
-    fetchCurationTypes();
   }, [currentPage, filters]);
 
   // Handle state updates from preview page

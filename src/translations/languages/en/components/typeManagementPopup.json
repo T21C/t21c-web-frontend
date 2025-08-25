@@ -24,7 +24,9 @@
   "notifications": {
     "created": "Curation type created successfully",
     "updated": "Curation type updated successfully",
-    "deleted": "Curation type deleted successfully"
+    "deleted": "Curation type deleted successfully",
+    "reordered": "Curation types reordered successfully",
+    "reorderFailed": "Failed to reorder curation types"
   },
   "form": {
     "name": "Type Name",

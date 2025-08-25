@@ -32,7 +32,7 @@ const LevelPage = () => {
   const [error, setError] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(false);
   const { user } = useAuth();
-  const { difficulties } = useContext(DifficultyContext);
+  const { difficulties, curationTypes } = useContext(DifficultyContext);
   const {
     levelsData,
     setLevelsData,
@@ -62,6 +62,8 @@ const LevelPage = () => {
     setAvailableDlFilter,
     clearedFilter,
     setClearedFilter,
+    curatedTypesFilter,
+    setCuratedTypesFilter,
     sliderRange,
     setSliderRange,
     selectedSpecialDiffs,
@@ -275,7 +277,8 @@ const LevelPage = () => {
           pguRange: `${selectedLowFilterDiff},${selectedHighFilterDiff}`,
           specialDifficulties: allSpecialDiffs.join(','),
           onlyMyLikes: user ? onlyMyLikes : undefined,
-          availableDlFilter: availableDlFilter
+          availableDlFilter: availableDlFilter,
+          curatedTypesFilter: curatedTypesFilter
         };
         
         const response = await api.get(
@@ -337,7 +340,7 @@ const LevelPage = () => {
       fetchLevels();
     }
     return () => cancel && cancel();
-  }, [query, sort, pageNumber, forceUpdate, deletedFilter, sliderQRange, qSliderVisible]);
+  }, [query, sort, pageNumber, forceUpdate, deletedFilter, sliderQRange, qSliderVisible, curatedTypesFilter]);
 
   function handleFilterOpen() {
     setFilterOpen(!filterOpen);
@@ -387,6 +390,7 @@ const LevelPage = () => {
     setDeletedFilter("hide");
     setClearedFilter("show");
     setAvailableDlFilter("show");
+    setCuratedTypesFilter("show");
     setQSliderVisible(false);
     // Clear and reload data
     setLoading(true);
@@ -543,6 +547,15 @@ const LevelPage = () => {
                   selectedDiffs={selectedSpecialDiffs}
                   onToggle={toggleSpecialDifficulty}
                   disableQuantum={true}
+                />
+                <span className="state-switches-label"></span>
+                <StateDisplay
+                  currentState={curatedTypesFilter}
+                  onChange={(newState) => {
+                    setCuratedTypesFilter(newState);
+                    triggerRefresh();
+                  }}
+                  states={["Legendary", "Loved", "None"]}
                 />
                 <button 
                   className={`q-toggle-button ${qSliderVisible ? 'active' : ''}`}

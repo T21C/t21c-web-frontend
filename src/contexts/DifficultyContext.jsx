@@ -11,7 +11,7 @@ const checkImageCacheStatus = async (imageUrl) => {
         const startTime = performance.now();
         const response = await fetch(imageUrl, { 
             cache: 'force-cache',
-            mode: isDevelopment ? 'no-cors' : 'cors'
+            mode: import.meta.env.DEV ? 'no-cors' : 'cors'
         });
         const endTime = performance.now();
         
@@ -67,8 +67,11 @@ const DifficultyContextProvider = (props) => {
     const [difficultyDict, setDifficultyDict] = useState({});
     const [difficulties, setDifficulties] = useState([]);
     const [noLegacyDifficulties, setNoLegacyDifficulties] = useState([]);
+    const [curationTypes, setCurationTypes] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [curationTypesLoading, setCurationTypesLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [curationTypesError, setCurationTypesError] = useState(null);
 
     const fetchDifficulties = async () => {
         try {
@@ -116,8 +119,37 @@ const DifficultyContextProvider = (props) => {
         }
     };
 
+    const fetchCurationTypes = async () => {
+        try {
+            setCurationTypesLoading(true);
+            setCurationTypesError(null);
+            
+            // Fetch fresh data from server with no-cache to ensure latest data
+            const response = await api.get(`${import.meta.env.VITE_CURATIONS}/types`, {
+                headers: {
+                    'Cache-Control': 'no-cache',
+                }
+            });
+            const typesArray = response.data;
+            
+            if (!typesArray || !Array.isArray(typesArray)) {
+                throw new Error('Invalid server response format for curation types');
+            }
+            
+            // Update state
+            setCurationTypes(typesArray);
+            
+        } catch (err) {
+            console.error('Error fetching curation types:', err);
+            setCurationTypesError(err.message || 'Failed to fetch curation types');
+        } finally {
+            setCurationTypesLoading(false);
+        }
+    };
+
     useEffect(() => {
         fetchDifficulties();
+        fetchCurationTypes();
     }, []);
 
     // Ensure noLegacyDifficulties is always in sync with difficulties
@@ -133,11 +165,18 @@ const DifficultyContextProvider = (props) => {
                 setDifficulties,
                 difficultyDict,
                 setDifficultyDict,
+                curationTypes,
+                setCurationTypes,
                 loading,
                 setLoading,
+                curationTypesLoading,
+                setCurationTypesLoading,
                 error,
                 setError,
+                curationTypesError,
+                setCurationTypesError,
                 reloadDifficulties: fetchDifficulties,
+                reloadCurationTypes: fetchCurationTypes,
                 checkImageCacheStatus
             }}
         >

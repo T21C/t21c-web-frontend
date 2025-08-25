@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
+import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import './curationselectionpopup.css';
 import toast from 'react-hot-toast';
 
@@ -12,9 +13,9 @@ const CurationSelectionPopup = ({
 }) => {
   const { t } = useTranslation('components');
   const tCur = (key, params = {}) => t(`curationSelectionPopup.${key}`, params);
+  const { curationTypes } = useDifficultyContext();
 
   const [curations, setCurations] = useState([]);
-  const [curationTypes, setCurationTypes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedType, setSelectedType] = useState('');
@@ -65,28 +66,18 @@ const CurationSelectionPopup = ({
     }
   }, [currentPage, searchTerm, selectedType, excludeIds]);
 
-  const fetchCurationTypes = useCallback(async () => {
-    try {
-      const response = await api.get(`${import.meta.env.VITE_CURATIONS}/types`);
-      setCurationTypes(response.data);
-    } catch (error) {
-      console.error('Failed to fetch curation types:', error);
-    }
-  }, []);
-
   useEffect(() => {
     if (isOpen) {
       document.addEventListener('mousedown', handleMouseDown);
       document.addEventListener('mouseup', handleMouseUp);
       fetchCurations();
-      fetchCurationTypes();
     }
 
     return () => {
       document.removeEventListener('mousedown', handleMouseDown);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isOpen, fetchCurations, fetchCurationTypes, mouseDownOutside]);
+  }, [isOpen, fetchCurations, mouseDownOutside]);
 
   const handleCurationSelect = (curation) => {
     onCurationSelect(curation);

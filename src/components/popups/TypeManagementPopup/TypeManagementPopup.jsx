@@ -4,6 +4,7 @@ import api from '@/utils/api';
 import './typemanagementpopup.css';
 import toast from 'react-hot-toast';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const POPUP_MODES = {
   LIST: 'LIST',
@@ -25,6 +26,8 @@ const TypeManagementPopup = ({
   const [isLoading, setIsLoading] = useState(false);
   const [selectedType, setSelectedType] = useState(null);
   const [mouseDownOutside, setMouseDownOutside] = useState(false);
+  const [isReordering, setIsReordering] = useState(false);
+  const [localCurationTypes, setLocalCurationTypes] = useState([]);
   const modalRef = useRef(null);
 
   // Form state for create/edit
@@ -63,6 +66,13 @@ const TypeManagementPopup = ({
       document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [isOpen, mouseDownOutside]);
+
+  // Sync local curation types with props
+  useEffect(() => {
+    if (curationTypes) {
+      setLocalCurationTypes([...curationTypes].sort((a, b) => a.sortOrder - b.sortOrder));
+    }
+  }, [curationTypes]);
 
   const resetForm = () => {
     setFormData({
@@ -235,6 +245,48 @@ const TypeManagementPopup = ({
     }
   };
 
+  const handleDragEnd = async (result) => {
+    if (!result.destination) return;
+    
+    setIsReordering(true);
+    
+    try {      
+      const items = Array.from(localCurationTypes);
+      const [reorderedItem] = items.splice(result.source.index, 1);
+      items.splice(result.destination.index, 0, reorderedItem);
+      
+      const updatedItems = items.map((item, index) => ({
+        ...item,
+        sortOrder: index
+      }));
+      
+      setLocalCurationTypes(updatedItems);
+      
+      const response = await api.put(`${import.meta.env.VITE_CURATIONS}/types/sort-orders`, {
+        sortOrders: updatedItems.map(item => ({
+          id: item.id,
+          sortOrder: item.sortOrder
+        }))
+      }, {
+        headers: {
+          'X-Super-Admin-Password': verifiedPassword
+        }
+      });
+
+      toast.success(tCur('notifications.reordered'));
+      onTypeUpdate();
+    } catch (err) {
+      console.error('Error updating sort orders:', err);
+      toast.error(tCur('notifications.reorderFailed'));
+      // Reset to original order
+      if (curationTypes) {
+        setLocalCurationTypes([...curationTypes].sort((a, b) => a.sortOrder - b.sortOrder));
+      }
+    } finally {
+      setIsReordering(false);
+    }
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -275,59 +327,88 @@ const TypeManagementPopup = ({
               </button>
             </div>
 
-            <div className="type-management-modal__types">
-              {isLoading ? (
-                <div className="type-management-modal__loading">{tCur('loading')}</div>
-              ) : curationTypes.length === 0 ? (
-                <div className="type-management-modal__empty">{tCur('empty')}</div>
-              ) : (
-                curationTypes.map(type => (
-                  <div key={type.id} className="type-management-modal__type-item">
-                    <div className="type-management-modal__type-info">
-                      <div className="type-management-modal__type-header">
-                        {type.icon && (
-                          <img 
-                            src={type.icon} 
-                            alt={`${type.name} icon`}
-                            className="type-management-modal__type-icon"
-                          />
-                        )}
-                        <h3>{type.name}</h3>
-                      </div>
-                      <div className="type-management-modal__type-details">
-                        <span 
-                          className="type-management-modal__type-color"
-                          style={{ backgroundColor: type.color }}
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable droppableId="curation-types">
+                {(provided) => (
+                  <div 
+                    className="type-management-modal__types"
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                  >
+                    {isLoading ? (
+                      <div className="type-management-modal__loading">{tCur('loading')}</div>
+                    ) : localCurationTypes.length === 0 ? (
+                      <div className="type-management-modal__empty">{tCur('empty')}</div>
+                    ) : (
+                      localCurationTypes.map((type, index) => (
+                        <Draggable 
+                          key={type.id} 
+                          draggableId={type.id.toString()} 
+                          index={index}
+                          isDragDisabled={isReordering}
                         >
-                          {type.color}
-                        </span>
-                        <span className="type-management-modal__type-abilities">
-                          {type.abilities > 0 ? tCur('hasAbilities') : tCur('noAbilities')}
-                        </span>
-                      </div>
-                    </div>
-                    
-                    <div className="type-management-modal__type-actions">
-                      <button
-                        className="type-management-modal__action-btn type-management-modal__action-btn--edit"
-                        onClick={() => handleEditType(type)}
-                        title={tCur('actions.edit')}
-                      >
-                        <EditIcon size={30}/>
-                      </button>
-                      <button
-                        className="type-management-modal__action-btn type-management-modal__action-btn--delete"
-                        onClick={() => handleDeleteType(type)}
-                        title={tCur('actions.delete')}
-                        disabled={isLoading}
-                      >
-                        <TrashIcon size={34}/>
-                      </button>
-                    </div>
+                          {(provided, snapshot) => (
+                            <div 
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                              className={`type-management-modal__type-item ${snapshot.isDragging ? 'dragging' : ''}`}
+                            >
+                              <div className="type-management-modal__type-info">
+                                <div className="type-management-modal__type-header">
+                                  <div className="type-management-modal__drag-handle">
+                                    ⋮⋮
+                                  </div>
+                                  {type.icon && (
+                                    <img 
+                                      src={type.icon} 
+                                      alt={`${type.name} icon`}
+                                      className="type-management-modal__type-icon"
+                                    />
+                                  )}
+                                  <h3>{type.name}</h3>
+                                </div>
+                                <div className="type-management-modal__type-details">
+                                  <span 
+                                    className="type-management-modal__type-color"
+                                    style={{ backgroundColor: type.color }}
+                                  >
+                                    {type.color}
+                                  </span>
+                                  <span className="type-management-modal__type-abilities">
+                                    {type.abilities > 0 ? tCur('hasAbilities') : tCur('noAbilities')}
+                                  </span>
+                                </div>
+                              </div>
+                              
+                              <div className="type-management-modal__type-actions">
+                                <button
+                                  className="type-management-modal__action-btn type-management-modal__action-btn--edit"
+                                  onClick={() => handleEditType(type)}
+                                  title={tCur('actions.edit')}
+                                  disabled={isReordering}
+                                >
+                                  <EditIcon size={30}/>
+                                </button>
+                                <button
+                                  className="type-management-modal__action-btn type-management-modal__action-btn--delete"
+                                  onClick={() => handleDeleteType(type)}
+                                  title={tCur('actions.delete')}
+                                  disabled={isLoading || isReordering}
+                                >
+                                  <TrashIcon size={34}/>
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </Draggable>
+                      ))
+                    )}
+                    {provided.placeholder}
                   </div>
-                ))
-              )}
-            </div>
+                )}
+              </Droppable>
+            </DragDropContext>
           </>
         )}
 
