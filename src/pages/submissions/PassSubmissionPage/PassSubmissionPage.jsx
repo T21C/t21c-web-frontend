@@ -10,6 +10,7 @@ import { parseJudgements } from "@/utils/ParseJudgements";
 import { useAuth } from "@/contexts/AuthContext";
 import { FetchIcon } from "@/components/common/icons";
 import { validateFeelingRating, validateSpeed, validateNumber } from "@/utils/Utility";
+import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { useTranslation } from "react-i18next";
 import api from "@/utils/api";
 import axios from 'axios';
@@ -46,7 +47,7 @@ const PassSubmissionPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user.player.isSubmissionsPaused || user.player.isBanned || !user.isEmailVerified) {
+    if (hasAnyFlag(user, [permissionFlags.SUBMISSIONS_PAUSED, permissionFlags.BANNED]) || !hasFlag(user, permissionFlags.EMAIL_VERIFIED)) {
       navigate('/submission')
     }
   }, [user]);

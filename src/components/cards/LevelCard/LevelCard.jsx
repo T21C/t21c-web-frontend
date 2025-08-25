@@ -9,6 +9,8 @@ import { EditIcon, SteamIcon, DownloadIcon, VideoIcon, PassIcon, LikeIcon } from
 import { formatCreatorDisplay } from "@/utils/Utility";
 import { ABILITIES, hasBit } from "@/utils/Abilities";
 import { UserAvatar } from "@/components/layout";
+import { permissionFlags } from "@/utils/UserPermissions";
+import { hasFlag } from "@/utils/UserPermissions";
 
 
 const LevelCard = ({
@@ -259,7 +261,7 @@ const LevelCard = ({
           )}
         </div>
 
-        {user?.isSuperAdmin && (
+        {user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
           <button className="edit-button" onClick={handleEditClick}>
             <EditIcon size={"32px"} />
           </button>

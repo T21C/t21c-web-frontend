@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { NavLink } from 'react-router-dom';
 import { CurationSelectionPopup } from '@/components/popups';
+import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
 const CurationSchedulePage = () => {
   const { user } = useAuth();
@@ -61,7 +62,7 @@ const CurationSchedulePage = () => {
   };
 
   useEffect(() => {
-    if (user?.role === 'admin' || user?.isSuperAdmin) {
+    if (hasFlag(user, permissionFlags.SUPER_ADMIN)) {
       fetchSchedules();
     }
   }, [user, currentMonday]);
@@ -150,7 +151,7 @@ const CurationSchedulePage = () => {
   // Get excluded curation IDs for the popup
   const excludedIds = schedules.map(s => s.curationId || s.curation?.id).filter(Boolean);
 
-  if (!user || (user.role !== 'admin' && !user.isSuperAdmin)) {
+  if (!hasFlag(user, permissionFlags.SUPER_ADMIN)) {
     return <AccessDenied />;
   }
 

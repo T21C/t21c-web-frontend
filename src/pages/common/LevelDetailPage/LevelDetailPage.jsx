@@ -24,6 +24,7 @@ import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
 import LevelDownloadPopup from '../../../components/popups/LevelDownloadPopup/LevelDownloadPopup';
 import { ABILITIES, hasBit } from '@/utils/Abilities';
+import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
 
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
@@ -1269,7 +1270,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                   {tLevel('components.ratingAccuracy.voteButton')}
                 </button>
                 <span className="rating-accuracy-vote-count">Votes: {res.totalVotes || 0}</span>
-                {user?.isSuperAdmin && (
+                {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
                   <>
                 <InfoIcon 
                 className="rating-accuracy-info-button"  
@@ -1331,7 +1332,7 @@ const LevelDetailPage = ({ mockData = null }) => {
               </div>
             </div>
             <div className="right"> 
-            {user?.isSuperAdmin && (
+            {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
                 <button 
                   className="edit-button svg-stroke"
                   onClick={() => setOpenEditDialog(true)}

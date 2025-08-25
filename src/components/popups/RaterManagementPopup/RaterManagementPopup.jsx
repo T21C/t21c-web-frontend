@@ -4,6 +4,8 @@ import api from '@/utils/api';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { UserAvatar } from '@/components/layout';
+import { permissionFlags } from '@/utils/UserPermissions';
+import { hasFlag } from '@/utils/UserPermissions';
 
 const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) => {
   const { t } = useTranslation('components');
@@ -27,7 +29,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
         superAdminPassword
       };
 
-      if (rater.isSuperAdmin) {
+      if (hasFlag(rater, permissionFlags.SUPER_ADMIN)) {
         await api.post(`/v2/admin/users/revoke-role`, payload);
       } else {
         await api.post(`/v2/admin/users/grant-role`, { username: rater.username, role: 'superadmin', superAdminPassword });
@@ -59,7 +61,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
       setIsLoading(true);
       const payload = { 
         userId: rater.id,
-        role: rater.isSuperAdmin ? 'superadmin' : 'rater',
+        role: hasFlag(rater, permissionFlags.SUPER_ADMIN) ? 'superadmin' : 'rater',
         superAdminPassword 
       };
       await api.post(`/v2/admin/users/revoke-role`, payload);
@@ -87,7 +89,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
           <div className="rater-text">
             <span className="rater-name">
               {rater.nickname || tRater('unknown')}
-              {rater.isSuperAdmin && (
+              {hasFlag(rater, permissionFlags.SUPER_ADMIN) && (
                 <span className="super-admin-icon" title={tRater('adminBadge')}>
                   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M8 0L10.2 4.8L15.2 5.6L11.6 9.2L12.4 14.4L8 12L3.6 14.4L4.4 9.2L0.8 5.6L5.8 4.8L8 0Z" fill="#FFD700"/>
@@ -99,7 +101,7 @@ const RaterEntry = ({ rater, onUpdate, onDelete, superAdminPassword, onError }) 
           </div>
         </div>
         <div className="rater-actions">
-          {rater.isSuperAdmin ? (
+          {hasFlag(rater, permissionFlags.SUPER_ADMIN) ? (
             <button 
               className={`remove-admin-button ${!superAdminPassword ? 'hidden' : ''}`}
               onClick={(e) => {

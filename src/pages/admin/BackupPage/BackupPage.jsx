@@ -9,6 +9,7 @@ import api from "@/utils/api";
 import { EditIcon, RefreshIcon } from "@/components/common/icons";
 import { AccessDenied } from "@/components/common/display";
 import { toast } from "react-hot-toast";
+import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
 const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB in bytes
 
@@ -649,7 +650,7 @@ const BackupPage = () => {
     return backups[activeTab].reduce((total, backup) => total + backup.size, 0);
   }, [backups, activeTab]);
 
-  if (user?.isSuperAdmin === undefined) {
+  if (user.permissionFlags === undefined) {
     return (
       <div className="admin-backup-page">
         <MetaTags
@@ -668,7 +669,7 @@ const BackupPage = () => {
     );
   }
 
-  if (!user?.isSuperAdmin) {
+  if (!hasFlag(user, permissionFlags.SUPER_ADMIN)) {
     return (
       <AccessDenied 
         metaTitle={tBackup('meta.title')}

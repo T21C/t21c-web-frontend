@@ -16,6 +16,7 @@ import { MetaTags } from "@/components/common/display";
 import { useAuth } from "@/contexts/AuthContext";
 import { SortDescIcon, SortAscIcon, SortIcon, FilterIcon, ResetIcon } from "@/components/common/icons";
 import { CreatorAssignmentPopup } from "@/components/popups";
+import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
 const currentUrl = window.location.origin + location.pathname;
 const limit = 30;
@@ -270,7 +271,7 @@ const LeaderboardPage = () => {
                   width="11rem"
                 />
               </div>
-              {user?.isSuperAdmin && (
+              {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
                 <div className="recent" style={{ display: "grid", alignItems: "end" }}>
                   <StateDisplay
                     label={tLeaderboard('bannedPlayers.label')}
@@ -317,7 +318,7 @@ const LeaderboardPage = () => {
                     ...playerStat,
                     name: playerStat.player.name,
                     country: playerStat.player.country,
-                    isBanned: playerStat.player.isBanned,
+                    isBanned: hasFlag(playerStat.player.user, permissionFlags.BANNED),
                     pfp: playerStat.player.pfp,
                   }}
                   onCreatorAssignmentClick={handleCreatorAssignmentClick}

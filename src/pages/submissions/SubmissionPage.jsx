@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { MetaTags } from "@/components/common/display";
 import { useLocation } from 'react-router-dom';
 import { useAuth } from "@/contexts/AuthContext";
+import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
 const SubmissionPage = () => {
   const { t } = useTranslation('pages');
@@ -25,8 +26,7 @@ const SubmissionPage = () => {
     navigate('/submission/pass');
   };
 
-  const noAccess = user.player.isSubmissionsPaused || user.player.isBanned || !user.isEmailVerified
-
+  const noAccess = hasAnyFlag(user, [permissionFlags.SUBMISSIONS_PAUSED, permissionFlags.BANNED]) || !hasFlag(user, permissionFlags.EMAIL_VERIFIED)
   return (
     <div className="submission-page">
       <MetaTags
@@ -40,7 +40,7 @@ const SubmissionPage = () => {
       <div className="background-level"></div>
       
       <div className={`submission-container ${noAccess && "banner-container"}`}>
-      {user.player.isSubmissionsPaused ? (
+      {hasFlag(user, permissionFlags.SUBMISSIONS_PAUSED) ? (
         <div className="banner">
           <span className="banner-text">
             <span className="submissions-paused">{tSubmission('banner.submissionSuspended')}</span>
@@ -48,7 +48,7 @@ const SubmissionPage = () => {
             <span className="contact">{tSubmission('banner.contact')}</span>
           </span>
         </div>
-      ) : user.player.isBanned ? (
+      ) : hasFlag(user, permissionFlags.BANNED) ? (
         <div className="banner">
           <span className="banner-text">
             <span className="banned">{tSubmission('banner.banned')}</span>
@@ -56,7 +56,7 @@ const SubmissionPage = () => {
             <span className="contact">{tSubmission('banner.contact')}</span>
           </span>
         </div>
-      ) : !user.isEmailVerified ? (
+      ) : !hasFlag(user, permissionFlags.EMAIL_VERIFIED) ? (
         <div className="email-not-verified banner">
           <span className="banner-text verify-email">{tSubmission('banner.emailVerification')}</span>
           <span className="verify-email">

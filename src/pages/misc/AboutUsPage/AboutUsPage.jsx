@@ -5,6 +5,7 @@ import { useTranslation } from "react-i18next";
 import { useState, useEffect, useCallback } from "react";
 import api from "@/utils/api";
 import { DefaultAvatar } from "@/components/common/icons";
+import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
 const AboutUsPage = () => {
   const { t } = useTranslation('pages');
@@ -20,10 +21,10 @@ const AboutUsPage = () => {
         const response = await api.get(import.meta.env.VITE_RATERS_API);
         // Sort raters with super admins first
         setRaters(response.data.sort((a, b) => {
-          if (a.isSuperAdmin === b.isSuperAdmin) {
+          if (hasFlag(a, permissionFlags.SUPER_ADMIN) === hasFlag(b, permissionFlags.SUPER_ADMIN)) {
             return a.discordUsername?.localeCompare(b.discordUsername) || 0;
           }
-          return b.isSuperAdmin - a.isSuperAdmin;
+          return hasFlag(b, permissionFlags.SUPER_ADMIN) - hasFlag(a, permissionFlags.SUPER_ADMIN);
         }));
       } catch (error) {
         console.error('Failed to fetch raters:', error);
@@ -153,10 +154,10 @@ const AboutUsPage = () => {
                             <span className="credit-name">
                               <span className="at">@</span>
                               {rater.username}
-                              {rater.isSuperAdmin ? ' ⭐' : ''}
+                              {hasFlag(rater, permissionFlags.SUPER_ADMIN) ? ' ⭐' : ''}
                             </span>
                             <span className="credit-role">
-                              {tAbout('sections.credits.categories.rating.roles.' + (rater.isSuperAdmin ? 'manager' : 'rater'))}
+                              {tAbout('sections.credits.categories.rating.roles.' + (hasFlag(rater, permissionFlags.SUPER_ADMIN) ? 'manager' : 'rater'))}
                             </span>
                           </div>
                         </div>

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNotification } from './NotificationContext';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
 const AuthContext = createContext();
 
@@ -75,10 +76,9 @@ export const AuthProvider = ({ children }) => {
     
     try {
       const response = await axios.get(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_ME}`);
-      const currentVerificationState = response.data.user?.isEmailVerified;
-      
+      const currentVerificationState = hasFlag(response.data.user, permissionFlags.EMAIL_VERIFIED);
       // If verification state has changed, update user
-      if (currentVerificationState !== user.isEmailVerified) {
+      if (currentVerificationState !== hasFlag(user, permissionFlags.EMAIL_VERIFIED)) {
         setUser(response.data.user);
         return true; // State changed
       }
@@ -101,9 +101,9 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       const response = await axios.get(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_ME}`);
       const newUser = response.data.user;
-      
+      console.log(hasFlag(newUser, permissionFlags.SUPER_ADMIN))
       setUser(newUser);
-      if (newUser?.isSuperAdmin || newUser?.isRater) {
+      if (hasAnyFlag(newUser, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])) {
         restartNotifications(true);
       }
     } catch (error) {

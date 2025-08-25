@@ -11,6 +11,8 @@ import { isoToEmoji } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotification } from "@/contexts/NotificationContext";
 import api from "@/utils/api";
+import { permissionFlags } from "@/utils/UserPermissions";
+import { hasFlag } from "@/utils/UserPermissions";
 
 const Navigation = ({ children }) => {
   const { t } = useTranslation('components');
@@ -85,7 +87,7 @@ const Navigation = ({ children }) => {
 
   useEffect(() => {
     const isAdminPath = location.pathname.startsWith('/admin');
-    setIsAdminView(isAdminPath && user?.isSuperAdmin);
+    setIsAdminView(isAdminPath && user && hasFlag(user, permissionFlags.SUPER_ADMIN));
   }, [location]);
 
   useEffect(() => {
@@ -142,7 +144,7 @@ const Navigation = ({ children }) => {
 
       <div className="nav-spacer" />
       
-      <nav className={isAdminView && user?.isSuperAdmin ? 'nav--admin' : ''}>
+      <nav className={isAdminView && user && hasFlag(user, permissionFlags.SUPER_ADMIN) ? 'nav--admin' : ''}>
         <div className="nav-wrapper">
           {/* Left side: Logo and main navigation links */}
           <div className="nav-left">
@@ -235,7 +237,7 @@ const Navigation = ({ children }) => {
 
           {/* Right side: Language switcher and profile */}
           <ul className="nav-list">
-            {user?.isSuperAdmin && (
+            {user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
               <li className="nav-list-item" onClick={toggleAdminView}>
                 {isAdminView ? tNav('links.admin.back') : tNav('links.admin.admin')}
               </li>

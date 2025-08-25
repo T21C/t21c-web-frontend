@@ -20,6 +20,8 @@ import { DifficultySlider, SpecialDifficulties } from "@/components/common/selec
 import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon , FilterIcon, LikeIcon, SwitchIcon} from "@/components/common/icons";
 import { LevelHelpPopup } from "@/components/popups";
 import toast from 'react-hot-toast';
+import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
+
 const currentUrl = window.location.origin + location.pathname;
 
 const limit = 50;
@@ -690,7 +692,7 @@ const LevelPage = () => {
                   states={['show', 'hide', 'only']}
                 />
               </div>
-              {user?.isSuperAdmin && (
+              {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
                 <div className="state-switches-item">
                   <span className="state-switches-label">{tLevel('settingExp.deletedLevels')}</span>
                   <StateDisplay

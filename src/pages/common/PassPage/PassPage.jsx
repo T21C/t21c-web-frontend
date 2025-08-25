@@ -19,6 +19,7 @@ import { DifficultyContext } from "@/contexts/DifficultyContext";
 import { DifficultySlider, SpecialDifficulties } from "@/components/common/selectors";
 import { PassHelpPopup } from "@/components/popups";
 import { ResetIcon, SortIcon, FilterIcon, SortAscIcon, SortDescIcon, SwitchIcon } from "@/components/common/icons";
+import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 const currentUrl = window.location.origin + location.pathname;
 
 const limit = 30;
@@ -508,7 +509,7 @@ const PassPage = () => {
             className={`state-switches state-switches-class ${stateDisplayOpen ? 'visible' : 'hidden'}`}
           >
             <div className="state-switches-option">
-              {user?.isSuperAdmin && (
+              {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
                 <div className="state-switches-item">
                   <span className="state-switches-label">{tPass('settings.filter.options.deletedPasses')}</span>
                   <StateDisplay

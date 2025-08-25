@@ -15,6 +15,7 @@ import api from "@/utils/api";
 import { prepareZipForUpload, validateZipSize } from '@/utils/zipUtils';
 import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
+import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
 const encodeFilename = (str) => {
   // Convert string to UTF-8 bytes, then to hex
@@ -53,7 +54,7 @@ const LevelSubmissionPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (user.player.isSubmissionsPaused || user.player.isBanned || !user.isEmailVerified) {
+    if (hasAnyFlag(user, [permissionFlags.SUBMISSIONS_PAUSED, permissionFlags.BANNED]) || !hasFlag(user, permissionFlags.EMAIL_VERIFIED)) {
       navigate('/submission')
     }
   }, [user]);
