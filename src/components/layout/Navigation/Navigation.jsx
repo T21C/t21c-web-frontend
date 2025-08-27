@@ -11,7 +11,7 @@ import { isoToEmoji } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useNotification } from "@/contexts/NotificationContext";
 import api from "@/utils/api";
-import { permissionFlags } from "@/utils/UserPermissions";
+import { hasAnyFlag, permissionFlags } from "@/utils/UserPermissions";
 import { hasFlag } from "@/utils/UserPermissions";
 
 const Navigation = ({ children }) => {
@@ -135,6 +135,10 @@ const Navigation = ({ children }) => {
     navigate(newAdminView ? '/admin/rating' : '/levels');
   };
 
+  const isCurator = (user) => {
+    return hasAnyFlag(user, [permissionFlags.HEAD_CURATOR, permissionFlags.CURATOR]);
+  };
+
   return (
     <>
       <div 
@@ -230,6 +234,13 @@ const Navigation = ({ children }) => {
                       )}
                     </li>
                   </NavLink>
+                  {isCurator(user) && (
+                    <NavLink className={({ isActive }) =>
+                      "nav-link " + (isActive ? "active" : "")}
+                      to="/admin/curations">
+                      <li className="nav-list-item">{tNav('links.curations')}</li>
+                    </NavLink>
+                  )}
                 </>
               )}
             </ul>
@@ -461,6 +472,13 @@ const Navigation = ({ children }) => {
                     </span>
                   )}
                 </li>
+                {isCurator(user) && (
+                  <li className="nav-list-item">
+                    <NavLink to="/admin/curations" onClick={changeNavState}>
+                      {tNav('links.curations')}
+                    </NavLink>
+                  </li>
+                )}
             </>
           )}
           <li className="nav-list-item">

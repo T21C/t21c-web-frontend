@@ -33,6 +33,11 @@
     "next": "Dalej",
     "previous": "Poprzednie"
   },
+  "promote": "Awansuj",
+  "demote": "Degraduj",
+  "promoteTo": "Awansuj na {{role}}",
+  "demoteTo": "Degraduj na {{role}}",
+  "currentRole": "Obecna rola",
   "pagination": {
     "previous": "Poprzednia strona",
     "next": "Następna strona",

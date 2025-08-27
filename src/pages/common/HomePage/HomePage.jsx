@@ -388,8 +388,6 @@ const HomePage = () => {
                         autoScroll={isUserActive && weeklies.filter(w => w.listType === 'primary').length > 1}
                         autoScrollInterval={6000}
                         onCurationClick={(curation) => {
-                          // Handle curation click - could navigate to curation page
-                          console.log('Clicked curation:', curation);
                         }}
                         className="weekly-gallery--primary"
                       />
@@ -405,8 +403,6 @@ const HomePage = () => {
                         autoScroll={isUserActive && weeklies.filter(w => w.listType === 'secondary').length > 1}
                         autoScrollInterval={7000}
                         onCurationClick={(curation) => {
-                          // Handle curation click - could navigate to curation page
-                          console.log('Clicked curation:', curation);
                         }}
                         className="weekly-gallery--secondary"
                       />

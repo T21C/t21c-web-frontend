@@ -1,0 +1,49 @@
+{
+  "meta": {
+    "title": "Gestion de la curation",
+    "description": "Gérer la curation des niveaux et les niveaux de qualité"
+  },
+  "title": "Gestion de la curation",
+  "description": "Attribuer des niveaux de qualité aux niveaux et gérer les programmes de curation",
+  "filters": {
+    "type": "Type de curation",
+    "allTypes": "Tous les types",
+    "search": "Rechercher",
+    "searchPlaceholder": "Rechercher par chanson, artiste ou créateur..."
+  },
+  "loading": "Chargement des curations...",
+  "empty": "Aucune curation trouvée",
+  "password": {
+    "title": "Mot de passe super-administrateur requis",
+    "description": "Veuillez entrer votre mot de passe super-administrateur pour continuer",
+    "placeholder": "Entrer le mot de passe",
+    "submit": "Soumettre",
+    "cancel": "Annuler"
+  },
+  "initialPassword": {
+    "title": "Accès super-administrateur requis",
+    "description": "Cette page nécessite des privilèges super-administrateur. Veuillez entrer votre mot de passe pour continuer.",
+    "placeholder": "Entrer le mot de passe super-administrateur",
+    "continue": "Continuer"
+  },
+  "notifications": {
+    "created": "Curation créée avec succès",
+    "updated": "Curation mise à jour avec succès",
+    "deleted": "Curation supprimée avec succès",
+    "typeCreated": "Type de curation créé avec succès",
+    "typeUpdated": "Type de curation mis à jour avec succès",
+    "levelAdded": "Niveau ajouté à la curation avec succès",
+    "levelUpdated": "Curation mise à jour avec succès"
+  },
+  "actions": {
+    "addLevel": "Ajouter un niveau",
+    "manageTypes": "Gérer les types",
+    "manageCurators": "Gérer les conservateurs",
+    "manageSchedule": "Gérer le programme",
+    "editCuration": "Modifier la curation",
+    "deleteCuration": "Supprimer la curation"
+  },
+  "confirmations": {
+    "deleteCuration": "Êtes-vous sûr de vouloir supprimer cette curation ?"
+  }
+}

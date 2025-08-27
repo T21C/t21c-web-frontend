@@ -121,9 +121,10 @@ const CurationTypePopup = ({
       
       if (isCreating) {
         // Create the curation type first
-        response = await api.post(`${import.meta.env.VITE_CURATIONS}/types`, {
-          ...formData,
-          superAdminPassword: verifiedPassword
+        response = await api.post(`${import.meta.env.VITE_CURATIONS}/types`, formData, {
+          headers: {
+            'X-Super-Admin-Password': verifiedPassword
+          }
         });
         
         // If there's an icon file to upload, upload it after creation
@@ -155,9 +156,10 @@ const CurationTypePopup = ({
         toast.success(tCur('notifications.created'));
       } else {
         // Update existing curation type
-        response = await api.put(`${import.meta.env.VITE_CURATIONS}/types/${curationType.id}`, {
-          ...formData,
-          superAdminPassword: verifiedPassword
+        response = await api.put(`${import.meta.env.VITE_CURATIONS}/types/${curationType.id}`, formData, {
+          headers: {
+            'X-Super-Admin-Password': verifiedPassword
+          }
         });
         
         // If there's an icon file to upload, upload it

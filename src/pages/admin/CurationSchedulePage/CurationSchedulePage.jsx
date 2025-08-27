@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { NavLink } from 'react-router-dom';
 import { CurationSelectionPopup } from '@/components/popups';
-import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
 const CurationSchedulePage = () => {
   const { user } = useAuth();
@@ -151,7 +151,7 @@ const CurationSchedulePage = () => {
   // Get excluded curation IDs for the popup
   const excludedIds = schedules.map(s => s.curationId || s.curation?.id).filter(Boolean);
 
-  if (!hasFlag(user, permissionFlags.SUPER_ADMIN)) {
+  if (!hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR])) {
     return <AccessDenied />;
   }
 
@@ -164,7 +164,7 @@ const CurationSchedulePage = () => {
       />
       
       <CompleteNav />
-      
+      <div className="background-level" />
       <div className="curation-schedule-page__content">
         <div className="curation-schedule-page__header">
           <div className="curation-schedule-page__header-top">

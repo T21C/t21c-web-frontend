@@ -101,7 +101,6 @@ export const AuthProvider = ({ children }) => {
       setLoading(true);
       const response = await axios.get(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_ME}`);
       const newUser = response.data.user;
-      console.log(hasFlag(newUser, permissionFlags.SUPER_ADMIN))
       setUser(newUser);
       if (hasAnyFlag(newUser, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])) {
         restartNotifications(true);

@@ -208,7 +208,6 @@ const FullInfoPopup = ({ level, onClose }) => {
       </div>
     );
   };
-  console.log(level);
   return (
     <>
       <div className="level-detail-popup-overlay" onClick={onClose}></div>
@@ -510,7 +509,6 @@ const LevelDetailPage = ({ mockData = null }) => {
   
   // Use previewLevelId if in preview mode, otherwise use URL parameter
   const effectiveId = id || mockData?.level.id;
-  console.log(mockData);
   const [res, setRes] = useState(null);
   const [displayedPlayers, setDisplayedPlayers] = useState([]);
   const [leaderboardSort, setLeaderboardSort] = useState("SCR");

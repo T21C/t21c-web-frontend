@@ -33,6 +33,11 @@
     "next": "Suivant",
     "previous": "Précédent"
   },
+  "promote": "Promouvoir",
+  "demote": "Rétrograder",
+  "promoteTo": "Promouvoir en {{role}}",
+  "demoteTo": "Rétrograder en {{role}}",
+  "currentRole": "Rôle actuel",
   "pagination": {
     "previous": "Précédent",
     "next": "Suivant",

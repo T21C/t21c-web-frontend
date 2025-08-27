@@ -1,6 +1,6 @@
 {
-  "title": "管理评级员",
-  "loading": "加载评级员中……",
+  "title": "管理策展人",
+  "loading": "加载策展人中……",
   "search": {
     "placeholder": "按用户名或 ID 搜索"
   },
@@ -9,9 +9,9 @@
       "placeholder": "输入超管密码"
     }
   },
-  "addRater": {
+  "addCurator": {
     "placeholder": "输入用户名",
-    "button": "添加评级员"
+    "button": "添加策展人"
   },
   "userEntry": {
     "unknown": "未知",
@@ -20,20 +20,20 @@
     }
   },
   "roles": {
-    "rater": "评级员",
-    "superadmin": "超级管理员"
+    "curator": "策展人",
+    "headCurator": "首席策展人"
   },
   "errors": {
     "passwordRequired": "需要密码",
     "invalidPassword": "超管密码无效",
-    "deleteConfirm": "确认删除评级员？",
+    "deleteConfirm": "确认删除策展人？",
     "updateRoleFailed": "更新角色失败",
-    "deleteFailed": "删除评级员失败",
-    "loadFailed": "加载评级员失败",
-    "addFailed": "添加评级员失败",
+    "deleteFailed": "删除策展人失败",
+    "loadFailed": "加载策展人失败",
+    "addFailed": "添加策展人失败",
     "userNotFound": "未找到用户",
     "alreadyHighestRole": "用户已拥有最高角色",
     "alreadyLowestRole": "用户已拥有最低角色",
     "noRoleToRemove": "用户没有可移除的角色"
   }
-} 
+}

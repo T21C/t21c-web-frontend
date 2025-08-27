@@ -1,0 +1,336 @@
+.user-management-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.user-management-overlay .user-management-popup {
+  background-color: var(--color-black);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 8px;
+  padding: 20px;
+  width: 90%;
+  max-width: 600px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-management-overlay .popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--color-white-t20);
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.user-management-overlay .mode-toggle {
+  display: flex;
+  gap: 8px;
+  margin: 0 20px;
+}
+
+.user-management-overlay .mode-button {
+  padding: 8px 16px;
+  background-color: var(--color-white-t10);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  color: var(--color-white-t70);
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: all 0.2s ease;
+}
+
+.user-management-overlay .mode-button:hover {
+  background-color: var(--color-white-t20);
+  color: var(--color-white);
+}
+
+.user-management-overlay .mode-button.active {
+  background-color: #4CAF50;
+  border-color: #4CAF50;
+  color: white;
+}
+
+.user-management-overlay .popup-header h2 {
+  margin: 0;
+  color: var(--color-white);
+  font-size: 1.5em;
+  white-space: nowrap;
+}
+
+.user-management-overlay .close-button {
+  background: none;
+  border: none;
+  color: var(--color-white);
+  font-size: 24px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.user-management-overlay .search-section {
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--color-white-t20);
+}
+
+.user-management-overlay .search-input {
+  width: 100%;
+  padding: 8px 12px;
+  background-color: var(--color-white-t20);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  color: var(--color-white);
+  font-size: 1em;
+}
+
+.user-management-overlay .users-list {
+  overflow-y: auto;
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+.user-management-overlay .user-entry {
+  background-color: var(--color-white-t10);
+  border-radius: 4px;
+  margin-bottom: 10px;
+}
+
+.user-management-overlay .user-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+}
+
+.user-management-overlay .user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+}
+
+.user-management-overlay .user-info .avatar-image {
+  width: 40px;
+  height: 40px;
+}
+
+.user-management-overlay .user-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.user-management-overlay .user-name {
+  color: var(--color-white);
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-management-overlay .role-badge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75em;
+  font-weight: 600;
+  margin-left: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.user-management-overlay .role-badge.top-role {
+  background: linear-gradient(135deg, #ffd700 0%, #ffb347 100%);
+  color: #333;
+  font-weight: 700;
+}
+
+.user-management-overlay .top-role-indicator {
+  font-size: 0.8em;
+  color: #333;
+}
+
+
+
+.user-management-overlay .internal-username {
+  color: var(--color-white-t70);
+  font-size: 0.9em;
+}
+
+.user-management-overlay .delete-user-button {
+  padding: 6px 12px;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  margin-left: 10px;
+}
+
+.user-management-overlay .promote-button {
+  padding: 6px 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  margin-left: 10px;
+}
+
+.user-management-overlay .demote-button {
+  padding: 6px 12px;
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  margin-left: 10px;
+}
+
+.user-management-overlay .loading {
+  color: var(--color-white);
+  text-align: center;
+  padding: 20px;
+}
+
+.user-management-overlay .add-user-section {
+  display: flex;
+  gap: 10px;
+  padding-top: 15px;
+  border-top: 1px solid var(--color-white-t20);
+}
+
+.user-management-overlay .add-user-section input {
+  flex: 1;
+  padding: 8px 12px;
+  background-color: var(--color-white-t20);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  color: var(--color-white);
+  font-size: 1em;
+}
+
+.user-management-overlay .add-user-section button {
+  padding: 8px 16px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.user-management-overlay button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.user-management-overlay .delete-user-button:hover:not(:disabled) {
+  background-color: #d32f2f;
+}
+
+.user-management-overlay .add-user-section button:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+.user-management-overlay .header-password-input {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-management-overlay .header-password-input input {
+  width: 100%;
+  padding: 8px 12px;
+  background-color: var(--color-white-t10);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  color: var(--color-white);
+  font-size: 0.9em;
+}
+
+.user-management-overlay .header-password-input input::placeholder {
+  color: #666666;
+}
+
+.user-management-overlay .user-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.user-management-overlay .promote-button,
+.user-management-overlay .demote-button {
+  transition: all 0.2s ease;
+}
+
+.user-management-overlay .promote-button:hover:not(:disabled) {
+  background-color: #45a049;
+  transform: translateY(-1px);
+}
+
+.user-management-overlay .demote-button:hover:not(:disabled) {
+  background-color: #e68900;
+  transform: translateY(-1px);
+}
+
+.user-management-overlay .error-message-container {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #f44336;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  z-index: 1001;
+  max-width: 90%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.user-management-overlay .error-message-container .close-error {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.user-management-overlay .error-message-container .error-text {
+  margin: 0;
+  font-size: 0.9em;
+  flex: 1;
+}
+
+.user-management-overlay .protected-status {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #4CAF50;
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8em;
+  font-weight: 500;
+}

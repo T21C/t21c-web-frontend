@@ -63,7 +63,6 @@
 .curation-page .curation-manage-types-btn {
   display: flex;
   align-items: center;
-  margin-left: auto;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
   background: #333333;
@@ -80,6 +79,28 @@
 .curation-page .curation-manage-types-btn:hover {
   background: #1a1a1a;
   border-color: #4a9eff;
+  transform: translateY(-1px);
+}
+
+.curation-page .curation-manage-curators-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #9c27b0;
+  color: #ffffff;
+  border: 2px solid #ba68c8;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.curation-page .curation-manage-curators-btn:hover {
+  background: #7b1fa2;
+  border-color: #e1bee7;
   transform: translateY(-1px);
 }
 
@@ -147,6 +168,11 @@
   border-bottom: 1px solid #404040;
 }
 
+.curation-page .curation-item.protected {
+  pointer-events: none;
+  cursor: none;
+}
+
 .curation-page .curation-item:hover {
   background-color: rgba(255, 255, 255, 0.05);
 }
@@ -201,6 +227,12 @@
   width: 1.5rem;
   height: 1.5rem;
   object-fit: contain;
+}
+
+.curation-page .curation-level-id {
+  font-size: 0.8rem;
+  color: #a0a0a0;
+  margin: 0;
 }
 
 .curation-page .curation-song-wrapper h3 {
@@ -620,4 +652,10 @@
 
 .password-modal-actions .cancel-btn:hover {
   background: #1a1a1a;
+}
+
+.curation-page .curation-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-left: auto;
 }

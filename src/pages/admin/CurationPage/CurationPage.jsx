@@ -8,9 +8,10 @@ import api from '@/utils/api';
 import './curationpage.css';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
-import { LevelSelectionPopup, TypeManagementPopup, CurationEditPopup } from '@/components/popups';
+import { LevelSelectionPopup, TypeManagementPopup, CurationEditPopup, UserManagementPopup } from '@/components/popups';
 import { toast } from 'react-hot-toast';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
 const CurationPage = () => {
   const navigate = useNavigate();
@@ -36,12 +37,13 @@ const CurationPage = () => {
   const [showLevelSelectionPopup, setShowLevelSelectionPopup] = useState(false);
   const [showTypeManagementPopup, setShowTypeManagementPopup] = useState(false);
   const [showCurationEditPopup, setShowCurationEditPopup] = useState(false);
+  const [showCuratorManagementPopup, setShowCuratorManagementPopup] = useState(false);
   const [editingCuration, setEditingCuration] = useState(null);
 
 
   // Add effect to handle body scrolling
   useEffect(() => {
-    const isAnyOpen = showPasswordPrompt || showLevelSelectionPopup || showTypeManagementPopup || showCurationEditPopup;
+    const isAnyOpen = showPasswordPrompt || showLevelSelectionPopup || showTypeManagementPopup || showCurationEditPopup || showCuratorManagementPopup;
     if (isAnyOpen) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -51,7 +53,7 @@ const CurationPage = () => {
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [showPasswordPrompt, showLevelSelectionPopup, showTypeManagementPopup, showCurationEditPopup]);
+  }, [showPasswordPrompt, showLevelSelectionPopup, showTypeManagementPopup, showCurationEditPopup, showCuratorManagementPopup]);
 
   const verifyPassword = async (password) => {
     try {
@@ -86,6 +88,10 @@ const CurationPage = () => {
     setShowPasswordPrompt(true);
   };
 
+  const handleManageCurators = () => {
+    setShowCuratorManagementPopup(true);
+  };
+
   const handleOpenTypeManagement = () => {
     // Refetch curation types to ensure we have the latest data
     reloadCurationTypes();
@@ -112,9 +118,7 @@ const CurationPage = () => {
       }
 
       const response = await api.post(`${import.meta.env.VITE_CURATIONS}`, {
-        levelId: selection.levelId,
-        typeId: defaultType.id,
-        assignedBy: user?.id
+        levelId: selection.levelId
       });
       
       toast.success(tCur('notifications.levelAdded'));
@@ -233,6 +237,13 @@ const CurationPage = () => {
     setEditingCuration(null);
   };
 
+  const isAccessibleCuration = (curation) => {
+    return curation.type.name == "T1" ||
+    hasAnyFlag(user, [
+      permissionFlags.SUPER_ADMIN, 
+      permissionFlags.HEAD_CURATOR
+    ]);
+  };
 
   return (
     <div className="curation-page">
@@ -286,13 +297,27 @@ const CurationPage = () => {
             🎵
             {tCur('actions.addLevel')}
           </button>
+
+          { hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR]) && (
+          <div className="curation-buttons">
+          { hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+                      <button
+                      className="curation-manage-types-btn"
+                      onClick={handleManageTypes}
+                      title={tCur('actions.manageTypes')}
+                    >
+                      ⚙️
+                      {tCur('actions.manageTypes')}
+                    </button>
+          )}
+
           <button
-            className="curation-manage-types-btn"
-            onClick={handleManageTypes}
-            title={tCur('actions.manageTypes')}
+            className="curation-manage-curators-btn"
+            onClick={handleManageCurators}
+            title={tCur('actions.manageCurators')}
           >
-            ⚙️
-            {tCur('actions.manageTypes')}
+            👥
+            {tCur('actions.manageCurators')}
           </button>
           <NavLink
             className="curation-schedule-btn"
@@ -303,7 +328,8 @@ const CurationPage = () => {
             {tCur('actions.manageSchedule')}
           </NavLink>
         </div>
-
+        )}
+        </div>
         {/* Curations List */}
         <div className="curation-list">
           {isLoading ? (
@@ -312,7 +338,7 @@ const CurationPage = () => {
             <div className="curation-empty">{tCur('empty')}</div>
           ) : (
             curations.map(curation => (
-              <div key={curation.id} className="curation-item">
+              <div key={curation.id} className={`curation-item ${isAccessibleCuration(curation) ? '' : 'protected'}`}>
                 <div className="curation-item-wrapper">
                   <div className="curation-icon-wrapper">
                     <img 
@@ -330,6 +356,7 @@ const CurationPage = () => {
                         className="curation-difficulty-icon" 
                       />
                       <h3>{curation.level?.song || 'Unknown Level'}</h3>
+                      <p className="curation-level-id">#{curation.level?.id}</p>
                     </div>
                     <p className="curation-artist">{curation.level?.artist || 'Unknown Artist'}</p>
                     <p className="curation-creator">{curation.level?.creator || 'Unknown Creator'}</p>
@@ -341,6 +368,9 @@ const CurationPage = () => {
                     </span>
                   </div>
 
+                  { 
+                  isAccessibleCuration(curation)
+                  && (
                   <div className="curation-item-actions">
                     <button 
                       className="curation-action-btn curation-action-btn--edit"
@@ -357,6 +387,7 @@ const CurationPage = () => {
                       <TrashIcon />
                     </button>
                   </div>
+                  )}
                 </div>
               </div>
             ))
@@ -441,6 +472,15 @@ const CurationPage = () => {
           curationTypes={curationTypes}
           onUpdate={handleCurationUpdate}
         />
+
+        {/* Curator Management Popup */}
+        {showCuratorManagementPopup && (
+          <UserManagementPopup 
+            onClose={() => setShowCuratorManagementPopup(false)}
+            currentUser={user}
+            managementType="curator"
+          />
+        )}
 
       {/* Notifications */}
       <div className="curation-notifications">

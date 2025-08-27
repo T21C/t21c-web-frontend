@@ -1,0 +1,49 @@
+{
+  "meta": {
+    "title": "큐레이션 관리",
+    "description": "레벨 큐레이션 및 품질 등급 관리"
+  },
+  "title": "큐레이션 관리",
+  "description": "레벨에 품질 등급을 할당하고 큐레이션 프로그램 관리",
+  "filters": {
+    "type": "큐레이션 유형",
+    "allTypes": "모든 유형",
+    "search": "검색",
+    "searchPlaceholder": "노래, 아티스트 또는 제작자로 검색..."
+  },
+  "loading": "큐레이션 로딩 중...",
+  "empty": "큐레이션을 찾을 수 없습니다",
+  "password": {
+    "title": "슈퍼 관리자 비밀번호 필요",
+    "description": "계속하려면 슈퍼 관리자 비밀번호를 입력하세요",
+    "placeholder": "비밀번호 입력",
+    "submit": "제출",
+    "cancel": "취소"
+  },
+  "initialPassword": {
+    "title": "슈퍼 관리자 액세스 필요",
+    "description": "이 페이지는 슈퍼 관리자 권한이 필요합니다. 계속하려면 비밀번호를 입력하세요.",
+    "placeholder": "슈퍼 관리자 비밀번호 입력",
+    "continue": "계속"
+  },
+  "notifications": {
+    "created": "큐레이션이 성공적으로 생성되었습니다",
+    "updated": "큐레이션이 성공적으로 업데이트되었습니다",
+    "deleted": "큐레이션이 성공적으로 삭제되었습니다",
+    "typeCreated": "큐레이션 유형이 성공적으로 생성되었습니다",
+    "typeUpdated": "큐레이션 유형이 성공적으로 업데이트되었습니다",
+    "levelAdded": "레벨이 큐레이션에 성공적으로 추가되었습니다",
+    "levelUpdated": "큐레이션이 성공적으로 업데이트되었습니다"
+  },
+  "actions": {
+    "addLevel": "레벨 추가",
+    "manageTypes": "유형 관리",
+    "manageCurators": "큐레이터 관리",
+    "manageSchedule": "일정 관리",
+    "editCuration": "큐레이션 편집",
+    "deleteCuration": "큐레이션 삭제"
+  },
+  "confirmations": {
+    "deleteCuration": "이 큐레이션을 삭제하시겠습니까?"
+  }
+}

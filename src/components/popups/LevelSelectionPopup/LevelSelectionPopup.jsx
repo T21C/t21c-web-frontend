@@ -63,7 +63,7 @@ const LevelSelectionPopup = ({
         offset: (currentPage - 1) * LIMIT,
         limit: LIMIT,
         query: searchTerm,
-        excludeCurated: 'true'
+        curatedTypesFilter: "hide"
       });
       
       const response = await api.get(`${import.meta.env.VITE_LEVELS}?${params}`);

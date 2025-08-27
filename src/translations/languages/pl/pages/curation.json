@@ -1,0 +1,49 @@
+{
+  "meta": {
+    "title": "Zarządzanie kuratorem",
+    "description": "Zarządzanie kuratorem poziomów i poziomami jakości"
+  },
+  "title": "Zarządzanie kuratorem",
+  "description": "Przypisywanie poziomów jakości do poziomów i zarządzanie programami kuratorskimi",
+  "filters": {
+    "type": "Typ kuratora",
+    "allTypes": "Wszystkie typy",
+    "search": "Szukaj",
+    "searchPlaceholder": "Szukaj według piosenki, artysty lub twórcy..."
+  },
+  "loading": "Ładowanie kuratorów...",
+  "empty": "Nie znaleziono kuratorów",
+  "password": {
+    "title": "Wymagane hasło superadministratora",
+    "description": "Wprowadź hasło superadministratora, aby kontynuować",
+    "placeholder": "Wprowadź hasło",
+    "submit": "Prześlij",
+    "cancel": "Anuluj"
+  },
+  "initialPassword": {
+    "title": "Wymagany dostęp superadministratora",
+    "description": "Ta strona wymaga uprawnień superadministratora. Wprowadź hasło, aby kontynuować.",
+    "placeholder": "Wprowadź hasło superadministratora",
+    "continue": "Kontynuuj"
+  },
+  "notifications": {
+    "created": "Kurator utworzony pomyślnie",
+    "updated": "Kurator zaktualizowany pomyślnie",
+    "deleted": "Kurator usunięty pomyślnie",
+    "typeCreated": "Typ kuratora utworzony pomyślnie",
+    "typeUpdated": "Typ kuratora zaktualizowany pomyślnie",
+    "levelAdded": "Poziom dodany do kuratora pomyślnie",
+    "levelUpdated": "Kurator zaktualizowany pomyślnie"
+  },
+  "actions": {
+    "addLevel": "Dodaj poziom",
+    "manageTypes": "Zarządzaj typami",
+    "manageCurators": "Zarządzaj kuratorami",
+    "manageSchedule": "Zarządzaj harmonogramem",
+    "editCuration": "Edytuj kuratora",
+    "deleteCuration": "Usuń kuratora"
+  },
+  "confirmations": {
+    "deleteCuration": "Czy na pewno chcesz usunąć tego kuratora?"
+  }
+}

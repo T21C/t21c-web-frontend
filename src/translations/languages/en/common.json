@@ -33,6 +33,11 @@
     "next": "Next",
     "previous": "Previous"
   },
+  "promote": "Promote",
+  "demote": "Demote",
+  "promoteTo": "Promote to {{role}}",
+  "demoteTo": "Demote to {{role}}",
+  "currentRole": "Current Role",
   "pagination": {
     "previous": "Previous",
     "next": "Next",

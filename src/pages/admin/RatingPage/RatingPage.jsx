@@ -499,6 +499,7 @@ const RatingPage = () => {
                   placeholder={tRating('search.placeholder')}
                   name="search"
                   autoComplete="off"
+                  aria-autocomplete="none"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />

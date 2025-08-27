@@ -21,6 +21,10 @@ import TypeManagementPopup from './TypeManagementPopup/TypeManagementPopup';
 import CurationEditPopup from './CurationEditPopup/CurationEditPopup';
 import CurationSelectionPopup from './CurationSelectionPopup/CurationSelectionPopup';
 
+// User Management Popups
+import UserManagementPopup from './UserManagementPopup/UserManagementPopup';
+import CuratorManagementPopup from './CuratorManagementPopup/CuratorManagementPopup';
+
 export {
     AdminPlayerPopup,
     CreatorActionPopup,
@@ -43,5 +47,8 @@ export {
     CurationTypePopup,
     TypeManagementPopup,
     CurationEditPopup,
-    CurationSelectionPopup
+    CurationSelectionPopup,
+    // User Management Popups
+    UserManagementPopup,
+    CuratorManagementPopup
 }

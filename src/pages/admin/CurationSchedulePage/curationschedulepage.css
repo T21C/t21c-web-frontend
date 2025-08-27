@@ -1,11 +1,12 @@
 .curation-schedule-page {
   min-height: 100vh;
-  background: #1a1a1a;
   color: #ffffff;
 }
 
 .curation-schedule-page__content {
   max-width: 1400px;
+  position: relative;
+  z-index: 2;
   margin: 0 auto;
   padding: 2rem;
 }
@@ -31,9 +32,9 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background: #333333;
+  background: rgba(0, 0, 0, 0.5);
   color: #ffffff;
-  border: 2px solid #404040;
+  border: 2px solid rgba(0, 0, 0, 0.3);
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
@@ -43,7 +44,7 @@
 }
 
 .curation-schedule-page__back-btn:hover {
-  background: #1a1a1a;
+  background: rgba(0, 0, 0, 0.6);
   border-color: #4a9eff;
   transform: translateY(-1px);
   color: #ffffff;
@@ -68,16 +69,16 @@
   justify-content: space-between;
   margin-bottom: 3rem;
   padding: 1rem;
-  background: #2a2a2a;
+  background: rgba(0, 0, 0, 0.4);
   border-radius: 12px;
-  border: 2px solid #404040;
+  border: 2px solid rgba(0, 0, 0, 0.5);
 }
 
 .curation-schedule-page__week-btn {
   padding: 0.75rem 1.5rem;
-  border: 2px solid #404040;
+  border: 2px solid rgba(0, 0, 0, 0.5);
   border-radius: 8px;
-  background: #1a1a1a;
+  background: rgba(0, 0, 0, 0.6);
   color: #ffffff;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -148,9 +149,9 @@
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background: #333333;
+  background: rgba(0, 0, 0, 0.5);
   color: #ffffff;
-  border: 2px solid #404040;
+  border: 2px solid rgba(0, 0, 0, 0.5);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -194,8 +195,8 @@
 }
 
 .curation-schedule-page__hall-item {
-  background: #2a2a2a;
-  border: 2px solid #404040;
+  background: rgba(0, 0, 0, 0.4);
+  border: 2px solid rgba(0, 0, 0, 0.5);
   border-radius: 12px;
   padding: 1.5rem;
   min-width: 280px;
@@ -210,7 +211,7 @@
 
 .curation-schedule-page__hall-item:hover {
   border-color: #4a9eff;
-  background: #333333;
+  background: rgba(0, 0, 0, 0.5);
   transform: translateY(-2px);
 }
 
@@ -228,7 +229,7 @@
   justify-content: center;
   font-weight: bold;
   font-size: 0.9rem;
-  border: 3px solid #1a1a1a;
+  border: 3px solid rgba(0, 0, 0, 0.6);
 }
 
 .curation-schedule-page__hall-preview {
@@ -236,7 +237,7 @@
   height: 140px;
   border-radius: 8px;
   overflow: hidden;
-  background: #1a1a1a;
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -316,8 +317,8 @@
 }
 
 .curation-schedule-page__add-slot {
-  background: #333333;
-  border: 2px dashed #666666;
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px dashed rgba(0, 0, 0, 0.4);
   border-radius: 12px;
   padding: 1.5rem;
   min-width: 280px;
@@ -336,7 +337,7 @@
 
 .curation-schedule-page__add-slot:hover {
   border-color: #4a9eff;
-  background: #2a2a2a;
+  background: rgba(0, 0, 0, 0.4);
   color: #4a9eff;
   transform: translateY(-2px);
 }
