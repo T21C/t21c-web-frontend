@@ -446,6 +446,54 @@ const RatingAccuracyDialog = ({ isOpen, onClose, onSave, initialValue = 0 }) => 
 };
 
 // Refactor RerateHistoryDropdown to match AliasesDropdown pattern
+const CurationTooltip = ({ curation, show, onClose }) => {
+  const { t } = useTranslation('pages');
+  const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [onClose]);
+
+  const handleDropdownClick = (e) => {
+    e.stopPropagation();
+  };
+
+  if (!show || !curation) return null;
+
+  return (
+    <div className="curation-tooltip-dropdown" ref={dropdownRef} onClick={handleDropdownClick}>
+      <div className="curation-tooltip-type">{curation.type.name}</div>
+      <div className="curation-tooltip-assigned">assigned by</div>
+      <div className="curation-tooltip-user">
+        {curation.assignedByUser?.avatarUrl && (
+          <img 
+            className="curation-tooltip-avatar" 
+            src={curation.assignedByUser.avatarUrl} 
+            alt={curation.assignedByUser.nickname || 'User'} 
+          />
+        )}
+        <span className="curation-tooltip-name">
+          {curation.assignedByUser?.nickname || 'Unknown'}
+        </span>
+        <span className="curation-tooltip-username">
+          @{curation.assignedByUser?.username || 'unknown'}
+        </span>
+      </div>
+      <div className="curation-tooltip-time">
+        At {new Date(curation.createdAt).toLocaleString()}
+      </div>
+    </div>
+  );
+};
+
 const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict }) => {
   const { t } = useTranslation('pages');
   const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
@@ -638,6 +686,7 @@ const LevelDetailPage = ({ mockData = null }) => {
   }, [setExternalCssOverrideValue]);
 
   const [activeAliasDropdown, setActiveAliasDropdown] = useState(null);
+  const [showCurationTooltip, setShowCurationTooltip] = useState(false);
 
   const [showRatingPopup, setShowRatingPopup] = useState(false);
 
@@ -1245,16 +1294,23 @@ const LevelDetailPage = ({ mockData = null }) => {
 
               {/* Curation Type */}
               {res?.level?.curation?.type && (
-                <div className="curation-type-container">
-
-                    <img className="curation-type-icon" src={res.level.curation.type.icon} alt={res.level.curation.type.name} />
-
-                  <div className="curation-type-name">
-                    {res.level.curation.type.name}
+                <div className="curation-type-container-wrapper">
+                  <div 
+                    className="curation-type-container"
+                    onMouseEnter={() => setShowCurationTooltip(true)}
+                    onMouseLeave={() => setShowCurationTooltip(false)}
+                  >
+                    <img 
+                      className="curation-type-icon" 
+                      src={res.level.curation.type.icon} 
+                      alt={res.level.curation.type.name} 
+                    />
                   </div>
-                  <div className="curation-type-assigned-by">
-                    {res.level.curation.assignedByUser.nickname}
-                  </div>
+                  <CurationTooltip 
+                    curation={res.level.curation}
+                    show={showCurationTooltip}
+                    onClose={() => setShowCurationTooltip(false)}
+                  />
                 </div>
               )}
 
@@ -1262,10 +1318,7 @@ const LevelDetailPage = ({ mockData = null }) => {
               {res?.level?.curation?.type && 
                res?.level?.curation?.description && 
                res.level.curation.description.trim() && (
-                <div className={`curation-description-container 
-                ${isDescriptionExpanded ? 'expanded' : ''}
-                ${isLongDescription ? 'expandable' : ''}
-                `}>
+                <div className={`curation-description-container ${isDescriptionExpanded ? 'expanded' : ''} ${isLongDescription ? 'expandable' : ''}`}>
                   <div 
                     className={`curation-description ${isDescriptionExpanded ? 'expanded' : ''}`}
                     onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded && isLongDescription)}

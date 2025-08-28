@@ -17,6 +17,7 @@
   --glass-border: rgba(255, 255, 255, 0.1);
   
   /* Spacing System */
+  --spacing-xxs: 0.125rem;
   --spacing-xs: 0.25rem;
   --spacing-sm: 0.5rem;
   --spacing-md: 1rem;
@@ -1775,28 +1776,102 @@
    CURATION TYPE
    ============================================ */
 
+.curation-type-container-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  z-index: 2;
+}
+
 .curation-type-container {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  z-index: 1;
+  cursor: help;
+  transition: all var(--transition-normal);
+}
+
+.curation-type-container:hover {
+  transform: scale(1.1);
 }
 
 .curation-type-icon {
-  width: 2rem;
-  height: 2rem;
+  width: 3rem;
+  height: 3rem;
+  transition: all var(--transition-normal);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
 }
 
-
-.curation-type-name {
-  font-size: 1.2rem;
-  font-weight: 600;
+.curation-type-icon:hover {
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.5));
 }
 
+/* Curation Tooltip Dropdown */
+.curation-tooltip-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  min-width: 200px;
+  z-index: 120;
+  box-shadow: var(--shadow-lg);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  text-align: center;
+}
 
-.curation-type-assigned-by {
-  font-size: 0.8rem;
+.curation-tooltip-type {
+  font-weight: bold;
+  font-size: var(--font-size-lg);
+  color: var(--primary-text);
+}
+
+.curation-tooltip-assigned {
+  font-size: var(--font-size-sm);
   color: var(--secondary-text);
+  opacity: 0.8;
+}
+
+.curation-tooltip-user {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-xxs);
+  margin: var(--spacing-sm) 0;
+}
+
+.curation-tooltip-avatar {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  border: 2px solid var(--glass-border);
+  object-fit: cover;
+  z-index: 2;
+}
+
+.curation-tooltip-name {
+  font-weight: 600;
+  color: var(--primary-text);
+  font-size: var(--font-size-base);
+}
+
+.curation-tooltip-username {
+  font-size: var(--font-size-sm);
+  color: var(--secondary-text);
+  opacity: 0.7;
+  font-weight: 400;
+}
+
+.curation-tooltip-time {
+  font-size: var(--font-size-sm);
+  color: var(--secondary-text);
+  opacity: 0.9;
 }
 
 
@@ -1805,37 +1880,52 @@
    EXPANDABLE CURATION DESCRIPTION
    ============================================ */
 .curation-description-container {
+  position: relative;
   margin-top: 1rem;
+  z-index: 1;
+  flex: 1;
+  align-self: start;
+}
+
+.curation-description {
   padding: 0.75rem;
   background: rgba(0, 0, 0, 0.7);
   border-radius: 8px;
   border: 1px solid rgba(255, 255, 255, 0.2);
   transition: all var(--transition-normal);
-  z-index: 1;
 }
 
-.curation-description-container:hover {
+.curation-description:hover {
   background: rgba(0, 0, 0, 0.9);
   border-color: rgba(255, 255, 255, 0.3);
 }
 
-.curation-description-container.expandable {
+.curation-description-container.expandable .curation-description {
   cursor: pointer;
 }
 
-.curation-description-container.expandable:hover {
+.curation-description-container.expandable .curation-description:hover {
   background: rgba(0, 0, 0, 0.5);
   border-color: rgba(255, 255, 255, 0.3);
 }
 
-.curation-description-container.expanded {
+.curation-description.expanded {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   background: rgba(0, 0, 0, 1);
+  z-index: 10;
+  box-shadow: var(--shadow-lg);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
 }
 
 .curation-description-content {
   color: var(--primary-text);
   line-height: 1.5;
   font-size: 0.9rem;
+  font-style: italic;
   white-space: pre-wrap;
   word-wrap: break-word;
   text-shadow: 0 0 5px rgba(0, 0, 0, 1);
@@ -1849,10 +1939,6 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-}
-
-.curation-description.expanded .curation-description-content {
-  max-height: none;
 }
 
 .curation-description:not(.expanded) .curation-description-content {
