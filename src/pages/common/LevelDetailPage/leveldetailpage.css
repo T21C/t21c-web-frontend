@@ -233,7 +233,6 @@
    TITLE SECTION
    ============================================ */
 .level-detail .title-container {
-  flex: 1;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1016,7 +1015,7 @@
   gap: var(--spacing-xs);
   margin-top: 12px;
   z-index: 10;
-  margin-left: var(--spacing-2xl);
+  margin-left: auto;
   margin-right: var(--spacing-md);
 }
 
@@ -1773,6 +1772,95 @@
 }
 
 /* ============================================
+   CURATION TYPE
+   ============================================ */
+
+.curation-type-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  z-index: 1;
+}
+
+.curation-type-icon {
+  width: 2rem;
+  height: 2rem;
+}
+
+
+.curation-type-name {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+
+.curation-type-assigned-by {
+  font-size: 0.8rem;
+  color: var(--secondary-text);
+}
+
+
+
+/* ============================================
+   EXPANDABLE CURATION DESCRIPTION
+   ============================================ */
+.curation-description-container {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all var(--transition-normal);
+  z-index: 1;
+}
+
+.curation-description-container:hover {
+  background: rgba(0, 0, 0, 0.9);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.curation-description-container.expandable {
+  cursor: pointer;
+}
+
+.curation-description-container.expandable:hover {
+  background: rgba(0, 0, 0, 0.5);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.curation-description-container.expanded {
+  background: rgba(0, 0, 0, 1);
+}
+
+.curation-description-content {
+  color: var(--primary-text);
+  line-height: 1.5;
+  font-size: 0.9rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 1);
+}
+
+.curation-description-toggle {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--curation-primary);
+  text-align: center;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.curation-description.expanded .curation-description-content {
+  max-height: none;
+}
+
+.curation-description:not(.expanded) .curation-description-content {
+  max-height: 4.5em;
+  overflow: hidden;
+}
+
+/* ============================================
    CUSTOM CSS HELPER COMMENTS
    ============================================ */
 /*
@@ -1805,6 +1893,51 @@
   // - .level-detail.curated .header .left
   // - .level-detail.curated .title-container
   // - Any other predefined curated styles
+  
+  EXPANDABLE DESCRIPTION STYLES:
+  
+  // Customize the expandable description appearance
+  .curation-description-container {
+    margin-top: 1rem;
+    padding: 0.75rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+  }
+  
+  .curation-description-container:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+  
+  .curation-description-content {
+    color: var(--primary-text);
+    line-height: 1.5;
+    font-size: 0.9rem;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+  }
+  
+  .curation-description-toggle {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--curation-primary);
+    text-align: center;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .curation-description.expanded .curation-description-content {
+    max-height: none;
+  }
+  
+  .curation-description:not(.expanded) .curation-description-content {
+    max-height: 4.5em;
+    overflow: hidden;
+  }
   
   STANDARD CURATED STYLES (for reference):
   

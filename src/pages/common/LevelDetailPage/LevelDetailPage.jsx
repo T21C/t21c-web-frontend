@@ -517,6 +517,9 @@ const LevelDetailPage = ({ mockData = null }) => {
   
   // Custom styling state for curations
   const [curationStyles, setCurationStyles] = useState(null);
+  
+  // Expandable description state
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [customStyleElement, setCustomStyleElement] = useState(null);
   const [notFound, setNotFound] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
@@ -538,10 +541,11 @@ const LevelDetailPage = ({ mockData = null }) => {
   const location = useLocation();
   const currentUrl = window.location.origin + location.pathname;
 
+  const [isLongDescription, setIsLongDescription] = useState(false);
 
-
-
-
+  useEffect(() => {
+    setIsLongDescription(res?.level?.curation?.description?.length > 250);
+  }, [res?.level?.curation?.description]);
 
 
   // Simple CSS sanitizer - remove dangerous content
@@ -1238,9 +1242,53 @@ const LevelDetailPage = ({ mockData = null }) => {
                   </div>
                 </div>
               </div>
+
+              {/* Curation Type */}
+              {res?.level?.curation?.type && (
+                <div className="curation-type-container">
+
+                    <img className="curation-type-icon" src={res.level.curation.type.icon} alt={res.level.curation.type.name} />
+
+                  <div className="curation-type-name">
+                    {res.level.curation.type.name}
+                  </div>
+                  <div className="curation-type-assigned-by">
+                    {res.level.curation.assignedByUser.nickname}
+                  </div>
+                </div>
+              )}
+
+              {/* Expandable Curation Description */}
+              {res?.level?.curation?.type && 
+               res?.level?.curation?.description && 
+               res.level.curation.description.trim() && (
+                <div className={`curation-description-container 
+                ${isDescriptionExpanded ? 'expanded' : ''}
+                ${isLongDescription ? 'expandable' : ''}
+                `}>
+                  <div 
+                    className={`curation-description ${isDescriptionExpanded ? 'expanded' : ''}`}
+                    onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded && isLongDescription)}
+                  >
+                    <div className="curation-description-content">
+                      {isDescriptionExpanded ? 
+                        res.level.curation.description : 
+                        isLongDescription ? 
+                          `${res.level.curation.description.substring(0, 250)}...` : 
+                          res.level.curation.description
+                      }
+                    </div>
+                    {isLongDescription && (
+                      <div className="curation-description-toggle">
+                        {isDescriptionExpanded ? 'Show Less' : 'Read More'}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
               
-              {/* Rating Accuracy Display */}
-              {res.level.difficulty.type === "PGU" && res.level.clears > 0 && (
+              {/* Rating Accuracy Display, disabled for now */}
+              {1==0 && res.level.difficulty.type === "PGU" && res.level.clears > 0 && (
                 <div className="rating-accuracy-container">
                   <div className="rating-accuracy-display-title">Rating Accuracy</div>
                   <div 
