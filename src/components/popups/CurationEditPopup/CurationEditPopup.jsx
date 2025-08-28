@@ -1,10 +1,14 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '@/utils/api';
 import './curationeditpopup.css';
 import toast from 'react-hot-toast';
 import ThumbnailUpload from '@/components/common/upload/ThumbnailUpload';
+import { hasAbility, getDefaultColor } from '@/utils/curationTypeUtils';
+import { hasBit, ABILITIES } from '@/utils/Abilities';
+import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { useAuth } from '@/contexts/AuthContext';
 
 const CurationEditPopup = ({
   isOpen,
@@ -46,6 +50,7 @@ const CurationEditPopup = ({
   };
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
 
   const [formData, setFormData] = useState({
     typeId: '',
@@ -57,6 +62,56 @@ const CurationEditPopup = ({
   const [isLoading, setIsLoading] = useState(false);
   const [mouseDownOutside, setMouseDownOutside] = useState(false);
   const modalRef = useRef(null);
+
+  // Get current curation type and its abilities
+  const currentCurationType = useMemo(() => {
+    if (!curation || !curationTypes) return null;
+    return curationTypes.find(type => type.id.toString() === formData.typeId);
+  }, [curation, curationTypes, formData.typeId]);
+
+  // Check abilities for the current curation type
+  const canUseCustomCSS = useMemo(() => {
+    return currentCurationType && hasAbility(currentCurationType, 1n << 0n); // CUSTOM_CSS
+  }, [currentCurationType]);
+
+  const canUseCustomColor = useMemo(() => {
+    return currentCurationType && hasAbility(currentCurationType, 1n << 14n); // CUSTOM_COLOR_THEME
+  }, [currentCurationType]);
+
+  const requiresDescription = useMemo(() => {
+    return currentCurationType && hasAbility(currentCurationType, 1n << 11n); // FORCE_DESCRIPTION
+  }, [currentCurationType]);
+
+  const isFrontPageEligible = useMemo(() => {
+    return currentCurationType && hasAbility(currentCurationType, 1n << 13n); // FRONT_PAGE_ELIGIBLE
+  }, [currentCurationType]);
+
+  // Get curation types that the current user can assign
+  const getAssignableCurationTypes = useMemo(() => {
+    if (!curationTypes || !user) return curationTypes || [];
+
+    return curationTypes.filter(type => {
+      const userFlags = BigInt(user.permissionFlags || 0);
+      
+      // Super admins can assign all curation types
+      if (hasFlag(user, permissionFlags.SUPER_ADMIN)) {
+        return true;
+      }
+
+      // Check for CURATOR_ASSIGNABLE ability
+      if (hasBit(type.abilities, ABILITIES.CURATOR_ASSIGNABLE)) {
+        return hasAnyFlag(user, [permissionFlags.CURATOR, permissionFlags.HEAD_CURATOR]);
+      }
+
+      // Check for RATER_ASSIGNABLE ability
+      if (hasBit(type.abilities, ABILITIES.RATER_ASSIGNABLE)) {
+        return hasFlag(user, permissionFlags.RATER);
+      }
+
+      // If no specific assignment flag, only super admins can assign
+      return false;
+    });
+  }, [curationTypes, user]);
 
   const handleMouseDown = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
@@ -122,6 +177,12 @@ const CurationEditPopup = ({
       return;
     }
 
+    // Check if description is required but missing
+    if (requiresDescription && (!formData.description || formData.description.trim() === '')) {
+      toast.error(tCur('form.descriptionRequired'));
+      return;
+    }
+
     try {
       setIsLoading(true);
       
@@ -129,8 +190,8 @@ const CurationEditPopup = ({
         typeId: parseInt(formData.typeId),
         shortDescription: formData.shortDescription,
         description: formData.description,
-        customCSS: formData.customCSS,
-        customColor: formData.customColor
+        customCSS: canUseCustomCSS ? formData.customCSS : '',
+        customColor: canUseCustomColor ? formData.customColor : getDefaultColor(currentCurationType?.abilities)
       });
 
       toast.success(tCur('notifications.updated'));
@@ -192,7 +253,7 @@ const CurationEditPopup = ({
               required
             >
               <option value="">{tCur('form.selectType')}</option>
-              {curationTypes.map(type => (
+              {getAssignableCurationTypes.map(type => (
                 <option key={type.id} value={type.id}>
                   {type.name}
                 </option>
@@ -219,66 +280,84 @@ const CurationEditPopup = ({
 
           {/* Description */}
           <div className="curation-edit-modal__form-group">
-            <label htmlFor="description">{tCur('form.description')}</label>
+            <label htmlFor="description">
+              {tCur('form.description')}
+              {requiresDescription && <span className="required">*</span>}
+            </label>
             <textarea
               id="description"
               value={formData.description}
               onChange={(e) => handleInputChange('description', e.target.value)}
-              placeholder={tCur('form.descriptionPlaceholder')}
+              placeholder={requiresDescription ? tCur('form.descriptionRequiredPlaceholder') : tCur('form.descriptionPlaceholder')}
               className="curation-edit-modal__textarea"
               rows={3}
+              required={requiresDescription}
             />
           </div>
 
           {/* Custom Color */}
-          <div className="curation-edit-modal__form-group">
-            <label htmlFor="custom-color">{tCur('form.customColor')}</label>
-            <div className="curation-edit-modal__color-input">
-              <input
-                id="custom-color"
-                type="color"
-                value={formData.customColor}
-                onChange={(e) => handleInputChange('customColor', e.target.value)}
-                className="curation-edit-modal__color-picker"
-              />
-              <input
-                type="text"
-                value={formData.customColor}
-                onChange={(e) => handleInputChange('customColor', e.target.value)}
-                placeholder="#ffffff"
-                className="curation-edit-modal__color-text"
-              />
+          {canUseCustomColor && (
+            <div className="curation-edit-modal__form-group">
+              <label htmlFor="custom-color">{tCur('form.customColor')}</label>
+              <div className="curation-edit-modal__color-input">
+                <input
+                  id="custom-color"
+                  type="color"
+                  value={formData.customColor}
+                  onChange={(e) => handleInputChange('customColor', e.target.value)}
+                  className="curation-edit-modal__color-picker"
+                />
+                <input
+                  type="text"
+                  value={formData.customColor}
+                  onChange={(e) => handleInputChange('customColor', e.target.value)}
+                  placeholder="#ffffff"
+                  className="curation-edit-modal__color-text"
+                />
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Custom CSS */}
-          <div className="curation-edit-modal__form-group">
-            <label htmlFor="custom-css">{tCur('form.customCSS')}</label>
-            <textarea
-              id="custom-css"
-              value={formData.customCSS}
-              onChange={(e) => handleInputChange('customCSS', e.target.value)}
-              placeholder={tCur('form.customCSSPlaceholder')}
-              className="curation-edit-modal__css-textarea"
-              rows={8}
-            />
-            <p className="curation-edit-modal__help-text">{tCur('form.customCSSHelp')}</p>
-            
-            {/* Preview Button */}
-            <button
-              type="button"
-              className="curation-edit-modal__preview-button"
-              onClick={() => {
-                // Navigate to the preview page with the current CSS
-                navigate(`/admin/curations/preview/${curation.levelId}`, {
-                  state: { customCSS: formData.customCSS }
-                });
-              }}
-              disabled={!curation?.levelId}
-            >
-              {tCur('form.previewCSS')}
-            </button>
-          </div>
+          {canUseCustomCSS ? (
+            <div className="curation-edit-modal__form-group">
+              <label htmlFor="custom-css">{tCur('form.customCSS')}</label>
+              <textarea
+                id="custom-css"
+                value={formData.customCSS}
+                onChange={(e) => handleInputChange('customCSS', e.target.value)}
+                placeholder={tCur('form.customCSSPlaceholder')}
+                className="curation-edit-modal__css-textarea"
+                rows={8}
+              />
+              <p className="curation-edit-modal__help-text">{tCur('form.customCSSHelp')}</p>
+              
+              {/* Preview Button */}
+              <button
+                type="button"
+                className="curation-edit-modal__preview-button"
+                onClick={() => {
+                  // Navigate to the preview page with the current CSS
+                  navigate(`/admin/curations/preview/${curation.levelId}`, {
+                    state: { customCSS: formData.customCSS }
+                  });
+                }}
+                disabled={!curation?.levelId}
+              >
+                {tCur('form.previewCSS')}
+              </button>
+            </div>
+          ) : (
+            // Show warning if custom CSS is entered but type doesn't support it
+            formData.customCSS && formData.customCSS.trim() && (
+              <div className="curation-edit-modal__form-group">
+                <div className="curation-edit-modal__warning">
+                  <p><strong>⚠️ Warning:</strong> The selected curation type doesn't support custom CSS. 
+                  Your CSS will not be applied to the level page.</p>
+                </div>
+              </div>
+            )
+          )}
 
           {/* Thumbnail Upload */}
           <div className="curation-edit-modal__form-group">

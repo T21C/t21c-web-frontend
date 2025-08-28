@@ -40,8 +40,14 @@
   },
   "abilities": {
     "customCSS": "Custom CSS",
-    "customColor": "Custom Color",
-    "previewLink": "Preview Link"
+    "curatorAssignable": "Curator Assignable",
+    "raterAssignable": "Rater Assignable",
+    "showAssigner": "Show Assigner",
+    "forceDescription": "Force Description",
+    "frontPageEligible": "Front Page Eligible",
+    "customColorTheme": "Custom Color Theme",
+    "levelListBasicGlow": "Level List Basic Glow",
+    "levelListLegendaryGlow": "Level List Legendary Glow"
   },
   "buttons": {
     "cancel": "Cancel",

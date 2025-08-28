@@ -136,7 +136,12 @@ const Navigation = ({ children }) => {
   };
 
   const isCurator = (user) => {
-    return hasAnyFlag(user, [permissionFlags.HEAD_CURATOR, permissionFlags.CURATOR]);
+    return hasAnyFlag(user, [
+      permissionFlags.HEAD_CURATOR, 
+      permissionFlags.CURATOR, 
+      permissionFlags.RATER, 
+      permissionFlags.SUPER_ADMIN
+    ]);
   };
 
   return (

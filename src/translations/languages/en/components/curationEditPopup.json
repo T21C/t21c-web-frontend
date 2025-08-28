@@ -9,6 +9,8 @@
     "shortDescriptionHelp": "A brief description that will be displayed in gallery views and previews",
     "description": "Description",
     "descriptionPlaceholder": "Enter a description for this curation...",
+    "descriptionRequired": "Description is required for this curation type",
+    "descriptionRequiredPlaceholder": "Description is required...",
     "customColor": "Custom Color",
     "customCSS": "Custom CSS",
     "customCSSPlaceholder": "/* Enter custom CSS for this level's detail page */\n.curation-custom {\n  /* Your custom styles here */\n}",

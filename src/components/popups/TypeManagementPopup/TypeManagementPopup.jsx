@@ -5,6 +5,7 @@ import './typemanagementpopup.css';
 import toast from 'react-hot-toast';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { ABILITIES } from '@/utils/Abilities';
 
 const POPUP_MODES = {
   LIST: 'LIST',
@@ -34,7 +35,7 @@ const TypeManagementPopup = ({
   const [formData, setFormData] = useState({
     name: '',
     color: '#3B82F6',
-    abilities: 0,
+    abilities: 0n,
     icon: null,
     iconPreview: null
   });
@@ -78,7 +79,7 @@ const TypeManagementPopup = ({
     setFormData({
       name: '',
       color: '#3B82F6',
-      abilities: 0,
+      abilities: 0n,
       icon: null,
       iconPreview: null
     });
@@ -94,7 +95,7 @@ const TypeManagementPopup = ({
     setFormData({
       name: type.name,
       color: type.color,
-      abilities: type.abilities,
+      abilities: BigInt(type.abilities || 0),
       icon: null,
       iconPreview: type.icon
     });
@@ -165,17 +166,19 @@ const TypeManagementPopup = ({
     setFormData(prev => ({ ...prev, icon: null, iconPreview: null }));
   };
 
-  const checkAbility = (input, exp) => {
-    return (input & Math.pow(2, exp)) === Math.pow(2, exp);
+  const checkAbility = (input, ability) => {
+    if (!input || ability === undefined || ability === null) return false;
+    return (BigInt(input) & BigInt(ability)) === BigInt(ability);
   };
 
-  const updateAbility = (input, exp, enabled) => {
-    const bitValue = Math.pow(2, exp);
-    return enabled ? input | bitValue : input & ~bitValue;
+  const updateAbility = (input, ability, enabled) => {
+    console.log(input, ability, enabled);
+    if ((!input && input !== 0n) || ability === undefined || ability === null) return input ? BigInt(input) : 0n;
+    return enabled ? BigInt(input || 0) | BigInt(ability) : BigInt(input || 0) & ~BigInt(ability);
   };
 
-  const handleAbilityChange = (exp, enabled) => {
-    const newAbilities = updateAbility(formData.abilities, exp, enabled);
+  const handleAbilityChange = (ability, enabled) => {
+    const newAbilities = updateAbility(formData.abilities, ability, enabled);
     handleFormChange('abilities', newAbilities);
   };
 
@@ -198,7 +201,7 @@ const TypeManagementPopup = ({
       const submitData = {
         name: formData.name.trim(),
         color: formData.color,
-        abilities: formData.abilities
+        abilities: formData.abilities.toString()
       };
 
       let response;
@@ -487,26 +490,74 @@ const TypeManagementPopup = ({
                 <label className="type-management-modal__ability-item">
                   <input
                     type="checkbox"
-                    checked={checkAbility(formData.abilities, 0)}
-                    onChange={(e) => handleAbilityChange(0, e.target.checked)}
+                    checked={checkAbility(formData.abilities, ABILITIES.CUSTOM_CSS)}
+                    onChange={(e) => handleAbilityChange(ABILITIES.CUSTOM_CSS, e.target.checked)}
                   />
                   {tCur('abilities.customCSS')}
                 </label>
                 <label className="type-management-modal__ability-item">
                   <input
                     type="checkbox"
-                    checked={checkAbility(formData.abilities, 1)}
-                    onChange={(e) => handleAbilityChange(1, e.target.checked)}
+                    checked={checkAbility(formData.abilities, ABILITIES.CURATOR_ASSIGNABLE)}
+                    onChange={(e) => handleAbilityChange(ABILITIES.CURATOR_ASSIGNABLE, e.target.checked)}
                   />
-                  {tCur('abilities.customColor')}
+                  {tCur('abilities.curatorAssignable')}
                 </label>
                 <label className="type-management-modal__ability-item">
                   <input
                     type="checkbox"
-                    checked={checkAbility(formData.abilities, 2)}
-                    onChange={(e) => handleAbilityChange(2, e.target.checked)}
+                    checked={checkAbility(formData.abilities, ABILITIES.RATER_ASSIGNABLE)}
+                    onChange={(e) => handleAbilityChange(ABILITIES.RATER_ASSIGNABLE, e.target.checked)}
                   />
-                  {tCur('abilities.previewLink')}
+                  {tCur('abilities.raterAssignable')}
+                </label>
+                <label className="type-management-modal__ability-item">
+                  <input
+                    type="checkbox"
+                    checked={checkAbility(formData.abilities, ABILITIES.SHOW_ASSIGNER)}
+                    onChange={(e) => handleAbilityChange(ABILITIES.SHOW_ASSIGNER, e.target.checked)}
+                  />
+                  {tCur('abilities.showAssigner')}
+                </label>
+                <label className="type-management-modal__ability-item">
+                  <input
+                    type="checkbox"
+                    checked={checkAbility(formData.abilities, ABILITIES.FORCE_DESCRIPTION)}
+                    onChange={(e) => handleAbilityChange(ABILITIES.FORCE_DESCRIPTION, e.target.checked)}
+                  />
+                  {tCur('abilities.forceDescription')}
+                </label>
+                <label className="type-management-modal__ability-item">
+                  <input
+                    type="checkbox"
+                    checked={checkAbility(formData.abilities, ABILITIES.FRONT_PAGE_ELIGIBLE)}
+                    onChange={(e) => handleAbilityChange(ABILITIES.FRONT_PAGE_ELIGIBLE, e.target.checked)}
+                  />
+                  {tCur('abilities.frontPageEligible')}
+                </label>
+                <label className="type-management-modal__ability-item">
+                  <input
+                    type="checkbox"
+                    checked={checkAbility(formData.abilities, ABILITIES.CUSTOM_COLOR_THEME)}
+                    onChange={(e) => handleAbilityChange(ABILITIES.CUSTOM_COLOR_THEME, e.target.checked)}
+                  />
+                  {tCur('abilities.customColorTheme')}
+                </label>
+                <label className="type-management-modal__ability-item">
+                  <input
+                    type="checkbox"
+                    checked={checkAbility(formData.abilities, ABILITIES.LEVEL_LIST_BASIC_GLOW)}
+                    onChange={(e) => handleAbilityChange(ABILITIES.LEVEL_LIST_BASIC_GLOW, e.target.checked)}
+                  />
+                  {tCur('abilities.levelListBasicGlow')}
+                </label>
+                <label className="type-management-modal__ability-item">
+                  <input
+                    type="checkbox"
+                    checked={checkAbility(formData.abilities, ABILITIES.LEVEL_LIST_LEGENDARY_GLOW)}
+                    onChange={(e) => handleAbilityChange(ABILITIES.LEVEL_LIST_LEGENDARY_GLOW, e.target.checked)}
+                  />
+                  {tCur('abilities.levelListLegendaryGlow')}
                 </label>
               </div>
             </div>

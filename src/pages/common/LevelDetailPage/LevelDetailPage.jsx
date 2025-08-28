@@ -570,6 +570,11 @@ const LevelDetailPage = ({ mockData = null }) => {
       return null;
     }
 
+    // Check if the curation type has the CUSTOM_CSS ability
+    if (curation.type && !hasBit(curation.type.abilities, ABILITIES.CUSTOM_CSS)) {
+      return null;
+    }
+
     const sanitizedCSS = sanitizeCSS(curation.customCSS);
     const scopedCSS = scopeCSS(sanitizedCSS);
     return scopedCSS;
@@ -587,6 +592,10 @@ const LevelDetailPage = ({ mockData = null }) => {
       setExternalCssOverride(null);
       return;
     }
+
+    // Check if the curation type has the CUSTOM_CSS ability (for preview system)
+    // Note: In preview mode, we allow CSS overrides regardless of ability for testing purposes
+    // This allows admins to preview CSS even if the curation type doesn't have the ability
 
     // Create new external style element
     const style = document.createElement('style');

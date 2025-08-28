@@ -148,6 +148,21 @@
   overflow: hidden;
 }
 
+.css-editor-warning {
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 4px;
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  color: #856404;
+}
+
+.css-editor-warning p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
 .css-editor-textarea-container {
   flex: 1;
   display: flex;

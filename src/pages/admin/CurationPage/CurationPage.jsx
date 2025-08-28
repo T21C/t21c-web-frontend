@@ -12,6 +12,7 @@ import { LevelSelectionPopup, TypeManagementPopup, CurationEditPopup, UserManage
 import { toast } from 'react-hot-toast';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { canAssignCurationType } from '@/utils/curationTypeUtils';
 
 const CurationPage = () => {
   const navigate = useNavigate();
@@ -110,13 +111,6 @@ const CurationPage = () => {
 
   const handleLevelSelect = async (selection) => {
     try {
-      // Create a default curation with the first available type
-      const defaultType = curationTypes[0];
-      if (!defaultType) {
-        toast.error('No curation types available');
-        return;
-      }
-
       const response = await api.post(`${import.meta.env.VITE_CURATIONS}`, {
         levelId: selection.levelId
       });
@@ -159,6 +153,8 @@ const CurationPage = () => {
       toast.error(error.response?.data?.error || 'Failed to delete curation');
     }
   };
+
+
 
   const fetchCurations = async () => {
     try {
@@ -238,11 +234,19 @@ const CurationPage = () => {
   };
 
   const isAccessibleCuration = (curation) => {
-    return curation.type.name == "T1" ||
-    hasAnyFlag(user, [
-      permissionFlags.SUPER_ADMIN, 
-      permissionFlags.HEAD_CURATOR
-    ]);
+    if (!curation || !user) return false;
+    
+    // Super admins and head curators can access all curations
+    if (hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR])) {
+      return true;
+    }
+    
+    // Check if user can assign this curation type
+    if (curation.type && curation.type.abilities) {
+      return canAssignCurationType(user.permissionFlags, curation.type.abilities);
+    }
+    
+    return false;
   };
 
   return (

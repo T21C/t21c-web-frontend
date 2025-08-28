@@ -153,7 +153,7 @@ const LevelCard = ({
   }
 
   return (
-    <div className={`level-card ${displayMode} ${hasBit(level.curation?.type.abilities, ABILITIES.CUSTOM_COLOR) ? 'legendary' : ''}`} 
+    <div className={`level-card ${displayMode} ${hasBit(level.curation?.type.abilities, ABILITIES.CUSTOM_COLOR_THEME) ? 'legendary' : ''}`} 
     style={{ 
       backgroundColor: level.isDeleted ? "#f0000099"
       : level.isHidden ? "#88888899" 

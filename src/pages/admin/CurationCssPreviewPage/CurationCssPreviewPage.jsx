@@ -4,11 +4,17 @@ import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import toast from 'react-hot-toast';
 import LevelDetailPage from '@/pages/common/LevelDetailPage/LevelDetailPage';
+import { ABILITIES, hasBit } from '@/utils/Abilities';
+import { canAssignCurationType } from '@/utils/curationTypeUtils';
+import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { useAuth } from "@/contexts/AuthContext";
 import './curationcsspreviewpage.css';
+import { AccessDenied } from '@/components/common/display';
 
 const CurationCssPreviewPage = () => {
   const { t } = useTranslation('pages');
   const tCur = (key, params = {}) => t(`curationCssPreview.${key}`, params);
+  const { user } = useAuth();
   
   const { levelId } = useParams();
   const navigate = useNavigate();
@@ -21,6 +27,23 @@ const CurationCssPreviewPage = () => {
   const [isSaving, setIsSaving] = useState(false);
   const [originalCSS, setOriginalCSS] = useState('');
   const [levelData, setLevelData] = useState(null);
+
+  // Check if user can access this curation
+  const canAccessCuration = (curation) => {
+    if (!curation || !user) return false;
+    
+    // Super admins and head curators can access all curations
+    if (hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR])) {
+      return true;
+    }
+    
+    // Check if user can assign this curation type
+    if (curation.type && curation.type.abilities) {
+      return canAssignCurationType(user.permissionFlags, curation.type.abilities);
+    }
+    
+    return false;
+  };
 
   // Get the CSS from the location state or URL parameters
   useEffect(() => {
@@ -166,6 +189,30 @@ const CurationCssPreviewPage = () => {
   };
 
 
+  // Check if user can access this curation
+  if (!canAccessCuration(curation)) {
+    const currentUrl = window.location.origin + location.pathname;
+    return (
+      <AccessDenied 
+        metaTitle={tCur('meta.title')}
+        metaDescription={tCur('meta.description')}
+        currentUrl={currentUrl}
+      />
+    );
+  }
+
+  // Check if curation type has CUSTOM_CSS ability
+  if (!hasBit(curation?.type?.abilities, ABILITIES.CUSTOM_CSS)) {
+    const currentUrl = window.location.origin + location.pathname;
+    return (
+      <AccessDenied 
+        metaTitle={tCur('meta.title')}
+        metaDescription={tCur('meta.description')}
+        currentUrl={currentUrl}
+      />
+    );
+  }
+
   if (isLoading || !levelData) {
     return (
       <div className="curation-css-preview-loading">
@@ -196,6 +243,14 @@ const CurationCssPreviewPage = () => {
         </div>
         
         <div className="css-editor-content">
+          {/* Warning if curation type doesn't have CUSTOM_CSS ability */}
+          {curation?.type && !hasBit(curation.type.abilities, ABILITIES.CUSTOM_CSS) && (
+            <div className="css-editor-warning">
+              <p><strong>⚠️ Warning:</strong> This curation type doesn't have the "Custom CSS" ability enabled. 
+              Custom CSS will not be applied to the actual level page, but you can still preview it here.</p>
+            </div>
+          )}
+          
           <div className="css-editor-textarea-container">
             <label htmlFor="css-editor">{tCur('editor.cssLabel')}</label>
             <textarea

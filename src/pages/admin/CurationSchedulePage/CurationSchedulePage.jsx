@@ -11,6 +11,7 @@ import { toast } from 'react-hot-toast';
 import { NavLink } from 'react-router-dom';
 import { CurationSelectionPopup } from '@/components/popups';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { canAssignCurationType } from '@/utils/curationTypeUtils';
 
 const CurationSchedulePage = () => {
   const { user } = useAuth();
@@ -148,10 +149,31 @@ const CurationSchedulePage = () => {
   const primarySchedules = schedules.filter(s => s.listType === 'primary').slice(0, 20);
   const secondarySchedules = schedules.filter(s => s.listType === 'secondary').slice(0, 20);
 
+  // Check if user can access a specific curation
+  const canAccessCuration = (curation) => {
+    if (!curation || !user) return false;
+    
+    // Super admins and head curators can access all curations
+    if (hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR])) {
+      return true;
+    }
+    
+    // Check if user can assign this curation type
+    if (curation.type && curation.type.abilities) {
+      return canAssignCurationType(user.permissionFlags, curation.type.abilities);
+    }
+    
+    return false;
+  };
+
   // Get excluded curation IDs for the popup
   const excludedIds = schedules.map(s => s.curationId || s.curation?.id).filter(Boolean);
 
-  if (!hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR])) {
+  // Check overall access - users need to be able to access at least some curations
+  const hasOverallAccess = hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR]) ||
+                          schedules.some(schedule => canAccessCuration(schedule.scheduledCuration));
+
+  if (!hasOverallAccess) {
     return <AccessDenied />;
   }
 

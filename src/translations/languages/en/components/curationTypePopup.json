@@ -17,7 +17,13 @@
     "abilitiesTitle": "Customization",
     "abilities": {
       "Custom CSS": "Custom CSS",
-      "Custom Color": "Custom Color"
+      "Curator Assignable": "Curator Assignable",
+      "Show Assigner": "Show Assigner",
+      "Force Description": "Force Description",
+      "Front Page Eligible": "Front Page Eligible",
+      "Custom Color Theme": "Custom Color Theme",
+      "Level List Basic Glow": "Level List Basic Glow",
+      "Level List Legendary Glow": "Level List Legendary Glow"
     }
   },
   "actions": {
