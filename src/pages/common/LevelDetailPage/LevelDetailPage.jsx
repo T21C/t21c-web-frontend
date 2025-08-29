@@ -903,8 +903,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       
       try {
         const levelData = await api.get(`${import.meta.env.VITE_LEVELS}/${effectiveId}?includeRatings=true`);
-        const passesData = await api.get(`${import.meta.env.VITE_PASSES}/level/${effectiveId}`);
-        
+
         if (levelData.data.timeout) {
           setLevelTimeout(levelData.data.timeout);
         }
@@ -912,7 +911,7 @@ const LevelDetailPage = ({ mockData = null }) => {
         setRes(prevRes => ({
           ...prevRes,
           ...levelData.data,
-          passes: passesData.data,
+          passes: levelData.data.level.passes,
         }));
         setDisplayedPlayers(sortLeaderboard(passesData.data));
         setNotFound(false);
