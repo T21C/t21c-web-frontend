@@ -569,6 +569,7 @@ const LevelDetailPage = ({ mockData = null }) => {
   // Expandable description state
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [customStyleElement, setCustomStyleElement] = useState(null);
+  const [customColorStyleElement, setCustomColorStyleElement] = useState(null);
   const [notFound, setNotFound] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
 
@@ -605,8 +606,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       .replace(/javascript:/gi, '')
       .replace(/expression\(/gi, '') 
       .replace(/behavior:/gi, '')
-      .replace(/-moz-binding/gi, '')
-      .replace(/url\s*\(/gi, '');
+      .replace(/-moz-binding/gi, '');
   }, []);
 
   // Scope CSS to level-detail.curated with higher specificity
@@ -614,6 +614,87 @@ const LevelDetailPage = ({ mockData = null }) => {
     if (!css) return '';
     // Use higher specificity selectors to override predefined styles
     return css.replace(/([^{}]+){/g, '.level-detail.curated[data-custom-styles="true"] $1{');
+  }, []);
+
+  // Generate custom color CSS based on curation's custom color
+  const createCustomColorCSS = useCallback((curation) => {
+    if (!curation?.customColor || !curation?.type) {
+      return null;
+    }
+
+    // Check if the curation type has the CUSTOM_COLOR_THEME ability
+    if (!hasBit(curation.type.abilities, ABILITIES.CUSTOM_COLOR_THEME)) {
+      return null;
+    }
+
+    const customColor = curation.customColor;
+    // Convert hex to RGB for CSS variables
+    const hexToRgb = (hex) => {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      } : null;
+    };
+
+    // Convert RGB to HSL for hue shifting
+    const rgbToHsl = (r, g, b) => {
+      r /= 255;
+      g /= 255;
+      b /= 255;
+      const max = Math.max(r, g, b);
+      const min = Math.min(r, g, b);
+      let h, s, l = (max + min) / 2;
+
+      if (max === min) {
+        h = s = 0; // achromatic
+      } else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+      }
+      return [h * 360, s * 100, l * 100];
+    };
+
+    // Convert HSL to hex
+    function hslToHex(h, s, l) {
+      l /= 100;
+      const a = s * Math.min(l, 1 - l) / 100;
+      const f = n => {
+        const k = (n + h / 30) % 12;
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+        return Math.round(255 * color).toString(16).padStart(2, '0');   // convert to Hex and prefix "0" if needed
+      };
+      return `#${f(0)}${f(8)}${f(4)}`;
+    }
+
+    const rgb = hexToRgb(customColor);
+    if (!rgb) return null;
+
+    const [h, s, l] = rgbToHsl(rgb.r, rgb.g, rgb.b);
+    const hueShiftedColor = hslToHex((h + 60) % 360, s, l);
+
+    return `
+      .level-detail.curated[data-custom-color="true"] {
+        --curation-primary: ${customColor};
+        --curation-primary-rgb: ${rgb.r}, ${rgb.g}, ${rgb.b};
+        --curation-primary-alpha: ${customColor}40;
+        --curation-glow: ${customColor}80;
+        --curation-type-color: ${customColor};
+        --curation-type-rgb: ${rgb.r}, ${rgb.g}, ${rgb.b};
+        --curation-type-alpha: ${customColor}40;
+        --curation-hue-shift: ${hueShiftedColor};
+        --glass-bg: rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.12);
+        --glass-border: rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.3);
+        --accent-color: ${customColor};
+      }
+    `;
   }, []);
 
   // Custom CSS injection system for curations
@@ -862,6 +943,10 @@ const LevelDetailPage = ({ mockData = null }) => {
         customStyleElement.parentNode.removeChild(customStyleElement);
         setCustomStyleElement(null);
       }
+      if (customColorStyleElement && customColorStyleElement.parentNode) {
+        customColorStyleElement.parentNode.removeChild(customColorStyleElement);
+        setCustomColorStyleElement(null);
+      }
       setCurationStyles(null);
       return;
     }
@@ -872,13 +957,39 @@ const LevelDetailPage = ({ mockData = null }) => {
         customStyleElement.parentNode.removeChild(customStyleElement);
         setCustomStyleElement(null);
       }
+      if (customColorStyleElement && customColorStyleElement.parentNode) {
+        customColorStyleElement.parentNode.removeChild(customColorStyleElement);
+        setCustomColorStyleElement(null);
+      }
       setCurationStyles(null);
       return;
     }
 
     const curation = res.level.curation;
-    const styleSheet = createCurationStyleSheet(curation);
     
+    // Handle custom color styles
+    const customColorCSS = createCustomColorCSS(curation);
+    if (customColorCSS) {
+      // Remove existing custom color styles before creating new ones
+      if (customColorStyleElement && customColorStyleElement.parentNode) {
+        customColorStyleElement.parentNode.removeChild(customColorStyleElement);
+        setCustomColorStyleElement(null);
+      }
+
+      // Create new color style element
+      const colorStyle = document.createElement('style');
+      colorStyle.type = 'text/css';
+      colorStyle.innerHTML = customColorCSS;
+      colorStyle.setAttribute('data-custom-color-styles', `level-${effectiveId}`);
+      colorStyle.setAttribute('data-hmr-id', `color-${effectiveId}-${Date.now()}`);
+      
+      // Add to document head
+      document.head.appendChild(colorStyle);
+      setCustomColorStyleElement(colorStyle);
+    }
+    
+    // Handle custom CSS styles
+    const styleSheet = createCurationStyleSheet(curation);
     if (styleSheet) {
       // Remove existing custom styles before creating new ones
       if (customStyleElement && customStyleElement.parentNode) {
@@ -900,36 +1011,81 @@ const LevelDetailPage = ({ mockData = null }) => {
       // Add to document head
       document.head.appendChild(style);
       setCustomStyleElement(style);
-      setCurationStyles(curation);
     }
+    
+    setCurationStyles(curation);
 
     // Cleanup on component unmount or when dependencies change
     return () => {
+      // Clean up current style elements
       if (customStyleElement && customStyleElement.parentNode) {
         customStyleElement.parentNode.removeChild(customStyleElement);
       }
+      if (customColorStyleElement && customColorStyleElement.parentNode) {
+        customColorStyleElement.parentNode.removeChild(customColorStyleElement);
+      }
+      
+      // Additional cleanup for any orphaned elements with our specific data attributes
+      try {
+        const orphanedCurationStyles = document.querySelectorAll(`[data-custom-styles="true"]`);
+        orphanedCurationStyles.forEach(element => {
+          if (element.parentNode) {
+            element.parentNode.removeChild(element);
+          }
+        });
+        
+      } catch (error) {
+        console.warn('Error cleaning up orphaned style elements:', error);
+      }
     };
-  }, [res?.level?.curation, createCurationStyleSheet, effectiveId, externalCssOverride, disableDefaultStyling]);
+  }, [res?.level?.curation, createCurationStyleSheet, createCustomColorCSS, effectiveId, externalCssOverride, disableDefaultStyling]);
 
 
 
-  // Cleanup external overrides when component unmounts
+  // Cleanup all custom styles when component unmounts
   useEffect(() => {
     return () => {
-      // Clean up only the styles we created
+      // Clean up all styles we created
       if (externalStyleElement && externalStyleElement.parentNode) {
         externalStyleElement.parentNode.removeChild(externalStyleElement);
       }
       if (customStyleElement && customStyleElement.parentNode) {
         customStyleElement.parentNode.removeChild(customStyleElement);
       }
+      if (customColorStyleElement && customColorStyleElement.parentNode) {
+        customColorStyleElement.parentNode.removeChild(customColorStyleElement);
+      }
+      
+      // Also clean up any stray style elements that might have been left behind
+      // Remove all curation-related style elements for this level
+      const levelStyleElements = document.querySelectorAll(`[data-curation-styles="level-${effectiveId}"]`);
+      levelStyleElements.forEach(element => {
+        if (element.parentNode) {
+          element.parentNode.removeChild(element);
+        }
+      });
+      
+      const colorStyleElements = document.querySelectorAll(`[data-custom-color-styles="level-${effectiveId}"]`);
+      colorStyleElements.forEach(element => {
+        if (element.parentNode) {
+          element.parentNode.removeChild(element);
+        }
+      });
+      
+      const externalStyleElements = document.querySelectorAll(`[data-level-id="${effectiveId}"]`);
+      externalStyleElements.forEach(element => {
+        if (element.parentNode) {
+          element.parentNode.removeChild(element);
+        }
+      });
+      
       // Remove global functions
       if (typeof window !== 'undefined') {
         delete window.setCurationCssOverride;
         delete window.setDisableDefaultStyling;
       }
     };
-  }, []);
+  }, [effectiveId]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -1208,6 +1364,12 @@ const LevelDetailPage = ({ mockData = null }) => {
       <div 
         className={`level-detail ${(res?.level?.curation && !externalCssOverride) || externalCssOverride ? 'curated' : ''}`}
         data-custom-styles={(externalCssOverride || curationStyles) ? "true" : undefined}
+        data-custom-color={
+          res?.level?.curation?.customColor && 
+          res?.level?.curation?.type && 
+          hasBit(res.level.curation.type.abilities, ABILITIES.CUSTOM_COLOR_THEME) 
+            ? "true" : undefined
+        }
       >
         <CompleteNav />
         <div className="background-level"></div>

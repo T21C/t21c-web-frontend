@@ -261,12 +261,8 @@ const LevelPage = () => {
     lastSearchValueRef.current = query;
   }, [query]);
 
-  // Clear selected curation types when filter changes to hide
-  useEffect(() => {
-    if (curatedTypesFilter === 'hide') {
-      setSelectedCurationTypes([]);
-    }
-  }, [curatedTypesFilter]);
+  // Note: Removed auto-clearing of curation types when filter changes to 'hide'
+  // to preserve user's selection for when they switch back to 'only' mode
 
   // Clean up the timeout when component unmounts
   useEffect(() => {

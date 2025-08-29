@@ -784,6 +784,7 @@
   text-align: center;
   max-width: 15rem;
   text-overflow: ellipsis;
+  text-shadow: 0 0 5px #000;
 }
 
 .level-detail .body .info .info-button {
@@ -1117,9 +1118,9 @@
   position: absolute;
   inset: -4px;
   background: linear-gradient(45deg, 
-    #8b00ff, 
-    #0062ff, 
-    #8b00ff
+    var(--curation-primary), 
+    var(--curation-hue-shift, #0062ff), 
+    var(--curation-primary)
   );
   background-size: 400% 400%;
   animation: curatedGlow 3s ease-in-out infinite;
@@ -1898,6 +1899,10 @@
 .curation-description:hover {
   background: rgba(0, 0, 0, 0.9);
   border-color: rgba(255, 255, 255, 0.3);
+}
+
+.curation-description-container:not(.expandable) {
+  margin: auto;
 }
 
 .curation-description-container.expandable .curation-description {
