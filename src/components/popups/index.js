@@ -16,6 +16,13 @@ import ProfilePicturePopup from "./ProfilePicturePopup/ProfilePicturePopup";
 import LevelSelectionPopup from "./LevelSelectionPopup/LevelSelectionPopup";
 import LevelUploadManagementPopup from './LevelUploadManagementPopup/LevelUploadManagementPopup';
 import CDNTosPopup from './CDNTosPopup/CDNTosPopup';
+import TypeManagementPopup from './TypeManagementPopup/TypeManagementPopup';
+import CurationEditPopup from './CurationEditPopup/CurationEditPopup';
+import CurationSelectionPopup from './CurationSelectionPopup/CurationSelectionPopup';
+
+// User Management Popups
+import UserManagementPopup from './UserManagementPopup/UserManagementPopup';
+import CuratorManagementPopup from './CuratorManagementPopup/CuratorManagementPopup';
 
 export {
     AdminPlayerPopup,
@@ -35,5 +42,11 @@ export {
     ProfilePicturePopup,
     LevelSelectionPopup,
     LevelUploadManagementPopup,
-    CDNTosPopup
+    CDNTosPopup,
+    TypeManagementPopup,
+    CurationEditPopup,
+    CurationSelectionPopup,
+    // User Management Popups
+    UserManagementPopup,
+    CuratorManagementPopup
 }

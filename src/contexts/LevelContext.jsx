@@ -21,6 +21,7 @@ const LevelContextProvider = (props) => {
         DELETED_FILTER: 'level_deleted_filter',
         CLEARED_FILTER: 'level_cleared_filter',
         AVAILABLE_DL_FILTER: 'level_available_dl_filter',
+        CURATED_TYPES_FILTER: 'level_curated_types_filter',
         SLIDER_RANGE: 'level_slider_range',
         SLIDER_Q_RANGE: 'level_slider_q_range',
         SLIDER_Q_RANGE_DRAG: 'level_slider_q_range_drag',
@@ -43,6 +44,7 @@ const LevelContextProvider = (props) => {
     const [deletedFilter, setDeletedFilter] = useState(() => Cookies.get(COOKIE_KEYS.DELETED_FILTER) || "hide");
     const [availableDlFilter, setAvailableDlFilter] = useState(() => Cookies.get(COOKIE_KEYS.AVAILABLE_DL_FILTER) || "show");
     const [clearedFilter, setClearedFilter] = useState(() => Cookies.get(COOKIE_KEYS.CLEARED_FILTER) || "show");
+    const [curatedTypesFilter, setCuratedTypesFilter] = useState(() => Cookies.get(COOKIE_KEYS.CURATED_TYPES_FILTER) || "show");
     const [sliderRange, setSliderRange] = useState(() => {
         const saved = Cookies.get(COOKIE_KEYS.SLIDER_RANGE);
         return saved ? JSON.parse(saved) : [1, 60];
@@ -162,6 +164,10 @@ const LevelContextProvider = (props) => {
     }, [availableDlFilter]);
 
     useEffect(() => {
+        Cookies.set(COOKIE_KEYS.CURATED_TYPES_FILTER, curatedTypesFilter);
+    }, [curatedTypesFilter]);
+
+    useEffect(() => {
         Cookies.set(COOKIE_KEYS.SLIDER_RANGE, JSON.stringify(sliderRange));
     }, [sliderRange]);
 
@@ -202,6 +208,7 @@ const LevelContextProvider = (props) => {
                 deletedFilter, setDeletedFilter,
                 clearedFilter, setClearedFilter,
                 availableDlFilter, setAvailableDlFilter,
+                curatedTypesFilter, setCuratedTypesFilter,
                 sliderRange, setSliderRange,
                 sliderQRange, setSliderQRange,
                 sliderQRangeDrag, setSliderQRangeDrag,

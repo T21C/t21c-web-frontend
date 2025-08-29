@@ -1,0 +1,49 @@
+{
+  "meta": {
+    "title": "策展管理",
+    "description": "管理关卡策展和质量等级"
+  },
+  "title": "策展管理",
+  "description": "为关卡分配质量等级并管理策展计划",
+  "filters": {
+    "type": "策展类型",
+    "allTypes": "所有类型",
+    "search": "搜索",
+    "searchPlaceholder": "按歌曲、艺术家或创作者搜索..."
+  },
+  "loading": "加载策展中...",
+  "empty": "未找到策展",
+  "password": {
+    "title": "需要超管密码",
+    "description": "请输入您的超管密码以继续",
+    "placeholder": "输入密码",
+    "submit": "提交",
+    "cancel": "取消"
+  },
+  "initialPassword": {
+    "title": "需要超管权限",
+    "description": "此页面需要超管权限。请输入您的密码以继续。",
+    "placeholder": "输入超管密码",
+    "continue": "继续"
+  },
+  "notifications": {
+    "created": "策展创建成功",
+    "updated": "策展更新成功",
+    "deleted": "策展删除成功",
+    "typeCreated": "策展类型创建成功",
+    "typeUpdated": "策展类型更新成功",
+    "levelAdded": "关卡添加到策展成功",
+    "levelUpdated": "策展更新成功"
+  },
+  "actions": {
+    "addLevel": "添加关卡",
+    "manageTypes": "管理类型",
+    "manageCurators": "管理策展人",
+    "manageSchedule": "管理计划",
+    "editCuration": "编辑策展",
+    "deleteCuration": "删除策展"
+  },
+  "confirmations": {
+    "deleteCuration": "您确定要删除此策展吗？"
+  }
+}

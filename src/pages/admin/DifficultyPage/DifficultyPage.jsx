@@ -11,6 +11,7 @@ import { EditIcon, RefreshIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { RatingInput } from '@/components/common/selectors';
+import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
 const DifficultyPage = () => {
   const { user } = useAuth();
@@ -67,11 +68,11 @@ const DifficultyPage = () => {
 
   // Initial password verification
   useEffect(() => {
-    if (user?.isSuperAdmin && showInitialPasswordPrompt) {
+    if (hasFlag(user, permissionFlags.SUPER_ADMIN) && showInitialPasswordPrompt) {
       // Show initial password prompt
       setShowInitialPasswordPrompt(true);
     }
-  }, [user?.isSuperAdmin]);
+  }, [user]);
 
   const handlePasswordSubmit = async () => {
     try {
@@ -214,7 +215,7 @@ const DifficultyPage = () => {
 
   const verifyPassword = async (password) => {
     try {
-      await api.head(`${import.meta.env.VITE_DIFFICULTIES}/verify-password`, {
+      await api.head(`${import.meta.env.VITE_VERIFY_PASSWORD}`, {
         headers: {
           'X-Super-Admin-Password': password
         }
@@ -349,7 +350,7 @@ const DifficultyPage = () => {
     }
   };
 
-  if (user?.isSuperAdmin === undefined) {
+  if (user.permissionFlags === undefined) {
     return (
       <div className="difficulty-page">
         <MetaTags
@@ -368,7 +369,7 @@ const DifficultyPage = () => {
     );
   }
 
-  if (!user?.isSuperAdmin) {
+  if (!hasFlag(user, permissionFlags.SUPER_ADMIN)) {
     return (
       <AccessDenied 
         metaTitle={tDiff('meta.title')}

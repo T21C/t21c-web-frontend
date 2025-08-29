@@ -18,7 +18,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { DifficultyContext } from "@/contexts/DifficultyContext";
 import { DifficultySlider, SpecialDifficulties } from "@/components/common/selectors";
 import { PassHelpPopup } from "@/components/popups";
-import { ResetIcon, SortIcon, FilterIcon, SortAscIcon, SortDescIcon } from "@/components/common/icons";
+import { ResetIcon, SortIcon, FilterIcon, SortAscIcon, SortDescIcon, SwitchIcon } from "@/components/common/icons";
+import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 const currentUrl = window.location.origin + location.pathname;
 
 const limit = 30;
@@ -33,6 +34,7 @@ const PassPage = () => {
   const [showHelpPopup, setShowHelpPopup] = useState(false);
   const [selectedSpecialDiffs, setSelectedSpecialDiffs] = useState([]);
   const [pendingQuery, setPendingQuery] = useState("");
+  const [stateDisplayOpen, setStateDisplayOpen] = useState(false);
 
   // Filter difficulties by type
   const pguDifficulties = difficulties.filter(d => d.type === 'PGU');
@@ -76,6 +78,13 @@ const PassPage = () => {
     { value: 'DIFF', label: tPass('settings.sort.options.difficulty') },
     { value: 'RANDOM', label: tPass('settings.sort.options.random') }
   ];
+
+  // Centralized refresh function
+  const triggerRefresh = () => {
+    setPageNumber(0);
+    setPassesData([]);
+    setForceUpdate(f => !f);
+  };
 
   useEffect(() => {
     let cancel;
@@ -149,11 +158,9 @@ const PassPage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       if (pendingQuery !== query) {
-        setPageNumber(0);
-        setPassesData(null);
         setQuery(pendingQuery);
         setLoading(true);
-        setForceUpdate((f) => !f);
+        triggerRefresh();
       }
     }, 500);
 
@@ -166,7 +173,6 @@ const PassPage = () => {
   }, []);
 
   function resetAll() {
-    setPageNumber(0);
     setSort("SCORE_DESC");
     setQuery("");
     setPendingQuery("");
@@ -178,9 +184,8 @@ const PassPage = () => {
     setDeletedFilter("hide");
 
     // Clear and reload data
-    setPassesData([]);
     setLoading(true);
-    setForceUpdate((f) => !f);
+    triggerRefresh();
   }
 
   function handleQueryChange(e) {
@@ -193,23 +198,23 @@ const PassPage = () => {
 
   function handleSortType(value) {
     setSort(value + "_" +(sort.endsWith('ASC') ? 'ASC' : 'DESC'));
-    setPageNumber(0);
-    setPassesData([]);
     setLoading(true);
-    setForceUpdate((f) => !f);
+    triggerRefresh();
   }
 
   function handleSortOrder(value) {
     setSort(prev => prev.replace(/ASC|DESC/g, value));
-    setPageNumber(0);
-    setPassesData([]);
     setLoading(true);
-    setForceUpdate((f) => !f);
+    triggerRefresh();
   }
 
 
   function handleSortOpen() {
     setSortOpen(!sortOpen);
+  }
+
+  function handleStateDisplayOpen() {
+    setStateDisplayOpen(!stateDisplayOpen);
   }
 
   // Handle slider value updates without triggering immediate fetches
@@ -235,9 +240,7 @@ const PassPage = () => {
     setSelectedLowFilterDiff(lowDiff.name || "P1");
     setSelectedHighFilterDiff(highDiff.name || "U20");
     setSliderRange(newRange);
-    setPageNumber(0);
-    setPassesData([]);
-    setForceUpdate(f => !f);
+    triggerRefresh();
   }, [pguDifficulties]);
 
   function toggleSpecialDifficulty(diffName) {
@@ -246,9 +249,7 @@ const PassPage = () => {
         ? prev.filter(d => d !== diffName)
         : [...prev, diffName];
       
-      setPageNumber(0);
-      setPassesData([]);
-      setForceUpdate(f => !f);
+      triggerRefresh();
       return newSelection;
     });
   }
@@ -384,6 +385,9 @@ const PassPage = () => {
           <Tooltip id="reset" place="bottom" noArrow>
             {tPass('toolTip.reset')}
           </Tooltip>
+          <Tooltip id="state-display" place="bottom" noArrow>
+            {tPass('toolTip.stateDisplay')}
+          </Tooltip>
 
           <FilterIcon
             color="#ffffff"
@@ -401,6 +405,15 @@ const PassPage = () => {
             data-tooltip-id="sort"
             style={{
               backgroundColor: sortOpen ? "rgba(255, 255, 255, 0.7)" : "",
+            }}
+          />
+
+          <SwitchIcon
+            color="#ffffff"
+            onClick={() => handleStateDisplayOpen()}
+            data-tooltip-id="state-display"
+            style={{
+              backgroundColor: stateDisplayOpen ? "rgba(255, 255, 255, 0.7)" : "",
             }}
           />
 
@@ -435,37 +448,6 @@ const PassPage = () => {
                   selectedDiffs={selectedSpecialDiffs}
                   onToggle={toggleSpecialDifficulty}
                 />
-                <div className="checkbox-filters">
-                  {user?.isSuperAdmin && (
-                    <StateDisplay
-                      currentState={deletedFilter}
-                      onChange={(newState) => {
-                        setDeletedFilter(newState);
-                        setPageNumber(0);
-                        setPassesData([]);
-                        setForceUpdate(prev => !prev);
-                      }}
-                      label={tPass('settings.filter.options.deletedPasses')}
-                      width={60}
-                      height={24}
-                      showLabel={true}
-                    />
-                  )}
-                  <StateDisplay
-                    currentState={keyFlag}
-                    states={['all', '12k', '16k']}
-                    onChange={(newState) => {
-                      setKeyFlag(newState);
-                      setPageNumber(0);
-                      setPassesData([]);
-                      setForceUpdate(prev => !prev);
-                    }}
-                    label={tPass('settings.filter.options.keyFlags')}
-                    width={60}
-                    height={24}
-                    showLabel={true}
-                  />
-                </div>
               </div>
             </div>
           </div>
@@ -519,6 +501,37 @@ const PassPage = () => {
                     data-tooltip-id="descending"
                   />
                 </div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            className={`state-switches state-switches-class ${stateDisplayOpen ? 'visible' : 'hidden'}`}
+          >
+            <div className="state-switches-option">
+              {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+                <div className="state-switches-item">
+                  <span className="state-switches-label">{tPass('settings.filter.options.deletedPasses')}</span>
+                  <StateDisplay
+                    currentState={deletedFilter}
+                    onChange={(newState) => {
+                      setDeletedFilter(newState);
+                      triggerRefresh();
+                    }}
+                    states={['show', 'hide', 'only']}
+                  />
+                </div>
+              )}
+              <div className="state-switches-item">
+                <span className="state-switches-label">{tPass('settings.filter.options.keyFlags')}</span>
+                <StateDisplay
+                  currentState={keyFlag}
+                  states={['all', '12k', '16k']}
+                  onChange={(newState) => {
+                    setKeyFlag(newState);
+                    triggerRefresh();
+                  }}
+                />
               </div>
             </div>
           </div>

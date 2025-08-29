@@ -5,14 +5,12 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import api from "@/utils/api";
 import "./auditlogpage.css";
-import AuditLogCard from "@/components/cards/AuditLogCard";
+import { AuditLogCard } from "@/components/cards";
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
 
 const AuditLogPage = () => {
-  const { t } = useTranslation("pages");
   const currentUrl = window.location.href;
-  const { user } = useAuth();
   const [logs, setLogs] = useState([]);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(1);

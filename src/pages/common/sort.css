@@ -91,6 +91,13 @@
     width: 100%;
   }
 
+
+
+  .state-switches .state-switches-option .state-switches-item .state-switches-label {
+    min-width: 120px;
+    font-weight: 500;
+  }
+
   
 /* Focus state */
 .sort .sort-option .css-t3ipsp-control {
@@ -99,16 +106,74 @@
     background-color: rgba(255, 255, 255, 0.4) !important;
   }
 
-  /* Sort dropdown styles */
+  /* Grid layout for state switches only */
+.state-switches {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  position: relative;
+  z-index: 90;
+  background-color: #0004;
+  border-radius: 1rem;
+  padding: 1.25rem 1.75rem;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  height: fit-content;
+  max-height: 300px;
+  margin-bottom: 1rem;
+}
+
+.state-switches.hidden {
+  opacity: 0;
+  padding: 0;
+  pointer-events: none;
+  overflow: hidden;
+  margin: 0;
+  max-height: 0;
+}
+
+.state-switches .state-switches-option {
+  display: contents;
+}
+
+.state-switches .state-switches-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 0.5rem 0.5rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Sort dropdown styles */
 .sort {
     position: relative;
     z-index: 90;
     background-color: #0004;
     border-radius: 1rem;
     padding: 1.25rem 1.75rem;
+    height: fit-content;
+  }
+
+
+
+/* Filter section styles */
+.filter {
+    position: relative;
+    z-index: 90;
+    background-color: #0004;
+    border-radius: 1rem;
+    padding: 1.25rem 1.75rem;
+    height: fit-content;
   }
 
   @media (max-width: 768px) {
+    /* Grid layout adjustments for mobile */
+    .state-switches {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+    }
 
     .sort {
         border-radius: 0.75rem;
@@ -125,6 +190,25 @@
     
       .sort .sort-option .wrapper {
         justify-content: flex-start;
+      }
+
+    .state-switches {
+        border-radius: 0.75rem;
+      }
+    
+      .state-switches .state-switches-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding: 0.5rem;
+      }
+    
+      .state-switches .state-switches-option .state-switches-item .state-switches-label {
+        min-width: auto;
+      }
+
+    .filter {
+        border-radius: 0.75rem;
       }
     .sort .sort-option {
       gap: 1.5rem;
@@ -160,6 +244,11 @@
 
   /* Landscape Mode Adjustments */
 @media (max-height: 600px) and (orientation: landscape) {
+  /* Grid layout adjustments for landscape */
+  .state-switches {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 0.75rem;
+  }
  
     .sort .sort-option {
       flex-direction: row;
@@ -188,6 +277,7 @@
   display: flex;
   gap: 0.5rem;
   height: 2rem;
+  margin-bottom: 1rem;
 }
 .input-option input {
   width: 100%;
@@ -212,7 +302,7 @@
   border-radius: 3px;
   cursor: pointer;
   transition: all 0.2s linear;
-  width: 2.5rem;
+  min-width: 2rem;
   height: 2rem;
 }
 .input-option svg:focus {
@@ -224,6 +314,10 @@
 }
 
 .sort-class .setting-title {
+  margin-bottom: 1rem;
+}
+
+.state-switches-class .setting-title {
   margin-bottom: 1rem;
 }
 .end-message {

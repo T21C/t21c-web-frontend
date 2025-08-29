@@ -31,6 +31,12 @@ const CreatorManagementPage = lazy(() => import('./admin/CreatorManagementPage/C
 const SubmissionManagementPage = lazy(() => import('./admin/SubmissionManagementPage/SubmissionManagementPage'));
 const RatingPage = lazy(() => import('./admin/RatingPage/RatingPage'));
 const AuditLogPage = lazy(() => import('./admin/AuditLogPage/AuditLogPage'));
+const CurationPage = lazy(() => import('./admin/CurationPage/CurationPage'));
+const CurationSchedulePage = lazy(() => import('./admin/CurationSchedulePage/CurationSchedulePage'));
+const CurationCssPreviewPage = lazy(() => import('./admin/CurationCssPreviewPage/CurationCssPreviewPage'));
+
+// Common pages
+const CurationPreviewPage = lazy(() => import('./common/CurationPreviewPage/CurationPreviewPage'));
 
 // Misc pages
 const AboutUsPage = lazy(() => import('./misc/AboutUsPage/AboutUsPage'));
@@ -69,6 +75,10 @@ export {
     SubmissionManagementPage,
     RatingPage,
     AuditLogPage,
+    CurationPage,
+    CurationSchedulePage,
+    CurationCssPreviewPage,
+    CurationPreviewPage,
     // Other pages
     AboutUsPage,
     PrivacyPolicyPage,

@@ -9,6 +9,7 @@ import LevelSubmissions from './components/LevelSubmissions';
 import PassSubmissions from './components/PassSubmissions';
 import { RefreshIcon } from '@/components/common/icons';
 import { useNotification } from '@/contexts/NotificationContext';
+import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
 const SubmissionManagementPage = () => {
   const { t } = useTranslation('pages');
@@ -39,7 +40,7 @@ const SubmissionManagementPage = () => {
     };
   }, []);
 
-  if (user?.isSuperAdmin === undefined) {
+  if (user.permissionFlags === undefined) {
     return (
       <>
         <MetaTags
@@ -60,7 +61,7 @@ const SubmissionManagementPage = () => {
     );
   }
 
-  if (!user?.isSuperAdmin) {
+  if (!hasFlag(user, permissionFlags.SUPER_ADMIN)) {
     return (
       <AccessDenied 
         metaTitle={tSubmission('meta.title')}

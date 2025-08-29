@@ -26,7 +26,6 @@ const TopRaterEntry = ({ rater, rank, averagePerDay }) => {
   const hasCircleOrnament = averagePerDay >= 5;
   const hasCrown = averagePerDay >= 15;
 
-  console.log(averagePerDay, rater.ratingCount);
   return (
     <div className={`top-rater-entry ${hasCrown ? 'top-performer' : ''}`}>
       <div className="rater-rank">#{rank}</div>

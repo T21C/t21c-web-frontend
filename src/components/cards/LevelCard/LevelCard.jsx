@@ -7,7 +7,11 @@ import { EditLevelPopup } from "@/components/popups";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { EditIcon, SteamIcon, DownloadIcon, VideoIcon, PassIcon, LikeIcon } from "@/components/common/icons";
 import { formatCreatorDisplay } from "@/utils/Utility";
+import { ABILITIES, hasBit } from "@/utils/Abilities";
 import { UserAvatar } from "@/components/layout";
+import { permissionFlags } from "@/utils/UserPermissions";
+import { hasFlag } from "@/utils/UserPermissions";
+
 
 const LevelCard = ({
   index,
@@ -83,10 +87,22 @@ const LevelCard = ({
     setShowEditPopup(true);
   };
 
+  // Determine glow class based on abilities - legendary overrides basic
+  const getGlowClass = () => {
+    if (!level.curation?.type?.abilities) return '';
+    
+    if (hasBit(level.curation.type.abilities, ABILITIES.LEVEL_LIST_LEGENDARY_GLOW)) {
+      return 'legendary';
+    } else if (hasBit(level.curation.type.abilities, ABILITIES.LEVEL_LIST_BASIC_GLOW)) {
+      return 'basic-glow';
+    }
+    return '';
+  };
+
   if (displayMode === 'grid') {
     return (
       <div 
-        className={`level-card grid size-${size}`} 
+        className={`level-card grid size-${size} ${getGlowClass()}`} 
         style={{ 
           // @ts-ignore
           '--difficulty-color': difficultyInfo?.color || '#fff',
@@ -149,7 +165,11 @@ const LevelCard = ({
   }
 
   return (
-    <div className={`level-card ${displayMode}`} style={{ backgroundColor: level.isDeleted ? "#f0000099" : level.isHidden ? "#88888899" : "none" }}>
+    <div className={`level-card ${displayMode} ${getGlowClass()}`} 
+    style={{ 
+      backgroundColor: level.isDeleted ? "#f0000099"
+      : level.isHidden ? "#88888899" 
+      : "none" }}>
       <div className="level-card-wrapper" onClick={() => redirect()}>
         <div className="img-wrapper">
           <img src={lvImage} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
@@ -161,6 +181,13 @@ const LevelCard = ({
               className="rating-icon"
               src={difficultyDict[level.rating.averageDifficultyId]?.icon}
               alt="Rating icon" />
+          : null
+          }
+          {(level.curation?.typeId) ?
+          <img 
+              className="curation-icon"
+              src={level.curation.type.icon}
+              alt="Curation icon" />
           : null
           }
           {difficultyDict[level.diffId]?.type === "PGU" 
@@ -246,7 +273,7 @@ const LevelCard = ({
           )}
         </div>
 
-        {user?.isSuperAdmin && (
+        {user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
           <button className="edit-button" onClick={handleEditClick}>
             <EditIcon size={"32px"} />
           </button>

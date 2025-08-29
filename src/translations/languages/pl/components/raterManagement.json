@@ -10,36 +10,30 @@
     }
   },
   "addRater": {
-    "placeholder": "Wpisz username",
+    "placeholder": "Wpisz nazwę użytkownika",
     "button": "Dodaj rater'a"
   },
-  "raterEntry": {
+  "userEntry": {
     "unknown": "Nieznany",
-    "adminBadge": "Administrator",
     "buttons": {
-      "makeAdmin": "Nadaj uprawnienia administratora",
-      "removeAdmin": "Odbierz uprawnienia administratora",
       "delete": "Usuń"
-    },
-    "discord": {
-      "idInput": "Wpisz username",
-      "validateButton": "Zatwierdź",
-      "confirmMessage": "Zaaktualizuj dane Discord dla @{{username}}?",
-      "confirmButton": "Potwierdź",
-      "cancelButton": "Anuluj",
-      "idLabel": "ID: {{id}}"
     }
+  },
+  "roles": {
+    "rater": "Rater",
+    "superadmin": "Super Administrator"
   },
   "errors": {
     "passwordRequired": "Hasło jest wymagane",
     "invalidPassword": "Niepoprawne hasło superadministratora",
     "deleteConfirm": "Czy na pewno chcesz usunąć tego rater'a?",
-    "updateAdminFailed": "Nie udało się zaaktualizować statusu administratora",
+    "updateRoleFailed": "Nie udało się zaaktualizować roli",
     "deleteFailed": "Nie udało się usunąć rater'a",
-    "discordFetchFailed": "Nie udało się pozyskać Discord ID",
-    "updateDiscordFailed": "Nie udało się zaaktualizować danych Discord",
     "loadFailed": "Nie udało się załadować rater'ów",
     "addFailed": "Nie udało się dodać rater'a",
-    "userNotFound": "Nie udało się znaleźć użytkownika"
+    "userNotFound": "Nie udało się znaleźć użytkownika",
+    "alreadyHighestRole": "Użytkownik ma już najwyższą rolę",
+    "alreadyLowestRole": "Użytkownik ma już najniższą rolę",
+    "noRoleToRemove": "Użytkownik nie ma roli do usunięcia"
   }
 } 

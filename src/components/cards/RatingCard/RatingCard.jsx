@@ -4,6 +4,7 @@ import { calculateRatingValue, formatCreatorDisplay } from '@/utils/Utility';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
+import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
 const trimString = (str, maxLength = 40) => {
   if (!str || typeof str !== 'string') return '';
@@ -191,7 +192,7 @@ export const RatingCard = ({
             >
               {tRating('buttons.viewDetails')}
             </button>
-            {user && user?.isSuperAdmin && (
+            {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
               <button 
                 onClick={handleEditClick} 
                 className={`edit-level-btn ${isEditing ? 'loading' : ''}`}

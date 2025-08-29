@@ -12,6 +12,7 @@ import { AdminPlayerPopup, CreatorAssignmentPopup } from "@/components/popups";
 import { DefaultAvatar, ShieldIcon, EditIcon } from "@/components/common/icons";
 import { CaseOpenSelector } from "@/components/common/selectors";
 import caseOpen from "@/assets/icons/case.png";
+import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
 
 const parseRankColor = (rank) => {
@@ -164,15 +165,15 @@ const ProfilePage = () => {
           />
           <CompleteNav />
           {user && isOwnProfile ? (
-            user.player.isBanned ? (
+            hasFlag(user, permissionFlags.BANNED) ? (
               <div className="profile-banner banned">
                 <span className="profile-banner-text">{tProfile('banned')}</span>
               </div>
-            ) : user.player.isSubmissionsPaused ? (
+            ) : hasFlag(user, permissionFlags.SUBMISSIONS_PAUSED) ? (
             <div className="profile-banner submissions-paused">
               <span className="profile-banner-text">{tProfile('submissionSuspended')}</span>
             </div>
-            ) : !user.isEmailVerified ? (
+            ) : !hasFlag(user, permissionFlags.EMAIL_VERIFIED) ? (
               <div className="profile-banner email-verification" onClick={() => navigate('/profile/verify-email')}>
                 <span className="profile-banner-text">{tProfile('emailVerification')}</span>
                 <span className="email-verification-arrow">→</span>
@@ -257,7 +258,7 @@ const ProfilePage = () => {
                       <EditIcon color="#fff" size={"24px"} />
                     </button>
                   )}
-                  {user?.isSuperAdmin && (
+                  {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
                     <button 
                       className="edit-button"
                       onClick={handleAdminEditClick}
@@ -265,7 +266,7 @@ const ProfilePage = () => {
                       <ShieldIcon color="#fff" size={"24px"} />
                     </button>
                   )}
-                  {user?.isSuperAdmin && (
+                  {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
                     <button 
                       className="edit-button"
                       onClick={handleCreatorAssignmentClick}

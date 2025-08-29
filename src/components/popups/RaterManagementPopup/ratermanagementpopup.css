@@ -31,6 +31,35 @@
   padding-bottom: 15px;
   border-bottom: 1px solid var(--color-white-t20);
   gap: 20px;
+  flex-wrap: wrap;
+}
+
+.rater-management-overlay .mode-toggle {
+  display: flex;
+  gap: 8px;
+  margin: 0 20px;
+}
+
+.rater-management-overlay .mode-button {
+  padding: 8px 16px;
+  background-color: var(--color-white-t10);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  color: var(--color-white-t70);
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: all 0.2s ease;
+}
+
+.rater-management-overlay .mode-button:hover {
+  background-color: var(--color-white-t20);
+  color: var(--color-white);
+}
+
+.rater-management-overlay .mode-button.active {
+  background-color: #4CAF50;
+  border-color: #4CAF50;
+  color: white;
 }
 
 .rater-management-overlay .popup-header h2 {
@@ -117,6 +146,18 @@
   justify-content: center;
 }
 
+.rater-management-overlay .role-badge {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 0.75em;
+  font-weight: 600;
+  margin-left: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
 .rater-management-overlay .discord-tag {
   color: #7289DA;
   font-size: 0.9em;
@@ -130,9 +171,32 @@
   flex-shrink: 0;
 }
 
-.rater-management-overlay .delete-rater-button {
+.rater-management-overlay .delete-rater-button,
+.rater-management-overlay .delete-user-button {
   padding: 6px 12px;
   background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  margin-left: 10px;
+}
+
+.rater-management-overlay .promote-button {
+  padding: 6px 12px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  margin-left: 10px;
+}
+
+.rater-management-overlay .demote-button {
+  padding: 6px 12px;
+  background-color: #ff9800;
   color: white;
   border: none;
   border-radius: 4px;
@@ -202,6 +266,13 @@
   color: var(--color-white-t70);
   margin: 0;
   font-size: 0.9em;
+}
+
+.rater-management-overlay .current-role {
+  color: var(--color-white-t70);
+  margin: 5px 0 0 0;
+  font-size: 0.9em;
+  font-style: italic;
 }
 
 .rater-management-overlay .confirm-buttons {
@@ -397,4 +468,9 @@
   margin: 0;
   font-size: 0.9em;
   flex: 1;
-} 
+}
+
+.rater-management-overlay .internal-avatar {
+  width: 40px;
+  height: 40px;
+}

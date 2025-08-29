@@ -1,0 +1,310 @@
+.curation-selection-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.curation-selection-modal__content {
+  background-color: #2a2a2a;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 900px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 2px solid #404040;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.curation-selection-modal__close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.curation-selection-modal__close-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.curation-selection-modal__header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.curation-selection-modal__header h2 {
+  color: #ffffff;
+  margin-bottom: 0.5rem;
+  font-size: 1.5rem;
+}
+
+.curation-selection-modal__header p {
+  color: #a0a0a0;
+  margin: 0;
+}
+
+.curation-selection-modal__filters {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.curation-selection-modal__filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 200px;
+}
+
+.curation-selection-modal__filter-group label {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.curation-selection-modal__search-input,
+.curation-selection-modal__type-select {
+  padding: 0.75rem;
+  border: 2px solid #404040;
+  border-radius: 8px;
+  background-color: #1a1a1a;
+  color: #ffffff;
+  font-size: 0.9rem;
+  transition: border-color 0.2s;
+}
+
+.curation-selection-modal__search-input:focus,
+.curation-selection-modal__type-select:focus {
+  outline: none;
+  border-color: #4a9eff;
+}
+
+.curation-selection-modal__list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.curation-selection-modal__loading,
+.curation-selection-modal__empty {
+  text-align: center;
+  padding: 3rem;
+  color: #a0a0a0;
+  font-style: italic;
+}
+
+.curation-selection-modal__item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: #1a1a1a;
+  border: 2px solid #404040;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.curation-selection-modal__item:hover {
+  border-color: #4a9eff;
+  background-color: #242424;
+  transform: translateY(-1px);
+}
+
+.curation-selection-modal__item-preview {
+  width: 80px;
+  height: 60px;
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #333333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.curation-selection-modal__thumbnail {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.curation-selection-modal__no-thumbnail {
+  font-size: 1.5rem;
+  color: #666666;
+}
+
+.curation-selection-modal__item-details {
+  flex: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.curation-selection-modal__level-info {
+  flex: 1;
+}
+
+.curation-selection-modal__level-title {
+  color: #ffffff;
+  margin: 0 0 0.25rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.curation-selection-modal__level-artist {
+  color: #a0a0a0;
+  margin: 0 0 0.25rem 0;
+  font-size: 0.9rem;
+}
+
+.curation-selection-modal__level-creator {
+  color: #888888;
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.curation-selection-modal__curation-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.curation-selection-modal__type-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+  min-width: 80px;
+}
+
+.curation-selection-modal__difficulty {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #a0a0a0;
+  font-size: 0.8rem;
+}
+
+.curation-selection-modal__difficulty-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.curation-selection-modal__select-btn {
+  padding: 0.75rem 1.5rem;
+  background-color: #4a9eff;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  flex-shrink: 0;
+}
+
+.curation-selection-modal__select-btn:hover {
+  background-color: #3a8eef;
+}
+
+.curation-selection-modal__pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid #404040;
+}
+
+.curation-selection-modal__page-btn {
+  padding: 0.75rem 1rem;
+  background-color: #333333;
+  color: #ffffff;
+  border: 2px solid #404040;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 600;
+}
+
+.curation-selection-modal__page-btn:hover:not(:disabled) {
+  background-color: #4a9eff;
+  border-color: #4a9eff;
+}
+
+.curation-selection-modal__page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.curation-selection-modal__page-info {
+  color: #a0a0a0;
+  font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .curation-selection-modal__content {
+    padding: 1.5rem;
+    width: 95%;
+  }
+  
+  .curation-selection-modal__filters {
+    flex-direction: column;
+  }
+  
+  .curation-selection-modal__filter-group {
+    min-width: auto;
+  }
+  
+  .curation-selection-modal__item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .curation-selection-modal__item-details {
+    width: 100%;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .curation-selection-modal__curation-info {
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .curation-selection-modal__select-btn {
+    align-self: flex-end;
+  }
+  
+  .curation-selection-modal__pagination {
+    flex-direction: column;
+    gap: 1rem;
+  }
+}

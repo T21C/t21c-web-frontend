@@ -7,6 +7,8 @@ import { DifficultyContext } from "@/contexts/DifficultyContext";
 import { formatNumber } from "@/utils";
 import { UserAvatar } from "@/components/layout";
 import { useAuth } from "@/contexts/AuthContext";
+import { permissionFlags } from "@/utils/UserPermissions";
+import { hasFlag } from "@/utils/UserPermissions";
 
 const diffFields = ["topDiff", "top12kDiff"];
 const passes = ["totalPasses", "universalPassCount", "worldsFirstCount"];
@@ -111,7 +113,7 @@ const PlayerCard = ({player, onCreatorAssignmentClick}) => {
   const difficultyIcon = diffFields.includes(sortBy) ? player[sortBy].icon : null;
 
   return (
-    <div className='player-card' onClick={() => redirect()} style={{backgroundColor: player.isBanned ? "#ff000099" : ""}}>
+    <div className='player-card' onClick={() => redirect()} style={{backgroundColor: hasFlag(player.user, permissionFlags.BANNED) ? "#ff000099" : ""}}>
       <div className="img-wrapper">
         <div className="image-container">
           <UserAvatar  
@@ -136,7 +138,7 @@ const PlayerCard = ({player, onCreatorAssignmentClick}) => {
           <p className='player-name'>
             {player.name}
             
-        {user?.isSuperAdmin && player.player?.user && (
+        {user && player.player?.user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
           <button
             className="creator-assignment-btn"
             onClick={handleCreatorAssignmentClick}

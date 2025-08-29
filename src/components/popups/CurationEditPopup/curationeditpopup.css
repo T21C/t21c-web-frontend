@@ -1,0 +1,331 @@
+.curation-edit-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.curation-edit-modal__content {
+  background-color: #2a2a2a;
+  border-radius: 12px;
+  padding: 2rem;
+  max-width: 800px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  border: 2px solid #404040;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.curation-edit-modal__close-button {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.curation-edit-modal__close-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.curation-edit-modal__header {
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.curation-edit-modal__header h2 {
+  color: #ffffff;
+  font-size: 1.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.curation-edit-modal__header p {
+  color: #a0a0a0;
+  font-size: 1rem;
+}
+
+/* Level Information Display */
+.curation-edit-modal__level-info {
+  margin-bottom: 2rem;
+}
+
+.curation-edit-modal__level-card {
+  background: #1a1a1a;
+  border: 1px solid #404040;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.curation-edit-modal__level-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.curation-edit-modal__difficulty-icon {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+}
+
+.curation-edit-modal__level-details h3 {
+  color: #ffffff;
+  font-size: 1.1rem;
+  margin: 0 0 0.25rem 0;
+}
+
+.curation-edit-modal__level-artist,
+.curation-edit-modal__level-creator {
+  color: #a0a0a0;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.curation-edit-modal__level-artist {
+  margin-bottom: 0.125rem;
+}
+
+/* Required field indicator */
+.curation-edit-modal__form-group .required {
+  color: #ff6b6b;
+  margin-left: 0.25rem;
+  font-weight: bold;
+}
+
+/* Form Styles */
+.curation-edit-modal__form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.curation-edit-modal__form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.curation-edit-modal__form-group label {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.curation-edit-modal__select,
+.curation-edit-modal__input,
+.curation-edit-modal__textarea,
+.curation-edit-modal__color-text {
+  padding: 0.75rem;
+  border: 2px solid #404040;
+  border-radius: 8px;
+  background: #1a1a1a;
+  color: #ffffff;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+}
+
+.curation-edit-modal__select:focus,
+.curation-edit-modal__input:focus,
+.curation-edit-modal__textarea:focus,
+.curation-edit-modal__color-text:focus {
+  outline: none;
+  border-color: #4a9eff;
+}
+
+.curation-edit-modal__textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.curation-edit-modal__css-textarea {
+  color: #ffffff;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875rem;
+  line-height: 1.4;
+  background: #0a0a0a;
+  border-color: #333333;
+  resize: vertical;
+  min-height: 200px;
+  max-height: 600px;
+}
+
+.curation-edit-modal__preview-button {
+  background: #2a5a8a;
+  color: var(--color-white);
+  border: none;
+  border-radius: 6px;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.curation-edit-modal__preview-button:hover:not(:disabled) {
+  background: #1e4a7a;
+  transform: translateY(-1px);
+}
+
+.curation-edit-modal__preview-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.curation-edit-modal__help-text {
+  color: #a0a0a0;
+  font-size: 0.8rem;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Color Input */
+.curation-edit-modal__color-input {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.curation-edit-modal__color-picker {
+  width: 50px;
+  height: 40px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  background: none;
+}
+
+.curation-edit-modal__color-text {
+  flex: 1;
+  font-family: 'Courier New', monospace;
+}
+
+/* Form Actions */
+.curation-edit-modal__actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #404040;
+}
+
+.curation-edit-modal__cancel-btn,
+.curation-edit-modal__save-btn {
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.curation-edit-modal__cancel-btn {
+  background: #333333;
+  color: #ffffff;
+  border: 1px solid #404040;
+}
+
+.curation-edit-modal__cancel-btn:hover:not(:disabled) {
+  background: #1a1a1a;
+}
+
+.curation-edit-modal__save-btn {
+  background: #4a9eff;
+  color: white;
+}
+
+.curation-edit-modal__save-btn:hover:not(:disabled) {
+  background: #3a8eef;
+  transform: translateY(-1px);
+}
+
+.curation-edit-modal__cancel-btn:disabled,
+.curation-edit-modal__save-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .curation-edit-modal__content {
+    margin: 1rem;
+    width: calc(100% - 2rem);
+    max-width: none;
+    padding: 1.5rem;
+  }
+
+  .curation-edit-modal__header h2 {
+    font-size: 1.5rem;
+  }
+
+  .curation-edit-modal__level-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .curation-edit-modal__color-input {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .curation-edit-modal__actions {
+    flex-direction: column;
+  }
+
+  .curation-edit-modal__cancel-btn,
+  .curation-edit-modal__save-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .curation-edit-modal__content {
+    padding: 1rem;
+  }
+
+  .curation-edit-modal__header h2 {
+    font-size: 1.25rem;
+  }
+
+  .curation-edit-modal__form {
+    gap: 1rem;
+  }
+}
+
+/* Warning Styles */
+.curation-edit-modal__warning {
+  background-color: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 4px;
+  padding: 0.75rem;
+  color: #856404;
+}
+
+.curation-edit-modal__warning p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}

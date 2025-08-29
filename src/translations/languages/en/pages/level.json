@@ -19,7 +19,8 @@
     "gridView": "Grid View",
     "toggleQSlider": "Toggle Q Difficulty Slider",
     "orderAsc": "Ascending",
-    "orderDesc": "Descending"
+    "orderDesc": "Descending",
+    "stateDisplay": "Display options"
   },
   "settings": {
     "sort": {
@@ -44,6 +45,7 @@
     "clearedLevels": "Cleared Levels",
     "deletedLevels": "Deleted Levels",
     "availableDl": "Downloadable",
+    "curationTypes": "Curation Types",
     "myLikes": "My Likes"
   },
   "infScroll": {

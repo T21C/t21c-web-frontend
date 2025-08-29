@@ -23,7 +23,7 @@
   flex-grow: 1;
 }
 .level-card:hover {
-  background-color: var(--color-white-t30);
+  background-color: var(--color-white-t20);
 }
 .level-card .level-exp {
   width: -moz-fit-content;
@@ -165,8 +165,18 @@
 }
 
 .level-card .rating-icon {
-  top: -10%;
-  left: -10%;
+  top: -11%;
+  left: -11%;
+  position: absolute;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+}
+
+.level-card .curation-icon {
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 1));
+  bottom: -11%;
+  right: -11%;
   position: absolute;
   width: 1.5rem;
   height: 1.5rem;
@@ -496,5 +506,213 @@
 @media (max-width: 480px) {
   .level-card.grid {
     width: 100%;
+  }
+}
+
+/* Basic glow card styling - only applies to list view (non-grid) */
+.level-card.basic-glow:not(.grid) {
+  position: relative;
+  overflow: hidden;
+}
+
+.level-card.basic-glow:not(.grid)::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(45deg,
+    rgba(0, 200, 255, 1),
+    rgba(150, 0, 255, 1),
+    rgba(0, 200, 255, 1)
+  );
+  background-size: 300% 300%;
+  border-radius: inherit;
+  z-index: -2;
+  animation: basicGlow 8s ease-in-out infinite;
+  opacity: 0.4;
+}
+
+.level-card.basic-glow:not(.grid)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(45deg, 
+    rgba(0, 150, 255, 0.05), 
+    rgba(100, 200, 255, 0.05), 
+    rgba(150, 100, 255, 0.05), 
+    rgba(0, 150, 255, 0.05)
+  );
+  background-size: 300% 300%;
+  border-radius: inherit;
+  z-index: -1;
+  animation: basicGlow 8s ease-in-out infinite reverse;
+  opacity: 0.2;
+}
+
+.level-card.basic-glow:not(.grid):hover::before {
+  opacity: 0.5;
+  animation-duration: 6s;
+}
+
+.level-card.basic-glow:not(.grid):hover::after {
+  opacity: 0.5;
+}
+
+.level-card.basic-glow:not(.grid) .level-card-wrapper {
+  background: rgba(0, 0, 0, 0.4);
+  -webkit-backdrop-filter: blur(1px);
+  backdrop-filter: blur(1px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+  z-index: 1;
+}
+
+.level-card.basic-glow:not(.grid):hover .level-card-wrapper {
+  background: rgba(0, 0, 0, 0.3);
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 16px rgba(0, 150, 255, 0.15);
+}
+
+
+/* Basic glow animation */
+@keyframes basicGlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* Legendary card styling - only applies to list view (non-grid) */
+.level-card.legendary:not(.grid) {
+  position: relative;
+  overflow: hidden;
+  will-change: transform;
+}
+
+.level-card.legendary:not(.grid)::before {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  background: linear-gradient(90deg,
+    #FF00FF,
+    #4200FF,
+    #A200FF,
+    #4200FF,
+    #FF00FF
+  );
+  background-size: 400% 400%;
+  border-radius: inherit;
+  z-index: -2;
+  animation: legendaryGlow 10s ease-in-out infinite;
+  opacity: 1;
+  filter: brightness(1.5);
+}
+
+.level-card.legendary:not(.grid)::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, 
+    rgba(0, 255, 255, 1), 
+    rgba(139, 0, 255, 1), 
+    rgba(255, 0, 255, 1), 
+    rgba(0, 255, 255, 1),
+    rgba(139, 0, 255, 1), 
+    rgba(255, 0, 255, 1), 
+    rgba(0, 255, 255, 1)
+  );
+  background-size: 400% 400%;
+  border-radius: inherit;
+  z-index: -1;
+  animation: legendaryGlow 10s cubic-bezier(0.37, 0, 0.63, 1) infinite reverse;
+  opacity: 0.1;
+  transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+.level-card.legendary:not(.grid):hover::before {
+  opacity: 1;
+  filter: blur(2px);
+  animation-duration: 7s;
+}
+
+.level-card.legendary:not(.grid):hover::after {
+  opacity: 1;
+  filter: brightness(1.2);
+}
+
+.level-card.legendary:not(.grid) .level-card-wrapper {
+  background: rgba(0, 0, 0, 0.6);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  position: relative;
+  z-index: 1;
+  transition: all 0s ease;
+}
+
+.level-card.legendary:not(.grid):hover .level-card-wrapper {
+  background: rgba(5, 5, 5, 0.5);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 255, 255, 0.2);
+}
+
+
+/* Legendary glow animation */
+@keyframes legendaryGlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  100% {
+    background-position: 133.33% 50%;
+  }
+}
+
+
+/* Performance optimizations for glow cards - only list view */
+.level-card.basic-glow:not(.grid),
+.level-card.basic-glow:not(.grid)::before,
+.level-card.basic-glow:not(.grid)::after,
+.level-card.legendary:not(.grid),
+.level-card.legendary:not(.grid)::before,
+.level-card.legendary:not(.grid)::after {
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  .level-card.basic-glow:not(.grid)::before,
+  .level-card.basic-glow:not(.grid)::after {
+    animation: none;
+  }
+  
+  .level-card.basic-glow:not(.grid)::before {
+    background: linear-gradient(45deg, rgba(0, 150, 255, 0.4), rgba(100, 200, 255, 0.4));
+    opacity: 0.5;
+  }
+  
+  .level-card.basic-glow:not(.grid)::after {
+    background: rgba(0, 150, 255, 0.1);
+    opacity: 0.2;
+  }
+
+  .level-card.legendary:not(.grid)::before,
+  .level-card.legendary:not(.grid)::after,
+  .level-card.legendary:not(.grid) .img-wrapper::after {
+    animation: none;
+  }
+  
+  .level-card.legendary:not(.grid)::before {
+    background: linear-gradient(45deg, #00ffff, #8b00ff);
+    opacity: 0.6;
+  }
+  
+  .level-card.legendary:not(.grid)::after {
+    background: rgba(0, 255, 255, 0.1);
+    opacity: 0.3;
   }
 }

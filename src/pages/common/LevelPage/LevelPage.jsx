@@ -17,8 +17,11 @@ import { DifficultyContext } from "@/contexts/DifficultyContext";
 import { ReferencesButton, ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
 import { DifficultySlider, SpecialDifficulties } from "@/components/common/selectors";
-import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon , FilterIcon, LikeIcon} from "@/components/common/icons";
+import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon , FilterIcon, LikeIcon, SwitchIcon} from "@/components/common/icons";
 import { LevelHelpPopup } from "@/components/popups";
+import toast from 'react-hot-toast';
+import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
+
 const currentUrl = window.location.origin + location.pathname;
 
 const limit = 50;
@@ -31,7 +34,7 @@ const LevelPage = () => {
   const [error, setError] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(false);
   const { user } = useAuth();
-  const { difficulties } = useContext(DifficultyContext);
+  const { difficulties, curationTypes } = useContext(DifficultyContext);
   const {
     levelsData,
     setLevelsData,
@@ -61,6 +64,8 @@ const LevelPage = () => {
     setAvailableDlFilter,
     clearedFilter,
     setClearedFilter,
+    curatedTypesFilter,
+    setCuratedTypesFilter,
     sliderRange,
     setSliderRange,
     selectedSpecialDiffs,
@@ -78,11 +83,13 @@ const LevelPage = () => {
   const [showHelpPopup, setShowHelpPopup] = useState(false);
   const [viewMode, setViewMode] = useState('normal');
   const [cardSize, setCardSize] = useState('medium');
+  const [stateDisplayOpen, setStateDisplayOpen] = useState(false);
   const [searchCooldown, setSearchCooldown] = useState(false);
   const [searchInput, setSearchInput] = useState(query);
   const searchTimeoutRef = useRef(null);
   const [pendingSearch, setPendingSearch] = useState(false);
   const lastSearchValueRef = useRef(query);
+  const [selectedCurationTypes, setSelectedCurationTypes] = useState([]);
 
   // Filter difficulties by type
   const pguDifficulties = difficulties.filter(d => d.type === 'PGU').sort((a, b) => a.sortOrder - b.sortOrder);
@@ -100,15 +107,20 @@ const LevelPage = () => {
     { value: 'RANDOM', label: tLevel('settings.sort.random') }
   ];
 
+  // Centralized refresh function
+  const triggerRefresh = () => {
+    setPageNumber(0);
+    setLevelsData([]);
+    setForceUpdate(f => !f);
+  };
+
   function handleLikeToggle() {
     if (!user) {
       toast.error(tLevel('errors.loginRequired'));
       return;
     }
     setOnlyMyLikes(!onlyMyLikes);
-    setPageNumber(0);
-    setLevelsData([]);
-    setForceUpdate(f => !f);
+    triggerRefresh();
   }
 
   // Handle slider value updates without triggering immediate fetches
@@ -173,9 +185,7 @@ const LevelPage = () => {
     setSliderQRangeDrag([sortOrderValues[0], sortOrderValues[sortOrderValues.length - 1]]);
     setSliderQRange(newRange);
     // Only reset page and trigger fetch when dragging is complete
-    setPageNumber(0);
-    setLevelsData([]);
-    setForceUpdate(f => !f);
+    triggerRefresh();
   }, [qDifficulties, difficulties]);
 
   // Handle slider changes complete (after drag or click)
@@ -193,9 +203,7 @@ const LevelPage = () => {
     setSelectedHighFilterDiff(highDiff?.name || "U20");
     
     // Only reset page and trigger fetch when dragging is complete
-    setPageNumber(0);
-    setLevelsData([]);
-    setForceUpdate(f => !f);
+    triggerRefresh();
   }, [pguDifficulties]);
 
   function toggleSpecialDifficulty(diffName) {
@@ -204,9 +212,18 @@ const LevelPage = () => {
         ? prev.filter(d => d !== diffName)
         : [...prev, diffName];
       
-      setPageNumber(0);
-      setLevelsData([]);
-      setForceUpdate(f => !f);
+      triggerRefresh();
+      return newSelection;
+    });
+  }
+
+  function toggleCurationType(typeName) {
+    setSelectedCurationTypes(prev => {
+      const newSelection = prev.includes(typeName)
+        ? prev.filter(name => name !== typeName)
+        : [...prev, typeName];
+      
+      triggerRefresh();
       return newSelection;
     });
   }
@@ -227,8 +244,7 @@ const LevelPage = () => {
         lastSearchValueRef.current = newValue;
         setPendingSearch(true);
         setQuery(newValue);
-        setPageNumber(0);
-        setLevelsData([]);
+        triggerRefresh();
         
         // Set cooldown after search is initiated
         setSearchCooldown(true);
@@ -244,6 +260,9 @@ const LevelPage = () => {
   useEffect(() => {
     lastSearchValueRef.current = query;
   }, [query]);
+
+  // Note: Removed auto-clearing of curation types when filter changes to 'hide'
+  // to preserve user's selection for when they switch back to 'only' mode
 
   // Clean up the timeout when component unmounts
   useEffect(() => {
@@ -275,7 +294,8 @@ const LevelPage = () => {
           pguRange: `${selectedLowFilterDiff},${selectedHighFilterDiff}`,
           specialDifficulties: allSpecialDiffs.join(','),
           onlyMyLikes: user ? onlyMyLikes : undefined,
-          availableDlFilter: availableDlFilter
+          availableDlFilter: availableDlFilter,
+          curatedTypesFilter: curatedTypesFilter === "only" && selectedCurationTypes.length > 0 ? selectedCurationTypes.join(',') : curatedTypesFilter
         };
         
         const response = await api.get(
@@ -337,7 +357,7 @@ const LevelPage = () => {
       fetchLevels();
     }
     return () => cancel && cancel();
-  }, [query, sort, pageNumber, forceUpdate, deletedFilter, sliderQRange, qSliderVisible]);
+  }, [query, sort, pageNumber, forceUpdate, deletedFilter, sliderQRange, qSliderVisible, curatedTypesFilter, selectedCurationTypes]);
 
   function handleFilterOpen() {
     setFilterOpen(!filterOpen);
@@ -347,24 +367,23 @@ const LevelPage = () => {
     setSortOpen(!sortOpen);
   }
 
+  function handleStateDisplayOpen() {
+    setStateDisplayOpen(!stateDisplayOpen);
+  }
+
   function handleSortType(value) {
     setSort(value);
-    setPageNumber(0);
-    setLevelsData([]);
     setLoading(true);
-    setForceUpdate((f) => !f);
+    triggerRefresh();
   }
 
   function handleSortOrder(value) {
     setOrder(value);
-    setPageNumber(0);
-    setLevelsData([]);
     setLoading(true);
-    setForceUpdate((f) => !f);
+    triggerRefresh();
   }
 
   function resetAll() {
-    setPageNumber(0);
     setSort("RECENT_DESC");
     setSearchInput("");
     setQuery("");
@@ -388,11 +407,12 @@ const LevelPage = () => {
     setDeletedFilter("hide");
     setClearedFilter("show");
     setAvailableDlFilter("show");
+    setCuratedTypesFilter("show");
+    setSelectedCurationTypes([]);
     setQSliderVisible(false);
     // Clear and reload data
-    setLevelsData([]);
     setLoading(true);
-    setForceUpdate(f => !f);
+    triggerRefresh();
   }
 
 
@@ -472,6 +492,9 @@ const LevelPage = () => {
           <Tooltip id="reset" place="bottom" noArrow>
             {tLevel('toolTip.reset')}
           </Tooltip>
+          <Tooltip id="state-display" place="bottom" noArrow>
+            {tLevel('toolTip.stateDisplay')}
+          </Tooltip>
 
 
           <FilterIcon
@@ -491,6 +514,15 @@ const LevelPage = () => {
             data-tooltip-id="sort"
             style={{
               backgroundColor: sortOpen ? "rgba(255, 255, 255, 0.7)" : "",
+            }}
+          />
+
+          <SwitchIcon
+            color="#ffffff"
+            onClick={() => handleStateDisplayOpen()}
+            data-tooltip-id="state-display"
+            style={{
+              backgroundColor: stateDisplayOpen ? "rgba(255, 255, 255, 0.7)" : "",
             }}
           />
 
@@ -534,48 +566,29 @@ const LevelPage = () => {
                   onToggle={toggleSpecialDifficulty}
                   disableQuantum={true}
                 />
-                <StateDisplay
-                  currentState={clearedFilter}
+                <div className={`curation-types-wrapper ${curatedTypesFilter === "only" ? 'visible' : 'hidden'}`}>
+                <SpecialDifficulties
+                  difficulties={curationTypes}
+                  selectedDiffs={selectedCurationTypes}
+                  onToggle={toggleCurationType}
+                  curationMode={true}
+                  title={tLevel('settingExp.curationTypes')}
+                />
+                
+              </div>
+              <StateDisplay
+                  currentState={curatedTypesFilter}
                   onChange={(newState) => {
-                    setClearedFilter(newState);
-                    setPageNumber(0);
-                    setLevelsData([]);
-                    setForceUpdate(f => !f);
+                    setCuratedTypesFilter(newState);
+                    triggerRefresh();
                   }}
-                  label={tLevel('settingExp.clearedLevels')}
                   states={['show', 'hide', 'only']}
                 />
-                <StateDisplay
-                  currentState={availableDlFilter}
-                  onChange={(newState) => {
-                    setAvailableDlFilter(newState);
-                    setPageNumber(0);
-                    setLevelsData([]);
-                    setForceUpdate(f => !f);
-                  }}
-                  label={tLevel('settingExp.availableDl')}
-                  states={['show', 'hide', 'only']}
-                />
-                {user?.isSuperAdmin && (
-                  <StateDisplay
-                    currentState={deletedFilter}
-                    onChange={(newState) => {
-                      setDeletedFilter(newState);
-                      setPageNumber(0);
-                      setLevelsData([]);
-                      setForceUpdate(f => !f);
-                    }}
-                    label={tLevel('settingExp.deletedLevels')}
-                    states={['show', 'hide', 'only']}
-                  />
-                )}
                 <button 
                   className={`q-toggle-button ${qSliderVisible ? 'active' : ''}`}
                   onClick={() => {
                     setQSliderVisible(!qSliderVisible);
-                    setPageNumber(0);
-                    setLevelsData([]);
-                    setForceUpdate(f => !f);
+                    triggerRefresh();
                   }}
                   title={tLevel('toolTip.toggleQSlider')}
                   data-tooltip-id="q-toggle"
@@ -648,6 +661,48 @@ const LevelPage = () => {
               )}
             </div>
           </div>
+
+          <div
+            className={`state-switches state-switches-class ${stateDisplayOpen ? 'visible' : 'hidden'}`}
+          >
+            <div className="state-switches-option">
+              <div className="state-switches-item">
+                <span className="state-switches-label">{tLevel('settingExp.clearedLevels')}</span>
+                <StateDisplay
+                  currentState={clearedFilter}
+                  onChange={(newState) => {
+                    setClearedFilter(newState);
+                    triggerRefresh();
+                  }}
+                  states={['show', 'hide', 'only']}
+                />
+              </div>
+              <div className="state-switches-item">
+                <span className="state-switches-label">{tLevel('settingExp.availableDl')}</span>
+                <StateDisplay
+                  currentState={availableDlFilter}
+                  onChange={(newState) => {
+                    setAvailableDlFilter(newState);
+                    triggerRefresh();
+                  }}
+                  states={['show', 'hide', 'only']}
+                />
+              </div>
+              {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+                <div className="state-switches-item">
+                  <span className="state-switches-label">{tLevel('settingExp.deletedLevels')}</span>
+                  <StateDisplay
+                    currentState={deletedFilter}
+                    onChange={(newState) => {
+                      setDeletedFilter(newState);
+                      triggerRefresh();
+                    }}
+                    states={['show', 'hide', 'only']}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         <div className="view-mode-section">
@@ -657,9 +712,7 @@ const LevelPage = () => {
               className={`view-mode-button ${viewMode === 'normal' ? 'active' : ''}`}
               onClick={() => {
                 setViewMode('normal');
-                setPageNumber(0);
-                setLevelsData([]);
-                setForceUpdate(f => !f);
+                triggerRefresh();
               }}
               title={tLevel('toolTip.normalView')}
             >
@@ -671,9 +724,7 @@ const LevelPage = () => {
               className={`view-mode-button ${viewMode === 'compact' ? 'active' : ''}`}
               onClick={() => {
                 setViewMode('compact');
-                setPageNumber(0);
-                setLevelsData([]);
-                setForceUpdate(f => !f);
+                triggerRefresh();
               }}
               title={tLevel('toolTip.compactView')}
             >
@@ -685,9 +736,7 @@ const LevelPage = () => {
               className={`view-mode-button ${viewMode === 'grid' ? 'active' : ''}`}
               onClick={() => {
                 setViewMode('grid');
-                setPageNumber(0);
-                setLevelsData([]);
-                setForceUpdate(f => !f);
+                triggerRefresh();
               }}
               title={tLevel('toolTip.gridView')}
             >

@@ -14,6 +14,7 @@ import pseudoIcon from '@/assets/icons/Pseudo.png';
 import keycountPlusIcon from '@/assets/icons/Kplus RITK.png';
 import hideIcons from '@/assets/icons/RITK hidden.png'
 import showIcons from '@/assets/icons/RITK visible.png'
+import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
 const hexToRgb = (hex) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -848,7 +849,7 @@ const ReferencesPopup = ({ onClose }) => {
                 </button>
               </>
             )}
-                      {user?.isSuperAdmin && (
+          {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
             <button 
               className="edit-mode-btn"
               onClick={handleEditModeToggle}

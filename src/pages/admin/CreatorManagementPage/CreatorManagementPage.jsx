@@ -773,7 +773,7 @@ const CreatorManagementPage = () => {
     // Server will handle the sorting
   };
 
-  if (user?.isSuperAdmin === undefined) {
+  if (user.permissionFlags === undefined) {
     return (
       <div className="creator-management-page">
         <MetaTags
@@ -792,7 +792,7 @@ const CreatorManagementPage = () => {
     );
   }
 
-  if (!user?.isSuperAdmin) {
+  if (!hasFlag(user, permissionFlags.SUPER_ADMIN)) {
     return (
       <AccessDenied 
         metaTitle="Creator Management"

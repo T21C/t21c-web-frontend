@@ -6,6 +6,7 @@ import { toast } from 'react-hot-toast';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import axios from 'axios';
+import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
 const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
   const { t } = useTranslation('components');
@@ -17,9 +18,9 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
   }
 
   const [selectedCountry, setSelectedCountry] = useState(player.country || 'XX');
-  const [isBanned, setIsBanned] = useState(player.isBanned || false);
-  const [isSubmissionsPaused, setIsSubmissionsPaused] = useState(player.isSubmissionsPaused || false);
-  const [isRatingBanned, setIsRatingBanned] = useState(player.isRatingBanned || false);
+  const [isBanned, setIsBanned] = useState(hasFlag(player.user, permissionFlags.BANNED) || false);
+  const [isSubmissionsPaused, setIsSubmissionsPaused] = useState(hasFlag(player.user, permissionFlags.SUBMISSIONS_PAUSED) || false);
+  const [isRatingBanned, setIsRatingBanned] = useState(hasFlag(player.user, permissionFlags.RATING_BANNED) || false);
   const [showBanConfirm, setShowBanConfirm] = useState(false);
   const [showPauseConfirm, setShowPauseConfirm] = useState(false);
   const [showRatingBanConfirm, setShowRatingBanConfirm] = useState(false);

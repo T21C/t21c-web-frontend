@@ -1,9 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import api from '@/utils/api';
 import './leveluploadmanagementpopup.css';
-import axios from 'axios';
 import { useTranslation } from 'react-i18next';
-import { prepareZipForUpload, validateZipSize, formatFileSize, encodeFilename } from '@/utils/zipUtils';
+import { encodeFilename } from '@/utils/zipUtils';
 import { uploadFileInChunks, validateChunkedUpload } from '@/utils/chunkedUpload';
 
 const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, setLevel }) => {
@@ -60,11 +59,6 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
     if (!file) return;
 
     try {
-      // Validate file type and size
-      if (!validateZipSize(file)) {
-        setError(tUpload('errors.invalidZip'));
-        return;
-      }
 
       setIsUploading(true);
       setError(null);

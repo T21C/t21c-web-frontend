@@ -1,6 +1,6 @@
 .special-difficulties-dropdown {
   position: relative;
-  width: 25%;
+  width: fit-content;
 }
 
 .special-difficulties-dropdown .dropdown-toggle {
@@ -16,6 +16,8 @@
   justify-content: space-between;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .special-difficulties-dropdown .dropdown-toggle:hover {
@@ -34,6 +36,8 @@
 
 .special-difficulties-dropdown .selected-count {
   color: var(--color-white-t70);
+  width: 1rem;
+  font-size: 0.8rem;
   margin-left: auto;
   margin-right: 0.5rem;
 }

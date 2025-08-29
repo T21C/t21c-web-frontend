@@ -1,0 +1,35 @@
+{
+  "title": "Edit Curation",
+  "description": "Customize the curation settings for this level",
+  "form": {
+    "type": "Curation Type",
+    "selectType": "Select a curation type",
+    "shortDescription": "Short Description",
+    "shortDescriptionPlaceholder": "Brief description (max 255 characters)...",
+    "shortDescriptionHelp": "A brief description that will be displayed in gallery views and previews",
+    "description": "Description",
+    "descriptionPlaceholder": "Enter a description for this curation...",
+    "descriptionRequired": "Description is required for this curation type",
+    "descriptionRequiredPlaceholder": "Description is required...",
+    "customColor": "Custom Color",
+    "customCSS": "Custom CSS",
+    "customCSSPlaceholder": "/* Enter custom CSS for this level's detail page */\n.curation-custom {\n  /* Your custom styles here */\n}",
+    "customCSSHelp": "This CSS will be applied to the level's detail page. Use this to customize the appearance and layout.",
+    "thumbnail": "Level Thumbnail"
+  },
+  "actions": {
+    "cancel": "Cancel",
+    "save": "Save Changes",
+    "saving": "Saving..."
+  },
+  "notifications": {
+    "updated": "Curation updated successfully",
+    "thumbnailUpdated": "Thumbnail updated successfully",
+    "thumbnailRemoved": "Thumbnail removed successfully"
+  },
+  "errors": {
+    "updateFailed": "Failed to update curation",
+    "thumbnailUpdateFailed": "Failed to update thumbnail",
+    "thumbnailRemoveFailed": "Failed to remove thumbnail"
+  }
+}

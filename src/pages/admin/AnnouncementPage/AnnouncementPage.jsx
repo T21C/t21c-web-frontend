@@ -11,6 +11,7 @@ import PassesTab from './components/PassesTab';
 import { RefreshIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { AccessDenied, MetaTags } from '@/components/common/display';
+import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
 const AnnouncementPage = () => {
   const { user } = useAuth();
@@ -190,7 +191,7 @@ const AnnouncementPage = () => {
     }
   };
 
-  if (user?.isSuperAdmin === undefined) {
+  if (user.permissionFlags === undefined) {
     return (
       <>
         <MetaTags
@@ -211,7 +212,7 @@ const AnnouncementPage = () => {
     );
   }
 
-  if (!user?.isSuperAdmin) {
+  if (!hasFlag(user, permissionFlags.SUPER_ADMIN)) {
     return (
       <AccessDenied 
         metaTitle={tAnnounce('meta.title')}

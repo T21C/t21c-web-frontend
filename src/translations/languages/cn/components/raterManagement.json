@@ -10,36 +10,30 @@
     }
   },
   "addRater": {
-    "placeholder": "输入 Discord ID",
+    "placeholder": "输入用户名",
     "button": "添加评级员"
   },
-  "raterEntry": {
+  "userEntry": {
     "unknown": "未知",
-    "adminBadge": "管理员",
     "buttons": {
-      "makeAdmin": "设为管理员",
-      "removeAdmin": "移除管理员",
       "delete": "删除"
-    },
-    "discord": {
-      "idInput": "输入 Discord ID",
-      "validateButton": "验证",
-      "confirmMessage": "更新 Discord 信息至 @{{username}}？",
-      "confirmButton": "确认",
-      "cancelButton": "取消",
-      "idLabel": "ID：{{id}}"
     }
+  },
+  "roles": {
+    "rater": "评级员",
+    "superadmin": "超级管理员"
   },
   "errors": {
     "passwordRequired": "需要密码",
     "invalidPassword": "超管密码无效",
     "deleteConfirm": "确认删除评级员？",
-    "updateAdminFailed": "更新管理员状态失败",
+    "updateRoleFailed": "更新角色失败",
     "deleteFailed": "删除评级员失败",
-    "discordFetchFailed": "获取 Discord ID 失败",
-    "updateDiscordFailed": "更新 Discord 信息失败",
     "loadFailed": "加载评级员失败",
     "addFailed": "添加评级员失败",
-    "userNotFound": "未找到用户"
+    "userNotFound": "未找到用户",
+    "alreadyHighestRole": "用户已拥有最高角色",
+    "alreadyLowestRole": "用户已拥有最低角色",
+    "noRoleToRemove": "用户没有可移除的角色"
   }
 } 

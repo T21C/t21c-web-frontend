@@ -10,6 +10,7 @@ import { ReferencesButton } from '@/components/common/buttons';
 import { ExternalLinkIcon, DownloadIcon } from '@/components/common/icons';
 import { formatCreatorDisplay, filterDifficultiesByUserTopDiff } from "@/utils/Utility";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
+import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 // Cache for video data
 const videoCache = new Map();
 
@@ -283,7 +284,7 @@ export const RatingDetailPopup = ({
   const communityRatings = otherRatings.filter(r => r.isCommunityRating);
 
   const isAdminRater = () => {
-    return user && (user.isSuperAdmin || user.isRater);
+    return user && (hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER]));
   };
 
   const handleSaveChanges = async () => {
@@ -553,7 +554,7 @@ export const RatingDetailPopup = ({
 
             <div className="rating-section">
               <div className="rating-columns">
-                {user && user.isRatingBanned ? (
+                {hasFlag(user, permissionFlags.RATING_BANNED) ? (
                   <div className="rating-banned-message">
                     {tRating('messages.ratingBanned')}
                   </div>

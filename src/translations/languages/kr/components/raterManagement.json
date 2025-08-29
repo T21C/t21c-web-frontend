@@ -1,6 +1,6 @@
 {
-  "title": "관리자 관리",
-  "loading": "관리자 불러오는 중...",
+  "title": "평가자 관리",
+  "loading": "평가자 불러오는 중...",
   "search": {
     "placeholder": "사용자명 또는 ID로 검색..."
   },
@@ -10,36 +10,30 @@
     }
   },
   "addRater": {
-    "placeholder": "Username 입력",
-    "button": "관리자 추가"
+    "placeholder": "사용자명 입력",
+    "button": "평가자 추가"
   },
-  "raterEntry": {
+  "userEntry": {
     "unknown": "알 수 없음",
-    "adminBadge": "관리자",
     "buttons": {
-      "makeAdmin": "관리자로 만들기",
-      "removeAdmin": "관리자 해제",
       "delete": "삭제"
-    },
-    "discord": {
-      "idInput": "Username 입력",
-      "validateButton": "검증",
-      "confirmMessage": "@{{username}}로 Discord 정보 업데이트 하시겠습니까?",
-      "confirmButton": "확인",
-      "cancelButton": "취소",
-      "idLabel": "ID: {{id}}"
     }
+  },
+  "roles": {
+    "rater": "평가자",
+    "superadmin": "슈퍼 관리자"
   },
   "errors": {
     "passwordRequired": "비밀번호가 필요합니다",
     "invalidPassword": "잘못된 슈퍼 관리자 비밀번호입니다",
-    "deleteConfirm": "이 관리자를 삭제하시겠습니까?",
-    "updateAdminFailed": "관리자 상태 업데이트 실패",
-    "deleteFailed": "관리자 삭제 실패",
-    "discordFetchFailed": "Discord ID 불러오기 실패",
-    "updateDiscordFailed": "Discord 정보 업데이트 실패",
-    "loadFailed": "관리자 불러오기 실패",
-    "addFailed": "관리자 추가 실패",
-    "userNotFound": "사용자를 찾을 수 없습니다"
+    "deleteConfirm": "이 평가자를 삭제하시겠습니까?",
+    "updateRoleFailed": "역할 업데이트 실패",
+    "deleteFailed": "평가자 삭제 실패",
+    "loadFailed": "평가자 불러오기 실패",
+    "addFailed": "평가자 추가 실패",
+    "userNotFound": "사용자를 찾을 수 없습니다",
+    "alreadyHighestRole": "사용자가 이미 최고 역할을 가지고 있습니다",
+    "alreadyLowestRole": "사용자가 이미 최저 역할을 가지고 있습니다",
+    "noRoleToRemove": "사용자에게 제거할 역할이 없습니다"
   }
 }

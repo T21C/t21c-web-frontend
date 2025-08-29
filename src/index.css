@@ -29,15 +29,15 @@
   --color-white-t30: rgba(249, 250, 251, 0.3);
   --color-white-t60: rgba(249, 250, 251, 0.6);
   --color-white-t80: rgba(249, 250, 251, 0.8);
+  --color-white-t90: rgba(249, 250, 251, 0.9);
+  --bg-color: #000;
+  --bg-secondary: #111;
 }
 
 .svg-fill path {
   fill: var(--color-white) !important;
 }
 
-.svg-stroke path {
-  stroke: var(--color-white) !important;
-}
 
 .svg-fill-stroke path {
   stroke: var(--color-white) !important;
@@ -118,6 +118,7 @@ body {
   position: fixed;
   top: -30px;
   left: -30px;
+  opacity: 0.9;
   background-image: url("https://images.rawpixel.com/image_social_landscape/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTM2NjcxMC1pbWFnZS1rd3Z4eGVxcC5qcGc.jpg");
   background-size: cover;
   filter: blur(15px);

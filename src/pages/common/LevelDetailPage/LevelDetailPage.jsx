@@ -18,11 +18,13 @@ import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { MetaTags } from "@/components/common/display";
-import { DownloadIcon, HistoryListIcon, InfoIcon, LikeIcon, SteamIcon } from "@/components/common/icons";
+import { DownloadIcon, EditIcon, HistoryListIcon, InfoIcon, LikeIcon, SteamIcon } from "@/components/common/icons";
 import { createEventSystem, formatCreatorDisplay, minus2Reasons, gimmickReasons } from "@/utils/Utility";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
 import LevelDownloadPopup from '../../../components/popups/LevelDownloadPopup/LevelDownloadPopup';
+import { ABILITIES, hasBit } from '@/utils/Abilities';
+import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
 
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
@@ -63,7 +65,7 @@ const getHighScores = (players) => {
     highestAcc: players.reduce((a, b) => 
       b.accuracy > a.accuracy ? b : a),
     highestSpeed: players.some(p => p.speed) ? 
-      players.reduce((a, b) => (b.speed || 0) > (a.speed || 0) ? b : a) : null
+      players.sort((a, b) => (b.scoreV2 || 0) - (a.scoreV2 || 0)).reduce((a, b) => (b.speed || 0) > (a.speed || 0) ? b : a) : null
   };
 };
 
@@ -206,13 +208,12 @@ const FullInfoPopup = ({ level, onClose }) => {
       </div>
     );
   };
-
   return (
     <>
       <div className="level-detail-popup-overlay" onClick={onClose}></div>
       <div className="level-detail-popup popup-scale-up">
         <div className="popup-content">
-          <div className="popup-header">
+          <div className="popup-header" style={{ backgroundColor: `#${level.difficulty.color}ff` }}>
             <h2>{level.song}</h2>
             <p>{level.artist}</p>
             <button className="popup-close-button" onClick={onClose} title={tLevel('buttons.close')}>
@@ -445,6 +446,54 @@ const RatingAccuracyDialog = ({ isOpen, onClose, onSave, initialValue = 0 }) => 
 };
 
 // Refactor RerateHistoryDropdown to match AliasesDropdown pattern
+const CurationTooltip = ({ curation, show, onClose }) => {
+  const { t } = useTranslation('pages');
+  const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [onClose]);
+
+  const handleDropdownClick = (e) => {
+    e.stopPropagation();
+  };
+
+  if (!show || !curation) return null;
+
+  return (
+    <div className="curation-tooltip-dropdown" ref={dropdownRef} onClick={handleDropdownClick}>
+      <div className="curation-tooltip-type">{curation.type.name}</div>
+      <div className="curation-tooltip-assigned">assigned by</div>
+      <div className="curation-tooltip-user">
+        {curation.assignedByUser?.avatarUrl && (
+          <img 
+            className="curation-tooltip-avatar" 
+            src={curation.assignedByUser.avatarUrl} 
+            alt={curation.assignedByUser.nickname || 'User'} 
+          />
+        )}
+        <span className="curation-tooltip-name">
+          {curation.assignedByUser?.nickname || 'Unknown'}
+        </span>
+        <span className="curation-tooltip-username">
+          @{curation.assignedByUser?.username || 'unknown'}
+        </span>
+      </div>
+      <div className="curation-tooltip-time">
+        At {new Date(curation.createdAt).toLocaleString()}
+      </div>
+    </div>
+  );
+};
+
 const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict }) => {
   const { t } = useTranslation('pages');
   const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
@@ -500,19 +549,36 @@ const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict })
   );
 };
 
-const LevelDetailPage = () => {
+const LevelDetailPage = ({ mockData = null }) => {
   const { t } = useTranslation('pages');
   const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
+  const { id } = useParams();
+  const detailPage = useLocation();
   
-  const { detailPage } = useLocation();
-  const {id} = useParams();
+  // Use previewLevelId if in preview mode, otherwise use URL parameter
+  const effectiveId = id || mockData?.level.id;
   const [res, setRes] = useState(null);
   const [displayedPlayers, setDisplayedPlayers] = useState([]);
   const [leaderboardSort, setLeaderboardSort] = useState("SCR");
   const [infoLoading, setInfoLoading] = useState(true);
   const [videoDetail, setVideoDetail] = useState(null);
+  
+  // Custom styling state for curations
+  const [curationStyles, setCurationStyles] = useState(null);
+  
+  // Expandable description state
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [customStyleElement, setCustomStyleElement] = useState(null);
+  const [customColorStyleElement, setCustomColorStyleElement] = useState(null);
   const [notFound, setNotFound] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
+
+  // Add support for external CSS overrides (for preview system)
+  const [externalCssOverride, setExternalCssOverride] = useState(null);
+  const [externalStyleElement, setExternalStyleElement] = useState(null);
+  
+  // Flag to disable default styling (for preview mode)
+  const [disableDefaultStyling, setDisableDefaultStyling] = useState(false);
 
   const { user } = useAuth();
 
@@ -524,8 +590,184 @@ const LevelDetailPage = () => {
   const location = useLocation();
   const currentUrl = window.location.origin + location.pathname;
 
+  const [isLongDescription, setIsLongDescription] = useState(false);
+
+  useEffect(() => {
+    setIsLongDescription(res?.level?.curation?.description?.length > 250);
+  }, [res?.level?.curation?.description]);
+
+
+  // Simple CSS sanitizer - remove dangerous content
+  const sanitizeCSS = useCallback((css) => {
+    if (!css) return '';
+    // Remove potentially dangerous CSS
+    return css
+      .replace(/@import/gi, '')
+      .replace(/javascript:/gi, '')
+      .replace(/expression\(/gi, '') 
+      .replace(/behavior:/gi, '')
+      .replace(/-moz-binding/gi, '');
+  }, []);
+
+  // Scope CSS to level-detail.curated with higher specificity
+  const scopeCSS = useCallback((css) => {
+    if (!css) return '';
+    // Use higher specificity selectors to override predefined styles
+    return css.replace(/([^{}]+){/g, '.level-detail.curated[data-custom-styles="true"] $1{');
+  }, []);
+
+  // Generate custom color CSS based on curation's custom color
+  const createCustomColorCSS = useCallback((curation) => {
+    if (!curation?.customColor || !curation?.type) {
+      return null;
+    }
+
+    // Check if the curation type has the CUSTOM_COLOR_THEME ability
+    if (!hasBit(curation.type.abilities, ABILITIES.CUSTOM_COLOR_THEME)) {
+      return null;
+    }
+
+    const customColor = curation.customColor;
+    // Convert hex to RGB for CSS variables
+    const hexToRgb = (hex) => {
+      const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+      return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+      } : null;
+    };
+
+    // Convert RGB to HSL for hue shifting
+    const rgbToHsl = (r, g, b) => {
+      r /= 255;
+      g /= 255;
+      b /= 255;
+      const max = Math.max(r, g, b);
+      const min = Math.min(r, g, b);
+      let h, s, l = (max + min) / 2;
+
+      if (max === min) {
+        h = s = 0; // achromatic
+      } else {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+      }
+      return [h * 360, s * 100, l * 100];
+    };
+
+    // Convert HSL to hex
+    function hslToHex(h, s, l) {
+      l /= 100;
+      const a = s * Math.min(l, 1 - l) / 100;
+      const f = n => {
+        const k = (n + h / 30) % 12;
+        const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+        return Math.round(255 * color).toString(16).padStart(2, '0');   // convert to Hex and prefix "0" if needed
+      };
+      return `#${f(0)}${f(8)}${f(4)}`;
+    }
+
+    const rgb = hexToRgb(customColor);
+    if (!rgb) return null;
+
+    const [h, s, l] = rgbToHsl(rgb.r, rgb.g, rgb.b);
+    const hueShiftedColor = hslToHex((h + 60) % 360, s, l);
+
+    return `
+      .level-detail.curated[data-custom-color="true"] {
+        --curation-primary: ${customColor};
+        --curation-primary-rgb: ${rgb.r}, ${rgb.g}, ${rgb.b};
+        --curation-primary-alpha: ${customColor}40;
+        --curation-glow: ${customColor}80;
+        --curation-type-color: ${customColor};
+        --curation-type-rgb: ${rgb.r}, ${rgb.g}, ${rgb.b};
+        --curation-type-alpha: ${customColor}40;
+        --curation-hue-shift: ${hueShiftedColor};
+        --glass-bg: rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.12);
+        --glass-border: rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.3);
+        --accent-color: ${customColor};
+      }
+    `;
+  }, []);
+
+  // Custom CSS injection system for curations
+  const createCurationStyleSheet = useCallback((curation) => {
+    if (!curation || !curation.customCSS) {
+      return null;
+    }
+
+    // Check if the curation type has the CUSTOM_CSS ability
+    if (curation.type && !hasBit(curation.type.abilities, ABILITIES.CUSTOM_CSS)) {
+      return null;
+    }
+
+    const sanitizedCSS = sanitizeCSS(curation.customCSS);
+    const scopedCSS = scopeCSS(sanitizedCSS);
+    return scopedCSS;
+  }, [sanitizeCSS, scopeCSS]);
+
+  // Simple setter for external CSS overrides (for preview system)
+  const setExternalCssOverrideValue = useCallback((css) => {
+    // Remove existing external override styles
+    if (externalStyleElement && externalStyleElement.parentNode) {
+      externalStyleElement.parentNode.removeChild(externalStyleElement);
+      setExternalStyleElement(null);
+    }
+
+    if (!css || !css.trim()) {
+      setExternalCssOverride(null);
+      return;
+    }
+
+    // Check if the curation type has the CUSTOM_CSS ability (for preview system)
+    // Note: In preview mode, we allow CSS overrides regardless of ability for testing purposes
+    // This allows admins to preview CSS even if the curation type doesn't have the ability
+
+    // Create new external style element
+    const style = document.createElement('style');
+    style.type = 'text/css';
+    
+    // Apply scoping for external overrides
+    const sanitizedCSS = sanitizeCSS(css);
+    const scopedCSS = scopeCSS(sanitizedCSS);
+    
+    // Add !important to all CSS rules to ensure they override everything
+    const cssWithImportant = scopedCSS.replace(/;/g, ' !important;');
+    
+    style.innerHTML = cssWithImportant;
+    style.setAttribute('data-external-override', 'true');
+    style.setAttribute('data-level-id', effectiveId);
+    style.setAttribute('data-hmr-id', `external-${effectiveId}-${Date.now()}`);
+    
+    // Add to document head
+    document.head.appendChild(style);
+    setExternalStyleElement(style);
+    setExternalCssOverride(css);
+  }, [effectiveId, externalStyleElement, sanitizeCSS, scopeCSS]);
+
+  // Expose the setter function globally for the preview system
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.setCurationCssOverride = setExternalCssOverrideValue;
+      window.setDisableDefaultStyling = setDisableDefaultStyling;
+      
+      // Cleanup function
+      return () => {
+        delete window.setCurationCssOverride;
+        delete window.setDisableDefaultStyling;
+      };
+    }
+  }, [setExternalCssOverrideValue]);
 
   const [activeAliasDropdown, setActiveAliasDropdown] = useState(null);
+  const [showCurationTooltip, setShowCurationTooltip] = useState(false);
 
   const [showRatingPopup, setShowRatingPopup] = useState(false);
 
@@ -545,6 +787,8 @@ const LevelDetailPage = () => {
   const [showDownloadPopup, setShowDownloadPopup] = useState(false);
   const [showRerateDropdown, setShowRerateDropdown] = useState(false);
   const [rerateArrowEnabled, setRerateArrowEnabled] = useState(true);
+
+
 
   const handleRerateDropdownToggle = () => {
     if (!rerateArrowEnabled) return;
@@ -648,9 +892,18 @@ const LevelDetailPage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      // Use mock data if provided - completely override everything
+      if (mockData) {
+        setRes(mockData);
+        setDisplayedPlayers(sortLeaderboard(mockData.passes || []));
+        setNotFound(false);
+        setInfoLoading(false);
+        return;
+      }
+      
       try {
-        const levelData = await api.get(`${import.meta.env.VITE_LEVELS}/${id}?includeRatings=true`);
-        const passesData = await api.get(`${import.meta.env.VITE_PASSES}/level/${id}`);
+        const levelData = await api.get(`${import.meta.env.VITE_LEVELS}/${effectiveId}?includeRatings=true`);
+        const passesData = await api.get(`${import.meta.env.VITE_PASSES}/level/${effectiveId}`);
         
         if (levelData.data.timeout) {
           setLevelTimeout(levelData.data.timeout);
@@ -673,13 +926,166 @@ const LevelDetailPage = () => {
       }
     };
     fetchData();
-  }, [id]);
+  }, [effectiveId, mockData]);
 
   useEffect(() => {
     if (res?.level?.videoLink) {
       getVideoDetails(res.level.videoLink).then(setVideoDetail);
     }
   }, [res?.level?.videoLink]);
+
+  // Apply curation styles when level data changes
+  useEffect(() => {
+    // Don't apply default curation styles if disabled or external CSS override is active
+    if (disableDefaultStyling || externalCssOverride) {
+      // Remove custom curation styles
+      if (customStyleElement && customStyleElement.parentNode) {
+        customStyleElement.parentNode.removeChild(customStyleElement);
+        setCustomStyleElement(null);
+      }
+      if (customColorStyleElement && customColorStyleElement.parentNode) {
+        customColorStyleElement.parentNode.removeChild(customColorStyleElement);
+        setCustomColorStyleElement(null);
+      }
+      setCurationStyles(null);
+      return;
+    }
+
+    if (!res?.level?.curation) {
+      // Remove custom styles if no curation
+      if (customStyleElement && customStyleElement.parentNode) {
+        customStyleElement.parentNode.removeChild(customStyleElement);
+        setCustomStyleElement(null);
+      }
+      if (customColorStyleElement && customColorStyleElement.parentNode) {
+        customColorStyleElement.parentNode.removeChild(customColorStyleElement);
+        setCustomColorStyleElement(null);
+      }
+      setCurationStyles(null);
+      return;
+    }
+
+    const curation = res.level.curation;
+    
+    // Handle custom color styles
+    const customColorCSS = createCustomColorCSS(curation);
+    if (customColorCSS) {
+      // Remove existing custom color styles before creating new ones
+      if (customColorStyleElement && customColorStyleElement.parentNode) {
+        customColorStyleElement.parentNode.removeChild(customColorStyleElement);
+        setCustomColorStyleElement(null);
+      }
+
+      // Create new color style element
+      const colorStyle = document.createElement('style');
+      colorStyle.type = 'text/css';
+      colorStyle.innerHTML = customColorCSS;
+      colorStyle.setAttribute('data-custom-color-styles', `level-${effectiveId}`);
+      colorStyle.setAttribute('data-hmr-id', `color-${effectiveId}-${Date.now()}`);
+      
+      // Add to document head
+      document.head.appendChild(colorStyle);
+      setCustomColorStyleElement(colorStyle);
+    }
+    
+    // Handle custom CSS styles
+    const styleSheet = createCurationStyleSheet(curation);
+    if (styleSheet) {
+      // Remove existing custom styles before creating new ones
+      if (customStyleElement && customStyleElement.parentNode) {
+        customStyleElement.parentNode.removeChild(customStyleElement);
+        setCustomStyleElement(null);
+      }
+
+      // Create new style element with !important declarations
+      const style = document.createElement('style');
+      style.type = 'text/css';
+      
+      // Add !important to all CSS rules to ensure they override predefined styles
+      const styleSheetWithImportant = styleSheet.replace(/;/g, ' !important;');
+      
+      style.innerHTML = styleSheetWithImportant;
+      style.setAttribute('data-curation-styles', `level-${effectiveId}`);
+      style.setAttribute('data-hmr-id', `curation-${effectiveId}-${Date.now()}`);
+      
+      // Add to document head
+      document.head.appendChild(style);
+      setCustomStyleElement(style);
+    }
+    
+    setCurationStyles(curation);
+
+    // Cleanup on component unmount or when dependencies change
+    return () => {
+      // Clean up current style elements
+      if (customStyleElement && customStyleElement.parentNode) {
+        customStyleElement.parentNode.removeChild(customStyleElement);
+      }
+      if (customColorStyleElement && customColorStyleElement.parentNode) {
+        customColorStyleElement.parentNode.removeChild(customColorStyleElement);
+      }
+      
+      // Additional cleanup for any orphaned elements with our specific data attributes
+      try {
+        const orphanedCurationStyles = document.querySelectorAll(`[data-custom-styles="true"]`);
+        orphanedCurationStyles.forEach(element => {
+          if (element.parentNode) {
+            element.parentNode.removeChild(element);
+          }
+        });
+        
+      } catch (error) {
+        console.warn('Error cleaning up orphaned style elements:', error);
+      }
+    };
+  }, [res?.level?.curation, createCurationStyleSheet, createCustomColorCSS, effectiveId, externalCssOverride, disableDefaultStyling]);
+
+
+
+  // Cleanup all custom styles when component unmounts
+  useEffect(() => {
+    return () => {
+      // Clean up all styles we created
+      if (externalStyleElement && externalStyleElement.parentNode) {
+        externalStyleElement.parentNode.removeChild(externalStyleElement);
+      }
+      if (customStyleElement && customStyleElement.parentNode) {
+        customStyleElement.parentNode.removeChild(customStyleElement);
+      }
+      if (customColorStyleElement && customColorStyleElement.parentNode) {
+        customColorStyleElement.parentNode.removeChild(customColorStyleElement);
+      }
+      
+      // Also clean up any stray style elements that might have been left behind
+      // Remove all curation-related style elements for this level
+      const levelStyleElements = document.querySelectorAll(`[data-curation-styles="level-${effectiveId}"]`);
+      levelStyleElements.forEach(element => {
+        if (element.parentNode) {
+          element.parentNode.removeChild(element);
+        }
+      });
+      
+      const colorStyleElements = document.querySelectorAll(`[data-custom-color-styles="level-${effectiveId}"]`);
+      colorStyleElements.forEach(element => {
+        if (element.parentNode) {
+          element.parentNode.removeChild(element);
+        }
+      });
+      
+      const externalStyleElements = document.querySelectorAll(`[data-level-id="${effectiveId}"]`);
+      externalStyleElements.forEach(element => {
+        if (element.parentNode) {
+          element.parentNode.removeChild(element);
+        }
+      });
+      
+      // Remove global functions
+      if (typeof window !== 'undefined') {
+        delete window.setCurationCssOverride;
+        delete window.setDisableDefaultStyling;
+      }
+    };
+  }, [effectiveId]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -739,7 +1145,7 @@ const LevelDetailPage = () => {
     const isOpen = activeAliasDropdown === field;
 
     return (
-      <div className="level-title">
+      <>
         {title}
         {aliases.length > 0 && (
           <>
@@ -761,7 +1167,7 @@ const LevelDetailPage = () => {
             />
           </>
         )}
-      </div>
+      </>
     );
   };
 
@@ -819,7 +1225,7 @@ const LevelDetailPage = () => {
         requestData.publicComments = publicComments;
       }
 
-      const response = await api.put(`${import.meta.env.VITE_LEVELS}/${id}/timeout`, requestData);
+      const response = await api.put(`${import.meta.env.VITE_LEVELS}/${effectiveId}/timeout`, requestData);
       
       if (response.data.timeout) {
         setLevelTimeout(response.data.timeout);
@@ -856,7 +1262,7 @@ const LevelDetailPage = () => {
     setIsLiking(true);
     try {
       const action = res.isLiked ? 'unlike' : 'like';
-      const response = await api.put(`${import.meta.env.VITE_LEVELS}/${id}/like`, { action });
+      const response = await api.put(`${import.meta.env.VITE_LEVELS}/${effectiveId}/like`, { action });
       
       if (response.data.success) {
         setRes(prevRes => ({
@@ -881,7 +1287,7 @@ const LevelDetailPage = () => {
   const handleRatingAccuracyVote = async (vote) => {
     if (!user || !res?.isCleared) return;
     try {
-      const response = await api.put(`${import.meta.env.VITE_LEVELS}/${id}/rating-accuracy-vote`, { vote });
+      const response = await api.put(`${import.meta.env.VITE_LEVELS}/${effectiveId}/rating-accuracy-vote`, { vote });
       
       if (response.data.level) {
         setRes(prevRes => ({
@@ -955,7 +1361,16 @@ const LevelDetailPage = () => {
         image={''}
         type="article"
       />
-      <div className="level-detail">
+      <div 
+        className={`level-detail ${(res?.level?.curation && !externalCssOverride) || externalCssOverride ? 'curated' : ''}`}
+        data-custom-styles={(externalCssOverride || curationStyles) ? "true" : undefined}
+        data-custom-color={
+          res?.level?.curation?.customColor && 
+          res?.level?.curation?.type && 
+          hasBit(res.level.curation.type.abilities, ABILITIES.CUSTOM_COLOR_THEME) 
+            ? "true" : undefined
+        }
+      >
         <CompleteNav />
         <div className="background-level"></div>
 
@@ -1021,20 +1436,74 @@ const LevelDetailPage = () => {
                 <div className="pp-display">
                   {(res.level.baseScore || res.level.difficulty.baseScore || 0).toFixed(1)}PP
                 </div>
+                <div className="level-id">#{effectiveId}</div>
               </div>
 
-              <div className="title">
-                {renderTitleWithAliases(res.level.song, 'song')}
+              <div className="title-container">
+                <div className="level-title">
+                  {renderTitleWithAliases(res.level.song, 'song')}
+                </div>
                 <div className="level-info">
-                  #{id}&nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
-                  {formatCreatorDisplay(res.level)}
-                  &nbsp;&nbsp;&nbsp;-&nbsp;&nbsp;&nbsp;
+                  <div className="level-creator">
+                    {formatCreatorDisplay(res.level)}
+                  </div>
+                  <div className="level-separator">-</div>
+                  <div className="level-artist">
                   {renderTitleWithAliases(res.level.artist, 'artist')}
+                  </div>
                 </div>
               </div>
+
+              {/* Curation Type */}
+              {res?.level?.curation?.type && (
+                <div className="curation-type-container-wrapper">
+                  <div 
+                    className="curation-type-container"
+                    onMouseEnter={() => setShowCurationTooltip(true)}
+                    onMouseLeave={() => setShowCurationTooltip(false)}
+                  >
+                    <img 
+                      className="curation-type-icon" 
+                      src={res.level.curation.type.icon} 
+                      alt={res.level.curation.type.name} 
+                    />
+                  </div>
+                  <CurationTooltip 
+                    curation={res.level.curation}
+                    show={showCurationTooltip}
+                    onClose={() => setShowCurationTooltip(false)}
+                  />
+                </div>
+              )}
+
+              {/* Expandable Curation Description */}
+              {res?.level?.curation?.type && 
+               res?.level?.curation?.description && 
+               res.level.curation.description.trim() && (
+                <div className={`curation-description-container ${isDescriptionExpanded ? 'expanded' : ''} ${isLongDescription ? 'expandable' : ''}`}>
+                  <div 
+                    className={`curation-description ${isDescriptionExpanded ? 'expanded' : ''}`}
+                    onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded && isLongDescription)}
+                  >
+                    <div className="curation-description-content">
+                      {isDescriptionExpanded ? 
+                        res.level.curation.description : 
+                        isLongDescription ? 
+                          `${res.level.curation.description.substring(0, 250)}...` : 
+                          res.level.curation.description
+                      }
+                    </div>
+                    {isLongDescription && (
+                      <div className="curation-description-toggle">
+                        {isDescriptionExpanded ? 'Show Less' : 'Read More'}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
               
-              {/* Rating Accuracy Display */}
-              {res.level.difficulty.type === "PGU" && res.level.clears > 0 && (
+              {/* Rating Accuracy Display, disabled for now */}
+              {1==0 && res.level.difficulty.type === "PGU" && res.level.clears > 0 && (
                 <div className="rating-accuracy-container">
                   <div className="rating-accuracy-display-title">Rating Accuracy</div>
                   <div 
@@ -1071,7 +1540,7 @@ const LevelDetailPage = () => {
                   {tLevel('components.ratingAccuracy.voteButton')}
                 </button>
                 <span className="rating-accuracy-vote-count">Votes: {res.totalVotes || 0}</span>
-                {user?.isSuperAdmin && (
+                {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
                   <>
                 <InfoIcon 
                 className="rating-accuracy-info-button"  
@@ -1133,26 +1602,23 @@ const LevelDetailPage = () => {
               </div>
             </div>
             <div className="right"> 
-            {user?.isSuperAdmin && (
+            {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
                 <button 
                   className="edit-button svg-stroke"
                   onClick={() => setOpenEditDialog(true)}
                   title={tLevel('buttons.edit')}
                 >
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                    <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.4374 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
+                  <EditIcon size={"34px"}/>
                 </button>
               )}
               {res.level.dlLink && res.level.dlLink.match(/http[s]?:\/\//) && (
                 <button className="svg-stroke" href={res.level.dlLink} target="_blank" title={tLevel('links.download')} onClick={handleDownloadClick}>
-                  <DownloadIcon size={"24px"}/>
+                  <DownloadIcon size={"36px"}/>
                 </button>
               )}
               {res.level.workshopLink && (
-                <button onClick={() => window.open(res.level.workshopLink, '_blank')} target="_blank" title={tLevel('links.workshop')}>
-                  <SteamIcon color="#ffffff" size={"24px"} />
+                <button className="svg-stroke" onClick={() => window.open(res.level.workshopLink, '_blank')} target="_blank" title={tLevel('links.workshop')}>
+                  <SteamIcon color="#ffffff" size={"34px"} />
                 </button>
               )}
               {res.ratings && (
@@ -1161,7 +1627,7 @@ const LevelDetailPage = () => {
                   onClick={() => setShowRatingPopup(true)}
                   title={tLevel('buttons.viewRating')}
                 >
-                  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="3" y="3" width="18" height="18" rx="3" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                     <path d="M7 12L10 15L17 9" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                   </svg>

@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import "./homepage.css"
 import { CompleteNav, Footer } from "@/components/layout";
-import { MetaTags } from "@/components/common/display";
+import { MetaTags, WeeklyGallery } from "@/components/common/display";
 import api from "@/utils/api";
 import { Link } from 'react-router-dom';
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
@@ -19,6 +19,7 @@ import {
 import { useLocation } from 'react-router-dom';
 import { ScrollButton } from "@/components/common/buttons";
 import { PassIcon, LevelIcon, LeaderboardIcon } from "@/components/common/icons";
+import { useWeeklyCurations } from "@/hooks/useWeeklyCurations";
 
 // Import the logo
 import logoFull from '@/assets/tuf-logo/logo-full.png';
@@ -208,8 +209,13 @@ const HomePage = () => {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [boundingRect, setBoundingRect] = useState(null);
   const [graphMode, setGraphMode] = useState('passes'); // 'passes' or 'levels'
+  const [isUserActive, setIsUserActive] = useState(true);
+  const [activeListType, setActiveListType] = useState('primary'); // 'primary' or 'secondary'
   const location = useLocation();
   const currentUrl = window.location.origin + location.pathname;
+  
+  // Fetch weekly curations
+  const { weeklies, isLoading: weekliesLoading, error: weekliesError } = useWeeklyCurations();
 
   // Fetch stats on mount
   useEffect(() => {
@@ -269,6 +275,29 @@ const HomePage = () => {
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, [boundingRect]);
 
+  // Track user activity for auto-scroll control
+  useEffect(() => {
+    let activityTimeout;
+    
+    const handleUserActivity = () => {
+      setIsUserActive(true);
+      clearTimeout(activityTimeout);
+      activityTimeout = setTimeout(() => setIsUserActive(false), 30000); // 30 seconds
+    };
+
+    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
+    events.forEach(event => {
+      window.addEventListener(event, handleUserActivity);
+    });
+
+    return () => {
+      events.forEach(event => {
+        window.removeEventListener(event, handleUserActivity);
+      });
+      clearTimeout(activityTimeout);
+    };
+  }, []);
+
   return (<>
     <MetaTags
       title={tHome('meta.title')}
@@ -287,6 +316,7 @@ const HomePage = () => {
             <div className="logo-container">
               <img src={logoFull} alt="TUForums" className="logo" />
             </div>
+            { /*
             <h1 
               className={`main-title`}
               id="main-title"
@@ -298,6 +328,7 @@ const HomePage = () => {
               <span className="title-mask">{tHome('title.revamped')}</span>
               <span className="title-glow">{tHome('title.revamped')}</span>
             </h1>
+            */ }
           </div>
 
           <div className="action-buttons">
@@ -317,6 +348,9 @@ const HomePage = () => {
               <LeaderboardIcon size={32} />
             </Link>
           </div>
+          {/* Weekly Curations Section */}
+
+          
           <Link to="/health">
           <button
             className="health-button visible"
@@ -330,6 +364,73 @@ const HomePage = () => {
             </button>
           </Link>
         </div>
+
+        <div className="weekly-curations-section">
+            <h2 className="weekly-curations-title">{tHome('weeklies.title')}</h2>
+            {weekliesLoading ? (
+              <div className="weekly-curations-loading">
+                <div className="loading-spinner"></div>
+                <p>{tHome('weeklies.loading')}</p>
+              </div>
+            ) : weekliesError ? (
+              <div className="weekly-curations-error">
+                <p>{tHome('weeklies.error')}</p>
+              </div>
+            ) : weeklies.length > 0 ? (
+              <div className="weekly-curations-container">
+                <div className="weekly-curations-stack">
+                  {/* Primary Weeklies */}
+                  {weeklies.filter(w => w.listType === 'primary').length > 0 && (
+                    <div className={`weekly-curations-group ${activeListType === 'primary' ? 'active' : 'inactive'}`}>
+                      <h3 className="weekly-curations-group-title">{tHome('weeklies.primary')}</h3>
+                      <WeeklyGallery
+                        curations={weeklies.filter(w => w.listType === 'primary').map(w => w.scheduledCuration)}
+                        autoScroll={isUserActive && weeklies.filter(w => w.listType === 'primary').length > 1}
+                        autoScrollInterval={6000}
+                        onCurationClick={(curation) => {
+                        }}
+                        className="weekly-gallery--primary"
+                      />
+                    </div>
+                  )}
+                  
+                  {/* Secondary Weeklies */}
+                  {weeklies.filter(w => w.listType === 'secondary').length > 0 && (
+                    <div className={`weekly-curations-group ${activeListType === 'secondary' ? 'active' : 'inactive'}`}>
+                      <h3 className="weekly-curations-group-title">{tHome('weeklies.secondary')}</h3>
+                      <WeeklyGallery
+                        curations={weeklies.filter(w => w.listType === 'secondary').map(w => w.scheduledCuration)}
+                        autoScroll={isUserActive && weeklies.filter(w => w.listType === 'secondary').length > 1}
+                        autoScrollInterval={7000}
+                        onCurationClick={(curation) => {
+                        }}
+                        className="weekly-gallery--secondary"
+                      />
+                    </div>
+                  )}
+                  
+                  {/* Switch Button - only show if both lists exist */}
+                  {weeklies.filter(w => w.listType === 'primary').length > 0 && 
+                   weeklies.filter(w => w.listType === 'secondary').length > 0 && (
+                    <button 
+                      className="weekly-curations-switch-btn"
+                      onClick={() => setActiveListType(activeListType === 'primary' ? 'secondary' : 'primary')}
+                      aria-label={`Switch to ${activeListType === 'primary' ? 'secondary' : 'primary'} list`}
+                    >
+                      <span className="switch-btn-text">
+                      ▼ &nbsp;&nbsp;{activeListType === 'primary' ? tHome('weeklies.secondary') : tHome('weeklies.primary')}
+                      </span>
+                    </button>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="weekly-curations-empty">
+                <div className="weekly-curations-empty-icon">🎵</div>
+                <p>{tHome('weeklies.empty')}</p>
+              </div>
+            )}
+          </div>
 
         {stats == null ? (
           <div className="stats-container">

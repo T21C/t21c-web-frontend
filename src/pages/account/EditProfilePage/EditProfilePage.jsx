@@ -10,6 +10,7 @@ import api from '@/utils/api';
 import { ProfilePicturePopup } from '@/components/popups';
 import { CountrySelect } from '@/components/common/selectors';
 import { useTranslation } from 'react-i18next';
+import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
 const ProviderIcon = ({ provider, size, color="#fff" }) => {
   switch(provider) {
@@ -343,7 +344,7 @@ const EditProfilePage = () => {
               readOnly
               className="input-field readonly"
             />
-            {user && !user.isEmailVerified && (
+            {!hasFlag(user, permissionFlags.EMAIL_VERIFIED) && (
               <div className="email-verification-message" onClick={() => navigate('/profile/verify-email')}>
                 <span className="profile-banner-text">{tEditProfile('form.emailVerification.message')}</span>
                 <span className="email-verification-arrow">{tEditProfile('form.emailVerification.arrow')}</span>

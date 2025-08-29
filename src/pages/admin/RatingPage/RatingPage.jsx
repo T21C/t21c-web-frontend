@@ -17,6 +17,7 @@ import { Tooltip } from "react-tooltip";
 import { RatingHelpPopup } from "@/components/popups";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { filterRatingsByUserTopDiff } from "@/utils/Utility";
+import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
 const RatingPage = () => {
   const { t } = useTranslation('pages');
@@ -333,7 +334,7 @@ const RatingPage = () => {
     });
 
     // Apply user top difficulty filter
-    if (!user?.isSuperAdmin) {
+    if (hasFlag(user, permissionFlags.SUPER_ADMIN)) {
       filtered = filterRatingsByUserTopDiff(filtered, user, difficultyDict);
     }
     
@@ -358,7 +359,7 @@ const RatingPage = () => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [fetchRatings, showHelpPopup]);
 
-  if (user?.isSuperAdmin === undefined && user?.isRater === undefined && user) {
+  if (user === undefined) {
     return (
       <div className="admin-rating-page">
         <MetaTags
@@ -392,7 +393,7 @@ const RatingPage = () => {
         <ScrollButton />
         <ReferencesButton />
         <div className="admin-buttons">
-            {user?.isSuperAdmin && (
+            {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
               <>
                 <button 
                   className="admin-button rater-management-button"
@@ -445,7 +446,7 @@ const RatingPage = () => {
               />
             </div>
           </div>
-          {user?.isSuperAdmin && (
+          {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
             <div className="view-mode-toggle">
               <span className="toggle-label">{tRating('toggles.detailedView.label')}</span>
               <label className="switch">
@@ -498,6 +499,7 @@ const RatingPage = () => {
                   placeholder={tRating('search.placeholder')}
                   name="search"
                   autoComplete="off"
+                  aria-autocomplete="none"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -539,7 +541,7 @@ const RatingPage = () => {
                     index={index}
                     setSelectedRating={setSelectedRating}
                     user={user}
-                    isSuperAdmin={user?.isSuperAdmin}
+                    isSuperAdmin={hasFlag(user, permissionFlags.SUPER_ADMIN)}
                     showDetailedView={showDetailedView}
                     onEditLevel={() => handleEditLevel(rating.level.id)}
                   />
@@ -554,12 +556,12 @@ const RatingPage = () => {
                 ratings={ratings}
                 setRatings={setRatings}
                 user={user}
-                isSuperAdmin={user?.isSuperAdmin}
+                isSuperAdmin={hasFlag(user, permissionFlags.SUPER_ADMIN)}
                 weeklyRaterActivity={weeklyRaterActivity}
               />
             )}
 
-            {openEditDialog && selectedLevel && user?.isSuperAdmin && (
+            {openEditDialog && selectedLevel && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
               <EditLevelPopup
                 level={selectedLevel.level}
                 onClose={() => {
@@ -601,7 +603,7 @@ const RatingPage = () => {
           <ReferencesPopup onClose={() => setShowReferences(false)} />
         )}
 
-        {showRaterManagement && user?.isSuperAdmin && (
+        {showRaterManagement && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
           <RaterManagementPopup 
             onClose={() => setShowRaterManagement(false)}
             currentUser={user}
