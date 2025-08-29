@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import LevelDetailPage from '@/pages/common/LevelDetailPage/LevelDetailPage';
 import { ABILITIES, hasBit } from '@/utils/Abilities';
 import { canAssignCurationType } from '@/utils/curationTypeUtils';
-import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { hasAnyFlag, permissionFlags } from '@/utils/UserPermissions';
 import { useAuth } from "@/contexts/AuthContext";
 import './curationcsspreviewpage.css';
 import { AccessDenied } from '@/components/common/display';
