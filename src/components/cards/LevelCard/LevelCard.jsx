@@ -87,10 +87,22 @@ const LevelCard = ({
     setShowEditPopup(true);
   };
 
+  // Determine glow class based on abilities - legendary overrides basic
+  const getGlowClass = () => {
+    if (!level.curation?.type?.abilities) return '';
+    
+    if (hasBit(level.curation.type.abilities, ABILITIES.LEVEL_LIST_LEGENDARY_GLOW)) {
+      return 'legendary';
+    } else if (hasBit(level.curation.type.abilities, ABILITIES.LEVEL_LIST_BASIC_GLOW)) {
+      return 'basic-glow';
+    }
+    return '';
+  };
+
   if (displayMode === 'grid') {
     return (
       <div 
-        className={`level-card grid size-${size}`} 
+        className={`level-card grid size-${size} ${getGlowClass()}`} 
         style={{ 
           // @ts-ignore
           '--difficulty-color': difficultyInfo?.color || '#fff',
@@ -153,7 +165,7 @@ const LevelCard = ({
   }
 
   return (
-    <div className={`level-card ${displayMode} ${hasBit(level.curation?.type.abilities, ABILITIES.CUSTOM_COLOR_THEME) ? 'legendary' : ''}`} 
+    <div className={`level-card ${displayMode} ${getGlowClass()}`} 
     style={{ 
       backgroundColor: level.isDeleted ? "#f0000099"
       : level.isHidden ? "#88888899" 
