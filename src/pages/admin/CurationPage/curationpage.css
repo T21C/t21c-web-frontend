@@ -309,31 +309,97 @@
   background: #f44336;
 }
 
+/* Enhanced Pagination Styles */
 .curation-page .curation-pagination {
   display: flex;
   justify-content: center;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 15px;
   margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #404040;
 }
 
-.curation-page .curation-page-btn {
-  padding: 0.75rem 1rem;
-  border: 2px solid #3339;
-  border-radius: 8px;
-  background: #0006;
-  color: #ffffff;
+.curation-page .curation-pagination-btn {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 4px;
+  background: #444;
+  color: #fff;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background 0.2s;
+  font-size: 0.9rem;
+  font-weight: 500;
 }
 
-.curation-page .curation-page-btn:hover {
+.curation-page .curation-pagination-btn:hover:not(:disabled) {
+  background: #555;
+}
+
+.curation-page .curation-pagination-btn:disabled {
+  background: #333;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.curation-page .curation-page-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.curation-page .curation-page-controls span {
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.curation-page .curation-page-input {
+  width: 60px;
+  padding: 4px 8px;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  font-size: 14px;
+  text-align: center;
+  min-width: 60px;
+}
+
+.curation-page .curation-page-input:focus {
+  outline: none;
   border-color: #4a9eff;
 }
 
-.curation-page .curation-page-btn--active {
-  background: #4a9eff;
-  border-color: #4a9eff;
-  color: white;
+.curation-page .curation-page-input::placeholder {
+  color: #666;
+}
+
+/* Remove spinner buttons from number input */
+.curation-page .curation-page-input::-webkit-inner-spin-button,
+.curation-page .curation-page-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.curation-page .curation-page-input[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
+/* Responsive pagination for mobile */
+@media (max-width: 768px) {
+  .curation-page .curation-pagination {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .curation-page .curation-page-controls {
+    order: 2;
+  }
+
+  .curation-page .curation-pagination-btn {
+    order: 1;
+  }
 }
 
 .curation-page .curation-loading,

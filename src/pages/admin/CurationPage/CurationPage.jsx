@@ -27,6 +27,7 @@ const CurationPage = () => {
   const [curations, setCurations] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  const [inputValue, setInputValue] = useState('1');
   const [filters, setFilters] = useState({
     typeId: '',
     search: '',
@@ -217,10 +218,66 @@ const CurationPage = () => {
   const handleFilterChange = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value }));
     setCurrentPage(1);
+    setInputValue('1');
   };
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
+    setInputValue(page.toString());
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      const newPage = currentPage - 1;
+      handlePageChange(newPage);
+      if (newPage <= 2) {
+        setInputValue('1');
+      }
+    }
+  };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      handlePageChange(currentPage + 1);
+    }
+  };
+
+  const handlePageInputChange = (e) => {
+    const input = e.target.value;
+    setInputValue(input);
+    
+    // Allow empty input - don't immediately change page
+    if (input === '') {
+      return;
+    }
+    
+    // Remove leading zeros and parse
+    const cleanInput = input.replace(/^0+/, '') || '0';
+    const page = parseInt(cleanInput);
+    
+    // Only change page if it's a valid number within bounds
+    if (!isNaN(page) && page >= 1 && page <= totalPages) {
+      handlePageChange(page);
+    }
+  };
+
+  const handlePageInputBlur = () => {
+    // When user finishes typing, ensure we have a valid page
+    if (inputValue === '' || inputValue === '0') {
+      setInputValue('1');
+      handlePageChange(1);
+      return;
+    }
+    
+    // Remove leading zeros and parse
+    const cleanInput = inputValue.replace(/^0+/, '') || '0';
+    const page = parseInt(cleanInput);
+    
+    // If invalid or out of bounds, default to page 1
+    if (isNaN(page) || page < 1 || page > totalPages) {
+      setInputValue('1');
+      handlePageChange(1);
+    }
   };
 
   const handleClosePopup = () => {
@@ -398,18 +455,35 @@ const CurationPage = () => {
           )}
         </div>
 
-        {/* Pagination */}
+        {/* Enhanced Pagination */}
         {totalPages > 1 && (
           <div className="curation-pagination">
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-              <button
-                key={page}
-                className={`curation-page-btn ${page === currentPage ? 'curation-page-btn--active' : ''}`}
-                onClick={() => handlePageChange(page)}
-              >
-                {page}
-              </button>
-            ))}
+            <button 
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+              className="curation-pagination-btn"
+            >
+              Previous
+            </button>
+            <div className="curation-page-controls">
+              <span>Page </span>
+              <input
+                type="number"
+                max={totalPages}
+                value={inputValue}
+                onChange={handlePageInputChange}
+                onBlur={handlePageInputBlur}
+                className="curation-page-input"
+              />
+              <span> of {totalPages}</span>
+            </div>
+            <button 
+              onClick={handleNextPage}
+              disabled={currentPage >= totalPages}
+              className="curation-pagination-btn"
+            >
+              Next
+            </button>
           </div>
         )}
       </div>
