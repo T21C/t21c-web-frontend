@@ -171,6 +171,16 @@ const WeeklyGallery = ({
     );
   }
 
+
+  const getThumbnailUrl = (level) => {
+    if (level.videoLink) {
+      const videoId = level.videoLink.match(/(?:youtu\.be\/|youtube\.com\/(?:.*v=|.*\/videos\/)|youtube-nocookie\.com\/(?:embed\/|v\/)|youtube\.com\/(?:v\/|e\/|embed\/|user\/[^/]+\/u\/[0-9]+\/)|watch\?v=)([^#\&\?]*)/)?.[1];
+      if (videoId) {
+        return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+      }
+    }
+    return null;
+  };
   return (
     <div 
       className={`weekly-gallery ${className}`} 
@@ -219,17 +229,13 @@ const WeeklyGallery = ({
                 onClick={() => onCurationClick?.(curation)}
               >
                 <div className="weekly-gallery__item-preview">
-                  {curation.previewLink ? (
+                
                     <img 
-                      src={curation.previewLink} 
+                      src={curation.previewLink || getThumbnailUrl(curation.level)}
                       alt={`${curation.level?.song || 'Unknown'} thumbnail`}
                       className="weekly-gallery__thumbnail"
                     />
-                  ) : (
-                    <div className="weekly-gallery__no-thumbnail">
-                      🎵
-                    </div>
-                  )}
+                  
                 </div>
                 
                 <div className="weekly-gallery__item-overlay">
