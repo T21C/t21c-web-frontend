@@ -5,9 +5,7 @@ import api from '@/utils/api';
 import './curationeditpopup.css';
 import toast from 'react-hot-toast';
 import ThumbnailUpload from '@/components/common/upload/ThumbnailUpload';
-import { hasAbility, getDefaultColor } from '@/utils/curationTypeUtils';
-import { hasBit, ABILITIES } from '@/utils/Abilities';
-import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { hasAbility, getDefaultColor, canAssignCurationType } from '@/utils/curationTypeUtils';
 import { useAuth } from '@/contexts/AuthContext';
 
 const CurationEditPopup = ({
@@ -91,25 +89,7 @@ const CurationEditPopup = ({
     if (!curationTypes || !user) return curationTypes || [];
 
     return curationTypes.filter(type => {
-      const userFlags = BigInt(user.permissionFlags || 0);
-      
-      // Super admins can assign all curation types
-      if (hasFlag(user, permissionFlags.SUPER_ADMIN)) {
-        return true;
-      }
-
-      // Check for CURATOR_ASSIGNABLE ability
-      if (hasBit(type.abilities, ABILITIES.CURATOR_ASSIGNABLE)) {
-        return hasAnyFlag(user, [permissionFlags.CURATOR, permissionFlags.HEAD_CURATOR]);
-      }
-
-      // Check for RATER_ASSIGNABLE ability
-      if (hasBit(type.abilities, ABILITIES.RATER_ASSIGNABLE)) {
-        return hasFlag(user, permissionFlags.RATER);
-      }
-
-      // If no specific assignment flag, only super admins can assign
-      return false;
+      return canAssignCurationType(user.permissionFlags, type.abilities);
     });
   }, [curationTypes, user]);
 
