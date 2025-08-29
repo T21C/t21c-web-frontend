@@ -113,7 +113,7 @@ const PlayerCard = ({player, onCreatorAssignmentClick}) => {
   const difficultyIcon = diffFields.includes(sortBy) ? player[sortBy].icon : null;
 
   return (
-    <div className='player-card' onClick={() => redirect()} style={{backgroundColor: hasFlag(player.user, permissionFlags.BANNED) ? "#ff000099" : ""}}>
+    <div className='player-card' onClick={() => redirect()} style={{backgroundColor: player.rankedScoreRank === -1 ? "#ff000099" : ""}}>
       <div className="img-wrapper">
         <div className="image-container">
           <UserAvatar  
