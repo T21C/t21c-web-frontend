@@ -333,7 +333,7 @@ const CurationSchedulePage = () => {
                     <div className="curation-schedule-page__hall-preview">
                       {schedule.scheduledCuration?.previewLink ? (
                         <img 
-                          src={schedule.curation.previewLink} 
+                          src={schedule.scheduledCuration.previewLink} 
                           alt="Level thumbnail"
                           className="curation-schedule-page__hall-thumbnail"
                         />
