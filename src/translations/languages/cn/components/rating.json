@@ -19,7 +19,7 @@
     },
     "buttons": {
       "saveChanges": "保存更改",
-      "removeRating": "移除评级",
+      "removeRating": "删除评级",
       "saving": "保存中……",
       "viewAdminRatings": "查看管理员评级",
       "viewCommunityRatings": "查看社区评级"

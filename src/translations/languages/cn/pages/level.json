@@ -19,7 +19,8 @@
     "gridView": "网格视角",
     "toggleQSlider": "切换Q等级滑块",
     "orderAsc": "升序",
-    "orderDesc": "降序"
+    "orderDesc": "降序",
+    "stateDisplay": "显示设置"
   },
   "settings": {
     "sort": {
@@ -29,7 +30,7 @@
       "clears": "通关记录",
       "likes": "收藏",
       "ratingAccuracy": "评级准确度",
-      "ratingAccuracyVotes": "总投票",
+      "ratingAccuracyVotes": "总票数",
       "random": "随机"
     }
   },
@@ -43,7 +44,8 @@
     "cardSize": "卡片大小",
     "clearedLevels": "已通过关卡",
     "deletedLevels": "已删除关卡",
-    "availableDl": "可下载",
+    "availableDl": "可下载关卡",
+    "curationTypes": "精选关卡类型",
     "myLikes": "我的收藏"
   },
   "infScroll": {

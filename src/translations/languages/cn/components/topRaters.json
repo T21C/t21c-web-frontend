@@ -9,7 +9,7 @@
   "stats": {
     "totalUsers": "总用户数",
     "averageRatingsPerDay": "平均每天评级数",
-    "totalRatings": "总评级员数"
+    "totalRatings": "总评级数"
   },
   "legend": {
     "circleOrnament": "每天 5+ 个评级",
@@ -19,7 +19,7 @@
     "unknown": "未知用户",
     "stats": {
       "totalRatings": "合计",
-      "averagePerDay": "平均每天评级数"
+      "averagePerDay": "平均每天"
     }
   },
   "pagination": {

@@ -82,7 +82,7 @@
   "errors": {
     "profileUpdate": "无法使用个人资料更新提交内容",
     "addCreatorFailed": "添加创作者失败",
-    "removeCreatorFailed": "移除创作者失败",
+    "removeCreatorFailed": "删除创作者失败",
     "cannotRemoveLastCharter": "无法删除最后一位采音师",
     "needProfiles": "所有创作者资料必须在批准前分配"
   }

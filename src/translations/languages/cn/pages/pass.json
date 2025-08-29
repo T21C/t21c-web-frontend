@@ -15,7 +15,8 @@
     "reset": "重置筛选条件",
     "search": "了解如何使用高级搜索",
     "orderAsc": "升序",
-    "orderDesc": "降序"
+    "orderDesc": "降序",
+    "stateDisplay": "显示设置"
   },
   "buttons": {
     "searchHelp": "搜索帮助"
@@ -40,6 +41,9 @@
         "difficulty": "难度",
         "random": "随机"
       }
+    },
+    "stateDisplay": {
+      "title": "显示设置"
     }
   },
   "infScroll": {

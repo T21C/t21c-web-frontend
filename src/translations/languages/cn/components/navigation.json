@@ -7,6 +7,7 @@
       "pass": "通关列表",
       "submission": "提交",
       "rating": "待评级列表",
+      "curations": "精选关卡",
       "admin": {
         "rating": "待评级列表",
         "submissions": "提交列表",

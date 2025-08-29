@@ -30,7 +30,16 @@
       "title": "加入我们的Discord！"
     },
     "comingSoon": "还有更多有趣的内容即将到来……",
-    "donate": "在 Ko-fi 上支持我！"
+    "donate": "在 Ko-fi 上赞助我！"
+  },
+  "weeklies": {
+    "title": "每周精选",
+    "description": "本周精选",
+    "primary": "传奇关卡",
+    "secondary": "受欢迎关卡",
+    "loading": "正在加载本周精选",
+    "error": "加载本周精选失败",
+    "empty": "本周没有精选关卡"
   },
   "footer": {
     "about": {

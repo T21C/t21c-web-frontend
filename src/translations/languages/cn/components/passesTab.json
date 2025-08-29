@@ -1,7 +1,7 @@
 {
   "noPasses": "没有要公布的通关记录",
   "errors": {
-    "removePass": "移除{{playerName}}的通关记录失败，请重试。",
+    "removePass": "删除{{playerName}}的通关记录失败，请重试。",
     "invalidPass": "无效通关数据："
   },
   "card": {
@@ -14,6 +14,6 @@
     }
   },
   "buttons": {
-    "remove": "移除通关记录"
+    "remove": "删除通关记录"
   }
 } 

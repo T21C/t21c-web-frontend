@@ -26,7 +26,7 @@
   "buttons": {
     "addCharter": "添加采音师",
     "addVfxer": "添加特效师",
-    "removeCreator": "移除",
+    "removeCreator": "删除",
     "uploadZip": "上传压缩文件",
     "submit": "提交",
     "submitWait": "……"

@@ -69,7 +69,7 @@
       "name": "名称",
       "description": "描述",
       "add": "添加指令",
-      "remove": "移除指令",
+      "remove": "删除指令",
       "isActive": "可用",
       "triggerType": "触发器类型",
       "copy": "复制指令设置",
@@ -79,7 +79,7 @@
       "pasteSuccess": "已从剪贴板粘贴指令设置",
       "pasteError": "无效指令格式。请粘贴有效的指令 JSON 文件。",
       "addSuccess": "新指令已添加",
-      "removeSuccess": "已移除指令",
+      "removeSuccess": "已删除指令",
       "saveSuccess": "指令保存成功",
       "saveError": "指令保存失败",
       "channelAddSuccess": "频道添加成功",
@@ -119,7 +119,7 @@
     "actions": {
       "title": "动作",
       "add": "添加动作",
-      "remove": "移除动作",
+      "remove": "删除动作",
       "channel": {
         "create": "创建频道",
         "label": "频道",

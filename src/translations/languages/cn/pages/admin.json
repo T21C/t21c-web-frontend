@@ -1,9 +1,9 @@
 {
   "meta": {
-    "title": "管理员数据",
-    "description": "网站管理数据"
+    "title": "管理员页面",
+    "description": "网站管理页面"
   },
-  "title": "管理员数据",
+  "title": "管理员页面",
   "links": {
     "rating": "评级",
     "ratingDesc": "为关卡评级、编辑评级",
@@ -18,6 +18,8 @@
     "backups": "备份",
     "backupsDesc": "管理数据库备份和系统维护",
     "auditLog": "审核日志",
-    "auditLogDesc": "查看所有管理员操作的审核日志"
+    "auditLogDesc": "查看所有管理员操作的审核日志",
+    "curations": "精选关卡",
+    "curationsDesc": "分配质量等级到各个关卡并安排每周精选"
   }
 } 

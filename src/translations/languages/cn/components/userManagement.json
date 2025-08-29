@@ -1,0 +1,53 @@
+{
+  "title": "用户管理",
+  "modeToggle": {
+    "rater": "评级员",
+    "curator": "选谱员"
+  },
+  "loading": "正在加载用户……",
+  "search": {
+    "placeholder": "按用户名或ID搜索……"
+  },
+  "superAdmin": {
+    "password": {
+      "placeholder": "输入超管密码"
+    }
+  },
+  "addUser": {
+    "placeholder": "输入用户名",
+    "button": "添加用户"
+  },
+  "userEntry": {
+    "unknown": "未知",
+    "buttons": {
+      "remove": "删除"
+    }
+  },
+  "roles": {
+    "rater": "评级员",
+    "superadmin": "超级管理员",
+    "curator": "选谱员",
+    "headCurator": "选谱员长"
+  },
+  "buttons": {
+    "promote": "升级",
+    "demote": "降级",
+    "promoteTo": "升级至 {{role}}",
+    "demoteTo": "降级至 {{role}}"
+  },
+
+  "errors": {
+    "passwordRequired": "需要密码",
+    "invalidPassword": "超管密码无效",
+    "deleteConfirm": "你确定删除此用户？",
+    "updateRoleFailed": "更新身份组失败",
+    "deleteFailed": "删除用户失败",
+    "loadFailed": "加载用户失败",
+    "addFailed": "添加用户失败",
+    "userNotFound": "未找到用户",
+    "alreadyHighestRole": "该用户已有最高身份组",
+    "alreadyLowestRole": "该用户已有最低身份组",
+    "noRoleToRemove": "该用户没有可删除的身份组",
+    "cannotRemoveBottomRole": "无法从基础身份组中删除用户 - 他们只能被降级"
+  }
+}

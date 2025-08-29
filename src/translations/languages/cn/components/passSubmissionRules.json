@@ -39,7 +39,7 @@
         "second": "封禁1个月",
         "third": "封禁6个月"
       },
-      "explanation": "修改判定数据，尤其是为了人为提高准确性，会破坏排行榜的完整性。"
+      "explanation": "修改判定数据，尤其是为了人为提高准确性，会破坏排行榜的公平性。"
     },
     "rule3": {
       "title": "规则3——修改初始 BPM （滥用空敲机制）",
@@ -84,7 +84,7 @@
     "rule7": {
       "title": "规则7——采音修改限制",
       "allowed": "允许：",
-      "allowedText": "移除特效（例如，通过模组 Enhanced Effect Remover 或者下载转换）。",
+      "allowedText": "删除特效（例如，通过模组 Enhanced Effect Remover 或者下载转换）。",
       "notAllowed": "不允许：",
       "notAllowedText": "任何影响游玩的改动",
       "specialCase": "特例：",

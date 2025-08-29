@@ -70,7 +70,7 @@
     "confirmation": {
     "title": "确认动作",
     "createMessage": "确认新建备份？",
-    "deleteMessage": "确认删除此备份？此行为不可撤销。",
+    "deleteMessage": "确认删除此备份？此动作不可撤销。",
     "restoreMessage": "确认恢复此备份？这将覆写当前数据。"
   },
   "notifications": {

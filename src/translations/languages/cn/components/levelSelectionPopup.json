@@ -1,0 +1,16 @@
+{
+  "title": "向精选关卡中添加关卡",
+  "titleAdd": "选择关卡以添加",
+  "description": "选择要添加到精选关卡列表的关卡",
+  "descriptionAdd": "选择关卡以按默认设置添加至精选关卡",
+  "filters": {
+    "search": "搜索关卡",
+    "searchPlaceholder": "按歌曲、艺术家或创作者搜索……"
+  },
+  "loading": "正在加载关卡",
+  "empty": "未找到关卡",
+  "create": "添加",
+  "selectLevel": "选择此关卡",
+  "createLevel": "将此关卡添加至精选关卡",
+  "creator": "创作者"
+}
