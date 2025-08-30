@@ -23,7 +23,7 @@ const CurationSchedulePage = () => {
   const [schedules, setSchedules] = useState([]);
   const [currentMonday, setCurrentMonday] = useState(getNextMonday(new Date()));
   const [showCurationSelection, setShowCurationSelection] = useState(false);
-  const [selectionMode, setSelectionMode] = useState({ type: '', position: null }); // 'primary' or 'secondary'
+  const [selectionMode, setSelectionMode] = useState({ type: '' }); // 'primary' or 'secondary'
   
   const primaryScrollRef = useRef(null);
   const secondaryScrollRef = useRef(null);
@@ -90,8 +90,8 @@ const CurationSchedulePage = () => {
     setCurrentMonday(newMonday);
   };
 
-  const handleAddCuration = (type, position = null) => {
-    setSelectionMode({ type, position });
+  const handleAddCuration = (type) => {
+    setSelectionMode({ type });
     setShowCurationSelection(true);
   };
 
@@ -100,14 +100,13 @@ const CurationSchedulePage = () => {
       const response = await api.post(`${import.meta.env.VITE_CURATIONS}/schedules`, {
         curationId: curation.id,
         weekStart: currentMonday.toISOString().split('T')[0],
-        listType: selectionMode.type, // 'primary' or 'secondary'
-        position: selectionMode.position
+        listType: selectionMode.type // 'primary' or 'secondary'
       });
 
       toast.success(tSch('notifications.added'));
       fetchSchedules();
       setShowCurationSelection(false);
-      setSelectionMode({ type: '', position: null });
+      setSelectionMode({ type: '' });
     } catch (error) {
       toast.error(error.response?.data?.error || 'Failed to add curation to schedule');
     }
@@ -123,16 +122,7 @@ const CurationSchedulePage = () => {
     }
   };
 
-  const handleReorderCuration = async (scheduleId, newPosition) => {
-    try {
-      await api.put(`${import.meta.env.VITE_CURATIONS}/schedules/${scheduleId}`, {
-        position: newPosition
-      });
-      fetchSchedules();
-    } catch (error) {
-      toast.error(error.response?.data?.error || 'Failed to reorder curation');
-    }
-  };
+
 
   // Scroll functions for horizontal lists
   const scrollList = (ref, direction) => {
@@ -285,7 +275,7 @@ const CurationSchedulePage = () => {
                 {primarySchedules.length < 20 && (
                   <button 
                     className="curation-schedule-page__add-slot"
-                    onClick={() => handleAddCuration('primary', primarySchedules.length)}
+                    onClick={() => handleAddCuration('primary')}
                   >
                     <div className="curation-schedule-page__add-icon">+</div>
                     <span>{tSch('actions.addCuration')}</span>
@@ -368,7 +358,7 @@ const CurationSchedulePage = () => {
                 {secondarySchedules.length < 20 && (
                   <button 
                     className="curation-schedule-page__add-slot"
-                    onClick={() => handleAddCuration('secondary', secondarySchedules.length)}
+                    onClick={() => handleAddCuration('secondary')}
                   >
                     <div className="curation-schedule-page__add-icon">+</div>
                     <span>{tSch('actions.addCuration')}</span>
@@ -399,7 +389,7 @@ const CurationSchedulePage = () => {
         isOpen={showCurationSelection}
         onClose={() => {
           setShowCurationSelection(false);
-          setSelectionMode({ type: '', position: null });
+          setSelectionMode({ type: '' });
         }}
         onCurationSelect={handleCurationSelect}
         excludeIds={excludedIds}
