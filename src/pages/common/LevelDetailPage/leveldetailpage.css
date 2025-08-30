@@ -970,6 +970,22 @@
   border-color: var(--accent-color);
 }
 
+.level-detail .rank .sort .sort-button-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  cursor: pointer;
+}
+
+.level-detail .rank .sort .sort-direction-indicator {
+  color: var(--primary-text);
+  font-size: 1rem;
+  font-weight: bold;
+  margin-left: 0.25rem;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
 .level-detail .rank h1 {
   text-align: center;
   margin-bottom: var(--spacing-sm);

@@ -2,7 +2,7 @@
 // eslint-disable-next-line no-unused-vars
 import "./leveldetailpage.css"
 import placeholder from "@/assets/placeholder/3.png";
-import React, { useEffect, useState, useRef, useCallback } from "react";
+import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { useLocation, useParams } from 'react-router-dom';
 import { CompleteNav } from "@/components/layout";
 import {
@@ -558,11 +558,12 @@ const LevelDetailPage = ({ mockData = null }) => {
   // Use previewLevelId if in preview mode, otherwise use URL parameter
   const effectiveId = id || mockData?.level.id;
   const [res, setRes] = useState(null);
-  const [displayedPlayers, setDisplayedPlayers] = useState([]);
   const [leaderboardSort, setLeaderboardSort] = useState("SCR");
+  const [sortDirection, setSortDirection] = useState("desc"); // "desc" or "asc"
   const [infoLoading, setInfoLoading] = useState(true);
+  const [sortedLeaderboard, setSortedLeaderboard] = useState([]);
   const [videoDetail, setVideoDetail] = useState(null);
-  
+
   // Custom styling state for curations
   const [curationStyles, setCurationStyles] = useState(null);
   
@@ -895,7 +896,6 @@ const LevelDetailPage = ({ mockData = null }) => {
       // Use mock data if provided - completely override everything
       if (mockData) {
         setRes(mockData);
-        setDisplayedPlayers(sortLeaderboard(mockData.passes || []));
         setNotFound(false);
         setInfoLoading(false);
         return;
@@ -910,10 +910,8 @@ const LevelDetailPage = ({ mockData = null }) => {
         
         setRes(prevRes => ({
           ...prevRes,
-          ...levelData.data,
-          passes: levelData.data.level.passes,
+          ...levelData.data
         }));
-        setDisplayedPlayers(sortLeaderboard(passesData.data));
         setNotFound(false);
       } catch (error) {
         console.error("Error fetching level data:", error);
@@ -1099,41 +1097,75 @@ const LevelDetailPage = ({ mockData = null }) => {
   }, [res?.level]);
 
   function handleSort(sort) {
-    setLeaderboardSort(sort);
-    if (res?.passes) {
-      const newSortedPlayers = sortLeaderboard([...res.passes]);
-      setDisplayedPlayers(newSortedPlayers);
+    if (leaderboardSort === sort) {
+      // Same sort clicked, toggle direction
+      setSortDirection(prev => prev === "desc" ? "asc" : "desc");
+    } else {
+      // Different sort clicked, use default descending for new sort
+      setLeaderboardSort(sort);
+      setSortDirection("desc");
     }
   }
 
-  const sortLeaderboard = (players) => {
-    if (!players) return [];
+  const sortLeaderboard = useCallback(() => {
+    if (!res?.level?.passes) return [];
+    const passes = [...res.level.passes]; // Create a copy to avoid mutating original array
+    const isDescending = sortDirection === "desc";
     
-    const sortedPlayers = [...players];
-
+    let sortedPasses = [];
+    
     switch (leaderboardSort) {
       case 'TIME':
-        return sortedPlayers.sort((a, b) => 
-          new Date(a.vidUploadTime) - new Date(b.vidUploadTime)
-        );
+        sortedPasses = passes.sort((a, b) => {
+          const dateA = a.vidUploadTime ? new Date(a.vidUploadTime) : new Date(0);
+          const dateB = b.vidUploadTime ? new Date(b.vidUploadTime) : new Date(0);
+          const result = dateA - dateB;
+          return isDescending ? result : -result;
+        });
+        break;
       case 'ACC':
-        return sortedPlayers.sort((a, b) => 
-          (b.accuracy || 0) - (a.accuracy || 0)
-        );
+        sortedPasses = passes.sort((a, b) => {
+          const result = (b.judgements?.accuracy || 0) - (a.judgements?.accuracy || 0);
+          return isDescending ? result : -result;
+        });
+        break;
       case 'SCR':
-        return sortedPlayers.sort((a, b) => 
-          (b.scoreV2 || 0) - (a.scoreV2 || 0)
-        );
       default:
-        return sortedPlayers;
+        sortedPasses = passes.sort((a, b) => {
+          const result = (b.scoreV2 || 0) - (a.scoreV2 || 0);
+          return isDescending ? result : -result;
+        });
+        break;
     }
-  };
+    return sortedPasses;
+  }, [res?.level?.passes, leaderboardSort, sortDirection]);
 
+  // Assign explicit sort order to passes data
   useEffect(() => {
-    if (res?.passes) {
-      setDisplayedPlayers(sortLeaderboard(res.passes));
+    if (!res?.level?.passes) {
+      setSortedLeaderboard([]);
+      return;
     }
-  }, [leaderboardSort, res?.passes]);
+
+    // Get the sorted order and assign explicit sortOrder to each item
+    const sorted = sortLeaderboard();
+    
+    // Assign sortOrder to the original passes based on the sorted position
+    const passesWithSortOrder = res.level.passes.map(pass => {
+      const sortedIndex = sorted.findIndex(sortedItem => sortedItem.id === pass.id);
+      return {
+        ...pass,
+        _sortOrder: sortedIndex !== -1 ? sortedIndex+1 : 999 // Put unfound items at the end
+      };
+    });
+    
+    setSortedLeaderboard(passesWithSortOrder);
+  }, [res?.level?.passes, leaderboardSort, sortDirection, sortLeaderboard]);
+
+  // Helper function to get sorted leaderboard data
+  const getSortedLeaderboard = () => {
+    return [...sortedLeaderboard].sort((a, b) => (a._sortOrder || 999) - (b._sortOrder || 999));
+  };
 
   function changeDialogState(){
     setOpenDialog(!openDialog)
@@ -1641,10 +1673,10 @@ const LevelDetailPage = ({ mockData = null }) => {
                 <p>{tLevel('stats.firstClear.label')}</p>
                 <span className="info-desc">
                   {!infoLoading ? 
-                    (displayedPlayers.length > 0 ? 
+                    (sortedLeaderboard.length > 0 ? 
                       tLevel('stats.firstClear.value', {
-                        player: getHighScores(displayedPlayers).firstClear.player.name,
-                        date: getHighScores(displayedPlayers).firstClear.vidUploadTime.slice(0, 10)
+                        player: getHighScores(getSortedLeaderboard()).firstClear.player.name,
+                        date: getHighScores(getSortedLeaderboard()).firstClear.vidUploadTime.slice(0, 10)
                       })
                       : "-")
                     : tLevel('stats.waiting')}
@@ -1655,10 +1687,10 @@ const LevelDetailPage = ({ mockData = null }) => {
                 <p>{tLevel('stats.highestScore.label')}</p>
                 <span className="info-desc">
                   {!infoLoading ? 
-                    (displayedPlayers.length > 0 ? 
+                    (sortedLeaderboard.length > 0 ? 
                       tLevel('stats.highestScore.value', {
-                        player: getHighScores(displayedPlayers).highestScore.player.name,
-                        score: getHighScores(displayedPlayers).highestScore.scoreV2.toFixed(2)
+                        player: getHighScores(getSortedLeaderboard()).highestScore.player.name,
+                        score: getHighScores(getSortedLeaderboard()).highestScore.scoreV2.toFixed(2)
                       })
                       : "-")
                     : tLevel('stats.waiting')}
@@ -1669,10 +1701,10 @@ const LevelDetailPage = ({ mockData = null }) => {
                 <p>{tLevel('stats.highestSpeed.label')}</p>
                 <span className="info-desc">
                   {!infoLoading ? 
-                    (displayedPlayers.length > 0 && getHighScores(displayedPlayers).highestSpeed ? 
+                    (sortedLeaderboard.length > 0 && getHighScores(getSortedLeaderboard()).highestSpeed ? 
                       tLevel('stats.highestSpeed.value', {
-                        player: getHighScores(displayedPlayers).highestSpeed.player.name,
-                        speed: getHighScores(displayedPlayers).highestSpeed.speed || 1
+                        player: getHighScores(getSortedLeaderboard()).highestSpeed.player.name,
+                        speed: getHighScores(getSortedLeaderboard()).highestSpeed.speed || 1
                       })
                       : "-")
                     : tLevel('stats.waiting')}
@@ -1683,10 +1715,10 @@ const LevelDetailPage = ({ mockData = null }) => {
                 <p>{tLevel('stats.highestAccuracy.label')}</p>
                 <span className="info-desc">
                   {!infoLoading ? 
-                    (displayedPlayers.length > 0 ? 
+                    (sortedLeaderboard.length > 0 ? 
                       tLevel('stats.highestAccuracy.value', {
-                        player: getHighScores(displayedPlayers).highestAcc.player.name,
-                        accuracy: (getHighScores(displayedPlayers).highestAcc.accuracy * 100).toFixed(2)
+                        player: getHighScores(getSortedLeaderboard()).highestAcc.player.name,
+                        accuracy: (getHighScores(getSortedLeaderboard()).highestAcc.accuracy * 100).toFixed(2)
                       })
                       : "-")
                     : tLevel('stats.waiting')}
@@ -1697,7 +1729,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                 <p>{tLevel('stats.totalClears.label')}</p>
                 <span className="info-desc">
                   {!infoLoading ? 
-                    tLevel('stats.totalClears.value', { count: displayedPlayers.length }) 
+                    tLevel('stats.totalClears.value', { count: sortedLeaderboard.length }) 
                     : tLevel('stats.waiting')}
                 </span>
               </div>
@@ -1737,7 +1769,7 @@ const LevelDetailPage = ({ mockData = null }) => {
 
           <div className="rank">
             <h1>{tLevel('leaderboard.header')}</h1>
-            {displayedPlayers && displayedPlayers.length > 0 ? (
+            {sortedLeaderboard.length > 0 ? (
               <div className="sort">
                 <Tooltip id="tm" place="top" noArrow>
                   {tLevel('leaderboard.tooltips.time')}
@@ -1749,61 +1781,81 @@ const LevelDetailPage = ({ mockData = null }) => {
                   {tLevel('leaderboard.tooltips.score')}
                 </Tooltip>
 
-                <svg className="svg-stroke" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                data-tooltip-id = "tm"
-                value="TIME" 
-                onClick={() => handleSort("TIME")} 
-                style={{
-                  backgroundColor:
-                    leaderboardSort == "TIME" ? "rgba(255, 255, 255, 0.7)" : "",
-                }}>
-                  <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                  <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
-                  <g id="SVGRepo_iconCarrier">
-                    <path d="M3 9H21M7 3V5M17 3V5M6 12H8M11 12H13M16 12H18M6 15H8M11 15H13M16 15H18M6 18H8M11 18H13M16 18H18M6.2 21H17.8C18.9201 21 19.4802 21 19.908 20.782C20.2843 20.5903 20.5903 20.2843 20.782 19.908C21 19.4802 21 18.9201 21 17.8V8.2C21 7.07989 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V17.8C3 18.9201 3 19.4802 3.21799 19.908C3.40973 20.2843 3.71569 20.5903 4.09202 20.782C4.51984 21 5.07989 21 6.2 21Z" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" ></path>
-                  </g>
-                </svg>
+                <div className="sort-button-container" onClick={() => handleSort("TIME")}>
+                  <svg className="svg-stroke" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                  data-tooltip-id = "tm"
+                  value="TIME" 
+                  style={{
+                    backgroundColor:
+                      leaderboardSort == "TIME" ? "rgba(255, 255, 255, 0.7)" : "",
+                  }}>
+                    <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                    <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+                    <g id="SVGRepo_iconCarrier">
+                      <path d="M3 9H21M7 3V5M17 3V5M6 12H8M11 12H13M16 12H18M6 15H8M11 15H13M16 15H18M6 18H8M11 18H13M16 18H18M6.2 21H17.8C18.9201 21 19.4802 21 19.908 20.782C20.2843 20.5903 20.5903 20.2843 20.782 19.908C21 19.4802 21 18.9201 21 17.8V8.2C21 7.07989 21 6.51984 20.782 6.09202C20.5903 5.71569 20.2843 5.40973 19.908 5.21799C19.4802 5 18.9201 5 17.8 5H6.2C5.0799 5 4.51984 5 4.09202 5.21799C3.71569 5.40973 3.40973 5.71569 3.21799 6.09202C3 6.51984 3 7.07989 3 8.2V17.8C3 18.9201 3 19.4802 3.21799 19.908C3.40973 20.2843 3.71569 20.5903 4.09202 20.782C4.51984 21 5.07989 21 6.2 21Z" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" ></path>
+                    </g>
+                  </svg>
+                  {leaderboardSort === "TIME" && (
+                    <span className="sort-direction-indicator">
+                      {sortDirection === "desc" ? "↓" : "↑"}
+                    </span>
+                  )}
+                </div>
 
-                <svg  className="svg-fill" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                style={{
-                  backgroundColor:
-                    leaderboardSort == "ACC" ? "rgba(255, 255, 255, 0.7)" : "",
-                }}
-                data-tooltip-id = "ac"
-                value="ACC"
-                onClick={() => handleSort("ACC")} >
-                  <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                  <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" ></g>
-                  <g id="SVGRepo_iconCarrier">
+                <div className="sort-button-container" onClick={() => handleSort("ACC")}>
+                  <svg  className="svg-fill" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                  style={{
+                    backgroundColor:
+                      leaderboardSort == "ACC" ? "rgba(255, 255, 255, 0.7)" : "",
+                  }}
+                  data-tooltip-id = "ac"
+                  value="ACC">
+                    <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                    <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" ></g>
+                    <g id="SVGRepo_iconCarrier">
+                      <path d="M21.4143 3.29285C21.8048 3.68337 21.8048 4.31653 21.4143 4.70706L4.70718 21.4142C4.31666 21.8047 3.68349 21.8047 3.29297 21.4142L2.58586 20.7071C2.19534 20.3165 2.19534 19.6834 2.58586 19.2928L19.293 2.58574C19.6835 2.19522 20.3167 2.19522 20.7072 2.58574L21.4143 3.29285Z" fill="#ffffff" ></path>
+                      <path d="M7.50009 2.99997C5.5671 2.99997 4.00009 4.56697 4.00009 6.49997C4.00009 8.43297 5.5671 9.99997 7.50009 9.99997C9.43309 9.99997 11.0001 8.43297 11.0001 6.49997C11.0001 4.56697 9.43309 2.99997 7.50009 2.99997Z" fill="#ffffff" ></path>
+                      <path d="M16.5001 14C14.5671 14 13.0001 15.567 13.0001 17.5C13.0001 19.433 14.5671 21 16.5001 21C18.4331 21 20.0001 19.433 20.0001 17.5C20.0001 15.567 18.4331 14 16.5001 14Z" fill="#ffffff" ></path>
+                    </g>
+                  </svg>
+                  {leaderboardSort === "ACC" && (
+                    <span className="sort-direction-indicator">
+                      {sortDirection === "desc" ? "↓" : "↑"}
+                    </span>
+                  )}
+                </div>
 
-                    <path d="M21.4143 3.29285C21.8048 3.68337 21.8048 4.31653 21.4143 4.70706L4.70718 21.4142C4.31666 21.8047 3.68349 21.8047 3.29297 21.4142L2.58586 20.7071C2.19534 20.3165 2.19534 19.6834 2.58586 19.2928L19.293 2.58574C19.6835 2.19522 20.3167 2.19522 20.7072 2.58574L21.4143 3.29285Z" fill="#ffffff" ></path>
-                    <path d="M7.50009 2.99997C5.5671 2.99997 4.00009 4.56697 4.00009 6.49997C4.00009 8.43297 5.5671 9.99997 7.50009 9.99997C9.43309 9.99997 11.0001 8.43297 11.0001 6.49997C11.0001 4.56697 9.43309 2.99997 7.50009 2.99997Z" fill="#ffffff" ></path>
-                    <path d="M16.5001 14C14.5671 14 13.0001 15.567 13.0001 17.5C13.0001 19.433 14.5671 21 16.5001 21C18.4331 21 20.0001 19.433 20.0001 17.5C20.0001 15.567 18.4331 14 16.5001 14Z" fill="#ffffff" ></path>
-                  </g>
-                </svg>
-
-                <svg className="svg-fill"  viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
-                style={{
-                  backgroundColor:
-                    leaderboardSort == "SCR" ? "rgba(255, 255, 255, 0.7)" : "",
-                }}
-                data-tooltip-id = "sc"
-                value="SCR"
-                onClick={() => handleSort("SCR")}
-                  >
-                  <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-                  <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" ></g>
-                  <g id="SVGRepo_iconCarrier">
-                    <path d="M9.15316 5.40838C10.4198 3.13613 11.0531 2 12 2C12.9469 2 13.5802 3.13612 14.8468 5.40837L15.1745 5.99623C15.5345 6.64193 15.7144 6.96479 15.9951 7.17781C16.2757 7.39083 16.6251 7.4699 17.3241 7.62805L17.9605 7.77203C20.4201 8.32856 21.65 8.60682 21.9426 9.54773C22.2352 10.4886 21.3968 11.4691 19.7199 13.4299L19.2861 13.9372C18.8096 14.4944 18.5713 14.773 18.4641 15.1177C18.357 15.4624 18.393 15.8341 18.465 16.5776L18.5306 17.2544C18.7841 19.8706 18.9109 21.1787 18.1449 21.7602C17.3788 22.3417 16.2273 21.8115 13.9243 20.7512L13.3285 20.4768C12.6741 20.1755 12.3469 20.0248 12 20.0248C11.6531 20.0248 11.3259 20.1755 10.6715 20.4768L10.0757 20.7512C7.77268 21.8115 6.62118 22.3417 5.85515 21.7602C5.08912 21.1787 5.21588 19.8706 5.4694 17.2544L5.53498 16.5776C5.60703 15.8341 5.64305 15.4624 5.53586 15.1177C5.42868 14.773 5.19043 14.4944 4.71392 13.9372L4.2801 13.4299C2.60325 11.4691 1.76482 10.4886 2.05742 9.54773C2.35002 8.60682 3.57986 8.32856 6.03954 7.77203L6.67589 7.62805C7.37485 7.4699 7.72433 7.39083 8.00494 7.17781C8.28555 6.96479 8.46553 6.64194 8.82547 5.99623L9.15316 5.40838Z" fill="#ffffff"></path>
-                  </g>
-                </svg>
+                <div className="sort-button-container" onClick={() => handleSort("SCR")}>
+                  <svg className="svg-fill"  viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
+                  style={{
+                    backgroundColor:
+                      leaderboardSort == "SCR" ? "rgba(255, 255, 255, 0.7)" : "",
+                  }}
+                  data-tooltip-id = "sc"
+                  value="SCR">
+                    <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                    <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round" ></g>
+                    <g id="SVGRepo_iconCarrier">
+                      <path d="M9.15316 5.40838C10.4198 3.13613 11.0531 2 12 2C12.9469 2 13.5802 3.13612 14.8468 5.40837L15.1745 5.99623C15.5345 6.64193 15.7144 6.96479 15.9951 7.17781C16.2757 7.39083 16.6251 7.4699 17.3241 7.62805L17.9605 7.77203C20.4201 8.32856 21.65 8.60682 21.9426 9.54773C22.2352 10.4886 21.3968 11.4691 19.7199 13.4299L19.2861 13.9372C18.8096 14.4944 18.5713 14.773 18.4641 15.1177C18.357 15.4624 18.393 15.8341 18.465 16.5776L18.5306 17.2544C18.7841 19.8706 18.9109 21.1787 18.1449 21.7602C17.3788 22.3417 16.2273 21.8115 13.9243 20.7512L13.3285 20.4768C12.6741 20.1755 12.3469 20.0248 12 20.0248C11.6531 20.0248 11.3259 20.1755 10.6715 20.4768L10.0757 20.7512C7.77268 21.8115 6.62118 22.3417 5.85515 21.7602C5.08912 21.1787 5.21588 19.8706 5.4694 17.2544L5.53498 16.5776C5.60703 15.8341 5.64305 15.4624 5.53586 15.1177C5.42868 14.773 5.19043 14.4944 4.71392 13.9372L4.2801 13.4299C2.60325 11.4691 1.76482 10.4886 2.05742 9.54773C2.35002 8.60682 3.57986 8.32856 6.03954 7.77203L6.67589 7.62805C7.37485 7.4699 7.72433 7.39083 8.00494 7.17781C8.28555 6.96479 8.46553 6.64194 8.82547 5.99623L9.15316 5.40838Z" fill="#ffffff"></path>
+                    </g>
+                  </svg>
+                  {leaderboardSort === "SCR" && (
+                    <span className="sort-direction-indicator">
+                      {sortDirection === "desc" ? "↓" : "↑"}
+                    </span>
+                  )}
+                </div>
               </div>
             ) : <></>}
             <div className="rank-list">
               {!infoLoading ? 
-                displayedPlayers && displayedPlayers.length > 0 ? (
-                  displayedPlayers.map((each, index) => (
-                    <ClearCard scoreData={each} index={index} key={index}/>
+                sortedLeaderboard.length > 0 ? (
+                  getSortedLeaderboard().map((each, index) => (
+                    <ClearCard 
+                      scoreData={each} 
+                      index={index} 
+                      key={`${each.id}`}
+                    />
                   ))
                 ) : (
                   <h3>{tLevel('leaderboard.notBeaten')}</h3>
