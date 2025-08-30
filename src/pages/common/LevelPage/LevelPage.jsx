@@ -566,7 +566,7 @@ const LevelPage = () => {
                   onToggle={toggleSpecialDifficulty}
                   disableQuantum={true}
                 />
-                <div className={`curation-types-wrapper ${curatedTypesFilter === "only" ? 'visible' : 'hidden'}`}>
+                <div className={`curation-types-wrapper ${curatedTypesFilter !== "hide" ? 'visible' : 'hidden'}`}>
                 <SpecialDifficulties
                   difficulties={curationTypes}
                   selectedDiffs={selectedCurationTypes}
@@ -582,7 +582,7 @@ const LevelPage = () => {
                     setCuratedTypesFilter(newState);
                     triggerRefresh();
                   }}
-                  states={['show', 'hide', 'only']}
+                  states={['show', 'only', 'hide']}
                 />
                 <button 
                   className={`q-toggle-button ${qSliderVisible ? 'active' : ''}`}
