@@ -18,7 +18,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
   }
 
   const [selectedCountry, setSelectedCountry] = useState(player.country || 'XX');
-  const [isBanned, setIsBanned] = useState(hasFlag(player.user, permissionFlags.BANNED) || false);
+  const [isBanned, setIsBanned] = useState(hasFlag(player.user, permissionFlags.BANNED) || player.isBanned || false);
   const [isSubmissionsPaused, setIsSubmissionsPaused] = useState(hasFlag(player.user, permissionFlags.SUBMISSIONS_PAUSED) || false);
   const [isRatingBanned, setIsRatingBanned] = useState(hasFlag(player.user, permissionFlags.RATING_BANNED) || false);
   const [showBanConfirm, setShowBanConfirm] = useState(false);

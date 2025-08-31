@@ -58,14 +58,27 @@ const getHighScores = (players) => {
   if (!players?.length) return null;
   
   return {
-    firstClear: players.reduce((a, b) => 
+    firstClear: players
+    .sort(((a, b) => 
+      new Date(a.vidUploadTime) < new Date(b.vidUploadTime) ? a : b))
+    .reduce((a, b) => 
       new Date(a.vidUploadTime) < new Date(b.vidUploadTime) ? a : b),
-    highestScore: players.reduce((a, b) => 
+    highestScore: players
+    .sort(((a, b) => 
+      new Date(a.vidUploadTime) < new Date(b.vidUploadTime) ? a : b))
+    .reduce((a, b) => 
       b.scoreV2 > a.scoreV2 ? b : a),
-    highestAcc: players.reduce((a, b) => 
+    highestAcc: players
+    .sort(((a, b) => 
+      new Date(a.vidUploadTime) < new Date(b.vidUploadTime) ? a : b))
+    .reduce((a, b) => 
       b.accuracy > a.accuracy ? b : a),
     highestSpeed: players.some(p => p.speed) ? 
-      players.sort((a, b) => (b.scoreV2 || 0) - (a.scoreV2 || 0)).reduce((a, b) => (b.speed || 0) > (a.speed || 0) ? b : a) : null
+      players
+      .sort(((a, b) => 
+        new Date(a.vidUploadTime) < new Date(b.vidUploadTime) ? a : b))
+      .sort((a, b) => (b.scoreV2 || 0) - (a.scoreV2 || 0))
+      .reduce((a, b) => (b.speed || 0) > (a.speed || 0) ? b : a) : null
   };
 };
 
@@ -1689,8 +1702,8 @@ const LevelDetailPage = ({ mockData = null }) => {
                   {!infoLoading ? 
                     (sortedLeaderboard.length > 0 ? 
                       tLevel('stats.highestScore.value', {
-                        player: getHighScores(getSortedLeaderboard()).highestScore.player.name,
-                        score: getHighScores(getSortedLeaderboard()).highestScore.scoreV2.toFixed(2)
+                        player: getHighScores(res?.level?.passes).highestScore.player.name,
+                        score: getHighScores(res?.level?.passes).highestScore.scoreV2.toFixed(2)
                       })
                       : "-")
                     : tLevel('stats.waiting')}
@@ -1701,10 +1714,10 @@ const LevelDetailPage = ({ mockData = null }) => {
                 <p>{tLevel('stats.highestSpeed.label')}</p>
                 <span className="info-desc">
                   {!infoLoading ? 
-                    (sortedLeaderboard.length > 0 && getHighScores(getSortedLeaderboard()).highestSpeed ? 
+                    (sortedLeaderboard.length > 0 && getHighScores(res?.level?.passes).highestSpeed ? 
                       tLevel('stats.highestSpeed.value', {
-                        player: getHighScores(getSortedLeaderboard()).highestSpeed.player.name,
-                        speed: getHighScores(getSortedLeaderboard()).highestSpeed.speed || 1
+                        player: getHighScores(res?.level?.passes).highestSpeed.player.name,
+                        speed: getHighScores(res?.level?.passes).highestSpeed.speed || 1
                       })
                       : "-")
                     : tLevel('stats.waiting')}
@@ -1717,8 +1730,8 @@ const LevelDetailPage = ({ mockData = null }) => {
                   {!infoLoading ? 
                     (sortedLeaderboard.length > 0 ? 
                       tLevel('stats.highestAccuracy.value', {
-                        player: getHighScores(getSortedLeaderboard()).highestAcc.player.name,
-                        accuracy: (getHighScores(getSortedLeaderboard()).highestAcc.accuracy * 100).toFixed(2)
+                        player: getHighScores(res?.level?.passes).highestAcc.player.name,
+                        accuracy: (getHighScores(res?.level?.passes).highestAcc.accuracy * 100).toFixed(2)
                       })
                       : "-")
                     : tLevel('stats.waiting')}
