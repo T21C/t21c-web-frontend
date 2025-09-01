@@ -17,6 +17,7 @@ const WeeklyGallery = ({
   
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoScrolling, setIsAutoScrolling] = useState(autoScroll);
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const autoScrollRef = useRef(null);
   const pauseTimeoutRef = useRef(null);
   const containerRef = useRef(null);
@@ -46,6 +47,16 @@ const WeeklyGallery = ({
   useEffect(() => {
     setIsAutoScrolling(autoScroll);
   }, [autoScroll]);
+
+  // Handle window resize for responsive positioning
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Unified pause mechanism to prevent race conditions
   const pauseWithTimeout = useCallback(() => {
@@ -114,6 +125,16 @@ const WeeklyGallery = ({
     
     const relativeIndex = (index - currentIndex + totalItems) % totalItems;
     
+    // Get viewport width for responsive positioning
+    const isMobile = windowWidth <= 768;
+    const isSmallPhone = windowWidth <= 480;
+    
+    // Responsive offsets and scales
+    const baseOffset = isSmallPhone ? 80 : isMobile ? 120 : 160;
+    const offsetIncrement = isSmallPhone ? 60 : isMobile ? 90 : 120;
+    const scaleReduction = isSmallPhone ? 0.1 : isMobile ? 0.12 : 0.15;
+    const opacityReduction = isSmallPhone ? 0.25 : isMobile ? 0.28 : 0.3;
+    
     // Center item (current)
     if (relativeIndex === 0) {
       return {
@@ -126,9 +147,9 @@ const WeeklyGallery = ({
     
     // Left side items (up to 2) - now move right when going to previous
     if (relativeIndex <= 2) {
-      const rightOffset = 160 + (relativeIndex - 1) * 120;
-      const scale = 1 - (relativeIndex * 0.15);
-      const opacity = 1 - (relativeIndex * 0.3);
+      const rightOffset = baseOffset + (relativeIndex - 1) * offsetIncrement;
+      const scale = 1 - (relativeIndex * scaleReduction);
+      const opacity = 1 - (relativeIndex * opacityReduction);
       return {
         zIndex: 5 - relativeIndex,
         opacity: Math.max(0.3, opacity),
@@ -140,9 +161,9 @@ const WeeklyGallery = ({
     // Right side items (up to 2) - now move left when going to next
     if (relativeIndex >= totalItems - 2) {
       const leftRelativeIndex = totalItems - relativeIndex;
-      const leftOffset = -160 - (leftRelativeIndex - 1) * 120;
-      const scale = 1 - (leftRelativeIndex * 0.15);
-      const opacity = 1 - (leftRelativeIndex * 0.3);
+      const leftOffset = -baseOffset - (leftRelativeIndex - 1) * offsetIncrement;
+      const scale = 1 - (leftRelativeIndex * scaleReduction);
+      const opacity = 1 - (leftRelativeIndex * opacityReduction);
       return {
         zIndex: 5 - leftRelativeIndex,
         opacity: Math.max(0.3, opacity),

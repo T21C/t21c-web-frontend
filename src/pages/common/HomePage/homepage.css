@@ -19,14 +19,13 @@
 
 .home .logo-container {
   width: 100%;
-  height: clamp(6rem, 15vw, 12rem);
   opacity: 0;
   animation: fadeInLogo 0.8s ease-out forwards;
 }
 
 .home .logo {
-  width: auto;
-  height: 100%;
+  width: 75%;
+  height: auto;
 }
 
 
@@ -562,6 +561,39 @@
   transform-origin: bottom;
 }
 
+
+/* Switch Button */
+.home .weekly-curations-switch-btn {
+  position: absolute;
+  width: 100%;
+  height: 60px;
+  bottom: 0px;
+  left: 50%;
+  transform: translateX(-50%);
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: radial-gradient(farthest-side at top, #000000aa, transparent 100%);
+  border: none;
+  border-radius: 25px;
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  opacity: 0.5;
+  z-index: 1;
+}
+
+.home .weekly-curations-switch-btn:hover {
+  opacity: 1;
+}
+
+.home .weekly-curations-switch-btn:active .switch-btn-text {
+  transform: translate(-50%, -90%) translateY(2px);
+}
+
+
+
 /* Mobile Adjustments */
 @media (max-width: 768px) {
   .home .home-container {
@@ -573,24 +605,17 @@
     padding: 1.5rem;
   }
 
-  .home .weekly-curations-container {
-    gap: 2rem;
-  }
-
   .home .weekly-curations-stack {
     min-height: 400px;
     margin-bottom: 70px;
   }
 
   .home .weekly-curations-switch-btn {
-    bottom: -50px;
+    bottom: -45px;
     padding: 0.6rem 1.2rem;
     font-size: 0.8rem;
   }
 
-  .home .logo-container {
-    height: clamp(4rem, 12vw, 8rem);
-  }
 
   .home .main-title {
     font-size: clamp(3rem, 7vw, 4rem);
@@ -671,14 +696,14 @@
 }
 
 /* Small phone adjustments */
-@media (max-width: 360px) {
+@media (max-width: 480px) {
   .home .home-container {
     padding: 4.5rem 0.75rem 1.5rem 0.75rem;
   }
 
   .home .weekly-curations-section {
     margin: 1.5rem 0;
-    padding: 1rem;
+    padding: 1rem 0;
   }
 
   .home .weekly-curations-stack {
@@ -687,14 +712,11 @@
   }
 
   .home .weekly-curations-switch-btn {
-    bottom: -45px;
+    bottom: 0px;
     padding: 0.5rem 1rem;
     font-size: 0.75rem;
   }
 
-  .home .logo-container {
-    height: clamp(3.5rem, 10vw, 6rem);
-  }
 
   .home .main-title {
     font-size: clamp(2rem, 7vw, 3rem);
@@ -737,10 +759,6 @@
 @media (max-height: 600px) and (orientation: landscape) {
   .home .home-container {
     padding-top: 4rem;
-  }
-
-  .home .logo-container {
-    height: clamp(3rem, 8vh, 5rem);
   }
 
   .home .main-title {
@@ -798,6 +816,19 @@
   -webkit-text-fill-color: transparent;
 }
 
+
+@media (max-width: 768px) {
+  .home .weekly-curations-title {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .home .weekly-curations-title {
+    font-size: 2rem;
+  }
+}
+
 .home .weekly-curations-description {
   font-size: clamp(0.9rem, 2vw, 1.1rem);
   margin-bottom: 2rem;
@@ -808,7 +839,6 @@
 .home .weekly-curations-container {
   display: flex;
   flex-direction: column;
-  gap: 3rem;
 }
 
 .home .weekly-curations-stack {
@@ -817,7 +847,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  min-height: 525px; /* Ensure minimum height for the stack */
+  min-height: 20em; /* Ensure minimum height for the stack */
   margin-bottom: 20px; /* Space for the switch button */
 }
 
@@ -906,37 +936,6 @@
   font-size: 3rem;
   margin-bottom: 1rem;
   opacity: 0.5;
-}
-
-
-/* Switch Button */
-.home .weekly-curations-switch-btn {
-  position: absolute;
-  width: 100%;
-  height: 60px;
-  bottom: 45px;
-  left: 50%;
-  transform: translateX(-50%);
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  background: radial-gradient(farthest-side at top, #000000aa, transparent 100%);
-  border: none;
-  border-radius: 25px;
-  color: white;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  opacity: 0.5;
-  z-index: 1;
-}
-
-.home .weekly-curations-switch-btn:hover {
-  opacity: 1;
-}
-
-.home .weekly-curations-switch-btn:active .switch-btn-text {
-  transform: translate(-50%, -90%) translateY(2px);
 }
 
 .home .switch-btn-text {

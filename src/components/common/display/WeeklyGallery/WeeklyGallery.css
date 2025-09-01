@@ -2,6 +2,8 @@
   position: relative;
   width: 100%;
   height: 400px;
+  max-width: 100vw;
+  overflow: hidden;
 }
 
 .weekly-gallery__container {
@@ -12,6 +14,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 .weekly-gallery__items {
@@ -21,6 +24,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 .weekly-gallery__item {
@@ -41,6 +45,7 @@
 
 .weekly-gallery__item-preview {
   width: 600px;
+  max-width: 90vw;
   aspect-ratio: 16/9;
   position: relative;
   overflow: hidden;
@@ -161,11 +166,21 @@
 
 .weekly-gallery__curation-icon {
   position: relative;
+  width: 3rem;
+  height: 3rem;
 }
 
+@media (max-width: 768px) {
+  .weekly-gallery__curation-icon {
+    width: 2rem;
+    height: 2rem;
+  }
+}
+
+
 .weekly-gallery__type-icon {
-  width: 4rem;
-  height: 4rem;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   filter: drop-shadow(1px 1px 10px rgba(0, 0, 0, 1));
 }
@@ -182,14 +197,16 @@
 }
 
 .weekly-gallery__difficulty-icon {
+  width: 1.5rem;
+  height: 1.5rem;
   position: absolute;
   bottom: 0;
   right: 0;
 }
 
 .weekly-gallery__difficulty-icon-img {
-  width: 1.5rem;
-  height: 1.5rem;
+  height: 100%;
+  width: 100%;
   object-fit: contain;
   filter: drop-shadow(1px 1px 2px rgba(0, 0, 0, 0.8));
 }
@@ -256,12 +273,23 @@
 }
 
 .weekly-gallery__arrow--left {
-  margin-right: 900px;
+  left: 2rem;
 }
 
 .weekly-gallery__arrow--right {
-  margin-left: 900px;
+  right: 2rem;
 }
+
+@media (max-width: 768px) {
+  .weekly-gallery__arrow--left {
+    margin-right: 0;
+  }
+
+  .weekly-gallery__arrow--right {
+    margin-left: 0;
+  }
+}
+
 
 /* Dots Navigation */
 .weekly-gallery__dots {
@@ -299,6 +327,12 @@
   top: 1rem;
   margin-left: 1000px;
   z-index: 20;
+}
+
+@media (max-width: 768px) {
+  .weekly-gallery__auto-scroll-indicator {
+    display: none;
+  }
 }
 
 .weekly-gallery__auto-scroll-dot {
@@ -346,11 +380,15 @@
 @media (max-width: 768px) {
   .weekly-gallery {
     height: 300px;
+    max-width: 100vw;
+    overflow: hidden;
   }
 
   .weekly-gallery__item-preview {
-    width: 180px;
-    height: 180px;
+    width: 340px;
+    max-width: 85vw;
+    height: auto;
+    aspect-ratio: 16/9;
   }
 
   .weekly-gallery__arrow {
@@ -368,7 +406,7 @@
   }
 
   .weekly-gallery__dots {
-    bottom: 0.5rem;
+    bottom: 1rem;
   }
 
   .weekly-gallery__dot {
@@ -392,14 +430,9 @@
     font-size: 0.7rem;
   }
 
-  .weekly-gallery__type-icon {
-    width: 1.8rem;
-    height: 1.8rem;
-  }
-
-  .weekly-gallery__difficulty-icon-img {
-    width: 1.3rem;
-    height: 1.3rem;
+  .weekly-gallery__difficulty-icon {
+    width: 1rem;
+    height: 1rem;
   }
 
   .weekly-gallery__short-description-text {
@@ -411,11 +444,15 @@
 @media (max-width: 480px) {
   .weekly-gallery {
     height: 250px;
+    max-width: 100vw;
+    overflow: hidden;
   }
 
   .weekly-gallery__item-preview {
-    width: 140px;
-    height: 140px;
+    width: 300px;
+    max-width: 80vw;
+    height: auto;
+    aspect-ratio: 16/9;
   }
 
   .weekly-gallery__arrow {
@@ -438,16 +475,6 @@
 
   .weekly-gallery__charter-name {
     font-size: 0.65rem;
-  }
-
-  .weekly-gallery__type-icon {
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-
-  .weekly-gallery__difficulty-icon-img {
-    width: 1.2rem;
-    height: 1.2rem;
   }
 
   .weekly-gallery__short-description-text {
