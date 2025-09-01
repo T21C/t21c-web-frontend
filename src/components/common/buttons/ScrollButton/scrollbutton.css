@@ -2,8 +2,8 @@
   position: fixed;
   bottom: 50px;
   right: 70px;
-  width: 50px;
-  height: 50px;
+  width: 3rem;
+  height: 3rem;
   border-radius: 50%;
   background-color: #ffffff35;
   border: none;
@@ -51,12 +51,6 @@
   .scroll-button {
     bottom: 16px;
     right: 16px;
-    width: 36px;
-    height: 36px;
   }
 
-  .scroll-button svg {
-    width: 18px;
-    height: 18px;
-  }
 } 
