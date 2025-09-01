@@ -22,6 +22,18 @@ const LevelCard = ({
   displayMode = 'normal',
   size = 'medium'
 }) => {
+  const [isTwoLineLayout, setIsTwoLineLayout] = useState(false);
+
+  // Check if we should use two-line layout based on screen width
+  useEffect(() => {
+    const checkLayout = () => {
+      setIsTwoLineLayout(window.innerWidth <= 650);
+    };
+    
+    checkLayout();
+    window.addEventListener('resize', checkLayout);
+    return () => window.removeEventListener('resize', checkLayout);
+  }, []);
   const { t } = useTranslation('components');
   const tCard = (key) => t(`cards.level.${key}`) || key;
   
@@ -170,115 +182,233 @@ const LevelCard = ({
       backgroundColor: level.isDeleted ? "#f0000099"
       : level.isHidden ? "#88888899" 
       : "none" }}>
-      <div className="level-card-wrapper" onClick={() => redirect()}>
-        <div className="img-wrapper">
-          <img src={lvImage} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
-          {(level.rating?.averageDifficultyId && 
-           difficultyDict[level.rating.averageDifficultyId]?.icon &&
-           difficultyDict[level.rating.averageDifficultyId]?.type == "PGU" &&
-           difficultyDict[level.diffId]?.name.startsWith("Q")) ?
-          <img 
-              className="rating-icon"
-              src={difficultyDict[level.rating.averageDifficultyId]?.icon}
-              alt="Rating icon" />
-          : null
-          }
-          {(level.curation?.typeId) ?
-          <img 
-              className="curation-icon"
-              src={level.curation.type.icon}
-              alt="Curation icon" />
-          : null
-          }
-          {difficultyDict[level.diffId]?.type === "PGU" 
-          // && sortBy === "RATING_ACCURACY"
-          && level.clears > 0
-          && level.totalRatingAccuracyVotes > 0
-          && (
-            <>
-              <div className={`rating-accuracy-wrapper ${displayMode === 'compact' ? 'compact' : ''}`}>
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" className="rating-accuracy-circle">
-                  <linearGradient id="a12" gradientTransform="scale(1.5) rotate(47)">
-                    <stop offset="0.3" stopColor="#ff0000"></stop>
-                    <stop offset="0.45" stopColor="#66ff00"></stop>
-                    <stop offset="0.55" stopColor="#66ff00"></stop>
-                    <stop offset="0.7" stopColor="#ff0000"></stop>
-                  </linearGradient>
-                  <circle transform-origin="center" fill="none" stroke="url(#a12)" strokeWidth="5" strokeLinecap="round" strokeDasharray="125 1000" strokeDashoffset="-100" cx="100" cy="100" r="70" />
-                </svg>
+      <div className={`level-card-wrapper ${isTwoLineLayout ? 'two-line' : ''}`} onClick={() => redirect()}>
+        {isTwoLineLayout ? (
+          <>
+            {/* Info Line - Upper row */}
+            <div className="info-line">
+              <div className="img-wrapper">
+                <img src={lvImage} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
+                {(level.rating?.averageDifficultyId && 
+                 difficultyDict[level.rating.averageDifficultyId]?.icon &&
+                 difficultyDict[level.rating.averageDifficultyId]?.type == "PGU" &&
+                 difficultyDict[level.diffId]?.name.startsWith("Q")) ?
+                <img 
+                    className="rating-icon"
+                    src={difficultyDict[level.rating.averageDifficultyId]?.icon}
+                    alt="Rating icon" />
+                : null
+                }
+                {(level.curation?.typeId) ?
+                <img 
+                    className="curation-icon"
+                    src={level.curation.type.icon}
+                    alt="Curation icon" />
+                : null
+                }
+                {difficultyDict[level.diffId]?.type === "PGU" 
+                && level.clears > 0
+                && level.totalRatingAccuracyVotes > 0
+                && (
+                  <>
+                    <div className={`rating-accuracy-wrapper ${displayMode === 'compact' ? 'compact' : ''}`}>
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" className="rating-accuracy-circle">
+                        <linearGradient id="a12" gradientTransform="scale(1.5) rotate(47)">
+                          <stop offset="0.3" stopColor="#ff0000"></stop>
+                          <stop offset="0.45" stopColor="#66ff00"></stop>
+                          <stop offset="0.55" stopColor="#66ff00"></stop>
+                          <stop offset="0.7" stopColor="#ff0000"></stop>
+                        </linearGradient>
+                        <circle transform-origin="center" fill="none" stroke="url(#a12)" strokeWidth="5" strokeLinecap="round" strokeDasharray="125 1000" strokeDashoffset="-100" cx="100" cy="100" r="70" />
+                      </svg>
+                    </div>
+                    
+                    <svg className="rating-accuracy-arrow" viewBox="0 0 200 200">
+                      <polygon 
+                      transform-origin="50% 50%" 
+                      transform={`rotate(${level.ratingAccuracy*10-45}) translate(0, -15)`} 
+                      points="0 100, 0 130, 15 115" 
+                      fill="#fff" />
+                    </svg>
+                {sortBy === "RATING_ACCURACY_VOTES"
+                &&
+                (
+                  <div className="rating-accuracy-votes-wrapper">
+                    <p>
+                      {level.totalRatingAccuracyVotes.toString().length === 1 && (<>&nbsp;</>)} 
+                      {level.totalRatingAccuracyVotes.toString() || 0}
+                    </p>
+                  </div>
+                )}
+                  </>
+              )}
               </div>
-              
-              <svg className="rating-accuracy-arrow" viewBox="0 0 200 200">
-                <polygon 
-                transform-origin="50% 50%" 
-                transform={`rotate(${level.ratingAccuracy*10-45}) translate(0, -15)`} 
-                points="0 100, 0 130, 15 115" 
-                fill="#fff" />
-              </svg>
-          {sortBy === "RATING_ACCURACY_VOTES"
-          &&
-          (
-            <div className="rating-accuracy-votes-wrapper">
-              <p>
-                {level.totalRatingAccuracyVotes.toString().length === 1 && (<>&nbsp;</>)} 
-                {level.totalRatingAccuracyVotes.toString() || 0}
-              </p>
+
+              <div className="song-wrapper">
+                <div className="group">
+                  <p className="level-exp">#{level.id} - {level.artist}</p>
+                </div>
+                <p className='level-desc'>{level.song}</p>
+              </div>
+
+              <div className="creator-wrapper">
+                <p className="level-exp">{tCard('creator')}</p>
+                <div className="level-desc">{formatCreatorDisplay(level)}</div>
+              </div>
             </div>
-          )}
-            </>
+
+            {/* Stats Line - Lower row */}
+            <div className="stats-line">
+              {(
+                <div className="icon-wrapper" style={{ opacity: level.clears ? 1 : 0 }}>
+                  <div className="icon-value">{level.clears || 0}</div>
+                  <PassIcon color="#ffffff" size={"24px"} />
+                </div>
+              )}
+
+              {(
+                <div className="icon-wrapper" style={{ opacity: level.likes ? 1 : 0 }}>
+                  <div className="icon-value">{level.likes || 0}</div>
+                  <LikeIcon color={"none"} size={"22px"}/>
+                </div>
+              )}
+          
+              <div className="downloads-wrapper">
+                {level.videoLink && (
+                  <a href={level.videoLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
+                    <VideoIcon color="#ffffff" size={"24px"} />
+                  </a>
+                )}
+                {level.dlLink && (
+                  <a href={level.dlLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
+                    <DownloadIcon color="#ffffff" size={"64px"} />
+                  </a>
+                )}
+                {level.wsLink && (
+                  <a href={level.wsLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
+                    <SteamIcon color="#ffffff" size={"24px"} />
+                  </a>
+                )}
+              </div>
+
+              {user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+                <button className="edit-button" onClick={handleEditClick}>
+                  <EditIcon size={"32px"} />
+                </button>
+              )}
+            </div>
+          </>
+        ) : (
+          <>
+            {/* Single line layout */}
+            <div className="img-wrapper">
+              <img src={lvImage} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
+              {(level.rating?.averageDifficultyId && 
+               difficultyDict[level.rating.averageDifficultyId]?.icon &&
+               difficultyDict[level.rating.averageDifficultyId]?.type == "PGU" &&
+               difficultyDict[level.diffId]?.name.startsWith("Q")) ?
+              <img 
+                  className="rating-icon"
+                  src={difficultyDict[level.rating.averageDifficultyId]?.icon}
+                  alt="Rating icon" />
+              : null
+              }
+              {(level.curation?.typeId) ?
+              <img 
+                  className="curation-icon"
+                  src={level.curation.type.icon}
+                  alt="Curation icon" />
+              : null
+              }
+              {difficultyDict[level.diffId]?.type === "PGU" 
+              && level.clears > 0
+              && level.totalRatingAccuracyVotes > 0
+              && (
+                <>
+                  <div className={`rating-accuracy-wrapper ${displayMode === 'compact' ? 'compact' : ''}`}>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" className="rating-accuracy-circle">
+                      <linearGradient id="a12" gradientTransform="scale(1.5) rotate(47)">
+                        <stop offset="0.3" stopColor="#ff0000"></stop>
+                        <stop offset="0.45" stopColor="#66ff00"></stop>
+                        <stop offset="0.55" stopColor="#66ff00"></stop>
+                        <stop offset="0.7" stopColor="#ff0000"></stop>
+                      </linearGradient>
+                      <circle transform-origin="center" fill="none" stroke="url(#a12)" strokeWidth="5" strokeLinecap="round" strokeDasharray="125 1000" strokeDashoffset="-100" cx="100" cy="100" r="70" />
+                    </svg>
+                  </div>
+                  
+                  <svg className="rating-accuracy-arrow" viewBox="0 0 200 200">
+                    <polygon 
+                    transform-origin="50% 50%" 
+                    transform={`rotate(${level.ratingAccuracy*10-45}) translate(0, -15)`} 
+                    points="0 100, 0 130, 15 115" 
+                    fill="#fff" />
+                  </svg>
+              {sortBy === "RATING_ACCURACY_VOTES"
+              &&
+              (
+                <div className="rating-accuracy-votes-wrapper">
+                  <p>
+                    {level.totalRatingAccuracyVotes.toString().length === 1 && (<>&nbsp;</>)} 
+                    {level.totalRatingAccuracyVotes.toString() || 0}
+                  </p>
+                </div>
+              )}
+                </>
+            )}
+            </div>
+
+            <div className="song-wrapper">
+              <div className="group">
+                <p className="level-exp">#{level.id} - {level.artist}</p>
+              </div>
+              <p className='level-desc'>{level.song}</p>
+            </div>
+
+            <div className="creator-wrapper">
+              <p className="level-exp">{tCard('creator')}</p>
+              <div className="level-desc">{formatCreatorDisplay(level)}</div>
+            </div>
+
+            {(
+              <div className="icon-wrapper" style={{ opacity: level.clears ? 1 : 0 }}>
+                <div className="icon-value">{level.clears || 0}</div>
+                <PassIcon color="#ffffff" size={"24px"} />
+              </div>
+            )}
+
+            {(
+              <div className="icon-wrapper" style={{ opacity: level.likes ? 1 : 0 }}>
+                <div className="icon-value">{level.likes || 0}</div>
+                <LikeIcon color={"none"} size={"22px"}/>
+              </div>
+            )}
+        
+            <div className="downloads-wrapper">
+              {level.videoLink && (
+                <a href={level.videoLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
+                  <VideoIcon color="#ffffff" size={"24px"} />
+                </a>
+              )}
+              {level.dlLink && (
+                <a href={level.dlLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
+                  <DownloadIcon color="#ffffff" size={"64px"} />
+                </a>
+              )}
+              {level.wsLink && (
+                <a href={level.wsLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
+                  <SteamIcon color="#ffffff" size={"24px"} />
+                </a>
+              )}
+            </div>
+
+            {user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+              <button className="edit-button" onClick={handleEditClick}>
+                <EditIcon size={"32px"} />
+              </button>
+            )}
+          </>
         )}
-        </div>
-
-        <div className="song-wrapper">
-          <div className="group">
-            <p className="level-exp">#{level.id} - {level.artist}</p>
-          </div>
-          <p className='level-desc'>{level.song}</p>
-        </div>
-
-        <div className="creator-wrapper">
-          <p className="level-exp">{tCard('creator')}</p>
-          <div className="level-desc">{formatCreatorDisplay(level)}</div>
-        </div>
-
-        {(
-          <div className="icon-wrapper" style={{ opacity: level.clears ? 1 : 0 }}>
-            <div className="icon-value">{level.clears || 0}</div>
-            <PassIcon color="#ffffff" size={"24px"} />
-          </div>
-        )}
-
-        {(
-          <div className="icon-wrapper" style={{ opacity: level.likes ? 1 : 0 }}>
-            <div className="icon-value">{level.likes || 0}</div>
-            <LikeIcon color={"none"} size={"22px"}/>
-          </div>
-        )}
-    
-        <div className="downloads-wrapper">
-          {level.videoLink && (
-            <a href={level.videoLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
-              <VideoIcon color="#ffffff" size={"24px"} />
-            </a>
-          )}
-          {level.dlLink && (
-            <a href={level.dlLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
-              <DownloadIcon color="#ffffff" size={"64px"} />
-            </a>
-          )}
-          {level.wsLink && (
-            <a href={level.wsLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
-              <SteamIcon color="#ffffff" size={"24px"} />
-            </a>
-          )}
-        </div>
-
-        {user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
-          <button className="edit-button" onClick={handleEditClick}>
-            <EditIcon size={"32px"} />
-          </button>
-        )}
-
       </div>
 
       {showEditPopup && (
