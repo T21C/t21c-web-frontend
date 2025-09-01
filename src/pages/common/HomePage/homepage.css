@@ -7,7 +7,7 @@
 
 .home .home-container {
   position: relative;
-  z-index: 1;
+  z-index: 10;
   padding: 2rem 4rem;
 }
 
@@ -215,9 +215,10 @@
 /* Media query for mobile devices */
 @media (max-width: 768px) {
   .health-button {
-    bottom: 16px;
-    left: 16px;
+    bottom: 24px;
+    left: 24px;
     min-width: 36px;
+    z-index: 1000;
   }
 
   .health-button:hover {
