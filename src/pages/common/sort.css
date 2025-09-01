@@ -217,6 +217,21 @@
     .sort .sort-option .wrapper {
         justify-content: flex-start;
     }
+    
+    /* Mobile adjustments for 2-line layout */
+    .input-option {
+      gap: 0.5rem;
+    }
+    
+    .search-row {
+      gap: 0.25rem;
+    }
+    
+    .buttons-row {
+      gap: 0.25rem;
+      justify-content: center;
+    }
+    
     .input-option .help-button {
       padding: 0.5rem;
     }
@@ -239,6 +254,25 @@
     .sort .sort-option .order svg {
       height: 1.75rem;
       width: 1.75rem;
+    }
+    
+    /* Small screen adjustments for 2-line layout */
+    .input-option {
+      gap: 0.4rem;
+    }
+    
+    .search-row {
+      gap: 0.2rem;
+    }
+    
+    .buttons-row {
+      gap: 0.2rem;
+      justify-content: center;
+    }
+    
+    .input-option input {
+      padding: 0.4rem;
+      font-size: 0.9rem;
     }
   }
 
@@ -273,41 +307,7 @@
   }
 
   
-.input-option {
-  display: flex;
-  gap: 0.5rem;
-  height: 2rem;
-  margin-bottom: 1rem;
-}
-.input-option input {
-  width: 100%;
-  background-color: var(--color-white-t20);
-  border-radius: 3px;
-  padding: 0.5rem;
-  color: var(--white-color);
-  border: 1px solid transparent;
-  transition: all 0.2s linear;
-}
-
-.input-option input.search-pending {
-  border: 1px solid #fff4;
-}
-
-.input-option input:focus {
-  outline: none;
-}
-.input-option svg {
-  background-color: var(--color-white-t20);
-  padding: 0.1rem;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: all 0.2s linear;
-  min-width: 2rem;
-  height: 2rem;
-}
-.input-option svg:focus {
-  outline: none;
-}
+/* Legacy support for existing .input-option styles - now handled by search-section.css */
 
 .filter .setting-title {
   margin-bottom: 1rem;

@@ -13,6 +13,7 @@ import { CurationSelectionPopup } from '@/components/popups';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { canAssignCurationType } from '@/utils/curationTypeUtils';
 
+// All date operations use UTC to ensure consistent timezone handling
 const CurationSchedulePage = () => {
   const { user } = useAuth();
   const { t } = useTranslation('pages');
@@ -21,32 +22,23 @@ const CurationSchedulePage = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [schedules, setSchedules] = useState([]);
-  const [currentMonday, setCurrentMonday] = useState(getNextMonday(new Date()));
+  const [currentMonday, setCurrentMonday] = useState(getCurrentMonday(new Date()));
   const [showCurationSelection, setShowCurationSelection] = useState(false);
   const [selectionMode, setSelectionMode] = useState({ type: '' }); // 'primary' or 'secondary'
   
   const primaryScrollRef = useRef(null);
   const secondaryScrollRef = useRef(null);
 
-  // Get the next Monday from a given date
-  function getNextMonday(date) {
-    const day = date.getDay();
-    const daysUntilMonday = day === 0 ? 1 : 8 - day; // If Sunday (0), get next Monday (1 day), otherwise 8 - current day
+  function getCurrentMonday(date) {
+    const day = date.getUTCDay();
+    const diff = date.getUTCDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
     const monday = new Date(date);
-    monday.setDate(date.getDate() + daysUntilMonday);
+    monday.setUTCDate(diff);
+    monday.setUTCHours(0, 0, 0, 0); // Set to start of day in UTC
     return monday;
   }
 
-  // Get Monday of current week
-  function getMondayOfWeek(date) {
-    const day = date.getDay();
-    const diff = date.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
-    const monday = new Date(date);
-    monday.setDate(diff);
-    return monday;
-  }
-
-  // Format date for display
+  // Format date for display (converts UTC to local time for user display)
   const formatDate = (date) => {
     return date.toLocaleDateString('en-US', { 
       month: 'long', 
@@ -55,10 +47,11 @@ const CurationSchedulePage = () => {
     });
   };
 
-  // Get week label
+  // Get week label (UTC)
   const getWeekLabel = (monday) => {
     const weekEnd = new Date(monday);
-    weekEnd.setDate(monday.getDate() + 6);
+    weekEnd.setUTCDate(monday.getUTCDate() + 6);
+    weekEnd.setUTCHours(0, 0, 0, 0); // Ensure it stays at start of day in UTC
     return `${formatDate(monday)} - ${formatDate(weekEnd)}`;
   };
 
@@ -71,6 +64,7 @@ const CurationSchedulePage = () => {
   const fetchSchedules = async () => {
     try {
       setIsLoading(true);
+      // Ensure the date is sent in UTC format
       const response = await api.get(`${import.meta.env.VITE_CURATIONS}/schedules`, {
         params: {
           weekStart: currentMonday.toISOString().split('T')[0]
@@ -86,7 +80,8 @@ const CurationSchedulePage = () => {
 
   const handleWeekChange = (direction) => {
     const newMonday = new Date(currentMonday);
-    newMonday.setDate(currentMonday.getDate() + (direction * 7));
+    newMonday.setUTCDate(currentMonday.getUTCDate() + (direction * 7));
+    newMonday.setUTCHours(0, 0, 0, 0); // Ensure it stays at start of day in UTC
     setCurrentMonday(newMonday);
   };
 
@@ -97,6 +92,7 @@ const CurationSchedulePage = () => {
 
   const handleCurationSelect = async (curation) => {
     try {
+      // Ensure the date is sent in UTC format
       const response = await api.post(`${import.meta.env.VITE_CURATIONS}/schedules`, {
         curationId: curation.id,
         weekStart: currentMonday.toISOString().split('T')[0],

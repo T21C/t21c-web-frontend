@@ -12,21 +12,8 @@ export const useWeeklyCurations = () => {
         setIsLoading(true);
         setError(null);
         
-        // Get Monday of current week
-        const today = new Date();
-        const dayOfWeek = today.getDay();
-        const daysToSubtract = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Convert to Monday-based week
-        const mondayOfCurrentWeek = new Date(today);
-        mondayOfCurrentWeek.setDate(today.getDate() - daysToSubtract);
-        
-        // Format as YYYY-MM-DD
-        const weekStart = mondayOfCurrentWeek.toISOString().split('T')[0];
-        
-        const response = await api.get(`${import.meta.env.VITE_CURATIONS}/schedules`, {
-          params: {
-            weekStart: weekStart
-          }
-        });
+        // Let the server handle date management - no parameters needed
+        const response = await api.get(`${import.meta.env.VITE_CURATIONS}/schedules`);
         
         setWeeklies(response.data.schedules || []);
       } catch (err) {

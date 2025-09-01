@@ -1,0 +1,255 @@
+/* Shared Search Section Styles for PassPage and LevelPage */
+
+/* Main Search Container */
+.search-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+/* Medium width horizontal layout */
+@media (min-width: 1024px) {
+  .search-section {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  
+  .search-section .search-row {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .search-section .buttons-row {
+    flex-shrink: 0;
+  }
+}
+
+/* Widescreen horizontal layout */
+@media (min-width: 1200px) {
+  .search-section {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .search-section .search-row {
+    flex: 1;
+    min-width: 0;
+  }
+  
+  .search-section .buttons-row {
+    flex-shrink: 0;
+  }
+}
+
+/* Search Row - Contains help button and search input */
+.search-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  height: 2rem;
+}
+
+/* Buttons Row - Contains action buttons */
+.buttons-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+/* Help Button */
+.search-section .help-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2rem;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.search-section .help-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.search-section .help-button svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  background: none;
+  padding: 0;
+}
+
+/* Search Input */
+.search-section input {
+  width: 100%;
+  background-color: var(--color-white-t20);
+  border-radius: 3px;
+  padding: 0.5rem;
+  color: var(--white-color);
+  border: 1px solid transparent;
+  transition: all 0.2s linear;
+  height: 2rem;
+  box-sizing: border-box;
+}
+
+.search-section input.search-pending {
+  border: 1px solid #fff4;
+}
+
+.search-section input:focus {
+  outline: none;
+}
+
+/* Action Buttons (Filter, Sort, Switch, Reset) */
+.search-section .action-button {
+  background-color: var(--color-white-t20);
+  padding: 0.1rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s linear;
+  min-width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  color: #ffffff;
+}
+
+.search-section .action-button:focus {
+  outline: none;
+}
+
+.search-section .action-button:hover {
+  background-color: var(--color-white-t30);
+}
+
+.search-section .action-button.active {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .search-section {
+    gap: 0.5rem;
+  }
+  
+  .search-row {
+    gap: 0.25rem;
+  }
+  
+  .buttons-row {
+    gap: 0.25rem;
+    justify-content: center;
+  }
+  
+  .search-section .help-button {
+    padding: 0.5rem;
+  }
+  
+  .search-section .help-button span {
+    display: none;
+  }
+  
+  .search-section .help-button svg {
+    width: 1.4rem;
+    height: 1.4rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .search-section {
+    gap: 0.4rem;
+  }
+  
+  .search-row {
+    gap: 0.2rem;
+  }
+  
+  .buttons-row {
+    gap: 0.2rem;
+    justify-content: center;
+  }
+  
+  .search-section input {
+    padding: 0.4rem;
+    font-size: 0.9rem;
+  }
+}
+
+/* Legacy Support - Keep existing .input-option styles for backward compatibility */
+.input-option {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.input-option .help-button {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 2rem;
+  white-space: nowrap;
+}
+
+.input-option .help-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.input-option .help-button svg {
+  width: 1.2rem;
+  height: 1.2rem;
+  background: none;
+  padding: 0;
+}
+
+.input-option input {
+  width: 100%;
+  background-color: var(--color-white-t20);
+  border-radius: 3px;
+  padding: 0.5rem;
+  color: var(--white-color);
+  border: 1px solid transparent;
+  transition: all 0.2s linear;
+}
+
+.input-option input.search-pending {
+  border: 1px solid #fff4;
+}
+
+.input-option input:focus {
+  outline: none;
+}
+
+.input-option svg {
+  background-color: var(--color-white-t20);
+  padding: 0.1rem;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s linear;
+  min-width: 2rem;
+  height: 2rem;
+}
+
+.input-option svg:focus {
+  outline: none;
+}
