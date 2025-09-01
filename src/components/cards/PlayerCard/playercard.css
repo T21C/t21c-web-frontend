@@ -14,6 +14,8 @@
   margin-bottom: 0.5rem;
   transition: all 0.2s ease-in-out;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  max-width: 100%;
+  overflow: hidden;
 }
 
 .player-card:hover {
@@ -92,17 +94,21 @@
 .player-card .score-wrapper {
   overflow: hidden;
   min-width: 200px;
+  max-width: 100%;
   background: rgba(0, 0, 0, 0.2);
   padding: 0.8rem 1rem;
   border-radius: 6px;
+  flex-shrink: 1;
 }
 
 .player-card .score-wrapper.secondary {
   min-width: 150px;
+  max-width: 100%;
   font-size: 0.8rem;
   background: rgba(0, 0, 0, 0.1);
   padding: 0.8rem 1rem;
   border-radius: 6px;
+  flex-shrink: 1;
 }
 
 .player-card .score-wrapper.secondary .player-exp {
@@ -127,8 +133,10 @@
   flex: 2;
   overflow: hidden;
   min-width: 200px;
+  max-width: 100%;
   padding: 0.8rem 1rem;
   border-radius: 6px;
+  flex-shrink: 1;
 }
 
 .player-card .name-container {
@@ -299,6 +307,180 @@
   .player-card .rank-display {
     font-size: 1.2rem;
     min-width: 2.5rem;
+  }
+}
+
+/* Enhanced Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .player-card {
+    gap: 1rem;
+    padding: 0.6rem 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .player-card .info-wrapper {
+    flex-wrap: wrap;
+    gap: 1rem;
+    min-width: 0;
+    width: 100%;
+  }
+
+  .player-card .score-wrapper {
+    min-width: 140px;
+    flex: 1;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .player-card .score-wrapper.secondary {
+    min-width: 120px;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .player-card .name-wrapper {
+    min-width: 150px;
+    padding: 0.6rem 0.8rem;
+  }
+
+  .player-card .player-name {
+    font-size: 1.1rem;
+    padding: 0.2rem 0.6rem;
+  }
+
+  .player-card .player-desc {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .player-card {
+    gap: 0.8rem;
+    padding: 0.5rem 0.6rem;
+  }
+
+  .player-card .info-wrapper {
+    gap: 0.8rem;
+  }
+
+  .player-card .score-wrapper {
+    min-width: 120px;
+    padding: 0.5rem 0.6rem;
+  }
+
+  .player-card .score-wrapper.secondary {
+    min-width: 100px;
+    padding: 0.5rem 0.6rem;
+  }
+
+  .player-card .name-wrapper {
+    min-width: 120px;
+    padding: 0.5rem 0.6rem;
+  }
+
+  .player-card .img-wrapper {
+    width: 3.5rem;
+    height: 3.5rem;
+  }
+
+  .player-card .player-name {
+    font-size: 1rem;
+  }
+
+  .player-card .player-desc {
+    font-size: 1rem;
+  }
+
+  .player-card .player-exp {
+    font-size: 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .player-card {
+    gap: 0.6rem;
+    padding: 0.4rem 0.5rem;
+  }
+
+  .player-card .info-wrapper {
+    gap: 0.6rem;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .player-card .score-wrapper,
+  .player-card .score-wrapper.secondary {
+    min-width: 100%;
+    padding: 0.4rem 0.5rem;
+  }
+
+  .player-card .name-wrapper {
+    min-width: 100%;
+    padding: 0.4rem 0.5rem;
+  }
+
+  .player-card .img-wrapper {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .player-card .player-name {
+    font-size: 0.9rem;
+    padding: 0.2rem 0.4rem;
+  }
+
+  .player-card .player-desc {
+    font-size: 0.9rem;
+  }
+
+  .player-card .player-exp {
+    font-size: 0.65rem;
+  }
+
+  .player-card .player-discord-handle {
+    font-size: 0.7rem;
+    margin-left: 0.4rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .player-card {
+    gap: 0.5rem;
+    padding: 0.3rem 0.4rem;
+  }
+
+  .player-card .info-wrapper {
+    gap: 0.5rem;
+  }
+
+  .player-card .score-wrapper,
+  .player-card .score-wrapper.secondary,
+  .player-card .name-wrapper {
+    padding: 0.3rem 0.4rem;
+  }
+
+  .player-card .img-wrapper {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .player-card .player-name {
+    font-size: 0.8rem;
+  }
+
+  .player-card .player-desc {
+    font-size: 0.8rem;
+  }
+
+  .player-card .player-exp {
+    font-size: 0.6rem;
+  }
+
+  .player-card .creator-assignment-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .player-card .creator-assignment-icon {
+    font-size: 16px;
   }
 }
 

@@ -167,50 +167,51 @@ const LeaderboardPage = () => {
       <div className="leaderboard-body">
         <ScrollButton />  
         <div className="input-option">
-          <input
-            value={query}
-            type="text"
-            placeholder={tLeaderboard('input.placeholder')}
-            onChange={handleQueryChange}
-          />
+          <div className="search-container">
+            <input
+              value={query}
+              type="text"
+              placeholder={tLeaderboard('input.placeholder')}
+              onChange={handleQueryChange}
+            />
+          </div>
 
-          <Tooltip id="filter" place="bottom" noArrow>
-            {tLeaderboard('tooltips.filter')}
-          </Tooltip>
-          <Tooltip id="sort" place="bottom" noArrow>
-            {tLeaderboard('tooltips.sort')}
-          </Tooltip>
-          <Tooltip id="reset" place="bottom" noArrow>
-            {tLeaderboard('tooltips.reset')}
-          </Tooltip>
+          <div className="button-container">
+            <Tooltip id="filter" place="bottom" noArrow>
+              {tLeaderboard('tooltips.filter')}
+            </Tooltip>
+            <Tooltip id="sort" place="bottom" noArrow>
+              {tLeaderboard('tooltips.sort')}
+            </Tooltip>
+            <Tooltip id="reset" place="bottom" noArrow>
+              {tLeaderboard('tooltips.reset')}
+            </Tooltip>
 
-          <FilterIcon
-            data-tooltip-id="filter"
-            color="#ffffff"
-            onClick={() => handleFilterOpen()}
-            style={{
-              //backgroundColor: filterOpen ? "rgba(255, 255, 255, 0.7)" : "",
-              padding: ".2rem",
-            }}
-          />
+            <FilterIcon
+              data-tooltip-id="filter"
+              color="#ffffff"
+              onClick={() => handleFilterOpen()}
+              style={{
+                //backgroundColor: filterOpen ? "rgba(255, 255, 255, 0.7)" : "",
+                padding: ".2rem",
+              }}
+            />
 
-          <SortIcon
-            data-tooltip-id="sort"
-
-            color="#ffffff"
-            style={{
-              backgroundColor: sortOpen ? "rgba(255, 255, 255, 0.7)" : "",
-            }}
-            onClick={() => handleSortOpen()}
-
-          />
-          
-          <ResetIcon
-            color="#ffffff"
-            onClick={() => resetAll()}
-            data-tooltip-id="reset"
-          />
-
+            <SortIcon
+              data-tooltip-id="sort"
+              color="#ffffff"
+              style={{
+                backgroundColor: sortOpen ? "rgba(255, 255, 255, 0.7)" : "",
+              }}
+              onClick={() => handleSortOpen()}
+            />
+            
+            <ResetIcon
+              color="#ffffff"
+              onClick={() => resetAll()}
+              data-tooltip-id="reset"
+            />
+          </div>
         </div>
         <div className="input-setting">
 
@@ -226,7 +227,6 @@ const LeaderboardPage = () => {
           <div
             className={`sort settings-class ${sortOpen ? 'visible' : 'hidden'}`}
           >
-            <div className="spacer-setting"></div>
             <h2 className="setting-title">
               {tLeaderboard('settings.sort.header')}
             </h2>
