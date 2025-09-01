@@ -36,7 +36,7 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
-.button-content {
+.references-button .button-content {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -51,8 +51,8 @@
   flex-shrink: 0;
 }
 
-.button-text {
-  font-size: 14px;
+.references-button .button-text {
+  font-size: 1rem;
   opacity: 0;
   transform: translateX(-10px);
   transition: all 0.3s ease;
@@ -67,27 +67,18 @@
 /* Media query for mobile devices */
 @media (max-width: 768px) {
   .references-button {
-    bottom: 16px;
-    left: 16px;
-    height: 36px;
+    bottom: 24px;
+    left: 24px;
     min-width: 36px;
-    width: 36px;
-  }
-
-  .button-content {
-    padding: 0 9px;
+    z-index: 1000;
   }
 
   .references-button:hover {
-    width: 120px;
+    width: 150px;
+    left: 10px;
   }
 
-  .references-button svg {
-    width: 18px;
-    height: 18px;
-  }
-
-  .button-text {
-    font-size: 12px;
+  .references-button .button-text {
+    font-size: 16px;
   }
 } 
