@@ -97,7 +97,7 @@ const Navigation = ({ children }) => {
   useEffect(() => {
     // Close language select when clicking outside
     function handleClickOutside(event) {
-      if (openDialog && !event.target.closest('.nav-language-selector')) {
+      if (openDialog && !event.target.closest('.nav-language-selector') && !event.target.closest('.nav-language-selector-mobile')) {
         setOpenDialog(false);
       }
     }
@@ -353,40 +353,6 @@ const Navigation = ({ children }) => {
       </nav>
 
       <div className={`nav-mobile ${openNav ? "open" : ""}`}>
-
-      <div className={`nav-language-select ${openDialog ? 'open' : ''}`}>
-        <ul className="nav-language-select__list">
-          {Object.entries(sortedLanguages).map(([code, { display, countryCode, status }]) => (
-            <li
-              key={code}
-              className={`nav-language-select__option ${
-                status === 0 ? 'not-implemented' : ''
-              } ${
-                (language === code || (language === 'en' && code === 'us')) ? 'selected' : ''
-              }`}
-              onClick={(e) => handleChangeLanguage(code, e)}
-            >
-              <img 
-                className="nav-language-select__option-flag" 
-                src={isoToEmoji(countryCode)} 
-                alt={display} 
-              />
-              <div className="nav-language-select__option-content">
-                <span>{display}</span>
-                {status === 0 ? (
-                  <span className="nav-language-select__option-status">
-                    {tLang('comingSoon')}
-                  </span>
-                ) : status < 100 ? (
-                  <span className="nav-language-select__option-status">
-                    {status.toFixed(1)}% ✔
-                  </span>
-                ) : null}
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
         <svg
           className="nav-mobile__close svg-stroke"
           onClick={changeNavState}
@@ -491,6 +457,63 @@ const Navigation = ({ children }) => {
               {tNav('links.submission')}
             </NavLink>
           </li>
+          
+          {/* Mobile Language Selector */}
+          <li className="nav-list-item nav-language-selector-mobile">
+            <div className="nav-language-selector__button" onClick={(e) => {
+              e.stopPropagation();
+              changeDialogState(e);
+            }}>
+              <img 
+                className="nav-language-selector__flag" 
+                src={isoToEmoji(getCurrentCountryCode())} 
+                alt={languages[language]?.display || ''} 
+              />
+              <span>{languages[language]?.display || 'Language'}</span>
+              <svg className="nav-language-selector__arrow svg-stroke" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7 10L12 15L17 10" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      {/* Mobile Language Select Dropdown */}
+      <div className={`nav-language-select mobile ${openDialog ? 'open' : ''}`}>
+        <ul className="nav-language-select__list">
+          {Object.entries(sortedLanguages).map(([code, { display, countryCode, status }]) => (
+            <li
+              key={code}
+              className={`nav-language-select__option ${
+                status === 0 ? 'not-implemented' : ''
+              } ${
+                (language === code || (language === 'en' && code === 'us')) ? 'selected' : ''
+              }`}
+              onClick={(e) => handleChangeLanguage(code, e)}
+            >
+              <img 
+                className="nav-language-select__option-flag" 
+                src={isoToEmoji(countryCode)} 
+                alt={display} 
+              />
+              <div className="nav-language-select__option-content">
+                <span>{display}</span>
+                {status === 0 ? (
+                  <span className="nav-language-select__option-status">
+                    {tLang('comingSoon')}
+                  </span>
+                ) : status < 100 ? (
+                  <span className="nav-language-select__option-status partially-implemented">
+                    {status.toFixed(1)}% ✔
+                  </span>
+                ) : (
+                  <span className="nav-language-select__option-status fully-implemented">
+                    100% ✔
+                  </span>
+                )}
+              </div>
+            </li>
+          ))}
         </ul>
       </div>
       
