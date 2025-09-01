@@ -209,6 +209,7 @@ const LevelCard = ({
                 {difficultyDict[level.diffId]?.type === "PGU" 
                 && level.clears > 0
                 && level.totalRatingAccuracyVotes > 0
+                && 1 == 0 // not needed anymore 😔
                 && (
                   <>
                     <div className={`rating-accuracy-wrapper ${displayMode === 'compact' ? 'compact' : ''}`}>
@@ -323,6 +324,7 @@ const LevelCard = ({
               {difficultyDict[level.diffId]?.type === "PGU" 
               && level.clears > 0
               && level.totalRatingAccuracyVotes > 0
+              && 1 == 0 // not needed anymore 😔
               && (
                 <>
                   <div className={`rating-accuracy-wrapper ${displayMode === 'compact' ? 'compact' : ''}`}>
