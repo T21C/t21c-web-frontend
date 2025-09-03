@@ -197,7 +197,8 @@
   gap: 2rem;
   justify-content: space-around;
 }
-.edit-pass-popup-overlay .form-container form .info .accuracy .top input, .form-container form .info .accuracy .bottom input {
+.edit-pass-popup-overlay .form-container form .info .accuracy .top input, 
+.edit-pass-popup-overlay .form-container form .info .accuracy .bottom input {
   padding: 0;
   width: 100%;
   background-color: #333333;
