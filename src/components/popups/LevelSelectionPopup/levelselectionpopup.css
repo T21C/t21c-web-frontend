@@ -381,6 +381,7 @@
   
   .level-selection-modal__filters {
     flex-direction: column;
+    margin-bottom: 0;
   }
   
   .level-selection-modal__filter-group {
@@ -398,7 +399,10 @@
   }
 
   .level-selection-modal__pagination {
-    flex-direction: column;
+    flex-direction: row;
+    margin: 0.5rem;
+    padding: 0;
+    border: none;
     gap: 10px;
   }
 

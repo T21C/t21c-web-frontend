@@ -271,7 +271,7 @@
 @media (max-width: 768px) {
   .curation-edit-modal__content {
     margin: 1rem;
-    width: calc(100% - 2rem);
+    width: 100%;
     max-width: none;
     padding: 1.5rem;
   }
