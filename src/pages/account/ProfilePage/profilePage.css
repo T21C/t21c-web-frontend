@@ -268,6 +268,12 @@
   gap: 2px;
 }
 
+.player-page .player-rank-flag {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
 .player-page .player-discord-handle {
   font-size: 0.9em;
   color: var(--color-white-t60);
@@ -423,5 +429,430 @@
 
 .profile-banner.email-verification:hover .email-verification-arrow {
   transform: translateX(4px);
+}
+
+.player-page .shift-rank-display {
+  transform: translateY(-0.45rem);
+}
+
+/* Mobile-friendly responsive design */
+@media (max-width: 768px) {
+  .player-page .player-body,
+  .player-page .player-content {
+    padding: 0 1rem;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .player-page .player-header {
+    min-width: unset;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .player-page .player-header-content {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .player-page .player-info-container {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 1rem;
+  }
+
+  /* Special mobile layout: combine profile picture with top difficulty */
+  .player-page .player-picture-container {
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    min-width: 120px;
+  }
+
+  .player-page .player-picture-container .mobile-diff-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+    text-align: center;
+    padding-top: 0.25rem;
+    width: 100%;
+  }
+
+  .player-page .player-picture-container .mobile-diff-info p {
+    font-size: 0.8rem;
+    color: var(--color-white-t80);
+    margin: 0;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  .player-page .player-picture-container .mobile-diff-info .diff-image {
+    width: 32px;
+    height: auto;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  }
+
+  .player-page .player-info {
+    margin-left: 0;
+    text-align: center;
+  }
+
+  .player-page .player-info .player-name-rank {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .player-page .player-rank-flag {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .player-page .player-info .player-name-rank h1 {
+    font-size: 20px;
+    text-align: center;
+  }
+
+  .player-page .player-info .player-name-rank h2 {
+    margin-left: 0;
+    font-size: 18px;
+    padding: 5px 8px;
+  }
+
+  .player-page .shift-rank-display {
+    transform: translateY(0);
+  }
+
+  .player-page .player-picture {
+    width: 80px;
+    height: 80px;
+  }
+
+  .player-page .country-flag {
+    width: 32px;
+    height: 32px;
+  }
+
+  .player-page .diff-container {
+    align-items: center;
+    margin-top: 1rem;
+    display: none; /* Hide original diff container on mobile */
+  }
+
+  /* Hide mobile diff info on larger screens */
+  .player-page .mobile-diff-info {
+    display: flex; /* Show mobile diff info on mobile */
+  }
+
+  .player-page .diff-info {
+    justify-content: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .player-page .diff-info p {
+    margin-right: 8px;
+    font-size: 0.9rem;
+  }
+
+  .player-page .diff-image {
+    width: 40px;
+  }
+
+  .player-page .score-container,
+  .player-page .passes-container {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+
+  .player-page .score-item {
+    min-width: 120px;
+    flex: 1;
+  }
+
+  .player-page .score-name {
+    font-size: 0.8rem;
+  }
+
+  .player-page .score-value {
+    font-size: 1.1rem;
+  }
+
+  .player-page .edit-button-container {
+    position: relative;
+    right: unset;
+    top: unset;
+    flex-direction: row;
+    gap: 0.5rem;
+    margin-top: 1rem;
+    justify-content: center;
+  }
+
+  .player-page .edit-button {
+    width: 44px;
+    height: 44px;
+  }
+
+  .player-page .edit-button svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .player-page .scores-section {
+    width: 100%;
+    max-width: 100%;
+    padding: 1rem;
+    margin-top: 1rem;
+  }
+
+  .player-page .scores-section h2 {
+    font-size: 1.2rem;
+  }
+
+  .case-open-button {
+    transform: none;
+    margin-bottom: 1rem;
+  }
+
+  .case-open-button:hover:not(:disabled) {
+    transform: scale(1.1);
+  }
+
+  .case-open-button img {
+    height: 80px;
+  }
+
+  .profile-banner {
+    padding: 10px 12px;
+  }
+
+  .profile-banner-text {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .player-page .player-body,
+  .player-page .player-content {
+    padding: 0 0.5rem;
+  }
+
+  .player-page .player-header {
+    padding: 0.5rem;
+  }
+
+  .player-page .player-picture-container {
+    min-width: 100px;
+    padding: 0.4rem;
+  }
+
+  .player-page .player-picture-container .mobile-diff-info .diff-image {
+    width: 28px;
+  }
+
+  .player-page .player-info .player-name-rank h1 {
+    font-size: 18px;
+  }
+
+  .player-page .player-info .player-name-rank h2 {
+    margin: 0 auto;
+    font-size: 16px;
+    padding: 4px 6px;
+  }
+
+  .player-page .player-rank-flag {
+    gap: 0.4rem;
+  }
+
+  .player-page .player-picture {
+    width: 70px;
+    height: 70px;
+  }
+
+  .player-page .score-container,
+  .player-page .passes-container {
+    gap: 0.75rem;
+  }
+
+  .player-page .score-item {
+    min-width: 100px;
+  }
+
+  .player-page .score-name {
+    font-size: 0.75rem;
+  }
+
+  .player-page .score-value {
+    font-size: 1rem;
+  }
+
+  .player-page .edit-button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .player-page .edit-button svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .case-open-button img {
+    height: 70px;
+  }
+
+  .profile-banner {
+    padding: 8px 10px;
+  }
+
+  .profile-banner-text {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 360px) {
+  .player-page .player-info .player-name-rank h1 {
+    font-size: 16px;
+  }
+
+  .player-page .player-info .player-name-rank h2 {
+    font-size: 14px;
+  }
+
+  .player-page .player-rank-flag {
+    gap: 0.3rem;
+  }
+
+  .player-page .player-picture {
+    width: 60px;
+    height: 60px;
+  }
+
+  .player-page .player-picture-container {
+    min-width: 90px;
+    padding: 0.3rem;
+  }
+
+  .player-page .player-picture-container .mobile-diff-info .diff-image {
+    width: 24px;
+  }
+
+  .player-page .score-container,
+  .player-page .passes-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .player-page .score-item {
+    min-width: unset;
+    width: 100%;
+    max-width: 200px;
+  }
+
+  .case-open-button img {
+    height: 60px;
+  }
+}
+
+/* Landscape mobile optimization */
+@media (max-width: 768px) and (orientation: landscape) {
+  .player-page .player-header {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .player-page .player-header-content {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .player-page .player-info-container {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .player-page .player-info {
+    margin-left: 1rem;
+    text-align: left;
+  }
+
+  .player-page .player-info .player-name-rank {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .player-page .diff-container {
+    margin-top: 0;
+  }
+}
+
+/* Touch-friendly improvements for mobile */
+@media (hover: none) and (pointer: coarse) {
+  .player-page .edit-button:hover {
+    background-color: var(--color-white-t10);
+  }
+
+  .case-open-button:hover:not(:disabled) {
+    transform: none;
+    opacity: 1;
+  }
+
+  .profile-banner.email-verification:hover {
+    background-color: #8d00a9;
+  }
+
+  .profile-banner.email-verification:hover .email-verification-arrow {
+    transform: none;
+  }
+}
+
+/* Desktop styles - show original diff container and hide mobile version */
+@media (min-width: 769px) {
+  .player-page .diff-container {
+    display: flex; /* Show original diff container on desktop */
+  }
+
+  .player-page .mobile-diff-info {
+    display: none; /* Hide mobile diff info on desktop */
+  }
+}
+
+/* High DPI display optimization */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .player-page .player-picture {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: pixelated;
+  }
+
+  .player-page .country-flag {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: pixelated;
+  }
+
+  .player-page .diff-image {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: pixelated;
+  }
 }
 

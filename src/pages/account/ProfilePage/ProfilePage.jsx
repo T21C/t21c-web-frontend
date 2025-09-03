@@ -198,35 +198,60 @@ const ProfilePage = () => {
 
                     <div className="player-info-container">
                       <div className="player-picture-container">
+                      <div className="player-picture-and-info">
                       <UserAvatar 
                         primaryUrl={playerData.avatarUrl}
                         fallbackUrl={playerData.pfp}
                         className="player-picture"
                       />
                       <div className="player-id">ID: {playerData.id}</div>
-                    </div>
-                    <div className="player-info">
-                      <div className="player-name-rank">
-                        <div className="player-name-container">
-                          <h1>{playerData.name}</h1>
-                          {playerData.username && (
-                            <span className="player-discord-handle">@{playerData.username}</span>
-                          )}
-                        </div>
-                        <h2
-                          style={{
-                            color: parseRankColor(playerData.stats.rankedScoreRank), 
-                            backgroundColor: `${parseRankColor(playerData.stats.rankedScoreRank)}27`,
-                            transform: playerData.username ? "translateY(-0.45rem)" : "translateY(0)"
-                        }}
-                        >#{playerData.stats.rankedScoreRank}</h2>
                       </div>
+                      {/* Mobile difficulty display */}
+                      <div className="mobile-diff-info">
+                      <div className="diff-info">
+                      <p>{valueLabels.topDiff}</p>
                       <img
-                        src={isoToEmoji(playerData.country)}
-                        alt={playerData.country}
-                        className="country-flag"
+                        src={playerData.stats.topDiff?.icon}
+                        alt={playerData.stats.topDiff?.name || 'None'}
+                        className="diff-image"
                       />
                     </div>
+
+                    <div className="diff-info">
+                      <p>{valueLabels.top12kDiff}</p>
+                      <img
+                        src={playerData.stats.top12kDiff?.icon}
+                        alt={playerData.stats.top12kDiff?.name || 'None'}
+                        className="diff-image"
+                      />
+                    </div>
+                      </div>
+                    </div>
+                                         <div className="player-info">
+                       <div className="player-name-rank">
+                         <div className="player-name-container">
+                           <h1>{playerData.name}</h1>
+                           {playerData.username && (
+                             <span className="player-discord-handle">@{playerData.username}</span>
+                           )}
+                         </div>
+                         <div className="player-rank-flag">
+                           <h2
+                             style={{
+                               color: parseRankColor(playerData.stats.rankedScoreRank), 
+                               backgroundColor: `${parseRankColor(playerData.stats.rankedScoreRank)}27`,
+                           }}
+                           className={playerData.username ? "shift-rank-display" : ""}
+                           
+                           >#{playerData.stats.rankedScoreRank}</h2>
+                           <img
+                             src={isoToEmoji(playerData.country)}
+                             alt={playerData.country}
+                             className="country-flag"
+                           />
+                         </div>
+                       </div>
+                     </div>
                   </div>
                   <div className="diff-container">
                     <div className="diff-info">

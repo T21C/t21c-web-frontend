@@ -166,7 +166,7 @@ const LeaderboardPage = () => {
 
       <div className="leaderboard-body">
         <ScrollButton />  
-        <div className="input-option">
+        <div className="leaderboard-input-option">
           <div className="search-container">
             <input
               value={query}

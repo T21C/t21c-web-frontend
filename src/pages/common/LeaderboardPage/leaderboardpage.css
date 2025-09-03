@@ -13,7 +13,7 @@
   margin: 0 auto;
   overflow-x: hidden;
 }
-.leaderboard-page .leaderboard-body .input-option {
+.leaderboard-page .leaderboard-body .leaderboard-input-option {
   position: relative;
   z-index: 3;
   display: flex;
@@ -345,7 +345,7 @@
 
   .leaderboard-page .leaderboard-body .button-container {
     gap: 0.25rem;
-    align-self: flex-start;
+    align-self: flex-end;
   }
 
   .leaderboard-page .leaderboard-body .button-container svg {
