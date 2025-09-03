@@ -401,16 +401,16 @@ const CurationPage = () => {
             curations.map(curation => (
               <div key={curation.id} className={`curation-item ${isAccessibleCuration(curation) ? '' : 'protected'}`}>
                 <div className="curation-item-wrapper">
-                  <div className="curation-icon-wrapper">
+                  <div className="curation-song-wrapper">
+                    
+                    <div className="curation-song-header">
+                    <div className="curation-icon-wrapper">
                     <img 
                       src={curation.type?.icon || '/default-curation-icon.png'} 
                       alt={curation.type?.name || 'Curation type'} 
                       className="curation-icon" 
                     />
                   </div>
-
-                  <div className="curation-song-wrapper">
-                    <div className="curation-song-header">
                       <img 
                         src={curation.level?.difficulty?.icon || '/default-difficulty-icon.png'} 
                         alt={curation.level?.difficulty?.name || 'Difficulty'} 
@@ -419,8 +419,10 @@ const CurationPage = () => {
                       <h3>{curation.level?.song || 'Unknown Level'}</h3>
                       <p className="curation-level-id">#{curation.level?.id}</p>
                     </div>
+                    <div className="curation-artist-creator">
                     <p className="curation-artist">{curation.level?.artist || 'Unknown Artist'}</p>
                     <p className="curation-creator">{curation.level?.creator || 'Unknown Creator'}</p>
+                  </div>
                   </div>
 
                   <div className="curation-type-info">
