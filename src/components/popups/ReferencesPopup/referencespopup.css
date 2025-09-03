@@ -934,3 +934,551 @@
 .references-popup-overlay .difficulty-section.expanded .levels-list {
   padding: 0.5rem;
 }
+
+/* Mobile-friendly responsive design */
+@media (max-width: 768px) {
+  .references-popup-overlay {
+    padding: 1rem;
+    padding-top: calc(3rem + 1rem);
+  }
+
+  .references-popup-overlay .references-popup {
+    width: 95%;
+    max-width: none;
+    height: calc(98vh - 3rem);
+    border-radius: 12px;
+  }
+
+  .references-popup-overlay .popup-header {
+    padding: 1rem;
+    padding-bottom: 0;
+  }
+
+  .references-popup-overlay .tabs-container {
+    padding: 0 1rem 1rem;
+  }
+
+  .references-popup-overlay .header-buttons {
+    position: relative;
+    top: unset;
+    margin-bottom: 0.5rem;
+    
+  }
+  .references-popup-overlay .edit-difficulty-name {
+    min-width: unset;
+  }
+  .references-popup-overlay .tab-navigation {
+    flex-direction: row;
+    gap: 0.75rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .references-popup-overlay .tab-navigation h2 {
+    font-size: 1.25rem;
+    min-width: auto;
+    text-align: center;
+  }
+
+  .references-popup-overlay .nav-arrow {
+    padding: 0.75rem;
+    opacity: 0.8;
+  }
+
+  .references-popup-overlay .nav-arrow svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .references-popup-overlay .difficulty-header {
+    padding: 0.5rem 0.75rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .references-popup-overlay .difficulty-info {
+    gap: 0.5rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .references-popup-overlay .difficulty-icon {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+  }
+
+  .references-popup-overlay .difficulty-name {
+    font-size: 1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .references-popup-overlay .difficulty-info h4 {
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  .references-popup-overlay .header-right {
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .references-popup-overlay .level-count {
+    font-size: 0.8rem;
+    white-space: nowrap;
+  }
+
+  .references-popup-overlay .expand-icon {
+    font-size: 1.2rem;
+    padding: 0.25rem;
+  }
+
+  .references-popup-overlay .reference-type-section {
+    margin-bottom: 1rem;
+    border-radius: 8px;
+  }
+
+  .references-popup-overlay .reference-type-header {
+    padding: 0.75rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .references-popup-overlay .reference-type-header h3 {
+    font-size: 1.1rem;
+    margin: 0;
+  }
+
+  .references-popup-overlay .reference-type-header .header-controls {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .references-popup-overlay .reference-type-levels {
+    padding: 0.75rem;
+  }
+
+  .references-popup-overlay .level-row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+  }
+
+  .references-popup-overlay .level-row.compact {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .references-popup-overlay .level-thumbnail {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+  }
+
+  .references-popup-overlay .level-info {
+    gap: 0.5rem;
+  }
+
+  .references-popup-overlay .level-title {
+    font-size: 0.95rem;
+    line-height: 1.3;
+  }
+
+  .references-popup-overlay .level-creator {
+    font-size: 0.85rem;
+  }
+
+  .references-popup-overlay .level-type-badges {
+    gap: 0.25rem;
+  }
+
+  .references-popup-overlay .level-type-badge {
+    font-size: 0.65rem;
+    padding: 0.1rem 0.3rem;
+  }
+
+  .references-popup-overlay .level-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .references-popup-overlay .action-button {
+    width: 36px;
+    height: 36px;
+    padding: 0.5rem;
+  }
+
+  .references-popup-overlay .action-button svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .references-popup-overlay .view-format-btn {
+    width: 36px;
+    height: 36px;
+  }
+
+  .references-popup-overlay .view-format-btn img {
+    width: 32px;
+  }
+
+  .references-popup-overlay .edit-controls {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: stretch;
+  }
+
+  .references-popup-overlay .edit-controls .control-group {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .references-popup-overlay .edit-controls input,
+  .references-popup-overlay .edit-controls select {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+
+  .references-popup-overlay .edit-controls button {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+  }
+
+  .references-popup-overlay .edit-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .references-popup-overlay .edit-actions button {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+
+  .references-popup-overlay .tab-content {
+    padding-right: 0.25rem;
+  }
+
+  .references-popup-overlay .tab-content.edit-mode {
+    padding: 0.75rem;
+  }
+
+  .references-popup-overlay .levels-list {
+    gap: 0.5rem;
+  }
+
+  .references-popup-overlay .difficulty-section.expanded .levels-list {
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .references-popup-overlay {
+    padding: 0.5rem;
+    padding-top: 5rem;
+  }
+
+  .references-popup-overlay .references-popup {
+    
+    width: 98%;
+    height: calc(99vh - 5rem);
+    border-radius: 8px;
+  }
+
+  .references-popup-overlay .popup-header {
+    padding: 0.75rem;
+    padding-bottom: 0;
+  }
+
+  .references-popup-overlay .tabs-container {
+    padding: 0 0.75rem 0.75rem;
+  }
+
+  .references-popup-overlay .tab-navigation {
+    gap: 0.5rem;
+  }
+
+  .references-popup-overlay .tab-navigation h2 {
+    font-size: 1.1rem;
+  }
+
+  .references-popup-overlay .nav-arrow {
+    padding: 0.5rem;
+  }
+
+  .references-popup-overlay .nav-arrow svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .references-popup-overlay .difficulty-header {
+    padding: 0.4rem 0.5rem;
+    gap: 0.4rem;
+  }
+
+  .references-popup-overlay .difficulty-icon {
+    width: 24px;
+    height: 24px;
+  }
+
+  .references-popup-overlay .difficulty-name {
+    font-size: 0.9rem;
+  }
+
+  .references-popup-overlay .difficulty-info h4 {
+    font-size: 0.75rem;
+  }
+
+  .references-popup-overlay .level-count {
+    font-size: 0.75rem;
+  }
+
+  .references-popup-overlay .expand-icon {
+    font-size: 1rem;
+    padding: 0.2rem;
+  }
+
+  .references-popup-overlay .reference-type-header {
+    padding: 0.5rem;
+    gap: 0.4rem;
+  }
+
+  .references-popup-overlay .reference-type-header h3 {
+    font-size: 1rem;
+  }
+
+  .references-popup-overlay .reference-type-levels {
+    padding: 0.5rem;
+  }
+
+  .references-popup-overlay .level-row {
+    padding: 0.5rem;
+    gap: 0.4rem;
+  }
+
+  .references-popup-overlay .level-thumbnail {
+    width: 50px;
+    height: 50px;
+  }
+
+  .references-popup-overlay .level-title {
+    font-size: 0.9rem;
+  }
+
+  .references-popup-overlay .level-creator {
+    font-size: 0.8rem;
+  }
+
+  .references-popup-overlay .level-type-badge {
+    font-size: 0.6rem;
+    padding: 0.08rem 0.25rem;
+  }
+
+  .references-popup-overlay .action-button {
+    width: 32px;
+    height: 32px;
+    padding: 0.4rem;
+  }
+
+  .references-popup-overlay .action-button svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .references-popup-overlay .view-format-btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .references-popup-overlay .view-format-btn img {
+    width: 28px;
+  }
+
+  .references-popup-overlay .edit-controls input,
+  .references-popup-overlay .edit-controls select {
+    padding: 0.6rem;
+    font-size: 0.95rem;
+  }
+
+  .references-popup-overlay .edit-controls button {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.95rem;
+  }
+
+  .references-popup-overlay .edit-actions button {
+    padding: 0.6rem;
+    font-size: 0.95rem;
+  }
+
+  .references-popup-overlay .tab-content.edit-mode {
+    padding: 0.5rem;
+  }
+
+  .references-popup-overlay .difficulty-section.expanded .levels-list {
+    padding: 0.5rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .references-popup-overlay .references-popup {
+    width: 99%;
+    height: calc(100vh - 2rem);
+    border-radius: 6px;
+  }
+
+  .references-popup-overlay .popup-header {
+    padding: 0.5rem;
+    padding-bottom: 0;
+  }
+
+  .references-popup-overlay .tabs-container {
+    padding: 0 0.5rem 0.5rem;
+  }
+
+  .references-popup-overlay .tab-navigation h2 {
+    font-size: 1rem;
+  }
+
+  .references-popup-overlay .difficulty-header {
+    padding: 0.3rem 0.4rem;
+  }
+
+  .references-popup-overlay .difficulty-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .references-popup-overlay .difficulty-name {
+    font-size: 0.85rem;
+  }
+
+  .references-popup-overlay .difficulty-info h4 {
+    font-size: 0.7rem;
+  }
+
+  .references-popup-overlay .level-thumbnail {
+    width: 45px;
+    height: 45px;
+  }
+
+  .references-popup-overlay .level-title {
+    font-size: 0.85rem;
+  }
+
+  .references-popup-overlay .level-creator {
+    font-size: 0.75rem;
+  }
+
+  .references-popup-overlay .action-button {
+    width: 28px;
+    height: 28px;
+    padding: 0.3rem;
+  }
+
+  .references-popup-overlay .action-button svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .references-popup-overlay .view-format-btn {
+    width: 28px;
+    height: 28px;
+  }
+
+  .references-popup-overlay .view-format-btn img {
+    width: 24px;
+  }
+}
+
+/* Landscape mobile optimization */
+@media (max-width: 768px) and (orientation: landscape) {
+  .references-popup-overlay {
+    padding: 0.5rem;
+    padding-top: calc(2rem + 0.5rem);
+  }
+
+  .references-popup-overlay .references-popup {
+    height: calc(98vh - 2rem);
+  }
+
+  .references-popup-overlay .tab-navigation {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .references-popup-overlay .difficulty-header {
+    flex-wrap: nowrap;
+  }
+
+  .references-popup-overlay .difficulty-info {
+    min-width: auto;
+  }
+
+  .references-popup-overlay .level-row {
+    grid-template-columns: 60px 2fr 1fr 1fr 80px;
+    gap: 0.75rem;
+  }
+
+  .references-popup-overlay .level-row.compact {
+    grid-template-columns: 60px 2fr 1fr 1fr 80px;
+  }
+}
+
+/* Touch-friendly improvements for mobile */
+@media (hover: none) and (pointer: coarse) {
+  .references-popup-overlay .nav-arrow:hover {
+    opacity: 0.8;
+  }
+
+  .references-popup-overlay .nav-arrow.left:hover svg {
+    transform: none;
+  }
+
+  .references-popup-overlay .nav-arrow.right:hover svg {
+    transform: none;
+  }
+
+  .references-popup-overlay .difficulty-header:hover {
+    background-color: transparent;
+  }
+
+  .references-popup-overlay .action-button:hover {
+    transform: none;
+  }
+
+  .references-popup-overlay .view-format-btn:hover {
+    transform: none;
+  }
+
+  .references-popup-overlay .edit-controls button:hover {
+    transform: none;
+  }
+
+  .references-popup-overlay .edit-actions button:hover {
+    transform: none;
+  }
+}
+
+/* High DPI display optimization for mobile */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .references-popup-overlay .difficulty-icon {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: pixelated;
+  }
+
+  .references-popup-overlay .level-thumbnail {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: pixelated;
+  }
+
+  .references-popup-overlay .view-format-btn img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: pixelated;
+  }
+}
