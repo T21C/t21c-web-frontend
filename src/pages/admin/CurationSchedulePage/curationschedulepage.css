@@ -367,87 +367,348 @@
   
   .curation-schedule-page__hall-item,
   .curation-schedule-page__add-slot {
-    min-width: 250px;
-    width: 250px;
+    min-width: 150px;
   }
 }
 
+/* Mobile-friendly responsive design */
 @media (max-width: 768px) {
   .curation-schedule-page__content {
     padding: 1rem;
+    max-width: 100%;
   }
-  
+
+  .curation-schedule-page__header {
+    margin-bottom: 2rem;
+  }
+
   .curation-schedule-page__header-top {
     flex-direction: column;
-    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
   }
-  
+
   .curation-schedule-page__back-btn {
     position: static;
     align-self: flex-start;
-    margin-bottom: 1rem;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
   }
-  
+
   .curation-schedule-page__header h1 {
     font-size: 2rem;
+    margin-bottom: 0.5rem;
   }
-  
+
+  .curation-schedule-page__header p {
+    font-size: 1rem;
+    max-width: 100%;
+  }
+
   .curation-schedule-page__week-nav {
     flex-direction: column;
     gap: 1rem;
-    text-align: center;
+    margin-bottom: 2rem;
+    padding: 1rem;
   }
-  
+
+  .curation-schedule-page__week-btn {
+    width: 100%;
+    padding: 1rem;
+    font-size: 1rem;
+    min-height: 44px;
+  }
+
   .curation-schedule-page__week-title {
-    font-size: 1.2rem;
+    font-size: 1.25rem;
+    order: -1;
   }
-  
+
+  .curation-schedule-page__hall-section {
+    margin-bottom: 2rem;
+  }
+
   .curation-schedule-page__hall-header {
-    flex-direction: column;
-    align-items: flex-start;
+    text-align: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .curation-schedule-page__hall-header h3 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .curation-schedule-page__hall-header p {
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .curation-schedule-page__count {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+  }
+
+  .curation-schedule-page__hall-container {
+    position: relative;
+  }
+
+  .curation-schedule-page__scroll-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    font-size: 1.5rem;
+    padding: 0;
+  }
+
+  .curation-schedule-page__scroll-btn--left {
+    left: 0.5rem;
+  }
+
+  .curation-schedule-page__scroll-btn--right {
+    right: 0.5rem;
+  }
+  .curation-schedule-page__scroll-btn--right:not(:disabled):hover {
+    transform: translateY(-50%) scale(1);
+  }
+
+  .curation-schedule-page__scroll-btn--left:not(:disabled):hover {
+    transform: translateY(-50%) scale(1);
+  }
+
+
+  .curation-schedule-page__hall-scroll {
+    padding: 0 3rem;
+  }
+
+  .curation-schedule-page__hall-list {
+    gap: 0.75rem;
+  }
+
+  .curation-schedule-page__hall-item {
+    min-width: 120px;
+    padding: 0.75rem;
     gap: 0.5rem;
   }
-  
-  .curation-schedule-page__hall-container {
-    flex-direction: column;
+
+  .curation-schedule-page__hall-position {
+    font-size: 1.1rem;
+    padding: 0.4rem 0.6rem;
+    min-width: 2rem;
+    min-height: 2rem;
   }
-  
-  .curation-schedule-page__scroll-btn {
-    display: none;
+
+  .curation-schedule-page__hall-preview {
+    width: 3rem;
+    height: 3rem;
   }
-  
-  .curation-schedule-page__hall-list {
-    flex-direction: column;
-    align-items: center;
+
+  .curation-schedule-page__hall-info h4 {
+    font-size: 0.95rem;
+    line-height: 1.3;
   }
-  
-  .curation-schedule-page__hall-item,
+
+  .curation-schedule-page__hall-info p {
+    font-size: 0.85rem;
+  }
+
+  .curation-schedule-page__hall-type {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.5rem;
+  }
+
+  .curation-schedule-page__remove-btn {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+  }
+
+  .curation-schedule-page__remove-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+
   .curation-schedule-page__add-slot {
-    width: 100%;
-    max-width: 350px;
-    min-width: auto;
+    min-width: 200px;
+    padding: 1rem;
+    gap: 0.5rem;
   }
-  
-  .curation-schedule-page__hall-scroll {
-    overflow-x: visible;
+
+  .curation-schedule-page__add-icon {
+    font-size: 1.5rem;
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .curation-schedule-page__add-slot span {
+    font-size: 0.9rem;
+  }
+
+  .curation-schedule-page__loading {
+    padding: 2rem;
+    font-size: 1rem;
   }
 }
 
 @media (max-width: 480px) {
   .curation-schedule-page__header h1 {
-    font-size: 1.8rem;
+    font-size: 1.75rem;
   }
   
   .curation-schedule-page__week-btn {
-    padding: 0.5rem 1rem;
-    font-size: 0.9rem;
+    padding: 0.8rem;
+    font-size: 0.95rem;
   }
   
   .curation-schedule-page__hall-item {
-    padding: 1rem;
+    width: 100px;
+    padding: 0.6rem;
   }
   
   .curation-schedule-page__hall-preview {
-    height: 120px;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .curation-schedule-page__hall-info h4 {
+    font-size: 0.9rem;
+  }
+
+  .curation-schedule-page__hall-info p {
+    font-size: 0.8rem;
+  }
+
+  .curation-schedule-page__add-slot {
+    min-width: 100px;
+    padding: 0.8rem;
+  }
+
+  .curation-schedule-page__add-slot span {
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 360px) {
+  .curation-schedule-page__content {
+    padding: 0.5rem;
+  }
+
+  .curation-schedule-page__header h1 {
+    font-size: 1.5rem;
+  }
+
+  .curation-schedule-page__header p {
+    font-size: 0.9rem;
+  }
+
+  .curation-schedule-page__week-nav {
+    padding: 0.5rem;
+    gap: 0.5rem;
+  }
+
+  .curation-schedule-page__week-btn {
+    padding: 0.7rem;
+    font-size: 0.9rem;
+  }
+
+  .curation-schedule-page__week-title {
+    font-size: 1rem;
+  }
+
+  .curation-schedule-page__hall-header h3 {
+    font-size: 1.1rem;
+  }
+
+  .curation-schedule-page__hall-header p {
+    font-size: 0.85rem;
+  }
+
+  .curation-schedule-page__hall-item {
+    width: 140px;
+    padding: 0.5rem;
+  }
+
+  .curation-schedule-page__hall-preview {
+    width: 2rem;
+    height: 2rem;
+  }
+
+  .curation-schedule-page__hall-info h4 {
+    font-size: 0.85rem;
+  }
+
+  .curation-schedule-page__hall-info p {
+    font-size: 0.75rem;
+  }
+
+  .curation-schedule-page__add-slot {
+    min-width: 100px;
+    padding: 0.7rem;
+  }
+
+  .curation-schedule-page__add-slot span {
+    font-size: 0.8rem;
+  }
+}
+
+/* Landscape mobile optimization */
+@media (max-width: 768px) and (orientation: landscape) {
+  .curation-schedule-page__week-nav {
+    flex-direction: row;
+    gap: 1rem;
+  }
+
+  .curation-schedule-page__week-btn {
+    width: auto;
+    flex: 1;
+    min-width: 120px;
+  }
+
+  .curation-schedule-page__week-title {
+    order: 0;
+    flex: 1;
+  }
+
+  .curation-schedule-page__hall-container {
+    margin: 0 1rem;
+  }
+
+  .curation-schedule-page__scroll-btn {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+    min-height: 40px;
+  }
+}
+
+/* Touch-friendly improvements for mobile */
+@media (hover: none) and (pointer: coarse) {
+  .curation-schedule-page__back-btn:hover {
+    transform: none;
+  }
+
+  .curation-schedule-page__week-btn:hover {
+    transform: none;
+  }
+
+  .curation-schedule-page__remove-btn:hover {
+    transform: none;
+  }
+
+  .curation-schedule-page__add-slot:hover {
+    transform: none;
+  }
+}
+
+/* High DPI display optimization for mobile */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .curation-schedule-page__hall-thumbnail {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: pixelated;
   }
 }
