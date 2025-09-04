@@ -1444,6 +1444,8 @@ const LevelDetailPage = ({ mockData = null }) => {
               style={{
                 backgroundImage: `url(${res && videoDetail ? videoDetail.image: "defaultImageURL"})`}}>
 
+              <div className="level-id mobile">#{effectiveId}</div>
+              <div className="difficulty-curation-row">
               <div className="diff rerate-history-container" style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <img 
                   src={difficultyDict[res.level.difficulty.id]?.icon} 
@@ -1482,7 +1484,27 @@ const LevelDetailPage = ({ mockData = null }) => {
                 </div>
                 <div className="level-id">#{effectiveId}</div>
               </div>
-
+              {res?.level?.curation?.type && (
+                <div className="curation-type-container-wrapper mobile">
+                  <div 
+                    className="curation-type-container"
+                    onMouseEnter={() => setShowCurationTooltip(true)}
+                    onMouseLeave={() => setShowCurationTooltip(false)}
+                  >
+                    <img 
+                      className="curation-type-icon" 
+                      src={res.level.curation.type.icon} 
+                      alt={res.level.curation.type.name} 
+                    />
+                  </div>
+                  <CurationTooltip 
+                    curation={res.level.curation}
+                    show={showCurationTooltip}
+                    onClose={() => setShowCurationTooltip(false)}
+                  />
+                </div>
+              )}
+              </div>
               <div className="title-container">
                 <div className="level-title">
                   {renderTitleWithAliases(res.level.song, 'song')}

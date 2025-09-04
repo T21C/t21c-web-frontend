@@ -1,3 +1,38 @@
+/* ============================================
+   CLEAR CARD - LEADERBOARD CARD COMPONENT
+   ============================================ */
+
+/* ============================================
+   ICON SIZE SYSTEM - STANDARDIZED SIZING
+   ============================================ */
+.clear-card {
+  /* Icon Size Variables */
+  --icon-size-xs: 1rem;      /* 16px - Small icons */
+  --icon-size-sm: 1.25rem;   /* 20px - Small-medium icons */
+  --icon-size-md: 1.5rem;    /* 24px - Medium icons */
+  --icon-size-lg: 2rem;      /* 32px - Large icons */
+  --icon-size-xl: 2.75rem;   /* 44px - Extra large icons */
+  --icon-size-2xl: 3rem;     /* 48px - Double extra large */
+  
+  /* Avatar Sizes */
+  --avatar-size-sm: 1.75rem; /* 28px - Small avatar */
+  --avatar-size-md: 2rem;    /* 32px - Medium avatar */
+  --avatar-size-lg: 2.25rem; /* 36px - Large avatar */
+  --avatar-size-xl: 2.5rem;  /* 40px - Extra large avatar */
+  --avatar-size-2xl: 2.75rem; /* 44px - Double extra large avatar */
+  
+  /* Country Flag Sizes */
+  --flag-size-sm: 1rem;      /* 16px - Small flag */
+  --flag-size-md: 1.125rem;  /* 18px - Medium flag */
+  --flag-size-lg: 1.25rem;   /* 20px - Large flag */
+  --flag-size-xl: 1.5rem;    /* 24px - Extra large flag */
+  
+  /* Interactive Element Sizes */
+  --touch-target-min: 2.75rem; /* 44px - Minimum touch target */
+  --touch-target-sm: 2rem;     /* 32px - Small touch target */
+  --touch-target-md: 1.5rem;   /* 24px - Medium touch target */
+}
+
 .clear-card {
   position: relative;
   display: flex;
@@ -170,15 +205,41 @@
   padding: 0.5rem;
   border-radius: 4px;
   transition: background-color 0.2s ease;
+  min-width: var(--touch-target-min);
+  min-height: var(--touch-target-min);
+  justify-content: center;
 }
 
 .clear-card .video-link:hover {
   background-color: var(--color-white-t10);
 }
 
-.clear-card .video-link svg {
-  width: 1.5rem;
-  height: 1.5rem;
+/* Ensure all icons maintain aspect ratio and consistent sizing */
+.clear-card .video-link svg,
+.clear-card .avatar-container .pfp,
+.clear-card .country {
+  object-fit: contain;
+  object-position: center;
+}
+
+/* Icon size consistency across all breakpoints */
+.clear-card .video-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* Consistent avatar sizing */
+.clear-card .avatar-container .pfp {
+  flex-shrink: 0;
+  object-fit: cover;
+}
+
+/* Consistent country flag sizing */
+.clear-card .country {
+  flex-shrink: 0;
+  object-fit: contain;
 }
 
 /* Feeling Rating */
@@ -225,54 +286,625 @@
 }
 
 .clear-card .expand-arrow {
-  font-size: 0.8rem;
+  font-size: var(--icon-size-sm);
   color: var(--color-white-t60);
   transition: transform 0.3s ease;
+  min-width: var(--touch-target-sm);
+  min-height: var(--touch-target-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .clear-card .expand-arrow.collapse {
   transform: rotate(180deg);
 }
 
-@media (max-width: 768px) {
-  .clear-card .card-section {
+/* ============================================
+   RESPONSIVE DESIGN - MOBILE FIRST APPROACH
+   ============================================ */
+
+/* Large Desktop - Enhanced spacing */
+@media (min-width: 1200px) {
+  .clear-card {
+    padding: 1.25rem;
+    gap: 1.5rem;
+  }
+  
+  .clear-card .score-info {
+    gap: 2rem;
+  }
+  
+  .clear-card .judgements {
+    gap: 0.75rem;
+    padding: 0.75rem 1.25rem;
+  }
+}
+
+/* Medium Desktop - Standard layout */
+@media (max-width: 1199px) and (min-width: 769px) {
+  .clear-card {
+    padding: 1rem;
+    gap: 1rem;
+  }
+  
+  .clear-card .score-info {
+    gap: 1.5rem;
+  }
+}
+
+/* Tablet Landscape - Layout adjustments */
+@media (max-width: 1024px) {
+  .clear-card .details-section {
+    min-width: 350px;
+  }  .clear-card {
+    padding: 0.875rem;
+    gap: 0.875rem;
     flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .clear-card .score-info {
+    gap: 1.25rem;
+  }
+  
+  .clear-card .judgements {
+    gap: 0.4rem;
+    padding: 0.4rem 0.8rem;
+  }
+  
+  .clear-card .judgements span {
+    font-size: 1.1rem;
+  }
+}
+
+/* Tablet Portrait - Major layout changes */
+@media (max-width: 768px) {
+  
+  .clear-card .card-section {
+    flex-direction: row;
+    min-width: unset;
+    width: 100%;
+    justify-content: flex-start;
+  }
+  
+  .clear-card .rank-display {
+    font-size: 6rem;
+  }
+  
+  .clear-card .rank-display > span {
+    transform: translate(-40px, -50%);
+  }
+  
+  .clear-card .player-info {
+    flex: 1;
+    justify-content: flex-start;
+  }
+  
+  .clear-card .avatar-container .pfp {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+  
+  .clear-card .player-name {
+    font-size: 1.1rem;
+  }
+  
+  .clear-card .details-section {
+    min-width: unset;
+    width: 100%;
+    gap: 0.75rem;
   }
   
   .clear-card .score-info {
     flex-wrap: wrap;
     gap: 1rem;
+    justify-content: flex-start;
+  }
+  
+  .clear-card .score-value,
+  .clear-card .score-accuracy,
+  .clear-card .score-speed {
+    min-width: unset;
+    margin-left: 0;
   }
   
   .clear-card .judgements {
-    flex-wrap: wrap;
-    justify-content: center;
+    justify-content: flex-start;
     margin: 0.5rem 0;
     width: 100%;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
   }
-
+  
+  .clear-card .judgements span {
+    font-size: 1rem;
+    min-width: 2rem;
+    text-align: center;
+  }
+  
+  .clear-card .bottom-row {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+  
   .clear-card .time-info {
     text-align: left;
+    min-width: unset;
+    font-size: 0.85rem;
+  }
+  
+  .clear-card .feeling-rating {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+  
+  .clear-card .feeling-label {
+    font-size: 0.9rem;
+  }
+  
+  .clear-card .feeling-content {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .clear-card .expand-arrow {
+    font-size: var(--icon-size-sm);
+    min-width: var(--touch-target-sm);
+    min-height: var(--touch-target-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .clear-card .link-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
   }
 }
 
-@media (max-width: 480px) {
+/* Mobile Landscape - Compact layout */
+@media (max-width: 600px) {
   .clear-card {
     padding: 0.75rem;
     gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .clear-card .rank-display {
+    font-size: 5rem;
+  }
+  
+  .clear-card .rank-display > span {
+    transform: translate(-35px, -50%);
+  }
+  
+  .clear-card .avatar-container .pfp {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+  
+  .clear-card .player-name {
+    font-size: 1rem;
+  }
+  
+  .clear-card .country {
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+  
+  .clear-card .score-info {
+    gap: 0.75rem;
+  }
+  
+  .clear-card .score-value {
+    font-size: 1.1rem;
+  }
+  
+  .clear-card .score-accuracy,
+  .clear-card .score-speed {
+    font-size: 0.9rem;
+  }
+  
+  .clear-card .judgements {
+    padding: 0.4rem 0.6rem;
+    gap: 0.4rem;
+  }
+  
+  .clear-card .judgements span {
+    font-size: 0.9rem;
+    min-width: 1.8rem;
+  }
+  
+  .clear-card .video-link {
+    padding: 0.4rem;
+  }
+
+}
+
+/* Mobile Portrait - Stacked layout */
+@media (max-width: 480px) {
+  .clear-card {
+    padding: 0.625rem;
+    gap: 0.625rem;
+    border-radius: 6px;
+  }
+  
+  .clear-card .card-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+  
+  .clear-card .rank-display {
+    font-size: 4rem;
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    opacity: 0.1;
+  }
+  
+  .clear-card .rank-display > span {
+    transform: none;
+    position: static;
   }
   
   .clear-card .player-info {
     flex-direction: row;
-    align-items: flex-start;
+    align-items: center;
+    width: 100%;
+    padding: 0.375rem;
+  }
+  
+  .clear-card .avatar-container .pfp {
+    width: 2rem;
+    height: 2rem;
   }
   
   .clear-card .name-container {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .clear-card .player-name {
+    font-size: 0.95rem;
+  }
+  
+  .clear-card .country {
+    width: 1.125rem;
+    height: 1.125rem;
+  }
+  
+  .clear-card .details-section {
+    gap: 0.625rem;
+  }
+  
+  .clear-card .score-info {
+    align-items: flex-start;
+    gap: 0.5rem;
+    width: 100%;
+  }
+  
+  .clear-card .score-value,
+  .clear-card .score-accuracy,
+  .clear-card .score-speed {
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .clear-card .score-value::before {
+    content: "Score:";
+    color: var(--color-white-t60);
+    font-weight: normal;
+  }
+  
+  .clear-card .score-accuracy::before {
+    content: "Acc:";
+    color: var(--color-white-t60);
+    font-weight: normal;
+  }
+  
+  .clear-card .score-speed::before {
+    content: "Speed:";
+    color: var(--color-white-t60);
+    font-weight: normal;
+  }
+  
+  .clear-card .judgements {
+    width: 100%;
+    justify-content: space-between;
+    padding: 0.5rem;
+    gap: 0.25rem;
+  }
+  
+  .clear-card .judgements span {
+    font-size: 0.8rem;
+    min-width: 1.5rem;
+    text-align: center;
+    padding: 0.125rem;
+    border-radius: 2px;
+    background-color: rgba(0, 0, 0, 0.2);
+  }
+  
+  .clear-card .bottom-row {
+    flex-direction: column;
+    gap: 0.375rem;
+  }
+  
+  .clear-card .feeling-rating {
     flex-direction: column;
     align-items: flex-start;
+    gap: 0.25rem;
+  }
+  
+  .clear-card .feeling-label {
+    font-size: 0.8rem;
+  }
+  
+  .clear-card .feeling-content {
+    width: 100%;
+    padding: 0.25rem;
+  }
+  
+  .clear-card .feeling-text {
+    font-size: 0.85rem;
+    line-height: 1.3;
+  }
+  
+  .clear-card .time-info {
+    font-size: 0.8rem;
+    color: var(--color-white-t50);
+  }
+  
+  .clear-card .video-link {
+    padding: 0.25rem;
+    min-width: 32px;
+    min-height: 32px;
+    justify-content: center;
   }
 
-  .clear-card .score-info {
-    gap: 0.75rem;
+}
+
+/* Extra Small Mobile - Ultra compact */
+@media (max-width: 360px) {
+  .clear-card {
+    padding: 0.5rem;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  .clear-card .rank-display {
+    font-size: 3rem;
+    top: 0.375rem;
+    right: 0.375rem;
+  }
+  
+  .clear-card .avatar-container .pfp {
+    width: 1.75rem;
+    height: 1.75rem;
+  }
+  
+  .clear-card .player-name {
+    font-size: 0.9rem;
+  }
+  
+  .clear-card .country {
+    width: 1rem;
+    height: 1rem;
+  }
+  
+  .clear-card .score-value,
+  .clear-card .score-accuracy,
+  .clear-card .score-speed {
+    font-size: 0.85rem;
+  }
+  
+  .clear-card .judgements {
+    padding: 0.375rem;
+    gap: 0.2rem;
+  }
+  
+  .clear-card .judgements span {
+    font-size: 0.75rem;
+    min-width: 1.25rem;
+    padding: 0.1rem;
+  }
+  
+  .clear-card .feeling-text {
+    font-size: 0.8rem;
+  }
+  
+  .clear-card .time-info {
+    font-size: 0.75rem;
+  }
+}
+
+/* ============================================
+   MOBILE TOUCH OPTIMIZATIONS
+   ============================================ */
+
+@media (max-width: 768px) {
+  /* Ensure proper touch targets */
+  .clear-card .player-info,
+  .clear-card .feeling-content,
+  .clear-card .video-link {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  .clear-card .expand-arrow {
+    min-height: 24px;
+    min-width: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Improve touch feedback */
+  .clear-card .player-info:active,
+  .clear-card .feeling-content:active,
+  .clear-card .video-link:active {
+    background-color: var(--color-white-t15);
+    transform: scale(0.98);
+    transition: all 0.1s ease;
+  }
+  
+  /* Prevent text selection on interactive elements */
+  .clear-card .player-info,
+  .clear-card .feeling-content,
+  .clear-card .video-link {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+  
+  /* Allow text selection on content */
+  .clear-card .player-name,
+  .clear-card .feeling-text,
+  .clear-card .score-value,
+  .clear-card .score-accuracy,
+  .clear-card .score-speed {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+  }
+}
+
+/* ============================================
+   MOBILE PERFORMANCE OPTIMIZATIONS
+   ============================================ */
+
+@media (max-width: 768px) {
+  /* Reduce animations on mobile for better performance */
+  .clear-card {
+    transition: background-color 0.2s ease, transform 0.1s ease;
+  }
+  
+  .clear-card .feeling-content {
+    transition: background-color 0.2s ease;
+  }
+  
+  .clear-card .expand-arrow {
+    transition: transform 0.2s ease;
+  }
+  
+  /* Optimize backdrop filters for mobile */
+  .clear-card {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  
+  /* Reduce shadow complexity on mobile */
+  .clear-card {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+  }
+  
+  .clear-card .judgements span {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* ============================================
+   MOBILE ACCESSIBILITY IMPROVEMENTS
+   ============================================ */
+
+@media (max-width: 768px) {
+  /* Improve focus states for mobile */
+  .clear-card .player-info:focus,
+  .clear-card .feeling-content:focus,
+  .clear-card .video-link:focus {
+    outline: 2px solid var(--color-purple-3);
+    outline-offset: 2px;
+  }
+  
+  /* Ensure sufficient color contrast */
+  .clear-card .score-accuracy,
+  .clear-card .score-speed,
+  .clear-card .time-info {
+    color: var(--color-white-t90);
+  }
+  
+  .clear-card .feeling-label {
+    color: var(--color-white-t90);
+  }
+  
+  /* Improve text readability */
+  .clear-card .player-name,
+  .clear-card .score-value {
+    font-weight: 600;
+  }
+}
+
+/* ============================================
+   MOBILE LANDSCAPE ORIENTATION OPTIMIZATIONS
+   ============================================ */
+
+@media (max-width: 768px) and (orientation: landscape) {
+  .clear-card {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .clear-card .card-section {
+    flex-direction: row;
+    min-width: unset;
+    width: auto;
+  }
+  
+  .clear-card .details-section {
+    flex: 1;
+    min-width: unset;
+    width: auto;
+  }
+  
+  .clear-card .bottom-row {
+    flex-direction: row;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .clear-card .feeling-rating {
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
+
+/* ============================================
+   HIGH DPI DISPLAY OPTIMIZATIONS
+   ============================================ */
+
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .clear-card .avatar-container .pfp,
+  .clear-card .country {
+    image-rendering: -webkit-optimize-contrast;
+  }
+}
+
+/* ============================================
+   REDUCED MOTION ACCESSIBILITY
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .clear-card,
+  .clear-card .feeling-content,
+  .clear-card .expand-arrow,
+  .clear-card .player-info,
+  .clear-card .video-link {
+    transition: none;
+    animation: none;
+  }
+  
+  .clear-card .expand-arrow.collapse {
+    transform: rotate(180deg);
   }
 }

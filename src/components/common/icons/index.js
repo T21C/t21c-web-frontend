@@ -33,6 +33,7 @@ import { CrossedPhoneIcon } from './CrossedPhoneIcon';
 import CrownIcon from './CrownIcon';
 import { ArrowIcon } from './ArrowIcon';
 import { SwitchIcon } from './SwitchIcon';
+import YoutubeIcon from './YoutubeIcon';
 
 export {
     DefaultAvatar,
@@ -69,5 +70,6 @@ export {
     CrossedPhoneIcon,
     CrownIcon,
     ArrowIcon,
-    SwitchIcon
+    SwitchIcon,
+    YoutubeIcon
 }
