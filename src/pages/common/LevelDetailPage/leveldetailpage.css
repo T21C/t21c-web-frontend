@@ -805,6 +805,7 @@
 }
 
 .level-detail .body .info .info-button {
+  max-height: 2.8rem;
   height: 100%;
   width: 100%;
   background-color: var(--accent-color);
@@ -818,6 +819,7 @@
   cursor: pointer;
   margin: 0;
   transition: all var(--transition-normal);
+  margin-top: auto;
 }
 
 .level-detail .body .info .info-button:hover {
@@ -2028,6 +2030,7 @@
    EXPANDABLE CURATION DESCRIPTION
    ============================================ */
 .curation-description-container {
+  min-width: 20rem;
   width: 100%;
   position: relative;
   z-index: 1;
@@ -2283,6 +2286,10 @@
 
   .curation-description-container {
     order: 3;
+  }
+
+  .curation-description.expanded {
+    position: relative;
   }
 }
 
