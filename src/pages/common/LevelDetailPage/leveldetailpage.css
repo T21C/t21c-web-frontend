@@ -169,25 +169,21 @@
   content: '';
   position: absolute;
   inset: 0;
-  background: #00000099;
+  background: #000000dd;
   filter: blur(8px) brightness(0.8);
   z-index: 1;
 }
 
 .level-detail .header .left .level-id {
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 1);
     font-size: 0.75rem;
     color: var(--color-white);
     opacity: 0.5;
     padding: 0;
-    height: 0;
     white-space: nowrap;
     text-align: center;
     font-weight: bold;
   }
-
-.level-detail .header .left .level-id.mobile {
-  display: none;
-}
 
 .level-detail .header .right {
   flex: 1;
@@ -241,6 +237,7 @@
 }
 
 .level-detail .pp-display {
+  text-shadow: 0 1px 7px rgba(0, 0, 0, 1);
   font-size: var(--font-size-sm);
   font-weight: 600;
   color: var(--secondary-text);
@@ -829,6 +826,30 @@
   box-shadow: var(--shadow-md);
 }
 
+.level-detail .body .info .not-beaten-container {
+  display: flex;
+  gap: var(--spacing-sm);
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
+.level-detail .body .info .not-beaten-container .not-beaten-text {
+  font-size: var(--font-size-lg);
+  font-weight: bold;
+  text-align: center;
+  color: var(--secondary-text);
+}
+
+.level-detail .body .info .not-beaten-container .challenge-text {
+  font-size: var(--font-size-sm);
+  opacity: 0.5;
+  text-align: center;
+  color: var(--secondary-text);
+}
+
 .level-detail .body .youtube {
   display: flex;
   justify-content: center;
@@ -1351,10 +1372,6 @@
     order: -1;
   }
   
-  .level-detail .header .left .title-container {
-    max-width: 10rem;
-  }
-  
   .level-detail .header .left .title-container .level-title {
     font-size: 1.5rem;
   }
@@ -1362,11 +1379,7 @@
   .level-detail .header .left .title-container .level-info {
     font-size: 0.8rem;
   }
-  
-  .level-detail .header .left .title-container .level-title,
-  .level-detail .header .left .title-container .level-info {
-    max-width: 100%;
-  }
+
   
   .level-detail .header .right {
     order: 1;
@@ -2015,8 +2028,8 @@
    EXPANDABLE CURATION DESCRIPTION
    ============================================ */
 .curation-description-container {
+  width: 100%;
   position: relative;
-  margin-top: 1rem;
   z-index: 1;
   flex: 1;
   align-self: start;
@@ -2221,7 +2234,7 @@
     align-items: center;
     justify-content: center;
   }
-  
+
   .level-detail .level-id {
     display: none;
   }
@@ -2254,7 +2267,7 @@
   }
   
   .level-detail .header {
-    overflow-x: hidden;
+    overflow: visible;
     width: 100%;
   }
   
@@ -2400,6 +2413,7 @@
 /* Improve mobile text readability */
 @media (max-width: 768px) {
   .level-detail .title-container .level-title {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
     line-height: 1.3;
     word-wrap: break-word;
     -webkit-hyphens: auto;
@@ -2408,6 +2422,7 @@
   }
   
   .level-detail .title-container .level-info {
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
     line-height: 1.4;
     word-wrap: break-word;
   }

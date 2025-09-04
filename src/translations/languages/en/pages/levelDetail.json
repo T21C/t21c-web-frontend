@@ -72,6 +72,8 @@
   "leaderboard": {
     "header": "Leaderboard",
     "notBeaten": "This level hasn't been beaten yet!",
+    "noClearsYet": "No clears yet!",
+    "challenge": "Maybe you will be the one to take on this challenge?",
     "tooltips": {
       "time": "Sort by clear date",
       "accuracy": "Sort by accuracy",

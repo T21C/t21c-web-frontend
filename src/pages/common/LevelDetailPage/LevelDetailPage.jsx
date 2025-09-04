@@ -1703,7 +1703,9 @@ const LevelDetailPage = ({ mockData = null }) => {
           </div>
 
           <div className="body">
+
             <div className="info">
+              {sortedLeaderboard.length > 0 ? (<>
               <div className="info-item">
                 <p>{tLevel('stats.firstClear.label')}</p>
                 <span className="info-desc">
@@ -1768,6 +1770,14 @@ const LevelDetailPage = ({ mockData = null }) => {
                     : tLevel('stats.waiting')}
                 </span>
               </div>
+              </>
+              ) : (
+                <div className="not-beaten-container">
+                  <p className="not-beaten-text">{tLevel('leaderboard.notBeaten')}</p>
+                  <p className="challenge-text">{tLevel('leaderboard.challenge')}</p>
+                </div>
+              )}
+
 
               <button className="info-button" onClick={changeDialogState}>
                 {tLevel('dialog.fullInfo')}
@@ -1893,7 +1903,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                     />
                   ))
                 ) : (
-                  <h3>{tLevel('leaderboard.notBeaten')}</h3>
+                  <h3>{tLevel('leaderboard.noClearsYet')}</h3>
                 )
                 :
                 <div className="loader loader-level-detail-rank"></div>
