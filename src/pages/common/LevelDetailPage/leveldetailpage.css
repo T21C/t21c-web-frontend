@@ -185,6 +185,11 @@
     font-weight: bold;
   }
 
+.level-detail .header .left .level-id.mobile {
+  display: none;
+  position: fixed;
+}
+
 .level-detail .header .right {
   flex: 1;
   display: flex;
