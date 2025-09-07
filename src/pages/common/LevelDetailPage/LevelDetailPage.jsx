@@ -1034,19 +1034,6 @@ const LevelDetailPage = ({ mockData = null }) => {
       if (customColorStyleElement && customColorStyleElement.parentNode) {
         customColorStyleElement.parentNode.removeChild(customColorStyleElement);
       }
-      
-      // Additional cleanup for any orphaned elements with our specific data attributes
-      try {
-        const orphanedCurationStyles = document.querySelectorAll(`[data-custom-styles="true"]`);
-        orphanedCurationStyles.forEach(element => {
-          if (element.parentNode) {
-            element.parentNode.removeChild(element);
-          }
-        });
-        
-      } catch (error) {
-        console.warn('Error cleaning up orphaned style elements:', error);
-      }
     };
   }, [res?.level?.curation, createCurationStyleSheet, createCustomColorCSS, effectiveId, externalCssOverride, disableDefaultStyling]);
 
@@ -1095,7 +1082,7 @@ const LevelDetailPage = ({ mockData = null }) => {
         delete window.setDisableDefaultStyling;
       }
     };
-  }, [effectiveId]);
+  }, []); // Empty dependency array - only run on mount/unmount
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -1397,7 +1384,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       </div>
     );
   return (
-    <>
+    <div>
       <MetaTags
         title={res?.level?.song}
         description={tLevel('meta.description', { song: res?.level?.song, creator: res?.level?.creator })}
@@ -2004,7 +1991,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       )}
 
       </div>
-    </>
+    </div>
   );
 };
 
