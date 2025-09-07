@@ -883,7 +883,6 @@
 .level-card.legendary:not(.grid) {
   position: relative;
   overflow: hidden;
-  will-change: transform;
 }
 
 .level-card.legendary:not(.grid)::before {
@@ -973,7 +972,6 @@
 .level-card.legendary:not(.grid)::before,
 .level-card.legendary:not(.grid)::after {
   backface-visibility: hidden;
-  transform: translateZ(0);
 }
 
 /* Reduce motion for users who prefer it */
