@@ -71,6 +71,8 @@
   "leaderboard": {
     "header": "排行榜",
     "notBeaten": "还没有人通过本关卡！",
+    "noClearsYet": "还没有通关记录！",
+    "challenge": "也许你要成为第一个吃螃蟹的人？",
     "tooltips": {
       "time": "按通过日期排序",
       "accuracy": "按精准度排序",

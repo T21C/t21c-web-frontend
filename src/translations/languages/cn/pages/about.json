@@ -45,14 +45,14 @@
     "join": {
       "title": "加入社区",
       "links": {
-        "discord": "在 Discord 上加入我们",
+        "discord": "加入 Discord 服务器",
         "github": "在 GitHub 上贡献"
       }
     },
     "credits": {
       "title": "制作人员",
       "version": {
-        "current": "v2.2 由 V0W4N 开发",
+        "current": "v2.2 由 V0W4N 开发，中文本地化由Alex1044和Desktop-0114514提供",
         "original": "由 Adrian 制作原始版本"
       },
       "categories": {
