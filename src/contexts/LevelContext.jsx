@@ -27,7 +27,8 @@ const LevelContextProvider = (props) => {
         SLIDER_Q_RANGE_DRAG: 'level_slider_q_range_drag',
         SELECTED_SPECIAL_DIFFS: 'level_selected_special_diffs',
         Q_SLIDER_VISIBLE: 'level_q_slider_visible',
-        ONLY_MY_LIKES: 'level_only_my_likes'
+        ONLY_MY_LIKES: 'level_only_my_likes',
+        SELECTED_CURATION_TYPES: 'level_selected_curation_types'
     };
 
     const [levelsData, setLevelsData] = useState([])
@@ -66,6 +67,10 @@ const LevelContextProvider = (props) => {
         Cookies.get(COOKIE_KEYS.Q_SLIDER_VISIBLE) === 'true'
         : true);
     const [onlyMyLikes, setOnlyMyLikes] = useState(() => Cookies.get(COOKIE_KEYS.ONLY_MY_LIKES) === 'true');
+    const [selectedCurationTypes, setSelectedCurationTypes] = useState(() => {
+        const saved = Cookies.get(COOKIE_KEYS.SELECTED_CURATION_TYPES);
+        return saved ? JSON.parse(saved) : [];
+    });
     // Effect to validate and adjust ranges based on difficulties
     useEffect(() => {
         if (difficulties.length > 0) {
@@ -191,6 +196,10 @@ const LevelContextProvider = (props) => {
         Cookies.set(COOKIE_KEYS.ONLY_MY_LIKES, onlyMyLikes);
     }, [onlyMyLikes]);
 
+    useEffect(() => {
+        Cookies.set(COOKIE_KEYS.SELECTED_CURATION_TYPES, JSON.stringify(selectedCurationTypes));
+    }, [selectedCurationTypes]);
+
     return (
         <LevelContext.Provider 
             value={{ 
@@ -214,7 +223,8 @@ const LevelContextProvider = (props) => {
                 sliderQRangeDrag, setSliderQRangeDrag,
                 selectedSpecialDiffs, setSelectedSpecialDiffs,
                 qSliderVisible, setQSliderVisible,
-                onlyMyLikes, setOnlyMyLikes
+                onlyMyLikes, setOnlyMyLikes,
+                selectedCurationTypes, setSelectedCurationTypes
             }}
         >
             {props.children}

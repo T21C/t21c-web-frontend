@@ -78,7 +78,9 @@ const LevelPage = () => {
     qSliderVisible,
     setQSliderVisible,
     onlyMyLikes,
-    setOnlyMyLikes
+    setOnlyMyLikes,
+    selectedCurationTypes,
+    setSelectedCurationTypes
   } = useContext(LevelContext);
 
   const [showHelpPopup, setShowHelpPopup] = useState(false);
@@ -90,7 +92,6 @@ const LevelPage = () => {
   const searchTimeoutRef = useRef(null);
   const [pendingSearch, setPendingSearch] = useState(false);
   const lastSearchValueRef = useRef(query);
-  const [selectedCurationTypes, setSelectedCurationTypes] = useState([]);
 
   // Filter difficulties by type
   const pguDifficulties = difficulties.filter(d => d.type === 'PGU').sort((a, b) => a.sortOrder - b.sortOrder);
