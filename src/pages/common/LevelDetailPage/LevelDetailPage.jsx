@@ -1024,10 +1024,8 @@ const LevelDetailPage = ({ mockData = null }) => {
       const style = document.createElement('style');
       style.type = 'text/css';
       
-      // Add !important to all CSS rules to ensure they override predefined styles
-      const styleSheetWithImportant = styleSheet.replace(/;/g, ' !important;');
       
-      style.innerHTML = styleSheetWithImportant;
+      style.innerHTML = styleSheet;
       style.setAttribute('data-curation-styles', `level-${effectiveId}`);
       style.setAttribute('data-hmr-id', `curation-${effectiveId}-${Date.now()}`);
       
