@@ -14,11 +14,12 @@ import { useTranslation } from "react-i18next";
 import { ClearCard } from "@/components/cards";
 import { EditLevelPopup } from "@/components/popups/EditLevelPopup/EditLevelPopup";
 import { RatingDetailPopup } from "@/components/popups/RatingDetailPopup/RatingDetailPopup";
+import { AddToPackPopup } from "@/components/popups";
 import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { MetaTags } from "@/components/common/display";
-import { DownloadIcon, EditIcon, HistoryListIcon, InfoIcon, LikeIcon, SteamIcon } from "@/components/common/icons";
+import { DownloadIcon, EditIcon, HistoryListIcon, InfoIcon, LikeIcon, SteamIcon, PackIcon } from "@/components/common/icons";
 import { createEventSystem, formatCreatorDisplay, minus2Reasons, gimmickReasons } from "@/utils/Utility";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
@@ -598,6 +599,7 @@ const LevelDetailPage = ({ mockData = null }) => {
 
   const [openDialog, setOpenDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [showAddToPackPopup, setShowAddToPackPopup] = useState(false);
 
   const { difficultyDict } = useDifficultyContext();
 
@@ -1674,6 +1676,15 @@ const LevelDetailPage = ({ mockData = null }) => {
                   <SteamIcon color="#ffffff" size={"34px"} />
                 </button>
               )}
+              {user && (
+                <button 
+                  className="svg-stroke" 
+                  onClick={() => setShowAddToPackPopup(true)}
+                  title={tLevel('buttons.addToPack')}
+                >
+                  <PackIcon color="#ffffff" size={"34px"} />
+                </button>
+              )}
               {res.ratings && (
                 <button 
                   className="rating-button svg-stroke"
@@ -1925,6 +1936,16 @@ const LevelDetailPage = ({ mockData = null }) => {
             setSelectedRating={() => setShowRatingPopup(false)}
             enableReferences={false}
           />
+      )}
+
+      {showAddToPackPopup && res.level && (
+        <AddToPackPopup
+          level={res.level}
+          onClose={() => setShowAddToPackPopup(false)}
+          onSuccess={() => {
+            // Optionally refresh data or show success message
+          }}
+        />
       )}
 
       {openDialog && (

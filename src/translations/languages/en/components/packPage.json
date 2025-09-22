@@ -1,0 +1,67 @@
+{
+  "title": "Level Packs",
+  "search": {
+    "placeholder": "Search packs...",
+    "noResults": "No packs found matching your search"
+  },
+  "filters": {
+    "title": "Filters",
+    "owner": {
+      "label": "Owner",
+      "placeholder": "Filter by owner...",
+      "myPacks": "My Packs"
+    },
+    "viewMode": {
+      "label": "Visibility",
+      "all": "All",
+      "public": "Public",
+      "linkonly": "Link Only",
+      "private": "Private"
+    },
+    "pinned": {
+      "label": "Pinned Only"
+    }
+  },
+  "sort": {
+    "title": "Sort",
+    "options": {
+      "recent": "Most Recent",
+      "name": "Name (A-Z)",
+      "oldest": "Oldest First"
+    },
+    "order": {
+      "asc": "Ascending",
+      "desc": "Descending"
+    }
+  },
+  "packCard": {
+    "levels": "{{count}} level",
+    "levels_plural": "{{count}} levels",
+    "createdBy": "Created by {{owner}}",
+    "viewModes": {
+      "public": "Public",
+      "linkonly": "Link Only", 
+      "private": "Private"
+    },
+    "buttons": {
+      "edit": "Edit Pack",
+      "view": "View Pack"
+    }
+  },
+  "empty": {
+    "title": "No Packs Found",
+    "message": "No level packs match your current filters.",
+    "suggestions": {
+      "clearFilters": "Try clearing your filters",
+      "createPack": "Create your first pack"
+    }
+  },
+  "loading": {
+    "message": "Loading packs...",
+    "loadMore": "Load More Packs"
+  },
+  "errors": {
+    "loadFailed": "Failed to load packs",
+    "retry": "Retry"
+  }
+}

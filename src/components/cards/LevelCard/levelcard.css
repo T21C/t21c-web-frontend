@@ -189,6 +189,29 @@
   transform: scale(1.3);
 }
 
+.level-card .add-to-pack-button {
+  display: block;
+  height: 2.5rem;
+  width: 2.5rem;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.level-card .add-to-pack-button svg {
+  height: 100%;
+  width: 100%;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.level-card .add-to-pack-button svg:hover {
+  transform: scale(1.3);
+}
+
 
 .level-card .toRate-checkbox {
   display: flex;

@@ -10,6 +10,7 @@ import { AuthProvider } from '@/contexts/AuthContext';
 import { PlayerContextProvider } from '@/contexts/PlayerContext';
 import { PassContextProvider } from '@/contexts/PassContext';  
 import { DifficultyContextProvider } from '@/contexts/DifficultyContext';
+import { PackContextProvider } from '@/contexts/PackContext';
 import { HelmetProvider } from 'react-helmet-async';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import i18next from '@/translations/config';
@@ -41,7 +42,9 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                     <PlayerContextProvider>
                         <RatingFilterProvider>
                           <PassContextProvider>
-                            <App />
+                            <PackContextProvider>
+                              <App />
+                            </PackContextProvider>
                           </PassContextProvider>
                         </RatingFilterProvider>
                     </PlayerContextProvider>

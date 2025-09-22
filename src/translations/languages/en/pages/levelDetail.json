@@ -16,7 +16,8 @@
     "like": "Like",
     "unlike": "Unlike",
     "update": "Update Level",
-    "saveRating": "Save Rating"
+    "saveRating": "Save Rating",
+    "addToPack": "Add to Pack"
   },
   "tooltips": {
     "loginRequired": "Login to like this level",

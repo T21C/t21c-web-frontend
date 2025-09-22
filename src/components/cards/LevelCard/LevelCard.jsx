@@ -3,9 +3,9 @@ import "./levelcard.css"
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
 import api from "@/utils/api";
-import { EditLevelPopup } from "@/components/popups";
+import { EditLevelPopup, AddToPackPopup } from "@/components/popups";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { EditIcon, SteamIcon, DownloadIcon, VideoIcon, PassIcon, LikeIcon } from "@/components/common/icons";
+import { EditIcon, SteamIcon, DownloadIcon, VideoIcon, PassIcon, LikeIcon, PackIcon } from "@/components/common/icons";
 import { formatCreatorDisplay } from "@/utils/Utility";
 import { ABILITIES, hasBit } from "@/utils/Abilities";
 import { UserAvatar } from "@/components/layout";
@@ -40,22 +40,23 @@ const LevelCard = ({
   const [level, setLevel] = useState(initialLevel);
   const [toRate, setToRate] = useState(!!initialLevel.toRate);
   const [showEditPopup, setShowEditPopup] = useState(false);
+  const [showAddToPackPopup, setShowAddToPackPopup] = useState(false);
   const [thumbnailUrl, setThumbnailUrl] = useState('');
   const { difficultyDict } = useDifficultyContext();
   const difficultyInfo = difficultyDict[level.diffId];
 
-  // Add effect to handle body overflow when edit popup is open
+  // Add effect to handle body overflow when popups are open
   useEffect(() => {
-    if (showEditPopup) {
+    if (showEditPopup || showAddToPackPopup) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
     }
-
+    
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [showEditPopup]);
+  }, [showEditPopup, showAddToPackPopup]);
 
   useEffect(() => {
     if (displayMode === 'grid' && level.videoLink) {
@@ -97,6 +98,11 @@ const LevelCard = ({
   const handleEditClick = (e) => {
     e.stopPropagation();
     setShowEditPopup(true);
+  };
+
+  const handleAddToPackClick = (e) => {
+    e.stopPropagation();
+    setShowAddToPackPopup(true);
   };
 
   // Determine glow class based on abilities - legendary overrides basic
@@ -290,6 +296,16 @@ const LevelCard = ({
                     <SteamIcon color="#ffffff" size={"24px"} />
                   </a>
                 )}
+                {user && (
+                  <button 
+                    className="add-to-pack-button" 
+                    onClick={handleAddToPackClick}
+                    data-tooltip-id={`add-to-pack-tooltip-${level.id}`}
+                    data-tooltip-content={tCard('addToPack')}
+                  >
+                    <PackIcon color="#ffffff" size={"24px"} />
+                  </button>
+                )}
               </div>
 
               {user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
@@ -402,6 +418,16 @@ const LevelCard = ({
                   <SteamIcon color="#ffffff" size={"24px"} />
                 </a>
               )}
+              {user && (
+                <button 
+                  className="add-to-pack-button" 
+                  onClick={handleAddToPackClick}
+                  data-tooltip-id={`add-to-pack-tooltip-${level.id}`}
+                  data-tooltip-content={tCard('addToPack')}
+                >
+                  <PackIcon color="#ffffff" size={"24px"} />
+                </button>
+              )}
             </div>
 
             {user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
@@ -418,6 +444,16 @@ const LevelCard = ({
           level={level}
           onClose={() => setShowEditPopup(false)}
           onUpdate={handleLevelUpdate}
+        />
+      )}
+
+      {showAddToPackPopup && (
+        <AddToPackPopup
+          level={level}
+          onClose={() => setShowAddToPackPopup(false)}
+          onSuccess={() => {
+            // Optionally refresh data or show success message
+          }}
         />
       )}
     </div>

@@ -1,0 +1,39 @@
+{    "loading": "Loading pack details...",
+    "backToPacks": "Back to Packs",
+    "by": "by",
+    "stats": {
+      "levels": "Levels",
+      "created": "Created"
+    },
+    "levels": {
+      "title": "Levels in this Pack",
+      "count": "levels",
+      "empty": "This pack doesn't contain any levels yet."
+    },
+    "actions": {
+      "edit": "Edit Pack"
+    },
+    "viewMode": {
+      "public": "Public",
+      "linkonly": "Link Only",
+      "private": "Private",
+      "forcedPrivate": "Private (Locked)"
+    },
+    "edit": {
+      "success": "Pack updated successfully!",
+      "error": "Failed to update pack"
+    },
+    "delete": {
+      "confirm": "Are you sure you want to delete this pack? This action cannot be undone.",
+      "success": "Pack deleted successfully!",
+      "error": "Failed to delete pack"
+    },
+    "error": {
+      "title": "Pack Not Found",
+      "message": "The pack you're looking for doesn't exist or you don't have permission to view it.",
+      "notFound": "Pack not found",
+      "accessDenied": "Access denied",
+      "loadFailed": "Failed to load pack",
+      "retry": "Retry"
+    }
+}

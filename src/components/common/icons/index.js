@@ -34,6 +34,14 @@ import CrownIcon from './CrownIcon';
 import { ArrowIcon } from './ArrowIcon';
 import { SwitchIcon } from './SwitchIcon';
 import YoutubeIcon from './YoutubeIcon';
+import PackIcon from './PackIcon';
+import PinIcon from './PinIcon';
+import LockIcon from './LockIcon';
+import EyeIcon from './EyeIcon';
+import UsersIcon from './UsersIcon';
+import PlusIcon from './PlusIcon';
+import SearchIcon from './SearchIcon';
+import ImageIcon from './ImageIcon';
 
 export {
     DefaultAvatar,
@@ -71,5 +79,13 @@ export {
     CrownIcon,
     ArrowIcon,
     SwitchIcon,
-    YoutubeIcon
+    YoutubeIcon,
+    PackIcon,
+    PinIcon,
+    LockIcon,
+    EyeIcon,
+    UsersIcon,
+    PlusIcon,
+    SearchIcon,
+    ImageIcon
 }

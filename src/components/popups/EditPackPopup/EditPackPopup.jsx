@@ -1,0 +1,304 @@
+import { useState, useEffect, useContext } from 'react';
+import { useTranslation } from 'react-i18next';
+import { PackContext } from '@/contexts/PackContext';
+import { useAuth } from '@/contexts/AuthContext';
+import { CrossIcon, ImageIcon, TrashIcon } from '@/components/common/icons';
+import './EditPackPopup.css';
+import toast from 'react-hot-toast';
+import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+
+const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
+  const { t } = useTranslation('components');
+  const tPopup = (key) => t(`packPopups.editPack.${key}`) || key;
+  
+  const { updatePack, deletePack } = useContext(PackContext);
+  const { user } = useAuth();
+  
+  const [formData, setFormData] = useState({
+    name: pack.name || '',
+    iconUrl: pack.iconUrl || '',
+    cssFlags: pack.cssFlags || 0,
+    viewMode: pack.viewMode || 1,
+    isPinned: pack.isPinned || false
+  });
+  const [loading, setLoading] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+
+  // View mode options
+  const viewModeOptions = [
+    { value: 1, label: tPopup('viewMode.public') },
+    { value: 2, label: tPopup('viewMode.linkonly') },
+    { value: 3, label: tPopup('viewMode.private') }
+  ];
+
+  // CSS theme options
+  const cssThemeOptions = [
+    { value: 0, label: tPopup('theme.default') },
+    { value: 1, label: tPopup('theme.dark') },
+    { value: 2, label: tPopup('theme.neon') },
+    { value: 3, label: tPopup('theme.pastel') }
+  ];
+
+  const handleInputChange = (field, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!formData.name.trim()) {
+      toast.error(tPopup('errors.nameRequired'));
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const updatedPack = await updatePack(pack.id, formData);
+      onUpdate?.(updatedPack);
+      onClose();
+      toast.success(tPopup('success.updated'));
+    } catch (error) {
+      console.error('Error updating pack:', error);
+      toast.error(tPopup('errors.updateFailed'));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async () => {
+    setLoading(true);
+    try {
+      await deletePack(pack.id);
+      onClose();
+      // Call the onDelete callback if provided (for navigation, etc.)
+      onDelete?.();
+      toast.success(tPopup('success.deleted'));
+    } catch (error) {
+      console.error('Error deleting pack:', error);
+      toast.error(tPopup('errors.deleteFailed'));
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Close popup when clicking outside
+  const handleBackdropClick = (e) => {
+    if (e.target.classList.contains('edit-pack-popup')) {
+      onClose();
+    }
+  };
+
+  // Prevent body scroll
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
+
+  const canEdit = user && (
+    pack.ownerId === user.id || 
+    hasFlag(user, permissionFlags.SUPER_ADMIN)
+  );
+
+  const canDelete = user && (
+    pack.ownerId === user.id || 
+    hasFlag(user, permissionFlags.SUPER_ADMIN)
+  );
+
+  const isForcedPrivate = pack.viewMode === 4;
+
+  return (
+    <div className="edit-pack-popup" onClick={handleBackdropClick}>
+      <div className="edit-pack-popup__content" onClick={(e) => e.stopPropagation()}>
+        <div className="edit-pack-popup__header">
+          <h2 className="edit-pack-popup__title">{tPopup('title')}</h2>
+          <button className="edit-pack-popup__close" onClick={onClose}>
+            <CrossIcon />
+          </button>
+        </div>
+
+        <form className="edit-pack-popup__form" onSubmit={handleSubmit}>
+          <div className="edit-pack-popup__body">
+            <div className="edit-pack-popup__field">
+              <label className="edit-pack-popup__label">
+                {tPopup('name.label')} *
+              </label>
+              <input
+                type="text"
+                className="edit-pack-popup__input"
+                placeholder={tPopup('name.placeholder')}
+                value={formData.name}
+                onChange={(e) => handleInputChange('name', e.target.value)}
+                maxLength={100}
+                required
+                disabled={!canEdit}
+              />
+              <p className="edit-pack-popup__help">
+                {tPopup('name.help')}
+              </p>
+            </div>
+
+            <div className="edit-pack-popup__field">
+              <label className="edit-pack-popup__label">
+                {tPopup('icon.label')}
+              </label>
+              <div className="edit-pack-popup__icon-input-group">
+                <ImageIcon className="edit-pack-popup__icon-input-icon" />
+                <input
+                  type="url"
+                  className="edit-pack-popup__input"
+                  placeholder={tPopup('icon.placeholder')}
+                  value={formData.iconUrl}
+                  onChange={(e) => handleInputChange('iconUrl', e.target.value)}
+                  disabled={!canEdit}
+                />
+              </div>
+              <p className="edit-pack-popup__help">
+                {tPopup('icon.help')}
+              </p>
+            </div>
+
+            <div className="edit-pack-popup__field">
+              <label className="edit-pack-popup__label">
+                {tPopup('theme.label')}
+              </label>
+              <select
+                className="edit-pack-popup__select"
+                value={formData.cssFlags}
+                onChange={(e) => handleInputChange('cssFlags', parseInt(e.target.value))}
+                disabled={!canEdit}
+              >
+                {cssThemeOptions.map(option => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              <p className="edit-pack-popup__help">
+                {tPopup('theme.help')}
+              </p>
+            </div>
+
+            <div className="edit-pack-popup__field">
+              <label className="edit-pack-popup__label">
+                {tPopup('viewMode.label')}
+              </label>
+              <select
+                className="edit-pack-popup__select"
+                value={formData.viewMode}
+                onChange={(e) => handleInputChange('viewMode', parseInt(e.target.value))}
+                disabled={!canEdit || isForcedPrivate}
+              >
+                {viewModeOptions.map(option => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+                {isForcedPrivate && (
+                  <option value={4} disabled>
+                    {tPopup('viewMode.forcedPrivate')} (Admin Locked)
+                  </option>
+                )}
+              </select>
+              <p className="edit-pack-popup__help">
+                {isForcedPrivate 
+                  ? tPopup('viewMode.forcedPrivateHelp')
+                  : tPopup('viewMode.help')
+                }
+              </p>
+            </div>
+
+            <div className="edit-pack-popup__field">
+              <label className="edit-pack-popup__checkbox-label">
+                <input
+                  type="checkbox"
+                  className="edit-pack-popup__checkbox"
+                  checked={formData.isPinned}
+                  onChange={(e) => handleInputChange('isPinned', e.target.checked)}
+                  disabled={!canEdit}
+                />
+                <span className="edit-pack-popup__checkbox-text">
+                  {tPopup('pinned.label')}
+                </span>
+              </label>
+              <p className="edit-pack-popup__help">
+                {tPopup('pinned.help')}
+              </p>
+            </div>
+
+            {!canEdit && (
+              <div className="edit-pack-popup__no-permission">
+                <p>{tPopup('noPermission')}</p>
+              </div>
+            )}
+          </div>
+
+          <div className="edit-pack-popup__footer">
+            <div className="edit-pack-popup__footer-left">
+              {canDelete && (
+                <button
+                  type="button"
+                  className="edit-pack-popup__delete-btn"
+                  onClick={() => setShowDeleteConfirm(true)}
+                  disabled={loading}
+                >
+                  <TrashIcon />
+                  <span>{tPopup('delete')}</span>
+                </button>
+              )}
+            </div>
+            
+            <div className="edit-pack-popup__footer-right">
+              <button
+                type="button"
+                className="edit-pack-popup__cancel-btn"
+                onClick={onClose}
+                disabled={loading}
+              >
+                {tPopup('cancel')}
+              </button>
+              <button
+                type="submit"
+                className="edit-pack-popup__save-btn"
+                disabled={loading || !canEdit || !formData.name.trim()}
+              >
+                {loading ? tPopup('saving') : tPopup('save')}
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      {showDeleteConfirm && (
+        <div className="edit-pack-popup__delete-confirm">
+          <div className="edit-pack-popup__delete-confirm-content">
+            <h3>{tPopup('deleteConfirm.title')}</h3>
+            <p>{tPopup('deleteConfirm.message')}</p>
+            <div className="edit-pack-popup__delete-confirm-actions">
+              <button
+                className="edit-pack-popup__delete-cancel-btn"
+                onClick={() => setShowDeleteConfirm(false)}
+                disabled={loading}
+              >
+                {tPopup('deleteConfirm.cancel')}
+              </button>
+              <button
+                className="edit-pack-popup__delete-confirm-btn"
+                onClick={handleDelete}
+                disabled={loading}
+              >
+                {loading ? tPopup('deleting') : tPopup('deleteConfirm.confirm')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default EditPackPopup;

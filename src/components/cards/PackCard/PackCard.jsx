@@ -1,0 +1,192 @@
+import { useNavigate } from "react-router-dom";
+import "./packcard.css"
+import { useTranslation } from "react-i18next";
+import { useState, useEffect } from "react";
+import api from "@/utils/api";
+import { EditPackPopup } from "@/components/popups";
+import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon } from "@/components/common/icons";
+import { formatCreatorDisplay } from "@/utils/Utility";
+import { UserAvatar } from "@/components/layout";
+import { permissionFlags } from "@/utils/UserPermissions";
+import { hasFlag } from "@/utils/UserPermissions";
+
+const PackCard = ({
+  index,
+  pack: initialPack,
+  user,
+  sortBy,
+  displayMode = 'normal',
+  size = 'medium'
+}) => {
+  const { t } = useTranslation('components');
+  const tCard = (key) => t(`cards.pack.${key}`) || key;
+  
+  const [pack, setPack] = useState(initialPack);
+  const [showEditPopup, setShowEditPopup] = useState(false);
+  const [levelCount, setLevelCount] = useState(pack.packItems?.length || 0);
+  const navigate = useNavigate();
+
+  // Add effect to handle body overflow when edit popup is open
+  useEffect(() => {
+    if (showEditPopup) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [showEditPopup]);
+
+  const handlePackClick = () => {
+    navigate(`/packs/${pack.id}`);
+  };
+
+  const handleEditClick = (e) => {
+    e.stopPropagation();
+    setShowEditPopup(true);
+  };
+
+  const getViewModeIcon = () => {
+    switch (pack.viewMode) {
+      case 1: // PUBLIC
+        return <EyeIcon className="pack-view-icon public" />;
+      case 2: // LINKONLY
+        return <UsersIcon className="pack-view-icon linkonly" />;
+      case 3: // PRIVATE
+        return <LockIcon className="pack-view-icon private" />;
+      case 4: // FORCED_PRIVATE
+        return <LockIcon className="pack-view-icon forced-private" />;
+      default:
+        return <EyeIcon className="pack-view-icon public" />;
+    }
+  };
+
+  const getViewModeText = () => {
+    switch (pack.viewMode) {
+      case 1: return tCard('viewMode.public');
+      case 2: return tCard('viewMode.linkonly');
+      case 3: return tCard('viewMode.private');
+      case 4: return tCard('viewMode.forcedPrivate');
+      default: return tCard('viewMode.public');
+    }
+  };
+
+  const canEdit = user && (
+    pack.ownerId === user.id || 
+    hasFlag(user, permissionFlags.SUPER_ADMIN)
+  );
+
+  const cardClasses = [
+    'pack-card',
+    `pack-card--${size}`,
+    `pack-card--${displayMode}`,
+    pack.isPinned ? 'pack-card--pinned' : '',
+    pack.viewMode === 4 ? 'pack-card--forced-private' : ''
+  ].filter(Boolean).join(' ');
+
+  return (
+    <>
+      <div 
+        className={cardClasses}
+        onClick={handlePackClick}
+        data-tooltip-id={`pack-tooltip-${pack.id}`}
+        data-tooltip-content={`${tCard('clickToView')} ${pack.name}`}
+      >
+        <div className="pack-card__header">
+          <div className="pack-card__icon">
+            {pack.iconUrl ? (
+              <img 
+                src={pack.iconUrl} 
+                alt={pack.name}
+                className="pack-card__icon-image"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling.style.display = 'flex';
+                }}
+              />
+            ) : null}
+            <div 
+              className="pack-card__icon-placeholder"
+              style={{ display: pack.iconUrl ? 'none' : 'flex' }}
+            >
+              📦
+            </div>
+          </div>
+          
+          <div className="pack-card__info">
+            <h3 className="pack-card__name">{pack.name}</h3>
+            <div className="pack-card__meta">
+              <span className="pack-card__level-count">
+                {levelCount} {levelCount === 1 ? tCard('level') : tCard('levels')}
+              </span>
+              {pack.isPinned && (
+                <PinIcon className="pack-card__pin-icon" />
+              )}
+            </div>
+          </div>
+
+          {canEdit && (
+            <button 
+              className="pack-card__edit-btn"
+              onClick={handleEditClick}
+              data-tooltip-id={`pack-edit-tooltip-${pack.id}`}
+              data-tooltip-content={tCard('edit')}
+            >
+              <EditIcon />
+            </button>
+          )}
+        </div>
+
+        <div className="pack-card__footer">
+          <div className="pack-card__owner">
+            <UserAvatar 
+              username={pack.ownerUsername || 'Unknown'} 
+              size="small"
+            />
+            <span className="pack-card__owner-name">
+              {pack.ownerUsername || 'Unknown'}
+            </span>
+          </div>
+          
+          <div className="pack-card__view-mode">
+            {getViewModeIcon()}
+            <span className="pack-card__view-mode-text">
+              {getViewModeText()}
+            </span>
+          </div>
+        </div>
+
+        {pack.packItems && pack.packItems.length > 0 && (
+          <div className="pack-card__preview">
+            <div className="pack-card__preview-levels">
+              {pack.packItems.slice(0, 3).map((item, idx) => (
+                <div key={idx} className="pack-card__preview-level">
+                  <span className="pack-card__preview-level-name">
+                    {item.level?.song || `Level ${item.levelId}`}
+                  </span>
+                </div>
+              ))}
+              {pack.packItems.length > 3 && (
+                <div className="pack-card__preview-more">
+                  +{pack.packItems.length - 3} {tCard('more')}
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {showEditPopup && (
+        <EditPackPopup
+          pack={pack}
+          onClose={() => setShowEditPopup(false)}
+          onUpdate={(updatedPack) => setPack(updatedPack)}
+        />
+      )}
+    </>
+  );
+};
+
+export default PackCard;

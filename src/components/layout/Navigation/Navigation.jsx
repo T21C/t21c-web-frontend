@@ -199,6 +199,11 @@ const Navigation = ({ children }) => {
                     <li className="nav-list-item">{tNav('links.admin.announcements')}</li>
                   </NavLink>
                   <NavLink className={({ isActive }) =>
+                    "nav-link " + (isActive ? "active" : "")}
+                    to="/admin/curations">
+                    <li className="nav-list-item">{tNav('links.curations')}</li>
+                  </NavLink>
+                  <NavLink className={({ isActive }) =>
                   {
                     if (location.pathname === '/admin') {
                       return "nav-link active"
@@ -219,13 +224,18 @@ const Navigation = ({ children }) => {
                   </NavLink>
                   <NavLink className={({ isActive }) =>
                     "nav-link " + (isActive ? "active" : "")}
+                    to="/passes">
+                    <li className="nav-list-item">{tNav('links.pass')}</li>
+                  </NavLink>
+                  <NavLink className={({ isActive }) =>
+                    "nav-link " + (isActive ? "active" : "")}
                     to="/leaderboard">
                     <li className="nav-list-item">{tNav('links.leaderboard')}</li>
                   </NavLink>
                   <NavLink className={({ isActive }) =>
                     "nav-link " + (isActive ? "active" : "")}
-                    to="/passes">
-                    <li className="nav-list-item">{tNav('links.pass')}</li>
+                    to="/packs">
+                    <li className="nav-list-item">{tNav('links.packs')}</li>
                   </NavLink>
                   <NavLink className={({ isActive }) =>
                     "nav-link " + (isActive ? "active" : "")}

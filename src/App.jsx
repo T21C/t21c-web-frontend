@@ -64,6 +64,8 @@ function App() {
 
           <Route path='leaderboard' element={<Pages.LeaderboardPage />} />
           <Route path='passes' element={<Pages.PassPage />} />
+          <Route path='packs' element={<Pages.PackPage />} />
+          <Route path='packs/:id' element={<Pages.PackDetailPage />} />
 
           {/* Admin Routes - Protected */}
           <Route path='admin' element={<PrivateRoute><Pages.AdminPage /></PrivateRoute>} />

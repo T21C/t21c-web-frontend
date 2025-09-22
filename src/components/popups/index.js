@@ -19,6 +19,9 @@ import CDNTosPopup from './CDNTosPopup/CDNTosPopup';
 import TypeManagementPopup from './TypeManagementPopup/TypeManagementPopup';
 import CurationEditPopup from './CurationEditPopup/CurationEditPopup';
 import CurationSelectionPopup from './CurationSelectionPopup/CurationSelectionPopup';
+import AddToPackPopup from './AddToPackPopup/AddToPackPopup';
+import CreatePackPopup from './AddToPackPopup/CreatePackPopup';
+import EditPackPopup from './EditPackPopup/EditPackPopup';
 
 // User Management Popups
 import UserManagementPopup from './UserManagementPopup/UserManagementPopup';
@@ -46,6 +49,9 @@ export {
     TypeManagementPopup,
     CurationEditPopup,
     CurationSelectionPopup,
+    AddToPackPopup,
+    CreatePackPopup,
+    EditPackPopup,
     // User Management Popups
     UserManagementPopup,
     CuratorManagementPopup

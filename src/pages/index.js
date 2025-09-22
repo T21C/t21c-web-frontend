@@ -11,7 +11,8 @@ const PassDetailPage = lazy(() => import('./common/PassDetailPage/PassDetailPage
 const LeaderboardPage = lazy(() => import('./common/LeaderboardPage/LeaderboardPage'));
 const LevelSubmissionPage = lazy(() => import('./submissions/LevelSubmissionPage/LevelSubmissionPage'));
 const PassSubmissionPage = lazy(() => import('./submissions/PassSubmissionPage/PassSubmissionPage'));
-
+const PackPage = lazy(() => import('./common/PackPage/PackPage'));
+const PackDetailPage = lazy(() => import('./common/PackDetailPage/PackDetailPage'));
 // Account pages
 const ProfilePage = lazy(() => import('./account/ProfilePage/ProfilePage'));
 const LoginPage = lazy(() => import('./account/LoginPage/LoginPage'));
@@ -56,7 +57,8 @@ export {
     LevelSubmissionPage,
     PassSubmissionPage,
     LeaderboardPage,
-    
+    PackPage,
+    PackDetailPage,
     // Account related pages
     ProfilePage,
     LoginPage,
