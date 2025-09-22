@@ -615,19 +615,35 @@ const LevelDetailPage = ({ mockData = null }) => {
   const sanitizeCSS = useCallback((css) => {
     if (!css) return '';
     // Remove potentially dangerous CSS
+    /*
     return css
       .replace(/@import/gi, '')
       .replace(/javascript:/gi, '')
       .replace(/expression\(/gi, '') 
       .replace(/behavior:/gi, '')
       .replace(/-moz-binding/gi, '');
+      */
+     return css; // trust admins 
   }, []);
 
   // Scope CSS to level-detail.curated with higher specificity
   const scopeCSS = useCallback((css) => {
     if (!css) return '';
-    // Use higher specificity selectors to override predefined styles
-    return css.replace(/([^{}]+){/g, '.level-detail.curated[data-custom-styles="true"] $1{');
+
+    // Extract @import statements to the beginning of the CSS
+    const importStatements = [];
+    let cssWithoutImports = css.replace(/@font-face\s+\{[\s\S]+?}/g, (match) => {
+      importStatements.push(match);
+      return '';
+    });
+    console.log(importStatements);
+    
+    cssWithoutImports = cssWithoutImports.replace(/([^{}]+){/g, '.level-detail.curated[data-custom-styles="true"] $1{')
+    
+    console.log(cssWithoutImports);
+    // Combine imports at the beginning with the rest of the CSS
+    const scopedCSS = importStatements.join('\n') + '\n' + cssWithoutImports;
+    return scopedCSS;
   }, []);
 
   // Generate custom color CSS based on curation's custom color
@@ -751,11 +767,8 @@ const LevelDetailPage = ({ mockData = null }) => {
     // Apply scoping for external overrides
     const sanitizedCSS = sanitizeCSS(css);
     const scopedCSS = scopeCSS(sanitizedCSS);
-    
-    // Add !important to all CSS rules to ensure they override everything
-    const cssWithImportant = scopedCSS.replace(/;/g, ' !important;');
-    
-    style.innerHTML = cssWithImportant;
+
+    style.innerHTML = scopedCSS;
     style.setAttribute('data-external-override', 'true');
     style.setAttribute('data-level-id', effectiveId);
     style.setAttribute('data-hmr-id', `external-${effectiveId}-${Date.now()}`);

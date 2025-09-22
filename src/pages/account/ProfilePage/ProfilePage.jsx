@@ -209,7 +209,7 @@ const ProfilePage = () => {
                       {/* Mobile difficulty display */}
                       <div className="mobile-diff-info">
                       <div className="diff-info">
-                      <p>{valueLabels.topDiff}</p>
+                      <p>{valueLabels?.topDiff}</p>
                       <img
                         src={playerData.stats.topDiff?.icon}
                         alt={playerData.stats.topDiff?.name || 'None'}
@@ -218,7 +218,7 @@ const ProfilePage = () => {
                     </div>
 
                     <div className="diff-info">
-                      <p>{valueLabels.top12kDiff}</p>
+                      <p>{valueLabels?.top12kDiff}</p>
                       <img
                         src={playerData.stats.top12kDiff?.icon}
                         alt={playerData.stats.top12kDiff?.name || 'None'}
@@ -255,19 +255,19 @@ const ProfilePage = () => {
                   </div>
                   <div className="diff-container">
                     <div className="diff-info">
-                      <p>{valueLabels.topDiff}</p>
+                      <p>{valueLabels?.topDiff}</p>
                       <img
-                        src={playerData.stats.topDiff?.icon}
-                        alt={playerData.stats.topDiff?.name || 'None'}
+                        src={playerData.stats?.topDiff?.icon}
+                        alt={playerData.stats?.topDiff?.name || 'None'}
                         className="diff-image"
                       />
                     </div>
 
                     <div className="diff-info">
-                      <p>{valueLabels.top12kDiff}</p>
+                      <p>{valueLabels?.top12kDiff}</p>
                       <img
-                        src={playerData.stats.top12kDiff?.icon}
-                        alt={playerData.stats.top12kDiff?.name || 'None'}
+                        src={playerData.stats?.top12kDiff?.icon}
+                        alt={playerData.stats?.top12kDiff?.name || 'None'}
                         className="diff-image"
                       />
                     </div>
