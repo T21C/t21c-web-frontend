@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CrossIcon, ImageIcon } from '@/components/common/icons';
+import ImageSelectorPopup from '../ImageSelectorPopup/ImageSelectorPopup';
 import './CreatePackPopup.css';
 import toast from 'react-hot-toast';
+import api from '@/utils/api';
 
 const CreatePackPopup = ({ onClose, onCreate }) => {
   const { t } = useTranslation('components');
@@ -16,6 +18,8 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
     isPinned: false
   });
   const [loading, setLoading] = useState(false);
+  const [showImageSelector, setShowImageSelector] = useState(false);
+  const [uploadingIcon, setUploadingIcon] = useState(false);
 
   // View mode options
   const viewModeOptions = [
@@ -39,6 +43,44 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
     }));
   };
 
+  const handleIconUpload = async (file) => {
+    setUploadingIcon(true);
+    try {
+      // For new packs, we'll store the file temporarily and upload it after pack creation
+      // Convert file to data URL for preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setFormData(prev => ({
+          ...prev,
+          iconUrl: e.target.result,
+          iconFile: file // Store the file for later upload
+        }));
+      };
+      reader.readAsDataURL(file);
+      
+      toast.success(tPopup('success.iconSelected'), {
+        duration: 3000,
+        position: 'top-right',
+        style: {
+          background: '#10b981',
+          color: '#ffffff',
+        },
+      });
+    } catch (error) {
+      console.error('Error processing icon:', error);
+      toast.error(tPopup('errors.iconProcessFailed'), {
+        duration: 4000,
+        position: 'top-right',
+        style: {
+          background: '#ef4444',
+          color: '#ffffff',
+        },
+      });
+    } finally {
+      setUploadingIcon(false);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     
@@ -49,7 +91,46 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
 
     setLoading(true);
     try {
-      await onCreate(formData);
+      // Create pack without icon first
+      const packData = { ...formData };
+      delete packData.iconFile; // Remove the file from pack data
+      delete packData.iconUrl; // Remove the preview URL
+      
+      const newPack = await onCreate(packData);
+      
+      // Upload icon if one was selected
+      if (formData.iconFile && newPack) {
+        try {
+          const iconFormData = new FormData();
+          iconFormData.append('icon', formData.iconFile);
+
+          await api.post(`/v2/database/levels/packs/${newPack.id}/icon`, iconFormData, {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          });
+          
+          toast.success(tPopup('success.iconUploaded'), {
+            duration: 3000,
+            position: 'top-right',
+            style: {
+              background: '#10b981',
+              color: '#ffffff',
+            },
+          });
+        } catch (iconError) {
+          console.error('Error uploading pack icon:', iconError);
+          const errorMessage = iconError.response?.data?.error || tPopup('errors.iconUploadFailed');
+          toast.error(errorMessage, {
+            duration: 4000,
+            position: 'top-right',
+            style: {
+              background: '#ef4444',
+              color: '#ffffff',
+            },
+          });
+        }
+      }
     } catch (error) {
       console.error('Error creating pack:', error);
       toast.error(tPopup('errors.createFailed'));
@@ -99,15 +180,38 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
               <label className="create-pack-popup__label">
                 {tPopup('icon.label')}
               </label>
-              <div className="create-pack-popup__icon-input-group">
-                <ImageIcon className="create-pack-popup__icon-input-icon" />
-                <input
-                  type="url"
-                  className="create-pack-popup__input"
-                  placeholder={tPopup('icon.placeholder')}
-                  value={formData.iconUrl}
-                  onChange={(e) => handleInputChange('iconUrl', e.target.value)}
-                />
+              <div className="create-pack-popup__icon-section">
+                {formData.iconUrl && (
+                  <div className="create-pack-popup__icon-preview">
+                    <img 
+                      src={formData.iconUrl} 
+                      alt="Pack icon" 
+                      className="create-pack-popup__icon-preview-img"
+                    />
+                  </div>
+                )}
+                <div className="create-pack-popup__icon-actions">
+                  <button
+                    type="button"
+                    className="create-pack-popup__icon-upload-btn"
+                    onClick={() => setShowImageSelector(true)}
+                    disabled={uploadingIcon}
+                  >
+                    <ImageIcon />
+                    <span>
+                      {uploadingIcon ? tPopup('icon.uploading') : tPopup('icon.upload')}
+                    </span>
+                  </button>
+                  {formData.iconUrl && (
+                    <button
+                      type="button"
+                      className="create-pack-popup__icon-remove-btn"
+                      onClick={() => handleInputChange('iconUrl', '')}
+                    >
+                      {tPopup('icon.remove')}
+                    </button>
+                  )}
+                </div>
               </div>
               <p className="create-pack-popup__help">
                 {tPopup('icon.help')}
@@ -191,6 +295,14 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
           </div>
         </form>
       </div>
+
+      {showImageSelector && (
+        <ImageSelectorPopup
+          isOpen={showImageSelector}
+          onClose={() => setShowImageSelector(false)}
+          onSave={handleIconUpload}
+        />
+      )}
     </div>
   );
 };

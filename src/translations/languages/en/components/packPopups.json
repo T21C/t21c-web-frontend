@@ -47,9 +47,13 @@
       "help": "Choose a descriptive name for your pack"
     },
     "icon": {
-      "label": "Icon URL",
+      "label": "Pack Icon",
       "placeholder": "https://example.com/icon.png",
-      "help": "Optional: URL to an image for your pack icon"
+      "help": "Optional: Upload an image for your pack icon",
+      "upload": "Upload Icon",
+      "uploading": "Uploading...",
+      "remove": "Remove",
+      "removing": "Removing..."
     },
     "theme": {
       "label": "Theme",
@@ -74,11 +78,15 @@
     "create": "Create Pack",
     "creating": "Creating...",
     "success": {
-      "created": "Pack created successfully!"
+      "created": "Pack created successfully!",
+      "iconSelected": "Icon selected successfully!",
+      "iconUploaded": "Icon uploaded successfully!"
     },
     "errors": {
       "nameRequired": "Pack name is required",
-      "createFailed": "Failed to create pack"
+      "createFailed": "Failed to create pack",
+      "iconProcessFailed": "Failed to process icon",
+      "iconUploadFailed": "Failed to upload icon"
     }
   },
   "editPack": {
@@ -90,9 +98,13 @@
       "help": "Choose a descriptive name for your pack"
     },
     "icon": {
-      "label": "Icon URL",
+      "label": "Pack Icon",
       "placeholder": "https://example.com/icon.png",
-      "help": "Optional: URL to an image for your pack icon"
+      "help": "Optional: Upload an image for your pack icon",
+      "upload": "Upload Icon",
+      "uploading": "Uploading...",
+      "remove": "Remove",
+      "removing": "Removing..."
     },
     "theme": {
       "label": "Theme",
@@ -129,12 +141,16 @@
     },
     "success": {
       "updated": "Pack updated successfully!",
-      "deleted": "Pack deleted successfully!"
+      "deleted": "Pack deleted successfully!",
+      "iconUploaded": "Icon uploaded successfully!",
+      "iconRemoved": "Icon removed successfully!"
     },
     "errors": {
       "nameRequired": "Pack name is required",
       "updateFailed": "Failed to update pack",
-      "deleteFailed": "Failed to delete pack"
+      "deleteFailed": "Failed to delete pack",
+      "iconUploadFailed": "Failed to upload icon",
+      "iconRemoveFailed": "Failed to remove icon"
     }
   }
 }

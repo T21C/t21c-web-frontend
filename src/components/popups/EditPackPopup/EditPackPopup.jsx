@@ -3,9 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { PackContext } from '@/contexts/PackContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { CrossIcon, ImageIcon, TrashIcon } from '@/components/common/icons';
+import ImageSelectorPopup from '../ImageSelectorPopup/ImageSelectorPopup';
 import './EditPackPopup.css';
 import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import api from '@/utils/api';
 
 const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
   const { t } = useTranslation('components');
@@ -23,6 +25,8 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
   });
   const [loading, setLoading] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showImageSelector, setShowImageSelector] = useState(false);
+  const [uploadingIcon, setUploadingIcon] = useState(false);
 
   // View mode options
   const viewModeOptions = [
@@ -44,6 +48,55 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
       ...prev,
       [field]: value
     }));
+  };
+
+  const handleIconUpload = async (file) => {
+    setUploadingIcon(true);
+    try {
+      const formData = new FormData();
+      formData.append('icon', file);
+
+      const response = await api.post(`/v2/database/levels/packs/${pack.id}/icon`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      // Update form data with new icon URL
+      setFormData(prev => ({
+        ...prev,
+        iconUrl: response.data.icon.urls.original
+      }));
+
+      toast.success(tPopup('success.iconUploaded'));
+    } catch (error) {
+      console.error('Error uploading pack icon:', error);
+      const errorMessage = error.response?.data?.error || tPopup('errors.iconUploadFailed');
+      toast.error(errorMessage);
+    } finally {
+      setUploadingIcon(false);
+    }
+  };
+
+  const handleIconRemove = async () => {
+    setUploadingIcon(true);
+    try {
+      await api.delete(`/v2/database/levels/packs/${pack.id}/icon`);
+
+      // Update form data to remove icon URL
+      setFormData(prev => ({
+        ...prev,
+        iconUrl: ''
+      }));
+
+      toast.success(tPopup('success.iconRemoved'));
+    } catch (error) {
+      console.error('Error removing pack icon:', error);
+      const errorMessage = error.response?.data?.error || tPopup('errors.iconRemoveFailed');
+      toast.error(errorMessage);
+    } finally {
+      setUploadingIcon(false);
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -146,16 +199,39 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
               <label className="edit-pack-popup__label">
                 {tPopup('icon.label')}
               </label>
-              <div className="edit-pack-popup__icon-input-group">
-                <ImageIcon className="edit-pack-popup__icon-input-icon" />
-                <input
-                  type="url"
-                  className="edit-pack-popup__input"
-                  placeholder={tPopup('icon.placeholder')}
-                  value={formData.iconUrl}
-                  onChange={(e) => handleInputChange('iconUrl', e.target.value)}
-                  disabled={!canEdit}
-                />
+              <div className="edit-pack-popup__icon-section">
+                {formData.iconUrl && (
+                  <div className="edit-pack-popup__icon-preview">
+                    <img 
+                      src={formData.iconUrl} 
+                      alt="Pack icon" 
+                      className="edit-pack-popup__icon-preview-img"
+                    />
+                  </div>
+                )}
+                <div className="edit-pack-popup__icon-actions">
+                  <button
+                    type="button"
+                    className="edit-pack-popup__icon-upload-btn"
+                    onClick={() => setShowImageSelector(true)}
+                    disabled={!canEdit || uploadingIcon}
+                  >
+                    <ImageIcon />
+                    <span>
+                      {uploadingIcon ? tPopup('icon.uploading') : tPopup('icon.upload')}
+                    </span>
+                  </button>
+                  {formData.iconUrl && (
+                    <button
+                      type="button"
+                      className="edit-pack-popup__icon-remove-btn"
+                      onClick={handleIconRemove}
+                      disabled={!canEdit || uploadingIcon}
+                    >
+                      {uploadingIcon ? tPopup('icon.removing') : tPopup('icon.remove')}
+                    </button>
+                  )}
+                </div>
               </div>
               <p className="edit-pack-popup__help">
                 {tPopup('icon.help')}
@@ -296,6 +372,15 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
             </div>
           </div>
         </div>
+      )}
+
+      {showImageSelector && (
+        <ImageSelectorPopup
+          isOpen={showImageSelector}
+          onClose={() => setShowImageSelector(false)}
+          onSave={handleIconUpload}
+          currentAvatar={formData.iconUrl}
+        />
       )}
     </div>
   );

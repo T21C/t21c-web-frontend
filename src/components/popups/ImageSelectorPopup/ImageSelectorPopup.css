@@ -1,4 +1,4 @@
-.profile-picture-popup-overlay {
+.image-selector-popup-overlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -11,7 +11,7 @@
     z-index: 1000;
 }
 
-.profile-picture-popup {
+.image-selector-popup {
     background: #1a1a1a;
     border-radius: 8px;
     width: 90%;
@@ -23,7 +23,7 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
 }
 
-.profile-picture-popup-header {
+.image-selector-popup-header {
     padding: 16px;
     border-bottom: 1px solid #333;
     display: flex;
@@ -31,7 +31,7 @@
     align-items: center;
 }
 
-.profile-picture-popup-header h2 {
+.image-selector-popup-header h2 {
     margin: 0;
     font-size: 1.25rem;
     color: #fff;
@@ -53,7 +53,7 @@
     opacity: 1;
 }
 
-.profile-picture-popup-content {
+.image-selector-popup-content {
     padding: 16px;
     flex: 1;
     overflow: auto;
@@ -107,7 +107,7 @@
     color: #999;
 }
 
-.profile-picture-popup-footer {
+.image-selector-popup-footer {
     padding: 16px;
     border-top: 1px solid #333;
     display: flex;
@@ -238,7 +238,7 @@
 
 /* Responsive adjustments */
 @media (max-width: 768px) {
-    .profile-picture-popup {
+    .image-selector-popup {
         width: 95%;
         max-height: 95vh;
     }
@@ -247,7 +247,7 @@
         height: 300px;
     }
 
-    .profile-picture-popup-footer {
+    .image-selector-popup-footer {
         flex-direction: column;
         align-items: stretch;
     }

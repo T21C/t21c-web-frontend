@@ -7,7 +7,7 @@ import { Tooltip } from 'react-tooltip';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
-import { ProfilePicturePopup } from '@/components/popups';
+import { ImageSelectorPopup } from '@/components/popups';
 import { CountrySelect } from '@/components/common/selectors';
 import { useTranslation } from 'react-i18next';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
@@ -516,7 +516,7 @@ const EditProfilePage = () => {
       </div>
     </div>
 
-    <ProfilePicturePopup
+    <ImageSelectorPopup
       isOpen={isPopupOpen}
       onClose={handlePopupClose}
       onSave={handlePopupSave}
