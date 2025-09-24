@@ -9,6 +9,7 @@ import { formatCreatorDisplay } from "@/utils/Utility";
 import { UserAvatar } from "@/components/layout";
 import { permissionFlags } from "@/utils/UserPermissions";
 import { hasFlag } from "@/utils/UserPermissions";
+import { useDifficultyContext } from "@/contexts/DifficultyContext";
 
 const PackCard = ({
   index,
@@ -24,6 +25,7 @@ const PackCard = ({
   const [pack, setPack] = useState(initialPack);
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [levelCount, setLevelCount] = useState(pack.packItems?.length || 0);
+  const { difficultyDict } = useDifficultyContext();
   const navigate = useNavigate();
 
   // Add effect to handle body overflow when edit popup is open
@@ -164,7 +166,8 @@ const PackCard = ({
               {pack.packItems.slice(0, 3).map((item, idx) => (
                 <div key={idx} className="pack-card__preview-level">
                   <span className="pack-card__preview-level-name">
-                    {item.level?.song || `Level ${item.levelId}`}
+                    <img className="pack-card__preview-level-icon" src={difficultyDict[item.level?.diffId]?.icon} alt={item.level?.song} />
+                    <span className="pack-card__preview-level-name-text">{item.level?.song || `Level ${item.levelId}`}</span>
                   </span>
                 </div>
               ))}

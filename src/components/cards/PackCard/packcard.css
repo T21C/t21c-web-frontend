@@ -200,10 +200,22 @@
   font-size: 13px;
   color: #888888;
   font-weight: 500;
-  display: block;
+  display: flex;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.pack-card__preview-level-name-text {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.pack-card__preview-level-icon {
+  width: 16px;
+  height: 16px;
+  margin-right: 4px;
 }
 
 .pack-card__preview-more {
