@@ -8,7 +8,8 @@
     "levels": {
       "title": "Levels in this Pack",
       "count": "levels",
-      "empty": "This pack doesn't contain any levels yet."
+      "empty": "This pack doesn't contain any levels yet.",
+      "dragHint": "Drag to reorder"
     },
     "actions": {
       "edit": "Edit Pack"
@@ -22,6 +23,10 @@
     "edit": {
       "success": "Pack updated successfully!",
       "error": "Failed to update pack"
+    },
+    "reorder": {
+      "success": "Levels reordered successfully!",
+      "error": "Failed to reorder levels"
     },
     "delete": {
       "confirm": "Are you sure you want to delete this pack? This action cannot be undone.",

@@ -34,6 +34,7 @@ import CrownIcon from './CrownIcon';
 import { ArrowIcon } from './ArrowIcon';
 import { SwitchIcon } from './SwitchIcon';
 import YoutubeIcon from './YoutubeIcon';
+import { DragHandleIcon } from './DragHandleIcon';
 import PackIcon from './PackIcon';
 import PinIcon from './PinIcon';
 import LockIcon from './LockIcon';
@@ -80,6 +81,7 @@ export {
     ArrowIcon,
     SwitchIcon,
     YoutubeIcon,
+    DragHandleIcon,
     PackIcon,
     PinIcon,
     LockIcon,

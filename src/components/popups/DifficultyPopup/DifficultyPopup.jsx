@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
-import { EditIcon, PencilIcon, QuestionmarkCircleIcon, TrashIcon } from '@/components/common/icons';
+import { EditIcon, PencilIcon, QuestionmarkCircleIcon, TrashIcon, DragHandleIcon } from '@/components/common/icons';
 import { CustomSelect, StateDisplay } from '@/components/common/selectors';
 import api from '@/utils/api';
 import './difficultypopup.css';
@@ -1156,9 +1156,7 @@ const DifficultyPopup = ({
                                     <div className="difficulty-modal__directive-header">
                                       <div className="difficulty-modal__directive-header-left">
                                         <div {...provided.dragHandleProps} className="difficulty-modal__drag-handle">
-                                          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                            <path d="M8 6H16M8 12H16M8 18H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                                          </svg>
+                                          <DragHandleIcon />
                                         </div>
                                         <button
                                           type="button"

@@ -295,6 +295,19 @@
   border-bottom: 1px solid var(--color-white-t20);
 }
 
+.pack-detail-page__levels-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+}
+
+.pack-detail-page__drag-hint {
+  font-size: 0.8rem;
+  color: var(--color-white-t60);
+  font-style: italic;
+}
+
 .pack-detail-page__levels-title {
   margin: 0;
   font-size: 1.5rem;
@@ -313,6 +326,53 @@
   flex-direction: column;
   gap: 1rem;
   margin-bottom: 2rem;
+}
+
+.pack-detail-page__level-item {
+  position: relative;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pack-detail-page__level-item.dragging {
+  transform: rotate(5deg);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+}
+
+.pack-detail-page__level-item.reordering {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.pack-detail-page__level-item:not(.dragging):not(.reordering) {
+  cursor: grab;
+}
+
+.pack-detail-page__level-item:not(.dragging):not(.reordering):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.pack-detail-page__drag-handle {
+  position: absolute;
+  left: -2rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--color-white-t40);
+  cursor: grab;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: color 0.2s ease, background-color 0.2s ease;
+  z-index: 10;
+}
+
+.pack-detail-page__drag-handle:hover {
+  color: var(--color-white-t80);
+  background-color: var(--color-white-t10);
+}
+
+.pack-detail-page__drag-handle:active {
+  cursor: grabbing;
 }
 
 .pack-detail-page__empty {

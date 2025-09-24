@@ -6,7 +6,7 @@ import { CompleteNav } from "@/components/layout";
 import { LevelCard } from "@/components/cards";
 import { MetaTags } from "@/components/common/display";
 import { ScrollButton } from "@/components/common/buttons";
-import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, ArrowIcon } from "@/components/common/icons";
+import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, ArrowIcon, DragHandleIcon } from "@/components/common/icons";
 import { EditPackPopup } from "@/components/popups";
 import { useAuth } from "@/contexts/AuthContext";
 import { PackContext } from "@/contexts/PackContext";
@@ -15,6 +15,7 @@ import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { UserAvatar } from "@/components/layout";
 import { Tooltip } from "react-tooltip";
 import toast from 'react-hot-toast';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 
 const PackDetailPage = () => {
   const { t } = useTranslation('pages');
@@ -30,6 +31,7 @@ const PackDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [showEditPopup, setShowEditPopup] = useState(false);
+  const [isReordering, setIsReordering] = useState(false);
   const scrollRef = useRef(null);
 
   // Fetch pack details
@@ -72,6 +74,48 @@ const PackDetailPage = () => {
   // Handle delete pack - navigate back to packs list
   const handleDeletePack = () => {
     navigate('/packs');
+  };
+
+  // Handle drag and drop reordering
+  const handleDragEnd = async (result) => {
+    if (!result.destination || !pack?.packItems) return;
+    
+    setIsReordering(true);
+    
+    try {
+      const items = Array.from(pack.packItems);
+      const [reorderedItem] = items.splice(result.source.index, 1);
+      items.splice(result.destination.index, 0, reorderedItem);
+      
+      // Update local state immediately for better UX
+      const updatedPack = {
+        ...pack,
+        packItems: items.map((item, index) => ({
+          ...item,
+          sortOrder: index + 1
+        }))
+      };
+      setPack(updatedPack);
+      
+      // Send reorder request to server
+      const levelOrders = items.map((item, index) => ({
+        levelId: item.levelId,
+        sortOrder: index + 1
+      }));
+      
+      await api.put(`/v2/database/levels/packs/${pack.id}/levels/reorder`, {
+        levelOrders
+      });
+      
+      toast.success(tPack('reorder.success'));
+    } catch (error) {
+      console.error('Error reordering pack levels:', error);
+      toast.error(tPack('reorder.error'));
+      // Revert local state on error
+      fetchPack();
+    } finally {
+      setIsReordering(false);
+    }
   };
 
   // Get view mode icon and text
@@ -157,7 +201,7 @@ const PackDetailPage = () => {
       />
       
       <CompleteNav />
-      
+      <div className="background-level"></div>
       <div className="pack-body">
         {/* Header */}
         <div className="pack-detail-page__header">
@@ -255,25 +299,66 @@ const PackDetailPage = () => {
             <h2 className="pack-detail-page__levels-title">
               {tPack('levels.title')}
             </h2>
-            <span className="pack-detail-page__levels-count">
-              {pack.packItems?.length || 0} {tPack('levels.count')}
-            </span>
+            <div className="pack-detail-page__levels-header-right">
+              <span className="pack-detail-page__levels-count">
+                {pack.packItems?.length || 0} {tPack('levels.count')}
+              </span>
+              {canEdit && pack.packItems && pack.packItems.length > 1 && (
+                <span className="pack-detail-page__drag-hint">
+                  {tPack('levels.dragHint')}
+                </span>
+              )}
+            </div>
           </div>
 
           {pack.packItems && pack.packItems.length > 0 ? (
-            <div className="pack-detail-page__levels-list">
-              {pack.packItems.map((item, index) => (
-                <LevelCard
-                  key={item.levelId}
-                  index={index}
-                  level={item.level}
-                  user={user}
-                  sortBy="RECENT"
-                  displayMode="normal"
-                  size="medium"
-                />
-              ))}
-            </div>
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable droppableId="pack-levels">
+                {(provided) => (
+                  <div 
+                    className="pack-detail-page__levels-list"
+                    {...provided.droppableProps}
+                    ref={provided.innerRef}
+                  >
+                    {pack.packItems.map((item, index) => (
+                      <Draggable 
+                        key={item.levelId} 
+                        draggableId={item.levelId.toString()} 
+                        index={index}
+                        isDragDisabled={!canEdit || isReordering}
+                      >
+                        {(provided, snapshot) => (
+                          <div 
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            className={`pack-detail-page__level-item ${snapshot.isDragging ? 'dragging' : ''} ${isReordering ? 'reordering' : ''}`}
+                          >
+                            {canEdit && (
+                              <div 
+                                {...provided.dragHandleProps}
+                                className="pack-detail-page__drag-handle"
+                                title={tPack('levels.dragHint')}
+                              >
+                                <DragHandleIcon />
+                              </div>
+                            )}
+                            <LevelCard
+                              index={index}
+                              level={item.level}
+                              user={user}
+                              sortBy="RECENT"
+                              displayMode="normal"
+                              size="medium"
+                            />
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
           ) : (
             <div className="pack-detail-page__empty">
               <p>{tPack('levels.empty')}</p>
