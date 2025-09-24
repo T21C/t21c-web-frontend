@@ -1,28 +1,86 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PackContext } from '@/contexts/PackContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { CrossIcon, PlusIcon, SearchIcon } from '@/components/common/icons';
 import CreatePackPopup from './CreatePackPopup';
 import './AddToPackPopup.css';
 import toast from 'react-hot-toast';
+import api from '@/utils/api';
 
 const AddToPackPopup = ({ level, onClose, onSuccess }) => {
   const { t } = useTranslation('components');
-  const tPopup = (key) => t(`packPopups.addToPack.${key}`) || key;
+  const tPopup = (key, params = {}) => t(`packPopups.addToPack.${key}`, params) || key;
   
-  const { userPacks, addLevelToPack, fetchUserPacks, createPack } = useContext(PackContext);
   const { user } = useAuth();
   
+  const [userPacks, setUserPacks] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPackId, setSelectedPackId] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showCreatePopup, setShowCreatePopup] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalPacks, setTotalPacks] = useState(0);
 
-  // Filter packs based on search query
-  const filteredPacks = userPacks.filter(pack =>
-    pack.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const LIMIT = 10;
+
+  // Fetch user packs on mount
+  const fetchUserPacks = async () => {
+    if (!user?.username) return;
+    
+    try {
+      setLoading(true);
+      const params = {
+        ownerUsername: user.username,
+        offset: (currentPage - 1) * LIMIT,
+        limit: LIMIT,
+        ...(searchQuery && { query: searchQuery })
+      };
+
+      const response = await api.get('/v2/database/levels/packs', { params });
+      setUserPacks(response.data.packs || []);
+      setTotalPacks(response.data.total || 0);
+      setTotalPages(Math.ceil((response.data.total || 0) / LIMIT));
+    } catch (error) {
+      console.error('Error fetching user packs:', error);
+      setUserPacks([]);
+      setTotalPacks(0);
+      setTotalPages(1);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (user) {
+      fetchUserPacks();
+    }
+  }, [user?.id, currentPage, searchQuery]);
+
+  // Handle search input changes
+  const handleSearchChange = (value) => {
+    setSearchQuery(value);
+    setCurrentPage(1); // Reset to first page when searching
+  };
+
+  // Handle page changes
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
+
+  // Standalone pack operations
+  const addLevelToPack = async (packId, levelId, sortOrder = null) => {
+    const response = await api.post(`/v2/database/levels/packs/${packId}/levels`, {
+      levelId,
+      sortOrder
+    });
+    return response.data;
+  };
+
+  const createPack = async (packData) => {
+    const response = await api.post('/v2/database/levels/packs', packData);
+    return response.data;
+  };
 
   // Handle adding level to pack
   const handleAddToPack = async () => {
@@ -59,6 +117,8 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
       toast.success(tPopup('success.packCreated'));
       // Auto-select the newly created pack
       setSelectedPackId(newPack.id);
+      // Refresh user packs to include the new pack
+      fetchUserPacks();
     } catch (error) {
       console.error('Error creating pack:', error);
       toast.error(tPopup('errors.createFailed'));
@@ -140,7 +200,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
                   className="add-to-pack-popup__search-input"
                   placeholder={tPopup('searchPlaceholder')}
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => handleSearchChange(e.target.value)}
                 />
               </div>
             </div>
@@ -160,7 +220,13 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
               </div>
 
               <div className="add-to-pack-popup__packs-list">
-                {filteredPacks.length === 0 ? (
+                {loading ? (
+                  <div className="add-to-pack-popup__loading">
+                    <p className="add-to-pack-popup__loading-text">
+                      {tPopup('loading')}
+                    </p>
+                  </div>
+                ) : userPacks.length === 0 ? (
                   <div className="add-to-pack-popup__empty">
                     <p className="add-to-pack-popup__empty-text">
                       {searchQuery ? tPopup('noPacksFound') : tPopup('noPacks')}
@@ -176,7 +242,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
                     )}
                   </div>
                 ) : (
-                  filteredPacks.map((pack) => {
+                  userPacks.map((pack) => {
                     const isAlreadyInPack = isLevelInPack(pack.id);
                     const isSelected = selectedPackId === pack.id;
                     
@@ -229,6 +295,31 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
                   })
                 )}
               </div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="add-to-pack-popup__pagination">
+                  <button
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="add-to-pack-popup__page-btn"
+                  >
+                    ←
+                  </button>
+                  
+                  <span className="add-to-pack-popup__page-info">
+                    {tPopup('pagination.pageInfo', { current: currentPage, total: totalPages })}
+                  </span>
+                  
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="add-to-pack-popup__page-btn"
+                  >
+                    →
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 

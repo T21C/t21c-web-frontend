@@ -13,12 +13,15 @@
 }
 
 .add-to-pack-popup__content {
+  position: absolute;
+  top: 0;
+  margin-top: 5rem;
   background: #1a1a1a;
   border-radius: 12px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
   max-width: 500px;
   width: 100%;
-  max-height: 80vh;
+  height: 85vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -171,7 +174,6 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: 300px;
 }
 
 .add-to-pack-popup__pack-item {
@@ -373,14 +375,68 @@
   transform: none;
 }
 
+/* Loading state */
+.add-to-pack-popup__loading {
+  text-align: center;
+  padding: 40px 20px;
+  color: #888888;
+}
+
+.add-to-pack-popup__loading-text {
+  font-size: 14px;
+  margin: 0;
+}
+
+/* Pagination */
+.add-to-pack-popup__pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 16px;
+  border-top: 1px solid #333333;
+  margin-top: 16px;
+}
+
+.add-to-pack-popup__page-btn {
+  padding: 8px 16px;
+  background: #2a2a2a;
+  border: 1px solid #333333;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.add-to-pack-popup__page-btn:hover:not(:disabled) {
+  background: #007bff;
+  border-color: #007bff;
+}
+
+.add-to-pack-popup__page-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.add-to-pack-popup__page-info {
+  color: #888888;
+  font-size: 14px;
+  font-weight: 500;
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .add-to-pack-popup {
-    padding: 16px;
+    padding: 12px;
+    align-items: flex-start;
+    padding-top: 2rem;
   }
   
   .add-to-pack-popup__content {
     max-height: 90vh;
+    position: relative;
+    top: auto;
   }
   
   .add-to-pack-popup__header {
@@ -396,25 +452,100 @@
     gap: 16px;
   }
   
+  .add-to-pack-popup__level-info {
+    padding: 12px;
+  }
+  
+  .add-to-pack-popup__level-title {
+    font-size: 15px;
+  }
+  
+  .add-to-pack-popup__level-creator {
+    font-size: 13px;
+  }
+  
+  .add-to-pack-popup__search-input {
+    padding: 10px 10px 10px 36px;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  .add-to-pack-popup__packs-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  
+  .add-to-pack-popup__create-btn {
+    align-self: flex-start;
+    padding: 10px 16px;
+    font-size: 14px;
+  }
+  
+  .add-to-pack-popup__pack-item {
+    padding: 12px;
+    gap: 12px;
+  }
+  
+  .add-to-pack-popup__pack-icon {
+    width: 44px;
+    height: 44px;
+  }
+  
+  .add-to-pack-popup__pack-name {
+    font-size: 15px;
+  }
+  
+  .add-to-pack-popup__pack-meta {
+    font-size: 13px;
+  }
+  
   .add-to-pack-popup__footer {
     padding: 16px 20px;
     flex-direction: column-reverse;
+    gap: 12px;
   }
   
   .add-to-pack-popup__cancel-btn,
   .add-to-pack-popup__add-btn {
     width: 100%;
     justify-content: center;
+    padding: 12px 20px;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+
+  .add-to-pack-popup__pagination {
+    gap: 12px;
+    padding-top: 12px;
+    margin-top: 12px;
+  }
+  
+  .add-to-pack-popup__page-btn {
+    padding: 10px 20px;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+  
+  .add-to-pack-popup__page-info {
+    font-size: 15px;
   }
 }
 
 @media (max-width: 480px) {
   .add-to-pack-popup {
-    padding: 12px;
+    padding: 8px;
+    padding-top: 1rem;
+  }
+  
+  .add-to-pack-popup__content {
+    max-height: 95vh;
+    border-radius: 8px;
   }
   
   .add-to-pack-popup__header {
     padding: 12px 16px;
+  }
+  
+  .add-to-pack-popup__title {
+    font-size: 16px;
   }
   
   .add-to-pack-popup__body {
@@ -422,8 +553,40 @@
     gap: 12px;
   }
   
-  .add-to-pack-popup__footer {
-    padding: 12px 16px;
+  .add-to-pack-popup__level-info {
+    padding: 10px;
+  }
+  
+  .add-to-pack-popup__level-title {
+    font-size: 14px;
+  }
+  
+  .add-to-pack-popup__level-creator {
+    font-size: 12px;
+  }
+  
+  .add-to-pack-popup__search-input {
+    padding: 8px 8px 8px 32px;
+    font-size: 16px;
+  }
+  
+  .add-to-pack-popup__search-icon {
+    left: 10px;
+    width: 14px;
+    height: 14px;
+  }
+  
+  .add-to-pack-popup__packs-header {
+    gap: 10px;
+  }
+  
+  .add-to-pack-popup__packs-title {
+    font-size: 15px;
+  }
+  
+  .add-to-pack-popup__create-btn {
+    padding: 8px 12px;
+    font-size: 13px;
   }
   
   .add-to-pack-popup__pack-item {
@@ -443,12 +606,112 @@
   .add-to-pack-popup__pack-meta {
     font-size: 11px;
   }
+  
+  .add-to-pack-popup__pack-status-text {
+    font-size: 11px;
+    padding: 3px 6px;
+  }
+  
+  .add-to-pack-popup__pack-selected {
+    width: 20px;
+    height: 20px;
+    font-size: 12px;
+  }
+  
+  .add-to-pack-popup__footer {
+    padding: 12px 16px;
+    gap: 10px;
+  }
+  
+  .add-to-pack-popup__cancel-btn,
+  .add-to-pack-popup__add-btn {
+    padding: 10px 16px;
+    font-size: 16px;
+  }
+  
+  .add-to-pack-popup__pagination {
+    gap: 10px;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+  
+  .add-to-pack-popup__page-btn {
+    padding: 8px 16px;
+    font-size: 16px;
+  }
+  
+  .add-to-pack-popup__page-info {
+    font-size: 14px;
+  }
+  
+  .add-to-pack-popup__loading {
+    padding: 30px 16px;
+  }
+  
+  .add-to-pack-popup__loading-text {
+    font-size: 13px;
+  }
+  
+  .add-to-pack-popup__empty {
+    padding: 30px 16px;
+  }
+  
+  .add-to-pack-popup__empty-text {
+    font-size: 13px;
+  }
+  
+  .add-to-pack-popup__create-first-btn {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
 }
 
 /* Dark mode adjustments */
 @media (prefers-color-scheme: dark) {
   .add-to-pack-popup {
     background: rgba(0, 0, 0, 0.7);
+  }
+}
+
+/* Touch-friendly improvements for mobile */
+@media (hover: none) and (pointer: coarse) {
+  .add-to-pack-popup__close {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .add-to-pack-popup__create-btn,
+  .add-to-pack-popup__create-first-btn {
+    min-height: 44px;
+  }
+  
+  .add-to-pack-popup__pack-item {
+    min-height: 60px;
+  }
+  
+  .add-to-pack-popup__page-btn {
+    min-width: 44px;
+    min-height: 44px;
+  }
+  
+  .add-to-pack-popup__cancel-btn,
+  .add-to-pack-popup__add-btn {
+    min-height: 48px;
+  }
+}
+
+/* Landscape orientation adjustments */
+@media (max-width: 768px) and (orientation: landscape) {
+  .add-to-pack-popup__content {
+    max-height: 95vh;
+  }
+  
+  .add-to-pack-popup__body {
+    gap: 12px;
+  }
+  
+  .add-to-pack-popup__level-info {
+    padding: 8px;
   }
 }
 

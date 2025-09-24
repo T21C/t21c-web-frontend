@@ -15,9 +15,15 @@
     "loginRequired": "Please log in to manage your packs",
     "levels": "levels",
     "alreadyInPack": "Already in pack",
+    "loading": "Loading packs...",
     "cancel": "Cancel",
     "addToPack": "Add to Pack",
     "adding": "Adding...",
+    "pagination": {
+      "previous": "Previous",
+      "next": "Next",
+      "pageInfo": "Page {{current}} of {{total}}"
+    },
     "success": {
       "added": "Level added to pack successfully!",
       "packCreated": "Pack created successfully!"

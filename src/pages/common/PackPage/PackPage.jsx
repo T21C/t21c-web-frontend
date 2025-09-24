@@ -32,8 +32,8 @@ const PackPage = () => {
   const isMyPacks = location.pathname === '/packs/my';
   
   const {
-    packsData,
-    setPacksData,
+    packs,
+    setPacks,
     filterOpen,
     setFilterOpen,
     sortOpen,
@@ -48,8 +48,6 @@ const PackPage = () => {
     setSort,
     order,
     setOrder,
-    ownerUsername,
-    setOwnerUsername,
     hasMore,
     loading,
     error,
@@ -80,12 +78,10 @@ const PackPage = () => {
   // Handle my packs mode
   useEffect(() => {
     if (isMyPacks && user) {
-      setOwnerUsername(user.username);
       setViewMode('all');
     } else if (!isMyPacks) {
-      setOwnerUsername('');
     }
-  }, [isMyPacks, user, setOwnerUsername, setViewMode]);
+  }, [isMyPacks, user, setViewMode]);
 
   // Initial fetch
   useEffect(() => {
@@ -100,13 +96,12 @@ const PackPage = () => {
   // Handle reset
   const handleReset = useCallback(() => {
     setQuery('');
-    setOwnerUsername('');
     setViewMode('all');
     setPinned(false); // Show all packs (pinned first) by default
     setSort('RECENT');
     setOrder('DESC');
     resetAndFetch();
-  }, [setQuery, setOwnerUsername, setViewMode, setPinned, setSort, setOrder, resetAndFetch]);
+  }, [setQuery, setViewMode, setPinned, setSort, setOrder, resetAndFetch]);
 
   // Handle create pack
   const handleCreatePack = async (packData) => {
@@ -235,19 +230,6 @@ const PackPage = () => {
           <div className="pack-page__controls">
             {filterOpen && (
               <div className="pack-page__filter-panel">
-                <div className="pack-page__filter-group">
-                  <label className="pack-page__filter-label">
-                    {tPack('filters.owner')}
-                  </label>
-                  <input
-                    type="text"
-                    className="pack-page__filter-input"
-                    placeholder={tPack('filters.ownerPlaceholder')}
-                    value={ownerUsername}
-                    onChange={(e) => setOwnerUsername(e.target.value)}
-                    disabled={isMyPacks}
-                  />
-                </div>
 
                 <div className="pack-page__filter-group">
                   <label className="pack-page__filter-label">
@@ -322,7 +304,7 @@ const PackPage = () => {
             </div>
           ) : (
             <InfiniteScroll
-              dataLength={packsData.length}
+              dataLength={packs?.length||0}
               next={loadMore}
               hasMore={hasMore}
               loader={
@@ -339,7 +321,7 @@ const PackPage = () => {
               scrollableTarget={scrollRef.current}
             >
               <div className={`pack-page__grid pack-page__grid--${displayMode}`}>
-                {packsData.map((pack, index) => (
+                {packs?.map((pack, index) => (
                   <PackCard
                     key={pack.id}
                     index={index}
