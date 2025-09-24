@@ -38,23 +38,20 @@ const PackContextProvider = (props) => {
         });
     }, [filters]);
 
+    // Force update state for triggering re-fetches
+    const [forceUpdate, setForceUpdate] = useState(false);
+
     // Pack browsing function (page-exclusive)
-    const fetchPacks = useCallback(async (options = {}) => {
-        const { 
-            reset = false, 
-            forceRefresh = false,
-            customFilters = null
-        } = options;
-        
-        if (loading && !forceRefresh) return;
+    const fetchPacks = useCallback(async () => {
+        if (loading) return;
         
         setLoading(true);
         setError(false);
 
         try {
-            const currentFilters = customFilters || filtersRef.current;
+            const currentFilters = filtersRef.current;
             const params = {
-                offset: reset ? 0 : pageNumber * 30,
+                offset: pageNumber * 30,
                 limit: 30,
                 sort: currentFilters.sort === 'RECENT' ? 'createdAt' : currentFilters.sort === 'NAME' ? 'name' : 'createdAt',
                 order: currentFilters.order
@@ -64,19 +61,16 @@ const PackContextProvider = (props) => {
             if (currentFilters.query.trim()) params.query = currentFilters.query.trim();
             if (currentFilters.ownerUsername.trim()) params.ownerUsername = currentFilters.ownerUsername.trim();
             if (currentFilters.viewMode !== 'all') params.viewMode = currentFilters.viewMode;
-            if (forceRefresh) params._t = Date.now();
 
             const response = await api.get('/v2/database/levels/packs', { params });
             const newPacks = response.data.packs || [];
 
-            if (reset) {
+            if (pageNumber === 0) {
                 setPacks(newPacks);
-                setPageNumber(0);
             } else {
                 setPacks(prev => [...prev, ...newPacks]);
             }
             setHasMore(newPacks.length === 30);
-            setPageNumber(prev => reset ? 1 : prev + 1);
 
         } catch (error) {
             console.error('Error fetching packs:', error);
@@ -84,20 +78,33 @@ const PackContextProvider = (props) => {
         } finally {
             setLoading(false);
         }
-    }, [loading, pageNumber]);
+    }, [pageNumber]);
 
-    // Convenience functions for page browsing
-    const resetAndFetch = useCallback(() => fetchPacks({ reset: true }), [fetchPacks]);
+    // Centralized refresh function
+    const triggerRefresh = useCallback(() => {
+        setPageNumber(0);
+        setPacks([]);
+        setForceUpdate(f => !f);
+    }, []);
+
+    // Load more function
     const loadMore = useCallback(() => {
-        if (hasMore && !loading) fetchPacks({ reset: false });
-    }, [hasMore, loading, fetchPacks]);
+        if (hasMore && !loading) {
+            setPageNumber(prev => prev + 1);
+        }
+    }, [hasMore, loading]);
+
+    // Effect to fetch packs when dependencies change
+    useEffect(() => {
+        fetchPacks();
+    }, [fetchPacks, forceUpdate]);
 
     // General pack operations (for page use)
     const createPack = async (packData) => {
         try {
             const response = await api.post('/v2/database/levels/packs', packData);
             // Refresh page pack list
-            resetAndFetch();
+            triggerRefresh();
             return response.data;
         } catch (error) {
             console.error('Error creating pack:', error);
@@ -108,7 +115,7 @@ const PackContextProvider = (props) => {
     const updatePack = async (packId, updateData) => {
         try {
             const response = await api.put(`/v2/database/levels/packs/${packId}`, updateData);
-            resetAndFetch();
+            triggerRefresh();
             return response.data;
         } catch (error) {
             console.error('Error updating pack:', error);
@@ -119,7 +126,7 @@ const PackContextProvider = (props) => {
     const deletePack = async (packId) => {
         try {
             await api.delete(`/v2/database/levels/packs/${packId}`);
-            resetAndFetch();
+            triggerRefresh();
         } catch (error) {
             console.error('Error deleting pack:', error);
             throw error;
@@ -188,7 +195,7 @@ const PackContextProvider = (props) => {
 
         // Page browsing actions
         fetchPacks,
-        resetAndFetch,
+        triggerRefresh,
         loadMore,
         updateFilter,
         resetFilters,

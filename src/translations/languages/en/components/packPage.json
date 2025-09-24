@@ -34,20 +34,6 @@
       "desc": "Descending"
     }
   },
-  "packCard": {
-    "levels": "{{count}} level",
-    "levels_plural": "{{count}} levels",
-    "createdBy": "Created by {{owner}}",
-    "viewModes": {
-      "public": "Public",
-      "linkonly": "Link Only", 
-      "private": "Private"
-    },
-    "buttons": {
-      "edit": "Edit Pack",
-      "view": "View Pack"
-    }
-  },
   "empty": {
     "title": "No Packs Found",
     "message": "No level packs match your current filters.",

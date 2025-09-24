@@ -14,7 +14,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ReferencesButton, ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
 import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon, FilterIcon, PinIcon, SwitchIcon } from "@/components/common/icons";
-import { CreatePackPopup } from "@/components/popups";
+import { CreatePackPopup, PackHelpPopup } from "@/components/popups";
 import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
@@ -26,39 +26,30 @@ const PackPage = () => {
   const { t } = useTranslation('pages');
   const tPack = (key, params = {}) => t(`pack.${key}`, params);
 
-  const [forceUpdate, setForceUpdate] = useState(false);
   const { user } = useAuth();
   const location = useLocation();
   const isMyPacks = location.pathname === '/packs/my';
   
   const {
     packs,
-    setPacks,
-    filterOpen,
-    setFilterOpen,
-    sortOpen,
-    setSortOpen,
-    query,
-    setQuery,
-    viewMode,
-    setViewMode,
-    pinned,
-    setPinned,
-    sort,
-    setSort,
-    order,
-    setOrder,
-    hasMore,
+    filters,
     loading,
     error,
-    resetAndFetch,
+    hasMore,
+    triggerRefresh,
     loadMore,
-    createPack
+    createPack,
+    updateFilter
   } = useContext(PackContext);
 
+  // Local state for UI controls
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [sortOpen, setSortOpen] = useState(false);
   const [showCreatePopup, setShowCreatePopup] = useState(false);
+  const [showHelpPopup, setShowHelpPopup] = useState(false);
   const [displayMode, setDisplayMode] = useState('grid');
   const scrollRef = useRef(null);
+  const [pendingQuery, setPendingQuery] = useState(filters.query);
 
   // Sort options
   const sortOptions = [
@@ -70,38 +61,49 @@ const PackPage = () => {
   // View mode options
   const viewModeOptions = [
     { value: 'all', label: tPack('viewMode.all') },
-    { value: '1', label: tPack('viewMode.public') },
-    { value: '2', label: tPack('viewMode.linkonly') },
-    { value: '3', label: tPack('viewMode.private') }
+    { value: '0', label: tPack('viewMode.public') },
+    { value: '1', label: tPack('viewMode.linkonly') },
+    { value: '2', label: tPack('viewMode.private') }
   ];
 
   // Handle my packs mode
   useEffect(() => {
     if (isMyPacks && user) {
-      setViewMode('all');
-    } else if (!isMyPacks) {
+      updateFilter('viewMode', 'all');
     }
-  }, [isMyPacks, user, setViewMode]);
+  }, [isMyPacks, user, updateFilter]);
 
-  // Initial fetch
+  // Debounced search effect (same pattern as PassPage)
   useEffect(() => {
-    resetAndFetch();
-  }, []); // Empty dependency array - only run on mount
+    console.log('pendingQuery', pendingQuery);
+    const timer = setTimeout(() => {
+      if (pendingQuery !== filters.query) {
+        updateFilter('query', pendingQuery);
+        triggerRefresh();
+      }
+    }, 500);
 
-  // Handle search
-  const handleSearch = useCallback(() => {
-    resetAndFetch();
-  }, [resetAndFetch]);
+    return () => clearTimeout(timer);
+  }, [pendingQuery]);
+
+  // Initialize pendingQuery with query value
+  useEffect(() => {
+    setPendingQuery(filters.query);
+  }, []);
+
+  function handleQueryChange(e) {
+    setPendingQuery(e.target.value);
+  }
 
   // Handle reset
   const handleReset = useCallback(() => {
-    setQuery('');
-    setViewMode('all');
-    setPinned(false); // Show all packs (pinned first) by default
-    setSort('RECENT');
-    setOrder('DESC');
-    resetAndFetch();
-  }, [setQuery, setViewMode, setPinned, setSort, setOrder, resetAndFetch]);
+    updateFilter('query', '');
+    setPendingQuery('');
+    updateFilter('viewMode', 'all');
+    updateFilter('sort', 'RECENT');
+    updateFilter('order', 'DESC');
+    triggerRefresh();
+  }, [updateFilter, triggerRefresh]);
 
   // Handle create pack
   const handleCreatePack = async (packData) => {
@@ -134,7 +136,7 @@ const PackPage = () => {
       />
       
       <CompleteNav />
-      
+      <div className="background-level"></div>
       <div className="pack-page__container">
         <div className="pack-page__header">
           <div className="pack-page__title-section">
@@ -171,134 +173,172 @@ const PackPage = () => {
           </div>
         </div>
 
-        <div className="pack-page__filters">
-          <div className="search-section">
-            <div className="search-section__input-group">
-              <input
-                type="text"
-                className="search-section__input"
-                placeholder={tPack('search.placeholder')}
-                value={query}
-                onChange={(e) => setQuery(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-              />
-              <button
-                className="search-section__search-btn"
-                onClick={handleSearch}
-                data-tooltip-id="search-tooltip"
-                data-tooltip-content={tPack('search.search')}
-              >
-                🔍
-              </button>
-            </div>
+        <div className="search-section">
+          {/* Search Row */}
+          <div className="search-row">
+            <button 
+              className="help-button"
+              onClick={() => setShowHelpPopup(true)}
+              data-tooltip-id="search"
+            >
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                <g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path d="M12 3C7.04 3 3 7.04 3 12C3 16.96 7.04 21 12 21C16.96 21 21 16.96 21 12C21 7.04 16.96 3 12 3ZM12 19.5C7.86 19.5 4.5 16.14 4.5 12C4.5 7.86 7.86 4.5 12 4.5C16.14 4.5 19.5 7.86 19.5 12C19.5 16.14 16.14 19.5 12 19.5ZM14.3 7.7C14.91 8.31 15.25 9.13 15.25 10C15.25 10.87 14.91 11.68 14.3 12.3C13.87 12.73 13.33 13.03 12.75 13.16V13.5C12.75 13.91 12.41 14.25 12 14.25C11.59 14.25 11.25 13.91 11.25 13.5V12.5C11.25 12.09 11.59 11.75 12 11.75C12.47 11.75 12.91 11.57 13.24 11.24C13.57 10.91 13.75 10.47 13.75 10C13.75 9.53 13.57 9.09 13.24 8.76C12.58 8.1 11.43 8.1 10.77 8.76C10.44 9.09 10.26 9.53 10.26 10C10.26 10.41 9.92 10.75 9.51 10.75C9.1 10.75 8.76 10.41 8.76 10C8.76 9.13 9.1 8.32 9.71 7.7C10.94 6.47 13.08 6.47 14.31 7.7H14.3ZM13 16.25C13 16.8 12.55 17.25 12 17.25C11.45 17.25 11 16.8 11 16.25C11 15.7 11.45 15.25 12 15.25C12.55 15.25 13 15.7 13 16.25Z" fill="#ffffff"></path>
+                </g>
+              </svg>
+              <span>{tPack('buttons.searchHelp')}</span>
+            </button>
+
+            <input
+              value={pendingQuery}
+              type="text"
+              placeholder={tPack('search.placeholder')}
+              onChange={handleQueryChange}
+              className={pendingQuery !== filters.query ? 'search-pending' : ''}
+            />
           </div>
 
-          <div className="pack-page__filter-controls">
-            <button
-              className={`pack-page__filter-btn ${filterOpen ? 'active' : ''}`}
+          {/* Buttons Row */}
+          <div className="buttons-row">
+            <FilterIcon
+              color="#ffffff"
               onClick={() => setFilterOpen(!filterOpen)}
-              data-tooltip-id="filter-tooltip"
-              data-tooltip-content={tPack('filters.toggle')}
-            >
-              <FilterIcon />
-              <span>{tPack('filters.title')}</span>
-            </button>
+              data-tooltip-id="filter"
+              className={`action-button ${filterOpen ? 'active' : ''}`}
+            />
 
-            <button
-              className={`pack-page__sort-btn ${sortOpen ? 'active' : ''}`}
+            <SortIcon
+              color="#ffffff"
               onClick={() => setSortOpen(!sortOpen)}
-              data-tooltip-id="sort-tooltip"
-              data-tooltip-content={tPack('sort.toggle')}
-            >
-              <SortIcon />
-              <span>{tPack('sort.title')}</span>
-            </button>
+              data-tooltip-id="sort"
+              className={`action-button ${sortOpen ? 'active' : ''}`}
+            />
 
-            <button
-              className="pack-page__reset-btn"
+            <SwitchIcon
+              color="#ffffff"
+              onClick={() => setDisplayMode(displayMode === 'grid' ? 'list' : 'grid')}
+              data-tooltip-id="display-mode"
+              className="action-button"
+            />
+
+            <ResetIcon
+              strokeWidth="1.5"
+              stroke="currentColor"
               onClick={handleReset}
-              data-tooltip-id="reset-tooltip"
-              data-tooltip-content={tPack('actions.reset')}
-            >
-              <ResetIcon />
-              <span>{tPack('actions.reset')}</span>
-            </button>
+              data-tooltip-id="reset"
+              className="action-button"
+            />
           </div>
+
+          <Tooltip id="search" place="bottom" noArrow>
+            {tPack('toolTip.search')}
+          </Tooltip>
+          <Tooltip id="filter" place="bottom" noArrow>
+            {tPack('toolTip.filter')}
+          </Tooltip>
+          <Tooltip id="sort" place="bottom" noArrow>
+            {tPack('toolTip.sort')}
+          </Tooltip>
+          <Tooltip id="reset" place="bottom" noArrow>
+            {tPack('toolTip.reset')}
+          </Tooltip>
+          <Tooltip id="display-mode" place="bottom" noArrow>
+            {displayMode === 'grid' ? tPack('actions.listView') : tPack('actions.gridView')}
+          </Tooltip>
         </div>
 
-        {(filterOpen || sortOpen) && (
-          <div className="pack-page__controls">
-            {filterOpen && (
-              <div className="pack-page__filter-panel">
-
+        <div className="input-setting">
+          <div
+            className={`filter settings-class ${filterOpen ? 'visible' : 'hidden'}`}
+          >
+            <h2 className="setting-title">{tPack('filters.title')}</h2>
+            <div className="filter-section">
+              <div className="filter-row">
                 <div className="pack-page__filter-group">
                   <label className="pack-page__filter-label">
                     {tPack('filters.viewMode')}
                   </label>
                   <CustomSelect
-                    value={viewMode}
-                    onChange={setViewMode}
+                    value={viewModeOptions.find(option => filters.viewMode === option.value)}
+                    onChange={(option) => {
+                      updateFilter('viewMode', option.value);
+                      triggerRefresh();
+                    }}
                     options={viewModeOptions}
                     placeholder={tPack('filters.viewModePlaceholder')}
                   />
                 </div>
-
-                <div className="pack-page__filter-group">
-                  <label className="pack-page__filter-checkbox">
-                    <input
-                      type="checkbox"
-                      checked={pinned}
-                      onChange={(e) => setPinned(e.target.checked)}
-                    />
-                    <PinIcon className="pack-page__filter-checkbox-icon" />
-                    <span>{tPack('filters.pinnedOnly')}</span>
-                  </label>
-                </div>
               </div>
-            )}
+            </div>
+          </div>
 
-            {sortOpen && (
-              <div className="pack-page__sort-panel">
-                <div className="pack-page__sort-group">
-                  <label className="pack-page__sort-label">
-                    {tPack('sort.by')}
-                  </label>
-                  <CustomSelect
-                    value={sort}
-                    onChange={setSort}
-                    options={sortOptions}
-                    placeholder={tPack('sort.placeholder')}
+          <div
+            className={`sort sort-class ${sortOpen ? 'visible' : 'hidden'}`}
+          >
+            <h2 className="setting-title">
+              {tPack('sort.title')}
+            </h2>
+            <div className="sort-option">
+              <CustomSelect
+                value={sortOptions.find(option => filters.sort === option.value)}
+                onChange={(option) => {
+                  updateFilter('sort', option.value);
+                  triggerRefresh();
+                }}
+                options={sortOptions}
+                label={tPack('sort.header')}
+              />
+              
+              <div className="order">
+                <p>{tPack('sort.order')}</p>
+                <Tooltip id="ascending" place="bottom" noArrow>
+                  {tPack('sort.ascending')}
+                </Tooltip>
+                <Tooltip id="descending" place="bottom" noArrow>
+                  {tPack('sort.descending')}
+                </Tooltip>
+
+                <div className="wrapper">
+                  <SortAscIcon
+                    className="svg-fill"
+                    style={{
+                      backgroundColor:
+                        filters.order === 'ASC' ? "rgba(255, 255, 255, 0.7)" : "",
+                    }}
+                    value="RECENT_ASC"
+                    onClick={() => {
+                      updateFilter('order', 'ASC');
+                      triggerRefresh();
+                    }}
+                    data-tooltip-id="ascending"
+                  />
+
+                  <SortDescIcon
+                    className="svg-fill"
+                    style={{
+                      backgroundColor:
+                        filters.order === 'DESC' ? "rgba(255, 255, 255, 0.7)" : "",
+                    }}
+                    onClick={() => {
+                      updateFilter('order', 'DESC');
+                      triggerRefresh();
+                    }}
+                    value="RECENT_DESC"
+                    data-tooltip-id="descending"
                   />
                 </div>
-
-                <div className="pack-page__sort-group">
-                  <button
-                    className={`pack-page__order-btn ${order === 'ASC' ? 'active' : ''}`}
-                    onClick={() => setOrder('ASC')}
-                    data-tooltip-id="sort-asc-tooltip"
-                    data-tooltip-content={tPack('sort.ascending')}
-                  >
-                    <SortAscIcon />
-                  </button>
-                  <button
-                    className={`pack-page__order-btn ${order === 'DESC' ? 'active' : ''}`}
-                    onClick={() => setOrder('DESC')}
-                    data-tooltip-id="sort-desc-tooltip"
-                    data-tooltip-content={tPack('sort.descending')}
-                  >
-                    <SortDescIcon />
-                  </button>
-                </div>
               </div>
-            )}
+            </div>
           </div>
-        )}
+        </div>
 
         <div className="pack-page__content" ref={scrollRef}>
           {error ? (
             <div className="pack-page__error">
               <p>{tPack('error.loadFailed')}</p>
-              <button onClick={resetAndFetch} className="pack-page__retry-btn">
+              <button onClick={triggerRefresh} className="pack-page__retry-btn">
                 {tPack('error.retry')}
               </button>
             </div>
@@ -327,7 +367,7 @@ const PackPage = () => {
                     index={index}
                     pack={pack}
                     user={user}
-                    sortBy={sort}
+                    sortBy={filters.sort}
                     displayMode={displayMode}
                     size="medium"
                   />
@@ -347,15 +387,9 @@ const PackPage = () => {
         />
       )}
 
-      {/* Tooltips */}
-      <Tooltip id="display-mode-tooltip" />
-      <Tooltip id="create-pack-tooltip" />
-      <Tooltip id="search-tooltip" />
-      <Tooltip id="filter-tooltip" />
-      <Tooltip id="sort-tooltip" />
-      <Tooltip id="reset-tooltip" />
-      <Tooltip id="sort-asc-tooltip" />
-      <Tooltip id="sort-desc-tooltip" />
+      {showHelpPopup && (
+        <PackHelpPopup onClose={() => setShowHelpPopup(false)} />
+      )}
     </div>
   );
 };

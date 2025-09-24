@@ -119,7 +119,7 @@ const PackCard = ({
             <h3 className="pack-card__name">{pack.name}</h3>
             <div className="pack-card__meta">
               <span className="pack-card__level-count">
-                {levelCount} {levelCount === 1 ? tCard('level') : tCard('levels')}
+                {levelCount} {tCard('stats.levels')}
               </span>
               {pack.isPinned && (
                 <PinIcon className="pack-card__pin-icon" />
@@ -142,11 +142,11 @@ const PackCard = ({
         <div className="pack-card__footer">
           <div className="pack-card__owner">
             <UserAvatar 
-              username={pack.ownerUsername || 'Unknown'} 
-              size="small"
+              primaryUrl={pack.packOwner?.avatarUrl || 'Unknown'} 
+              className="pack-card__owner-avatar"
             />
             <span className="pack-card__owner-name">
-              {pack.ownerUsername || 'Unknown'}
+              {pack.packOwner?.username || 'Unknown'}
             </span>
           </div>
           

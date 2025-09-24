@@ -5,6 +5,7 @@ import { RatingDetailPopup } from "./RatingDetailPopup/RatingDetailPopup";
 import { EditLevelPopup } from "./EditLevelPopup/EditLevelPopup";
 import { EditPassPopup } from "./EditPassPopup/EditPassPopup";
 import { LevelHelpPopup } from "./LevelHelpPopup/LevelHelpPopup";
+import { PackHelpPopup } from "./PackHelpPopup/PackHelpPopup";
 import { PassHelpPopup } from "./PassHelpPopup/PassHelpPopup";
 import RaterManagementPopup from "./RaterManagementPopup/RaterManagementPopup";
 import TopRatersPopup from "./TopRatersPopup/TopRatersPopup";
@@ -34,6 +35,7 @@ export {
     EditLevelPopup,
     EditPassPopup,
     LevelHelpPopup,
+    PackHelpPopup,
     PassHelpPopup,
     RaterManagementPopup,
     TopRatersPopup,

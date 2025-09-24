@@ -29,6 +29,7 @@
   "sort": {
     "title": "Sort",
     "toggle": "Toggle sort options",
+    "header": "Sort by",
     "by": "Sort by",
     "placeholder": "Select sort option",
     "recent": "Recent",
@@ -48,6 +49,15 @@
     "reset": "Reset",
     "listView": "List View",
     "gridView": "Grid View"
+  },
+  "buttons": {
+    "searchHelp": "Search Help"
+  },
+  "toolTip": {
+    "search": "Search Help",
+    "filter": "Toggle Filters",
+    "sort": "Toggle Sort Options",
+    "reset": "Reset All Filters"
   },
   "create": {
     "success": "Pack created successfully!",

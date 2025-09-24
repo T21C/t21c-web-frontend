@@ -52,7 +52,6 @@ function getYouTubeEmbedUrl(url) {
       videoId = match[1];
       break;
     }
-    console.log(match);
   }
 
   const timestampMatch = url.match(timestampRegex);

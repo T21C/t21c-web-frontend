@@ -172,7 +172,6 @@ const TypeManagementPopup = ({
   };
 
   const updateAbility = (input, ability, enabled) => {
-    console.log(input, ability, enabled);
     if ((!input && input !== 0n) || ability === undefined || ability === null) return input ? BigInt(input) : 0n;
     return enabled ? BigInt(input || 0) | BigInt(ability) : BigInt(input || 0) & ~BigInt(ability);
   };
