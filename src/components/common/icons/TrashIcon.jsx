@@ -7,4 +7,6 @@ export const TrashIcon = ({ color, size }) => {
   );
 };
 
+export default TrashIcon;
+
                   

@@ -16,6 +16,8 @@ import { UserAvatar } from "@/components/layout";
 import { Tooltip } from "react-tooltip";
 import toast from 'react-hot-toast';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import PackFolder from "@/components/cards/PackFolder/PackFolder";
+import { getFolderState, setFolderState } from "@/utils/folderState";
 
 const PackDetailPage = () => {
   const { t } = useTranslation('pages');
@@ -24,14 +26,13 @@ const PackDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const packContext = useContext(PackContext);
-  const { updatePack } = packContext || { updatePack: null };
   
   const [pack, setPack] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [isReordering, setIsReordering] = useState(false);
+  const [folderStates, setFolderStates] = useState({});
   const scrollRef = useRef(null);
 
   // Fetch pack details
@@ -76,10 +77,29 @@ const PackDetailPage = () => {
     navigate('/packs');
   };
 
-  // Handle drag and drop reordering
+  // Folder state management
+  const toggleFolderExpanded = (folderId) => {
+    const newState = !folderStates[folderId];
+    setFolderStates(prev => ({ ...prev, [folderId]: newState }));
+    setFolderState(folderId, newState);
+  };
+
+  const isFolderExpanded = (folderId) => {
+    return folderStates[folderId] ?? getFolderState(folderId, false);
+  };
+
+  // Handle drag and drop reordering and combining
   const handleDragEnd = async (result) => {
+    if (result.combine != null) {
+      console.log("handleCombine", result);
+      await handleCombine(result);
+      return;
+    }
+
     if (!result.destination || !pack?.packItems) return;
+
     
+    // Handle normal reordering
     setIsReordering(true);
     
     try {
@@ -117,6 +137,112 @@ const PackDetailPage = () => {
       setIsReordering(false);
     }
   };
+
+  // Handle combining items
+  const handleCombine = async (result) => {
+    console.log("handleCombine", result);
+    
+    if (!canEdit) return;
+    
+    const sourceId = result.draggableId;
+    const targetId = result.combine.draggableId;
+    
+    // Determine if source and target are levels or folders
+    const isSourceLevel = sourceId.startsWith(`${pack.id}-`);
+    const isTargetLevel = targetId.startsWith(`${pack.id}-`);
+    const isSourceFolder = sourceId.startsWith(`folder-${pack.id}-`);
+    const isTargetFolder = targetId.startsWith(`folder-${pack.id}-`);
+    
+    try {
+      if (isSourceLevel && isTargetLevel) {
+        // Level + Level: Create new folder with both levels
+        const sourceItem = pack.packItems.find(item => `${pack.id}-${item.levelId}` === sourceId);
+        const targetItem = pack.packItems.find(item => `${pack.id}-${item.levelId}` === targetId);
+        if (sourceItem && targetItem) {
+          await createFolderWithLevels([sourceItem, targetItem]);
+        }
+      } else if (isSourceLevel && isTargetFolder) {
+        // Level + Folder: Add level to folder
+        const sourceItem = pack.packItems.find(item => `${pack.id}-${item.levelId}` === sourceId);
+        const targetFolderId = parseInt(targetId.replace(`folder-${pack.id}-`, ''));
+        if (sourceItem) {
+          await addLevelToFolder(sourceItem, targetFolderId);
+        }
+      } else if (isSourceFolder && isTargetLevel) {
+        // Folder + Level: Create new folder with level, then add original folder
+        const sourceFolderId = parseInt(sourceId.replace(`folder-${pack.id}-`, ''));
+        const targetItem = pack.packItems.find(item => `${pack.id}-${item.levelId}` === targetId);
+        if (targetItem) {
+          await createFolderWithLevelAndFolder(targetItem, sourceFolderId);
+        }
+      } else if (isSourceFolder && isTargetFolder) {
+        // Folder + Folder: Add source folder to target folder
+        const sourceFolderId = parseInt(sourceId.replace(`folder-${pack.id}-`, ''));
+        const targetFolderId = parseInt(targetId.replace(`folder-${pack.id}-`, ''));
+        await addFolderToFolder(sourceFolderId, targetFolderId);
+      }
+      
+      toast.success(tPack('combine.success'));
+    } catch (error) {
+      console.error('Error combining items:', error);
+      toast.error(tPack('combine.error'));
+    }
+  };
+
+  // Create new folder with multiple levels
+  const createFolderWithLevels = async (levels) => {
+    const folderName = prompt(tPack('createFolder.prompt'));
+    if (!folderName) return;
+    
+    // Create new folder
+    const folderResponse = await api.post('/v2/database/levels/packs/folders', {
+      name: folderName.trim(),
+      parentFolderId: null
+    });
+    
+    // Move levels to new folder
+    for (const level of levels) {
+      await api.put(`/v2/database/levels/packs/folders/${folderResponse.data.id}/packs/${level.levelId}`);
+    }
+    
+    await fetchPack();
+  };
+
+  // Add level to existing folder
+  const addLevelToFolder = async (level, folderId) => {
+    await api.put(`/v2/database/levels/packs/folders/${folderId}/packs/${level.levelId}`);
+    await fetchPack();
+  };
+
+  // Create folder with level, then add original folder
+  const createFolderWithLevelAndFolder = async (level, sourceFolderId) => {
+    const folderName = prompt(tPack('createFolder.prompt'));
+    if (!folderName) return;
+    
+    // Create new folder
+    const newFolderResponse = await api.post('/v2/database/levels/packs/folders', {
+      name: folderName.trim(),
+      parentFolderId: null
+    });
+    
+    // Add level to new folder
+    await api.put(`/v2/database/levels/packs/folders/${newFolderResponse.data.id}/packs/${level.levelId}`);
+    
+    // Move original folder to new folder
+    await api.put(`/v2/database/levels/packs/folders/${newFolderResponse.data.id}/folders/${sourceFolderId}`);
+    
+    await fetchPack();
+  };
+
+  // Add folder to another folder
+  const addFolderToFolder = async (sourceFolderId, targetFolderId) => {
+    await api.put(`/v2/database/levels/packs/folders/${sourceFolderId}`, {
+      parentFolderId: targetFolderId
+    });
+    await fetchPack();
+  };
+
+
 
   // Get view mode icon and text
   const getViewModeIcon = () => {
@@ -253,6 +379,15 @@ const PackDetailPage = () => {
                     {getViewModeText()}
                   </span>
                 </div>
+                
+                {pack.folder && (
+                  <div className="pack-detail-page__folder">
+                    <span className="pack-detail-page__folder-icon">📁</span>
+                    <span className="pack-detail-page__folder-text">
+                      {tPack('inFolder')} {pack.folder.name}
+                    </span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -301,9 +436,9 @@ const PackDetailPage = () => {
             </h2>
             <div className="pack-detail-page__levels-header-right">
               <span className="pack-detail-page__levels-count">
-                {pack.packItems?.length || 0} {tPack('levels.count')}
+                {pack.packItems?.filter(item => !item.folderId).length || 0} {tPack('levels.count')}
               </span>
-              {canEdit && pack.packItems && pack.packItems.length > 1 && (
+              {canEdit && pack.packItems && pack.packItems.filter(item => !item.folderId).length > 1 && (
                 <span className="pack-detail-page__drag-hint">
                   {tPack('levels.dragHint')}
                 </span>
@@ -311,49 +446,67 @@ const PackDetailPage = () => {
             </div>
           </div>
 
-          {pack.packItems && pack.packItems.length > 0 ? (
+          {pack && pack.packItems && pack.packItems.length > 0 ? (
             <DragDropContext onDragEnd={handleDragEnd}>
-              <Droppable droppableId="pack-levels">
-                {(provided) => (
+              <Droppable droppableId={`pack-levels-${pack.id}`} isCombineEnabled={true}>
+                {(provided, snapshot) => (
                   <div 
-                    className="pack-detail-page__levels-list"
+                    className={`pack-detail-page__levels-list ${snapshot.isDraggingOver ? 'dragging-over' : ''} ${snapshot.draggingFromThisWith ? 'dragging-from' : ''}`}
                     {...provided.droppableProps}
                     ref={provided.innerRef}
                   >
-                    {pack.packItems.map((item, index) => (
-                      <Draggable 
-                        key={item.levelId} 
-                        draggableId={item.levelId.toString()} 
-                        index={index}
-                        isDragDisabled={!canEdit || isReordering}
-                      >
-                        {(provided, snapshot) => (
-                          <div 
-                            ref={provided.innerRef}
-                            {...provided.draggableProps}
-                            className={`pack-detail-page__level-item ${snapshot.isDragging ? 'dragging' : ''} ${isReordering ? 'reordering' : ''}`}
-                          >
-                            {canEdit && (
-                              <div 
-                                {...provided.dragHandleProps}
-                                className="pack-detail-page__drag-handle"
-                                title={tPack('levels.dragHint')}
-                              >
-                                <DragHandleIcon />
-                              </div>
-                            )}
-                            <LevelCard
-                              index={index}
-                              level={item.level}
-                              user={user}
-                              sortBy="RECENT"
-                              displayMode="normal"
-                              size="medium"
-                            />
-                          </div>
-                        )}
-                      </Draggable>
+                    {/* Render folders first */}
+                    {pack.folders?.map((folder, folderIndex) => (
+                      <PackFolder
+                        key={`folder-${folder.id}`}
+                        folder={folder}
+                        index={folderIndex}
+                        isExpanded={isFolderExpanded(folder.id)}
+                        onToggleExpanded={() => toggleFolderExpanded(folder.id)}
+                        canEdit={canEdit}
+                        isReordering={isReordering}
+                        packId={pack.id}
+                        user={user}
+                      />
                     ))}
+                    
+                    {/* Render levels that are NOT in any folder */}
+                    {pack.packItems
+                      .filter(item => !item.folderId) // Only show levels not in folders
+                      .map((item, levelIndex) => (
+                        <Draggable 
+                          key={`${pack.id}-${item.levelId}`} 
+                          draggableId={`${pack.id}-${item.levelId}`} 
+                          index={(pack.folders?.length || 0) + levelIndex}
+                          isDragDisabled={!canEdit || isReordering}
+                        >
+                          {(provided, snapshot) => (
+                            <div 
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              className={`pack-detail-page__level-item ${snapshot.isDragging ? 'dragging' : ''} ${isReordering ? 'reordering' : ''} ${snapshot.combineTargetFor ? 'combine-target' : ''}`}
+                            >
+                              {canEdit && (
+                                <div 
+                                  {...provided.dragHandleProps}
+                                  className="pack-detail-page__drag-handle"
+                                  title={tPack('levels.dragHint')}
+                                >
+                                  <DragHandleIcon />
+                                </div>
+                              )}
+                              <LevelCard
+                                index={levelIndex}
+                                level={item.level}
+                                user={user}
+                                sortBy="RECENT"
+                                displayMode="normal"
+                                size="medium"
+                              />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
                     {provided.placeholder}
                   </div>
                 )}

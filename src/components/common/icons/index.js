@@ -43,6 +43,9 @@ import UsersIcon from './UsersIcon';
 import PlusIcon from './PlusIcon';
 import SearchIcon from './SearchIcon';
 import ImageIcon from './ImageIcon';
+import FolderIcon from './FolderIcon';
+import ChevronIcon from './ChevronIcon';
+import DeleteIcon from './TrashIcon';
 
 export {
     DefaultAvatar,
@@ -89,5 +92,8 @@ export {
     UsersIcon,
     PlusIcon,
     SearchIcon,
-    ImageIcon
+    ImageIcon,
+    FolderIcon,
+    ChevronIcon,
+    DeleteIcon
 }
