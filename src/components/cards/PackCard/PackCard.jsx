@@ -24,7 +24,7 @@ const PackCard = ({
   
   const [pack, setPack] = useState(initialPack);
   const [showEditPopup, setShowEditPopup] = useState(false);
-  const [levelCount, setLevelCount] = useState(pack.packItems?.length || 0);
+  const levelCount = pack.packItems?.filter(item => item.type === 'level').length || 0;
   const { difficultyDict } = useDifficultyContext();
   const navigate = useNavigate();
 
@@ -160,20 +160,23 @@ const PackCard = ({
           </div>
         </div>
 
-        {pack.packItems && pack.packItems.length > 0 && (
+        {levelCount > 0 && (
           <div className="pack-card__preview">
             <div className="pack-card__preview-levels">
-              {pack.packItems.slice(0, 3).map((item, idx) => (
-                <div key={idx} className="pack-card__preview-level">
-                  <span className="pack-card__preview-level-name">
-                    <img className="pack-card__preview-level-icon" src={difficultyDict[item.level?.diffId]?.icon} alt={item.level?.song} />
-                    <span className="pack-card__preview-level-name-text">{item.level?.song || `Level ${item.levelId}`}</span>
-                  </span>
-                </div>
-              ))}
-              {pack.packItems.length > 3 && (
+              {pack.packItems
+                .filter(item => item.type === 'level')
+                .slice(0, 3)
+                .map((item, idx) => (
+                  <div key={idx} className="pack-card__preview-level">
+                    <span className="pack-card__preview-level-name">
+                      <img className="pack-card__preview-level-icon" src={difficultyDict[item.referencedLevel?.diffId]?.icon} alt={item.referencedLevel?.song} />
+                      <span className="pack-card__preview-level-name-text">{item.referencedLevel?.song || `Level ${item.levelId}`}</span>
+                    </span>
+                  </div>
+                ))}
+              {levelCount > 3 && (
                 <div className="pack-card__preview-more">
-                  +{pack.packItems.length - 3} {tCard('more')}
+                  +{levelCount - 3} {tCard('more')}
                 </div>
               )}
             </div>

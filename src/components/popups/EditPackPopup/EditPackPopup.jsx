@@ -1,6 +1,5 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PackContext } from '@/contexts/PackContext';
 import { useAuth } from '@/contexts/AuthContext';
 import { CrossIcon, ImageIcon, TrashIcon } from '@/components/common/icons';
 import ImageSelectorPopup from '../ImageSelectorPopup/ImageSelectorPopup';
@@ -13,7 +12,6 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
   const { t } = useTranslation('components');
   const tPopup = (key) => t(`packPopups.editPack.${key}`) || key;
   
-  const { updatePack, deletePack } = useContext(PackContext);
   const { user } = useAuth();
   
   const [formData, setFormData] = useState({
@@ -109,13 +107,13 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
 
     setLoading(true);
     try {
-      const updatedPack = await updatePack(pack.id, formData);
-      onUpdate?.(updatedPack);
+      const response = await api.put(`/v2/database/levels/packs/${pack.id}`, formData);
+      onUpdate?.(response.data);
       onClose();
       toast.success(tPopup('success.updated'));
     } catch (error) {
       console.error('Error updating pack:', error);
-      toast.error(tPopup('errors.updateFailed'));
+      toast.error(error.response?.data?.error || tPopup('errors.updateFailed'));
     } finally {
       setLoading(false);
     }
@@ -124,14 +122,14 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
   const handleDelete = async () => {
     setLoading(true);
     try {
-      await deletePack(pack.id);
+      await api.delete(`/v2/database/levels/packs/${pack.id}`);
       onClose();
       // Call the onDelete callback if provided (for navigation, etc.)
       onDelete?.();
       toast.success(tPopup('success.deleted'));
     } catch (error) {
       console.error('Error deleting pack:', error);
-      toast.error(tPopup('errors.deleteFailed'));
+      toast.error(error.response?.data?.error || tPopup('errors.deleteFailed'));
     } finally {
       setLoading(false);
     }

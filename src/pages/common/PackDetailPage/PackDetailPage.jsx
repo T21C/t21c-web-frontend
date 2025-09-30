@@ -1,23 +1,21 @@
 import "./packdetailpage.css";
-import { useEffect, useState, useRef, useContext } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { CompleteNav } from "@/components/layout";
-import { LevelCard } from "@/components/cards";
+import PackItem from "@/components/cards/PackItem/PackItem";
+import LevelCard from "@/components/cards/LevelCard/LevelCard";
 import { MetaTags } from "@/components/common/display";
 import { ScrollButton } from "@/components/common/buttons";
-import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, ArrowIcon, DragHandleIcon } from "@/components/common/icons";
+import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, ArrowIcon, PlusIcon } from "@/components/common/icons";
 import { EditPackPopup } from "@/components/popups";
 import { useAuth } from "@/contexts/AuthContext";
-import { PackContext } from "@/contexts/PackContext";
 import api from "@/utils/api";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { UserAvatar } from "@/components/layout";
 import { Tooltip } from "react-tooltip";
 import toast from 'react-hot-toast';
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
-import PackFolder from "@/components/cards/PackFolder/PackFolder";
-import { getFolderState, setFolderState } from "@/utils/folderState";
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 
 const PackDetailPage = () => {
   const { t } = useTranslation('pages');
@@ -32,20 +30,24 @@ const PackDetailPage = () => {
   const [error, setError] = useState(false);
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [isReordering, setIsReordering] = useState(false);
-  const [folderStates, setFolderStates] = useState({});
+  const [expandedFolders, setExpandedFolders] = useState(new Set());
   const scrollRef = useRef(null);
 
   // Fetch pack details
-  const fetchPack = async () => {
+  const fetchPack = async (silent = false) => {
     try {
-      setLoading(true);
-      setError(false);
+      if (!silent) {
+        setLoading(true);
+        setError(false);
+      }
       
-      const response = await api.get(`/v2/database/levels/packs/${id}`);
+      const response = await api.get(`/v2/database/levels/packs/${id}?tree=true`);
       setPack(response.data);
     } catch (error) {
       console.error('Error fetching pack:', error);
-      setError(true);
+      if (!silent) {
+        setError(true);
+      }
       if (error.response?.status === 404) {
         toast.error(tPack('error.notFound'));
       } else if (error.response?.status === 403) {
@@ -54,7 +56,9 @@ const PackDetailPage = () => {
         toast.error(tPack('error.loadFailed'));
       }
     } finally {
-      setLoading(false);
+      if (!silent) {
+        setLoading(false);
+      }
     }
   };
 
@@ -66,183 +70,305 @@ const PackDetailPage = () => {
 
   // Handle edit pack
   const handleEditPack = async (updatedPack) => {
-    // Update local pack state with the updated pack data
-    setPack(updatedPack);
+    setPack({ ...pack, ...updatedPack });
     setShowEditPopup(false);
     toast.success(tPack('edit.success'));
   };
 
-  // Handle delete pack - navigate back to packs list
+  // Handle delete pack
   const handleDeletePack = () => {
     navigate('/packs');
   };
 
-  // Folder state management
-  const toggleFolderExpanded = (folderId) => {
-    const newState = !folderStates[folderId];
-    setFolderStates(prev => ({ ...prev, [folderId]: newState }));
-    setFolderState(folderId, newState);
+  // Folder expansion state
+  const toggleFolderExpanded = (itemId) => {
+    setExpandedFolders(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(itemId)) {
+        newSet.delete(itemId);
+      } else {
+        newSet.add(itemId);
+      }
+      return newSet;
+    });
   };
 
-  const isFolderExpanded = (folderId) => {
-    return folderStates[folderId] ?? getFolderState(folderId, false);
-  };
+  // Handle adding new folder
+  const handleAddFolder = async () => {
+    const folderName = prompt(tPack('createFolder.prompt'));
+    if (!folderName?.trim()) return;
 
-  // Handle drag and drop reordering and combining
-  const handleDragEnd = async (result) => {
-    if (result.combine != null) {
-      console.log("handleCombine", result);
-      await handleCombine(result);
-      return;
-    }
-
-    if (!result.destination || !pack?.packItems) return;
-
-    
-    // Handle normal reordering
-    setIsReordering(true);
-    
     try {
-      const items = Array.from(pack.packItems);
-      const [reorderedItem] = items.splice(result.source.index, 1);
-      items.splice(result.destination.index, 0, reorderedItem);
-      
-      // Update local state immediately for better UX
-      const updatedPack = {
-        ...pack,
-        packItems: items.map((item, index) => ({
-          ...item,
-          sortOrder: index + 1
-        }))
-      };
-      setPack(updatedPack);
-      
-      // Send reorder request to server
-      const levelOrders = items.map((item, index) => ({
-        levelId: item.levelId,
-        sortOrder: index + 1
-      }));
-      
-      await api.put(`/v2/database/levels/packs/${pack.id}/levels/reorder`, {
-        levelOrders
+      await api.post(`/v2/database/levels/packs/${pack.id}/items`, {
+        type: 'folder',
+        name: folderName.trim(),
+        parentId: null
       });
       
-      toast.success(tPack('reorder.success'));
+      toast.success(tPack('createFolder.success'));
+      await fetchPack(true); // Silent refetch
     } catch (error) {
-      console.error('Error reordering pack levels:', error);
-      toast.error(tPack('reorder.error'));
-      // Revert local state on error
-      fetchPack();
+      console.error('Error creating folder:', error);
+      toast.error(tPack('createFolder.error'));
+    }
+  };
+
+  // Handle adding new level
+  const handleAddLevel = async () => {
+    const levelId = prompt(tPack('addLevel.prompt'));
+    if (!levelId?.trim()) return;
+
+    try {
+      await api.post(`/v2/database/levels/packs/${pack.id}/items`, {
+        type: 'level',
+        levelId: parseInt(levelId),
+        parentId: null
+      });
+      
+      toast.success(tPack('addLevel.success'));
+      await fetchPack(true); // Silent refetch
+    } catch (error) {
+      console.error('Error adding level:', error);
+      toast.error(error.response?.data?.error || tPack('addLevel.error'));
+    }
+  };
+
+  // Handle rename folder
+  const handleRenameFolder = async (item) => {
+    const newName = prompt(tPack('renameFolder.prompt'), item.name);
+    if (!newName?.trim() || newName === item.name) return;
+
+    try {
+      await api.put(`/v2/database/levels/packs/${pack.id}/items/${item.id}`, {
+        name: newName.trim()
+      });
+      
+      toast.success(tPack('renameFolder.success'));
+      await fetchPack(true); // Silent refetch
+    } catch (error) {
+      console.error('Error renaming folder:', error);
+      toast.error(error.response?.data?.error || tPack('renameFolder.error'));
+    }
+  };
+
+  // Handle delete item
+  const handleDeleteItem = async (item) => {
+    const confirmMessage = item.type === 'folder' 
+      ? tPack('deleteFolder.confirm', { name: item.name })
+      : tPack('deleteLevel.confirm');
+    
+    if (!confirm(confirmMessage)) return;
+
+    try {
+      await api.delete(`/v2/database/levels/packs/${pack.id}/items/${item.id}`);
+      
+      toast.success(tPack('deleteItem.success'));
+      await fetchPack(true); // Silent refetch
+    } catch (error) {
+      console.error('Error deleting item:', error);
+      toast.error(error.response?.data?.error || tPack('deleteItem.error'));
+    }
+  };
+
+  // Flatten tree for DnD
+  const flattenItems = (items, result = [], depth = 0) => {
+    items?.forEach(item => {
+      result.push({ ...item, depth });
+      if (item.children && expandedFolders.has(item.id)) {
+        flattenItems(item.children, result, depth + 1);
+      }
+    });
+    return result;
+  };
+
+  // Handle drag and drop
+  const handleDragEnd = async (result) => {
+    if (!result.destination && !result.combine) return;
+
+    setIsReordering(true);
+
+    try {
+      // Handle combining items (drop one on another)
+      if (result.combine) {
+        await handleCombineItems(result);
+        return;
+      }
+
+      // Handle normal reorder/move
+      const sourceId = parseInt(result.draggableId.split('-')[2]);
+      const sourceIndex = result.source.index;
+      const destinationIndex = result.destination.index;
+      const sourceDroppableId = result.source.droppableId;
+      const destinationDroppableId = result.destination.droppableId;
+
+      // Determine the new parent based on where it was dropped
+      let newParentId = null;
+      if (destinationDroppableId.startsWith('folder-')) {
+        newParentId = parseInt(destinationDroppableId.split('-')[2]);
+      }
+
+      // Get the source parent ID
+      let sourceParentId = null;
+      if (sourceDroppableId.startsWith('folder-')) {
+        sourceParentId = parseInt(sourceDroppableId.split('-')[2]);
+      }
+
+      // If moving within the same parent, calculate new order
+      if (sourceParentId === newParentId && sourceIndex !== destinationIndex) {
+        // Get all items in the current parent
+        const getItemsInParent = (parentId) => {
+          if (parentId === null) {
+            return pack.items || [];
+          }
+          // Recursively find the parent folder and its children
+          const findFolder = (items) => {
+            for (const item of items) {
+              if (item.id === parentId) return item.children || [];
+              if (item.children) {
+                const found = findFolder(item.children);
+                if (found) return found;
+              }
+            }
+            return [];
+          };
+          return findFolder(pack.items || []);
+        };
+
+        const itemsInParent = getItemsInParent(newParentId).sort((a, b) => a.sortOrder - b.sortOrder);
+        
+        // Remove the source item and reinsert at new position
+        const movedItem = itemsInParent.find(item => item.id === sourceId);
+        const reordered = itemsInParent.filter(item => item.id !== sourceId);
+        reordered.splice(destinationIndex, 0, movedItem);
+        
+        // Create items to reorder with new sortOrders
+        const itemsToReorder = reordered.map((item, index) => ({
+          id: item.id,
+          sortOrder: index
+        }));
+
+        await api.put(`/v2/database/levels/packs/${pack.id}/items/${sourceId}/move`, {
+          parentId: newParentId,
+          itemsToReorder
+        });
+      } else {
+        // Moving to a different parent
+        // Get all items in the destination parent
+        const getItemsInParent = (parentId) => {
+          if (parentId === null) {
+            return pack.items || [];
+          }
+          const findFolder = (items) => {
+            for (const item of items) {
+              if (item.id === parentId) return item.children || [];
+              if (item.children) {
+                const found = findFolder(item.children);
+                if (found) return found;
+              }
+            }
+            return [];
+          };
+          return findFolder(pack.items || []);
+        };
+
+        const destinationItems = getItemsInParent(newParentId)
+          .filter(item => item.id !== sourceId)
+          .sort((a, b) => a.sortOrder - b.sortOrder);
+
+        // Find the moved item
+        const allItems = flattenItems(pack.items || []);
+        const movedItem = allItems.find(item => item.id === sourceId);
+
+        // Insert at destination index
+        destinationItems.splice(destinationIndex, 0, movedItem);
+
+        // Create items to reorder with new sortOrders
+        const itemsToReorder = destinationItems.map((item, index) => ({
+          id: item.id,
+          sortOrder: index
+        }));
+
+        await api.put(`/v2/database/levels/packs/${pack.id}/items/${sourceId}/move`, {
+          parentId: newParentId,
+          itemsToReorder
+        });
+      }
+
+      toast.success(tPack('move.success'));
+      await fetchPack(true); // Silent refetch
+    } catch (error) {
+      console.error('Error moving item:', error);
+      toast.error(error.response?.data?.error || tPack('move.error'));
     } finally {
       setIsReordering(false);
     }
   };
 
-  // Handle combining items
-  const handleCombine = async (result) => {
-    console.log("handleCombine", result);
-    
-    if (!canEdit) return;
-    
-    const sourceId = result.draggableId;
-    const targetId = result.combine.draggableId;
-    
-    // Determine if source and target are levels or folders
-    const isSourceLevel = sourceId.startsWith(`${pack.id}-`);
-    const isTargetLevel = targetId.startsWith(`${pack.id}-`);
-    const isSourceFolder = sourceId.startsWith(`folder-${pack.id}-`);
-    const isTargetFolder = targetId.startsWith(`folder-${pack.id}-`);
-    
+  // Handle combining items (creating folders or nesting)
+  const handleCombineItems = async (result) => {
+    const sourceId = parseInt(result.draggableId.split('-')[2]);
+    const targetId = parseInt(result.combine.draggableId.split('-')[2]);
+
     try {
-      if (isSourceLevel && isTargetLevel) {
-        // Level + Level: Create new folder with both levels
-        const sourceItem = pack.packItems.find(item => `${pack.id}-${item.levelId}` === sourceId);
-        const targetItem = pack.packItems.find(item => `${pack.id}-${item.levelId}` === targetId);
-        if (sourceItem && targetItem) {
-          await createFolderWithLevels([sourceItem, targetItem]);
-        }
-      } else if (isSourceLevel && isTargetFolder) {
-        // Level + Folder: Add level to folder
-        const sourceItem = pack.packItems.find(item => `${pack.id}-${item.levelId}` === sourceId);
-        const targetFolderId = parseInt(targetId.replace(`folder-${pack.id}-`, ''));
-        if (sourceItem) {
-          await addLevelToFolder(sourceItem, targetFolderId);
-        }
-      } else if (isSourceFolder && isTargetLevel) {
-        // Folder + Level: Create new folder with level, then add original folder
-        const sourceFolderId = parseInt(sourceId.replace(`folder-${pack.id}-`, ''));
-        const targetItem = pack.packItems.find(item => `${pack.id}-${item.levelId}` === targetId);
-        if (targetItem) {
-          await createFolderWithLevelAndFolder(targetItem, sourceFolderId);
-        }
-      } else if (isSourceFolder && isTargetFolder) {
-        // Folder + Folder: Add source folder to target folder
-        const sourceFolderId = parseInt(sourceId.replace(`folder-${pack.id}-`, ''));
-        const targetFolderId = parseInt(targetId.replace(`folder-${pack.id}-`, ''));
-        await addFolderToFolder(sourceFolderId, targetFolderId);
+      // Find source and target items
+      const allItems = flattenItems(pack.items);
+      const sourceItem = allItems.find(item => item.id === sourceId);
+      const targetItem = allItems.find(item => item.id === targetId);
+
+      if (!sourceItem || !targetItem) return;
+
+      // If target is a folder, move source into it
+      if (targetItem.type === 'folder') {
+        await api.put(`/v2/database/levels/packs/${pack.id}/items/${sourceId}/move`, {
+          parentId: targetId
+        });
+        
+        // Auto-expand the target folder
+        setExpandedFolders(prev => new Set(prev).add(targetId));
+      } 
+      // If both are levels, create a new folder containing both
+      else if (sourceItem.type === 'level' && targetItem.type === 'level') {
+        const folderName = prompt(tPack('createFolder.prompt'));
+        if (!folderName?.trim()) return;
+
+        // Create folder at target's parent
+        const folderResponse = await api.post(`/v2/database/levels/packs/${pack.id}/items`, {
+          type: 'folder',
+          name: folderName.trim(),
+          parentId: targetItem.parentId || null
+        });
+
+        // Move both items into the new folder
+        await api.put(`/v2/database/levels/packs/${pack.id}/items/${sourceId}/move`, {
+          parentId: folderResponse.data.id
+        });
+        await api.put(`/v2/database/levels/packs/${pack.id}/items/${targetId}/move`, {
+          parentId: folderResponse.data.id
+        });
+
+        // Auto-expand the new folder
+        setExpandedFolders(prev => new Set(prev).add(folderResponse.data.id));
       }
-      
+
       toast.success(tPack('combine.success'));
+      await fetchPack(true); // Silent refetch
     } catch (error) {
       console.error('Error combining items:', error);
-      toast.error(tPack('combine.error'));
+      toast.error(error.response?.data?.error || tPack('combine.error'));
+    } finally {
+      setIsReordering(false);
     }
   };
 
-  // Create new folder with multiple levels
-  const createFolderWithLevels = async (levels) => {
-    const folderName = prompt(tPack('createFolder.prompt'));
-    if (!folderName) return;
-    
-    // Create new folder
-    const folderResponse = await api.post('/v2/database/levels/packs/folders', {
-      name: folderName.trim(),
-      parentFolderId: null
+  // Count total levels (recursive)
+  const countLevels = (items) => {
+    let count = 0;
+    items?.forEach(item => {
+      if (item.type === 'level') count++;
+      if (item.children) count += countLevels(item.children);
     });
-    
-    // Move levels to new folder
-    for (const level of levels) {
-      await api.put(`/v2/database/levels/packs/folders/${folderResponse.data.id}/packs/${level.levelId}`);
-    }
-    
-    await fetchPack();
+    return count;
   };
-
-  // Add level to existing folder
-  const addLevelToFolder = async (level, folderId) => {
-    await api.put(`/v2/database/levels/packs/folders/${folderId}/packs/${level.levelId}`);
-    await fetchPack();
-  };
-
-  // Create folder with level, then add original folder
-  const createFolderWithLevelAndFolder = async (level, sourceFolderId) => {
-    const folderName = prompt(tPack('createFolder.prompt'));
-    if (!folderName) return;
-    
-    // Create new folder
-    const newFolderResponse = await api.post('/v2/database/levels/packs/folders', {
-      name: folderName.trim(),
-      parentFolderId: null
-    });
-    
-    // Add level to new folder
-    await api.put(`/v2/database/levels/packs/folders/${newFolderResponse.data.id}/packs/${level.levelId}`);
-    
-    // Move original folder to new folder
-    await api.put(`/v2/database/levels/packs/folders/${newFolderResponse.data.id}/folders/${sourceFolderId}`);
-    
-    await fetchPack();
-  };
-
-  // Add folder to another folder
-  const addFolderToFolder = async (sourceFolderId, targetFolderId) => {
-    await api.put(`/v2/database/levels/packs/folders/${sourceFolderId}`, {
-      parentFolderId: targetFolderId
-    });
-    await fetchPack();
-  };
-
-
 
   // Get view mode icon and text
   const getViewModeIcon = () => {
@@ -250,15 +376,15 @@ const PackDetailPage = () => {
     
     switch (pack.viewMode) {
       case 1: // PUBLIC
-        return <EyeIcon className="pack-detail__view-icon public" />;
+        return <EyeIcon className="pack-detail-page__view-icon public" />;
       case 2: // LINKONLY
-        return <UsersIcon className="pack-detail__view-icon linkonly" />;
+        return <UsersIcon className="pack-detail-page__view-icon linkonly" />;
       case 3: // PRIVATE
-        return <LockIcon className="pack-detail__view-icon private" />;
+        return <LockIcon className="pack-detail-page__view-icon private" />;
       case 4: // FORCED_PRIVATE
-        return <LockIcon className="pack-detail__view-icon forced-private" />;
+        return <LockIcon className="pack-detail-page__view-icon forced-private" />;
       default:
-        return <EyeIcon className="pack-detail__view-icon public" />;
+        return <EyeIcon className="pack-detail-page__view-icon public" />;
     }
   };
 
@@ -276,7 +402,7 @@ const PackDetailPage = () => {
 
   // Check if user can edit pack
   const canEdit = user && pack && (
-    pack.packOwnerId === user.id || 
+    pack.ownerId === user.id || 
     hasFlag(user, permissionFlags.SUPER_ADMIN)
   );
 
@@ -317,12 +443,14 @@ const PackDetailPage = () => {
   }
 
   const currentUrl = window.location.origin + location.pathname;
+  const totalLevels = countLevels(pack.items);
+  const flatItems = flattenItems(pack.items || []);
 
   return (
     <div className="pack-detail-page">
       <MetaTags 
         title={`${pack.name} - Pack - TUF`}
-        description={`Level pack: ${pack.name} by ${pack.packOwner?.username || 'Unknown'}. Contains ${pack.packItems?.length || 0} levels.`}
+        description={`Level pack: ${pack.name} by ${pack.packOwner?.username || 'Unknown'}. Contains ${totalLevels} levels.`}
         url={currentUrl}
       />
       
@@ -379,15 +507,6 @@ const PackDetailPage = () => {
                     {getViewModeText()}
                   </span>
                 </div>
-                
-                {pack.folder && (
-                  <div className="pack-detail-page__folder">
-                    <span className="pack-detail-page__folder-icon">📁</span>
-                    <span className="pack-detail-page__folder-text">
-                      {tPack('inFolder')} {pack.folder.name}
-                    </span>
-                  </div>
-                )}
               </div>
             </div>
           </div>
@@ -411,10 +530,19 @@ const PackDetailPage = () => {
         <div className="pack-detail-page__stats">
           <div className="pack-detail-page__stat">
             <span className="pack-detail-page__stat-value">
-              {pack.packItems?.length || 0}
+              {totalLevels}
             </span>
             <span className="pack-detail-page__stat-label">
               {tPack('stats.levels')}
+            </span>
+          </div>
+          
+          <div className="pack-detail-page__stat">
+            <span className="pack-detail-page__stat-value">
+              {pack.items?.length || 0}
+            </span>
+            <span className="pack-detail-page__stat-label">
+              {tPack('stats.items')}
             </span>
           </div>
           
@@ -428,84 +556,104 @@ const PackDetailPage = () => {
           </div>
         </div>
 
-        {/* Levels */}
+        {/* Content */}
         <div className="pack-detail-page__content" ref={scrollRef}>
           <div className="pack-detail-page__levels-header">
             <h2 className="pack-detail-page__levels-title">
-              {tPack('levels.title')}
+              {tPack('items.title')}
             </h2>
             <div className="pack-detail-page__levels-header-right">
-              <span className="pack-detail-page__levels-count">
-                {pack.packItems?.filter(item => !item.folderId).length || 0} {tPack('levels.count')}
-              </span>
-              {canEdit && pack.packItems && pack.packItems.filter(item => !item.folderId).length > 1 && (
+              {canEdit && (
+                <div className="pack-detail-page__add-buttons">
+                  <button
+                    className="pack-detail-page__add-btn"
+                    onClick={handleAddFolder}
+                    title={tPack('actions.addFolder')}
+                  >
+                    <PlusIcon /> 📁 {tPack('actions.addFolder')}
+                  </button>
+                  <button
+                    className="pack-detail-page__add-btn"
+                    onClick={handleAddLevel}
+                    title={tPack('actions.addLevel')}
+                  >
+                    <PlusIcon /> 🎵 {tPack('actions.addLevel')}
+                  </button>
+                </div>
+              )}
+              {canEdit && flatItems.length > 1 && (
                 <span className="pack-detail-page__drag-hint">
-                  {tPack('levels.dragHint')}
+                  {tPack('items.dragHint')}
                 </span>
               )}
             </div>
           </div>
 
-          {pack && pack.packItems && pack.packItems.length > 0 ? (
+          {pack.items && pack.items.length > 0 ? (
             <DragDropContext onDragEnd={handleDragEnd}>
-              <Droppable droppableId={`pack-levels-${pack.id}`} isCombineEnabled={true}>
+              <Droppable
+                droppableId={`pack-root-${pack.id}`}
+                type="PACK_ITEM"
+                isCombineEnabled={true}
+                renderClone={(provided, snapshot, rubric) => {
+                  const item = flatItems.find(i => `item-${pack.id}-${i.id}` === rubric.draggableId);
+                  if (!item) return null;
+                  
+                  return (
+                    <div
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      className={`pack-item pack-item--${item.type} dragging-clone`}
+                      style={{
+                        ...provided.draggableProps.style,
+                      }}
+                    >
+                      {item.type === 'folder' ? (
+                        <div className="pack-item__content">
+                          <div className="pack-item__icon">📁</div>
+                          <div className="pack-item__info">
+                            <div className="pack-item__name">{item.name}</div>
+                            <div className="pack-item__count">
+                              {item.children?.length || 0} {item.children?.length === 1 ? 'item' : 'items'}
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <LevelCard
+                          level={item.referencedLevel}
+                          user={user}
+                          sortBy="RECENT"
+                          displayMode="normal"
+                          size="medium"
+                        />
+                      )}
+                    </div>
+                  );
+                }}
+              >
                 {(provided, snapshot) => (
                   <div 
-                    className={`pack-detail-page__levels-list ${snapshot.isDraggingOver ? 'dragging-over' : ''} ${snapshot.draggingFromThisWith ? 'dragging-from' : ''}`}
+                    className={`pack-detail-page__items-list ${snapshot.isDraggingOver ? 'dragging-over' : ''}`}
                     {...provided.droppableProps}
                     ref={provided.innerRef}
                   >
-                    {/* Render folders first */}
-                    {pack.folders?.map((folder, folderIndex) => (
-                      <PackFolder
-                        key={`folder-${folder.id}`}
-                        folder={folder}
-                        index={folderIndex}
-                        isExpanded={isFolderExpanded(folder.id)}
-                        onToggleExpanded={() => toggleFolderExpanded(folder.id)}
-                        canEdit={canEdit}
-                        isReordering={isReordering}
-                        packId={pack.id}
-                        user={user}
-                      />
-                    ))}
-                    
-                    {/* Render levels that are NOT in any folder */}
-                    {pack.packItems
-                      .filter(item => !item.folderId) // Only show levels not in folders
-                      .map((item, levelIndex) => (
-                        <Draggable 
-                          key={`${pack.id}-${item.levelId}`} 
-                          draggableId={`${pack.id}-${item.levelId}`} 
-                          index={(pack.folders?.length || 0) + levelIndex}
-                          isDragDisabled={!canEdit || isReordering}
-                        >
-                          {(provided, snapshot) => (
-                            <div 
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              className={`pack-detail-page__level-item ${snapshot.isDragging ? 'dragging' : ''} ${isReordering ? 'reordering' : ''} ${snapshot.combineTargetFor ? 'combine-target' : ''}`}
-                            >
-                              {canEdit && (
-                                <div 
-                                  {...provided.dragHandleProps}
-                                  className="pack-detail-page__drag-handle"
-                                  title={tPack('levels.dragHint')}
-                                >
-                                  <DragHandleIcon />
-                                </div>
-                              )}
-                              <LevelCard
-                                index={levelIndex}
-                                level={item.level}
-                                user={user}
-                                sortBy="RECENT"
-                                displayMode="normal"
-                                size="medium"
-                              />
-                            </div>
-                          )}
-                        </Draggable>
+                    {pack.items
+                      .sort((a, b) => a.sortOrder - b.sortOrder)
+                      .map((item, index) => (
+                        <PackItem
+                          key={item.id}
+                          item={item}
+                          index={index}
+                          expandedFolders={expandedFolders}
+                          onToggleExpanded={toggleFolderExpanded}
+                          canEdit={canEdit}
+                          isReordering={isReordering}
+                          packId={pack.id}
+                          user={user}
+                          onRenameFolder={handleRenameFolder}
+                          onDeleteItem={handleDeleteItem}
+                        />
                       ))}
                     {provided.placeholder}
                   </div>
@@ -514,7 +662,23 @@ const PackDetailPage = () => {
             </DragDropContext>
           ) : (
             <div className="pack-detail-page__empty">
-              <p>{tPack('levels.empty')}</p>
+              <p>{tPack('items.empty')}</p>
+              {canEdit && (
+                <div className="pack-detail-page__empty-actions">
+                  <button
+                    className="pack-detail-page__add-btn"
+                    onClick={handleAddFolder}
+                  >
+                    <PlusIcon /> {tPack('actions.addFolder')}
+                  </button>
+                  <button
+                    className="pack-detail-page__add-btn"
+                    onClick={handleAddLevel}
+                  >
+                    <PlusIcon /> {tPack('actions.addLevel')}
+                  </button>
+                </div>
+              )}
             </div>
           )}
         </div>

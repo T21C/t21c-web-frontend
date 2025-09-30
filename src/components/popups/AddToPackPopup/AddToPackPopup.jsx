@@ -69,10 +69,11 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
   };
 
   // Standalone pack operations
-  const addLevelToPack = async (packId, levelId, sortOrder = null) => {
-    const response = await api.post(`/v2/database/levels/packs/${packId}/levels`, {
+  const addLevelToPack = async (packId, levelId, parentId = null) => {
+    const response = await api.post(`/v2/database/levels/packs/${packId}/items`, {
+      type: 'level',
       levelId,
-      sortOrder
+      parentId
     });
     return response.data;
   };
@@ -128,7 +129,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
   // Check if level is already in any pack
   const isLevelInPack = (packId) => {
     const pack = userPacks.find(p => p.id === packId);
-    return pack?.packItems?.some(item => item.levelId === level.id);
+    return pack?.packItems?.some(item => item.type === 'level' && item.levelId === level.id);
   };
 
   // Close popup when clicking outside
@@ -273,7 +274,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
                             {pack.name}
                           </h5>
                           <p className="add-to-pack-popup__pack-meta">
-                            {pack.packItems?.length || 0} {tPopup('levels')}
+                            {pack.packItems?.filter(item => item.type === 'level').length || 0} {tPopup('levels')}
                           </p>
                         </div>
 
