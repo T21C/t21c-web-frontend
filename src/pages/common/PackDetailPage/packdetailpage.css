@@ -316,11 +316,12 @@
 .pack-detail-page__items-list {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
   margin-bottom: 2rem;
   transition: background-color 0.2s ease, opacity 0.1s ease;
   border-radius: 8px;
   padding: 0.5rem;
+  position: relative;
+  z-index: 1;
 }
 
 .pack-detail-page__items-list.dragging-over {

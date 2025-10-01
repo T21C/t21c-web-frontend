@@ -1,5 +1,7 @@
 import React from 'react';
-import { Draggable, Droppable } from 'react-beautiful-dnd';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
+import { useDroppable } from '@dnd-kit/core';
 import { useTranslation } from 'react-i18next';
 import { ChevronIcon, FolderIcon, DragHandleIcon } from '@/components/common/icons';
 import LevelCard from '../LevelCard/LevelCard';
@@ -7,7 +9,6 @@ import './PackItem.css';
 
 const PackItem = ({ 
   item, 
-  index, 
   expandedFolders,
   onToggleExpanded, 
   canEdit, 
@@ -21,41 +22,54 @@ const PackItem = ({
   const { t } = useTranslation();
   const isExpanded = expandedFolders?.has(item.id) || false;
 
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+    isOver
+  } = useSortable({
+    id: item.id,
+    data: {
+      type: item.type,
+      parentId: item.parentId || null
+    },
+    disabled: !canEdit || isReordering
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition
+  };
+
   // If it's a level item, just render the level card
   if (item.type === 'level') {
     return (
-      <Draggable
-        key={`item-${item.id}`}
-        draggableId={`item-${packId}-${item.id}`}
-        index={index}
-        isDragDisabled={!canEdit || isReordering}
-        disableInteractiveElementBlocking={true}
+      <div
+        ref={setNodeRef}
+        style={style}
+        className={`pack-item pack-item--level ${isDragging ? 'dragging' : ''} ${isOver ? 'over' : ''}`}
       >
-        {(provided, snapshot) => (
+        {canEdit && (
           <div
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            className={`pack-item pack-item--level ${snapshot.isDragging ? 'dragging' : ''} ${isReordering ? 'reordering' : ''} ${snapshot.combineTargetFor ? 'combine-target' : ''}`}
+            {...attributes}
+            {...listeners}
+            className="pack-item__drag-handle"
+            title="Drag to reorder or move"
           >
-            {canEdit && (
-              <div
-                {...provided.dragHandleProps}
-                className="pack-item__drag-handle"
-                title="Drag to reorder or combine"
-              >
-                <DragHandleIcon />
-              </div>
-            )}
-            <LevelCard
-              level={item.referencedLevel}
-              user={user}
-              sortBy="RECENT"
-              displayMode="normal"
-              size="medium"
-            />
+            <DragHandleIcon />
           </div>
         )}
-      </Draggable>
+        <LevelCard
+          level={item.referencedLevel}
+          user={user}
+          sortBy="RECENT"
+          displayMode="normal"
+          size="medium"
+        />
+      </div>
     );
   }
 
@@ -63,127 +77,140 @@ const PackItem = ({
   const childCount = item.children?.length || 0;
 
   return (
-    <div className="pack-item pack-item--folder-wrapper">
-      <Draggable
-        key={`item-${item.id}`}
-        draggableId={`item-${packId}-${item.id}`}
-        index={index}
-        isDragDisabled={!canEdit || isReordering}
-        isCombineEnabled={!isExpanded}
-        disableInteractiveElementBlocking={true}
+    <div className="pack-item__folder-container">
+      <div
+        ref={setNodeRef}
+        style={style}
+        className={`pack-item pack-item--folder ${isDragging ? 'dragging' : ''} ${isOver ? 'over' : ''}`}
       >
-        {(provided, snapshot) => (
+        {canEdit && (
           <div
-            ref={provided.innerRef}
-            {...provided.draggableProps}
-            className={`pack-item pack-item--folder ${snapshot.isDragging ? 'dragging' : ''} ${isReordering ? 'reordering' : ''} ${snapshot.combineTargetFor && !isExpanded ? 'combine-target' : ''}`}
+            {...attributes}
+            {...listeners}
+            className="pack-item__drag-handle"
+            title="Drag to reorder or nest"
           >
-            {canEdit && (
-              <div
-                {...provided.dragHandleProps}
-                className="pack-item__drag-handle"
-                title="Drag to reorder or nest"
-              >
-                <DragHandleIcon />
-              </div>
-            )}
-            
-            <div className="pack-item__content">
-              <button
-                className="pack-item__toggle"
-                onClick={() => onToggleExpanded(item.id)}
-                disabled={!canEdit && childCount === 0}
-              >
-                <ChevronIcon className={isExpanded ? 'expanded' : 'collapsed'} />
-              </button>
-              
-              <div className="pack-item__icon">
-                <FolderIcon />
-              </div>
-              
-              <div className="pack-item__info">
-                <div className="pack-item__name">{item.name}</div>
-                <div className="pack-item__count">
-                  {childCount} {childCount === 1 ? 'item' : 'items'}
-                </div>
-              </div>
-
-              {canEdit && (
-                <div className="pack-item__actions">
-                  <button
-                    className="pack-item__action-btn"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onRenameFolder?.(item);
-                    }}
-                    title="Rename folder"
-                  >
-                    ✏️
-                  </button>
-                  <button
-                    className="pack-item__action-btn pack-item__action-btn--delete"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onDeleteItem?.(item);
-                    }}
-                    title="Delete folder"
-                    disabled={childCount > 0}
-                  >
-                    🗑️
-                  </button>
-                </div>
-              )}
-            </div>
+            <DragHandleIcon />
           </div>
         )}
-      </Draggable>
-      
-      {/* Render folder contents when expanded - OUTSIDE the draggable */}
-      {isExpanded && (
-        <Droppable
-          droppableId={`folder-${packId}-${item.id}`}
-          type="PACK_ITEM"
-          isCombineEnabled={false}
-          ignoreContainerClipping={false}
-          direction="vertical"
+        
+        <button
+          className="pack-item__toggle"
+          onClick={() => onToggleExpanded(item.id)}
+          disabled={!canEdit && childCount === 0}
         >
-          {(droppableProvided, droppableSnapshot) => (
-            <div
-              ref={droppableProvided.innerRef}
-              {...droppableProvided.droppableProps}
-              className={`pack-item__contents ${droppableSnapshot.isDraggingOver ? 'dragging-over' : ''} ${!item.children || item.children.length === 0 ? 'empty' : ''}`}
-              style={{ 
-                zIndex: 10 + depth
+          <ChevronIcon className={isExpanded ? 'expanded' : 'collapsed'} />
+        </button>
+        
+        <div className="pack-item__icon">
+          <FolderIcon />
+        </div>
+        
+        <div className="pack-item__info">
+          <div className="pack-item__name">{item.name}</div>
+          <div className="pack-item__count">
+            {childCount} {childCount === 1 ? 'item' : 'items'}
+          </div>
+        </div>
+
+        {canEdit && (
+          <div className="pack-item__actions">
+            <button
+              className="pack-item__action-btn"
+              onClick={(e) => {
+                e.stopPropagation();
+                onRenameFolder?.(item);
               }}
+              title="Rename folder"
             >
-              {item.children && item.children.length > 0 ? (
-                item.children
-                  .sort((a, b) => a.sortOrder - b.sortOrder)
-                  .map((childItem, childIndex) => (
-                    <PackItem
-                      key={childItem.id}
-                      item={childItem}
-                      index={childIndex}
-                      expandedFolders={expandedFolders}
-                      onToggleExpanded={onToggleExpanded}
-                      canEdit={canEdit}
-                      isReordering={isReordering}
-                      packId={packId}
-                      user={user}
-                      onRenameFolder={onRenameFolder}
-                      onDeleteItem={onDeleteItem}
-                      depth={depth + 1}
-                    />
-                  ))
-              ) : (
-                <div className="pack-item__contents-empty">
-                  Drop items here
-                </div>
-              )}
-              {droppableProvided.placeholder}
-            </div>
-          )}
-        </Droppable>
+              ✏️
+            </button>
+            <button
+              className="pack-item__action-btn pack-item__action-btn--delete"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDeleteItem?.(item);
+              }}
+              title="Delete folder"
+              disabled={childCount > 0}
+            >
+              🗑️
+            </button>
+          </div>
+        )}
+      </div>
+      
+      {/* Render folder contents when expanded */}
+      {isExpanded && (
+        <FolderDropZone
+          folderId={item.id}
+          children={item.children}
+          expandedFolders={expandedFolders}
+          onToggleExpanded={onToggleExpanded}
+          canEdit={canEdit}
+          isReordering={isReordering}
+          packId={packId}
+          user={user}
+          onRenameFolder={onRenameFolder}
+          onDeleteItem={onDeleteItem}
+          depth={depth}
+        />
+      )}
+    </div>
+  );
+};
+
+// Separate component for folder drop zone
+const FolderDropZone = ({
+  folderId,
+  children = [],
+  expandedFolders,
+  onToggleExpanded,
+  canEdit,
+  isReordering,
+  packId,
+  user,
+  onRenameFolder,
+  onDeleteItem,
+  depth
+}) => {
+  const { setNodeRef, isOver } = useDroppable({
+    id: `folder-${folderId}`,
+    data: {
+      type: 'folder-container',
+      parentId: folderId
+    }
+  });
+
+  const sortedChildren = children ? [...children].sort((a, b) => a.sortOrder - b.sortOrder) : [];
+
+  return (
+    <div
+      ref={setNodeRef}
+      className={`pack-item__contents ${isOver ? 'dragging-over' : ''} ${!children || children.length === 0 ? 'empty' : ''}`}
+    >
+      {sortedChildren.length > 0 ? (
+        <>
+          {sortedChildren.map((childItem) => (
+            <PackItem
+              key={childItem.id}
+              item={childItem}
+              expandedFolders={expandedFolders}
+              onToggleExpanded={onToggleExpanded}
+              canEdit={canEdit}
+              isReordering={isReordering}
+              packId={packId}
+              user={user}
+              onRenameFolder={onRenameFolder}
+              onDeleteItem={onDeleteItem}
+              depth={depth + 1}
+            />
+          ))}
+        </>
+      ) : (
+        <div className="pack-item__contents-empty">
+          Drop items here
+        </div>
       )}
     </div>
   );

@@ -6,6 +6,7 @@
   "level": {
     "creator": "Creator",
     "clears": "Clears",
+    "addToPack": "Add to Pack",
     "buttons": {
       "edit": "Edit",
       "addToPack": "Add to Pack"
