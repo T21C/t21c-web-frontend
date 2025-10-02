@@ -5,9 +5,9 @@
 }
 
 .pack-page__container {
-  max-width: 1400px;
   margin: 0 auto;
   position: relative;
+  max-width: 70rem;
   padding: 20px;
   z-index: 1;
 }
@@ -244,6 +244,7 @@
 }
 
 .pack-page__content {
+  margin: 1rem 2rem;
   padding-right: 8px;
 }
 

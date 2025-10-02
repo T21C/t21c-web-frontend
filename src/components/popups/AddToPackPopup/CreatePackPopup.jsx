@@ -5,16 +5,19 @@ import ImageSelectorPopup from '../ImageSelectorPopup/ImageSelectorPopup';
 import './CreatePackPopup.css';
 import toast from 'react-hot-toast';
 import api from '@/utils/api';
+import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { useAuth } from '@/contexts/AuthContext';
 
 const CreatePackPopup = ({ onClose, onCreate }) => {
   const { t } = useTranslation('components');
+  const { user } = useAuth();
   const tPopup = (key) => t(`packPopups.createPack.${key}`) || key;
   
   const [formData, setFormData] = useState({
     name: '',
     iconUrl: '',
     cssFlags: 0,
-    viewMode: 1, // PUBLIC
+    viewMode: 3, // PRIVATE
     isPinned: false
   });
   const [loading, setLoading] = useState(false);
@@ -23,10 +26,13 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
 
   // View mode options
   const viewModeOptions = [
-    { value: 1, label: tPopup('viewMode.public') },
     { value: 2, label: tPopup('viewMode.linkonly') },
     { value: 3, label: tPopup('viewMode.private') }
   ];
+
+  if (hasFlag(user, permissionFlags.SUPER_ADMIN)) {
+    viewModeOptions.splice(0, 0, { value: 1, label: tPopup('viewMode.public') });
+  }
 
   // CSS theme options
   const cssThemeOptions = [

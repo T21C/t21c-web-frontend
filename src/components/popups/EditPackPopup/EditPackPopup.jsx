@@ -28,10 +28,13 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
 
   // View mode options
   const viewModeOptions = [
-    { value: 1, label: tPopup('viewMode.public') },
     { value: 2, label: tPopup('viewMode.linkonly') },
     { value: 3, label: tPopup('viewMode.private') }
   ];
+
+  if (hasFlag(user, permissionFlags.SUPER_ADMIN)) {
+    viewModeOptions.splice(0, 0, { value: 1, label: tPopup('viewMode.public') });
+  }
 
   // CSS theme options
   const cssThemeOptions = [

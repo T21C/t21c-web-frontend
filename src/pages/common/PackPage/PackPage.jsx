@@ -58,10 +58,13 @@ const PackPage = () => {
     { value: 'LEVELS', label: tPack('sort.levels') }
   ];
 
-  // View mode options
+  // Check if user is admin
+  const isAdmin = user && hasFlag(user, permissionFlags.SUPER_ADMIN);
+
+  // View mode options - filter based on admin status
   const viewModeOptions = [
     { value: 'all', label: tPack('viewMode.all') },
-    { value: '0', label: tPack('viewMode.public') },
+    ...(isAdmin ? [{ value: '0', label: tPack('viewMode.public') }] : []),
     { value: '1', label: tPack('viewMode.linkonly') },
     { value: '2', label: tPack('viewMode.private') }
   ];
@@ -72,6 +75,13 @@ const PackPage = () => {
       updateFilter('viewMode', 'all');
     }
   }, [isMyPacks, user, updateFilter]);
+
+  // Set default view mode for non-admins
+  useEffect(() => {
+    if (!isAdmin && !isMyPacks) {
+      updateFilter('viewMode', 'all'); // Show all visible packs
+    }
+  }, [isAdmin, isMyPacks, updateFilter]);
 
   // Debounced search effect (same pattern as PassPage)
   useEffect(() => {
@@ -256,20 +266,22 @@ const PackPage = () => {
             <h2 className="setting-title">{tPack('filters.title')}</h2>
             <div className="filter-section">
               <div className="filter-row">
-                <div className="pack-page__filter-group">
-                  <label className="pack-page__filter-label">
-                    {tPack('filters.viewMode')}
-                  </label>
-                  <CustomSelect
-                    value={viewModeOptions.find(option => filters.viewMode === option.value)}
-                    onChange={(option) => {
-                      updateFilter('viewMode', option.value);
-                      triggerRefresh();
-                    }}
-                    options={viewModeOptions}
-                    placeholder={tPack('filters.viewModePlaceholder')}
-                  />
-                </div>
+                {isAdmin && (
+                  <div className="pack-page__filter-group">
+                    <label className="pack-page__filter-label">
+                      {tPack('filters.viewMode')}
+                    </label>
+                    <CustomSelect
+                      value={viewModeOptions.find(option => filters.viewMode === option.value)}
+                      onChange={(option) => {
+                        updateFilter('viewMode', option.value);
+                        triggerRefresh();
+                      }}
+                      options={viewModeOptions}
+                      placeholder={tPack('filters.viewModePlaceholder')}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
