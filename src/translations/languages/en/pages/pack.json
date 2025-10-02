@@ -36,7 +36,9 @@
     "name": "Name",
     "levels": "Level Count",
     "ascending": "Ascending",
-    "descending": "Descending"
+    "order": "Order",
+    "descending": "Descending",
+    "myLikes": "My Likes"
   },
   "viewMode": {
     "all": "All",

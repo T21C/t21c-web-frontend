@@ -693,6 +693,39 @@
   background: rgba(var(--accent-color-rgb), 0.1) !important;
 }
 
+/* My Likes Button Styles */
+.pack-page .wrapper-like {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.pack-page .wrapper-like:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.pack-page .wrapper-like.active {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.pack-page .wrapper-like svg {
+  transition: all 0.2s ease;
+}
+
+.pack-page .wrapper-like p {
+  margin: 0;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
 /* High contrast mode */
 @media (prefers-contrast: high) {
   .pack-page__filter-btn,
@@ -701,7 +734,7 @@
   .pack-page__display-toggle {
     border-width: 2px;
   }
-  
+
   .pack-page__create-btn {
     border: 2px solid var(--primary-color);
   }

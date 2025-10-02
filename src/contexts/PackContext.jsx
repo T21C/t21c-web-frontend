@@ -29,7 +29,8 @@ const PackContextProvider = (props) => {
         query: Cookies.get('pack_query') || "",
         viewMode: Cookies.get('pack_view_mode') || "all",
         sort: Cookies.get('pack_sort') || "RECENT",
-        order: Cookies.get('pack_order') || "DESC"
+        order: Cookies.get('pack_order') || "DESC",
+        myLikesOnly: Cookies.get('pack_my_likes_only') === 'true' || false
     }));
     
     // Use ref to access current filters without causing re-renders
@@ -77,6 +78,7 @@ const PackContextProvider = (props) => {
             // Add search parameters
             if (currentFilters.query.trim()) params.query = currentFilters.query.trim();
             if (currentFilters.viewMode !== 'all') params.viewMode = currentFilters.viewMode;
+            if (currentFilters.myLikesOnly) params.myLikesOnly = currentFilters.myLikesOnly;
 
             const response = await api.get('/v2/database/levels/packs', { params });
             const newPacks = response.data.packs || [];
@@ -226,7 +228,8 @@ const PackContextProvider = (props) => {
             query: "",
             viewMode: "all",
             sort: "RECENT",
-            order: "DESC"
+            order: "DESC",
+            myLikesOnly: false
         });
     };
 
@@ -263,6 +266,12 @@ const PackContextProvider = (props) => {
         return packs.find(pack => pack.id === packId);
     }, [packs]);
 
+    // Handle my likes toggle
+    const handleMyLikesToggle = useCallback(() => {
+        setFilters(prev => ({ ...prev, myLikesOnly: !prev.myLikesOnly }));
+        triggerRefresh();
+    }, [triggerRefresh]);
+
     const contextValue = {
         // Page-exclusive state for browsing/filtering
         packs,
@@ -286,6 +295,7 @@ const PackContextProvider = (props) => {
         // Favorites operations
         getPackById,
         toggleFavorite,
+        handleMyLikesToggle,
 
         // General pack operations (for page use)
         createPack,

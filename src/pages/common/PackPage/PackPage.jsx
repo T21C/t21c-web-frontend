@@ -13,7 +13,7 @@ import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { ReferencesButton, ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
-import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon, FilterIcon, PinIcon, SwitchIcon } from "@/components/common/icons";
+import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon, FilterIcon, PinIcon, SwitchIcon, LikeIcon } from "@/components/common/icons";
 import { CreatePackPopup, PackHelpPopup } from "@/components/popups";
 import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -40,7 +40,8 @@ const PackPageContent = () => {
     triggerRefresh,
     loadMore,
     createPack,
-    updateFilter
+    updateFilter,
+    handleMyLikesToggle
   } = useContext(PackContext);
 
   // Local state for UI controls
@@ -114,6 +115,7 @@ const PackPageContent = () => {
     updateFilter('viewMode', 'all');
     updateFilter('sort', 'RECENT');
     updateFilter('order', 'DESC');
+    updateFilter('myLikesOnly', false);
     triggerRefresh();
   }, [updateFilter, triggerRefresh]);
 
@@ -344,6 +346,15 @@ const PackPageContent = () => {
                   />
                 </div>
               </div>
+
+              {user && (
+                <div className="order" >
+                  <div className={`wrapper-like ${filters.myLikesOnly ? 'active' : ''}`} onClick={handleMyLikesToggle}>
+                    <LikeIcon color={filters.myLikesOnly ? "var(--color-white)" : "none"} size={"22px"} />
+                    <p>{tPack('sort.myLikes')}</p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
