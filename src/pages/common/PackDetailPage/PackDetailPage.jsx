@@ -7,9 +7,10 @@ import PackItem from "@/components/cards/PackItem/PackItem";
 import LevelCard from "@/components/cards/LevelCard/LevelCard";
 import { MetaTags } from "@/components/common/display";
 import { ScrollButton } from "@/components/common/buttons";
-import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, ArrowIcon, PlusIcon } from "@/components/common/icons";
+import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, ArrowIcon, PlusIcon, LikeIcon } from "@/components/common/icons";
 import { EditPackPopup } from "@/components/popups";
 import { useAuth } from "@/contexts/AuthContext";
+import { usePackContext } from "@/contexts/PackContext";
 import api from "@/utils/api";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { UserAvatar } from "@/components/layout";
@@ -82,6 +83,7 @@ const PackDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { toggleFavorite, isFavorite } = usePackContext();
   
   const [pack, setPack] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -160,6 +162,28 @@ const PackDetailPage = () => {
   // Handle delete pack
   const handleDeletePack = () => {
     navigate('/packs');
+  };
+
+  // Handle favorite toggle
+  const handleFavoriteClick = async () => {
+    if (!user) {
+      toast.error('Please log in to favorite packs');
+      return;
+    }
+
+    try {
+      const success = await toggleFavorite(pack.id);
+      if (success) {
+        // Update local pack state
+        setPack(prevPack => ({
+          ...prevPack,
+          favorites: isFavorite(pack.id) ? (prevPack.favorites || 0) - 1 : (prevPack.favorites || 0) + 1
+        }));
+      }
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+      toast.error(error.response?.data?.error || 'Failed to update favorite status');
+    }
   };
 
   // Folder expansion state
@@ -749,6 +773,20 @@ const PackDetailPage = () => {
               </button>
             </div>
           )}
+
+          {user && (
+            <div className="pack-detail-page__user-actions">
+              <button
+                className={`pack-detail-page__favorite-btn ${isFavorite(pack.id) ? 'favorited' : ''}`}
+                onClick={handleFavoriteClick}
+                data-tooltip-id="favorite-pack-tooltip"
+                data-tooltip-content={isFavorite(pack.id) ? tPack('actions.removeFromFavorites') : tPack('actions.addToFavorites')}
+              >
+                <LikeIcon />
+                <span>{isFavorite(pack.id) ? tPack('actions.removeFromFavorites') : tPack('actions.addToFavorites')}</span>
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Stats */}
@@ -896,6 +934,7 @@ const PackDetailPage = () => {
 
       {/* Tooltips */}
       <Tooltip id="edit-pack-tooltip" />
+      <Tooltip id="favorite-pack-tooltip" />
     </div>
   );
 };

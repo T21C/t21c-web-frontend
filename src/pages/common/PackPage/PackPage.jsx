@@ -30,7 +30,6 @@ const PackPageContent = () => {
 
   const { user } = useAuth();
   const location = useLocation();
-  const { favorites, favoritesLoading } = usePackContext();
   const isMyPacks = location.pathname === '/packs/my';
   
   const {
@@ -50,7 +49,6 @@ const PackPageContent = () => {
   const [showCreatePopup, setShowCreatePopup] = useState(false);
   const [showHelpPopup, setShowHelpPopup] = useState(false);
   const [displayMode, setDisplayMode] = useState('grid');
-  const [activeTab, setActiveTab] = useState('all'); // 'all' or 'favorites'
   const scrollRef = useRef(null);
   const [pendingQuery, setPendingQuery] = useState(filters.query);
 
@@ -155,30 +153,12 @@ const PackPageContent = () => {
         <div className="pack-page__header">
           <div className="pack-page__title-section">
             <h1 className="pack-page__title">
-              {isMyPacks ? tPack('title.myPacks') : activeTab === 'favorites' ? tPack('title.favorites') : tPack('title.allPacks')}
+              {isMyPacks ? tPack('title.myPacks') : tPack('title.allPacks')}
             </h1>
             <p className="pack-page__subtitle">
-              {isMyPacks ? tPack('subtitle.myPacks') : activeTab === 'favorites' ? tPack('subtitle.favorites') : tPack('subtitle.allPacks')}
+              {isMyPacks ? tPack('subtitle.myPacks') : tPack('subtitle.allPacks')}
             </p>
           </div>
-
-          {/* Tab Navigation */}
-          {!isMyPacks && user && (
-            <div className="pack-page__tabs">
-              <button
-                className={`pack-page__tab ${activeTab === 'all' ? 'active' : ''}`}
-                onClick={() => setActiveTab('all')}
-              >
-                {tPack('tabs.allPacks')}
-              </button>
-              <button
-                className={`pack-page__tab ${activeTab === 'favorites' ? 'active' : ''}`}
-                onClick={() => setActiveTab('favorites')}
-              >
-                {tPack('tabs.myFavorites')} ({favorites.length})
-              </button>
-            </div>
-          )}
           
           <div className="pack-page__actions">
             <button
@@ -397,11 +377,11 @@ const PackPageContent = () => {
               scrollableTarget={scrollRef.current}
             >
               <div className={`pack-page__grid pack-page__grid--${displayMode}`}>
-                {(activeTab === 'favorites' ? favorites : packs)?.map((pack, index) => (
-                  <PackCard
+                {packs.map((pack, index) => (
+                    <PackCard
                     key={pack.id}
                     index={index}
-                    pack={pack}
+                    packId={pack.id}
                     user={user}
                     sortBy={filters.sort}
                     displayMode={displayMode}

@@ -222,6 +222,13 @@
   flex-shrink: 0;
 }
 
+.pack-detail-page__user-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-shrink: 0;
+}
+
 .pack-detail-page__edit-btn {
   padding: 0.75rem 1rem;
   border: 1px solid var(--color-white-t20);
@@ -239,6 +246,37 @@
 .pack-detail-page__edit-btn:hover {
   background: var(--color-white-t20);
   border-color: var(--color-white-t30);
+}
+
+.pack-detail-page__favorite-btn {
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--color-white-t20);
+  border-radius: 8px;
+  background: var(--color-white-t10);
+  color: var(--color-white);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.pack-detail-page__favorite-btn:hover {
+  background: var(--color-white-t20);
+  border-color: var(--color-white-t30);
+}
+
+.pack-detail-page__favorite-btn.favorited {
+  background: rgba(255, 71, 87, 0.1);
+  border-color: #ff4757;
+  color: #ff4757;
+}
+
+.pack-detail-page__favorite-btn.favorited:hover {
+  background: rgba(255, 71, 87, 0.2);
+  border-color: #ff3742;
+  color: #ff3742;
 }
 
 /* Stats */

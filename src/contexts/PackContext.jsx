@@ -88,20 +88,51 @@ const PackContextProvider = (props) => {
     const triggerRefresh = useCallback(() => {
         setPageNumber(0);
         setPacks([]);
+        if (filtersRef.current.viewMode === 'favorites') {
+            setFavorites([]);
+        }
         setForceUpdate(f => !f);
     }, []);
 
     // Load more function
     const loadMore = useCallback(() => {
+        if (filtersRef.current.viewMode === 'favorites') {
+            // Favorites don't support pagination, do nothing
+            return;
+        }
         if (hasMore && !loading) {
             setPageNumber(prev => prev + 1);
         }
     }, [hasMore, loading]);
 
+
+    // Favorites operations
+    const fetchFavorites = useCallback(async () => {
+        if (!user) {
+            setFavorites([]);
+            return;
+        }
+
+        setFavoritesLoading(true);
+        try {
+            const response = await api.get('/v2/database/levels/packs/favorites');
+            setFavorites(response.data.packs || []);
+        } catch (error) {
+            console.error('Error fetching favorites:', error);
+            setFavorites([]);
+        } finally {
+            setFavoritesLoading(false);
+        }
+    }, [user]);
+
     // Effect to fetch packs when dependencies change
     useEffect(() => {
-        fetchPacks();
-    }, [fetchPacks, forceUpdate]);
+        if (filtersRef.current.viewMode === 'favorites') {
+            fetchFavorites();
+        } else {
+            fetchPacks();
+        }
+    }, [fetchPacks, fetchFavorites, forceUpdate]);
 
     // General pack operations (for page use)
     const createPack = async (packData) => {
@@ -188,55 +219,38 @@ const PackContextProvider = (props) => {
         });
     };
 
-    // Favorites operations
-    const fetchFavorites = useCallback(async () => {
-        if (!user) {
-            setFavorites([]);
-            return;
-        }
-
-        setFavoritesLoading(true);
+    const toggleFavorite = useCallback(async (packId) => {
         try {
-            const response = await api.get('/v2/database/levels/packs/favorites');
-            setFavorites(response.data.packs || []);
-        } catch (error) {
-            console.error('Error fetching favorites:', error);
-            setFavorites([]);
-        } finally {
-            setFavoritesLoading(false);
-        }
-    }, [user]);
+            // Determine desired state based on current favorite status
+            const currentlyFavorited = packs.some(pack => pack.id === packId && pack.isFavorited);
+            const desiredFavorited = !currentlyFavorited;
+            
+            const response = await api.put(`/v2/database/levels/packs/${packId}/favorite`, { 
+                favorited: desiredFavorited 
+            });
 
-    const addToFavorites = useCallback(async (packId) => {
-        try {
-            await api.post(`/v2/database/levels/packs/${packId}/favorite`);
-            await fetchFavorites();
+            console.log(response);
+            // Update the pack in the main packs list if it exists
+            if (response.data.success) {
+                setPacks(prevPacks =>
+                    prevPacks.map(pack =>
+                        pack.id === packId
+                            ? { ...pack, isFavorited: response.data.favorited }
+                            : pack
+                    )
+                );
+            }
+
             return true;
         } catch (error) {
-            console.error('Error adding to favorites:', error);
+            console.error('Error toggling favorite:', error);
             return false;
         }
-    }, [fetchFavorites]);
+    }, [packs]);
 
-    const removeFromFavorites = useCallback(async (packId) => {
-        try {
-            await api.delete(`/v2/database/levels/packs/${packId}/favorite`);
-            await fetchFavorites();
-            return true;
-        } catch (error) {
-            console.error('Error removing from favorites:', error);
-            return false;
-        }
-    }, [fetchFavorites]);
-
-    const isFavorite = useCallback((packId) => {
-        return favorites.some(pack => pack.id === packId);
-    }, [favorites]);
-
-    // Load favorites when user changes
-    useEffect(() => {
-        fetchFavorites();
-    }, [fetchFavorites]);
+    const getPackById = useCallback((packId) => {
+        return packs.find(pack => pack.id === packId);
+    }, [packs]);
 
     const contextValue = {
         // Page-exclusive state for browsing/filtering
@@ -259,10 +273,8 @@ const PackContextProvider = (props) => {
         resetFilters,
 
         // Favorites operations
-        fetchFavorites,
-        addToFavorites,
-        removeFromFavorites,
-        isFavorite,
+        getPackById,
+        toggleFavorite,
 
         // General pack operations (for page use)
         createPack,

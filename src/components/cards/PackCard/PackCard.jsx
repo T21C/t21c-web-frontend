@@ -3,7 +3,7 @@ import "./packcard.css"
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { EditPackPopup } from "@/components/popups";
-import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, LikeIcon } from "@/components/common/icons";
+import { EditIcon, PinIcon, LockIcon, EyeIcon, LikeIcon } from "@/components/common/icons";
 import toast from 'react-hot-toast';
 import { usePackContext } from "@/contexts/PackContext";
 import { UserAvatar } from "@/components/layout";
@@ -11,10 +11,11 @@ import { permissionFlags } from "@/utils/UserPermissions";
 import { hasFlag } from "@/utils/UserPermissions";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { LinkIcon } from "@/components/common/icons/LinkIcon";
+import { LevelPackViewModes } from "@/utils/constants";
 
 const PackCard = ({
   index,
-  pack: initialPack,
+  packId,
   user,
   sortBy,
   displayMode = 'normal',
@@ -23,14 +24,17 @@ const PackCard = ({
   const { t } = useTranslation('components');
   const tCard = (key) => t(`cards.pack.${key}`) || key;
   
-  const [pack, setPack] = useState(initialPack);
   const [showEditPopup, setShowEditPopup] = useState(false);
-  const levelCount = pack.packItems?.filter(item => item.type === 'level').length || 0;
   const { difficultyDict } = useDifficultyContext();
-  const { isFavorite, addToFavorites, removeFromFavorites } = usePackContext();
+  const { toggleFavorite } = usePackContext();
   const navigate = useNavigate();
+  const { packs, getPackById } = usePackContext();
+  const [pack, setPack] = useState(getPackById(packId));
 
-  const isFavorited = isFavorite(pack.id);
+
+  const levelCount = pack.packItems.filter(item => item.type === 'level').length || 0;
+
+  const isFavorited = pack.isFavorited;
 
   // Add effect to handle body overflow when edit popup is open
   useEffect(() => {
@@ -63,16 +67,9 @@ const PackCard = ({
     }
 
     try {
-      if (isFavorited) {
-        const success = await removeFromFavorites(pack.id);
-        if (!success) {
-          toast.error('Failed to remove from favorites');
-        }
-      } else {
-        const success = await addToFavorites(pack.id);
-        if (!success) {
-          toast.error('Failed to add to favorites');
-        }
+      const success = await toggleFavorite(pack.id);
+      if (!success) {
+        toast.error('Failed to update favorite status');
       }
     } catch (error) {
       console.error('Error toggling favorite:', error);
@@ -97,10 +94,10 @@ const PackCard = ({
 
   const getViewModeText = () => {
     switch (pack.viewMode) {
-      case 1: return tCard('viewMode.public');
-      case 2: return tCard('viewMode.linkonly');
-      case 3: return tCard('viewMode.private');
-      case 4: return tCard('viewMode.forcedPrivate');
+      case LevelPackViewModes.PUBLIC: return tCard('viewMode.public');
+      case LevelPackViewModes.LINKONLY: return tCard('viewMode.linkonly');
+      case LevelPackViewModes.PRIVATE: return tCard('viewMode.private');
+      case LevelPackViewModes.FORCED_PRIVATE: return tCard('viewMode.forcedPrivate');
       default: return tCard('viewMode.public');
     }
   };
@@ -115,7 +112,7 @@ const PackCard = ({
     `pack-card--${size}`,
     `pack-card--${displayMode}`,
     pack.isPinned ? 'pack-card--pinned' : '',
-    pack.viewMode === 4 ? 'pack-card--forced-private' : ''
+    pack.viewMode === LevelPackViewModes.FORCED_PRIVATE ? 'pack-card--forced-private' : ''
   ].filter(Boolean).join(' ');
 
   return (
@@ -173,12 +170,12 @@ const PackCard = ({
 
             {user && (
               <button
-                className={`pack-card__favorite-btn ${isFavorited ? 'favorited' : ''}`}
+                className='pack-card__favorite-btn'
                 onClick={handleFavoriteClick}
                 data-tooltip-id={`pack-favorite-tooltip-${pack.id}`}
                 data-tooltip-content={isFavorited ? tCard('removeFromFavorites') : tCard('addToFavorites')}
               >
-                <LikeIcon />
+                <LikeIcon color={isFavorited ? "#ffffff" : "none"} />
               </button>
             )}
           </div>
@@ -231,7 +228,7 @@ const PackCard = ({
         <EditPackPopup
           pack={pack}
           onClose={() => setShowEditPopup(false)}
-          onUpdate={(updatedPack) => setPack(updatedPack)}
+          onUpdate={(updatedPack) => {setPack({...pack, ...updatedPack})}}
         />
       )}
     </>
