@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { createContext, useState, useEffect, useCallback, useRef } from "react"
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from "react"
 import Cookies from 'js-cookie';
 import api from '@/utils/api';
 import { useAuth } from './AuthContext';
@@ -13,10 +13,14 @@ const PackContextProvider = (props) => {
     const [packs, setPacks] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
-    
+
     // Pagination state
     const [hasMore, setHasMore] = useState(true);
     const [pageNumber, setPageNumber] = useState(0);
+
+    // Favorites state
+    const [favorites, setFavorites] = useState([]);
+    const [favoritesLoading, setFavoritesLoading] = useState(false);
     
     // Filter state (with cookie persistence)
     const [filters, setFilters] = useState(() => ({
@@ -184,6 +188,56 @@ const PackContextProvider = (props) => {
         });
     };
 
+    // Favorites operations
+    const fetchFavorites = useCallback(async () => {
+        if (!user) {
+            setFavorites([]);
+            return;
+        }
+
+        setFavoritesLoading(true);
+        try {
+            const response = await api.get('/v2/database/levels/packs/favorites');
+            setFavorites(response.data.packs || []);
+        } catch (error) {
+            console.error('Error fetching favorites:', error);
+            setFavorites([]);
+        } finally {
+            setFavoritesLoading(false);
+        }
+    }, [user]);
+
+    const addToFavorites = useCallback(async (packId) => {
+        try {
+            await api.post(`/v2/database/levels/packs/${packId}/favorite`);
+            await fetchFavorites();
+            return true;
+        } catch (error) {
+            console.error('Error adding to favorites:', error);
+            return false;
+        }
+    }, [fetchFavorites]);
+
+    const removeFromFavorites = useCallback(async (packId) => {
+        try {
+            await api.delete(`/v2/database/levels/packs/${packId}/favorite`);
+            await fetchFavorites();
+            return true;
+        } catch (error) {
+            console.error('Error removing from favorites:', error);
+            return false;
+        }
+    }, [fetchFavorites]);
+
+    const isFavorite = useCallback((packId) => {
+        return favorites.some(pack => pack.id === packId);
+    }, [favorites]);
+
+    // Load favorites when user changes
+    useEffect(() => {
+        fetchFavorites();
+    }, [fetchFavorites]);
+
     const contextValue = {
         // Page-exclusive state for browsing/filtering
         packs,
@@ -193,12 +247,22 @@ const PackContextProvider = (props) => {
         hasMore,
         pageNumber,
 
+        // Favorites state
+        favorites,
+        favoritesLoading,
+
         // Page browsing actions
         fetchPacks,
         triggerRefresh,
         loadMore,
         updateFilter,
         resetFilters,
+
+        // Favorites operations
+        fetchFavorites,
+        addToFavorites,
+        removeFromFavorites,
+        isFavorite,
 
         // General pack operations (for page use)
         createPack,
@@ -215,6 +279,15 @@ const PackContextProvider = (props) => {
         </PackContext.Provider>
     )
 }
+
+// Hook for consuming the PackContext
+export const usePackContext = () => {
+    const context = useContext(PackContext);
+    if (!context) {
+        throw new Error('usePackContext must be used within a PackContextProvider');
+    }
+    return context;
+};
 
 export { PackContext, PackContextProvider }
 export default PackContext

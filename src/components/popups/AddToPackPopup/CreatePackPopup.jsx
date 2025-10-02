@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import api from '@/utils/api';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { useAuth } from '@/contexts/AuthContext';
+import { LevelPackViewModes } from '@/utils/constants';
 
 const CreatePackPopup = ({ onClose, onCreate }) => {
   const { t } = useTranslation('components');
@@ -17,7 +18,7 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
     name: '',
     iconUrl: '',
     cssFlags: 0,
-    viewMode: 3, // PRIVATE
+    viewMode: LevelPackViewModes.PRIVATE, // PRIVATE
     isPinned: false
   });
   const [loading, setLoading] = useState(false);
@@ -26,12 +27,12 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
 
   // View mode options
   const viewModeOptions = [
-    { value: 2, label: tPopup('viewMode.linkonly') },
-    { value: 3, label: tPopup('viewMode.private') }
+    { value: LevelPackViewModes.LINKONLY, label: tPopup('viewMode.linkonly') },
+    { value: LevelPackViewModes.PRIVATE, label: tPopup('viewMode.private') }
   ];
 
   if (hasFlag(user, permissionFlags.SUPER_ADMIN)) {
-    viewModeOptions.splice(0, 0, { value: 1, label: tPopup('viewMode.public') });
+    viewModeOptions.splice(0, 0, { value: LevelPackViewModes.PUBLIC, label: tPopup('viewMode.public') });
   }
 
   // CSS theme options
@@ -264,22 +265,24 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
               </p>
             </div>
 
-            <div className="create-pack-popup__field">
-              <label className="create-pack-popup__checkbox-label">
-                <input
-                  type="checkbox"
-                  className="create-pack-popup__checkbox"
-                  checked={formData.isPinned}
-                  onChange={(e) => handleInputChange('isPinned', e.target.checked)}
-                />
-                <span className="create-pack-popup__checkbox-text">
-                  {tPopup('pinned.label')}
-                </span>
-              </label>
-              <p className="create-pack-popup__help">
-                {tPopup('pinned.help')}
-              </p>
-            </div>
+            {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+              <div className="create-pack-popup__field">
+                <label className="create-pack-popup__checkbox-label">
+                  <input
+                    type="checkbox"
+                    className="create-pack-popup__checkbox"
+                    checked={formData.isPinned}
+                    onChange={(e) => handleInputChange('isPinned', e.target.checked)}
+                  />
+                  <span className="create-pack-popup__checkbox-text">
+                    {tPopup('pinned.label')}
+                  </span>
+                </label>
+                <p className="create-pack-popup__help">
+                  {tPopup('pinned.help')}
+                </p>
+              </div>
+            )}
           </div>
 
           <div className="create-pack-popup__footer">

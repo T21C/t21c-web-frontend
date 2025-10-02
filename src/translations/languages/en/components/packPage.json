@@ -16,7 +16,8 @@
       "all": "All",
       "public": "Public",
       "linkonly": "Link Only",
-      "private": "Private"
+      "private": "Private",
+      "forcedPrivate": "Forced Private"
     },
     "pinned": {
       "label": "Pinned Only"

@@ -7,6 +7,7 @@ import './EditPackPopup.css';
 import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import api from '@/utils/api';
+import { LevelPackViewModes } from '@/utils/constants';
 
 const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
   const { t } = useTranslation('components');
@@ -18,7 +19,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
     name: pack.name || '',
     iconUrl: pack.iconUrl || '',
     cssFlags: pack.cssFlags || 0,
-    viewMode: pack.viewMode || 1,
+    viewMode: pack.viewMode || 3,
     isPinned: pack.isPinned || false
   });
   const [loading, setLoading] = useState(false);
@@ -28,12 +29,13 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
 
   // View mode options
   const viewModeOptions = [
-    { value: 2, label: tPopup('viewMode.linkonly') },
-    { value: 3, label: tPopup('viewMode.private') }
+    { value: LevelPackViewModes.LINKONLY, label: tPopup('viewMode.linkonly') },
+    { value: LevelPackViewModes.PRIVATE, label: tPopup('viewMode.private') },
+    { value: LevelPackViewModes.FORCED_PRIVATE, label: tPopup('viewMode.forcedPrivate') }
   ];
 
   if (hasFlag(user, permissionFlags.SUPER_ADMIN)) {
-    viewModeOptions.splice(0, 0, { value: 1, label: tPopup('viewMode.public') });
+    viewModeOptions.splice(0, 0, { value: LevelPackViewModes.PUBLIC, label: tPopup('viewMode.public') });
   }
 
   // CSS theme options
@@ -163,7 +165,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
     hasFlag(user, permissionFlags.SUPER_ADMIN)
   );
 
-  const isForcedPrivate = pack.viewMode === 4;
+  const isForcedPrivate = pack.viewMode === LevelPackViewModes.FORCED_PRIVATE;
 
   return (
     <div className="edit-pack-popup" onClick={handleBackdropClick}>
@@ -267,8 +269,8 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
               <select
                 className="edit-pack-popup__select"
                 value={formData.viewMode}
-                onChange={(e) => handleInputChange('viewMode', parseInt(e.target.value))}
-                disabled={!canEdit || isForcedPrivate}
+                onChange={(e) => handleInputChange('viewMode', e.target.value)}
+                disabled={!canEdit || (isForcedPrivate && !hasFlag(user, permissionFlags.SUPER_ADMIN))}
               >
                 {viewModeOptions.map(option => (
                   <option key={option.value} value={option.value}>
@@ -276,7 +278,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                   </option>
                 ))}
                 {isForcedPrivate && (
-                  <option value={4} disabled>
+                  <option value={LevelPackViewModes.FORCED_PRIVATE} disabled>
                     {tPopup('viewMode.forcedPrivate')} (Admin Locked)
                   </option>
                 )}
@@ -289,23 +291,25 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
               </p>
             </div>
 
-            <div className="edit-pack-popup__field">
-              <label className="edit-pack-popup__checkbox-label">
-                <input
-                  type="checkbox"
-                  className="edit-pack-popup__checkbox"
-                  checked={formData.isPinned}
-                  onChange={(e) => handleInputChange('isPinned', e.target.checked)}
-                  disabled={!canEdit}
-                />
-                <span className="edit-pack-popup__checkbox-text">
-                  {tPopup('pinned.label')}
-                </span>
-              </label>
-              <p className="edit-pack-popup__help">
-                {tPopup('pinned.help')}
-              </p>
-            </div>
+            {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+              <div className="edit-pack-popup__field">
+                <label className="edit-pack-popup__checkbox-label">
+                  <input
+                    type="checkbox"
+                    className="edit-pack-popup__checkbox"
+                    checked={formData.isPinned}
+                    onChange={(e) => handleInputChange('isPinned', e.target.checked)}
+                    disabled={!canEdit}
+                  />
+                  <span className="edit-pack-popup__checkbox-text">
+                    {tPopup('pinned.label')}
+                  </span>
+                </label>
+                <p className="edit-pack-popup__help">
+                  {tPopup('pinned.help')}
+                </p>
+              </div>
+            )}
 
             {!canEdit && (
               <div className="edit-pack-popup__no-permission">

@@ -6,7 +6,6 @@
   cursor: pointer;
   transition: all 0.2s ease;
   position: relative;
-  overflow: hidden;
 }
 
 .pack-card:hover {
@@ -124,6 +123,42 @@
 .pack-card__edit-btn:hover {
   background: #2a2a2a;
   color: #007bff;
+}
+
+.pack-card__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.pack-card__favorite-btn {
+  background: none;
+  border: none;
+  padding: 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: #666666;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.pack-card__favorite-btn:hover {
+  background: #2a2a2a;
+  color: #ff6b6b;
+}
+
+.pack-card__favorite-btn.favorited {
+  color: #ff4757;
+  background: rgba(255, 71, 87, 0.1);
+}
+
+.pack-card__favorite-btn.favorited:hover {
+  color: #ff3742;
+  background: rgba(255, 71, 87, 0.2);
 }
 
 .pack-card__footer {

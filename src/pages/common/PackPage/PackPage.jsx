@@ -7,7 +7,7 @@ import { PackCard } from "@/components/cards";
 import { StateDisplay, CustomSelect } from "@/components/common/selectors";
 import { Tooltip } from "react-tooltip";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { PackContext } from "@/contexts/PackContext";
+import { PackContext, usePackContext } from "@/contexts/PackContext";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,23 +17,25 @@ import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon, FilterIcon, PinIcon, Sw
 import { CreatePackPopup, PackHelpPopup } from "@/components/popups";
 import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import { LevelPackViewModes } from "@/utils/constants";
 
 const currentUrl = window.location.origin + location.pathname;
 
 const limit = 30;
 
-const PackPage = () => {
+// Internal component that uses unified PackContext
+const PackPageContent = () => {
   const { t } = useTranslation('pages');
   const tPack = (key, params = {}) => t(`pack.${key}`, params);
 
   const { user } = useAuth();
   const location = useLocation();
+  const { favorites, favoritesLoading } = usePackContext();
   const isMyPacks = location.pathname === '/packs/my';
   
   const {
     packs,
     filters,
-    loading,
     error,
     hasMore,
     triggerRefresh,
@@ -48,6 +50,7 @@ const PackPage = () => {
   const [showCreatePopup, setShowCreatePopup] = useState(false);
   const [showHelpPopup, setShowHelpPopup] = useState(false);
   const [displayMode, setDisplayMode] = useState('grid');
+  const [activeTab, setActiveTab] = useState('all'); // 'all' or 'favorites'
   const scrollRef = useRef(null);
   const [pendingQuery, setPendingQuery] = useState(filters.query);
 
@@ -64,9 +67,10 @@ const PackPage = () => {
   // View mode options - filter based on admin status
   const viewModeOptions = [
     { value: 'all', label: tPack('viewMode.all') },
-    ...(isAdmin ? [{ value: '0', label: tPack('viewMode.public') }] : []),
-    { value: '1', label: tPack('viewMode.linkonly') },
-    { value: '2', label: tPack('viewMode.private') }
+    ...(isAdmin ? [{ value: LevelPackViewModes.PUBLIC, label: tPack('viewMode.public') }] : []),
+    { value: LevelPackViewModes.LINKONLY, label: tPack('viewMode.linkonly') },
+    { value: LevelPackViewModes.PRIVATE, label: tPack('viewMode.private') },
+    { value: LevelPackViewModes.FORCED_PRIVATE, label: tPack('viewMode.forcedPrivate') }
   ];
 
   // Handle my packs mode
@@ -151,12 +155,30 @@ const PackPage = () => {
         <div className="pack-page__header">
           <div className="pack-page__title-section">
             <h1 className="pack-page__title">
-              {isMyPacks ? tPack('title.myPacks') : tPack('title.allPacks')}
+              {isMyPacks ? tPack('title.myPacks') : activeTab === 'favorites' ? tPack('title.favorites') : tPack('title.allPacks')}
             </h1>
             <p className="pack-page__subtitle">
-              {isMyPacks ? tPack('subtitle.myPacks') : tPack('subtitle.allPacks')}
+              {isMyPacks ? tPack('subtitle.myPacks') : activeTab === 'favorites' ? tPack('subtitle.favorites') : tPack('subtitle.allPacks')}
             </p>
           </div>
+
+          {/* Tab Navigation */}
+          {!isMyPacks && user && (
+            <div className="pack-page__tabs">
+              <button
+                className={`pack-page__tab ${activeTab === 'all' ? 'active' : ''}`}
+                onClick={() => setActiveTab('all')}
+              >
+                {tPack('tabs.allPacks')}
+              </button>
+              <button
+                className={`pack-page__tab ${activeTab === 'favorites' ? 'active' : ''}`}
+                onClick={() => setActiveTab('favorites')}
+              >
+                {tPack('tabs.myFavorites')} ({favorites.length})
+              </button>
+            </div>
+          )}
           
           <div className="pack-page__actions">
             <button
@@ -356,6 +378,7 @@ const PackPage = () => {
             </div>
           ) : (
             <InfiniteScroll
+              style={{ paddingBottom: "7rem", minHeight: "50vh", overflow: "visible" }}
               dataLength={packs?.length||0}
               next={loadMore}
               hasMore={hasMore}
@@ -370,10 +393,11 @@ const PackPage = () => {
                   <p>{tPack('endMessage')}</p>
                 </div>
               }
+
               scrollableTarget={scrollRef.current}
             >
               <div className={`pack-page__grid pack-page__grid--${displayMode}`}>
-                {packs?.map((pack, index) => (
+                {(activeTab === 'favorites' ? favorites : packs)?.map((pack, index) => (
                   <PackCard
                     key={pack.id}
                     index={index}
@@ -404,6 +428,11 @@ const PackPage = () => {
       )}
     </div>
   );
+};
+
+// Main wrapper component that provides the unified PackContext
+const PackPage = () => {
+  return <PackPageContent />;
 };
 
 export default PackPage;

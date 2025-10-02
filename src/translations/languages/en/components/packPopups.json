@@ -121,7 +121,7 @@
       "public": "Public - Everyone can see",
       "linkonly": "Link Only - Only with direct link",
       "private": "Private - Only you can see",
-      "forcedPrivate": "Private (Admin Locked)"
+      "forcedPrivate": "Forced Private - Cannot be changed by the owner"
     },
     "pinned": {
       "label": "Pin to top",

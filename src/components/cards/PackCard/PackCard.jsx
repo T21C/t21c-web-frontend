@@ -1,15 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import "./packcard.css"
 import { useTranslation } from "react-i18next";
-import { useState, useEffect } from "react";
-import api from "@/utils/api";
+import { useEffect, useState } from "react";
 import { EditPackPopup } from "@/components/popups";
-import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon } from "@/components/common/icons";
-import { formatCreatorDisplay } from "@/utils/Utility";
+import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, LikeIcon } from "@/components/common/icons";
+import toast from 'react-hot-toast';
+import { usePackContext } from "@/contexts/PackContext";
 import { UserAvatar } from "@/components/layout";
 import { permissionFlags } from "@/utils/UserPermissions";
 import { hasFlag } from "@/utils/UserPermissions";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
+import { LinkIcon } from "@/components/common/icons/LinkIcon";
 
 const PackCard = ({
   index,
@@ -26,7 +27,10 @@ const PackCard = ({
   const [showEditPopup, setShowEditPopup] = useState(false);
   const levelCount = pack.packItems?.filter(item => item.type === 'level').length || 0;
   const { difficultyDict } = useDifficultyContext();
+  const { isFavorite, addToFavorites, removeFromFavorites } = usePackContext();
   const navigate = useNavigate();
+
+  const isFavorited = isFavorite(pack.id);
 
   // Add effect to handle body overflow when edit popup is open
   useEffect(() => {
@@ -35,7 +39,7 @@ const PackCard = ({
     } else {
       document.body.style.overflow = 'unset';
     }
-    
+
     return () => {
       document.body.style.overflow = 'unset';
     };
@@ -50,12 +54,38 @@ const PackCard = ({
     setShowEditPopup(true);
   };
 
+  const handleFavoriteClick = async (e) => {
+    e.stopPropagation();
+
+    if (!user) {
+      toast.error('Please log in to favorite packs');
+      return;
+    }
+
+    try {
+      if (isFavorited) {
+        const success = await removeFromFavorites(pack.id);
+        if (!success) {
+          toast.error('Failed to remove from favorites');
+        }
+      } else {
+        const success = await addToFavorites(pack.id);
+        if (!success) {
+          toast.error('Failed to add to favorites');
+        }
+      }
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+      toast.error(error.response?.data?.error || 'Failed to update favorite status');
+    }
+  };
+
   const getViewModeIcon = () => {
     switch (pack.viewMode) {
       case 1: // PUBLIC
         return <EyeIcon className="pack-view-icon public" />;
       case 2: // LINKONLY
-        return <UsersIcon className="pack-view-icon linkonly" />;
+        return <LinkIcon color="#db4" size={14} className="pack-view-icon linkonly" />;
       case 3: // PRIVATE
         return <LockIcon className="pack-view-icon private" />;
       case 4: // FORCED_PRIVATE
@@ -129,16 +159,29 @@ const PackCard = ({
             </div>
           </div>
 
-          {canEdit && (
-            <button 
-              className="pack-card__edit-btn"
-              onClick={handleEditClick}
-              data-tooltip-id={`pack-edit-tooltip-${pack.id}`}
-              data-tooltip-content={tCard('edit')}
-            >
-              <EditIcon />
-            </button>
-          )}
+          <div className="pack-card__actions">
+            {canEdit && (
+              <button
+                className="pack-card__edit-btn"
+                onClick={handleEditClick}
+                data-tooltip-id={`pack-edit-tooltip-${pack.id}`}
+                data-tooltip-content={tCard('edit')}
+              >
+                <EditIcon />
+              </button>
+            )}
+
+            {user && (
+              <button
+                className={`pack-card__favorite-btn ${isFavorited ? 'favorited' : ''}`}
+                onClick={handleFavoriteClick}
+                data-tooltip-id={`pack-favorite-tooltip-${pack.id}`}
+                data-tooltip-content={isFavorited ? tCard('removeFromFavorites') : tCard('addToFavorites')}
+              >
+                <LikeIcon />
+              </button>
+            )}
+          </div>
         </div>
 
         <div className="pack-card__footer">
