@@ -50,7 +50,9 @@ const PackCard = ({
   }, [showEditPopup]);
 
   const handlePackClick = () => {
-    navigate(`/packs/${pack.id}`);
+    // Use linkCode if available, otherwise fall back to numerical ID
+    const packIdentifier = pack.linkCode || pack.id;
+    navigate(`/packs/${packIdentifier}`);
   };
 
   const handleEditClick = (e) => {
