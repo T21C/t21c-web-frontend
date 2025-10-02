@@ -33,7 +33,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
     try {
       setLoading(true);
       const params = {
-        ownerUsername: user.username,
+        owner: user.username,
         offset: (currentPage - 1) * LIMIT,
         limit: LIMIT,
         ...(searchQuery && { query: searchQuery })
@@ -131,7 +131,12 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
   // Handle looking up level in packs
   const handleLookupInPacks = () => {
     onClose();
-    navigate(`/packs?levelId=${level.id}`);
+    // Use window context to pass the search query
+    window.packSearchContext = {
+      query: `levelId:${level.id}`,
+      timestamp: Date.now()
+    };
+    navigate('/packs');
   };
 
   // Check if level is already in any pack

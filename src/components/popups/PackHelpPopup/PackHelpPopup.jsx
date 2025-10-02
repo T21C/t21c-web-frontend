@@ -84,7 +84,7 @@ export const PackHelpPopup = ({ onClose }) => {
               <h4>{tHelp('sections.search.examples.title')}</h4>
               <ul>
                 <li><b><code>name:My Pack</code></b> - {tHelp('sections.search.examples.nameField')}</li>
-                <li><b><code>ownerUsername:v0w4n</code></b> - {tHelp('sections.search.examples.ownerField')}</li>
+                <li><b><code>owner:v0w4n</code></b> - {tHelp('sections.search.examples.ownerField')}</li>
                 <li><b><code>levelId:123</code></b> - {tHelp('sections.search.examples.levelIdField')}</li>
                 <li><b><code>viewMode:0</code></b> - {tHelp('sections.search.examples.viewModeField')}</li>
                 <li><b><code>pinned:true</code></b> - {tHelp('sections.search.examples.pinnedField')}</li>
@@ -98,9 +98,9 @@ export const PackHelpPopup = ({ onClose }) => {
             <div className="examples">
               <h4>{tHelp('sections.operators.examples.title')}</h4>
               <ul>
-                <li><b><code>name:my pack, ownerUsername:v0w4n</code></b> - {tHelp('sections.operators.examples.and')}</li>
+                <li><b><code>name:my pack, owner:v0w4n</code></b> - {tHelp('sections.operators.examples.and')}</li>
                 <li><b><code>name=My Pack | name:cool pack</code></b> - {tHelp('sections.operators.examples.or')}</li>
-                <li><b><code>ownerUsername:teo_72, pinned:true | ownerUsername:v0w4n</code></b> - {tHelp('sections.operators.examples.complex')}</li>
+                <li><b><code>owner:teo_72, pinned:true | owner:v0w4n</code></b> - {tHelp('sections.operators.examples.complex')}</li>
                 <li><b><code>name:cool, \!pinned</code></b> - {tHelp('sections.operators.examples.not')}</li>
               </ul>
             </div>

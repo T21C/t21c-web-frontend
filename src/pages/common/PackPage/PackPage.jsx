@@ -99,9 +99,21 @@ const PackPageContent = () => {
     return () => clearTimeout(timer);
   }, [pendingQuery]);
 
-  // Initialize pendingQuery with query value
+  // Initialize pendingQuery with query value and check for preset queries
   useEffect(() => {
     setPendingQuery(filters.query);
+    
+    // Check for preset search queries from window context
+    if (window.packSearchContext && window.packSearchContext.query) {
+      const presetQuery = window.packSearchContext.query;
+      console.log('Found preset search query:', presetQuery);
+      
+      // Set the query in the search input
+      setPendingQuery(presetQuery);
+      
+      // Clean up the window context after consuming it
+      delete window.packSearchContext;
+    }
   }, []);
 
   function handleQueryChange(e) {

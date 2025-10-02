@@ -44,12 +44,18 @@ const PackContextProvider = (props) => {
         });
     }, [filters]);
 
-    // Handle URL query parameters
+    // Handle URL query parameters and window context
     useEffect(() => {
         const urlParams = new URLSearchParams(location.search);
         const levelId = urlParams.get('levelId');
         
-        if (levelId) {
+        // Check for window context first (higher priority)
+        if (window.packSearchContext && window.packSearchContext.query) {
+            const contextQuery = window.packSearchContext.query;
+            setFilters(prev => ({ ...prev, query: contextQuery }));
+            // Clear the context after using it
+            delete window.packSearchContext;
+        } else if (levelId) {
             // Set query to search for this level ID
             const levelQuery = `levelId:${levelId}`;
             setFilters(prev => ({ ...prev, query: levelQuery }));

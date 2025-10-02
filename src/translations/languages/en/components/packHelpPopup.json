@@ -8,7 +8,7 @@
         "examples": {
           "title": "Available Fields",
           "nameField": "Search by pack name (e.g., 'name:my pack' or 'name=My Cool Pack')",
-          "ownerField": "Search by pack owner username (e.g., 'ownerUsername:v0w4n' or 'ownerUsername=v0w4n')",
+          "ownerField": "Search by pack owner username (e.g., 'owner:v0w4n' or 'owner=v0w4n')",
           "levelIdField": "Search for packs containing a specific level (e.g., 'levelId:123' or 'levelId=456')",
           "viewModeField": "Search by pack visibility mode (e.g., 'viewMode:0' for public packs)",
           "pinnedField": "Search by pinned status (e.g., 'pinned:true' for pinned packs)"
