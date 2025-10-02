@@ -83,7 +83,7 @@ const PackDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const { toggleFavorite, isFavorite } = usePackContext();
+  const { toggleFavorite } = usePackContext();
   
   const [pack, setPack] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -174,11 +174,7 @@ const PackDetailPage = () => {
     try {
       const success = await toggleFavorite(pack.id);
       if (success) {
-        // Update local pack state
-        setPack(prevPack => ({
-          ...prevPack,
-          favorites: isFavorite(pack.id) ? (prevPack.favorites || 0) - 1 : (prevPack.favorites || 0) + 1
-        }));
+        fetchPack(true);
       }
     } catch (error) {
       console.error('Error toggling favorite:', error);
@@ -777,13 +773,13 @@ const PackDetailPage = () => {
           {user && (
             <div className="pack-detail-page__user-actions">
               <button
-                className={`pack-detail-page__favorite-btn ${isFavorite(pack.id) ? 'favorited' : ''}`}
+                className="pack-detail-page__favorite-btn"
                 onClick={handleFavoriteClick}
                 data-tooltip-id="favorite-pack-tooltip"
-                data-tooltip-content={isFavorite(pack.id) ? tPack('actions.removeFromFavorites') : tPack('actions.addToFavorites')}
+                data-tooltip-content={pack.isFavorited ? tPack('actions.removeFromFavorites') : tPack('actions.addToFavorites')}
               >
-                <LikeIcon />
-                <span>{isFavorite(pack.id) ? tPack('actions.removeFromFavorites') : tPack('actions.addToFavorites')}</span>
+                <LikeIcon color={pack.isFavorited ? "#ffffff" : "none"} />
+                <span>{pack.isFavorited ? tPack('actions.removeFromFavorites') : tPack('actions.addToFavorites')}</span>
               </button>
             </div>
           )}

@@ -6,12 +6,14 @@ import CreatePackPopup from './CreatePackPopup';
 import './AddToPackPopup.css';
 import toast from 'react-hot-toast';
 import api from '@/utils/api';
+import { useNavigate } from 'react-router-dom';
 
 const AddToPackPopup = ({ level, onClose, onSuccess }) => {
   const { t } = useTranslation('components');
   const tPopup = (key, params = {}) => t(`packPopups.addToPack.${key}`, params) || key;
   
   const { user } = useAuth();
+  const navigate = useNavigate();
   
   const [userPacks, setUserPacks] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -124,6 +126,12 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
       console.error('Error creating pack:', error);
       toast.error(tPopup('errors.createFailed'));
     }
+  };
+
+  // Handle looking up level in packs
+  const handleLookupInPacks = () => {
+    onClose();
+    navigate(`/packs?levelId=${level.id}`);
   };
 
   // Check if level is already in any pack
@@ -325,6 +333,14 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
           </div>
 
           <div className="add-to-pack-popup__footer">
+          <button
+                className="add-to-pack-popup__lookup-btn"
+                onClick={handleLookupInPacks}
+                type="button"
+              >
+                <SearchIcon />
+                <span>{tPopup('lookupInPacks')}</span>
+              </button>
             <button
               className="add-to-pack-popup__cancel-btn"
               onClick={onClose}

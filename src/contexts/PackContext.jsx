@@ -3,11 +3,13 @@ import { createContext, useContext, useState, useEffect, useCallback, useRef } f
 import Cookies from 'js-cookie';
 import api from '@/utils/api';
 import { useAuth } from './AuthContext';
+import { useLocation } from 'react-router-dom';
 
 const PackContext = createContext()
 
 const PackContextProvider = (props) => {
     const { user } = useAuth();
+    const location = useLocation();
     
     // Page-exclusive state for pack browsing/filtering
     const [packs, setPacks] = useState([]);
@@ -27,8 +29,7 @@ const PackContextProvider = (props) => {
         query: Cookies.get('pack_query') || "",
         viewMode: Cookies.get('pack_view_mode') || "all",
         sort: Cookies.get('pack_sort') || "RECENT",
-        order: Cookies.get('pack_order') || "DESC",
-        ownerUsername: Cookies.get('pack_owner_username') || ""
+        order: Cookies.get('pack_order') || "DESC"
     }));
     
     // Use ref to access current filters without causing re-renders
@@ -41,6 +42,18 @@ const PackContextProvider = (props) => {
             Cookies.set(`pack_${key}`, value, { expires: 365 });
         });
     }, [filters]);
+
+    // Handle URL query parameters
+    useEffect(() => {
+        const urlParams = new URLSearchParams(location.search);
+        const levelId = urlParams.get('levelId');
+        
+        if (levelId) {
+            // Set query to search for this level ID
+            const levelQuery = `levelId:${levelId}`;
+            setFilters(prev => ({ ...prev, query: levelQuery }));
+        }
+    }, [location.search]);
 
     // Force update state for triggering re-fetches
     const [forceUpdate, setForceUpdate] = useState(false);
@@ -63,7 +76,6 @@ const PackContextProvider = (props) => {
 
             // Add search parameters
             if (currentFilters.query.trim()) params.query = currentFilters.query.trim();
-            if (currentFilters.ownerUsername.trim()) params.ownerUsername = currentFilters.ownerUsername.trim();
             if (currentFilters.viewMode !== 'all') params.viewMode = currentFilters.viewMode;
 
             const response = await api.get('/v2/database/levels/packs', { params });
@@ -214,8 +226,7 @@ const PackContextProvider = (props) => {
             query: "",
             viewMode: "all",
             sort: "RECENT",
-            order: "DESC",
-            ownerUsername: ""
+            order: "DESC"
         });
     };
 

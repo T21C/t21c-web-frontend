@@ -89,7 +89,30 @@
 .add-to-pack-popup__level-creator {
   font-size: 14px;
   color: #888888;
+  margin: 0 0 12px 0;
+}
+
+.add-to-pack-popup__lookup-btn {
+  background: #2a2a2a;
+  border: 1px solid #333333;
+  border-radius: 6px;
+  padding: 8px 12px;
+  cursor: pointer;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   margin: 0;
+  margin-right: auto;
+}
+
+.add-to-pack-popup__lookup-btn:hover {
+  background: #007bff;
+  border-color: #007bff;
+  transform: translateY(-1px);
 }
 
 .add-to-pack-popup__search {
@@ -464,6 +487,11 @@
     font-size: 13px;
   }
   
+  .add-to-pack-popup__lookup-btn {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+  
   .add-to-pack-popup__search-input {
     padding: 10px 10px 10px 36px;
     font-size: 16px; /* Prevent zoom on iOS */
@@ -563,6 +591,11 @@
   
   .add-to-pack-popup__level-creator {
     font-size: 12px;
+  }
+  
+  .add-to-pack-popup__lookup-btn {
+    padding: 5px 8px;
+    font-size: 11px;
   }
   
   .add-to-pack-popup__search-input {
