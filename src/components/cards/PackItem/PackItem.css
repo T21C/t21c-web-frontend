@@ -12,15 +12,15 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 0.75rem;
-  background: var(--color-card-background);
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
+  padding: 0.5rem 0;
+  background: none;
+  border: none;
+  border-radius: 0;
   transition: all 0.2s ease;
   gap: 0.5rem;
 }
 
-.pack-item--folder:hover {
+.pack-item--folder:hover .pack-item__content {
   border-color: var(--color-primary);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
@@ -38,11 +38,36 @@
   border-radius: 4px;
   transition: all 0.2s ease;
   flex-shrink: 0;
-  position: absolute;
-  left: -2rem;
-  top: 50%;
-  transform: translateY(-50%);
   z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Folder drag handle positioning - inline with content */
+.pack-item--folder .pack-item__drag-handle {
+  position: static;
+  transform: none;
+}
+
+/* Folder content wrapper */
+.pack-item__content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.75rem;
+  background: var(--color-card-background);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+/* Show drag handle on hover or when dragging */
+.pack-item:hover .pack-item__drag-handle,
+.pack-item.dragging .pack-item__drag-handle {
+  opacity: 1;
+  visibility: visible;
 }
 
 .pack-item .pack-item__drag-handle:hover {

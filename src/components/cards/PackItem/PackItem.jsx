@@ -29,7 +29,7 @@ const PackLevelItem = ({
 
   return (
     <LevelCard
-      level={level}
+      level={{...level, isCleared: item.isCleared}}
       displayMode="pack"
       user={user}
       canEdit={canEdit}
@@ -111,6 +111,7 @@ const PackItem = ({
         style={style}
         className={`pack-item pack-item--folder ${isDragging ? 'dragging' : ''} ${isOver ? 'over' : ''}`}
       >
+        {/* Drag handle on the left */}
         {canEdit && (
           <div
             {...attributes}
@@ -122,49 +123,52 @@ const PackItem = ({
           </div>
         )}
         
-        <button
-          className="pack-item__toggle"
-          onClick={() => onToggleExpanded(item.id)}
-          disabled={!canEdit && childCount === 0}
-        >
-          <ChevronIcon className={isExpanded ? 'expanded' : 'collapsed'} />
-        </button>
-        
-        <div className="pack-item__icon">
-          <FolderIcon />
-        </div>
-        
-        <div className="pack-item__info">
-          <div className="pack-item__name">{item.name}</div>
-          <div className="pack-item__count">
-            {childCount} {childCount === 1 ? 'item' : 'items'}
+        {/* Main folder content */}
+        <div className="pack-item__content">
+          <button
+            className="pack-item__toggle"
+            onClick={() => onToggleExpanded(item.id)}
+            disabled={!canEdit && childCount === 0}
+          >
+            <ChevronIcon className={isExpanded ? 'expanded' : 'collapsed'} />
+          </button>
+          
+          <div className="pack-item__icon">
+            <FolderIcon />
           </div>
-        </div>
+          
+          <div className="pack-item__info">
+            <div className="pack-item__name">{item.name}</div>
+            <div className="pack-item__count">
+              {childCount} {childCount === 1 ? 'item' : 'items'}
+            </div>
+          </div>
 
-        {canEdit && (
-          <div className="pack-item__actions">
-            <button
-              className="pack-item__action-btn"
-              onClick={(e) => {
-                e.stopPropagation();
-                onRenameFolder?.(item);
-              }}
-              title="Rename folder"
-            >
-              ✏️
-            </button>
-            <button
-              className="pack-item__action-btn pack-item__action-btn--delete"
-              onClick={(e) => {
-                e.stopPropagation();
-                onDeleteItem?.(item);
-              }}
-              title="Delete folder"
-            >
-              🗑️
-            </button>
-          </div>
-        )}
+          {canEdit && (
+            <div className="pack-item__actions">
+              <button
+                className="pack-item__action-btn"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onRenameFolder?.(item);
+                }}
+                title="Rename folder"
+              >
+                ✏️
+              </button>
+              <button
+                className="pack-item__action-btn pack-item__action-btn--delete"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onDeleteItem?.(item);
+                }}
+                title="Delete folder"
+              >
+                🗑️
+              </button>
+            </div>
+          )}
+        </div>
       </div>
       
       {/* Render folder contents when expanded */}

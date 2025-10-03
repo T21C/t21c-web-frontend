@@ -2,7 +2,7 @@ import React from 'react';
 
 export const DragHandleIcon = ({ color = "#fff", size = "24px", className = "", ...props }) => {
   return (
-    <svg {...props} className={className} width={size} height={size} viewBox="0 1 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
+    <svg {...props} className={className} width={size} height={size} viewBox="-3 3 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
    
     <path d="M8 6H6V8H8V6Z" fill={color || "#fff"}/>
     <path d="M8 10H6V12H8V10Z" fill={color || "#fff"}/>

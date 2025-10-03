@@ -992,6 +992,7 @@
   position: relative;
   display: flex;
   align-items: center;
+  overflow: visible;
   gap: 0.5rem;
   padding: 0.5rem 0;
 }
@@ -1010,6 +1011,16 @@
   transition: all 0.2s ease;
   flex-shrink: 0;
   z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Show drag handle on hover or when dragging */
+.level-card.pack:hover .level-card__drag-handle,
+.level-card.pack.dragging .level-card__drag-handle {
+  opacity: 1;
+  visibility: visible;
+  left: -1.5rem;
 }
 
 .level-card.pack .level-card__drag-handle:hover {
@@ -1022,6 +1033,8 @@
 }
 
 .level-card.pack .level-card__check-btn {
+  position: absolute;
+  left: 0.25rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1031,9 +1044,12 @@
   background: none;
   cursor: pointer;
   border-radius: 4px;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   flex-shrink: 0;
-  z-index: 10;
+}
+
+.level-card.pack:hover .level-card__check-btn {
+  left: -1.75rem;
 }
 
 .level-card.pack .level-card__check-btn:hover {

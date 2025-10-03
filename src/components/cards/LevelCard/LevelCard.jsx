@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import api from "@/utils/api";
 import { EditLevelPopup, AddToPackPopup } from "@/components/popups";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { EditIcon, SteamIcon, DownloadIcon, VideoIcon, PassIcon, LikeIcon, PackIcon } from "@/components/common/icons";
+import { EditIcon, SteamIcon, DownloadIcon, VideoIcon, PassIcon, LikeIcon, PackIcon, DragHandleIcon, YoutubeIcon } from "@/components/common/icons";
 import { formatCreatorDisplay } from "@/utils/Utility";
 import { ABILITIES, hasBit } from "@/utils/Abilities";
 import { UserAvatar } from "@/components/layout";
@@ -23,14 +23,10 @@ const LevelCard = ({
   size = 'medium',
   // Pack mode specific props
   canEdit = false,
-  isReordering = false,
   onDeleteItem,
-  onCheckItem,
-  isChecked = false,
   dragHandleProps = null
 }) => {
   const [isTwoLineLayout, setIsTwoLineLayout] = useState(false);
-
   // Check if we should use two-line layout based on screen width
   useEffect(() => {
     const checkLayout = () => {
@@ -52,6 +48,7 @@ const LevelCard = ({
   const { difficultyDict } = useDifficultyContext();
   const difficultyInfo = difficultyDict[level.diffId];
 
+  console.log(level )
   // Add effect to handle body overflow when popups are open
   useEffect(() => {
     if (showEditPopup || showAddToPackPopup) {
@@ -197,13 +194,6 @@ const LevelCard = ({
       }
     };
 
-    const handleCheckClick = (e) => {
-      e.stopPropagation();
-      if (onCheckItem) {
-        onCheckItem(level, !isChecked);
-      }
-    };
-
     return (
       <div className={`level-card pack ${getGlowClass()}`} 
         style={{ 
@@ -220,23 +210,20 @@ const LevelCard = ({
             className="level-card__drag-handle"
             title="Drag to reorder or move"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M11 18c0 1.1-.9 2-2 2s-2-.9-2-2 .9-2 2-2 2 .9 2 2zm-2-8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 2c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
-            </svg>
+            <DragHandleIcon />
           </div>
         )}
 
         {/* Checkbox on the right */}
-        <button
-          className="level-card__check-btn"
-          onClick={handleCheckClick}
-          title={isChecked ? "Mark as not completed" : "Mark as completed"}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill={isChecked ? "#4CAF50" : "#ffffff"}>
+        {level.isCleared ? (
+          <svg className="level-card__check-btn" width="16" height="16" viewBox="0 0 24 24" fill="#4CAF50" >
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
           </svg>
-        </button>
-
+        ) : (
+          <svg className="level-card__check-btn" width="16" height="16" viewBox="0 0 24 24" fill="#4CAF50" >
+           
+          </svg>
+        )}
         {/* Main card content */}
         <div className="level-card-wrapper" onClick={redirect}>
           <div className="img-wrapper">
@@ -279,11 +266,19 @@ const LevelCard = ({
 
           <div className="downloads-wrapper">
             {level.videoLink && (
-              <VideoIcon color="#ffffff" size={"24px"} />
+              
+              <a href={level.videoLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
+              <VideoIcon color="#ffffff" size={"16px"} />
+              </a>
             )}
             {level.dlLink && (
-              <DownloadIcon color="#ffffff" size={"24px"} />
+              <a href={level.dlLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
+                <DownloadIcon color="#ffffff" size={"24px"} />
+              </a>
             )}
+            <button className="edit-button" style={{ marginLeft: "0" }} onClick={handleEditClick}>
+              <EditIcon color="#ffffff" size={"32px"} />
+            </button>
           </div>
 
           {/* Trash button for removal */}
@@ -293,7 +288,7 @@ const LevelCard = ({
               onClick={handleDeleteClick}
               title="Remove from pack"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
               </svg>
             </button>
