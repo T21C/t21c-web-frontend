@@ -575,16 +575,6 @@ const PackDetailPage = () => {
       newTree = removeItemFromTree(newTree, activeId);
       newTree = insertItemIntoTree(newTree, targetParentId, activeItem, newIndex);
 
-      // Debug logging
-      console.log('DND Debug:', {
-        activeId,
-        activeParentId,
-        targetParentId,
-        newIndex,
-        activeItemName: activeItem.name || activeItem.referencedLevel?.name,
-        overItemName: over?.data?.current ? findItem(pack.items, parseInt(over.id))?.name || findItem(pack.items, parseInt(over.id))?.referencedLevel?.name : 'container'
-      });
-
       // Update local state immediately (optimistic update)
       setIsReordering(true);
       setPack({ ...pack, items: newTree });

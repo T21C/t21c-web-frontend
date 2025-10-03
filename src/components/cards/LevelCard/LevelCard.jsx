@@ -47,8 +47,6 @@ const LevelCard = ({
   const [thumbnailUrl, setThumbnailUrl] = useState('');
   const { difficultyDict } = useDifficultyContext();
   const difficultyInfo = difficultyDict[level.diffId];
-
-  console.log(level )
   // Add effect to handle body overflow when popups are open
   useEffect(() => {
     if (showEditPopup || showAddToPackPopup) {

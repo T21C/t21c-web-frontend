@@ -641,11 +641,9 @@ const LevelDetailPage = ({ mockData = null }) => {
       importStatements.push(match);
       return '';
     });
-    console.log(importStatements);
     
     cssWithoutImports = cssWithoutImports.replace(/([^{}]+){/g, '.level-detail.curated[data-custom-styles="true"] $1{')
     
-    console.log(cssWithoutImports);
     // Combine imports at the beginning with the rest of the CSS
     const scopedCSS = importStatements.join('\n') + '\n' + cssWithoutImports;
     return scopedCSS;

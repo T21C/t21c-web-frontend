@@ -88,7 +88,6 @@ const PackPageContent = () => {
 
   // Debounced search effect (same pattern as PassPage)
   useEffect(() => {
-    console.log('pendingQuery', pendingQuery);
     const timer = setTimeout(() => {
       if (pendingQuery !== filters.query) {
         updateFilter('query', pendingQuery);
@@ -106,7 +105,6 @@ const PackPageContent = () => {
     // Check for preset search queries from window context
     if (window.packSearchContext && window.packSearchContext.query) {
       const presetQuery = window.packSearchContext.query;
-      console.log('Found preset search query:', presetQuery);
       
       // Set the query in the search input
       setPendingQuery(presetQuery);

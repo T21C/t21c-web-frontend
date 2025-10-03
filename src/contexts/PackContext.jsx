@@ -252,7 +252,6 @@ const PackContextProvider = (props) => {
                 favorited: desiredFavorited 
             });
 
-            console.log(response);
             // Update the pack in the main packs list if it exists
             if (response.data.success) {
                 setPacks(prevPacks =>
