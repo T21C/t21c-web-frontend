@@ -2,9 +2,9 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { toast } from 'react-hot-toast';
 import { FixedCropper, CircleStencil, ImageRestriction } from 'react-advanced-cropper';
 import 'react-advanced-cropper/dist/style.css';
-import './ProfilePicturePopup.css';
+import './ImageSelectorPopup.css';
 
-const ProfilePicturePopup = ({ isOpen, onClose, onSave, currentAvatar, initialImage }) => {
+const ImageSelectorPopup = ({ isOpen, onClose, onSave, currentAvatar, initialImage }) => {
     const [image, setImage] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [rotation, setRotation] = useState(0);
@@ -144,14 +144,14 @@ const ProfilePicturePopup = ({ isOpen, onClose, onSave, currentAvatar, initialIm
     if (!isOpen) return null;
 
     return (
-        <div className="profile-picture-popup-overlay">
-            <div className="profile-picture-popup">
-                <div className="profile-picture-popup-header">
+        <div className="image-selector-popup-overlay">
+            <div className="image-selector-popup">
+                <div className="image-selector-popup-header">
                     <h2>Edit Profile Picture</h2>
                     <button className="close-button" onClick={onClose}>×</button>
                 </div>
 
-                <div className="profile-picture-popup-content">
+                <div className="image-selector-popup-content">
                     <div className="cropper-container">
                         {image ? (
                             <FixedCropper
@@ -205,7 +205,7 @@ const ProfilePicturePopup = ({ isOpen, onClose, onSave, currentAvatar, initialIm
                     </div>
                 </div>
 
-                <div className="profile-picture-popup-footer">
+                <div className="image-selector-popup-footer">
                     {image && (
                         <div className="rotation-control">
                             <label htmlFor="rotation">Rotation: {rotation}°</label>
@@ -238,4 +238,4 @@ const ProfilePicturePopup = ({ isOpen, onClose, onSave, currentAvatar, initialIm
     );
 };
 
-export default ProfilePicturePopup; 
+export default ImageSelectorPopup; 

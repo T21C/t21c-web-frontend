@@ -3,9 +3,9 @@ import "./levelcard.css"
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
 import api from "@/utils/api";
-import { EditLevelPopup } from "@/components/popups";
+import { EditLevelPopup, AddToPackPopup } from "@/components/popups";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { EditIcon, SteamIcon, DownloadIcon, VideoIcon, PassIcon, LikeIcon } from "@/components/common/icons";
+import { EditIcon, SteamIcon, DownloadIcon, VideoIcon, PassIcon, LikeIcon, PackIcon, DragHandleIcon, YoutubeIcon } from "@/components/common/icons";
 import { formatCreatorDisplay } from "@/utils/Utility";
 import { ABILITIES, hasBit } from "@/utils/Abilities";
 import { UserAvatar } from "@/components/layout";
@@ -20,10 +20,13 @@ const LevelCard = ({
   user,
   sortBy,
   displayMode = 'normal',
-  size = 'medium'
+  size = 'medium',
+  // Pack mode specific props
+  canEdit = false,
+  onDeleteItem,
+  dragHandleProps = null
 }) => {
   const [isTwoLineLayout, setIsTwoLineLayout] = useState(false);
-
   // Check if we should use two-line layout based on screen width
   useEffect(() => {
     const checkLayout = () => {
@@ -40,22 +43,24 @@ const LevelCard = ({
   const [level, setLevel] = useState(initialLevel);
   const [toRate, setToRate] = useState(!!initialLevel.toRate);
   const [showEditPopup, setShowEditPopup] = useState(false);
+  const [showAddToPackPopup, setShowAddToPackPopup] = useState(false);
   const [thumbnailUrl, setThumbnailUrl] = useState('');
   const { difficultyDict } = useDifficultyContext();
   const difficultyInfo = difficultyDict[level.diffId];
 
-  // Add effect to handle body overflow when edit popup is open
+  console.log(level )
+  // Add effect to handle body overflow when popups are open
   useEffect(() => {
-    if (showEditPopup) {
+    if (showEditPopup || showAddToPackPopup) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'unset';
     }
-
+    
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, [showEditPopup]);
+  }, [showEditPopup, showAddToPackPopup]);
 
   useEffect(() => {
     if (displayMode === 'grid' && level.videoLink) {
@@ -97,6 +102,11 @@ const LevelCard = ({
   const handleEditClick = (e) => {
     e.stopPropagation();
     setShowEditPopup(true);
+  };
+
+  const handleAddToPackClick = (e) => {
+    e.stopPropagation();
+    setShowAddToPackPopup(true);
   };
 
   // Determine glow class based on abilities - legendary overrides basic
@@ -170,6 +180,220 @@ const LevelCard = ({
             level={level}
             onClose={() => setShowEditPopup(false)}
             onUpdate={handleLevelUpdate}
+          />
+        )}
+      </div>
+    );
+  }
+
+  if (displayMode === 'pack') {
+    const handleDeleteClick = (e) => {
+      e.stopPropagation();
+      if (onDeleteItem) {
+        onDeleteItem(level);
+      }
+    };
+
+    return (
+      <div className={`level-card pack ${getGlowClass()}`} 
+        style={{ 
+          backgroundColor: level.isDeleted ? "#f0000099"
+            : level.isHidden ? "#88888899"
+            : "none"
+        }}
+      >
+        {/* Drag handle on the left */}
+        {canEdit && dragHandleProps && (
+          <div
+            {...dragHandleProps.attributes}
+            {...dragHandleProps.listeners}
+            className="level-card__drag-handle"
+            title="Drag to reorder or move"
+          >
+            <DragHandleIcon />
+          </div>
+        )}
+
+        {/* Checkbox on the right */}
+        {level.isCleared ? (
+          <svg className="level-card__cleared" width="16" height="16" viewBox="0 0 24 24" fill="#4CAF50" >
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+          </svg>
+        ) : (
+          <svg className="level-card__cleared" width="16" height="16" viewBox="0 0 24 24" fill="#4CAF50" >
+           
+          </svg>
+        )}
+        {/* Main card content */}
+        <div className={`level-card-wrapper ${isTwoLineLayout ? 'two-line' : ''}`} onClick={redirect}>
+          {isTwoLineLayout ? (
+            <>
+              {/* Info Line - Upper row */}
+              <div className="info-line">
+                <div className="img-wrapper">
+                  <img src={lvImage} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
+                  {(level.rating?.averageDifficultyId && 
+                   difficultyDict[level.rating.averageDifficultyId]?.icon &&
+                   difficultyDict[level.rating.averageDifficultyId]?.type == "PGU" &&
+                   difficultyDict[level.diffId]?.name.startsWith("Q")) ?
+                  <img 
+                      className="rating-icon"
+                      src={difficultyDict[level.rating.averageDifficultyId]?.icon}
+                      alt="Rating icon" />
+                  : null
+                  }
+                  {(level.curation?.typeId) ?
+                  <img 
+                      className="curation-icon"
+                      src={level.curation.type.icon}
+                      alt="Curation icon" />
+                  : null
+                  }
+                </div>
+
+                <div className="song-wrapper">
+                  <div className="group">
+                    <p className="level-exp">#{level.id} - {level.artist}</p>
+                  </div>
+                  <p className='level-desc'>{level.song}</p>
+                </div>
+
+                <div className="creator-wrapper">
+                  <p className="level-exp">{tCard('creator')}</p>
+                  <div className="level-desc">{formatCreatorDisplay(level)}</div>
+                </div>
+              </div>
+
+              {/* Stats Line - Lower row */}
+              <div className="stats-line">
+                <div className="icon-wrapper" style={{ opacity: level.clears ? 1 : 0 }}>
+                  <div className="icon-value">{level.clears || 0}</div>
+                  <PassIcon color="#ffffff" size={"24px"} />
+                </div>
+
+                <div className="downloads-wrapper">
+                  {level.videoLink && (
+                    <a href={level.videoLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
+                      <VideoIcon color="#ffffff" size={"24px"} />
+                    </a>
+                  )}
+                  {level.dlLink && (
+                    <a href={level.dlLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
+                      <DownloadIcon color="#ffffff" size={"24px"} />
+                    </a>
+                  )}
+                  <button className="edit-button" style={{ marginLeft: "0" }} onClick={handleEditClick}>
+                    <EditIcon color="#ffffff" size={"32px"} />
+                  </button>
+                  <button
+                    className="level-card__delete-btn mobile"
+                     onClick={handleDeleteClick}
+                     title="Remove from pack"
+                   >
+                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                       <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                     </svg>
+                   </button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Single line layout */}
+              <div className="img-wrapper">
+                <img src={lvImage} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
+                {(level.rating?.averageDifficultyId && 
+                 difficultyDict[level.rating.averageDifficultyId]?.icon &&
+                 difficultyDict[level.rating.averageDifficultyId]?.type == "PGU" &&
+                 difficultyDict[level.diffId]?.name.startsWith("Q")) ?
+                <img 
+                    className="rating-icon"
+                    src={difficultyDict[level.rating.averageDifficultyId]?.icon}
+                    alt="Rating icon" />
+                : null
+                }
+                {(level.curation?.typeId) ?
+                <img 
+                    className="curation-icon"
+                    src={level.curation.type.icon}
+                    alt="Curation icon" />
+                : null
+                }
+              </div>
+
+              <div className="song-wrapper">
+                <div className="group">
+                  <p className="level-exp">#{level.id} - {level.artist}</p>
+                </div>
+                <p className='level-desc'>{level.song}</p>
+              </div>
+
+              <div className="creator-wrapper">
+                <p className="level-exp">{tCard('creator')}</p>
+                <div className="level-desc">{formatCreatorDisplay(level)}</div>
+              </div>
+
+              <div className="icon-wrapper" style={{ opacity: level.clears ? 1 : 0 }}>
+                <div className="icon-value">{level.clears || 0}</div>
+                <PassIcon color="#ffffff" size={"24px"} />
+              </div>
+
+              <div className="downloads-wrapper">
+                {level.videoLink && (
+                  <a href={level.videoLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
+                    <VideoIcon color="#ffffff" size={"24px"} />
+                  </a>
+                )}
+                {level.dlLink && (
+                  <a href={level.dlLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
+                    <DownloadIcon color="#ffffff" size={"24px"} />
+                  </a>
+                )}
+                <button className="edit-button" style={{ marginLeft: "0" }} onClick={handleEditClick}>
+                  <EditIcon color="#ffffff" size={"32px"} />
+                </button>
+                <button
+                    className="level-card__delete-btn mobile"
+                     onClick={handleDeleteClick}
+                     title="Remove from pack"
+                   >
+                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                       <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                     </svg>
+                   </button>
+              </div>
+            </>
+          )}
+
+          {/* Trash button for removal */}
+          {canEdit && (
+            <button
+              className="level-card__delete-btn"
+              onClick={handleDeleteClick}
+              title="Remove from pack"
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+              </svg>
+            </button>
+          )}
+        </div>
+
+        {showEditPopup && (
+          <EditLevelPopup
+            level={level}
+            onClose={() => setShowEditPopup(false)}
+            onUpdate={handleLevelUpdate}
+          />
+        )}
+
+        {showAddToPackPopup && (
+          <AddToPackPopup
+            level={level}
+            onClose={() => setShowAddToPackPopup(false)}
+            onSuccess={() => {
+              // Optionally refresh data or show success message
+            }}
           />
         )}
       </div>
@@ -290,6 +514,16 @@ const LevelCard = ({
                     <SteamIcon color="#ffffff" size={"24px"} />
                   </a>
                 )}
+                {user && (
+                  <button 
+                    className="add-to-pack-button" 
+                    onClick={handleAddToPackClick}
+                    data-tooltip-id={`add-to-pack-tooltip-${level.id}`}
+                    data-tooltip-content={tCard('addToPack')}
+                  >
+                    <PackIcon color="#ffffff" size={"24px"} />
+                  </button>
+                )}
               </div>
 
               {user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
@@ -297,6 +531,7 @@ const LevelCard = ({
                   <EditIcon size={"32px"} />
                 </button>
               )}
+              
             </div>
           </>
         ) : (
@@ -402,6 +637,16 @@ const LevelCard = ({
                   <SteamIcon color="#ffffff" size={"24px"} />
                 </a>
               )}
+              {user && (
+                <button 
+                  className="add-to-pack-button" 
+                  onClick={handleAddToPackClick}
+                  data-tooltip-id={`add-to-pack-tooltip-${level.id}`}
+                  data-tooltip-content={tCard('addToPack')}
+                >
+                  <PackIcon color="#ffffff" size={"24px"} />
+                </button>
+              )}
             </div>
 
             {user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
@@ -418,6 +663,16 @@ const LevelCard = ({
           level={level}
           onClose={() => setShowEditPopup(false)}
           onUpdate={handleLevelUpdate}
+        />
+      )}
+
+      {showAddToPackPopup && (
+        <AddToPackPopup
+          level={level}
+          onClose={() => setShowAddToPackPopup(false)}
+          onSuccess={() => {
+            // Optionally refresh data or show success message
+          }}
         />
       )}
     </div>

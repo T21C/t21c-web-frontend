@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { CompleteNav } from '@/components/layout';
@@ -42,6 +42,12 @@ const CurationPage = () => {
   const [showCuratorManagementPopup, setShowCuratorManagementPopup] = useState(false);
   const [editingCuration, setEditingCuration] = useState(null);
 
+  // Cancel token refs for request cancellation
+  const fetchCurationsCancelTokenRef = useRef(null);
+  const levelSelectCancelTokenRef = useRef(null);
+  const deleteCurationCancelTokenRef = useRef(null);
+  const verifyPasswordCancelTokenRef = useRef(null);
+
 
   // Add effect to handle body scrolling
   useEffect(() => {
@@ -59,15 +65,28 @@ const CurationPage = () => {
 
   const verifyPassword = async (password) => {
     try {
+      // Cancel any existing password verification request
+      if (verifyPasswordCancelTokenRef.current) {
+        verifyPasswordCancelTokenRef.current.cancel('New password verification initiated');
+      }
+
+      // Create new cancel token
+      verifyPasswordCancelTokenRef.current = api.CancelToken.source();
+
       await api.head(`${import.meta.env.VITE_VERIFY_PASSWORD}`, {
         headers: {
           'X-Super-Admin-Password': password
-        }
+        },
+        cancelToken: verifyPasswordCancelTokenRef.current.token
       });
       setVerifiedPassword(password);
       setShowPasswordPrompt(false);
       return true;
     } catch (error) {
+      if (api.isCancel(error)) {
+        // Request was cancelled, don't show error
+        return false;
+      }
       toast.error('Invalid password');
       return false;
     }
@@ -112,8 +131,18 @@ const CurationPage = () => {
 
   const handleLevelSelect = async (selection) => {
     try {
+      // Cancel any existing level select request
+      if (levelSelectCancelTokenRef.current) {
+        levelSelectCancelTokenRef.current.cancel('New level selection initiated');
+      }
+
+      // Create new cancel token
+      levelSelectCancelTokenRef.current = api.CancelToken.source();
+
       const response = await api.post(`${import.meta.env.VITE_CURATIONS}`, {
         levelId: selection.levelId
+      }, {
+        cancelToken: levelSelectCancelTokenRef.current.token
       });
       
       toast.success(tCur('notifications.levelAdded'));
@@ -126,6 +155,10 @@ const CurationPage = () => {
       setShowLevelSelectionPopup(false);
       setEditingCuration(null);
     } catch (error) {
+      if (api.isCancel(error)) {
+        // Request was cancelled, don't show error
+        return;
+      }
       toast.error(error.response?.data?.error || 'Failed to add level curation');
     }
   };
@@ -147,10 +180,24 @@ const CurationPage = () => {
     }
 
     try {
-      await api.delete(`${import.meta.env.VITE_CURATIONS}/${curation.id}`);
+      // Cancel any existing delete request
+      if (deleteCurationCancelTokenRef.current) {
+        deleteCurationCancelTokenRef.current.cancel('New delete request initiated');
+      }
+
+      // Create new cancel token
+      deleteCurationCancelTokenRef.current = api.CancelToken.source();
+
+      await api.delete(`${import.meta.env.VITE_CURATIONS}/${curation.id}`, {
+        cancelToken: deleteCurationCancelTokenRef.current.token
+      });
       setCurations(prev => prev.filter(cur => cur.id !== curation.id));
       toast.success(tCur('notifications.deleted'));
     } catch (error) {
+      if (api.isCancel(error)) {
+        // Request was cancelled, don't show error
+        return;
+      }
       toast.error(error.response?.data?.error || 'Failed to delete curation');
     }
   };
@@ -159,6 +206,14 @@ const CurationPage = () => {
 
   const fetchCurations = async () => {
     try {
+      // Cancel any existing fetch request
+      if (fetchCurationsCancelTokenRef.current) {
+        fetchCurationsCancelTokenRef.current.cancel('New fetch request initiated');
+      }
+
+      // Create new cancel token
+      fetchCurationsCancelTokenRef.current = api.CancelToken.source();
+
       setIsLoading(true);
       const params = new URLSearchParams({
         page: currentPage,
@@ -166,10 +221,16 @@ const CurationPage = () => {
         ...(filters.search && { search: filters.search }),
       });
 
-      const response = await api.get(`${import.meta.env.VITE_CURATIONS}?${params}`);
+      const response = await api.get(`${import.meta.env.VITE_CURATIONS}?${params}`, {
+        cancelToken: fetchCurationsCancelTokenRef.current.token
+      });
       setCurations(response.data.curations);
       setTotalPages(response.data.totalPages);
     } catch (error) {
+      if (api.isCancel(error)) {
+        // Request was cancelled, don't update state or show error
+        return;
+      }
       toast.error(error.response?.data?.error || 'Failed to fetch curations');
     } finally {
       setIsLoading(false);
@@ -179,6 +240,25 @@ const CurationPage = () => {
   useEffect(() => {
     fetchCurations();
   }, [currentPage, filters]);
+
+  // Cleanup effect to cancel all pending requests when component unmounts
+  useEffect(() => {
+    return () => {
+      // Cancel all pending requests when component unmounts
+      if (fetchCurationsCancelTokenRef.current) {
+        fetchCurationsCancelTokenRef.current.cancel('Component unmounted');
+      }
+      if (levelSelectCancelTokenRef.current) {
+        levelSelectCancelTokenRef.current.cancel('Component unmounted');
+      }
+      if (deleteCurationCancelTokenRef.current) {
+        deleteCurationCancelTokenRef.current.cancel('Component unmounted');
+      }
+      if (verifyPasswordCancelTokenRef.current) {
+        verifyPasswordCancelTokenRef.current.cancel('Component unmounted');
+      }
+    };
+  }, []);
 
   // Handle state updates from preview page
   useEffect(() => {

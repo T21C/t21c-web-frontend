@@ -29,6 +29,7 @@
     align-items: flex-end;
     width: 100%;
     flex-direction: row;
+    flex-wrap: wrap;
   }
   
   .sort .sort-option .wrapper svg {

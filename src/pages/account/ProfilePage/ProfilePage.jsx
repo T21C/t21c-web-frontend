@@ -9,7 +9,7 @@ import { ScoreCard } from "@/components/cards";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { AdminPlayerPopup, CreatorAssignmentPopup } from "@/components/popups";
-import { DefaultAvatar, ShieldIcon, EditIcon } from "@/components/common/icons";
+import { DefaultAvatar, ShieldIcon, EditIcon, SearchIcon } from "@/components/common/icons";
 import { CaseOpenSelector } from "@/components/common/selectors";
 import caseOpen from "@/assets/icons/case.png";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -124,6 +124,17 @@ const ProfilePage = () => {
 
       const handleCaseOpenClose = () => {
         setShowCaseOpen(false);
+      };
+
+      const handleViewUserPacks = () => {
+        if (playerData?.username) {
+          // Use window context to pass the search query
+          window.packSearchContext = {
+            query: `owner:${playerData.username}`,
+            timestamp: Date.now()
+          };
+          navigate('/packs');
+        }
       };
 
       if (playerId && !playerData) {
@@ -273,7 +284,7 @@ const ProfilePage = () => {
                     </div>
                   </div>
                   </div>
-                  <div className="edit-button-container">
+                  <div className="profile-button-container">
                   {user && isOwnProfile && (
                     <button 
                       className="edit-button"
@@ -302,6 +313,15 @@ const ProfilePage = () => {
                           color: playerData.user?.creator ? '#5f5' : '#fff'
                         }}
                       >🛠</span>
+                    </button>
+                  )}
+                  {playerData?.username && (
+                    <button 
+                      className="edit-button"
+                      onClick={handleViewUserPacks}
+                      title="View User's Packs"
+                    >
+                      <SearchIcon color="#fff" size={"24px"} />
                     </button>
                   )}
                   </div>

@@ -192,10 +192,16 @@
 
 .level-detail .header .right {
   flex: 1;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: var(--spacing-md);
 }
+
+/* When there are 4 or fewer items, force single column */
+.level-detail .header .right:has(:nth-child(5):last-child) {
+  grid-template-columns: 1fr 1fr;
+}
+
 
 
 /* ============================================

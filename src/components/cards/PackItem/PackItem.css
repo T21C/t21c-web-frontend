@@ -1,0 +1,257 @@
+.pack-item {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.pack-item--folder {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.5rem 0;
+  background: none;
+  border: none;
+  border-radius: 0;
+  transition: all 0.2s ease;
+  gap: 0.5rem;
+}
+
+.pack-item--folder:hover .pack-item__content {
+  border-color: var(--color-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.pack-item .pack-item__drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  cursor: grab;
+  color: var(--color-text-secondary);
+  border: none;
+  background: none;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  z-index: 10;
+  opacity: 0;
+  visibility: hidden;
+  touch-action: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Folder drag handle positioning - inline with content */
+.pack-item--folder .pack-item__drag-handle {
+  position: static;
+  transform: none;
+}
+
+/* Folder content wrapper */
+.pack-item__content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding: 0.75rem;
+  background: var(--color-card-background);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+/* Show drag handle on hover or when dragging */
+.pack-item:hover .pack-item__drag-handle,
+.pack-item.dragging .pack-item__drag-handle {
+  opacity: 1;
+  visibility: visible;
+}
+
+.pack-item .pack-item__drag-handle:hover {
+  background: var(--color-hover);
+  color: var(--color-text);
+}
+
+.pack-item .pack-item__drag-handle:active {
+  cursor: grabbing;
+}
+
+.pack-item .pack-item__toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.pack-item .pack-item__toggle:hover:not(:disabled) {
+  background: var(--color-hover);
+  color: var(--color-text);
+}
+
+.pack-item .pack-item__toggle:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pack-item .pack-item__toggle .expanded {
+  transform: rotate(90deg);
+}
+
+.pack-item .pack-item__toggle .collapsed {
+  transform: rotate(0deg);
+}
+
+.pack-item .pack-item__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--color-primary);
+  flex-shrink: 0;
+}
+
+.pack-item .pack-item__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.pack-item .pack-item__name {
+  font-weight: 500;
+  color: var(--color-text);
+  margin-bottom: 0.25rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.pack-item .pack-item__count {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+}
+
+.pack-item .pack-item__actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+
+.pack-item .pack-item__action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  font-size: 14px;
+}
+
+.pack-item .pack-item__action-btn:hover:not(:disabled) {
+  background: var(--color-hover);
+}
+
+.pack-item .pack-item__action-btn--delete:hover:not(:disabled) {
+  background: rgba(220, 53, 69, 0.1);
+}
+
+.pack-item .pack-item__action-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+/* Drag states */
+.pack-item.dragging {
+  opacity: 0.4;
+}
+
+.pack-item--dragging {
+  padding: 1rem;
+  background: var(--color-card-background);
+  border: 2px solid var(--color-primary);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  font-weight: 500;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.pack-item--dragging.entering-folder {
+  border-color: #4CAF50;
+  background: rgba(76, 175, 80, 0.1);
+}
+
+.pack-item.over {
+  background: rgba(76, 175, 80, 0.05);
+  border-color: #4CAF50;
+}
+
+/* Folder contents */
+.pack-item__contents {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  margin-top: 0.5rem;
+  margin-left: 1.5rem;
+  padding: 0.5rem 0.5rem 0.5rem 2rem;
+  border-left: 2px solid var(--color-border);
+  border-radius: 4px;
+  min-height: 50px;
+  transition: background-color 0.2s ease;
+}
+
+.pack-item__contents.dragging-over {
+  background-color: rgba(76, 175, 80, 0.05);
+  border-left-color: #4CAF50;
+  border: 2px dashed #4CAF50;
+}
+
+.pack-item__contents.empty {
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pack-item__contents-empty {
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+  opacity: 0.6;
+  text-align: center;
+  padding: 1rem;
+}
+
+.pack-item__contents.dragging-over .pack-item__contents-empty {
+  opacity: 1;
+  color: #4CAF50;
+  font-weight: 500;
+}
+
+/* Level item specific styles */
+.pack-item--level {
+  padding: 0;
+  background: none;
+  border: none;
+}
+
+@media (max-width: 650px) {
+  .pack-item__contents {
+    margin-left: 0;
+    padding-left: 0.5rem;
+  }
+}

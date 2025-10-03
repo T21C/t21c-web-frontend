@@ -6,8 +6,10 @@
   "level": {
     "creator": "Creator",
     "clears": "Clears",
+    "addToPack": "Add to Pack",
     "buttons": {
-      "edit": "Edit"
+      "edit": "Edit",
+      "addToPack": "Add to Pack"
     },
     "links": {
       "workshop": "Workshop Link",
@@ -62,6 +64,19 @@
       "worldsFirstCount": "WF Passes",
       "topDiff": "Top Difficulty",
       "top12kDiff": "Top 12k Difficulty"
+    }
+  },
+  "pack": {
+    "more": "more",
+    "clickToView": "Click to view",
+    "viewMode": {
+      "public": "Public",
+      "linkonly": "Link Only",
+      "private": "Private",
+      "forcedPrivate": "Private (Locked)"
+    },
+    "stats": {
+      "levels": "level(s)"
     }
   }
 } 
