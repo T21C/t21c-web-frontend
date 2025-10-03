@@ -1,17 +1,52 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useDroppable } from '@dnd-kit/core';
 import { useTranslation } from 'react-i18next';
 import { ChevronIcon, FolderIcon, DragHandleIcon } from '@/components/common/icons';
-import LevelCard from '../LevelCard/LevelCard';
+
+import LevelCard from '@/components/cards/LevelCard/LevelCard';
 import './PackItem.css';
 
-const PackItem = ({ 
-  item, 
+// Reusable level item component for pack display
+const PackLevelItem = ({
+  item,
+  canEdit,
+  isReordering,
+  packId,
+  user,
+  onDeleteItem,
+  depth = 0,
+  dragHandleProps
+}) => {
+  const [isChecked, setIsChecked] = useState(false); // Future feature for level completion
+  const level = item.referencedLevel;
+
+  const handleCheckItem = (level, checked) => {
+    setIsChecked(checked);
+    // Future: Send API request to mark level as completed/not completed
+  };
+
+  return (
+    <LevelCard
+      level={level}
+      displayMode="pack"
+      user={user}
+      canEdit={canEdit}
+      isReordering={isReordering}
+      onDeleteItem={onDeleteItem}
+      onCheckItem={handleCheckItem}
+      isChecked={isChecked}
+      dragHandleProps={dragHandleProps}
+    />
+  );
+};
+
+const PackItem = ({
+  item,
   expandedFolders,
-  onToggleExpanded, 
-  canEdit, 
+  onToggleExpanded,
+  canEdit,
   isReordering,
   packId,
   user,
@@ -44,7 +79,7 @@ const PackItem = ({
     transition
   };
 
-  // If it's a level item, just render the level card
+  // If it's a level item, use the new PackLevelItem component
   if (item.type === 'level') {
     return (
       <div
@@ -52,22 +87,15 @@ const PackItem = ({
         style={style}
         className={`pack-item pack-item--level ${isDragging ? 'dragging' : ''} ${isOver ? 'over' : ''}`}
       >
-        {canEdit && (
-          <div
-            {...attributes}
-            {...listeners}
-            className="pack-item__drag-handle"
-            title="Drag to reorder or move"
-          >
-            <DragHandleIcon />
-          </div>
-        )}
-        <LevelCard
-          level={item.referencedLevel}
+        <PackLevelItem
+          item={item}
+          canEdit={canEdit}
+          isReordering={isReordering}
+          packId={packId}
           user={user}
-          sortBy="RECENT"
-          displayMode="normal"
-          size="medium"
+          onDeleteItem={onDeleteItem}
+          depth={depth}
+          dragHandleProps={{ attributes, listeners }}
         />
       </div>
     );
@@ -87,7 +115,7 @@ const PackItem = ({
           <div
             {...attributes}
             {...listeners}
-            className="pack-item__drag-handle"
+            className="pack-item__drag-handle pack-item__drag-handle--folder"
             title="Drag to reorder or nest"
           >
             <DragHandleIcon />
@@ -132,7 +160,6 @@ const PackItem = ({
                 onDeleteItem?.(item);
               }}
               title="Delete folder"
-              disabled={childCount > 0}
             >
               🗑️
             </button>

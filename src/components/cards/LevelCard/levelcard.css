@@ -987,6 +987,92 @@
 }
 
 
+/* Pack mode styles */
+.level-card.pack {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.level-card.pack .level-card__drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  cursor: grab;
+  color: var(--color-text-secondary);
+  border: none;
+  background: none;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.level-card.pack .level-card__drag-handle:hover {
+  background: var(--color-hover);
+  color: var(--color-text);
+}
+
+.level-card.pack .level-card__drag-handle:active {
+  cursor: grabbing;
+}
+
+.level-card.pack .level-card__check-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  z-index: 10;
+}
+
+.level-card.pack .level-card__check-btn:hover {
+  background: var(--color-hover);
+}
+
+.level-card.pack .level-card__delete-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+  margin-left: auto;
+}
+
+.level-card.pack .level-card__delete-btn:hover {
+  background: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+}
+
+.level-card.pack .level-card-wrapper {
+  flex: 1;
+  margin: 0;
+  border-bottom: 1px solid var(--color-border);
+  padding: 0.75rem 0.5rem;
+  min-height: 4rem;
+}
+
+.level-card.pack .downloads-wrapper {
+  margin-right: 0.5rem;
+}
+
 /* Performance optimizations for glow cards - only list view */
 .level-card.basic-glow:not(.grid),
 .level-card.basic-glow:not(.grid)::before,

@@ -15,7 +15,9 @@
     "actions": {
       "edit": "Edit Pack",
       "addFolder": "Add Folder",
-      "addLevel": "Add Level"
+      "addLevel": "Add Levels",
+      "addToFavorites": "Favorite",
+      "removeFromFavorites": "Unfavorite"
     },
     "createFolder": {
       "prompt": "Enter folder name:",
@@ -23,7 +25,7 @@
       "error": "Failed to create folder"
     },
     "addLevel": {
-      "prompt": "Enter level ID:",
+      "prompt": "Enter list of separated level IDs:",
       "success": "Level added successfully!",
       "error": "Failed to add level"
     },

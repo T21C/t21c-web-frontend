@@ -174,7 +174,11 @@ const PackDetailPage = () => {
     try {
       const success = await toggleFavorite(pack.id);
       if (success) {
-        fetchPack(true);
+        // Update pack data immediately with the new favorite status
+        setPack(prevPack => ({
+          ...prevPack,
+          isFavorited: !prevPack.isFavorited
+        }));
       }
     } catch (error) {
       console.error('Error toggling favorite:', error);
@@ -223,7 +227,7 @@ const PackDetailPage = () => {
     try {
       await api.post(`/v2/database/levels/packs/${pack.id}/items`, {
         type: 'level',
-        levelId: parseInt(levelId),
+        levelIds: levelId,
         parentId: null
       });
       
@@ -708,7 +712,7 @@ const PackDetailPage = () => {
             className="pack-detail-page__back-btn"
             onClick={() => navigate('/packs')}
           >
-            <ArrowIcon />
+            <ArrowIcon style={{ transform: 'rotate(180deg)' }} />
             <span>{tPack('backToPacks')}</span>
           </button>
 
@@ -775,8 +779,6 @@ const PackDetailPage = () => {
               <button
                 className="pack-detail-page__favorite-btn"
                 onClick={handleFavoriteClick}
-                data-tooltip-id="favorite-pack-tooltip"
-                data-tooltip-content={pack.isFavorited ? tPack('actions.removeFromFavorites') : tPack('actions.addToFavorites')}
               >
                 <LikeIcon color={pack.isFavorited ? "#ffffff" : "none"} />
                 <span>{pack.isFavorited ? tPack('actions.removeFromFavorites') : tPack('actions.addToFavorites')}</span>
