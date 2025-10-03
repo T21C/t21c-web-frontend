@@ -225,6 +225,7 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
               </p>
             </div>
 
+{/*
             <div className="create-pack-popup__field">
               <label className="create-pack-popup__label">
                 {tPopup('theme.label')}
@@ -244,7 +245,7 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
                 {tPopup('theme.help')}
               </p>
             </div>
-
+*/}
             <div className="create-pack-popup__field">
               <label className="create-pack-popup__label">
                 {tPopup('viewMode.label')}

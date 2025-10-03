@@ -33,10 +33,9 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
     try {
       setLoading(true);
       const params = {
-        owner: user.username,
         offset: (currentPage - 1) * LIMIT,
         limit: LIMIT,
-        ...(searchQuery && { query: searchQuery })
+        query: `owner:${user.username},${searchQuery}`,
       };
 
       const response = await api.get('/v2/database/levels/packs', { params });

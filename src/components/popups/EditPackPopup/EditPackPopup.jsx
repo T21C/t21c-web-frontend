@@ -241,6 +241,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
               </p>
             </div>
 
+{/*
             <div className="edit-pack-popup__field">
               <label className="edit-pack-popup__label">
                 {tPopup('theme.label')}
@@ -261,6 +262,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                 {tPopup('theme.help')}
               </p>
             </div>
+*/}
 
             <div className="edit-pack-popup__field">
               <label className="edit-pack-popup__label">
