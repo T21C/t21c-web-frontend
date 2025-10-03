@@ -280,9 +280,11 @@ const LevelCard = ({
                       <DownloadIcon color="#ffffff" size={"24px"} />
                     </a>
                   )}
+                  {user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
                   <button className="edit-button" style={{ marginLeft: "0" }} onClick={handleEditClick}>
                     <EditIcon color="#ffffff" size={"32px"} />
                   </button>
+                  )}
                   <button
                     className="level-card__delete-btn mobile"
                      onClick={handleDeleteClick}
@@ -347,9 +349,11 @@ const LevelCard = ({
                     <DownloadIcon color="#ffffff" size={"24px"} />
                   </a>
                 )}
+                {user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
                 <button className="edit-button" style={{ marginLeft: "0" }} onClick={handleEditClick}>
                   <EditIcon color="#ffffff" size={"32px"} />
                 </button>
+                )}
                 <button
                     className="level-card__delete-btn mobile"
                      onClick={handleDeleteClick}
