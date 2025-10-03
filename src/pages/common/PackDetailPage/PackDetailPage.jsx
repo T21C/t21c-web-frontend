@@ -259,13 +259,15 @@ const PackDetailPage = () => {
 
   // Handle delete item
   const handleDeleteItem = async (item) => {
-    const confirmMessage = item.type === 'folder' 
+    const confirmMessage = item?.type === 'folder' 
       ? tPack('deleteFolder.confirm', { name: item.name })
       : tPack('deleteLevel.confirm');
     
     if (!confirm(confirmMessage)) return;
 
     try {
+      console.log(item);
+      console.log(`Deleting item ${item.id} from pack ${pack.id}`);
       await api.delete(`/v2/database/levels/packs/${pack.id}/items/${item.id}`);
       
       toast.success(tPack('deleteItem.success'));

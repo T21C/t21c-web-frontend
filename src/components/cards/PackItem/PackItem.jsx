@@ -19,24 +19,14 @@ const PackLevelItem = ({
   depth = 0,
   dragHandleProps
 }) => {
-  const [isChecked, setIsChecked] = useState(false); // Future feature for level completion
-  const level = item.referencedLevel;
-
-  const handleCheckItem = (level, checked) => {
-    setIsChecked(checked);
-    // Future: Send API request to mark level as completed/not completed
-  };
-
   return (
-    <LevelCard
-      level={{...level, isCleared: item.isCleared}}
+    <LevelCard 
+      packItem={item}
       displayMode="pack"
       user={user}
       canEdit={canEdit}
       isReordering={isReordering}
       onDeleteItem={onDeleteItem}
-      onCheckItem={handleCheckItem}
-      isChecked={isChecked}
       dragHandleProps={dragHandleProps}
     />
   );

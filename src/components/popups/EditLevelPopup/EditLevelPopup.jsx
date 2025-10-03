@@ -569,6 +569,8 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                 <input
                   type="checkbox"
                   checked={isExternallyAvailable}
+                  onChange={() => {}} // Empty handler to prevent warning, actual logic handled by div onClick
+                  readOnly
                 />
                 {tLevel('form.labels.isExternallyAvailable')}
             </div> 

@@ -73,7 +73,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
   const addLevelToPack = async (packId, levelId, parentId = null) => {
     const response = await api.post(`/v2/database/levels/packs/${packId}/items`, {
       type: 'level',
-      levelId,
+      levelIds: levelId,
       parentId
     });
     return response.data;

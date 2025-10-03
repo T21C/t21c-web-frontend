@@ -2,20 +2,19 @@ import { useNavigate } from "react-router-dom";
 import "./levelcard.css"
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
-import api from "@/utils/api";
 import { EditLevelPopup, AddToPackPopup } from "@/components/popups";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { EditIcon, SteamIcon, DownloadIcon, VideoIcon, PassIcon, LikeIcon, PackIcon, DragHandleIcon, YoutubeIcon } from "@/components/common/icons";
 import { formatCreatorDisplay } from "@/utils/Utility";
 import { ABILITIES, hasBit } from "@/utils/Abilities";
-import { UserAvatar } from "@/components/layout";
 import { permissionFlags } from "@/utils/UserPermissions";
 import { hasFlag } from "@/utils/UserPermissions";
 
 
 const LevelCard = ({
   index,
-  level: initialLevel,
+  level: initialLevel = null,
+  packItem = null,
   legacyMode,
   user,
   sortBy,
@@ -39,6 +38,9 @@ const LevelCard = ({
   }, []);
   const { t } = useTranslation('components');
   const tCard = (key) => t(`cards.level.${key}`) || key;
+  if (packItem) {
+    initialLevel = packItem.referencedLevel;
+  }
   
   const [level, setLevel] = useState(initialLevel);
   const [toRate, setToRate] = useState(!!initialLevel.toRate);
@@ -188,7 +190,7 @@ const LevelCard = ({
     const handleDeleteClick = (e) => {
       e.stopPropagation();
       if (onDeleteItem) {
-        onDeleteItem(level);
+        onDeleteItem(packItem);
       }
     };
 
