@@ -169,9 +169,9 @@ const ProfilePage = () => {
         <div className="player-page">
           <MetaTags
             title={playerData?.name ? tProfile('meta.title', { name: playerData.name }) : tProfile('meta.defaultTitle')}
-            description={tProfile('meta.description', { name: playerData?.name || '' })}
+            description={tProfile('meta.description', { name: playerData?.name || 'Unknown Player' })}
             url={currentUrl}
-            image={playerData?.avatar || '/default-avatar.jpg'}
+            image={playerData?.avatar || playerData?.avatarUrl || playerData?.pfp || '/default-avatar.jpg'}
             type="profile"
           />
           <CompleteNav />
@@ -211,19 +211,19 @@ const ProfilePage = () => {
                       <div className="player-picture-container">
                       <div className="player-picture-and-info">
                       <UserAvatar 
-                        primaryUrl={playerData.avatarUrl}
-                        fallbackUrl={playerData.pfp}
+                        primaryUrl={playerData?.avatarUrl || playerData?.pfp}
+                        fallbackUrl={playerData?.pfp || '/default-avatar.jpg'}
                         className="player-picture"
                       />
-                      <div className="player-id">ID: {playerData.id}</div>
+                      <div className="player-id">ID: {playerData?.id || 'N/A'}</div>
                       </div>
                       {/* Mobile difficulty display */}
                       <div className="mobile-diff-info">
                       <div className="diff-info">
                       <p>{valueLabels?.topDiff}</p>
                       <img
-                        src={playerData.stats.topDiff?.icon}
-                        alt={playerData.stats.topDiff?.name || 'None'}
+                        src={playerData?.stats?.topDiff?.icon || "/placeholder-difficulty.png"}
+                        alt={playerData?.stats?.topDiff?.name || 'No difficulty set'}
                         className="diff-image"
                       />
                     </div>
@@ -231,8 +231,8 @@ const ProfilePage = () => {
                     <div className="diff-info">
                       <p>{valueLabels?.top12kDiff}</p>
                       <img
-                        src={playerData.stats.top12kDiff?.icon}
-                        alt={playerData.stats.top12kDiff?.name || 'None'}
+                        src={playerData?.stats?.top12kDiff?.icon || "/placeholder-difficulty.png"}
+                        alt={playerData?.stats?.top12kDiff?.name || 'No 12K difficulty set'}
                         className="diff-image"
                       />
                     </div>
@@ -241,23 +241,23 @@ const ProfilePage = () => {
                                          <div className="player-info">
                        <div className="player-name-rank">
                          <div className="player-name-container">
-                           <h1>{playerData.name}</h1>
-                           {playerData.username && (
+                           <h1>{playerData?.name || 'Unknown Player'}</h1>
+                           {playerData?.username && (
                              <span className="player-discord-handle">@{playerData.username}</span>
                            )}
                          </div>
                          <div className="player-rank-flag">
                            <h2
                              style={{
-                               color: parseRankColor(playerData.stats.rankedScoreRank), 
-                               backgroundColor: `${parseRankColor(playerData.stats.rankedScoreRank)}27`,
+                               color: parseRankColor(playerData?.stats?.rankedScoreRank || 0), 
+                               backgroundColor: `${parseRankColor(playerData?.stats?.rankedScoreRank || 0)}27`,
                            }}
                            className={playerData.username ? "shift-rank-display" : ""}
                            
-                           >#{playerData.stats.rankedScoreRank}</h2>
+                           >#{playerData?.stats?.rankedScoreRank || 'Unranked'}</h2>
                            <img
-                             src={isoToEmoji(playerData.country)}
-                             alt={playerData.country}
+                             src={isoToEmoji(playerData?.country || 'XX')}
+                             alt={playerData?.country || 'Unknown Country'}
                              className="country-flag"
                            />
                          </div>
@@ -268,8 +268,8 @@ const ProfilePage = () => {
                     <div className="diff-info">
                       <p>{valueLabels?.topDiff}</p>
                       <img
-                        src={playerData.stats?.topDiff?.icon}
-                        alt={playerData.stats?.topDiff?.name || 'None'}
+                        src={playerData?.stats?.topDiff?.icon || "/placeholder-difficulty.png"}
+                        alt={playerData?.stats?.topDiff?.name || 'No difficulty set'}
                         className="diff-image"
                       />
                     </div>
@@ -277,8 +277,8 @@ const ProfilePage = () => {
                     <div className="diff-info">
                       <p>{valueLabels?.top12kDiff}</p>
                       <img
-                        src={playerData.stats?.top12kDiff?.icon}
-                        alt={playerData.stats?.top12kDiff?.name || 'None'}
+                        src={playerData?.stats?.top12kDiff?.icon || "/placeholder-difficulty.png"}
+                        alt={playerData?.stats?.top12kDiff?.name || 'No 12K difficulty set'}
                         className="diff-image"
                       />
                     </div>
@@ -310,7 +310,7 @@ const ProfilePage = () => {
                     >
                       <span className="creator-assignment-icon"
                         style={{
-                          color: playerData.user?.creator ? '#5f5' : '#fff'
+                          color: playerData?.user?.creator ? '#5f5' : '#fff'
                         }}
                       >🛠</span>
                     </button>
@@ -331,56 +331,56 @@ const ProfilePage = () => {
                 <div className="score-container">
                   <div className="score-item">
                     <p className="score-name">{valueLabels.rankedScore}</p>
-                    <p className="score-value">{formatNumber(playerData.rankedScore)}</p>
+                    <p className="score-value">{formatNumber(playerData?.rankedScore || 0)}</p>
                   </div>
                   <br />
                   <div className="score-item">
                     <p className="score-name">{valueLabels.generalScore}</p>
-                    <p className="score-value">{formatNumber(playerData.generalScore)}</p>
+                    <p className="score-value">{formatNumber(playerData?.generalScore || 0)}</p>
                   </div>
                   <br />
                   <div className="score-item">
                     <p className="score-name">{valueLabels.ppScore}</p>
-                    <p className="score-value">{formatNumber(playerData.ppScore)}</p>
+                    <p className="score-value">{formatNumber(playerData?.ppScore || 0)}</p>
                   </div>
                   <br />
                   <div className="score-item">
                     <p className="score-name">{valueLabels.wfScore}</p>
-                    <p className="score-value">{formatNumber(playerData.wfScore)}</p>
+                    <p className="score-value">{formatNumber(playerData?.wfScore || 0)}</p>
                   </div>
                   <br />
                   <div className="score-item">
                     <p className="score-name">{valueLabels.score12K}</p>
-                    <p className="score-value">{formatNumber(playerData.score12K)}</p>
+                    <p className="score-value">{formatNumber(playerData?.score12K || 0)}</p>
                   </div>
                 </div>
             
                 <div className="passes-container">
                   <div className="score-item">
                     <p className="score-name">{valueLabels.worldsFirstCount}</p>
-                    <p className="score-value">{playerData.worldsFirstCount}</p>
+                    <p className="score-value">{playerData?.worldsFirstCount || 0}</p>
                   </div>
                   <div className="score-item">
                     <p className="score-name">{valueLabels.averageXacc}</p>
-                    <p className="score-value">{(playerData.averageXacc*100).toFixed(2)}%</p>
+                    <p className="score-value">{((playerData?.averageXacc || 0) * 100).toFixed(2)}%</p>
                   </div>
                   <div className="score-item">
                     <p className="score-name">{valueLabels.totalPasses}</p>
-                    <p className="score-value">{playerData.totalPasses}</p>
+                    <p className="score-value">{playerData?.totalPasses || 0}</p>
                   </div>
                   <div className="score-item">
                     <p className="score-name">{valueLabels.universalPassCount}</p>
-                    <p className="score-value">{playerData.universalPassCount}</p>
+                    <p className="score-value">{playerData?.universalPassCount || 0}</p>
                   </div>
                 </div>
               </div>
-              {playerData.passes && playerData.passes.length > 0 && (
+              {playerData?.passes && playerData.passes.length > 0 && (
                 <div className="scores-section">
                   <h2>{tProfile('sections.scores.title')}</h2>
                   <div className="scores-list">
-                    {playerData.passes.filter(score => !score.isDeleted).sort((a, b) => b.scoreV2 - a.scoreV2).map((score, index) => (
+                    {playerData.passes.filter(score => !score.isDeleted).sort((a, b) => (b.scoreV2 || 0) - (a.scoreV2 || 0)).map((score, index) => (
                       <li key={index}>
-                        <ScoreCard scoreData={score} topScores={playerData.topScores} potentialTopScores={playerData.potentialTopScores} />
+                        <ScoreCard scoreData={score} topScores={playerData?.topScores || []} potentialTopScores={playerData?.potentialTopScores || []} />
                       </li>
                     ))}
                   </div>
