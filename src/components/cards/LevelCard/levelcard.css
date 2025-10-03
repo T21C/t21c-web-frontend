@@ -1013,14 +1013,25 @@
   z-index: 10;
   opacity: 0;
   visibility: hidden;
+  touch-action: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 /* Show drag handle on hover or when dragging */
-.level-card.pack:hover .level-card__drag-handle,
-.level-card.pack.dragging .level-card__drag-handle {
+.level-card.pack:hover .level-card__drag-handle {
   opacity: 1;
   visibility: visible;
   left: -1.5rem;
+}
+
+/* Keep drag handle in original position when dragging */
+.level-card.pack.dragging .level-card__drag-handle {
+  opacity: 1;
+  visibility: visible;
+  left: 0;
 }
 
 .level-card.pack .level-card__drag-handle:hover {
@@ -1050,6 +1061,11 @@
 
 .level-card.pack:hover .level-card__check-btn {
   left: -1.75rem;
+}
+
+/* Keep check button in original position when dragging */
+.level-card.pack.dragging .level-card__check-btn {
+  left: 0.25rem;
 }
 
 .level-card.pack .level-card__check-btn:hover {
@@ -1087,6 +1103,117 @@
 
 .level-card.pack .downloads-wrapper {
   margin-right: 0.5rem;
+}
+
+/* Mobile layout for pack mode */
+@media (max-width: 650px) {
+  .level-card.pack {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+    padding: 0.5rem 0;
+  }
+
+  .level-card.pack:hover .level-card__drag-handle {
+    opacity: 1;
+    visibility: visible;
+    left: inherit;
+  }
+  /* Drag handle always visible and positioned at top right on mobile */
+  .level-card.pack .level-card__drag-handle {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    opacity: 1;
+    visibility: visible;
+    color: #ffffff;
+    border-radius: 4px;
+    z-index: 20;
+    touch-action: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;    -ms-user-select: none;
+    user-select: none;
+  }
+
+
+  /* Check button positioned at top left on mobile */
+  .level-card.pack .level-card__check-btn {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    color: #ffffff;
+    z-index: 20;
+  }
+
+
+  /* Card wrapper with proper spacing for mobile */
+  .level-card.pack .level-card-wrapper {
+    flex: 1;
+    margin: 0;
+    min-height: 4rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  /* Info line layout for mobile */
+  .level-card.pack .level-card-wrapper .info-line {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+    min-height: 2.5rem;
+  }
+
+  /* Stats line layout for mobile */
+  .level-card.pack .level-card-wrapper .stats-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    min-height: 2rem;
+    padding-left: 4rem; /* Align with content after icon */
+  }
+
+  /* Song wrapper adjustments for mobile */
+  .level-card.pack .song-wrapper {
+    flex: 1;
+    padding-right: 0;
+  }
+
+  /* Creator wrapper adjustments for mobile */
+  .level-card.pack .creator-wrapper {
+    flex: 1;
+  }
+
+  /* Downloads wrapper adjustments for mobile */
+  .level-card.pack .downloads-wrapper {
+    min-width: auto;
+    flex-shrink: 0;
+    margin-right: 0;
+  }
+
+  /* Delete button positioned at bottom right on mobile */
+  .level-card.pack .level-card__delete-btn {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    background: rgba(220, 53, 69, 0.8);
+    color: #ffffff;
+    z-index: 20;
+    margin-left: 0;
+    display: none;
+  }
+
+  .level-card.pack .level-card__delete-btn.mobile {
+    display: flex;
+  }
+
+
+  .level-card.pack .level-card__delete-btn:hover {
+    background: rgba(220, 53, 69, 1);
+  }
 }
 
 /* Performance optimizations for glow cards - only list view */

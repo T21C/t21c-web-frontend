@@ -14,6 +14,7 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  align-items: center;
 }
 
 
@@ -40,6 +41,8 @@
 
 .pack-detail-page__retry-btn,
 .pack-detail-page__back-btn {
+  margin-bottom: 0.5rem;
+  width: fit-content;
   padding: 0.75rem 1.5rem;
   border: none;
   border-radius: 8px;
@@ -62,6 +65,7 @@
 /* Header */
 .pack-detail-page__header {
   display: flex;
+  min-width: 100%;
   align-items: flex-start;
   gap: 2rem;
   padding: 2rem;
@@ -70,7 +74,15 @@
   margin-bottom: 1rem;
 }
 
+.pack-detail-page__header-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  min-width: 60%;
+}
+
 .pack-detail-page__back-btn {
+  align-self: flex-start;
   padding: 0.75rem 1rem;
   border: 1px solid var(--color-white-t20);
   border-radius: 8px;
@@ -95,12 +107,11 @@
   display: flex;
   align-items: center;
   gap: 1.5rem;
-  flex: 1;
 }
 
 .pack-detail-page__icon {
-  width: 80px;
   height: 80px;
+  width: 80px;
   border-radius: 12px;
   overflow: hidden;
   background: var(--color-white-t10);
@@ -124,6 +135,7 @@
 
 .pack-detail-page__title-content {
   display: flex;
+  align-items: center;
   flex-direction: column;
   gap: 0.5rem;
   flex: 1;
@@ -148,7 +160,7 @@
 .pack-detail-page__meta {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: 1rem;
   flex-wrap: wrap;
 }
 
@@ -219,17 +231,12 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  flex-shrink: 0;
-}
-
-.pack-detail-page__user-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+  width: 100%;
   flex-shrink: 0;
 }
 
 .pack-detail-page__edit-btn {
+  width: 100%;
   padding: 0.75rem 1rem;
   border: 1px solid var(--color-white-t20);
   border-radius: 8px;
@@ -248,6 +255,14 @@
   border-color: var(--color-white-t30);
 }
 
+.pack-detail-page__actions-container {
+  gap: 0.5rem;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  margin-left: auto;
+}
+
 .pack-detail-page__favorite-btn {
   padding: 0.75rem 1rem;
   border: 1px solid var(--color-white-t20);
@@ -259,6 +274,7 @@
   transition: all 0.2s ease;
   display: flex;
   align-items: center;
+  width: 100%;
   gap: 0.5rem;
 }
 
@@ -312,6 +328,7 @@
 
 /* Content - Match LevelPage structure */
 .pack-detail-page__content {
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -453,9 +470,16 @@
   }
 
   .pack-detail-page__title-section {
-    flex-direction: column;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
     text-align: center;
     gap: 1rem;
+  }
+
+  .pack-detail-page__actions {
+    margin-left: 0;
+    width: 100%;
   }
 
   .pack-detail-page__title {
@@ -480,7 +504,6 @@
 
   .pack-detail-page__levels-header {
     flex-direction: column;
-    align-items: flex-start;
     gap: 0.75rem;
   }
 
@@ -496,10 +519,6 @@
 }
 
 @media (max-width: 480px) {
-  .pack-detail-page__icon {
-    width: 60px;
-    height: 60px;
-  }
 
   .pack-detail-page__title {
     font-size: 1.25rem;

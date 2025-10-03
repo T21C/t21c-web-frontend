@@ -108,6 +108,7 @@ const PackContextProvider = (props) => {
     const triggerRefresh = useCallback(() => {
         setPageNumber(0);
         setPacks([]);
+        setError(false);
         if (filtersRef.current.viewMode === 'favorites') {
             setFavorites([]);
         }
@@ -134,11 +135,13 @@ const PackContextProvider = (props) => {
         }
 
         setFavoritesLoading(true);
+        setError(false);
         try {
             const response = await api.get('/v2/database/levels/packs/favorites');
             setFavorites(response.data.packs || []);
         } catch (error) {
             console.error('Error fetching favorites:', error);
+            setError(true);
             setFavorites([]);
         } finally {
             setFavoritesLoading(false);

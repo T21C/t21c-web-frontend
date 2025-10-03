@@ -3,10 +3,6 @@
   transition: all 0.2s ease;
 }
 
-.pack-item__folder-container {
-  margin-bottom: 0.5rem;
-}
-
 .pack-item--folder {
   position: relative;
   display: flex;
@@ -41,6 +37,11 @@
   z-index: 10;
   opacity: 0;
   visibility: hidden;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 /* Folder drag handle positioning - inline with content */

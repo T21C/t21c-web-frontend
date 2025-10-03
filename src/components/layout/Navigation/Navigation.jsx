@@ -434,14 +434,21 @@ const Navigation = ({ children }) => {
                 </NavLink>
               </li>
               <li className="nav-list-item">
+                <NavLink to="/passes" onClick={changeNavState}>
+                  {tNav('links.pass')}
+                </NavLink>
+              </li>
+              <li className="nav-list-item">
                 <NavLink to="/leaderboard" onClick={changeNavState}>
                   {tNav('links.leaderboard')}
                 </NavLink>
               </li>
-              <li className="nav-list-item">
-                <NavLink to="/passes" onClick={changeNavState}>
-                  {tNav('links.pass')}
-                </NavLink>
+              <li className="nav-list-item">  
+              <NavLink className={({ isActive }) =>
+                    "nav-link " + (isActive ? "active" : "")}
+                    to="/packs">
+                    {tNav('links.packs')}
+                  </NavLink>
               </li>
                 <li className="nav-list-item">
                   <NavLink to="/admin/rating" onClick={changeNavState}>

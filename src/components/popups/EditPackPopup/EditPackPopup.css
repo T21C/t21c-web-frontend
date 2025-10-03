@@ -269,6 +269,7 @@
 }
 
 .edit-pack-popup__footer-left {
+  width: fit-content;
   flex: 1;
 }
 
@@ -310,7 +311,7 @@
   border-radius: 6px;
   padding: 10px 20px;
   cursor: pointer;
-  color: #888888;
+  color: #fff;
   font-size: 14px;
   font-weight: 500;
   transition: all 0.2s ease;
@@ -464,12 +465,7 @@
   
   .edit-pack-popup__footer {
     padding: 16px 20px;
-    flex-direction: column;
     align-items: stretch;
-  }
-  
-  .edit-pack-popup__footer-left {
-    order: 2;
   }
   
   .edit-pack-popup__footer-right {
@@ -480,7 +476,6 @@
   .edit-pack-popup__delete-btn,
   .edit-pack-popup__cancel-btn,
   .edit-pack-popup__save-btn {
-    width: 100%;
     justify-content: center;
   }
   

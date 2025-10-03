@@ -225,61 +225,145 @@ const LevelCard = ({
           </svg>
         )}
         {/* Main card content */}
-        <div className="level-card-wrapper" onClick={redirect}>
-          <div className="img-wrapper">
-            <img src={lvImage} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
-            {(level.rating?.averageDifficultyId && 
-             difficultyDict[level.rating.averageDifficultyId]?.icon &&
-             difficultyDict[level.rating.averageDifficultyId]?.type == "PGU" &&
-             difficultyDict[level.diffId]?.name.startsWith("Q")) ?
-            <img 
-                className="rating-icon"
-                src={difficultyDict[level.rating.averageDifficultyId]?.icon}
-                alt="Rating icon" />
-            : null
-            }
-            {(level.curation?.typeId) ?
-            <img 
-                className="curation-icon"
-                src={level.curation.type.icon}
-                alt="Curation icon" />
-            : null
-            }
-          </div>
+        <div className={`level-card-wrapper ${isTwoLineLayout ? 'two-line' : ''}`} onClick={redirect}>
+          {isTwoLineLayout ? (
+            <>
+              {/* Info Line - Upper row */}
+              <div className="info-line">
+                <div className="img-wrapper">
+                  <img src={lvImage} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
+                  {(level.rating?.averageDifficultyId && 
+                   difficultyDict[level.rating.averageDifficultyId]?.icon &&
+                   difficultyDict[level.rating.averageDifficultyId]?.type == "PGU" &&
+                   difficultyDict[level.diffId]?.name.startsWith("Q")) ?
+                  <img 
+                      className="rating-icon"
+                      src={difficultyDict[level.rating.averageDifficultyId]?.icon}
+                      alt="Rating icon" />
+                  : null
+                  }
+                  {(level.curation?.typeId) ?
+                  <img 
+                      className="curation-icon"
+                      src={level.curation.type.icon}
+                      alt="Curation icon" />
+                  : null
+                  }
+                </div>
 
-          <div className="song-wrapper">
-            <div className="group">
-              <p className="level-exp">#{level.id} - {level.artist}</p>
-            </div>
-            <p className='level-desc'>{level.song}</p>
-          </div>
+                <div className="song-wrapper">
+                  <div className="group">
+                    <p className="level-exp">#{level.id} - {level.artist}</p>
+                  </div>
+                  <p className='level-desc'>{level.song}</p>
+                </div>
 
-          <div className="creator-wrapper">
-            <p className="level-exp">{tCard('creator')}</p>
-            <div className="level-desc">{formatCreatorDisplay(level)}</div>
-          </div>
+                <div className="creator-wrapper">
+                  <p className="level-exp">{tCard('creator')}</p>
+                  <div className="level-desc">{formatCreatorDisplay(level)}</div>
+                </div>
+              </div>
 
-          <div className="icon-wrapper" style={{ opacity: level.clears ? 1 : 0 }}>
-            <div className="icon-value">{level.clears || 0}</div>
-            <PassIcon color="#ffffff" size={"24px"} />
-          </div>
+              {/* Stats Line - Lower row */}
+              <div className="stats-line">
+                <div className="icon-wrapper" style={{ opacity: level.clears ? 1 : 0 }}>
+                  <div className="icon-value">{level.clears || 0}</div>
+                  <PassIcon color="#ffffff" size={"24px"} />
+                </div>
 
-          <div className="downloads-wrapper">
-            {level.videoLink && (
-              
-              <a href={level.videoLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
-              <VideoIcon color="#ffffff" size={"16px"} />
-              </a>
-            )}
-            {level.dlLink && (
-              <a href={level.dlLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
-                <DownloadIcon color="#ffffff" size={"24px"} />
-              </a>
-            )}
-            <button className="edit-button" style={{ marginLeft: "0" }} onClick={handleEditClick}>
-              <EditIcon color="#ffffff" size={"32px"} />
-            </button>
-          </div>
+                <div className="downloads-wrapper">
+                  {level.videoLink && (
+                    <a href={level.videoLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
+                      <VideoIcon color="#ffffff" size={"24px"} />
+                    </a>
+                  )}
+                  {level.dlLink && (
+                    <a href={level.dlLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
+                      <DownloadIcon color="#ffffff" size={"24px"} />
+                    </a>
+                  )}
+                  <button className="edit-button" style={{ marginLeft: "0" }} onClick={handleEditClick}>
+                    <EditIcon color="#ffffff" size={"32px"} />
+                  </button>
+                  <button
+                    className="level-card__delete-btn mobile"
+                     onClick={handleDeleteClick}
+                     title="Remove from pack"
+                   >
+                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                       <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                     </svg>
+                   </button>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              {/* Single line layout */}
+              <div className="img-wrapper">
+                <img src={lvImage} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
+                {(level.rating?.averageDifficultyId && 
+                 difficultyDict[level.rating.averageDifficultyId]?.icon &&
+                 difficultyDict[level.rating.averageDifficultyId]?.type == "PGU" &&
+                 difficultyDict[level.diffId]?.name.startsWith("Q")) ?
+                <img 
+                    className="rating-icon"
+                    src={difficultyDict[level.rating.averageDifficultyId]?.icon}
+                    alt="Rating icon" />
+                : null
+                }
+                {(level.curation?.typeId) ?
+                <img 
+                    className="curation-icon"
+                    src={level.curation.type.icon}
+                    alt="Curation icon" />
+                : null
+                }
+              </div>
+
+              <div className="song-wrapper">
+                <div className="group">
+                  <p className="level-exp">#{level.id} - {level.artist}</p>
+                </div>
+                <p className='level-desc'>{level.song}</p>
+              </div>
+
+              <div className="creator-wrapper">
+                <p className="level-exp">{tCard('creator')}</p>
+                <div className="level-desc">{formatCreatorDisplay(level)}</div>
+              </div>
+
+              <div className="icon-wrapper" style={{ opacity: level.clears ? 1 : 0 }}>
+                <div className="icon-value">{level.clears || 0}</div>
+                <PassIcon color="#ffffff" size={"24px"} />
+              </div>
+
+              <div className="downloads-wrapper">
+                {level.videoLink && (
+                  <a href={level.videoLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
+                    <VideoIcon color="#ffffff" size={"24px"} />
+                  </a>
+                )}
+                {level.dlLink && (
+                  <a href={level.dlLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
+                    <DownloadIcon color="#ffffff" size={"24px"} />
+                  </a>
+                )}
+                <button className="edit-button" style={{ marginLeft: "0" }} onClick={handleEditClick}>
+                  <EditIcon color="#ffffff" size={"32px"} />
+                </button>
+                <button
+                    className="level-card__delete-btn mobile"
+                     onClick={handleDeleteClick}
+                     title="Remove from pack"
+                   >
+                     <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                       <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                     </svg>
+                   </button>
+              </div>
+            </>
+          )}
 
           {/* Trash button for removal */}
           {canEdit && (
@@ -447,6 +531,7 @@ const LevelCard = ({
                   <EditIcon size={"32px"} />
                 </button>
               )}
+              
             </div>
           </>
         ) : (

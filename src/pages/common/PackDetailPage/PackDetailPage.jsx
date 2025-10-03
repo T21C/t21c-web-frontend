@@ -706,17 +706,19 @@ const PackDetailPage = () => {
       <CompleteNav />
       <div className="background-level"></div>
       <div className="pack-body">
-        {/* Header */}
-        <div className="pack-detail-page__header">
-          <button 
+      <button 
             className="pack-detail-page__back-btn"
             onClick={() => navigate('/packs')}
           >
             <ArrowIcon style={{ transform: 'rotate(180deg)' }} />
             <span>{tPack('backToPacks')}</span>
           </button>
+          <div className="pack-detail-page__header-container">
+        {/* Header */}
+        <div className="pack-detail-page__header">
 
           <div className="pack-detail-page__title-section">
+            <div className="pack-detail-page__title-content">
             <div className="pack-detail-page__icon">
               {pack.iconUrl ? (
                 <img 
@@ -730,14 +732,16 @@ const PackDetailPage = () => {
                 </div>
               )}
             </div>
-            
-            <div className="pack-detail-page__title-content">
-              <h1 className="pack-detail-page__title">
+            <h1 className="pack-detail-page__title">
                 {pack.name}
                 {pack.isPinned && (
                   <PinIcon className="pack-detail-page__pinned-icon" />
                 )}
               </h1>
+              </div>
+            
+            <div className="pack-detail-page__title-content">
+
               
               <div className="pack-detail-page__meta">
                 <div className="pack-detail-page__owner">
@@ -759,7 +763,7 @@ const PackDetailPage = () => {
               </div>
             </div>
           </div>
-
+<div className="pack-detail-page__actions-container">
           {canEdit && (
             <div className="pack-detail-page__actions">
               <button
@@ -775,7 +779,7 @@ const PackDetailPage = () => {
           )}
 
           {user && (
-            <div className="pack-detail-page__user-actions">
+            <div className="pack-detail-page__actions">
               <button
                 className="pack-detail-page__favorite-btn"
                 onClick={handleFavoriteClick}
@@ -785,6 +789,7 @@ const PackDetailPage = () => {
               </button>
             </div>
           )}
+          </div>
         </div>
 
         {/* Stats */}
@@ -815,6 +820,7 @@ const PackDetailPage = () => {
               {tPack('stats.created')}
             </span>
           </div>
+        </div>
         </div>
 
         {/* Content */}
