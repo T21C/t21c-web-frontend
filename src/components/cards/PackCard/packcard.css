@@ -323,9 +323,6 @@
   flex: 1;
 }
 
-.pack-card--grid .pack-card__preview {
-  margin-top: auto;
-}
 
 /* List layout adjustments */
 .pack-card--list {

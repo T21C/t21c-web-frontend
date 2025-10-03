@@ -1043,7 +1043,7 @@
   cursor: grabbing;
 }
 
-.level-card.pack .level-card__check-btn {
+.level-card.pack .level-card__cleared {
   position: absolute;
   left: 0.25rem;
   display: flex;
@@ -1059,16 +1059,16 @@
   flex-shrink: 0;
 }
 
-.level-card.pack:hover .level-card__check-btn {
+.level-card.pack:hover .level-card__cleared {
   left: -1.75rem;
 }
 
 /* Keep check button in original position when dragging */
-.level-card.pack.dragging .level-card__check-btn {
+.level-card.pack.dragging .level-card__cleared {
   left: 0.25rem;
 }
 
-.level-card.pack .level-card__check-btn:hover {
+.level-card.pack .level-card__cleared:hover {
   background: var(--color-hover);
 }
 
@@ -1086,6 +1086,10 @@
   flex-shrink: 0;
   color: var(--color-text-secondary);
   margin-left: auto;
+}
+
+.level-card.pack .level-card__delete-btn.mobile {
+  display: none;
 }
 
 .level-card.pack .level-card__delete-btn:hover {
@@ -1137,12 +1141,16 @@
 
 
   /* Check button positioned at top left on mobile */
-  .level-card.pack .level-card__check-btn {
+  .level-card.pack .level-card__cleared {
     position: absolute;
-    top: 0.5rem;
+    bottom: 1.5rem;
     left: 0.5rem;
     color: #ffffff;
     z-index: 20;
+  }
+
+  .level-card.pack:hover .level-card__cleared {
+    left: 0.5rem;
   }
 
 

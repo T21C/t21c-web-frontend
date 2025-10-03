@@ -38,10 +38,10 @@
   opacity: 0;
   visibility: hidden;
   touch-action: none;
-  user-select: none;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
+  user-select: none;
 }
 
 /* Folder drag handle positioning - inline with content */
@@ -247,4 +247,11 @@
   padding: 0;
   background: none;
   border: none;
+}
+
+@media (max-width: 650px) {
+  .pack-item__contents {
+    margin-left: 0;
+    padding-left: 0.5rem;
+  }
 }
