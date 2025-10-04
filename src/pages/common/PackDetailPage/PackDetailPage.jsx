@@ -15,6 +15,7 @@ import api from "@/utils/api";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { UserAvatar } from "@/components/layout";
 import { Tooltip } from "react-tooltip";
+import { getPackExpandedFolders, setPackExpandedFolders } from "@/utils/folderState";
 import toast from 'react-hot-toast';
 import {
   DndContext,
@@ -148,6 +149,9 @@ const PackDetailPage = () => {
 
   useEffect(() => {
     if (id) {
+      // Load expanded folders from cookies for this pack
+      const savedExpandedFolders = getPackExpandedFolders(id);
+      setExpandedFolders(savedExpandedFolders);
       fetchPack();
     }
   }, [id]);
@@ -195,8 +199,48 @@ const PackDetailPage = () => {
       } else {
         newSet.add(itemId);
       }
+      // Save to cookies
+      if (id) {
+        setPackExpandedFolders(id, newSet);
+      }
       return newSet;
     });
+  };
+
+  // Helper to get all folder IDs from the tree
+  const getAllFolderIds = (items) => {
+    const folderIds = [];
+    items?.forEach(item => {
+      if (item.type === 'folder') {
+        folderIds.push(item.id);
+        if (item.children) {
+          folderIds.push(...getAllFolderIds(item.children));
+        }
+      }
+    });
+    return folderIds;
+  };
+
+  // Collapse/expand all folders
+  const handleCollapseExpandAll = (expand) => {
+    if (!pack?.items) return;
+    
+    const allFolderIds = getAllFolderIds(pack.items);
+    const newExpandedFolders = expand ? new Set(allFolderIds) : new Set();
+    
+    setExpandedFolders(newExpandedFolders);
+    
+    // Save to cookies
+    if (id) {
+      setPackExpandedFolders(id, newExpandedFolders);
+    }
+  };
+
+  // Check if all folders are expanded
+  const areAllFoldersExpanded = () => {
+    if (!pack?.items) return false;
+    const allFolderIds = getAllFolderIds(pack.items);
+    return allFolderIds.length > 0 && allFolderIds.every(folderId => expandedFolders.has(folderId));
   };
 
   // Handle adding new folder
@@ -492,7 +536,14 @@ const PackDetailPage = () => {
         // When dropping in empty space, append to end (excluding active item if it's already there)
         newIndex = targetItems.filter(item => item.id !== activeId).length;
         if (targetParentId !== null) {
-          setExpandedFolders(prev => new Set(prev).add(targetParentId));
+          setExpandedFolders(prev => {
+            const newSet = new Set(prev).add(targetParentId);
+            // Save to cookies
+            if (id) {
+              setPackExpandedFolders(id, newSet);
+            }
+            return newSet;
+          });
         }
       } else if (overData?.type === 'folder') {
         const overId = parseInt(over.id);
@@ -818,6 +869,27 @@ const PackDetailPage = () => {
         {/* Content */}
         <div className="pack-detail-page__content" ref={scrollRef}>
           <div className="pack-detail-page__levels-header">
+          {pack?.items && pack.items.length > 0 && getAllFolderIds(pack.items).length > 0 && (
+            <div className="pack-detail-page__tree-controls">
+              {areAllFoldersExpanded() ? (
+                <button
+                  className="pack-detail-page__collapse-expand-btn"
+                  onClick={() => handleCollapseExpandAll(false)}
+                  title={tPack('actions.collapseAll')}
+                >
+                  📁➖ {tPack('actions.collapseAll')}
+                </button>
+              ) : (
+                <button
+                  className="pack-detail-page__collapse-expand-btn"
+                  onClick={() => handleCollapseExpandAll(true)}
+                  title={tPack('actions.expandAll')}
+                >
+                  📁➕ {tPack('actions.expandAll')}
+                </button>
+              )}
+            </div>
+          )}
             <h2 className="pack-detail-page__levels-title">
               {tPack('items.title')}
             </h2>
@@ -881,9 +953,7 @@ const PackDetailPage = () => {
                   return (
                     <div 
                       className={`pack-item pack-item--dragging ${dragOverInfo?.willEnterFolder ? 'entering-folder' : ''}`}
-                      style={{
-                        marginLeft: dragOverInfo ? `${dragOverInfo.depth * 1.5}rem` : '0'
-                      }}
+
                     >
                       {isFolder && <span style={{ marginRight: '0.5rem' }}>📁</span>}
                       {displayName}

@@ -17,7 +17,9 @@
       "addFolder": "Add Folder",
       "addLevel": "Add Levels",
       "addToFavorites": "Favorite",
-      "removeFromFavorites": "Unfavorite"
+      "removeFromFavorites": "Unfavorite",
+      "collapseAll": "Collapse All",
+      "expandAll": "Expand All"
     },
     "createFolder": {
       "prompt": "Enter folder name:",
