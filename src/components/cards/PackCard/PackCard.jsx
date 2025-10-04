@@ -51,8 +51,7 @@ const PackCard = ({
 
   const handlePackClick = () => {
     // Use linkCode if available, otherwise fall back to numerical ID
-    const packIdentifier = pack.linkCode || pack.id;
-    navigate(`/packs/${packIdentifier}`);
+    navigate(`/packs/${pack.id}`);
   };
 
   const handleEditClick = (e) => {
@@ -69,7 +68,13 @@ const PackCard = ({
     }
 
     try {
-      const success = await toggleFavorite(pack.id);
+      const { success, isFavorited } = await toggleFavorite(pack.id);
+      if (success) {
+      setPack(prevPack => ({
+          ...prevPack,
+          isFavorited: isFavorited
+        }));
+      }
       if (!success) {
         toast.error('Failed to update favorite status');
       }

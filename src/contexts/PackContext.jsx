@@ -254,6 +254,7 @@ const PackContextProvider = (props) => {
 
             // Update the pack in the main packs list if it exists
             if (response.data.success) {
+                console.log(response.data);
                 setPacks(prevPacks =>
                     prevPacks.map(pack =>
                         pack.id === packId
@@ -263,10 +264,10 @@ const PackContextProvider = (props) => {
                 );
             }
 
-            return true;
+            return { success: true, isFavorited: response.data.favorited };
         } catch (error) {
             console.error('Error toggling favorite:', error);
-            return false;
+            return { success: false};
         }
     }, [packs]);
 
