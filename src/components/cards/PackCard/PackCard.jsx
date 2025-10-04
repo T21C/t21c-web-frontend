@@ -32,7 +32,7 @@ const PackCard = ({
   const [pack, setPack] = useState(getPackById(packId));
 
 
-  const levelCount = pack.packItems.filter(item => item.type === 'level').length || 0;
+  const levelCount = pack.packItems.filter(item => item.levelId !== null).length || 0;
 
   const isFavorited = pack.isFavorited;
 
@@ -109,7 +109,7 @@ const PackCard = ({
       default: return tCard('viewMode.public');
     }
   };
-
+  console.log(pack.packItems)
   const canEdit = user && (
     pack.ownerId === user.id || 
     hasFlag(user, permissionFlags.SUPER_ADMIN)
@@ -212,7 +212,7 @@ const PackCard = ({
           <div className="pack-card__preview">
             <div className="pack-card__preview-levels">
               {pack.packItems
-                .filter(item => item.type === 'level')
+                .filter(item => item.levelId !== null)
                 .slice(0, 3)
                 .map((item, idx) => (
                   <div key={idx} className="pack-card__preview-level">
