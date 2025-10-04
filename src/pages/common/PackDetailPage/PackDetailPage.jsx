@@ -674,7 +674,7 @@ const PackDetailPage = () => {
   const getViewModeIcon = () => {
     if (!pack) return null;
     
-    switch (pack.viewMode) {
+    switch (parseInt(pack.viewMode)) {
       case 1: // PUBLIC
         return <EyeIcon className="pack-detail-page__view-icon public" />;
       case 2: // LINKONLY
@@ -691,7 +691,7 @@ const PackDetailPage = () => {
   const getViewModeText = () => {
     if (!pack) return '';
     
-    switch (pack.viewMode) {
+    switch (parseInt(pack.viewMode)) {
       case 1: return tPack('viewMode.public');
       case 2: return tPack('viewMode.linkonly');
       case 3: return tPack('viewMode.private');
@@ -733,6 +733,7 @@ const PackDetailPage = () => {
           </button>
           <button 
             className="pack-detail-page__back-btn"
+            style={{alignSelf: 'center'}}
             onClick={() => navigate('/packs')}
           >
             {tPack('backToPacks')}

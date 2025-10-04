@@ -86,7 +86,7 @@ const PackCard = ({
   };
 
   const getViewModeIcon = () => {
-    switch (pack.viewMode) {
+    switch (parseInt(pack.viewMode)) {
       case 1: // PUBLIC
         return <EyeIcon className="pack-view-icon public" />;
       case 2: // LINKONLY
@@ -101,7 +101,7 @@ const PackCard = ({
   };
 
   const getViewModeText = () => {
-    switch (pack.viewMode) {
+    switch (parseInt(pack.viewMode)) {
       case LevelPackViewModes.PUBLIC: return tCard('viewMode.public');
       case LevelPackViewModes.LINKONLY: return tCard('viewMode.linkonly');
       case LevelPackViewModes.PRIVATE: return tCard('viewMode.private');

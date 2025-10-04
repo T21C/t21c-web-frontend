@@ -30,12 +30,13 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
   // View mode options
   const viewModeOptions = [
     { value: LevelPackViewModes.LINKONLY, label: tPopup('viewMode.linkonly') },
-    { value: LevelPackViewModes.PRIVATE, label: tPopup('viewMode.private') },
-    { value: LevelPackViewModes.FORCED_PRIVATE, label: tPopup('viewMode.forcedPrivate') }
+    { value: LevelPackViewModes.PRIVATE, label: tPopup('viewMode.private') }
   ];
 
   if (hasFlag(user, permissionFlags.SUPER_ADMIN)) {
-    viewModeOptions.splice(0, 0, { value: LevelPackViewModes.PUBLIC, label: tPopup('viewMode.public') });
+    viewModeOptions.splice(0, 0, 
+      { value: LevelPackViewModes.PUBLIC, label: tPopup('viewMode.public') }, 
+      { value: LevelPackViewModes.FORCED_PRIVATE, label: tPopup('viewMode.forcedPrivate') });
   }
 
   // CSS theme options
