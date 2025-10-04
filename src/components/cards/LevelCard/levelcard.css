@@ -994,7 +994,6 @@
   align-items: center;
   overflow: visible;
   gap: 0.5rem;
-  padding: 0.5rem 0;
 }
 
 .level-card.pack .level-card__drag-handle {
