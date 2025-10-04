@@ -6,8 +6,10 @@
   "level": {
     "creator": "关卡设计",
     "clears": "通关总数",
+    "addToPack": "添加至地图包",
     "buttons": {
-      "edit": "编辑"
+      "edit": "编辑",
+      "addToPack": "添加至地图包"
     },
     "links": {
       "workshop": "创意工坊链接",
@@ -62,6 +64,19 @@
       "worldsFirstCount": "世界首通数",
       "topDiff": "最高通关难度",
       "top12kDiff": "最高12键通关难度"
+    }
+  },
+  "pack": {
+    "more": "更多信息",
+    "clickToView": "点击查看",
+    "viewMode": {
+      "public": "公开",
+      "linkonly": "仅限链接",
+      "private": "私密",
+      "forcedPrivate": "私密（已锁定）"
+    },
+    "stats": {
+      "levels": "关卡"
     }
   }
 } 

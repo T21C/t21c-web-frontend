@@ -15,7 +15,8 @@
     "like": "收藏",
     "unlike": "取消收藏",
     "update": "上传关卡",
-    "saveRating": "保存评级"
+    "saveRating": "保存评级",
+    "addToPack": "添加至地图包"
   },
   "tooltips": {
     "loginRequired": "登录以收藏此关卡",

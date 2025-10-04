@@ -32,7 +32,6 @@ const PackCard = ({
   const [pack, setPack] = useState(getPackById(packId));
 
 
-  const levelCount = pack.packItems.filter(item => item.levelId !== null).length || 0;
 
   const isFavorited = pack.isFavorited;
 
@@ -155,7 +154,7 @@ const PackCard = ({
             <h3 className="pack-card__name">{pack.name}</h3>
             <div className="pack-card__meta">
               <span className="pack-card__level-count">
-                {levelCount} {tCard('stats.levels')}
+                {pack.totalLevelCount} {tCard('stats.levels')}
               </span>
               {pack.isPinned && (
                 <PinIcon className="pack-card__pin-icon" />
@@ -207,12 +206,10 @@ const PackCard = ({
           </div>
         </div>
 
-        {levelCount > 0 && (
+        {pack.totalLevelCount > 0 && (
           <div className="pack-card__preview">
             <div className="pack-card__preview-levels">
               {pack.packItems
-                .filter(item => item.levelId !== null)
-                .slice(0, 3)
                 .map((item, idx) => (
                   <div key={idx} className="pack-card__preview-level">
                     <span className="pack-card__preview-level-name">
@@ -221,9 +218,9 @@ const PackCard = ({
                     </span>
                   </div>
                 ))}
-              {levelCount > 3 && (
+              {pack.totalLevelCount > 3 && (
                 <div className="pack-card__preview-more">
-                  +{levelCount - 3} {tCard('more')}
+                  +{pack.totalLevelCount - 3} {tCard('more')}
                 </div>
               )}
             </div>

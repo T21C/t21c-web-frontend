@@ -1,0 +1,157 @@
+{
+  "addToPack": {
+    "title": "添加至地图包",
+    "close": "×",
+    "levelInfo": {
+      "adding": "添加至地图包："
+    },
+    "by": "所有者：",
+    "searchPlaceholder": "搜索地图包……",
+    "selectPack": "选择地图包",
+    "createNew": "创建新地图包",
+    "noPacks": "你还没有任何地图包",
+    "noPacksFound": "未找到符合搜索条件的地图包。",
+    "createFirst": "创建你的第一个地图包",
+    "loginRequired": "请登录以管理你的地图包",
+    "levels": "关卡",
+    "alreadyInPack": "已在包中",
+    "loading": "正在加载地图包……",
+    "cancel": "取消",
+    "addToPack": "添加至地图包",
+    "lookupInPacks": "在包中查找",
+    "adding": "添加中……",
+    "pagination": {
+      "previous": "上一页",
+      "next": "下一页",
+      "pageInfo": "第 {{current}} 页，共 {{total}} 页"
+    },
+    "success": {
+      "added": "成功添加关卡至地图包！",
+      "packCreated": "地图包创建成功"
+    },
+    "errors": {
+      "addFailed": "添加关卡失败",
+      "fetchPacksFailed": "获取你的地图包失败",
+      "noPackSelected": "请选择一个包",
+      "alreadyInPack": "此关卡已在选中的包中",
+      "packFull": "此地图包已达到最大关卡数",
+      "createFailed": "创建地图包失败",
+      "generic": "添加此关卡至地图包时发生错误"
+    }
+  },
+  "createPack": {
+    "title": "创建新地图包",
+    "close": "×",
+    "name": {
+      "label": "包名",
+      "placeholder": "输入包名……",
+      "help": "为你的包选择一个描述性名称"
+    },
+    "icon": {
+      "label": "地图包图标",
+      "placeholder": "https://example.com/icon.png",
+      "help": "可选：为你的地图包选择一个图标",
+      "upload": "上传图标",
+      "uploading": "上传中……",
+      "remove": "删除",
+      "removing": "删除中……"
+    },
+    "theme": {
+      "label": "主题",
+      "help": "为你的包选择一个视效主题",
+      "default": "默认",
+      "dark": "暗黑",
+      "neon": "霓虹",
+      "pastel": "粉彩"
+    },
+    "viewMode": {
+      "label": "可见性",
+      "help": "控制谁可以看到你的包",
+      "public": "公开 - 所有人可见",
+      "linkonly": "仅限链接 - 只有知道链接的人可见",
+      "private": "私密 - 仅自己可见"
+    },
+    "pinned": {
+      "label": "固定在顶部",
+      "help": "把此包固定在你的地图包列表顶端"
+    },
+    "cancel": "取消",
+    "create": "创建地图包",
+    "creating": "创建中……",
+    "success": {
+      "created": "地图包创建成功！",
+      "iconSelected": "图标选择成功！",
+      "iconUploaded": "图标上传成功！"
+    },
+    "errors": {
+      "nameRequired": "需要包名",
+      "createFailed": "地图包创建失败",
+      "iconProcessFailed": "图标处理失败",
+      "iconUploadFailed": "图标上传失败"
+    }
+  },
+  "editPack": {
+    "title": "编辑地图包",
+    "close": "×",
+    "name": {
+      "label": "包名",
+      "placeholder": "输入包名……",
+      "help": "为你的包选择一个描述性名称"
+    },
+    "icon": {
+      "label": "地图包图标",
+      "placeholder": "https://example.com/icon.png",
+      "help": "可选：为你的地图包选择一个图标",
+      "upload": "上传图标",
+      "uploading": "上传中……",
+      "remove": "删除",
+      "removing": "删除中……"
+    },
+    "theme": {
+      "label": "主题",
+      "help": "为你的包选择一个视效主题",
+      "default": "默认",
+      "dark": "暗黑",
+      "neon": "霓虹",
+      "pastel": "粉彩"
+    },
+    "viewMode": {
+      "label": "可见性",
+      "help": "控制谁可以看到你的包",
+      "forcedPrivateHelp": "此包已被管理员锁定为私密",
+      "public": "公开 - 所有人可见",
+      "linkonly": "仅限链接 - 只有知道链接的人可见",
+      "private": "私密 - 仅自己可见",
+      "forcedPrivate": "强制私密 - 无法由所有者更改"
+    },
+    "pinned": {
+      "label": "固定在顶部",
+      "help": "把此包固定在你的地图包列表顶端"
+    },
+    "cancel": "取消",
+    "save": "保存",
+    "saving": "保存中……",
+    "delete": "删除",
+    "deleting": "删除中……",
+    "noPermission": "你无权限编辑此包",
+    "deleteConfirm": {
+      "title": "删除此包",
+      "message": "你确定你要删除此包吗？此操作不可撤销。",
+      "cancel": "取消",
+      "confirm": "删除"
+    },
+    "success": {
+      "updated": "地图包更新成功！",
+      "deleted": "地图包删除成功！",
+      "iconUploaded": "图标上传成功！",
+      "iconRemoved": "图标删除成功！"
+    },
+    "errors": {
+      "nameRequired": "需要包名",
+      "updateFailed": "更新此包失败",
+      "deleteFailed": "删除此包失败",
+      "iconUploadFailed": "更新图标失败",
+      "iconRemoveFailed": "删除图标失败"
+    }
+  }
+}

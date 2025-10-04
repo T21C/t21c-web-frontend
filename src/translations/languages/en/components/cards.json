@@ -69,6 +69,9 @@
   "pack": {
     "more": "more",
     "clickToView": "Click to view",
+    "addToFavorites": "Add to Favorites",
+    "removeFromFavorites": "Remove from Favorites",
+    "edit": "Edit",
     "viewMode": {
       "public": "Public",
       "linkonly": "Link Only",
