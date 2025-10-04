@@ -73,7 +73,7 @@
     },
     "pinned": {
       "label": "Pin to top",
-      "help": "Pin this pack to the top of your pack list"
+      "help": "Pin this pack to the top of the pack list"
     },
     "cancel": "Cancel",
     "create": "Create Pack",
@@ -126,7 +126,7 @@
     },
     "pinned": {
       "label": "Pin to top",
-      "help": "Pin this pack to the top of your pack list"
+      "help": "Pin this pack to the top of the pack list"
     },
     "cancel": "Cancel",
     "save": "Save Changes",

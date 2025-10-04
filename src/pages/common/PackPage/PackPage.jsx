@@ -39,6 +39,7 @@ const PackPageContent = () => {
     hasMore,
     triggerRefresh,
     loadMore,
+    retryLoadMore,
     createPack,
     updateFilter,
     handleMyLikesToggle
@@ -57,7 +58,8 @@ const PackPageContent = () => {
   const sortOptions = [
     { value: 'RECENT', label: tPack('sort.recent') },
     { value: 'NAME', label: tPack('sort.name') },
-    { value: 'LEVELS', label: tPack('sort.levels') }
+    { value: 'LEVELS', label: tPack('sort.levels') },
+    { value: 'FAVORITES', label: tPack('sort.favorites') }
   ];
 
   // Check if user is admin
@@ -370,7 +372,7 @@ const PackPageContent = () => {
         </div>
 
         <div className="pack-page__content" ref={scrollRef}>
-          {error ? (
+          {error && packs.length === 0 ? (
             <div className="pack-page__error">
               <p>{tPack('error.loadFailed')}</p>
               <button onClick={triggerRefresh} className="pack-page__retry-btn">
@@ -380,7 +382,7 @@ const PackPageContent = () => {
           ) : (
             <InfiniteScroll
               style={{ paddingBottom: "7rem", minHeight: "50vh", overflow: "visible" }}
-              dataLength={packs?.length||0}
+              dataLength={packs?.length || 0}
               next={loadMore}
               hasMore={hasMore}
               loader={
@@ -394,8 +396,7 @@ const PackPageContent = () => {
                   <p>{tPack('endMessage')}</p>
                 </div>
               }
-
-              scrollableTarget={scrollRef.current}
+              scrollableTarget={scrollRef.current || undefined}
             >
               <div className={`pack-page__grid pack-page__grid--${displayMode}`}>
                 {packs.map((pack, index) => (
@@ -410,6 +411,16 @@ const PackPageContent = () => {
                   />
                 ))}
               </div>
+              
+              {/* Show error message for infinite scroll failures */}
+              {error && packs.length > 0 && (
+                <div className="pack-page__infinite-error">
+                  <p>{tPack('error.loadMoreFailed')}</p>
+                  <button onClick={retryLoadMore} className="pack-page__retry-btn">
+                    {tPack('error.retry')}
+                  </button>
+                </div>
+              )}
             </InfiniteScroll>
           )}
         </div>

@@ -67,8 +67,6 @@ const PackContextProvider = (props) => {
 
     // Pack browsing function (page-exclusive)
     const fetchPacks = useCallback(async () => {
-        if (loading) return;
-        
         setLoading(true);
         setError(false);
 
@@ -77,7 +75,7 @@ const PackContextProvider = (props) => {
             const params = {
                 offset: pageNumber * 30,
                 limit: 30,
-                sort: currentFilters.sort === 'RECENT' ? 'createdAt' : currentFilters.sort === 'NAME' ? 'name' : 'createdAt',
+                sort: currentFilters.sort,
                 order: currentFilters.order
             };
 
@@ -89,11 +87,14 @@ const PackContextProvider = (props) => {
             const response = await api.get('/v2/database/levels/packs', { params });
             const newPacks = response.data.packs || [];
 
-            if (pageNumber === 0) {
-                setPacks(newPacks);
-            } else {
-                setPacks(prev => [...prev, ...newPacks]);
-            }
+            // Use functional updates to avoid race conditions
+            setPacks(prevPacks => {
+                if (pageNumber === 0) {
+                    return newPacks;
+                } else {
+                    return [...prevPacks, ...newPacks];
+                }
+            });
             setHasMore(newPacks.length === 30);
 
         } catch (error) {
@@ -115,16 +116,24 @@ const PackContextProvider = (props) => {
         setForceUpdate(f => !f);
     }, []);
 
+    // Retry function for infinite scroll errors
+    const retryLoadMore = useCallback(() => {
+        if (error) {
+            setError(false);
+            setForceUpdate(f => !f);
+        }
+    }, [error]);
+
     // Load more function
     const loadMore = useCallback(() => {
         if (filtersRef.current.viewMode === 'favorites') {
             // Favorites don't support pagination, do nothing
             return;
         }
-        if (hasMore && !loading) {
+        if (hasMore && !loading && !error) {
             setPageNumber(prev => prev + 1);
         }
-    }, [hasMore, loading]);
+    }, [hasMore, error]);
 
 
     // Favorites operations
@@ -298,6 +307,7 @@ const PackContextProvider = (props) => {
         fetchPacks,
         triggerRefresh,
         loadMore,
+        retryLoadMore,
         updateFilter,
         resetFilters,
 

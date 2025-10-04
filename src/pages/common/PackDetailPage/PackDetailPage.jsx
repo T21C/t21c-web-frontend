@@ -452,6 +452,14 @@ const PackDetailPage = () => {
     }));
   };
 
+  // Helper to create minimal tree structure for backend (only id, parentId, sortOrder)
+  const createMinimalTreeStructure = (items) => {
+    return items.map(item => ({
+      id: item.id,
+      children: item.children ? createMinimalTreeStructure(item.children) : undefined
+    }));
+  };
+
   // Helper to remove item from tree
   const removeItemFromTree = (items, itemId) => {
     const result = [];
@@ -632,9 +640,10 @@ const PackDetailPage = () => {
       setIsReordering(true);
       setPack({ ...pack, items: newTree });
 
-      // Send to backend
+      // Send to backend - use minimal structure to avoid large payloads
+      const minimalTree = createMinimalTreeStructure(newTree);
       const response = await api.put(`/v2/database/levels/packs/${pack.id}/tree`, {
-        items: newTree
+        items: minimalTree
       });
 
       // Update with server response (in case of any server-side modifications)

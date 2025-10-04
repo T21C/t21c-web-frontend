@@ -72,7 +72,8 @@ const PackCard = ({
       if (success) {
       setPack(prevPack => ({
           ...prevPack,
-          isFavorited: isFavorited
+          isFavorited: isFavorited,
+          favoritesCount: isFavorited ? (pack.favoritesCount + 1) : (pack.favoritesCount - 1)
         }));
       }
       if (!success) {
@@ -175,16 +176,16 @@ const PackCard = ({
               </button>
             )}
 
-            {user && (
               <button
                 className='pack-card__favorite-btn'
                 onClick={handleFavoriteClick}
                 data-tooltip-id={`pack-favorite-tooltip-${pack.id}`}
+                disabled={!user}
                 data-tooltip-content={isFavorited ? tCard('removeFromFavorites') : tCard('addToFavorites')}
               >
                 <LikeIcon color={isFavorited ? "#ffffff" : "none"} />
+                <span className="pack-card__favorite-count">{pack.favoritesCount}</span>
               </button>
-            )}
           </div>
         </div>
 

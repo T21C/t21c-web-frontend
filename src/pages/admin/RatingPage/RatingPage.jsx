@@ -333,10 +333,12 @@ const RatingPage = () => {
       return true;
     });
 
+    /*
     // Apply user top difficulty filter
     if (hasFlag(user, permissionFlags.SUPER_ADMIN)) {
       filtered = filterRatingsByUserTopDiff(filtered, user, difficultyDict);
     }
+    */
     
     return filtered;
   }, [sortedRatings, hideRated, lowDiffFilter, fourVoteFilter, searchQuery, user, difficultyDict]);
