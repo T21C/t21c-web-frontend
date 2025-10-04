@@ -263,7 +263,6 @@ const PackContextProvider = (props) => {
 
             // Update the pack in the main packs list if it exists
             if (response.data.success) {
-                console.log(response.data);
                 setPacks(prevPacks =>
                     prevPacks.map(pack =>
                         pack.id === packId

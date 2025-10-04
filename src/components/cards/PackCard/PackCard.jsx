@@ -109,7 +109,6 @@ const PackCard = ({
       default: return tCard('viewMode.public');
     }
   };
-  console.log(pack.packItems)
   const canEdit = user && (
     pack.ownerId === user.id || 
     hasFlag(user, permissionFlags.SUPER_ADMIN)

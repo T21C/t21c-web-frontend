@@ -310,8 +310,6 @@ const PackDetailPage = () => {
     if (!confirm(confirmMessage)) return;
 
     try {
-      console.log(item);
-      console.log(`Deleting item ${item.id} from pack ${pack.id}`);
       await api.delete(`/v2/database/levels/packs/${pack.id}/items/${item.id}`);
       
       toast.success(tPack('deleteItem.success'));
