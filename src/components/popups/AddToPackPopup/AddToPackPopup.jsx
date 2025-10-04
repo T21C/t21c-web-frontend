@@ -16,6 +16,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
   const navigate = useNavigate();
   
   const [userPacks, setUserPacks] = useState([]);
+  const [levelContainingPacks, setLevelContainingPacks] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedPackId, setSelectedPackId] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -38,15 +39,24 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
         query: `owner:${user.username},${searchQuery}`,
       };
 
+      const levelContainingParams = {
+        offset: (currentPage - 1) * LIMIT,
+        limit: 100,
+        query: `levelId:${level.id}`,
+      };
+
       const response = await api.get('/v2/database/levels/packs', { params });
       setUserPacks(response.data.packs || []);
       setTotalPacks(response.data.total || 0);
       setTotalPages(Math.ceil((response.data.total || 0) / LIMIT));
+      const levelContainingResponse = await api.get('/v2/database/levels/packs', { params: levelContainingParams });
+      setLevelContainingPacks(levelContainingResponse.data.packs || []);
     } catch (error) {
       console.error('Error fetching user packs:', error);
       setUserPacks([]);
       setTotalPacks(0);
       setTotalPages(1);
+      setLevelContainingPacks([]);
     } finally {
       setLoading(false);
     }
@@ -140,8 +150,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
 
   // Check if level is already in any pack
   const isLevelInPack = (packId) => {
-    const pack = userPacks.find(p => p.id === packId);
-    return pack?.packItems?.some(item => item.type === 'level' && item.levelId === level.id);
+    return levelContainingPacks.some(p => p.id.includes(packId));
   };
 
   // Close popup when clicking outside
@@ -286,7 +295,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
                             {pack.name}
                           </h5>
                           <p className="add-to-pack-popup__pack-meta">
-                            {pack.packItems?.filter(item => item.type === 'level').length || 0} {tPopup('levels')}
+                            {pack.totalLevelCount || 0} {tPopup('levels')}
                           </p>
                         </div>
 
