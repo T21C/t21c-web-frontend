@@ -42,14 +42,13 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
       const levelContainingParams = {
         offset: (currentPage - 1) * LIMIT,
         limit: 100,
-        query: `levelId:${level.id}`,
+        query: `owner:${user.username},levelId:${level.id},${searchQuery}`,
       };
 
-      const response = await api.get('/v2/database/levels/packs', { params });
+      const [response, levelContainingResponse] = await Promise.all([api.get('/v2/database/levels/packs', { params }), api.get('/v2/database/levels/packs', { params: levelContainingParams })]);
       setUserPacks(response.data.packs || []);
       setTotalPacks(response.data.total || 0);
       setTotalPages(Math.ceil((response.data.total || 0) / LIMIT));
-      const levelContainingResponse = await api.get('/v2/database/levels/packs', { params: levelContainingParams });
       setLevelContainingPacks(levelContainingResponse.data.packs || []);
     } catch (error) {
       console.error('Error fetching user packs:', error);
