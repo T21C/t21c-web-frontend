@@ -1053,7 +1053,8 @@
   flex-shrink: 0;
 }
 
-.level-card.pack:hover .level-card__cleared {
+.level-card.pack:hover .level-card__cleared,
+.level-card.pack .level-card__cleared.no-hover {
   left: -1.75rem;
 }
 
