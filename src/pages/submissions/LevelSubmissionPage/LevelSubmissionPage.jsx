@@ -3,7 +3,7 @@ import "./levelsubmission.css";
 import placeholder from "@/assets/placeholder/3.png";
 import { FormManager } from "@/components/misc/FormManager/FormManager";
 import { useEffect, useState } from "react";
-import { getDriveFromYt, getVideoDetails } from "@/utils";
+import { getVideoDetails } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { validateFeelingRating } from "@/utils/Utility";
 import { useTranslation } from "react-i18next";
@@ -202,11 +202,10 @@ const LevelSubmissionPage = () => {
         const videoDetails = await getVideoDetails(cleanedVideoLink);
         setVideoDetail(videoDetails ? videoDetails : null);
   
-        const driveDetails = await getDriveFromYt(cleanedVideoLink);
-        if (driveDetails.drive && !form.levelZip) {
+        if (videoDetails?.downloadLink && !form.levelZip) {
           setForm((prevForm) => ({
             ...prevForm,
-            dlLink: driveDetails.drive ? driveDetails.drive : "",
+            dlLink: videoDetails.downloadLink ? videoDetails.downloadLink : "",
           }));
         }
       } catch (error) {

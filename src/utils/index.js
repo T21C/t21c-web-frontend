@@ -122,149 +122,30 @@ async function getBilibiliVideoDetails(url) {
   }
 }
 
-async function getYouTubeVideoDetails(url) {
+// Client-side YouTube video details - now fetched server-side
+// This function only extracts the video ID for server processing
+function extractYouTubeVideoId(url) {
   const patterns = {
     short: /youtu\.be\/([a-zA-Z0-9_-]{11})/,
     long: /youtube\.com\/.*[?&]v=([a-zA-Z0-9_-]{11})/,
     live: /youtube\.com\/live\/([a-zA-Z0-9_-]{11})/
   };
 
-  let videoId = null;
   for (const pattern of Object.values(patterns)) {
     const match = url.match(pattern);
     if (match) {
-      videoId = match[1];
-      break;
+      return match[1];
     }
   }
-
-  if (!videoId) {
-    return null;
-  }
-
-  const apiKey = import.meta.env.VITE_YOUTUBE_API_KEY;
-  const apiUrl = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=snippet,contentDetails`;
-  var channelApiUrl = `https://www.googleapis.com/youtube/v3/channels`;
-
-  try {
-    const response = await fetch(apiUrl);
-    const data = await response.json();
-
-    if (data.items.length === 0) {
-      return null;
-    }
-
-    const channelId = data.items[0].snippet.channelId;
-    channelApiUrl = `${channelApiUrl}?${new URLSearchParams({
-      id: channelId,
-      key: apiKey,
-      part: "snippet"
-    }).toString()}`;
-    const channelResponse = await fetch(channelApiUrl);
-    const channelData = await channelResponse.json();
-
-    const details = {
-      title: data.items[0].snippet.title,
-      channelName: data.items[0].snippet.channelTitle,
-      timestamp: data.items[0].snippet.publishedAt,
-      image: getYouTubeThumbnailUrl(url),
-      embed: getYouTubeEmbedUrl(url),
-      pfp: channelData.items[0].snippet.thumbnails.default.url
-    };
-
-    return details;
-  } catch (error) {
-    console.error('Error fetching YouTube video details:', error);
-    return null;
-  }
+  return null;
 }
 
 async function getVideoDetails(url) {
-
-  if (!url){
-    return null;
-  }
-  var details = await getYouTubeVideoDetails(url)
-  if (!details) {
-    details = await getBilibiliVideoDetails(url)
-  }
-
-  return details;
+  return await api.get(`${import.meta.env.VITE_API_URL}/v2/media/video-details/${encodeURIComponent(url)}`).then(res => res.data);
 }
 
 async function getDriveFromYt(link) {
-  let yoon = null;
-  let drive = null;
-  let dsc = null;
-
-  let id = "";
-
-  if (!link){
-    id = null;
-  } else if (link.split("/")[0].includes("youtu.be")) {
-      id = link.split('/').join(',').split('?').join(',').split(',')[1];
-  } else if (link.split("/")[2].includes("youtu.be")) {
-      id = link.split("/").join(',').split('?').join(',').split(',')[3];
-  } else {
-      id = link.split('?v=')[1];
-  }
-
-  try {
-      const response = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${id}&key=AIzaSyAvW8Fe_CqIUHzYw2aSMKCe247NtSewmJY`);
-      const data = await response.json();
-
-      if (data.items[0]) {
-          let desc = data.items[0].snippet.description;
-          let format = desc.split('\n').join(',').split('/').join(',').split(',');
-          yoon = "";
-          drive = "";
-          dsc = desc;
-
-          // Handle Google Drive links
-          if (desc.includes("drive.google.com/file/d")) { 
-              for (let i = 0; i < format.length; i++) {
-                  if (format[i].includes("drive.google.com")) {
-                      drive += "https://" + format[i] + "/file/d/" + format[i+3] + "/" + format[i+4] + "\n"; 
-                  }
-              }
-          }
-
-          // Handle hyonsu.com links
-          if (desc.includes("hyonsu.com/")) { 
-              for (let i = 0; i < format.length; i++) {
-                  if (format[i].includes("hyonsu.com")) {
-                      yoon += "https://" + format[i] + "/attachments/" + format[i+2] + "/" + format[i+3] + "/" + format[i+4] + "\n";
-                  }
-              }
-          }
-
-          // Handle Discord CDN links
-          if (desc.includes("cdn.discordapp.com")) { 
-              for (let i = 0; i < format.length; i++) {
-                  if (format[i].includes("cdn.discordapp.com")) {
-                      yoon += "https://fixcdn.hyonsu.com/attachments/" + format[i+2] + "/" + format[i+3] + "/" + format[i+4] + "\n";
-                  }
-              }
-          }
-
-
-
-          // Return the result
-          return {
-              drive: drive? drive: yoon,
-              desc: dsc
-          };
-      }
-  } catch (error) {
-      console.error("Error fetching YouTube video details:", error);
-      return null; // Return null if an error occurs
-  }
-
-  return {
-      yoon: yoon,
-      drive: drive,
-      desc: dsc
-  };
+  return null;
 }
 
 
@@ -286,8 +167,11 @@ function isoToEmoji(code) {
 
 
 export {
-  getYouTubeVideoDetails, 
+  extractYouTubeVideoId,
   getDriveFromYt,
   isoToEmoji, 
-  getVideoDetails, 
+  getVideoDetails, // Now only handles Bilibili
+  getYouTubeThumbnailUrl,
+  getYouTubeEmbedUrl
 }
+
