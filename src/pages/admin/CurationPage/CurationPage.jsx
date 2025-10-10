@@ -73,7 +73,7 @@ const CurationPage = () => {
       // Create new cancel token
       verifyPasswordCancelTokenRef.current = api.CancelToken.source();
 
-      await api.head(`${import.meta.env.VITE_VERIFY_PASSWORD}`, {
+      await api.head(`${import.meta.env.VITE_VERIFY_PASSWORD}?origin=curation`, {
         headers: {
           'X-Super-Admin-Password': password
         },

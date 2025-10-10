@@ -445,7 +445,7 @@ const BackupPage = () => {
     try {
       setIsVerifyingPassword(true);
       await api.head(
-        `${import.meta.env.VITE_API_URL}${import.meta.env.VITE_VERIFY_PASSWORD}`,
+        `${import.meta.env.VITE_API_URL}${import.meta.env.VITE_VERIFY_PASSWORD}?origin=backup`,
         {
           headers: {
             'X-Super-Admin-Password': password

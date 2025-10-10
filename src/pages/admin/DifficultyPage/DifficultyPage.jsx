@@ -215,7 +215,7 @@ const DifficultyPage = () => {
 
   const verifyPassword = async (password) => {
     try {
-      await api.head(`${import.meta.env.VITE_VERIFY_PASSWORD}`, {
+      await api.head(`${import.meta.env.VITE_VERIFY_PASSWORD}?origin=difficulty`, {
         headers: {
           'X-Super-Admin-Password': password
         }
