@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import AliasManagementPopup from './AliasManagementPopup';
 import { LevelUploadManagementPopup } from '@/components/popups';
 import { UploadIcon } from '@/components/common/icons';
+import { useNavigate } from 'react-router-dom';
 
 // Helper function to check if a URL is from our CDN
 const isCdnUrl = (url) => {
@@ -47,16 +48,12 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const [showAliasManagement, setShowAliasManagement] = useState(false);
   const [showUploadManagement, setShowUploadManagement] = useState(false);
   const [isExternallyAvailable, setIsExternallyAvailable] = useState(false);
-
+  const navigate = useNavigate();
   useEffect(() => {
     if (level) {
       setFormData({
         song: level.song || '',
         artist: level.artist || '',
-        creator: level.creator || '',
-        charter: level.charter || '',
-        vfxer: level.vfxer || '',
-        team: level.team || '',
         diffId: level.diffId !== null ? level.diffId : 0,
         baseScore: level.baseScore,
         videoLink: level.videoLink || '',
@@ -367,28 +364,14 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               </div>
 
               <div className="form-group">
-                <label htmlFor="creator">{tLevel('form.labels.creator')}</label>
-                <input
-                  type="text"
-                  id="creator"
-                  name="creator"
-                  value={formData.creator}
-                  onChange={handleInputChange}
-                />
+                <button 
+                className="manage-creators-btn" 
+                onClick={() => navigate('/admin/creators?search=' + encodeURIComponent("id:" + level.id))}>
+                  Manage Creators
+                </button>
               </div>
-
-              {!isFromAnnouncementPage ? (
-              <div className="form-group">
-                <label htmlFor="charter">{tLevel('form.labels.charter')}</label>
-                <input
-                  type="text"
-                  id="charter"
-                  name="charter"
-                  value={formData.charter}
-                  onChange={handleInputChange}
-                />
-              </div>
-              ):
+              {isFromAnnouncementPage &&
+              <>
               <div className="form-group">
                 <label htmlFor="baseScore">{tLevel('form.labels.previousBaseScore')}</label>
               <RatingInput
@@ -408,29 +391,9 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                     Equal to {getBaseScoreDisplay('previousBaseScore')}
                   </div>
                 )}
-            </div>}
-
-              <div className="form-group">
-                <label htmlFor="vfxer">{tLevel('form.labels.vfxer')}</label>
-                <input
-                  type="text"
-                  id="vfxer"
-                  name="vfxer"
-                  value={formData.vfxer}
-                  onChange={handleInputChange}
-                />
-              </div>
-
-              <div className="form-group">
-                <label htmlFor="team">{tLevel('form.labels.team')}</label>
-                <input
-                  type="text"
-                  id="team"
-                  name="team"
-                  value={formData.team}
-                  onChange={handleInputChange}
-                />
-              </div>
+            </div>
+            </>
+            }
 
               <div className="form-group">
                 <RatingInput

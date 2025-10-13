@@ -33,7 +33,7 @@ const CreatorManagementPage = () => {
   const [newCreator, setNewCreator] = useState({ name: '', aliases: [] });
   const [newAlias, setNewAlias] = useState('');
   const [selectedCreators, setSelectedCreators] = useState([]);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(decodeURIComponent(window.location.search.split('search=')[1]) || "");
   const [creatorListSearchQuery, setCreatorListSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [creatorPage, setCreatorPage] = useState(1);

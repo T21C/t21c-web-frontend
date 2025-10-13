@@ -198,7 +198,7 @@ export const formatCreatorDisplay = (level) => {
 
     // If no credits, fall back to creator field
     if (!level.levelCredits || level.levelCredits.length === 0) {
-      return level.creator;
+      return "No credits";
     }
 
     // Group credits by role
@@ -240,7 +240,7 @@ export const formatCreatorDisplay = (level) => {
       }
     }
 
-    return level.levelCredits[0]?.creator.name || level.creator;
+    return level.levelCredits[0]?.creator.name || "No credits";
   };
 
 
