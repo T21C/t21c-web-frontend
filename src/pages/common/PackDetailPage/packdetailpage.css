@@ -27,6 +27,8 @@
   min-height: 50vh;
   gap: 1rem;
   text-align: center;
+  position: relative;
+  z-index: 2;
 }
 
 .pack-detail-page__error h2 {
@@ -465,6 +467,8 @@
   background: var(--color-white-t10);
   border-radius: 1rem;
   margin-bottom: 2rem;
+  z-index: 2;
+  position: relative;
 }
 
 .pack-detail-page__loading {
@@ -474,6 +478,8 @@
   justify-content: center;
   min-height: 50vh;
   gap: 1rem;
+  z-index: 2;
+  position: relative;
 }
 
 .pack-detail-page__loading-spinner {

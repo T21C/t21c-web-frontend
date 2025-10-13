@@ -122,6 +122,7 @@ const PackDetailPage = () => {
   const fetchPack = async (silent = false) => {
     try {
       if (!silent) {
+        console.log('fetching pack');
         setLoading(true);
         setError(false);
       }
@@ -707,11 +708,9 @@ const PackDetailPage = () => {
   if (loading) {
     return (
       <div className="pack-detail-page">
+        <div className="background-level"></div>
         <CompleteNav />
-        <div className="pack-detail-page__loading">
-          <div className="pack-detail-page__loading-spinner"></div>
-          <p>{tPack('loading')}</p>
-        </div>
+        <div className="loader loader-level-detail" />
       </div>
     );
   }
@@ -720,12 +719,13 @@ const PackDetailPage = () => {
     return (
       <div className="pack-detail-page">
         <CompleteNav />
+        <div className="background-level"></div>
         <div className="pack-detail-page__error">
           <h2>{tPack('error.title')}</h2>
           <p>{tPack('error.message')}</p>
           <button 
             className="pack-detail-page__retry-btn"
-            onClick={fetchPack}
+            onClick={() => fetchPack(false)}
           >
             {tPack('error.retry')}
           </button>
