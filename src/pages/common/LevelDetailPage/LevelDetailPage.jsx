@@ -1699,7 +1699,7 @@ const LevelDetailPage = ({ mockData = null }) => {
               {res.level.dlLink && res.level.dlLink.match(/http[s]?:\/\//) && (
                 <button className="svg-stroke" href={res.level.dlLink} target="_blank" title={tLevel('links.download')} onClick={handleDownloadClick}>
                   <DownloadIcon size={"36px"}/>
-                  {res.accessCount && <span className="access-count">{res.accessCount || 0}</span>}
+                  {res.accessCount !== undefined && <span className="access-count">{res.accessCount || 0}</span>}
                 </button>
               )}
               {res.level.workshopLink && (
