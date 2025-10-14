@@ -19,7 +19,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { MetaTags } from "@/components/common/display";
-import { DownloadIcon, EditIcon, HistoryListIcon, InfoIcon, LikeIcon, SteamIcon, PackIcon } from "@/components/common/icons";
+import { DownloadIcon, EditIcon, HistoryListIcon, InfoIcon, LikeIcon, SteamIcon, PackIcon, LevelIcon, MetronomeIcon } from "@/components/common/icons";
 import { createEventSystem, formatCreatorDisplay } from "@/utils/Utility";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
@@ -1518,6 +1518,23 @@ const LevelDetailPage = ({ mockData = null }) => {
                   <div className="level-artist">
                   {renderTitleWithAliases(res.level.artist, 'artist')}
                   </div>
+                </div>
+                <div className="metadata-container">  
+                  {res.levelAngles && (
+                    <div className="metadata-item">
+                      <LevelIcon size={18} />
+                      {/* <span className="metadata-label">Tilecount</span> */}
+                      <span className="metadata-value">{res.levelAngles.length}</span>
+                    </div>
+                  )}
+                  {res.levelSettings?.bpm && (
+                    <div className="metadata-item">
+                      {/* <span className="metadata-icon">ICON</span> */}
+                      {/* <span className="metadata-label">Start BPM</span> */}
+                      <MetronomeIcon size={18} />
+                      <span className="metadata-value">{res.levelSettings.bpm}</span>
+                    </div>
+                  )}
                 </div>
               </div>
 

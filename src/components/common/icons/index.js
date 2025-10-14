@@ -13,6 +13,7 @@ import { RefreshIcon } from './RefreshIcon';
 import { ResetIcon } from './ResetIcon';
 import { ShieldIcon } from './ShieldIcon';
 import SortAscIcon from './SortAscIcon';
+import { MetronomeIcon } from './MetronomeIcon';
 import SortDescIcon from './SortDescIcon';
 import { SortIcon } from './SortIcon';
 import { SteamIcon } from './SteamIcon';
@@ -64,6 +65,7 @@ export {
     ShieldIcon,
     SortAscIcon,
     SortDescIcon,
+    MetronomeIcon,
     SortIcon,
     SteamIcon,
     TrashIcon,
