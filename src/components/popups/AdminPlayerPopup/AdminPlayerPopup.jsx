@@ -28,7 +28,6 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
   const [pendingPauseState, setPendingPauseState] = useState(false);
   const [pendingRatingBanState, setPendingRatingBanState] = useState(false);
   const [playerName, setPlayerName] = useState(player.name || '');
-  const [discordId, setDiscordId] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
   const [discordInfo, setDiscordInfo] = useState({
@@ -38,8 +37,6 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
     id: player.discordId || null,
     isNewData: false
   });
-  const [pendingDiscordInfo, setPendingDiscordInfo] = useState(null);
-  const [showDiscordConfirm, setShowDiscordConfirm] = useState(false);
   const [showMergeModal, setShowMergeModal] = useState(false);
   const [showMergeInput, setShowMergeInput] = useState(false);
   const [targetPlayerId, setTargetPlayerId] = useState('');
@@ -168,117 +165,6 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
     } finally {
       setIsLoading(false);
       setShowPauseConfirm(false);
-    }
-  };
-
-  const handleDiscordIdSubmit = async () => {
-    if (!discordId) return;
-
-    try {
-      setIsLoading(true);
-      // Create a new axios instance without the global auth header
-      const validationApi = axios.create();
-      // Keep the auth header only for this request
-      validationApi.defaults.headers.common['Authorization'] = axios.defaults.headers.common['Authorization'];
-      
-      const fetchResponse = await validationApi.get(
-        `${import.meta.env.VITE_API_URL}/v2/database/players/${player.id}/discord/${discordId}`
-      );
-      
-      const discordUser = fetchResponse.data.discordUser;
-      setPendingDiscordInfo({
-        username: discordUser.username,
-        avatar: discordUser.avatar,
-        id: discordUser.id,
-        avatarUrl: discordUser.avatarUrl
-      });
-      setShowDiscordConfirm(true);
-    } catch (error) {
-      console.error('Error fetching Discord ID:', error);
-      toast.error(error.response?.data?.details || tAdmin('errors.discordFetch'));
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleDiscordConfirm = async (confirmed) => {
-    if (!confirmed || !pendingDiscordInfo) {
-      setShowDiscordConfirm(false);
-      setPendingDiscordInfo(null);
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      const updateResponse = await api.put(`${import.meta.env.VITE_PLAYERS}/${player.id}/discord/${pendingDiscordInfo.id}`, {
-        username: pendingDiscordInfo.username,
-        avatar: pendingDiscordInfo.avatar,
-      });
-
-      if (updateResponse.status !== 200) {
-        const error = await updateResponse.data;
-        toast.error(error.details || tAdmin('errors.discordUpdate'));
-        return;
-      }
-
-      const updatedDiscordInfo = updateResponse.data.discordInfo;
-      setDiscordInfo({
-        username: updatedDiscordInfo.username,
-        avatarUrl: updatedDiscordInfo.avatarUrl,
-        avatarId: updatedDiscordInfo.avatar,
-        id: updatedDiscordInfo.id,
-        isNewData: false
-      });
-
-      onUpdate({
-        ...player,
-        discordId: updatedDiscordInfo.id,
-        discordUsername: updatedDiscordInfo.username,
-        discordAvatar: updatedDiscordInfo.avatarUrl,
-        discordAvatarId: updatedDiscordInfo.avatar
-      });
-
-      toast.success(tAdmin('success.discordUpdate'));
-      setDiscordId('');
-    } catch (error) {
-      console.error('Error updating Discord info:', error);
-      toast.error(tAdmin('errors.discordUpdate'));
-    } finally {
-      setIsLoading(false);
-      setShowDiscordConfirm(false);
-      setPendingDiscordInfo(null);
-    }
-  };
-
-  const handleDiscordDelete = async () => {
-    try {
-      setIsLoading(true);
-      const response = await api.delete(`${import.meta.env.VITE_PLAYERS}/${player.id}/discord`);
-      
-      if (response.status === 200) {
-        setDiscordInfo({
-          username: '',
-          avatarUrl: null,
-          avatarId: null,
-          id: null,
-          isNewData: false
-        });
-        
-        onUpdate({
-          ...player,
-          discordId: null,
-          discordUsername: null,
-          discordAvatar: null,
-          discordAvatarId: null
-        });
-        
-        toast.success(tAdmin('success.discordDelete'));
-      }
-    } catch (error) {
-      console.error('Error removing Discord info:', error);
-      toast.error(tAdmin('errors.discordDelete'));
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -518,86 +404,13 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
 
           <div className="form-group discord-section">
             <label htmlFor="discordId">{tAdmin('form.discord.label')}</label>
-            <div className="discord-input-group">
-              <input
-                type="text"
-                id="discordId"
-                value={discordId}
-                onChange={(e) => setDiscordId(e.target.value)}
-                placeholder={tAdmin('form.discord.placeholder')}
-                disabled={isLoading || showDiscordConfirm}
-              />
-              <button
-                type="button"
-                onClick={handleDiscordIdSubmit}
-                disabled={isLoading || showDiscordConfirm}
-                className="fetch-discord-button"
-              >
-                {tAdmin('form.discord.buttons.validate')}
-              </button>
-            </div>
-
-            {showDiscordConfirm && pendingDiscordInfo && (
-              <div className="discord-confirm-container">
-                <div className="discord-preview">
-                  {pendingDiscordInfo.avatarUrl && (
-                    <img 
-                      src={pendingDiscordInfo.avatarUrl}
-                      alt="Discord Avatar"
-                      className="discord-avatar"
-                    />
-                  )}
-                  <div>
-                    <p className="discord-username">@{pendingDiscordInfo.username}</p>
-                    <p className="discord-id">ID: {pendingDiscordInfo.id}</p>
-                  </div>
-                </div>
-                <p className="discord-confirm-message">
-                  {tAdmin('form.discord.confirm.message')}
-                </p>
-                <div className="ban-confirm-buttons">
-                  <button
-                    type="button"
-                    onClick={() => handleDiscordConfirm(true)}
-                    disabled={isLoading}
-                    className="discord-confirm-button"
-                  >
-                    {tAdmin('form.discord.confirm.buttons.confirm')}
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleDiscordConfirm(false)}
-                    disabled={isLoading}
-                    className="discord-cancel-button"
-                  >
-                    {tAdmin('form.discord.confirm.buttons.cancel')}
-                  </button>
-                </div>
-              </div>
-            )}
-
-            {discordInfo.username && !showDiscordConfirm && (
+            {discordInfo.username && (
               <div className="discord-info">
-                {discordInfo.avatarUrl && (
-                  <img 
-                    src={discordInfo.avatarUrl}
-                    alt="Discord Avatar"
-                    className="discord-avatar"
-                  />
-                )}
                 <div className="discord-info-header">
                   <div className="discord-info-header-content">
                     <p className="discord-username">@{discordInfo.username}</p>
                     <p className="discord-id">ID: {discordInfo.id}</p>
                   </div>
-                  <button
-                    type="button"
-                    onClick={handleDiscordDelete}
-                    disabled={isLoading}
-                    className="discord-delete-button"
-                  >
-                    {tAdmin('form.discord.buttons.remove')}
-                  </button>
                 </div>
               </div>
             )}
