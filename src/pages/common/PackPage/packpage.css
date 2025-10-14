@@ -536,7 +536,7 @@
   }
   
   .pack-page__grid--grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   }
   
   .pack-page__loading {
