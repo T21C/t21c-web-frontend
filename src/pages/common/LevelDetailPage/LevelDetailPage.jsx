@@ -1415,6 +1415,9 @@ const LevelDetailPage = ({ mockData = null }) => {
           hasBit(res.level.curation.type.abilities, ABILITIES.CUSTOM_COLOR_THEME) 
             ? "true" : undefined
         }
+        style={{
+          '--header-bg-image': videoDetail?.image ? `url(${videoDetail.image})` : 'none'
+        }}
       >
         <CompleteNav />
         <div className="background-level"></div>
@@ -1441,9 +1444,7 @@ const LevelDetailPage = ({ mockData = null }) => {
         ) : null}
       
           <div className="header">
-            <div className="left"
-              style={{
-                backgroundImage: `url(${res && videoDetail ? videoDetail.image: "defaultImageURL"})`}}>
+            <div className="left">
 
               <div className="level-id mobile">#{effectiveId}</div>
               <div className="difficulty-curation-row">
@@ -1698,6 +1699,7 @@ const LevelDetailPage = ({ mockData = null }) => {
               {res.level.dlLink && res.level.dlLink.match(/http[s]?:\/\//) && (
                 <button className="svg-stroke" href={res.level.dlLink} target="_blank" title={tLevel('links.download')} onClick={handleDownloadClick}>
                   <DownloadIcon size={"36px"}/>
+                  {res.accessCount && <span className="access-count">{res.accessCount || 0}</span>}
                 </button>
               )}
               {res.level.workshopLink && (

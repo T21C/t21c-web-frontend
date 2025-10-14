@@ -11,10 +11,14 @@
   --primary-bg: var(--color-black);
   --primary-text: var(--color-white);
   --secondary-text: rgba(225, 225, 225, 1);
+  --tertiary-text: rgba(225, 225, 225, 0.7);
   --accent-color: var(--color-purple-3);
   --border-color: #404040;
   --glass-bg: rgba(0, 0, 0, 0.7);
   --glass-border: rgba(255, 255, 255, 0.1);
+  
+  /* Background Images */
+  --header-bg-image: none;
   
   /* Spacing System */
   --spacing-xxs: 0.125rem;
@@ -157,6 +161,7 @@
   flex: 15;
   align-items: center;
   gap: var(--spacing-lg);
+  background-image: var(--header-bg-image);
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -202,6 +207,14 @@
   grid-template-columns: 1fr 1fr;
 }
 
+.level-detail .header .right .access-count {
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  color: var(--tertiary-text);
+  position: absolute;
+  transform: translateY(100%);
+  bottom: 0;
+}
 
 
 /* ============================================
@@ -2166,7 +2179,6 @@
 }
 
 .curation-description:not(.expanded) .curation-description-content {
-  max-height: 4.5em;
   overflow: hidden;
 }
 
@@ -2180,6 +2192,7 @@
   2. Target .level-detail.curated for curation-specific styles
   3. Use the --curation-primary and --curation-type-color variables
   4. Utility classes are available: .curation-highlight, .curation-glow, etc.
+  5. Override --header-bg-image to customize the header background
   
   CUSTOM STYLES OVERRIDE SYSTEM:
   
@@ -2197,6 +2210,11 @@
   .title-container {
     color: #ffffff;
     text-shadow: 0 0 20px #ff0000;
+  }
+  
+  // Override the header background image
+  .level-detail {
+    --header-bg-image: url('https://example.com/custom-bg.jpg');
   }
   
   // These rules target .level-detail.custom-curated and will override:
