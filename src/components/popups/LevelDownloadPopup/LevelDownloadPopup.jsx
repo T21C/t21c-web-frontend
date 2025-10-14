@@ -4,7 +4,7 @@ import './LevelDownloadPopup.css';
 import EnhancedSelect from './EnhancedSelect';
 import { Tooltip } from 'react-tooltip';
 
-const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink }) => {
+const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, incrementAccessCount }) => {
     const [step, setStep] = useState(1);
     const [selectionMode, setSelectionMode] = useState('drop'); // 'keep' or 'drop'
     const [availableFilters, setAvailableFilters] = useState([]);
@@ -109,6 +109,8 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink }) => {
     };
 
     const handleDownload = (format) => {
+        incrementAccessCount();
+        
         if (format === 'original') {
             window.location.href = dlLink;
             onClose();
