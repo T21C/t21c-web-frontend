@@ -1520,19 +1520,19 @@ const LevelDetailPage = ({ mockData = null }) => {
                   </div>
                 </div>
                 <div className="metadata-container">  
-                  {res.levelAngles && (
+                  {res.tilecount && (
                     <div className="metadata-item">
                       <LevelIcon size={18} />
                       {/* <span className="metadata-label">Tilecount</span> */}
-                      <span className="metadata-value">{res.levelAngles.length}</span>
+                      <span className="metadata-value">{res.tilecount}</span>
                     </div>
                   )}
-                  {res.levelSettings?.bpm && (
+                  {res.bpm && (
                     <div className="metadata-item">
                       {/* <span className="metadata-icon">ICON</span> */}
                       {/* <span className="metadata-label">Start BPM</span> */}
                       <MetronomeIcon size={18} />
-                      <span className="metadata-value">{res.levelSettings.bpm}</span>
+                      <span className="metadata-value">{res.bpm}</span>
                     </div>
                   )}
                 </div>
