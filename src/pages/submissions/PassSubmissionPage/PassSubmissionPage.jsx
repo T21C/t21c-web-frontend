@@ -247,6 +247,52 @@ const PassSubmissionPage = () => {
   }, []);
 
   useEffect(() => {
+    const fetchProfile = async () => {
+      const { username } = user;
+      if (pendingProfiles.length > 0) {
+        return;
+      }
+      try {
+        // Search for profiles matching the channel name
+        const searchUrl = `${import.meta.env.VITE_PLAYERS}/search/${encodeURIComponent(username)}`;
+
+        const response = await api.get(searchUrl);
+        const profiles = response.data;
+
+        // Find exact match (case insensitive)
+        const exactMatchResult = profiles.find(p => 
+          p.player.name.toLowerCase() === user.nickname.toLowerCase()
+        );
+
+        // Directly set the form state with the profile data
+        setForm(prev => ({
+          ...prev,
+          player: exactMatchResult ? {
+            id: exactMatchResult.player.id,
+            name: exactMatchResult.player.name,
+            isNewRequest: false
+          } : {
+            name: username,
+            isNewRequest: true
+          }
+        }));
+      } catch (error) {
+        console.error('[Profile Search] Error searching profiles:', error);
+        // Set as new request on error
+        setForm(prev => ({
+          ...prev,
+          player: {
+            name: username,
+            isNewRequest: true
+          }
+        }));
+      }
+    };
+
+    fetchProfile();
+  }, []);
+
+  useEffect(() => {
     const { videoLink } = form;
     
     // Cancel previous video details request if it exists
@@ -262,53 +308,12 @@ const PassSubmissionPage = () => {
       return;
     }
     
-    const searchAndSetProfile = async (channelName) => {
-      try {
-        // Search for profiles matching the channel name
-        const searchUrl = `${import.meta.env.VITE_PLAYERS}/search/${encodeURIComponent(channelName)}`;
-
-        const response = await api.get(searchUrl);
-        const profiles = response.data;
-
- 
-        // Find exact match (case insensitive)
-        const exactMatch = profiles.find(p => 
-          p.player.name.toLowerCase() === channelName.toLowerCase()
-        ).player;
-
-        // Directly set the form state with the profile data
-        setForm(prev => ({
-          ...prev,
-          player: exactMatch ? {
-            id: exactMatch.id,
-            name: exactMatch.name,
-            isNewRequest: false
-          } : {
-            name: channelName,
-            isNewRequest: true
-          }
-        }));
-      } catch (error) {
-        console.error('[Profile Search] Error searching profiles:', error);
-        // Set as new request on error
-        setForm(prev => ({
-          ...prev,
-          player: {
-            name: channelName,
-            isNewRequest: true
-          }
-        }));
-      }
-    };
+    
 
     const fetchVideoDetails = async () => {
       try {
         const details = await getVideoDetails(videoLink);
         setVideoDetail(details);
-        
-        if (details?.channelName) {
-          await searchAndSetProfile(details.channelName);
-        }
       } catch (error) {
         console.error('[Video Details] Error fetching video details:', error);
         setVideoDetail(null);
@@ -482,6 +487,7 @@ const PassSubmissionPage = () => {
       setSuccess(true);
       setFormStateKey(prevKey => prevKey + 1);
       setForm(initialFormState);
+      setSearchInput('');
       setPendingProfiles([]); // Clear pending profiles after successful submission
 
     } catch (err) {
