@@ -9,7 +9,7 @@
     "difficulty": "评级：",
     "download": {
       "label": "下载：",
-      "directLink": "直接链接",
+      "directLink": "直链",
       "notAvailable": "无",
       "cdnLink": "本地 CDN 链接"
     },

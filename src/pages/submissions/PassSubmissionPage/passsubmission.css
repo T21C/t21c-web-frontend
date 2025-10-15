@@ -241,6 +241,7 @@
 }
 .pass-submission-page form .info .id-input .information .level-info .level-info-sub {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: space-around;
   color: var(--color-white);

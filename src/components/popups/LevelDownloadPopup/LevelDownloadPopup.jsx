@@ -1,13 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useQuery } from '@tanstack/react-query';
 import './LevelDownloadPopup.css';
 import EnhancedSelect from './EnhancedSelect';
 import { Tooltip } from 'react-tooltip';
+import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
 
-const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, incrementAccessCount }) => {
+const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, legacyDllink, incrementAccessCount }) => {
+    const { t } = useTranslation();
     const [step, setStep] = useState(1);
+    const { user } = useAuth();
     const [selectionMode, setSelectionMode] = useState('drop'); // 'keep' or 'drop'
     const [availableFilters, setAvailableFilters] = useState([]);
+    const [availableOptions, setAvailableOptions] = useState(null);
+    const [isFileCorrupted, setIsFileCorrupted] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const [transformOptions, setTransformOptions] = useState({
         keepEvents: [],
         dropEvents: [],
@@ -23,14 +30,37 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, incrementAccessC
     const fileId = dlLink.split('/').pop();
 
     // Fetch available options from the server
-    const { data: availableOptions } = useQuery({
-        queryKey: ['levelTransformOptions', levelId],
-        queryFn: async () => {
-            const response = await fetch(`${import.meta.env.VITE_CDN_URL}/levels/transform-options?fileId=${fileId}`);
-            return response.json();
-        },
-        enabled: !!levelId
-    });
+    useEffect(() => {
+        if (!levelId || !fileId) return;
+
+        const fetchTransformOptions = async () => {
+            setIsLoading(true);
+            try {
+                const response = await fetch(`${import.meta.env.VITE_CDN_URL}/levels/transform-options?fileId=${fileId}`);
+                
+                if (response.status === 500) {
+                    // File is missing/corrupted - show error without auto-downloading
+                    setIsFileCorrupted(true);
+                    return;
+                }
+
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch transform options: ${response.status}`);
+                }
+
+                const data = await response.json();
+                setAvailableOptions(data);
+                setIsFileCorrupted(false);
+            } catch (error) {
+                console.error('Error fetching transform options:', error);
+                setIsFileCorrupted(true);
+            } finally {
+                setIsLoading(false);
+            }
+        };
+
+        fetchTransformOptions();
+    }, [levelId, fileId]);
 
     // Handle scroll locking
     useEffect(() => {
@@ -109,6 +139,13 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, incrementAccessC
     };
 
     const handleDownload = (format) => {
+
+        if (format === 'legacy' && legacyDllink) {
+            window.location.href = legacyDllink;
+            onClose();
+            return;
+        }
+
         incrementAccessCount();
         
         if (format === 'original') {
@@ -156,7 +193,7 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, incrementAccessC
                 <button 
                     className="close-popup-btn"
                     onClick={onClose}
-                    aria-label="Close popup"
+                    aria-label={t('components.levelPopups.download.closePopup')}
                 >
                     <svg 
                         width="24" 
@@ -174,17 +211,47 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, incrementAccessC
                     </svg>
                 </button>
 
-                <h2>Download Options</h2>
+                <h2>{t('components.levelPopups.download.title')}</h2>
                 
-                {step === 1 ? (
+                {isFileCorrupted ? (
+                    <div className="download-step error-state">
+                        <div className="error-icon">⚠️</div>
+                        <h3>{t('components.levelPopups.download.errors.corrupted')}</h3>
+                        <p>{t('components.levelPopups.download.errors.fileMissing')}</p>
+                        {hasFlag(user, permissionFlags.SUPER_ADMIN) && <p className="error-message">{t('components.levelPopups.download.errors.reupload')}</p>}
+                        {!legacyDllink &&
+                            <p className="no-backup-info">{t('components.levelPopups.download.errors.noBackup')}</p>
+                        }
+                        <div className="download-buttons">
+                            <button onClick={onClose}>{t('components.levelPopups.download.close')}</button>
+                            {legacyDllink && (
+                                <button 
+                                    className="legacy-download-btn"
+                                    onClick={() => {
+                                        window.location.href = legacyDllink;
+                                        setTimeout(() => {
+                                            onClose();
+                                        }, 500);
+                                    }}
+                                >
+                                    {t('components.levelPopups.download.errors.downloadLegacy')}
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                ) : isLoading ? (
+                    <div className="download-step loading-state">
+                        <p>{t('components.levelPopups.download.loading')}</p>
+                    </div>
+                ) : step === 1 ? (
                     <div className="download-step">
-                        <p>Choose download format:</p>
+                        <p>{t('components.levelPopups.download.step1.prompt')}</p>
                         <div className="download-buttons">
                             <button onClick={() => handleDownload('original')}>
-                                Download Original
+                                {t('components.levelPopups.download.step1.downloadOriginal')}
                             </button>
                             <button onClick={() => setStep(2)}>
-                                Convert & Download
+                                {t('components.levelPopups.download.step1.convertDownload')}
                             </button>
                         </div>
                     </div>
@@ -198,20 +265,20 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, incrementAccessC
                                         onClick={() => setSelectionMode('drop')}
                                         data-tooltip-id='drop-events-tooltip'
                                     >
-                                        Drop Events
+                                        {t('components.levelPopups.download.step2.dropEvents')}
                                     </button>
                                     <button 
                                         className={selectionMode === 'keep' ? 'active' : ''}
                                         onClick={() => setSelectionMode('keep')}
                                         data-tooltip-id='keep-events-tooltip'
                                     >
-                                        Keep Events
+                                        {t('components.levelPopups.download.step2.keepEvents')}
                                     </button>
                                     <Tooltip id='drop-events-tooltip' place="bottom"> 
-                                        Remove selected events and filters from the level
+                                        {t('components.levelPopups.download.step2.tooltips.dropEvents')}
                                     </Tooltip>
                                     <Tooltip id='keep-events-tooltip' place="bottom">
-                                        Keep only the selected events and remove filters
+                                        {t('components.levelPopups.download.step2.tooltips.keepEvents')}
                                     </Tooltip>
                                 </div>
 
@@ -221,12 +288,12 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, incrementAccessC
                                         value={selectionMode === 'keep' ? transformOptions.keepEvents : transformOptions.dropEvents}
                                         onChange={handleSelectionChange}
                                         searchField={"events"}
-                                        placeholder={`Select events to ${selectionMode}`}
+                                        placeholder={t(`components.levelPopups.download.step2.selectEventsPlaceholder.${selectionMode}`)}
                                     />
                                 </div>
 
                                 <div className="option-group">
-                                    <label>Camera Zoom:</label>
+                                    <label>{t('components.levelPopups.download.step2.cameraZoom')}</label>
                                     <input 
                                         type="number" 
                                         value={transformOptions.baseCameraZoom}
@@ -250,12 +317,12 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, incrementAccessC
                                                 useCustomBackground: e.target.checked
                                             }))}
                                         />
-                                        Use Custom Background Color
+                                        {t('components.levelPopups.download.step2.customBackground')}
                                     </label>
                                     {transformOptions.useCustomBackground && (
                                         <div className="color-picker-group">
                                             <div className="color-selection">
-                                                <label>Color:</label>
+                                                <label>{t('components.levelPopups.download.step2.color')}</label>
                                                 <input 
                                                     type="color" 
                                                     value={transformOptions.constantBackgroundColor}
@@ -273,7 +340,7 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, incrementAccessC
                                                 />
                                             </div>
                                             <div className="opacity-control">
-                                                <label>Opacity:</label>
+                                                <label>{t('components.levelPopups.download.step2.opacity')}</label>
                                                 <input 
                                                     type="range"
                                                     min="0"
@@ -301,13 +368,13 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, incrementAccessC
                                                 removeForegroundFlash: e.target.checked
                                             }))}
                                         />
-                                        Remove Foreground Flash
+                                        {t('components.levelPopups.download.step2.removeForegroundFlash')}
                                     </label>
                                 </div>
 
                                 {(
                                     <div className="option-group">
-                                        <label>Drop Filters:</label>
+                                        <label>{t('components.levelPopups.download.step2.dropFilters')}</label>
                                         <EnhancedSelect
                                             options={availableFilters}
                                             value={transformOptions.dropFilters}
@@ -317,7 +384,7 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, incrementAccessC
                                             }))}
                                             position={"top"}
                                             searchField={"filters"}
-                                            placeholder="Select filters to drop"
+                                            placeholder={t('components.levelPopups.download.step2.dropFiltersPlaceholder')}
                                         />
                                     </div>
                                 )}
@@ -325,9 +392,9 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, incrementAccessC
                         )}
 
                         <div className="transform-buttons">
-                            <button onClick={() => setStep(1)}>Back</button>
+                            <button onClick={() => setStep(1)}>{t('components.levelPopups.download.step2.back')}</button>
                             <button onClick={() => handleDownload('transformed')}>
-                                Download Converted
+                                {t('components.levelPopups.download.step2.downloadConverted')}
                             </button>
                         </div>
                     </div>

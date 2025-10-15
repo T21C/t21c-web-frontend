@@ -301,4 +301,67 @@
     min-width: 48px;
     text-align: right;
     color: #666666;
+}
+
+/* Error state styles */
+.level-download-popup .error-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 24px;
+}
+
+.level-download-popup .error-state .error-icon {
+    font-size: 48px;
+    line-height: 1;
+}
+
+.level-download-popup .error-state h3 {
+    margin: 0;
+    font-size: 24px;
+    color: #ff4444;
+}
+
+.level-download-popup .error-state p {
+    margin: 0;
+    text-align: center;
+    color: #cccccc;
+}
+
+.level-download-popup .error-state .error-message {
+    font-weight: bold;
+    color: #ff6666;
+    font-size: 16px;
+}
+
+.level-download-popup .error-state .legacy-download-info {
+    color: #66aaff;
+    font-style: italic;
+}
+
+.level-download-popup .error-state .no-backup-info {
+    color: #ff8866;
+    font-style: italic;
+}
+
+.level-download-popup .error-state .legacy-download-btn {
+    background-color: #2a5a8a !important;
+}
+
+.level-download-popup .error-state .legacy-download-btn:hover {
+    background-color: #3a6a9a !important;
+}
+
+/* Loading state styles */
+.level-download-popup .loading-state {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 48px 24px;
+}
+
+.level-download-popup .loading-state p {
+    color: #cccccc;
+    font-size: 16px;
 } 

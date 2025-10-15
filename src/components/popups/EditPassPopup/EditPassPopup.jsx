@@ -6,7 +6,7 @@ import { getVideoDetails } from "@/utils";
 import { useTranslation } from 'react-i18next'; 
 import { useAuth } from '@/contexts/AuthContext';
 import { parseJudgements } from '@/utils/ParseJudgements';
-import { validateFeelingRating, validateSpeed, validateNumber } from '@/utils/Utility';
+import { validateFeelingRating, validateSpeed, validateNumber, formatCreatorDisplay } from '@/utils/Utility';
 import placeholder from '@/assets/placeholder/4.png';
 import { FetchIcon } from '@/components/common/icons';
 import { useNavigate } from 'react-router-dom';
@@ -443,7 +443,10 @@ const handleSubmit = async (e) => {
               <div className="information">
                   {(level && form.levelId) ? 
                   (<div className="level-info"><h2 className="level-info-sub">{truncateString(level.song, 30)}</h2>
-                   <div className="level-info-sub"><span>{truncateString(level.artist, 15)}</span><span>{truncateString(level.creator, 20)}</span></div></div>)
+                   <div className="level-info-sub">
+                    <span>{truncateString(level.artist, 15)}</span>
+                    <span>{formatCreatorDisplay(level)}</span>
+                   </div></div>)
                   : 
                   (<div className="level-info"><h2 className="level-info-sub" style={{color: "#aaa"}}>{tPass('form.levelInfo.song')}</h2>
                    <div className="level-info-sub"><span style={{color: "#aaa"}}>{tPass('form.levelInfo.artist')}</span><span style={{color: "#aaa"}}>{tPass('form.levelInfo.charter')}</span></div></div>)

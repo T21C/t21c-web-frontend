@@ -60,5 +60,44 @@
       "toggleHidden": "Failed to toggle hidden status",
       "restore": "Failed to restore level"
     }
+  },
+  "download": {
+    "title": "Download Options",
+    "close": "Close",
+    "closePopup": "Close popup",
+    "loading": "Loading download options...",
+    "step1": {
+      "prompt": "Choose download format:",
+      "downloadOriginal": "Download Original",
+      "convertDownload": "Convert & Download"
+    },
+    "step2": {
+      "dropEvents": "Drop Events",
+      "keepEvents": "Keep Events",
+      "tooltips": {
+        "dropEvents": "Remove selected events and filters from the level",
+        "keepEvents": "Keep only the selected events and remove filters"
+      },
+      "selectEventsPlaceholder": {
+        "drop": "Select events to drop",
+        "keep": "Select events to keep"
+      },
+      "cameraZoom": "Camera Zoom:",
+      "customBackground": "Use Custom Background Color",
+      "color": "Color:",
+      "opacity": "Opacity:",
+      "removeForegroundFlash": "Remove Foreground Flash",
+      "dropFilters": "Drop Filters:",
+      "dropFiltersPlaceholder": "Select filters to drop",
+      "back": "Back",
+      "downloadConverted": "Download Converted"
+    },
+    "errors": {
+      "corrupted": "Download Corrupted",
+      "fileMissing": "The file for this level is missing or corrupted on the server.",
+      "reupload": "Please reupload the level in the editing window.",
+      "noBackup": "No backup is available. Please contact an administrator.",
+      "downloadLegacy": "Download Legacy Backup"
+    }
   }
 } 

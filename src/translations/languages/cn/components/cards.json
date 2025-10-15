@@ -67,8 +67,11 @@
     }
   },
   "pack": {
-    "more": "更多信息",
+    "more": "更多关卡",
     "clickToView": "点击查看",
+    "addToFavorites": "收藏",
+    "removeFromFavorites": "取消收藏",
+    "edit": "编辑",
     "viewMode": {
       "public": "公开",
       "linkonly": "仅限链接",

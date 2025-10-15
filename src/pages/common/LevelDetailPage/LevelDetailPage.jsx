@@ -2039,6 +2039,7 @@ const LevelDetailPage = ({ mockData = null }) => {
               onClose={() => setShowDownloadPopup(false)}
               levelId={id}
               dlLink={res.level.dlLink}
+              legacyDllink={res.level.legacyDllink}
               incrementAccessCount={() => setRes(prevRes => ({
                 ...prevRes,
                 accessCount: prevRes.accessCount + 1

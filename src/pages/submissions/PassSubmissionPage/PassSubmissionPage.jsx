@@ -19,6 +19,7 @@ import { ProfileSelector } from "@/components/common/selectors";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { useNavigate } from "react-router-dom";
 import RulePopup from "./RulePopup";
+import { formatCreatorDisplay } from "@/utils/Utility";
 import { getCookie, setCookie } from "@/utils/cookieUtils";
 
 
@@ -705,7 +706,7 @@ const PassSubmissionPage = () => {
                       </div>
                       <div className="level-details">
                         <span>{result.artist}</span>
-                        <span>{result.creator}</span>
+                        <span>{formatCreatorDisplay(result)}</span>
                       </div>
                     </div>
                   </div>
@@ -720,7 +721,7 @@ const PassSubmissionPage = () => {
                     <h2 className="level-info-sub">{truncateString(level["song"], 30)}</h2>
                     <div className="level-info-sub">
                       <span>{truncateString(level["artist"], 15)}</span>
-                      <span>{truncateString(level["creator"], 20)}</span>
+                      <span>{formatCreatorDisplay(level)}</span>
                     </div>
                   </div>
                 </>) : 
@@ -728,7 +729,7 @@ const PassSubmissionPage = () => {
                   <h2 className="level-info-sub" style={{color: "#aaa"}}>{tPass("levelInfo.song")}</h2>
                   <div className="level-info-sub">
                     <span style={{color: "#aaa"}}>{tPass("levelInfo.artist")}</span>
-                    <span style={{color: "#aaa"}}>{tPass("levelInfo.charter")}</span>
+                    <span style={{color: "#aaa"}}>{formatCreatorDisplay(level)}</span>
                   </div>
                 </div>)}
 

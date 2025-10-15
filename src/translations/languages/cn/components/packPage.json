@@ -13,7 +13,7 @@
     },
     "viewMode": {
       "label": "可见性",
-      "all": "All",
+      "all": "所有",
       "public": "公开",
       "linkonly": "仅限链接",
       "private": "私密",
