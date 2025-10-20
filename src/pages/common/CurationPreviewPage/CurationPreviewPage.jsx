@@ -6,6 +6,7 @@ import { ScrollButton } from '@/components/common/buttons';
 import api from '@/utils/api';
 import './curationpreviewpage.css';
 import { useTranslation } from 'react-i18next';
+import { formatCreatorDisplay } from '@/utils/Utility';
 
 const CurationPreviewPage = () => {
   const { id } = useParams();
@@ -81,7 +82,7 @@ const CurationPreviewPage = () => {
           </div>
           <h1>{level?.song || 'Unknown Level'}</h1>
           <p className="curation-preview-page__artist">{level?.artist || 'Unknown Artist'}</p>
-          <p className="curation-preview-page__creator">by {level?.creator || 'Unknown Creator'}</p>
+          <p className="curation-preview-page__creator">by {formatCreatorDisplay(level)}</p>
         </div>
 
         {curation.previewLink && (

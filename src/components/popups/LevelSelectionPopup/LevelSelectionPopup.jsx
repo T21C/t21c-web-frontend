@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import './levelselectionpopup.css';
 import toast from 'react-hot-toast';
+import { formatCreatorDisplay } from '@/utils/Utility';
 
 const LIMIT = 20; 
 
@@ -240,7 +241,7 @@ const LevelSelectionPopup = ({
 
                   <div className="level-selection-modal__creator-wrapper">
                     <p className="level-selection-modal__level-exp">{tCur('creator')}</p>
-                    <div className="level-selection-modal__level-desc">{level.creator || 'Unknown Creator'}</div>
+                    <div className="level-selection-modal__level-desc">{formatCreatorDisplay(level)}</div>
                   </div>
 
                   <button

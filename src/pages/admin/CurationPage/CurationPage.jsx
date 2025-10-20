@@ -13,6 +13,7 @@ import { toast } from 'react-hot-toast';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { canAssignCurationType } from '@/utils/curationTypeUtils';
+import { formatCreatorDisplay } from '@/utils/Utility';
 
 const CurationPage = () => {
   const navigate = useNavigate();
@@ -501,7 +502,7 @@ const CurationPage = () => {
                     </div>
                     <div className="curation-artist-creator">
                     <p className="curation-artist">{curation.level?.artist || 'Unknown Artist'}</p>
-                    <p className="curation-creator">{curation.level?.creator || 'Unknown Creator'}</p>
+                    <p className="curation-creator">{formatCreatorDisplay(curation.level)}</p>
                   </div>
                   </div>
 

@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import ThumbnailUpload from '@/components/common/upload/ThumbnailUpload';
 import { hasAbility, getDefaultColor, canAssignCurationType } from '@/utils/curationTypeUtils';
 import { useAuth } from '@/contexts/AuthContext';
+import { formatCreatorDisplay } from '@/utils/Utility';
 
 const CurationEditPopup = ({
   isOpen,
@@ -215,7 +216,7 @@ const CurationEditPopup = ({
               <div className="curation-edit-modal__level-details">
                 <h3>{curation.level?.song || 'Unknown Level'}</h3>
                 <p className="curation-edit-modal__level-artist">{curation.level?.artist || 'Unknown Artist'}</p>
-                <p className="curation-edit-modal__level-creator">{curation.level?.creator || 'Unknown Creator'}</p>
+                <p className="curation-edit-modal__level-creator">{formatCreatorDisplay(curation.level)}</p>
               </div>
             </div>
           </div>
