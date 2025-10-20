@@ -23,7 +23,7 @@ import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { createEventSystem } from "@/utils/Utility";
 import { useAuth } from "@/contexts/AuthContext";
 // Import the logo
-import logoFull from '@/assets/tuf-logo/logo-full.png';
+import logoFull from '@/assets/tuf-logo/logo-full.svg';
 import toast from "react-hot-toast";
 
 const minus2Reasons = [

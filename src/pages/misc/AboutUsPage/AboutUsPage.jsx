@@ -4,8 +4,9 @@ import { MetaTags } from "@/components/common/display";
 import { useTranslation } from "react-i18next";
 import { useState, useEffect, useCallback } from "react";
 import api from "@/utils/api";
-import { DefaultAvatar } from "@/components/common/icons";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
+
+const CURRENT_VERSION = 'v2.3';
 
 const AboutUsPage = () => {
   const { t } = useTranslation('pages');
@@ -134,10 +135,9 @@ const AboutUsPage = () => {
                   '--mouse-y': `${mousePosition.y}px`
                 }}>
                   <div className="main-title">
-                    <span className="title-mask">{tAbout('sections.credits.version.current')}</span>
-                    <span className="title-glow">{tAbout('sections.credits.version.current')}</span>
+                    <span className="title-mask">{tAbout('sections.credits.version', { version: CURRENT_VERSION })}</span>
+                    <span className="title-glow">{tAbout('sections.credits.version', { version: CURRENT_VERSION })}</span>
                   </div>
-                  <div className="version-original">{tAbout('sections.credits.version.original')}</div>
                 </div>
                 <div className="credits-grid">
                   <div className="credit-category">

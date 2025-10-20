@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Link } from 'react-router-dom';
 import './footer.css';
-import logoIcon from '@/assets/tuf-logo/logo.png';
+import LogoSVG from '@/assets/tuf-logo/logo.jsx';
 
 const Footer = () => {
   const { t } = useTranslation('pages');
@@ -11,7 +11,7 @@ const Footer = () => {
     <footer>
       <div className="footer-content">
         <div className="footer-logo">
-          <img src={logoIcon} alt="TUF" />
+          <LogoSVG />
         </div>
         <div className="footer-section">
           <h4>{tHome('about.title')}</h4>

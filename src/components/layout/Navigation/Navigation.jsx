@@ -3,7 +3,6 @@
 import "./navigation.css";
 import React, { useState, useContext, useEffect } from "react";
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
-import logo from "@/assets/tuf-logo/logo-full.png";
 import { useTranslation } from "react-i18next";
 import { UserContext } from "@/contexts/UserContext";
 import i18next from 'i18next';
@@ -13,6 +12,7 @@ import { useNotification } from "@/contexts/NotificationContext";
 import api from "@/utils/api";
 import { hasAnyFlag, permissionFlags } from "@/utils/UserPermissions";
 import { hasFlag } from "@/utils/UserPermissions";
+import LogoFullOutlineSVG from "@/assets/tuf-logo/LogoFullOutlined/LogoFullOutlined";
 
 const Navigation = ({ children }) => {
   const { t } = useTranslation('components');
@@ -161,7 +161,7 @@ const Navigation = ({ children }) => {
               to="/"
             >
               <div className="nav-logo">
-                <img src={logo} alt="logo" />
+                <LogoFullOutlineSVG strokeWidth={16} strokeColor="#fffb"/>
               </div>
             </NavLink>
 

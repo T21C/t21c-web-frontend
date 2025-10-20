@@ -73,16 +73,18 @@ footer {
   display: flex;
   justify-content: center;
   margin-bottom: 1rem;
-}
-
-.footer-logo img {
-  height: 6rem;
-  width: auto;
-  opacity: 0.8;
   transition: opacity 0.3s ease;
+  opacity: 0.8;
 }
 
-.footer-logo img:hover {
+.footer-logo svg {
+  height: 6rem;
+  stroke: #fff6;
+  stroke-width: 10px;
+  width: auto;
+}
+
+.footer-logo:hover {
   opacity: 1;
 }
 

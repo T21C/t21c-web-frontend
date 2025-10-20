@@ -20,9 +20,7 @@ import { useLocation } from 'react-router-dom';
 import { ScrollButton } from "@/components/common/buttons";
 import { PassIcon, LevelIcon, LeaderboardIcon } from "@/components/common/icons";
 import { useWeeklyCurations } from "@/hooks/useWeeklyCurations";
-
-// Import the logo
-import logoFull from '@/assets/tuf-logo/logo-full.png';
+import LogoFullOutlineSVG from "@/assets/tuf-logo/LogoFullOutlined/LogoFullOutlined";
 
 const SupportButton = () => {
   const { t } = useTranslation('pages');
@@ -313,9 +311,7 @@ const HomePage = () => {
       <div className="home-container">
         <div className="content-container">
           <div className="title-section">
-            <div className="logo-container">
-              <img src={logoFull} alt="TUForums" className="logo" />
-            </div>
+            <LogoFullOutlineSVG className="logo-container" />
             { /*
             <h1 
               className={`main-title`}

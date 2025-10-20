@@ -38,7 +38,7 @@ nav {
   justify-content: center;
 }
 
-.nav-logo img {
+.nav-logo svg {
   width: 100%;
   height: 100%;
   object-fit: contain;

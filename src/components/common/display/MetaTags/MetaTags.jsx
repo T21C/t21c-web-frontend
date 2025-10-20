@@ -10,7 +10,7 @@ const MetaTags = ({
 }) => {
   const siteName = 'The Universal Forums';
   const defaultDescription = 'Explore and share rhythm game content';
-  const defaultImage = '/images/logo.png';
+  const defaultImage = '/images/logo.svg';
 
   return (
     <Helmet>

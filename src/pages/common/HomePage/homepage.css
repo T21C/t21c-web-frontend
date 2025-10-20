@@ -23,13 +23,23 @@
   animation: fadeInLogo 0.8s ease-out forwards;
 }
 
-.home .logo {
+.home .logo-container .logo {
+  position: relative;
+  z-index: 2;
+  height: 100%;
+}
+
+
+
+.home .logo-container {
+  position: relative;
+  margin: 0 auto;
   width: 50%;
   height: auto;
 }
 
 @media (max-width: 768px) {
-  .home .logo {
+  .home .logo-container {
     width: 75%;
   }
 }

@@ -51,10 +51,7 @@
     },
     "credits": {
       "title": "Credits",
-      "version": {
-        "current": "v2.2 Developed by V0W4N",
-        "original": "Original by Adrian"
-      },
+      "version": "{{version}} Developed by V0W4N",
       "categories": {
         "rating": {
           "title": "Rating Team",

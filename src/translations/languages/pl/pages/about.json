@@ -51,10 +51,7 @@
     },
     "credits": {
       "title": "O twórcach",
-      "version": {
-        "current": "v2.2 rozwijane przez V0W4N",
-        "original": "Oryginalna strona stworzona przez Adrian"
-      },
+      "version": "{{version}} rozwijane przez V0W4N",
       "categories": {
         "rating": {
           "title": "Raterzy i Managerzy",
