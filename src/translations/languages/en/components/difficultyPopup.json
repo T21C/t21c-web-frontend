@@ -89,6 +89,34 @@
       "roleUpdateSuccess": "Role updated successfully",
       "roleDeleteSuccess": "Role deleted successfully"
     },
+    "notifications": {
+      "saved": "Directives saved successfully"
+    },
+    "errors": {
+      "saveFailed": "Failed to save directives"
+    },
+    "channel": {
+      "notifications": {
+        "updated": "Channel updated successfully",
+        "created": "Channel created successfully",
+        "deleted": "Channel deleted successfully"
+      },
+      "errors": {
+        "saveFailed": "Failed to save channel",
+        "deleteFailed": "Failed to delete channel"
+      }
+    },
+    "role": {
+      "notifications": {
+        "updated": "Role updated successfully",
+        "created": "Role created successfully",
+        "deleted": "Role deleted successfully"
+      },
+      "errors": {
+        "saveFailed": "Failed to save role",
+        "deleteFailed": "Failed to delete role"
+      }
+    },
     "triggerType": {
       "PASS": "Pass Announcement",
       "LEVEL": "Level Announcement"
@@ -168,21 +196,29 @@
     "create": "Create",
     "save": "Save",
     "delete": "Delete",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "add": "Add"
   },
   "errors": {
     "passwordRequired": "Super admin password is required",
+    "invalidPassword": "Invalid super admin password",
     "loadDirectives": "Failed to load directives",
     "saveDirectives": "Failed to save announcement directives",
     "channelSaveFailed": "Failed to save channel",
     "channelDeleteFailed": "Failed to delete channel",
+    "channelEditFailed": "Failed to edit channel",
     "roleSaveFailed": "Failed to save role",
-    "roleDeleteFailed": "Failed to delete role"
+    "roleDeleteFailed": "Failed to delete role",
+    "roleEditFailed": "Failed to edit role",
+    "createFailed": "Failed to create difficulty",
+    "updateFailed": "Failed to update difficulty"
   },
   "loading": {
     "directives": "Loading announcement directives..."
   },
   "notifications": {
-    "updated": "Difficulty updated successfully"
+    "saved": "Directives saved successfully",
+    "updated": "Difficulty updated successfully",
+    "created": "Difficulty created successfully"
   }
 }
