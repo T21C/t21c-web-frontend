@@ -15,6 +15,7 @@ import keycountPlusIcon from '@/assets/icons/Kplus RITK.png';
 import hideIcons from '@/assets/icons/RITK hidden.png'
 import showIcons from '@/assets/icons/RITK visible.png'
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { formatCreatorDisplay } from '@/utils/Utility';
 
 const hexToRgb = (hex) => {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -506,7 +507,7 @@ const ReferencesPopup = ({ onClose }) => {
         )}
       </div>
       <span className="level-artist">{level.artist}</span>
-      <span className="level-creator">{level.creator}</span>
+      <span className="level-creator">{formatCreatorDisplay(level)}</span>
       {level.videoLink && (
         <a 
           href={level.videoLink} 

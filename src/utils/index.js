@@ -1,5 +1,6 @@
 import twemoji from '@discordapp/twemoji';
 import api from "@/utils/api";
+import * as Utility from "@/utils/Utility";
 
 export function formatNumber(num, digits = 2) {
   return num.toLocaleString('en-US', {
@@ -172,6 +173,7 @@ export {
   isoToEmoji, 
   getVideoDetails, // Now only handles Bilibili
   getYouTubeThumbnailUrl,
-  getYouTubeEmbedUrl
+  getYouTubeEmbedUrl,
+  Utility
 }
 
