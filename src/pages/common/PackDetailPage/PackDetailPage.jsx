@@ -122,7 +122,6 @@ const PackDetailPage = () => {
   const fetchPack = async (silent = false) => {
     try {
       if (!silent) {
-        console.log('fetching pack');
         setLoading(true);
         setError(false);
       }
