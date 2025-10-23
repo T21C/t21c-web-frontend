@@ -570,7 +570,7 @@ const ReferencesPopup = ({ onClose }) => {
   const renderTabContent = (tabPrefix) => (
     <div className="tab-content">
       {references
-        .filter(ref => ref.difficulty.name.startsWith(tabPrefix) && !ref.difficulty.name.endsWith('J'))
+        .filter(ref => ref.difficulty.name.startsWith(tabPrefix))
         .map((ref) => {
           const difficultyInfo = difficultyDict[ref.difficulty.id] || ref.difficulty;
           
