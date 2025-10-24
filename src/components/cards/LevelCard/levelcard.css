@@ -242,6 +242,18 @@
   border-radius: 50%;
 }
 
+.level-card .base-score-wrapper {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translate(-50%, -85%);
+  opacity: 0.9;
+  font-weight: 600;
+  font-size: 10px;
+  white-space: nowrap;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 1);
+}
+
 @media (max-width: 795px) {
   .level-card .downloads-wrapper {
     min-width: 200px;
@@ -312,7 +324,7 @@
   
   .level-card .level-card-wrapper {
     gap: 0.5rem;
-    padding: 0.5rem 0.25rem;
+    padding: 0.8rem 0.25rem;
   }
   
   .level-card .level-card-wrapper .stats-line {
@@ -356,7 +368,7 @@
   
   .level-card .level-card-wrapper {
     gap: 0.4rem;
-    padding: 0.4rem 0.2rem;
+    padding: 0.6rem 0.2rem;
     min-height: 3.5rem;
   }
   
@@ -400,7 +412,7 @@
   
   .level-card .level-card-wrapper {
     gap: 0.3rem;
-    padding: 0.3rem 0.15rem;
+    padding: 0.6rem 0.15rem;
     min-height: 3rem;
   }
   
@@ -445,7 +457,7 @@
   
   .level-card .level-card-wrapper {
     gap: 0.2rem;
-    padding: 0.25rem 0.1rem;
+    padding: 0.5rem 0.1rem;
     min-height: 2.5rem;
   }
   
