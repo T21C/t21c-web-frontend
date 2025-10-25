@@ -165,6 +165,9 @@ const ProfilePage = () => {
         );
       }
 
+      const lowestImpactScore = playerData?.topScores?.reduce((minItem, score) =>
+        minItem == null || score.impact < minItem.impact ? score : minItem
+      , null);
       return (
         <div className="player-page">
           <MetaTags
@@ -378,10 +381,32 @@ const ProfilePage = () => {
                 <div className="scores-section">
                   <h2>{tProfile('sections.scores.title')}</h2>
                   <div className="scores-list">
-                    {playerData.passes.filter(score => !score.isDeleted).sort((a, b) => (b.scoreV2 || 0) - (a.scoreV2 || 0)).map((score, index) => (
+                    {playerData.passes.filter(score => !score.isDeleted)
+                    .sort((a, b) => (b.scoreV2 || 0) - (a.scoreV2 || 0))
+                    .sort((a, b) => (playerData.topScores.find(topScore => topScore.id === b.id)?.impact || 0) - (playerData.topScores.find(topScore => topScore.id === a.id)?.impact || 0))
+                    .map((score, index) => (
+                      <>
                       <li key={index}>
                         <ScoreCard scoreData={score} topScores={playerData?.topScores || []} potentialTopScores={playerData?.potentialTopScores || []} />
                       </li>
+                      {lowestImpactScore && lowestImpactScore.id === score.id && playerData?.passes?.length > 20 && (
+                        <div className="lowest-impact-score-indicator">
+                          <p>
+                            {(() => {
+                              const text = tProfile('sections.scores.lowestImpactScore');
+                              const parts = text.split('{{score}}');
+                              return (
+                                <>
+                                  {parts[0]}
+                                  <b style={{color: '#0f0'}}>{(score.scoreV2+0.01).toFixed(2)}PP</b>
+                                  {parts[1]}
+                                </>
+                              );
+                            })()}
+                          </p>
+                        </div>
+                      )}
+                      </>
                     ))}
                   </div>
                 </div>

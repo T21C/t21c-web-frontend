@@ -25,7 +25,8 @@
   },
   "sections": {
     "scores": {
-      "title": "Scores"
+      "title": "Scores",
+      "lowestImpactScore": "Get at least {{score}} to gain Ranked Score"
     }
   }
 } 

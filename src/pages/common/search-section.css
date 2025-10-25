@@ -10,6 +10,11 @@
   margin-bottom: 1rem;
 }
 
+.input-setting {
+  position: relative;
+  z-index: 5;
+}
+
 /* Medium width horizontal layout */
 @media (min-width: 1024px) {
   .search-section {
