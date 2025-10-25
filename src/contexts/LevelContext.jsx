@@ -41,6 +41,7 @@ const LevelContextProvider = (props) => {
     const [sort, setSort] = useState(() => Cookies.get(COOKIE_KEYS.SORT) || "RECENT");
     const [order, setOrder] = useState(() => Cookies.get(COOKIE_KEYS.ORDER) || "ASC");
     const [hasMore, setHasMore] = useState(true);
+    const [totalLevels, setTotalLevels] = useState(0);
     const [pageNumber, setPageNumber] = useState(0);
     const [deletedFilter, setDeletedFilter] = useState(() => Cookies.get(COOKIE_KEYS.DELETED_FILTER) || "hide");
     const [availableDlFilter, setAvailableDlFilter] = useState(() => Cookies.get(COOKIE_KEYS.AVAILABLE_DL_FILTER) || "show");
@@ -213,6 +214,7 @@ const LevelContextProvider = (props) => {
                 sort, setSort,
                 order, setOrder,
                 hasMore, setHasMore, 
+                totalLevels, setTotalLevels,
                 pageNumber, setPageNumber,
                 deletedFilter, setDeletedFilter,
                 clearedFilter, setClearedFilter,

@@ -25,6 +25,7 @@ export const PassContextProvider = ({ children }) => {
   const [sortOpen, setSortOpen] = useState(() => Cookies.get(COOKIE_KEYS.SORT_OPEN) !== 'false');
   const [query, setQuery] = useState(() => Cookies.get(COOKIE_KEYS.QUERY) || '');
   const [sort, setSort] = useState(() => Cookies.get(COOKIE_KEYS.SORT) || 'RECENT_DESC');
+  const [totalPasses, setTotalPasses] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [pageNumber, setPageNumber] = useState(0);
   const [deletedFilter, setDeletedFilter] = useState(() => Cookies.get(COOKIE_KEYS.DELETED_FILTER) || 'hide');
@@ -103,6 +104,8 @@ export const PassContextProvider = ({ children }) => {
         setSort,
         hasMore,
         setHasMore,
+        totalPasses,
+        setTotalPasses,
         pageNumber,
         setPageNumber,
         deletedFilter,

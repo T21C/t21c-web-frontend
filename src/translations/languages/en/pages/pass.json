@@ -46,6 +46,7 @@
       "title": "Display Options"
     }
   },
+  "totalResults": "{{count}} Total Results",
   "infScroll": {
     "end": "End of list"
   }

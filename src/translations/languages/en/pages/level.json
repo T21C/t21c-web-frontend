@@ -48,6 +48,7 @@
     "curationTypes": "Curation Types",
     "myLikes": "My Likes"
   },
+  "totalResults": "{{count}} Total Results",
   "infScroll": {
     "end": "No more levels to load"
   },

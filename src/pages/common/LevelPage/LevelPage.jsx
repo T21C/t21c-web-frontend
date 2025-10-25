@@ -57,6 +57,8 @@ const LevelPage = () => {
     setOrder,
     hasMore,
     setHasMore,
+    totalLevels,
+    setTotalLevels,
     pageNumber,
     setPageNumber,
     deletedFilter,
@@ -309,6 +311,7 @@ const LevelPage = () => {
         );
 
         const newLevels = response.data.results;
+        setTotalLevels(response.data.total);
         
         const existingIds = new Set(levelsData.map((level) => level.id));
         const uniqueLevels = newLevels.filter(
@@ -703,7 +706,7 @@ const LevelPage = () => {
             </div>
           </div>
         </div>
-
+        <span className="total-search-results">{tLevel('totalResults', { count: totalLevels })}</span>
         <div className="view-mode-section">
           <p>{tLevel('settingExp.viewMode')}</p>
           <div className="view-mode-buttons">

@@ -54,6 +54,8 @@ const PassPage = () => {
     setSort,
     hasMore,
     setHasMore,
+    totalPasses,
+    setTotalPasses,
     pageNumber,
     setPageNumber,
     hide12k,
@@ -141,6 +143,7 @@ const PassPage = () => {
         });
         
         setHasMore(response.data.count > (pageNumber * limit) + newPasses.length);
+        setTotalPasses(response.data.count);
       } catch (error) {
         if (!axios.isCancel(error)) {
           console.error('Fetch error:', error);
@@ -280,7 +283,7 @@ const PassPage = () => {
     // Data loaded (passesData is an array)
     return (
       <InfiniteScroll
-        style={{paddingBottom: "6rem", minHeight: "90vh", overflow: "visible" }}
+        style={{paddingBottom: "6rem", minHeight: "90vh", overflow: "visible", marginTop: "-1rem" }}
         dataLength={passesData.length}
         next={() => {
           const newPage = pageNumber + 1;
@@ -538,6 +541,7 @@ const PassPage = () => {
           </div>
         </div>
 
+        <span className="total-search-results">{tPass('totalResults', { count: totalPasses })}</span>
         {renderContent()}
 
         {showHelpPopup && (

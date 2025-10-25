@@ -38,6 +38,7 @@
   "promoteTo": "Promote to {{role}}",
   "demoteTo": "Demote to {{role}}",
   "currentRole": "Current Role",
+  "totalResults": "{{count}} Total Results",
   "pagination": {
     "previous": "Previous",
     "next": "Next",
