@@ -47,6 +47,7 @@ import ImageIcon from './ImageIcon';
 import FolderIcon from './FolderIcon';
 import ChevronIcon from './ChevronIcon';
 import DeleteIcon from './TrashIcon';
+import SpeedIcon from './SpeedIcon';
 
 export {
     DefaultAvatar,
@@ -97,5 +98,6 @@ export {
     ImageIcon,
     FolderIcon,
     ChevronIcon,
-    DeleteIcon
+    DeleteIcon,
+    SpeedIcon
 }

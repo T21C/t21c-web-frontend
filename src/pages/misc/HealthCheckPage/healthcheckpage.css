@@ -119,6 +119,8 @@
 
 .health-check-page .last-updated {
   display: flex;
+  position: relative;
+  bottom: 14px;
   justify-content: center;
   color: #aaa;
   font-size: 0.9rem;

@@ -39,6 +39,7 @@
         "score": "Score",
         "accuracy": "Accuracy",
         "difficulty": "Difficulty",
+        "speed": "Speed",
         "random": "Random"
       }
     },

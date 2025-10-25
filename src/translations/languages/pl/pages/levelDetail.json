@@ -65,7 +65,8 @@
     "tooltips": {
       "time": "Sortuj według daty",
       "accuracy": "Sortuj według dokładności",
-      "score": "Sortuj według wyniku"
+      "score": "Sortuj według wyniku",
+      "speed": "Sortuj według prędkości"
     }
   },
   "dialog": {

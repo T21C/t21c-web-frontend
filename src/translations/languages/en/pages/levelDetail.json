@@ -78,7 +78,8 @@
     "tooltips": {
       "time": "Sort by clear date",
       "accuracy": "Sort by accuracy",
-      "score": "Sort by score"
+      "score": "Sort by score",
+      "speed": "Sort by speed"
     }
   },
   "dialog": {

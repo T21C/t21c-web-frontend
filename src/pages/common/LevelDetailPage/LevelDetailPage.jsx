@@ -19,7 +19,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { MetaTags } from "@/components/common/display";
-import { DownloadIcon, EditIcon, HistoryListIcon, InfoIcon, LikeIcon, SteamIcon, PackIcon, LevelIcon, MetronomeIcon } from "@/components/common/icons";
+import { DownloadIcon, EditIcon, HistoryListIcon, InfoIcon, LikeIcon, SteamIcon, PackIcon, LevelIcon, MetronomeIcon, SpeedIcon } from "@/components/common/icons";
 import { createEventSystem, formatCreatorDisplay } from "@/utils/Utility";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
@@ -1143,6 +1143,12 @@ const LevelDetailPage = ({ mockData = null }) => {
           return isDescending ? result : -result;
         });
         break;
+      case 'SPEED':
+        sortedPasses = passes.sort((a, b) => {
+          const result = (b.speed || 0) - (a.speed || 0);
+          return isDescending ? result : -result;
+        });
+        break;
       case 'SCR':
       default:
         sortedPasses = passes.sort((a, b) => {
@@ -1854,6 +1860,9 @@ const LevelDetailPage = ({ mockData = null }) => {
                 <Tooltip id="sc" place="top" noArrow>
                   {tLevel('leaderboard.tooltips.score')}
                 </Tooltip>
+                <Tooltip id="sp" place="top" noArrow>
+                  {tLevel('leaderboard.tooltips.speed')}
+                </Tooltip>
 
                 <div className="sort-button-container" onClick={() => handleSort("TIME")}>
                   <svg className="svg-stroke" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -1914,6 +1923,15 @@ const LevelDetailPage = ({ mockData = null }) => {
                     </g>
                   </svg>
                   {leaderboardSort === "SCR" && (
+                    <span className="sort-direction-indicator">
+                      {sortDirection === "desc" ? "↓" : "↑"}
+                    </span>
+                  )}
+                </div>
+
+                <div className="sort-button-container" onClick={() => handleSort("SPEED")}>
+                  <SpeedIcon data-tooltip-id = "sp" />
+                  {leaderboardSort === "SPEED" && (
                     <span className="sort-direction-indicator">
                       {sortDirection === "desc" ? "↓" : "↑"}
                     </span>

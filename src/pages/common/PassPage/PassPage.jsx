@@ -79,6 +79,7 @@ const PassPage = () => {
     { value: 'SCORE', label: tPass('settings.sort.options.score') },
     { value: 'XACC', label: tPass('settings.sort.options.accuracy') },
     { value: 'DIFF', label: tPass('settings.sort.options.difficulty') },
+    { value: 'SPEED', label: tPass('settings.sort.options.speed') },
     { value: 'RANDOM', label: tPass('settings.sort.options.random') }
   ];
 
