@@ -1,0 +1,16 @@
+.legacy-diff-icon {
+    position: relative;
+}
+
+
+.legacy-diff-icon-text {
+    position: absolute;
+    transform: translate(50%, 50%);
+    justify-self: center;
+    font-size: 0.8rem ;
+    font-weight: 600;
+    color: var(--color-white);
+    width: 100%;
+    margin: auto;
+    text-align: center;
+}

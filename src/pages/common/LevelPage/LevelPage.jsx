@@ -341,13 +341,17 @@ const LevelPage = () => {
         );
         if (response.data) {
           setLevelsData([response.data]);
+          setTotalLevels(1);
           setHasMore(false);
         } else {
+          setTotalLevels(0);
           setLevelsData([]);
           setHasMore(false);
         }
       } catch (error) {
-        if (!axios.isCancel(error)) {
+        setTotalLevels(0);
+        setLevelsData([]);
+        if (!axios.isCancel(error) && error.response.status !== 404) {
           console.error('Error fetching level by ID:', error);
           setError(true);
         }

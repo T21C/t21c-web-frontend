@@ -19,7 +19,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { MetaTags } from "@/components/common/display";
-import { DownloadIcon, EditIcon, HistoryListIcon, InfoIcon, LikeIcon, SteamIcon, PackIcon, LevelIcon, MetronomeIcon, SpeedIcon } from "@/components/common/icons";
+import { DownloadIcon, EditIcon, HistoryListIcon, InfoIcon, LikeIcon, SteamIcon, PackIcon, LevelIcon, MetronomeIcon, SpeedIcon, LegacyDiffIcon } from "@/components/common/icons";
 import { createEventSystem, formatCreatorDisplay } from "@/utils/Utility";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
@@ -541,17 +541,26 @@ const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict })
         {rerateHistory.slice().reverse().map((entry, idx) => {
           const prevDiff = difficultyDict[entry.previousDiffId];
           const newDiff = difficultyDict[entry.newDiffId];
+          const legacyPrevDiff = entry.oldLegacyValue;
+          const legacyNewDiff = entry.newLegacyValue;
           return (
             <div className="rerate-history-row" key={entry.id || idx}>
               <div className="rerate-history-step">
                 <div className="rerate-history-icon" title={prevDiff?.name || entry.previousDiffId}>
-                  {prevDiff?.icon ? <img src={prevDiff.icon} alt={prevDiff.name} /> : <span>{prevDiff?.name || entry.previousDiffId}</span>}
-                  <div className="rerate-history-basescore">{entry.previousBaseScore || difficultyDict[entry.previousDiffId]?.baseScore}PP</div>
+                  {legacyPrevDiff ? 
+                  <LegacyDiffIcon diff={legacyPrevDiff} /> 
+                  : prevDiff?.icon ? 
+                  <img src={prevDiff.icon} alt={prevDiff.name} /> 
+                  : <span>{prevDiff?.name || entry.previousDiffId}</span>}
+                  {entry.previousBaseScore || difficultyDict[entry.previousDiffId]?.baseScore && <div className="rerate-history-basescore">{entry.previousBaseScore || difficultyDict[entry.previousDiffId]?.baseScore}PP</div>}
                 </div>
                 <span className="rerate-history-arrow">➔</span>
                 <div className="rerate-history-icon" title={newDiff?.name || entry.newDiffId}>
-                  {newDiff?.icon ? <img src={newDiff.icon} alt={newDiff.name} /> : <span>{newDiff?.name || entry.newDiffId}</span>}
-                  <div className="rerate-history-basescore">{entry.newBaseScore || difficultyDict[entry.newDiffId]?.baseScore}PP</div>
+                  {legacyNewDiff ? 
+                  <LegacyDiffIcon diff={legacyNewDiff} /> 
+                  : newDiff?.icon ? 
+                  <img src={newDiff.icon} alt={newDiff.name} /> : <span>{newDiff?.name || entry.newDiffId}</span>}
+                  {entry.newBaseScore || difficultyDict[entry.newDiffId]?.baseScore && <div className="rerate-history-basescore">{entry.newBaseScore || difficultyDict[entry.newDiffId]?.baseScore}PP</div>}
                 </div>
                 <div className="rerate-history-meta">
                   <span className="rerate-history-date">{new Date(entry.createdAt).toLocaleDateString()}</span>

@@ -108,6 +108,7 @@ const PassPage = () => {
               }
             );
             setPassesData(response.data.results);
+            setTotalPasses(response.data.count);
             setHasMore(false);
             setLoading(false);
             return;

@@ -48,6 +48,7 @@ import FolderIcon from './FolderIcon';
 import ChevronIcon from './ChevronIcon';
 import DeleteIcon from './TrashIcon';
 import SpeedIcon from './SpeedIcon';
+import LegacyDiffIcon from './LegacyDiffIcon/LegacyDiffIcon';
 
 export {
     DefaultAvatar,
@@ -99,5 +100,6 @@ export {
     FolderIcon,
     ChevronIcon,
     DeleteIcon,
-    SpeedIcon
+    SpeedIcon,
+    LegacyDiffIcon
 }
