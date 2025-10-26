@@ -33,9 +33,10 @@ export default function LegacyDiffIcon({ diff, size = 32 }) {
         "21.2": [69, 31, 101],
         "21.2+": [83, 51, 122],
         "21.3": [85, 55, 125],
-        "21.3+": [40, 0, 0]
+        "21.3+": [40, 0, 0],
+        "Epic": [87, 44, 2],
     }
-    const diffColor = `rgb(${diffColors[diff][0]}, ${diffColors[diff][1]}, ${diffColors[diff][2]})`;
+    const diffColor = `rgb(${diffColors[diff]?.[0]}, ${diffColors[diff]?.[1]}, ${diffColors[diff]?.[2]})`;
     return (
         <div className="legacy-diff-icon" style={{ width: size, height: size }}>
             <span className="legacy-diff-icon-text">{diff}</span>

@@ -563,7 +563,7 @@ const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict })
                   {entry.newBaseScore || difficultyDict[entry.newDiffId]?.baseScore && <div className="rerate-history-basescore">{entry.newBaseScore || difficultyDict[entry.newDiffId]?.baseScore}PP</div>}
                 </div>
                 <div className="rerate-history-meta">
-                  <span className="rerate-history-date">{new Date(entry.createdAt).toLocaleDateString()}</span>
+                  <span className="rerate-history-date">{new Date(entry.createdAt).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                   {entry.user && <span className="rerate-history-user">{entry.user.username || entry.reratedBy}</span>}
                 </div>
               </div>
