@@ -1979,6 +1979,7 @@ const LevelDetailPage = ({ mockData = null }) => {
               ...res.ratings,
               level: res.level
             }}
+            showingConfirmed={true}
             setSelectedRating={() => setShowRatingPopup(false)}
             enableReferences={false}
           />

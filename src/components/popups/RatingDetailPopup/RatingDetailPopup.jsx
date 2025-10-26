@@ -42,6 +42,7 @@ export const RatingDetailPopup = ({
   user = null, 
   isSuperAdmin = false,
   enableReferences = true,
+  showingConfirmed=false,
   weeklyRaterActivity = []
 }) => {
   const currentUser = user;
@@ -534,7 +535,7 @@ export const RatingDetailPopup = ({
               <div className={`details-container ${isDetailsCollapsed ? 'collapsed' : ''}`}>
                 <div className="detail-field rerate-field">
                   <span className="detail-label">{tRating('labels.rerateNum')}</span>
-                  <span className="detail-value">{selectedRating.level.rerateNum || selectedRating.requesterFR}</span>
+                  <span className="detail-value">{showingConfirmed ? selectedRating.requesterFR : (selectedRating.level.rerateNum || selectedRating.requesterFR)}</span>
                 </div>
                 <div className="detail-field">
                   <span className="detail-label">{tRating('labels.currentDifficulty')}</span>

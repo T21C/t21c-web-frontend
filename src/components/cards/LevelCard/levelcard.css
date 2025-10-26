@@ -19,7 +19,7 @@
   align-items: center;
   flex-wrap: wrap;
   border-bottom: 1px solid;
-  border-color: #aaa;
+  border-color: #aaa6;
   transition: all 0.1s ease-in-out;
   justify-items: space-between;
   flex-grow: 1;
@@ -198,6 +198,11 @@
   padding: 0;
   cursor: pointer;
   transition: all 0.2s;
+}
+
+.level-card.compact .add-to-pack-button {
+  height: 1.65rem;
+  width: 1.65rem;
 }
 
 .level-card .add-to-pack-button svg {
@@ -546,6 +551,11 @@
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s;
+}
+
+.level-card.compact .edit-button {
+  height: 1.65rem;
+  width: 1.65rem;
 }
 
 .level-card .edit-button:hover {
