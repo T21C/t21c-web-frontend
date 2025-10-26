@@ -711,7 +711,7 @@ const LevelPage = () => {
           </div>
         </div>
         <span className="total-search-results">{tLevel('totalResults', 
-        { count: totalLevels > 50000 ? "50000+" : totalLevels })}</span>
+        { count: totalLevels })}</span>
         <div className="view-mode-section">
           <p>{tLevel('settingExp.viewMode')}</p>
           <div className="view-mode-buttons">
