@@ -552,7 +552,7 @@ const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict })
                   : prevDiff?.icon ? 
                   <img src={prevDiff.icon} alt={prevDiff.name} /> 
                   : <span>{prevDiff?.name || entry.previousDiffId}</span>}
-                  {entry.previousBaseScore || difficultyDict[entry.previousDiffId]?.baseScore && <div className="rerate-history-basescore">{entry.previousBaseScore || difficultyDict[entry.previousDiffId]?.baseScore}PP</div>}
+                  {entry.previousBaseScore || difficultyDict[entry.previousDiffId]?.baseScore !== undefined && <div className="rerate-history-basescore">{entry.previousBaseScore || difficultyDict[entry.previousDiffId]?.baseScore}PP</div>}
                 </div>
                 <span className="rerate-history-arrow">➔</span>
                 <div className="rerate-history-icon" title={newDiff?.name || entry.newDiffId}>
@@ -560,7 +560,7 @@ const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict })
                   <LegacyDiffIcon diff={legacyNewDiff} /> 
                   : newDiff?.icon ? 
                   <img src={newDiff.icon} alt={newDiff.name} /> : <span>{newDiff?.name || entry.newDiffId}</span>}
-                  {entry.newBaseScore || difficultyDict[entry.newDiffId]?.baseScore && <div className="rerate-history-basescore">{entry.newBaseScore || difficultyDict[entry.newDiffId]?.baseScore}PP</div>}
+                  {entry.newBaseScore || difficultyDict[entry.newDiffId]?.baseScore !== undefined && <div className="rerate-history-basescore">{entry.newBaseScore || difficultyDict[entry.newDiffId]?.baseScore}PP</div>}
                 </div>
                 <div className="rerate-history-meta">
                   <span className="rerate-history-date">{new Date(entry.createdAt).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
