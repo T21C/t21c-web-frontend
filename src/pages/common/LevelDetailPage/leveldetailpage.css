@@ -1059,6 +1059,10 @@
 /* ============================================
    RANK/LEADERBOARD SECTION
    ============================================ */
+.level-detail .rank .sort .svg-fill.active {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
 .level-detail .rank {
   max-width: var(--content-max-width);
   margin: var(--spacing-xl) auto;
@@ -1105,10 +1109,14 @@
 
 .level-detail .rank .sort .sort-direction-indicator {
   color: var(--primary-text);
-  font-size: 1rem;
-  font-weight: bold;
-  margin-left: 0.25rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-left: -0.2rem;
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
+}
+
+.level-detail .rank .sort .sort-direction-indicator.flip-up {
+  transform: rotate(180deg);
 }
 
 .level-detail .rank h1 {

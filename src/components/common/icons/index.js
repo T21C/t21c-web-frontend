@@ -49,6 +49,9 @@ import ChevronIcon from './ChevronIcon';
 import DeleteIcon from './TrashIcon';
 import SpeedIcon from './SpeedIcon';
 import LegacyDiffIcon from './LegacyDiffIcon/LegacyDiffIcon';
+import PercentIcon from './PercentIcon';
+import CalendarIcon from './CalendarIcon';
+import ScoreIcon from './ScoreIcon';
 
 export {
     DefaultAvatar,
@@ -101,5 +104,8 @@ export {
     ChevronIcon,
     DeleteIcon,
     SpeedIcon,
-    LegacyDiffIcon
+    LegacyDiffIcon,
+    PercentIcon,
+    CalendarIcon,
+    ScoreIcon
 }
