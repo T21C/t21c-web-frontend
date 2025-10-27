@@ -233,6 +233,7 @@
 
 .leaderboard-page .add-filter-button {
   padding: 0.5rem 1rem;
+  height: -webkit-fill-available;
   color: white;
   border: none;
   border-radius: 4px;
@@ -321,6 +322,29 @@
 .leaderboard-page .filter-chip-remove:hover {
   background-color: rgba(220, 53, 69, 0.8);
   transform: scale(1.1);
+}
+
+.leaderboard-page .country-clear-button {
+  background: var(--color-white-t20);
+  border: 1px solid var(--color-white-t30);
+  border-radius: 4px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white;
+  font-size: 1.2rem;
+  line-height: 1;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.leaderboard-page .country-clear-button:hover {
+  background-color: rgba(220, 53, 69, 0.8);
+  border-color: rgba(220, 53, 69, 1);
+  transform: scale(1.05);
 }
 
 .leaderboard-page .filter-range-editor {

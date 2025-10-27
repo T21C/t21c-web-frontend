@@ -3,6 +3,8 @@ import './rangeselector.css';
 
 const RangeSelector = ({ 
   values = [0, 100],  // [min, max]
+  decimals = 0,
+  suffix = "",
   onChange,
   onChangeComplete,
   min = 0,
@@ -17,6 +19,7 @@ const RangeSelector = ({
   const [dragStartX, setDragStartX] = useState(null);
   const [dragStartValue, setDragStartValue] = useState(null);
   const [localValues, setLocalValues] = useState(values);
+  const [inputValues, setInputValues] = useState([values[0].toFixed(decimals), values[1].toFixed(decimals)]);
 
   // Update local values when prop values change (only if not dragging)
   useEffect(() => {
@@ -24,12 +27,13 @@ const RangeSelector = ({
       setLocalValues(prevValues => {
         // Only update if values actually changed (deep comparison)
         if (values[0] !== prevValues[0] || values[1] !== prevValues[1]) {
+          setInputValues([values[0].toFixed(decimals), values[1].toFixed(decimals)]);
           return values;
         }
         return prevValues;
       });
     }
-  }, [values[0], values[1], isDragging]);
+  }, [values[0], values[1], isDragging, decimals]);
 
   const clampValue = useCallback((value) => {
     return Math.max(min, Math.min(max, Math.round(value / step) * step));
@@ -66,8 +70,9 @@ const RangeSelector = ({
     }
     
     setLocalValues(newValues);
+    setInputValues([newValues[0].toFixed(decimals), newValues[1].toFixed(decimals)]);
     onChange?.(newValues);
-  }, [isDragging, activeKnob, dragStartX, dragStartValue, localValues, min, max, step, onChange, clampValue]);
+  }, [isDragging, activeKnob, dragStartX, dragStartValue, localValues, min, max, step, decimals, onChange, clampValue]);
 
   // Handle pointer up
   const handlePointerUp = useCallback(() => {
@@ -77,6 +82,7 @@ const RangeSelector = ({
         Math.max(localValues[0], localValues[1])
       ];
       setLocalValues(newValues);
+      setInputValues([newValues[0].toFixed(decimals), newValues[1].toFixed(decimals)]);
       onChange?.(newValues);
       onChangeComplete?.(newValues);
       setIsDragging(false);
@@ -84,7 +90,7 @@ const RangeSelector = ({
       setDragStartX(null);
       setDragStartValue(null);
     }
-  }, [isDragging, localValues, onChange, onChangeComplete]);
+  }, [isDragging, localValues, decimals, onChange, onChangeComplete]);
 
   // Add and remove event listeners
   useEffect(() => {
@@ -126,9 +132,10 @@ const RangeSelector = ({
     ];
     
     setLocalValues(sortedValues);
+    setInputValues([sortedValues[0].toFixed(decimals), sortedValues[1].toFixed(decimals)]);
     onChange?.(sortedValues);
     onChangeComplete?.(sortedValues);
-  }, [isDragging, localValues, onChange, onChangeComplete, clampValue, percentToValue]);
+  }, [isDragging, localValues, decimals, onChange, onChangeComplete, clampValue, percentToValue]);
 
   // Handle drag start
   const handleDragStart = useCallback((index, e) => {
@@ -140,10 +147,30 @@ const RangeSelector = ({
     setDragStartValue(localValues[index]);
   }, [localValues]);
 
-  // Handle input change
+  // Handle input change (while typing)
   const handleInputChange = useCallback((index, value) => {
-    const numValue = parseFloat(value);
-    if (isNaN(numValue)) return;
+    // Allow empty string for better UX when clearing input
+    const newInputValues = [...inputValues];
+    newInputValues[index] = value;
+    setInputValues(newInputValues);
+  }, [inputValues]);
+
+  // Handle input blur (apply the value)
+  const handleInputBlur = useCallback((index) => {
+    const value = inputValues[index];
+    
+    // Treat empty string as 0
+    const numValue = value === '' ? 0 : parseFloat(value);
+    
+    if (isNaN(numValue)) {
+      // Revert to current value if invalid
+      setInputValues(prev => {
+        const newInputs = [...prev];
+        newInputs[index] = localValues[index].toFixed(decimals);
+        return newInputs;
+      });
+      return;
+    }
     
     const clampedValue = clampValue(numValue);
     const newValues = [...localValues];
@@ -157,15 +184,11 @@ const RangeSelector = ({
     }
     
     setLocalValues(newValues);
+    setInputValues([newValues[0].toFixed(decimals), newValues[1].toFixed(decimals)]);
     onChange?.(newValues);
     onChangeComplete?.(newValues);
-  }, [localValues, onChange, onChangeComplete, clampValue]);
+  }, [inputValues, localValues, decimals, onChange, onChangeComplete, clampValue]);
 
-  // Prevent default drag behavior
-  const preventDrag = (e) => {
-    e.preventDefault();
-    return false;
-  };
 
   const rangeLeft = valueToPercent(Math.min(...localValues));
   const rangeWidth = valueToPercent(Math.max(...localValues)) - rangeLeft;
@@ -177,9 +200,9 @@ const RangeSelector = ({
           <input
             type="number"
             className="range-input"
-            value={localValues[0]}
+            value={inputValues[0]}
             onChange={(e) => handleInputChange(0, e.target.value)}
-            onBlur={(e) => handleInputChange(0, e.target.value)}
+            onBlur={() => handleInputBlur(0)}
             min={min}
             max={max}
             step={step}
@@ -213,7 +236,7 @@ const RangeSelector = ({
               >
                 <div className="knob" />
                 {isDragging && activeKnob === 0 && (
-                  <div className="value-display">{localValues[0]}</div>
+                  <div className="value-display">{localValues[0].toFixed(decimals)}</div>
                 )}
               </div>
               <div 
@@ -224,7 +247,7 @@ const RangeSelector = ({
               >
                 <div className="knob" />
                 {isDragging && activeKnob === 1 && (
-                  <div className="value-display">{localValues[1]}</div>
+                  <div className="value-display">{localValues[1].toFixed(decimals)}</div>
                 )}
               </div>
             </div>
@@ -235,9 +258,9 @@ const RangeSelector = ({
           <input
             type="number"
             className="range-input"
-            value={localValues[1]}
+            value={inputValues[1]}
             onChange={(e) => handleInputChange(1, e.target.value)}
-            onBlur={(e) => handleInputChange(1, e.target.value)}
+            onBlur={() => handleInputBlur(1)}
             min={min}
             max={max}
             step={step}

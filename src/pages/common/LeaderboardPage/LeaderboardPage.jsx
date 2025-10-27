@@ -75,8 +75,8 @@ const LeaderboardPage = () => {
     { key: 'generalScore', label: tLeaderboard('sortOptions.generalScore'), maxKey: 'maxGeneralScore', step: 1 },
     { key: 'ppScore', label: tLeaderboard('sortOptions.ppScore'), maxKey: 'maxPpScore', step: 1 },
     { key: 'wfScore', label: tLeaderboard('sortOptions.wfScore'), maxKey: 'maxWfScore', step: 1 },
-    { key: 'score12K', label: '12K Score', maxKey: 'maxScore12K', step: 1 },
-    { key: 'averageXacc', label: tLeaderboard('sortOptions.averageXacc'), maxKey: 'maxAverageXacc', step: 0.01 },
+    { key: 'score12K', label: tLeaderboard('sortOptions.score12K'), maxKey: 'maxScore12K', step: 1 },
+    { key: 'averageXacc', label: tLeaderboard('sortOptions.averageXacc'), maxKey: 'maxAverageXacc', step: 0.01, isPercentage: true },
     { key: 'totalPasses', label: tLeaderboard('sortOptions.totalPasses'), maxKey: 'maxTotalPasses', step: 1 },
     { key: 'universalPassCount', label: tLeaderboard('sortOptions.universalPassCount'), maxKey: 'maxUniversalPassCount', step: 1 },
     { key: 'worldsFirstCount', label: tLeaderboard('sortOptions.worldsFirstCount'), maxKey: 'maxWorldsFirstCount', step: 1 },
@@ -95,7 +95,15 @@ const LeaderboardPage = () => {
 
       // Add filters if they exist
       if (filters && Object.keys(filters).length > 0 || country) {
-        params.append('filters', JSON.stringify({...filters, country: country}));
+        // Convert percentage filters back to decimal values for API
+        const apiFilters = { ...filters };
+        if (apiFilters.averageXacc) {
+          apiFilters.averageXacc = [
+            apiFilters.averageXacc[0] / 100,
+            apiFilters.averageXacc[1] / 100
+          ];
+        }
+        params.append('filters', JSON.stringify({...apiFilters, country: country}));
       }
       
       const endpoint = `/v2/database/leaderboard?${params.toString()}`;
@@ -178,7 +186,13 @@ const LeaderboardPage = () => {
 
   const addFilter = () => {
     if (selectedFilterField && !activeFilters[selectedFilterField.key]) {
-      const maxValue = maxFields[selectedFilterField.maxKey] || 1000;
+      let maxValue = maxFields[selectedFilterField.maxKey] || 1000;
+      
+      // Convert to percentage if needed
+      if (selectedFilterField.isPercentage) {
+        maxValue = maxValue * 100;
+      }
+      
       const newFilterValue = [0, Math.ceil(maxValue)];
       
       setActiveFilters(prev => ({
@@ -321,18 +335,29 @@ const LeaderboardPage = () => {
               <div className="filter-row">
                 <div className="filter-container country-filter">
                   <p className="setting-description">{tLeaderboard('settings.filter.country')}</p>
-                  <CountrySelect
-                    value={country}
-                    onChange={(country) => {
-                      setCountry(country);
-                    }}
-                  />
+                  <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+                    <CountrySelect
+                      value={country}
+                      onChange={(country) => {
+                        setCountry(country);
+                      }}
+                    />
+                    {country && (
+                      <button 
+                        className="country-clear-button"
+                        onClick={() => setCountry('')}
+                        title="Clear country filter"
+                      >
+                        ×
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
 
               {/* Filter Builder */}
               <div className="filter-builder" >
-                <p className="setting-description">Add Stat Filters</p>
+                <p className="setting-description">{tLeaderboard('settings.filter.addStatFilters')}</p>
                 <div className="filter-selector-row">
                   <div className="filter-selector-container">
                     <CustomSelect
@@ -341,7 +366,7 @@ const LeaderboardPage = () => {
                       options={filterableFields
                         .filter(f => !activeFilters[f.key])
                         .map(f => ({ value: f, label: f.label }))}
-                      placeholder="Select stat to filter..."
+                      placeholder={tLeaderboard('settings.filter.selectStatPlaceholder')}
                       width="100%"
                     />
                   </div>
@@ -350,7 +375,7 @@ const LeaderboardPage = () => {
                     disabled={!selectedFilterField}
                     className="add-filter-button"
                   >
-                    Add Filter
+                    {tLeaderboard('settings.filter.addFilterButton')}
                   </button>
                 </div>
 
@@ -361,6 +386,9 @@ const LeaderboardPage = () => {
                       const field = filterableFields.find(f => f.key === key);
                       if (!field) return null;
                       
+                      const decimals = field.step < 1 ? 2 : 0;
+                      const suffix = field.isPercentage ? '%' : '';
+                      
                       return (
                         <div 
                           key={key} 
@@ -369,7 +397,7 @@ const LeaderboardPage = () => {
                         >
                           <span className="filter-chip-label">{field.label}</span>
                           <span className="filter-chip-range">
-                            {values[0].toFixed(field.step < 1 ? 2 : 0)} - {values[1].toFixed(field.step < 1 ? 2 : 0)}
+                            {values[0].toFixed(decimals)}{suffix} - {values[1].toFixed(decimals)}{suffix}
                           </span>
                           <button 
                             className="filter-chip-remove"
@@ -393,7 +421,16 @@ const LeaderboardPage = () => {
                       const field = filterableFields.find(f => f.key === selectedFilterKey);
                       if (!field) return null;
                       
-                      const maxValue = maxFields[field.maxKey] || 1000;
+                      let maxValue = maxFields[field.maxKey] || 1000;
+                      
+                      // Convert to percentage if needed
+                      if (field.isPercentage) {
+                        maxValue = maxValue * 100;
+                      }
+
+                      const decimals = field.step < 1 ? 2 : 0;
+                      const suffix = field.isPercentage ? '%' : '';
+                      
                       const currentValues = activeFilters[selectedFilterKey];
                       
                       return (
@@ -414,9 +451,11 @@ const LeaderboardPage = () => {
                             }}
                             min={0}
                             max={Math.ceil(maxValue)}
+                            decimals={decimals}
+                            suffix={suffix}
                             step={field.step}
-                            minLabel="Min"
-                            maxLabel="Max"
+                            minLabel={tLeaderboard('settings.filter.min') + suffix}
+                            maxLabel={tLeaderboard('settings.filter.max') + suffix}
                           />
                         </>
                       );
@@ -492,7 +531,7 @@ const LeaderboardPage = () => {
 
         <div style={{ minHeight: "200px" }}>
           {!playerData ? (
-            <div className="loader"></div>
+            <div className="loader loader-level-page"></div>
           ) : (
             <InfiniteScroll
               style={{ paddingBottom: "4rem", overflow: "visible" }}

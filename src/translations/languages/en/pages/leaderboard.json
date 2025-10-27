@@ -16,7 +16,12 @@
   "settings": {
     "filter": {
       "header": "Filter Settings",
-      "country": "Country or Region"
+      "country": "Country or Region",
+      "addStatFilters": "Add Stat Filters",
+      "selectStatPlaceholder": "Select stat to filter...",
+      "addFilterButton": "Add Filter",
+      "min": "Min",
+      "max": "Max"
     },
     "sort": {
       "header": "Sort Settings",

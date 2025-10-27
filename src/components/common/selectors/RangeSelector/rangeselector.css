@@ -27,7 +27,7 @@
 
 .range-selector-container .range-input {
   width: 80px;
-  padding: 0.5rem;
+  padding: 0.5rem 0rem 0.5rem 0.5rem;
   background: var(--color-white-t20);
   border: 1px solid var(--color-white-t30);
   border-radius: 4px;
@@ -41,7 +41,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
 }
 .range-selector-container .range-input:focus {
   outline: none;
