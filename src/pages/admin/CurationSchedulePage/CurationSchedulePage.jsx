@@ -12,6 +12,8 @@ import { NavLink } from 'react-router-dom';
 import { CurationSelectionPopup } from '@/components/popups';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { canAssignCurationType } from '@/utils/curationTypeUtils';
+import { formatDate } from '@/utils/Utility';
+import i18next from 'i18next';
 
 // All date operations use UTC to ensure consistent timezone handling
 const CurationSchedulePage = () => {
@@ -38,21 +40,13 @@ const CurationSchedulePage = () => {
     return monday;
   }
 
-  // Format date for display (converts UTC to local time for user display)
-  const formatDate = (date) => {
-    return date.toLocaleDateString('en-US', { 
-      month: 'long', 
-      day: 'numeric', 
-      year: 'numeric' 
-    });
-  };
 
   // Get week label (UTC)
   const getWeekLabel = (monday) => {
     const weekEnd = new Date(monday);
     weekEnd.setUTCDate(monday.getUTCDate() + 6);
     weekEnd.setUTCHours(0, 0, 0, 0); // Ensure it stays at start of day in UTC
-    return `${formatDate(monday)} - ${formatDate(weekEnd)}`;
+    return `${formatDate(monday, i18next?.language)} - ${formatDate(weekEnd, i18next?.language)}`;
   };
 
   useEffect(() => {

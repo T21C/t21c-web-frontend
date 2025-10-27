@@ -10,6 +10,8 @@ import { EditIcon, RefreshIcon } from "@/components/common/icons";
 import { AccessDenied } from "@/components/common/display";
 import { toast } from "react-hot-toast";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import { formatDate } from "@/utils/Utility";
+import i18next from "i18next";
 
 const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB in bytes
 
@@ -377,7 +379,7 @@ const BackupList = ({ backups, type, onRestore, onDelete, isLoadingBackups, isDe
                     </div>
                     <div className="backup-details">
                       <p className="backup-date">
-                        {tBackup('fileInfo.created', { date: new Date(backup.created).toLocaleString() })}
+                        {tBackup('fileInfo.created', { date: formatDate(backup.created, i18next?.language) })}
                         <TimeAgo date={backup.created} />
                       </p>
                       <p className="backup-size">

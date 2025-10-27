@@ -8,6 +8,8 @@ import { PlayerInput } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
 import { ProfileCreationModal } from './ProfileCreationModal';
 import { AdminPlayerPopup } from '@/components/popups';
+import { formatDate } from '@/utils/Utility';
+import i18next from 'i18next';
 
 
 const PassSubmissions = ({ setIsAutoAllowing }) => {
@@ -312,7 +314,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
               <div className="submission-header">
                 <h3>{submission.title || "Null"}</h3>
                 <span className="submission-date">
-                  {new Date(submission.createdAt || Date.now()).toLocaleDateString()}
+                  {formatDate(submission.createdAt || Date.now(), i18next?.language)}
                 </span>
               </div>
               
@@ -371,7 +373,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                   <div className="detail-row">
                     <span className="detail-label">{tPass('details.uploadTime')}</span>
                     <span className="detail-value">
-                      {new Date(submission.rawTime || Date.now()).toLocaleString()}
+                      {formatDate(submission.rawTime || Date.now(), i18next?.language)}
                     </span>
                   </div>
 

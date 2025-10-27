@@ -31,6 +31,8 @@ import {
   verticalListSortingStrategy,
 } from '@dnd-kit/sortable';
 import { useDroppable } from '@dnd-kit/core';
+import i18next from 'i18next';
+import { formatDate } from '@/utils/Utility';
 
 // Root drop zone component for top-level items
 const RootDropZone = ({
@@ -864,7 +866,7 @@ const PackDetailPage = () => {
           
           <div className="pack-detail-page__stat">
             <span className="pack-detail-page__stat-value">
-              {new Date(pack.createdAt).toLocaleDateString()}
+              {formatDate(pack?.createdAt, i18next?.language)}
             </span>
             <span className="pack-detail-page__stat-label">
               {tPack('stats.created')}

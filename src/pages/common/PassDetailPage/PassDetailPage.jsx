@@ -1,6 +1,6 @@
 import "./passdetailpage.css";
 import { useEffect, useState } from "react";
-import { useLocation, useParams, Link } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { CompleteNav, UserAvatar } from "@/components/layout";
 import { formatNumber, getVideoDetails, isoToEmoji } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
@@ -8,8 +8,9 @@ import { useTranslation } from "react-i18next";
 import api from "@/utils/api";
 import { EditPassPopup } from "@/components/popups";
 import { MetaTags } from "@/components/common/display";
-import { DefaultAvatar } from "@/components/common/icons";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import { formatDate } from "@/utils/Utility";
+import i18next from "i18next";
 
 const currentUrl = window.location.origin + location.pathname;
 
@@ -23,15 +24,6 @@ const parseRankColor = (rank) => {
   }
   return clr
 }
-
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
-  });
-};
 
 const PassDetailPage = () => {
   const { t } = useTranslation('pages');
@@ -221,7 +213,7 @@ const PassDetailPage = () => {
                     </div>
                   )}
                 </div>
-                <div className="pass-date">{tPass('player.clearDate', { date: formatDate(pass.vidUploadTime) })}</div>
+                <div className="pass-date">{tPass('player.clearDate', { date: formatDate(pass.vidUploadTime, i18next?.language) })}</div>
               </div>
             </div>
           </div>

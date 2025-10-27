@@ -16,7 +16,6 @@ import { LeaderboardIcon, SortAscIcon, SortDescIcon } from "@/components/common/
 import { Tooltip } from "react-tooltip";
 import { RatingHelpPopup } from "@/components/popups";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { filterRatingsByUserTopDiff } from "@/utils/Utility";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
 const RatingPage = () => {
@@ -333,12 +332,6 @@ const RatingPage = () => {
       return true;
     });
 
-    /*
-    // Apply user top difficulty filter
-    if (hasFlag(user, permissionFlags.SUPER_ADMIN)) {
-      filtered = filterRatingsByUserTopDiff(filtered, user, difficultyDict);
-    }
-    */
     
     return filtered;
   }, [sortedRatings, hideRated, lowDiffFilter, fourVoteFilter, searchQuery, user, difficultyDict]);

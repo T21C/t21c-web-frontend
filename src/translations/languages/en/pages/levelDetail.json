@@ -68,7 +68,8 @@
     "difficulty": "Difficulty",
     "baseScore": "Base Score",
     "aliases": "Aliases",
-    "comments": "Comments"
+    "comments": "Comments",
+    "createdAt": "Created at"
   },
   "leaderboard": {
     "header": "Leaderboard",

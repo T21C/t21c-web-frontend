@@ -7,6 +7,8 @@ import api from '@/utils/api';
 import './curationpreviewpage.css';
 import { useTranslation } from 'react-i18next';
 import { formatCreatorDisplay } from '@/utils/Utility';
+import { formatDate } from '@/utils/Utility';
+import i18next from 'i18next';
 
 const CurationPreviewPage = () => {
   const { id } = useParams();
@@ -153,7 +155,7 @@ const CurationPreviewPage = () => {
             {tCur('footer.assignedBy', { user: curation.assignedBy })}
           </p>
           <p className="curation-preview-page__date">
-            {tCur('footer.assignedOn', { date: new Date(curation.createdAt).toLocaleDateString() })}
+            {tCur('footer.assignedOn', { date: formatDate(curation.createdAt, i18next?.language) })}
           </p>
         </div>
       </div>

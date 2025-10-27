@@ -72,6 +72,7 @@ nav {
 
 .nav-list-item {
   padding: 0.5rem;
+  text-wrap: nowrap;
   position: relative;
   cursor: pointer;
 }

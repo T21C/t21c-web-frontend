@@ -35,12 +35,13 @@ import {
   CalendarIcon, 
   ScoreIcon
 } from "@/components/common/icons";
-import { createEventSystem, formatCreatorDisplay } from "@/utils/Utility";
+import { createEventSystem, formatCreatorDisplay, formatDate } from "@/utils/Utility";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
 import LevelDownloadPopup from '../../../components/popups/LevelDownloadPopup/LevelDownloadPopup';
 import { ABILITIES, hasBit } from '@/utils/Abilities';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import i18next from "i18next";
 
 const minus2Reasons = []
 const gimmickReasons = []
@@ -192,7 +193,7 @@ const RatingVotesDropdown = ({ votes, show, onClose }) => {
   );
 };
 
-const FullInfoPopup = ({ level, onClose }) => {
+const FullInfoPopup = ({ level, onClose, videoDetail }) => {
   const { t } = useTranslation('pages');
   const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
 
@@ -257,6 +258,7 @@ const FullInfoPopup = ({ level, onClose }) => {
           <div className="popup-header" style={{ backgroundColor: `#${level.difficulty.color}ff` }}>
             <h2>{level.song}</h2>
             <p>{level.artist}</p>
+            <span className="createdAt">{tLevel('info.createdAt')}: {formatDate(videoDetail?.timestamp || level.createdAt, i18next?.language)}</span>
             <button className="popup-close-button" onClick={onClose} title={tLevel('buttons.close')}>
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -529,7 +531,7 @@ const CurationTooltip = ({ curation, show, onClose }) => {
         </span>
       </div>
       <div className="curation-tooltip-time">
-        At {new Date(curation.createdAt).toLocaleString()}
+        At {formatDate(curation.createdAt, i18next?.language)}
       </div>
     </div>
   );
@@ -587,7 +589,7 @@ const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict })
                   {(entry.newBaseScore || difficultyDict[entry.newDiffId]?.baseScore !== undefined) && <div className="rerate-history-basescore">{entry.newBaseScore || difficultyDict[entry.newDiffId]?.baseScore}PP</div>}
                 </div>
                 <div className="rerate-history-meta">
-                  <span className="rerate-history-date">{new Date(entry.createdAt).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                  <span className="rerate-history-date">{formatDate(entry.createdAt, i18next?.language)}</span>
                   {entry.user && <span className="rerate-history-user">{entry.user.username || entry.reratedBy}</span>}
                 </div>
               </div>
@@ -1999,6 +2001,7 @@ const LevelDetailPage = ({ mockData = null }) => {
         <FullInfoPopup
           level={res.level}
           onClose={changeDialogState}
+          videoDetail={videoDetail}
         />
       )}
 

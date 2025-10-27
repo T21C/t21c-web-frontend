@@ -9,6 +9,8 @@ import { SubmissionCreatorPopup } from '@/components/popups';
 import { toast } from "react-hot-toast";
 import { ServerCloudIcon, WarningIcon } from "@/components/common/icons";
 import { Tooltip } from "react-tooltip";
+import { formatDate } from "@/utils/Utility";
+import i18next from "i18next";
 
 
 const LevelSubmissions = () => {
@@ -379,7 +381,7 @@ const LevelSubmissions = () => {
               <div className="submission-header">
                 <h3>{submission.song}</h3>
                 <span className="submission-date">
-                  {new Date(submission.createdAt).toLocaleDateString()}
+                  {formatDate(submission.createdAt, i18next?.language)}
                 </span>
               </div>
               

@@ -3,6 +3,8 @@ import { CompleteNav } from '@/components/layout';
 import { MetaTags } from '@/components/common/display';
 import { useTranslation } from 'react-i18next';
 import './healthcheckpage.css';
+import { formatDate } from '@/utils/Utility';
+import i18next from 'i18next';
 
 const HealthCheckPage = () => {
   const { t } = useTranslation('pages');
@@ -26,7 +28,7 @@ const HealthCheckPage = () => {
       
       const data = await response.json();
       setHealthData(data);
-      setLastUpdated(new Date().toLocaleString());
+      setLastUpdated(formatDate(new Date(), i18next?.language));
     } catch (err) {
       setError(t('healthCheck.error', { error: err.message }));
       console.error('Error fetching health data:', err);

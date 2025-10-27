@@ -1667,6 +1667,13 @@
   z-index: 1;
 }
 
+.level-detail-popup .popup-content .popup-header .createdAt {
+  position: relative;
+  color: var(--tertiary-text);
+  font-size: var(--font-size-sm);
+  z-index: 2;
+}
+
 .level-detail-popup .popup-content .popup-header .popup-close-button {
   position: absolute;
   top: var(--spacing-md);

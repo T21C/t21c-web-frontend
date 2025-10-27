@@ -1,30 +1,15 @@
 import { LinkIcon } from '@/components/common/icons/LinkIcon';
 import './ratingcard.css';
-import { calculateRatingValue, formatCreatorDisplay } from '@/utils/Utility';
+import { calculateRatingValue, formatCreatorDisplay, formatDate } from '@/utils/Utility';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import i18next from 'i18next';
 
 const trimString = (str, maxLength = 40) => {
   if (!str || typeof str !== 'string') return '';
   return str.length > maxLength ? str.substring(0, maxLength - 3) + '...' : str;
-};
-
-const formatDate = (dateString) => {
-  const date = new Date(dateString);
-  const formattedDate = date.toLocaleDateString(undefined, { 
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  });
-  const formattedTime = date.toLocaleTimeString(undefined, {
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit',
-    hour12: false
-  });
-  return `${formattedDate} ${formattedTime}`;
 };
 
 export const RatingCard = ({ 
@@ -119,7 +104,7 @@ export const RatingCard = ({
                 className="updated-at" 
                 title={tRating('tooltips.lastUpdated')}
               >
-                {tRating('labels.updatedAt')} {formatDate(rating.updatedAt)}
+                {tRating('labels.updatedAt')} {formatDate(rating.updatedAt, i18next?.language)}
               </span>
               <span className="level-id">
                 #{rating.level.id}
