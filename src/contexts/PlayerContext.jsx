@@ -11,11 +11,22 @@ export const PlayerContextProvider = ({ children }) => {
     QUERY: 'player_query',
     SORT: 'player_sort',
     SORT_BY: 'player_sort_by',
-    SHOW_BANNED: 'player_show_banned'
+    SHOW_BANNED: 'player_show_banned',
+    FILTERS: 'player_filters',
+    COUNTRY: 'player_country',
   };
 
   const [playerData, setPlayerData] = useState([]);
   const [displayedPlayers, setDisplayedPlayers] = useState([]);
+  const [maxFields, setMaxFields] = useState({});
+  const [filters, setFilters] = useState(() => {
+    try {
+      const savedFilters = Cookies.get(COOKIE_KEYS.FILTERS);
+      return savedFilters ? JSON.parse(savedFilters) : {};
+    } catch (e) {
+      return {};
+    }
+  });
   const [filterOpen, setFilterOpen] = useState(() => Cookies.get(COOKIE_KEYS.FILTER_OPEN) === 'true');
   const [sortOpen, setSortOpen] = useState(() => Cookies.get(COOKIE_KEYS.SORT_OPEN) === 'true');
   const [query, setQuery] = useState(() => Cookies.get(COOKIE_KEYS.QUERY) || '');
@@ -25,6 +36,7 @@ export const PlayerContextProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [initialLoading, setInitialLoading] = useState(true);
   const [forceUpdate, setForceUpdate] = useState(false);
+  const [country, setCountry] = useState(() => Cookies.get(COOKIE_KEYS.COUNTRY) || '');
 
   // Effects to save state changes to cookies
   useEffect(() => {
@@ -51,6 +63,14 @@ export const PlayerContextProvider = ({ children }) => {
     Cookies.set(COOKIE_KEYS.SHOW_BANNED, showBanned);
   }, [showBanned]);
 
+  useEffect(() => {
+    Cookies.set(COOKIE_KEYS.FILTERS, JSON.stringify(filters));
+  }, [filters]);
+
+  useEffect(() => {
+    Cookies.set(COOKIE_KEYS.COUNTRY, country);
+  }, [country]);
+
   return (
     <PlayerContext.Provider
       value={{
@@ -75,7 +95,13 @@ export const PlayerContextProvider = ({ children }) => {
         initialLoading,
         setInitialLoading,
         forceUpdate,
-        setForceUpdate
+        setForceUpdate,
+        maxFields,
+        setMaxFields,
+        filters,
+        setFilters,
+        country,
+        setCountry
       }}
     >
       {children}

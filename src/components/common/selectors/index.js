@@ -9,6 +9,7 @@ import { RatingInput } from "./RatingInput/RatingInput";
 import { RouletteWheel } from "./RouletteWheel/RouletteWheel";
 import { SlotMachine } from "./SlotMachine/SlotMachine";
 import { CaseOpenSelector } from "./CaseOpenSelector/CaseOpenSelector";
+import RangeSelector from "./RangeSelector/RangeSelector";
 
 export {
     CountrySelect,
@@ -21,5 +22,6 @@ export {
     RatingInput,
     RouletteWheel,
     SlotMachine,
-    CaseOpenSelector
+    CaseOpenSelector,
+    RangeSelector
 }

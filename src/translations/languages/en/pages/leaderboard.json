@@ -15,7 +15,8 @@
   },
   "settings": {
     "filter": {
-      "header": "Filter Settings"
+      "header": "Filter Settings",
+      "country": "Country or Region"
     },
     "sort": {
       "header": "Sort Settings",

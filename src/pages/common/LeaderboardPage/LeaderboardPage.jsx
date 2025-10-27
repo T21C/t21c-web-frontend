@@ -1,15 +1,12 @@
-/* eslint-disable no-unused-vars */
 import "./leaderboardpage.css";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { CompleteNav, } from "@/components/layout";
 import { PlayerCard } from "@/components/cards";
-import { StateDisplay } from "@/components/common/selectors";
+import { StateDisplay, CustomSelect, CountrySelect, RangeSelector } from "@/components/common/selectors";
 import { Tooltip } from "react-tooltip";
-import { CustomSelect } from "@/components/common/selectors";
 import InfiniteScroll from "react-infinite-scroll-component";
 import api from '@/utils/api';
 import { PlayerContext } from "@/contexts/PlayerContext";
-import { useLocation, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
@@ -25,12 +22,13 @@ const LeaderboardPage = () => {
   const { t } = useTranslation('pages');
   const tLeaderboard = (key, params = {}) => t(`leaderboard.${key}`, params);
   const { user } = useAuth();
-  const [error, setError] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [showCreatorAssignment, setShowCreatorAssignment] = useState(false);
   const [selectedPlayerUser, setSelectedPlayerUser] = useState(null);
-  const location = useLocation();
+  const [selectedFilterField, setSelectedFilterField] = useState(null);
+  const [activeFilters, setActiveFilters] = useState({});
+  const [selectedFilterKey, setSelectedFilterKey] = useState(null);
+  const debounceTimerRef = useRef(null);
 
   const {
     playerData,
@@ -41,6 +39,12 @@ const LeaderboardPage = () => {
     setFilterOpen,
     sortOpen,
     setSortOpen,
+    maxFields,
+    setMaxFields,
+    filters,
+    setFilters,
+    country,
+    setCountry,
     query,
     setQuery,
     sort,
@@ -66,19 +70,46 @@ const LeaderboardPage = () => {
     { value: 'top12kDiff', label: tLeaderboard('sortOptions.top12kDiff') }
   ];
 
+  const filterableFields = [
+    { key: 'rankedScore', label: tLeaderboard('sortOptions.rankedScore'), maxKey: 'maxRankedScore', step: 1 },
+    { key: 'generalScore', label: tLeaderboard('sortOptions.generalScore'), maxKey: 'maxGeneralScore', step: 1 },
+    { key: 'ppScore', label: tLeaderboard('sortOptions.ppScore'), maxKey: 'maxPpScore', step: 1 },
+    { key: 'wfScore', label: tLeaderboard('sortOptions.wfScore'), maxKey: 'maxWfScore', step: 1 },
+    { key: 'score12K', label: '12K Score', maxKey: 'maxScore12K', step: 1 },
+    { key: 'averageXacc', label: tLeaderboard('sortOptions.averageXacc'), maxKey: 'maxAverageXacc', step: 0.01 },
+    { key: 'totalPasses', label: tLeaderboard('sortOptions.totalPasses'), maxKey: 'maxTotalPasses', step: 1 },
+    { key: 'universalPassCount', label: tLeaderboard('sortOptions.universalPassCount'), maxKey: 'maxUniversalPassCount', step: 1 },
+    { key: 'worldsFirstCount', label: tLeaderboard('sortOptions.worldsFirstCount'), maxKey: 'maxWorldsFirstCount', step: 1 },
+  ];
+
   const fetchPlayers = async (offset = 0) => {
     try {
-      setLoading(true);
-      const endpoint = `/v2/database/leaderboard?query=${encodeURIComponent(query)}&sortBy=${sortBy}&order=${sort.toLowerCase()}&offset=${offset}&limit=${limit}&showBanned=${showBanned}`;
+      const params = new URLSearchParams({
+        query: query,
+        sortBy: sortBy,
+        order: sort.toLowerCase(),
+        offset: offset,
+        limit: limit,
+        showBanned: showBanned
+      });
 
+      // Add filters if they exist
+      if (filters && Object.keys(filters).length > 0 || country) {
+        params.append('filters', JSON.stringify({...filters, country: country}));
+      }
+      
+      const endpoint = `/v2/database/leaderboard?${params.toString()}`;
       const response = await api.get(endpoint);
       
       if (offset === 0) {
-        // First page, replace all data
         setPlayerData(response.data.results);
         setDisplayedPlayers(response.data.results);
+        
+        // Store maxFields if they're in the response
+        if (response.data.maxFields) {
+          setMaxFields(response.data.maxFields);
+        }
       } else {
-        // Subsequent pages, append data
         setPlayerData(prev => [...prev, ...response.data.results]);
         setDisplayedPlayers(prev => [...prev, ...response.data.results]);
       }
@@ -86,32 +117,51 @@ const LeaderboardPage = () => {
       setHasMore(displayedPlayers.length < response.data.count);
     } catch (error) {
       if (!api.isCancel(error)) {
-        setError(true);
         console.error('Error fetching leaderboard data:', error);
       }
-    } finally {
-      setLoading(false);
     }
   };
 
+  // Sync activeFilters with filters from context
   useEffect(() => {
-    let cancelToken = api.CancelToken.source();
-    setDisplayedPlayers([]);
-    fetchPlayers(0);
+    if (filters && Object.keys(filters).length > 0) {
+      setActiveFilters(filters);
+    }
+  }, []);
 
+  // Cleanup debounce timer on unmount
+  useEffect(() => {
     return () => {
-      cancelToken.cancel('Request cancelled due to component update');
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
     };
-  }, [forceUpdate, query, sort, sortBy, showBanned]);
+  }, []);
+
+  useEffect(() => {
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+    
+    debounceTimerRef.current = setTimeout(() => {
+      let cancelToken = api.CancelToken.source();
+      setPlayerData(null);
+      
+      fetchPlayers(0);
+
+      return () => {
+        cancelToken.cancel('Request cancelled due to component update');
+      };
+    }, 500);
+  }, [forceUpdate, query, sort, sortBy, showBanned, country, filters]);
 
   function handleQueryChange(e) {
     setQuery(e.target.value);
-    setDisplayedPlayers([]);
     setForceUpdate(prev => !prev);
   }
 
   function handleFilterOpen() {
-    //setFilterOpen(!filterOpen);
+    setFilterOpen(!filterOpen);
   }
 
   function handleSortOpen() {
@@ -126,12 +176,59 @@ const LeaderboardPage = () => {
     setSort(value);
   }
 
+  const addFilter = () => {
+    if (selectedFilterField && !activeFilters[selectedFilterField.key]) {
+      const maxValue = maxFields[selectedFilterField.maxKey] || 1000;
+      const newFilterValue = [0, Math.ceil(maxValue)];
+      
+      setActiveFilters(prev => ({
+        ...prev,
+        [selectedFilterField.key]: newFilterValue
+      }));
+      
+      setFilters(prev => ({
+        ...prev,
+        [selectedFilterField.key]: newFilterValue
+      }));
+      
+      setSelectedFilterKey(selectedFilterField.key);
+      setSelectedFilterField(null);
+    }
+  };
+
+  const removeFilter = (key) => {
+    setActiveFilters(prev => {
+      const newFilters = { ...prev };
+      delete newFilters[key];
+      return newFilters;
+    });
+    
+    setFilters(prev => {
+      const newFilters = { ...prev };
+      delete newFilters[key];
+      return newFilters;
+    });
+    
+    if (selectedFilterKey === key) {
+      const remainingKeys = Object.keys(activeFilters).filter(k => k !== key);
+      setSelectedFilterKey(remainingKeys[0] || null);
+    }
+  };
+
   function resetAll() {
-    setSortBy(sortOptions[0].value)
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+    setSortBy(sortOptions[0].value);
     setSort("DESC");
     setQuery("");
     setShowBanned('hide');
-    setForceUpdate((f) => !f);
+    setCountry('');
+    setActiveFilters({});
+    setFilters({});
+    setSelectedFilterField(null);
+    setSelectedFilterKey(null);
+    setForceUpdate(prev => !prev);
   }
 
   const handleCreatorAssignmentClick = (playerUser) => {
@@ -166,6 +263,7 @@ const LeaderboardPage = () => {
 
       <div className="leaderboard-body">
         <ScrollButton />  
+        
         <div className="leaderboard-input-option">
           <div className="search-container">
             <input
@@ -190,11 +288,10 @@ const LeaderboardPage = () => {
             <FilterIcon
               data-tooltip-id="filter"
               color="#ffffff"
-              onClick={() => handleFilterOpen()}
               style={{
-                //backgroundColor: filterOpen ? "rgba(255, 255, 255, 0.7)" : "",
-                padding: ".2rem",
+                backgroundColor: filterOpen ? "rgba(255, 255, 255, 0.7)" : "",
               }}
+              onClick={handleFilterOpen}
             />
 
             <SortIcon
@@ -203,30 +300,134 @@ const LeaderboardPage = () => {
               style={{
                 backgroundColor: sortOpen ? "rgba(255, 255, 255, 0.7)" : "",
               }}
-              onClick={() => handleSortOpen()}
+              onClick={handleSortOpen}
             />
             
             <ResetIcon
               color="#ffffff"
-              onClick={() => resetAll()}
+              onClick={resetAll}
               data-tooltip-id="reset"
             />
           </div>
         </div>
-        <div className="input-setting">
 
-          <div
-            className={`filter settings-class ${filterOpen ? 'visible' : 'hidden'}`}
-          >
+        <div className="input-setting">
+          <div className={`filter settings-class ${filterOpen ? 'visible' : 'hidden'}`}>
             <h2 className="setting-title">
               {tLeaderboard('settings.filter.header')}
             </h2>
-            {/* ... rest of filter content ... */}
+            
+            <div className="filter-section">
+              <div className="filter-row">
+                <div className="filter-container country-filter">
+                  <p className="setting-description">{tLeaderboard('settings.filter.country')}</p>
+                  <CountrySelect
+                    value={country}
+                    onChange={(country) => {
+                      setCountry(country);
+                    }}
+                  />
+                </div>
+              </div>
+
+              {/* Filter Builder */}
+              <div className="filter-builder" >
+                <p className="setting-description">Add Stat Filters</p>
+                <div className="filter-selector-row">
+                  <div className="filter-selector-container">
+                    <CustomSelect
+                      value={selectedFilterField ? { value: selectedFilterField, label: selectedFilterField.label } : null}
+                      onChange={(option) => setSelectedFilterField(option?.value || null)}
+                      options={filterableFields
+                        .filter(f => !activeFilters[f.key])
+                        .map(f => ({ value: f, label: f.label }))}
+                      placeholder="Select stat to filter..."
+                      width="100%"
+                    />
+                  </div>
+                  <button 
+                    onClick={addFilter} 
+                    disabled={!selectedFilterField}
+                    className="add-filter-button"
+                  >
+                    Add Filter
+                  </button>
+                </div>
+
+                {/* Active Filter Chips */}
+                {Object.keys(activeFilters).length > 0 && (
+                  <div className="filter-chips" style={{ marginTop: '1rem' }}>
+                    {Object.entries(activeFilters).map(([key, values]) => {
+                      const field = filterableFields.find(f => f.key === key);
+                      if (!field) return null;
+                      
+                      return (
+                        <div 
+                          key={key} 
+                          className={`filter-chip ${selectedFilterKey === key ? 'selected' : ''}`}
+                          onClick={() => setSelectedFilterKey(key)}
+                        >
+                          <span className="filter-chip-label">{field.label}</span>
+                          <span className="filter-chip-range">
+                            {values[0].toFixed(field.step < 1 ? 2 : 0)} - {values[1].toFixed(field.step < 1 ? 2 : 0)}
+                          </span>
+                          <button 
+                            className="filter-chip-remove"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              removeFilter(key);
+                            }}
+                          >
+                            ×
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Single Range Selector for Selected Filter */}
+                {selectedFilterKey && activeFilters[selectedFilterKey] && (
+                  <div className="filter-range-editor" style={{ marginTop: '1rem' }}>
+                    {(() => {
+                      const field = filterableFields.find(f => f.key === selectedFilterKey);
+                      if (!field) return null;
+                      
+                      const maxValue = maxFields[field.maxKey] || 1000;
+                      const currentValues = activeFilters[selectedFilterKey];
+                      
+                      return (
+                        <>
+                          <p className="setting-description" style={{ marginBottom: '0.5rem' }}>
+                            {field.label}
+                          </p>
+                          <RangeSelector
+                            values={currentValues}
+                            onChange={(newValues) => {
+                              // Update activeFilters for immediate visual feedback during drag
+                              setActiveFilters(prev => ({ ...prev, [selectedFilterKey]: newValues }));
+                            }}
+                            onChangeComplete={(newValues) => {
+                              // Update both activeFilters and filters to trigger API refresh
+                              setActiveFilters(prev => ({ ...prev, [selectedFilterKey]: newValues }));
+                              setFilters(prev => ({ ...prev, [selectedFilterKey]: newValues }));
+                            }}
+                            min={0}
+                            max={Math.ceil(maxValue)}
+                            step={field.step}
+                            minLabel="Min"
+                            maxLabel="Max"
+                          />
+                        </>
+                      );
+                    })()}
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
-          <div
-            className={`sort settings-class ${sortOpen ? 'visible' : 'hidden'}`}
-          >
+          <div className={`sort settings-class ${sortOpen ? 'visible' : 'hidden'}`}>
             <h2 className="setting-title">
               {tLeaderboard('settings.sort.header')}
             </h2>
@@ -243,23 +444,20 @@ const LeaderboardPage = () => {
 
                 <div className="wrapper">
                   <SortAscIcon 
-                  data-tooltip-id="ra"
-                  style={{
-                    backgroundColor:
-                      sort == "ASC" ? "rgba(255, 255, 255, 0.7)" : "",
-                  }}
-                  onClick={() => handleSort("ASC")}
-                  value="ASC"
+                    data-tooltip-id="ra"
+                    style={{
+                      backgroundColor: sort === "ASC" ? "rgba(255, 255, 255, 0.7)" : "",
+                    }}
+                    onClick={() => handleSort("ASC")}
                   />
 
                   <SortDescIcon
-                  data-tooltip-id="rd"
-                  style={{
-                    backgroundColor:
-                      sort == "DESC" ? "rgba(255, 255, 255, 0.7)" : "",
-                  }}
-                  onClick={() => handleSort("DESC")}
-                  value="DESC" />
+                    data-tooltip-id="rd"
+                    style={{
+                      backgroundColor: sort === "DESC" ? "rgba(255, 255, 255, 0.7)" : "",
+                    }}
+                    onClick={() => handleSort("DESC")}
+                  />
                 </div>
               </div>
               <div className="recent">
