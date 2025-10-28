@@ -251,6 +251,109 @@
   text-align: center;
 }
 
+.player-page .scores-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding: 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.player-page .search-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.2s ease;
+  flex: 1;
+}
+
+.player-page .search-container:focus-within {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.player-page .search-input {
+  background: transparent;
+  border: none;
+  color: var(--color-white);
+  font-size: 0.95rem;
+  width: 100%;
+  padding: 0.25rem;
+}
+
+.player-page .search-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.player-page .search-input:focus {
+  outline: none;
+}
+
+.player-page .search-icon {
+  width: 18px;
+  height: 18px;
+  opacity: 0.7;
+}
+
+.player-page .sort-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.player-page .sort-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.player-page .sort-buttons:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.player-page .sort-buttons svg {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.player-page .sort-buttons svg:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.player-page .sort-buttons svg:active {
+  transform: translateY(0);
+}
+
+.player-page .results-count {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 6px;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  font-weight: 500;
+}
+
 .player-page .scores-list {
   list-style: none; /* Remove bullets */
   padding: 0;
@@ -635,6 +738,19 @@
 
   .player-page .scores-section h2 {
     font-size: 1.2rem;
+  }
+
+  .player-page .scores-controls {
+    padding: 0.75rem;
+  }
+
+  .player-page .sort-controls {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .player-page .search-container {
+    padding: 0.5rem 0.75rem;
   }
 
   .case-open-button {

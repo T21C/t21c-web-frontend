@@ -188,7 +188,7 @@ export  function formatScore(score) {
     }).format(score);
   }
   
-export const formatCreatorDisplay = (level) => {
+export function formatCreatorDisplay (level) {
     // If team exists, it takes priority
     if (!level) return "";
 
@@ -241,7 +241,7 @@ export const formatCreatorDisplay = (level) => {
     }
 
     return level.levelCredits[0]?.creator.name || "No credits";
-  };
+  }
 
 
   export function gaussianRandom(mean=0, stdev=1) {

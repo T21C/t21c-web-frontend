@@ -1,6 +1,6 @@
 import "./profilePage.css"
 import api from "@/utils/api";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom"
 import { isoToEmoji, formatNumber } from "@/utils";
 import { CompleteNav, UserAvatar } from "@/components/layout";
@@ -9,11 +9,15 @@ import { ScoreCard } from "@/components/cards";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { AdminPlayerPopup, CreatorAssignmentPopup } from "@/components/popups";
-import { DefaultAvatar, ShieldIcon, EditIcon, SearchIcon } from "@/components/common/icons";
-import { CaseOpenSelector } from "@/components/common/selectors";
+import { DefaultAvatar, ShieldIcon, EditIcon, SearchIcon, SortAscIcon, SortDescIcon } from "@/components/common/icons";
+import { CaseOpenSelector, CustomSelect } from "@/components/common/selectors";
 import caseOpen from "@/assets/icons/case.png";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { ScrollButton } from "@/components/common/buttons";
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
+
+const PASSES_PER_PAGE = 20;
 
 const parseRankColor = (rank) => {
   var clr;
@@ -39,6 +43,15 @@ const ProfilePage = () => {
     const currentUrl = window.location.origin + location.pathname;
     const navigate = useNavigate();
     const [isSpinning, setIsSpinning] = useState(false);
+    
+    // Search and sort state
+    const [searchQuery, setSearchQuery] = useState('');
+    const [sortType, setSortType] = useState('impact');
+    const [sortOrder, setSortOrder] = useState('DESC');
+    
+    // Infinite scroll state
+    const [displayedPasses, setDisplayedPasses] = useState([]);
+    const [hasMore, setHasMore] = useState(true);
 
     const isOwnProfile = !playerId || Number(playerId) === user?.playerId;
 
@@ -137,6 +150,135 @@ const ProfilePage = () => {
         }
       };
 
+      const lowestImpactScore = playerData?.topScores?.reduce((minItem, score) =>
+        minItem == null || score.impact < minItem.impact ? score : minItem
+      , null);
+
+      const sortByScore = (a, b) => {
+        return sortOrder === 'DESC' ? (b.scoreV2 || 0) - (a.scoreV2 || 0) : (a.scoreV2 || 0) - (b.scoreV2 || 0);
+      }
+      // Define sort options (extendable)
+      const sortOptions = useMemo(() => [
+        { value: 'impact', label: tProfile('sort.byImpact'), sortFn: (a, b) => {
+          const impactA = playerData?.topScores?.find(topScore => topScore.id === a.id)?.impact || 0;
+          const impactB = playerData?.topScores?.find(topScore => topScore.id === b.id)?.impact || 0;
+          if (impactA !== impactB) {
+            return sortOrder === 'DESC' ? impactB - impactA : impactA - impactB;
+          }
+          return sortByScore(a, b);
+        }},
+        { value: 'score', label: tProfile('sort.byScore'), sortFn: sortByScore },
+        { value: 'speed', label: tProfile('sort.bySpeed'), sortFn: (a, b) => {
+          const speedA = a.speed || 0;
+          const speedB = b.speed || 0;
+          if (speedA !== speedB) {
+            return sortOrder === 'DESC' ? speedB - speedA : speedA - speedB;
+          }
+          return sortByScore(a, b);
+        }},
+        { value: 'date', label: tProfile('sort.byDate'), sortFn: (a, b) => {
+          const dateA = a.vidUploadTime || 0;
+          const dateB = b.vidUploadTime || 0;
+          if (dateA !== dateB) {
+            return sortOrder === 'DESC' ? dateB - dateA : dateA - dateB;
+          }
+          return sortByScore(a, b);
+        }},
+        { value: 'xacc', label: tProfile('sort.byXacc'), sortFn: (a, b) => {
+          const xaccA = a.judgements?.accuracy || 0;
+          const xaccB = b.judgements?.accuracy || 0;
+          if (xaccA !== xaccB) {
+            return sortOrder === 'DESC' ? xaccB - xaccA : xaccA - xaccB;
+          }
+          return sortByScore(a, b);
+        }},
+        { 
+          value: 'difficulty', 
+          label: tProfile('sort.byDifficulty'), 
+          sortFn: (a, b) => {
+            // First: .difficulty.type == "PGU" sorted before others
+            const typeA = a.level?.difficulty?.type === "PGU" ? 0 : 1;
+            const typeB = b.level?.difficulty?.type === "PGU" ? 0 : 1;
+            if (typeA !== typeB) {
+              return sortOrder !== 'DESC' ? typeB - typeA : typeA - typeB;
+            }
+
+            const sortOrderA = a.level?.difficulty?.sortOrder || 0;
+            const sortOrderB = b.level?.difficulty?.sortOrder || 0;
+            if (sortOrderA !== sortOrderB) {
+              return sortOrder === 'DESC' ? sortOrderB - sortOrderA : sortOrderA - sortOrderB;
+            }
+
+            const baseScoreA = a.level?.baseScore || a.level?.difficulty?.baseScore || 0;
+            const baseScoreB = b.level?.baseScore || b.level?.difficulty?.baseScore || 0;
+            if (baseScoreA !== baseScoreB) {
+              return sortOrder !== 'DESC' ? baseScoreB - baseScoreA : baseScoreA - baseScoreB;
+            }
+          }
+        }
+      ], [tProfile, sortOrder, playerData?.topScores]);
+
+      const selectedSortOption = useMemo(() => 
+        sortOptions.find(option => option.value === sortType),
+        [sortOptions, sortType]
+      );
+
+      // Define searchable fields (extendable)
+      const searchableFields = useMemo(() => ({
+        song: (pass) => pass.level?.song?.toLowerCase() || '',
+        artist: (pass) => pass.level?.artist?.toLowerCase() || '',
+        difficulty: (pass) => pass.level?.difficulty?.name?.toLowerCase() || '',
+        creators: (pass) => pass.level?.levelCredits?.map(credit => 
+          credit.creator?.name?.toLowerCase() || ''
+        ).join(' ') || '',
+        team: (pass) => pass.level?.teamObject?.name?.toLowerCase() || '',
+      }), []);
+
+      // Filtered and sorted passes
+      const filteredAndSortedPasses = useMemo(() => {
+        if (!playerData?.passes) return [];
+
+        let filtered = playerData.passes.filter(pass => !pass.isDeleted);
+
+        // Apply search filter
+        if (searchQuery) {
+          const query = searchQuery.toLowerCase();
+          filtered = filtered.filter(pass => {
+            return Object.values(searchableFields).some(fieldFn => 
+              fieldFn(pass).includes(query)
+            );
+          });
+        }
+
+        // Apply sorting
+        const sortFn = sortOptions.find(opt => opt.value === sortType)?.sortFn;
+        if (sortFn) {
+          filtered = [...filtered].sort(sortFn);
+        }
+
+        return filtered;
+      }, [playerData?.passes, searchQuery, sortType, sortOrder, sortOptions, searchableFields]);
+
+      // Update displayed passes when filter/sort changes
+      useEffect(() => {
+        if (filteredAndSortedPasses.length > 0) {
+          setDisplayedPasses(filteredAndSortedPasses.slice(0, PASSES_PER_PAGE));
+          setHasMore(filteredAndSortedPasses.length > PASSES_PER_PAGE);
+        } else {
+          setDisplayedPasses([]);
+          setHasMore(false);
+        }
+      }, [playerData?.passes, searchQuery, sortType, sortOrder]);
+
+      // Load more passes for infinite scroll
+      const loadMorePasses = () => {
+        const currentLength = displayedPasses.length;
+        const nextPasses = filteredAndSortedPasses.slice(currentLength, currentLength + PASSES_PER_PAGE);
+        setDisplayedPasses(prev => [...prev, ...nextPasses]);
+        setHasMore(currentLength + PASSES_PER_PAGE < filteredAndSortedPasses.length);
+      };
+
+      // Conditional renders after all hooks
       if (playerId && !playerData) {
         return (
           <div className="player-page">
@@ -165,9 +307,6 @@ const ProfilePage = () => {
         );
       }
 
-      const lowestImpactScore = playerData?.topScores?.reduce((minItem, score) =>
-        minItem == null || score.impact < minItem.impact ? score : minItem
-      , null);
       return (
         <div className="player-page">
           <MetaTags
@@ -178,6 +317,7 @@ const ProfilePage = () => {
             type="profile"
           />
           <CompleteNav />
+          <ScrollButton />
           {user && isOwnProfile ? (
             hasFlag(user, permissionFlags.BANNED) ? (
               <div className="profile-banner banned">
@@ -380,35 +520,98 @@ const ProfilePage = () => {
               {playerData?.passes && playerData.passes.length > 0 && (
                 <div className="scores-section">
                   <h2>{tProfile('sections.scores.title')}</h2>
-                  <div className="scores-list">
-                    {playerData.passes.filter(score => !score.isDeleted)
-                    .sort((a, b) => (b.scoreV2 || 0) - (a.scoreV2 || 0))
-                    .sort((a, b) => (playerData.topScores.find(topScore => topScore.id === b.id)?.impact || 0) - (playerData.topScores.find(topScore => topScore.id === a.id)?.impact || 0))
-                    .map((score, index) => (
-                      <>
-                      <li key={index}>
-                        <ScoreCard scoreData={score} topScores={playerData?.topScores || []} potentialTopScores={playerData?.potentialTopScores || []} />
-                      </li>
-                      {lowestImpactScore && lowestImpactScore.id === score.id && playerData?.passes?.length > 20 && (
-                        <div className="lowest-impact-score-indicator">
-                          <p>
-                            {(() => {
-                              const text = tProfile('sections.scores.lowestImpactScore');
-                              const parts = text.split('{{score}}');
-                              return (
-                                <>
-                                  {parts[0]}
-                                  <b style={{color: '#0f0'}}>{(score.scoreV2+0.01).toFixed(2)}PP</b>
-                                  {parts[1]}
-                                </>
-                              );
-                            })()}
-                          </p>
-                        </div>
-                      )}
-                      </>
-                    ))}
+                  
+                  {/* Search and Sort Controls */}
+                  <div className="scores-controls">
+                    <div className="search-container">
+                      <svg className="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                      </svg>
+                      <input
+                        type="text"
+                        className="search-input"
+                        placeholder={tProfile('search.placeholder')}
+                        name="search"
+                        autoComplete="off"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                    </div>
+                    
+                    <div className="sort-controls">
+                      <CustomSelect
+                        options={sortOptions}
+                        value={selectedSortOption}
+                        onChange={(option) => setSortType(option.value)}
+                        width="12rem"
+                        menuPlacement="bottom"
+                        isSearchable={false}
+                      />
+                      <div className="sort-buttons">
+                        <SortAscIcon
+                          className="svg-fill"
+                          style={{
+                            backgroundColor: sortOrder === 'ASC' ? "rgba(255, 255, 255, 0.4)" : "",
+                          }}
+                          onClick={() => setSortOrder('ASC')}
+                        />
+                        <SortDescIcon
+                          className="svg-fill"
+                          style={{
+                            backgroundColor: sortOrder === 'DESC' ? "rgba(255, 255, 255, 0.4)" : "",
+                          }}
+                          onClick={() => setSortOrder('DESC')}
+                        />
+                      </div>
+                    </div>
+                    
+                    <div className="results-count">
+                      {tProfile('labels.totalPasses', { count: filteredAndSortedPasses.length })}
+                    </div>
                   </div>
+
+                  <InfiniteScroll
+                    dataLength={displayedPasses.length}
+                    next={loadMorePasses}
+                    hasMore={hasMore}
+                    endMessage={
+                      displayedPasses.length > 0 && (
+                        <p style={{ textAlign: 'center', padding: '1rem', color: 'rgba(255, 255, 255, 0.6)' }}>
+                          <b>{tProfile('infiniteScroll.end')}</b>
+                        </p>
+                      )
+                    }
+                    scrollableTarget="scrollableDiv"
+                    style={{ overflow: 'visible' }}
+                  >
+                    <div className="scores-list">
+                      {displayedPasses.map((score, index) => (
+                        <>
+                        <li key={index}>
+                          <ScoreCard scoreData={score} topScores={playerData?.topScores || []} potentialTopScores={playerData?.potentialTopScores || []} />
+                        </li>
+                        {lowestImpactScore && lowestImpactScore.id === score.id && playerData?.passes?.length > 20 && sortType === 'impact' && sortOrder === 'DESC' && (
+                          <div className="lowest-impact-score-indicator">
+                            <p>
+                              {(() => {
+                                const text = tProfile('sections.scores.lowestImpactScore');
+                                const parts = text.split('{{score}}');
+                                return (
+                                  <>
+                                    {parts[0]}
+                                    <b style={{color: '#0f0'}}>{(score.scoreV2+0.01).toFixed(2)}PP</b>
+                                    {parts[1]}
+                                  </>
+                                );
+                              })()}
+                            </p>
+                          </div>
+                        )}
+                        </>
+                      ))}
+                    </div>
+                  </InfiniteScroll>
                 </div>
               )}
             </div>

@@ -28,5 +28,22 @@
       "title": "Scores",
       "lowestImpactScore": "Get at least {{score}} to gain Ranked Score"
     }
+  },
+  "sort": {
+    "byImpact": "By Impact",
+    "byScore": "By Score",
+    "byDate": "By Date",
+    "byXacc": "By X-Accuracy",
+    "byDifficulty": "By Difficulty",
+    "bySpeed": "By Speed"
+  },
+  "search": {
+    "placeholder": "Search passes..."
+  },
+  "labels": {
+    "totalPasses": "{{count}} passes"
+  },
+  "infiniteScroll": {
+    "end": "You've reached the end!"
   }
 } 
