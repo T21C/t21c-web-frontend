@@ -15,6 +15,7 @@ import caseOpen from "@/assets/icons/case.png";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { ScrollButton } from "@/components/common/buttons";
+import { useProfileContext } from "@/contexts/ProfileContext";
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
 
 const PASSES_PER_PAGE = 20;
@@ -44,11 +45,6 @@ const ProfilePage = () => {
     const navigate = useNavigate();
     const [isSpinning, setIsSpinning] = useState(false);
     
-    // Search and sort state
-    const [searchQuery, setSearchQuery] = useState('');
-    const [sortType, setSortType] = useState('impact');
-    const [sortOrder, setSortOrder] = useState('DESC');
-    
     // Infinite scroll state
     const [displayedPasses, setDisplayedPasses] = useState([]);
     const [hasMore, setHasMore] = useState(true);
@@ -58,6 +54,18 @@ const ProfilePage = () => {
     if (!playerId) {
       playerId = user?.playerId;
     }
+    
+    // Get context for search and sort state (per player)
+    const profileContext = useProfileContext();
+    const currentSettings = profileContext.getPlayerSettings(playerId);
+    
+    const searchQuery = currentSettings.searchQuery;
+    const sortType = currentSettings.sortType;
+    const sortOrder = currentSettings.sortOrder;
+    
+    const setSearchQuery = (query) => profileContext.setSearchQuery(playerId, query);
+    const setSortType = (type) => profileContext.setSortType(playerId, type);
+    const setSortOrder = (order) => profileContext.setSortOrder(playerId, order);
     
 
     var valueLabels = {
@@ -159,14 +167,6 @@ const ProfilePage = () => {
       }
       // Define sort options (extendable)
       const sortOptions = useMemo(() => [
-        { value: 'impact', label: tProfile('sort.byImpact'), sortFn: (a, b) => {
-          const impactA = playerData?.topScores?.find(topScore => topScore.id === a.id)?.impact || 0;
-          const impactB = playerData?.topScores?.find(topScore => topScore.id === b.id)?.impact || 0;
-          if (impactA !== impactB) {
-            return sortOrder === 'DESC' ? impactB - impactA : impactA - impactB;
-          }
-          return sortByScore(a, b);
-        }},
         { value: 'score', label: tProfile('sort.byScore'), sortFn: sortByScore },
         { value: 'speed', label: tProfile('sort.bySpeed'), sortFn: (a, b) => {
           const speedA = a.speed || 0;
@@ -177,8 +177,8 @@ const ProfilePage = () => {
           return sortByScore(a, b);
         }},
         { value: 'date', label: tProfile('sort.byDate'), sortFn: (a, b) => {
-          const dateA = a.vidUploadTime || 0;
-          const dateB = b.vidUploadTime || 0;
+          const dateA = new Date(a.vidUploadTime).getTime() || 0;
+          const dateB = new Date(b.vidUploadTime).getTime() || 0;
           if (dateA !== dateB) {
             return sortOrder === 'DESC' ? dateB - dateA : dateA - dateB;
           }
@@ -240,6 +240,13 @@ const ProfilePage = () => {
 
         let filtered = playerData.passes.filter(pass => !pass.isDeleted);
 
+        const sortedImpact = filtered.sort((a, b) => {
+          const impactA = playerData?.topScores?.find(topScore => topScore.id === a.id)?.impact || 0;
+          const impactB = playerData?.topScores?.find(topScore => topScore.id === b.id)?.impact || 0;
+          if (impactA !== impactB) {
+            return sortOrder === 'DESC' ? impactB - impactA : impactA - impactB;
+          }
+        });
         // Apply search filter
         if (searchQuery) {
           const query = searchQuery.toLowerCase();
@@ -253,7 +260,7 @@ const ProfilePage = () => {
         // Apply sorting
         const sortFn = sortOptions.find(opt => opt.value === sortType)?.sortFn;
         if (sortFn) {
-          filtered = [...filtered].sort(sortFn);
+          filtered = [...sortedImpact].sort(sortFn);
         }
 
         return filtered;
@@ -381,7 +388,7 @@ const ProfilePage = () => {
                     </div>
                       </div>
                     </div>
-                                         <div className="player-info">
+                      <div className="player-info">
                        <div className="player-name-rank">
                          <div className="player-name-container">
                            <h1>{playerData?.name || 'Unknown Player'}</h1>
@@ -591,7 +598,7 @@ const ProfilePage = () => {
                         <li key={index}>
                           <ScoreCard scoreData={score} topScores={playerData?.topScores || []} potentialTopScores={playerData?.potentialTopScores || []} />
                         </li>
-                        {lowestImpactScore && lowestImpactScore.id === score.id && playerData?.passes?.length > 20 && sortType === 'impact' && sortOrder === 'DESC' && (
+                        {lowestImpactScore && lowestImpactScore.id === score.id && playerData?.passes?.length > 20 && sortType === 'score' && sortOrder === 'DESC' && (
                           <div className="lowest-impact-score-indicator">
                             <p>
                               {(() => {

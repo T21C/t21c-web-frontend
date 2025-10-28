@@ -51,7 +51,7 @@
 }
 
 .score-card:hover .acc-wrapper-inner {
-  transform: translateY(-1.1rem) scale(0.9);
+  transform: translateY(-1rem) scale(0.9);
 }
 
 .score-card .judgements-container {
@@ -63,11 +63,12 @@
   padding: 0.15rem 0.25rem;
   border-radius: 8px;
   z-index: 1;
+  transform: translateY(0.8rem);
 }
 
 .score-card:hover .judgements-container{
   opacity: 1;
-  transform: translateY(1.3rem);
+  transform: translateY(1.4rem);
 }
 
 .score-card .judgements-grid {
@@ -77,6 +78,7 @@
   text-align: center;
   font-size: 0.75rem;
   font-weight: 700;
+  height: 0.825rem;
 }
 
 .score-card .judgements-grid span {
