@@ -18,7 +18,7 @@ import {
 } from 'recharts';
 import { useLocation } from 'react-router-dom';
 import { ScrollButton } from "@/components/common/buttons";
-import { PassIcon, LevelIcon, LeaderboardIcon } from "@/components/common/icons";
+import { PassIcon, ChartIcon, LeaderboardIcon } from "@/components/common/icons";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { createEventSystem } from "@/utils/Utility";
 import { useAuth } from "@/contexts/AuthContext";
@@ -762,7 +762,7 @@ const HomePage = () => {
             <Link to="/levels" className="action-button">
               <span>{tHome('buttons.browseLevels')}</span>
               &nbsp;
-              <LevelIcon size={32} />
+              <ChartIcon size={32} />
             </Link>
             <Link to="/passes" className="action-button">
               <span>{tHome('buttons.browsePasses')}</span>

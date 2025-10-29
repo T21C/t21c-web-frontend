@@ -27,7 +27,7 @@ import {
   LikeIcon, 
   SteamIcon, 
   PackIcon, 
-  LevelIcon, 
+  ChartIcon, 
   MetronomeIcon, 
   SpeedIcon, 
   LegacyDiffIcon, 
@@ -1564,7 +1564,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                 <div className="metadata-container">  
                   {res.tilecount && (
                     <div className="metadata-item">
-                      <LevelIcon size={18} />
+                      <ChartIcon size={18} />
                       {/* <span className="metadata-label">Tilecount</span> */}
                       <span className="metadata-value">{res.tilecount}</span>
                     </div>

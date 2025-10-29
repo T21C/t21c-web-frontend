@@ -6,7 +6,6 @@ import { ExternalLinkIcon } from './ExternalLinkIcon';
 import { FetchIcon } from './FetchIcon';
 import { FilterIcon } from './FilterIcon';
 import { LeaderboardIcon } from './LeaderboardIcon';
-import { LevelIcon } from './LevelIcon';
 import { PassIcon } from './PassIcon';
 import RandomIcon from './RandomIcon';
 import { RefreshIcon } from './RefreshIcon';
@@ -52,6 +51,7 @@ import LegacyDiffIcon from './LegacyDiffIcon/LegacyDiffIcon';
 import PercentIcon from './PercentIcon';
 import CalendarIcon from './CalendarIcon';
 import ScoreIcon from './ScoreIcon';
+import ChartIcon from './ChartIcon';
 
 export {
     DefaultAvatar,
@@ -62,7 +62,6 @@ export {
     FetchIcon,
     FilterIcon,
     LeaderboardIcon,
-    LevelIcon,
     PassIcon,
     RandomIcon,
     RefreshIcon,
@@ -107,5 +106,6 @@ export {
     LegacyDiffIcon,
     PercentIcon,
     CalendarIcon,
-    ScoreIcon
+    ScoreIcon,
+    ChartIcon
 }
