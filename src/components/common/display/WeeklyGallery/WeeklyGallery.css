@@ -272,11 +272,29 @@
 }
 
 .weekly-gallery__arrow--left {
-  left: 2rem;
+  margin-right: 60rem;
 }
 
 .weekly-gallery__arrow--right {
-  right: 2rem;
+  margin-left: 60rem;
+}
+
+@media (max-width: 1280px) {
+  .weekly-gallery__arrow--left {
+    margin-right: 50rem;
+  }
+  .weekly-gallery__arrow--right {
+    margin-left: 50rem;
+  }
+}
+
+@media (max-width: 1024px) {
+  .weekly-gallery__arrow--left {
+    margin-right: 40rem;
+  }
+  .weekly-gallery__arrow--right {
+    margin-left: 40rem;
+  }
 }
 
 @media (max-width: 768px) {

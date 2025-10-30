@@ -862,7 +862,7 @@
     rgba(150, 0, 255, 1),
     rgba(0, 200, 255, 1)
   );
-  background-size: 300% 300%;
+  background-size: 300% 1%;
   border-radius: inherit;
   z-index: -2;
   animation: basicGlow 8s ease-in-out infinite;
@@ -879,7 +879,7 @@
     rgba(150, 100, 255, 0.05), 
     rgba(0, 150, 255, 0.05)
   );
-  background-size: 300% 300%;
+  background-size: 300% 1%;
   border-radius: inherit;
   z-index: -1;
   animation: basicGlow 8s ease-in-out infinite reverse;
@@ -897,8 +897,6 @@
 
 .level-card.basic-glow:not(.grid) .level-card-wrapper {
   background: rgba(0, 0, 0, 0.4);
-  -webkit-backdrop-filter: blur(1px);
-  backdrop-filter: blur(1px);
   border: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
   z-index: 1;
@@ -941,7 +939,7 @@
     #4200FF,
     #FF00FF
   );
-  background-size: 400% 400%;
+  background-size: 400% 1%;
   border-radius: inherit;
   z-index: -2;
   animation: legendaryGlow 10s ease-in-out infinite;
@@ -972,7 +970,6 @@
 
 .level-card.legendary:not(.grid):hover::before {
   opacity: 1;
-  filter: blur(2px);
   animation-duration: 7s;
 }
 
@@ -983,8 +980,6 @@
 
 .level-card.legendary:not(.grid) .level-card-wrapper {
   background: rgba(0, 0, 0, 0.6);
-  -webkit-backdrop-filter: blur(2px);
-  backdrop-filter: blur(2px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   position: relative;
   z-index: 1;
@@ -1015,7 +1010,6 @@
   display: flex;
   align-items: center;
   overflow: visible;
-  gap: 0.5rem;
 }
 
 .level-card.pack .level-card__drag-handle {

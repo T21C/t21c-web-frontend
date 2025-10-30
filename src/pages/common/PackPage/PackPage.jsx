@@ -74,19 +74,19 @@ const PackPageContent = () => {
     { value: LevelPackViewModes.FORCED_PRIVATE, label: tPack('viewMode.forcedPrivate') }
   ];
 
-  // Handle my packs mode
+  // Handle my packs mode (only change if needed)
   useEffect(() => {
-    if (isMyPacks && user) {
+    if (isMyPacks && user && filters.viewMode !== 'all') {
       updateFilter('viewMode', 'all');
     }
-  }, [isMyPacks, user, updateFilter]);
+  }, [isMyPacks, user, filters.viewMode]);
 
-  // Set default view mode for non-admins
+  // Set default view mode for non-admins (only change if needed)
   useEffect(() => {
-    if (!isAdmin && !isMyPacks) {
+    if (!isAdmin && !isMyPacks && filters.viewMode !== 'all') {
       updateFilter('viewMode', 'all'); // Show all visible packs
     }
-  }, [isAdmin, isMyPacks, updateFilter]);
+  }, [isAdmin, isMyPacks, filters.viewMode]);
 
   // Debounced search effect (same pattern as PassPage)
   useEffect(() => {

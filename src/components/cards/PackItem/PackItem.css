@@ -8,18 +8,17 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 0.5rem 0;
   background: none;
   border: none;
   border-radius: 0;
   transition: all 0.2s ease;
-  gap: 0.5rem;
 }
 
-.pack-item--folder:hover .pack-item__content {
-  border-color: var(--color-primary);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+.pack-item--folder:hover .pack-item__wrapper {
+  border-color: #2563eb;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
+
 
 .pack-item .pack-item__drag-handle {
   display: flex;
@@ -28,7 +27,7 @@
   width: 24px;
   height: 24px;
   cursor: grab;
-  color: var(--color-text-secondary);
+  color: #9ca3af;
   border: none;
   background: none;
   border-radius: 4px;
@@ -51,17 +50,29 @@
 }
 
 /* Folder content wrapper */
-.pack-item__content {
+.pack-item__wrapper {
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 0.75rem;
-  background: var(--color-card-background);
-  border: 1px solid var(--color-border);
+  background: #111827;
+  border: 1px solid #374151;
   border-radius: 8px;
-  transition: all 0.2s ease;
+  transition: max-height 0.2s ease;
   gap: 0.5rem;
   flex: 1;
+}
+
+
+.pack-item__wrapper.expanded {
+  border-radius: 8px 8px 0 8px;
+}
+
+
+@media (max-width: 650px) {
+  .pack-item__wrapper.expanded {
+    border-radius: 8px 8px 0 0;
+  }
 }
 
 /* Show drag handle on hover or when dragging */
@@ -72,8 +83,8 @@
 }
 
 .pack-item .pack-item__drag-handle:hover {
-  background: var(--color-hover);
-  color: var(--color-text);
+  background: #1f2937;
+  color: #f9fafb;
 }
 
 .pack-item .pack-item__drag-handle:active {
@@ -89,28 +100,20 @@
   border: none;
   background: none;
   cursor: pointer;
-  color: var(--color-text-secondary);
+  color: #9ca3af;
   border-radius: 4px;
   transition: all 0.2s ease;
   flex-shrink: 0;
 }
 
 .pack-item .pack-item__toggle:hover:not(:disabled) {
-  background: var(--color-hover);
-  color: var(--color-text);
+  background: #1f2937;
+  color: #f9fafb;
 }
 
 .pack-item .pack-item__toggle:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-.pack-item .pack-item__toggle .expanded {
-  transform: rotate(90deg);
-}
-
-.pack-item .pack-item__toggle .collapsed {
-  transform: rotate(0deg);
 }
 
 .pack-item .pack-item__icon {
@@ -119,7 +122,7 @@
   justify-content: center;
   width: 24px;
   height: 24px;
-  color: var(--color-primary);
+  color: #60a5fa;
   flex-shrink: 0;
 }
 
@@ -130,7 +133,7 @@
 
 .pack-item .pack-item__name {
   font-weight: 500;
-  color: var(--color-text);
+  color: #f9fafb;
   margin-bottom: 0.25rem;
   white-space: nowrap;
   overflow: hidden;
@@ -139,7 +142,7 @@
 
 .pack-item .pack-item__count {
   font-size: 0.875rem;
-  color: var(--color-text-secondary);
+  color: #9ca3af;
 }
 
 .pack-item .pack-item__actions {
@@ -164,7 +167,7 @@
 }
 
 .pack-item .pack-item__action-btn:hover:not(:disabled) {
-  background: var(--color-hover);
+  background: #1f2937;
 }
 
 .pack-item .pack-item__action-btn--delete:hover:not(:disabled) {
@@ -183,8 +186,8 @@
 
 .pack-item--dragging {
   padding: 1rem;
-  background: var(--color-card-background);
-  border: 2px solid var(--color-primary);
+  background: #111827;
+  border: 2px solid #2563eb;
   border-radius: 8px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
   font-weight: 500;
@@ -206,13 +209,26 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  margin-top: 0.5rem;
-  margin-left: 1.5rem;
+  margin-top: 0;
   padding: 0.5rem 0.5rem 0.5rem 2rem;
-  border-left: 2px solid var(--color-border);
-  border-radius: 4px;
+  margin-left: 1.5rem;
+  background: #11182788;
+  border-left: 2px solid #374151;
+  border-bottom: 2px solid #374151;
+  border-right: 2px solid #374151;
+  border-radius: 0 0 8px 8px;
   min-height: 50px;
-  transition: background-color 0.2s ease;
+  max-height: 0%;
+  transition: background-color 0.2s ease, max-height 0.2s ease;
+}
+
+.pack-item__contents-container {
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.3, 1, 0.3, 1);
+  max-height: 0;
+}
+.pack-item__contents-container.expanded {
+  max-height: calc(var(--max-height) + 2rem);
 }
 
 .pack-item__contents.dragging-over {

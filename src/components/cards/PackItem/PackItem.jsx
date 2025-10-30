@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useDroppable } from '@dnd-kit/core';
@@ -53,8 +53,7 @@ const PackItem = ({
     setNodeRef,
     transform,
     transition,
-    isDragging,
-    isOver
+    isDragging
   } = useSortable({
     id: item.id,
     data: {
@@ -75,7 +74,7 @@ const PackItem = ({
       <div
         ref={setNodeRef}
         style={style}
-        className={`pack-item pack-item--level ${isDragging ? 'dragging' : ''} ${isOver ? 'over' : ''}`}
+        className={`pack-item pack-item--level ${isDragging ? 'dragging' : ''}`}
       >
         <PackLevelItem
           item={item}
@@ -93,15 +92,16 @@ const PackItem = ({
 
   // It's a folder item
   const childCount = item.children?.length || 0;
-
   return (
     <div className="pack-item__folder-container">
+      {/* Container controlling expand/collapse max-height via CSS vars */}
       <div
         ref={setNodeRef}
         style={style}
-        className={`pack-item pack-item--folder ${isDragging ? 'dragging' : ''} ${isOver ? 'over' : ''}`}
+        className={`pack-item pack-item--folder ${isDragging ? 'dragging' : ''}`}
       >
-        {/* Drag handle on the left */}
+        {/* Main folder content */}
+        <div className={`pack-item__wrapper ${isExpanded ? 'expanded' : 'collapsed'}`}>
         {canEdit && (
           <div
             {...attributes}
@@ -112,15 +112,15 @@ const PackItem = ({
             <DragHandleIcon />
           </div>
         )}
-        
-        {/* Main folder content */}
-        <div className="pack-item__content">
           <button
             className="pack-item__toggle"
-            onClick={() => onToggleExpanded(item.id)}
             disabled={!canEdit && childCount === 0}
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleExpanded(item.id);
+            }}
           >
-            <ChevronIcon className={isExpanded ? 'expanded' : 'collapsed'} />
+            <ChevronIcon direction={isExpanded ? 'down' : 'right'} />
           </button>
           
           <div className="pack-item__icon">

@@ -25,6 +25,7 @@ import {
   useSensors,
   pointerWithin,
   rectIntersection,
+  MeasuringStrategy,
 } from '@dnd-kit/core';
 import {
   SortableContext,
@@ -95,7 +96,7 @@ const PackDetailPage = () => {
   const [isReordering, setIsReordering] = useState(false);
   const [expandedFolders, setExpandedFolders] = useState(new Set());
   const [activeId, setActiveId] = useState(null);
-  const [dragOverInfo, setDragOverInfo] = useState(null); // Track where we're dragging over
+  // Removed dragOverInfo state to avoid unnecessary re-renders during drag
   const scrollRef = useRef(null);
 
   // Set up sensors for dnd-kit
@@ -371,78 +372,9 @@ const PackDetailPage = () => {
   // Handle drag start
   const handleDragStart = (event) => {
     setActiveId(event.active.id);
-    setDragOverInfo(null);
   };
 
-  // Handle drag over to track current target depth
-  const handleDragOver = (event) => {
-    const { over, active } = event;
-    if (!over || !active) {
-      setDragOverInfo(null);
-      return;
-    }
-
-    const activeId = parseInt(active.id);
-    const activeItem = findItem(pack.items, activeId);
-    if (!activeItem) return;
-
-    const overData = over.data.current;
-    let depth = 0;
-    let willEnterFolder = false;
-
-    // Calculate depth based on drop target
-    if (overData?.type === 'folder-container') {
-      const parentId = overData.parentId;
-      willEnterFolder = true;
-      if (parentId !== null) {
-        // Inside a folder container - count depth of the parent folder + 1
-        let current = findItem(pack.items, parentId);
-        depth = 1; // Start at 1 because we're inside the folder
-        while (current) {
-          const parent = findParent(pack.items, current.id);
-          if (parent) {
-            depth++;
-            current = findItem(pack.items, parent.id);
-          } else {
-            break;
-          }
-        }
-      }
-    } else if (overData?.type === 'folder') {
-      const folderId = parseInt(over.id);
-      
-      // Dropping on a folder: will be at the same level as the target folder
-      willEnterFolder = false;
-      let current = findItem(pack.items, folderId);
-      while (current) {
-        const parent = findParent(pack.items, current.id);
-        if (parent) {
-          depth++;
-          current = findItem(pack.items, parent.id);
-        } else {
-          break;
-        }
-      }
-    } else {
-      // Dropping on a regular item - use that item's current depth
-      const itemId = parseInt(over.id);
-      const item = findItem(pack.items, itemId);
-      if (item) {
-        let current = findParent(pack.items, itemId);
-        while (current) {
-          depth++;
-          const parent = findParent(pack.items, current.id);
-          if (parent) {
-            current = findItem(pack.items, parent.id);
-          } else {
-            break;
-          }
-        }
-      }
-    }
-
-    setDragOverInfo({ depth, willEnterFolder });
-  };
+  // Removed handleDragOver to reduce state updates during dragging
 
   // Helper to clone and update tree
   const cloneTree = (items) => {
@@ -517,7 +449,7 @@ const PackDetailPage = () => {
     const { active, over } = event;
     
     setActiveId(null);
-    setDragOverInfo(null);
+    
 
     if (!over || active.id === over.id) return;
 
@@ -934,8 +866,14 @@ const PackDetailPage = () => {
               sensors={sensors}
               collisionDetection={collisionDetectionStrategy}
               onDragStart={handleDragStart}
-              onDragOver={handleDragOver}
+              
               onDragEnd={handleDragEnd}
+              measuring={{
+                droppable: {
+                  // Ensure droppable rects update while their parents move
+                  strategy: MeasuringStrategy.Always,
+                },
+              }}
             >
               <SortableContext
                 items={allItemIds}
@@ -958,15 +896,10 @@ const PackDetailPage = () => {
                   const draggedItem = findItem(pack.items, activeId);
                   const isFolder = draggedItem?.type === 'folder';
                   const displayName = draggedItem?.name || draggedItem?.referencedLevel?.name || 'Item';
-                  
                   return (
-                    <div 
-                      className={`pack-item pack-item--dragging ${dragOverInfo?.willEnterFolder ? 'entering-folder' : ''}`}
-
-                    >
+                    <div className="pack-item pack-item--dragging">
                       {isFolder && <span style={{ marginRight: '0.5rem' }}>📁</span>}
                       {displayName}
-                      {dragOverInfo?.willEnterFolder && <span style={{ marginLeft: '0.5rem', opacity: 0.7 }}>↪</span>}
                     </div>
                   );
                 })() : null}
