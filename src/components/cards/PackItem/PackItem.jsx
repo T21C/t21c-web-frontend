@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { useDroppable } from '@dnd-kit/core';
 import { useTranslation } from 'react-i18next';
 import { ChevronIcon, FolderIcon, DragHandleIcon } from '@/components/common/icons';
 
@@ -42,10 +41,46 @@ const PackItem = ({
   user,
   onRenameFolder,
   onDeleteItem,
-  depth = 0
+  depth = 0,
+  isFirstInFolder = false,
+  isLastInFolder = false,
+  parentId = null,
+  siblingCount = 0
 }) => {
   const { t } = useTranslation();
   const isExpanded = expandedFolders?.has(item.id) || false;
+  const containerRef = useRef(null);
+  const [backgroundHeight, setBackgroundHeight] = useState(0);
+
+  // For first-in-folder items, calculate the height to span all siblings
+  useEffect(() => {
+    if (isFirstInFolder && containerRef.current && parentId !== null) {
+      // Use requestAnimationFrame to ensure DOM is fully rendered
+      const measureHeight = () => {
+        if (!containerRef.current) return;
+        
+        let currentElement = containerRef.current;
+        let totalHeight = 0;
+        let siblingsFound = 0;
+        
+      while (currentElement && siblingsFound < siblingCount) {
+        totalHeight += currentElement.offsetHeight;
+        const nextSibling = currentElement.nextElementSibling;
+        // Check if next sibling has same parent (same folder group)
+        if (nextSibling && nextSibling.dataset.parentId === String(parentId)) {
+          currentElement = nextSibling;
+          siblingsFound++;
+        } else {
+          break;
+        }
+      }
+        
+        setBackgroundHeight(totalHeight);
+      };
+      
+      requestAnimationFrame(measureHeight);
+    }
+  }, [isFirstInFolder, siblingCount, parentId, item.id, isReordering]);
 
   const {
     attributes,
@@ -63,18 +98,31 @@ const PackItem = ({
     disabled: !canEdit || isReordering
   });
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition
-  };
+  // When dragging, don't apply transform to the original item (DragOverlay handles visual)
+  // This prevents visual glitches and allows proper displacement of other items
+  const style = isDragging 
+    ? {} 
+    : {
+        transform: CSS.Transform.toString(transform),
+        transition
+      };
 
   // If it's a level item, use the new PackLevelItem component
   if (item.type === 'level') {
     return (
       <div
-        ref={setNodeRef}
-        style={style}
-        className={`pack-item pack-item--level ${isDragging ? 'dragging' : ''}`}
+        ref={(node) => {
+          setNodeRef(node);
+          containerRef.current = node;
+        }}
+        style={{
+          ...style,
+          marginLeft: `${depth * 1.5}rem`,  // Indent based on depth
+          ...(isFirstInFolder && backgroundHeight && { '--background-height': `${backgroundHeight}px` })
+        }}
+        className={`pack-item pack-item--level ${isDragging ? 'dragging' : ''} ${isFirstInFolder ? 'first-in-folder' : ''} ${isLastInFolder ? 'last-in-folder' : ''}`}
+        data-depth={depth}
+        data-parent-id={parentId}
       >
         <PackLevelItem
           item={item}
@@ -90,147 +138,78 @@ const PackItem = ({
     );
   }
 
-  // It's a folder item
+  // It's a folder item - just show the folder header, children are rendered separately in flat list
   const childCount = item.children?.length || 0;
   return (
-    <div className="pack-item__folder-container">
-      {/* Container controlling expand/collapse max-height via CSS vars */}
-      <div
-        ref={setNodeRef}
-        style={style}
-        className={`pack-item pack-item--folder ${isDragging ? 'dragging' : ''}`}
-      >
-        {/* Main folder content */}
-        <div className={`pack-item__wrapper ${isExpanded ? 'expanded' : 'collapsed'}`}>
-        {canEdit && (
-          <div
-            {...attributes}
-            {...listeners}
-            className="pack-item__drag-handle pack-item__drag-handle--folder"
-            title="Drag to reorder or nest"
-          >
-            <DragHandleIcon />
-          </div>
-        )}
-          <button
-            className="pack-item__toggle"
-            disabled={!canEdit && childCount === 0}
-            onClick={(e) => {
-              e.stopPropagation();
-              onToggleExpanded(item.id);
-            }}
-          >
-            <ChevronIcon direction={isExpanded ? 'down' : 'right'} />
-          </button>
-          
-          <div className="pack-item__icon">
-            <FolderIcon />
-          </div>
-          
-          <div className="pack-item__info">
-            <div className="pack-item__name">{item.name}</div>
-            <div className="pack-item__count">
-              {childCount} {childCount === 1 ? 'item' : 'items'}
-            </div>
-          </div>
-
-          {canEdit && (
-            <div className="pack-item__actions">
-              <button
-                className="pack-item__action-btn"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onRenameFolder?.(item);
-                }}
-                title="Rename folder"
-              >
-                ✏️
-              </button>
-              <button
-                className="pack-item__action-btn pack-item__action-btn--delete"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onDeleteItem?.(item);
-                }}
-                title="Delete folder"
-              >
-                🗑️
-              </button>
-            </div>
-          )}
+    <div
+      ref={(node) => {
+        setNodeRef(node);
+        containerRef.current = node;
+      }}
+      style={{
+        ...style,
+        marginLeft: `${depth * 1.5}rem`,  // Indent based on depth
+        ...(isFirstInFolder && backgroundHeight && { '--background-height': `${backgroundHeight}px` })
+      }}
+      className={`pack-item pack-item--folder ${isDragging ? 'dragging' : ''} ${isExpanded ? 'expanded' : ''} ${isFirstInFolder ? 'first-in-folder' : ''} ${isLastInFolder ? 'last-in-folder' : ''}`}
+      data-depth={depth}
+      data-parent-id={parentId}
+      data-folder-id={item.id}
+    >
+      {canEdit && (
+        <div
+          {...attributes}
+          {...listeners}
+          className="pack-item__drag-handle pack-item__drag-handle--folder"
+          title="Drag to reorder or nest"
+        >
+          <DragHandleIcon />
         </div>
+      )}
+      <button
+        className="pack-item__toggle"
+        disabled={!canEdit && childCount === 0}
+        onClick={(e) => {
+          e.stopPropagation();
+          onToggleExpanded(item.id);
+        }}
+      >
+        <ChevronIcon direction={isExpanded ? 'down' : 'right'} />
+      </button>
+      
+      <div className="pack-item__icon">
+        <FolderIcon />
       </div>
       
-      {/* Render folder contents when expanded */}
-      {isExpanded && (
-        <FolderDropZone
-          folderId={item.id}
-          children={item.children}
-          expandedFolders={expandedFolders}
-          onToggleExpanded={onToggleExpanded}
-          canEdit={canEdit}
-          isReordering={isReordering}
-          packId={packId}
-          user={user}
-          onRenameFolder={onRenameFolder}
-          onDeleteItem={onDeleteItem}
-          depth={depth}
-        />
-      )}
-    </div>
-  );
-};
+      <div className="pack-item__info">
+        <div className="pack-item__name">{item.name}</div>
+        <div className="pack-item__count">
+          {childCount} {childCount === 1 ? 'item' : 'items'}
+        </div>
+      </div>
 
-// Separate component for folder drop zone
-const FolderDropZone = ({
-  folderId,
-  children = [],
-  expandedFolders,
-  onToggleExpanded,
-  canEdit,
-  isReordering,
-  packId,
-  user,
-  onRenameFolder,
-  onDeleteItem,
-  depth
-}) => {
-  const { setNodeRef, isOver } = useDroppable({
-    id: `folder-${folderId}`,
-    data: {
-      type: 'folder-container',
-      parentId: folderId
-    }
-  });
-
-  const sortedChildren = children ? [...children].sort((a, b) => a.sortOrder - b.sortOrder) : [];
-
-  return (
-    <div
-      ref={setNodeRef}
-      className={`pack-item__contents ${isOver ? 'dragging-over' : ''} ${!children || children.length === 0 ? 'empty' : ''}`}
-    >
-      {sortedChildren.length > 0 ? (
-        <>
-          {sortedChildren.map((childItem) => (
-            <PackItem
-              key={childItem.id}
-              item={childItem}
-              expandedFolders={expandedFolders}
-              onToggleExpanded={onToggleExpanded}
-              canEdit={canEdit}
-              isReordering={isReordering}
-              packId={packId}
-              user={user}
-              onRenameFolder={onRenameFolder}
-              onDeleteItem={onDeleteItem}
-              depth={depth + 1}
-            />
-          ))}
-        </>
-      ) : (
-        <div className="pack-item__contents-empty">
-          Drop items here
+      {canEdit && (
+        <div className="pack-item__actions">
+          <button
+            className="pack-item__action-btn"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRenameFolder?.(item);
+            }}
+            title="Rename folder"
+          >
+            ✏️
+          </button>
+          <button
+            className="pack-item__action-btn pack-item__action-btn--delete"
+            onClick={(e) => {
+              e.stopPropagation();
+              onDeleteItem?.(item);
+            }}
+            title="Delete folder"
+          >
+            🗑️
+          </button>
         </div>
       )}
     </div>

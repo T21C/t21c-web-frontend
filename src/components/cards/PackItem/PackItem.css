@@ -1,6 +1,28 @@
 .pack-item {
   position: relative;
-  transition: all 0.2s ease;
+  /* Visual connector for nested items */
+}
+
+/* Create continuous background for folder contents using pseudo-element on first child */
+.pack-item.first-in-folder[data-depth]:not([data-depth="0"])::before {
+  content: '';
+  position: absolute;
+  top: -0.5rem;
+  left: 0;
+  right: 0;
+  /* Use measured height from JavaScript + padding */
+  height: calc(var(--background-height, 100%) + 1rem);
+  background: linear-gradient(90deg, 
+    rgba(59, 130, 246, 0.03) 0%, 
+    rgba(15, 23, 42, 0.5) 1.5rem,
+    rgba(15, 23, 42, 0.3) 100%
+  );
+  border-left: 2px solid rgba(71, 85, 105, 0.5);
+  border-right: 1px solid rgba(71, 85, 105, 0.3);
+  border-bottom: 1px solid rgba(71, 85, 105, 0.3);
+  border-radius: 0 0 8px 8px;
+  z-index: -1;
+  pointer-events: none;
 }
 
 .pack-item--folder {
@@ -8,17 +30,26 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  background: none;
-  border: none;
-  border-radius: 0;
+  padding: 0.75rem;
+  background: #111827;
+  border: 1px solid #374151;
+  border-radius: 8px;
+  gap: 0.5rem;
   transition: all 0.2s ease;
 }
 
-.pack-item--folder:hover .pack-item__wrapper {
+.pack-item--folder.expanded {
+  background: #1e293b;
+  border-color: #475569;
+  border-bottom-right-radius: 0;
+  border-bottom: none; /* Remove bottom border to connect with content background */
+  margin-bottom: 0 !important; /* No gap between folder header and first child */
+}
+
+.pack-item--folder:hover {
   border-color: #2563eb;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
-
 
 .pack-item .pack-item__drag-handle {
   display: flex;
@@ -49,31 +80,6 @@
   transform: none;
 }
 
-/* Folder content wrapper */
-.pack-item__wrapper {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 0.75rem;
-  background: #111827;
-  border: 1px solid #374151;
-  border-radius: 8px;
-  transition: max-height 0.2s ease;
-  gap: 0.5rem;
-  flex: 1;
-}
-
-
-.pack-item__wrapper.expanded {
-  border-radius: 8px 8px 0 8px;
-}
-
-
-@media (max-width: 650px) {
-  .pack-item__wrapper.expanded {
-    border-radius: 8px 8px 0 0;
-  }
-}
 
 /* Show drag handle on hover or when dragging */
 .pack-item:hover .pack-item__drag-handle,
@@ -181,7 +187,11 @@
 
 /* Drag states */
 .pack-item.dragging {
-  opacity: 0.4;
+  opacity: 0.3;
+  /* Ensure the element still occupies space in layout */
+  pointer-events: none;
+  /* Prevent any layout shift */
+  position: relative;
 }
 
 .pack-item--dragging {
@@ -204,58 +214,20 @@
   border-color: #4CAF50;
 }
 
-/* Folder contents */
-.pack-item__contents {
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  margin-top: 0;
-  padding: 0.5rem 0.5rem 0.5rem 2rem;
-  margin-left: 1.5rem;
-  background: #11182788;
-  border-left: 2px solid #374151;
-  border-bottom: 2px solid #374151;
-  border-right: 2px solid #374151;
-  border-radius: 0 0 8px 8px;
-  min-height: 50px;
-  max-height: 0%;
-  transition: background-color 0.2s ease, max-height 0.2s ease;
+/* Folder content area styling - visual grouping using classes */
+.pack-item.first-in-folder {
+  /* First child after expanded folder - connect visually */
+  margin-top: 0 !important;
 }
 
-.pack-item__contents-container {
-  overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.3, 1, 0.3, 1);
-  max-height: 0;
-}
-.pack-item__contents-container.expanded {
-  max-height: calc(var(--max-height) + 2rem);
+.pack-item.last-in-folder {
+  /* Last child in folder - extra spacing after group */
+  margin-bottom: 0.75rem !important;
 }
 
-.pack-item__contents.dragging-over {
-  background-color: rgba(76, 175, 80, 0.05);
-  border-left-color: #4CAF50;
-  border: 2px dashed #4CAF50;
-}
-
-.pack-item__contents.empty {
-  min-height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.pack-item__contents-empty {
-  color: var(--color-text-secondary);
-  font-size: 0.9rem;
-  opacity: 0.6;
-  text-align: center;
-  padding: 1rem;
-}
-
-.pack-item__contents.dragging-over .pack-item__contents-empty {
-  opacity: 1;
-  color: #4CAF50;
-  font-weight: 500;
+/* Ensure proper spacing between root-level items */
+.pack-item[data-depth="0"] + .pack-item[data-depth="0"] {
+  margin-top: 0.5rem;
 }
 
 /* Level item specific styles */

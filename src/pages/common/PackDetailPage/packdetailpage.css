@@ -408,17 +408,14 @@
   display: flex;
   flex-direction: column;
   margin-bottom: 2rem;
-  transition: background-color 0.2s ease, opacity 0.1s ease;
+  transition: background-color 0.2s ease;
   border-radius: 8px;
   padding: 0.5rem;
   position: relative;
   z-index: 1;
 }
 
-.pack-detail-page__items-list.dragging-over {
-  background-color: rgba(76, 175, 80, 0.1);
-  border: 2px dashed rgba(76, 175, 80, 0.3);
-}
+/* Removed dragging-over styles - no longer needed without droppable zones */
 
 .pack-detail-page__add-buttons {
   display: flex;

@@ -104,6 +104,12 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
     try {
       await addLevelToPack(selectedPackId, level.id);
       toast.success(tPopup('success.added'));
+      
+      // Notify any listening PackDetailPage that the pack was updated
+      window.dispatchEvent(new CustomEvent('packUpdated', {
+        detail: { packId: selectedPackId }
+      }));
+      
       onSuccess?.();
       onClose();
     } catch (error) {
