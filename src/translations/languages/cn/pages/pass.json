@@ -16,7 +16,7 @@
     "search": "了解如何使用高级搜索",
     "orderAsc": "升序",
     "orderDesc": "降序",
-    "stateDisplay": "显示设置"
+    "stateDisplay": "显示选项"
   },
   "buttons": {
     "searchHelp": "搜索帮助"
@@ -26,7 +26,7 @@
       "title": "筛选条件",
       "options": {
         "only12k": "仅12键以下",
-        "deletedPasses": "已被删除的通关记录",
+        "deletedPasses": "已删除通关记录",
         "keyFlags": "键数"
       }
     },
@@ -39,13 +39,15 @@
         "score": "分数",
         "accuracy": "精准度",
         "difficulty": "难度",
+        "speed": "飙速速度",
         "random": "随机"
       }
     },
     "stateDisplay": {
-      "title": "显示设置"
+      "title": "显示选项"
     }
   },
+  "totalResults": "共 {{count}} 个结果",
   "infScroll": {
     "end": "已经到底啦！"
   }

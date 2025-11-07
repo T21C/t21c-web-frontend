@@ -38,6 +38,7 @@
   "promoteTo": "升级至 {{role}}",
   "demoteTo": "降级至 {{role}}",
   "currentRole": "当前身份组",
+  "totalResults": "共 {{count}} 个结果",
   "pagination": {
     "previous": "上一页",
     "next": "下一页",

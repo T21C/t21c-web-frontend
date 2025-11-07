@@ -48,6 +48,7 @@
     "curationTypes": "精选关卡类型",
     "myLikes": "我的收藏"
   },
+  "totalResults": "共 {{count}} 个结果",
   "infScroll": {
     "end": "没有更多关卡"
   },

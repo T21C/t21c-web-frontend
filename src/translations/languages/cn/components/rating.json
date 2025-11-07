@@ -4,25 +4,25 @@
     "labels": {
       "creator": "制作者：",
       "currentDifficulty": "当前难度：",
-      "averageRating": "管理员评级：",
-      "communityRating": "社区评级：",
+      "averageRating": "评级员评级：",
+      "communityRating": "玩家评级：",
       "rerateNum": "请求评级：",
       "rerateReason": "重评级原因：",
       "yourRating": "你的评级：",
       "yourComment": "你的注释：",
       "otherRatings": "其他评级：",
       "noRatings": "没有评级",
-      "adminRatings": "管理员评级",
-      "communityRatings": "社区评级",
-      "noAdminRatings": "没有管理员评级",
-      "noCommunityRatings": "没有社区评级"
+      "adminRatings": "评级员评级",
+      "communityRatings": "玩家评级",
+      "noAdminRatings": "没有评级员评级",
+      "noCommunityRatings": "没有玩家评级"
     },
     "buttons": {
       "saveChanges": "保存更改",
       "removeRating": "删除评级",
       "saving": "保存中……",
-      "viewAdminRatings": "查看管理员评级",
-      "viewCommunityRatings": "查看社区评级"
+      "viewAdminRatings": "查看评级员评级",
+      "viewCommunityRatings": "查看玩家评级"
     },
     "errors": {
       "commentLength": "注释必须少于1000个字符",
@@ -51,10 +51,10 @@
   "ratingCard": {
     "labels": {
       "yourRating": "你的评级",
-      "managerAverage": "管理员平均评级",
-      "managerRatings": "管理员评级",
-      "communityAverage": "社区平均评级",
-      "communityRatings": "社区评级",
+      "managerAverage": "评级员平均评级",
+      "managerRatings": "评级员评级",
+      "communityAverage": "玩家平均评级",
+      "communityRatings": "玩家评级",
       "allRatings": "所有评级",
       "average": "平均评级",
       "rerateNumber": "重评评级",

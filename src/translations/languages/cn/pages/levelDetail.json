@@ -51,7 +51,7 @@
       "value": "{{player}} | {{accuracy}}%"
     },
     "totalClears": {
-      "label": "总通关人数",
+      "label": "总通关次数",
       "value": "{{count}}"
     },
     "waiting": "加载中……"
@@ -67,7 +67,8 @@
     "difficulty": "等级",
     "baseScore": "基础分数",
     "aliases": "别名",
-    "comments": "评论"
+    "comments": "评论",
+    "createdAt": "上传日期"
   },
   "leaderboard": {
     "header": "排行榜",
@@ -77,7 +78,8 @@
     "tooltips": {
       "time": "按通过日期排序",
       "accuracy": "按精准度排序",
-      "score": "按分数排序"
+      "score": "按分数排序",
+      "speed": "按飙速速度排序"
     }
   },
   "dialog": {

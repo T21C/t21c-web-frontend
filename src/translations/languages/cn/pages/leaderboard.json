@@ -15,7 +15,13 @@
   },
   "settings": {
     "filter": {
-      "header": "筛选设置"
+      "header": "筛选设置",
+      "country": "国家或地区",
+      "addStatFilters": "添加统计数据筛选器",
+      "selectStatPlaceholder": "选择统计数据以过滤……",
+      "addFilterButton": "添加",
+      "min": "最小值",
+      "max": "最大值"
     },
     "sort": {
       "header": "排序设置",

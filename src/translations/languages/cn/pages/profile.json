@@ -16,16 +16,33 @@
     "ppScore": "PP 分数",
     "wfScore": "世界首通分数",
     "score12K": "12键分数",
-    "averageXacc": "平均X-精准度",
+    "averageXacc": "平均X精准度",
     "totalPasses": "总通关数",
-    "universalPassCount": "U级通关数",
+    "universalPassCount": "U通关数",
     "worldsFirstCount": "世界首通数",
     "topDiff": "最高通关难度",
     "top12kDiff": "最高12键通关难度"
   },
   "sections": {
     "scores": {
-      "title": "分数列表"
+      "title": "通关记录列表",
+      "lowestImpactScore": "排位分加分下限：{{score}}"
     }
+  },
+  "sort": {
+    "byScore": "按分数",
+    "byDate": "按日期",
+    "byXacc": "按X精准度",
+    "byDifficulty": "按难度",
+    "bySpeed": "按飙速速度"
+  },
+  "search": {
+    "placeholder": "搜索通关记录……"
+  },
+  "labels": {
+    "totalPasses": "共 {{count}} 个通关记录"
+  },
+  "infiniteScroll": {
+    "end": "已经到底啦！"
   }
 } 

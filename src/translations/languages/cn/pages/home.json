@@ -27,7 +27,7 @@
       }
     },
     "discord": {
-      "title": "加入我们的Discord！"
+      "title": "加入我们的Discord服务器！"
     },
     "comingSoon": "还有更多有趣的内容即将到来……",
     "donate": "在 Ko-fi 上赞助我！"
@@ -43,11 +43,11 @@
   },
   "footer": {
     "about": {
-      "title": "TUF",
+      "title": "关于TUF",
       "description": "The Universal Forums 是一个由社区驱动的，致力于收集、评级并整理《冰与火之舞》自制关卡的组织。"
     },
     "quickLinks": {
-      "title": "链接",
+      "title": "其他页面",
       "browseLevels": "浏览关卡",
       "browsePasses": "浏览通关记录",
       "leaderboard": "排行榜",
@@ -57,7 +57,7 @@
       "apiDocs": "API 文档"
     },
     "community": {
-      "title": "社区",
+      "title": "社区链接",
       "discord": "Discord",
       "github": "GitHub"
     },

@@ -25,12 +25,12 @@
       "webhookUrlPlaceholder": "输入 Webhook 链接"
     },
     "role": {
-      "editTitle": "编辑身份",
-      "addTitle": "添加新身份",
-      "roleId": "身份 ID",
-      "roleIdPlaceholder": "输入身份 ID",
-      "label": "身份标签",
-      "labelPlaceholder": "输入身份标签"
+      "editTitle": "编辑身份组",
+      "addTitle": "添加新身份组",
+      "roleId": "身份组 ID",
+      "roleIdPlaceholder": "输入身份组 ID",
+      "label": "身份组标签",
+      "labelPlaceholder": "输入身份组标签"
     }
   },
   "form": {
@@ -89,6 +89,34 @@
       "roleUpdateSuccess": "身份更新成功",
       "roleDeleteSuccess": "身份删除成功"
     },
+    "notifications": {
+      "saved": "指令保存成功"
+    },
+    "errors": {
+      "saveFailed": "指令保存失败"
+    },
+    "channel": {
+      "notifications": {
+        "updated": "频道更新成功",
+        "created": "频道创建成功",
+        "deleted": "频道删除成功"
+      },
+      "errors": {
+        "saveFailed": "频道保存失败",
+        "deleteFailed": "频道删除失败"
+      }
+    },
+    "role": {
+      "notifications": {
+        "updated": "身份组更新成功",
+        "created": "身份组创建成功",
+        "deleted": "身份组删除成功"
+      },
+      "errors": {
+        "saveFailed": "身份组保存失败",
+        "deleteFailed": "身份组删除失败"
+      }
+    },
     "triggerType": {
       "PASS": "通关公告",
       "LEVEL": "关卡公告"
@@ -104,7 +132,7 @@
         }
       },
       "operator": {
-        "label": "操作员",
+        "label": "运算符",
         "options": {
           "EQUAL": "等于",
           "GREATER_THAN": "大于",
@@ -132,7 +160,7 @@
         "options": {
           "NONE": "没有提醒",
           "ROLE": "身份组提醒",
-          "EVERYONE": "@所有人"
+          "EVERYONE": "提醒所有人"
         }
       },
       "role": {
@@ -168,21 +196,29 @@
     "create": "创建",
     "save": "保存",
     "delete": "删除",
-    "cancel": "取消"
+    "cancel": "取消",
+    "add": "添加"
   },
   "errors": {
     "passwordRequired": "需要超管密码",
+    "invalidPassword": "超管密码无效",
     "loadDirectives": "加载指令失败",
     "saveDirectives": "保存公告指令失败",
     "channelSaveFailed": "保存频道失败",
     "channelDeleteFailed": "删除频道失败",
-    "roleSaveFailed": "保存身份失败",
-    "roleDeleteFailed": "删除身份失败"
+    "channelEditFailed": "编辑频道失败",
+    "roleSaveFailed": "保存身份组失败",
+    "roleDeleteFailed": "删除身份组失败",
+    "roleEditFailed": "编辑身份组失败",
+    "createFailed": "创建等级失败",
+    "updateFailed": "更新等级失败"
   },
   "loading": {
     "directives": "正在加载公告指令……"
   },
   "notifications": {
-    "updated": "等级更新成功"
+    "saved": "指令保存成功",
+    "updated": "等级更新成功",
+    "created": "等级创建成功"
   }
 }

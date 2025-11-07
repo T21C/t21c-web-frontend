@@ -58,7 +58,46 @@
       "update": "更新关卡失败",
       "delete": "软删除失败",
       "toggleHidden": "切换隐藏状态失败",
-      "restore": "恢复失败"
+      "restore": "恢复关卡失败"
+    }
+  },
+  "download": {
+    "title": "下载选项",
+    "close": "关闭",
+    "closePopup": "关闭窗口",
+    "loading": "正在加载下载选项……",
+    "step1": {
+      "prompt": "选择下载方式：",
+      "downloadOriginal": "下载原始文件",
+      "convertDownload": "转换并下载"
+    },
+    "step2": {
+      "dropEvents": "删除事件",
+      "keepEvents": "保留事件",
+      "tooltips": {
+        "dropEvents": "从关卡中移除选中的事件和滤镜",
+        "keepEvents": "仅保留选中的事件并移除滤镜"
+      },
+      "selectEventsPlaceholder": {
+        "drop": "选择要删除的事件",
+        "keep": "选择要保留的事件"
+      },
+      "cameraZoom": "摄像头缩放：",
+      "customBackground": "使用自定义背景颜色",
+      "color": "颜色：",
+      "opacity": "不透明度：",
+      "removeForegroundFlash": "移除前景闪光",
+      "dropFilters": "移除滤镜：",
+      "dropFiltersPlaceholder": "选择要移除的滤镜",
+      "back": "返回",
+      "downloadConverted": "下载已转换关卡"
+    },
+    "errors": {
+      "corrupted": "下载已损坏",
+      "fileMissing": "服务器上此关卡文件已损坏或丢失。",
+      "reupload": "请在编辑窗口中重新上传此关卡。",
+      "noBackup": "无可用备份。请联系管理员。",
+      "downloadLegacy": "下载原始备份"
     }
   }
 } 

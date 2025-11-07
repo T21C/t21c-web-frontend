@@ -1,84 +1,72 @@
 {
-    "loading": "正在加载地图包详细信息……",
-    "backToPacks": "返回主页",
-    "by": "创建者：",
-    "stats": {
-      "levels": "关卡",
-      "items": "项目",
-      "created": "创建日期"
-    },
-    "items": {
-      "title": "地图包内容",
-      "empty": "此包为空。添加一些文件夹或关卡以开始。",
-      "dragHint": "拖动项目以重新排序或合并它们"
-    },
-    "actions": {
-      "edit": "编辑此包",
-      "addFolder": "添加文件夹",
-      "addLevel": "添加关卡",
-      "addToFavorites": "收藏",
-      "removeFromFavorites": "取消收藏",
-      "collapseAll": "全部折叠",
-      "expandAll": "全部展开"
-    },
-    "createFolder": {
-      "prompt": "输入文件夹名称：",
-      "success": "文件夹创建成功！",
-      "error": "文件夹创建失败"
-    },
-    "addLevel": {
-      "prompt": "输入已分离关卡 ID 列表：",
-      "success": "关卡添加成功！",
-      "error": "关卡添加失败"
-    },
-    "renameFolder": {
-      "prompt": "输入新文件夹名称：",
-      "success": "重命名文件夹成功！",
-      "error": "重命名文件夹失败"
-    },
-    "deleteItem": {
-      "success": "项目删除成功！",
-      "error": "项目删除失败"
-    },
-    "deleteFolder": {
-      "confirm": "你确定删除文件夹 \"{{name}}\" 吗？这将同时删除文件夹中的项目。"
-    },
-    "deleteLevel": {
-      "confirm": "您确定要从包中删除该关卡吗？"
-    },
-    "viewMode": {
-      "public": "公开",
-      "linkonly": "仅限链接",
-      "private": "私密",
-      "forcedPrivate": "私密（已锁定）"
-    },
-    "edit": {
-      "success": "地图包更新成功！",
-      "error": "地图包更新失败"
-    },
-    "reorder": {
-      "success": "关卡重排序成功！",
-      "error": "关卡重排序失败"
-    },
-    "move": {
-      "success": "项目移动成功！",
-      "error": "项目移动失败"
-    },
-    "combine": {
-      "success": "项目合并成功！",
-      "error": "项目合并失败"
-    },
-    "delete": {
-      "confirm": "你确定要删除此地图包吗？此操作无法撤消。",
-      "success": "删除地图包成功！",
-      "error": "删除地图包失败"
-    },
-    "error": {
-      "title": "未找到地图包",
-      "message": "你正在寻找的包不存在或你没有查看权限。",
-      "notFound": "未找到地图包",
-      "accessDenied": "拒绝访问",
-      "loadFailed": "加载地图包失败",
-      "retry": "重试"
-    }
+  "loading": "正在加载地图包详细信息……",
+  "by": "创建者：",
+  "backToPacks": "返回主页",
+  "viewMode": {
+    "public": "公开",
+    "linkonly": "仅限链接",
+    "private": "私密",
+    "forcedPrivate": "强制私密"
+  },
+  "stats": {
+    "levels": "关卡",
+    "items": "项目",
+    "created": "创建日期"
+  },
+  "items": {
+    "title": "地图包内容",
+    "dragHint": "拖动项目以重新排序或合并它们",
+    "empty": "此包为空。"
+  },
+  "actions": {
+    "edit": "编辑此包",
+    "addFolder": "添加文件夹",
+    "addLevel": "添加关卡",
+    "collapseAll": "全部折叠",
+    "expandAll": "全部展开",
+    "addToFavorites": "收藏",
+    "removeFromFavorites": "取消收藏"
+  },
+  "createFolder": {
+    "prompt": "输入新文件夹名称：",
+    "success": "文件夹创建成功",
+    "error": "文件夹创建失败"
+  },
+  "addLevel": {
+    "prompt": "输入关卡ID：",
+    "success": "关卡添加成功",
+    "error": "关卡添加失败"
+  },
+  "renameFolder": {
+    "prompt": "输入新的文件夹名称：",
+    "success": "文件夹重命名成功",
+    "error": "文件夹重命名失败"
+  },
+  "deleteItem": {
+    "success": "项目删除成功",
+    "error": "项目删除失败"
+  },
+  "deleteFolder": {
+    "confirm": "你确定删除文件夹 \"{{name}}\" 吗？这将同时删除文件夹中的项目。"
+  },
+  "deleteLevel": {
+    "confirm": "你确定要从包中删除该关卡吗？"
+  },
+  "move": {
+    "cannotMoveIntoSelf": "你不能把文件夹移动到它自己里",
+    "success": "项目移动成功",
+    "error": "项目移动失败"
+  },
+  "edit": {
+    "success": "地图包更新成功",
+    "error": "地图包更新失败"
+  },
+  "error": {
+    "title": "出问题了",
+    "message": "无法加载此包。请重试。",
+    "retry": "重试",
+    "notFound": "未找到地图包",
+    "accessDenied": "你没有查看此包的权限",
+    "loadFailed": "加载地图包失败"
+  }
 }
