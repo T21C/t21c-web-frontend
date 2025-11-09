@@ -7,6 +7,7 @@ import './AddToPackPopup.css';
 import toast from 'react-hot-toast';
 import api from '@/utils/api';
 import { useNavigate } from 'react-router-dom';
+import { formatCreatorDisplay } from "@/utils/Utility";
 
 const AddToPackPopup = ({ level, onClose, onSuccess }) => {
   const { t } = useTranslation('components');
@@ -215,7 +216,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
                 {level.song} - {level.artist}
               </h3>
               <p className="add-to-pack-popup__level-creator">
-                {tPopup('by')} {level.creator}
+                {tPopup('by')} {formatCreatorDisplay(level)}
               </p>
             </div>
 
