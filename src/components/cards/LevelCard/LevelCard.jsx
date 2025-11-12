@@ -74,9 +74,12 @@ const LevelCard = ({
 
 
   const handleLevelUpdate = (updatedData) => {
-    const updatedLevel = updatedData.level || updatedData;
-    setLevel(updatedLevel);
-    setToRate(!!updatedLevel.toRate);
+    const updatedLevel = updatedData.level || updatedData || {};
+    setLevel(prevLevel => ({
+      ...prevLevel,
+      ...updatedLevel,
+    }));
+    setToRate(prev => updatedLevel.toRate !== undefined ? !!updatedLevel.toRate : prev);
     setShowEditPopup(false);
   };
   

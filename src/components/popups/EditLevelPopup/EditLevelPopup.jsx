@@ -201,8 +201,9 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     try {
       const response = await api.delete(`${import.meta.env.VITE_LEVELS}/${level.id}`);
       if (response.data) {
+        const updatedFields = response.data.level || response.data || {};
         if (onUpdate) {
-          await onUpdate(response.data);
+          await onUpdate({ level: updatedFields });
         }
         setHasUnsavedChanges(false);
         onClose();
@@ -226,9 +227,9 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     try {
       const response = await api.patch(`${import.meta.env.VITE_LEVELS}/${level.id}/toggle-hidden`);
       if (response.data) {
+        const updatedFields = response.data.level || response.data || {};
         if (onUpdate) {
-          const updatedLevel = { ...level, isHidden: response.data.isHidden };
-          await onUpdate(updatedLevel);
+          await onUpdate({ level: updatedFields });
         }
         setHasUnsavedChanges(false);
         onClose();
@@ -267,8 +268,9 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     try {
       const response = await api.patch(`${import.meta.env.VITE_LEVELS}/${level.id}/restore`);
       if (response.data) {
+        const updatedFields = response.data.level || response.data || {};
         if (onUpdate) {
-          await onUpdate(response.data);
+          await onUpdate({ level: updatedFields });
         }
         onClose();
       }
