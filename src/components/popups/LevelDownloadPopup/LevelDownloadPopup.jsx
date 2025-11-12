@@ -5,8 +5,9 @@ import { Tooltip } from 'react-tooltip';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
+import { formatFileSize } from '@/utils/zipUtils';
 
-const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, legacyDllink, incrementAccessCount }) => {
+const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, legacyDllink, incrementAccessCount, metadata }) => {
     const { t } = useTranslation('components');
     const [step, setStep] = useState(1);
     const { user } = useAuth();
@@ -248,7 +249,7 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, legacyDllink, in
                         <p>{t('levelPopups.download.step1.prompt')}</p>
                         <div className="download-buttons">
                             <button onClick={() => handleDownload('original')}>
-                                {t('levelPopups.download.step1.downloadOriginal')}
+                                {t('levelPopups.download.step1.downloadOriginal')} ({formatFileSize(metadata?.originalZip?.size)})
                             </button>
                             <button onClick={() => setStep(2)}>
                                 {t('levelPopups.download.step1.convertDownload')}

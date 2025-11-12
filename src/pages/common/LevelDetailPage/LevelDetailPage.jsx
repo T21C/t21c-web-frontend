@@ -966,7 +966,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       }
       
       try {
-        const levelData = await api.get(`${import.meta.env.VITE_LEVELS}/${effectiveId}?includeRatings=true`);
+        const levelData = await api.get(`${import.meta.env.VITE_LEVELS}/${effectiveId}`);
 
         if (levelData.data.timeout) {
           setLevelTimeout(levelData.data.timeout);
@@ -2059,6 +2059,7 @@ const LevelDetailPage = ({ mockData = null }) => {
               levelId={id}
               dlLink={res.level.dlLink}
               legacyDllink={res.level.legacyDllink}
+              metadata={res.metadata}
               incrementAccessCount={() => setRes(prevRes => ({
                 ...prevRes,
                 accessCount: prevRes.accessCount + 1

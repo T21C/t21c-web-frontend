@@ -75,7 +75,7 @@ const CurationCssPreviewPage = () => {
         
         // Fetch level data first
         try {
-          const levelResponse = await api.get(`${import.meta.env.VITE_LEVELS}/${levelId}?includeRatings=true`);
+          const levelResponse = await api.get(`${import.meta.env.VITE_LEVELS}/${levelId}`);
           const passesResponse = await api.get(`${import.meta.env.VITE_PASSES}/level/${levelId}`);
           
           setLevelData({
