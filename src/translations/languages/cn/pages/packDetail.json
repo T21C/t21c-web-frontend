@@ -25,7 +25,9 @@
     "collapseAll": "全部折叠",
     "expandAll": "全部展开",
     "addToFavorites": "收藏",
-    "removeFromFavorites": "取消收藏"
+    "removeFromFavorites": "取消收藏",
+    "downloadPack": "下载地图包",
+    "downloadFolder": "下载文件夹"
   },
   "createFolder": {
     "prompt": "输入新文件夹名称：",

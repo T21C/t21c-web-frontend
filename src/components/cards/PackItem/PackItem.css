@@ -151,11 +151,55 @@
   color: #9ca3af;
 }
 
+.pack-item .pack-item__download {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+}
+
+.pack-item .pack-item__download-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  padding: 0.6rem 0.85rem;
+  border-radius: 10px;
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  background: rgba(59, 130, 246, 0.15);
+  color: #f9fafb;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  min-width: 160px;
+}
+
+.pack-item .pack-item__download-btn:hover:not(:disabled) {
+  background: rgba(59, 130, 246, 0.25);
+  border-color: rgba(96, 165, 250, 0.8);
+  transform: translateY(-1px);
+}
+
+.pack-item .pack-item__download-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.pack-item .pack-item__download-main {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.pack-item .pack-item__download-size {
+  font-size: 0.75rem;
+  color: rgba(148, 163, 184, 0.9);
+}
+
 .pack-item .pack-item__actions {
   display: flex;
   align-items: center;
   gap: 0.25rem;
-  margin-left: auto;
+  margin-left: 0.75rem;
 }
 
 .pack-item .pack-item__action-btn {

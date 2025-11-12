@@ -1,0 +1,162 @@
+.pack-download-popup__overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 1000;
+}
+
+.pack-download-popup {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  width: min(500px, 90vw);
+  padding: 2rem;
+  background: var(--background-primary, #121212);
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+  color: var(--text-primary, #ffffff);
+}
+
+.pack-download-popup__close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.pack-download-popup__close-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.pack-download-popup__content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.pack-download-popup__title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.pack-download-popup__step {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pack-download-popup__description {
+  font-size: 0.9rem;
+  color: rgb(141 255 85);
+}
+
+.pack-download-popup__estimate-container {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.pack-download-popup__estimate-label {
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.pack-download-popup__estimate-value {
+  font-weight: 600;
+}
+
+.pack-download-popup__notice {
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  color: rgb(255 120 120);
+  background: rgba(255, 255, 255, 0.06);
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.pack-download-popup__error {
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: rgba(255, 82, 82, 0.15);
+  color: #ff8080;
+  font-weight: 500;
+}
+
+.pack-download-popup__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.pack-download-popup__primary-btn,
+.pack-download-popup__secondary-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.pack-download-popup__primary-btn {
+  background: var(--accent-primary, #687bff);
+  color: #fff;
+}
+
+.pack-download-popup__primary-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 10px rgba(104, 123, 255, 0.45);
+}
+
+.pack-download-popup__secondary-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: inherit;
+}
+
+.pack-download-popup__secondary-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.pack-download-popup__spinner {
+  align-self: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  border: 4px solid rgba(255, 255, 255, 0.2);
+  border-top-color: var(--accent-primary, #687bff);
+  animation: pack-download-popup__spin 1s linear infinite;
+}
+
+.pack-download-popup__subtext {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+@keyframes pack-download-popup__spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+

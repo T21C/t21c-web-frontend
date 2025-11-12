@@ -1,8 +1,9 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useMemo } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useTranslation } from 'react-i18next';
-import { ChevronIcon, FolderIcon, DragHandleIcon } from '@/components/common/icons';
+import { ChevronIcon, FolderIcon, DragHandleIcon, DownloadIcon } from '@/components/common/icons';
+import { summarizeFolderSize, formatEstimatedSize } from '@/utils/packDownloadUtils';
 
 import LevelCard from '@/components/cards/LevelCard/LevelCard';
 import './PackItem.css';
@@ -41,6 +42,7 @@ const PackItem = ({
   user,
   onRenameFolder,
   onDeleteItem,
+  onDownloadFolder,
   depth = 0,
   isFirstInFolder = false,
   isLastInFolder = false,
@@ -140,6 +142,11 @@ const PackItem = ({
 
   // It's a folder item - just show the folder header, children are rendered separately in flat list
   const childCount = item.children?.length || 0;
+  const folderSizeSummary = useMemo(() => summarizeFolderSize(item), [item]);
+  const folderSizeLabel = useMemo(() => formatEstimatedSize(folderSizeSummary), [folderSizeSummary]);
+  const folderDownloadDisabled = folderSizeSummary.levelCount === 0;
+  const downloadFolderLabel = t('pages:packDetail.actions.downloadFolder', 'Download Folder');
+
   return (
     <div
       ref={(node) => {
@@ -186,6 +193,32 @@ const PackItem = ({
         <div className="pack-item__count">
           {childCount} {childCount === 1 ? 'item' : 'items'}
         </div>
+      </div>
+
+      <div className="pack-item__download">
+        <button
+          className="pack-item__download-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDownloadFolder?.(item);
+          }}
+          disabled={folderDownloadDisabled}
+          title={
+            folderDownloadDisabled
+              ? 'No downloadable levels in this folder'
+              : `${downloadFolderLabel} (${folderSizeLabel.sizeLabel}) ${folderSizeLabel.isEstimated ? folderSizeLabel.isEstimated : ''}`
+          }
+        >
+          <div className="pack-item__download-main">
+            <DownloadIcon color="#ffffff" size={"18px"} />
+            <span>{downloadFolderLabel}</span>
+          </div>
+          <span className="pack-item__download-size">
+            {folderSizeLabel.sizeLabel} <span className="pack-item__download-size-estimated">
+              {folderSizeLabel.shortEstimated}
+            </span>
+          </span>
+        </button>
       </div>
 
       {canEdit && (

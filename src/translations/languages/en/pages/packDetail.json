@@ -25,7 +25,9 @@
     "collapseAll": "Collapse All",
     "expandAll": "Expand All",
     "addToFavorites": "Add to Favorites",
-    "removeFromFavorites": "Remove from Favorites"
+    "removeFromFavorites": "Remove from Favorites",
+    "downloadPack": "Download Pack",
+    "downloadFolder": "Download Folder"
   },
   "createFolder": {
     "prompt": "Enter a name for the new folder",

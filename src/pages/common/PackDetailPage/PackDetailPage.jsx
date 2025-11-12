@@ -1,5 +1,5 @@
 import "./packdetailpage.css";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { CompleteNav } from "@/components/layout";
@@ -7,8 +7,8 @@ import PackItem from "@/components/cards/PackItem/PackItem";
 import LevelCard from "@/components/cards/LevelCard/LevelCard";
 import { MetaTags } from "@/components/common/display";
 import { ScrollButton } from "@/components/common/buttons";
-import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, ArrowIcon, PlusIcon, LikeIcon } from "@/components/common/icons";
-import { EditPackPopup } from "@/components/popups";
+import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, ArrowIcon, PlusIcon, LikeIcon, DownloadIcon } from "@/components/common/icons";
+import { EditPackPopup, PackDownloadPopup } from "@/components/popups";
 import { useAuth } from "@/contexts/AuthContext";
 import { usePackContext } from "@/contexts/PackContext";
 import api from "@/utils/api";
@@ -17,6 +17,7 @@ import { UserAvatar } from "@/components/layout";
 import { Tooltip } from "react-tooltip";
 import { getPackExpandedFolders, setPackExpandedFolders } from "@/utils/folderState";
 import toast from 'react-hot-toast';
+import { summarizePackSize, summarizeFolderSize, formatEstimatedSize } from '@/utils/packDownloadUtils';
 import {
   DndContext,
   DragOverlay,
@@ -42,7 +43,8 @@ const FlatList = ({
   packId,
   user,
   onRenameFolder,
-  onDeleteItem
+  onDeleteItem,
+  onDownloadFolder
 }) => {
   // Single SortableContext with ALL visible items
   const itemIds = visibleItems.map(item => item.id);
@@ -67,6 +69,7 @@ const FlatList = ({
             user={user}
             onRenameFolder={onRenameFolder}
             onDeleteItem={onDeleteItem}
+            onDownloadFolder={onDownloadFolder}
           />
         ))}
       </div>
@@ -90,7 +93,13 @@ const PackDetailPage = () => {
   const [isReordering, setIsReordering] = useState(false);
   const [expandedFolders, setExpandedFolders] = useState(new Set());
   const [activeId, setActiveId] = useState(null);
+  const [downloadContext, setDownloadContext] = useState(null);
   const scrollRef = useRef(null);
+
+  const packItems = pack?.items || [];
+  const packSizeSummary = useMemo(() => summarizePackSize(packItems), [packItems]);
+  const packSizeLabel = useMemo(() => formatEstimatedSize(packSizeSummary), [packSizeSummary]);
+  const packDownloadDisabled = packSizeSummary.levelCount === 0;
 
   // Set up sensors for dnd-kit
   const sensors = useSensors(
@@ -304,6 +313,47 @@ const PackDetailPage = () => {
       toast.error(error.response?.data?.error || tPack('addLevel.error'));
     }
   };
+
+  const handlePackDownloadClick = () => {
+    if (!pack) return;
+    setDownloadContext({
+      type: 'pack',
+      name: pack.name,
+      sizeSummary: packSizeSummary,
+      folderId: null
+    });
+  };
+
+  const handleFolderDownload = useCallback((folderItem) => {
+    if (!folderItem) return;
+    const summary = summarizeFolderSize(folderItem);
+    setDownloadContext({
+      type: 'folder',
+      name: folderItem.name,
+      sizeSummary: summary,
+      folderId: folderItem.id
+    });
+  }, []);
+
+  const handleCloseDownloadPopup = () => setDownloadContext(null);
+
+  const handleRequestDownload = useCallback(async () => {
+    if (!downloadContext || !pack?.id) {
+      throw new Error('Missing download context.');
+    }
+
+    const payload = {};
+    if (downloadContext.folderId) {
+      payload.folderId = downloadContext.folderId;
+    }
+
+    const response = await api.post(
+      `/v2/database/levels/packs/${pack.id}/download-link`,
+      payload
+    );
+
+    return response.data;
+  }, [downloadContext, pack?.id]);
 
   // Handle rename folder
   const handleRenameFolder = async (item) => {
@@ -671,6 +721,9 @@ const PackDetailPage = () => {
   const currentUrl = window.location.origin + location.pathname;
   const totalLevels = countLevels(pack.items);
   const visibleItems = flattenVisibleItems(pack.items || []);
+  const isDownloadPopupOpen = Boolean(downloadContext);
+  const popupContextName = downloadContext?.name || pack?.name;
+  const popupSizeSummary = downloadContext?.sizeSummary || packSizeSummary;
 
   return (
     <div className="pack-detail-page">
@@ -741,6 +794,21 @@ const PackDetailPage = () => {
             </div>
           </div>
 <div className="pack-detail-page__actions-container">
+          <div className="pack-detail-page__actions">
+            <button
+              className="pack-detail-page__download-btn"
+              onClick={handlePackDownloadClick}
+              disabled={packDownloadDisabled}
+              title={
+                packDownloadDisabled
+                  ? 'No downloadable levels available yet'
+                  : `${tPack('actions.downloadPack')} (${packSizeLabel.sizeLabel}) ${packSizeLabel.isEstimated}`
+              }
+            >
+              <DownloadIcon color="#ffffff" size={"20px"} />
+              <span>{tPack('actions.downloadPack')}</span>
+            </button>
+          </div>
           {canEdit && (
             <div className="pack-detail-page__actions">
               <button
@@ -872,6 +940,7 @@ const PackDetailPage = () => {
                 user={user}
                 onRenameFolder={handleRenameFolder}
                 onDeleteItem={handleDeleteItem}
+                onDownloadFolder={handleFolderDownload}
               />
               <DragOverlay>
                 {activeId ? (() => {
@@ -912,6 +981,14 @@ const PackDetailPage = () => {
 
         <ScrollButton targetRef={scrollRef} />
       </div>
+
+      <PackDownloadPopup
+        isOpen={isDownloadPopupOpen}
+        onClose={handleCloseDownloadPopup}
+        contextName={popupContextName}
+        sizeSummary={popupSizeSummary}
+        onRequestDownload={handleRequestDownload}
+      />
 
       {showEditPopup && (
         <EditPackPopup

@@ -23,6 +23,7 @@ import CurationSelectionPopup from './CurationSelectionPopup/CurationSelectionPo
 import AddToPackPopup from './AddToPackPopup/AddToPackPopup';
 import CreatePackPopup from './AddToPackPopup/CreatePackPopup';
 import EditPackPopup from './EditPackPopup/EditPackPopup';
+import PackDownloadPopup from './PackDownloadPopup/PackDownloadPopup';
 
 // User Management Popups
 import UserManagementPopup from './UserManagementPopup/UserManagementPopup';
@@ -54,6 +55,7 @@ export {
     AddToPackPopup,
     CreatePackPopup,
     EditPackPopup,
+    PackDownloadPopup,
     // User Management Popups
     UserManagementPopup,
     CuratorManagementPopup
