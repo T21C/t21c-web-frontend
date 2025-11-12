@@ -155,7 +155,6 @@ const PackDetailPage = () => {
   useEffect(() => {
     const handlePackUpdate = (event) => {
       if (event.detail?.packId === id || event.detail?.packId === pack?.id) {
-        console.log('Pack updated externally, refreshing...');
         fetchPack(true); // Silent refetch
       }
     };
@@ -168,7 +167,6 @@ const PackDetailPage = () => {
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (!document.hidden && id) {
-        console.log('Tab became visible, checking for pack updates...');
         fetchPack(true); // Silent refetch
       }
     };
