@@ -6,7 +6,7 @@ import { useState, useEffect, useCallback } from "react";
 import api from "@/utils/api";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
-const CURRENT_VERSION = 'v2.3';
+const CURRENT_VERSION = 'v2.4';
 
 const AboutUsPage = () => {
   const { t } = useTranslation('pages');
