@@ -210,8 +210,7 @@ const LevelCard = ({
         {/* Drag handle on the left */}
         {canEdit && dragHandleProps && (
           <div
-            {...dragHandleProps.attributes}
-            {...dragHandleProps.listeners}
+            {...dragHandleProps}
             className="level-card__drag-handle"
             title="Drag to reorder or move"
           >

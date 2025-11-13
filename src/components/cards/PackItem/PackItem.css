@@ -1,289 +1,249 @@
 .pack-item {
   position: relative;
-  /* Visual connector for nested items */
+  display: block;
 }
 
-/* Create continuous background for folder contents using pseudo-element on first child */
-.pack-item.first-in-folder[data-depth]:not([data-depth="0"])::before {
-  content: '';
-  position: absolute;
-  top: -0.5rem;
-  left: 0;
-  right: 0;
-  /* Use measured height from JavaScript + padding */
-  height: calc(var(--background-height, 100%) + 1rem);
-  background: linear-gradient(90deg, 
-    rgba(59, 130, 246, 0.03) 0%, 
-    rgba(15, 23, 42, 0.5) 1.5rem,
-    rgba(15, 23, 42, 0.3) 100%
-  );
-  border-left: 2px solid rgba(71, 85, 105, 0.5);
-  border-right: 1px solid rgba(71, 85, 105, 0.3);
-  border-bottom: 1px solid rgba(71, 85, 105, 0.3);
-  border-radius: 0 0 8px 8px;
-  z-index: -1;
-  pointer-events: none;
+.pack-item + .pack-item {
+  margin-top: 0.5rem;
+}
+
+/* Original item being dragged - reduce opacity */
+.pack-item.dragging {
+  opacity: 0.4;
+}
+
+/* The dragging clone itself */
+[data-rbd-drag-handle-draggable-id] {
+  cursor: grabbing !important;
+}
+
+/* Ensure proper z-index for dragging items */
+[data-rbd-draggable-context-id] {
+  z-index: 9999 !important;
 }
 
 .pack-item--folder {
-  position: relative;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  padding: 0.75rem;
   background: #111827;
   border: 1px solid #374151;
   border-radius: 8px;
-  gap: 0.5rem;
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  overflow: hidden;
 }
 
 .pack-item--folder.expanded {
-  background: #1e293b;
   border-color: #475569;
-  border-bottom-right-radius: 0;
-  border-bottom: none; /* Remove bottom border to connect with content background */
-  margin-bottom: 0 !important; /* No gap between folder header and first child */
 }
 
 .pack-item--folder:hover {
   border-color: #2563eb;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
 }
 
-.pack-item .pack-item__drag-handle {
+.pack-item__header {
   display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem;
+}
+
+.pack-item__drag-handle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: none;
+  background: none;
+  color: #94a3b8;
+  border-radius: 4px;
+  cursor: grab;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.pack-item__drag-handle:hover {
+  background: #1f2937;
+  color: #f1f5f9;
+}
+
+.pack-item__drag-handle:active {
+  cursor: grabbing;
+}
+
+.pack-item__toggle {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 24px;
   height: 24px;
-  cursor: grab;
-  color: #9ca3af;
   border: none;
   background: none;
+  color: #94a3b8;
   border-radius: 4px;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
-  z-index: 10;
-  opacity: 0;
-  visibility: hidden;
-  touch-action: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-/* Folder drag handle positioning - inline with content */
-.pack-item--folder .pack-item__drag-handle {
-  position: static;
-  transform: none;
-}
-
-
-/* Show drag handle on hover or when dragging */
-.pack-item:hover .pack-item__drag-handle,
-.pack-item.dragging .pack-item__drag-handle {
-  opacity: 1;
-  visibility: visible;
-}
-
-.pack-item .pack-item__drag-handle:hover {
-  background: #1f2937;
-  color: #f9fafb;
-}
-
-.pack-item .pack-item__drag-handle:active {
-  cursor: grabbing;
-}
-
-.pack-item .pack-item__toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  border: none;
-  background: none;
   cursor: pointer;
-  color: #9ca3af;
-  border-radius: 4px;
-  transition: all 0.2s ease;
-  flex-shrink: 0;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-.pack-item .pack-item__toggle:hover:not(:disabled) {
+.pack-item__toggle:hover:not(:disabled) {
   background: #1f2937;
-  color: #f9fafb;
+  color: #f1f5f9;
 }
 
-.pack-item .pack-item__toggle:disabled {
-  opacity: 0.5;
+.pack-item__toggle:disabled {
   cursor: not-allowed;
+  opacity: 0.5;
 }
 
-.pack-item .pack-item__icon {
-  display: flex;
+.pack-item__icon {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 24px;
   height: 24px;
   color: #60a5fa;
-  flex-shrink: 0;
 }
 
-.pack-item .pack-item__info {
+.pack-item__info {
   flex: 1;
   min-width: 0;
 }
 
-.pack-item .pack-item__name {
-  font-weight: 500;
-  color: #f9fafb;
-  margin-bottom: 0.25rem;
+.pack-item__name {
+  color: #f8fafc;
+  font-weight: 600;
+  margin-bottom: 0.15rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.pack-item .pack-item__count {
-  font-size: 0.875rem;
-  color: #9ca3af;
+.pack-item__count {
+  color: #94a3b8;
+  font-size: 0.85rem;
 }
 
-.pack-item .pack-item__download {
-  margin-left: auto;
+.pack-item__download {
   display: flex;
   align-items: center;
+  margin-left: auto;
 }
 
-.pack-item .pack-item__download-btn {
+.pack-item__download-btn {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
   gap: 0.25rem;
-  padding: 0.6rem 0.85rem;
+  align-items: flex-start;
+  padding: 0.55rem 0.85rem;
   border-radius: 10px;
   border: 1px solid rgba(59, 130, 246, 0.4);
   background: rgba(59, 130, 246, 0.15);
-  color: #f9fafb;
+  color: #f8fafc;
   cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
   min-width: 160px;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
-.pack-item .pack-item__download-btn:hover:not(:disabled) {
+.pack-item__download-btn:hover:not(:disabled):not(.dragging *) {
   background: rgba(59, 130, 246, 0.25);
   border-color: rgba(96, 165, 250, 0.8);
   transform: translateY(-1px);
 }
 
-.pack-item .pack-item__download-btn:disabled {
+.pack-item__download-btn:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }
 
-.pack-item .pack-item__download-main {
-  display: flex;
+.pack-item__download-main {
+  display: inline-flex;
   align-items: center;
   gap: 0.5rem;
   font-weight: 600;
 }
 
-.pack-item .pack-item__download-size {
+.pack-item__download-size {
   font-size: 0.75rem;
   color: rgba(148, 163, 184, 0.9);
 }
 
-.pack-item .pack-item__actions {
-  display: flex;
+.pack-item__download-size-estimated {
+  color: rgba(148, 163, 184, 0.7);
+  font-weight: 500;
+}
+
+.pack-item__actions {
+  display: inline-flex;
   align-items: center;
   gap: 0.25rem;
   margin-left: 0.75rem;
 }
 
-.pack-item .pack-item__action-btn {
-  display: flex;
+.pack-item__action-btn {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 28px;
   height: 28px;
   border: none;
   background: none;
-  cursor: pointer;
   border-radius: 4px;
-  transition: all 0.2s ease;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
   font-size: 14px;
 }
 
-.pack-item .pack-item__action-btn:hover:not(:disabled) {
+.pack-item__action-btn:hover:not(:disabled) {
   background: #1f2937;
 }
 
-.pack-item .pack-item__action-btn--delete:hover:not(:disabled) {
+.pack-item__action-btn--delete:hover:not(:disabled) {
   background: rgba(220, 53, 69, 0.1);
 }
 
-.pack-item .pack-item__action-btn:disabled {
-  opacity: 0.3;
+.pack-item__action-btn:disabled {
   cursor: not-allowed;
+  opacity: 0.35;
 }
 
-/* Drag states */
-.pack-item.dragging {
-  opacity: 0.3;
-  /* Ensure the element still occupies space in layout */
-  pointer-events: none;
-  /* Prevent any layout shift */
-  position: relative;
+.pack-item__children {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0 0.75rem 0.75rem;
+  transition: background-color 0.2s ease, min-height 0.2s ease;
 }
 
-.pack-item--dragging {
-  padding: 1rem;
-  background: #111827;
-  border: 2px solid #2563eb;
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-  font-weight: 500;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
+.pack-item__children.is-collapsed {
+  display: none;
 }
 
-.pack-item--dragging.entering-folder {
-  border-color: #4CAF50;
-  background: rgba(76, 175, 80, 0.1);
+.pack-item__children.is-expanded {
+  min-height: 40px;
 }
 
-.pack-item.over {
-  background: rgba(76, 175, 80, 0.05);
-  border-color: #4CAF50;
+.pack-item__children.is-dragging-over {
+  background: rgba(59, 130, 246, 0.12);
+  border-radius: 6px;
+  padding: 0.75rem;
+  min-height: 60px;
 }
 
-/* Folder content area styling - visual grouping using classes */
-.pack-item.first-in-folder {
-  /* First child after expanded folder - connect visually */
-  margin-top: 0 !important;
+.pack-item__level-wrapper {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
 }
 
-.pack-item.last-in-folder {
-  /* Last child in folder - extra spacing after group */
-  margin-bottom: 0.75rem !important;
-}
-
-/* Ensure proper spacing between root-level items */
-.pack-item[data-depth="0"] + .pack-item[data-depth="0"] {
-  margin-top: 0.5rem;
-}
-
-/* Level item specific styles */
-.pack-item--level {
-  padding: 0;
-  background: none;
-  border: none;
+.pack-item__level-wrapper .level-card {
+  margin-bottom: 0;
 }
 
 @media (max-width: 650px) {
-  .pack-item__contents {
+  .pack-item__header {
+    flex-wrap: wrap;
+    row-gap: 0.5rem;
+  }
+
+  .pack-item__download,
+  .pack-item__actions {
     margin-left: 0;
-    padding-left: 0.5rem;
   }
 }

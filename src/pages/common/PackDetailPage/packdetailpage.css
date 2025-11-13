@@ -61,6 +61,11 @@
 .pack-detail-page__retry-btn:hover,
 .pack-detail-page__back-btn:hover {
   background: var(--color-white-t30);
+}
+
+/* Only apply transform when not inside a dragging element */
+.pack-detail-page__retry-btn:hover:not(.dragging *),
+.pack-detail-page__back-btn:hover:not(.dragging *) {
   transform: translateY(-1px);
 }
 
@@ -256,6 +261,10 @@
 .pack-detail-page__download-btn:hover:not(:disabled) {
   background: rgba(59, 130, 246, 0.28);
   border-color: rgba(96, 165, 250, 0.7);
+}
+
+/* Only apply transform when not inside a dragging element */
+.pack-detail-page__download-btn:hover:not(:disabled):not(.dragging *) {
   transform: translateY(-1px);
 }
 
@@ -426,8 +435,12 @@
 
 .pack-detail-page__collapse-expand-btn:hover {
   background: rgba(255, 255, 255, 0.1);
-  transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+/* Only apply transform when not inside a dragging element */
+.pack-detail-page__collapse-expand-btn:hover:not(.dragging *) {
+  transform: translateY(-1px);
 }
 
 /* Items list structure */
@@ -435,11 +448,15 @@
   display: flex;
   flex-direction: column;
   margin-bottom: 2rem;
-  transition: background-color 0.2s ease;
   border-radius: 8px;
   padding: 0.5rem;
   position: relative;
-  z-index: 1;
+}
+
+/* Ensure drag and drop context doesn't create stacking issues */
+.pack-detail-page__content {
+  position: relative;
+  isolation: isolate;
 }
 
 /* Removed dragging-over styles - no longer needed without droppable zones */
@@ -469,6 +486,10 @@
 .pack-detail-page__add-btn:hover {
   background: var(--color-white-t20);
   border-color: var(--color-primary);
+}
+
+/* Only apply transform when not inside a dragging element */
+.pack-detail-page__add-btn:hover:not(.dragging *) {
   transform: translateY(-1px);
 }
 

@@ -1,10 +1,9 @@
 import "./packdetailpage.css";
-import { useEffect, useState, useRef, useMemo, useCallback } from "react";
+import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { CompleteNav } from "@/components/layout";
 import PackItem from "@/components/cards/PackItem/PackItem";
-import LevelCard from "@/components/cards/LevelCard/LevelCard";
 import { MetaTags } from "@/components/common/display";
 import { ScrollButton } from "@/components/common/buttons";
 import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, ArrowIcon, PlusIcon, LikeIcon, DownloadIcon } from "@/components/common/icons";
@@ -18,63 +17,28 @@ import { Tooltip } from "react-tooltip";
 import { getPackExpandedFolders, setPackExpandedFolders } from "@/utils/folderState";
 import toast from 'react-hot-toast';
 import { summarizePackSize, summarizeFolderSize, formatEstimatedSize } from '@/utils/packDownloadUtils';
-import {
-  DndContext,
-  DragOverlay,
-  PointerSensor,
-  useSensor,
-  useSensors,
-  closestCenter,
-} from '@dnd-kit/core';
-import {
-  SortableContext,
-  verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
+import { DragDropContext, Droppable } from '@hello-pangea/dnd';
 import i18next from 'i18next';
 import { formatDate } from '@/utils/Utility';
 
-// Simplified flat list - all items in one SortableContext
-const FlatList = ({
-  visibleItems,
-  expandedFolders,
-  onToggleExpanded,
-  canEdit,
-  isReordering,
-  packId,
-  user,
-  onRenameFolder,
-  onDeleteItem,
-  onDownloadFolder
-}) => {
-  // Single SortableContext with ALL visible items
-  const itemIds = visibleItems.map(item => item.id);
+const ROOT_DROPPABLE_ID = 'folder-root';
 
-  return (
-    <SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
-      <div className="pack-detail-page__items-list">
-        {visibleItems.map((item) => (
-          <PackItem
-            key={item.id}
-            item={item}
-            depth={item._depth || 0}
-            isFirstInFolder={item._isFirstInFolder}
-            isLastInFolder={item._isLastInFolder}
-            parentId={item._parentId}
-            siblingCount={item._siblingCount}
-            expandedFolders={expandedFolders}
-            onToggleExpanded={onToggleExpanded}
-            canEdit={canEdit}
-            isReordering={isReordering}
-            packId={packId}
-            user={user}
-            onRenameFolder={onRenameFolder}
-            onDeleteItem={onDeleteItem}
-            onDownloadFolder={onDownloadFolder}
-          />
-        ))}
-      </div>
-    </SortableContext>
-  );
+const parseDroppableId = (droppableId) => {
+  if (droppableId === ROOT_DROPPABLE_ID) return null;
+  if (droppableId?.startsWith('folder-')) {
+    const id = Number(droppableId.replace('folder-', ''));
+    return Number.isNaN(id) ? null : id;
+  }
+  return null;
+};
+
+const sortItemsByOrder = (items = []) => [...items].sort((a, b) => a.sortOrder - b.sortOrder);
+
+const countPackItems = (items = []) => {
+  return items.reduce((total, current) => {
+    const childCount = current.children ? countPackItems(current.children) : 0;
+    return total + 1 + childCount;
+  }, 0);
 };
 
 const PackDetailPage = () => {
@@ -92,7 +56,6 @@ const PackDetailPage = () => {
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [isReordering, setIsReordering] = useState(false);
   const [expandedFolders, setExpandedFolders] = useState(new Set());
-  const [activeId, setActiveId] = useState(null);
   const [downloadContext, setDownloadContext] = useState(null);
   const scrollRef = useRef(null);
 
@@ -100,18 +63,8 @@ const PackDetailPage = () => {
   const packSizeSummary = useMemo(() => summarizePackSize(packItems), [packItems]);
   const packSizeLabel = useMemo(() => formatEstimatedSize(packSizeSummary), [packSizeSummary]);
   const packDownloadDisabled = packSizeSummary.levelCount === 0;
-
-  // Set up sensors for dnd-kit
-  const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: {
-        distance: 8,
-      },
-    })
-  );
-
-  // Use default collision detection - closestCenter works best for vertical lists
-  // Removed custom collision detection to avoid interfering with library's sorting behavior
+  const sortedRootItems = useMemo(() => sortItemsByOrder(packItems), [packItems]);
+  const totalRenderableItems = useMemo(() => countPackItems(packItems), [packItems]);
 
   // Fetch pack details
   const fetchPack = async (silent = false) => {
@@ -400,37 +353,6 @@ const PackDetailPage = () => {
     }
   };
 
-  // Flatten tree into a linear list for DND - only visible items
-  // Also mark first/last children for CSS styling and count siblings for background sizing
-  const flattenVisibleItems = (items, result = [], parent = null) => {
-    const sortedItems = items ? [...items].sort((a, b) => a.sortOrder - b.sortOrder) : [];
-    
-    sortedItems.forEach((item, index) => {
-      const depth = parent ? (parent._depth || 0) + 1 : 0;
-      const isFirstChild = index === 0 && parent;
-      const isLastChild = index === sortedItems.length - 1 && parent;
-      
-      // Create enriched item with metadata
-      const enrichedItem = {
-        ...item,
-        _parentItem: parent,
-        _parentId: parent?.id || null,
-        _depth: depth,
-        _isFirstInFolder: isFirstChild,
-        _isLastInFolder: isLastChild,
-        _siblingCount: sortedItems.length  // How many children in this folder
-      };
-      
-      result.push(enrichedItem);
-      
-      // Pass enriched item (with _depth set) as parent for children
-      if (item.type === 'folder' && item.children && expandedFolders.has(item.id)) {
-        flattenVisibleItems(item.children, result, enrichedItem);
-      }
-    });
-    return result;
-  };
-
   // Helper to find item by ID in tree
   const findItem = (items, itemId) => {
     for (const item of items) {
@@ -455,10 +377,6 @@ const PackDetailPage = () => {
     return undefined;
   };
 
-  // Handle drag start
-  const handleDragStart = (event) => {
-    setActiveId(event.active.id);
-  };
 
   // Helper to clone and update tree
   const cloneTree = (items) => {
@@ -476,161 +394,148 @@ const PackDetailPage = () => {
     }));
   };
 
-  // Helper to remove item from tree
-  const removeItemFromTree = (items, itemId) => {
-    const result = [];
-    for (const item of items) {
-      if (item.id === itemId) continue;
-      
-      const newItem = { ...item };
-      if (newItem.children) {
-        newItem.children = removeItemFromTree(newItem.children, itemId);
-      }
-      result.push(newItem);
+  const findParentId = (items, itemId) => {
+    const parentItem = findParent(items, itemId);
+    if (parentItem === undefined) {
+      return undefined;
     }
-    return result;
+    return parentItem?.id ?? null;
   };
 
-  // Helper to insert item into tree at specific location
-  const insertItemIntoTree = (items, parentId, item, insertIndex) => {
+  const getChildList = (items, parentId) => {
     if (parentId === null) {
-      // Insert at root level
-      const newItems = [...items];
-      if (insertIndex >= 0 && insertIndex <= newItems.length) {
-        newItems.splice(insertIndex, 0, item);
-      } else {
-        newItems.push(item);
-      }
-      return newItems;
+      return items;
     }
 
-    // Insert into a folder
-    return items.map(currentItem => {
-      if (currentItem.id === parentId) {
-        const children = currentItem.children || [];
-        const newChildren = [...children];
-        if (insertIndex >= 0 && insertIndex <= newChildren.length) {
-          newChildren.splice(insertIndex, 0, item);
-        } else {
-          newChildren.push(item);
-        }
-        return { ...currentItem, children: newChildren };
-      }
-      
-      if (currentItem.children) {
-        return {
-          ...currentItem,
-          children: insertItemIntoTree(currentItem.children, parentId, item, insertIndex)
-        };
-      }
-      
-      return currentItem;
-    });
+    const parentItem = findItem(items, parentId);
+    if (!parentItem) {
+      return null;
+    }
+
+    if (!parentItem.children) {
+      parentItem.children = [];
+    }
+
+    return parentItem.children;
   };
 
-  // Handle drag end
-  const handleDragEnd = async (event) => {
-    const { active, over } = event;
-    
-    setActiveId(null);
+  const moveItemInTree = (items, { sourceParentId, sourceIndex, destinationParentId, destinationIndex }) => {
 
-    if (!over || active.id === over.id) return;
+    const sourceList = getChildList(items, sourceParentId);
+    const destinationList = getChildList(items, destinationParentId);
+
+    if (!sourceList || !destinationList) {
+      return false;
+    }
+
+    if (sourceIndex < 0 || sourceIndex >= sourceList.length) {
+      return false;
+    }
+
+    const [movedItem] = sourceList.splice(sourceIndex, 1);
+
+    if (!movedItem) {
+      return false;
+    }
+
+    let targetIndex = destinationIndex;
+    if (sourceParentId === destinationParentId && destinationIndex > sourceIndex) {
+      targetIndex = destinationIndex;
+    }
+
+    if (targetIndex < 0) {
+      targetIndex = 0;
+    }
+
+    if (targetIndex > destinationList.length) {
+      targetIndex = destinationList.length;
+    }
+
+    destinationList.splice(targetIndex, 0, movedItem);
+    return true;
+  };
+
+  // Handle drag end with DnD context
+  const handleDragEnd = async (result) => {
+    if (!result.destination || !pack?.items) return;
+
+    const { source, destination, draggableId } = result;
+    const sourceParentId = parseDroppableId(source.droppableId);
+    const destinationParentId = parseDroppableId(destination.droppableId);
+
+    if (sourceParentId === destinationParentId && source.index === destination.index) {
+      return;
+    }
+
+    const activeId = parseInt(draggableId.replace('item-', ''), 10);
+    const activeItem = findItem(pack.items, activeId);
+
+    if (!activeItem) {
+      console.error('Active item not found');
+      return;
+    }
+
+    if (activeItem.type === 'folder') {
+      let currentParentId = destinationParentId;
+      while (currentParentId !== null && currentParentId !== undefined) {
+        if (currentParentId === activeId) {
+          toast.error(tPack('move.cannotMoveIntoSelf'));
+          return;
+        }
+        const nextParentId = findParentId(pack.items, currentParentId);
+        if (nextParentId === undefined) {
+          break;
+        }
+        currentParentId = nextParentId;
+      }
+    }
 
     try {
-      const activeId = parseInt(active.id);
-      const activeItem = findItem(pack.items, activeId);
-      const activeParent = findParent(pack.items, activeId);
-      const activeParentId = activeParent?.id || null;
-      
-      if (!activeItem) {
-        console.error('Active item not found');
-        return;
-      }
-
-      // Simplified: find positions in the flat visible list
-      const overId = parseInt(over.id);
-      const overItem = visibleItems.find(v => v.id === overId);
-      
-      if (!overItem) {
-        console.error('Over item not found in visible list');
-        return;
-      }
-
-      // Determine new parent: use the same parent as the item we're dropping next to
-      const overParent = findParent(pack.items, overId);
-      const targetParentId = overParent?.id || null;
-      const targetItems = targetParentId === null ? pack.items : overParent?.children || [];
-      
-      // Find position within that parent's children
-      const sortedTargetItems = [...targetItems].sort((a, b) => a.sortOrder - b.sortOrder);
-      const overIndex = sortedTargetItems.findIndex(item => item.id === overId);
-      const activeIndex = sortedTargetItems.findIndex(item => item.id === activeId);
-      
-      let newIndex = -1;
-      
-      if (activeParentId === targetParentId && activeIndex !== -1 && overIndex !== -1) {
-        // Moving within same parent
-        const withoutActive = sortedTargetItems.filter(item => item.id !== activeId);
-        const overIndexWithoutActive = withoutActive.findIndex(item => item.id === overId);
-        
-        if (activeIndex < overIndex) {
-          // Moving down: insert after
-          newIndex = overIndexWithoutActive + 1;
-        } else {
-          // Moving up: insert before
-          newIndex = overIndexWithoutActive;
-        }
-      } else {
-        // Moving to different parent - insert at position of over item
-        const filteredItems = sortedTargetItems.filter(item => item.id !== activeId);
-        newIndex = filteredItems.findIndex(item => item.id === overId);
-        if (newIndex === -1) newIndex = filteredItems.length;
-      }
-
-      // Prevent folder into itself
-      if (activeItem.type === 'folder' && targetParentId !== null) {
-        let current = findItem(pack.items, targetParentId);
-        while (current) {
-          if (current.id === activeId) {
-            toast.error(tPack('move.cannotMoveIntoSelf'));
-            return;
-          }
-          current = findParent(pack.items, current.id);
-          if (current) current = findItem(pack.items, current.id);
-        }
-      }
-
-      // Build new tree optimistically
-      let newTree = cloneTree(pack.items);
-      newTree = removeItemFromTree(newTree, activeId);
-      newTree = insertItemIntoTree(newTree, targetParentId, activeItem, newIndex);
-
-      // Update local state immediately (optimistic update)
       setIsReordering(true);
+
+      const newTree = cloneTree(pack.items);
+      const moveSucceeded = moveItemInTree(newTree, {
+        sourceParentId,
+        sourceIndex: source.index,
+        destinationParentId,
+        destinationIndex: destination.index
+      });
+
+      if (!moveSucceeded) {
+        setIsReordering(false);
+        return;
+      }
+
       setPack({ ...pack, items: newTree });
 
-      // Send to backend - use minimal structure to avoid large payloads
+      if (destinationParentId !== null && destinationParentId !== undefined) {
+        setExpandedFolders(prev => {
+          const newSet = new Set(prev);
+          newSet.add(destinationParentId);
+          if (id) {
+            setPackExpandedFolders(id, newSet);
+          }
+          return newSet;
+        });
+      }
+
       const minimalTree = createMinimalTreeStructure(newTree);
       const response = await api.put(`/v2/database/levels/packs/${pack.id}/tree`, {
         items: minimalTree
       });
 
-      // Update with server response (in case of any server-side modifications)
       setPack(prevPack => ({ ...prevPack, items: response.data.items }));
       toast.success(tPack('move.success'));
-      setIsReordering(false);
       
-      // Notify any other listeners that the pack was updated
       window.dispatchEvent(new CustomEvent('packUpdated', {
         detail: { packId: pack.id }
       }));
-      
     } catch (error) {
       console.error('Failed to move item:', error);
       toast.error(error.response?.data?.error || tPack('move.error'));
-      // Revert on error by refetching
-      setIsReordering(false);
       await fetchPack(true);
+    } finally {
+      setIsReordering(false);
     }
   };
 
@@ -718,7 +623,6 @@ const PackDetailPage = () => {
 
   const currentUrl = window.location.origin + location.pathname;
   const totalLevels = countLevels(pack.items);
-  const visibleItems = flattenVisibleItems(pack.items || []);
   const isDownloadPopupOpen = Boolean(downloadContext);
   const popupContextName = downloadContext?.name || pack?.name;
   const popupSizeSummary = downloadContext?.sizeSummary || packSizeSummary;
@@ -912,7 +816,7 @@ const PackDetailPage = () => {
                   </button>
                 </div>
               )}
-              {canEdit && visibleItems.length > 1 && (
+              {canEdit && totalRenderableItems > 1 && (
                 <span className="pack-detail-page__drag-hint">
                   {tPack('items.dragHint')}
                 </span>
@@ -921,39 +825,38 @@ const PackDetailPage = () => {
           </div>
 
           {pack.items && pack.items.length > 0 ? (
-            <DndContext
-              sensors={sensors}
-              collisionDetection={closestCenter}
-              onDragStart={handleDragStart}
-              onDragEnd={handleDragEnd}
-            >
-              {/* Single flat list - simpler! */}
-              <FlatList
-                visibleItems={visibleItems}
-                expandedFolders={expandedFolders}
-                onToggleExpanded={toggleFolderExpanded}
-                canEdit={canEdit}
-                isReordering={isReordering}
-                packId={pack.id}
-                user={user}
-                onRenameFolder={handleRenameFolder}
-                onDeleteItem={handleDeleteItem}
-                onDownloadFolder={handleFolderDownload}
-              />
-              <DragOverlay>
-                {activeId ? (() => {
-                  const draggedItem = findItem(pack.items, activeId);
-                  const isFolder = draggedItem?.type === 'folder';
-                  const displayName = draggedItem?.name || draggedItem?.referencedLevel?.name || 'Item';
-                  return (
-                    <div className="pack-item pack-item--dragging">
-                      {isFolder && <span style={{ marginRight: '0.5rem' }}>📁</span>}
-                      {displayName}
-                    </div>
-                  );
-                })() : null}
-              </DragOverlay>
-            </DndContext>
+            <DragDropContext onDragEnd={handleDragEnd}>
+              <Droppable 
+                droppableId={ROOT_DROPPABLE_ID} 
+                type="ITEM"
+              >
+                {(provided, snapshot) => (
+                  <div
+                    className={`pack-detail-page__items-list ${snapshot.isDraggingOver ? 'is-dragging-over' : ''}`}
+                    ref={provided.innerRef}
+                    {...provided.droppableProps}
+                  >
+                    {sortedRootItems.map((item, index) => (
+                      <PackItem
+                        key={item.id}
+                        item={item}
+                        index={index}
+                        depth={0}
+                        expandedFolders={expandedFolders}
+                        onToggleExpanded={toggleFolderExpanded}
+                        canEdit={canEdit}
+                        isReordering={isReordering}
+                        user={user}
+                        onRenameFolder={handleRenameFolder}
+                        onDeleteItem={handleDeleteItem}
+                        onDownloadFolder={handleFolderDownload}
+                      />
+                    ))}
+                    {provided.placeholder}
+                  </div>
+                )}
+              </Droppable>
+            </DragDropContext>
           ) : (
             <div className="pack-detail-page__empty">
               <p>{tPack('items.empty')}</p>
