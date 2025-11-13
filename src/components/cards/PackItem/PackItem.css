@@ -3,10 +3,6 @@
   display: block;
 }
 
-.pack-item + .pack-item {
-  margin-top: 0.5rem;
-}
-
 /* Original item being dragged - reduce opacity */
 .pack-item.dragging {
   opacity: 0.4;
@@ -228,8 +224,8 @@
 }
 
 .pack-item__level-wrapper {
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  z-index: 2;
+  position: relative;
 }
 
 .pack-item__level-wrapper .level-card {
