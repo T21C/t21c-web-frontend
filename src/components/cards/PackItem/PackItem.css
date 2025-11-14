@@ -214,6 +214,8 @@
 
 .pack-item__children.is-expanded {
   min-height: 40px;
+  position: relative;
+  z-index: 1;
 }
 
 .pack-item__children.is-dragging-over {
