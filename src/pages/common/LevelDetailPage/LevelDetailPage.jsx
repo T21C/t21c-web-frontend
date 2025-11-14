@@ -1491,8 +1491,8 @@ const LevelDetailPage = ({ mockData = null }) => {
               <div className="difficulty-curation-row">
               <div className="diff rerate-history-container" style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <img 
-                  src={difficultyDict[res.level.difficulty.id]?.icon} 
-                  alt={difficultyDict[res.level.difficulty.id]?.name || 'Difficulty icon'} 
+                  src={difficultyDict[res.level.diffId]?.icon} 
+                  alt={difficultyDict[res.level.diffId]?.name || 'Difficulty icon'} 
                   className="difficulty-icon"
                 />
                 {(res.ratings?.averageDifficultyId && 
