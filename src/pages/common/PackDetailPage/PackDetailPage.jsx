@@ -116,18 +116,6 @@ const PackDetailPage = () => {
     return () => window.removeEventListener('packUpdated', handlePackUpdate);
   }, [id, pack?.id]);
 
-  // Refetch pack data when window regains focus or becomes visible
-  useEffect(() => {
-    const handleVisibilityChange = () => {
-      if (!document.hidden && id) {
-        fetchPack(true); // Silent refetch
-      }
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
-  }, [id]);
-
   // Handle edit pack
   const handleEditPack = async (updatedPack) => {
     setPack({ ...pack, ...updatedPack });
