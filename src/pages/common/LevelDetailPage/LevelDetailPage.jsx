@@ -193,7 +193,7 @@ const RatingVotesDropdown = ({ votes, show, onClose }) => {
   );
 };
 
-const FullInfoPopup = ({ level, onClose, videoDetail }) => {
+const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
   const { t } = useTranslation('pages');
   const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
 
@@ -255,7 +255,7 @@ const FullInfoPopup = ({ level, onClose, videoDetail }) => {
       <div className="level-detail-popup-overlay" onClick={onClose}></div>
       <div className="level-detail-popup popup-scale-up">
         <div className="popup-content">
-          <div className="popup-header" style={{ backgroundColor: `#${level.difficulty.color}ff` }}>
+          <div className="popup-header" style={{ backgroundColor: `#${difficulty.color}ff` }}>
             <h2>{level.song}</h2>
             <p>{level.artist}</p>
             <span className="createdAt">{tLevel('info.createdAt')}: {formatDate(videoDetail?.timestamp || level.createdAt, i18next?.language)}</span>
@@ -275,12 +275,12 @@ const FullInfoPopup = ({ level, onClose, videoDetail }) => {
               )}
               <div className="each-info">
                 <span>{tLevel('info.difficulty')}:</span>
-                <span>{level.difficulty.name}</span>
+                <span>{difficulty.name}</span>
               </div>
-              {(level.baseScore || level.difficulty.baseScore) && (
+              {(level.baseScore || difficulty.baseScore) && (
                 <div className="each-info">
                   <span>{tLevel('info.baseScore')}:</span>
-                  <span>{level.baseScore || level.difficulty.baseScore}PP</span>
+                  <span>{level.baseScore || difficulty.baseScore}PP</span>
                 </div>
               )}
               {level.aliases && level.aliases.length > 0 && (
@@ -1438,6 +1438,9 @@ const LevelDetailPage = ({ mockData = null }) => {
         <div className="loader loader-level-detail"></div>
       </div>
     );
+
+  const difficulty = difficultyDict[res.level.diffId];
+  const averageDifficulty = difficultyDict[res.ratings?.averageDifficultyId];
   return (
     <div>
       <MetaTags
@@ -1491,17 +1494,17 @@ const LevelDetailPage = ({ mockData = null }) => {
               <div className="difficulty-curation-row">
               <div className="diff rerate-history-container" style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                 <img 
-                  src={difficultyDict[res.level.diffId]?.icon} 
-                  alt={difficultyDict[res.level.diffId]?.name || 'Difficulty icon'} 
+                  src={difficulty.icon} 
+                  alt={difficulty.name || 'Difficulty icon'} 
                   className="difficulty-icon"
                 />
                 {(res.ratings?.averageDifficultyId && 
-                 difficultyDict[res.ratings.averageDifficultyId]?.icon) &&
-                 difficultyDict[res.ratings.averageDifficultyId]?.type == "PGU" &&
-                 difficultyDict[res.level.diffId]?.name.startsWith("Q") ?
+                 averageDifficulty?.icon) &&
+                 averageDifficulty?.type == "PGU" &&
+                 difficulty.name.startsWith("Q") ?
                 <img 
                     className="rating-icon"
-                    src={difficultyDict[res.ratings.averageDifficultyId]?.icon}
+                    src={averageDifficulty.icon}
                     alt="Rating icon" />
                 : null
                 }
@@ -1523,7 +1526,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                   difficultyDict={difficultyDict}
                 />
                 <div className="pp-display">
-                  {(res.level.baseScore || res.level.difficulty.baseScore || 0).toFixed(1)}PP
+                  {(res.level.baseScore || difficulty.baseScore || 0).toFixed(1)}PP
                 </div>
                 <div className="level-id">#{effectiveId}</div>
               </div>
@@ -1629,7 +1632,7 @@ const LevelDetailPage = ({ mockData = null }) => {
               )}
               
               {/* Rating Accuracy Display, disabled for now */}
-              {1==0 && res.level.difficulty.type === "PGU" && res.level.clears > 0 && (
+              {1==0 && difficulty.type === "PGU" && res.level.clears > 0 && (
                 <div className="rating-accuracy-container">
                   <div className="rating-accuracy-display-title">Rating Accuracy</div>
                   <div 
@@ -1702,7 +1705,7 @@ const LevelDetailPage = ({ mockData = null }) => {
               <div className="like-container"
                 style={{
                   marginLeft:
-                   res.level.difficulty.type === "PGU"
+                   difficulty.type === "PGU"
                    && res.level.clears > 0
                    ? "" : "auto"
                 }}
@@ -2002,6 +2005,7 @@ const LevelDetailPage = ({ mockData = null }) => {
           level={res.level}
           onClose={changeDialogState}
           videoDetail={videoDetail}
+          difficulty={difficulty}
         />
       )}
 
