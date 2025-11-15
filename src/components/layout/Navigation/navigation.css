@@ -442,6 +442,10 @@ nav {
   display: none;
 }
 
+.nav-language-select.mobile {
+  display: none;
+}
+
 .nav-language-selector.mobile .nav-language-selector__button {
   display: flex;
   align-items: center;
@@ -469,6 +473,11 @@ nav {
 @media (max-width: 580px) {
   .nav-wrapper {
     padding: 0.7rem;
+  }
+
+
+  .nav-language-select.mobile {
+    display: block;
   }
 
   .nav-logo {
