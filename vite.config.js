@@ -83,83 +83,7 @@ export default defineConfig(({ command, mode }) => {
         usePolling: true
       },
       proxy: {
-        '/v2': {
-          target: apiUrl || 'http://localhost:3002',
-          changeOrigin: true,
-          secure: false,
-          ws: false,
-          configure: (proxy, options) => {
-            proxy.on('error', (err, req, res) => {
-              console.log('proxy error', err);
-            });
-            proxy.on('proxyReq', (proxyReq, req, res) => {
-              console.log('Proxying request:', req.method, req.url, 'to:', options.target + req.url);
-            });
-            proxy.on('proxyRes', (proxyRes, req, res) => {
-              console.log('Received response:', proxyRes.statusCode, req.url);
-            });
-          },
-          htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'],
-          rewrite: (path) => path
-        },
-        '^/passes/\\d+$': {
-          target: apiUrl || 'http://localhost:3002',
-          changeOrigin: true,
-          secure: false,
-          ws: false,
-          configure: (proxy, options) => {
-            proxy.on('error', (err, req, res) => {
-              console.log('proxy error', err);
-            });
-            proxy.on('proxyReq', (proxyReq, req, res) => {
-              console.log('Proxying request:', req.method, req.url, 'to:', options.target + req.url);
-            });
-            proxy.on('proxyRes', (proxyRes, req, res) => {
-              console.log('Received response:', proxyRes.statusCode, req.url);
-            });
-          },
-          htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'],
-          rewrite: (path) => path
-        },
-        '^/levels/\\d+$': {
-          target: apiUrl || 'http://localhost:3002',
-          changeOrigin: true,
-          secure: false,
-          ws: false,
-          configure: (proxy, options) => {
-            proxy.on('error', (err, req, res) => {
-              console.log('proxy error', err);
-            });
-            proxy.on('proxyReq', (proxyReq, req, res) => {
-              console.log('Proxying request:', req.method, req.url, 'to:', options.target + req.url);
-            });
-            proxy.on('proxyRes', (proxyRes, req, res) => {
-              console.log('Received response:', proxyRes.statusCode, req.url);
-            });
-          },
-          htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'],
-          rewrite: (path) => path
-        },
-        '^/profile/\\d+$': {
-          target: apiUrl || 'http://localhost:3002',
-          changeOrigin: true,
-          secure: false,
-          ws: false,
-          configure: (proxy, options) => {
-            proxy.on('error', (err, req, res) => {
-              console.log('proxy error', err);
-            });
-            proxy.on('proxyReq', (proxyReq, req, res) => {
-              console.log('Proxying request:', req.method, req.url, 'to:', options.target + req.url);
-            });
-            proxy.on('proxyRes', (proxyRes, req, res) => {
-              console.log('Received response:', proxyRes.statusCode, req.url);
-            });
-          },
-          htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'],
-          rewrite: (path) => path
-        },
-        '/events': {
+        '/v2|/(levels|passes|profile)/\\d+$': {
           target: apiUrl || 'http://localhost:3002',
           changeOrigin: true,
           secure: false,
@@ -184,24 +108,12 @@ export default defineConfig(({ command, mode }) => {
       port: port,
       strictPort: true,
       proxy: {
-        '^/levels/\\d+$': {
+        '^/(levels|passes|profile)/\\d+$': {
           target: apiUrl || 'http://localhost:3002',
           changeOrigin: true,
           secure: false,
           ws: false
         },
-        '^/passes/\\d+$': {
-          target: apiUrl || 'http://localhost:3002',
-          changeOrigin: true,
-          secure: false,
-          ws: false
-        },
-        '^/profile/\\d+$': {
-          target: apiUrl || 'http://localhost:3002',
-          changeOrigin: true,
-          secure: false,
-          ws: false
-        }
       }
     }
   }
