@@ -196,7 +196,7 @@ export default defineConfig(({ command, mode }) => {
           secure: false,
           ws: false
         },
-        '^/player/\\d+$': {
+        '^/profile/\\d+$': {
           target: apiUrl || 'http://localhost:3002',
           changeOrigin: true,
           secure: false,
