@@ -140,7 +140,7 @@ export default defineConfig(({ command, mode }) => {
           htmlAcceptHeaders: ['text/html', 'application/xhtml+xml'],
           rewrite: (path) => path
         },
-        '^/player/\\d+$': {
+        '^/profile/\\d+$': {
           target: apiUrl || 'http://localhost:3002',
           changeOrigin: true,
           secure: false,
