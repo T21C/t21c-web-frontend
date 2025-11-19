@@ -155,7 +155,8 @@
 
 .level-upload-management-popup .upload-button,
 .level-upload-management-popup .delete-button,
-.level-upload-management-popup .select-button {
+.level-upload-management-popup .select-button,
+.level-upload-management-popup .cancel-upload-button {
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
@@ -195,6 +196,16 @@
   background-color: #2a2a2a;
   color: rgba(255, 255, 255, 0.6);
   cursor: not-allowed;
+}
+
+.level-upload-management-popup .cancel-upload-button {
+  background-color: #c64141;
+  color: white;
+  margin-top: 10px;
+}
+
+.level-upload-management-popup .cancel-upload-button:hover {
+  background-color: #a13535;
 }
 
 .level-upload-management-popup .current-target {
@@ -286,7 +297,8 @@
 
   .level-upload-management-popup .upload-button,
   .level-upload-management-popup .delete-button,
-  .level-upload-management-popup .select-button {
+  .level-upload-management-popup .select-button,
+  .level-upload-management-popup .cancel-upload-button {
     padding: 14px;
     font-size: 16px;
   }
@@ -305,7 +317,8 @@
 
   .level-upload-management-popup .upload-button,
   .level-upload-management-popup .delete-button,
-  .level-upload-management-popup .select-button {
+  .level-upload-management-popup .select-button,
+  .level-upload-management-popup .cancel-upload-button {
     padding: 12px;
     font-size: 14px;
   }

@@ -26,10 +26,12 @@
     "currentlySelected": "Currently Selected",
     "uploadNew": "Upload New Level",
     "deleteCurrent": "Delete Current Level",
-    "close": "✖"
+    "close": "✖",
+    "cancel": "Cancel Upload"
   },
   "upload": {
     "progress": "Uploading... {{progress}}%"
   },
-  "confirmDelete": "Are you sure you want to delete this level file? This action cannot be undone."
+  "confirmDelete": "Are you sure you want to delete this level file? This action cannot be undone.",
+  "confirmCloseDuringUpload": "Upload in progress. Are you sure you want to cancel?"
 } 

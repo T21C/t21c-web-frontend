@@ -15,6 +15,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
   const [originalZip, setOriginalZip] = useState(null);
   const [songFiles, setSongFiles] = useState({});
   const fileInputRef = useRef(null);
+  const abortControllerRef = useRef(null);
   const { t } = useTranslation(['components']);
   const tUpload = (key, params = {}) => t(`levelUploadManagement.${key}`, params);
 
@@ -54,12 +55,24 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
     fetchLevelFiles();
   }, [formData]);
 
+  // Cleanup: Cancel any ongoing requests when component unmounts
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
+
   const handleZipUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
-    try {
+    // Create abort controller for this upload
+    abortControllerRef.current = new AbortController();
+    const signal = abortControllerRef.current.signal;
 
+    try {
       setIsUploading(true);
       setError(null);
       setUploadProgress(0);
@@ -71,23 +84,38 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
         (progress) => setUploadProgress(progress)
       );
 
+      // Check if cancelled before validation
+      if (signal.aborted) {
+        return;
+      }
+
       // Validate the upload
       const validationResult = await validateChunkedUpload(
         fileId,
         `${import.meta.env.VITE_CHUNK_UPLOAD_URL}/validate`
       );
 
+      // Check if cancelled before final upload
+      if (signal.aborted) {
+        return;
+      }
+
       if (validationResult.success) {
-        // Encode filename to hex string array
-
         // Now submit the level with the fileId and encoded filename
-        const response = await api.post(`${import.meta.env.VITE_LEVELS}/${level.id}/upload`, {
-          fileId,
-          fileName: encodeFilename(file.name),
-          fileSize: file.size
-        });
+        // Use signal to allow cancellation
+        const response = await api.post(
+          `${import.meta.env.VITE_LEVELS}/${level.id}/upload`,
+          {
+            fileId,
+            fileName: encodeFilename(file.name),
+            fileSize: file.size
+          },
+          {
+            signal,
+            timeout: 300000, // 5 minutes timeout for large file processing
+          }
+        );
 
-        
         if (response.data.success) {
           setLevel(response.data.level.dataValues);
           setFormData(prev => ({
@@ -100,9 +128,17 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
         throw new Error('Upload validation failed');
       }
     } catch (error) {
+      // Don't show error if request was cancelled (user closed popup or navigated away)
+      if (api.isCancel && api.isCancel(error)) {
+        return;
+      }
+      if (error.name === 'AbortError' || error.name === 'CanceledError') {
+        return;
+      }
       setError(error.response?.data?.error || tUpload('errors.uploadFailed'));
     } finally {
       setIsUploading(false);
+      abortControllerRef.current = null;
     }
   };
 
@@ -142,8 +178,23 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
   const handleOverlayClick = (e) => {
     if (e.target === e.currentTarget) {
       e.stopPropagation();
-      onClose();
+      handleClose();
     }
+  };
+
+  const handleClose = () => {
+    // Prevent closing during upload
+    if (isUploading) {
+      const confirmed = window.confirm(tUpload('confirmCloseDuringUpload') || 'Upload in progress. Are you sure you want to cancel?');
+      if (!confirmed) {
+        return;
+      }
+      // Cancel the upload
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    }
+    onClose();
   };
 
   const handleContentClick = (e) => {
@@ -159,8 +210,9 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
             className="close-button" 
             onClick={(e) => {
               e.stopPropagation();
-              onClose();
+              handleClose();
             }}
+            disabled={isUploading}
           >
             {tUpload('buttons.close')}
           </button>
@@ -179,6 +231,19 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
             <div className="progress-text">
               {tUpload('upload.progress', { progress: uploadProgress.toFixed(2) })}
             </div>
+            <button
+              className="cancel-upload-button"
+              onClick={() => {
+                if (abortControllerRef.current) {
+                  abortControllerRef.current.abort();
+                }
+                setIsUploading(false);
+                setUploadProgress(0);
+                setError(null);
+              }}
+            >
+              {tUpload('buttons.cancel')}
+            </button>
           </div>
         ) : (
           <>
