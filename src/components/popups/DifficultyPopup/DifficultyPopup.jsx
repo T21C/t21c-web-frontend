@@ -112,7 +112,8 @@ const DifficultyPopup = ({
           mode: DIRECTIVE_MODES.STATIC,
           actions: [{
             channelId: availableChannels[0]?.id || '',
-            pingType: 'NONE'
+            pingType: 'NONE',
+            roleId: null
           }],
           sortOrder: 0,
           isActive: true,
@@ -121,13 +122,14 @@ const DifficultyPopup = ({
         setDirectives([defaultDirective]);
         setOriginalDirectives([defaultDirective]);
       } else {
-        // Ensure firstOfKind is included for each directive
-        const directivesWithFirstOfKind = loadedDirectives.map(directive => ({
+        // Ensure firstOfKind is included
+        const directivesWithDefaults = loadedDirectives.map(directive => ({
           ...directive,
-          firstOfKind: directive.firstOfKind ?? false
+          firstOfKind: directive.firstOfKind ?? false,
+          actions: directive.actions || []
         }));
-        setDirectives(directivesWithFirstOfKind);
-        setOriginalDirectives(directivesWithFirstOfKind);
+        setDirectives(directivesWithDefaults);
+        setOriginalDirectives(directivesWithDefaults);
       }
     } catch (err) {
       setDirectivesError(tDiff('errors.loadDirectives'));
@@ -193,6 +195,7 @@ const DifficultyPopup = ({
     }
   };
 
+
   const showToast = (message, type = 'success') => {
     if (type === 'success') {
       toast.success(message);
@@ -216,7 +219,8 @@ const DifficultyPopup = ({
           roleId: null
         }],
         sortOrder: directives.length,
-        isActive: true
+        isActive: true,
+        firstOfKind: false
       }
     ]);
     showToast(tDiff('announcements.directive.addSuccess'));
@@ -261,6 +265,7 @@ const DifficultyPopup = ({
     setDirectives(newDirectives);
   };
 
+
   const handleSaveDirectives = async (e) => {
     e.preventDefault();
     
@@ -268,7 +273,7 @@ const DifficultyPopup = ({
       showToast(tDiff('errors.passwordRequired'), 'error');
       return;
     }
-    
+
     setIsLoadingDirectives(true);
     try {
       // Format directives for API
@@ -404,7 +409,9 @@ const DifficultyPopup = ({
     setRoleModalSource('new');
     setSelectedRole({
       id: '',
-      name: ''
+      roleId: '',
+      label: '',
+      messageFormat: null
     });
     setShowRoleModal(true);
   };
@@ -478,12 +485,13 @@ const DifficultyPopup = ({
     
     try {
       if (roleModalSource === 'edit' && selectedRole) {
-        // Update existing role
+          // Update existing role
         await api.put(
           `${import.meta.env.VITE_DIFFICULTIES}/roles/${selectedRole.id}`,
           {
             roleId: selectedRole.roleId,
-            label: selectedRole.label
+            label: selectedRole.label,
+            messageFormat: selectedRole.messageFormat || null
           },
           {
             headers: {
@@ -498,7 +506,8 @@ const DifficultyPopup = ({
           `${import.meta.env.VITE_DIFFICULTIES}/roles`,
           {
             roleId: selectedRole.roleId,
-            label: selectedRole.label
+            label: selectedRole.label,
+            messageFormat: selectedRole.messageFormat || null
           },
           {
             headers: {
@@ -583,7 +592,8 @@ const DifficultyPopup = ({
     }
     newDirectives[directiveIndex].actions.push({
       channelId: availableChannels[0]?.id || '',
-      pingType: 'NONE'
+      pingType: 'NONE',
+      roleId: null
     });
     setDirectives(newDirectives);
   };
@@ -933,6 +943,28 @@ const DifficultyPopup = ({
                     required
                     className="difficulty-modal__form-input"
                   />
+                </div>
+                <div className="difficulty-modal__form-group">
+                  <label className="difficulty-modal__form-label">
+                    {tDiff('modal.role.messageFormat') || 'Message Format'}
+                    <span className="difficulty-modal__form-label-hint">
+                      {' '}({tDiff('announcements.directive.optional') || 'Optional'})
+                    </span>
+                  </label>
+                  <textarea
+                    value={selectedRole?.messageFormat || ''}
+                    onChange={(e) => setSelectedRole({...selectedRole, messageFormat: e.target.value || null})}
+                    placeholder={tDiff('modal.role.messageFormatPlaceholder') || 'e.g., {count} {difficultyName} Clears! {ping}'}
+                    className="difficulty-modal__form-textarea"
+                    rows={3}
+                    maxLength={500}
+                  />
+                  <p className="difficulty-modal__form-hint">
+                    {tDiff('modal.role.messageFormatHint') || 'Template for grouped message. Use variables: {count}, {difficultyName}, {ping}, {groupName}. Messages will be grouped by role ID.'}
+                    <br />
+                    <strong>{tDiff('announcements.directive.messageFormat.variables') || 'Variables:'}</strong>{' '}
+                    {tDiff('announcements.directive.messageFormat.variablesList') || '{count}, {difficultyName}, {ping}, {groupName}'}
+                  </p>
                 </div>
                 {roleError && <div className="difficulty-modal__error-message">{roleError}</div>}
                 <div className="difficulty-modal__actions">
@@ -1285,6 +1317,7 @@ const DifficultyPopup = ({
                                         />
                                       </div>
 
+
                                       {directive.mode === DIRECTIVE_MODES.CONDITIONAL && (
                                         <>
                                           <div className="difficulty-modal__form-group">
@@ -1441,10 +1474,11 @@ const DifficultyPopup = ({
                                               </div>
 
                                               {action.pingType === 'ROLE' && (
-                                                <div className="difficulty-modal__form-group">
-                                                  <label className="difficulty-modal__form-label">{tDiff('announcements.actions.role', { returnObjects: true })["label"]}</label>
-                                                  <div className="difficulty-modal__select-with-edit">
-                                                    <CustomSelect
+                                                <>
+                                                  <div className="difficulty-modal__form-group">
+                                                    <label className="difficulty-modal__form-label">{tDiff('announcements.actions.role', { returnObjects: true })["label"]}</label>
+                                                    <div className="difficulty-modal__select-with-edit">
+                                                      <CustomSelect
                                                       value={availableRoles.find(r => r.id === action.roleId) || null}
                                                       onChange={(option) => {
                                                         if (option.value === 'add_new') {
@@ -1453,32 +1487,33 @@ const DifficultyPopup = ({
                                                           handleDirectiveChange(index, `actions.${actionIndex}.roleId`, option.value);
                                                         }
                                                       }}
-                                                      options={[
-                                                        ...availableRoles.map(role => ({
-                                                          value: role.id,
-                                                          label: role.label
-                                                        })),
-                                                        { value: 'add_new', label: `+ ${tDiff('announcements.actions.role.add')}` }
-                                                      ]}
-                                                      width="100%"
-                                                    />
-                                                    {action.roleId && action.roleId !== 'EVERYONE' && (
-                                                      <button
-                                                        type="button"
-                                                        className="difficulty-modal__select-edit-button"
-                                                        onClick={(e) => {
-                                                          e.preventDefault();
-                                                          e.stopPropagation();
-                                                          const roleToEdit = availableRoles.find(r => r.id === action.roleId);
-                                                          handleEditRole(roleToEdit);
-                                                        }}
-                                                        aria-label={tDiff('announcements.actions.role.edit')}
-                                                      >
-                                                        <EditIcon className="difficulty-modal__select-edit-button-icon" />
-                                                      </button>
-                                                    )}
+                                                        options={[
+                                                          ...availableRoles.map(role => ({
+                                                            value: role.id,
+                                                            label: role.label
+                                                          })),
+                                                          { value: 'add_new', label: `+ ${tDiff('announcements.actions.role.add')}` }
+                                                        ]}
+                                                        width="100%"
+                                                      />
+                                                      {action.roleId && action.roleId !== 'EVERYONE' && (
+                                                        <button
+                                                          type="button"
+                                                          className="difficulty-modal__select-edit-button"
+                                                          onClick={(e) => {
+                                                            e.preventDefault();
+                                                            e.stopPropagation();
+                                                            const roleToEdit = availableRoles.find(r => r.id === action.roleId);
+                                                            handleEditRole(roleToEdit);
+                                                          }}
+                                                          aria-label={tDiff('announcements.actions.role.edit')}
+                                                        >
+                                                          <EditIcon className="difficulty-modal__select-edit-button-icon" />
+                                                        </button>
+                                                      )}
+                                                    </div>
                                                   </div>
-                                                </div>
+                                                </>
                                               )}
                                             </div>
                                           ))}

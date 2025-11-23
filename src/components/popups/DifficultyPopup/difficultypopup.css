@@ -1491,4 +1491,37 @@
   color: #f44336;
   font-size: 0.8rem;
   margin-top: 0.25rem;
+}
+
+/* Message Grouping Styles */
+.difficulty-modal__form-label-hint {
+  font-weight: normal;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.9em;
+}
+
+.difficulty-modal__form-hint {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-top: 0.5rem;
+  line-height: 1.4;
+}
+
+.difficulty-modal__form-hint strong {
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 600;
+}
+
+.difficulty-modal__group-indicator {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  margin-left: 0.5rem;
+  background-color: rgba(74, 158, 255, 0.2);
+  border: 1px solid rgba(74, 158, 255, 0.4);
+  border-radius: 4px;
+  color: #4A9EFF;
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
 } 

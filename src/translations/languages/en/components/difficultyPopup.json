@@ -30,7 +30,10 @@
       "roleId": "Role ID",
       "roleIdPlaceholder": "Enter role ID",
       "label": "Role Label",
-      "labelPlaceholder": "Enter role label"
+      "labelPlaceholder": "Enter role label",
+      "messageFormat": "Message Format",
+      "messageFormatPlaceholder": "e.g., {count} {difficultyName} Clears! {ping}",
+      "messageFormatHint": "Template for grouped message. Use variables: {count}, {difficultyName}, {ping}. Messages will be grouped by role ID AND difficultyName if included."
     }
   },
   "form": {
@@ -87,13 +90,25 @@
       "channelDeleteSuccess": "Channel deleted successfully",
       "roleAddSuccess": "Role added successfully",
       "roleUpdateSuccess": "Role updated successfully",
-      "roleDeleteSuccess": "Role deleted successfully"
+      "roleDeleteSuccess": "Role deleted successfully",
+      "messageGroupKey": "Message Group Key",
+      "messageGroupKey.placeholder": "e.g., universal-clears, galactic-clears",
+      "messageGroupKey.hint": "Directives with the same group key will be combined into a single message",
+      "messageFormat": "Message Format Template",
+      "messageFormat.placeholder": "e.g., {count} {difficultyName} Clears! {ping}",
+      "messageFormat.hint": "Template for the grouped message content. Available variables:",
+      "messageFormat.variables": "Available variables:",
+      "messageFormat.variablesList": "{count} - number of passes, {difficultyName} - difficulty name, {ping} - role ping",
+      "optional": "Optional"
     },
     "notifications": {
       "saved": "Directives saved successfully"
     },
     "errors": {
-      "saveFailed": "Failed to save directives"
+      "saveFailed": "Failed to save directives",
+      "groupKeyFormatRequired": "If Message Group Key is provided, Message Format is required",
+      "formatGroupKeyRequired": "If Message Format is provided, Message Group Key is required",
+      "invalidFormatVariables": "Message format contains invalid variables. Valid variables are: {count}, {difficultyName}, {ping}"
     },
     "channel": {
       "notifications": {
