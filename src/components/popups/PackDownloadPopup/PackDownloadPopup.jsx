@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import './PackDownloadPopup.css';
 import { formatEstimatedSize } from '@/utils/packDownloadUtils';
 
@@ -11,10 +12,15 @@ const PackDownloadPopup = ({
   sizeSummary = DEFAULT_SIZE_SUMMARY,
   onRequestDownload
 }) => {
+  const { t } = useTranslation('components');
+  const tPopup = (key, params = {}) => t(`packPopups.downloadPack.${key}`, params) || key;
   const popupRef = useRef(null);
   const [step, setStep] = useState('confirm');
   const [error, setError] = useState(null);
   const [downloadData, setDownloadData] = useState(null);
+
+  const MAX_DOWNLOAD_SIZE_BYTES = 15 * 1024 * 1024 * 1024; // 15GB
+  const exceedsSizeLimit = (sizeSummary?.totalBytes || 0) > MAX_DOWNLOAD_SIZE_BYTES;
 
   const resetState = useCallback(() => {
     setStep('confirm');
@@ -78,7 +84,7 @@ const PackDownloadPopup = ({
   }
 
   const handleConfirm = async () => {
-    if (!onRequestDownload || step === 'processing') {
+    if (!onRequestDownload || step === 'processing' || exceedsSizeLimit) {
       return;
     }
 
@@ -135,20 +141,39 @@ const PackDownloadPopup = ({
 
         <div className="pack-download-popup__content">
           <h2 className="pack-download-popup__title">
-            Download {contextName || 'Pack'}
+            {tPopup('title', { contextName: contextName || 'Pack' })}
           </h2>
 
           {step === 'confirm' && (
             <div className="pack-download-popup__step pack-download-popup__step--confirm">
-              <p className="pack-download-popup__description">
-                This will generate a downloadable archive for{' '}
-                <strong>{contextName || 'this selection'}</strong>.
-              </p>
+              {!exceedsSizeLimit && (<p className="pack-download-popup__description">
+                {contextName 
+                  ? (() => {
+                      const desc = tPopup('description', { contextName: 'PLACEHOLDER' });
+                      const parts = desc.split('PLACEHOLDER');
+                      return (
+                        <>
+                          {parts[0]}
+                          <strong>{contextName}</strong>
+                          {parts[1]}
+                        </>
+                      );
+                    })()
+                  : tPopup('descriptionFallback')
+                }
+              </p> )}
               <div className="pack-download-popup__estimate-container">
-                <span className="pack-download-popup__estimate-label">Estimated size: </span>
-                <span className="pack-download-popup__estimate-value">{sizeLabel} <span className="pack-download-popup__estimate-value-estimated">{isEstimated}</span></span>
+                <span className="pack-download-popup__estimate-label">{tPopup('estimatedSize')} </span>
+                <span className={`pack-download-popup__estimate-value ${exceedsSizeLimit ? 'exceeded' : ''}`}>
+                  {sizeLabel} 
+                <span className="pack-download-popup__estimate-value-estimated">{isEstimated}</span></span>
               </div>
-              {isEstimated && (
+              {exceedsSizeLimit && (
+                <div className="pack-download-popup__error" role="alert">
+                  {tPopup('sizeExceeded')}
+                </div>
+              )}
+              {isEstimated && !exceedsSizeLimit && (
                 <p className="pack-download-popup__notice">
                   Some levels are missing size metadata. The final download may
                   be larger than estimated.
@@ -164,13 +189,14 @@ const PackDownloadPopup = ({
                   className="pack-download-popup__secondary-btn"
                   onClick={onClose}
                 >
-                  Cancel
+                  {tPopup('cancel')}
                 </button>
                 <button
                   className="pack-download-popup__primary-btn"
                   onClick={handleConfirm}
+                  disabled={exceedsSizeLimit}
                 >
-                  Generate Download
+                  {tPopup('generateDownload')}
                 </button>
               </div>
             </div>
@@ -179,9 +205,9 @@ const PackDownloadPopup = ({
           {step === 'processing' && (
             <div className="pack-download-popup__step pack-download-popup__step--processing">
               <div className="pack-download-popup__spinner" />
-              <p>Processing... please wait while we prepare the download.</p>
+              <p>{tPopup('processing')}</p>
               <p className="pack-download-popup__subtext">
-                This may take a moment depending on the total size of the pack.
+                {tPopup('processingSubtext')}
               </p>
             </div>
           )}
@@ -189,28 +215,26 @@ const PackDownloadPopup = ({
           {step === 'ready' && downloadData && (
             <div className="pack-download-popup__step pack-download-popup__step--ready">
               <p>
-                Your download is ready! Click the button below to start the
-                download.
+                {tPopup('ready')}
               </p>
               <p className="pack-download-popup__subtext">
-                Link expires at{' '}
                 {downloadData.expiresAt
-                  ? new Date(downloadData.expiresAt).toLocaleString()
-                  : 'an unknown time'}
-                .
+                  ? tPopup('readySubtext', { expiresAt: new Date(downloadData.expiresAt).toLocaleString() })
+                  : tPopup('readySubtextFallback')}
               </p>
               <div className="pack-download-popup__actions">
                 <button
                   className="pack-download-popup__secondary-btn"
                   onClick={onClose}
                 >
-                  Close
+                  {tPopup('close')}
                 </button>
                 <button
                   className="pack-download-popup__primary-btn"
+                  disabled={exceedsSizeLimit}
                   onClick={handleDownload}
                 >
-                  Download
+                  {tPopup('download')}
                 </button>
               </div>
             </div>

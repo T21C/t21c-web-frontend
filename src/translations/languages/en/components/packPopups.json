@@ -153,5 +153,21 @@
       "iconUploadFailed": "Failed to upload icon",
       "iconRemoveFailed": "Failed to remove icon"
     }
+  },
+  "downloadPack": {
+    "title": "Download {{contextName}}",
+    "description": "This will generate a downloadable archive for {{contextName}}.",
+    "descriptionFallback": "This will generate a downloadable archive for this selection.",
+    "estimatedSize": "Estimated size:",
+    "processing": "Processing... please wait while we prepare the download.",
+    "processingSubtext": "This may take a moment depending on the total size of the pack.",
+    "ready": "Your download is ready! Click the button below to start the download.",
+    "readySubtext": "Link expires at {{expiresAt}}.",
+    "readySubtextFallback": "Link expires at an unknown time.",
+    "sizeExceeded": "Pack download cannot exceed 15GB at once. Select a smaller pack or split into multiple downloads.",
+    "cancel": "Cancel",
+    "generateDownload": "Generate Download",
+    "close": "Close",
+    "download": "Download"
   }
 }
