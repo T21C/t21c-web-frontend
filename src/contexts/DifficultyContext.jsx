@@ -1,59 +1,8 @@
 /* eslint-disable react/prop-types */
 import { createContext, useState, useEffect, useContext } from "react";
-import axios from "axios";
 import api from "@/utils/api";
 
 const DifficultyContext = createContext();
-
-// Utility function to check if an image was loaded from cache
-const checkImageCacheStatus = async (imageUrl) => {
-    try {
-        const startTime = performance.now();
-        const response = await fetch(imageUrl, { 
-            cache: 'force-cache',
-            mode: import.meta.env.DEV ? 'no-cors' : 'cors'
-        });
-        const endTime = performance.now();
-        
-        // Get cache status from response
-        const cacheStatus = response.headers.get('x-cache') || 
-                          (response.headers.get('cf-cache-status') || 'unknown');
-        
-        // Check if it was a 304 Not Modified response
-        const fromCache = response.status === 304 || 
-                         cacheStatus.toLowerCase().includes('hit') ||
-                         endTime - startTime < 50; // Very fast response likely from cache
-        
-        return {
-            url: imageUrl,
-            fromCache,
-            cacheStatus,
-            loadTime: endTime - startTime,
-            status: response.status
-        };
-    } catch (error) {
-        console.error('Error checking cache status:', error);
-        return { url: imageUrl, error: error.message };
-    }
-};
-
-// Function to preload an image
-const preloadImage = async (url) => {
-    try {
-        const response = await fetch(url, {
-            cache: 'force-cache',
-        });
-
-        // In normal mode, we can check response status
-        if (!response.ok) {
-            throw new Error(`Failed to load image: ${response.statusText}`);
-        }
-        return { url, success: true };
-    } catch (error) {
-        console.error(`Failed to preload image ${url}:`, error);
-        return { url, success: false, error: error.message };
-    }
-};
 
 export const useDifficultyContext = () => {
     const context = useContext(DifficultyContext);
@@ -68,49 +17,47 @@ const DifficultyContextProvider = (props) => {
     const [difficulties, setDifficulties] = useState([]);
     const [noLegacyDifficulties, setNoLegacyDifficulties] = useState([]);
     const [curationTypes, setCurationTypes] = useState([]);
+    const [curationTypesDict, setCurationTypesDict] = useState({});
     const [loading, setLoading] = useState(true);
     const [curationTypesLoading, setCurationTypesLoading] = useState(true);
     const [error, setError] = useState(null);
     const [curationTypesError, setCurationTypesError] = useState(null);
 
-    const fetchDifficulties = async () => {
+    const fetchDifficulties = async (update = true) => {
         try {
             setLoading(true);
             setError(null);
-            
-            // Fetch fresh data from server
-            const response = await api.get(import.meta.env.VITE_DIFFICULTIES, {
-                headers: {
-                    'Cache-Control': 'no-cache',
+
+            let diffsArray = [];
+            if (update) {
+                // Fetch fresh data from server
+                const response = await api.get(import.meta.env.VITE_DIFFICULTIES, {
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                    }
+                });
+                diffsArray = response.data;
+
+                if (!diffsArray || !Array.isArray(diffsArray)) {
+                    throw new Error('Invalid server response format');
                 }
-            });
-            const diffsArray = response.data;
-            
-            if (!diffsArray || !Array.isArray(diffsArray)) {
-                throw new Error('Invalid server response format');
+                // Use localStorage instead of cookies - cookies have 4KB limit, this data is ~32KB
+                try {
+                    localStorage.setItem('difficultyCache', JSON.stringify(diffsArray));
+                } catch (storageError) {
+                    console.error('Error setting difficulty cache in localStorage:', storageError);
+                }
             }
-            
-            // Create and set difficulty dictionary
+            else {
+                const cached = localStorage.getItem('difficultyCache');
+                diffsArray = cached ? JSON.parse(cached) : [];
+            }
             const diffsDict = {};
-            diffsArray.forEach(diff => {
+            diffsArray.forEach(diff => {   
                 diffsDict[diff.id] = diff;
             });
-            
-            // Update state
             setDifficulties(diffsArray);
             setDifficultyDict(diffsDict);
-            // Preload all icons in parallel
-            const iconUrls = diffsArray.reduce((urls, diff) => {
-                if (diff.icon) urls.push(diff.icon);
-                if (diff.legacyIcon) urls.push(diff.legacyIcon);
-                return urls;
-            }, []);
-
-            // Load all icons in parallel
-            const preloadPromises = iconUrls.map(url => preloadImage(url));
-            const preloadResults = await Promise.all(preloadPromises);
-
-            
         } catch (err) {
             console.error('Error fetching difficulties:', err);
             setError(err.message || 'Failed to fetch difficulties');
@@ -119,26 +66,41 @@ const DifficultyContextProvider = (props) => {
         }
     };
 
-    const fetchCurationTypes = async () => {
+    const fetchCurationTypes = async (update = true) => {
         try {
             setCurationTypesLoading(true);
             setCurationTypesError(null);
-            
-            // Fetch fresh data from server with no-cache to ensure latest data
-            const response = await api.get(`${import.meta.env.VITE_CURATIONS}/types`, {
-                headers: {
-                    'Cache-Control': 'no-cache',
+
+            let typesArray = [];
+            if (update) {
+                // Fetch fresh data from server with no-cache to ensure latest data
+                const response = await api.get(`${import.meta.env.VITE_CURATIONS}/types`, {
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                    }
+                });
+                typesArray = response.data;
+
+                if (!typesArray || !Array.isArray(typesArray)) {
+                    throw new Error('Invalid server response format for curation types');
                 }
-            });
-            const typesArray = response.data;
-            
-            if (!typesArray || !Array.isArray(typesArray)) {
-                throw new Error('Invalid server response format for curation types');
+                // Use localStorage instead of cookies for larger data
+                try {
+                    localStorage.setItem('curationTypeCache', JSON.stringify(typesArray));
+                } catch (storageError) {
+                    console.error('Error setting curation type cache in localStorage:', storageError);
+                }
             }
-            
-            // Update state
+            else {
+                const cached = localStorage.getItem('curationTypeCache');
+                typesArray = cached ? JSON.parse(cached) : [];
+            }
+            const typesDict = {};
+            typesArray.forEach(type => {
+                typesDict[type.id] = type;
+            });
             setCurationTypes(typesArray);
-            
+            setCurationTypesDict(typesDict);
         } catch (err) {
             console.error('Error fetching curation types:', err);
             setCurationTypesError(err.message || 'Failed to fetch curation types');
@@ -148,8 +110,15 @@ const DifficultyContextProvider = (props) => {
     };
 
     useEffect(() => {
-        fetchDifficulties();
-        fetchCurationTypes();
+        const runFetch = async () => {
+            const hash = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/hash`).then(res => res.data?.hash);
+            const storedHash = localStorage.getItem('difficultiesHash');
+            const doUpdate = hash !== storedHash;
+            console.log('doUpdate', doUpdate);
+            await Promise.all([fetchDifficulties(doUpdate), fetchCurationTypes(doUpdate)]);
+            localStorage.setItem('difficultiesHash', hash);
+        }
+        runFetch().catch(err => console.error('Error fetching difficulties and curation types:', err));
     }, []);
 
     // Ensure noLegacyDifficulties is always in sync with difficulties
@@ -167,6 +136,8 @@ const DifficultyContextProvider = (props) => {
                 setDifficultyDict,
                 curationTypes,
                 setCurationTypes,
+                curationTypesDict,
+                setCurationTypesDict,
                 loading,
                 setLoading,
                 curationTypesLoading,
@@ -176,8 +147,7 @@ const DifficultyContextProvider = (props) => {
                 curationTypesError,
                 setCurationTypesError,
                 reloadDifficulties: fetchDifficulties,
-                reloadCurationTypes: fetchCurationTypes,
-                checkImageCacheStatus
+                reloadCurationTypes: fetchCurationTypes
             }}
         >
             {props.children}
