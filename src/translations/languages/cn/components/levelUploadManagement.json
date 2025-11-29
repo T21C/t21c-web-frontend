@@ -26,10 +26,12 @@
     "currentlySelected": "当前选中",
     "uploadNew": "上传新关卡",
     "deleteCurrent": "删除当前关卡",
-    "close": "✖"
+    "close": "✖",
+    "cancel": "取消上传"
   },
   "upload": {
     "progress": "上传中……{{progress}}%"
   },
-  "confirmDelete": "你确定要删除此关卡文件吗？此操作无法撤消。"
+  "confirmDelete": "你确定要删除此关卡文件吗？此操作无法撤消。",
+  "confirmCloseDuringUpload": "上传中。你确定要取消吗？"
 } 

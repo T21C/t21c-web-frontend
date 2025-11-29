@@ -18,7 +18,7 @@
   },
   "videoInfo": {
     "title": "视频标题",
-    "channel": "频道名称",
+    "channel": "UP主名称",
     "timestamp": "上传时间",
     "nolink": "未提供链接"
   },
@@ -53,8 +53,8 @@
   "validation": {
     "required": "必填",
     "invalidDifficulty": "无效等级格式",
-    "needDownloadLink": "请提供下载链接或工坊链接",
-    "needCharter": "至少需要一个采音师"
+    "needDownloadLink": "请提供下载链接或 Steam 创意工坊链接",
+    "needCharter": "需要至少一个采音师"
   },
   "placeholders": {
     "searchCreator": "搜索创作者……",
@@ -72,7 +72,7 @@
       "2": "不包含任何恶意或有害内容"
     },
     "dontShowAgain": "不再显示",
-    "agree": "我同意",
-    "decline": "取消"
+    "agree": "同意",
+    "decline": "不同意并取消"
   }
 } 

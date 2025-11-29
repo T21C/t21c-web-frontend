@@ -153,5 +153,21 @@
       "iconUploadFailed": "更新图标失败",
       "iconRemoveFailed": "删除图标失败"
     }
+  },
+  "downloadPack": {
+    "title": "下载 {{contextName}}",
+    "description": "这将生成一个可下载的 {{contextName}} 压缩包。",
+    "descriptionFallback": "这将生成一个可供下载的压缩文件。",
+    "estimatedSize": "预计大小：",
+    "processing": "正在处理……在我们正在准备下载时请稍等。",
+    "processingSubtext": "这可能需要一些时间，具体取决于地图包的总大小。",
+    "ready": "下载准备就绪！点击下方按钮以下载。",
+    "readySubtext": "链接失效于{{expiresAt}}.",
+    "readySubtextFallback": "链接失效于未知时间。",
+    "sizeExceeded": "一次下载的地图包大小不能超过 15GB。请选择较小的地图包或分多次下载。",
+    "cancel": "取消",
+    "generateDownload": "生成下载链接",
+    "close": "关闭",
+    "download": "下载"
   }
 }

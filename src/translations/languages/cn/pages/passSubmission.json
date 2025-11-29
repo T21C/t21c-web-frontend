@@ -24,7 +24,7 @@
   "videoInfo": {
     "videoLink": "视频链接",
     "title": "视频标题",
-    "channel": "频道名称",
+    "channel": "UP主名称",
     "timestamp": "上传时间",
     "nolink": "请输入正确的视频链接。"
   },

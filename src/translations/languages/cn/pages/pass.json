@@ -4,7 +4,7 @@
     "description": "浏览并发掘玩家们的成就"
   },
   "loading": {
-    "difficulties": "正在加载等级列表……"
+    "difficulties": "正在加载通关记录……"
   },
   "input": {
     "placeholder": "按曲名、曲师或谱师搜索……"

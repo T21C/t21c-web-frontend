@@ -30,7 +30,10 @@
       "roleId": "身份组 ID",
       "roleIdPlaceholder": "输入身份组 ID",
       "label": "身份组标签",
-      "labelPlaceholder": "输入身份组标签"
+      "labelPlaceholder": "输入身份组标签",
+      "messageFormat": "消息格式",
+      "messageFormatPlaceholder": "例如，{count} 个新的 {difficultyName} 通关记录！{ping}",
+      "messageFormatHint": "分组消息模板。使用变量：{count}，{difficultyName}，{ping}。消息将按身份组 ID 和难度名称（若含）进行分组。"
     }
   },
   "form": {
@@ -85,15 +88,27 @@
       "channelAddSuccess": "频道添加成功",
       "channelUpdateSuccess": "频道更新成功",
       "channelDeleteSuccess": "频道删除成功",
-      "roleAddSuccess": "身份添加成功",
-      "roleUpdateSuccess": "身份更新成功",
-      "roleDeleteSuccess": "身份删除成功"
+      "roleAddSuccess": "身份组添加成功",
+      "roleUpdateSuccess": "身份组更新成功",
+      "roleDeleteSuccess": "身份组删除成功",
+      "messageGroupKey": "消息组密钥",
+      "messageGroupKey.placeholder": "例如，universal-clears，galactic-clears",
+      "messageGroupKey.hint": "具有相同组密钥的指令将被合并到一条消息中。",
+      "messageFormat": "消息格式模板",
+      "messageFormat.placeholder": "例如，{count} {difficultyName} Clears! {ping}",
+      "messageFormat.hint": "分组消息内容模板。可用变量：",
+      "messageFormat.variables": "可用变量：",
+      "messageFormat.variablesList": "{count} - 通关记录数量，{difficultyName} - 难度名称 {ping} - @身份组",
+      "optional": "可选"
     },
     "notifications": {
       "saved": "指令保存成功"
     },
     "errors": {
-      "saveFailed": "指令保存失败"
+      "saveFailed": "指令保存失败",
+      "groupKeyFormatRequired": "如果提供了消息组密钥，则需要消息格式。",
+      "formatGroupKeyRequired": "如果提供了消息格式，则需要消息组密钥。",
+      "invalidFormatVariables": "消息格式包含无效变量。有效变量包括：{count}，{difficultyName}，{ping}"
     },
     "channel": {
       "notifications": {

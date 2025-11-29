@@ -24,11 +24,11 @@
   "errors": {
     "generic": "未指定的错误。请稍后再试。",
     "network": "网络连接错误。请稍后再试。",
-    "discordFailed": "无法启动 Discord 登录。请重试。如果问题仍然存在，请联系开发者。",
+    "discordFailed": "无法启动 Discord 登录。请重试。如果问题仍然存在，请联系管理员。",
     "captcha": {
       "notLoaded": "reCAPTCHA 未加载",
       "incomplete": "请完成 reCAPTCHA 验证",
-      "failed": "验证 reCAPTCHA 失败。请重试。"
+      "failed": "reCAPTCHA 验证失败。请重试。"
     }
   }
 } 

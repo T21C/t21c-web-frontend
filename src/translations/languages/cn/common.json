@@ -11,10 +11,10 @@
   },
   "errors": {
     "generic": "发生错误，请重试。",
-    "network": "网络错误，请检查您的连接。",
-    "unauthorized": "您没有权限执行此操作。",
+    "network": "网络错误，请检查你的连接。",
+    "unauthorized": "你没有权限执行此操作。",
     "notFound": "未找到请求的资源。",
-    "validation": "请检查您的输入并重试。"
+    "validation": "请检查你的输入并重试。"
   },
   "loading": {
     "generic": "加载中……",

@@ -19,7 +19,7 @@
     "delete": "删除类型"
   },
   "confirmations": {
-    "deleteType": "你确定你要删除 \"{{name}}\" 精选关卡类型？ 此动作不可撤销。"
+    "deleteType": "你确定要删除 \"{{name}}\" 精选关卡类型吗？ 此操作不可撤销。"
   },
   "notifications": {
     "created": "精选关卡类型创建成功",

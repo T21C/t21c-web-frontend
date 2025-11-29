@@ -37,7 +37,7 @@
   },
   "empty": {
     "title": "未找到地图包",
-    "message": "没有符合您当前筛选条件的地图包。",
+    "message": "没有符合你当前筛选条件的地图包。",
     "suggestions": {
       "clearFilters": "尝试重置过滤器",
       "createPack": "创建你的第一个地图包"
