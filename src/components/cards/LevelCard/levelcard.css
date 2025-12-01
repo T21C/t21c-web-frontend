@@ -1060,7 +1060,8 @@
 
 .level-card.pack .level-card__cleared {
   position: absolute;
-  left: 0.25rem;
+  overflow: visible;
+  left: 0rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1072,6 +1073,7 @@
   border-radius: 4px;
   transition: all 0.3s ease;
   flex-shrink: 0;
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.3));
 }
 
 .level-card.pack:hover .level-card__cleared,
