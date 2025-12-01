@@ -224,7 +224,12 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
       }
       
       const creatorName = credit.creator.creatorAliases?.length > 0 
-        ? `${credit.creator.name} (${credit.creator.creatorAliases.map(alias => alias.name).join(', ')})`
+        ? `${credit.creator.name} (${
+          credit.creator.creatorAliases
+          .slice(0, 6)
+          .map(alias => alias.name)
+          .join(', ')}
+          ${credit.creator.creatorAliases.length > 6 ? `(${credit.creator.creatorAliases.length - 6} more)` : ''})`
         : credit.creator.name;
       acc[role].push(creatorName);
       return acc;
