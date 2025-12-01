@@ -60,8 +60,8 @@ const ProfilePage = () => {
     const currentSettings = profileContext.getPlayerSettings(playerId);
     
     const searchQuery = currentSettings.searchQuery;
-    const sortType = currentSettings.sortType;
-    const sortOrder = currentSettings.sortOrder;
+    const sortType = currentSettings.sortType || 'score';
+    const sortOrder = currentSettings.sortOrder || 'DESC';
     
     const setSearchQuery = (query) => profileContext.setSearchQuery(playerId, query);
     const setSortType = (type) => profileContext.setSortType(playerId, type);
@@ -240,13 +240,6 @@ const ProfilePage = () => {
 
         let filtered = playerData.passes.filter(pass => !pass.isDeleted);
 
-        const sortedImpact = filtered.sort((a, b) => {
-          const impactA = playerData?.topScores?.find(topScore => topScore.id === a.id)?.impact || 0;
-          const impactB = playerData?.topScores?.find(topScore => topScore.id === b.id)?.impact || 0;
-          if (impactA !== impactB) {
-            return sortOrder === 'DESC' ? impactB - impactA : impactA - impactB;
-          }
-        });
         // Apply search filter
         if (searchQuery) {
           const query = searchQuery.toLowerCase();
@@ -260,7 +253,7 @@ const ProfilePage = () => {
         // Apply sorting
         const sortFn = sortOptions.find(opt => opt.value === sortType)?.sortFn;
         if (sortFn) {
-          filtered = [...sortedImpact].sort(sortFn);
+          filtered = [...filtered].sort(sortFn);
         }
 
         return filtered;
