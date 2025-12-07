@@ -55,7 +55,8 @@
     "title": "Linked Accounts",
     "discord": "Discord",
     "linkDiscord": "Link Discord Account",
-    "unlink": "Unlink"
+    "unlink": "Unlink",
+    "cannotUnlinkLastProvider": "Cannot unlink last provider without a password"
   }
 }
 

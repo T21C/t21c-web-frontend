@@ -55,7 +55,8 @@
     "title": "已绑定账户",
     "discord": "Discord",
     "linkDiscord": "绑定 Discord 账户",
-    "unlink": "解绑"
+    "unlink": "解绑",
+    "cannotUnlinkLastProvider": "无法在没有密码的情况下解绑最后一个提供商"
   }
 }
 

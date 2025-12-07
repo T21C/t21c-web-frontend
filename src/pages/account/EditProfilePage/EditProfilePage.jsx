@@ -255,6 +255,9 @@ const EditProfilePage = () => {
       country,
     }));
   };
+
+  const isLastProvider = user?.password === null && user?.providers?.length === 1;
+
   return (
     <>
     <div className="background-level"/> 
@@ -493,9 +496,12 @@ const EditProfilePage = () => {
                 )}
               </div>
               <div className="unlink-container">
-                 <button
-                  className={`unlink-button`}
-                    onClick={() => handleProviderUnlink('discord')}
+                <button
+                  className={`unlink-button ${isLastProvider ? 'disabled' : ''}`}
+                  onClick={() => handleProviderUnlink('discord')}
+                  disabled={isLastProvider}
+                  data-tooltip-id="unlink-tooltip"
+                  data-tooltip-content={isLastProvider ? tEditProfile('linkedAccounts.cannotUnlinkLastProvider') : undefined}
                 >
                   {tEditProfile('linkedAccounts.unlink')}
                   <UnlinkIcon color="#fff" size={"24px"} />
