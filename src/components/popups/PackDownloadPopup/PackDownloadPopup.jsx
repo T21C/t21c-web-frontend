@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
+import { io } from 'socket.io-client';
 import './PackDownloadPopup.css';
 import { formatEstimatedSize } from '@/utils/packDownloadUtils';
 
@@ -15,9 +16,22 @@ const PackDownloadPopup = ({
   const { t } = useTranslation('components');
   const tPopup = (key, params = {}) => t(`packPopups.downloadPack.${key}`, params) || key;
   const popupRef = useRef(null);
+  const socketRef = useRef(null);
+  const downloadDataRef = useRef(null);
+  const stepRef = useRef('confirm');
   const [step, setStep] = useState('confirm');
   const [error, setError] = useState(null);
   const [downloadData, setDownloadData] = useState(null);
+  const [progress, setProgress] = useState(null);
+  
+  // Keep refs in sync with state
+  useEffect(() => {
+    downloadDataRef.current = downloadData;
+  }, [downloadData]);
+  
+  useEffect(() => {
+    stepRef.current = step;
+  }, [step]);
 
   const MAX_DOWNLOAD_SIZE_BYTES = 15 * 1024 * 1024 * 1024; // 15GB
   const exceedsSizeLimit = (sizeSummary?.totalBytes || 0) > MAX_DOWNLOAD_SIZE_BYTES;
@@ -26,6 +40,7 @@ const PackDownloadPopup = ({
     setStep('confirm');
     setError(null);
     setDownloadData(null);
+    setProgress(null);
   }, []);
 
   useEffect(() => {
@@ -33,6 +48,62 @@ const PackDownloadPopup = ({
       resetState();
     }
   }, [isOpen, resetState]);
+
+  // Set up Socket.IO connection for progress updates
+  useEffect(() => {
+    if (!isOpen) {
+      // Clean up socket connection when popup closes
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
+      return;
+    }
+
+    // Connect to main server Socket.IO
+    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002';
+    const socket = io(apiUrl, {
+      transports: ['websocket', 'polling'],
+      withCredentials: true
+    });
+
+    socketRef.current = socket;
+
+    socket.on('connect', () => {
+      console.debug('Socket.IO connected for pack download progress');
+    });
+
+    socket.on('disconnect', () => {
+      console.debug('Socket.IO disconnected');
+    });
+
+    const handleProgress = (data) => {
+      // Only update progress if we're in processing step or it matches our download
+      const currentStep = stepRef.current;
+      const currentDownloadData = downloadDataRef.current;
+      const isRelevant = currentStep === 'processing' || currentDownloadData?.downloadId === data.downloadId;
+      
+      if (isRelevant) {
+        setProgress(data);
+        
+        // Handle status transitions
+        if (data.status === 'failed') {
+          setError(data.error || 'Pack generation failed');
+          setStep('confirm');
+          setProgress(null);
+        }
+      }
+    };
+
+    socket.on('packDownloadProgress', handleProgress);
+
+    return () => {
+      if (socketRef.current) {
+        socketRef.current.disconnect();
+        socketRef.current = null;
+      }
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -79,6 +150,20 @@ const PackDownloadPopup = ({
     };
   }, [isOpen, onClose]);
 
+  // Watch for progress completion to transition to ready
+  useEffect(() => {
+    if (step === 'processing' && progress?.status === 'completed' && downloadData) {
+      // Verify downloadId matches
+      if (progress.downloadId === downloadData.downloadId) {
+        // Small delay to ensure UI updates smoothly
+        const timer = setTimeout(() => {
+          setStep('ready');
+        }, 500);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [step, progress, downloadData]);
+
   if (!isOpen) {
     return null;
   }
@@ -90,14 +175,24 @@ const PackDownloadPopup = ({
 
     setError(null);
     setStep('processing');
+    setProgress(null); // Reset progress
 
     try {
       const response = await onRequestDownload();
       if (!response || !response.url) {
         throw new Error('Download link was not returned by the server.');
       }
+      
       setDownloadData(response);
-      setStep('ready');
+      
+      // For cached downloads, backend sends a 'completed' progress event
+      // For new generations, we wait for progress updates via WebSocket
+      // The useEffect watching progress will transition to 'ready' when status is 'completed'
+      // If progress already shows completed, go directly to ready
+      if (progress?.status === 'completed' && progress.downloadId === response.downloadId) {
+        setStep('ready');
+      }
+      // Otherwise, wait for the progress completion useEffect to handle the transition
     } catch (err) {
       const message =
         err?.response?.data?.error ||
@@ -105,6 +200,7 @@ const PackDownloadPopup = ({
         'Failed to generate download link.';
       setError(message);
       setStep('confirm');
+      setProgress(null);
     }
   };
 
@@ -206,9 +302,55 @@ const PackDownloadPopup = ({
             <div className="pack-download-popup__step pack-download-popup__step--processing">
               <div className="pack-download-popup__spinner" />
               <p>{tPopup('processing')}</p>
-              <p className="pack-download-popup__subtext">
-                {tPopup('processingSubtext')}
-              </p>
+              
+              {progress && (
+                <>
+                  <div className="pack-download-popup__progress-container">
+                    <div className="pack-download-popup__progress-bar">
+                      <div 
+                        className="pack-download-popup__progress-fill"
+                        style={{ width: `${progress.progressPercent || 0}%` }}
+                      />
+                    </div>
+                    <div className="pack-download-popup__progress-text">
+                      {progress.progressPercent || 0}%
+                    </div>
+                  </div>
+                  
+                  {progress.status === 'processing' && progress.currentLevel && (
+                    <p className="pack-download-popup__subtext">
+                      Unpacking: {progress.currentLevel}
+                      {progress.totalLevels > 0 && (
+                        <> ({progress.processedLevels} / {progress.totalLevels})</>
+                      )}
+                    </p>
+                  )}
+                  
+                  {progress.status === 'zipping' && (
+                    <p className="pack-download-popup__subtext">
+                      Creating zip file...
+                    </p>
+                  )}
+                  
+                  {progress.status === 'uploading' && (
+                    <p className="pack-download-popup__subtext">
+                      Uploading to storage...
+                    </p>
+                  )}
+                  
+                  {!progress.currentLevel && progress.status === 'processing' && (
+                    <p className="pack-download-popup__subtext">
+                      {tPopup('processingSubtext')}
+                    </p>
+                  )}
+                </>
+              )}
+              
+              {!progress && (
+                <p className="pack-download-popup__subtext">
+                  {tPopup('processingSubtext')}
+                </p>
+              )}
             </div>
           )}
 
