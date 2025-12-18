@@ -178,7 +178,7 @@ const TagsDropdown = ({ tags, show, onClose }) => {
             <div
               className="tag-item-icon"
               style={{
-                '--tag-bg-color': `${tag.color}30`,
+                '--tag-bg-color': `${tag.color}50`,
                 '--tag-border-color': tag.color,
                 '--tag-text-color': tag.color
               }}
@@ -808,11 +808,11 @@ const LevelDetailPage = ({ mockData = null }) => {
       .level-detail.curated[data-custom-color="true"] {
         --curation-primary: ${customColor};
         --curation-primary-rgb: ${rgb.r}, ${rgb.g}, ${rgb.b};
-        --curation-primary-alpha: ${customColor}40;
+        --curation-primary-alpha: ${customColor}30;
         --curation-glow: ${customColor}80;
         --curation-type-color: ${customColor};
         --curation-type-rgb: ${rgb.r}, ${rgb.g}, ${rgb.b};
-        --curation-type-alpha: ${customColor}40;
+        --curation-type-alpha: ${customColor}30;
         --curation-hue-shift: ${hueShiftedColor};
         --glass-bg: rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.12);
         --glass-border: rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.3);
@@ -1298,7 +1298,7 @@ const LevelDetailPage = ({ mockData = null }) => {
         {aliases.length > 0 && (
           <>
             <span 
-              className={`alias-arrow ${isOpen ? 'open' : ''}`}
+              className={`tag-list-arrow ${isOpen ? 'open' : ''}`}
               onMouseDown={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -1623,7 +1623,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                   {renderTitleWithAliases(res.level.artist, 'artist')}
                   </div>
                 </div>
-                {res.tilecount || res.bpm && (
+                {(res.tilecount || res.bpm) && (
                   <div className="metadata-container">  
                   {res.tilecount && (
                     <div className="metadata-item">
@@ -1647,7 +1647,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                 {tags && tags.length > 0 && (
                   <div className="level-tags-container" data-open={showTagsDropdown}>
                     <span 
-                      className={`tags-arrow ${showTagsDropdown ? 'open' : ''}`}
+                      className={`tag-list-arrow ${showTagsDropdown ? 'open' : ''}`}
                       onMouseDown={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
@@ -1662,7 +1662,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                           key={tag.id}
                           className="tag-icon-preview"
                           style={{
-                            '--tag-bg-color': `${tag.color}30`,
+                            '--tag-bg-color': `${tag.color}50`,
                             '--tag-border-color': tag.color,
                             '--tag-text-color': tag.color,
                             '--tag-index': index

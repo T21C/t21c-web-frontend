@@ -494,7 +494,7 @@ const LevelCard = ({
                           key={tag.id}
                           className="level-tag-badge"
                           style={{
-                            '--tag-bg-color': `${tag.color}40`,
+                            '--tag-bg-color': `${tag.color}50`,
                             '--tag-border-color': tag.color,
                             '--tag-text-color': tag.color
                           }}
@@ -693,7 +693,7 @@ const LevelCard = ({
                         key={tag.id}
                         className="level-tag-badge"
                         style={{
-                          '--tag-bg-color': `${tag.color}40`,
+                          '--tag-bg-color': `${tag.color}50`,
                           '--tag-border-color': tag.color,
                           '--tag-text-color': tag.color
                         }}
@@ -729,7 +729,7 @@ const LevelCard = ({
                         key={tag.id}
                         className="level-tag-badge"
                         style={{
-                          '--tag-bg-color': `${tag.color}40`,
+                          '--tag-bg-color': `${tag.color}50`,
                           '--tag-border-color': tag.color,
                           '--tag-text-color': tag.color
                         }}

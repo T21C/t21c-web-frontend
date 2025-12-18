@@ -121,10 +121,10 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
                     key={tag.id}
                     className="tag-management-tag-item"
                     style={{
-                      '--tag-bg-color': `${tag.color}30`,
+                      '--tag-bg-color': `${tag.color}50`,
                       '--tag-border-color': tag.color,
                       '--tag-text-color': tag.color,
-                      '--tag-shadow': `0 0 10px ${tag.color}40`
+                      '--tag-shadow': `0 0 10px ${tag.color}50`
                     }}
                   >
                     {tag.icon && (
@@ -172,10 +172,10 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
                     key={tag.id}
                     className="tag-management-tag-item tag-management-tag-item-addable"
                     style={{
-                      '--tag-bg-color': `${tag.color}30`,
+                      '--tag-bg-color': `${tag.color}50`,
                       '--tag-border-color': tag.color,
                       '--tag-text-color': tag.color,
-                      '--tag-shadow': `0 0 10px ${tag.color}40`
+                      '--tag-shadow': `0 0 10px ${tag.color}50`
                     }}
                     onClick={() => handleAddTag(tag.id)}
                   >

@@ -745,7 +745,7 @@
 
 .edit-level-popup__tag-icon-fallback {
   color: #fff;
-  font-size: 0.875rem;
+  font-size: 1rem;
   font-weight: 600;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
@@ -814,6 +814,7 @@
   padding: 0.5rem 0.75rem;
   border-radius: 6px;
   background-color: var(--tag-bg-color, transparent);
+  backdrop-filter: brightness(40%);
   border: 2px solid var(--tag-border-color, transparent);
   color: var(--tag-text-color, inherit);
   box-shadow: var(--tag-shadow, none);
