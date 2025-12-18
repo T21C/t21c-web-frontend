@@ -17,7 +17,7 @@ import api from '@/utils/api';
 import { ScrollButton } from "@/components/common/buttons";
 import { useAuth } from "@/contexts/AuthContext";
 import { DifficultyContext } from "@/contexts/DifficultyContext";
-import { DifficultySlider, SpecialDifficulties } from "@/components/common/selectors";
+import { DifficultySlider, TagSelector } from "@/components/common/selectors";
 import { PassHelpPopup } from "@/components/popups";
 import { ResetIcon, SortIcon, FilterIcon, SortAscIcon, SortDescIcon, SwitchIcon } from "@/components/common/icons";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -449,7 +449,7 @@ const PassPage = () => {
               </div>
 
               <div className="filter-row">
-                <SpecialDifficulties
+                <TagSelector
                   difficulties={specialDifficulties}
                   selectedDiffs={selectedSpecialDiffs}
                   onToggle={toggleSpecialDifficulty}

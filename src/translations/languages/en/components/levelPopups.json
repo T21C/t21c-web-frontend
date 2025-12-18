@@ -13,6 +13,7 @@
         "team": "Team",
         "baseScore": "Base Score",
         "previousBaseScore": "Previous Base Score",
+        "tags": "Tags",
         "videoLink": "Video Link",
         "dlLink": "Download Link",
         "workshopLink": "Workshop Link",
@@ -44,7 +45,8 @@
         "restore": {
           "default": "Restore Level",
           "restoring": "Restoring..."
-        }
+        },
+        "manageTags": "Manage Tags"
       }
     },
     "confirmations": {
@@ -59,6 +61,25 @@
       "delete": "Soft deletion failed",
       "toggleHidden": "Failed to toggle hidden status",
       "restore": "Failed to restore level"
+    },
+    "tags": {
+      "title": "Manage Level Tags",
+      "currentTags": "Current Tags",
+      "noTags": "No tags assigned",
+      "removeTag": "Remove tag",
+      "addTags": "Add Tags",
+      "searchPlaceholder": "Search tags...",
+      "loading": "Loading tags...",
+      "noResults": "No tags found matching your search",
+      "noAvailableTags": "No available tags to add",
+      "addTag": "Add tag",
+      "cancel": "Cancel",
+      "saving": "Saving...",
+      "save": "Save",
+      "errors": {
+        "fetchTags": "Failed to fetch tags",
+        "saveTags": "Failed to save tags"
+      }
     }
   },
   "download": {

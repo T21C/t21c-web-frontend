@@ -8,6 +8,7 @@ import AliasManagementPopup from './AliasManagementPopup';
 import { LevelUploadManagementPopup } from '@/components/popups';
 import { UploadIcon } from '@/components/common/icons';
 import { useNavigate } from 'react-router-dom';
+import { TagManagementPopup } from './TagManagementPopup';
 
 // Helper function to check if a URL is from our CDN
 const isCdnUrl = (url) => {
@@ -47,6 +48,8 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const { difficulties } = useDifficultyContext();
   const [showAliasManagement, setShowAliasManagement] = useState(false);
   const [showUploadManagement, setShowUploadManagement] = useState(false);
+  const [showTagManagement, setShowTagManagement] = useState(false);
+  const [levelTags, setLevelTags] = useState([]);
   const [isExternallyAvailable, setIsExternallyAvailable] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
@@ -70,6 +73,18 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
       });
       setHasUnsavedChanges(false);
       setIsExternallyAvailable(level.isExternallyAvailable);
+      
+      // Fetch level tags
+      const fetchTags = async () => {
+        try {
+          const response = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/levels/${level.id}/tags`);
+          setLevelTags(response.data || []);
+        } catch (err) {
+          console.error('Error fetching level tags:', err);
+          setLevelTags([]);
+        }
+      };
+      fetchTags();
     }
 
     const handleEsc = (e) => {
@@ -297,6 +312,19 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     return matchingDiff ? matchingDiff.name : formData[field]?.toString();
   }, [formData, difficulties]);
 
+  const handleOpenTagManagement = (e) => {
+    if (e) e.stopPropagation();
+    setShowTagManagement(true);
+  };
+
+  const handleTagSave = async (updatedTags) => {
+    setLevelTags(updatedTags);
+    // Update the level data if onUpdate is available
+    if (onUpdate) {
+      await onUpdate({ level: { ...level, tags: updatedTags } });
+    }
+  };
+
   const handleOpenUploadManagement = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -482,6 +510,41 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
             </div>
 
             <div className="form-group">
+              <label>{tLevel('form.labels.tags')}</label>
+              <div className="edit-level-popup__tag-preview-container">
+              <button
+                  type="button"
+                  className="edit-level-popup__manage-tags-button"
+                  onClick={handleOpenTagManagement}
+                >
+                  {tLevel('form.buttons.manageTags')}
+                </button>
+                <div className="edit-level-popup__tag-icons">
+                  {levelTags.map(tag => (
+                    <div
+                      key={tag.id}
+                      className="edit-level-popup__tag-icon"
+                      style={{
+                        backgroundColor: `${tag.color}aa`,
+                        '--tag-bg-color': tag.color
+                      }}
+                      title={tag.name}
+                    >
+                      {tag.icon ? (
+                        <img src={tag.icon} alt={tag.name} />
+                      ) : (
+                        <span className="edit-level-popup__tag-icon-fallback">
+                          {tag.name.charAt(0).toUpperCase()}
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+
+              </div>
+            </div>
+
+            <div className="form-group">
               <label htmlFor="videoLink">{tLevel('form.labels.videoLink')}</label>
               <input
                 type="text"
@@ -618,6 +681,15 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
           onClose={() => setShowUploadManagement(false)}
           setFormData={setFormData}
           formData={formData}
+        />
+      )}
+
+      {showTagManagement && (
+        <TagManagementPopup
+          levelId={level.id}
+          currentTags={levelTags}
+          onClose={() => setShowTagManagement(false)}
+          onSave={handleTagSave}
         />
       )}
     </div>

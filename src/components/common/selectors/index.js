@@ -3,7 +3,7 @@ import DifficultySlider from "./DifficultySlider/DifficultySlider";
 import { PlayerInput } from "./PlayerInput/PlayerInput";
 import { ProfileSelector } from "./ProfileSelector/ProfileSelector";
 import CustomSelect from "./Select/Select";
-import SpecialDifficulties from "./SpecialDifficulties/SpecialDifficulties";
+import TagSelector from "./TagSelector/TagSelector";
 import StateDisplay from "./StateDisplay/StateDisplay";
 import { RatingInput } from "./RatingInput/RatingInput";
 import { RouletteWheel } from "./RouletteWheel/RouletteWheel";
@@ -17,7 +17,7 @@ export {
     PlayerInput,
     ProfileSelector,
     CustomSelect,
-    SpecialDifficulties,
+    TagSelector,
     StateDisplay,
     RatingInput,
     RouletteWheel,

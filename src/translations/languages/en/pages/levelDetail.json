@@ -124,5 +124,8 @@
     "baseScore": "Base Score",
     "date": "Date",
     "user": "User"
+  },
+  "tags": {
+    "header": "Level Tags"
   }
 } 

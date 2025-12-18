@@ -46,7 +46,9 @@
     "deletedLevels": "已删除关卡",
     "availableDl": "可下载关卡",
     "curationTypes": "精选关卡类型",
-    "myLikes": "我的收藏"
+    "myLikes": "我的收藏",
+    "specialDifficulties": "特殊难度",
+    "tags": "标签"
   },
   "totalResults": "共 {{count}} 个结果",
   "infScroll": {

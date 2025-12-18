@@ -196,7 +196,6 @@
 }
 
 .level-detail .header .right {
-  flex: 1;
   display: grid;
   grid-template-columns: 1fr;
   gap: var(--spacing-md);
@@ -233,6 +232,7 @@
   align-items: center;
   gap: var(--spacing-xs);
   position: relative;
+  z-index: 10;
 }
 
 .level-detail .inline-curation-display {
@@ -290,7 +290,7 @@
   font-size: 1em;
   font-weight: 600;
   margin: 0;
-  display: flex;
+  display: block;
   align-items: center;
   gap: var(--spacing-xs);
   position: relative;
@@ -404,8 +404,6 @@
 .level-detail .title-container .aliases-dropdown {
   position: absolute;
   opacity: 1;
-  top: calc(100% + 4px);
-  left: 0;
   background: #1a1a1a;
   border: 1px solid #3a3a3a;
   border-radius: 4px;
@@ -2401,6 +2399,7 @@
 @media (max-width: 768px) {
   .level-detail .rerate-history-dropdown,
   .level-detail .title-container .aliases-dropdown,
+  .tags-dropdown,
   .rating-votes-dropdown,
   .curation-tooltip-dropdown {
     position: fixed;
@@ -3088,4 +3087,232 @@
 .level-detail .inline-curation-icon:hover {
   transform: scale(1.1);
   filter: drop-shadow(var(--shadow-md));
+}
+
+/* ============================================
+   INLINE STYLES MOVED TO CSS CLASSES
+   ============================================ */
+
+/* Rating vote value with dynamic color */
+.rating-vote-value-span {
+  white-space: nowrap;
+  color: var(--rating-color, inherit);
+  text-shadow: 0 0 5px var(--rating-color-shadow, transparent);
+}
+
+/* Popup header with dynamic background color */
+.popup-header {
+  background-color: var(--popup-header-bg, transparent);
+}
+
+/* Rating accuracy slider marker */
+.rating-accuracy-dialog-slider-marker {
+  left: var(--marker-position, 50%);
+  background-color: var(--marker-color, transparent);
+}
+
+.rating-accuracy-dialog-slider-labels span,
+.rating-accuracy-dialog-label {
+  color: var(--rating-color, inherit);
+  text-shadow: 0 0 10px var(--rating-color-shadow, transparent);
+}
+
+/* Loading container */
+.level-detail-loading-container {
+  height: 100vh;
+  width: 100vw;
+  background-color: #090909;
+}
+
+/* Rerate history container */
+.rerate-history-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Rerate arrow */
+.rerate-arrow[data-disabled="true"] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+.rerate-arrow[data-disabled="false"] {
+  pointer-events: auto;
+  opacity: 1;
+}
+
+/* Level tags container */
+.level-tags-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.level-detail .tags-dropdown .tags-arrow {
+  font-size: 0.5em;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: all var(--transition-normal, 0.2s ease);
+  padding: 2px 4px;
+  background: #2a2a2a;
+  border-radius: 3px;
+  border: 1px solid #3a3a3a;
+  transform: rotate(0deg);
+  user-select: none;
+  color: var(--color-white-t70);
+}
+
+.level-detail .tags-dropdown .tags-arrow.open {
+  transform: rotate(180deg);
+}
+
+.level-detail .tags-dropdown .tags-arrow:hover {
+  opacity: 1;
+  background: #3a3a3a;
+}
+
+.level-detail .tags-dropdown .tags-icons-row {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: gap 0.3s ease;
+}
+
+.level-detail .tags-dropdown .tags-container[data-open="true"] .tags-icons-row {
+  gap: 0;
+}
+
+.level-detail .tags-dropdown .tag-icon-preview {
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--tag-bg-color, transparent);
+  border: 2px solid var(--tag-border-color, transparent);
+  color: var(--tag-text-color, inherit);
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));
+  transition: transform 0.3s ease, margin-left 0.3s ease;
+  position: relative;
+  flex-shrink: 0;
+  z-index: calc(100 - var(--tag-index, 0));
+}
+
+.level-detail .tags-dropdown .tags-container[data-open="true"] .tag-icon-preview:not(:first-child) {
+  margin-left: -0.9rem;
+}
+
+.level-detail .tags-dropdown .tag-icon-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.level-detail .tags-dropdown .tag-icon-preview .tag-letter {
+  font-size: 0.75rem;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.level-detail .tags-dropdown {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  border-radius: 4px;
+  padding: var(--spacing-xs);
+  min-width: 200px;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  font-size: 0.9em;
+  background: #1a1a1a88;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+
+.level-detail .tags-dropdown .tags-header {
+  color: #888;
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 6px;
+  padding: 4px;
+  border-bottom: 1px solid #3a3a3a;
+}
+
+.level-detail .tags-dropdown .tags-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.level-detail .tags-dropdown .tag-item {
+  padding: 6px 8px;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #fff;
+  font-size: 1rem;
+}
+
+.level-detail .tags-dropdown .tag-item:not(:last-child) {
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.level-detail .tags-dropdown .tag-item-icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--tag-bg-color, transparent);
+  border: 2px solid var(--tag-border-color, transparent);
+  flex-shrink: 0;
+}
+
+.level-detail .tags-dropdown .tag-item-icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.level-detail .tags-dropdown .tag-item-icon .tag-letter {
+  font-size: 0.75rem;
+  font-weight: bold;
+  line-height: 1;
+  color: var(--tag-text-color, inherit);
+}
+
+.level-detail .tags-dropdown .tag-label {
+  flex: 1;
+}
+
+/* Rating accuracy display marker */
+.level-detail .rating-accuracy-display-marker {
+  left: var(--marker-position, 50%);
+  background-color: var(--marker-color, transparent);
+}
+
+.level-detail .rating-accuracy-labels span {
+  color: var(--rating-color, inherit);
+  text-shadow: 0 0 10px var(--rating-color-shadow, transparent);
+}
+
+/* Like container */
+.level-detail .like-container[data-margin-auto="true"] {
+  margin-left: auto;
+}
+
+/* Thumbnail container */
+.level-detail .thumbnail-container {
+  background-image: var(--thumbnail-bg-image, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
 }

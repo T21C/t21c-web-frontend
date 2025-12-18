@@ -11,13 +11,12 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import axios from "axios";
 import api from '@/utils/api';
 import { LevelContext } from "@/contexts/LevelContext";
-import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { DifficultyContext } from "@/contexts/DifficultyContext";
 import { ReferencesButton, ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
-import { DifficultySlider, SpecialDifficulties } from "@/components/common/selectors";
+import { DifficultySlider, TagSelector } from "@/components/common/selectors";
 import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon , FilterIcon, LikeIcon, SwitchIcon} from "@/components/common/icons";
 import { LevelHelpPopup } from "@/components/popups";
 import toast from 'react-hot-toast';
@@ -35,7 +34,7 @@ const LevelPage = () => {
   const [error, setError] = useState(false);
   const [forceUpdate, setForceUpdate] = useState(false);
   const { user } = useAuth();
-  const { difficulties, curationTypes } = useContext(DifficultyContext);
+  const { difficulties, curationTypes, tags } = useContext(DifficultyContext);
   const {
     levelsData,
     setLevelsData,
@@ -67,8 +66,6 @@ const LevelPage = () => {
     setAvailableDlFilter,
     clearedFilter,
     setClearedFilter,
-    curatedTypesFilter,
-    setCuratedTypesFilter,
     sliderRange,
     setSliderRange,
     selectedSpecialDiffs,
@@ -82,17 +79,17 @@ const LevelPage = () => {
     onlyMyLikes,
     setOnlyMyLikes,
     selectedCurationTypes,
-    setSelectedCurationTypes
+    setSelectedCurationTypes,
+    selectedTags,
+    setSelectedTags
   } = useContext(LevelContext);
 
   const [showHelpPopup, setShowHelpPopup] = useState(false);
   const [viewMode, setViewMode] = useState('normal');
   const [cardSize, setCardSize] = useState('medium');
   const [stateDisplayOpen, setStateDisplayOpen] = useState(false);
-  const [searchCooldown, setSearchCooldown] = useState(false);
   const [searchInput, setSearchInput] = useState(query);
   const searchTimeoutRef = useRef(null);
-  const [pendingSearch, setPendingSearch] = useState(false);
   const lastSearchValueRef = useRef(query);
 
   // Filter difficulties by type
@@ -232,6 +229,17 @@ const LevelPage = () => {
     });
   }
 
+  function toggleTag(tagName) {
+    setSelectedTags(prev => {
+      const newSelection = prev.includes(tagName)
+        ? prev.filter(name => name !== tagName)
+        : [...prev, tagName];
+      
+      triggerRefresh();
+      return newSelection;
+    });
+  }
+
   function handleQueryChange(e) {
     const newValue = e.target.value;
     setSearchInput(newValue);
@@ -246,16 +254,9 @@ const LevelPage = () => {
       // Only update if the value has changed since the last search
       if (newValue !== lastSearchValueRef.current) {
         lastSearchValueRef.current = newValue;
-        setPendingSearch(true);
         setQuery(newValue);
         triggerRefresh();
         
-        // Set cooldown after search is initiated
-        setSearchCooldown(true);
-        setTimeout(() => {
-          setSearchCooldown(false);
-          setPendingSearch(false);
-        }, 1000);
       }
     }, 500);
   }
@@ -299,7 +300,8 @@ const LevelPage = () => {
           specialDifficulties: allSpecialDiffs.join(','),
           onlyMyLikes: user ? onlyMyLikes : undefined,
           availableDlFilter: availableDlFilter,
-          curatedTypesFilter: curatedTypesFilter === "only" && selectedCurationTypes.length > 0 ? selectedCurationTypes.join(',') : curatedTypesFilter
+          curatedTypesFilter:  selectedCurationTypes.length > 0 && selectedCurationTypes.join(','),
+          tagsFilter: selectedTags.length > 0 && selectedTags.join(',')
         };
         
         const response = await api.get(
@@ -366,7 +368,7 @@ const LevelPage = () => {
       fetchLevels();
     }
     return () => cancel && cancel();
-  }, [query, sort, pageNumber, forceUpdate, deletedFilter, sliderQRange, qSliderVisible, curatedTypesFilter, selectedCurationTypes]);
+  }, [query, sort, pageNumber, forceUpdate, deletedFilter, sliderQRange, qSliderVisible, selectedCurationTypes, selectedTags]);
 
   function handleFilterOpen() {
     setFilterOpen(!filterOpen);
@@ -416,7 +418,6 @@ const LevelPage = () => {
     setDeletedFilter("hide");
     setClearedFilter("show");
     setAvailableDlFilter("show");
-    setCuratedTypesFilter("show");
     setSelectedCurationTypes([]);
     setQSliderVisible(false);
     // Clear and reload data
@@ -566,30 +567,31 @@ const LevelPage = () => {
                 />
               </div>
               <div className="filter-row">
-                <SpecialDifficulties
-                  difficulties={specialDifficulties}
-                  selectedDiffs={selectedSpecialDiffs}
+                <div className={`special-difficulties-wrapper`}>
+                <TagSelector
+                  items={specialDifficulties}
+                  selectedItems={selectedSpecialDiffs}
                   onToggle={toggleSpecialDifficulty}
-                  disableQuantum={true}
+                  title={tLevel('settingExp.specialDifficulties')}
                 />
-                <div className={`curation-types-wrapper ${curatedTypesFilter !== "hide" ? 'visible' : 'hidden'}`}>
-                <SpecialDifficulties
-                  difficulties={curationTypes}
-                  selectedDiffs={selectedCurationTypes}
+                </div>
+                <div className={`curation-types-wrapper`}>
+                <TagSelector
+                  items={curationTypes}
+                  selectedItems={selectedCurationTypes}
                   onToggle={toggleCurationType}
-                  curationMode={true}
+                  enableGrouping={false}
                   title={tLevel('settingExp.curationTypes')}
                 />
-                
-              </div>
-              <StateDisplay
-                  currentState={curatedTypesFilter}
-                  onChange={(newState) => {
-                    setCuratedTypesFilter(newState);
-                    triggerRefresh();
-                  }}
-                  states={['show', 'only', 'hide']}
+                </div>
+                <div className={`tags-wrapper`}>
+                <TagSelector
+                  items={tags}
+                  selectedItems={selectedTags}
+                  onToggle={toggleTag}
+                  title={tLevel('settingExp.tags')}
                 />
+              </div>
                 <button 
                   className={`q-toggle-button ${qSliderVisible ? 'active' : ''}`}
                   onClick={() => {
@@ -783,7 +785,7 @@ const LevelPage = () => {
               <b>{tLevel('infScroll.end')}</b>
             </p>}
         >
-          <div className={viewMode === 'grid' ? 'level-cards-grid' : ''}>
+          <div className={`${viewMode === 'grid' ? 'level-cards-grid' : ''} infinite-scroll-container`}>
             {levelsData.map((l, index) => (
               <LevelCard
                 key={index}

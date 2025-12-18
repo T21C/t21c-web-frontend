@@ -45,7 +45,9 @@
     "clearedLevels": "Cleared Levels",
     "deletedLevels": "Deleted Levels",
     "availableDl": "Downloadable",
+    "specialDifficulties": "Special Difficulties",
     "curationTypes": "Curation Types",
+    "tags": "Tags",
     "myLikes": "My Likes"
   },
   "totalResults": "{{count}} Total Results",

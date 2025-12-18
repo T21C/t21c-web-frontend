@@ -49,11 +49,192 @@ const DifficultyPage = () => {
   const [isAnyPopupOpen, setIsAnyPopupOpen] = useState(false);
   const [showInitialPasswordPrompt, setShowInitialPasswordPrompt] = useState(true);
   const [isReordering, setIsReordering] = useState(false);
+  const [activeTab, setActiveTab] = useState('difficulties'); // 'difficulties' or 'tags'
+  
+  // Tag management state
+  const [tags, setTags] = useState([]);
+  const [tagsLoading, setTagsLoading] = useState(false);
+  const [editingTag, setEditingTag] = useState(null);
+  const [originalTag, setOriginalTag] = useState(null); // Store original tag data for comparison
+  const [isCreatingTag, setIsCreatingTag] = useState(false);
+  const [deletingTag, setDeletingTag] = useState(null);
+  const [newTag, setNewTag] = useState({
+    name: '',
+    iconFile: null,
+    icon: null, // For preview only
+    color: '#FF5733',
+    group: ''
+  });
+
+  // Fetch tags when tags tab is active
+  useEffect(() => {
+    if (activeTab === 'tags' && verifiedPassword) {
+      fetchTags();
+    }
+  }, [activeTab, verifiedPassword]);
+
+  const fetchTags = async () => {
+    setTagsLoading(true);
+    try {
+      const response = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/tags`, {
+        headers: {
+          'X-Super-Admin-Password': verifiedPassword
+        }
+      });
+      setTags(response.data);
+    } catch (error) {
+      console.error('Error fetching tags:', error);
+      addNotification('Failed to fetch tags', 'error');
+    } finally {
+      setTagsLoading(false);
+    }
+  };
+
+  const handleCreateTag = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('name', newTag.name);
+      formData.append('color', newTag.color);
+      if (newTag.group) {
+        formData.append('group', newTag.group);
+      }
+      
+      // If iconFile exists, append it (Priority 1: file attached -> update icon)
+      if (newTag.iconFile) {
+        formData.append('icon', newTag.iconFile);
+      } else if (newTag.icon === null) {
+        // Priority 2: null explicitly -> remove icon
+        formData.append('icon', 'null');
+      }
+      // Otherwise: no iconUrl field, server will use default (null for new tags)
+
+      const response = await api.post(`${import.meta.env.VITE_DIFFICULTIES}/tags`, formData, {
+        headers: {
+          'X-Super-Admin-Password': verifiedPassword,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      setTags(prev => [...prev, response.data]);
+      // Clean up preview URL if exists
+      if (newTag.icon && newTag.icon.startsWith('blob:')) {
+        URL.revokeObjectURL(newTag.iconUrl);
+      }
+      setIsCreatingTag(false);
+      setNewTag({ name: '', iconFile: null, icon: null, color: '#FF5733', group: '' });
+      addNotification('Tag created successfully');
+    } catch (error) {
+      console.error('Error creating tag:', error);
+      addNotification(error.response?.data?.error || 'Failed to create tag', 'error');
+    }
+  };
+
+  const handleUpdateTag = async () => {
+    try {
+      const formData = new FormData();
+      formData.append('name', editingTag.name);
+      formData.append('color', editingTag.color);
+      if (editingTag.group !== undefined) {
+        formData.append('group', editingTag.group || '');
+      }
+      
+      // Priority logic:
+      // Priority 1: iconFile exists -> update icon
+      // Priority 2: iconUrl is null -> remove icon
+      // Otherwise: no change (don't send iconUrl field)
+      if (editingTag.iconFile) {
+        formData.append('icon', editingTag.iconFile);
+      } else if (editingTag.icon === null && editingTag.icon !== undefined) {
+        // Explicitly null (removed) -> send null
+        formData.append('icon', 'null');
+      }
+      // Otherwise: don't send iconUrl, server will keep existing
+
+      const response = await api.put(`${import.meta.env.VITE_DIFFICULTIES}/tags/${editingTag.id}`, formData, {
+        headers: {
+          'X-Super-Admin-Password': verifiedPassword,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      setTags(prev => prev.map(tag => tag.id === editingTag.id ? response.data : tag));
+      // Clean up preview URL if it was a blob URL
+      if (editingTag.icon && editingTag.icon.startsWith('blob:')) {
+        URL.revokeObjectURL(editingTag.icon);
+      }
+      setEditingTag(null);
+      setOriginalTag(null);
+      addNotification('Tag updated successfully');
+    } catch (error) {
+      console.error('Error updating tag:', error);
+      addNotification(error.response?.data?.error || 'Failed to update tag', 'error');
+    }
+  };
+
+  // Check if there are unsaved changes in the editing tag
+  const hasUnsavedChanges = () => {
+    if (!editingTag || !originalTag) return false;
+    
+    // Compare name
+    if (editingTag.name !== originalTag.name) return true;
+    
+    // Compare color
+    if (editingTag.color !== originalTag.color) return true;
+    
+    // Compare group (handle null/undefined/empty string)
+    const editingGroup = (editingTag.group || '').trim();
+    const originalGroup = (originalTag.group || '').trim();
+    if (editingGroup !== originalGroup) return true;
+    
+    // Check if icon was changed
+    // New file uploaded
+    if (editingTag.iconFile) return true;
+    
+    // Icon removed (explicitly set to null when it wasn't null before)
+    if (editingTag.icon === null && originalTag.icon !== null) return true;
+    
+    // If icon is a blob URL (preview), it means a new file was selected
+    // We don't need to compare URLs since blob URLs are temporary previews
+    // The presence of iconFile or explicit null is already checked above
+    
+    return false;
+  };
+
+  // Handle closing the edit tag modal with confirmation if needed
+  const handleCloseEditTag = () => {
+    if (hasUnsavedChanges()) {
+      const confirmed = window.confirm('You have unsaved changes. Are you sure you want to close?');
+      if (!confirmed) return;
+    }
+    
+    // Clean up preview URL if it was a blob URL
+    if (editingTag?.icon && editingTag.icon.startsWith('blob:')) {
+      URL.revokeObjectURL(editingTag.icon);
+    }
+    setEditingTag(null);
+    setOriginalTag(null);
+  };
+
+  const handleDeleteTag = async () => {
+    try {
+      await api.delete(`${import.meta.env.VITE_DIFFICULTIES}/tags/${deletingTag.id}`, {
+        headers: {
+          'X-Super-Admin-Password': verifiedPassword
+        }
+      });
+      setTags(prev => prev.filter(tag => tag.id !== deletingTag.id));
+      setDeletingTag(null);
+      addNotification('Tag deleted successfully');
+    } catch (error) {
+      console.error('Error deleting tag:', error);
+      addNotification(error.response?.data?.error || 'Failed to delete tag', 'error');
+    }
+  };
+
 
   // Add effect to handle body scrolling
   useEffect(() => {
     const isAnyOpen = isCreating || editingDifficulty !== null || 
-                          deletingDifficulty !== null || showPasswordPrompt || showInitialPasswordPrompt;
+                          deletingDifficulty !== null || showPasswordPrompt || showInitialPasswordPrompt ||
+                          isCreatingTag || editingTag !== null || deletingTag !== null;
     setIsAnyPopupOpen(isAnyOpen);
     if (isAnyOpen) {
       document.body.style.overflow = 'hidden';
@@ -397,23 +578,41 @@ const DifficultyPage = () => {
             <h1>{tDiff('header.title')}</h1>
             <button
               className="refresh-button"
-              onClick={reloadDifficulties}
-              disabled={isLoading || contextLoading || isReordering}
+              onClick={activeTab === 'difficulties' ? reloadDifficulties : fetchTags}
+              disabled={isLoading || contextLoading || isReordering || tagsLoading}
               aria-label={tDiff('header.refresh')}
             >
               <RefreshIcon color="#fff" size="36px" />
             </button>
           </div>
 
+          {/* Tab Navigation */}
+          <div className="tab-navigation">
+            <button
+              className={`tab-button ${activeTab === 'difficulties' ? 'active' : ''}`}
+              onClick={() => setActiveTab('difficulties')}
+            >
+              Difficulties
+            </button>
+            <button
+              className={`tab-button ${activeTab === 'tags' ? 'active' : ''}`}
+              onClick={() => setActiveTab('tags')}
+            >
+              Tags
+            </button>
+          </div>
+
           {error && <div className="error-message">{error}</div>}
 
-          <button
-            className="create-button"
-            onClick={handleCreateClick}
-            disabled={isLoading || contextLoading || isReordering}
-          >
-            {tDiff('buttons.create')}
-          </button>
+          {activeTab === 'difficulties' ? (
+            <>
+              <button
+                className="create-button"
+                onClick={handleCreateClick}
+                disabled={isLoading || contextLoading || isReordering}
+              >
+                {tDiff('buttons.create')}
+              </button>
 
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId="difficulties">
@@ -479,6 +678,343 @@ const DifficultyPage = () => {
               )}
             </Droppable>
           </DragDropContext>
+            </>
+          ) : (
+            <>
+              <button
+                className="create-button"
+                onClick={() => setIsCreatingTag(true)}
+                disabled={tagsLoading}
+              >
+                Create Tag
+              </button>
+
+              {tagsLoading ? (
+                <div className="loading-message">Loading tags...</div>
+              ) : tags.length === 0 ? (
+                <div className="no-items-message">No tags found. Create your first tag!</div>
+              ) : (
+                <div className="tags-list">
+                  {tags.map((tag) => (
+                    <div
+                      key={tag.id}
+                      className="tag-item"
+                    >
+                      <div className="tag-item-content">
+                        {tag.icon && (
+                          <img
+                            src={tag.icon}
+                            alt={tag.name}
+                            className="tag-item-icon"
+                          />
+                        )}
+                        <div className="tag-item-info">
+                          <div className="tag-item-name" style={{ color: tag.color }}>
+                            {tag.name}
+                          </div>
+                          <div className="tag-item-color">
+                            {tag.color}
+                          </div>
+                          {tag.group && (
+                            <div className="tag-item-group">
+                              Group: {tag.group}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="tag-item-actions">
+                        <button
+                          onClick={() => {
+                            // Store original tag data for comparison
+                            setOriginalTag({ ...tag });
+                            setEditingTag({ ...tag, iconFile: null, group: tag.group || '' });
+                          }}
+                        >
+                          <EditIcon color="#fff" size="20px" />
+                        </button>
+                        <button
+                          onClick={() => setDeletingTag(tag)}
+                        >
+                          <TrashIcon color="#fff" size="20px" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {/* Create Tag Modal */}
+              {isCreatingTag && (
+                <div
+                  className="difficulty-modal"
+                  onClick={(e) => {
+                    if (e.target.className === 'difficulty-modal') {
+                      // Clean up preview URL if exists
+                      if (newTag.icon && newTag.icon.startsWith('blob:')) {
+                        URL.revokeObjectURL(newTag.iconUrl);
+                      }
+                      setIsCreatingTag(false);
+                      setNewTag({ name: '', iconFile: null, icon: null, color: '#FF5733' });
+                    }
+                  }}
+                >
+                  <div className="difficulty-modal-content">
+                    <button
+                      className="modal-close-button"
+                      onClick={() => {
+                        setIsCreatingTag(false);
+                        setNewTag({ name: '', iconFile: null, icon: null, color: '#FF5733' });
+                      }}
+                    >
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </button>
+                    <h2>Create Tag</h2>
+                    <form onSubmit={(e) => { e.preventDefault(); handleCreateTag(); }}>
+                      <div className="form-group">
+                        <label>Name</label>
+                        <input
+                          type="text"
+                          value={newTag.name}
+                          onChange={(e) => setNewTag({ ...newTag, name: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Color</label>
+                        <input
+                          type="color"
+                          value={newTag.color}
+                          onChange={(e) => setNewTag({ ...newTag, color: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Group (Optional)</label>
+                        <input
+                          type="text"
+                          value={newTag.group}
+                          onChange={(e) => setNewTag({ ...newTag, group: e.target.value })}
+                          placeholder="Enter group name"
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Icon (Optional)</label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              // Create preview URL for display
+                              const previewUrl = URL.createObjectURL(file);
+                              setNewTag({ 
+                                ...newTag, 
+                                iconFile: file,
+                                icon: previewUrl // For preview only
+                              });
+                            }
+                          }}
+                        />
+                        {newTag.icon && (
+                          <>
+                            <img
+                              src={newTag.icon}
+                              alt="Preview"
+                              className="icon-preview"
+                            />
+                            <button
+                              type="button"
+                              className="remove-icon-button"
+                              onClick={() => {
+                                // Clean up preview URL
+                                if (newTag.icon && newTag.icon.startsWith('blob:')) {
+                                  URL.revokeObjectURL(newTag.icon);
+                                }
+                                setNewTag({ ...newTag, iconFile: null, icon: null });
+                              }}
+                            >
+                              Remove Icon
+                            </button>
+                          </>
+                        )}
+                      </div>
+                      <div className="modal-actions">
+                        <button type="submit" className="confirm-button">Create</button>
+                        <button
+                          type="button"
+                          className="cancel-button"
+                          onClick={() => {
+                            // Clean up preview URL if exists
+                            if (newTag.icon && newTag.icon.startsWith('blob:')) {
+                              URL.revokeObjectURL(newTag.icon);
+                            }
+                            setIsCreatingTag(false);
+                            setNewTag({ name: '', iconFile: null, icon: null, color: '#FF5733' });
+                          }}
+                        >
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
+
+              {/* Edit Tag Modal */}
+              {editingTag && (
+                <div
+                  className="difficulty-modal"
+                  onClick={(e) => {
+                    if (e.target.className === 'difficulty-modal') {
+                      handleCloseEditTag();
+                    }
+                  }}
+                >
+                  <div className="difficulty-modal-content">
+                    <button
+                      className="modal-close-button"
+                      onClick={handleCloseEditTag}
+                    >
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </button>
+                    <h2>Edit Tag</h2>
+                    <form onSubmit={(e) => { e.preventDefault(); handleUpdateTag(); }}>
+                      <div className="form-group">
+                        <label>Name</label>
+                        <input
+                          type="text"
+                          value={editingTag.name}
+                          onChange={(e) => setEditingTag({ ...editingTag, name: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Color</label>
+                        <input
+                          type="color"
+                          value={editingTag.color}
+                          onChange={(e) => setEditingTag({ ...editingTag, color: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Group (Optional)</label>
+                        <input
+                          type="text"
+                          value={editingTag.group || ''}
+                          onChange={(e) => setEditingTag({ ...editingTag, group: e.target.value })}
+                          placeholder="Enter group name"
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>Icon (Optional)</label>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) {
+                              // Clean up previous preview URL if it was a blob URL
+                              if (editingTag.icon && editingTag.icon.startsWith('blob:')) {
+                                URL.revokeObjectURL(editingTag.icon);
+                              }
+                              // Create preview URL for display
+                              const previewUrl = URL.createObjectURL(file);
+                              setEditingTag({ 
+                                ...editingTag, 
+                                iconFile: file,
+                                icon: previewUrl // For preview only
+                              });
+                            }
+                          }}
+                        />
+                        {editingTag.icon && (
+                          <>
+                            <img
+                              src={editingTag.icon}
+                              alt="Preview"
+                              className="icon-preview"
+                            />
+                            <button
+                              type="button"
+                              className="remove-icon-button"
+                              onClick={() => {
+                                // Clean up preview URL if it was a blob URL
+                                if (editingTag.icon && editingTag.icon.startsWith('blob:')) {
+                                  URL.revokeObjectURL(editingTag.icon);
+                                }
+                                setEditingTag({ ...editingTag, iconFile: null, icon: null });
+                              }}
+                            >
+                              Remove Icon
+                            </button>
+                          </>
+                        )}
+                      </div>
+                      <div className="modal-actions">
+                        <button type="submit" className="confirm-button">Update</button>
+                      <button
+                        type="button"
+                        className="cancel-button"
+                        onClick={handleCloseEditTag}
+                      >
+                          Cancel
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              )}
+
+              {/* Delete Tag Confirmation */}
+              {deletingTag && (
+                <div
+                  className="difficulty-modal"
+                  onClick={(e) => {
+                    if (e.target.className === 'difficulty-modal') {
+                      setDeletingTag(null);
+                    }
+                  }}
+                >
+                  <div className="difficulty-modal-content">
+                    <button
+                      className="modal-close-button"
+                      onClick={() => setDeletingTag(null)}
+                    >
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      </svg>
+                    </button>
+                    <h2>Delete Tag</h2>
+                    <p>Are you sure you want to delete the tag "{deletingTag.name}"?</p>
+                    <p>
+                      This action cannot be undone. The tag will be removed from all levels.
+                    </p>
+                    <div className="modal-actions">
+                      <button
+                        type="button"
+                        className="delete-confirm-button"
+                        onClick={handleDeleteTag}
+                      >
+                        Delete
+                      </button>
+                      <button
+                        type="button"
+                        className="cancel-button"
+                        onClick={() => setDeletingTag(null)}
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
 
           {deletingDifficulty && (
             <div 
@@ -519,7 +1055,7 @@ const DifficultyPage = () => {
                   </button>
                 </div>
 
-                <div className={`delete-input ${showDeleteInput ? 'fade-in' : ''}`} style={{height: showDeleteInput ? 'auto' : '0px'}}>
+                <div className={`delete-input ${showDeleteInput ? 'fade-in' : ''}`}>
                   <h2>{tDiff('modal.delete.title')}</h2>
                   <form onSubmit={(e) => {
                     e.preventDefault();

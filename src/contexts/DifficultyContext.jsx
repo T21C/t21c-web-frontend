@@ -18,10 +18,14 @@ const DifficultyContextProvider = (props) => {
     const [noLegacyDifficulties, setNoLegacyDifficulties] = useState([]);
     const [curationTypes, setCurationTypes] = useState([]);
     const [curationTypesDict, setCurationTypesDict] = useState({});
+    const [tags, setTags] = useState([]);
+    const [tagsDict, setTagsDict] = useState({});
     const [loading, setLoading] = useState(true);
     const [curationTypesLoading, setCurationTypesLoading] = useState(true);
+    const [tagsLoading, setTagsLoading] = useState(true);
     const [error, setError] = useState(null);
     const [curationTypesError, setCurationTypesError] = useState(null);
+    const [tagsError, setTagsError] = useState(null);
 
     const fetchDifficulties = async (update = true) => {
         try {
@@ -109,16 +113,59 @@ const DifficultyContextProvider = (props) => {
         }
     };
 
+    const fetchTags = async (update = true) => {
+        try {
+            setTagsLoading(true);
+            setTagsError(null);
+
+            let tagsArray = [];
+            if (update) {
+                // Fetch fresh data from server with no-cache to ensure latest data
+                const response = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/tags`, {
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                    }
+                });
+                tagsArray = response.data;
+
+                if (!tagsArray || !Array.isArray(tagsArray)) {
+                    throw new Error('Invalid server response format for tags');
+                }
+                // Use localStorage instead of cookies for larger data
+                try {
+                    localStorage.setItem('tagsCache', JSON.stringify(tagsArray));
+                } catch (storageError) {
+                    console.error('Error setting tags cache in localStorage:', storageError);
+                }
+            }
+            else {
+                const cached = localStorage.getItem('tagsCache');
+                tagsArray = cached ? JSON.parse(cached) : [];
+            }
+            const tagsDict = {};
+            tagsArray.forEach(tag => {
+                tagsDict[tag.id] = tag;
+            });
+            setTags(tagsArray);
+            setTagsDict(tagsDict);
+        } catch (err) {
+            console.error('Error fetching tags:', err);
+            setTagsError(err.message || 'Failed to fetch tags');
+        } finally {
+            setTagsLoading(false);
+        }
+    };
+
     useEffect(() => {
         const runFetch = async () => {
             const hash = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/hash`).then(res => res.data?.hash);
             const storedHash = localStorage.getItem('difficultiesHash');
             const doUpdate = hash !== storedHash;
             console.log('doUpdate', doUpdate);
-            await Promise.all([fetchDifficulties(doUpdate), fetchCurationTypes(doUpdate)]);
+            await Promise.all([fetchDifficulties(doUpdate), fetchCurationTypes(doUpdate), fetchTags(doUpdate)]);
             localStorage.setItem('difficultiesHash', hash);
         }
-        runFetch().catch(err => console.error('Error fetching difficulties and curation types:', err));
+        runFetch().catch(err => console.error('Error fetching difficulties, curation types, and tags:', err));
     }, []);
 
     // Ensure noLegacyDifficulties is always in sync with difficulties
@@ -138,16 +185,25 @@ const DifficultyContextProvider = (props) => {
                 setCurationTypes,
                 curationTypesDict,
                 setCurationTypesDict,
+                tags,
+                setTags,
+                tagsDict,
+                setTagsDict,
                 loading,
                 setLoading,
                 curationTypesLoading,
                 setCurationTypesLoading,
+                tagsLoading,
+                setTagsLoading,
                 error,
                 setError,
                 curationTypesError,
                 setCurationTypesError,
+                tagsError,
+                setTagsError,
                 reloadDifficulties: fetchDifficulties,
-                reloadCurationTypes: fetchCurationTypes
+                reloadCurationTypes: fetchCurationTypes,
+                reloadTags: fetchTags
             }}
         >
             {props.children}

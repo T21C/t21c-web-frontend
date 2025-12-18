@@ -1,9 +1,9 @@
-.special-difficulties-dropdown {
+.tag-selector-dropdown {
   position: relative;
   width: fit-content;
 }
 
-.special-difficulties-dropdown .dropdown-toggle {
+.tag-selector-dropdown .dropdown-toggle {
   width: 100%;
   padding: 0.75rem 1rem;
   background: var(--color-white-t20);
@@ -20,21 +20,21 @@
   text-overflow: ellipsis;
 }
 
-.special-difficulties-dropdown .dropdown-toggle:hover {
+.tag-selector-dropdown .dropdown-toggle:hover {
   background: var(--color-white-t30);
 }
 
-.special-difficulties-dropdown .dropdown-arrow {
+.tag-selector-dropdown .dropdown-arrow {
   width: 20px;
   height: 20px;
   transition: transform 0.2s ease;
 }
 
-.special-difficulties-dropdown .dropdown-arrow.open {
+.tag-selector-dropdown .dropdown-arrow.open {
   transform: rotate(180deg);
 }
 
-.special-difficulties-dropdown .selected-count {
+.tag-selector-dropdown .selected-count {
   color: var(--color-white-t70);
   width: 1rem;
   font-size: 0.8rem;
@@ -42,7 +42,7 @@
   margin-right: 0.5rem;
 }
 
-.special-difficulties-dropdown .difficulties-backdrop {
+.tag-selector-dropdown .tag-selector-backdrop {
   position: fixed;
   top: 0;
   left: 0;
@@ -57,7 +57,7 @@
   user-select: none;
 }
 
-.special-difficulties-dropdown .difficulties-grid {
+.tag-selector-dropdown .tag-selector-grid {
   position: absolute;
   top: calc(100% + 0.5rem);
   left: 0;
@@ -72,13 +72,13 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.special-difficulties-dropdown .difficulties-header {
+.tag-selector-dropdown .tag-selector-header {
   display: flex;
   justify-content: space-between;
   padding-bottom: 0.5rem;
 }
 
-.special-difficulties-dropdown .select-all-button {
+.tag-selector-dropdown .select-all-button {
   background: var(--color-white-t20);
   color: var(--color-white);
   border: none;
@@ -89,20 +89,20 @@
   transition: all 0.2s ease;
 }
 
-.special-difficulties-dropdown .select-all-button:hover {
+.tag-selector-dropdown .select-all-button:hover {
   background: var(--color-white-t30);
   transform: translateY(-1px);
 }
 
-.special-difficulties-dropdown .difficulty-group {
+.tag-selector-dropdown .tag-selector-group {
   margin-bottom: 1.5rem;
 }
 
-.special-difficulties-dropdown .difficulty-group:last-child {
+.tag-selector-dropdown .tag-selector-group:last-child {
   margin-bottom: 0;
 }
 
-.special-difficulties-dropdown .group-title {
+.tag-selector-dropdown .group-title {
   color: var(--color-white);
   font-size: 0.9rem;
   margin-bottom: 0.75rem;
@@ -110,13 +110,13 @@
   border-bottom: 1px solid var(--color-white-t20);
 }
 
-.special-difficulties-dropdown .difficulties-list {
+.tag-selector-dropdown .tag-selector-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
   gap: 0.5rem;
 }
 
-.special-difficulties-dropdown .difficulty-item {
+.tag-selector-dropdown .tag-selector-item {
   display: flex;
   align-items: center;
   gap: 0.5rem;
@@ -128,23 +128,23 @@
   opacity: 0.8;
 }
 
-.special-difficulties-dropdown .difficulty-item:hover {
+.tag-selector-dropdown .tag-selector-item:hover {
   opacity: 0.9;
   transform: translateY(-1px);
 }
 
-.special-difficulties-dropdown .difficulty-item.selected {
+.tag-selector-dropdown .tag-selector-item.selected {
   opacity: 1;
   box-shadow: 0 0 0 2px var(--color-white);
 }
 
-.special-difficulties-dropdown .difficulty-icon {
+.tag-selector-dropdown .tag-selector-icon {
   width: 20px;
   height: 20px;
   object-fit: contain;
 }
 
-.special-difficulties-dropdown .difficulty-name {
+.tag-selector-dropdown .tag-selector-name {
   font-size: 0.9rem;
   white-space: nowrap;
   overflow: hidden;
@@ -153,12 +153,12 @@
 
 /* Mobile Styles */
 @media (max-width: 768px) {
-  .special-difficulties-dropdown {
+  .tag-selector-dropdown {
     width: 100%;
     margin-bottom: 1rem;
   }
 
-  .special-difficulties-dropdown .difficulties-grid {
+  .tag-selector-dropdown .tag-selector-grid {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -171,67 +171,67 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
   }
 
-  .special-difficulties-dropdown .difficulties-list {
+  .tag-selector-dropdown .tag-selector-list {
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
     gap: 0.75rem;
   }
 
-  .special-difficulties-dropdown .difficulty-item {
+  .tag-selector-dropdown .tag-selector-item {
     padding: 0.75rem;
     font-size: 1.1rem;
     touch-action: manipulation;
   }
 
-  .special-difficulties-dropdown .difficulty-icon {
+  .tag-selector-dropdown .tag-selector-icon {
     width: 24px;
     height: 24px;
   }
 
-  .special-difficulties-dropdown .difficulty-name {
+  .tag-selector-dropdown .tag-selector-name {
     font-size: 1rem;
   }
 
-  .special-difficulties-dropdown .select-all-button {
+  .tag-selector-dropdown .select-all-button {
     padding: 0.75rem 1rem;
     font-size: 1rem;
   }
 }
 
 @media (max-width: 480px) {
-  .special-difficulties-dropdown .difficulties-grid {
+  .tag-selector-dropdown .tag-selector-grid {
     width: 95%;
     padding: 0.75rem;
   }
 
-  .special-difficulties-dropdown .difficulties-list {
+  .tag-selector-dropdown .tag-selector-list {
     grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
     gap: 0.5rem;
   }
 
-  .special-difficulties-dropdown .difficulty-item {
+  .tag-selector-dropdown .tag-selector-item {
     padding: 0.5rem;
     font-size: 1rem;
   }
 
-  .special-difficulties-dropdown .difficulty-icon {
+  .tag-selector-dropdown .tag-selector-icon {
     width: 20px;
     height: 20px;
   }
 
-  .special-difficulties-dropdown .difficulty-name {
+  .tag-selector-dropdown .tag-selector-name {
     font-size: 0.9rem;
   }
 
-  .special-difficulties-dropdown .group-title {
+  .tag-selector-dropdown .group-title {
     font-size: 0.85rem;
     margin-bottom: 0.5rem;
   }
 
-  .special-difficulties-dropdown .difficulties-header h3 {
+  .tag-selector-dropdown .tag-selector-header h3 {
     font-size: 1rem;
   }
 
-  .special-difficulties-dropdown .select-all-button {
+  .tag-selector-dropdown .select-all-button {
     padding: 0.5rem 0.75rem;
     font-size: 0.9rem;
   }
@@ -239,7 +239,7 @@
 
 /* Mobile Styles */
 @media (max-width: 768px) {
-  .special-difficulties-dropdown::before {
+  .tag-selector-dropdown::before {
     display: none;
   }
 } 

@@ -111,7 +111,7 @@ const SortIncidator = ({ direction }) => {
   );
 };
 
-const AliasesDropdown = ({ field, aliases, show, onClose }) => {
+const AliasesDropdown = ({ aliases, show, onClose }) => {
   const { t } = useTranslation('pages');
   const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
   const dropdownRef = useRef(null);
@@ -140,6 +140,56 @@ const AliasesDropdown = ({ field, aliases, show, onClose }) => {
         {aliases.map((alias, index) => (
           <div key={index} className="alias-item">
             <span className="alias-label">{alias.alias}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const TagsDropdown = ({ tags, show, onClose }) => {
+  const { t } = useTranslation('pages');
+  const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [onClose]);
+
+  const handleDropdownClick = (e) => {
+    e.stopPropagation();
+  };
+
+  if (!show || !tags?.length) return null;
+
+  return (
+    <div className="tags-dropdown" ref={dropdownRef} onClick={handleDropdownClick}>
+      <div className="tags-header">{tLevel('tags.header') || 'Tags'}</div>
+      <div className="tags-list">
+        {tags.map((tag) => (
+          <div key={tag.id} className="tag-item">
+            <div
+              className="tag-item-icon"
+              style={{
+                '--tag-bg-color': `${tag.color}30`,
+                '--tag-border-color': tag.color,
+                '--tag-text-color': tag.color
+              }}
+            >
+              {tag.icon ? (
+                <img src={tag.icon} alt={tag.name} />
+              ) : (
+                <span className="tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
+              )}
+            </div>
+            <span className="tag-label">{tag.name}</span>
           </div>
         ))}
       </div>
@@ -180,10 +230,10 @@ const RatingVotesDropdown = ({ votes, show, onClose }) => {
               className="rating-vote-value"
             >
               {vote.user.player.name} - <span 
+                className="rating-vote-value-span"
                 style={{ 
-                  color: getRatingAccuracyColor(vote.vote),
-                  textShadow: `0 0 5px ${getRatingAccuracyColor(vote.vote)}66`,
-                  whiteSpace: 'nowrap'
+                  '--rating-color': getRatingAccuracyColor(vote.vote),
+                  '--rating-color-shadow': `${getRatingAccuracyColor(vote.vote)}66`
                 }}>{accuracyLabel[vote.vote.toString()]}</span>
             </span>
           </div>
@@ -260,7 +310,7 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
       <div className="level-detail-popup-overlay" onClick={onClose}></div>
       <div className="level-detail-popup popup-scale-up">
         <div className="popup-content">
-          <div className="popup-header" style={{ backgroundColor: `#${difficulty.color}ff` }}>
+          <div className="popup-header" style={{ '--popup-header-bg': `#${difficulty.color}ff` }}>
             <h2>{level.song}</h2>
             <p>{level.artist}</p>
             <span className="createdAt">{tLevel('info.createdAt')}: {formatDate(videoDetail?.timestamp || level.createdAt, i18next?.language)}</span>
@@ -450,8 +500,8 @@ const RatingAccuracyDialog = ({ isOpen, onClose, onSave, initialValue = 0 }) => 
             <div 
               className="rating-accuracy-dialog-slider-marker"
               style={{ 
-                left: `${((value + 5) / 10) * 100}%`,
-                backgroundColor: getRatingAccuracyColor(value)
+                '--marker-position': `${((value + 5) / 10) * 100}%`,
+                '--marker-color': getRatingAccuracyColor(value)
               }}
               onMouseDown={handleDragStart}
               onTouchStart={handleDragStart}
@@ -465,9 +515,10 @@ const RatingAccuracyDialog = ({ isOpen, onClose, onSave, initialValue = 0 }) => 
         
         <div className="rating-accuracy-dialog-slider-labels">
           <span 
+            className="rating-accuracy-dialog-label"
             style={{ 
-              color: getRatingAccuracyColor(value),
-              textShadow: `0 0 10px ${getRatingAccuracyColor(value)}66`
+              '--rating-color': getRatingAccuracyColor(value),
+              '--rating-color-shadow': `${getRatingAccuracyColor(value)}66`
             }}
           >
             {accuracyLabel[Math.round(value)]}
@@ -837,6 +888,7 @@ const LevelDetailPage = ({ mockData = null }) => {
   }, [setExternalCssOverrideValue]);
 
   const [activeAliasDropdown, setActiveAliasDropdown] = useState(null);
+  const [showTagsDropdown, setShowTagsDropdown] = useState(false);
   const [showCurationTooltip, setShowCurationTooltip] = useState(false);
 
   const [showRatingPopup, setShowRatingPopup] = useState(false);
@@ -942,6 +994,11 @@ const LevelDetailPage = ({ mockData = null }) => {
 
   const handleDropdownClose = () => {
     setActiveAliasDropdown(null);
+    setShowTagsDropdown(false);
+  };
+
+  const handleTagsButtonClick = () => {
+    setShowTagsDropdown(prev => !prev);
   };
 
   useEffect(() => {
@@ -1251,7 +1308,6 @@ const LevelDetailPage = ({ mockData = null }) => {
               ▼
             </span>
             <AliasesDropdown 
-              field={field}
               aliases={aliases}
               show={isOpen}
               onClose={handleDropdownClose}
@@ -1435,9 +1491,7 @@ const LevelDetailPage = ({ mockData = null }) => {
 
   if (res == null)
     return (
-      <div
-        style={{ height: "100vh", width: "100vw", backgroundColor: "#090909" }}
-      >
+      <div className="level-detail-loading-container">
         <CompleteNav />
         <div className="background-level"></div>
         <div className="loader loader-level-detail"></div>
@@ -1446,6 +1500,10 @@ const LevelDetailPage = ({ mockData = null }) => {
 
   const difficulty = difficultyDict[res.level.diffId];
   const averageDifficulty = difficultyDict[res.ratings?.averageDifficultyId];
+  
+  // Use tags from level data
+  const tags = res.level.tags || [];
+  
   return (
     <div>
       <MetaTags
@@ -1497,7 +1555,7 @@ const LevelDetailPage = ({ mockData = null }) => {
 
               <div className="level-id mobile">#{effectiveId}</div>
               <div className="difficulty-curation-row">
-              <div className="diff rerate-history-container" style={{ position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div className="diff rerate-history-container">
                 <img 
                   src={difficulty.icon} 
                   alt={difficulty.name || 'Difficulty icon'} 
@@ -1518,7 +1576,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                     className={`rerate-arrow ${showRerateDropdown ? 'open' : ''}`}
                     onClick={handleRerateDropdownToggle}
                     title={tLevel('rerateHistory.header', { defaultValue: 'Show rerate history' })}
-                    style={{ pointerEvents: rerateArrowEnabled ? 'auto' : 'none', opacity: rerateArrowEnabled ? 1 : 0.5 }}
+                    data-disabled={!rerateArrowEnabled}
                   >
                     <HistoryListIcon className="rerate-history-icon" size={"24px"}/>
                     <span className="rerate-arrow-icon">&#9660;</span>
@@ -1569,7 +1627,8 @@ const LevelDetailPage = ({ mockData = null }) => {
                   {renderTitleWithAliases(res.level.artist, 'artist')}
                   </div>
                 </div>
-                <div className="metadata-container">  
+                {res.tilecount || res.bpm && (
+                  <div className="metadata-container">  
                   {res.tilecount && (
                     <div className="metadata-item">
                       <ChartIcon size={18} />
@@ -1585,7 +1644,53 @@ const LevelDetailPage = ({ mockData = null }) => {
                       <span className="metadata-value">{res.bpm}</span>
                     </div>
                   )}
-                </div>
+                  </div>
+                )}
+                
+                {/* Tags display */}
+                {tags && tags.length > 0 && (
+                  <div className="level-tags-container" data-open={showTagsDropdown}>
+                    <span 
+                      className={`tags-arrow ${showTagsDropdown ? 'open' : ''}`}
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      onClick={handleTagsButtonClick}
+                    >
+                      ▼
+                    </span>
+                    <div className="tags-icons-row">
+                      {tags.map((tag, index) => (
+                        <div
+                          key={tag.id}
+                          className="tag-icon-preview"
+                          style={{
+                            '--tag-bg-color': `${tag.color}30`,
+                            '--tag-border-color': tag.color,
+                            '--tag-text-color': tag.color,
+                            '--tag-index': index
+                          }}
+                          title={tag.name}
+                        >
+                          {tag.icon ? (
+                            <img 
+                              src={tag.icon} 
+                              alt={tag.name}
+                            />
+                          ) : (
+                            <span className="tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                    <TagsDropdown 
+                      tags={tags}
+                      show={showTagsDropdown}
+                      onClose={handleDropdownClose}
+                    />
+                  </div>
+                )}
               </div>
 
               {/* Curation Type */}
@@ -1646,17 +1751,18 @@ const LevelDetailPage = ({ mockData = null }) => {
                   <div 
                     className="rating-accuracy-display-marker" 
                     style={{ 
-                      left: `${getPosition(res.level.ratingAccuracy || 0)}%`,
-                      backgroundColor: getRatingAccuracyColor(res.level.ratingAccuracy || 0)
+                      '--marker-position': `${getPosition(res.level.ratingAccuracy || 0)}%`,
+                      '--marker-color': getRatingAccuracyColor(res.level.ratingAccuracy || 0)
                     }}
                   >
                   </div>
                 </div>
                 <div className="rating-accuracy-labels">
-                  <span style={{
-                    color: getRatingAccuracyColor(res.level.ratingAccuracy || 0),
-                    textShadow: `0 0 10px ${getRatingAccuracyColor(res.level.ratingAccuracy || 0)}66`
-                  }}>{accuracyLabel[Math.round(res.level.ratingAccuracy || 0).toString()]}</span>
+                  <span 
+                    style={{
+                      '--rating-color': getRatingAccuracyColor(res.level.ratingAccuracy || 0),
+                      '--rating-color-shadow': `${getRatingAccuracyColor(res.level.ratingAccuracy || 0)}66`
+                    }}>{accuracyLabel[Math.round(res.level.ratingAccuracy || 0).toString()]}</span>
                 </div>
                 <button 
                   className="rating-accuracy-vote-button"
@@ -1707,13 +1813,9 @@ const LevelDetailPage = ({ mockData = null }) => {
               </div>
               )}
               
-              <div className="like-container"
-                style={{
-                  marginLeft:
-                   difficulty.type === "PGU"
-                   && res.level.clears > 0
-                   ? "" : "auto"
-                }}
+              <div 
+                className="like-container"
+                data-margin-auto={!(difficulty.type === "PGU" && res.level.clears > 0)}
               >
                 <span className="like-count">{res.level.likes || 0}</span>
                 <button 
@@ -1876,7 +1978,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                 <div
                   className="thumbnail-container"
                   style={{
-                    backgroundImage: `url(${videoDetail? videoDetail.image: placeholder})`,
+                    '--thumbnail-bg-image': `url(${videoDetail? videoDetail.image: placeholder})`,
                   }}
                 >
                   <div className="thumbnail-text">

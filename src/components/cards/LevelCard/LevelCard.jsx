@@ -80,7 +80,6 @@ const LevelCard = ({
       ...updatedLevel,
     }));
     setToRate(prev => updatedLevel.toRate !== undefined ? !!updatedLevel.toRate : prev);
-    setShowEditPopup(false);
   };
   
   level.wsLink = level.ws ? level.ws : level.wsLink ? level.wsLink : level.workshopLink;
@@ -99,6 +98,9 @@ const LevelCard = ({
   const redirect = () => {
     navigate(`/levels/${level.id}`);
   };
+
+  // Use tags from level data
+  const tags = level.tags || [];
 
   const onAnchorClick = (e) => {
     e.stopPropagation();
@@ -130,20 +132,53 @@ const LevelCard = ({
     return (
       <div 
         className={`level-card grid size-${size} ${getGlowClass()}`} 
+        data-deleted={level.isDeleted}
+        data-hidden={level.isHidden && !level.isDeleted}
         style={{ 
           // @ts-ignore
-          '--difficulty-color': difficultyInfo?.color || '#fff',
-          backgroundColor: level.isDeleted ? "#f0000099" : level.isHidden ? "#88888899" : "none" 
+          '--difficulty-color': difficultyInfo?.color || '#fff'
         }}
         onClick={redirect}
       >
         <div 
           className="level-card-wrapper"
-          style={{ backgroundImage: thumbnailUrl ? `url(${thumbnailUrl})` : 'none' }}
+          style={{ '--card-bg-image': thumbnailUrl ? `url(${thumbnailUrl})` : 'none' }}
         >
           <div className="difficulty-icon-wrapper">
             <img src={lvImage} alt={difficultyInfo?.name || 'Difficulty icon'} />
           </div>
+
+          {/* Tags for grid mode */}
+          {tags && tags.length > 0 && (
+            <div className="level-tags-grid">
+              {tags.map((tag, index) => {
+                // Calculate if this tag should span both columns (odd number of tags and last one)
+                const isFirstInOddRow = tags.length % 2 === 1 && index === 0;
+                return (
+                  <div
+                    key={tag.id}
+                    className="level-tag-badge"
+                    style={{
+                      '--tag-bg-color': `${tag.color}80`,
+                      '--tag-border-color': tag.color,
+                      '--tag-text-color': tag.color,
+                    }}
+                    data-span-full={isFirstInOddRow}
+                    title={tag.name}
+                  >
+                    {tag.icon ? (
+                      <img 
+                        src={tag.icon} 
+                        alt={tag.name}
+                      />
+                    ) : (
+                      <span className="level-tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          )}
 
           <div className="content-overlay">
             <div className="title-section">
@@ -200,12 +235,10 @@ const LevelCard = ({
     };
 
     return (
-      <div className={`level-card pack ${getGlowClass()}`} 
-        style={{ 
-          backgroundColor: level.isDeleted ? "#f0000099"
-            : level.isHidden ? "#88888899"
-            : "none"
-        }}
+      <div 
+        className={`level-card pack ${getGlowClass()}`} 
+        data-deleted={level.isDeleted}
+        data-hidden={level.isHidden && !level.isDeleted}
       >
         {/* Drag handle on the left */}
         {canEdit && dragHandleProps && (
@@ -274,7 +307,7 @@ const LevelCard = ({
 
               {/* Stats Line - Lower row */}
               <div className="stats-line">
-                <div className="icon-wrapper" style={{ opacity: level.clears ? 1 : 0 }}>
+                <div className="icon-wrapper" data-opacity={level.clears ? 1 : 0}>
                   <div className="icon-value">{level.clears || 0}</div>
                   <PassIcon color="#ffffff" size={"24px"} />
                 </div>
@@ -291,7 +324,7 @@ const LevelCard = ({
                     </a>
                   )}
                   {user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
-                  <button className="edit-button" style={{ marginLeft: "0" }} onClick={handleEditClick}>
+                  <button className="edit-button" data-margin-zero="true" onClick={handleEditClick}>
                     <EditIcon color="#ffffff" size={"32px"} />
                   </button>
                   )}
@@ -346,7 +379,7 @@ const LevelCard = ({
                 <div className="level-desc">{formatCreatorDisplay(level)}</div>
               </div>
 
-              <div className="icon-wrapper" style={{ opacity: level.clears ? 1 : 0 }}>
+              <div className="icon-wrapper" data-opacity={level.clears ? 1 : 0}>
                 <div className="icon-value">{level.clears || 0}</div>
                 <PassIcon color="#ffffff" size={"24px"} />
               </div>
@@ -363,7 +396,7 @@ const LevelCard = ({
                   </a>
                 )}
                 {user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
-                <button className="edit-button" style={{ marginLeft: "0" }} onClick={handleEditClick}>
+                <button className="edit-button" data-margin-zero="true" onClick={handleEditClick}>
                   <EditIcon color="#ffffff" size={"32px"} />
                 </button>
                 )}
@@ -416,11 +449,11 @@ const LevelCard = ({
   }
 
   return (
-    <div className={`level-card ${displayMode} ${getGlowClass()}`} 
-    style={{ 
-      backgroundColor: level.isDeleted ? "#f0000099"
-      : level.isHidden ? "#88888899" 
-      : "none" }}>
+    <div 
+      className={`level-card ${displayMode} ${getGlowClass()}`} 
+      data-deleted={level.isDeleted}
+      data-hidden={level.isHidden && !level.isDeleted}
+    >
       <div className={`level-card-wrapper ${isTwoLineLayout ? 'two-line' : ''}`} onClick={() => redirect()}>
         {isTwoLineLayout ? (
           <>
@@ -449,6 +482,37 @@ const LevelCard = ({
                     <div className="base-score-wrapper">
                       <p className="base-score-value">{customBaseScore} PP</p>
                     </div>
+                )}
+                {/* Tags display */}
+                {tags && tags.length > 0 && (
+                  <div className="level-tags-wrapper">
+                    {tags.map((tag, index) => {
+                      // Calculate if this tag should span both columns (odd number of tags and last one)
+                      const isLastInOddRow = tags.length % 2 === 1 && index === tags.length - 1;
+                      return (
+                        <div
+                          key={tag.id}
+                          className="level-tag-badge"
+                          style={{
+                            '--tag-bg-color': `${tag.color}40`,
+                            '--tag-border-color': tag.color,
+                            '--tag-text-color': tag.color
+                          }}
+                          data-span-full={isLastInOddRow}
+                          title={tag.name}
+                        >
+                          {tag.icon ? (
+                            <img 
+                              src={tag.icon} 
+                              alt={tag.name}
+                            />
+                          ) : (
+                            <span className="level-tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
+                          )}
+                        </div>
+                      );
+                    })}
+                  </div>
                 )}
                 {difficultyDict[level.diffId]?.type === "PGU" 
                 && level.clears > 0
@@ -504,19 +568,19 @@ const LevelCard = ({
 
             {/* Stats Line - Lower row */}
             <div className="stats-line">
-              {(
-                <div className="icon-wrapper" style={{ opacity: level.clears ? 1 : 0 }}>
+            {(
+                <div className="icon-wrapper" data-opacity={level.clears ? 1 : 0}>
                   <div className="icon-value">{level.clears || 0}</div>
                   <PassIcon color="#ffffff" size={"24px"} />
                 </div>
               )}
 
               {(
-                <div className="icon-wrapper" style={{ opacity: level.likes ? 1 : 0 }}>
+                <div className="icon-wrapper" data-opacity={level.likes ? 1 : 0}>
                   <div className="icon-value">{level.likes || 0}</div>
                   <LikeIcon color={"none"} size={"22px"}/>
-                </div>
-              )}
+              </div>
+            )}
           
               <div className="downloads-wrapper">
                 {level.videoLink && (
@@ -557,6 +621,7 @@ const LevelCard = ({
         ) : (
           <>
             {/* Single line layout */}
+            <div className="level-details-wrapper">
             <div className="img-wrapper">
               <img src={lvImage} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
               {(level.rating?.averageDifficultyId && 
@@ -581,6 +646,7 @@ const LevelCard = ({
                       <p className="base-score-value">{customBaseScore} PP</p>
                     </div>
                 )}
+            
               {difficultyDict[level.diffId]?.type === "PGU" 
               && level.clears > 0
               && level.totalRatingAccuracyVotes > 0
@@ -618,7 +684,75 @@ const LevelCard = ({
               )}
                 </>
             )}
+             {/* Tags display */}
+             {tags && tags.length == 1 && (
+                <div className="level-tags-wrapper" data-single={true}>
+                  {tags.map((tag, index) => {
+                    return (
+                      <div
+                        key={tag.id}
+                        className="level-tag-badge"
+                        style={{
+                          '--tag-bg-color': `${tag.color}40`,
+                          '--tag-border-color': tag.color,
+                          '--tag-text-color': tag.color
+                        }}
+                        title={tag.name}
+                      >
+                        {tag.icon ? (
+                          <img 
+                            src={tag.icon} 
+                            alt={tag.name}
+                          />
+                        ) : (
+                          <span className="level-tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
             </div>
+              {/* Tags display */}
+              {tags && tags.length > 1 && (
+                <>
+                <div 
+                  className="level-tags-wrapper" 
+                  data-curated={level.curation?.typeId ? true : false} 
+                  data-itemcount={tags.length}
+                >
+                  {tags.map((tag, index) => {
+                    // Calculate if this tag should span both columns (odd number of tags and last one)
+                    const isLastInOddRow = tags.length % 2 === 1 && index === tags.length - 1;
+                    return (
+                      <div
+                        key={tag.id}
+                        className="level-tag-badge"
+                        style={{
+                          '--tag-bg-color': `${tag.color}40`,
+                          '--tag-border-color': tag.color,
+                          '--tag-text-color': tag.color
+                        }}
+                        data-span-full={isLastInOddRow}
+                        title={tag.name}
+                      >
+                        {tag.icon ? (
+                          <img 
+                            src={tag.icon} 
+                            alt={tag.name}
+                          />
+                        ) : (
+                          <span className="level-tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
+                        )}
+                      </div>
+                    );
+                    })}
+                  </div>
+                  <div className="tags-spacer" data-itemcount={tags.length} data-curated={level.curation?.typeId ? true : false} />
+                </>
+              )}
+            </div>
+            
 
             <div className="song-wrapper">
               <div className="group">
@@ -633,14 +767,14 @@ const LevelCard = ({
             </div>
 
             {(
-              <div className="icon-wrapper" style={{ opacity: level.clears ? 1 : 0 }}>
+              <div className="icon-wrapper" data-opacity={level.clears ? 1 : 0}>
                 <div className="icon-value">{level.clears || 0}</div>
                 <PassIcon color="#ffffff" size={"24px"} />
               </div>
             )}
 
             {(
-              <div className="icon-wrapper" style={{ opacity: level.likes ? 1 : 0 }}>
+              <div className="icon-wrapper" data-opacity={level.likes ? 1 : 0}>
                 <div className="icon-value">{level.likes || 0}</div>
                 <LikeIcon color={"none"} size={"22px"}/>
               </div>

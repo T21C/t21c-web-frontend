@@ -853,6 +853,10 @@
 }
 
 
+.level-card.basic-glow {
+  z-index: -2;
+}
+
 .level-card.basic-glow:not(.grid)::before {
   content: '';
   position: absolute;
@@ -899,7 +903,7 @@
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
-  z-index: 1;
+  z-index: 3;
 }
 
 .level-card.basic-glow:not(.grid):hover .level-card-wrapper {
@@ -931,7 +935,7 @@
 .level-card.legendary:not(.grid)::before {
   content: '';
   position: absolute;
-  inset: -3px;
+  inset: -2px;
   background: linear-gradient(90deg,
     #FF00FF,
     #4200FF,
@@ -941,7 +945,7 @@
   );
   background-size: 400% 1%;
   border-radius: inherit;
-  z-index: -2;
+  z-index: -1;
   animation: legendaryGlow 10s ease-in-out infinite;
   opacity: 1;
   filter: brightness(1.5);
@@ -1283,4 +1287,151 @@
     background: rgba(0, 255, 255, 0.1);
     opacity: 0.3;
   }
+}
+
+/* ============================================
+   INLINE STYLES MOVED TO CSS CLASSES
+   ============================================ */
+
+/* Level card background colors */
+.level-card {
+  background-color: var(--card-bg-color, transparent);
+}
+
+.level-card[data-deleted="true"] {
+  background-color: #f0000099;
+}
+
+.level-card[data-hidden="true"] {
+  background-color: #88888899;
+}
+
+/* Level card wrapper background image */
+.level-card-wrapper {
+  background-image: var(--card-bg-image, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Level tags grid positioning (grid mode) */
+.level-tags-grid {
+  top: 0.5rem;
+  right: 0.5rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.25rem;
+  max-width: 60px;
+  z-index: 1;
+}
+
+
+/* Level tags wrapper (normal/compact modes) */
+.level-tags-wrapper {
+  display: flex;
+  margin-top: 0.25rem;
+  position: absolute;
+  gap: 0.1rem;
+  z-index: 1;
+}
+
+.level-tags-wrapper[data-single="true"] {
+  position: absolute;
+  bottom: -11%;
+  width: fit-content;
+  left: -11%;
+  margin-bottom: 0;
+  z-index: 1;
+}
+
+.tags-spacer {
+  height: 0.5rem;
+}
+
+.tags-spacer[data-curated="true"] {
+  height: 1rem;
+}
+
+.tags-spacer[data-itemcount="2"] {
+  height: 0.65rem;
+}
+
+
+.level-tags-wrapper[data-curated="true"] {
+  margin-top: 0.5rem;
+}
+
+.level-tags-wrapper[data-curated="true"][data-itemcount="2"] {
+  margin-top: 0.2rem;
+}
+
+/* Level tag badge - grid mode */
+.level-tags-grid .level-tag-badge {
+  padding: 0.25rem;
+  border-radius: 50%;
+  width: 1.5rem;
+  height: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(4px);
+  background-color: var(--tag-bg-color, transparent);
+  border: 2px solid var(--tag-border-color, transparent);
+  color: var(--tag-text-color, inherit);
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 1));
+}
+
+.level-tags-wrapper[data-single="true"] .level-tag-badge {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+/* Level tag badge - normal/compact modes */
+.level-tags-wrapper .level-tag-badge {
+  padding: 0;
+  border-radius: 50%;
+  display: flex;
+  width: 0.9rem;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--tag-bg-color, transparent);
+  color: var(--tag-text-color, inherit);
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));
+}
+
+
+/* Tag icon images */
+.level-card .level-tag-badge img {
+  object-fit: contain;
+  border-radius: 50%;
+  width: 100%;
+  height: 100%;
+}
+
+/* Tag letter fallback */
+.level-card .level-tag-letter {
+  font-size: 0.75rem;
+  font-weight: bold;
+  line-height: 1;
+}
+/* Icon wrapper with conditional opacity */
+.icon-wrapper {
+  opacity: var(--icon-opacity, 1);
+}
+
+.icon-wrapper[data-opacity="0"] {
+  opacity: 0;
+}
+
+.icon-wrapper[data-opacity="1"] {
+  opacity: 1;
+}
+
+/* Edit button */
+.edit-button {
+  margin-left: var(--edit-button-margin, auto);
+}
+
+.edit-button[data-margin-zero="true"] {
+  margin-left: 0;
 }
