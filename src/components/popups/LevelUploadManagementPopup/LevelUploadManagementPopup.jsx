@@ -4,6 +4,7 @@ import './leveluploadmanagementpopup.css';
 import { useTranslation } from 'react-i18next';
 import { encodeFilename } from '@/utils/zipUtils';
 import { uploadFileInChunks, validateChunkedUpload } from '@/utils/chunkedUpload';
+import { isCdnUrl } from '@/utils/Utility';
 
 const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, setLevel }) => {
   const [isUploading, setIsUploading] = useState(false);
@@ -20,7 +21,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
   const tUpload = (key, params = {}) => t(`levelUploadManagement.${key}`, params);
 
   const fetchLevelFiles = async () => {
-    if (formData.dlLink && formData.dlLink !== 'removed') {
+    if (formData.dlLink && formData.dlLink !== 'removed' && isCdnUrl(formData.dlLink)) {
       try {
         const fileId = formData.dlLink.split('/').pop();
         const response = await fetch(`${import.meta.env.VITE_CDN_URL}/${fileId}/metadata`);
@@ -296,7 +297,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
                 </div>
               ))}
             </div>
-            {selectedLevel && (
+            {selectedLevel && levelFiles.length > 0 && (
             <button 
               className="select-button"
               onClick={handleLevelSelect}
@@ -321,7 +322,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
             >
               {tUpload('buttons.uploadNew')}
             </button>
-            {level.dlLink && level.dlLink !== 'removed' && (
+            {level.dlLink && level.dlLink !== 'removed' && levelFiles.length > 0 && (
               <button 
                 className="delete-button"
                 onClick={handleDelete}

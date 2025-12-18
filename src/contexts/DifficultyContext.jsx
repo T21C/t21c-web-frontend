@@ -161,7 +161,6 @@ const DifficultyContextProvider = (props) => {
             const hash = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/hash`).then(res => res.data?.hash);
             const storedHash = localStorage.getItem('difficultiesHash');
             const doUpdate = hash !== storedHash;
-            console.log('doUpdate', doUpdate);
             await Promise.all([fetchDifficulties(doUpdate), fetchCurationTypes(doUpdate), fetchTags(doUpdate)]);
             localStorage.setItem('difficultiesHash', hash);
         }

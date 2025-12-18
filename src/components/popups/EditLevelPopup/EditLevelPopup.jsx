@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { createPortal } from 'react-dom';
 import './editlevelpopup.css';
 import api from '@/utils/api';
 import { RatingInput } from '@/components/common/selectors';
@@ -9,11 +10,7 @@ import { LevelUploadManagementPopup } from '@/components/popups';
 import { UploadIcon } from '@/components/common/icons';
 import { useNavigate } from 'react-router-dom';
 import { TagManagementPopup } from './TagManagementPopup';
-
-// Helper function to check if a URL is from our CDN
-const isCdnUrl = (url) => {
-  return url?.startsWith(import.meta.env.VITE_CDN_URL);
-};
+import { isCdnUrl } from '@/utils/Utility';
 
 export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPage = false }) => {
   const { t } = useTranslation('components');
@@ -341,7 +338,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     e.stopPropagation();
   };
 
-  return (
+  const popupContent = (
     <div className="edit-level-popup-overlay" onClick={handleOverlayClick}>
       <div className="edit-level-popup" onClick={handleContentClick}>
         <div className="popup-header">
@@ -694,4 +691,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
       )}
     </div>
   );
+
+  // Use portal to render popup at document.body level to escape stacking context
+  return createPortal(popupContent, document.body);
 }; 

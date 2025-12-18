@@ -35,7 +35,7 @@ import {
   CalendarIcon, 
   ScoreIcon
 } from "@/components/common/icons";
-import { createEventSystem, formatCreatorDisplay, formatDate } from "@/utils/Utility";
+import { createEventSystem, formatCreatorDisplay, formatDate, isCdnUrl } from "@/utils/Utility";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
 import LevelDownloadPopup from '../../../components/popups/LevelDownloadPopup/LevelDownloadPopup';
@@ -1455,10 +1455,6 @@ const LevelDetailPage = ({ mockData = null }) => {
     }
   };
 
-  // Add this function to check if a URL is from the local CDN
-  const isCdnUrl = (url) => {
-    return url?.startsWith(import.meta.env.VITE_CDN_URL);
-  };
 
   // Find the download button click handler and replace it with:
   const handleDownloadClick = (e) => {

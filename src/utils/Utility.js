@@ -375,3 +375,7 @@ export function formatDate(date, language = 'en') {
   if (!date) return '';
   return new Date(date).toLocaleString(localeMap[language] || 'en-GB', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
 }
+
+export function isCdnUrl(url) {
+  return url?.startsWith(import.meta.env.VITE_CDN_URL);
+}
