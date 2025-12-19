@@ -1329,7 +1329,7 @@
 /* Level tags wrapper (normal/compact modes) */
 .level-tags-wrapper {
   display: flex;
-  margin-top: 0.4rem;
+  margin-top: 0.3rem;
   position: absolute;
   gap: 0.1rem;
   z-index: 1;
