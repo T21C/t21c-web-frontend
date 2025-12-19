@@ -7,8 +7,9 @@ import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { useTranslation } from 'react-i18next';
 import AliasManagementPopup from './AliasManagementPopup';
 import { LevelUploadManagementPopup } from '@/components/popups';
-import { UploadIcon } from '@/components/common/icons';
+import { UploadIcon, RefreshIcon } from '@/components/common/icons';
 import { useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { TagManagementPopup } from './TagManagementPopup';
 import { isCdnUrl } from '@/utils/Utility';
 
@@ -48,6 +49,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const [showTagManagement, setShowTagManagement] = useState(false);
   const [levelTags, setLevelTags] = useState([]);
   const [isExternallyAvailable, setIsExternallyAvailable] = useState(false);
+  const [isRefreshingTags, setIsRefreshingTags] = useState(false);
   const navigate = useNavigate();
   useEffect(() => {
     if (level) {
@@ -322,6 +324,47 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     }
   };
 
+  const handleRefreshAutoTags = async (e) => {
+    if (e) e.stopPropagation();
+    if (isRefreshingTags) return;
+
+    setIsRefreshingTags(true);
+    try {
+      const response = await api.post(`${import.meta.env.VITE_LEVELS}/${level.id}/refresh-tags`);
+      if (response.data?.success) {
+        const { removedTags, assignedTags } = response.data;
+        
+        // Build toast message
+        const changes = [];
+        if (removedTags?.length > 0) {
+          changes.push(`Removed: ${removedTags.join(', ')}`);
+        }
+        if (assignedTags?.length > 0) {
+          changes.push(`Added: ${assignedTags.join(', ')}`);
+        }
+        
+        if (changes.length > 0) {
+          toast.success(changes.join('\n'), { duration: 4000 });
+        } else {
+          toast('No tag changes needed', { icon: 'ℹ️' });
+        }
+
+        // Fetch updated tags
+        const tagsResponse = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/levels/${level.id}/tags`);
+        setLevelTags(tagsResponse.data || []);
+        // Update the level data if onUpdate is available
+        if (onUpdate) {
+          await onUpdate({ level: { ...level, tags: tagsResponse.data } });
+        }
+      }
+    } catch (err) {
+      console.error('Error refreshing auto tags:', err);
+      toast.error(err.response?.data?.error || 'Failed to refresh auto tags');
+    } finally {
+      setIsRefreshingTags(false);
+    }
+  };
+
   const handleOpenUploadManagement = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -537,7 +580,15 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                     </div>
                   ))}
                 </div>
-
+                <button
+                  type="button"
+                  className={`edit-level-popup__refresh-tags-button ${isRefreshingTags ? 'refreshing' : ''}`}
+                  onClick={handleRefreshAutoTags}
+                  disabled={isRefreshingTags}
+                  title="Refresh auto-assigned tags"
+                >
+                  <RefreshIcon color="white" size={16} />
+                </button>
               </div>
             </div>
 
