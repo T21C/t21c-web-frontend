@@ -571,6 +571,7 @@ const LevelPage = () => {
                 <TagSelector
                   items={specialDifficulties}
                   selectedItems={selectedSpecialDiffs}
+                  disableQuantum={true}
                   onToggle={toggleSpecialDifficulty}
                   title={tLevel('settingExp.specialDifficulties')}
                 />
