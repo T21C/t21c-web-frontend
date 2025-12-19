@@ -1329,7 +1329,7 @@
 /* Level tags wrapper (normal/compact modes) */
 .level-tags-wrapper {
   display: flex;
-  margin-top: 0.25rem;
+  margin-top: 0.4rem;
   position: absolute;
   gap: 0.1rem;
   z-index: 1;
@@ -1345,7 +1345,7 @@
 }
 
 .tags-spacer {
-  height: 0.5rem;
+  height: 1rem;
 }
 
 .tags-spacer[data-curated="true"] {
@@ -1353,7 +1353,7 @@
 }
 
 .tags-spacer[data-itemcount="2"] {
-  height: 0.65rem;
+  height: 0.8rem;
 }
 
 
@@ -1391,8 +1391,9 @@
 .level-tags-wrapper .level-tag-badge {
   padding: 0;
   border-radius: 50%;
+  aspect-ratio: 1/1;
   display: flex;
-  width: 0.9rem;
+  width: 1.1rem;
   align-items: center;
   justify-content: center;
   background-color: var(--tag-bg-color, transparent);
