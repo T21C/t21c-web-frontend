@@ -100,7 +100,7 @@ const LevelCard = ({
   };
 
   // Use tags from level data
-  const tags = level.tags || [];
+  const tags = displayMode !== 'normal' ? [] : level.tags || [];
 
   const onAnchorClick = (e) => {
     e.stopPropagation();
