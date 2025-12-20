@@ -128,6 +128,9 @@ const LevelCard = ({
     return '';
   };
 
+  const dlLinkValid = (level.dlLink && level.dlLink.match(/http[s]?:\/\//)) ? true : false;
+  console.log(dlLinkValid);
+
   if (displayMode === 'grid') {
     return (
       <div 
@@ -200,7 +203,7 @@ const LevelCard = ({
                     <VideoIcon color="#ffffff" size={"24px"} />
                   </a>
                 )}
-                {level.dlLink && (
+                {dlLinkValid && (
                   <a href={level.dlLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
                     <DownloadIcon color="#ffffff" size={"24px"} />
                   </a>
@@ -318,7 +321,7 @@ const LevelCard = ({
                       <VideoIcon color="#ffffff" size={"24px"} />
                     </a>
                   )}
-                  {level.dlLink && (
+                  {dlLinkValid && (
                     <a href={level.dlLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
                       <DownloadIcon color="#ffffff" size={"24px"} />
                     </a>
@@ -390,7 +393,7 @@ const LevelCard = ({
                     <VideoIcon color="#ffffff" size={"24px"} />
                   </a>
                 )}
-                {level.dlLink && (
+                {(level.dlLink && level.dlLink.match(/http[s]?:\/\//)) && (
                   <a href={level.dlLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
                     <DownloadIcon color="#ffffff" size={"24px"} />
                   </a>
@@ -588,7 +591,7 @@ const LevelCard = ({
                     <VideoIcon color="#ffffff" size={"24px"} />
                   </a>
                 )}
-                {level.dlLink && level.dlLink.match(/http[s]?:\/\//) && (
+                {dlLinkValid && (
                   <a href={level.dlLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
                     <DownloadIcon color="#ffffff" size={"64px"} />
                   </a>
@@ -786,7 +789,7 @@ const LevelCard = ({
                   <VideoIcon color="#ffffff" size={"24px"} />
                 </a>
               )}
-              {level.dlLink && (
+              {dlLinkValid && (
                 <a href={level.dlLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
                   <DownloadIcon color="#ffffff" size={"64px"} />
                 </a>
