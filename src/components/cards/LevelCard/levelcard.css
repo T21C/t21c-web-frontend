@@ -1406,7 +1406,6 @@
 /* Tag icon images */
 .level-card .level-tag-badge img {
   object-fit: contain;
-  border-radius: 50%;
   width: 100%;
   height: 100%;
 }
