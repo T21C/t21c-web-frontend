@@ -58,9 +58,21 @@ const TagSelector = ({
     };
   }, [isOpen]);
 
+  // Sort items by groupSortOrder first, then sortOrder within groups
+  const sortedFilteredItems = [...filteredItems].sort((a, b) => {
+    // First sort by groupSortOrder
+    const groupOrderA = a.groupSortOrder ?? Number.MAX_SAFE_INTEGER;
+    const groupOrderB = b.groupSortOrder ?? Number.MAX_SAFE_INTEGER;
+    if (groupOrderA !== groupOrderB) return groupOrderA - groupOrderB;
+    // Then sort by sortOrder within group
+    const sortOrderA = a.sortOrder ?? Number.MAX_SAFE_INTEGER;
+    const sortOrderB = b.sortOrder ?? Number.MAX_SAFE_INTEGER;
+    return sortOrderA - sortOrderB;
+  });
+
   // Group items by type with ordering
   // Priority: Use item.group if available, otherwise fall back to hardcoded logic
-  const itemGroups = filteredItems.reduce((groups, item) => {
+  const itemGroups = sortedFilteredItems.reduce((groups, item) => {
     let group;
     
     // If item has a group field set, use it
@@ -77,25 +89,33 @@ const TagSelector = ({
       }
     }
     
-    if (!groups[group]) groups[group] = [];
-    groups[group].push(item);
+    if (!groups[group]) {
+      groups[group] = {
+        items: [],
+        groupSortOrder: item.groupSortOrder ?? Number.MAX_SAFE_INTEGER
+      };
+    }
+    groups[group].items.push(item);
     return groups;
   }, {});
 
-  // Sort groups: groups with explicit order first, then alphabetically
+  // Sort groups by groupSortOrder (from items), fall back to GROUP_ORDER for backward compatibility, then alphabetically
   const orderedGroups = Object.entries(itemGroups)
-    .sort(([groupA], [groupB]) => {
-      // If both groups have defined order, sort by order
+    .sort(([groupA, dataA], [groupB, dataB]) => {
+      // First try to use groupSortOrder from items
+      if (dataA.groupSortOrder !== dataB.groupSortOrder) {
+        return dataA.groupSortOrder - dataB.groupSortOrder;
+      }
+      // Fall back to hardcoded GROUP_ORDER for backward compatibility
       if (GROUP_ORDER[groupA] !== undefined && GROUP_ORDER[groupB] !== undefined) {
         return GROUP_ORDER[groupA] - GROUP_ORDER[groupB];
       }
-      // If only groupA has order, it comes first
       if (GROUP_ORDER[groupA] !== undefined) return -1;
-      // If only groupB has order, it comes first
       if (GROUP_ORDER[groupB] !== undefined) return 1;
       // Otherwise, sort alphabetically
       return groupA.localeCompare(groupB);
-    });
+    })
+    .map(([group, data]) => [group, data.items]);
 
   // Handle select/deselect all
   const handleSelectAll = () => {

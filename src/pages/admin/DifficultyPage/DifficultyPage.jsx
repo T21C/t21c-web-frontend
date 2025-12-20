@@ -49,7 +49,10 @@ const DifficultyPage = () => {
   const [isAnyPopupOpen, setIsAnyPopupOpen] = useState(false);
   const [showInitialPasswordPrompt, setShowInitialPasswordPrompt] = useState(true);
   const [isReordering, setIsReordering] = useState(false);
+  const [isTagsReordering, setIsTagsReordering] = useState(false);
+  const [isGroupsReordering, setIsGroupsReordering] = useState(false);
   const [activeTab, setActiveTab] = useState('difficulties'); // 'difficulties' or 'tags'
+  const [tagsSubTab, setTagsSubTab] = useState('tags'); // 'tags' or 'groups'
   
   // Tag management state
   const [tags, setTags] = useState([]);
@@ -509,7 +512,124 @@ const DifficultyPage = () => {
     handlePasswordSubmit();
   };
 
+  const handleTagDragEnd = async (result, groupName) => {
+    if (!result.destination) return;
+    // Only allow reordering within the same group (same droppableId)
+    if (result.source.droppableId !== result.destination.droppableId) return;
+    
+    setIsTagsReordering(true);
+    
+    try {
+      // Get tags for this specific group
+      const groupTags = tags.filter(t => (t.group || '') === groupName);
+      const sortedGroupTags = [...groupTags].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+      
+      const items = Array.from(sortedGroupTags);
+      const [reorderedItem] = items.splice(result.source.index, 1);
+      items.splice(result.destination.index, 0, reorderedItem);
+      
+      // Update sortOrder for items in this group only
+      const updatedItems = items.map((item, index) => ({
+        ...item,
+        sortOrder: index
+      }));
+      
+      // Update local state
+      setTags(prev => prev.map(tag => {
+        const updated = updatedItems.find(u => u.id === tag.id);
+        return updated ? updated : tag;
+      }));
+      
+      await api.put(`${import.meta.env.VITE_DIFFICULTIES}/tags/sort-orders`, {
+        sortOrders: updatedItems.map(item => ({
+          id: item.id,
+          sortOrder: item.sortOrder
+        }))
+      }, {
+        headers: {
+          'X-Super-Admin-Password': verifiedPassword
+        }
+      });
+
+      addNotification('Tags reordered successfully', 'success');
+    } catch (err) {
+      console.error('Error updating tag sort orders:', err);
+      addNotification('Failed to reorder tags', 'error');
+      await fetchTags();
+    } finally {
+      setIsTagsReordering(false);
+    }
+  };
+
+  const handleGroupDragEnd = async (result) => {
+    if (!result.destination) return;
+    
+    setIsGroupsReordering(true);
+    
+    try {
+      const items = Array.from(orderedGroups);
+      const [reorderedItem] = items.splice(result.source.index, 1);
+      items.splice(result.destination.index, 0, reorderedItem);
+      
+      // Create groups array with new sort orders
+      const groupUpdates = items.map((group, index) => ({
+        name: group.name,
+        sortOrder: index
+      }));
+      
+      // Update local state - update all tags with new groupSortOrder
+      setTags(prev => prev.map(tag => {
+        const tagGroup = tag.group || '';
+        const groupUpdate = groupUpdates.find(g => g.name === tagGroup);
+        if (groupUpdate) {
+          return { ...tag, groupSortOrder: groupUpdate.sortOrder };
+        }
+        return tag;
+      }));
+      
+      await api.put(`${import.meta.env.VITE_DIFFICULTIES}/tags/group-sort-orders`, {
+        groups: groupUpdates
+      }, {
+        headers: {
+          'X-Super-Admin-Password': verifiedPassword
+        }
+      });
+
+      addNotification('Groups reordered successfully', 'success');
+    } catch (err) {
+      console.error('Error updating group sort orders:', err);
+      addNotification('Failed to reorder groups', 'error');
+      await fetchTags();
+    } finally {
+      setIsGroupsReordering(false);
+    }
+  };
+
   const sortedDifficulties = [...difficulties].sort((a, b) => a.sortOrder - b.sortOrder);
+  const sortedTags = [...tags].sort((a, b) => {
+    // First sort by groupSortOrder, then by sortOrder within group
+    const groupOrderA = a.groupSortOrder ?? 0;
+    const groupOrderB = b.groupSortOrder ?? 0;
+    if (groupOrderA !== groupOrderB) return groupOrderA - groupOrderB;
+    return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
+  });
+
+  // Group tags by their group field
+  const groupedTags = sortedTags.reduce((groups, tag) => {
+    const groupName = tag.group || '';
+    if (!groups[groupName]) {
+      groups[groupName] = {
+        name: groupName,
+        tags: [],
+        groupSortOrder: tag.groupSortOrder ?? 0
+      };
+    }
+    groups[groupName].tags.push(tag);
+    return groups;
+  }, {});
+
+  // Get ordered groups list
+  const orderedGroups = Object.values(groupedTags).sort((a, b) => a.groupSortOrder - b.groupSortOrder);
 
   const handleDirectDelete = async () => {
     if (!fallbackDiff || fallbackDiff === String(deletingDifficulty?.id)) return;
@@ -681,66 +801,185 @@ const DifficultyPage = () => {
             </>
           ) : (
             <>
-              <button
-                className="create-button"
-                onClick={() => setIsCreatingTag(true)}
-                disabled={tagsLoading}
-              >
-                Create Tag
-              </button>
+              {/* Sub-tab Navigation for Tags */}
+              <div className="sub-tab-navigation">
+                <button
+                  className={`sub-tab-button ${tagsSubTab === 'tags' ? 'active' : ''}`}
+                  onClick={() => setTagsSubTab('tags')}
+                >
+                  Tags
+                </button>
+                <button
+                  className={`sub-tab-button ${tagsSubTab === 'groups' ? 'active' : ''}`}
+                  onClick={() => setTagsSubTab('groups')}
+                >
+                  Groups
+                </button>
+              </div>
 
-              {tagsLoading ? (
-                <div className="loading-message">Loading tags...</div>
-              ) : tags.length === 0 ? (
-                <div className="no-items-message">No tags found. Create your first tag!</div>
-              ) : (
-                <div className="tags-list">
-                  {tags.map((tag) => (
-                    <div
-                      key={tag.id}
-                      className="tag-item"
-                    >
-                      <div className="tag-item-content">
-                        {tag.icon && (
-                          <img
-                            src={tag.icon}
-                            alt={tag.name}
-                            className="tag-item-icon"
-                          />
-                        )}
-                        <div className="tag-item-info">
-                          <div className="tag-item-name" style={{ color: tag.color }}>
-                            {tag.name}
-                          </div>
-                          <div className="tag-item-color">
-                            {tag.color}
-                          </div>
-                          {tag.group && (
-                            <div className="tag-item-group">
-                              Group: {tag.group}
-                            </div>
-                          )}
+              {tagsSubTab === 'tags' ? (
+                <>
+                  <button
+                    className="create-button"
+                    onClick={() => setIsCreatingTag(true)}
+                    disabled={tagsLoading || isTagsReordering}
+                  >
+                    Create Tag
+                  </button>
+
+                  {tagsLoading ? (
+                    <div className="loading-message">Loading tags...</div>
+                  ) : tags.length === 0 ? (
+                    <div className="no-items-message">No tags found. Create your first tag!</div>
+                  ) : (
+                    <div className="grouped-tags-container">
+                      {orderedGroups.map((group) => (
+                        <div key={group.name || 'ungrouped'} className="tag-group-section">
+                          <h3 className="tag-group-header">
+                            {group.name || 'Ungrouped'}
+                            <span className="tag-count">({group.tags.length})</span>
+                          </h3>
+                          <DragDropContext onDragEnd={(result) => handleTagDragEnd(result, group.name)}>
+                            <Droppable droppableId={`group-${group.name || 'ungrouped'}`}>
+                              {(provided) => (
+                                <div 
+                                  className="tags-list"
+                                  {...provided.droppableProps}
+                                  ref={provided.innerRef}
+                                >
+                                  {group.tags.map((tag, index) => (
+                                    <Draggable 
+                                      key={tag.id} 
+                                      draggableId={`tag-${tag.id}`} 
+                                      index={index}
+                                      isDragDisabled={isTagsReordering}
+                                    >
+                                      {(provided, snapshot) => (
+                                        <div
+                                          ref={provided.innerRef}
+                                          {...provided.draggableProps}
+                                          {...provided.dragHandleProps}
+                                          className={`tag-item ${snapshot.isDragging ? 'dragging' : ''}`}
+                                        >
+                                          <div className="tag-item-content">
+                                            {tag.icon && (
+                                              <img
+                                                src={tag.icon}
+                                                alt={tag.name}
+                                                className="tag-item-icon"
+                                              />
+                                            )}
+                                            <div className="tag-item-info">
+                                              <div className="tag-item-name" style={{ color: tag.color }}>
+                                                {tag.name}
+                                              </div>
+                                              <div className="tag-item-color">
+                                                {tag.color}
+                                              </div>
+                                            </div>
+                                          </div>
+                                          <div className="tag-item-actions">
+                                            <button
+                                              onClick={() => {
+                                                setOriginalTag({ ...tag });
+                                                setEditingTag({ ...tag, iconFile: null, group: tag.group || '' });
+                                              }}
+                                              disabled={isTagsReordering}
+                                            >
+                                              <EditIcon color="#fff" size="20px" />
+                                            </button>
+                                            <button
+                                              onClick={() => setDeletingTag(tag)}
+                                              disabled={isTagsReordering}
+                                            >
+                                              <TrashIcon color="#fff" size="20px" />
+                                            </button>
+                                          </div>
+                                        </div>
+                                      )}
+                                    </Draggable>
+                                  ))}
+                                  {provided.placeholder}
+                                </div>
+                              )}
+                            </Droppable>
+                          </DragDropContext>
                         </div>
-                      </div>
-                      <div className="tag-item-actions">
-                        <button
-                          onClick={() => {
-                            // Store original tag data for comparison
-                            setOriginalTag({ ...tag });
-                            setEditingTag({ ...tag, iconFile: null, group: tag.group || '' });
-                          }}
-                        >
-                          <EditIcon color="#fff" size="20px" />
-                        </button>
-                        <button
-                          onClick={() => setDeletingTag(tag)}
-                        >
-                          <TrashIcon color="#fff" size="20px" />
-                        </button>
-                      </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
+                  )}
+                </>
+              ) : (
+                <>
+                  {/* Groups Sub-tab */}
+                  {tagsLoading ? (
+                    <div className="loading-message">Loading groups...</div>
+                  ) : orderedGroups.length === 0 ? (
+                    <div className="no-items-message">No groups found. Create tags with groups first!</div>
+                  ) : (
+                    <DragDropContext onDragEnd={handleGroupDragEnd}>
+                      <Droppable droppableId="groups">
+                        {(provided) => (
+                          <div 
+                            className="groups-list"
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                          >
+                            {orderedGroups.map((group, index) => (
+                              <Draggable 
+                                key={group.name || 'ungrouped'} 
+                                draggableId={`group-${group.name || 'ungrouped'}`} 
+                                index={index}
+                                isDragDisabled={isGroupsReordering}
+                              >
+                                {(provided, snapshot) => (
+                                  <div
+                                    ref={provided.innerRef}
+                                    {...provided.draggableProps}
+                                    {...provided.dragHandleProps}
+                                    className={`group-item ${snapshot.isDragging ? 'dragging' : ''}`}
+                                  >
+                                    <div className="group-item-content">
+                                      <div className="group-item-name">
+                                        {group.name || 'Ungrouped'}
+                                      </div>
+                                      <div className="group-item-count">
+                                        {group.tags.length} tag{group.tags.length !== 1 ? 's' : ''}
+                                      </div>
+                                    </div>
+                                    <div className="group-item-preview">
+                                      {group.tags.slice(0, 5).map(tag => (
+                                        <div
+                                          key={tag.id}
+                                          className="group-tag-preview"
+                                          style={{
+                                            backgroundColor: `${tag.color}40`,
+                                            borderColor: tag.color
+                                          }}
+                                          title={tag.name}
+                                        >
+                                          {tag.icon ? (
+                                            <img src={tag.icon} alt={tag.name} />
+                                          ) : (
+                                            <span>{tag.name.charAt(0)}</span>
+                                          )}
+                                        </div>
+                                      ))}
+                                      {group.tags.length > 5 && (
+                                        <span className="more-tags">+{group.tags.length - 5}</span>
+                                      )}
+                                    </div>
+                                  </div>
+                                )}
+                              </Draggable>
+                            ))}
+                            {provided.placeholder}
+                          </div>
+                        )}
+                      </Droppable>
+                    </DragDropContext>
+                  )}
+                </>
               )}
 
               {/* Create Tag Modal */}

@@ -448,8 +448,8 @@ const PassPage = () => {
 
               <div className="filter-row">
                 <TagSelector
-                  difficulties={specialDifficulties}
-                  selectedDiffs={selectedSpecialDiffs}
+                  items={specialDifficulties}
+                  selectedItems={selectedSpecialDiffs}
                   onToggle={toggleSpecialDifficulty}
                 />
               </div>

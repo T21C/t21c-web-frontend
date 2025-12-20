@@ -3343,6 +3343,65 @@
   flex: 1;
 }
 
+/* Grouped Tags List */
+.level-detail .tags-dropdown .tags-grouped-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.level-detail .tags-dropdown .tags-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.level-detail .tags-dropdown .tags-group-header {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.level-detail .tags-dropdown .tags-group-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.level-detail .tags-dropdown .tag-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  background-color: var(--tag-bg-color, transparent);
+  border: 1px solid var(--tag-border-color, transparent);
+  font-size: 0.85rem;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.level-detail .tags-dropdown .tag-chip-icon {
+  width: 1rem;
+  height: 1rem;
+  object-fit: contain;
+  border-radius: 2px;
+}
+
+.level-detail .tags-dropdown .tag-chip-letter {
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: var(--tag-text-color, inherit);
+}
+
+.level-detail .tags-dropdown .tag-chip-name {
+  font-size: 0.8rem;
+}
+
 /* Rating accuracy display marker */
 .level-detail .rating-accuracy-display-marker {
   left: var(--marker-position, 50%);

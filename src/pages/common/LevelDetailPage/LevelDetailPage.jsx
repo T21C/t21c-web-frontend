@@ -169,27 +169,58 @@ const TagsDropdown = ({ tags, show, onClose }) => {
 
   if (!show || !tags?.length) return null;
 
+  // Sort tags by groupSortOrder then sortOrder
+  const sortedTags = [...tags].sort((a, b) => {
+    const groupOrderA = a.groupSortOrder ?? 0;
+    const groupOrderB = b.groupSortOrder ?? 0;
+    if (groupOrderA !== groupOrderB) return groupOrderA - groupOrderB;
+    return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
+  });
+
+  // Group tags by their group field
+  const groupedTags = sortedTags.reduce((groups, tag) => {
+    const groupName = tag.group || '';
+    if (!groups[groupName]) {
+      groups[groupName] = {
+        name: groupName,
+        tags: [],
+        groupSortOrder: tag.groupSortOrder ?? 0
+      };
+    }
+    groups[groupName].tags.push(tag);
+    return groups;
+  }, {});
+
+  const orderedGroups = Object.values(groupedTags).sort((a, b) => a.groupSortOrder - b.groupSortOrder);
+
   return (
     <div className="tags-dropdown" ref={dropdownRef} onClick={handleDropdownClick}>
       <div className="tags-header">{tLevel('tags.header') || 'Tags'}</div>
-      <div className="tags-list">
-        {tags.map((tag) => (
-          <div key={tag.id} className="tag-item">
-            <div
-              className="tag-item-icon"
-              style={{
-                '--tag-bg-color': `${tag.color}50`,
-                '--tag-border-color': tag.color,
-                '--tag-text-color': tag.color
-              }}
-            >
-              {tag.icon ? (
-                <img src={tag.icon} alt={tag.name} />
-              ) : (
-                <span className="tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
-              )}
+      <div className="tags-grouped-list">
+        {orderedGroups.map((group) => (
+          <div key={group.name || 'ungrouped'} className="tags-group">
+            {group.name && <div className="tags-group-header">{group.name}</div>}
+            <div className="tags-group-items">
+              {group.tags.map((tag) => (
+                <div
+                  key={tag.id}
+                  className="tag-chip"
+                  style={{
+                    '--tag-bg-color': `${tag.color}40`,
+                    '--tag-border-color': tag.color,
+                    '--tag-text-color': tag.color
+                  }}
+                  title={tag.name}
+                >
+                  {tag.icon ? (
+                    <img src={tag.icon} alt={tag.name} className="tag-chip-icon" />
+                  ) : (
+                    <span className="tag-chip-letter">{tag.name.charAt(0).toUpperCase()}</span>
+                  )}
+                  <span className="tag-chip-name">{tag.name}</span>
+                </div>
+              ))}
             </div>
-            <span className="tag-label">{tag.name}</span>
           </div>
         ))}
       </div>
