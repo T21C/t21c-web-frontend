@@ -1,6 +1,6 @@
 export default function LogoSVG () {
 	return (
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+<svg xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
 	 width="100%" viewBox="0 0 1667 1667" xmlSpace="preserve">
 <path fill="#331D4B" opacity="1.000000" 
 	d="

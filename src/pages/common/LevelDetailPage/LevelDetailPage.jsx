@@ -1528,8 +1528,13 @@ const LevelDetailPage = ({ mockData = null }) => {
   const difficulty = difficultyDict[res.level.diffId];
   const averageDifficulty = difficultyDict[res.ratings?.averageDifficultyId];
   
-  // Use tags from level data
-  const tags = res.level.tags || [];
+  // Use tags from level data, sorted by groupSortOrder then sortOrder
+  const tags = [...(res.level.tags || [])].sort((a, b) => {
+    const groupOrderA = a.groupSortOrder ?? 0;
+    const groupOrderB = b.groupSortOrder ?? 0;
+    if (groupOrderA !== groupOrderB) return groupOrderA - groupOrderB;
+    return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
+  });
   
   return (
     <div>
@@ -1698,6 +1703,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                             '--tag-text-color': tag.color,
                             '--tag-index': index
                           }}
+                          data-letter-only={!tag.icon}
                           title={tag.name}
                         >
                           {tag.icon ? (

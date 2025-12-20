@@ -220,6 +220,7 @@
 }
 
 .pack-item__level-wrapper {
+  z-index: 3;
   position: relative;
 }
 
