@@ -322,7 +322,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
             >
               {tUpload('buttons.uploadNew')}
             </button>
-            {level.dlLink && level.dlLink !== 'removed' && levelFiles.length > 0 && (
+            {level.dlLink && level.dlLink !== 'removed' && (
               <button 
                 className="delete-button"
                 onClick={handleDelete}
