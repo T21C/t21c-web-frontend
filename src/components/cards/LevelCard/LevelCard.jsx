@@ -588,7 +588,7 @@ const LevelCard = ({
                     <VideoIcon color="#ffffff" size={"24px"} />
                   </a>
                 )}
-                {level.dlLink && (
+                {level.dlLink && level.dlLink.match(/http[s]?:\/\//) && (
                   <a href={level.dlLink} target="_blank" rel="noopener noreferrer" onClick={onAnchorClick}>
                     <DownloadIcon color="#ffffff" size={"64px"} />
                   </a>
