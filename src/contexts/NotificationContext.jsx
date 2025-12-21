@@ -151,7 +151,7 @@ export const NotificationProvider = ({ children }) => {
     eventSourceRef.current.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        console.debug('SSE: Received message:', data);
+        //console.debug('SSE: Received message:', data);
 
         // Dispatch event to components
         const sseEvent = new CustomEvent('sse-message', { detail: data });

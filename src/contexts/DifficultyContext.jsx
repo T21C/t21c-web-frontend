@@ -176,7 +176,7 @@ const DifficultyContextProvider = (props) => {
         const hash = await api.get(`${import.meta.env.VITE_DIFFICULTIES}/hash`).then(res => res.data?.hash);
         const storedHash = localStorage.getItem('difficultiesHash');
         if(hash !== storedHash) {
-            console.log('Hash mismatch, validating');
+            //console.log('Hash mismatch, validating');
             await Promise.all([fetchDifficulties(true), fetchCurationTypes(true), fetchTags(true)]);
             localStorage.setItem('difficultiesHash', hash);
         }

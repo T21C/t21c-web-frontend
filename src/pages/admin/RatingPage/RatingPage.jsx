@@ -94,7 +94,7 @@ const RatingPage = () => {
     const handleMessage = (event) => {
       try {
         const data = JSON.parse(event.data);
-        console.debug('SSE Client: Received message:', data);
+        //console.debug('SSE Client: Received message:', data);
 
         switch (data.type) {
           case 'userCount':
