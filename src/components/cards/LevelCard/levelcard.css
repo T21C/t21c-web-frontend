@@ -899,7 +899,6 @@
   background: rgba(0, 0, 0, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.1);
   position: relative;
-  z-index: 3;
 }
 
 .level-card.basic-glow:not(.grid):hover .level-card-wrapper {
@@ -982,7 +981,6 @@
   background: rgba(0, 0, 0, 0.6);
   border: 1px solid rgba(255, 255, 255, 0.15);
   position: relative;
-  z-index: 1;
   transition: all 0s ease;
 }
 
