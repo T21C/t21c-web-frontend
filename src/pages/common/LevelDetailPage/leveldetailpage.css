@@ -3388,8 +3388,7 @@
 }
 
 .level-detail .tags-dropdown .tag-chip-icon {
-  width: 1rem;
-  height: 1rem;
+  width: 1.5rem;
   object-fit: contain;
   border-radius: 2px;
 }

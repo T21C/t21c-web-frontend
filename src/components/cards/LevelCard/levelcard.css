@@ -1326,7 +1326,6 @@
   margin-top: 0.3rem;
   position: absolute;
   gap: 0.1rem;
-  z-index: 1;
 }
 
 .level-tags-wrapper[data-single="true"] {
@@ -1335,7 +1334,6 @@
   width: fit-content;
   left: -11%;
   margin-bottom: 0;
-  z-index: 1;
 }
 
 .tags-spacer {
