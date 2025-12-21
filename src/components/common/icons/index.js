@@ -39,6 +39,7 @@ import PackIcon from './PackIcon';
 import PinIcon from './PinIcon';
 import LockIcon from './LockIcon';
 import EyeIcon from './EyeIcon';
+import EyeOffIcon from './EyeOffIcon';
 import UsersIcon from './UsersIcon';
 import PlusIcon from './PlusIcon';
 import SearchIcon from './SearchIcon';
@@ -95,6 +96,7 @@ export {
     PinIcon,
     LockIcon,
     EyeIcon,
+    EyeOffIcon,
     UsersIcon,
     PlusIcon,
     SearchIcon,

@@ -20,6 +20,7 @@ const LevelCard = ({
   sortBy,
   displayMode = 'normal',
   size = 'medium',
+  showTags = true,
   // Pack mode specific props
   canEdit = false,
   onDeleteItem,
@@ -99,8 +100,8 @@ const LevelCard = ({
     navigate(`/levels/${level.id}`);
   };
 
-  // Use tags from level data
-  const tags = displayMode !== 'normal' ? [] : level.tags || [];
+  // Use tags from level data (hide if showTags is false)
+  const tags = (displayMode !== 'normal' || !showTags) ? [] : level.tags || [];
 
   const onAnchorClick = (e) => {
     e.stopPropagation();

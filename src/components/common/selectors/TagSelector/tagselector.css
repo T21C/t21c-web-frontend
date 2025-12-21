@@ -155,7 +155,6 @@
 @media (max-width: 768px) {
   .tag-selector-dropdown {
     width: 100%;
-    margin-bottom: 1rem;
   }
 
   .tag-selector-dropdown .tag-selector-grid {

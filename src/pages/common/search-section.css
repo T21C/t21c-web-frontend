@@ -4,7 +4,7 @@
 .search-section {
   display: flex;
   position: relative;
-  z-index: 10;
+  z-index: 1;
   flex-direction: column;
   gap: 0.75rem;
   margin-bottom: 1rem;
@@ -12,7 +12,7 @@
 
 .input-setting {
   position: relative;
-  z-index: 5;
+  z-index: 1;
 }
 
 /* Medium width horizontal layout */

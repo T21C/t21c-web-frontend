@@ -621,6 +621,40 @@
   margin-top: 0;
 }
 
+/* Tags selector group with visibility toggle */
+.level-page .level-body .tags-selector-group {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.level-page .level-body .tags-selector-group .tags-wrapper {
+  flex: 1;
+}
+
+.level-page .level-body .tags-visibility-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: var(--color-white);
+  cursor: pointer;
+  transition: background-color 0.2s, opacity 0.2s;
+  flex-shrink: 0;
+}
+
+.level-page .level-body .tags-visibility-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.level-page .level-body .tags-visibility-toggle.hidden {
+  opacity: 0.5;
+}
+
 /* Mobile adjustments for Q slider */
 @media (max-width: 768px) {
   .level-page .level-body .q-toggle-button {

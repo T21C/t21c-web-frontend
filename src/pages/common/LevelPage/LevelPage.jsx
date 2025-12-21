@@ -17,7 +17,7 @@ import { DifficultyContext } from "@/contexts/DifficultyContext";
 import { ReferencesButton, ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
 import { DifficultySlider, TagSelector } from "@/components/common/selectors";
-import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon , FilterIcon, LikeIcon, SwitchIcon} from "@/components/common/icons";
+import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon , FilterIcon, LikeIcon, SwitchIcon, EyeIcon, EyeOffIcon} from "@/components/common/icons";
 import { LevelHelpPopup } from "@/components/popups";
 import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -89,6 +89,7 @@ const LevelPage = () => {
   const [cardSize, setCardSize] = useState('medium');
   const [stateDisplayOpen, setStateDisplayOpen] = useState(false);
   const [searchInput, setSearchInput] = useState(query);
+  const [showTagsInCards, setShowTagsInCards] = useState(true);
   const searchTimeoutRef = useRef(null);
   const lastSearchValueRef = useRef(query);
 
@@ -585,14 +586,23 @@ const LevelPage = () => {
                   title={tLevel('settingExp.curationTypes')}
                 />
                 </div>
-                <div className={`tags-wrapper`}>
-                <TagSelector
-                  items={tags}
-                  selectedItems={selectedTags}
-                  onToggle={toggleTag}
-                  title={tLevel('settingExp.tags')}
-                />
-              </div>
+                <div className={`tags-selector-group`}>
+                  <div className={`tags-wrapper`}>
+                    <TagSelector
+                      items={tags}
+                      selectedItems={selectedTags}
+                      onToggle={toggleTag}
+                      title={tLevel('settingExp.tags')}
+                    />
+                  </div>
+                  <button
+                    className={`tags-visibility-toggle ${!showTagsInCards ? 'hidden' : ''}`}
+                    onClick={() => setShowTagsInCards(!showTagsInCards)}
+                    title={showTagsInCards ? 'Hide tags in cards' : 'Show tags in cards'}
+                  >
+                    {showTagsInCards ? <EyeIcon size="18px" /> : <EyeOffIcon size="18px" />}
+                  </button>
+                </div>
                 <button 
                   className={`q-toggle-button ${qSliderVisible ? 'active' : ''}`}
                   onClick={() => {
@@ -796,6 +806,7 @@ const LevelPage = () => {
                 sortBy={sort}
                 displayMode={viewMode}
                 size={cardSize}
+                showTags={showTagsInCards}
               />
             ))}
           </div>
