@@ -3170,9 +3170,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--tag-bg-color, transparent);
-  backdrop-filter: brightness(40%);
-  border: 2px solid var(--tag-border-color, transparent);
   color: var(--tag-text-color, inherit);
   filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));
   transition: transform 0.3s ease, margin-left 0.3s ease;
@@ -3183,6 +3180,9 @@
 
 .level-tags-container .tag-icon-preview[data-letter-only="true"] {
   border-radius: 50%;
+  background-color: var(--tag-bg-color, transparent);
+  backdrop-filter: brightness(40%);
+  border: 2px solid var(--tag-border-color, transparent);
 }
 
 .level-tags-container[data-open="true"] .tag-icon-preview:not(:first-child) {

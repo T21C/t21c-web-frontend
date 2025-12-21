@@ -48,7 +48,7 @@ const LevelCard = ({
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [showAddToPackPopup, setShowAddToPackPopup] = useState(false);
   const [thumbnailUrl, setThumbnailUrl] = useState('');
-  const { difficultyDict } = useDifficultyContext();
+  const { difficultyDict, tagsDict } = useDifficultyContext();
   const difficultyInfo = difficultyDict[level.diffId];
   // Add effect to handle body overflow when popups are open
   useEffect(() => {
@@ -101,8 +101,9 @@ const LevelCard = ({
   };
 
   // Use tags from level data (hide if showTags is false)
-  const tags = (displayMode !== 'normal' || !showTags) ? [] : level.tags || [];
+  const tagIds = (displayMode !== 'normal' || !showTags) ? [] : level.tags.map((item) => item.id) || [];
 
+  const tags = tagIds.map((id) => tagsDict[id]);
   const onAnchorClick = (e) => {
     e.stopPropagation();
   };
