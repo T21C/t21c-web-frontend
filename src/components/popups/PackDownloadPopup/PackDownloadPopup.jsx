@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { io } from 'socket.io-client';
 import './PackDownloadPopup.css';
 import { formatEstimatedSize } from '@/utils/packDownloadUtils';
 
@@ -16,22 +15,15 @@ const PackDownloadPopup = ({
   const { t } = useTranslation('components');
   const tPopup = (key, params = {}) => t(`packPopups.downloadPack.${key}`, params) || key;
   const popupRef = useRef(null);
-  const socketRef = useRef(null);
+  const eventSourceRef = useRef(null);
   const downloadDataRef = useRef(null);
-  const stepRef = useRef('confirm');
   const [step, setStep] = useState('confirm');
   const [error, setError] = useState(null);
   const [downloadData, setDownloadData] = useState(null);
   const [progress, setProgress] = useState(null);
   
-  // Keep refs in sync with state
-  useEffect(() => {
-    downloadDataRef.current = downloadData;
-  }, [downloadData]);
-  
-  useEffect(() => {
-    stepRef.current = step;
-  }, [step]);
+  // Track the pre-generated downloadId for SSE subscription
+  const [preDownloadId, setPreDownloadId] = useState(null);
 
   const MAX_DOWNLOAD_SIZE_BYTES = 15 * 1024 * 1024 * 1024; // 15GB
   const exceedsSizeLimit = (sizeSummary?.totalBytes || 0) > MAX_DOWNLOAD_SIZE_BYTES;
@@ -41,49 +33,54 @@ const PackDownloadPopup = ({
     setError(null);
     setDownloadData(null);
     setProgress(null);
+    setPreDownloadId(null);
   }, []);
 
+  // Clean up SSE when popup closes
   useEffect(() => {
-    if (isOpen) {
+    if (!isOpen) {
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+        eventSourceRef.current = null;
+      }
       resetState();
     }
   }, [isOpen, resetState]);
 
-  // Set up Socket.IO connection for progress updates
+  // Set up SSE connection when we have a preDownloadId (before API call)
   useEffect(() => {
-    if (!isOpen) {
-      // Clean up socket connection when popup closes
-      if (socketRef.current) {
-        socketRef.current.disconnect();
-        socketRef.current = null;
-      }
+    if (!preDownloadId) {
       return;
     }
 
-    // Connect to main server Socket.IO
+    // Connect to SSE endpoint with specific source for this download BEFORE API call
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002';
-    const socket = io(apiUrl, {
-      transports: ['websocket', 'polling'],
+    const source = `packDownload:${preDownloadId}`;
+    const eventSource = new EventSource(`${apiUrl}/events?source=${encodeURIComponent(source)}`, {
       withCredentials: true
     });
 
-    socketRef.current = socket;
+    eventSourceRef.current = eventSource;
 
-    socket.on('connect', () => {
-      console.debug('Socket.IO connected for pack download progress');
-    });
+    eventSource.onopen = () => {
+      console.debug('SSE connected for pack download:', preDownloadId);
+    };
 
-    socket.on('disconnect', () => {
-      console.debug('Socket.IO disconnected');
-    });
+    eventSource.onerror = (error) => {
+      console.debug('SSE error:', error);
+    };
 
-    const handleProgress = (data) => {
-      // Only update progress if we're in processing step or it matches our download
-      const currentStep = stepRef.current;
-      const currentDownloadData = downloadDataRef.current;
-      const isRelevant = currentStep === 'processing' || currentDownloadData?.downloadId === data.downloadId;
-      
-      if (isRelevant) {
+    eventSource.onmessage = (event) => {
+      try {
+        const message = JSON.parse(event.data);
+        
+        // Only handle packDownloadProgress events
+        if (message.type !== 'packDownloadProgress') {
+          return;
+        }
+        
+        const data = message.data;
+        console.debug('Pack download progress:', data);
         setProgress(data);
         
         // Handle status transitions
@@ -92,18 +89,18 @@ const PackDownloadPopup = ({
           setStep('confirm');
           setProgress(null);
         }
+      } catch (e) {
+        // Ignore parse errors for non-JSON messages (like keepalive)
       }
     };
-
-    socket.on('packDownloadProgress', handleProgress);
 
     return () => {
-      if (socketRef.current) {
-        socketRef.current.disconnect();
-        socketRef.current = null;
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
+        eventSourceRef.current = null;
       }
     };
-  }, [isOpen]);
+  }, [preDownloadId]);
 
   useEffect(() => {
     if (!isOpen) {
@@ -150,19 +147,6 @@ const PackDownloadPopup = ({
     };
   }, [isOpen, onClose]);
 
-  // Watch for progress completion to transition to ready
-  useEffect(() => {
-    if (step === 'processing' && progress?.status === 'completed' && downloadData) {
-      // Verify downloadId matches
-      if (progress.downloadId === downloadData.downloadId) {
-        // Small delay to ensure UI updates smoothly
-        const timer = setTimeout(() => {
-          setStep('ready');
-        }, 500);
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [step, progress, downloadData]);
 
   if (!isOpen) {
     return null;
@@ -177,22 +161,25 @@ const PackDownloadPopup = ({
     setStep('processing');
     setProgress(null); // Reset progress
 
+    // Generate a downloadId upfront so we can subscribe to SSE before calling API
+    const downloadId = crypto.randomUUID();
+    setPreDownloadId(downloadId);
+
+    // Small delay to ensure SSE connection is established before API call starts
+    await new Promise(resolve => setTimeout(resolve, 100));
+
     try {
-      const response = await onRequestDownload();
+      // Pass the pre-generated downloadId to the API
+      const response = await onRequestDownload(downloadId);
       if (!response || !response.url) {
         throw new Error('Download link was not returned by the server.');
       }
       
       setDownloadData(response);
       
-      // For cached downloads, backend sends a 'completed' progress event
-      // For new generations, we wait for progress updates via WebSocket
-      // The useEffect watching progress will transition to 'ready' when status is 'completed'
-      // If progress already shows completed, go directly to ready
-      if (progress?.status === 'completed' && progress.downloadId === response.downloadId) {
-        setStep('ready');
-      }
-      // Otherwise, wait for the progress completion useEffect to handle the transition
+      // The API waits for generation to complete before returning a response with a URL.
+      // Once we have the URL, the download is ready.
+      setStep('ready');
     } catch (err) {
       const message =
         err?.response?.data?.error ||

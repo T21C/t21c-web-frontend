@@ -276,7 +276,7 @@ const PackDetailPage = () => {
 
   const handleCloseDownloadPopup = () => setDownloadContext(null);
 
-  const handleRequestDownload = useCallback(async () => {
+  const handleRequestDownload = useCallback(async (downloadId) => {
     if (!downloadContext || !pack?.id) {
       throw new Error('Missing download context.');
     }
@@ -284,6 +284,10 @@ const PackDetailPage = () => {
     const payload = {};
     if (downloadContext.folderId) {
       payload.folderId = downloadContext.folderId;
+    }
+    // Pass the client-generated downloadId for progress tracking
+    if (downloadId) {
+      payload.downloadId = downloadId;
     }
 
     const response = await api.post(
