@@ -853,10 +853,6 @@
 }
 
 
-.level-card.basic-glow {
-  z-index: -2;
-}
-
 .level-card.basic-glow:not(.grid)::before {
   content: '';
   position: absolute;

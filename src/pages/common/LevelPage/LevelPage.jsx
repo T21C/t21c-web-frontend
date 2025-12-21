@@ -785,12 +785,13 @@ const LevelPage = () => {
           )}
         </div>
 
+        {loading ? <div className="loader loader-level-page"></div> :
         <InfiniteScroll
           style={{ paddingBottom: "7rem", minHeight: "100vh", overflow: "visible" }}
           dataLength={levelsData.length}
           next={() => setPageNumber((prevPageNumber) => prevPageNumber + 1)}
           hasMore={hasMore}
-          loader={<div className="loader loader-level-page" style={{zIndex: 1}}></div>}
+          loader={<div className="loader loader-level-page"></div>}
           endMessage={
             <p className="end-message">
               <b>{tLevel('infScroll.end')}</b>
@@ -811,6 +812,7 @@ const LevelPage = () => {
             ))}
           </div>
         </InfiniteScroll>
+        }
 
         {showHelpPopup && (
           <LevelHelpPopup onClose={() => setShowHelpPopup(false)} />
