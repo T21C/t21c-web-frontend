@@ -403,18 +403,55 @@
 
 .level-submission-page .zip-upload-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 0.75rem;
   padding: 2rem;
   border: 2px dashed var(--color-purple-2);
   border-radius: 8px;
   background-color: rgba(143, 125, 234, 0.1);
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
 }
 
 .level-submission-page .zip-upload-container:hover {
   background-color: rgba(143, 125, 234, 0.2);
   border-color: var(--color-purple-1);
+}
+
+.level-submission-page .zip-upload-container.drag-over {
+  border-color: #4CAF50;
+  background-color: rgba(76, 175, 80, 0.2);
+  transform: scale(1.02);
+}
+
+.level-submission-page .zip-upload-button.drag-over {
+  border-color: #4CAF50;
+  background-color: rgba(79, 207, 83, 0.6);
+  transform: scale(1.02);
+}
+
+.level-submission-page .zip-drop-icon {
+  font-size: 2rem;
+  transition: transform 0.2s ease;
+}
+
+.level-submission-page .zip-upload-container.drag-over .zip-drop-icon {
+  transform: scale(1.2);
+}
+
+.level-submission-page .zip-drop-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--color-white);
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
+}
+
+.level-submission-page .zip-upload-container.drag-over .zip-drop-hint {
+  opacity: 1;
+  color: #4CAF50;
+  font-weight: 500;
 }
 
 .level-submission-page .zip-upload-button {

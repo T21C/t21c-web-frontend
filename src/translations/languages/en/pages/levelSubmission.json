@@ -28,6 +28,8 @@
     "addVfxer": "Add VFX-er",
     "removeCreator": "Remove",
     "uploadZip": "Upload Zip",
+    "orDragDrop": "or drag and drop here",
+    "dropHere": "Drop file here!",
     "submit": "Submit",
     "submitWait": "..."
   },

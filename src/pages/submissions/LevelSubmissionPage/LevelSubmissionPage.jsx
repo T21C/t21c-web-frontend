@@ -89,6 +89,7 @@ const LevelSubmissionPage = () => {
 
   const [showCdnTos, setShowCdnTos] = useState(false);
   const [pendingZipFile, setPendingZipFile] = useState(null);
+  const [isDragOver, setIsDragOver] = useState(false);
 
   // Helper function to clean video URLs
   const cleanVideoUrl = (url) => {
@@ -506,7 +507,7 @@ const LevelSubmissionPage = () => {
   };
 
   const handleZipUpload = async (event) => {
-    const file = event.target.files[0];
+    const file = event.target.files?.[0];
     if (!file) return;
 
     if (!hasAgreedToCdnTos()) {
@@ -516,6 +517,8 @@ const LevelSubmissionPage = () => {
     }
 
     processZipUpload(file);
+    // Reset input so selecting the same file works again
+    event.target.value = '';
   };
 
   const handleRemoveZip = () => {
@@ -524,6 +527,49 @@ const LevelSubmissionPage = () => {
       ...prev,
       levelZip: null
     }));
+  };
+
+  // Drag and drop handlers for zip upload
+  const handleZipDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleZipDragEnter = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(true);
+  };
+
+  const handleZipDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Only set drag over to false if we're leaving the container entirely
+    if (e.currentTarget.contains(e.relatedTarget)) return;
+    setIsDragOver(false);
+  };
+
+  const handleZipDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+
+    const file = e.dataTransfer?.files?.[0];
+    if (!file) return;
+
+    // Check if it's a zip file
+    if (!file.name.toLowerCase().endsWith('.zip')) {
+      setError(t('levelSubmission.alert.invalidZip'));
+      return;
+    }
+
+    if (!hasAgreedToCdnTos()) {
+      setPendingZipFile(file);
+      setShowCdnTos(true);
+      return;
+    }
+
+    processZipUpload(file);
   };
 
   return (
@@ -657,7 +703,13 @@ const LevelSubmissionPage = () => {
             <div className="zip-upload-section">
               <h3>{t('levelSubmission.submInfo.levelZip')}</h3>
               {!levelZipInfo ? (
-                <div className="zip-upload-container">
+                <div 
+                  className={`zip-upload-container ${isDragOver ? 'drag-over' : ''}`}
+                  onDragOver={handleZipDragOver}
+                  onDragEnter={handleZipDragEnter}
+                  onDragLeave={handleZipDragLeave}
+                  onDrop={handleZipDrop}
+                >
                   <input
                     type="file"
                     accept=".zip"
@@ -665,9 +717,12 @@ const LevelSubmissionPage = () => {
                     id="levelZip"
                     style={{ display: 'none' }}
                   />
-                  <label htmlFor="levelZip" className="zip-upload-button">
+                  {
+                  <label htmlFor="levelZip" className={`zip-upload-button ${isDragOver ? 'drag-over' : ''}`}>
                     {t('levelSubmission.buttons.uploadZip')}
                   </label>
+                  }
+                  <p className="zip-drop-hint">{isDragOver ? t('levelSubmission.buttons.dropHere') : t('levelSubmission.buttons.orDragDrop')}</p>
                 </div>
               ) : (
                 <div className="zip-info">

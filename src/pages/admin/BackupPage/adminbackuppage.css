@@ -685,15 +685,33 @@
   padding: 2rem;
   text-align: center;
   margin-bottom: 2rem;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
   background-color: var(--color-white-t05);
   cursor: pointer;
   position: relative;
 }
 
 .upload-zone.drag-over {
-  border-color: var(--color-white);
-  background-color: var(--color-white-t10);
+  border-color: #2196f3;
+  background-color: rgba(33, 150, 243, 0.15);
+  transform: scale(1.01);
+}
+
+.upload-zone.uploading {
+  border-color: #2196f3;
+  background-color: rgba(33, 150, 243, 0.1);
+  cursor: wait;
+}
+
+.upload-zone.has-file:not(.uploading) {
+  border-color: #4CAF50;
+  background-color: rgba(76, 175, 80, 0.1);
+}
+
+.upload-zone .upload-filename {
+  color: var(--color-white);
+  font-weight: 500;
+  word-break: break-all;
 }
 
 .upload-zone p {

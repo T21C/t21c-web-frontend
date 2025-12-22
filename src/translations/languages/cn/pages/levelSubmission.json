@@ -28,6 +28,8 @@
     "addVfxer": "添加特效师",
     "removeCreator": "删除",
     "uploadZip": "上传压缩文件",
+    "orDragDrop": "或拖放文件到此处",
+    "dropHere": "松开以上传！",
     "submit": "提交",
     "submitWait": "……"
   },

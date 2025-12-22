@@ -21,36 +21,30 @@ const UploadZone = ({ type, onUploadComplete, storedPassword, isLoadingBackups }
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadError, setUploadError] = useState('');
   const [isUploading, setIsUploading] = useState(false);
-  const [selectedFile, setSelectedFile] = useState(null);
-
-  const handleDragOver = (e) => {
-    e.preventDefault();
-    setIsDragOver(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragOver(false);
-  };
+  const [selectedFileName, setSelectedFileName] = useState(null);
 
   const validateFile = (file) => {
+    if (!file) return false;
     if (file.size > MAX_FILE_SIZE) {
       setUploadError(tBackup('upload.errors.fileTooBig', { 
         size: formatFileSize(MAX_FILE_SIZE) 
       }));
       return false;
     }
+    setUploadError('');
     return true;
   };
 
-  const handleUpload = async () => {
-    if (!selectedFile) return;
+  const handleUpload = async (file) => {
+    if (!file) return;
 
     try {
       setIsUploading(true);
+      setSelectedFileName(file.name);
       setUploadError('');
       
       const formData = new FormData();
-      formData.append('backup', selectedFile);
+      formData.append('backup', file);
       
       const response = await api.post(
         `${import.meta.env.VITE_BACKUP_API}/upload/${type}`,
@@ -70,7 +64,7 @@ const UploadZone = ({ type, onUploadComplete, storedPassword, isLoadingBackups }
       if (response.data.success) {
         toast.success(tBackup('notifications.uploadSuccess'));
         onUploadComplete();
-        setSelectedFile(null);
+        setSelectedFileName(null);
         setUploadProgress(0);
       }
     } catch (error) {
@@ -89,38 +83,64 @@ const UploadZone = ({ type, onUploadComplete, storedPassword, isLoadingBackups }
     }
   };
 
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
+  const handleDragEnter = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    // Only set drag over to false if we're leaving the upload zone entirely
+    if (e.currentTarget.contains(e.relatedTarget)) return;
+    setIsDragOver(false);
+  };
+
   const handleDrop = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     setIsDragOver(false);
     
-    const file = e.dataTransfer.files[0];
+    const file = e.dataTransfer?.files?.[0];
     if (file && validateFile(file)) {
-      setSelectedFile(file);
-      handleUpload();
+      handleUpload(file);
     }
   };
 
   const handleFileSelect = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (file && validateFile(file)) {
-      setSelectedFile(file);
-      handleUpload();
+      handleUpload(file);
     }
+    // Reset input so selecting the same file works again
+    e.target.value = '';
   };
 
   return (
     <div
-      className={`upload-zone ${isDragOver ? 'drag-over' : ''}`}
+      className={`upload-zone ${isDragOver ? 'drag-over' : ''} ${isUploading ? 'uploading' : ''} ${selectedFileName ? 'has-file' : ''}`}
       onDragOver={handleDragOver}
+      onDragEnter={handleDragEnter}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
     >
-      <div className="icon">📤</div>
-      <p>{tBackup('upload.dragDropMessage')}</p>
+      <div className="icon">{isDragOver ? '📥' : '📤'}</div>
+      {selectedFileName && isUploading ? (
+        <p className="upload-filename">{selectedFileName}</p>
+      ) : (
+        <p>{tBackup('upload.dragDropMessage')}</p>
+      )}
       <input
         type="file"
         onChange={handleFileSelect}
         accept=".sql,.zip,.tar.gz"
+        disabled={isUploading}
       />
       {isUploading && (
         <div 

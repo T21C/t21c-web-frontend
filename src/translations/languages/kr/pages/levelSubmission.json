@@ -13,7 +13,8 @@
     "workshop": "Steam Workshop 링크",
     "dlLinksOr": "또는",
     "charters": "제작자들",
-    "vfxers": "이펙터"
+    "vfxers": "이펙터",
+    "levelZip": "레벨 Zip 파일"
   },
   "videoInfo": {
     "title": "비디오 제목",
@@ -22,19 +23,23 @@
     "nolink": "링크가 제공되지 않음"
   },
   "tooltip": "알 수 없는 난이도입니다. 제출은 가능하지만 관리자들이 읽을 수 있도록 정확히 입력해 주세요. 예시: G13; P7~P13; 21.1+; 19~20.0+",
-  "submit": "제출",
-  "submitWait": "...",
   "alert": {
     "success": "레벨이 성공적으로 제출되었습니다!",
     "error": "오류: ",
     "loading": "제출 중...",
     "login": "레벨을 제출하려면 로그인 해주세요",
-    "form": "필수 항목을 올바르게 작성해 주세요"
+    "form": "필수 항목을 올바르게 작성해 주세요",
+    "invalidZip": "유효한 zip 파일을 업로드해 주세요"
   },
   "buttons": {
     "addCharter": "제작자 추가",
     "addVfxer": "이펙터 추가",
-    "removeCreator": "제거"
+    "removeCreator": "제거",
+    "uploadZip": "Zip 업로드",
+    "orDragDrop": "또는 여기에 드래그 앤 드롭",
+    "dropHere": "여기에 놓으세요!",
+    "submit": "제출",
+    "submitWait": "..."
   },
   "warnings": {
     "pendingProfiles": "다음 프로필이 생성됩니다:"

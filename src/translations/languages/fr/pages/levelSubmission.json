@@ -11,7 +11,10 @@
     "team": "Nom de l'équipe (optionnel)",
     "dlLink": "Lien de téléchargement",
     "workshop": "Lien Workshop",
-    "dlLinksOr": "ou"
+    "dlLinksOr": "ou",
+    "charters": "Charteurs",
+    "vfxers": "Effecteurs",
+    "levelZip": "Fichier Zip du niveau"
   },
   "videoInfo": {
     "title": "Titre de la vidéo",
@@ -20,13 +23,22 @@
     "nolink": "Aucun lien fourni"
   },
   "tooltip": "Difficulté innconue, le formulaire va être envoyé mais faites en sorte que les évaluateurs puisse le lire. Exemple de difficultés correctes.: G13; P7~P13; 21.1+; 19~20.0+",
-  "submit": "Soumettre",
-  "submitWait": "...",
+  "buttons": {
+    "addCharter": "Ajouter un charteur",
+    "addVfxer": "Ajouter un effecteur",
+    "removeCreator": "Supprimer",
+    "uploadZip": "Télécharger Zip",
+    "orDragDrop": "ou glisser-déposer ici",
+    "dropHere": "Déposez le fichier ici!",
+    "submit": "Soumettre",
+    "submitWait": "..."
+  },
   "alert": {
     "success": "Niveau envoyé!",
     "error": "Erreur: ",
     "loading": "Envoi...",
     "login": "Vous devez être connecté pour soumettre un niveau ",
-    "form": "Veuillez remplir tous les champs obligatoires"
+    "form": "Veuillez remplir tous les champs obligatoires",
+    "invalidZip": "Veuillez télécharger un fichier zip valide"
   }
 } 
