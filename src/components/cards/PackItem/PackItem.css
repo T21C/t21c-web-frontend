@@ -228,10 +228,6 @@
   inset: 0;
 }
 
-.level-card.legendary:not(.grid) {
-  overflow: visible;
-}
-
 .pack-item__level-wrapper .level-card {
   margin-bottom: 0;
 }

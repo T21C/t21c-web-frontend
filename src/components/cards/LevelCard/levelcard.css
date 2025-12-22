@@ -924,7 +924,11 @@
 /* Legendary card styling - only applies to list view (non-grid) */
 .level-card.legendary:not(.grid) {
   position: relative;
-  overflow: hidden;
+  overflow: visible;
+}
+
+.level-card.basic-glow:not(.grid) {
+  z-index: -2;
 }
 
 .level-card.legendary:not(.grid)::before {

@@ -253,7 +253,7 @@ const ProfilePage = () => {
         // Apply sorting
         const sortFn = sortOptions.find(opt => opt.value === sortType)?.sortFn;
         if (sortFn) {
-          filtered = [...filtered].sort(sortFn);
+          filtered = [...filtered].sort((a, b) => (b.id - a.id)).sort(sortFn);
         }
 
         return filtered;
