@@ -49,17 +49,17 @@ const EditProfilePage = () => {
   useEffect(() => {
     if (isPopupOpen) {
       // Lock scrolling
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflowY = 'hidden';
       document.body.style.paddingRight = `${window.innerWidth - document.documentElement.clientWidth}px`;
     } else {
       // Restore scrolling
-      document.body.style.overflow = '';
+      document.body.style.overflowY = '';
       document.body.style.paddingRight = '';
     }
 
     return () => {
       // Cleanup: ensure scrolling is restored
-      document.body.style.overflow = '';
+      document.body.style.overflowY = '';
       document.body.style.paddingRight = '';
     };
   }, [isPopupOpen]);

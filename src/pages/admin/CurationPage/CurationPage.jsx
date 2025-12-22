@@ -54,13 +54,13 @@ const CurationPage = () => {
   useEffect(() => {
     const isAnyOpen = showPasswordPrompt || showLevelSelectionPopup || showTypeManagementPopup || showCurationEditPopup || showCuratorManagementPopup;
     if (isAnyOpen) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflowY = 'hidden';
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflowY = 'unset';
     }
 
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflowY = 'unset';
     };
   }, [showPasswordPrompt, showLevelSelectionPopup, showTypeManagementPopup, showCurationEditPopup, showCuratorManagementPopup]);
 

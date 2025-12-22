@@ -13,7 +13,7 @@ export const RatingHelpPopup = ({ onClose }) => {
     const originalStyle = window.getComputedStyle(document.body).overflow;
     
     // Lock scrolling
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflowY = 'hidden';
 
     // Capture and stop propagation of keyboard events
     const handleKeyEvents = (event) => {
@@ -30,7 +30,7 @@ export const RatingHelpPopup = ({ onClose }) => {
 
     // Cleanup function
     return () => {
-      document.body.style.overflow = originalStyle;
+      document.body.style.overflowY = originalStyle;
       document.removeEventListener('keydown', handleKeyEvents, true);
       document.removeEventListener('keyup', handleKeyEvents, true);
       document.removeEventListener('keypress', handleKeyEvents, true);

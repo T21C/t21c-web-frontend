@@ -111,11 +111,11 @@ const TopRatersPopup = ({ onClose }) => {
     const originalStyle = window.getComputedStyle(document.body).overflow;
     
     // Lock scrolling
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflowY = 'hidden';
 
     // Cleanup function to restore original scroll state
     return () => {
-      document.body.style.overflow = originalStyle;
+      document.body.style.overflowY = originalStyle;
     };
   }, []); // Empty dependency array since we only want this on mount/unmount
 

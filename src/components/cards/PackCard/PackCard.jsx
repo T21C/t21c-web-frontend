@@ -38,13 +38,13 @@ const PackCard = ({
   // Add effect to handle body overflow when edit popup is open
   useEffect(() => {
     if (showEditPopup) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflowY = 'hidden';
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflowY = 'unset';
     }
 
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflowY = 'unset';
     };
   }, [showEditPopup]);
 

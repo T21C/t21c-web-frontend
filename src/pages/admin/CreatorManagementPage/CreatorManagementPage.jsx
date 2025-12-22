@@ -277,14 +277,14 @@ const CreatorManagementPage = () => {
   useEffect(() => {
     // Prevent scrolling when modals are open
     if (showMergeWarning || showSplitDialog) {
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflowY = 'hidden';
     } else {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflowY = 'unset';
     }
 
     // Cleanup function to restore scrolling when component unmounts
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflowY = 'unset';
     };
   }, [showMergeWarning, showSplitDialog]);
 

@@ -150,9 +150,9 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
 
   // Prevent body scroll
   useEffect(() => {
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflowY = 'hidden';
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflowY = 'unset';
     };
   }, []);
 
