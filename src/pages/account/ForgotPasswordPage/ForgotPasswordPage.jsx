@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { CompleteNav } from '@/components/layout';
+
 import { MetaTags } from '@/components/common/display';
 import ReCAPTCHA from '@/components/auth/ReCaptcha/ReCaptcha';
 import { useTranslation } from 'react-i18next';
@@ -401,8 +401,7 @@ const ForgotPasswordPage = () => {
         url={window.location.href}
         type="website"
       />
-      <CompleteNav />
-      <div className="background-level"></div>
+      
       <div className="reset-container">
         {renderContent()}
       </div>

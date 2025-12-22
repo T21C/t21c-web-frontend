@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { CompleteNav } from '@/components/layout';
+
 import { MetaTags, AccessDenied } from '@/components/common/display';
 import { ScrollButton } from '@/components/common/buttons';
 import { DifficultyPopup } from '@/components/popups';
@@ -661,8 +661,7 @@ const DifficultyPage = () => {
           image="/og-image.jpg"
           type="website"
         />
-        <CompleteNav />
-        <div className="background-level"></div>
+        
         <div className="difficulty-container">
           <div className="loader loader-level-detail"/>
         </div>
@@ -689,8 +688,7 @@ const DifficultyPage = () => {
         image="/og-image.jpg"
         type="website"
       />
-      <CompleteNav />
-      <div className="background-level"></div>
+      
       <div className="difficulty-page">
         {!isAnyPopupOpen && <ScrollButton />}
         <div className="difficulty-container">

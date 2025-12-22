@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import "./homepage.css"
-import { CompleteNav, Footer } from "@/components/layout";
+import { Footer } from "@/components/layout";
 import { MetaTags } from "@/components/common/display";
 import api from "@/utils/api";
 import { Link } from 'react-router-dom';
@@ -706,9 +706,8 @@ const HomePage = () => {
       image="/og-image.jpg"
       type="website"
     />
-    <div className="background-level"></div>
     <div className="home">
-      <CompleteNav />
+      
       <ScrollButton />
       <div className="home-container">
         <div className="content-container">

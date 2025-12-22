@@ -1,5 +1,5 @@
 import "./aboutuspage.css";
-import { CompleteNav, Footer, UserAvatar } from "@/components/layout";
+import { Footer, UserAvatar } from "@/components/layout";
 import { MetaTags } from "@/components/common/display";
 import { useTranslation } from "react-i18next";
 import { useState, useEffect, useCallback } from "react";
@@ -78,8 +78,7 @@ const AboutUsPage = () => {
         image="/og-image.jpg"
         type="website"
       />
-        <CompleteNav />
-        <div className="background-level" />
+        
         <div className="about-us">
         <div className="about-us-container">
           <div className="about-content">

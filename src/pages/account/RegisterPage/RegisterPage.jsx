@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import './registerPage.css';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
-import { CompleteNav } from '@/components/layout';
+
 import { Tooltip } from 'react-tooltip';
 import { QuestionmarkCircleIcon, WarningIcon } from '@/components/common/icons';
 import ReCAPTCHA from '@/components/auth/ReCaptcha/ReCaptcha';
@@ -310,8 +310,7 @@ const RegisterPage = () => {
   if (success) {
     return (
       <div className="register-page-wrapper">
-        <CompleteNav />
-        <div className="background-level"></div>
+        
         <div className="register-page">
           <div className="register-container">
             <div className="success-container">
@@ -351,8 +350,7 @@ const RegisterPage = () => {
 
   return (
     <div className="register-page-wrapper">
-      <CompleteNav />
-      <div className="background-level"></div>
+      
       <div className="register-page">
         <div className="register-container">
           <h1>{t('register.title')}</h1>

@@ -1,5 +1,5 @@
 import "./submissionpage.css"
-import { CompleteNav } from "@/components/layout";
+
 import { Link, useNavigate } from "react-router-dom"
 import { useTranslation } from "react-i18next";
 import { MetaTags } from "@/components/common/display";
@@ -36,8 +36,7 @@ const SubmissionPage = () => {
         image="/submission-preview.jpg"
         type={tSubmission('meta.type')}
       />
-      <CompleteNav/>
-      <div className="background-level"></div>
+      
       
       <div className={`submission-container ${noAccess && "banner-container"}`}>
       {hasFlag(user, permissionFlags.SUBMISSIONS_PAUSED) ? (

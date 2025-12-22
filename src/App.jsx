@@ -9,6 +9,7 @@ import { Toaster } from "react-hot-toast";
 function App() {
   return (
     <AuthProvider>
+      <CompleteNav />
       <Toaster
         position="bottom-right"
         toastOptions={{
@@ -32,8 +33,6 @@ function App() {
               backgroundColor: "#090909",
             }}
           >
-            <CompleteNav />
-            <div className="background-level"></div>
             <div className="loader loader-level-detail"></div>
           </div>
         }

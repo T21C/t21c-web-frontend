@@ -3,7 +3,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import "./adminsubmissionpage.css";
 import { AccessDenied, MetaTags } from '@/components/common/display';
-import { CompleteNav } from '@/components/layout';
+
 import { ScrollButton } from '@/components/common/buttons';
 import LevelSubmissions from './components/LevelSubmissions';
 import PassSubmissions from './components/PassSubmissions';
@@ -50,8 +50,7 @@ const SubmissionManagementPage = () => {
           image="/og-image.jpg"
           type="website"
         />
-        <CompleteNav />
-        <div className="background-level"></div>
+        
         <div className="submission-admin-page">
           <div className="submissions-admin-container">
             <div className="loader loader-level-detail"/>
@@ -80,8 +79,7 @@ const SubmissionManagementPage = () => {
         image="/og-image.jpg"
         type="website"
       />
-      <CompleteNav />
-      <div className="background-level"></div>
+      
       <div className="submission-admin-page">
         <ScrollButton />
         <div className="submissions-admin-container">

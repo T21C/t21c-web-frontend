@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { CompleteNav } from '@/components/layout';
+
 import { MetaTags, AccessDenied } from '@/components/common/display';
 import { ScrollButton } from '@/components/common/buttons';
 import api from '@/utils/api';
@@ -395,8 +395,7 @@ const CurationPage = () => {
         url={currentUrl}
       />
       
-      <div className="background-level" />
-      <CompleteNav />
+      
       
       <div className="curation-container">
         <div className="curation-header">

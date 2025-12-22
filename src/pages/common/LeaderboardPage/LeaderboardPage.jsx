@@ -1,6 +1,5 @@
 import "./leaderboardpage.css";
 import { useContext, useEffect, useState, useRef } from "react";
-import { CompleteNav, } from "@/components/layout";
 import { PlayerCard } from "@/components/cards";
 import { StateDisplay, CustomSelect, CountrySelect, RangeSelector } from "@/components/common/selectors";
 import { Tooltip } from "react-tooltip";
@@ -271,9 +270,7 @@ const LeaderboardPage = () => {
         image="/leaderboard-preview.jpg"
         type="website"
       />
-      <CompleteNav />
-
-      <div className="background-level"></div>
+      
 
       <div className="leaderboard-body">
         <ScrollButton />  

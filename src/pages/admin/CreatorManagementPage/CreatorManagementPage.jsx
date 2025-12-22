@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { CompleteNav } from '@/components/layout';
+
 import { CustomSelect } from '@/components/common/selectors';
 import './creatorManagement.css';
 import api from '@/utils/api';
@@ -784,8 +784,7 @@ const CreatorManagementPage = () => {
           image="/og-image.jpg"
           type="website"
         />
-        <CompleteNav />
-        <div className="background-level"></div>
+        
         <div className="creator-management-container">
           <div className="loader loader-level-detail"/>
         </div>
@@ -805,7 +804,6 @@ const CreatorManagementPage = () => {
 
   return (
     <>
-      <div className="background-level"/>
       <MetaTags
           title={tCreator('meta.title')}
           description={tCreator('meta.description')}
@@ -813,7 +811,7 @@ const CreatorManagementPage = () => {
           image={''}
           type="article"
       />
-      <CompleteNav/>
+      
       <div className="creator-management-page">
         <div className="creator-management-container">
           <h1>Creator Management</h1>

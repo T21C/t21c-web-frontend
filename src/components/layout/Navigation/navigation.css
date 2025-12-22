@@ -1,7 +1,7 @@
 /* Base Navigation Styles */
 nav {
   width: 100%;
-  background: var(--color-white-t6);
+  background: var(--color-white-t5);
   -webkit-backdrop-filter: blur(5px);
   backdrop-filter: blur(5px);
   border-bottom: 1px solid var(--color-white-t10);

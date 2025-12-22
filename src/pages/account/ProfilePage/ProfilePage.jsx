@@ -3,7 +3,7 @@ import api from "@/utils/api";
 import { useEffect, useState, useMemo } from "react";
 import { useParams, useLocation, useNavigate } from "react-router-dom"
 import { isoToEmoji, formatNumber } from "@/utils";
-import { CompleteNav, UserAvatar } from "@/components/layout";
+import { UserAvatar } from "@/components/layout";
 import { MetaTags } from "@/components/common/display";
 import { ScoreCard } from "@/components/cards";
 import { useTranslation } from "react-i18next";
@@ -282,8 +282,7 @@ const ProfilePage = () => {
       if (playerId && !playerData) {
         return (
           <div className="player-page">
-            <CompleteNav />
-            <div className="background-level"></div>
+            
             <div className="loader"/>  
           </div>
         );
@@ -299,8 +298,7 @@ const ProfilePage = () => {
               image={'/default-avatar.jpg'}
               type="profile"
           />
-            <CompleteNav />
-            <div className="background-level"></div>
+            
             <h1 className="player-notfound">{tProfile('notLoggedIn')}</h1>
             <h2 className="player-search-for-other" onClick={handleSearchForOther}>{tProfile('searchForOther')}</h2>
           </div>
@@ -316,7 +314,7 @@ const ProfilePage = () => {
             image={playerData?.avatar || playerData?.avatarUrl || playerData?.pfp || '/default-avatar.jpg'}
             type="profile"
           />
-          <CompleteNav />
+          
           <ScrollButton />
           {user && isOwnProfile ? (
             hasFlag(user, permissionFlags.BANNED) ? (
@@ -334,7 +332,6 @@ const ProfilePage = () => {
               </div>
             ) : <br />
           ): <br />}
-          <div className="background-level"></div>
           {playerData != null ? (Object.keys(playerData).length > 0 ? (
             <div className="player-body">
               <div className="player-content">

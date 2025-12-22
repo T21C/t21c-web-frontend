@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
-import { CompleteNav } from '@/components/layout';
+
 import { ScrollButton } from '@/components/common/buttons';
 import { EditLevelPopup } from '@/components/popups';
 import api from '@/utils/api';
@@ -201,8 +201,7 @@ const AnnouncementPage = () => {
           image="/og-image.jpg"
           type="website"
         />
-        <CompleteNav />
-        <div className="background-level"></div>
+        
         <div className="announcement-page">
           <div className="announcement-container">
             <div className="loader loader-level-detail"/>
@@ -232,8 +231,7 @@ const AnnouncementPage = () => {
           image="/og-image.jpg"
           type="website"
         />
-        <CompleteNav />
-        <div className="background-level"></div>
+        
         <div className="announcement-page">
           <ScrollButton />
           <div className="announcement-container">
@@ -256,8 +254,7 @@ const AnnouncementPage = () => {
         image="/og-image.jpg"
         type="website"
       />
-      <CompleteNav />
-      <div className="background-level"></div>
+      
       <div className="announcement-page">
         <ScrollButton />
         <div className="announcement-container">

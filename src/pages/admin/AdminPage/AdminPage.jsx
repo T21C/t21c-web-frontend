@@ -1,5 +1,5 @@
 import "./adminpage.css"
-import { CompleteNav } from "@/components/layout";
+
 import { useNavigate, useLocation } from "react-router-dom"
 import { useTranslation } from "react-i18next";
 import { MetaTags } from "@/components/common/display";
@@ -77,8 +77,7 @@ const AdminPage = () => {
         url={currentUrl}
         type="website"
       />
-      <CompleteNav/>
-      <div className="background-level"></div>
+      
       
       <div className="admin-container">
         <h1 className="admin-title">{t("admin.title")}</h1>

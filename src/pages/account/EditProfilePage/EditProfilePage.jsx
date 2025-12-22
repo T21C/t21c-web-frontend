@@ -1,7 +1,6 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import './editProfilePage.css';
-import { CompleteNav } from '@/components/layout';
 import { DiscordIcon, UnlinkIcon } from '@/components/common/icons';
 import { Tooltip } from 'react-tooltip';
 import { useNavigate } from 'react-router-dom';
@@ -260,8 +259,7 @@ const EditProfilePage = () => {
 
   return (
     <>
-    <div className="background-level"/> 
-      <CompleteNav/>
+    
     <div className="edit-profile-page">
       <div className="edit-profile-container">
         <h1>{tEditProfile('title')}</h1>

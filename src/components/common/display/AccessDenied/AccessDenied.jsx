@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { CompleteNav } from '@/components/layout';
 import { MetaTags } from '@/components/common/display';
 import './accessdenied.css';
 
@@ -21,8 +20,7 @@ const AccessDenied = ({
         image="/og-image.jpg"
         type="website"
       />
-      <CompleteNav />
-      <div className="background-level"></div>
+      
       <div className="access-denied-page">
         <div className="access-denied-container">
           <h1>{tState('title')}</h1>

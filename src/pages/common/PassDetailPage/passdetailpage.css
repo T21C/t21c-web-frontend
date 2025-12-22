@@ -8,16 +8,6 @@
   align-content: center;
 }
 
-.pass-detail .background-level {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: var(--color-black);
-  z-index: 1;
-}
-
 .pass-detail .deletion-banner-wrapper {
   display: flex;
   justify-content: center;

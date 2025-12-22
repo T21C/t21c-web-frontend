@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { CompleteNav } from '@/components/layout';
 import './emailVerificationPage.css';
 
 const EmailVerificationPage = () => {
@@ -253,8 +252,6 @@ const EmailVerificationPage = () => {
 
   return (
     <div className="email-verification-page">
-      <CompleteNav />
-      <div className="background-level"></div>
       <div className="verification-container">
         {renderContent()}
       </div>

@@ -2,7 +2,7 @@ import "./passpage.css";
 import "../sort.css";
 import "../search-section.css";
 import { useContext, useEffect, useState, useCallback } from "react";
-import { CompleteNav } from "@/components/layout";
+
 import { MetaTags } from "@/components/common/display";
 import { PassCard } from "@/components/cards";
 import { StateDisplay, CustomSelect } from "@/components/common/selectors";
@@ -328,9 +328,8 @@ const PassPage = () => {
           image="/passes-preview.jpg"
           type="article"
         />
-        <CompleteNav />
+        
   
-        <div className="background-level"></div>
         <div className="pass-body">
           {renderContent()}
         </div>
@@ -347,9 +346,7 @@ const PassPage = () => {
         image="/passes-preview.jpg"
         type="article"
       />
-      <CompleteNav />
       
-      <div className="background-level"></div>
 
       <div className="pass-body">
         <ScrollButton />

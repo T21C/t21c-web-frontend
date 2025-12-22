@@ -1,5 +1,5 @@
 import "./privacyPolicyPage.css";
-import { CompleteNav, Footer } from "@/components/layout";
+import { Footer } from "@/components/layout";
 import { MetaTags } from "@/components/common/display";
 
 const PrivacyPolicyPage = () => {
@@ -14,8 +14,7 @@ const PrivacyPolicyPage = () => {
         image="/og-image.jpg"
         type="website"
       />
-      <CompleteNav />
-      <div className="background-level" />
+      
       <div className="privacy-policy">
         <div className="privacy-container">
           <div className="privacy-content">

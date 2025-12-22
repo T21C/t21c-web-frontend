@@ -1,5 +1,5 @@
 import "./termsOfServicePage.css";
-import { CompleteNav, Footer } from "@/components/layout";
+import { Footer } from "@/components/layout";
 import { MetaTags } from "@/components/common/display";
 import { ExternalLinkIcon } from "@/components/common/icons";
 
@@ -15,9 +15,7 @@ const TermsOfServicePage = () => {
         image="/og-image.jpg"
         type="website"
       />
-      <CompleteNav />
-      
-      <div className="background-level" />
+    
       <div className="terms-of-service">
         <div className="terms-container">
           <div className="terms-content">

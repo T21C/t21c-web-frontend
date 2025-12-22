@@ -3,7 +3,7 @@ import "./levelpage.css";
 import "../sort.css";
 import "../search-section.css";
 import { useContext, useEffect, useState, useCallback, useRef } from "react";
-import { CompleteNav } from "@/components/layout";
+
 import { LevelCard } from "@/components/cards";
 import { StateDisplay, CustomSelect } from "@/components/common/selectors";
 import { Tooltip } from "react-tooltip";
@@ -437,9 +437,8 @@ const LevelPage = () => {
           image={''}
           type="article"
         />
-        <CompleteNav />
+        
   
-        <div className="background-level"></div>
         <div className="level-body">
           <div className="level-body-content" style={{marginTop: "45vh"}} >
             <div className="loader loader-level-page" style={{top: "-6rem"}}></div>
@@ -461,9 +460,8 @@ const LevelPage = () => {
         image={''}
         type="article"
       />
-      <CompleteNav />
+      
 
-      <div className="background-level"></div>
       <div className="level-body">
         <ScrollButton />
         <ReferencesButton />

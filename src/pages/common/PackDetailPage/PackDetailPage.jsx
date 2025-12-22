@@ -2,7 +2,7 @@ import "./packdetailpage.css";
 import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { CompleteNav } from "@/components/layout";
+
 import PackItem from "@/components/cards/PackItem/PackItem";
 import { MetaTags } from "@/components/common/display";
 import { ScrollButton } from "@/components/common/buttons";
@@ -580,8 +580,7 @@ const PackDetailPage = () => {
   if (loading) {
     return (
       <div className="pack-detail-page">
-        <div className="background-level"></div>
-        <CompleteNav />
+        
         <div className="loader loader-level-detail" />
       </div>
     );
@@ -590,8 +589,7 @@ const PackDetailPage = () => {
   if (error || !pack) {
     return (
       <div className="pack-detail-page">
-        <CompleteNav />
-        <div className="background-level"></div>
+        
         <div className="pack-detail-page__error">
           <h2>{tPack('error.title')}</h2>
           <p>{tPack('error.message')}</p>
@@ -627,8 +625,7 @@ const PackDetailPage = () => {
         url={currentUrl}
       />
       
-      <CompleteNav />
-      <div className="background-level"></div>
+      
       <div className="pack-body">
       <button 
             className="pack-detail-page__back-btn"

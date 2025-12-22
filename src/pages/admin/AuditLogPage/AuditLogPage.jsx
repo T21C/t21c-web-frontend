@@ -1,5 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
-import { CompleteNav } from "@/components/layout";
+
 import { MetaTags } from "@/components/common/display";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -83,8 +83,7 @@ const AuditLogPage = () => {
           image="/og-image.jpg"
           type="website"
         />
-        <CompleteNav />
-        <div className="background-level"></div>
+        
       <div className="auditlog-container">
         <h1>Audit Logs</h1>
         <div className="auditlog-filters">

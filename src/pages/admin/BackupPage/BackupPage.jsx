@@ -1,4 +1,3 @@
-import { CompleteNav } from "@/components/layout";
 import { MetaTags } from "@/components/common/display";
 import "./adminbackuppage.css";
 import { useEffect, useState, useMemo } from "react";
@@ -662,8 +661,7 @@ const BackupPage = () => {
           image="/og-image.jpg"
           type="website"
         />
-        <CompleteNav />
-        <div className="background-level"></div>
+        
         <div className="admin-backup-body">
           <div className="loader loader-level-detail"/>
         </div>
@@ -690,7 +688,6 @@ const BackupPage = () => {
         image="/og-image.jpg"
         type="website"
       />
-      <CompleteNav user={user} />
       <div className="admin-backup-body">
         <div className="header-container">
           <h1>{tBackup('header.title')}</h1>

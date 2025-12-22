@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { CompleteNav } from '@/components/layout';
+
 import { MetaTags } from '@/components/common/display';
 import { useTranslation } from 'react-i18next';
 import './healthcheckpage.css';
@@ -128,8 +128,7 @@ const HealthCheckPage = () => {
         image="/og-image.jpg"
         type="website"
       />
-      <CompleteNav />
-      <div className="background-level" />
+      
       <div className="health-check-container">
         <h1>{t('healthCheck.title')}</h1>
         

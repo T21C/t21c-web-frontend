@@ -1,4 +1,4 @@
-import { CompleteNav } from "@/components/layout";
+
 import "./passsubmission.css";
 import placeholder from "@/assets/placeholder/3.png";
 import { FormManager } from "@/components/misc/FormManager/FormManager";
@@ -626,8 +626,7 @@ const PassSubmissionPage = () => {
 
   return (
     <div className="pass-submission-page">
-      <CompleteNav />
-      <div className="background-level"></div>
+      
       <div className="form-container">
         {import.meta.env.MODE !== "production" && <StagingModeWarning />}
         <div className={`result-message ${showMessage ? 'visible' : ''}`} 

@@ -4,7 +4,7 @@ import "./leveldetailpage.css"
 import placeholder from "@/assets/placeholder/3.png";
 import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { useLocation, useParams } from 'react-router-dom';
-import { CompleteNav } from "@/components/layout";
+
 import {
   getVideoDetails
 } from "@/utils";
@@ -1500,8 +1500,7 @@ const LevelDetailPage = ({ mockData = null }) => {
   if (notFound) {
     return (
       <div className="level-detail">
-        <CompleteNav />
-        <div className="background-level"></div>
+        
         <div className="wrapper-level wrapper-level-top">
           <div className="deletion-banner-wrapper">
             <div className="deletion-banner">
@@ -1519,8 +1518,7 @@ const LevelDetailPage = ({ mockData = null }) => {
   if (res == null)
     return (
       <div className="level-detail-loading-container">
-        <CompleteNav />
-        <div className="background-level"></div>
+        
         <div className="loader loader-level-detail"></div>
       </div>
     );
@@ -1558,8 +1556,7 @@ const LevelDetailPage = ({ mockData = null }) => {
           '--header-bg-image': videoDetail?.image ? `url(${videoDetail.image})` : 'none'
         }}
       >
-        <CompleteNav />
-        <div className="background-level"></div>
+        
 
         <div className="wrapper-level wrapper-level-top">
         {res?.level?.isDeleted ? (

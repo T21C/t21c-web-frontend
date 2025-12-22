@@ -1,7 +1,7 @@
 import "./passdetailpage.css";
 import { useEffect, useState } from "react";
 import { useParams, Link } from 'react-router-dom';
-import { CompleteNav, UserAvatar } from "@/components/layout";
+import { UserAvatar } from "@/components/layout";
 import { formatNumber, getVideoDetails, isoToEmoji } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
@@ -104,8 +104,7 @@ const PassDetailPage = () => {
   if (res == null)
     return (
       <div style={{ height: "100vh", width: "100vw", backgroundColor: "#090909" }}>
-        <CompleteNav />
-        <div className="background-level"></div>
+        
         <div className="loader loader-pass-detail"></div>
       </div>
     );
@@ -127,8 +126,7 @@ const PassDetailPage = () => {
         image={pass.level?.videoLink ? pass.level?.videoLink : "/leaderboard-preview.jpg"}
         type="website"
       />
-      <CompleteNav />
-      <div className="background-level"></div>
+      
       <div className="pass-detail">
         {pass?.isDeleted && (
           <div className="deletion-banner-wrapper">

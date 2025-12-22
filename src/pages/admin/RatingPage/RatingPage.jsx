@@ -1,4 +1,4 @@
-import { CompleteNav} from "@/components/layout";
+
 import { MetaTags } from "@/components/common/display";
 import { StateDisplay } from "@/components/common/selectors";
 import "./adminratingpage.css";
@@ -364,8 +364,7 @@ const RatingPage = () => {
           image="/og-image.jpg"
           type="website"
         />
-        <CompleteNav />
-        <div className="background-level"></div>
+        
         <div className="admin-rating-body">
           <div className="loader loader-level-detail"/>
         </div>
@@ -382,8 +381,7 @@ const RatingPage = () => {
         image="/og-image.jpg"
         type="website"
       />
-      <CompleteNav />
-      <div className="background-level"></div>
+      
       <div className="admin-rating-body">
         <ScrollButton />
         <ReferencesButton />

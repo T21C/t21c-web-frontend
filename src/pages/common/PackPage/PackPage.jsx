@@ -2,7 +2,7 @@ import "./packpage.css";
 import "../sort.css";
 import "../search-section.css";
 import { useContext, useEffect, useState, useCallback, useRef } from "react";
-import { CompleteNav } from "@/components/layout";
+
 import { PackCard } from "@/components/cards";
 import { StateDisplay, CustomSelect } from "@/components/common/selectors";
 import { Tooltip } from "react-tooltip";
@@ -161,8 +161,7 @@ const PackPageContent = () => {
         url={currentUrl}
       />
       
-      <CompleteNav />
-      <div className="background-level"></div>
+      
       <div className="pack-page__container">
         <div className="pack-page__header">
           <div className="pack-page__title-section">

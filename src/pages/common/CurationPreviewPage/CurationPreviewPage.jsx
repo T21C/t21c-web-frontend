@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { CompleteNav } from '@/components/layout';
+
 import { MetaTags } from '@/components/common/display';
 import { ScrollButton } from '@/components/common/buttons';
 import api from '@/utils/api';
@@ -48,7 +48,7 @@ const CurationPreviewPage = () => {
   if (isLoading) {
     return (
       <div className="curation-preview-page">
-        <CompleteNav />
+        
         <div className="curation-preview-page__loading">
           {tCur('loading')}
         </div>
@@ -59,7 +59,7 @@ const CurationPreviewPage = () => {
   if (error || !curation) {
     return (
       <div className="curation-preview-page">
-        <CompleteNav />
+        
         <div className="curation-preview-page__error">
           {error || tCur('notFound')}
         </div>
@@ -75,7 +75,7 @@ const CurationPreviewPage = () => {
         url={currentUrl}
       />
       
-      <CompleteNav />
+      
       
       <div className="curation-preview-page__content">
         <div className="curation-preview-page__header">

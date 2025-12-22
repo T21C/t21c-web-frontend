@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
-import { CompleteNav } from '@/components/layout';
+
 import { MetaTags, AccessDenied } from '@/components/common/display';
 import { ScrollButton } from '@/components/common/buttons';
 import api from '@/utils/api';
@@ -165,8 +165,7 @@ const CurationSchedulePage = () => {
         url={currentUrl}
       />
       
-      <CompleteNav />
-      <div className="background-level" />
+      
       <div className="curation-schedule-page__content">
         <div className="curation-schedule-page__header">
           <div className="curation-schedule-page__header-top">
