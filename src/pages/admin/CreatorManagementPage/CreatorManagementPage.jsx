@@ -279,12 +279,12 @@ const CreatorManagementPage = () => {
     if (showMergeWarning || showSplitDialog) {
       document.body.style.overflowY = 'hidden';
     } else {
-      document.body.style.overflowY = 'unset';
+      document.body.style.overflowY = '';
     }
 
     // Cleanup function to restore scrolling when component unmounts
     return () => {
-      document.body.style.overflowY = 'unset';
+      document.body.style.overflowY = '';
     };
   }, [showMergeWarning, showSplitDialog]);
 

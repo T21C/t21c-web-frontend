@@ -98,6 +98,13 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     };
   }, [level]);
 
+  useEffect(() => {
+    document.body.style.overflowY = 'hidden';
+    return () => {
+      document.body.style.overflowY = '';
+    };
+  }, []);
+
   const handleInputChange = (e) => {
     const { name, type, value, checked } = e.target;
     setFormData(prev => ({

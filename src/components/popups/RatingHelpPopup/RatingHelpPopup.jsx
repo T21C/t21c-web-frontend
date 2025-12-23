@@ -9,9 +9,6 @@ export const RatingHelpPopup = ({ onClose }) => {
   const popupRef = useRef(null);
 
   useEffect(() => {
-    // Store original body style
-    const originalStyle = window.getComputedStyle(document.body).overflow;
-    
     // Lock scrolling
     document.body.style.overflowY = 'hidden';
 
@@ -30,7 +27,7 @@ export const RatingHelpPopup = ({ onClose }) => {
 
     // Cleanup function
     return () => {
-      document.body.style.overflowY = originalStyle;
+      document.body.style.overflowY = '';
       document.removeEventListener('keydown', handleKeyEvents, true);
       document.removeEventListener('keyup', handleKeyEvents, true);
       document.removeEventListener('keypress', handleKeyEvents, true);

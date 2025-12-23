@@ -354,7 +354,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
     
     // Cleanup: restore body scroll when popup closes
     return () => {
-      document.body.style.overflowY = 'unset';
+      document.body.style.overflowY = '';
     };
   }, []);
 

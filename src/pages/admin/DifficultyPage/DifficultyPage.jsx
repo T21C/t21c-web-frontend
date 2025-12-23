@@ -242,11 +242,11 @@ const DifficultyPage = () => {
     if (isAnyOpen) {
       document.body.style.overflowY = 'hidden';
     } else {
-      document.body.style.overflowY = 'unset';
+      document.body.style.overflowY = '';
     }
 
     return () => {
-      document.body.style.overflowY = 'unset';
+      document.body.style.overflowY = '';
     };
   }, [isCreating, editingDifficulty, deletingDifficulty, showPasswordPrompt, showInitialPasswordPrompt]);
 

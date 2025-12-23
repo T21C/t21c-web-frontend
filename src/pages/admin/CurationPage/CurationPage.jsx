@@ -56,11 +56,11 @@ const CurationPage = () => {
     if (isAnyOpen) {
       document.body.style.overflowY = 'hidden';
     } else {
-      document.body.style.overflowY = 'unset';
+      document.body.style.overflowY = '';
     }
 
     return () => {
-      document.body.style.overflowY = 'unset';
+      document.body.style.overflowY = '';
     };
   }, [showPasswordPrompt, showLevelSelectionPopup, showTypeManagementPopup, showCurationEditPopup, showCuratorManagementPopup]);
 

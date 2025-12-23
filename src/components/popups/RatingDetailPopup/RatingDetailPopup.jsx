@@ -70,16 +70,13 @@ export const RatingDetailPopup = ({
 
   const popupRef = useRef(null);
 
-  useEffect(() => {
-    // Store original body style
-    const originalStyle = window.getComputedStyle(document.body).overflow;
-    
+  useEffect(() => {    
     // Lock scrolling
     document.body.style.overflowY = 'hidden';
 
     // Cleanup function to restore original scroll state
     return () => {
-      document.body.style.overflowY = originalStyle;
+      document.body.style.overflowY = '';
     };
   }, []); // Empty dependency array since we only want this on mount/unmount
 
