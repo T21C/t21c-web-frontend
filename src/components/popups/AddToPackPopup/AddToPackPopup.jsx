@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import api from '@/utils/api';
 import { useNavigate } from 'react-router-dom';
 import { formatCreatorDisplay } from "@/utils/Utility";
+import { createPortal } from 'react-dom';
 
 const AddToPackPopup = ({ level, onClose, onSuccess }) => {
   const { t } = useTranslation('components');
@@ -179,8 +180,9 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
     };
   }, []);
 
+  let popupContent = null;
   if (!user) {
-    return (
+    popupContent = (
       <div className="add-to-pack-popup" onClick={onClose}>
         <div className="add-to-pack-popup__content" onClick={(e) => e.stopPropagation()}>
           <div className="add-to-pack-popup__header">
@@ -199,7 +201,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
     );
   }
 
-  return (
+  popupContent = (
     <>
       <div className="add-to-pack-popup" onClick={onClose}>
         <div className="add-to-pack-popup__content" onClick={(e) => e.stopPropagation()}>
@@ -386,6 +388,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
       )}
     </>
   );
+  return createPortal(popupContent, document.body);
 };
 
 export default AddToPackPopup;

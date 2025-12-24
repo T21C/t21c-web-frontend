@@ -465,7 +465,7 @@ const LevelPage = () => {
       <div className="level-body">
         <ScrollButton />
         <ReferencesButton />
-                 <div className="search-section">
+        <div className="search-section">
            {/* Search Row */}
            <div className="search-row">
              <button 
@@ -538,7 +538,7 @@ const LevelPage = () => {
            <Tooltip id="state-display" place="bottom" noArrow>
              {tLevel('toolTip.stateDisplay')}
            </Tooltip>
-         </div>
+        </div>
 
         <div className="input-setting">
 
@@ -721,8 +721,7 @@ const LevelPage = () => {
             </div>
           </div>
         </div>
-        <span className="total-search-results">{tLevel('totalResults', 
-        { count: totalLevels })}</span>
+        <span className="total-search-results">{tLevel('totalResults', { count: totalLevels })}</span>
         <div className="view-mode-section">
           <p>{tLevel('settingExp.viewMode')}</p>
           <div className="view-mode-buttons">
@@ -810,9 +809,7 @@ const LevelPage = () => {
           </div>
         </InfiniteScroll>
 
-        {showHelpPopup && (
-          <LevelHelpPopup onClose={() => setShowHelpPopup(false)} />
-        )}
+        {showHelpPopup && (<LevelHelpPopup onClose={() => setShowHelpPopup(false)} />)}
       </div>
     </div>
   );
