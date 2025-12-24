@@ -83,7 +83,6 @@
    BASE LAYOUT
    ============================================ */
 .level-detail {
-  background-color: var(--primary-bg);
   color: var(--primary-text);
   min-height: 100vh;
   position: relative;

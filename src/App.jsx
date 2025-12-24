@@ -30,7 +30,6 @@ function App() {
             style={{
               height: "100vh",
               width: "100vw",
-              backgroundColor: "#090909",
             }}
           >
             <div className="loader loader-level-detail"></div>

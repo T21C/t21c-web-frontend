@@ -1,9 +1,3 @@
-.admin-backup-page {
-  background-color: var(--color-black);
-  color: var(--color-white);
-  min-height: 100vh;
-}
-
 .admin-backup-page .admin-backup-body {
   position: relative;
   z-index: 2;

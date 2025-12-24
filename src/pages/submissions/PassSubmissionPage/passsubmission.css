@@ -1,12 +1,3 @@
-.pass-submission-page {
-  background-color: var(--color-black);
-  min-height: 100vh;
-  position: relative;
-  flex-direction: column;
-  place-items: center;
-  overflow-x: hidden;
-}
-
 .pass-submission-page .form-container {
   place-items: center;
   overflow: hidden;

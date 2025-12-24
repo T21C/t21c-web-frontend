@@ -1,11 +1,3 @@
-.difficulty-page {
-  background-color: var(--color-black);
-  width: 100%;
-  color: var(--color-white);
-  min-height: 100vh;
-  position: relative;
-}
-
 .difficulty-page .difficulty-container {
   width: 90%;
   max-width: 1200px;

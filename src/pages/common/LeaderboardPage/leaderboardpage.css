@@ -1,8 +1,3 @@
-.leaderboard-page {
-  background-color: var(--color-black);
-  color: var(--color-white);
-  min-height: 100vh;
-}
 .leaderboard-page .leaderboard-body {
   position: relative;
   z-index: 2;

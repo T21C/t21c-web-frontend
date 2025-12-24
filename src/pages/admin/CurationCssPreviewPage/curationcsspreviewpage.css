@@ -2,12 +2,6 @@
    CURATION CSS PREVIEW PAGE
    ============================================ */
 
-.curation-css-preview-page {
-  position: relative;
-  min-height: 100vh;
-  background-color: var(--color-black);
-}
-
 /* Loading and Error States */
 .curation-css-preview-loading,
 .curation-css-preview-error {
