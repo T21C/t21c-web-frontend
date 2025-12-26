@@ -26,6 +26,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     team: '',
     diffId: '',
     previousDiffId: null,
+    ppBaseScore: '',
     baseScore: '',
     videoLink: '',
     dlLink: '',
@@ -58,6 +59,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         artist: level.artist || '',
         diffId: level.diffId !== null ? level.diffId : 0,
         baseScore: level.baseScore,
+        ppBaseScore: level.ppBaseScore,
         videoLink: level.videoLink || '',
         dlLink: level.dlLink || '',
         workshopLink: level.workshopLink || '',
@@ -169,6 +171,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
       }));
     }
   };
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -500,9 +503,13 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   difficulties={difficulties}
                   showDiff={true}
                 />
-                {isFromAnnouncementPage && (
+                {isFromAnnouncementPage ? (
                   <div className="base-score-display">
                     Current
+                  </div>
+                ) : (
+                  <div className="base-score-display">
+                    {difficulties.find(d => d.id === parseInt(formData.diffId))?.baseScore} PP
                   </div>
                 )}
               </div>
@@ -554,6 +561,17 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   </div>
                 </div>
               )}
+              
+              <div className="form-group">
+                <label htmlFor="ppBaseScore">{tLevel('form.labels.ppBaseScore')}</label>
+                <input
+                  type="number"
+                  id="ppBaseScore"
+                  name="ppBaseScore"
+                  value={formData.ppBaseScore}
+                  onChange={handleInputChange}
+                />
+              </div>
             </div>
 
             <div className="form-group">

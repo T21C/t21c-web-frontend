@@ -379,3 +379,9 @@ export function formatDate(date, language = 'en') {
 export function isCdnUrl(url) {
   return url?.startsWith(import.meta.env.VITE_CDN_URL);
 }
+
+export function selectIconSize(url, size = "small") {
+  if (!url) return null;
+  if (!isCdnUrl(url)) return url;
+  return url.replace('/original', `/${size}`);
+}

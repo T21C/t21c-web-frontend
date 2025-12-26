@@ -67,12 +67,15 @@
     },
     "difficulty": "Difficulty",
     "baseScore": "Base Score",
+    "ppBaseScore": "PP Base Score",
     "aliases": "Aliases",
     "comments": "Comments",
     "createdAt": "Created at"
   },
   "leaderboard": {
     "header": "Leaderboard",
+    "refresh": "Refresh Leaderboard",
+    "refreshed": "Leaderboard refreshed!",
     "notBeaten": "This level hasn't been beaten yet!",
     "noClearsYet": "No clears yet!",
     "challenge": "Maybe you will be the one to take on this challenge?",
@@ -101,7 +104,8 @@
   "errors": {
     "loginRequired": "You need to be logged in to like this level",
     "likeFailed": "Failed to update like status",
-    "voteFailed": "Failed to submit rating accuracy vote"
+    "voteFailed": "Failed to submit rating accuracy vote",
+    "refreshFailed": "Failed to refresh leaderboard"
   },
   "messages": {
     "liked": "Liked!",

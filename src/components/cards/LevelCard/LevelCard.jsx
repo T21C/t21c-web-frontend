@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { EditLevelPopup, AddToPackPopup } from "@/components/popups";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { EditIcon, SteamIcon, DownloadIcon, VideoIcon, PassIcon, LikeIcon, PackIcon, DragHandleIcon } from "@/components/common/icons";
-import { formatCreatorDisplay } from "@/utils/Utility";
+import { formatCreatorDisplay, selectIconSize } from "@/utils/Utility";
 import { ABILITIES, hasBit } from "@/utils/Abilities";
 import { permissionFlags } from "@/utils/UserPermissions";
 import { hasFlag } from "@/utils/UserPermissions";
@@ -58,12 +58,6 @@ const LevelCard = ({
   const customBaseScore = level.baseScore && level.baseScore !== difficultyDict[level.diffId]?.baseScore ? level.baseScore : null;
   const tagIds = (displayMode !== 'normal' || !showTags) ? [] : (level.tags?.map((item) => item.id) || []);
   const tags = tagIds.map((id) => tagsDict[id]).filter(Boolean); // Filter out undefined/null tags
-  
-  const lvImage = (
-    legacyMode ? 
-    difficultyDict[difficultyInfo?.id]?.legacyIcon 
-    : difficultyDict[difficultyInfo?.id]?.icon
-  ) || difficultyDict[difficultyInfo?.id]?.icon;
 
   // Handle body overflow when popups are open
   useEffect(() => {
@@ -116,7 +110,7 @@ const LevelCard = ({
 
   const renderDifficultyIcon = ({ showRating = true, showCuration = true, showBaseScore = true, showTags: showTagsInIcon = false } = {}) => (
     <div className="img-wrapper">
-      <img src={lvImage} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
+      <img src={difficultyDict[difficultyInfo?.id]?.icon} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
       
       {showRating && level.rating?.averageDifficultyId && 
        difficultyDict[level.rating.averageDifficultyId]?.icon &&
@@ -124,7 +118,7 @@ const LevelCard = ({
        difficultyDict[level.diffId]?.name.startsWith("Q") && (
         <img 
           className="rating-icon"
-          src={difficultyDict[level.rating.averageDifficultyId]?.icon}
+          src={selectIconSize(difficultyDict[level.rating.averageDifficultyId]?.icon, "small")}
           alt="Rating icon" 
         />
       )}
@@ -132,7 +126,7 @@ const LevelCard = ({
       {showCuration && level.curation?.typeId && (
         <img 
           className="curation-icon"
-          src={level.curation.type.icon}
+          src={selectIconSize(level.curation.type.icon, "small")}
           alt="Curation icon" 
         />
       )}
@@ -263,7 +257,7 @@ const LevelCard = ({
               title={tag.name}
             >
               {tag.icon ? (
-                <img src={tag.icon} alt={tag.name} />
+                <img src={selectIconSize(tag.icon, "small")} alt={tag.name} />
               ) : (
                 <span className="level-tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
               )}
@@ -335,7 +329,7 @@ const LevelCard = ({
           style={{ '--card-bg-image': thumbnailUrl ? `url(${thumbnailUrl})` : 'none' }}
         >
           <div className="difficulty-icon-wrapper">
-            <img src={lvImage} alt={difficultyInfo?.name || 'Difficulty icon'} />
+            <img src={difficultyDict[difficultyInfo?.id]?.icon} alt={difficultyInfo?.name || 'Difficulty icon'} />
           </div>
 
           {tags && tags.length > 0 && (
@@ -355,7 +349,7 @@ const LevelCard = ({
                     title={tag.name}
                   >
                     {tag.icon ? (
-                      <img src={tag.icon} alt={tag.name} />
+                      <img src={selectIconSize(tag.icon, "small")} alt={tag.name} />
                     ) : (
                       <span className="level-tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
                     )}
@@ -474,7 +468,7 @@ const LevelCard = ({
     <>
       <div className="level-details-wrapper">
         <div className="img-wrapper">
-          <img src={lvImage} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
+          <img src={difficultyDict[difficultyInfo?.id]?.icon} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
           
           {level.rating?.averageDifficultyId && 
            difficultyDict[level.rating.averageDifficultyId]?.icon &&
@@ -482,7 +476,7 @@ const LevelCard = ({
            difficultyDict[level.diffId]?.name.startsWith("Q") && (
             <img 
               className="rating-icon"
-              src={difficultyDict[level.rating.averageDifficultyId]?.icon}
+              src={selectIconSize(difficultyDict[level.rating.averageDifficultyId]?.icon, "small")}
               alt="Rating icon" 
             />
           )}
@@ -490,7 +484,7 @@ const LevelCard = ({
           {level.curation?.typeId && (
             <img 
               className="curation-icon"
-              src={level.curation.type.icon}
+              src={selectIconSize(level.curation.type.icon, "small")}
               alt="Curation icon" 
             />
           )}

@@ -33,9 +33,10 @@ import {
   LegacyDiffIcon, 
   PercentIcon, 
   CalendarIcon, 
-  ScoreIcon
+  ScoreIcon,
+  RefreshIcon
 } from "@/components/common/icons";
-import { createEventSystem, formatCreatorDisplay, formatDate, isCdnUrl } from "@/utils/Utility";
+import { createEventSystem, formatCreatorDisplay, formatDate, isCdnUrl, selectIconSize } from "@/utils/Utility";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
 import LevelDownloadPopup from '../../../components/popups/LevelDownloadPopup/LevelDownloadPopup';
@@ -213,7 +214,7 @@ const TagsDropdown = ({ tags, show, onClose }) => {
                   title={tag.name}
                 >
                   {tag.icon ? (
-                    <img src={tag.icon} alt={tag.name} className="tag-chip-icon" />
+                    <img src={selectIconSize(tag.icon, "small")} alt={tag.name} className="tag-chip-icon" />
                   ) : (
                     <span className="tag-chip-letter">{tag.name.charAt(0).toUpperCase()}</span>
                   )}
@@ -367,6 +368,12 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
                 <div className="each-info">
                   <span>{tLevel('info.baseScore')}:</span>
                   <span>{level.baseScore || difficulty.baseScore}PP</span>
+                </div>
+              )}
+              {(level.ppBaseScore || difficulty.ppBaseScore) && (
+                <div className="each-info">
+                  <span>{tLevel('info.ppBaseScore')}:</span>
+                  <span>{level.ppBaseScore || difficulty.ppBaseScore}PP</span>
                 </div>
               )}
               {level.aliases && level.aliases.length > 0 && (
@@ -606,7 +613,7 @@ const CurationTooltip = ({ curation, show, onClose }) => {
         {curation.assignedByUser?.avatarUrl && (
           <img 
             className="curation-tooltip-avatar" 
-            src={curation.assignedByUser.avatarUrl} 
+            src={selectIconSize(curation.assignedByUser.avatarUrl, "small")} 
             alt={curation.assignedByUser.nickname || 'User'} 
           />
         )}
@@ -940,6 +947,7 @@ const LevelDetailPage = ({ mockData = null }) => {
   const [showDownloadPopup, setShowDownloadPopup] = useState(false);
   const [showRerateDropdown, setShowRerateDropdown] = useState(false);
   const [rerateArrowEnabled, setRerateArrowEnabled] = useState(true);
+  const [isRefreshingLeaderboard, setIsRefreshingLeaderboard] = useState(false);
 
 
 
@@ -1048,39 +1056,52 @@ const LevelDetailPage = ({ mockData = null }) => {
     return () => clearInterval(interval);
   }, [levelTimeout]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      // Use mock data if provided - completely override everything
-      if (mockData) {
-        setRes(mockData);
-        setNotFound(false);
-        setInfoLoading(false);
-        return;
+  const fetchLevelData = useCallback(async (isRefresh = false) => {
+    // Use mock data if provided - completely override everything
+    if (mockData) {
+      setRes(mockData);
+      setNotFound(false);
+      setInfoLoading(false);
+      return;
+    }
+    
+    if (isRefresh) {
+      setIsRefreshingLeaderboard(true);
+    }
+    
+    try {
+      const levelData = await api.get(`${import.meta.env.VITE_LEVELS}/${effectiveId}`);
+
+      if (levelData.data.timeout) {
+        setLevelTimeout(levelData.data.timeout);
       }
       
-      try {
-        const levelData = await api.get(`${import.meta.env.VITE_LEVELS}/${effectiveId}`);
-
-        if (levelData.data.timeout) {
-          setLevelTimeout(levelData.data.timeout);
-        }
-        
-        setRes(prevRes => ({
-          ...prevRes,
-          ...levelData.data
-        }));
-        setNotFound(false);
-      } catch (error) {
-        console.error("Error fetching level data:", error);
-        if (error.response?.status === 404 || error.response?.status === 403) {
-          setNotFound(true);
-        }
-      } finally {
-        setInfoLoading(false);
+      setRes(prevRes => ({
+        ...prevRes,
+        ...levelData.data
+      }));
+      setNotFound(false);
+      
+      if (isRefresh) {
+        toast.success(tLevel('leaderboard.refreshed'));
       }
-    };
-    fetchData();
-  }, [effectiveId, mockData]);
+    } catch (error) {
+      console.error("Error fetching level data:", error);
+      if (error.response?.status === 404 || error.response?.status === 403) {
+        setNotFound(true);
+      }
+      if (isRefresh) {
+        toast.error(tLevel('errors.refreshFailed'));
+      }
+    } finally {
+      setInfoLoading(false);
+      setIsRefreshingLeaderboard(false);
+    }
+  }, [effectiveId, mockData, tLevel]);
+
+  useEffect(() => {
+    fetchLevelData();
+  }, [effectiveId, mockData]); // Don't include fetchLevelData to avoid infinite loop
 
   useEffect(() => {
     if (res?.level?.videoLink) {
@@ -1596,7 +1617,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                  difficulty.name.startsWith("Q") ?
                 <img 
                     className="rating-icon"
-                    src={averageDifficulty.icon}
+                    src={selectIconSize(averageDifficulty.icon, "small")}
                     alt="Rating icon" />
                 : null
                 }
@@ -1631,7 +1652,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                   >
                     <img 
                       className="curation-type-icon" 
-                      src={res.level.curation.type.icon} 
+                      src={selectIconSize(res.level.curation.type.icon, "medium")} 
                       alt={res.level.curation.type.name} 
                     />
                   </div>
@@ -1733,7 +1754,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                   >
                     <img 
                       className="curation-type-icon" 
-                      src={res.level.curation.type.icon} 
+                      src={selectIconSize(res.level.curation.type.icon, "medium")} 
                       alt={res.level.curation.type.name} 
                     />
                   </div>
@@ -2023,7 +2044,17 @@ const LevelDetailPage = ({ mockData = null }) => {
           </div>
 
           <div className="rank">
-            <h1>{tLevel('leaderboard.header')}</h1>
+            <div className="rank-header">
+              <h1>{tLevel('leaderboard.header')}</h1>
+              <button 
+                className={`refresh-leaderboard-button ${isRefreshingLeaderboard ? 'refreshing' : ''}`}
+                onClick={() => fetchLevelData(true)}
+                disabled={isRefreshingLeaderboard}
+                title={tLevel('leaderboard.refresh')}
+              >
+                <RefreshIcon size="20px" />
+              </button>
+            </div>
             {sortedLeaderboard.length > 0 ? (
               <div className="sort">
                 <Tooltip id="tm" place="top" noArrow>

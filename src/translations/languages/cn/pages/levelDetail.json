@@ -66,6 +66,7 @@
     },
     "difficulty": "等级",
     "baseScore": "基础分数",
+    "ppBaseScore": "PP 基础分数",
     "aliases": "别名",
     "comments": "评论",
     "createdAt": "上传日期"

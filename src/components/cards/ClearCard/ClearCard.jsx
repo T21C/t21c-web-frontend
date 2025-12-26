@@ -6,6 +6,7 @@ import { useState } from "react";
 import DefaultAvatar from "@/components/common/icons/DefaultAvatar";
 import { PassIcon, YoutubeIcon } from "@/components/common/icons";
 import { UserAvatar } from "@/components/layout";
+import { selectIconSize } from "@/utils/Utility";
 
 const ClearCard = ({scoreData, index}) => {
   const { t } = useTranslation('pages');
@@ -57,7 +58,7 @@ const ClearCard = ({scoreData, index}) => {
         <div className="player-info" onClick={redirect}>
           <div className="avatar-container">
             <UserAvatar 
-              primaryUrl={scoreData.player.user?.avatarUrl}
+              primaryUrl={selectIconSize(scoreData.player.user?.avatarUrl, "small")}
               fallbackUrl={scoreData.player.pfp}
               className="pfp"
             />
