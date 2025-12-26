@@ -1617,7 +1617,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                  difficulty.name.startsWith("Q") ?
                 <img 
                     className="rating-icon"
-                    src={selectIconSize(averageDifficulty.icon, "small")}
+                    src={averageDifficulty.icon}
                     alt="Rating icon" />
                 : null
                 }
@@ -1652,7 +1652,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                   >
                     <img 
                       className="curation-type-icon" 
-                      src={selectIconSize(res.level.curation.type.icon, "medium")} 
+                      src={res.level.curation.type.icon} 
                       alt={res.level.curation.type.name} 
                     />
                   </div>
@@ -1754,7 +1754,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                   >
                     <img 
                       className="curation-type-icon" 
-                      src={selectIconSize(res.level.curation.type.icon, "medium")} 
+                      src={res.level.curation.type.icon} 
                       alt={res.level.curation.type.name} 
                     />
                   </div>

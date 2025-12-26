@@ -118,7 +118,7 @@ const LevelCard = ({
        difficultyDict[level.diffId]?.name.startsWith("Q") && (
         <img 
           className="rating-icon"
-          src={selectIconSize(difficultyDict[level.rating.averageDifficultyId]?.icon, "small")}
+          src={difficultyDict[level.rating.averageDifficultyId]?.icon}
           alt="Rating icon" 
         />
       )}
@@ -126,7 +126,7 @@ const LevelCard = ({
       {showCuration && level.curation?.typeId && (
         <img 
           className="curation-icon"
-          src={selectIconSize(level.curation.type.icon, "small")}
+          src={level.curation.type.icon}
           alt="Curation icon" 
         />
       )}
@@ -476,7 +476,7 @@ const LevelCard = ({
            difficultyDict[level.diffId]?.name.startsWith("Q") && (
             <img 
               className="rating-icon"
-              src={selectIconSize(difficultyDict[level.rating.averageDifficultyId]?.icon, "small")}
+              src={difficultyDict[level.rating.averageDifficultyId]?.icon}
               alt="Rating icon" 
             />
           )}
@@ -484,7 +484,7 @@ const LevelCard = ({
           {level.curation?.typeId && (
             <img 
               className="curation-icon"
-              src={selectIconSize(level.curation.type.icon, "small")}
+              src={level.curation.type.icon}
               alt="Curation icon" 
             />
           )}
