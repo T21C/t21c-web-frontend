@@ -61,7 +61,7 @@
       "requestedRating": "申请等级",
       "rerateMessage": "重评信息",
       "lastUpdated": "最新上传",
-      "updatedAt": "已上传："
+      "updatedAt": "上次更新于"
     },
     "tooltips": {
       "expandReason": "点击展开",

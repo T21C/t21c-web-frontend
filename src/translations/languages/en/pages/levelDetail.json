@@ -104,8 +104,7 @@
   "errors": {
     "loginRequired": "You need to be logged in to like this level",
     "likeFailed": "Failed to update like status",
-    "voteFailed": "Failed to submit rating accuracy vote",
-    "refreshFailed": "Failed to refresh leaderboard"
+    "voteFailed": "Failed to submit rating accuracy vote"
   },
   "messages": {
     "liked": "Liked!",

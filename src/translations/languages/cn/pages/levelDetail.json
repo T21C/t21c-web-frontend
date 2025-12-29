@@ -47,7 +47,7 @@
       "value": "{{player}} | {{speed}}×"
     },
     "highestAccuracy": {
-      "label": "最高精准度",
+      "label": "最高准度",
       "value": "{{player}} | {{accuracy}}%"
     },
     "totalClears": {
@@ -66,13 +66,15 @@
     },
     "difficulty": "等级",
     "baseScore": "基础分数",
-    "ppBaseScore": "PP 基础分数",
+    "ppBaseScore": "无暇基础分数",
     "aliases": "别名",
     "comments": "评论",
     "createdAt": "上传日期"
   },
   "leaderboard": {
     "header": "排行榜",
+    "refresh": "刷新排行榜",
+    "refreshed": "已刷新排行榜！",
     "notBeaten": "还没有人通过本关卡！",
     "noClearsYet": "还没有通关记录！",
     "challenge": "也许你要成为第一个吃螃蟹的人？",
@@ -101,7 +103,8 @@
   "errors": {
     "loginRequired": "你需要登录以收藏此关卡",
     "likeFailed": "更新收藏状态失败",
-    "voteFailed": "提交评级准确度投票失败"
+    "voteFailed": "提交评级准确度投票失败",
+    "refreshFailed": "排行榜刷新失败"
   },
   "messages": {
     "liked": "已收藏！",
@@ -124,5 +127,8 @@
     "baseScore": "基础分",
     "date": "日期",
     "user": "用户"
+  },
+  "tags": {
+    "header": "关卡标签"
   }
 } 

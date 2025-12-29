@@ -12,7 +12,9 @@
         "vfxer": "特效师",
         "team": "制作团队",
         "baseScore": "基础分",
+        "ppBaseScore": "无暇基础分",
         "previousBaseScore": "先前基础分",
+        "tags": "标签",
         "videoLink": "视频链接",
         "dlLink": "下载链接",
         "workshopLink": "创意工坊链接",
@@ -22,6 +24,7 @@
       },
       "placeholders": {
         "baseScore": "基础分",
+        "ppBaseScore": "无暇基础分",
         "previousBaseScore": "先前基础分",
         "rerateNumber": "重评评级",
         "rerateReason": "重评原因"
@@ -44,7 +47,8 @@
         "restore": {
           "default": "恢复关卡",
           "restoring": "恢复中……"
-        }
+        },
+        "manageTags": "管理标签"
       }
     },
     "confirmations": {
@@ -59,6 +63,25 @@
       "delete": "软删除失败",
       "toggleHidden": "切换隐藏状态失败",
       "restore": "恢复关卡失败"
+    },
+    "tags": {
+      "title": "管理关卡标签",
+      "currentTags": "当前标签",
+      "noTags": "未分配标签",
+      "removeTag": "移除标签",
+      "addTags": "添加标签",
+      "searchPlaceholder": "搜索标签中……",
+      "loading": "加载标签中……",
+      "noResults": "无匹配结果",
+      "noAvailableTags": "无可用标签",
+      "addTag": "添加标签",
+      "cancel": "取消",
+      "saving": "保存中……",
+      "save": "保存",
+      "errors": {
+        "fetchTags": "标签获取失败",
+        "saveTags": "标签保存失败"
+      }
     }
   },
   "download": {
