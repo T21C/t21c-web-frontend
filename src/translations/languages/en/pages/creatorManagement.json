@@ -45,7 +45,7 @@
   },
   "messages": {
     "noResults": "No creators found",
-    "noResultsSearch": "No creators found matching \"{query}\"",
+    "noResultsSearch": "No creators found matching \"{{query}}\"",
     "creatorCreated": "Creator created successfully",
     "nameRequired": "Creator name is required"
   },

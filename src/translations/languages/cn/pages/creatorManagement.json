@@ -45,7 +45,7 @@
   },
   "messages": {
     "noResults": "未找到创作者",
-    "noResultsSearch": "未找到匹配 \"{query}\" 的创作者",
+    "noResultsSearch": "未找到匹配 \"{{query}}\" 的创作者",
     "creatorCreated": "创作者创建成功",
     "nameRequired": "需要创作者名称"
   },
