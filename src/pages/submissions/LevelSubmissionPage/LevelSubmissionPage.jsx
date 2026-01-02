@@ -9,7 +9,7 @@ import { validateFeelingRating } from "@/utils/Utility";
 import { useTranslation } from "react-i18next";
 import { StagingModeWarning } from "@/components/common/display";
 import { ProfileSelector } from "@/components/common/selectors";
-import { LevelSelectionPopup, CDNTosPopup } from "@/components/popups";
+import { LevelSelectionPopup, CDNTosPopup, LevelUploadPopup } from "@/components/popups";
 
 import api from "@/utils/api";
 import { prepareZipForUpload, validateZipSize } from '@/utils/zipUtils';
@@ -90,6 +90,8 @@ const LevelSubmissionPage = () => {
   const [showCdnTos, setShowCdnTos] = useState(false);
   const [pendingZipFile, setPendingZipFile] = useState(null);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [showUploadProgress, setShowUploadProgress] = useState(false);
+  const [uploadId, setUploadId] = useState(null);
 
   // Helper function to clean video URLs
   const cleanVideoUrl = (url) => {
@@ -316,11 +318,21 @@ const LevelSubmissionPage = () => {
       // Encode the original filename using our UTF-8 to hex encoding
       if (form.levelZip) {
         submissionForm.setDetail('originalname', encodeFilename(form.levelZip.name));
+        
+        // Generate uploadId for progress tracking and show popup
+        const generatedUploadId = crypto.randomUUID();
+        setUploadId(generatedUploadId);
+        submissionForm.setDetail('uploadId', generatedUploadId);
+        setShowUploadProgress(true);
+        
+        // Small delay to ensure SSE connection is established before upload starts
+        await new Promise(resolve => setTimeout(resolve, 100));
       }
 
       const response = await submissionForm.submit();
       
       if (response.requiresLevelSelection) {
+        setShowUploadProgress(false);
         setLevelFiles(response.levelFiles);
         setSelectedFileId(response.fileId);
         setShowLevelSelection(true);
@@ -330,12 +342,19 @@ const LevelSubmissionPage = () => {
       }
       
       if (response.success) {
-        resetForm();
+        // Upload is complete, popup will close automatically when status becomes 'completed'
+        // Small delay to allow progress update to be received
+        setTimeout(() => {
+          setShowUploadProgress(false);
+          resetForm();
+        }, 500);
       } else {
+        setShowUploadProgress(false);
         throw new Error(response.error || 'Failed to submit form');
       }
     } catch (error) {
       console.error('Submission error:', error);
+      setShowUploadProgress(false);
       setError(error.response?.data?.error || error.message || error.error || "Unknown error occurred");
     } finally {
       setSubmission(false);
@@ -619,6 +638,19 @@ const LevelSubmissionPage = () => {
           <CDNTosPopup 
             onAgree={handleCdnTosAgree}
             onDecline={handleCdnTosDecline}
+          />
+        )}
+
+        {/* Level Upload Progress Popup */}
+        {showUploadProgress && (
+          <LevelUploadPopup
+            isOpen={showUploadProgress}
+            onClose={() => setShowUploadProgress(false)}
+            fileName={levelZipInfo?.name}
+            uploadId={uploadId}
+            onUploadComplete={() => {
+              // Upload completed, popup will stay open until user closes it
+            }}
           />
         )}
 

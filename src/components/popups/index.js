@@ -24,6 +24,7 @@ import AddToPackPopup from './AddToPackPopup/AddToPackPopup';
 import CreatePackPopup from './AddToPackPopup/CreatePackPopup';
 import EditPackPopup from './EditPackPopup/EditPackPopup';
 import PackDownloadPopup from './PackDownloadPopup/PackDownloadPopup';
+import LevelUploadPopup from './LevelUploadPopup/LevelUploadPopup';
 
 // User Management Popups
 import UserManagementPopup from './UserManagementPopup/UserManagementPopup';
@@ -56,6 +57,7 @@ export {
     CreatePackPopup,
     EditPackPopup,
     PackDownloadPopup,
+    LevelUploadPopup,
     // User Management Popups
     UserManagementPopup,
     CuratorManagementPopup
