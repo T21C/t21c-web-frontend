@@ -64,6 +64,7 @@ const LeaderboardPage = () => {
     { value: 'averageXacc', label: tLeaderboard('sortOptions.averageXacc') },
     { value: 'totalPasses', label: tLeaderboard('sortOptions.totalPasses') },
     { value: 'universalPassCount', label: tLeaderboard('sortOptions.universalPassCount') },
+    { value: 'score12K', label: tLeaderboard('sortOptions.score12K') },
     { value: 'worldsFirstCount', label: tLeaderboard('sortOptions.worldsFirstCount') },
     { value: 'topDiff', label: tLeaderboard('sortOptions.topDiff') },
     { value: 'top12kDiff', label: tLeaderboard('sortOptions.top12kDiff') }
