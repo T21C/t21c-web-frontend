@@ -9,7 +9,7 @@ import { ScoreCard } from "@/components/cards";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { AdminPlayerPopup, CreatorAssignmentPopup } from "@/components/popups";
-import { DefaultAvatar, ShieldIcon, EditIcon, SearchIcon, SortAscIcon, SortDescIcon } from "@/components/common/icons";
+import { DefaultAvatar, ShieldIcon, EditIcon, SearchIcon, SortAscIcon, SortDescIcon, PackIcon } from "@/components/common/icons";
 import { CaseOpenSelector, CustomSelect } from "@/components/common/selectors";
 import caseOpen from "@/assets/icons/case.png";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -461,7 +461,7 @@ const ProfilePage = () => {
                       onClick={handleViewUserPacks}
                       title="View User's Packs"
                     >
-                      <SearchIcon color="#fff" size={"24px"} />
+                      <PackIcon color="#fff" size={"24px"} />
                     </button>
                   )}
                   </div>

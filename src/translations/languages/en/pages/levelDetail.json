@@ -53,7 +53,8 @@
     },
     "totalClears": {
       "label": "Total Clears",
-      "value": "{{count}}"
+      "value": "{{count}}",
+      "tooltip": "{{total}} total clears, {{unique}} unique"
     },
     "waiting": "Loading..."
   },

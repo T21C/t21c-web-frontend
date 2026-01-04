@@ -853,8 +853,6 @@
 }
 
 .level-detail .body .info .info-item .info-desc {
-  -webkit-user-select: none;
-  user-select: none;
   display: inline-block;
   white-space: nowrap;
   overflow: hidden;

@@ -708,6 +708,8 @@ const LevelDetailPage = ({ mockData = null }) => {
   const [sortDirection, setSortDirection] = useState("desc"); // "desc" or "asc"
   const [infoLoading, setInfoLoading] = useState(true);
   const [sortedLeaderboard, setSortedLeaderboard] = useState([]);
+  const [clearCount, setClearCount] = useState(0);
+  const [hasRepeatedClears, setHasRepeatedClears] = useState(false);
   const [videoDetail, setVideoDetail] = useState(null);
 
   // Custom styling state for curations
@@ -743,6 +745,17 @@ const LevelDetailPage = ({ mockData = null }) => {
   useEffect(() => {
     setIsLongDescription(res?.level?.curation?.description?.length > 250);
   }, [res?.level?.curation?.description]);
+
+  useEffect(() => {
+    const uniqueClears = new Set(sortedLeaderboard.map(player => player.playerId));
+    if (uniqueClears.size !== sortedLeaderboard.length) {
+      setClearCount(uniqueClears.size.toString());
+      setHasRepeatedClears(true);
+    } else {
+      setClearCount(sortedLeaderboard.length.toString());
+      setHasRepeatedClears(false);
+    }
+  }, [sortedLeaderboard]);
 
 
   // Simple CSS sanitizer - remove dangerous content
@@ -1995,11 +2008,20 @@ const LevelDetailPage = ({ mockData = null }) => {
 
               <div className="info-item">
                 <p>{tLevel('stats.totalClears.label')}</p>
-                <span className="info-desc">
-                  {!infoLoading ? 
-                    tLevel('stats.totalClears.value', { count: sortedLeaderboard.length }) 
-                    : tLevel('stats.waiting')}
+                <span 
+                  className="info-desc" 
+                  data-tooltip-id="total-clears-tooltip" 
+                  data-tooltip-content={
+                    hasRepeatedClears 
+                      ? tLevel('stats.totalClears.tooltip', { unique: clearCount, total: sortedLeaderboard.length }) 
+                      : undefined
+                  }
+                  >
+                    {!infoLoading ? 
+                      `${sortedLeaderboard.length} (${clearCount})` 
+                      : tLevel('stats.waiting')}
                 </span>
+                {hasRepeatedClears && <Tooltip id="total-clears-tooltip" place="left" noArrow />}
               </div>
               </>
               ) : (
