@@ -282,9 +282,12 @@ const RatingPage = () => {
          return false;
       if (searchQuery === "vote") 
         return /^vote/i.test(rating.level.rerateNum);
+      if (searchQuery.includes("-vote") && /^vote/i.test(rating.level.rerateNum))
+        return false;
+
       // Search functionality
       if (searchQuery) {
-        const query = searchQuery.toLowerCase();
+        const query = searchQuery.toLowerCase().split("-vote")[0];
         
         // Basic level info search
         const basicMatch = 
@@ -343,7 +346,7 @@ const RatingPage = () => {
       if (showHelpPopup) return;
 
       // Check for Ctrl + Alt + R
-      if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'r') {
+      if (e.ctrlKey && e.altKey && e.key.toLowerCase() === 'f') {
         e.preventDefault(); // Prevent browser refresh
         setRatings(null); 
         fetchRatings();

@@ -168,8 +168,8 @@ export const RatingHelpPopup = ({ onClose }) => {
               
               <li className='keycombo'>
                 <KeyCombo 
-                  keys={['Ctrl', 'Alt', 'R']} 
-                  actualKeys={['Control', 'Alt', 'r']}
+                  keys={['Ctrl', 'Alt', 'F']} 
+                  actualKeys={['Control', 'Alt', 'f']}
                 />
                 <span className="shortcut-description">
                   {tHelp('sections.shortcuts.points.reset')}
