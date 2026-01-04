@@ -631,6 +631,57 @@ const CurationTooltip = ({ curation, show, onClose }) => {
   );
 };
 
+const WeeklyAppearanceDropdown = ({ schedules, show, onClose }) => {
+  const { t } = useTranslation('pages');
+  const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [onClose]);
+
+  const handleDropdownClick = (e) => {
+    e.stopPropagation();
+  };
+
+  if (!show || !schedules?.length) return null;
+
+  // Sort schedules by weekStart (most recent first)
+  const sortedSchedules = [...schedules].sort((a, b) => {
+    return new Date(b.weekStart) - new Date(a.weekStart);
+  });
+
+  return (
+    <div className="weekly-appearance-dropdown" ref={dropdownRef} onClick={handleDropdownClick}>
+      <div className="weekly-appearance-header">{tLevel('weeklyAppearance.header')}</div>
+      <div className="weekly-appearance-list">
+        {sortedSchedules.map((schedule, index) => (
+          <div 
+            key={schedule.id || index} 
+            className={`weekly-appearance-item weekly-appearance-item-${schedule.listType}`}
+          >
+            <div className="weekly-appearance-date">
+              {formatDate(schedule.weekStart, i18next?.language)}
+            </div>
+            <div className="weekly-appearance-list-type">
+              {schedule.listType === 'primary' 
+                ? tLevel('weeklyAppearance.primary') 
+                : tLevel('weeklyAppearance.secondary')}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict }) => {
   const { t } = useTranslation('pages');
   const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
@@ -961,6 +1012,7 @@ const LevelDetailPage = ({ mockData = null }) => {
   const [showRerateDropdown, setShowRerateDropdown] = useState(false);
   const [rerateArrowEnabled, setRerateArrowEnabled] = useState(true);
   const [isRefreshingLeaderboard, setIsRefreshingLeaderboard] = useState(false);
+  const [showWeeklyAppearanceDropdown, setShowWeeklyAppearanceDropdown] = useState(false);
 
 
 
@@ -1616,6 +1668,26 @@ const LevelDetailPage = ({ mockData = null }) => {
           <div className="header">
             <div className="left">
 
+              {res?.level?.curation?.curationSchedules?.length > 0 && (
+                <div 
+                  className="weekly-appearance-container"
+                  onMouseEnter={() => setShowWeeklyAppearanceDropdown(true)}
+                  onMouseLeave={() => setShowWeeklyAppearanceDropdown(false)}
+                >
+                  <div className="weekly-appearance-icon">
+                    <CalendarIcon 
+                      size={"24px"}
+                      color="#fff"
+                      className="weekly-appearance-icon-icon"
+                    />
+                  </div>
+                  <WeeklyAppearanceDropdown
+                    schedules={res?.level?.curation?.curationSchedules}
+                    show={showWeeklyAppearanceDropdown}
+                    onClose={() => setShowWeeklyAppearanceDropdown(false)}
+                  />
+                </div>
+              )}
               <div className="level-id mobile">#{effectiveId}</div>
               <div className="difficulty-curation-row">
               <div className="diff rerate-history-container">
