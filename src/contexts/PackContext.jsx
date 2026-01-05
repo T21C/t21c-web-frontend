@@ -4,6 +4,7 @@ import Cookies from 'js-cookie';
 import api from '@/utils/api';
 import { useAuth } from './AuthContext';
 import { useLocation } from 'react-router-dom';
+import { LevelPackViewModes } from "@/utils/constants";
 
 const PackContext = createContext()
 
@@ -25,13 +26,13 @@ const PackContextProvider = (props) => {
     const [favoritesLoading, setFavoritesLoading] = useState(false);
     
     // Filter state (with cookie persistence)
-    const [filters, setFilters] = useState(() => ({
+    const [filters, setFilters] = useState(() => { return {
         query: Cookies.get('pack_query') || "",
-        viewMode: Cookies.get('pack_view_mode') || "all",
+        viewMode: Cookies.get('pack_viewMode') || LevelPackViewModes.PUBLIC,
         sort: Cookies.get('pack_sort') || "RECENT",
         order: Cookies.get('pack_order') || "DESC",
-        myLikesOnly: Cookies.get('pack_my_likes_only') === 'true' || false
-    }));
+        myLikesOnly: Cookies.get('pack_myLikesOnly') === 'true' || false
+    }});
     
     // Use ref to access current filters without causing re-renders
     const filtersRef = useRef(filters);
@@ -39,8 +40,10 @@ const PackContextProvider = (props) => {
 
     // Save filters to cookies
     useEffect(() => {
+        // Convert values to strings for cookie storage
         Object.entries(filters).forEach(([key, value]) => {
-            Cookies.set(`pack_${key}`, value, { expires: 365 });
+            const cookieValue = value === null || value === undefined ? '' : value;
+            Cookies.set(`pack_${key}`, cookieValue, { expires: 365 });
         });
     }, [filters]);
 
@@ -244,7 +247,7 @@ const PackContextProvider = (props) => {
     const resetFilters = () => {
         setFilters({
             query: "",
-            viewMode: "all",
+            viewMode: LevelPackViewModes.PUBLIC,
             sort: "RECENT",
             order: "DESC",
             myLikesOnly: false

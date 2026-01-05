@@ -68,10 +68,10 @@ const PackPageContent = () => {
   // View mode options - filter based on admin status
   const viewModeOptions = [
     { value: 'all', label: tPack('viewMode.all') },
-    ...(isAdmin ? [{ value: LevelPackViewModes.PUBLIC, label: tPack('viewMode.public') }] : []),
-    { value: LevelPackViewModes.LINKONLY, label: tPack('viewMode.linkonly') },
-    { value: LevelPackViewModes.PRIVATE, label: tPack('viewMode.private') },
-    { value: LevelPackViewModes.FORCED_PRIVATE, label: tPack('viewMode.forcedPrivate') }
+    ...(isAdmin ? [{ value: String(LevelPackViewModes.PUBLIC), label: tPack('viewMode.public') }] : []),
+    { value: String(LevelPackViewModes.LINKONLY), label: tPack('viewMode.linkonly') },
+    { value: String(LevelPackViewModes.PRIVATE), label: tPack('viewMode.private') },
+    { value: String(LevelPackViewModes.FORCED_PRIVATE), label: tPack('viewMode.forcedPrivate') }
   ];
 
   // Handle my packs mode (only change if needed)
@@ -81,12 +81,7 @@ const PackPageContent = () => {
     }
   }, [isMyPacks, user, filters.viewMode]);
 
-  // Set default view mode for non-admins (only change if needed)
-  useEffect(() => {
-    if (!isAdmin && !isMyPacks && filters.viewMode !== 'all') {
-      updateFilter('viewMode', 'all'); // Show all visible packs
-    }
-  }, [isAdmin, isMyPacks, filters.viewMode]);
+  // No longer overriding viewMode for non-admins - default is PUBLIC
 
   // Debounced search effect (same pattern as PassPage)
   useEffect(() => {
@@ -124,7 +119,7 @@ const PackPageContent = () => {
   const handleReset = useCallback(() => {
     updateFilter('query', '');
     setPendingQuery('');
-    updateFilter('viewMode', 'all');
+    updateFilter('viewMode', LevelPackViewModes.PUBLIC);
     updateFilter('sort', 'RECENT');
     updateFilter('order', 'DESC');
     updateFilter('myLikesOnly', false);
