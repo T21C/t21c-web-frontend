@@ -95,6 +95,78 @@
     "created": "Difficulty created successfully",
     "updated": "Difficulty updated successfully",
     "deleted": "Difficulty deleted successfully",
-    "reordered": "Difficulties reordered successfully"
+    "reordered": "Difficulties reordered successfully",
+    "reorderFailed": "Failed to reorder difficulties"
+  },
+  "tabs": {
+    "difficulties": "Difficulties",
+    "tags": "Tags",
+    "groups": "Groups"
+  },
+  "tags": {
+    "createButton": "Create Tag",
+    "loading": "Loading tags...",
+    "noTags": "No tags found. Create your first tag!",
+    "ungrouped": "Ungrouped",
+    "tagCount": "{{count}} tag{{plural}}",
+    "create": {
+      "title": "Create Tag",
+      "name": "Name",
+      "color": "Color",
+      "group": {
+        "label": "Group (Optional)",
+        "placeholder": "Enter group name"
+      },
+      "icon": {
+        "label": "Icon (Optional)",
+        "preview": "Preview",
+        "remove": "Remove Icon"
+      },
+      "createButton": "Create",
+      "cancelButton": "Cancel"
+    },
+    "edit": {
+      "title": "Edit Tag",
+      "name": "Name",
+      "color": "Color",
+      "group": {
+        "label": "Group (Optional)",
+        "placeholder": "Enter group name"
+      },
+      "icon": {
+        "label": "Icon (Optional)",
+        "preview": "Preview",
+        "remove": "Remove Icon"
+      },
+      "updateButton": "Update",
+      "cancelButton": "Cancel",
+      "unsavedChanges": "You have unsaved changes. Are you sure you want to close?"
+    },
+    "delete": {
+      "title": "Delete Tag",
+      "message": "Are you sure you want to delete the tag \"{{name}}\"?",
+      "description": "This action cannot be undone. The tag will be removed from all levels.",
+      "deleteButton": "Delete",
+      "cancelButton": "Cancel"
+    },
+    "notifications": {
+      "fetchFailed": "Failed to fetch tags",
+      "created": "Tag created successfully",
+      "createFailed": "Failed to create tag",
+      "updated": "Tag updated successfully",
+      "updateFailed": "Failed to update tag",
+      "deleted": "Tag deleted successfully",
+      "deleteFailed": "Failed to delete tag",
+      "reordered": "Tags reordered successfully",
+      "reorderFailed": "Failed to reorder tags"
+    }
+  },
+  "groups": {
+    "loading": "Loading groups...",
+    "noGroups": "No groups found. Create tags with groups first!",
+    "notifications": {
+      "reordered": "Groups reordered successfully",
+      "reorderFailed": "Failed to reorder groups"
+    }
   }
 } 

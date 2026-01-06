@@ -87,7 +87,7 @@ const DifficultyPage = () => {
       setTags(response.data);
     } catch (error) {
       console.error('Error fetching tags:', error);
-      addNotification('Failed to fetch tags', 'error');
+      addNotification(tDiff('tags.notifications.fetchFailed'), 'error');
     } finally {
       setTagsLoading(false);
     }
@@ -124,10 +124,10 @@ const DifficultyPage = () => {
       }
       setIsCreatingTag(false);
       setNewTag({ name: '', iconFile: null, icon: null, color: '#FF5733', group: '' });
-      addNotification('Tag created successfully');
+      addNotification(tDiff('tags.notifications.created'));
     } catch (error) {
       console.error('Error creating tag:', error);
-      addNotification(error.response?.data?.error || 'Failed to create tag', 'error');
+      addNotification(error.response?.data?.error || tDiff('tags.notifications.createFailed'), 'error');
     }
   };
 
@@ -165,10 +165,10 @@ const DifficultyPage = () => {
       }
       setEditingTag(null);
       setOriginalTag(null);
-      addNotification('Tag updated successfully');
+      addNotification(tDiff('tags.notifications.updated'));
     } catch (error) {
       console.error('Error updating tag:', error);
-      addNotification(error.response?.data?.error || 'Failed to update tag', 'error');
+      addNotification(error.response?.data?.error || tDiff('tags.notifications.updateFailed'), 'error');
     }
   };
 
@@ -204,7 +204,7 @@ const DifficultyPage = () => {
   // Handle closing the edit tag modal with confirmation if needed
   const handleCloseEditTag = () => {
     if (hasUnsavedChanges()) {
-      const confirmed = window.confirm('You have unsaved changes. Are you sure you want to close?');
+      const confirmed = window.confirm(tDiff('tags.edit.unsavedChanges'));
       if (!confirmed) return;
     }
     
@@ -225,10 +225,10 @@ const DifficultyPage = () => {
       });
       setTags(prev => prev.filter(tag => tag.id !== deletingTag.id));
       setDeletingTag(null);
-      addNotification('Tag deleted successfully');
+      addNotification(tDiff('tags.notifications.deleted'));
     } catch (error) {
       console.error('Error deleting tag:', error);
-      addNotification(error.response?.data?.error || 'Failed to delete tag', 'error');
+      addNotification(error.response?.data?.error || tDiff('tags.notifications.deleteFailed'), 'error');
     }
   };
 
@@ -449,14 +449,9 @@ const DifficultyPage = () => {
   };
 
   const handleCreateClick = () => {
-    setPendingAction({ type: 'create' });
-    setShowPasswordPrompt(true);
+      setIsCreating(true);
   };
 
-  const handleDeleteClick = (difficulty) => {
-    setPendingAction({ type: 'delete', data: difficulty });
-    setShowPasswordPrompt(true);
-  };
 
   const handleDragEnd = async (result) => {
     if (!result.destination) return;
@@ -551,10 +546,10 @@ const DifficultyPage = () => {
         }
       });
 
-      addNotification('Tags reordered successfully', 'success');
+      addNotification(tDiff('tags.notifications.reordered'), 'success');
     } catch (err) {
       console.error('Error updating tag sort orders:', err);
-      addNotification('Failed to reorder tags', 'error');
+      addNotification(tDiff('tags.notifications.reorderFailed'), 'error');
       await fetchTags();
     } finally {
       setIsTagsReordering(false);
@@ -595,10 +590,10 @@ const DifficultyPage = () => {
         }
       });
 
-      addNotification('Groups reordered successfully', 'success');
+      addNotification(tDiff('groups.notifications.reordered'), 'success');
     } catch (err) {
       console.error('Error updating group sort orders:', err);
-      addNotification('Failed to reorder groups', 'error');
+      addNotification(tDiff('groups.notifications.reorderFailed'), 'error');
       await fetchTags();
     } finally {
       setIsGroupsReordering(false);
@@ -710,13 +705,13 @@ const DifficultyPage = () => {
               className={`tab-button ${activeTab === 'difficulties' ? 'active' : ''}`}
               onClick={() => setActiveTab('difficulties')}
             >
-              Difficulties
+              {tDiff('tabs.difficulties')}
             </button>
             <button
               className={`tab-button ${activeTab === 'tags' ? 'active' : ''}`}
               onClick={() => setActiveTab('tags')}
             >
-              Tags
+              {tDiff('tabs.tags')}
             </button>
           </div>
 
@@ -805,13 +800,13 @@ const DifficultyPage = () => {
                   className={`sub-tab-button ${tagsSubTab === 'tags' ? 'active' : ''}`}
                   onClick={() => setTagsSubTab('tags')}
                 >
-                  Tags
+                  {tDiff('tabs.tags')}
                 </button>
                 <button
                   className={`sub-tab-button ${tagsSubTab === 'groups' ? 'active' : ''}`}
                   onClick={() => setTagsSubTab('groups')}
                 >
-                  Groups
+                  {tDiff('tabs.groups')}
                 </button>
               </div>
 
@@ -822,19 +817,19 @@ const DifficultyPage = () => {
                     onClick={() => setIsCreatingTag(true)}
                     disabled={tagsLoading || isTagsReordering}
                   >
-                    Create Tag
+                    {tDiff('tags.createButton')}
                   </button>
 
                   {tagsLoading ? (
-                    <div className="loading-message">Loading tags...</div>
+                    <div className="loading-message">{tDiff('tags.loading')}</div>
                   ) : tags.length === 0 ? (
-                    <div className="no-items-message">No tags found. Create your first tag!</div>
+                    <div className="no-items-message">{tDiff('tags.noTags')}</div>
                   ) : (
                     <div className="grouped-tags-container">
                       {orderedGroups.map((group) => (
                         <div key={group.name || 'ungrouped'} className="tag-group-section">
                           <h3 className="tag-group-header">
-                            {group.name || 'Ungrouped'}
+                            {group.name || tDiff('tags.ungrouped')}
                             <span className="tag-count">({group.tags.length})</span>
                           </h3>
                           <DragDropContext onDragEnd={(result) => handleTagDragEnd(result, group.name)}>
@@ -911,9 +906,9 @@ const DifficultyPage = () => {
                 <>
                   {/* Groups Sub-tab */}
                   {tagsLoading ? (
-                    <div className="loading-message">Loading groups...</div>
+                    <div className="loading-message">{tDiff('groups.loading')}</div>
                   ) : orderedGroups.length === 0 ? (
-                    <div className="no-items-message">No groups found. Create tags with groups first!</div>
+                    <div className="no-items-message">{tDiff('groups.noGroups')}</div>
                   ) : (
                     <DragDropContext onDragEnd={handleGroupDragEnd}>
                       <Droppable droppableId="groups">
@@ -939,10 +934,10 @@ const DifficultyPage = () => {
                                   >
                                     <div className="group-item-content">
                                       <div className="group-item-name">
-                                        {group.name || 'Ungrouped'}
+                                        {group.name || tDiff('tags.ungrouped')}
                                       </div>
                                       <div className="group-item-count">
-                                        {group.tags.length} tag{group.tags.length !== 1 ? 's' : ''}
+                                        {tDiff('tags.tagCount', { count: group.tags.length, plural: group.tags.length !== 1 ? 's' : '' })}
                                       </div>
                                     </div>
                                     <div className="group-item-preview">
@@ -1007,10 +1002,10 @@ const DifficultyPage = () => {
                         <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     </button>
-                    <h2>Create Tag</h2>
+                    <h2>{tDiff('tags.create.title')}</h2>
                     <form onSubmit={(e) => { e.preventDefault(); handleCreateTag(); }}>
                       <div className="form-group">
-                        <label>Name</label>
+                        <label>{tDiff('tags.create.name')}</label>
                         <input
                           type="text"
                           value={newTag.name}
@@ -1019,7 +1014,7 @@ const DifficultyPage = () => {
                         />
                       </div>
                       <div className="form-group">
-                        <label>Color</label>
+                        <label>{tDiff('tags.create.color')}</label>
                         <input
                           type="color"
                           value={newTag.color}
@@ -1028,16 +1023,16 @@ const DifficultyPage = () => {
                         />
                       </div>
                       <div className="form-group">
-                        <label>Group (Optional)</label>
+                        <label>{tDiff('tags.create.group.label')}</label>
                         <input
                           type="text"
                           value={newTag.group}
                           onChange={(e) => setNewTag({ ...newTag, group: e.target.value })}
-                          placeholder="Enter group name"
+                          placeholder={tDiff('tags.create.group.placeholder')}
                         />
                       </div>
                       <div className="form-group">
-                        <label>Icon (Optional)</label>
+                        <label>{tDiff('tags.create.icon.label')}</label>
                         <input
                           type="file"
                           accept="image/*"
@@ -1058,7 +1053,7 @@ const DifficultyPage = () => {
                           <>
                             <img
                               src={newTag.icon}
-                              alt="Preview"
+                              alt={tDiff('tags.create.icon.preview')}
                               className="icon-preview"
                             />
                             <button
@@ -1072,13 +1067,13 @@ const DifficultyPage = () => {
                                 setNewTag({ ...newTag, iconFile: null, icon: null });
                               }}
                             >
-                              Remove Icon
+                              {tDiff('tags.create.icon.remove')}
                             </button>
                           </>
                         )}
                       </div>
                       <div className="modal-actions">
-                        <button type="submit" className="confirm-button">Create</button>
+                        <button type="submit" className="confirm-button">{tDiff('tags.create.createButton')}</button>
                         <button
                           type="button"
                           className="cancel-button"
@@ -1091,7 +1086,7 @@ const DifficultyPage = () => {
                             setNewTag({ name: '', iconFile: null, icon: null, color: '#FF5733' });
                           }}
                         >
-                          Cancel
+                          {tDiff('tags.create.cancelButton')}
                         </button>
                       </div>
                     </form>
@@ -1118,10 +1113,10 @@ const DifficultyPage = () => {
                         <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     </button>
-                    <h2>Edit Tag</h2>
+                    <h2>{tDiff('tags.edit.title')}</h2>
                     <form onSubmit={(e) => { e.preventDefault(); handleUpdateTag(); }}>
                       <div className="form-group">
-                        <label>Name</label>
+                        <label>{tDiff('tags.edit.name')}</label>
                         <input
                           type="text"
                           value={editingTag.name}
@@ -1130,7 +1125,7 @@ const DifficultyPage = () => {
                         />
                       </div>
                       <div className="form-group">
-                        <label>Color</label>
+                        <label>{tDiff('tags.edit.color')}</label>
                         <input
                           type="color"
                           value={editingTag.color}
@@ -1139,16 +1134,16 @@ const DifficultyPage = () => {
                         />
                       </div>
                       <div className="form-group">
-                        <label>Group (Optional)</label>
+                        <label>{tDiff('tags.edit.group.label')}</label>
                         <input
                           type="text"
                           value={editingTag.group || ''}
                           onChange={(e) => setEditingTag({ ...editingTag, group: e.target.value })}
-                          placeholder="Enter group name"
+                          placeholder={tDiff('tags.edit.group.placeholder')}
                         />
                       </div>
                       <div className="form-group">
-                        <label>Icon (Optional)</label>
+                        <label>{tDiff('tags.edit.icon.label')}</label>
                         <input
                           type="file"
                           accept="image/*"
@@ -1173,7 +1168,7 @@ const DifficultyPage = () => {
                           <>
                             <img
                               src={editingTag.icon}
-                              alt="Preview"
+                              alt={tDiff('tags.edit.icon.preview')}
                               className="icon-preview"
                             />
                             <button
@@ -1187,19 +1182,19 @@ const DifficultyPage = () => {
                                 setEditingTag({ ...editingTag, iconFile: null, icon: null });
                               }}
                             >
-                              Remove Icon
+                              {tDiff('tags.edit.icon.remove')}
                             </button>
                           </>
                         )}
                       </div>
                       <div className="modal-actions">
-                        <button type="submit" className="confirm-button">Update</button>
+                        <button type="submit" className="confirm-button">{tDiff('tags.edit.updateButton')}</button>
                       <button
                         type="button"
                         className="cancel-button"
                         onClick={handleCloseEditTag}
                       >
-                          Cancel
+                          {tDiff('tags.edit.cancelButton')}
                         </button>
                       </div>
                     </form>
@@ -1226,10 +1221,10 @@ const DifficultyPage = () => {
                         <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     </button>
-                    <h2>Delete Tag</h2>
-                    <p>Are you sure you want to delete the tag "{deletingTag.name}"?</p>
+                    <h2>{tDiff('tags.delete.title')}</h2>
+                    <p>{tDiff('tags.delete.message', { name: deletingTag.name })}</p>
                     <p>
-                      This action cannot be undone. The tag will be removed from all levels.
+                      {tDiff('tags.delete.description')}
                     </p>
                     <div className="modal-actions">
                       <button
@@ -1237,14 +1232,14 @@ const DifficultyPage = () => {
                         className="delete-confirm-button"
                         onClick={handleDeleteTag}
                       >
-                        Delete
+                        {tDiff('tags.delete.deleteButton')}
                       </button>
                       <button
                         type="button"
                         className="cancel-button"
                         onClick={() => setDeletingTag(null)}
                       >
-                        Cancel
+                        {tDiff('tags.delete.cancelButton')}
                       </button>
                     </div>
                   </div>

@@ -1,0 +1,96 @@
+{
+  "actionPopup": {
+    "close": "Close",
+    "modes": {
+      "update": "Update",
+      "discord": "Discord",
+      "merge": "Merge",
+      "split": "Split",
+      "levels": "Levels"
+    },
+    "update": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Enter creator name"
+      },
+      "verifyCreator": "Verify Creator",
+      "aliases": {
+        "label": "Aliases",
+        "placeholder": "Add alias",
+        "add": "Add"
+      },
+      "updateButton": "Update Creator"
+    },
+    "merge": {
+      "warning": {
+        "title": "Warning:",
+        "message": "This will delete {{creatorName}} and reassign all credits to the selected creator. This action cannot be undone."
+      },
+      "selectTarget": {
+        "label": "Select Target Creator",
+        "placeholder": "Search and select target creator...",
+        "loading": "Loading...",
+        "noOptions": "Type to search creators..."
+      },
+      "mergeButton": "Merge Creators",
+      "creatorLabel": "{{name}} (ID: {{id}}, Charts: {{count}}){{aliases}}"
+    },
+    "split": {
+      "newNamesAndRoles": {
+        "label": "New Creator Names and Roles",
+        "namePlaceholder": "Enter creator name {{index}}",
+        "rolePlaceholder": "Select role",
+        "addAnother": "+ Add Another Name"
+      },
+      "splitButton": "Split Creator"
+    },
+    "discord": {
+      "currentUser": {
+        "label": "Current User",
+        "avatarAlt": "User Avatar",
+        "idLabel": "ID:",
+        "unlinkButton": "Unlink User"
+      },
+      "discordId": {
+        "label": "Discord ID",
+        "placeholder": "Enter Discord ID",
+        "validateButton": "Validate"
+      },
+      "confirm": {
+        "avatarAlt": "Discord Avatar",
+        "message": "Is this the correct Discord user?",
+        "confirmButton": "Confirm",
+        "cancelButton": "Cancel"
+      },
+      "unlinkConfirm": {
+        "message": "Are you sure you want to unlink this user?",
+        "yesButton": "Yes, Unlink",
+        "cancelButton": "Cancel"
+      }
+    },
+    "levels": {
+      "charter": "Charter:",
+      "vfx": "VFX:",
+      "difficulty": "Difficulty"
+    },
+    "errors": {
+      "loadCreatorsFailed": "Failed to load creators",
+      "invalidDiscordId": "Invalid Discord ID or user not found",
+      "updateFailed": "Failed to update creator",
+      "mergeFailed": "Failed to merge creators",
+      "splitFailed": "Failed to split creator",
+      "fetchDiscordFailed": "Failed to fetch Discord user",
+      "updateDiscordFailed": "Failed to update Discord info",
+      "removeDiscordFailed": "Failed to remove Discord info",
+      "unlinkFailed": "Failed to unlink user"
+    },
+    "success": {
+      "updated": "Creator updated successfully",
+      "merged": "Creators merged successfully",
+      "split": "Creator split successfully",
+      "discordUpdated": "Discord info updated successfully",
+      "discordRemoved": "Discord info removed successfully",
+      "userUnlinked": "User unlinked successfully"
+    }
+  }
+}

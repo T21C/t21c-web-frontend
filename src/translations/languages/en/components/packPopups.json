@@ -140,18 +140,32 @@
       "cancel": "Cancel",
       "confirm": "Delete Pack"
     },
+    "transferOwnership": {
+      "label": "Transfer Ownership",
+      "currentOwner": "Current Owner",
+      "placeholder": "Search for user by username or nickname...",
+      "searching": "Searching...",
+      "noResults": "No users found",
+      "selected": "Selected",
+      "transfer": "Transfer Ownership",
+      "transferring": "Transferring...",
+      "help": "Transfer pack ownership to another user."
+    },
     "success": {
       "updated": "Pack updated successfully!",
       "deleted": "Pack deleted successfully!",
       "iconUploaded": "Icon uploaded successfully!",
-      "iconRemoved": "Icon removed successfully!"
+      "iconRemoved": "Icon removed successfully!",
+      "ownershipTransferred": "Pack ownership transferred successfully!"
     },
     "errors": {
       "nameRequired": "Pack name is required",
       "updateFailed": "Failed to update pack",
       "deleteFailed": "Failed to delete pack",
       "iconUploadFailed": "Failed to upload icon",
-      "iconRemoveFailed": "Failed to remove icon"
+      "iconRemoveFailed": "Failed to remove icon",
+      "selectNewOwner": "Please select a new owner",
+      "transferFailed": "Failed to transfer pack ownership"
     }
   },
   "downloadPack": {
