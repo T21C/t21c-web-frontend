@@ -20,9 +20,8 @@ const roleOptions = Object.entries(CreditRole).map(([key, value]) => ({
 
 export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
   const { t } = useTranslation('components');
-  const tCreator = (key) => t(`creator.actionPopup.${key}`) || key;
+  const tCreator = (key) => t(`creatorActionPopup.actionPopup.${key}`) || key;
   const popupRef = useRef(null);
-  const navigate = useNavigate();
   const { difficultyDict } = useDifficultyContext();
 
   const [mode, setMode] = useState('update'); // update, merge, split, discord, levels
@@ -32,12 +31,6 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
   const [discordId, setDiscordId] = useState('');
   const [isVerified, setIsVerified] = useState(creator?.isVerified || false);
   const [showUnlinkConfirm, setShowUnlinkConfirm] = useState(false);
-  const [discordInfo, setDiscordInfo] = useState({
-    username: creator?.user?.username || '',
-    avatarUrl: creator?.user?.avatarUrl || null,
-    id: creator?.user?.id || null,
-    isNewData: false
-  });
   const [pendingDiscordInfo, setPendingDiscordInfo] = useState(null);
   const [showDiscordConfirm, setShowDiscordConfirm] = useState(false);
   const [mergeTarget, setMergeTarget] = useState(null);
@@ -268,10 +261,6 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
       const response = await api.put(`/v2/database/creators/${creator.id}/discord/${pendingDiscordInfo.id}`);
       
       if (response.status === 200) {
-        setDiscordInfo({
-          ...pendingDiscordInfo,
-          isNewData: false
-        });
         
         onUpdate();
         toast.success(tCreator('success.discordUpdated'));
@@ -287,29 +276,6 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
     }
   };
 
-  const handleDiscordDelete = async () => {
-    try {
-      setIsLoading(true);
-      const response = await api.delete(`/v2/database/creators/${creator.id}/discord`);
-      
-      if (response.status === 200) {
-        setDiscordInfo({
-          username: '',
-          avatarUrl: null,
-          id: null,
-          isNewData: false
-        });
-        
-        onUpdate();
-        toast.success(tCreator('success.discordRemoved'));
-      }
-    } catch (error) {
-      console.error('Error removing Discord info:', error);
-      toast.error(tCreator('errors.removeDiscordFailed'));
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleUnlinkConfirm = async (confirmed) => {
     if (!confirmed) {
@@ -322,13 +288,6 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
       const response = await api.delete(`/v2/database/creators/${creator.id}/discord`);
       
       if (response.status === 200) {
-        setDiscordInfo({
-          username: '',
-          avatarUrl: null,
-          id: null,
-          isNewData: false
-        });
-        
         onUpdate();
         toast.success(tCreator('success.userUnlinked'));
       }

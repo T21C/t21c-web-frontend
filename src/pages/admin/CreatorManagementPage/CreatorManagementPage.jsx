@@ -30,9 +30,6 @@ const CreatorManagementPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [newCreator, setNewCreator] = useState({ name: '', aliases: [] });
-  const [newAlias, setNewAlias] = useState('');
-  const [selectedCreators, setSelectedCreators] = useState([]);
   const [searchQuery, setSearchQuery] = useState(decodeURIComponent(window.location.search.split('search=')[1]) || "");
   const [creatorListSearchQuery, setCreatorListSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -40,30 +37,16 @@ const CreatorManagementPage = () => {
   const [hideVerified, setHideVerified] = useState(false);
   const [hideVerifiedCreators, setHideVerifiedCreators] = useState(false);
   const [activeTab, setActiveTab] = useState('credits');
-  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  const [showErrorMessage, setShowErrorMessage] = useState(false);
   const [showMergeWarning, setShowMergeWarning] = useState(false);
-  const [mergeSource, setMergeSource] = useState(null);
-  const [mergeTarget, setMergeTarget] = useState(null);
   const [showSplitDialog, setShowSplitDialog] = useState(false);
   const levelsPerPage = 50;
   const creatorsPerPage = 100;
   const maxCreatorResults = 100;
-  const [isUpdatingCredits, setIsUpdatingCredits] = useState(false);
-  const [isVerifying, setIsVerifying] = useState(false);
-  const [splitCreatorName, setSplitCreatorName] = useState('');
-  const [selectedCreator, setSelectedCreator] = useState(null);
   const [selectedCreatorForAction, setSelectedCreatorForAction] = useState(null);
   const { t } = useTranslation('pages');
   const tCreator = (key, params = {}) => t(`creatorManagement.${key}`, params);
   const [sort, setSort] = useState('NAME_ASC');
-  const [teamName, setTeamName] = useState('');
-  const [teamDescription, setTeamDescription] = useState('');
-  const [teamMembers, setTeamMembers] = useState([]);
   const [teams, setTeams] = useState([]);
-  const [teamSearchQuery, setTeamSearchQuery] = useState('');
-  const [filteredTeams, setFilteredTeams] = useState([]);
-  const [showTeamSearch, setShowTeamSearch] = useState(false);
   const [pendingTeam, setPendingTeam] = useState(null);
   const [pendingCreators, setPendingCreators] = useState([]);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -74,7 +57,6 @@ const CreatorManagementPage = () => {
   const [loadingCreators, setLoadingCreators] = useState(true);
   const creatorsCancelTokenRef = useRef();
   const levelsCancelTokenRef = useRef();
-  const scrollPositionRef = useRef(0);
   const [excludeAliases, setExcludeAliases] = useState(false);
   const [availableCreators, setAvailableCreators] = useState(null);
   const [showAddCreatorForm, setShowAddCreatorForm] = useState(false);
@@ -164,11 +146,6 @@ const CreatorManagementPage = () => {
           const updatedLevel = response.data.results.find(l => l.id === selectedLevel.id);
           if (updatedLevel) {
             setSelectedLevel(updatedLevel);
-            if (updatedLevel.team) {
-              setTeamName(updatedLevel.team.name);
-              setTeamDescription(updatedLevel.team.description || '');
-              setTeamMembers(updatedLevel.team.members || []);
-            }
           }
         }
       }
@@ -293,13 +270,9 @@ const CreatorManagementPage = () => {
       if (e.key === 'Escape') {
         if (showMergeWarning) {
           setShowMergeWarning(false);
-          setMergeSource(null);
-          setMergeTarget(null);
         }
         if (showSplitDialog) {
           setShowSplitDialog(false);
-          setSplitCreatorName('');
-          setSelectedCreator(null);
         }
       }
     };
@@ -313,87 +286,9 @@ const CreatorManagementPage = () => {
       const response = await api.get(`/v2/database/creators/teams${search ? `?search=${search}` : ''}`);
       if (response.status === 200) {
         setTeams(response.data);
-        setFilteredTeams(response.data);
       }
     } catch (error) {
       console.error('Error fetching teams:', error);
-    }
-  };
-
-  const handleTeamSearch = async (value) => {
-    setTeamSearchQuery(value);
-    if (value.length >= 2) {
-      await fetchTeams(value);
-      setShowTeamSearch(true);
-    } else {
-      setShowTeamSearch(false);
-    }
-  };
-
-  const handleTeamSelect = (team) => {
-    setTeamName(team.name);
-    setTeamDescription(team.description || '');
-    setTeamMembers(team.members || []);
-    setShowTeamSearch(false);
-  };
-
-  const handleCreateCreator = async (e) => {
-    e.preventDefault();
-    setError('');
-    setSuccess('');
-
-    try {
-      const response = await api.post('/v2/database/creators', newCreator);
-      const data = response.data;
-      if (response.status !== 200) throw new Error(data.error || 'Failed to create creator');
-      
-      await fetchCreators();
-      setSuccess('Creator created successfully');
-      setNewCreator({ name: '', aliases: [] });
-      setNewCreatorAlias('');
-    } catch (err) {
-      setError(err.message || 'Failed to create creator');
-    }
-  };
-
-  const handleAddAlias = (e) => {
-    e.preventDefault();
-    if (newCreatorAlias && !newCreator.aliases.includes(newCreatorAlias)) {
-      setNewCreator(prev => ({
-        ...prev,
-        aliases: [...prev.aliases, newCreatorAlias]
-      }));
-      setNewCreatorAlias('');
-    }
-  };
-
-  const handleRemoveAlias = (alias) => {
-    setNewCreator(prev => ({
-      ...prev,
-      aliases: prev.aliases.filter(a => a !== alias)
-    }));
-  };
-
-  const handleUpdateLevelCreators = async (levelId) => {
-    setError('');
-    setSuccess('');
-    setIsUpdatingCredits(true);
-
-    try {
-      const response = await api.put(`/v2/database/creators/level/${levelId}`, {
-        creators: selectedCreators
-      });
-      const data = response.data;
-      if (response.status !== 200) throw new Error(data.error || 'Failed to update level creators');
-
-      await fetchLevelsAudit();
-      setSuccess('Level creators updated successfully');
-      setSelectedLevel(null);
-      setSelectedCreators([]);
-    } catch (err) {
-      setError(err.message || 'Failed to update level creators');
-    } finally {
-      setIsUpdatingCredits(false);
     }
   };
 
@@ -519,11 +414,9 @@ const CreatorManagementPage = () => {
       setVerifyingLevelId(levelId);
       await api.post(`/v2/database/creators/level/${levelId}/verify`);
       await fetchCreators(true);
-      setShowSuccessMessage(true);
       await fetchLevelsAudit(true); // Refresh the levels list
     } catch (error) {
       console.error('Error verifying level credits:', error);
-      setShowErrorMessage(true);
     } finally {
       setVerifyingLevelId(null);
     }
@@ -537,21 +430,14 @@ const CreatorManagementPage = () => {
       setVerifyingLevelId(levelId);
       await api.post(`/v2/database/creators/level/${levelId}/unverify`);
       await fetchCreators(true);
-      setShowSuccessMessage(true);
       await fetchLevelsAudit(true); // Refresh the levels list
     } catch (error) {
       console.error('Error unverifying level credits:', error);
-      setShowErrorMessage(true);
     } finally {
       setVerifyingLevelId(null);
     }
   };
 
-  const clearTeamForm = () => {
-    setTeamName('');
-    setTeamDescription('');
-    setTeamMembers([]);
-  };
 
   // Pagination for levels
 
