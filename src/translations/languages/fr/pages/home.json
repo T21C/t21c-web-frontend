@@ -9,6 +9,7 @@
   "buttons": {
     "browseLevels": "Explorer les niveaux",
     "browsePasses": "Explorer les complétions",
+    "browsePacks": "Explorer les packs",
     "leaderboard": "Classement"
   },
   "stats": {
@@ -37,6 +38,7 @@
       "title": "Liens Rapides",
       "browseLevels": "Explorer les niveaux",
       "browsePasses": "Explorer les complétions",
+      "browsePacks": "Explorer les packs",
       "leaderboard": "Classement",
       "aboutUs": "A propos de nous"
     },

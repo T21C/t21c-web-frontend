@@ -9,6 +9,7 @@
   "buttons": {
     "browseLevels": "채보 둘러보기",
     "browsePasses": "클리어 기록 보기",
+    "browsePacks": "맵 팩 둘러보기",
     "leaderboard": "리더보드"
   },
   "stats": {
@@ -40,6 +41,7 @@
       "title": "빠른 링크",
       "browseLevels": "채보 둘러보기",
       "browsePasses": "클리어 기록 보기",
+      "browsePacks": "맵 팩 둘러보기",
       "leaderboard": "리더보드",
       "aboutUs": "소개",
       "privacyPolicy": "개인정보처리방침",

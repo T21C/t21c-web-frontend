@@ -9,6 +9,7 @@
   "buttons": {
     "browseLevels": "浏览关卡",
     "browsePasses": "浏览通关记录",
+    "browsePacks": "浏览地图包",
     "leaderboard": "排行榜"
   },
   "stats": {
@@ -50,6 +51,7 @@
       "title": "其他页面",
       "browseLevels": "浏览关卡",
       "browsePasses": "浏览通关记录",
+      "browsePacks": "浏览包",
       "leaderboard": "排行榜",
       "aboutUs": "关于我们",
       "privacyPolicy": "隐私政策",

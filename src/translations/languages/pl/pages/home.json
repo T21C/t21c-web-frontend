@@ -9,6 +9,7 @@
   "buttons": {
     "browseLevels": "Przeglądaj poziomy",
     "browsePasses": "Przeglądaj przejścia",
+    "browsePacks": "Przeglądaj pakiety",
     "leaderboard": "Lista rankingowa"
   },
   "stats": {
@@ -40,6 +41,7 @@
       "title": "Szybki dostęp",
       "browseLevels": "Przeglądaj poziomy",
       "browsePasses": "Przeglądaj przejścia",
+      "browsePacks": "Przeglądaj pakiety",
       "leaderboard": "Lista rankingowa",
       "aboutUs": "O nas"
     },

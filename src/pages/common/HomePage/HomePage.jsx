@@ -17,7 +17,7 @@ import {
 } from 'recharts';
 import { useLocation } from 'react-router-dom';
 import { ScrollButton } from "@/components/common/buttons";
-import { PassIcon, ChartIcon, LeaderboardIcon } from "@/components/common/icons";
+import { PassIcon, ChartIcon, LeaderboardIcon, PackIcon } from "@/components/common/icons";
 import { useWeeklyCurations } from "@/hooks/useWeeklyCurations";
 import LogoFullOutlineSVG from "@/assets/tuf-logo/LogoFullOutlined/LogoFullOutlined";
 
@@ -326,11 +326,19 @@ const HomePage = () => {
           </div>
 
           <div className="action-buttons">
+            <div className="action-buttons-row">
             <Link to="/levels" className="action-button">
               <span>{tHome('buttons.browseLevels')}</span>
               &nbsp;
               <ChartIcon size={32} />
             </Link>
+            <Link to="/packs" className="action-button">
+              <span>{tHome('buttons.browsePacks')}</span>
+              &nbsp;
+              <PackIcon size={32} />
+            </Link>
+            </div>
+            <div className="action-buttons-row"> 
             <Link to="/passes" className="action-button">
               <span>{tHome('buttons.browsePasses')}</span>
               &nbsp;
@@ -341,6 +349,7 @@ const HomePage = () => {
               &nbsp;
               <LeaderboardIcon size={32} />
             </Link>
+            </div>
           </div>
           {/* Weekly Curations Section */}
 

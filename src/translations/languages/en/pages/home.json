@@ -8,7 +8,8 @@
   },
   "buttons": {
     "browseLevels": "Browse Levels",
-    "browsePasses": "Browse Passes",
+    "browsePasses": "Browse Passes",  
+    "browsePacks": "Browse Packs",
     "leaderboard": "Leaderboard"
   },
   "stats": {
@@ -50,6 +51,7 @@
       "title": "Quick Links",
       "browseLevels": "Browse Levels",
       "browsePasses": "Browse Passes",
+      "browsePacks": "Browse Packs",
       "leaderboard": "Leaderboard",
       "aboutUs": "About Us",
       "privacyPolicy": "Privacy Policy",
