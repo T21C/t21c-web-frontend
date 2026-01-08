@@ -39,7 +39,7 @@ import {
 import { createEventSystem, formatCreatorDisplay, formatDate, isCdnUrl, selectIconSize } from "@/utils/Utility";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
-import LevelDownloadPopup from '../../../components/popups/Levels/LevelDownloadPopup/LevelDownloadPopup';
+import LevelDownloadPopup from '../../../../components/popups/Levels/LevelDownloadPopup/LevelDownloadPopup';
 import { ABILITIES, hasBit } from '@/utils/Abilities';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import i18next from "i18next";

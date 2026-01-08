@@ -1,27 +1,25 @@
 import "./packpage.css";
-import "../sort.css";
-import "../search-section.css";
+import "../../sort.css";
+import "../../search-section.css";
 import { useContext, useEffect, useState, useCallback, useRef } from "react";
 
 import { PackCard } from "@/components/cards";
-import { StateDisplay, CustomSelect } from "@/components/common/selectors";
+import { CustomSelect } from "@/components/common/selectors";
 import { Tooltip } from "react-tooltip";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { PackContext, usePackContext } from "@/contexts/PackContext";
+import { PackContext } from "@/contexts/PackContext";
 import { useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
-import { ReferencesButton, ScrollButton } from "@/components/common/buttons";
+import { ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
-import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon, FilterIcon, PinIcon, SwitchIcon, LikeIcon } from "@/components/common/icons";
+import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon, FilterIcon, SwitchIcon, LikeIcon } from "@/components/common/icons";
 import { CreatePackPopup, PackHelpPopup } from "@/components/popups";
 import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { LevelPackViewModes } from "@/utils/constants";
 
 const currentUrl = window.location.origin + location.pathname;
-
-const limit = 30;
 
 // Internal component that uses unified PackContext
 const PackPageContent = () => {

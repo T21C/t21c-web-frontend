@@ -30,7 +30,7 @@ export const RatingFilterProvider = ({ children }) => {
   const [hideRated, setHideRated] = useState(() => Cookies.get(COOKIE_KEYS.HIDE_RATED) === 'true');
   const [lowDiffFilter, setLowDiffFilter] = useState(() => Cookies.get(COOKIE_KEYS.LOW_DIFF_FILTER) || 'show');
   const [fourVoteFilter, setFourVoteFilter] = useState(() => Cookies.get(COOKIE_KEYS.FOUR_VOTE_FILTER) || 'show');
-  const [sortType, setSortType] = useState(() => Cookies.get(COOKIE_KEYS.SORT_TYPE) || 'id');
+  const [sortType, setSortType] = useState(() => Cookies.get(COOKIE_KEYS.SORT_TYPE) || 'ratings');
   const [searchQuery, setSearchQuery] = useState(() => Cookies.get(COOKIE_KEYS.SEARCH_QUERY) || '');
   const [showDetailedView, setShowDetailedView] = useState(() => Cookies.get(COOKIE_KEYS.DETAILED_VIEW) === 'true');
   const [showReferences, setShowReferences] = useState(() => Cookies.get(COOKIE_KEYS.SHOW_REFERENCES) === 'true');

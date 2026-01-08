@@ -3,16 +3,16 @@ import { lazy } from 'react';
 // Common pages
 const HomePage = lazy(() => import('./common/HomePage/HomePage'));
 //const HomePageAprils = lazy(() => import('./common/HomePageAprils/HomePage'));
-const LevelDetailPage = lazy(() => import('./common/LevelDetailPage/LevelDetailPage'));
-const LevelPage = lazy(() => import('./common/LevelPage/LevelPage'));
+const LevelDetailPage = lazy(() => import('./common/Level/LevelDetailPage/LevelDetailPage'));
+const LevelPage = lazy(() => import('./common/Level/LevelPage/LevelPage'));
 const SubmissionPage = lazy(() => import('./submissions/SubmissionPage'));
-const PassPage = lazy(() => import('./common/PassPage/PassPage'));
-const PassDetailPage = lazy(() => import('./common/PassDetailPage/PassDetailPage'));
+const PassPage = lazy(() => import('./common/Pass/PassPage/PassPage'));
+const PassDetailPage = lazy(() => import('./common/Pass/PassDetailPage/PassDetailPage'));
 const LeaderboardPage = lazy(() => import('./common/LeaderboardPage/LeaderboardPage'));
 const LevelSubmissionPage = lazy(() => import('./submissions/LevelSubmissionPage/LevelSubmissionPage'));
 const PassSubmissionPage = lazy(() => import('./submissions/PassSubmissionPage/PassSubmissionPage'));
-const PackPage = lazy(() => import('./common/PackPage/PackPage'));
-const PackDetailPage = lazy(() => import('./common/PackDetailPage/PackDetailPage'));
+const PackPage = lazy(() => import('./common/Pack/PackPage/PackPage'));
+const PackDetailPage = lazy(() => import('./common/Pack/PackDetailPage/PackDetailPage'));
 // Account pages
 const ProfilePage = lazy(() => import('./account/ProfilePage/ProfilePage'));
 const LoginPage = lazy(() => import('./account/LoginPage/LoginPage'));
@@ -32,9 +32,9 @@ const CreatorManagementPage = lazy(() => import('./admin/CreatorManagementPage/C
 const SubmissionManagementPage = lazy(() => import('./admin/SubmissionManagementPage/SubmissionManagementPage'));
 const RatingPage = lazy(() => import('./admin/RatingPage/RatingPage'));
 const AuditLogPage = lazy(() => import('./admin/AuditLogPage/AuditLogPage'));
-const CurationPage = lazy(() => import('./admin/CurationPage/CurationPage'));
-const CurationSchedulePage = lazy(() => import('./admin/CurationSchedulePage/CurationSchedulePage'));
-const CurationCssPreviewPage = lazy(() => import('./admin/CurationCssPreviewPage/CurationCssPreviewPage'));
+const CurationPage = lazy(() => import('./admin/Curation/CurationPage/CurationPage'));
+const CurationSchedulePage = lazy(() => import('./admin/Curation/CurationSchedulePage/CurationSchedulePage'));
+const CurationCssPreviewPage = lazy(() => import('./admin/Curation/CurationCssPreviewPage/CurationCssPreviewPage'));
 
 // Common pages
 const CurationPreviewPage = lazy(() => import('./common/CurationPreviewPage/CurationPreviewPage'));

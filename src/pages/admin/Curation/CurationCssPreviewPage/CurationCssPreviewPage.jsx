@@ -3,7 +3,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import toast from 'react-hot-toast';
-import LevelDetailPage from '@/pages/common/LevelDetailPage/LevelDetailPage';
+import LevelDetailPage from '@/pages/common/Level/LevelDetailPage/LevelDetailPage';
 import { ABILITIES, hasBit } from '@/utils/Abilities';
 import { canAssignCurationType } from '@/utils/curationTypeUtils';
 import { hasAnyFlag, permissionFlags } from '@/utils/UserPermissions';
