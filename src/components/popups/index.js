@@ -11,7 +11,7 @@ import RaterManagementPopup from "./Rating/RaterManagementPopup/RaterManagementP
 import TopRatersPopup from "./Rating/TopRatersPopup/TopRatersPopup";
 import { RatingHelpPopup } from "./Rating/RatingHelpPopup/RatingHelpPopup";
 import ReferencesPopup from "./Difficulties/ReferencesPopup/ReferencesPopup";
-import SubmissionCreatorPopup from "./SubmissionCreatorPopup/SubmissionCreatorPopup";
+import SubmissionCreatorPopup from "./Levels/SubmissionCreatorPopup/SubmissionCreatorPopup";
 import DifficultyPopup from "./Difficulties/DifficultyPopup/DifficultyPopup";
 import ImageSelectorPopup from "../common/selectors/ImageSelectorPopup/ImageSelectorPopup";
 import LevelSelectionPopup from "./Levels/LevelSelectionPopup/LevelSelectionPopup";
