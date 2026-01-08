@@ -11,6 +11,7 @@ import { MetaTags } from "@/components/common/display";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { formatDate } from "@/utils/Utility";
 import i18next from "i18next";
+import { EyeIcon, EyeOffIcon, TrashIcon } from "@/components/common/icons";
 
 const currentUrl = window.location.origin + location.pathname;
 
@@ -35,6 +36,8 @@ const PassDetailPage = () => {
   const { user } = useAuth();
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [particles, setParticles] = useState([]);
+  const [showHideConfirm, setShowHideConfirm] = useState(false);
+  const [isTogglingHidden, setIsTogglingHidden] = useState(false);
 
   // Function to generate random particle properties
   const generateParticle = (index) => ({
@@ -79,6 +82,25 @@ const PassDetailPage = () => {
     } catch (error) {
       console.error("Error fetching pass data:", error);
       setInfoLoading(false);
+    }
+  };
+
+  const handleToggleHidden = async () => {
+    if (!showHideConfirm) {
+      setShowHideConfirm(true);
+      return;
+    }
+
+    setIsTogglingHidden(true);
+    try {
+      await api.patch(`${import.meta.env.VITE_PASSES}/${id}/toggle-hidden`);
+      await fetchPassData();
+      setShowHideConfirm(false);
+    } catch (error) {
+      console.error("Error toggling pass hidden status:", error);
+      alert(tPass('errors.toggleHidden'));
+    } finally {
+      setIsTogglingHidden(false);
     }
   };
 
@@ -131,10 +153,16 @@ const PassDetailPage = () => {
         {pass?.isDeleted && (
           <div className="deletion-banner-wrapper">
             <div className="deletion-banner">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
+              <TrashIcon />
               <span>{tPass('banners.deleted')}</span>
+            </div>
+          </div>
+        )}
+        {pass?.isHidden && !pass?.isDeleted && (
+          <div className="hidden-banner-wrapper">
+            <div className="hidden-banner">
+              <EyeOffIcon />
+              <span>{tPass('banners.hidden')}</span>
             </div>
           </div>
         )}
@@ -343,15 +371,53 @@ const PassDetailPage = () => {
             </div>
           </div>
 
-          {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
-            <button className="edit-button" onClick={() => setOpenEditDialog(true)}>
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.4374 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
-          )}
+          <div className="pass-actions">
+            {user && user.playerId === pass.player?.id && (
+              <button 
+                className={`hide-button ${pass.isHidden ? 'hidden' : ''}`}
+                onClick={handleToggleHidden}
+                disabled={isTogglingHidden}
+                title={pass.isHidden ? tPass('actions.unhide') : tPass('actions.hide')}
+              >
+                {isTogglingHidden ? (
+                  <div className="spinner"></div>
+                ) : pass.isHidden ? (
+                  <EyeIcon />
+                ) : (
+                  <EyeOffIcon />
+                )}
+              </button>
+            )}
+            {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+              <button className="edit-button" onClick={() => setOpenEditDialog(true)}>
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M11 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V20C2 20.5304 2.21071 21.0391 2.58579 21.4142C2.96086 21.7893 3.46957 22 4 22H18C18.5304 22 19.0391 21.7893 19.4142 21.4142C19.7893 21.0391 20 20.5304 20 20V13" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M18.5 2.50001C18.8978 2.10219 19.4374 1.87869 20 1.87869C20.5626 1.87869 21.1022 2.10219 21.5 2.50001C21.8978 2.89784 22.1213 3.4374 22.1213 4.00001C22.1213 4.56262 21.8978 5.10219 21.5 5.50001L12 15L8 16L9 12L18.5 2.50001Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+            )}
+          </div>
         </div>
+
+        {showHideConfirm && (
+          <div className="hide-confirm-overlay" onClick={() => setShowHideConfirm(false)}>
+            <div className="hide-confirm-dialog" onClick={(e) => e.stopPropagation()}>
+              <h3>{pass.isHidden ? tPass('confirm.unhide.title') : tPass('confirm.hide.title')}</h3>
+              <p>{pass.isHidden ? tPass('confirm.unhide.message') : tPass('confirm.hide.message')}</p>
+              <div className="hide-confirm-actions">
+                <button className="confirm-button" onClick={handleToggleHidden} disabled={isTogglingHidden}>
+                  {isTogglingHidden 
+                    ? (pass.isHidden ? tPass('confirm.unhide.processing') : tPass('confirm.hide.processing'))
+                    : (pass.isHidden ? tPass('confirm.unhide.confirm') : tPass('confirm.hide.confirm'))
+                  }
+                </button>
+                <button className="cancel-button" onClick={() => setShowHideConfirm(false)} disabled={isTogglingHidden}>
+                  {tPass('confirm.hide.cancel')}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {openEditDialog && (
           <EditPassPopup

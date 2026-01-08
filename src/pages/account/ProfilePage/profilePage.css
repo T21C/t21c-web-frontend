@@ -255,6 +255,18 @@
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.player-page .scores-controls .search-container {
+  width: 100%;
+}
+
+.player-page .scores-controls-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
 .player-page .search-container {
   display: flex;
   align-items: center;
@@ -334,6 +346,37 @@
 
 .player-page .sort-buttons svg:active {
   transform: translateY(0);
+}
+
+.player-page .toggle-hidden-passes-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--color-white);
+  flex-shrink: 0;
+}
+
+.player-page .toggle-hidden-passes-button:hover {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-1px);
+}
+
+.player-page .toggle-hidden-passes-button:active {
+  transform: translateY(0);
+}
+
+.player-page .toggle-hidden-passes-button svg {
+  width: 20px;
+  height: 20px;
 }
 
 .player-page .results-count {
@@ -737,9 +780,22 @@
     padding: 0.75rem;
   }
 
+  .player-page .scores-controls .search-container {
+    width: 100%;
+  }
+
+  .player-page .scores-controls-row {
+    width: 100%;
+    justify-content: space-between;
+  }
+
   .player-page .sort-controls {
-    flex-direction: column;
+    flex: 1;
     gap: 0.5rem;
+  }
+
+  .player-page .toggle-hidden-passes-button {
+    flex-shrink: 0;
   }
 
   .player-page .search-container {

@@ -13,6 +13,13 @@
 .score-card:hover {
   background-color: var(--color-white-t30);
 }
+.score-card.hidden-pass {
+  background-color: rgba(128, 128, 128, 0.2);
+  opacity: 0.7;
+}
+.score-card.hidden-pass:hover {
+  background-color: rgba(128, 128, 128, 0.3);
+}
 .score-card .score-exp {
   overflow:visible;
   font-size: 0.9rem;

@@ -20,15 +20,26 @@
   --warning-color: #ffc107;
   --color-black-t10: rgba(9, 9, 9, 0.1);
   --color-black-t20: rgba(9, 9, 9, 0.2);
+  --color-black-t30: rgba(9, 9, 9, 0.3);
+  --color-black-t40: rgba(9, 9, 9, 0.4);
+  --color-black-t50: rgba(9, 9, 9, 0.5);
   --color-black-t60: rgba(9, 9, 9, 0.6);
-  --color-white-t5: rgba(249, 250, 251, 0.05);
-  --color-white-t6: rgba(249, 250, 251, 0.06);
+  --color-black-t70: rgba(9, 9, 9, 0.7);
+  --color-black-t80: rgba(9, 9, 9, 0.8);
+  --color-black-t90: rgba(9, 9, 9, 0.9);
+  --color-black-t100: rgba(9, 9, 9, 1);
   --color-white-t10: rgba(249, 250, 251, 0.1);
   --color-white-t20: rgba(249, 250, 251, 0.2);
   --color-white-t30: rgba(249, 250, 251, 0.3);
+  --color-white-t40: rgba(249, 250, 251, 0.4);
+  --color-white-t50: rgba(249, 250, 251, 0.5);
   --color-white-t60: rgba(249, 250, 251, 0.6);
+  --color-white-t70: rgba(249, 250, 251, 0.7);
   --color-white-t80: rgba(249, 250, 251, 0.8);
   --color-white-t90: rgba(249, 250, 251, 0.9);
+  --color-white-t100: rgba(249, 250, 251, 1);
+  --color-white-t5: rgba(249, 250, 251, 0.05);
+  --color-white-t6: rgba(249, 250, 251, 0.06);
   --bg-color: #000;
   --bg-secondary: #111;
 }

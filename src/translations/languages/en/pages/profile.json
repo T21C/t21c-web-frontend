@@ -42,6 +42,8 @@
   "labels": {
     "totalPasses": "{{count}} passes"
   },
+  "showHiddenPasses": "Show hidden passes",
+  "hideHiddenPasses": "Hide hidden passes",
   "infiniteScroll": {
     "end": "You've reached the end!"
   }

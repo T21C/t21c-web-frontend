@@ -31,11 +31,12 @@ const ScoreCard = ({scoreData, topScores, potentialTopScores}) => {
   const navigate = useNavigate()
   const {t} = useTranslation('components');
   const isHiddenLevel = scoreData.level?.isHidden || false;
+  const isHiddenPass = scoreData.isHidden || false;
   const tScore = (key) => t(`score.card.${key}`) || key;
   const { difficultyDict } = useDifficultyContext();
 
   return (
-    <div className='score-card' style={{pointerEvents: isHiddenLevel ? 'none' : 'auto'}}>
+    <div className={`score-card ${isHiddenPass ? 'hidden-pass' : ''}`} style={{pointerEvents: isHiddenLevel ? 'none' : 'auto'}}>
       <div className="img-wrapper">
         {!isHiddenLevel && (
           <img src={difficultyDict[scoreData.level.difficulty.id]?.icon} referrerPolicy="no-referrer" alt="" />

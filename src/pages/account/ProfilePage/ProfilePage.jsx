@@ -9,7 +9,7 @@ import { ScoreCard } from "@/components/cards";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { AdminPlayerPopup, CreatorAssignmentPopup } from "@/components/popups";
-import { DefaultAvatar, ShieldIcon, EditIcon, SearchIcon, SortAscIcon, SortDescIcon, PackIcon } from "@/components/common/icons";
+import { DefaultAvatar, ShieldIcon, EditIcon, SearchIcon, SortAscIcon, SortDescIcon, PackIcon, EyeIcon, EyeOffIcon } from "@/components/common/icons";
 import { CaseOpenSelector, CustomSelect } from "@/components/common/selectors";
 import caseOpen from "@/assets/icons/case.png";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -48,6 +48,7 @@ const ProfilePage = () => {
     // Infinite scroll state
     const [displayedPasses, setDisplayedPasses] = useState([]);
     const [hasMore, setHasMore] = useState(true);
+    const [showHiddenPasses, setShowHiddenPasses] = useState(false);
 
     const isOwnProfile = !playerId || Number(playerId) === user?.playerId;
 
@@ -238,7 +239,21 @@ const ProfilePage = () => {
       const filteredAndSortedPasses = useMemo(() => {
         if (!playerData?.passes) return [];
 
-        let filtered = playerData.passes.filter(pass => !pass.isDeleted);
+        let filtered = playerData.passes.filter(pass => {
+          // Always filter out deleted passes
+          if (pass.isDeleted) return false;
+          
+          // Filter hidden passes based on toggle state (only for own profile)
+          if (isOwnProfile) {
+            // If toggle is off, hide hidden passes
+            if (!showHiddenPasses && pass.isHidden) return false;
+          } else {
+            // For other profiles, always hide hidden passes
+            if (pass.isHidden) return false;
+          }
+          
+          return true;
+        });
 
         // Apply search filter
         if (searchQuery) {
@@ -257,7 +272,7 @@ const ProfilePage = () => {
         }
 
         return filtered;
-      }, [playerData?.passes, searchQuery, sortType, sortOrder, sortOptions, searchableFields]);
+      }, [playerData?.passes, searchQuery, sortType, sortOrder, sortOptions, searchableFields, showHiddenPasses, isOwnProfile]);
 
       // Update displayed passes when filter/sort changes
       useEffect(() => {
@@ -268,7 +283,7 @@ const ProfilePage = () => {
           setDisplayedPasses([]);
           setHasMore(false);
         }
-      }, [playerData?.passes, searchQuery, sortType, sortOrder]);
+      }, [filteredAndSortedPasses]);
 
       // Load more passes for infinite scroll
       const loadMorePasses = () => {
@@ -536,31 +551,43 @@ const ProfilePage = () => {
                       />
                     </div>
                     
-                    <div className="sort-controls">
-                      <CustomSelect
-                        options={sortOptions}
-                        value={selectedSortOption}
-                        onChange={(option) => setSortType(option.value)}
-                        width="12rem"
-                        menuPlacement="bottom"
-                        isSearchable={false}
-                      />
-                      <div className="sort-buttons">
-                        <SortAscIcon
-                          className="svg-fill"
-                          style={{
-                            backgroundColor: sortOrder === 'ASC' ? "rgba(255, 255, 255, 0.4)" : "",
-                          }}
-                          onClick={() => setSortOrder('ASC')}
+                    <div className="scores-controls-row">
+                      <div className="sort-controls">
+                        <CustomSelect
+                          options={sortOptions}
+                          value={selectedSortOption}
+                          onChange={(option) => setSortType(option.value)}
+                          width="12rem"
+                          menuPlacement="bottom"
+                          isSearchable={false}
                         />
-                        <SortDescIcon
-                          className="svg-fill"
-                          style={{
-                            backgroundColor: sortOrder === 'DESC' ? "rgba(255, 255, 255, 0.4)" : "",
-                          }}
-                          onClick={() => setSortOrder('DESC')}
-                        />
+                        <div className="sort-buttons">
+                          <SortAscIcon
+                            className="svg-fill"
+                            style={{
+                              backgroundColor: sortOrder === 'ASC' ? "rgba(255, 255, 255, 0.4)" : "",
+                            }}
+                            onClick={() => setSortOrder('ASC')}
+                          />
+                          <SortDescIcon
+                            className="svg-fill"
+                            style={{
+                              backgroundColor: sortOrder === 'DESC' ? "rgba(255, 255, 255, 0.4)" : "",
+                            }}
+                            onClick={() => setSortOrder('DESC')}
+                          />
+                        </div>
                       </div>
+                      
+                      {isOwnProfile && (
+                        <button
+                          className="toggle-hidden-passes-button"
+                          onClick={() => setShowHiddenPasses(!showHiddenPasses)}
+                          title={showHiddenPasses ? tProfile('hideHiddenPasses') : tProfile('showHiddenPasses')}
+                        >
+                          {showHiddenPasses ? <EyeIcon size="20px" /> : <EyeOffIcon size="20px" />}
+                        </button>
+                      )}
                     </div>
                     
                     <div className="results-count">
