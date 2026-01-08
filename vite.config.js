@@ -58,7 +58,7 @@ export default defineConfig(({ command, mode }) => {
             recharts: ['recharts'],
             i18n: ['i18next', 'react-i18next'],
             popups: [
-              'src/components/popups/EditLevelPopup/EditLevelPopup.jsx',
+              'src/components/popups/Levels/EditLevelPopup/EditLevelPopup.jsx',
             ],
             admin: [
               'src/pages/admin/AnnouncementPage/AnnouncementPage.jsx',
