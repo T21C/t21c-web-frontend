@@ -239,29 +239,31 @@ const ProfilePage = () => {
       const filteredAndSortedPasses = useMemo(() => {
         if (!playerData?.passes) return [];
 
-        let filtered = playerData.passes.filter(pass => {
-          // Always filter out deleted passes
-          if (pass.isDeleted) return false;
-          
-          // Filter hidden passes based on toggle state (only for own profile)
-          if (isOwnProfile) {
-            // If toggle is off, hide hidden passes
-            if (!showHiddenPasses && pass.isHidden) return false;
-          } else {
-            // For other profiles, always hide hidden passes
-            if (pass.isHidden) return false;
-          }
-          
-          return true;
-        });
 
+        let filtered = playerData.passes;
         // Apply search filter
         if (searchQuery) {
           const query = searchQuery.toLowerCase();
-          filtered = filtered.filter(pass => {
+          filtered = filtered
+          .filter(pass => {
             return Object.values(searchableFields).some(fieldFn => 
               fieldFn(pass).includes(query)
             );
+          })
+          .filter(pass => {
+            // Always filter out deleted passes
+            if (pass.isDeleted) return false;
+            
+            // Filter hidden passes based on toggle state (only for own profile)
+            if (isOwnProfile) {
+              // If toggle is off, hide hidden passes
+              if (!showHiddenPasses && pass.isHidden) return false;
+            } else {
+              // For other profiles, always hide hidden passes
+              if (pass.isHidden) return false;
+            }
+            
+            return true;
           });
         }
 
@@ -274,7 +276,7 @@ const ProfilePage = () => {
         return filtered;
       }, [playerData?.passes, searchQuery, sortType, sortOrder, sortOptions, searchableFields, showHiddenPasses, isOwnProfile]);
 
-      // Update displayed passes when filter/sort changes
+      // Update displayed passes when filter/sort changes (not when filteredAndSortedPasses object changes)
       useEffect(() => {
         if (filteredAndSortedPasses.length > 0) {
           setDisplayedPasses(filteredAndSortedPasses.slice(0, PASSES_PER_PAGE));
@@ -283,14 +285,22 @@ const ProfilePage = () => {
           setDisplayedPasses([]);
           setHasMore(false);
         }
-      }, [filteredAndSortedPasses]);
+      }, [searchQuery, sortType, sortOrder, showHiddenPasses, playerData?.passes]);
 
       // Load more passes for infinite scroll
       const loadMorePasses = () => {
+        if (displayedPasses.length >= filteredAndSortedPasses.length) {
+          setHasMore(false);
+          return;
+        }
         const currentLength = displayedPasses.length;
         const nextPasses = filteredAndSortedPasses.slice(currentLength, currentLength + PASSES_PER_PAGE);
-        setDisplayedPasses(prev => [...prev, ...nextPasses]);
-        setHasMore(currentLength + PASSES_PER_PAGE < filteredAndSortedPasses.length);
+        if (nextPasses.length > 0) {
+          setDisplayedPasses(prev => [...prev, ...nextPasses]);
+          setHasMore(currentLength + nextPasses.length < filteredAndSortedPasses.length);
+        } else {
+          setHasMore(false);
+        }
       };
 
       // Conditional renders after all hooks
