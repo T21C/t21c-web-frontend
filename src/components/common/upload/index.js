@@ -1,1 +1,1 @@
-export { default as ThumbnailUpload } from './ThumbnailUpload.jsx';
+export { default as ThumbnailUpload } from './ThumbnailUpload';

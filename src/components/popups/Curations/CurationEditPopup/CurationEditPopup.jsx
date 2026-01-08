@@ -333,7 +333,7 @@ const CurationEditPopup = ({
             formData.customCSS && formData.customCSS.trim() && (
               <div className="curation-edit-modal__form-group">
                 <div className="curation-edit-modal__warning">
-                  <p><strong>⚠️ Warning:</strong> The selected curation type doesn't support custom CSS. 
+                  <p><strong>⚠️ Warning:</strong> The selected curation type doesn&apos;t support custom CSS. 
                   Your CSS will not be applied to the level page.</p>
                 </div>
               </div>

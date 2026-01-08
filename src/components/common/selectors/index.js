@@ -10,6 +10,7 @@ import { RouletteWheel } from "./RouletteWheel/RouletteWheel";
 import { SlotMachine } from "./SlotMachine/SlotMachine";
 import { CaseOpenSelector } from "./CaseOpenSelector/CaseOpenSelector";
 import RangeSelector from "./RangeSelector/RangeSelector";
+import ImageSelectorPopup from "./ImageSelectorPopup/ImageSelectorPopup";
 
 export {
     CountrySelect,
@@ -23,5 +24,6 @@ export {
     RouletteWheel,
     SlotMachine,
     CaseOpenSelector,
-    RangeSelector
+    RangeSelector,
+    ImageSelectorPopup
 }

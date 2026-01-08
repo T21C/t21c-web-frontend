@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { CrossIcon, ImageIcon, TrashIcon } from '@/components/common/icons';
-import ImageSelectorPopup from '../ImageSelectorPopup/ImageSelectorPopup';
+import ImageSelectorPopup from '../../../common/selectors/ImageSelectorPopup/ImageSelectorPopup';
 import './EditPackPopup.css';
 import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';

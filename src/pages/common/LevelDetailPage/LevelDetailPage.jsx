@@ -12,8 +12,8 @@ import {
 import { Tooltip } from "react-tooltip";
 import { useTranslation } from "react-i18next";
 import { ClearCard } from "@/components/cards";
-import { EditLevelPopup } from "@/components/popups/EditLevelPopup/EditLevelPopup";
-import { RatingDetailPopup } from "@/components/popups/RatingDetailPopup/RatingDetailPopup";
+import { EditLevelPopup } from "@/components/popups/Levels/EditLevelPopup/EditLevelPopup";
+import { RatingDetailPopup } from "@/components/popups/Rating/RatingDetailPopup/RatingDetailPopup";
 import { AddToPackPopup } from "@/components/popups";
 import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
@@ -39,7 +39,7 @@ import {
 import { createEventSystem, formatCreatorDisplay, formatDate, isCdnUrl, selectIconSize } from "@/utils/Utility";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
-import LevelDownloadPopup from '../../../components/popups/LevelDownloadPopup/LevelDownloadPopup';
+import LevelDownloadPopup from '../../../components/popups/Levels/LevelDownloadPopup/LevelDownloadPopup';
 import { ABILITIES, hasBit } from '@/utils/Abilities';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import i18next from "i18next";

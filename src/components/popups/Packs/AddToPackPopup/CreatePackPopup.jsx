@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CrossIcon, ImageIcon } from '@/components/common/icons';
-import ImageSelectorPopup from '../ImageSelectorPopup/ImageSelectorPopup';
+import { ImageSelectorPopup } from '@/components/common/selectors';
 import './CreatePackPopup.css';
 import toast from 'react-hot-toast';
 import api from '@/utils/api';

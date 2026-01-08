@@ -8,7 +8,7 @@ import { useRatingFilter } from "@/contexts/RatingFilterContext";
 import { useTranslation } from "react-i18next";
 import { RatingCard } from "@/components/cards";
 import { EditLevelPopup, RaterManagementPopup, ReferencesPopup, TopRatersPopup } from "@/components/popups";
-import { RatingDetailPopup } from "@/components/popups/RatingDetailPopup/RatingDetailPopup";
+import { RatingDetailPopup } from "@/components/popups/Rating/RatingDetailPopup/RatingDetailPopup";
 import { ScrollButton, ReferencesButton } from "@/components/common/buttons";
 import { CustomSelect } from "@/components/common/selectors";
 import api from "@/utils/api";

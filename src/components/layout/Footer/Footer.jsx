@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { Link } from 'react-router-dom';
 import './footer.css';
-import LogoSVG from '@/assets/tuf-logo/logo.jsx';
+import LogoSVG from '@/assets/tuf-logo/logo';
 
 const Footer = () => {
   const { t } = useTranslation('pages');

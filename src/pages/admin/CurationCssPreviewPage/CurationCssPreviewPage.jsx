@@ -246,7 +246,7 @@ const CurationCssPreviewPage = () => {
           {/* Warning if curation type doesn't have CUSTOM_CSS ability */}
           {curation?.type && !hasBit(curation.type.abilities, ABILITIES.CUSTOM_CSS) && (
             <div className="css-editor-warning">
-              <p><strong>⚠️ Warning:</strong> This curation type doesn't have the "Custom CSS" ability enabled. 
+              <p><strong>⚠️ Warning:</strong> This curation type doesn&apos;t have the &quot;Custom CSS&quot; ability enabled. 
               Custom CSS will not be applied to the actual level page, but you can still preview it here.</p>
             </div>
           )}

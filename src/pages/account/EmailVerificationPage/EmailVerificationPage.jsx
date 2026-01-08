@@ -212,7 +212,7 @@ const EmailVerificationPage = () => {
             <h1>Verification Failed</h1>
             {error && <p className="error-message">{error}</p>}
             <div className="resend-section">
-              <p className="resend-info">We'll send a new verification email to:</p>
+              <p className="resend-info">We&apos;ll send a new verification email to:</p>
               <p className="email-display">{user?.email || verificationEmail || 'your email address'}</p>
               <button
                 className="action-button"

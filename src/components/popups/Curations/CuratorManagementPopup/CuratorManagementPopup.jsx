@@ -1,5 +1,5 @@
 import React from 'react';
-import UserManagementPopup from '../UserManagementPopup/UserManagementPopup';
+import UserManagementPopup from '../../Users/UserManagementPopup/UserManagementPopup';
 import PropTypes from 'prop-types';
 
 // Backward compatibility wrapper

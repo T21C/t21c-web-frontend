@@ -1,34 +1,34 @@
-import AdminPlayerPopup from "./AdminPlayerPopup/AdminPlayerPopup";
-import { CreatorActionPopup } from "./CreatorActionPopup/CreatorActionPopup";
-import { CreatorAssignmentPopup } from "./CreatorAssignmentPopup/CreatorAssignmentPopup";
-import { RatingDetailPopup } from "./RatingDetailPopup/RatingDetailPopup";
-import { EditLevelPopup } from "./EditLevelPopup/EditLevelPopup";
-import { EditPassPopup } from "./EditPassPopup/EditPassPopup";
-import { LevelHelpPopup } from "./LevelHelpPopup/LevelHelpPopup";
-import { PackHelpPopup } from "./PackHelpPopup/PackHelpPopup";
-import { PassHelpPopup } from "./PassHelpPopup/PassHelpPopup";
-import RaterManagementPopup from "./RaterManagementPopup/RaterManagementPopup";
-import TopRatersPopup from "./TopRatersPopup/TopRatersPopup";
-import { RatingHelpPopup } from "./RatingHelpPopup/RatingHelpPopup";
-import ReferencesPopup from "./ReferencesPopup/ReferencesPopup";
+import AdminPlayerPopup from "./Users/AdminPlayerPopup/AdminPlayerPopup";
+import { CreatorActionPopup } from "./Creators/CreatorActionPopup/CreatorActionPopup";
+import { CreatorAssignmentPopup } from "./Creators/CreatorAssignmentPopup/CreatorAssignmentPopup";
+import { RatingDetailPopup } from "./Rating/RatingDetailPopup/RatingDetailPopup";
+import { EditLevelPopup } from "./Levels/EditLevelPopup/EditLevelPopup";
+import { EditPassPopup } from "./Passes/EditPassPopup/EditPassPopup";
+import { LevelHelpPopup } from "./Levels/LevelHelpPopup/LevelHelpPopup";
+import { PackHelpPopup } from "./Packs/PackHelpPopup/PackHelpPopup";
+import { PassHelpPopup } from "./Passes/PassHelpPopup/PassHelpPopup";
+import RaterManagementPopup from "./Rating/RaterManagementPopup/RaterManagementPopup";
+import TopRatersPopup from "./Rating/TopRatersPopup/TopRatersPopup";
+import { RatingHelpPopup } from "./Rating/RatingHelpPopup/RatingHelpPopup";
+import ReferencesPopup from "./Difficulties/ReferencesPopup/ReferencesPopup";
 import SubmissionCreatorPopup from "./SubmissionCreatorPopup/SubmissionCreatorPopup";
-import DifficultyPopup from "./DifficultyPopup/DifficultyPopup";
-import ImageSelectorPopup from "./ImageSelectorPopup/ImageSelectorPopup";
-import LevelSelectionPopup from "./LevelSelectionPopup/LevelSelectionPopup";
-import LevelUploadManagementPopup from './LevelUploadManagementPopup/LevelUploadManagementPopup';
-import CDNTosPopup from './CDNTosPopup/CDNTosPopup';
-import TypeManagementPopup from './TypeManagementPopup/TypeManagementPopup';
-import CurationEditPopup from './CurationEditPopup/CurationEditPopup';
-import CurationSelectionPopup from './CurationSelectionPopup/CurationSelectionPopup';
-import AddToPackPopup from './AddToPackPopup/AddToPackPopup';
-import CreatePackPopup from './AddToPackPopup/CreatePackPopup';
-import EditPackPopup from './EditPackPopup/EditPackPopup';
-import PackDownloadPopup from './PackDownloadPopup/PackDownloadPopup';
-import LevelUploadPopup from './LevelUploadPopup/LevelUploadPopup';
+import DifficultyPopup from "./Difficulties/DifficultyPopup/DifficultyPopup";
+import ImageSelectorPopup from "../common/selectors/ImageSelectorPopup/ImageSelectorPopup";
+import LevelSelectionPopup from "./Levels/LevelSelectionPopup/LevelSelectionPopup";
+import LevelUploadManagementPopup from './Levels/LevelUploadManagementPopup/LevelUploadManagementPopup';
+import CDNTosPopup from './Levels/CDNTosPopup/CDNTosPopup';
+import TypeManagementPopup from './Curations/TypeManagementPopup/TypeManagementPopup';
+import CurationEditPopup from './Curations/CurationEditPopup/CurationEditPopup';
+import CurationSelectionPopup from './Curations/CurationSelectionPopup/CurationSelectionPopup';
+import AddToPackPopup from './Packs/AddToPackPopup/AddToPackPopup';
+import CreatePackPopup from './Packs/AddToPackPopup/CreatePackPopup';
+import EditPackPopup from './Packs/EditPackPopup/EditPackPopup';
+import PackDownloadPopup from './Packs/PackDownloadPopup/PackDownloadPopup';
+import LevelUploadPopup from './Levels/LevelUploadPopup/LevelUploadPopup';
 
 // User Management Popups
-import UserManagementPopup from './UserManagementPopup/UserManagementPopup';
-import CuratorManagementPopup from './CuratorManagementPopup/CuratorManagementPopup';
+import UserManagementPopup from './Users/UserManagementPopup/UserManagementPopup';
+import CuratorManagementPopup from './Curations/CuratorManagementPopup/CuratorManagementPopup';
 
 export {
     AdminPlayerPopup,

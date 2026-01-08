@@ -87,7 +87,7 @@ const TermsOfServicePage = () => {
 
             <section className="terms-section">
               <h2>Disclaimer</h2>
-              <p>Our website is provided on an "AS IS" and "AS AVAILABLE" basis.
+              <p>Our website is provided on an &quot;AS IS&quot; and &quot;AS AVAILABLE&quot; basis.
                 We make no representations or warranties of any kind, express or implied,
                 as to the operation of our website or the information, content, materials,
                 or products included on our website.</p>
@@ -127,7 +127,7 @@ const TermsOfServicePage = () => {
               <h2>Changes to Terms</h2>
               <p>We reserve the right to modify or replace 
                 these Terms at any time. If a revision is material, 
-                we will provide at least 30 days' notice prior to any new 
+                we will provide at least 30 days&apos; notice prior to any new 
                 terms taking effect. What constitutes a material change 
                 will be determined at our sole discretion.</p>
             </section>

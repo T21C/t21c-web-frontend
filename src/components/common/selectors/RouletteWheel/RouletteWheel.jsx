@@ -372,7 +372,7 @@ export const RouletteWheel = ({
                     {activeGimmick === 'bus' && (
                       <>
                         <div className="message">
-                          You're in for one hell of a ride pal...
+                          You&apos;re in for one hell of a ride pal...
                         </div>
                         <div className="countdown" style={{
                           fontSize: '2em',

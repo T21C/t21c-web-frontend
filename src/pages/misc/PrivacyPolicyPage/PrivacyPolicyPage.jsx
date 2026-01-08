@@ -117,7 +117,7 @@ const PrivacyPolicyPage = () => {
 
             <section className="privacy-section">
               <h2>Changes to This Privacy Policy</h2>
-              <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date. You are advised to review this Privacy Policy periodically for any changes.</p>
+              <p>We may update our Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the &quot;Last Updated&quot; date. You are advised to review this Privacy Policy periodically for any changes.</p>
             </section>
 
             <section className="privacy-section">
