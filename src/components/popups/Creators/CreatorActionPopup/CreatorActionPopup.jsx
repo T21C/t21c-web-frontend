@@ -20,7 +20,7 @@ const roleOptions = Object.entries(CreditRole).map(([key, value]) => ({
 
 export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
   const { t } = useTranslation('components');
-  const tCreator = (key) => t(`creatorActionPopup.actionPopup.${key}`) || key;
+  const tCreator = (key, params) => t(`creatorActionPopup.actionPopup.${key}`, params) || key;
   const popupRef = useRef(null);
   const { difficultyDict } = useDifficultyContext();
 
@@ -60,8 +60,21 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
     };
 
     const handleClickOutside = (event) => {
+      // Only handle left mouse button clicks (button === 0)
+      // Ignore right-clicks and other mouse buttons
+      if (event.button !== 0 && event.button !== undefined) {
+        return;
+      }
+      
+      // Check if click is outside popup and not on a react-select menu
       if (popupRef.current && !popupRef.current.contains(event.target)) {
-        onClose();
+        // Also check if click is on react-select menu (which is portaled to body)
+        const isReactSelectMenu = event.target.closest('.custom-select-menu') || 
+                                  event.target.closest('[class*="react-select"]') ||
+                                  event.target.closest('[id*="react-select"]');
+        if (!isReactSelectMenu) {
+          onClose();
+        }
       }
     };
 

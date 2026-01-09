@@ -156,7 +156,21 @@ const CustomSelect = ({
   };
 
   return (
-    <div className="custom-select-container" style={{ width: width }}>
+    <div 
+      className="custom-select-container" 
+      style={{ width: width }}
+      onMouseDown={(e) => {
+        // Prevent right-clicks and stop propagation to prevent popup from closing
+        if (e.button !== 0) {
+          e.preventDefault();
+        }
+        e.stopPropagation();
+      }}
+      onContextMenu={(e) => {
+        // Prevent context menu on right-click
+        e.preventDefault();
+      }}
+    >
       {label && <p className="custom-select-label">{label}</p>}
       <div className="custom-select-wrapper">
         <ReactSelect
