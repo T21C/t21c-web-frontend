@@ -58,6 +58,10 @@ const DifficultyPopup = ({
   const [expandedDirectives, setExpandedDirectives] = useState({});
   const [expandedActions, setExpandedActions] = useState({});
   const modalRef = useRef(null);
+  const [iconFile, setIconFile] = useState(null);
+  const [iconPreview, setIconPreview] = useState(null);
+  const [legacyIconFile, setLegacyIconFile] = useState(null);
+  const [legacyIconPreview, setLegacyIconPreview] = useState(null);
 
   const handleMouseDown = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
@@ -84,6 +88,7 @@ const DifficultyPopup = ({
     };
   }, [isOpen, mouseDownOutside]);
 
+  // Load directives, roles, and channels when modal opens
   useEffect(() => {
     if (isOpen && !isCreating) {
       loadDirectives();
@@ -91,6 +96,54 @@ const DifficultyPopup = ({
       loadAvailableChannels();
     }
   }, [isOpen, isCreating]);
+
+  // Initialize icon previews only when modal first opens
+  // Use a ref to track if we've already initialized to prevent resetting on difficulty changes
+  const hasInitialized = useRef(false);
+  
+  useEffect(() => {
+    if (isOpen && !hasInitialized.current) {
+      // Initialize previews from difficulty prop only on first open
+      if (difficulty?.icon) {
+        setIconPreview(difficulty.icon);
+      } else {
+        setIconPreview(null);
+      }
+      
+      if (difficulty?.legacyIcon) {
+        setLegacyIconPreview(difficulty.legacyIcon);
+      } else {
+        setLegacyIconPreview(null);
+      }
+      
+      setIconFile(null);
+      setLegacyIconFile(null);
+      hasInitialized.current = true;
+    } else if (!isOpen) {
+      // Reset initialization flag when modal closes
+      hasInitialized.current = false;
+      
+      // Clean up blob URLs when modal closes
+      if (iconPreview && iconPreview.startsWith('blob:')) {
+        URL.revokeObjectURL(iconPreview);
+      }
+      if (legacyIconPreview && legacyIconPreview.startsWith('blob:')) {
+        URL.revokeObjectURL(legacyIconPreview);
+      }
+    }
+  }, [isOpen, difficulty?.icon, difficulty?.legacyIcon]); // Only depend on isOpen and initial icon values
+
+  // Cleanup blob URLs on unmount
+  useEffect(() => {
+    return () => {
+      if (iconPreview && iconPreview.startsWith('blob:')) {
+        URL.revokeObjectURL(iconPreview);
+      }
+      if (legacyIconPreview && legacyIconPreview.startsWith('blob:')) {
+        URL.revokeObjectURL(legacyIconPreview);
+      }
+    };
+  }, [iconPreview, legacyIconPreview]);
 
   const loadDirectives = async () => {
     if (!difficulty?.id) return;
@@ -746,6 +799,52 @@ const DifficultyPopup = ({
     setDirectives(updatedItems);
   };
 
+  const handleIconChange = (e, isLegacy = false) => {
+    const file = e.target.files[0];
+    if (file) {
+      // Validate file type
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml'];
+      if (!allowedTypes.includes(file.type)) {
+        showToast('Invalid file type. Only JPEG, PNG, WebP, and SVG files are allowed.', 'error');
+        return;
+      }
+
+      // Validate file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        showToast('File size too large. Maximum size is 5MB.', 'error');
+        return;
+      }
+
+      if (isLegacy) {
+        setLegacyIconFile(file);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setLegacyIconPreview(e.target.result);
+        };
+        reader.readAsDataURL(file);
+      } else {
+        setIconFile(file);
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          setIconPreview(e.target.result);
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+  };
+
+  const handleRemoveIcon = (isLegacy = false) => {
+    if (isLegacy) {
+      setLegacyIconFile(null);
+      setLegacyIconPreview(null);
+      onChange({ ...difficulty, legacyIcon: null });
+    } else {
+      setIconFile(null);
+      setIconPreview(null);
+      onChange({ ...difficulty, icon: null });
+    }
+  };
+
   const handleFormSubmit = (e) => {
     e.preventDefault();
     
@@ -758,29 +857,69 @@ const DifficultyPopup = ({
       // For details tab, make API call based on whether creating or editing
       const updateDifficulty = async () => {
         try {
-          const difficultyData = {
-            id: difficulty.id,
-            name: difficulty.name,
-            type: difficulty.type,
-            icon: difficulty.icon,
-            emoji: difficulty.emoji,
-            color: difficulty.color,
-            baseScore: difficulty.baseScore,
-            sortOrder: difficulty.sortOrder,
-            legacy: difficulty.legacy,
-            legacyIcon: difficulty.legacyIcon,
-            legacyEmoji: difficulty.legacyEmoji
-          };
+          // Use FormData to handle file uploads (like tags do)
+          const formData = new FormData();
+          
+          // Only include id if explicitly provided (not empty string or undefined)
+          if (difficulty.id !== undefined && difficulty.id !== null && difficulty.id !== '') {
+            formData.append('id', difficulty.id.toString());
+          }
+          
+          formData.append('name', difficulty.name);
+          formData.append('type', difficulty.type);
+          formData.append('emoji', difficulty.emoji);
+          formData.append('color', difficulty.color);
+          formData.append('baseScore', difficulty.baseScore.toString());
+          formData.append('legacy', difficulty.legacy);
+          formData.append('legacyEmoji', difficulty.legacyEmoji);
+          
+          if (difficulty.sortOrder !== undefined) {
+            formData.append('sortOrder', difficulty.sortOrder.toString());
+          }
+
+          // Handle icon uploads with priority logic (like tags):
+          // Priority 1: iconFile exists -> upload file
+          // Priority 2: icon is null -> remove icon
+          // Otherwise: send existing icon URL or don't send (no change)
+          if (iconFile) {
+            formData.append('icon', iconFile);
+          } else if (iconPreview === null && difficulty.icon === null) {
+            // Explicitly null (removed) -> send null
+            formData.append('icon', 'null');
+          } else if (difficulty.icon) {
+            // Send existing icon URL
+            formData.append('icon', difficulty.icon);
+          }
+
+          // Handle legacy icon uploads with same priority logic
+          if (legacyIconFile) {
+            formData.append('legacyIcon', legacyIconFile);
+          } else if (legacyIconPreview === null && difficulty.legacyIcon === null) {
+            // Explicitly null (removed) -> send null
+            formData.append('legacyIcon', 'null');
+          } else if (difficulty.legacyIcon) {
+            // Send existing legacy icon URL
+            formData.append('legacyIcon', difficulty.legacyIcon);
+          }
 
           const response = await api[isCreating ? 'post' : 'put'](
             `${import.meta.env.VITE_DIFFICULTIES}${isCreating ? '' : `/${difficulty.id}`}`,
-            difficultyData,
+            formData,
             {
               headers: {
-                'X-Super-Admin-Password': verifiedPassword
+                'X-Super-Admin-Password': verifiedPassword,
+                'Content-Type': 'multipart/form-data'
               }
             }
           );
+
+          // Clean up blob URLs after successful upload
+          if (iconPreview && iconPreview.startsWith('blob:')) {
+            URL.revokeObjectURL(iconPreview);
+          }
+          if (legacyIconPreview && legacyIconPreview.startsWith('blob:')) {
+            URL.revokeObjectURL(legacyIconPreview);
+          }
           
           showToast(tDiff(isCreating ? 'notifications.created' : 'notifications.updated'), 'success');
           onClose();
@@ -1019,15 +1158,25 @@ const DifficultyPopup = ({
             <form onSubmit={handleFormSubmit}>
               <h2 className="difficulty-modal__title">{isCreating ? tDiff('modal.create.title') : tDiff('modal.edit.title')}</h2>
               <div className="difficulty-modal__form-group">
-                <label className="difficulty-modal__form-label">{tDiff('form.labels.id')}</label>
+                <label className="difficulty-modal__form-label">
+                  {tDiff('form.labels.id')}
+                  <span className="difficulty-modal__form-label-hint">
+                    {' '}({tDiff('form.optional')})
+                  </span>
+                </label>
                 <input
                   type="number"
-                  value={difficulty.id}
-                  onChange={(e) => onChange({ ...difficulty, id: parseInt(e.target.value) })}
+                  value={difficulty.id || ''}
+                  onChange={(e) => onChange({ ...difficulty, id: e.target.value ? parseInt(e.target.value) : undefined })}
                   disabled={!isCreating}
-                  required
+                  placeholder={isCreating ? tDiff('form.placeholders.id') : ''}
                   className="difficulty-modal__form-input"
                 />
+                {isCreating && (
+                  <p className="difficulty-modal__help-text">
+                    {tDiff('form.helpText.id')}
+                  </p>
+                )}
               </div>
 
               <div className="difficulty-modal__form-group">
@@ -1057,23 +1206,68 @@ const DifficultyPopup = ({
 
               <div className="difficulty-modal__form-group">
                 <label className="difficulty-modal__form-label">{tDiff('form.labels.icon')}</label>
-                <input
-                  type="text"
-                  value={difficulty.icon}
-                  onChange={(e) => onChange({ ...difficulty, icon: e.target.value })}
-                  required
-                  className="difficulty-modal__form-input"
-                />
+                <div className="difficulty-modal__icon-upload">
+                  {iconPreview && (
+                    <div className="difficulty-modal__icon-preview">
+                      <img 
+                        src={iconPreview} 
+                        alt="Icon preview"
+                        className="difficulty-modal__icon-preview-img"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveIcon(false)}
+                        className="difficulty-modal__icon-remove"
+                      >
+                        ✖
+                      </button>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/jpg,image/png,image/webp,image/svg+xml"
+                    onChange={(e) => handleIconChange(e, false)}
+                    className="difficulty-modal__file-input"
+                    id="icon-upload"
+                  />
+                  <label htmlFor="icon-upload" className="difficulty-modal__file-label">
+                    {iconPreview ? tDiff('form.icon.change') : tDiff('form.icon.select')}
+                  </label>
+                </div>
+                <p className="difficulty-modal__help-text">{tDiff('form.icon.help')}</p>
               </div>
 
               <div className="difficulty-modal__form-group">
                 <label className="difficulty-modal__form-label">{tDiff('form.labels.legacyIcon')}</label>
-                <input
-                  type="text"
-                  value={difficulty.legacyIcon}
-                  onChange={(e) => onChange({ ...difficulty, legacyIcon: e.target.value })}
-                  className="difficulty-modal__form-input"
-                />
+                <div className="difficulty-modal__icon-upload">
+                  {legacyIconPreview && (
+                    <div className="difficulty-modal__icon-preview">
+                      <img 
+                        src={legacyIconPreview} 
+                        alt="Legacy icon preview"
+                        className="difficulty-modal__icon-preview-img"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveIcon(true)}
+                        className="difficulty-modal__icon-remove"
+                      >
+                        ✖
+                      </button>
+                    </div>
+                  )}
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/jpg,image/png,image/webp,image/svg+xml"
+                    onChange={(e) => handleIconChange(e, true)}
+                    className="difficulty-modal__file-input"
+                    id="legacy-icon-upload"
+                  />
+                  <label htmlFor="legacy-icon-upload" className="difficulty-modal__file-label">
+                    {legacyIconPreview ? tDiff('form.legacyIcon.change') : tDiff('form.legacyIcon.select')}
+                  </label>
+                </div>
+                <p className="difficulty-modal__help-text">{tDiff('form.legacyIcon.help')}</p>
               </div>
 
               <div className="difficulty-modal__form-group">

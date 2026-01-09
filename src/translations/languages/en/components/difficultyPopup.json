@@ -51,8 +51,23 @@
       "sortOrder": "Sort Order",
       "legacy": "Legacy Name"
     },
+    "optional": "Optional",
     "placeholders": {
-      "color": "#RRGGBB"
+      "color": "#RRGGBB",
+      "id": "Auto-assign if empty"
+    },
+    "helpText": {
+      "id": "Leave empty to automatically assign the smallest available ID"
+    },
+    "icon": {
+      "change": "Change Icon",
+      "select": "Select Icon",
+      "help": "Upload an icon file (JPEG, PNG, WebP, or SVG, max 5MB)"
+    },
+    "legacyIcon": {
+      "change": "Change Legacy Icon",
+      "select": "Select Legacy Icon",
+      "help": "Upload a legacy icon file (JPEG, PNG, WebP, or SVG, max 5MB) - Optional"
     }
   },
   "difficultyTypes": {
