@@ -3295,6 +3295,7 @@
   align-items: center;
   gap: 0.25rem;
   transition: gap 0.3s ease;
+  z-index: 1;
 }
 
 .level-tags-container[data-open="true"] .tags-icons-row {
