@@ -2,18 +2,22 @@ import './ratingitem.css';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
-import DefaultAvatar from '@/components/common/icons/DefaultAvatar';
 import { CommentFormatter } from '@/components/misc';
 import { UserAvatar } from '@/components/layout';
 import { CrownIcon } from '@/components/common/icons';
+import { formatDate } from '@/utils/Utility';
+import i18next from 'i18next';
 
-export const RatingItem = ({key, user, rating, comment, isSuperAdmin, onDelete, weeklyRaterActivity = [] }) => {
+export const RatingItem = ({ ratingDetail, isSuperAdmin, onDelete, weeklyRaterActivity = [] }) => {
+    // Accept full rating detail object and extract fields from it
+    const { rating, comment, createdAt, user, userId, isCommunityRating } = ratingDetail || {};
+    
     const [isExpanded, setIsExpanded] = useState(false);
     const { t } = useTranslation('components');
     const tRating = (key, params = {}) => t(`rating.ratingCard.${key}`, params) || key;
     
     // Find user's weekly activity
-    const userActivity = weeklyRaterActivity.find(rater => rater.userId === user?.id);
+    const userActivity = weeklyRaterActivity.find(rater => rater.userId === (user?.id || userId));
     const averagePerDay = userActivity?.averagePerDay || 0;
     
     // Determine visual indicators based on average per day
@@ -22,8 +26,8 @@ export const RatingItem = ({key, user, rating, comment, isSuperAdmin, onDelete, 
     
     const handleDelete = (e) => {
       e.stopPropagation();
-      if (window.confirm(t('rating.detailPopup.confirmations.deleteRating', {username: user?.username}))) {
-          onDelete(user?.id);
+      if (window.confirm(t('rating.detailPopup.confirmations.deleteRating', {username: user?.username || user?.nickname}))) {
+          onDelete(user?.id || userId);
       }
     };
 
@@ -49,8 +53,11 @@ export const RatingItem = ({key, user, rating, comment, isSuperAdmin, onDelete, 
                 </div>
               )}
             </div>
-            <span className="rater-name">{user?.username}:</span>
-            <span className="rater-rating">{rating}</span>
+            <span className="rater-name">{user?.username || user?.nickname}:</span>
+            <span className="rater-rating">{rating || ''}</span>
+            {createdAt && (
+              <span className="rating-date">{formatDate(createdAt, i18next?.language)}</span>
+            )}
             <div className="rating-item-icons">
               {comment && (
                 <div className="comment-icon">

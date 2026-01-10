@@ -25,7 +25,6 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    margin-left: auto;
   }
 
   .comment-icon, .delete-icon {
@@ -83,6 +82,12 @@
 
   .other-rating-item.expanded {
     background-color: rgba(255, 255, 255, 0.05);
+  }
+
+  .rating-date {
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-left: auto;
   }
 
 

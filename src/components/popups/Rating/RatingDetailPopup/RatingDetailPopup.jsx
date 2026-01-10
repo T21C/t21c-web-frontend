@@ -411,12 +411,10 @@ export const RatingDetailPopup = ({
     <div className={`other-ratings-section ${ratings.length === 0 ? 'empty' : ''}`}>
       {ratings.length > 0 ? (
         <div className="other-ratings-content">
-          {ratings.map(({user, rating, comment, isCommunityRating}) => (
+          {ratings.map((ratingDetail) => (
             <RatingItem
-              key={user?.id}
-              user={user}
-              rating={rating}
-              comment={comment}
+              key={ratingDetail.id || ratingDetail.userId || ratingDetail.user?.id}
+              ratingDetail={ratingDetail}
               isSuperAdmin={isSuperAdmin}
               onDelete={handleDeleteRating}
               weeklyRaterActivity={weeklyRaterActivity}

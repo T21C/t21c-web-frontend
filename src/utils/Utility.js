@@ -98,9 +98,8 @@ export function validateFeelingRating(value, range = true) {
     // Base patterns
     const numbers = {
         single: '[1-9]',
-        teens: '1[0-2]',
-        teensJ: '1[3-9][jJ]?',
-        twenty: '20[jJ]?'
+        teens: '1[0-9]',
+        twenty: '20'
     };
     
     const prefixes = '[PGUpgu]';
@@ -109,7 +108,6 @@ export function validateFeelingRating(value, range = true) {
     const pguPatterns = [
         `${prefixes}${numbers.single}`,
         `${prefixes}${numbers.teens}`,
-        `${prefixes}${numbers.teensJ}`,
         `${prefixes}${numbers.twenty}`
     ];
     const pguRegex = `(${pguPatterns.join('|')})`;
@@ -138,7 +136,7 @@ export function validateFeelingRating(value, range = true) {
     // Special patterns
 
 
-    const extras = ['-2', '-21', 'Marathon', 'MA', 'Impossible', 'Censored'];
+    const extras = ['-2', '-21', 'Marathon', 'MA', 'Impossible', 'Censored', 'P0'];
     const extrasRegex = extras.join('$|^');
     
     // Combine all patterns based on range flag

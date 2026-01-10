@@ -82,7 +82,7 @@ const TagSelector = ({
       // Backward compatibility: fall back to hardcoded grouping logic
       if (item.name.startsWith('Q')) {
         group = tDiff('groups.Quantum');
-      } else if (['Unranked', 'Impossible', 'Censored'].includes(item.name)) {
+      } else if (['Unranked', 'Impossible', 'Censored', 'P0'].includes(item.name)) {
         group = tDiff('groups.Hidden');
       } else {
         group = tDiff('groups.Extra');
