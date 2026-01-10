@@ -705,9 +705,12 @@ const LevelPage = () => {
                   states={['show', 'hide', 'only']}
                 />
               </div>
-              {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+              {user && (
                 <div className="state-switches-item">
-                  <span className="state-switches-label">{tLevel('settingExp.deletedLevels')}</span>
+                  <span className="state-switches-label">{
+                  hasFlag(user, permissionFlags.SUPER_ADMIN) 
+                  ? tLevel('settingExp.deletedLevels') 
+                  : tLevel('settingExp.myHiddenLevels')}</span>
                   <StateDisplay
                     currentState={deletedFilter}
                     onChange={(newState) => {
