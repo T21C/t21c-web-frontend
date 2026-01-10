@@ -307,7 +307,7 @@ const ProfilePage = () => {
       if (playerId && !playerData) {
         return (
           <div className="player-page">
-            <div className="player-body">
+            <div className="player-body" style={{height: "85vh"}}>
               <div className="loader"/>  
             </div>
           </div>
@@ -324,7 +324,7 @@ const ProfilePage = () => {
               image={'/default-avatar.jpg'}
               type="profile"
           />
-            <div className="player-body">
+            <div className="player-body" style={{height: "85vh"}}>
                 <h1 className="player-notfound">{tProfile('notLoggedIn')}</h1>
                 <h2 className="player-search-for-other" onClick={handleSearchForOther}>{tProfile('searchForOther')}</h2>
             </div>  

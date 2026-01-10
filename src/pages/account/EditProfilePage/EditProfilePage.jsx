@@ -11,6 +11,8 @@ import { CountrySelect } from '@/components/common/selectors';
 import { useTranslation } from 'react-i18next';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
+const usernameChangeCooldown = 3 * 24 * 60 * 60 * 1000; // 3 days
+
 const ProviderIcon = ({ provider, size, color="#fff" }) => {
   switch(provider) {
     case 'discord':
@@ -73,10 +75,10 @@ const EditProfilePage = () => {
       const lastChange = new Date(user.lastUsernameChange).getTime();
       const now = Date.now();
       const msSinceLastChange = now - lastChange;
-      const msRemaining = (24 * 60 * 60 * 1000) - msSinceLastChange;
+      const msRemaining = usernameChangeCooldown - msSinceLastChange;
 
       if (msRemaining > 0) {
-        const nextAvailableChange = new Date(lastChange + (24 * 60 * 60 * 1000));
+        const nextAvailableChange = new Date(lastChange + usernameChangeCooldown);
         setUsernameRateLimit({
           nextAvailableChange: nextAvailableChange.toISOString(),
           timeRemaining: {
@@ -454,8 +456,8 @@ const EditProfilePage = () => {
               name="email"
               value={formData.email}
               onChange={handleInputChange}
-              readOnly
-              className="input-field readonly"
+              disabled
+              className="input-field disabled"
             />
             {!hasFlag(user, permissionFlags.EMAIL_VERIFIED) && (
               <div className="email-verification-message" onClick={() => navigate('/profile/verify-email')}>

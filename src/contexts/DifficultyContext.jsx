@@ -185,7 +185,7 @@ const DifficultyContextProvider = (props) => {
     useEffect(() => {
         setInterval(() => {
             validateHash().catch(err => console.error('Error validating hash:', err));
-        }, 1000 * 60);
+        }, 10 * 1000 * 60);
     }, [validateHash]);
     return (
         <DifficultyContext.Provider 
