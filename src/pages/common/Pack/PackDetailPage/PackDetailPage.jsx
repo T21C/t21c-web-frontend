@@ -818,6 +818,8 @@ const PackDetailPage = () => {
               <Droppable 
                 droppableId={ROOT_DROPPABLE_ID} 
                 type="ITEM"
+                ignoreContainerClipping={true}
+                isCombineEnabled={false}
               >
                 {(provided, snapshot) => (
                   <div

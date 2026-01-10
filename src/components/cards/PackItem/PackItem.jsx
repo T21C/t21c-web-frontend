@@ -101,7 +101,9 @@ const PackItem = ({
           {...provided.draggableProps}
           style={{
             ...provided.draggableProps.style,
-            marginLeft: 0
+            marginLeft: 0,
+            // Only elevate z-index when actively being dragged
+            zIndex: snapshot.isDragging ? 1000 : undefined
           }}
           className={`pack-item pack-item--folder ${snapshot.isDragging ? 'dragging' : ''} ${isExpanded ? 'expanded' : ''}`}
           data-depth={depth}
@@ -202,13 +204,29 @@ const PackItem = ({
           <Droppable 
             droppableId={`folder-${item.id}`} 
             type="ITEM"
+            ignoreContainerClipping={true}
+            isCombineEnabled={false}
+            isDropDisabled={snapshot.isDragging}
           >
-            {(droppableProvided, droppableSnapshot) => (
-              <div
-                ref={droppableProvided.innerRef}
-                {...droppableProvided.droppableProps}
-                className={`pack-item__children ${droppableSnapshot.isDraggingOver ? 'is-dragging-over' : ''} ${isExpanded ? 'is-expanded' : 'is-collapsed'}`}
-              >
+            {(droppableProvided, droppableSnapshot) => {
+              // Calculate z-index based on depth - deeper folders get higher z-index
+              const baseZIndex = 10 + (depth * 10);
+              const hoverBoost = droppableSnapshot.isDraggingOver ? 100 : 0;
+              const childrenZIndex = isExpanded ? baseZIndex + hoverBoost : undefined;
+              
+              return (
+                <div
+                  ref={droppableProvided.innerRef}
+                  {...droppableProvided.droppableProps}
+                  className={`pack-item__children ${droppableSnapshot.isDraggingOver ? 'is-dragging-over' : ''} ${isExpanded ? 'is-expanded' : 'is-collapsed'}`}
+                  style={{
+                    ...droppableProvided.droppableProps?.style,
+                    '--folder-depth': depth,
+                    zIndex: childrenZIndex,
+                    // Ensure this droppable creates its own stacking context
+                    position: 'relative'
+                  }}
+                >
                 {isExpanded &&
                   sortedChildren.map((child, childIndex) => (
                     <PackItem
@@ -228,7 +246,8 @@ const PackItem = ({
                   ))}
                 {droppableProvided.placeholder}
               </div>
-            )}
+              );
+            }}
           </Droppable>
         </div>
       )}

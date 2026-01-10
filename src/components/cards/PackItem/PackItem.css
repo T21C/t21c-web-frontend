@@ -207,16 +207,33 @@
 }
 
 .pack-item__children.is-expanded {
-  min-height: 40px;
+  min-height: 60px;
   position: relative;
-  z-index: 1;
+  /* z-index is now applied dynamically via inline styles based on depth */
+}
+
+/* Ensure folder droppable stays accessible during any drag operation */
+.pack-item--folder:not(.dragging) > .pack-item__children.is-expanded {
+  pointer-events: auto;
 }
 
 .pack-item__children.is-dragging-over {
   background: rgba(59, 130, 246, 0.12);
   border-radius: 6px;
   padding: 0.75rem;
-  min-height: 60px;
+  min-height: 80px;
+  /* z-index boost is handled in inline styles when dragging over */
+}
+
+/* Prevent folder header from blocking drop zone during drag */
+.pack-item--folder .pack-item__header {
+  position: relative;
+  z-index: auto;
+}
+
+/* Ensure nested folders stack correctly - children droppables above parent draggables */
+.pack-item--folder .pack-item--folder {
+  position: relative;
 }
 
 .pack-item__level-wrapper {

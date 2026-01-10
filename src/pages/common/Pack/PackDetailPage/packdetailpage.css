@@ -441,10 +441,18 @@
 .pack-detail-page__items-list {
   display: flex;
   flex-direction: column;
+  gap: 0.5rem;
   margin-bottom: 2rem;
   border-radius: 8px;
   padding: 0.5rem;
   position: relative;
+  min-height: 80px;
+}
+
+/* Ensure droppable zones are properly accessible during drag */
+.pack-detail-page__items-list.is-dragging-over {
+  background: rgba(59, 130, 246, 0.08);
+  min-height: 100px;
 }
 
 /* Ensure drag and drop context doesn't create stacking issues */
