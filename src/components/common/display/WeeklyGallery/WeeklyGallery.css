@@ -357,10 +357,10 @@
   height: 8px;
   border-radius: 50%;
   background: #00ff00;
-  animation: pulse 2s infinite;
+  animation: weekly-gallery_pulse 2s infinite;
 }
 
-@keyframes pulse {
+@keyframes weekly-gallery_pulse {
   0%, 100% {
     opacity: 1;
     transform: scale(1);

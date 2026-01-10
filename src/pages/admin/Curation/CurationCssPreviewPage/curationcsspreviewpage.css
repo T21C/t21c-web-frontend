@@ -23,11 +23,6 @@
   animation: spin 1s linear infinite;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
 .curation-css-preview-error button {
   padding: 0.75rem 1.5rem;
   background: var(--color-purple-3);

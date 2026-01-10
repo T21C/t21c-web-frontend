@@ -483,7 +483,7 @@
   }
 }
 
-@keyframes pulse {
+@keyframes pass-detail_pulse {
   0%, 100% {
     text-shadow: 
       0 0 5px #000a,
@@ -523,10 +523,10 @@
     0 2px 10px rgba(255, 0, 0, 0.8),
     0 4px 15px rgba(255, 0, 0, 0.6),
     0 6px 20px rgba(255, 0, 0, 0.4);
-  animation: zero-pulse 5s ease-in-out infinite;
+  animation: pass-detail_zero-pulse 5s ease-in-out infinite;
 }
 
-@keyframes zero-pulse {
+@keyframes pass-detail_zero-pulse {
   0%, 100% {
     text-shadow: 
       0 0px 4px #000,
@@ -641,10 +641,10 @@
   border: 2px solid var(--color-white-t50);
   border-top-color: var(--color-white);
   border-radius: 50%;
-  animation: spin 0.6s linear infinite;
+  animation: pass-detail_spin 0.6s linear infinite;
 }
 
-@keyframes spin {
+@keyframes pass-detail_spin {
   to { transform: rotate(360deg); }
 }
 

@@ -19,7 +19,7 @@
   width: 100%;
   height: clamp(6rem, 15vw, 12rem);
   opacity: 0;
-  animation: fadeInLogo 0.8s ease-out forwards;
+  animation: home-aprils_fadeInLogo 0.8s ease-out forwards;
 }
 
 .home-aprils .logo {
@@ -28,7 +28,7 @@
 }
 
 
-@keyframes slideDown {
+@keyframes home-aprils_slideDown {
   0% {
     opacity: 0;
     transform: translateY(-20px);
@@ -53,7 +53,7 @@
   cursor: default;
   display: inline-block;
   opacity: 0;
-  animation: slideDown 0.8s ease-out forwards;
+  animation: home-aprils_slideDown 0.8s ease-out forwards;
   animation-delay: 0.5s;
   display:grid;
 }
@@ -66,7 +66,7 @@
   background-clip: text;
   -webkit-text-fill-color: transparent;
   background-size: 300% 300%;
-  animation: gradient 8s ease-in-out infinite;
+  animation: home-aprils_gradient 8s ease-in-out infinite;
   filter: drop-shadow(2px 2px 5px rgba(0, 0, 0, 0.41));
 }
 
@@ -116,7 +116,7 @@
   gap: 2rem;
   margin: 2rem 0;
   opacity: 0;
-  animation: fadeIn 0.5s ease-out forwards;
+  animation: home-aprils_fadeIn 0.5s ease-out forwards;
   animation-delay: 0s;
   position: relative;
   z-index: 21;
@@ -173,10 +173,10 @@
   border-radius: 12px;
   font-weight: bold;
   box-shadow: 0 0 10px rgba(255, 42, 209, 0.5);
-  animation: pulse 1s infinite;
+  animation: home-aprils_pulse 1s infinite;
 }
 
-@keyframes pulse {
+@keyframes home-aprils_pulse {
   0% {
     transform: scale(1);
   }
@@ -193,7 +193,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  animation: spin 2s linear infinite;
+  animation: home-aprils_spin 2s linear infinite;
   transform-origin: 50% 55%;
   margin-bottom: 0.2rem;
 }
@@ -215,7 +215,7 @@
   text-align: center;
 }
 
-@keyframes fadeIn {
+@keyframes home-aprils_fadeIn {
   from {
     opacity: 0;
     transform: translateY(10px);
@@ -226,7 +226,7 @@
   }
 }
 
-@keyframes fadeInLogo {
+@keyframes home-aprils_fadeInLogo {
   0% {
     opacity: 0;
     transform: translateY(-5px);
@@ -659,7 +659,7 @@
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  animation: fadeIn 0.3s ease-out;
+  animation: home-aprils_fadeIn 0.3s ease-out;
 }
 
 .level-wheel-popup .level-wheel-container {
@@ -670,7 +670,7 @@
   height: 95vh;
   max-width: 800px;
   position: relative;
-  animation: slideIn 0.3s ease-out;
+  animation: home-aprils_slideIn 0.3s ease-out;
 }
 
 .level-wheel-popup .level-wheel-header {
@@ -777,7 +777,7 @@
 
 .level-wheel-popup .level-result-display {
   text-align: center;
-  animation: fadeIn 0.5s ease-out;
+  animation: home-aprils_fadeIn 0.5s ease-out;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -1011,7 +1011,7 @@
 }
 
 
-@keyframes pulse {
+@keyframes home-aprils_pulse {
   0% {
     transform: scale(1);
   }

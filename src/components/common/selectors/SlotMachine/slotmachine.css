@@ -89,14 +89,14 @@
   .slot-digit.spinning {
     background: #3a3a3a;
     border-color: #4a4a4a;
-    animation: pulse 0.5s infinite;
+    animation: slot-digit_pulse 0.5s infinite;
   }
 
   .slot-digit.complete {
     background: #2a2a2a;
     border-color: #4CAF50;
     box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
-    animation: completePulse 1s ease-out;
+    animation: completeslot-digit_pulse 1s ease-out;
   }
   
   .slot-machine-container .spin-button {
@@ -205,7 +205,7 @@
     }
   }
 
-  @keyframes pulse {
+  @keyframes slot-digit_pulse {
     0% {
       box-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
     }
@@ -217,7 +217,7 @@
     }
   }
 
-  @keyframes completePulse {
+  @keyframes completeslot-digit_pulse {
     0% {
       box-shadow: 0 0 5px rgba(76, 175, 80, 0.5);
     }

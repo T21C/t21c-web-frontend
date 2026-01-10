@@ -791,18 +791,8 @@
   }
 
   .submission-admin-page .auto-allow-button .loading-spinner {
-    animation: spinnerSpin 1s linear infinite;
+    animation: spin 1s linear infinite;
     display: flex;
-  }
-
-
-  @keyframes spinnerSpin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
   }
 
   .submission-admin-page .header-container {
@@ -841,7 +831,7 @@
   .submission-admin-page .refresh-button:disabled {
     opacity: 0.3;
     cursor: not-allowed;
-    animation: spinnerSpin 1s linear infinite;
+    animation: spin 1s linear infinite;
   }
 
   .submission-admin-page .discord-assignment-container {

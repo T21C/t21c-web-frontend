@@ -218,7 +218,7 @@
   border: 2px solid #4CAF50;
   border-radius: 50%;
   z-index: 1;
-  animation: pulse 6s infinite;
+  animation: top-raters-popup_pulse 6s infinite;
 }
 
 .avatar-container .crown-ornament-container {
@@ -327,13 +327,13 @@
   transition: all 0.2s ease;
 }
 
-/* Add pulse animation for high values */
+/* Add top-raters-popup_pulse animation for high values */
 .top-raters-overlay .total-ratings.top-value .stat-value,
 .top-raters-overlay .average-per-day.top-value .stat-value {
-  animation: valuePulse 2s infinite;
+  animation: valuetop-raters-popup_pulse 2s infinite;
 }
 
-@keyframes valuePulse {
+@keyframes valuetop-raters-popup_pulse {
   0%, 100% {
     transform: scale(1);
   }
@@ -434,7 +434,7 @@
 }
 
 /* Animations */
-@keyframes pulse {
+@keyframes top-raters-popup_pulse {
   0% {
     transform: scale(1);
     opacity: 0.8;

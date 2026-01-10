@@ -399,10 +399,10 @@ nav {
 .nav-mobile__list .nav-list-item .nav-notification-badge {
   background: linear-gradient(135deg, #ff4444 0%, #ff6b6b 100%);
   box-shadow: 0 2px 4px rgba(255, 68, 68, 0.3);
-  animation: pulse 2s infinite;
+  animation: navigation_pulse 2s infinite;
 }
 
-@keyframes pulse {
+@keyframes navigation_pulse {
   0% {
     transform: scale(1);
   }
