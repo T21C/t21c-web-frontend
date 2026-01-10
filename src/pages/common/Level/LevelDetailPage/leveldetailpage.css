@@ -118,6 +118,11 @@
   box-shadow: var(--shadow-md);
 }
 
+.level-detail .deletion-banner.hidden {
+  background: linear-gradient(135deg, #6b6b6b, #5a5a5a);
+}
+
+
 .level-detail .deletion-banner svg {
   width: 1.5rem;
   height: 1.5rem;

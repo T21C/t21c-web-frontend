@@ -30,7 +30,7 @@ const CreatorManagementPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  const [searchQuery, setSearchQuery] = useState(decodeURIComponent(window.location.search.split('search=')[1]) || "");
+  const [searchQuery, setSearchQuery] = useState(decodeURIComponent(window.location.search.split('search=')[1] || ""));
   const [creatorListSearchQuery, setCreatorListSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [creatorPage, setCreatorPage] = useState(1);

@@ -12,10 +12,23 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { TagManagementPopup } from './TagManagementPopup';
 import { isCdnUrl } from '@/utils/Utility';
+import { useAuth } from '@/contexts/AuthContext';
+import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
 export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPage = false }) => {
   const { t } = useTranslation('components');
   const tLevel = (key) => t(`levelPopups.edit.${key}`) || key;
+  const { user } = useAuth();
+  const isSuperAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
+  
+  // Fields allowed for non-admin creators
+  const ALLOWED_CREATOR_FIELDS = ['song', 'artist', 'videoLink', 'dlLink', 'workshopLink'];
+  
+  // Check if a field is allowed for non-admin users
+  const isFieldAllowed = (fieldName) => {
+    if (isSuperAdmin) return true;
+    return ALLOWED_CREATOR_FIELDS.includes(fieldName);
+  };
 
   const [formData, setFormData] = useState({
     song: '',
@@ -393,7 +406,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
 
   const popupContent = (
     <div className="edit-level-popup-overlay" onClick={handleOverlayClick}>
-      <div className="edit-level-popup" onClick={handleContentClick}>
+      <div className={`edit-level-popup ${!isSuperAdmin ? 'creator-limited-mode' : ''}`} onClick={handleContentClick}>
         <div className="popup-header">
           <h2>{tLevel('title')}</h2>
           <div className="popup-actions">
@@ -404,6 +417,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                 setShowAliasManagement(true);
               }}
               title={tLevel('manageAliases')}
+              disabled={!isSuperAdmin}
             >
               {tLevel('manageAliases')}
             </button>
@@ -421,7 +435,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         <div className="popup-content">
           <form onSubmit={handleSubmit}>
             <div className="form-grid">
-              <div className="form-group">
+              <div className={`form-group ${isFieldAllowed('song') ? 'field-enabled' : ''}`}>
                 <label htmlFor="song">{tLevel('form.labels.song')}</label>
                 <input
                   type="text"
@@ -429,10 +443,11 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   name="song"
                   value={formData.song}
                   onChange={handleInputChange}
+                  disabled={!isFieldAllowed('song')}
                 />
               </div>
 
-              <div className="form-group">
+              <div className={`form-group ${isFieldAllowed('artist') ? 'field-enabled' : ''}`}>
                 <label htmlFor="artist">{tLevel('form.labels.artist')}</label>
                 <input
                   type="text"
@@ -440,12 +455,14 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   name="artist"
                   value={formData.artist}
                   onChange={handleInputChange}
+                  disabled={!isFieldAllowed('artist')}
                 />
               </div>
 
-              <div className="form-group">
+              <div className={`form-group ${isSuperAdmin ? 'field-enabled' : ''}`}>
                 <button 
-                className="manage-creators-btn" 
+                className="manage-creators-btn"
+                disabled={!isSuperAdmin}
                 onClick={() => navigate('/admin/creators?search=' + encodeURIComponent("id:" + level.id))}>
                   Manage Creators
                 </button>
@@ -475,7 +492,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
             </>
             }
 
-              <div className="form-group">
+              <div className={`form-group ${isSuperAdmin ? 'field-enabled' : ''}`}>
                 <RatingInput
                   value={(() => {
                     if (formData.baseScore === null) {
@@ -487,6 +504,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   difficulties={difficulties}
                   allowCustomInput={true}
                   placeholder={tLevel('form.placeholders.baseScore')}
+                  disabled={!isSuperAdmin}
                 />
                 {getBaseScoreDisplay() !== "" && (
                   <div className="base-score-display">
@@ -495,13 +513,14 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                 )}
               </div>
 
-              <div className="form-group">
+              <div className={`form-group ${isSuperAdmin ? 'field-enabled' : ''}`}>
                 <RatingInput
                   value={getDifficultyName(formData.diffId)}
                   diffId={parseInt(formData.diffId)}
                   onChange={(value) => handleDifficultyChange(value, 'diffId')}
                   difficulties={difficulties}
                   showDiff={true}
+                  disabled={!isSuperAdmin}
                 />
                 {isFromAnnouncementPage ? (
                   <div className="base-score-display">
@@ -529,7 +548,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   </div>
                 </div>
               ) : (
-                <div className="to-rate-checkbox-container">
+                <div className={`to-rate-checkbox-container ${isSuperAdmin ? 'field-enabled' : ''}`}>
                   <div className="to-rate-group">
                     <label className="to-rate-checkbox">
                       <input
@@ -537,6 +556,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                         name="toRate"
                         checked={formData.toRate}
                         onChange={handleInputChange}
+                        disabled={!isSuperAdmin}
                       />
                       {tLevel('form.checkboxes.toRate')}
                     </label>
@@ -547,6 +567,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                         value={formData.rerateNum}
                         onChange={handleInputChange}
                         placeholder={tLevel('form.placeholders.rerateNumber')}
+                        disabled={!isSuperAdmin}
                       />
                     </div>
                   </div>
@@ -557,12 +578,13 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                       value={formData.rerateReason}
                       onChange={handleInputChange}
                       placeholder={tLevel('form.placeholders.rerateReason')}
+                      disabled={!isSuperAdmin}
                     />
                   </div>
                 </div>
               )}
               
-              <div className="form-group">
+              <div className={`form-group ${isSuperAdmin ? 'field-enabled' : ''}`}>
                 <label htmlFor="ppBaseScore">{tLevel('form.labels.ppBaseScore')}</label>
                 <input
                   type="number"
@@ -570,17 +592,19 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   name="ppBaseScore"
                   value={formData.ppBaseScore}
                   onChange={handleInputChange}
+                  disabled={!isSuperAdmin}
                 />
               </div>
             </div>
 
-            <div className="form-group">
+            <div className={`form-group ${isSuperAdmin ? 'field-enabled' : ''}`}>
               <label>{tLevel('form.labels.tags')}</label>
               <div className="edit-level-popup__tag-preview-container">
               <button
                   type="button"
                   className="edit-level-popup__manage-tags-button"
                   onClick={handleOpenTagManagement}
+                  disabled={!isSuperAdmin}
                 >
                   {tLevel('form.buttons.manageTags')}
                 </button>
@@ -609,7 +633,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   type="button"
                   className={`edit-level-popup__refresh-tags-button ${isRefreshingTags ? 'refreshing' : ''}`}
                   onClick={handleRefreshAutoTags}
-                  disabled={isRefreshingTags}
+                  disabled={isRefreshingTags || !isSuperAdmin}
                   title="Refresh auto-assigned tags"
                 >
                   <RefreshIcon color="white" size={16} />
@@ -617,7 +641,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               </div>
             </div>
 
-            <div className="form-group">
+            <div className={`form-group ${isFieldAllowed('videoLink') ? 'field-enabled' : ''}`}>
               <label htmlFor="videoLink">{tLevel('form.labels.videoLink')}</label>
               <input
                 type="text"
@@ -625,10 +649,11 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                 name="videoLink"
                 value={formData.videoLink}
                 onChange={handleInputChange}
+                disabled={!isFieldAllowed('videoLink')}
               />
             </div>
 
-            <div className="form-group">
+            <div className={`form-group ${isFieldAllowed('dlLink') ? 'field-enabled' : ''}`}>
               <label htmlFor="dlLink">{tLevel('form.labels.dlLink')}</label>
               {isCdnUrl(formData.dlLink) ? (
                 <div className="edit-level-popup__cdn-managed">
@@ -641,6 +666,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   <button
                     className="edit-level-popup__manage-button"
                     onClick={handleOpenUploadManagement}
+                    disabled={!isFieldAllowed('dlLink')}
                   >
                     Manage Upload
                   </button>
@@ -655,23 +681,26 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                     value={formData.dlLink}
                     onChange={handleInputChange}
                     placeholder="Download Link"
+                    disabled={!isFieldAllowed('dlLink')}
                   />
                   <button
                     className="edit-level-popup__upload-button"
                     onClick={handleOpenUploadManagement}
                     title="Upload Level File"
+                    disabled={!isFieldAllowed('dlLink')}
                   >
                     <UploadIcon color="white" size={20} />
                   </button>
                 </div>
-                <div className="checkbox-group"
-                  onClick={() => setIsExternallyAvailable(!isExternallyAvailable)}
-                  style={{ opacity: isExternallyAvailable ? 1 : 0.5 }}>
+                <div className={`checkbox-group ${isSuperAdmin ? 'field-enabled' : ''}`}
+                  onClick={() => isSuperAdmin && setIsExternallyAvailable(!isExternallyAvailable)}
+                  style={{ opacity: !isSuperAdmin ? 0.5 : (isExternallyAvailable ? 1 : 0.5), cursor: !isSuperAdmin ? 'not-allowed' : 'pointer' }}>
                 <input
                   type="checkbox"
                   checked={isExternallyAvailable}
                   onChange={() => {}} // Empty handler to prevent warning, actual logic handled by div onClick
                   readOnly
+                  disabled={!isSuperAdmin}
                 />
                 {tLevel('form.labels.isExternallyAvailable')}
             </div> 
@@ -679,7 +708,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               )}
             </div>
 
-            <div className="form-group">
+            <div className={`form-group ${isFieldAllowed('workshopLink') ? 'field-enabled' : ''}`}>
               <label htmlFor="workshopLink">{tLevel('form.labels.workshopLink')}</label>
               <input
                 type="text"
@@ -687,16 +716,18 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                 name="workshopLink"
                 value={formData.workshopLink}
                 onChange={handleInputChange}
+                disabled={!isFieldAllowed('workshopLink')}
               />
             </div>
 
-            <div className="form-group">
+            <div className={`form-group ${isSuperAdmin ? 'field-enabled' : ''}`}>
               <label htmlFor="publicComments">{tLevel('form.labels.publicComments')}</label>
               <textarea
                 id="publicComments"
                 name="publicComments"
                 value={formData.publicComments}
                 onChange={handleInputChange}
+                disabled={!isSuperAdmin}
               />
             </div>
 
@@ -706,7 +737,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               <button type="submit" disabled={isSaving} className="save-button">
                 {isSaving ? tLevel('form.buttons.save.saving') : tLevel('form.buttons.save.default')}
               </button>
-              {level.isDeleted || level.isHidden ? (
+              {level.isDeleted ? (
                 <button 
                   type="button"
                   className="restore-button"
@@ -715,20 +746,44 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                 >
                   {isSaving ? tLevel('form.buttons.restore.restoring') : tLevel('form.buttons.restore.default')}
                 </button>
-              ) : (
+              ) : level.isHidden ? (
                 <button 
-                  type="button" 
-                  className={`delete-button ${isHideMode ? 'hide-mode' : ''}`}
-                  onClick={handleDelete}
+                  type="button"
+                  className="restore-button"
+                  onClick={handleToggleHidden}
                   disabled={isSaving}
                 >
-                  {isSaving ? 
-                    (isHideMode ? tLevel('form.buttons.delete.processing') : tLevel('form.buttons.delete.deleting')) : 
-                    (isHideMode ? 
-                      (level.isHidden ? tLevel('form.buttons.delete.unhide') : tLevel('form.buttons.delete.hide')) : 
-                      tLevel('form.buttons.delete.default'))}
-                  <div className="toggle-arrow" onClick={toggleMode}></div>
+                  {isSaving ? tLevel('form.buttons.restore.restoring') : tLevel('form.buttons.restore.default')}
                 </button>
+              ) : (
+                <>
+                  {isSuperAdmin ? (
+                    <button 
+                      type="button" 
+                      className={`delete-button ${isHideMode ? 'hide-mode' : ''}`}
+                      onClick={handleDelete}
+                      disabled={isSaving}
+                    >
+                      {isSaving ? 
+                        (isHideMode ? tLevel('form.buttons.delete.processing') : tLevel('form.buttons.delete.deleting')) : 
+                        (isHideMode ? 
+                          (level.isHidden ? tLevel('form.buttons.delete.unhide') : tLevel('form.buttons.delete.hide')) : 
+                          tLevel('form.buttons.delete.default'))}
+                      <div className="toggle-arrow" onClick={toggleMode}></div>
+                    </button>
+                  ) : (
+                    <button 
+                      type="button" 
+                      className="delete-button hide-mode"
+                      onClick={handleToggleHidden}
+                      disabled={isSaving}
+                    >
+                      {isSaving ? 
+                        tLevel('form.buttons.delete.processing') : 
+                        (level.isHidden ? tLevel('form.buttons.delete.unhide') : tLevel('form.buttons.delete.hide'))}
+                    </button>
+                  )}
+                </>
               )}
             </div>
           </form>

@@ -23,6 +23,85 @@
   position: relative;
 }
 
+/* Creator limited mode - gray out everything by default */
+.edit-level-popup.creator-limited-mode .form-group {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Re-enable allowed fields for creators */
+.edit-level-popup.creator-limited-mode .form-group.field-enabled {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* Ensure disabled inputs are visually distinct */
+.edit-level-popup.creator-limited-mode .form-group:not(.field-enabled) input,
+.edit-level-popup.creator-limited-mode .form-group:not(.field-enabled) textarea,
+.edit-level-popup.creator-limited-mode .form-group:not(.field-enabled) button {
+  cursor: not-allowed;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Remove hover effects from disabled fields */
+.edit-level-popup.creator-limited-mode .form-group:not(.field-enabled) input:hover,
+.edit-level-popup.creator-limited-mode .form-group:not(.field-enabled) textarea:hover,
+.edit-level-popup.creator-limited-mode .form-group:not(.field-enabled) button:hover {
+  background-color: inherit;
+  border-color: inherit;
+  opacity: 0.5;
+}
+
+/* Disable alias button for non-admin */
+.edit-level-popup.creator-limited-mode .manage-aliases-btn {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.edit-level-popup.creator-limited-mode .manage-aliases-btn:hover {
+  background-color: inherit;
+  opacity: 0.5;
+}
+
+/* Disable hover and cursor effects for toRate button in limited mode */
+.edit-level-popup.creator-limited-mode .to-rate-checkbox-container:not(.field-enabled) .to-rate-checkbox {
+  opacity: 0.5;
+  cursor: not-allowed;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.edit-level-popup.creator-limited-mode .to-rate-checkbox-container:not(.field-enabled) .to-rate-checkbox:hover {
+  background: #2a2a2a;
+}
+
+.edit-level-popup.creator-limited-mode .to-rate-checkbox-container:not(.field-enabled) .to-rate-checkbox input[type="checkbox"] {
+  cursor: not-allowed;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.edit-level-popup.creator-limited-mode .to-rate-checkbox-container:not(.field-enabled) .rerate-num input,
+.edit-level-popup.creator-limited-mode .to-rate-checkbox-container:not(.field-enabled) .rerate-reason input {
+  cursor: not-allowed;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
 .edit-level-popup-overlay .close-popup-btn {
   position: absolute;
   top: 16px;
@@ -650,8 +729,23 @@
   transition: background-color 0.2s ease;
 }
 
-.edit-level-popup .manage-aliases-btn:hover {
+.edit-level-popup .manage-aliases-btn:hover:not(:disabled) {
   background-color: #357abd;
+}
+
+.edit-level-popup .manage-aliases-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+.edit-level-popup .manage-aliases-btn:disabled:hover {
+  background-color: #4a90e2;
+  opacity: 0.5;
 }
 
 .edit-level-popup .close-popup-btn {

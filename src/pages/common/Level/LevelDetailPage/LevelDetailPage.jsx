@@ -1656,7 +1656,7 @@ const LevelDetailPage = ({ mockData = null }) => {
           </div>
         ) : res?.level?.isHidden ? (
           <div className="deletion-banner-wrapper">
-            <div className="deletion-banner">
+            <div className="deletion-banner hidden">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
@@ -1973,16 +1973,68 @@ const LevelDetailPage = ({ mockData = null }) => {
                 <Tooltip id="like-tooltip" place="bottom" noArrow />
               </div>
             </div>
-            <div className="right"> 
-            {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
-                <button 
-                  className="edit-button svg-stroke"
-                  onClick={() => setOpenEditDialog(true)}
-                  title={tLevel('buttons.edit')}
-                >
-                  <EditIcon size={"34px"}/>
-                </button>
-              )}
+            <div className="right">
+              {(() => {
+                // Check if user is a creator and count CHARTERS
+                const isSuperAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
+                let isCreator = false;
+                let charterCount = 0;
+                let canEdit = false;
+                let editTooltip = '';
+
+                if (user && res?.level?.levelCredits) {
+                  // Count CHARTER roles
+                  charterCount = res.level.levelCredits.filter(
+                    credit => credit.role?.toLowerCase() === 'charter'
+                  ).length;
+
+                  // Check if user is one of the creators
+                  isCreator = res.level.levelCredits.some(
+                    credit => credit.creator?.userId === user.id
+                  );
+
+                  // Determine if user can edit
+                  if (isSuperAdmin) {
+                    canEdit = true;
+                  } else if (isCreator && charterCount <= 2) {
+                    canEdit = true;
+                  } else if (isCreator && charterCount > 2) {
+                    canEdit = false;
+                    editTooltip = 'Contact admins to change this level due to it having more than 2 charters assigned';
+                  }
+                } else if (isSuperAdmin) {
+                  canEdit = true;
+                }
+
+                if (!isCreator && !isSuperAdmin) {
+                  return null;
+                }
+
+                return (
+                  <button 
+                    className={`edit-button svg-stroke ${!canEdit ? 'disabled' : ''}`}
+                    onClick={() => canEdit && setOpenEditDialog(true)}
+                    disabled={!canEdit}
+                    title={editTooltip || tLevel('buttons.edit')}
+                    data-tooltip-id={!canEdit ? 'edit-disabled-tooltip' : undefined}
+                    data-tooltip-content={editTooltip}
+                    style={!canEdit ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+                  >
+                    <EditIcon size={"34px"}/>
+                  </button>
+                );
+              })()}
+              {!hasFlag(user, permissionFlags.SUPER_ADMIN) && (() => {
+                const isCreator = user && res?.level?.levelCredits?.some(
+                  credit => credit.creator?.userId === user.id
+                );
+                const charterCount = res?.level?.levelCredits?.filter(
+                  credit => credit.role?.toLowerCase() === 'charter'
+                ).length || 0;
+                const showTooltip = isCreator && charterCount > 2;
+                
+                return showTooltip ? <Tooltip id="edit-disabled-tooltip" place="bottom" noArrow /> : null;
+              })()}
               {res.level.dlLink && res.level.dlLink.match(/http[s]?:\/\//) && (
                 <button className="svg-stroke" href={res.level.dlLink} target="_blank" title={tLevel('links.download')} onClick={handleDownloadClick}>
                   <DownloadIcon size={"36px"}/>
