@@ -307,8 +307,9 @@ const ProfilePage = () => {
       if (playerId && !playerData) {
         return (
           <div className="player-page">
-            
-            <div className="loader"/>  
+            <div className="player-body">
+              <div className="loader"/>  
+            </div>
           </div>
         );
       }
@@ -323,9 +324,10 @@ const ProfilePage = () => {
               image={'/default-avatar.jpg'}
               type="profile"
           />
-            
-            <h1 className="player-notfound">{tProfile('notLoggedIn')}</h1>
-            <h2 className="player-search-for-other" onClick={handleSearchForOther}>{tProfile('searchForOther')}</h2>
+            <div className="player-body">
+                <h1 className="player-notfound">{tProfile('notLoggedIn')}</h1>
+                <h2 className="player-search-for-other" onClick={handleSearchForOther}>{tProfile('searchForOther')}</h2>
+            </div>  
           </div>
         );
       }

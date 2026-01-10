@@ -71,6 +71,27 @@
   border-color: #9d4edd;
 }
 
+.edit-profile-page .form-group .input-field.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+  background: #2a2a2a;
+}
+
+.edit-profile-page .form-group label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.edit-profile-page .form-group .username-timer {
+  font-size: 0.85rem;
+  font-weight: 400;
+  color: #888;
+  opacity: 0.7;
+}
+
 .edit-profile-page .save-button,
 .edit-profile-page .change-password-button,
 .edit-profile-page .link-button,

@@ -45,6 +45,9 @@ const EditProfilePage = () => {
   const fileInputRef = useRef(null);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [initialImage, setInitialImage] = useState(null);
+  const [usernameRateLimit, setUsernameRateLimit] = useState(null);
+  const [usernameTimer, setUsernameTimer] = useState(null);
+  const timerIntervalRef = useRef(null);
 
   useEffect(() => {
     if (isPopupOpen) {
@@ -63,6 +66,84 @@ const EditProfilePage = () => {
       document.body.style.paddingRight = '';
     };
   }, [isPopupOpen]);
+
+  // Check for existing rate limit on mount
+  useEffect(() => {
+    if (user?.lastUsernameChange) {
+      const lastChange = new Date(user.lastUsernameChange).getTime();
+      const now = Date.now();
+      const msSinceLastChange = now - lastChange;
+      const msRemaining = (24 * 60 * 60 * 1000) - msSinceLastChange;
+
+      if (msRemaining > 0) {
+        const nextAvailableChange = new Date(lastChange + (24 * 60 * 60 * 1000));
+        setUsernameRateLimit({
+          nextAvailableChange: nextAvailableChange.toISOString(),
+          timeRemaining: {
+            milliseconds: msRemaining
+          }
+        });
+      }
+    }
+  }, [user?.lastUsernameChange]);
+
+  // Username rate limit timer effect
+  useEffect(() => {
+    if (usernameRateLimit?.nextAvailableChange) {
+      const updateTimer = () => {
+        const now = new Date().getTime();
+        const nextAvailable = new Date(usernameRateLimit.nextAvailableChange).getTime();
+        const msRemaining = nextAvailable - now;
+
+        if (msRemaining <= 0) {
+          // Timer expired, clear rate limit
+          setUsernameRateLimit(null);
+          setUsernameTimer(null);
+          if (timerIntervalRef.current) {
+            clearInterval(timerIntervalRef.current);
+            timerIntervalRef.current = null;
+          }
+          return;
+        }
+
+        const hours = Math.floor(msRemaining / (60 * 60 * 1000));
+        const minutes = Math.floor((msRemaining % (60 * 60 * 1000)) / (60 * 1000));
+        const seconds = Math.floor((msRemaining % (60 * 1000)) / 1000);
+
+        setUsernameTimer({
+          hours,
+          minutes,
+          seconds,
+          formatted: `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+        });
+      };
+
+      updateTimer();
+      timerIntervalRef.current = setInterval(updateTimer, 1000);
+
+      return () => {
+        if (timerIntervalRef.current) {
+          clearInterval(timerIntervalRef.current);
+          timerIntervalRef.current = null;
+        }
+      };
+    } else {
+      setUsernameTimer(null);
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+        timerIntervalRef.current = null;
+      }
+    }
+  }, [usernameRateLimit]);
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (timerIntervalRef.current) {
+        clearInterval(timerIntervalRef.current);
+      }
+    };
+  }, []);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -123,19 +204,43 @@ const EditProfilePage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
+    setError('');
+    setSuccess('');
 
     try {
       const response = await api.put(`${import.meta.env.VITE_PROFILE}/me`, {
-        // username: formData.username,
+        username: formData.username,
         nickname: formData.nickname,
         country: formData.country,
       });
 
+      // Clear rate limit state on successful update
+      setUsernameRateLimit(null);
+      setUsernameTimer(null);
+      
       fetchUser();
       toast.success(tEditProfile('success.profileUpdated'));
       navigate('/profile');
     } catch (error) {
-      toast.error(error.response?.data?.error || tEditProfile('error.failedToUpdateProfile'));
+      const errorData = error.response?.data;
+      
+      // Handle username rate limit (429)
+      if (errorData?.code === 429 && errorData?.nextAvailableChange) {
+        setUsernameRateLimit({
+          nextAvailableChange: errorData.nextAvailableChange,
+          timeRemaining: errorData.timeRemaining
+        });
+        
+        // Reset username to original value
+        setFormData(prev => ({
+          ...prev,
+          username: user?.username || ''
+        }));
+        
+        toast.error(errorData.error || tEditProfile('error.usernameChangeRateLimited'));
+      } else {
+        toast.error(errorData?.error || tEditProfile('error.failedToUpdateProfile'));
+      }
     } finally {
       setIsLoading(false);
     }
@@ -309,15 +414,22 @@ const EditProfilePage = () => {
 
         <form onSubmit={handleSubmit} className="edit-profile-form">
           <div className="form-group">
-            <label htmlFor="username">{tEditProfile('form.labels.username')}</label>
+            <label htmlFor="username">
+              {tEditProfile('form.labels.username')}
+              {usernameTimer && (
+                <span className="username-timer">
+                  ({usernameTimer.formatted})
+                </span>
+              )}
+            </label>
             <input
               type="text"
               id="username"
               name="username"
               value={formData.username}
               onChange={handleInputChange}
-              disabled
-              className="input-field readonly"
+              className={`input-field ${usernameRateLimit ? 'disabled' : ''}`}
+              disabled={!!usernameRateLimit}
             />
           </div>
 
