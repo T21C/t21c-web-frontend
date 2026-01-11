@@ -1,11 +1,24 @@
 .pack-item {
   position: relative;
   display: block;
+  z-index: 1;
 }
 
 /* Original item being dragged - reduce opacity */
 .pack-item.dragging {
   opacity: 0.4;
+}
+
+/* Dragging clone rendered via renderClone - ensure it's fully visible */
+.pack-item.dragging-clone {
+  opacity: 1 !important;
+  background: #1e293b;
+  border-radius: 8px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+.pack-item.dragging-clone.is-dragging {
+  transform: scale(1.02);
 }
 
 /* The dragging clone itself */
@@ -14,6 +27,7 @@
 }
 
 .pack-item--folder {
+  position: relative;
   background: #111827;
   border: 1px solid #374151;
   border-radius: 8px;
@@ -208,13 +222,6 @@
 
 .pack-item__children.is-expanded {
   min-height: 60px;
-  position: relative;
-  /* z-index is now applied dynamically via inline styles based on depth */
-}
-
-/* Ensure folder droppable stays accessible during any drag operation */
-.pack-item--folder:not(.dragging) > .pack-item__children.is-expanded {
-  pointer-events: auto;
 }
 
 .pack-item__children.is-dragging-over {
@@ -222,27 +229,15 @@
   border-radius: 6px;
   padding: 0.75rem;
   min-height: 80px;
-  /* z-index boost is handled in inline styles when dragging over */
-}
-
-/* Prevent folder header from blocking drop zone during drag */
-.pack-item--folder .pack-item__header {
-  position: relative;
-  z-index: auto;
-}
-
-/* Ensure nested folders stack correctly - children droppables above parent draggables */
-.pack-item--folder .pack-item--folder {
-  position: relative;
-}
-
-.pack-item__level-wrapper {
-  z-index: 3;
-  position: relative;
 }
 
 .pack-item__level-wrapper .level-card.legendary:not(.grid)::before {
   inset: 0;
+}
+
+.pack-item__level-wrapper {
+  position: relative;
+  z-index: 2;
 }
 
 .pack-item__level-wrapper .level-card {

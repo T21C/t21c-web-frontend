@@ -7,6 +7,11 @@ import { summarizeFolderSize, formatEstimatedSize } from '@/utils/packDownloadUt
 import LevelCard from '@/components/cards/LevelCard/LevelCard';
 import './PackItem.css';
 
+// Registry for folder droppable elements - used for manual collision detection
+if (typeof window !== 'undefined' && !window.__folderDroppables) {
+  window.__folderDroppables = new Map();
+}
+
 // Reusable level item component for pack display
 export const PackLevelItem = ({
   item,
@@ -29,8 +34,6 @@ export const PackLevelItem = ({
   );
 };
 
-const INDENT_REM = 1.5;
-
 const PackItem = ({
   item,
   index,
@@ -42,7 +45,10 @@ const PackItem = ({
   onRenameFolder,
   onDeleteItem,
   onDownloadFolder,
-  depth = 0
+  depth = 0,
+  // For renderClone support in nested Droppables
+  allItems,
+  findItemFn
 }) => {
   const { t } = useTranslation();
   const isExpanded = expandedFolders?.has(item.id) || false;
@@ -61,7 +67,6 @@ const PackItem = ({
       <Draggable 
         draggableId={`item-${item.id}`} 
         index={index}
-        isDragDisabled={!canEdit || isReordering}
       >
         {(provided, snapshot) => (
           <div
@@ -69,11 +74,8 @@ const PackItem = ({
             {...provided.draggableProps}
             className={`pack-item pack-item--level ${snapshot.isDragging ? 'dragging' : ''}`}
             style={provided.draggableProps.style}
-            data-depth={depth}
           >
-            <div
-              className="pack-item__level-wrapper"
-            >
+            <div className="pack-item__level-wrapper">
               <PackLevelItem
                 item={item}
                 canEdit={canEdit}
@@ -93,7 +95,6 @@ const PackItem = ({
     <Draggable 
       draggableId={`item-${item.id}`} 
       index={index}
-      isDragDisabled={!canEdit || isReordering}
     >
       {(provided, snapshot) => (
         <div
@@ -101,17 +102,11 @@ const PackItem = ({
           {...provided.draggableProps}
           style={{
             ...provided.draggableProps.style,
-            marginLeft: 0,
-            // Only elevate z-index when actively being dragged
             zIndex: snapshot.isDragging ? 1000 : undefined
           }}
           className={`pack-item pack-item--folder ${snapshot.isDragging ? 'dragging' : ''} ${isExpanded ? 'expanded' : ''}`}
-          data-depth={depth}
-          data-folder-id={item.id}
         >
-          <div
-            className="pack-item__header"
-          >
+          <div className="pack-item__header">
             {canEdit && (
               <button
                 type="button"
@@ -204,29 +199,89 @@ const PackItem = ({
           <Droppable 
             droppableId={`folder-${item.id}`} 
             type="ITEM"
-            ignoreContainerClipping={true}
-            isCombineEnabled={false}
-            isDropDisabled={snapshot.isDragging}
-          >
-            {(droppableProvided, droppableSnapshot) => {
-              // Calculate z-index based on depth - deeper folders get higher z-index
-              const baseZIndex = 10 + (depth * 10);
-              const hoverBoost = droppableSnapshot.isDraggingOver ? 100 : 0;
-              const childrenZIndex = isExpanded ? baseZIndex + hoverBoost : undefined;
+            //isDropDisabled={snapshot.isDragging || !isExpanded}
+            direction="vertical"
+            renderClone={(provided, cloneSnapshot, rubric) => {
+              // Find the item being dragged
+              const draggedItemId = parseInt(rubric.draggableId.replace('item-', ''), 10);
+              // Try to find item in children first, then in all items
+              let draggedItem = sortedChildren.find(c => c.id === draggedItemId);
+              if (!draggedItem && findItemFn && allItems) {
+                draggedItem = findItemFn(allItems, draggedItemId);
+              }
               
+              if (draggedItem?.type === 'level') {
+                return (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    className={`pack-item pack-item--level dragging-clone ${cloneSnapshot.isDragging ? 'is-dragging' : ''}`}
+                    style={{
+                      ...provided.draggableProps.style,
+                      zIndex: 9999,
+                      opacity: 1,
+                    }}
+                  >
+                    <div className="pack-item__level-wrapper">
+                      <PackLevelItem
+                        item={draggedItem}
+                        canEdit={canEdit}
+                        isReordering={false}
+                        user={user}
+                        onDeleteItem={() => {}}
+                        dragHandleProps={provided.dragHandleProps}
+                      />
+                    </div>
+                  </div>
+                );
+              }
+              
+              // Fallback for folders or unknown items
               return (
                 <div
-                  ref={droppableProvided.innerRef}
-                  {...droppableProvided.droppableProps}
-                  className={`pack-item__children ${droppableSnapshot.isDraggingOver ? 'is-dragging-over' : ''} ${isExpanded ? 'is-expanded' : 'is-collapsed'}`}
+                  ref={provided.innerRef}
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                  className="pack-item pack-item--folder dragging-clone"
                   style={{
-                    ...droppableProvided.droppableProps?.style,
-                    '--folder-depth': depth,
-                    zIndex: childrenZIndex,
-                    // Ensure this droppable creates its own stacking context
-                    position: 'relative'
+                    ...provided.draggableProps.style,
+                    zIndex: 9999,
+                    opacity: 1,
                   }}
                 >
+                  <div className="pack-item__header">
+                    <div className="pack-item__icon">📁</div>
+                    <div className="pack-item__info">
+                      <div className="pack-item__name">{draggedItem?.name || 'Unknown'}</div>
+                    </div>
+                  </div>
+                </div>
+              );
+            }}
+          >
+            {(droppableProvided, droppableSnapshot) => {
+              // Register folder droppable element for manual collision detection
+              const combinedRef = (el) => {
+                droppableProvided.innerRef(el);
+                if (el && isExpanded) {
+                  window.__folderDroppables?.set(item.id, {
+                    element: el,
+                    folderId: item.id,
+                    folderName: item.name,
+                    childCount: sortedChildren.length
+                  });
+                } else {
+                  window.__folderDroppables?.delete(item.id);
+                }
+              };
+              
+              return (
+              <div
+                ref={combinedRef}
+                {...droppableProvided.droppableProps}
+                className={`pack-item__children ${droppableSnapshot.isDraggingOver ? 'is-dragging-over' : ''} ${isExpanded ? 'is-expanded' : 'is-collapsed'}`}
+              >
                 {isExpanded &&
                   sortedChildren.map((child, childIndex) => (
                     <PackItem
@@ -237,17 +292,17 @@ const PackItem = ({
                       expandedFolders={expandedFolders}
                       onToggleExpanded={onToggleExpanded}
                       canEdit={canEdit}
-                      isReordering={isReordering}
                       user={user}
                       onRenameFolder={onRenameFolder}
                       onDeleteItem={onDeleteItem}
                       onDownloadFolder={onDownloadFolder}
+                      allItems={allItems}
+                      findItemFn={findItemFn}
                     />
                   ))}
                 {droppableProvided.placeholder}
               </div>
-              );
-            }}
+            );}}
           </Droppable>
         </div>
       )}

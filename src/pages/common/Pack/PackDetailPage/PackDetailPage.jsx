@@ -2,8 +2,7 @@ import "./packdetailpage.css";
 import React, { useEffect, useState, useRef, useMemo, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-
-import PackItem from "@/components/cards/PackItem/PackItem";
+import PackItem, { PackLevelItem } from "@/components/cards/PackItem/PackItem";
 import { MetaTags } from "@/components/common/display";
 import { ScrollButton } from "@/components/common/buttons";
 import { EditIcon, PinIcon, LockIcon, EyeIcon, UsersIcon, ArrowIcon, PlusIcon, LikeIcon, DownloadIcon } from "@/components/common/icons";
@@ -22,6 +21,61 @@ import i18next from 'i18next';
 import { formatDate } from '@/utils/Utility';
 
 const ROOT_DROPPABLE_ID = 'folder-root';
+
+// Render clone for dragging items - this renders in a portal to prevent layout shifts
+// from affecting hit detection on Droppables above the source
+const RenderClone = ({ item, provided, snapshot, user, canEdit }) => {
+  if (item.type === 'level') {
+    return (
+      <div
+        ref={provided.innerRef}
+        {...provided.draggableProps}
+        {...provided.dragHandleProps}
+        className={`pack-item pack-item--level dragging-clone ${snapshot.isDragging ? 'is-dragging' : ''}`}
+        style={{
+          ...provided.draggableProps.style,
+          // Ensure clone is visible and on top
+          zIndex: 9999,
+          opacity: 1,
+        }}
+      >
+        <div className="pack-item__level-wrapper">
+          <PackLevelItem
+            item={item}
+            canEdit={canEdit}
+            isReordering={false}
+            user={user}
+            onDeleteItem={() => {}}
+            dragHandleProps={provided.dragHandleProps}
+          />
+        </div>
+      </div>
+    );
+  }
+  
+  // For folders (though folders have isDragDisabled=true currently)
+  return (
+    <div
+      ref={provided.innerRef}
+      {...provided.draggableProps}
+      {...provided.dragHandleProps}
+      className={`pack-item pack-item--folder dragging-clone ${snapshot.isDragging ? 'is-dragging' : ''}`}
+      style={{
+        ...provided.draggableProps.style,
+        zIndex: 9999,
+        opacity: 1,
+      }}
+    >
+      <div className="pack-item__header">
+        <div className="pack-item__icon">📁</div>
+        <div className="pack-item__info">
+          <div className="pack-item__name">{item.name}</div>
+          <div className="pack-item__count">{item.children?.length || 0} items</div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const parseDroppableId = (droppableId) => {
   if (droppableId === ROOT_DROPPABLE_ID) return null;
@@ -54,10 +108,10 @@ const PackDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [showEditPopup, setShowEditPopup] = useState(false);
-  const [isReordering, setIsReordering] = useState(false);
   const [expandedFolders, setExpandedFolders] = useState(new Set());
   const [downloadContext, setDownloadContext] = useState(null);
   const scrollRef = useRef(null);
+  const lastMousePosRef = useRef({ x: 0, y: 0 });
 
   const packItems = pack?.items || [];
   const packSizeSummary = useMemo(() => summarizePackSize(packItems), [packItems]);
@@ -447,15 +501,80 @@ const PackDetailPage = () => {
     return true;
   };
 
+  // Track mouse position for manual collision detection
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      lastMousePosRef.current = { x: e.clientX, y: e.clientY };
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  // Manual collision detection - find which folder the mouse is over
+  const detectFolderAtPoint = (x, y) => {
+    if (!window.__folderDroppables) return null;
+    
+    for (const [folderId, info] of window.__folderDroppables) {
+      const el = info.element;
+      if (!el) continue;
+      
+      const rect = el.getBoundingClientRect();
+      if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+        // Mouse is inside this folder's droppable area
+        // Calculate the drop index based on Y position
+        const children = el.children;
+        let dropIndex = info.childCount; // Default to end
+        
+        for (let i = 0; i < children.length; i++) {
+          const childRect = children[i].getBoundingClientRect();
+          const childMidY = childRect.top + childRect.height / 2;
+          if (y < childMidY) {
+            dropIndex = i;
+            break;
+          }
+        }
+        
+        return { folderId, dropIndex };
+      }
+    }
+    return null;
+  };
+
+  // Handle drag start
+  const handleDragStart = () => {
+    // Mouse tracking is already active via useEffect
+  };
+
+  // Handle drag update - not needed for manual collision detection
+  const handleDragUpdate = () => {
+    // We use mouse position tracking instead
+  };
+
   // Handle drag end with DnD context
   const handleDragEnd = async (result) => {
-    if (!result.destination || !pack?.items) return;
+    if (!result.destination || !pack?.items) {
+      return;
+    }
 
     const { source, destination, draggableId } = result;
-    const sourceParentId = parseDroppableId(source.droppableId);
-    const destinationParentId = parseDroppableId(destination.droppableId);
+    let sourceParentId = parseDroppableId(source.droppableId);
+    let destinationParentId = parseDroppableId(destination.droppableId);
+    let destinationIndex = destination.index;
 
-    if (sourceParentId === destinationParentId && source.index === destination.index) {
+    // Manual collision detection: if library says destination is root,
+    // check if mouse is actually over a folder droppable
+    if (destinationParentId === null && sourceParentId !== null) {
+      const mousePos = lastMousePosRef.current;
+      const manualDetection = detectFolderAtPoint(mousePos.x, mousePos.y);
+      
+      if (manualDetection) {
+        // Override with manual detection
+        destinationParentId = manualDetection.folderId;
+        destinationIndex = manualDetection.dropIndex;
+      }
+    }
+
+    if (sourceParentId === destinationParentId && source.index === destinationIndex) {
       return;
     }
 
@@ -483,18 +602,15 @@ const PackDetailPage = () => {
     }
 
     try {
-      setIsReordering(true);
-
       const newTree = cloneTree(pack.items);
       const moveSucceeded = moveItemInTree(newTree, {
         sourceParentId,
         sourceIndex: source.index,
         destinationParentId,
-        destinationIndex: destination.index
+        destinationIndex
       });
 
       if (!moveSucceeded) {
-        setIsReordering(false);
         return;
       }
 
@@ -526,8 +642,6 @@ const PackDetailPage = () => {
       console.error('Failed to move item:', error);
       toast.error(error.response?.data?.error || tPack('move.error'));
       await fetchPack(true);
-    } finally {
-      setIsReordering(false);
     }
   };
 
@@ -814,12 +928,25 @@ const PackDetailPage = () => {
           </div>
 
           {pack.items && pack.items.length > 0 ? (
-            <DragDropContext onDragEnd={handleDragEnd}>
+            <DragDropContext onDragStart={handleDragStart} onDragUpdate={handleDragUpdate} onDragEnd={handleDragEnd}>
               <Droppable 
                 droppableId={ROOT_DROPPABLE_ID} 
                 type="ITEM"
-                ignoreContainerClipping={true}
-                isCombineEnabled={false}
+                renderClone={(provided, snapshot, rubric) => {
+                  // Find the item being dragged from the flat list of all items
+                  const draggedItemId = parseInt(rubric.draggableId.replace('item-', ''), 10);
+                  const draggedItem = findItem(pack.items, draggedItemId);
+                  
+                  return (
+                    <RenderClone
+                      item={draggedItem}
+                      provided={provided}
+                      snapshot={snapshot}
+                      user={user}
+                      canEdit={canEdit}
+                    />
+                  );
+                }}
               >
                 {(provided, snapshot) => (
                   <div
@@ -836,11 +963,12 @@ const PackDetailPage = () => {
                         expandedFolders={expandedFolders}
                         onToggleExpanded={toggleFolderExpanded}
                         canEdit={canEdit}
-                        isReordering={isReordering}
                         user={user}
                         onRenameFolder={handleRenameFolder}
                         onDeleteItem={handleDeleteItem}
                         onDownloadFolder={handleFolderDownload}
+                        allItems={pack.items}
+                        findItemFn={findItem}
                       />
                     ))}
                     {provided.placeholder}

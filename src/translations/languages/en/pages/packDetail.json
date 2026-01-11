@@ -16,7 +16,8 @@
   "items": {
     "title": "Items",
     "dragHint": "Drag items to reorder or move into folders",
-    "empty": "This pack has no items yet."
+    "empty": "This pack has no items yet.",
+    "dragToReorder": "Drag to reorder"
   },
   "actions": {
     "edit": "Edit Pack",
