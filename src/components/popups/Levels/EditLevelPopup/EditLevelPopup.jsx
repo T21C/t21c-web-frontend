@@ -205,7 +205,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
       };
 
       const response = await api.put(
-        `${import.meta.env.VITE_LEVELS}/${level.id}`,
+        isSuperAdmin ? `${import.meta.env.VITE_LEVELS}/${level.id}` : `${import.meta.env.VITE_LEVELS}/own/${level.id}`,
         levelData
       );
 
