@@ -74,7 +74,6 @@ const RatingPage = () => {
       const weeklyActivityData = weeklyActivityResponse.data;
       
       setRatings(ratingsData);
-      setSortedRatings(ratingsData);
       setWeeklyRaterActivity(weeklyActivityData.ratingsPerUser || []);
     } catch (error) {
       console.error("Error fetching ratings:", error);
