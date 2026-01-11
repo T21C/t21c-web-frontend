@@ -9,6 +9,7 @@ import { CreatorActionPopup } from '@/components/popups';
 import { SortDescIcon, SortAscIcon } from '@/components/common/icons';
 import { AccessDenied, MetaTags } from '@/components/common/display';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import toast from 'react-hot-toast';
 const currentUrl = window.location.origin + location.pathname;
 
 
@@ -28,8 +29,6 @@ const CreatorManagementPage = () => {
   const [levels, setLevels] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [success, setSuccess] = useState('');
   const [searchQuery, setSearchQuery] = useState(decodeURIComponent(window.location.search.split('search=')[1] || ""));
   const [creatorListSearchQuery, setCreatorListSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -100,14 +99,14 @@ const CreatorManagementPage = () => {
       setCreators(response.data.results);
       const totalPages = Math.ceil(response.data.count / creatorsPerPage);
       setTotalCreatorPages(totalPages);
-      setLoadingCreators(false);
 
     } catch (err) {
       if (!api.isCancel(err)) {
-        setError('Failed to load creators');
+        toast.error('Failed to load creators');
         console.error(err);
-        setLoadingCreators(false);
       }
+    } finally {
+      setLoadingCreators(false);
     }
   };
 
@@ -152,10 +151,10 @@ const CreatorManagementPage = () => {
     } catch (error) {
       if (!api.isCancel(error)) {
         console.error('Error fetching levels:', error);
-        setError('Failed to fetch levels');
+        toast.error('Failed to fetch levels');
       }
     } finally {
-      if (!api.isCancel(error)) {
+      if (!api.isCancel()) {
         setLoading(false);
       }
     }
@@ -302,6 +301,7 @@ const CreatorManagementPage = () => {
       id: c.id,
       name: c.name,
       role: c.role || CreditRole.CREATOR,
+      isOwner: c.isOwner,
       isVerified: c.isVerified,
       levelCount: c.levelCount || 0,
       aliases: c.creatorAliases?.map(alias => alias.name) || []
@@ -347,6 +347,13 @@ const CreatorManagementPage = () => {
     setHasUnsavedChanges(true);
   };
 
+  const handleToggleOwner = (creatorId) => {
+    setPendingCreators(prev => prev.map(c => 
+      c.id === creatorId ? { ...c, isOwner: !c.isOwner } : c
+    ));
+    setHasUnsavedChanges(true);
+  };
+
   const handleSaveChanges = async () => {
     if (!selectedLevel) return;
 
@@ -364,19 +371,37 @@ const CreatorManagementPage = () => {
       }
 
       // Save creator changes - using the correct endpoint
-      await api.put(`/v2/database/creators/level/${selectedLevel.id}`, {
+      const response = await api.put(`/v2/database/creators/level/${selectedLevel.id}`, {
         creators: pendingCreators.map(c => ({
           id: c.id,
-          role: c.role
+          role: c.role,
+          isOwner: c.isOwner
         }))
       });
 
       await fetchLevelsAudit();
-      setSuccess('Changes saved successfully');
+      
+      // Check status code and use response message if available
+      if (response.status >= 200 && response.status < 300) {
+        const message = response.data?.message || 'Changes saved successfully';
+        toast.success(message);
+      } else {
+        toast.error(response.data?.message || 'Failed to save changes');
+      }
+      
       setHasUnsavedChanges(false);
     } catch (error) {
       console.error('Error saving changes:', error);
-      setError('Failed to save changes');
+      // Check if error response has a message and status code
+      if (error.response?.status >= 200 && error.response?.status < 300) {
+        // Success status but caught as error (shouldn't happen, but handle it)
+        const message = error.response.data?.message || 'Changes saved successfully';
+        toast.success(message);
+        await fetchLevelsAudit();
+        setHasUnsavedChanges(false);
+      } else {
+        toast.error(error.response?.data?.message || error.response?.data?.error || 'Failed to save changes');
+      }
     }
   };
 
@@ -391,6 +416,7 @@ const CreatorManagementPage = () => {
           id: c.id,
           name: c.name,
           role: c.role || CreditRole.CREATOR,
+          isOwner: c.isOwner,
           isVerified: c.isVerified,
           createdLevels: c.createdLevels,
           aliases: c.creatorAliases?.map(alias => alias.name) || []
@@ -577,6 +603,12 @@ const CreatorManagementPage = () => {
                   </span>
                 </span>
                 <div className="creator-controls">
+                <button 
+                    className={`toggle-owner-button ${creator.isOwner ? 'is-owner' : ''}`}
+                    onClick={() => handleToggleOwner(creator.id)}
+                  >
+                    {creator.isOwner ? 'Remove Owner' : 'Make Owner'}
+                  </button>
                   <CustomSelect
                     value={roleOptions.find(opt => opt.value === creator.role)}
                     options={roleOptions.filter(opt => 
@@ -702,8 +734,6 @@ const CreatorManagementPage = () => {
         <div className="creator-management-container">
           <h1>Creator Management</h1>
           
-          {error && <div className="error-message">{error}</div>}
-          {success && <div className="success-message">{success}</div>}
 
           <div className="tabs">
             <button 
@@ -813,7 +843,7 @@ const CreatorManagementPage = () => {
                 <div className="levels-list">
                   {levels.map(level => renderLevelItem(level))}
                 </div>
-                {loading  && (
+                {loadingCreators && (
                   <div className="new-loader" />
                 )}
 
@@ -1061,7 +1091,7 @@ const CreatorManagementPage = () => {
                 className={`submit-button ${isCreatingCreator ? 'loading' : ''}`}
                 onClick={async () => {
                   if (!newCreatorData.name.trim()) {
-                    setError(tCreator('messages.nameRequired'));
+                    toast.error(tCreator('messages.nameRequired'));
                     return;
                   }
                   setIsCreatingCreator(true);
@@ -1070,9 +1100,9 @@ const CreatorManagementPage = () => {
                     await fetchCreators();
                     setShowAddCreatorForm(false);
                     setNewCreatorData({ name: '', aliases: [] });
-                    setSuccess(tCreator('messages.creatorCreated'));
+                    toast.success(tCreator('messages.creatorCreated'));
                   } catch (error) {
-                    setError(error.response?.data?.error || tCreator('errors.createFailed'));
+                    toast.error(error.response?.data?.error || tCreator('errors.createFailed'));
                   } finally {
                     setIsCreatingCreator(false);
                   }

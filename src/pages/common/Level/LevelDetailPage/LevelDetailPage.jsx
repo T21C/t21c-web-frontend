@@ -313,7 +313,7 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
           .join(', ')}
           ${credit.creator.creatorAliases.length > 6 ? `(${credit.creator.creatorAliases.length - 6} more)` : ''})`
         : credit.creator.name;
-      acc[role].push(creatorName);
+      acc[role].push({name: creatorName, isOwner: credit.isOwner});
       return acc;
     }, {});
 
@@ -325,13 +325,16 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
         <div className="credits-column">
           <div className="role-header">{tLevel('info.roles.charter')}</div>
           {charters.map((charter, index) => (
-            <div key={`charter-${index}`} className="creator-name">{charter}</div>
+            <div>
+            {charter.isOwner && <div className="owner-badge" title="Owner">Owner</div>}
+            <div key={`charter-${index}`} className="creator-name">{charter.name}</div>
+            </div>
           ))}
         </div>
         <div className="credits-column">
           <div className="role-header">{tLevel('info.roles.vfxer')}</div>
           {vfxers.map((vfxer, index) => (
-            <div key={`vfxer-${index}`} className="creator-name">{vfxer}</div>
+            <div key={`vfxer-${index}`} className="creator-name">{vfxer.name}</div>
           ))}
         </div>
       </div>
@@ -1978,9 +1981,14 @@ const LevelDetailPage = ({ mockData = null }) => {
                 // Check if user is a creator and count CHARTERS
                 const isSuperAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
                 let isCreator = false;
+                const isOwner = res?.level?.levelCredits?.some(
+                  credit => credit.creator?.userId === user?.id && credit.isOwner
+                );
+                const isCharter = res?.level?.levelCredits?.some(
+                  credit => credit.creator?.userId === user?.id && credit.role?.toLowerCase() === 'charter'
+                );  
                 let charterCount = 0;
                 let canEdit = false;
-                let editTooltip = '';
 
                 if (user && res?.level?.levelCredits) {
                   // Count CHARTER roles
@@ -1990,17 +1998,18 @@ const LevelDetailPage = ({ mockData = null }) => {
 
                   // Check if user is one of the creators
                   isCreator = res.level.levelCredits.some(
-                    credit => credit.creator?.userId === user.id
+                    credit => credit.creator?.userId === user.id && credit.role?.toLowerCase() === 'charter'
                   );
 
+                  
+
                   // Determine if user can edit
-                  if (isSuperAdmin) {
+                  if (isSuperAdmin || isOwner) {
                     canEdit = true;
                   } else if (isCreator && charterCount <= 2) {
                     canEdit = true;
                   } else if (isCreator && charterCount > 2) {
                     canEdit = false;
-                    editTooltip = 'Contact admins to change this level due to it having more than 2 charters assigned';
                   }
                 } else if (isSuperAdmin) {
                   canEdit = true;
@@ -2011,29 +2020,34 @@ const LevelDetailPage = ({ mockData = null }) => {
                 }
 
                 return (
+                  <div>
                   <button 
                     className={`edit-button svg-stroke ${!canEdit ? 'disabled' : ''}`}
                     onClick={() => canEdit && setOpenEditDialog(true)}
                     disabled={!canEdit}
-                    title={editTooltip || tLevel('buttons.edit')}
+                    title={tLevel('buttons.edit')}
                     data-tooltip-id={!canEdit ? 'edit-disabled-tooltip' : undefined}
-                    data-tooltip-content={editTooltip}
-                    style={!canEdit ? { opacity: 0.5, cursor: 'not-allowed' } : {}}
+                    data-tooltip-content={!canEdit ? tLevel('tooltips.editDisabled') : undefined}
+                    style={
+                      {...(
+                        !canEdit ? { opacity: 0.5, cursor: 'not-allowed' }: {}),
+                      }}
                   >
                     <EditIcon size={"34px"}/>
                   </button>
-                );
-              })()}
-              {!hasFlag(user, permissionFlags.SUPER_ADMIN) && (() => {
+                  {!hasFlag(user, permissionFlags.SUPER_ADMIN) && (() => {
                 const isCreator = user && res?.level?.levelCredits?.some(
-                  credit => credit.creator?.userId === user.id
+                  credit => credit.creator?.userId === user?.id && credit.isOwner
                 );
                 const charterCount = res?.level?.levelCredits?.filter(
                   credit => credit.role?.toLowerCase() === 'charter'
                 ).length || 0;
-                const showTooltip = isCreator && charterCount > 2;
+                const showTooltip = !isCreator && charterCount > 2;
                 
-                return showTooltip ? <Tooltip id="edit-disabled-tooltip" place="bottom" noArrow /> : null;
+                return showTooltip ? <Tooltip id="edit-disabled-tooltip" place="left" noArrow style={{ zIndex: '1', maxWidth: '400px' }}/> : null;
+              })()}
+                  </div>
+                );
               })()}
               {res.level.dlLink && res.level.dlLink.match(/http[s]?:\/\//) && (
                 <button className="svg-stroke" href={res.level.dlLink} target="_blank" title={tLevel('links.download')} onClick={handleDownloadClick}>

@@ -1899,6 +1899,13 @@
   margin-bottom: var(--spacing-sm);
 }
 
+.level-detail-popup .popup-content .popup-body .owner-badge {
+  background-color: var(--primary-color);
+  color: var(--tertiary-text);
+  border-radius: var(--border-radius);
+  font-size: var(--font-size-xs);
+}
+
 .level-detail-popup .popup-content .popup-body .creator-name {
   padding: var(--spacing-xs) var(--spacing-sm);
   background-color: rgba(255, 255, 255, 0.1);

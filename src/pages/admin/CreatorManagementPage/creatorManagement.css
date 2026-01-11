@@ -1300,6 +1300,27 @@
   background-color: rgba(255, 107, 107, 0.2);
 }
 
+.creator-management-page .toggle-owner-button {
+  padding: 8px 16px;
+  background-color: rgba(180, 180, 180, 0.1);
+  color: #b4b4b4;
+  border: 1px solid #b4b4b4;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.9rem;
+}
+
+.creator-management-page .toggle-owner-button:hover {
+  background-color: rgba(180, 180, 180, 0.2);
+}
+
+.creator-management-page .toggle-owner-button.is-owner {
+  background-color: rgba(100, 180, 255, 0.25);
+  color: #8ccfff;
+  border-color: #8ccfff;
+}
+
 .creator-management-page .add-creator {
   margin-bottom: 1.5rem;
 }
@@ -1411,7 +1432,8 @@
     min-width: unset;
   }
 
-  .creator-management-page .remove-creator-button {
+  .creator-management-page .remove-creator-button,
+  .creator-management-page .toggle-owner-button {
     width: 100%;
   }
 
