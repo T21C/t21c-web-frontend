@@ -23,42 +23,29 @@
   position: relative;
 }
 
-/* Creator limited mode - gray out everything by default */
-.edit-level-popup.creator-limited-mode .form-group {
+/* Disabled fields styling - use user-select instead of pointer-events to allow tooltips */
+.edit-level-popup .form-group:not(.field-enabled) {
   opacity: 0.5;
-  pointer-events: none;
 }
 
-/* Re-enable allowed fields for creators */
-.edit-level-popup.creator-limited-mode .form-group.field-enabled {
+.edit-level-popup .form-group.field-enabled {
   opacity: 1;
-  pointer-events: auto;
 }
 
-/* Ensure disabled inputs are visually distinct */
-.edit-level-popup.creator-limited-mode .form-group:not(.field-enabled) input,
-.edit-level-popup.creator-limited-mode .form-group:not(.field-enabled) textarea,
-.edit-level-popup.creator-limited-mode .form-group:not(.field-enabled) button {
+/* Ensure disabled inputs are visually distinct and non-selectable */
+.edit-level-popup .form-group:not(.field-enabled) input:disabled,
+.edit-level-popup .form-group:not(.field-enabled) textarea:disabled,
+.edit-level-popup .form-group:not(.field-enabled) button:disabled {
   cursor: not-allowed;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-}
-
-/* Remove hover effects from disabled fields */
-.edit-level-popup.creator-limited-mode .form-group:not(.field-enabled) input:hover,
-.edit-level-popup.creator-limited-mode .form-group:not(.field-enabled) textarea:hover,
-.edit-level-popup.creator-limited-mode .form-group:not(.field-enabled) button:hover {
-  background-color: inherit;
-  border-color: inherit;
-  opacity: 0.5;
 }
 
 /* Disable alias button for non-admin */
-.edit-level-popup.creator-limited-mode .manage-aliases-btn {
+.edit-level-popup .manage-aliases-btn:disabled {
   opacity: 0.5;
-  pointer-events: none;
   cursor: not-allowed;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -66,13 +53,13 @@
   user-select: none;
 }
 
-.edit-level-popup.creator-limited-mode .manage-aliases-btn:hover {
+.edit-level-popup .manage-aliases-btn:disabled:hover {
   background-color: inherit;
   opacity: 0.5;
 }
 
-/* Disable hover and cursor effects for toRate button in limited mode */
-.edit-level-popup.creator-limited-mode .to-rate-checkbox-container:not(.field-enabled) .to-rate-checkbox {
+/* Disable hover and cursor effects for toRate button when disabled */
+.edit-level-popup .to-rate-checkbox-container:not(.field-enabled) .to-rate-checkbox {
   opacity: 0.5;
   cursor: not-allowed;
   -webkit-user-select: none;
@@ -81,11 +68,11 @@
   user-select: none;
 }
 
-.edit-level-popup.creator-limited-mode .to-rate-checkbox-container:not(.field-enabled) .to-rate-checkbox:hover {
+.edit-level-popup .to-rate-checkbox-container:not(.field-enabled) .to-rate-checkbox:hover {
   background: #2a2a2a;
 }
 
-.edit-level-popup.creator-limited-mode .to-rate-checkbox-container:not(.field-enabled) .to-rate-checkbox input[type="checkbox"] {
+.edit-level-popup .to-rate-checkbox-container:not(.field-enabled) .to-rate-checkbox input[type="checkbox"]:disabled {
   cursor: not-allowed;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -93,8 +80,8 @@
   user-select: none;
 }
 
-.edit-level-popup.creator-limited-mode .to-rate-checkbox-container:not(.field-enabled) .rerate-num input,
-.edit-level-popup.creator-limited-mode .to-rate-checkbox-container:not(.field-enabled) .rerate-reason input {
+.edit-level-popup .to-rate-checkbox-container:not(.field-enabled) .rerate-num input:disabled,
+.edit-level-popup .to-rate-checkbox-container:not(.field-enabled) .rerate-reason input:disabled {
   cursor: not-allowed;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -534,7 +521,7 @@
   height: 36px;
 }
 
-.edit-level-popup__upload-button:hover {
+.edit-level-popup__upload-button:not(:disabled):hover {
   background-color: #357abd;
 }
 
@@ -740,7 +727,6 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  pointer-events: none;
 }
 
 .edit-level-popup .manage-aliases-btn:disabled:hover {

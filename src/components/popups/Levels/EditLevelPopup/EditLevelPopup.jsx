@@ -30,6 +30,29 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     return ALLOWED_CREATOR_FIELDS.includes(fieldName);
   };
 
+  // Check if dlLink field should be disabled for non-admin creators
+  // Based on server logic: canEdit && level.clears > 0 && level.dlLink && !isCdnUrl(level.dlLink)
+  const isDlLinkDisabled = () => {
+    if (isSuperAdmin) return false;
+    if (!isFieldAllowed('dlLink')) return true;
+    // Disable if level has clears and has a non-CDN dlLink
+    // This matches server-side restriction in upload endpoint
+    if (level?.clears > 0 && level?.dlLink && !isCdnUrl(level.dlLink)) {
+      return true;
+    }
+    return false;
+  };
+
+  // Get disabled reason for dlLink field
+  const getDlLinkDisabledReason = () => {
+    if (isSuperAdmin) return null;
+    if (!isFieldAllowed('dlLink')) return 'This field is only available to administrators';
+    if (level?.clears > 0 && level?.dlLink && !isCdnUrl(level.dlLink)) {
+      return 'Download link cannot be changed when level has clears and a non-CDN download link';
+    }
+    return null;
+  };
+
   const [formData, setFormData] = useState({
     song: '',
     artist: '',
@@ -122,6 +145,14 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
 
   const handleInputChange = (e) => {
     const { name, type, value, checked } = e.target;
+    
+    // Prevent non-admin users from setting CDN URLs directly for dlLink
+    // CDN URLs must be set through the upload endpoint
+    if (name === 'dlLink' && !isSuperAdmin && isCdnUrl(value)) {
+      toast.error('CDN URLs cannot be set directly. Please use the upload button to manage CDN files.');
+      return;
+    }
+    
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
@@ -391,6 +422,14 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const handleOpenUploadManagement = (e) => {
     e.preventDefault();
     e.stopPropagation();
+    
+    // Check if upload is disabled
+    if (isDlLinkDisabled()) {
+      const reason = getDlLinkDisabledReason();
+      toast.error(reason || 'Upload is not available');
+      return;
+    }
+    
     setShowUploadManagement(true);
   };
 
@@ -406,7 +445,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
 
   const popupContent = (
     <div className="edit-level-popup-overlay" onClick={handleOverlayClick}>
-      <div className={`edit-level-popup ${!isSuperAdmin ? 'creator-limited-mode' : ''}`} onClick={handleContentClick}>
+      <div className="edit-level-popup" onClick={handleContentClick}>
         <div className="popup-header">
           <h2>{tLevel('title')}</h2>
           <div className="popup-actions">
@@ -472,6 +511,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               <div className="form-group">
                 <label htmlFor="baseScore">{tLevel('form.labels.previousBaseScore')}</label>
               <RatingInput
+                disabled={!isSuperAdmin}
                 value={(() => {
                   if (formData.previousBaseScore === null) {
                     return "";
@@ -494,6 +534,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
 
               <div className={`form-group ${isSuperAdmin ? 'field-enabled' : ''}`}>
                 <RatingInput
+                  disabled={!isSuperAdmin}
                   value={(() => {
                     if (formData.baseScore === null) {
                       return "";
@@ -504,7 +545,6 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   difficulties={difficulties}
                   allowCustomInput={true}
                   placeholder={tLevel('form.placeholders.baseScore')}
-                  disabled={!isSuperAdmin}
                 />
                 {getBaseScoreDisplay() !== "" && (
                   <div className="base-score-display">
@@ -653,7 +693,8 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               />
             </div>
 
-            <div className={`form-group ${isFieldAllowed('dlLink') ? 'field-enabled' : ''}`}>
+            <div 
+            className={`form-group ${isFieldAllowed('dlLink') && !isDlLinkDisabled() ? 'field-enabled' : ''}`}>
               <label htmlFor="dlLink">{tLevel('form.labels.dlLink')}</label>
               {isCdnUrl(formData.dlLink) ? (
                 <div className="edit-level-popup__cdn-managed">
@@ -666,7 +707,8 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   <button
                     className="edit-level-popup__manage-button"
                     onClick={handleOpenUploadManagement}
-                    disabled={!isFieldAllowed('dlLink')}
+                    disabled={isDlLinkDisabled()}
+                    title={isDlLinkDisabled() ? getDlLinkDisabledReason() : 'Manage Upload'}
                   >
                     Manage Upload
                   </button>
@@ -681,13 +723,15 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                     value={formData.dlLink}
                     onChange={handleInputChange}
                     placeholder="Download Link"
-                    disabled={!isFieldAllowed('dlLink')}
+                    disabled={isDlLinkDisabled()}
+                    title={isDlLinkDisabled() ? getDlLinkDisabledReason() : ''}
+                    style={{cursor: isDlLinkDisabled() ? 'help' : ''}}
                   />
                   <button
                     className="edit-level-popup__upload-button"
                     onClick={handleOpenUploadManagement}
-                    title="Upload Level File"
-                    disabled={!isFieldAllowed('dlLink')}
+                    title={isDlLinkDisabled() ? getDlLinkDisabledReason() : 'Upload Level File'}
+                    disabled={isDlLinkDisabled()}
                   >
                     <UploadIcon color="white" size={20} />
                   </button>

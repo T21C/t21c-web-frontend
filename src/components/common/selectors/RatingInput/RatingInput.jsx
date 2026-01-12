@@ -3,6 +3,7 @@ import "./ratinginput.css";
 import { useTranslation } from 'react-i18next';
 
 export const RatingInput = ({ 
+  disabled=false,
   value = "", 
   onChange, 
   showDiff=true, 
@@ -107,8 +108,8 @@ export const RatingInput = ({
     .map(diff => [diff.name, diff.icon]);
 
   return (
-    <div className="rating-input-wrapper">
-      <div className="rating-input-container">
+    <div className={`rating-input-wrapper ${disabled ? 'disabled' : ''}`}>
+      <div className={`rating-input-container ${disabled ? 'disabled' : ''}`}>
         <input
           type="text"
           value={inputValue}

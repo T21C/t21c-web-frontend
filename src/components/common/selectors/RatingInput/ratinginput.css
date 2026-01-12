@@ -88,6 +88,14 @@
   font-weight: bold;
 }
 
+.rating-input-wrapper.disabled {
+  cursor: not-allowed;
+}
+.rating-input-container.disabled {
+  pointer-events: none;
+}
+
+
 .rating-input-wrapper .calculated-difficulty {
   font-size: 0.9em;
   color: #666;
