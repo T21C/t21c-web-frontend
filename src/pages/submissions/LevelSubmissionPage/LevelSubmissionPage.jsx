@@ -596,15 +596,14 @@ const LevelSubmissionPage = () => {
       
       <div className="form-container">
         {import.meta.env.MODE !== "production" && <StagingModeWarning />}
-        <div className={`result-message ${showMessage ? 'visible' : ''}`} 
+        <div className={`result-message ${showMessage && (success || error) ? 'visible' : ''}`} 
         style={{backgroundColor: 
         ( success? "#2b2" :
           error? "#b22":
           "#888"
         )}}>
           {success ? <p>{t('levelSubmission.alert.success')}</p> :
-           error ? <p>{t('levelSubmission.alert.error')} {truncateString(error?.message || error?.toString() || error, 60)}</p> :
-           <p>{t('levelSubmission.alert.loading')}</p>}
+           error && <p>{t('levelSubmission.alert.error')} {truncateString(error?.message || error?.toString() || error, 60)}</p>}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div>
 
