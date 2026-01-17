@@ -199,7 +199,8 @@
 }
 
 .difficulty-page .save-button,
-.difficulty-page .cancel-button {
+.difficulty-page .cancel-button,
+.difficulty-page .delete-confirm-button {
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
   font-weight: 600;
@@ -207,6 +208,16 @@
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s;
+}
+
+.difficulty-page .delete-confirm-button {
+  background-color: rgba(255, 0, 0, 0.2);
+  color: #FFFFFF;
+  border: 1px solid #FF000070;
+}
+
+.difficulty-page .delete-confirm-button:hover {
+  background-color: rgba(255, 0, 0, 0.3);
 }
 
 .difficulty-page .save-button {
