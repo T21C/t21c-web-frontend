@@ -83,7 +83,7 @@ export default defineConfig(({ command, mode }) => {
         usePolling: true
       },
       proxy: {
-        '/v2|/(levels|passes|profile)/\\d+$': {
+        '/v2|/(levels|passes|profile)/\\d+$|/packs/[0-9A-Za-z]{8,}$': {
           target: apiUrl || 'http://localhost:3002',
           changeOrigin: true,
           secure: false,
@@ -108,7 +108,7 @@ export default defineConfig(({ command, mode }) => {
       port: port,
       strictPort: true,
       proxy: {
-        '^/(levels|passes|profile)/\\d+$': {
+        '^/(levels|passes|profile)/\\d+$|^/packs/[0-9A-Za-z]{8,}$': {
           target: apiUrl || 'http://localhost:3002',
           changeOrigin: true,
           secure: false,
