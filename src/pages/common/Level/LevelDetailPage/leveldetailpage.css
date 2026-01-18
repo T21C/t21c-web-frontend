@@ -1180,6 +1180,8 @@
 }
 
 .level-detail .rank {
+  position: relative;
+  z-index: 1;
   max-width: var(--content-max-width);
   margin: var(--spacing-xl) auto;
   background-color: var(--glass-bg);
