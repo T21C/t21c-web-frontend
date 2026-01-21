@@ -6,7 +6,7 @@ import { summarizeFolderSize, formatEstimatedSize } from '@/utils/packDownloadUt
 
 import LevelCard from '@/components/cards/LevelCard/LevelCard';
 import './PackItem.css';
-
+import { Tooltip } from 'react-tooltip';
 // Registry for folder droppable elements - used for manual collision detection
 if (typeof window !== 'undefined' && !window.__folderDroppables) {
   window.__folderDroppables = new Map();
@@ -148,12 +148,16 @@ const PackItem = ({
                   e.stopPropagation();
                   onDownloadFolder?.(item);
                 }}
-                disabled={folderDownloadDisabled}
-                title={
+                disabled={folderDownloadDisabled || !user}
+                data-tooltip-id="download-folder-tooltip"
+                data-tooltip-content={
                   folderDownloadDisabled
                     ? 'No downloadable levels in this folder'
-                    : `${downloadFolderLabel} (${folderSizeLabel.sizeLabel}) ${folderSizeLabel.isEstimated ? folderSizeLabel.isEstimated : ''}`
+                    : !user
+                      ? 'You must be logged in to download a folder'
+                      : `${downloadFolderLabel} (${folderSizeLabel.sizeLabel}) ${folderSizeLabel.isEstimated ? folderSizeLabel.isEstimated : ''}`
                 }
+                data-tooltip-place="bottom"
               >
                 <div className="pack-item__download-main">
                   <DownloadIcon color="#ffffff" size={"18px"} />
@@ -166,6 +170,7 @@ const PackItem = ({
                   </span>
                 </span>
               </button>
+              <Tooltip id="download-folder-tooltip" place="bottom" noArrow />
             </div>
 
             {canEdit && (

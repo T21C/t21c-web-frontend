@@ -803,24 +803,28 @@ const PackDetailPage = () => {
             <button
               className="pack-detail-page__download-btn"
               onClick={handlePackDownloadClick}
-              disabled={packDownloadDisabled}
-              title={
+              disabled={packDownloadDisabled || !user}
+              data-tooltip-id="download-pack-tooltip"
+              data-tooltip-content={
                 packDownloadDisabled
                   ? 'No downloadable levels available yet'
+                  : !user
+                    ? 'You must be logged in to download a pack'
                   : `${tPack('actions.downloadPack')} (${packSizeLabel.sizeLabel}) ${packSizeLabel.isEstimated}`
               }
+              data-tooltip-place="bottom"
             >
               <DownloadIcon color="#ffffff" size={"20px"} />
               <span>{tPack('actions.downloadPack')}</span>
             </button>
+            <Tooltip id="download-pack-tooltip" place="bottom" noArrow />
           </div>
           {canEdit && (
             <div className="pack-detail-page__actions">
               <button
                 className="pack-detail-page__edit-btn"
                 onClick={() => setShowEditPopup(true)}
-                data-tooltip-id="edit-pack-tooltip"
-                data-tooltip-content={tPack('actions.edit')}
+                title={tPack('actions.edit')}
               >
                 <EditIcon />
                 <span>{tPack('actions.edit')}</span>
