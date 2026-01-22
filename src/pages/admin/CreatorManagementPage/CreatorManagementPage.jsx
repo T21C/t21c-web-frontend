@@ -31,6 +31,7 @@ const CreatorManagementPage = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState(decodeURIComponent(window.location.search.split('search=')[1] || ""));
   const [creatorListSearchQuery, setCreatorListSearchQuery] = useState('');
+  const [creatorToAddSearchQuery, setCreatorToAddSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
   const [creatorPage, setCreatorPage] = useState(1);
   const [hideVerified, setHideVerified] = useState(false);
@@ -219,7 +220,7 @@ const CreatorManagementPage = () => {
         const params = new URLSearchParams({
           page: 1,
           limit: maxCreatorResults,
-          search: creatorListSearchQuery,
+          search: creatorToAddSearchQuery,
           excludeAliases: excludeAliases
         });
 
@@ -229,7 +230,7 @@ const CreatorManagementPage = () => {
 
         // Filter out creators that are already added
         setAvailableCreators(response.data.results.filter(
-          creator => !pendingCreators.some(pc => pc.id === creator.id)
+          creator => !pendingCreators.some(pc => pc.id === creator.id && pc.role === creator.role)
         ));
       } catch (error) {
         if (!api.isCancel(error)) {
@@ -248,7 +249,7 @@ const CreatorManagementPage = () => {
         cancelToken.cancel('Component unmounted or search changed');
       }
     };
-  }, [creatorListSearchQuery, selectedLevel, pendingCreators, excludeAliases]);
+  }, [creatorToAddSearchQuery, selectedLevel, pendingCreators, excludeAliases]);
 
   useEffect(() => {
     // Prevent scrolling when modals are open
@@ -292,20 +293,24 @@ const CreatorManagementPage = () => {
   };
 
   const handleSelectLevel = (level) => {
+    // Clear all creator-related state immediately when switching levels
+    setAvailableCreators(null);
+    setCreatorToAddSearchQuery('');
     setSelectedLevel(level);
     setPendingTeam(level.team ? {
       id: level.team.id,
       name: level.team.name
     } : null);
-    setPendingCreators(level.currentCreators?.map(c => ({
+    const creators = level.currentCreators?.map(c => ({
       id: c.id,
       name: c.name,
-      role: c.role || CreditRole.CREATOR,
+      role: c.role || CreditRole.CHARTER,
       isOwner: c.isOwner,
       isVerified: c.isVerified,
       levelCount: c.levelCount || 0,
       aliases: c.creatorAliases?.map(alias => alias.name) || []
-    })) || []);
+    })) || []
+    setPendingCreators(creators);
     setHasUnsavedChanges(false);
   };
 
@@ -324,10 +329,28 @@ const CreatorManagementPage = () => {
   };
 
   const handleAddCreator = (creator) => {
+    
+    // Check if creator already exists and what role(s) they have
+    const existingCreatorRoles = pendingCreators
+      .filter(c => c.id === creator.id)
+      .map(c => c.role);
+
+    // Determine the role to assign
+    let assignedRole = CreditRole.CHARTER; // Default
+    if (existingCreatorRoles.includes(CreditRole.CHARTER)) {
+      // If they already have charter, assign vfxer
+      assignedRole = CreditRole.VFXER;
+    } else if (existingCreatorRoles.includes(CreditRole.VFXER)) {
+      // If they already have vfxer, assign charter
+      assignedRole = CreditRole.CHARTER;
+    }
+    // If they have both roles already, still assign charter (though this shouldn't happen due to filtering)
+    
     setPendingCreators(prev => [...prev, {
       id: creator.id,
       name: creator.name,
-      role: CreditRole.CHARTER,
+      isOwner: false,
+      role: assignedRole,
       isVerified: creator.isVerified,
       levelCount: creator.createdLevels?.length || 0,
       aliases: creator.creatorAliases?.map(alias => alias.name) || []
@@ -335,8 +358,8 @@ const CreatorManagementPage = () => {
     setHasUnsavedChanges(true);
   };
 
-  const handleRemoveCreator = (creatorId) => {
-    setPendingCreators(prev => prev.filter(c => c.id !== creatorId));
+  const handleRemoveCreator = (creatorId, role) => {
+    setPendingCreators(prev => prev.filter(c => !(c.id === creatorId && c.role === role)));
     setHasUnsavedChanges(true);
   };
 
@@ -412,15 +435,16 @@ const CreatorManagementPage = () => {
           id: selectedLevel.team.id,
           name: selectedLevel.team.name
         } : null);
-        setPendingCreators(selectedLevel.currentCreators?.map(c => ({
+        const creators = selectedLevel.currentCreators?.map(c => ({
           id: c.id,
           name: c.name,
-          role: c.role || CreditRole.CREATOR,
+          role: c.role || CreditRole.CHARTER,
           isOwner: c.isOwner,
           isVerified: c.isVerified,
           createdLevels: c.createdLevels,
           aliases: c.creatorAliases?.map(alias => alias.name) || []
-        })) || []);
+        })) || []
+        setPendingCreators(creators);
         setHasUnsavedChanges(false);
       }
     } else {
@@ -497,7 +521,7 @@ const CreatorManagementPage = () => {
         )}
         <div className="current-creators">
           {level.currentCreators?.map(creator => (
-            <span key={creator.id} className="creator-tag">
+            <span key={`${creator.role}-${creator.id}`} className="creator-tag">
               {creator.name} ({creator.role})
               {creator.aliases && creator.aliases.length > 0 && (
                 <span className="creator-aliases"> [{creator.aliases.join(', ')}]</span>
@@ -552,6 +576,14 @@ const CreatorManagementPage = () => {
     );
   };
 
+  // Check if a creator appears with both roles (charter and vfxer)
+  const hasCreatorBothRoles = (creatorId) => {
+    const creatorRoles = pendingCreators
+      .filter(c => c.id === creatorId)
+      .map(c => c.role);
+    return creatorRoles.includes(CreditRole.CHARTER) && creatorRoles.includes(CreditRole.VFXER);
+  };
+
   // Render team management section
   const renderTeamSection = () => {
     if (!selectedLevel) return null;
@@ -592,7 +624,7 @@ const CreatorManagementPage = () => {
           <div className="creator-list">
             {pendingCreators.map(creator => {
               return (
-              <div key={creator.id} className="creator-item">
+              <div key={`${creator.role}-${creator.id}`} className="creator-item">
                 <span className="creator-name">
                   {creator.name.length > 25 ? `${creator.name.substring(0, 25)}...` : creator.name}
                   <span className="creator-details">
@@ -616,11 +648,12 @@ const CreatorManagementPage = () => {
                       opt.value === CreditRole.VFXER
                     )}
                     onChange={(selected) => handleChangeRole(creator.id, selected.value)}
-                    className="role-select"
+                    className={`role-select ${hasCreatorBothRoles(creator.id) ? 'disabled' : ''}`}
+                    isDisabled={hasCreatorBothRoles(creator.id)}
                   />
                   <button
                     className="remove-creator-button"
-                    onClick={() => handleRemoveCreator(creator.id)}
+                    onClick={() => handleRemoveCreator(creator.id, creator.role)}
                   >
                     Remove
                   </button>
@@ -644,7 +677,7 @@ const CreatorManagementPage = () => {
                 }
               }}
               placeholder="Search and select creator..."
-              onInputChange={(value) => setCreatorListSearchQuery(value)}
+              onInputChange={(value) => setCreatorToAddSearchQuery(value)}
               isSearchable={true}
               className="creator-select"
               width="50%"
@@ -994,7 +1027,7 @@ const CreatorManagementPage = () => {
                   </div>
                 ) : (
                   currentCreators.map(creator => (
-                    <div key={creator.id} className={`creator-item ${creator.isVerified ? 'verified' : ''}`}>
+                    <div key={`${creator.role}-${creator.id}`} className={`creator-item ${creator.isVerified ? 'verified' : ''}`}>
                       <div className="creator-info">
                         <h3>
                           {creator.name} ({tCreator('creatorInfo.id')}: {creator.id})

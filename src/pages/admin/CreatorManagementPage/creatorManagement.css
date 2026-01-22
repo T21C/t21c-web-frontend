@@ -1285,6 +1285,17 @@
   border-radius: 4px;
 }
 
+.creator-management-page .role-select.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.creator-management-page .role-select.disabled > div {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
 .creator-management-page .remove-creator-button {
   padding: 8px 16px;
   background-color: rgba(255, 107, 107, 0.1);

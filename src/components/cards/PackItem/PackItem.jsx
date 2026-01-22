@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { Draggable, Droppable } from '@hello-pangea/dnd';
 import { useTranslation } from 'react-i18next';
-import { ChevronIcon, FolderIcon, DragHandleIcon, DownloadIcon } from '@/components/common/icons';
+import { ChevronIcon, FolderIcon, DragHandleIcon, DownloadIcon } from '                     @/components/common/icons';
 import { summarizeFolderSize, formatEstimatedSize } from '@/utils/packDownloadUtils';
 
 import LevelCard from '@/components/cards/LevelCard/LevelCard';
