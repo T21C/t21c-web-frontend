@@ -39,7 +39,12 @@
     "add": "Add Credit"
   },
   "evidence": {
-    "add": "Upload Evidence Images"
+    "add": "Upload Evidence Images",
+    "pendingUpload": "Pending Upload",
+    "uploaded": "Uploaded Evidence",
+    "existing": "Existing Evidence",
+    "dropZoneText": "Drop images here or click to select",
+    "dropZoneHint": "Supports multiple image files"
   },
   "buttons": {
     "update": "Update",
@@ -68,6 +73,8 @@
     "loadSongsFailed": "Failed to load songs",
     "deleteFailed": "Failed to delete",
     "creditFailed": "Failed to add credit",
-    "evidenceFailed": "Failed to add evidence"
+    "evidenceFailed": "Failed to add evidence",
+    "noFile": "Please select a file",
+    "invalidFileType": "Please select image files only"
   }
 }

@@ -39,6 +39,9 @@ export const SongActionPopup = ({ song, onClose, onUpdate }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [showEvidenceGallery, setShowEvidenceGallery] = useState(false);
+  const [evidenceFiles, setEvidenceFiles] = useState([]); // Array of {file, preview}
+  const [isUploadingEvidence, setIsUploadingEvidence] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
 
   useEffect(() => {
     const handleEscapeKey = (event) => {
@@ -298,10 +301,78 @@ export const SongActionPopup = ({ song, onClose, onUpdate }) => {
     }
   };
 
-  const handleAddEvidence = async (files) => {
+  const handleEvidenceFileSelect = (files) => {
+    if (!files || files.length === 0) return;
+    
+    const fileArray = Array.from(files).filter(file => file.type.startsWith('image/'));
+    if (fileArray.length === 0) {
+      toast.error(tSong('errors.invalidFileType'));
+      return;
+    }
+
+    const newEvidenceFiles = fileArray.map(file => {
+      const reader = new FileReader();
+      const previewPromise = new Promise((resolve) => {
+        reader.onloadend = () => {
+          resolve(reader.result);
+        };
+        reader.readAsDataURL(file);
+      });
+      return { file, preview: null, previewPromise };
+    });
+
+    // Set files immediately, then update with previews
+    setEvidenceFiles(prev => [...prev, ...newEvidenceFiles]);
+    
+    // Update previews as they load
+    Promise.all(newEvidenceFiles.map(item => item.previewPromise)).then(previews => {
+      setEvidenceFiles(prev => {
+        const updated = [...prev];
+        let previewIndex = 0;
+        return updated.map(item => {
+          if (item.preview === null && item.previewPromise) {
+            const preview = previews[previewIndex++];
+            return { ...item, preview, previewPromise: null };
+          }
+          return item;
+        });
+      });
+    });
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+    
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      handleEvidenceFileSelect(files);
+    }
+  };
+
+  const handleAddEvidence = async () => {
+    if (evidenceFiles.length === 0) {
+      toast.error(tSong('errors.noFile'));
+      return;
+    }
+
+    setIsUploadingEvidence(true);
     try {
       const formData = new FormData();
-      Array.from(files).forEach(file => {
+      evidenceFiles.forEach(({ file }) => {
         formData.append('evidence', file);
       });
 
@@ -319,10 +390,22 @@ export const SongActionPopup = ({ song, onClose, onUpdate }) => {
       // Refresh song data
       const response = await api.get(`/v2/admin/songs/${song.id}`);
       setEvidences(response.data.evidences || []);
+      // Clear preview files
+      setEvidenceFiles([]);
     } catch (error) {
       const errorMessage = getErrorMessage(error, tSong('errors.evidenceFailed'));
       toast.error(errorMessage);
+    } finally {
+      setIsUploadingEvidence(false);
     }
+  };
+
+  const handleRemoveEvidencePreview = (index) => {
+    setEvidenceFiles(prev => {
+      const updated = [...prev];
+      updated.splice(index, 1);
+      return updated;
+    });
   };
 
   const handleDeleteEvidence = async (evidenceId) => {
@@ -616,34 +699,87 @@ export const SongActionPopup = ({ song, onClose, onUpdate }) => {
 
           {mode === 'evidence' && (
             <div className="form-section">
-              <div className="form-group">
-                <label>{tSong('evidence.add')}</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files.length > 0) {
-                      handleAddEvidence(e.target.files);
-                    }
-                  }}
-                />
+              {/* Drop-in field for uploading new evidence */}
+              <div className="evidence-upload-zone">
+                <div
+                  className={`evidence-drop-zone ${isDragOver ? 'drag-over' : ''}`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    id="evidence-upload-input"
+                    style={{ display: 'none' }}
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files.length > 0) {
+                        handleEvidenceFileSelect(e.target.files);
+                      }
+                      // Reset input so same file can be selected again
+                      e.target.value = '';
+                    }}
+                  />
+                  <label htmlFor="evidence-upload-input" className="evidence-drop-label">
+                    <div className="evidence-drop-content">
+                      <span className="evidence-drop-icon">📁</span>
+                      <span className="evidence-drop-text">
+                        {tSong('evidence.dropZoneText')}
+                      </span>
+                      <span className="evidence-drop-hint">
+                        {tSong('evidence.dropZoneHint')}
+                      </span>
+                    </div>
+                  </label>
+                </div>
+
+                {/* Show previews of files selected for upload */}
+                {evidenceFiles.length > 0 && (
+                  <div className="evidence-preview-upload">
+                    <div className="evidence-items-container">
+                      {evidenceFiles.map((evidenceFile, index) => (
+                        <div key={index} className="evidence-item">
+                          <img
+                            src={evidenceFile.preview || ''}
+                            alt="Evidence preview"
+                            className={evidenceFile.preview ? '' : 'loading'}
+                          />
+                          <button onClick={() => handleRemoveEvidencePreview(index)}>
+                            {tSong('buttons.remove')}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    <button 
+                      onClick={handleAddEvidence} 
+                      disabled={isUploadingEvidence || evidenceFiles.length === 0}
+                      className="upload-evidence-btn"
+                    >
+                      {isUploadingEvidence ? tSong('buttons.uploading') : tSong('buttons.upload')}
+                    </button>
+                  </div>
+                )}
               </div>
 
+              {/* Show existing uploaded evidence */}
               {evidences.length > 0 && (
                 <div className="evidence-preview">
-                  {evidences.map((evidence) => (
-                    <div key={evidence.id} className="evidence-item">
-                      <img
-                        src={evidence.link}
-                        alt="Evidence"
-                        onClick={() => setShowEvidenceGallery(true)}
-                      />
-                      <button onClick={() => handleDeleteEvidence(evidence.id)}>
-                        {tSong('buttons.delete')}
-                      </button>
-                    </div>
-                  ))}
+                  <label>{tSong('evidence.existing')}</label>
+                  <div className="evidence-items-container">
+                    {evidences.map((evidence) => (
+                      <div key={evidence.id} className="evidence-item">
+                        <img
+                          src={evidence.link}
+                          alt="Evidence"
+                          onClick={() => setShowEvidenceGallery(true)}
+                        />
+                        <button onClick={() => handleDeleteEvidence(evidence.id)}>
+                          {tSong('buttons.delete')}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 

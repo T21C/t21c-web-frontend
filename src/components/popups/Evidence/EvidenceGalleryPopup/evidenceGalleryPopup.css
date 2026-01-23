@@ -23,12 +23,6 @@
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
 }
 
-.evidence-gallery-popup.zoomed {
-  width: 95%;
-  max-width: 95vw;
-  max-height: 95vh;
-}
-
 .evidence-gallery-popup .popup-header {
   padding: 16px;
   display: flex;
@@ -78,6 +72,8 @@
   background-color: rgba(0, 0, 0, 0.3);
   border-radius: 8px;
   overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 .evidence-gallery-popup .evidence-image-wrapper {
@@ -86,24 +82,53 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  cursor: zoom-in;
-}
-
-.evidence-gallery-popup .evidence-image-wrapper.zoomed {
-  cursor: zoom-out;
+  position: relative;
+  user-select: none;
 }
 
 .evidence-gallery-popup .evidence-image {
   max-width: 100%;
   max-height: 70vh;
   object-fit: contain;
-  transition: transform 0.3s ease;
+  pointer-events: none;
+  user-select: none;
 }
 
-.evidence-gallery-popup .evidence-image.zoomed {
-  max-width: 95vw;
-  max-height: 95vh;
-  cursor: zoom-out;
+.evidence-gallery-popup .zoom-controls {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 8px 16px;
+  border-radius: 20px;
+  z-index: 15;
+}
+
+.evidence-gallery-popup .zoom-reset-button {
+  padding: 4px 12px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 4px;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.2s;
+}
+
+.evidence-gallery-popup .zoom-reset-button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.evidence-gallery-popup .zoom-level {
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 500;
+  min-width: 50px;
+  text-align: center;
 }
 
 .evidence-gallery-popup .nav-button {
@@ -172,8 +197,6 @@
   gap: 10px;
   justify-content: center;
   flex-wrap: wrap;
-  max-height: 120px;
-  overflow-y: auto;
   padding: 10px;
   background-color: rgba(0, 0, 0, 0.2);
   border-radius: 8px;

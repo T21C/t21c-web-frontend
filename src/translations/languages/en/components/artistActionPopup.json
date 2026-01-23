@@ -10,8 +10,9 @@
   },
   "form": {
     "name": "Name",
-    "avatarUrl": "Avatar URL",
+    "avatarUrl": "Avatar",
     "avatarUrlPlaceholder": "Enter avatar URL",
+    "avatarCdnInfo": "CDN-hosted avatar can only be changed via upload/delete",
     "verificationState": "Verification State"
   },
   "verification": {
@@ -48,7 +49,9 @@
     "placeholder": "Enter URL"
   },
   "evidence": {
-    "add": "Upload Evidence Images"
+    "add": "Upload Evidence Images",
+    "pendingUpload": "Pending Upload",
+    "uploaded": "Uploaded Evidence"
   },
   "buttons": {
     "update": "Update",
@@ -67,7 +70,8 @@
     "deleteAvatar": "Delete Avatar",
     "selectAvatar": "Select Avatar File",
     "upload": "Upload",
-    "uploading": "Uploading..."
+    "uploading": "Uploading...",
+    "remove": "Remove"
   },
   "messages": {
     "updated": "Artist updated successfully",
@@ -91,6 +95,7 @@
     "noFile": "Please select a file",
     "uploadFailed": "Failed to upload avatar",
     "deleteFailed": "Failed to delete",
-    "evidenceFailed": "Failed to add evidence"
+    "evidenceFailed": "Failed to add evidence",
+    "invalidFileType": "Please select image files only"
   }
 }

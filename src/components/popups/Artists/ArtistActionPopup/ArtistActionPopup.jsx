@@ -6,6 +6,7 @@ import './artistActionPopup.css';
 import { toast } from 'react-hot-toast';
 import { ExternalLinkIcon } from '@/components/common/icons';
 import { EvidenceGalleryPopup } from '@/components/popups';
+import { isCdnUrl } from '@/utils/Utility';
 
 export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
   const { t } = useTranslation('components');
@@ -38,6 +39,9 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
+  const [evidenceFiles, setEvidenceFiles] = useState([]); // Array of {file, preview}
+  const [isUploadingEvidence, setIsUploadingEvidence] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
 
   const verificationStateOptions = [
     { value: 'unverified', label: tArtist('verification.unverified') },
@@ -47,6 +51,16 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
     { value: 'mostly allowed', label: tArtist('verification.mostlyAllowed') },
     { value: 'allowed', label: tArtist('verification.allowed') }
   ];
+
+  useEffect(() => {    
+    // Lock scrolling
+    document.body.style.overflowY = 'hidden';
+
+    // Cleanup function to restore original scroll state
+    return () => {
+      document.body.style.overflowY = '';
+    };
+  }, []);
 
   // Update local state when artist prop changes
   useEffect(() => {
@@ -158,9 +172,14 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
     setSuccess('');
 
     try {
+      // If current avatarUrl is a CDN URL, don't allow changing it through update endpoint
+      // CDN URLs can only be changed via upload/delete endpoints
+      const currentAvatarIsCdn = artist?.avatarUrl && isCdnUrl(artist.avatarUrl);
+      const avatarUrlToUpdate = currentAvatarIsCdn ? artist.avatarUrl : (avatarUrl.trim() || null);
+      
       await api.put(`/v2/admin/artists/${artist.id}`, {
         name: name.trim(),
-        avatarUrl: avatarUrl.trim() || null,
+        avatarUrl: avatarUrlToUpdate,
         verificationState
       });
 
@@ -383,10 +402,78 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
     }
   };
 
-  const handleAddEvidence = async (files) => {
+  const handleEvidenceFileSelect = (files) => {
+    if (!files || files.length === 0) return;
+    
+    const fileArray = Array.from(files).filter(file => file.type.startsWith('image/'));
+    if (fileArray.length === 0) {
+      toast.error(tArtist('errors.invalidFileType'));
+      return;
+    }
+
+    const newEvidenceFiles = fileArray.map(file => {
+      const reader = new FileReader();
+      const previewPromise = new Promise((resolve) => {
+        reader.onloadend = () => {
+          resolve(reader.result);
+        };
+        reader.readAsDataURL(file);
+      });
+      return { file, preview: null, previewPromise };
+    });
+
+    // Set files immediately, then update with previews
+    setEvidenceFiles(prev => [...prev, ...newEvidenceFiles]);
+    
+    // Update previews as they load
+    Promise.all(newEvidenceFiles.map(item => item.previewPromise)).then(previews => {
+      setEvidenceFiles(prev => {
+        const updated = [...prev];
+        let previewIndex = 0;
+        return updated.map(item => {
+          if (item.preview === null && item.previewPromise) {
+            const preview = previews[previewIndex++];
+            return { ...item, preview, previewPromise: null };
+          }
+          return item;
+        });
+      });
+    });
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragOver(false);
+    
+    const files = e.dataTransfer.files;
+    if (files && files.length > 0) {
+      handleEvidenceFileSelect(files);
+    }
+  };
+
+  const handleAddEvidence = async () => {
+    if (evidenceFiles.length === 0) {
+      toast.error(tArtist('errors.noFile'));
+      return;
+    }
+
+    setIsUploadingEvidence(true);
     try {
       const formData = new FormData();
-      Array.from(files).forEach(file => {
+      evidenceFiles.forEach(({ file }) => {
         formData.append('evidence', file);
       });
 
@@ -404,10 +491,22 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
       // Refresh artist data
       const response = await api.get(`/v2/admin/artists/${artist.id}`);
       setEvidences(response.data.evidences || []);
+      // Clear preview files
+      setEvidenceFiles([]);
     } catch (error) {
       const errorMessage = getErrorMessage(error, tArtist('errors.evidenceFailed'));
       toast.error(errorMessage);
+    } finally {
+      setIsUploadingEvidence(false);
     }
+  };
+
+  const handleRemoveEvidencePreview = (index) => {
+    setEvidenceFiles(prev => {
+      const updated = [...prev];
+      updated.splice(index, 1);
+      return updated;
+    });
   };
 
   const handleDeleteEvidence = async (evidenceId) => {
@@ -541,17 +640,24 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
                       </button>
                     )}
                   </div>
-                  <input
-                    type="text"
-                    value={avatarUrl}
-                    onChange={(e) => {
-                      setAvatarUrl(e.target.value);
-                      if (!e.target.value) {
-                        setAvatarPreview(null);
-                      }
-                    }}
-                    placeholder={tArtist('form.avatarUrlPlaceholder')}
-                  />
+                  {avatarUrl && !isCdnUrl(avatarUrl) && (
+                    <input
+                      type="text"
+                      value={avatarUrl}
+                      onChange={(e) => {
+                        setAvatarUrl(e.target.value);
+                        if (!e.target.value) {
+                          setAvatarPreview(null);
+                        }
+                      }}
+                      placeholder={tArtist('form.avatarUrlPlaceholder')}
+                    />
+                  )}
+                  {avatarUrl && isCdnUrl(avatarUrl) && (
+                    <div className="avatar-url-info">
+                      <span className="info-text">{tArtist('form.avatarCdnInfo')}</span>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -804,34 +910,87 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
 
           {mode === 'evidence' && (
             <div className="form-section">
-              <div className="form-group">
-                <label>{tArtist('evidence.add')}</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  multiple
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files.length > 0) {
-                      handleAddEvidence(e.target.files);
-                    }
-                  }}
-                />
+              {/* Drop-in field for uploading new evidence */}
+              <div className="evidence-upload-zone">
+                <div
+                  className={`evidence-drop-zone ${isDragOver ? 'drag-over' : ''}`}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  onDrop={handleDrop}
+                >
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    id="evidence-upload-input"
+                    style={{ display: 'none' }}
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files.length > 0) {
+                        handleEvidenceFileSelect(e.target.files);
+                      }
+                      // Reset input so same file can be selected again
+                      e.target.value = '';
+                    }}
+                  />
+                  <label htmlFor="evidence-upload-input" className="evidence-drop-label">
+                    <div className="evidence-drop-content">
+                      <span className="evidence-drop-icon">📁</span>
+                      <span className="evidence-drop-text">
+                        {tArtist('evidence.dropZoneText')}
+                      </span>
+                      <span className="evidence-drop-hint">
+                        {tArtist('evidence.dropZoneHint')}
+                      </span>
+                    </div>
+                  </label>
+                </div>
+
+                {/* Show previews of files selected for upload */}
+                {evidenceFiles.length > 0 && (
+                  <div className="evidence-preview-upload">
+                    <div className="evidence-items-container">
+                      {evidenceFiles.map((evidenceFile, index) => (
+                        <div key={index} className="evidence-item">
+                          <img
+                            src={evidenceFile.preview || ''}
+                            alt="Evidence preview"
+                            className={evidenceFile.preview ? '' : 'loading'}
+                          />
+                          <button onClick={() => handleRemoveEvidencePreview(index)}>
+                            {tArtist('buttons.remove')}
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                    <button 
+                      onClick={handleAddEvidence} 
+                      disabled={isUploadingEvidence || evidenceFiles.length === 0}
+                      className="upload-evidence-btn"
+                    >
+                      {isUploadingEvidence ? tArtist('buttons.uploading') : tArtist('buttons.upload')}
+                    </button>
+                  </div>
+                )}
               </div>
 
+              {/* Show existing uploaded evidence */}
               {evidences.length > 0 && (
                 <div className="evidence-preview">
-                  {evidences.map((evidence) => (
-                    <div key={evidence.id} className="evidence-item">
-                      <img
-                        src={evidence.link}
-                        alt="Evidence"
-                        onClick={() => setShowEvidenceGallery(true)}
-                      />
-                      <button onClick={() => handleDeleteEvidence(evidence.id)}>
-                        {tArtist('buttons.delete')}
-                      </button>
-                    </div>
-                  ))}
+                  <label>{tArtist('evidence.existing')}</label>
+                  <div className="evidence-items-container">
+                    {evidences.map((evidence) => (
+                      <div key={evidence.id} className="evidence-item">
+                        <img
+                          src={evidence.link}
+                          alt="Evidence"
+                          onClick={() => setShowEvidenceGallery(true)}
+                        />
+                        <button onClick={() => handleDeleteEvidence(evidence.id)}>
+                          {tArtist('buttons.delete')}
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )}
 

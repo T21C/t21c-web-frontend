@@ -288,11 +288,87 @@
   background-color: rgba(76, 175, 80, 0.1);
 }
 
+.evidence-upload-zone {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.evidence-drop-zone {
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  padding: 32px;
+  background-color: rgba(255, 255, 255, 0.02);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.evidence-drop-zone:hover {
+  border-color: rgba(76, 175, 80, 0.5);
+  background-color: rgba(76, 175, 80, 0.05);
+}
+
+.evidence-drop-zone.drag-over {
+  border-color: #4CAF50;
+  background-color: rgba(76, 175, 80, 0.1);
+  border-style: solid;
+}
+
+.evidence-drop-label {
+  display: block;
+  cursor: pointer;
+  width: 100%;
+}
+
+.evidence-drop-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+}
+
+.evidence-drop-icon {
+  font-size: 3rem;
+  opacity: 0.7;
+}
+
+.evidence-drop-text {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.evidence-drop-hint {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.85rem;
+}
+
+.evidence-preview-upload {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
 .evidence-preview {
   display: flex;
+  flex-direction: column;
   gap: 12px;
-  flex-wrap: wrap;
   margin-top: 12px;
+}
+
+.evidence-preview label {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+}
+
+.evidence-preview .evidence-items-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
 .evidence-item {
@@ -310,6 +386,12 @@
   cursor: pointer;
   border: 2px solid rgba(255, 255, 255, 0.2);
   transition: transform 0.2s;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.evidence-item img.loading {
+  opacity: 0.5;
+  cursor: wait;
 }
 
 .evidence-item img:hover {
@@ -328,6 +410,30 @@
 
 .evidence-item button:hover {
   background-color: rgba(244, 67, 54, 0.3);
+}
+
+.upload-evidence-btn {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 4px;
+  color: #ffffff;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s;
+  margin-top: 8px;
+  align-self: flex-start;
+}
+
+.upload-evidence-btn:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+.upload-evidence-btn:disabled {
+  background-color: #666;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .form-actions {
