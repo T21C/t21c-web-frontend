@@ -510,6 +510,10 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
   };
 
   const handleDeleteEvidence = async (evidenceId) => {
+    if (!window.confirm(tArtist('evidence.deleteConfirm'))) {
+      return;
+    }
+
     try {
       await api.delete(`/v2/admin/artists/${artist.id}/evidences/${evidenceId}`);
       toast.success(tArtist('messages.evidenceDeleted'));
@@ -842,14 +846,16 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
                 </div>
               </div>
 
-              <div className="aliases-list">
+              {aliases.length > 0 && (
+                <div className="aliases-list">
                 {aliases.map((alias, index) => (
                   <div key={index} className="alias-item">
                     <span>{alias}</span>
                     <button onClick={() => handleRemoveAlias(alias)}>×</button>
                   </div>
                 ))}
-              </div>
+                </div>
+              )}
 
               <div className="form-actions">
                 <button
@@ -884,7 +890,8 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
                 </div>
               </div>
 
-              <div className="links-list">
+              {links.length > 0 && (  
+                <div className="links-list">
                 {links.map((link, index) => (
                   <div key={index} className="link-item">
                     <a href={link} target="_blank" rel="noopener noreferrer">
@@ -893,8 +900,9 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
                     </a>
                     <button onClick={() => handleRemoveLink(link)}>×</button>
                   </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
 
               <div className="form-actions">
                 <button
@@ -956,8 +964,10 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
                             alt="Evidence preview"
                             className={evidenceFile.preview ? '' : 'loading'}
                           />
-                          <button onClick={() => handleRemoveEvidencePreview(index)}>
-                            {tArtist('buttons.remove')}
+                          <button onClick={() => handleRemoveEvidencePreview(index)} title={tArtist('buttons.remove')}>
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                              <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                            </svg>
                           </button>
                         </div>
                       ))}
@@ -985,8 +995,10 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
                           alt="Evidence"
                           onClick={() => setShowEvidenceGallery(true)}
                         />
-                        <button onClick={() => handleDeleteEvidence(evidence.id)}>
-                          {tArtist('buttons.delete')}
+                        <button onClick={() => handleDeleteEvidence(evidence.id)} title={tArtist('buttons.delete')}>
+                          <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                          </svg>
                         </button>
                       </div>
                     ))}

@@ -303,7 +303,7 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
                   }}
                   title={tGallery('resetZoom')}
                 >
-                  Reset
+                  {tGallery('reset')}
                 </button>
                 <span className="zoom-level">{Math.round(zoom * 100)}%</span>
               </div>

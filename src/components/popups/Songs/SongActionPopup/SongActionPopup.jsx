@@ -604,7 +604,8 @@ export const SongActionPopup = ({ song, onClose, onUpdate }) => {
                 </div>
               </div>
 
-              <div className="links-list">
+              {links.length > 0 && (
+                <div className="links-list">
                 {links.map((link, index) => (
                   <div key={index} className="link-item">
                     <a href={link} target="_blank" rel="noopener noreferrer">
@@ -614,7 +615,8 @@ export const SongActionPopup = ({ song, onClose, onUpdate }) => {
                     <button onClick={() => handleRemoveLink(link)}>×</button>
                   </div>
                 ))}
-              </div>
+                </div>
+              )}
 
               <div className="form-actions">
                 <button

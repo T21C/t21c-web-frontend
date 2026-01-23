@@ -118,7 +118,8 @@ const ArtistDetailPage = () => {
           {artist.links && artist.links.length > 0 && (
             <div className="artist-section">
               <h2>{tArtist('sections.links')}</h2>
-              <div className="links-list">
+              {artist.links.length > 0 && (
+                <div className="links-list">
                 {artist.links.map((link) => (
                   <a
                     key={link.id}
@@ -131,7 +132,8 @@ const ArtistDetailPage = () => {
                     <ExternalLinkIcon size={14} />
                   </a>
                 ))}
-              </div>
+                </div>
+              )}
             </div>
           )}
 
