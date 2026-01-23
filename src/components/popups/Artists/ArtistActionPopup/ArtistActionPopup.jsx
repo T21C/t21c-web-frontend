@@ -172,14 +172,9 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
     setSuccess('');
 
     try {
-      // If current avatarUrl is a CDN URL, don't allow changing it through update endpoint
-      // CDN URLs can only be changed via upload/delete endpoints
-      const currentAvatarIsCdn = artist?.avatarUrl && isCdnUrl(artist.avatarUrl);
-      const avatarUrlToUpdate = currentAvatarIsCdn ? artist.avatarUrl : (avatarUrl.trim() || null);
-      
+      // Avatar can only be changed via upload/delete endpoints
       await api.put(`/v2/admin/artists/${artist.id}`, {
         name: name.trim(),
-        avatarUrl: avatarUrlToUpdate,
         verificationState
       });
 
@@ -205,7 +200,7 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
       // Add new links
       const newLinks = links.filter(l => !currentLinks.some(cl => cl.link === l));
       for (const link of newLinks) {
-        await api.post(`${import.meta.env.VITE_ADMIN_API}/artists/${artist.id}/links`, { link });
+        await api.post(`/v2/admin/artists/${artist.id}/links`, { link });
       }
 
       // Remove deleted links
@@ -638,30 +633,12 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
                     <label htmlFor="avatar-upload" className="upload-label">
                       {tArtist('buttons.selectAvatar')}
                     </label>
-                    {avatarFile && !avatarUrl && (
+                    {avatarFile && (
                       <button onClick={handleAvatarUpload} disabled={isUploadingAvatar}>
                         {isUploadingAvatar ? tArtist('buttons.uploading') : tArtist('buttons.upload')}
                       </button>
                     )}
                   </div>
-                  {avatarUrl && !isCdnUrl(avatarUrl) && (
-                    <input
-                      type="text"
-                      value={avatarUrl}
-                      onChange={(e) => {
-                        setAvatarUrl(e.target.value);
-                        if (!e.target.value) {
-                          setAvatarPreview(null);
-                        }
-                      }}
-                      placeholder={tArtist('form.avatarUrlPlaceholder')}
-                    />
-                  )}
-                  {avatarUrl && isCdnUrl(avatarUrl) && (
-                    <div className="avatar-url-info">
-                      <span className="info-text">{tArtist('form.avatarCdnInfo')}</span>
-                    </div>
-                  )}
                 </div>
               </div>
 

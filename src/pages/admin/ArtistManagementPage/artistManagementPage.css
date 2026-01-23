@@ -300,6 +300,67 @@
   border-color: rgba(255, 255, 255, 0.4);
 }
 
+.avatar-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.avatar-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.avatar-preview img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.delete-avatar-btn {
+  padding: 6px 12px;
+  background-color: rgba(244, 67, 54, 0.2);
+  border: 1px solid rgba(244, 67, 54, 0.5);
+  border-radius: 4px;
+  color: #f44336;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.delete-avatar-btn:hover {
+  background-color: rgba(244, 67, 54, 0.3);
+}
+
+.avatar-upload {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.avatar-upload input[type="text"] {
+  flex: 1;
+  min-width: 200px;
+}
+
+.upload-label {
+  padding: 8px 16px;
+  background-color: rgba(76, 175, 80, 0.2);
+  border: 1px solid rgba(76, 175, 80, 0.5);
+  border-radius: 4px;
+  color: #4caf50;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.upload-label:hover {
+  background-color: rgba(76, 175, 80, 0.3);
+}
+
 .alias-input-group {
   display: flex;
   gap: 0.5rem;

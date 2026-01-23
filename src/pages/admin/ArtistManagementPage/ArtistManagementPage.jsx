@@ -26,12 +26,13 @@ const ArtistManagementPage = () => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newArtistData, setNewArtistData] = useState({
     name: '',
-    avatarUrl: '',
     verificationState: 'unverified',
     aliases: []
   });
   const [newAlias, setNewAlias] = useState('');
   const [isCreating, setIsCreating] = useState(false);
+  const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
 
   useEffect(() => {
     if (user && hasFlag(user, permissionFlags.SUPER_ADMIN)) {
@@ -86,16 +87,36 @@ const ArtistManagementPage = () => {
 
     setIsCreating(true);
     try {
-      await api.post('/v2/admin/artists', newArtistData);
+      const formData = new FormData();
+      formData.append('name', newArtistData.name.trim());
+      formData.append('verificationState', newArtistData.verificationState);
+      
+      // Add avatar file if provided
+      if (avatarFile) {
+        formData.append('avatar', avatarFile);
+      }
+      
+      // Add aliases as JSON string
+      if (newArtistData.aliases.length > 0) {
+        formData.append('aliases', JSON.stringify(newArtistData.aliases));
+      }
+
+      await api.post('/v2/admin/artists', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
       toast.success(tArtist('messages.created'));
       setShowAddForm(false);
       setNewArtistData({
         name: '',
-        avatarUrl: '',
         verificationState: 'unverified',
         aliases: []
       });
       setNewAlias('');
+      setAvatarFile(null);
+      setAvatarPreview(null);
       fetchArtists(true);
     } catch (error) {
       toast.error(error.response?.data?.error || tArtist('errors.createFailed'));
@@ -307,12 +328,47 @@ const ArtistManagementPage = () => {
             </div>
             <div className="form-group">
               <label>{tArtist('form.avatarUrl')}</label>
-              <input
-                type="text"
-                value={newArtistData.avatarUrl}
-                onChange={(e) => setNewArtistData(prev => ({...prev, avatarUrl: e.target.value}))}
-                placeholder={tArtist('form.avatarUrlPlaceholder')}
-              />
+              <div className="avatar-section">
+                {avatarPreview && (
+                  <div className="avatar-preview">
+                    <img src={avatarPreview} alt="Avatar preview" />
+                    <button 
+                      type="button"
+                      onClick={() => {
+                        setAvatarFile(null);
+                        setAvatarPreview(null);
+                      }}
+                      className="delete-avatar-btn"
+                    >
+                      {tArtist('form.removeAvatar')}
+                    </button>
+                  </div>
+                )}
+                <div className="avatar-upload">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] || null;
+                      setAvatarFile(file);
+                      if (file) {
+                        const reader = new FileReader();
+                        reader.onloadend = () => {
+                          setAvatarPreview(reader.result);
+                        };
+                        reader.readAsDataURL(file);
+                      } else {
+                        setAvatarPreview(null);
+                      }
+                    }}
+                    id="avatar-upload-create"
+                    style={{ display: 'none' }}
+                  />
+                  <label htmlFor="avatar-upload-create" className="upload-label">
+                    {tArtist('form.selectAvatarFile')}
+                  </label>
+                </div>
+              </div>
             </div>
             <div className="form-group">
               <CustomSelect
@@ -388,11 +444,12 @@ const ArtistManagementPage = () => {
                   setShowAddForm(false);
                   setNewArtistData({
                     name: '',
-                    avatarUrl: '',
                     verificationState: 'unverified',
                     aliases: []
                   });
                   setNewAlias('');
+                  setAvatarFile(null);
+                  setAvatarPreview(null);
                 }}
               >
                 {tArtist('buttons.cancel')}
