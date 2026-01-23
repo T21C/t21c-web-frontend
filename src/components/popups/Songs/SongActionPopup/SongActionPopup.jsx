@@ -11,6 +11,14 @@ export const SongActionPopup = ({ song, onClose, onUpdate }) => {
   const tSong = (key, params = {}) => t(`songActionPopup.${key}`, params) || key;
   const popupRef = useRef(null);
 
+  // Helper function to extract error message, prioritizing details.errors
+  const getErrorMessage = (error, defaultMessage) => {
+    if (error?.response?.data?.details?.errors && Array.isArray(error.response.data.details.errors) && error.response.data.details.errors.length > 0) {
+      return error.response.data.details.errors[0];
+    }
+    return error?.response?.data?.error || defaultMessage;
+  };
+
   const [mode, setMode] = useState('update'); // update, merge, aliases, links, evidence, credits
   const [name, setName] = useState(song?.name || '');
   const [verificationState, setVerificationState] = useState(song?.verificationState || 'unverified');
@@ -190,7 +198,8 @@ export const SongActionPopup = ({ song, onClose, onUpdate }) => {
       setNewCreditRole('');
       setCreditSearch('');
     } catch (error) {
-      toast.error(error.response?.data?.error || tSong('errors.creditFailed'));
+      const errorMessage = getErrorMessage(error, tSong('errors.creditFailed'));
+      toast.error(errorMessage);
     }
   };
 
@@ -200,7 +209,8 @@ export const SongActionPopup = ({ song, onClose, onUpdate }) => {
       toast.success(tSong('messages.creditRemoved'));
       setCredits(credits.filter(c => c.id !== creditId));
     } catch (error) {
-      toast.error(error.response?.data?.error || tSong('errors.deleteFailed'));
+      const errorMessage = getErrorMessage(error, tSong('errors.deleteFailed'));
+      toast.error(errorMessage);
     }
   };
 
@@ -251,8 +261,9 @@ export const SongActionPopup = ({ song, onClose, onUpdate }) => {
         onUpdate();
       }, 1000);
     } catch (error) {
-      setError(error.response?.data?.error || tSong('errors.updateFailed'));
-      toast.error(error.response?.data?.error || tSong('errors.updateFailed'));
+      const errorMessage = getErrorMessage(error, tSong('errors.updateFailed'));
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -279,8 +290,9 @@ export const SongActionPopup = ({ song, onClose, onUpdate }) => {
         onUpdate();
       }, 1000);
     } catch (error) {
-      setError(error.response?.data?.error || tSong('errors.mergeFailed'));
-      toast.error(error.response?.data?.error || tSong('errors.mergeFailed'));
+      const errorMessage = getErrorMessage(error, tSong('errors.mergeFailed'));
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -308,7 +320,8 @@ export const SongActionPopup = ({ song, onClose, onUpdate }) => {
       const response = await api.get(`/v2/admin/songs/${song.id}`);
       setEvidences(response.data.evidences || []);
     } catch (error) {
-      toast.error(error.response?.data?.error || tSong('errors.evidenceFailed'));
+      const errorMessage = getErrorMessage(error, tSong('errors.evidenceFailed'));
+      toast.error(errorMessage);
     }
   };
 
@@ -318,7 +331,8 @@ export const SongActionPopup = ({ song, onClose, onUpdate }) => {
       toast.success(tSong('messages.evidenceDeleted'));
       setEvidences(evidences.filter(e => e.id !== evidenceId));
     } catch (error) {
-      toast.error(error.response?.data?.error || tSong('errors.deleteFailed'));
+      const errorMessage = getErrorMessage(error, tSong('errors.deleteFailed'));
+      toast.error(errorMessage);
     }
   };
 

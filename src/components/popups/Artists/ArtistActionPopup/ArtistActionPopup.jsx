@@ -36,6 +36,7 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
   const [success, setSuccess] = useState('');
   const [showEvidenceGallery, setShowEvidenceGallery] = useState(false);
   const [avatarFile, setAvatarFile] = useState(null);
+  const [avatarPreview, setAvatarPreview] = useState(null);
   const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
 
   const verificationStateOptions = [
@@ -46,6 +47,18 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
     { value: 'mostly allowed', label: tArtist('verification.mostlyAllowed') },
     { value: 'allowed', label: tArtist('verification.allowed') }
   ];
+
+  // Update local state when artist prop changes
+  useEffect(() => {
+    if (artist) {
+      setName(artist.name || '');
+      setAvatarUrl(artist.avatarUrl || '');
+      setVerificationState(artist.verificationState || 'unverified');
+      setAliases(artist.aliases?.map(a => a.alias) || []);
+      setLinks(artist.links?.map(l => l.link) || []);
+      setEvidences(artist.evidences || []);
+    }
+  }, [artist]);
 
   useEffect(() => {
     const handleEscapeKey = (event) => {
@@ -188,8 +201,9 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
         onUpdate();
       }, 1000);
     } catch (error) {
-      setError(error.response?.data?.error || tArtist('errors.updateFailed'));
-      toast.error(error.response?.data?.error || tArtist('errors.updateFailed'));
+      const errorMessage = getErrorMessage(error, tArtist('errors.updateFailed'));
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -216,8 +230,9 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
         onUpdate();
       }, 1000);
     } catch (error) {
-      setError(error.response?.data?.error || tArtist('errors.mergeFailed'));
-      toast.error(error.response?.data?.error || tArtist('errors.mergeFailed'));
+      const errorMessage = getErrorMessage(error, tArtist('errors.mergeFailed'));
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -259,8 +274,9 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
         await performSplit(false, false);
       }
     } catch (error) {
-      setError(error.response?.data?.error || tArtist('errors.checkFailed'));
-      toast.error(error.response?.data?.error || tArtist('errors.checkFailed'));
+      const errorMessage = getErrorMessage(error, tArtist('errors.checkFailed'));
+      setError(errorMessage);
+      toast.error(errorMessage);
       setIsLoading(false);
     }
   };
@@ -290,8 +306,9 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
         onUpdate();
       }, 1500);
     } catch (error) {
-      setError(error.response?.data?.error || tArtist('errors.splitFailed'));
-      toast.error(error.response?.data?.error || tArtist('errors.splitFailed'));
+      const errorMessage = getErrorMessage(error, tArtist('errors.splitFailed'));
+      setError(errorMessage);
+      toast.error(errorMessage);
     } finally {
       setIsLoading(false);
     }
@@ -306,6 +323,14 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
     setExistingArtists({existing1: null, existing2: null});
     setUseExisting1(false);
     setUseExisting2(false);
+  };
+
+  // Helper function to extract error message, prioritizing details.errors
+  const getErrorMessage = (error, defaultMessage) => {
+    if (error?.response?.data?.details?.errors && Array.isArray(error.response.data.details.errors) && error.response.data.details.errors.length > 0) {
+      return error.response.data.details.errors[0];
+    }
+    return error?.response?.data?.error || defaultMessage;
   };
 
   const handleAvatarUpload = async () => {
@@ -329,11 +354,16 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
         }
       );
 
-      setAvatarUrl(response.data.avatarUrl);
-      toast.success(tArtist('messages.avatarUploaded'));
+      const newAvatarUrl = response.data.avatarUrl;
+      setAvatarUrl(newAvatarUrl);
+      setAvatarPreview(null); // Clear preview since we now have the uploaded URL
       setAvatarFile(null);
+      toast.success(tArtist('messages.avatarUploaded'));
+      // Refresh artist data to update parent component
+      onUpdate();
     } catch (error) {
-      toast.error(error.response?.data?.error || tArtist('errors.uploadFailed'));
+      const errorMessage = getErrorMessage(error, tArtist('errors.uploadFailed'));
+      toast.error(errorMessage);
     } finally {
       setIsUploadingAvatar(false);
     }
@@ -343,9 +373,13 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
     try {
       await api.delete(`/v2/admin/artists/${artist.id}/avatar`);
       setAvatarUrl('');
+      setAvatarPreview(null);
       toast.success(tArtist('messages.avatarDeleted'));
+      // Refresh artist data to update parent component
+      onUpdate();
     } catch (error) {
-      toast.error(error.response?.data?.error || tArtist('errors.deleteFailed'));
+      const errorMessage = getErrorMessage(error, tArtist('errors.deleteFailed'));
+      toast.error(errorMessage);
     }
   };
 
@@ -371,7 +405,8 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
       const response = await api.get(`/v2/admin/artists/${artist.id}`);
       setEvidences(response.data.evidences || []);
     } catch (error) {
-      toast.error(error.response?.data?.error || tArtist('errors.evidenceFailed'));
+      const errorMessage = getErrorMessage(error, tArtist('errors.evidenceFailed'));
+      toast.error(errorMessage);
     }
   };
 
@@ -381,7 +416,8 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
       toast.success(tArtist('messages.evidenceDeleted'));
       setEvidences(evidences.filter(e => e.id !== evidenceId));
     } catch (error) {
-      toast.error(error.response?.data?.error || tArtist('errors.deleteFailed'));
+      const errorMessage = getErrorMessage(error, tArtist('errors.deleteFailed'));
+      toast.error(errorMessage);
     }
   };
 
@@ -466,26 +502,40 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
               <div className="form-group">
                 <label>{tArtist('form.avatarUrl')}</label>
                 <div className="avatar-section">
-                  {avatarUrl && (
+                  {(avatarUrl || avatarPreview) && (
                     <div className="avatar-preview">
-                      <img src={avatarUrl} alt="Avatar" />
-                      <button onClick={handleDeleteAvatar} className="delete-avatar-btn">
-                        {tArtist('buttons.deleteAvatar')}
-                      </button>
+                      <img src={avatarUrl || avatarPreview} alt="Avatar" />
+                      {avatarUrl && (
+                        <button onClick={handleDeleteAvatar} className="delete-avatar-btn">
+                          {tArtist('buttons.deleteAvatar')}
+                        </button>
+                      )}
                     </div>
                   )}
                   <div className="avatar-upload">
                     <input
                       type="file"
                       accept="image/*"
-                      onChange={(e) => setAvatarFile(e.target.files?.[0] || null)}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0] || null;
+                        setAvatarFile(file);
+                        if (file) {
+                          const reader = new FileReader();
+                          reader.onloadend = () => {
+                            setAvatarPreview(reader.result);
+                          };
+                          reader.readAsDataURL(file);
+                        } else {
+                          setAvatarPreview(null);
+                        }
+                      }}
                       id="avatar-upload"
                       style={{ display: 'none' }}
                     />
                     <label htmlFor="avatar-upload" className="upload-label">
                       {tArtist('buttons.selectAvatar')}
                     </label>
-                    {avatarFile && (
+                    {avatarFile && !avatarUrl && (
                       <button onClick={handleAvatarUpload} disabled={isUploadingAvatar}>
                         {isUploadingAvatar ? tArtist('buttons.uploading') : tArtist('buttons.upload')}
                       </button>
@@ -494,7 +544,12 @@ export const ArtistActionPopup = ({ artist, onClose, onUpdate }) => {
                   <input
                     type="text"
                     value={avatarUrl}
-                    onChange={(e) => setAvatarUrl(e.target.value)}
+                    onChange={(e) => {
+                      setAvatarUrl(e.target.value);
+                      if (!e.target.value) {
+                        setAvatarPreview(null);
+                      }
+                    }}
                     placeholder={tArtist('form.avatarUrlPlaceholder')}
                   />
                 </div>
