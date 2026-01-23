@@ -1,0 +1,237 @@
+.song-detail-page {
+  min-height: 100vh;
+  padding: 2rem;
+  color: var(--color-white);
+}
+
+.song-detail-container {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.song-header {
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.song-header-content h1 {
+  font-size: 3rem;
+  margin: 0 0 1rem 0;
+  color: var(--color-white);
+}
+
+.song-verification {
+  margin-top: 1rem;
+}
+
+.verification-chip {
+  padding: 0.5rem 1rem;
+  border-radius: 16px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  display: inline-block;
+}
+
+.verification-chip.verified {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+}
+
+.verification-chip.pending {
+  background-color: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+}
+
+.verification-chip.unverified {
+  background-color: rgba(128, 128, 128, 0.2);
+  color: #aaa;
+}
+
+.song-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.song-section {
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 1.5rem;
+}
+
+.song-section h2 {
+  margin: 0 0 1rem 0;
+  font-size: 1.5rem;
+  color: var(--color-white);
+}
+
+.aliases-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.alias-tag {
+  padding: 0.5rem 1rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: var(--color-white);
+  font-size: 0.9rem;
+}
+
+.links-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.link-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #4CAF50;
+  text-decoration: none;
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.link-item:hover {
+  background-color: rgba(76, 175, 80, 0.1);
+}
+
+.artists-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.artist-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.artist-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.artist-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.artist-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.artist-name {
+  font-weight: 500;
+  color: var(--color-white);
+}
+
+.artist-role {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+}
+
+.evidence-preview {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.evidence-thumbnail {
+  width: 120px;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.evidence-thumbnail:hover {
+  transform: scale(1.05);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.evidence-more {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: rgba(255, 255, 255, 0.6);
+  transition: all 0.2s;
+}
+
+.evidence-more:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: var(--color-white);
+}
+
+.levels-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.level-item {
+  padding: 0.75rem 1rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  color: var(--color-white);
+}
+
+.level-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.error-container {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.error-container h2 {
+  color: var(--color-white);
+  margin-bottom: 2rem;
+}
+
+.back-button {
+  padding: 0.75rem 1.5rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: var(--color-white);
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s;
+}
+
+.back-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}

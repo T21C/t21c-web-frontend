@@ -1,0 +1,73 @@
+{
+  "title": "Manage Song",
+  "tabs": {
+    "update": "Update",
+    "merge": "Merge",
+    "aliases": "Aliases",
+    "links": "Links",
+    "credits": "Credits",
+    "evidence": "Evidence"
+  },
+  "form": {
+    "name": "Name",
+    "verificationState": "Verification State"
+  },
+  "verification": {
+    "unverified": "Unverified",
+    "pending": "Pending",
+    "verified": "Verified"
+  },
+  "merge": {
+    "info": "Merge this song into another. All data will be transferred.",
+    "search": "Search for target song",
+    "placeholder": "Search by name..."
+  },
+  "aliases": {
+    "add": "Add Alias",
+    "placeholder": "Enter alias name"
+  },
+  "links": {
+    "add": "Add Link",
+    "placeholder": "Enter URL"
+  },
+  "credits": {
+    "search": "Search for Artist",
+    "placeholder": "Search by name...",
+    "role": "Role (optional)",
+    "rolePlaceholder": "e.g., Producer, Composer",
+    "existing": "Existing Credits",
+    "add": "Add Credit"
+  },
+  "evidence": {
+    "add": "Upload Evidence Images"
+  },
+  "buttons": {
+    "update": "Update",
+    "updating": "Updating...",
+    "merge": "Merge",
+    "merging": "Merging...",
+    "add": "Add",
+    "addCredit": "Add Credit",
+    "save": "Save",
+    "saving": "Saving...",
+    "delete": "Delete"
+  },
+  "messages": {
+    "updated": "Song updated successfully",
+    "merged": "Songs merged successfully",
+    "creditAdded": "Credit added successfully",
+    "creditRemoved": "Credit removed successfully",
+    "evidenceAdded": "Evidence added successfully",
+    "evidenceDeleted": "Evidence deleted successfully"
+  },
+  "errors": {
+    "updateFailed": "Failed to update song",
+    "mergeFailed": "Failed to merge songs",
+    "selectTarget": "Please select a target song",
+    "selectArtist": "Please select an artist",
+    "loadSongsFailed": "Failed to load songs",
+    "deleteFailed": "Failed to delete",
+    "creditFailed": "Failed to add credit",
+    "evidenceFailed": "Failed to add evidence"
+  }
+}

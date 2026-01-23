@@ -46,7 +46,13 @@ const LevelSubmissionPage = () => {
     charter: null,
     vfxer: null,
     team: null,
-    levelZip: null
+    levelZip: null,
+    songId: null,
+    artistId: null,
+    isNewSongRequest: false,
+    isNewArtistRequest: false,
+    requiresSongEvidence: false,
+    requiresArtistEvidence: false
   };
 
   const { t } = useTranslation('pages');
@@ -80,6 +86,14 @@ const LevelSubmissionPage = () => {
   const [charters, setCharters] = useState([{ name: '', id: null, isNewRequest: false }]);
   const [vfxers, setVfxers] = useState([{ name: '', id: null, isNewRequest: false }]);
   const [team, setTeam] = useState({ name: '', id: null, isNewRequest: false });
+
+  // State for song/artist selection
+  const [selectedSong, setSelectedSong] = useState(null);
+  const [selectedArtist, setSelectedArtist] = useState(null);
+  const [showSongSelector, setShowSongSelector] = useState(false);
+  const [showArtistSelector, setShowArtistSelector] = useState(false);
+  const [evidenceFiles, setEvidenceFiles] = useState([]);
+  const [evidenceType, setEvidenceType] = useState('song'); // 'song' or 'artist'
 
   const [levelZipInfo, setLevelZipInfo] = useState(null);
   const [showLevelSelection, setShowLevelSelection] = useState(false);
@@ -132,13 +146,18 @@ const LevelSubmissionPage = () => {
   };
 
   const validateForm = () => {
-    const requiredFields = ['artist', 'diff', 'song', 'videoLink'];
+    // Use selected song/artist or fallback to form text fields
+    const songValue = selectedSong?.songName || form.song;
+    const artistValue = selectedArtist?.artistName || form.artist;
+    
     const validationResult = {};
     const displayValidationRes = {};
     
-    requiredFields.forEach(field => {
-      validationResult[field] = form[field]?.trim?.() !== '';
-    });
+    // Validate required fields
+    validationResult.artist = artistValue?.trim?.() !== '';
+    validationResult.song = songValue?.trim?.() !== '';
+    validationResult.diff = form.diff?.trim?.() !== '';
+    validationResult.videoLink = form.videoLink?.trim?.() !== '';
 
     // Validate creators
     validationResult.charter = charters.some(charter => 
@@ -246,6 +265,12 @@ const LevelSubmissionPage = () => {
     setVfxers([{ name: '', id: null, isNewRequest: false }]);
     setTeam({ name: '', id: null, isNewRequest: false });
     
+    // Reset song/artist selection
+    setSelectedSong(null);
+    setSelectedArtist(null);
+    setEvidenceFiles([]);
+    setEvidenceType('song');
+    
     // Reset validation states
     setSubmitAttempt(false);
     setIsInvalidFeelingRating(false);
@@ -260,6 +285,16 @@ const LevelSubmissionPage = () => {
     if(!user){
       console.error("No user logged in");
       setError(t('levelSubmission.alert.login'));
+      return;
+    }
+
+    // Validate song/artist - must have either selected or text input
+    const songValue = selectedSong?.songName || form.song;
+    const artistValue = selectedArtist?.artistName || form.artist;
+    
+    if (!songValue?.trim() || !artistValue?.trim() || !form.diff?.trim() || !form.videoLink?.trim()) {
+      setSubmitAttempt(true);
+      setError(t('levelSubmission.alert.form'));
       return;
     }
 
@@ -303,9 +338,16 @@ const LevelSubmissionPage = () => {
         isNewRequest: team.isNewRequest
       } : null;
 
-      submissionForm.setDetail('artist', form.artist);
+      // Set song/artist data (normalized or text)
+      submissionForm.setDetail('artist', selectedArtist?.artistName || form.artist);
+      submissionForm.setDetail('song', selectedSong?.songName || form.song);
+      submissionForm.setDetail('songId', selectedSong?.songId || null);
+      submissionForm.setDetail('artistId', selectedArtist?.artistId || null);
+      submissionForm.setDetail('isNewSongRequest', selectedSong?.isNewRequest || false);
+      submissionForm.setDetail('isNewArtistRequest', selectedArtist?.isNewRequest || false);
+      submissionForm.setDetail('requiresSongEvidence', selectedSong?.requiresEvidence || false);
+      submissionForm.setDetail('requiresArtistEvidence', selectedArtist?.requiresEvidence || false);
       submissionForm.setDetail('diff', form.diff);
-      submissionForm.setDetail('song', form.song);
       submissionForm.setDetail('videoLink', cleanedVideoUrl);
       submissionForm.setDetail('directDL', form.dlLink);
       submissionForm.setDetail('wsLink', form.workshopLink);
@@ -314,6 +356,12 @@ const LevelSubmissionPage = () => {
       submissionForm.setDetail('creatorRequests', creatorRequests);
       submissionForm.setDetail('teamRequest', teamRequest);
       submissionForm.setDetail('levelZip', form.levelZip);
+      
+      // Add evidence files if present - FormManager will handle File objects
+      if (evidenceFiles.length > 0) {
+        submissionForm.setDetail('evidence', evidenceFiles); // Pass as array
+        submissionForm.setDetail('evidenceType', evidenceType);
+      }
       
       // Encode the original filename using our UTF-8 to hex encoding
       if (form.levelZip) {
@@ -653,6 +701,44 @@ const LevelSubmissionPage = () => {
           />
         )}
 
+        {/* Song Selector Popup */}
+        {showSongSelector && (
+          <SongSelectorPopup
+            onClose={() => setShowSongSelector(false)}
+            onSelect={(songData) => {
+              setSelectedSong(songData);
+              setForm(prev => ({
+                ...prev,
+                song: songData.songName || prev.song,
+                songId: songData.songId || null,
+                isNewSongRequest: songData.isNewRequest || false,
+                requiresSongEvidence: songData.requiresEvidence || false
+              }));
+              setShowSongSelector(false);
+            }}
+            initialSong={selectedSong}
+          />
+        )}
+
+        {/* Artist Selector Popup */}
+        {showArtistSelector && (
+          <ArtistSelectorPopup
+            onClose={() => setShowArtistSelector(false)}
+            onSelect={(artistData) => {
+              setSelectedArtist(artistData);
+              setForm(prev => ({
+                ...prev,
+                artist: artistData.artistName || prev.artist,
+                artistId: artistData.artistId || null,
+                isNewArtistRequest: artistData.isNewRequest || false,
+                requiresArtistEvidence: artistData.requiresEvidence || false
+              }));
+              setShowArtistSelector(false);
+            }}
+            initialArtist={selectedArtist}
+          />
+        )}
+
         <form className={`form-container ${videoDetail ? 'shadow' : ''}`}>
           <div className="thumbnail-container">
             {videoDetail ? (
@@ -683,22 +769,50 @@ const LevelSubmissionPage = () => {
             <h1>{t('levelSubmission.title')}</h1>
 
             <div className="information">
-              <input
-                type="text"
-                placeholder={t('levelSubmission.submInfo.song')}
-                name="song"
-                value={form.song}
-                onChange={handleInputChange}
-                style={{ borderColor: isFormValidDisplay.song ? "" : "red" }}
-              />
-              <input
-                type="text"
-                placeholder={t('levelSubmission.submInfo.artist')}
-                name="artist"
-                value={form.artist}
-                onChange={handleInputChange}
-                style={{ borderColor: isFormValidDisplay.artist ? "" : "red" }}
-              />
+              <div 
+                className="song-selector-field"
+                onClick={() => setShowSongSelector(true)}
+                style={{ 
+                  borderColor: isFormValidDisplay.song ? "" : "red",
+                  cursor: 'pointer'
+                }}
+              >
+                <input
+                  type="text"
+                  placeholder={t('levelSubmission.submInfo.song')}
+                  name="song"
+                  value={selectedSong?.songName || form.song}
+                  readOnly
+                  style={{ cursor: 'pointer' }}
+                />
+                {selectedSong && (
+                  <span className="selector-badge">
+                    {selectedSong.isNewRequest ? 'New Request' : 'Selected'}
+                  </span>
+                )}
+              </div>
+              <div 
+                className="artist-selector-field"
+                onClick={() => setShowArtistSelector(true)}
+                style={{ 
+                  borderColor: isFormValidDisplay.artist ? "" : "red",
+                  cursor: 'pointer'
+                }}
+              >
+                <input
+                  type="text"
+                  placeholder={t('levelSubmission.submInfo.artist')}
+                  name="artist"
+                  value={selectedArtist?.artistName || form.artist}
+                  readOnly
+                  style={{ cursor: 'pointer' }}
+                />
+                {selectedArtist && (
+                  <span className="selector-badge">
+                    {selectedArtist.isNewRequest ? 'New Request' : 'Selected'}
+                  </span>
+                )}
+              </div>
             </div>
 
             <div className="youtube-input">
@@ -771,6 +885,73 @@ const LevelSubmissionPage = () => {
                 </div>
               )}
             </div>
+
+            {/* Evidence Upload Section */}
+            {(selectedSong?.requiresEvidence || selectedArtist?.requiresEvidence) && (
+              <div className="evidence-upload-section">
+                <h3>{t('levelSubmission.submInfo.evidence')}</h3>
+                <div className="evidence-type-selector">
+                  <label>
+                    <input
+                      type="radio"
+                      name="evidenceType"
+                      value="song"
+                      checked={evidenceType === 'song'}
+                      onChange={(e) => setEvidenceType(e.target.value)}
+                      disabled={!selectedSong?.requiresEvidence}
+                    />
+                    {t('levelSubmission.submInfo.evidenceForSong')}
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="evidenceType"
+                      value="artist"
+                      checked={evidenceType === 'artist'}
+                      onChange={(e) => setEvidenceType(e.target.value)}
+                      disabled={!selectedArtist?.requiresEvidence}
+                    />
+                    {t('levelSubmission.submInfo.evidenceForArtist')}
+                  </label>
+                </div>
+                <div className="evidence-files-container">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    multiple
+                    onChange={(e) => {
+                      const files = Array.from(e.target.files || []);
+                      if (files.length + evidenceFiles.length > 10) {
+                        setError(t('levelSubmission.alert.maxEvidenceFiles'));
+                        return;
+                      }
+                      setEvidenceFiles(prev => [...prev, ...files].slice(0, 10));
+                    }}
+                    id="evidenceFiles"
+                    style={{ display: 'none' }}
+                  />
+                  <label htmlFor="evidenceFiles" className="evidence-upload-button">
+                    {t('levelSubmission.buttons.uploadEvidence')} ({evidenceFiles.length}/10)
+                  </label>
+                  {evidenceFiles.length > 0 && (
+                    <div className="evidence-files-list">
+                      {evidenceFiles.map((file, index) => (
+                        <div key={index} className="evidence-file-item">
+                          <span>{file.name}</span>
+                          <button
+                            type="button"
+                            onClick={() => setEvidenceFiles(prev => prev.filter((_, i) => i !== index))}
+                            className="remove-evidence-btn"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
             <div className="info-group">
               <div className="diff-tooltip">

@@ -1,0 +1,27 @@
+{
+  "title": "Artist Details",
+  "meta": {
+    "title": "Artist - TUF",
+    "description": "View artist information for {{name}}"
+  },
+  "verification": {
+    "unverified": "Unverified",
+    "pending": "Pending",
+    "declined": "Declined",
+    "mostlyDeclined": "Mostly Declined",
+    "mostlyAllowed": "Mostly Allowed",
+    "allowed": "Allowed"
+  },
+  "sections": {
+    "aliases": "Aliases",
+    "links": "Links",
+    "songs": "Songs",
+    "evidence": "Evidence",
+    "levels": "Levels"
+  },
+  "backToList": "Back to Artists",
+  "errors": {
+    "notFound": "Artist not found",
+    "loadFailed": "Failed to load artist"
+  }
+}

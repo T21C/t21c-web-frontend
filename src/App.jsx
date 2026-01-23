@@ -64,6 +64,10 @@ function App() {
           <Route path='passes' element={<Pages.PassPage />} />
           <Route path='packs' element={<Pages.PackPage />} />
           <Route path='packs/:id' element={<Pages.PackDetailPage />} />
+          <Route path='artists' element={<Pages.ArtistListPage />} />
+          <Route path='artists/:id' element={<Pages.ArtistDetailPage />} />
+          <Route path='songs' element={<Pages.SongListPage />} />
+          <Route path='songs/:id' element={<Pages.SongDetailPage />} />
 
           {/* Admin Routes - Protected */}
           <Route path='admin' element={<PrivateRoute><Pages.AdminPage /></PrivateRoute>} />
@@ -73,6 +77,8 @@ function App() {
           <Route path='admin/backups' element={<PrivateRoute><Pages.BackupPage /></PrivateRoute>} />
           <Route path='admin/difficulties' element={<PrivateRoute><Pages.DifficultyPage /></PrivateRoute>} />
           <Route path="admin/creators" element={<PrivateRoute><Pages.CreatorManagementPage /></PrivateRoute>} />
+          <Route path="admin/artists" element={<PrivateRoute><Pages.ArtistManagementPage /></PrivateRoute>} />
+          <Route path="admin/songs" element={<PrivateRoute><Pages.SongManagementPage /></PrivateRoute>} />
           <Route path="admin/audit-log" element={<PrivateRoute><Pages.AuditLogPage /></PrivateRoute>} />
           <Route path="admin/backup" element={<PrivateRoute><Pages.BackupPage /></PrivateRoute>} />
           

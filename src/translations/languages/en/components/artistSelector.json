@@ -1,0 +1,52 @@
+{
+  "title": "Select Artist",
+  "loading": "Loading...",
+  "currentArtist": {
+    "label": "Current Artist",
+    "none": "No artist selected"
+  },
+  "search": {
+    "placeholder": "Search for an artist...",
+    "loading": "Searching...",
+    "noResults": "No artists found"
+  },
+  "buttons": {
+    "createNew": "Create New",
+    "assign": "Assign Artist",
+    "create": "Create",
+    "creating": "Creating...",
+    "cancel": "Cancel"
+  },
+  "createForm": {
+    "title": "Create New Artist Request",
+    "name": "Artist Name",
+    "namePlaceholder": "Enter artist name",
+    "requiresEvidence": "Requires evidence (artist is declined)"
+  },
+  "stats": {
+    "title": "Artist Statistics",
+    "levels": "Levels",
+    "songs": "Songs"
+  },
+  "status": {
+    "unverified": "Unverified",
+    "pending": "Pending",
+    "declined": "Declined",
+    "mostlyDeclined": "Mostly Declined",
+    "mostlyAllowed": "Mostly Allowed",
+    "allowed": "Allowed"
+  },
+  "messages": {
+    "success": {
+      "artistAssigned": "Artist assigned successfully",
+      "artistCreated": "Artist request created successfully"
+    },
+    "error": {
+      "searchFailed": "Failed to search artists",
+      "loadDetailsFailed": "Failed to load artist details",
+      "artistNotFound": "Artist not found",
+      "assignFailed": "Failed to assign artist",
+      "createFailed": "Failed to create artist request"
+    }
+  }
+}

@@ -1,0 +1,373 @@
+.song-management-page {
+  min-height: 100vh;
+  padding: 2rem;
+  color: var(--color-white);
+}
+
+.song-management-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.song-management-container h1 {
+  margin-bottom: 2rem;
+  font-size: 2.5rem;
+}
+
+.controls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.search-container {
+  flex: 1;
+  min-width: 200px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: var(--color-white);
+  font-size: 1rem;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.filter-container,
+.sort-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-container label,
+.sort-container label {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.filter-select,
+.sort-select {
+  padding: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: var(--color-white);
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.filter-select:focus,
+.sort-select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.add-button {
+  padding: 0.75rem 1.5rem;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 4px;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.add-button:hover {
+  background-color: #45a049;
+}
+
+.songs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.song-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+.song-item:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.song-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.song-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.song-details h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--color-white);
+}
+
+.song-meta {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.verification-chip {
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.verification-chip.verified {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+}
+
+.verification-chip.pending {
+  background-color: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+}
+
+.verification-chip.unverified {
+  background-color: rgba(128, 128, 128, 0.2);
+  color: #aaa;
+}
+
+.aliases-count,
+.credits-count {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.9rem;
+}
+
+.song-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.edit-button,
+.delete-button {
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.edit-button {
+  background-color: rgba(33, 150, 243, 0.2);
+  color: #2196F3;
+  border: 1px solid rgba(33, 150, 243, 0.5);
+}
+
+.edit-button:hover {
+  background-color: rgba(33, 150, 243, 0.3);
+}
+
+.delete-button {
+  background-color: rgba(244, 67, 54, 0.2);
+  color: #f44336;
+  border: 1px solid rgba(244, 67, 54, 0.5);
+}
+
+.delete-button:hover {
+  background-color: rgba(244, 67, 54, 0.3);
+}
+
+.load-more-button {
+  margin-top: 2rem;
+  padding: 0.75rem 1.5rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: var(--color-white);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+
+.load-more-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.no-results {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.1rem;
+}
+
+.add-form-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.add-form {
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.add-form h3 {
+  margin: 0 0 1.5rem 0;
+  color: var(--color-white);
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  color: var(--color-white);
+  font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+  padding: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  color: var(--color-white);
+  font-size: 1rem;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.alias-input-group {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.alias-input-group input {
+  flex: 1;
+}
+
+.alias-input-group button {
+  padding: 0.75rem 1rem;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 4px;
+  color: #ffffff;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.alias-input-group button:hover {
+  background-color: #45a049;
+}
+
+.aliases-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.alias-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: var(--color-white);
+}
+
+.alias-tag button {
+  background: none;
+  border: none;
+  color: #f44336;
+  cursor: pointer;
+  font-size: 1.2em;
+  padding: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.submit-button,
+.cancel-button {
+  flex: 1;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.submit-button {
+  background-color: #4CAF50;
+  color: #ffffff;
+}
+
+.submit-button:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+.submit-button:disabled {
+  background-color: #666;
+  cursor: not-allowed;
+}
+
+.cancel-button {
+  background-color: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--color-white);
+}
+
+.cancel-button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}

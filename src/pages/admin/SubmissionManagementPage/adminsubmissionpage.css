@@ -268,7 +268,84 @@
     overflow: hidden;
   }
 
-  .submission-admin-page .submission-header {
+  .submission-admin-page .submission-header h3.clickable-field {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.2s;
+}
+
+.submission-header h3.clickable-field:hover {
+  text-decoration-color: rgba(255, 255, 255, 0.5);
+}
+
+.submission-header .request-badge {
+  font-size: 0.6em;
+  padding: 2px 6px;
+  background-color: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+  border-radius: 4px;
+  margin-left: 8px;
+}
+
+.detail-value.clickable-field {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.2s;
+}
+
+.detail-value.clickable-field:hover {
+  text-decoration-color: rgba(255, 255, 255, 0.5);
+}
+
+.detail-value .request-badge {
+  font-size: 0.7em;
+  padding: 2px 6px;
+  background-color: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+  border-radius: 4px;
+  margin-left: 8px;
+}
+
+.evidence-preview {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.evidence-thumbnail {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.2s;
+}
+
+.evidence-thumbnail:hover {
+  transform: scale(1.1);
+}
+
+.evidence-count {
+  color: #aaa;
+  font-size: 0.9em;
+}
+
+.evidence-count.clickable {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  transition: text-decoration-color 0.2s;
+}
+
+.evidence-count.clickable:hover {
+  text-decoration-color: rgba(255, 255, 255, 0.5);
+}
+
+.submission-header {
     display: flex;
     justify-content: space-between;
     align-items: center;

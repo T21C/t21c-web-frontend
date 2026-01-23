@@ -30,6 +30,15 @@ import LevelUploadPopup from './Levels/LevelUploadPopup/LevelUploadPopup';
 import UserManagementPopup from './Users/UserManagementPopup/UserManagementPopup';
 import CuratorManagementPopup from './Curations/CuratorManagementPopup/CuratorManagementPopup';
 
+// Song and Artist Popups
+import { SongPopup } from './Songs/SongPopup/SongPopup';
+import { ArtistPopup } from './Artists/ArtistPopup/ArtistPopup';
+import { SongSelectorPopup } from './Songs/SongSelectorPopup/SongSelectorPopup';
+import { ArtistSelectorPopup } from './Artists/ArtistSelectorPopup/ArtistSelectorPopup';
+import { EvidenceGalleryPopup } from './Evidence/EvidenceGalleryPopup/EvidenceGalleryPopup';
+import { ArtistActionPopup } from './Artists/ArtistActionPopup/ArtistActionPopup';
+import { SongActionPopup } from './Songs/SongActionPopup/SongActionPopup';
+
 export {
     AdminPlayerPopup,
     CreatorActionPopup,
@@ -60,5 +69,13 @@ export {
     LevelUploadPopup,
     // User Management Popups
     UserManagementPopup,
-    CuratorManagementPopup
+    CuratorManagementPopup,
+    // Song and Artist Popups
+    SongPopup,
+    ArtistPopup,
+    SongSelectorPopup,
+    ArtistSelectorPopup,
+    EvidenceGalleryPopup,
+    ArtistActionPopup,
+    SongActionPopup
 }

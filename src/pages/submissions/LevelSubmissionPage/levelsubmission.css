@@ -76,6 +76,97 @@
   margin-bottom: 1rem;
 }
 
+.level-submission-page form .info .information .song-selector-field,
+.level-submission-page form .info .information .artist-selector-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.level-submission-page form .info .information .song-selector-field input,
+.level-submission-page form .info .information .artist-selector-field input {
+  flex: 1;
+}
+
+.level-submission-page form .info .information .selector-badge {
+  font-size: 0.75em;
+  padding: 2px 8px;
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.level-submission-page form .info .evidence-upload-section {
+  padding: 0 2rem;
+  margin: 1rem 0;
+}
+
+.level-submission-page form .info .evidence-upload-section h3 {
+  margin-bottom: 0.5rem;
+  font-size: 1em;
+}
+
+.level-submission-page form .info .evidence-type-selector {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.level-submission-page form .info .evidence-type-selector label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+}
+
+.level-submission-page form .info .evidence-files-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.level-submission-page form .info .evidence-upload-button {
+  padding: 0.5rem 1rem;
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+  border: 1px solid #4caf50;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.2s;
+}
+
+.level-submission-page form .info .evidence-upload-button:hover {
+  background-color: rgba(76, 175, 80, 0.3);
+}
+
+.level-submission-page form .info .evidence-files-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.level-submission-page form .info .evidence-file-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  font-size: 0.9em;
+}
+
+.level-submission-page form .info .remove-evidence-btn {
+  background: none;
+  border: none;
+  color: #f44336;
+  font-size: 1.2em;
+  cursor: pointer;
+  padding: 0 0.5rem;
+}
+
 
 .level-submission-page form .info .info-group {
   display: grid;

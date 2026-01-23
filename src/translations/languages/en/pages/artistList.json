@@ -1,0 +1,29 @@
+{
+  "title": "Artists",
+  "meta": {
+    "title": "Artists - TUF",
+    "description": "Browse all artists"
+  },
+  "search": {
+    "placeholder": "Search artists..."
+  },
+  "sort": {
+    "label": "Sort by:",
+    "nameAsc": "Name (A-Z)",
+    "nameDesc": "Name (Z-A)",
+    "idAsc": "ID (Low to High)",
+    "idDesc": "ID (High to Low)"
+  },
+  "verification": {
+    "unverified": "Unverified",
+    "pending": "Pending",
+    "declined": "Declined",
+    "mostlyDeclined": "Mostly Declined",
+    "mostlyAllowed": "Mostly Allowed",
+    "allowed": "Allowed"
+  },
+  "infScroll": {
+    "end": "You've reached the end!"
+  },
+  "noArtists": "No artists found"
+}

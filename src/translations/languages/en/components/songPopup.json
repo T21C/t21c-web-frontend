@@ -1,0 +1,18 @@
+{
+  "loading": "Loading...",
+  "verification": {
+    "unverified": "Unverified",
+    "pending": "Pending",
+    "verified": "Verified"
+  },
+  "aliases": {
+    "title": "Aliases"
+  },
+  "links": {
+    "title": "Links"
+  },
+  "artists": {
+    "title": "Artists"
+  },
+  "viewDetails": "View Full Details"
+}

@@ -1,0 +1,24 @@
+{
+  "title": "Song Details",
+  "meta": {
+    "title": "Song - TUF",
+    "description": "View song information for {{name}}"
+  },
+  "verification": {
+    "unverified": "Unverified",
+    "pending": "Pending",
+    "verified": "Verified"
+  },
+  "sections": {
+    "aliases": "Aliases",
+    "links": "Links",
+    "artists": "Artists",
+    "evidence": "Evidence",
+    "levels": "Levels"
+  },
+  "backToList": "Back to Songs",
+  "errors": {
+    "notFound": "Song not found",
+    "loadFailed": "Failed to load song"
+  }
+}

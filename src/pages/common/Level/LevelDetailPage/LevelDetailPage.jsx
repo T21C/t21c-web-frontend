@@ -14,7 +14,7 @@ import { useTranslation } from "react-i18next";
 import { ClearCard } from "@/components/cards";
 import { EditLevelPopup } from "@/components/popups/Levels/EditLevelPopup/EditLevelPopup";
 import { RatingDetailPopup } from "@/components/popups/Rating/RatingDetailPopup/RatingDetailPopup";
-import { AddToPackPopup } from "@/components/popups";
+import { AddToPackPopup, SongPopup, ArtistPopup } from "@/components/popups";
 import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
@@ -788,6 +788,8 @@ const LevelDetailPage = ({ mockData = null }) => {
   const [openDialog, setOpenDialog] = useState(false);
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [showAddToPackPopup, setShowAddToPackPopup] = useState(false);
+  const [showSongPopup, setShowSongPopup] = useState(false);
+  const [showArtistPopup, setShowArtistPopup] = useState(false);
 
   const { difficultyDict } = useDifficultyContext();
 
@@ -1409,12 +1411,44 @@ const LevelDetailPage = ({ mockData = null }) => {
   }
 
   const renderTitleWithAliases = (title, field) => {
-    const aliases = res?.level?.aliases?.filter(a => a.field === field) || [];
+    const level = res?.level;
+    const aliases = level?.aliases?.filter(a => a.field === field) || [];
     const isOpen = activeAliasDropdown === field;
+    
+    // Check for normalized data
+    const isSong = field === 'song';
+    const isArtist = field === 'artist';
+    const normalizedData = isSong ? level?.songObject : (isArtist ? level?.artistObject : null);
+    const normalizedId = isSong ? level?.songId : (isArtist ? level?.artistId : null);
+    const hasPopup = normalizedData || normalizedId;
+    
+    // Use normalized name if available, otherwise use title
+    const displayName = normalizedData?.name || title;
+    
+    const handleClick = (e) => {
+      if (hasPopup) {
+        e.stopPropagation();
+        if (isSong) {
+          setShowSongPopup(true);
+        } else if (isArtist) {
+          setShowArtistPopup(true);
+        }
+      }
+    };
 
     return (
       <>
-        {title}
+        {hasPopup ? (
+          <span 
+            className="level-title-clickable"
+            onClick={handleClick}
+            title={isSong ? "Click to view song details" : "Click to view artist details"}
+          >
+            {displayName}
+          </span>
+        ) : (
+          <span>{displayName}</span>
+        )}
         {aliases.length > 0 && (
           <>
             <span 
@@ -2384,6 +2418,18 @@ const LevelDetailPage = ({ mockData = null }) => {
         initialValue={0}
       />
 
+      {showSongPopup && res.level && (res.level.songObject || res.level.songId) && (
+        <SongPopup
+          song={res.level.songObject || { id: res.level.songId, name: res.level.song }}
+          onClose={() => setShowSongPopup(false)}
+        />
+      )}
+      {showArtistPopup && res.level && (res.level.artistObject || res.level.artistId) && (
+        <ArtistPopup
+          artist={res.level.artistObject || { id: res.level.artistId, name: res.level.artist }}
+          onClose={() => setShowArtistPopup(false)}
+        />
+      )}
       {showDownloadPopup && (
           <LevelDownloadPopup
               isOpen={showDownloadPopup}

@@ -1,0 +1,26 @@
+{
+  "title": "Songs",
+  "meta": {
+    "title": "Songs - TUF",
+    "description": "Browse all songs"
+  },
+  "search": {
+    "placeholder": "Search songs..."
+  },
+  "sort": {
+    "label": "Sort by:",
+    "nameAsc": "Name (A-Z)",
+    "nameDesc": "Name (Z-A)",
+    "idAsc": "ID (Low to High)",
+    "idDesc": "ID (High to Low)"
+  },
+  "verification": {
+    "unverified": "Unverified",
+    "pending": "Pending",
+    "verified": "Verified"
+  },
+  "infScroll": {
+    "end": "You've reached the end!"
+  },
+  "noSongs": "No songs found"
+}

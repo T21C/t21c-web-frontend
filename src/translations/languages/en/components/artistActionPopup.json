@@ -1,0 +1,96 @@
+{
+  "title": "Manage Artist",
+  "tabs": {
+    "update": "Update",
+    "merge": "Merge",
+    "split": "Split",
+    "aliases": "Aliases",
+    "links": "Links",
+    "evidence": "Evidence"
+  },
+  "form": {
+    "name": "Name",
+    "avatarUrl": "Avatar URL",
+    "avatarUrlPlaceholder": "Enter avatar URL",
+    "verificationState": "Verification State"
+  },
+  "verification": {
+    "unverified": "Unverified",
+    "pending": "Pending",
+    "declined": "Declined",
+    "mostlyDeclined": "Mostly Declined",
+    "mostlyAllowed": "Mostly Allowed",
+    "allowed": "Allowed"
+  },
+  "merge": {
+    "info": "Merge this artist into another. All data will be transferred.",
+    "search": "Search for target artist",
+    "placeholder": "Search by name..."
+  },
+  "split": {
+    "info": "Split this artist into two new artists. All data (aliases, links, evidences, avatar) and song credits will be duplicated for both new artists.",
+    "name1": "First Artist Name",
+    "name2": "Second Artist Name",
+    "name1Placeholder": "Enter first artist name",
+    "name2Placeholder": "Enter second artist name",
+    "deleteOriginal": "Delete original artist after splitting",
+    "confirmTitle": "One or more artists with these names already exist. Choose how to proceed:",
+    "existing1": "Artist '{name}' already exists for first name.",
+    "existing2": "Artist '{name}' already exists for second name.",
+    "useExisting": "Use existing artist (add data to it instead of creating new)"
+  },
+  "aliases": {
+    "add": "Add Alias",
+    "placeholder": "Enter alias name"
+  },
+  "links": {
+    "add": "Add Link",
+    "placeholder": "Enter URL"
+  },
+  "evidence": {
+    "add": "Upload Evidence Images"
+  },
+  "buttons": {
+    "update": "Update",
+    "updating": "Updating...",
+    "merge": "Merge",
+    "merging": "Merging...",
+    "split": "Split",
+    "splitting": "Splitting...",
+    "checking": "Checking...",
+    "proceed": "Proceed",
+    "cancel": "Cancel",
+    "add": "Add",
+    "save": "Save",
+    "saving": "Saving...",
+    "delete": "Delete",
+    "deleteAvatar": "Delete Avatar",
+    "selectAvatar": "Select Avatar File",
+    "upload": "Upload",
+    "uploading": "Uploading..."
+  },
+  "messages": {
+    "updated": "Artist updated successfully",
+    "merged": "Artists merged successfully",
+    "split": "Artist split into '{name1}' and '{name2}'",
+    "splitSuccess": "Artist split successfully",
+    "avatarUploaded": "Avatar uploaded successfully",
+    "avatarDeleted": "Avatar deleted successfully",
+    "evidenceAdded": "Evidence added successfully",
+    "evidenceDeleted": "Evidence deleted successfully"
+  },
+  "errors": {
+    "updateFailed": "Failed to update artist",
+    "mergeFailed": "Failed to merge artists",
+    "splitFailed": "Failed to split artist",
+    "selectTarget": "Please select a target artist",
+    "bothNamesRequired": "Both artist names are required",
+    "namesMustBeDifferent": "Artist names must be different",
+    "checkFailed": "Failed to check existing artists",
+    "loadArtistsFailed": "Failed to load artists",
+    "noFile": "Please select a file",
+    "uploadFailed": "Failed to upload avatar",
+    "deleteFailed": "Failed to delete",
+    "evidenceFailed": "Failed to add evidence"
+  }
+}

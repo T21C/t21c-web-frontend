@@ -14,7 +14,10 @@
     "dlLinksOr": "or",
     "charters": "Charters",
     "vfxers": "VFX-ers",
-    "levelZip": "Level Zip"
+    "levelZip": "Level Zip",
+    "evidence": "Evidence",
+    "evidenceForSong": "Evidence for Song",
+    "evidenceForArtist": "Evidence for Artist"
   },
   "videoInfo": {
     "title": "Video title",
@@ -30,6 +33,7 @@
     "uploadZip": "Upload Zip",
     "orDragDrop": "or drag and drop here",
     "dropHere": "Drop file here!",
+    "uploadEvidence": "Upload Evidence Images",
     "submit": "Submit",
     "submitWait": "..."
   },
@@ -39,7 +43,8 @@
     "loading": "Submitting...",
     "login": "Please log in to submit a level",
     "form": "Please fill in all required fields correctly",
-    "invalidZip": "Please upload a valid zip file"
+    "invalidZip": "Please upload a valid zip file",
+    "maxEvidenceFiles": "Maximum 10 evidence images allowed"
   },
   "warnings": {
     "pendingProfiles": "The following profiles will be created:"

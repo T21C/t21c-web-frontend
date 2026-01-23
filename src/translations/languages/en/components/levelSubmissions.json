@@ -19,7 +19,8 @@
     },
     "team": "Team:",
     "vfxer": "VFXer:",
-    "submitter": "Submitter:"
+    "submitter": "Submitter:",
+    "evidence": "Evidence:"
   },
   "buttons": {
     "manageCreator": "Manage Creator",
@@ -84,6 +85,8 @@
     "addCreatorFailed": "Failed to add creator",
     "removeCreatorFailed": "Failed to remove creator",
     "cannotRemoveLastCharter": "Cannot remove the last charter",
-    "needProfiles": "All creator profiles must be assigned before approval"
+    "needProfiles": "All creator profiles must be assigned before approval",
+    "updateSongFailed": "Failed to update song",
+    "updateArtistFailed": "Failed to update artist"
   }
 } 

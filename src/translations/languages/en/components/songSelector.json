@@ -1,0 +1,49 @@
+{
+  "title": "Select Song",
+  "loading": "Loading...",
+  "currentSong": {
+    "label": "Current Song",
+    "none": "No song selected"
+  },
+  "search": {
+    "placeholder": "Search for a song...",
+    "loading": "Searching...",
+    "noResults": "No songs found"
+  },
+  "buttons": {
+    "createNew": "Create New",
+    "assign": "Assign Song",
+    "create": "Create",
+    "creating": "Creating...",
+    "cancel": "Cancel"
+  },
+  "createForm": {
+    "title": "Create New Song Request",
+    "name": "Song Name",
+    "namePlaceholder": "Enter song name",
+    "requiresEvidence": "Requires evidence (song is declined)"
+  },
+  "stats": {
+    "title": "Song Statistics",
+    "levels": "Levels",
+    "artists": "Artists"
+  },
+  "status": {
+    "verified": "Verified",
+    "pending": "Pending",
+    "unverified": "Unverified"
+  },
+  "messages": {
+    "success": {
+      "songAssigned": "Song assigned successfully",
+      "songCreated": "Song request created successfully"
+    },
+    "error": {
+      "searchFailed": "Failed to search songs",
+      "loadDetailsFailed": "Failed to load song details",
+      "songNotFound": "Song not found",
+      "assignFailed": "Failed to assign song",
+      "createFailed": "Failed to create song request"
+    }
+  }
+}

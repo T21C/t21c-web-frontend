@@ -13,6 +13,10 @@ const LevelSubmissionPage = lazy(() => import('./submissions/LevelSubmissionPage
 const PassSubmissionPage = lazy(() => import('./submissions/PassSubmissionPage/PassSubmissionPage'));
 const PackPage = lazy(() => import('./common/Pack/PackPage/PackPage'));
 const PackDetailPage = lazy(() => import('./common/Pack/PackDetailPage/PackDetailPage'));
+const ArtistListPage = lazy(() => import('./common/Artist/ArtistListPage/ArtistListPage'));
+const ArtistDetailPage = lazy(() => import('./common/Artist/ArtistDetailPage/ArtistDetailPage'));
+const SongListPage = lazy(() => import('./common/Song/SongListPage/SongListPage'));
+const SongDetailPage = lazy(() => import('./common/Song/SongDetailPage/SongDetailPage'));
 // Account pages
 const ProfilePage = lazy(() => import('./account/ProfilePage/ProfilePage'));
 const LoginPage = lazy(() => import('./account/LoginPage/LoginPage'));
@@ -29,6 +33,8 @@ const AnnouncementPage = lazy(() => import('./admin/AnnouncementPage/Announcemen
 const BackupPage = lazy(() => import('./admin/BackupPage/BackupPage'));
 const DifficultyPage = lazy(() => import('./admin/DifficultyPage/DifficultyPage'));
 const CreatorManagementPage = lazy(() => import('./admin/CreatorManagementPage/CreatorManagementPage'));
+const ArtistManagementPage = lazy(() => import('./admin/ArtistManagementPage/ArtistManagementPage'));
+const SongManagementPage = lazy(() => import('./admin/SongManagementPage/SongManagementPage'));
 const SubmissionManagementPage = lazy(() => import('./admin/SubmissionManagementPage/SubmissionManagementPage'));
 const RatingPage = lazy(() => import('./admin/RatingPage/RatingPage'));
 const AuditLogPage = lazy(() => import('./admin/AuditLogPage/AuditLogPage'));
@@ -59,6 +65,10 @@ export {
     LeaderboardPage,
     PackPage,
     PackDetailPage,
+    ArtistListPage,
+    ArtistDetailPage,
+    SongListPage,
+    SongDetailPage,
     // Account related pages
     ProfilePage,
     LoginPage,
@@ -74,6 +84,8 @@ export {
     BackupPage,
     DifficultyPage,
     CreatorManagementPage,
+    ArtistManagementPage,
+    SongManagementPage,
     SubmissionManagementPage,
     RatingPage,
     AuditLogPage,

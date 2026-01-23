@@ -1,0 +1,244 @@
+.evidence-gallery-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.evidence-gallery-popup {
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 1200px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.evidence-gallery-popup.zoomed {
+  width: 95%;
+  max-width: 95vw;
+  max-height: 95vh;
+}
+
+.evidence-gallery-popup .popup-header {
+  padding: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.evidence-gallery-popup .popup-header h2 {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1.25em;
+}
+
+.evidence-gallery-popup .close-button {
+  background: none;
+  border: none;
+  color: #ffffff;
+  font-size: 1.5em;
+  cursor: pointer;
+  padding: 4px 8px;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+}
+
+.evidence-gallery-popup .close-button:hover {
+  opacity: 1;
+}
+
+.evidence-gallery-popup .popup-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+  overflow: hidden;
+}
+
+.evidence-gallery-popup .evidence-image-container {
+  position: relative;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.evidence-gallery-popup .evidence-image-wrapper {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: zoom-in;
+}
+
+.evidence-gallery-popup .evidence-image-wrapper.zoomed {
+  cursor: zoom-out;
+}
+
+.evidence-gallery-popup .evidence-image {
+  max-width: 100%;
+  max-height: 70vh;
+  object-fit: contain;
+  transition: transform 0.3s ease;
+}
+
+.evidence-gallery-popup .evidence-image.zoomed {
+  max-width: 95vw;
+  max-height: 95vh;
+  cursor: zoom-out;
+}
+
+.evidence-gallery-popup .nav-button {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.7);
+  border: none;
+  color: #ffffff;
+  font-size: 3em;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: background-color 0.2s, opacity 0.2s;
+  opacity: 0.7;
+}
+
+.evidence-gallery-popup .nav-button:hover:not(:disabled) {
+  background-color: rgba(0, 0, 0, 0.9);
+  opacity: 1;
+}
+
+.evidence-gallery-popup .nav-button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.evidence-gallery-popup .prev-button {
+  left: 20px;
+}
+
+.evidence-gallery-popup .next-button {
+  right: 20px;
+}
+
+.evidence-gallery-popup .delete-evidence-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background-color: rgba(244, 67, 54, 0.8);
+  border: none;
+  color: #ffffff;
+  font-size: 1.5em;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: background-color 0.2s;
+}
+
+.evidence-gallery-popup .delete-evidence-button:hover {
+  background-color: rgba(244, 67, 54, 1);
+}
+
+.evidence-gallery-popup .evidence-thumbnails {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  flex-wrap: wrap;
+  max-height: 120px;
+  overflow-y: auto;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+}
+
+.evidence-gallery-popup .thumbnail {
+  width: 80px;
+  height: 80px;
+  border-radius: 4px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: border-color 0.2s, transform 0.2s;
+  flex-shrink: 0;
+}
+
+.evidence-gallery-popup .thumbnail:hover {
+  transform: scale(1.1);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.evidence-gallery-popup .thumbnail.active {
+  border-color: #4CAF50;
+}
+
+.evidence-gallery-popup .thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.evidence-gallery-popup .evidence-info {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+}
+
+.evidence-gallery-popup .evidence-type {
+  color: #aaa;
+  font-size: 0.9em;
+}
+
+.evidence-gallery-popup .no-evidence {
+  text-align: center;
+  color: #aaa;
+  padding: 40px;
+  font-size: 1.1em;
+}
+
+.evidence-gallery-popup .evidence-thumbnails::-webkit-scrollbar {
+  height: 8px;
+}
+
+.evidence-gallery-popup .evidence-thumbnails::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.evidence-gallery-popup .evidence-thumbnails::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.evidence-gallery-popup .evidence-thumbnails::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}

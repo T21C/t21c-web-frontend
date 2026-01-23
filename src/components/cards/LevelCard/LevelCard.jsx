@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import "./levelcard.css"
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
-import { EditLevelPopup, AddToPackPopup } from "@/components/popups";
+import { EditLevelPopup, AddToPackPopup, SongPopup, ArtistPopup } from "@/components/popups";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { EditIcon, SteamIcon, DownloadIcon, VideoIcon, PassIcon, LikeIcon, PackIcon, DragHandleIcon } from "@/components/common/icons";
 import { formatCreatorDisplay, selectIconSize } from "@/utils/Utility";
@@ -46,6 +46,8 @@ const LevelCard = ({
   const [level, setLevel] = useState(initialLevel);
   const [showEditPopup, setShowEditPopup] = useState(false);
   const [showAddToPackPopup, setShowAddToPackPopup] = useState(false);
+  const [showSongPopup, setShowSongPopup] = useState(false);
+  const [showArtistPopup, setShowArtistPopup] = useState(false);
   const [thumbnailUrl, setThumbnailUrl] = useState('');
   const { difficultyDict, tagsDict } = useDifficultyContext();
   const difficultyInfo = difficultyDict[level.diffId];
@@ -61,7 +63,7 @@ const LevelCard = ({
 
   // Handle body overflow when popups are open
   useEffect(() => {
-    if (showEditPopup || showAddToPackPopup) {
+    if (showEditPopup || showAddToPackPopup || showSongPopup || showArtistPopup) {
       document.body.style.overflowY = 'hidden';
     } else {
       document.body.style.overflowY = '';
@@ -69,7 +71,7 @@ const LevelCard = ({
     return () => {
       document.body.style.overflowY = '';
     };
-  }, [showEditPopup, showAddToPackPopup]);
+  }, [showEditPopup, showAddToPackPopup, showSongPopup, showArtistPopup]);
 
   // Fetch thumbnail for grid mode
   useEffect(() => {
@@ -141,14 +143,50 @@ const LevelCard = ({
     </div>
   );
 
-  const renderSongInfo = () => (
-    <div className="song-wrapper">
-      <div className="group">
-        <p className="level-exp">#{level.id} - {level.artist}</p>
+  const renderSongInfo = () => {
+    const songName = level.songObject?.name || level.song || '';
+    const artistName = level.artistObject?.name || level.artist || '';
+    const hasSongPopup = level.songObject || level.songId;
+    const hasArtistPopup = level.artistObject || level.artistId;
+
+    const handleSongClick = (e) => {
+      if (hasSongPopup) {
+        e.stopPropagation();
+        setShowSongPopup(true);
+      }
+    };
+
+    const handleArtistClick = (e) => {
+      if (hasArtistPopup) {
+        e.stopPropagation();
+        setShowArtistPopup(true);
+      }
+    };
+
+    return (
+      <div className="song-wrapper">
+        <div className="group">
+          <p className="level-exp">
+            #{level.id} -{' '}
+            {hasArtistPopup ? (
+              <span 
+                className="level-artist-clickable" 
+                onClick={handleArtistClick}
+                title="Click to view artist details"
+              >
+                {artistName}
+              </span>
+            ) : (
+              artistName
+            )}
+          </p>
+        </div>
+        <p className={`level-desc ${hasSongPopup ? 'level-song-clickable' : ''}`} onClick={hasSongPopup ? handleSongClick : undefined} title={hasSongPopup ? "Click to view song details" : undefined}>
+          {songName}
+        </p>
       </div>
-      <p className='level-desc'>{level.song}</p>
-    </div>
-  );
+    );
+  };
 
   const renderCreatorInfo = () => (
     <div className="creator-wrapper">
@@ -307,6 +345,18 @@ const LevelCard = ({
           level={level}
           onClose={() => setShowAddToPackPopup(false)}
           onSuccess={() => {}}
+        />
+      )}
+      {showSongPopup && (level.songObject || level.songId) && (
+        <SongPopup
+          song={level.songObject || { id: level.songId, name: level.song }}
+          onClose={() => setShowSongPopup(false)}
+        />
+      )}
+      {showArtistPopup && (level.artistObject || level.artistId) && (
+        <ArtistPopup
+          artist={level.artistObject || { id: level.artistId, name: level.artist }}
+          onClose={() => setShowArtistPopup(false)}
         />
       )}
     </>

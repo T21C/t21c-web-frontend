@@ -1,0 +1,202 @@
+.song-popup {
+  background: var(--bg-primary);
+  border-radius: 12px;
+  padding: 24px;
+  max-width: 500px;
+  width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.song-popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+  gap: 16px;
+}
+
+.song-popup-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+  color: var(--text-primary);
+  flex: 1;
+}
+
+.song-popup-close {
+  background: none;
+  border: none;
+  font-size: 32px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.song-popup-close:hover {
+  background-color: var(--bg-secondary);
+}
+
+.song-popup-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.song-popup-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.song-popup-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+}
+
+.song-popup-verification {
+  display: flex;
+  gap: 8px;
+}
+
+.verification-chip {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.verification-chip.unverified {
+  background-color: rgba(128, 128, 128, 0.2);
+  color: var(--text-secondary);
+}
+
+.verification-chip.pending {
+  background-color: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+}
+
+.verification-chip.verified {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+}
+
+.song-popup-aliases {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.song-popup-alias-tag {
+  padding: 6px 12px;
+  background-color: var(--bg-secondary);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-primary);
+}
+
+.song-popup-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.song-popup-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-link);
+  text-decoration: none;
+  font-size: 14px;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  word-break: break-all;
+}
+
+.song-popup-link:hover {
+  background-color: var(--bg-secondary);
+}
+
+.song-popup-artists {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.song-popup-artist-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.song-popup-artist-item:hover {
+  background-color: var(--bg-secondary);
+}
+
+.song-popup-artist-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: var(--bg-secondary);
+}
+
+.song-popup-artist-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.song-popup-artist-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.song-popup-artist-role {
+  font-size: 12px;
+  color: var(--text-secondary);
+  text-transform: capitalize;
+}
+
+.song-popup-view-details {
+  width: 100%;
+  padding: 12px;
+  background-color: var(--bg-secondary);
+  border: none;
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.song-popup-view-details:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.song-popup-loading {
+  padding: 40px;
+  text-align: center;
+  color: var(--text-secondary);
+}

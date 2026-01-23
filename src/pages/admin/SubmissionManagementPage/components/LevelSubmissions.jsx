@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import api from "@/utils/api";
 import { ProfileCreationModal } from './ProfileCreationModal';
-import { SubmissionCreatorPopup } from '@/components/popups';
+import { SubmissionCreatorPopup, SongSelectorPopup, ArtistSelectorPopup } from '@/components/popups';
 import { toast } from "react-hot-toast";
 import { ServerCloudIcon, WarningIcon } from "@/components/common/icons";
 import { Tooltip } from "react-tooltip";
@@ -31,6 +31,12 @@ const LevelSubmissions = () => {
   const [selectedSubmission, setSelectedSubmission] = useState(null);
   const [selectedCreatorRequest, setSelectedCreatorRequest] = useState(null);
   const [selectedRole, setSelectedRole] = useState(null);
+  const [showSongSelector, setShowSongSelector] = useState(false);
+  const [showArtistSelector, setShowArtistSelector] = useState(false);
+  const [selectedSongSubmission, setSelectedSongSubmission] = useState(null);
+  const [selectedArtistSubmission, setSelectedArtistSubmission] = useState(null);
+  const [showEvidenceGallery, setShowEvidenceGallery] = useState(false);
+  const [selectedEvidenceSubmission, setSelectedEvidenceSubmission] = useState(null);
 
   useEffect(() => {
     fetchPendingSubmissions();
@@ -340,6 +346,64 @@ const LevelSubmissions = () => {
     }
   };
 
+  const handleSongSelect = async (songData) => {
+    if (!selectedSongSubmission) return;
+    
+    try {
+      const response = await api.put(
+        `${import.meta.env.VITE_SUBMISSION_API}/levels/${selectedSongSubmission.id}/song`,
+        {
+          songId: songData.songId || null,
+          songName: songData.songName,
+          isNewRequest: songData.isNewRequest || false
+        }
+      );
+      
+      setSubmissions(prevSubmissions => prevSubmissions.map(submission => {
+        if (submission.id === selectedSongSubmission.id) {
+          return response.data;
+        }
+        return submission;
+      }));
+      
+      toast.success(tLevel('messages.songUpdated'));
+      setShowSongSelector(false);
+      setSelectedSongSubmission(null);
+    } catch (error) {
+      console.error('Error updating song:', error);
+      toast.error(error.response?.data?.error || tLevel('errors.updateSongFailed'));
+    }
+  };
+
+  const handleArtistSelect = async (artistData) => {
+    if (!selectedArtistSubmission) return;
+    
+    try {
+      const response = await api.put(
+        `${import.meta.env.VITE_SUBMISSION_API}/levels/${selectedArtistSubmission.id}/artist`,
+        {
+          artistId: artistData.artistId || null,
+          artistName: artistData.artistName,
+          isNewRequest: artistData.isNewRequest || false
+        }
+      );
+      
+      setSubmissions(prevSubmissions => prevSubmissions.map(submission => {
+        if (submission.id === selectedArtistSubmission.id) {
+          return response.data;
+        }
+        return submission;
+      }));
+      
+      toast.success(tLevel('messages.artistUpdated'));
+      setShowArtistSelector(false);
+      setSelectedArtistSubmission(null);
+    } catch (error) {
+      console.error('Error updating artist:', error);
+      toast.error(error.response?.data?.error || tLevel('errors.updateArtistFailed'));
+    }
+  };
+
   const handleRemoveCreator = async (submissionId, requestId) => {
     try {
       const response = await api.delete(
@@ -379,7 +443,21 @@ const LevelSubmissions = () => {
               className={`submission-card ${animatingCards[submission.id] || ''}`}
             >
               <div className="submission-header">
-                <h3>{submission.song}</h3>
+                <h3 
+                  className={submission.songObject || submission.songId ? 'clickable-field' : ''}
+                  onClick={() => {
+                    if (submission.songObject || submission.songId || submission.songRequest) {
+                      setSelectedSongSubmission(submission);
+                      setShowSongSelector(true);
+                    }
+                  }}
+                  title={submission.songObject || submission.songId ? 'Click to change song' : ''}
+                >
+                  {submission.songObject?.name || submission.song}
+                  {submission.songRequest?.isNewRequest && (
+                    <span className="request-badge">{tLevel('badges.newRequest')}</span>
+                  )}
+                </h3>
                 <span className="submission-date">
                   {formatDate(submission.createdAt, i18next?.language)}
                 </span>
@@ -389,7 +467,21 @@ const LevelSubmissions = () => {
                 <div className="submission-details">
                   <div className="detail-row">
                     <span className="detail-label">{tLevel('details.artist')}</span>
-                    <span className="detail-value">{submission.artist}</span>
+                    <span 
+                      className={`detail-value ${submission.artistObject || submission.artistId ? 'clickable-field' : ''}`}
+                      onClick={() => {
+                        if (submission.artistObject || submission.artistId || submission.artistRequest) {
+                          setSelectedArtistSubmission(submission);
+                          setShowArtistSelector(true);
+                        }
+                      }}
+                      title={submission.artistObject || submission.artistId ? 'Click to change artist' : ''}
+                    >
+                      {submission.artistObject?.name || submission.artist}
+                      {submission.artistRequest?.isNewRequest && (
+                        <span className="request-badge">{tLevel('badges.newRequest')}</span>
+                      )}
+                    </span>
                   </div>
                   
                   <div className="detail-row">
@@ -566,6 +658,29 @@ const LevelSubmissions = () => {
                     </div>
                   </div>
 
+                  {/* Evidence Display */}
+                  {submission.evidence && submission.evidence.length > 0 && (
+                    <div className="detail-row">
+                      <span className="detail-label">{tLevel('details.evidence')}</span>
+                      <div className="evidence-preview">
+                        {submission.evidence.slice(0, 3).map((evidence, index) => (
+                          <img
+                            key={evidence.id}
+                            src={evidence.link}
+                            alt={`Evidence ${index + 1}`}
+                            className="evidence-thumbnail"
+                            onClick={() => {
+                              // TODO: Open evidence gallery popup
+                            }}
+                          />
+                        ))}
+                        {submission.evidence.length > 3 && (
+                          <span className="evidence-count">+{submission.evidence.length - 3}</span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
                   <div className="action-buttons">
                     <button 
                       onClick={() => handleSubmission(submission.id, 'approve')}
@@ -624,6 +739,47 @@ const LevelSubmissions = () => {
           profiles={profileCreation.profiles}
           onComplete={handleProfileCreationComplete}
           onCancel={handleProfileCreationCancel}
+        />
+      )}
+
+      {/* Song Selector Popup */}
+      {showSongSelector && selectedSongSubmission && (
+        <SongSelectorPopup
+          onClose={() => {
+            setShowSongSelector(false);
+            setSelectedSongSubmission(null);
+          }}
+          onSelect={handleSongSelect}
+          initialSong={selectedSongSubmission.songObject || (selectedSongSubmission.songRequest ? {
+            name: selectedSongSubmission.song,
+            isNewRequest: true
+          } : null)}
+        />
+      )}
+
+      {/* Artist Selector Popup */}
+      {showArtistSelector && selectedArtistSubmission && (
+        <ArtistSelectorPopup
+          onClose={() => {
+            setShowArtistSelector(false);
+            setSelectedArtistSubmission(null);
+          }}
+          onSelect={handleArtistSelect}
+          initialArtist={selectedArtistSubmission.artistObject || (selectedArtistSubmission.artistRequest ? {
+            name: selectedArtistSubmission.artist,
+            isNewRequest: true
+          } : null)}
+        />
+      )}
+
+      {/* Evidence Gallery Popup */}
+      {showEvidenceGallery && selectedEvidenceSubmission && (
+        <EvidenceGalleryPopup
+          evidence={selectedEvidenceSubmission.evidence || []}
+          onClose={() => {
+            setShowEvidenceGallery(false);
+            setSelectedEvidenceSubmission(null);
+          }}
         />
       )}
     </>

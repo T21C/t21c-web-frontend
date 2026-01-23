@@ -282,6 +282,18 @@
   font-size: 1em;
   font-weight: 600;
   margin: 0;
+}
+
+.level-detail .title-container .level-title .level-title-clickable {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.3);
+  transition: text-decoration-color 0.2s;
+}
+
+.level-detail .title-container .level-title .level-title-clickable:hover {
+  text-decoration-color: rgba(255, 255, 255, 0.6);
+}
   display: block;
   align-items: center;
   gap: var(--spacing-xs);
