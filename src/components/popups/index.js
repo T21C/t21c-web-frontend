@@ -36,6 +36,7 @@ import { ArtistPopup } from './Artists/ArtistPopup/ArtistPopup';
 import { SongSelectorPopup } from './Songs/SongSelectorPopup/SongSelectorPopup';
 import { ArtistSelectorPopup } from './Artists/ArtistSelectorPopup/ArtistSelectorPopup';
 import { EvidenceGalleryPopup } from './Evidence/EvidenceGalleryPopup/EvidenceGalleryPopup';
+import { EntityActionPopup } from './Entities/EntityActionPopup/EntityActionPopup';
 import { ArtistActionPopup } from './Artists/ArtistActionPopup/ArtistActionPopup';
 import { SongActionPopup } from './Songs/SongActionPopup/SongActionPopup';
 
@@ -76,6 +77,7 @@ export {
     SongSelectorPopup,
     ArtistSelectorPopup,
     EvidenceGalleryPopup,
+    EntityActionPopup,
     ArtistActionPopup,
     SongActionPopup
 }
