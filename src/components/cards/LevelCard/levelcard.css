@@ -76,16 +76,6 @@
   text-decoration-color: rgba(255, 255, 255, 0.6);
 }
 
-.level-card .level-artist-clickable {
-  cursor: pointer;
-  text-decoration: underline;
-  text-decoration-color: rgba(255, 255, 255, 0.3);
-  transition: text-decoration-color 0.2s;
-}
-
-.level-card .level-artist-clickable:hover {
-  text-decoration-color: rgba(255, 255, 255, 0.6);
-}
 .level-card .level-id {
   color: var(--color-white-t30);
   font-size: 0.6rem;

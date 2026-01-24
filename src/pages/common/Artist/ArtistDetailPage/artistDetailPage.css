@@ -172,6 +172,21 @@
   font-style: italic;
 }
 
+.artist-name-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.edit-icon {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.edit-icon:hover {
+  transform: scale(1.05);
+}
+
 .evidence-preview {
   display: flex;
   gap: 1rem;

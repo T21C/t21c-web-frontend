@@ -162,17 +162,7 @@ const LevelCard = ({
         <div className="group">
           <p className="level-exp">
             #{level.id} -{' '}
-            {hasArtistPopup ? (
-              <span 
-                className="level-artist-clickable" 
-                onClick={handleArtistClick}
-                title="Click to view artist details"
-              >
-                {artistName}
-              </span>
-            ) : (
-              artistName
-            )}
+            {artistName}
           </p>
         </div>
         <p 

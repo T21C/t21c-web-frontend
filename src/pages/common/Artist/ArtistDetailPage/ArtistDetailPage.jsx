@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/contexts/AuthContext';
+import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
-import { EvidenceGalleryPopup } from '@/components/popups';
-import { ExternalLinkIcon } from '@/components/common/icons';
+import { EvidenceGalleryPopup, EntityActionPopup } from '@/components/popups';
+import { EditIcon, ExternalLinkIcon } from '@/components/common/icons';
 import './artistDetailPage.css';
 
 const ArtistDetailPage = () => {
@@ -13,11 +15,15 @@ const ArtistDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const currentUrl = window.location.origin + location.pathname;
+  const { user } = useAuth();
 
   const [artist, setArtist] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showEvidenceGallery, setShowEvidenceGallery] = useState(false);
+  const [showEditPopup, setShowEditPopup] = useState(false);
+
+  const isSuperAdmin = user && hasFlag(user, permissionFlags.SUPER_ADMIN);
 
   useEffect(() => {
     fetchArtist();
@@ -92,7 +98,12 @@ const ArtistDetailPage = () => {
             </div>
           )}
           <div className="artist-header-content">
+            <div className="artist-name-wrapper">
             <h1>{artist.name}</h1>
+              {isSuperAdmin && (
+                <EditIcon className="edit-icon" size={24} onClick={() => setShowEditPopup(true)} />
+              )}
+            </div>
             <div className="artist-verification">
               <span className={getVerificationClass(artist.verificationState)}>
                 {verificationStateLabels[artist.verificationState] || verificationStateLabels.unverified}
@@ -212,6 +223,18 @@ const ArtistDetailPage = () => {
         <EvidenceGalleryPopup
           evidence={artist.evidences}
           onClose={() => setShowEvidenceGallery(false)}
+        />
+      )}
+
+      {showEditPopup && artist && (
+        <EntityActionPopup
+          artist={artist}
+          onClose={() => setShowEditPopup(false)}
+          onUpdate={() => {
+            setShowEditPopup(false);
+            fetchArtist();
+          }}
+          type="artist"
         />
       )}
     </div>
