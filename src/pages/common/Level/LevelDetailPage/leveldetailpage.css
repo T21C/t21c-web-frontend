@@ -302,6 +302,17 @@
   align-items: center;
 }
 
+.level-detail .title-container .level-artist-list-wrapper .level-artist-name {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0);
+  transition: text-decoration-color 0.2s;
+}
+
+.level-detail .title-container .level-artist-list-wrapper .level-artist-name:hover {
+  text-decoration-color: rgba(255, 255, 255, 0.3);
+}
+
 .level-detail .title-container .level-info {
   display: flex;
   align-items: center;

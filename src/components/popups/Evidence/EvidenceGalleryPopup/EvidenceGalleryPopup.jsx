@@ -14,13 +14,16 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
 
+  const maxZoom = 5;
+  const defaultZoom = 1;
+  const minZoom = 0.5;
   const evidenceList = Array.isArray(evidence) ? evidence : [];
 
   useEffect(() => {
     const handleEscapeKey = (event) => {
       if (event.key === 'Escape') {
-        if (zoom > 1) {
-          setZoom(1);
+        if (zoom > minZoom) {
+          setZoom(defaultZoom);
           setPosition({ x: 0, y: 0 });
         } else {
           onClose();
@@ -45,14 +48,20 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
     };
   }, [onClose, zoom, currentIndex, evidenceList.length]);
 
+
   useEffect(() => {
-    document.body.classList.add('body-scroll-lock');
-    return () => document.body.classList.remove('body-scroll-lock');
+    // Lock body scroll when popup opens
+    document.body.style.overflowY = 'hidden';
+    
+    // Cleanup: restore body scroll when popup closes
+    return () => {
+      document.body.style.overflowY = '';
+    };
   }, []);
 
   // Reset zoom and position when image changes
   useEffect(() => {
-    setZoom(1);
+    setZoom(defaultZoom);
     setPosition({ x: 0, y: 0 });
   }, [currentIndex]);
 
@@ -96,13 +105,12 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
   };
 
   const handleWheel = (e) => {
-    e.preventDefault();
     e.stopPropagation();
     
     if (!containerRef.current || !imageRef.current) return;
     
     const delta = e.deltaY > 0 ? -0.1 : 0.1;
-    const newZoom = Math.max(1, Math.min(5, zoom + delta));
+    const newZoom = Math.max(minZoom, Math.min(maxZoom, zoom + delta));
     
     // Get container and image dimensions
     const containerRect = containerRef.current.getBoundingClientRect();
@@ -159,7 +167,7 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
   };
 
   const handleMouseDown = (e) => {
-    if (zoom > 1 && e.button === 0) {
+    if (zoom > minZoom && e.button === 0) {
       e.preventDefault();
       setIsDragging(true);
       setDragStart({
@@ -170,7 +178,7 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
   };
 
   const handleMouseMove = (e) => {
-    if (isDragging && zoom > 1) {
+    if (isDragging && zoom > minZoom) {
       e.preventDefault();
       const newX = e.clientX - dragStart.x;
       const newY = e.clientY - dragStart.y;
@@ -200,11 +208,11 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
   };
 
   const handleDoubleClick = () => {
-    if (zoom > 1) {
-      setZoom(1);
+    if (zoom > minZoom) {
+      setZoom(defaultZoom);
       setPosition({ x: 0, y: 0 });
     } else {
-      setZoom(2);
+      setZoom(defaultZoom + 1);
     }
   };
 
@@ -246,8 +254,8 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
             onMouseUp={handleMouseUp}
             onMouseLeave={handleMouseUp}
             style={{ 
-              cursor: zoom > 1 ? (isDragging ? 'grabbing' : 'grab') : 'default',
-              overflow: zoom > 1 ? 'hidden' : 'hidden'
+              cursor: zoom > minZoom ? (isDragging ? 'grabbing' : 'grab') : 'default',
+              overflow: zoom > minZoom ? 'hidden' : 'hidden'
             }}
           >
             {evidenceList.length > 1 && (
@@ -293,19 +301,19 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
               />
             </div>
 
-            {zoom > 1 && (
+            {zoom.toFixed(1) !== defaultZoom.toFixed(1) && (
               <div className="zoom-controls">
                 <button
                   className="zoom-reset-button"
                   onClick={() => {
-                    setZoom(1);
+                    setZoom(defaultZoom);
                     setPosition({ x: 0, y: 0 });
                   }}
                   title={tGallery('resetZoom')}
                 >
                   {tGallery('reset')}
                 </button>
-                <span className="zoom-level">{Math.round(zoom * 100)}%</span>
+                <span className="zoom-level">{Math.round((zoom - defaultZoom) * 100 + defaultZoom * 100)}%</span>
               </div>
             )}
 

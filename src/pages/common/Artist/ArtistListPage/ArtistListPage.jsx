@@ -32,7 +32,7 @@ const ArtistListPage = () => {
       }
 
       const currentPage = reset ? 1 : page;
-      const response = await api.get(`${import.meta.env.VITE_API_URL}/artists`, {
+      const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/artists`, {
         params: {
           page: currentPage,
           limit: 50,

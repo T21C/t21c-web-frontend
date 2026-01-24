@@ -1440,8 +1440,17 @@ const LevelDetailPage = ({ mockData = null }) => {
     // Use normalized name if available, otherwise use title
     const displayName = isSong ? getSongName(level) : hasPopup ? (
     <div className="level-artist-list-wrapper">
-      {level.artists.map(artist => (
-        <span key={artist.id} onClick={() => handleArtistClick(artist)}>{artist.name}</span>
+      {level.artists.map((artist, index) => (<>
+        <span 
+        className="level-artist-name"
+        key={artist.id}
+        onClick={() => handleArtistClick(artist)}>
+          {artist.name}
+        </span>
+        
+        {index < level.artists.length - 1 && 
+        <span className="level-artist-separator"> & </span>}
+        </>
       ))}
     </div>) : getArtistDisplayName(level);
     

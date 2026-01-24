@@ -26,7 +26,7 @@ const ArtistDetailPage = () => {
   const fetchArtist = async () => {
     try {
       setLoading(true);
-      const response = await api.get(`${import.meta.env.VITE_API_URL}/artists/${id}`);
+      const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/artists/${id}`);
       setArtist(response.data);
     } catch (error) {
       console.error('Error fetching artist:', error);
