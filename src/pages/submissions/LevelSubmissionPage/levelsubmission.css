@@ -11,14 +11,14 @@
 }
 
 
-.level-submission-page .form-container form {
+.level-submission-page .form-container .main-form {
   border-radius: 8px;
   margin-top: 2rem;
   max-width: 47rem;
-  background-color: #000010d6;
   color: var(--color-white);
   background-size: contain;
   background-position: center -80px;
+  background-color: #000010d6;
   background-repeat: no-repeat;
   flex-direction: column;
 }

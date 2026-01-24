@@ -76,12 +76,36 @@ const LevelSubmissions = () => {
   }, [submissions]);
 
   const canBeApproved = (submission) => {
-    // Check if both song and artist are set (either as objects or IDs)
+    // Check if song is set
     const hasSong = submission.songObject || submission.songId;
-    const hasArtist = submission.artistObject || submission.artistId;
     
-    if (!hasSong || !hasArtist) {
+    if (!hasSong) {
       return false;
+    }
+    
+    // If existing song is selected, verify all song credits have matching artist requests
+    if (submission.songId && submission.songObject?.credits) {
+      const songCreditArtistIds = submission.songObject.credits
+        .map(c => c.artist?.id)
+        .filter(id => id !== undefined)
+        .sort();
+      
+      const requestArtistIds = (submission.artistRequests || [])
+        .map(req => req.artistId)
+        .filter(id => id !== undefined)
+        .sort();
+      
+      if (songCreditArtistIds.length !== requestArtistIds.length ||
+          !songCreditArtistIds.every((id, idx) => id === requestArtistIds[idx])) {
+        return false;
+      }
+    } else {
+      // For new song requests, check if at least one artist is set
+      const hasArtist = (submission.artistRequests && submission.artistRequests.length > 0) ||
+                        submission.artistObject || submission.artistId;
+      if (!hasArtist) {
+        return false;
+      }
     }
     
     // Check for pending creator requests
@@ -398,21 +422,29 @@ const LevelSubmissions = () => {
         }
       );
       
-      setSubmissions(prevSubmissions => prevSubmissions.map(submission => {
-        if (submission.id === selectedSongSubmission.id) {
-          // Merge response data with existing submission to preserve all fields
-          return {
-            ...submission,
-            ...response.data,
-            // Preserve nested objects that might not be in response
-            creatorRequests: response.data.creatorRequests || submission.creatorRequests,
-            teamRequestData: response.data.teamRequestData || submission.teamRequestData,
-            evidence: response.data.evidence || submission.evidence,
-            levelSubmitter: response.data.levelSubmitter || submission.levelSubmitter
-          };
-        }
-        return submission;
-      }));
+      // If a song was assigned (songId exists), refresh to get full songObject with credits
+      // Otherwise, just merge the response
+      if (songData.songId) {
+        await fetchPendingSubmissions();
+      } else {
+        setSubmissions(prevSubmissions => prevSubmissions.map(submission => {
+          if (submission.id === selectedSongSubmission.id) {
+            // Merge response data with existing submission to preserve all fields
+            return {
+              ...submission,
+              ...response.data,
+              // Preserve nested objects that might not be in response
+              creatorRequests: response.data.creatorRequests || submission.creatorRequests,
+              teamRequestData: response.data.teamRequestData || submission.teamRequestData,
+              evidence: response.data.evidence || submission.evidence,
+              levelSubmitter: response.data.levelSubmitter || submission.levelSubmitter,
+              songObject: response.data.songObject || submission.songObject,
+              artistObject: response.data.artistObject || submission.artistObject
+            };
+          }
+          return submission;
+        }));
+      }
       
       toast.success(tLevel('messages.songUpdated'));
       setShowSongSelector(false);
@@ -431,6 +463,7 @@ const LevelSubmissions = () => {
         `${import.meta.env.VITE_SUBMISSION_API}/levels/${selectedArtistSubmission.id}/artist`,
         {
           artistId: artistData.artistId || null,
+          artistRequestId: artistData.artistRequestId || null,
           artistName: artistData.artistName,
           isNewRequest: artistData.isNewRequest || false,
           requiresEvidence: artistData.requiresEvidence || false
@@ -446,6 +479,9 @@ const LevelSubmissions = () => {
             // Preserve nested objects that might not be in response
             creatorRequests: response.data.creatorRequests || submission.creatorRequests,
             teamRequestData: response.data.teamRequestData || submission.teamRequestData,
+            artistRequests: response.data.artistRequests || submission.artistRequests,
+            songObject: response.data.songObject || submission.songObject,
+            songRequest: response.data.songRequest || submission.songRequest,
             evidence: response.data.evidence || submission.evidence,
             levelSubmitter: response.data.levelSubmitter || submission.levelSubmitter
           };
@@ -618,6 +654,7 @@ const LevelSubmissions = () => {
             teamRequestData: response.data.teamRequestData || submission.teamRequestData,
             songObject: response.data.songObject || submission.songObject,
             songRequest: response.data.songRequest || submission.songRequest,
+            artistRequests: response.data.artistRequests || submission.artistRequests,
             evidence: response.data.evidence || submission.evidence,
             levelSubmitter: response.data.levelSubmitter || submission.levelSubmitter
           };
@@ -628,6 +665,37 @@ const LevelSubmissions = () => {
     } catch (error) {
       console.error('Error adding artist request:', error);
       toast.error(error.response?.data?.error || tLevel('errors.addArtistRequestFailed'));
+    }
+  };
+
+  const handleRemoveArtistRequest = async (submissionId, artistRequestId) => {
+    try {
+      const response = await api.delete(
+        `${import.meta.env.VITE_SUBMISSION_API}/levels/${submissionId}/artist-requests/${artistRequestId}`
+      );
+      
+      setSubmissions(prevSubmissions => prevSubmissions.map(submission => {
+        if (submission.id === submissionId) {
+          return {
+            ...submission,
+            ...response.data,
+            artistRequests: response.data.artistRequests || submission.artistRequests?.filter(
+              req => req.id !== artistRequestId
+            ),
+            creatorRequests: response.data.creatorRequests || submission.creatorRequests,
+            teamRequestData: response.data.teamRequestData || submission.teamRequestData,
+            songObject: response.data.songObject || submission.songObject,
+            songRequest: response.data.songRequest || submission.songRequest,
+            evidence: response.data.evidence || submission.evidence,
+            levelSubmitter: response.data.levelSubmitter || submission.levelSubmitter
+          };
+        }
+        return submission;
+      }));
+      toast.success(tLevel('messages.artistRequestRemoved'));
+    } catch (error) {
+      console.error('Error removing artist request:', error);
+      toast.error(error.response?.data?.error || tLevel('errors.removeArtistRequestFailed'));
     }
   };
 
@@ -712,44 +780,97 @@ const LevelSubmissions = () => {
                   <div className="detail-row">
                     <span className="detail-label">{tLevel('details.artist')}</span>
                     <div className="detail-value-group">
-                      <span className="detail-value">
-                        {submission.artistObject?.name || submission.artist}
-                        {submission.artistRequest?.isNewRequest && (
-                          <span className="request-badge">{tLevel('badges.newRequest')}</span>
+                      <div className="detail-value">
+                        {/* Show artists from song credits if existing song is selected */}
+                        {submission.songId && submission.songObject ? (
+                          <>
+                            {submission.songObject.credits && submission.songObject.credits.length > 0 ? (
+                              <div className="artists-list">
+                                {submission.songObject.credits.map((credit, idx) => (
+                                  <span key={credit.artist?.id || idx} className="artist-item">
+                                    {credit.artist?.name || 'Unknown'}
+                                    <span className="locked-indicator" title={tLevel('messages.artistLockedToSong')}>
+                                      {' '}(Locked)
+                                    </span>
+                                  </span>
+                                ))}
+                              </div>
+                            ) : (
+                              <span className="profile-request-unassigned" title={tLevel('badges.unassigned')}>
+                                <WarningIcon className="warning-icon" color="#f00" />
+                                {tLevel('badges.unassigned')}
+                              </span>
+                            )}
+                          </>
+                        ) : (
+                          <>
+                            {/* Show artist requests for new song */}
+                            {submission.artistRequests && submission.artistRequests.length > 0 ? (
+                              <div className="artists-list">
+                                {submission.artistRequests.map((artistRequest, idx) => (
+                                  <span key={artistRequest.id || idx} className="artist-item">
+                                    {artistRequest.artist?.name || artistRequest.artistName || 'Unknown'}
+                                    {artistRequest.isNewRequest && (
+                                      <span className="request-badge">{tLevel('badges.newRequest')}</span>
+                                    )}
+                                    {!submission.songId && (
+                                      <button
+                                        className="remove-artist-button"
+                                        onClick={() => handleRemoveArtistRequest(submission.id, artistRequest.id)}
+                                        title={tLevel('buttons.removeArtist')}
+                                      >
+                                        ×
+                                      </button>
+                                    )}
+                                  </span>
+                                ))}
+                              </div>
+                            ) : (
+                              <span className="profile-request-unassigned" title={tLevel('badges.unassigned')}>
+                                <WarningIcon className="warning-icon" color="#f00" />
+                                {tLevel('badges.unassigned')}
+                              </span>
+                            )}
+                          </>
                         )}
-                        {!submission.artistId && !submission.artistRequest && (
-                          <span className="profile-request-unassigned" title={tLevel('badges.unassigned')}>
-                            <WarningIcon className="warning-icon" color="#f00" />
-                          </span>
-                        )}
-                      </span>
+                      </div>
                       <div className="entity-actions">
-                        {(submission.artistObject || submission.artistId || submission.artistRequest) && (
-                          <button
-                            className="change-entity-button"
-                            onClick={() => {
-                              setSelectedArtistSubmission(submission);
-                              setShowArtistSelector(true);
-                            }}
-                          >
-                            {tLevel('buttons.changeArtist')}
-                          </button>
-                        )}
-                        {(submission.artistObject || submission.artistId) && (
-                          <button
-                            className="manage-entity-button"
-                            onClick={() => handleArtistAction(submission)}
-                          >
-                            {tLevel('buttons.manageArtist')}
-                          </button>
-                        )}
-                        {!submission.artistRequest && (
-                          <button
-                            className="add-entity-request-button"
-                            onClick={() => handleAddArtistRequest(submission.id)}
-                          >
-                            {tLevel('buttons.addArtistRequest')}
-                          </button>
+                        {/* Disable artist management if an existing song is selected */}
+                        {submission.songId && submission.songObject ? (
+                          <>
+                            <button
+                              className="change-entity-button"
+                              disabled
+                              title={tLevel('errors.artistLockedToSong')}
+                            >
+                              {tLevel('buttons.changeArtist')}
+                            </button>
+                            <button
+                              className="add-entity-request-button"
+                              disabled
+                              title={tLevel('errors.artistLockedToSong')}
+                            >
+                              {tLevel('buttons.addArtistRequest')}
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <button
+                              className="change-entity-button"
+                              onClick={() => {
+                                setSelectedArtistSubmission(submission);
+                                setShowArtistSelector(true);
+                              }}
+                            >
+                              {tLevel('buttons.changeArtist')}
+                            </button>
+                            <button
+                              className="add-entity-request-button"
+                              onClick={() => handleAddArtistRequest(submission.id)}
+                            >
+                              {tLevel('buttons.addArtistRequest')}
+                            </button>
+                          </>
                         )}
                       </div>
                     </div>

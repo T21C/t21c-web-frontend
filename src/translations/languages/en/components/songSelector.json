@@ -11,17 +11,18 @@
     "noResults": "No songs found"
   },
   "buttons": {
-    "createNew": "Create New",
-    "assign": "Assign Song",
-    "create": "Create",
-    "creating": "Creating...",
+    "createNew": "Request New Song",
+    "assign": "Update Request",
+    "create": "Update Request",
+    "creating": "Updating...",
     "cancel": "Cancel"
   },
   "createForm": {
-    "title": "Create New Song Request",
+    "title": "Request New Song",
     "name": "Song Name",
     "namePlaceholder": "Enter song name",
-    "requiresEvidence": "Requires evidence (song is declined)"
+    "requiresEvidence": "Requires evidence (song is declined)",
+    "description": "This will add a song creation request to your submission. The song will be created when your submission is approved."
   },
   "stats": {
     "title": "Song Statistics",
@@ -35,18 +36,21 @@
   },
   "messages": {
     "success": {
-      "songAssigned": "Song assigned successfully",
-      "songCreated": "Song request created successfully"
+      "songAssigned": "Request updated successfully",
+      "songCreated": "Request updated successfully"
     },
-    "newArtistRestriction": "A new artist request is set. Only new song requests can be created.",
+    "newArtistRestriction": "A new artist request is set. Only new song requests can be added.",
     "onlyNewSongsAllowed": "Only new song requests are allowed when a new artist is set.",
     "filteredByArtist": "Showing songs by {{artistName}}",
+    "info": {
+      "requestNote": "Selecting a song updates your submission request. The song will be assigned when your submission is approved."
+    },
     "error": {
       "searchFailed": "Failed to search songs",
       "loadDetailsFailed": "Failed to load song details",
       "songNotFound": "Song not found",
-      "assignFailed": "Failed to assign song",
-      "createFailed": "Failed to create song request",
+      "assignFailed": "Failed to update request",
+      "createFailed": "Failed to update request",
       "cannotAssignExistingWithNewArtist": "Cannot assign existing songs when a new artist request is set",
       "songNotByArtist": "This song does not belong to the selected artist"
     }

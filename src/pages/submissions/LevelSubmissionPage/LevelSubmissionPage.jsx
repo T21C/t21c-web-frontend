@@ -786,7 +786,7 @@ const LevelSubmissionPage = () => {
           />
         )}
 
-        <form className={`form-container ${videoDetail ? 'shadow' : ''}`}>
+        <form className={`main-form form-container ${videoDetail ? 'shadow' : ''}`}>
           <div className="thumbnail-container">
             {videoDetail ? (
               <iframe

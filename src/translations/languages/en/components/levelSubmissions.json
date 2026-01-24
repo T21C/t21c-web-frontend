@@ -30,8 +30,9 @@
     "manageArtist": "Manage Artist",
     "changeSong": "Change Song",
     "changeArtist": "Change Artist",
-    "addSongRequest": "Add Song Request",
-    "addArtistRequest": "Add Artist Request",
+    "addSongRequest": "Request as a New Song",
+    "addArtistRequest": "Request as a New Artist",
+    "removeArtist": "Remove Artist",
     "allow": "Allow",
     "decline": "Decline",
     "addCharter": "Add Charter",
@@ -61,7 +62,8 @@
       "generic": "An error occurred",
       "approve": "Failed to approve submission",
       "reject": "Failed to reject submission"
-    }
+    },
+    "artistLockedToSong": "Artist is fixed to the selected song and cannot be changed"
   },
   "warnings": {
     "pendingProfiles": "This profile will be requested for creation:",
@@ -95,9 +97,11 @@
     "needProfiles": "All creator profiles must be assigned before approval",
     "needSongAndArtist": "Both song and artist must be set before approval",
     "needArtistForSong": "Artist must be set before managing song",
+    "artistLockedToSong": "Cannot modify artist: it is fixed to the selected song",
     "updateSongFailed": "Failed to update song",
     "updateArtistFailed": "Failed to update artist",
     "addSongRequestFailed": "Failed to add song request",
-    "addArtistRequestFailed": "Failed to add artist request"
+    "addArtistRequestFailed": "Failed to add artist request",
+    "removeArtistRequestFailed": "Failed to remove artist request"
   }
 } 

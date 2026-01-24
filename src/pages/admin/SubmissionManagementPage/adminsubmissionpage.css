@@ -369,6 +369,21 @@
   transform: translateY(0);
 }
 
+.change-entity-button:disabled,
+.manage-entity-button:disabled,
+.add-entity-request-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #666;
+}
+
+.change-entity-button:disabled:hover,
+.manage-entity-button:disabled:hover,
+.add-entity-request-button:disabled:hover {
+  transform: none;
+  background-color: #666;
+}
+
 .detail-value .request-badge {
   font-size: 0.7em;
   padding: 2px 6px;
@@ -1121,6 +1136,55 @@
     justify-content: center;
     padding: 2px 6px;
     border-radius: 0.5rem;
+  }
+
+  .detail-value .info-message {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 0.85em;
+    opacity: 0.8;
+  }
+
+  .detail-value .locked-indicator {
+    color: #9E9E9E;
+    font-style: italic;
+    font-size: 0.9em;
+  }
+
+  .artists-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .artist-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+  }
+
+  .remove-artist-button {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    font-size: 1.2em;
+    line-height: 1;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+  }
+
+  .remove-artist-button:hover {
+    background-color: #d32f2f;
   }
 
   .creator-group {

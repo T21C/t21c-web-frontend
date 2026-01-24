@@ -21,14 +21,11 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [hasMoreResults, setHasMoreResults] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
 
   // Create state
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newName, setNewName] = useState('');
   const [isCreating, setIsCreating] = useState(false);
-  const [isNewRequest, setIsNewRequest] = useState(false);
   const [requiresEvidence, setRequiresEvidence] = useState(false);
 
   // Reset create form state when popup opens
@@ -38,7 +35,6 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
     if (!initialSong || initialSong.id || !initialSong.name) {
       setShowCreateForm(false);
       setNewName('');
-      setIsNewRequest(false);
       setRequiresEvidence(false);
     }
   }, [initialSong]);
@@ -52,6 +48,12 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
       setSearchResults([]);
     }
   }, [selectedArtist]);
+
+  const handleCreateClick = () => {
+    setShowCreateForm(true);
+    setNewName(initialSong?.name || '');
+    setRequiresEvidence(initialSong?.requiresEvidence || false);
+  };
 
   // Load initial song details if they exist
   useEffect(() => {
@@ -85,10 +87,6 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
         } finally {
           setIsLoadingDetails(false);
         }
-      } else if (initialSong?.name && !initialSong.id) {
-        setNewName(initialSong.name);
-        setIsNewRequest(true);
-        setShowCreateForm(true);
       }
     };
 
@@ -98,9 +96,8 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
   // Handle search with pagination
   useEffect(() => {
     const searchSongs = async () => {
-      if (!searchQuery.trim()) {
+      if (!searchQuery?.trim()) {
         setSearchResults([]);
-        setHasMoreResults(false);
         return;
       }
 
@@ -124,8 +121,6 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
         const data = response.data;
         const songs = Array.isArray(data) ? data : (data.songs || data.data || []);
         setSearchResults(songs);
-        setHasMoreResults(songs.length >= 20);
-        setCurrentPage(1);
       } catch (error) {
         console.error('Error searching songs:', error);
         setError(tSong('messages.error.searchFailed'));
@@ -207,7 +202,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
 
       // Return new song request data
       const newSongData = {
-        songName: newName.trim(),
+        songName: (newName || '').trim(),
         isNewRequest: true,
         requiresEvidence: requiresEvidence
       };
@@ -358,7 +353,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                     />
                     <button 
                       className="create-song-button"
-                      onClick={() => setShowCreateForm(true)}
+                      onClick={handleCreateClick}
                     >
                       {tSong('buttons.createNew')}
                     </button>
@@ -408,6 +403,9 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
               ) : (
                 <form onSubmit={handleCreate} className="create-song-form">
                   <h3>{tSong('createForm.title')}</h3>
+                  {tSong('createForm.description') && (
+                    <p className="form-description">{tSong('createForm.description')}</p>
+                  )}
                   <div className="form-group">
                     <label>{tSong('createForm.name')}</label>
                     <input
@@ -445,7 +443,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                     </button>
                     <button
                       type="submit"
-                      disabled={isCreating || !newName.trim()}
+                      disabled={isCreating || !newName?.trim()}
                       className={`submit-button ${isCreating ? 'loading' : ''}`}
                     >
                       {isCreating ? tSong('buttons.creating') : tSong('buttons.create')}

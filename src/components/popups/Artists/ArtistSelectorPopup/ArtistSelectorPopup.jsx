@@ -20,14 +20,11 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [isSearching, setIsSearching] = useState(false);
-  const [hasMoreResults, setHasMoreResults] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
 
   // Create state
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newName, setNewName] = useState('');
   const [isCreating, setIsCreating] = useState(false);
-  const [isNewRequest, setIsNewRequest] = useState(false);
   const [requiresEvidence, setRequiresEvidence] = useState(false);
 
   // Reset create form state when popup opens
@@ -37,7 +34,6 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
     if (!initialArtist || initialArtist.id || !initialArtist.name) {
       setShowCreateForm(false);
       setNewName('');
-      setIsNewRequest(false);
       setRequiresEvidence(false);
     }
   }, [initialArtist]);
@@ -56,22 +52,23 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
         } finally {
           setIsLoadingDetails(false);
         }
-      } else if (initialArtist?.name && !initialArtist.id) {
-        setNewName(initialArtist.name);
-        setIsNewRequest(true);
-        setShowCreateForm(true);
       }
     };
 
     loadInitialDetails();
   }, [initialArtist]);
 
+  const handleCreateClick = () => {
+    setShowCreateForm(true);
+    setNewName(initialArtist.name);
+    setRequiresEvidence(false);
+  };
+
   // Handle search with pagination
   useEffect(() => {
     const searchArtists = async () => {
       if (!searchQuery.trim()) {
         setSearchResults([]);
-        setHasMoreResults(false);
         return;
       }
 
@@ -88,8 +85,6 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
         const data = response.data;
         const artists = Array.isArray(data) ? data : (data.artists || data.data || []);
         setSearchResults(artists);
-        setHasMoreResults(artists.length >= 20);
-        setCurrentPage(1);
       } catch (error) {
         console.error('Error searching artists:', error);
         setError(tArtist('messages.error.searchFailed'));
@@ -130,7 +125,6 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
     setSearchQuery('');
     setSearchResults([]);
     setShowCreateForm(false);
-    setIsNewRequest(false);
   };
 
   const handleCreate = async (e) => {
@@ -285,7 +279,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                     />
                     <button 
                       className="create-artist-button"
-                      onClick={() => setShowCreateForm(true)}
+                      onClick={handleCreateClick}
                     >
                       {tArtist('buttons.createNew')}
                     </button>
