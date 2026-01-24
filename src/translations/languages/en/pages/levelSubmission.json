@@ -14,6 +14,7 @@
     "dlLinksOr": "or",
     "charters": "Charters",
     "vfxers": "VFX-ers",
+    "artists": "Artists",
     "levelZip": "Level Zip",
     "evidence": "Evidence",
     "evidenceForSong": "Evidence for Song",
@@ -29,6 +30,7 @@
   "buttons": {
     "addCharter": "Add Charter",
     "addVfxer": "Add VFX-er",
+    "addArtist": "Add Artist",
     "removeCreator": "Remove",
     "uploadZip": "Upload Zip",
     "orDragDrop": "or drag and drop here",
@@ -44,7 +46,8 @@
     "login": "Please log in to submit a level",
     "form": "Please fill in all required fields correctly",
     "invalidZip": "Please upload a valid zip file",
-    "maxEvidenceFiles": "Maximum 10 evidence images allowed"
+    "maxEvidenceFiles": "Maximum 10 evidence images allowed",
+    "evidenceRequired": "Evidence is required for new song/artist requests"
   },
   "warnings": {
     "pendingProfiles": "The following profiles will be created:"

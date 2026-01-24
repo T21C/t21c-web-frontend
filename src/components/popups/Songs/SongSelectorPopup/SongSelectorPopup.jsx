@@ -41,7 +41,11 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
 
   // Clear song selection when artist changes to a new request
   useEffect(() => {
-    if (selectedArtist?.isNewRequest && selectedSongId) {
+    const hasNewRequest = Array.isArray(selectedArtist) 
+      ? selectedArtist.some(a => a.isNewRequest)
+      : selectedArtist?.isNewRequest;
+    
+    if (hasNewRequest && selectedSongId) {
       setSelectedSongId(null);
       setSongDetails(null);
       setSearchQuery('');
@@ -58,8 +62,23 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
   // Load initial song details if they exist
   useEffect(() => {
     const loadInitialDetails = async () => {
+      // Check if any artist is a new request
+      const hasNewRequest = Array.isArray(selectedArtist) 
+        ? selectedArtist.some(a => a.isNewRequest)
+        : selectedArtist?.isNewRequest;
+      
+      // Check if initialSong is a new request (has name but no id)
+      const isNewSongRequest = initialSong && !initialSong.id && initialSong.name;
+      
       // If a new artist request is set, clear any existing song selection
-      if (selectedArtist?.isNewRequest && initialSong?.id) {
+      if (hasNewRequest && initialSong?.id) {
+        setSelectedSongId(null);
+        setSongDetails(null);
+        return;
+      }
+
+      // If it's a new song request, don't load song details
+      if (isNewSongRequest) {
         setSelectedSongId(null);
         setSongDetails(null);
         return;
@@ -71,14 +90,22 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
         try {
           const song = await fetchSongDetails(initialSong.id);
           
-          // If an existing artist is selected, verify the song belongs to that artist
-          if (selectedArtist?.artistId && !selectedArtist?.isNewRequest && song) {
-            const hasArtist = song?.credits?.some(credit => credit.artist?.id === selectedArtist.artistId);
-            if (!hasArtist) {
-              // Song doesn't belong to selected artist, clear selection
-              setSelectedSongId(null);
-              setSongDetails(null);
-              setError(tSong('messages.error.songNotByArtist'));
+          // If existing artist(s) are selected, verify the song belongs to all of them
+          if (selectedArtist && song) {
+            const artistIds = Array.isArray(selectedArtist)
+              ? selectedArtist.filter(a => a.id && !a.isNewRequest).map(a => a.id)
+              : (selectedArtist.artistId && !selectedArtist.isNewRequest ? [selectedArtist.artistId] : []);
+            
+            if (artistIds.length > 0) {
+              const songArtistIds = new Set(song?.credits?.map(credit => credit.artist?.id).filter(Boolean) || []);
+              const hasAllArtists = artistIds.every(id => songArtistIds.has(id));
+              
+              if (!hasAllArtists) {
+                // Song doesn't belong to all selected artists, clear selection
+                setSelectedSongId(null);
+                setSongDetails(null);
+                setError(tSong('messages.error.songNotByArtist'));
+              }
             }
           }
         } catch (error) {
@@ -109,9 +136,22 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
           limit: 20
         };
 
-        // If an existing artist is selected, filter songs by that artist
-        if (selectedArtist?.artistId && !selectedArtist?.isNewRequest) {
-          params.artistId = selectedArtist.artistId;
+        // If existing artist(s) are selected AND we're not requesting a new song, filter songs by those artists
+        // Don't filter when requesting a new song (initialSong has name but no id)
+        const isNewSongRequest = initialSong && !initialSong.id && initialSong.name;
+        if (selectedArtist && !isNewSongRequest) {
+          if (Array.isArray(selectedArtist)) {
+            // Multiple artists: filter by all of them
+            const artistIds = selectedArtist
+              .filter(artist => artist.id && !artist.isNewRequest)
+              .map(artist => artist.id);
+            if (artistIds.length > 0) {
+              params.artistId = artistIds.join(',');
+            }
+          } else if (selectedArtist.artistId && !selectedArtist.isNewRequest) {
+            // Single artist: use artistId directly
+            params.artistId = selectedArtist.artistId;
+          }
         }
 
         const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/songs`, {
@@ -156,30 +196,43 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
   };
 
   const handleSelect = async (song) => {
+    // Check if any artist is a new request
+    const hasNewRequest = Array.isArray(selectedArtist) 
+      ? selectedArtist.some(a => a.isNewRequest)
+      : selectedArtist?.isNewRequest;
+    
     // Don't allow selecting existing songs if a new artist request is set
-    if (selectedArtist?.isNewRequest) {
+    if (hasNewRequest) {
       return;
     }
     
-    // If an existing artist is selected, verify the song belongs to that artist
-    if (selectedArtist?.artistId && !selectedArtist?.isNewRequest) {
-      setIsLoadingDetails(true);
-      try {
-        const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/songs/${song.id}`);
-        const songData = response.data;
-        const hasArtist = songData?.credits?.some(credit => credit.artist?.id === selectedArtist.artistId);
-        if (!hasArtist) {
-          setError(tSong('messages.error.songNotByArtist'));
+    // If existing artist(s) are selected, verify the song belongs to all of them
+    if (selectedArtist) {
+      const artistIds = Array.isArray(selectedArtist)
+        ? selectedArtist.filter(a => a.id && !a.isNewRequest).map(a => a.id)
+        : (selectedArtist.artistId && !selectedArtist.isNewRequest ? [selectedArtist.artistId] : []);
+      
+      if (artistIds.length > 0) {
+        setIsLoadingDetails(true);
+        try {
+          const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/songs/${song.id}`);
+          const songData = response.data;
+          const songArtistIds = new Set(songData?.credits?.map(credit => credit.artist?.id).filter(Boolean) || []);
+          const hasAllArtists = artistIds.every(id => songArtistIds.has(id));
+          
+          if (!hasAllArtists) {
+            setError(tSong('messages.error.songNotByArtist'));
+            setIsLoadingDetails(false);
+            return;
+          }
+        } catch (error) {
+          console.error('Error verifying song artist:', error);
+          setError(tSong('messages.error.loadDetailsFailed'));
           setIsLoadingDetails(false);
           return;
         }
-      } catch (error) {
-        console.error('Error verifying song artist:', error);
-        setError(tSong('messages.error.loadDetailsFailed'));
         setIsLoadingDetails(false);
-        return;
       }
-      setIsLoadingDetails(false);
     }
     
     setSelectedSongId(song.id);
@@ -187,7 +240,6 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
     setSearchQuery('');
     setSearchResults([]);
     setShowCreateForm(false);
-    setIsNewRequest(false);
   };
 
   const handleCreate = async (e) => {
@@ -223,8 +275,13 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
   const handleAssign = async () => {
     if (!selectedSongId) return;
     
+    // Check if any artist is a new request
+    const hasNewRequest = Array.isArray(selectedArtist) 
+      ? selectedArtist.some(a => a.isNewRequest)
+      : selectedArtist?.isNewRequest;
+    
     // Don't allow assigning existing songs if a new artist request is set
-    if (selectedArtist?.isNewRequest) {
+    if (hasNewRequest) {
       setError(tSong('messages.error.cannotAssignExistingWithNewArtist'));
       return;
     }
@@ -329,18 +386,34 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
               {!showCreateForm ? (
                 <>
                   {/* Show message when new artist is set */}
-                  {selectedArtist?.isNewRequest && (
-                    <div className="info-message">
-                      {tSong('messages.newArtistRestriction')}
-                    </div>
-                  )}
+                  {(() => {
+                    const hasNewRequest = Array.isArray(selectedArtist) 
+                      ? selectedArtist.some(a => a.isNewRequest)
+                      : selectedArtist?.isNewRequest;
+                    return hasNewRequest && (
+                      <div className="info-message">
+                        {tSong('messages.newArtistRestriction')}
+                      </div>
+                    );
+                  })()}
                   
-                  {/* Show message when existing artist is selected */}
-                  {selectedArtist?.artistId && !selectedArtist?.isNewRequest && (
-                    <div className="info-message">
-                      {tSong('messages.filteredByArtist', { artistName: selectedArtist.artistName })}
-                    </div>
-                  )}
+                  {/* Show message when existing artist(s) are selected */}
+                  {(() => {
+                    if (!selectedArtist) return null;
+                    const existingArtists = Array.isArray(selectedArtist)
+                      ? selectedArtist.filter(a => a.id && !a.isNewRequest)
+                      : (selectedArtist.artistId && !selectedArtist.isNewRequest ? [selectedArtist] : []);
+                    
+                    if (existingArtists.length > 0) {
+                      const artistNames = existingArtists.map(a => a.name || a.artistName).filter(Boolean).join(', ');
+                      return (
+                        <div className="info-message">
+                          {tSong('messages.filteredByArtist', { artistName: artistNames })}
+                        </div>
+                      );
+                    }
+                    return null;
+                  })()}
 
                   <div className="search-input-wrapper">
                     <input
@@ -349,7 +422,9 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
                       placeholder={tSong('search.placeholder')}
-                      disabled={selectedArtist?.isNewRequest}
+                      disabled={Array.isArray(selectedArtist) 
+                        ? selectedArtist.some(a => a.isNewRequest)
+                        : selectedArtist?.isNewRequest}
                     />
                     <button 
                       className="create-song-button"
@@ -358,47 +433,67 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                       {tSong('buttons.createNew')}
                     </button>
                   </div>
-                  {selectedArtist?.isNewRequest ? (
-                    <div className="search-status">
-                      {tSong('messages.onlyNewSongsAllowed')}
-                    </div>
-                  ) : isSearching ? (
-                    <div className="search-status">
-                      {tSong('search.loading')}
-                    </div>
-                  ) : searchQuery && (!Array.isArray(searchResults) || searchResults.length === 0) ? (
-                    <div className="search-status">
-                      {tSong('search.noResults')}
-                    </div>
-                  ) : (
-                    <div className="search-results">
-                      {Array.isArray(searchResults) && searchResults.map((song) => (
-                        <div
-                          key={song.id}
-                          className={`song-result ${selectedArtist?.isNewRequest ? 'disabled' : ''}`}
-                          onClick={() => !selectedArtist?.isNewRequest && handleSelect(song)}
-                          style={{
-                            cursor: selectedArtist?.isNewRequest ? 'not-allowed' : 'pointer',
-                            opacity: selectedArtist?.isNewRequest ? 0.5 : 1
-                          }}
-                        >
-                          <span className="song-name">
-                            {song.name}
-                          </span>
-                          {song.aliases?.length > 0 && (
-                            <span className="song-aliases">
-                              [{song.aliases.map(a => a.alias).join(', ')}]
-                            </span>
-                          )}
-                          {song.verificationState && (
-                            <span className={`verification-badge ${song.verificationState}`}>
-                              {song.verificationState}
-                            </span>
-                          )}
+                  {(() => {
+                    const hasNewRequest = Array.isArray(selectedArtist) 
+                      ? selectedArtist.some(a => a.isNewRequest)
+                      : selectedArtist?.isNewRequest;
+                    
+                    if (hasNewRequest) {
+                      return (
+                        <div className="search-status">
+                          {tSong('messages.onlyNewSongsAllowed')}
                         </div>
-                      ))}
-                    </div>
-                  )}
+                      );
+                    }
+                    
+                    if (isSearching) {
+                      return (
+                        <div className="search-status">
+                          {tSong('search.loading')}
+                        </div>
+                      );
+                    }
+                    
+                    if (searchQuery && (!Array.isArray(searchResults) || searchResults.length === 0)) {
+                      return (
+                        <div className="search-status">
+                          {tSong('search.noResults')}
+                        </div>
+                      );
+                    }
+                    
+                    return (
+                      <div className="search-results">
+                        {Array.isArray(searchResults) && searchResults.map((song) => {
+                          return (
+                            <div
+                              key={song.id}
+                              className="song-result"
+                              onClick={() => handleSelect(song)}
+                              style={{
+                                cursor: 'pointer',
+                                opacity: 1
+                              }}
+                            >
+                              <span className="song-name">
+                                {song.name}
+                              </span>
+                              {song.aliases?.length > 0 && (
+                                <span className="song-aliases">
+                                  [{song.aliases.map(a => a.alias).join(', ')}]
+                                </span>
+                              )}
+                              {song.verificationState && (
+                                <span className={`verification-badge ${song.verificationState}`}>
+                                  {song.verificationState}
+                                </span>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    );
+                  })()}
                 </>
               ) : (
                 <form onSubmit={handleCreate} className="create-song-form">
@@ -470,8 +565,18 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
             <button
               className={`action-button ${isLoading || isLoadingDetails ? 'loading' : ''}`}
               onClick={handleAssign}
-              disabled={!selectedSongId || isLoading || isLoadingDetails || selectedArtist?.isNewRequest}
-              title={selectedArtist?.isNewRequest ? tSong('messages.error.cannotAssignExistingWithNewArtist') : ''}
+              disabled={(() => {
+                const hasNewRequest = Array.isArray(selectedArtist) 
+                  ? selectedArtist.some(a => a.isNewRequest)
+                  : selectedArtist?.isNewRequest;
+                return !selectedSongId || isLoading || isLoadingDetails || hasNewRequest;
+              })()}
+              title={(() => {
+                const hasNewRequest = Array.isArray(selectedArtist) 
+                  ? selectedArtist.some(a => a.isNewRequest)
+                  : selectedArtist?.isNewRequest;
+                return hasNewRequest ? tSong('messages.error.cannotAssignExistingWithNewArtist') : '';
+              })()}
             >
               {tSong('buttons.assign')}
               {(isLoading || isLoadingDetails) && <div className="loading-spinner" />}

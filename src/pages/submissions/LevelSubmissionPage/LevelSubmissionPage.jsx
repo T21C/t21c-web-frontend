@@ -89,9 +89,9 @@ const LevelSubmissionPage = () => {
 
   // State for song/artist selection
   const [selectedSong, setSelectedSong] = useState(null);
-  const [selectedArtist, setSelectedArtist] = useState(null);
+  const [artists, setArtists] = useState([{ name: '', id: null, isNewRequest: false }]);
   const [showSongSelector, setShowSongSelector] = useState(false);
-  const [showArtistSelector, setShowArtistSelector] = useState(false);
+  const [showArtistSelector, setShowArtistSelector] = useState({ show: false, index: 0 });
   const [evidenceFiles, setEvidenceFiles] = useState([]);
   const [evidenceType, setEvidenceType] = useState('song'); // 'song' or 'artist'
 
@@ -148,13 +148,14 @@ const LevelSubmissionPage = () => {
   const validateForm = () => {
     // Use selected song/artist or fallback to form text fields
     const songValue = selectedSong?.songName || form.song;
-    const artistValue = selectedArtist?.artistName || form.artist;
+    const hasArtists = artists.some(artist => artist.name && (artist.id !== null || artist.isNewRequest));
+    const artistValue = artists.length > 0 ? artists.map(a => a.name).filter(Boolean).join(', ') : form.artist;
     
     const validationResult = {};
     const displayValidationRes = {};
     
     // Validate required fields
-    validationResult.artist = artistValue?.trim?.() !== '';
+    validationResult.artist = hasArtists || artistValue?.trim?.() !== '';
     validationResult.song = songValue?.trim?.() !== '';
     validationResult.diff = form.diff?.trim?.() !== '';
     validationResult.videoLink = form.videoLink?.trim?.() !== '';
@@ -166,6 +167,12 @@ const LevelSubmissionPage = () => {
 
     // Validate download links - only required if no zip is uploaded
     validationResult.directLink = form.levelZip || form.dlLink?.trim?.() !== '' || form.workshopLink?.trim?.() !== '';
+    
+    // Validate evidence - required when new song/artist requests exist
+    const hasNewSongRequest = selectedSong?.isNewRequest || false;
+    const hasNewArtistRequests = artists.some(artist => artist.isNewRequest);
+    const requiresEvidence = hasNewSongRequest || hasNewArtistRequests;
+    validationResult.evidence = !requiresEvidence || evidenceFiles.length > 0;
     
     // Check for pending profile creations
     const newPendingProfiles = [];
@@ -267,7 +274,7 @@ const LevelSubmissionPage = () => {
     
     // Reset song/artist selection
     setSelectedSong(null);
-    setSelectedArtist(null);
+    setArtists([{ name: '', id: null, isNewRequest: false }]);
     setEvidenceFiles([]);
     setEvidenceType('song');
     // Note: Artist selector will be re-enabled automatically when selectedSong is null
@@ -340,14 +347,24 @@ const LevelSubmissionPage = () => {
       } : null;
 
       // Set song/artist data (normalized or text)
-      submissionForm.setDetail('artist', selectedArtist?.artistName || form.artist);
+      const artistDisplayName = artists.length > 0 
+        ? artists.map(a => a.name).filter(Boolean).join(', ')
+        : form.artist;
+      submissionForm.setDetail('artist', artistDisplayName);
       submissionForm.setDetail('song', selectedSong?.songName || form.song);
       submissionForm.setDetail('songId', selectedSong?.songId || null);
-      submissionForm.setDetail('artistId', selectedArtist?.artistId || null);
+      // Use first artist ID for backward compatibility, or null if multiple artists
+      const firstArtistId = artists.length === 1 && artists[0].id ? artists[0].id : null;
+      submissionForm.setDetail('artistId', firstArtistId);
       submissionForm.setDetail('isNewSongRequest', selectedSong?.isNewRequest || false);
-      submissionForm.setDetail('isNewArtistRequest', selectedArtist?.isNewRequest || false);
-      submissionForm.setDetail('requiresSongEvidence', selectedSong?.requiresEvidence || false);
-      submissionForm.setDetail('requiresArtistEvidence', selectedArtist?.requiresEvidence || false);
+      // Check if any artist is a new request
+      const hasNewArtistRequest = artists.some(artist => artist.isNewRequest);
+      submissionForm.setDetail('isNewArtistRequest', hasNewArtistRequest);
+      // Evidence is required when new requests exist
+      const requiresSongEvidence = selectedSong?.isNewRequest || false;
+      const requiresArtistEvidence = hasNewArtistRequest;
+      submissionForm.setDetail('requiresSongEvidence', requiresSongEvidence);
+      submissionForm.setDetail('requiresArtistEvidence', requiresArtistEvidence);
       submissionForm.setDetail('diff', form.diff);
       submissionForm.setDetail('videoLink', cleanedVideoUrl);
       submissionForm.setDetail('directDL', form.dlLink);
@@ -358,8 +375,25 @@ const LevelSubmissionPage = () => {
       submissionForm.setDetail('teamRequest', teamRequest);
       submissionForm.setDetail('levelZip', form.levelZip);
       
+      // Add artist requests (similar to creator requests)
+      const artistRequests = artists
+        .filter(artist => artist.name)
+        .map(artist => ({
+          artistName: artist.name,
+          artistId: artist.id,
+          isNewRequest: artist.isNewRequest,
+          requiresEvidence: artist.isNewRequest // Always require evidence for new requests
+        }));
+      
+      submissionForm.setDetail('artistRequests', artistRequests);
+      
       // Add evidence files if present - FormManager will handle File objects
-      if (evidenceFiles.length > 0) {
+      // Evidence is required when new song/artist requests exist
+      const requiresEvidence = requiresSongEvidence || requiresArtistEvidence;
+      if (evidenceFiles.length > 0 || requiresEvidence) {
+        if (evidenceFiles.length === 0 && requiresEvidence) {
+          throw new Error('Evidence is required for new song/artist requests');
+        }
         submissionForm.setDetail('evidence', evidenceFiles); // Pass as array
         submissionForm.setDetail('evidenceType', evidenceType);
       }
@@ -523,6 +557,61 @@ const LevelSubmissionPage = () => {
     setVfxers(prev => prev.map((vfxer, i) => 
       i === index ? (value || { name: '', id: null, isNewRequest: false }) : vfxer
     ));
+  };
+
+  const addArtist = () => {
+    if (!Array.isArray(artists)) {
+      setArtists([{ name: '', id: null, isNewRequest: false }]);
+      return;
+    }
+    setArtists([...artists, { name: '', id: null, isNewRequest: false }]);
+  };
+
+  const removeArtist = (index) => {
+    if (!Array.isArray(artists)) {
+      setArtists([{ name: '', id: null, isNewRequest: false }]);
+      return;
+    }
+    if (artists.length === 1) {
+      // Keep at least one empty entry
+      setArtists([{ name: '', id: null, isNewRequest: false }]);
+    } else {
+      setArtists(artists.filter((_, i) => i !== index));
+    }
+    
+    // Update form
+    const updatedArtists = artists.filter((_, i) => i !== index);
+    const artistDisplayName = updatedArtists.map(a => a.name).filter(Boolean).join(', ');
+    const hasNewArtistRequest = updatedArtists.some(a => a.isNewRequest);
+    setForm(prev => ({
+      ...prev,
+      artist: artistDisplayName,
+      artistId: updatedArtists.length === 1 && updatedArtists[0].id ? updatedArtists[0].id : null,
+      isNewArtistRequest: hasNewArtistRequest,
+      requiresArtistEvidence: hasNewArtistRequest
+    }));
+  };
+
+  const handleArtistChange = (index, value) => {
+    if (!Array.isArray(artists)) {
+      setArtists([{ name: '', id: null, isNewRequest: false }]);
+      return;
+    }
+    const updatedArtists = artists.map((artist, i) => 
+      i === index ? (value || { name: '', id: null, isNewRequest: false }) : artist
+    );
+    setArtists(updatedArtists);
+    
+    // Update form
+    const artistDisplayName = updatedArtists.map(a => a.name).filter(Boolean).join(', ');
+    const hasNewArtistRequest = updatedArtists.some(a => a.isNewRequest);
+    setForm(prev => ({
+      ...prev,
+      artist: artistDisplayName,
+      artistId: updatedArtists.length === 1 && updatedArtists[0].id ? updatedArtists[0].id : null,
+      isNewArtistRequest: hasNewArtistRequest,
+      requiresArtistEvidence: hasNewArtistRequest
+    }));
   };
 
   // Check if user has agreed to CDN ToS
@@ -706,44 +795,48 @@ const LevelSubmissionPage = () => {
         {showSongSelector && (
           <SongSelectorPopup
             onClose={() => setShowSongSelector(false)}
-            selectedArtist={selectedArtist}
+            selectedArtist={selectedSong?.isNewRequest ? null : artists.filter(a => a.id && !a.isNewRequest)}
             onSelect={async (songData) => {
-              setSelectedSong(songData);
+              // Force evidence requirement for new song requests
+              const requiresEvidence = songData.isNewRequest ? true : (songData.requiresEvidence || false);
+              const finalSongData = {
+                ...songData,
+                requiresEvidence: requiresEvidence
+              };
+              
+              setSelectedSong(finalSongData);
               setForm(prev => ({
                 ...prev,
-                song: songData.songName || prev.song,
-                songId: songData.songId || null,
-                isNewSongRequest: songData.isNewRequest || false,
-                requiresSongEvidence: songData.requiresEvidence || false
+                song: finalSongData.songName || prev.song,
+                songId: finalSongData.songId || null,
+                isNewSongRequest: finalSongData.isNewRequest || false,
+                requiresSongEvidence: requiresEvidence
               }));
               
               // If a valid song is selected (not a new request), fetch artists and auto-assign them
-              if (songData.songId && !songData.isNewRequest) {
+              if (finalSongData.songId && !finalSongData.isNewRequest) {
                 try {
-                  const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/songs/${songData.songId}`);
+                  const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/songs/${finalSongData.songId}`);
                   const songDetails = response.data;
                   
                   if (songDetails?.credits && songDetails.credits.length > 0) {
-                    // Extract artists from credits
-                    const artists = songDetails.credits.map(credit => credit.artist).filter(Boolean);
+                    // Extract artists from credits and populate artists array
+                    const songArtists = songDetails.credits
+                      .map(credit => credit.artist)
+                      .filter(Boolean)
+                      .map(artist => ({
+                        name: artist.name,
+                        id: artist.id,
+                        isNewRequest: false
+                      }));
                     
-                    if (artists.length > 0) {
-                      // Format artist display name using same pattern as getArtistDisplayName: "Artist1, Artist2, Artist3"
-                      const artistDisplayName = artists.map(artist => artist.name).join(', ');
-                      
-                      // Auto-assign artists
-                      setSelectedArtist({
-                        artistId: artists.length === 1 ? artists[0].id : null, // Only set ID if single artist
-                        artistName: artistDisplayName,
-                        isNewRequest: false,
-                        requiresEvidence: false,
-                        artists: artists // Store full artist objects for reference
-                      });
-                      
+                    if (songArtists.length > 0) {
+                      setArtists(songArtists);
+                      const artistDisplayName = songArtists.map(a => a.name).join(', ');
                       setForm(prev => ({
                         ...prev,
                         artist: artistDisplayName,
-                        artistId: artists.length === 1 ? artists[0].id : null
+                        artistId: songArtists.length === 1 ? songArtists[0].id : null
                       }));
                     }
                   }
@@ -752,13 +845,28 @@ const LevelSubmissionPage = () => {
                   // Don't show error to user, just continue without auto-assigning artists
                 }
               } else {
-                // If it's a new song request or no songId, clear artist selection
-                setSelectedArtist(null);
-                setForm(prev => ({
-                  ...prev,
-                  artist: '',
-                  artistId: null
-                }));
+                // If it's a new song request or no songId, keep existing artists but don't reset them
+                // Users can have artists selected before requesting a new song
+                // Only reset if artists array is empty
+                if (!artists || artists.length === 0 || artists.every(a => !a.name)) {
+                  setArtists([{ name: '', id: null, isNewRequest: false }]);
+                  setForm(prev => ({
+                    ...prev,
+                    artist: '',
+                    artistId: null
+                  }));
+                } else {
+                  // Keep existing artists, just update form with artist display name
+                  const artistDisplayName = artists.map(a => a.name).filter(Boolean).join(', ');
+                  const hasNewArtistRequest = artists.some(a => a.isNewRequest);
+                  setForm(prev => ({
+                    ...prev,
+                    artist: artistDisplayName,
+                    artistId: artists.length === 1 && artists[0].id ? artists[0].id : null,
+                    isNewArtistRequest: hasNewArtistRequest,
+                    requiresArtistEvidence: hasNewArtistRequest
+                  }));
+                }
               }
               
               setShowSongSelector(false);
@@ -768,21 +876,40 @@ const LevelSubmissionPage = () => {
         )}
 
         {/* Artist Selector Popup */}
-        {showArtistSelector && (
+        {showArtistSelector.show && (
           <ArtistSelectorPopup
-            onClose={() => setShowArtistSelector(false)}
+            onClose={() => setShowArtistSelector({ show: false, index: 0 })}
             onSelect={(artistData) => {
-              setSelectedArtist(artistData);
+              // Force evidence requirement for new artist requests
+              const requiresEvidence = artistData.isNewRequest ? true : (artistData.requiresEvidence || false);
+              const finalArtistData = {
+                ...artistData,
+                requiresEvidence: requiresEvidence
+              };
+              
+              // Update the specific artist in the array
+              const updatedArtists = [...artists];
+              updatedArtists[showArtistSelector.index] = {
+                name: finalArtistData.artistName || '',
+                id: finalArtistData.artistId || null,
+                isNewRequest: finalArtistData.isNewRequest || false
+              };
+              setArtists(updatedArtists);
+              
+              // Update form with combined artist names
+              const artistDisplayName = updatedArtists.map(a => a.name).filter(Boolean).join(', ');
+              const hasNewArtistRequest = updatedArtists.some(a => a.isNewRequest);
               setForm(prev => ({
                 ...prev,
-                artist: artistData.artistName || prev.artist,
-                artistId: artistData.artistId || null,
-                isNewArtistRequest: artistData.isNewRequest || false,
-                requiresArtistEvidence: artistData.requiresEvidence || false
+                artist: artistDisplayName,
+                artistId: updatedArtists.length === 1 && updatedArtists[0].id ? updatedArtists[0].id : null,
+                isNewArtistRequest: hasNewArtistRequest,
+                requiresArtistEvidence: hasNewArtistRequest
               }));
-              setShowArtistSelector(false);
+              
+              setShowArtistSelector({ show: false, index: 0 });
             }}
-            initialArtist={selectedArtist}
+            initialArtist={artists[showArtistSelector.index] || { name: '', id: null, isNewRequest: false }}
           />
         )}
 
@@ -838,38 +965,65 @@ const LevelSubmissionPage = () => {
                   </span>
                 )}
               </div>
-              <div 
-                className="artist-selector-field"
-                onClick={() => {
-                  // Only allow opening if artist selector is not disabled
-                  if (!selectedSong?.songId || selectedSong?.isNewRequest) {
-                    setShowArtistSelector(true);
-                  }
-                }}
-                style={{ 
-                  borderColor: isFormValidDisplay.artist ? "" : "red",
-                  cursor: (selectedSong?.songId && !selectedSong?.isNewRequest) ? 'not-allowed' : 'pointer',
-                  opacity: (selectedSong?.songId && !selectedSong?.isNewRequest) ? 0.6 : 1
-                }}
-              >
-                <input
-                  type="text"
-                  placeholder={t('levelSubmission.submInfo.artist')}
-                  name="artist"
-                  value={selectedArtist?.artistName || form.artist}
-                  readOnly
-                  disabled={selectedSong?.songId && !selectedSong?.isNewRequest}
-                  style={{ 
-                    cursor: (selectedSong?.songId && !selectedSong?.isNewRequest) ? 'not-allowed' : 'pointer'
-                  }}
-                />
-                {selectedArtist && (
-                  <span className="selector-badge">
-                    {selectedArtist.isNewRequest ? 'New Request' : selectedSong?.songId && !selectedSong?.isNewRequest ? 'Auto-assigned' : 'Selected'}
-                  </span>
-                )}
-              </div>
+              <br/>
+              <h3>{t('levelSubmission.submInfo.artists')}</h3>
+              {Array.isArray(artists) && artists.map((artist, index) => (
+                <div key={index} className="creator-row">
+                  <div 
+                    className="artist-selector-field"
+                    onClick={() => {
+                      // Only allow opening if artist selector is not disabled (when existing song is selected)
+                      if (!selectedSong?.songId || selectedSong?.isNewRequest) {
+                        setShowArtistSelector({ show: true, index });
+                      }
+                    }}
+                    style={{ 
+                      borderColor: isFormValidDisplay.artist ? "" : "red",
+                      cursor: (selectedSong?.songId && !selectedSong?.isNewRequest) ? 'not-allowed' : 'pointer',
+                      opacity: (selectedSong?.songId && !selectedSong?.isNewRequest) ? 0.6 : 1
+                    }}
+                  >
+                    <input
+                      type="text"
+                      placeholder={t('levelSubmission.submInfo.artist')}
+                      name={`artist-${index}`}
+                      value={artist.name || ''}
+                      readOnly
+                      disabled={selectedSong?.songId && !selectedSong?.isNewRequest}
+                      style={{ 
+                        cursor: (selectedSong?.songId && !selectedSong?.isNewRequest) ? 'not-allowed' : 'pointer'
+                      }}
+                    />
+                    {artist.name && (
+                      <span className="selector-badge">
+                        {artist.isNewRequest ? 'New Request' : selectedSong?.songId && !selectedSong?.isNewRequest ? 'Auto-assigned' : 'Selected'}
+                      </span>
+                    )}
+                  </div>
+                  {index > 0 && (
+                    <button 
+                      className="creator-action-btn remove-creator-btn"
+                      onClick={() => removeArtist(index)}
+                      type="button"
+                      disabled={selectedSong?.songId && !selectedSong?.isNewRequest}
+                    >
+                      🗑️
+                    </button>
+                  )}
+                </div>
+              ))}
+              {(!selectedSong?.songId || selectedSong?.isNewRequest) && (
+                <button 
+                  className="creator-action-btn add-creator-btn"
+                  onClick={addArtist}
+                  type="button"
+                >
+                  ➕ {t('levelSubmission.buttons.addArtist')}
+                </button>
+              )}
             </div>
+
+
 
             <div className="youtube-input">
               <input
@@ -943,33 +1097,40 @@ const LevelSubmissionPage = () => {
             </div>
 
             {/* Evidence Upload Section */}
-            {(selectedSong?.requiresEvidence || selectedArtist?.requiresEvidence) && (
+            {(selectedSong?.isNewRequest || artists.some(artist => artist.isNewRequest)) && (
               <div className="evidence-upload-section">
                 <h3>{t('levelSubmission.submInfo.evidence')}</h3>
                 <div className="evidence-type-selector">
-                  <label>
-                    <input
-                      type="radio"
-                      name="evidenceType"
-                      value="song"
-                      checked={evidenceType === 'song'}
-                      onChange={(e) => setEvidenceType(e.target.value)}
-                      disabled={!selectedSong?.requiresEvidence}
-                    />
-                    {t('levelSubmission.submInfo.evidenceForSong')}
-                  </label>
-                  <label>
-                    <input
-                      type="radio"
-                      name="evidenceType"
-                      value="artist"
-                      checked={evidenceType === 'artist'}
-                      onChange={(e) => setEvidenceType(e.target.value)}
-                      disabled={!selectedArtist?.requiresEvidence}
-                    />
-                    {t('levelSubmission.submInfo.evidenceForArtist')}
-                  </label>
+                  {selectedSong?.isNewRequest && (
+                    <label>
+                      <input
+                        type="radio"
+                        name="evidenceType"
+                        value="song"
+                        checked={evidenceType === 'song'}
+                        onChange={(e) => setEvidenceType(e.target.value)}
+                      />
+                      {t('levelSubmission.submInfo.evidenceForSong')}
+                    </label>
+                  )}
+                  {artists.some(artist => artist.isNewRequest) && (
+                    <label>
+                      <input
+                        type="radio"
+                        name="evidenceType"
+                        value="artist"
+                        checked={evidenceType === 'artist'}
+                        onChange={(e) => setEvidenceType(e.target.value)}
+                      />
+                      {t('levelSubmission.submInfo.evidenceForArtist')}
+                    </label>
+                  )}
                 </div>
+                {evidenceFiles.length === 0 && (
+                  <div className="evidence-required-warning" style={{ color: 'red', marginTop: '10px' }}>
+                    {t('levelSubmission.alert.evidenceRequired')}
+                  </div>
+                )}
                 <div className="evidence-files-container">
                   <input
                     type="file"
