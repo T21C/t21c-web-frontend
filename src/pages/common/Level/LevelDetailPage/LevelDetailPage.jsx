@@ -811,7 +811,7 @@ const LevelDetailPage = ({ mockData = null }) => {
   };
 
   useEffect(() => {
-    setHasSongPopup(res?.level?.songs && res?.level?.songs.length > 0);
+    setHasSongPopup(res?.level?.songId !== null);
     setHasArtistPopup(res?.level?.artists && res?.level?.artists.length > 0);
   }, [res?.level]);
 
@@ -1438,7 +1438,9 @@ const LevelDetailPage = ({ mockData = null }) => {
     const hasPopup = isSong ? hasSongPopup : hasArtistPopup;
       
     // Use normalized name if available, otherwise use title
-    const displayName = isSong ? getSongName(level) : hasPopup ? (
+    const displayName = isSong ? 
+    <span onClick={() => setShowSongPopup(true)} className="level-title-clickable">{getSongName(level)}</span>
+    : hasPopup ? (
     <div className="level-artist-list-wrapper">
       {level.artists.map((artist, index) => (<>
         <span 

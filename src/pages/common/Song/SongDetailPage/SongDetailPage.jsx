@@ -26,7 +26,7 @@ const SongDetailPage = () => {
   const fetchSong = async () => {
     try {
       setLoading(true);
-      const response = await api.get(`${import.meta.env.VITE_API_URL}/songs/${id}`);
+      const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/songs/${id}`);
       setSong(response.data);
     } catch (error) {
       console.error('Error fetching song:', error);

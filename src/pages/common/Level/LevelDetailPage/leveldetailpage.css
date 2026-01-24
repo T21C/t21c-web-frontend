@@ -287,7 +287,7 @@
 .level-detail .title-container .level-title .level-title-clickable {
   cursor: pointer;
   text-decoration: underline;
-  text-decoration-color: rgba(255, 255, 255, 0.3);
+  text-decoration-color: rgba(255, 255, 255, 0);
   transition: text-decoration-color 0.2s;
 }
 
