@@ -811,7 +811,7 @@ const LevelDetailPage = ({ mockData = null }) => {
   };
 
   useEffect(() => {
-    setHasSongPopup(res?.level?.songId !== null);
+    setHasSongPopup(res?.level?.songObject !== undefined);
     setHasArtistPopup(res?.level?.artists && res?.level?.artists.length > 0);
   }, [res?.level]);
 
@@ -2451,7 +2451,7 @@ const LevelDetailPage = ({ mockData = null }) => {
 
       {showSongPopup && res.level && hasSongPopup && (
         <SongPopup
-          song={res.level.songs}
+          song={res.level.songObject}
           onClose={() => setShowSongPopup(false)}
         />
       )}
