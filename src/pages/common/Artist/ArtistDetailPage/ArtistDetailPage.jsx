@@ -195,7 +195,11 @@ const ArtistDetailPage = () => {
                     className="level-item"
                     onClick={() => navigate(`/levels/${level.id}`)}
                   >
-                    {level.song || level.artist ? `${level.song || ''} - ${level.artist || ''}` : `Level ${level.id}`}
+                    {(() => {
+                      const songName = level.songObject?.name || level.song || '';
+                      const artistName = level.artistObject?.name || level.artist || '';
+                      return songName || artistName ? `${songName} - ${artistName}` : `Level ${level.id}`;
+                    })()}
                   </div>
                 ))}
               </div>

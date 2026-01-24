@@ -1,12 +1,13 @@
 {
-  "title": "Manage Song",
+  "title": "Manage Song {{name}}",
   "tabs": {
     "update": "Update",
     "merge": "Merge",
     "aliases": "Aliases",
     "links": "Links",
     "credits": "Credits",
-    "evidence": "Evidence"
+    "evidence": "Evidence",
+    "levelSuffix": "Level Suffix"
   },
   "form": {
     "name": "Name",
@@ -63,7 +64,20 @@
     "creditAdded": "Credit added successfully",
     "creditRemoved": "Credit removed successfully",
     "evidenceAdded": "Evidence added successfully",
-    "evidenceDeleted": "Evidence deleted successfully"
+    "evidenceDeleted": "Evidence deleted successfully",
+    "suffixUpdated": "Level suffix updated successfully"
+  },
+  "levelSuffix": {
+    "description": "Update the level suffix for all levels with this song.",
+    "currentSuffix": "Current Suffix",
+    "newSuffix": "New Suffix",
+    "placeholder": "Enter the new suffix",
+    "clearSuffix": "Clear Suffix",
+    "applyToAll": "Apply to All",
+    "levelsAffected": "{{count}} levels will be affected",
+    "noLevels": "No levels found for this song",
+    "differentSuffixes": "Different suffixes found for different levels",
+    "suffixUpdated": "Level suffix updated successfully"
   },
   "errors": {
     "updateFailed": "Failed to update song",
@@ -75,6 +89,7 @@
     "creditFailed": "Failed to add credit",
     "evidenceFailed": "Failed to add evidence",
     "noFile": "Please select a file",
-    "invalidFileType": "Please select image files only"
+    "invalidFileType": "Please select image files only",
+    "suffixUpdateFailed": "Failed to update level suffix"
   }
 }

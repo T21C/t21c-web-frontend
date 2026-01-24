@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import './entityActionPopup.css';
 import { toast } from 'react-hot-toast';
-import { UpdateTab, MergeTab, SplitTab, AliasesTab, LinksTab, CreditsTab, EvidenceTab } from './tabs';
+import { UpdateTab, MergeTab, SplitTab, AliasesTab, LinksTab, CreditsTab, EvidenceTab, LevelSuffixTab } from './tabs';
 
 export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'artist' }) => {
   const { t } = useTranslation('components');
@@ -15,7 +15,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
   };
   const popupRef = useRef(null);
 
-  const [mode, setMode] = useState('update'); // update, merge, split, aliases, links, evidence, credits (songs only)
+  const [mode, setMode] = useState('update'); // update, merge, split, aliases, links, evidence, credits (songs only), levelSuffix (songs only)
   const [name, setName] = useState(artist?.name || '');
   const [avatarUrl, setAvatarUrl] = useState(artist?.avatarUrl || '');
   const [verificationState, setVerificationState] = useState(artist?.verificationState || 'unverified');
@@ -647,7 +647,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
     <div className={`entity-action-popup-overlay`}>
       <div className={`entity-action-popup`} ref={popupRef}>
         <div className="popup-header">
-          <h2>{tEntity('title')}</h2>
+          <h2>{tEntity('title', { name: entity.name })}</h2>
           <button className="close-button" onClick={onClose}>×</button>
         </div>
 
@@ -710,6 +710,14 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
                 onClick={() => setMode('credits')}
               >
                 {tEntity('tabs.credits')}
+              </button>
+            )}
+            {type === 'song' && (
+              <button
+                className={`mode-tab ${mode === 'levelSuffix' ? 'active' : ''}`}
+                onClick={() => setMode('levelSuffix')}
+              >
+                {tEntity('tabs.levelSuffix')}
               </button>
             )}
             <button
@@ -816,6 +824,15 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
               credits={credits}
               handleAddCredit={handleAddCredit}
               handleRemoveCredit={handleRemoveCredit}
+              tEntity={tEntity}
+            />
+          )}
+
+          {mode === 'levelSuffix' && type === 'song' && (
+            <LevelSuffixTab
+              song={song}
+              onUpdate={onUpdate}
+              isLoading={isLoading}
               tEntity={tEntity}
             />
           )}

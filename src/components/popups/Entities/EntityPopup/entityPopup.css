@@ -1,0 +1,283 @@
+.entity-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  overflow-y: auto;
+}
+
+.entity-popup {
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.entity-popup .popup-header {
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: sticky;
+  top: 0;
+  background-color: #1e1e1e;
+  z-index: 10;
+}
+
+.entity-popup .popup-header-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.entity-popup .popup-header .popup-avatar {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.entity-popup .popup-header .popup-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+  color: #ffffff;
+  flex: 1;
+}
+
+.entity-popup .popup-close-button {
+  background: none;
+  border: none;
+  font-size: 32px;
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: background-color 0.2s, opacity 0.2s;
+  flex-shrink: 0;
+}
+
+.entity-popup .popup-close-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  opacity: 1;
+}
+
+.entity-popup .popup-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  flex: 1;
+  min-height: 0;
+}
+
+.entity-popup .popup-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.entity-popup .popup-section-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 0;
+}
+
+.entity-popup .popup-verification {
+  display: flex;
+  gap: 8px;
+}
+
+.entity-popup .verification-chip {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.entity-popup .verification-chip.unverified {
+  background-color: rgba(128, 128, 128, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.entity-popup .verification-chip.pending {
+  background-color: rgba(255, 193, 7, 0.2);
+  color: #ffc107;
+}
+
+.entity-popup .verification-chip.verified {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+}
+
+.entity-popup .verification-chip.allowed {
+  background-color: rgba(76, 175, 80, 0.2);
+  color: #4caf50;
+}
+
+.entity-popup .verification-chip.mostly-allowed {
+  background-color: rgba(129, 199, 132, 0.2);
+  color: #81c784;
+}
+
+.entity-popup .verification-chip.mostly-declined {
+  background-color: rgba(239, 154, 154, 0.2);
+  color: #ef9a9a;
+}
+
+.entity-popup .verification-chip.declined {
+  background-color: rgba(244, 67, 54, 0.2);
+  color: #f44336;
+}
+
+.entity-popup .popup-aliases {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.entity-popup .popup-alias-tag {
+  padding: 6px 12px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  font-size: 14px;
+  color: #ffffff;
+}
+
+.entity-popup .popup-links {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.entity-popup .popup-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #4CAF50;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 8px;
+  border-radius: 6px;
+  transition: background-color 0.2s;
+  word-break: break-all;
+}
+
+.entity-popup .popup-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.entity-popup .popup-artists {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.entity-popup .popup-artist-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.entity-popup .popup-artist-item:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.entity-popup .popup-artist-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  background-color: rgba(255, 255, 255, 0.1);
+  flex-shrink: 0;
+}
+
+.entity-popup .popup-artist-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.entity-popup .popup-artist-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.entity-popup .popup-artist-role {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  text-transform: capitalize;
+}
+
+.entity-popup .popup-view-details {
+  width: 100%;
+  padding: 12px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 8px;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.entity-popup .popup-view-details:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.entity-popup .popup-loading {
+  padding: 40px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.entity-popup::-webkit-scrollbar {
+  width: 8px;
+}
+
+.entity-popup::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.entity-popup::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.entity-popup::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
+}

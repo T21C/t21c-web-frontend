@@ -9,6 +9,7 @@ import { formatCreatorDisplay, selectIconSize } from "@/utils/Utility";
 import { ABILITIES, hasBit } from "@/utils/Abilities";
 import { permissionFlags } from "@/utils/UserPermissions";
 import { hasFlag } from "@/utils/UserPermissions";
+import { getSongName, getArtistDisplayName } from "@/utils/levelHelpers";
 
 
 const LevelCard = ({
@@ -60,6 +61,8 @@ const LevelCard = ({
   const customBaseScore = level.baseScore && level.baseScore !== difficultyDict[level.diffId]?.baseScore ? level.baseScore : null;
   const tagIds = (displayMode !== 'normal' || !showTags) ? [] : (level.tags?.map((item) => item.id) || []);
   const tags = tagIds.map((id) => tagsDict[id]).filter(Boolean); // Filter out undefined/null tags
+  const hasSongPopup = (level.songs && level.songs.length > 0) ? true : false;
+  const hasArtistPopup = (level.artists && level.artists.length > 0) ? true : false;
 
   // Handle body overflow when popups are open
   useEffect(() => {
@@ -144,17 +147,8 @@ const LevelCard = ({
   );
 
   const renderSongInfo = () => {
-    const songName = level.songObject?.name || level.song || '';
-    const artistName = level.artistObject?.name || level.artist || '';
-    const hasSongPopup = level.songObject || level.songId;
-    const hasArtistPopup = level.artistObject || level.artistId;
-
-    const handleSongClick = (e) => {
-      if (hasSongPopup) {
-        e.stopPropagation();
-        setShowSongPopup(true);
-      }
-    };
+    const songName = getSongName(level);
+    const artistName = getArtistDisplayName(level);
 
     const handleArtistClick = (e) => {
       if (hasArtistPopup) {
@@ -181,8 +175,9 @@ const LevelCard = ({
             )}
           </p>
         </div>
-        <p className={`level-desc ${hasSongPopup ? 'level-song-clickable' : ''}`} onClick={hasSongPopup ? handleSongClick : undefined} title={hasSongPopup ? "Click to view song details" : undefined}>
-          {songName}
+        <p 
+        className="level-desc">
+          {songName} 
         </p>
       </div>
     );
@@ -347,15 +342,15 @@ const LevelCard = ({
           onSuccess={() => {}}
         />
       )}
-      {showSongPopup && (level.songObject || level.songId) && (
+      {showSongPopup && hasSongPopup && (
         <SongPopup
-          song={level.songObject || { id: level.songId, name: level.song }}
+          song={level.songs}
           onClose={() => setShowSongPopup(false)}
         />
       )}
-      {showArtistPopup && (level.artistObject || level.artistId) && (
+      {showArtistPopup && hasArtistPopup && (
         <ArtistPopup
-          artist={level.artistObject || { id: level.artistId, name: level.artist }}
+          artist={level.artists}
           onClose={() => setShowArtistPopup(false)}
         />
       )}
@@ -410,9 +405,9 @@ const LevelCard = ({
           )}
 
           <div className="content-overlay">
-            <div className="title-section">{level.song}</div>
+            <div className="title-section">{getSongName(level)}</div>
             <div className="creator-section">
-              {level.artist} - {formatCreatorDisplay(level)}
+              {getArtistDisplayName(level)} - {formatCreatorDisplay(level)}
             </div>
           </div>
         </div>

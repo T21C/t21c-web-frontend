@@ -294,10 +294,12 @@
 .level-detail .title-container .level-title .level-title-clickable:hover {
   text-decoration-color: rgba(255, 255, 255, 0.6);
 }
-  display: block;
-  align-items: center;
+
+.level-detail .title-container .level-artist-list-wrapper {
+  display: flex;
+  flex-direction: row;
   gap: var(--spacing-xs);
-  position: relative;
+  align-items: center;
 }
 
 .level-detail .title-container .level-info {
@@ -1791,7 +1793,6 @@
 
 .level-detail-popup {
   position: fixed;
-  margin-top: var(--spacing-xl);
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -1885,6 +1886,29 @@
   color: var(--primary-text);
   overflow-y: auto;
   background-color: var(--glass-bg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  flex: 1;
+  min-height: 0;
+}
+
+.level-detail-popup .popup-content .popup-body::-webkit-scrollbar {
+  width: 8px;
+}
+
+.level-detail-popup .popup-content .popup-body::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.level-detail-popup .popup-content .popup-body::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.level-detail-popup .popup-content .popup-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 /* Full Info Popup Specific Styles */
@@ -1892,7 +1916,6 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: var(--spacing-md);
-  margin: var(--spacing-md) 0;
   padding: var(--spacing-md);
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: var(--border-radius);
@@ -1920,6 +1943,12 @@
   font-size: var(--font-size-xs);
 }
 
+.level-detail-popup .popup-content .popup-body .creator-item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
 .level-detail-popup .popup-content .popup-body .creator-name {
   padding: var(--spacing-xs) var(--spacing-sm);
   background-color: rgba(255, 255, 255, 0.1);
@@ -1929,13 +1958,14 @@
 }
 
 .level-detail-popup .popup-content .popup-body .team-info {
-  margin-bottom: var(--spacing-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
   border-bottom: 2px solid rgba(255, 255, 255, 0.2);
-  padding: var(--spacing-sm);
+  padding-bottom: var(--spacing-md);
 }
 
 .level-detail-popup .popup-content .popup-body .team-info .each-info {
-  margin-bottom: var(--spacing-sm);
   display: grid;
   gap: var(--spacing-md);
   grid-template-columns: 1fr 5fr;
@@ -1943,9 +1973,9 @@
 }
 
 .level-detail-popup .popup-content .popup-body .team-info .team-name {
-  margin-bottom: var(--spacing-md);
   padding-bottom: var(--spacing-md);
   border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 0;
 }
 
 .level-detail-popup .popup-content .popup-body .team-info .team-name span:last-child {
@@ -1965,6 +1995,7 @@
   align-items: center;
   padding-top: var(--spacing-md);
   border-top: 2px solid rgba(255, 255, 255, 0.2);
+  margin-top: 0;
 }
 
 .level-detail-popup .popup-content .popup-body .links a {
@@ -2665,7 +2696,6 @@
   
   .level-detail-popup .popup-content {
     max-height: 95vh;
-    margin: 2.5vh auto;
   }
   
   .rating-accuracy-dialog-content {

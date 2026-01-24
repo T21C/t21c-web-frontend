@@ -37,6 +37,7 @@ import {
   RefreshIcon
 } from "@/components/common/icons";
 import { createEventSystem, formatCreatorDisplay, formatDate, isCdnUrl, selectIconSize } from "@/utils/Utility";
+import { getSongName, getArtistDisplayName } from "@/utils/levelHelpers";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
 import LevelDownloadPopup from '../../../../components/popups/Levels/LevelDownloadPopup/LevelDownloadPopup';
@@ -325,9 +326,9 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
         <div className="credits-column">
           <div className="role-header">{tLevel('info.roles.charter')}</div>
           {charters.map((charter, index) => (
-            <div>
-            {charter.isOwner && <div className="owner-badge" title="Owner">Owner</div>}
-            <div key={`charter-${index}`} className="creator-name">{charter.name}</div>
+            <div key={`charter-${index}`} className="creator-item">
+              {charter.isOwner && <div className="owner-badge" title="Owner">Owner</div>}
+              <div className="creator-name">{charter.name}</div>
             </div>
           ))}
         </div>
@@ -346,8 +347,8 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
       <div className="level-detail-popup popup-scale-up">
         <div className="popup-content">
           <div className="popup-header" style={{ '--popup-header-bg': `#${difficulty.color}ff` }}>
-            <h2>{level.song}</h2>
-            <p>{level.artist}</p>
+            <h2>{getSongName(level)}</h2>
+            <p>{getArtistDisplayName(level)}</p>
             <span className="createdAt">{tLevel('info.createdAt')}: {formatDate(videoDetail?.timestamp || level.createdAt, i18next?.language)}</span>
             <button className="popup-close-button" onClick={onClose} title={tLevel('buttons.close')}>
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -797,6 +798,22 @@ const LevelDetailPage = ({ mockData = null }) => {
   const currentUrl = window.location.origin + location.pathname;
 
   const [isLongDescription, setIsLongDescription] = useState(false);
+
+  const [hasSongPopup, setHasSongPopup] = useState(false);
+  const [hasArtistPopup, setHasArtistPopup] = useState(false);
+
+
+  const [clickedArtist, setClickedArtist] = useState(null);
+
+  const handleArtistClick = (artist) => {
+    setClickedArtist(artist);
+    setShowArtistPopup(true);
+  };
+
+  useEffect(() => {
+    setHasSongPopup(res?.level?.songs && res?.level?.songs.length > 0);
+    setHasArtistPopup(res?.level?.artists && res?.level?.artists.length > 0);
+  }, [res?.level]);
 
   useEffect(() => {
     setIsLongDescription(res?.level?.curation?.description?.length > 250);
@@ -1323,7 +1340,7 @@ const LevelDetailPage = ({ mockData = null }) => {
 
   useEffect(() => {
     if (res?.level) {
-      document.title = `${res.level.song} - ${res.level.artist} | TUF`;
+      document.title = `${getSongName(res.level)} - ${getArtistDisplayName(res.level)} | TUF`;
     } else {
       document.title = 'Loading Level... | TUF';
     }
@@ -1410,7 +1427,7 @@ const LevelDetailPage = ({ mockData = null }) => {
     setOpenDialog(!openDialog)
   }
 
-  const renderTitleWithAliases = (title, field) => {
+  const renderTitleWithAliases = (field) => {
     const level = res?.level;
     const aliases = level?.aliases?.filter(a => a.field === field) || [];
     const isOpen = activeAliasDropdown === field;
@@ -1418,12 +1435,15 @@ const LevelDetailPage = ({ mockData = null }) => {
     // Check for normalized data
     const isSong = field === 'song';
     const isArtist = field === 'artist';
-    const normalizedData = isSong ? level?.songObject : (isArtist ? level?.artistObject : null);
-    const normalizedId = isSong ? level?.songId : (isArtist ? level?.artistId : null);
-    const hasPopup = normalizedData || normalizedId;
-    
+    const hasPopup = isSong ? hasSongPopup : hasArtistPopup;
+      
     // Use normalized name if available, otherwise use title
-    const displayName = normalizedData?.name || title;
+    const displayName = isSong ? getSongName(level) : hasPopup ? (
+    <div className="level-artist-list-wrapper">
+      {level.artists.map(artist => (
+        <span key={artist.id} onClick={() => handleArtistClick(artist)}>{artist.name}</span>
+      ))}
+    </div>) : getArtistDisplayName(level);
     
     const handleClick = (e) => {
       if (hasPopup) {
@@ -1449,7 +1469,7 @@ const LevelDetailPage = ({ mockData = null }) => {
         ) : (
           <span>{displayName}</span>
         )}
-        {aliases.length > 0 && (
+        {aliases.length > 0 && !level.artists && (
           <>
             <span 
               className={`tag-list-arrow ${isOpen ? 'open' : ''}`}
@@ -1660,8 +1680,8 @@ const LevelDetailPage = ({ mockData = null }) => {
   return (
     <div>
       <MetaTags
-        title={res?.level?.song}
-        description={tLevel('meta.description', { song: res?.level?.song, creator: res?.level?.creator })}
+        title={getSongName(res?.level)}
+        description={tLevel('meta.description', { song: getSongName(res?.level), creator: res?.level?.creator })}
         url={currentUrl}
         image={''}
         type="article"
@@ -1788,7 +1808,7 @@ const LevelDetailPage = ({ mockData = null }) => {
               </div>
               <div className="title-container">
                 <div className="level-title">
-                  {renderTitleWithAliases(res.level.song, 'song')}
+                  {renderTitleWithAliases('song')}
                 </div>
                 <div className="level-info">
                   <div className="level-creator">
@@ -1796,7 +1816,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                   </div>
                   <div className="level-separator">-</div>
                   <div className="level-artist">
-                  {renderTitleWithAliases(res.level.artist, 'artist')}
+                  {renderTitleWithAliases('artist')}
                   </div>
                 </div>
                 {(res.tilecount || res.bpm) && (
@@ -2418,16 +2438,19 @@ const LevelDetailPage = ({ mockData = null }) => {
         initialValue={0}
       />
 
-      {showSongPopup && res.level && (res.level.songObject || res.level.songId) && (
+      {showSongPopup && res.level && hasSongPopup && (
         <SongPopup
-          song={res.level.songObject || { id: res.level.songId, name: res.level.song }}
+          song={res.level.songs}
           onClose={() => setShowSongPopup(false)}
         />
       )}
-      {showArtistPopup && res.level && (res.level.artistObject || res.level.artistId) && (
+      {showArtistPopup && res.level && hasArtistPopup && (
         <ArtistPopup
-          artist={res.level.artistObject || { id: res.level.artistId, name: res.level.artist }}
-          onClose={() => setShowArtistPopup(false)}
+          artist={clickedArtist}
+          onClose={() => {
+            setShowArtistPopup(false);
+            setClickedArtist(null);
+          }}
         />
       )}
       {showDownloadPopup && (
