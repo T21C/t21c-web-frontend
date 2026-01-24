@@ -9,7 +9,7 @@ import { validateFeelingRating } from "@/utils/Utility";
 import { useTranslation } from "react-i18next";
 import { StagingModeWarning } from "@/components/common/display";
 import { ProfileSelector } from "@/components/common/selectors";
-import { LevelSelectionPopup, CDNTosPopup, LevelUploadPopup } from "@/components/popups";
+import { LevelSelectionPopup, CDNTosPopup, LevelUploadPopup, SongSelectorPopup, ArtistSelectorPopup } from "@/components/popups";
 
 import api from "@/utils/api";
 import { prepareZipForUpload, validateZipSize } from '@/utils/zipUtils';
@@ -270,6 +270,7 @@ const LevelSubmissionPage = () => {
     setSelectedArtist(null);
     setEvidenceFiles([]);
     setEvidenceType('song');
+    // Note: Artist selector will be re-enabled automatically when selectedSong is null
     
     // Reset validation states
     setSubmitAttempt(false);
@@ -705,7 +706,8 @@ const LevelSubmissionPage = () => {
         {showSongSelector && (
           <SongSelectorPopup
             onClose={() => setShowSongSelector(false)}
-            onSelect={(songData) => {
+            selectedArtist={selectedArtist}
+            onSelect={async (songData) => {
               setSelectedSong(songData);
               setForm(prev => ({
                 ...prev,
@@ -714,6 +716,51 @@ const LevelSubmissionPage = () => {
                 isNewSongRequest: songData.isNewRequest || false,
                 requiresSongEvidence: songData.requiresEvidence || false
               }));
+              
+              // If a valid song is selected (not a new request), fetch artists and auto-assign them
+              if (songData.songId && !songData.isNewRequest) {
+                try {
+                  const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/songs/${songData.songId}`);
+                  const songDetails = response.data;
+                  
+                  if (songDetails?.credits && songDetails.credits.length > 0) {
+                    // Extract artists from credits
+                    const artists = songDetails.credits.map(credit => credit.artist).filter(Boolean);
+                    
+                    if (artists.length > 0) {
+                      // Format artist display name using same pattern as getArtistDisplayName: "Artist1, Artist2, Artist3"
+                      const artistDisplayName = artists.map(artist => artist.name).join(', ');
+                      
+                      // Auto-assign artists
+                      setSelectedArtist({
+                        artistId: artists.length === 1 ? artists[0].id : null, // Only set ID if single artist
+                        artistName: artistDisplayName,
+                        isNewRequest: false,
+                        requiresEvidence: false,
+                        artists: artists // Store full artist objects for reference
+                      });
+                      
+                      setForm(prev => ({
+                        ...prev,
+                        artist: artistDisplayName,
+                        artistId: artists.length === 1 ? artists[0].id : null
+                      }));
+                    }
+                  }
+                } catch (error) {
+                  console.error('Error fetching song details for artists:', error);
+                  // Don't show error to user, just continue without auto-assigning artists
+                }
+              } else {
+                // If it's a new song request or no songId, clear artist selection
+                setSelectedArtist(null);
+                setForm(prev => ({
+                  ...prev,
+                  artist: '',
+                  artistId: null
+                }));
+              }
+              
               setShowSongSelector(false);
             }}
             initialSong={selectedSong}
@@ -793,10 +840,16 @@ const LevelSubmissionPage = () => {
               </div>
               <div 
                 className="artist-selector-field"
-                onClick={() => setShowArtistSelector(true)}
+                onClick={() => {
+                  // Only allow opening if artist selector is not disabled
+                  if (!selectedSong?.songId || selectedSong?.isNewRequest) {
+                    setShowArtistSelector(true);
+                  }
+                }}
                 style={{ 
                   borderColor: isFormValidDisplay.artist ? "" : "red",
-                  cursor: 'pointer'
+                  cursor: (selectedSong?.songId && !selectedSong?.isNewRequest) ? 'not-allowed' : 'pointer',
+                  opacity: (selectedSong?.songId && !selectedSong?.isNewRequest) ? 0.6 : 1
                 }}
               >
                 <input
@@ -805,11 +858,14 @@ const LevelSubmissionPage = () => {
                   name="artist"
                   value={selectedArtist?.artistName || form.artist}
                   readOnly
-                  style={{ cursor: 'pointer' }}
+                  disabled={selectedSong?.songId && !selectedSong?.isNewRequest}
+                  style={{ 
+                    cursor: (selectedSong?.songId && !selectedSong?.isNewRequest) ? 'not-allowed' : 'pointer'
+                  }}
                 />
                 {selectedArtist && (
                   <span className="selector-badge">
-                    {selectedArtist.isNewRequest ? 'New Request' : 'Selected'}
+                    {selectedArtist.isNewRequest ? 'New Request' : selectedSong?.songId && !selectedSong?.isNewRequest ? 'Auto-assigned' : 'Selected'}
                   </span>
                 )}
               </div>

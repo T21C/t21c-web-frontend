@@ -299,6 +299,76 @@
   text-decoration-color: rgba(255, 255, 255, 0.5);
 }
 
+.detail-value-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.entity-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.manage-entity-button {
+  padding: 6px 12px;
+  background-color: #9370DB;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: all 0.2s ease;
+}
+
+.manage-entity-button:hover {
+  background-color: #b468ee;
+  transform: translateY(-1px);
+}
+
+.manage-entity-button:active {
+  transform: translateY(0);
+}
+
+.add-entity-request-button {
+  padding: 4px 10px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: all 0.2s ease;
+}
+
+.add-entity-request-button:hover {
+  background-color: #45a049;
+  transform: translateY(-1px);
+}
+
+.change-entity-button {
+  padding: 6px 12px;
+  background-color: #2196F3;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+  transition: all 0.2s ease;
+}
+
+.change-entity-button:hover {
+  background-color: #1976D2;
+  transform: translateY(-1px);
+}
+
+.change-entity-button:active {
+  transform: translateY(0);
+}
+
 .detail-value .request-badge {
   font-size: 0.7em;
   padding: 2px 6px;

@@ -30,6 +30,18 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
   const [isNewRequest, setIsNewRequest] = useState(false);
   const [requiresEvidence, setRequiresEvidence] = useState(false);
 
+  // Reset create form state when popup opens
+  useEffect(() => {
+    // Only show create form if we have an explicit new request (name but no id)
+    // Otherwise, reset the create form state
+    if (!initialArtist || initialArtist.id || !initialArtist.name) {
+      setShowCreateForm(false);
+      setNewName('');
+      setIsNewRequest(false);
+      setRequiresEvidence(false);
+    }
+  }, [initialArtist]);
+
   // Load initial artist details if they exist
   useEffect(() => {
     const loadInitialDetails = async () => {
@@ -65,7 +77,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
 
       setIsSearching(true);
       try {
-        const response = await api.get(`${import.meta.env.VITE_API_URL}/artists`, {
+        const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/artists`, {
           params: {
             search: searchQuery,
             page: 1,
@@ -95,7 +107,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
     if (!artistId) return null;
 
     try {
-      const response = await api.get(`${import.meta.env.VITE_API_URL}/artists/${artistId}`);
+      const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/artists/${artistId}`);
       const artist = response.data;
       
       if (!artist) {

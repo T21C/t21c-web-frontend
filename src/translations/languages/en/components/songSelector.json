@@ -38,12 +38,17 @@
       "songAssigned": "Song assigned successfully",
       "songCreated": "Song request created successfully"
     },
+    "newArtistRestriction": "A new artist request is set. Only new song requests can be created.",
+    "onlyNewSongsAllowed": "Only new song requests are allowed when a new artist is set.",
+    "filteredByArtist": "Showing songs by {{artistName}}",
     "error": {
       "searchFailed": "Failed to search songs",
       "loadDetailsFailed": "Failed to load song details",
       "songNotFound": "Song not found",
       "assignFailed": "Failed to assign song",
-      "createFailed": "Failed to create song request"
+      "createFailed": "Failed to create song request",
+      "cannotAssignExistingWithNewArtist": "Cannot assign existing songs when a new artist request is set",
+      "songNotByArtist": "This song does not belong to the selected artist"
     }
   }
 }

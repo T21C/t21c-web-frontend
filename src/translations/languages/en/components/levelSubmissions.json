@@ -4,6 +4,7 @@
   "loading": "Loading submissions...",
   "error": "Error loading submissions",
   "details": {
+    "song": "Song:",
     "artist": "Artist:",
     "charter": "Charter:",
     "difficulty": "Difficulty:",
@@ -25,6 +26,12 @@
   "buttons": {
     "manageCreator": "Manage Creator",
     "manageTeam": "Manage Team",
+    "manageSong": "Manage Song",
+    "manageArtist": "Manage Artist",
+    "changeSong": "Change Song",
+    "changeArtist": "Change Artist",
+    "addSongRequest": "Add Song Request",
+    "addArtistRequest": "Add Artist Request",
     "allow": "Allow",
     "decline": "Decline",
     "addCharter": "Add Charter",
@@ -86,7 +93,11 @@
     "removeCreatorFailed": "Failed to remove creator",
     "cannotRemoveLastCharter": "Cannot remove the last charter",
     "needProfiles": "All creator profiles must be assigned before approval",
+    "needSongAndArtist": "Both song and artist must be set before approval",
+    "needArtistForSong": "Artist must be set before managing song",
     "updateSongFailed": "Failed to update song",
-    "updateArtistFailed": "Failed to update artist"
+    "updateArtistFailed": "Failed to update artist",
+    "addSongRequestFailed": "Failed to add song request",
+    "addArtistRequestFailed": "Failed to add artist request"
   }
 } 

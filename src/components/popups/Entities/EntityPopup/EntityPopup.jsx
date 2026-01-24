@@ -54,8 +54,8 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
         try {
           setLoading(true);
           const endpoint = type === 'artist' 
-            ? `${import.meta.env.VITE_API_URL}/artists/${entity.id}`
-            : `${import.meta.env.VITE_API_URL}/songs/${entity.id}`;
+            ? `${import.meta.env.VITE_API_URL}/v2/database/artists/${entity.id}`
+            : `${import.meta.env.VITE_API_URL}/v2/database/songs/${entity.id}`;
           const response = await api.get(endpoint);
           setEntityData(response.data);
         } catch (error) {
