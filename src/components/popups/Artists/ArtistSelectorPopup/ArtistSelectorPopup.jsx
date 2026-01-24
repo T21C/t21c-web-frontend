@@ -1,12 +1,23 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
+import { CustomSelect } from '@/components/common/selectors';
 import './artistSelectorPopup.css';
 
 export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null }) => {
   const { t } = useTranslation('components');
   const tArtist = (key, params = {}) => t(`artistSelector.${key}`, params) || key;
   const popupRef = useRef(null);
+
+  // Verification state options for CustomSelect
+  const verificationStateOptions = [
+    { value: 'unverified', label: tArtist('status.unverified') },
+    { value: 'pending', label: tArtist('status.pending') },
+    { value: 'declined', label: tArtist('status.declined') },
+    { value: 'mostly declined', label: tArtist('status.mostlyDeclined') },
+    { value: 'mostly allowed', label: tArtist('status.mostlyAllowed') },
+    { value: 'allowed', label: tArtist('status.allowed') }
+  ];
 
   // Core state
   const [selectedArtistId, setSelectedArtistId] = useState(initialArtist?.id || null);
@@ -25,7 +36,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newName, setNewName] = useState('');
   const [isCreating, setIsCreating] = useState(false);
-  const [requiresEvidence, setRequiresEvidence] = useState(false);
+  const [verificationState, setVerificationState] = useState('unverified');
 
   // Reset create form state when popup opens
   useEffect(() => {
@@ -34,7 +45,9 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
     if (!initialArtist || initialArtist.id || !initialArtist.name) {
       setShowCreateForm(false);
       setNewName('');
-      setRequiresEvidence(false);
+      setVerificationState('unverified');
+    } else {
+      setVerificationState(initialArtist.verificationState || 'unverified');
     }
   }, [initialArtist]);
 
@@ -61,7 +74,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
   const handleCreateClick = () => {
     setShowCreateForm(true);
     setNewName(initialArtist.name);
-    setRequiresEvidence(false);
+    setVerificationState(initialArtist?.verificationState || 'unverified');
   };
 
   // Handle search with pagination
@@ -141,7 +154,8 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
       const newArtistData = {
         artistName: newName.trim(),
         isNewRequest: true,
-        requiresEvidence: requiresEvidence
+        verificationState: verificationState,
+        requiresEvidence: verificationState === 'declined' || verificationState === 'mostly declined'
       };
 
       onSelect(newArtistData);
@@ -340,15 +354,14 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                     />
                   </div>
                   <div className="form-group">
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={requiresEvidence}
-                        onChange={(e) => setRequiresEvidence(e.target.checked)}
-                        disabled={isCreating}
-                      />
-                      {tArtist('createForm.requiresEvidence')}
-                    </label>
+                    <CustomSelect
+                      label={tArtist('createForm.verificationState')}
+                      options={verificationStateOptions}
+                      value={verificationStateOptions.find(opt => opt.value === verificationState) || verificationStateOptions[0]}
+                      onChange={(option) => setVerificationState(option?.value || 'unverified')}
+                      isDisabled={isCreating}
+                      width="100%"
+                    />
                   </div>
                   <div className="form-buttons">
                     <button
@@ -356,7 +369,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                       onClick={() => {
                         setShowCreateForm(false);
                         setNewName('');
-                        setRequiresEvidence(false);
+                        setVerificationState('unverified');
                       }}
                       className="cancel-button"
                       disabled={isCreating}

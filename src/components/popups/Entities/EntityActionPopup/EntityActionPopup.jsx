@@ -18,7 +18,11 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
   const [mode, setMode] = useState('update'); // update, merge, split, aliases, links, evidence, credits (songs only), levelSuffix (songs only)
   const [name, setName] = useState(artist?.name || '');
   const [avatarUrl, setAvatarUrl] = useState(artist?.avatarUrl || '');
-  const [verificationState, setVerificationState] = useState(artist?.verificationState || 'unverified');
+  const [verificationState, setVerificationState] = useState(
+    type === 'song' 
+      ? (song?.verificationState || 'pending')
+      : (artist?.verificationState || 'unverified')
+  );
   const [aliases, setAliases] = useState(artist?.aliases?.map(a => a.alias) || []);
   const [links, setLinks] = useState(artist?.links?.map(l => l.link) || []);
   const [evidences, setEvidences] = useState(artist?.evidences || []);
@@ -47,9 +51,11 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
 
   const verificationStateOptions = type === 'song' 
     ? [
-        { value: 'unverified', label: tEntity('verification.unverified') },
+        { value: 'declined', label: tEntity('verification.declined') },
         { value: 'pending', label: tEntity('verification.pending') },
-        { value: 'verified', label: tEntity('verification.verified') }
+        { value: 'conditional', label: tEntity('verification.conditional') },
+        { value: 'ysmod_only', label: tEntity('verification.ysmodOnly') },
+        { value: 'allowed', label: tEntity('verification.allowed') }
       ]
     : [
         { value: 'unverified', label: tEntity('verification.unverified') },

@@ -11,17 +11,17 @@
     "noResults": "No artists found"
   },
   "buttons": {
-    "createNew": "Create New",
+    "createNew": "Request New",
     "assign": "Assign Artist",
-    "create": "Create",
-    "creating": "Creating...",
+    "create": "Request",
+    "creating": "Requesting...",
     "cancel": "Cancel"
   },
   "createForm": {
-    "title": "Create New Artist Request",
+    "title": "Request New Artist",
     "name": "Artist Name",
     "namePlaceholder": "Enter artist name",
-    "requiresEvidence": "Requires evidence (artist is declined)"
+    "verificationState": "Verification State"
   },
   "stats": {
     "title": "Artist Statistics",
@@ -39,14 +39,14 @@
   "messages": {
     "success": {
       "artistAssigned": "Artist assigned successfully",
-      "artistCreated": "Artist request created successfully"
+      "artistCreated": "Artist request added successfully"
     },
     "error": {
       "searchFailed": "Failed to search artists",
       "loadDetailsFailed": "Failed to load artist details",
       "artistNotFound": "Artist not found",
       "assignFailed": "Failed to assign artist",
-      "createFailed": "Failed to create artist request"
+      "createFailed": "Failed to request artist"
     }
   }
 }

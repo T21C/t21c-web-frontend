@@ -29,7 +29,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
   const [showAddForm, setShowAddForm] = useState(false);
   const [newEntityData, setNewEntityData] = useState({
     name: '',
-    verificationState: 'unverified',
+    verificationState: type === 'song' ? 'pending' : 'unverified',
     aliases: []
   });
   const [newAlias, setNewAlias] = useState('');
@@ -120,7 +120,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
       setShowAddForm(false);
       setNewEntityData({
         name: '',
-        verificationState: 'unverified',
+        verificationState: type === 'song' ? 'pending' : 'unverified',
         aliases: []
       });
       setNewAlias('');
@@ -153,9 +153,11 @@ const EntityManagementPage = ({ type = 'artist' }) => {
 
   const verificationStateLabels = type === 'song'
     ? {
-        unverified: tEntity('verification.unverified'),
+        declined: tEntity('verification.declined'),
         pending: tEntity('verification.pending'),
-        verified: tEntity('verification.verified')
+        conditional: tEntity('verification.conditional'),
+        ysmod_only: tEntity('verification.ysmodOnly'),
+        allowed: tEntity('verification.allowed')
       }
     : {
         unverified: tEntity('verification.unverified'),
@@ -169,9 +171,11 @@ const EntityManagementPage = ({ type = 'artist' }) => {
   const verificationStateOptions = type === 'song'
     ? [
         { value: '', label: tEntity('filter.all') },
-        { value: 'verified', label: tEntity('verification.verified') },
+        { value: 'allowed', label: tEntity('verification.allowed') },
+        { value: 'ysmod_only', label: tEntity('verification.ysmodOnly') },
+        { value: 'conditional', label: tEntity('verification.conditional') },
         { value: 'pending', label: tEntity('verification.pending') },
-        { value: 'unverified', label: tEntity('verification.unverified') }
+        { value: 'declined', label: tEntity('verification.declined') }
       ]
     : [
         { value: '', label: tEntity('filter.all') },
@@ -185,9 +189,11 @@ const EntityManagementPage = ({ type = 'artist' }) => {
 
   const verificationStateFormOptions = type === 'song'
     ? [
-        { value: 'unverified', label: tEntity('verification.unverified') },
+        { value: 'declined', label: tEntity('verification.declined') },
         { value: 'pending', label: tEntity('verification.pending') },
-        { value: 'verified', label: tEntity('verification.verified') }
+        { value: 'conditional', label: tEntity('verification.conditional') },
+        { value: 'ysmod_only', label: tEntity('verification.ysmodOnly') },
+        { value: 'allowed', label: tEntity('verification.allowed') }
       ]
     : [
         { value: 'unverified', label: tEntity('verification.unverified') },
@@ -296,7 +302,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
                       </h3>
                       <div className="entity-meta">
                         <span className={getVerificationClass(entity.verificationState)}>
-                          {verificationStateLabels[entity.verificationState] || verificationStateLabels.unverified}
+                          {verificationStateLabels[entity.verificationState] || (type === 'song' ? verificationStateLabels.pending : verificationStateLabels.unverified)}
                         </span>
                         {entity.aliases && entity.aliases.length > 0 && (
                           <span className="aliases-count">
@@ -419,7 +425,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
                 label={tEntity('form.verificationState')}
                 options={verificationStateFormOptions}
                 value={verificationStateFormOptions.find(opt => opt.value === newEntityData.verificationState) || verificationStateFormOptions[0]}
-                onChange={(option) => setNewEntityData(prev => ({...prev, verificationState: option?.value || 'unverified'}))}
+                onChange={(option) => setNewEntityData(prev => ({...prev, verificationState: option?.value || (type === 'song' ? 'pending' : 'unverified')}))}
                 width="100%"
               />
             </div>
@@ -488,7 +494,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
                   setShowAddForm(false);
                   setNewEntityData({
                     name: '',
-                    verificationState: 'unverified',
+                    verificationState: type === 'song' ? 'pending' : 'unverified',
                     aliases: []
                   });
                   setNewAlias('');

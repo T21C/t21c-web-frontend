@@ -22,7 +22,7 @@
     "name": "Song Name",
     "namePlaceholder": "Enter song name",
     "requiresEvidence": "Requires evidence (song is declined)",
-    "description": "This will add a song creation request to your submission. The song will be created when your submission is approved."
+    "description": "This will add a song request to your submission. The song will be created when your submission is approved."
   },
   "stats": {
     "title": "Song Statistics",

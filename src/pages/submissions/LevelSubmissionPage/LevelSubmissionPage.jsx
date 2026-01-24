@@ -298,7 +298,7 @@ const LevelSubmissionPage = () => {
 
     // Validate song/artist - must have either selected or text input
     const songValue = selectedSong?.songName || form.song;
-    const artistValue = selectedArtist?.artistName || form.artist;
+    const artistValue = artists.length > 0 ? artists.map(a => a.name).filter(Boolean).join(', ') : form.artist;
     
     if (!songValue?.trim() || !artistValue?.trim() || !form.diff?.trim() || !form.videoLink?.trim()) {
       setSubmitAttempt(true);
@@ -360,9 +360,11 @@ const LevelSubmissionPage = () => {
       // Check if any artist is a new request
       const hasNewArtistRequest = artists.some(artist => artist.isNewRequest);
       submissionForm.setDetail('isNewArtistRequest', hasNewArtistRequest);
-      // Evidence is required when new requests exist
+      // Evidence is required when new requests exist or when verification state requires it
       const requiresSongEvidence = selectedSong?.isNewRequest || false;
-      const requiresArtistEvidence = hasNewArtistRequest;
+      const requiresArtistEvidence = artists.some(artist => 
+        artist.isNewRequest && (artist.verificationState === 'declined' || artist.verificationState === 'mostly declined')
+      );
       submissionForm.setDetail('requiresSongEvidence', requiresSongEvidence);
       submissionForm.setDetail('requiresArtistEvidence', requiresArtistEvidence);
       submissionForm.setDetail('diff', form.diff);
@@ -382,7 +384,10 @@ const LevelSubmissionPage = () => {
           artistName: artist.name,
           artistId: artist.id,
           isNewRequest: artist.isNewRequest,
-          requiresEvidence: artist.isNewRequest // Always require evidence for new requests
+          requiresEvidence: artist.isNewRequest 
+            ? (artist.verificationState === 'declined' || artist.verificationState === 'mostly declined')
+            : false,
+          verificationState: artist.verificationState || null
         }));
       
       submissionForm.setDetail('artistRequests', artistRequests);
@@ -880,11 +885,14 @@ const LevelSubmissionPage = () => {
           <ArtistSelectorPopup
             onClose={() => setShowArtistSelector({ show: false, index: 0 })}
             onSelect={(artistData) => {
-              // Force evidence requirement for new artist requests
-              const requiresEvidence = artistData.isNewRequest ? true : (artistData.requiresEvidence || false);
+              // Calculate requiresEvidence from verificationState for new requests
+              const requiresEvidence = artistData.isNewRequest 
+                ? (artistData.verificationState === 'declined' || artistData.verificationState === 'mostly declined')
+                : (artistData.requiresEvidence || false);
               const finalArtistData = {
                 ...artistData,
-                requiresEvidence: requiresEvidence
+                requiresEvidence: requiresEvidence,
+                verificationState: artistData.verificationState || null
               };
               
               // Update the specific artist in the array
@@ -892,19 +900,23 @@ const LevelSubmissionPage = () => {
               updatedArtists[showArtistSelector.index] = {
                 name: finalArtistData.artistName || '',
                 id: finalArtistData.artistId || null,
-                isNewRequest: finalArtistData.isNewRequest || false
+                isNewRequest: finalArtistData.isNewRequest || false,
+                verificationState: finalArtistData.verificationState || null
               };
               setArtists(updatedArtists);
               
               // Update form with combined artist names
               const artistDisplayName = updatedArtists.map(a => a.name).filter(Boolean).join(', ');
               const hasNewArtistRequest = updatedArtists.some(a => a.isNewRequest);
+              const requiresArtistEvidence = updatedArtists.some(a => 
+                a.isNewRequest && (a.verificationState === 'declined' || a.verificationState === 'mostly declined')
+              );
               setForm(prev => ({
                 ...prev,
                 artist: artistDisplayName,
                 artistId: updatedArtists.length === 1 && updatedArtists[0].id ? updatedArtists[0].id : null,
                 isNewArtistRequest: hasNewArtistRequest,
-                requiresArtistEvidence: hasNewArtistRequest
+                requiresArtistEvidence: requiresArtistEvidence
               }));
               
               setShowArtistSelector({ show: false, index: 0 });

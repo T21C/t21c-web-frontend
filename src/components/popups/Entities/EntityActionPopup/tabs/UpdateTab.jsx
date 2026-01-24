@@ -83,7 +83,7 @@ export const UpdateTab = ({
           label={tEntity('form.verificationState')}
           options={verificationStateOptions}
           value={verificationStateOptions.find(opt => opt.value === verificationState) || verificationStateOptions[0]}
-          onChange={(option) => setVerificationState(option?.value || 'unverified')}
+          onChange={(option) => setVerificationState(option?.value || (type === 'song' ? 'pending' : 'unverified'))}
           width="100%"
         />
       </div>

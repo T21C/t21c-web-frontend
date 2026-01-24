@@ -26,7 +26,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newName, setNewName] = useState('');
   const [isCreating, setIsCreating] = useState(false);
-  const [requiresEvidence, setRequiresEvidence] = useState(false);
+  const [requiresEvidence, setRequiresEvidence] = useState(true);
 
   // Reset create form state when popup opens
   useEffect(() => {
@@ -35,7 +35,9 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
     if (!initialSong || initialSong.id || !initialSong.name) {
       setShowCreateForm(false);
       setNewName('');
-      setRequiresEvidence(false);
+      setRequiresEvidence(true);
+    } else {
+      setRequiresEvidence(initialSong.requiresEvidence !== undefined ? initialSong.requiresEvidence : true);
     }
   }, [initialSong]);
 
@@ -56,7 +58,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
   const handleCreateClick = () => {
     setShowCreateForm(true);
     setNewName(initialSong?.name || '');
-    setRequiresEvidence(initialSong?.requiresEvidence || false);
+    setRequiresEvidence(initialSong?.requiresEvidence !== undefined ? initialSong.requiresEvidence : true);
   };
 
   // Load initial song details if they exist
@@ -253,10 +255,11 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
       setError('');
 
       // Return new song request data
+      // New songs always require evidence
       const newSongData = {
         songName: (newName || '').trim(),
         isNewRequest: true,
-        requiresEvidence: requiresEvidence
+        requiresEvidence: true
       };
 
       onSelect(newSongData);
@@ -368,9 +371,12 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                         )}
                         {songDetails.verificationState && (
                           <span className={`verification-status ${songDetails.verificationState}`}>
-                            {songDetails.verificationState === 'verified' ? tSong('status.verified') : 
-                             songDetails.verificationState === 'pending' ? tSong('status.pending') : 
-                             tSong('status.unverified')}
+                            {songDetails.verificationState === 'allowed' ? tSong('status.allowed') :
+                             songDetails.verificationState === 'ysmod_only' ? tSong('status.ysmodOnly') :
+                             songDetails.verificationState === 'conditional' ? tSong('status.conditional') :
+                             songDetails.verificationState === 'pending' ? tSong('status.pending') :
+                             songDetails.verificationState === 'declined' ? tSong('status.declined') :
+                             tSong('status.pending')}
                           </span>
                         )}
                       </>
@@ -529,7 +535,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                       onClick={() => {
                         setShowCreateForm(false);
                         setNewName('');
-                        setRequiresEvidence(false);
+                        setRequiresEvidence(true);
                       }}
                       className="cancel-button"
                       disabled={isCreating}

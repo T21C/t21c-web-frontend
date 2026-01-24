@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import api from "@/utils/api";
 import { ProfileCreationModal } from './ProfileCreationModal';
-import { SubmissionCreatorPopup, SongSelectorPopup, ArtistSelectorPopup, EntityActionPopup } from '@/components/popups';
+import { SubmissionCreatorPopup, SongSelectorPopup, ArtistSelectorPopup, EntityActionPopup, EvidenceGalleryPopup } from '@/components/popups';
 import { toast } from "react-hot-toast";
 import { ServerCloudIcon, WarningIcon } from "@/components/common/icons";
 import { Tooltip } from "react-tooltip";
@@ -35,6 +35,7 @@ const LevelSubmissions = () => {
   const [showArtistSelector, setShowArtistSelector] = useState(false);
   const [selectedSongSubmission, setSelectedSongSubmission] = useState(null);
   const [selectedArtistSubmission, setSelectedArtistSubmission] = useState(null);
+  const [selectedArtistRequest, setSelectedArtistRequest] = useState(null);
   const [showSongManagement, setShowSongManagement] = useState(false);
   const [showArtistManagement, setShowArtistManagement] = useState(false);
   const [selectedSongForManagement, setSelectedSongForManagement] = useState(null);
@@ -455,18 +456,57 @@ const LevelSubmissions = () => {
     }
   };
 
+  const handleArtistAction = (submission, artistRequest) => {
+    // Format artist request data similar to creator requests
+    if (artistRequest?.artist) {
+      // Existing artist assigned
+      artistRequest = {
+        ...artistRequest,
+        artist: {
+          ...artistRequest.artist,
+          aliases: artistRequest.artist.artistAliases?.map(alias => alias.name) || [],
+          isVerified: artistRequest.artist.isVerified || false
+        }
+      };
+    } else if (artistRequest?.isNewRequest) {
+      // New artist request
+      artistRequest = {
+        ...artistRequest,
+        artistName: artistRequest.artistName,
+        isNewRequest: true,
+        verificationState: artistRequest.verificationState || null
+      };
+    }
+    
+    setSelectedArtistSubmission(submission);
+    setSelectedArtistRequest(artistRequest);
+    setShowArtistSelector(true);
+  };
+
+  const handleArtistSelectorClose = () => {
+    setSelectedArtistSubmission(null);
+    setSelectedArtistRequest(null);
+    setShowArtistSelector(false);
+  };
+
   const handleArtistSelect = async (artistData) => {
     if (!selectedArtistSubmission) return;
     
     try {
+      // If we have a selected artist request, update it; otherwise assign new
+      const artistRequestId = selectedArtistRequest?.id || artistData.artistRequestId || null;
+      
       const response = await api.put(
         `${import.meta.env.VITE_SUBMISSION_API}/levels/${selectedArtistSubmission.id}/artist`,
         {
           artistId: artistData.artistId || null,
-          artistRequestId: artistData.artistRequestId || null,
+          artistRequestId: artistRequestId,
           artistName: artistData.artistName,
           isNewRequest: artistData.isNewRequest || false,
-          requiresEvidence: artistData.requiresEvidence || false
+          requiresEvidence: artistData.isNewRequest 
+            ? (artistData.verificationState === 'declined' || artistData.verificationState === 'mostly declined')
+            : (artistData.requiresEvidence || false),
+          verificationState: artistData.verificationState || null
         }
       );
       
@@ -490,8 +530,7 @@ const LevelSubmissions = () => {
       }));
       
       toast.success(tLevel('messages.artistUpdated'));
-      setShowArtistSelector(false);
-      setSelectedArtistSubmission(null);
+      handleArtistSelectorClose();
     } catch (error) {
       console.error('Error updating artist:', error);
       toast.error(error.response?.data?.error || tLevel('errors.updateArtistFailed'));
@@ -559,7 +598,7 @@ const LevelSubmissions = () => {
     }
   };
 
-  const handleArtistAction = async (submission) => {
+  const handleArtistEntityAction = async (submission) => {
     // If we have artistObject, use it directly
     if (submission.artistObject) {
       setSelectedArtistForManagement(submission);
@@ -777,105 +816,126 @@ const LevelSubmissions = () => {
                   </div>
 
                   {/* Artist Management */}
-                  <div className="detail-row">
-                    <span className="detail-label">{tLevel('details.artist')}</span>
-                    <div className="detail-value-group">
-                      <div className="detail-value">
-                        {/* Show artists from song credits if existing song is selected */}
-                        {submission.songId && submission.songObject ? (
-                          <>
-                            {submission.songObject.credits && submission.songObject.credits.length > 0 ? (
-                              <div className="artists-list">
-                                {submission.songObject.credits.map((credit, idx) => (
-                                  <span key={credit.artist?.id || idx} className="artist-item">
-                                    {credit.artist?.name || 'Unknown'}
-                                    <span className="locked-indicator" title={tLevel('messages.artistLockedToSong')}>
-                                      {' '}(Locked)
-                                    </span>
-                                  </span>
-                                ))}
-                              </div>
-                            ) : (
-                              <span className="profile-request-unassigned" title={tLevel('badges.unassigned')}>
-                                <WarningIcon className="warning-icon" color="#f00" />
-                                {tLevel('badges.unassigned')}
-                              </span>
-                            )}
-                          </>
-                        ) : (
-                          <>
-                            {/* Show artist requests for new song */}
-                            {submission.artistRequests && submission.artistRequests.length > 0 ? (
-                              <div className="artists-list">
-                                {submission.artistRequests.map((artistRequest, idx) => (
-                                  <span key={artistRequest.id || idx} className="artist-item">
-                                    {artistRequest.artist?.name || artistRequest.artistName || 'Unknown'}
-                                    {artistRequest.isNewRequest && (
-                                      <span className="request-badge">{tLevel('badges.newRequest')}</span>
-                                    )}
-                                    {!submission.songId && (
-                                      <button
-                                        className="remove-artist-button"
-                                        onClick={() => handleRemoveArtistRequest(submission.id, artistRequest.id)}
-                                        title={tLevel('buttons.removeArtist')}
-                                      >
-                                        ×
-                                      </button>
-                                    )}
-                                  </span>
-                                ))}
-                              </div>
-                            ) : (
-                              <span className="profile-request-unassigned" title={tLevel('badges.unassigned')}>
-                                <WarningIcon className="warning-icon" color="#f00" />
-                                {tLevel('badges.unassigned')}
-                              </span>
-                            )}
-                          </>
-                        )}
+                  {submission.songId && submission.songObject ? (
+                    <div className="creator-group">
+                      <div className="creator-group-header">
+                        {tLevel('details.artist')}
                       </div>
-                      <div className="entity-actions">
-                        {/* Disable artist management if an existing song is selected */}
-                        {submission.songId && submission.songObject ? (
-                          <>
-                            <button
-                              className="change-entity-button"
-                              disabled
-                              title={tLevel('errors.artistLockedToSong')}
-                            >
-                              {tLevel('buttons.changeArtist')}
-                            </button>
-                            <button
-                              className="add-entity-request-button"
-                              disabled
-                              title={tLevel('errors.artistLockedToSong')}
-                            >
-                              {tLevel('buttons.addArtistRequest')}
-                            </button>
-                          </>
+                      <div className="creator-list">
+                        {submission.songObject.credits && submission.songObject.credits.length > 0 ? (
+                          submission.songObject.credits.map((credit, idx) => (
+                            <div key={credit.artist?.id || idx} className="creator-item">
+                              <span className="creator-name">
+                                {credit.artist?.name || 'Unknown'}
+                                <span className="locked-indicator" title={tLevel('messages.artistLockedToSong')}>
+                                  {' '}(Locked)
+                                </span>
+                              </span>
+                            </div>
+                          ))
                         ) : (
-                          <>
-                            <button
-                              className="change-entity-button"
-                              onClick={() => {
-                                setSelectedArtistSubmission(submission);
-                                setShowArtistSelector(true);
-                              }}
-                            >
-                              {tLevel('buttons.changeArtist')}
-                            </button>
-                            <button
-                              className="add-entity-request-button"
-                              onClick={() => handleAddArtistRequest(submission.id)}
-                            >
-                              {tLevel('buttons.addArtistRequest')}
-                            </button>
-                          </>
+                          <div className="creator-item">
+                            <span className="profile-request-unassigned" title={tLevel('badges.unassigned')}>
+                              <WarningIcon className="warning-icon" color="#f00" />
+                              {tLevel('badges.unassigned')}
+                            </span>
+                          </div>
                         )}
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="creator-group">
+                      <div className="creator-group-header">
+                        {tLevel('details.artist')}
+                      </div>
+                      <div className="creator-list">
+                        {submission.artistRequests && submission.artistRequests.length > 0 ? (
+                          submission.artistRequests.map((artistRequest, idx) => (
+                            <div key={artistRequest.id || idx} className="creator-item">
+                              <span className={`creator-name ${artistRequest.isNewRequest ? 'pending' : ''}`}>
+                                {artistRequest.artist?.name || artistRequest.artistName || 'Unknown'}
+                                {artistRequest.isNewRequest && (
+                                  <span className="profile-request-badge">
+                                    {tLevel('badges.newRequest')}
+                                  </span>
+                                )}
+                                {!artistRequest.artistId && !artistRequest.isNewRequest && (
+                                  <span className="profile-request-unassigned" title={tLevel('badges.unassigned')}>
+                                    <WarningIcon className="warning-icon" color="#f00" />
+                                  </span>
+                                )}
+                              </span>
+                              <div className="creator-actions">
+                                {/* Show remove button if there's more than one artist */}
+                                {submission.artistRequests.length > 1 && (
+                                  <button
+                                    className="remove-creator-button"
+                                    onClick={() => handleRemoveArtistRequest(submission.id, artistRequest.id)}
+                                  >
+                                    {tLevel('buttons.remove')}
+                                  </button>
+                                )}
+                                <button
+                                  className="manage-creator-button"
+                                  onClick={() => handleArtistAction(submission, artistRequest)}
+                                >
+                                  {tLevel('buttons.manageArtist')}
+                                </button>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="creator-item">
+                            <span className="profile-request-unassigned" title={tLevel('badges.unassigned')}>
+                              <WarningIcon className="warning-icon" color="#f00" />
+                              {tLevel('badges.unassigned')}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="add-creator-button-container">
+                        <button
+                          className="add-creator-button"
+                          onClick={() => handleAddArtistRequest(submission.id)}
+                        >
+                          {tLevel('buttons.addArtistRequest')}
+                        </button>
+                      </div>
+                    </div>
+                  )}
                   
+                      {/* Evidence Display */}
+                      {submission.evidence && submission.evidence.length > 0 && (
+                    <div className="detail-row">
+                      <span className="detail-label">{tLevel('details.evidence')}</span>
+                      <div className="evidence-preview">
+                        {submission.evidence.slice(0, 3).map((evidence, index) => (
+                          <img
+                            key={evidence.id}
+                            src={evidence.link}
+                            alt={`Evidence ${index + 1}`}
+                            className="evidence-thumbnail"
+                            onClick={() => {
+                              setSelectedEvidenceSubmission(submission);
+                              setShowEvidenceGallery(true);
+                            }}
+                          />
+                        ))}
+                        {submission.evidence.length > 3 && (
+                          <span 
+                            className="evidence-count clickable"
+                            onClick={() => {
+                              setSelectedEvidenceSubmission(submission);
+                              setShowEvidenceGallery(true);
+                            }}
+                          >
+                            +{submission.evidence.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                  <br/>
                   <div className="detail-row">
                     <span className="detail-label">{tLevel('details.difficulty')}</span>
                     <span className="detail-value">{submission.diff}</span>
@@ -1050,28 +1110,7 @@ const LevelSubmissions = () => {
                     </div>
                   </div>
 
-                  {/* Evidence Display */}
-                  {submission.evidence && submission.evidence.length > 0 && (
-                    <div className="detail-row">
-                      <span className="detail-label">{tLevel('details.evidence')}</span>
-                      <div className="evidence-preview">
-                        {submission.evidence.slice(0, 3).map((evidence, index) => (
-                          <img
-                            key={evidence.id}
-                            src={evidence.link}
-                            alt={`Evidence ${index + 1}`}
-                            className="evidence-thumbnail"
-                            onClick={() => {
-                              // TODO: Open evidence gallery popup
-                            }}
-                          />
-                        ))}
-                        {submission.evidence.length > 3 && (
-                          <span className="evidence-count">+{submission.evidence.length - 3}</span>
-                        )}
-                      </div>
-                    </div>
-                  )}
+              
 
                   <div className="action-buttons">
                     <button 
@@ -1156,15 +1195,16 @@ const LevelSubmissions = () => {
       {/* Artist Selector Popup */}
       {showArtistSelector && selectedArtistSubmission && (
         <ArtistSelectorPopup
-          onClose={() => {
-            setShowArtistSelector(false);
-            setSelectedArtistSubmission(null);
-          }}
+          onClose={handleArtistSelectorClose}
           onSelect={handleArtistSelect}
-          initialArtist={selectedArtistSubmission.artistObject || (selectedArtistSubmission.artistRequest ? {
+          initialArtist={selectedArtistRequest?.artist || (selectedArtistRequest?.isNewRequest ? {
+            name: selectedArtistRequest.artistName,
+            isNewRequest: true,
+            verificationState: selectedArtistRequest.verificationState || null
+          } : (selectedArtistSubmission.artistObject || (selectedArtistSubmission.artistRequest ? {
             name: selectedArtistSubmission.artist,
             isNewRequest: true
-          } : null)}
+          } : null)))}
         />
       )}
 

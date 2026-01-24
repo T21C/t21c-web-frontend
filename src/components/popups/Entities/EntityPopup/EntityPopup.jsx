@@ -96,13 +96,15 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
         allowed: tEntity('verification.allowed')
       }
     : {
-        unverified: tEntity('verification.unverified'),
+        declined: tEntity('verification.declined'),
         pending: tEntity('verification.pending'),
-        verified: tEntity('verification.verified')
+        conditional: tEntity('verification.conditional'),
+        ysmod_only: tEntity('verification.ysmodOnly'),
+        allowed: tEntity('verification.allowed')
       };
 
   const getVerificationClass = (state) => {
-    return `verification-chip ${state || 'unverified'}`;
+    return `verification-chip ${state || (type === 'song' ? 'pending' : 'unverified')}`;
   };
 
   const handleArtistClick = (artistId) => {
@@ -141,7 +143,7 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
           <div className="popup-section">
             <div className="popup-verification">
               <span className={getVerificationClass(entityData.verificationState)}>
-                {verificationStateLabels[entityData.verificationState] || verificationStateLabels.unverified}
+                {verificationStateLabels[entityData.verificationState] || (type === 'song' ? verificationStateLabels.pending : verificationStateLabels.unverified)}
               </span>
             </div>
           </div>

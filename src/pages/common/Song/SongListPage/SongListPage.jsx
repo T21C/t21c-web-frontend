@@ -74,13 +74,15 @@ const SongListPage = () => {
   };
 
   const getVerificationClass = (state) => {
-    return `verification-chip ${state || 'unverified'}`;
+    return `verification-chip ${state || 'pending'}`;
   };
 
   const verificationStateLabels = {
-    unverified: tSong('verification.unverified'),
+    declined: tSong('verification.declined'),
     pending: tSong('verification.pending'),
-    verified: tSong('verification.verified')
+    conditional: tSong('verification.conditional'),
+    ysmod_only: tSong('verification.ysmodOnly'),
+    allowed: tSong('verification.allowed')
   };
 
   return (
@@ -175,7 +177,7 @@ const SongListPage = () => {
                     )}
                     <div className="song-card-verification">
                       <span className={getVerificationClass(song.verificationState)}>
-                        {verificationStateLabels[song.verificationState] || verificationStateLabels.unverified}
+                        {verificationStateLabels[song.verificationState] || verificationStateLabels.pending}
                       </span>
                     </div>
                   </div>

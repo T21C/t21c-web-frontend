@@ -341,12 +341,6 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
               ))}
             </div>
           )}
-
-          {currentEvidence.type && (
-            <div className="evidence-info">
-              <span className="evidence-type">{tGallery('type')}: {currentEvidence.type}</span>
-            </div>
-          )}
         </div>
       </div>
     </div>
