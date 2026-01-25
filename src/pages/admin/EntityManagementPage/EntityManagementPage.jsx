@@ -4,11 +4,12 @@ import { useAuth } from '@/contexts/AuthContext';
 import { AccessDenied, MetaTags } from '@/components/common/display';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { CustomSelect } from '@/components/common/selectors';
-import { ArtistActionPopup, EntityActionPopup } from '@/components/popups';
+import { EntityActionPopup } from '@/components/popups';
 import api from '@/utils/api';
 import { toast } from 'react-hot-toast';
 import './entityManagementPage.css';
 import { Link } from 'react-router-dom';
+import { getVerificationClass } from '@/utils/Utility';
 
 const EntityManagementPage = ({ type = 'artist' }) => {
   const { t } = useTranslation('pages');
@@ -146,10 +147,6 @@ const EntityManagementPage = ({ type = 'artist' }) => {
     } catch (error) {
       toast.error(error.response?.data?.error || tEntity('errors.deleteFailed'));
     }
-  };
-
-  const getVerificationClass = (state) => {
-    return `verification-chip ${state || 'unverified'}`;
   };
 
   const verificationStateLabels = type === 'song'

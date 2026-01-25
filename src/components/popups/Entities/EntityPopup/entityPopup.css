@@ -112,50 +112,6 @@
   gap: 8px;
 }
 
-.entity-popup .verification-chip {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 500;
-  text-transform: uppercase;
-}
-
-.entity-popup .verification-chip.unverified {
-  background-color: rgba(128, 128, 128, 0.2);
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.entity-popup .verification-chip.pending {
-  background-color: rgba(255, 193, 7, 0.2);
-  color: #ffc107;
-}
-
-.entity-popup .verification-chip.verified {
-  background-color: rgba(76, 175, 80, 0.2);
-  color: #4caf50;
-}
-
-.entity-popup .verification-chip.allowed {
-  background-color: rgba(76, 175, 80, 0.2);
-  color: #4caf50;
-}
-
-.entity-popup .verification-chip.mostly-allowed {
-  background-color: rgba(129, 199, 132, 0.2);
-  color: #81c784;
-}
-
-.entity-popup .verification-chip.mostly-declined {
-  background-color: rgba(239, 154, 154, 0.2);
-  color: #ef9a9a;
-}
-
-.entity-popup .verification-chip.declined {
-  background-color: rgba(244, 67, 54, 0.2);
-  color: #f44336;
-}
-
 .entity-popup .popup-aliases {
   display: flex;
   flex-wrap: wrap;

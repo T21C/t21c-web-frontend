@@ -410,3 +410,7 @@ export function selectIconSize(url, size = "small") {
   if (!isCdnUrl(url)) return url;
   return url.replace('/original', `/${size}`);
 }
+
+export function getVerificationClass(state) {
+  return `verification-chip ${state?.replace(' ', '-') || 'unverified'}`;
+};

@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '@/utils/api';
 import './entityPopup.css';
 import { ExternalLinkIcon } from '@/components/common/icons';
+import { getVerificationClass } from '@/utils/Utility';
 
 export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
   const { t } = useTranslation('components');
@@ -102,10 +103,6 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
         ysmod_only: tEntity('verification.ysmodOnly'),
         allowed: tEntity('verification.allowed')
       };
-
-  const getVerificationClass = (state) => {
-    return `verification-chip ${state || (type === 'song' ? 'pending' : 'unverified')}`;
-  };
 
   const handleArtistClick = (artistId) => {
     onClose();

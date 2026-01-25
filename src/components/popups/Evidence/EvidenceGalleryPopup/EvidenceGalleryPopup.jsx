@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isImageUrl } from '@/utils/Utility';
 import './evidenceGalleryPopup.css';
+import { ChevronIcon } from '@/components/common/icons';
 
 export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDelete = false }) => {
   const { t } = useTranslation('components');
@@ -269,7 +270,7 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
                   disabled={currentIndex === 0}
                   aria-label={tGallery('previous')}
                 >
-                  ‹
+                  <ChevronIcon size={32} direction="left" />
                 </button>
                 <button
                   className="nav-button next-button"
@@ -277,7 +278,7 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
                   disabled={currentIndex === evidenceList.length - 1}
                   aria-label={tGallery('next')}
                 >
-                  ›
+                  <ChevronIcon size={32} direction="right" />
                 </button>
               </>
             )}

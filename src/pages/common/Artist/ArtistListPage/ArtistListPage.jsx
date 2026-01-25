@@ -5,6 +5,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
 import './artistListPage.css';
+import { getVerificationClass } from '@/utils/Utility';
 
 const ArtistListPage = () => {
   const { t } = useTranslation('pages');
@@ -71,10 +72,6 @@ const ArtistListPage = () => {
 
   const handleSortChange = (e) => {
     setSortBy(e.target.value);
-  };
-
-  const getVerificationClass = (state) => {
-    return `verification-chip ${state || 'unverified'}`;
   };
 
   const verificationStateLabels = {

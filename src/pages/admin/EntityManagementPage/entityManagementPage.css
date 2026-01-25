@@ -150,28 +150,45 @@
   flex-wrap: wrap;
 }
 
-.entity-management-container .verification-chip {
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.75rem;
+.verification-chip {
+  padding: 0.5rem 1rem;
+  border-radius: 16px;
+  font-size: 0.875rem;
   font-weight: 600;
   text-transform: uppercase;
+  display: inline-block;
 }
 
-.entity-management-container .verification-chip.verified {
+.verification-chip.allowed {
   background-color: rgba(76, 175, 80, 0.2);
-  color: #4caf50;
+  color: #00ff08;
 }
 
-.entity-management-container .verification-chip.pending {
-  background-color: rgba(255, 193, 7, 0.2);
+.verification-chip.mostly-allowed {
+  background-color: rgba(156, 218, 89, 0.2);
+  color: #c0ff2d;
+}
+
+.verification-chip.pending {
+  background-color: rgba(255, 218, 7, 0.2);
   color: #ffc107;
 }
 
-.entity-management-container .verification-chip.unverified {
+.verification-chip.mostly-declined {
+  background-color: rgba(244, 119, 15, 0.2);
+  color: #ff772e;
+}
+
+.verification-chip.declined {
+  background-color: rgba(244, 67, 54, 0.2);
+  color: #f44336;
+}
+
+.verification-chip.unverified {
   background-color: rgba(128, 128, 128, 0.2);
   color: #aaa;
 }
+
 
 .entity-management-container .aliases-count {
   color: rgba(255, 255, 255, 0.6);

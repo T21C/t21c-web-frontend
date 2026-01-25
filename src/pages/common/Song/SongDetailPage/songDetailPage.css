@@ -25,30 +25,6 @@
   margin-top: 1rem;
 }
 
-.verification-chip {
-  padding: 0.5rem 1rem;
-  border-radius: 16px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  display: inline-block;
-}
-
-.verification-chip.verified {
-  background-color: rgba(76, 175, 80, 0.2);
-  color: #4caf50;
-}
-
-.verification-chip.pending {
-  background-color: rgba(255, 193, 7, 0.2);
-  color: #ffc107;
-}
-
-.verification-chip.unverified {
-  background-color: rgba(128, 128, 128, 0.2);
-  color: #aaa;
-}
-
 .song-content {
   display: flex;
   flex-direction: column;

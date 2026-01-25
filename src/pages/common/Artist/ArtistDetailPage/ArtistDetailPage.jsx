@@ -3,7 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
-import { isImageUrl } from '@/utils/Utility';
+import { getVerificationClass, isImageUrl } from '@/utils/Utility';
 import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
 import { EvidenceGalleryPopup, EntityActionPopup } from '@/components/popups';
@@ -45,10 +45,6 @@ const ArtistDetailPage = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const getVerificationClass = (state) => {
-    return `verification-chip ${state || 'unverified'}`;
   };
 
   const verificationStateLabels = {

@@ -158,29 +158,6 @@
   margin-top: 0.5rem;
 }
 
-.verification-chip {
-  padding: 0.25rem 0.75rem;
-  border-radius: 12px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.verification-chip.verified {
-  background-color: rgba(76, 175, 80, 0.2);
-  color: #4caf50;
-}
-
-.verification-chip.pending {
-  background-color: rgba(255, 193, 7, 0.2);
-  color: #ffc107;
-}
-
-.verification-chip.unverified {
-  background-color: rgba(128, 128, 128, 0.2);
-  color: #aaa;
-}
-
 .no-songs {
   text-align: center;
   padding: 4rem 2rem;

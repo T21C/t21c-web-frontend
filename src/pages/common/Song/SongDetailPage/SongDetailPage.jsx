@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { isImageUrl } from '@/utils/Utility';
+import { getVerificationClass, isImageUrl } from '@/utils/Utility';
 import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
 import { EvidenceGalleryPopup } from '@/components/popups';
@@ -39,10 +39,6 @@ const SongDetailPage = () => {
     } finally {
       setLoading(false);
     }
-  };
-
-  const getVerificationClass = (state) => {
-    return `verification-chip ${state || 'pending'}`;
   };
 
   const verificationStateLabels = {

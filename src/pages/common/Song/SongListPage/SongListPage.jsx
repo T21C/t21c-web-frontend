@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
+import { getVerificationClass } from '@/utils/Utility';
 import './songListPage.css';
 
 const SongListPage = () => {
@@ -71,10 +72,6 @@ const SongListPage = () => {
 
   const handleSortChange = (e) => {
     setSortBy(e.target.value);
-  };
-
-  const getVerificationClass = (state) => {
-    return `verification-chip ${state || 'pending'}`;
   };
 
   const verificationStateLabels = {
