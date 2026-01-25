@@ -87,22 +87,9 @@ const LevelSubmissions = () => {
       return false;
     }
     
-    // If existing song is selected, verify all song credits have matching artist requests
+    // If existing song is selected, artists are inherited from song credits, so approval is allowed
     if (submission.songId && submission.songObject?.credits) {
-      const songCreditArtistIds = submission.songObject.credits
-        .map(c => c.artist?.id)
-        .filter(id => id !== undefined)
-        .sort();
-      
-      const requestArtistIds = (submission.artistRequests || [])
-        .map(req => req.artistId)
-        .filter(id => id !== undefined)
-        .sort();
-      
-      if (songCreditArtistIds.length !== requestArtistIds.length ||
-          !songCreditArtistIds.every((id, idx) => id === requestArtistIds[idx])) {
-        return false;
-      }
+      // Artists will be inherited from song credits, no need to check artist requests
     } else {
       // For new song requests, check if at least one artist is set
       const hasArtist = (submission.artistRequests && submission.artistRequests.length > 0) ||
@@ -1254,9 +1241,13 @@ const LevelSubmissions = () => {
                       className="approve-btn"
                       disabled={disabledButtons[submission.id] || !canBeApproved(submission)}
                       title={!canBeApproved(submission) ? (
-                        !(submission.songObject || submission.songId) || !(submission.artistObject || submission.artistId)
+                        !(submission.songObject || submission.songId)
                           ? tLevel('errors.needSongAndArtist')
-                          : tLevel('errors.needProfiles')
+                          : (!(submission.songId && submission.songObject?.credits) && 
+                             !(submission.artistObject || submission.artistId) && 
+                             (!submission.artistRequests || submission.artistRequests.length === 0))
+                            ? tLevel('errors.needSongAndArtist')
+                            : tLevel('errors.needProfiles')
                       ) : ''}
                     >
                       {tLevel('buttons.allow')}
