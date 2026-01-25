@@ -111,6 +111,14 @@ const ArtistDetailPage = () => {
 
         <div className="artist-content">
 
+          {/* Extra Info */}
+          {artist.extraInfo && (
+            <div className="artist-section">
+              <h2>{tArtist('sections.extraInfo')}</h2>
+              <div className="extra-info-content">{artist.extraInfo}</div>
+            </div>
+          )}
+
           {/* Evidence */}
           {artist.evidences && artist.evidences.length > 0 && (
             <div className="artist-section">
