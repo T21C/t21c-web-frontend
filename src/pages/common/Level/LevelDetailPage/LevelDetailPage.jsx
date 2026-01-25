@@ -812,7 +812,7 @@ const LevelDetailPage = ({ mockData = null }) => {
 
   useEffect(() => {
     setHasSongPopup(res?.level?.songObject !== undefined);
-    setHasArtistPopup(res?.level?.artists && res?.level?.artists.length > 0);
+    setHasArtistPopup(res?.level?.songObject?.artists && res?.level?.songObject?.artists.length > 0);
   }, [res?.level]);
 
   useEffect(() => {
@@ -1442,7 +1442,7 @@ const LevelDetailPage = ({ mockData = null }) => {
     <span onClick={() => setShowSongPopup(true)} className="level-title-clickable">{getSongDisplayName(level)}</span>
     : hasPopup ? (
     <div className="level-artist-list-wrapper">
-      {level.artists.map((artist, index) => (<>
+      {level.songObject?.artists.map((artist, index) => (<>
         <span 
         className="level-artist-name"
         key={artist.id}
@@ -1450,7 +1450,7 @@ const LevelDetailPage = ({ mockData = null }) => {
           {artist.name}
         </span>
         
-        {index < level.artists.length - 1 && 
+        {index < level.songObject?.artists.length - 1 && 
         <span className="level-artist-separator"> & </span>}
         </>
       ))}
@@ -1480,7 +1480,7 @@ const LevelDetailPage = ({ mockData = null }) => {
         ) : (
           <span>{displayName}</span>
         )}
-        {aliases.length > 0 && !level.artists && (
+        {aliases.length > 0 && !level.songObject?.artists && (
           <>
             <span 
               className={`tag-list-arrow ${isOpen ? 'open' : ''}`}
