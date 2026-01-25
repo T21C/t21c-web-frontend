@@ -8,5 +8,6 @@
   "type": "Type",
   "resetZoom": "Reset zoom",
   "reset": "Reset",
-  "externalLinkHint": "Click to open external link"
+  "externalLinkHint": "Click to open external link",
+  "extraInfo": "Additional Information"
 }

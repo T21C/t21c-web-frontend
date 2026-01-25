@@ -329,6 +329,12 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
                   🗑️
                 </button>
               )}
+              {currentEvidence.extraInfo && (
+                <div className="evidence-extra-info-display">
+                  <h4>{tGallery('extraInfo') || 'Additional Information'}</h4>
+                  <p className="evidence-extra-info-text">{currentEvidence.extraInfo}</p>
+                </div>
+              )}
             </div>
           ) : (
             <div className="evidence-link-container">
@@ -364,6 +370,12 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
                   {currentEvidence.link}
                 </a>
                 <p className="evidence-link-hint">{tGallery('externalLinkHint') || 'Click to open external link'}</p>
+                {currentEvidence.extraInfo && (
+                  <div className="evidence-extra-info-display">
+                    <h4>{tGallery('extraInfo') || 'Additional Information'}</h4>
+                    <p className="evidence-extra-info-text">{currentEvidence.extraInfo}</p>
+                  </div>
+                )}
               </div>
 
               {canDelete && onDelete && (

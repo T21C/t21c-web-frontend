@@ -293,6 +293,34 @@
   opacity: 0.7;
 }
 
+.evidence-gallery-popup .evidence-extra-info-display {
+  position: absolute;
+  bottom: 60px;
+  left: 0;
+  right: 0;
+  padding: 16px;
+  background-color: rgba(0, 0, 0, 0.8);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.evidence-gallery-popup .evidence-extra-info-display h4 {
+  margin: 0 0 8px 0;
+  color: #ffffff;
+  font-size: 0.9em;
+  font-weight: 600;
+}
+
+.evidence-gallery-popup .evidence-extra-info-text {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.85em;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
 .evidence-gallery-popup .evidence-thumbnails::-webkit-scrollbar {
   height: 8px;
 }

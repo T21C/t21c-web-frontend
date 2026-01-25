@@ -912,6 +912,9 @@ const LevelSubmissions = () => {
                       <div className="evidence-preview">
                         {submission.evidence.slice(0, 3).map((evidence, index) => {
                           const isImage = isImageUrl(evidence.link);
+                          const title = evidence.extraInfo 
+                            ? `${evidence.link}\n\n${evidence.extraInfo}` 
+                            : evidence.link;
                           return isImage ? (
                             <img
                               key={evidence.id}
@@ -922,6 +925,7 @@ const LevelSubmissions = () => {
                                 setSelectedEvidenceSubmission(submission);
                                 setShowEvidenceGallery(true);
                               }}
+                              title={title}
                             />
                           ) : (
                             <div
@@ -931,9 +935,12 @@ const LevelSubmissions = () => {
                                 setSelectedEvidenceSubmission(submission);
                                 setShowEvidenceGallery(true);
                               }}
-                              title={evidence.link}
+                              title={title}
                             >
                               <span className="evidence-link-icon">🔗</span>
+                              {evidence.extraInfo && (
+                                <span className="evidence-extra-info-indicator" title={evidence.extraInfo}>ℹ️</span>
+                              )}
                             </div>
                           );
                         })}

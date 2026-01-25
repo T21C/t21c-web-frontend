@@ -52,6 +52,8 @@
     "add": "Upload Evidence Images",
     "addLink": "Add External Evidence Link",
     "linkPlaceholder": "Enter external URL",
+    "extraInfo": "Extra Info",
+    "extraInfoPlaceholder": "Additional notes or information about this evidence",
     "pendingUpload": "Pending Upload",
     "uploaded": "Uploaded Evidence",
     "dropZoneText": "Drag & drop images here or click to select",

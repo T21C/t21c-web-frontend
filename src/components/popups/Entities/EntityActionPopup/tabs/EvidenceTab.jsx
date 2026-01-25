@@ -20,10 +20,14 @@ export const EvidenceTab = ({
   handleDeleteEvidence,
   newEvidenceLink,
   setNewEvidenceLink,
+  newEvidenceExtraInfo,
+  setNewEvidenceExtraInfo,
   handleAddEvidenceLink,
   editingEvidenceId,
   editingEvidenceLink,
   setEditingEvidenceLink,
+  editingEvidenceExtraInfo,
+  setEditingEvidenceExtraInfo,
   handleStartEditEvidence,
   handleCancelEditEvidence,
   handleUpdateEvidence,
@@ -137,6 +141,13 @@ export const EvidenceTab = ({
                         className="evidence-edit-input"
                         placeholder={tEntity('evidence.linkPlaceholder') || 'Enter URL'}
                       />
+                      <textarea
+                        value={editingEvidenceExtraInfo}
+                        onChange={(e) => setEditingEvidenceExtraInfo(e.target.value)}
+                        className="evidence-edit-textarea"
+                        placeholder={tEntity('evidence.extraInfoPlaceholder') || 'Extra info (optional)'}
+                        rows={3}
+                      />
                       <div className="evidence-edit-actions">
                         <button 
                           onClick={() => handleUpdateEvidence(evidence.id)} 
@@ -169,6 +180,16 @@ export const EvidenceTab = ({
                           title={evidence.link}
                         >
                           <span className="evidence-link-icon">🔗</span>
+                        </div>
+                      )}
+                      {evidence.extraInfo && (
+                        <div className="evidence-extra-info-preview" title={evidence.extraInfo}>
+                          <span className="evidence-extra-info-icon">ℹ️</span>
+                          <span className="evidence-extra-info-text">
+                            {evidence.extraInfo.length > 50 
+                              ? evidence.extraInfo.substring(0, 50) + '...' 
+                              : evidence.extraInfo}
+                          </span>
                         </div>
                       )}
                       <div className="evidence-item-info">

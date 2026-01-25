@@ -641,10 +641,14 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       const endpoint = type === 'song'
         ? `/v2/admin/songs/${entityId}/evidences`
         : `/v2/admin/artists/${entityId}/evidences`;
-      const response = await api.post(endpoint, { link: newEvidenceLink.trim() });
+      const response = await api.post(endpoint, { 
+        link: newEvidenceLink.trim(),
+        extraInfo: newEvidenceExtraInfo.trim() || null
+      });
       toast.success(tEntity('messages.evidenceAdded'));
       setEvidences([...evidences, response.data]);
       setNewEvidenceLink('');
+      setNewEvidenceExtraInfo('');
     } catch (error) {
       const errorMessage = getErrorMessage(error, tEntity('errors.evidenceFailed'));
       toast.error(errorMessage);
@@ -659,6 +663,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
   const handleCancelEditEvidence = () => {
     setEditingEvidenceId(null);
     setEditingEvidenceLink('');
+    setEditingEvidenceExtraInfo('');
   };
 
   const handleUpdateEvidence = async (evidenceId) => {
@@ -916,10 +921,14 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
                 handleDeleteEvidence={handleDeleteEvidence}
                 newEvidenceLink={newEvidenceLink}
                 setNewEvidenceLink={setNewEvidenceLink}
+                newEvidenceExtraInfo={newEvidenceExtraInfo}
+                setNewEvidenceExtraInfo={setNewEvidenceExtraInfo}
                 handleAddEvidenceLink={handleAddEvidenceLink}
                 editingEvidenceId={editingEvidenceId}
                 editingEvidenceLink={editingEvidenceLink}
                 setEditingEvidenceLink={setEditingEvidenceLink}
+                editingEvidenceExtraInfo={editingEvidenceExtraInfo}
+                setEditingEvidenceExtraInfo={setEditingEvidenceExtraInfo}
                 handleStartEditEvidence={handleStartEditEvidence}
                 handleCancelEditEvidence={handleCancelEditEvidence}
                 handleUpdateEvidence={handleUpdateEvidence}

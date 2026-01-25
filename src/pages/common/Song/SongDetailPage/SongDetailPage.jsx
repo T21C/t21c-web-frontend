@@ -167,6 +167,9 @@ const SongDetailPage = () => {
               <div className="evidence-preview">
                 {song.evidences.slice(0, 4).map((evidence) => {
                   const isImage = isImageUrl(evidence.link);
+                  const title = evidence.extraInfo 
+                    ? `${evidence.link}\n\n${evidence.extraInfo}` 
+                    : evidence.link;
                   return isImage ? (
                     <img
                       key={evidence.id}
@@ -174,15 +177,19 @@ const SongDetailPage = () => {
                       alt={`Evidence ${evidence.id}`}
                       className="evidence-thumbnail"
                       onClick={() => setShowEvidenceGallery(true)}
+                      title={title}
                     />
                   ) : (
                     <div
                       key={evidence.id}
                       className="evidence-thumbnail evidence-link-thumbnail"
                       onClick={() => setShowEvidenceGallery(true)}
-                      title={evidence.link}
+                      title={title}
                     >
                       <span className="evidence-link-icon">🔗</span>
+                      {evidence.extraInfo && (
+                        <span className="evidence-extra-info-indicator" title={evidence.extraInfo}>ℹ️</span>
+                      )}
                     </div>
                   );
                 })}
