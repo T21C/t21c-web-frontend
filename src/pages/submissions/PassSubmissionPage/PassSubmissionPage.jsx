@@ -802,7 +802,9 @@ const PassSubmissionPage = () => {
                 className={isFormValidDisplay.player ? "" : "error"}
                 allowNewRequest={true}
               />
-              <div className="tooltip-container">
+              <div className="tooltip-container"
+              style={{visibility: !level?.tags || level?.tags?.some(tag => tag.name === "Hold") ? "visible" : "hidden"}}
+              >
                 <input
                   type="checkbox"
                   value={form.isNoHold}

@@ -40,7 +40,7 @@
   "scoreCalc": "Score: ",
   "submit": "Submit",
   "submitWait": "...",
-  "holdTooltip": "Check this if alternate hold option was used",
+  "holdTooltip": "Check this if a different hold tile behavior was used (no holding required etc.)",
   "12kTooltip": "Check this if 12K was used (12 or less keys)",
   "16kTooltip": "Check this if 16K was used (13+ keys)",
   "tooltip": "Unknown difficulty, make sure the managers will understand it. Valid examples: G1-G5, 17~18+, U1, etc.",
