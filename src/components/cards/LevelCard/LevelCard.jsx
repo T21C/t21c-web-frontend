@@ -150,13 +150,6 @@ const LevelCard = ({
     const songName = getSongName(level);
     const artistName = getArtistDisplayName(level);
 
-    const handleArtistClick = (e) => {
-      if (hasArtistPopup) {
-        e.stopPropagation();
-        setShowArtistPopup(true);
-      }
-    };
-
     return (
       <div className="song-wrapper">
         <div className="group">

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { isImageUrl } from '@/utils/Utility';
 import './evidenceGalleryPopup.css';
 
 export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDelete = false }) => {
@@ -233,6 +234,7 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
   }
 
   const currentEvidence = evidenceList[currentIndex];
+  const isImage = isImageUrl(currentEvidence.link);
 
   return (
     <div className="evidence-gallery-popup-overlay" onClick={onClose}>
@@ -245,19 +247,20 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
         </div>
 
         <div className="popup-content">
-          <div 
-            className="evidence-image-container"
-            ref={containerRef}
-            onWheel={handleWheel}
-            onMouseDown={handleMouseDown}
-            onMouseMove={handleMouseMove}
-            onMouseUp={handleMouseUp}
-            onMouseLeave={handleMouseUp}
-            style={{ 
-              cursor: zoom > minZoom ? (isDragging ? 'grabbing' : 'grab') : 'default',
-              overflow: zoom > minZoom ? 'hidden' : 'hidden'
-            }}
-          >
+          {isImage ? (
+            <div 
+              className="evidence-image-container"
+              ref={containerRef}
+              onWheel={handleWheel}
+              onMouseDown={handleMouseDown}
+              onMouseMove={handleMouseMove}
+              onMouseUp={handleMouseUp}
+              onMouseLeave={handleMouseUp}
+              style={{ 
+                cursor: zoom > minZoom ? (isDragging ? 'grabbing' : 'grab') : 'default',
+                overflow: zoom > minZoom ? 'hidden' : 'hidden'
+              }}
+            >
             {evidenceList.length > 1 && (
               <>
                 <button
@@ -301,44 +304,98 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
               />
             </div>
 
-            {zoom.toFixed(1) !== defaultZoom.toFixed(1) && (
-              <div className="zoom-controls">
-                <button
-                  className="zoom-reset-button"
-                  onClick={() => {
-                    setZoom(defaultZoom);
-                    setPosition({ x: 0, y: 0 });
-                  }}
-                  title={tGallery('resetZoom')}
-                >
-                  {tGallery('reset')}
-                </button>
-                <span className="zoom-level">{Math.round((zoom - defaultZoom) * 100 + defaultZoom * 100)}%</span>
-              </div>
-            )}
+              {zoom.toFixed(1) !== defaultZoom.toFixed(1) && (
+                <div className="zoom-controls">
+                  <button
+                    className="zoom-reset-button"
+                    onClick={() => {
+                      setZoom(defaultZoom);
+                      setPosition({ x: 0, y: 0 });
+                    }}
+                    title={tGallery('resetZoom')}
+                  >
+                    {tGallery('reset')}
+                  </button>
+                  <span className="zoom-level">{Math.round((zoom - defaultZoom) * 100 + defaultZoom * 100)}%</span>
+                </div>
+              )}
 
-            {canDelete && onDelete && (
-              <button
-                className="delete-evidence-button"
-                onClick={() => handleDelete(currentEvidence.id, currentIndex)}
-                title={tGallery('delete')}
-              >
-                🗑️
-              </button>
-            )}
-          </div>
+              {canDelete && onDelete && (
+                <button
+                  className="delete-evidence-button"
+                  onClick={() => handleDelete(currentEvidence.id, currentIndex)}
+                  title={tGallery('delete')}
+                >
+                  🗑️
+                </button>
+              )}
+            </div>
+          ) : (
+            <div className="evidence-link-container">
+              {evidenceList.length > 1 && (
+                <>
+                  <button
+                    className="nav-button prev-button"
+                    onClick={handlePrevious}
+                    disabled={currentIndex === 0}
+                    aria-label={tGallery('previous')}
+                  >
+                    ‹
+                  </button>
+                  <button
+                    className="nav-button next-button"
+                    onClick={handleNext}
+                    disabled={currentIndex === evidenceList.length - 1}
+                    aria-label={tGallery('next')}
+                  >
+                    ›
+                  </button>
+                </>
+              )}
+              
+              <div className="evidence-link-content">
+                <div className="evidence-link-icon">🔗</div>
+                <a
+                  href={currentEvidence.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="evidence-link"
+                >
+                  {currentEvidence.link}
+                </a>
+                <p className="evidence-link-hint">{tGallery('externalLinkHint') || 'Click to open external link'}</p>
+              </div>
+
+              {canDelete && onDelete && (
+                <button
+                  className="delete-evidence-button"
+                  onClick={() => handleDelete(currentEvidence.id, currentIndex)}
+                  title={tGallery('delete')}
+                >
+                  🗑️
+                </button>
+              )}
+            </div>
+          )}
 
           {evidenceList.length > 1 && (
             <div className="evidence-thumbnails">
-              {evidenceList.map((item, index) => (
-                <div
-                  key={item.id || index}
-                  className={`thumbnail ${index === currentIndex ? 'active' : ''}`}
-                  onClick={() => setCurrentIndex(index)}
-                >
-                  <img src={item.link} alt={`Thumbnail ${index + 1}`} />
-                </div>
-              ))}
+              {evidenceList.map((item, index) => {
+                const itemIsImage = isImageUrl(item.link);
+                return (
+                  <div
+                    key={item.id || index}
+                    className={`thumbnail ${index === currentIndex ? 'active' : ''} ${!itemIsImage ? 'link-thumbnail' : ''}`}
+                    onClick={() => setCurrentIndex(index)}
+                  >
+                    {itemIsImage ? (
+                      <img src={item.link} alt={`Thumbnail ${index + 1}`} />
+                    ) : (
+                      <div className="link-thumbnail-icon">🔗</div>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

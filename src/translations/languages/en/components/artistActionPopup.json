@@ -50,6 +50,8 @@
   },
   "evidence": {
     "add": "Upload Evidence Images",
+    "addLink": "Add External Evidence Link",
+    "linkPlaceholder": "Enter external URL",
     "pendingUpload": "Pending Upload",
     "uploaded": "Uploaded Evidence",
     "dropZoneText": "Drag & drop images here or click to select",
@@ -73,6 +75,7 @@
     "delete": "Delete",
     "deleteAvatar": "Delete Avatar",
     "selectAvatar": "Select Avatar File",
+    "edit": "Edit",
     "upload": "Upload",
     "uploading": "Uploading...",
     "remove": "Remove"
@@ -85,6 +88,7 @@
     "avatarUploaded": "Avatar uploaded successfully",
     "avatarDeleted": "Avatar deleted successfully",
     "evidenceAdded": "Evidence added successfully",
+    "evidenceUpdated": "Evidence updated successfully",
     "evidenceDeleted": "Evidence deleted successfully"
   },
   "errors": {

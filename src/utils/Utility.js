@@ -378,6 +378,33 @@ export function isCdnUrl(url) {
   return url?.startsWith(import.meta.env.VITE_CDN_URL);
 }
 
+/**
+ * Check if URL is likely an image based on extension or patterns
+ */
+export function isImageUrl(url) {
+  if (!url) return false;
+  
+  const imageExtensions = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.bmp', '.svg'];
+  const lowerUrl = url.toLowerCase();
+  
+  // Check extension
+  if (imageExtensions.some(ext => lowerUrl.includes(ext))) {
+    return true;
+  }
+  
+  // Check for common image CDN patterns
+  if (lowerUrl.includes('/images/') || lowerUrl.includes('/image/') || lowerUrl.includes('evidence')) {
+    return true;
+  }
+  
+  // CDN URLs are typically images
+  if (isCdnUrl(url)) {
+    return true;
+  }
+  
+  return false;
+}
+
 export function selectIconSize(url, size = "small") {
   if (!url) return null;
   if (!isCdnUrl(url)) return url;

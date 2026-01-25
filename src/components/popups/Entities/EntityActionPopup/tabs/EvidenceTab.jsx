@@ -1,4 +1,5 @@
 import React from 'react';
+import { isImageUrl, isCdnUrl } from '@/utils/Utility';
 import { EvidenceGalleryPopup } from '@/components/popups';
 
 export const EvidenceTab = ({
@@ -17,10 +18,39 @@ export const EvidenceTab = ({
   showEvidenceGallery,
   setShowEvidenceGallery,
   handleDeleteEvidence,
+  newEvidenceLink,
+  setNewEvidenceLink,
+  handleAddEvidenceLink,
+  editingEvidenceId,
+  editingEvidenceLink,
+  setEditingEvidenceLink,
+  handleStartEditEvidence,
+  handleCancelEditEvidence,
+  handleUpdateEvidence,
   tEntity
 }) => {
   return (
     <div className="form-section">
+      {/* Add external evidence link */}
+      <div className="form-group">
+        <label>{tEntity('evidence.addLink') || 'Add External Evidence Link'}</label>
+        <div className="entity-input-group">
+          <input
+            type="text"
+            value={newEvidenceLink}
+            onChange={(e) => setNewEvidenceLink(e.target.value)}
+            onKeyPress={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                handleAddEvidenceLink();
+              }
+            }}
+            placeholder={tEntity('evidence.linkPlaceholder') || 'Enter external URL'}
+          />
+          <button onClick={handleAddEvidenceLink}>{tEntity('buttons.add')}</button>
+        </div>
+      </div>
+
       {/* Drop-in field for uploading new evidence */}
       <div className="evidence-upload-zone">
         <div
@@ -91,20 +121,92 @@ export const EvidenceTab = ({
         <div className="evidence-preview">
           <label>{tEntity('evidence.existing')}</label>
           <div className="evidence-items-container">
-            {evidences.map((evidence) => (
-              <div key={evidence.id} className="evidence-item">
-                <img
-                  src={evidence.link}
-                  alt="Evidence"
-                  onClick={() => setShowEvidenceGallery(true)}
-                />
-                <button onClick={() => handleDeleteEvidence(evidence.id)} title={tEntity('buttons.delete')}>
-                  <svg viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
-                  </svg>
-                </button>
-              </div>
-            ))}
+            {evidences.map((evidence) => {
+              const isImage = isImageUrl(evidence.link);
+              const isCdn = isCdnUrl(evidence.link);
+              const isEditing = editingEvidenceId === evidence.id;
+              
+              return (
+                <div key={evidence.id} className="evidence-item">
+                  {isEditing ? (
+                    <div className="evidence-edit-form">
+                      <input
+                        type="text"
+                        value={editingEvidenceLink}
+                        onChange={(e) => setEditingEvidenceLink(e.target.value)}
+                        className="evidence-edit-input"
+                        placeholder={tEntity('evidence.linkPlaceholder') || 'Enter URL'}
+                      />
+                      <div className="evidence-edit-actions">
+                        <button 
+                          onClick={() => handleUpdateEvidence(evidence.id)} 
+                          className="evidence-save-btn"
+                          title={tEntity('buttons.save')}
+                        >
+                          ✓
+                        </button>
+                        <button 
+                          onClick={handleCancelEditEvidence} 
+                          className="evidence-cancel-btn"
+                          title={tEntity('buttons.cancel') || 'Cancel'}
+                        >
+                          ×
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      {isImage ? (
+                        <img
+                          src={evidence.link}
+                          alt="Evidence"
+                          onClick={() => setShowEvidenceGallery(true)}
+                        />
+                      ) : (
+                        <div
+                          className="evidence-link-item"
+                          onClick={() => setShowEvidenceGallery(true)}
+                          title={evidence.link}
+                        >
+                          <span className="evidence-link-icon">🔗</span>
+                        </div>
+                      )}
+                      <div className="evidence-item-info">
+                        {isCdn ? (
+                          <span className="evidence-cdn-badge" title="CDN Link (read-only)">
+                            CDN
+                          </span>
+                        ) : (
+                          <span className="evidence-external-badge" title="External Link (editable)">
+                            External
+                          </span>
+                        )}
+                      </div>
+                      <div className="evidence-item-actions">
+                        {!isCdn && (
+                          <button 
+                            onClick={() => handleStartEditEvidence(evidence)} 
+                            className="evidence-edit-btn"
+                            title={tEntity('buttons.edit') || 'Edit'}
+                          >
+                            ✎
+                          </button>
+                        )}
+                        <button 
+                          onClick={() => handleDeleteEvidence(evidence.id)} 
+                          className="evidence-delete-btn"
+                          title={tEntity('buttons.delete')}
+                        >
+                          <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>
+                          </svg>
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}

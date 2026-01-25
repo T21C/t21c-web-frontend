@@ -48,6 +48,9 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
   const [evidenceFiles, setEvidenceFiles] = useState([]); // Array of {file, preview}
   const [isUploadingEvidence, setIsUploadingEvidence] = useState(false);
   const [isDragOver, setIsDragOver] = useState(false);
+  const [newEvidenceLink, setNewEvidenceLink] = useState('');
+  const [editingEvidenceId, setEditingEvidenceId] = useState(null);
+  const [editingEvidenceLink, setEditingEvidenceLink] = useState('');
 
   const verificationStateOptions = type === 'song' 
     ? [
@@ -628,6 +631,57 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
     });
   };
 
+  const handleAddEvidenceLink = async () => {
+    if (!newEvidenceLink.trim()) {
+      toast.error(tEntity('errors.invalidLink'));
+      return;
+    }
+
+    try {
+      const endpoint = type === 'song'
+        ? `/v2/admin/songs/${entityId}/evidences`
+        : `/v2/admin/artists/${entityId}/evidences`;
+      const response = await api.post(endpoint, { link: newEvidenceLink.trim() });
+      toast.success(tEntity('messages.evidenceAdded'));
+      setEvidences([...evidences, response.data]);
+      setNewEvidenceLink('');
+    } catch (error) {
+      const errorMessage = getErrorMessage(error, tEntity('errors.evidenceFailed'));
+      toast.error(errorMessage);
+    }
+  };
+
+  const handleStartEditEvidence = (evidence) => {
+    setEditingEvidenceId(evidence.id);
+    setEditingEvidenceLink(evidence.link);
+  };
+
+  const handleCancelEditEvidence = () => {
+    setEditingEvidenceId(null);
+    setEditingEvidenceLink('');
+  };
+
+  const handleUpdateEvidence = async (evidenceId) => {
+    if (!editingEvidenceLink.trim()) {
+      toast.error(tEntity('errors.invalidLink'));
+      return;
+    }
+
+    try {
+      const endpoint = type === 'song'
+        ? `/v2/admin/songs/${entityId}/evidences/${evidenceId}`
+        : `/v2/admin/artists/${entityId}/evidences/${evidenceId}`;
+      const response = await api.put(endpoint, { link: editingEvidenceLink.trim() });
+      toast.success(tEntity('messages.evidenceUpdated') || 'Evidence updated successfully');
+      setEvidences(evidences.map(e => e.id === evidenceId ? response.data : e));
+      setEditingEvidenceId(null);
+      setEditingEvidenceLink('');
+    } catch (error) {
+      const errorMessage = getErrorMessage(error, tEntity('errors.evidenceFailed'));
+      toast.error(errorMessage);
+    }
+  };
+
   const handleDeleteEvidence = async (evidenceId) => {
     if (!window.confirm(tEntity('evidence.deleteConfirm'))) {
       return;
@@ -844,24 +898,33 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
           )}
 
           {mode === 'evidence' && (
-            <EvidenceTab
-              type={type}
-              entityId={entityId}
-              isDragOver={isDragOver}
-              handleDragOver={handleDragOver}
-              handleDragLeave={handleDragLeave}
-              handleDrop={handleDrop}
-              handleEvidenceFileSelect={handleEvidenceFileSelect}
-              evidenceFiles={evidenceFiles}
-              handleRemoveEvidencePreview={handleRemoveEvidencePreview}
-              handleAddEvidence={handleAddEvidence}
-              isUploadingEvidence={isUploadingEvidence}
-              evidences={evidences}
-              showEvidenceGallery={showEvidenceGallery}
-              setShowEvidenceGallery={setShowEvidenceGallery}
-              handleDeleteEvidence={handleDeleteEvidence}
-              tEntity={tEntity}
-            />
+              <EvidenceTab
+                type={type}
+                entityId={entityId}
+                isDragOver={isDragOver}
+                handleDragOver={handleDragOver}
+                handleDragLeave={handleDragLeave}
+                handleDrop={handleDrop}
+                handleEvidenceFileSelect={handleEvidenceFileSelect}
+                evidenceFiles={evidenceFiles}
+                handleRemoveEvidencePreview={handleRemoveEvidencePreview}
+                handleAddEvidence={handleAddEvidence}
+                isUploadingEvidence={isUploadingEvidence}
+                evidences={evidences}
+                showEvidenceGallery={showEvidenceGallery}
+                setShowEvidenceGallery={setShowEvidenceGallery}
+                handleDeleteEvidence={handleDeleteEvidence}
+                newEvidenceLink={newEvidenceLink}
+                setNewEvidenceLink={setNewEvidenceLink}
+                handleAddEvidenceLink={handleAddEvidenceLink}
+                editingEvidenceId={editingEvidenceId}
+                editingEvidenceLink={editingEvidenceLink}
+                setEditingEvidenceLink={setEditingEvidenceLink}
+                handleStartEditEvidence={handleStartEditEvidence}
+                handleCancelEditEvidence={handleCancelEditEvidence}
+                handleUpdateEvidence={handleUpdateEvidence}
+                tEntity={tEntity}
+              />
           )}
 
           {error && <div className="error-message">{error}</div>}

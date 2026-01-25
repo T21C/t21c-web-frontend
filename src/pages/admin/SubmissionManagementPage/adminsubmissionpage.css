@@ -414,6 +414,29 @@
   transform: scale(1.1);
 }
 
+.evidence-link-thumbnail {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.05);
+  transition: transform 0.2s, background-color 0.2s;
+}
+
+.evidence-link-thumbnail:hover {
+  transform: scale(1.1);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.evidence-link-icon {
+  font-size: 1.5em;
+  opacity: 0.7;
+}
+
 .evidence-count {
   color: #aaa;
   font-size: 0.9em;

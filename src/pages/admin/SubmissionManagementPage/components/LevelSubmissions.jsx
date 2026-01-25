@@ -3,6 +3,7 @@ import placeholder from "@/assets/placeholder/1.png"
 import "../adminsubmissionpage.css";
 import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
+import { isImageUrl } from "@/utils/Utility";
 import api from "@/utils/api";
 import { ProfileCreationModal } from './ProfileCreationModal';
 import { SubmissionCreatorPopup, SongSelectorPopup, ArtistSelectorPopup, EntityActionPopup, EvidenceGalleryPopup } from '@/components/popups';
@@ -909,20 +910,35 @@ const LevelSubmissions = () => {
                     <div className="detail-row">
                       <span className="detail-label">{tLevel('details.evidence')}</span>
                       <div className="evidence-preview">
-                        {submission.evidence.slice(0, 3).map((evidence, index) => (
-                          <img
-                            key={evidence.id}
-                            src={evidence.link}
-                            alt={`Evidence ${index + 1}`}
-                            className="evidence-thumbnail"
-                            onClick={() => {
-                              setSelectedEvidenceSubmission(submission);
-                              setShowEvidenceGallery(true);
-                            }}
-                          />
-                        ))}
+                        {submission.evidence.slice(0, 3).map((evidence, index) => {
+                          const isImage = isImageUrl(evidence.link);
+                          return isImage ? (
+                            <img
+                              key={evidence.id}
+                              src={evidence.link}
+                              alt={`Evidence ${index + 1}`}
+                              className="evidence-thumbnail"
+                              onClick={() => {
+                                setSelectedEvidenceSubmission(submission);
+                                setShowEvidenceGallery(true);
+                              }}
+                            />
+                          ) : (
+                            <div
+                              key={evidence.id}
+                              className="evidence-thumbnail evidence-link-thumbnail"
+                              onClick={() => {
+                                setSelectedEvidenceSubmission(submission);
+                                setShowEvidenceGallery(true);
+                              }}
+                              title={evidence.link}
+                            >
+                              <span className="evidence-link-icon">🔗</span>
+                            </div>
+                          );
+                        })}
                         {submission.evidence.length > 3 && (
-                          <span 
+                          <span
                             className="evidence-count clickable"
                             onClick={() => {
                               setSelectedEvidenceSubmission(submission);

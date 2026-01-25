@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { isImageUrl } from '@/utils/Utility';
 import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
 import { EvidenceGalleryPopup, EntityActionPopup } from '@/components/popups';
@@ -113,6 +114,45 @@ const ArtistDetailPage = () => {
         </div>
 
         <div className="artist-content">
+
+          {/* Evidence */}
+          {artist.evidences && artist.evidences.length > 0 && (
+            <div className="artist-section">
+              <h2>{tArtist('sections.evidence')}</h2>
+              <div className="evidence-preview">
+                {artist.evidences.slice(0, 4).map((evidence) => {
+                  const isImage = isImageUrl(evidence.link);
+                  return isImage ? (
+                    <img
+                      key={evidence.id}
+                      src={evidence.link}
+                      alt={`Evidence ${evidence.id}`}
+                      className="evidence-thumbnail"
+                      onClick={() => setShowEvidenceGallery(true)}
+                    />
+                  ) : (
+                    <div
+                      key={evidence.id}
+                      className="evidence-thumbnail evidence-link-thumbnail"
+                      onClick={() => setShowEvidenceGallery(true)}
+                      title={evidence.link}
+                    >
+                      <span className="evidence-link-icon">🔗</span>
+                    </div>
+                  );
+                })}
+                {artist.evidences.length > 4 && (
+                  <div
+                    className="evidence-more"
+                    onClick={() => setShowEvidenceGallery(true)}
+                  >
+                    +{artist.evidences.length - 4}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Aliases */}
           {artist.aliases && artist.aliases.length > 0 && (
             <div className="artist-section">
@@ -169,31 +209,7 @@ const ArtistDetailPage = () => {
             </div>
           )}
 
-          {/* Evidence */}
-          {artist.evidences && artist.evidences.length > 0 && (
-            <div className="artist-section">
-              <h2>{tArtist('sections.evidence')}</h2>
-              <div className="evidence-preview">
-                {artist.evidences.slice(0, 4).map((evidence) => (
-                  <img
-                    key={evidence.id}
-                    src={evidence.link}
-                    alt={`Evidence ${evidence.id}`}
-                    className="evidence-thumbnail"
-                    onClick={() => setShowEvidenceGallery(true)}
-                  />
-                ))}
-                {artist.evidences.length > 4 && (
-                  <div
-                    className="evidence-more"
-                    onClick={() => setShowEvidenceGallery(true)}
-                  >
-                    +{artist.evidences.length - 4}
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+
 
           {/* Levels */}
           {artist.levels && artist.levels.length > 0 && (

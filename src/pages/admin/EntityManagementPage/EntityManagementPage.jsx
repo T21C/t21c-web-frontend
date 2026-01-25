@@ -8,6 +8,7 @@ import { ArtistActionPopup, EntityActionPopup } from '@/components/popups';
 import api from '@/utils/api';
 import { toast } from 'react-hot-toast';
 import './entityManagementPage.css';
+import { Link } from 'react-router-dom';
 
 const EntityManagementPage = ({ type = 'artist' }) => {
   const { t } = useTranslation('pages');
@@ -297,9 +298,9 @@ const EntityManagementPage = ({ type = 'artist' }) => {
                       <img src={entity.avatarUrl} alt={entity.name} className="entity-avatar" />
                     )}
                     <div className="entity-details">
-                      <h3>
+                      <Link to={`/${type}s/${entity.id}`} className="entity-name-link">
                         {entity.name} (ID: {entity.id})
-                      </h3>
+                      </Link>
                       <div className="entity-meta">
                         <span className={getVerificationClass(entity.verificationState)}>
                           {verificationStateLabels[entity.verificationState] || (type === 'song' ? verificationStateLabels.pending : verificationStateLabels.unverified)}

@@ -23,18 +23,12 @@ export const getSongName = (level) => {
 export const getArtists = (level) => {
   if (!level) return null;
   if (level.artists) return level.artists;
-  if (level.artist) {
-    return [{
-      id: level.artistId || null,
-      name: level.artist
-    }];
-  }
   return null;
 };
 
 export const getArtistDisplayName = (level) => {
   if (!level) return '';
-  return getArtists(level).map(artist => artist.name).join(', ');
+  return getArtists(level)?.map(artist => artist.name).join(', ') || level.artist;
 };
 
 

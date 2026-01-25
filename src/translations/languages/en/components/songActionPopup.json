@@ -41,11 +41,14 @@
   },
   "evidence": {
     "add": "Upload Evidence Images",
+    "addLink": "Add External Evidence Link",
+    "linkPlaceholder": "Enter external URL",
     "pendingUpload": "Pending Upload",
     "uploaded": "Uploaded Evidence",
     "existing": "Existing Evidence",
     "dropZoneText": "Drop images here or click to select",
-    "dropZoneHint": "Supports multiple image files"
+    "dropZoneHint": "Supports multiple image files",
+    "deleteConfirm": "Are you sure you want to delete this evidence?"
   },
   "buttons": {
     "update": "Update",
@@ -56,7 +59,12 @@
     "addCredit": "Add Credit",
     "save": "Save",
     "saving": "Saving...",
-    "delete": "Delete"
+    "edit": "Edit",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "upload": "Upload",
+    "uploading": "Uploading...",
+    "remove": "Remove"
   },
   "messages": {
     "updated": "Song updated successfully",
@@ -64,6 +72,7 @@
     "creditAdded": "Credit added successfully",
     "creditRemoved": "Credit removed successfully",
     "evidenceAdded": "Evidence added successfully",
+    "evidenceUpdated": "Evidence updated successfully",
     "evidenceDeleted": "Evidence deleted successfully",
     "suffixUpdated": "Level suffix updated successfully"
   },

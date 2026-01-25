@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { isImageUrl } from '@/utils/Utility';
 import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
 import { EvidenceGalleryPopup } from '@/components/popups';
@@ -164,15 +165,27 @@ const SongDetailPage = () => {
             <div className="song-section">
               <h2>{tSong('sections.evidence')}</h2>
               <div className="evidence-preview">
-                {song.evidences.slice(0, 4).map((evidence) => (
-                  <img
-                    key={evidence.id}
-                    src={evidence.link}
-                    alt={`Evidence ${evidence.id}`}
-                    className="evidence-thumbnail"
-                    onClick={() => setShowEvidenceGallery(true)}
-                  />
-                ))}
+                {song.evidences.slice(0, 4).map((evidence) => {
+                  const isImage = isImageUrl(evidence.link);
+                  return isImage ? (
+                    <img
+                      key={evidence.id}
+                      src={evidence.link}
+                      alt={`Evidence ${evidence.id}`}
+                      className="evidence-thumbnail"
+                      onClick={() => setShowEvidenceGallery(true)}
+                    />
+                  ) : (
+                    <div
+                      key={evidence.id}
+                      className="evidence-thumbnail evidence-link-thumbnail"
+                      onClick={() => setShowEvidenceGallery(true)}
+                      title={evidence.link}
+                    >
+                      <span className="evidence-link-icon">🔗</span>
+                    </div>
+                  );
+                })}
                 {song.evidences.length > 4 && (
                   <div
                     className="evidence-more"
