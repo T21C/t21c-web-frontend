@@ -5,6 +5,8 @@
   "error": "Error loading submissions",
   "details": {
     "song": "Song:",
+    "suffix": "Suffix:",
+    "suffixPlaceholder": "Optional suffix (e.g., \"Nerfed\")",
     "artist": "Artist:",
     "charter": "Charter:",
     "difficulty": "Difficulty:",
@@ -42,7 +44,10 @@
     "createCreator": "Create New",
     "assignCreator": "Assign Existing",
     "addTeam": "Add Team",
-    "addCreator": "Add Creator"
+    "addCreator": "Add Creator",
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel"
   },
   "labels": {
     "levelName": "Level",
@@ -56,7 +61,8 @@
   "messages": {
     "success": {
       "approved": "Submission approved successfully",
-      "rejected": "Submission rejected successfully"
+      "rejected": "Submission rejected successfully",
+      "suffixUpdated": "Suffix updated successfully"
     },
     "error": {
       "generic": "An error occurred",
@@ -98,6 +104,7 @@
     "needSongAndArtist": "Both song and artist must be set before approval",
     "needArtistForSong": "Artist must be set before managing song",
     "artistLockedToSong": "Cannot modify artist: it is fixed to the selected song",
+    "suffixUpdateFailed": "Failed to update suffix",
     "updateSongFailed": "Failed to update song",
     "updateArtistFailed": "Failed to update artist",
     "addSongRequestFailed": "Failed to add song request",

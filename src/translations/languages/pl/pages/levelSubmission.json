@@ -3,6 +3,7 @@
   "thumbnailInfo": "Informacje o wideo pojawią się tutaj",
   "submInfo": {
     "song": "Piosenka",
+    "suffix": "Przyrostek (opcj.)",
     "artist": "Artysta/ści",
     "videoLink": "Link do wideo",
     "charter": "Charter(zy)",

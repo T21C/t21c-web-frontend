@@ -3,6 +3,7 @@
   "thumbnailInfo": "Video information will appear here",
   "submInfo": {
     "song": "Song",
+    "suffix": "Suffix (optional)",
     "artist": "Artist",
     "videoLink": "Video Link",
     "charter": "Charter",
@@ -27,6 +28,7 @@
     "nolink": "No link provided"
   },
   "tooltip": "Unknown difficulty, will submit but please make sure it's readable by the managers. Correct diff ex.: G13; P7~P13; 21.1+; 19~20.0+",
+  "suffixTooltip": "This will be encased in brackets and placed at the end of the song name, for example, \"Nerfed\" here will result in \"Song Name (Nerfed)\"",
   "buttons": {
     "addCharter": "Add Charter",
     "addVfxer": "Add VFX-er",

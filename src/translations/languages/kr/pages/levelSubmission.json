@@ -3,6 +3,7 @@
   "thumbnailInfo": "비디오 정보가 여기에 표시됩니다",
   "submInfo": {
     "song": "곡명",
+    "suffix": "접미사 (선택사항)",
     "artist": "아티스트",
     "videoLink": "비디오 링크",
     "charter": "제작자",

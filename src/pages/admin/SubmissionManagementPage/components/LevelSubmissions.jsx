@@ -43,6 +43,8 @@ const LevelSubmissions = () => {
   const [selectedArtistForManagement, setSelectedArtistForManagement] = useState(null);
   const [showEvidenceGallery, setShowEvidenceGallery] = useState(false);
   const [selectedEvidenceSubmission, setSelectedEvidenceSubmission] = useState(null);
+  const [editingSuffix, setEditingSuffix] = useState({});
+  const [suffixValues, setSuffixValues] = useState({});
 
   useEffect(() => {
     fetchPendingSubmissions();
@@ -538,6 +540,53 @@ const LevelSubmissions = () => {
     }
   };
 
+  const handleSaveSuffix = async (submissionId) => {
+    const newSuffix = (suffixValues[submissionId] || '').trim();
+    const currentSuffix = submissions.find(s => s.id === submissionId)?.suffix || '';
+    
+    // Only update if value changed
+    if (newSuffix !== currentSuffix) {
+      try {
+        const response = await api.put(
+          `${import.meta.env.VITE_SUBMISSION_API}/levels/${submissionId}/suffix`,
+          { suffix: newSuffix }
+        );
+        setSubmissions(prevSubmissions => prevSubmissions.map(s => 
+          s.id === submissionId ? { ...s, ...response.data } : s
+        ));
+        toast.success(tLevel('messages.suffixUpdated'));
+      } catch (error) {
+        console.error('Error updating suffix:', error);
+        toast.error(tLevel('errors.suffixUpdateFailed'));
+      }
+    }
+    
+    // Exit edit mode
+    setEditingSuffix(prev => {
+      const newState = { ...prev };
+      delete newState[submissionId];
+      return newState;
+    });
+    setSuffixValues(prev => {
+      const newState = { ...prev };
+      delete newState[submissionId];
+      return newState;
+    });
+  };
+
+  const handleCancelSuffix = (submissionId) => {
+    setEditingSuffix(prev => {
+      const newState = { ...prev };
+      delete newState[submissionId];
+      return newState;
+    });
+    setSuffixValues(prev => {
+      const newState = { ...prev };
+      delete newState[submissionId];
+      return newState;
+    });
+  };
+
   const handleRemoveCreator = async (submissionId, requestId) => {
     try {
       const response = await api.delete(
@@ -959,6 +1008,70 @@ const LevelSubmissions = () => {
                     </div>
                   )}
                   <br/>
+                  <div className="detail-row">
+                    <span className="detail-label">{tLevel('details.suffix')}</span>
+                    <div className="detail-value-group suffix-edit-group">
+                      {editingSuffix[submission.id] ? (
+                        <div className="suffix-edit-controls">
+                          <input
+                            type="text"
+                            className="suffix-input"
+                            value={suffixValues[submission.id] ?? (submission.suffix || '')}
+                            onChange={(e) => {
+                              setSuffixValues(prev => ({
+                                ...prev,
+                                [submission.id]: e.target.value
+                              }));
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                handleSaveSuffix(submission.id);
+                              } else if (e.key === 'Escape') {
+                                handleCancelSuffix(submission.id);
+                              }
+                            }}
+                            placeholder={tLevel('details.suffixPlaceholder')}
+                            autoFocus
+                          />
+                          <div className="suffix-edit-buttons">
+                            <button
+                              className="suffix-save-btn"
+                              onClick={() => handleSaveSuffix(submission.id)}
+                              title={tLevel('buttons.save')}
+                            >
+                              ✓
+                            </button>
+                            <button
+                              className="suffix-cancel-btn"
+                              onClick={() => handleCancelSuffix(submission.id)}
+                              title={tLevel('buttons.cancel')}
+                            >
+                              ✕
+                            </button>
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="suffix-display">
+                          <span className="detail-value">
+                            {submission.suffix || <span style={{opacity: 0.5}}>{tLevel('details.suffixPlaceholder')}</span>}
+                          </span>
+                          <button
+                            className="suffix-edit-btn"
+                            onClick={() => {
+                              setEditingSuffix(prev => ({ ...prev, [submission.id]: true }));
+                              setSuffixValues(prev => ({
+                                ...prev,
+                                [submission.id]: submission.suffix || ''
+                              }));
+                            }}
+                            title={tLevel('buttons.edit')}
+                          >
+                            ✏️
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                   <div className="detail-row">
                     <span className="detail-label">{tLevel('details.difficulty')}</span>
                     <span className="detail-value">{submission.diff}</span>

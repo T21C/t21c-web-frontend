@@ -3,6 +3,7 @@
   "thumbnailInfo": "视频信息会显示在此处",
   "submInfo": {
     "song": "曲名",
+    "suffix": "后缀（选填）",
     "artist": "曲师",
     "videoLink": "视频链接",
     "charter": "谱师",

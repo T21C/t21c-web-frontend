@@ -16,6 +16,8 @@ import { prepareZipForUpload, validateZipSize } from '@/utils/zipUtils';
 import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
 import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import { QuestionmarkCircleIcon } from "@/components/common/icons";
+import { Tooltip } from "react-tooltip";
 
 const encodeFilename = (str) => {
   // Convert string to UTF-8 bytes, then to hex
@@ -41,6 +43,7 @@ const LevelSubmissionPage = () => {
     artist: '',
     diff: '',
     song: '',
+    suffix: '',
     dlLink: '',
     workshopLink: '',
     charter: null,
@@ -368,6 +371,7 @@ const LevelSubmissionPage = () => {
       submissionForm.setDetail('requiresSongEvidence', requiresSongEvidence);
       submissionForm.setDetail('requiresArtistEvidence', requiresArtistEvidence);
       submissionForm.setDetail('diff', form.diff);
+      submissionForm.setDetail('suffix', form.suffix || '');
       submissionForm.setDetail('videoLink', cleanedVideoUrl);
       submissionForm.setDetail('directDL', form.dlLink);
       submissionForm.setDetail('wsLink', form.workshopLink);
@@ -976,6 +980,25 @@ const LevelSubmissionPage = () => {
                     {selectedSong.isNewRequest ? 'New Request' : 'Selected'}
                   </span>
                 )}
+              </div>
+              <div className="suffix-input">
+                <input 
+                  type="text"
+                  placeholder={t('levelSubmission.submInfo.suffix')}
+                  name="suffix"
+                  value={form.suffix}
+                  onChange={handleInputChange}
+                />
+                < QuestionmarkCircleIcon 
+                style={{opacity: 0.7}}
+                data-tooltip-content={t('levelSubmission.suffixTooltip')} 
+                className="suffix-tooltip-icon" 
+                data-tooltip-id="suffix-tooltip" 
+                data-tooltip-place="bottom"
+                />
+                <Tooltip 
+                id="suffix-tooltip" 
+                style={{maxWidth: "400px", zIndex: 100}} />
               </div>
               <br/>
               <h3>{t('levelSubmission.submInfo.artists')}</h3>
