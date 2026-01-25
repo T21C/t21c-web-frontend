@@ -243,16 +243,6 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 40px;
-    height: 40px;
-    border: 3px solid rgba(255, 255, 255, 0.1);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: video-spin 1s linear infinite;
-}
-
-@keyframes video-spin {
-    to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
 .rating-popup .video-iframe {

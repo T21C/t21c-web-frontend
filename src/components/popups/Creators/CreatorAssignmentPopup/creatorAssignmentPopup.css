@@ -133,17 +133,6 @@
   cursor: not-allowed;
 }
 
-.creator-assignment-popup-overlay .spinner {
-  width: 20px;
-  height: 20px;
-  animation: spin 1s linear infinite;
-}
-
-.creator-assignment-popup-overlay .spinner circle {
-  stroke: #ffffff;
-  stroke-linecap: round;
-  animation: dash 1.5s ease-in-out infinite;
-}
 
 .creator-assignment-popup-overlay .popup-content {
   margin-top: 16px;

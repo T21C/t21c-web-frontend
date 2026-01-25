@@ -250,15 +250,6 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    width: 24px;
-    height: 24px;
-    animation: spin 1s linear infinite;
-  }
-
-  .creator-action-popup-overlay .spinner circle {
-    stroke: #ffffff;
-    stroke-linecap: round;
-    animation: dash 1.5s ease-in-out infinite;
   }
 
   /* Discord section specific styles */

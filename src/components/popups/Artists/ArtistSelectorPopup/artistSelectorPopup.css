@@ -393,19 +393,6 @@
   cursor: not-allowed;
 }
 
-.artist-selector-popup .loading-spinner {
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: #fff;
-  animation: spin 1s linear infinite;
-  position: relative;
-  transform: translate(50%, 50%);
-  top: 8px;
-  left: 10px;
-}
-
 .artist-selector-popup .current-artist-loading {
   display: flex;
   align-items: center;
@@ -416,10 +403,6 @@
 
 .artist-selector-popup .action-button.loading {
   padding-right: 40px;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }
 
 .artist-selector-popup .search-results::-webkit-scrollbar {

@@ -419,6 +419,29 @@
   box-sizing: border-box;
 }
 
+/* Song selector field */
+.edit-level-popup-overlay .song-selector-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.edit-level-popup-overlay .song-selector-field input {
+  flex: 1;
+  cursor: pointer;
+}
+
+.edit-level-popup-overlay .song-selector-field .selector-badge {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  background-color: rgba(76, 175, 80, 0.3);
+  color: #4caf50;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
 .edit-level-popup-overlay .restore-button {
   background: #41c641;
   color: white;

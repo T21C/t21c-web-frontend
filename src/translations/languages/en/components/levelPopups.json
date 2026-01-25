@@ -6,7 +6,7 @@
     "form": {
       "labels": {
         "song": "Song",
-        "artist": "Artist",
+        "suffix": "Suffix",
         "creator": "Creator",
         "charter": "Charter",
         "vfxer": "VFXer",
@@ -27,7 +27,12 @@
         "ppBaseScore": "PP Base Score",
         "previousBaseScore": "Previous Base Score",
         "rerateNumber": "Rerate Number",
-        "rerateReason": "Rerate Reason"
+        "rerateReason": "Rerate Reason",
+        "selectSong": "Click to select song",
+        "suffix": "Optional suffix (e.g., \"Nerfed\")"
+      },
+      "badges": {
+        "selected": "Selected"
       },
       "checkboxes": {
         "toRate": "To Rate"
@@ -48,7 +53,9 @@
           "default": "Restore Level",
           "restoring": "Restoring..."
         },
-        "manageTags": "Manage Tags"
+        "manageTags": "Manage Tags",
+        "edit": "Edit",
+        "cancel": "Cancel"
       }
     },
     "confirmations": {
@@ -62,7 +69,8 @@
       "update": "Failed to update level",
       "delete": "Soft deletion failed",
       "toggleHidden": "Failed to toggle hidden status",
-      "restore": "Failed to restore level"
+      "restore": "Failed to restore level",
+      "cannotCreateSong": "Cannot create new songs from level edit. Please select an existing song."
     },
     "tags": {
       "title": "Manage Level Tags",

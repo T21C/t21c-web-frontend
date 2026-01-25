@@ -3,8 +3,9 @@ import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import './songSelectorPopup.css';
 import axios from 'axios';
+import { getVerificationClass } from '@/utils/Utility';
 
-export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selectedArtist = null }) => {
+export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selectedArtist = null, allowCreate = true }) => {
   const { t } = useTranslation('components');
   const tSong = (key, params = {}) => t(`songSelector.${key}`, params) || key;
   const popupRef = useRef(null);
@@ -370,7 +371,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                           </span>
                         )}
                         {songDetails.verificationState && (
-                          <span className={`verification-status ${songDetails.verificationState}`}>
+                          <span className={getVerificationClass(songDetails.verificationState)}>
                             {songDetails.verificationState === 'allowed' ? tSong('status.allowed') :
                              songDetails.verificationState === 'ysmod_only' ? tSong('status.ysmodOnly') :
                              songDetails.verificationState === 'conditional' ? tSong('status.conditional') :
@@ -432,12 +433,14 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                         ? selectedArtist.some(a => a.isNewRequest)
                         : selectedArtist?.isNewRequest}
                     />
-                    <button 
-                      className="create-song-button"
-                      onClick={handleCreateClick}
-                    >
-                      {tSong('buttons.createNew')}
-                    </button>
+                    {allowCreate && (
+                      <button 
+                        className="create-song-button"
+                        onClick={handleCreateClick}
+                      >
+                        {tSong('buttons.createNew')}
+                      </button>
+                    )}
                   </div>
                   {(() => {
                     const hasNewRequest = Array.isArray(selectedArtist) 
@@ -490,8 +493,13 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                                 </span>
                               )}
                               {song.verificationState && (
-                                <span className={`verification-badge ${song.verificationState}`}>
-                                  {song.verificationState}
+                                <span className={getVerificationClass(song.verificationState)}>
+                                  {song.verificationState === 'allowed' ? tSong('status.allowed') :
+                                   song.verificationState === 'ysmod_only' ? tSong('status.ysmodOnly') :
+                                   song.verificationState === 'conditional' ? tSong('status.conditional') :
+                                   song.verificationState === 'pending' ? tSong('status.pending') :
+                                   song.verificationState === 'declined' ? tSong('status.declined') :
+                                   song.verificationState}
                                 </span>
                               )}
                             </div>

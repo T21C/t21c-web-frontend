@@ -147,26 +147,11 @@
 
 .pack-download-popup__spinner {
   align-self: center;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  border: 4px solid rgba(255, 255, 255, 0.2);
-  border-top-color: var(--accent-primary, #687bff);
-  animation: pack-download-popup__spin 1s linear infinite;
 }
 
 .pack-download-popup__subtext {
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.75);
-}
-
-@keyframes pack-download-popup__spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 .pack-download-popup__progress-container {

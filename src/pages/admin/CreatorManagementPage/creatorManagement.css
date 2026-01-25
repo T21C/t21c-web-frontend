@@ -179,19 +179,10 @@
 }
 
 .creator-management-page .create-creator-section .submit-button .spinner {
-  width: 20px;
-  height: 20px;
-  animation: spin 1s linear infinite;
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-}
-
-.creator-management-page .create-creator-section .submit-button .spinner circle {
-  stroke: #ffffff;
-  stroke-linecap: round;
-  animation: dash 1.5s ease-in-out infinite;
 }
 
 @media (max-width: 768px) {
@@ -621,19 +612,10 @@
 
 .creator-management-page .save-button .spinner,
 .creator-management-page .verify-button .spinner {
-  width: 24px;
-  height: 24px;
   position: absolute;
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-}
-
-.creator-management-page .save-button .spinner circle,
-.creator-management-page .verify-button .spinner circle {
-  stroke: #ffffff;
-  stroke-linecap: round;
-  animation: dash 1.5s ease-in-out infinite;
 }
 
 @media (max-width: 768px) {
@@ -1502,11 +1484,6 @@
   transform: translate(-50%, -50%);
 }
 
-.creator-management-page .unverify-button .spinner circle {
-  stroke: #ffffff;
-  stroke-linecap: round;
-  animation: dash 1.5s ease-in-out infinite;
-}
 
 @media (max-width: 768px) {
   .creator-management-page .verification-buttons {
@@ -1688,11 +1665,6 @@
   transform: translate(-50%, -50%);
 }
 
-.add-creator-form-overlay .add-creator-form .form-actions .submit-button .spinner circle {
-  stroke: #ffffff;
-  stroke-linecap: round;
-  animation: dash 1.5s ease-in-out infinite;
-}
 
 @media (max-width: 768px) {
   .add-creator-form-overlay .add-creator-form {

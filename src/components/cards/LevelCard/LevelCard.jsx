@@ -9,7 +9,7 @@ import { formatCreatorDisplay, selectIconSize } from "@/utils/Utility";
 import { ABILITIES, hasBit } from "@/utils/Abilities";
 import { permissionFlags } from "@/utils/UserPermissions";
 import { hasFlag } from "@/utils/UserPermissions";
-import { getSongName, getArtistDisplayName } from "@/utils/levelHelpers";
+import { getSongDisplayName, getArtistDisplayName } from "@/utils/levelHelpers";
 
 
 const LevelCard = ({
@@ -147,7 +147,7 @@ const LevelCard = ({
   );
 
   const renderSongInfo = () => {
-    const songName = getSongName(level);
+    const songName = getSongDisplayName(level);
     const artistName = getArtistDisplayName(level);
 
     return (
@@ -388,7 +388,7 @@ const LevelCard = ({
           )}
 
           <div className="content-overlay">
-            <div className="title-section">{getSongName(level)}</div>
+            <div className="title-section">{getSongDisplayName(level)}</div>
             <div className="creator-section">
               {getArtistDisplayName(level)} - {formatCreatorDisplay(level)}
             </div>

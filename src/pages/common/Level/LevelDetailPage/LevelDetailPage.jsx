@@ -37,7 +37,7 @@ import {
   RefreshIcon
 } from "@/components/common/icons";
 import { createEventSystem, formatCreatorDisplay, formatDate, isCdnUrl, selectIconSize } from "@/utils/Utility";
-import { getSongName, getArtistDisplayName } from "@/utils/levelHelpers";
+import { getSongDisplayName, getArtistDisplayName } from "@/utils/levelHelpers";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
 import LevelDownloadPopup from '../../../../components/popups/Levels/LevelDownloadPopup/LevelDownloadPopup';
@@ -347,7 +347,7 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
       <div className="level-detail-popup popup-scale-up">
         <div className="popup-content">
           <div className="popup-header" style={{ '--popup-header-bg': `#${difficulty.color}ff` }}>
-            <h2>{getSongName(level)}</h2>
+            <h2>{getSongDisplayName(level)}</h2>
             <p>{getArtistDisplayName(level)}</p>
             <span className="createdAt">{tLevel('info.createdAt')}: {formatDate(videoDetail?.timestamp || level.createdAt, i18next?.language)}</span>
             <button className="popup-close-button" onClick={onClose} title={tLevel('buttons.close')}>
@@ -1340,7 +1340,7 @@ const LevelDetailPage = ({ mockData = null }) => {
 
   useEffect(() => {
     if (res?.level) {
-      document.title = `${getSongName(res.level)} - ${getArtistDisplayName(res.level)} | TUF`;
+      document.title = `${getSongDisplayName(res.level)} - ${getArtistDisplayName(res.level)} | TUF`;
     } else {
       document.title = 'Loading Level... | TUF';
     }
@@ -1439,7 +1439,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       
     // Use normalized name if available, otherwise use title
     const displayName = isSong ? 
-    <span onClick={() => setShowSongPopup(true)} className="level-title-clickable">{getSongName(level)}</span>
+    <span onClick={() => setShowSongPopup(true)} className="level-title-clickable">{getSongDisplayName(level)}</span>
     : hasPopup ? (
     <div className="level-artist-list-wrapper">
       {level.artists.map((artist, index) => (<>
@@ -1691,8 +1691,8 @@ const LevelDetailPage = ({ mockData = null }) => {
   return (
     <div>
       <MetaTags
-        title={getSongName(res?.level)}
-        description={tLevel('meta.description', { song: getSongName(res?.level), creator: res?.level?.creator })}
+        title={getSongDisplayName(res?.level)}
+        description={tLevel('meta.description', { song: getSongDisplayName(res?.level), creator: res?.level?.creator })}
         url={currentUrl}
         image={''}
         type="article"

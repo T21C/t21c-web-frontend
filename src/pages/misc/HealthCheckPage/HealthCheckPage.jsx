@@ -144,7 +144,7 @@ const HealthCheckPage = () => {
         
         {loading && !healthData && (
           <div className="loading-spinner">
-            <div className="spinner"></div>
+            <div className="spinner spinner-xlarge"></div>
             <p>{t('healthCheck.loading')}</p>
           </div>
         )}
@@ -349,7 +349,7 @@ const HealthCheckPage = () => {
         aria-label={t('healthCheck.refresh.ariaLabel')}
       >
         {isRefreshing ? (
-          <div className="refresh-spinner"></div>
+          <div className="spinner refresh-spinner"></div>
         ) : (
           <span className="refresh-icon">↻</span>
         )}

@@ -372,7 +372,7 @@ const HomePage = () => {
             <h2 className="weekly-curations-title">{tHome('weeklies.title')}</h2>
             {weekliesLoading ? (
               <div className="weekly-curations-loading">
-                <div className="loading-spinner"></div>
+                <div className="spinner spinner-xlarge spinner-accent"></div>
                 <p>{tHome('weeklies.loading')}</p>
               </div>
             ) : weekliesError ? (

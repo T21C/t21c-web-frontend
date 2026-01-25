@@ -14,6 +14,7 @@ import { TagManagementPopup } from './TagManagementPopup';
 import { isCdnUrl } from '@/utils/Utility';
 import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { SongSelectorPopup } from '@/components/popups';
 
 export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPage = false }) => {
   const { t } = useTranslation('components');
@@ -22,7 +23,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const isSuperAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
   
   // Fields allowed for non-admin creators
-  const ALLOWED_CREATOR_FIELDS = ['song', 'artist', 'videoLink', 'dlLink', 'workshopLink'];
+  const ALLOWED_CREATOR_FIELDS = ['song', 'suffix', 'videoLink', 'dlLink', 'workshopLink'];
   
   // Check if a field is allowed for non-admin users
   const isFieldAllowed = (fieldName) => {
@@ -55,7 +56,8 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
 
   const [formData, setFormData] = useState({
     song: '',
-    artist: '',
+    songId: null,
+    suffix: '',
     creator: '',
     charter: '',
     vfxer: '',
@@ -87,12 +89,15 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   const [levelTags, setLevelTags] = useState([]);
   const [isExternallyAvailable, setIsExternallyAvailable] = useState(false);
   const [isRefreshingTags, setIsRefreshingTags] = useState(false);
+  const [showSongSelector, setShowSongSelector] = useState(false);
+  const [selectedSong, setSelectedSong] = useState(null);
   const navigate = useNavigate();
   useEffect(() => {
     if (level) {
       setFormData({
-        song: level.song || '',
-        artist: level.artist || '',
+        song: level.songObject?.name || level.song || '',
+        songId: level.songId || null,
+        suffix: level.suffix || '',
         diffId: level.diffId !== null ? level.diffId : 0,
         baseScore: level.baseScore,
         ppBaseScore: level.ppBaseScore,
@@ -108,6 +113,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         previousDiffId: level.previousDiffId,
         previousBaseScore: level.previousBaseScore,
       });
+      setSelectedSong(level.songId ? { id: level.songId, name: level.songObject?.name || level.song || '' } : null);
       setHasUnsavedChanges(false);
       setIsExternallyAvailable(level.isExternallyAvailable);
       
@@ -215,6 +221,23 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
       }));
     }
   };
+
+  const handleSongSelect = (songData) => {
+    // Only allow existing songs (no new requests)
+    if (songData.isNewRequest) {
+      toast.error(tLevel('errors.cannotCreateSong') || 'Cannot create new songs from level edit');
+      return;
+    }
+
+    setFormData(prev => ({
+      ...prev,
+      song: songData.songName || '',
+      songId: songData.songId || null
+    }));
+    setSelectedSong({ id: songData.songId, name: songData.songName });
+    setShowSongSelector(false);
+    setHasUnsavedChanges(true);
+  };
   
 
   const handleSubmit = async (e) => {
@@ -230,8 +253,11 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         delete submitData.previousBaseScore;
       }
 
+      // Ensure suffix and songId are included in submission
       const levelData = {
         ...submitData,
+        suffix: submitData.suffix || null,
+        songId: submitData.songId || null,
         isExternallyAvailable,
       };
 
@@ -476,25 +502,33 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
             <div className="form-grid">
               <div className={`form-group ${isFieldAllowed('song') ? 'field-enabled' : ''}`}>
                 <label htmlFor="song">{tLevel('form.labels.song')}</label>
-                <input
-                  type="text"
-                  id="song"
-                  name="song"
-                  value={formData.song}
-                  onChange={handleInputChange}
-                  disabled={!isFieldAllowed('song')}
-                />
+                <div className="song-selector-field" onClick={() => isFieldAllowed('song') && setShowSongSelector(true)}>
+                  <input
+                    type="text"
+                    id="song"
+                    name="song"
+                    value={formData.song}
+                    readOnly
+                    disabled={!isFieldAllowed('song')}
+                    placeholder={tLevel('form.placeholders.selectSong')}
+                    style={{ cursor: isFieldAllowed('song') ? 'pointer' : 'not-allowed' }}
+                  />
+                  {selectedSong && (
+                    <span className="selector-badge">{tLevel('form.badges.selected')}</span>
+                  )}
+                </div>
               </div>
 
-              <div className={`form-group ${isFieldAllowed('artist') ? 'field-enabled' : ''}`}>
-                <label htmlFor="artist">{tLevel('form.labels.artist')}</label>
+              <div className={`form-group ${isFieldAllowed('suffix') ? 'field-enabled' : ''}`}>
+                <label htmlFor="suffix">{tLevel('form.labels.suffix')}</label>
                 <input
                   type="text"
-                  id="artist"
-                  name="artist"
-                  value={formData.artist}
+                  id="suffix"
+                  name="suffix"
+                  value={formData.suffix}
                   onChange={handleInputChange}
-                  disabled={!isFieldAllowed('artist')}
+                  disabled={!isFieldAllowed('suffix')}
+                  placeholder={tLevel('form.placeholders.suffix')}
                 />
               </div>
 
@@ -862,6 +896,16 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
           currentTags={levelTags}
           onClose={() => setShowTagManagement(false)}
           onSave={handleTagSave}
+        />
+      )}
+
+      {showSongSelector && (
+        <SongSelectorPopup
+          onClose={() => setShowSongSelector(false)}
+          onSelect={handleSongSelect}
+          initialSong={selectedSong}
+          selectedArtist={null} // No artist filtering for level edit
+          allowCreate={false} // Only allow selecting existing songs
         />
       )}
     </div>

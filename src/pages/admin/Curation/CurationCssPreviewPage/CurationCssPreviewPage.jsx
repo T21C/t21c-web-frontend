@@ -216,7 +216,7 @@ const CurationCssPreviewPage = () => {
   if (isLoading || !levelData) {
     return (
       <div className="curation-css-preview-loading">
-        <div className="loading-spinner"></div>
+        <div className="spinner spinner-large spinner-primary"></div>
         <p>{tCur('loading')}</p>
       </div>
     );

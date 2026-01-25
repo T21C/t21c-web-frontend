@@ -497,7 +497,7 @@ export const RatingDetailPopup = ({
                 <div className="video-aspect-ratio">
                   {isVideoLoading ? (
                     <div className="video-placeholder">
-                      <div className="video-loading" />
+                      <div className="spinner spinner-xlarge video-loading" />
                     </div>
                   ) : !videoData ? (
                     <div className="video-placeholder">

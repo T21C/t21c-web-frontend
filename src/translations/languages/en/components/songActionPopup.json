@@ -14,9 +14,11 @@
     "verificationState": "Verification State"
   },
   "verification": {
-    "unverified": "Unverified",
+    "declined": "Declined",
     "pending": "Pending",
-    "verified": "Verified"
+    "conditional": "Conditional",
+    "ysmodOnly": "YSMod Only",
+    "allowed": "Allowed"
   },
   "merge": {
     "info": "Merge this song into another. All data will be transferred.",

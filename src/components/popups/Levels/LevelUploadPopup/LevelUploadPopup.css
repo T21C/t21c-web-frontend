@@ -71,27 +71,12 @@
 
 .level-upload-popup__spinner {
   align-self: center;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  border: 4px solid rgba(255, 255, 255, 0.2);
-  border-top-color: var(--accent-primary, #687bff);
-  animation: level-upload-popup__spin 1s linear infinite;
 }
 
 .level-upload-popup__subtext {
   font-size: 0.9rem;
   color: rgba(255, 255, 255, 0.75);
   margin: 0;
-}
-
-@keyframes level-upload-popup__spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
 }
 
 .level-upload-popup__progress-container {

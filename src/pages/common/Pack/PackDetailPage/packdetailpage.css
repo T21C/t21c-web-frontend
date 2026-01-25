@@ -529,14 +529,6 @@
   position: relative;
 }
 
-.pack-detail-page__loading-spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid var(--color-border);
-  border-top: 3px solid var(--color-primary);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
 /* Responsive Design - Match LevelPage breakpoints */
 @media (max-width: 768px) {
   .pack-detail-page .pack-body {

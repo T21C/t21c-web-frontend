@@ -1,9 +1,11 @@
 {
   "loading": "Loading...",
   "verification": {
-    "unverified": "Unverified",
+    "declined": "Declined",
     "pending": "Pending",
-    "verified": "Verified"
+    "conditional": "Conditional",
+    "ysmodOnly": "YSMod Only",
+    "allowed": "Allowed"
   },
   "aliases": {
     "title": "Aliases"

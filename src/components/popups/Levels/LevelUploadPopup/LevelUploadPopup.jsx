@@ -211,7 +211,7 @@ const LevelUploadPopup = ({
 
           {(step === 'uploading' || step === 'processing' || step === 'caching') && (
             <div className="level-upload-popup__step level-upload-popup__step--processing">
-              <div className="level-upload-popup__spinner" />
+              <div className="spinner spinner-large" />
               <p>{getStatusText()}</p>
               
               {progress && (

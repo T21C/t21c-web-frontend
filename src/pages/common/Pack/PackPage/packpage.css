@@ -319,14 +319,6 @@
   gap: 16px;
 }
 
-.pack-page__loading-spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid var(--border-color);
-  border-top: 3px solid var(--primary-color);
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
 
 .pack-page__end-message {
   text-align: center;
@@ -538,9 +530,6 @@
     padding: 30px 16px;
   }
   
-  .pack-page__loading-spinner {
-    width: 28px;
-    height: 28px;
   }
   
   .pack-page__end-message {
@@ -669,9 +658,6 @@
     padding: 20px 12px;
   }
   
-  .pack-page__loading-spinner {
-    width: 24px;
-    height: 24px;
   }
   
   .pack-page__end-message {
@@ -692,9 +678,6 @@
 
 /* Dark mode adjustments */
 @media (prefers-color-scheme: dark) {
-  .pack-page__loading-spinner {
-    border-color: var(--border-color);
-    border-top-color: var(--primary-color);
   }
 }
 

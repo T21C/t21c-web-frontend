@@ -287,7 +287,7 @@ const PackDownloadPopup = ({
 
           {step === 'processing' && (
             <div className="pack-download-popup__step pack-download-popup__step--processing">
-              <div className="pack-download-popup__spinner" />
+              <div className="spinner spinner-large pack-download-popup__spinner" />
               <p>{tPopup('processing')}</p>
               
               {progress && (

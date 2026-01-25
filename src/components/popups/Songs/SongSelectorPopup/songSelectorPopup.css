@@ -89,27 +89,6 @@
   margin-left: 8px;
 }
 
-.song-selector-popup .verification-status {
-  font-size: 0.85em;
-  padding: 2px 8px;
-  border-radius: 4px;
-  margin-left: 8px;
-}
-
-.song-selector-popup .verification-status.verified {
-  background-color: rgba(76, 175, 80, 0.2);
-  color: #4caf50;
-}
-
-.song-selector-popup .verification-status.pending {
-  background-color: rgba(255, 193, 7, 0.2);
-  color: #ffc107;
-}
-
-.song-selector-popup .verification-status.unverified {
-  background-color: rgba(128, 128, 128, 0.2);
-  color: #aaa;
-}
 
 .song-selector-popup .song-stats {
   margin-top: 16px;
@@ -254,27 +233,6 @@
   font-size: 0.9em;
 }
 
-.song-selector-popup .song-result .verification-badge {
-  font-size: 0.75em;
-  padding: 2px 6px;
-  border-radius: 3px;
-  text-transform: uppercase;
-}
-
-.song-selector-popup .song-result .verification-badge.verified {
-  background-color: rgba(76, 175, 80, 0.2);
-  color: #4caf50;
-}
-
-.song-selector-popup .song-result .verification-badge.pending {
-  background-color: rgba(255, 193, 7, 0.2);
-  color: #ffc107;
-}
-
-.song-selector-popup .song-result .verification-badge.unverified {
-  background-color: rgba(128, 128, 128, 0.2);
-  color: #aaa;
-}
 
 .song-selector-popup .create-song-form {
   background-color: #ffffff0f;
@@ -356,19 +314,6 @@
   cursor: not-allowed;
 }
 
-.song-selector-popup .loading-spinner {
-  width: 20px;
-  height: 20px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 50%;
-  border-top-color: #fff;
-  animation: spin 1s linear infinite;
-  position: relative;
-  transform: translate(50%, 50%);
-  top: 8px;
-  left: 10px;
-}
-
 .song-selector-popup .current-song-loading {
   display: flex;
   align-items: center;
@@ -379,10 +324,6 @@
 
 .song-selector-popup .action-button.loading {
   padding-right: 40px;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }
 
 .song-selector-popup .search-results::-webkit-scrollbar {

@@ -379,7 +379,7 @@ const PackPageContent = () => {
               hasMore={hasMore}
               loader={
                 <div className="pack-page__loading">
-                  <div className="pack-page__loading-spinner"></div>
+                  <div className="spinner spinner-large"></div>
                   <p>{tPack('loading.more')}</p>
                 </div>
               }

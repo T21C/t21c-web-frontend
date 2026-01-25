@@ -12,8 +12,8 @@
   },
   "buttons": {
     "createNew": "Request New Song",
-    "assign": "Update Request",
-    "create": "Update Request",
+    "assign": "Save",
+    "create": "Request New",
     "creating": "Updating...",
     "cancel": "Cancel"
   },
@@ -30,9 +30,11 @@
     "artists": "Artists"
   },
   "status": {
-    "verified": "Verified",
+    "allowed": "Allowed",
+    "ysmodOnly": "YSMod Only",
+    "conditional": "Conditional",
     "pending": "Pending",
-    "unverified": "Unverified"
+    "declined": "Declined"
   },
   "messages": {
     "success": {
