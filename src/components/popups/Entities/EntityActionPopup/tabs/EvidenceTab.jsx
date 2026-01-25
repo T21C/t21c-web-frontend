@@ -51,7 +51,7 @@ export const EvidenceTab = ({
               value={editingEntityExtraInfo}
               onChange={(e) => setEditingEntityExtraInfo(e.target.value)}
               className="entity-extra-info-textarea"
-              placeholder={tEntity('entityExtraInfo.placeholder') || 'Additional notes or information about this ' + type}
+              placeholder={tEntity('entityExtraInfo.placeholder', {type}) || 'Additional notes or information about this ' + type}
               rows={4}
             />
             <div className="entity-extra-info-actions">

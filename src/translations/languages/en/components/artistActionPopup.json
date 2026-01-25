@@ -48,6 +48,11 @@
     "add": "Add Link",
     "placeholder": "Enter URL"
   },
+  "entityExtraInfo": {
+    "label": "Extra Info",
+    "placeholder": "Additional notes or information about this {{type}}",
+    "empty": "No extra info added"
+  },
   "evidence": {
     "add": "Upload Evidence Images",
     "addLink": "Add External Evidence Link",
