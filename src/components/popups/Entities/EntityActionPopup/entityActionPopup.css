@@ -240,6 +240,28 @@
   background-color: #45a049;
 }
 
+.entity-action-popup .evidence-link-input-group {
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.entity-action-popup .evidence-link-input-group input {
+  flex: none;
+  width: 100%;
+}
+
+.entity-action-popup .evidence-link-input-group button {
+  align-self: flex-end;
+  margin-top: 8px;
+}
+
+.entity-action-popup .evidence-extra-info-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 4px;
+}
+
 .entity-action-popup .entity-list {
   display: flex;
   flex-direction: column;
@@ -585,9 +607,16 @@
   color: #ffffff;
 }
 
-.entity-action-popup .evidence-save-btn:hover {
+.entity-action-popup .evidence-save-btn:hover:not(:disabled) {
   background-color: rgba(76, 175, 80, 1);
   transform: scale(1.1);
+}
+
+.entity-action-popup .evidence-save-btn:disabled {
+  background-color: rgba(158, 158, 158, 0.5);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .entity-action-popup .evidence-cancel-btn {
@@ -600,6 +629,16 @@
   transform: scale(1.1);
 }
 
+.entity-action-popup .evidence-extra-info-label {
+  margin-top: 8px;
+  margin-bottom: 4px;
+  display: block;
+  font-size: 0.9em;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+.entity-action-popup .evidence-add-textarea,
 .entity-action-popup .evidence-edit-textarea {
   width: 100%;
   padding: 8px;
@@ -611,11 +650,141 @@
   font-family: inherit;
   resize: vertical;
   min-height: 60px;
+  transition: border-color 0.2s, background-color 0.2s;
 }
 
+.entity-action-popup .evidence-add-textarea:focus,
 .entity-action-popup .evidence-edit-textarea:focus {
   outline: none;
   border-color: rgba(33, 150, 243, 0.5);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.entity-action-popup .evidence-add-textarea::placeholder,
+.entity-action-popup .evidence-edit-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* Entity Extra Info Section */
+.entity-action-popup .entity-extra-info-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.entity-action-popup .entity-extra-info-textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #ffffff;
+  font-size: 0.9em;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 80px;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.entity-action-popup .entity-extra-info-textarea:focus {
+  outline: none;
+  border-color: rgba(33, 150, 243, 0.5);
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.entity-action-popup .entity-extra-info-textarea::placeholder {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.entity-action-popup .entity-extra-info-actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.entity-action-popup .entity-extra-info-save-btn,
+.entity-action-popup .entity-extra-info-cancel-btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.9em;
+  transition: all 0.2s;
+}
+
+.entity-action-popup .entity-extra-info-save-btn {
+  background-color: rgba(76, 175, 80, 0.9);
+  color: #ffffff;
+}
+
+.entity-action-popup .entity-extra-info-save-btn:hover:not(:disabled) {
+  background-color: rgba(76, 175, 80, 1);
+  transform: scale(1.05);
+}
+
+.entity-action-popup .entity-extra-info-save-btn:disabled {
+  background-color: rgba(158, 158, 158, 0.5);
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.entity-action-popup .entity-extra-info-cancel-btn {
+  background-color: rgba(158, 158, 158, 0.9);
+  color: #ffffff;
+}
+
+.entity-action-popup .entity-extra-info-cancel-btn:hover {
+  background-color: rgba(158, 158, 158, 1);
+  transform: scale(1.05);
+}
+
+.entity-action-popup .entity-extra-info-display {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.entity-action-popup .entity-extra-info-content {
+  flex: 1;
+}
+
+.entity-action-popup .entity-extra-info-content p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9em;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.entity-action-popup .entity-extra-info-empty {
+  color: rgba(255, 255, 255, 0.4) !important;
+  font-style: italic;
+}
+
+.entity-action-popup .entity-extra-info-edit-btn {
+  padding: 6px 12px;
+  background-color: rgba(33, 150, 243, 0.2);
+  border: 1px solid rgba(33, 150, 243, 0.3);
+  border-radius: 4px;
+  color: rgba(33, 150, 243, 1);
+  cursor: pointer;
+  font-size: 0.85em;
+  font-weight: 500;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.entity-action-popup .entity-extra-info-edit-btn:hover {
+  background-color: rgba(33, 150, 243, 0.3);
+  border-color: rgba(33, 150, 243, 0.5);
+  transform: scale(1.05);
 }
 
 .entity-action-popup .evidence-extra-info-preview {

@@ -20,21 +20,95 @@ export const EvidenceTab = ({
   handleDeleteEvidence,
   newEvidenceLink,
   setNewEvidenceLink,
-  newEvidenceExtraInfo,
-  setNewEvidenceExtraInfo,
   handleAddEvidenceLink,
   editingEvidenceId,
   editingEvidenceLink,
   setEditingEvidenceLink,
-  editingEvidenceExtraInfo,
-  setEditingEvidenceExtraInfo,
   handleStartEditEvidence,
   handleCancelEditEvidence,
   handleUpdateEvidence,
+  entityExtraInfo,
+  editingEntityExtraInfo,
+  setEditingEntityExtraInfo,
+  isEditingEntityExtraInfo,
+  handleStartEditEntityExtraInfo,
+  handleCancelEditEntityExtraInfo,
+  handleSaveEntityExtraInfo,
   tEntity
 }) => {
+  const hasEntityExtraInfoChanges = isEditingEntityExtraInfo && (
+    editingEntityExtraInfo !== (entityExtraInfo || '')
+  );
+
   return (
     <div className="form-section">
+      {/* Entity Extra Info Section */}
+      <div className="form-group">
+        <label>{tEntity('entityExtraInfo.label') || `${type === 'song' ? 'Song' : 'Artist'} Extra Info`}</label>
+        {isEditingEntityExtraInfo ? (
+          <div className="entity-extra-info-edit">
+            <textarea
+              value={editingEntityExtraInfo}
+              onChange={(e) => setEditingEntityExtraInfo(e.target.value)}
+              className="entity-extra-info-textarea"
+              placeholder={tEntity('entityExtraInfo.placeholder') || 'Additional notes or information about this ' + type}
+              rows={4}
+            />
+            <div className="entity-extra-info-actions">
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleSaveEntityExtraInfo();
+                }} 
+                className="entity-extra-info-save-btn"
+                disabled={!hasEntityExtraInfoChanges}
+                title={tEntity('buttons.save')}
+                type="button"
+              >
+                {tEntity('buttons.save') || 'Save'}
+              </button>
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleCancelEditEntityExtraInfo();
+                }} 
+                className="entity-extra-info-cancel-btn"
+                title={tEntity('buttons.cancel') || 'Cancel'}
+                type="button"
+              >
+                {tEntity('buttons.cancel') || 'Cancel'}
+              </button>
+            </div>
+          </div>
+        ) : (
+          <div className="entity-extra-info-display">
+            <div className="entity-extra-info-content">
+              {entityExtraInfo ? (
+                <p>{entityExtraInfo}</p>
+              ) : (
+                <p className="entity-extra-info-empty">
+                  {tEntity('entityExtraInfo.empty') || 'No extra info added'}
+                </p>
+              )}
+            </div>
+              <button 
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleStartEditEntityExtraInfo();
+                }} 
+                className="entity-extra-info-edit-btn"
+                title={tEntity('buttons.edit') || 'Edit'}
+                type="button"
+              >
+                {tEntity('buttons.edit') || 'Edit'}
+              </button>
+          </div>
+        )}
+      </div>
+
       {/* Add external evidence link */}
       <div className="form-group">
         <label>{tEntity('evidence.addLink') || 'Add External Evidence Link'}</label>
@@ -129,6 +203,7 @@ export const EvidenceTab = ({
               const isImage = isImageUrl(evidence.link);
               const isCdn = isCdnUrl(evidence.link);
               const isEditing = editingEvidenceId === evidence.id;
+              const hasChanges = isEditing && editingEvidenceLink !== evidence.link;
               
               return (
                 <div key={evidence.id} className="evidence-item">
@@ -141,25 +216,29 @@ export const EvidenceTab = ({
                         className="evidence-edit-input"
                         placeholder={tEntity('evidence.linkPlaceholder') || 'Enter URL'}
                       />
-                      <textarea
-                        value={editingEvidenceExtraInfo}
-                        onChange={(e) => setEditingEvidenceExtraInfo(e.target.value)}
-                        className="evidence-edit-textarea"
-                        placeholder={tEntity('evidence.extraInfoPlaceholder') || 'Extra info (optional)'}
-                        rows={3}
-                      />
                       <div className="evidence-edit-actions">
                         <button 
-                          onClick={() => handleUpdateEvidence(evidence.id)} 
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleUpdateEvidence(evidence.id);
+                          }} 
                           className="evidence-save-btn"
+                          disabled={!hasChanges}
                           title={tEntity('buttons.save')}
+                          type="button"
                         >
                           ✓
                         </button>
                         <button 
-                          onClick={handleCancelEditEvidence} 
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            handleCancelEditEvidence();
+                          }} 
                           className="evidence-cancel-btn"
                           title={tEntity('buttons.cancel') || 'Cancel'}
+                          type="button"
                         >
                           ×
                         </button>

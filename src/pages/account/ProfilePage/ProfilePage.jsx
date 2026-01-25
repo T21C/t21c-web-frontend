@@ -255,13 +255,10 @@ const ProfilePage = () => {
             if (pass.isDeleted) return false;
             
             // Filter hidden passes based on toggle state (only for own profile)
-            if (isOwnProfile) {
               // If toggle is off, hide hidden passes
-              if (!showHiddenPasses && pass.isHidden) return false;
-            } else {
+              if (showHiddenPasses && pass.isHidden) return false;
               // For other profiles, always hide hidden passes
               if (pass.isHidden) return false;
-            }
             
             return true;
           });

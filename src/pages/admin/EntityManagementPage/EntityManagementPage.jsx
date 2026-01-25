@@ -355,7 +355,6 @@ const EntityManagementPage = ({ type = 'artist' }) => {
           {...(type === 'song' ? { song: selectedEntity } : { artist: selectedEntity })}
           onClose={() => setSelectedEntity(null)}
           onUpdate={() => {
-            setSelectedEntity(null);
             fetchEntities(true);
           }}
           type={type}

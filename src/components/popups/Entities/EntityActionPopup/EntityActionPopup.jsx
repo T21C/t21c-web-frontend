@@ -51,6 +51,9 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
   const [newEvidenceLink, setNewEvidenceLink] = useState('');
   const [editingEvidenceId, setEditingEvidenceId] = useState(null);
   const [editingEvidenceLink, setEditingEvidenceLink] = useState('');
+  const [entityExtraInfo, setEntityExtraInfo] = useState(entity?.extraInfo || '');
+  const [editingEntityExtraInfo, setEditingEntityExtraInfo] = useState('');
+  const [isEditingEntityExtraInfo, setIsEditingEntityExtraInfo] = useState(false);
 
   const verificationStateOptions = type === 'song' 
     ? [
@@ -98,6 +101,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       setAliases(entity.aliases?.map(a => a.alias) || []);
       setLinks(entity.links?.map(l => l.link) || []);
       setEvidences(entity.evidences || []);
+      setEntityExtraInfo(entity.extraInfo || '');
       if (type === 'song') {
         setCredits(entity.credits || []);
       }
@@ -642,13 +646,11 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
         ? `/v2/admin/songs/${entityId}/evidences`
         : `/v2/admin/artists/${entityId}/evidences`;
       const response = await api.post(endpoint, { 
-        link: newEvidenceLink.trim(),
-        extraInfo: newEvidenceExtraInfo.trim() || null
+        link: newEvidenceLink.trim()
       });
       toast.success(tEntity('messages.evidenceAdded'));
       setEvidences([...evidences, response.data]);
       setNewEvidenceLink('');
-      setNewEvidenceExtraInfo('');
     } catch (error) {
       const errorMessage = getErrorMessage(error, tEntity('errors.evidenceFailed'));
       toast.error(errorMessage);
@@ -663,7 +665,6 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
   const handleCancelEditEvidence = () => {
     setEditingEvidenceId(null);
     setEditingEvidenceLink('');
-    setEditingEvidenceExtraInfo('');
   };
 
   const handleUpdateEvidence = async (evidenceId) => {
@@ -676,13 +677,46 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       const endpoint = type === 'song'
         ? `/v2/admin/songs/${entityId}/evidences/${evidenceId}`
         : `/v2/admin/artists/${entityId}/evidences/${evidenceId}`;
-      const response = await api.put(endpoint, { link: editingEvidenceLink.trim() });
+      const response = await api.put(endpoint, { 
+        link: editingEvidenceLink.trim()
+      });
       toast.success(tEntity('messages.evidenceUpdated') || 'Evidence updated successfully');
       setEvidences(evidences.map(e => e.id === evidenceId ? response.data : e));
       setEditingEvidenceId(null);
       setEditingEvidenceLink('');
     } catch (error) {
       const errorMessage = getErrorMessage(error, tEntity('errors.evidenceFailed'));
+      toast.error(errorMessage);
+    }
+  };
+
+  const handleStartEditEntityExtraInfo = () => {
+    setEditingEntityExtraInfo(entityExtraInfo || '');
+    setIsEditingEntityExtraInfo(true);
+  };
+
+  const handleCancelEditEntityExtraInfo = () => {
+    setEditingEntityExtraInfo('');
+    setIsEditingEntityExtraInfo(false);
+  };
+
+  const handleSaveEntityExtraInfo = async () => {
+    try {
+      const endpoint = type === 'song'
+        ? `/v2/admin/songs/${entityId}`
+        : `/v2/admin/artists/${entityId}`;
+      const response = await api.put(endpoint, { 
+        extraInfo: editingEntityExtraInfo.trim() || null
+      });
+      setEntityExtraInfo(response.data.extraInfo || '');
+      setIsEditingEntityExtraInfo(false);
+      setEditingEntityExtraInfo('');
+      toast.success(tEntity('messages.entityExtraInfoUpdated') || 'Extra info updated successfully');
+      if (onUpdate) {
+        onUpdate(response.data);
+      }
+    } catch (error) {
+      const errorMessage = getErrorMessage(error, tEntity('errors.updateFailed'));
       toast.error(errorMessage);
     }
   };
@@ -903,37 +937,40 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
           )}
 
           {mode === 'evidence' && (
-              <EvidenceTab
-                type={type}
-                entityId={entityId}
-                isDragOver={isDragOver}
-                handleDragOver={handleDragOver}
-                handleDragLeave={handleDragLeave}
-                handleDrop={handleDrop}
-                handleEvidenceFileSelect={handleEvidenceFileSelect}
-                evidenceFiles={evidenceFiles}
-                handleRemoveEvidencePreview={handleRemoveEvidencePreview}
-                handleAddEvidence={handleAddEvidence}
-                isUploadingEvidence={isUploadingEvidence}
-                evidences={evidences}
-                showEvidenceGallery={showEvidenceGallery}
-                setShowEvidenceGallery={setShowEvidenceGallery}
-                handleDeleteEvidence={handleDeleteEvidence}
-                newEvidenceLink={newEvidenceLink}
-                setNewEvidenceLink={setNewEvidenceLink}
-                newEvidenceExtraInfo={newEvidenceExtraInfo}
-                setNewEvidenceExtraInfo={setNewEvidenceExtraInfo}
-                handleAddEvidenceLink={handleAddEvidenceLink}
-                editingEvidenceId={editingEvidenceId}
-                editingEvidenceLink={editingEvidenceLink}
-                setEditingEvidenceLink={setEditingEvidenceLink}
-                editingEvidenceExtraInfo={editingEvidenceExtraInfo}
-                setEditingEvidenceExtraInfo={setEditingEvidenceExtraInfo}
-                handleStartEditEvidence={handleStartEditEvidence}
-                handleCancelEditEvidence={handleCancelEditEvidence}
-                handleUpdateEvidence={handleUpdateEvidence}
-                tEntity={tEntity}
-              />
+            <EvidenceTab
+              type={type}
+              entityId={entityId}
+              isDragOver={isDragOver}
+              handleDragOver={handleDragOver}
+              handleDragLeave={handleDragLeave}
+              handleDrop={handleDrop}
+              handleEvidenceFileSelect={handleEvidenceFileSelect}
+              evidenceFiles={evidenceFiles}
+              handleRemoveEvidencePreview={handleRemoveEvidencePreview}
+              handleAddEvidence={handleAddEvidence}
+              isUploadingEvidence={isUploadingEvidence}
+              evidences={evidences}
+              showEvidenceGallery={showEvidenceGallery}
+              setShowEvidenceGallery={setShowEvidenceGallery}
+              handleDeleteEvidence={handleDeleteEvidence}
+              newEvidenceLink={newEvidenceLink}
+              setNewEvidenceLink={setNewEvidenceLink}
+              handleAddEvidenceLink={handleAddEvidenceLink}
+              editingEvidenceId={editingEvidenceId}
+              editingEvidenceLink={editingEvidenceLink}
+              setEditingEvidenceLink={setEditingEvidenceLink}
+              handleStartEditEvidence={handleStartEditEvidence}
+              handleCancelEditEvidence={handleCancelEditEvidence}
+              handleUpdateEvidence={handleUpdateEvidence}
+              entityExtraInfo={entityExtraInfo}
+              editingEntityExtraInfo={editingEntityExtraInfo}
+              setEditingEntityExtraInfo={setEditingEntityExtraInfo}
+              isEditingEntityExtraInfo={isEditingEntityExtraInfo}
+              handleStartEditEntityExtraInfo={handleStartEditEntityExtraInfo}
+              handleCancelEditEntityExtraInfo={handleCancelEditEntityExtraInfo}
+              handleSaveEntityExtraInfo={handleSaveEntityExtraInfo}
+              tEntity={tEntity}
+            />
           )}
 
           {error && <div className="error-message">{error}</div>}
