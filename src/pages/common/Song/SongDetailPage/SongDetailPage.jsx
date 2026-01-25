@@ -6,6 +6,9 @@ import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
 import { EvidenceGalleryPopup } from '@/components/popups';
 import { ExternalLinkIcon } from '@/components/common/icons';
+import { LevelCard } from '@/components/cards';
+import { useDifficultyContext } from '@/contexts/DifficultyContext';
+import { useAuth } from '@/contexts/AuthContext';
 import './songDetailPage.css';
 
 const SongDetailPage = () => {
@@ -14,6 +17,8 @@ const SongDetailPage = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const currentUrl = window.location.origin + location.pathname;
+  const { difficultyDict, tagsDict } = useDifficultyContext();
+  const { user } = useAuth();
 
   const [song, setSong] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -207,17 +212,14 @@ const SongDetailPage = () => {
               <h2>{tSong('sections.levels')}</h2>
               <div className="levels-list">
                 {song.levels.map((level) => (
-                  <div
-                    key={level.id}
-                    className="level-item"
-                    onClick={() => navigate(`/levels/${level.id}`)}
-                  >
-                    {(() => {
-                      const songName = level.songObject?.name || level.song || '';
-                      const artistName = level.artistObject?.name || level.artist || '';
-                      return songName || artistName ? `${songName} - ${artistName}` : `Level ${level.id}`;
-                    })()}
-                  </div>
+                  <LevelCard
+                    key={level.id || level._id}
+                    level={level}
+                    user={user}
+                    displayMode="normal"
+                    size="medium"
+                    showTags={true}
+                  />
                 ))}
               </div>
             </div>

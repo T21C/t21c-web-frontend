@@ -219,30 +219,6 @@ const ArtistDetailPage = () => {
               </div>
             </div>
           )}
-
-
-
-          {/* Levels */}
-          {artist.levels && artist.levels.length > 0 && (
-            <div className="artist-section">
-              <h2>{tArtist('sections.levels')}</h2>
-              <div className="levels-list">
-                {artist.levels.map((level) => (
-                  <div
-                    key={level.id}
-                    className="level-item"
-                    onClick={() => navigate(`/levels/${level.id}`)}
-                  >
-                    {(() => {
-                      const songName = level.songObject?.name || level.song || '';
-                      const artistName = level.artistObject?.name || level.artist || '';
-                      return songName || artistName ? `${songName} - ${artistName}` : `Level ${level.id}`;
-                    })()}
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       </div>
 
