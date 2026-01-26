@@ -28,14 +28,8 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
   const [evidences, setEvidences] = useState(artist?.evidences || []);
   const [newAlias, setNewAlias] = useState('');
   const [newLink, setNewLink] = useState('');
-  const [mergeSourceEntity, setMergeSourceEntity] = useState(null);
-  const [mergeSourceSearch, setMergeSourceSearch] = useState('');
-  const [mergeTargetEntity, setMergeTargetEntity] = useState(null);
+  const [mergeTarget, setMergeTarget] = useState(null);
   const [mergeTargetSearch, setMergeTargetSearch] = useState('');
-  const [availableSourceEntities, setAvailableSourceEntities] = useState([]);
-  const [availableTargetEntities, setAvailableTargetEntities] = useState([]);
-  const [isSearchingSource, setIsSearchingSource] = useState(false);
-  const [isSearchingTarget, setIsSearchingTarget] = useState(false);
   const [availableArtists, setAvailableArtists] = useState([]);
   const [splitName1, setSplitName1] = useState('');
   const [splitName2, setSplitName2] = useState('');
@@ -72,10 +66,9 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
     : [
         { value: 'unverified', label: t('verification.unverified', { ns: 'common' }) },
         { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
-        { value: 'ysmod_only', label: t('verification.ysmodOnly', { ns: 'common' }) },
         { value: 'declined', label: t('verification.declined', { ns: 'common' }) },
-        { value: 'mostly_declined', label: t('verification.mostlyDeclined', { ns: 'common' }) },
-        { value: 'mostly_allowed', label: t('verification.mostlyAllowed', { ns: 'common' }) },
+        { value: 'mostly declined', label: t('verification.mostlyDeclined', { ns: 'common' }) },
+        { value: 'mostly allowed', label: t('verification.mostlyAllowed', { ns: 'common' }) },
         { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) }
       ];
 
@@ -112,10 +105,6 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       if (type === 'song') {
         setCredits(entity.credits || []);
       }
-      // Set current entity as default source for merge
-      if (mode === 'merge' && !mergeSourceEntity) {
-        setMergeSourceEntity(entity);
-      }
     }
   }, [entity, type]);
 
@@ -145,84 +134,17 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
     };
   }, [onClose]);
 
-  // Fetch source entities for merge
   useEffect(() => {
     let cancelToken;
 
-    const fetchSourceEntities = async () => {
-      if (!mergeSourceSearch.trim()) {
-        setAvailableSourceEntities([]);
-        setIsSearchingSource(false);
-        return;
-      }
-
+    const fetchEntities = async () => {
       try {
         if (cancelToken) {
           cancelToken.cancel('New search initiated');
         }
 
         cancelToken = api.CancelToken.source();
-        setIsSearchingSource(true);
-
-        const params = new URLSearchParams({
-          page: '1',
-          limit: '20',
-          search: mergeSourceSearch,
-          sort: 'NAME_ASC'
-        });
-
-        const endpoint = type === 'song' ? '/v2/database/songs' : '/v2/database/artists';
-        const response = await api.get(`${endpoint}?${params}`, {
-          cancelToken: cancelToken.token
-        });
-
-        const items = type === 'song' ? (response.data.songs || []) : (response.data.artists || []);
-        setAvailableSourceEntities(items);
-      } catch (error) {
-        if (!api.isCancel(error)) {
-          console.error(`Error fetching source ${type}s:`, error);
-          setAvailableSourceEntities([]);
-        }
-      } finally {
-        setIsSearchingSource(false);
-      }
-    };
-
-    if (mode === 'merge') {
-      const timeoutId = setTimeout(fetchSourceEntities, 300);
-      return () => {
-        clearTimeout(timeoutId);
-        if (cancelToken) {
-          cancelToken.cancel('Component unmounted');
-        }
-      };
-    }
-
-    return () => {
-      if (cancelToken) {
-        cancelToken.cancel('Component unmounted');
-      }
-    };
-  }, [mode, mergeSourceSearch, type]);
-
-  // Fetch target entities for merge
-  useEffect(() => {
-    let cancelToken;
-
-    const fetchTargetEntities = async () => {
-      if (!mergeTargetSearch.trim()) {
-        setAvailableTargetEntities([]);
-        setIsSearchingTarget(false);
-        return;
-      }
-
-      try {
-        if (cancelToken) {
-          cancelToken.cancel('New search initiated');
-        }
-
-        cancelToken = api.CancelToken.source();
-        setIsSearchingTarget(true);
+        setAvailableArtists(null);
 
         const params = new URLSearchParams({
           page: '1',
@@ -237,29 +159,26 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
         });
 
         const items = type === 'song' ? (response.data.songs || []) : (response.data.artists || []);
-        // Filter out the source entity from target options
-        const filteredItems = mergeSourceEntity 
-          ? items.filter(item => item.id !== mergeSourceEntity.id)
-          : items;
-        setAvailableTargetEntities(filteredItems);
+        if (type === 'song') {
+          setAvailableSongs(items.filter(s => String(s.id) !== String(entityId)));
+        } else {
+          setAvailableArtists(items.filter(a => a.id !== entityId));
+        }
       } catch (error) {
         if (!api.isCancel(error)) {
-          console.error(`Error fetching target ${type}s:`, error);
-          setAvailableTargetEntities([]);
+          console.error(`Error fetching ${type}s:`, error);
+          setError(tEntity(`errors.load${type === 'song' ? 'Songs' : 'Artists'}Failed`));
+          if (type === 'song') {
+            setAvailableSongs([]);
+          } else {
+            setAvailableArtists([]);
+          }
         }
-      } finally {
-        setIsSearchingTarget(false);
       }
     };
 
     if (mode === 'merge') {
-      const timeoutId = setTimeout(fetchTargetEntities, 300);
-      return () => {
-        clearTimeout(timeoutId);
-        if (cancelToken) {
-          cancelToken.cancel('Component unmounted');
-        }
-      };
+      fetchEntities();
     }
 
     return () => {
@@ -267,7 +186,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
         cancelToken.cancel('Component unmounted');
       }
     };
-  }, [mode, mergeTargetSearch, mergeSourceEntity, type]);
+  }, [entityId, mode, mergeTargetSearch, type]);
 
   // Fetch artists for credits (songs only)
   useEffect(() => {
@@ -395,28 +314,9 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
     }
   };
 
-  // Fetch full entity details when selected
-  const fetchEntityDetails = async (entityId) => {
-    try {
-      const endpoint = type === 'song' 
-        ? `/v2/database/songs/${entityId}`
-        : `/v2/database/artists/${entityId}`;
-      const response = await api.get(endpoint);
-      return response.data;
-    } catch (error) {
-      console.error(`Error fetching entity details:`, error);
-      return null;
-    }
-  };
-
   const handleMerge = async () => {
-    if (!mergeSourceEntity || !mergeTargetEntity) {
-      setError(tEntity('errors.selectSourceAndTarget') || 'Please select both source and target entities');
-      return;
-    }
-
-    if (mergeSourceEntity.id === mergeTargetEntity.id) {
-      setError(tEntity('errors.sameEntity') || 'Source and target entities must be different');
+    if (!currentMergeTarget) {
+      setError(tEntity('errors.selectTarget'));
       return;
     }
 
@@ -425,15 +325,11 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
     setSuccess('');
 
     try {
-      // Ensure we have full entity details (in case they were selected from dropdown with minimal data)
-      const sourceId = typeof mergeSourceEntity === 'object' ? mergeSourceEntity.id : mergeSourceEntity;
-      const targetId = typeof mergeTargetEntity === 'object' ? mergeTargetEntity.id : mergeTargetEntity;
-
       const endpoint = type === 'song' 
-        ? `/v2/database/songs/${sourceId}/merge`
-        : `/v2/database/artists/${sourceId}/merge`;
+        ? `/v2/database/songs/${entityId}/merge`
+        : `/v2/database/artists/${entityId}/merge`;
       await api.post(endpoint, {
-        targetId: targetId
+        targetId: currentMergeTarget.id
       });
 
       setSuccess(tEntity('messages.merged'));
@@ -843,6 +739,8 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
     }
   };
 
+  const currentMergeTarget = type === 'song' ? mergeTarget : mergeTarget;
+  const availableMergeTargets = type === 'song' ? availableSongs : availableArtists;
 
   return (
     <div className={`entity-action-popup-overlay`}>
@@ -870,13 +768,6 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
                 setMode('merge');
                 setError('');
                 setSuccess('');
-                // Reset merge state and set current entity as default source
-                setMergeSourceEntity(entity);
-                setMergeSourceSearch('');
-                setMergeTargetEntity(null);
-                setMergeTargetSearch('');
-                setAvailableSourceEntities([]);
-                setAvailableTargetEntities([]);
               }}
             >
               {tEntity('tabs.merge')}
@@ -961,20 +852,13 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
           {mode === 'merge' && (
             <MergeTab
               type={type}
-              sourceEntitySearch={mergeSourceSearch}
-              setSourceEntitySearch={setMergeSourceSearch}
-              availableSourceEntities={availableSourceEntities}
-              currentSourceEntity={mergeSourceEntity}
-              setSourceEntity={setMergeSourceEntity}
-              targetEntitySearch={mergeTargetSearch}
-              setTargetEntitySearch={setMergeTargetSearch}
-              availableTargetEntities={availableTargetEntities}
-              currentTargetEntity={mergeTargetEntity}
-              setTargetEntity={setMergeTargetEntity}
+              mergeTargetSearch={mergeTargetSearch}
+              setMergeTargetSearch={setMergeTargetSearch}
+              availableMergeTargets={availableMergeTargets}
+              currentMergeTarget={currentMergeTarget}
+              setMergeTarget={setMergeTarget}
               handleMerge={handleMerge}
               isLoading={isLoading}
-              isSearchingSource={isSearchingSource}
-              isSearchingTarget={isSearchingTarget}
               tEntity={tEntity}
             />
           )}
