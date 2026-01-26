@@ -506,5 +506,13 @@ select:-moz-focusring {
   color: #aaa;
 }
 
+.verification-chip.conditional {
+  background-color: rgba(255, 152, 0, 0.2);
+  color: #ff9800;
+}
+.verification-chip.ysmod_only {
+  background-color: rgba(156, 39, 176, 0.2);
+  color: #dc3af9;
+}
 
 

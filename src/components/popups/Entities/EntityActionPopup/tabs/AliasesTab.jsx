@@ -11,6 +11,7 @@ export const AliasesTab = ({
   isLoading,
   tEntity
 }) => {
+  const { t } = useTranslation(['components', 'common']);
   return (
     <div className="form-section">
       <div className="form-group">

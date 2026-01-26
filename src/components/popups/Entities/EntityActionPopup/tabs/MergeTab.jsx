@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { useTranslation } from 'react-i18next';
 export const MergeTab = ({
   type,
   mergeTargetSearch,
@@ -8,9 +8,10 @@ export const MergeTab = ({
   currentMergeTarget,
   setMergeTarget,
   handleMerge,
-  isLoading,
+  isLoading,  
   tEntity
 }) => {
+  const { t } = useTranslation(['components', 'common']);
   return (
     <div className="form-section">
       <p className="info-text">{tEntity('merge.info')}</p>

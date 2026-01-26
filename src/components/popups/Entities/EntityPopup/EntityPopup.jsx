@@ -89,19 +89,19 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
 
   const verificationStateLabels = type === 'artist' 
     ? {
-        unverified: t('common.verification.unverified'),
-        pending: t('common.verification.pending'),
-        declined: t('common.verification.declined'),
-        'mostly declined': t('common.verification.mostlyDeclined'),
-        'mostly allowed': t('common.verification.mostlyAllowed'),
-        allowed: t('common.verification.allowed')
+        unverified: t('verification.unverified', { ns: 'common' }),
+        pending: t('verification.pending', { ns: 'common' }),
+        declined: t('verification.declined', { ns: 'common' }),
+        'mostly declined': t('verification.mostlyDeclined', { ns: 'common' }),
+        'mostly allowed': t('verification.mostlyAllowed', { ns: 'common' }),
+        allowed: t('verification.allowed', { ns: 'common' })
       }
     : {
-        declined: t('common.verification.declined'),
-        pending: t('common.verification.pending'),
-        conditional: t('common.verification.conditional'),
-        ysmod_only: t('common.verification.ysmodOnly'),
-        allowed: t('common.verification.allowed')
+        declined: t('verification.declined', { ns: 'common' }),
+        pending: t('verification.pending', { ns: 'common' }),
+        conditional: t('verification.conditional', { ns: 'common' }),
+        ysmod_only: t('verification.ysmodOnly', { ns: 'common' }),
+        allowed: t('verification.allowed', { ns: 'common' })
       };
 
   const handleArtistClick = (artistId) => {

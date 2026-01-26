@@ -12,7 +12,7 @@ export const LinksTab = ({
   isLoading,
   tEntity
 }) => {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['components', 'common']);
   return (
     <div className="form-section">
       <div className="form-group">

@@ -330,7 +330,6 @@ const EntityManagementPage = ({ type = 'artist' }) => {
             {tEntity('buttons.loadMore')}
           </button>
         )}
-      </div>
 
       {selectedEntity && (
         <EntityActionPopup
@@ -490,6 +489,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
           </div>
         </div>
       )}
+    </div>
     </div>
   );
 };

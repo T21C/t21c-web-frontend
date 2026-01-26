@@ -372,12 +372,12 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                         )}
                         {songDetails.verificationState && (
                           <span className={getVerificationClass(songDetails.verificationState)}>
-                            {songDetails.verificationState === 'allowed' ? t('common.verification.allowed') :
-                             songDetails.verificationState === 'ysmod_only' ? t('common.verification.ysmodOnly') :
-                             songDetails.verificationState === 'conditional' ? t('common.verification.conditional') :
-                             songDetails.verificationState === 'pending' ? t('common.verification.pending') :
-                             songDetails.verificationState === 'declined' ? t('common.verification.declined') :
-                             t('common.verification.pending')}
+                            {songDetails.verificationState === 'allowed' ? t('verification.allowed', { ns: 'common' }) :
+                             songDetails.verificationState === 'ysmod_only' ? t('verification.ysmodOnly', { ns: 'common' }) :
+                             songDetails.verificationState === 'conditional' ? t('verification.conditional', { ns: 'common' }) :
+                             songDetails.verificationState === 'pending' ? t('verification.pending', { ns: 'common' }) :
+                             songDetails.verificationState === 'declined' ? t('verification.declined', { ns: 'common' }) :
+                             t('verification.pending', { ns: 'common' })}
                           </span>
                         )}
                       </>
@@ -494,12 +494,12 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                               )}
                               {song.verificationState && (
                                 <span className={getVerificationClass(song.verificationState)}>
-                                  {song.verificationState === 'allowed' ? t('common.verification.allowed') :
-                                   song.verificationState === 'ysmod_only' ? t('common.verification.ysmodOnly') :
-                                   song.verificationState === 'conditional' ? t('common.verification.conditional') :
-                                   song.verificationState === 'pending' ? t('common.verification.pending') :
-                                   song.verificationState === 'declined' ? t('common.verification.declined') :
-                                   t('common.verification.pending')}
+                                  {song.verificationState === 'allowed' ? t('verification.allowed', { ns: 'common' }) :
+                                   song.verificationState === 'ysmod_only' ? t('verification.ysmodOnly', { ns: 'common' }) :
+                                   song.verificationState === 'conditional' ? t('verification.conditional', { ns: 'common' }) :
+                                   song.verificationState === 'pending' ? t('verification.pending', { ns: 'common' }) :
+                                   song.verificationState === 'declined' ? t('verification.declined', { ns: 'common' }) :
+                                   t('verification.pending', { ns: 'common' })}
                                 </span>
                               )}
                             </div>

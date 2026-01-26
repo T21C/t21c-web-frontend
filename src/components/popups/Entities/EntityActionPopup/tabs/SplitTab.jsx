@@ -1,6 +1,5 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-
 export const SplitTab = ({
   splitName1,
   setSplitName1,
@@ -20,7 +19,7 @@ export const SplitTab = ({
   isLoading,
   tEntity
 }) => {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['components', 'common']);
   return (
     <div className="form-section">
       {!showSplitConfirm ? (

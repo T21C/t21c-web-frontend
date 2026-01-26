@@ -47,11 +47,11 @@ const SongDetailPage = () => {
   };
 
   const verificationStateLabels = {
-    declined: t('common.verification.declined'),
-    pending: t('common.verification.pending'),
-    conditional: t('common.verification.conditional'),
-    ysmod_only: t('common.verification.ysmodOnly'),
-    allowed: t('common.verification.allowed')
+    declined: t('verification.declined', { ns: 'common' }),
+    pending: t('verification.pending', { ns: 'common' }),
+    conditional: t('verification.conditional', { ns: 'common' }),
+    ysmod_only: t('verification.ysmodOnly', { ns: 'common' }),
+    allowed: t('verification.allowed', { ns: 'common' })
   };
 
   if (loading) {

@@ -37,7 +37,7 @@ export const EvidenceTab = ({
   handleSaveEntityExtraInfo,
   tEntity
 }) => {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['components', 'common']);
   const hasEntityExtraInfoChanges = isEditingEntityExtraInfo && (
     editingEntityExtraInfo !== (entityExtraInfo || '')
   );

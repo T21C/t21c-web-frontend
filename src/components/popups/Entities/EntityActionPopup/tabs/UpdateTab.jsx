@@ -1,6 +1,6 @@
 import React from 'react';
 import { CustomSelect } from '@/components/common/selectors';
-
+import { useTranslation } from 'react-i18next';
 export const UpdateTab = ({
   type,
   name,
@@ -20,7 +20,7 @@ export const UpdateTab = ({
   isLoading,
   tEntity
 }) => {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['components', 'common']);
   return (
     <div className="form-section">
       <div className="form-group">

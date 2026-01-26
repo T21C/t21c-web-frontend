@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import { toast } from 'react-hot-toast';
 
+
 const getErrorMessage = (error, defaultMessage) => {
   if (error?.response?.data?.error) {
     return error.response.data.error;
@@ -19,7 +20,7 @@ export const LevelSuffixTab = ({
   isLoading,
   tEntity
 }) => {
-  const { t } = useTranslation('common');
+  const { t } = useTranslation(['components', 'common']);
   const [newSuffix, setNewSuffix] = useState('');
   const [levelCount, setLevelCount] = useState(0);
   const [currentSuffix, setCurrentSuffix] = useState(null);

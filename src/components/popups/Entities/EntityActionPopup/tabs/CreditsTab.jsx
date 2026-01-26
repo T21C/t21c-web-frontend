@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { useTranslation } from 'react-i18next';
 export const CreditsTab = ({
   creditSearch,
   setCreditSearch,
@@ -13,6 +13,7 @@ export const CreditsTab = ({
   handleRemoveCredit,
   tEntity
 }) => {
+  const { t } = useTranslation(['components', 'common']);
   return (
     <div className="form-section">
       <div className="form-group">
