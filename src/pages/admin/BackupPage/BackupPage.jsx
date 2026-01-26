@@ -853,7 +853,7 @@ const BackupPage = () => {
                   (confirmationAction?.type === 'restore' && isRestoringBackup)
                 }
               >
-                {tBackup('buttons.cancel')}
+                {t('buttons.cancel', { ns: 'common' })}
               </button>
             </div>
           </div>
