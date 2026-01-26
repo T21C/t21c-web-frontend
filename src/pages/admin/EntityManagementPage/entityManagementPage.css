@@ -176,6 +176,19 @@
   gap: 0.75rem;
 }
 
+.entity-management-container .evidence-list {
+  margin-right: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.entity-management-container .evidence-item img {
+  height: 60px;
+  max-width: 200px;
+  border-radius: 8px;
+}
+
 .entity-management-container .edit-button,
 .entity-management-container .delete-button {
   padding: 0.5rem 1rem;

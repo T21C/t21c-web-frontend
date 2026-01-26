@@ -329,6 +329,17 @@ const EntityManagementPage = ({ type = 'artist' }) => {
                         </div>
                       </div>
                     </div>
+                    <div className="evidence-list">
+                      {entity.evidences && entity.evidences.length > 0 && (
+                        <div className="evidence-list">
+                          {entity.evidences.map((evidence) => (
+                            <div key={evidence.id} className="evidence-item">
+                              <img src={evidence.link.replace("original", "small")} alt="Evidence" />
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                     <div className="entity-actions">
                       <button
                         className="edit-button"
