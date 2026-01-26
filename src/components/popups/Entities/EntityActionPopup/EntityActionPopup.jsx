@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import './entityActionPopup.css';
 import { toast } from 'react-hot-toast';
-import { UpdateTab, MergeTab, SplitTab, AliasesTab, LinksTab, CreditsTab, EvidenceTab, LevelSuffixTab } from './tabs';
+import { UpdateTab, MergeTab, SplitTab, AliasesTab, LinksTab, CreditsTab, EvidenceTab, LevelSuffixTab, RelationsTab } from './tabs';
 
 export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'artist' }) => {
   const { t } = useTranslation(['components', 'common']);
@@ -91,6 +91,12 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
   const [availableArtistsForCredits, setAvailableArtistsForCredits] = useState([]);
   const [availableSongs, setAvailableSongs] = useState([]);
 
+  // Artist relations state (artists only)
+  const [relations, setRelations] = useState(type === 'artist' ? (artist?.relatedArtists || []) : []);
+  const [newRelationArtistId, setNewRelationArtistId] = useState('');
+  const [relationSearch, setRelationSearch] = useState('');
+  const [availableArtistsForRelations, setAvailableArtistsForRelations] = useState([]);
+
   // Update local state when entity prop changes
   useEffect(() => {
     if (entity) {
@@ -105,6 +111,9 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       setEntityExtraInfo(entity.extraInfo || '');
       if (type === 'song') {
         setCredits(entity.credits || []);
+      }
+      if (type === 'artist') {
+        setRelations(entity.relatedArtists || []);
       }
     }
   }, [entity, type]);
@@ -330,6 +339,63 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
     };
   }, [mode, splitSearch1, splitSearch2, type, entityId]);
 
+  // Fetch artists for relations (artists only)
+  useEffect(() => {
+    let cancelToken;
+
+    const fetchArtists = async () => {
+      if (!relationSearch.trim()) {
+        setAvailableArtistsForRelations([]);
+        return;
+      }
+
+      try {
+        if (cancelToken) {
+          cancelToken.cancel('New search initiated');
+        }
+
+        cancelToken = api.CancelToken.source();
+        setAvailableArtistsForRelations(null); // Set to null to show loading state
+
+        const params = new URLSearchParams({
+          page: '1',
+          limit: '20',
+          search: relationSearch,
+          sort: 'NAME_ASC'
+        });
+
+        const response = await api.get(`/v2/database/artists?${params}`, {
+          cancelToken: cancelToken.token
+        });
+
+        // Filter out current artist and already related artists
+        const relatedIds = new Set(relations.map(r => r.id));
+        setAvailableArtistsForRelations(
+          (response.data.artists || []).filter(
+            a => a.id !== entityId && !relatedIds.has(a.id)
+          )
+        );
+      } catch (error) {
+        if (!api.isCancel(error)) {
+          console.error('Error fetching artists:', error);
+          setAvailableArtistsForRelations([]);
+        }
+      }
+    };
+
+    if (mode === 'relations' && type === 'artist') {
+      fetchArtists();
+    } else {
+      setAvailableArtistsForRelations([]);
+    }
+
+    return () => {
+      if (cancelToken) {
+        cancelToken.cancel('Component unmounted');
+      }
+    };
+  }, [mode, relationSearch, type, entityId, relations]);
+
   const handleAddAlias = () => {
     if (newAlias.trim() && !aliases.includes(newAlias.trim())) {
       setAliases([...aliases, newAlias.trim()]);
@@ -517,6 +583,45 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       await api.delete(`/v2/database/songs/${entityId}/credits/${creditId}`);
       toast.success(tEntity('messages.creditRemoved'));
       setCredits(credits.filter(c => c.id !== creditId));
+    } catch (error) {
+      const errorMessage = getErrorMessage(error, tEntity('errors.deleteFailed'));
+      toast.error(errorMessage);
+    }
+  };
+
+  // Artist relations handlers (artists only)
+  const handleAddRelation = async () => {
+    if (!newRelationArtistId || type !== 'artist') {
+      toast.error(tEntity('errors.selectArtist'));
+      return;
+    }
+
+    try {
+      await api.post(`/v2/database/artists/${entityId}/relations`, {
+        relatedArtistId: parseInt(newRelationArtistId)
+      });
+
+      toast.success(tEntity('messages.relationAdded'));
+      const response = await api.get(`/v2/database/artists/${entityId}/relations`);
+      setRelations(response.data.relations || []);
+      setNewRelationArtistId('');
+      setRelationSearch('');
+      // Refresh entity data to update parent component
+      onUpdate();
+    } catch (error) {
+      const errorMessage = getErrorMessage(error, tEntity('errors.relationFailed'));
+      toast.error(errorMessage);
+    }
+  };
+
+  const handleRemoveRelation = async (relatedArtistId) => {
+    if (type !== 'artist') return;
+    try {
+      await api.delete(`/v2/database/artists/${entityId}/relations/${relatedArtistId}`);
+      toast.success(tEntity('messages.relationRemoved'));
+      setRelations(relations.filter(r => r.id !== relatedArtistId));
+      // Refresh entity data to update parent component
+      onUpdate();
     } catch (error) {
       const errorMessage = getErrorMessage(error, tEntity('errors.deleteFailed'));
       toast.error(errorMessage);
@@ -871,6 +976,18 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
                 {tEntity('tabs.levelSuffix')}
               </button>
             )}
+            {type === 'artist' && (
+              <button
+                className={`mode-tab ${mode === 'relations' ? 'active' : ''}`}
+                onClick={() => {
+                  setMode('relations');
+                  setError('');
+                  setSuccess('');
+                }}
+              >
+                {tEntity('tabs.relations')}
+              </button>
+            )}
             <button
               className={`mode-tab ${mode === 'evidence' ? 'active' : ''}`}
               onClick={() => setMode('evidence')}
@@ -983,6 +1100,20 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
               song={song}
               onUpdate={onUpdate}
               isLoading={isLoading}
+              tEntity={tEntity}
+            />
+          )}
+
+          {mode === 'relations' && type === 'artist' && (
+            <RelationsTab
+              relationSearch={relationSearch}
+              setRelationSearch={setRelationSearch}
+              availableArtistsForRelations={availableArtistsForRelations}
+              newRelationArtistId={newRelationArtistId}
+              setNewRelationArtistId={setNewRelationArtistId}
+              relations={relations}
+              handleAddRelation={handleAddRelation}
+              handleRemoveRelation={handleRemoveRelation}
               tEntity={tEntity}
             />
           )}

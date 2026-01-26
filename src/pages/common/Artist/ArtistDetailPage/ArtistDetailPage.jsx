@@ -155,6 +155,34 @@ const ArtistDetailPage = () => {
             </div>
           )}
 
+          {/* Relations */}
+          {artist.relatedArtists && artist.relatedArtists.length > 0 && (
+            <div className="artist-section">
+              <h2>{tArtist('sections.relations')}</h2>
+              <div className="relations-list">
+                {artist.relatedArtists.map((relatedArtist) => (
+                  <div
+                    key={relatedArtist.id}
+                    className="relation-item"
+                    onClick={() => navigate(`/artists/${relatedArtist.id}`)}
+                  >
+                    {relatedArtist.avatarUrl && (
+                      <img 
+                        src={relatedArtist.avatarUrl} 
+                        alt={relatedArtist.name}
+                        className="relation-avatar"
+                      />
+                    )}
+                    <div className="relation-info">
+                      <span className="relation-name">{relatedArtist.name}</span>
+                      <span className="relation-id">ID: {relatedArtist.id}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Aliases */}
           {artist.aliases && artist.aliases.length > 0 && (
             <div className="artist-section">

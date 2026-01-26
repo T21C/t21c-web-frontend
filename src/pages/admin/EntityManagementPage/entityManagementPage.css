@@ -189,6 +189,19 @@
   border-radius: 8px;
 }
 
+.entity-management-container .evidence-link-item {
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.05);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
 .entity-management-container .edit-button,
 .entity-management-container .delete-button {
   padding: 0.5rem 1rem;

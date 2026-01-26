@@ -1005,3 +1005,22 @@
 .entity-action-popup::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.3);
 }
+
+.entity-action-popup .relations-tab {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.entity-action-popup .relations-tab .no-relations {
+  color: var(--text-secondary, #666);
+  font-style: italic;
+  padding: 1rem;
+  text-align: center;
+}
+
+.entity-action-popup .relations-tab .relations-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

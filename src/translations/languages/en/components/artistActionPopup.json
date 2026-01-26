@@ -6,7 +6,8 @@
     "split": "Split",
     "aliases": "Aliases",
     "links": "Links",
-    "evidence": "Evidence"
+    "evidence": "Evidence",
+    "relations": "Relations"
   },
   "form": {
     "name": "Name",
@@ -54,6 +55,16 @@
     "existing": "Existing Evidence",
     "deleteConfirm": "Are you sure you want to delete this evidence?"
   },
+  "relations": {
+    "search": "Search for Artist",
+    "placeholder": "Search by name...",
+    "existing": "Existing Relations",
+    "none": "No relations found",
+    "treeView": "Tree View",
+    "addRelation": "Add Relation",
+    "typeToSearch": "Type to search artists...",
+    "noResults": "No artists found"
+  },
   "buttons": {
     "merge": "Merge",
     "merging": "Merging...",
@@ -62,7 +73,9 @@
     "checking": "Checking...",
     "proceed": "Proceed",
     "deleteAvatar": "Delete Avatar",
-    "selectAvatar": "Select Avatar File"
+    "selectAvatar": "Select Avatar File",
+    "addRelation": "Add Relation",
+    "removeRelation": "Remove Relation"
   },
   "messages": {
     "updated": "Artist updated successfully",

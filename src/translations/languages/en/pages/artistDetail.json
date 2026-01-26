@@ -10,7 +10,8 @@
     "songs": "Songs",
     "extraInfo": "Extra Info",
     "evidence": "Evidence",
-    "levels": "Levels"
+    "levels": "Levels",
+    "relations": "Relations"
   },
   "backToList": "Back to Artists",
   "errors": {

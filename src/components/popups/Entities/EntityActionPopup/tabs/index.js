@@ -6,3 +6,4 @@ export { LinksTab } from './LinksTab';
 export { CreditsTab } from './CreditsTab';
 export { EvidenceTab } from './EvidenceTab';
 export { LevelSuffixTab } from './LevelSuffixTab';
+export { RelationsTab } from './RelationsTab';

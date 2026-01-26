@@ -10,7 +10,7 @@ import { toast } from 'react-hot-toast';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import './entityManagementPage.css';
 import { Link } from 'react-router-dom';
-import { getVerificationClass } from '@/utils/Utility';
+import { getVerificationClass, isCdnUrl, isImageUrl } from '@/utils/Utility';
 import { EvidenceGalleryPopup } from '@/components/popups/Evidence/EvidenceGalleryPopup/EvidenceGalleryPopup';
 
 const EntityManagementPage = ({ type = 'artist' }) => {
@@ -338,11 +338,23 @@ const EntityManagementPage = ({ type = 'artist' }) => {
                     <div className="evidence-list">
                       {entity.evidences && entity.evidences.length > 0 && (
                         <div className="evidence-list" onClick={() => openEvidenceGallery(entity)}>
-                          {entity.evidences.map((evidence) => (
+                          {entity.evidences.map((evidence) => {
+
+                            const isImage = isImageUrl(evidence.link);
+                            const isCdn = isCdnUrl(evidence.link);
+                            const isExternal = !isImage && !isCdn;
+                            return (
                             <div key={evidence.id} className="evidence-item">
-                              <img src={evidence.link.replace("original", "small")} alt="Evidence" />
+                              {isImage ? (
+                                <img src={evidence.link} alt="Evidence" />
+                              ) : (
+                                <div className="evidence-link-item">
+                                  <span className="evidence-link-icon">🔗</span>
+                                </div>
+                              )}
                             </div>
-                          ))}
+                            )
+                          })}
                         </div>
                       )}
                     </div>

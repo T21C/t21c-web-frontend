@@ -77,7 +77,7 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
     return (
       <div className="entity-popup-overlay">
         <div className="entity-popup" ref={popupRef}>
-          <div className="popup-loading">{tEntity('loading')}</div>
+          <div className="popup-loading">{t('loading', { ns: 'common' })}</div>
         </div>
       </div>
     );
@@ -158,6 +158,34 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
                     {link.link}
                     <ExternalLinkIcon size={14} />
                   </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Relations */}
+          {type === 'artist' && entityData.relatedArtists && entityData.relatedArtists.length > 0 && (
+            <div className="popup-section">
+              <h3 className="popup-section-title">{tEntity('relations.title')}</h3>
+              <div className="popup-relations">
+                {entityData.relatedArtists.map((relatedArtist) => (
+                  <div
+                    key={relatedArtist.id}
+                    className="popup-relation-item"
+                    onClick={() => handleArtistClick(relatedArtist.id)}
+                  >
+                    {relatedArtist.avatarUrl && (
+                      <img
+                        src={relatedArtist.avatarUrl}
+                        alt={relatedArtist.name}
+                        className="popup-relation-avatar"
+                      />
+                    )}
+                    <div className="popup-relation-info">
+                      <span className="popup-relation-name">{relatedArtist.name}</span>
+                      <span className="popup-relation-id">ID: {relatedArtist.id}</span>
+                    </div>
+                  </div>
                 ))}
               </div>
             </div>
