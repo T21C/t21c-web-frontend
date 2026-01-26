@@ -36,6 +36,9 @@
   margin: 0;
   color: #ffffff;
   font-size: 1.25em;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
 .evidence-gallery-popup .close-button {

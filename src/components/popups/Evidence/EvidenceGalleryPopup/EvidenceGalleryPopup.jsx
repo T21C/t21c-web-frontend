@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { isImageUrl } from '@/utils/Utility';
 import './evidenceGalleryPopup.css';
-import { ChevronIcon } from '@/components/common/icons';
+import { ChevronIcon, ExternalLinkIcon } from '@/components/common/icons';
 
 export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDelete = false }) => {
   const { t } = useTranslation('components');
@@ -243,6 +243,7 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
         <div className="popup-header">
           <h2>
             {tGallery('title')} ({currentIndex + 1}/{evidenceList.length})
+            <ExternalLinkIcon onClick={() => window.open(currentEvidence.link, '_blank')} />
           </h2>
           <button className="close-button" onClick={onClose}>×</button>
         </div>
