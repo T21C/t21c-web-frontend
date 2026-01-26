@@ -41,9 +41,9 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
           // Set original zip info
           setOriginalZip(data.metadata.originalZip);
 
-          // Set target level
+          // Set target level (store full path, not just filename)
           const targetPath = data.metadata.targetLevel;
-          setTargetLevel(targetPath ? targetPath.split(/\\|\//).pop() : null);
+          setTargetLevel(targetPath || null);
         }
       } catch (error) {
         console.error('Error fetching level files:', error);
@@ -296,14 +296,14 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
             )}
             {targetLevel && (
               <div className="current-target">
-                {tUpload('sections.levelSelection.currentTarget', { name: targetLevel })}
+                {tUpload('sections.levelSelection.currentTarget', { name: targetLevel.split(/\\|\//).pop() })}
               </div>
             )}
             <div className="level-list">
               {levelFiles.map((file) => (
                 <div 
                   key={file.fullPath}
-                  className={`level-item ${selectedLevel === file.fullPath ? 'selected' : ''} ${targetLevel === file.name ? 'target' : ''}`}
+                  className={`level-item ${selectedLevel === file.fullPath ? 'selected' : ''} ${targetLevel === file.fullPath ? 'target' : ''}`}
                   onClick={() => {
                     setSelectedLevel(file.fullPath);
                     setError(null);
@@ -311,6 +311,9 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
                 >
                   <div className="level-name">
                     {file.name}
+                  </div>
+                  <div className="level-path">
+                    {file.fullPath}
                   </div>
                   <div className="level-info">
                     <span>Size: {(file.size / 1024 / 1024).toFixed(2)} MB</span>

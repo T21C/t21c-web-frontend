@@ -129,6 +129,14 @@
   margin-bottom: 5px;
 }
 
+.level-upload-management-popup .level-path {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 8px;
+  word-break: break-all;
+  font-family: monospace;
+}
+
 .level-upload-management-popup .level-info {
   display: flex;
   flex-wrap: wrap;
