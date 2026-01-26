@@ -87,7 +87,9 @@
     "evidenceAdded": "Evidence added successfully",
     "evidenceUpdated": "Evidence updated successfully",
     "evidenceDeleted": "Evidence deleted successfully",
-    "entityExtraInfoUpdated": "Extra info updated successfully"
+    "entityExtraInfoUpdated": "Extra info updated successfully",
+    "relationAdded": "Relation added successfully",
+    "relationRemoved": "Relation removed successfully"
   },
   "errors": {
     "updateFailed": "Failed to update artist",
