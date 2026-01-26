@@ -20,8 +20,7 @@
     "title": "Request New Song",
     "name": "Song Name",
     "namePlaceholder": "Enter song name",
-    "requiresEvidence": "Requires evidence (song is declined)",
-    "description": "This will add a song request to your submission. The song will be created when your submission is approved."
+    "description": "This will create a new song with the artists credited"
   },
   "stats": {
     "title": "Song Statistics",

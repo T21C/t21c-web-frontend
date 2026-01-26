@@ -264,7 +264,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                         )}
                         {artistDetails.verificationState && (
                           <span className={`verification-status ${artistDetails.verificationState}`}>
-                            {t(`  verification.${artistDetails.verificationState}`, { ns: 'common' })}
+                            {t(`verification.${artistDetails.verificationState}`, { ns: 'common' })}
                           </span>
                         )}
                       </>

@@ -4,6 +4,7 @@ import api from '@/utils/api';
 import './songSelectorPopup.css';
 import axios from 'axios';
 import { getVerificationClass } from '@/utils/Utility';
+import { CustomSelect } from '@/components/common/selectors';
 
 export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selectedArtist = null, allowCreate = true }) => {
   const { t } = useTranslation(['components', 'common']);
@@ -27,7 +28,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newName, setNewName] = useState('');
   const [isCreating, setIsCreating] = useState(false);
-  const [requiresEvidence, setRequiresEvidence] = useState(true);
+  const [verificationState, setVerificationState] = useState('pending');
 
   // Reset create form state when popup opens
   useEffect(() => {
@@ -36,9 +37,9 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
     if (!initialSong || initialSong.id || !initialSong.name) {
       setShowCreateForm(false);
       setNewName('');
-      setRequiresEvidence(true);
+      setVerificationState('pending');
     } else {
-      setRequiresEvidence(initialSong.requiresEvidence !== undefined ? initialSong.requiresEvidence : true);
+      setVerificationState(initialSong.verificationState || 'pending');
     }
   }, [initialSong]);
 
@@ -59,7 +60,12 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
   const handleCreateClick = () => {
     setShowCreateForm(true);
     setNewName(initialSong?.name || '');
-    setRequiresEvidence(initialSong?.requiresEvidence !== undefined ? initialSong.requiresEvidence : true);
+    setVerificationState(initialSong?.verificationState || 'pending');
+    // Clear any selected song when creating a new request
+    setSelectedSongId(null);
+    setSongDetails(null);
+    setSearchQuery('');
+    setSearchResults([]);
   };
 
   // Load initial song details if they exist
@@ -255,12 +261,13 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
       setSuccess('');
       setError('');
 
-      // Return new song request data
-      // New songs always require evidence
+      // Return new song request data with verificationState
+      // Explicitly ensure songId is not included for new requests
       const newSongData = {
         songName: (newName || '').trim(),
         isNewRequest: true,
-        requiresEvidence: true
+        verificationState: verificationState || 'pending',
+        songId: null // Explicitly null to ensure consistency
       };
 
       onSelect(newSongData);
@@ -298,8 +305,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
       const songData = {
         songId: selectedSongId,
         songName: songDetails.name,
-        isNewRequest: false,
-        requiresEvidence: false
+        isNewRequest: false
       };
 
       onSelect(songData);
@@ -517,15 +523,25 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                     />
                   </div>
                   <div className="form-group">
-                    <label className="checkbox-label">
-                      <input
-                        type="checkbox"
-                        checked={requiresEvidence}
-                        onChange={(e) => setRequiresEvidence(e.target.checked)}
-                        disabled={isCreating}
-                      />
-                      {tSong('createForm.requiresEvidence')}
-                    </label>
+                    <CustomSelect
+                      label={t('verification.verificationState', { ns: 'common' })}
+                      options={[
+                        { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
+                        { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) },
+                        { value: 'conditional', label: t('verification.conditional', { ns: 'common' }) },
+                        { value: 'ysmod_only', label: t('verification.ysmod_only', { ns: 'common' }) },
+                        { value: 'declined', label: t('verification.declined', { ns: 'common' }) }
+                      ]}
+                      value={[
+                        { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
+                        { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) },
+                        { value: 'conditional', label: t('verification.conditional', { ns: 'common' }) },
+                        { value: 'ysmod_only', label: t('verification.ysmod_only', { ns: 'common' }) },
+                        { value: 'declined', label: t('verification.declined', { ns: 'common' }) }
+                      ].find(opt => opt.value === verificationState) || { value: 'pending', label: t('verification.pending', { ns: 'common' }) }}
+                      onChange={(option) => setVerificationState(option?.value || 'pending')}
+                      width="100%"
+                    />
                   </div>
                   <div className="form-buttons">
                     <button
@@ -533,7 +549,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                       onClick={() => {
                         setShowCreateForm(false);
                         setNewName('');
-                        setRequiresEvidence(true);
+                        setVerificationState('pending');
                       }}
                       className="cancel-button"
                       disabled={isCreating}

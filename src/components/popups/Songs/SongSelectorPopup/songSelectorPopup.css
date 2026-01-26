@@ -233,6 +233,11 @@
   font-size: 0.9em;
 }
 
+.song-selector-popup .form-description {
+  color: #aaa;
+  font-size: 0.9em;
+  margin-bottom: 10px;
+}
 
 .song-selector-popup .create-song-form {
   background-color: #ffffff0f;

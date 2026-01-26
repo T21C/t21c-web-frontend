@@ -54,6 +54,7 @@
     "showing": "Showing {{start}}-{{end}} of {{total}} items"
   },
   "verification": {
+    "verificationState": "Verification State",
     "all": "All",
     "unverified": "Unverified",
     "pending": "Pending",

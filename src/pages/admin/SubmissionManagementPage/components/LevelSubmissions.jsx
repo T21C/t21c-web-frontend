@@ -80,18 +80,18 @@ const LevelSubmissions = () => {
   }, [submissions]);
 
   const canBeApproved = (submission) => {
-    // Check if song is set
-    const hasSong = submission.songObject || submission.songId;
+    // Check if song is set (either existing song or new request)
+    const hasSong = submission.songObject || submission.songId || submission.songRequest;
     
     if (!hasSong) {
       return false;
     }
     
-    // If existing song is selected, artists are inherited from song credits, so approval is allowed
+    // Case 1: If existing song is selected (songId exists), artists are inherited from song credits
     if (submission.songId && submission.songObject?.credits) {
       // Artists will be inherited from song credits, no need to check artist requests
     } else {
-      // For new song requests, check if at least one artist is set
+      // Case 2 & 3: For new song requests, check if at least one artist is set
       const hasArtist = (submission.artistRequests && submission.artistRequests.length > 0) ||
                         submission.artistObject || submission.artistId;
       if (!hasArtist) {
@@ -403,14 +403,40 @@ const LevelSubmissions = () => {
     if (!selectedSongSubmission) return;
     
     try {
+      const submission = submissions.find(s => s.id === selectedSongSubmission.id);
+      
+      // Case 1: If song is set (songId exists), clear all artist requests BEFORE setting the song
+      // This discards artist state as requested
+      if (songData.songId && submission?.artistRequests && submission.artistRequests.length > 0) {
+        // Delete all artist requests before setting the song (discard artist state)
+        const deletePromises = submission.artistRequests.map(artistRequest => 
+          api.delete(
+            `${import.meta.env.VITE_SUBMISSION_API}/levels/${selectedSongSubmission.id}/artist-requests/${artistRequest.id}`
+          ).catch(err => {
+            // Log error but continue - if deletion fails, we'll refresh after song is set anyway
+            console.error('Error deleting artist request:', err);
+          })
+        );
+        await Promise.all(deletePromises);
+      }
+      
+      // Ensure songId is explicitly null when creating a new request
+      const requestData = {
+        songName: songData.songName,
+        isNewRequest: songData.isNewRequest || false,
+        verificationState: songData.verificationState || (songData.isNewRequest ? 'pending' : null)
+      };
+      
+      // Only include songId if it's not a new request
+      if (!songData.isNewRequest && songData.songId) {
+        requestData.songId = songData.songId;
+      } else {
+        requestData.songId = null;
+      }
+      
       const response = await api.put(
         `${import.meta.env.VITE_SUBMISSION_API}/levels/${selectedSongSubmission.id}/song`,
-        {
-          songId: songData.songId || null,
-          songName: songData.songName,
-          isNewRequest: songData.isNewRequest || false,
-          requiresEvidence: songData.requiresEvidence || false
-        }
+        requestData
       );
       
       // If a song was assigned (songId exists), refresh to get full songObject with credits
@@ -421,17 +447,28 @@ const LevelSubmissions = () => {
         setSubmissions(prevSubmissions => prevSubmissions.map(submission => {
           if (submission.id === selectedSongSubmission.id) {
             // Merge response data with existing submission to preserve all fields
-            return {
+            const updatedSubmission = {
               ...submission,
               ...response.data,
+              // Clear artist requests when song is set (case 1)
+              artistRequests: songData.songId ? [] : (response.data.artistRequests || submission.artistRequests),
               // Preserve nested objects that might not be in response
               creatorRequests: response.data.creatorRequests || submission.creatorRequests,
               teamRequestData: response.data.teamRequestData || submission.teamRequestData,
               evidence: response.data.evidence || submission.evidence,
               levelSubmitter: response.data.levelSubmitter || submission.levelSubmitter,
-              songObject: response.data.songObject || submission.songObject,
               artistObject: response.data.artistObject || submission.artistObject
             };
+            
+            // For new requests, ensure songId and songObject are cleared
+            if (songData.isNewRequest) {
+              updatedSubmission.songId = null;
+              updatedSubmission.songObject = null;
+            } else {
+              updatedSubmission.songObject = response.data.songObject || submission.songObject;
+            }
+            
+            return updatedSubmission;
           }
           return submission;
         }));
@@ -483,6 +520,20 @@ const LevelSubmissions = () => {
     if (!selectedArtistSubmission) return;
     
     try {
+      const submission = submissions.find(s => s.id === selectedArtistSubmission.id);
+      
+      // Case 2: If artist is set and no song exists, create a song request
+      if (!submission?.songId && !submission?.songRequest) {
+        try {
+          await api.post(
+            `${import.meta.env.VITE_SUBMISSION_API}/levels/${selectedArtistSubmission.id}/song-requests`
+          );
+        } catch (error) {
+          // If song request creation fails, log but continue with artist update
+          console.error('Error creating song request:', error);
+        }
+      }
+      
       // If we have a selected artist request, update it; otherwise assign new
       const artistRequestId = selectedArtistRequest?.id || artistData.artistRequestId || null;
       
@@ -1313,8 +1364,10 @@ const LevelSubmissions = () => {
           }}
           onSelect={handleSongSelect}
           initialSong={selectedSongSubmission.songObject || (selectedSongSubmission.songRequest ? {
-            name: selectedSongSubmission.song,
-            isNewRequest: true
+            name: selectedSongSubmission.songRequest.songName || selectedSongSubmission.song,
+            isNewRequest: true,
+            verificationState: selectedSongSubmission.songRequest.verificationState || 'pending',
+            songId: null // Explicitly null for new requests
           } : null)}
         />
       )}
