@@ -11,13 +11,13 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
 
   // Verification state options for CustomSelect
   const verificationStateOptions = [
-    { value: 'unverified', label: t('verification.unverified', { ns: 'common' }) },
-    { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
-    { value: 'ysmod_only', label: t('verification.ysmodOnly', { ns: 'common' }) },
-    { value: 'declined', label: t('verification.declined', { ns: 'common' }) },
-    { value: 'mostly_declined', label: t('verification.mostlyDeclined', { ns: 'common' }) },
+    { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) },
     { value: 'mostly_allowed', label: t('verification.mostlyAllowed', { ns: 'common' }) },
-    { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) }
+    { value: 'mostly_declined', label: t('verification.mostlyDeclined', { ns: 'common' }) },
+    { value: 'declined', label: t('verification.declined', { ns: 'common' }) },
+    { value: 'ysmod_only', label: t('verification.ysmodOnly', { ns: 'common' }) },
+    { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
+    { value: 'unverified', label: t('verification.unverified', { ns: 'common' }) }
   ];
 
   // Core state

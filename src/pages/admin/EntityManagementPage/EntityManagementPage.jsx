@@ -151,40 +151,40 @@ const EntityManagementPage = ({ type = 'artist' }) => {
 
   const verificationStateLabels = type === 'song'
     ? {
-        declined: t('verification.declined', { ns: 'common' }),
-        pending: t('verification.pending', { ns: 'common' }),
-        conditional: t('verification.conditional', { ns: 'common' }),
+        allowed: t('verification.allowed', { ns: 'common' }),
         'ysmod_only': t('verification.ysmodOnly', { ns: 'common' }),
-        allowed: t('verification.allowed', { ns: 'common' })
+        conditional: t('verification.conditional', { ns: 'common' }),
+        pending: t('verification.pending', { ns: 'common' }),
+        declined: t('verification.declined', { ns: 'common' })
       }
     : {
-        unverified: t('verification.unverified', { ns: 'common' }),
-        pending: t('verification.pending', { ns: 'common' }),
-        'ysmod_only': t('verification.ysmodOnly', { ns: 'common' }),
-        declined: t('verification.declined', { ns: 'common' }),
-        'mostly_declined': t('verification.mostlyDeclined', { ns: 'common' }),
+        allowed: t('verification.allowed', { ns: 'common' }),
         'mostly_allowed': t('verification.mostlyAllowed', { ns: 'common' }),
-        allowed: t('verification.allowed', { ns: 'common' })
+        'mostly_declined': t('verification.mostlyDeclined', { ns: 'common' }),
+        declined: t('verification.declined', { ns: 'common' }),
+        'ysmod_only': t('verification.ysmodOnly', { ns: 'common' }),
+        pending: t('verification.pending', { ns: 'common' }),
+        unverified: t('verification.unverified', { ns: 'common' })
       };
 
 
 
   const verificationStateFormOptions = type === 'song'
     ? [
-        { value: 'declined', label: t('verification.declined', { ns: 'common' }) },
-        { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
-        { value: 'conditional', label: t('verification.conditional', { ns: 'common' }) },
+        { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) },
         { value: 'ysmod_only', label: t('verification.ysmodOnly', { ns: 'common' }) },
-        { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) }
+        { value: 'conditional', label: t('verification.conditional', { ns: 'common' }) },
+        { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
+        { value: 'declined', label: t('verification.declined', { ns: 'common' }) }
       ]
     : [
-        { value: 'unverified', label: t('verification.unverified', { ns: 'common' }) },
-        { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
-        { value: 'ysmod_only', label: t('verification.ysmodOnly', { ns: 'common' }) },
-        { value: 'declined', label: t('verification.declined', { ns: 'common' }) },
-        { value: 'mostly_declined', label: t('verification.mostlyDeclined', { ns: 'common' }) },
+        { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) },
         { value: 'mostly_allowed', label: t('verification.mostlyAllowed', { ns: 'common' }) },
-        { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) }
+        { value: 'mostly_declined', label: t('verification.mostlyDeclined', { ns: 'common' }) },
+        { value: 'declined', label: t('verification.declined', { ns: 'common' }) },
+        { value: 'ysmod_only', label: t('verification.ysmodOnly', { ns: 'common' }) },
+        { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
+        { value: 'unverified', label: t('verification.unverified', { ns: 'common' }) }
       ];
       
     const verificationStateOptions = [...verificationStateFormOptions, { value: '', label: tEntity('filter.all') }]; 

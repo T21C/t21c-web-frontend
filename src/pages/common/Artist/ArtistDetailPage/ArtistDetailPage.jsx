@@ -48,13 +48,13 @@ const ArtistDetailPage = () => {
   };
 
   const verificationStateLabels = {
-    unverified: t('verification.unverified', { ns: 'common' }),
-    pending: t('verification.pending', { ns: 'common' }),
-    'ysmod_only': t('verification.ysmodOnly', { ns: 'common' }),
-    declined: t('verification.declined', { ns: 'common' }),
-    'mostly_declined': t('verification.mostlyDeclined', { ns: 'common' }),
+    allowed: t('verification.allowed', { ns: 'common' }),
     'mostly_allowed': t('verification.mostlyAllowed', { ns: 'common' }),
-    allowed: t('verification.allowed', { ns: 'common' })
+    'mostly_declined': t('verification.mostlyDeclined', { ns: 'common' }),
+    declined: t('verification.declined', { ns: 'common' }),
+    'ysmod_only': t('verification.ysmodOnly', { ns: 'common' }),
+    pending: t('verification.pending', { ns: 'common' }),
+    unverified: t('verification.unverified', { ns: 'common' })
   };
 
   if (loading) {

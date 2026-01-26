@@ -471,7 +471,7 @@ select:-moz-focusring {
   color: #00ff08;
 }
 
-.verification-chip.mostly-allowed {
+.verification-chip.mostly_allowed {
   background-color: rgba(156, 218, 89, 0.2);
   color: #c0ff2d;
 }
@@ -486,12 +486,12 @@ select:-moz-focusring {
   color: #ff9800;
 }
 
-.verification-chip.ysmod-only {
+.verification-chip.ysmod_only {
   background-color: rgba(156, 39, 176, 0.2);
   color: #9c27b0;
 }
 
-.verification-chip.mostly-declined {
+.verification-chip.mostly_declined {
   background-color: rgba(244, 119, 15, 0.2);
   color: #ff772e;
 }

@@ -108,7 +108,7 @@
   color: #4caf50;
 }
 
-.artist-selector-popup .verification-status.mostly-allowed {
+.artist-selector-popup .verification-status.mostly_allowed {
   background-color: rgba(129, 199, 132, 0.2);
   color: #81c784;
 }
@@ -118,7 +118,7 @@
   color: #ffc107;
 }
 
-.artist-selector-popup .verification-status.mostly-declined {
+.artist-selector-popup .verification-status.mostly_declined {
   background-color: rgba(239, 154, 154, 0.2);
   color: #ef9a9a;
 }
@@ -288,7 +288,7 @@
   color: #4caf50;
 }
 
-.artist-selector-popup .artist-result .verification-badge.mostly-allowed {
+.artist-selector-popup .artist-result .verification-badge.mostly_allowed {
   background-color: rgba(129, 199, 132, 0.2);
   color: #81c784;
 }
@@ -298,7 +298,7 @@
   color: #ffc107;
 }
 
-.artist-selector-popup .artist-result .verification-badge.mostly-declined {
+.artist-selector-popup .artist-result .verification-badge.mostly_declined {
   background-color: rgba(239, 154, 154, 0.2);
   color: #ef9a9a;
 }

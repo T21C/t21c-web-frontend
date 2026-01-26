@@ -65,7 +65,8 @@
     "evidenceAdded": "Evidence added successfully",
     "evidenceUpdated": "Evidence updated successfully",
     "evidenceDeleted": "Evidence deleted successfully",
-    "suffixUpdated": "Level suffix updated successfully"
+    "suffixUpdated": "Level suffix updated successfully",
+    "entityExtraInfoUpdated": "Extra info updated successfully"
   },
   "levelSuffix": {
     "description": "Update the level suffix for all levels with this song.",
@@ -90,6 +91,7 @@
     "evidenceFailed": "Failed to add evidence",
     "noFile": "Please select a file",
     "invalidFileType": "Please select image files only",
+    "invalidLink": "Please enter a valid link",
     "suffixUpdateFailed": "Failed to update level suffix"
   }
 }

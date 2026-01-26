@@ -31,13 +31,13 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
   const [mergeTarget, setMergeTarget] = useState(null);
   const [mergeTargetSearch, setMergeTargetSearch] = useState('');
   const [availableArtists, setAvailableArtists] = useState([]);
-  const [splitName1, setSplitName1] = useState('');
-  const [splitName2, setSplitName2] = useState('');
+  const [splitEntity1, setSplitEntity1] = useState(null);
+  const [splitEntity2, setSplitEntity2] = useState(null);
+  const [splitSearch1, setSplitSearch1] = useState('');
+  const [splitSearch2, setSplitSearch2] = useState('');
+  const [availableEntities1, setAvailableEntities1] = useState(null);
+  const [availableEntities2, setAvailableEntities2] = useState(null);
   const [deleteOriginal, setDeleteOriginal] = useState(false);
-  const [existingArtists, setExistingArtists] = useState({existing1: null, existing2: null});
-  const [showSplitConfirm, setShowSplitConfirm] = useState(false);
-  const [useExisting1, setUseExisting1] = useState(false);
-  const [useExisting2, setUseExisting2] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -57,19 +57,19 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
 
   const verificationStateOptions = type === 'song' 
     ? [
-        { value: 'declined', label: t('verification.declined', { ns: 'common' }) },
-        { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
-        { value: 'conditional', label: t('verification.conditional', { ns: 'common' }) },
+        { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) },
         { value: 'ysmod_only', label: t('verification.ysmodOnly', { ns: 'common' }) },
-        { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) }
+        { value: 'conditional', label: t('verification.conditional', { ns: 'common' }) },
+        { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
+        { value: 'declined', label: t('verification.declined', { ns: 'common' }) }
       ]
     : [
-        { value: 'unverified', label: t('verification.unverified', { ns: 'common' }) },
-        { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
-        { value: 'declined', label: t('verification.declined', { ns: 'common' }) },
-        { value: 'mostly declined', label: t('verification.mostlyDeclined', { ns: 'common' }) },
+        { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) },
         { value: 'mostly allowed', label: t('verification.mostlyAllowed', { ns: 'common' }) },
-        { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) }
+        { value: 'mostly declined', label: t('verification.mostlyDeclined', { ns: 'common' }) },
+        { value: 'declined', label: t('verification.declined', { ns: 'common' }) },
+        { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
+        { value: 'unverified', label: t('verification.unverified', { ns: 'common' }) }
       ];
 
   useEffect(() => {    
@@ -236,6 +236,99 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
     };
   }, [mode, creditSearch, type]);
 
+  // Fetch entities for split (artists only)
+  useEffect(() => {
+    let cancelToken1;
+    let cancelToken2;
+
+    const fetchEntities1 = async () => {
+      if (!splitSearch1 || splitSearch1.trim().length < 1) {
+        setAvailableEntities1([]);
+        return;
+      }
+
+      try {
+        if (cancelToken1) {
+          cancelToken1.cancel('New search initiated');
+        }
+
+        cancelToken1 = api.CancelToken.source();
+
+        const params = new URLSearchParams({
+          page: '1',
+          limit: '20',
+          search: splitSearch1,
+          sort: 'NAME_ASC'
+        });
+
+        const endpoint = type === 'song' ? '/v2/database/songs' : '/v2/database/artists';
+        const response = await api.get(`${endpoint}?${params}`, {
+          cancelToken: cancelToken1.token
+        });
+
+        const items = type === 'song' ? (response.data.songs || []) : (response.data.artists || []);
+        setAvailableEntities1(items.filter(e => String(e.id) !== String(entityId)));
+      } catch (error) {
+        if (!api.isCancel(error)) {
+          console.error(`Error fetching ${type}s:`, error);
+          setAvailableEntities1([]);
+        }
+      }
+    };
+
+    const fetchEntities2 = async () => {
+      if (!splitSearch2 || splitSearch2.trim().length < 1) {
+        setAvailableEntities2([]);
+        return;
+      }
+
+      try {
+        if (cancelToken2) {
+          cancelToken2.cancel('New search initiated');
+        }
+
+        cancelToken2 = api.CancelToken.source();
+
+        const params = new URLSearchParams({
+          page: '1',
+          limit: '20',
+          search: splitSearch2,
+          sort: 'NAME_ASC'
+        });
+
+        const endpoint = type === 'song' ? '/v2/database/songs' : '/v2/database/artists';
+        const response = await api.get(`${endpoint}?${params}`, {
+          cancelToken: cancelToken2.token
+        });
+
+        const items = type === 'song' ? (response.data.songs || []) : (response.data.artists || []);
+        setAvailableEntities2(items.filter(e => String(e.id) !== String(entityId)));
+      } catch (error) {
+        if (!api.isCancel(error)) {
+          console.error(`Error fetching ${type}s:`, error);
+          setAvailableEntities2([]);
+        }
+      }
+    };
+
+    if (mode === 'split' && type === 'artist') {
+      fetchEntities1();
+      fetchEntities2();
+    } else {
+      setAvailableEntities1(null);
+      setAvailableEntities2(null);
+    }
+
+    return () => {
+      if (cancelToken1) {
+        cancelToken1.cancel('Component unmounted');
+      }
+      if (cancelToken2) {
+        cancelToken2.cancel('Component unmounted');
+      }
+    };
+  }, [mode, splitSearch1, splitSearch2, type, entityId]);
+
   const handleAddAlias = () => {
     if (newAlias.trim() && !aliases.includes(newAlias.trim())) {
       setAliases([...aliases, newAlias.trim()]);
@@ -346,14 +439,14 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
     }
   };
 
-  const handleSplitCheck = async () => {
-    if (!splitName1.trim() || !splitName2.trim()) {
-      setError(tEntity('errors.bothNamesRequired'));
+  const handleSplit = async () => {
+    if (!splitEntity1 || !splitEntity2) {
+      setError(tEntity('errors.bothEntitiesRequired'));
       return;
     }
 
-    if (splitName1.trim().toLowerCase() === splitName2.trim().toLowerCase()) {
-      setError(tEntity('errors.namesMustBeDifferent'));
+    if (splitEntity1.id === splitEntity2.id) {
+      setError(tEntity('errors.entitiesMustBeDifferent'));
       return;
     }
 
@@ -362,54 +455,25 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
     setSuccess('');
 
     try {
-      // Check if artists already exist
-      const checkResponse = await api.post(`/v2/database/artists/${entityId}/split/check`, {
-        name1: splitName1.trim(),
-        name2: splitName2.trim()
-      });
-
-      const {existing1, existing2} = checkResponse.data;
-
-      if (existing1 || existing2) {
-        // Show confirmation dialog
-        setExistingArtists({existing1, existing2});
-        setUseExisting1(false);
-        setUseExisting2(false);
-        setShowSplitConfirm(true);
-        setIsLoading(false);
-      } else {
-        // No existing artists, proceed directly
-        await performSplit(false, false);
-      }
-    } catch (error) {
-      const errorMessage = getErrorMessage(error, tEntity('errors.checkFailed'));
-      setError(errorMessage);
-      toast.error(errorMessage);
-      setIsLoading(false);
-    }
-  };
-
-  const performSplit = async (useExisting1Flag, useExisting2Flag) => {
-    setIsLoading(true);
-    setError('');
-    setSuccess('');
-
-    try {
-      const response = await api.post(`/v2/database/artists/${entityId}/split`, {
-        name1: splitName1.trim(),
-        name2: splitName2.trim(),
-        deleteOriginal,
-        useExisting1: useExisting1Flag,
-        useExisting2: useExisting2Flag
+      const endpoint = type === 'song' 
+        ? `/v2/database/songs/${entityId}/split`
+        : `/v2/database/artists/${entityId}/split`;
+      
+      const response = await api.post(endpoint, {
+        targetId1: splitEntity1.id,
+        targetId2: splitEntity2.id,
+        deleteOriginal
       });
 
       setSuccess(tEntity('messages.split', { 
-        name1: response.data.artist1.name, 
-        name2: response.data.artist2.name 
+        name1: response.data.entity1.name, 
+        name2: response.data.entity2.name 
       }));
       toast.success(tEntity('messages.splitSuccess'));
-      setShowSplitConfirm(false);
-      setExistingArtists({existing1: null, existing2: null});
+      setSplitEntity1(null);
+      setSplitEntity2(null);
+      setSplitSearch1('');
+      setSplitSearch2('');
       setTimeout(() => {
         onUpdate();
       }, 1500);
@@ -420,17 +484,6 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleSplitConfirm = () => {
-    performSplit(useExisting1, useExisting2);
-  };
-
-  const handleSplitCancel = () => {
-    setShowSplitConfirm(false);
-    setExistingArtists({existing1: null, existing2: null});
-    setUseExisting1(false);
-    setUseExisting2(false);
   };
 
   // Song-specific handlers
@@ -779,13 +832,11 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
                   setMode('split');
                   setError('');
                   setSuccess('');
-                  setSplitName1('');
-                  setSplitName2('');
+                  setSplitEntity1(null);
+                  setSplitEntity2(null);
+                  setSplitSearch1('');
+                  setSplitSearch2('');
                   setDeleteOriginal(false);
-                  setShowSplitConfirm(false);
-                  setExistingArtists({existing1: null, existing2: null});
-                  setUseExisting1(false);
-                  setUseExisting2(false);
                 }}
               >
                 {tEntity('tabs.split')}
@@ -865,21 +916,20 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
 
           {mode === 'split' && type === 'artist' && (
             <SplitTab
-              splitName1={splitName1}
-              setSplitName1={setSplitName1}
-              splitName2={splitName2}
-              setSplitName2={setSplitName2}
+              type={type}
+              splitEntity1={splitEntity1}
+              setSplitEntity1={setSplitEntity1}
+              splitEntity2={splitEntity2}
+              setSplitEntity2={setSplitEntity2}
+              splitSearch1={splitSearch1}
+              setSplitSearch1={setSplitSearch1}
+              splitSearch2={splitSearch2}
+              setSplitSearch2={setSplitSearch2}
+              availableEntities1={availableEntities1}
+              availableEntities2={availableEntities2}
               deleteOriginal={deleteOriginal}
               setDeleteOriginal={setDeleteOriginal}
-              showSplitConfirm={showSplitConfirm}
-              existingArtists={existingArtists}
-              useExisting1={useExisting1}
-              setUseExisting1={setUseExisting1}
-              useExisting2={useExisting2}
-              setUseExisting2={setUseExisting2}
-              handleSplitCheck={handleSplitCheck}
-              handleSplitConfirm={handleSplitConfirm}
-              handleSplitCancel={handleSplitCancel}
+              handleSplit={handleSplit}
               isLoading={isLoading}
               tEntity={tEntity}
             />

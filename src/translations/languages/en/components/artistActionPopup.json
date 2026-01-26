@@ -21,16 +21,12 @@
     "placeholder": "Search by name..."
   },
   "split": {
-    "info": "Split this artist into two new artists. All data (aliases, links, evidences, avatar) and song credits will be duplicated for both new artists.",
-    "name1": "First Artist Name",
-    "name2": "Second Artist Name",
-    "name1Placeholder": "Enter first artist name",
-    "name2Placeholder": "Enter second artist name",
-    "deleteOriginal": "Delete original artist after splitting",
-    "confirmTitle": "One or more artists with these names already exist. Choose how to proceed:",
-    "existing1": "Artist '{name}' already exists for first name.",
-    "existing2": "Artist '{name}' already exists for second name.",
-    "useExisting": "Use existing artist (add data to it instead of creating new)"
+    "info": "Split this artist into two existing artists. All data (aliases, links, evidences, avatar) and song credits will be duplicated for both target artists.",
+    "entity1": "First Target Artist",
+    "entity2": "Second Target Artist",
+    "entity1Placeholder": "Search and select first target artist...",
+    "entity2Placeholder": "Search and select second target artist...",
+    "deleteOriginal": "Delete original artist after splitting"
   },
   "aliases": {
     "add": "Add Alias",
@@ -77,7 +73,8 @@
     "avatarDeleted": "Avatar deleted successfully",
     "evidenceAdded": "Evidence added successfully",
     "evidenceUpdated": "Evidence updated successfully",
-    "evidenceDeleted": "Evidence deleted successfully"
+    "evidenceDeleted": "Evidence deleted successfully",
+    "entityExtraInfoUpdated": "Extra info updated successfully"
   },
   "errors": {
     "updateFailed": "Failed to update artist",
@@ -86,12 +83,15 @@
     "selectTarget": "Please select a target artist",
     "bothNamesRequired": "Both artist names are required",
     "namesMustBeDifferent": "Artist names must be different",
+    "bothEntitiesRequired": "Please select both target artists",
+    "entitiesMustBeDifferent": "Target artists must be different",
     "checkFailed": "Failed to check existing artists",
     "loadArtistsFailed": "Failed to load artists",
     "noFile": "Please select a file",
     "uploadFailed": "Failed to upload avatar",
     "deleteFailed": "Failed to delete",
     "evidenceFailed": "Failed to add evidence",
-    "invalidFileType": "Please select image files only"
+    "invalidFileType": "Please select image files only",
+    "invalidLink": "Please enter a valid link"
   }
 }
