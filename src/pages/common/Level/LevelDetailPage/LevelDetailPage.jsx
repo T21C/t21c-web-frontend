@@ -2076,7 +2076,6 @@ const LevelDetailPage = ({ mockData = null }) => {
                 } else if (isSuperAdmin) {
                   canEdit = true;
                 }
-                console.log(canEdit);
                 if (!isCreator && !isSuperAdmin && !isOwner) {
                   return null;
                 }
