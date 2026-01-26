@@ -11,6 +11,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import './entityManagementPage.css';
 import { Link } from 'react-router-dom';
 import { getVerificationClass } from '@/utils/Utility';
+import { EvidenceGalleryPopup } from '@/components/popups/Evidence/EvidenceGalleryPopup/EvidenceGalleryPopup';
 
 const EntityManagementPage = ({ type = 'artist' }) => {
   const { t } = useTranslation(['pages', 'common']);
@@ -39,6 +40,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
   const [isCreating, setIsCreating] = useState(false);
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
+  const [showEvidenceGallery, setShowEvidenceGallery] = useState(false);
 
   useEffect(() => {
     if (user && hasFlag(user, permissionFlags.SUPER_ADMIN)) {
@@ -144,6 +146,10 @@ const EntityManagementPage = ({ type = 'artist' }) => {
     }
   };
 
+
+  const openEvidenceGallery = (entity) => {
+    setShowEvidenceGallery(entity.evidences);
+  };
   const handleDelete = async (entityId) => {
     if (!window.confirm(tEntity('confirmDelete'))) return;
 
@@ -331,7 +337,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
                     </div>
                     <div className="evidence-list">
                       {entity.evidences && entity.evidences.length > 0 && (
-                        <div className="evidence-list">
+                        <div className="evidence-list" onClick={() => openEvidenceGallery(entity)}>
                           {entity.evidences.map((evidence) => (
                             <div key={evidence.id} className="evidence-item">
                               <img src={evidence.link.replace("original", "small")} alt="Evidence" />
@@ -354,6 +360,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
                         {t('buttons.delete', { ns: 'common' })}
                       </button>
                     </div>
+
                   </div>
                 ))
               )}
@@ -369,6 +376,13 @@ const EntityManagementPage = ({ type = 'artist' }) => {
             fetchEntities(true);
           }}
           type={type}
+        />
+      )}
+
+      {showEvidenceGallery && (
+        <EvidenceGalleryPopup
+          evidence={showEvidenceGallery}
+          onClose={() => setShowEvidenceGallery(null)}
         />
       )}
 
