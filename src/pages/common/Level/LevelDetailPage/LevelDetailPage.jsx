@@ -2047,11 +2047,8 @@ const LevelDetailPage = ({ mockData = null }) => {
                 const isSuperAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
                 let isCreator = false;
                 const isOwner = res?.level?.levelCredits?.some(
-                  credit => credit.creator?.userId === user?.id && credit.isOwner
+                  credit => credit.creatorId === user?.creatorId && credit.isOwner
                 );
-                const isCharter = res?.level?.levelCredits?.some(
-                  credit => credit.creator?.userId === user?.id && credit.role?.toLowerCase() === 'charter'
-                );  
                 let charterCount = 0;
                 let canEdit = false;
 
@@ -2063,7 +2060,7 @@ const LevelDetailPage = ({ mockData = null }) => {
 
                   // Check if user is one of the creators
                   isCreator = res.level.levelCredits.some(
-                    credit => credit.creator?.userId === user.id && credit.role?.toLowerCase() === 'charter'
+                    credit => credit.creatorId === user?.creatorId && credit.role?.toLowerCase() === 'charter'
                   );
 
                   
@@ -2079,8 +2076,8 @@ const LevelDetailPage = ({ mockData = null }) => {
                 } else if (isSuperAdmin) {
                   canEdit = true;
                 }
-
-                if (!isCreator && !isSuperAdmin) {
+                console.log(canEdit);
+                if (!isCreator && !isSuperAdmin && !isOwner) {
                   return null;
                 }
 
@@ -2102,7 +2099,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                   </button>
                   {!hasFlag(user, permissionFlags.SUPER_ADMIN) && (() => {
                 const isCreator = user && res?.level?.levelCredits?.some(
-                  credit => credit.creator?.userId === user?.id && credit.isOwner
+                  credit => credit.creatorId === user?.creatorId && credit.isOwner
                 );
                 const charterCount = res?.level?.levelCredits?.filter(
                   credit => credit.role?.toLowerCase() === 'charter'
