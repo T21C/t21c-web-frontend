@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { TrashIcon } from '@/components/common/icons';
 
 export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
   const tLevel = (key) => t(`levelPopups.edit.tags.${key}`) || key;
 
   const [allTags, setAllTags] = useState([]);
@@ -160,7 +160,7 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
             />
 
             {isLoading ? (
-              <p className="tag-management-loading">{tLevel('loading')}</p>
+              <p className="tag-management-loading">{t('loading', { ns: 'common' })}</p>
             ) : availableTags.length === 0 ? (
               <p className="tag-management-empty">
                 {searchQuery ? tLevel('noResults') : tLevel('noAvailableTags')}
@@ -211,7 +211,7 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
               disabled={isSaving}
               type="button"
             >
-              {tLevel('cancel')}
+              {t('buttons.cancel', { ns: 'common' })}
             </button>
             <button
               className="tag-management-save-btn"
@@ -219,7 +219,7 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
               disabled={isSaving}
               type="button"
             >
-              {isSaving ? tLevel('saving') : tLevel('save')}
+              {isSaving ? t('buttons.saving', { ns: 'common' }) : t('buttons.save', { ns: 'common' })}
             </button>
           </div>
         </div>

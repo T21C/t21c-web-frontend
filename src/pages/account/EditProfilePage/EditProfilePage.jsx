@@ -483,7 +483,7 @@ const EditProfilePage = () => {
               onClick={() => navigate('/profile')}
               disabled={isLoading}
             >
-              {tEditProfile('form.buttons.cancel')}
+              {t('buttons.cancel', { ns: 'common' })}
             </button>
             <button 
               className="button submit-button"

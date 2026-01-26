@@ -57,9 +57,6 @@
         }
       }
     },
-    "buttons": {
-      "done": "Done"
-    },
     "errors": {
       "nameUpdate": "Failed to update player name",
       "countryUpdate": "Failed to update country",

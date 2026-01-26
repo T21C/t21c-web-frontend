@@ -356,7 +356,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                         disabled={isLoading}
                         className="cancel-button"
                       >
-                        {tAdmin('form.pause.confirm.buttons.cancel')}
+                        {t('buttons.cancel', { ns: 'common' })}
                       </button>
                     </div>
                   </div>
@@ -393,7 +393,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                         disabled={isLoading}
                         className="cancel-button"
                       >
-                        {tAdmin('form.ratingBan.confirm.buttons.cancel')}
+                        {t('buttons.cancel', { ns: 'common' })}
                       </button>
                     </div>
                   </div>
@@ -470,7 +470,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                         onClick={() => handleMergePlayer(false)}
                         disabled={isLoading}
                       >
-                        {tAdmin('form.merge.confirm.buttons.cancel')}
+                        {t('buttons.cancel', { ns: 'common' })}
                       </button>
                     </div>
                   </>
@@ -486,7 +486,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
             className="done-button"
             onClick={onClose}
           >
-            {tAdmin('buttons.done')}
+            {t('buttons.done', { ns: 'common' })}
           </button>
         </div>
       </div>
