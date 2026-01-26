@@ -33,7 +33,8 @@
     "declined": "Declined",
     "mostlyDeclined": "Mostly Declined",
     "mostlyAllowed": "Mostly Allowed",
-    "allowed": "Allowed"
+    "allowed": "Allowed",
+    "ysmodOnly": "YSMod Only"
   },
   "messages": {
     "success": {

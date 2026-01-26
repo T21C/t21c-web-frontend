@@ -91,16 +91,17 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
     ? {
         unverified: t('verification.unverified', { ns: 'common' }),
         pending: t('verification.pending', { ns: 'common' }),
+        'ysmod_only': t('verification.ysmodOnly', { ns: 'common' }),
         declined: t('verification.declined', { ns: 'common' }),
-        'mostly declined': t('verification.mostlyDeclined', { ns: 'common' }),
-        'mostly allowed': t('verification.mostlyAllowed', { ns: 'common' }),
+        'mostly_declined': t('verification.mostlyDeclined', { ns: 'common' }),
+        'mostly_allowed': t('verification.mostlyAllowed', { ns: 'common' }),
         allowed: t('verification.allowed', { ns: 'common' })
       }
     : {
         declined: t('verification.declined', { ns: 'common' }),
         pending: t('verification.pending', { ns: 'common' }),
         conditional: t('verification.conditional', { ns: 'common' }),
-        ysmod_only: t('verification.ysmodOnly', { ns: 'common' }),
+        'ysmod_only': t('verification.ysmodOnly', { ns: 'common' }),
         allowed: t('verification.allowed', { ns: 'common' })
       };
 

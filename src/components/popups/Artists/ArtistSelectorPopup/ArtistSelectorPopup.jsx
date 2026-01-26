@@ -13,9 +13,10 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
   const verificationStateOptions = [
     { value: 'unverified', label: t('verification.unverified', { ns: 'common' }) },
     { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
+    { value: 'ysmod_only', label: t('verification.ysmodOnly', { ns: 'common' }) },
     { value: 'declined', label: t('verification.declined', { ns: 'common' }) },
-    { value: 'mostly declined', label: t('verification.mostlyDeclined', { ns: 'common' }) },
-    { value: 'mostly allowed', label: t('verification.mostlyAllowed', { ns: 'common' }) },
+    { value: 'mostly_declined', label: t('verification.mostlyDeclined', { ns: 'common' }) },
+    { value: 'mostly_allowed', label: t('verification.mostlyAllowed', { ns: 'common' }) },
     { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) }
   ];
 
@@ -155,7 +156,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
         artistName: newName.trim(),
         isNewRequest: true,
         verificationState: verificationState,
-        requiresEvidence: verificationState === 'declined' || verificationState === 'mostly declined'
+        requiresEvidence: verificationState === 'declined' || verificationState === 'mostly_declined'
       };
 
       onSelect(newArtistData);
@@ -264,8 +265,9 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                         {artistDetails.verificationState && (
                           <span className={`verification-status ${artistDetails.verificationState}`}>
                             {artistDetails.verificationState === 'allowed' ? t('verification.allowed', { ns: 'common' }) :
-                             artistDetails.verificationState === 'mostly allowed' ? t('verification.mostlyAllowed', { ns: 'common' }) :
-                             artistDetails.verificationState === 'mostly declined' ? t('verification.mostlyDeclined', { ns: 'common' }) :
+                             artistDetails.verificationState === 'ysmod_only' ? t('verification.ysmodOnly', { ns: 'common' }) :
+                             artistDetails.verificationState === 'mostly_allowed' ? t('verification.mostlyAllowed', { ns: 'common' }) :
+                             artistDetails.verificationState === 'mostly_declined' ? t('verification.mostlyDeclined', { ns: 'common' }) :
                              artistDetails.verificationState === 'declined' ? t('verification.declined', { ns: 'common' }) :
                              artistDetails.verificationState === 'pending' ? t('verification.pending', { ns: 'common' }) : 
                              t('verification.unverified', { ns: 'common' })}
@@ -332,10 +334,11 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                           {artist.verificationState && (
                             <span className={`verification-badge ${artist.verificationState}`}>
                               {artist.verificationState === 'allowed' ? t('verification.allowed', { ns: 'common' }) :
-                               artist.verificationState === 'mostly allowed' ? t('verification.mostlyAllowed', { ns: 'common' }) :
-                               artist.verificationState === 'mostly declined' ? t('verification.mostlyDeclined', { ns: 'common' }) :
+                               artist.verificationState === 'ysmod_only' ? t('verification.ysmodOnly', { ns: 'common' }) :
+                               artist.verificationState === 'mostly_allowed' ? t('verification.mostlyAllowed', { ns: 'common' }) :
+                               artist.verificationState === 'mostly_declined' ? t('verification.mostlyDeclined', { ns: 'common' }) :
                                artist.verificationState === 'declined' ? t('verification.declined', { ns: 'common' }) :
-                               artist.verificationState === 'pending' ? t('verification.pending', { ns: 'common' }) : 
+                               artist.verificationState === 'pending' ? t('verification.pending', { ns: 'common' }) :
                                t('verification.unverified', { ns: 'common' })}
                             </span>
                           )}

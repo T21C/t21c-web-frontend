@@ -366,7 +366,7 @@ const LevelSubmissionPage = () => {
       // Evidence is required when new requests exist or when verification state requires it
       const requiresSongEvidence = selectedSong?.isNewRequest || false;
       const requiresArtistEvidence = artists.some(artist => 
-        artist.isNewRequest && (artist.verificationState === 'declined' || artist.verificationState === 'mostly declined')
+        artist.isNewRequest && (artist.verificationState === 'declined' || artist.verificationState === 'mostly_declined')
       );
       submissionForm.setDetail('requiresSongEvidence', requiresSongEvidence);
       submissionForm.setDetail('requiresArtistEvidence', requiresArtistEvidence);
@@ -389,7 +389,7 @@ const LevelSubmissionPage = () => {
           artistId: artist.id,
           isNewRequest: artist.isNewRequest,
           requiresEvidence: artist.isNewRequest 
-            ? (artist.verificationState === 'declined' || artist.verificationState === 'mostly declined')
+            ? (artist.verificationState === 'declined' || artist.verificationState === 'mostly_declined')
             : false,
           verificationState: artist.verificationState || null
         }));
@@ -891,7 +891,7 @@ const LevelSubmissionPage = () => {
             onSelect={(artistData) => {
               // Calculate requiresEvidence from verificationState for new requests
               const requiresEvidence = artistData.isNewRequest 
-                ? (artistData.verificationState === 'declined' || artistData.verificationState === 'mostly declined')
+                ? (artistData.verificationState === 'declined' || artistData.verificationState === 'mostly_declined')
                 : (artistData.requiresEvidence || false);
               const finalArtistData = {
                 ...artistData,
@@ -913,7 +913,7 @@ const LevelSubmissionPage = () => {
               const artistDisplayName = updatedArtists.map(a => a.name).filter(Boolean).join(', ');
               const hasNewArtistRequest = updatedArtists.some(a => a.isNewRequest);
               const requiresArtistEvidence = updatedArtists.some(a => 
-                a.isNewRequest && (a.verificationState === 'declined' || a.verificationState === 'mostly declined')
+                a.isNewRequest && (a.verificationState === 'declined' || a.verificationState === 'mostly_declined')
               );
               setForm(prev => ({
                 ...prev,
