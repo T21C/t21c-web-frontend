@@ -6,7 +6,7 @@ import axios from 'axios';
 import { getVerificationClass } from '@/utils/Utility';
 
 export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selectedArtist = null, allowCreate = true }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
   const tSong = (key, params = {}) => t(`songSelector.${key}`, params) || key;
   const popupRef = useRef(null);
 
@@ -372,12 +372,12 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                         )}
                         {songDetails.verificationState && (
                           <span className={getVerificationClass(songDetails.verificationState)}>
-                            {songDetails.verificationState === 'allowed' ? tSong('status.allowed') :
-                             songDetails.verificationState === 'ysmod_only' ? tSong('status.ysmodOnly') :
-                             songDetails.verificationState === 'conditional' ? tSong('status.conditional') :
-                             songDetails.verificationState === 'pending' ? tSong('status.pending') :
-                             songDetails.verificationState === 'declined' ? tSong('status.declined') :
-                             tSong('status.pending')}
+                            {songDetails.verificationState === 'allowed' ? t('common.verification.allowed') :
+                             songDetails.verificationState === 'ysmod_only' ? t('common.verification.ysmodOnly') :
+                             songDetails.verificationState === 'conditional' ? t('common.verification.conditional') :
+                             songDetails.verificationState === 'pending' ? t('common.verification.pending') :
+                             songDetails.verificationState === 'declined' ? t('common.verification.declined') :
+                             t('common.verification.pending')}
                           </span>
                         )}
                       </>
@@ -494,12 +494,12 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                               )}
                               {song.verificationState && (
                                 <span className={getVerificationClass(song.verificationState)}>
-                                  {song.verificationState === 'allowed' ? tSong('status.allowed') :
-                                   song.verificationState === 'ysmod_only' ? tSong('status.ysmodOnly') :
-                                   song.verificationState === 'conditional' ? tSong('status.conditional') :
-                                   song.verificationState === 'pending' ? tSong('status.pending') :
-                                   song.verificationState === 'declined' ? tSong('status.declined') :
-                                   song.verificationState}
+                                  {song.verificationState === 'allowed' ? t('common.verification.allowed') :
+                                   song.verificationState === 'ysmod_only' ? t('common.verification.ysmodOnly') :
+                                   song.verificationState === 'conditional' ? t('common.verification.conditional') :
+                                   song.verificationState === 'pending' ? t('common.verification.pending') :
+                                   song.verificationState === 'declined' ? t('common.verification.declined') :
+                                   t('common.verification.pending')}
                                 </span>
                               )}
                             </div>

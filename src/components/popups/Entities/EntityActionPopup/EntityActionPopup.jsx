@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast';
 import { UpdateTab, MergeTab, SplitTab, AliasesTab, LinksTab, CreditsTab, EvidenceTab, LevelSuffixTab } from './tabs';
 
 export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'artist' }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
   const entity = type === 'song' ? song : artist;
   const entityId = entity?.id;
   const tEntity = (key, params = {}) => {
@@ -57,19 +57,19 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
 
   const verificationStateOptions = type === 'song' 
     ? [
-        { value: 'declined', label: tEntity('verification.declined') },
-        { value: 'pending', label: tEntity('verification.pending') },
-        { value: 'conditional', label: tEntity('verification.conditional') },
-        { value: 'ysmod_only', label: tEntity('verification.ysmodOnly') },
-        { value: 'allowed', label: tEntity('verification.allowed') }
+        { value: 'declined', label: t('common.verification.declined') },
+        { value: 'pending', label: t('common.verification.pending') },
+        { value: 'conditional', label: t('common.verification.conditional') },
+        { value: 'ysmod_only', label: t('common.verification.ysmodOnly') },
+        { value: 'allowed', label: t('common.verification.allowed') }
       ]
     : [
-        { value: 'unverified', label: tEntity('verification.unverified') },
-        { value: 'pending', label: tEntity('verification.pending') },
-        { value: 'declined', label: tEntity('verification.declined') },
-        { value: 'mostly declined', label: tEntity('verification.mostlyDeclined') },
-        { value: 'mostly allowed', label: tEntity('verification.mostlyAllowed') },
-        { value: 'allowed', label: tEntity('verification.allowed') }
+        { value: 'unverified', label: t('common.verification.unverified') },
+        { value: 'pending', label: t('common.verification.pending') },
+        { value: 'declined', label: t('common.verification.declined') },
+        { value: 'mostly declined', label: t('common.verification.mostlyDeclined') },
+        { value: 'mostly allowed', label: t('common.verification.mostlyAllowed') },
+        { value: 'allowed', label: t('common.verification.allowed') }
       ];
 
   useEffect(() => {    
@@ -153,7 +153,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
           sort: 'NAME_ASC'
         });
 
-        const endpoint = type === 'song' ? '/v2/admin/songs' : '/v2/admin/artists';
+        const endpoint = type === 'song' ? '/v2/database/songs' : '/v2/database/artists';
         const response = await api.get(`${endpoint}?${params}`, {
           cancelToken: cancelToken.token
         });
@@ -212,7 +212,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
           sort: 'NAME_ASC'
         });
 
-        const response = await api.get(`/v2/admin/artists?${params}`, {
+        const response = await api.get(`/v2/database/artists?${params}`, {
           cancelToken: cancelToken.token
         });
 
@@ -264,7 +264,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
     setSuccess('');
 
     try {
-      const endpoint = type === 'song' ? `/v2/admin/songs/${entityId}` : `/v2/admin/artists/${entityId}`;
+      const endpoint = type === 'song' ? `/v2/database/songs/${entityId}` : `/v2/database/artists/${entityId}`;
       await api.put(endpoint, {
         name: name.trim(),
         verificationState
@@ -326,8 +326,8 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
 
     try {
       const endpoint = type === 'song' 
-        ? `/v2/admin/songs/${entityId}/merge`
-        : `/v2/admin/artists/${entityId}/merge`;
+        ? `/v2/database/songs/${entityId}/merge`
+        : `/v2/database/artists/${entityId}/merge`;
       await api.post(endpoint, {
         targetId: currentMergeTarget.id
       });
@@ -363,7 +363,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
 
     try {
       // Check if artists already exist
-      const checkResponse = await api.post(`/v2/admin/artists/${entityId}/split/check`, {
+      const checkResponse = await api.post(`/v2/database/artists/${entityId}/split/check`, {
         name1: splitName1.trim(),
         name2: splitName2.trim()
       });
@@ -395,7 +395,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
     setSuccess('');
 
     try {
-      const response = await api.post(`/v2/admin/artists/${entityId}/split`, {
+      const response = await api.post(`/v2/database/artists/${entityId}/split`, {
         name1: splitName1.trim(),
         name2: splitName2.trim(),
         deleteOriginal,
@@ -441,13 +441,13 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
     }
 
     try {
-      await api.post(`/v2/admin/songs/${entityId}/credits`, {
+      await api.post(`/v2/database/songs/${entityId}/credits`, {
         artistId: parseInt(newCreditArtistId),
         role: newCreditRole.trim() || null
       });
 
       toast.success(tEntity('messages.creditAdded'));
-      const response = await api.get(`/v2/admin/songs/${entityId}`);
+      const response = await api.get(`/v2/database/songs/${entityId}`);
       setCredits(response.data.credits || []);
       setNewCreditArtistId('');
       setNewCreditRole('');
@@ -460,7 +460,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
 
   const handleRemoveCredit = async (creditId) => {
     try {
-      await api.delete(`/v2/admin/songs/${entityId}/credits/${creditId}`);
+      await api.delete(`/v2/database/songs/${entityId}/credits/${creditId}`);
       toast.success(tEntity('messages.creditRemoved'));
       setCredits(credits.filter(c => c.id !== creditId));
     } catch (error) {
@@ -489,7 +489,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       formData.append('avatar', avatarFile);
 
       const response = await api.post(
-        `/v2/admin/artists/${entityId}/avatar`,
+        `/v2/database/artists/${entityId}/avatar`,
         formData,
         {
           headers: {
@@ -516,7 +516,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
   const handleDeleteAvatar = async () => {
     if (type !== 'artist') return;
     try {
-      await api.delete(`/v2/admin/artists/${entityId}/avatar`);
+      await api.delete(`/v2/database/artists/${entityId}/avatar`);
       setAvatarUrl('');
       setAvatarPreview(null);
       toast.success(tEntity('messages.avatarDeleted'));
@@ -604,8 +604,8 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       });
 
       const endpoint = type === 'song'
-        ? `/v2/admin/songs/${entityId}/evidences/upload`
-        : `/v2/admin/artists/${entityId}/evidences/upload`;
+        ? `/v2/database/songs/${entityId}/evidences/upload`
+        : `/v2/database/artists/${entityId}/evidences/upload`;
       await api.post(endpoint, formData, {
         headers: {
           'Content-Type': 'multipart/form-data'
@@ -614,7 +614,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
 
       toast.success(tEntity('messages.evidenceAdded'));
       // Refresh entity data
-      const fetchEndpoint = type === 'song' ? `/v2/admin/songs/${entityId}` : `/v2/admin/artists/${entityId}`;
+      const fetchEndpoint = type === 'song' ? `/v2/database/songs/${entityId}` : `/v2/database/artists/${entityId}`;
       const response = await api.get(fetchEndpoint);
       setEvidences(response.data.evidences || []);
       // Clear preview files
@@ -643,8 +643,8 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
 
     try {
       const endpoint = type === 'song'
-        ? `/v2/admin/songs/${entityId}/evidences`
-        : `/v2/admin/artists/${entityId}/evidences`;
+        ? `/v2/database/songs/${entityId}/evidences`
+        : `/v2/database/artists/${entityId}/evidences`;
       const response = await api.post(endpoint, { 
         link: newEvidenceLink.trim()
       });
@@ -675,8 +675,8 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
 
     try {
       const endpoint = type === 'song'
-        ? `/v2/admin/songs/${entityId}/evidences/${evidenceId}`
-        : `/v2/admin/artists/${entityId}/evidences/${evidenceId}`;
+        ? `/v2/database/songs/${entityId}/evidences/${evidenceId}`
+        : `/v2/database/artists/${entityId}/evidences/${evidenceId}`;
       const response = await api.put(endpoint, { 
         link: editingEvidenceLink.trim()
       });
@@ -703,8 +703,8 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
   const handleSaveEntityExtraInfo = async () => {
     try {
       const endpoint = type === 'song'
-        ? `/v2/admin/songs/${entityId}`
-        : `/v2/admin/artists/${entityId}`;
+        ? `/v2/database/songs/${entityId}`
+        : `/v2/database/artists/${entityId}`;
       const response = await api.put(endpoint, { 
         extraInfo: editingEntityExtraInfo.trim() || null
       });
@@ -728,8 +728,8 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
 
     try {
       const endpoint = type === 'song'
-        ? `/v2/admin/songs/${entityId}/evidences/${evidenceId}`
-        : `/v2/admin/artists/${entityId}/evidences/${evidenceId}`;
+        ? `/v2/database/songs/${entityId}/evidences/${evidenceId}`
+        : `/v2/database/artists/${entityId}/evidences/${evidenceId}`;
       await api.delete(endpoint);
       toast.success(tEntity('messages.evidenceDeleted'));
       setEvidences(evidences.filter(e => e.id !== evidenceId));

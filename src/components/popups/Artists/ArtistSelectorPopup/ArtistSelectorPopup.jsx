@@ -5,18 +5,18 @@ import { CustomSelect } from '@/components/common/selectors';
 import './artistSelectorPopup.css';
 
 export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
   const tArtist = (key, params = {}) => t(`artistSelector.${key}`, params) || key;
   const popupRef = useRef(null);
 
   // Verification state options for CustomSelect
   const verificationStateOptions = [
-    { value: 'unverified', label: tArtist('status.unverified') },
-    { value: 'pending', label: tArtist('status.pending') },
-    { value: 'declined', label: tArtist('status.declined') },
-    { value: 'mostly declined', label: tArtist('status.mostlyDeclined') },
-    { value: 'mostly allowed', label: tArtist('status.mostlyAllowed') },
-    { value: 'allowed', label: tArtist('status.allowed') }
+    { value: 'unverified', label: t('common.verification.unverified') },
+    { value: 'pending', label: t('common.verification.pending') },
+    { value: 'declined', label: t('common.verification.declined') },
+    { value: 'mostly declined', label: t('common.verification.mostlyDeclined') },
+    { value: 'mostly allowed', label: t('common.verification.mostlyAllowed') },
+    { value: 'allowed', label: t('common.verification.allowed') }
   ];
 
   // Core state
@@ -263,12 +263,12 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                         )}
                         {artistDetails.verificationState && (
                           <span className={`verification-status ${artistDetails.verificationState}`}>
-                            {artistDetails.verificationState === 'allowed' ? tArtist('status.allowed') :
-                             artistDetails.verificationState === 'mostly allowed' ? tArtist('status.mostlyAllowed') :
-                             artistDetails.verificationState === 'mostly declined' ? tArtist('status.mostlyDeclined') :
-                             artistDetails.verificationState === 'declined' ? tArtist('status.declined') :
-                             artistDetails.verificationState === 'pending' ? tArtist('status.pending') : 
-                             tArtist('status.unverified')}
+                            {artistDetails.verificationState === 'allowed' ? t('common.verification.allowed') :
+                             artistDetails.verificationState === 'mostly allowed' ? t('common.verification.mostlyAllowed') :
+                             artistDetails.verificationState === 'mostly declined' ? t('common.verification.mostlyDeclined') :
+                             artistDetails.verificationState === 'declined' ? t('common.verification.declined') :
+                             artistDetails.verificationState === 'pending' ? t('common.verification.pending') : 
+                             t('common.verification.unverified')}
                           </span>
                         )}
                       </>
@@ -331,7 +331,12 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                           )}
                           {artist.verificationState && (
                             <span className={`verification-badge ${artist.verificationState}`}>
-                              {artist.verificationState}
+                              {artist.verificationState === 'allowed' ? t('common.verification.allowed') :
+                               artist.verificationState === 'mostly allowed' ? t('common.verification.mostlyAllowed') :
+                               artist.verificationState === 'mostly declined' ? t('common.verification.mostlyDeclined') :
+                               artist.verificationState === 'declined' ? t('common.verification.declined') :
+                               artist.verificationState === 'pending' ? t('common.verification.pending') : 
+                               t('common.verification.unverified')}
                             </span>
                           )}
                         </div>

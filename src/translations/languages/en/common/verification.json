@@ -1,0 +1,12 @@
+{
+  "verification": {
+  "unverified": "Unverified",
+  "pending": "Pending",
+  "declined": "Declined",
+  "mostlyDeclined": "Mostly Declined",
+  "mostlyAllowed": "Mostly Allowed",
+  "conditional": "Conditional",
+  "ysmodOnly": "YSMod Only",
+  "allowed": "Allowed"
+  }
+} 

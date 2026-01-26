@@ -8,7 +8,7 @@ import { getVerificationClass } from '@/utils/Utility';
 import './songListPage.css';
 
 const SongListPage = () => {
-  const { t } = useTranslation('pages');
+  const { t } = useTranslation(['pages', 'common']);
   const tSong = (key, params = {}) => t(`songList.${key}`, params);
   const navigate = useNavigate();
   const currentUrl = window.location.origin + location.pathname;
@@ -75,11 +75,11 @@ const SongListPage = () => {
   };
 
   const verificationStateLabels = {
-    declined: tSong('verification.declined'),
-    pending: tSong('verification.pending'),
-    conditional: tSong('verification.conditional'),
-    ysmod_only: tSong('verification.ysmodOnly'),
-    allowed: tSong('verification.allowed')
+    declined: t('common.verification.declined'),
+    pending: t('common.verification.pending'),
+    conditional: t('common.verification.conditional'),
+    ysmod_only: t('common.verification.ysmodOnly'),
+    allowed: t('common.verification.allowed')
   };
 
   return (

@@ -7,7 +7,7 @@ import { ExternalLinkIcon } from '@/components/common/icons';
 import { getVerificationClass } from '@/utils/Utility';
 
 export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
   const tEntity = (key, params) => {
     const translationKey = type === 'artist' ? `artistPopup.${key}` : `songPopup.${key}`;
     return t(translationKey, params) || key;
@@ -89,19 +89,19 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
 
   const verificationStateLabels = type === 'artist' 
     ? {
-        unverified: tEntity('verification.unverified'),
-        pending: tEntity('verification.pending'),
-        declined: tEntity('verification.declined'),
-        'mostly declined': tEntity('verification.mostlyDeclined'),
-        'mostly allowed': tEntity('verification.mostlyAllowed'),
-        allowed: tEntity('verification.allowed')
+        unverified: t('common.verification.unverified'),
+        pending: t('common.verification.pending'),
+        declined: t('common.verification.declined'),
+        'mostly declined': t('common.verification.mostlyDeclined'),
+        'mostly allowed': t('common.verification.mostlyAllowed'),
+        allowed: t('common.verification.allowed')
       }
     : {
-        declined: tEntity('verification.declined'),
-        pending: tEntity('verification.pending'),
-        conditional: tEntity('verification.conditional'),
-        ysmod_only: tEntity('verification.ysmodOnly'),
-        allowed: tEntity('verification.allowed')
+        declined: t('common.verification.declined'),
+        pending: t('common.verification.pending'),
+        conditional: t('common.verification.conditional'),
+        ysmod_only: t('common.verification.ysmodOnly'),
+        allowed: t('common.verification.allowed')
       };
 
   const handleArtistClick = (artistId) => {

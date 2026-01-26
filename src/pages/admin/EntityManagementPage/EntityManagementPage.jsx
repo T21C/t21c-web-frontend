@@ -12,7 +12,7 @@ import { Link } from 'react-router-dom';
 import { getVerificationClass } from '@/utils/Utility';
 
 const EntityManagementPage = ({ type = 'artist' }) => {
-  const { t } = useTranslation('pages');
+  const { t } = useTranslation(['pages', 'common']);
   const tEntity = (key, params = {}) => {
     const translationKey = type === 'song' ? `songManagement.${key}` : `artistManagement.${key}`;
     return t(translationKey, params);
@@ -59,7 +59,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
         params.append('verificationState', verificationFilter);
       }
 
-      const endpoint = type === 'song' ? '/v2/admin/songs' : '/v2/admin/artists';
+      const endpoint = type === 'song' ? '/v2/database/songs' : '/v2/database/artists';
       const response = await api.get(`${endpoint}?${params}`);
       const data = response.data;
       const items = type === 'song' ? (data.songs || []) : (data.artists || []);
@@ -94,7 +94,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
 
     setIsCreating(true);
     try {
-      const endpoint = type === 'song' ? '/v2/admin/songs' : '/v2/admin/artists';
+      const endpoint = type === 'song' ? '/v2/database/songs' : '/v2/database/artists';
       
       if (type === 'artist') {
         const formData = new FormData();
@@ -140,7 +140,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
     if (!window.confirm(tEntity('confirmDelete'))) return;
 
     try {
-      const endpoint = type === 'song' ? `/v2/admin/songs/${entityId}` : `/v2/admin/artists/${entityId}`;
+      const endpoint = type === 'song' ? `/v2/database/songs/${entityId}` : `/v2/database/artists/${entityId}`;
       await api.delete(endpoint);
       toast.success(tEntity('messages.deleted'));
       fetchEntities(true);
@@ -151,56 +151,41 @@ const EntityManagementPage = ({ type = 'artist' }) => {
 
   const verificationStateLabels = type === 'song'
     ? {
-        declined: tEntity('verification.declined'),
-        pending: tEntity('verification.pending'),
-        conditional: tEntity('verification.conditional'),
-        ysmod_only: tEntity('verification.ysmodOnly'),
-        allowed: tEntity('verification.allowed')
+        declined: t('verification.declined', { ns: 'common' }),
+        pending: t('verification.pending', { ns: 'common' }),
+        conditional: t('verification.conditional', { ns: 'common' }),
+        ysmod_only: t('verification.ysmodOnly', { ns: 'common' }),
+        allowed: t('verification.allowed', { ns: 'common' })
       }
     : {
-        unverified: tEntity('verification.unverified'),
-        pending: tEntity('verification.pending'),
-        declined: tEntity('verification.declined'),
-        'mostly declined': tEntity('verification.mostlyDeclined'),
-        'mostly allowed': tEntity('verification.mostlyAllowed'),
-        allowed: tEntity('verification.allowed')
+        unverified: t('verification.unverified', { ns: 'common' }),
+        pending: t('verification.pending', { ns: 'common' }),
+        declined: t('verification.declined', { ns: 'common' }),
+        'mostly declined': t('verification.mostlyDeclined', { ns: 'common' }),
+        'mostly allowed': t('verification.mostlyAllowed', { ns: 'common' }),
+        allowed: t('verification.allowed', { ns: 'common' })
       };
 
-  const verificationStateOptions = type === 'song'
-    ? [
-        { value: '', label: tEntity('filter.all') },
-        { value: 'allowed', label: tEntity('verification.allowed') },
-        { value: 'ysmod_only', label: tEntity('verification.ysmodOnly') },
-        { value: 'conditional', label: tEntity('verification.conditional') },
-        { value: 'pending', label: tEntity('verification.pending') },
-        { value: 'declined', label: tEntity('verification.declined') }
-      ]
-    : [
-        { value: '', label: tEntity('filter.all') },
-        { value: 'unverified', label: tEntity('verification.unverified') },
-        { value: 'pending', label: tEntity('verification.pending') },
-        { value: 'declined', label: tEntity('verification.declined') },
-        { value: 'mostly declined', label: tEntity('verification.mostlyDeclined') },
-        { value: 'mostly allowed', label: tEntity('verification.mostlyAllowed') },
-        { value: 'allowed', label: tEntity('verification.allowed') }
-      ];
+
 
   const verificationStateFormOptions = type === 'song'
     ? [
-        { value: 'declined', label: tEntity('verification.declined') },
-        { value: 'pending', label: tEntity('verification.pending') },
-        { value: 'conditional', label: tEntity('verification.conditional') },
-        { value: 'ysmod_only', label: tEntity('verification.ysmodOnly') },
-        { value: 'allowed', label: tEntity('verification.allowed') }
+        { value: 'declined', label: t('verification.declined', { ns: 'common' }) },
+        { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
+        { value: 'conditional', label: t('verification.conditional', { ns: 'common' }) },
+        { value: 'ysmod_only', label: t('verification.ysmodOnly', { ns: 'common' }) },
+        { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) }
       ]
     : [
-        { value: 'unverified', label: tEntity('verification.unverified') },
-        { value: 'pending', label: tEntity('verification.pending') },
-        { value: 'declined', label: tEntity('verification.declined') },
-        { value: 'mostly declined', label: tEntity('verification.mostlyDeclined') },
-        { value: 'mostly allowed', label: tEntity('verification.mostlyAllowed') },
-        { value: 'allowed', label: tEntity('verification.allowed') }
+        { value: 'unverified', label: t('verification.unverified', { ns: 'common' }) },
+        { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
+        { value: 'declined', label: t('verification.declined', { ns: 'common' }) },
+        { value: 'mostly declined', label: t('verification.mostlyDeclined', { ns: 'common' }) },
+        { value: 'mostly allowed', label: t('verification.mostlyAllowed', { ns: 'common' }) },
+        { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) }
       ];
+      
+    const verificationStateOptions = [...verificationStateFormOptions, { value: '', label: tEntity('filter.all') }]; 
 
   const sortOptions = [
     { value: 'NAME_ASC', label: tEntity('sort.nameAsc') },

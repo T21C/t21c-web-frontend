@@ -48,12 +48,12 @@ const ArtistDetailPage = () => {
   };
 
   const verificationStateLabels = {
-    unverified: tArtist('verification.unverified'),
-    pending: tArtist('verification.pending'),
-    declined: tArtist('verification.declined'),
-    'mostly declined': tArtist('verification.mostlyDeclined'),
-    'mostly allowed': tArtist('verification.mostlyAllowed'),
-    allowed: tArtist('verification.allowed')
+    unverified: t('common.verification.unverified'),
+    pending: t('common.verification.pending'),
+    declined: t('common.verification.declined'),
+    'mostly declined': t('common.verification.mostlyDeclined'),
+    'mostly allowed': t('common.verification.mostlyAllowed'),
+    allowed: t('common.verification.allowed')
   };
 
   if (loading) {

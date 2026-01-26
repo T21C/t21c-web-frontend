@@ -33,7 +33,7 @@ export const LevelSuffixTab = ({
       setIsLoadingData(true);
       try {
         // Fetch levels for this song
-        const response = await api.get(`/v2/admin/songs/${song.id}/levels/info`);
+        const response = await api.get(`/v2/database/songs/${song.id}/levels/info`);
 
         const levels = response.data.levels || [];
         setLevelCount(levels.length);
@@ -74,7 +74,7 @@ export const LevelSuffixTab = ({
     try {
       const normalizedSuffix = newSuffix.trim() || null;
       
-      await api.post(`/v2/admin/songs/${song.id}/levels/suffix`, {
+      await api.post(`/v2/database/songs/${song.id}/levels/suffix`, {
         suffix: normalizedSuffix
       });
 
@@ -102,7 +102,7 @@ export const LevelSuffixTab = ({
     try {
       const normalizedSuffix = emptySuffix.trim() || null;
       
-      await api.post(`/v2/admin/songs/${song.id}/levels/suffix`, {
+      await api.post(`/v2/database/songs/${song.id}/levels/suffix`, {
         suffix: normalizedSuffix
       });
 

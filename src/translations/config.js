@@ -13,31 +13,25 @@ const loadLanguage = async (lang) => {
   }
 
   try {
-    // Get all common translation files
-    const commonFiles = import.meta.glob('./languages/*/common.json', { eager: true });
-    
+
     // Initialize language resources
     resources[lang] = {
-      common: {},
       pages: {},
-      components: {}
+      components: {},
+      common: {},
     };
 
-    // Load common translations
-    const commonPath = Object.keys(commonFiles).find(path => path.includes(`/languages/${lang}/common.json`));
-    if (commonPath) {
-      resources[lang].common = commonFiles[commonPath].default;
-    }
-
     // Load pages and components translations
-    const [pagesTranslations, componentsTranslations] = await Promise.all([
+    const [pagesTranslations, componentsTranslations, commonTranslations] = await Promise.all([
       loadTranslations(lang, 'pages'),
-      loadTranslations(lang, 'components')
+      loadTranslations(lang, 'components'),
+      loadTranslations(lang, 'common')
+
     ]);
 
     resources[lang].pages = pagesTranslations;
     resources[lang].components = componentsTranslations;
-
+    resources[lang].common = commonTranslations;
     return resources[lang];
   } catch (error) {
     console.error(`Error loading translations for ${lang}:`, error);
