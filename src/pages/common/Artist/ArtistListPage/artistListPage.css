@@ -43,30 +43,11 @@
   border-color: rgba(255, 255, 255, 0.4);
 }
 
+.filter-container,
 .sort-container {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-.sort-container label {
-  color: var(--color-white);
-  font-size: 0.9rem;
-}
-
-.sort-select {
-  padding: 0.75rem 1rem;
-  background-color: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
-  color: var(--color-white);
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-.sort-select:focus {
-  outline: none;
-  border-color: rgba(255, 255, 255, 0.4);
 }
 
 .artist-cards-grid {

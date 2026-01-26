@@ -50,16 +50,6 @@ const SongDetailPage = () => {
     }
   };
 
-  const verificationStateLabels = {
-    allowed: t('verification.allowed', { ns: 'common' }),
-    'mostly_allowed': t('verification.mostlyAllowed', { ns: 'common' }),
-    'mostly_declined': t('verification.mostlyDeclined', { ns: 'common' }),
-    declined: t('verification.declined', { ns: 'common' }),
-    'ysmod_only': t('verification.ysmodOnly', { ns: 'common' }),
-    pending: t('verification.pending', { ns: 'common' }),
-    conditional: t('verification.conditional', { ns: 'common' })
-  };
-
   if (loading) {
     return (
       <div className="song-detail-page">
@@ -102,7 +92,7 @@ const SongDetailPage = () => {
             </div>
             <div className="song-verification">
               <span className={getVerificationClass(song.verificationState)}>
-                {verificationStateLabels[song.verificationState] || verificationStateLabels.pending}
+                {t(`verification.${song.verificationState}`, { ns: 'common' })}
               </span>
             </div>
           </div>

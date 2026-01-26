@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
+import { CustomSelect } from '@/components/common/selectors';
 import './artistListPage.css';
 import { getVerificationClass } from '@/utils/Utility';
 
@@ -19,10 +20,11 @@ const ArtistListPage = () => {
   const [hasMore, setHasMore] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('NAME_ASC');
+  const [verificationState, setVerificationState] = useState(null);
 
   useEffect(() => {
     fetchArtists(true);
-  }, [searchQuery, sortBy]);
+  }, [searchQuery, sortBy, verificationState]);
 
   const fetchArtists = async (reset = false) => {
     try {
@@ -33,13 +35,19 @@ const ArtistListPage = () => {
       }
 
       const currentPage = reset ? 1 : page;
+      const params = {
+        page: currentPage,
+        limit: 50,
+        search: searchQuery,
+        sort: sortBy
+      };
+      
+      if (verificationState) {
+        params.verificationState = verificationState;
+      }
+      
       const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/artists`, {
-        params: {
-          page: currentPage,
-          limit: 50,
-          search: searchQuery,
-          sort: sortBy
-        }
+        params
       });
 
       const data = response.data;
@@ -51,7 +59,8 @@ const ArtistListPage = () => {
         setArtists(prev => [...prev, ...newArtists]);
       }
 
-      setHasMore(data.hasMore || false);
+      // If no artists returned, there's no more data regardless of hasMore flag
+      setHasMore(newArtists.length > 0 && (data.hasMore || false));
       setPage(currentPage + 1);
     } catch (error) {
       console.error('Error fetching artists:', error);
@@ -70,19 +79,22 @@ const ArtistListPage = () => {
     setSearchQuery(e.target.value);
   };
 
-  const handleSortChange = (e) => {
-    setSortBy(e.target.value);
-  };
+  const sortOptions = [
+    { value: 'NAME_ASC', label: tArtist('sort.nameAsc') },
+    { value: 'NAME_DESC', label: tArtist('sort.nameDesc') },
+    { value: 'ID_ASC', label: tArtist('sort.idAsc') },
+    { value: 'ID_DESC', label: tArtist('sort.idDesc') }
+  ];
 
-  const verificationStateLabels = {
-    allowed: t('verification.allowed', { ns: 'common' }),
-    'mostly_allowed': t('verification.mostlyAllowed', { ns: 'common' }),
-    'mostly_declined': t('verification.mostlyDeclined', { ns: 'common' }),
-    declined: t('verification.declined', { ns: 'common' }),
-    'ysmod_only': t('verification.ysmodOnly', { ns: 'common' }),
-    pending: t('verification.pending', { ns: 'common' }),
-    unverified: t('verification.unverified', { ns: 'common' })
-  };
+  const verificationStateOptions = [
+    { value: null, label: t('verification.all', { ns: 'common' }) },
+    { value: 'unverified', label: t('verification.unverified', { ns: 'common' }) },
+    { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
+    { value: 'declined', label: t('verification.declined', { ns: 'common' }) },
+    { value: 'mostly_declined', label: t('verification.mostly_declined', { ns: 'common' }) },
+    { value: 'mostly_allowed', label: t('verification.mostly_allowed', { ns: 'common' }) },
+    { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) }
+  ];
 
   return (
     <div className="artist-list-page">
@@ -108,14 +120,24 @@ const ArtistListPage = () => {
             />
           </div>
 
+          <div className="filter-container">
+            <CustomSelect
+              options={verificationStateOptions}
+              value={verificationStateOptions.find(opt => opt.value === verificationState) || verificationStateOptions[0]}
+              onChange={(option) => setVerificationState(option?.value || null)}
+              label={tArtist('filter.verificationState')}
+              width="12rem"
+            />
+          </div>
+
           <div className="sort-container">
-            <label>{tArtist('sort.label')}</label>
-            <select value={sortBy} onChange={handleSortChange} className="sort-select">
-              <option value="NAME_ASC">{tArtist('sort.nameAsc')}</option>
-              <option value="NAME_DESC">{tArtist('sort.nameDesc')}</option>
-              <option value="ID_ASC">{tArtist('sort.idAsc')}</option>
-              <option value="ID_DESC">{tArtist('sort.idDesc')}</option>
-            </select>
+            <CustomSelect
+              options={sortOptions}
+              value={sortOptions.find(opt => opt.value === sortBy) || sortOptions[0]}
+              onChange={(option) => setSortBy(option?.value || 'NAME_ASC')}
+              label={tArtist('sort.label')}
+              width="12rem"
+            />
           </div>
         </div>
 
@@ -162,7 +184,7 @@ const ArtistListPage = () => {
                     )}
                     <div className="artist-card-verification">
                       <span className={getVerificationClass(artist.verificationState)}>
-                        {verificationStateLabels[artist.verificationState] || verificationStateLabels.unverified}
+                        {t(`verification.${artist.verificationState}`, { ns: 'common' })}
                       </span>
                     </div>
                   </div>

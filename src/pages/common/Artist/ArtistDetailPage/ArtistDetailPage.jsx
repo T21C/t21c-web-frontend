@@ -47,16 +47,6 @@ const ArtistDetailPage = () => {
     }
   };
 
-  const verificationStateLabels = {
-    allowed: t('verification.allowed', { ns: 'common' }),
-    'mostly_allowed': t('verification.mostlyAllowed', { ns: 'common' }),
-    'mostly_declined': t('verification.mostlyDeclined', { ns: 'common' }),
-    declined: t('verification.declined', { ns: 'common' }),
-    'ysmod_only': t('verification.ysmodOnly', { ns: 'common' }),
-    pending: t('verification.pending', { ns: 'common' }),
-    unverified: t('verification.unverified', { ns: 'common' })
-  };
-
   if (loading) {
     return (
       <div className="artist-detail-page">
@@ -104,7 +94,7 @@ const ArtistDetailPage = () => {
             </div>
             <div className="artist-verification">
               <span className={getVerificationClass(artist.verificationState)}>
-                {verificationStateLabels[artist.verificationState] || verificationStateLabels.unverified}
+                {t(`verification.${artist.verificationState}`, { ns: 'common' })}
               </span>
             </div>
           </div>

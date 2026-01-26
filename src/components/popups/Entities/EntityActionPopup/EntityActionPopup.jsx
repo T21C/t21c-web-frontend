@@ -58,16 +58,17 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
   const verificationStateOptions = type === 'song' 
     ? [
         { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) },
-        { value: 'ysmod_only', label: t('verification.ysmodOnly', { ns: 'common' }) },
+        { value: 'ysmod_only', label: t('verification.ysmod_only', { ns: 'common' }) },
         { value: 'conditional', label: t('verification.conditional', { ns: 'common' }) },
         { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
         { value: 'declined', label: t('verification.declined', { ns: 'common' }) }
       ]
     : [
         { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) },
-        { value: 'mostly allowed', label: t('verification.mostlyAllowed', { ns: 'common' }) },
-        { value: 'mostly declined', label: t('verification.mostlyDeclined', { ns: 'common' }) },
+        { value: 'mostly_allowed', label: t('verification.mostly_allowed', { ns: 'common' }) },
+        { value: 'mostly_declined', label: t('verification.mostly_declined', { ns: 'common' }) },
         { value: 'declined', label: t('verification.declined', { ns: 'common' }) },
+        { value: 'ysmod_only', label: t('verification.ysmod_only', { ns: 'common' }) },
         { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
         { value: 'unverified', label: t('verification.unverified', { ns: 'common' }) }
       ];

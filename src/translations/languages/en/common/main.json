@@ -54,13 +54,14 @@
     "showing": "Showing {{start}}-{{end}} of {{total}} items"
   },
   "verification": {
+    "all": "All",
     "unverified": "Unverified",
     "pending": "Pending",
     "declined": "Declined",
-    "mostlyDeclined": "Mostly Declined",
-    "mostlyAllowed": "Mostly Allowed",
+    "mostly_declined": "Mostly Declined",
+    "mostly_allowed": "Mostly Allowed",
     "conditional": "Conditional",
-    "ysmodOnly": "YSMod Only",
+    "ysmod_only": "YSMod Only",
     "allowed": "Allowed"
   }
 } 

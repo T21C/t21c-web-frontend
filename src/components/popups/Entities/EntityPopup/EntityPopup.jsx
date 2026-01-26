@@ -87,24 +87,6 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
     return null;
   }
 
-  const verificationStateLabels = type === 'artist' 
-    ? {
-        allowed: t('verification.allowed', { ns: 'common' }),
-        'mostly_allowed': t('verification.mostlyAllowed', { ns: 'common' }),
-        'mostly_declined': t('verification.mostlyDeclined', { ns: 'common' }),
-        declined: t('verification.declined', { ns: 'common' }),
-        'ysmod_only': t('verification.ysmodOnly', { ns: 'common' }),
-        pending: t('verification.pending', { ns: 'common' }),
-        unverified: t('verification.unverified', { ns: 'common' })
-      }
-    : {
-        allowed: t('verification.allowed', { ns: 'common' }),
-        'ysmod_only': t('verification.ysmodOnly', { ns: 'common' }),
-        conditional: t('verification.conditional', { ns: 'common' }),
-        pending: t('verification.pending', { ns: 'common' }),
-        declined: t('verification.declined', { ns: 'common' })
-      };
-
   const handleArtistClick = (artistId) => {
     onClose();
     navigate(`/artists/${artistId}`);
@@ -141,7 +123,7 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
           <div className="popup-section">
             <div className="popup-verification">
               <span className={getVerificationClass(entityData.verificationState)}>
-                {verificationStateLabels[entityData.verificationState] || (type === 'song' ? verificationStateLabels.pending : verificationStateLabels.unverified)}
+                {t(`verification.${entityData.verificationState}`, { ns: 'common' })}
               </span>
             </div>
           </div>

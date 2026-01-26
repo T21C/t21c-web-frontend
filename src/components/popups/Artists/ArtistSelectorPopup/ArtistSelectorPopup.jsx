@@ -12,10 +12,10 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
   // Verification state options for CustomSelect
   const verificationStateOptions = [
     { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) },
-    { value: 'mostly_allowed', label: t('verification.mostlyAllowed', { ns: 'common' }) },
-    { value: 'mostly_declined', label: t('verification.mostlyDeclined', { ns: 'common' }) },
+    { value: 'mostly_allowed', label: t('verification.mostly_allowed', { ns: 'common' }) },
+    { value: 'mostly_declined', label: t('verification.mostly_declined', { ns: 'common' }) },
     { value: 'declined', label: t('verification.declined', { ns: 'common' }) },
-    { value: 'ysmod_only', label: t('verification.ysmodOnly', { ns: 'common' }) },
+    { value: 'ysmod_only', label: t('verification.ysmod_only', { ns: 'common' }) },
     { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
     { value: 'unverified', label: t('verification.unverified', { ns: 'common' }) }
   ];
@@ -264,13 +264,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                         )}
                         {artistDetails.verificationState && (
                           <span className={`verification-status ${artistDetails.verificationState}`}>
-                            {artistDetails.verificationState === 'allowed' ? t('verification.allowed', { ns: 'common' }) :
-                             artistDetails.verificationState === 'ysmod_only' ? t('verification.ysmodOnly', { ns: 'common' }) :
-                             artistDetails.verificationState === 'mostly_allowed' ? t('verification.mostlyAllowed', { ns: 'common' }) :
-                             artistDetails.verificationState === 'mostly_declined' ? t('verification.mostlyDeclined', { ns: 'common' }) :
-                             artistDetails.verificationState === 'declined' ? t('verification.declined', { ns: 'common' }) :
-                             artistDetails.verificationState === 'pending' ? t('verification.pending', { ns: 'common' }) : 
-                             t('verification.unverified', { ns: 'common' })}
+                            {t(`  verification.${artistDetails.verificationState}`, { ns: 'common' })}
                           </span>
                         )}
                       </>
@@ -333,13 +327,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                           )}
                           {artist.verificationState && (
                             <span className={`verification-badge ${artist.verificationState}`}>
-                              {artist.verificationState === 'allowed' ? t('verification.allowed', { ns: 'common' }) :
-                               artist.verificationState === 'ysmod_only' ? t('verification.ysmodOnly', { ns: 'common' }) :
-                               artist.verificationState === 'mostly_allowed' ? t('verification.mostlyAllowed', { ns: 'common' }) :
-                               artist.verificationState === 'mostly_declined' ? t('verification.mostlyDeclined', { ns: 'common' }) :
-                               artist.verificationState === 'declined' ? t('verification.declined', { ns: 'common' }) :
-                               artist.verificationState === 'pending' ? t('verification.pending', { ns: 'common' }) :
-                               t('verification.unverified', { ns: 'common' })}
+                              {t(`verification.${artist.verificationState}`, { ns: 'common' })}
                             </span>
                           )}
                         </div>

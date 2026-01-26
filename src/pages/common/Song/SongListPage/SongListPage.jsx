@@ -74,14 +74,6 @@ const SongListPage = () => {
     setSortBy(e.target.value);
   };
 
-  const verificationStateLabels = {
-    declined: t('verification.declined', { ns: 'common' }),
-    pending: t('verification.pending', { ns: 'common' }),
-    conditional: t('verification.conditional', { ns: 'common' }),
-    ysmod_only: t('verification.ysmodOnly', { ns: 'common' }),
-    allowed: t('verification.allowed', { ns: 'common' })
-  };
-
   return (
     <div className="song-list-page">
       <MetaTags
@@ -174,7 +166,7 @@ const SongListPage = () => {
                     )}
                     <div className="song-card-verification">
                       <span className={getVerificationClass(song.verificationState)}>
-                        {verificationStateLabels[song.verificationState] || verificationStateLabels.pending}
+                        {t(`verification.${song.verificationState}`, { ns: 'common' })}
                       </span>
                     </div>
                   </div>

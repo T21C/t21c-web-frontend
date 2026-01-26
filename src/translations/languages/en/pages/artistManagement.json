@@ -47,6 +47,9 @@
     "createFailed": "Failed to create artist",
     "deleteFailed": "Failed to delete artist"
   },
+  "infScroll": {
+    "end": "You've reached the end!"
+  },
   "confirmDelete": "Are you sure you want to delete this artist?",
   "noArtists": "No artists found"
 }

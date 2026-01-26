@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { AccessDenied, MetaTags } from '@/components/common/display';
@@ -7,6 +7,7 @@ import { CustomSelect } from '@/components/common/selectors';
 import { EntityActionPopup } from '@/components/popups';
 import api from '@/utils/api';
 import { toast } from 'react-hot-toast';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import './entityManagementPage.css';
 import { Link } from 'react-router-dom';
 import { getVerificationClass } from '@/utils/Utility';
@@ -39,7 +40,13 @@ const EntityManagementPage = ({ type = 'artist' }) => {
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
 
-  const fetchEntities = useCallback(async (reset = false) => {
+  useEffect(() => {
+    if (user && hasFlag(user, permissionFlags.SUPER_ADMIN)) {
+      fetchEntities(true);
+    }
+  }, [searchQuery, sortBy, verificationFilter, user, type]);
+
+  const fetchEntities = async (reset = false) => {
     try {
       if (reset) {
         setLoading(true);
@@ -48,19 +55,19 @@ const EntityManagementPage = ({ type = 'artist' }) => {
       }
 
       const currentPage = reset ? 1 : page;
-      const params = new URLSearchParams({
-        page: currentPage.toString(),
-        limit: '50',
+      const params = {
+        page: currentPage,
+        limit: 50,
         search: searchQuery,
         sort: sortBy
-      });
+      };
 
       if (verificationFilter) {
-        params.append('verificationState', verificationFilter);
+        params.verificationState = verificationFilter;
       }
 
       const endpoint = type === 'song' ? '/v2/database/songs' : '/v2/database/artists';
-      const response = await api.get(`${endpoint}?${params}`);
+      const response = await api.get(endpoint, { params });
       const data = response.data;
       const items = type === 'song' ? (data.songs || []) : (data.artists || []);
       
@@ -70,7 +77,8 @@ const EntityManagementPage = ({ type = 'artist' }) => {
         setEntities(prev => [...prev, ...items]);
       }
 
-      setHasMore(data.hasMore || false);
+      // If no items returned, there's no more data regardless of hasMore flag
+      setHasMore(items.length > 0 && (data.hasMore || false));
       setPage(currentPage + 1);
     } catch (error) {
       console.error(`Error fetching ${type}s:`, error);
@@ -78,13 +86,13 @@ const EntityManagementPage = ({ type = 'artist' }) => {
     } finally {
       setLoading(false);
     }
-  }, [type, searchQuery, sortBy, verificationFilter]);
+  };
 
-  useEffect(() => {
-    if (user && hasFlag(user, permissionFlags.SUPER_ADMIN)) {
-      fetchEntities(true);
+  const handleLoadMore = () => {
+    if (!loading && hasMore) {
+      fetchEntities(false);
     }
-  }, [searchQuery, sortBy, verificationFilter, user, type]);
+  };
 
   const handleCreate = async () => {
     if (!newEntityData.name.trim()) {
@@ -152,17 +160,17 @@ const EntityManagementPage = ({ type = 'artist' }) => {
   const verificationStateLabels = type === 'song'
     ? {
         allowed: t('verification.allowed', { ns: 'common' }),
-        'ysmod_only': t('verification.ysmodOnly', { ns: 'common' }),
+        'ysmod_only': t('verification.ysmod_only', { ns: 'common' }),
         conditional: t('verification.conditional', { ns: 'common' }),
         pending: t('verification.pending', { ns: 'common' }),
         declined: t('verification.declined', { ns: 'common' })
       }
     : {
         allowed: t('verification.allowed', { ns: 'common' }),
-        'mostly_allowed': t('verification.mostlyAllowed', { ns: 'common' }),
-        'mostly_declined': t('verification.mostlyDeclined', { ns: 'common' }),
+        'mostly_allowed': t('verification.mostly_allowed', { ns: 'common' }),
+        'mostly_declined': t('verification.mostly_declined', { ns: 'common' }),
         declined: t('verification.declined', { ns: 'common' }),
-        'ysmod_only': t('verification.ysmodOnly', { ns: 'common' }),
+        'ysmod_only': t('verification.ysmod_only', { ns: 'common' }),
         pending: t('verification.pending', { ns: 'common' }),
         unverified: t('verification.unverified', { ns: 'common' })
       };
@@ -172,17 +180,17 @@ const EntityManagementPage = ({ type = 'artist' }) => {
   const verificationStateFormOptions = type === 'song'
     ? [
         { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) },
-        { value: 'ysmod_only', label: t('verification.ysmodOnly', { ns: 'common' }) },
+        { value: 'ysmod_only', label: t('verification.ysmod_only', { ns: 'common' }) },
         { value: 'conditional', label: t('verification.conditional', { ns: 'common' }) },
         { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
         { value: 'declined', label: t('verification.declined', { ns: 'common' }) }
       ]
     : [
         { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) },
-        { value: 'mostly_allowed', label: t('verification.mostlyAllowed', { ns: 'common' }) },
-        { value: 'mostly_declined', label: t('verification.mostlyDeclined', { ns: 'common' }) },
+        { value: 'mostly_allowed', label: t('verification.mostly_allowed', { ns: 'common' }) },
+        { value: 'mostly_declined', label: t('verification.mostly_declined', { ns: 'common' }) },
         { value: 'declined', label: t('verification.declined', { ns: 'common' }) },
-        { value: 'ysmod_only', label: t('verification.ysmodOnly', { ns: 'common' }) },
+        { value: 'ysmod_only', label: t('verification.ysmod_only', { ns: 'common' }) },
         { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
         { value: 'unverified', label: t('verification.unverified', { ns: 'common' }) }
       ];
@@ -271,66 +279,75 @@ const EntityManagementPage = ({ type = 'artist' }) => {
         {loading && entities.length === 0 ? (
           <div className="loader loader-level-page"></div>
         ) : (
-          <div className="entities-list">
-            {entities.length === 0 ? (
-              <div className="no-results">{tEntity(noResultsKey)}</div>
-            ) : (
-              entities.map((entity) => (
-                <div key={entity.id} className="entity-item">
-                  <div className="entity-info">
-                    {type === 'artist' && entity.avatarUrl && (
-                      <img src={entity.avatarUrl} alt={entity.name} className="entity-avatar" />
-                    )}
-                    <div className="entity-details">
-                      <Link to={`/${type}s/${entity.id}`} className="entity-name-link">
-                        {entity.name} (ID: {entity.id})
-                      </Link>
-                      <div className="entity-meta">
-                        <span className={getVerificationClass(entity.verificationState)}>
-                          {verificationStateLabels[entity.verificationState] || (type === 'song' ? verificationStateLabels.pending : verificationStateLabels.unverified)}
-                        </span>
-                        {entity.aliases && entity.aliases.length > 0 && (
-                          <span className="aliases-count">
-                            {entity.aliases.length} {tEntity('aliases')}
+          <InfiniteScroll
+            style={{ paddingBottom: "7rem", minHeight: "100vh", overflow: "visible" }}
+            dataLength={entities.length}
+            next={handleLoadMore}
+            hasMore={hasMore}
+            loader={<div className="loader loader-level-page"></div>}
+            endMessage={
+              entities.length > 0 && (
+                <p className="end-message">
+                  <b>{tEntity('infScroll.end')}</b>
+                </p>
+              )
+            }
+          >
+            <div className="entities-list">
+              {entities.length === 0 ? (
+                <div className="no-results">{tEntity(noResultsKey)}</div>
+              ) : (
+                entities.map((entity) => (
+                  <div key={entity.id} className="entity-item">
+                    <div className="entity-info">
+                      {type === 'artist' && entity.avatarUrl && (
+                        <img src={entity.avatarUrl} alt={entity.name} className="entity-avatar" />
+                      )}
+                      <div className="entity-details">
+                        <Link to={`/${type}s/${entity.id}`} className="entity-name-link">
+                          {entity.name} (ID: {entity.id})
+                        </Link>
+                        <div className="entity-meta">
+                          <span className={getVerificationClass(entity.verificationState)}>
+                            {t(`verification.${entity.verificationState}`, { ns: 'common' })}
                           </span>
-                        )}
-                        {type === 'song' && entity.credits && entity.credits.length > 0 && (
-                          <div className="entity-credits">
-                            {entity.credits.map((credit, index) => (
-                              <span key={credit.id} className="entity-credit-tag">
-                                {credit.artist?.name || 'Unknown'}
-                                {index < entity.credits.length - 1 && <span className="entity-credit-separator">, </span>}
-                              </span>
-                            ))}
-                          </div>
-                        )}
+                          {entity.aliases && entity.aliases.length > 0 && (
+                            <span className="aliases-count">
+                              {entity.aliases.length} {tEntity('aliases')}
+                            </span>
+                          )}
+                          {type === 'song' && entity.credits && entity.credits.length > 0 && (
+                            <div className="entity-credits">
+                              {entity.credits.map((credit, index) => (
+                                <span key={credit.id} className="entity-credit-tag">
+                                  {credit.artist?.name || 'Unknown'}
+                                  {index < entity.credits.length - 1 && <span className="entity-credit-separator">, </span>}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </div>
                     </div>
+                    <div className="entity-actions">
+                      <button
+                        className="edit-button"
+                        onClick={() => setSelectedEntity(entity)}
+                      >
+                        {t('buttons.edit', { ns: 'common' })}
+                      </button>
+                      <button
+                        className="delete-button"
+                        onClick={() => handleDelete(entity.id)}
+                      >
+                        {t('buttons.delete', { ns: 'common' })}
+                      </button>
+                    </div>
                   </div>
-                  <div className="entity-actions">
-                    <button
-                      className="edit-button"
-                      onClick={() => setSelectedEntity(entity)}
-                    >
-                      {t('buttons.edit', { ns: 'common' })}
-                    </button>
-                    <button
-                      className="delete-button"
-                      onClick={() => handleDelete(entity.id)}
-                    >
-                      {t('buttons.delete', { ns: 'common' })}
-                    </button>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        )}
-
-        {hasMore && !loading && (
-          <button className="load-more-button" onClick={() => fetchEntities(false)}>
-            {tEntity('buttons.loadMore')}
-          </button>
+                ))
+              )}
+            </div>
+          </InfiniteScroll>
         )}
 
       {selectedEntity && (
