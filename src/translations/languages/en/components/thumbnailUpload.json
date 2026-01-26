@@ -2,7 +2,6 @@
   "label": "Level Thumbnail",
   "chooseFile": "Choose Thumbnail File",
   "upload": "Upload Thumbnail",
-  "uploading": "Uploading...",
   "remove": "Remove Thumbnail",
   "help": "Upload a thumbnail image for your level (JPEG, PNG, WebP, max 10MB). Recommended size: 1200x800 pixels.",
   "uploadSuccess": "Thumbnail uploaded successfully",

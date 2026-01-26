@@ -14,14 +14,6 @@
     "idAsc": "ID (Low to High)",
     "idDesc": "ID (High to Low)"
   },
-  "verification": {
-    "unverified": "Unverified",
-    "pending": "Pending",
-    "declined": "Declined",
-    "mostlyDeclined": "Mostly Declined",
-    "mostlyAllowed": "Mostly Allowed",
-    "allowed": "Allowed"
-  },
   "infScroll": {
     "end": "You've reached the end!"
   },

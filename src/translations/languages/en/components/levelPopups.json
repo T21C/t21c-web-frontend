@@ -39,8 +39,7 @@
       },
       "buttons": {
         "save": {
-          "default": "Save Changes",
-          "saving": "Saving..."
+          "default": "Save Changes"
         },
         "delete": {
           "default": "Delete",
@@ -53,9 +52,7 @@
           "default": "Restore Level",
           "restoring": "Restoring..."
         },
-        "manageTags": "Manage Tags",
-        "edit": "Edit",
-        "cancel": "Cancel"
+        "manageTags": "Manage Tags"
       }
     },
     "confirmations": {
@@ -83,9 +80,6 @@
       "noResults": "No tags found matching your search",
       "noAvailableTags": "No available tags to add",
       "addTag": "Add tag",
-      "cancel": "Cancel",
-      "saving": "Saving...",
-      "save": "Save",
       "errors": {
         "fetchTags": "Failed to fetch tags",
         "saveTags": "Failed to save tags"

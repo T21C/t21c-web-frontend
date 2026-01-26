@@ -17,7 +17,7 @@ import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { SongSelectorPopup } from '@/components/popups';
 
 export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPage = false }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
   const tLevel = (key) => t(`levelPopups.edit.${key}`) || key;
   const { user } = useAuth();
   const isSuperAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
@@ -813,7 +813,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
             
             <div className="button-group">
               <button type="submit" disabled={isSaving} className="save-button">
-                {isSaving ? tLevel('form.buttons.save.saving') : tLevel('form.buttons.save.default')}
+                {isSaving ? t('loading.saving', { ns: 'common' }) : tLevel('form.buttons.save.default')}
               </button>
               {level.isDeleted ? (
                 <button 

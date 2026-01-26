@@ -17,8 +17,7 @@
     "title": "Super Admin Password Required",
     "description": "Please enter your super admin password to continue",
     "placeholder": "Enter password",
-    "submit": "Submit",
-    "cancel": "Cancel"
+    "submit": "Submit"
   },
   "initialPassword": {
     "title": "Super Admin Access Required",

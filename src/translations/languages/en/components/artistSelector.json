@@ -14,8 +14,7 @@
     "createNew": "Request New",
     "assign": "Assign Artist",
     "create": "Request",
-    "creating": "Requesting...",
-    "cancel": "Cancel"
+    "creating": "Requesting..."
   },
   "createForm": {
     "title": "Request New Artist",

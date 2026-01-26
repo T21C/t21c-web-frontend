@@ -1,13 +1,4 @@
 {
-  "loading": "Loading...",
-  "verification": {
-    "unverified": "Unverified",
-    "pending": "Pending",
-    "declined": "Declined",
-    "mostlyDeclined": "Mostly Declined",
-    "mostlyAllowed": "Mostly Allowed",
-    "allowed": "Allowed"
-  },
   "aliases": {
     "title": "Aliases"
   },

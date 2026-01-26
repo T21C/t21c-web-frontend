@@ -9,7 +9,7 @@ import axios from 'axios';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
 const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
   const tAdmin = (key) => t(`adminPopups.player.${key}`) || key;
 
   if (!player) {
@@ -311,7 +311,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                         disabled={isLoading}
                         className="confirm-button ban-confirm"
                       >
-                        {tAdmin('form.ban.confirm.buttons.confirm')}
+                        {t('buttons.confirm', { ns: 'common' })}
                       </button>
                       <button
                         type="button"
@@ -319,7 +319,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                         disabled={isLoading}
                         className="cancel-button"
                       >
-                        {tAdmin('form.ban.confirm.buttons.cancel')}
+                        {t('buttons.cancel', { ns: 'common' })}
                       </button>
                     </div>
                   </div>

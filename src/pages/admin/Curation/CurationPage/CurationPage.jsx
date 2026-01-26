@@ -20,7 +20,7 @@ const CurationPage = () => {
   const location = useLocation();
   const { user } = useAuth();
   const { curationTypes, reloadCurationTypes } = useDifficultyContext();
-  const { t } = useTranslation('pages');
+  const { t } = useTranslation(['pages', 'common']);
   const tCur = (key, params = {}) => t(`curation.${key}`, params);
   const currentUrl = window.location.origin + location.pathname;
 
@@ -598,7 +598,7 @@ const CurationPage = () => {
                   setPendingAction(null);
                 }}
               >
-                {tCur('password.cancel')}
+                {t('buttons.cancel', { ns: 'common' })}
               </button>
             </div>
           </div>

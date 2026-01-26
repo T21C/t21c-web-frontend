@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const AliasesTab = ({
   newAlias,
@@ -27,7 +28,7 @@ export const AliasesTab = ({
             }}
             placeholder={tEntity('aliases.placeholder')}
           />
-          <button onClick={handleAddAlias}>{tEntity('buttons.add')}</button>
+          <button onClick={handleAddAlias}>{t('buttons.add', { ns: 'common' })}</button>
         </div>
       </div>
 
@@ -48,7 +49,7 @@ export const AliasesTab = ({
           onClick={handleUpdate}
           disabled={isLoading}
         >
-          {isLoading ? tEntity('buttons.saving') : tEntity('buttons.save')}
+          {isLoading ? t('loading.saving', { ns: 'common' }) : t('buttons.save', { ns: 'common' })}
         </button>
       </div>
     </div>

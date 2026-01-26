@@ -751,7 +751,7 @@ const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict })
 };
 
 const LevelDetailPage = ({ mockData = null }) => {
-  const { t } = useTranslation('pages');
+  const { t } = useTranslation(['pages', 'common']);
   const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
   const { id } = useParams();
   const detailPage = useLocation();
@@ -2090,7 +2090,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                     className={`edit-button svg-stroke ${!canEdit ? 'disabled' : ''}`}
                     onClick={() => canEdit && setOpenEditDialog(true)}
                     disabled={!canEdit}
-                    title={tLevel('buttons.edit')}
+                    title={t('buttons.edit', { ns: 'common' })}
                     data-tooltip-id={!canEdit ? 'edit-disabled-tooltip' : undefined}
                     data-tooltip-content={!canEdit ? tLevel('tooltips.editDisabled') : undefined}
                     style={

@@ -548,14 +548,14 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                       className="cancel-button"
                       disabled={isCreating}
                     >
-                      {tSong('buttons.cancel')}
+                      {t('buttons.cancel', { ns: 'common' })}
                     </button>
                     <button
                       type="submit"
                       disabled={isCreating || !newName?.trim()}
                       className={`submit-button ${isCreating ? 'loading' : ''}`}
                     >
-                      {isCreating ? tSong('buttons.creating') : tSong('buttons.create')}
+                      {isCreating ? t('loading.creating', { ns: 'common' }) : tSong('buttons.create')}
                     </button>
                   </div>
                 </form>

@@ -23,7 +23,7 @@ const ProviderIcon = ({ provider, size, color="#fff" }) => {
 };
 
 const EditProfilePage = () => {
-  const { t } = useTranslation('pages');
+  const { t } = useTranslation(['pages', 'common']);
   const tEditProfile = (key, params = {}) => t(`editProfile.${key}`, params);
   const { user, changePassword, linkProvider, unlinkProvider, setUser, fetchUser } = useAuth();
   const [formData, setFormData] = useState({
@@ -490,7 +490,7 @@ const EditProfilePage = () => {
               onClick={handleSubmit}
               disabled={isLoading}
             >
-              {isLoading ? tEditProfile('form.buttons.saving') : tEditProfile('form.buttons.saveChanges')}
+              {isLoading ? t('loading.saving', { ns: 'common' }) : tEditProfile('form.buttons.saveChanges')}
             </button>
           </div>
         </form>

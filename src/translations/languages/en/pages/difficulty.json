@@ -15,12 +15,7 @@
   },
   "buttons": {
     "create": "Create New Difficulty",
-    "creating": "Creating...",
-    "save": "Save",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
-    "understand": "I understand the risks",
-    "delete": "Delete"
+    "understand": "I understand the risks"
   },
   "loading": {
     "difficulties": "Loading difficulties...",

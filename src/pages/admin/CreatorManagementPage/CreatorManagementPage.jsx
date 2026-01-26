@@ -1142,7 +1142,7 @@ const CreatorManagementPage = () => {
                 }}
                 disabled={isCreatingCreator || !newCreatorData.name.trim()}
               >
-                {isCreatingCreator ? tCreator('buttons.creating') : tCreator('buttons.create')}
+                {isCreatingCreator ? t('loading.creating', { ns: 'common' }) : tCreator('buttons.create')}
               </button>
               <button
                 className="cancel-button"

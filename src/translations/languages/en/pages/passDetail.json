@@ -102,14 +102,12 @@
       "title": "Hide Pass",
       "message": "Are you sure you want to hide this pass from the leaderboard? It will only be visible to you.",
       "confirm": "Hide Pass",
-      "cancel": "Cancel",
       "processing": "Hiding..."
     },
     "unhide": {
       "title": "Show Pass",
       "message": "Are you sure you want to show this pass on the leaderboard? It will be visible to everyone.",
       "confirm": "Show Pass",
-      "cancel": "Cancel",
       "processing": "Showing..."
     }
   },

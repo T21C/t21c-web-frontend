@@ -14,9 +14,7 @@
   "buttons": {
     "addCreator": "Add New Creator",
     "manageCreator": "Manage Creator",
-    "cancel": "Cancel",
-    "create": "Create Creator",
-    "creating": "Creating..."
+    "create": "Create Creator"
   },
   "form": {
     "title": "Add New Creator",

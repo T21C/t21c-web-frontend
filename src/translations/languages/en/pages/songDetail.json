@@ -4,14 +4,6 @@
     "title": "Song - TUF",
     "description": "View song information for {{name}}"
   },
-  "verification": {
-    "unverified": "Unverified",
-    "pending": "Pending",
-    "declined": "Declined",
-    "conditional": "Conditional",
-    "ysmodOnly": "YSMod Only",
-    "allowed": "Allowed"
-  },
   "sections": {
     "aliases": "Aliases",
     "links": "Links",

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { isImageUrl, isCdnUrl } from '@/utils/Utility';
 import { EvidenceGalleryPopup } from '@/components/popups';
 
@@ -36,6 +37,7 @@ export const EvidenceTab = ({
   handleSaveEntityExtraInfo,
   tEntity
 }) => {
+  const { t } = useTranslation('common');
   const hasEntityExtraInfoChanges = isEditingEntityExtraInfo && (
     editingEntityExtraInfo !== (entityExtraInfo || '')
   );
@@ -63,10 +65,10 @@ export const EvidenceTab = ({
                 }} 
                 className="entity-extra-info-save-btn"
                 disabled={!hasEntityExtraInfoChanges}
-                title={tEntity('buttons.save')}
+                title={t('buttons.save')}
                 type="button"
               >
-                {tEntity('buttons.save') || 'Save'}
+                {t('buttons.save')}
               </button>
               <button 
                 onClick={(e) => {
@@ -75,10 +77,10 @@ export const EvidenceTab = ({
                   handleCancelEditEntityExtraInfo();
                 }} 
                 className="entity-extra-info-cancel-btn"
-                title={tEntity('buttons.cancel') || 'Cancel'}
+                title={t('buttons.cancel')}
                 type="button"
               >
-                {tEntity('buttons.cancel') || 'Cancel'}
+                {t('buttons.cancel')}
               </button>
             </div>
           </div>
@@ -100,10 +102,10 @@ export const EvidenceTab = ({
                   handleStartEditEntityExtraInfo();
                 }} 
                 className="entity-extra-info-edit-btn"
-                title={tEntity('buttons.edit') || 'Edit'}
+                title={t('buttons.edit')}
                 type="button"
               >
-                {tEntity('buttons.edit') || 'Edit'}
+                {t('buttons.edit')}
               </button>
           </div>
         )}
@@ -125,7 +127,7 @@ export const EvidenceTab = ({
             }}
             placeholder={tEntity('evidence.linkPlaceholder') || 'Enter external URL'}
           />
-          <button onClick={handleAddEvidenceLink}>{tEntity('buttons.add')}</button>
+          <button onClick={handleAddEvidenceLink}>{t('buttons.add', { ns: 'common' })}</button>
         </div>
       </div>
 
@@ -188,7 +190,7 @@ export const EvidenceTab = ({
               disabled={isUploadingEvidence || evidenceFiles.length === 0}
               className="upload-evidence-btn"
             >
-              {isUploadingEvidence ? tEntity('buttons.uploading') : tEntity('buttons.upload')}
+              {isUploadingEvidence ? t('loading.uploading', { ns: 'common' }) : t('buttons.upload', { ns: 'common' })}
             </button>
           </div>
         )}
@@ -225,7 +227,7 @@ export const EvidenceTab = ({
                           }} 
                           className="evidence-save-btn"
                           disabled={!hasChanges}
-                          title={tEntity('buttons.save')}
+                          title={t('buttons.save')}
                           type="button"
                         >
                           ✓
@@ -237,7 +239,7 @@ export const EvidenceTab = ({
                             handleCancelEditEvidence();
                           }} 
                           className="evidence-cancel-btn"
-                          title={tEntity('buttons.cancel') || 'Cancel'}
+                          title={t('buttons.cancel')}
                           type="button"
                         >
                           ×
@@ -287,7 +289,7 @@ export const EvidenceTab = ({
                           <button 
                             onClick={() => handleStartEditEvidence(evidence)} 
                             className="evidence-edit-btn"
-                            title={tEntity('buttons.edit') || 'Edit'}
+                            title={t('buttons.edit')}
                           >
                             ✎
                           </button>
@@ -295,7 +297,7 @@ export const EvidenceTab = ({
                         <button 
                           onClick={() => handleDeleteEvidence(evidence.id)} 
                           className="evidence-delete-btn"
-                          title={tEntity('buttons.delete')}
+                          title={t('buttons.delete')}
                         >
                           <svg viewBox="0 0 24 24" fill="currentColor">
                             <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>

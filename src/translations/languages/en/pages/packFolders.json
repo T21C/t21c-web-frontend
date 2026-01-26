@@ -1,7 +1,6 @@
 {
   "createFolder": "Create Folder",
   "rename": "Rename",
-  "delete": "Delete",
   "confirmDelete": "Are you sure you want to delete the folder \"{{name}}\"? This action cannot be undone.",
   "moveToFolder": "Move to Folder",
   "moveToRoot": "Move to Root",

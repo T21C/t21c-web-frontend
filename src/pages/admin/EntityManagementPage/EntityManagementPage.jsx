@@ -262,7 +262,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
           </div>
 
           <button className="add-button" onClick={() => setShowAddForm(true)}>
-            {tEntity('buttons.add')}
+            {t('buttons.add', { ns: 'common' })}
           </button>
         </div>
 
@@ -310,13 +310,13 @@ const EntityManagementPage = ({ type = 'artist' }) => {
                       className="edit-button"
                       onClick={() => setSelectedEntity(entity)}
                     >
-                      {tEntity('buttons.edit')}
+                      {t('buttons.edit', { ns: 'common' })}
                     </button>
                     <button
                       className="delete-button"
                       onClick={() => handleDelete(entity.id)}
                     >
-                      {tEntity('buttons.delete')}
+                      {t('buttons.delete', { ns: 'common' })}
                     </button>
                   </div>
                 </div>
@@ -468,7 +468,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
                 onClick={handleCreate}
                 disabled={isCreating || !newEntityData.name.trim()}
               >
-                {isCreating ? tEntity('buttons.creating') : tEntity('buttons.create')}
+                {isCreating ? t('loading.creating', { ns: 'common' }) : tEntity('buttons.create')}
               </button>
               <button
                 className="cancel-button"
@@ -484,7 +484,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
                   setAvatarPreview(null);
                 }}
               >
-                {tEntity('buttons.cancel')}
+                {t('buttons.cancel', { ns: 'common' })}
               </button>
             </div>
           </div>

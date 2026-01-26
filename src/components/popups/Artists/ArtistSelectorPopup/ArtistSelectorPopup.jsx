@@ -379,14 +379,14 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                       className="cancel-button"
                       disabled={isCreating}
                     >
-                      {tArtist('buttons.cancel')}
+                      {t('buttons.cancel', { ns: 'common' })}
                     </button>
                     <button
                       type="submit"
                       disabled={isCreating || !newName.trim()}
                       className={`submit-button ${isCreating ? 'loading' : ''}`}
                     >
-                      {isCreating ? tArtist('buttons.creating') : tArtist('buttons.create')}
+                      {isCreating ? t('loading.creating', { ns: 'common' }) : tArtist('buttons.create')}
                     </button>
                   </div>
                 </form>

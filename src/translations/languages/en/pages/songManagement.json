@@ -18,21 +18,12 @@
     "idAsc": "ID (Low to High)",
     "idDesc": "ID (High to Low)"
   },
-  "verification": {
-    "unverified": "Unverified",
-    "pending": "Pending",
-    "verified": "Verified"
-  },
   "aliases": "aliases",
   "artists": "artists",
   "buttons": {
     "add": "Add Song",
-    "edit": "Edit",
-    "delete": "Delete",
     "loadMore": "Load More",
-    "create": "Create",
-    "creating": "Creating...",
-    "cancel": "Cancel"
+    "create": "Create"
   },
   "form": {
     "title": "Create New Song",

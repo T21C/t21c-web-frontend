@@ -20,15 +20,8 @@
   },
   "buttons": {
     "create": "Create {{type}} Backup",
-    "creating": "Creating...",
     "restore": "Restore",
-    "delete": "Delete",
-    "save": "Save",
-    "saving": "Saving...",
-    "cancel": "Cancel",
-    "confirm": "Confirm",
     "upload": "Upload",
-    "uploading": "Uploading...",
     "download": "Download",
     "verifying": "Verifying..."
   },

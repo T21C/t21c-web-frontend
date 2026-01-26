@@ -29,7 +29,7 @@ const DifficultyPopup = ({
   error,
   verifiedPassword
 }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
   const tDiff = (key, params = {}) => t(`difficultyPopup.${key}`, params);
   const [activeTab, setActiveTab] = useState('details');
   const [directives, setDirectives] = useState([]);
@@ -986,7 +986,7 @@ const DifficultyPopup = ({
                       setPendingDirectives(null);
                     }}
                   >
-                    {tDiff('buttons.cancel')}
+                    {t('buttons.cancel', { ns: 'common' })}
                   </button>
                 </div>
               </form>
@@ -1025,7 +1025,7 @@ const DifficultyPopup = ({
                 {channelError && <div className="difficulty-modal__error-message">{channelError}</div>}
                 <div className="difficulty-modal__actions">
                   <button type="submit" className="difficulty-modal__button difficulty-modal__button--save">
-                    {channelModalSource === 'edit' ? tDiff('buttons.save') : tDiff('buttons.add')}
+                    {channelModalSource === 'edit' ? t('buttons.save', { ns: 'common' }) : t('buttons.add', { ns: 'common' })}
                   </button>
                   {channelModalSource === 'edit' && (
                     <button
@@ -1033,7 +1033,7 @@ const DifficultyPopup = ({
                       className="difficulty-modal__button difficulty-modal__button--delete"
                       onClick={handleDeleteChannel}
                     >
-                      {tDiff('buttons.delete')}
+                      {t('buttons.delete', { ns: 'common' })}
                     </button>
                   )}
                   <button
@@ -1047,7 +1047,7 @@ const DifficultyPopup = ({
                       setChannelError('');
                     }}
                   >
-                    {tDiff('buttons.cancel')}
+                    {t('buttons.cancel', { ns: 'common' })}
                   </button>
                 </div>
               </form>
@@ -1108,7 +1108,7 @@ const DifficultyPopup = ({
                 {roleError && <div className="difficulty-modal__error-message">{roleError}</div>}
                 <div className="difficulty-modal__actions">
                   <button type="submit" className="difficulty-modal__button difficulty-modal__button--save">
-                    {roleModalSource === 'edit' ? tDiff('buttons.save') : tDiff('buttons.add')}
+                    {roleModalSource === 'edit' ? t('buttons.save', { ns: 'common' }) : t('buttons.add', { ns: 'common' })}
                   </button>
                   {roleModalSource === 'edit' && (
                     <button
@@ -1116,7 +1116,7 @@ const DifficultyPopup = ({
                       className="difficulty-modal__button difficulty-modal__button--delete"
                       onClick={handleDeleteRole}
                     >
-                      {tDiff('buttons.delete')}
+                      {t('buttons.delete', { ns: 'common' })}
                     </button>
                   )}
                   <button
@@ -1128,7 +1128,7 @@ const DifficultyPopup = ({
                       setRoleError('');
                     }}
                   >
-                    {tDiff('buttons.cancel')}
+                    {t('buttons.cancel', { ns: 'common' })}
                   </button>
                 </div>
               </form>
@@ -1340,7 +1340,7 @@ const DifficultyPopup = ({
 
               <div className="difficulty-modal__actions">
                 <button type="submit" className="difficulty-modal__button difficulty-modal__button--save">
-                  {isCreating ? tDiff('buttons.create') : tDiff('buttons.save')}
+                  {isCreating ? tDiff('buttons.create') : t('buttons.save', { ns: 'common' })}
                 </button>
                 <button
                   type="button"
@@ -1770,14 +1770,14 @@ const DifficultyPopup = ({
                       type="submit" 
                       className={`difficulty-modal__button difficulty-modal__button--save ${!hasAnyChanges() ? 'difficulty-modal__button--disabled' : ''}`}
                     >
-                      {tDiff('buttons.save')}
+                      {t('buttons.save', { ns: 'common' })}
                     </button>
                     <button
                       type="button"
                       className="difficulty-modal__button difficulty-modal__button--cancel"
                       onClick={onClose}
                     >
-                      {tDiff('buttons.cancel')}
+                      {t('buttons.cancel', { ns: 'common' })}
                     </button>
                   </div>
                 </form>

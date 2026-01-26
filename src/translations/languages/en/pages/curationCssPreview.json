@@ -15,7 +15,6 @@
   },
   "actions": {
     "save": "Save Changes",
-    "saving": "Saving...",
     "discard": "Discard Changes",
     "backToEdit": "Back to Edit"
   },

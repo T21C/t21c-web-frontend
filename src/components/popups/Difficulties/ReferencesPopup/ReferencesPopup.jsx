@@ -279,7 +279,7 @@ const parseReferenceString = (str) => {
 };
 
 const ReferencesPopup = ({ onClose }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
   const tRef = (key, params = {}) => t(`references.popup.${key}`, params);
 
   const { user } = useAuth();
@@ -694,7 +694,7 @@ const ReferencesPopup = ({ onClose }) => {
                       onClick={() => handleSaveChanges(ref.difficulty.id)}
                       disabled={saving}
                     >
-                      {saving ? tRef('buttons.saving') : tRef('buttons.saveChanges')}
+                      {saving ? t('loading.saving', { ns: 'common' }) : tRef('buttons.saveChanges')}
                     </button>
                     <button 
                       className="cancel-edit-btn"
@@ -711,7 +711,7 @@ const ReferencesPopup = ({ onClose }) => {
                       }}
                       disabled={saving}
                     >
-                      {tRef('buttons.cancel')}
+                      {t('buttons.cancel', { ns: 'common' })}
                     </button>
                   </div>
                 )}

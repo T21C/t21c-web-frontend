@@ -15,7 +15,7 @@ import i18next from "i18next";
 
 
 const LevelSubmissions = () => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
   const tLevel = (key, params = {}) => t(`levelSubmissions.${key}`, params);
   
   const [submissions, setSubmissions] = useState([]);
@@ -1024,14 +1024,14 @@ const LevelSubmissions = () => {
                             <button
                               className="suffix-save-btn"
                               onClick={() => handleSaveSuffix(submission.id)}
-                              title={tLevel('buttons.save')}
+                              title={t('buttons.save', { ns: 'common' })}
                             >
                               ✓
                             </button>
                             <button
                               className="suffix-cancel-btn"
                               onClick={() => handleCancelSuffix(submission.id)}
-                              title={tLevel('buttons.cancel')}
+                              title={t('buttons.cancel', { ns: 'common' })}
                             >
                               ✕
                             </button>
@@ -1051,7 +1051,7 @@ const LevelSubmissions = () => {
                                 [submission.id]: submission.suffix || ''
                               }));
                             }}
-                            title={tLevel('buttons.edit')}
+                            title={t('buttons.edit', { ns: 'common' })}
                           >
                             ✏️
                           </button>

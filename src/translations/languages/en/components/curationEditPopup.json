@@ -18,9 +18,7 @@
     "thumbnail": "Level Thumbnail"
   },
   "actions": {
-    "cancel": "Cancel",
-    "save": "Save Changes",
-    "saving": "Saving..."
+    "save": "Save Changes"
   },
   "notifications": {
     "updated": "Curation updated successfully",

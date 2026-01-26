@@ -50,7 +50,6 @@
     "levelListLegendaryGlow": "Level List Legendary Glow"
   },
   "buttons": {
-    "cancel": "Cancel",
     "create": "Create Type",
     "update": "Update Type",
     "submitting": "Submitting..."

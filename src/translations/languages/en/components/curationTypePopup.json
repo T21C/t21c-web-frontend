@@ -27,7 +27,6 @@
     }
   },
   "actions": {
-    "cancel": "Cancel",
     "create": "Create",
     "update": "Update",
     "submitting": "Submitting..."

@@ -20,7 +20,10 @@
     "generic": "Loading...",
     "submitting": "Submitting...",
     "saving": "Saving...",
-    "deleting": "Deleting..."
+    "deleting": "Deleting...",
+    "creating": "Creating...",
+    "updating": "Updating...",
+    "uploading": "Uploading..."
   },
   "buttons": {
     "submit": "Submit",
@@ -31,7 +34,12 @@
     "close": "Close",
     "back": "Back",
     "next": "Next",
-    "previous": "Previous"
+    "previous": "Previous",
+    "confirm": "Confirm",
+    "add": "Add",
+    "remove": "Remove",
+    "update": "Update",
+    "upload": "Upload"
   },
   "promote": "Promote",
   "demote": "Demote",

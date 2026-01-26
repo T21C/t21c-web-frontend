@@ -12,7 +12,7 @@ import './curationcsspreviewpage.css';
 import { AccessDenied } from '@/components/common/display';
 
 const CurationCssPreviewPage = () => {
-  const { t } = useTranslation('pages');
+  const { t } = useTranslation(['pages', 'common']);
   const tCur = (key, params = {}) => t(`curationCssPreview.${key}`, params);
   const { user } = useAuth();
   
@@ -280,7 +280,7 @@ const CurationCssPreviewPage = () => {
               onClick={handleSave}
               disabled={isSaving}
             >
-              {isSaving ? tCur('actions.saving') : tCur('actions.save')}
+              {isSaving ? t('loading.saving', { ns: 'common' }) : tCur('actions.save')}
             </button>
             <button
               className="back-to-edit-button"

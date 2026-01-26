@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 export const SplitTab = ({
   splitName1,
@@ -19,6 +20,7 @@ export const SplitTab = ({
   isLoading,
   tEntity
 }) => {
+  const { t } = useTranslation('common');
   return (
     <div className="form-section">
       {!showSplitConfirm ? (
@@ -107,7 +109,7 @@ export const SplitTab = ({
               onClick={handleSplitCancel}
               disabled={isLoading}
             >
-              {tEntity('buttons.cancel')}
+              {t('buttons.cancel')}
             </button>
           </div>
         </div>

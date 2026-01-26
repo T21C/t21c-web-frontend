@@ -5,7 +5,7 @@ import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 
 const NewLevelsTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRemove, onEdit }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
   const tLevel = (key, params = {}) => t(`newLevelsTab.${key}`, params);
   
   const [removingIds, setRemovingIds] = useState(new Set());
@@ -67,7 +67,7 @@ const NewLevelsTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onR
                   className="edit-button"
                   onClick={() => onEdit(level)}
                   disabled={isLoading || removingIds.has(level.id)}
-                  aria-label={tLevel('buttons.edit')}
+                  aria-label={t('buttons.edit', { ns: 'common' })}
                 >
                   <EditIcon color="#fff" size="24px" />
                 </button>

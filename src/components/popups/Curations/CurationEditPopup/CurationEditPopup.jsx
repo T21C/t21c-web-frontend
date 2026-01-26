@@ -16,7 +16,7 @@ const CurationEditPopup = ({
   curationTypes,
   onUpdate
 }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
   const tCur = (key, params = {}) => {
     const translation = t(`curationEditPopup.${key}`, params);
     // Fallback to default text if translation is not found
@@ -374,7 +374,7 @@ const CurationEditPopup = ({
               className="curation-edit-modal__save-btn"
               disabled={isLoading || !formData.typeId}
             >
-              {isLoading ? tCur('actions.saving') : tCur('actions.save')}
+              {isLoading ? t('loading.saving', { ns: 'common' }) : tCur('actions.save')}
             </button>
           </div>
         </form>

@@ -24,8 +24,6 @@
     "invalid": "Invalid player data"
   },
   "buttons": {
-    "save": "Save",
-    "cancel": "Cancel",
     "create": "Create new player \"{{name}}\"",
     "loading": "Creating player \"{{name}}\"..."
   }

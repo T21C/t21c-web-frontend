@@ -31,8 +31,6 @@
   "buttons": {
     "allow": "Allow",
     "decline": "Decline",
-    "save": "Save",
-    "cancel": "Cancel",
     "reset": "Reset",
     "clear": "Clear",
     "selectAll": "Select All",
@@ -64,10 +62,6 @@
   "modal": {
     "title": "Confirm Action",
     "confirmMessage": "Will assign @{{username}} to {{playerName}}. Proceed?",
-    "buttons": {
-      "confirm": "Confirm",
-      "cancel": "Cancel"
-    },
     "tooltip": "{{discordUsername}} → {{playerName}}"
   },
   "notifications": {

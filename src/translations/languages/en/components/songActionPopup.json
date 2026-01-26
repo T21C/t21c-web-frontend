@@ -13,13 +13,6 @@
     "name": "Name",
     "verificationState": "Verification State"
   },
-  "verification": {
-    "declined": "Declined",
-    "pending": "Pending",
-    "conditional": "Conditional",
-    "ysmodOnly": "YSMod Only",
-    "allowed": "Allowed"
-  },
   "merge": {
     "info": "Merge this song into another. All data will be transferred.",
     "search": "Search for target song",
@@ -55,20 +48,9 @@
     "deleteConfirm": "Are you sure you want to delete this evidence?"
   },
   "buttons": {
-    "update": "Update",
-    "updating": "Updating...",
     "merge": "Merge",
     "merging": "Merging...",
-    "add": "Add",
-    "addCredit": "Add Credit",
-    "save": "Save",
-    "saving": "Saving...",
-    "edit": "Edit",
-    "cancel": "Cancel",
-    "delete": "Delete",
-    "upload": "Upload",
-    "uploading": "Uploading...",
-    "remove": "Remove"
+    "addCredit": "Add Credit"
   },
   "messages": {
     "updated": "Song updated successfully",

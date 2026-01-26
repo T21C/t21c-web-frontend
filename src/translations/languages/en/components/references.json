@@ -12,8 +12,6 @@
       "editMode": "Edit Mode",
       "viewMode": "View Mode",
       "saveChanges": "Save Changes",
-      "saving": "Saving...",
-      "cancel": "Cancel",
       "help": "Help",
       "switchToExtended": "Switch to extended view",
       "switchToCompact": "Switch to compact view"
@@ -83,8 +81,6 @@
   },
   "title": "{{tab}} Difficulties",
   "buttons": {
-    "save": "Save",
-    "cancel": "Cancel",
     "reset": "Reset",
     "clear": "Clear",
     "selectAll": "Select All"

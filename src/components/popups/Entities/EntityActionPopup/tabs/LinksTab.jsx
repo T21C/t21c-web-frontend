@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import { ExternalLinkIcon } from '@/components/common/icons';
 
 export const LinksTab = ({
@@ -11,6 +12,7 @@ export const LinksTab = ({
   isLoading,
   tEntity
 }) => {
+  const { t } = useTranslation('common');
   return (
     <div className="form-section">
       <div className="form-group">
@@ -28,7 +30,7 @@ export const LinksTab = ({
             }}
             placeholder={tEntity('links.placeholder')}
           />
-          <button onClick={handleAddLink}>{tEntity('buttons.add')}</button>
+          <button onClick={handleAddLink}>{t('buttons.add', { ns: 'common' })}</button>
         </div>
       </div>
 
@@ -52,7 +54,7 @@ export const LinksTab = ({
           onClick={handleUpdate}
           disabled={isLoading}
         >
-          {isLoading ? tEntity('buttons.saving') : tEntity('buttons.save')}
+          {isLoading ? t('loading.saving', { ns: 'common' }) : t('buttons.save', { ns: 'common' })}
         </button>
       </div>
     </div>

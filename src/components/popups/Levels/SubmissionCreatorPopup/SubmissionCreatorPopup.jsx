@@ -498,7 +498,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
                       disabled={isCreating || !newName.trim()}
                       className={`submit-button ${isCreating ? 'loading' : ''}`}
                     >
-                      {isCreating ? tCreator('buttons.creating') : 
+                      {isCreating ? t('loading.creating', { ns: 'common' }) : 
                         (isTeamMode ? tCreator('buttons.createTeam') : tCreator('buttons.create'))}
                     </button>
                   </div>

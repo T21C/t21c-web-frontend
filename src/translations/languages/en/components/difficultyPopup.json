@@ -223,11 +223,7 @@
     }
   },
   "buttons": {
-    "create": "Create",
-    "save": "Save",
-    "delete": "Delete",
-    "cancel": "Cancel",
-    "add": "Add"
+    "create": "Create"
   },
   "errors": {
     "passwordRequired": "Super admin password is required",

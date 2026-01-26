@@ -14,8 +14,7 @@
     "createNew": "Request New Song",
     "assign": "Save",
     "create": "Request New",
-    "creating": "Updating...",
-    "cancel": "Cancel"
+    "creating": "Updating..."
   },
   "createForm": {
     "title": "Request New Song",

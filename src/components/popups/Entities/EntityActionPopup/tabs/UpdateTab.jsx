@@ -20,6 +20,7 @@ export const UpdateTab = ({
   isLoading,
   tEntity
 }) => {
+  const { t } = useTranslation('common');
   return (
     <div className="form-section">
       <div className="form-group">
@@ -70,7 +71,7 @@ export const UpdateTab = ({
               </label>
               {avatarFile && (
                 <button onClick={handleAvatarUpload} disabled={isUploadingAvatar}>
-                  {isUploadingAvatar ? tEntity('buttons.uploading') : tEntity('buttons.upload')}
+                  {isUploadingAvatar ? t('loading.uploading', { ns: 'common' }) : t('buttons.upload', { ns: 'common' })}
                 </button>
               )}
             </div>
@@ -94,7 +95,7 @@ export const UpdateTab = ({
           onClick={handleUpdate}
           disabled={isLoading || !name.trim()}
         >
-          {isLoading ? tEntity('buttons.updating') : tEntity('buttons.update')}
+          {isLoading ? t('loading.updating', { ns: 'common' }) : t('buttons.update', { ns: 'common' })}
         </button>
       </div>
     </div>

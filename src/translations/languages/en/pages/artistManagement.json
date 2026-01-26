@@ -18,23 +18,11 @@
     "idAsc": "ID (Low to High)",
     "idDesc": "ID (High to Low)"
   },
-  "verification": {
-    "unverified": "Unverified",
-    "pending": "Pending",
-    "declined": "Declined",
-    "mostlyDeclined": "Mostly Declined",
-    "mostlyAllowed": "Mostly Allowed",
-    "allowed": "Allowed"
-  },
   "aliases": "aliases",
   "buttons": {
     "add": "Add Artist",
-    "edit": "Edit",
-    "delete": "Delete",
     "loadMore": "Load More",
-    "create": "Create",
-    "creating": "Creating...",
-    "cancel": "Cancel"
+    "create": "Create"
   },
   "form": {
     "title": "Create New Artist",

@@ -16,33 +16,21 @@
         "label": "Ban Player",
         "confirm": {
           "ban": "Are you sure you want to ban this player?",
-          "unban": "Are you sure you want to unban this player?",
-          "buttons": {
-            "confirm": "Confirm",
-            "cancel": "Cancel"
-          }
+          "unban": "Are you sure you want to unban this player?"
         }
       },
       "pause": {
         "label": "Pause Submissions",
         "confirm": {
           "pause": "Are you sure you want to pause submissions for this player?",
-          "resume": "Are you sure you want to resume submissions for this player?",
-          "buttons": {
-            "confirm": "Confirm",
-            "cancel": "Cancel"
-          }
+          "resume": "Are you sure you want to resume submissions for this player?"
         }
       },
       "ratingBan": {
         "label": "Ban from Rating",
         "confirm": {
           "ban": "Are you sure you want to ban this player from rating?",
-          "unban": "Are you sure you want to allow this player to rate again?",
-          "buttons": {
-            "confirm": "Confirm",
-            "cancel": "Cancel"
-          }
+          "unban": "Are you sure you want to allow this player to rate again?"
         }
       },
       "merge": {
@@ -54,8 +42,7 @@
           "warning": "All passes will be transferred to the target player and this player entry will be deleted.",
           "buttons": {
             "understand": "I understand",
-            "confirm": "Confirm Merge",
-            "cancel": "Cancel"
+            "confirm": "Confirm Merge"
           }
         }
       },
@@ -63,15 +50,10 @@
         "label": "Discord ID",
         "placeholder": "Enter Discord ID to validate",
         "buttons": {
-          "validate": "Validate",
-          "remove": "Remove"
+          "validate": "Validate"
         },
         "confirm": {
-          "message": "Are you sure you want to update this player's Discord info?",
-          "buttons": {
-            "confirm": "Confirm",
-            "cancel": "Cancel"
-          }
+          "message": "Are you sure you want to update this player's Discord info?"
         }
       }
     },

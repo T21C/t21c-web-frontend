@@ -20,7 +20,6 @@
     "buttons": {
       "saveChanges": "Save Changes",
       "removeRating": "Remove Rating",
-      "saving": "Saving...",
       "viewAdminRatings": "View Manager Ratings",
       "viewCommunityRatings": "View Community Ratings"
     },

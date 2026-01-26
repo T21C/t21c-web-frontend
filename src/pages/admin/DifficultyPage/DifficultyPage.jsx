@@ -16,7 +16,7 @@ import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 const DifficultyPage = () => {
   const { user } = useAuth();
   const { difficulties, loading: contextLoading, reloadDifficulties, setDifficulties } = useDifficultyContext();
-  const { t } = useTranslation('pages');
+  const { t } = useTranslation(['pages', 'common']);
   const tDiff = (key, params = {}) => t(`difficulty.${key}`, params);
   const currentUrl = window.location.origin + location.pathname;
 
@@ -1318,14 +1318,14 @@ const DifficultyPage = () => {
                     </div>
                     <div className="modal-actions">
                       <button type="button" className="delete-confirm-button" onClick={handleDirectDelete} disabled={!fallbackDiff || fallbackDiff === String(deletingDifficulty?.id) || isLoading}>
-                        {isLoading ? tDiff('loading.deleting') || 'Deleting...' : tDiff('buttons.delete')}
+                        {isLoading ? tDiff('loading.deleting') || 'Deleting...' : t('buttons.delete', { ns: 'common' })}
                       </button>
                       <button
                         type="button"
                         className="cancel-button"
                         onClick={handleCloseDeleteModal}
                       >
-                        {tDiff('buttons.cancel')}
+                        {t('buttons.cancel', { ns: 'common' })}
                       </button>
                     </div>
                   </form>
@@ -1352,7 +1352,7 @@ const DifficultyPage = () => {
                     onClick={handlePasswordPromptSubmit}
                     disabled={!superAdminPassword}
                   >
-                    {tDiff('buttons.confirm')}
+                    {t('buttons.confirm', { ns: 'common' })}
                   </button>
                   <button 
                     className="cancel-btn"
@@ -1387,7 +1387,7 @@ const DifficultyPage = () => {
                     onClick={handleInitialPasswordSubmit}
                     disabled={!superAdminPassword}
                   >
-                    {tDiff('buttons.confirm')}
+                    {t('buttons.confirm', { ns: 'common' })}
                   </button>
                 </div>
               </div>

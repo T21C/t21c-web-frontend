@@ -2,7 +2,6 @@
   "title": "Select Level File",
   "description": "Multiple level files were found in the zip. Please select the main level file:",
   "buttons": {
-    "cancel": "Cancel",
     "submit": "Submit"
   },
   "fileInfo": {

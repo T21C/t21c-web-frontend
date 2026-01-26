@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import { toast } from 'react-hot-toast';
 
@@ -18,6 +19,7 @@ export const LevelSuffixTab = ({
   isLoading,
   tEntity
 }) => {
+  const { t } = useTranslation('common');
   const [newSuffix, setNewSuffix] = useState('');
   const [levelCount, setLevelCount] = useState(0);
   const [currentSuffix, setCurrentSuffix] = useState(null);
@@ -195,7 +197,7 @@ export const LevelSuffixTab = ({
               onClick={handleUpdateSuffix}
               disabled={isLoading}
             >
-              {isLoading ? tEntity('buttons.saving') : tEntity('levelSuffix.applyToAll')}
+              {isLoading ? t('loading.saving', { ns: 'common' }) : tEntity('levelSuffix.applyToAll')}
             </button>
           </div>
         </>

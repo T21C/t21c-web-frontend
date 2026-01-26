@@ -44,10 +44,7 @@
     "createCreator": "Create New",
     "assignCreator": "Assign Existing",
     "addTeam": "Add Team",
-    "addCreator": "Add Creator",
-    "edit": "Edit",
-    "save": "Save",
-    "cancel": "Cancel"
+    "addCreator": "Add Creator"
   },
   "labels": {
     "levelName": "Level",

@@ -5,7 +5,7 @@ import api from '@/utils/api';
 import './profilecreationmodal.css';
 
 export const ProfileCreationModal = ({ profiles, onComplete, onCancel }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
   const tModal = (key, params = {}) => t(`profileCreationModal.${key}`, params);
 
   const [createdProfiles, setCreatedProfiles] = useState([]);
@@ -145,14 +145,14 @@ export const ProfileCreationModal = ({ profiles, onComplete, onCancel }) => {
               className="cancel-btn"
               disabled={isLoading}
             >
-              {tModal('buttons.cancel')}
+              {t('buttons.cancel', { ns: 'common' })}
             </button>
             <button 
               type="submit"
               className="submit-btn"
               disabled={isLoading}
             >
-              {isLoading ? tModal('buttons.creating') : 
+              {isLoading ? t('loading.creating', { ns: 'common' }) : 
                isLastProfile ? tModal('buttons.finish') : tModal('buttons.next')}
             </button>
           </div>

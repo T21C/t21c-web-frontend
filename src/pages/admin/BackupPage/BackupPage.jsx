@@ -15,7 +15,7 @@ import i18next from "i18next";
 const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB in bytes
 
 const UploadZone = ({ type, onUploadComplete, storedPassword, isLoadingBackups }) => {
-  const { t } = useTranslation('pages');
+  const { t } = useTranslation(['pages', 'common']);
   const tBackup = (key, params = {}) => t(`backup.${key}`, params);
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -155,7 +155,7 @@ const UploadZone = ({ type, onUploadComplete, storedPassword, isLoadingBackups }
 
 const TimeAgo = ({ date }) => {
   const [timeAgo, setTimeAgo] = useState('');
-  const { t } = useTranslation('pages');
+  const { t } = useTranslation(['pages', 'common']);
   const tBackup = (key, params = {}) => t(`backup.${key}`, params);
 
   useEffect(() => {
@@ -195,7 +195,7 @@ const TimeAgo = ({ date }) => {
 };
 
 const BackupList = ({ backups, type, onRestore, onDelete, isLoadingBackups, isDeletingBackup, isRestoringBackup, showConfirmation, storedPassword }) => {
-  const { t } = useTranslation('pages');
+  const { t } = useTranslation(['pages', 'common']);
   const tBackup = (key, params = {}) => t(`backup.${key}`, params);
   const [editingId, setEditingId] = useState(null);
   const [newName, setNewName] = useState('');
@@ -377,7 +377,7 @@ const BackupList = ({ backups, type, onRestore, onDelete, isLoadingBackups, isDe
                         }}
                         disabled={renameLoading}
                       >
-                        {tBackup('buttons.cancel')}
+                        {t('buttons.cancel', { ns: 'common' })}
                       </button>
                     </div>
                   </div>
@@ -421,7 +421,7 @@ const BackupList = ({ backups, type, onRestore, onDelete, isLoadingBackups, isDe
                   onClick={() => handleAction('delete', backup)}
                   disabled={isLoadingBackups || renameLoading}
                 >
-                  {tBackup('buttons.delete')}
+                  {t('buttons.delete', { ns: 'common' })}
                 </button>
               </div>
             </div>
@@ -441,7 +441,7 @@ const formatFileSize = (bytes) => {
 };
 
 const BackupPage = () => {
-  const { t } = useTranslation('pages');
+  const { t } = useTranslation(['pages', 'common']);
   const tBackup = (key, params = {}) => t(`backup.${key}`, params);
   const { user } = useAuth();
   const currentUrl = window.location.origin + location.pathname;
@@ -766,7 +766,7 @@ const BackupPage = () => {
               disabled={isCreatingBackup}
             >
               {isCreatingBackup 
-                ? tBackup('buttons.creating') 
+                ? t('loading.creating', { ns: 'common' }) 
                 : tBackup('buttons.create', { type: activeTab.toUpperCase() })
               }
             </button>
@@ -813,7 +813,7 @@ const BackupPage = () => {
                 style={{pointerEvents: !initialPassword || isVerifyingPassword ? 'none' : 'auto'}}
                 disabled={!initialPassword || isVerifyingPassword}
               >
-                {isVerifyingPassword ? tBackup('buttons.verifying') : tBackup('buttons.confirm')}
+                {isVerifyingPassword ? tBackup('buttons.verifying') : t('buttons.confirm', { ns: 'common' })}
               </button>
             </div>
           </div>
@@ -839,7 +839,7 @@ const BackupPage = () => {
                   (confirmationAction?.type === 'restore' && isRestoringBackup)
                 }
               >
-                {tBackup('buttons.confirm')}
+                {t('buttons.confirm', { ns: 'common' })}
               </button>
               <button 
                 className="cancel-btn"

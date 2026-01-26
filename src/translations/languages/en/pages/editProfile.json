@@ -35,7 +35,6 @@
       "arrow": "→"
     },
     "buttons": {
-      "cancel": "Cancel",
       "saveChanges": "Save Changes",
       "saving": "Saving..."
     }
