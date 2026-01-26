@@ -57,9 +57,7 @@ const SongDetailPage = () => {
     declined: t('verification.declined', { ns: 'common' }),
     'ysmod_only': t('verification.ysmodOnly', { ns: 'common' }),
     pending: t('verification.pending', { ns: 'common' }),
-    conditional: t('verification.conditional', { ns: 'common' }),
-    ysmod_only: t('verification.ysmodOnly', { ns: 'common' }),
-    allowed: t('verification.allowed', { ns: 'common' })
+    conditional: t('verification.conditional', { ns: 'common' })
   };
 
   if (loading) {

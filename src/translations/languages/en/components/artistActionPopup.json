@@ -67,7 +67,7 @@
   "messages": {
     "updated": "Artist updated successfully",
     "merged": "Artists merged successfully",
-    "split": "Artist split into '{name1}' and '{name2}'",
+    "split": "Artist split into '{{name1}}' and '{{name2}}'",
     "splitSuccess": "Artist split successfully",
     "avatarUploaded": "Avatar uploaded successfully",
     "avatarDeleted": "Avatar deleted successfully",
