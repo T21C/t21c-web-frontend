@@ -238,8 +238,8 @@
     display: grid;
     grid-template-columns: repeat(11, 1fr);
     gap: 15px;
-    transition: all 0.5s ease-out;
-    max-height: 1200px;
+    transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+    max-height: 4000px;
     opacity: 1;
     position: relative;
     z-index: 1;
