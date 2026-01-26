@@ -21,6 +21,21 @@
   color: var(--color-white);
 }
 
+.song-detail-page .song-name-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.song-detail-page .edit-icon {
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.song-detail-page .edit-icon:hover {
+  transform: scale(1.05);
+}
+
 .song-detail-page .song-verification {
   margin-top: 1rem;
 }

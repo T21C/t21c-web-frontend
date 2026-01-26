@@ -73,7 +73,7 @@ export const CreditsTab = ({
               <img src={credit.artist.avatarUrl} alt={credit.artist.name} className="entity-avatar" />
             )}
             <div className="entity-info">
-              <span>{credit.artist?.name || 'Unknown'}</span>
+              <span>{credit.artist?.name || 'Unknown'} (ID: {credit.artist?.id})</span>
               {credit.role && <span className="entity-role">{credit.role}</span>}
             </div>
             <button onClick={() => handleRemoveCredit(credit.id)}>×</button>

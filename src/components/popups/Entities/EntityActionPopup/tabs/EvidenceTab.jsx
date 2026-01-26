@@ -65,10 +65,10 @@ export const EvidenceTab = ({
                 }} 
                 className="entity-extra-info-save-btn"
                 disabled={!hasEntityExtraInfoChanges}
-                title={t('buttons.save')}
+                title={t('buttons.save', { ns: 'common' })}
                 type="button"
               >
-                {t('buttons.save')}
+                {t('buttons.save', { ns: 'common' })}
               </button>
               <button 
                 onClick={(e) => {
@@ -77,10 +77,10 @@ export const EvidenceTab = ({
                   handleCancelEditEntityExtraInfo();
                 }} 
                 className="entity-extra-info-cancel-btn"
-                title={t('buttons.cancel')}
+                title={t('buttons.cancel', { ns: 'common' })}
                 type="button"
               >
-                {t('buttons.cancel')}
+                {t('buttons.cancel', { ns: 'common' })}
               </button>
             </div>
           </div>
@@ -102,10 +102,10 @@ export const EvidenceTab = ({
                   handleStartEditEntityExtraInfo();
                 }} 
                 className="entity-extra-info-edit-btn"
-                title={t('buttons.edit')}
+                title={t('buttons.edit', { ns: 'common' })}
                 type="button"
               >
-                {t('buttons.edit')}
+                {t('buttons.edit', { ns: 'common' })}
               </button>
           </div>
         )}
@@ -227,7 +227,7 @@ export const EvidenceTab = ({
                           }} 
                           className="evidence-save-btn"
                           disabled={!hasChanges}
-                          title={t('buttons.save')}
+                          title={t('buttons.save', { ns: 'common' })}
                           type="button"
                         >
                           ✓
@@ -239,7 +239,7 @@ export const EvidenceTab = ({
                             handleCancelEditEvidence();
                           }} 
                           className="evidence-cancel-btn"
-                          title={t('buttons.cancel')}
+                          title={t('buttons.cancel', { ns: 'common' })}
                           type="button"
                         >
                           ×
@@ -289,7 +289,7 @@ export const EvidenceTab = ({
                           <button 
                             onClick={() => handleStartEditEvidence(evidence)} 
                             className="evidence-edit-btn"
-                            title={t('buttons.edit')}
+                            title={t('buttons.edit', { ns: 'common' })}
                           >
                             ✎
                           </button>
@@ -297,7 +297,7 @@ export const EvidenceTab = ({
                         <button 
                           onClick={() => handleDeleteEvidence(evidence.id)} 
                           className="evidence-delete-btn"
-                          title={t('buttons.delete')}
+                          title={t('buttons.delete', { ns: 'common' })}
                         >
                           <svg viewBox="0 0 24 24" fill="currentColor">
                             <path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/>

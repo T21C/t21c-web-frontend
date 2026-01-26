@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import { useAuth } from '@/contexts/AuthContext';
+import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { getVerificationClass, isImageUrl } from '@/utils/Utility';
 import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
-import { EvidenceGalleryPopup } from '@/components/popups';
-import { ExternalLinkIcon } from '@/components/common/icons';
+import { EvidenceGalleryPopup, EntityActionPopup } from '@/components/popups';
+import { EditIcon, ExternalLinkIcon } from '@/components/common/icons';
 import { LevelCard } from '@/components/cards';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
-import { useAuth } from '@/contexts/AuthContext';
 import './songDetailPage.css';
 
 const SongDetailPage = () => {
@@ -24,6 +25,9 @@ const SongDetailPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showEvidenceGallery, setShowEvidenceGallery] = useState(false);
+  const [showEditPopup, setShowEditPopup] = useState(false);
+
+  const isSuperAdmin = user && hasFlag(user, permissionFlags.SUPER_ADMIN);
 
   useEffect(() => {
     fetchSong();
@@ -88,7 +92,12 @@ const SongDetailPage = () => {
       <div className="song-detail-container">
         <div className="song-header">
           <div className="song-header-content">
-            <h1>{song.name}</h1>
+            <div className="song-name-wrapper">
+              <h1>{song.name}</h1>
+              {isSuperAdmin && (
+                <EditIcon className="edit-icon" size={24} onClick={() => setShowEditPopup(true)} />
+              )}
+            </div>
             <div className="song-verification">
               <span className={getVerificationClass(song.verificationState)}>
                 {verificationStateLabels[song.verificationState] || verificationStateLabels.pending}
@@ -227,10 +236,24 @@ const SongDetailPage = () => {
         </div>
       </div>
 
+
+
       {showEvidenceGallery && song.evidences && (
         <EvidenceGalleryPopup
           evidence={song.evidences}
           onClose={() => setShowEvidenceGallery(false)}
+        />
+      )}
+
+      {showEditPopup && song && (
+        <EntityActionPopup
+          song={song}
+          onClose={() => setShowEditPopup(false)}
+          onUpdate={() => {
+            setShowEditPopup(false);
+            fetchSong();
+          }}
+          type="song"
         />
       )}
     </div>
