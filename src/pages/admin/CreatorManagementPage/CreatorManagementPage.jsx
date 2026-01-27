@@ -66,6 +66,22 @@ const CreatorManagementPage = () => {
   });
   const [newCreatorAlias, setNewCreatorAlias] = useState('');
   const [isCreatingCreator, setIsCreatingCreator] = useState(false);
+  
+  // Teams CRUD state
+  const [teamsList, setTeamsList] = useState([]);
+  const [loadingTeams, setLoadingTeams] = useState(false);
+  const [teamSearchQuery, setTeamSearchQuery] = useState('');
+  const [showAddTeamForm, setShowAddTeamForm] = useState(false);
+  const [selectedTeam, setSelectedTeam] = useState(null);
+  const [newTeamData, setNewTeamData] = useState({
+    name: '',
+    description: '',
+    aliases: []
+  });
+  const [newTeamAlias, setNewTeamAlias] = useState('');
+  const [isCreatingTeam, setIsCreatingTeam] = useState(false);
+  const [isUpdatingTeam, setIsUpdatingTeam] = useState(false);
+  const teamsCancelTokenRef = useRef();
 
   const fetchCreators = async (preserveScroll = false) => {
     try {
@@ -282,14 +298,108 @@ const CreatorManagementPage = () => {
   }, [showMergeWarning, showSplitDialog]);
 
   const fetchTeams = async (search = '') => {
+    // Cancel previous request if it exists
+    if (teamsCancelTokenRef.current) {
+      teamsCancelTokenRef.current.cancel('New teams request initiated');
+    }
+    
     try {
-      const response = await api.get(`/v2/database/creators/teams${search ? `?search=${search}` : ''}`);
+      setLoadingTeams(true);
+      teamsCancelTokenRef.current = api.CancelToken.source();
+      const response = await api.get(`/v2/database/creators/teams${search ? `?search=${search}` : ''}`, {
+        cancelToken: teamsCancelTokenRef.current.token
+      });
       if (response.status === 200) {
-        setTeams(response.data);
+        setTeamsList(response.data);
       }
     } catch (error) {
-      console.error('Error fetching teams:', error);
+      if (!api.isCancel(error)) {
+        console.error('Error fetching teams:', error);
+        toast.error('Failed to load teams');
+      }
+    } finally {
+      setLoadingTeams(false);
     }
+  };
+  
+  useEffect(() => {
+    if (activeTab === 'teams') {
+      fetchTeams(teamSearchQuery);
+    }
+    
+    return () => {
+      if (teamsCancelTokenRef.current) {
+        teamsCancelTokenRef.current.cancel('Component unmounted');
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeTab, teamSearchQuery]);
+  
+  const handleCreateTeam = async () => {
+    if (!newTeamData.name.trim()) {
+      toast.error('Team name is required');
+      return;
+    }
+    
+    setIsCreatingTeam(true);
+    try {
+      await api.post('/v2/database/creators/teams', newTeamData);
+      await fetchTeams(teamSearchQuery);
+      setShowAddTeamForm(false);
+      setNewTeamData({ name: '', description: '', aliases: [] });
+      setNewTeamAlias('');
+      toast.success('Team created successfully');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Failed to create team');
+    } finally {
+      setIsCreatingTeam(false);
+    }
+  };
+  
+  const handleUpdateTeam = async () => {
+    if (!selectedTeam || !newTeamData.name.trim()) {
+      toast.error('Team name is required');
+      return;
+    }
+    
+    setIsUpdatingTeam(true);
+    try {
+      await api.put(`/v2/database/creators/teams/${selectedTeam.id}`, newTeamData);
+      await fetchTeams(teamSearchQuery);
+      setSelectedTeam(null);
+      setNewTeamData({ name: '', description: '', aliases: [] });
+      setNewTeamAlias('');
+      toast.success('Team updated successfully');
+    } catch (error) {
+      toast.error(error.response?.data?.error || 'Failed to update team');
+    } finally {
+      setIsUpdatingTeam(false);
+    }
+  };
+  
+  const handleDeleteTeam = async (teamId) => {
+    if (!window.confirm('Are you sure you want to delete this team? This action cannot be undone.')) {
+      return;
+    }
+    
+    try {
+      await api.delete(`/v2/database/creators/teams/${teamId}`);
+      await fetchTeams(teamSearchQuery);
+      toast.success('Team deleted successfully');
+    } catch (error) {
+      const errorMsg = error.response?.data?.error || 'Failed to delete team';
+      toast.error(errorMsg);
+    }
+  };
+  
+  const handleEditTeam = (team) => {
+    setSelectedTeam(team);
+    setNewTeamData({
+      name: team.name || '',
+      description: team.description || '',
+      aliases: Array.isArray(team.aliases) ? team.aliases.filter(Boolean) : []
+    });
+    setNewTeamAlias('');
   };
 
   const handleSelectLevel = (level) => {
@@ -781,6 +891,12 @@ const CreatorManagementPage = () => {
             >
               Creator Management
             </button>
+            <button 
+              className={`tab ${activeTab === 'teams' ? 'active' : ''}`}
+              onClick={() => setActiveTab('teams')}
+            >
+              Team Management
+            </button>
           </div>
 
           {activeTab === 'credits' ? (
@@ -882,7 +998,7 @@ const CreatorManagementPage = () => {
 
               </section>
             </>
-          ) : (
+          ) : activeTab === 'creators' ? (
             <>
             <div className="sort-controls">
               <button 
@@ -1054,8 +1170,85 @@ const CreatorManagementPage = () => {
                 <div className="new-loader" />
               )}
             </section>
-          </>
-          )}
+            </>
+          ) : activeTab === 'teams' ? (
+            <section className="manage-teams-section">
+              <h2>Manage Teams</h2>
+              
+              <div className="teams-controls">
+                <div className="search-box">
+                  <input
+                    type="text"
+                    placeholder="Search teams by name or alias..."
+                    value={teamSearchQuery}
+                    onChange={(e) => setTeamSearchQuery(e.target.value)}
+                  />
+                </div>
+                <button 
+                  className="add-team-button"
+                  onClick={() => {
+                    setSelectedTeam(null);
+                    setNewTeamData({ name: '', description: '', aliases: [] });
+                    setNewTeamAlias('');
+                    setShowAddTeamForm(true);
+                  }}
+                >
+                  Add Team
+                </button>
+              </div>
+
+              {loadingTeams ? (
+                <div className="new-loader" />
+              ) : (
+                <div className="teams-list">
+                  {teamsList.length === 0 ? (
+                    <div className="no-results-message">
+                      {teamSearchQuery 
+                        ? `No teams found matching "${teamSearchQuery}"`
+                        : 'No teams found'}
+                    </div>
+                  ) : (
+                    teamsList.map(team => (
+                      <div key={team.id} className="team-item">
+                        <div className="team-info">
+                          <h3>
+                            {team.name} (ID: {team.id})
+                          </h3>
+                          {team.description && (
+                            <p className="team-description">{team.description}</p>
+                          )}
+                          {Array.isArray(team.aliases) && team.aliases.length > 0 && (
+                            <p className="team-aliases">
+                              Aliases: {team.aliases.filter(Boolean).join(', ')}
+                            </p>
+                          )}
+                          {team.members && team.members.length > 0 && (
+                            <p className="team-members">
+                              Members: {team.members.map(m => m.name).join(', ')}
+                            </p>
+                          )}
+                        </div>
+                        <div className="team-actions">
+                          <button 
+                            onClick={() => handleEditTeam(team)}
+                            className="edit-button"
+                          >
+                            Edit
+                          </button>
+                          <button 
+                            onClick={() => handleDeleteTeam(team.id)}
+                            className="delete-button"
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              )}
+            </section>
+          ) : null}
         </div>
       </div>
 
@@ -1153,6 +1346,113 @@ const CreatorManagementPage = () => {
                 }}
               >
                 {tCreator('buttons.cancel')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {(showAddTeamForm || selectedTeam) && (
+        <div className="add-creator-form-overlay" onClick={() => {
+          if (!isCreatingTeam && !isUpdatingTeam) {
+            setShowAddTeamForm(false);
+            setSelectedTeam(null);
+            setNewTeamData({ name: '', description: '', aliases: [] });
+            setNewTeamAlias('');
+          }
+        }}>
+          <div className="add-creator-form" onClick={(e) => e.stopPropagation()}>
+            <h3>{selectedTeam ? 'Edit Team' : 'Add Team'}</h3>
+            <div className="form-group">
+              <label>Team Name</label>
+              <input
+                type="text"
+                value={newTeamData.name}
+                onChange={(e) => setNewTeamData(prev => ({...prev, name: e.target.value}))}
+                placeholder="Enter team name"
+              />
+            </div>
+            <div className="form-group">
+              <label>Description (Optional)</label>
+              <textarea
+                value={newTeamData.description}
+                onChange={(e) => setNewTeamData(prev => ({...prev, description: e.target.value}))}
+                placeholder="Enter team description"
+                rows={3}
+              />
+            </div>
+            <div className="form-group">
+              <label>Aliases</label>
+              <div className="alias-input-group">
+                <input
+                  type="text"
+                  value={newTeamAlias}
+                  onChange={(e) => setNewTeamAlias(e.target.value)}
+                  placeholder="Enter alias"
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      e.preventDefault();
+                      if (newTeamAlias.trim()) {
+                        setNewTeamData(prev => ({
+                          ...prev,
+                          aliases: [...prev.aliases, newTeamAlias.trim()]
+                        }));
+                        setNewTeamAlias('');
+                      }
+                    }
+                  }}
+                />
+                <button 
+                  onClick={() => {
+                    if (newTeamAlias.trim()) {
+                      setNewTeamData(prev => ({
+                        ...prev,
+                        aliases: [...prev.aliases, newTeamAlias.trim()]
+                      }));
+                      setNewTeamAlias('');
+                    }
+                  }}
+                >
+                  Add Alias
+                </button>
+              </div>
+              <div className="aliases-list">
+                {newTeamData.aliases.map((alias, index) => (
+                  <div key={index} className="alias-tag">
+                    {alias}
+                    <button
+                      onClick={() => setNewTeamData(prev => ({
+                        ...prev,
+                        aliases: prev.aliases.filter((_, i) => i !== index)
+                      }))}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="form-actions">
+              <button
+                className={`submit-button ${(isCreatingTeam || isUpdatingTeam) ? 'loading' : ''}`}
+                onClick={selectedTeam ? handleUpdateTeam : handleCreateTeam}
+                disabled={(isCreatingTeam || isUpdatingTeam) || !newTeamData.name.trim()}
+              >
+                {isCreatingTeam || isUpdatingTeam 
+                  ? (isCreatingTeam ? 'Creating...' : 'Updating...')
+                  : (selectedTeam ? 'Update' : 'Create')}
+              </button>
+              <button
+                className="cancel-button"
+                onClick={() => {
+                  setShowAddTeamForm(false);
+                  setSelectedTeam(null);
+                  setNewTeamData({ name: '', description: '', aliases: [] });
+                  setNewTeamAlias('');
+                }}
+                disabled={isCreatingTeam || isUpdatingTeam}
+              >
+                Cancel
               </button>
             </div>
           </div>
