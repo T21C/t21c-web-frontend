@@ -13,6 +13,8 @@ import { DifficultyContextProvider } from '@/contexts/DifficultyContext';
 import { PackContextProvider } from '@/contexts/PackContext';
 import { HelmetProvider } from 'react-helmet-async';
 import { NotificationProvider } from '@/contexts/NotificationContext';
+import { ArtistContextProvider } from '@/contexts/ArtistContext';
+import { SongContextProvider } from '@/contexts/SongContext';
 import i18next from '@/translations/config';
 import { RatingFilterProvider } from '@/contexts/RatingFilterContext';
 import { ProfileContextProvider } from '@/contexts/ProfileContext';
@@ -45,7 +47,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                           <RatingFilterProvider>
                             <PassContextProvider>
                               <PackContextProvider>
-                                <App />
+                                <ArtistContextProvider>
+                                  <SongContextProvider>
+                                    <App />
+                                  </SongContextProvider>
+                                </ArtistContextProvider>
                               </PackContextProvider>
                             </PassContextProvider>
                           </RatingFilterProvider>

@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
+import { useArtistContext } from '@/contexts/ArtistContext';
+import { useSongContext } from '@/contexts/SongContext';
 import { AccessDenied, MetaTags } from '@/components/common/display';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { CustomSelect } from '@/components/common/selectors';
@@ -20,15 +22,23 @@ const EntityManagementPage = ({ type = 'artist' }) => {
     return t(translationKey, params);
   };
   const { user } = useAuth();
+  const artistContext = useArtistContext();
+  const songContext = useSongContext();
   const currentUrl = window.location.origin + location.pathname;
+  
+  // Use context values based on type
+  const context = type === 'song' ? songContext : artistContext;
+  const searchQuery = context.searchQuery;
+  const sortBy = context.sortBy;
+  const verificationFilter = context.verificationState;
+  const setSearchQuery = context.setSearchQuery;
+  const setSortBy = context.setSortBy;
+  const setVerificationFilter = context.setVerificationState;
 
   const [entities, setEntities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState('NAME_ASC');
-  const [verificationFilter, setVerificationFilter] = useState('');
   const [selectedEntity, setSelectedEntity] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newEntityData, setNewEntityData] = useState({
@@ -41,14 +51,33 @@ const EntityManagementPage = ({ type = 'artist' }) => {
   const [avatarFile, setAvatarFile] = useState(null);
   const [avatarPreview, setAvatarPreview] = useState(null);
   const [showEvidenceGallery, setShowEvidenceGallery] = useState(false);
+  
+  // Cancel token ref for race condition prevention
+  const abortControllerRef = useRef(null);
 
   useEffect(() => {
     if (user && hasFlag(user, permissionFlags.SUPER_ADMIN)) {
       fetchEntities(true);
     }
+    
+    // Cleanup: abort any pending requests when component unmounts or dependencies change
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, [searchQuery, sortBy, verificationFilter, user, type]);
 
   const fetchEntities = async (reset = false) => {
+    // Cancel previous request if it exists
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    
+    // Create new abort controller for this request
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+    
     try {
       if (reset) {
         setLoading(true);
@@ -64,12 +93,21 @@ const EntityManagementPage = ({ type = 'artist' }) => {
         sort: sortBy
       };
 
-      if (verificationFilter) {
+      if (verificationFilter && verificationFilter !== '') {
         params.verificationState = verificationFilter;
       }
 
       const endpoint = type === 'song' ? '/v2/database/songs' : '/v2/database/artists';
-      const response = await api.get(endpoint, { params });
+      const response = await api.get(endpoint, { 
+        params,
+        signal: abortController.signal
+      });
+      
+      // Check if request was aborted
+      if (abortController.signal.aborted) {
+        return;
+      }
+      
       const data = response.data;
       const items = type === 'song' ? (data.songs || []) : (data.artists || []);
       
@@ -83,10 +121,17 @@ const EntityManagementPage = ({ type = 'artist' }) => {
       setHasMore(items.length > 0 && (data.hasMore || false));
       setPage(currentPage + 1);
     } catch (error) {
+      // Don't show error if request was cancelled
+      if (api.isCancel && api.isCancel(error)) {
+        return;
+      }
       console.error(`Error fetching ${type}s:`, error);
       toast.error(tEntity('errors.fetchFailed'));
     } finally {
-      setLoading(false);
+      // Only update loading state if request wasn't aborted
+      if (!abortController.signal.aborted) {
+        setLoading(false);
+      }
     }
   };
 

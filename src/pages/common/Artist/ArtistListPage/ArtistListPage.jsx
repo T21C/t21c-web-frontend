@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
 import { CustomSelect } from '@/components/common/selectors';
+import { useArtistContext } from '@/contexts/ArtistContext';
 import './artistListPage.css';
 import { getVerificationClass } from '@/utils/Utility';
 
@@ -13,20 +14,44 @@ const ArtistListPage = () => {
   const tArtist = (key, params = {}) => t(`artistList.${key}`, params);
   const navigate = useNavigate();
   const currentUrl = window.location.origin + location.pathname;
+  const {
+    searchQuery,
+    sortBy,
+    verificationState,
+    setSearchQuery,
+    setSortBy,
+    setVerificationState
+  } = useArtistContext();
 
   const [artists, setArtists] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState('NAME_ASC');
-  const [verificationState, setVerificationState] = useState(null);
+  
+  // Cancel token ref for race condition prevention
+  const abortControllerRef = useRef(null);
 
   useEffect(() => {
     fetchArtists(true);
+    
+    // Cleanup: abort any pending requests when component unmounts or dependencies change
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, [searchQuery, sortBy, verificationState]);
 
   const fetchArtists = async (reset = false) => {
+    // Cancel previous request if it exists
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    
+    // Create new abort controller for this request
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+    
     try {
       if (reset) {
         setLoading(true);
@@ -47,8 +72,14 @@ const ArtistListPage = () => {
       }
       
       const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/artists`, {
-        params
+        params,
+        signal: abortController.signal
       });
+      
+      // Check if request was aborted
+      if (abortController.signal.aborted) {
+        return;
+      }
 
       const data = response.data;
       const newArtists = data.artists || [];
@@ -63,9 +94,16 @@ const ArtistListPage = () => {
       setHasMore(newArtists.length > 0 && (data.hasMore || false));
       setPage(currentPage + 1);
     } catch (error) {
+      // Don't show error if request was cancelled
+      if (api.isCancel && api.isCancel(error)) {
+        return;
+      }
       console.error('Error fetching artists:', error);
     } finally {
-      setLoading(false);
+      // Only update loading state if request wasn't aborted
+      if (!abortController.signal.aborted) {
+        setLoading(false);
+      }
     }
   };
 
@@ -77,6 +115,14 @@ const ArtistListPage = () => {
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
+  };
+  
+  const handleVerificationChange = (option) => {
+    setVerificationState(option?.value || null);
+  };
+  
+  const handleSortChange = (option) => {
+    setSortBy(option?.value || 'NAME_ASC');
   };
 
   const sortOptions = [
@@ -124,7 +170,7 @@ const ArtistListPage = () => {
             <CustomSelect
               options={verificationStateOptions}
               value={verificationStateOptions.find(opt => opt.value === verificationState) || verificationStateOptions[0]}
-              onChange={(option) => setVerificationState(option?.value || null)}
+              onChange={handleVerificationChange}
               label={tArtist('filter.verificationState')}
               width="12rem"
             />
@@ -134,7 +180,7 @@ const ArtistListPage = () => {
             <CustomSelect
               options={sortOptions}
               value={sortOptions.find(opt => opt.value === sortBy) || sortOptions[0]}
-              onChange={(option) => setSortBy(option?.value || 'NAME_ASC')}
+              onChange={handleSortChange}
               label={tArtist('sort.label')}
               width="12rem"
             />

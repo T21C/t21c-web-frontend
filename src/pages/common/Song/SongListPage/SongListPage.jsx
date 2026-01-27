@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
+import { CustomSelect } from '@/components/common/selectors';
+import { useSongContext } from '@/contexts/SongContext';
 import { getVerificationClass } from '@/utils/Utility';
 import './songListPage.css';
 
@@ -12,19 +14,42 @@ const SongListPage = () => {
   const tSong = (key, params = {}) => t(`songList.${key}`, params);
   const navigate = useNavigate();
   const currentUrl = window.location.origin + location.pathname;
+  const {
+    searchQuery,
+    sortBy,
+    setSearchQuery,
+    setSortBy
+  } = useSongContext();
 
   const [songs, setSongs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState('NAME_ASC');
+  
+  // Cancel token ref for race condition prevention
+  const abortControllerRef = useRef(null);
 
   useEffect(() => {
     fetchSongs(true);
+    
+    // Cleanup: abort any pending requests when component unmounts or dependencies change
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
   }, [searchQuery, sortBy]);
 
   const fetchSongs = async (reset = false) => {
+    // Cancel previous request if it exists
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    
+    // Create new abort controller for this request
+    const abortController = new AbortController();
+    abortControllerRef.current = abortController;
+    
     try {
       if (reset) {
         setLoading(true);
@@ -39,8 +64,14 @@ const SongListPage = () => {
           limit: 50,
           search: searchQuery,
           sort: sortBy
-        }
+        },
+        signal: abortController.signal
       });
+      
+      // Check if request was aborted
+      if (abortController.signal.aborted) {
+        return;
+      }
 
       const data = response.data;
       const newSongs = data.songs || [];
@@ -54,9 +85,16 @@ const SongListPage = () => {
       setHasMore(data.hasMore || false);
       setPage(currentPage + 1);
     } catch (error) {
+      // Don't show error if request was cancelled
+      if (api.isCancel && api.isCancel(error)) {
+        return;
+      }
       console.error('Error fetching songs:', error);
     } finally {
-      setLoading(false);
+      // Only update loading state if request wasn't aborted
+      if (!abortController.signal.aborted) {
+        setLoading(false);
+      }
     }
   };
 
@@ -70,9 +108,16 @@ const SongListPage = () => {
     setSearchQuery(e.target.value);
   };
 
-  const handleSortChange = (e) => {
-    setSortBy(e.target.value);
+  const handleSortChange = (option) => {
+    setSortBy(option?.value || 'NAME_ASC');
   };
+  
+  const sortOptions = [
+    { value: 'NAME_ASC', label: tSong('sort.nameAsc') },
+    { value: 'NAME_DESC', label: tSong('sort.nameDesc') },
+    { value: 'ID_ASC', label: tSong('sort.idAsc') },
+    { value: 'ID_DESC', label: tSong('sort.idDesc') }
+  ];
 
   return (
     <div className="song-list-page">
@@ -99,13 +144,13 @@ const SongListPage = () => {
           </div>
 
           <div className="sort-container">
-            <label>{tSong('sort.label')}</label>
-            <select value={sortBy} onChange={handleSortChange} className="sort-select">
-              <option value="NAME_ASC">{tSong('sort.nameAsc')}</option>
-              <option value="NAME_DESC">{tSong('sort.nameDesc')}</option>
-              <option value="ID_ASC">{tSong('sort.idAsc')}</option>
-              <option value="ID_DESC">{tSong('sort.idDesc')}</option>
-            </select>
+            <CustomSelect
+              options={sortOptions}
+              value={sortOptions.find(opt => opt.value === sortBy) || sortOptions[0]}
+              onChange={handleSortChange}
+              label={tSong('sort.label')}
+              width="12rem"
+            />
           </div>
         </div>
 
