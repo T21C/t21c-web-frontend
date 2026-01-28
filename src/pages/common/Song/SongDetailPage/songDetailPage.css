@@ -30,6 +30,7 @@
 .song-detail-page .edit-icon {
   cursor: pointer;
   transition: all 0.2s;
+  min-width: 32px;
 }
 
 .song-detail-page .edit-icon:hover {

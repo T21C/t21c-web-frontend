@@ -87,7 +87,7 @@ const SongDetailPage = () => {
             <div className="song-name-wrapper">
               <h1>{song.name}</h1>
               {isSuperAdmin && (
-                <EditIcon className="edit-icon" size={24} onClick={() => setShowEditPopup(true)} />
+                <EditIcon className="edit-icon" size={32} onClick={() => setShowEditPopup(true)} />
               )}
             </div>
             <div className="song-verification">
@@ -162,6 +162,13 @@ const SongDetailPage = () => {
             </div>
           )}
 
+          {song.extraInfo && (
+            <div className="song-section">
+              <h2>{tSong('sections.extraInfo')}</h2>
+              <div className="extra-info-content">{song.extraInfo}</div>
+            </div>
+          )}
+
           {/* Evidence */}
           {song.evidences && song.evidences.length > 0 && (
             <div className="song-section">
@@ -189,9 +196,6 @@ const SongDetailPage = () => {
                       title={title}
                     >
                       <span className="evidence-link-icon">🔗</span>
-                      {evidence.extraInfo && (
-                        <span className="evidence-extra-info-indicator" title={evidence.extraInfo}>ℹ️</span>
-                      )}
                     </div>
                   );
                 })}
