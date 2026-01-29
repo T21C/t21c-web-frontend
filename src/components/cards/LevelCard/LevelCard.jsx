@@ -50,8 +50,9 @@ const LevelCard = ({
   const [showSongPopup, setShowSongPopup] = useState(false);
   const [showArtistPopup, setShowArtistPopup] = useState(false);
   const [thumbnailUrl, setThumbnailUrl] = useState('');
-  const { difficultyDict, tagsDict } = useDifficultyContext();
+  const { difficultyDict, curationTypesDict, tagsDict } = useDifficultyContext();
   const difficultyInfo = difficultyDict[level.diffId];
+  const curationTypeInfo = curationTypesDict[level.curation?.typeId];
   const navigate = useNavigate();
 
   // Computed values
@@ -103,9 +104,9 @@ const LevelCard = ({
 
   // Determine glow class based on abilities
   const getGlowClass = () => {
-    if (!level.curation?.type?.abilities) return '';
-    if (hasBit(level.curation.type.abilities, ABILITIES.LEVEL_LIST_LEGENDARY_GLOW)) return 'legendary';
-    if (hasBit(level.curation.type.abilities, ABILITIES.LEVEL_LIST_BASIC_GLOW)) return 'basic-glow';
+    if (!curationTypeInfo?.abilities) return '';
+    if (hasBit(curationTypeInfo.abilities, ABILITIES.LEVEL_LIST_LEGENDARY_GLOW)) return 'legendary';
+    if (hasBit(curationTypeInfo.abilities, ABILITIES.LEVEL_LIST_BASIC_GLOW)) return 'basic-glow';
     return '';
   };
 
@@ -128,10 +129,10 @@ const LevelCard = ({
         />
       )}
       
-      {showCuration && level.curation?.typeId && (
+      {showCuration && level.curation?.typeId && curationTypeInfo?.icon && (
         <img 
           className="curation-icon"
-          src={level.curation.type.icon}
+          src={curationTypeInfo.icon}
           alt="Curation icon" 
         />
       )}
@@ -509,10 +510,10 @@ const LevelCard = ({
             />
           )}
           
-          {level.curation?.typeId && (
+          {level.curation?.typeId && curationTypeInfo?.icon && (
             <img 
               className="curation-icon"
-              src={level.curation.type.icon}
+              src={curationTypeInfo.icon}
               alt="Curation icon" 
             />
           )}
