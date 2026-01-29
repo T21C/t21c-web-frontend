@@ -1143,6 +1143,38 @@ const LevelDetailPage = ({ mockData = null }) => {
     return () => clearInterval(interval);
   }, [levelTimeout]);
 
+  const fetchIsLiked = useCallback(async () => {
+    // Skip if no user or mock data
+    if (!user?.id || mockData || !effectiveId) {
+      return;
+    }
+    
+    try {
+      const response = await api.get(`${import.meta.env.VITE_LEVELS}/${effectiveId}/isLiked`);
+      setRes(prevRes => {
+        if (!prevRes) return prevRes;
+        return {
+          ...prevRes,
+          isLiked: response.data.isLiked || false,
+          level: {
+            ...prevRes.level,
+            likes: response.data.likes !== undefined ? response.data.likes : prevRes.level?.likes
+          }
+        };
+      });
+    } catch (error) {
+      console.error("Error fetching like status:", error);
+      // Set to false on error
+      setRes(prevRes => {
+        if (!prevRes) return prevRes;
+        return {
+          ...prevRes,
+          isLiked: false
+        };
+      });
+    }
+  }, [effectiveId, user?.id, mockData]);
+
   const fetchLevelData = useCallback(async (isRefresh = false) => {
     // Use mock data if provided - completely override everything
     if (mockData) {
@@ -1165,13 +1197,17 @@ const LevelDetailPage = ({ mockData = null }) => {
       
       setRes(prevRes => ({
         ...prevRes,
-        ...levelData.data
+        ...levelData.data,
+        isLiked: false // Initialize as false, will be fetched separately
       }));
       setNotFound(false);
       
       if (isRefresh) {
         toast.success(tLevel('leaderboard.refreshed'));
       }
+      
+      // Fetch like status separately after main data is loaded
+      await fetchIsLiked();
     } catch (error) {
       console.error("Error fetching level data:", error);
       if (error.response?.status === 404 || error.response?.status === 403) {
@@ -1184,7 +1220,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       setInfoLoading(false);
       setIsRefreshingLeaderboard(false);
     }
-  }, [effectiveId, mockData, tLevel]);
+  }, [effectiveId, mockData, tLevel, fetchIsLiked]);
 
   useEffect(() => {
     fetchLevelData();
@@ -1442,7 +1478,7 @@ const LevelDetailPage = ({ mockData = null }) => {
     <span onClick={() => setShowSongPopup(true)} className="level-title-clickable">{getSongDisplayName(level)}</span>
     : hasPopup ? (
     <div className="level-artist-list-wrapper">
-      {level.songObject?.artists.map((artist, index) => (<>
+      {level.songObject?.artists.map((artist, index) => (<div key={artist.id}>
         <span 
         className="level-artist-name"
         key={artist.id}
@@ -1452,7 +1488,7 @@ const LevelDetailPage = ({ mockData = null }) => {
         
         {index < level.songObject?.artists.length - 1 && 
         <span className="level-artist-separator"> & </span>}
-        </>
+        </div>
       ))}
     </div>) : getArtistDisplayName(level);
     
@@ -1606,6 +1642,9 @@ const LevelDetailPage = ({ mockData = null }) => {
           }
         }));
         
+        // Refresh like status from server to ensure cache consistency
+        await fetchIsLiked();
+        
         toast.success(action === 'like' ? tLevel('messages.liked') : tLevel('messages.unliked'));
       }
     } catch (error) {
@@ -1616,6 +1655,7 @@ const LevelDetailPage = ({ mockData = null }) => {
     }
   };
 
+  /*
   const handleRatingAccuracyVote = async (vote) => {
     if (!user || !res?.isCleared) return;
     try {
@@ -1639,6 +1679,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       toast.error(tLevel('errors.voteFailed'));
     }
   };
+  */
 
 
   // Find the download button click handler and replace it with:
@@ -1945,8 +1986,8 @@ const LevelDetailPage = ({ mockData = null }) => {
                 </div>
               )}
               
-              {/* Rating Accuracy Display, disabled for now */}
-              {1==0 && difficulty.type === "PGU" && res.level.clears > 0 && (
+              {/* Rating Accuracy Display, disabled for now
+              {difficulty.type === "PGU" && res.level.clears > 0 && (
                 <div className="rating-accuracy-container">
                   <div className="rating-accuracy-display-title">Rating Accuracy</div>
                   <div 
@@ -2016,6 +2057,7 @@ const LevelDetailPage = ({ mockData = null }) => {
 
               </div>
               )}
+              */}
               
               <div 
                 className="like-container"
@@ -2438,12 +2480,14 @@ const LevelDetailPage = ({ mockData = null }) => {
       )}
 
       {/* Rating Accuracy Dialog */}
+      {/*
       <RatingAccuracyDialog 
         isOpen={isRatingAccuracyDialogOpen}
         onClose={() => setIsRatingAccuracyDialogOpen(false)}
         onSave={handleRatingAccuracyVote}
         initialValue={0}
       />
+      */}
 
       {showSongPopup && res.level && hasSongPopup && (
         <SongPopup

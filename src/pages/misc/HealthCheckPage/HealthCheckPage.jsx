@@ -143,9 +143,9 @@ const HealthCheckPage = () => {
         )}
         
         {loading && !healthData && (
-          <div className="loading-spinner">
+          <div className="loading-container">
             <div className="spinner spinner-xlarge"></div>
-            <p>{t('healthCheck.loading')}</p>
+            <p className="loading-label">{t('healthCheck.loading')}</p>
           </div>
         )}
         

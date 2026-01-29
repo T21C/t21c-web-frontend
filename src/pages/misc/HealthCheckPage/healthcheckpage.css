@@ -97,9 +97,6 @@
   font-size: 24px;
 }
 
-.health-check-page .fixed-refresh-button .refresh-spinner {
-}
-
 .health-check-page .last-updated {
   display: flex;
   position: relative;
@@ -119,12 +116,21 @@
   border-left: 4px solid #c62828;
 }
 
-.health-check-page .loading-spinner {
+.health-check-page .loading-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   margin: 3rem 0;
+  width: 100%;
+  min-height: 200px;
+  gap: 1rem;
+}
+
+.health-check-page .loading-container .loading-label {
+  margin: 0;
+  color: #f5f5f5;
+  font-size: 1rem;
 }
 
 

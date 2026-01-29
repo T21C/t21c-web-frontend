@@ -367,7 +367,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
               onClick={onClose}
               disabled={loading}
             >
-              {tPopup('cancel')}
+              {t('buttons.cancel', { ns: 'common' })}
             </button>
             <button
               className="add-to-pack-popup__add-btn"

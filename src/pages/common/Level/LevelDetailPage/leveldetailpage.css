@@ -3377,6 +3377,7 @@
 .level-tags-container .tag-icon-preview[data-letter-only="true"] {
   border-radius: 50%;
   background-color: var(--tag-bg-color, transparent);
+  -webkit-backdrop-filter: brightness(40%);
   backdrop-filter: brightness(40%);
   border: 2px solid var(--tag-border-color, transparent);
 }
@@ -3408,6 +3409,7 @@
   border-radius: 3px;
   border: 1px solid #3a3a3a;
   transform: rotate(0deg);
+  -webkit-user-select: none;
   user-select: none;
   color: var(--color-white-t70);
 }
@@ -3440,6 +3442,7 @@
   align-items: center;
   justify-content: center;
   background-color: var(--tag-bg-color, transparent);
+  -webkit-backdrop-filter: brightness(40%);
   backdrop-filter: brightness(40%);
   border: 2px solid var(--tag-border-color, transparent);
   color: var(--tag-text-color, inherit);
@@ -3518,6 +3521,7 @@
   align-items: center;
   justify-content: center;
   background-color: var(--tag-bg-color, transparent);
+  -webkit-backdrop-filter: brightness(40%);
   backdrop-filter: brightness(40%);
   border: 2px solid var(--tag-border-color, transparent);
   flex-shrink: 0;
