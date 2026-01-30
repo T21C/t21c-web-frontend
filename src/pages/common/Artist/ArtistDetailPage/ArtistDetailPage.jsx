@@ -252,9 +252,15 @@ const ArtistDetailPage = () => {
         <EntityActionPopup
           artist={artist}
           onClose={() => setShowEditPopup(false)}
-          onUpdate={() => {
+          onUpdate={(updatedArtist) => {
+            if (updatedArtist) {
+              // Update artist state with the updated data (no refetch needed)
+              setArtist(updatedArtist);
+            } else {
+              // Fallback: refetch if no updated artist provided (for other operations)
+              fetchArtist();
+            }
             setShowEditPopup(false);
-            fetchArtist();
           }}
           type="artist"
         />

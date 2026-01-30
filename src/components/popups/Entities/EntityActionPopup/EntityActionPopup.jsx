@@ -597,17 +597,31 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
     }
 
     try {
-      await api.post(`/v2/database/artists/${entityId}/relations`, {
+      const response = await api.post(`/v2/database/artists/${entityId}/relations`, {
         relatedArtistId: parseInt(newRelationArtistId)
       });
 
+      // Use the returned artist data from the API response
+      const addedArtist = response.data?.relation?.artist;
+      if (addedArtist) {
+        // Update local relations state with the new relation
+        setRelations([...relations, addedArtist]);
+        
+        // Update the artist prop locally by creating updated artist object
+        const updatedArtist = {
+          ...artist,
+          relatedArtists: [...(artist?.relatedArtists || []), addedArtist]
+        };
+        
+        // Notify parent with updated artist data (no refetch needed)
+        if (onUpdate) {
+          onUpdate(updatedArtist);
+        }
+      }
+
       toast.success(tEntity('messages.relationAdded'));
-      const response = await api.get(`/v2/database/artists/${entityId}/relations`);
-      setRelations(response.data.relations || []);
       setNewRelationArtistId('');
       setRelationSearch('');
-      // Refresh entity data to update parent component
-      onUpdate();
     } catch (error) {
       const errorMessage = getErrorMessage(error, tEntity('errors.relationFailed'));
       toast.error(errorMessage);
@@ -616,13 +630,29 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
 
   const handleRemoveRelation = async (relatedArtistId) => {
     if (type !== 'artist') return;
+    
+    // Optimistically update local state
+    const updatedRelations = relations.filter(r => r.id !== relatedArtistId);
+    setRelations(updatedRelations);
+    
     try {
       await api.delete(`/v2/database/artists/${entityId}/relations/${relatedArtistId}`);
+      
+      // Update the artist prop locally
+      const updatedArtist = {
+        ...artist,
+        relatedArtists: updatedRelations
+      };
+      
+      // Notify parent with updated artist data (no refetch needed)
+      if (onUpdate) {
+        onUpdate(updatedArtist);
+      }
+      
       toast.success(tEntity('messages.relationRemoved'));
-      setRelations(relations.filter(r => r.id !== relatedArtistId));
-      // Refresh entity data to update parent component
-      onUpdate();
     } catch (error) {
+      // Revert optimistic update on error
+      setRelations(relations);
       const errorMessage = getErrorMessage(error, tEntity('errors.deleteFailed'));
       toast.error(errorMessage);
     }

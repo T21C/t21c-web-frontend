@@ -429,8 +429,18 @@ const EntityManagementPage = ({ type = 'artist' }) => {
         <EntityActionPopup
           {...(type === 'song' ? { song: selectedEntity } : { artist: selectedEntity })}
           onClose={() => setSelectedEntity(null)}
-          onUpdate={() => {
-            fetchEntities(true);
+          onUpdate={(updatedEntity) => {
+            if (updatedEntity) {
+              // Update the entity in the list without refetching
+              setEntities(prev => prev.map(entity => 
+                entity.id === updatedEntity.id ? updatedEntity : entity
+              ));
+              // Update selected entity to reflect changes in popup
+              setSelectedEntity(updatedEntity);
+            } else {
+              // Fallback: refetch if no updated entity provided (for other operations)
+              fetchEntities(true);
+            }
           }}
           type={type}
         />
