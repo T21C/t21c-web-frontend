@@ -1432,7 +1432,7 @@
 
 .difficulty-modal__actions-content {
   max-height: 0;
-  overflow: hidden;
+  overflow-y: auto;
   transition: max-height 0.3s ease-out;
   opacity: 0;
 }
