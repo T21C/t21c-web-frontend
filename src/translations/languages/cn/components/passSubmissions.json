@@ -1,7 +1,7 @@
 {
   "noSubmissions": "没有要审核的通关记录",
   "details": {
-    "levelId": "关卡 ID：",
+    "level": "关卡：",
     "player": "玩家：",
     "feelingDiff": "体感难度：",
     "speed": "飙速",

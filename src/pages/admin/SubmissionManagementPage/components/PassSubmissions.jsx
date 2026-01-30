@@ -10,6 +10,7 @@ import { ProfileCreationModal } from './ProfileCreationModal';
 import { AdminPlayerPopup } from '@/components/popups';
 import { formatDate } from '@/utils/Utility';
 import i18next from 'i18next';
+import { useDifficultyContext } from '@/contexts/DifficultyContext';
 
 
 const PassSubmissions = ({ setIsAutoAllowing }) => {
@@ -31,6 +32,8 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
   });
   const [showPlayerPopup, setShowPlayerPopup] = useState(false);
   const [selectedSubmission, setSelectedSubmission] = useState(null);
+
+  const { difficultyDict } = useDifficultyContext();
 
   useEffect(() => {
     fetchPendingSubmissions();
@@ -321,8 +324,18 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
               <div className="card-content">
                 <div className="submission-details">
                   <div className="detail-row">
-                    <span className="detail-label">{tPass('details.levelId')}</span>
-                    <span className="detail-value">{submission.levelId || "Null"}</span>
+                    <span className="detail-label">{tPass('details.level')}</span>
+                    <div
+                      className="level-info"
+                      onClick={() => {
+                        if (submission.level?.id) {
+                          window.open(`/levels/${submission.level.id}`, '_blank');
+                        }
+                      }}
+                    >
+                      <img src={difficultyDict[submission.level?.diffId]?.icon} alt={submission.level?.song?.name} className="diff-icon" />
+                      <span className="detail-value">{submission.level?.song || "Null"}</span>
+                    </div>
                   </div>
 
                   <div className="detail-row">

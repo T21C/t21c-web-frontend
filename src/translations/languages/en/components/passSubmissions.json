@@ -1,7 +1,7 @@
 {
   "noSubmissions": "No pending submissions",
   "details": {
-    "levelId": "Level ID",
+    "level": "Level",
     "player": "Player",
     "feelingDiff": "Feeling Difficulty",
     "speed": "Speed",

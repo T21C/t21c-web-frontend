@@ -526,7 +526,24 @@
     font-size: 1.1rem;
   }
 
+
+  .submission-admin-page .level-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  .submission-admin-page .level-info:hover {
+    text-decoration: underline;
+  }
+  
   /* Suffix editing styles */
+  .submission-admin-page .level-info .diff-icon {
+    width: 2rem;
+    height: 2rem;
+    object-fit: contain;
+  }
   .submission-admin-page .suffix-edit-group {
     display: flex;
     gap: 8px;

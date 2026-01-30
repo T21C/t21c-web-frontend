@@ -1,7 +1,7 @@
 {
   "noSubmissions": "보류 중인 제출물이 없습니다",
   "details": {
-    "levelId": "레벨 ID",
+    "level": "레벨",
     "player": "플레이어",
     "feelingDiff": "체감 난이도",
     "speed": "배속",

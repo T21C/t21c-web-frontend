@@ -542,7 +542,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               </div>
               {isFromAnnouncementPage &&
               <>
-              <div className="form-group">
+              <div className={`form-group ${isSuperAdmin ? 'field-enabled' : ''}`}>
                 <label htmlFor="baseScore">{tLevel('form.labels.previousBaseScore')}</label>
               <RatingInput
                 disabled={!isSuperAdmin}
@@ -608,13 +608,14 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               </div>
 
               {isFromAnnouncementPage ? (
-                <div className="form-group">
+                <div className={`form-group ${isSuperAdmin ? 'field-enabled' : ''}`}>
                   <RatingInput
                     value={getDifficultyName(formData.previousDiffId)}
                     diffId={parseInt(formData.previousDiffId)}
                     onChange={(value) => handleDifficultyChange(value, 'previousDiffId')}
                     difficulties={difficulties}
                     showDiff={true}
+                    disabled={!isSuperAdmin}
                     placeholder={tLevel('form.labels.previousDifficulty')}
                   />
                   <div className="base-score-display">
