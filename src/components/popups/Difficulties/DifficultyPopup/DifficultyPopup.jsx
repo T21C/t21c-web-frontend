@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { EditIcon, PencilIcon, QuestionmarkCircleIcon, TrashIcon, DragHandleIcon } from '@/components/common/icons';
@@ -666,6 +666,32 @@ const DifficultyPopup = ({
   // Helper function to get translation for ping type options
   const getPingTypeOption = (type) => tDiff(`announcements.actions.pingType.options.${type}`);
 
+  // Prepare options for CustomSelect components
+  const difficultyTypeOptions = useMemo(() => [
+    { value: 'PGU', label: tDiff('difficultyTypes.PGU') },
+    { value: 'SPECIAL', label: tDiff('difficultyTypes.SPECIAL') },
+    { value: 'LEGACY', label: tDiff('difficultyTypes.LEGACY') }
+  ], [tDiff]);
+
+  const directiveModeOptions = useMemo(() => [
+    { value: DIRECTIVE_MODES.STATIC, label: tDiff('announcements.mode.static') },
+    { value: DIRECTIVE_MODES.CONDITIONAL, label: tDiff('announcements.mode.conditional') }
+  ], [tDiff]);
+
+  const conditionTypeOptions = useMemo(() => 
+    ['ACCURACY', 'WORLDS_FIRST', 'BASE_SCORE', 'CUSTOM'].map(type => ({
+      value: type,
+      label: getConditionTypeOption(type)
+    }))
+  , [getConditionTypeOption]);
+
+  const operatorOptions = useMemo(() => 
+    ['EQUAL', 'GREATER_THAN', 'LESS_THAN', 'GREATER_THAN_EQUAL', 'LESS_THAN_EQUAL'].map(operator => ({
+      value: operator,
+      label: getOperatorOption(operator)
+    }))
+  , [getOperatorOption]);
+
   const hasDirectiveChanges = (directive, index) => {
     const original = originalDirectives[index];
     if (!original) return true;
@@ -1191,17 +1217,13 @@ const DifficultyPopup = ({
               </div>
 
               <div className="difficulty-modal__form-group">
-                <label className="difficulty-modal__form-label">{tDiff('form.labels.type')}</label>
-                <select
-                  value={difficulty.type}
-                  onChange={(e) => onChange({ ...difficulty, type: e.target.value })}
-                  required
-                  className="difficulty-modal__form-select"
-                >
-                  <option value="PGU">{tDiff('difficultyTypes.PGU')}</option>
-                  <option value="SPECIAL">{tDiff('difficultyTypes.SPECIAL')}</option>
-                  <option value="LEGACY">{tDiff('difficultyTypes.LEGACY')}</option>
-                </select>
+                <CustomSelect
+                  label={tDiff('form.labels.type')}
+                  options={difficultyTypeOptions}
+                  value={difficultyTypeOptions.find(opt => opt.value === difficulty.type)}
+                  onChange={(selected) => onChange({ ...difficulty, type: selected.value })}
+                  width="100%"
+                />
               </div>
 
               <div className="difficulty-modal__form-group">
@@ -1331,7 +1353,6 @@ const DifficultyPopup = ({
                   type="text"
                   value={difficulty.legacy}
                   onChange={(e) => onChange({ ...difficulty, legacy: e.target.value })}
-                  required
                   className="difficulty-modal__form-input"
                 />
               </div>
@@ -1459,11 +1480,12 @@ const DifficultyPopup = ({
                                       </div>
 
                                       <div className="difficulty-modal__form-group">
-                                        <label className="difficulty-modal__form-label">{tDiff('announcements.mode.label')}</label>
-                                        <select
-                                          value={directive.mode}
-                                          onChange={(e) => {
-                                            const newMode = e.target.value;
+                                        <CustomSelect
+                                          label={tDiff('announcements.mode.label')}
+                                          options={directiveModeOptions}
+                                          value={directiveModeOptions.find(opt => opt.value === directive.mode)}
+                                          onChange={(selected) => {
+                                            const newMode = selected.value;
                                             const updatedDirective = {
                                               ...directive,
                                               mode: newMode,
@@ -1481,15 +1503,8 @@ const DifficultyPopup = ({
                                               return newDirectives;
                                             });
                                           }}
-                                          className="difficulty-modal__form-select"
-                                        >
-                                          <option value={DIRECTIVE_MODES.STATIC}>
-                                            {tDiff('announcements.mode.static')}
-                                          </option>
-                                          <option value={DIRECTIVE_MODES.CONDITIONAL}>
-                                            {tDiff('announcements.mode.conditional')}
-                                          </option>
-                                        </select>
+                                          width="100%"
+                                        />
                                       </div>
 
                                       <div className="difficulty-modal__form-group">
@@ -1515,37 +1530,25 @@ const DifficultyPopup = ({
                                       {directive.mode === DIRECTIVE_MODES.CONDITIONAL && (
                                         <>
                                           <div className="difficulty-modal__form-group">
-                                            <label className="difficulty-modal__form-label">{tDiff('announcements.condition.type.label')}</label>
-                                            <select
-                                              value={directive.condition?.type || 'ACCURACY'}
-                                              onChange={(e) => handleDirectiveChange(index, 'condition.type', e.target.value)}
-                                              required
-                                              className="difficulty-modal__form-select"
-                                            >
-                                              {['ACCURACY', 'WORLDS_FIRST', 'BASE_SCORE', 'CUSTOM'].map(type => (
-                                                <option key={type} value={type}>
-                                                  {getConditionTypeOption(type)}
-                                                </option>
-                                              ))}
-                                            </select>
+                                            <CustomSelect
+                                              label={tDiff('announcements.condition.type.label')}
+                                              options={conditionTypeOptions}
+                                              value={conditionTypeOptions.find(opt => opt.value === (directive.condition?.type || 'ACCURACY'))}
+                                              onChange={(selected) => handleDirectiveChange(index, 'condition.type', selected.value)}
+                                              width="100%"
+                                            />
                                           </div>
 
                                           {(directive.condition?.type === 'ACCURACY' || directive.condition?.type === 'BASE_SCORE') && (
                                             <>
                                               <div className="difficulty-modal__form-group">
-                                                <label className="difficulty-modal__form-label">{tDiff('announcements.condition.operator.label')}</label>
-                                                <select
-                                                  value={directive.condition?.operator || 'GREATER_THAN_EQUAL'}
-                                                  onChange={(e) => handleDirectiveChange(index, 'condition.operator', e.target.value)}
-                                                  required
-                                                  className="difficulty-modal__form-select"
-                                                >
-                                                  {['EQUAL', 'GREATER_THAN', 'LESS_THAN', 'GREATER_THAN_EQUAL', 'LESS_THAN_EQUAL'].map(operator => (
-                                                    <option key={operator} value={operator}>
-                                                      {getOperatorOption(operator)}
-                                                    </option>
-                                                  ))}
-                                                </select>
+                                                <CustomSelect
+                                                  label={tDiff('announcements.condition.operator.label')}
+                                                  options={operatorOptions}
+                                                  value={operatorOptions.find(opt => opt.value === (directive.condition?.operator || 'GREATER_THAN_EQUAL'))}
+                                                  onChange={(selected) => handleDirectiveChange(index, 'condition.operator', selected.value)}
+                                                  width="100%"
+                                                />
                                               </div>
 
                                               <div className="difficulty-modal__form-group">

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { CrossIcon, ImageIcon } from '@/components/common/icons';
-import { ImageSelectorPopup } from '@/components/common/selectors';
+import { ImageSelectorPopup, CustomSelect } from '@/components/common/selectors';
 import './CreatePackPopup.css';
 import toast from 'react-hot-toast';
 import api from '@/utils/api';
@@ -27,12 +27,12 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
 
   // View mode options
   const viewModeOptions = [
-    { value: LevelPackViewModes.LINKONLY, label: tPopup('viewMode.linkonly') },
-    { value: LevelPackViewModes.PRIVATE, label: tPopup('viewMode.private') }
+    { value: LevelPackViewModes.LINKONLY.toString(), label: tPopup('viewMode.linkonly') },
+    { value: LevelPackViewModes.PRIVATE.toString(), label: tPopup('viewMode.private') }
   ];
 
   if (hasFlag(user, permissionFlags.SUPER_ADMIN)) {
-    viewModeOptions.splice(0, 0, { value: LevelPackViewModes.PUBLIC, label: tPopup('viewMode.public') });
+    viewModeOptions.splice(0, 0, { value: LevelPackViewModes.PUBLIC.toString(), label: tPopup('viewMode.public') });
   }
 
   // CSS theme options
@@ -247,20 +247,13 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
             </div>
 */}
             <div className="create-pack-popup__field">
-              <label className="create-pack-popup__label">
-                {tPopup('viewMode.label')}
-              </label>
-              <select
-                className="create-pack-popup__select"
-                value={formData.viewMode}
-                onChange={(e) => handleInputChange('viewMode', parseInt(e.target.value))}
-              >
-                {viewModeOptions.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+              <CustomSelect
+                label={tPopup('viewMode.label')}
+                options={viewModeOptions}
+                value={viewModeOptions.find(opt => opt.value === formData.viewMode.toString())}
+                onChange={(selected) => handleInputChange('viewMode', parseInt(selected.value))}
+                width="100%"
+              />
               <p className="create-pack-popup__help">
                 {tPopup('viewMode.help')}
               </p>

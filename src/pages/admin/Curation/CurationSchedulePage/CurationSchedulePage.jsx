@@ -5,7 +5,7 @@ import { MetaTags, AccessDenied } from '@/components/common/display';
 import { ScrollButton } from '@/components/common/buttons';
 import api from '@/utils/api';
 import './curationschedulepage.css';
-import { EditIcon, TrashIcon } from '@/components/common/icons';
+import { ChevronIcon, EditIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { NavLink } from 'react-router-dom';
@@ -174,7 +174,7 @@ const CurationSchedulePage = () => {
               to="/admin/curations"
               title={tSch('actions.backToCuration')}
             >
-              ← {tSch('actions.backToCuration')}
+              <ChevronIcon direction="left" /> {tSch('actions.backToCuration')}
             </NavLink>
             <h1>{tSch('title')}</h1>
           </div>
@@ -187,7 +187,7 @@ const CurationSchedulePage = () => {
             className="curation-schedule-page__week-btn"
             onClick={() => handleWeekChange(-1)}
           >
-            ← {tSch('previousWeek')}
+            <ChevronIcon direction="left" /> {tSch('previousWeek')}
           </button>
           <h2 className="curation-schedule-page__week-title">
             {getWeekLabel(currentMonday)}
@@ -196,7 +196,7 @@ const CurationSchedulePage = () => {
             className="curation-schedule-page__week-btn"
             onClick={() => handleWeekChange(1)}
           >
-            {tSch('nextWeek')} →
+            {tSch('nextWeek')} <ChevronIcon direction="right" />
           </button>
         </div>
 
@@ -216,7 +216,7 @@ const CurationSchedulePage = () => {
               onClick={() => scrollList(primaryScrollRef, 'left')}
               disabled={primarySchedules.length === 0}
             >
-              ‹
+              <ChevronIcon direction="left" size={24} />
             </button>
             
             <div className="curation-schedule-page__hall-scroll" ref={primaryScrollRef}>
@@ -278,7 +278,7 @@ const CurationSchedulePage = () => {
               onClick={() => scrollList(primaryScrollRef, 'right')}
               disabled={primarySchedules.length === 0}
             >
-              ›
+              <ChevronIcon direction="right" size={24} />
             </button>
           </div>
         </div>
@@ -299,7 +299,7 @@ const CurationSchedulePage = () => {
               onClick={() => scrollList(secondaryScrollRef, 'left')}
               disabled={secondarySchedules.length === 0}
             >
-              ‹
+              <ChevronIcon direction="left" size={24} />
             </button>
             
             <div className="curation-schedule-page__hall-scroll" ref={secondaryScrollRef}>
@@ -361,7 +361,7 @@ const CurationSchedulePage = () => {
               onClick={() => scrollList(secondaryScrollRef, 'right')}
               disabled={secondarySchedules.length === 0}
             >
-              ›
+              <ChevronIcon direction="right" size={24} />
             </button>
           </div>
         </div>

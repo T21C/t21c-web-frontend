@@ -8,6 +8,7 @@ import ThumbnailUpload from '@/components/common/upload/ThumbnailUpload';
 import { hasAbility, getDefaultColor, canAssignCurationType } from '@/utils/curationTypeUtils';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatCreatorDisplay } from '@/utils/Utility';
+import { CustomSelect } from '@/components/common/selectors';
 
 const CurationEditPopup = ({
   isOpen,
@@ -93,6 +94,15 @@ const CurationEditPopup = ({
       return canAssignCurationType(user.permissionFlags, type.abilities);
     });
   }, [curationTypes, user]);
+
+  // Prepare options for CustomSelect
+  const curationTypeOptions = useMemo(() => [
+    { value: '', label: tCur('form.selectType') },
+    ...getAssignableCurationTypes.map(type => ({
+      value: type.id.toString(),
+      label: type.name
+    }))
+  ], [getAssignableCurationTypes, tCur]);
 
   const handleMouseDown = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
@@ -226,21 +236,13 @@ const CurationEditPopup = ({
         <form onSubmit={handleSubmit} className="curation-edit-modal__form">
           {/* Curation Type Selection */}
           <div className="curation-edit-modal__form-group">
-            <label htmlFor="type-select">{tCur('form.type')}</label>
-            <select
-              id="type-select"
-              value={formData.typeId}
-              onChange={(e) => handleInputChange('typeId', e.target.value)}
-              className="curation-edit-modal__select"
-              required
-            >
-              <option value="">{tCur('form.selectType')}</option>
-              {getAssignableCurationTypes.map(type => (
-                <option key={type.id} value={type.id}>
-                  {type.name}
-                </option>
-              ))}
-            </select>
+            <CustomSelect
+              label={tCur('form.type')}
+              options={curationTypeOptions}
+              value={curationTypeOptions.find(opt => opt.value === (formData.typeId ? formData.typeId.toString() : ''))}
+              onChange={(selected) => handleInputChange('typeId', selected.value)}
+              width="100%"
+            />
           </div>
 
           {/* Short Description */}

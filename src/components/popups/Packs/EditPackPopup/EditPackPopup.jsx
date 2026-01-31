@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { CrossIcon, ImageIcon, TrashIcon } from '@/components/common/icons';
 import ImageSelectorPopup from '../../../common/selectors/ImageSelectorPopup/ImageSelectorPopup';
+import { CustomSelect } from '@/components/common/selectors';
 import './EditPackPopup.css';
 import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
@@ -37,14 +38,14 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
 
   // View mode options
   const viewModeOptions = [
-    { value: LevelPackViewModes.LINKONLY, label: tPopup('viewMode.linkonly') },
-    { value: LevelPackViewModes.PRIVATE, label: tPopup('viewMode.private') }
+    { value: LevelPackViewModes.LINKONLY.toString(), label: tPopup('viewMode.linkonly') },
+    { value: LevelPackViewModes.PRIVATE.toString(), label: tPopup('viewMode.private') }
   ];
 
   if (hasFlag(user, permissionFlags.SUPER_ADMIN)) {
     viewModeOptions.splice(0, 0, 
-      { value: LevelPackViewModes.PUBLIC, label: tPopup('viewMode.public') }, 
-      { value: LevelPackViewModes.FORCED_PRIVATE, label: tPopup('viewMode.forcedPrivate') });
+      { value: LevelPackViewModes.PUBLIC.toString(), label: tPopup('viewMode.public') }, 
+      { value: LevelPackViewModes.FORCED_PRIVATE.toString(), label: tPopup('viewMode.forcedPrivate') });
   }
 
   // CSS theme options
@@ -376,26 +377,14 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
 */}
 
             <div className="edit-pack-popup__field">
-              <label className="edit-pack-popup__label">
-                {tPopup('viewMode.label')}
-              </label>
-              <select
-                className="edit-pack-popup__select"
-                value={formData.viewMode}
-                onChange={(e) => handleInputChange('viewMode', e.target.value)}
-                disabled={!canEdit || (isForcedPrivate && !hasFlag(user, permissionFlags.SUPER_ADMIN))}
-              >
-                {viewModeOptions.map(option => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-                {isForcedPrivate && (
-                  <option value={LevelPackViewModes.FORCED_PRIVATE} disabled>
-                    {tPopup('viewMode.forcedPrivate')} (Admin Locked)
-                  </option>
-                )}
-              </select>
+              <CustomSelect
+                label={tPopup('viewMode.label')}
+                options={viewModeOptions}
+                value={viewModeOptions.find(opt => opt.value === formData.viewMode.toString())}
+                onChange={(selected) => handleInputChange('viewMode', parseInt(selected.value))}
+                width="100%"
+                isDisabled={!canEdit || (isForcedPrivate && !hasFlag(user, permissionFlags.SUPER_ADMIN))}
+              />
               <p className="edit-pack-popup__help">
                 {isForcedPrivate 
                   ? tPopup('viewMode.forcedPrivateHelp')
@@ -542,7 +531,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                 onClick={onClose}
                 disabled={loading}
               >
-                {tPopup('cancel')}
+                {t('buttons.cancel', { ns : "common"})}
               </button>
               <button
                 type="submit"

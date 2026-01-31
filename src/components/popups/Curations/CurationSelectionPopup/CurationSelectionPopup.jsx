@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import './curationselectionpopup.css';
 import toast from 'react-hot-toast';
+import { CustomSelect } from '@/components/common/selectors';
 
 const CurationSelectionPopup = ({
   isOpen,
@@ -14,6 +15,15 @@ const CurationSelectionPopup = ({
   const { t } = useTranslation('components');
   const tCur = (key, params = {}) => t(`curationSelectionPopup.${key}`, params);
   const { curationTypes } = useDifficultyContext();
+
+  // Prepare options for CustomSelect
+  const curationTypeOptions = useMemo(() => [
+    { value: '', label: tCur('filters.allTypes') },
+    ...curationTypes.map(type => ({
+      value: type.id.toString(),
+      label: type.name
+    }))
+  ], [curationTypes, tCur]);
 
   const [curations, setCurations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -129,19 +139,13 @@ const CurationSelectionPopup = ({
           </div>
           
           <div className="curation-selection-modal__filter-group">
-            <label>{tCur('filters.type')}</label>
-            <select
-              value={selectedType}
-              onChange={(e) => handleTypeFilter(e.target.value)}
-              className="curation-selection-modal__type-select"
-            >
-              <option value="">{tCur('filters.allTypes')}</option>
-              {curationTypes.map(type => (
-                <option key={type.id} value={type.id}>
-                  {type.name}
-                </option>
-              ))}
-            </select>
+            <CustomSelect
+              label={tCur('filters.type')}
+              options={curationTypeOptions}
+              value={curationTypeOptions.find(opt => opt.value === (selectedType ? selectedType.toString() : ''))}
+              onChange={(selected) => handleTypeFilter(selected.value)}
+              width="100%"
+            />
           </div>
         </div>
 

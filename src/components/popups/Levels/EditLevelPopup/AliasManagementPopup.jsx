@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import './aliasmanagementpopup.css';
 import api from '@/utils/api';
+import { CustomSelect } from '@/components/common/selectors';
 
 const AliasManagementPopup = ({ levelId, onClose }) => {
   const [aliases, setAliases] = useState([]);
@@ -9,6 +10,17 @@ const AliasManagementPopup = ({ levelId, onClose }) => {
   const [error, setError] = useState(null);
   const [affectedLevelsCount, setAffectedLevelsCount] = useState(null);
   const [levelData, setLevelData] = useState(null);
+
+  // Prepare options for CustomSelect
+  const fieldOptions = useMemo(() => [
+    { value: 'song', label: `Song (${levelData?.song || 'Loading...'})` },
+    { value: 'artist', label: `Artist (${levelData?.artist || 'Loading...'})` }
+  ], [levelData]);
+
+  const matchTypeOptions = useMemo(() => [
+    { value: 'exact', label: 'Exact Match' },
+    { value: 'partial', label: 'Partial Match' }
+  ], []);
 
   useEffect(() => {
     const fetchLevelData = async () => {
@@ -155,15 +167,13 @@ const AliasManagementPopup = ({ levelId, onClose }) => {
 
         <form onSubmit={handleAddAlias} className="add-alias-form">
           <div className="form-group">
-            <label>Field:</label>
-            <select
-              value={newAlias.field}
-              onChange={(e) => setNewAlias({ ...newAlias, field: e.target.value })}
-              className="field-select"
-            >
-              <option value="song">Song ({levelData?.song || 'Loading...'})</option>
-              <option value="artist">Artist ({levelData?.artist || 'Loading...'})</option>
-            </select>
+            <CustomSelect
+              label="Field:"
+              options={fieldOptions}
+              value={fieldOptions.find(opt => opt.value === newAlias.field)}
+              onChange={(selected) => setNewAlias({ ...newAlias, field: selected.value })}
+              width="100%"
+            />
           </div>
 
           <div className="form-group">
@@ -191,14 +201,13 @@ const AliasManagementPopup = ({ levelId, onClose }) => {
           {newAlias.propagate && (
             <>
               <div className="form-group">
-                <label>Match Type:</label>
-                <select
-                  value={newAlias.matchType}
-                  onChange={(e) => setNewAlias({ ...newAlias, matchType: e.target.value })}
-                >
-                  <option value="exact">Exact Match</option>
-                  <option value="partial">Partial Match</option>
-                </select>
+                <CustomSelect
+                  label="Match Type:"
+                  options={matchTypeOptions}
+                  value={matchTypeOptions.find(opt => opt.value === newAlias.matchType)}
+                  onChange={(selected) => setNewAlias({ ...newAlias, matchType: selected.value })}
+                  width="100%"
+                />
               </div>
 
               {affectedLevelsCount !== null && (

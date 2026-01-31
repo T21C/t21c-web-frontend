@@ -71,12 +71,15 @@
   padding: 1rem;
   background: rgba(0, 0, 0, 0.4);
   border-radius: 12px;
-  border: 2px solid rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(0, 0, 0, 0);
 }
 
 .curation-schedule-page__week-btn {
   padding: 0.75rem 1.5rem;
-  border: 2px solid rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 2px solid rgba(0, 0, 0, 0);
   border-radius: 8px;
   background: rgba(0, 0, 0, 0.6);
   color: #ffffff;
@@ -151,7 +154,7 @@
   border-radius: 50%;
   background: rgba(0, 0, 0, 0.5);
   color: #ffffff;
-  border: 2px solid rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(0, 0, 0, 0);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -195,7 +198,7 @@
 
 .curation-schedule-page__hall-item {
   background: rgba(0, 0, 0, 0.4);
-  border: 2px solid rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(0, 0, 0, 0);
   border-radius: 12px;
   padding: 1.5rem;
   min-width: 280px;

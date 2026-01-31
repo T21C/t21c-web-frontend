@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 
@@ -14,6 +14,7 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { canAssignCurationType } from '@/utils/curationTypeUtils';
 import { formatCreatorDisplay } from '@/utils/Utility';
+import { CustomSelect } from '@/components/common/selectors';
 
 const CurationPage = () => {
   const navigate = useNavigate();
@@ -100,6 +101,8 @@ const CurationPage = () => {
       const { type } = pendingAction;
       if (type === 'manage') {
         handleOpenTypeManagement();
+      } else if (type === 'discordRoles') {
+        setShowDiscordRolesPopup(true);
       }
       setPendingAction(null);
     }
@@ -388,6 +391,15 @@ const CurationPage = () => {
     return false;
   };
 
+  // Prepare options for CustomSelect
+  const curationTypeOptions = useMemo(() => [
+    { value: '', label: tCur('filters.allTypes') },
+    ...curationTypes.map(type => ({
+      value: type.id.toString(),
+      label: type.name
+    }))
+  ], [curationTypes, tCur]);
+
   return (
     <div className="curation-page">
       <MetaTags 
@@ -407,16 +419,13 @@ const CurationPage = () => {
         {/* Filters */}
         <div className="curation-filters">
           <div className="curation-filter-group">
-            <label>{tCur('filters.type')}</label>
-            <select 
-              value={filters.typeId} 
-              onChange={(e) => handleFilterChange('typeId', e.target.value)}
-            >
-              <option value="">{tCur('filters.allTypes')}</option>
-              {curationTypes.map(type => (
-                <option key={type.id} value={type.id}>{type.name}</option>
-              ))}
-            </select>
+            <CustomSelect
+              label={tCur('filters.type')}
+              options={curationTypeOptions}
+              value={curationTypeOptions.find(opt => opt.value === (filters.typeId ? filters.typeId.toString() : ''))}
+              onChange={(selected) => handleFilterChange('typeId', selected.value)}
+              width="100%"
+            />
           </div>
           
           <div className="curation-filter-group">
@@ -472,7 +481,14 @@ const CurationPage = () => {
           { hasFlag(user, permissionFlags.SUPER_ADMIN) && (
             <button
               className="curation-discord-roles-btn"
-              onClick={() => setShowDiscordRolesPopup(true)}
+              onClick={() => {
+                if (!verifiedPassword) {
+                  setPendingAction({ type: 'discordRoles' });
+                  setShowPasswordPrompt(true);
+                } else {
+                  setShowDiscordRolesPopup(true);
+                }
+              }}
               title={t('components:discordRoles.title', { defaultValue: 'Discord Role Sync' })}
             >
               💬
@@ -659,6 +675,7 @@ const CurationPage = () => {
           onClose={() => setShowDiscordRolesPopup(false)}
           roleType="CURATION"
           curationTypes={curationTypes}
+          verifiedPassword={verifiedPassword}
         />
 
       {/* Notifications */}

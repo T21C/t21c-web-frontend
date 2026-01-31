@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import toast from 'react-hot-toast';
 import { TrashIcon, EditIcon } from '@/components/common/icons';
-import { RatingInput } from '@/components/common/selectors';
+import { RatingInput, CustomSelect } from '@/components/common/selectors';
 import './discordrolesmanager.css';
 
 /**
@@ -16,6 +16,7 @@ import './discordrolesmanager.css';
  * @param {number} props.curationTypeId - Required for CURATION type - the curation type ID to filter roles by
  * @param {Array} props.difficulties - List of all difficulties (for DIFFICULTY type)
  * @param {Array} props.curationTypes - List of all curation types (for CURATION type)
+ * @param {string} props.verifiedPassword - Verified super admin password for modification requests
  */
 const DiscordRolesManager = ({
   roleType = 'DIFFICULTY',
@@ -24,9 +25,19 @@ const DiscordRolesManager = ({
   difficulties = [],
   curationTypes = [],
   onUnsavedChangesChange,
+  verifiedPassword = '',
 }) => {
   const { t } = useTranslation(['components', 'common']);
   const tDisc = (key, params = {}) => t(`discordRoles.${key}`, params);
+
+  // Prepare curation type options for CustomSelect
+  const curationTypeOptions = useMemo(() => [
+    { value: '', label: tDisc('role.form.selectCurationType') },
+    ...curationTypes.map(type => ({
+      value: type.id.toString(),
+      label: type.name
+    }))
+  ], [curationTypes, tDisc]);
 
   const [guilds, setGuilds] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -185,10 +196,20 @@ const DiscordRolesManager = ({
     });
   };
 
+  // Helper function to build headers with password
+  const getHeaders = () => {
+    if (!verifiedPassword) return {};
+    return {
+      'X-Super-Admin-Password': verifiedPassword
+    };
+  };
+
   // Guild CRUD operations
   const handleCreateGuild = async () => {
     try {
-      const response = await api.post('/v2/admin/discord/guilds', guildForm);
+      const response = await api.post('/v2/admin/discord/guilds', guildForm, {
+        headers: getHeaders()
+      });
       setGuilds([...guilds, response.data]);
       setShowGuildModal(false);
       resetGuildForm();
@@ -201,7 +222,9 @@ const DiscordRolesManager = ({
 
   const handleUpdateGuild = async () => {
     try {
-      const response = await api.put(`/v2/admin/discord/guilds/${editingGuild.id}`, guildForm);
+      const response = await api.put(`/v2/admin/discord/guilds/${editingGuild.id}`, guildForm, {
+        headers: getHeaders()
+      });
       // Merge response data with existing guild data to preserve roles array
       setGuilds(guilds.map(g => {
         if (g.id === editingGuild.id) {
@@ -226,7 +249,9 @@ const DiscordRolesManager = ({
     if (!confirm(tDisc('guild.confirmDelete'))) return;
     
     try {
-      await api.delete(`/v2/admin/discord/guilds/${guildId}`);
+      await api.delete(`/v2/admin/discord/guilds/${guildId}`, {
+        headers: getHeaders()
+      });
       setGuilds(guilds.filter(g => g.id !== guildId));
       toast.success(tDisc('success.guildDeleted'));
     } catch (err) {
@@ -279,7 +304,9 @@ const DiscordRolesManager = ({
         minDifficultyId: roleType === 'DIFFICULTY' ? (roleForm.minDifficultyId || difficultyId) : null,
         curationTypeId: roleType === 'CURATION' ? (roleForm.curationTypeId || curationTypeId) : null,
       };
-      const response = await api.post(`/v2/admin/discord/guilds/${selectedGuildId}/roles`, payload);
+      const response = await api.post(`/v2/admin/discord/guilds/${selectedGuildId}/roles`, payload, {
+        headers: getHeaders()
+      });
       
       // Update the guild's roles in state
       setGuilds(guilds.map(g => {
@@ -308,7 +335,9 @@ const DiscordRolesManager = ({
         minDifficultyId: roleType === 'DIFFICULTY' ? roleForm.minDifficultyId : null,
         curationTypeId: roleType === 'CURATION' ? roleForm.curationTypeId : null,
       };
-      const response = await api.put(`/v2/admin/discord/guilds/${selectedGuildId}/roles/${editingRole.id}`, payload);
+      const response = await api.put(`/v2/admin/discord/guilds/${selectedGuildId}/roles/${editingRole.id}`, payload, {
+        headers: getHeaders()
+      });
       
       // Update the role in state
       setGuilds(guilds.map(g => {
@@ -334,7 +363,9 @@ const DiscordRolesManager = ({
     if (!confirm(tDisc('role.confirmDelete'))) return;
     
     try {
-      await api.delete(`/v2/admin/discord/guilds/${selectedGuildId}/roles/${editingRole.id}`);
+      await api.delete(`/v2/admin/discord/guilds/${selectedGuildId}/roles/${editingRole.id}`, {
+        headers: getHeaders()
+      });
       
       // Remove the role from state
       setGuilds(guilds.map(g => {
@@ -651,19 +682,13 @@ const DiscordRolesManager = ({
 
               {roleType === 'CURATION' && (
                 <div className="discord-roles-manager__form-group">
-                  <label>{tDisc('role.form.curationType')}</label>
-                  <select
-                    value={roleForm.curationTypeId || ''}
-                    onChange={(e) => setRoleForm({ ...roleForm, curationTypeId: parseInt(e.target.value) || null })}
-                    required
-                  >
-                    <option value="">{tDisc('role.form.selectCurationType')}</option>
-                    {curationTypes.map(type => (
-                      <option key={type.id} value={type.id}>
-                        {type.name}
-                      </option>
-                    ))}
-                  </select>
+                  <CustomSelect
+                    label={tDisc('role.form.curationType')}
+                    options={curationTypeOptions}
+                    value={curationTypeOptions.find(opt => opt.value === (roleForm.curationTypeId ? roleForm.curationTypeId.toString() : ''))}
+                    onChange={(selected) => setRoleForm({ ...roleForm, curationTypeId: selected.value ? parseInt(selected.value) : null })}
+                    width="100%"
+                  />
                   <p className="discord-roles-manager__hint">
                     {tDisc('role.form.curationTypeHint')}
                   </p>

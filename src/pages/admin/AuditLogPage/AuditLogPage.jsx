@@ -6,6 +6,7 @@ import { useTranslation } from "react-i18next";
 import api from "@/utils/api";
 import "./auditlogpage.css";
 import { AuditLogCard } from "@/components/cards";
+import { CustomSelect } from "@/components/common/selectors";
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
 
@@ -16,6 +17,11 @@ const AuditLogPage = () => {
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(25);
   const [loading, setLoading] = useState(false);
+
+  // Prepare page size options for CustomSelect
+  const pageSizeOptions = useMemo(() => 
+    PAGE_SIZE_OPTIONS.map(size => ({ value: size.toString(), label: `${size} / page` }))
+  , []);
   const [filters, setFilters] = useState({
     userId: "",
     action: "",
@@ -156,11 +162,12 @@ const AuditLogPage = () => {
           >
             Next
           </button>
-          <select value={pageSize} onChange={(e) => { setPageSize(Number(e.target.value)); setPage(1); }}>
-            {PAGE_SIZE_OPTIONS.map((size) => (
-              <option key={size} value={size}>{size} / page</option>
-            ))}
-          </select>
+          <CustomSelect
+            options={pageSizeOptions}
+            value={pageSizeOptions.find(opt => opt.value === pageSize.toString())}
+            onChange={(selected) => { setPageSize(Number(selected.value)); setPage(1); }}
+            width="120px"
+          />
         </div>
       </div>
     </div>

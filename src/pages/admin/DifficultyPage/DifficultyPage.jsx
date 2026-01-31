@@ -439,6 +439,9 @@ const DifficultyPage = () => {
         case 'delete':
           setDeletingDifficulty(data);
           break;
+        case 'discordRoles':
+          setShowDiscordRolesPopup(true);
+          break;
       }
       setPendingAction(null);
     }
@@ -731,7 +734,14 @@ const DifficultyPage = () => {
                 </button>
                 <button
                   className="discord-roles-button"
-                  onClick={() => setShowDiscordRolesPopup(true)}
+                  onClick={() => {
+                    if (!verifiedPassword) {
+                      setPendingAction({ type: 'discordRoles' });
+                      setShowPasswordPrompt(true);
+                    } else {
+                      setShowDiscordRolesPopup(true);
+                    }
+                  }}
                   disabled={isLoading || contextLoading || isReordering}
                 >
                   {tDiff('buttons.discordRoles')}
@@ -1433,6 +1443,7 @@ const DifficultyPage = () => {
             isOpen={showDiscordRolesPopup}
             onClose={() => setShowDiscordRolesPopup(false)}
             roleType="DIFFICULTY"
+            verifiedPassword={verifiedPassword}
           />
 
           <div className="notifications">

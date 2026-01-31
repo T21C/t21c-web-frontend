@@ -11,6 +11,7 @@ const DiscordRolesPopup = ({
   difficultyId = null,
   curationTypeId = null,
   curationTypes = [],
+  verifiedPassword = '',
 }) => {
   const { t } = useTranslation(['components', 'common']);
   const tDisc = (key, params = {}) => t(`discordRoles.${key}`, params);
@@ -96,6 +97,7 @@ const DiscordRolesPopup = ({
             difficulties={allDifficulties}
             curationTypes={curationTypes}
             onUnsavedChangesChange={handleUnsavedChangesChange}
+            verifiedPassword={verifiedPassword}
           />
         </div>
       </div>
