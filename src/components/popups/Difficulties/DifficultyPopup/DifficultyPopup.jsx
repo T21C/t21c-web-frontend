@@ -1351,7 +1351,7 @@ const DifficultyPopup = ({
                 </button>
               </div>
             </form>
-          ) : (
+          ) : activeTab === 'announcements' ? (
             <div className="difficulty-modal__announcements">
               <h2 className="difficulty-modal__title">{tDiff('announcements.title', { diffName: difficulty.name })}</h2>
               {isLoadingDirectives ? (
@@ -1783,7 +1783,7 @@ const DifficultyPopup = ({
                 </form>
               )}
             </div>
-          )}
+          ) : null}
         </div>
       </div>
     </div>

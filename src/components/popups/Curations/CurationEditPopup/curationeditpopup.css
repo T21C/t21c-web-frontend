@@ -58,6 +58,53 @@
   font-size: 1rem;
 }
 
+/* Tabs */
+.curation-edit-modal__tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  border-bottom: 1px solid #404040;
+  padding-bottom: 0.5rem;
+}
+
+.curation-edit-modal__tab-button {
+  background: transparent;
+  border: none;
+  color: #a0a0a0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  border-radius: 4px 4px 0 0;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.curation-edit-modal__tab-button:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.curation-edit-modal__tab-button--active {
+  color: #4a9eff;
+  background: rgba(74, 158, 255, 0.1);
+}
+
+.curation-edit-modal__tab-button--active::after {
+  content: '';
+  position: absolute;
+  bottom: -0.5rem;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: #4a9eff;
+}
+
+/* Discord Roles Tab */
+.curation-edit-modal__discord-roles {
+  min-height: 200px;
+}
+
 /* Level Information Display */
 .curation-edit-modal__level-info {
   margin-bottom: 2rem;

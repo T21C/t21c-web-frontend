@@ -50,7 +50,16 @@
   animation: spin 1s linear infinite;
 }
 
-.difficulty-page .create-button {
+.difficulty-page .difficulty-actions-container {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.difficulty-page .create-button,
+.difficulty-page .discord-roles-button {
   padding: 0.75rem 1.5rem;
   font-size: 1.1rem;
   font-weight: 600;
@@ -60,14 +69,15 @@
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s;
-  margin-bottom: 2rem;
 }
 
-.difficulty-page .create-button:hover:not(:disabled) {
+.difficulty-page .create-button:hover:not(:disabled),
+.difficulty-page .discord-roles-button:hover:not(:disabled) {
   background-color: var(--color-white-t30);
 }
 
-.difficulty-page .create-button:disabled {
+.difficulty-page .create-button:disabled,
+.difficulty-page .discord-roles-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
 }

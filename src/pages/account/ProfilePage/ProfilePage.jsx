@@ -9,13 +9,14 @@ import { ScoreCard } from "@/components/cards";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { AdminPlayerPopup, CreatorAssignmentPopup } from "@/components/popups";
-import { DefaultAvatar, ShieldIcon, EditIcon, SearchIcon, SortAscIcon, SortDescIcon, PackIcon, EyeIcon, EyeOffIcon } from "@/components/common/icons";
+import { DefaultAvatar, ShieldIcon, EditIcon, SearchIcon, SortAscIcon, SortDescIcon, PackIcon, EyeIcon, EyeOffIcon, DiscordIcon } from "@/components/common/icons";
 import { CaseOpenSelector, CustomSelect } from "@/components/common/selectors";
 import caseOpen from "@/assets/icons/case.png";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { ScrollButton } from "@/components/common/buttons";
 import { useProfileContext } from "@/contexts/ProfileContext";
+import toast from 'react-hot-toast';
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
 
 const PASSES_PER_PAGE = 20;
@@ -156,6 +157,44 @@ const ProfilePage = () => {
             timestamp: Date.now()
           };
           navigate('/packs');
+        }
+      };
+
+      const handleDiscordRoleRefresh = async () => {
+        try {
+          // Determine which user ID to sync
+          let targetUserId;
+          if (hasFlag(user, permissionFlags.SUPER_ADMIN)) {
+            // Super admin can sync any user's roles
+            if (!playerData?.user?.id) {
+              toast.error(tProfile('discordRoleSync.errors.noUser'));
+              return;
+            }
+            targetUserId = playerData.user.id;
+          } else {
+            // Non-admin users can only sync their own roles
+            if (!user?.id) {
+              toast.error(tProfile('discordRoleSync.errors.noUser'));
+              return;
+            }
+            targetUserId = user.id;
+          }
+
+          const response = await api.post(`/v2/admin/discord/sync/user/${targetUserId}`);
+          
+          if (response.data?.success) {
+            toast.success(
+              hasFlag(user, permissionFlags.SUPER_ADMIN) 
+                ? tProfile('discordRoleSync.success.other')
+                : tProfile('discordRoleSync.success.own')
+            );
+          } else {
+            toast.error(tProfile('discordRoleSync.errors.generic'));
+          }
+        } catch (error) {
+          console.error('Error syncing Discord roles:', error);
+          const errorMessage = error.response?.data?.error || error.message || tProfile('discordRoleSync.errors.generic');
+          toast.error(errorMessage);
         }
       };
 
@@ -486,6 +525,19 @@ const ProfilePage = () => {
                       title="View User's Packs"
                     >
                       <PackIcon color="#fff" size={"24px"} />
+                    </button>
+                  )}
+                    {(user && (isOwnProfile || hasFlag(user, permissionFlags.SUPER_ADMIN))) && (
+                    <button 
+                      className="edit-button discord-role-refresh-button" 
+                      onClick={handleDiscordRoleRefresh}
+                      title={
+                        hasFlag(user, permissionFlags.SUPER_ADMIN)
+                          ? tProfile('discordRoleSync.buttonTitle.other')
+                          : tProfile('discordRoleSync.buttonTitle.own')
+                      }
+                    >
+                      <DiscordIcon color="#fff" size={"24px"} />
                     </button>
                   )}
                   </div>

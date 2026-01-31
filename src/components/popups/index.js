@@ -40,6 +40,7 @@ import { EntityActionPopup } from './Entities/EntityActionPopup/EntityActionPopu
 import { EntityPopup } from './Entities/EntityPopup/EntityPopup';
 import { ArtistActionPopup } from './Artists/ArtistActionPopup/ArtistActionPopup';
 import { SongActionPopup } from './Songs/SongActionPopup/SongActionPopup';
+import DiscordRolesPopup from './DiscordRoles/DiscordRolesPopup';
 
 export {
     AdminPlayerPopup,
@@ -81,5 +82,6 @@ export {
     EntityActionPopup,
     EntityPopup,
     ArtistActionPopup,
-    SongActionPopup
+    SongActionPopup,
+    DiscordRolesPopup
 }

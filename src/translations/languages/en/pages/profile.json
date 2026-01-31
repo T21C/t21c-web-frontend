@@ -46,5 +46,19 @@
   "hideHiddenPasses": "Hide hidden passes",
   "infiniteScroll": {
     "end": "You've reached the end!"
+  },
+  "discordRoleSync": {
+    "buttonTitle": {
+      "own": "Refresh your Discord roles",
+      "other": "Refresh Discord roles for this user"
+    },
+    "success": {
+      "own": "Your Discord roles have been refreshed successfully",
+      "other": "Discord roles have been refreshed successfully"
+    },
+    "errors": {
+      "noUser": "Unable to determine user ID",
+      "generic": "Failed to refresh Discord roles"
+    }
   }
 } 

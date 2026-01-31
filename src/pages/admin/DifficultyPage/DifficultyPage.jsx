@@ -4,7 +4,7 @@ import { useDifficultyContext } from "@/contexts/DifficultyContext";
 
 import { MetaTags, AccessDenied } from '@/components/common/display';
 import { ScrollButton } from '@/components/common/buttons';
-import { DifficultyPopup } from '@/components/popups';
+import { DifficultyPopup, DiscordRolesPopup } from '@/components/popups';
 import api from '@/utils/api';
 import './difficultypage.css';
 import { EditIcon, RefreshIcon, TrashIcon } from '@/components/common/icons';
@@ -53,6 +53,7 @@ const DifficultyPage = () => {
   const [isGroupsReordering, setIsGroupsReordering] = useState(false);
   const [activeTab, setActiveTab] = useState('difficulties'); // 'difficulties' or 'tags'
   const [tagsSubTab, setTagsSubTab] = useState('tags'); // 'tags' or 'groups'
+  const [showDiscordRolesPopup, setShowDiscordRolesPopup] = useState(false);
   
   // Tag management state
   const [tags, setTags] = useState([]);
@@ -237,7 +238,8 @@ const DifficultyPage = () => {
   useEffect(() => {
     const isAnyOpen = isCreating || editingDifficulty !== null || 
                           deletingDifficulty !== null || showPasswordPrompt || showInitialPasswordPrompt ||
-                          isCreatingTag || editingTag !== null || deletingTag !== null;
+                          isCreatingTag || editingTag !== null || deletingTag !== null ||
+                          showDiscordRolesPopup;
     setIsAnyPopupOpen(isAnyOpen);
     if (isAnyOpen) {
       document.body.style.overflowY = 'hidden';
@@ -719,13 +721,22 @@ const DifficultyPage = () => {
 
           {activeTab === 'difficulties' ? (
             <>
-              <button
-                className="create-button"
-                onClick={handleCreateClick}
-                disabled={isLoading || contextLoading || isReordering}
-              >
-                {tDiff('buttons.create')}
-              </button>
+              <div className="difficulty-actions-container">
+                <button
+                  className="create-button"
+                  onClick={handleCreateClick}
+                  disabled={isLoading || contextLoading || isReordering}
+                >
+                  {tDiff('buttons.create')}
+                </button>
+                <button
+                  className="discord-roles-button"
+                  onClick={() => setShowDiscordRolesPopup(true)}
+                  disabled={isLoading || contextLoading || isReordering}
+                >
+                  {tDiff('buttons.discordRoles')}
+                </button>
+              </div>
 
           <DragDropContext onDragEnd={handleDragEnd}>
             <Droppable droppableId="difficulties">
@@ -1416,6 +1427,12 @@ const DifficultyPage = () => {
             refreshDifficulties={reloadDifficulties}
             error={error}
             verifiedPassword={verifiedPassword}
+          />
+
+          <DiscordRolesPopup
+            isOpen={showDiscordRolesPopup}
+            onClose={() => setShowDiscordRolesPopup(false)}
+            roleType="DIFFICULTY"
           />
 
           <div className="notifications">

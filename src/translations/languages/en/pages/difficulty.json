@@ -15,7 +15,8 @@
   },
   "buttons": {
     "create": "Create New Difficulty",
-    "understand": "I understand the risks"
+    "understand": "I understand the risks",
+    "discordRoles": "Discord Role Sync"
   },
   "loading": {
     "difficulties": "Loading difficulties...",

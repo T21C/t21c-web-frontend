@@ -185,7 +185,8 @@
 
 .player-page .profile-button-container {
   position: absolute;
-  right: -60px; /* Position it outside the header */
+  right: 0;
+  transform: translateX(75%); /* Position it outside the header */
   top: 20px;
   border: none;
   padding: 2px;
@@ -194,9 +195,16 @@
   gap: 10px;
   cursor: pointer;
   transition: background-color 0.2s;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   align-items: center;
   justify-content: center;
+}
+
+/* For a single or two elements, use a single column layout */
+.player-page .profile-button-container:not(:has(button:nth-child(3))) {
+  grid-template-columns: 1fr !important;
+  transform: translateX(100%)
 }
 
 .player-page .edit-button {

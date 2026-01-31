@@ -1,7 +1,11 @@
 {
   "tabs": {
     "details": "Details",
-    "announcement": "Announcement"
+    "announcement": "Announcement",
+    "discordRoles": "Discord Roles"
+  },
+  "discordRoles": {
+    "title": "Discord Role Sync"
   },
   "modal": {
     "create": {
