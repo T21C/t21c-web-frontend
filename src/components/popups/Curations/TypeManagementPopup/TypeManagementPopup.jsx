@@ -567,7 +567,7 @@ const TypeManagementPopup = ({
                 onClick={handleBackToList}
                 className="type-management-modal__btn type-management-modal__btn--cancel"
               >
-                {tCur('buttons.cancel')}
+                {t('buttons.cancel', { ns: 'common' })}
               </button>
               <button
                 type="submit"

@@ -8,7 +8,7 @@ import api from '@/utils/api';
 import './curationpage.css';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
-import { LevelSelectionPopup, TypeManagementPopup, CurationEditPopup, UserManagementPopup } from '@/components/popups';
+import { LevelSelectionPopup, TypeManagementPopup, CurationEditPopup, UserManagementPopup, DiscordRolesPopup } from '@/components/popups';
 import { toast } from 'react-hot-toast';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
@@ -41,6 +41,7 @@ const CurationPage = () => {
   const [showTypeManagementPopup, setShowTypeManagementPopup] = useState(false);
   const [showCurationEditPopup, setShowCurationEditPopup] = useState(false);
   const [showCuratorManagementPopup, setShowCuratorManagementPopup] = useState(false);
+  const [showDiscordRolesPopup, setShowDiscordRolesPopup] = useState(false);
   const [editingCuration, setEditingCuration] = useState(null);
 
   // Cancel token refs for request cancellation
@@ -52,7 +53,7 @@ const CurationPage = () => {
 
   // Add effect to handle body scrolling
   useEffect(() => {
-    const isAnyOpen = showPasswordPrompt || showLevelSelectionPopup || showTypeManagementPopup || showCurationEditPopup || showCuratorManagementPopup;
+    const isAnyOpen = showPasswordPrompt || showLevelSelectionPopup || showTypeManagementPopup || showCurationEditPopup || showCuratorManagementPopup || showDiscordRolesPopup;
     if (isAnyOpen) {
       document.body.style.overflowY = 'hidden';
     } else {
@@ -62,7 +63,7 @@ const CurationPage = () => {
     return () => {
       document.body.style.overflowY = '';
     };
-  }, [showPasswordPrompt, showLevelSelectionPopup, showTypeManagementPopup, showCurationEditPopup, showCuratorManagementPopup]);
+  }, [showPasswordPrompt, showLevelSelectionPopup, showTypeManagementPopup, showCurationEditPopup, showCuratorManagementPopup, showDiscordRolesPopup]);
 
   const verifyPassword = async (password) => {
     try {
@@ -468,6 +469,16 @@ const CurationPage = () => {
             📅
             {tCur('actions.manageSchedule')}
           </NavLink>
+          { hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+            <button
+              className="curation-discord-roles-btn"
+              onClick={() => setShowDiscordRolesPopup(true)}
+              title={t('components:discordRoles.title', { defaultValue: 'Discord Role Sync' })}
+            >
+              💬
+              {t('components:discordRoles.title', { defaultValue: 'Discord Roles' })}
+            </button>
+          )}
         </div>
         )}
         </div>
@@ -641,6 +652,14 @@ const CurationPage = () => {
             managementType="curator"
           />
         )}
+
+        {/* Discord Roles Popup */}
+        <DiscordRolesPopup
+          isOpen={showDiscordRolesPopup}
+          onClose={() => setShowDiscordRolesPopup(false)}
+          roleType="CURATION"
+          curationTypes={curationTypes}
+        />
 
       {/* Notifications */}
       <div className="curation-notifications">

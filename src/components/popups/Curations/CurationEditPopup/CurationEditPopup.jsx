@@ -8,7 +8,6 @@ import ThumbnailUpload from '@/components/common/upload/ThumbnailUpload';
 import { hasAbility, getDefaultColor, canAssignCurationType } from '@/utils/curationTypeUtils';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatCreatorDisplay } from '@/utils/Utility';
-import { DiscordRolesManager } from '@/components/common/discord';
 
 const CurationEditPopup = ({
   isOpen,
@@ -61,7 +60,6 @@ const CurationEditPopup = ({
   });
   const [isLoading, setIsLoading] = useState(false);
   const [mouseDownOutside, setMouseDownOutside] = useState(false);
-  const [activeTab, setActiveTab] = useState('details');
   const modalRef = useRef(null);
 
   // Get current curation type and its abilities
@@ -206,26 +204,7 @@ const CurationEditPopup = ({
           <p>{tCur('description')}</p>
         </div>
 
-        {/* Tabs */}
-        <div className="curation-edit-modal__tabs">
-          <button 
-            type="button"
-            className={`curation-edit-modal__tab-button ${activeTab === 'details' ? 'curation-edit-modal__tab-button--active' : ''}`}
-            onClick={() => setActiveTab('details')}
-          >
-            {tCur('tabs.details') || 'Details'}
-          </button>
-          <button 
-            type="button"
-            className={`curation-edit-modal__tab-button ${activeTab === 'discordRoles' ? 'curation-edit-modal__tab-button--active' : ''}`}
-            onClick={() => setActiveTab('discordRoles')}
-          >
-            {tCur('tabs.discordRoles') || 'Discord Roles'}
-          </button>
-        </div>
-
-        {activeTab === 'details' ? (
-          <>
+        <div className="curation-edit-modal__content-scroll">
         {/* Level Information Display */}
         <div className="curation-edit-modal__level-info">
           <div className="curation-edit-modal__level-card">
@@ -400,16 +379,7 @@ const CurationEditPopup = ({
             </button>
           </div>
         </form>
-          </>
-        ) : activeTab === 'discordRoles' ? (
-          <div className="curation-edit-modal__discord-roles">
-            <DiscordRolesManager
-              roleType="CURATION"
-              curationTypeId={currentCurationType?.id}
-              curationTypes={curationTypes}
-            />
-          </div>
-        ) : null}
+        </div>
       </div>
     </div>
   );

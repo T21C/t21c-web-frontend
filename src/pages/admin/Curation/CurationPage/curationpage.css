@@ -120,6 +120,27 @@
   transform: translateY(-1px);
 }
 
+.curation-page .curation-discord-roles-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: #5865F2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.curation-page .curation-discord-roles-btn:hover {
+  background: #4752C4;
+  transform: translateY(-1px);
+}
+
 .curation-page .curation-filter-group {
   display: flex;
   flex-direction: column;
@@ -513,7 +534,8 @@
 
   .curation-page .curation-add-level-btn,
   .curation-page .curation-manage-types-btn,
-  .curation-page .curation-schedule-btn {
+  .curation-page .curation-schedule-btn,
+  .curation-page .curation-discord-roles-btn {
     justify-content: center;
   }
   
@@ -704,9 +726,11 @@
 }
 
 .curation-page .curation-buttons {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   margin-left: auto;
+  max-width: 600px;
 }
 
 /* Mobile-friendly responsive design */
@@ -752,7 +776,8 @@
   .curation-page .curation-add-level-btn,
   .curation-page .curation-manage-types-btn,
   .curation-page .curation-manage-curators-btn,
-  .curation-page .curation-schedule-btn {
+  .curation-page .curation-schedule-btn,
+  .curation-page .curation-discord-roles-btn {
     width: 100%;
     justify-content: center;
     padding: 1rem;
@@ -830,7 +855,8 @@
     margin-left: 0;
     margin-top: 0.75rem;
     width: 100%;
-    justify-content: center;
+    max-width: 100%;
+    grid-template-columns: repeat(2, 1fr);
     gap: 0.75rem;
   }
 
@@ -945,7 +971,8 @@
   .curation-page .curation-add-level-btn,
   .curation-page .curation-manage-types-btn,
   .curation-page .curation-manage-curators-btn,
-  .curation-page .curation-schedule-btn {
+  .curation-page .curation-schedule-btn,
+  .curation-page .curation-discord-roles-btn {
     padding: 0.8rem;
     font-size: 0.95rem;
   }
@@ -1069,7 +1096,8 @@
   .curation-page .curation-add-level-btn,
   .curation-page .curation-manage-types-btn,
   .curation-page .curation-manage-curators-btn,
-  .curation-page .curation-schedule-btn {
+  .curation-page .curation-schedule-btn,
+  .curation-page .curation-discord-roles-btn {
     padding: 0.7rem;
     font-size: 0.9rem;
   }
@@ -1178,7 +1206,8 @@
   .curation-page .curation-add-level-btn,
   .curation-page .curation-manage-types-btn,
   .curation-page .curation-manage-curators-btn,
-  .curation-page .curation-schedule-btn {
+  .curation-page .curation-schedule-btn,
+  .curation-page .curation-discord-roles-btn {
     width: auto;
     flex: 1;
     min-width: 120px;
@@ -1216,7 +1245,8 @@
   .curation-page .curation-add-level-btn:hover,
   .curation-page .curation-manage-types-btn:hover,
   .curation-page .curation-manage-curators-btn:hover,
-  .curation-page .curation-schedule-btn:hover {
+  .curation-page .curation-schedule-btn:hover,
+  .curation-page .curation-discord-roles-btn:hover {
     transform: none;
   }
 
