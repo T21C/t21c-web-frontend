@@ -58,7 +58,8 @@
     },
     "errors": {
       "noUser": "Unable to determine user ID",
-      "generic": "Failed to refresh Discord roles"
+      "generic": "Failed to refresh Discord roles",
+      "tooManyRequests": "Too many requests. Please try again later. ({{retryAfter}})"
     }
   }
 } 

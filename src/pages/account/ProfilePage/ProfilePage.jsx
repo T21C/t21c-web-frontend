@@ -50,6 +50,7 @@ const ProfilePage = () => {
     const [displayedPasses, setDisplayedPasses] = useState([]);
     const [hasMore, setHasMore] = useState(true);
     const [showHiddenPasses, setShowHiddenPasses] = useState(false);
+    const [hasDiscordProvider, setHasDiscordProvider] = useState(false);
 
     const isOwnProfile = !playerId || Number(playerId) === user?.playerId;
 
@@ -69,6 +70,9 @@ const ProfilePage = () => {
     const setSortType = (type) => profileContext.setSortType(playerId, type);
     const setSortOrder = (order) => profileContext.setSortOrder(playerId, order);
     
+    useEffect(() => {
+      setHasDiscordProvider(user?.providers?.some(provider => provider.name === 'discord'));
+    }, [user]);
 
     var valueLabels = {
       rankedScore: tProfile('valueLabels.rankedScore'),
@@ -164,13 +168,16 @@ const ProfilePage = () => {
         try {
           // Determine which user ID to sync
           let targetUserId;
-          if (hasFlag(user, permissionFlags.SUPER_ADMIN)) {
+          let response;
+          
+          if (!hasFlag(user, permissionFlags.SUPER_ADMIN)) {
             // Super admin can sync any user's roles
             if (!playerData?.user?.id) {
               toast.error(tProfile('discordRoleSync.errors.noUser'));
               return;
             }
             targetUserId = playerData.user.id;
+            response = await api.post(`/v2/admin/discord/sync/user/${targetUserId}`);
           } else {
             // Non-admin users can only sync their own roles
             if (!user?.id) {
@@ -178,23 +185,38 @@ const ProfilePage = () => {
               return;
             }
             targetUserId = user.id;
+            response = await api.post(`/v2/auth/profile/sync-roles`);
           }
 
-          const response = await api.post(`/v2/admin/discord/sync/user/${targetUserId}`);
-          
+
+          console.log(response);
           if (response.data?.success) {
             toast.success(
               hasFlag(user, permissionFlags.SUPER_ADMIN) 
                 ? tProfile('discordRoleSync.success.other')
                 : tProfile('discordRoleSync.success.own')
             );
-          } else {
+          }
+          else {
             toast.error(tProfile('discordRoleSync.errors.generic'));
           }
         } catch (error) {
-          console.error('Error syncing Discord roles:', error);
-          const errorMessage = error.response?.data?.error || error.message || tProfile('discordRoleSync.errors.generic');
-          toast.error(errorMessage);
+          
+          if (error.response?.status === 429 && error.response?.data?.retryAfter) {
+            // Format retryAfter (which is in ms) into MM:SS
+            const retryAfterMs = error.response?.data?.retryAfter;
+            let retryAfterFormatted = retryAfterMs;
+            if (typeof retryAfterMs === 'number' && !isNaN(retryAfterMs) && retryAfterMs > 0) {
+              const totalSeconds = Math.ceil(retryAfterMs / 1000);
+              const minutes = Math.floor(totalSeconds / 60);
+              const seconds = totalSeconds % 60;
+              retryAfterFormatted = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
+            toast.error(tProfile('discordRoleSync.errors.tooManyRequests', { retryAfter: retryAfterFormatted }));
+          } else {
+            const errorMessage = error.response?.data?.error || error.message || tProfile('discordRoleSync.errors.generic');
+            toast.error(errorMessage);
+          }
         }
       };
 
@@ -527,7 +549,8 @@ const ProfilePage = () => {
                       <PackIcon color="#fff" size={"24px"} />
                     </button>
                   )}
-                    {(user && (isOwnProfile || hasFlag(user, permissionFlags.SUPER_ADMIN))) && (
+                    {(user && ((isOwnProfile && hasDiscordProvider) 
+                    /*|| hasFlag(user, permissionFlags.SUPER_ADMIN)*/)) && (
                     <button 
                       className="edit-button discord-role-refresh-button" 
                       onClick={handleDiscordRoleRefresh}
