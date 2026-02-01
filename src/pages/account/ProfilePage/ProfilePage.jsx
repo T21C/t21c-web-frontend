@@ -170,7 +170,7 @@ const ProfilePage = () => {
           let targetUserId;
           let response;
           
-          if (!hasFlag(user, permissionFlags.SUPER_ADMIN)) {
+          if (hasFlag(user, permissionFlags.SUPER_ADMIN)) {
             // Super admin can sync any user's roles
             if (!playerData?.user?.id) {
               toast.error(tProfile('discordRoleSync.errors.noUser'));
@@ -550,7 +550,7 @@ const ProfilePage = () => {
                     </button>
                   )}
                     {(user && ((isOwnProfile && hasDiscordProvider) 
-                    /*|| hasFlag(user, permissionFlags.SUPER_ADMIN)*/)) && (
+                    || hasFlag(user, permissionFlags.SUPER_ADMIN))) && (
                     <button 
                       className="edit-button discord-role-refresh-button" 
                       onClick={handleDiscordRoleRefresh}
