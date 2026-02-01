@@ -193,12 +193,15 @@
   border-radius: 4px;
   flex-direction: column;
   gap: 10px;
-  cursor: pointer;
-  transition: background-color 0.2s;
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
   justify-content: center;
+  pointer-events: none; /* Prevent container from receiving pointer events */
+}
+
+.player-page .profile-button-container > * {
+  pointer-events: auto; /* Re-enable pointer events for buttons inside */
 }
 
 /* For a single or two elements, use a single column layout */
@@ -215,14 +218,32 @@
   padding: 2px;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.15s ease, transform 0.1s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  -webkit-tap-highlight-color: transparent; /* Remove mobile tap highlight */
+  touch-action: manipulation; /* Optimize touch handling */
+  -webkit-user-select: none; /* Prevent text selection on touch */
+  user-select: none; /* Prevent text selection on touch */
 }
 
 .player-page .edit-button:hover {
   background-color: var(--color-white-t20);
+}
+
+.player-page .edit-button:active {
+  background-color: var(--color-white-t30);
+  transform: scale(0.95); /* Slight scale down on press for tactile feedback */
+}
+
+.player-page .edit-button:focus {
+  outline: 2px solid rgba(255, 255, 255, 0.3);
+  outline-offset: 2px;
+}
+
+.player-page .edit-button:focus:not(:focus-visible) {
+  outline: none; /* Remove outline for mouse clicks, keep for keyboard */
 }
 
 .player-page .edit-button svg {
@@ -761,11 +782,25 @@
     gap: 0.5rem;
     margin-top: 1rem;
     justify-content: center;
+    transform: none;
+    display: flex;
+    pointer-events: none; /* Prevent container from receiving pointer events */
+  }
+
+  .player-page .profile-button-container > * {
+    pointer-events: auto; /* Re-enable pointer events for buttons inside */
   }
 
   .player-page .edit-button {
     width: 44px;
     height: 44px;
+    min-width: 44px; /* Ensure minimum touch target size */
+    min-height: 44px;
+  }
+
+  .player-page .edit-button:active {
+    background-color: var(--color-white-t40); /* More prominent on mobile */
+    transform: scale(0.92); /* More noticeable scale on mobile */
   }
 
   .player-page .edit-button svg {
@@ -890,6 +925,13 @@
   .player-page .edit-button {
     width: 40px;
     height: 40px;
+    min-width: 40px; /* Ensure minimum touch target size */
+    min-height: 40px;
+  }
+
+  .player-page .edit-button:active {
+    background-color: var(--color-white-t40); /* More prominent on mobile */
+    transform: scale(0.92); /* More noticeable scale on mobile */
   }
 
   .player-page .edit-button svg {
@@ -994,6 +1036,12 @@
 @media (hover: none) and (pointer: coarse) {
   .player-page .edit-button:hover {
     background-color: var(--color-white-t10);
+  }
+
+  .player-page .edit-button:active {
+    background-color: var(--color-white-t40) !important; /* Force prominent active state on touch */
+    transform: scale(0.92) !important; /* More noticeable feedback */
+    transition: background-color 0.1s ease, transform 0.1s ease; /* Faster transition for touch */
   }
 
   .case-open-button:hover:not(:disabled) {
