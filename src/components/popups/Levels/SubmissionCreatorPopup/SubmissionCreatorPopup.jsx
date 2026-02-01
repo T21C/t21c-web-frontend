@@ -491,7 +491,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
                       className="cancel-button"
                       disabled={isCreating}
                     >
-                      {tCreator('buttons.cancel')}
+                      {t('buttons.cancel', { ns: 'common' })}
                     </button>
                     <button
                       type="submit"

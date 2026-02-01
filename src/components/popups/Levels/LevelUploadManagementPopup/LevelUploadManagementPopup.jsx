@@ -242,7 +242,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
             }}
             disabled={isUploading}
           >
-            {tUpload('buttons.close')}
+            {t('buttons.close', { ns: 'common' })}
           </button>
         </div>
 
@@ -270,7 +270,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
                 setError(null);
               }}
             >
-              {tUpload('buttons.cancel')}
+              {t('buttons.cancel', { ns: 'common' })}
             </button>
           </div>
         ) : (

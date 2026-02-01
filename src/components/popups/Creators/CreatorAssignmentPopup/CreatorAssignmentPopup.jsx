@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 import { CustomSelect } from '@/components/common/selectors';
 import api from '@/utils/api';
@@ -16,6 +17,18 @@ export const CreatorAssignmentPopup = ({ user, onClose, onUpdate }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [showUnassignConfirm, setShowUnassignConfirm] = useState(false);
   const [currentCreator, setCurrentCreator] = useState(user?.creator || null);
+
+
+  useEffect(() => {
+    // Lock body scroll when popup opens
+    document.body.style.overflowY = 'hidden';
+    
+    // Cleanup: restore body scroll when popup closes
+    return () => {
+      document.body.style.overflowY = '';
+    };
+  }, []);
+
 
   // Update currentCreator when user prop changes
   useEffect(() => {
@@ -119,7 +132,13 @@ export const CreatorAssignmentPopup = ({ user, onClose, onUpdate }) => {
       
       if (response.status === 200) {
         toast.success('Creator assigned successfully');
-        onUpdate(); // Refresh the data to get updated creator information
+        // Update local state with new creator
+        setCurrentCreator(response.data.user.creator || null);
+        // Reset selected creator
+        setSelectedCreator(null);
+        setCreatorSearch('');
+        // Pass updated user data to onUpdate callback
+        onUpdate(response.data.user);
       } else {
         const errorMsg = response.data?.error || response.data?.message || 'Failed to assign creator';
         toast.error(errorMsg);
@@ -147,7 +166,10 @@ export const CreatorAssignmentPopup = ({ user, onClose, onUpdate }) => {
       
       if (response.status === 200) {
         toast.success('Creator unassigned successfully');
-        onUpdate(); 
+        // Update local state - creator is now null
+        setCurrentCreator(null);
+        // Pass updated user data to onUpdate callback
+        onUpdate(response.data.user);
       } else {
         const errorMsg = response.data?.error || response.data?.message || 'Failed to unassign creator';
         toast.error(errorMsg);
@@ -170,7 +192,7 @@ export const CreatorAssignmentPopup = ({ user, onClose, onUpdate }) => {
     }
   };
 
-  return (
+  const popupContent = (
     <div className="creator-assignment-popup-overlay">
       <div className="creator-assignment-popup" ref={popupRef}>
         <button className="close-popup-btn" onClick={onClose}>
@@ -278,4 +300,7 @@ export const CreatorAssignmentPopup = ({ user, onClose, onUpdate }) => {
       </div>
     </div>
   );
+
+  // Use portal to render popup at document.body level to escape stacking context
+  return createPortal(popupContent, document.body);
 }; 

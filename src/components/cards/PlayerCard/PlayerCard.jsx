@@ -9,6 +9,7 @@ import { UserAvatar } from "@/components/layout";
 import { useAuth } from "@/contexts/AuthContext";
 import { permissionFlags } from "@/utils/UserPermissions";
 import { hasFlag } from "@/utils/UserPermissions";
+import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 
 const diffFields = ["topDiff", "top12kDiff"];
 const passes = ["totalPasses", "universalPassCount", "worldsFirstCount"];
@@ -144,12 +145,7 @@ const PlayerCard = ({player, onCreatorAssignmentClick}) => {
             onClick={handleCreatorAssignmentClick}
             title="Assign Creator"
           >
-            <span 
-              className="creator-assignment-icon"
-              style={{
-                color: player.player.user.creator ? '#5f5' : '#fff'
-              }}
-            >🛠</span>
+              <CreatorIcon className="creator-assignment-icon" color={player.player.user.creator ? '#5f5' : '#fff'} />
           </button>
         )}
             </p>

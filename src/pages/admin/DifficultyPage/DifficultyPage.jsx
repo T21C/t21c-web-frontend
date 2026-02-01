@@ -1383,7 +1383,7 @@ const DifficultyPage = () => {
                       setPendingAction(null);
                     }}
                   >
-                    {tDiff('buttons.cancel')}
+                    {t('buttons.cancel', { ns: 'common' })}
                   </button>
                 </div>
               </div>

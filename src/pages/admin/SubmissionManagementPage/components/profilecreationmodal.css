@@ -95,6 +95,12 @@
   font-size: 0.9rem;
 }
 
+.profile-creation-modal .creator-assignment-icon {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  margin-left: 0.5rem;
+}
+
 .profile-creation-modal .modal-actions {
   display: flex;
   justify-content: flex-end;

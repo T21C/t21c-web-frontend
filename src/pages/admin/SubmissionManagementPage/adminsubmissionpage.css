@@ -512,6 +512,7 @@
     margin-left: 1rem;
     align-items: center;
     gap: 8px;
+    flex-wrap: wrap;
   }
 
   .submission-admin-page .detail-label {
@@ -1265,6 +1266,45 @@
   .submission-admin-page .detail-subvalue {
     font-size: 0.8rem;
     color: var(--color-white-t80);
+  }
+
+  .submission-admin-page .creator-assignment-button {
+    padding: 6px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 36px;
+    margin-left: 8px;
+  }
+
+  .submission-admin-page .creator-assignment-button.no-creator {
+    background-color: #ff4444;
+    color: white;
+  }
+
+  .submission-admin-page .creator-assignment-button.no-creator:hover {
+    background-color: #ff6666;
+    transform: translateY(-1px);
+  }
+
+  .submission-admin-page .creator-assignment-button.has-creator {
+    background-color: #4CAF50;
+    color: white;
+  }
+
+  .submission-admin-page .creator-assignment-button.has-creator:hover {
+    background-color: #66BB6A;
+    transform: translateY(-1px);
+  }
+
+  .submission-admin-page .creator-assignment-button:active {
+    transform: translateY(0);
   }
 
   .pending-profile {

@@ -6,12 +6,13 @@ import { useTranslation } from "react-i18next";
 import { isImageUrl } from "@/utils/Utility";
 import api from "@/utils/api";
 import { ProfileCreationModal } from './ProfileCreationModal';
-import { SubmissionCreatorPopup, SongSelectorPopup, ArtistSelectorPopup, EntityActionPopup, EvidenceGalleryPopup } from '@/components/popups';
+import { SubmissionCreatorPopup, SongSelectorPopup, ArtistSelectorPopup, EntityActionPopup, EvidenceGalleryPopup, CreatorAssignmentPopup } from '@/components/popups';
 import { toast } from "react-hot-toast";
 import { ServerCloudIcon, WarningIcon } from "@/components/common/icons";
 import { Tooltip } from "react-tooltip";
 import { formatDate } from "@/utils/Utility";
 import i18next from "i18next";
+import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 
 
 const LevelSubmissions = () => {
@@ -45,6 +46,7 @@ const LevelSubmissions = () => {
   const [selectedEvidenceSubmission, setSelectedEvidenceSubmission] = useState(null);
   const [editingSuffix, setEditingSuffix] = useState({});
   const [suffixValues, setSuffixValues] = useState({});
+  const [showCreatorAssignmentModal, setShowCreatorAssignmentModal] = useState({});
 
   useEffect(() => {
     fetchPendingSubmissions();
@@ -1164,7 +1166,42 @@ const LevelSubmissions = () => {
                       <span className="detail-value">{submission.submitterDiscordUsername? `@${submission.submitterDiscordUsername}` : submission.levelSubmitter?.username || "Null"}</span>
                       <span className="detail-subvalue">#{submission.levelSubmitter?.playerId || "Null"}</span>
                     </div>
+                    {submission.levelSubmitter && (
+                      <CreatorIcon
+                        className={`creator-assignment-button ${submission.levelSubmitter?.creator ? 'has-creator' : 'no-creator'}`}
+                        onClick={() => setShowCreatorAssignmentModal(prev => ({ ...prev, [submission.id]: true }))}
+                        title={submission.levelSubmitter?.creator ? 'Creator assigned' : 'No creator assigned'}
+                      />
+                    )}
                   </div>
+                  {showCreatorAssignmentModal[submission.id] && submission.levelSubmitter && (
+                    <CreatorAssignmentPopup
+                      user={submission.levelSubmitter}
+                      onClose={() => setShowCreatorAssignmentModal(prev => {
+                        const newState = { ...prev };
+                        delete newState[submission.id];
+                        return newState;
+                      })}
+                      onUpdate={(updatedUser) => {
+                        // Update all submissions with matching user ID in place
+                        if (updatedUser) {
+                          setSubmissions(prevSubmissions => prevSubmissions.map(sub => {
+                            if (sub.levelSubmitter?.id === updatedUser.id) {
+                              return {
+                                ...sub,
+                                levelSubmitter: {
+                                  ...sub.levelSubmitter,
+                                  creatorId: updatedUser.creatorId,
+                                  creator: updatedUser.creator || null
+                                }
+                              };
+                            }
+                            return sub;
+                          }));
+                        }
+                      }}
+                    />
+                  )}
 
                   {/* Group Creator Requests by Role */}
                   {(() => {

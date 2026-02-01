@@ -1361,14 +1361,14 @@ const DifficultyPopup = ({
 
               <div className="difficulty-modal__actions">
                 <button type="submit" className="difficulty-modal__button difficulty-modal__button--save">
-                  {isCreating ? tDiff('buttons.create') : t('buttons.save', { ns: 'common' })}
+                  {isCreating ? t('buttons.create', { ns: 'common' }) : t('buttons.save', { ns: 'common' })}
                 </button>
                 <button
                   type="button"
                   className="difficulty-modal__button difficulty-modal__button--cancel"
                   onClick={onClose}
                 >
-                  {tDiff('buttons.cancel')}
+                  {t('buttons.cancel', { ns: 'common' })}
                 </button>
               </div>
             </form>

@@ -1335,7 +1335,7 @@ const CreatorManagementPage = () => {
                 }}
                 disabled={isCreatingCreator || !newCreatorData.name.trim()}
               >
-                {isCreatingCreator ? t('loading.creating', { ns: 'common' }) : tCreator('buttons.create')}
+                {isCreatingCreator ? t('loading.creating', { ns: 'common' }) : t('buttons.create', { ns: 'common' })}
               </button>
               <button
                 className="cancel-button"
@@ -1345,7 +1345,7 @@ const CreatorManagementPage = () => {
                   setNewCreatorAlias('');
                 }}
               >
-                {tCreator('buttons.cancel')}
+                {t('buttons.cancel', { ns: 'common' })}
               </button>
             </div>
           </div>

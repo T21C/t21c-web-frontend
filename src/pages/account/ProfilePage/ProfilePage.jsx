@@ -17,6 +17,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { ScrollButton } from "@/components/common/buttons";
 import { useProfileContext } from "@/contexts/ProfileContext";
 import toast from 'react-hot-toast';
+import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
 
 const PASSES_PER_PAGE = 20;
@@ -533,11 +534,10 @@ const ProfilePage = () => {
                       onClick={handleCreatorAssignmentClick}
                       title="Assign Creator"
                     >
-                      <span className="creator-assignment-icon"
-                        style={{
-                          color: playerData?.user?.creator ? '#5f5' : '#fff'
-                        }}
-                      >🛠</span>
+                      <CreatorIcon className="creator-assignment-icon"
+                          color={playerData?.user?.creator ? '#5f5' : '#fff'}
+                          size={24}
+                      />
                     </button>
                   )}
                   {playerData?.username && (
