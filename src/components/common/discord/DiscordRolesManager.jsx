@@ -4,6 +4,7 @@ import api from '@/utils/api';
 import toast from 'react-hot-toast';
 import { TrashIcon, EditIcon } from '@/components/common/icons';
 import { RatingInput, CustomSelect } from '@/components/common/selectors';
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import './discordrolesmanager.css';
 
 /**
@@ -69,6 +70,9 @@ const DiscordRolesManager = ({
 
   // Expanded guilds state
   const [expandedGuilds, setExpandedGuilds] = useState({});
+  
+  // Reordering state per guild
+  const [reorderingGuilds, setReorderingGuilds] = useState({});
 
   // Track initial form states for unsaved changes detection
   const [initialGuildForm, setInitialGuildForm] = useState(null);
@@ -433,6 +437,70 @@ const DiscordRolesManager = ({
     setShowRoleModal(true);
   };
 
+  const handleRoleDragEnd = async (result, guildId) => {
+    if (!result.destination) return;
+    
+    // Only allow reordering within the same guild (same droppableId)
+    if (result.source.droppableId !== result.destination.droppableId) return;
+    
+    setReorderingGuilds(prev => ({ ...prev, [guildId]: true }));
+    
+    try {
+      const guild = guilds.find(g => g.id === guildId);
+      if (!guild || !guild.roles) {
+        return;
+      }
+
+      const relevantRoles = getRelevantRoles(guild.roles);
+      // Sort by sortOrder to get current order
+      const sortedRoles = [...relevantRoles].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+      
+      // Reorder the array
+      const items = Array.from(sortedRoles);
+      const [reorderedItem] = items.splice(result.source.index, 1);
+      items.splice(result.destination.index, 0, reorderedItem);
+      
+      // Extract IDs in the new order - these are the relevant role IDs
+      const roleIds = items.map(item => item.id);
+      
+      // Update local state immediately for better UX
+      // Only update sortOrder for roles that are in the reordered list
+      setGuilds(guilds.map(g => {
+        if (g.id === guildId) {
+          const updatedRoles = g.roles.map(role => {
+            const newIndex = roleIds.indexOf(role.id);
+            if (newIndex !== -1) {
+              // This role is in the reordered list, update its sortOrder
+              return { ...role, sortOrder: newIndex };
+            }
+            // Keep other roles unchanged
+            return role;
+          });
+          return { ...g, roles: updatedRoles };
+        }
+        return g;
+      }));
+      
+      // Send reorder request to backend with the sorted list of IDs
+      await api.put(`/v2/admin/discord/guilds/${guildId}/roles/reorder`, {
+        roleIds: roleIds
+      }, {
+        headers: getHeaders()
+      });
+      
+      // Reload guilds to get updated sortOrder values from backend
+      await loadGuilds();
+      
+      toast.success(tDisc('success.rolesReordered'));
+    } catch (err) {
+      toast.error(err.response?.data?.error || tDisc('errors.reorderRoles'));
+      // Reload guilds on error to restore original order
+      loadGuilds();
+    } finally {
+      setReorderingGuilds(prev => ({ ...prev, [guildId]: false }));
+    }
+  };
+
   if (isLoading) {
     return <div className="discord-roles-manager__loading">{t('loading.generic', { ns: 'common' })}</div>;
   }
@@ -519,29 +587,60 @@ const DiscordRolesManager = ({
                         {tDisc('empty.noRoles', { type: roleTypeLabel })}
                       </div>
                     ) : (
-                      <div className="discord-roles-manager__roles-list">
-                        {relevantRoles.map(role => (
-                          <div key={role.id} className="discord-roles-manager__role">
-                            <div className="discord-roles-manager__role-info">
-                              <span className={`discord-roles-manager__role-status ${role.isActive ? 'active' : 'inactive'}`} />
-                              <span className="discord-roles-manager__role-label">{role.label}</span>
-                              <span className="discord-roles-manager__role-id">({role.roleId})</span>
-                              {role.conflictGroup && (
-                                <span className="discord-roles-manager__conflict-group">
-                                  {tDisc('role.group', { group: role.conflictGroup })}
-                                </span>
-                              )}
-                            </div>
-                            <button
-                              type="button"
-                              className="discord-roles-manager__edit-btn"
-                              onClick={() => openRoleModal(guild.id, role)}
-                            >
-                              <EditIcon size="14px" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
+                      <DragDropContext onDragEnd={(result) => handleRoleDragEnd(result, guild.id)}>
+                        <Droppable droppableId={`guild-${guild.id}`}>
+                          {(provided) => {
+                            // Sort roles by sortOrder before rendering
+                            const sortedRoles = [...relevantRoles].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+                            
+                            return (
+                              <div 
+                                className="discord-roles-manager__roles-list"
+                                {...provided.droppableProps}
+                                ref={provided.innerRef}
+                              >
+                                {sortedRoles.map((role, index) => (
+                                  <Draggable
+                                    key={role.id}
+                                    draggableId={`role-${role.id}`}
+                                    index={index}
+                                    isDragDisabled={reorderingGuilds[guild.id]}
+                                  >
+                                    {(provided, snapshot) => (
+                                      <div
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                        className={`discord-roles-manager__role ${snapshot.isDragging ? 'dragging' : ''}`}
+                                      >
+                                        <div className="discord-roles-manager__role-info">
+                                          <span className={`discord-roles-manager__role-status ${role.isActive ? 'active' : 'inactive'}`} />
+                                          <span className="discord-roles-manager__role-label">{role.label}</span>
+                                          <span className="discord-roles-manager__role-id">({role.roleId})</span>
+                                          {role.conflictGroup && (
+                                            <span className="discord-roles-manager__conflict-group">
+                                              {tDisc('role.group', { group: role.conflictGroup })}
+                                            </span>
+                                          )}
+                                        </div>
+                                        <button
+                                          type="button"
+                                          className="discord-roles-manager__edit-btn"
+                                          onClick={() => openRoleModal(guild.id, role)}
+                                          disabled={reorderingGuilds[guild.id]}
+                                        >
+                                          <EditIcon size="14px" />
+                                        </button>
+                                      </div>
+                                    )}
+                                  </Draggable>
+                                ))}
+                                {provided.placeholder}
+                              </div>
+                            );
+                          }}
+                        </Droppable>
+                      </DragDropContext>
                     )}
                   </div>
                 )}

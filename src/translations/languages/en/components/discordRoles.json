@@ -8,7 +8,8 @@
     "deleteGuild": "Failed to delete guild",
     "createRole": "Failed to create role",
     "updateRole": "Failed to update role",
-    "deleteRole": "Failed to delete role"
+    "deleteRole": "Failed to delete role",
+    "reorderRoles": "Failed to reorder roles"
   },
   "success": {
     "guildCreated": "Guild created successfully",
@@ -16,7 +17,8 @@
     "guildDeleted": "Guild deleted successfully",
     "roleCreated": "Role created successfully",
     "roleUpdated": "Role updated successfully",
-    "roleDeleted": "Role deleted successfully"
+    "roleDeleted": "Role deleted successfully",
+    "rolesReordered": "Roles reordered successfully"
   },
   "empty": {
     "noGuilds": "No Discord guilds configured yet.",
