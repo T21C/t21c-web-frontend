@@ -181,8 +181,8 @@ const CurationEditPopup = ({
         typeId: parseInt(formData.typeId),
         shortDescription: formData.shortDescription,
         description: formData.description,
-        customCSS: canUseCustomCSS ? formData.customCSS : '',
-        customColor: canUseCustomColor ? formData.customColor : getDefaultColor(currentCurationType?.abilities)
+        customCSS: formData.customCSS,
+        customColor: formData.customColor
       });
 
       toast.success(tCur('notifications.updated'));

@@ -165,6 +165,7 @@ const ProfilePage = () => {
         }
       };
 
+      /*
       const handleDiscordRoleRefresh = async () => {
         try {
           // Determine which user ID to sync
@@ -220,6 +221,7 @@ const ProfilePage = () => {
           }
         }
       };
+      */
 
       const lowestImpactScore = playerData?.topScores?.reduce((minItem, score) =>
         minItem == null || score.impact < minItem.impact ? score : minItem
@@ -549,7 +551,8 @@ const ProfilePage = () => {
                       <PackIcon color="#fff" size={"24px"} />
                     </button>
                   )}
-                    {(user && ((isOwnProfile && hasDiscordProvider) 
+                  
+                    {/*(user && ((isOwnProfile && hasDiscordProvider) 
                     || hasFlag(user, permissionFlags.SUPER_ADMIN))) && (
                     <button 
                       className="edit-button discord-role-refresh-button" 
@@ -562,7 +565,7 @@ const ProfilePage = () => {
                     >
                       <DiscordIcon color="#fff" size={"24px"} />
                     </button>
-                  )}
+                  )*/}
                   </div>
                 </div>
             
