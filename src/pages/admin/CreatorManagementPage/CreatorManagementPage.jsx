@@ -46,7 +46,6 @@ const CreatorManagementPage = () => {
   const { t } = useTranslation('pages');
   const tCreator = (key, params = {}) => t(`creatorManagement.${key}`, params);
   const [sort, setSort] = useState('NAME_ASC');
-  const [teams, setTeams] = useState([]);
   const [pendingTeam, setPendingTeam] = useState(null);
   const [pendingCreators, setPendingCreators] = useState([]);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
@@ -432,7 +431,7 @@ const CreatorManagementPage = () => {
       return;
     }
 
-    const matchingTeam = teams.find(t => t.name.toLowerCase() === input?.toLowerCase());
+    const matchingTeam = teamsList?.find(t => t.name.toLowerCase() === input?.toLowerCase());
     const newPendingTeam = matchingTeam ? { id: matchingTeam.id, name: matchingTeam.name } : { name: input };
     setPendingTeam(newPendingTeam);
     setHasUnsavedChanges(true);
@@ -702,7 +701,7 @@ const CreatorManagementPage = () => {
         <div className="team-header">
           <div className="team-input-group">
             <CustomSelect
-              options={teams.map(team => ({
+              options={teamsList.map(team => ({
                 value: team.name,
                 label: team.name
               }))}

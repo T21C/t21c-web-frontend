@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import i18next from 'i18next';
+import { getSongDisplayName } from '@/utils/levelHelpers';
 
 const trimString = (str, maxLength = 40) => {
   if (!str || typeof str !== 'string') return '';
@@ -50,9 +51,9 @@ export const RatingCard = ({
         
     const rerateValue = rating.level.rerateNum || rating.requesterFR;
     const rerateReason = rating.level.rerateReason;
-    const songTitle = trimString(rating.level.song, 50);
+    const songTitle = trimString(getSongDisplayName(rating.level), 50);
     const creator = trimString(rating.level.creator, 30);
-    const fullTitle = `${rating.level.song} - ${rating.level.creator}`;
+    const fullTitle = `${getSongDisplayName(rating.level)} - ${rating.level.creator}`;
     
     const handleReasonClick = () => {
       setIsReasonExpanded(!isReasonExpanded);
