@@ -4,11 +4,15 @@
       "home": "Home",
       "levels": "Levels",
       "leaderboard": "Leaderboard",
+      "creators": "Creators",
+      "packs": "Packs",
+      "info": "Info",
+      "more": "More",
       "pass": "Passes",
       "submission": "Submit",
       "rating": "Rating",
       "curations": "Curation",
-      "packs": "Packs",
+      "signIn": "Sign in",
       "admin": {
         "rating": "Rating",
         "submissions": "Submissions",
@@ -20,6 +24,47 @@
         "admin": "Admin",
         "creators": "Creators"
       }
+    },
+    "dropdowns": {
+      "creators": {
+        "adofaiCreators": "ADOFAI Creators",
+        "artists": "Artists",
+        "songs": "Songs"
+      },
+      "packs": {
+        "allPacks": "All Packs"
+      },
+      "more": {
+        "passes": "Passes",
+        "rating": "Rating",
+        "tufHelper": "TUFHelper",
+        "tos": "ToS",
+        "privacyPolicy": "Privacy Policy",
+        "aboutUs": "About Us"
+      },
+      "user": {
+        "myProfile": "My Profile",
+        "mySubmissions": "My Submissions",
+        "notifications": "Notifications",
+        "settings": "Settings",
+        "admin": "Admin",
+        "logout": "Log out"
+      },
+      "admin": {
+        "rating": "Rating",
+        "submissions": "Submissions",
+        "announcements": "Announcements",
+        "difficulties": "Difficulties",
+        "creators": "Creators",
+        "backups": "Backups",
+        "auditLog": "Audit Log",
+        "curations": "Curations",
+        "songs": "Songs",
+        "artists": "Artists"
+      }
+    },
+    "badges": {
+      "underConstruction": "Under Construction"
     }
   },
   "languages": {

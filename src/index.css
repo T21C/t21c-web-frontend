@@ -68,8 +68,7 @@ body {
   background-color: var(--color-black);
 }
 
-.wrapper-body {
-  padding: 0 3rem;
+.body {
   position: relative;
   z-index: 2;
 }

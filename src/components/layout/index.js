@@ -1,11 +1,11 @@
 import Footer from './Footer/Footer'
-import CompleteNav from './Navigation/CompleteNav'
+import Navigation from './Navigation/Navigation'
 import Profile from './Profile/Profile'
 import UserAvatar from './UserAvatar/UserAvatar'
 
 export {
     Footer,
-    CompleteNav,
+    Navigation,
     Profile,
     UserAvatar
 }

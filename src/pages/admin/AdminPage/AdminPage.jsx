@@ -66,6 +66,20 @@ const AdminPage = () => {
       title: t("admin.links.curations"),
       description: t("admin.links.curationsDesc"),
       icon: "🏆"
+    },
+    {
+      id: 'song-management',
+      path: '/admin/songs',
+      title: t("admin.links.songs"),
+      description: t("admin.links.songsDesc"),
+      icon: "🎵"
+    },
+    {
+      id: 'artist-management',
+      path: '/admin/artists',
+      title: t("admin.links.artists"),
+      description: t("admin.links.artistsDesc"),
+      icon: "🎤"
     }
   ];
 

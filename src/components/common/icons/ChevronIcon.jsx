@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ChevronIcon = ({ className = "", size = 16, direction = "right", ...props }) => {
+const ChevronIcon = ({ className = "", color = "currentColor", size = 16, direction = "right", ...props }) => {
   const rotation = {
     right: "0deg",
     down: "90deg",
@@ -21,7 +21,7 @@ const ChevronIcon = ({ className = "", size = 16, direction = "right", ...props 
     >
       <path
         d="M6 4L10 8L6 12"
-        stroke="currentColor"
+        stroke={color}
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"

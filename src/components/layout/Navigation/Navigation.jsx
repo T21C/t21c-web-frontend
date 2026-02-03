@@ -1,350 +1,178 @@
 /* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
 import "./navigation.css";
-import React, { useState, useContext, useEffect } from "react";
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { NavLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { UserContext } from "@/contexts/UserContext";
-import i18next from 'i18next';
-import { isoToEmoji } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
-import { useNotification } from "@/contexts/NotificationContext";
-import api from "@/utils/api";
-import { hasAnyFlag, permissionFlags } from "@/utils/UserPermissions";
-import { hasFlag } from "@/utils/UserPermissions";
+import { isoToEmoji } from "@/utils";
+import { useContext } from "react";
+import { UserContext } from "@/contexts/UserContext";
 import LogoFullOutlineSVG from "@/assets/tuf-logo/LogoFullOutlined/LogoFullOutlined";
+import NavDropdown from "./NavDropdown";
+import NavLinkItem from "./NavLinkItem";
+import LanguageSelector from "./LanguageSelector";
+import UserMenu from "./UserMenu";
+import MobileMenu from "./MobileMenu";
+import { createNavigationConfig } from "./navigationConfig";
 
-const Navigation = ({ children }) => {
-  const { t } = useTranslation('components');
+const Navigation = ({ children, config: externalConfig = null }) => {
+  const { t } = useTranslation("components");
   const tNav = (key) => t(`navigation.main.${key}`) || key;
   const tLang = (key) => t(`navigation.languages.${key}`) || key;
 
   const [openNav, setOpenNav] = useState(false);
-  const { language, setLanguage } = useContext(UserContext);
-  const [openDialog, setOpenDialog] = useState(false);
-  const [isAdminView, setIsAdminView] = useState(false);
-  const { user } = useAuth();
-  const navigate = useNavigate();
+  const { user, initiateLogin } = useAuth();
   const location = useLocation();
-  const { pendingRatings, pendingSubmissions } = useNotification();
+  const { language } = useContext(UserContext);
 
-  // Language configuration with implementation status
-  const [languages, setLanguages] = useState({
-    en: { display: "English", countryCode: "us", status: 100 },
-    pl: { display: "Polski", countryCode: "pl", status: 0 },
-    kr: { display: "한국어", countryCode: "kr", status: 0 },
-    cn: { display: "中文", countryCode: "cn", status: 0 },
-    id: { display: "Bahasa Indonesia", countryCode: "id", status: 0 },
-    jp: { display: "日本語", countryCode: "jp", status: 0 },
-    ru: { display: "Русский", countryCode: "ru", status: 0 },
-    de: { display: "Deutsch", countryCode: "de", status: 0 },
-    fr: { display: "Français", countryCode: "fr", status: 0 },
-    es: { display: "Español", countryCode: "es", status: 0 }
-  });
+  // Create navigation config from external config or generate from context
+  const config = externalConfig || createNavigationConfig(tNav, { user, location });
 
-  // Fetch language implementation status on mount
-  useEffect(() => {
-    const fetchLanguageStatus = async () => {
-      try {
-        const response = await api.get('/v2/utils/languages');
-        // The response is already in the correct format, just update the state
-        setLanguages(response.data);
-      } catch (error) {
-        console.error('Error fetching language status:', error);
-      }
-    };
-    
-    fetchLanguageStatus();
-  }, []);
-
-  // Convert to array and sort
-  const sortedLanguages = Object.entries(languages)
-    .sort(([keyA, a], [keyB, b]) => {
-      // First sort by implementation status (higher first)
-      if (a.status !== b.status) {
-        return b.status - a.status;
-      }
-      // Then sort alphabetically by display name
-      return a.display.localeCompare(b.display);
-    })
-    .reduce((obj, [key, value]) => {
-      obj[key] = value;
-      return obj;
-    }, {});
-
-  const getCurrentCountryCode = () => {
-    if (language === 'en' || language === 'us') {
-      return 'us';
-    }
-    return languages[language]?.countryCode || language;
-  };
-
-  useEffect(() => {
-    if (language === 'us') {
-      setLanguage('en');
-    }
-  }, []);
-
-  useEffect(() => {
-    const isAdminPath = location.pathname.startsWith('/admin');
-    setIsAdminView(isAdminPath && user && hasFlag(user, permissionFlags.SUPER_ADMIN));
-  }, [location]);
-
+  // Close mobile nav when location changes
   useEffect(() => {
     setOpenNav(false);
   }, [location]);
 
+  // Close mobile nav when viewport crosses threshold (580px)
   useEffect(() => {
-    // Close language select when clicking outside
-    function handleClickOutside(event) {
-      if (openDialog && !event.target.closest('.nav-language-selector') && !event.target.closest('.nav-language-selector-mobile')) {
-        setOpenDialog(false);
+    const handleResize = () => {
+      if (window.innerWidth > 580 && openNav) {
+        setOpenNav(false);
       }
-    }
+    };
 
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
-  }, [openDialog]);
+    window.addEventListener("resize", handleResize);
+    // Check on mount in case viewport is already above threshold
+    handleResize();
 
-  function changeNavState() {
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, [openNav]);
+
+  const toggleMobileNav = () => {
     setOpenNav(!openNav);
-  }
-
-  function changeDialogState(e) {
-    e.stopPropagation(); // Prevent event from bubbling
-    setOpenDialog(!openDialog);
-  }
-
-  function handleChangeLanguage(newLanguage, e) {
-    e.stopPropagation();
-    
-    // Only allow changing to languages with some implementation
-    if (languages[newLanguage].status === 0) {
-      return;
-    }
-    
-    const i18nLanguage = newLanguage === 'us' ? 'en' : newLanguage;
-    i18next.changeLanguage(i18nLanguage).then(() => {
-      setLanguage(i18nLanguage);
-    });
-    setOpenDialog(false);
-  }
-
-  const toggleAdminView = () => {
-    const newAdminView = !isAdminView;
-    navigate(newAdminView ? '/admin/rating' : '/levels');
   };
 
-  const isCurator = (user) => {
-    return hasAnyFlag(user, [
-      permissionFlags.HEAD_CURATOR, 
-      permissionFlags.CURATOR, 
-      permissionFlags.RATER, 
-      permissionFlags.SUPER_ADMIN
-    ]);
+  // Render navigation item based on type
+  const renderNavItem = (item, index) => {
+    // Check condition if present
+    if (item.condition && !item.condition()) {
+      // Use fallback if available
+      if (item.fallback) {
+        return renderNavItem(item.fallback, index);
+      }
+      return null;
+    }
+
+    switch (item.type) {
+      case "link":
+        return (
+          <NavLinkItem
+            key={item.to || index}
+            to={item.to}
+            label={item.translationKey}
+            getTranslation={tNav}
+            className={item.className}
+            linkClassName={item.linkClassName}
+          />
+        );
+
+      case "dropdown":
+        return (
+          <NavDropdown
+            key={item.label || index}
+            label={tNav(item.label)}
+            items={item.items}
+            getTranslation={tNav}
+            isActive={item.isActive}
+            className={item.className}
+            showAsLink={item.showAsLink}
+            linkTo={item.linkTo}
+          />
+        );
+
+      case "button":
+        const onClickHandler = item.onClick
+          ? item.onClick(initiateLogin)
+          : undefined;
+        return (
+          <button
+            key={item.translationKey || index}
+            className={item.className || "nav-signin-button"}
+            onClick={onClickHandler}
+          >
+            {tNav(item.translationKey)}
+          </button>
+        );
+
+      case "component":
+        switch (item.component) {
+          case "LanguageSelector":
+            return (
+              <LanguageSelector
+                key="language-selector"
+                getTranslation={tLang}
+                {...item.props}
+              />
+            );
+
+          case "UserMenu":
+            return (
+              <UserMenu
+                key="user-menu"
+                getTranslation={tNav}
+                isActive={item.props?.isActive}
+              />
+            );
+
+          default:
+            return null;
+        }
+
+      default:
+        return null;
+    }
   };
 
   return (
     <>
-      <div 
-        className={`nav-mobile-overlay ${openNav ? 'visible' : ''}`} 
-        onClick={changeNavState}
-      />
-
       <div className="nav-spacer" />
-      
-      <nav className={isAdminView && user && hasFlag(user, permissionFlags.SUPER_ADMIN) ? 'nav--admin' : ''}>
+
+      <nav>
         <div className="nav-wrapper">
           {/* Left side: Logo and main navigation links */}
           <div className="nav-left">
-            <NavLink
-              to="/"
-            >
+            <NavLink to={config.logo.to} className="nav-logo-link">
               <div className="nav-logo">
-                <LogoFullOutlineSVG strokeWidth={16} strokeColor="#fffb"/>
+                {config.logo.component || (
+                  <LogoFullOutlineSVG strokeWidth={16} strokeColor="#fffb" />
+                )}
               </div>
             </NavLink>
 
             <ul className="nav-list">
-              {isAdminView ? (
-                // Admin Links
-                <>
-                  <NavLink className={({ isActive }) =>
-                    "nav-link " + (isActive ? "active" : "")}
-                    to="/admin/rating">
-                    <li className="nav-list-item">
-                      {tNav('links.admin.rating')}
-                      {pendingRatings > 0 && (
-                        <span className="nav-notification-badge">
-                          {pendingRatings > 99 ? "99+" : pendingRatings}
-                        </span>
-                      )}
-                    </li>
-                  </NavLink>
-                  <NavLink className={({ isActive }) =>
-                    "nav-link " + (isActive ? "active" : "")}
-                    to="/admin/submissions">
-                    <li className="nav-list-item">
-                      {tNav('links.admin.submissions')}
-                      {pendingSubmissions > 0 && (
-                        <span className="nav-notification-badge">
-                          {pendingSubmissions > 99 ? "99+" : pendingSubmissions}
-                        </span>
-                      )}
-                    </li>
-                  </NavLink>
-                  <NavLink className={({ isActive }) =>
-                    "nav-link " + (isActive ? "active" : "")}
-                    to="/admin/announcements">
-                    <li className="nav-list-item">{tNav('links.admin.announcements')}</li>
-                  </NavLink>
-                  <NavLink className={({ isActive }) =>
-                    "nav-link " + (isActive ? "active" : "")}
-                    to="/admin/curations">
-                    <li className="nav-list-item">{tNav('links.curations')}</li>
-                  </NavLink>
-                  <NavLink className={({ isActive }) =>
-                  {
-                    if (location.pathname === '/admin') {
-                      return "nav-link active"
-                    }
-                    return "nav-link"
-                  }}
-                    to="/admin">
-                    <li className="nav-list-item">{tNav('links.admin.dashboard')}</li>
-                  </NavLink>
-                </>
-              ) : (
-                // Regular Links
-                <>
-                  <NavLink className={({ isActive }) =>
-                    "nav-link " + (isActive ? "active" : "")}
-                    to="/levels">
-                    <li className="nav-list-item">{tNav('links.levels')}</li>
-                  </NavLink>
-                  <NavLink className={({ isActive }) =>
-                    "nav-link " + (isActive ? "active" : "")}
-                    to="/passes">
-                    <li className="nav-list-item">{tNav('links.pass')}</li>
-                  </NavLink>
-                  <NavLink className={({ isActive }) =>
-                    "nav-link " + (isActive ? "active" : "")}
-                    to="/leaderboard">
-                    <li className="nav-list-item">{tNav('links.leaderboard')}</li>
-                  </NavLink>
-                  <NavLink className={({ isActive }) =>
-                    "nav-link " + (isActive ? "active" : "")}
-                    to="/packs">
-                    <li className="nav-list-item">{tNav('links.packs')}</li>
-                  </NavLink>
-                  <NavLink className={({ isActive }) =>
-                    "nav-link " + (isActive ? "active" : "")}
-                    to="/admin/rating">
-                    <li className="nav-list-item">
-                      {tNav('links.rating')}
-                      {pendingRatings > 0 && (
-                        <span className="nav-notification-badge">
-                          {pendingRatings > 99 ? "99+" : pendingRatings}
-                        </span>
-                      )}
-                    </li>
-                  </NavLink>
-                  {isCurator(user) && (
-                    <NavLink className={({ isActive }) =>
-                      "nav-link " + (isActive ? "active" : "")}
-                      to="/admin/curations">
-                      <li className="nav-list-item">{tNav('links.curations')}</li>
-                    </NavLink>
-                  )}
-                </>
-              )}
+              {config.leftNav.map((item, index) => renderNavItem(item, index))}
             </ul>
           </div>
 
-          {/* Right side: Language switcher and profile */}
-          <ul className="nav-list">
-            {user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
-              <li className="nav-list-item" onClick={toggleAdminView}>
-                {isAdminView ? tNav('links.admin.back') : tNav('links.admin.admin')}
-              </li>
-            )}
-            <NavLink
-              className={({ isActive }) =>
-                "nav-link " + (isActive ? "active" : "")
-              }
-              to="/submission"
-            >
-              <li className="nav-list-item">{tNav('links.submission')}</li>
-            </NavLink>
-            
-            <li className={`nav-language-selector ${openDialog ? 'open' : ''}`}>
-              <div className="nav-language-selector__button" onClick={changeDialogState}>
-                <img 
-                  className="nav-language-selector__flag" 
-                  src={isoToEmoji(getCurrentCountryCode())} 
-                  alt={languages[language]?.display || ''} 
-                />
-                <svg className="nav-language-selector__arrow svg-stroke" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M7 10L12 15L17 10" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                </svg>
-              </div>
-
-              <div className={`nav-language-select ${openDialog ? 'open' : ''}`}>
-                <ul className="nav-language-select__list">
-                  {Object.entries(sortedLanguages).map(([code, { display, countryCode, status }]) => (
-                    <li
-                      key={code}
-                      className={`nav-language-select__option ${
-                        status === 0 ? 'not-implemented' : ''
-                      } ${
-                        (language === code || (language === 'en' && code === 'us')) ? 'selected' : ''
-                      }`}
-                      onClick={(e) => handleChangeLanguage(code, e)}
-                    >
-                      <img 
-                        className="nav-language-select__option-flag" 
-                        src={isoToEmoji(countryCode)} 
-                        alt={display} 
-                      />
-                      <div className="nav-language-select__option-content">
-                        <span>{display}</span>
-                        {status === 0 ? (
-                          <span className="nav-language-select__option-status">
-                            {tLang('comingSoon')}
-                          </span>
-                        ) : status < 100 ? (
-                          <span className="nav-language-select__option-status partially-implemented">
-                            {status.toFixed(1)}% ✔
-                          </span>
-                        ) : (
-                          <span className="nav-language-select__option-status fully-implemented">
-                            100% ✔
-                          </span>
-                        )}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </li>
-
+          {/* Right side: Submit, Language, Profile */}
+          <div className="nav-right">
+            {config.rightNav.map((item, index) => renderNavItem(item, index))}
             {children}
-          </ul>
+          </div>
 
+          {/* Mobile Menu Button */}
           <div className="nav-mobile-controls">
-            <div className="nav-language-selector mobile">
-              <div className="nav-language-selector__button" onClick={changeDialogState}>
-                <img 
-                  className="nav-language-selector__flag" 
-                  src={isoToEmoji(getCurrentCountryCode())} 
-                  alt={languages[language]?.display || ''} 
-                />
-              </div>
-            </div>
+            <LanguageSelector
+              getTranslation={tLang}
+              variant="mobile"
+              asListItem={false}
+            />
 
             <svg
               className="nav-mobile-menu svg-stroke"
-              onClick={changeNavState}
+              onClick={toggleMobileNav}
               xmlns="http://www.w3.org/2000/svg"
               fill="none"
               viewBox="0 0 24 24"
@@ -359,181 +187,19 @@ const Navigation = ({ children }) => {
             </svg>
           </div>
         </div>
-      
       </nav>
 
-      <div className={`nav-mobile ${openNav ? "open" : ""}`}>
-        <svg
-          className="nav-mobile__close svg-stroke"
-          onClick={changeNavState}
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          strokeWidth={1.5}
-          stroke="currentColor"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M6 18 18 6M6 6l12 12"
-          />
-        </svg>
-
-        <ul className="nav-mobile__list">
-          {children}
-          {isAdminView ? (
-            // Admin Links for mobile
-            <>
-              <li className="nav-list-item">
-                <NavLink to="/" onClick={changeNavState}>
-                  {tNav('links.home')}
-                </NavLink>
-              </li>
-              <li className="nav-list-item">
-                <NavLink to="/admin/rating" onClick={changeNavState}>
-                  {tNav('links.admin.rating')}
-                </NavLink>
-                {pendingRatings > 0 && (
-                  <span className="nav-notification-badge">
-                    {pendingRatings > 99 ? "99+" : pendingRatings}
-                  </span>
-                )}
-              </li>
-              <li className="nav-list-item">
-                <NavLink to="/admin/submissions" onClick={changeNavState}>
-                  {tNav('links.admin.submissions')}
-                </NavLink>
-                {pendingSubmissions > 0 && (
-                  <span className="nav-notification-badge">
-                    {pendingSubmissions > 99 ? "99+" : pendingSubmissions}
-                  </span>
-                )}
-              </li>
-              <li className="nav-list-item">
-                <NavLink to="/admin/announcements" onClick={changeNavState}>
-                  {tNav('links.admin.announcements')}
-                </NavLink>
-              </li>
-              <li className="nav-list-item">
-                <NavLink to="/admin" onClick={changeNavState}>
-                  {tNav('links.admin.dashboard')}
-                </NavLink>
-              </li>
-            </>
-          ) : (
-            // Regular Links for mobile
-            <>
-              <li className="nav-list-item">
-                <NavLink to="/" onClick={changeNavState}>
-                  {tNav('links.home')}
-                </NavLink>
-              </li>
-              <li className="nav-list-item">
-                <NavLink to="/levels" onClick={changeNavState}>
-                  {tNav('links.levels')}
-                </NavLink>
-              </li>
-              <li className="nav-list-item">
-                <NavLink to="/passes" onClick={changeNavState}>
-                  {tNav('links.pass')}
-                </NavLink>
-              </li>
-              <li className="nav-list-item">
-                <NavLink to="/leaderboard" onClick={changeNavState}>
-                  {tNav('links.leaderboard')}
-                </NavLink>
-              </li>
-              <li className="nav-list-item">  
-              <NavLink className={({ isActive }) =>
-                    "nav-link " + (isActive ? "active" : "")}
-                    to="/packs">
-                    {tNav('links.packs')}
-                  </NavLink>
-              </li>
-                <li className="nav-list-item">
-                  <NavLink to="/admin/rating" onClick={changeNavState}>
-                    {tNav('links.rating')}
-                  </NavLink>
-                  {pendingRatings > 0 && (
-                    <span className="nav-notification-badge">
-                      {pendingRatings > 99 ? "99+" : pendingRatings}
-                    </span>
-                  )}
-                </li>
-                {isCurator(user) && (
-                  <li className="nav-list-item">
-                    <NavLink to="/admin/curations" onClick={changeNavState}>
-                      {tNav('links.curations')}
-                    </NavLink>
-                  </li>
-                )}
-            </>
-          )}
-          <li className="nav-list-item">
-            <NavLink to="/submission" onClick={changeNavState}>
-              {tNav('links.submission')}
-            </NavLink>
-          </li>
-          
-          {/* Mobile Language Selector */}
-          <li className="nav-list-item nav-language-selector-mobile">
-            <div className="nav-language-selector__button" onClick={(e) => {
-              e.stopPropagation();
-              changeDialogState(e);
-            }}>
-              <img 
-                className="nav-language-selector__flag" 
-                src={isoToEmoji(getCurrentCountryCode())} 
-                alt={languages[language]?.display || ''} 
-              />
-              <span>{languages[language]?.display || 'Language'}</span>
-              <svg className="nav-language-selector__arrow svg-stroke" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7 10L12 15L17 10" stroke="#ffffff" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
-            </div>
-          </li>
-        </ul>
-      </div>
-
-      {/* Mobile Language Select Dropdown */}
-      <div className={`nav-language-select mobile ${openDialog ? 'open' : ''}`}>
-        <ul className="nav-language-select__list">
-          {Object.entries(sortedLanguages).map(([code, { display, countryCode, status }]) => (
-            <li
-              key={code}
-              className={`nav-language-select__option ${
-                status === 0 ? 'not-implemented' : ''
-              } ${
-                (language === code || (language === 'en' && code === 'us')) ? 'selected' : ''
-              }`}
-              onClick={(e) => handleChangeLanguage(code, e)}
-            >
-              <img 
-                className="nav-language-select__option-flag" 
-                src={isoToEmoji(countryCode)} 
-                alt={display} 
-              />
-              <div className="nav-language-select__option-content">
-                <span>{display}</span>
-                {status === 0 ? (
-                  <span className="nav-language-select__option-status">
-                    {tLang('comingSoon')}
-                  </span>
-                ) : status < 100 ? (
-                  <span className="nav-language-select__option-status partially-implemented">
-                    {status.toFixed(1)}% ✔
-                  </span>
-                ) : (
-                  <span className="nav-language-select__option-status fully-implemented">
-                    100% ✔
-                  </span>
-                )}
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
-      
+      {/* Mobile Navigation Menu */}
+      <MobileMenu
+        isOpen={openNav}
+        onClose={toggleMobileNav}
+        getTranslation={tNav}
+        getLangTranslation={tLang}
+        config={config}
+        initiateLogin={initiateLogin}
+      >
+        {children}
+      </MobileMenu>
     </>
   );
 };
