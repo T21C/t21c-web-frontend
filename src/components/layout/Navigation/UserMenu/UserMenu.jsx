@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { UserAvatar } from "@/components/layout";
+import { createUserMenuItems } from "../navigationConfig";
 import { ChevronIcon } from "@/components/common/icons";
 import "./userMenu.css";
 
@@ -47,39 +47,8 @@ const UserMenu = ({ getTranslation, isActive }) => {
   const hasActiveItem = isActive ? isActive(location.pathname) : false;
   const activeClass = hasActiveItem ? "has-active" : "";
   const openClass = isOpen ? "open" : "";
-  const isAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
 
-  const menuItems = [
-    {
-      to: "/profile",
-      translationKey: "dropdowns.user.myProfile",
-    },
-    {
-      to: "/submission",
-      translationKey: "dropdowns.user.mySubmissions",
-    },
-    { divider: true },
-    {
-      disabled: true,
-      translationKey: "dropdowns.user.notifications",
-      badge: "badges.underConstruction",
-    },
-    {
-      disabled: true,
-      translationKey: "dropdowns.user.settings",
-      badge: "badges.underConstruction",
-    },
-    { divider: true },
-    ...(isAdmin
-      ? [
-          {
-            to: "/admin",
-            translationKey: "dropdowns.user.admin",
-          },
-          { divider: true },
-        ]
-      : []),
-  ];
+  const menuItems = createUserMenuItems(user) || [];
 
   return (
     <li

@@ -1,8 +1,8 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { UserAvatar } from "@/components/layout";
+import { createUserMenuItems } from "../navigationConfig";
 import LanguageSelector from "../LanguageSelector/LanguageSelector";
 import MobileDropdown from "../MobileDropdown/MobileDropdown";
 import "./mobileMenu.css";
@@ -29,44 +29,6 @@ const MobileMenu = ({
   children,
 }) => {
   const { user, logout } = useAuth();
-  const isAdmin = user && hasFlag(user, permissionFlags.SUPER_ADMIN);
-
-  // Get user menu items (same structure as UserMenu component)
-  const getUserMenuItems = () => {
-    if (!user) return null;
-
-    return [
-      {
-        to: "/profile",
-        translationKey: "dropdowns.user.myProfile",
-      },
-      {
-        to: "/submission",
-        translationKey: "dropdowns.user.mySubmissions",
-      },
-      { divider: true },
-      {
-        disabled: true,
-        translationKey: "dropdowns.user.notifications",
-        badge: "badges.underConstruction",
-      },
-      {
-        disabled: true,
-        translationKey: "dropdowns.user.settings",
-        badge: "badges.underConstruction",
-      },
-      { divider: true },
-      ...(isAdmin
-        ? [
-            {
-              to: "/admin",
-              translationKey: "dropdowns.user.admin",
-            },
-            { divider: true },
-          ]
-        : []),
-    ];
-  };
 
   // Render navigation item based on type (same logic as desktop)
   const renderNavItem = (item, index) => {
@@ -134,7 +96,7 @@ const MobileMenu = ({
 
           case "UserMenu":
             // Render UserMenu as a MobileDropdown in mobile view
-            const userMenuItems = getUserMenuItems();
+            const userMenuItems = createUserMenuItems(user);
             if (!userMenuItems) return null;
 
             const userButtonContent = (

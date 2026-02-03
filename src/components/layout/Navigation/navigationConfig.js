@@ -1,3 +1,5 @@
+import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
+
 /**
  * Navigation configuration
  * Centralized configuration for navigation items
@@ -5,6 +7,51 @@
  * This config completely defines the navigation structure.
  * The Navigation component is data-driven and renders based on this config.
  */
+
+/**
+ * Creates user menu items configuration
+ * @param {Object} user - User object
+ * @returns {Array|null} Array of user menu items or null if no user
+ */
+export const createUserMenuItems = (user) => {
+  if (!user) return null;
+
+  const isAdmin = hasFlag(user, permissionFlags.SUPER_ADMIN);
+
+  return [
+    {
+      to: "/profile",
+      translationKey: "dropdowns.user.myProfile",
+    },
+    {
+      disabled: true,
+      badge: "badges.underConstruction",
+      to: "/submission",
+      translationKey: "dropdowns.user.mySubmissions",
+    },
+    { divider: true },
+    {
+      disabled: true,
+      translationKey: "dropdowns.user.notifications",
+      badge: "badges.underConstruction",
+    },
+    {
+      disabled: true,
+      translationKey: "dropdowns.user.settings",
+      badge: "badges.underConstruction",
+    },
+    { divider: true },
+    ...(isAdmin
+      ? [
+          {
+            to: "/admin",
+            translationKey: "dropdowns.user.admin",
+          },
+          { divider: true },
+        ]
+      : []),
+  ];
+};
 
 /**
  * Creates a navigation configuration
