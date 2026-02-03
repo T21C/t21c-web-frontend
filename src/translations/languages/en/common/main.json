@@ -65,6 +65,7 @@
     "mostly_allowed": "Mostly Allowed",
     "conditional": "Conditional",
     "ysmod_only": "YSMod Only",
-    "allowed": "Allowed"
+    "allowed": "Allowed",
+    "tuf_verified": "TUF Verified"
   }
 } 

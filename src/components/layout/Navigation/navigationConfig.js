@@ -105,6 +105,7 @@ export const createNavigationConfig = (getTranslation, context = {}) => {
         items: [
           { to: "/passes", translationKey: "dropdowns.more.passes" },
           { to: "/admin/rating", translationKey: "dropdowns.more.rating" },
+          { to: "/admin/curations", translationKey: "dropdowns.admin.curations" },
           { divider: true },
           {
             disabled: true,

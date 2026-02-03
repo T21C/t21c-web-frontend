@@ -440,6 +440,7 @@ const CurationPage = () => {
               placeholder={tCur('filters.searchPlaceholder')}
             />
           </div>
+          { hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR, permissionFlags.RATER, permissionFlags.CURATOR]) && (
           <button
             className="curation-add-level-btn"
             onClick={handleAddNewLevel}
@@ -448,6 +449,7 @@ const CurationPage = () => {
             🎵
             {tCur('actions.addLevel')}
           </button>
+          )}
 
           { hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR]) && (
           <div className="curation-buttons">

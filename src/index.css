@@ -510,8 +510,13 @@ select:-moz-focusring {
   color: #ff9800;
 }
 .verification-chip.ysmod_only {
-  background-color: rgba(156, 39, 176, 0.2);
-  color: #dc3af9;
+  background-color: rgba(54, 77, 224, 0.2);
+  color: #364de0;
+}
+
+.verification-chip.tuf_verified {
+  background-color: rgba(195, 0, 255, 0.25);
+  color: #ff42f9;
 }
 
 /* Password Modal Styles - Consolidated */

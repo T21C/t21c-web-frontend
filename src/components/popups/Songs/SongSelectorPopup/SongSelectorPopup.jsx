@@ -529,13 +529,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                         { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
                         { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) },
                         { value: 'conditional', label: t('verification.conditional', { ns: 'common' }) },
-                        { value: 'ysmod_only', label: t('verification.ysmod_only', { ns: 'common' }) },
-                        { value: 'declined', label: t('verification.declined', { ns: 'common' }) }
-                      ]}
-                      value={[
-                        { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
-                        { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) },
-                        { value: 'conditional', label: t('verification.conditional', { ns: 'common' }) },
+                        { value: 'tuf_verified', label: t('verification.tuf_verified', { ns: 'common' }) },
                         { value: 'ysmod_only', label: t('verification.ysmod_only', { ns: 'common' }) },
                         { value: 'declined', label: t('verification.declined', { ns: 'common' }) }
                       ].find(opt => opt.value === verificationState) || { value: 'pending', label: t('verification.pending', { ns: 'common' }) }}

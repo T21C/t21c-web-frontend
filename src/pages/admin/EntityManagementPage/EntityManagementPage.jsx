@@ -211,17 +211,19 @@ const EntityManagementPage = ({ type = 'artist' }) => {
   const verificationStateLabels = type === 'song'
     ? {
         allowed: t('verification.allowed', { ns: 'common' }),
-        'ysmod_only': t('verification.ysmod_only', { ns: 'common' }),
+        ysmod_only: t('verification.ysmod_only', { ns: 'common' }),
+        tuf_verified: t('verification.tuf_verified', { ns: 'common' }),
         conditional: t('verification.conditional', { ns: 'common' }),
         pending: t('verification.pending', { ns: 'common' }),
         declined: t('verification.declined', { ns: 'common' })
       }
     : {
         allowed: t('verification.allowed', { ns: 'common' }),
-        'mostly_allowed': t('verification.mostly_allowed', { ns: 'common' }),
-        'mostly_declined': t('verification.mostly_declined', { ns: 'common' }),
+        mostly_allowed: t('verification.mostly_allowed', { ns: 'common' }),
+        mostly_declined: t('verification.mostly_declined', { ns: 'common' }),
         declined: t('verification.declined', { ns: 'common' }),
-        'ysmod_only': t('verification.ysmod_only', { ns: 'common' }),
+        ysmod_only: t('verification.ysmod_only', { ns: 'common' }),
+        tuf_verified: t('verification.tuf_verified', { ns: 'common' }),
         pending: t('verification.pending', { ns: 'common' }),
         unverified: t('verification.unverified', { ns: 'common' })
       };
@@ -232,6 +234,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
     ? [
         { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) },
         { value: 'ysmod_only', label: t('verification.ysmod_only', { ns: 'common' }) },
+        { value: 'tuf_verified', label: t('verification.tuf_verified', { ns: 'common' }) },
         { value: 'conditional', label: t('verification.conditional', { ns: 'common' }) },
         { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
         { value: 'declined', label: t('verification.declined', { ns: 'common' }) }
@@ -241,6 +244,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
         { value: 'mostly_allowed', label: t('verification.mostly_allowed', { ns: 'common' }) },
         { value: 'mostly_declined', label: t('verification.mostly_declined', { ns: 'common' }) },
         { value: 'declined', label: t('verification.declined', { ns: 'common' }) },
+        { value: 'tuf_verified', label: t('verification.tuf_verified', { ns: 'common' }) },
         { value: 'ysmod_only', label: t('verification.ysmod_only', { ns: 'common' }) },
         { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
         { value: 'unverified', label: t('verification.unverified', { ns: 'common' }) }
