@@ -105,7 +105,7 @@ export const createNavigationConfig = (getTranslation, context = {}) => {
         items: [
           { to: "/passes", translationKey: "dropdowns.more.passes" },
           { to: "/admin/rating", translationKey: "dropdowns.more.rating" },
-          { to: "/admin/curations", translationKey: "dropdowns.admin.curations" },
+          { to: "/curations", translationKey: "dropdowns.admin.curations" },
           { divider: true },
           {
             disabled: true,
@@ -119,6 +119,7 @@ export const createNavigationConfig = (getTranslation, context = {}) => {
         ],
         isActive: (pathname) =>
           pathname.startsWith("/passes") ||
+          pathname.startsWith("/curations") ||
           pathname.startsWith("/admin/rating") ||
           pathname.startsWith("/terms-of-service") ||
           pathname.startsWith("/privacy-policy") ||
@@ -134,7 +135,7 @@ export const createNavigationConfig = (getTranslation, context = {}) => {
         items: [
           { to: "/admin/submissions", translationKey: "dropdowns.admin.submissions" },
           { to: "/admin/announcements", translationKey: "dropdowns.admin.announcements" },
-          { to: "/admin/curations", translationKey: "dropdowns.admin.curations" },
+          { to: "/curations", translationKey: "dropdowns.admin.curations" },
           { divider: true },
           { to: "/admin/songs", translationKey: "dropdowns.admin.songs" },
           { to: "/admin/artists", translationKey: "dropdowns.admin.artists" },
