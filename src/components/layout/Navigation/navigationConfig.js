@@ -120,9 +120,7 @@ export const createNavigationConfig = (getTranslation, context = {}) => {
         component: "UserMenu",
         props: {
           isActive: (pathname) =>
-            pathname.startsWith("/profile") ||
-            pathname.startsWith("/submission") ||
-            pathname.startsWith("/admin"),
+            pathname.startsWith("/profile")
         },
         // Conditional rendering based on user
         condition: () => !!user,

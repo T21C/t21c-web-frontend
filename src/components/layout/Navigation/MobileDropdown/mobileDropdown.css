@@ -24,7 +24,6 @@
   min-height: 48px;
   touch-action: manipulation;
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
-  tap-highlight-color: rgba(255, 255, 255, 0.1);
 }
 
 .nav-mobile-dropdown-button:hover {
@@ -72,11 +71,10 @@
   overflow-x: hidden;
   display: flex;
   flex-direction: column;
-  backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
   max-height: 50vh;
   /* Smooth scrolling */
-  -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
   scrollbar-color: var(--color-purple-1) var(--color-white-t10);
 }
@@ -109,7 +107,6 @@
   min-height: 48px;
   touch-action: manipulation;
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
-  tap-highlight-color: rgba(255, 255, 255, 0.1);
 }
 
 .nav-mobile-dropdown-item:hover {
@@ -175,7 +172,6 @@
   min-height: 48px;
   touch-action: manipulation;
   -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
-  tap-highlight-color: rgba(255, 255, 255, 0.1);
 }
 
 .nav-mobile-dropdown-item--button:hover {
