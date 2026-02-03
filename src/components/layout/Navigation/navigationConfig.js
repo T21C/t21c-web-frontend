@@ -145,7 +145,7 @@ export const createNavigationConfig = (getTranslation, context = {}) => {
         ],
         isActive: (pathname) => pathname.startsWith("/admin"),
         // Only show admin dropdown if user is admin
-        condition: () => !!user,
+        condition: () => hasFlag(user, permissionFlags.SUPER_ADMIN),
       },
       {
         type: "link",

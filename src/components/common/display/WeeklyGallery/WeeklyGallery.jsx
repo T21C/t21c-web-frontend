@@ -181,6 +181,29 @@ const WeeklyGallery = ({
     };
   };
 
+    // Handle arrow key navigation
+    useEffect(() => {
+      if (curations.length <= 1) return;
+  
+      const handleKeyDown = (event) => {
+        // Only handle arrow keys if not typing in an input field
+        if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') {
+          return;
+        }
+  
+        if (event.key === 'ArrowLeft') {
+          event.preventDefault();
+          goToPrevious();
+        } else if (event.key === 'ArrowRight') {
+          event.preventDefault();
+          goToNext();
+        }
+      };
+  
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [curations.length, goToNext, goToPrevious]);
+
   if (curations.length === 0) {
     return (
       <div className={`weekly-gallery ${className}`}>

@@ -59,15 +59,15 @@ const UserMenu = ({ getTranslation, isActive }) => {
         className={`nav-user-button ${hasActiveItem ? "active" : ""}`}
         onClick={() => setIsOpen(!isOpen)}
       >
+      <UserAvatar
+        primaryUrl={user?.avatarUrl}
+        fallbackUrl={user?.pfp}
+        className="nav-user-avatar"
+      />
         <div className="nav-user-info">
           <div className="nav-user-name">{user?.nickname}</div>
           <div className="nav-user-username">@{user?.username}</div>
         </div>
-        <UserAvatar
-          primaryUrl={user?.avatarUrl}
-          fallbackUrl={user?.pfp}
-          className="nav-user-avatar"
-        />
         <ChevronIcon
           direction={isOpen ? "up" : "down"}
           className="nav-dropdown-arrow"

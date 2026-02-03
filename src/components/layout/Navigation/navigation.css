@@ -9,6 +9,7 @@ nav {
   color: var(--color-white);
   z-index: 100;
   position: fixed;
+  font-weight: 500;
   top: 0;
   overflow: visible;
 }
@@ -158,6 +159,7 @@ nav {
   border: none;
   color: var(--color-white);
   font-size: inherit;
+  font-weight: inherit;
   font-family: inherit;
   cursor: pointer;
   padding: 0.5rem;
@@ -296,10 +298,11 @@ nav {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  font-weight: inherit;
   background: none;
   border: none;
   cursor: pointer;
-  padding: 0.25rem 0.5rem;
+  padding: 0.1rem 0.5rem;
   border-radius: 0.5rem;
   transition: background-color 0.15s ease;
 }
@@ -325,13 +328,13 @@ nav {
 .nav-user-info {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
+  align-items: flex-start;
   gap: 0.1rem;
-  text-align: right;
+  text-align: left;
 }
 
 .nav-user-name {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--color-white);
   line-height: 1.2;
 }
@@ -343,9 +346,9 @@ nav {
 }
 
 .nav-user-avatar {
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: 50%;
+  width: 2.6rem;
+  height: 2.6rem;
+  border: 2px solid var(--color-black-t10);
   flex-shrink: 0;
   transition: border-color 0.15s ease;
 }
