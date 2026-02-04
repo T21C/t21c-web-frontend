@@ -1,7 +1,7 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import './editProfilePage.css';
-import { DiscordIcon, UnlinkIcon } from '@/components/common/icons';
+import { CrossIcon, DiscordIcon, EditIcon, UnlinkIcon } from '@/components/common/icons';
 import { Tooltip } from 'react-tooltip';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
@@ -40,7 +40,8 @@ const EditProfilePage = () => {
   const [isChangingPassword, setIsChangingPassword] = useState(false);
   const hasNoPassword = user?.password === null;
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSavingProfile, setIsSavingProfile] = useState(false);
+  const [isUploadingAvatar, setIsUploadingAvatar] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [avatarPreview, setAvatarPreview] = useState(user?.avatarUrl ? user.avatarUrl : null);
   const [uploadError, setUploadError] = useState(null);
@@ -50,6 +51,8 @@ const EditProfilePage = () => {
   const [usernameRateLimit, setUsernameRateLimit] = useState(null);
   const [usernameTimer, setUsernameTimer] = useState(null);
   const timerIntervalRef = useRef(null);
+  const [isUsernameEditing, setIsUsernameEditing] = useState(false);
+  const [originalUsername, setOriginalUsername] = useState(user?.username || '');
 
   useEffect(() => {
     if (isPopupOpen) {
@@ -87,7 +90,15 @@ const EditProfilePage = () => {
         });
       }
     }
-  }, [user?.lastUsernameChange]);
+    // Initialize original username when user data loads
+    if (user?.username) {
+      setOriginalUsername(user.username);
+      setFormData(prev => ({
+        ...prev,
+        username: user.username
+      }));
+    }
+  }, [user?.lastUsernameChange, user?.username]);
 
   // Username rate limit timer effect
   useEffect(() => {
@@ -203,50 +214,6 @@ const EditProfilePage = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError('');
-    setSuccess('');
-
-    try {
-      const response = await api.put(`${import.meta.env.VITE_PROFILE}/me`, {
-        username: formData.username,
-        nickname: formData.nickname,
-        country: formData.country,
-      });
-
-      // Clear rate limit state on successful update
-      setUsernameRateLimit(null);
-      setUsernameTimer(null);
-      
-      fetchUser();
-      toast.success(tEditProfile('success.profileUpdated'));
-      navigate('/profile');
-    } catch (error) {
-      const errorData = error.response?.data;
-      
-      // Handle username rate limit (429)
-      if (errorData?.code === 429 && errorData?.nextAvailableChange) {
-        setUsernameRateLimit({
-          nextAvailableChange: errorData.nextAvailableChange,
-          timeRemaining: errorData.timeRemaining
-        });
-        
-        // Reset username to original value
-        setFormData(prev => ({
-          ...prev,
-          username: user?.username || ''
-        }));
-        
-        toast.error(errorData.error || tEditProfile('error.usernameChangeRateLimited'));
-      } else {
-        toast.error(errorData?.error || tEditProfile('error.failedToUpdateProfile'));
-      }
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
@@ -276,7 +243,7 @@ const EditProfilePage = () => {
   };
 
   const handlePopupSave = async (file) => {
-    setIsLoading(true);
+    setIsUploadingAvatar(true);
     const formData = new FormData();
     formData.append('avatar', file);
 
@@ -302,14 +269,17 @@ const EditProfilePage = () => {
         toast.error(errorData?.error || tEditProfile('error.failedToUploadAvatar'));
       }
     } finally {
-      setIsLoading(false);
+      setIsUploadingAvatar(false);
     }
   };
 
   const handleAvatarRemove = async () => {
     if (!user?.avatarUrl) return;
 
-    setIsLoading(true);
+    const confirmed = window.confirm(tEditProfile('avatar.confirmRemove'));
+    if (!confirmed) return;
+
+    setIsUploadingAvatar(true);
     try {
       await api.delete(`${import.meta.env.VITE_PROFILE}/avatar`);
 
@@ -319,7 +289,7 @@ const EditProfilePage = () => {
     } catch (error) {
       toast.error(error.response?.data?.error || tEditProfile('error.failedToRemoveAvatar'));
     } finally {
-      setIsLoading(false);
+      setIsUploadingAvatar(false);
     }
   };
 
@@ -360,6 +330,68 @@ const EditProfilePage = () => {
       ...prev,
       country,
     }));
+  };
+
+  const handleUsernameEditClick = () => {
+    if (usernameRateLimit) return; // Don't allow editing if rate limited
+    setOriginalUsername(formData.username);
+    setIsUsernameEditing(true);
+  };
+
+  const handleUsernameCancel = () => {
+    setFormData((prev) => ({
+      ...prev,
+      username: originalUsername,
+    }));
+    setIsUsernameEditing(false);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSavingProfile(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const response = await api.put(`${import.meta.env.VITE_PROFILE}/me`, {
+        username: formData.username,
+        nickname: formData.nickname,
+        country: formData.country,
+      });
+
+      // Clear rate limit state on successful update
+      setUsernameRateLimit(null);
+      setUsernameTimer(null);
+      setIsUsernameEditing(false);
+      setOriginalUsername(formData.username);
+      
+      fetchUser();
+      toast.success(tEditProfile('success.profileUpdated'));
+      navigate('/profile');
+    } catch (error) {
+      const errorData = error.response?.data;
+      
+      // Handle username rate limit (429)
+      if (errorData?.code === 429 && errorData?.nextAvailableChange) {
+        setUsernameRateLimit({
+          nextAvailableChange: errorData.nextAvailableChange,
+          timeRemaining: errorData.timeRemaining
+        });
+        
+        // Reset username to original value
+        setFormData(prev => ({
+          ...prev,
+          username: originalUsername
+        }));
+        setIsUsernameEditing(false);
+        
+        toast.error(errorData.error || tEditProfile('error.usernameChangeRateLimited'));
+      } else {
+        toast.error(errorData?.error || tEditProfile('error.failedToUpdateProfile'));
+      }
+    } finally {
+      setIsSavingProfile(false);
+    }
   };
 
   const isLastProvider = user?.password === null && user?.providers?.length === 1;
@@ -407,9 +439,9 @@ const EditProfilePage = () => {
             <button 
               className="remove-avatar-btn"
               onClick={handleAvatarRemove}
-              disabled={isLoading}
+              disabled={isUploadingAvatar}
             >
-              {isLoading ? tEditProfile('avatar.removing') : tEditProfile('avatar.removeAvatar')}
+              {isUploadingAvatar ? tEditProfile('avatar.removing') : tEditProfile('avatar.removeAvatar')}
             </button>
           )}
         </div>
@@ -424,15 +456,35 @@ const EditProfilePage = () => {
                 </span>
               )}
             </label>
-            <input
-              type="text"
-              id="username"
-              name="username"
-              value={formData.username}
-              onChange={handleInputChange}
-              className={`input-field ${usernameRateLimit ? 'disabled' : ''}`}
-              disabled={!!usernameRateLimit}
-            />
+            <div className="username-input-wrapper">
+              <input
+                type="text"
+                id="username"
+                name="username"
+                value={formData.username}
+                onChange={handleInputChange}
+                className={`input-field ${usernameRateLimit ? 'disabled' : ''} ${!isUsernameEditing ? 'readonly' : ''}`}
+                disabled={!!usernameRateLimit || !isUsernameEditing}
+                readOnly={!isUsernameEditing && !usernameRateLimit}
+              />
+              {!usernameRateLimit && (
+                <button
+                  type="button"
+                  className={`username-action-btn ${isUsernameEditing ? 'cancel' : 'edit'}`}
+                  onClick={isUsernameEditing ? handleUsernameCancel : handleUsernameEditClick}
+                  disabled={isSavingProfile && isUsernameEditing}
+                  title={isUsernameEditing ? t('buttons.cancel', { ns: 'common' }) : t('buttons.edit', { ns: 'common' })}
+                >
+                  <span className="username-action-icon">
+                    {isUsernameEditing ? (
+                      <CrossIcon style={{transform: 'rotate(45deg)'}} color="#fff" size={"24px"} />
+                    ) : (
+                      <EditIcon color="#fff" size={"24px"} />
+                    )}
+                  </span>
+                </button>
+              )}
+            </div>
           </div>
 
           <div className="form-group">
@@ -481,16 +533,16 @@ const EditProfilePage = () => {
               className="button"
               type="button" 
               onClick={() => navigate('/profile')}
-              disabled={isLoading}
+              disabled={isSavingProfile}
             >
               {t('buttons.cancel', { ns: 'common' })}
             </button>
             <button 
               className="button submit-button"
-              onClick={handleSubmit}
-              disabled={isLoading}
+              type="submit"
+              disabled={isSavingProfile}
             >
-              {isLoading ? t('loading.saving', { ns: 'common' }) : tEditProfile('form.buttons.saveChanges')}
+              {isSavingProfile ? t('loading.saving', { ns: 'common' }) : tEditProfile('form.buttons.saveChanges')}
             </button>
           </div>
         </form>

@@ -21,7 +21,8 @@
   "avatar": {
     "dragDropOrClick": "Drag & drop or click to upload",
     "removeAvatar": "Remove Avatar",
-    "removing": "Removing..."
+    "removing": "Removing...",
+    "confirmRemove": "Are you sure you want to remove your avatar? This action cannot be undone."
   },
   "form": {
     "labels": {
