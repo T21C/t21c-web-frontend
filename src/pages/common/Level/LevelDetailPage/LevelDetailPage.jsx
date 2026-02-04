@@ -306,13 +306,10 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
         acc[role] = [];
       }
       
+      const aliasNames = credit.creator.creatorAliases?.slice(0, 6).map(alias => alias.name).join(', ');
+      const moreCount = credit.creator.creatorAliases?.length > 6 ? ` (+${credit.creator.creatorAliases.length - 6} more)` : '';
       const creatorName = credit.creator.creatorAliases?.length > 0 
-        ? `${credit.creator.name} (${
-          credit.creator.creatorAliases
-          .slice(0, 6)
-          .map(alias => alias.name)
-          .join(', ')}
-          ${credit.creator.creatorAliases.length > 6 ? `(${credit.creator.creatorAliases.length - 6} more)` : ''})`
+        ? `${credit.creator.name} (${aliasNames}${moreCount})`
         : credit.creator.name;
       acc[role].push({name: creatorName, isOwner: credit.isOwner});
       return acc;

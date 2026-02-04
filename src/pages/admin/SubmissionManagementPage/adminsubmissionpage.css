@@ -275,11 +275,11 @@
   transition: text-decoration-color 0.2s;
 }
 
-.submission-header h3.clickable-field:hover {
+.submission-admin-page .submission-header h3.clickable-field:hover {
   text-decoration-color: rgba(255, 255, 255, 0.5);
 }
 
-.submission-header .request-badge {
+.submission-admin-page .submission-header .request-badge {
   font-size: 0.6em;
   padding: 2px 6px;
   background-color: rgba(255, 193, 7, 0.2);
@@ -288,32 +288,32 @@
   margin-left: 8px;
 }
 
-.detail-value.clickable-field {
+.submission-admin-page .detail-value.clickable-field {
   cursor: pointer;
   text-decoration: underline;
   text-decoration-color: transparent;
   transition: text-decoration-color 0.2s;
 }
 
-.detail-value.clickable-field:hover {
+.submission-admin-page .detail-value.clickable-field:hover {
   text-decoration-color: rgba(255, 255, 255, 0.5);
 }
 
-.detail-value-group {
+.submission-admin-page .detail-value-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
   flex: 1;
 }
 
-.entity-actions {
+.submission-admin-page .entity-actions {
   display: flex;
   gap: 8px;
   align-items: center;
   flex-wrap: wrap;
 }
 
-.manage-entity-button {
+.submission-admin-page .manage-entity-button {
   padding: 6px 12px;
   background-color: #9370DB;
   color: #FFFFFF;
@@ -324,16 +324,16 @@
   transition: all 0.2s ease;
 }
 
-.manage-entity-button:hover {
+.submission-admin-page .manage-entity-button:hover {
   background-color: #b468ee;
   transform: translateY(-1px);
 }
 
-.manage-entity-button:active {
+.submission-admin-page .manage-entity-button:active {
   transform: translateY(0);
 }
 
-.add-entity-request-button {
+.submission-admin-page .add-entity-request-button {
   padding: 4px 10px;
   background-color: #4CAF50;
   color: white;
@@ -344,12 +344,12 @@
   transition: all 0.2s ease;
 }
 
-.add-entity-request-button:hover {
+.submission-admin-page .add-entity-request-button:hover {
   background-color: #45a049;
   transform: translateY(-1px);
 }
 
-.change-entity-button {
+.submission-admin-page .change-entity-button {
   padding: 6px 12px;
   background-color: #2196F3;
   color: #FFFFFF;
@@ -360,31 +360,31 @@
   transition: all 0.2s ease;
 }
 
-.change-entity-button:hover {
+.submission-admin-page .change-entity-button:hover {
   background-color: #1976D2;
   transform: translateY(-1px);
 }
 
-.change-entity-button:active {
+.submission-admin-page .change-entity-button:active {
   transform: translateY(0);
 }
 
-.change-entity-button:disabled,
-.manage-entity-button:disabled,
-.add-entity-request-button:disabled {
+.submission-admin-page .change-entity-button:disabled,
+.submission-admin-page .manage-entity-button:disabled,
+.submission-admin-page .add-entity-request-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   background-color: #666;
 }
 
-.change-entity-button:disabled:hover,
-.manage-entity-button:disabled:hover,
-.add-entity-request-button:disabled:hover {
+.submission-admin-page .change-entity-button:disabled:hover,
+.submission-admin-page .manage-entity-button:disabled:hover,
+.submission-admin-page .add-entity-request-button:disabled:hover {
   transform: none;
   background-color: #666;
 }
 
-.detail-value .request-badge {
+.submission-admin-page .detail-value .request-badge {
   font-size: 0.7em;
   padding: 2px 6px;
   background-color: rgba(255, 193, 7, 0.2);
@@ -393,14 +393,14 @@
   margin-left: 8px;
 }
 
-.evidence-preview {
+.submission-admin-page .evidence-preview {
   display: flex;
   gap: 8px;
   align-items: center;
   flex-wrap: wrap;
 }
 
-.evidence-thumbnail {
+.submission-admin-page .evidence-thumbnail {
   width: 60px;
   height: 60px;
   object-fit: cover;
@@ -410,11 +410,11 @@
   transition: transform 0.2s;
 }
 
-.evidence-thumbnail:hover {
+.submission-admin-page .evidence-thumbnail:hover {
   transform: scale(1.1);
 }
 
-.evidence-link-thumbnail {
+.submission-admin-page .evidence-link-thumbnail {
   width: 60px;
   height: 60px;
   display: flex;
@@ -428,17 +428,17 @@
   position: relative;
 }
 
-.evidence-link-thumbnail:hover {
+.submission-admin-page .evidence-link-thumbnail:hover {
   transform: scale(1.1);
   background-color: rgba(255, 255, 255, 0.1);
 }
 
-.evidence-link-icon {
+.submission-admin-page .evidence-link-icon {
   font-size: 1.5em;
   opacity: 0.7;
 }
 
-.evidence-extra-info-indicator {
+.submission-admin-page .evidence-extra-info-indicator {
   position: absolute;
   bottom: 2px;
   right: 2px;
@@ -453,23 +453,23 @@
   font-size: 0.6em;
 }
 
-.evidence-count {
+.submission-admin-page .evidence-count {
   color: #aaa;
   font-size: 0.9em;
 }
 
-.evidence-count.clickable {
+.submission-admin-page .evidence-count.clickable {
   cursor: pointer;
   text-decoration: underline;
   text-decoration-color: transparent;
   transition: text-decoration-color 0.2s;
 }
 
-.evidence-count.clickable:hover {
+.submission-admin-page .evidence-count.clickable:hover {
   text-decoration-color: rgba(255, 255, 255, 0.5);
 }
 
-.submission-header {
+.submission-admin-page .submission-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1307,13 +1307,13 @@
     transform: translateY(0);
   }
 
-  .pending-profile {
+  .submission-admin-page .pending-profile {
     display: flex;
     align-items: center;
     gap: 0.5rem;
   }
 
-  .profile-request-badge {
+  .submission-admin-page .profile-request-badge {
     display: inline-block;
     padding: 2px 8px;
     margin-left: 8px;
@@ -1327,7 +1327,7 @@
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
   }
 
-  .profile-request-unassigned {
+  .submission-admin-page .profile-request-unassigned {
     background-color: #FF980044; /* Orange background for unassigned */
     display: inline-flex;
     align-items: center;
@@ -1336,26 +1336,26 @@
     border-radius: 0.5rem;
   }
 
-  .detail-value .info-message {
+  .submission-admin-page .detail-value .info-message {
     display: inline-block;
     margin-left: 8px;
     font-size: 0.85em;
     opacity: 0.8;
   }
 
-  .detail-value .locked-indicator {
+  .submission-admin-page .detail-value .locked-indicator {
     color: #9E9E9E;
     font-style: italic;
     font-size: 0.9em;
   }
 
-  .artists-list {
+  .submission-admin-page .artists-list {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
   }
 
-  .artist-item {
+  .submission-admin-page .artist-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1365,28 +1365,28 @@
     margin-bottom: 8px;
   }
 
-  .artist-item:last-child {
+  .submission-admin-page .artist-item:last-child {
     margin-bottom: 0;
   }
 
-  .artist-name {
+  .submission-admin-page .artist-name {
     display: flex;
     align-items: center;
     gap: 8px;
     flex: 1;
   }
 
-  .artist-name.pending {
+  .submission-admin-page .artist-name.pending {
     color: #FFA500;
   }
 
-  .artist-actions {
+  .submission-admin-page .artist-actions {
     display: flex;
     gap: 8px;
     align-items: center;
   }
 
-  .manage-artist-button {
+  .submission-admin-page .manage-artist-button {
     padding: 6px 12px;
     background-color: #9370DB; /* Medium purple */
     color: #FFFFFF; /* White text */
@@ -1397,16 +1397,16 @@
     transition: background-color 0.2s, transform 0.1s;
   }
 
-  .manage-artist-button:hover {
+  .submission-admin-page .manage-artist-button:hover {
     background-color: #b468ee; /* Medium slate blue */
     transform: translateY(-1px);
   }
 
-  .manage-artist-button:active {
+  .submission-admin-page .manage-artist-button:active {
     transform: translateY(0);
   }
 
-  .artist-item-old {
+  .submission-admin-page .artist-item-old {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -1415,7 +1415,7 @@
     border-radius: 4px;
   }
 
-  .remove-artist-button {
+  .submission-admin-page .remove-artist-button {
     background-color: #f44336;
     color: white;
     border: none;
@@ -1432,11 +1432,11 @@
     transition: background-color 0.2s;
   }
 
-  .remove-artist-button:hover {
+  .submission-admin-page .remove-artist-button:hover {
     background-color: #d32f2f;
   }
 
-  .artist-item {
+  .submission-admin-page .artist-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1446,28 +1446,28 @@
     margin-bottom: 8px;
   }
 
-  .artist-item:last-child {
+  .submission-admin-page .artist-item:last-child {
     margin-bottom: 0;
   }
 
-  .artist-name {
+  .submission-admin-page .artist-name {
     display: flex;
     align-items: center;
     gap: 8px;
     flex: 1;
   }
 
-  .artist-name.pending {
+  .submission-admin-page .artist-name.pending {
     color: #FFA500;
   }
 
-  .artist-actions {
+  .submission-admin-page .artist-actions {
     display: flex;
     gap: 8px;
     align-items: center;
   }
 
-  .manage-artist-button {
+  .submission-admin-page .manage-artist-button {
     padding: 6px 12px;
     background-color: #9370DB; /* Medium purple */
     color: #FFFFFF; /* White text */
@@ -1478,23 +1478,23 @@
     transition: all 0.2s ease;
   }
 
-  .manage-artist-button:hover {
+  .submission-admin-page .manage-artist-button:hover {
     background-color: #b468ee; /* Medium slate blue */
     transform: translateY(-1px);
   }
 
-  .manage-artist-button:active {
+  .submission-admin-page .manage-artist-button:active {
     transform: translateY(0);
   }
 
-  .creator-group {
+  .submission-admin-page .creator-group {
     margin-bottom: 20px;
     padding: 15px;
     background-color: #E6E6FA22; /* Light purple background */
     border-radius: 8px;
   }
 
-  .creator-group-header {
+  .submission-admin-page .creator-group-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1506,13 +1506,13 @@
     padding-right: 10px;
   }
 
-  .creator-actions {
+  .submission-admin-page .creator-actions {
     display: flex;
     gap: 8px;
     align-items: center;
   }
 
-  .add-creator-button {
+  .submission-admin-page .add-creator-button {
     padding: 4px 10px;
     background-color: #4CAF50;
     color: white;
@@ -1523,12 +1523,12 @@
     transition: all 0.2s ease;
   }
 
-  .add-creator-button:hover {
+  .submission-admin-page .add-creator-button:hover {
     background-color: #45a049;
     transform: translateY(-1px);
   }
 
-  .remove-creator-button {
+  .submission-admin-page .remove-creator-button {
     padding: 4px 10px;
     background-color: #f44336;
     color: white;
@@ -1539,18 +1539,18 @@
     transition: all 0.2s ease;
   }
 
-  .remove-creator-button:hover {
+  .submission-admin-page .remove-creator-button:hover {
     background-color: #da190b;
     transform: translateY(-1px);
   }
 
-  .remove-creator-button:disabled {
+  .submission-admin-page .remove-creator-button:disabled {
     background-color: #cccccc;
     cursor: not-allowed;
     transform: none;
   }
 
-  .creator-item {
+  .submission-admin-page .creator-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1560,24 +1560,24 @@
     margin-bottom: 8px;
   }
 
-  .creator-item:last-child {
+  .submission-admin-page .creator-item:last-child {
     margin-bottom: 0;
   }
 
-  .creator-list {
+  .submission-admin-page .creator-list {
     display: flex;
     flex-direction: column;
     gap: 8px;
     margin-left: 15px;
   }
 
-  .creator-name {
+  .submission-admin-page .creator-name {
     color: #FFFFFF; /* White text */
     font-size: 1em;
     font-weight: 600;
   }
 
-  .manage-creator-button {
+  .submission-admin-page .manage-creator-button {
     padding: 6px 12px;
     background-color: #9370DB; /* Medium purple */
     color: #FFFFFF; /* White text */
@@ -1588,16 +1588,16 @@
     transition: all 0.2s ease;
   }
 
-  .manage-creator-button:hover {
+  .submission-admin-page .manage-creator-button:hover {
     background-color: #b468ee; /* Medium slate blue */
     transform: translateY(-1px);
   }
 
-  .manage-creator-button:active {
+  .submission-admin-page .manage-creator-button:active {
     transform: translateY(0);
   }
 
-  .body-scroll-lock {
+  .submission-admin-page .body-scroll-lock {
     overflow: hidden;
     padding-right: 17px; /* Compensate for the scrollbar disappearing */
   }
