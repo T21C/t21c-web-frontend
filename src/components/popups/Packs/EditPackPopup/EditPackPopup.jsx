@@ -556,14 +556,14 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                 onClick={() => setShowDeleteConfirm(false)}
                 disabled={loading}
               >
-                {tPopup('deleteConfirm.cancel')}
+                {t('buttons.cancel', { ns : "common"})}
               </button>
               <button
                 className="edit-pack-popup__delete-confirm-btn"
                 onClick={handleDelete}
                 disabled={loading}
               >
-                {loading ? tPopup('deleting') : tPopup('deleteConfirm.confirm')}
+                {loading ? t('buttons.deleting', { ns : "common" }) : t('buttons.confirm', { ns : "common" })}
               </button>
             </div>
           </div>
