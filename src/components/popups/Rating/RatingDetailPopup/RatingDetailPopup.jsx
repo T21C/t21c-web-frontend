@@ -1,14 +1,13 @@
 import "./ratingdetailpopup.css";
-import { useEffect, useState, useContext, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { getVideoDetails } from "@/utils";
 import { RatingItem } from '@/components/cards';
 import { RatingInput } from '@/components/common/selectors';
-import { DifficultyContext } from "@/contexts/DifficultyContext";
 import api from '@/utils/api';
 import { useTranslation } from 'react-i18next';
 import { ReferencesButton } from '@/components/common/buttons';
 import { ExternalLinkIcon, DownloadIcon } from '@/components/common/icons';
-import { formatCreatorDisplay, filterDifficultiesByUserTopDiff } from "@/utils/Utility";
+import { formatCreatorDisplay } from "@/utils/Utility";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 // Cache for video data
@@ -566,7 +565,7 @@ export const RatingDetailPopup = ({
                             validateRating(value);
                           }}
                           showDiff={false}
-                          difficulties={filterDifficultiesByUserTopDiff(difficulties, user)}
+                          difficulties={difficulties}
                           allowCustomInput={true}
                         />
                         {(pendingRating && difficulties.find(d => d.name === pendingRating)) && 
