@@ -186,7 +186,7 @@
 .player-page .profile-button-container {
   position: absolute;
   right: 0;
-  transform: translateX(75%); /* Position it outside the header */
+  transform: translateX(100%); /* Position it outside the header */
   top: 20px;
   border: none;
   padding: 2px;

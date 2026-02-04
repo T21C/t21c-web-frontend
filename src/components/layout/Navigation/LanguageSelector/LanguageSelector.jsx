@@ -106,9 +106,9 @@ const LanguageSelector = ({ getTranslation, variant = "desktop", asListItem = nu
     }
 
     const i18nLanguage = newLanguage === "us" ? "en" : newLanguage;
-    i18next.changeLanguage(i18nLanguage).then(() => {
-      setLanguage(i18nLanguage);
-    });
+    // Update context state immediately so all components re-render together
+    setLanguage(i18nLanguage);
+    i18next.changeLanguage(i18nLanguage);
     setIsOpen(false);
   };
 

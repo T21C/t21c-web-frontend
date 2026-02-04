@@ -21,7 +21,10 @@ export const SongContextProvider = ({ children }) => {
 
   const [searchQuery, setSearchQuery] = useState(() => Cookies.get(COOKIE_KEYS.SEARCH_QUERY) || '');
   const [sortBy, setSortBy] = useState(() => Cookies.get(COOKIE_KEYS.SORT_BY) || 'NAME_ASC');
-  const [verificationState, setVerificationState] = useState(() => Cookies.get(COOKIE_KEYS.VERIFICATION_STATE) || '');
+  const [verificationState, setVerificationState] = useState(() => {
+    const saved = Cookies.get(COOKIE_KEYS.VERIFICATION_STATE);
+    return saved === '' ? null : (saved || null);
+  });
 
   // Effects to save state changes to cookies
   useEffect(() => {
@@ -33,7 +36,11 @@ export const SongContextProvider = ({ children }) => {
   }, [sortBy]);
 
   useEffect(() => {
-    Cookies.set(COOKIE_KEYS.VERIFICATION_STATE, verificationState);
+    if (verificationState === null || verificationState === '') {
+      Cookies.remove(COOKIE_KEYS.VERIFICATION_STATE);
+    } else {
+      Cookies.set(COOKIE_KEYS.VERIFICATION_STATE, verificationState);
+    }
   }, [verificationState]);
 
   const value = {

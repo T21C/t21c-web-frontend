@@ -698,7 +698,7 @@ const ProfilePage = () => {
                   >
                     <div className="scores-list">
                       {displayedPasses.map((score, index) => (
-                        <>
+                        <div key={index}>
                         <li key={index}>
                           <ScoreCard scoreData={score} topScores={playerData?.topScores || []} potentialTopScores={playerData?.potentialTopScores || []} />
                         </li>
@@ -719,7 +719,7 @@ const ProfilePage = () => {
                             </p>
                           </div>
                         )}
-                        </>
+                        </div>
                       ))}
                     </div>
                   </InfiniteScroll>

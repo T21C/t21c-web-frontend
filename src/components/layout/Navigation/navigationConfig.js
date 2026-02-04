@@ -86,8 +86,8 @@ export const createNavigationConfig = (getTranslation, context = {}) => {
         label: "links.creators",
         items: [
           //{ to: "/admin/creators", translationKey: "dropdowns.creators.adofaiCreators" },
-          { to: "/artists", translationKey: "dropdowns.creators.artists" },
           { to: "/songs", translationKey: "dropdowns.creators.songs" },
+          { to: "/artists", translationKey: "dropdowns.creators.artists" },
         ],
         isActive: (pathname) =>
           //pathname.startsWith("/admin/creators") ||

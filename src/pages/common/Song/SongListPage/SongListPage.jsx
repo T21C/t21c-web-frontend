@@ -17,8 +17,10 @@ const SongListPage = () => {
   const {
     searchQuery,
     sortBy,
+    verificationState,
     setSearchQuery,
-    setSortBy
+    setSortBy,
+    setVerificationState
   } = useSongContext();
 
   const [songs, setSongs] = useState([]);
@@ -38,7 +40,7 @@ const SongListPage = () => {
         abortControllerRef.current.abort();
       }
     };
-  }, [searchQuery, sortBy]);
+  }, [searchQuery, sortBy, verificationState]);
 
   const fetchSongs = async (reset = false) => {
     // Cancel previous request if it exists
@@ -58,13 +60,19 @@ const SongListPage = () => {
       }
 
       const currentPage = reset ? 1 : page;
+      const params = {
+        page: currentPage,
+        limit: 50,
+        search: searchQuery,
+        sort: sortBy
+      };
+      
+      if (verificationState) {
+        params.verificationState = verificationState;
+      }
+      
       const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/database/songs`, {
-        params: {
-          page: currentPage,
-          limit: 50,
-          search: searchQuery,
-          sort: sortBy
-        },
+        params,
         signal: abortController.signal
       });
       
@@ -108,6 +116,10 @@ const SongListPage = () => {
     setSearchQuery(e.target.value);
   };
 
+  const handleVerificationChange = (option) => {
+    setVerificationState(option?.value || null);
+  };
+  
   const handleSortChange = (option) => {
     setSortBy(option?.value || 'NAME_ASC');
   };
@@ -117,6 +129,16 @@ const SongListPage = () => {
     { value: 'NAME_DESC', label: tSong('sort.nameDesc') },
     { value: 'ID_ASC', label: tSong('sort.idAsc') },
     { value: 'ID_DESC', label: tSong('sort.idDesc') }
+  ];
+
+  const verificationStateOptions = [
+    { value: null, label: t('verification.all', { ns: 'common' }) },
+    { value: 'unverified', label: t('verification.unverified', { ns: 'common' }) },
+    { value: 'pending', label: t('verification.pending', { ns: 'common' }) },
+    { value: 'declined', label: t('verification.declined', { ns: 'common' }) },
+    { value: 'mostly_declined', label: t('verification.mostly_declined', { ns: 'common' }) },
+    { value: 'mostly_allowed', label: t('verification.mostly_allowed', { ns: 'common' }) },
+    { value: 'allowed', label: t('verification.allowed', { ns: 'common' }) }
   ];
 
   return (
@@ -140,6 +162,16 @@ const SongListPage = () => {
               placeholder={tSong('search.placeholder')}
               value={searchQuery}
               onChange={handleSearchChange}
+            />
+          </div>
+
+          <div className="filter-container">
+            <CustomSelect
+              options={verificationStateOptions}
+              value={verificationStateOptions.find(opt => opt.value === verificationState) || verificationStateOptions[0]}
+              onChange={handleVerificationChange}
+              label={tSong('filter.verificationState')}
+              width="12rem"
             />
           </div>
 

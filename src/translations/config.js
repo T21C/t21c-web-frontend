@@ -76,7 +76,8 @@ const initializeTranslations = async () => {
   i18next.on('languageChanged', async (newLang) => {
     if (!resources[newLang]) {
       await loadLanguage(newLang);
-      i18next.reloadResources(newLang);
+      // Add loaded resources to i18next (don't use reloadResources - that requires a backend)
+
     }
   });
 };
