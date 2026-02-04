@@ -8,7 +8,6 @@ const NotificationContext = createContext({
   totalNotifications: 0,
   pendingLevelSubmissions: 0,
   pendingPassSubmissions: 0,
-  displayCount: '0',
   isConnected: false,
   restartNotifications: () => {},
   resetNotifications: () => {},
@@ -183,12 +182,8 @@ export const NotificationProvider = ({ children }) => {
     return cleanup;
   }, [user]); // Add user as a dependency to react to auth changes
 
-  const displayCount = totalNotifications > 9 ? '9+' : totalNotifications.toString();
-
   const value = {
     pendingSubmissions,
-    totalNotifications,
-    displayCount,
     pendingLevelSubmissions,
     pendingPassSubmissions,
     isConnected,
