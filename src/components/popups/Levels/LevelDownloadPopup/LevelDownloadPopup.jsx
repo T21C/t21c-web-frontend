@@ -242,7 +242,7 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, legacyDllink, in
                     </div>
                 ) : isLoading ? (
                     <div className="download-step loading-state">
-                        <p>{t('levelPopups.download.loading')}</p>
+                        <p>{t('loading.generic', { ns: 'common' })}</p>
                     </div>
                 ) : step === 1 ? (
                     <div className="download-step">

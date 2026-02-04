@@ -1,7 +1,6 @@
 {
   "title": "System Health Status",
   "lastUpdated": "Last updated: {{time}}",
-  "loading": "Loading health data...",
   "error": "Failed to fetch health data: {{error}}",
   "status": {
     "online": "ONLINE",

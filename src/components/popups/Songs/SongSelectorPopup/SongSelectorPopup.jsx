@@ -459,7 +459,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                     if (isSearching) {
                       return (
                         <div className="search-status">
-                          {tSong('search.loading')}
+                          {t('loading.searching', { ns: 'common' })}
                         </div>
                       );
                     }

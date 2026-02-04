@@ -59,7 +59,6 @@
     "alert": {
       "success": "Pass updated successfully!",
       "error": "Error: ",
-      "loading": "Processing...",
       "login": "Please log in to submit a pass",
       "form": "Please fill in all required fields correctly"
     },

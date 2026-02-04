@@ -90,7 +90,6 @@
     "title": "Download Options",
     "close": "Close",
     "closePopup": "Close popup",
-    "loading": "Loading download options...",
     "step1": {
       "prompt": "Choose download format:",
       "downloadOriginal": "Download Original",

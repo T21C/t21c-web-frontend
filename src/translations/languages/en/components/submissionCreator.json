@@ -18,11 +18,9 @@
   },
   "search": {
     "placeholder": "Search for creators...",
-    "loading": "Searching...",
     "noResults": "No creators found",
     "teamPlaceholder": "Search for teams...",
-    "noTeamsFound": "No teams found",
-    "searchingTeams": "Searching teams..."
+    "noTeamsFound": "No teams found"
   },
   "createForm": {
     "title": "Create New Creator",

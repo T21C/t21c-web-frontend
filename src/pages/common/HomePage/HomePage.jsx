@@ -373,7 +373,7 @@ const HomePage = () => {
             {weekliesLoading ? (
               <div className="weekly-curations-loading">
                 <div className="spinner spinner-xlarge spinner-accent"></div>
-                <p>{tHome('weeklies.loading')}</p>
+                <p>{t('loading.generic', { ns: 'common' })}</p>
               </div>
             ) : weekliesError ? (
               <div className="weekly-curations-error">

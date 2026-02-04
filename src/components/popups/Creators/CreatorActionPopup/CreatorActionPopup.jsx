@@ -489,7 +489,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                     isSearchable={true}
                     width="100%"
                     isLoading={availableCreators === null}
-                    noOptionsMessage={() => availableCreators === null ? tCreator('merge.selectTarget.loading') : tCreator('merge.selectTarget.noOptions')}
+                    noOptionsMessage={() => availableCreators === null ? t('loading.generic', { ns: 'common' }) : tCreator('merge.selectTarget.noOptions')}
                   />
                 </div>
 

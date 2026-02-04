@@ -38,7 +38,6 @@
     "description": "Featured curations for the current week",
     "primary": "Legendary",
     "secondary": "Loved",
-    "loading": "Loading weeklies...",
     "error": "Failed to load weeklies",
     "empty": "No levels scheduled for this week"
   },

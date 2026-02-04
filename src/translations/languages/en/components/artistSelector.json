@@ -1,13 +1,11 @@
 {
   "title": "Select Artist",
-  "loading": "Loading...",
   "currentArtist": {
     "label": "Current Artist",
     "none": "No artist selected"
   },
   "search": {
     "placeholder": "Search for an artist...",
-    "loading": "Searching...",
     "noResults": "No artists found"
   },
   "buttons": {

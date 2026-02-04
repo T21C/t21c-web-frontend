@@ -842,7 +842,7 @@ const DifficultyPage = () => {
                   </button>
 
                   {tagsLoading ? (
-                    <div className="loading-message">{tDiff('tags.loading')}</div>
+                    <div className="loading-message">{t('loading.generic', { ns: 'common' })}</div>
                   ) : tags.length === 0 ? (
                     <div className="no-items-message">{tDiff('tags.noTags')}</div>
                   ) : (
@@ -927,7 +927,7 @@ const DifficultyPage = () => {
                 <>
                   {/* Groups Sub-tab */}
                   {tagsLoading ? (
-                    <div className="loading-message">{tDiff('groups.loading')}</div>
+                    <div className="loading-message">{t('loading.generic', { ns: 'common' })}</div>
                   ) : orderedGroups.length === 0 ? (
                     <div className="no-items-message">{tDiff('groups.noGroups')}</div>
                   ) : (

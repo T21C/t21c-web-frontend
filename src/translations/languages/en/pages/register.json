@@ -35,8 +35,7 @@
       "error": "Captcha is required"
     },
     "submit": {
-      "default": "Create Account",
-      "loading": "Creating Account..."
+      "default": "Create Account"
     }
   },
   "success": {

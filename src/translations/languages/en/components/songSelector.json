@@ -7,7 +7,6 @@
   },
   "search": {
     "placeholder": "Search for a song...",
-    "loading": "Searching...",
     "noResults": "No songs found"
   },
   "buttons": {

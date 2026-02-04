@@ -12,7 +12,6 @@
     "noResults": "No players found",
     "creation": {
       "button": "Create new player \"{{name}}\"",
-      "loading": "Creating player \"{{name}}\"...",
       "error": "Failed to create player"
     }
   },
@@ -24,7 +23,6 @@
     "invalid": "Invalid player data"
   },
   "buttons": {
-    "create": "Create new player \"{{name}}\"",
-    "loading": "Creating player \"{{name}}\"..."
+    "create": "Create new player \"{{name}}\""
   }
 } 

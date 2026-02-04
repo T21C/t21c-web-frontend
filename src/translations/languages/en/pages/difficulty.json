@@ -101,7 +101,6 @@
   },
   "tags": {
     "createButton": "Create Tag",
-    "loading": "Loading tags...",
     "noTags": "No tags found. Create your first tag!",
     "ungrouped": "Ungrouped",
     "tagCount": "{{count}} tag{{plural}}",
@@ -158,7 +157,6 @@
     }
   },
   "groups": {
-    "loading": "Loading groups...",
     "noGroups": "No groups found. Create tags with groups first!",
     "notifications": {
       "reordered": "Groups reordered successfully",

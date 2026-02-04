@@ -465,7 +465,7 @@ const RegisterPage = () => {
               className={`register-button ${!agreedToTerms || isSubmitting || !captchaToken ? 'disabled' : ''}`}
               disabled={!agreedToTerms || isSubmitting || !captchaToken}
             >
-              {isSubmitting ? t('register.form.submit.loading') : t('register.form.submit.default')}
+              {isSubmitting ? t('loading.submitting', { ns: 'common' }) : t('register.form.submit.default')}
             </button>
           </form>
 

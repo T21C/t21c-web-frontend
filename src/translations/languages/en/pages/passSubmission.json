@@ -47,7 +47,6 @@
   "alert": {
     "success": "Pass submitted successfully!",
     "error": "Error: ",
-    "loading": "Submitting...",
     "login": "Please log in to submit a pass",
     "form": "Please fill in all required fields correctly"
   },

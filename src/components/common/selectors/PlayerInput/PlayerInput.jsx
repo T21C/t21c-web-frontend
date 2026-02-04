@@ -4,7 +4,7 @@ import "./playerinput.css";
 import { useTranslation } from 'react-i18next';
 
 export const PlayerInput = ({ value, onChange, onSelect, currentPlayer }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
   const tPlayer = (key, params) => t(`player.playerInput.${key}`, params);
 
   const [showDropdown, setShowDropdown] = useState(false);
@@ -144,7 +144,7 @@ export const PlayerInput = ({ value, onChange, onSelect, currentPlayer }) => {
       <div className="player-input-container">
         <input
           type="text"
-          value={creationStatus === 'creating' ? tPlayer('creation.loading', { name: value }) : value}
+          value={creationStatus === 'creating' ? t('loading.creatingWithName', { ns: 'common', name: value }) : value}
           onChange={(e) => {
             onChange(e.target.value);
             openDropdown();
@@ -171,11 +171,11 @@ export const PlayerInput = ({ value, onChange, onSelect, currentPlayer }) => {
       {((showDropdown || isClosing) || creationStatus === 'creating') && (
         <div className={`player-dropdown ${isClosing ? 'closing' : ''} ${isOpening ? 'opening' : ''}`}>
           {creationStatus === 'creating' ? (
-            <div className="player-loading">{tPlayer('creation.loading', { name: value })}</div>
+            <div className="player-loading">{t('loading.creatingWithName', { ns: 'common', name: value })}</div>
           ) : (
             <>
               {isLoading ? (
-                <div className="player-loading">{tPlayer('loading')}</div>
+                <div className="player-loading">{t('loading.generic', { ns: 'common' })}</div>
               ) : searchResults.length > 0 ? (
                 <>
                   {searchResults.map((player) => (

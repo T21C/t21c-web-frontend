@@ -432,7 +432,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
                   </div>
                   {isSearching ? (
                     <div className="search-status">
-                      {isTeamMode ? tCreator('search.searchingTeams') : tCreator('search.loading')}
+                      {t('loading.searching', { ns: 'common' })}
                     </div>
                   ) : searchQuery && (!Array.isArray(searchResults) || searchResults.length === 0) ? (
                     <div className="search-status">

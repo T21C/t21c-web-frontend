@@ -29,7 +29,6 @@
       "selectTarget": {
         "label": "Select Target Creator",
         "placeholder": "Search and select target creator...",
-        "loading": "Loading...",
         "noOptions": "Type to search creators..."
       },
       "mergeButton": "Merge Creators",

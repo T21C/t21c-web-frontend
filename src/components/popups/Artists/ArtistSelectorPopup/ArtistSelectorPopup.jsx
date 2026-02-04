@@ -242,7 +242,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
               <div className="current-artist-info">
                 {isLoadingDetails ? (
                   <div className="current-artist-loading">
-                    {tArtist('loading')}
+                    {t('loading.generic', { ns: 'common' })}
                     <div className="loading-spinner" />
                   </div>
                 ) : (
@@ -296,7 +296,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                   </div>
                   {isSearching ? (
                     <div className="search-status">
-                      {tArtist('search.loading')}
+                      {t('loading.searching', { ns: 'common' })}
                     </div>
                   ) : searchQuery && (!Array.isArray(searchResults) || searchResults.length === 0) ? (
                     <div className="search-status">

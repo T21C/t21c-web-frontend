@@ -145,7 +145,7 @@ const HealthCheckPage = () => {
         {loading && !healthData && (
           <div className="loading-container">
             <div className="spinner spinner-xlarge"></div>
-            <p className="loading-label">{t('healthCheck.loading')}</p>
+            <p className="loading-label">{t('loading.generic', { ns: 'common' })}</p>
           </div>
         )}
         

@@ -129,7 +129,7 @@ export const LevelSuffixTab = ({
   if (isLoadingData) {
     return (
       <div className="form-section">
-        <div className="info-text">{tEntity('levelSuffix.loading') || 'Loading...'}</div>
+        <div className="info-text">{t('loading.generic', { ns: 'common' })}</div>
       </div>
     );
   }

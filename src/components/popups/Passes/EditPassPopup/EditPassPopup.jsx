@@ -398,7 +398,7 @@ const handleSubmit = async (e) => {
           }}>
           {success? (<p>{tPass('alert.success')}</p>) :
            error? (<p>{tPass('alert.error')}{truncateString(error, 28)}</p>):
-           (<p>{tPass('alert.loading')}</p>)}
+           (<p>{t('loading.generic', { ns: 'common' })}</p>)}
           <button onClick={() => setShowMessage(false)} className="close-btn">{tPass('close')}</button>
         </div>
 

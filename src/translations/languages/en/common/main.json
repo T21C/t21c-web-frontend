@@ -22,8 +22,10 @@
     "saving": "Saving...",
     "deleting": "Deleting...",
     "creating": "Creating...",
+    "creatingWithName": "Creating {{name}}...",
     "updating": "Updating...",
-    "uploading": "Uploading..."
+    "uploading": "Uploading...",
+    "searching": "Searching..."
   },
   "buttons": {
     "submit": "Submit",
