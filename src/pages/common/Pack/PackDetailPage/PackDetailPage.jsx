@@ -78,12 +78,12 @@ const RenderClone = ({ item, provided, snapshot, user, canEdit }) => {
 };
 
 const parseDroppableId = (droppableId) => {
-  if (droppableId === ROOT_DROPPABLE_ID) return null;
+  if (droppableId === ROOT_DROPPABLE_ID) return 0;
   if (droppableId?.startsWith('folder-')) {
     const id = Number(droppableId.replace('folder-', ''));
-    return Number.isNaN(id) ? null : id;
+    return Number.isNaN(id) ? 0 : id;
   }
-  return null;
+  return 0;
 };
 
 const sortItemsByOrder = (items = []) => [...items].sort((a, b) => a.sortOrder - b.sortOrder);
@@ -266,7 +266,7 @@ const PackDetailPage = () => {
       await api.post(`/v2/database/levels/packs/${pack.id}/items`, {
         type: 'folder',
         name: folderName.trim(),
-        parentId: null
+        parentId: 0
       });
       
       toast.success(tPack('createFolder.success'));
@@ -291,7 +291,7 @@ const PackDetailPage = () => {
       await api.post(`/v2/database/levels/packs/${pack.id}/items`, {
         type: 'level',
         levelIds: levelId,
-        parentId: null
+        parentId: 0
       });
       
       toast.success(tPack('addLevel.success'));
@@ -445,11 +445,11 @@ const PackDetailPage = () => {
     if (parentItem === undefined) {
       return undefined;
     }
-    return parentItem?.id ?? null;
+    return parentItem?.id ?? 0;
   };
 
   const getChildList = (items, parentId) => {
-    if (parentId === null) {
+    if (parentId === 0) {
       return items;
     }
 
@@ -563,7 +563,7 @@ const PackDetailPage = () => {
 
     // Manual collision detection: if library says destination is root,
     // check if mouse is actually over a folder droppable
-    if (destinationParentId === null && sourceParentId !== null) {
+    if (destinationParentId === 0 && sourceParentId !== 0) {
       const mousePos = lastMousePosRef.current;
       const manualDetection = detectFolderAtPoint(mousePos.x, mousePos.y);
       
@@ -588,13 +588,13 @@ const PackDetailPage = () => {
 
     if (activeItem.type === 'folder') {
       let currentParentId = destinationParentId;
-      while (currentParentId !== null && currentParentId !== undefined) {
+      while (currentParentId !== 0 && currentParentId !== undefined) {
         if (currentParentId === activeId) {
           toast.error(tPack('move.cannotMoveIntoSelf'));
           return;
         }
         const nextParentId = findParentId(pack.items, currentParentId);
-        if (nextParentId === undefined) {
+        if (nextParentId === undefined || nextParentId === 0) {
           break;
         }
         currentParentId = nextParentId;
@@ -616,7 +616,7 @@ const PackDetailPage = () => {
 
       setPack({ ...pack, items: newTree });
 
-      if (destinationParentId !== null && destinationParentId !== undefined) {
+      if (destinationParentId !== 0 && destinationParentId !== undefined) {
         setExpandedFolders(prev => {
           const newSet = new Set(prev);
           newSet.add(destinationParentId);

@@ -5,7 +5,6 @@ import { hasAnyFlag, permissionFlags } from '@/utils/UserPermissions';
 
 const NotificationContext = createContext({
   pendingSubmissions: 0,
-  pendingRatings: 0,
   totalNotifications: 0,
   pendingLevelSubmissions: 0,
   pendingPassSubmissions: 0,
@@ -26,7 +25,6 @@ export const useNotification = () => {
 
 export const NotificationProvider = ({ children }) => {
   const [pendingSubmissions, setPendingSubmissions] = useState(0);
-  const [pendingRatings, setPendingRatings] = useState(0);
   const [pendingLevelSubmissions, setPendingLevelSubmissions] = useState(0);
   const [pendingPassSubmissions, setPendingPassSubmissions] = useState(0);
   const [isConnected, setIsConnected] = useState(false);
@@ -42,13 +40,12 @@ export const NotificationProvider = ({ children }) => {
 
   const resetCounts = () => {
     setPendingSubmissions(0);
-    setPendingRatings(0);
     setPendingLevelSubmissions(0);
     setPendingPassSubmissions(0);
   };
 
   const fetchNotificationCounts = async (force = false) => {
-    if (!force && !hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])) {
+    if (!force && !hasAnyFlag(user, [permissionFlags.SUPER_ADMIN])) {
       resetCounts();
       return;
     }
@@ -65,10 +62,9 @@ export const NotificationProvider = ({ children }) => {
 
     try {
       const response = await api.get(`${import.meta.env.VITE_API_URL}/v2/admin/statistics`);
-      const { unratedRatings, totalPendingSubmissions, pendingLevelSubmissions, pendingPassSubmissions } = response.data;
+      const { totalPendingSubmissions, pendingLevelSubmissions, pendingPassSubmissions } = response.data;
       
       setPendingSubmissions(totalPendingSubmissions);
-      setPendingRatings(unratedRatings);
       setPendingLevelSubmissions(pendingLevelSubmissions);
       setPendingPassSubmissions(pendingPassSubmissions);
       
@@ -103,7 +99,7 @@ export const NotificationProvider = ({ children }) => {
       return;
     }
 
-    if (!force && !hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])) {
+    if (!force && !hasAnyFlag(user, [permissionFlags.SUPER_ADMIN])) {
       console.debug('SSE: User not authorized for notifications');
       return;
     }
@@ -177,7 +173,7 @@ export const NotificationProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])) {
+    if (hasAnyFlag(user, [permissionFlags.SUPER_ADMIN])) {
       setupEventSource();
       fetchNotificationCounts();
     } else {
@@ -187,12 +183,10 @@ export const NotificationProvider = ({ children }) => {
     return cleanup;
   }, [user]); // Add user as a dependency to react to auth changes
 
-  const totalNotifications = pendingSubmissions + pendingRatings;
   const displayCount = totalNotifications > 9 ? '9+' : totalNotifications.toString();
 
   const value = {
     pendingSubmissions,
-    pendingRatings,
     totalNotifications,
     displayCount,
     pendingLevelSubmissions,

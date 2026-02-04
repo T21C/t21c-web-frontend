@@ -81,7 +81,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
   };
 
   // Standalone pack operations
-  const addLevelToPack = async (packId, levelId, parentId = null) => {
+  const addLevelToPack = async (packId, levelId, parentId = 0) => {
     const response = await api.post(`/v2/database/levels/packs/${packId}/items`, {
       type: 'level',
       levelIds: levelId,

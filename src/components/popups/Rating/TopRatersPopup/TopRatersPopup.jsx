@@ -6,17 +6,17 @@ import { useTranslation } from 'react-i18next';
 import { UserAvatar } from '@/components/layout';
 import { CrownIcon } from '@/components/common/icons';
 
-  // Format numbers for better readability
-  const formatNumber = (num) => {
-    if (num >= 1000) {
-      return (num / 1000).toFixed(1) + 'k';
-    }
-    return num.toString();
-  };
+// Format numbers for better readability
+const formatNumber = (num) => {
+  if (num >= 1000) {
+    return (num / 1000).toFixed(1) + 'k';
+  }
+  return num.toString();
+};
 
-  const formatAverage = (avg) => {
-    return avg.toFixed(1);
-  };
+const formatAverage = (avg) => {
+  return avg.toFixed(1);
+};
 
 const TopRaterEntry = ({ rater, rank, averagePerDay }) => {
   const { t } = useTranslation('components');

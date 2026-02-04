@@ -75,7 +75,7 @@ export const AuthProvider = ({ children }) => {
     if (!user) return;
     
     try {
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_ME}`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/v2/auth/profile/me`);
       const currentVerificationState = hasFlag(response.data.user, permissionFlags.EMAIL_VERIFIED);
       // If verification state has changed, update user
       if (currentVerificationState !== hasFlag(user, permissionFlags.EMAIL_VERIFIED)) {
@@ -99,7 +99,7 @@ export const AuthProvider = ({ children }) => {
 
     try {
       setLoading(true);
-      const response = await axios.get(`${import.meta.env.VITE_API_URL}${import.meta.env.VITE_AUTH_ME}`);
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/v2/auth/profile/me`);
       const newUser = response.data.user;
       setUser(newUser);
       if (hasAnyFlag(newUser, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])) {
@@ -121,7 +121,7 @@ export const AuthProvider = ({ children }) => {
 
     const checkInterval = setInterval(async () => {
       await checkVerificationState();
-    }, 30000); // Check every 30 seconds
+    }, 300000); // Check every 5 minutes
 
     return () => clearInterval(checkInterval);
   }, [user, checkVerificationState]);
@@ -214,8 +214,6 @@ export const AuthProvider = ({ children }) => {
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/v2/auth/oauth/link/${provider}`
       );
-      
-      const { url } = response.data;
 
       // Open Discord auth in a new window
       window.location.href = response.data.url;
