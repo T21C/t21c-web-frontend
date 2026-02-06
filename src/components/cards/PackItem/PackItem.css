@@ -216,6 +216,170 @@
   transition: background-color 0.2s ease, min-height 0.2s ease;
 }
 
+/* Performance optimizations for 10+ nested folders to prevent lag during drag operations */
+.pack-item__children.ten-plus {
+  /* Layout containment - isolates layout calculations */
+  contain: layout style paint;
+  
+  /* Disable all transitions - major performance killer during drag */
+  transition: none !important;
+  
+  /* Disable animations */
+  animation: none !important;
+  
+  /* Simplify padding to reduce layout calculations */
+  padding-left: 0;
+  padding-right: 0;
+  
+  /* Reduce gap to minimize layout work */
+  gap: 0.25rem;
+  
+  /* Disable min-height transitions */
+  min-height: 0 !important;
+}
+
+/* Disable transitions on all children when in ten-plus mode */
+.pack-item__children.ten-plus * {
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Simplify folder styling in ten-plus mode - target folders within ten-plus containers */
+.pack-item__children.ten-plus .pack-item--folder {
+  /* Remove expensive box-shadow */
+  box-shadow: none !important;
+  
+  /* Simplify border */
+  border: 1px solid #374151;
+  
+  /* Disable hover effects */
+  transition: none !important;
+}
+
+/* Disable hover effects on folders in ten-plus mode */
+.pack-item__children.ten-plus .pack-item--folder:hover {
+  border-color: #374151 !important;
+  box-shadow: none !important;
+}
+
+/* Disable transitions on folder header */
+.pack-item__children.ten-plus .pack-item__header {
+  transition: none !important;
+}
+
+/* Disable transitions on drag handle */
+.pack-item__children.ten-plus .pack-item__drag-handle {
+  transition: none !important;
+}
+
+.pack-item__children.ten-plus .pack-item__drag-handle:hover {
+  background: transparent !important;
+  color: #94a3b8 !important;
+}
+
+/* Disable transitions on toggle button */
+.pack-item__children.ten-plus .pack-item__toggle {
+  transition: none !important;
+}
+
+.pack-item__children.ten-plus .pack-item__toggle:hover {
+  background: transparent !important;
+  color: #94a3b8 !important;
+}
+
+/* Disable transitions on download button */
+.pack-item__children.ten-plus .pack-item__download-btn {
+  transition: none !important;
+  transform: none !important;
+}
+
+.pack-item__children.ten-plus .pack-item__download-btn:hover {
+  background: rgba(59, 130, 246, 0.15) !important;
+  border-color: rgba(59, 130, 246, 0.4) !important;
+  transform: none !important;
+}
+
+/* Disable transitions on action buttons */
+.pack-item__children.ten-plus .pack-item__action-btn {
+  transition: none !important;
+}
+
+.pack-item__children.ten-plus .pack-item__action-btn:hover {
+  background: transparent !important;
+}
+
+/* Simplify dragging-over state */
+.pack-item__children.ten-plus.is-dragging-over {
+  background: rgba(59, 130, 246, 0.08) !important;
+  transition: none !important;
+}
+
+/* Disable opacity transitions on dragging items */
+.pack-item__children.ten-plus .pack-item.dragging {
+  transition: opacity 0s !important;
+}
+
+/* Optimize level cards in ten-plus mode */
+.pack-item__children.ten-plus .pack-item__level-wrapper,
+.pack-item__children.ten-plus .pack-item__level-wrapper .level-card {
+  /* Use content-visibility for better rendering performance */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 100px;
+  
+  /* Disable transitions */
+  transition: none !important;
+  animation: none !important;
+}
+
+/* Reduce z-index complexity */
+.pack-item__children.ten-plus .pack-item__level-wrapper {
+  z-index: auto;
+}
+
+/* Disable pointer events on non-interactive elements during drag to reduce event overhead */
+.pack-item__children.ten-plus.is-dragging-over *:not(button):not(input):not(select):not(textarea) {
+  pointer-events: none;
+}
+
+/* Re-enable pointer events on interactive elements */
+.pack-item__children.ten-plus.is-dragging-over button,
+.pack-item__children.ten-plus.is-dragging-over input,
+.pack-item__children.ten-plus.is-dragging-over select,
+.pack-item__children.ten-plus.is-dragging-over textarea {
+  pointer-events: auto;
+}
+
+/* Additional optimizations: reduce repaints and reflows */
+.pack-item__children.ten-plus {
+  /* Reduce paint complexity */
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  
+  /* Optimize font rendering for better performance */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeSpeed;
+}
+
+/* When dragging, further optimize ten-plus containers */
+.pack-item__children.ten-plus.is-dragging-over {
+  /* Use simpler background without transitions */
+  background: rgba(59, 130, 246, 0.08) !important;
+}
+
+/* Optimize nested ten-plus containers (11+, 12+, etc.) */
+.pack-item__children.ten-plus .pack-item__children.ten-plus {
+  /* Further reduce visual complexity */
+  gap: 0.15rem;
+}
+
+/* Disable expensive CSS filters and effects */
+.pack-item__children.ten-plus * {
+  filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+
 .pack-item__children.is-collapsed {
   display: none;
 }

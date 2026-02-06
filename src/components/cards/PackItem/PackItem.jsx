@@ -285,7 +285,7 @@ const PackItem = ({
               <div
                 ref={combinedRef}
                 {...droppableProvided.droppableProps}
-                className={`pack-item__children ${droppableSnapshot.isDraggingOver ? 'is-dragging-over' : ''} ${isExpanded ? 'is-expanded' : 'is-collapsed'}`}
+                className={`pack-item__children ${depth > 5 ? 'ten-plus' : ''} ${droppableSnapshot.isDraggingOver ? 'is-dragging-over' : ''} ${isExpanded ? 'is-expanded' : 'is-collapsed'}`}
               >
                 {isExpanded &&
                   sortedChildren.map((child, childIndex) => (
