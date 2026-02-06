@@ -27,7 +27,7 @@ const parseRankColor = (rank) => {
 }
 
 const PassDetailPage = () => {
-  const { t } = useTranslation('pages');
+  const { t } = useTranslation(['pages', 'common']);
   const tPass = (key, params = {}) => t(`passDetail.${key}`, params);
   const { id } = useParams();
   const [res, setRes] = useState(null);
@@ -412,7 +412,7 @@ const PassDetailPage = () => {
                   }
                 </button>
                 <button className="cancel-button" onClick={() => setShowHideConfirm(false)} disabled={isTogglingHidden}>
-                  {tPass('confirm.hide.cancel')}
+                  {t('buttons.cancel', { ns: 'common' })}
                 </button>
               </div>
             </div>

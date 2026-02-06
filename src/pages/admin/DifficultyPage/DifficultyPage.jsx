@@ -1107,7 +1107,7 @@ const DifficultyPage = () => {
                             setNewTag({ name: '', iconFile: null, icon: null, color: '#FF5733' });
                           }}
                         >
-                          {tDiff('tags.create.cancelButton')}
+                          {t('buttons.cancel', { ns: 'common' })}
                         </button>
                       </div>
                     </form>
@@ -1215,7 +1215,7 @@ const DifficultyPage = () => {
                         className="cancel-button"
                         onClick={handleCloseEditTag}
                       >
-                          {tDiff('tags.edit.cancelButton')}
+                          {t('buttons.cancel', { ns: 'common' })}
                         </button>
                       </div>
                     </form>
@@ -1260,7 +1260,7 @@ const DifficultyPage = () => {
                         className="cancel-button"
                         onClick={() => setDeletingTag(null)}
                       >
-                        {tDiff('tags.delete.cancelButton')}
+                        {t('buttons.cancel', { ns: 'common' })}
                       </button>
                     </div>
                   </div>

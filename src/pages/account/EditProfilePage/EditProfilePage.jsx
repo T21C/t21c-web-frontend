@@ -639,7 +639,7 @@ const EditProfilePage = () => {
               onClick={() => setIsChangingPassword(false)}
               style={{ marginTop: '1rem' }}
             >
-              {tEditProfile('form.buttons.cancel')}
+              {t('buttons.cancel', { ns: 'common' })}
             </button>
           </form>
         )}

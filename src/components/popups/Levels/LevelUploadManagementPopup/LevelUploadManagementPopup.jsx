@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { encodeFilename } from '@/utils/zipUtils';
 import { uploadFileInChunks, validateChunkedUpload } from '@/utils/chunkedUpload';
 import { isCdnUrl } from '@/utils/Utility';
+import { CrossIcon } from '@/components/common/icons';
 
 const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, setLevel }) => {
   const [isUploading, setIsUploading] = useState(false);
@@ -242,7 +243,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
             }}
             disabled={isUploading}
           >
-            {t('buttons.close', { ns: 'common' })}
+            <CrossIcon color="#fff" size={"24px"} />
           </button>
         </div>
 

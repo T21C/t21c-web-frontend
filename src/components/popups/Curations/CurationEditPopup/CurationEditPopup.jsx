@@ -18,36 +18,7 @@ const CurationEditPopup = ({
   onUpdate
 }) => {
   const { t } = useTranslation(['components', 'common']);
-  const tCur = (key, params = {}) => {
-    const translation = t(`curationEditPopup.${key}`, params);
-    // Fallback to default text if translation is not found
-    if (translation === `curationEditPopup.${key}`) {
-      const fallbacks = {
-        'form.previewCSS': 'Preview CSS',
-        'title': 'Edit Curation',
-        'description': 'Modify the curation settings for this level',
-        'form.type': 'Curation Type',
-        'form.selectType': 'Select a curation type',
-        'form.shortDescription': 'Short Description',
-        'form.shortDescriptionPlaceholder': 'Brief description of the curation',
-        'form.shortDescriptionHelp': 'A short description that will be displayed',
-        'form.description': 'Description',
-        'form.descriptionPlaceholder': 'Detailed description of the curation',
-        'form.customColor': 'Custom Color',
-        'form.customCSS': 'Custom CSS',
-        'form.customCSSPlaceholder': 'Enter custom CSS rules...',
-        'form.customCSSHelp': 'Custom CSS will be applied to the level detail page',
-        'form.thumbnail': 'Thumbnail',
-        'actions.cancel': 'Cancel',
-        'actions.save': 'Save',
-        'actions.saving': 'Saving...',
-        'notifications.updated': 'Curation updated successfully!',
-        'errors.updateFailed': 'Failed to update curation'
-      };
-      return fallbacks[key] || key;
-    }
-    return translation;
-  };
+  const tCur = (key, params = {}) => t(`curationEditPopup.${key}`, params);
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
@@ -370,14 +341,14 @@ const CurationEditPopup = ({
               className="curation-edit-modal__cancel-btn"
               disabled={isLoading}
             >
-              {tCur('actions.cancel')}
+              {t('buttons.cancel', { ns: 'common' })}
             </button>
             <button
               type="submit"
               className="curation-edit-modal__save-btn"
               disabled={isLoading || !formData.typeId}
             >
-              {isLoading ? t('loading.saving', { ns: 'common' }) : tCur('actions.save')}
+              {isLoading ? t('loading.saving', { ns: 'common' }) : t('buttons.save', { ns: 'common' })}
             </button>
           </div>
         </form>

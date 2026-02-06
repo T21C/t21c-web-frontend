@@ -348,7 +348,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                         disabled={isLoading}
                         className="confirm-button pause-confirm"
                       >
-                        {tAdmin('form.pause.confirm.buttons.confirm')}
+                        {t('buttons.confirm', { ns: 'common' })}
                       </button>
                       <button
                         type="button"
@@ -385,7 +385,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                         disabled={isLoading}
                         className="confirm-button rating-ban-confirm"
                       >
-                        {tAdmin('form.ratingBan.confirm.buttons.confirm')}
+                        {t('buttons.confirm', { ns: 'common' })}
                       </button>
                       <button
                         type="button"
@@ -463,7 +463,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                         onClick={() => handleMergePlayer(true)}
                         disabled={!targetPlayerId || isLoading}
                       >
-                        {tAdmin('form.merge.confirm.buttons.confirm')}
+                        {t('buttons.confirm', { ns: 'common' })}
                       </button>
                       <button
                         className="cancel-button"

@@ -569,13 +569,13 @@ const RatingAccuracyDialog = ({ isOpen, onClose, onSave, initialValue = 0 }) => 
             className="rating-accuracy-dialog-button rating-accuracy-dialog-cancel"
             onClick={onClose}
           >
-            {tLevel('components.ratingAccuracy.cancelButton')}
+            {t('buttons.cancel', { ns: 'common' })}
           </button>
           <button 
             className="rating-accuracy-dialog-button rating-accuracy-dialog-save"
             onClick={handleSave}
           >
-            {tLevel('components.ratingAccuracy.saveButton')}
+            {t('buttons.save', { ns: 'common' })}
           </button>
         </div>
       </div>
@@ -585,7 +585,7 @@ const RatingAccuracyDialog = ({ isOpen, onClose, onSave, initialValue = 0 }) => 
 
 // Refactor RerateHistoryDropdown to match AliasesDropdown pattern
 const CurationTooltip = ({ curation, show, onClose }) => {
-  const { t } = useTranslation('pages');
+  const { t } = useTranslation(['pages', 'common']);
   const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
   const dropdownRef = useRef(null);
 
@@ -633,7 +633,7 @@ const CurationTooltip = ({ curation, show, onClose }) => {
 };
 
 const WeeklyAppearanceDropdown = ({ schedules, show, onClose }) => {
-  const { t } = useTranslation('pages');
+  const { t } = useTranslation(['pages', 'common']);
   const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
   const dropdownRef = useRef(null);
 
@@ -684,7 +684,7 @@ const WeeklyAppearanceDropdown = ({ schedules, show, onClose }) => {
 };
 
 const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict }) => {
-  const { t } = useTranslation('pages');
+  const { t } = useTranslation(['pages', 'common']);
   const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
   const dropdownRef = useRef(null);
 
