@@ -46,9 +46,9 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
 
   useEffect(() => {
     // Determine default role if creator has exactly one level
-    if (creator?.createdLevels?.length === 1) {
-      const singleLevel = creator.createdLevels[0];
-      setDefaultRole(singleLevel.LevelCredit?.role || CreditRole.CHARTER);
+    if (creator?.credits?.length === 1) {
+      const singleCredit= creator.credits[0];
+      setDefaultRole(singleCredit.role || CreditRole.CHARTER);
     }
   }, [creator]);
 
@@ -382,12 +382,6 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
               >
                 {tCreator('modes.split')}
               </button>
-              <button 
-                className={`mode-btn ${mode === 'levels' ? 'active' : ''}`}
-                onClick={() => setMode('levels')}
-              >
-                {tCreator('modes.levels')}
-              </button>
             </div>
           </div>
 
@@ -472,7 +466,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                       label: tCreator('merge.creatorLabel', {
                         name: c.name,
                         id: c.id,
-                        count: c.createdLevels?.length || 0,
+                        count: c.credits?.length || 0,
                         aliases: c.aliases?.length > 0 ? ` [${c.aliases.join(', ')}]` : ''
                       })
                     }))}
@@ -692,49 +686,6 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                     </div>
                   </div>
                 )}
-              </div>
-            )}
-
-            {mode === 'levels' && (
-              <div className="levels-list">
-                {creator.createdLevels?.map(level => {
-                  const difficultyInfo = difficultyDict[level.diffId];
-                  return (
-                    <div 
-                      key={level.id}
-                      className="level-item"
-                      onClick={() => {
-                        window.open(`/levels/${level.id}`, '_blank');
-                      }}
-                    >
-                      <div className="level-item-icon">
-                        <img 
-                          src={difficultyDict[difficultyInfo?.id]?.icon} 
-                          alt={difficultyInfo?.name || tCreator('levels.difficulty')} 
-                          className="difficulty-icon"
-                        />
-                      </div>
-                      <div className="level-item-info">
-                        <div className="level-id">#{level.id}</div>
-                        <div className="level-title">{level.song}</div>
-                        <div className="level-artist">{level.artist}</div>
-                        <div className="level-legacy-creators">
-                          {
-                            level.charter && <span>{tCreator('levels.charter')} <b>{level.charter}</b></span>
-                          }
-                          <br/>
-                          {
-                            level.vfxer && <span>{tCreator('levels.vfx')} <b>{level.vfxer}</b></span>
-                          }
-                        </div>
-                      </div>
-                      <div className="level-item-role">
-                        {level.LevelCredit?.role}
-                      </div>
-                      <ExternalLinkIcon color="#fff" size={32} className="external-link-icon"/>
-                    </div>
-                  );
-                })}
               </div>
             )}
           </div>

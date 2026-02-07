@@ -284,7 +284,6 @@ const LevelSubmissions = () => {
             updatedAt: team.updatedAt,
             credits: {
               totalLevels: team.levels?.length || 0,
-              verifiedLevels: team.levels?.filter(l => l.isVerified).length || 0,
               memberCount: team.members?.length || 0
             }
           },
@@ -312,8 +311,7 @@ const LevelSubmissions = () => {
               charterCount: credits.charterCount || 0,
               vfxerCount: credits.vfxerCount || 0,
               totalCredits: credits.totalCredits || 0,
-              totalLevels: request.creator.createdLevels?.length || 0,
-              verifiedLevels: request.creator.createdLevels?.filter(l => l.isVerified).length || 0
+              totalLevels: request.creator.credits?.length || 0,
             },
             aliases: request.creator.creatorAliases?.map(alias => alias.name) || [],
             isVerified: request.creator.isVerified || false

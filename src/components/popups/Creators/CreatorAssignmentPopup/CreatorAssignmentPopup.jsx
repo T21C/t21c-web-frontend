@@ -238,7 +238,7 @@ export const CreatorAssignmentPopup = ({ user, onClose, onUpdate }) => {
                 <CustomSelect
                   options={availableCreators === null ? [] : availableCreators.map(c => ({
                     value: c.id,
-                    label: `${c.name} (ID: ${c.id}, Charts: ${c.createdLevels?.length || 0})${c.creatorAliases?.length > 0 ? ` [${c.creatorAliases.map(a => a.name).join(', ')}]` : ''}`
+                    label: `${c.name} (ID: ${c.id}, Charts: ${c.credits?.length || 0})${c.creatorAliases?.length > 0 ? ` [${c.creatorAliases.map(a => a.name).join(', ')}]` : ''}`
                   }))}
                   value={selectedCreator ? {
                     value: selectedCreator.id,

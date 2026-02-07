@@ -461,7 +461,7 @@ const CreatorManagementPage = () => {
       isOwner: false,
       role: assignedRole,
       isVerified: creator.isVerified,
-      levelCount: creator.createdLevels?.length || 0,
+      levelCount: creator.credits?.length || 0,
       aliases: creator.creatorAliases?.map(alias => alias.name) || []
     }]);
     setHasUnsavedChanges(true);
@@ -550,7 +550,7 @@ const CreatorManagementPage = () => {
           role: c.role || CreditRole.CHARTER,
           isOwner: c.isOwner,
           isVerified: c.isVerified,
-          createdLevels: c.createdLevels,
+          credits: c.credits,
           aliases: c.creatorAliases?.map(alias => alias.name) || []
         })) || []
         setPendingCreators(creators);
@@ -776,7 +776,7 @@ const CreatorManagementPage = () => {
             <CustomSelect
               options={availableCreators === null ? [] : availableCreators.map(creator => ({
                 value: creator.id,
-                label: `${creator.name} (ID: ${creator.id}, Charts: ${creator.createdLevels?.length || 0})${creator.creatorAliases?.length > 0 ? ` [${creator.creatorAliases.map(alias => alias.name).join(', ')}]` : ''}`
+                label: `${creator.name} (ID: ${creator.id}, Charts: ${creator.credits?.length || 0})${creator.creatorAliases?.length > 0 ? ` [${creator.creatorAliases.map(alias => alias.name).join(', ')}]` : ''}`
               }))}
               value={null}
               onChange={(option) => {
@@ -1148,7 +1148,7 @@ const CreatorManagementPage = () => {
                           {creator.name} ({tCreator('creatorInfo.id')}: {creator.id})
                           {creator.isVerified && <span className="verified-badge" title={tCreator('creatorInfo.verifiedBadge')}>✓</span>}
                         </h3>
-                        <p>{tCreator('creatorInfo.charts')}: {creator.createdLevels?.length || 0}</p>
+                        <p>{tCreator('creatorInfo.charts')}: {creator.credits?.length || 0}</p>
                         {creator.creatorAliases?.length > 0 && (
                           <p>{tCreator('creatorInfo.aliases')}: {creator.creatorAliases.map(alias => alias.name).join(', ')}</p>
                         )}
