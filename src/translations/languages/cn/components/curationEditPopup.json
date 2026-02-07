@@ -13,6 +13,7 @@
     "descriptionRequiredPlaceholder": "需要描述……",
     "customColor": "自定义颜色",
     "customCSS": "自定义 CSS",
+    "previewCSS": "预览 CSS",
     "customCSSPlaceholder": "/* Enter custom CSS for this level's detail page */\n.curation-custom {\n  /* Your custom styles here */\n}",
     "customCSSHelp": "此 CSS 将应用于关卡详情页面。使用它来自定义外观和布局。",
     "thumbnail": "关卡缩略图"

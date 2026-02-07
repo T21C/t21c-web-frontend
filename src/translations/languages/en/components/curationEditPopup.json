@@ -13,6 +13,7 @@
     "descriptionRequiredPlaceholder": "Description is required...",
     "customColor": "Custom Color",
     "customCSS": "Custom CSS",
+    "previewCSS": "Preview CSS",
     "customCSSPlaceholder": "/* Enter custom CSS for this level's detail page */\n.curation-custom {\n  /* Your custom styles here */\n}",
     "customCSSHelp": "This CSS will be applied to the level's detail page. Use this to customize the appearance and layout.",
     "thumbnail": "Level Thumbnail"
