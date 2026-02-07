@@ -533,15 +533,15 @@ export const RatingDetailPopup = ({
                 </div>
                 <div className="detail-field">
                   <span className="detail-label">{tRating('labels.currentDifficulty')}</span>
-                  <img src={difficultyDict[selectedRating.level.difficulty.id]?.icon} alt="" className="detail-value lv-icon" />
+                  <img src={difficultyDict[selectedRating.currentDifficultyId]?.icon} alt="" className="detail-value lv-icon" />
                 </div>
-                <div className="detail-field" style={{visibility: selectedRating.averageDifficulty ? 'visible' : 'hidden'}}>
+                <div className="detail-field" style={{visibility: selectedRating.averageDifficultyId ? 'visible' : 'hidden'}}>
                   <span className="detail-label">{tRating('labels.averageRating')}</span>
-                  <img src={difficultyDict[selectedRating.averageDifficulty?.id]?.icon} alt="" className="detail-value lv-icon" />
+                  <img src={difficultyDict[selectedRating.averageDifficultyId]?.icon} alt="" className="detail-value lv-icon" />
                 </div>
-                <div className="detail-field" style={{visibility: selectedRating.communityDifficulty ? 'visible' : 'hidden'}}>
+                <div className="detail-field" style={{visibility: selectedRating.communityDifficultyId ? 'visible' : 'hidden'}}>
                   <span className="detail-label">{tRating('labels.communityRating')}</span>
-                  <img src={difficultyDict[selectedRating.communityDifficulty?.id]?.icon} alt="" className="detail-value lv-icon" />
+                  <img src={difficultyDict[selectedRating.communityDifficultyId]?.icon} alt="" className="detail-value lv-icon" />
                 </div>
 
               </div>
