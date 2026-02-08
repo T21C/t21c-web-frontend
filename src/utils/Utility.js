@@ -330,7 +330,7 @@ export const filterDifficultiesByUserTopDiff = (difficulties, user) => {
 
   // Filter PGU difficulties based on user's top difficulty
   return difficulties.filter(diff => {
-    if (diff.name.startsWith('Q')) {
+    if (diff.name.includes('Q')) {
       return false;
     }
     if (diff.type === 'SPECIAL') {

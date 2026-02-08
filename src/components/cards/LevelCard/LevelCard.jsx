@@ -121,7 +121,7 @@ const LevelCard = ({
       {showRating && level.rating?.averageDifficultyId && 
        difficultyDict[level.rating.averageDifficultyId]?.icon &&
        difficultyDict[level.rating.averageDifficultyId]?.type === "PGU" &&
-       difficultyDict[level.diffId]?.name.startsWith("Q") && (
+       difficultyDict[level.diffId]?.name.includes("Q") && (
         <img 
           className="rating-icon"
           src={difficultyDict[level.rating.averageDifficultyId]?.icon}
@@ -502,7 +502,7 @@ const LevelCard = ({
           {level.rating?.averageDifficultyId && 
            difficultyDict[level.rating.averageDifficultyId]?.icon &&
            difficultyDict[level.rating.averageDifficultyId]?.type === "PGU" &&
-           difficultyDict[level.diffId]?.name.startsWith("Q") && (
+           difficultyDict[level.diffId]?.name.includes("Q") && (
             <img 
               className="rating-icon"
               src={difficultyDict[level.rating.averageDifficultyId]?.icon}
