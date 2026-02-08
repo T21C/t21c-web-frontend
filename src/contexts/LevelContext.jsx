@@ -24,8 +24,11 @@ const LevelContextProvider = (props) => {
         SLIDER_RANGE: 'level_slider_range',
         SLIDER_Q_RANGE: 'level_slider_q_range',
         SLIDER_Q_RANGE_DRAG: 'level_slider_q_range_drag',
+        SLIDER_GQ_RANGE: 'level_slider_gq_range',
+        SLIDER_GQ_RANGE_DRAG: 'level_slider_gq_range_drag',
         SELECTED_SPECIAL_DIFFS: 'level_selected_special_diffs',
         Q_SLIDER_VISIBLE: 'level_q_slider_visible',
+        GQ_SLIDER_VISIBLE: 'level_gq_slider_visible',
         ONLY_MY_LIKES: 'level_only_my_likes',
         SELECTED_CURATION_TYPES: 'level_selected_curation_types',
         SELECTED_TAGS: 'level_selected_tags'
@@ -58,6 +61,14 @@ const LevelContextProvider = (props) => {
         const saved = Cookies.get(COOKIE_KEYS.SLIDER_Q_RANGE_DRAG);
         return saved ? JSON.parse(saved) : [1, 1];
     });
+    const [sliderGQRange, setSliderGQRange] = useState(() => {
+        const saved = Cookies.get(COOKIE_KEYS.SLIDER_GQ_RANGE);
+        return saved ? JSON.parse(saved) : [];
+    });
+    const [sliderGQRangeDrag, setSliderGQRangeDrag] = useState(() => {
+        const saved = Cookies.get(COOKIE_KEYS.SLIDER_GQ_RANGE_DRAG);
+        return saved ? JSON.parse(saved) : [1, 1];
+    });
     const [selectedSpecialDiffs, setSelectedSpecialDiffs] = useState(() => {
         const saved = Cookies.get(COOKIE_KEYS.SELECTED_SPECIAL_DIFFS);
         return saved ? JSON.parse(saved) : [];
@@ -66,6 +77,10 @@ const LevelContextProvider = (props) => {
         Cookies.get(COOKIE_KEYS.Q_SLIDER_VISIBLE) ?
         Cookies.get(COOKIE_KEYS.Q_SLIDER_VISIBLE) === 'true'
         : true);
+    const [gqSliderVisible, setGqSliderVisible] = useState(() => 
+        Cookies.get(COOKIE_KEYS.GQ_SLIDER_VISIBLE) ?
+        Cookies.get(COOKIE_KEYS.GQ_SLIDER_VISIBLE) === 'true'
+        : false);
     const [onlyMyLikes, setOnlyMyLikes] = useState(() => Cookies.get(COOKIE_KEYS.ONLY_MY_LIKES) === 'true');
     const [selectedCurationTypes, setSelectedCurationTypes] = useState(() => {
         const saved = Cookies.get(COOKIE_KEYS.SELECTED_CURATION_TYPES);
@@ -88,9 +103,14 @@ const LevelContextProvider = (props) => {
                 Cookies.set(COOKIE_KEYS.SLIDER_RANGE, JSON.stringify(newRange));
             }
             
-            // Get available Q difficulties
+            // Get available Q difficulties (only Q, not GQ)
             const qDifficulties = difficulties
-                .filter(d => d.name.startsWith('Q'))
+                .filter(d => d.name.startsWith('Q') && !d.name.startsWith('GQ'))
+                .sort((a, b) => a.sortOrder - b.sortOrder);
+
+            // Get available GQ difficulties
+            const gqDifficulties = difficulties
+                .filter(d => d.name.startsWith('GQ'))
                 .sort((a, b) => a.sortOrder - b.sortOrder);
 
             if (qDifficulties.length > 0) {
@@ -123,6 +143,38 @@ const LevelContextProvider = (props) => {
                 setSliderQRangeDrag([1, 1]);
                 Cookies.set(COOKIE_KEYS.SLIDER_Q_RANGE, JSON.stringify([]));
                 Cookies.set(COOKIE_KEYS.SLIDER_Q_RANGE_DRAG, JSON.stringify([1, 1]));
+            }
+
+            if (gqDifficulties.length > 0) {
+                const availableGQNames = gqDifficulties.map(d => d.name);
+                const minGQOrder = gqDifficulties[0].sortOrder;
+                const maxGQOrder = gqDifficulties[gqDifficulties.length - 1].sortOrder;
+
+                // Validate and adjust sliderGQRange if needed
+                const currentGQRange = [...sliderGQRange];
+                const currentGQRangeDrag = [...sliderGQRangeDrag];
+                
+                const needsGQRangeReset = currentGQRange.length === 0 || 
+                    !currentGQRange.every(gq => availableGQNames.includes(gq));
+                
+                const needsGQDragReset = currentGQRangeDrag[0] < minGQOrder || 
+                    currentGQRangeDrag[1] > maxGQOrder;
+
+                if (needsGQRangeReset) {
+                    setSliderGQRange(availableGQNames);
+                    Cookies.set(COOKIE_KEYS.SLIDER_GQ_RANGE, JSON.stringify(availableGQNames));
+                }
+
+                if (needsGQDragReset) {
+                    setSliderGQRangeDrag([minGQOrder, maxGQOrder]);
+                    Cookies.set(COOKIE_KEYS.SLIDER_GQ_RANGE_DRAG, JSON.stringify([minGQOrder, maxGQOrder]));
+                }
+            } else {
+                // Only reset if there are no GQ difficulties
+                setSliderGQRange([]);
+                setSliderGQRangeDrag([1, 1]);
+                Cookies.set(COOKIE_KEYS.SLIDER_GQ_RANGE, JSON.stringify([]));
+                Cookies.set(COOKIE_KEYS.SLIDER_GQ_RANGE_DRAG, JSON.stringify([1, 1]));
             }
         }
     }, [difficulties]);
@@ -185,12 +237,24 @@ const LevelContextProvider = (props) => {
     }, [sliderQRangeDrag]);
 
     useEffect(() => {
+        Cookies.set(COOKIE_KEYS.SLIDER_GQ_RANGE, JSON.stringify(sliderGQRange));
+    }, [sliderGQRange]);
+
+    useEffect(() => {
+        Cookies.set(COOKIE_KEYS.SLIDER_GQ_RANGE_DRAG, JSON.stringify(sliderGQRangeDrag));
+    }, [sliderGQRangeDrag]);
+
+    useEffect(() => {
         Cookies.set(COOKIE_KEYS.SELECTED_SPECIAL_DIFFS, JSON.stringify(selectedSpecialDiffs));
     }, [selectedSpecialDiffs]);
 
     useEffect(() => {
         Cookies.set(COOKIE_KEYS.Q_SLIDER_VISIBLE, qSliderVisible);
     }, [qSliderVisible]);
+
+    useEffect(() => {
+        Cookies.set(COOKIE_KEYS.GQ_SLIDER_VISIBLE, gqSliderVisible);
+    }, [gqSliderVisible]);
 
     useEffect(() => {
         Cookies.set(COOKIE_KEYS.ONLY_MY_LIKES, onlyMyLikes);
@@ -221,8 +285,11 @@ const LevelContextProvider = (props) => {
                 sliderRange, setSliderRange,
                 sliderQRange, setSliderQRange,
                 sliderQRangeDrag, setSliderQRangeDrag,
+                sliderGQRange, setSliderGQRange,
+                sliderGQRangeDrag, setSliderGQRangeDrag,
                 selectedSpecialDiffs, setSelectedSpecialDiffs,
                 qSliderVisible, setQSliderVisible,
+                gqSliderVisible, setGqSliderVisible,
                 onlyMyLikes, setOnlyMyLikes,
                 selectedCurationTypes, setSelectedCurationTypes,
                 selectedTags, setSelectedTags

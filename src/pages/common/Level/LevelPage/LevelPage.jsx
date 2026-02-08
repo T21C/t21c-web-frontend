@@ -30,9 +30,6 @@ const LevelPage = () => {
   const { t } = useTranslation('pages');
   const tLevel = (key, params = {}) => t(`level.${key}`, params);
 
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(false);
-  const [forceUpdate, setForceUpdate] = useState(false);
   const { user } = useAuth();
   const { difficulties, curationTypes, tags } = useContext(DifficultyContext);
   const {
@@ -73,9 +70,15 @@ const LevelPage = () => {
     setSliderQRange,
     sliderQRangeDrag,
     setSliderQRangeDrag,
+    sliderGQRange,
+    setSliderGQRange,
+    sliderGQRangeDrag,
+    setSliderGQRangeDrag,
     setSelectedSpecialDiffs,
     qSliderVisible,
     setQSliderVisible,
+    gqSliderVisible,
+    setGqSliderVisible,
     onlyMyLikes,
     setOnlyMyLikes,
     selectedCurationTypes,
@@ -90,12 +93,15 @@ const LevelPage = () => {
   const [stateDisplayOpen, setStateDisplayOpen] = useState(false);
   const [searchInput, setSearchInput] = useState(query);
   const [showTagsInCards, setShowTagsInCards] = useState(true);
-  const searchTimeoutRef = useRef(null);
-  const lastSearchValueRef = useRef(query);
+  
+  // Timeout ref for debounced fetch
+  const fetchTimeoutRef = useRef(null);
+  const cancelTokenRef = useRef(null);
 
   // Filter difficulties by type
   const pguDifficulties = difficulties.filter(d => d.type === 'PGU').sort((a, b) => a.sortOrder - b.sortOrder);
-  const qDifficulties = difficulties.filter(d => d.name.startsWith('Q')).sort((a, b) => a.sortOrder - b.sortOrder);
+  const qDifficulties = difficulties.filter(d => d.name.startsWith('Q') && !d.name.startsWith('GQ')).sort((a, b) => a.sortOrder - b.sortOrder);
+  const gqDifficulties = difficulties.filter(d => d.name.startsWith('GQ')).sort((a, b) => a.sortOrder - b.sortOrder);
   const specialDifficulties = difficulties.filter(d => d.type === 'SPECIAL');
 
   // Add sort options similar to PassPage
@@ -109,12 +115,118 @@ const LevelPage = () => {
     { value: 'RANDOM', label: tLevel('settings.sort.random') }
   ];
 
-  // Centralized refresh function
-  const triggerRefresh = () => {
-    setPageNumber(0);
-    setLevelsData([]);
-    setForceUpdate(f => !f);
-  };
+  // Fetch function
+  const fetchLevelsData = useCallback(async (resetPage = false) => {
+    // Cancel any pending request
+    if (cancelTokenRef.current) {
+      cancelTokenRef.current();
+    }
+    
+    const fetchLevels = async () => {
+      try {
+        // Combine slider special diffs with manually selected ones
+        const allSpecialDiffs = [
+          ...(qSliderVisible ? sliderQRange : []),
+          ...(gqSliderVisible ? sliderGQRange : []),
+          ...selectedSpecialDiffs
+        ].filter(Boolean);
+        const uniqueSpecialDiffs = [...new Set(allSpecialDiffs)];
+
+        const params = {
+          limit,
+          offset: resetPage ? 0 : pageNumber * limit,
+          query: query || '',
+          sort: sort + "_" + order,
+          deletedFilter: deletedFilter || 'hide',
+          clearedFilter: clearedFilter || 'show',
+          pguRange: `${selectedLowFilterDiff},${selectedHighFilterDiff}`,
+          specialDifficulties: uniqueSpecialDiffs.length > 0 ? uniqueSpecialDiffs.join(',') : undefined,
+          onlyMyLikes: user ? onlyMyLikes : undefined,
+          availableDlFilter: availableDlFilter || 'show',
+          curatedTypesFilter: selectedCurationTypes.length > 0 ? selectedCurationTypes.join(',') : undefined,
+          tagsFilter: selectedTags.length > 0 ? selectedTags.join(',') : undefined
+        };
+        
+        const response = await api.get(
+          `${import.meta.env.VITE_LEVELS}`,
+          {
+            params,
+            cancelToken: new axios.CancelToken((c) => (cancelTokenRef.current = c)),
+          }
+        );
+
+        const newLevels = response.data.results;
+        setTotalLevels(response.data.total);
+        
+        if (resetPage) {
+          // Replace entire list for new search/filter
+          setLevelsData(newLevels);
+          setPageNumber(0);
+        } else {
+          // Append new results for pagination
+          setLevelsData(prev => [...prev, ...newLevels]);
+        }
+        
+        setHasMore(response.data.hasMore);
+      } catch (error) {
+        if (!axios.isCancel(error)) {
+          console.error('Error fetching levels:', error);
+        }
+      }
+    };
+
+    const fetchLevelById = async () => {
+      try {
+        const response = await api.get(
+          `${import.meta.env.VITE_LEVELS}/byId/${query.slice(1)}`,
+          {
+            cancelToken: new axios.CancelToken((c) => (cancelTokenRef.current = c)),
+          }
+        );
+        if (response.data) {
+          setLevelsData([response.data]);
+          setTotalLevels(1);
+          setHasMore(false);
+        } else {
+          setTotalLevels(0);
+          setLevelsData([]);
+          setHasMore(false);
+        }
+      } catch (error) {
+        setTotalLevels(0);
+        setLevelsData([]);
+        if (!axios.isCancel(error) && error.response?.status !== 404) {
+          console.error('Error fetching level by ID:', error);
+        }
+      }
+    };
+
+    if (query[0] == "#" && !isNaN(parseInt(query.slice(1)))) {
+      await fetchLevelById();
+    } else {
+      await fetchLevels();
+    }
+  }, [
+    query, 
+    sort, 
+    order, 
+    pageNumber, 
+    deletedFilter, 
+    clearedFilter, 
+    availableDlFilter,
+    selectedLowFilterDiff, 
+    selectedHighFilterDiff, 
+    sliderQRange, 
+    sliderGQRange, 
+    qSliderVisible, 
+    gqSliderVisible, 
+    selectedCurationTypes, 
+    selectedTags, 
+    selectedSpecialDiffs, 
+    onlyMyLikes, 
+    user,
+  ]);
+
 
   function handleLikeToggle() {
     if (!user) {
@@ -122,7 +234,6 @@ const LevelPage = () => {
       return;
     }
     setOnlyMyLikes(!onlyMyLikes);
-    triggerRefresh();
   }
 
   // Handle slider value updates without triggering immediate fetches
@@ -186,9 +297,56 @@ const LevelPage = () => {
     
     setSliderQRangeDrag([sortOrderValues[0], sortOrderValues[sortOrderValues.length - 1]]);
     setSliderQRange(newRange);
-    // Only reset page and trigger fetch when dragging is complete
-    triggerRefresh();
   }, [qDifficulties, difficulties]);
+
+  function handleSliderGQChange(newRange) {
+    // If newRange is a list of difficulty names, keep it as is
+    if (newRange && newRange.length > 0 && typeof newRange[0] === 'string') {
+      // For display purposes, convert to sortOrder values
+      const sortOrderValues = newRange.map(name => {
+        const diff = difficulties.find(d => d.name === name);
+        return diff ? diff.sortOrder : 1;
+      });
+      
+      // Ensure we have at least two values for the slider display
+      if (sortOrderValues.length === 1) {
+        setSliderGQRangeDrag([sortOrderValues[0], sortOrderValues[0]]);
+      } else {
+        setSliderGQRangeDrag([sortOrderValues[0], sortOrderValues[sortOrderValues.length - 1]]);
+      }
+    } else if (newRange && newRange.length === 2) {
+      // Already sortOrder values
+      setSliderGQRangeDrag(newRange);
+    } else if (newRange && newRange.length === 1) {
+      // If we only have one value, duplicate it
+      setSliderGQRangeDrag([newRange[0], newRange[0]]);
+    } else {
+      // If we have no values, use the first GQ difficulty
+      const firstGQ = gqDifficulties[0]?.sortOrder || 1;
+      setSliderGQRangeDrag([firstGQ, firstGQ]);
+    }
+  }
+
+  const handleSliderGQChangeComplete = useCallback((newRange) => {
+    // If newRange is a list of difficulty names, keep it as is
+    // newrange = ["GQ1", "GQ2", "GQ3"]
+
+    if (!newRange) {
+      setSliderGQRange(gqDifficulties.map(d => d.name));
+      setSliderGQRangeDrag([gqDifficulties[0]?.sortOrder || 1, gqDifficulties[gqDifficulties.length - 1]?.sortOrder || 1]);
+      return;
+    }
+    // Keep the list of difficulty names
+    
+    // For display purposes, convert to sortOrder values
+    const sortOrderValues = newRange.map(name => {
+      const diff = difficulties.find(d => d.name === name);
+      return diff ? diff.sortOrder : 1;
+    }).sort((a, b) => a - b);
+    
+    setSliderGQRangeDrag([sortOrderValues[0], sortOrderValues[sortOrderValues.length - 1]]);
+    setSliderGQRange(newRange);
+  }, [gqDifficulties, difficulties]);
 
   // Handle slider changes complete (after drag or click)
   const handleSliderChangeComplete = useCallback((newRange) => {
@@ -203,9 +361,6 @@ const LevelPage = () => {
 
     setSelectedLowFilterDiff(lowDiff?.name || "P1");
     setSelectedHighFilterDiff(highDiff?.name || "U20");
-    
-    // Only reset page and trigger fetch when dragging is complete
-    triggerRefresh();
   }, [pguDifficulties]);
 
   function toggleSpecialDifficulty(diffName) {
@@ -214,7 +369,6 @@ const LevelPage = () => {
         ? prev.filter(d => d !== diffName)
         : [...prev, diffName];
       
-      triggerRefresh();
       return newSelection;
     });
   }
@@ -225,7 +379,6 @@ const LevelPage = () => {
         ? prev.filter(name => name !== typeName)
         : [...prev, typeName];
       
-      triggerRefresh();
       return newSelection;
     });
   }
@@ -236,7 +389,6 @@ const LevelPage = () => {
         ? prev.filter(name => name !== tagName)
         : [...prev, tagName];
       
-      triggerRefresh();
       return newSelection;
     });
   }
@@ -244,132 +396,63 @@ const LevelPage = () => {
   function handleQueryChange(e) {
     const newValue = e.target.value;
     setSearchInput(newValue);
-    
-    // Clear any existing timeout
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
-    
-    // Set a new timeout to trigger search after 500ms of inactivity
-    searchTimeoutRef.current = setTimeout(() => {
-      // Only update if the value has changed since the last search
-      if (newValue !== lastSearchValueRef.current) {
-        lastSearchValueRef.current = newValue;
-        setQuery(newValue);
-        triggerRefresh();
-        
-      }
-    }, 500);
+    setQuery(newValue);
+    setPageNumber(0);
+    setLevelsData([]);
   }
-
-  // Update lastSearchValueRef when query changes from other sources
-  useEffect(() => {
-    lastSearchValueRef.current = query;
-  }, [query]);
 
   // Note: Removed auto-clearing of curation types when filter changes to 'hide'
   // to preserve user's selection for when they switch back to 'only' mode
 
-  // Clean up the timeout when component unmounts
+  // Clean up timeout when component unmounts
   useEffect(() => {
     return () => {
-      if (searchTimeoutRef.current) {
-        clearTimeout(searchTimeoutRef.current);
+      if (fetchTimeoutRef.current) {
+        clearTimeout(fetchTimeoutRef.current);
+      }
+      if (cancelTokenRef.current) {
+        cancelTokenRef.current();
       }
     };
   }, []);
 
+  // Debounced fetch on filter/query changes
   useEffect(() => {
-    let cancel;
-    
-    const fetchLevels = async () => {
-      setLoading(true);
-      try {
-        // Combine slider special diffs with manually selected ones
-        const allSpecialDiffs = qSliderVisible
-        ? [...new Set([...sliderQRange, ...selectedSpecialDiffs])]
-        : [...new Set([...selectedSpecialDiffs])];
-
-        const params = {
-          limit,
-          offset: pageNumber * limit,
-          query,
-          sort: sort + "_" + order,
-          deletedFilter,
-          clearedFilter,
-          pguRange: `${selectedLowFilterDiff},${selectedHighFilterDiff}`,
-          specialDifficulties: allSpecialDiffs.join(','),
-          onlyMyLikes: user ? onlyMyLikes : undefined,
-          availableDlFilter: availableDlFilter,
-          curatedTypesFilter:  selectedCurationTypes.length > 0 && selectedCurationTypes.join(','),
-          tagsFilter: selectedTags.length > 0 && selectedTags.join(',')
-        };
-        
-        const response = await api.get(
-          `${import.meta.env.VITE_LEVELS}`,
-          {
-            params,
-            cancelToken: new axios.CancelToken((c) => (cancel = c)),
-          }
-        );
-
-        const newLevels = response.data.results;
-        setTotalLevels(response.data.total);
-        
-        const existingIds = new Set(levelsData.map((level) => level.id));
-        const uniqueLevels = newLevels.filter(
-          (level) => !existingIds.has(level.id)
-        );
-
-        setLevelsData((prev) => [...prev, ...uniqueLevels]);
-        setHasMore(response.data.hasMore);
-      } catch (error) {
-        if (!axios.isCancel(error)) {
-          console.error('Error fetching levels:', error);
-          setError(true);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const fetchLevelById = async () => {
-      setLoading(true);
-      try {
-        const response = await api.get(
-          `${import.meta.env.VITE_LEVELS}/byId/${query.slice(1)}`,
-          {
-            cancelToken: new axios.CancelToken((c) => (cancel = c)),
-          }
-        );
-        if (response.data) {
-          setLevelsData([response.data]);
-          setTotalLevels(1);
-          setHasMore(false);
-        } else {
-          setTotalLevels(0);
-          setLevelsData([]);
-          setHasMore(false);
-        }
-      } catch (error) {
-        setTotalLevels(0);
-        setLevelsData([]);
-        if (!axios.isCancel(error) && error.response.status !== 404) {
-          console.error('Error fetching level by ID:', error);
-          setError(true);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (query[0] == "#" && !isNaN(parseInt(query.slice(1)))) {
-      fetchLevelById();
-    } else {
-      fetchLevels();
+    // Clear any existing timeout
+    if (fetchTimeoutRef.current) {
+      clearTimeout(fetchTimeoutRef.current);
     }
-    return () => cancel && cancel();
-  }, [query, sort, pageNumber, forceUpdate, deletedFilter, sliderQRange, qSliderVisible, selectedCurationTypes, selectedTags]);
+    
+    setPageNumber(0);
+    setLevelsData([]);
+    setHasMore(true);
+
+    // Set a new timeout to trigger fetch after 500ms
+    fetchTimeoutRef.current = setTimeout(() => {
+      fetchLevelsData(true);
+    }, 500);
+    
+    return () => {
+      if (fetchTimeoutRef.current) {
+        clearTimeout(fetchTimeoutRef.current);
+      }
+      if (cancelTokenRef.current) {
+        cancelTokenRef.current();
+      }
+    };
+  }, [query, sort, order, deletedFilter, clearedFilter, availableDlFilter, selectedLowFilterDiff, selectedHighFilterDiff, sliderQRange, sliderGQRange, qSliderVisible, gqSliderVisible, selectedCurationTypes, selectedTags, selectedSpecialDiffs, onlyMyLikes, user]);
+
+  // Direct fetch for page number changes (pagination)
+  useEffect(() => {
+    if (pageNumber === 0) return; // Skip initial page load, handled by debounced effect
+    
+    fetchLevelsData(false);
+    return () => {
+      if (cancelTokenRef.current) {
+        cancelTokenRef.current();
+      }
+    };
+  }, [pageNumber, fetchLevelsData]);
 
   function handleFilterOpen() {
     setFilterOpen(!filterOpen);
@@ -385,14 +468,16 @@ const LevelPage = () => {
 
   function handleSortType(value) {
     setSort(value);
-    setLoading(true);
-    triggerRefresh();
+    setPageNumber(0);
+    setLevelsData([]);
+    setHasMore(true);
   }
 
   function handleSortOrder(value) {
     setOrder(value);
-    setLoading(true);
-    triggerRefresh();
+    setPageNumber(0);
+    setLevelsData([]);
+    setHasMore(true);
   }
 
   function resetAll() {
@@ -413,6 +498,15 @@ const LevelPage = () => {
       setSliderQRangeDrag([1, 1]);
     }
     
+    // Reset GQ range to first and last GQ difficulty
+    if (gqDifficulties.length > 0) {
+      setSliderGQRange(gqDifficulties.map(d => d.name));
+      setSliderGQRangeDrag([gqDifficulties[0].sortOrder, gqDifficulties[gqDifficulties.length - 1].sortOrder]);
+    } else {
+      setSliderGQRange([]);
+      setSliderGQRangeDrag([1, 1]);
+    }
+    
     // Reset special difficulties
     setSelectedSpecialDiffs([]);
     // Reset filters
@@ -421,9 +515,10 @@ const LevelPage = () => {
     setAvailableDlFilter("show");
     setSelectedCurationTypes([]);
     setQSliderVisible(false);
-    // Clear and reload data
-    setLoading(true);
-    triggerRefresh();
+    setGqSliderVisible(false);
+    setPageNumber(0);
+    setLevelsData([]);
+    setHasMore(true);
   }
 
 
@@ -557,13 +652,23 @@ const LevelPage = () => {
                   mode="pgu"
                 />
               </div>
-              <div className={`q-slider-wrapper ${qSliderVisible ? 'visible' : 'hidden'}`}>
-                <DifficultySlider
-                  values={sliderQRangeDrag}
-                  onChange={handleSliderQChange}
-                  onChangeComplete={handleSliderQChangeComplete}
-                  mode="q"
-                />
+              <div className={`sliders-container ${qSliderVisible || gqSliderVisible ? 'has-sliders' : ''}`}>
+                <div className={`gq-slider-wrapper ${gqSliderVisible ? 'visible' : 'hidden'} ${qSliderVisible ? 'with-q' : ''}`}>
+                  <DifficultySlider
+                    values={sliderGQRangeDrag}
+                    onChange={handleSliderGQChange}
+                    onChangeComplete={handleSliderGQChangeComplete}
+                    mode="gq"
+                  />
+                </div>
+                <div className={`q-slider-wrapper ${qSliderVisible ? 'visible' : 'hidden'} ${gqSliderVisible ? 'with-gq' : ''}`}>
+                  <DifficultySlider
+                    values={sliderQRangeDrag}
+                    onChange={handleSliderQChange}
+                    onChangeComplete={handleSliderQChangeComplete}
+                    mode="q"
+                  />
+                </div>
               </div>
               <div className="filter-row">
                 <div className={`special-difficulties-wrapper`}>
@@ -602,15 +707,27 @@ const LevelPage = () => {
                   </button>
                 </div>
                 <button 
+                  className={`gq-toggle-button ${gqSliderVisible ? 'active' : ''}`}
+                  onClick={() => {
+                    setGqSliderVisible(!gqSliderVisible);
+                  }}
+                  title={tLevel('toolTip.toggleGQSlider')}
+                  data-tooltip-id="gq-toggle"
+                >
+                  <img src={difficulties.find(d => d.name === "GQq" || (d.name.startsWith("GQ") && d.name !== "GQq")).icon || difficulties.find(d => d.name.startsWith("GQ"))?.icon} alt="GQ Slider" />
+                </button>
+                <Tooltip id="gq-toggle" place="bottom" noArrow>
+                  {tLevel('toolTip.toggleGQSlider')}
+                </Tooltip>
+                <button 
                   className={`q-toggle-button ${qSliderVisible ? 'active' : ''}`}
                   onClick={() => {
                     setQSliderVisible(!qSliderVisible);
-                    triggerRefresh();
                   }}
                   title={tLevel('toolTip.toggleQSlider')}
                   data-tooltip-id="q-toggle"
                 >
-                  <img src={difficulties.find(d => d.name === "Qq").icon} alt="Q Slider" />
+                  <img src={difficulties.find(d => d.name === "Qq" || (d.name.startsWith("Q") && !d.name.startsWith("GQ"))).icon} alt="Q Slider" />
                 </button>
                 <Tooltip id="q-toggle" place="bottom" noArrow>
                   {tLevel('toolTip.toggleQSlider')}
@@ -689,7 +806,6 @@ const LevelPage = () => {
                   currentState={clearedFilter}
                   onChange={(newState) => {
                     setClearedFilter(newState);
-                    triggerRefresh();
                   }}
                   states={['show', 'hide', 'only']}
                 />
@@ -700,7 +816,6 @@ const LevelPage = () => {
                   currentState={availableDlFilter}
                   onChange={(newState) => {
                     setAvailableDlFilter(newState);
-                    triggerRefresh();
                   }}
                   states={['show', 'hide', 'only']}
                 />
@@ -715,7 +830,6 @@ const LevelPage = () => {
                     currentState={deletedFilter}
                     onChange={(newState) => {
                       setDeletedFilter(newState);
-                      triggerRefresh();
                     }}
                     states={['show', 'hide', 'only']}
                   />
@@ -732,7 +846,7 @@ const LevelPage = () => {
               className={`view-mode-button ${viewMode === 'normal' ? 'active' : ''}`}
               onClick={() => {
                 setViewMode('normal');
-                triggerRefresh();
+                // View mode change doesn't need refresh, it's just UI
               }}
               title={tLevel('toolTip.normalView')}
             >
@@ -744,7 +858,7 @@ const LevelPage = () => {
               className={`view-mode-button ${viewMode === 'compact' ? 'active' : ''}`}
               onClick={() => {
                 setViewMode('compact');
-                triggerRefresh();
+                // View mode change doesn't need refresh, it's just UI
               }}
               title={tLevel('toolTip.compactView')}
             >
@@ -756,7 +870,7 @@ const LevelPage = () => {
               className={`view-mode-button ${viewMode === 'grid' ? 'active' : ''}`}
               onClick={() => {
                 setViewMode('grid');
-                triggerRefresh();
+                // View mode change doesn't need refresh, it's just UI
               }}
               title={tLevel('toolTip.gridView')}
             >

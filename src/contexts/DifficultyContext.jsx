@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { createContext, useState, useEffect, useContext } from "react";
+import { createContext, useState, useEffect, useContext, useRef } from "react";
 import api from "@/utils/api";
 
 const DifficultyContext = createContext();
@@ -181,10 +181,21 @@ const DifficultyContextProvider = (props) => {
         }
     };
 
+    const intervalRef = useRef(null);
+
     useEffect(() => {
-        setInterval(() => {
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+        }
+        intervalRef.current = setInterval(() => {
             validateHash().catch(err => console.error('Error validating hash:', err));
         }, 10 * 1000 * 60);
+        
+        return () => {
+            if (intervalRef.current) {
+                clearInterval(intervalRef.current);
+            }
+        };
     }, [validateHash]);
     return (
         <DifficultyContext.Provider 

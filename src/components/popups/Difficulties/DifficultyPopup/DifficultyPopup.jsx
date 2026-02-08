@@ -948,8 +948,9 @@ const DifficultyPopup = ({
           }
           
           showToast(tDiff(isCreating ? 'notifications.created' : 'notifications.updated'), 'success');
+          // Pass the updated difficulty to parent for targeted update instead of full refresh
+          refreshDifficulties(response.data);
           onClose();
-          refreshDifficulties();
         } catch (err) {
           const errorMessage = err.response?.data?.error || tDiff(isCreating ? 'errors.createFailed' : 'errors.updateFailed');
           showToast(errorMessage, 'error');

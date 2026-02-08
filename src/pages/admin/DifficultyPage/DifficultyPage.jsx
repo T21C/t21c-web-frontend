@@ -488,16 +488,17 @@ const DifficultyPage = () => {
 
       
       addNotification(tDiff('notifications.reordered'), 'success');
-    } catch (err) {
-      console.error('Error updating sort orders:', {
-        error: err.message,
-        status: err.response?.status,
-        difficultyId: movedDifficulty?.id,
-        difficultyName: movedDifficulty?.name
-      });
-      addNotification(tDiff('notifications.reorderFailed'), 'error');
-      await reloadDifficulties();
-    } finally {
+      } catch (err) {
+        console.error('Error updating sort orders:', {
+          error: err.message,
+          status: err.response?.status,
+          difficultyId: movedDifficulty?.id,
+          difficultyName: movedDifficulty?.name
+        });
+        addNotification(tDiff('notifications.reorderFailed'), 'error');
+        // Revert to previous state on error instead of full refresh
+        await reloadDifficulties();
+      } finally {
       setIsReordering(false);
     }
   };
@@ -638,7 +639,8 @@ const DifficultyPage = () => {
       await api.delete(`${import.meta.env.VITE_DIFFICULTIES}/${deletingDifficulty.id}?fallbackId=${difficulties.find(d => d.name === fallbackDiff)?.id}`, {
         data: { superAdminPassword: verifiedPassword }
       });
-      await reloadDifficulties();
+      // Update local state directly instead of full refresh
+      setDifficulties(prev => prev.filter(diff => diff.id !== deletingDifficulty.id));
       addNotification(tDiff('notifications.deleted'));
       setDeletingDifficulty(null);
       setShowDeleteInput(false);
@@ -1434,7 +1436,19 @@ const DifficultyPage = () => {
                 setEditingDifficulty(updatedDifficulty);
               }
             }}
-            refreshDifficulties={reloadDifficulties}
+            refreshDifficulties={(updatedDifficulty) => {
+              // Update only the changed difficulty instead of full refresh
+              if (updatedDifficulty) {
+                if (isCreating) {
+                  setDifficulties(prev => [...prev, updatedDifficulty]);
+                } else {
+                  setDifficulties(prev => prev.map(diff => diff.id === updatedDifficulty.id ? updatedDifficulty : diff));
+                }
+              } else {
+                // Fallback to full refresh only if no updated difficulty provided
+                reloadDifficulties();
+              }
+            }}
             error={error}
             verifiedPassword={verifiedPassword}
           />

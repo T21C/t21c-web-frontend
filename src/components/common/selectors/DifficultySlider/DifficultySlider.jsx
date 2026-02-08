@@ -21,7 +21,9 @@ const DifficultySlider = ({
   if (mode === "pgu") {
     filteredDifficulties = difficulties.filter(d => d.type === 'PGU');
   } else if (mode === "q") {
-    filteredDifficulties = difficulties.filter(d => d.name.startsWith('Q'));
+    filteredDifficulties = difficulties.filter(d => d.name.startsWith('Q') && !d.name.startsWith('GQ'));
+  } else if (mode === "gq") {
+    filteredDifficulties = difficulties.filter(d => d.name.startsWith('GQ'));
   }
   filteredDifficulties = filteredDifficulties.slice().sort((a, b) => a.sortOrder - b.sortOrder);
 
@@ -124,13 +126,13 @@ const DifficultySlider = ({
         Math.min(safeIndices[0], safeIndices[1]),
         Math.max(safeIndices[0], safeIndices[1])
       ];
-      if (mode === "q") {
-        // For Q mode, return all Q difficulties within the range
-        const qDifficulties = filteredDifficulties
+      if (mode === "q" || mode === "gq") {
+        // For Q/GQ mode, return all difficulties within the range
+        const selectedDifficulties = filteredDifficulties
           .filter((_, i) => i >= newIndices[0] && i <= newIndices[1])
           .map(d => d.name);
         onChange(newIndices.map(idx => indexToSortOrder(idx)));
-        onChangeComplete?.(qDifficulties);
+        onChangeComplete?.(selectedDifficulties);
       } else {
         onChange(newIndices.map(idx => indexToSortOrder(idx)));
         onChangeComplete?.(newIndices.map(idx => indexToSortOrder(idx)));
@@ -172,12 +174,12 @@ const DifficultySlider = ({
     const closerKnobIndex = distanceToFirst <= distanceToSecond ? 0 : 1;
     const newIndices = [...safeIndices];
     newIndices[closerKnobIndex] = clickedIndex;
-    if (mode === "q") {
-      const qDifficulties = filteredDifficulties
+    if (mode === "q" || mode === "gq") {
+      const selectedDifficulties = filteredDifficulties
         .filter((_, i) => i >= Math.min(...newIndices) && i <= Math.max(...newIndices))
         .map(d => d.name);
       onChange(newIndices.map(idx => indexToSortOrder(idx)));
-      onChangeComplete?.(qDifficulties);
+      onChangeComplete?.(selectedDifficulties);
     } else {
       onChange(newIndices.map(idx => indexToSortOrder(idx)));
       onChangeComplete?.(newIndices.map(idx => indexToSortOrder(idx)));
@@ -209,7 +211,7 @@ const DifficultySlider = ({
         return "#FFFFFF";
       }
     }
-    if (diff.name.startsWith('Q') && !/^Q2$/.test(diff.name)) {
+    if ((diff.name.startsWith('Q') || diff.name.startsWith('GQ')) && !/^Q2$/.test(diff.name) && !/^GQ2$/.test(diff.name)) {
       return "#FFFFFF";
     }
     return diff.color;
