@@ -25,7 +25,7 @@ const TagSelector = ({
   if (!items) return null;
 
   const filteredItems = disableQuantum
-    ? items.filter(item => !item.name.startsWith('Q') && !item.name.startsWith('GQ'))
+    ? items.filter(item => !item.name.includes('Q'))
     : items;
 
   // Filter out non-existent items from selectedDiffs
@@ -80,7 +80,7 @@ const TagSelector = ({
       group = item.group;
     } else {
       // Backward compatibility: fall back to hardcoded grouping logic
-      if (item.name.startsWith('Q') || item.name.startsWith('GQ')) {
+      if (item.name.startsWith('Q')) {
         group = tDiff('groups.Quantum');
       } else if (['Unranked', 'Impossible', 'Censored', 'P0'].includes(item.name)) {
         group = tDiff('groups.Hidden');

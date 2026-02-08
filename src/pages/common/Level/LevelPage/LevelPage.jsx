@@ -70,15 +70,9 @@ const LevelPage = () => {
     setSliderQRange,
     sliderQRangeDrag,
     setSliderQRangeDrag,
-    sliderGQRange,
-    setSliderGQRange,
-    sliderGQRangeDrag,
-    setSliderGQRangeDrag,
     setSelectedSpecialDiffs,
     qSliderVisible,
     setQSliderVisible,
-    gqSliderVisible,
-    setGqSliderVisible,
     onlyMyLikes,
     setOnlyMyLikes,
     selectedCurationTypes,
@@ -100,8 +94,7 @@ const LevelPage = () => {
 
   // Filter difficulties by type
   const pguDifficulties = difficulties.filter(d => d.type === 'PGU').sort((a, b) => a.sortOrder - b.sortOrder);
-  const qDifficulties = difficulties.filter(d => d.name.startsWith('Q') && !d.name.startsWith('GQ')).sort((a, b) => a.sortOrder - b.sortOrder);
-  const gqDifficulties = difficulties.filter(d => d.name.startsWith('GQ')).sort((a, b) => a.sortOrder - b.sortOrder);
+  const qDifficulties = difficulties.filter(d => d.name.includes('Q')).sort((a, b) => a.sortOrder - b.sortOrder);
   const specialDifficulties = difficulties.filter(d => d.type === 'SPECIAL');
 
   // Add sort options similar to PassPage
@@ -127,7 +120,6 @@ const LevelPage = () => {
         // Combine slider special diffs with manually selected ones
         const allSpecialDiffs = [
           ...(qSliderVisible ? sliderQRange : []),
-          ...(gqSliderVisible ? sliderGQRange : []),
           ...selectedSpecialDiffs
         ].filter(Boolean);
         const uniqueSpecialDiffs = [...new Set(allSpecialDiffs)];
@@ -217,9 +209,7 @@ const LevelPage = () => {
     selectedLowFilterDiff, 
     selectedHighFilterDiff, 
     sliderQRange, 
-    sliderGQRange, 
     qSliderVisible, 
-    gqSliderVisible, 
     selectedCurationTypes, 
     selectedTags, 
     selectedSpecialDiffs, 
@@ -298,55 +288,6 @@ const LevelPage = () => {
     setSliderQRangeDrag([sortOrderValues[0], sortOrderValues[sortOrderValues.length - 1]]);
     setSliderQRange(newRange);
   }, [qDifficulties, difficulties]);
-
-  function handleSliderGQChange(newRange) {
-    // If newRange is a list of difficulty names, keep it as is
-    if (newRange && newRange.length > 0 && typeof newRange[0] === 'string') {
-      // For display purposes, convert to sortOrder values
-      const sortOrderValues = newRange.map(name => {
-        const diff = difficulties.find(d => d.name === name);
-        return diff ? diff.sortOrder : 1;
-      });
-      
-      // Ensure we have at least two values for the slider display
-      if (sortOrderValues.length === 1) {
-        setSliderGQRangeDrag([sortOrderValues[0], sortOrderValues[0]]);
-      } else {
-        setSliderGQRangeDrag([sortOrderValues[0], sortOrderValues[sortOrderValues.length - 1]]);
-      }
-    } else if (newRange && newRange.length === 2) {
-      // Already sortOrder values
-      setSliderGQRangeDrag(newRange);
-    } else if (newRange && newRange.length === 1) {
-      // If we only have one value, duplicate it
-      setSliderGQRangeDrag([newRange[0], newRange[0]]);
-    } else {
-      // If we have no values, use the first GQ difficulty
-      const firstGQ = gqDifficulties[0]?.sortOrder || 1;
-      setSliderGQRangeDrag([firstGQ, firstGQ]);
-    }
-  }
-
-  const handleSliderGQChangeComplete = useCallback((newRange) => {
-    // If newRange is a list of difficulty names, keep it as is
-    // newrange = ["GQ1", "GQ2", "GQ3"]
-
-    if (!newRange) {
-      setSliderGQRange(gqDifficulties.map(d => d.name));
-      setSliderGQRangeDrag([gqDifficulties[0]?.sortOrder || 1, gqDifficulties[gqDifficulties.length - 1]?.sortOrder || 1]);
-      return;
-    }
-    // Keep the list of difficulty names
-    
-    // For display purposes, convert to sortOrder values
-    const sortOrderValues = newRange.map(name => {
-      const diff = difficulties.find(d => d.name === name);
-      return diff ? diff.sortOrder : 1;
-    }).sort((a, b) => a - b);
-    
-    setSliderGQRangeDrag([sortOrderValues[0], sortOrderValues[sortOrderValues.length - 1]]);
-    setSliderGQRange(newRange);
-  }, [gqDifficulties, difficulties]);
 
   // Handle slider changes complete (after drag or click)
   const handleSliderChangeComplete = useCallback((newRange) => {
@@ -440,7 +381,7 @@ const LevelPage = () => {
         cancelTokenRef.current();
       }
     };
-  }, [query, sort, order, deletedFilter, clearedFilter, availableDlFilter, selectedLowFilterDiff, selectedHighFilterDiff, sliderQRange, sliderGQRange, qSliderVisible, gqSliderVisible, selectedCurationTypes, selectedTags, selectedSpecialDiffs, onlyMyLikes, user]);
+  }, [query, sort, order, deletedFilter, clearedFilter, availableDlFilter, selectedLowFilterDiff, selectedHighFilterDiff, sliderQRange, qSliderVisible, selectedCurationTypes, selectedTags, selectedSpecialDiffs, onlyMyLikes, user]);
 
   // Direct fetch for page number changes (pagination)
   useEffect(() => {
@@ -489,22 +430,13 @@ const LevelPage = () => {
     setSelectedHighFilterDiff("U20");
     setSliderRange([1, difficulties.find(d => d.name === "U20").sortOrder]);
     
-    // Reset Q range to first and last Q difficulty
+    // Reset Q range to first and last Q difficulty (includes GQ)
     if (qDifficulties.length > 0) {
       setSliderQRange(qDifficulties.map(d => d.name));
       setSliderQRangeDrag([qDifficulties[0].sortOrder, qDifficulties[qDifficulties.length - 1].sortOrder]);
     } else {
       setSliderQRange([]);
       setSliderQRangeDrag([1, 1]);
-    }
-    
-    // Reset GQ range to first and last GQ difficulty
-    if (gqDifficulties.length > 0) {
-      setSliderGQRange(gqDifficulties.map(d => d.name));
-      setSliderGQRangeDrag([gqDifficulties[0].sortOrder, gqDifficulties[gqDifficulties.length - 1].sortOrder]);
-    } else {
-      setSliderGQRange([]);
-      setSliderGQRangeDrag([1, 1]);
     }
     
     // Reset special difficulties
@@ -515,7 +447,6 @@ const LevelPage = () => {
     setAvailableDlFilter("show");
     setSelectedCurationTypes([]);
     setQSliderVisible(false);
-    setGqSliderVisible(false);
     setPageNumber(0);
     setLevelsData([]);
     setHasMore(true);
@@ -652,16 +583,8 @@ const LevelPage = () => {
                   mode="pgu"
                 />
               </div>
-              <div className={`sliders-container ${qSliderVisible || gqSliderVisible ? 'has-sliders' : ''}`}>
-                <div className={`gq-slider-wrapper ${gqSliderVisible ? 'visible' : 'hidden'} ${qSliderVisible ? 'with-q' : ''}`}>
-                  <DifficultySlider
-                    values={sliderGQRangeDrag}
-                    onChange={handleSliderGQChange}
-                    onChangeComplete={handleSliderGQChangeComplete}
-                    mode="gq"
-                  />
-                </div>
-                <div className={`q-slider-wrapper ${qSliderVisible ? 'visible' : 'hidden'} ${gqSliderVisible ? 'with-gq' : ''}`}>
+              <div className={`sliders-container ${qSliderVisible ? 'has-sliders' : ''}`}>
+                <div className={`q-slider-wrapper ${qSliderVisible ? 'visible' : 'hidden'}`}>
                   <DifficultySlider
                     values={sliderQRangeDrag}
                     onChange={handleSliderQChange}
@@ -707,19 +630,6 @@ const LevelPage = () => {
                   </button>
                 </div>
                 <button 
-                  className={`gq-toggle-button ${gqSliderVisible ? 'active' : ''}`}
-                  onClick={() => {
-                    setGqSliderVisible(!gqSliderVisible);
-                  }}
-                  title={tLevel('toolTip.toggleGQSlider')}
-                  data-tooltip-id="gq-toggle"
-                >
-                  <img src={difficulties.find(d => d.name === "GQq" || (d.name.startsWith("GQ") && d.name !== "GQq")).icon || difficulties.find(d => d.name.startsWith("GQ"))?.icon} alt="GQ Slider" />
-                </button>
-                <Tooltip id="gq-toggle" place="bottom" noArrow>
-                  {tLevel('toolTip.toggleGQSlider')}
-                </Tooltip>
-                <button 
                   className={`q-toggle-button ${qSliderVisible ? 'active' : ''}`}
                   onClick={() => {
                     setQSliderVisible(!qSliderVisible);
@@ -727,7 +637,7 @@ const LevelPage = () => {
                   title={tLevel('toolTip.toggleQSlider')}
                   data-tooltip-id="q-toggle"
                 >
-                  <img src={difficulties.find(d => d.name === "Qq" || (d.name.startsWith("Q") && !d.name.startsWith("GQ"))).icon} alt="Q Slider" />
+                  <img src={difficulties.find(d => d.name === "Qq" || d.name.startsWith("Q")).icon} alt="Q Slider" />
                 </button>
                 <Tooltip id="q-toggle" place="bottom" noArrow>
                   {tLevel('toolTip.toggleQSlider')}
