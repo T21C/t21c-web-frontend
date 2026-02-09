@@ -23,7 +23,7 @@ export const RatingCard = ({
   onEditLevel 
 }) => {
     const { t } = useTranslation('components');
-    const tRating = (key) => t(`rating.ratingCard.${key}`) || key;
+    const tRating = (key, params = {}) => t(`rating.ratingCard.${key}`, params) || key;
     const { difficultyDict } = useDifficultyContext();
     const [isEditing, setIsEditing] = useState(false);
     const [isReasonExpanded, setIsReasonExpanded] = useState(false);
@@ -109,6 +109,10 @@ export const RatingCard = ({
               </span>
               <span className="level-id">
                 #{rating.level.id}
+              </span>
+              <br />
+              <span className="cleared-count">
+                {tRating('labels.clearedCount', { count: rating.level.clears || 0 })}
               </span>
             </div>
           </div>

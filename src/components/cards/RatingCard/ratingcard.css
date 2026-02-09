@@ -42,6 +42,19 @@
   transform: translate(-20px, -7.5rem) skew(-15deg) scaleX(80%);
 }
 
+.rating-card .header-meta {
+  display: grid;
+  gap: 0.25rem;
+  grid-template-columns: 1fr auto;
+}
+
+.rating-card .cleared-count {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.6);
+  white-space: nowrap;
+  text-align: right;
+}
+
 .rating-card .rating-card-header {
   display: flex;
   justify-content: space-between;

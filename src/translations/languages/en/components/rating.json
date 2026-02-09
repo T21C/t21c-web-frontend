@@ -51,6 +51,7 @@
     "labels": {
       "yourRating": "Your Rating",
       "managerAverage": "Manager Average",
+      "clearedCount": "Clears: {{count}}",
       "managerRatings": "Manager Ratings",
       "communityAverage": "Community Average",
       "communityRatings": "Community Ratings",

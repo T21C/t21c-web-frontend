@@ -205,11 +205,11 @@ const DifficultySlider = ({
     if (diff.name[0] === "U") {
       const number = parseInt(diff.name.slice(1));
       
-      if (number > 14) {
+      if (number > 13) {
         return "#FFFFFF";
       }
     }
-    if (diff.name.startsWith('Q') && !/^Q2$/.test(diff.name)) {
+    if (diff.name.startsWith('Q')) {
       return "#FFFFFF";
     }
     return diff.color;
@@ -227,11 +227,11 @@ const DifficultySlider = ({
             className="difficulty-name" 
             style={{ 
                 color: minDiff?.color,
-                textShadow: `0 0 10px ${getGlowColor(minDiff)}`
+                textShadow: `0 0 2px #000, 0 1px 2px #000, 0 0 12px ${getGlowColor(minDiff)}, 0 0 12px ${getGlowColor(minDiff)}`
              }}
             data-difficulty={minDiff?.name}
           >
-            {minDiff?.name}
+            {minDiff?.name.split(/\s+/)[0]}
           </span>
         </div>
         <div className="difficulty-value" style={{ left: `${((safeIndices[1] / (availableSortOrders.length - 1)) * 100)}%` }}>
@@ -243,10 +243,12 @@ const DifficultySlider = ({
              }}
             data-difficulty={maxDiff?.name}
           >
-            {maxDiff?.name}
+            {maxDiff?.name.split(/\s+/)[0]}
           </span>
         </div>
       </div>
+
+   
 
       <div 
         ref={trackRef}
@@ -299,6 +301,26 @@ const DifficultySlider = ({
               />
             )}
           </div>
+        </div>
+      </div>
+
+
+      <div className="difficulty-display-range">
+        <div className="difficulty-value" style={{ left: `${((safeIndices[0] / (availableSortOrders.length - 1)) * 100)}%` }}>
+          <span 
+            className="difficulty-name" 
+            data-difficulty={minDiff?.name}
+          >
+            {minDiff?.name.split(/\s+/)[1]}
+          </span>
+        </div>
+        <div className="difficulty-value" style={{ left: `${((safeIndices[1] / (availableSortOrders.length - 1)) * 100)}%` }}>
+          <span 
+            className="difficulty-name" 
+            data-difficulty={maxDiff?.name}
+          >
+            {maxDiff?.name.split(/\s+/)[1]}
+          </span>
         </div>
       </div>
     </div>
