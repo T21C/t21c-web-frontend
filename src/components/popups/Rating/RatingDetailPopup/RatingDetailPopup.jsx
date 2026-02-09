@@ -533,7 +533,7 @@ export const RatingDetailPopup = ({
                 </div>
                 <div className="detail-field">
                   <span className="detail-label">{tRating('labels.currentDifficulty')}</span>
-                  <img src={difficultyDict[selectedRating.currentDifficultyId]?.icon} alt="" className="detail-value lv-icon" />
+                  <img src={difficultyDict[selectedRating.level.diffId]?.icon} alt="" className="detail-value lv-icon" />
                 </div>
                 <div className="detail-field" style={{visibility: selectedRating.averageDifficultyId ? 'visible' : 'hidden'}}>
                   <span className="detail-label">{tRating('labels.averageRating')}</span>
