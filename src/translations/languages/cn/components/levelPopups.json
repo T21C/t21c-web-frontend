@@ -89,6 +89,7 @@
     "close": "关闭",
     "closePopup": "关闭窗口",
     "loading": "正在加载下载选项……",
+    "oversizedNotice": "此关卡文件过大，不支持转换。仅可下载原始 zip。",
     "step1": {
       "prompt": "选择下载方式：",
       "downloadOriginal": "下载原始文件",

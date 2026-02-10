@@ -16,6 +16,7 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, legacyDllink, in
     const [availableOptions, setAvailableOptions] = useState(null);
     const [isFileCorrupted, setIsFileCorrupted] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
+    const [isOversizedLevel, setIsOversizedLevel] = useState(false);
     const [transformOptions, setTransformOptions] = useState({
         keepEvents: [],
         dropEvents: [],
@@ -52,6 +53,7 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, legacyDllink, in
                 const data = await response.json();
                 setAvailableOptions(data);
                 setIsFileCorrupted(false);
+                setIsOversizedLevel(!!data.transformUnavailable);
             } catch (error) {
                 console.error('Error fetching transform options:', error);
                 setIsFileCorrupted(true);
@@ -62,6 +64,12 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, legacyDllink, in
 
         fetchTransformOptions();
     }, [levelId, fileId]);
+
+    useEffect(() => {
+        if (metadata?.transformUnavailable) {
+            setIsOversizedLevel(true);
+        }
+    }, [metadata?.transformUnavailable]);
 
     // Handle scroll locking
     useEffect(() => {
@@ -247,13 +255,20 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, legacyDllink, in
                 ) : step === 1 ? (
                     <div className="download-step">
                         <p>{t('levelPopups.download.step1.prompt')}</p>
+                        {(isOversizedLevel || metadata?.transformUnavailable) && (
+                            <p className="level-download-popup__oversized-notice">
+                                {t('levelPopups.download.oversizedNotice')}
+                            </p>
+                        )}
                         <div className="download-buttons">
                             <button onClick={() => handleDownload('original')}>
                                 {t('levelPopups.download.step1.downloadOriginal')} ({formatFileSize(metadata?.originalZip?.size)})
                             </button>
-                            <button onClick={() => setStep(2)}>
-                                {t('levelPopups.download.step1.convertDownload')}
-                            </button>
+                            {!(isOversizedLevel || metadata?.transformUnavailable) && (
+                                <button onClick={() => setStep(2)}>
+                                    {t('levelPopups.download.step1.convertDownload')}
+                                </button>
+                            )}
                         </div>
                     </div>
                 ) : (

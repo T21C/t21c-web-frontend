@@ -52,6 +52,15 @@
     text-align: center;
 }
 
+.level-download-popup .level-download-popup__oversized-notice {
+    margin: 12px 0 0;
+    padding: 10px 12px;
+    background: rgba(255, 180, 0, 0.12);
+    border-radius: 6px;
+    font-size: 0.9rem;
+    color: #e6b84d;
+}
+
 .download-buttons {
     display: flex;
     gap: 16px;
