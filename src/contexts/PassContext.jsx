@@ -34,14 +34,14 @@ export const PassContextProvider = ({ children }) => {
   const [forceUpdate, setForceUpdate] = useState(false);
   const [sliderRange, setSliderRange] = useState(() => {
     const saved = Cookies.get(COOKIE_KEYS.SLIDER_RANGE);
-    return saved ? JSON.parse(saved) : [1, 61];
+    return saved ? JSON.parse(saved) : [1, 9999];
   });
   const [keyFlag, setKeyFlag] = useState(() => Cookies.get(COOKIE_KEYS.KEY_FLAG) || 'all');
 
   // Effect to validate and adjust ranges based on difficulties
   useEffect(() => {
     if (difficulties.length > 0) {
-      const maxDifficulty = difficulties.find(d => d.name === "U20")?.sortOrder || 61;
+      const maxDifficulty = difficulties.find(d => d.name === "U20")?.sortOrder || 60;
       // Validate and adjust sliderRange if needed
       const currentRange = [...sliderRange];
       if (currentRange[0] < 1 || currentRange[1] > maxDifficulty) {

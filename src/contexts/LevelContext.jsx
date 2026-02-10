@@ -48,7 +48,7 @@ const LevelContextProvider = (props) => {
     const [clearedFilter, setClearedFilter] = useState(() => Cookies.get(COOKIE_KEYS.CLEARED_FILTER) || "show");
     const [sliderRange, setSliderRange] = useState(() => {
         const saved = Cookies.get(COOKIE_KEYS.SLIDER_RANGE);
-        return saved ? JSON.parse(saved) : [1, 60];
+        return saved ? JSON.parse(saved) : [1, 9999];
     });
     const [sliderQRange, setSliderQRange] = useState(() => {
         const saved = Cookies.get(COOKIE_KEYS.SLIDER_Q_RANGE);
