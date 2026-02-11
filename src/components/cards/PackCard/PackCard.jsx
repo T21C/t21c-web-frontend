@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import "./packcard.css"
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
-import { EditPackPopup } from "@/components/popups";
+import { EditPackPopup } from "@/components/popups/Packs";
 import { EditIcon, PinIcon, LockIcon, EyeIcon, LikeIcon } from "@/components/common/icons";
 import toast from 'react-hot-toast';
 import { usePackContext } from "@/contexts/PackContext";

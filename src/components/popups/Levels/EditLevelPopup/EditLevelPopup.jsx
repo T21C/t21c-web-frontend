@@ -6,7 +6,7 @@ import { RatingInput } from '@/components/common/selectors';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { useTranslation } from 'react-i18next';
 import AliasManagementPopup from './AliasManagementPopup';
-import { LevelUploadManagementPopup } from '@/components/popups';
+import { LevelUploadManagementPopup } from '@/components/popups/Levels';
 import { UploadIcon, RefreshIcon } from '@/components/common/icons';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
@@ -14,7 +14,7 @@ import { TagManagementPopup } from './TagManagementPopup';
 import { isCdnUrl } from '@/utils/Utility';
 import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
-import { SongSelectorPopup } from '@/components/popups';
+import { SongSelectorPopup } from '@/components/popups/Songs';
 
 export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPage = false }) => {
   const { t } = useTranslation(['components', 'common']);

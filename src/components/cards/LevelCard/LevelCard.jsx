@@ -2,7 +2,10 @@ import { useNavigate } from "react-router-dom";
 import "./levelcard.css"
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
-import { EditLevelPopup, AddToPackPopup, SongPopup, ArtistPopup } from "@/components/popups";
+import { EditLevelPopup } from "@/components/popups/Levels";
+import { AddToPackPopup } from "@/components/popups/Packs";
+import { SongPopup } from "@/components/popups/Songs";
+import { ArtistPopup } from "@/components/popups/Artists";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { EditIcon, SteamIcon, DownloadIcon, VideoIcon, PassIcon, LikeIcon, PackIcon, DragHandleIcon } from "@/components/common/icons";
 import { formatCreatorDisplay, selectIconSize } from "@/utils/Utility";

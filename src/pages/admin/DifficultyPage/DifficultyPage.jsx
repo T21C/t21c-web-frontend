@@ -4,7 +4,8 @@ import { useDifficultyContext } from "@/contexts/DifficultyContext";
 
 import { MetaTags, AccessDenied } from '@/components/common/display';
 import { ScrollButton } from '@/components/common/buttons';
-import { DifficultyPopup, DiscordRolesPopup } from '@/components/popups';
+import { DifficultyPopup } from '@/components/popups/Difficulties';
+import { DiscordRolesPopup } from '@/components/popups/DiscordRoles';
 import api from '@/utils/api';
 import './difficultypage.css';
 import { EditIcon, RefreshIcon, TrashIcon } from '@/components/common/icons';

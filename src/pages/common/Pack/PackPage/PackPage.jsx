@@ -14,7 +14,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
 import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon, FilterIcon, SwitchIcon, LikeIcon } from "@/components/common/icons";
-import { CreatePackPopup, PackHelpPopup } from "@/components/popups";
+import { CreatePackPopup, PackHelpPopup } from "@/components/popups/Packs";
 import toast from 'react-hot-toast';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { LevelPackViewModes } from "@/utils/constants";

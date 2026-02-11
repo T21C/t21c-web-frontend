@@ -6,14 +6,14 @@ import { useSongContext } from '@/contexts/SongContext';
 import { AccessDenied, MetaTags } from '@/components/common/display';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { CustomSelect } from '@/components/common/selectors';
-import { EntityActionPopup } from '@/components/popups';
+import { EntityActionPopup } from '@/components/popups/Entities';
 import api from '@/utils/api';
 import { toast } from 'react-hot-toast';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import './entityManagementPage.css';
 import { Link } from 'react-router-dom';
 import { getVerificationClass, isCdnUrl, isImageUrl } from '@/utils/Utility';
-import { EvidenceGalleryPopup } from '@/components/popups/Evidence/EvidenceGalleryPopup/EvidenceGalleryPopup';
+import { EvidenceGalleryPopup } from '@/components/popups/Evidence';
 
 const EntityManagementPage = ({ type = 'artist' }) => {
   const { t } = useTranslation(['pages', 'common']);

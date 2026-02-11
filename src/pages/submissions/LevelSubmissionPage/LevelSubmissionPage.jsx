@@ -9,7 +9,9 @@ import { validateFeelingRating } from "@/utils/Utility";
 import { useTranslation } from "react-i18next";
 import { StagingModeWarning } from "@/components/common/display";
 import { ProfileSelector } from "@/components/common/selectors";
-import { LevelSelectionPopup, CDNTosPopup, LevelUploadPopup, SongSelectorPopup, ArtistSelectorPopup } from "@/components/popups";
+import { LevelSelectionPopup, CDNTosPopup, LevelUploadPopup } from "@/components/popups/Levels";
+import { SongSelectorPopup } from "@/components/popups/Songs";
+import { ArtistSelectorPopup } from "@/components/popups/Artists";
 
 import api from "@/utils/api";
 import { prepareZipForUpload, validateZipSize } from '@/utils/zipUtils';

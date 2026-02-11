@@ -12,9 +12,11 @@ import {
 import { Tooltip } from "react-tooltip";
 import { useTranslation } from "react-i18next";
 import { ClearCard } from "@/components/cards";
-import { EditLevelPopup } from "@/components/popups/Levels/EditLevelPopup/EditLevelPopup";
-import { RatingDetailPopup } from "@/components/popups/Rating/RatingDetailPopup/RatingDetailPopup";
-import { AddToPackPopup, SongPopup, ArtistPopup } from "@/components/popups";
+import { EditLevelPopup, LevelDownloadPopup } from "@/components/popups/Levels";
+import { RatingDetailPopup } from "@/components/popups/Rating";
+import { AddToPackPopup } from "@/components/popups/Packs";
+import { SongPopup } from "@/components/popups/Songs";
+import { ArtistPopup } from "@/components/popups/Artists";
 import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
@@ -40,7 +42,6 @@ import { createEventSystem, formatCreatorDisplay, formatDate, isCdnUrl, selectIc
 import { getSongDisplayName, getArtistDisplayName } from "@/utils/levelHelpers";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
-import LevelDownloadPopup from '../../../../components/popups/Levels/LevelDownloadPopup/LevelDownloadPopup';
 import { ABILITIES, hasBit } from '@/utils/Abilities';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import i18next from "i18next";

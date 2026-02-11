@@ -1,5 +1,5 @@
 import React from 'react';
-import { EntityPopup } from '@/components/popups';
+import { EntityPopup } from '@/components/popups/Entities';
 
 export const ArtistPopup = ({ artist, onClose }) => {
   return (

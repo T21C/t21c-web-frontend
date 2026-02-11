@@ -11,7 +11,7 @@ import { ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
 import { useAuth } from "@/contexts/AuthContext";
 import { SortDescIcon, SortAscIcon, SortIcon, FilterIcon, ResetIcon } from "@/components/common/icons";
-import { CreatorAssignmentPopup } from "@/components/popups";
+import { CreatorAssignmentPopup } from "@/components/popups/Creators";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
 const currentUrl = window.location.origin + location.pathname;

@@ -16,7 +16,7 @@ import { ScrollButton } from "@/components/common/buttons";
 import { useAuth } from "@/contexts/AuthContext";
 import { DifficultyContext } from "@/contexts/DifficultyContext";
 import { DifficultySlider, TagSelector } from "@/components/common/selectors";
-import { PassHelpPopup } from "@/components/popups";
+import { PassHelpPopup } from "@/components/popups/Passes";
 import { ResetIcon, SortIcon, FilterIcon, SortAscIcon, SortDescIcon, SwitchIcon } from "@/components/common/icons";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 const currentUrl = window.location.origin + location.pathname;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './referencesbutton.css';
-import { ReferencesPopup } from '@/components/popups';
+import { ReferencesPopup } from '@/components/popups/Difficulties';
 import { useTranslation } from 'react-i18next';
 
 const ReferencesButton = ({ ...props }) => {

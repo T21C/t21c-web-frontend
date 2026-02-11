@@ -6,7 +6,8 @@ import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { getVerificationClass, isImageUrl } from '@/utils/Utility';
 import api from '@/utils/api';
 import { MetaTags } from '@/components/common/display';
-import { EvidenceGalleryPopup, EntityActionPopup } from '@/components/popups';
+import { EvidenceGalleryPopup } from '@/components/popups/Evidence';
+import { EntityActionPopup } from '@/components/popups/Entities';
 import { EditIcon, ExternalLinkIcon } from '@/components/common/icons';
 import './artistDetailPage.css';
 

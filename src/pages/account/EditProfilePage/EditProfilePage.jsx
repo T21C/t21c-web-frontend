@@ -6,7 +6,7 @@ import { Tooltip } from 'react-tooltip';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
-import { ImageSelectorPopup } from '@/components/popups';
+import ImageSelectorPopup from '@/components/common/selectors/ImageSelectorPopup/ImageSelectorPopup';
 import { CountrySelect } from '@/components/common/selectors';
 import { useTranslation } from 'react-i18next';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';

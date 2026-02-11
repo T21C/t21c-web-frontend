@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from "@/contexts/AuthContext";
 
 import { ScrollButton } from '@/components/common/buttons';
-import { EditLevelPopup } from '@/components/popups';
+import { EditLevelPopup } from '@/components/popups/Levels';
 import api from '@/utils/api';
 import './announcementpage.css';
 import NewLevelsTab from './components/NewLevelsTab';

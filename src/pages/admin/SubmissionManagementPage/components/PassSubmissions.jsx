@@ -7,7 +7,7 @@ import api from "@/utils/api";
 import { PlayerInput } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
 import { ProfileCreationModal } from './ProfileCreationModal';
-import { AdminPlayerPopup } from '@/components/popups';
+import { AdminPlayerPopup } from '@/components/popups/Users';
 import { formatDate } from '@/utils/Utility';
 import i18next from 'i18next';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';

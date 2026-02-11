@@ -9,7 +9,7 @@ import { ChevronIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { NavLink } from 'react-router-dom';
-import { CurationSelectionPopup } from '@/components/popups';
+import { CurationSelectionPopup } from '@/components/popups/Curations';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { canAssignCurationType } from '@/utils/curationTypeUtils';
 import { formatDate } from '@/utils/Utility';

@@ -5,7 +5,7 @@ import { CustomSelect } from '@/components/common/selectors';
 import './creatorManagement.css';
 import api from '@/utils/api';
 import { useTranslation } from 'react-i18next';
-import { CreatorActionPopup } from '@/components/popups';
+import { CreatorActionPopup } from '@/components/popups/Creators';
 import { SortDescIcon, SortAscIcon } from '@/components/common/icons';
 import { AccessDenied, MetaTags } from '@/components/common/display';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';

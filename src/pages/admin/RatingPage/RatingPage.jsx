@@ -7,14 +7,15 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useRatingFilter } from "@/contexts/RatingFilterContext";
 import { useTranslation } from "react-i18next";
 import { RatingCard } from "@/components/cards";
-import { EditLevelPopup, RaterManagementPopup, ReferencesPopup, TopRatersPopup } from "@/components/popups";
-import { RatingDetailPopup } from "@/components/popups/Rating/RatingDetailPopup/RatingDetailPopup";
+import { EditLevelPopup } from "@/components/popups/Levels";
+import { RaterManagementPopup, RatingDetailPopup, TopRatersPopup } from "@/components/popups/Rating";
+import { ReferencesPopup } from "@/components/popups/Difficulties";
 import { ScrollButton, ReferencesButton } from "@/components/common/buttons";
 import { CustomSelect } from "@/components/common/selectors";
 import api from "@/utils/api";
 import { LeaderboardIcon, SortAscIcon, SortDescIcon } from "@/components/common/icons";
 import { Tooltip } from "react-tooltip";
-import { RatingHelpPopup } from "@/components/popups";
+import { RatingHelpPopup } from "@/components/popups/Rating";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 

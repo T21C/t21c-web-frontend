@@ -6,7 +6,7 @@ import { formatNumber, getVideoDetails, isoToEmoji } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { useTranslation } from "react-i18next";
 import api from "@/utils/api";
-import { EditPassPopup } from "@/components/popups";
+import { EditPassPopup } from "@/components/popups/Passes";
 import { MetaTags } from "@/components/common/display";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { formatDate } from "@/utils/Utility";

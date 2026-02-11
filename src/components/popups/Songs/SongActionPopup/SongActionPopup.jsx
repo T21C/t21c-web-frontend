@@ -1,5 +1,5 @@
 import React from 'react';
-import { EntityActionPopup } from '@/components/popups';
+import { EntityActionPopup } from '@/components/popups/Entities';
 
 export const SongActionPopup = ({ song, onClose, onUpdate }) => {
   return (
