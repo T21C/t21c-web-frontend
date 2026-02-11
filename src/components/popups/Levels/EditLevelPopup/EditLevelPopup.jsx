@@ -6,7 +6,7 @@ import { RatingInput } from '@/components/common/selectors';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { useTranslation } from 'react-i18next';
 import AliasManagementPopup from './AliasManagementPopup';
-import { LevelUploadManagementPopup } from '@/components/popups/Levels';
+import LevelUploadManagementPopup from '../LevelUploadManagementPopup/LevelUploadManagementPopup';
 import { UploadIcon, RefreshIcon } from '@/components/common/icons';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
