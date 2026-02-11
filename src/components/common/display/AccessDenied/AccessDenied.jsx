@@ -9,7 +9,6 @@ const AccessDenied = ({
   currentUrl = window.location.origin + location.pathname
 }) => {
   const { t } = useTranslation('components');
-  const tState = (key) => t(`stateDisplay.accessDenied.${key}`) || key;
 
   return (
     <>
@@ -23,8 +22,8 @@ const AccessDenied = ({
       
       <div className="access-denied-page">
         <div className="access-denied-container">
-          <h1>{tState('title')}</h1>
-          <p>{tState('message')}</p>
+          <h1>{t('stateDisplay.accessDenied.title')}</h1>
+          <p>{t('stateDisplay.accessDenied.message')}</p>
         </div>
       </div>
     </>

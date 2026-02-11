@@ -13,10 +13,8 @@ const PackDownloadPopup = ({
   onRequestDownload
 }) => {
   const { t } = useTranslation('components');
-  const tPopup = (key, params = {}) => t(`packPopups.downloadPack.${key}`, params) || key;
   const popupRef = useRef(null);
   const eventSourceRef = useRef(null);
-  const downloadDataRef = useRef(null);
   const [step, setStep] = useState('confirm');
   const [error, setError] = useState(null);
   const [downloadData, setDownloadData] = useState(null);
@@ -224,7 +222,7 @@ const PackDownloadPopup = ({
 
         <div className="pack-download-popup__content">
           <h2 className="pack-download-popup__title">
-            {tPopup('title', { contextName: contextName || 'Pack' })}
+            {t('packPopups.downloadPack.title', { contextName: contextName || 'Pack' })}
           </h2>
 
           {step === 'confirm' && (
@@ -232,7 +230,7 @@ const PackDownloadPopup = ({
               {!exceedsSizeLimit && (<p className="pack-download-popup__description">
                 {contextName 
                   ? (() => {
-                      const desc = tPopup('description', { contextName: 'PLACEHOLDER' });
+                      const desc = t('packPopups.downloadPack.description', { contextName: 'PLACEHOLDER' });
                       const parts = desc.split('PLACEHOLDER');
                       return (
                         <>
@@ -242,18 +240,18 @@ const PackDownloadPopup = ({
                         </>
                       );
                     })()
-                  : tPopup('descriptionFallback')
+                  : t('packPopups.downloadPack.descriptionFallback')
                 }
               </p> )}
               <div className="pack-download-popup__estimate-container">
-                <span className="pack-download-popup__estimate-label">{tPopup('estimatedSize')} </span>
+                <span className="pack-download-popup__estimate-label">{t('packPopups.downloadPack.estimatedSize')} </span>
                 <span className={`pack-download-popup__estimate-value ${exceedsSizeLimit ? 'exceeded' : ''}`}>
                   {sizeLabel} 
                 <span className="pack-download-popup__estimate-value-estimated">{isEstimated}</span></span>
               </div>
               {exceedsSizeLimit && (
                 <div className="pack-download-popup__error" role="alert">
-                  {tPopup('sizeExceeded')}
+                  {t('packPopups.downloadPack.sizeExceeded')}
                 </div>
               )}
               {isEstimated && !exceedsSizeLimit && (
@@ -272,14 +270,14 @@ const PackDownloadPopup = ({
                   className="pack-download-popup__secondary-btn"
                   onClick={onClose}
                 >
-                  {tPopup('cancel')}
+                  {t('packPopups.downloadPack.cancel')}
                 </button>
                 <button
                   className="pack-download-popup__primary-btn"
                   onClick={handleConfirm}
                   disabled={exceedsSizeLimit}
                 >
-                  {tPopup('generateDownload')}
+                  {t('packPopups.downloadPack.generateDownload')}
                 </button>
               </div>
             </div>
@@ -288,7 +286,7 @@ const PackDownloadPopup = ({
           {step === 'processing' && (
             <div className="pack-download-popup__step pack-download-popup__step--processing">
               <div className="spinner spinner-large pack-download-popup__spinner" />
-              <p>{tPopup('processing')}</p>
+              <p>{t('packPopups.downloadPack.processing')}</p>
               
               {progress && (
                 <>
@@ -327,7 +325,7 @@ const PackDownloadPopup = ({
                   
                   {!progress.currentLevel && progress.status === 'processing' && (
                     <p className="pack-download-popup__subtext">
-                      {tPopup('processingSubtext')}
+                      {t('packPopups.downloadPack.processingSubtext')}
                     </p>
                   )}
                 </>
@@ -335,7 +333,7 @@ const PackDownloadPopup = ({
               
               {!progress && (
                 <p className="pack-download-popup__subtext">
-                  {tPopup('processingSubtext')}
+                  {t('packPopups.downloadPack.processingSubtext')}
                 </p>
               )}
             </div>
@@ -344,26 +342,26 @@ const PackDownloadPopup = ({
           {step === 'ready' && downloadData && (
             <div className="pack-download-popup__step pack-download-popup__step--ready">
               <p>
-                {tPopup('ready')}
+                {t('packPopups.downloadPack.ready')}
               </p>
               <p className="pack-download-popup__subtext">
                 {downloadData.expiresAt
-                  ? tPopup('readySubtext', { expiresAt: new Date(downloadData.expiresAt).toLocaleString() })
-                  : tPopup('readySubtextFallback')}
+                  ? t('packPopups.downloadPack.readySubtext', { expiresAt: new Date(downloadData.expiresAt).toLocaleString() })
+                  : t('packPopups.downloadPack.readySubtextFallback')}
               </p>
               <div className="pack-download-popup__actions">
                 <button
                   className="pack-download-popup__secondary-btn"
                   onClick={onClose}
                 >
-                  {tPopup('close')}
+                  {t('packPopups.downloadPack.close')}
                 </button>
                 <button
                   className="pack-download-popup__primary-btn"
                   disabled={exceedsSizeLimit}
                   onClick={handleDownload}
                 >
-                  {tPopup('download')}
+                  {t('packPopups.downloadPack.download')}
                 </button>
               </div>
             </div>

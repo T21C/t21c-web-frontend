@@ -13,7 +13,6 @@ export const RatingInput = ({
   placeholder=""
 }) => {
   const { t } = useTranslation('components');
-  const tRating = (key) => t(`rating.detailPopup.${key}`) || key;
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedRating, setSelectedRating] = useState([null,null]);
   const [inputValue, setInputValue] = useState(value);
@@ -116,7 +115,7 @@ export const RatingInput = ({
           onChange={handleInputChange}
           onFocus={() => setShowDropdown(true)}
           onKeyDown={handleKeyDown}
-          placeholder={placeholder || tRating('placeholders.difficultyInput')}
+          placeholder={placeholder || t('rating.detailPopup.placeholders.difficultyInput')}
         />
         <button 
           className="dropdown-toggle"

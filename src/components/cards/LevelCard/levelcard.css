@@ -1382,7 +1382,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: brightness(40%);
   background-color: var(--tag-bg-color, transparent);
   backdrop-filter: brightness(40%);
   border: 2px solid var(--tag-border-color, transparent);
@@ -1405,6 +1405,7 @@
   align-items: center;
   justify-content: center;
   background-color: var(--tag-bg-color, transparent);
+  -webkit-backdrop-filter: brightness(40%);
   backdrop-filter: brightness(40%);
   color: var(--tag-text-color, inherit);
   filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.5));

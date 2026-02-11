@@ -18,7 +18,6 @@ const TagSelector = ({
   title
 }) => {
   const { t } = useTranslation('components');
-  const tDiff = (key, params = {}) => t(`tagSelector.special.${key}`, params);
 
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -81,11 +80,11 @@ const TagSelector = ({
     } else {
       // Backward compatibility: fall back to hardcoded grouping logic
       if (item.name.startsWith('Q')) {
-        group = tDiff('groups.Quantum');
+        group = t('tagSelector.special.groups.Quantum');
       } else if (['Unranked', 'Impossible', 'Censored', 'P0'].includes(item.name)) {
-        group = tDiff('groups.Hidden');
+        group = t('tagSelector.special.groups.Hidden');
       } else {
-        group = tDiff('groups.Extra');
+        group = t('tagSelector.special.groups.Extra');
       }
     }
     
@@ -160,7 +159,7 @@ const TagSelector = ({
         className="dropdown-toggle"
         onClick={() => setIsOpen(!isOpen)}
       >
-        <span>{title || tDiff('title')}</span>
+        <span>{title || t('tagSelector.special.title')}</span>
         <span className="selected-count">
           &nbsp;{selectedItems.length > 0 && <>({selectedItems.length})</>}
         </span>
@@ -190,12 +189,12 @@ const TagSelector = ({
           />
           <div className="tag-selector-grid" ref={dropdownRef}>
             <div className="tag-selector-header">
-              {enableGrouping && <h3>{title || tDiff('title')}</h3>}
+              {enableGrouping && <h3>{title || t('tagSelector.special.title')}</h3>}
               <button 
                 className="select-all-button"
                 onClick={handleSelectAll}
               >
-                {selectedItems.length > 0 ? tDiff('buttons.deselectAll') : tDiff('buttons.selectAll')}
+                {selectedItems.length > 0 ? t('tagSelector.special.buttons.deselectAll') : t('tagSelector.special.buttons.selectAll')}
               </button>
             </div>
             {orderedGroups.map(([group, items]) => (

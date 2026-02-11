@@ -21,7 +21,6 @@ const TypeManagementPopup = ({
   verifiedPassword
 }) => {
   const { t } = useTranslation('components');
-  const tCur = (key, params = {}) => t(`typeManagementPopup.${key}`, params);
 
   const [mode, setMode] = useState(POPUP_MODES.LIST);
   const [isLoading, setIsLoading] = useState(false);
@@ -103,7 +102,7 @@ const TypeManagementPopup = ({
   };
 
   const handleDeleteType = async (type) => {
-    if (!window.confirm(tCur('confirmations.deleteType', { name: type.name }))) {
+    if (!window.confirm(t('typeManagementPopup.confirmations.deleteType', { name: type.name }))) {
       return;
     }
 
@@ -115,7 +114,7 @@ const TypeManagementPopup = ({
         }
       });
       
-      toast.success(tCur('notifications.deleted'));
+      toast.success(t('typeManagementPopup.notifications.deleted'));
       onTypeUpdate();
     } catch (error) {
       const errorMessage = error.response?.data?.error || 'Failed to delete curation type';
@@ -210,14 +209,14 @@ const TypeManagementPopup = ({
             'X-Super-Admin-Password': verifiedPassword
           }
         });
-        toast.success(tCur('notifications.created'));
+        toast.success(t('typeManagementPopup.notifications.created'));
       } else {
         response = await api.put(`${import.meta.env.VITE_CURATIONS}/types/${selectedType.id}`, submitData, {
           headers: {
             'X-Super-Admin-Password': verifiedPassword
           }
         });
-        toast.success(tCur('notifications.updated'));
+        toast.success(t('typeManagementPopup.notifications.updated'));
       }
 
       // Upload icon if provided
@@ -275,11 +274,11 @@ const TypeManagementPopup = ({
         }
       });
 
-      toast.success(tCur('notifications.reordered'));
+      toast.success(t('typeManagementPopup.notifications.reordered'));
       onTypeUpdate();
     } catch (err) {
       console.error('Error updating sort orders:', err);
-      toast.error(tCur('notifications.reorderFailed'));
+      toast.error(t('typeManagementPopup.notifications.reorderFailed'));
       // Reset to original order
       if (curationTypes) {
         setLocalCurationTypes([...curationTypes].sort((a, b) => a.sortOrder - b.sortOrder));
@@ -305,14 +304,14 @@ const TypeManagementPopup = ({
         {/* Header */}
         <div className="type-management-modal__header">
           <h2>
-            {mode === POPUP_MODES.LIST && tCur('title')}
-            {mode === POPUP_MODES.CREATE && tCur('create.title')}
-            {mode === POPUP_MODES.EDIT && tCur('edit.title')}
+            {mode === POPUP_MODES.LIST && t('typeManagementPopup.title')}
+            {mode === POPUP_MODES.CREATE && t('typeManagementPopup.create.title')}
+            {mode === POPUP_MODES.EDIT && t('typeManagementPopup.edit.title')}
           </h2>
           <p>
-            {mode === POPUP_MODES.LIST && tCur('description')}
-            {mode === POPUP_MODES.CREATE && tCur('create.description')}
-            {mode === POPUP_MODES.EDIT && tCur('edit.description')}
+            {mode === POPUP_MODES.LIST && t('typeManagementPopup.description')}
+            {mode === POPUP_MODES.CREATE && t('typeManagementPopup.create.description')}
+            {mode === POPUP_MODES.EDIT && t('typeManagementPopup.edit.description')}
           </p>
         </div>
 
@@ -325,7 +324,7 @@ const TypeManagementPopup = ({
                 onClick={handleCreateNew}
               >
                 ➕
-                {tCur('actions.create')}
+                {t('typeManagementPopup.actions.create')}
               </button>
             </div>
 
@@ -338,9 +337,9 @@ const TypeManagementPopup = ({
                     ref={provided.innerRef}
                   >
                     {isLoading ? (
-                      <div className="type-management-modal__loading">{tCur('loading')}</div>
+                      <div className="type-management-modal__loading">{t('typeManagementPopup.loading')}</div>
                     ) : localCurationTypes.length === 0 ? (
-                      <div className="type-management-modal__empty">{tCur('empty')}</div>
+                      <div className="type-management-modal__empty">{t('typeManagementPopup.empty')}</div>
                     ) : (
                       localCurationTypes.map((type, index) => (
                         <Draggable 
@@ -378,7 +377,7 @@ const TypeManagementPopup = ({
                                     {type.color}
                                   </span>
                                   <span className="type-management-modal__type-abilities">
-                                    {type.abilities > 0 ? tCur('hasAbilities') : tCur('noAbilities')}
+                                    {type.abilities > 0 ? t('typeManagementPopup.hasAbilities') : t('typeManagementPopup.noAbilities')}
                                   </span>
                                 </div>
                               </div>
@@ -387,7 +386,7 @@ const TypeManagementPopup = ({
                                 <button
                                   className="type-management-modal__action-btn type-management-modal__action-btn--edit"
                                   onClick={() => handleEditType(type)}
-                                  title={tCur('actions.edit')}
+                                  title={t('typeManagementPopup.actions.edit')}
                                   disabled={isReordering}
                                 >
                                   <EditIcon size={30}/>
@@ -395,7 +394,7 @@ const TypeManagementPopup = ({
                                 <button
                                   className="type-management-modal__action-btn type-management-modal__action-btn--delete"
                                   onClick={() => handleDeleteType(type)}
-                                  title={tCur('actions.delete')}
+                                  title={t('typeManagementPopup.actions.delete')}
                                   disabled={isLoading || isReordering}
                                 >
                                   <TrashIcon size={34}/>
@@ -418,20 +417,20 @@ const TypeManagementPopup = ({
         {(mode === POPUP_MODES.CREATE || mode === POPUP_MODES.EDIT) && (
           <form onSubmit={handleFormSubmit} className="type-management-modal__form">
             <div className="type-management-modal__form-group">
-              <label htmlFor="name">{tCur('form.name')}</label>
+              <label htmlFor="name">{t('typeManagementPopup.form.name')}</label>
               <input
                 id="name"
                 type="text"
                 value={formData.name}
                 onChange={(e) => handleFormChange('name', e.target.value)}
-                placeholder={tCur('form.namePlaceholder')}
+                placeholder={t('typeManagementPopup.form.namePlaceholder')}
                 required
                 className="type-management-modal__input"
               />
             </div>
 
             <div className="type-management-modal__form-group">
-              <label htmlFor="color">{tCur('form.color')}</label>
+              <label htmlFor="color">{t('typeManagementPopup.form.color')}</label>
               <div className="type-management-modal__color-input">
                 <input
                   id="color"
@@ -451,7 +450,7 @@ const TypeManagementPopup = ({
             </div>
 
             <div className="type-management-modal__form-group">
-              <label>{tCur('form.icon')}</label>
+              <label>{t('typeManagementPopup.form.icon')}</label>
               <div className="type-management-modal__icon-upload">
                 {formData.iconPreview && (
                   <div className="type-management-modal__icon-preview">
@@ -477,14 +476,14 @@ const TypeManagementPopup = ({
                   id="icon-upload"
                 />
                 <label htmlFor="icon-upload" className="type-management-modal__file-label">
-                  {formData.iconPreview ? tCur('form.changeIcon') : tCur('form.selectIcon')}
+                  {formData.iconPreview ? t('typeManagementPopup.form.changeIcon') : t('typeManagementPopup.form.selectIcon')}
                 </label>
               </div>
-              <p className="type-management-modal__help-text">{tCur('form.iconHelp')}</p>
+              <p className="type-management-modal__help-text">{t('typeManagementPopup.form.iconHelp')}</p>
             </div>
 
             <div className="type-management-modal__form-group">
-              <label>{tCur('form.abilities')}</label>
+              <label>{t('typeManagementPopup.form.abilities')}</label>
               <div className="type-management-modal__abilities">
                 <label className="type-management-modal__ability-item">
                   <input
@@ -492,7 +491,7 @@ const TypeManagementPopup = ({
                     checked={checkAbility(formData.abilities, ABILITIES.CUSTOM_CSS)}
                     onChange={(e) => handleAbilityChange(ABILITIES.CUSTOM_CSS, e.target.checked)}
                   />
-                  {tCur('abilities.customCSS')}
+                  {t('typeManagementPopup.abilities.customCSS')}
                 </label>
                 <label className="type-management-modal__ability-item">
                   <input
@@ -500,7 +499,7 @@ const TypeManagementPopup = ({
                     checked={checkAbility(formData.abilities, ABILITIES.CURATOR_ASSIGNABLE)}
                     onChange={(e) => handleAbilityChange(ABILITIES.CURATOR_ASSIGNABLE, e.target.checked)}
                   />
-                  {tCur('abilities.curatorAssignable')}
+                  {t('typeManagementPopup.abilities.curatorAssignable')}
                 </label>
                 <label className="type-management-modal__ability-item">
                   <input
@@ -508,7 +507,7 @@ const TypeManagementPopup = ({
                     checked={checkAbility(formData.abilities, ABILITIES.RATER_ASSIGNABLE)}
                     onChange={(e) => handleAbilityChange(ABILITIES.RATER_ASSIGNABLE, e.target.checked)}
                   />
-                  {tCur('abilities.raterAssignable')}
+                  {t('typeManagementPopup.abilities.raterAssignable')}
                 </label>
                 <label className="type-management-modal__ability-item">
                   <input
@@ -516,7 +515,7 @@ const TypeManagementPopup = ({
                     checked={checkAbility(formData.abilities, ABILITIES.SHOW_ASSIGNER)}
                     onChange={(e) => handleAbilityChange(ABILITIES.SHOW_ASSIGNER, e.target.checked)}
                   />
-                  {tCur('abilities.showAssigner')}
+                  {t('typeManagementPopup.abilities.showAssigner')}
                 </label>
                 <label className="type-management-modal__ability-item">
                   <input
@@ -524,7 +523,7 @@ const TypeManagementPopup = ({
                     checked={checkAbility(formData.abilities, ABILITIES.FORCE_DESCRIPTION)}
                     onChange={(e) => handleAbilityChange(ABILITIES.FORCE_DESCRIPTION, e.target.checked)}
                   />
-                  {tCur('abilities.forceDescription')}
+                  {t('typeManagementPopup.abilities.forceDescription')}
                 </label>
                 <label className="type-management-modal__ability-item">
                   <input
@@ -532,7 +531,7 @@ const TypeManagementPopup = ({
                     checked={checkAbility(formData.abilities, ABILITIES.FRONT_PAGE_ELIGIBLE)}
                     onChange={(e) => handleAbilityChange(ABILITIES.FRONT_PAGE_ELIGIBLE, e.target.checked)}
                   />
-                  {tCur('abilities.frontPageEligible')}
+                  {t('typeManagementPopup.abilities.frontPageEligible')}
                 </label>
                 <label className="type-management-modal__ability-item">
                   <input
@@ -540,7 +539,7 @@ const TypeManagementPopup = ({
                     checked={checkAbility(formData.abilities, ABILITIES.CUSTOM_COLOR_THEME)}
                     onChange={(e) => handleAbilityChange(ABILITIES.CUSTOM_COLOR_THEME, e.target.checked)}
                   />
-                  {tCur('abilities.customColorTheme')}
+                  {t('typeManagementPopup.abilities.customColorTheme')}
                 </label>
                 <label className="type-management-modal__ability-item">
                   <input
@@ -548,7 +547,7 @@ const TypeManagementPopup = ({
                     checked={checkAbility(formData.abilities, ABILITIES.LEVEL_LIST_BASIC_GLOW)}
                     onChange={(e) => handleAbilityChange(ABILITIES.LEVEL_LIST_BASIC_GLOW, e.target.checked)}
                   />
-                  {tCur('abilities.levelListBasicGlow')}
+                  {t('typeManagementPopup.abilities.levelListBasicGlow')}
                 </label>
                 <label className="type-management-modal__ability-item">
                   <input
@@ -556,7 +555,7 @@ const TypeManagementPopup = ({
                     checked={checkAbility(formData.abilities, ABILITIES.LEVEL_LIST_LEGENDARY_GLOW)}
                     onChange={(e) => handleAbilityChange(ABILITIES.LEVEL_LIST_LEGENDARY_GLOW, e.target.checked)}
                   />
-                  {tCur('abilities.levelListLegendaryGlow')}
+                  {t('typeManagementPopup.abilities.levelListLegendaryGlow')}
                 </label>
               </div>
             </div>
@@ -574,7 +573,7 @@ const TypeManagementPopup = ({
                 disabled={isLoading}
                 className="type-management-modal__btn type-management-modal__btn--submit"
               >
-                {isLoading ? tCur('buttons.submitting') : (mode === POPUP_MODES.CREATE ? tCur('buttons.create') : tCur('buttons.update'))}
+                {isLoading ? t('typeManagementPopup.buttons.submitting') : (mode === POPUP_MODES.CREATE ? t('typeManagementPopup.buttons.create') : t('typeManagementPopup.buttons.update'))}
               </button>
             </div>
           </form>

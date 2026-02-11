@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 
 export const CountrySelect = ({ value, onChange }) => {
   const { t } = useTranslation('components');
-  const tPlayer = (key) => t(`player.countrySelect.${key}`) || key;
 
   const [showDropdown, setShowDropdown] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
@@ -64,7 +63,7 @@ export const CountrySelect = ({ value, onChange }) => {
               <span>{selectedCountry.name}</span>
             </>
           ) : (
-            <span className="select-country-placeholder">{tPlayer('placeholder')}</span>
+            <span className="select-country-placeholder">{t('player.countrySelect.placeholder')}</span>
           )}
           <div className={`select-country-dropdown-toggle-icon ${showDropdown ? 'open' : ''}`}>▼</div>
         </div>
@@ -75,7 +74,7 @@ export const CountrySelect = ({ value, onChange }) => {
           <input
             type="text"
             className="select-country-search"
-            placeholder={tPlayer('search.placeholder')}
+            placeholder={t('player.countrySelect.search.placeholder')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             onClick={(e) => e.stopPropagation()}

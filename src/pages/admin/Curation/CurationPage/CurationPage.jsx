@@ -22,7 +22,6 @@ const CurationPage = () => {
   const { user } = useAuth();
   const { curationTypes, reloadCurationTypes } = useDifficultyContext();
   const { t } = useTranslation(['pages', 'common']);
-  const tCur = (key, params = {}) => t(`curation.${key}`, params);
   const currentUrl = window.location.origin + location.pathname;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -150,7 +149,7 @@ const CurationPage = () => {
         cancelToken: levelSelectCancelTokenRef.current.token
       });
       
-      toast.success(tCur('notifications.levelAdded'));
+      toast.success(t('curation.notifications.levelAdded'));
       
       // Add the new curation to the list manually
       const newCuration = response.data.curation;
@@ -180,7 +179,7 @@ const CurationPage = () => {
   };
 
   const handleDeleteCuration = async (curation) => {
-    if (!window.confirm(tCur('confirmations.deleteCuration'))) {
+    if (!window.confirm(t('curation.confirmations.deleteCuration'))) {
       return;
     }
 
@@ -197,7 +196,7 @@ const CurationPage = () => {
         cancelToken: deleteCurationCancelTokenRef.current.token
       });
       setCurations(prev => prev.filter(cur => cur.id !== curation.id));
-      toast.success(tCur('notifications.deleted'));
+      toast.success(t('curation.notifications.deleted'));
     } catch (error) {
       if (api.isCancel(error)) {
         // Request was cancelled, don't show error
@@ -286,9 +285,9 @@ const CurationPage = () => {
 
       // Show appropriate message
       if (action === 'saved') {
-        toast.success(tCur('notifications.updated'));
+        toast.success(t('curation.notifications.updated'));
       } else if (action === 'discarded') {
-        toast.success(tCur('notifications.discarded'));
+        toast.success(t('curation.notifications.discarded'));
       } else if (action === 'backToEdit') {
         // Open the CurationEditPopup with the updated curation
         setEditingCuration(updatedCuration);
@@ -298,7 +297,7 @@ const CurationPage = () => {
       // Clear the state to prevent re-processing
       navigate(location.pathname, { replace: true, state: {} });
     }
-  }, [location.state, navigate, location.pathname, tCur]);
+  }, [location.state, navigate, location.pathname]);
 
   const handleFilterChange = (key, value) => {
     setFilters(prev => ({ ...prev, [key]: value }));
@@ -393,18 +392,18 @@ const CurationPage = () => {
 
   // Prepare options for CustomSelect
   const curationTypeOptions = useMemo(() => [
-    { value: '', label: tCur('filters.allTypes') },
+    { value: '', label: t('curation.filters.allTypes') },
     ...curationTypes.map(type => ({
       value: type.id.toString(),
       label: type.name
     }))
-  ], [curationTypes, tCur]);
+  ], [curationTypes]);
 
   return (
     <div className="curation-page">
       <MetaTags 
-        title={tCur('meta.title')}
-        description={tCur('meta.description')}
+        title={t('curation.meta.title')}
+        description={t('curation.meta.description')}
         url={currentUrl}
       />
       
@@ -412,15 +411,15 @@ const CurationPage = () => {
       
       <div className="curation-container">
         <div className="curation-header">
-          <h1>{tCur('title')}</h1>
-          <p>{tCur('description')}</p>
+          <h1>{t('curation.title')}</h1>
+          <p>{t('curation.description')}</p>
         </div>
 
         {/* Filters */}
         <div className="curation-filters">
           <div className="curation-filter-group">
             <CustomSelect
-              label={tCur('filters.type')}
+              label={t('curation.filters.type')}
               options={curationTypeOptions}
               value={curationTypeOptions.find(opt => opt.value === (filters.typeId ? filters.typeId.toString() : ''))}
               onChange={(selected) => handleFilterChange('typeId', selected.value)}
@@ -429,7 +428,7 @@ const CurationPage = () => {
           </div>
           
           <div className="curation-filter-group">
-            <label>{tCur('filters.search')}</label>
+            <label>{t('curation.filters.search')}</label>
             <input
               name='curation-search'
               autoComplete='off'
@@ -437,17 +436,17 @@ const CurationPage = () => {
               type="text"
               value={filters.search}
               onChange={(e) => handleFilterChange('search', e.target.value)}
-              placeholder={tCur('filters.searchPlaceholder')}
+              placeholder={t('curation.filters.searchPlaceholder')}
             />
           </div>
           { hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR, permissionFlags.RATER, permissionFlags.CURATOR]) && (
           <button
             className="curation-add-level-btn"
             onClick={handleAddNewLevel}
-            title={tCur('actions.addLevel')}
+            title={t('curation.actions.addLevel')}
           >
             🎵
-            {tCur('actions.addLevel')}
+            {t('curation.actions.addLevel')}
           </button>
           )}
 
@@ -457,28 +456,28 @@ const CurationPage = () => {
                       <button
                       className="curation-manage-types-btn"
                       onClick={handleManageTypes}
-                      title={tCur('actions.manageTypes')}
+                      title={t('curation.actions.manageTypes')}
                     >
                       ⚙️
-                      {tCur('actions.manageTypes')}
+                      {t('curation.actions.manageTypes')}
                     </button>
           )}
 
           <button
             className="curation-manage-curators-btn"
             onClick={handleManageCurators}
-            title={tCur('actions.manageCurators')}
+            title={t('curation.actions.manageCurators')}
           >
             👥
-            {tCur('actions.manageCurators')}
+            {t('curation.actions.manageCurators')}
           </button>
           <NavLink
             className="curation-schedule-btn"
             to="/admin/curations/schedules"
-            title={tCur('actions.manageSchedule')}
+            title={t('curation.actions.manageSchedule')}
           >
             📅
-            {tCur('actions.manageSchedule')}
+            {t('curation.actions.manageSchedule')}
           </NavLink>
           { hasFlag(user, permissionFlags.SUPER_ADMIN) && (
             <button
@@ -503,9 +502,9 @@ const CurationPage = () => {
         {/* Curations List */}
         <div className="curation-list">
           {isLoading ? (
-            <div className="curation-loading">{tCur('loading')}</div>
+            <div className="curation-loading">{t('curation.loading')}</div>
           ) : curations.length === 0 ? (
-            <div className="curation-empty">{tCur('empty')}</div>
+            <div className="curation-empty">{t('curation.empty')}</div>
           ) : (
             curations.map(curation => (
               <div key={curation.id} className={`curation-item ${isAccessibleCuration(curation) ? '' : 'protected'}`}>
@@ -547,14 +546,14 @@ const CurationPage = () => {
                     <button 
                       className="curation-action-btn curation-action-btn--edit"
                       onClick={() => handleEditCuration(curation)}
-                      title={tCur('actions.editCuration')}
+                      title={t('curation.actions.editCuration')}
                     >
                       <EditIcon />
                     </button>
                     <button 
                       className="curation-action-btn curation-action-btn--delete"
                       onClick={() => handleDeleteCuration(curation)}
-                      title={tCur('actions.deleteCuration')}
+                      title={t('curation.actions.deleteCuration')}
                     >
                       <TrashIcon />
                     </button>
@@ -603,13 +602,13 @@ const CurationPage = () => {
       {showPasswordPrompt && (
         <div className="password-modal">
           <div className="password-modal-content">
-            <h3>{tCur('password.title')}</h3>
-            <p>{tCur('password.description')}</p>
+            <h3>{t('curation.password.title')}</h3>
+            <p>{t('curation.password.description')}</p>
             <input
               type="password"
               value={superAdminPassword}
               onChange={(e) => setSuperAdminPassword(e.target.value)}
-              placeholder={tCur('password.placeholder')}
+              placeholder={t('curation.password.placeholder')}
             />
             <div className="password-modal-actions">
               <button 
@@ -617,7 +616,7 @@ const CurationPage = () => {
                 onClick={handlePasswordPromptSubmit}
                 disabled={!superAdminPassword}
               >
-                {tCur('password.submit')}
+                {t('curation.password.submit')}
               </button>
               <button 
                 className="cancel-btn"

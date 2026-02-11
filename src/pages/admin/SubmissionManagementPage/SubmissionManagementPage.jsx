@@ -13,7 +13,6 @@ import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
 const SubmissionManagementPage = () => {
   const { t } = useTranslation('pages');
-  const tSubmission = (key, params = {}) => t(`submissionManagement.${key}`, params);
   const currentUrl = window.location.origin + location.pathname;
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('levels'); // 'levels' or 'passes'
@@ -44,8 +43,8 @@ const SubmissionManagementPage = () => {
     return (
       <>
         <MetaTags
-          title={tSubmission('meta.title')}
-          description={tSubmission('meta.description')}
+          title={t('submissionManagement.meta.title')}
+          description={t('submissionManagement.meta.description')}
           url={currentUrl}
           image="/og-image.jpg"
           type="website"
@@ -63,8 +62,8 @@ const SubmissionManagementPage = () => {
   if (!hasFlag(user, permissionFlags.SUPER_ADMIN)) {
     return (
       <AccessDenied 
-        metaTitle={tSubmission('meta.title')}
-        metaDescription={tSubmission('meta.description')}
+        metaTitle={t('submissionManagement.meta.title')}
+        metaDescription={t('submissionManagement.meta.description')}
         currentUrl={currentUrl}
       />
     );
@@ -73,8 +72,8 @@ const SubmissionManagementPage = () => {
   return (
     <>
       <MetaTags
-        title={tSubmission('meta.title')}
-        description={tSubmission('meta.description')}
+        title={t('submissionManagement.meta.title')}
+        description={t('submissionManagement.meta.description')}
         url={currentUrl}
         image="/og-image.jpg"
         type="website"
@@ -84,12 +83,12 @@ const SubmissionManagementPage = () => {
         <ScrollButton />
         <div className="submissions-admin-container">
           <div className="header-container">
-            <h1>{tSubmission('header.title')}</h1>
+            <h1>{t('submissionManagement.header.title')}</h1>
             <button 
               className="refresh-button" 
               onClick={handleRefresh}
               disabled={isLoading}
-              aria-label={tSubmission('header.refresh')}
+              aria-label={t('submissionManagement.header.refresh')}
             >
               <RefreshIcon color="#fff" size="40px" />
             </button>
@@ -100,7 +99,7 @@ const SubmissionManagementPage = () => {
               className={`tab-button ${activeTab === 'levels' ? 'active' : ''}`}
               onClick={() => setActiveTab('levels')}
             >
-              {tSubmission('tabs.levels')}
+              {t('submissionManagement.tabs.levels')}
               <span className="notification-badge" style={{visibility: pendingLevelSubmissions > 0 ? 'visible' : 'hidden'}}>
                 {pendingLevelSubmissions || pendingLevelSubmissions > 0 && (
                   pendingLevelSubmissions > 99 ? "99+" : pendingLevelSubmissions
@@ -112,7 +111,7 @@ const SubmissionManagementPage = () => {
               className={`tab-button ${activeTab === 'passes' ? 'active' : ''}`}
               onClick={() => setActiveTab('passes')}
             >
-              {tSubmission('tabs.passes')}
+              {t('submissionManagement.tabs.passes')}
               <span className="notification-badge" style={{visibility: pendingPassSubmissions > 0 ? 'visible' : 'hidden'}}>
                 {pendingPassSubmissions || pendingPassSubmissions > 0 && (
                   pendingPassSubmissions > 99 ? "99+" : pendingPassSubmissions
@@ -125,7 +124,7 @@ const SubmissionManagementPage = () => {
                 onClick={() => window.dispatchEvent(new Event('autoAllowPasses'))}
                 disabled={isAutoAllowing}
               >
-                {tSubmission('tabs.autoAllow')}
+                {t('submissionManagement.tabs.autoAllow')}
                 {isAutoAllowing && (
                   <div className="loading-spinner">
                     <RefreshIcon color="#fff" size="20px" />

@@ -21,31 +21,31 @@ export const createUserMenuItems = (user) => {
   return [
     {
       to: "/profile",
-      translationKey: "dropdowns.user.myProfile",
+      translationKey: "navigation.main.dropdowns.user.myProfile",
     },
     {
       disabled: true,
-      badge: "badges.underConstruction",
+      badge: "navigation.main.badges.underConstruction",
       to: "/submission",
-      translationKey: "dropdowns.user.mySubmissions",
+      translationKey: "navigation.main.dropdowns.user.mySubmissions",
     },
     { divider: true },
     {
       disabled: true,
-      translationKey: "dropdowns.user.notifications",
-      badge: "badges.underConstruction",
+      translationKey: "navigation.main.dropdowns.user.notifications",
+      badge: "navigation.main.badges.underConstruction",
     },
     {
       disabled: true,
-      translationKey: "dropdowns.user.settings",
-      badge: "badges.underConstruction",
+      translationKey: "navigation.main.dropdowns.user.settings",
+      badge: "navigation.main.badges.underConstruction",
     },
     { divider: true },
     ...(isAdmin
       ? [
           {
             to: "/admin",
-            translationKey: "dropdowns.user.admin",
+            translationKey: "navigation.main.dropdowns.user.admin",
           },
           { divider: true },
         ]
@@ -55,12 +55,11 @@ export const createUserMenuItems = (user) => {
 
 /**
  * Creates a navigation configuration
- * @param {Function} getTranslation - Function to get translations
  * @param {Object} context - Context object with user, location, etc.
  * @returns {Object} Complete navigation configuration
  */
-export const createNavigationConfig = (getTranslation, context = {}) => {
-  const { user, location } = context;
+export const createNavigationConfig = (context = {}) => {
+  const { user } = context;
 
   return {
     // Logo configuration
@@ -74,16 +73,16 @@ export const createNavigationConfig = (getTranslation, context = {}) => {
       {
         type: "link",
         to: "/levels",
-        translationKey: "links.levels",
+        translationKey: "navigation.main.links.levels",
       },
       {
         type: "link",
         to: "/leaderboard",
-        translationKey: "links.leaderboard",
+        translationKey: "navigation.main.links.leaderboard",
       },
       {
         type: "dropdown",
-        label: "links.creators",
+        label: "navigation.main.links.creators",
         items: [
           //{ to: "/admin/creators", translationKey: "dropdowns.creators.adofaiCreators" },
           { to: "/songs", translationKey: "dropdowns.creators.songs" },
@@ -97,25 +96,25 @@ export const createNavigationConfig = (getTranslation, context = {}) => {
       {
         type: "link",
         to: "/packs",
-        translationKey: "links.packs",
+        translationKey: "navigation.main.links.packs",
       },
       {
         type: "dropdown",
-        label: "links.more",
+        label: "navigation.main.links.more",
         items: [
-          { to: "/passes", translationKey: "dropdowns.more.passes" },
-          { to: "/admin/rating", translationKey: "dropdowns.more.rating" },
-          { to: "/curations", translationKey: "dropdowns.admin.curations" },
+          { to: "/passes", translationKey: "navigation.main.dropdowns.more.passes" },
+          { to: "/admin/rating", translationKey: "navigation.main.dropdowns.more.rating" },
+          { to: "/curations", translationKey: "navigation.main.dropdowns.admin.curations" },
           { divider: true },
           {
             disabled: true,
-            translationKey: "dropdowns.more.tufHelper",
-            badge: "badges.underConstruction",
+            translationKey: "navigation.main.dropdowns.more.tufHelper",
+            badge: "navigation.main.badges.underConstruction",
           },
           { divider: true },
-          { to: "/terms-of-service", translationKey: "dropdowns.more.tos" },
-          { to: "/privacy-policy", translationKey: "dropdowns.more.privacyPolicy" },
-          { to: "/about", translationKey: "dropdowns.more.aboutUs" },
+          { to: "/terms-of-service", translationKey: "navigation.main.dropdowns.more.tos" },
+          { to: "/privacy-policy", translationKey: "navigation.main.dropdowns.more.privacyPolicy" },
+          { to: "/about", translationKey: "navigation.main.dropdowns.more.aboutUs" },
         ],
         isActive: (pathname) =>
           pathname.startsWith("/passes") ||
@@ -131,19 +130,19 @@ export const createNavigationConfig = (getTranslation, context = {}) => {
     rightNav: [
       {
         type: "dropdown",
-        label: "links.admin.admin",
+        label: "navigation.main.links.admin.admin",
         items: [
-          { to: "/admin/submissions", translationKey: "dropdowns.admin.submissions" },
-          { to: "/admin/announcements", translationKey: "dropdowns.admin.announcements" },
-          { to: "/curations", translationKey: "dropdowns.admin.curations" },
+          { to: "/admin/submissions", translationKey: "navigation.main.dropdowns.admin.submissions" },
+          { to: "/admin/announcements", translationKey: "navigation.main.dropdowns.admin.announcements" },
+          { to: "/curations", translationKey: "navigation.main.dropdowns.admin.curations" },
           { divider: true },
-          { to: "/admin/songs", translationKey: "dropdowns.admin.songs" },
-          { to: "/admin/artists", translationKey: "dropdowns.admin.artists" },
-          { to: "/admin/creators", translationKey: "dropdowns.admin.creators" },
+          { to: "/admin/songs", translationKey: "navigation.main.dropdowns.admin.songs" },
+          { to: "/admin/artists", translationKey: "navigation.main.dropdowns.admin.artists" },
+          { to: "/admin/creators", translationKey: "navigation.main.dropdowns.admin.creators" },
           { divider: true },
-          { to: "/admin/difficulties", translationKey: "dropdowns.admin.difficulties" },
-          { to: "/admin/backups", translationKey: "dropdowns.admin.backups" },
-          { to: "/admin/audit-log", translationKey: "dropdowns.admin.auditLog" },
+          { to: "/admin/difficulties", translationKey: "navigation.main.dropdowns.admin.difficulties" },
+          { to: "/admin/backups", translationKey: "navigation.main.dropdowns.admin.backups" },
+          { to: "/admin/audit-log", translationKey: "navigation.main.dropdowns.admin.auditLog" },
         ],
         isActive: (pathname) => pathname.startsWith("/admin"),
         // Only show admin dropdown if user is admin
@@ -152,7 +151,7 @@ export const createNavigationConfig = (getTranslation, context = {}) => {
       {
         type: "link",
         to: "/submission",
-        translationKey: "links.submission",
+        translationKey: "navigation.main.links.submission",
         className: "nav-submit-button",
         linkClassName: "no-active",
         isActive: (pathname) => {return false},
@@ -176,7 +175,7 @@ export const createNavigationConfig = (getTranslation, context = {}) => {
         // Fallback when condition is false
         fallback: {
           type: "button",
-          translationKey: "links.signIn",
+          translationKey: "navigation.main.links.signIn",
           className: "nav-signin-button",
           onClick: (initiateLogin) => () => {
             initiateLogin(window.location.pathname);

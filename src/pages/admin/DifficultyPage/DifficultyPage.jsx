@@ -17,7 +17,6 @@ const DifficultyPage = () => {
   const { user } = useAuth();
   const { difficulties, loading: contextLoading, reloadDifficulties, setDifficulties } = useDifficultyContext();
   const { t } = useTranslation(['pages', 'common']);
-  const tDiff = (key, params = {}) => t(`difficulty.${key}`, params);
   const currentUrl = window.location.origin + location.pathname;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +24,6 @@ const DifficultyPage = () => {
   const [editingDifficulty, setEditingDifficulty] = useState(null);
   const [isCreating, setIsCreating] = useState(false);
   const [superAdminPassword, setSuperAdminPassword] = useState('');
-  const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [selectedAction, setSelectedAction] = useState({ type: '', data: null });
   const [notifications, setNotifications] = useState([]);
   const [newDifficulty, setNewDifficulty] = useState({
@@ -88,7 +86,7 @@ const DifficultyPage = () => {
       setTags(response.data);
     } catch (error) {
       console.error('Error fetching tags:', error);
-      addNotification(tDiff('tags.notifications.fetchFailed'), 'error');
+      addNotification(t('difficulty.tags.notifications.fetchFailed'), 'error');
     } finally {
       setTagsLoading(false);
     }
@@ -125,10 +123,10 @@ const DifficultyPage = () => {
       }
       setIsCreatingTag(false);
       setNewTag({ name: '', iconFile: null, icon: null, color: '#FF5733', group: '' });
-      addNotification(tDiff('tags.notifications.created'));
+      addNotification(t('difficulty.tags.notifications.created'));
     } catch (error) {
       console.error('Error creating tag:', error);
-      addNotification(error.response?.data?.error || tDiff('tags.notifications.createFailed'), 'error');
+      addNotification(error.response?.data?.error || t('difficulty.tags.notifications.createFailed'), 'error');
     }
   };
 
@@ -166,10 +164,10 @@ const DifficultyPage = () => {
       }
       setEditingTag(null);
       setOriginalTag(null);
-      addNotification(tDiff('tags.notifications.updated'));
+      addNotification(t('difficulty.tags.notifications.updated'));
     } catch (error) {
       console.error('Error updating tag:', error);
-      addNotification(error.response?.data?.error || tDiff('tags.notifications.updateFailed'), 'error');
+      addNotification(error.response?.data?.error || t('difficulty.tags.notifications.updateFailed'), 'error');
     }
   };
 
@@ -205,7 +203,7 @@ const DifficultyPage = () => {
   // Handle closing the edit tag modal with confirmation if needed
   const handleCloseEditTag = () => {
     if (hasUnsavedChanges()) {
-      const confirmed = window.confirm(tDiff('tags.edit.unsavedChanges'));
+      const confirmed = window.confirm(t('difficulty.tags.edit.unsavedChanges'));
       if (!confirmed) return;
     }
     
@@ -226,10 +224,10 @@ const DifficultyPage = () => {
       });
       setTags(prev => prev.filter(tag => tag.id !== deletingTag.id));
       setDeletingTag(null);
-      addNotification(tDiff('tags.notifications.deleted'));
+      addNotification(t('difficulty.tags.notifications.deleted'));
     } catch (error) {
       console.error('Error deleting tag:', error);
-      addNotification(error.response?.data?.error || tDiff('tags.notifications.deleteFailed'), 'error');
+      addNotification(error.response?.data?.error || t('difficulty.tags.notifications.deleteFailed'), 'error');
     }
   };
 
@@ -275,7 +273,7 @@ const DifficultyPage = () => {
         const newDifficulty = response.data;
         setDifficulties(prev => [...prev, newDifficulty]);
         
-        addNotification(tDiff('notifications.created'));
+        addNotification(t('difficulty.notifications.created'));
       } else if (type === 'edit') {
         const response = await api.put(`${import.meta.env.VITE_DIFFICULTIES}/${data.id}`, {
           ...data,
@@ -286,7 +284,7 @@ const DifficultyPage = () => {
         const updatedDifficulty = response.data;
         setDifficulties(prev => prev.map(diff => diff.id === updatedDifficulty.id ? updatedDifficulty : diff));
         
-        addNotification(tDiff('notifications.updated'));
+        addNotification(t('difficulty.notifications.updated'));
       } else if (type === 'delete') {
         await api.delete(`${import.meta.env.VITE_DIFFICULTIES}/${data.id}?fallbackId=${difficulties.find(d => d.name === data.fallbackDiff)?.id}`, {
           data: { superAdminPassword: verifiedPassword }
@@ -295,11 +293,10 @@ const DifficultyPage = () => {
         // Update context state directly
         setDifficulties(prev => prev.filter(diff => diff.id !== data.id));
         
-        addNotification(tDiff('notifications.deleted'));
+        addNotification(t('difficulty.notifications.deleted'));
       }
       
       // Reset all states on success
-      setShowPasswordModal(false);
       setSuperAdminPassword('');
       setSelectedAction({ type: '', data: null });
       setError('');
@@ -324,8 +321,8 @@ const DifficultyPage = () => {
       });
     } catch (err) {
       const errorMessage = err.response?.status === 403 
-        ? tDiff('passwordModal.errors.invalid') 
-        : tDiff('passwordModal.errors.generic');
+        ? t('difficulty.passwordModal.errors.invalid') 
+        : t('difficulty.passwordModal.errors.generic');
       setError(errorMessage);
       addNotification(errorMessage, 'error');
     }
@@ -337,13 +334,6 @@ const DifficultyPage = () => {
     setTimeout(() => {
       setNotifications(prev => prev.filter(n => n.id !== id));
     }, 5000);
-  };
-
-  const handleCancel = () => {
-    setShowPasswordModal(false);
-    setSuperAdminPassword('');
-    setSelectedAction({ type: '', data: null });
-    setError('');
   };
 
   const handleCloseCreateModal = () => {
@@ -411,8 +401,8 @@ const DifficultyPage = () => {
       setShowInitialPasswordPrompt(false);
       return true;
     } catch (error) {
-      setError(tDiff('passwordModal.errors.invalid'));
-      addNotification(tDiff('passwordModal.errors.invalid'), 'error');
+      setError(t('difficulty.passwordModal.errors.invalid'));
+      addNotification(t('difficulty.passwordModal.errors.invalid'), 'error');
       return false;
     }
   };
@@ -487,7 +477,7 @@ const DifficultyPage = () => {
       });
 
       
-      addNotification(tDiff('notifications.reordered'), 'success');
+      addNotification(t('difficulty.notifications.reordered'), 'success');
       } catch (err) {
         console.error('Error updating sort orders:', {
           error: err.message,
@@ -495,7 +485,7 @@ const DifficultyPage = () => {
           difficultyId: movedDifficulty?.id,
           difficultyName: movedDifficulty?.name
         });
-        addNotification(tDiff('notifications.reorderFailed'), 'error');
+        addNotification(t('difficulty.notifications.reorderFailed'), 'error');
         // Revert to previous state on error instead of full refresh
         await reloadDifficulties();
       } finally {
@@ -552,10 +542,10 @@ const DifficultyPage = () => {
         }
       });
 
-      addNotification(tDiff('tags.notifications.reordered'), 'success');
+      addNotification(t('difficulty.tags.notifications.reordered'), 'success');
     } catch (err) {
       console.error('Error updating tag sort orders:', err);
-      addNotification(tDiff('tags.notifications.reorderFailed'), 'error');
+      addNotification(t('difficulty.tags.notifications.reorderFailed'), 'error');
       await fetchTags();
     } finally {
       setIsTagsReordering(false);
@@ -596,10 +586,10 @@ const DifficultyPage = () => {
         }
       });
 
-      addNotification(tDiff('groups.notifications.reordered'), 'success');
+      addNotification(t('difficulty.groups.notifications.reordered'), 'success');
     } catch (err) {
       console.error('Error updating group sort orders:', err);
-      addNotification(tDiff('groups.notifications.reorderFailed'), 'error');
+      addNotification(t('difficulty.groups.notifications.reorderFailed'), 'error');
       await fetchTags();
     } finally {
       setIsGroupsReordering(false);
@@ -641,13 +631,13 @@ const DifficultyPage = () => {
       });
       // Update local state directly instead of full refresh
       setDifficulties(prev => prev.filter(diff => diff.id !== deletingDifficulty.id));
-      addNotification(tDiff('notifications.deleted'));
+      addNotification(t('difficulty.notifications.deleted'));
       setDeletingDifficulty(null);
       setShowDeleteInput(false);
       setFallbackDiff('');
     } catch (err) {
-      setError(tDiff('passwordModal.errors.generic'));
-      addNotification(tDiff('passwordModal.errors.generic'), 'error');
+      setError(t('difficulty.passwordModal.errors.generic'));
+      addNotification(t('difficulty.passwordModal.errors.generic'), 'error');
     } finally {
       setIsLoading(false);
     }
@@ -657,8 +647,8 @@ const DifficultyPage = () => {
     return (
       <div className="difficulty-page">
         <MetaTags
-          title={tDiff('meta.title')}
-          description={tDiff('meta.description')}
+          title={t('difficulty.meta.title')}
+          description={t('difficulty.meta.description')}
           url={currentUrl}
           image="/og-image.jpg"
           type="website"
@@ -674,8 +664,8 @@ const DifficultyPage = () => {
   if (!hasFlag(user, permissionFlags.SUPER_ADMIN)) {
     return (
       <AccessDenied 
-        metaTitle={tDiff('meta.title')}
-        metaDescription={tDiff('meta.description')}
+        metaTitle={t('difficulty.meta.title')}
+        metaDescription={t('difficulty.meta.description')}
         currentUrl={currentUrl}
       />
     );
@@ -684,8 +674,8 @@ const DifficultyPage = () => {
   return (
     <>
       <MetaTags
-        title={tDiff('meta.title')}
-        description={tDiff('meta.description')}
+        title={t('difficulty.meta.title')}
+        description={t('difficulty.meta.description')}
         url={currentUrl}
         image="/og-image.jpg"
         type="website"
@@ -695,12 +685,12 @@ const DifficultyPage = () => {
         {!isAnyPopupOpen && <ScrollButton />}
         <div className="difficulty-container">
           <div className="header-container">
-            <h1>{tDiff('header.title')}</h1>
+            <h1>{t('difficulty.header.title')}</h1>
             <button
               className="refresh-button"
               onClick={activeTab === 'difficulties' ? reloadDifficulties : fetchTags}
               disabled={isLoading || contextLoading || isReordering || tagsLoading}
-              aria-label={tDiff('header.refresh')}
+              aria-label={t('difficulty.header.refresh')}
             >
               <RefreshIcon color="#fff" size="36px" />
             </button>
@@ -712,13 +702,13 @@ const DifficultyPage = () => {
               className={`tab-button ${activeTab === 'difficulties' ? 'active' : ''}`}
               onClick={() => setActiveTab('difficulties')}
             >
-              {tDiff('tabs.difficulties')}
+              {t('difficulty.tabs.difficulties')}
             </button>
             <button
               className={`tab-button ${activeTab === 'tags' ? 'active' : ''}`}
               onClick={() => setActiveTab('tags')}
             >
-              {tDiff('tabs.tags')}
+              {t('difficulty.tabs.tags')}
             </button>
           </div>
 
@@ -732,7 +722,7 @@ const DifficultyPage = () => {
                   onClick={handleCreateClick}
                   disabled={isLoading || contextLoading || isReordering}
                 >
-                  {tDiff('buttons.create')}
+                  {t('difficulty.buttons.create')}
                 </button>
                 <button
                   className="discord-roles-button"
@@ -746,7 +736,7 @@ const DifficultyPage = () => {
                   }}
                   disabled={isLoading || contextLoading || isReordering}
                 >
-                  {tDiff('buttons.discordRoles')}
+                  {t('difficulty.buttons.discordRoles')}
                 </button>
               </div>
 
@@ -759,9 +749,9 @@ const DifficultyPage = () => {
                   ref={provided.innerRef}
                 >
                   {isLoading || contextLoading ? (
-                    <div className="loading-message">{tDiff('loading.difficulties')}</div>
+                    <div className="loading-message">{t('difficulty.loading.difficulties')}</div>
                   ) : sortedDifficulties.length === 0 ? (
-                    <div className="no-items-message">{tDiff('noItems.message')}</div>
+                    <div className="no-items-message">{t('difficulty.noItems.message')}</div>
                   ) : (
                     sortedDifficulties.map((difficulty, index) => (
                       <Draggable 
@@ -823,13 +813,13 @@ const DifficultyPage = () => {
                   className={`sub-tab-button ${tagsSubTab === 'tags' ? 'active' : ''}`}
                   onClick={() => setTagsSubTab('tags')}
                 >
-                  {tDiff('tabs.tags')}
+                  {t('difficulty.tabs.tags')}
                 </button>
                 <button
                   className={`sub-tab-button ${tagsSubTab === 'groups' ? 'active' : ''}`}
                   onClick={() => setTagsSubTab('groups')}
                 >
-                  {tDiff('tabs.groups')}
+                  {t('difficulty.tabs.groups')}
                 </button>
               </div>
 
@@ -840,19 +830,19 @@ const DifficultyPage = () => {
                     onClick={() => setIsCreatingTag(true)}
                     disabled={tagsLoading || isTagsReordering}
                   >
-                    {tDiff('tags.createButton')}
+                    {t('difficulty.tags.createButton')}
                   </button>
 
                   {tagsLoading ? (
                     <div className="loading-message">{t('loading.generic', { ns: 'common' })}</div>
                   ) : tags.length === 0 ? (
-                    <div className="no-items-message">{tDiff('tags.noTags')}</div>
+                    <div className="no-items-message">{t('difficulty.tags.noTags')}</div>
                   ) : (
                     <div className="grouped-tags-container">
                       {orderedGroups.map((group) => (
                         <div key={group.name || 'ungrouped'} className="tag-group-section">
                           <h3 className="tag-group-header">
-                            {group.name || tDiff('tags.ungrouped')}
+                            {group.name || t('difficulty.tags.ungrouped')}
                             <span className="tag-count">({group.tags.length})</span>
                           </h3>
                           <DragDropContext onDragEnd={(result) => handleTagDragEnd(result, group.name)}>
@@ -931,7 +921,7 @@ const DifficultyPage = () => {
                   {tagsLoading ? (
                     <div className="loading-message">{t('loading.generic', { ns: 'common' })}</div>
                   ) : orderedGroups.length === 0 ? (
-                    <div className="no-items-message">{tDiff('groups.noGroups')}</div>
+                    <div className="no-items-message">{t('difficulty.groups.noGroups')}</div>
                   ) : (
                     <DragDropContext onDragEnd={handleGroupDragEnd}>
                       <Droppable droppableId="groups">
@@ -957,10 +947,10 @@ const DifficultyPage = () => {
                                   >
                                     <div className="group-item-content">
                                       <div className="group-item-name">
-                                        {group.name || tDiff('tags.ungrouped')}
+                                        {group.name || t('difficulty.tags.ungrouped')}
                                       </div>
                                       <div className="group-item-count">
-                                        {tDiff('tags.tagCount', { count: group.tags.length, plural: group.tags.length !== 1 ? 's' : '' })}
+                                        {t('difficulty.tags.tagCount', { count: group.tags.length, plural: group.tags.length !== 1 ? 's' : '' })}
                                       </div>
                                     </div>
                                     <div className="group-item-preview">
@@ -1025,10 +1015,10 @@ const DifficultyPage = () => {
                         <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     </button>
-                    <h2>{tDiff('tags.create.title')}</h2>
+                    <h2>{t('difficulty.tags.create.title')}</h2>
                     <form onSubmit={(e) => { e.preventDefault(); handleCreateTag(); }}>
                       <div className="form-group">
-                        <label>{tDiff('tags.create.name')}</label>
+                        <label>{t('difficulty.tags.create.name')}</label>
                         <input
                           type="text"
                           value={newTag.name}
@@ -1037,7 +1027,7 @@ const DifficultyPage = () => {
                         />
                       </div>
                       <div className="form-group">
-                        <label>{tDiff('tags.create.color')}</label>
+                        <label>{t('difficulty.tags.create.color')}</label>
                         <input
                           type="color"
                           value={newTag.color}
@@ -1046,16 +1036,16 @@ const DifficultyPage = () => {
                         />
                       </div>
                       <div className="form-group">
-                        <label>{tDiff('tags.create.group.label')}</label>
+                        <label>{t('difficulty.tags.create.group.label')}</label>
                         <input
                           type="text"
                           value={newTag.group}
                           onChange={(e) => setNewTag({ ...newTag, group: e.target.value })}
-                          placeholder={tDiff('tags.create.group.placeholder')}
+                          placeholder={t('difficulty.tags.create.group.placeholder')}
                         />
                       </div>
                       <div className="form-group">
-                        <label>{tDiff('tags.create.icon.label')}</label>
+                        <label>{t('difficulty.tags.create.icon.label')}</label>
                         <input
                           type="file"
                           accept="image/*"
@@ -1076,7 +1066,7 @@ const DifficultyPage = () => {
                           <>
                             <img
                               src={newTag.icon}
-                              alt={tDiff('tags.create.icon.preview')}
+                              alt={t('difficulty.tags.create.icon.preview')}
                               className="icon-preview"
                             />
                             <button
@@ -1090,13 +1080,13 @@ const DifficultyPage = () => {
                                 setNewTag({ ...newTag, iconFile: null, icon: null });
                               }}
                             >
-                              {tDiff('tags.create.icon.remove')}
+                              {t('difficulty.tags.create.icon.remove')}
                             </button>
                           </>
                         )}
                       </div>
                       <div className="modal-actions">
-                        <button type="submit" className="confirm-button">{tDiff('tags.create.createButton')}</button>
+                        <button type="submit" className="confirm-button">{t('difficulty.tags.create.createButton')}</button>
                         <button
                           type="button"
                           className="cancel-button"
@@ -1136,10 +1126,10 @@ const DifficultyPage = () => {
                         <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     </button>
-                    <h2>{tDiff('tags.edit.title')}</h2>
+                    <h2>{t('difficulty.tags.edit.title')}</h2>
                     <form onSubmit={(e) => { e.preventDefault(); handleUpdateTag(); }}>
                       <div className="form-group">
-                        <label>{tDiff('tags.edit.name')}</label>
+                        <label>{t('difficulty.tags.edit.name')}</label>
                         <input
                           type="text"
                           value={editingTag.name}
@@ -1148,7 +1138,7 @@ const DifficultyPage = () => {
                         />
                       </div>
                       <div className="form-group">
-                        <label>{tDiff('tags.edit.color')}</label>
+                        <label>{t('difficulty.tags.edit.color')}</label>
                         <input
                           type="color"
                           value={editingTag.color}
@@ -1157,16 +1147,16 @@ const DifficultyPage = () => {
                         />
                       </div>
                       <div className="form-group">
-                        <label>{tDiff('tags.edit.group.label')}</label>
+                        <label>{t('difficulty.tags.edit.group.label')}</label>
                         <input
                           type="text"
                           value={editingTag.group || ''}
                           onChange={(e) => setEditingTag({ ...editingTag, group: e.target.value })}
-                          placeholder={tDiff('tags.edit.group.placeholder')}
+                          placeholder={t('difficulty.tags.edit.group.placeholder')}
                         />
                       </div>
                       <div className="form-group">
-                        <label>{tDiff('tags.edit.icon.label')}</label>
+                        <label>{t('difficulty.tags.edit.icon.label')}</label>
                         <input
                           type="file"
                           accept="image/*"
@@ -1191,7 +1181,7 @@ const DifficultyPage = () => {
                           <>
                             <img
                               src={editingTag.icon}
-                              alt={tDiff('tags.edit.icon.preview')}
+                              alt={t('difficulty.tags.edit.icon.preview')}
                               className="icon-preview"
                             />
                             <button
@@ -1205,13 +1195,13 @@ const DifficultyPage = () => {
                                 setEditingTag({ ...editingTag, iconFile: null, icon: null });
                               }}
                             >
-                              {tDiff('tags.edit.icon.remove')}
+                              {t('difficulty.tags.edit.icon.remove')}
                             </button>
                           </>
                         )}
                       </div>
                       <div className="modal-actions">
-                        <button type="submit" className="confirm-button">{tDiff('tags.edit.updateButton')}</button>
+                        <button type="submit" className="confirm-button">{t('difficulty.tags.edit.updateButton')}</button>
                       <button
                         type="button"
                         className="cancel-button"
@@ -1244,10 +1234,10 @@ const DifficultyPage = () => {
                         <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
                       </svg>
                     </button>
-                    <h2>{tDiff('tags.delete.title')}</h2>
-                    <p>{tDiff('tags.delete.message', { name: deletingTag.name })}</p>
+                    <h2>{t('difficulty.tags.delete.title')}</h2>
+                    <p>{t('difficulty.tags.delete.message', { name: deletingTag.name })}</p>
                     <p>
-                      {tDiff('tags.delete.description')}
+                      {t('difficulty.tags.delete.description')}
                     </p>
                     <div className="modal-actions">
                       <button
@@ -1255,7 +1245,7 @@ const DifficultyPage = () => {
                         className="delete-confirm-button"
                         onClick={handleDeleteTag}
                       >
-                        {tDiff('tags.delete.deleteButton')}
+                        {t('difficulty.tags.delete.deleteButton')}
                       </button>
                       <button
                         type="button"
@@ -1291,27 +1281,27 @@ const DifficultyPage = () => {
                 </button>
 
                 <div className={`delete-warning ${showDeleteInput ? 'fade-out' : ''}`}>
-                  <h2>{tDiff('modal.delete.warning.title')}</h2>
+                  <h2>{t('difficulty.modal.delete.warning.title')}</h2>
                   <div className="warning-content">
-                    <p>{tDiff('modal.delete.warning.message', { name: deletingDifficulty?.name })}</p>
-                    <p>{tDiff('modal.delete.warning.description')}</p>
+                    <p>{t('difficulty.modal.delete.warning.message', { name: deletingDifficulty?.name })}</p>
+                    <p>{t('difficulty.modal.delete.warning.description')}</p>
                     <ul>
-                      {tDiff('modal.delete.warning.points', { returnObjects: true }).map((point, index) => (
+                      {t('difficulty.modal.delete.warning.points', { returnObjects: true }).map((point, index) => (
                         <li key={index}>{point}</li>
                       ))}
                     </ul>
-                    <p className="warning-highlight">{tDiff('modal.delete.warning.highlight')}</p>
+                    <p className="warning-highlight">{t('difficulty.modal.delete.warning.highlight')}</p>
                   </div>
                   <button 
                     className="understand-button"
                     onClick={() => setShowDeleteInput(true)}
                   >
-                    {tDiff('buttons.understand')}
+                    {t('difficulty.buttons.understand')}
                   </button>
                 </div>
 
                 <div className={`delete-input ${showDeleteInput ? 'fade-in' : ''}`}>
-                  <h2>{tDiff('modal.delete.title')}</h2>
+                  <h2>{t('difficulty.modal.delete.title')}</h2>
                   <form onSubmit={(e) => {
                     e.preventDefault();
                     if (fallbackDiff) {
@@ -1322,26 +1312,25 @@ const DifficultyPage = () => {
                           fallbackDiff 
                         } 
                       });
-                      setShowPasswordModal(true);
                     }
                   }}>
                     <div className="form-group">
-                      <label>{tDiff('form.labels.fallbackDiff')}</label>
+                      <label>{t('difficulty.form.labels.fallbackDiff')}</label>
                       <RatingInput
                         value={fallbackDiff || ''}
                         onChange={(val) => setFallbackDiff(val || '')}
                         showDiff={true}
                         difficulties={difficulties.filter(d => d.id !== deletingDifficulty?.id)}
                         allowCustomInput={false}
-                        placeholder={tDiff('form.placeholders.fallbackDiff')}
+                        placeholder={t('difficulty.form.placeholders.fallbackDiff')}
                       />
                       <p className="help-text">
-                        {tDiff('form.helpText.fallbackDiff', { name: deletingDifficulty?.name })}
+                        {t('difficulty.form.helpText.fallbackDiff', { name: deletingDifficulty?.name })}
                       </p>
                     </div>
                     <div className="modal-actions">
                       <button type="button" className="delete-confirm-button" onClick={handleDirectDelete} disabled={!fallbackDiff || fallbackDiff === String(deletingDifficulty?.id) || isLoading}>
-                        {isLoading ? tDiff('loading.deleting') || 'Deleting...' : t('buttons.delete', { ns: 'common' })}
+                        {isLoading ? t('difficulty.loading.deleting') || 'Deleting...' : t('buttons.delete', { ns: 'common' })}
                       </button>
                       <button
                         type="button"
@@ -1360,13 +1349,13 @@ const DifficultyPage = () => {
           {showPasswordPrompt && (
             <div className="password-modal">
               <div className="password-modal-content">
-                <h3>{tDiff('passwordModal.title')}</h3>
-                <p>{tDiff('passwordModal.message', { action: pendingAction?.type })}</p>
+                <h3>{t('difficulty.passwordModal.title')}</h3>
+                <p>{t('difficulty.passwordModal.message', { action: pendingAction?.type })}</p>
                 <input
                   type="password"
                   value={superAdminPassword}
                   onChange={(e) => setSuperAdminPassword(e.target.value)}
-                  placeholder={tDiff('passwordModal.placeholder')}
+                  placeholder={t('difficulty.passwordModal.placeholder')}
                 />
                 {error && <p className="error-message">{error}</p>}
                 <div className="password-modal-actions">
@@ -1395,13 +1384,13 @@ const DifficultyPage = () => {
           {showInitialPasswordPrompt && (
             <div className="password-modal">
               <div className="password-modal-content">
-                <h3>{tDiff('passwordModal.initialTitle')}</h3>
-                <p>{tDiff('passwordModal.initialMessage')}</p>
+                <h3>{t('difficulty.passwordModal.initialTitle')}</h3>
+                <p>{t('difficulty.passwordModal.initialMessage')}</p>
                 <input
                   type="password"
                   value={superAdminPassword}
                   onChange={(e) => setSuperAdminPassword(e.target.value)}
-                  placeholder={tDiff('passwordModal.placeholder')}
+                  placeholder={t('difficulty.passwordModal.placeholder')}
                 />
                 {error && <p className="error-message">{error}</p>}
                 <div className="password-modal-actions">

@@ -11,7 +11,7 @@ import { CountrySelect } from '@/components/common/selectors';
 import { useTranslation } from 'react-i18next';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
-const usernameChangeCooldown = 3 * 24 * 60 * 60 * 1000; // 3 days
+const usernameChangeCooldown = 1 * 24 * 60 * 60 * 1000; // 1 day
 
 const ProviderIcon = ({ provider, size, color="#fff" }) => {
   switch(provider) {
@@ -24,7 +24,6 @@ const ProviderIcon = ({ provider, size, color="#fff" }) => {
 
 const EditProfilePage = () => {
   const { t } = useTranslation(['pages', 'common']);
-  const tEditProfile = (key, params = {}) => t(`editProfile.${key}`, params);
   const { user, changePassword, linkProvider, unlinkProvider, setUser, fetchUser } = useAuth();
   const [formData, setFormData] = useState({
     username: user?.username || '',
@@ -172,7 +171,7 @@ const EditProfilePage = () => {
     setSuccess('');
 
     if (formData.newPassword !== formData.confirmPassword) {
-      setError(tEditProfile('error.newPasswordsDoNotMatch'));
+      setError(t('editProfile.error.newPasswordsDoNotMatch'));
       return;
     }
 
@@ -181,7 +180,7 @@ const EditProfilePage = () => {
         currentPassword: formData.currentPassword,
         newPassword: formData.newPassword,
       });
-      setSuccess(tEditProfile('success.passwordChanged'));
+      setSuccess(t('editProfile.success.passwordChanged'));
       setFormData((prev) => ({
         ...prev,
         currentPassword: '',
@@ -190,7 +189,7 @@ const EditProfilePage = () => {
       }));
       setIsChangingPassword(false);
     } catch (err) {
-      setError(err.message || tEditProfile('error.failedToChangePassword'));
+      setError(err.message || t('editProfile.error.failedToChangePassword'));
     }
   };
 
@@ -199,18 +198,18 @@ const EditProfilePage = () => {
       setError('');
       setSuccess('');
       await linkProvider(provider);
-      setSuccess(tEditProfile('success.accountLinked', { provider }));
+      setSuccess(t('editProfile.success.accountLinked', { provider }));
     } catch (err) {
-      setError(err.response?.data?.error || tEditProfile('error.failedToLinkAccount', { provider }));
+      setError(err.response?.data?.error || t('editProfile.error.failedToLinkAccount', { provider }));
     }
   };
 
   const handleProviderUnlink = async (provider) => {
     try {
       await unlinkProvider(provider);
-      setSuccess(tEditProfile('success.accountUnlinked', { provider }));
+      setSuccess(t('editProfile.success.accountUnlinked', { provider }));
     } catch (err) {
-      setError(err.message || tEditProfile('error.failedToUnlinkAccount', { provider }));
+      setError(err.message || t('editProfile.error.failedToUnlinkAccount', { provider }));
     }
   };
 
@@ -222,7 +221,7 @@ const EditProfilePage = () => {
     // Validate file type
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
-      toast.error(tEditProfile('error.invalidFileType'));
+      toast.error(t('editProfile.error.invalidFileType'));
       return;
     }
 
@@ -257,7 +256,7 @@ const EditProfilePage = () => {
       const avatarUrl = response.data.avatar.urls.medium;
       setAvatarPreview(avatarUrl);
       setUser({ ...user, avatarUrl});
-      toast.success(tEditProfile('success.avatarUploaded'));
+      toast.success(t('editProfile.success.avatarUploaded'));
     } catch (error) {
       const errorData = error.response?.data;
       
@@ -265,8 +264,8 @@ const EditProfilePage = () => {
         errorData.details.errors.forEach(err => toast.error(err));
         setUploadError(errorData.details.errors.join(', '));
       } else {
-        setUploadError(errorData?.error || tEditProfile('error.failedToUploadAvatar'));
-        toast.error(errorData?.error || tEditProfile('error.failedToUploadAvatar'));
+        setUploadError(errorData?.error || t('editProfile.error.failedToUploadAvatar'));
+        toast.error(errorData?.error || t('editProfile.error.failedToUploadAvatar'));
       }
     } finally {
       setIsUploadingAvatar(false);
@@ -276,7 +275,7 @@ const EditProfilePage = () => {
   const handleAvatarRemove = async () => {
     if (!user?.avatarUrl) return;
 
-    const confirmed = window.confirm(tEditProfile('avatar.confirmRemove'));
+    const confirmed = window.confirm(t('editProfile.avatar.confirmRemove'));
     if (!confirmed) return;
 
     setIsUploadingAvatar(true);
@@ -285,9 +284,9 @@ const EditProfilePage = () => {
 
       setAvatarPreview(null);
       setUser({ ...user, avatarUrl: null, avatarId: null });
-      toast.success(tEditProfile('success.avatarRemoved'));
+      toast.success(t('editProfile.success.avatarRemoved'));
     } catch (error) {
-      toast.error(error.response?.data?.error || tEditProfile('error.failedToRemoveAvatar'));
+      toast.error(error.response?.data?.error || t('editProfile.error.failedToRemoveAvatar'));
     } finally {
       setIsUploadingAvatar(false);
     }
@@ -313,7 +312,7 @@ const EditProfilePage = () => {
     // Validate file type
     const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
     if (!allowedTypes.includes(file.type)) {
-      toast.error(tEditProfile('error.invalidFileType'));
+      toast.error(t('editProfile.error.invalidFileType'));
       return;
     }
 
@@ -366,7 +365,7 @@ const EditProfilePage = () => {
       setOriginalUsername(formData.username);
       
       fetchUser();
-      toast.success(tEditProfile('success.profileUpdated'));
+      toast.success(t('editProfile.success.profileUpdated'));
       navigate('/profile');
     } catch (error) {
       const errorData = error.response?.data;
@@ -385,9 +384,9 @@ const EditProfilePage = () => {
         }));
         setIsUsernameEditing(false);
         
-        toast.error(errorData.error || tEditProfile('error.usernameChangeRateLimited'));
+        toast.error(errorData.error || t('editProfile.error.usernameChangeRateLimited'));
       } else {
-        toast.error(errorData?.error || tEditProfile('error.failedToUpdateProfile'));
+        toast.error(errorData?.error || t('editProfile.error.failedToUpdateProfile'));
       }
     } finally {
       setIsSavingProfile(false);
@@ -401,7 +400,7 @@ const EditProfilePage = () => {
     
     <div className="edit-profile-page">
       <div className="edit-profile-container">
-        <h1>{tEditProfile('title')}</h1>
+        <h1>{t('editProfile.title')}</h1>
 
         {error && <div className="error-message">{error}</div>}
         {success && <div className="success-message">{success}</div>}
@@ -423,7 +422,7 @@ const EditProfilePage = () => {
             ) : (
               <div className="avatar-placeholder">
                 <i className="fas fa-user"></i>
-                <span>{tEditProfile('avatar.dragDropOrClick')}</span>
+                <span>{t('editProfile.avatar.dragDropOrClick')}</span>
               </div>
             )}
             <input
@@ -441,7 +440,7 @@ const EditProfilePage = () => {
               onClick={handleAvatarRemove}
               disabled={isUploadingAvatar}
             >
-              {isUploadingAvatar ? tEditProfile('avatar.removing') : tEditProfile('avatar.removeAvatar')}
+              {isUploadingAvatar ? t('editProfile.avatar.removing') : t('editProfile.avatar.removeAvatar')}
             </button>
           )}
         </div>
@@ -449,7 +448,7 @@ const EditProfilePage = () => {
         <form onSubmit={handleSubmit} className="edit-profile-form">
           <div className="form-group">
             <label htmlFor="username">
-              {tEditProfile('form.labels.username')}
+              {t('editProfile.form.labels.username')}
               {usernameTimer && (
                 <span className="username-timer">
                   ({usernameTimer.formatted})
@@ -488,7 +487,7 @@ const EditProfilePage = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="nickname">{tEditProfile('form.labels.nickname')}</label>
+            <label htmlFor="nickname">{t('editProfile.form.labels.nickname')}</label>
             <input
               type="text"
               id="nickname"
@@ -501,7 +500,7 @@ const EditProfilePage = () => {
           </div>
 
           <div className="form-group">
-            <label htmlFor="email">{tEditProfile('form.labels.email')}</label>
+            <label htmlFor="email">{t('editProfile.form.labels.email')}</label>
             <input
               type="email"
               id="email"
@@ -513,14 +512,14 @@ const EditProfilePage = () => {
             />
             {!hasFlag(user, permissionFlags.EMAIL_VERIFIED) && (
               <div className="email-verification-message" onClick={() => navigate('/profile/verify-email')}>
-                <span className="profile-banner-text">{tEditProfile('form.emailVerification.message')}</span>
-                <span className="email-verification-arrow">{tEditProfile('form.emailVerification.arrow')}</span>
+                <span className="profile-banner-text">{t('editProfile.form.emailVerification.message')}</span>
+                <span className="email-verification-arrow">{t('editProfile.form.emailVerification.arrow')}</span>
               </div>
             )}
           </div>
 
           <div className="form-group">
-            <label htmlFor="country">{tEditProfile('form.labels.country')}</label>
+            <label htmlFor="country">{t('editProfile.form.labels.country')}</label>
             <CountrySelect 
               value={formData.country}
               onChange={handleCountryChange}
@@ -542,18 +541,18 @@ const EditProfilePage = () => {
               type="submit"
               disabled={isSavingProfile}
             >
-              {isSavingProfile ? t('loading.saving', { ns: 'common' }) : tEditProfile('form.buttons.saveChanges')}
+              {isSavingProfile ? t('loading.saving', { ns: 'common' }) : t('editProfile.form.buttons.saveChanges')}
             </button>
           </div>
         </form>
 
         <div className="section-divider" />
 
-        <h2>{hasNoPassword ? tEditProfile('password.addPassword') : tEditProfile('password.title')}</h2>
+        <h2>{hasNoPassword ? t('editProfile.password.addPassword') : t('editProfile.password.title')}</h2>
         {hasNoPassword ? (
           <form onSubmit={handlePasswordChange}>
             <div className="form-group">
-              <label htmlFor="newPassword">{tEditProfile('password.newPassword')}</label>
+              <label htmlFor="newPassword">{t('editProfile.password.newPassword')}</label>
               <input
                 className="input-field"
                 type="password"
@@ -566,7 +565,7 @@ const EditProfilePage = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="confirmPassword">{tEditProfile('password.confirmPassword')}</label>
+              <label htmlFor="confirmPassword">{t('editProfile.password.confirmPassword')}</label>
               <input
                 className="input-field"
                 type="password"
@@ -579,7 +578,7 @@ const EditProfilePage = () => {
             </div>
 
             <button type="submit" className="save-button">
-              {tEditProfile('password.createPassword')}
+              {t('editProfile.password.createPassword')}
             </button>
           </form>
         ) : !isChangingPassword ? (
@@ -587,12 +586,12 @@ const EditProfilePage = () => {
             className="change-password-button"
             onClick={() => setIsChangingPassword(true)}
           >
-            {tEditProfile('password.changePassword')}
+            {t('editProfile.password.changePassword')}
           </button>
         ) : (
           <form onSubmit={handlePasswordChange}>
             <div className="form-group">
-              <label htmlFor="currentPassword">{tEditProfile('password.currentPassword')}</label>
+              <label htmlFor="currentPassword">{t('editProfile.password.currentPassword')}</label>
               <input
                 className="input-field"
                 type="password"
@@ -605,7 +604,7 @@ const EditProfilePage = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="newPassword">{tEditProfile('password.newPassword')}</label>
+              <label htmlFor="newPassword">{t('editProfile.password.newPassword')}</label>
               <input
                 className="input-field"
                 type="password"
@@ -618,7 +617,7 @@ const EditProfilePage = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="confirmPassword">{tEditProfile('password.confirmNewPassword')}</label>
+              <label htmlFor="confirmPassword">{t('editProfile.password.confirmNewPassword')}</label>
               <input
                 className="input-field"
                 type="password"
@@ -631,7 +630,7 @@ const EditProfilePage = () => {
             </div>
 
             <button type="submit" className="save-button">
-              {tEditProfile('password.updatePassword')}
+              {t('editProfile.password.updatePassword')}
             </button>
             <button
               type="button"
@@ -646,13 +645,13 @@ const EditProfilePage = () => {
 
         <div className="section-divider" />
 
-        <h2>{tEditProfile('linkedAccounts.title')}</h2>
+        <h2>{t('editProfile.linkedAccounts.title')}</h2>
         <div className="linked-accounts">
           {user?.providers?.some(p => p.name === 'discord') ? (
             <div className="provider-info">
               <div className="provider-details">
                 <ProviderIcon provider="discord" size={32}/>
-                <span>{tEditProfile('linkedAccounts.discord')}</span>
+                <span>{t('editProfile.linkedAccounts.discord')}</span>
                 {user?.providers?.find(p => p.name === 'discord')?.profile?.username && (
                   <span className="provider-username">
                     @{user.providers.find(p => p.name === 'discord').profile.username}
@@ -665,9 +664,9 @@ const EditProfilePage = () => {
                   onClick={() => handleProviderUnlink('discord')}
                   disabled={isLastProvider}
                   data-tooltip-id="unlink-tooltip"
-                  data-tooltip-content={isLastProvider ? tEditProfile('linkedAccounts.cannotUnlinkLastProvider') : undefined}
+                  data-tooltip-content={isLastProvider ? t('editProfile.linkedAccounts.cannotUnlinkLastProvider') : undefined}
                 >
-                  {tEditProfile('linkedAccounts.unlink')}
+                  {t('editProfile.linkedAccounts.unlink')}
                   <UnlinkIcon color="#fff" size={"24px"} />
                 </button>
                 <Tooltip id="unlink-tooltip" />
@@ -679,7 +678,7 @@ const EditProfilePage = () => {
               onClick={() => handleProviderLink('discord')}
             >
               <DiscordIcon size={16} />
-              {tEditProfile('linkedAccounts.linkDiscord')}
+              {t('editProfile.linkedAccounts.linkDiscord')}
             </button>
           )}
         </div>

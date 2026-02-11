@@ -23,11 +23,10 @@ import LogoFullOutlineSVG from "@/assets/tuf-logo/LogoFullOutlined/LogoFullOutli
 
 const SupportButton = () => {
   const { t } = useTranslation('pages');
-  const tHome = (key, params = {}) => t(`home.${key}`, params);
   return (
     <button onClick={() => window.open('https://ko-fi.com/v0w4n', '_blank')} className="support-button rainbow-box">
 
-        <span className="support-text">{tHome('stats.donate')}</span>
+        <span className="support-text">{t('home.stats.donate')}</span>
         <img className="support-icon" src="https://cdn.prod.website-files.com/5c14e387dab576fe667689cf/670f5a01229bf8a18f97a3c1_favion.png" alt="Ko-fi" />
         <div className="rainbow-background" />
     </button>
@@ -72,13 +71,6 @@ const StatCard = ({ value, label }) => (
   <div className="stat-card">
     <span className="stat-value">{value.toLocaleString()}</span>
     <span className="stat-label">{label}</span>
-  </div>
-);
-
-const DifficultyCard = ({ name, passCount }) => (
-  <div className="difficulty-card">
-    <span className="diff-name">{name}</span>
-    <span className="diff-passes">{passCount.toLocaleString()} passes</span>
   </div>
 );
 
@@ -201,10 +193,7 @@ const DifficultyGraph = ({ data, mode }) => {
 
 const HomePage = () => {
   const { t } = useTranslation('pages');
-  const tHome = (key, params = {}) => t(`home.${key}`, params);
   const [stats, setStats] = useState(null);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const [boundingRect, setBoundingRect] = useState(null);
   const [graphMode, setGraphMode] = useState('passes'); // 'passes' or 'levels'
   const [isUserActive, setIsUserActive] = useState(true);
   const [activeListType, setActiveListType] = useState('primary'); // 'primary' or 'secondary'
@@ -227,50 +216,6 @@ const HomePage = () => {
 
     fetchStats();
   }, []);
-
-  // Memoize the update function to avoid recreating it on every render
-  const updateBoundingRect = useCallback(() => {
-    const element = document.getElementById('main-title');
-    if (element) {
-      setBoundingRect(element.getBoundingClientRect());
-    }
-  }, []);
-
-  // Update bounding rect on mount and scroll
-  useEffect(() => {
-    updateBoundingRect();
-    window.addEventListener('scroll', updateBoundingRect);
-    window.addEventListener('resize', updateBoundingRect);
-
-    return () => {
-      window.removeEventListener('scroll', updateBoundingRect);
-      window.removeEventListener('resize', updateBoundingRect);
-    };
-  }, [updateBoundingRect]);
-
-  // Update to track mouse position only when near the title
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (boundingRect) {
-        // Check if mouse is within or near the title area (adding some padding)
-        const padding = 100; // pixels of padding around the title
-        if (
-          e.clientX >= boundingRect.left - padding &&
-          e.clientX <= boundingRect.right + padding &&
-          e.clientY >= boundingRect.top - padding &&
-          e.clientY <= boundingRect.bottom + padding
-        ) {
-          setMousePosition({ 
-            x: e.clientX - boundingRect.left, 
-            y: e.clientY - boundingRect.top 
-          });
-        }
-      }
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [boundingRect]);
 
   // Track user activity for auto-scroll control
   useEffect(() => {
@@ -297,8 +242,8 @@ const HomePage = () => {
 
   return (<>
     <MetaTags
-      title={tHome('meta.title')}
-      description={tHome('meta.description')}
+      title={t('home.meta.title')}
+      description={t('home.meta.description')}
       url={currentUrl}
       image="/og-image.jpg"
       type="website"
@@ -319,8 +264,8 @@ const HomePage = () => {
                 '--mouse-y': `${mousePosition.y}px`
               }}
             >
-              <span className="title-mask">{tHome('title.revamped')}</span>
-              <span className="title-glow">{tHome('title.revamped')}</span>
+              <span className="title-mask">{t('home.title.revamped')}</span>
+              <span className="title-glow">{t('home.title.revamped')}</span>
             </h1>
             */ }
           </div>
@@ -328,24 +273,24 @@ const HomePage = () => {
           <div className="action-buttons">
             <div className="action-buttons-row">
             <Link to="/levels" className="action-button">
-              <span>{tHome('buttons.browseLevels')}</span>
+              <span>{t('home.buttons.browseLevels')}</span>
               &nbsp;
               <ChartIcon size={32} />
             </Link>
             <Link to="/packs" className="action-button">
-              <span>{tHome('buttons.browsePacks')}</span>
+              <span>{t('home.buttons.browsePacks')}</span>
               &nbsp;
               <PackIcon size={32} />
             </Link>
             </div>
             <div className="action-buttons-row"> 
             <Link to="/passes" className="action-button">
-              <span>{tHome('buttons.browsePasses')}</span>
+              <span>{t('home.buttons.browsePasses')}</span>
               &nbsp;
               <PassIcon size={32} />
             </Link>
             <Link to="/leaderboard" className="action-button">
-              <span>{tHome('buttons.leaderboard')}</span>
+              <span>{t('home.buttons.leaderboard')}</span>
               &nbsp;
               <LeaderboardIcon size={32} />
             </Link>
@@ -369,7 +314,7 @@ const HomePage = () => {
         </div>
 
         <div className="weekly-curations-section">
-            <h2 className="weekly-curations-title">{tHome('weeklies.title')}</h2>
+            <h2 className="weekly-curations-title">{t('home.weeklies.title')}</h2>
             {weekliesLoading ? (
               <div className="weekly-curations-loading">
                 <div className="spinner spinner-xlarge spinner-accent"></div>
@@ -377,7 +322,7 @@ const HomePage = () => {
               </div>
             ) : weekliesError ? (
               <div className="weekly-curations-error">
-                <p>{tHome('weeklies.error')}</p>
+                <p>{t('home.weeklies.error')}</p>
               </div>
             ) : weeklies.length > 0 ? (
               <div className="weekly-curations-container">
@@ -385,7 +330,7 @@ const HomePage = () => {
                   {/* Primary Weeklies */}
                   {weeklies.filter(w => w.listType === 'primary').length > 0 && (
                     <div className={`weekly-curations-group ${activeListType === 'primary' ? 'active' : 'inactive'}`}>
-                      <h3 className="weekly-curations-group-title">{tHome('weeklies.primary')}</h3>
+                      <h3 className="weekly-curations-group-title">{t('home.weeklies.primary')}</h3>
                       <WeeklyGallery
                         curations={weeklies.filter(w => w.listType === 'primary').map(w => w.scheduledCuration)}
                         autoScroll={isUserActive && weeklies.filter(w => w.listType === 'primary').length > 1}
@@ -400,7 +345,7 @@ const HomePage = () => {
                   {/* Secondary Weeklies */}
                   {weeklies.filter(w => w.listType === 'secondary').length > 0 && (
                     <div className={`weekly-curations-group ${activeListType === 'secondary' ? 'active' : 'inactive'}`}>
-                      <h3 className="weekly-curations-group-title">{tHome('weeklies.secondary')}</h3>
+                      <h3 className="weekly-curations-group-title">{t('home.weeklies.secondary')}</h3>
                       <WeeklyGallery
                         curations={weeklies.filter(w => w.listType === 'secondary').map(w => w.scheduledCuration)}
                         autoScroll={isUserActive && weeklies.filter(w => w.listType === 'secondary').length > 1}
@@ -421,7 +366,7 @@ const HomePage = () => {
                       aria-label={`Switch to ${activeListType === 'primary' ? 'secondary' : 'primary'} list`}
                     >
                       <span className="switch-btn-text">
-                      ▼ &nbsp;&nbsp;{activeListType === 'primary' ? tHome('weeklies.secondary') : tHome('weeklies.primary')}
+                      ▼ &nbsp;&nbsp;{activeListType === 'primary' ? t('home.weeklies.secondary') : t('home.weeklies.primary')}
                       </span>
                     </button>
                   )}
@@ -430,7 +375,7 @@ const HomePage = () => {
             ) : (
               <div className="weekly-curations-empty">
                 <div className="weekly-curations-empty-icon">🎵</div>
-                <p>{tHome('weeklies.empty')}</p>
+                <p>{t('home.weeklies.empty')}</p>
               </div>
             )}
           </div>
@@ -438,30 +383,30 @@ const HomePage = () => {
         {stats == null ? (
           <div className="stats-container">
             <section className="stats-section overview">
-              <h2>{tHome('stats.overview.title')}</h2>
+              <h2>{t('home.stats.overview.title')}</h2>
               <div className="stats-grid empty">
-                <StatCard value={0} label={tHome('stats.overview.totalLevels')} />
-                <StatCard value={0} label={tHome('stats.overview.totalPasses')} />
-                <StatCard value={0} label={tHome('stats.overview.totalPlayers')} />
-                <StatCard value={0} label={tHome('stats.overview.passesLast30Days')} />
+                <StatCard value={0} label={t('home.stats.overview.totalLevels')} />
+                <StatCard value={0} label={t('home.stats.overview.totalPasses')} />
+                <StatCard value={0} label={t('home.stats.overview.totalPlayers')} />
+                <StatCard value={0} label={t('home.stats.overview.passesLast30Days')} />
               </div>
             </section>
 
             <section className="stats-section difficulties">
-              <h2>{tHome('stats.difficulties.title')}</h2>
+              <h2>{t('home.stats.difficulties.title')}</h2>
               <div style={{ opacity: 0.5, transform: 'scaleY(0)', height: 0, transformOrigin: 'top' }}>
                 <div className="graph-controls">
                   <button 
                     className={`graph-mode ${graphMode === 'passes' ? 'active' : ''}`}
                     onClick={() => setGraphMode('passes')}
                   >
-                    {tHome('stats.difficulties.graphModes.passes')}
+                    {t('home.stats.difficulties.graphModes.passes')}
                   </button>
                   <button 
                     className={`graph-mode ${graphMode === 'levels' ? 'active' : ''}`}
                     onClick={() => setGraphMode('levels')}
                   >
-                    {tHome('stats.difficulties.graphModes.levels')}
+                    {t('home.stats.difficulties.graphModes.levels')}
                   </button>
                 </div>
                 <div style={{ height: "300px" }}></div>
@@ -470,7 +415,7 @@ const HomePage = () => {
 
             <section className="stats-section discord-section">
               <div className="discord-container">
-                <span className="discord-title">{tHome('stats.discord.title')}</span>
+                <span className="discord-title">{t('home.stats.discord.title')}</span>
                 <iframe 
                 src="https://discord.com/widget?id=1024941834373439509&theme=dark" 
                 width="83.333%" 
@@ -487,22 +432,22 @@ const HomePage = () => {
                 />
               </div>
             </section>
-            <p style={{textAlign: "center", opacity: "0.5"}}>{tHome('stats.comingSoon')}</p>
+            <p style={{textAlign: "center", opacity: "0.5"}}>{t('home.stats.comingSoon')}</p>
           </div>
         ) : (
           <div className="stats-container">
             <section className="stats-section overview">
-              <h2>{tHome('stats.overview.title')}</h2>
+              <h2>{t('home.stats.overview.title')}</h2>
               <div className="stats-grid">
-                <StatCard value={stats.overview.totalLevels} label={tHome('stats.overview.totalLevels')} />
-                <StatCard value={stats.overview.totalPasses} label={tHome('stats.overview.totalPasses')} />
-                <StatCard value={stats.overview.totalPlayers} label={tHome('stats.overview.totalPlayers')} />
-                <StatCard value={stats.overview.passesLast30Days} label={tHome('stats.overview.passesLast30Days')} />
+                <StatCard value={stats.overview.totalLevels} label={t('home.stats.overview.totalLevels')} />
+                <StatCard value={stats.overview.totalPasses} label={t('home.stats.overview.totalPasses')} />
+                <StatCard value={stats.overview.totalPlayers} label={t('home.stats.overview.totalPlayers')} />
+                <StatCard value={stats.overview.passesLast30Days} label={t('home.stats.overview.passesLast30Days')} />
               </div>
             </section>
 
             <section className="stats-section difficulties">
-              <h2>{tHome('stats.difficulties.title')}</h2>
+              <h2>{t('home.stats.difficulties.title')}</h2>
               <div style={{ 
                 transformOrigin: 'top' 
               }}>
@@ -511,13 +456,13 @@ const HomePage = () => {
                     className={`graph-mode ${graphMode === 'passes' ? 'active' : ''}`}
                     onClick={() => setGraphMode('passes')}
                   >
-                    {tHome('stats.difficulties.graphModes.passes')}
+                    {t('home.stats.difficulties.graphModes.passes')}
                   </button>
                   <button 
                     className={`graph-mode ${graphMode === 'levels' ? 'active' : ''}`}
                     onClick={() => setGraphMode('levels')}
                   >
-                    {tHome('stats.difficulties.graphModes.levels')}
+                    {t('home.stats.difficulties.graphModes.levels')}
                   </button>
                 </div>
                 {Object.entries(stats.difficulties.byType).filter(([type]) => type == 'PGU').map(([type, difficulties]) => (
@@ -530,7 +475,7 @@ const HomePage = () => {
             </section>
             <section className="stats-section discord-section">
               <div className="discord-container">
-                <span className="discord-title">{tHome('stats.discord.title')}</span>
+                <span className="discord-title">{t('home.stats.discord.title')}</span>
                 <iframe 
                 src="https://discord.com/widget?id=1024941834373439509&theme=dark" 
                 width="83.333%" 

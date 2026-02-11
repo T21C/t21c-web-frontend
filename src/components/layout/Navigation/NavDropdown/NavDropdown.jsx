@@ -2,13 +2,13 @@ import React, { useState, useRef, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { ChevronIcon } from "@/components/common/icons";
 import "./navDropdown.css";
+import { useTranslation } from 'react-i18next';
 
 /**
  * Reusable dropdown component for navigation
  * @param {Object} props
  * @param {string} props.label - The label text for the dropdown button
  * @param {Array} props.items - Array of dropdown items { to, label, translationKey, disabled, badge }
- * @param {Function} props.getTranslation - Function to get translation (tNav)
  * @param {Function} props.isActive - Function to check if dropdown should be marked as active
  * @param {string} props.className - Additional CSS classes
  * @param {boolean} props.showAsLink - If true, shows as a link when no items provided
@@ -17,12 +17,12 @@ import "./navDropdown.css";
 const NavDropdown = ({
   label,
   items = [],
-  getTranslation,
   isActive,
   className = "",
   showAsLink = false,
   linkTo = null,
 }) => {
+  const { t } = useTranslation('components');
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const location = useLocation();
@@ -90,11 +90,11 @@ const NavDropdown = ({
                   className="nav-dropdown-item nav-dropdown-item--disabled"
                 >
                   {item.translationKey
-                    ? getTranslation(item.translationKey)
+                    ? t(item.translationKey)
                     : item.label}
                   {item.badge && (
                     <span className="nav-dropdown-badge">
-                      {getTranslation ? getTranslation(item.badge) : item.badge}
+                      {t(item.badge)}
                     </span>
                   )}
                 </div>
@@ -111,7 +111,7 @@ const NavDropdown = ({
                 onClick={() => setIsOpen(false)}
               >
                 {item.translationKey
-                  ? getTranslation(item.translationKey)
+                  ? t(item.translationKey)
                   : item.label}
               </NavLink>
             );

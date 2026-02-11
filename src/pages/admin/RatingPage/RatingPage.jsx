@@ -20,7 +20,6 @@ import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
 const RatingPage = () => {
   const { t } = useTranslation('pages');
-  const tRating = (key, params = {}) => t(`rating.${key}`, params);
   const currentUrl = window.location.origin + location.pathname;
   const { user } = useAuth();
   const { 
@@ -252,10 +251,10 @@ const RatingPage = () => {
   };
 
   const sortOptions = useMemo(() => [
-    { value: 'id', label: tRating('sort.byId') },
-    { value: 'ratings', label: tRating('sort.byRatings'), title: tRating('sort.byRatingsFull') },
-    { value: 'updatedAt', label: tRating('sort.byDate') }
-  ], [tRating]);
+    { value: 'id', label: t('rating.sort.byId') },
+    { value: 'ratings', label: t('rating.sort.byRatings'), title: t('rating.sort.byRatingsFull') },
+    { value: 'updatedAt', label: t('rating.sort.byDate') }
+  ], [t]);
 
   const selectedSortOption = useMemo(() => 
     sortOptions.find(option => option.value === sortType),
@@ -360,8 +359,8 @@ const RatingPage = () => {
     return (
       <div className="admin-rating-page">
         <MetaTags
-          title={tRating('meta.title')}
-          description={tRating('meta.description')}
+          title={t('rating.meta.title')}
+          description={t('rating.meta.description')}
           url={currentUrl}
           image="/og-image.jpg"
           type="website"
@@ -377,8 +376,8 @@ const RatingPage = () => {
   return (
     <div className="admin-rating-page">
       <MetaTags
-        title={tRating('meta.title')}
-        description={tRating('meta.description')}
+        title={t('rating.meta.title')}
+        description={t('rating.meta.description')}
         url={currentUrl}
         image="/og-image.jpg"
         type="website"
@@ -394,7 +393,7 @@ const RatingPage = () => {
                   className="admin-button rater-management-button"
                   onClick={() => setShowRaterManagement(true)}
                 >
-                  {tRating('buttons.manageRaters')}
+                  {t('rating.buttons.manageRaters')}
                 </button>
               </>
             )}
@@ -402,7 +401,7 @@ const RatingPage = () => {
               className="admin-button top-rater-button"
               onClick={() => setShowTopRaters(true)}
             >
-              {tRating('buttons.topRaters')} <LeaderboardIcon />
+              {t('rating.buttons.topRaters')} <LeaderboardIcon />
             </button>
           </div>
         <div className="view-controls">
@@ -418,10 +417,10 @@ const RatingPage = () => {
             />
             <div className="sort-buttons">
               <Tooltip id="sa" place="top" noArrow>
-                {tRating('tooltips.sortAsc')}
+                {t('rating.tooltips.sortAsc')}
               </Tooltip>
               <Tooltip id="sd" place="top" noArrow>
-                {tRating('tooltips.sortDesc')}
+                {t('rating.tooltips.sortDesc')}
               </Tooltip>
               <SortAscIcon
                 className="svg-fill"
@@ -443,7 +442,7 @@ const RatingPage = () => {
           </div>
           {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
             <div className="view-mode-toggle">
-              <span className="toggle-label">{tRating('toggles.detailedView.label')}</span>
+              <span className="toggle-label">{t('rating.toggles.detailedView.label')}</span>
               <label className="switch">
                 <input
                   type="checkbox"
@@ -455,7 +454,7 @@ const RatingPage = () => {
             </div>
           )}
           <div className="view-mode-toggle">
-            <span className="toggle-label">{tRating('toggles.hideRated.label')}</span>
+            <span className="toggle-label">{t('rating.toggles.hideRated.label')}</span>
             <label className="switch">
               <input
                 type="checkbox"
@@ -469,14 +468,14 @@ const RatingPage = () => {
               currentState={lowDiffFilter}
               states={['show','hide',  'only']}
               onChange={setLowDiffFilter}
-              label={tRating('toggles.lowDiff.label')}
+              label={t('rating.toggles.lowDiff.label')}
               width={60}
             />
             <StateDisplay
               currentState={fourVoteFilter}
               states={['hide', 'show', 'only']}
               onChange={setFourVoteFilter}
-              label={tRating('toggles.fourVote.label')}
+              label={t('rating.toggles.fourVote.label')}
               width={60}
             />
         </div>
@@ -491,7 +490,7 @@ const RatingPage = () => {
                 <input
                   type="text"
                   className="search-input"
-                  placeholder={tRating('search.placeholder')}
+                  placeholder={t('rating.search.placeholder')}
                   name="search"
                   autoComplete="off"
                   aria-autocomplete="none"
@@ -505,23 +504,23 @@ const RatingPage = () => {
                 onClick={() => setShowHelpPopup(true)}
               >
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"> <path d="M12 3C7.04 3 3 7.04 3 12C3 16.96 7.04 21 12 21C16.96 21 21 16.96 21 12C21 7.04 16.96 3 12 3ZM12 19.5C7.86 19.5 4.5 16.14 4.5 12C4.5 7.86 7.86 4.5 12 4.5C16.14 4.5 19.5 7.86 19.5 12C19.5 16.14 16.14 19.5 12 19.5ZM14.3 7.7C14.91 8.31 15.25 9.13 15.25 10C15.25 10.87 14.91 11.68 14.3 12.3C13.87 12.73 13.33 13.03 12.75 13.16V13.5C12.75 13.91 12.41 14.25 12 14.25C11.59 14.25 11.25 13.91 11.25 13.5V12.5C11.25 12.09 11.59 11.75 12 11.75C12.47 11.75 12.91 11.57 13.24 11.24C13.57 10.91 13.75 10.47 13.75 10C13.75 9.53 13.57 9.09 13.24 8.76C12.58 8.1 11.43 8.1 10.77 8.76C10.44 9.09 10.26 9.53 10.26 10C10.26 10.41 9.92 10.75 9.51 10.75C9.1 10.75 8.76 10.41 8.76 10C8.76 9.13 9.1 8.32 9.71 7.7C10.94 6.47 13.08 6.47 14.31 7.7H14.3ZM13 16.25C13 16.8 12.55 17.25 12 17.25C11.45 17.25 11 16.8 11 16.25C11 15.7 11.45 15.25 12 15.25C12.55 15.25 13 15.7 13 16.25Z" fill="#ffffff"></path> </g></svg>
-                {tRating('buttons.help')}
+                {t('rating.buttons.help')}
               </button>
               <div className="ratings-count">
-                {tRating('labels.totalRatings', { count: filteredRatings?.length || 0 })}
+                {t('rating.labels.totalRatings', { count: filteredRatings?.length || 0 })}
               </div>
               <div className={`connected-users ${isConnected ? 'connected' : 'disconnected'}`}>
                 <div className={`indicator`} />
                 {isConnected ? (
                   <>
-                    {tRating('labels.connectedUsers', { count: connectedUsers })}
+                    {t('rating.labels.connectedUsers', { count: connectedUsers })}
                     {connectedManagers > 0 && (
                       <span className="manager-count">
-                        {tRating('labels.connectedManagers', { count: connectedManagers })}
+                        {t('rating.labels.connectedManagers', { count: connectedManagers })}
                       </span>
                     )}
                   </>
-                ) : tRating('labels.disconnected')}
+                ) : t('rating.labels.disconnected')}
               </div>
               </div>
             </div>
@@ -587,8 +586,8 @@ const RatingPage = () => {
         ) : 
         ratings && ratings.length === 0 ? (
           <div className="all-rated-message">
-            <h2>{tRating('messages.noRatings.title')}</h2>
-            <p>{tRating('messages.noRatings.subtitle')}</p>
+            <h2>{t('rating.messages.noRatings.title')}</h2>
+            <p>{t('rating.messages.noRatings.subtitle')}</p>
           </div>
         ) : (
           <div className="loader loader-offset"/>

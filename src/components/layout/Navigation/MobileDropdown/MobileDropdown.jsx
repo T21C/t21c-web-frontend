@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { ChevronIcon } from "@/components/common/icons";
 import "./mobileDropdown.css";
+import { useTranslation } from 'react-i18next';
 
 /**
  * Mobile dropdown component that displays items above the trigger
@@ -17,11 +18,11 @@ import "./mobileDropdown.css";
 const MobileDropdown = ({
   label,
   items = [],
-  getTranslation,
   isActive,
   onItemClick,
   buttonContent,
 }) => {
+  const { t } = useTranslation('components');
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
   const menuRef = useRef(null);
@@ -122,11 +123,11 @@ const MobileDropdown = ({
                   className="nav-mobile-dropdown-item nav-mobile-dropdown-item--disabled"
                 >
                   {item.translationKey
-                    ? getTranslation(item.translationKey)
+                    ? t(item.translationKey)
                     : item.label}
                   {item.badge && (
                     <span className="nav-mobile-dropdown-badge">
-                      {getTranslation ? getTranslation(item.badge) : item.badge}
+                      {t('navigation.main.' + item.badge)}
                     </span>
                   )}
                 </div>
@@ -147,7 +148,7 @@ const MobileDropdown = ({
                   }}
                 >
                   {item.translationKey
-                    ? getTranslation(item.translationKey)
+                    ? t(item.translationKey)
                     : item.label}
                 </button>
               );
@@ -165,7 +166,7 @@ const MobileDropdown = ({
                   onClick={handleItemClick}
                 >
                   {item.translationKey
-                    ? getTranslation(item.translationKey)
+                    ? t(item.translationKey)
                     : item.label}
                 </NavLink>
               );

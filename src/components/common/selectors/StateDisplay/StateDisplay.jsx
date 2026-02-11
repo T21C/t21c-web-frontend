@@ -16,7 +16,6 @@ const StateDisplay = ({
   className = ''
 }) => {
   const { t } = useTranslation('components');
-  const tState = (key) => t(`stateDisplay.states.${key}`) || key;
 
   // Calculate dimensions based on props
   const dimensions = useMemo(() => {
@@ -72,7 +71,7 @@ const StateDisplay = ({
         />
         {showValue && (
           <span className="state-value">
-            {tState(currentState)}
+            {t('stateDisplay.states.' + currentState)}
           </span>
         )}
       </div>

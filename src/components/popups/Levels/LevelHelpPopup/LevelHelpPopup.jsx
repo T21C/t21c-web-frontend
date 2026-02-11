@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 
 export const LevelHelpPopup = ({ onClose }) => {
   const { t } = useTranslation(['components']);
-  const tHelp = (key) => t(`level.helpPopup.${key}`) || key;
   const popupRef = useRef(null);
 
   useEffect(() => {
@@ -35,7 +34,7 @@ export const LevelHelpPopup = ({ onClose }) => {
         <button 
           className="close-popup-btn"
           onClick={onClose}
-          aria-label={tHelp('closeButton')}
+          aria-label={t('level.helpPopup.closeButton')}
         >
           <svg 
             width="24" 
@@ -54,44 +53,44 @@ export const LevelHelpPopup = ({ onClose }) => {
         </button>
 
         <div className="help-content">
-          <h2>{tHelp('title')}</h2>
+          <h2>{t('level.helpPopup.title')}</h2>
 
           <section>
-            <h3>{tHelp('sections.search.title')}</h3>
-            <p>{tHelp('sections.search.description')}</p>
+            <h3>{t('level.helpPopup.sections.search.title')}</h3>
+            <p>{t('level.helpPopup.sections.search.description')}</p>
             <div className="examples">
-              <h4>{tHelp('sections.search.examples.title')}</h4>
+              <h4>{t('level.helpPopup.sections.search.examples.title')}</h4>
               <ul>
-                <li><b><code>song:Example</code></b> - {tHelp('sections.search.examples.songField')}</li>
-                <li><b><code>artist:Artist</code></b> - {tHelp('sections.search.examples.artistField')}</li>
-                <li><b><code>charter:Charter</code></b> - {tHelp('sections.search.examples.charterField')}</li>
-                <li><b><code>vfxer:Vfxer</code></b> - {tHelp('sections.search.examples.vfxerField')}</li>
-                <li><b><code>creator:Creator</code></b> - {tHelp('sections.search.examples.creatorField')}</li>
+                <li><b><code>song:Example</code></b> - {t('level.helpPopup.sections.search.examples.songField')}</li>
+                <li><b><code>artist:Artist</code></b> - {t('level.helpPopup.sections.search.examples.artistField')}</li>
+                <li><b><code>charter:Charter</code></b> - {t('level.helpPopup.sections.search.examples.charterField')}</li>
+                <li><b><code>vfxer:Vfxer</code></b> - {t('level.helpPopup.sections.search.examples.vfxerField')}</li>
+                <li><b><code>creator:Creator</code></b> - {t('level.helpPopup.sections.search.examples.creatorField')}</li>
               </ul>
             </div>
           </section>
 
           <section>
-            <h3>{tHelp('sections.operators.title')}</h3>
-            <p>{tHelp('sections.operators.description')}</p>
+            <h3>{t('level.helpPopup.sections.operators.title')}</h3>
+            <p>{t('level.helpPopup.sections.operators.description')}</p>
             <div className="examples">
-              <h4>{tHelp('sections.operators.examples.title')}</h4>
+              <h4>{t('level.helpPopup.sections.operators.examples.title')}</h4>
               <ul>
-                <li><b><code>song:hello, artist:camellia</code></b> - {tHelp('sections.operators.examples.and')}</li>
-                <li><b><code>song=goTe | song:xnor</code></b> - {tHelp('sections.operators.examples.or')}</li>
-                <li><b><code>charter:gazizi, song:onus | artist=ludicin</code></b> - {tHelp('sections.operators.examples.complex')}</li>
-                <li><b><code>song:onus, \!nerfed</code></b> - {tHelp('sections.operators.examples.not')}</li>
+                <li><b><code>song:hello, artist:camellia</code></b> - {t('level.helpPopup.sections.operators.examples.and')}</li>
+                <li><b><code>song=goTe | song:xnor</code></b> - {t('level.helpPopup.sections.operators.examples.or')}</li>
+                <li><b><code>charter:gazizi, song:onus | artist=ludicin</code></b> - {t('level.helpPopup.sections.operators.examples.complex')}</li>
+                <li><b><code>song:onus, \!nerfed</code></b> - {t('level.helpPopup.sections.operators.examples.not')}</li>
               </ul>
             </div>
           </section>
 
           <section>
-            <h3>{tHelp('sections.tips.title')}</h3>
+            <h3>{t('level.helpPopup.sections.tips.title')}</h3>
             <ul>
-              <li>{tHelp('sections.tips.points.caseSensitive')}</li>
-              <li>{tHelp('sections.tips.points.partial')}</li>
-              <li>{tHelp('sections.tips.points.spaces')}</li>
-              <li>{tHelp('sections.tips.points.order')}</li>
+              <li>{t('level.helpPopup.sections.tips.points.caseSensitive')}</li>
+              <li>{t('level.helpPopup.sections.tips.points.partial')}</li>
+              <li>{t('level.helpPopup.sections.tips.points.spaces')}</li>
+              <li>{t('level.helpPopup.sections.tips.points.order')}</li>
             </ul>
           </section>
         </div>

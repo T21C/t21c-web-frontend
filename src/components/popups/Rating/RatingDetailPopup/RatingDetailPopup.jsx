@@ -46,7 +46,6 @@ export const RatingDetailPopup = ({
 }) => {
   const currentUser = user;
   const { t } = useTranslation('components');
-  const tRating = (key) => t(`rating.detailPopup.${key}`) || key;
 
   const { difficulties, difficultyDict } = useDifficultyContext();
   const [videoData, setVideoData] = useState(null);
@@ -294,14 +293,14 @@ export const RatingDetailPopup = ({
     try {
       if (pendingComment.length > 1000) {
         setCommentError(true);
-        setSaveError(tRating('errors.commentLength'));
+        setSaveError(t('rating.detailPopup.errors.commentLength'));
         setIsSaving(false);
         return;
       }
 
       if (isCommentRequired && !pendingComment.trim()) {
         setCommentError(true);
-        setSaveError(tRating('errors.commentRequired'));
+        setSaveError(t('rating.detailPopup.errors.commentRequired'));
         setIsSaving(false);
         return;
       }
@@ -332,7 +331,7 @@ export const RatingDetailPopup = ({
       setIsInitialLoad(false);
     } catch (error) {
       console.error('[RatingDetailPopup] Save failed:', error);
-      setSaveError(error.response?.data?.error || error.response?.data?.message || error.message || error.error || tRating('errors.saveFailed'));
+      setSaveError(error.response?.data?.error || error.response?.data?.message || error.message || error.error || t('rating.detailPopup.errors.saveFailed'));
     } finally {
       setIsSaving(false);
     }
@@ -342,7 +341,7 @@ export const RatingDetailPopup = ({
     if (isAnimating) return; // Prevent closing during entry animation
     
     if (hasUnsavedChanges) {
-      if (window.confirm(tRating('errors.unsavedChanges'))) {
+      if (window.confirm(t('rating.detailPopup.errors.unsavedChanges'))) {
         initiateClose();
       }
     } else {
@@ -398,7 +397,7 @@ export const RatingDetailPopup = ({
       }
     } catch (error) {
       console.error('Error deleting rating:', error);
-      alert(tRating('errors.deleteFailed'));
+      alert(t('rating.detailPopup.errors.deleteFailed'));
     }
   };
 
@@ -422,16 +421,16 @@ export const RatingDetailPopup = ({
         </div>
       ) : (
         <div className="no-ratings-message">
-          {type === 'admin' ? tRating('labels.noAdminRatings') : tRating('labels.noCommunityRatings')}
+          {type === 'admin' ? t('rating.detailPopup.labels.noAdminRatings') : t('rating.detailPopup.labels.noCommunityRatings')}
         </div>
       )}
     </div>
   );
 
   const getSaveButtonText = () => {
-    if (isSaving) return tRating('buttons.saving');
-    if (!pendingRating && initialRating) return tRating('buttons.removeRating');
-    return tRating('buttons.saveChanges');
+    if (isSaving) return t('rating.detailPopup.buttons.saving');
+    if (!pendingRating && initialRating) return t('rating.detailPopup.buttons.removeRating');
+    return t('rating.detailPopup.buttons.saveChanges');
   };
 
   const getSaveButtonClass = () => {
@@ -453,7 +452,7 @@ export const RatingDetailPopup = ({
         <button 
           className="close-popup-btn"
           onClick={handleClose}
-          aria-label={tRating('closeButton')}
+          aria-label={t('rating.detailPopup.closeButton')}
         >
           <svg 
             width="24" 
@@ -528,19 +527,19 @@ export const RatingDetailPopup = ({
 
               <div className={`details-container ${isDetailsCollapsed ? 'collapsed' : ''}`}>
                 <div className="detail-field rerate-field">
-                  <span className="detail-label">{tRating('labels.rerateNum')}</span>
+                  <span className="detail-label">{t('rating.detailPopup.labels.rerateNum')}</span>
                   <span className="detail-value">{showingConfirmed ? selectedRating.requesterFR : (selectedRating.level.rerateNum || selectedRating.requesterFR)}</span>
                 </div>
                 <div className="detail-field">
-                  <span className="detail-label">{tRating('labels.currentDifficulty')}</span>
+                  <span className="detail-label">{t('rating.detailPopup.labels.currentDifficulty')}</span>
                   <img src={difficultyDict[selectedRating.level.diffId]?.icon} alt="" className="detail-value lv-icon" />
                 </div>
                 <div className="detail-field" style={{visibility: selectedRating.averageDifficultyId ? 'visible' : 'hidden'}}>
-                  <span className="detail-label">{tRating('labels.averageRating')}</span>
+                  <span className="detail-label">{t('rating.detailPopup.labels.averageRating')}</span>
                   <img src={difficultyDict[selectedRating.averageDifficultyId]?.icon} alt="" className="detail-value lv-icon" />
                 </div>
                 <div className="detail-field" style={{visibility: selectedRating.communityDifficultyId ? 'visible' : 'hidden'}}>
-                  <span className="detail-label">{tRating('labels.communityRating')}</span>
+                  <span className="detail-label">{t('rating.detailPopup.labels.communityRating')}</span>
                   <img src={difficultyDict[selectedRating.communityDifficultyId]?.icon} alt="" className="detail-value lv-icon" />
                 </div>
 
@@ -551,12 +550,12 @@ export const RatingDetailPopup = ({
               <div className="rating-columns">
                 {hasFlag(user, permissionFlags.RATING_BANNED) ? (
                   <div className="rating-banned-message">
-                    {tRating('messages.ratingBanned')}
+                    {t('rating.detailPopup.messages.ratingBanned')}
                   </div>
                 ) : user ? (
                   <div className="rating-field-group">
                     <div className="rating-field">
-                      <label>{tRating('labels.yourRating')}</label>
+                      <label>{t('rating.detailPopup.labels.yourRating')}</label>
                       <div className="rating-input-container">
                         <RatingInput
                           value={pendingRating}
@@ -574,7 +573,7 @@ export const RatingDetailPopup = ({
                     </div>
                     <div className="rating-field">
                       <label>
-                        {tRating('labels.yourComment')}
+                        {t('rating.detailPopup.labels.yourComment')}
                         {isCommentRequired && <span className="required-mark" data-tooltip-id="required-tooltip" />}
                       </label>
                       <textarea
@@ -584,7 +583,7 @@ export const RatingDetailPopup = ({
                           borderColor: commentError ? 'red' : '',
                           backgroundColor: isCommentRequired && commentError ? 'rgba(255, 0, 0, 0.05)' : ''
                         }}
-                        placeholder={tRating('placeholders.communityComment')}
+                        placeholder={t('rating.detailPopup.placeholders.communityComment')}
                       />
                     </div>
                     <div className="save-button-container">
@@ -621,14 +620,14 @@ export const RatingDetailPopup = ({
                 <div className="rating-field other-ratings">
                   <div className="other-ratings-header">
                     <label className="rating-field-label">
-                      {showSecondRatings ? tRating('labels.communityRatings') : tRating('labels.adminRatings')}
+                      {showSecondRatings ? t('rating.detailPopup.labels.communityRatings') : t('rating.detailPopup.labels.adminRatings')}
                     </label>
                     <button 
                       className={`ratings-toggle-btn ${showSecondRatings ? 'show-second' : ''}`}
                       onClick={() => setShowSecondRatings(!showSecondRatings)}
                     >
                       <span>
-                        {showSecondRatings ? tRating('buttons.viewAdminRatings') : tRating('buttons.viewCommunityRatings')}
+                        {showSecondRatings ? t('rating.detailPopup.buttons.viewAdminRatings') : t('rating.detailPopup.buttons.viewCommunityRatings')}
                       </span>
                       <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M9 6L15 12L9 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>

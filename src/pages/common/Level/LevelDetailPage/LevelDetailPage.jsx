@@ -115,7 +115,6 @@ const SortIncidator = ({ direction }) => {
 
 const AliasesDropdown = ({ aliases, show, onClose }) => {
   const { t } = useTranslation('pages');
-  const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -137,7 +136,7 @@ const AliasesDropdown = ({ aliases, show, onClose }) => {
 
   return (
     <div className="aliases-dropdown" ref={dropdownRef} onClick={handleDropdownClick}>
-      <div className="aliases-header">{tLevel('aliases.header')}</div>
+      <div className="aliases-header">{t('levelDetail.aliases.header')}</div>
       <div className="aliases-list">
         {aliases.map((alias, index) => (
           <div key={index} className="alias-item">
@@ -151,7 +150,6 @@ const AliasesDropdown = ({ aliases, show, onClose }) => {
 
 const TagsDropdown = ({ tags, show, onClose }) => {
   const { t } = useTranslation('pages');
-  const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -197,7 +195,7 @@ const TagsDropdown = ({ tags, show, onClose }) => {
 
   return (
     <div className="tags-dropdown" ref={dropdownRef} onClick={handleDropdownClick}>
-      <div className="tags-header">{tLevel('tags.header') || 'Tags'}</div>
+      <div className="tags-header">{t('levelDetail.tags.header') || 'Tags'}</div>
       <div className="tags-grouped-list">
         {orderedGroups.map((group) => (
           <div key={group.name || 'ungrouped'} className="tags-group">
@@ -232,7 +230,6 @@ const TagsDropdown = ({ tags, show, onClose }) => {
 
 const RatingVotesDropdown = ({ votes, show, onClose }) => {
   const { t } = useTranslation('pages');
-  const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -254,7 +251,7 @@ const RatingVotesDropdown = ({ votes, show, onClose }) => {
 
   return (
     <div className="rating-votes-dropdown" ref={dropdownRef} onClick={handleDropdownClick}>
-      <div className="rating-votes-header">{tLevel('ratingAccuracy.votesHeader')}</div>
+      <div className="rating-votes-header">{t('levelDetail.ratingAccuracy.votesHeader')}</div>
       <div className="rating-votes-list">
         {votes.length > 0 ? votes.map((vote, index) => (
           <div key={index} className="rating-vote-item">
@@ -270,7 +267,7 @@ const RatingVotesDropdown = ({ votes, show, onClose }) => {
                 }}>{accuracyLabel[vote.vote.toString()]}</span>
             </span>
           </div>
-        )) : <div className="rating-votes-empty">{tLevel('ratingAccuracy.noVotes')}</div>}
+        )) : <div className="rating-votes-empty">{t('levelDetail.ratingAccuracy.noVotes')}</div>}
       </div>
     </div>
   );
@@ -278,7 +275,6 @@ const RatingVotesDropdown = ({ votes, show, onClose }) => {
 
 const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
   const { t } = useTranslation('pages');
-  const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
 
   useEffect(() => {
     const handleEscape = (e) => {
@@ -294,7 +290,7 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
     if (!level.levelCredits || level.levelCredits.length === 0) {
       return (
         <div className="each-info">
-          <span>{tLevel('info.creator')}:</span>
+          <span>{t('levelDetail.info.creator')}:</span>
           <span>{level.creator}</span>
         </div>
       );
@@ -321,7 +317,7 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
     return (
       <div className="credits-grid">
         <div className="credits-column">
-          <div className="role-header">{tLevel('info.roles.charter')}</div>
+          <div className="role-header">{t('levelDetail.info.roles.charter')}</div>
           {charters.map((charter, index) => (
             <div key={`charter-${index}`} className="creator-item">
               {charter.isOwner && <div className="owner-badge" title="Owner">Owner</div>}
@@ -330,7 +326,7 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
           ))}
         </div>
         <div className="credits-column">
-          <div className="role-header">{tLevel('info.roles.vfxer')}</div>
+          <div className="role-header">{t('levelDetail.info.roles.vfxer')}</div>
           {vfxers.map((vfxer, index) => (
             <div key={`vfxer-${index}`} className="creator-name">{vfxer.name}</div>
           ))}
@@ -346,8 +342,8 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
           <div className="popup-header" style={{ '--popup-header-bg': `#${difficulty.color}ff` }}>
             <h2>{getSongDisplayName(level)}</h2>
             <p>{getArtistDisplayName(level)}</p>
-            <span className="createdAt">{tLevel('info.createdAt')}: {formatDate(videoDetail?.timestamp || level.createdAt, i18next?.language)}</span>
-            <button className="popup-close-button" onClick={onClose} title={tLevel('buttons.close')}>
+            <span className="createdAt">{t('levelDetail.info.createdAt')}: {formatDate(videoDetail?.timestamp || level.createdAt, i18next?.language)}</span>
+            <button className="popup-close-button" onClick={onClose} title={t('levelDetail.buttons.close')}>
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
@@ -357,29 +353,29 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
             <div className="team-info">
               {level.teamObject && (
                 <div className="each-info team-name">
-                  <span>{tLevel('info.team')}:</span>
+                  <span>{t('levelDetail.info.team')}:</span>
                   <span>{level.teamObject.name}</span>
                 </div>
               )}
               <div className="each-info">
-                <span>{tLevel('info.difficulty')}:</span>
+                <span>{t('levelDetail.info.difficulty')}:</span>
                 <span>{difficulty.name}</span>
               </div>
               {(level.baseScore || difficulty.baseScore) && (
                 <div className="each-info">
-                  <span>{tLevel('info.baseScore')}:</span>
+                  <span>{t('levelDetail.info.baseScore')}:</span>
                   <span>{level.baseScore || difficulty.baseScore}PP</span>
                 </div>
               )}
               {(level.ppBaseScore || difficulty.ppBaseScore) && (
                 <div className="each-info">
-                  <span>{tLevel('info.ppBaseScore')}:</span>
+                  <span>{t('levelDetail.info.ppBaseScore')}:</span>
                   <span>{level.ppBaseScore || difficulty.ppBaseScore}PP</span>
                 </div>
               )}
               {level.aliases && level.aliases.length > 0 && (
                 <div className="each-info">
-                  <span>{tLevel('info.aliases')}:</span>
+                  <span>{t('levelDetail.info.aliases')}:</span>
                   <span>
                     {level.aliases.map(alias => 
                       `${alias.field}: ${alias.alias}`
@@ -389,7 +385,7 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
               )}
               {level.publicComments && (
                 <div className="each-info">
-                  <span>{tLevel('info.comments')}:</span>
+                  <span>{t('levelDetail.info.comments')}:</span>
                   <span>{level.publicComments}</span>
                 </div>
               )}
@@ -397,7 +393,7 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
             {formatCredits()}
             <div className="links">
               {level.videoLink && (
-                <a href={level.videoLink} target="_blank" rel="noopener noreferrer" title={tLevel('links.thumbnailNotFound.goToVideo')}>
+                <a href={level.videoLink} target="_blank" rel="noopener noreferrer" title={t('levelDetail.links.thumbnailNotFound.goToVideo')}>
                   <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke="#ffffff" strokeWidth="1.5"/>
                     <path d="M15.91 11.672a.375.375 0 010 .656l-5.603 3.113a.375.375 0 01-.557-.328V8.887c0-.286.307-.466.557-.327l5.603 3.112z" stroke="#ffffff" strokeWidth="1.5"/>
@@ -405,14 +401,14 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
                 </a>
               )}
               {level.dlLink && (
-                <a href={level.dlLink} target="_blank" rel="noopener noreferrer" title={tLevel('links.download')}>
+                <a href={level.dlLink} target="_blank" rel="noopener noreferrer" title={t('levelDetail.links.download')}>
                   <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M17 17H17.01M17.4 14H18C18.9319 14 19.3978 14 19.7654 14.1522C20.2554 14.3552 20.6448 14.7446 20.8478 15.2346C21 15.6022 21 16.0681 21 17C21 17.9319 21 18.3978 20.8478 18.7654C20.6448 19.2554 20.2554 19.6448 19.7654 19.8478C19.3978 20 18.9319 20 18 20H6C5.06812 20 4.60218 20 4.23463 19.8478C3.74458 19.6448 3.35523 19.2554 3.15224 18.7654C3 18.3978 3 17.9319 3 17C3 16.0681 3 15.6022 3.15224 15.2346C3.35523 14.7446 3.74458 14.3552 4.23463 14.1522C4.60218 14 5.06812 14 6 14H6.6M12 15V4M12 15L9 12M12 15L15 12" fill="none" stroke="#ffffff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                   </svg>
                 </a>
               )}
               {level.workshopLink && (
-                <a href={level.workshopLink} target="_blank" rel="noopener noreferrer" title={tLevel('links.workshop')}>
+                <a href={level.workshopLink} target="_blank" rel="noopener noreferrer" title={t('levelDetail.links.workshop')}>
                   <SteamIcon color="#ffffff" size={50} />
                 </a>
               )}
@@ -431,7 +427,6 @@ const RatingAccuracyDialog = ({ isOpen, onClose, onSave, initialValue = 0 }) => 
   const [isDragging, setIsDragging] = useState(false);
   const sliderRef = useRef(null);
   const { t } = useTranslation('pages');
-  const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
 
   // Reset value when dialog opens
   useEffect(() => {
@@ -515,7 +510,7 @@ const RatingAccuracyDialog = ({ isOpen, onClose, onSave, initialValue = 0 }) => 
       <div className="rating-accuracy-dialog-content">
         <div className="rating-accuracy-dialog-header">
           <div className="rating-accuracy-dialog-title">
-            {tLevel('components.ratingAccuracy.title')}
+            {t('levelDetail.components.ratingAccuracy.title')}
           </div>
           <button 
             className="rating-accuracy-dialog-close"
@@ -526,7 +521,7 @@ const RatingAccuracyDialog = ({ isOpen, onClose, onSave, initialValue = 0 }) => 
         </div>
         
         <div className="rating-accuracy-dialog-description">
-          {tLevel('components.ratingAccuracy.description')}
+          {t('levelDetail.components.ratingAccuracy.description')}
         </div>
         
         <div className="rating-accuracy-dialog-slider">
@@ -586,7 +581,6 @@ const RatingAccuracyDialog = ({ isOpen, onClose, onSave, initialValue = 0 }) => 
 // Refactor RerateHistoryDropdown to match AliasesDropdown pattern
 const CurationTooltip = ({ curation, show, onClose }) => {
   const { t } = useTranslation(['pages', 'common']);
-  const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -634,7 +628,6 @@ const CurationTooltip = ({ curation, show, onClose }) => {
 
 const WeeklyAppearanceDropdown = ({ schedules, show, onClose }) => {
   const { t } = useTranslation(['pages', 'common']);
-  const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -661,7 +654,7 @@ const WeeklyAppearanceDropdown = ({ schedules, show, onClose }) => {
 
   return (
     <div className="weekly-appearance-dropdown" ref={dropdownRef} onClick={handleDropdownClick}>
-      <div className="weekly-appearance-header">{tLevel('weeklyAppearance.header')}</div>
+      <div className="weekly-appearance-header">{t('levelDetail.weeklyAppearance.header')}</div>
       <div className="weekly-appearance-list">
         {sortedSchedules.map((schedule, index) => (
           <div 
@@ -673,8 +666,8 @@ const WeeklyAppearanceDropdown = ({ schedules, show, onClose }) => {
             </div>
             <div className="weekly-appearance-list-type">
               {schedule.listType === 'primary' 
-                ? tLevel('weeklyAppearance.primary') 
-                : tLevel('weeklyAppearance.secondary')}
+                ? t('levelDetail.weeklyAppearance.primary') 
+                : t('levelDetail.weeklyAppearance.secondary')}
             </div>
           </div>
         ))}
@@ -685,7 +678,6 @@ const WeeklyAppearanceDropdown = ({ schedules, show, onClose }) => {
 
 const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict }) => {
   const { t } = useTranslation(['pages', 'common']);
-  const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
   const dropdownRef = useRef(null);
 
   useEffect(() => {
@@ -708,7 +700,7 @@ const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict })
 
   return (
     <div className="rerate-history-dropdown" ref={dropdownRef} onClick={handleDropdownClick}>
-      <div className="rerate-history-header">{tLevel('rerateHistory.header', { defaultValue: 'Rerate History' })}</div>
+      <div className="rerate-history-header">{t('levelDetail.rerateHistory.header', { defaultValue: 'Rerate History' })}</div>
       <div className="rerate-history-sequence">
         {rerateHistory.slice().reverse().map((entry, idx) => {
           const prevDiff = difficultyDict[entry.previousDiffId];
@@ -749,7 +741,6 @@ const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict })
 
 const LevelDetailPage = ({ mockData = null }) => {
   const { t } = useTranslation(['pages', 'common']);
-  const tLevel = (key, params = {}) => t(`levelDetail.${key}`, params);
   const { id } = useParams();
   const detailPage = useLocation();
   
@@ -1022,8 +1013,6 @@ const LevelDetailPage = ({ mockData = null }) => {
   const [showMinus2Reason, setShowMinus2Reason] = useState(false);
   const [showGimmickReason, setShowGimmickReason] = useState(false);
 
-  const [isRatingAccuracyDialogOpen, setIsRatingAccuracyDialogOpen] = useState(false);
-  const [isAllVotesOpen, setIsAllVotesOpen] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const sliderRef = useRef(null);
 
@@ -1051,14 +1040,6 @@ const LevelDetailPage = ({ mockData = null }) => {
     window.addEventListener('mouseup', enableArrow);
   };
 
-  const handleOpenRatingAccuracyInfo = () => {
-    setIsAllVotesOpen(!isAllVotesOpen);
-  };
-
-  const handleCloseRatingAccuracyInfo = () => {
-    setIsAllVotesOpen(false);
-  };
-
   useEffect(() => {
     const modifiedSlots = createEventSystem({
       "3": 20,
@@ -1069,12 +1050,6 @@ const LevelDetailPage = ({ mockData = null }) => {
     });
     setSlots(parseInt(modifiedSlots() || 3));
   }, []);
-
-  // Rating accuracy helper functions
-  const getPosition = (value) => {
-    // Map -5 to 5 to 0 to 100
-    return ((value + 5) / 10) * 100;
-  };
 
   const handleSliderMouseMove = (e) => {
     if (isDragging) {
@@ -1200,7 +1175,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       setNotFound(false);
       
       if (isRefresh) {
-        toast.success(tLevel('leaderboard.refreshed'));
+        toast.success(t('levelDetail.leaderboard.refreshed'));
       }
       
       // Fetch like status separately after main data is loaded
@@ -1211,13 +1186,13 @@ const LevelDetailPage = ({ mockData = null }) => {
         setNotFound(true);
       }
       if (isRefresh) {
-        toast.error(tLevel('errors.refreshFailed'));
+        toast.error(t('levelDetail.errors.refreshFailed'));
       }
     } finally {
       setInfoLoading(false);
       setIsRefreshingLeaderboard(false);
     }
-  }, [effectiveId, mockData, tLevel, fetchIsLiked]);
+  }, [effectiveId, mockData, t, fetchIsLiked]);
 
   useEffect(() => {
     fetchLevelData();
@@ -1618,7 +1593,7 @@ const LevelDetailPage = ({ mockData = null }) => {
 
   const handleLikeToggle = async () => {
     if (!user) {
-      toast.error(tLevel('errors.loginRequired'));
+      toast.error(t('levelDetail.errors.loginRequired'));
       return;
     }
 
@@ -1642,11 +1617,11 @@ const LevelDetailPage = ({ mockData = null }) => {
         // Refresh like status from server to ensure cache consistency
         await fetchIsLiked();
         
-        toast.success(action === 'like' ? tLevel('messages.liked') : tLevel('messages.unliked'));
+        toast.success(action === 'like' ? t('levelDetail.messages.liked') : t('levelDetail.messages.unliked'));
       }
     } catch (error) {
       console.error('Error toggling like:', error);
-      toast.error(tLevel('errors.likeFailed'));
+      toast.error(t('levelDetail.errors.likeFailed'));
     } finally {
       setIsLiking(false);
     }
@@ -1669,11 +1644,11 @@ const LevelDetailPage = ({ mockData = null }) => {
           votes: response.data.votes ? response.data.votes : prevRes.votes
         }));
         
-        toast.success(tLevel('messages.voteSubmitted'));
+        toast.success(t('levelDetail.messages.voteSubmitted'));
       }
     } catch (error) {
       console.error('Error submitting rating accuracy vote:', error);
-      toast.error(tLevel('errors.voteFailed'));
+      toast.error(t('levelDetail.errors.voteFailed'));
     }
   };
   */
@@ -1699,7 +1674,7 @@ const LevelDetailPage = ({ mockData = null }) => {
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
-              <span>{tLevel('banners.notFound')}</span>
+              <span>{t('levelDetail.banners.notFound')}</span>
             </div>
           </div>
         </div>
@@ -1730,7 +1705,7 @@ const LevelDetailPage = ({ mockData = null }) => {
     <div>
       <MetaTags
         title={getSongDisplayName(res?.level)}
-        description={tLevel('meta.description', { song: getSongDisplayName(res?.level), creator: res?.level?.creator })}
+        description={t('levelDetail.meta.description', { song: getSongDisplayName(res?.level), creator: res?.level?.creator })}
         url={currentUrl}
         image={''}
         type="article"
@@ -1757,7 +1732,7 @@ const LevelDetailPage = ({ mockData = null }) => {
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
-              <span>{tLevel('banners.deleted')}</span>
+              <span>{t('levelDetail.banners.deleted')}</span>
             </div>
           </div>
         ) : res?.level?.isHidden ? (
@@ -1766,7 +1741,7 @@ const LevelDetailPage = ({ mockData = null }) => {
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
               </svg>
-              <span>{tLevel('banners.hidden')}</span>
+              <span>{t('levelDetail.banners.hidden')}</span>
             </div>
           </div>
         ) : null}
@@ -1816,7 +1791,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                   <span
                     className={`rerate-arrow ${showRerateDropdown ? 'open' : ''}`}
                     onClick={handleRerateDropdownToggle}
-                    title={tLevel('rerateHistory.header', { defaultValue: 'Show rerate history' })}
+                    title={t('levelDetail.rerateHistory.header', { defaultValue: 'Show rerate history' })}
                     data-disabled={!rerateArrowEnabled}
                   >
                     <HistoryListIcon className="rerate-history-icon" size={"24px"}/>
@@ -2013,13 +1988,13 @@ const LevelDetailPage = ({ mockData = null }) => {
                   data-tooltip-id="rating-accuracy-tooltip"
                   data-tooltip-content={
                     !user 
-                      ? tLevel('ratingAccuracy.loginToVote')
+                      ? t('levelDetail.ratingAccuracy.loginToVote')
                       : !res?.isCleared 
-                        ? tLevel('tooltips.clearRequired')
-                        : tLevel('components.ratingAccuracy.voteButton')
+                        ? t('levelDetail.tooltips.clearRequired')
+                        : t('levelDetail.components.ratingAccuracy.voteButton')
                   }
                 >
-                  {tLevel('components.ratingAccuracy.voteButton')}
+                  {t('levelDetail.components.ratingAccuracy.voteButton')}
                 </button>
                 <span className="rating-accuracy-vote-count">Votes: {res.totalVotes || 0}</span>
                 {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
@@ -2035,7 +2010,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                 onClick={handleOpenRatingAccuracyInfo} 
                 data-tooltip-id="rating-accuracy-info-tooltip"
                 data-tooltip-content={
-                  tLevel('ratingAccuracy.viewAllVotes')
+                  t('levelDetail.ratingAccuracy.viewAllVotes')
                 }
                 />
                 <RatingVotesDropdown 
@@ -2065,8 +2040,8 @@ const LevelDetailPage = ({ mockData = null }) => {
                   data-tooltip-id="like-tooltip"
                   data-tooltip-content={
                     user ?
-                      res.isLiked ? tLevel('buttons.unlike') : tLevel('buttons.like')
-                    : tLevel('tooltips.loginRequired')
+                      res.isLiked ? t('levelDetail.buttons.unlike') : t('levelDetail.buttons.like')
+                    : t('levelDetail.tooltips.loginRequired')
                   }
                   className={
                     `like-button 
@@ -2127,7 +2102,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                     disabled={!canEdit}
                     title={t('buttons.edit', { ns: 'common' })}
                     data-tooltip-id={!canEdit ? 'edit-disabled-tooltip' : undefined}
-                    data-tooltip-content={!canEdit ? tLevel('tooltips.editDisabled') : undefined}
+                    data-tooltip-content={!canEdit ? t('levelDetail.tooltips.editDisabled') : undefined}
                     style={
                       {...(
                         !canEdit ? { opacity: 0.5, cursor: 'not-allowed' }: {}),
@@ -2150,13 +2125,13 @@ const LevelDetailPage = ({ mockData = null }) => {
                 );
               })()}
               {res.level.dlLink && res.level.dlLink.match(/http[s]?:\/\//) && (
-                <button className="svg-stroke" href={res.level.dlLink} target="_blank" title={tLevel('links.download')} onClick={handleDownloadClick}>
+                <button className="svg-stroke" href={res.level.dlLink} target="_blank" title={t('levelDetail.links.download')} onClick={handleDownloadClick}>
                   <DownloadIcon size={"36px"}/>
                   {res.accessCount !== undefined && <span className="access-count">{res.accessCount || 0}</span>}
                 </button>
               )}
               {res.level.workshopLink && (
-                <button className="svg-stroke" onClick={() => window.open(res.level.workshopLink, '_blank')} target="_blank" title={tLevel('links.workshop')}>
+                <button className="svg-stroke" onClick={() => window.open(res.level.workshopLink, '_blank')} target="_blank" title={t('levelDetail.links.workshop')}>
                   <SteamIcon color="#ffffff" size={"34px"} />
                 </button>
               )}
@@ -2164,7 +2139,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                 <button 
                   className="svg-stroke" 
                   onClick={() => setShowAddToPackPopup(true)}
-                  title={tLevel('buttons.addToPack')}
+                  title={t('levelDetail.buttons.addToPack')}
                 >
                   <PackIcon color="#ffffff" size={"34px"} />
                 </button>
@@ -2173,7 +2148,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                 <button 
                   className="rating-button svg-stroke"
                   onClick={() => setShowRatingPopup(true)}
-                  title={tLevel('buttons.viewRating')}
+                  title={t('levelDetail.buttons.viewRating')}
                 >
                   <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <rect x="3" y="3" width="18" height="18" rx="3" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -2189,89 +2164,89 @@ const LevelDetailPage = ({ mockData = null }) => {
             <div className="info">
               {sortedLeaderboard.length > 0 ? (<>
               <div className="info-item">
-                <p>{tLevel('stats.firstClear.label')}</p>
+                <p>{t('levelDetail.stats.firstClear.label')}</p>
                 <span className="info-desc">
                   {!infoLoading ? 
                     (sortedLeaderboard.length > 0 ? 
-                      tLevel('stats.firstClear.value', {
+                      t('levelDetail.stats.firstClear.value', {
                         player: getHighScores(getSortedLeaderboard()).firstClear.player.name,
                         date: getHighScores(getSortedLeaderboard()).firstClear.vidUploadTime.slice(0, 10)
                       })
                       : "-")
-                    : tLevel('stats.waiting')}
+                    : t('levelDetail.stats.waiting')}
                 </span>
               </div>
 
               <div className="info-item">
-                <p>{tLevel('stats.highestScore.label')}</p>
+                <p>{t('levelDetail.stats.highestScore.label')}</p>
                 <span className="info-desc">
                   {!infoLoading ? 
                     (sortedLeaderboard.length > 0 ? 
-                      tLevel('stats.highestScore.value', {
+                      t('levelDetail.stats.highestScore.value', {
                         player: getHighScores(res?.level?.passes).highestScore.player.name,
                         score: getHighScores(res?.level?.passes).highestScore.scoreV2.toFixed(2)
                       })
                       : "-")
-                    : tLevel('stats.waiting')}
+                    : t('levelDetail.stats.waiting')}
                 </span>
               </div>
 
               <div className="info-item">
-                <p>{tLevel('stats.highestSpeed.label')}</p>
+                <p>{t('levelDetail.stats.highestSpeed.label')}</p>
                 <span className="info-desc">
                   {!infoLoading ? 
                     (sortedLeaderboard.length > 0 && getHighScores(res?.level?.passes).highestSpeed ? 
-                      tLevel('stats.highestSpeed.value', {
+                      t('levelDetail.stats.highestSpeed.value', {
                         player: getHighScores(res?.level?.passes).highestSpeed.player.name,
                         speed: getHighScores(res?.level?.passes).highestSpeed.speed || 1
                       })
                       : "-")
-                    : tLevel('stats.waiting')}
+                    : t('levelDetail.stats.waiting')}
                 </span>
               </div>
 
               <div className="info-item">
-                <p>{tLevel('stats.highestAccuracy.label')}</p>
+                <p>{t('levelDetail.stats.highestAccuracy.label')}</p>
                 <span className="info-desc">
                   {!infoLoading ? 
                     (sortedLeaderboard.length > 0 ? 
-                      tLevel('stats.highestAccuracy.value', {
+                      t('levelDetail.stats.highestAccuracy.value', {
                         player: getHighScores(res?.level?.passes).highestAcc.player.name,
                         accuracy: (getHighScores(res?.level?.passes).highestAcc.accuracy * 100).toFixed(2)
                       })
                       : "-")
-                    : tLevel('stats.waiting')}
+                    : t('levelDetail.stats.waiting')}
                 </span>
               </div>
 
               <div className="info-item">
-                <p>{tLevel('stats.totalClears.label')}</p>
+                <p>{t('levelDetail.stats.totalClears.label')}</p>
                 <span 
                   className="info-desc" 
                   data-tooltip-id="total-clears-tooltip" 
                   data-tooltip-content={
                     hasRepeatedClears 
-                      ? tLevel('stats.totalClears.tooltip', { unique: clearCount, total: sortedLeaderboard.length }) 
+                      ? t('levelDetail.stats.totalClears.tooltip', { unique: clearCount, total: sortedLeaderboard.length }) 
                       : undefined
                   }
                   >
                     {!infoLoading ? 
                       `${sortedLeaderboard.length} (${clearCount})` 
-                      : tLevel('stats.waiting')}
+                      : t('levelDetail.stats.waiting')}
                 </span>
                 {hasRepeatedClears && <Tooltip id="total-clears-tooltip" place="left" noArrow />}
               </div>
               </>
               ) : (
                 <div className="not-beaten-container">
-                  <p className="not-beaten-text">{tLevel('leaderboard.notBeaten')}</p>
-                  <p className="challenge-text">{tLevel('leaderboard.challenge')}</p>
+                  <p className="not-beaten-text">{t('levelDetail.leaderboard.notBeaten')}</p>
+                  <p className="challenge-text">{t('levelDetail.leaderboard.challenge')}</p>
                 </div>
               )}
 
 
               <button className="info-button" onClick={changeDialogState}>
-                {tLevel('dialog.fullInfo')}
+                {t('levelDetail.dialog.fullInfo')}
               </button>
             </div>
 
@@ -2293,9 +2268,9 @@ const LevelDetailPage = ({ mockData = null }) => {
                   }}
                 >
                   <div className="thumbnail-text">
-                    <p>{tLevel('links.thumbnailNotFound.text')}</p>
+                    <p>{t('levelDetail.links.thumbnailNotFound.text')}</p>
                     {res.level.videoLink && 
-                      <a href={res.level.videoLink}>{tLevel('links.thumbnailNotFound.goToVideo')}</a>
+                      <a href={res.level.videoLink}>{t('levelDetail.links.thumbnailNotFound.goToVideo')}</a>
                     }
                   </div>
                 </div>
@@ -2305,12 +2280,12 @@ const LevelDetailPage = ({ mockData = null }) => {
 
           <div className="rank">
             <div className="rank-header">
-              <h1>{tLevel('leaderboard.header')}</h1>
+              <h1>{t('levelDetail.leaderboard.header')}</h1>
               <button 
                 className={`refresh-leaderboard-button ${isRefreshingLeaderboard ? 'refreshing' : ''}`}
                 onClick={() => fetchLevelData(true)}
                 disabled={isRefreshingLeaderboard}
-                title={tLevel('leaderboard.refresh')}
+                title={t('levelDetail.leaderboard.refresh')}
               >
                 <RefreshIcon size="20px" />
               </button>
@@ -2318,16 +2293,16 @@ const LevelDetailPage = ({ mockData = null }) => {
             {sortedLeaderboard.length > 0 ? (
               <div className="sort">
                 <Tooltip id="tm" place="top" noArrow>
-                  {tLevel('leaderboard.tooltips.time')}
+                  {t('levelDetail.leaderboard.tooltips.time')}
                 </Tooltip>
                 <Tooltip id="ac" place="top" noArrow>
-                  {tLevel('leaderboard.tooltips.accuracy')}
+                  {t('levelDetail.leaderboard.tooltips.accuracy')}
                 </Tooltip>
                 <Tooltip id="sc" place="top" noArrow>
-                  {tLevel('leaderboard.tooltips.score')}
+                  {t('levelDetail.leaderboard.tooltips.score')}
                 </Tooltip>
                 <Tooltip id="sp" place="top" noArrow>
-                  {tLevel('leaderboard.tooltips.speed')}
+                  {t('levelDetail.leaderboard.tooltips.speed')}
                 </Tooltip>
 
                 <div className="sort-button-container" onClick={() => handleSort("TIME")}>
@@ -2380,7 +2355,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                     />
                   ))
                 ) : (
-                  <h3>{tLevel('leaderboard.noClearsYet')}</h3>
+                  <h3>{t('levelDetail.leaderboard.noClearsYet')}</h3>
                 )
                 :
                 <div className="loader loader-level-detail-rank"></div>

@@ -2,13 +2,11 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import './songSelectorPopup.css';
-import axios from 'axios';
 import { getVerificationClass } from '@/utils/Utility';
 import { CustomSelect } from '@/components/common/selectors';
 
 export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selectedArtist = null, allowCreate = true }) => {
   const { t } = useTranslation(['components', 'common']);
-  const tSong = (key, params = {}) => t(`songSelector.${key}`, params) || key;
   const popupRef = useRef(null);
 
   // Core state
@@ -113,13 +111,13 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                 // Song doesn't belong to all selected artists, clear selection
                 setSelectedSongId(null);
                 setSongDetails(null);
-                setError(tSong('messages.error.songNotByArtist'));
+                setError(t('songSelector.messages.error.songNotByArtist'));
               }
             }
           }
         } catch (error) {
           console.error('Error loading initial details:', error);
-          setError(tSong('messages.error.loadDetailsFailed'));
+          setError(t('songSelector.messages.error.loadDetailsFailed'));
         } finally {
           setIsLoadingDetails(false);
         }
@@ -172,7 +170,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
         setSearchResults(songs);
       } catch (error) {
         console.error('Error searching songs:', error);
-        setError(tSong('messages.error.searchFailed'));
+        setError(t('songSelector.messages.error.searchFailed'));
         setSearchResults([]);
       } finally {
         setIsSearching(false);
@@ -191,7 +189,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
       const song = response.data;
       
       if (!song) {
-        setError(tSong('messages.error.songNotFound'));
+        setError(t('songSelector.messages.error.songNotFound'));
         return null;
       }
 
@@ -199,7 +197,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
       return song;
     } catch (error) {
       console.error('Error fetching song details:', error);
-      setError(tSong('messages.error.loadDetailsFailed'));
+      setError(t('songSelector.messages.error.loadDetailsFailed'));
       return null;
     }
   };
@@ -230,13 +228,13 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
           const hasAllArtists = artistIds.every(id => songArtistIds.has(id));
           
           if (!hasAllArtists) {
-            setError(tSong('messages.error.songNotByArtist'));
+            setError(t('songSelector.messages.error.songNotByArtist'));
             setIsLoadingDetails(false);
             return;
           }
         } catch (error) {
           console.error('Error verifying song artist:', error);
-          setError(tSong('messages.error.loadDetailsFailed'));
+          setError(t('songSelector.messages.error.loadDetailsFailed'));
           setIsLoadingDetails(false);
           return;
         }
@@ -271,13 +269,13 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
       };
 
       onSelect(newSongData);
-      setSuccess(tSong('messages.success.songCreated'));
+      setSuccess(t('songSelector.messages.success.songCreated'));
       
       await new Promise(resolve => setTimeout(resolve, 500));
       onClose();
     } catch (error) {
       console.error('Error creating song:', error);
-      setError(error.response?.data?.error || tSong('messages.error.createFailed'));
+      setError(error.response?.data?.error || t('songSelector.messages.error.createFailed'));
     } finally {
       setIsCreating(false);
     }
@@ -293,7 +291,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
     
     // Don't allow assigning existing songs if a new artist request is set
     if (hasNewRequest) {
-      setError(tSong('messages.error.cannotAssignExistingWithNewArtist'));
+      setError(t('songSelector.messages.error.cannotAssignExistingWithNewArtist'));
       return;
     }
     
@@ -309,11 +307,11 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
       };
 
       onSelect(songData);
-      setSuccess(tSong('messages.success.songAssigned'));
+      setSuccess(t('songSelector.messages.success.songAssigned'));
       setTimeout(onClose, 1500);
     } catch (error) {
       console.error('Error assigning song:', error);
-      setError(tSong('messages.error.assignFailed'));
+      setError(t('songSelector.messages.error.assignFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -350,7 +348,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
     <div className="song-selector-popup-overlay">
       <div className="song-selector-popup" ref={popupRef}>
         <div className="popup-header">
-          <h2>{tSong('title')}</h2>
+          <h2>{t('songSelector.title')}</h2>
           <button className="close-button" onClick={onClose}>×</button>
         </div>
 
@@ -358,12 +356,12 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
           <div className="song-selection">
             <div className="current-song">
               <div className="current-song-header">
-                {tSong('currentSong.label')}
+                {t('songSelector.currentSong.label')}
               </div>
               <div className="current-song-info">
                 {isLoadingDetails ? (
                   <div className="current-song-loading">
-                    {tSong('loading')}
+                    {t('songSelector.loading')}
                     <div className="loading-spinner" />
                   </div>
                 ) : (
@@ -383,7 +381,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                         )}
                       </>
                     ) : (
-                      tSong('currentSong.none')
+                      t('songSelector.currentSong.none')
                     )}
                   </div>
                 )}
@@ -400,7 +398,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                       : selectedArtist?.isNewRequest;
                     return hasNewRequest && (
                       <div className="info-message">
-                        {tSong('messages.newArtistRestriction')}
+                        {t('songSelector.messages.newArtistRestriction')}
                       </div>
                     );
                   })()}
@@ -416,7 +414,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                       const artistNames = existingArtists.map(a => a.name || a.artistName).filter(Boolean).join(', ');
                       return (
                         <div className="info-message">
-                          {tSong('messages.filteredByArtist', { artistName: artistNames })}
+                          {t('songSelector.messages.filteredByArtist', { artistName: artistNames })}
                         </div>
                       );
                     }
@@ -429,7 +427,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                       className="search-input"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder={tSong('search.placeholder')}
+                      placeholder={t('songSelector.search.placeholder')}
                       disabled={Array.isArray(selectedArtist) 
                         ? selectedArtist.some(a => a.isNewRequest)
                         : selectedArtist?.isNewRequest}
@@ -439,7 +437,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                         className="create-song-button"
                         onClick={handleCreateClick}
                       >
-                        {tSong('buttons.createNew')}
+                        {t('songSelector.buttons.createNew')}
                       </button>
                     )}
                   </div>
@@ -451,7 +449,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                     if (hasNewRequest) {
                       return (
                         <div className="search-status">
-                          {tSong('messages.onlyNewSongsAllowed')}
+                          {t('songSelector.messages.onlyNewSongsAllowed')}
                         </div>
                       );
                     }
@@ -467,7 +465,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                     if (searchQuery && (!Array.isArray(searchResults) || searchResults.length === 0)) {
                       return (
                         <div className="search-status">
-                          {tSong('search.noResults')}
+                          {t('songSelector.search.noResults')}
                         </div>
                       );
                     }
@@ -507,17 +505,17 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                 </>
               ) : (
                 <form onSubmit={handleCreate} className="create-song-form">
-                  <h3>{tSong('createForm.title')}</h3>
-                  {tSong('createForm.description') && (
-                    <p className="form-description">{tSong('createForm.description')}</p>
+                  <h3>{t('songSelector.createForm.title')}</h3>
+                  {t('songSelector.createForm.description') && (
+                    <p className="form-description">{t('songSelector.createForm.description')}</p>
                   )}
                   <div className="form-group">
-                    <label>{tSong('createForm.name')}</label>
+                    <label>{t('songSelector.createForm.name')}</label>
                     <input
                       type="text"
                       value={newName}
                       onChange={(e) => setNewName(e.target.value)}
-                      placeholder={tSong('createForm.namePlaceholder')}
+                      placeholder={t('songSelector.createForm.namePlaceholder')}
                       required
                       disabled={isCreating}
                     />
@@ -555,7 +553,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                       disabled={isCreating || !newName?.trim()}
                       className={`submit-button ${isCreating ? 'loading' : ''}`}
                     >
-                      {isCreating ? t('loading.creating', { ns: 'common' }) : tSong('buttons.create')}
+                      {isCreating ? t('loading.creating', { ns: 'common' }) : t('songSelector.buttons.create')}
                     </button>
                   </div>
                 </form>
@@ -564,11 +562,11 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
 
             {songDetails && (
               <div className="song-stats">
-                <h3>{tSong('stats.title')}</h3>
+                <h3>{t('songSelector.stats.title')}</h3>
                 <div className="stats-content">
-                  <p>{tSong('stats.levels')}: {songDetails.levels?.length || 0}</p>
+                  <p>{t('songSelector.stats.levels')}: {songDetails.levels?.length || 0}</p>
                   {songDetails.credits && songDetails.credits.length > 0 && (
-                    <p>{tSong('stats.artists')}: {songDetails.credits.length}</p>
+                    <p>{t('songSelector.stats.artists')}: {songDetails.credits.length}</p>
                   )}
                 </div>
               </div>
@@ -589,10 +587,10 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
                 const hasNewRequest = Array.isArray(selectedArtist) 
                   ? selectedArtist.some(a => a.isNewRequest)
                   : selectedArtist?.isNewRequest;
-                return hasNewRequest ? tSong('messages.error.cannotAssignExistingWithNewArtist') : '';
+                return hasNewRequest ? t('songSelector.messages.error.cannotAssignExistingWithNewArtist') : '';
               })()}
             >
-              {tSong('buttons.assign')}
+              {t('songSelector.buttons.assign')}
               {(isLoading || isLoadingDetails) && <div className="loading-spinner" />}
             </button>
           </div>

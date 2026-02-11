@@ -19,7 +19,6 @@ const limit = 30;
 
 const LeaderboardPage = () => {
   const { t } = useTranslation('pages');
-  const tLeaderboard = (key, params = {}) => t(`leaderboard.${key}`, params);
   const { user } = useAuth();
   const [hasMore, setHasMore] = useState(true);
   const [showCreatorAssignment, setShowCreatorAssignment] = useState(false);
@@ -57,29 +56,29 @@ const LeaderboardPage = () => {
   } = useContext(PlayerContext);
 
   const sortOptions = [
-    { value: 'rankedScore', label: tLeaderboard('sortOptions.rankedScore') },
-    { value: 'generalScore', label: tLeaderboard('sortOptions.generalScore') },
-    { value: 'ppScore', label: tLeaderboard('sortOptions.ppScore') },
-    { value: 'wfScore', label: tLeaderboard('sortOptions.wfScore') },
-    { value: 'averageXacc', label: tLeaderboard('sortOptions.averageXacc') },
-    { value: 'totalPasses', label: tLeaderboard('sortOptions.totalPasses') },
-    { value: 'universalPassCount', label: tLeaderboard('sortOptions.universalPassCount') },
-    { value: 'score12K', label: tLeaderboard('sortOptions.score12K') },
-    { value: 'worldsFirstCount', label: tLeaderboard('sortOptions.worldsFirstCount') },
-    { value: 'topDiff', label: tLeaderboard('sortOptions.topDiff') },
-    { value: 'top12kDiff', label: tLeaderboard('sortOptions.top12kDiff') }
+    { value: 'rankedScore', label: t('leaderboard.sortOptions.rankedScore') },
+    { value: 'generalScore', label: t('leaderboard.sortOptions.generalScore') },
+    { value: 'ppScore', label: t('leaderboard.sortOptions.ppScore') },
+    { value: 'wfScore', label: t('leaderboard.sortOptions.wfScore') },
+    { value: 'averageXacc', label: t('leaderboard.sortOptions.averageXacc') },
+    { value: 'totalPasses', label: t('leaderboard.sortOptions.totalPasses') },
+    { value: 'universalPassCount', label: t('leaderboard.sortOptions.universalPassCount') },
+    { value: 'score12K', label: t('leaderboard.sortOptions.score12K') },
+    { value: 'worldsFirstCount', label: t('leaderboard.sortOptions.worldsFirstCount') },
+    { value: 'topDiff', label: t('leaderboard.sortOptions.topDiff') },
+    { value: 'top12kDiff', label: t('leaderboard.sortOptions.top12kDiff') }
   ];
 
   const filterableFields = [
-    { key: 'rankedScore', label: tLeaderboard('sortOptions.rankedScore'), maxKey: 'maxRankedScore', step: 1 },
-    { key: 'generalScore', label: tLeaderboard('sortOptions.generalScore'), maxKey: 'maxGeneralScore', step: 1 },
-    { key: 'ppScore', label: tLeaderboard('sortOptions.ppScore'), maxKey: 'maxPpScore', step: 1 },
-    { key: 'wfScore', label: tLeaderboard('sortOptions.wfScore'), maxKey: 'maxWfScore', step: 1 },
-    { key: 'score12K', label: tLeaderboard('sortOptions.score12K'), maxKey: 'maxScore12K', step: 1 },
-    { key: 'averageXacc', label: tLeaderboard('sortOptions.averageXacc'), maxKey: 'maxAverageXacc', step: 0.01, isPercentage: true },
-    { key: 'totalPasses', label: tLeaderboard('sortOptions.totalPasses'), maxKey: 'maxTotalPasses', step: 1 },
-    { key: 'universalPassCount', label: tLeaderboard('sortOptions.universalPassCount'), maxKey: 'maxUniversalPassCount', step: 1 },
-    { key: 'worldsFirstCount', label: tLeaderboard('sortOptions.worldsFirstCount'), maxKey: 'maxWorldsFirstCount', step: 1 },
+    { key: 'rankedScore', label: t('leaderboard.sortOptions.rankedScore'), maxKey: 'maxRankedScore', step: 1 },
+    { key: 'generalScore', label: t('leaderboard.sortOptions.generalScore'), maxKey: 'maxGeneralScore', step: 1 },
+    { key: 'ppScore', label: t('leaderboard.sortOptions.ppScore'), maxKey: 'maxPpScore', step: 1 },
+    { key: 'wfScore', label: t('leaderboard.sortOptions.wfScore'), maxKey: 'maxWfScore', step: 1 },
+    { key: 'score12K', label: t('leaderboard.sortOptions.score12K'), maxKey: 'maxScore12K', step: 1 },
+    { key: 'averageXacc', label: t('leaderboard.sortOptions.averageXacc'), maxKey: 'maxAverageXacc', step: 0.01, isPercentage: true },
+    { key: 'totalPasses', label: t('leaderboard.sortOptions.totalPasses'), maxKey: 'maxTotalPasses', step: 1 },
+    { key: 'universalPassCount', label: t('leaderboard.sortOptions.universalPassCount'), maxKey: 'maxUniversalPassCount', step: 1 },
+    { key: 'worldsFirstCount', label: t('leaderboard.sortOptions.worldsFirstCount'), maxKey: 'maxWorldsFirstCount', step: 1 },
   ];
 
   const fetchPlayers = async (offset = 0) => {
@@ -265,8 +264,8 @@ const LeaderboardPage = () => {
   return (
     <div className="leaderboard-page">
       <MetaTags
-        title={tLeaderboard('meta.title')}
-        description={tLeaderboard('meta.description')}
+        title={t('leaderboard.meta.title')}
+        description={t('leaderboard.meta.description')}
         url={currentUrl}
         image="/leaderboard-preview.jpg"
         type="website"
@@ -281,20 +280,20 @@ const LeaderboardPage = () => {
             <input
               value={query}
               type="text"
-              placeholder={tLeaderboard('input.placeholder')}
+              placeholder={t('leaderboard.input.placeholder')}
               onChange={handleQueryChange}
             />
           </div>
 
           <div className="button-container">
             <Tooltip id="filter" place="bottom" noArrow>
-              {tLeaderboard('tooltips.filter')}
+              {t('leaderboard.tooltips.filter')}
             </Tooltip>
             <Tooltip id="sort" place="bottom" noArrow>
-              {tLeaderboard('tooltips.sort')}
+              {t('leaderboard.tooltips.sort')}
             </Tooltip>
             <Tooltip id="reset" place="bottom" noArrow>
-              {tLeaderboard('tooltips.reset')}
+              {t('leaderboard.tooltips.reset')}
             </Tooltip>
 
             <FilterIcon
@@ -326,13 +325,13 @@ const LeaderboardPage = () => {
         <div className="input-setting">
           <div className={`filter settings-class ${filterOpen ? 'visible' : 'hidden'}`}>
             <h2 className="setting-title">
-              {tLeaderboard('settings.filter.header')}
+              {t('leaderboard.settings.filter.header')}
             </h2>
             
             <div className="filter-section">
               <div className="filter-row">
                 <div className="filter-container country-filter">
-                  <p className="setting-description">{tLeaderboard('settings.filter.country')}</p>
+                  <p className="setting-description">{t('leaderboard.settings.filter.country')}</p>
                   <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                     <CountrySelect
                       value={country}
@@ -355,7 +354,7 @@ const LeaderboardPage = () => {
 
               {/* Filter Builder */}
               <div className="filter-builder" >
-                <p className="setting-description">{tLeaderboard('settings.filter.addStatFilters')}</p>
+                <p className="setting-description">{t('leaderboard.settings.filter.addStatFilters')}</p>
                 <div className="filter-selector-row">
                   <div className="filter-selector-container">
                     <CustomSelect
@@ -364,7 +363,7 @@ const LeaderboardPage = () => {
                       options={filterableFields
                         .filter(f => !activeFilters[f.key])
                         .map(f => ({ value: f, label: f.label }))}
-                      placeholder={tLeaderboard('settings.filter.selectStatPlaceholder')}
+                      placeholder={t('leaderboard.settings.filter.selectStatPlaceholder')}
                       width="100%"
                     />
                   </div>
@@ -373,7 +372,7 @@ const LeaderboardPage = () => {
                     disabled={!selectedFilterField}
                     className="add-filter-button"
                   >
-                    {tLeaderboard('settings.filter.addFilterButton')}
+                    {t('leaderboard.settings.filter.addFilterButton')}
                   </button>
                 </div>
 
@@ -452,8 +451,8 @@ const LeaderboardPage = () => {
                             decimals={decimals}
                             suffix={suffix}
                             step={field.step}
-                            minLabel={tLeaderboard('settings.filter.min') + suffix}
-                            maxLabel={tLeaderboard('settings.filter.max') + suffix}
+                            minLabel={t('leaderboard.settings.filter.min') + suffix}
+                            maxLabel={t('leaderboard.settings.filter.max') + suffix}
                           />
                         </>
                       );
@@ -466,17 +465,17 @@ const LeaderboardPage = () => {
 
           <div className={`sort settings-class ${sortOpen ? 'visible' : 'hidden'}`}>
             <h2 className="setting-title">
-              {tLeaderboard('settings.sort.header')}
+              {t('leaderboard.settings.sort.header')}
             </h2>
 
             <div className="sort-option">
               <div className="recent">
-                <p>{tLeaderboard('settings.sort.sortOrder')}</p>
+                <p>{t('leaderboard.settings.sort.sortOrder')}</p>
                 <Tooltip id="ra" place="top" noArrow>
-                  {tLeaderboard('tooltips.recentAsc')}
+                  {t('leaderboard.tooltips.recentAsc')}
                 </Tooltip>
                 <Tooltip id="rd" place="top" noArrow>
-                  {tLeaderboard('tooltips.recentDesc')}
+                  {t('leaderboard.tooltips.recentDesc')}
                 </Tooltip>
 
                 <div className="wrapper">
@@ -498,7 +497,7 @@ const LeaderboardPage = () => {
                 </div>
               </div>
               <div className="recent">
-                <p>{tLeaderboard('settings.sort.sortBy')}</p>
+                <p>{t('leaderboard.settings.sort.sortBy')}</p>
                 <CustomSelect
                   value={sortOptions.find(option => option.value === sortBy)}
                   onChange={handleSortBy}
@@ -509,7 +508,7 @@ const LeaderboardPage = () => {
               {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
                 <div className="recent" style={{ display: "grid", alignItems: "end" }}>
                   <StateDisplay
-                    label={tLeaderboard('bannedPlayers.label')}
+                    label={t('leaderboard.bannedPlayers.label')}
                   currentState={showBanned}
                   onChange={(newState) => {
                     setShowBanned(newState);
@@ -540,7 +539,7 @@ const LeaderboardPage = () => {
               endMessage={
                 displayedPlayers.length > 0 && (
                   <p style={{ textAlign: "center" }}>
-                    <b>{tLeaderboard('infiniteScroll.end')}</b>
+                    <b>{t('leaderboard.infiniteScroll.end')}</b>
                   </p>
                 )
               }

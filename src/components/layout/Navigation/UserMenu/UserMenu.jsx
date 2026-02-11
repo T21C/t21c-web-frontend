@@ -5,14 +5,15 @@ import { UserAvatar } from "@/components/layout";
 import { createUserMenuItems } from "../navigationConfig";
 import { ChevronIcon } from "@/components/common/icons";
 import "./userMenu.css";
+import { useTranslation } from 'react-i18next';
 
 /**
  * User menu dropdown component
  * @param {Object} props
- * @param {Function} props.getTranslation - Function to get translation (tNav)
  * @param {Function} props.isActive - Function to check if menu should be marked as active
  */
-const UserMenu = ({ getTranslation, isActive }) => {
+const UserMenu = ({ isActive }) => {
+  const { t } = useTranslation('components');
   const [isOpen, setIsOpen] = useState(false);
   const { user, logout } = useAuth();
   const location = useLocation();
@@ -90,10 +91,10 @@ const UserMenu = ({ getTranslation, isActive }) => {
                   key={item.translationKey || index}
                   className="nav-dropdown-item nav-dropdown-item--disabled"
                 >
-                  {getTranslation(item.translationKey)}
+                  {t(item.translationKey)}
                   {item.badge && (
                     <span className="nav-dropdown-badge">
-                      {getTranslation(item.badge)}
+                      {t(item.badge)}
                     </span>
                   )}
                 </div>
@@ -109,7 +110,7 @@ const UserMenu = ({ getTranslation, isActive }) => {
                 }
                 onClick={() => setIsOpen(false)}
               >
-                {getTranslation(item.translationKey)}
+                {t(item.translationKey)}
               </NavLink>
             );
           })}
@@ -117,7 +118,7 @@ const UserMenu = ({ getTranslation, isActive }) => {
             className="nav-dropdown-item nav-dropdown-item--button"
             onClick={handleLogout}
           >
-            {getTranslation("dropdowns.user.logout")}
+            {t('navigation.main.dropdowns.user.logout')}
           </button>
         </div>
       )}

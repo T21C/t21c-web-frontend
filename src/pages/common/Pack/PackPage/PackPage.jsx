@@ -24,7 +24,6 @@ const currentUrl = window.location.origin + location.pathname;
 // Internal component that uses unified PackContext
 const PackPageContent = () => {
   const { t } = useTranslation('pages');
-  const tPack = (key, params = {}) => t(`pack.${key}`, params);
 
   const { user } = useAuth();
   const location = useLocation();
@@ -54,10 +53,10 @@ const PackPageContent = () => {
 
   // Sort options
   const sortOptions = [
-    { value: 'RECENT', label: tPack('sort.recent') },
-    { value: 'NAME', label: tPack('sort.name') },
-    { value: 'LEVELS', label: tPack('sort.levels') },
-    { value: 'FAVORITES', label: tPack('sort.favorites') }
+    { value: 'RECENT', label: t('pack.sort.recent') },
+    { value: 'NAME', label: t('pack.sort.name') },
+    { value: 'LEVELS', label: t('pack.sort.levels') },
+    { value: 'FAVORITES', label: t('pack.sort.favorites') }
   ];
 
   // Check if user is admin
@@ -65,11 +64,11 @@ const PackPageContent = () => {
 
   // View mode options - filter based on admin status
   const viewModeOptions = [
-    { value: 'all', label: tPack('viewMode.all') },
-    ...(isAdmin ? [{ value: String(LevelPackViewModes.PUBLIC), label: tPack('viewMode.public') }] : []),
-    { value: String(LevelPackViewModes.LINKONLY), label: tPack('viewMode.linkonly') },
-    { value: String(LevelPackViewModes.PRIVATE), label: tPack('viewMode.private') },
-    { value: String(LevelPackViewModes.FORCED_PRIVATE), label: tPack('viewMode.forcedPrivate') }
+    { value: 'all', label: t('pack.viewMode.all') },
+    ...(isAdmin ? [{ value: String(LevelPackViewModes.PUBLIC), label: t('pack.viewMode.public') }] : []),
+    { value: String(LevelPackViewModes.LINKONLY), label: t('pack.viewMode.linkonly') },
+    { value: String(LevelPackViewModes.PRIVATE), label: t('pack.viewMode.private') },
+    { value: String(LevelPackViewModes.FORCED_PRIVATE), label: t('pack.viewMode.forcedPrivate') }
   ];
 
   // Handle my packs mode (only change if needed)
@@ -129,10 +128,10 @@ const PackPageContent = () => {
     try {
       await createPack(packData);
       setShowCreatePopup(false);
-      toast.success(tPack('create.success'));
+      toast.success(t('pack.create.success'));
     } catch (error) {
       console.error('Error creating pack:', error);
-      toast.error(tPack('create.error'));
+      toast.error(t('pack.create.error'));
     }
   };
 
@@ -149,8 +148,8 @@ const PackPageContent = () => {
   return (
     <div className="pack-page">
       <MetaTags 
-        title={isMyPacks ? tPack('meta.myPacksTitle') : tPack('meta.title')}
-        description={isMyPacks ? tPack('meta.myPacksDescription') : tPack('meta.description')}
+        title={isMyPacks ? t('pack.meta.myPacksTitle') : t('pack.meta.title')}
+        description={isMyPacks ? t('pack.meta.myPacksDescription') : t('pack.meta.description')}
         url={currentUrl}
       />
       
@@ -159,10 +158,10 @@ const PackPageContent = () => {
         <div className="pack-page__header">
           <div className="pack-page__title-section">
             <h1 className="pack-page__title">
-              {isMyPacks ? tPack('title.myPacks') : tPack('title.allPacks')}
+              {isMyPacks ? t('pack.title.myPacks') : t('pack.title.allPacks')}
             </h1>
             <p className="pack-page__subtitle">
-              {isMyPacks ? tPack('subtitle.myPacks') : tPack('subtitle.allPacks')}
+              {isMyPacks ? t('pack.subtitle.myPacks') : t('pack.subtitle.allPacks')}
             </p>
           </div>
           
@@ -171,7 +170,7 @@ const PackPageContent = () => {
               className="pack-page__display-toggle"
               onClick={toggleDisplayMode}
               data-tooltip-id="display-mode-tooltip"
-              data-tooltip-content={displayMode === 'grid' ? tPack('actions.listView') : tPack('actions.gridView')}
+              data-tooltip-content={displayMode === 'grid' ? t('pack.actions.listView') : t('pack.actions.gridView')}
             >
               <SwitchIcon />
             </button>
@@ -181,10 +180,10 @@ const PackPageContent = () => {
                 className="pack-page__create-btn"
                 onClick={() => setShowCreatePopup(true)}
                 data-tooltip-id="create-pack-tooltip"
-                data-tooltip-content={tPack('actions.createPack')}
+                data-tooltip-content={t('pack.actions.createPack')}
               >
                 <span className="pack-page__create-btn-text">
-                  {tPack('actions.createPack')}
+                  {t('pack.actions.createPack')}
                 </span>
               </button>
             )}
@@ -206,13 +205,13 @@ const PackPageContent = () => {
                   <path d="M12 3C7.04 3 3 7.04 3 12C3 16.96 7.04 21 12 21C16.96 21 21 16.96 21 12C21 7.04 16.96 3 12 3ZM12 19.5C7.86 19.5 4.5 16.14 4.5 12C4.5 7.86 7.86 4.5 12 4.5C16.14 4.5 19.5 7.86 19.5 12C19.5 16.14 16.14 19.5 12 19.5ZM14.3 7.7C14.91 8.31 15.25 9.13 15.25 10C15.25 10.87 14.91 11.68 14.3 12.3C13.87 12.73 13.33 13.03 12.75 13.16V13.5C12.75 13.91 12.41 14.25 12 14.25C11.59 14.25 11.25 13.91 11.25 13.5V12.5C11.25 12.09 11.59 11.75 12 11.75C12.47 11.75 12.91 11.57 13.24 11.24C13.57 10.91 13.75 10.47 13.75 10C13.75 9.53 13.57 9.09 13.24 8.76C12.58 8.1 11.43 8.1 10.77 8.76C10.44 9.09 10.26 9.53 10.26 10C10.26 10.41 9.92 10.75 9.51 10.75C9.1 10.75 8.76 10.41 8.76 10C8.76 9.13 9.1 8.32 9.71 7.7C10.94 6.47 13.08 6.47 14.31 7.7H14.3ZM13 16.25C13 16.8 12.55 17.25 12 17.25C11.45 17.25 11 16.8 11 16.25C11 15.7 11.45 15.25 12 15.25C12.55 15.25 13 15.7 13 16.25Z" fill="#ffffff"></path>
                 </g>
               </svg>
-              <span>{tPack('buttons.searchHelp')}</span>
+              <span>{t('pack.buttons.searchHelp')}</span>
             </button>
 
             <input
               value={pendingQuery}
               type="text"
-              placeholder={tPack('search.placeholder')}
+              placeholder={t('pack.search.placeholder')}
               onChange={handleQueryChange}
               className={pendingQuery !== filters.query ? 'search-pending' : ''}
             />
@@ -251,19 +250,19 @@ const PackPageContent = () => {
           </div>
 
           <Tooltip id="search" place="bottom" noArrow>
-            {tPack('toolTip.search')}
+            {t('pack.toolTip.search')}
           </Tooltip>
           <Tooltip id="filter" place="bottom" noArrow>
-            {tPack('toolTip.filter')}
+            {t('pack.toolTip.filter')}
           </Tooltip>
           <Tooltip id="sort" place="bottom" noArrow>
-            {tPack('toolTip.sort')}
+            {t('pack.toolTip.sort')}
           </Tooltip>
           <Tooltip id="reset" place="bottom" noArrow>
-            {tPack('toolTip.reset')}
+            {t('pack.toolTip.reset')}
           </Tooltip>
           <Tooltip id="display-mode" place="bottom" noArrow>
-            {displayMode === 'grid' ? tPack('actions.listView') : tPack('actions.gridView')}
+            {displayMode === 'grid' ? t('pack.actions.listView') : t('pack.actions.gridView')}
           </Tooltip>
         </div>
 
@@ -271,13 +270,13 @@ const PackPageContent = () => {
           <div
             className={`filter settings-class ${filterOpen ? 'visible' : 'hidden'}`}
           >
-            <h2 className="setting-title">{tPack('filters.title')}</h2>
+            <h2 className="setting-title">{t('pack.filters.title')}</h2>
             <div className="filter-section">
               <div className="filter-row">
                 {isAdmin && (
                   <div className="pack-page__filter-group">
                     <label className="pack-page__filter-label">
-                      {tPack('filters.viewMode')}
+                      {t('pack.filters.viewMode')}
                     </label>
                     <CustomSelect
                       value={viewModeOptions.find(option => filters.viewMode === option.value)}
@@ -286,7 +285,7 @@ const PackPageContent = () => {
                         triggerRefresh();
                       }}
                       options={viewModeOptions}
-                      placeholder={tPack('filters.viewModePlaceholder')}
+                      placeholder={t('pack.filters.viewModePlaceholder')}
                     />
                   </div>
                 )}
@@ -298,7 +297,7 @@ const PackPageContent = () => {
             className={`sort sort-class ${sortOpen ? 'visible' : 'hidden'}`}
           >
             <h2 className="setting-title">
-              {tPack('sort.title')}
+              {t('pack.sort.title')}
             </h2>
             <div className="sort-option">
               <CustomSelect
@@ -308,16 +307,16 @@ const PackPageContent = () => {
                   triggerRefresh();
                 }}
                 options={sortOptions}
-                label={tPack('sort.header')}
+                label={t('pack.sort.header')}
               />
               
               <div className="order">
-                <p>{tPack('sort.order')}</p>
+                <p>{t('pack.sort.order')}</p>
                 <Tooltip id="ascending" place="bottom" noArrow>
-                  {tPack('sort.ascending')}
+                  {t('pack.sort.ascending')}
                 </Tooltip>
                 <Tooltip id="descending" place="bottom" noArrow>
-                  {tPack('sort.descending')}
+                  {t('pack.sort.descending')}
                 </Tooltip>
 
                 <div className="wrapper">
@@ -355,7 +354,7 @@ const PackPageContent = () => {
                 <div className="order" >
                   <div className={`wrapper-like ${filters.myLikesOnly ? 'active' : ''}`} onClick={handleMyLikesToggle}>
                     <LikeIcon color={filters.myLikesOnly ? "var(--color-white)" : "none"} size={"22px"} />
-                    <p>{tPack('sort.myLikes')}</p>
+                    <p>{t('pack.sort.myLikes')}</p>
                   </div>
                 </div>
               )}
@@ -366,9 +365,9 @@ const PackPageContent = () => {
         <div className="pack-page__content" ref={scrollRef}>
           {error && packs.length === 0 ? (
             <div className="pack-page__error">
-              <p>{tPack('error.loadFailed')}</p>
+              <p>{t('pack.error.loadFailed')}</p>
               <button onClick={triggerRefresh} className="pack-page__retry-btn">
-                {tPack('error.retry')}
+                {t('pack.error.retry')}
               </button>
             </div>
           ) : (
@@ -380,12 +379,12 @@ const PackPageContent = () => {
               loader={
                 <div className="pack-page__loading">
                   <div className="spinner spinner-large"></div>
-                  <p>{tPack('loading.more')}</p>
+                  <p>{t('pack.loading.more')}</p>
                 </div>
               }
               endMessage={
                 <div className="pack-page__end-message">
-                  <p>{tPack('endMessage')}</p>
+                  <p>{t('pack.endMessage')}</p>
                 </div>
               }
               scrollableTarget={scrollRef.current || undefined}
@@ -407,9 +406,9 @@ const PackPageContent = () => {
               {/* Show error message for infinite scroll failures */}
               {error && packs.length > 0 && (
                 <div className="pack-page__infinite-error">
-                  <p>{tPack('error.loadMoreFailed')}</p>
+                  <p>{t('pack.error.loadMoreFailed')}</p>
                   <button onClick={retryLoadMore} className="pack-page__retry-btn">
-                    {tPack('error.retry')}
+                    {t('pack.error.retry')}
                   </button>
                 </div>
               )}

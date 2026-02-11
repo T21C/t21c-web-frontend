@@ -19,7 +19,6 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
   const fileInputRef = useRef(null);
   const abortControllerRef = useRef(null);
   const { t } = useTranslation(['components']);
-  const tUpload = (key, params = {}) => t(`levelUploadManagement.${key}`, params);
 
   const fetchLevelFiles = async () => {
     if (formData.dlLink && formData.dlLink !== 'removed' && isCdnUrl(formData.dlLink)) {
@@ -48,7 +47,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
         }
       } catch (error) {
         console.error('Error fetching level files:', error);
-        setError(tUpload('errors.fetchFailed'));
+        setError(t('levelUploadManagement.errors.fetchFailed'));
       }
     }
   };
@@ -146,7 +145,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
       if (error.name === 'AbortError' || error.name === 'CanceledError') {
         return;
       }
-      setError(error.response?.data?.error || tUpload('errors.uploadFailed'));
+      setError(error.response?.data?.error || t('levelUploadManagement.errors.uploadFailed'));
     } finally {
       setIsUploading(false);
       abortControllerRef.current = null;
@@ -166,15 +165,15 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
         // Fetch updated files to reflect any changes
         fetchLevelFiles();
       } else {
-        setError(result.data.error || tUpload('errors.selectFailed'));
+        setError(result.data.error || t('levelUploadManagement.errors.selectFailed'));
       }
     } catch (error) {
-      setError(error.response?.data?.error || tUpload('errors.selectFailed'));
+      setError(error.response?.data?.error || t('levelUploadManagement.errors.selectFailed'));
     }
   };
 
   const handleDelete = async () => {
-    if (!window.confirm(tUpload('confirmDelete'))) {
+    if (!window.confirm(t('levelUploadManagement.confirmDelete'))) {
       return;
     }
 
@@ -200,7 +199,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
         onClose();
       }
     } catch (error) {
-      setError(error.response?.data?.error || tUpload('errors.deleteFailed'));
+      setError(error.response?.data?.error || t('levelUploadManagement.errors.deleteFailed'));
     }
   };
 
@@ -214,7 +213,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
   const handleClose = () => {
     // Prevent closing during upload
     if (isUploading) {
-      const confirmed = window.confirm(tUpload('confirmCloseDuringUpload') || 'Upload in progress. Are you sure you want to cancel?');
+      const confirmed = window.confirm(t('levelUploadManagement.confirmCloseDuringUpload') || 'Upload in progress. Are you sure you want to cancel?');
       if (!confirmed) {
         return;
       }
@@ -234,7 +233,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
     <div className="level-upload-management-popup" onClick={handleOverlayClick}>
       <div className="level-upload-management-content" onClick={handleContentClick}>
         <div className="level-upload-management-header">
-          <h2>{tUpload('title')}</h2>
+          <h2>{t('levelUploadManagement.title')}</h2>
           <button 
             className="close-button" 
             onClick={(e) => {
@@ -258,7 +257,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
               />
             </div>
             <div className="progress-text">
-              {tUpload('upload.progress', { progress: uploadProgress.toFixed(2) })}
+              {t('levelUploadManagement.upload.progress', { progress: uploadProgress.toFixed(2) })}
             </div>
             <button
               className="cancel-upload-button"
@@ -277,27 +276,27 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
         ) : (
           <>
           <div className="level-selection">
-            <h3>{tUpload('sections.levelSelection.title')}</h3>
+            <h3>{t('levelUploadManagement.sections.levelSelection.title')}</h3>
             {originalZip && (
               <div className="original-zip-info">
-                <div className="zip-name">{tUpload('sections.levelSelection.originalZip.title', { name: originalZip.name })}</div>
-                <div className="zip-size">{tUpload('sections.levelSelection.originalZip.size', { size: (originalZip.size / 1024 / 1024).toFixed(2) })}</div>
+                <div className="zip-name">{t('levelUploadManagement.sections.levelSelection.originalZip.title', { name: originalZip.name })}</div>
+                <div className="zip-size">{t('levelUploadManagement.sections.levelSelection.originalZip.size', { size: (originalZip.size / 1024 / 1024).toFixed(2) })}</div>
               </div>
             )}
             {Object.keys(songFiles).length > 0 && (
               <div className="song-files-info">
-                <h4>{tUpload('sections.levelSelection.songFiles.title')}</h4>
+                <h4>{t('levelUploadManagement.sections.levelSelection.songFiles.title')}</h4>
                 {Object.entries(songFiles).map(([filename, file]) => (
                   <div key={filename} className="song-file">
                     <span className="song-name">{file.name}</span>
-                    <span className="song-size">{tUpload('sections.levelSelection.songFiles.size', { size: (file.size / 1024 / 1024).toFixed(2) })}</span>
+                    <span className="song-size">{t('levelUploadManagement.sections.levelSelection.songFiles.size', { size: (file.size / 1024 / 1024).toFixed(2) })}</span>
                   </div>
                 ))}
               </div>
             )}
             {targetLevel && (
               <div className="current-target">
-                {tUpload('sections.levelSelection.currentTarget', { name: targetLevel.split(/\\|\//).pop() })}
+                {t('levelUploadManagement.sections.levelSelection.currentTarget', { name: targetLevel.split(/\\|\//).pop() })}
               </div>
             )}
             <div className="level-list">
@@ -334,7 +333,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
               onClick={handleLevelSelect}
               disabled={!selectedLevel || selectedLevel === targetLevel}
             >
-              {selectedLevel === targetLevel ? tUpload('buttons.currentlySelected') : tUpload('buttons.select')}
+              {selectedLevel === targetLevel ? t('levelUploadManagement.buttons.currentlySelected') : t('levelUploadManagement.buttons.select')}
             </button>
             )}
           </div>
@@ -351,14 +350,14 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
               className="upload-button"
               onClick={() => fileInputRef.current?.click()}
             >
-              {tUpload('buttons.uploadNew')}
+              {t('levelUploadManagement.buttons.uploadNew')}
             </button>
             {level.dlLink && level.dlLink !== 'removed' && (
               <button 
                 className="delete-button"
                 onClick={handleDelete}
               >
-                {tUpload('buttons.deleteCurrent')}
+                {t('levelUploadManagement.buttons.deleteCurrent')}
               </button>
             )}
           </div>

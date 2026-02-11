@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 
 const ReratesTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRemove, onEdit }) => {
   const { t } = useTranslation('components');
-  const tRerate = (key, params = {}) => t(`reratesTab.${key}`, params);
   
   const [removingIds, setRemovingIds] = useState(new Set());
   const [error, setError] = useState('');
@@ -25,7 +24,7 @@ const ReratesTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRem
       });
     } catch (err) {
       console.error('Error silently removing level:', err);
-      setError(tRerate('errors.silentRemoveLevel', { song: level.song }));
+      setError(t('reratesTab.errors.silentRemoveLevel', { song: level.song }));
       // Refetch the data to ensure UI is in sync
       window.location.reload();
     } finally {
@@ -66,25 +65,25 @@ const ReratesTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRem
                 <span className="checkmark"></span>
                 <div className="item-details">
                   <div className="item-title">
-                    {tRerate('card.title', { song: level.song, artist: level.artist })}
+                    {t('reratesTab.card.title', { song: level.song, artist: level.artist })}
                   </div>
                   <div className="item-subtitle">
                     <div className="rerate-values">
                       <span className="rerate-value">
-                        {shouldShowDifficulty(level) ? tRerate('card.subtitle.difficulty', { 
+                        {shouldShowDifficulty(level) ? t('reratesTab.card.subtitle.difficulty', { 
                           oldDifficulty: level.previousDifficulty?.name,
                           newDifficulty: level.difficulty?.name
                         }) : level.difficulty?.name}
 
                       </span>
                       <span className="rerate-value">
-                      {shouldShowBaseScore(level) && tRerate('card.subtitle.baseScore', { 
+                      {shouldShowBaseScore(level) && t('reratesTab.card.subtitle.baseScore', { 
                         oldBaseScore: level.previousBaseScore || level.difficulty.basescore,
                         newBaseScore: level.baseScore 
                       })}
                       </span>
                     </div>
-                    {level.team && tRerate('card.subtitle.team', { team: level.team })}
+                    {level.team && t('reratesTab.card.subtitle.team', { team: level.team })}
                   </div>
                 </div>
               </label>
@@ -94,7 +93,7 @@ const ReratesTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRem
                   onClick={() => onEdit(level)}
                   disabled={isLoading || removingIds.has(level.id)}
                   style ={{width: '40px', height: '40px'}}
-                  aria-label={tRerate('buttons.edit')}
+                  aria-label={t('reratesTab.buttons.edit')}
                 >
                   <EditIcon color="#fff" size="24px" />
                 </button>
@@ -103,8 +102,8 @@ const ReratesTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRem
                   onClick={() => handleSilentRemove(level)}
                   disabled={isLoading || removingIds.has(level.id)}
                   style ={{width: '40px', height: '40px'}}
-                  aria-label={tRerate('buttons.remove')}
-                  title={tRerate('buttons.removeTooltip')}
+                  aria-label={t('reratesTab.buttons.remove')}
+                  title={t('reratesTab.buttons.removeTooltip')}
                 >
                   {removingIds.has(level.id) ? (
                     <svg className="spinner spinner-svg" viewBox="0 0 50 50">
@@ -118,7 +117,7 @@ const ReratesTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRem
             </div>
           ))
         ) : (
-          <div className="no-items-message">{tRerate('noRerates')}</div>
+          <div className="no-items-message">{t('reratesTab.noRerates')}</div>
         )}
       </div>
     </div>

@@ -13,17 +13,16 @@ const CurationSelectionPopup = ({
   excludeIds = [] // Array of curation IDs to exclude from selection
 }) => {
   const { t } = useTranslation('components');
-  const tCur = (key, params = {}) => t(`curationSelectionPopup.${key}`, params);
   const { curationTypes } = useDifficultyContext();
 
   // Prepare options for CustomSelect
   const curationTypeOptions = useMemo(() => [
-    { value: '', label: tCur('filters.allTypes') },
+    { value: '', label: t('curationSelectionPopup.filters.allTypes') },
     ...curationTypes.map(type => ({
       value: type.id.toString(),
       label: type.name
     }))
-  ], [curationTypes, tCur]);
+  ], [curationTypes, t]);
 
   const [curations, setCurations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -121,26 +120,26 @@ const CurationSelectionPopup = ({
         </button>
 
         <div className="curation-selection-modal__header">
-          <h2>{tCur('title')}</h2>
-          <p>{tCur('description')}</p>
+          <h2>{t('curationSelectionPopup.title')}</h2>
+          <p>{t('curationSelectionPopup.description')}</p>
         </div>
 
         {/* Filters */}
         <div className="curation-selection-modal__filters">
           <div className="curation-selection-modal__filter-group">
-            <label>{tCur('filters.search')}</label>
+            <label>{t('curationSelectionPopup.filters.search')}</label>
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => handleSearch(e.target.value)}
-              placeholder={tCur('filters.searchPlaceholder')}
+              placeholder={t('curationSelectionPopup.filters.searchPlaceholder')}
               className="curation-selection-modal__search-input"
             />
           </div>
           
           <div className="curation-selection-modal__filter-group">
             <CustomSelect
-              label={tCur('filters.type')}
+              label={t('curationSelectionPopup.filters.type')}
               options={curationTypeOptions}
               value={curationTypeOptions.find(opt => opt.value === (selectedType ? selectedType.toString() : ''))}
               onChange={(selected) => handleTypeFilter(selected.value)}
@@ -152,9 +151,9 @@ const CurationSelectionPopup = ({
         {/* Curations List */}
         <div className="curation-selection-modal__list">
           {isLoading ? (
-            <div className="curation-selection-modal__loading">{tCur('loading')}</div>
+            <div className="curation-selection-modal__loading">{t('curationSelectionPopup.loading')}</div>
           ) : curations.length === 0 ? (
-            <div className="curation-selection-modal__empty">{tCur('empty')}</div>
+            <div className="curation-selection-modal__empty">{t('curationSelectionPopup.empty')}</div>
           ) : (
             curations.map(curation => (
               <div 
@@ -185,7 +184,7 @@ const CurationSelectionPopup = ({
                       {curation.level?.artist || 'Unknown Artist'}
                     </p>
                     <p className="curation-selection-modal__level-creator">
-                      {tCur('creator')}: {curation.level?.creator || 'Unknown'}
+                      {t('curationSelectionPopup.creator')}: {curation.level?.creator || 'Unknown'}
                     </p>
                   </div>
                   
@@ -213,7 +212,7 @@ const CurationSelectionPopup = ({
                 </div>
                 
                 <button className="curation-selection-modal__select-btn">
-                  {tCur('actions.select')}
+                  {t('curationSelectionPopup.actions.select')}
                 </button>
               </div>
             ))
@@ -228,11 +227,11 @@ const CurationSelectionPopup = ({
               disabled={currentPage === 1}
               className="curation-selection-modal__page-btn"
             >
-              ← {tCur('pagination.previous')}
+              ← {t('curationSelectionPopup.pagination.previous')}
             </button>
             
             <span className="curation-selection-modal__page-info">
-              {tCur('pagination.pageInfo', { current: currentPage, total: totalPages })}
+              {t('curationSelectionPopup.pagination.pageInfo', { current: currentPage, total: totalPages })}
             </span>
             
             <button
@@ -240,7 +239,7 @@ const CurationSelectionPopup = ({
               disabled={currentPage === totalPages}
               className="curation-selection-modal__page-btn"
             >
-              {tCur('pagination.next')} →
+              {t('curationSelectionPopup.pagination.next')} →
             </button>
           </div>
         )}

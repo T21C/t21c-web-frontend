@@ -6,7 +6,6 @@ import { TrashIcon } from '@/components/common/icons';
 
 export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave }) => {
   const { t } = useTranslation(['components', 'common']);
-  const tLevel = (key) => t(`levelPopups.edit.tags.${key}`) || key;
 
   const [allTags, setAllTags] = useState([]);
   const [selectedTagIds, setSelectedTagIds] = useState(new Set(currentTags.map(tag => tag.id)));
@@ -24,7 +23,7 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
         setAllTags(response.data || []);
       } catch (err) {
         console.error('Error fetching tags:', err);
-        setError(tLevel('errors.fetchTags'));
+        setError(t('levelPopups.edit.tags.errors.fetchTags'));
       } finally {
         setIsLoading(false);
       }
@@ -75,7 +74,7 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
       onClose();
     } catch (err) {
       console.error('Error saving tags:', err);
-      setError(err.response?.data?.error || tLevel('errors.saveTags'));
+      setError(err.response?.data?.error || t('levelPopups.edit.tags.errors.saveTags'));
     } finally {
       setIsSaving(false);
     }
@@ -105,15 +104,15 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
         </button>
 
         <div className="popup-content">
-          <h2>{tLevel('title')}</h2>
+          <h2>{t('levelPopups.edit.tags.title')}</h2>
 
           {error && <div className="error-message">{error}</div>}
 
           {/* Current Tags Section */}
           <div className="tag-management-section">
-            <h3>{tLevel('currentTags')}</h3>
+            <h3>{t('levelPopups.edit.tags.currentTags')}</h3>
             {selectedTags.length === 0 ? (
-              <p className="tag-management-empty">{tLevel('noTags')}</p>
+              <p className="tag-management-empty">{t('levelPopups.edit.tags.noTags')}</p>
             ) : (
               <div className="tag-management-current-list">
                 {selectedTags.map(tag => (
@@ -138,7 +137,7 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
                     <button
                       className="tag-management-remove-btn"
                       onClick={() => handleRemoveTag(tag.id)}
-                      title={tLevel('removeTag')}
+                      title={t('levelPopups.edit.tags.removeTag')}
                     >
                       <TrashIcon color="currentColor" size="16px" />
                     </button>
@@ -150,11 +149,11 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
 
           {/* Search and Add Tags Section */}
           <div className="tag-management-section">
-            <h3>{tLevel('addTags')}</h3>
+            <h3>{t('levelPopups.edit.tags.addTags')}</h3>
             <input
               type="text"
               className="tag-management-search"
-              placeholder={tLevel('searchPlaceholder')}
+              placeholder={t('levelPopups.edit.tags.searchPlaceholder')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -163,7 +162,7 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
               <p className="tag-management-loading">{t('loading', { ns: 'common' })}</p>
             ) : availableTags.length === 0 ? (
               <p className="tag-management-empty">
-                {searchQuery ? tLevel('noResults') : tLevel('noAvailableTags')}
+                {searchQuery ? t('levelPopups.edit.tags.noResults') : t('levelPopups.edit.tags.noAvailableTags')}
               </p>
             ) : (
               <div className="tag-management-available-list">
@@ -193,7 +192,7 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
                         e.stopPropagation();
                         handleAddTag(tag.id);
                       }}
-                      title={tLevel('addTag')}
+                      title={t('levelPopups.edit.tags.addTag')}
                     >
                       +
                     </button>

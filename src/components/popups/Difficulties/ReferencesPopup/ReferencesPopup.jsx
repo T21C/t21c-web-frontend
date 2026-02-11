@@ -280,7 +280,6 @@ const parseReferenceString = (str) => {
 
 const ReferencesPopup = ({ onClose }) => {
   const { t } = useTranslation(['components', 'common']);
-  const tRef = (key, params = {}) => t(`references.popup.${key}`, params);
 
   const { user } = useAuth();
   const { difficultyDict } = useDifficultyContext();
@@ -309,7 +308,7 @@ const ReferencesPopup = ({ onClose }) => {
       setReferences(response.data);
     } catch (err) {
       console.error('Error fetching references:', err);
-      setError(tRef('errors.loadFailed'));
+      setError(t('difficultyPopup.errors.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -465,15 +464,15 @@ const ReferencesPopup = ({ onClose }) => {
         });
 
         await fetchReferences();
-        toast.success(tRef('messages.saveSuccess'));
+        toast.success(t('references.popup.messages.saveSuccess'));
       } catch (error) {
         console.error('Error saving references:', error);
-        toast.error(tRef('errors.saveFailed'));
+        toast.error(t('references.popup.errors.saveFailed'));
         throw error;
       }
     } catch (err) {
       console.error('Error in handleSaveChanges:', err);
-      toast.error(tRef('errors.saveFailed'));
+      toast.error(t('references.popup.errors.saveFailed'));
     } finally {
       setSaving(false);
     }
@@ -552,12 +551,12 @@ const ReferencesPopup = ({ onClose }) => {
               })}
             </div>
           ) : (
-            <span className="no-type-label">{tRef('noType')}</span>
+            <span className="no-type-label">{t('references.popup.noType')}</span>
           )}
           <span className="reference-type-count">
             {levels.length === 1 
-              ? tRef('levelCount.singular')
-              : tRef('levelCount.plural', { count: levels.length })}
+              ? t('references.popup.levelCount.singular')
+              : t('references.popup.levelCount.plural', { count: levels.length })}
           </span>
         </div>
         <div className="reference-type-levels">
@@ -624,8 +623,8 @@ const ReferencesPopup = ({ onClose }) => {
                 <div className="header-right">
                   <span className="level-count">
                     {ref.levels.length === 1 
-                      ? tRef('levelCount.singular')
-                      : tRef('levelCount.plural', { count: ref.levels.length })}
+                      ? t('references.popup.levelCount.singular')
+                      : t('references.popup.levelCount.plural', { count: ref.levels.length })}
                   </span>
                   <span className="expand-icon">
                     {expandedDiffs.has(ref.difficulty.id) ? '▼' : '▶'}
@@ -685,7 +684,7 @@ const ReferencesPopup = ({ onClose }) => {
                 <textarea
                   value={editedLevelIds[ref.difficulty.id] || ''}
                   onChange={(e) => handleLevelIdsChange(ref.difficulty.id, e.target.value)}
-                  placeholder={tRef('editMode.placeholder')}
+                  placeholder={t('references.popup.editMode.placeholder')}
                 />
                 {hasChanges && (
                   <div className="difficulty-actions">
@@ -694,7 +693,7 @@ const ReferencesPopup = ({ onClose }) => {
                       onClick={() => handleSaveChanges(ref.difficulty.id)}
                       disabled={saving}
                     >
-                      {saving ? t('loading.saving', { ns: 'common' }) : tRef('buttons.saveChanges')}
+                      {saving ? t('loading.saving', { ns: 'common' }) : t('references.popup.buttons.saveChanges')}
                     </button>
                     <button 
                       className="cancel-edit-btn"
@@ -814,7 +813,7 @@ const ReferencesPopup = ({ onClose }) => {
                 <path d="M15 6L9 12L15 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
-            <h2>{tRef('title', { tab: activeTab })}</h2>
+            <h2>{t('references.popup.title', { tab: activeTab })}</h2>
             <button className="nav-arrow right" onClick={() => handleTabChange(1)}>
               <svg viewBox="0 0 24 24" width="24" height="24">
                 <path d="M9 6L15 12L9 18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -826,7 +825,7 @@ const ReferencesPopup = ({ onClose }) => {
             <button 
               className="help-button"
               onClick={() => setShowHelp(!showHelp)}
-              title={tRef('buttons.help')}
+              title={t('references.popup.buttons.help')}
             >
               ?
             </button>
@@ -836,12 +835,12 @@ const ReferencesPopup = ({ onClose }) => {
                   className="toggle-all-btn"
                   onClick={toggleAllDifficulties}
                 >
-                  {isAllExpanded ? tRef('buttons.collapseAll') : tRef('buttons.expandAll')}
+                  {isAllExpanded ? t('references.popup.buttons.collapseAll') : t('references.popup.buttons.expandAll')}
                 </button>
                 <button 
                   className="view-format-btn"
                   onClick={() => setViewFormat(prev => prev === 'extended' ? 'compact' : 'extended')}
-                  title={viewFormat === 'extended' ? tRef('buttons.switchToCompact') : tRef('buttons.switchToExtended')}
+                  title={viewFormat === 'extended' ? t('references.popup.buttons.switchToCompact') : t('references.popup.buttons.switchToExtended')}
                 >
                   <img 
                     src={viewFormat === 'extended' ? showIcons : hideIcons} 
@@ -856,7 +855,7 @@ const ReferencesPopup = ({ onClose }) => {
               onClick={handleEditModeToggle}
               disabled={saving}
             >
-              {isEditMode ? tRef('buttons.viewMode') : tRef('buttons.editMode')}
+              {isEditMode ? t('references.popup.buttons.viewMode') : t('references.popup.buttons.editMode')}
             </button>
           )}
           </div>
@@ -865,7 +864,7 @@ const ReferencesPopup = ({ onClose }) => {
         </div>
 
         {loading ? (
-          <div className="loading">{tRef('loading')}</div>
+          <div className="loading">{t('references.popup.loading')}</div>
         ) : error ? (
           <div className="error">{error}</div>
         ) : (
@@ -873,29 +872,29 @@ const ReferencesPopup = ({ onClose }) => {
             {showHelp && (
               <div className="help-popup" ref={helpRef}>
                 <div className="help-content">
-                  <h3>{tRef(isEditMode ? 'editMode.help.title' : 'help.title')}</h3>
-                  <p>{tRef(isEditMode ? 'editMode.help.description' : 'help.description')}</p>
+                  <h3>{t(isEditMode ? 'references.popup.editMode.help.title' : 'references.popup.help.title')}</h3>
+                  <p>{t(isEditMode ? 'references.popup.editMode.help.description' : 'references.popup.help.description')}</p>
                   
-                  <h4>{tRef(isEditMode ? 'editMode.help.types.title' : 'help.types.title')}</h4>
+                  <h4>{t(isEditMode ? 'references.popup.editMode.help.types.title' : 'references.popup.help.types.title')}</h4>
                   <ul>
-                    <li><strong>R:</strong> {tRef(isEditMode ? 'editMode.help.types.R' : 'help.types.R')}</li>
-                    <li><strong>I:</strong> {tRef(isEditMode ? 'editMode.help.types.I' : 'help.types.I')}</li>
-                    <li><strong>T:</strong> {tRef(isEditMode ? 'editMode.help.types.T' : 'help.types.T')}</li>
-                    <li><strong>K:</strong> {tRef(isEditMode ? 'editMode.help.types.K' : 'help.types.K')}</li>
+                    <li><strong>R:</strong> {t(isEditMode ? 'references.popup.editMode.help.types.R' : 'references.popup.help.types.R')}</li>
+                    <li><strong>I:</strong> {t(isEditMode ? 'references.popup.editMode.help.types.I' : 'references.popup.help.types.I')}</li>
+                    <li><strong>T:</strong> {t(isEditMode ? 'references.popup.editMode.help.types.T' : 'references.popup.help.types.T')}</li>
+                    <li><strong>K:</strong> {t(isEditMode ? 'references.popup.editMode.help.types.K' : 'references.popup.help.types.K')}</li>
                   </ul>
 
                   {isEditMode && (
                     <>
-                      <h4>{tRef('editMode.help.format.title')}</h4>
+                      <h4>{t('references.popup.editMode.help.format.title')}</h4>
                       <ul>
-                        <li>{tRef('editMode.help.format.single')}</li>
-                        <li>{tRef('editMode.help.format.multiple')}</li>
-                        <li>{tRef('editMode.help.format.noType')}</li>
+                        <li>{t('references.popup.editMode.help.format.single')}</li>
+                        <li>{t('references.popup.editMode.help.format.multiple')}</li>
+                        <li>{t('references.popup.editMode.help.format.noType')}</li>
                       </ul>
 
-                      <h4>{tRef('editMode.help.rules.title')}</h4>
+                      <h4>{t('references.popup.editMode.help.rules.title')}</h4>
                       <ul>
-                        {tRef('editMode.help.rules.list', { returnObjects: true }).map((rule, index) => (
+                        {t('references.popup.editMode.help.rules.list', { returnObjects: true }).map((rule, index) => (
                           <li key={index}>{rule}</li>
                         ))}
                       </ul>

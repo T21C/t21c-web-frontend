@@ -6,7 +6,6 @@ import './artistSelectorPopup.css';
 
 export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null }) => {
   const { t } = useTranslation(['components', 'common']);
-  const tArtist = (key, params = {}) => t(`artistSelector.${key}`, params) || key;
   const popupRef = useRef(null);
 
   // Verification state options for CustomSelect
@@ -62,7 +61,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
           await fetchArtistDetails(initialArtist.id);
         } catch (error) {
           console.error('Error loading initial details:', error);
-          setError(tArtist('messages.error.loadDetailsFailed'));
+          setError(t('artistSelector.messages.error.loadDetailsFailed'));
         } finally {
           setIsLoadingDetails(false);
         }
@@ -101,7 +100,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
         setSearchResults(artists);
       } catch (error) {
         console.error('Error searching artists:', error);
-        setError(tArtist('messages.error.searchFailed'));
+        setError(t('artistSelector.messages.error.searchFailed'));
         setSearchResults([]);
       } finally {
         setIsSearching(false);
@@ -120,7 +119,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
       const artist = response.data;
       
       if (!artist) {
-        setError(tArtist('messages.error.artistNotFound'));
+        setError(t('artistSelector.messages.error.artistNotFound'));
         return null;
       }
 
@@ -128,7 +127,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
       return artist;
     } catch (error) {
       console.error('Error fetching artist details:', error);
-      setError(tArtist('messages.error.loadDetailsFailed'));
+      setError(t('artistSelector.messages.error.loadDetailsFailed'));
       return null;
     }
   };
@@ -160,13 +159,13 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
       };
 
       onSelect(newArtistData);
-      setSuccess(tArtist('messages.success.artistCreated'));
+      setSuccess(t('artistSelector.messages.success.artistCreated'));
       
       await new Promise(resolve => setTimeout(resolve, 500));
       onClose();
     } catch (error) {
       console.error('Error creating artist:', error);
-      setError(error.response?.data?.error || tArtist('messages.error.createFailed'));
+      setError(error.response?.data?.error || t('artistSelector.messages.error.createFailed'));
     } finally {
       setIsCreating(false);
     }
@@ -188,11 +187,11 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
       };
 
       onSelect(artistData);
-      setSuccess(tArtist('messages.success.artistAssigned'));
+      setSuccess(t('artistSelector.messages.success.artistAssigned'));
       setTimeout(onClose, 1500);
     } catch (error) {
       console.error('Error assigning artist:', error);
-      setError(tArtist('messages.error.assignFailed'));
+      setError(t('artistSelector.messages.error.assignFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -229,7 +228,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
     <div className="artist-selector-popup-overlay">
       <div className="artist-selector-popup" ref={popupRef}>
         <div className="popup-header">
-          <h2>{tArtist('title')}</h2>
+          <h2>{t('artistSelector.title')}</h2>
           <button className="close-button" onClick={onClose}>×</button>
         </div>
 
@@ -237,7 +236,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
           <div className="artist-selection">
             <div className="current-artist">
               <div className="current-artist-header">
-                {tArtist('currentArtist.label')}
+                {t('artistSelector.currentArtist.label')}
               </div>
               <div className="current-artist-info">
                 {isLoadingDetails ? (
@@ -269,7 +268,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                         )}
                       </>
                     ) : (
-                      tArtist('currentArtist.none')
+                      t('artistSelector.currentArtist.none')
                     )}
                   </div>
                 )}
@@ -285,13 +284,13 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                       className="search-input"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder={tArtist('search.placeholder')}
+                      placeholder={t('artistSelector.search.placeholder')}
                     />
                     <button 
                       className="create-artist-button"
                       onClick={handleCreateClick}
                     >
-                      {tArtist('buttons.createNew')}
+                      {t('artistSelector.buttons.createNew')}
                     </button>
                   </div>
                   {isSearching ? (
@@ -300,7 +299,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                     </div>
                   ) : searchQuery && (!Array.isArray(searchResults) || searchResults.length === 0) ? (
                     <div className="search-status">
-                      {tArtist('search.noResults')}
+                      {t('artistSelector.search.noResults')}
                     </div>
                   ) : (
                     <div className="search-results">
@@ -337,21 +336,21 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                 </>
               ) : (
                 <form onSubmit={handleCreate} className="create-artist-form">
-                  <h3>{tArtist('createForm.title')}</h3>
+                  <h3>{t('artistSelector.createForm.title')}</h3>
                   <div className="form-group">
-                    <label>{tArtist('createForm.name')}</label>
+                    <label>{t('artistSelector.createForm.name')}</label>
                     <input
                       type="text"
                       value={newName}
                       onChange={(e) => setNewName(e.target.value)}
-                      placeholder={tArtist('createForm.namePlaceholder')}
+                      placeholder={t('artistSelector.createForm.namePlaceholder')}
                       required
                       disabled={isCreating}
                     />
                   </div>
                   <div className="form-group">
                     <CustomSelect
-                      label={tArtist('createForm.verificationState')}
+                      label={t('artistSelector.createForm.verificationState')}
                       options={verificationStateOptions}
                       value={verificationStateOptions.find(opt => opt.value === verificationState) || verificationStateOptions[0]}
                       onChange={(option) => setVerificationState(option?.value || 'unverified')}
@@ -377,7 +376,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                       disabled={isCreating || !newName.trim()}
                       className={`submit-button ${isCreating ? 'loading' : ''}`}
                     >
-                      {isCreating ? t('loading.creating', { ns: 'common' }) : tArtist('buttons.create')}
+                      {isCreating ? t('loading.creating', { ns: 'common' }) : t('artistSelector.buttons.create')}
                     </button>
                   </div>
                 </form>
@@ -386,11 +385,11 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
 
             {artistDetails && (
               <div className="artist-stats">
-                <h3>{tArtist('stats.title')}</h3>
+                <h3>{t('artistSelector.stats.title')}</h3>
                 <div className="stats-content">
-                  <p>{tArtist('stats.levels')}: {artistDetails.levels?.length || 0}</p>
+                  <p>{t('artistSelector.stats.levels')}: {artistDetails.levels?.length || 0}</p>
                   {artistDetails.songCredits && artistDetails.songCredits.length > 0 && (
-                    <p>{tArtist('stats.songs')}: {artistDetails.songCredits.length}</p>
+                    <p>{t('artistSelector.stats.songs')}: {artistDetails.songCredits.length}</p>
                   )}
                 </div>
               </div>
@@ -403,7 +402,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
               onClick={handleAssign}
               disabled={!selectedArtistId || isLoading || isLoadingDetails}
             >
-              {tArtist('buttons.assign')}
+              {t('artistSelector.buttons.assign')}
               {(isLoading || isLoadingDetails) && <div className="loading-spinner" />}
             </button>
           </div>

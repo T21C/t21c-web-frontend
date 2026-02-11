@@ -13,7 +13,6 @@ import { LevelPackViewModes } from '@/utils/constants';
 
 const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
   const { t } = useTranslation('components');
-  const tPopup = (key) => t(`packPopups.editPack.${key}`) || key;
   
   const { user } = useAuth();
   
@@ -38,22 +37,22 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
 
   // View mode options
   const viewModeOptions = [
-    { value: LevelPackViewModes.LINKONLY.toString(), label: tPopup('viewMode.linkonly') },
-    { value: LevelPackViewModes.PRIVATE.toString(), label: tPopup('viewMode.private') }
+    { value: LevelPackViewModes.LINKONLY.toString(), label: t('packPopups.editPack.viewMode.linkonly') },
+    { value: LevelPackViewModes.PRIVATE.toString(), label: t('packPopups.editPack.viewMode.private') }
   ];
 
   if (hasFlag(user, permissionFlags.SUPER_ADMIN)) {
     viewModeOptions.splice(0, 0, 
-      { value: LevelPackViewModes.PUBLIC.toString(), label: tPopup('viewMode.public') }, 
-      { value: LevelPackViewModes.FORCED_PRIVATE.toString(), label: tPopup('viewMode.forcedPrivate') });
+      { value: LevelPackViewModes.PUBLIC.toString(), label: t('packPopups.editPack.viewMode.public') }, 
+      { value: LevelPackViewModes.FORCED_PRIVATE.toString(), label: t('packPopups.editPack.viewMode.forcedPrivate') });
   }
 
   // CSS theme options
   const cssThemeOptions = [
-    { value: 0, label: tPopup('theme.default') },
-    { value: 1, label: tPopup('theme.dark') },
-    { value: 2, label: tPopup('theme.neon') },
-    { value: 3, label: tPopup('theme.pastel') }
+    { value: 0, label: t('packPopups.editPack.theme.default') },
+    { value: 1, label: t('packPopups.editPack.theme.dark') },
+    { value: 2, label: t('packPopups.editPack.theme.neon') },
+    { value: 3, label: t('packPopups.editPack.theme.pastel') }
   ];
 
   const handleInputChange = (field, value) => {
@@ -81,10 +80,10 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
         iconUrl: response.data.icon.urls.original
       }));
 
-      toast.success(tPopup('success.iconUploaded'));
+      toast.success(t('packPopups.editPack.success.iconUploaded'));
     } catch (error) {
       console.error('Error uploading pack icon:', error);
-      const errorMessage = error.response?.data?.error || tPopup('errors.iconUploadFailed');
+      const errorMessage = error.response?.data?.error || t('packPopups.editPack.errors.iconUploadFailed');
       toast.error(errorMessage);
     } finally {
       setUploadingIcon(false);
@@ -102,10 +101,10 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
         iconUrl: ''
       }));
 
-      toast.success(tPopup('success.iconRemoved'));
+      toast.success(t('packPopups.editPack.success.iconRemoved'));
     } catch (error) {
       console.error('Error removing pack icon:', error);
-      const errorMessage = error.response?.data?.error || tPopup('errors.iconRemoveFailed');
+      const errorMessage = error.response?.data?.error || t('packPopups.editPack.errors.iconRemoveFailed');
       toast.error(errorMessage);
     } finally {
       setUploadingIcon(false);
@@ -116,7 +115,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
     e.preventDefault();
     
     if (!formData.name.trim()) {
-      toast.error(tPopup('errors.nameRequired'));
+      toast.error(t('packPopups.editPack.errors.nameRequired'));
       return;
     }
 
@@ -125,10 +124,10 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
       const response = await api.put(`/v2/database/levels/packs/${pack.id}`, formData);
       onUpdate?.(response.data);
       onClose();
-      toast.success(tPopup('success.updated'));
+      toast.success(t('packPopups.editPack.success.updated'));
     } catch (error) {
       console.error('Error updating pack:', error);
-      toast.error(error.response?.data?.error || tPopup('errors.updateFailed'));
+      toast.error(error.response?.data?.error || t('packPopups.editPack.errors.updateFailed'));
     } finally {
       setLoading(false);
     }
@@ -141,10 +140,10 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
       onClose();
       // Call the onDelete callback if provided (for navigation, etc.)
       onDelete?.();
-      toast.success(tPopup('success.deleted'));
+      toast.success(t('packPopups.editPack.success.deleted'));
     } catch (error) {
       console.error('Error deleting pack:', error);
-      toast.error(error.response?.data?.error || tPopup('errors.deleteFailed'));
+      toast.error(error.response?.data?.error || t('packPopups.editPack.errors.deleteFailed'));
     } finally {
       setLoading(false);
     }
@@ -177,7 +176,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
 
   const handleTransferOwnership = async () => {
     if (!selectedNewOwner) {
-      toast.error(tPopup('errors.selectNewOwner'));
+      toast.error(t('packPopups.editPack.errors.selectNewOwner'));
       return;
     }
 
@@ -187,14 +186,14 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
         newOwnerId: selectedNewOwner.id
       });
       
-      toast.success(tPopup('success.ownershipTransferred'));
+      toast.success(t('packPopups.editPack.success.ownershipTransferred'));
       onUpdate?.(response.data.pack);
       setSelectedNewOwner(null);
       setTransferOwnershipSearch('');
       setTransferOwnershipUsers([]);
     } catch (error) {
       console.error('Error transferring ownership:', error);
-      toast.error(error.response?.data?.error || tPopup('errors.transferFailed'));
+      toast.error(error.response?.data?.error || t('packPopups.editPack.errors.transferFailed'));
     } finally {
       setTransferringOwnership(false);
     }
@@ -283,7 +282,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
     <div className="edit-pack-popup" onClick={handleBackdropClick}>
       <div className="edit-pack-popup__content" onClick={(e) => e.stopPropagation()}>
         <div className="edit-pack-popup__header">
-          <h2 className="edit-pack-popup__title">{tPopup('title')}</h2>
+          <h2 className="edit-pack-popup__title">{t('packPopups.editPack.title')}</h2>
           <button className="edit-pack-popup__close" onClick={onClose}>
             <CrossIcon />
           </button>
@@ -293,12 +292,12 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
           <div className="edit-pack-popup__body">
             <div className="edit-pack-popup__field">
               <label className="edit-pack-popup__label">
-                {tPopup('name.label')} *
+                {t('packPopups.editPack.name.label')} *
               </label>
               <input
                 type="text"
                 className="edit-pack-popup__input"
-                placeholder={tPopup('name.placeholder')}
+                placeholder={t('packPopups.editPack.name.placeholder')}
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
                 maxLength={100}
@@ -306,13 +305,13 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                 disabled={!canEdit}
               />
               <p className="edit-pack-popup__help">
-                {tPopup('name.help')}
+                {t('packPopups.editPack.name.help')}
               </p>
             </div>
 
             <div className="edit-pack-popup__field">
               <label className="edit-pack-popup__label">
-                {tPopup('icon.label')}
+                {t('packPopups.editPack.icon.label')}
               </label>
               <div className="edit-pack-popup__icon-section">
                 {formData.iconUrl && (
@@ -333,7 +332,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                   >
                     <ImageIcon />
                     <span>
-                      {uploadingIcon ? tPopup('icon.uploading') : tPopup('icon.upload')}
+                      {uploadingIcon ? t('packPopups.editPack.icon.uploading') : t('packPopups.editPack.icon.upload')}
                     </span>
                   </button>
                   {formData.iconUrl && (
@@ -343,20 +342,20 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                       onClick={handleIconRemove}
                       disabled={!canEdit || uploadingIcon}
                     >
-                      {uploadingIcon ? tPopup('icon.removing') : tPopup('icon.remove')}
+                      {uploadingIcon ? t('packPopups.editPack.icon.removing') : t('packPopups.editPack.icon.remove')}
                     </button>
                   )}
                 </div>
               </div>
               <p className="edit-pack-popup__help">
-                {tPopup('icon.help')}
+                {t('packPopups.editPack.icon.help')}
               </p>
             </div>
 
 {/*
             <div className="edit-pack-popup__field">
               <label className="edit-pack-popup__label">
-                {tPopup('theme.label')}
+                {t('packPopups.editPack.theme.label')}
               </label>
               <select
                 className="edit-pack-popup__select"
@@ -371,14 +370,14 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                 ))}
               </select>
               <p className="edit-pack-popup__help">
-                {tPopup('theme.help')}
+                {t('packPopups.editPack.theme.help')}
               </p>
             </div>
 */}
 
             <div className="edit-pack-popup__field">
               <CustomSelect
-                label={tPopup('viewMode.label')}
+                label={t('packPopups.editPack.viewMode.label')}
                 options={viewModeOptions}
                 value={viewModeOptions.find(opt => opt.value === formData.viewMode.toString())}
                 onChange={(selected) => handleInputChange('viewMode', parseInt(selected.value))}
@@ -387,8 +386,8 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
               />
               <p className="edit-pack-popup__help">
                 {isForcedPrivate 
-                  ? tPopup('viewMode.forcedPrivateHelp')
-                  : tPopup('viewMode.help')
+                  ? t('packPopups.editPack.viewMode.forcedPrivateHelp')
+                  : t('packPopups.editPack.viewMode.help')
                 }
               </p>
             </div>
@@ -404,11 +403,11 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                     disabled={!canEdit}
                   />
                   <span className="edit-pack-popup__checkbox-text">
-                    {tPopup('pinned.label')}
+                    {t('packPopups.editPack.pinned.label')}
                   </span>
                 </label>
                 <p className="edit-pack-popup__help">
-                  {tPopup('pinned.help')}
+                  {t('packPopups.editPack.pinned.help')}
                 </p>
               </div>
             )}
@@ -416,12 +415,12 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
             {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
               <div className="edit-pack-popup__field">
                 <label className="edit-pack-popup__label">
-                  {tPopup('transferOwnership.label')}
+                  {t('packPopups.editPack.transferOwnership.label')}
                 </label>
                 {pack.packOwner && (
                   <div className="edit-pack-popup__transfer-current-owner">
                     <span className="edit-pack-popup__transfer-current-label">
-                      {tPopup('transferOwnership.currentOwner')}:
+                      {t('packPopups.editPack.transferOwnership.currentOwner')}:
                     </span>
                     <span className="edit-pack-popup__transfer-current-name">
                       {pack.packOwner.nickname || pack.packOwner.username}
@@ -433,7 +432,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                     <input
                       type="text"
                       className="edit-pack-popup__input"
-                      placeholder={tPopup('transferOwnership.placeholder')}
+                      placeholder={t('packPopups.editPack.transferOwnership.placeholder')}
                       value={transferOwnershipSearch}
                       onChange={(e) => {
                         setTransferOwnershipSearch(e.target.value);
@@ -446,11 +445,11 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                     <div className="edit-pack-popup__transfer-dropdown" ref={transferDropdownRef}>
                       {transferOwnershipLoading ? (
                         <div className="edit-pack-popup__transfer-loading">
-                          {tPopup('transferOwnership.searching')}
+                          {t('packPopups.editPack.transferOwnership.searching')}
                         </div>
                       ) : transferOwnershipUsers.length === 0 ? (
                         <div className="edit-pack-popup__transfer-no-results">
-                          {tPopup('transferOwnership.noResults')}
+                          {t('packPopups.editPack.transferOwnership.noResults')}
                         </div>
                       ) : (
                         transferOwnershipUsers.map((userOption) => (
@@ -480,7 +479,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                   {selectedNewOwner && (
                     <div className="edit-pack-popup__transfer-selected">
                       <span className="edit-pack-popup__transfer-selected-label">
-                        {tPopup('transferOwnership.selected')}:
+                        {t('packPopups.editPack.transferOwnership.selected')}:
                       </span>
                       <span className="edit-pack-popup__transfer-selected-name">
                         {selectedNewOwner.nickname || selectedNewOwner.username}
@@ -491,20 +490,20 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                         onClick={handleTransferOwnership}
                         disabled={transferringOwnership || !canEdit}
                       >
-                        {transferringOwnership ? tPopup('transferOwnership.transferring') : tPopup('transferOwnership.transfer')}
+                        {transferringOwnership ? t('packPopups.editPack.transferOwnership.transferring') : t('packPopups.editPack.transferOwnership.transfer')}
                       </button>
                     </div>
                   )}
                 </div>
                 <p className="edit-pack-popup__help">
-                  {tPopup('transferOwnership.help')}
+                  {t('packPopups.editPack.transferOwnership.help')}
                 </p>
               </div>
             )}
 
             {!canEdit && (
               <div className="edit-pack-popup__no-permission">
-                <p>{tPopup('noPermission')}</p>
+                <p>{t('packPopups.editPack.noPermission')}</p>
               </div>
             )}
           </div>
@@ -519,7 +518,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                   disabled={loading}
                 >
                   <TrashIcon />
-                  <span>{tPopup('delete')}</span>
+                  <span>{t('packPopups.editPack.delete')}</span>
                 </button>
               )}
             </div>
@@ -538,7 +537,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                 className="edit-pack-popup__save-btn"
                 disabled={loading || !canEdit || !formData.name.trim()}
               >
-                {loading ? tPopup('saving') : tPopup('save')}
+                {loading ? t('packPopups.editPack.saving') : t('packPopups.editPack.save')}
               </button>
             </div>
           </div>
@@ -548,8 +547,8 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
       {showDeleteConfirm && (
         <div className="edit-pack-popup__delete-confirm">
           <div className="edit-pack-popup__delete-confirm-content">
-            <h3>{tPopup('deleteConfirm.title')}</h3>
-            <p>{tPopup('deleteConfirm.message')}</p>
+            <h3>{t('packPopups.editPack.deleteConfirm.title')}</h3>
+            <p>{t('packPopups.editPack.deleteConfirm.message')}</p>
             <div className="edit-pack-popup__delete-confirm-actions">
               <button
                 className="edit-pack-popup__delete-cancel-btn"

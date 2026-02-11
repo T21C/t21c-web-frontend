@@ -14,7 +14,6 @@ const DiscordRolesPopup = ({
   verifiedPassword = '',
 }) => {
   const { t } = useTranslation(['components', 'common']);
-  const tDisc = (key, params = {}) => t(`discordRoles.${key}`, params);
   const { difficulties: allDifficulties } = useDifficultyContext();
   const [mouseDownOutside, setMouseDownOutside] = useState(false);
   const modalRef = useRef(null);
@@ -28,7 +27,7 @@ const DiscordRolesPopup = ({
   const handleClose = () => {
     if (hasUnsavedChanges) {
       const confirmed = window.confirm(
-        tDisc('confirmClose.message') || 'You have unsaved changes. Are you sure you want to close?'
+        t('discordRoles.confirmClose.message') || 'You have unsaved changes. Are you sure you want to close?'
       );
       if (confirmed) {
         onClose();
@@ -86,7 +85,7 @@ const DiscordRolesPopup = ({
         </button>
 
         <div className="discord-roles-popup__header">
-          <h2>{tDisc('title')}</h2>
+          <h2>{t('discordRoles.title')}</h2>
         </div>
 
         <div className="discord-roles-popup__body">

@@ -3,14 +3,12 @@ import { isoToEmoji } from "@/utils";
 import "./clearcard.css"
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import DefaultAvatar from "@/components/common/icons/DefaultAvatar";
 import { PassIcon, YoutubeIcon } from "@/components/common/icons";
 import { UserAvatar } from "@/components/layout";
 import { selectIconSize } from "@/utils/Utility";
 
 const ClearCard = ({scoreData, index}) => {
   const { t } = useTranslation('pages');
-  const tClearCard = (key) => t(`levelDetail.components.clearCard.${key}`) || key;
   const navigate = useNavigate()
   const [isExpanded, setIsExpanded] = useState(false);
   
@@ -107,7 +105,7 @@ const ClearCard = ({scoreData, index}) => {
 
         <div className="bottom-row">
           <div className="feeling-rating">
-            <span className="feeling-label">{tClearCard('feeling')}</span>
+            <span className="feeling-label">{t('levelDetail.components.clearCard.feeling')}</span>
             {renderFeeling()}
           </div>
           <div className="time-info">{scoreData.vidUploadTime.slice(0, 10)}</div>

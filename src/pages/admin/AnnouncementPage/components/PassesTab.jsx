@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
   
 const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemove }) => {
   const { t } = useTranslation('components');
-  const tPass = (key, params = {}) => t(`passesTab.${key}`, params);
   
   const [removingIds, setRemovingIds] = useState(new Set());
   const [error, setError] = useState('');
@@ -25,7 +24,7 @@ const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemo
       });
     } catch (err) {
       console.error('Error silently removing pass:', err);
-      setError(tPass('errors.silentRemovePass', { playerName: pass.player?.name }));
+      setError(t('passesTab.errors.silentRemovePass', { playerName: pass.player?.name }));
       // Refetch the data to ensure UI is in sync
       window.location.reload();
     } finally {
@@ -45,7 +44,7 @@ const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemo
           passes.map(pass => {
             // Skip invalid passes
             if (!pass?.id || !pass?.player?.name || !pass?.level?.song) {
-              console.warn(tPass('errors.invalidPass'), pass);
+              console.warn(t('passesTab.errors.invalidPass'), pass);
               return null;
             }
   
@@ -61,19 +60,19 @@ const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemo
                   <span className="checkmark"></span>
                   <div className="item-details">
                     <div className="item-title">
-                      {tPass('card.title', { 
+                      {t('passesTab.card.title', { 
                         playerName: pass.player?.name,
                         songName: pass.level?.song
                       })}
                     </div>
                     <div className="item-subtitle">
                       {pass.scoreV2 !== undefined ? 
-                        tPass('card.stats.score', { score: pass.scoreV2.toFixed(2) }) :
-                        tPass('card.stats.scoreNA')
-                      } | {tPass('card.stats.accuracy', { 
+                        t('passesTab.card.stats.score', { score: pass.scoreV2.toFixed(2) }) :
+                        t('passesTab.card.stats.scoreNA')
+                      } | {t('passesTab.card.stats.accuracy', { 
                         accuracy: ((pass.accuracy || 0) * 100).toFixed(2)
                       })}
-                      {pass.level?.difficulty?.name && tPass('card.stats.difficulty', { 
+                      {pass.level?.difficulty?.name && t('passesTab.card.stats.difficulty', { 
                         difficultyName: pass.level.difficulty.name 
                       })}
                     </div>
@@ -84,8 +83,8 @@ const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemo
                   onClick={() => handleSilentRemove(pass)}
                   disabled={isLoading || removingIds.has(pass.id)}
                   style ={{width: '40px', height: '40px'}}
-                  aria-label={tPass('buttons.remove')}
-                  title={tPass('buttons.removeTooltip')}
+                  aria-label={t('passesTab.buttons.remove')}
+                  title={t('passesTab.buttons.removeTooltip')}
                 >
                   {removingIds.has(pass.id) ? (
                     <svg className="spinner spinner-svg" viewBox="0 0 50 50">
@@ -99,7 +98,7 @@ const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemo
             );
           }).filter(Boolean)
         ) : (
-          <div className="no-items-message">{tPass('noPasses')}</div>
+          <div className="no-items-message">{t('passesTab.noPasses')}</div>
         )}
       </div>
     </div>

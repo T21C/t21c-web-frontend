@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
@@ -12,7 +12,6 @@ import './artistDetailPage.css';
 
 const ArtistDetailPage = () => {
   const { t } = useTranslation('pages');
-  const tArtist = (key, params = {}) => t(`artistDetail.${key}`, params);
   const { id } = useParams();
   const navigate = useNavigate();
   const currentUrl = window.location.origin + location.pathname;
@@ -59,9 +58,9 @@ const ArtistDetailPage = () => {
     return (
       <div className="artist-detail-page">
         <div className="error-container">
-          <h2>{tArtist(`errors.${error || 'notFound'}`)}</h2>
+          <h2>{t('artistDetail.errors.' + (error || 'notFound'))}</h2>
           <button onClick={() => navigate('/artists')} className="back-button">
-            {tArtist('backToList')}
+            {t('artistDetail.backToList')}
           </button>
         </div>
       </div>
@@ -71,8 +70,8 @@ const ArtistDetailPage = () => {
   return (
     <div className="artist-detail-page">
       <MetaTags
-        title={`${artist.name} - ${tArtist('meta.title')}`}
-        description={tArtist('meta.description', { name: artist.name })}
+        title={`${artist.name} - ${t('artistDetail.meta.title')}`}
+        description={t('artistDetail.meta.description', { name: artist.name })}
         url={currentUrl}
         image={artist.avatarUrl || "/og-image.jpg"}
         type="article"
@@ -105,7 +104,7 @@ const ArtistDetailPage = () => {
           {/* Extra Info */}
           {artist.extraInfo && (
             <div className="artist-section">
-              <h2>{tArtist('sections.extraInfo')}</h2>
+              <h2>{t('artistDetail.sections.extraInfo')}</h2>
               <div className="extra-info-content">{artist.extraInfo}</div>
             </div>
           )}
@@ -113,7 +112,7 @@ const ArtistDetailPage = () => {
           {/* Evidence */}
           {artist.evidences && artist.evidences.length > 0 && (
             <div className="artist-section">
-              <h2>{tArtist('sections.evidence')}</h2>
+              <h2>{t('artistDetail.sections.evidence')}</h2>
               <div className="evidence-preview">
                 {artist.evidences.slice(0, 4).map((evidence) => {
                   const isImage = isImageUrl(evidence.link);
@@ -158,7 +157,7 @@ const ArtistDetailPage = () => {
           {/* Relations */}
           {artist.relatedArtists && artist.relatedArtists.length > 0 && (
             <div className="artist-section">
-              <h2>{tArtist('sections.relations')}</h2>
+              <h2>{t('artistDetail.sections.relations')}</h2>
               <div className="relations-list">
                 {artist.relatedArtists.map((relatedArtist) => (
                   <div
@@ -186,7 +185,7 @@ const ArtistDetailPage = () => {
           {/* Aliases */}
           {artist.aliases && artist.aliases.length > 0 && (
             <div className="artist-section">
-              <h2>{tArtist('sections.aliases')}</h2>
+              <h2>{t('artistDetail.sections.aliases')}</h2>
               <div className="aliases-list">
                 {artist.aliases.map((alias) => (
                   <span key={alias.id} className="alias-tag">{alias.alias}</span>
@@ -198,7 +197,7 @@ const ArtistDetailPage = () => {
           {/* Links */}
           {artist.links && artist.links.length > 0 && (
             <div className="artist-section">
-              <h2>{tArtist('sections.links')}</h2>
+              <h2>{t('artistDetail.sections.links')}</h2>
               {artist.links.length > 0 && (
                 <div className="links-list">
                 {artist.links.map((link) => (
@@ -221,7 +220,7 @@ const ArtistDetailPage = () => {
           {/* Songs */}
           {artist.songCredits && artist.songCredits.length > 0 && (
             <div className="artist-section">
-              <h2>{tArtist('sections.songs')}</h2>
+              <h2>{t('artistDetail.sections.songs')}</h2>
               <div className="songs-list">
                 {artist.songCredits.map((credit) => (
                   <div

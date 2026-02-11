@@ -5,7 +5,7 @@ import api from '@/utils/api';
 import './curationeditpopup.css';
 import toast from 'react-hot-toast';
 import ThumbnailUpload from '@/components/common/upload/ThumbnailUpload';
-import { hasAbility, getDefaultColor, canAssignCurationType } from '@/utils/curationTypeUtils';
+import { hasAbility, canAssignCurationType } from '@/utils/curationTypeUtils';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatCreatorDisplay } from '@/utils/Utility';
 import { CustomSelect } from '@/components/common/selectors';
@@ -18,7 +18,6 @@ const CurationEditPopup = ({
   onUpdate
 }) => {
   const { t } = useTranslation(['components', 'common']);
-  const tCur = (key, params = {}) => t(`curationEditPopup.${key}`, params);
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
@@ -68,12 +67,12 @@ const CurationEditPopup = ({
 
   // Prepare options for CustomSelect
   const curationTypeOptions = useMemo(() => [
-    { value: '', label: tCur('form.selectType') },
+    { value: '', label: t('curationEditPopup.form.selectType') },
     ...getAssignableCurationTypes.map(type => ({
       value: type.id.toString(),
       label: type.name
     }))
-  ], [getAssignableCurationTypes, tCur]);
+  ], [getAssignableCurationTypes, t]);
 
   const handleMouseDown = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
@@ -141,7 +140,7 @@ const CurationEditPopup = ({
 
     // Check if description is required but missing
     if (requiresDescription && (!formData.description || formData.description.trim() === '')) {
-      toast.error(tCur('form.descriptionRequired'));
+      toast.error(t('curationEditPopup.form.descriptionRequired'));
       return;
     }
 
@@ -156,11 +155,11 @@ const CurationEditPopup = ({
         customColor: formData.customColor
       });
 
-      toast.success(tCur('notifications.updated'));
+      toast.success(t('curationEditPopup.notifications.updated'));
       onUpdate(response.data.curation);
       onClose();
     } catch (error) {
-      const errorMessage = error.response?.data?.error || tCur('errors.updateFailed');
+      const errorMessage = error.response?.data?.error || t('curationEditPopup.errors.updateFailed');
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);
@@ -181,8 +180,8 @@ const CurationEditPopup = ({
         </button>
 
         <div className="curation-edit-modal__header">
-          <h2>{tCur('title')}</h2>
-          <p>{tCur('description')}</p>
+          <h2>{t('curationEditPopup.title')}</h2>
+          <p>{t('curationEditPopup.description')}</p>
         </div>
 
         <div className="curation-edit-modal__content-scroll">
@@ -208,7 +207,7 @@ const CurationEditPopup = ({
           {/* Curation Type Selection */}
           <div className="curation-edit-modal__form-group">
             <CustomSelect
-              label={tCur('form.type')}
+              label={t('curationEditPopup.form.type')}
               options={curationTypeOptions}
               value={curationTypeOptions.find(opt => opt.value === (formData.typeId ? formData.typeId.toString() : ''))}
               onChange={(selected) => handleInputChange('typeId', selected.value)}
@@ -218,32 +217,32 @@ const CurationEditPopup = ({
 
           {/* Short Description */}
           <div className="curation-edit-modal__form-group">
-            <label htmlFor="short-description">{tCur('form.shortDescription')}</label>
+            <label htmlFor="short-description">{t('curationEditPopup.form.shortDescription')}</label>
             <input
               id="short-description"
               type="text"
               value={formData.shortDescription}
               onChange={(e) => handleInputChange('shortDescription', e.target.value)}
-              placeholder={tCur('form.shortDescriptionPlaceholder')}
+              placeholder={t('curationEditPopup.form.shortDescriptionPlaceholder')}
               className="curation-edit-modal__input"
               maxLength={255}
             />
             <p className="curation-edit-modal__help-text">
-              {tCur('form.shortDescriptionHelp')} ({formData.shortDescription.length}/255)
+              {t('curationEditPopup.form.shortDescriptionHelp')} ({formData.shortDescription.length}/255)
             </p>
           </div>
 
           {/* Description */}
           <div className="curation-edit-modal__form-group">
             <label htmlFor="description">
-              {tCur('form.description')}
+              {t('curationEditPopup.form.description')}
               {requiresDescription && <span className="required">*</span>}
             </label>
             <textarea
               id="description"
               value={formData.description}
               onChange={(e) => handleInputChange('description', e.target.value)}
-              placeholder={requiresDescription ? tCur('form.descriptionRequiredPlaceholder') : tCur('form.descriptionPlaceholder')}
+              placeholder={requiresDescription ? t('curationEditPopup.form.descriptionRequiredPlaceholder') : t('curationEditPopup.form.descriptionPlaceholder')}
               className="curation-edit-modal__textarea"
               rows={3}
               required={requiresDescription}
@@ -253,7 +252,7 @@ const CurationEditPopup = ({
           {/* Custom Color */}
           {canUseCustomColor && (
             <div className="curation-edit-modal__form-group">
-              <label htmlFor="custom-color">{tCur('form.customColor')}</label>
+              <label htmlFor="custom-color">{t('curationEditPopup.form.customColor')}</label>
               <div className="curation-edit-modal__color-input">
                 <input
                   id="custom-color"
@@ -276,16 +275,16 @@ const CurationEditPopup = ({
           {/* Custom CSS */}
           {canUseCustomCSS ? (
             <div className="curation-edit-modal__form-group">
-              <label htmlFor="custom-css">{tCur('form.customCSS')}</label>
+              <label htmlFor="custom-css">{t('curationEditPopup.form.customCSS')}</label>
               <textarea
                 id="custom-css"
                 value={formData.customCSS}
                 onChange={(e) => handleInputChange('customCSS', e.target.value)}
-                placeholder={tCur('form.customCSSPlaceholder')}
+                placeholder={t('curationEditPopup.form.customCSSPlaceholder')}
                 className="curation-edit-modal__css-textarea"
                 rows={8}
               />
-              <p className="curation-edit-modal__help-text">{tCur('form.customCSSHelp')}</p>
+              <p className="curation-edit-modal__help-text">{t('curationEditPopup.form.customCSSHelp')}</p>
               
               {/* Preview Button */}
               <button
@@ -299,7 +298,7 @@ const CurationEditPopup = ({
                 }}
                 disabled={!curation?.levelId}
               >
-                {tCur('form.previewCSS')}
+                {t('curationEditPopup.form.previewCSS')}
               </button>
             </div>
           ) : (
@@ -316,7 +315,7 @@ const CurationEditPopup = ({
 
           {/* Thumbnail Upload */}
           <div className="curation-edit-modal__form-group">
-            <label>{tCur('form.thumbnail')}</label>
+            <label>{t('curationEditPopup.form.thumbnail')}</label>
             <ThumbnailUpload
               currentThumbnail={curation.previewLink}
               onThumbnailUpdate={(thumbnailUrl) => {

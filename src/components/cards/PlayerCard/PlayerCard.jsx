@@ -1,9 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import "./playercard.css"
 import { useTranslation } from "react-i18next";
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { PlayerContext } from "@/contexts/PlayerContext";
-import { DifficultyContext } from "@/contexts/DifficultyContext";
 import { formatNumber } from "@/utils";
 import { UserAvatar } from "@/components/layout";
 import { useAuth } from "@/contexts/AuthContext";
@@ -17,22 +16,21 @@ const passes = ["totalPasses", "universalPassCount", "worldsFirstCount"];
 const PlayerCard = ({player, onCreatorAssignmentClick}) => {
   const { sortBy } = useContext(PlayerContext);
   const { t } = useTranslation('components');
-  const tCard = (key) => t(`cards.player.${key}`) || key;
   const navigate = useNavigate();
   const { user } = useAuth();
 
   const sortLabels = {
-    rankedScore: tCard('stats.rankedScore'),
-    generalScore: tCard('stats.generalScore'),
-    ppScore: tCard('stats.ppScore'),
-    wfScore: tCard('stats.wfScore'),
-    score12K: tCard('stats.score12K'),
-    averageXacc: tCard('stats.averageXacc'),
-    totalPasses: tCard('stats.totalPasses'),
-    universalPassCount: tCard('stats.universalPassCount'),
-    worldsFirstCount: tCard('stats.worldsFirstCount'),
-    topDiff: tCard('stats.topDiff'),
-    top12kDiff: tCard('stats.top12kDiff')
+    rankedScore: t('cards.player.stats.rankedScore'),
+    generalScore: t('cards.player.stats.generalScore'),
+    ppScore: t('cards.player.stats.ppScore'),
+    wfScore: t('cards.player.stats.wfScore'),
+    score12K: t('cards.player.stats.score12K'),
+    averageXacc: t('cards.player.stats.averageXacc'),
+    totalPasses: t('cards.player.stats.totalPasses'),
+    universalPassCount: t('cards.player.stats.universalPassCount'),
+    worldsFirstCount: t('cards.player.stats.worldsFirstCount'),
+    topDiff: t('cards.player.stats.topDiff'),
+    top12kDiff: t('cards.player.stats.top12kDiff')
   };
 
   const redirect = () => {
@@ -133,7 +131,7 @@ const PlayerCard = ({player, onCreatorAssignmentClick}) => {
 
       <div className="name-wrapper">
         <div className="group">
-          <p className="player-exp">{tCard('title')} | ID: {player.id}</p>
+          <p className="player-exp">{t('cards.player.title')} | ID: {player.id}</p>
         </div>
         <div className="name-container">
           <p className='player-name'>

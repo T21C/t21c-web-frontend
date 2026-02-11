@@ -15,7 +15,6 @@ import { useDifficultyContext } from '@/contexts/DifficultyContext';
 
 const PassSubmissions = ({ setIsAutoAllowing }) => {
   const { t } = useTranslation('components');
-  const tPass = (key, params = {}) => t(`passSubmissions.${key}`, params);
 
   const [submissions, setSubmissions] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -124,13 +123,13 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
         ));
       }
 
-      toast.success(tPass('success.playerAssigned', { 
+      toast.success(t('passSubmissions.success.playerAssigned', { 
         playerName: player.name 
       }));
 
     } catch (error) {
       console.error('Error assigning player:', error);
-      toast.error(tPass('errors.playerAssignment'));
+      toast.error(t('passSubmissions.errors.playerAssignment'));
     }
   };
 
@@ -197,7 +196,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
 
     } catch (error) {
       console.error('Error processing submission:', error);
-      toast.error(tPass('errors.processing'));
+      toast.error(t('passSubmissions.errors.processing'));
       setDisabledButtons(prev => {
         const newState = { ...prev };
         delete newState[submissionId];
@@ -227,7 +226,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
       await handleSubmission(submission.id, 'approve');
     } catch (error) {
       console.error('Error updating submission with profile:', error);
-      toast.error(tPass('errors.profileUpdate'));
+      toast.error(t('passSubmissions.errors.profileUpdate'));
     } finally {
       setProfileCreation({
         show: false,
@@ -253,12 +252,12 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
       await handlePlayerSelect(selectedSubmission.id, newPlayer);
       setShowPlayerPopup(false);
       setSelectedSubmission(null);
-      toast.success(tPass('success.playerCreated', { 
+      toast.success(t('passSubmissions.success.playerCreated', { 
         playerName: newPlayer.name 
       }));
     } catch (error) {
       console.error('Error assigning new player:', error);
-      toast.error(tPass('errors.playerAssignment'));
+      toast.error(t('passSubmissions.errors.playerAssignment'));
     }
   };
 
@@ -275,13 +274,13 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
         window.dispatchEvent(new CustomEvent('autoAllowComplete', {
           detail: { count: successCount }
         }));
-        toast.success(tPass('success.autoAllow', { 
+        toast.success(t('passSubmissions.success.autoAllow', { 
           count: successCount 
         }));
       }
     } catch (error) {
       console.error('Error auto-allowing submissions:', error);
-      toast.error(tPass('errors.autoAllow'));
+      toast.error(t('passSubmissions.errors.autoAllow'));
       
       // Dispatch completion event with error
       window.dispatchEvent(new CustomEvent('autoAllowComplete', {
@@ -303,7 +302,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
   }, []);
 
   if (submissions?.length === 0 && !isLoading) {
-    return <p className="no-submissions">{tPass('noSubmissions')}</p>;
+    return <p className="no-submissions">{t('passSubmissions.noSubmissions')}</p>;
   }
 
   return (
@@ -324,7 +323,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
               <div className="card-content">
                 <div className="submission-details">
                   <div className="detail-row">
-                    <span className="detail-label">{tPass('details.level')}</span>
+                    <span className="detail-label">{t('passSubmissions.details.level')}</span>
                     <div
                       className="level-info"
                       onClick={() => {
@@ -339,22 +338,22 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                   </div>
 
                   <div className="detail-row">
-                    <span className="detail-label">{tPass('details.player')}</span>
+                    <span className="detail-label">{t('passSubmissions.details.player')}</span>
                     <span className="detail-value">{submission.passer || "Null"}</span>
                   </div>
 
                   <div className="detail-row">
-                    <span className="detail-label">{tPass('details.feelingDiff')}</span>
+                    <span className="detail-label">{t('passSubmissions.details.feelingDiff')}</span>
                     <span className="detail-value">{submission.feelingDifficulty || "Null"}</span>
                   </div>
                 
                   <div className="detail-row">
-                    <span className="detail-label">{tPass('details.speed')}</span>
+                    <span className="detail-label">{t('passSubmissions.details.speed')}</span>
                     <span className="detail-value">{submission.speed || "1.0"}</span>
                   </div>
 
                   <div className="detail-row">
-                    <span className="detail-label">{tPass('details.submitter')}</span>
+                    <span className="detail-label">{t('passSubmissions.details.submitter')}</span>
                     <div className="submitter-details">
                       <span className="detail-value">{submission.submitterDiscordUsername? `@${submission.submitterDiscordUsername}` : submission.passSubmitter?.username || "Null"}</span>
                       <span className="detail-subvalue">#{submission.passSubmitter?.playerId || "Null"}</span>
@@ -362,7 +361,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                   </div>
 
                   <div className="detail-row">
-                    <span className="detail-label">{tPass('details.judgements.label')}</span>
+                    <span className="detail-label">{t('passSubmissions.details.judgements.label')}</span>
                     <div className="judgements-details">
                       <span className="judgement early-double">{submission.judgements?.earlyDouble !== null ? submission.judgements?.earlyDouble : "0"}</span>
                       <span className="judgement early-single">{submission.judgements?.earlySingle !== null ? submission.judgements?.earlySingle : "0"}</span>
@@ -375,26 +374,26 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                   </div>
 
                   <div className="detail-row">
-                    <span className="detail-label">{tPass('details.flags.label')}</span>
+                    <span className="detail-label">{t('passSubmissions.details.flags.label')}</span>
                     <div className="flags-details">
-                      {submission.flags?.is12K && <span>{tPass('details.flags.types.12k')}</span>}
-                      {submission.flags?.isNoHoldTap && <span>{tPass('details.flags.types.nht')}</span>}
-                      {submission.flags?.is16K && <span>{tPass('details.flags.types.16k')}</span>}
+                      {submission.flags?.is12K && <span>{t('passSubmissions.details.flags.types.12k')}</span>}
+                      {submission.flags?.isNoHoldTap && <span>{t('passSubmissions.details.flags.types.nht')}</span>}
+                      {submission.flags?.is16K && <span>{t('passSubmissions.details.flags.types.16k')}</span>}
                     </div>
                   </div>
 
                   <div className="detail-row">
-                    <span className="detail-label">{tPass('details.uploadTime')}</span>
+                    <span className="detail-label">{t('passSubmissions.details.uploadTime')}</span>
                     <span className="detail-value">
                       {formatDate(submission.rawTime || Date.now(), i18next?.language)}
                     </span>
                   </div>
 
                   <div className="player-assignment">
-                    <h4>{tPass('playerAssignment.title')}</h4>
+                    <h4>{t('passSubmissions.playerAssignment.title')}</h4>
                       <div className="profile-request-section" style={{display: submission.passerRequest ? 'block' : 'none'}}>
                         <span className="profile-request-badge">
-                          {tPass('playerAssignment.newProfile')}
+                          {t('passSubmissions.playerAssignment.newProfile')}
                         </span>
                         
                       </div>
@@ -412,7 +411,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
 
                     {submission.assignedPlayer && (
                       <div className="assigned-player-info">
-                        <span className="assigned-player-label">{tPass('playerAssignment.current')}</span>
+                        <span className="assigned-player-label">{t('passSubmissions.playerAssignment.current')}</span>
                         <span className="assigned-player-name">
                           {submission.assignedPlayer.name || "Null"} (ID: {submission.assignedPlayerId || "Null"})
                         </span>
@@ -421,7 +420,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                           onClick={() => handleManagePlayer(submission)}
                           disabled={!submission.assignedPlayerId}
                         >
-                          {tPass('playerAssignment.manageProfile')}
+                          {t('passSubmissions.playerAssignment.manageProfile')}
                         </button>
                       </div>
                     )}
@@ -431,17 +430,17 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                         onClick={() => handleSubmission(submission.id, 'approve')}
                         className="approve-btn"
                         disabled={disabledButtons[submission.id] || !submission.assignedPlayerId || (submission.passerRequest && !submission.assignedPlayerId)}
-                        title={!submission.assignedPlayerId ? tPass('errors.noPlayer') : 
-                               (submission.passerRequest && !submission.assignedPlayerId) ? tPass('errors.needProfileCreation') : ''}
+                        title={!submission.assignedPlayerId ? t('passSubmissions.errors.noPlayer') : 
+                               (submission.passerRequest && !submission.assignedPlayerId) ? t('passSubmissions.errors.needProfileCreation') : ''}
                       >
-                        {tPass('buttons.allow')}
+                        {t('passSubmissions.buttons.allow')}
                       </button>
                       <button
                         onClick={() => handleSubmission(submission.id, 'decline')}
                         className="decline-btn"
                         disabled={disabledButtons[submission.id]}
                       >
-                        {tPass('buttons.decline')}
+                        {t('passSubmissions.buttons.decline')}
                       </button>
                     </div>
                   </div>

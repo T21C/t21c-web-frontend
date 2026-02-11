@@ -4,9 +4,6 @@ import React, { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
-import { isoToEmoji } from "@/utils";
-import { useContext } from "react";
-import { UserContext } from "@/contexts/UserContext";
 import LogoFullOutlineSVG from "@/assets/tuf-logo/LogoFullOutlined/LogoFullOutlined";
 import NavDropdown from "./NavDropdown";
 import NavLinkItem from "./NavLinkItem";
@@ -17,16 +14,13 @@ import { createNavigationConfig } from "./navigationConfig";
 
 const Navigation = ({ children, config: externalConfig = null }) => {
   const { t } = useTranslation("components");
-  const tNav = (key) => t(`navigation.main.${key}`) || key;
-  const tLang = (key) => t(`navigation.languages.${key}`) || key;
 
   const [openNav, setOpenNav] = useState(false);
   const { user, initiateLogin } = useAuth();
   const location = useLocation();
-  const { language } = useContext(UserContext);
 
   // Create navigation config from external config or generate from context
-  const config = externalConfig || createNavigationConfig(tNav, { user, location });
+  const config = externalConfig || createNavigationConfig(t, { user, location });
 
   // Close mobile nav when location changes
   useEffect(() => {
@@ -72,7 +66,6 @@ const Navigation = ({ children, config: externalConfig = null }) => {
             key={item.to || index}
             to={item.to}
             label={item.translationKey}
-            getTranslation={tNav}
             className={item.className}
             linkClassName={item.linkClassName}
           />
@@ -82,9 +75,8 @@ const Navigation = ({ children, config: externalConfig = null }) => {
         return (
           <NavDropdown
             key={item.label || index}
-            label={tNav(item.label)}
+            label={t(item.label)}
             items={item.items}
-            getTranslation={tNav}
             isActive={item.isActive}
             className={item.className}
             showAsLink={item.showAsLink}
@@ -102,7 +94,7 @@ const Navigation = ({ children, config: externalConfig = null }) => {
             className={item.className || "nav-signin-button"}
             onClick={onClickHandler}
           >
-            {tNav(item.translationKey)}
+            {t(item.translationKey)}
           </button>
         );
 
@@ -112,7 +104,6 @@ const Navigation = ({ children, config: externalConfig = null }) => {
             return (
               <LanguageSelector
                 key="language-selector"
-                getTranslation={tLang}
                 {...item.props}
               />
             );
@@ -121,7 +112,6 @@ const Navigation = ({ children, config: externalConfig = null }) => {
             return (
               <UserMenu
                 key="user-menu"
-                getTranslation={tNav}
                 isActive={item.props?.isActive}
               />
             );
@@ -165,7 +155,6 @@ const Navigation = ({ children, config: externalConfig = null }) => {
           {/* Mobile Menu Button */}
           <div className="nav-mobile-controls">
             <LanguageSelector
-              getTranslation={tLang}
               variant="mobile"
               asListItem={false}
             />
@@ -193,8 +182,6 @@ const Navigation = ({ children, config: externalConfig = null }) => {
       <MobileMenu
         isOpen={openNav}
         onClose={toggleMobileNav}
-        getTranslation={tNav}
-        getLangTranslation={tLang}
         config={config}
         initiateLogin={initiateLogin}
       >

@@ -6,7 +6,6 @@ import { ChevronIcon, ExternalLinkIcon } from '@/components/common/icons';
 
 export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDelete = false }) => {
   const { t } = useTranslation('components');
-  const tGallery = (key, params = {}) => t(`evidenceGallery.${key}`, params) || key;
   const popupRef = useRef(null);
   const imageRef = useRef(null);
   const containerRef = useRef(null);
@@ -93,7 +92,7 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
   const handleDelete = async (evidenceId, index) => {
     if (!onDelete || !canDelete) return;
     
-    if (window.confirm(tGallery('confirmDelete'))) {
+    if (window.confirm(t('evidenceGallery.confirmDelete'))) {
       try {
         await onDelete(evidenceId);
         // If we deleted the current image, adjust index
@@ -223,11 +222,11 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
       <div className="evidence-gallery-popup-overlay" onClick={onClose}>
         <div className="evidence-gallery-popup" ref={popupRef} onClick={(e) => e.stopPropagation()}>
           <div className="popup-header">
-            <h2>{tGallery('title')}</h2>
+            <h2>{t('evidenceGallery.title')}</h2>
             <button className="close-button" onClick={onClose}>×</button>
           </div>
           <div className="popup-content">
-            <p className="no-evidence">{tGallery('noEvidence')}</p>
+            <p className="no-evidence">{t('evidenceGallery.noEvidence')}</p>
           </div>
         </div>
       </div>
@@ -242,7 +241,7 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
       <div className="evidence-gallery-popup" ref={popupRef} onClick={(e) => e.stopPropagation()}>
         <div className="popup-header">
           <h2>
-            {tGallery('title')} ({currentIndex + 1}/{evidenceList.length})
+            {t('evidenceGallery.title')} ({currentIndex + 1}/{evidenceList.length})
             <ExternalLinkIcon onClick={() => window.open(currentEvidence.link, '_blank')} />
           </h2>
           <button className="close-button" onClick={onClose}>×</button>
@@ -269,7 +268,7 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
                   className="nav-button prev-button"
                   onClick={handlePrevious}
                   disabled={currentIndex === 0}
-                  aria-label={tGallery('previous')}
+                  aria-label={t('evidenceGallery.previous')}
                 >
                   <ChevronIcon size={32} direction="left" />
                 </button>
@@ -277,7 +276,7 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
                   className="nav-button next-button"
                   onClick={handleNext}
                   disabled={currentIndex === evidenceList.length - 1}
-                  aria-label={tGallery('next')}
+                  aria-label={t('evidenceGallery.next')}
                 >
                   <ChevronIcon size={32} direction="right" />
                 </button>
@@ -314,9 +313,9 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
                       setZoom(defaultZoom);
                       setPosition({ x: 0, y: 0 });
                     }}
-                    title={tGallery('resetZoom')}
+                    title={t('evidenceGallery.resetZoom')}
                   >
-                    {tGallery('reset')}
+                    {t('evidenceGallery.reset')}
                   </button>
                   <span className="zoom-level">{Math.round((zoom - defaultZoom) * 100 + defaultZoom * 100)}%</span>
                 </div>
@@ -326,14 +325,14 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
                 <button
                   className="delete-evidence-button"
                   onClick={() => handleDelete(currentEvidence.id, currentIndex)}
-                  title={tGallery('delete')}
+                  title={t('evidenceGallery.delete')}
                 >
                   🗑️
                 </button>
               )}
               {currentEvidence.extraInfo && (
                 <div className="evidence-extra-info-display">
-                  <h4>{tGallery('extraInfo') || 'Additional Information'}</h4>
+                  <h4>{t('evidenceGallery.extraInfo') || 'Additional Information'}</h4>
                   <p className="evidence-extra-info-text">{currentEvidence.extraInfo}</p>
                 </div>
               )}
@@ -346,7 +345,7 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
                     className="nav-button prev-button"
                     onClick={handlePrevious}
                     disabled={currentIndex === 0}
-                    aria-label={tGallery('previous')}
+                    aria-label={t('evidenceGallery.previous')}
                   >
                     ‹
                   </button>
@@ -354,7 +353,7 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
                     className="nav-button next-button"
                     onClick={handleNext}
                     disabled={currentIndex === evidenceList.length - 1}
-                    aria-label={tGallery('next')}
+                    aria-label={t('evidenceGallery.next')}
                   >
                     ›
                   </button>
@@ -371,10 +370,10 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
                 >
                   {currentEvidence.link}
                 </a>
-                <p className="evidence-link-hint">{tGallery('externalLinkHint') || 'Click to open external link'}</p>
+                <p className="evidence-link-hint">{t('evidenceGallery.externalLinkHint') || 'Click to open external link'}</p>
                 {currentEvidence.extraInfo && (
                   <div className="evidence-extra-info-display">
-                    <h4>{tGallery('extraInfo') || 'Additional Information'}</h4>
+                    <h4>{t('evidenceGallery.extraInfo') || 'Additional Information'}</h4>
                     <p className="evidence-extra-info-text">{currentEvidence.extraInfo}</p>
                   </div>
                 )}
@@ -384,7 +383,7 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
                 <button
                   className="delete-evidence-button"
                   onClick={() => handleDelete(currentEvidence.id, currentIndex)}
-                  title={tGallery('delete')}
+                  title={t('evidenceGallery.delete')}
                 >
                   🗑️
                 </button>

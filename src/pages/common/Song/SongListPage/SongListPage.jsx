@@ -11,7 +11,6 @@ import './songListPage.css';
 
 const SongListPage = () => {
   const { t } = useTranslation(['pages', 'common']);
-  const tSong = (key, params = {}) => t(`songList.${key}`, params);
   const navigate = useNavigate();
   const currentUrl = window.location.origin + location.pathname;
   const {
@@ -125,10 +124,10 @@ const SongListPage = () => {
   };
   
   const sortOptions = [
-    { value: 'NAME_ASC', label: tSong('sort.nameAsc') },
-    { value: 'NAME_DESC', label: tSong('sort.nameDesc') },
-    { value: 'ID_ASC', label: tSong('sort.idAsc') },
-    { value: 'ID_DESC', label: tSong('sort.idDesc') }
+    { value: 'NAME_ASC', label: t('songList.sort.nameAsc') },
+    { value: 'NAME_DESC', label: t('songList.sort.nameDesc') },
+    { value: 'ID_ASC', label: t('songList.sort.idAsc') },
+    { value: 'ID_DESC', label: t('songList.sort.idDesc') }
   ];
 
   const verificationStateOptions = [
@@ -144,22 +143,22 @@ const SongListPage = () => {
   return (
     <div className="song-list-page">
       <MetaTags
-        title={tSong('meta.title')}
-        description={tSong('meta.description')}
+        title={t('songList.meta.title')}
+        description={t('songList.meta.description')}
         url={currentUrl}
         image="/og-image.jpg"
         type="website"
       />
 
       <div className="song-list-container">
-        <h1>{tSong('title')}</h1>
+        <h1>{t('songList.title')}</h1>
 
         <div className="song-list-controls">
           <div className="search-container">
             <input
               type="text"
               className="search-input"
-              placeholder={tSong('search.placeholder')}
+              placeholder={t('songList.search.placeholder')}
               value={searchQuery}
               onChange={handleSearchChange}
             />
@@ -170,7 +169,7 @@ const SongListPage = () => {
               options={verificationStateOptions}
               value={verificationStateOptions.find(opt => opt.value === verificationState) || verificationStateOptions[0]}
               onChange={handleVerificationChange}
-              label={tSong('filter.verificationState')}
+              label={t('songList.filter.verificationState')}
               width="12rem"
             />
           </div>
@@ -180,7 +179,7 @@ const SongListPage = () => {
               options={sortOptions}
               value={sortOptions.find(opt => opt.value === sortBy) || sortOptions[0]}
               onChange={handleSortChange}
-              label={tSong('sort.label')}
+              label={t('songList.sort.label')}
               width="12rem"
             />
           </div>
@@ -198,7 +197,7 @@ const SongListPage = () => {
             endMessage={
               songs.length > 0 && (
                 <p className="end-message">
-                  <b>{tSong('infScroll.end')}</b>
+                  <b>{t('songList.infScroll.end')}</b>
                 </p>
               )
             }
@@ -255,7 +254,7 @@ const SongListPage = () => {
 
         {!loading && songs.length === 0 && (
           <div className="no-songs">
-            <p>{tSong('noSongs')}</p>
+            <p>{t('songList.noSongs')}</p>
           </div>
         )}
       </div>

@@ -4,7 +4,6 @@ import { useTranslation } from 'react-i18next';
 
 export const PassHelpPopup = ({ onClose }) => {
   const { t } = useTranslation(['components']);
-  const tHelp = (key) => t(`pass.helpPopup.${key}`) || key;
   const popupRef = useRef(null);
 
   useEffect(() => {
@@ -35,7 +34,7 @@ export const PassHelpPopup = ({ onClose }) => {
         <button 
           className="close-popup-btn"
           onClick={onClose}
-          aria-label={tHelp('closeButton')}
+          aria-label={t('pass.helpPopup.closeButton')}
         >
           <svg 
             width="24" 
@@ -54,40 +53,40 @@ export const PassHelpPopup = ({ onClose }) => {
         </button>
 
         <div className="help-content">
-          <h2>{tHelp('title')}</h2>
+          <h2>{t('pass.helpPopup.title')}</h2>
 
           <section>
-            <h3>{tHelp('sections.search.title')}</h3>
-            <p>{tHelp('sections.search.description')}</p>
+            <h3>{t('pass.helpPopup.sections.search.title')}</h3>
+            <p>{t('pass.helpPopup.sections.search.description')}</p>
             <div className="examples">
-              <h4>{tHelp('sections.search.examples.title')}</h4>
+              <h4>{t('pass.helpPopup.sections.search.examples.title')}</h4>
               <ul>
-                <li><b><code>player:Name</code></b> - {tHelp('sections.search.examples.playerField')}</li>
-                <li><b><code>video:Link</code></b> - {tHelp('sections.search.examples.videoField')}</li>
+                <li><b><code>player:Name</code></b> - {t('pass.helpPopup.sections.search.examples.playerField')}</li>
+                <li><b><code>video:Link</code></b> - {t('pass.helpPopup.sections.search.examples.videoField')}</li>
               </ul>
             </div>
           </section>
 
           <section>
-            <h3>{tHelp('sections.operators.title')}</h3>
-            <p>{tHelp('sections.operators.description')}</p>
+            <h3>{t('pass.helpPopup.sections.operators.title')}</h3>
+            <p>{t('pass.helpPopup.sections.operators.description')}</p>
             <div className="examples">
-              <h4>{tHelp('sections.operators.examples.title')}</h4>
+              <h4>{t('pass.helpPopup.sections.operators.examples.title')}</h4>
               <ul>
-                <li><b><code>player:Name, video:Link</code></b> - {tHelp('sections.operators.examples.and')}</li>
-                <li><b><code>player=Exact | player:Partial</code></b> - {tHelp('sections.operators.examples.or')}</li>
-                <li><b><code>player:Name, video:Link | player=Exact</code></b> - {tHelp('sections.operators.examples.complex')}</li>
+                <li><b><code>player:Name, video:Link</code></b> - {t('pass.helpPopup.sections.operators.examples.and')}</li>
+                <li><b><code>player=Exact | player:Partial</code></b> - {t('pass.helpPopup.sections.operators.examples.or')}</li>
+                <li><b><code>player:Name, video:Link | player=Exact</code></b> - {t('pass.helpPopup.sections.operators.examples.complex')}</li>
               </ul>
             </div>
           </section>
 
           <section>
-            <h3>{tHelp('sections.tips.title')}</h3>
+            <h3>{t('pass.helpPopup.sections.tips.title')}</h3>
             <ul>
-              <li>{tHelp('sections.tips.points.caseSensitive')}</li>
-              <li>{tHelp('sections.tips.points.partial')}</li>
-              <li>{tHelp('sections.tips.points.spaces')}</li>
-              <li>{tHelp('sections.tips.points.order')}</li>
+              <li>{t('pass.helpPopup.sections.tips.points.caseSensitive')}</li>
+              <li>{t('pass.helpPopup.sections.tips.points.partial')}</li>
+              <li>{t('pass.helpPopup.sections.tips.points.spaces')}</li>
+              <li>{t('pass.helpPopup.sections.tips.points.order')}</li>
             </ul>
           </section>
         </div>

@@ -6,7 +6,6 @@ import './profilecreationmodal.css';
 
 export const ProfileCreationModal = ({ profiles, onComplete, onCancel }) => {
   const { t } = useTranslation(['components', 'common']);
-  const tModal = (key, params = {}) => t(`profileCreationModal.${key}`, params);
 
   const [createdProfiles, setCreatedProfiles] = useState([]);
   const [currentProfile, setCurrentProfile] = useState(0);
@@ -84,21 +83,21 @@ export const ProfileCreationModal = ({ profiles, onComplete, onCancel }) => {
   return (
     <div className="profile-creation-modal">
       <div className="modal-content">
-        <h2>{tModal('title')}</h2>
+        <h2>{t('profileCreationModal.title')}</h2>
         <p className="progress">
-          {tModal('progress', { current: currentProfile + 1, total: profiles.length })}
+          {t('profileCreationModal.progress', { current: currentProfile + 1, total: profiles.length })}
         </p>
 
         <form onSubmit={handleSubmit}>
           <div className="profile-info">
-            <h3>{tModal('profileTypes.' + profile.type)}</h3>
+            <h3>{t('profileCreationModal.profileTypes.' + profile.type)}</h3>
             <p className="profile-name">{profile.name}</p>
           </div>
 
           {(profile.type === 'charter' || profile.type === 'vfx') && (
             <>
               <div className="form-group">
-                <label htmlFor="discordId">{tModal('fields.discordId')}</label>
+                <label htmlFor="discordId">{t('profileCreationModal.fields.discordId')}</label>
                 <input
                   type="text"
                   id="discordId"
@@ -110,7 +109,7 @@ export const ProfileCreationModal = ({ profiles, onComplete, onCancel }) => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="country">{tModal('fields.country')}</label>
+                <label htmlFor="country">{t('profileCreationModal.fields.country')}</label>
                 <input
                   type="text"
                   id="country"
@@ -125,7 +124,7 @@ export const ProfileCreationModal = ({ profiles, onComplete, onCancel }) => {
 
           {profile.type === 'team' && (
             <div className="form-group">
-              <label htmlFor="description">{tModal('fields.description')}</label>
+              <label htmlFor="description">{t('profileCreationModal.fields.description')}</label>
               <textarea
                 id="description"
                 name="description"
@@ -153,7 +152,7 @@ export const ProfileCreationModal = ({ profiles, onComplete, onCancel }) => {
               disabled={isLoading}
             >
               {isLoading ? t('loading.creating', { ns: 'common' }) : 
-               isLastProfile ? tModal('buttons.finish') : tModal('buttons.next')}
+               isLastProfile ? t('profileCreationModal.buttons.finish') : t('profileCreationModal.buttons.next')}
             </button>
           </div>
         </form>

@@ -13,7 +13,6 @@ import { AccessDenied } from '@/components/common/display';
 
 const CurationCssPreviewPage = () => {
   const { t } = useTranslation(['pages', 'common']);
-  const tCur = (key, params = {}) => t(`curationCssPreview.${key}`, params);
   const { user } = useAuth();
   
   const { levelId } = useParams();
@@ -131,7 +130,7 @@ const CurationCssPreviewPage = () => {
     try {
       setIsSaving(true);
       
-      const response = await api.put(`${import.meta.env.VITE_CURATIONS}/${curation.id}`, {
+      await api.put(`${import.meta.env.VITE_CURATIONS}/${curation.id}`, {
         typeId: parseInt(curation.typeId),
         shortDescription: curation.shortDescription,
         description: curation.description,
@@ -139,7 +138,7 @@ const CurationCssPreviewPage = () => {
         customColor: curation.customColor
       });
 
-      toast.success(tCur('notifications.saved'));
+      toast.success(t('curationCssPreview.notifications.saved'));
       
       // Create updated curation object with new CSS
       const updatedCuration = {
@@ -155,7 +154,7 @@ const CurationCssPreviewPage = () => {
         }
       });
     } catch (error) {
-      const errorMessage = error.response?.data?.error || tCur('errors.saveFailed');
+      const errorMessage = error.response?.data?.error || t('curationCssPreview.errors.saveFailed');
       toast.error(errorMessage);
     } finally {
       setIsSaving(false);
@@ -194,8 +193,8 @@ const CurationCssPreviewPage = () => {
     const currentUrl = window.location.origin + location.pathname;
     return (
       <AccessDenied 
-        metaTitle={tCur('meta.title')}
-        metaDescription={tCur('meta.description')}
+        metaTitle={t('curationCssPreview.meta.title')}
+        metaDescription={t('curationCssPreview.meta.description')}
         currentUrl={currentUrl}
       />
     );
@@ -206,8 +205,8 @@ const CurationCssPreviewPage = () => {
     const currentUrl = window.location.origin + location.pathname;
     return (
       <AccessDenied 
-        metaTitle={tCur('meta.title')}
-        metaDescription={tCur('meta.description')}
+        metaTitle={t('curationCssPreview.meta.title')}
+        metaDescription={t('curationCssPreview.meta.description')}
         currentUrl={currentUrl}
       />
     );
@@ -217,7 +216,7 @@ const CurationCssPreviewPage = () => {
     return (
       <div className="curation-css-preview-loading">
         <div className="spinner spinner-large spinner-primary"></div>
-        <p>{tCur('loading')}</p>
+        <p>{t('curationCssPreview.loading')}</p>
       </div>
     );
   }
@@ -228,7 +227,7 @@ const CurationCssPreviewPage = () => {
       <button
         className="fixed-collapse-button"
         onClick={() => setIsEditorCollapsed(!isEditorCollapsed)}
-        title={isEditorCollapsed ? tCur('editor.expand') : tCur('editor.collapse')}
+        title={isEditorCollapsed ? t('curationCssPreview.editor.expand') : t('curationCssPreview.editor.collapse')}
       >
         {isEditorCollapsed ? '◀' : '▶'}
       </button>
@@ -237,8 +236,8 @@ const CurationCssPreviewPage = () => {
       <div className={`css-editor-overlay ${isEditorCollapsed ? 'collapsed' : ''}`}>
         <div className="css-editor-header">
           <div className="css-editor-title">
-            <h3>{tCur('editor.title')}</h3>
-            <p>{tCur('editor.subtitle')}</p>
+            <h3>{t('curationCssPreview.editor.title')}</h3>
+            <p>{t('curationCssPreview.editor.subtitle')}</p>
           </div>
         </div>
         
@@ -252,16 +251,16 @@ const CurationCssPreviewPage = () => {
           )}
           
           <div className="css-editor-textarea-container">
-            <label htmlFor="css-editor">{tCur('editor.cssLabel')}</label>
+            <label htmlFor="css-editor">{t('curationCssPreview.editor.cssLabel')}</label>
             <textarea
               id="css-editor"
               value={customCSS}
               onChange={(e) => setCustomCSS(e.target.value)}
-              placeholder={tCur('editor.placeholder')}
+              placeholder={t('curationCssPreview.editor.placeholder')}
               className="css-editor-textarea"
             />
             <div className="css-editor-help">
-              <p>{tCur('editor.help')}</p>
+              <p>{t('curationCssPreview.editor.help')}</p>
               <p><strong>Note:</strong> Write CSS as if targeting <code>.level-detail.curated</code>. The system will automatically scope it properly.</p>
               <p><strong>Example:</strong> <code>.left {'{'} box-shadow: 0 0 10px; {'}'}</code> will target the left section.</p>
             </div>
@@ -273,21 +272,21 @@ const CurationCssPreviewPage = () => {
               onClick={handleDiscard}
               disabled={isSaving}
             >
-              {tCur('actions.discard')}
+              {t('curationCssPreview.actions.discard')}
             </button>
             <button
               className="save-button"
               onClick={handleSave}
               disabled={isSaving}
             >
-              {isSaving ? t('loading.saving', { ns: 'common' }) : tCur('actions.save')}
+              {isSaving ? t('loading.saving', { ns: 'common' }) : t('curationCssPreview.actions.save')}
             </button>
             <button
               className="back-to-edit-button"
               onClick={handleBackToEdit}
               disabled={isSaving}
             >
-              {tCur('actions.backToEdit')}
+              {t('curationCssPreview.actions.backToEdit')}
             </button>
           </div>
         </div>

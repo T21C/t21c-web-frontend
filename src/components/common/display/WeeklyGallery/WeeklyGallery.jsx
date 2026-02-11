@@ -13,7 +13,6 @@ const WeeklyGallery = ({
   className = ''
 }) => {
   const { t } = useTranslation('components');
-  const tGallery = (key, params = {}) => t(`weeklyGallery.${key}`, params);
   
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoScrolling, setIsAutoScrolling] = useState(autoScroll);
@@ -209,7 +208,7 @@ const WeeklyGallery = ({
       <div className={`weekly-gallery ${className}`}>
         <div className="weekly-gallery__empty">
           <div className="weekly-gallery__empty-icon">🎵</div>
-          <p>{tGallery('empty')}</p>
+          <p>{t('weeklyGallery.empty')}</p>
         </div>
       </div>
     );
@@ -240,14 +239,14 @@ const WeeklyGallery = ({
             <button 
               className="weekly-gallery__arrow weekly-gallery__arrow--left"
               onClick={goToPrevious}
-              aria-label={tGallery('navigation.previous')}
+              aria-label={t('weeklyGallery.navigation.previous')}
             >
               <ArrowIcon style={{ transform: 'rotate(180deg)' }} />
             </button>
             <button 
               className="weekly-gallery__arrow weekly-gallery__arrow--right"
               onClick={goToNext}
-              aria-label={tGallery('navigation.next')}
+              aria-label={t('weeklyGallery.navigation.next')}
             >
               <ArrowIcon />
             </button>
@@ -345,7 +344,7 @@ const WeeklyGallery = ({
                 key={index}
                 className={`weekly-gallery__dot ${index === currentIndex ? 'weekly-gallery__dot--active' : ''}`}
                 onClick={() => goToIndex(index)}
-                aria-label={tGallery('navigation.goTo', { position: index + 1 })}
+                aria-label={t('weeklyGallery.navigation.goTo', { position: index + 1 })}
               />
             ))}
           </div>

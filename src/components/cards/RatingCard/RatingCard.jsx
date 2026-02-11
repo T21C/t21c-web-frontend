@@ -3,7 +3,6 @@ import './ratingcard.css';
 import { calculateRatingValue, formatCreatorDisplay, formatDate } from '@/utils/Utility';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import i18next from 'i18next';
 import { getSongDisplayName } from '@/utils/levelHelpers';
@@ -18,13 +17,10 @@ export const RatingCard = ({
   index, 
   setSelectedRating, 
   user, 
-  isSuperAdmin,
   showDetailedView,
   onEditLevel 
 }) => {
     const { t } = useTranslation('components');
-    const tRating = (key, params = {}) => t(`rating.ratingCard.${key}`, params) || key;
-    const { difficultyDict } = useDifficultyContext();
     const [isEditing, setIsEditing] = useState(false);
     const [isReasonExpanded, setIsReasonExpanded] = useState(false);
     const [copySuccess, setCopySuccess] = useState(false);
@@ -52,7 +48,6 @@ export const RatingCard = ({
     const rerateValue = rating.level.rerateNum || rating.requesterFR;
     const rerateReason = rating.level.rerateReason;
     const songTitle = trimString(getSongDisplayName(rating.level), 50);
-    const creator = trimString(rating.level.creator, 30);
     const fullTitle = `${getSongDisplayName(rating.level)} - ${rating.level.creator}`;
     
     const handleReasonClick = () => {
@@ -103,16 +98,16 @@ export const RatingCard = ({
             <div className="header-meta">
               <span 
                 className="updated-at" 
-                title={tRating('tooltips.lastUpdated')}
+                title={t('rating.ratingCard.tooltips.lastUpdated')}
               >
-                {tRating('labels.updatedAt')} {formatDate(rating.updatedAt, i18next?.language)}
+                {t('rating.ratingCard.labels.updatedAt')} {formatDate(rating.updatedAt, i18next?.language)}
               </span>
               <span className="level-id">
                 #{rating.level.id}
               </span>
               <br />
               <span className="cleared-count">
-                {tRating('labels.clearedCount', { count: rating.level.clears || 0 })}
+                {t('rating.ratingCard.labels.clearedCount', { count: rating.level.clears || 0 })}
               </span>
             </div>
           </div>
@@ -121,13 +116,13 @@ export const RatingCard = ({
             {/* Top row - Rating averages */}
             {!showDetailedView && (rating.communityDifficulty || rating.averageDifficulty || userRating) && (
               <div className="rating-info-grid top-row" >
-                <div className="rating-info-item" data-label={tRating('labels.yourRating')}>
+                <div className="rating-info-item" data-label={t('rating.ratingCard.labels.yourRating')}>
                   <div className="content">{userRating}</div>
               </div>
-              <div className="rating-info-item" data-label={tRating('labels.managerAverage')}>
+              <div className="rating-info-item" data-label={t('rating.ratingCard.labels.managerAverage')}>
                 <div className="content">{rating.averageDifficulty?.name}</div>
               </div>
-              <div className="rating-info-item" data-label={tRating('labels.communityAverage')}>
+              <div className="rating-info-item" data-label={t('rating.ratingCard.labels.communityAverage')}>
                   <div className="content">{rating.communityDifficulty?.name}</div>
                 </div>
               </div>
@@ -135,13 +130,13 @@ export const RatingCard = ({
 
             {showDetailedView && (rating.communityDifficulty || rating.averageDifficulty || userRating) && (
               <div className="rating-info-grid top-row" >
-                <div className="rating-info-item" data-label={tRating('labels.yourRating')}>
+                <div className="rating-info-item" data-label={t('rating.ratingCard.labels.yourRating')}>
                   <div className="content">{userRating}</div>
               </div>
-              <div className="rating-info-item" data-label={tRating('labels.managerRatings')}>
+              <div className="rating-info-item" data-label={t('rating.ratingCard.labels.managerRatings')}>
                 <div className="content">{managerRatings}</div>
               </div>
-              <div className="rating-info-item" data-label={tRating('labels.communityRatings')}>
+              <div className="rating-info-item" data-label={t('rating.ratingCard.labels.communityRatings')}>
                   <div className="content">{communityRatings}</div>
                 </div>
               </div>
@@ -161,9 +156,9 @@ export const RatingCard = ({
                 {rerateReason && (
                   <div 
                     className={`rating-info-item rerate-reason ${isReasonExpanded ? 'expanded' : ''} ${!rerateValue ? 'full-width' : ''}`}
-                    data-label={tRating('labels.rerateMessage')}
+                    data-label={t('rating.ratingCard.labels.rerateMessage')}
                     onClick={handleReasonClick}
-                    title={tRating('tooltips.expandReason')}
+                    title={t('rating.ratingCard.tooltips.expandReason')}
                   > 
                     <div className="reason-content">
                       {rerateReason}
@@ -180,7 +175,7 @@ export const RatingCard = ({
               onClick={() => setSelectedRating(rating)} 
               className="view-details-btn"
             >
-              {tRating('buttons.viewDetails')}
+              {t('rating.ratingCard.buttons.viewDetails')}
             </button>
             {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
               <button 
@@ -193,16 +188,16 @@ export const RatingCard = ({
                     <circle cx="25" cy="25" r="20" fill="none" strokeWidth="5"></circle>
                   </svg>
                 ) : (
-                  tRating('buttons.editLevel')
+                  t('rating.ratingCard.buttons.editLevel')
                 )}
               </button>
             )}
             <button
               onClick={handleCopyLink}
               className={`copy-link-btn ${copySuccess ? 'success' : ''}`}
-              title={tRating('tooltips.copyLink')}
+              title={t('rating.ratingCard.tooltips.copyLink')}
             >
-              {copySuccess ? tRating('buttons.copied') : tRating('buttons.copyLink')}
+              {copySuccess ? t('rating.ratingCard.buttons.copied') : t('rating.ratingCard.buttons.copyLink')}
               <LinkIcon size={20} color={copySuccess ? "#4CAF50" : "#ccc"} />
             </button>
           </div>

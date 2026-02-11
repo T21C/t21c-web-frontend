@@ -20,7 +20,6 @@ const formatAverage = (avg) => {
 
 const TopRaterEntry = ({ rater, rank, averagePerDay }) => {
   const { t } = useTranslation('components');
-  const tRater = (key, params) => t(`topRaters.raterEntry.${key}`, params);
 
   // Determine visual indicators based on average per day
   const hasCircleOrnament = averagePerDay >= 5;
@@ -46,18 +45,18 @@ const TopRaterEntry = ({ rater, rank, averagePerDay }) => {
         </div>
         <div className="rater-text">
           <span className="rater-name">
-            {rater.nickname || tRater('unknown')}
+            {rater.nickname || t('topRaters.raterEntry.unknown')}
           </span>
           <span className="internal-username">@{rater.username}</span>
         </div>
       </div>
       <div className="rater-stats">
         <div className={`total-ratings ${hasCircleOrnament ? 'high-value' : ''}`}>
-          <span className="stat-label">{tRater('stats.totalRatings')}</span>
+          <span className="stat-label">{t('topRaters.raterEntry.stats.totalRatings')}</span>
           <span className="stat-value">{formatNumber(rater.ratingCount)}</span>
         </div>
         <div className={`average-per-day ${hasCircleOrnament ? 'high-value' : ''}`}>
-          <span className="stat-label">{tRater('stats.averagePerDay')}</span>
+          <span className="stat-label">{t('topRaters.raterEntry.stats.averagePerDay')}</span>
           <span className="stat-value">{formatAverage(averagePerDay)}</span>
         </div>
       </div>
@@ -67,7 +66,6 @@ const TopRaterEntry = ({ rater, rank, averagePerDay }) => {
 
 const TopRatersPopup = ({ onClose }) => {
   const { t } = useTranslation('components');
-  const tRater = (key, params = {}) => t(`topRaters.${key}`, params) || key;
 
   const [topRaters, setTopRaters] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -204,14 +202,14 @@ const TopRatersPopup = ({ onClose }) => {
     <div className="top-raters-overlay">
       <div className="top-raters-popup">
         <div className="popup-header">
-          <h2>{tRater('title')}</h2>
+          <h2>{t('topRaters.raterEntry.title')}</h2>
           <button className="close-button" onClick={onClose}>×</button>
         </div>
 
         <div className="date-selection">
           <div className="date-inputs">
             <div className="date-input-group">
-              <label htmlFor="start-date-selector">{tRater('dateSelector.startDate')}</label>
+              <label htmlFor="start-date-selector">{t('topRaters.raterEntry.dateSelector.startDate')}</label>
               <input
                 id="start-date-selector"
                 type="date"
@@ -221,7 +219,7 @@ const TopRatersPopup = ({ onClose }) => {
               />
             </div>
             <div className="date-input-group">
-              <label htmlFor="end-date-selector">{tRater('dateSelector.endDate')}</label>
+              <label htmlFor="end-date-selector">{t('topRaters.raterEntry.dateSelector.endDate')}</label>
               <input
                 id="end-date-selector"
                 type="date"
@@ -235,24 +233,24 @@ const TopRatersPopup = ({ onClose }) => {
 
         <div className="overall-stats">
           <div className="stat-item">
-            <span className="stat-label">{tRater('stats.totalUsers')}</span>
+            <span className="stat-label">{t('topRaters.raterEntry.stats.totalUsers')}</span>
             <span className="stat-value">{formatNumber(overallStats.totalUsers)}</span>
           </div>
           <div className="stat-item">
-            <span className="stat-label">{tRater('stats.averageRatingsPerDay')}</span>
+            <span className="stat-label">{t('topRaters.raterEntry.stats.averageRatingsPerDay')}</span>
             <span className="stat-value">{formatAverage(overallStats.averageRatingsPerDay)}</span>
           </div>
           <div className="stat-item">
-            <span className="stat-label">{tRater('stats.totalRatings')}</span>
+            <span className="stat-label">{t('topRaters.raterEntry.stats.totalRatings')}</span>
             <span className="stat-value">{formatNumber(overallStats.totalRatings)}</span>
           </div>
         </div>
 
         <div className="raters-list">
           {isLoading ? (
-            <div className="loading">{tRater('loading')}</div>
+            <div className="loading">{t('topRaters.raterEntry.loading')}</div>
           ) : topRaters.length === 0 ? (
-            <div className="no-raters">{tRater('noRaters')}</div>
+            <div className="no-raters">{t('topRaters.raterEntry.noRaters')}</div>
           ) : (
             topRaters.map((rater, index) => (
               <TopRaterEntry
@@ -272,10 +270,10 @@ const TopRatersPopup = ({ onClose }) => {
               onClick={() => handlePageChange(pagination.currentPage - 1)}
               disabled={!pagination.hasPrevPage}
             >
-              {tRater('pagination.previous')}
+              {t('topRaters.raterEntry.pagination.previous')}
             </button>
             <span className="pagination-info">
-              {tRater('pagination.pageInfo', { 
+              {t('topRaters.raterEntry.pagination.pageInfo', { 
                 current: pagination.currentPage, 
                 total: pagination.totalPages 
               })}
@@ -285,7 +283,7 @@ const TopRatersPopup = ({ onClose }) => {
               onClick={() => handlePageChange(pagination.currentPage + 1)}
               disabled={!pagination.hasNextPage}
             >
-              {tRater('pagination.next')}
+              {t('topRaters.raterEntry.pagination.next')}
             </button>
           </div>
         )}
@@ -293,11 +291,11 @@ const TopRatersPopup = ({ onClose }) => {
         <div className="legend">
           <div className="legend-item ">
             <div className="legend-icon circle-ornament"></div>
-            <span>{tRater('legend.circleOrnament')}</span>
+            <span>{t('topRaters.raterEntry.legend.circleOrnament')}</span>
           </div>
           <div className="legend-item">
             <CrownIcon className="crown-ornament" size="20px" />
-            <span>{tRater('legend.crownOrnament')}</span>
+            <span>{t('topRaters.raterEntry.legend.crownOrnament')}</span>
           </div>
         </div>
       </div>

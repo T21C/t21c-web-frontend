@@ -43,7 +43,6 @@ const PassSubmissionPage = () => {
 
   const { t } = useTranslation('pages');
   const { difficultyDict } = useDifficultyContext();
-  const tPass = (key, params = {}) => t(`passSubmission.${key}`, params);
   const { user } = useAuth();
   const navigate = useNavigate();
 
@@ -387,15 +386,15 @@ const PassSubmissionPage = () => {
 
     // Check if levelId is present and all judgements are valid
     if (!form.levelId) {
-        setScore(tPass("score.needId"));
+        setScore(t('passSubmission.score.needId'));
     } else if (!newJudgements.every(Number.isInteger)) {
-        setScore(tPass("score.needJudg"));
+        setScore(t('passSubmission.score.needJudg'));
     } else if (!Object.values(passData).every(value => value !== null)) {
-        setScore(tPass("score.needInfo"));
+        setScore(t('passSubmission.score.needInfo'));
     } else if (passData && levelData) {
         setScore(getScoreV2(passData, levelData).toFixed(2));
     } else {
-        setScore(tPass("score.noInfo"));
+        setScore(t('passSubmission.score.noInfo'));
     }
 };
 
@@ -441,14 +440,14 @@ const PassSubmissionPage = () => {
     
     if(!user){
       console.error("No user logged in");
-      setError(tPass("alert.login"));
+      setError(t('passSubmission.alert.login'));
       return;
     }
 
     
     if (!Object.values(isFormValid).every(Boolean)) {
       setSubmitAttempt(true);
-      setError(tPass("alert.form"));
+      setError(t('passSubmission.alert.form'));
       return;
     }
 
@@ -635,8 +634,8 @@ const PassSubmissionPage = () => {
             error? "#b22":
             "#888"
           )}}>
-          {success? (<p>{tPass("alert.success")}</p>) :
-          error? (<p>{tPass("alert.error")}{truncateString(error?.message || error?.toString() || error, 120)}</p>):
+          {success? (<p>{t('passSubmission.alert.success')}</p>) :
+          error? (<p>{t('passSubmission.alert.error')}{truncateString(error?.message || error?.toString() || error, 120)}</p>):
           (<p>{t('loading.generic', { ns: 'common' })}</p>)}
           <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
         </div>
@@ -656,19 +655,19 @@ const PassSubmissionPage = () => {
               ></iframe>
             ) : (
               <div className="thumbnail-text">
-                <h2>{tPass("thumbnailInfo")}</h2>
+                <h2>{t('passSubmission.thumbnailInfo')}</h2>
               </div>
             )}
           </div>
 
           <div className="info">
-            <h1>{tPass("title")}</h1>
+            <h1>{t('passSubmission.title')}</h1>
 
             <div className="id-input">
               <div className="search-container" ref={searchContainerRef}>
                 <input
                   type="text"
-                  placeholder={tPass("submInfo.levelId")}
+                  placeholder={t('passSubmission.submInfo.levelId')}
                   name="levelId"
                   value={searchInput}
                   onChange={handleLevelInputChange}
@@ -725,9 +724,9 @@ const PassSubmissionPage = () => {
                   </div>
                 </>) : 
                 (<div className="level-info">
-                  <h2 className="level-info-sub" style={{color: "#aaa"}}>{tPass("levelInfo.song")}</h2>
+                  <h2 className="level-info-sub" style={{color: "#aaa"}}>{t('passSubmission.levelInfo.song')}</h2>
                   <div className="level-info-sub">
-                    <span style={{color: "#aaa"}}>{tPass("levelInfo.artist")}</span>
+                    <span style={{color: "#aaa"}}>{t('passSubmission.levelInfo.artist')}</span>
                     <span style={{color: "#aaa"}}>{formatCreatorDisplay(level)}</span>
                   </div>
                 </div>)}
@@ -751,12 +750,12 @@ const PassSubmissionPage = () => {
                     textShadow: "0 0 5px #0009"
                   }}>
                   {!form.levelId
-                    ? tPass("levelFetching.input")
+                    ? t('passSubmission.levelFetching.input')
                     : levelLoading
-                    ? tPass("levelFetching.fetching")
+                    ? t('passSubmission.levelFetching.fetching')
                     : level
-                    ? tPass("levelFetching.goto")
-                    : tPass("levelFetching.notfound")}
+                    ? t('passSubmission.levelFetching.goto')
+                    : t('passSubmission.levelFetching.notfound')}
                 </a>
               </div>
             </div>
@@ -764,7 +763,7 @@ const PassSubmissionPage = () => {
             <div className="youtube-input">
               <input
                 type="text"
-                placeholder={tPass("videoInfo.videoLink")}
+                placeholder={t('passSubmission.videoInfo.videoLink')}
                 name="videoLink"
                 value={form.videoLink}
                 onChange={handleInputChange}
@@ -773,20 +772,20 @@ const PassSubmissionPage = () => {
               {videoDetail ? 
               (<div className="youtube-info">
                 <div className="yt-info">
-                  <h4>{tPass("videoInfo.title")}</h4>
+                  <h4>{t('passSubmission.videoInfo.title')}</h4>
                   <p>{videoDetail.title}</p>
                 </div>
                 <div className="yt-info">
-                  <h4>{tPass("videoInfo.channel")}</h4>
+                  <h4>{t('passSubmission.videoInfo.channel')}</h4>
                   <p>{videoDetail.channelName}</p>
                 </div>
                 <div className="yt-info">
-                  <h4>{tPass("videoInfo.timestamp")}</h4>
+                  <h4>{t('passSubmission.videoInfo.timestamp')}</h4>
                   <p>{videoDetail.timestamp.replace("T", " ").replace("Z", "")}</p>
                 </div>
               </div>) : 
               (<div className="yt-info">
-                <p style={{color: "#aaa"}}>{tPass("videoInfo.nolink")}</p>
+                <p style={{color: "#aaa"}}>{t('passSubmission.videoInfo.nolink')}</p>
                 <br />
               </div>)}
             </div>
@@ -798,7 +797,7 @@ const PassSubmissionPage = () => {
                 value={form.player}
                 onChange={(value) => handleProfileChange('player', value)}
                 required
-                placeholder={tPass("submInfo.altname")}
+                placeholder={t('passSubmission.submInfo.altname')}
                 className={isFormValidDisplay.player ? "" : "error"}
                 allowNewRequest={true}
               />
@@ -813,10 +812,10 @@ const PassSubmissionPage = () => {
                   checked={form.isNoHold}
                 />
                 <span style={{margin: '0 15px 0 10px', position: 'relative'}}>
-                  {tPass("submInfo.nohold")}
+                  {t('passSubmission.submInfo.nohold')}
                 </span>
                 <span className="tooltip" style={{bottom: "110%", right: "10%"}}>
-                  {tPass("holdTooltip")}
+                  {t('passSubmission.holdTooltip')}
                 </span>
               </div>
             </div>
@@ -824,7 +823,7 @@ const PassSubmissionPage = () => {
             <div className="info-input">
               <input
                 type="text"
-                placeholder={tPass("submInfo.speed")}
+                placeholder={t('passSubmission.submInfo.speed')}
                 name="speed"
                 value={form.speed}
                 onChange={handleInputChange}
@@ -836,7 +835,7 @@ const PassSubmissionPage = () => {
               <div style={{ display: 'flex', justifyContent: "center", gap: "10px"}}>
                 <input
                   type="text"
-                  placeholder={tPass("submInfo.feelDiff")}
+                  placeholder={t('passSubmission.submInfo.feelDiff')}
                   name="feelingRating"
                   value={form.feelingRating}
                   onChange={handleInputChange}
@@ -854,7 +853,7 @@ const PassSubmissionPage = () => {
                     visibility: `${!isValidFeelingRating ? '' : 'hidden'}`,
                     bottom: "115%",
                     right: "-15%"
-                  }}>{tPass("tooltip")}</span>
+                  }}>{t('passSubmission.tooltip')}</span>
                 </div>
               </div>
             </div>
@@ -871,10 +870,10 @@ const PassSubmissionPage = () => {
                   style={{outline: IsUDiff && submitAttempt && !isFormValid.keyMode ? '2px solid red' : 'none'}}
                 />
                 <span style={{margin: '0 15px 0 10px', position: 'relative'}}>
-                  {tPass("submInfo.is12K")}
+                    {t('passSubmission.submInfo.is12K')}
                 </span>
                 <span className="tooltip" style={{bottom: '110%'}}>
-                  {tPass("12kTooltip")}
+                  {t('passSubmission.12kTooltip')}
                 </span>
               </div>
               <div className="tooltip-container keycount-checkbox">
@@ -887,10 +886,10 @@ const PassSubmissionPage = () => {
                   style={{outline: IsUDiff && submitAttempt && !isFormValid.keyMode ? '2px solid red' : 'none'}}
                 />
                 <span style={{margin: '0 15px 0 10px', position: 'relative'}}>
-                  {tPass("submInfo.is16K")}
+                  {t('passSubmission.submInfo.is16K')}
                 </span>
                 <span className="tooltip" style={{bottom: '110%'}}>
-                  {tPass("16kTooltip")}
+                  {t('passSubmission.16kTooltip')}
                 </span>
               </div>
             </div>
@@ -898,7 +897,7 @@ const PassSubmissionPage = () => {
             <div className="accuracy" style={{backgroundColor: "#ffffff06", color: "#fff"}}>
               <div className="top">
                 <div className="each-accuracy">
-                  <p>{tPass("judgements.ePerfect")}</p>
+                  <p>{t('passSubmission.judgements.ePerfect')}</p>
                   <input
                     type="text"
                     placeholder="#"
@@ -912,7 +911,7 @@ const PassSubmissionPage = () => {
                   />
                 </div>
                 <div className="each-accuracy">
-                  <p>{tPass("judgements.perfect")}</p>
+                  <p>{t('passSubmission.judgements.perfect')}</p>
                   <input
                     type="text"
                     placeholder="#"
@@ -926,7 +925,7 @@ const PassSubmissionPage = () => {
                   />
                 </div>
                 <div className="each-accuracy">
-                  <p>{tPass("judgements.lPerfect")}</p>
+                  <p>{t('passSubmission.judgements.lPerfect')}</p>
                   <input
                     type="text"
                     placeholder="#"
@@ -943,7 +942,7 @@ const PassSubmissionPage = () => {
 
               <div className="bottom">
                 <div className="each-accuracy">
-                  <p>{tPass("judgements.tooearly")}</p>
+                  <p>{t('passSubmission.judgements.tooearly')}</p>
                   <input
                     type="text"
                     placeholder="#"
@@ -957,7 +956,7 @@ const PassSubmissionPage = () => {
                   />
                 </div>
                 <div className="each-accuracy">
-                  <p>{tPass("judgements.early")}</p>
+                  <p>{t('passSubmission.judgements.early')}</p>
                   <input
                     type="text"
                     placeholder="#"
@@ -971,7 +970,7 @@ const PassSubmissionPage = () => {
                   />
                 </div>
                 <div className="each-accuracy">
-                  <p>{tPass("judgements.late")}</p>
+                  <p>{t('passSubmission.judgements.late')}</p>
                   <input
                     type="text"
                     placeholder="#"
@@ -987,14 +986,14 @@ const PassSubmissionPage = () => {
               </div>
 
               <div className="acc-score">
-                <p>{tPass("acc")}{accuracy !== null ? accuracy : 'N/A'}</p>
-                <p>{tPass("scoreCalc")}{score}</p>
+                <p>{t('passSubmission.acc')}{accuracy !== null ? accuracy : 'N/A'}</p>
+                <p>{t('passSubmission.scoreCalc')}{score}</p>
               </div>
             </div>
 
             {pendingProfiles.length > 0 && (
               <div className="pending-profiles-warning">
-                {tPass("warnings.pendingProfiles")}
+                {t('passSubmission.warnings.pendingProfiles')}
                 <ul>
                   {pendingProfiles.map((profile, index) => (
                     <li key={index}>
@@ -1015,13 +1014,13 @@ const PassSubmissionPage = () => {
                   style={{ outline: submitAttempt && !isFormValid.rulesAccepted ? '2px solid red' : 'none' }}
                 />
                 <label htmlFor="rules-checkbox">
-                  {tPass("rules.checkbox")}{" "}
+                  {t('passSubmission.rules.checkbox')}{" "}
                   <button
                     type="button"
                     className="rules-link"
                     onClick={() => setShowRulesPopup(true)}
                   >
-                    {tPass("rules.rulesLink")}
+                    {t('passSubmission.rules.rulesLink')}
                   </button>
                 </label>
               </div>
@@ -1032,7 +1031,7 @@ const PassSubmissionPage = () => {
               onClick={handleSubmit}
               disabled={submission}
             >
-              {tPass("submit")}{submission && (<>{tPass("submitWait")}</>)}
+              {t('passSubmission.submit')}{submission && (<>{t('passSubmission.submitWait')}</>)}
             </button>
           </div>
         </form>

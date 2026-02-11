@@ -28,10 +28,8 @@ const parseRankColor = (rank) => {
 
 const PassDetailPage = () => {
   const { t } = useTranslation(['pages', 'common']);
-  const tPass = (key, params = {}) => t(`passDetail.${key}`, params);
   const { id } = useParams();
   const [res, setRes] = useState(null);
-  const [infoLoading, setInfoLoading] = useState(true);
   const [videoDetail, setVideoDetail] = useState(null);
   const { user } = useAuth();
   const [openEditDialog, setOpenEditDialog] = useState(false);
@@ -78,10 +76,8 @@ const PassDetailPage = () => {
         ...prevRes,
         pass: passData.data
       }));
-      setInfoLoading(false);
     } catch (error) {
       console.error("Error fetching pass data:", error);
-      setInfoLoading(false);
     }
   };
 
@@ -98,7 +94,7 @@ const PassDetailPage = () => {
       setShowHideConfirm(false);
     } catch (error) {
       console.error("Error toggling pass hidden status:", error);
-      alert(tPass('errors.toggleHidden'));
+      alert(t('passDetail.errors.toggleHidden'));
     } finally {
       setIsTogglingHidden(false);
     }
@@ -138,8 +134,8 @@ const PassDetailPage = () => {
   return (
     <>
       <MetaTags
-        title={tPass('meta.title', { song: pass.level?.song })}
-        description={tPass('meta.description', { 
+        title={t('passDetail.meta.title', { song: pass.level?.song })}
+        description={t('passDetail.meta.description', { 
           playerName: pass.player?.name,
           song: pass.level?.song,
           artist: pass.level?.artist
@@ -154,7 +150,7 @@ const PassDetailPage = () => {
           <div className="deletion-banner-wrapper">
             <div className="deletion-banner">
               <TrashIcon />
-              <span>{tPass('banners.deleted')}</span>
+              <span>{t('passDetail.banners.deleted')}</span>
             </div>
           </div>
         )}
@@ -162,7 +158,7 @@ const PassDetailPage = () => {
           <div className="hidden-banner-wrapper">
             <div className="hidden-banner">
               <EyeOffIcon />
-              <span>{tPass('banners.hidden')}</span>
+              <span>{t('passDetail.banners.hidden')}</span>
             </div>
           </div>
         )}
@@ -174,7 +170,7 @@ const PassDetailPage = () => {
                 <div className="difficulty-icon">
                   <img src={pass.level?.difficulty?.icon} alt={pass.level?.difficulty?.name} />
                 </div>
-                {baseScore && <span className="base-score">{tPass('level.baseScore', { score: baseScore })}</span>}
+                {baseScore && <span className="base-score">{t('passDetail.level.baseScore', { score: baseScore })}</span>}
               </div>
               <div className="level-info">
                 <Link to={`/levels/${pass.level?.id}`} className="level-title">
@@ -182,9 +178,9 @@ const PassDetailPage = () => {
                   <p className="artist">{pass.level?.artist}</p>
                 </Link>
                 <div className="credits">
-                  {pass.level?.team && <p className="team">{tPass('level.credits.team', { team: pass.level?.team })}</p>}
-                  <p className="charter">{tPass('level.credits.charter', { charter: pass.level?.charter })}</p>
-                  {pass.level?.vfxer && <p className="vfxer">{tPass('level.credits.vfxer', { vfxer: pass.level?.vfxer })}</p>}
+                  {pass.level?.team && <p className="team">{t('passDetail.level.credits.team', { team: pass.level?.team })}</p>}
+                  <p className="charter">{t('passDetail.level.credits.charter', { charter: pass.level?.charter })}</p>
+                  {pass.level?.vfxer && <p className="vfxer">{t('passDetail.level.credits.vfxer', { vfxer: pass.level?.vfxer })}</p>}
                 </div>
               </div>
             </div>
@@ -217,7 +213,7 @@ const PassDetailPage = () => {
                             color: parseRankColor(pass.ranks.rankedScoreRank), 
                             backgroundColor: `${parseRankColor(pass.ranks.rankedScoreRank)}27`
                           }}
-                        >{tPass('player.rank', { rank: pass.ranks.rankedScoreRank })}</h2>
+                        >{t('passDetail.player.rank', { rank: pass.ranks.rankedScoreRank })}</h2>
                       )}
                     </div>
                   </div>
@@ -226,20 +222,20 @@ const PassDetailPage = () => {
                   {pass.scoreInfo && (
                     <div className="score-container">
                       <div className="current-score">
-                        <span className="score-value">{tPass('player.score.current', { score: formatNumber(pass.scoreInfo.currentRankedScore) })}</span>
+                        <span className="score-value">{t('passDetail.player.score.current', { score: formatNumber(pass.scoreInfo.currentRankedScore) })}</span>
                         {pass.scoreInfo.impact > 0 && (
                           <span className="score-difference positive">
-                            {tPass('player.score.difference.positive', { score: formatNumber(pass.scoreInfo.impact) })}
+                            {t('passDetail.player.score.difference.positive', { score: formatNumber(pass.scoreInfo.impact) })}
                           </span>
                         )}
                       </div>
                       <div className="previous-score">
-                        {tPass('player.score.previous', { score: formatNumber(pass.scoreInfo.previousRankedScore) })}
+                        {t('passDetail.player.score.previous', { score: formatNumber(pass.scoreInfo.previousRankedScore) })}
                       </div>
                     </div>
                   )}
                 </div>
-                <div className="pass-date">{tPass('player.clearDate', { date: formatDate(pass.vidUploadTime, i18next?.language) })}</div>
+                <div className="pass-date">{t('passDetail.player.clearDate', { date: formatDate(pass.vidUploadTime, i18next?.language) })}</div>
               </div>
             </div>
           </div>
@@ -248,51 +244,51 @@ const PassDetailPage = () => {
             <div className="info">
               <div className="info-items">
                 <div className="info-item">
-                  <p>{tPass('stats.score.label')}</p>
-                  <span className="info-desc">{tPass('stats.score.value', { score: formatNumber(pass.scoreV2) })}</span>
+                  <p>{t('passDetail.stats.score.label')}</p>
+                  <span className="info-desc">{t('passDetail.stats.score.value', { score: formatNumber(pass.scoreV2) })}</span>
                 </div>
                 <div className="info-item">
-                  <p>{tPass('stats.accuracy.label')}</p>
+                  <p>{t('passDetail.stats.accuracy.label')}</p>
                   <span className={`info-desc ${accuracy === 1 ? 'perfect-shine' : ''}`}>
-                    {tPass('stats.accuracy.value', { accuracy: (100*accuracy).toFixed(2) })}
+                    {t('passDetail.stats.accuracy.value', { accuracy: (100*accuracy).toFixed(2) })}
                   </span>
                 </div>
                 <div className="info-item">
-                  <p>{tPass('stats.speed.label')}</p>
-                  <span className="info-desc">{tPass('stats.speed.value', { speed: pass.speed })}</span>
+                  <p>{t('passDetail.stats.speed.label')}</p>
+                  <span className="info-desc">{t('passDetail.stats.speed.value', { speed: pass.speed })}</span>
                 </div>
                 <div className="info-item">
-                  <p>{tPass('stats.feelingRating.label')}</p>
+                  <p>{t('passDetail.stats.feelingRating.label')}</p>
                   <span className="info-desc">
-                    {pass.feelingRating ? tPass('stats.feelingRating.value', { rating: pass.feelingRating }) : tPass('stats.feelingRating.none')}
+                    {pass.feelingRating ? t('passDetail.stats.feelingRating.value', { rating: pass.feelingRating }) : t('passDetail.stats.feelingRating.none')}
                   </span>
                 </div>
               </div>
               {(pass.isWorldsFirst || pass.is12K || pass.is16K || pass.isNoHoldTap) && (
                 <div className="flags-container">
                   {pass.isWorldsFirst && (
-                    <span className="worlds-first">{tPass('flags.worldsFirst')}</span>
+                    <span className="worlds-first">{t('passDetail.flags.worldsFirst')}</span>
                   )}
                   {(pass.is12K || pass.is16K || pass.isNoHoldTap) && (
                     <div className="flags">
-                      {pass.is12K && <span className="flag">{tPass('flags.12k')}</span>}
-                      {pass.is16K && <span className="flag">{tPass('flags.16k')}</span>}
-                      {pass.isNoHoldTap && <span className="flag">{tPass('flags.noHoldTap')}</span>}
+                      {pass.is12K && <span className="flag">{t('passDetail.flags.12k')}</span>}
+                      {pass.is16K && <span className="flag">{t('passDetail.flags.16k')}</span>}
+                      {pass.isNoHoldTap && <span className="flag">{t('passDetail.flags.noHoldTap')}</span>}
                     </div>
                   )}
                 </div>
               )}
 
               <div className="judgements">
-                <h3>{tPass('judgements.title')}</h3>
+                <h3>{t('passDetail.judgements.title')}</h3>
                 <div className="judgement-grid">
                   <div className="top">
                     <div className="judgement-item early-perfect">
-                      <label>{tPass('judgements.types.earlyPerfect.label')}</label>
-                      <span>{tPass('judgements.types.earlyPerfect.value', { count: pass.judgements?.ePerfect || 0 })}</span>
+                      <label>{t('passDetail.judgements.types.earlyPerfect.label')}</label>
+                      <span>{t('passDetail.judgements.types.earlyPerfect.value', { count: pass.judgements?.ePerfect || 0 })}</span>
                     </div>
                     <div className={`judgement-item perfect ${accuracy === 1 ? 'perfect-shine' : ''}`}>
-                      <label>{tPass('judgements.types.perfect.label')}</label>
+                      <label>{t('passDetail.judgements.types.perfect.label')}</label>
                       <div className="value-container">
                         {accuracy === 1 && (
                           <div className="particles">
@@ -316,30 +312,30 @@ const PassDetailPage = () => {
                             ))}
                           </div>
                         )}
-                        <span>{tPass('judgements.types.perfect.value', { count: pass.judgements?.perfect || 0 })}</span>
+                        <span>{t('passDetail.judgements.types.perfect.value', { count: pass.judgements?.perfect || 0 })}</span>
                       </div>
                     </div>
                     <div className="judgement-item late-perfect">
-                      <label>{tPass('judgements.types.latePerfect.label')}</label>
-                      <span>{tPass('judgements.types.latePerfect.value', { count: pass.judgements?.lPerfect || 0 })}</span>
+                      <label>{t('passDetail.judgements.types.latePerfect.label')}</label>
+                      <span>{t('passDetail.judgements.types.latePerfect.value', { count: pass.judgements?.lPerfect || 0 })}</span>
                     </div>
                   </div>
                   <div className="bottom">
                     <div className={`judgement-item too-early ${pass.judgements?.earlyDouble === 0 && pass.level?.difficulty?.name[0] !== "P" && accuracy !== 1 ? 'zero-shine' : ''}`}>
-                      <label>{tPass('judgements.types.tooEarly.label')}</label>
-                      <span>{tPass('judgements.types.tooEarly.value', { count: pass.judgements?.earlyDouble || 0 })}</span>
+                      <label>{t('passDetail.judgements.types.tooEarly.label')}</label>
+                      <span>{t('passDetail.judgements.types.tooEarly.value', { count: pass.judgements?.earlyDouble || 0 })}</span>
                     </div>
                     <div className="judgement-item early">
-                      <label>{tPass('judgements.types.early.label')}</label>
-                      <span>{tPass('judgements.types.early.value', { count: pass.judgements?.earlySingle || 0 })}</span>
+                      <label>{t('passDetail.judgements.types.early.label')}</label>
+                      <span>{t('passDetail.judgements.types.early.value', { count: pass.judgements?.earlySingle || 0 })}</span>
                     </div>
                     <div className="judgement-item late">
-                      <label>{tPass('judgements.types.late.label')}</label>
-                      <span>{tPass('judgements.types.late.value', { count: pass.judgements?.lateSingle || 0 })}</span>
+                      <label>{t('passDetail.judgements.types.late.label')}</label>
+                      <span>{t('passDetail.judgements.types.late.value', { count: pass.judgements?.lateSingle || 0 })}</span>
                     </div>
                     <div className="judgement-item too-late">
-                      <label>{tPass('judgements.types.tooLate.label')}</label>
-                      <span>{tPass('judgements.types.tooLate.value', { count: pass.judgements?.lateDouble || 0 })}</span>
+                      <label>{t('passDetail.judgements.types.tooLate.label')}</label>
+                      <span>{t('passDetail.judgements.types.tooLate.value', { count: pass.judgements?.lateDouble || 0 })}</span>
                     </div>
                   </div>
                 </div>
@@ -359,10 +355,10 @@ const PassDetailPage = () => {
               ) : (
                 <div className="thumbnail-container">
                   <div className="thumbnail-text">
-                    <p>{tPass('video.notAvailable.text')}</p>
+                    <p>{t('passDetail.video.notAvailable.text')}</p>
                     {pass.videoLink && (
                       <a href={pass.videoLink} target="_blank" rel="noopener noreferrer">
-                        {tPass('video.notAvailable.watchOnYoutube')}
+                        {t('passDetail.video.notAvailable.watchOnYoutube')}
                       </a>
                     )}
                   </div>
@@ -377,7 +373,7 @@ const PassDetailPage = () => {
                 className={`hide-button ${pass.isHidden ? 'hidden' : ''}`}
                 onClick={handleToggleHidden}
                 disabled={isTogglingHidden}
-                title={pass.isHidden ? tPass('actions.unhide') : tPass('actions.hide')}
+                title={pass.isHidden ? t('passDetail.actions.unhide') : t('passDetail.actions.hide')}
               >
                 {isTogglingHidden ? (
                   <div className="spinner"></div>
@@ -402,13 +398,13 @@ const PassDetailPage = () => {
         {showHideConfirm && (
           <div className="hide-confirm-overlay" onClick={() => setShowHideConfirm(false)}>
             <div className="hide-confirm-dialog" onClick={(e) => e.stopPropagation()}>
-              <h3>{pass.isHidden ? tPass('confirm.unhide.title') : tPass('confirm.hide.title')}</h3>
-              <p>{pass.isHidden ? tPass('confirm.unhide.message') : tPass('confirm.hide.message')}</p>
+              <h3>{pass.isHidden ? t('passDetail.confirm.unhide.title') : t('passDetail.confirm.hide.title')}</h3>
+              <p>{pass.isHidden ? t('passDetail.confirm.unhide.message') : t('passDetail.confirm.hide.message')}</p>
               <div className="hide-confirm-actions">
                 <button className="confirm-button" onClick={handleToggleHidden} disabled={isTogglingHidden}>
                   {isTogglingHidden 
-                    ? (pass.isHidden ? tPass('confirm.unhide.processing') : tPass('confirm.hide.processing'))
-                    : (pass.isHidden ? tPass('confirm.unhide.confirm') : tPass('confirm.hide.confirm'))
+                    ? (pass.isHidden ? t('passDetail.confirm.unhide.processing') : t('passDetail.confirm.hide.processing'))
+                    : (pass.isHidden ? t('passDetail.confirm.unhide.confirm') : t('passDetail.confirm.hide.confirm'))
                   }
                 </button>
                 <button className="cancel-button" onClick={() => setShowHideConfirm(false)} disabled={isTogglingHidden}>

@@ -5,7 +5,6 @@ import { useTranslation } from 'react-i18next';
 
 export const PlayerInput = ({ value, onChange, onSelect, currentPlayer }) => {
   const { t } = useTranslation(['components', 'common']);
-  const tPlayer = (key, params) => t(`player.playerInput.${key}`, params);
 
   const [showDropdown, setShowDropdown] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
@@ -78,7 +77,7 @@ export const PlayerInput = ({ value, onChange, onSelect, currentPlayer }) => {
           setCreationStatus(null);
         }, 1500);
       } catch (error) {
-        setCreationError(error.response?.data?.details || tPlayer('creation.error'));
+        setCreationError(error.response?.data?.details || t('player.playerInput.creation.error'));
         setCreationStatus('error');
         setTimeout(() => {
           setCreationStatus(null);
@@ -151,7 +150,7 @@ export const PlayerInput = ({ value, onChange, onSelect, currentPlayer }) => {
           }}
           onFocus={() => !creationStatus && openDropdown()}
           onKeyDown={handleKeyDown}
-          placeholder={tPlayer('placeholder')}
+          placeholder={t('player.playerInput.placeholder')}
           disabled={creationStatus === 'creating'}
         />
         <button 
@@ -203,21 +202,21 @@ export const PlayerInput = ({ value, onChange, onSelect, currentPlayer }) => {
                     className="player-option create-new"
                     onClick={() => handleSelect({ isNew: true, name: value })}
                   >
-                    <span>{tPlayer('creation.button', { name: value })}</span>
+                    <span>{t('player.playerInput.creation.button', { name: value })}</span>
                   </div>
                 </>
               ) : value.length >= 2 ? (
                 <div className="no-results">
-                  {tPlayer('noResults')}
+                  {t('player.playerInput.noResults')}
                   <div
                     className="player-option create-new"
                     onClick={() => handleSelect({ isNew: true, name: value })}
                   >
-                    <span>{tPlayer('creation.button', { name: value })}</span>
+                    <span>{t('player.playerInput.creation.button', { name: value })}</span>
                   </div>
                 </div>
               ) : (
-                <div className="player-hint">{tPlayer('minChars')}</div>
+                <div className="player-hint">{t('player.playerInput.minChars')}</div>
               )}
             </>
           )}

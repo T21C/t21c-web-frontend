@@ -13,7 +13,6 @@ const ThumbnailUpload = ({
   disabled = false
 }) => {
   const { t } = useTranslation('components');
-  const tCur = (key, params = {}) => t(`thumbnailUpload.${key}`, params);
 
   const [thumbnailFile, setThumbnailFile] = useState(null);
   const [thumbnailPreview, setThumbnailPreview] = useState(currentThumbnail || '');
@@ -85,10 +84,10 @@ const ThumbnailUpload = ({
           fileInputRef.current.value = '';
         }
         
-        toast.success(tCur('uploadSuccess'));
+        toast.success(t('thumbnailUpload.uploadSuccess'));
       }
     } catch (error) {
-      const errorMessage = error.response?.data?.error || tCur('uploadError');
+      const errorMessage = error.response?.data?.error || t('thumbnailUpload.uploadError');
       toast.error(errorMessage);
     } finally {
       setIsUploading(false);
@@ -111,9 +110,9 @@ const ThumbnailUpload = ({
       if (onThumbnailRemove) {
         onThumbnailRemove();
       }
-      toast.success(tCur('removeSuccess'));
+      toast.success(t('thumbnailUpload.removeSuccess'));
     } catch (error) {
-      const errorMessage = error.response?.data?.error || tCur('removeError');
+      const errorMessage = error.response?.data?.error || t('thumbnailUpload.removeError');
       toast.error(errorMessage);
     }
   };
@@ -135,7 +134,7 @@ const ThumbnailUpload = ({
             type="button"
             onClick={removeThumbnail}
             className="thumbnail-upload__remove"
-            title={tCur('remove')}
+            title={t('thumbnailUpload.remove')}
             disabled={disabled}
           >
             ✖
@@ -158,7 +157,7 @@ const ThumbnailUpload = ({
           htmlFor={fileInputId} 
           className="thumbnail-upload__file-label"
         >
-          {thumbnailFile ? thumbnailFile.name : tCur('chooseFile')}
+          {thumbnailFile ? thumbnailFile.name : t('thumbnailUpload.chooseFile')}
         </label>
         
         {thumbnailFile && (
@@ -168,12 +167,12 @@ const ThumbnailUpload = ({
             disabled={isUploading || disabled}
             className="thumbnail-upload__upload-btn"
           >
-            {isUploading ? tCur('uploading') : tCur('upload')}
+            {isUploading ? t('thumbnailUpload.uploading') : t('thumbnailUpload.upload')}
           </button>
         )}
       </div>
 
-      <small className="thumbnail-upload__help">{tCur('help')}</small>
+      <small className="thumbnail-upload__help">{t('thumbnailUpload.help')}</small>
     </div>
   );
 };

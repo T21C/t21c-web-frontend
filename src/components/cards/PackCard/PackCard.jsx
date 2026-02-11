@@ -22,13 +22,12 @@ const PackCard = ({
   size = 'medium'
 }) => {
   const { t } = useTranslation('components');
-  const tCard = (key) => t(`cards.pack.${key}`) || key;
   
   const [showEditPopup, setShowEditPopup] = useState(false);
   const { difficultyDict } = useDifficultyContext();
   const { toggleFavorite } = usePackContext();
   const navigate = useNavigate();
-  const { packs, getPackById } = usePackContext();
+  const { getPackById } = usePackContext();
   const [pack, setPack] = useState(getPackById(packId));
 
 
@@ -101,11 +100,11 @@ const PackCard = ({
 
   const getViewModeText = () => {
     switch (parseInt(pack.viewMode)) {
-      case LevelPackViewModes.PUBLIC: return tCard('viewMode.public');
-      case LevelPackViewModes.LINKONLY: return tCard('viewMode.linkonly');
-      case LevelPackViewModes.PRIVATE: return tCard('viewMode.private');
-      case LevelPackViewModes.FORCED_PRIVATE: return tCard('viewMode.forcedPrivate');
-      default: return tCard('viewMode.public');
+      case LevelPackViewModes.PUBLIC: return t('cards.pack.viewMode.public');
+      case LevelPackViewModes.LINKONLY: return t('cards.pack.viewMode.linkonly');
+      case LevelPackViewModes.PRIVATE: return t('cards.pack.viewMode.private');
+      case LevelPackViewModes.FORCED_PRIVATE: return t('cards.pack.viewMode.forcedPrivate');
+      default: return t('cards.pack.viewMode.public');
     }
   };
   const canEdit = user && (
@@ -127,7 +126,7 @@ const PackCard = ({
         className={cardClasses}
         onClick={handlePackClick}
         data-tooltip-id={`pack-tooltip-${pack.id}`}
-        data-tooltip-content={`${tCard('clickToView')} ${pack.name}`}
+        data-tooltip-content={`${t('cards.pack.clickToView')} ${pack.name}`}
       >
         <div className="pack-card__header">
           <div className="pack-card__icon">
@@ -154,7 +153,7 @@ const PackCard = ({
             <h3 className="pack-card__name">{pack.name}</h3>
             <div className="pack-card__meta">
               <span className="pack-card__level-count">
-                {pack.totalLevelCount} {tCard('stats.levels')}
+                {pack.totalLevelCount} {t('cards.pack.stats.levels')}
               </span>
               {pack.isPinned && (
                 <PinIcon className="pack-card__pin-icon" />
@@ -168,7 +167,7 @@ const PackCard = ({
                 className="pack-card__edit-btn"
                 onClick={handleEditClick}
                 data-tooltip-id={`pack-edit-tooltip-${pack.id}`}
-                data-tooltip-content={tCard('edit')}
+                data-tooltip-content={t('cards.pack.edit')}
               >
                 <EditIcon />
               </button>
@@ -179,7 +178,7 @@ const PackCard = ({
                 onClick={handleFavoriteClick}
                 data-tooltip-id={`pack-favorite-tooltip-${pack.id}`}
                 disabled={!user}
-                data-tooltip-content={isFavorited ? tCard('removeFromFavorites') : tCard('addToFavorites')}
+                data-tooltip-content={isFavorited ? t('cards.pack.removeFromFavorites') : t('cards.pack.addToFavorites')}
               >
                 <LikeIcon color={isFavorited ? "#ffffff" : "none"} />
                 <span className="pack-card__favorite-count">{pack.favoritesCount}</span>
@@ -220,7 +219,7 @@ const PackCard = ({
                 ))}
               {pack.totalLevelCount > 3 && (
                 <div className="pack-card__preview-more">
-                  +{pack.totalLevelCount - 3} {tCard('more')}
+                  +{pack.totalLevelCount - 3} {t('cards.pack.more')}
                 </div>
               )}
             </div>

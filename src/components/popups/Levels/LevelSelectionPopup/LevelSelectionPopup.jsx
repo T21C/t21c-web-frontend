@@ -165,19 +165,19 @@ const LevelSelectionPopup = ({
         </button>
 
         <div className="level-selection-modal__header">
-          <h2>{tCur('titleAdd')}</h2>
-          <p>{tCur('descriptionAdd')}</p>
+          <h2>{t('levelSelectionPopup.titleAdd')}</h2>
+          <p>{t('levelSelectionPopup.descriptionAdd')}</p>
         </div>
 
         <div className="level-selection-modal__filters">
           <div className="level-selection-modal__filter-group">
-            <label htmlFor="search">{tCur('filters.search')}</label>
+            <label htmlFor="search">{t('levelSelectionPopup.filters.search')}</label>
             <input
               id="search"
               type="text"
               value={searchTerm}
               onChange={handleSearchChange}
-              placeholder={tCur('filters.searchPlaceholder')}
+              placeholder={t('levelSelectionPopup.filters.searchPlaceholder')}
               className="level-selection-modal__input"
             />
           </div>
@@ -219,7 +219,7 @@ const LevelSelectionPopup = ({
           {isLoading ? (
             <div className="level-selection-modal__loading"><div className="loader" /></div>
           ) : levels.length === 0 ? (
-            <div className="level-selection-modal__empty">{tCur('empty')}</div>
+            <div className="level-selection-modal__empty">{t('levelSelectionPopup.empty')}</div>
           ) : (
             levels.map(level => (
               <div key={level.id} className="level-selection-modal__level-item">
@@ -240,16 +240,16 @@ const LevelSelectionPopup = ({
                   </div>
 
                   <div className="level-selection-modal__creator-wrapper">
-                    <p className="level-selection-modal__level-exp">{tCur('creator')}</p>
+                    <p className="level-selection-modal__level-exp">{t('levelSelectionPopup.creator')}</p>
                     <div className="level-selection-modal__level-desc">{formatCreatorDisplay(level)}</div>
                   </div>
 
                   <button
                     className="level-selection-modal__select-btn"
                     onClick={() => handleLevelSelect(level)}
-                    title={tCur('createLevel')}
+                    title={t('levelSelectionPopup.createLevel')}
                   >
-                    {tCur('create')}
+                    {t('levelSelectionPopup.create')}
                   </button>
                 </div>
               </div>

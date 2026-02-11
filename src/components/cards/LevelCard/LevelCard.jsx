@@ -38,7 +38,6 @@ const LevelCard = ({
   }, []);
 
   const { t } = useTranslation('components');
-  const tCard = (key) => t(`cards.level.${key}`) || key;
   
   if (packItem) {
     initialLevel = packItem.referencedLevel;
@@ -169,7 +168,7 @@ const LevelCard = ({
 
   const renderCreatorInfo = () => (
     <div className="creator-wrapper">
-      <p className="level-exp">{tCard('creator')}</p>
+      <p className="level-exp">{t('cards.level.creator')}</p>
       <div className="level-desc">{formatCreatorDisplay(level)}</div>
     </div>
   );
@@ -219,7 +218,7 @@ const LevelCard = ({
           className="add-to-pack-button" 
           onClick={handleAddToPackClick}
           data-tooltip-id={`add-to-pack-tooltip-${level.id}`}
-          data-tooltip-content={tCard('addToPack')}
+          data-tooltip-content={t('cards.level.addToPack')}
         >
           <PackIcon color="#ffffff" size={"24px"} />
         </button>

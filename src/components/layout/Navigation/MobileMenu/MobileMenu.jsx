@@ -6,6 +6,7 @@ import { createUserMenuItems } from "../navigationConfig";
 import LanguageSelector from "../LanguageSelector/LanguageSelector";
 import MobileDropdown from "../MobileDropdown/MobileDropdown";
 import "./mobileMenu.css";
+import { useTranslation } from 'react-i18next';
 
 /**
  * Mobile navigation menu component
@@ -13,8 +14,6 @@ import "./mobileMenu.css";
  * @param {Object} props
  * @param {boolean} props.isOpen - Whether the menu is open
  * @param {Function} props.onClose - Function to close the menu
- * @param {Function} props.getTranslation - Function to get translation (tNav)
- * @param {Function} props.getLangTranslation - Function to get language translation (tLang)
  * @param {Object} props.config - Navigation configuration object
  * @param {Function} props.initiateLogin - Function to initiate login (for sign in button)
  * @param {ReactNode} props.children - Additional children to render
@@ -22,14 +21,12 @@ import "./mobileMenu.css";
 const MobileMenu = ({
   isOpen,
   onClose,
-  getTranslation,
-  getLangTranslation,
   config,
   initiateLogin,
   children,
 }) => {
   const { user, logout } = useAuth();
-
+  const { t } = useTranslation('components');
   // Render navigation item based on type (same logic as desktop)
   const renderNavItem = (item, index) => {
     // Check condition if present
@@ -46,7 +43,7 @@ const MobileMenu = ({
         return (
           <li key={item.to || index} className="nav-list-item">
             <NavLink to={item.to} onClick={onClose}>
-              {getTranslation(item.translationKey)}
+              {t(item.translationKey)}
             </NavLink>
           </li>
         );
@@ -55,9 +52,8 @@ const MobileMenu = ({
         return (
           <MobileDropdown
             key={item.label || index}
-            label={getTranslation(item.label)}
+            label={t(item.label)}
             items={item.items}
-            getTranslation={getTranslation}
             isActive={item.isActive}
             onItemClick={onClose}
           />
@@ -78,7 +74,7 @@ const MobileMenu = ({
                 onClose();
               }}
             >
-              {getTranslation(item.translationKey)}
+              {t(item.translationKey)}
             </button>
           </li>
         );
@@ -89,7 +85,6 @@ const MobileMenu = ({
             return (
               <LanguageSelector
                 key="language-selector"
-                getTranslation={getLangTranslation}
                 variant="mobile"
               />
             );
@@ -128,7 +123,6 @@ const MobileMenu = ({
                     },
                   },
                 ]}
-                getTranslation={getTranslation}
                 isActive={item.props?.isActive}
                 onItemClick={onClose}
               />

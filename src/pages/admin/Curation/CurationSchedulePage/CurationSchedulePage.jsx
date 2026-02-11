@@ -5,7 +5,7 @@ import { MetaTags, AccessDenied } from '@/components/common/display';
 import { ScrollButton } from '@/components/common/buttons';
 import api from '@/utils/api';
 import './curationschedulepage.css';
-import { ChevronIcon, EditIcon, TrashIcon } from '@/components/common/icons';
+import { ChevronIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
 import { toast } from 'react-hot-toast';
 import { NavLink } from 'react-router-dom';
@@ -19,7 +19,6 @@ import i18next from 'i18next';
 const CurationSchedulePage = () => {
   const { user } = useAuth();
   const { t } = useTranslation('pages');
-  const tSch = (key, params = {}) => t(`curationSchedule.${key}`, params);
   const currentUrl = window.location.origin + location.pathname;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -93,7 +92,7 @@ const CurationSchedulePage = () => {
         listType: selectionMode.type // 'primary' or 'secondary'
       });
 
-      toast.success(tSch('notifications.added'));
+      toast.success(t('curationSchedule.notifications.added'));
       fetchSchedules();
       setShowCurationSelection(false);
       setSelectionMode({ type: '' });
@@ -105,7 +104,7 @@ const CurationSchedulePage = () => {
   const handleRemoveCuration = async (scheduleId) => {
     try {
       await api.delete(`${import.meta.env.VITE_CURATIONS}/schedules/${scheduleId}`);
-      toast.success(tSch('notifications.removed'));
+      toast.success(t('curationSchedule.notifications.removed'));
       fetchSchedules();
     } catch (error) {
       toast.error(error.response?.data?.error || 'Failed to remove curation');
@@ -160,8 +159,8 @@ const CurationSchedulePage = () => {
   return (
     <div className="curation-schedule-page">
       <MetaTags 
-        title={tSch('meta.title')}
-        description={tSch('meta.description')}
+        title={t('curationSchedule.meta.title')}
+        description={t('curationSchedule.meta.description')}
         url={currentUrl}
       />
       
@@ -172,13 +171,13 @@ const CurationSchedulePage = () => {
             <NavLink
               className="curation-schedule-page__back-btn"
               to="/admin/curations"
-              title={tSch('actions.backToCuration')}
+              title={t('curationSchedule.actions.backToCuration')}
             >
-              <ChevronIcon direction="left" /> {tSch('actions.backToCuration')}
+              <ChevronIcon direction="left" /> {t('curationSchedule.actions.backToCuration')}
             </NavLink>
-            <h1>{tSch('title')}</h1>
+            <h1>{t('curationSchedule.title')}</h1>
           </div>
-          <p>{tSch('description')}</p>
+          <p>{t('curationSchedule.description')}</p>
         </div>
 
         {/* Week Navigation */}
@@ -187,7 +186,7 @@ const CurationSchedulePage = () => {
             className="curation-schedule-page__week-btn"
             onClick={() => handleWeekChange(-1)}
           >
-            <ChevronIcon direction="left" /> {tSch('previousWeek')}
+            <ChevronIcon direction="left" /> {t('curationSchedule.previousWeek')}
           </button>
           <h2 className="curation-schedule-page__week-title">
             {getWeekLabel(currentMonday)}
@@ -196,15 +195,15 @@ const CurationSchedulePage = () => {
             className="curation-schedule-page__week-btn"
             onClick={() => handleWeekChange(1)}
           >
-            {tSch('nextWeek')} <ChevronIcon direction="right" />
+            {t('curationSchedule.nextWeek')} <ChevronIcon direction="right" />
           </button>
         </div>
 
         {/* Primary Hall of Fame */}
         <div className="curation-schedule-page__hall-section">
           <div className="curation-schedule-page__hall-header">
-            <h3>{tSch('primaryHall.title')}</h3>
-            <p>{tSch('primaryHall.description')}</p>
+            <h3>{t('curationSchedule.primaryHall.title')}</h3>
+            <p>{t('curationSchedule.primaryHall.description')}</p>
             <span className="curation-schedule-page__count">
               {primarySchedules.length}/20
             </span>
@@ -253,7 +252,7 @@ const CurationSchedulePage = () => {
                       <button
                         onClick={() => handleRemoveCuration(schedule.id)}
                         className="curation-schedule-page__remove-btn"
-                        title={tSch('actions.remove')}
+                        title={t('curationSchedule.actions.remove')}
                       >
                         <TrashIcon />
                       </button>
@@ -267,7 +266,7 @@ const CurationSchedulePage = () => {
                     onClick={() => handleAddCuration('primary')}
                   >
                     <div className="curation-schedule-page__add-icon">+</div>
-                    <span>{tSch('actions.addCuration')}</span>
+                    <span>{t('curationSchedule.actions.addCuration')}</span>
                   </button>
                 )}
               </div>
@@ -286,8 +285,8 @@ const CurationSchedulePage = () => {
         {/* Secondary Hall of Fame */}
         <div className="curation-schedule-page__hall-section">
           <div className="curation-schedule-page__hall-header">
-            <h3>{tSch('secondaryHall.title')}</h3>
-            <p>{tSch('secondaryHall.description')}</p>
+            <h3>{t('curationSchedule.secondaryHall.title')}</h3>
+            <p>{t('curationSchedule.secondaryHall.description')}</p>
             <span className="curation-schedule-page__count">
               {secondarySchedules.length}/20
             </span>
@@ -336,7 +335,7 @@ const CurationSchedulePage = () => {
                       <button
                         onClick={() => handleRemoveCuration(schedule.id)}
                         className="curation-schedule-page__remove-btn"
-                        title={tSch('actions.remove')}
+                        title={t('curationSchedule.actions.remove')}
                       >
                         <TrashIcon />
                       </button>
@@ -350,7 +349,7 @@ const CurationSchedulePage = () => {
                     onClick={() => handleAddCuration('secondary')}
                   >
                     <div className="curation-schedule-page__add-icon">+</div>
-                    <span>{tSch('actions.addCuration')}</span>
+                    <span>{t('curationSchedule.actions.addCuration')}</span>
                   </button>
                 )}
               </div>
@@ -368,7 +367,7 @@ const CurationSchedulePage = () => {
 
         {isLoading && (
           <div className="curation-schedule-page__loading">
-            {tSch('loading')}
+            {t('curationSchedule.loading')}
           </div>
         )}
       </div>

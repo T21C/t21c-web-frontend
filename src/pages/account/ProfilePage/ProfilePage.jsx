@@ -9,7 +9,7 @@ import { ScoreCard } from "@/components/cards";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { AdminPlayerPopup, CreatorAssignmentPopup } from "@/components/popups";
-import { DefaultAvatar, ShieldIcon, EditIcon, SortAscIcon, SortDescIcon, PackIcon, EyeIcon, EyeOffIcon } from "@/components/common/icons";
+import { ShieldIcon, EditIcon, SortAscIcon, SortDescIcon, PackIcon, EyeIcon, EyeOffIcon } from "@/components/common/icons";
 import { CaseOpenSelector, CustomSelect } from "@/components/common/selectors";
 import caseOpen from "@/assets/icons/case.png";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -37,7 +37,6 @@ const ProfilePage = () => {
     const [playerData, setPlayerData] = useState(null)
     const [showCaseOpen, setShowCaseOpen] = useState(false);
     const { t } = useTranslation('pages');
-    const tProfile = (key, params = {}) => t(`profile.${key}`, params);
     const { user } = useAuth();
     const [showEditPopup, setShowEditPopup] = useState(false);
     const [showCreatorAssignment, setShowCreatorAssignment] = useState(false);
@@ -70,17 +69,17 @@ const ProfilePage = () => {
     const setSortOrder = (order) => profileContext.setSortOrder(playerId, order);
 
     var valueLabels = {
-      rankedScore: tProfile('valueLabels.rankedScore'),
-      generalScore: tProfile('valueLabels.generalScore'),
-      ppScore: tProfile('valueLabels.ppScore'),
-      wfScore: tProfile('valueLabels.wfScore'),
-      score12K: tProfile('valueLabels.score12K'),
-      averageXacc: tProfile('valueLabels.averageXacc'),
-      totalPasses: tProfile('valueLabels.totalPasses'),
-      universalPassCount: tProfile('valueLabels.universalPassCount'),
-      worldsFirstCount: tProfile('valueLabels.worldsFirstCount'),
-      topDiff: tProfile('valueLabels.topDiff'),
-      top12kDiff: tProfile('valueLabels.top12kDiff')
+      rankedScore: t('profile.valueLabels.rankedScore'),
+      generalScore: t('profile.valueLabels.generalScore'),
+      ppScore: t('profile.valueLabels.ppScore'),
+      wfScore: t('profile.valueLabels.wfScore'),
+      score12K: t('profile.valueLabels.score12K'),
+      averageXacc: t('profile.valueLabels.averageXacc'),
+      totalPasses: t('profile.valueLabels.totalPasses'),
+      universalPassCount: t('profile.valueLabels.universalPassCount'),
+      worldsFirstCount: t('profile.valueLabels.worldsFirstCount'),
+      topDiff: t('profile.valueLabels.topDiff'),
+      top12kDiff: t('profile.valueLabels.top12kDiff')
     };
 
     useEffect(() => {
@@ -169,7 +168,7 @@ const ProfilePage = () => {
           if (hasFlag(user, permissionFlags.SUPER_ADMIN)) {
             // Super admin can sync any user's roles
             if (!playerData?.user?.id) {
-              toast.error(tProfile('discordRoleSync.errors.noUser'));
+              toast.error(t('profile.discordRoleSync.errors.noUser'));
               return;
             }
             targetUserId = playerData.user.id;
@@ -177,7 +176,7 @@ const ProfilePage = () => {
           } else {
             // Non-admin users can only sync their own roles
             if (!user?.id) {
-              toast.error(tProfile('discordRoleSync.errors.noUser'));
+              toast.error(t('profile.discordRoleSync.errors.noUser'));
               return;
             }
             targetUserId = user.id;
@@ -189,12 +188,12 @@ const ProfilePage = () => {
           if (response.data?.success) {
             toast.success(
               hasFlag(user, permissionFlags.SUPER_ADMIN) 
-                ? tProfile('discordRoleSync.success.other')
-                : tProfile('discordRoleSync.success.own')
+                ? t('profile.discordRoleSync.success.other')
+                : t('profile.discordRoleSync.success.own')
             );
           }
           else {
-            toast.error(tProfile('discordRoleSync.errors.generic'));
+            toast.error(t('profile.discordRoleSync.errors.generic'));
           }
         } catch (error) {
           
@@ -208,9 +207,9 @@ const ProfilePage = () => {
               const seconds = totalSeconds % 60;
               retryAfterFormatted = `${minutes}:${seconds.toString().padStart(2, '0')}`;
             }
-            toast.error(tProfile('discordRoleSync.errors.tooManyRequests', { retryAfter: retryAfterFormatted }));
+            toast.error(t('profile.discordRoleSync.errors.tooManyRequests', { retryAfter: retryAfterFormatted }));
           } else {
-            const errorMessage = error.response?.data?.error || error.message || tProfile('discordRoleSync.errors.generic');
+            const errorMessage = error.response?.data?.error || error.message || t('profile.discordRoleSync.errors.generic');
             toast.error(errorMessage);
           }
         }
@@ -226,8 +225,8 @@ const ProfilePage = () => {
       }
       // Define sort options (extendable)
       const sortOptions = useMemo(() => [
-        { value: 'score', label: tProfile('sort.byScore'), sortFn: sortByScore },
-        { value: 'speed', label: tProfile('sort.bySpeed'), sortFn: (a, b) => {
+        { value: 'score', label: t('profile.sort.byScore'), sortFn: sortByScore },
+        { value: 'speed', label: t('profile.sort.bySpeed'), sortFn: (a, b) => {
           const speedA = a.speed || 0;
           const speedB = b.speed || 0;
           if (speedA !== speedB) {
@@ -235,7 +234,7 @@ const ProfilePage = () => {
           }
           return sortByScore(a, b);
         }},
-        { value: 'date', label: tProfile('sort.byDate'), sortFn: (a, b) => {
+        { value: 'date', label: t('profile.sort.byDate'), sortFn: (a, b) => {
           const dateA = new Date(a.vidUploadTime).getTime() || 0;
           const dateB = new Date(b.vidUploadTime).getTime() || 0;
           if (dateA !== dateB) {
@@ -243,7 +242,7 @@ const ProfilePage = () => {
           }
           return sortByScore(a, b);
         }},
-        { value: 'xacc', label: tProfile('sort.byXacc'), sortFn: (a, b) => {
+        { value: 'xacc', label: t('profile.sort.byXacc'), sortFn: (a, b) => {
           const xaccA = a.judgements?.accuracy || 0;
           const xaccB = b.judgements?.accuracy || 0;
           if (xaccA !== xaccB) {
@@ -253,7 +252,7 @@ const ProfilePage = () => {
         }},
         { 
           value: 'difficulty', 
-          label: tProfile('sort.byDifficulty'), 
+          label: t('profile.sort.byDifficulty'), 
           sortFn: (a, b) => {
             // First: .difficulty.type == "PGU" sorted before others
             const typeA = a.level?.difficulty?.type === "PGU" ? 0 : 1;
@@ -275,7 +274,7 @@ const ProfilePage = () => {
             }
           }
         }
-      ], [tProfile, sortOrder, playerData?.topScores]);
+      ], [t, sortOrder, playerData?.topScores]);
 
       const selectedSortOption = useMemo(() => 
         sortOptions.find(option => option.value === sortType),
@@ -373,15 +372,15 @@ const ProfilePage = () => {
         return (
           <div className="player-page">
             <MetaTags
-              title={tProfile('meta.defaultTitle')}
-              description={tProfile('meta.description')}
+              title={t('profile.meta.defaultTitle')}
+              description={t('profile.meta.description')}
               url={currentUrl}
               image={'/default-avatar.jpg'}
               type="profile"
           />
             <div className="player-body" style={{height: "85vh"}}>
-                <h1 className="player-notfound">{tProfile('notLoggedIn')}</h1>
-                <h2 className="player-search-for-other" onClick={handleSearchForOther}>{tProfile('searchForOther')}</h2>
+                <h1 className="player-notfound">{t('profile.notLoggedIn')}</h1>
+                <h2 className="player-search-for-other" onClick={handleSearchForOther}>{t('profile.searchForOther')}</h2>
             </div>  
           </div>
         );
@@ -390,8 +389,8 @@ const ProfilePage = () => {
       return (
         <div className="player-page">
           <MetaTags
-            title={playerData?.name ? tProfile('meta.title', { name: playerData.name }) : tProfile('meta.defaultTitle')}
-            description={tProfile('meta.description', { name: playerData?.name || 'Unknown Player' })}
+            title={playerData?.name ? t('profile.meta.title', { name: playerData.name }) : t('profile.meta.defaultTitle')}
+            description={t('profile.meta.description', { name: playerData?.name || 'Unknown Player' })}
             url={currentUrl}
             image={playerData?.avatar || playerData?.avatarUrl || playerData?.pfp || '/default-avatar.jpg'}
             type="profile"
@@ -401,15 +400,15 @@ const ProfilePage = () => {
           {user && isOwnProfile ? (
             hasFlag(user, permissionFlags.BANNED) ? (
               <div className="profile-banner banned">
-                <span className="profile-banner-text">{tProfile('banned')}</span>
+                <span className="profile-banner-text">{t('profile.banned')}</span>
               </div>
             ) : hasFlag(user, permissionFlags.SUBMISSIONS_PAUSED) ? (
             <div className="profile-banner submissions-paused">
-              <span className="profile-banner-text">{tProfile('submissionSuspended')}</span>
+              <span className="profile-banner-text">{t('profile.submissionSuspended')}</span>
             </div>
             ) : !hasFlag(user, permissionFlags.EMAIL_VERIFIED) ? (
               <div className="profile-banner email-verification" onClick={() => navigate('/profile/verify-email')}>
-                <span className="profile-banner-text">{tProfile('emailVerification')}</span>
+                <span className="profile-banner-text">{t('profile.emailVerification')}</span>
                 <span className="email-verification-arrow">→</span>
               </div>
             ) : <br />
@@ -553,8 +552,8 @@ const ProfilePage = () => {
                       onClick={handleDiscordRoleRefresh}
                       title={
                         hasFlag(user, permissionFlags.SUPER_ADMIN)
-                          ? tProfile('discordRoleSync.buttonTitle.other')
-                          : tProfile('discordRoleSync.buttonTitle.own')
+                          ? t('profile.discordRoleSync.buttonTitle.other')
+                          : t('profile.discordRoleSync.buttonTitle.own')
                       }
                     >
                       <DiscordIcon color="#fff" size={"24px"} />
@@ -612,7 +611,7 @@ const ProfilePage = () => {
               </div>
               {playerData?.passes && playerData.passes.length > 0 && (
                 <div className="scores-section">
-                  <h2>{tProfile('sections.scores.title')}</h2>
+                  <h2>{t('profile.sections.scores.title')}</h2>
                   
                   {/* Search and Sort Controls */}
                   <div className="scores-controls">
@@ -624,7 +623,7 @@ const ProfilePage = () => {
                       <input
                         type="text"
                         className="search-input"
-                        placeholder={tProfile('search.placeholder')}
+                        placeholder={t('profile.search.placeholder')}
                         name="search"
                         autoComplete="off"
                         value={searchQuery}
@@ -664,7 +663,7 @@ const ProfilePage = () => {
                         <button
                           className="toggle-hidden-passes-button"
                           onClick={() => setShowHiddenPasses(!showHiddenPasses)}
-                          title={showHiddenPasses ? tProfile('hideHiddenPasses') : tProfile('showHiddenPasses')}
+                          title={showHiddenPasses ? t('profile.hideHiddenPasses') : t('profile.showHiddenPasses')}
                         >
                           {showHiddenPasses ? <EyeIcon size="20px" /> : <EyeOffIcon size="20px" />}
                         </button>
@@ -672,7 +671,7 @@ const ProfilePage = () => {
                     </div>
                     
                     <div className="results-count">
-                      {tProfile('labels.totalPasses', { count: filteredAndSortedPasses.length })}
+                      {t('profile.labels.totalPasses', { count: filteredAndSortedPasses.length })}
                     </div>
                   </div>
 
@@ -683,7 +682,7 @@ const ProfilePage = () => {
                     endMessage={
                       displayedPasses.length > 0 && (
                         <p style={{ textAlign: 'center', padding: '1rem', color: 'rgba(255, 255, 255, 0.6)' }}>
-                          <b>{tProfile('infiniteScroll.end')}</b>
+                          <b>{t('profile.infiniteScroll.end')}</b>
                         </p>
                       )
                     }
@@ -700,7 +699,7 @@ const ProfilePage = () => {
                           <div className="lowest-impact-score-indicator">
                             <p>
                               {(() => {
-                                const text = tProfile('sections.scores.lowestImpactScore');
+                                const text = t('profile.sections.scores.lowestImpactScore');
                                 const parts = text.split('{{score}}');
                                 return (
                                   <>
@@ -720,7 +719,7 @@ const ProfilePage = () => {
                 </div>
               )}
             </div>
-          ) : <h1 className="player-notfound">{tProfile('notFound')}</h1>)
+          ) : <h1 className="player-notfound">{t('profile.notFound')}</h1>)
           : <div className="loader"></div>}
           
           {showEditPopup && playerData && (

@@ -5,13 +5,10 @@ import { CountrySelect } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
 import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
-import axios from 'axios';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
 const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
   const { t } = useTranslation(['components', 'common']);
-  const tAdmin = (key) => t(`adminPopups.player.${key}`) || key;
-
   if (!player) {
     console.error('Player prop is undefined');
     return null;
@@ -66,7 +63,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
         name: playerName
       });
     } catch (err) {
-      setError(err.response?.data?.details || tAdmin('errors.nameUpdate'));
+      setError(err.response?.data?.details || t('adminPopups.player.errors.nameUpdate'));
       setPlayerName(player.name);
       console.error('Error updating player name:', err);
     } finally {
@@ -90,7 +87,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
         country: selectedCountry
       });
     } catch (err) {
-      setError(err.response?.data?.details || tAdmin('errors.countryUpdate'));
+      setError(err.response?.data?.details || t('adminPopups.player.errors.countryUpdate'));
       setSelectedCountry(player.country);
       console.error('Error updating country:', err);
     } finally {
@@ -124,7 +121,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
         isBanned: pendingBanState
       });
     } catch (err) {
-      setError(err.response?.data?.details || tAdmin('errors.banUpdate'));
+      setError(err.response?.data?.details || t('adminPopups.player.errors.banUpdate'));
       setPendingBanState(isBanned);
       console.error('Error updating ban status:', err);
     } finally {
@@ -159,7 +156,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
         isSubmissionsPaused: pendingPauseState
       });
     } catch (err) {
-      setError(err.response?.data?.details || tAdmin('errors.pauseUpdate'));
+      setError(err.response?.data?.details || t('adminPopups.player.errors.pauseUpdate'));
       setPendingPauseState(isSubmissionsPaused);
       console.error('Error updating pause status:', err);
     } finally {
@@ -185,12 +182,12 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
         targetPlayerId: parseInt(targetPlayerId)
       });
 
-      toast.success(tAdmin('success.mergePlayer'));
+      toast.success(t('adminPopups.player.success.mergePlayer'));
       onClose();
       window.location.href = '/leaderboard';
     } catch (err) {
       console.error('Error merging player:', err);
-      toast.error(err.response?.data?.details || tAdmin('errors.mergePlayer'));
+      toast.error(err.response?.data?.details || t('adminPopups.player.errors.mergePlayer'));
       setTargetPlayerId('');
       setPendingMergeState(null);
     } finally {
@@ -226,7 +223,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
         isRatingBanned: pendingRatingBanState
       });
     } catch (err) {
-      setError(err.response?.data?.details || tAdmin('errors.ratingBanUpdate'));
+      setError(err.response?.data?.details || t('adminPopups.player.errors.ratingBanUpdate'));
       setPendingRatingBanState(isRatingBanned);
       console.error('Error updating rating ban status:', err);
     } finally {
@@ -239,20 +236,20 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
     <div className="admin-player-popup-overlay" onClick={handleClose}>
       <div className="admin-player-popup" onClick={(e) => e.stopPropagation()}>
         <div className="admin-player-popup-header">
-          <h2>{tAdmin('title')}</h2>
-          <button className="close-button" onClick={onClose}>{tAdmin('close')}</button>
+          <h2>{t('adminPopups.player.title')}</h2>
+          <button className="close-button" onClick={onClose}>{t('adminPopups.player.close')}</button>
         </div>
 
         <div className="admin-form">
           <div className="form-group name-section">
-            <label htmlFor="playerName">{tAdmin('form.name.label')}</label>
+            <label htmlFor="playerName">{t('adminPopups.player.form.name.label')}</label>
             <div className="name-input-group">
               <input
                 type="text"
                 id="playerName"
                 value={playerName}
                 onChange={(e) => setPlayerName(e.target.value)}
-                placeholder={tAdmin('form.name.placeholder')}
+                placeholder={t('adminPopups.player.form.name.placeholder')}
               />
               {playerName !== player.name && (
                 <button
@@ -261,14 +258,14 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                   disabled={isLoading || !playerName.trim()}
                   className="update-name-button"
                 >
-                  {tAdmin('form.name.button')}
+                  {t('adminPopups.player.form.name.button')}
                 </button>
               )}
             </div>
           </div>
 
           <div className="form-group country-section">
-            <label htmlFor="country">{tAdmin('form.country.label')}</label>
+            <label htmlFor="country">{t('adminPopups.player.form.country.label')}</label>
             <div className="country-input-group">
               <CountrySelect
                 value={selectedCountry}
@@ -281,7 +278,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                   disabled={isLoading}
                   className="update-country-button"
                 >
-                  {tAdmin('form.country.button')}
+                  {t('adminPopups.player.form.country.button')}
                 </button>
               )}
             </div>
@@ -297,12 +294,12 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                     onChange={(e) => handleBanChange(e.target.checked)}
                     disabled={isLoading || showBanConfirm}
                   />
-                  <span>{tAdmin('form.ban.label')}</span>
+                  <span>{t('adminPopups.player.form.ban.label')}</span>
                 </label>
                 {showBanConfirm && (
                   <div className="confirm-container">
                     <p className="confirm-message">
-                      {pendingBanState ? tAdmin('form.ban.confirm.ban') : tAdmin('form.ban.confirm.unban')}
+                      {pendingBanState ? t('adminPopups.player.form.ban.confirm.ban') : t('adminPopups.player.form.ban.confirm.unban')}
                     </p>
                     <div className="confirm-buttons">
                       <button
@@ -334,12 +331,12 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                     onChange={(e) => handlePauseChange(e.target.checked)}
                     disabled={isLoading || showPauseConfirm}
                   />
-                  <span>{tAdmin('form.pause.label')}</span>
+                  <span>{t('adminPopups.player.form.pause.label')}</span>
                 </label>
                 {showPauseConfirm && (
                   <div className="confirm-container">
                     <p className="confirm-message">
-                      {pendingPauseState ? tAdmin('form.pause.confirm.pause') : tAdmin('form.pause.confirm.resume')}
+                      {pendingPauseState ? t('adminPopups.player.form.pause.confirm.pause') : t('adminPopups.player.form.pause.confirm.resume')}
                     </p>
                     <div className="confirm-buttons">
                       <button
@@ -371,12 +368,12 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                     onChange={(e) => handleRatingBanChange(e.target.checked)}
                     disabled={isLoading || showRatingBanConfirm}
                   />
-                  <span>{tAdmin('form.ratingBan.label')}</span>
+                  <span>{t('adminPopups.player.form.ratingBan.label')}</span>
                 </label>
                 {showRatingBanConfirm && (
                   <div className="confirm-container">
                     <p className="confirm-message">
-                      {pendingRatingBanState ? tAdmin('form.ratingBan.confirm.ban') : tAdmin('form.ratingBan.confirm.unban')}
+                      {pendingRatingBanState ? t('adminPopups.player.form.ratingBan.confirm.ban') : t('adminPopups.player.form.ratingBan.confirm.unban')}
                     </p>
                     <div className="confirm-buttons">
                       <button
@@ -403,7 +400,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
           </div>
 
           <div className="form-group discord-section">
-            <label htmlFor="discordId">{tAdmin('form.discord.label')}</label>
+            <label htmlFor="discordId">{t('adminPopups.player.form.discord.label')}</label>
             {discordInfo.username && (
               <div className="discord-info">
                 <div className="discord-info-header">
@@ -422,7 +419,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
               onClick={() => setShowMergeModal(true)}
               disabled={isLoading}
             >
-              {tAdmin('form.merge.button')}
+              {t('adminPopups.player.form.merge.button')}
             </button>
           </div>
 
@@ -433,9 +430,9 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                   <>
                     <div className="merge-warning">
                       <div className="warning-content">
-                        {tAdmin('form.merge.confirm.message')}
+                        {t('adminPopups.player.form.merge.confirm.message')}
                         <ul>
-                          <li>{tAdmin('form.merge.confirm.warning')}</li>
+                          <li>{t('adminPopups.player.form.merge.confirm.warning')}</li>
                         </ul>
                       </div>
                       <button
@@ -443,7 +440,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                         onClick={() => setShowMergeInput(true)}
                         disabled={isLoading}
                       >
-                        {tAdmin('form.merge.confirm.buttons.understand')}
+                        {t('adminPopups.player.form.merge.confirm.buttons.understand')}
                       </button>
                     </div>
                   </>
@@ -452,7 +449,7 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
                     <input
                       type="text"
                       className="merge-input"
-                      placeholder={tAdmin('form.merge.placeholder')}
+                      placeholder={t('adminPopups.player.form.merge.placeholder')}
                       value={targetPlayerId}
                       onChange={(e) => setTargetPlayerId(e.target.value)}
                       disabled={isLoading}

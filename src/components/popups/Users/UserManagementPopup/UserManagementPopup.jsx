@@ -33,9 +33,6 @@ const isOnlyHeadCurator = (user) => {
 
 const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, roleConfig, currentUser }) => {
   const { t } = useTranslation('components');
-  const tUser = (key, params) => t(`userManagement.userEntry.${key}`, params);
-  const tError = (key) => t(`userManagement.errors.${key}`) || key;
-  const tButtons = (key, params) => t(`userManagement.buttons.${key}`, params);
 
   const [isExpanded, setIsExpanded] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -127,7 +124,7 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
   const handleRoleChange = async (promote = true) => {
     // Only require password for super admins
     if (hasFlag(currentUser, permissionFlags.SUPER_ADMIN) && !superAdminPassword) {
-      onError(tError('passwordRequired'));
+      onError(t('userManagement.errors.passwordRequired'));
       return;
     }
 
@@ -138,7 +135,7 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
         // Promoting: Grant the next role
         const targetRole = getNextRole();
         if (!targetRole) {
-          onError(tError('alreadyHighestRole'));
+          onError(t('userManagement.errors.alreadyHighestRole'));
           return;
         }
 
@@ -156,7 +153,7 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
         // Demoting: Revoke the current role
         const currentRole = getHighestRole();
         if (!currentRole) {
-          onError(tError('alreadyLowestRole'));
+          onError(t('userManagement.errors.alreadyLowestRole'));
           return;
         }
 
@@ -176,9 +173,9 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
     } catch (error) {
       console.error('Error updating role:', error);
       if (error.response?.data?.message === 'Invalid super admin password') {
-        onError(tError('invalidPassword'));
+        onError(t('userManagement.errors.invalidPassword'));
       } else {
-        onError(error.response?.data?.error || tError('updateRoleFailed'));
+        onError(error.response?.data?.error || t('userManagement.errors.updateRoleFailed'));
       }
     } finally {
       setIsLoading(false);
@@ -188,17 +185,17 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
   const handleDelete = async () => {
     // Check if user can be removed (not at bottom role)
     if (!canBeRemoved()) {
-      onError(tError('cannotRemoveBottomRole'));
+      onError(t('userManagement.errors.cannotRemoveBottomRole'));
       return;
     }
 
-    if (!window.confirm(tError('deleteConfirm'))) {
+    if (!window.confirm(t('userManagement.errors.deleteConfirm'))) {
       return;
     }
 
     // Only require password for super admins
     if (hasFlag(currentUser, permissionFlags.SUPER_ADMIN) && !superAdminPassword) {
-      onError(tError('passwordRequired'));
+      onError(t('userManagement.errors.passwordRequired'));
       return;
     }
 
@@ -206,7 +203,7 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
       setIsLoading(true);
       const currentRole = getHighestRole();
       if (!currentRole) {
-        onError(tError('noRoleToRemove'));
+        onError(t('userManagement.errors.noRoleToRemove'));
         return;
       }
 
@@ -223,9 +220,9 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
     } catch (error) {
       console.error('Error removing user:', error);
       if (error.response?.data?.error === 'Invalid super admin password') {
-        onError(tError('invalidPassword'));
+        onError(t('userManagement.errors.invalidPassword'));
       } else {
-        onError(error.response?.data?.error || tError('deleteFailed'));
+        onError(error.response?.data?.error || t('userManagement.errors.deleteFailed'));
       }
     } finally {
       setIsLoading(false);
@@ -248,7 +245,7 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
           />
           <div className="user-text">
             <span className="user-name">
-              {user.nickname || tUser('unknown')}
+              {user.nickname || t('userManagement.userEntry.unknown')}
               {currentRole && (
                 <span className={`role-badge ${atTopRole ? 'top-role' : ''}`} title={t(currentRole.label)}>
                   {t(currentRole.label)}
@@ -277,9 +274,9 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
                      handleRoleChange(true);
                    }}
                    disabled={(hasFlag(currentUser, permissionFlags.SUPER_ADMIN) && !superAdminPassword) || isLoading}
-                   title={tButtons('promoteTo', { role: t(nextRole.label) })}
+                   title={t('userManagement.buttons.promoteTo', { role: t(nextRole.label) })}
                  >
-                   {tButtons('promote')}
+                   {t('userManagement.buttons.promote')}
                  </button>
                )}
                
@@ -292,9 +289,9 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
                      handleRoleChange(false);
                    }}
                    disabled={(hasFlag(currentUser, permissionFlags.SUPER_ADMIN) && !superAdminPassword) || isLoading}
-                   title={tButtons('demoteTo', { role: t(previousRole.label) })}
+                   title={t('userManagement.buttons.demoteTo', { role: t(previousRole.label) })}
                  >
-                   {tButtons('demote')}
+                   {t('userManagement.buttons.demote')}
                  </button>
                )}
 
@@ -308,7 +305,7 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
                    }}
                    disabled={(hasFlag(currentUser, permissionFlags.SUPER_ADMIN) && !superAdminPassword) || isLoading}
                  >
-                   {tUser('buttons.remove')}
+                   {t('userManagement.userEntry.buttons.remove')}
                  </button>
                )}
             </>
@@ -336,7 +333,6 @@ const UserManagementPopup = ({ onClose, currentUser, initialMode = 'rater' }) =>
   
   const [managementMode, setManagementMode] = useState(getInitialMode());
   const roleConfig = ROLE_CONFIGS[managementMode];
-  const tPopup = (key) => t(`userManagement.${key}`) || key;
 
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -454,13 +450,13 @@ const UserManagementPopup = ({ onClose, currentUser, initialMode = 'rater' }) =>
                 className={`mode-button ${managementMode === 'rater' ? 'active' : ''}`}
                 onClick={() => handleModeChange('rater')}
               >
-                {tPopup('modeToggle.rater')}
+                {t('userManagement.modeToggle.rater')}
               </button>
               <button
                 className={`mode-button ${managementMode === 'curator' ? 'active' : ''}`}
                 onClick={() => handleModeChange('curator')}
               >
-                {tPopup('modeToggle.curator')}
+                {t('userManagement.modeToggle.curator')}
               </button>
             </div>
           )}
@@ -471,7 +467,7 @@ const UserManagementPopup = ({ onClose, currentUser, initialMode = 'rater' }) =>
                  type="password"
                  value={superAdminPassword}
                  onChange={(e) => setSuperAdminPassword(e.target.value)}
-                 placeholder={tPopup('superAdmin.password.placeholder')}
+                 placeholder={t('userManagement.superAdmin.password.placeholder')}
                />
              </div>
            )}
@@ -483,7 +479,7 @@ const UserManagementPopup = ({ onClose, currentUser, initialMode = 'rater' }) =>
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={tPopup('search.placeholder')}
+            placeholder={t('userManagement.search.placeholder')}
             className="search-input"
             autoComplete='off'
             aria-autocomplete='none'
@@ -492,7 +488,7 @@ const UserManagementPopup = ({ onClose, currentUser, initialMode = 'rater' }) =>
 
         <div className="users-list">
           {isLoading ? (
-            <div className="loading">{tPopup('loading')}</div>
+            <div className="loading">{t('userManagement.loading')}</div>
           ) : (
             filteredUsers.map(user => (
               <UserEntry
@@ -516,9 +512,9 @@ const UserManagementPopup = ({ onClose, currentUser, initialMode = 'rater' }) =>
               type="text"
               value={newUserUsername}
               onChange={(e) => setNewUserUsername(e.target.value)}
-              placeholder={tPopup('addUser.placeholder')}
+              placeholder={t('userManagement.addUser.placeholder')}
             />
-            <button onClick={handleAddUser}>{tPopup('addUser.button')}</button>
+            <button onClick={handleAddUser}>{t('userManagement.addUser.button')}</button>
           </div>
         )}
       </div>

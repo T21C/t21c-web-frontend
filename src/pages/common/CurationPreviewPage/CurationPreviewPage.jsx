@@ -13,7 +13,6 @@ import i18next from 'i18next';
 const CurationPreviewPage = () => {
   const { id } = useParams();
   const { t } = useTranslation('pages');
-  const tCur = (key, params = {}) => t(`curationPreview.${key}`, params);
   const currentUrl = window.location.origin + location.pathname;
 
   const [isLoading, setIsLoading] = useState(true);
@@ -50,7 +49,7 @@ const CurationPreviewPage = () => {
       <div className="curation-preview-page">
         
         <div className="curation-preview-page__loading">
-          {tCur('loading')}
+          {t('curationPreview.loading')}
         </div>
       </div>
     );
@@ -61,7 +60,7 @@ const CurationPreviewPage = () => {
       <div className="curation-preview-page">
         
         <div className="curation-preview-page__error">
-          {error || tCur('notFound')}
+          {error || t('curationPreview.notFound')}
         </div>
       </div>
     );
@@ -70,8 +69,8 @@ const CurationPreviewPage = () => {
   return (
     <div className="curation-preview-page">
       <MetaTags 
-        title={tCur('meta.title', { song: level?.song || 'Unknown' })}
-        description={tCur('meta.description', { song: level?.song || 'Unknown' })}
+        title={t('curationPreview.meta.title', { song: level?.song || 'Unknown' })}
+        description={t('curationPreview.meta.description', { song: level?.song || 'Unknown' })}
         url={currentUrl}
       />
       
@@ -91,7 +90,7 @@ const CurationPreviewPage = () => {
           <div className="curation-preview-page__preview">
             <img 
               src={curation.previewLink} 
-              alt={tCur('preview.alt', { song: level?.song || 'Unknown' })}
+              alt={t('curationPreview.preview.alt', { song: level?.song || 'Unknown' })}
               className="curation-preview-page__preview-image"
             />
           </div>
@@ -99,50 +98,50 @@ const CurationPreviewPage = () => {
 
         {curation.description && (
           <div className="curation-preview-page__description">
-            <h2>{tCur('description.title')}</h2>
+            <h2>{t('curationPreview.description.title')}</h2>
             <p>{curation.description}</p>
           </div>
         )}
 
         {level && (
           <div className="curation-preview-page__level-info">
-            <h2>{tCur('levelInfo.title')}</h2>
+            <h2>{t('curationPreview.levelInfo.title')}</h2>
             <div className="curation-preview-page__level-details">
               <div className="curation-preview-page__detail">
-                <span className="curation-preview-page__detail-label">{tCur('levelInfo.difficulty')}</span>
+                <span className="curation-preview-page__detail-label">{t('curationPreview.levelInfo.difficulty')}</span>
                 <span className="curation-preview-page__detail-value">{level.difficulty?.name || 'Unknown'}</span>
               </div>
               <div className="curation-preview-page__detail">
-                <span className="curation-preview-page__detail-label">{tCur('levelInfo.clears')}</span>
+                <span className="curation-preview-page__detail-label">{t('curationPreview.levelInfo.clears')}</span>
                 <span className="curation-preview-page__detail-value">{level.clears || 0}</span>
               </div>
               <div className="curation-preview-page__detail">
-                <span className="curation-preview-page__detail-label">{tCur('levelInfo.likes')}</span>
+                <span className="curation-preview-page__detail-label">{t('curationPreview.levelInfo.likes')}</span>
                 <span className="curation-preview-page__detail-value">{level.likes || 0}</span>
               </div>
               {level.videoLink && (
                 <div className="curation-preview-page__detail">
-                  <span className="curation-preview-page__detail-label">{tCur('levelInfo.video')}</span>
+                  <span className="curation-preview-page__detail-label">{t('curationPreview.levelInfo.video')}</span>
                   <a 
                     href={level.videoLink} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="curation-preview-page__detail-link"
                   >
-                    {tCur('levelInfo.watchVideo')}
+                    {t('curationPreview.levelInfo.watchVideo')}
                   </a>
                 </div>
               )}
               {level.dlLink && (
                 <div className="curation-preview-page__detail">
-                  <span className="curation-preview-page__detail-label">{tCur('levelInfo.download')}</span>
+                  <span className="curation-preview-page__detail-label">{t('curationPreview.levelInfo.download')}</span>
                   <a 
                     href={level.dlLink} 
                     target="_blank" 
                     rel="noopener noreferrer"
                     className="curation-preview-page__detail-link"
                   >
-                    {tCur('levelInfo.downloadLevel')}
+                    {t('curationPreview.levelInfo.downloadLevel')}
                   </a>
                 </div>
               )}
@@ -152,10 +151,10 @@ const CurationPreviewPage = () => {
 
         <div className="curation-preview-page__footer">
           <p className="curation-preview-page__assigned-by">
-            {tCur('footer.assignedBy', { user: curation.assignedBy })}
+            {t('curationPreview.footer.assignedBy', { user: curation.assignedBy })}
           </p>
           <p className="curation-preview-page__date">
-            {tCur('footer.assignedOn', { date: formatDate(curation.createdAt, i18next?.language) })}
+            {t('curationPreview.footer.assignedOn', { date: formatDate(curation.createdAt, i18next?.language) })}
           </p>
         </div>
       </div>

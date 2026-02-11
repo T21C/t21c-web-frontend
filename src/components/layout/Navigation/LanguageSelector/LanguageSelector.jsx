@@ -6,15 +6,16 @@ import { isoToEmoji } from "@/utils";
 import api from "@/utils/api";
 import { ChevronIcon } from "@/components/common/icons";
 import "./languageSelector.css";
+import { useTranslation } from 'react-i18next';
 
 /**
  * Language selector component
  * @param {Object} props
- * @param {Function} props.getTranslation - Function to get translation (tLang)
  * @param {string} props.variant - 'desktop' or 'mobile'
  * @param {boolean} props.asListItem - Whether to render as list item (default: true for mobile)
  */
-const LanguageSelector = ({ getTranslation, variant = "desktop", asListItem = null }) => {
+const LanguageSelector = ({ variant = "desktop", asListItem = null }) => {
+  const { t } = useTranslation('components');
   const [isOpen, setIsOpen] = useState(false);
   const [languages, setLanguages] = useState({
     en: { display: "English", countryCode: "us", status: 100 },
@@ -143,7 +144,7 @@ const LanguageSelector = ({ getTranslation, variant = "desktop", asListItem = nu
                 <span>{display}</span>
                 {status === 0 ? (
                   <span className="nav-language-select__option-status">
-                    {getTranslation("comingSoon")}
+                    {t("navigation.languages.comingSoon")}
                   </span>
                 ) : status < 100 ? (
                   <span className="nav-language-select__option-status partially-implemented">
@@ -252,7 +253,7 @@ const LanguageSelector = ({ getTranslation, variant = "desktop", asListItem = nu
                     <span>{display}</span>
                     {status === 0 ? (
                       <span className="nav-language-select__option-status">
-                        {getTranslation("comingSoon")}
+                        {t("navigation.languages.comingSoon")}
                       </span>
                     ) : status < 100 ? (
                       <span className="nav-language-select__option-status partially-implemented">

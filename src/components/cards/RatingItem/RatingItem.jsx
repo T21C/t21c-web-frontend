@@ -14,7 +14,6 @@ export const RatingItem = ({ ratingDetail, isSuperAdmin, onDelete, weeklyRaterAc
     
     const [isExpanded, setIsExpanded] = useState(false);
     const { t } = useTranslation('components');
-    const tRating = (key, params = {}) => t(`rating.ratingCard.${key}`, params) || key;
     
     // Find user's weekly activity
     const userActivity = weeklyRaterActivity.find(rater => rater.userId === (user?.id || userId));
@@ -85,7 +84,7 @@ export const RatingItem = ({ ratingDetail, isSuperAdmin, onDelete, weeklyRaterAc
                   data-tooltip-id="delete-rating"
                 >
                   <Tooltip id="delete-rating" place="top" noArrow>
-                    {tRating('tooltips.deleteRating')}
+                    {t('rating.ratingCard.tooltips.deleteRating')}
                   </Tooltip>
                   <svg 
                     width="16" 

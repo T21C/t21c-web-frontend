@@ -33,7 +33,7 @@ const DiscordRolesManager = ({
 
   // Prepare curation type options for CustomSelect
   const curationTypeOptions = useMemo(() => [
-    { value: '', label: tDisc('role.form.selectCurationType') },
+    { value: '', label: t('discordRoles.role.form.selectCurationType') },
     ...curationTypes.map(type => ({
       value: type.id.toString(),
       label: type.name
@@ -125,7 +125,7 @@ const DiscordRolesManager = ({
   const handleCloseGuildModal = () => {
     if (hasGuildFormChanges()) {
       const confirmed = window.confirm(
-        tDisc('confirmClose.message') || 'You have unsaved changes. Are you sure you want to close?'
+        t('discordRoles.confirmClose.message') || 'You have unsaved changes. Are you sure you want to close?'
       );
       if (!confirmed) {
         return;
@@ -138,7 +138,7 @@ const DiscordRolesManager = ({
   const handleCloseRoleModal = () => {
     if (hasRoleFormChanges()) {
       const confirmed = window.confirm(
-        tDisc('confirmClose.message') || 'You have unsaved changes. Are you sure you want to close?'
+        t('discordRoles.confirmClose.message') || 'You have unsaved changes. Are you sure you want to close?'
       );
       if (!confirmed) {
         return;
@@ -171,7 +171,7 @@ const DiscordRolesManager = ({
       setGuilds(response.data || []);
       setError('');
     } catch (err) {
-      setError(tDisc('errors.loadGuilds'));
+      setError(t('discordRoles.errors.loadGuilds'));
       console.error('Error loading guilds:', err);
     } finally {
       setIsLoading(false);
@@ -218,9 +218,9 @@ const DiscordRolesManager = ({
       setShowGuildModal(false);
       resetGuildForm();
       setInitialGuildForm(null);
-      toast.success(tDisc('success.guildCreated'));
+      toast.success(t('discordRoles.success.guildCreated'));
     } catch (err) {
-      toast.error(err.response?.data?.error || tDisc('errors.createGuild'));
+      toast.error(err.response?.data?.error || t('discordRoles.errors.createGuild'));
     }
   };
 
@@ -243,23 +243,23 @@ const DiscordRolesManager = ({
       setShowGuildModal(false);
       resetGuildForm();
       setInitialGuildForm(null);
-      toast.success(tDisc('success.guildUpdated'));
+      toast.success(t('discordRoles.success.guildUpdated'));
     } catch (err) {
-      toast.error(err.response?.data?.error || tDisc('errors.updateGuild'));
+      toast.error(err.response?.data?.error || t('discordRoles.errors.updateGuild'));
     }
   };
 
   const handleDeleteGuild = async (guildId) => {
-    if (!confirm(tDisc('guild.confirmDelete'))) return;
+    if (!confirm(t('discordRoles.guild.confirmDelete'))) return;
     
     try {
       await api.delete(`/v2/admin/discord/guilds/${guildId}`, {
         headers: getHeaders()
       });
       setGuilds(guilds.filter(g => g.id !== guildId));
-      toast.success(tDisc('success.guildDeleted'));
+      toast.success(t('discordRoles.success.guildDeleted'));
     } catch (err) {
-      toast.error(err.response?.data?.error || tDisc('errors.deleteGuild'));
+      toast.error(err.response?.data?.error || t('discordRoles.errors.deleteGuild'));
     }
   };
 
@@ -357,14 +357,14 @@ const DiscordRolesManager = ({
       setShowRoleModal(false);
       resetRoleForm();
       setInitialRoleForm(null);
-      toast.success(tDisc('success.roleUpdated'));
+      toast.success(t('discordRoles.success.roleUpdated'));
     } catch (err) {
-      toast.error(err.response?.data?.error || tDisc('errors.updateRole'));
+      toast.error(err.response?.data?.error || t('discordRoles.errors.updateRole'));
     }
   };
 
   const handleDeleteRole = async () => {
-    if (!confirm(tDisc('role.confirmDelete'))) return;
+    if (!confirm(t('discordRoles.role.confirmDelete'))) return;
     
     try {
       await api.delete(`/v2/admin/discord/guilds/${selectedGuildId}/roles/${editingRole.id}`, {
@@ -384,9 +384,9 @@ const DiscordRolesManager = ({
       
       setShowRoleModal(false);
       resetRoleForm();
-      toast.success(tDisc('success.roleDeleted'));
+      toast.success(t('discordRoles.success.roleDeleted'));
     } catch (err) {
-      toast.error(err.response?.data?.error || tDisc('errors.deleteRole'));
+      toast.error(err.response?.data?.error || t('discordRoles.errors.deleteRole'));
     }
   };
 
@@ -491,9 +491,9 @@ const DiscordRolesManager = ({
       // Reload guilds to get updated sortOrder values from backend
       await loadGuilds();
       
-      toast.success(tDisc('success.rolesReordered'));
+      toast.success(t('discordRoles.success.rolesReordered'));
     } catch (err) {
-      toast.error(err.response?.data?.error || tDisc('errors.reorderRoles'));
+      toast.error(err.response?.data?.error || t('discordRoles.errors.reorderRoles'));
       // Reload guilds on error to restore original order
       loadGuilds();
     } finally {
@@ -509,25 +509,25 @@ const DiscordRolesManager = ({
     return <div className="discord-roles-manager__error">{error}</div>;
   }
 
-  const roleTypeLabel = roleType === 'DIFFICULTY' ? tDisc('types.difficulty') : tDisc('types.curation');
+  const roleTypeLabel = roleType === 'DIFFICULTY' ? t('discordRoles.types.difficulty') : t('discordRoles.types.curation');
 
   return (
     <div className="discord-roles-manager">
       <div className="discord-roles-manager__header">
-        <h3 className="discord-roles-manager__title">{tDisc('title')}</h3>
+        <h3 className="discord-roles-manager__title">{t('discordRoles.title')}</h3>
         <button
           type="button"
           className="discord-roles-manager__add-guild-btn"
           onClick={() => openGuildModal()}
         >
-          + {tDisc('guild.add')}
+          + {t('discordRoles.guild.add')}
         </button>
       </div>
 
       {guilds.length === 0 ? (
         <div className="discord-roles-manager__empty">
-          <p>{tDisc('empty.noGuilds')}</p>
-          <p>{tDisc('empty.noGuildsHint')}</p>
+          <p>{t('discordRoles.empty.noGuilds')}</p>
+          <p>{t('discordRoles.empty.noGuildsHint')}</p>
         </div>
       ) : (
         <div className="discord-roles-manager__guilds">
@@ -545,7 +545,7 @@ const DiscordRolesManager = ({
                     <span className="discord-roles-manager__guild-name">{guild.name}</span>
                     <span className="discord-roles-manager__guild-id">({guild.guildId})</span>
                     <span className="discord-roles-manager__role-count">
-                      {relevantRoles.length} {relevantRoles.length !== 1 ? tDisc('guild.roleCountPlural', { count: relevantRoles.length }) : tDisc('guild.roleCount', { count: relevantRoles.length })}
+                      {relevantRoles.length} {relevantRoles.length !== 1 ? t('discordRoles.guild.roleCountPlural', { count: relevantRoles.length }) : t('discordRoles.guild.roleCount', { count: relevantRoles.length })}
                     </span>
                   </div>
                   <div className="discord-roles-manager__guild-actions">
@@ -572,19 +572,19 @@ const DiscordRolesManager = ({
                 {expandedGuilds[guild.id] && (
                   <div className="discord-roles-manager__guild-content">
                     <div className="discord-roles-manager__roles-header">
-                      <span>{tDisc('guild.rolesFor', { type: roleTypeLabel })}</span>
+                      <span>{t('discordRoles.guild.rolesFor', { type: roleTypeLabel })}</span>
                       <button
                         type="button"
                         className="discord-roles-manager__add-role-btn"
                         onClick={() => openRoleModal(guild.id)}
                       >
-                        + {tDisc('role.add')}
+                        + {t('discordRoles.role.add')}
                       </button>
                     </div>
 
                     {relevantRoles.length === 0 ? (
                       <div className="discord-roles-manager__no-roles">
-                        {tDisc('empty.noRoles', { type: roleTypeLabel })}
+                        {t('discordRoles.empty.noRoles', { type: roleTypeLabel })}
                       </div>
                     ) : (
                       <DragDropContext onDragEnd={(result) => handleRoleDragEnd(result, guild.id)}>
@@ -619,7 +619,7 @@ const DiscordRolesManager = ({
                                           <span className="discord-roles-manager__role-id">({role.roleId})</span>
                                           {role.conflictGroup && (
                                             <span className="discord-roles-manager__conflict-group">
-                                              {tDisc('role.group', { group: role.conflictGroup })}
+                                              {t('discordRoles.role.group', { group: role.conflictGroup })}
                                             </span>
                                           )}
                                         </div>
@@ -654,39 +654,39 @@ const DiscordRolesManager = ({
       {showGuildModal && (
         <div className="discord-roles-manager__modal-overlay" onClick={handleCloseGuildModal}>
           <div className="discord-roles-manager__modal" onClick={e => e.stopPropagation()}>
-            <h3>{editingGuild ? tDisc('guild.edit') : tDisc('guild.add')}</h3>
+            <h3>{editingGuild ? t('discordRoles.guild.edit') : t('discordRoles.guild.add')}</h3>
             <form onSubmit={(e) => { e.preventDefault(); editingGuild ? handleUpdateGuild() : handleCreateGuild(); }}>
               <div className="discord-roles-manager__form-group">
-                <label>{tDisc('guild.form.guildId')}</label>
+                <label>{t('discordRoles.guild.form.guildId')}</label>
                 <input
                   type="text"
                   value={guildForm.guildId}
                   onChange={(e) => setGuildForm({ ...guildForm, guildId: e.target.value })}
                   required
-                  placeholder={tDisc('guild.form.guildIdPlaceholder')}
+                  placeholder={t('discordRoles.guild.form.guildIdPlaceholder')}
                 />
               </div>
               <div className="discord-roles-manager__form-group">
-                <label>{tDisc('guild.form.displayName')}</label>
+                <label>{t('discordRoles.guild.form.displayName')}</label>
                 <input
                   type="text"
                   value={guildForm.name}
                   onChange={(e) => setGuildForm({ ...guildForm, name: e.target.value })}
                   required
-                  placeholder={tDisc('guild.form.displayNamePlaceholder')}
+                  placeholder={t('discordRoles.guild.form.displayNamePlaceholder')}
                 />
               </div>
               <div className="discord-roles-manager__form-group">
-                <label>{tDisc('guild.form.botToken')}</label>
+                <label>{t('discordRoles.guild.form.botToken')}</label>
                 <input
                   type="password"
                   value={guildForm.botToken}
                   onChange={(e) => setGuildForm({ ...guildForm, botToken: e.target.value })}
                   required={!editingGuild}
-                  placeholder={editingGuild ? tDisc('guild.form.botTokenPlaceholderEdit') : tDisc('guild.form.botTokenPlaceholder')}
+                  placeholder={editingGuild ? t('discordRoles.guild.form.botTokenPlaceholderEdit') : t('discordRoles.guild.form.botTokenPlaceholder')}
                 />
                 <p className="discord-roles-manager__hint">
-                  {tDisc('guild.form.botTokenHint')}
+                  {t('discordRoles.guild.form.botTokenHint')}
                 </p>
               </div>
               <div className="discord-roles-manager__form-group discord-roles-manager__form-group--checkbox">
@@ -696,7 +696,7 @@ const DiscordRolesManager = ({
                     checked={guildForm.isActive}
                     onChange={(e) => setGuildForm({ ...guildForm, isActive: e.target.checked })}
                   />
-                  {tDisc('guild.form.active')}
+                  {t('discordRoles.guild.form.active')}
                 </label>
               </div>
               <div className="discord-roles-manager__modal-actions">
@@ -729,32 +729,32 @@ const DiscordRolesManager = ({
       {showRoleModal && (
         <div className="discord-roles-manager__modal-overlay" onClick={handleCloseRoleModal}>
           <div className="discord-roles-manager__modal" onClick={e => e.stopPropagation()}>
-            <h3>{editingRole ? tDisc('role.edit') : tDisc('role.add')}</h3>
+            <h3>{editingRole ? t('discordRoles.role.edit') : t('discordRoles.role.add')}</h3>
             <form onSubmit={(e) => { e.preventDefault(); editingRole ? handleUpdateRole() : handleCreateRole(); }}>
               <div className="discord-roles-manager__form-group">
-                <label>{tDisc('role.form.roleId')}</label>
+                <label>{t('discordRoles.role.form.roleId')}</label>
                 <input
                   type="text"
                   value={roleForm.roleId}
                   onChange={(e) => setRoleForm({ ...roleForm, roleId: e.target.value })}
                   required
-                  placeholder={tDisc('role.form.roleIdPlaceholder')}
+                  placeholder={t('discordRoles.role.form.roleIdPlaceholder')}
                 />
               </div>
               <div className="discord-roles-manager__form-group">
-                <label>{tDisc('role.form.label')}</label>
+                <label>{t('discordRoles.role.form.label')}</label>
                 <input
                   type="text"
                   value={roleForm.label}
                   onChange={(e) => setRoleForm({ ...roleForm, label: e.target.value })}
                   required
-                  placeholder={tDisc('role.form.labelPlaceholder')}
+                  placeholder={t('discordRoles.role.form.labelPlaceholder')}
                 />
               </div>
               
               {roleType === 'DIFFICULTY' && (
                 <div className="discord-roles-manager__form-group">
-                  <label>{tDisc('role.form.minimumDifficulty')}</label>
+                  <label>{t('discordRoles.role.form.minimumDifficulty')}</label>
                   <RatingInput
                     value={roleForm.minDifficultyId ? difficulties.find(d => d.id === roleForm.minDifficultyId)?.name || '' : ''}
                     onChange={(difficultyName, isSelected) => {
@@ -771,10 +771,10 @@ const DiscordRolesManager = ({
                     difficulties={difficulties}
                     diffId={roleForm.minDifficultyId || 0}
                     allowCustomInput={false}
-                    placeholder={tDisc('role.form.selectDifficulty')}
+                    placeholder={t('discordRoles.role.form.selectDifficulty')}
                   />
                   <p className="discord-roles-manager__hint">
-                    {tDisc('role.form.difficultyHint')}
+                    {t('discordRoles.role.form.difficultyHint')}
                   </p>
                 </div>
               )}
@@ -782,28 +782,28 @@ const DiscordRolesManager = ({
               {roleType === 'CURATION' && (
                 <div className="discord-roles-manager__form-group">
                   <CustomSelect
-                    label={tDisc('role.form.curationType')}
+                    label={t('discordRoles.role.form.curationType')}
                     options={curationTypeOptions}
                     value={curationTypeOptions.find(opt => opt.value === (roleForm.curationTypeId ? roleForm.curationTypeId.toString() : ''))}
                     onChange={(selected) => setRoleForm({ ...roleForm, curationTypeId: selected.value ? parseInt(selected.value) : null })}
                     width="100%"
                   />
                   <p className="discord-roles-manager__hint">
-                    {tDisc('role.form.curationTypeHint')}
+                    {t('discordRoles.role.form.curationTypeHint')}
                   </p>
                 </div>
               )}
 
               <div className="discord-roles-manager__form-group">
-                <label>{tDisc('role.form.conflictGroup')}</label>
+                <label>{t('discordRoles.role.form.conflictGroup')}</label>
                 <input
                   type="text"
                   value={roleForm.conflictGroup}
                   onChange={(e) => setRoleForm({ ...roleForm, conflictGroup: e.target.value })}
-                  placeholder={tDisc('role.form.conflictGroupPlaceholder')}
+                  placeholder={t('discordRoles.role.form.conflictGroupPlaceholder')}
                 />
                 <p className="discord-roles-manager__hint">
-                  {tDisc('role.form.conflictGroupHint')}
+                  {t('discordRoles.role.form.conflictGroupHint')}
                 </p>
               </div>
 
@@ -814,7 +814,7 @@ const DiscordRolesManager = ({
                     checked={roleForm.isActive}
                     onChange={(e) => setRoleForm({ ...roleForm, isActive: e.target.checked })}
                   />
-                  {tDisc('role.form.active')}
+                  {t('discordRoles.role.form.active')}
                 </label>
               </div>
 

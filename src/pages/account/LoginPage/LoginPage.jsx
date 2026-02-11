@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
 import './loginPage.css';
@@ -21,7 +21,6 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const { login, loginWithDiscord, getOriginUrl } = useAuth();
   const { t } = useTranslation('pages');
-  const tLogin = (key, params = {}) => t(`login.${key}`, params);
 
   // Handle countdown timer for rate limiting
   useEffect(() => {
@@ -99,7 +98,7 @@ const LoginPage = () => {
 
     try {
       if (requireCaptcha && !captchaToken) {
-        setError(tLogin('errors.captcha.incomplete'));
+        setError(t('login.errors.captcha.incomplete'));
         setLoading(false);
         return;
       }
@@ -121,12 +120,12 @@ const LoginPage = () => {
         // Handle rate limit errors
         if (response?.retryAfter) {
           retryAfterValue = response.retryAfter;
-          errorMessage = response.message || tLogin('errors.rateLimit');
+          errorMessage = response.message || t('login.errors.rateLimit');
         } 
         // Handle captcha requirement
         else if (response?.requireCaptcha) {
           captchaRequired = true;
-          errorMessage = response.message || response.error || tLogin('errors.generic');
+          errorMessage = response.message || response.error || t('login.errors.generic');
         }
         // Handle specific error messages
         else if (response?.message) {
@@ -138,29 +137,29 @@ const LoginPage = () => {
         }
         // Handle specific status codes
         else if (err.response.status === 401) {
-          errorMessage = tLogin('errors.invalidCredentials');
+          errorMessage = t('login.errors.invalidCredentials');
           captchaRequired = response?.requireCaptcha || false;
         }
         else if (err.response.status === 403) {
-          errorMessage = tLogin('errors.emailNotVerified');
+          errorMessage = t('login.errors.emailNotVerified');
         }
         else if (err.response.status === 429) {
-          errorMessage = tLogin('errors.rateLimit');
+          errorMessage = t('login.errors.rateLimit');
           if (response?.retryAfter) {
             retryAfterValue = response.retryAfter;
           }
         }
         else {
-          errorMessage = tLogin('errors.generic');
+          errorMessage = t('login.errors.generic');
         }
       } 
       // Handle network errors
       else if (err.request) {
-        errorMessage = tLogin('errors.network');
+        errorMessage = t('login.errors.network');
       } 
       // Handle other errors
       else {
-        errorMessage = err.message || tLogin('errors.generic');
+        errorMessage = err.message || t('login.errors.generic');
       }
       
       // Set the error message, retry after value, and captcha requirement
@@ -187,15 +186,15 @@ const LoginPage = () => {
       setError('');
       await loginWithDiscord();
     } catch (err) {
-      setError(tLogin('errors.discordFailed'));
+      setError(t('login.errors.discordFailed'));
     }
   };
 
   return (
     <div className="login-page-wrapper">
        <MetaTags
-          title={tLogin('meta.title')}
-          description={tLogin('meta.description')}
+          title={t('login.meta.title')}
+          description={t('login.meta.description')}
           url={currentUrl}
           image={''}
           type="article"
@@ -203,7 +202,7 @@ const LoginPage = () => {
       
       <div className="login-page">
         <div className="login-container">
-          <h1>{tLogin('header.title')}</h1>
+          <h1>{t('login.header.title')}</h1>
           {error && (
             <div className="error-message">
               {error}
@@ -217,7 +216,7 @@ const LoginPage = () => {
         
           <form onSubmit={handleEmailLogin} className="login-form">
             <div className="form-group">
-              <label htmlFor="email">{tLogin('form.labels.emailOrUsername')}</label>
+              <label htmlFor="email">{t('login.form.labels.emailOrUsername')}</label>
               <input
                 type="text"
                 id="email"
@@ -230,7 +229,7 @@ const LoginPage = () => {
             </div>
             
             <div className="form-group">
-              <label htmlFor="password">{tLogin('form.labels.password')}</label>
+              <label htmlFor="password">{t('login.form.labels.password')}</label>
               <input
                 type="password"
                 id="password"
@@ -258,12 +257,12 @@ const LoginPage = () => {
               className="login-button" 
               disabled={loading || retryAfter || (requireCaptcha && !captchaToken)}
             >
-              {loading ? tLogin('form.buttons.loggingIn') : tLogin('form.buttons.login')}
+              {loading ? t('login.form.buttons.loggingIn') : t('login.form.buttons.login')}
             </button>
           </form>
 
           <div className="divider">
-            <span>{tLogin('form.divider')}</span>
+            <span>{t('login.form.divider')}</span>
           </div>
 
           <button
@@ -272,12 +271,12 @@ const LoginPage = () => {
             onClick={handleDiscordLogin}
             disabled={loading || retryAfter}
           >
-            {tLogin('form.buttons.discordLogin')}
+            {t('login.form.buttons.discordLogin')}
           </button>
 
           <div className="links">
             <Link to="/register" className="register-link">
-              {tLogin('form.links.register')}
+              {t('login.form.links.register')}
             </Link>
           </div>
 

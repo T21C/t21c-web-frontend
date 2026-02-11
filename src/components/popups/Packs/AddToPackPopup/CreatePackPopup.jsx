@@ -12,7 +12,6 @@ import { LevelPackViewModes } from '@/utils/constants';
 const CreatePackPopup = ({ onClose, onCreate }) => {
   const { t } = useTranslation('components');
   const { user } = useAuth();
-  const tPopup = (key) => t(`packPopups.createPack.${key}`) || key;
   
   const [formData, setFormData] = useState({
     name: '',
@@ -27,20 +26,20 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
 
   // View mode options
   const viewModeOptions = [
-    { value: LevelPackViewModes.LINKONLY.toString(), label: tPopup('viewMode.linkonly') },
-    { value: LevelPackViewModes.PRIVATE.toString(), label: tPopup('viewMode.private') }
+    { value: LevelPackViewModes.LINKONLY.toString(), label: t('packPopups.createPack.viewMode.linkonly') },
+    { value: LevelPackViewModes.PRIVATE.toString(), label: t('packPopups.createPack.viewMode.private') }
   ];
 
   if (hasFlag(user, permissionFlags.SUPER_ADMIN)) {
-    viewModeOptions.splice(0, 0, { value: LevelPackViewModes.PUBLIC.toString(), label: tPopup('viewMode.public') });
+    viewModeOptions.splice(0, 0, { value: LevelPackViewModes.PUBLIC.toString(), label: t('packPopups.createPack.viewMode.public') });
   }
 
   // CSS theme options
   const cssThemeOptions = [
-    { value: 0, label: tPopup('theme.default') },
-    { value: 1, label: tPopup('theme.dark') },
-    { value: 2, label: tPopup('theme.neon') },
-    { value: 3, label: tPopup('theme.pastel') }
+    { value: 0, label: t('packPopups.createPack.theme.default') },
+    { value: 1, label: t('packPopups.createPack.theme.dark') },
+    { value: 2, label: t('packPopups.createPack.theme.neon') },
+    { value: 3, label: t('packPopups.createPack.theme.pastel') }
   ];
 
   const handleInputChange = (field, value) => {
@@ -65,7 +64,7 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
       };
       reader.readAsDataURL(file);
       
-      toast.success(tPopup('success.iconSelected'), {
+      toast.success(t('packPopups.createPack.success.iconSelected'), {
         duration: 3000,
         position: 'top-right',
         style: {
@@ -75,7 +74,7 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
       });
     } catch (error) {
       console.error('Error processing icon:', error);
-      toast.error(tPopup('errors.iconProcessFailed'), {
+      toast.error(t('packPopups.createPack.errors.iconProcessFailed'), {
         duration: 4000,
         position: 'top-right',
         style: {
@@ -92,7 +91,7 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
     e.preventDefault();
     
     if (!formData.name.trim()) {
-      toast.error(tPopup('errors.nameRequired'));
+      toast.error(t('packPopups.createPack.errors.nameRequired'));
       return;
     }
 
@@ -117,7 +116,7 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
             },
           });
           
-          toast.success(tPopup('success.iconUploaded'), {
+          toast.success(t('packPopups.createPack.success.iconUploaded'), {
             duration: 3000,
             position: 'top-right',
             style: {
@@ -127,7 +126,7 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
           });
         } catch (iconError) {
           console.error('Error uploading pack icon:', iconError);
-          const errorMessage = iconError.response?.data?.error || tPopup('errors.iconUploadFailed');
+          const errorMessage = iconError.response?.data?.error || t('packPopups.createPack.errors.iconUploadFailed');
           toast.error(errorMessage, {
             duration: 4000,
             position: 'top-right',
@@ -140,7 +139,7 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
       }
     } catch (error) {
       console.error('Error creating pack:', error);
-      toast.error(tPopup('errors.createFailed'));
+      toast.error(t('packPopups.createPack.errors.createFailed'));
     } finally {
       setLoading(false);
     }
@@ -157,7 +156,7 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
     <div className="create-pack-popup" onClick={handleBackdropClick}>
       <div className="create-pack-popup__content" onClick={(e) => e.stopPropagation()}>
         <div className="create-pack-popup__header">
-          <h2 className="create-pack-popup__title">{tPopup('title')}</h2>
+          <h2 className="create-pack-popup__title">{t('packPopups.createPack.title')}</h2>
           <button className="create-pack-popup__close" onClick={onClose}>
             <CrossIcon />
           </button>
@@ -167,25 +166,25 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
           <div className="create-pack-popup__body">
             <div className="create-pack-popup__field">
               <label className="create-pack-popup__label">
-                {tPopup('name.label')} *
+                {t('packPopups.createPack.name.label')} *
               </label>
               <input
                 type="text"
                 className="create-pack-popup__input"
-                placeholder={tPopup('name.placeholder')}
+                placeholder={t('packPopups.createPack.name.placeholder')}
                 value={formData.name}
                 onChange={(e) => handleInputChange('name', e.target.value)}
                 maxLength={100}
                 required
               />
               <p className="create-pack-popup__help">
-                {tPopup('name.help')}
+                {t('packPopups.createPack.name.help')}
               </p>
             </div>
 
             <div className="create-pack-popup__field">
               <label className="create-pack-popup__label">
-                {tPopup('icon.label')}
+                {t('packPopups.createPack.icon.label')}
               </label>
               <div className="create-pack-popup__icon-section">
                 {formData.iconUrl && (
@@ -206,7 +205,7 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
                   >
                     <ImageIcon />
                     <span>
-                      {uploadingIcon ? tPopup('icon.uploading') : tPopup('icon.upload')}
+                      {uploadingIcon ? t('packPopups.createPack.icon.uploading') : t('packPopups.createPack.icon.upload')}
                     </span>
                   </button>
                   {formData.iconUrl && (
@@ -215,20 +214,20 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
                       className="create-pack-popup__icon-remove-btn"
                       onClick={() => handleInputChange('iconUrl', '')}
                     >
-                      {tPopup('icon.remove')}
+                      {t('packPopups.createPack.icon.remove')}
                     </button>
                   )}
                 </div>
               </div>
               <p className="create-pack-popup__help">
-                {tPopup('icon.help')}
+                {t('packPopups.createPack.icon.help')}
               </p>
             </div>
 
 {/*
             <div className="create-pack-popup__field">
               <label className="create-pack-popup__label">
-                {tPopup('theme.label')}
+                {t('packPopups.createPack.theme.label')}
               </label>
               <select
                 className="create-pack-popup__select"
@@ -242,20 +241,20 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
                 ))}
               </select>
               <p className="create-pack-popup__help">
-                {tPopup('theme.help')}
+                {t('packPopups.createPack.theme.help')}
               </p>
             </div>
 */}
             <div className="create-pack-popup__field">
               <CustomSelect
-                label={tPopup('viewMode.label')}
+                label={t('packPopups.createPack.viewMode.label')}
                 options={viewModeOptions}
                 value={viewModeOptions.find(opt => opt.value === formData.viewMode.toString())}
                 onChange={(selected) => handleInputChange('viewMode', parseInt(selected.value))}
                 width="100%"
               />
               <p className="create-pack-popup__help">
-                {tPopup('viewMode.help')}
+                {t('packPopups.createPack.viewMode.help')}
               </p>
             </div>
 
@@ -269,11 +268,11 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
                     onChange={(e) => handleInputChange('isPinned', e.target.checked)}
                   />
                   <span className="create-pack-popup__checkbox-text">
-                    {tPopup('pinned.label')}
+                    {t('packPopups.createPack.pinned.label')}
                   </span>
                 </label>
                 <p className="create-pack-popup__help">
-                  {tPopup('pinned.help')}
+                  {t('packPopups.createPack.pinned.help')}
                 </p>
               </div>
             )}
@@ -286,14 +285,14 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
               onClick={onClose}
               disabled={loading}
             >
-              {tPopup('cancel')}
+              {t('packPopups.createPack.cancel')}
             </button>
             <button
               type="submit"
               className="create-pack-popup__create-btn"
               disabled={loading || !formData.name.trim()}
             >
-              {loading ? tPopup('creating') : tPopup('create')}
+              {loading ? t('packPopups.createPack.creating') : t('packPopups.createPack.create')}
             </button>
           </div>
         </form>

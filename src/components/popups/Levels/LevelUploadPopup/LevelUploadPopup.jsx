@@ -10,7 +10,6 @@ const LevelUploadPopup = ({
   onUploadComplete
 }) => {
   const { t } = useTranslation('components');
-  const tPopup = (key, params = {}) => t(`levelUploadPopup.${key}`, params) || key;
   const popupRef = useRef(null);
   const eventSourceRef = useRef(null);
   const [step, setStep] = useState('uploading');
@@ -154,22 +153,22 @@ const LevelUploadPopup = ({
   }
 
   const getStatusText = () => {
-    if (error) return tPopup('error');
-    if (step === 'completed') return tPopup('completed');
-    if (step === 'uploading') return tPopup('uploading');
-    if (step === 'processing') return tPopup('processing');
-    if (step === 'caching') return tPopup('caching');
-    return tPopup('processing');
+    if (error) return t('levelUploadPopup.error');
+    if (step === 'completed') return t('levelUploadPopup.completed');
+    if (step === 'uploading') return t('levelUploadPopup.uploading');
+    if (step === 'processing') return t('levelUploadPopup.processing');
+    if (step === 'caching') return t('levelUploadPopup.caching');
+    return t('levelUploadPopup.processing');
   };
 
   const getStatusSubtext = () => {
     if (progress?.currentStep) {
       return progress.currentStep;
     }
-    if (step === 'uploading') return tPopup('uploadingSubtext');
-    if (step === 'processing') return tPopup('processingSubtext');
-    if (step === 'caching') return tPopup('cachingSubtext');
-    return tPopup('processingSubtext');
+    if (step === 'uploading') return t('levelUploadPopup.uploadingSubtext');
+    if (step === 'processing') return t('levelUploadPopup.processingSubtext');
+    if (step === 'caching') return t('levelUploadPopup.cachingSubtext');
+    return t('levelUploadPopup.processingSubtext');
   };
 
   return (
@@ -200,7 +199,7 @@ const LevelUploadPopup = ({
 
         <div className="level-upload-popup__content">
           <h2 className="level-upload-popup__title">
-            {tPopup('title')}
+            {t('levelUploadPopup.title')}
           </h2>
 
           {fileName && (
@@ -245,9 +244,9 @@ const LevelUploadPopup = ({
           {step === 'completed' && (
             <div className="level-upload-popup__step level-upload-popup__step--completed">
               <div className="level-upload-popup__success-icon">✓</div>
-              <p>{tPopup('completed')}</p>
+              <p>{t('levelUploadPopup.completed')}</p>
               <p className="level-upload-popup__subtext">
-                {tPopup('completedSubtext')}
+                {t('levelUploadPopup.completedSubtext')}
               </p>
             </div>
           )}
@@ -262,7 +261,7 @@ const LevelUploadPopup = ({
                   className="level-upload-popup__primary-btn"
                   onClick={onClose}
                 >
-                  {tPopup('close')}
+                  {t('levelUploadPopup.close')}
                 </button>
               </div>
             </div>

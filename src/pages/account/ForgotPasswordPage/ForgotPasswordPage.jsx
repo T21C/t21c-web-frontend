@@ -23,7 +23,6 @@ const ForgotPasswordPage = () => {
   const { requestPasswordReset, resetPassword, initiateLogin } = useAuth();
   const navigate = useNavigate();
   const { t } = useTranslation('pages');
-  const tForgotPassword = (key, params = {}) => t(`forgotPassword.${key}`, params);
 
   // Handle countdown timer for rate limiting
   useEffect(() => {
@@ -106,7 +105,7 @@ const ForgotPasswordPage = () => {
 
     try {
       if (requireCaptcha && !captchaToken) {
-        setError(tForgotPassword('errors.captcha.required'));
+        setError(t('forgotPassword.errors.captcha.required'));
         setLoading(false);
         return;
       }
@@ -125,27 +124,27 @@ const ForgotPasswordPage = () => {
         
         if (response?.retryAfter) {
           retryAfterValue = response.retryAfter;
-          errorMessage = response.message || tForgotPassword('errors.tooManyRequests');
+          errorMessage = response.message || t('forgotPassword.errors.tooManyRequests');
         } else if (response?.requireCaptcha) {
           captchaRequired = true;
-          errorMessage = response.message || response.error || tForgotPassword('errors.generic');
+          errorMessage = response.message || response.error || t('forgotPassword.errors.generic');
         } else if (response?.message) {
           errorMessage = response.message;
           captchaRequired = response.requireCaptcha || false;
         } else if (response?.error) {
           errorMessage = response.error;
         } else if (err.response.status === 429) {
-          errorMessage = tForgotPassword('errors.tooManyRequests');
+          errorMessage = t('forgotPassword.errors.tooManyRequests');
           if (response?.retryAfter) {
             retryAfterValue = response.retryAfter;
           }
         } else {
-          errorMessage = tForgotPassword('errors.requestFailed');
+          errorMessage = t('forgotPassword.errors.requestFailed');
         }
       } else if (err.request) {
-        errorMessage = tForgotPassword('errors.network');
+        errorMessage = t('forgotPassword.errors.network');
       } else {
-        errorMessage = err.message || tForgotPassword('errors.generic');
+        errorMessage = err.message || t('forgotPassword.errors.generic');
       }
       
       setError(errorMessage);
@@ -172,13 +171,13 @@ const ForgotPasswordPage = () => {
 
     try {
       if (password !== confirmPassword) {
-        setError(tForgotPassword('errors.passwordsMismatch'));
+        setError(t('forgotPassword.errors.passwordsMismatch'));
         setLoading(false);
         return;
       }
 
       if (password.length < 8) {
-        setError(tForgotPassword('errors.passwordTooShort'));
+        setError(t('forgotPassword.errors.passwordTooShort'));
         setLoading(false);
         return;
       }
@@ -197,14 +196,14 @@ const ForgotPasswordPage = () => {
         } else if (response?.error) {
           errorMessage = response.error;
         } else if (err.response.status === 400) {
-          errorMessage = tForgotPassword('errors.invalidToken');
+          errorMessage = t('forgotPassword.errors.invalidToken');
         } else {
-          errorMessage = tForgotPassword('errors.resetFailed');
+          errorMessage = t('forgotPassword.errors.resetFailed');
         }
       } else if (err.request) {
-        errorMessage = tForgotPassword('errors.network');
+        errorMessage = t('forgotPassword.errors.network');
       } else {
-        errorMessage = err.message || tForgotPassword('errors.generic');
+        errorMessage = err.message || t('forgotPassword.errors.generic');
       }
       
       setError(errorMessage);
@@ -218,9 +217,9 @@ const ForgotPasswordPage = () => {
       case 'request':
         return (
           <>
-            <h1>{tForgotPassword('request.title')}</h1>
+            <h1>{t('forgotPassword.request.title')}</h1>
             <p className="status-message">
-              {tForgotPassword('request.description')}
+              {t('forgotPassword.request.description')}
             </p>
             
             {error && (
@@ -228,7 +227,7 @@ const ForgotPasswordPage = () => {
                 {error}
                 {retryAfter && (
                   <div className="retry-countdown">
-                    {tForgotPassword('rateLimit.timeRemaining', { time: formatTime(retryAfter) })}
+                    {t('forgotPassword.rateLimit.timeRemaining', { time: formatTime(retryAfter) })}
                   </div>
                 )}
               </div>
@@ -236,7 +235,7 @@ const ForgotPasswordPage = () => {
 
             <form onSubmit={handleRequestReset} className="reset-form">
               <div className="form-group">
-                <label htmlFor="email">{tForgotPassword('request.form.labels.email')}</label>
+                <label htmlFor="email">{t('forgotPassword.request.form.labels.email')}</label>
                 <input
                   type="email"
                   id="email"
@@ -245,7 +244,7 @@ const ForgotPasswordPage = () => {
                   required
                   disabled={loading || retryAfter}
                   className={`reset-input ${retryAfter ? 'rate-limit' : ''}`}
-                  placeholder={tForgotPassword('request.form.placeholders.email')}
+                  placeholder={t('forgotPassword.request.form.placeholders.email')}
                 />
               </div>
 
@@ -260,7 +259,7 @@ const ForgotPasswordPage = () => {
                 className="action-button" 
                 disabled={loading || retryAfter || (requireCaptcha && !captchaToken)}
               >
-                {loading ? tForgotPassword('request.form.buttons.sending') : tForgotPassword('request.form.buttons.sendReset')}
+                {loading ? t('forgotPassword.request.form.buttons.sending') : t('forgotPassword.request.form.buttons.sendReset')}
               </button>
             </form>
 
@@ -268,7 +267,7 @@ const ForgotPasswordPage = () => {
               className="action-button secondary"
               onClick={() => navigate('/login')}
             >
-              {tForgotPassword('request.form.buttons.backToLogin')}
+              {t('forgotPassword.request.form.buttons.backToLogin')}
             </button>
           </>
         );
@@ -277,19 +276,19 @@ const ForgotPasswordPage = () => {
         return (
           <>
             <div className="success-icon">✓</div>
-            <h1>{tForgotPassword('sent.title')}</h1>
+            <h1>{t('forgotPassword.sent.title')}</h1>
             <p className="status-message">
-              {tForgotPassword('sent.description')}
+              {t('forgotPassword.sent.description')}
             </p>
             <p className="email-display">{email}</p>
             <p className="info-message">
-              {tForgotPassword('sent.info')}
+              {t('forgotPassword.sent.info')}
             </p>
             <button
               className="action-button"
               onClick={() => navigate('/login')}
             >
-              {tForgotPassword('sent.buttons.backToLogin')}
+              {t('forgotPassword.sent.buttons.backToLogin')}
             </button>
           </>
         );
@@ -297,9 +296,9 @@ const ForgotPasswordPage = () => {
       case 'reset':
         return (
           <>
-            <h1>{tForgotPassword('reset.title')}</h1>
+            <h1>{t('forgotPassword.reset.title')}</h1>
             <p className="status-message">
-              {tForgotPassword('reset.description')}
+              {t('forgotPassword.reset.description')}
             </p>
             
             {error && (
@@ -310,7 +309,7 @@ const ForgotPasswordPage = () => {
 
             <form onSubmit={handleResetPassword} className="reset-form">
               <div className="form-group">
-                <label htmlFor="password">{tForgotPassword('reset.form.labels.password')}</label>
+                <label htmlFor="password">{t('forgotPassword.reset.form.labels.password')}</label>
                 <input
                   type="password"
                   id="password"
@@ -319,13 +318,13 @@ const ForgotPasswordPage = () => {
                   required
                   disabled={loading}
                   className="reset-input"
-                  placeholder={tForgotPassword('reset.form.placeholders.password')}
+                  placeholder={t('forgotPassword.reset.form.placeholders.password')}
                   minLength={8}
                 />
               </div>
 
               <div className="form-group">
-                <label htmlFor="confirmPassword">{tForgotPassword('reset.form.labels.confirmPassword')}</label>
+                <label htmlFor="confirmPassword">{t('forgotPassword.reset.form.labels.confirmPassword')}</label>
                 <input
                   type="password"
                   id="confirmPassword"
@@ -334,7 +333,7 @@ const ForgotPasswordPage = () => {
                   required
                   disabled={loading}
                   className="reset-input"
-                  placeholder={tForgotPassword('reset.form.placeholders.confirmPassword')}
+                  placeholder={t('forgotPassword.reset.form.placeholders.confirmPassword')}
                   minLength={8}
                 />
               </div>
@@ -344,7 +343,7 @@ const ForgotPasswordPage = () => {
                 className="action-button" 
                 disabled={loading}
               >
-                {loading ? tForgotPassword('reset.form.buttons.resetting') : tForgotPassword('reset.form.buttons.reset')}
+                {loading ? t('forgotPassword.reset.form.buttons.resetting') : t('forgotPassword.reset.form.buttons.reset')}
               </button>
             </form>
           </>
@@ -354,15 +353,15 @@ const ForgotPasswordPage = () => {
         return (
           <>
             <div className="success-icon">✓</div>
-            <h1>{tForgotPassword('success.title')}</h1>
+            <h1>{t('forgotPassword.success.title')}</h1>
             <p className="status-message">
-              {tForgotPassword('success.description')}
+              {t('forgotPassword.success.description')}
             </p>
             <button
               className="action-button"
               onClick={() => initiateLogin()}
             >
-              {tForgotPassword('success.buttons.login')}
+              {t('forgotPassword.success.buttons.login')}
             </button>
           </>
         );
@@ -396,8 +395,8 @@ const ForgotPasswordPage = () => {
   return (
     <div className="forgot-password-page">
       <MetaTags
-        title={tForgotPassword('meta.title')}
-        description={tForgotPassword('meta.description')}
+        title={t('forgotPassword.meta.title')}
+        description={t('forgotPassword.meta.description')}
         url={window.location.href}
         type="website"
       />

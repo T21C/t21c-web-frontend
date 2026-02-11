@@ -16,7 +16,6 @@ const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB in bytes
 
 const UploadZone = ({ type, onUploadComplete, storedPassword, isLoadingBackups }) => {
   const { t } = useTranslation(['pages', 'common']);
-  const tBackup = (key, params = {}) => t(`backup.${key}`, params);
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadError, setUploadError] = useState('');
@@ -26,7 +25,7 @@ const UploadZone = ({ type, onUploadComplete, storedPassword, isLoadingBackups }
   const validateFile = (file) => {
     if (!file) return false;
     if (file.size > MAX_FILE_SIZE) {
-      setUploadError(tBackup('upload.errors.fileTooBig', { 
+      setUploadError(t('backup.upload.errors.fileTooBig', { 
         size: formatFileSize(MAX_FILE_SIZE) 
       }));
       return false;
@@ -62,7 +61,7 @@ const UploadZone = ({ type, onUploadComplete, storedPassword, isLoadingBackups }
       );
 
       if (response.data.success) {
-        toast.success(tBackup('notifications.uploadSuccess'));
+        toast.success(t('backup.notifications.uploadSuccess'));
         onUploadComplete();
         setSelectedFileName(null);
         setUploadProgress(0);
@@ -70,12 +69,12 @@ const UploadZone = ({ type, onUploadComplete, storedPassword, isLoadingBackups }
     } catch (error) {
       console.error('Upload failed:', error);
       setUploadError(error.response?.status === 403 
-        ? tBackup('passwordModal.errors.invalid')
-        : tBackup('notifications.uploadFailed')
+        ? t('backup.passwordModal.errors.invalid')
+        : t('backup.notifications.uploadFailed')
       );
       toast.error(error.response?.status === 403 
-        ? tBackup('passwordModal.errors.invalid')
-        : tBackup('notifications.uploadFailed')
+        ? t('backup.passwordModal.errors.invalid')
+        : t('backup.notifications.uploadFailed')
       );
       setUploadProgress(0);
     } finally {
@@ -134,7 +133,7 @@ const UploadZone = ({ type, onUploadComplete, storedPassword, isLoadingBackups }
       {selectedFileName && isUploading ? (
         <p className="upload-filename">{selectedFileName}</p>
       ) : (
-        <p>{tBackup('upload.dragDropMessage')}</p>
+        <p>{t('backup.upload.dragDropMessage')}</p>
       )}
       <input
         type="file"
@@ -156,7 +155,6 @@ const UploadZone = ({ type, onUploadComplete, storedPassword, isLoadingBackups }
 const TimeAgo = ({ date }) => {
   const [timeAgo, setTimeAgo] = useState('');
   const { t } = useTranslation(['pages', 'common']);
-  const tBackup = (key, params = {}) => t(`backup.${key}`, params);
 
   useEffect(() => {
     const updateTimeAgo = () => {
@@ -182,21 +180,20 @@ const TimeAgo = ({ date }) => {
         unit = 'minute';
       }
 
-      const key = `timeAgo.${unit}${interval !== 1 ? 's' : ''}`;
-      setTimeAgo(tBackup(key, { count: interval }));
+      const key = `${unit}${interval !== 1 ? 's' : ''}`;
+      setTimeAgo(t('backup.timeAgo.' + key, { count: interval }));
     };
 
     updateTimeAgo();
     const timer = setInterval(updateTimeAgo, 60000); // Update every minute
     return () => clearInterval(timer);
-  }, [date, tBackup]);
+  }, [date]);
 
   return <span className="time-ago">{timeAgo}</span>;
 };
 
-const BackupList = ({ backups, type, onRestore, onDelete, isLoadingBackups, isDeletingBackup, isRestoringBackup, showConfirmation, storedPassword }) => {
+const BackupList = ({ backups, type, isLoadingBackups, showConfirmation, storedPassword }) => {
   const { t } = useTranslation(['pages', 'common']);
-  const tBackup = (key, params = {}) => t(`backup.${key}`, params);
   const [editingId, setEditingId] = useState(null);
   const [newName, setNewName] = useState('');
   const [renameLoading, setRenameLoading] = useState(false);
@@ -225,13 +222,13 @@ const BackupList = ({ backups, type, onRestore, onDelete, isLoadingBackups, isDe
       );
       
       if (response.data.success) {
-        toast.success(tBackup('notifications.renameSuccess'));
+        toast.success(t('backup.notifications.renameSuccess'));
         setEditingId(null);
         setNewName('');
       }
     } catch (error) {
       console.error('Failed to rename backup:', error);
-      toast.error(tBackup('notifications.renameFailed'));
+      toast.error(t('backup.notifications.renameFailed'));
     } finally {
       setRenameLoading(false);
     }
@@ -285,7 +282,7 @@ const BackupList = ({ backups, type, onRestore, onDelete, isLoadingBackups, isDe
       }, 1000);
     } catch (error) {
       console.error('Failed to download backup:', error);
-      toast.error(tBackup('notifications.downloadFailed'));
+      toast.error(t('backup.notifications.downloadFailed'));
       setDownloading(prev => ({ ...prev, [backup.filename]: false }));
       setDownloadProgress(prev => ({ ...prev, [backup.filename]: 0 }));
     }
@@ -294,8 +291,8 @@ const BackupList = ({ backups, type, onRestore, onDelete, isLoadingBackups, isDe
   if (!backups || backups.length === 0) {
     return (
       <div className="no-backups-message">
-        <h2>{tBackup('noBackups.title', { type })}</h2>
-        <p>{tBackup('noBackups.message')}</p>
+        <h2>{t('backup.noBackups.title', { type })}</h2>
+        <p>{t('backup.noBackups.message')}</p>
       </div>
     );
   }
@@ -356,7 +353,7 @@ const BackupList = ({ backups, type, onRestore, onDelete, isLoadingBackups, isDe
                         type="text"
                         value={newName}
                         onChange={(e) => setNewName(e.target.value)}
-                        placeholder={tBackup('fileInfo.newName')}
+                        placeholder={t('backup.fileInfo.newName')}
                         className="rename-input"
                       />
                       <span className="file-extension">{extension}</span>
@@ -367,7 +364,7 @@ const BackupList = ({ backups, type, onRestore, onDelete, isLoadingBackups, isDe
                         onClick={() => handleAction('rename', backup)}
                         disabled={renameLoading || !newName.trim()}
                       >
-                        {renameLoading ? tBackup('buttons.saving') : tBackup('buttons.save')}
+                        {renameLoading ? t('backup.buttons.saving') : t('backup.buttons.save')}
                       </button>
                       <button
                         className="cancel-rename-btn"
@@ -398,11 +395,11 @@ const BackupList = ({ backups, type, onRestore, onDelete, isLoadingBackups, isDe
                     </div>
                     <div className="backup-details">
                       <p className="backup-date">
-                        {tBackup('fileInfo.created', { date: formatDate(backup.created, i18next?.language) })}
+                        {t('backup.fileInfo.created', { date: formatDate(backup.created, i18next?.language) })}
                         <TimeAgo date={backup.created} />
                       </p>
                       <p className="backup-size">
-                        {tBackup('fileInfo.size', { size: formatFileSize(backup.size) })}
+                        {t('backup.fileInfo.size', { size: formatFileSize(backup.size) })}
                       </p>
                     </div>
                   </>
@@ -414,7 +411,7 @@ const BackupList = ({ backups, type, onRestore, onDelete, isLoadingBackups, isDe
                   onClick={() => handleAction('restore', backup)}
                   disabled={isLoadingBackups || renameLoading}
                 >
-                  {tBackup('buttons.restore')}
+                  {t('backup.buttons.restore')}
                 </button>
                 <button
                   className="delete-btn"
@@ -442,7 +439,6 @@ const formatFileSize = (bytes) => {
 
 const BackupPage = () => {
   const { t } = useTranslation(['pages', 'common']);
-  const tBackup = (key, params = {}) => t(`backup.${key}`, params);
   const { user } = useAuth();
   const currentUrl = window.location.origin + location.pathname;
   const [activeTab, setActiveTab] = useState('mysql');
@@ -491,10 +487,10 @@ const BackupPage = () => {
         setInitialPasswordError('');
         await loadBackups();
       } else {
-        setInitialPasswordError(tBackup('passwordModal.errors.invalid'));
+        setInitialPasswordError(t('backup.passwordModal.errors.invalid'));
       }
     } catch (error) {
-      setInitialPasswordError(tBackup('passwordModal.errors.generic'));
+      setInitialPasswordError(t('backup.passwordModal.errors.generic'));
     }
   };
 
@@ -534,12 +530,12 @@ const BackupPage = () => {
         }
     );
       if (response.data.success) {
-        toast.success(tBackup('notifications.backupCreated', { type: activeTab.toUpperCase() }));
+        toast.success(t('backup.notifications.backupCreated', { type: activeTab.toUpperCase() }));
         await loadBackups();
       }
     } catch (error) {
       console.error('Failed to create backup:', error);
-      toast.error(tBackup('notifications.createFailed'));
+      toast.error(t('backup.notifications.createFailed'));
     } finally {
       setIsCreatingBackup(false);
     }
@@ -557,12 +553,12 @@ const BackupPage = () => {
         }
       );
       if (response.data.success) {
-        toast.success(tBackup('notifications.backupDeleted'));
+        toast.success(t('backup.notifications.backupDeleted'));
         await loadBackups();
       }
     } catch (error) {
       console.error('Failed to delete backup:', error);
-      toast.error(tBackup('notifications.deleteFailed'));
+      toast.error(t('backup.notifications.deleteFailed'));
     } finally {
       setIsDeletingBackup(false);
     }
@@ -581,11 +577,11 @@ const BackupPage = () => {
         }
       );
       if (response.data.success) {
-        toast.success(tBackup('notifications.backupRestored'));
+        toast.success(t('backup.notifications.backupRestored'));
       }
     } catch (error) {
       console.error('Failed to restore backup:', error);
-      toast.error(tBackup('notifications.restoreFailed'));
+      toast.error(t('backup.notifications.restoreFailed'));
     } finally {
       setIsRestoringBackup(false);
     }
@@ -598,7 +594,7 @@ const BackupPage = () => {
       setBackups(response.data);
     } catch (error) {
       console.error('Failed to load backups:', error);
-      toast.error(tBackup('notifications.loadFailed'));
+      toast.error(t('backup.notifications.loadFailed'));
     } finally {
       setIsLoadingBackups(false);
     }
@@ -625,11 +621,11 @@ const BackupPage = () => {
         }
       );
       if (response.data.success) {
-        toast.success(tBackup('notifications.backupRestored'));
+        toast.success(t('backup.notifications.backupRestored'));
       }
     } catch (error) {
       console.error('Failed to restore backup:', error);
-      toast.error(tBackup('notifications.restoreFailed'));
+      toast.error(t('backup.notifications.restoreFailed'));
     } finally {
       setIsRestoringBackup(false);
     }
@@ -647,12 +643,12 @@ const BackupPage = () => {
         }
       );
       if (response.data.success) {
-        toast.success(tBackup('notifications.backupDeleted'));
+        toast.success(t('backup.notifications.backupDeleted'));
         await loadBackups();
       }
     } catch (error) {
       console.error('Failed to delete backup:', error);
-      toast.error(tBackup('notifications.deleteFailed'));
+      toast.error(t('backup.notifications.deleteFailed'));
     } finally {
       setIsDeletingBackup(false);
     }
@@ -675,8 +671,8 @@ const BackupPage = () => {
     return (
       <div className="admin-backup-page">
         <MetaTags
-          title={tBackup('meta.title')}
-          description={tBackup('meta.description')}
+          title={t('backup.meta.title')}
+          description={t('backup.meta.description')}
           url={currentUrl}
           image="/og-image.jpg"
           type="website"
@@ -692,8 +688,8 @@ const BackupPage = () => {
   if (!hasFlag(user, permissionFlags.SUPER_ADMIN)) {
     return (
       <AccessDenied 
-        metaTitle={tBackup('meta.title')}
-        metaDescription={tBackup('meta.description')}
+        metaTitle={t('backup.meta.title')}
+        metaDescription={t('backup.meta.description')}
         currentUrl={currentUrl}
       />
     );
@@ -702,20 +698,20 @@ const BackupPage = () => {
   return (
     <div className="admin-backup-page">
       <MetaTags
-        title={tBackup('meta.title')}
-        description={tBackup('meta.description')}
+        title={t('backup.meta.title')}
+        description={t('backup.meta.description')}
         url={currentUrl}
         image="/og-image.jpg"
         type="website"
       />
       <div className="admin-backup-body">
         <div className="header-container">
-          <h1>{tBackup('header.title')}</h1>
+          <h1>{t('backup.header.title')}</h1>
           <button 
             className="refresh-button"
             onClick={loadBackups}
             disabled={isLoadingBackups}
-            aria-label={tBackup('header.refresh')}
+            aria-label={t('backup.header.refresh')}
           >
             <RefreshIcon color="#fff" size="36px" />
           </button>
@@ -727,35 +723,35 @@ const BackupPage = () => {
               className={`tab-button ${activeTab === 'mysql' ? 'active' : ''}`}
               onClick={() => setActiveTab('mysql')}
             >
-              {tBackup('tabs.mysql')}
+              {t('backup.tabs.mysql')}
             </button>
             <button
               className={`tab-button ${activeTab === 'files' ? 'active' : ''}`}
               onClick={() => setActiveTab('files')}
             >
-              {tBackup('tabs.files')}
+              {t('backup.tabs.files')}
             </button>
           </div>
           <div className="total-size">
-            {tBackup('stats.totalSize', { size: formatFileSize(totalSize) })}
+            {t('backup.stats.totalSize', { size: formatFileSize(totalSize) })}
           </div>
         </div>
 
         <div className="backup-header">
           <div className="header-left">
-            <h2>{activeTab === 'mysql' ? tBackup('tabs.mysql') : tBackup('tabs.files')}</h2>
+            <h2>{activeTab === 'mysql' ? t('backup.tabs.mysql') : t('backup.tabs.files')}</h2>
             <div className="sort-buttons">
               <button
                 className={`sort-btn ${sortOrder === 'newest' ? 'active' : ''}`}
                 onClick={() => setSortOrder('newest')}
               >
-                {tBackup('sort.newest')}
+                {t('backup.sort.newest')}
               </button>
               <button
                 className={`sort-btn ${sortOrder === 'oldest' ? 'active' : ''}`}
                 onClick={() => setSortOrder('oldest')}
               >
-                {tBackup('sort.oldest')}
+                {t('backup.sort.oldest')}
               </button>
             </div>
           </div>
@@ -767,7 +763,7 @@ const BackupPage = () => {
             >
               {isCreatingBackup 
                 ? t('loading.creating', { ns: 'common' }) 
-                : tBackup('buttons.create', { type: activeTab.toUpperCase() })
+                : t('backup.buttons.create', { type: activeTab.toUpperCase() })
               }
             </button>
           </div>
@@ -783,11 +779,7 @@ const BackupPage = () => {
         <BackupList
           backups={sortedBackups}
           type={activeTab}
-          onRestore={handleRestore}
-          onDelete={handleDelete}
           isLoadingBackups={isLoadingBackups}
-          isDeletingBackup={isDeletingBackup}
-          isRestoringBackup={isRestoringBackup}
           showConfirmation={showConfirmation}
           storedPassword={storedPassword}
         />
@@ -797,13 +789,13 @@ const BackupPage = () => {
       {showInitialPasswordModal && (
         <div className="password-modal">
           <div className="password-modal-content">
-            <h3>{tBackup('passwordModal.title')}</h3>
-            <p>{tBackup('passwordModal.initialMessage')}</p>
+            <h3>{t('backup.passwordModal.title')}</h3>
+            <p>{t('backup.passwordModal.initialMessage')}</p>
             <input
               type="password"
               value={initialPassword}
               onChange={(e) => setInitialPassword(e.target.value)}
-              placeholder={tBackup('passwordModal.placeholder')}
+              placeholder={t('backup.passwordModal.placeholder')}
             />
             {initialPasswordError && <p className="error-message">{initialPasswordError}</p>}
             <div className="password-modal-actions">
@@ -813,7 +805,7 @@ const BackupPage = () => {
                 style={{pointerEvents: !initialPassword || isVerifyingPassword ? 'none' : 'auto'}}
                 disabled={!initialPassword || isVerifyingPassword}
               >
-                {isVerifyingPassword ? tBackup('buttons.verifying') : t('buttons.confirm', { ns: 'common' })}
+                {isVerifyingPassword ? t('backup.buttons.verifying') : t('buttons.confirm', { ns: 'common' })}
               </button>
             </div>
           </div>
@@ -823,11 +815,11 @@ const BackupPage = () => {
       {showConfirmationModal && (
         <div className="password-modal">
           <div className="password-modal-content">
-            <h3>{tBackup('confirmation.title')}</h3>
+            <h3>{t('backup.confirmation.title')}</h3>
             <p>
-              {confirmationAction?.type === 'create' && tBackup('confirmation.createMessage')}
-              {confirmationAction?.type === 'delete' && tBackup('confirmation.deleteMessage')}
-              {confirmationAction?.type === 'restore' && tBackup('confirmation.restoreMessage')}
+              {confirmationAction?.type === 'create' && t('backup.confirmation.createMessage')}
+              {confirmationAction?.type === 'delete' && t('backup.confirmation.deleteMessage')}
+              {confirmationAction?.type === 'restore' && t('backup.confirmation.restoreMessage')}
             </p>
             <div className="password-modal-actions">
               <button 

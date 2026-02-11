@@ -16,7 +16,6 @@ import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 const AnnouncementPage = () => {
   const { user } = useAuth();
   const { t } = useTranslation('pages');
-  const tAnnounce = (key) => t(`announcement.${key}`) || key;
   const currentUrl = window.location.origin + location.pathname;
 
   const [activeTab, setActiveTab] = useState('newLevels');
@@ -63,7 +62,7 @@ const AnnouncementPage = () => {
         prev.filter(id => passesResponse.data.some(pass => pass.id === id))
       );
     } catch (err) {
-      setError(tAnnounce('errors.fetchFailed'));
+      setError(t('announcement.errors.fetchFailed'));
       console.error('Error fetching items:', err);
     } finally {
       setIsLoading(false);
@@ -109,7 +108,7 @@ const AnnouncementPage = () => {
     const validLevelIds = selectedLevels.filter(id => !isNaN(id) && id > 0);
 
     if (validPassIds.length !== selectedPasses.length || validLevelIds.length !== selectedLevels.length) {
-      setError(tAnnounce('errors.invalidIds'));
+      setError(t('announcement.errors.invalidIds'));
       return;
     }
 
@@ -136,7 +135,7 @@ const AnnouncementPage = () => {
       setSelectedLevels([]);
       setSelectedPasses([]);
     } catch (err) {
-      setError(tAnnounce('errors.announceFailed'));
+      setError(t('announcement.errors.announceFailed'));
       console.error('Error announcing items:', err);
       await fetchItems();
     } finally {
@@ -195,8 +194,8 @@ const AnnouncementPage = () => {
     return (
       <>
         <MetaTags
-          title={tAnnounce('meta.title')}
-          description={tAnnounce('meta.description')}
+          title={t('announcement.meta.title')}
+          description={t('announcement.meta.description')}
           url={currentUrl}
           image="/og-image.jpg"
           type="website"
@@ -214,8 +213,8 @@ const AnnouncementPage = () => {
   if (!hasFlag(user, permissionFlags.SUPER_ADMIN)) {
     return (
       <AccessDenied 
-        metaTitle={tAnnounce('meta.title')}
-        metaDescription={tAnnounce('meta.description')}
+        metaTitle={t('announcement.meta.title')}
+        metaDescription={t('announcement.meta.description')}
         currentUrl={currentUrl}
       />
     );
@@ -225,8 +224,8 @@ const AnnouncementPage = () => {
     return (
       <>
         <MetaTags
-          title={tAnnounce('meta.title')}
-          description={tAnnounce('meta.description')}
+          title={t('announcement.meta.title')}
+          description={t('announcement.meta.description')}
           url={currentUrl}
           image="/og-image.jpg"
           type="website"
@@ -237,7 +236,7 @@ const AnnouncementPage = () => {
           <div className="announcement-container">
             <div className="error-message">{error}</div>
             <button onClick={fetchItems} className="announce-button">
-              {tAnnounce('buttons.retry')}
+              {t('announcement.buttons.retry')}
             </button>
           </div>
         </div>
@@ -248,8 +247,8 @@ const AnnouncementPage = () => {
   return (
     <>
       <MetaTags
-        title={tAnnounce('meta.title')}
-        description={tAnnounce('meta.description')}
+        title={t('announcement.meta.title')}
+        description={t('announcement.meta.description')}
         url={currentUrl}
         image="/og-image.jpg"
         type="website"
@@ -259,12 +258,12 @@ const AnnouncementPage = () => {
         <ScrollButton />
         <div className="announcement-container">
           <div className="header-container">
-            <h1>{tAnnounce('header.title')}</h1>
+            <h1>{t('announcement.header.title')}</h1>
             <button 
               className="refresh-button"
               onClick={fetchItems}
               disabled={isLoading}
-              aria-label={tAnnounce('buttons.refresh')}
+              aria-label={t('announcement.buttons.refresh')}
             >
               <RefreshIcon color="#fff" size="40px" />
             </button>
@@ -280,7 +279,7 @@ const AnnouncementPage = () => {
                   setSelectedPasses([]);
                 }}
               >
-                {tAnnounce('tabs.newLevels')}
+                {t('announcement.tabs.newLevels')}
               </button>
               <button
                 className={`tab-button ${activeTab === 'rerates' ? 'active' : ''}`}
@@ -290,7 +289,7 @@ const AnnouncementPage = () => {
                   setSelectedPasses([]);
                 }}
               >
-                {tAnnounce('tabs.rerates')}
+                {t('announcement.tabs.rerates')}
               </button>
               <button
                 className={`tab-button ${activeTab === 'passes' ? 'active' : ''}`}
@@ -300,7 +299,7 @@ const AnnouncementPage = () => {
                   setSelectedPasses([]);
                 }}
               >
-                {tAnnounce('tabs.passes')}
+                {t('announcement.tabs.passes')}
               </button>
             </div>
           </div>
@@ -317,11 +316,11 @@ const AnnouncementPage = () => {
           >
             {activeTab === 'passes' 
               ? selectedPasses.length === passes.length 
-                ? tAnnounce('buttons.deselectAll') 
-                : tAnnounce('buttons.selectAll')
+                ? t('announcement.buttons.deselectAll') 
+                : t('announcement.buttons.selectAll')
               : selectedLevels.length === (activeTab === 'newLevels' ? newLevels : rerates).length 
-                ? tAnnounce('buttons.deselectAll') 
-                : tAnnounce('buttons.selectAll')
+                ? t('announcement.buttons.deselectAll') 
+                : t('announcement.buttons.selectAll')
             }
           </button>
           {error && <div className="error-message">{error}</div>}
@@ -367,7 +366,7 @@ const AnnouncementPage = () => {
                 (activeTab === 'passes' ? selectedPasses.length === 0 : selectedLevels.length === 0)
               }
             >
-              {isAnnouncing ? tAnnounce('buttons.announcing') : tAnnounce('buttons.announce')}
+              {isAnnouncing ? t('announcement.buttons.announcing') : t('announcement.buttons.announce')}
             </button>
           </div>
         </div>

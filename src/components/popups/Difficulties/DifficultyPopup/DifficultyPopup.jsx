@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { EditIcon, PencilIcon, QuestionmarkCircleIcon, TrashIcon, DragHandleIcon } from '@/components/common/icons';
 import { CustomSelect, StateDisplay } from '@/components/common/selectors';
 import api from '@/utils/api';
@@ -30,11 +29,9 @@ const DifficultyPopup = ({
   verifiedPassword
 }) => {
   const { t } = useTranslation(['components', 'common']);
-  const tDiff = (key, params = {}) => t(`difficultyPopup.${key}`, params);
   const [activeTab, setActiveTab] = useState('details');
   const [directives, setDirectives] = useState([]);
   const [originalDirectives, setOriginalDirectives] = useState([]);
-  const [directivesError, setDirectivesError] = useState('');
   const [isLoadingDirectives, setIsLoadingDirectives] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [password, setPassword] = useState('');
@@ -54,7 +51,6 @@ const DifficultyPopup = ({
   const [channelWebhookUrl, setChannelWebhookUrl] = useState('');
   const [mouseDownOutside, setMouseDownOutside] = useState(false);
   const [pasteError, setPasteError] = useState('');
-  const [showHelpModal, setShowHelpModal] = useState(false);
   const [expandedDirectives, setExpandedDirectives] = useState({});
   const [expandedActions, setExpandedActions] = useState({});
   const modalRef = useRef(null);
@@ -185,7 +181,6 @@ const DifficultyPopup = ({
         setOriginalDirectives(directivesWithDefaults);
       }
     } catch (err) {
-      setDirectivesError(tDiff('errors.loadDirectives'));
       console.error(err);
     } finally {
       setIsLoadingDirectives(false);
@@ -276,13 +271,13 @@ const DifficultyPopup = ({
         firstOfKind: false
       }
     ]);
-    showToast(tDiff('announcements.directive.addSuccess'));
+    showToast(t('difficultyPopup.announcements.directive.addSuccess'));
   };
 
   const handleRemoveDirective = (index) => {
     const newDirectives = directives.filter((_, i) => i !== index);
     setDirectives(newDirectives);
-    showToast(tDiff('announcements.directive.removeSuccess'));
+    showToast(t('difficultyPopup.announcements.directive.removeSuccess'));
   };
 
   const handleDirectiveChange = (index, field, value) => {
@@ -323,7 +318,7 @@ const DifficultyPopup = ({
     e.preventDefault();
     
     if (!verifiedPassword) {
-      showToast(tDiff('errors.passwordRequired'), 'error');
+      showToast(t('difficultyPopup.errors.passwordRequired'), 'error');
       return;
     }
 
@@ -358,11 +353,10 @@ const DifficultyPopup = ({
       
       setDirectives(response.data);
       setOriginalDirectives(response.data);
-      showToast(tDiff('announcements.notifications.saved'), 'success');
+      showToast(t('difficultyPopup.announcements.notifications.saved'), 'success');
     } catch (err) {
       console.error('Failed to save directives:', err);
-      setDirectivesError(tDiff('announcements.errors.saveFailed'));
-      showToast(tDiff('announcements.errors.saveFailed'), 'error');
+      showToast(t('difficultyPopup.announcements.errors.saveFailed'), 'error');
     } finally {
       setIsLoadingDirectives(false);
     }
@@ -382,7 +376,6 @@ const DifficultyPopup = ({
           }
         }
       );
-      setDirectivesError('');
       setPasswordError('');
       setShowPasswordModal(false);
       setPassword('');
@@ -390,9 +383,8 @@ const DifficultyPopup = ({
       await loadDirectives();
     } catch (err) {
       if (err.response?.status === 401) {
-        setPasswordError(tDiff('errors.invalidPassword'));
+        setPasswordError(t('difficultyPopup.errors.invalidPassword'));
       } else {
-        setDirectivesError('Failed to save announcement directives');
         setShowPasswordModal(false);
         setPassword('');
         setPendingDirectives(null);
@@ -404,13 +396,13 @@ const DifficultyPopup = ({
   const handleEditChannel = (channel) => {    
     if (!channel) {
       console.error('Cannot edit channel: channel object is null or undefined');
-      showToast(tDiff('errors.channelEditFailed'), 'error');
+      showToast(t('difficultyPopup.errors.channelEditFailed'), 'error');
       return;
     }
     
     if (!channel.id) {
       console.error('Cannot edit channel: channel ID is missing', channel);
-      showToast(tDiff('errors.channelEditFailed'), 'error');
+      showToast(t('difficultyPopup.errors.channelEditFailed'), 'error');
       return;
     }
     
@@ -422,7 +414,7 @@ const DifficultyPopup = ({
       setShowChannelModal(true);
     } catch (error) {
       console.error('Error opening channel modal:', error);
-      showToast(tDiff('errors.channelEditFailed'), 'error');
+      showToast(t('difficultyPopup.errors.channelEditFailed'), 'error');
     }
   };
 
@@ -430,13 +422,13 @@ const DifficultyPopup = ({
     
     if (!role) {
       console.error('Cannot edit role: role object is null or undefined');
-      showToast(tDiff('errors.roleEditFailed'), 'error');
+      showToast(t('difficultyPopup.errors.roleEditFailed'), 'error');
       return;
     }
     
     if (!role.id) {
       console.error('Cannot edit role: role ID is missing', role);
-      showToast(tDiff('errors.roleEditFailed'), 'error');
+      showToast(t('difficultyPopup.errors.roleEditFailed'), 'error');
       return;
     }
     
@@ -446,7 +438,7 @@ const DifficultyPopup = ({
       setShowRoleModal(true);
     } catch (error) {
       console.error('Error opening role modal:', error);
-      showToast(tDiff('errors.roleEditFailed'), 'error');
+      showToast(t('difficultyPopup.errors.roleEditFailed'), 'error');
     }
   };
 
@@ -473,7 +465,7 @@ const DifficultyPopup = ({
     e.preventDefault();
     
     if (!verifiedPassword) {
-      showToast(tDiff('errors.passwordRequired'), 'error');
+      showToast(t('difficultyPopup.errors.passwordRequired'), 'error');
       return;
     }
     
@@ -494,7 +486,7 @@ const DifficultyPopup = ({
             }
           }
         );
-        showToast(tDiff('announcements.channel.notifications.updated'), 'success');
+        showToast(t('difficultyPopup.announcements.channel.notifications.updated'), 'success');
       } else {
         // Create new channel
         await api.post(
@@ -509,7 +501,7 @@ const DifficultyPopup = ({
             }
           }
         );
-        showToast(tDiff('announcements.channel.notifications.created'), 'success');
+        showToast(t('difficultyPopup.announcements.channel.notifications.created'), 'success');
       }
       
       // Reload channels
@@ -521,8 +513,8 @@ const DifficultyPopup = ({
       setShowChannelModal(false);
     } catch (err) {
       console.error('Failed to save channel:', err);
-      setChannelError(tDiff('announcements.channel.errors.saveFailed'));
-      showToast(tDiff('announcements.channel.errors.saveFailed'), 'error');
+      setChannelError(t('difficultyPopup.announcements.channel.errors.saveFailed'));
+      showToast(t('difficultyPopup.announcements.channel.errors.saveFailed'), 'error');
     }
   };
 
@@ -530,7 +522,7 @@ const DifficultyPopup = ({
     e.preventDefault();
     
     if (!verifiedPassword) {
-      showToast(tDiff('errors.passwordRequired'), 'error');
+      showToast(t('difficultyPopup.errors.passwordRequired'), 'error');
       return;
     }
     
@@ -552,7 +544,7 @@ const DifficultyPopup = ({
             }
           }
         );
-        showToast(tDiff('announcements.role.notifications.updated'), 'success');
+        showToast(t('difficultyPopup.announcements.role.notifications.updated'), 'success');
       } else {
         // Create new role
         await api.post(
@@ -568,7 +560,7 @@ const DifficultyPopup = ({
             }
           }
         );
-        showToast(tDiff('announcements.role.notifications.created'), 'success');
+        showToast(t('difficultyPopup.announcements.role.notifications.created'), 'success');
       }
       
       // Reload roles
@@ -579,14 +571,14 @@ const DifficultyPopup = ({
       setShowRoleModal(false);
     } catch (err) {
       console.error('Failed to save role:', err);
-      setRoleError(tDiff('announcements.role.errors.saveFailed'));
-      showToast(tDiff('announcements.role.errors.saveFailed'), 'error');
+      setRoleError(t('difficultyPopup.announcements.role.errors.saveFailed'));
+      showToast(t('difficultyPopup.announcements.role.errors.saveFailed'), 'error');
     }
   };
 
   const handleDeleteChannel = async () => {
     if (!verifiedPassword) {
-      showToast(tDiff('errors.passwordRequired'), 'error');
+      showToast(t('difficultyPopup.errors.passwordRequired'), 'error');
       return;
     }
     
@@ -602,18 +594,18 @@ const DifficultyPopup = ({
         }
       );
       
-      showToast(tDiff('announcements.channel.notifications.deleted'), 'success');
+      showToast(t('difficultyPopup.announcements.channel.notifications.deleted'), 'success');
       await loadAvailableChannels();
       setShowChannelModal(false);
     } catch (err) {
       console.error('Failed to delete channel:', err);
-      showToast(tDiff('announcements.channel.errors.deleteFailed'), 'error');
+      showToast(t('difficultyPopup.announcements.channel.errors.deleteFailed'), 'error');
     }
   };
 
   const handleDeleteRole = async () => {
     if (!verifiedPassword) {
-      showToast(tDiff('errors.passwordRequired'), 'error');
+      showToast(t('difficultyPopup.errors.passwordRequired'), 'error');
       return;
     }
     
@@ -629,12 +621,12 @@ const DifficultyPopup = ({
         }
       );
       
-      showToast(tDiff('announcements.role.notifications.deleted'), 'success');
+      showToast(t('difficultyPopup.announcements.role.notifications.deleted'), 'success');
       await loadAvailableRoles();
       setShowRoleModal(false);
     } catch (err) {
       console.error('Failed to delete role:', err);
-      showToast(tDiff('announcements.role.errors.deleteFailed'), 'error');
+      showToast(t('difficultyPopup.announcements.role.errors.deleteFailed'), 'error');
     }
   };
 
@@ -658,25 +650,25 @@ const DifficultyPopup = ({
   };
 
   // Helper function to get translation for condition type options
-  const getConditionTypeOption = (type) => tDiff(`announcements.condition.type.options.${type}`);
+  const getConditionTypeOption = (type) => t(`difficultyPopup.announcements.condition.type.options.${type}`);
   
   // Helper function to get translation for operator options
-  const getOperatorOption = (operator) => tDiff(`announcements.condition.operator.options.${operator}`);
+  const getOperatorOption = (operator) => t(`difficultyPopup.announcements.condition.operator.options.${operator}`);
   
   // Helper function to get translation for ping type options
-  const getPingTypeOption = (type) => tDiff(`announcements.actions.pingType.options.${type}`);
+  const getPingTypeOption = (type) => t(`difficultyPopup.announcements.actions.pingType.options.${type}`);
 
   // Prepare options for CustomSelect components
   const difficultyTypeOptions = useMemo(() => [
-    { value: 'PGU', label: tDiff('difficultyTypes.PGU') },
-    { value: 'SPECIAL', label: tDiff('difficultyTypes.SPECIAL') },
-    { value: 'LEGACY', label: tDiff('difficultyTypes.LEGACY') }
-  ], [tDiff]);
+    { value: 'PGU', label: t('difficultyPopup.difficultyTypes.PGU') },
+    { value: 'SPECIAL', label: t('difficultyPopup.difficultyTypes.SPECIAL') },
+    { value: 'LEGACY', label: t('difficultyPopup.difficultyTypes.LEGACY') }
+  ], [toggleDirective]);
 
   const directiveModeOptions = useMemo(() => [
-    { value: DIRECTIVE_MODES.STATIC, label: tDiff('announcements.mode.static') },
-    { value: DIRECTIVE_MODES.CONDITIONAL, label: tDiff('announcements.mode.conditional') }
-  ], [tDiff]);
+    { value: DIRECTIVE_MODES.STATIC, label: t('difficultyPopup.announcements.mode.static') },
+    { value: DIRECTIVE_MODES.CONDITIONAL, label: t('difficultyPopup.announcements.mode.conditional') }
+  ], [t]);
 
   const conditionTypeOptions = useMemo(() => 
     ['ACCURACY', 'WORLDS_FIRST', 'BASE_SCORE', 'CUSTOM'].map(type => ({
@@ -746,12 +738,12 @@ const DifficultyPopup = ({
     
     navigator.clipboard.writeText(JSON.stringify(directiveToCopy))
       .then(() => {
-        showToast(tDiff('announcements.directive.copySuccess'));
+        showToast(t('difficultyPopup.announcements.directive.copySuccess'));
       })
       .catch(err => {
         console.error('Failed to copy directive settings:', err);
-        showToast(tDiff('announcements.directive.copyError'), 'error');
-        setPasteError(tDiff('announcements.directive.copyError'));
+        showToast(t('difficultyPopup.announcements.directive.copyError'), 'error');
+        setPasteError(t('difficultyPopup.announcements.directive.copyError'));
       });
   };
 
@@ -787,11 +779,11 @@ const DifficultyPopup = ({
       };
       
       setDirectives(newDirectives);
-      showToast(tDiff('announcements.directive.pasteSuccess'));
+      showToast(t('difficultyPopup.announcements.directive.pasteSuccess'));
     } catch (err) {
       console.error('Failed to paste directive settings:', err);
-      setPasteError(tDiff('announcements.directive.pasteError'));
-      showToast(tDiff('announcements.directive.pasteError'), 'error');
+      setPasteError(t('difficultyPopup.announcements.directive.pasteError'));
+      showToast(t('difficultyPopup.announcements.directive.pasteError'), 'error');
     }
   };
 
@@ -876,7 +868,7 @@ const DifficultyPopup = ({
     
     if (activeTab === 'details') {
       if (!verifiedPassword) {
-        showToast(tDiff('errors.passwordRequired'), 'error');
+        showToast(t('difficultyPopup.errors.passwordRequired'), 'error');
         return;
       }
 
@@ -947,12 +939,12 @@ const DifficultyPopup = ({
             URL.revokeObjectURL(legacyIconPreview);
           }
           
-          showToast(tDiff(isCreating ? 'notifications.created' : 'notifications.updated'), 'success');
+          showToast(t(isCreating ? 'difficultyPopup.notifications.created' : 'difficultyPopup.notifications.updated'), 'success');
           // Pass the updated difficulty to parent for targeted update instead of full refresh
           refreshDifficulties(response.data);
           onClose();
         } catch (err) {
-          const errorMessage = err.response?.data?.error || tDiff(isCreating ? 'errors.createFailed' : 'errors.updateFailed');
+          const errorMessage = err.response?.data?.error || t(isCreating ? 'difficultyPopup.errors.createFailed' : 'difficultyPopup.errors.updateFailed');
           showToast(errorMessage, 'error');
           console.error(err);
         }
@@ -975,7 +967,7 @@ const DifficultyPopup = ({
         <button 
           className="difficulty-modal__close-button"
           onClick={onClose}
-          aria-label={tDiff('modal.close')}
+          aria-label={t('difficultyPopup.modal.close')}
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -986,14 +978,14 @@ const DifficultyPopup = ({
         {showPasswordModal && !verifiedPassword && (
           <div className="difficulty-modal__password-modal">
             <div className="difficulty-modal__password-modal-content">
-              <h3>{tDiff('modal.password.title')}</h3>
+              <h3>{t('difficultyPopup.modal.password.title')}</h3>
               <form onSubmit={handlePasswordSubmit}>
                 <div className="difficulty-modal__form-group">
                   <input
                     type="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    placeholder={tDiff('modal.password.placeholder')}
+                    placeholder={t('difficultyPopup.modal.password.placeholder')}
                     required
                     className="difficulty-modal__form-input"
                   />
@@ -1001,7 +993,7 @@ const DifficultyPopup = ({
                 {passwordError && <div className="difficulty-modal__error-message">{passwordError}</div>}
                 <div className="difficulty-modal__actions">
                   <button type="submit" className="difficulty-modal__button difficulty-modal__button--save">
-                    {tDiff('modal.password.confirm')}
+                    {t('difficultyPopup.modal.password.confirm')}
                   </button>
                   <button
                     type="button"
@@ -1025,26 +1017,26 @@ const DifficultyPopup = ({
         {showChannelModal && (
           <div className="difficulty-modal__channel-modal">
             <div className="difficulty-modal__channel-modal-content">
-              <h3>{channelModalSource === 'edit' ? tDiff('modal.channel.editTitle') : tDiff('modal.channel.addTitle')}</h3>
+              <h3>{channelModalSource === 'edit' ? t('difficultyPopup.modal.channel.editTitle') : t('difficultyPopup.modal.channel.addTitle')}</h3>
               <form onSubmit={handleChannelSubmit}>
                 <div className="difficulty-modal__form-group">
-                  <label className="difficulty-modal__form-label">{tDiff('modal.channel.label')}</label>
+                  <label className="difficulty-modal__form-label">{t('difficultyPopup.modal.channel.label')}</label>
                   <input
                     type="text"
                     value={channelLabel}
                     onChange={(e) => setChannelLabel(e.target.value)}
-                    placeholder={tDiff('modal.channel.labelPlaceholder')}
+                    placeholder={t('difficultyPopup.modal.channel.labelPlaceholder')}
                     required
                     className="difficulty-modal__form-input"
                   />
                 </div>
                 <div className="difficulty-modal__form-group">
-                  <label className="difficulty-modal__form-label">{tDiff('modal.channel.webhookUrl')}</label>
+                  <label className="difficulty-modal__form-label">{t('difficultyPopup.modal.channel.webhookUrl')}</label>
                   <input
                     type="text"
                     value={channelWebhookUrl}
                     onChange={(e) => setChannelWebhookUrl(e.target.value)}
-                    placeholder={tDiff('modal.channel.webhookUrlPlaceholder')}
+                    placeholder={t('difficultyPopup.modal.channel.webhookUrlPlaceholder')}
                     required
                     className="difficulty-modal__form-input"
                   />
@@ -1086,50 +1078,50 @@ const DifficultyPopup = ({
         {showRoleModal && (
           <div className="difficulty-modal__role-modal">
             <div className="difficulty-modal__role-modal-content">
-              <h3>{roleModalSource === 'edit' ? tDiff('modal.role.editTitle') : tDiff('modal.role.addTitle')}</h3>
+              <h3>{roleModalSource === 'edit' ? t('difficultyPopup.modal.role.editTitle') : t('difficultyPopup.modal.role.addTitle')}</h3>
               <form onSubmit={handleRoleSubmit}>
                 <div className="difficulty-modal__form-group">
-                  <label className="difficulty-modal__form-label">{tDiff('modal.role.roleId')}</label>
+                  <label className="difficulty-modal__form-label">{t('difficultyPopup.modal.role.roleId')}</label>
                   <input
                     type="text"
                     value={selectedRole?.roleId || ''}
                     onChange={(e) => setSelectedRole({...selectedRole, roleId: e.target.value})}
-                    placeholder={tDiff('modal.role.roleIdPlaceholder')}
+                    placeholder={t('difficultyPopup.modal.role.roleIdPlaceholder')}
                     required
                     className="difficulty-modal__form-input"
                   />
                 </div>
                 <div className="difficulty-modal__form-group">
-                  <label className="difficulty-modal__form-label">{tDiff('modal.role.label')}</label>
+                  <label className="difficulty-modal__form-label">{t('difficultyPopup.modal.role.label')}</label>
                   <input
                     type="text"
                     value={selectedRole?.label || ''}
                     onChange={(e) => setSelectedRole({...selectedRole, label: e.target.value})}
-                    placeholder={tDiff('modal.role.labelPlaceholder')}
+                    placeholder={t('difficultyPopup.modal.role.labelPlaceholder')}
                     required
                     className="difficulty-modal__form-input"
                   />
                 </div>
                 <div className="difficulty-modal__form-group">
                   <label className="difficulty-modal__form-label">
-                    {tDiff('modal.role.messageFormat') || 'Message Format'}
+                    {t('difficultyPopup.modal.role.messageFormat') || 'Message Format'}
                     <span className="difficulty-modal__form-label-hint">
-                      {' '}({tDiff('announcements.directive.optional') || 'Optional'})
+                      {' '}({t('difficultyPopup.announcements.directive.optional') || 'Optional'})
                     </span>
                   </label>
                   <textarea
                     value={selectedRole?.messageFormat || ''}
                     onChange={(e) => setSelectedRole({...selectedRole, messageFormat: e.target.value || null})}
-                    placeholder={tDiff('modal.role.messageFormatPlaceholder') || 'e.g., {count} {difficultyName} Clears! {ping}'}
+                    placeholder={t('difficultyPopup.modal.role.messageFormatPlaceholder') || 'e.g., {count} {difficultyName} Clears! {ping}'}
                     className="difficulty-modal__form-textarea"
                     rows={3}
                     maxLength={500}
                   />
                   <p className="difficulty-modal__form-hint">
-                    {tDiff('modal.role.messageFormatHint') || 'Template for grouped message. Use variables: {count}, {difficultyName}, {ping}, {groupName}. Messages will be grouped by role ID.'}
+                    {t('difficultyPopup.modal.role.messageFormatHint') || 'Template for grouped message. Use variables: {count}, {difficultyName}, {ping}, {groupName}. Messages will be grouped by role ID.'}
                     <br />
-                    <strong>{tDiff('announcements.directive.messageFormat.variables') || 'Variables:'}</strong>{' '}
-                    {tDiff('announcements.directive.messageFormat.variablesList') || '{count}, {difficultyName}, {ping}, {groupName}'}
+                    <strong>{t('difficultyPopup.announcements.directive.messageFormat.variables') || 'Variables:'}</strong>{' '}
+                    {t('difficultyPopup.announcements.directive.messageFormat.variablesList') || '{count}, {difficultyName}, {ping}, {groupName}'}
                   </p>
                 </div>
                 {roleError && <div className="difficulty-modal__error-message">{roleError}</div>}
@@ -1168,14 +1160,14 @@ const DifficultyPopup = ({
             className={`difficulty-modal__tab-button ${activeTab === 'details' ? 'difficulty-modal__tab-button--active' : ''}`}
             onClick={() => setActiveTab('details')}
           >
-            {tDiff('tabs.details')}
+            {t('difficultyPopup.tabs.details')}
           </button>
           {!isCreating && (
             <button 
               className={`difficulty-modal__tab-button ${activeTab === 'announcements' ? 'difficulty-modal__tab-button--active' : ''}`}
               onClick={() => setActiveTab('announcements')}
             >
-              {tDiff('tabs.announcement')}
+              {t('difficultyPopup.tabs.announcement')}
             </button>
           )}
         </div>
@@ -1183,12 +1175,12 @@ const DifficultyPopup = ({
         <div className="difficulty-modal__content-scroll">
           {activeTab === 'details' ? (
             <form onSubmit={handleFormSubmit}>
-              <h2 className="difficulty-modal__title">{isCreating ? tDiff('modal.create.title') : tDiff('modal.edit.title')}</h2>
+              <h2 className="difficulty-modal__title">{isCreating ? t('difficultyPopup.modal.create.title') : t('difficultyPopup.modal.edit.title')}</h2>
               <div className="difficulty-modal__form-group">
                 <label className="difficulty-modal__form-label">
-                  {tDiff('form.labels.id')}
+                  {t('difficultyPopup.form.labels.id')}
                   <span className="difficulty-modal__form-label-hint">
-                    {' '}({tDiff('form.optional')})
+                    {' '}({t('difficultyPopup.form.optional')})
                   </span>
                 </label>
                 <input
@@ -1196,18 +1188,18 @@ const DifficultyPopup = ({
                   value={difficulty.id || ''}
                   onChange={(e) => onChange({ ...difficulty, id: e.target.value ? parseInt(e.target.value) : undefined })}
                   disabled={!isCreating}
-                  placeholder={isCreating ? tDiff('form.placeholders.id') : ''}
+                  placeholder={isCreating ? t('difficultyPopup.form.placeholders.id') : ''}
                   className="difficulty-modal__form-input"
                 />
                 {isCreating && (
                   <p className="difficulty-modal__help-text">
-                    {tDiff('form.helpText.id')}
+                    {t('difficultyPopup.form.helpText.id')}
                   </p>
                 )}
               </div>
 
               <div className="difficulty-modal__form-group">
-                <label className="difficulty-modal__form-label">{tDiff('form.labels.name')}</label>
+                <label className="difficulty-modal__form-label">{t('difficultyPopup.form.labels.name')}</label>
                 <input
                   type="text"
                   value={difficulty.name}
@@ -1219,7 +1211,7 @@ const DifficultyPopup = ({
 
               <div className="difficulty-modal__form-group">
                 <CustomSelect
-                  label={tDiff('form.labels.type')}
+                  label={t('difficultyPopup.form.labels.type')}
                   options={difficultyTypeOptions}
                   value={difficultyTypeOptions.find(opt => opt.value === difficulty.type)}
                   onChange={(selected) => onChange({ ...difficulty, type: selected.value })}
@@ -1228,7 +1220,7 @@ const DifficultyPopup = ({
               </div>
 
               <div className="difficulty-modal__form-group">
-                <label className="difficulty-modal__form-label">{tDiff('form.labels.icon')}</label>
+                <label className="difficulty-modal__form-label">{t('difficultyPopup.form.labels.icon')}</label>
                 <div className="difficulty-modal__icon-upload">
                   {iconPreview && (
                     <div className="difficulty-modal__icon-preview">
@@ -1254,14 +1246,14 @@ const DifficultyPopup = ({
                     id="icon-upload"
                   />
                   <label htmlFor="icon-upload" className="difficulty-modal__file-label">
-                    {iconPreview ? tDiff('form.icon.change') : tDiff('form.icon.select')}
+                    {iconPreview ? t('difficultyPopup.form.icon.change') : t('difficultyPopup.form.icon.select')}
                   </label>
                 </div>
-                <p className="difficulty-modal__help-text">{tDiff('form.icon.help')}</p>
+                <p className="difficulty-modal__help-text">{t('difficultyPopup.form.icon.help')}</p>
               </div>
 
               <div className="difficulty-modal__form-group">
-                <label className="difficulty-modal__form-label">{tDiff('form.labels.legacyIcon')}</label>
+                <label className="difficulty-modal__form-label">{t('difficultyPopup.form.labels.legacyIcon')}</label>
                 <div className="difficulty-modal__icon-upload">
                   {legacyIconPreview && (
                     <div className="difficulty-modal__icon-preview">
@@ -1287,14 +1279,14 @@ const DifficultyPopup = ({
                     id="legacy-icon-upload"
                   />
                   <label htmlFor="legacy-icon-upload" className="difficulty-modal__file-label">
-                    {legacyIconPreview ? tDiff('form.legacyIcon.change') : tDiff('form.legacyIcon.select')}
+                    {legacyIconPreview ? t('difficultyPopup.form.legacyIcon.change') : t('difficultyPopup.form.legacyIcon.select')}
                   </label>
                 </div>
-                <p className="difficulty-modal__help-text">{tDiff('form.legacyIcon.help')}</p>
+                <p className="difficulty-modal__help-text">{t('difficultyPopup.form.legacyIcon.help')}</p>
               </div>
 
               <div className="difficulty-modal__form-group">
-                <label className="difficulty-modal__form-label">{tDiff('form.labels.emoji')}</label>
+                <label className="difficulty-modal__form-label">{t('difficultyPopup.form.labels.emoji')}</label>
                 <input
                   type="text"
                   value={difficulty.emoji}
@@ -1305,7 +1297,7 @@ const DifficultyPopup = ({
               </div>
 
               <div className="difficulty-modal__form-group">
-                <label className="difficulty-modal__form-label">{tDiff('form.labels.legacyEmoji')}</label>
+                <label className="difficulty-modal__form-label">{t('difficultyPopup.form.labels.legacyEmoji')}</label>
                 <input
                   type="text"
                   value={difficulty.legacyEmoji}
@@ -1315,7 +1307,7 @@ const DifficultyPopup = ({
               </div>
 
               <div className="difficulty-modal__form-group">
-                <label className="difficulty-modal__form-label">{tDiff('form.labels.color')}</label>
+                <label className="difficulty-modal__form-label">{t('difficultyPopup.form.labels.color')}</label>
                 <div className="difficulty-modal__color-input-container">
                   <input
                     type="color"
@@ -1329,7 +1321,7 @@ const DifficultyPopup = ({
                     value={difficulty.color}
                     onChange={(e) => onChange({ ...difficulty, color: e.target.value })}
                     pattern="^#[0-9A-Fa-f]{6}$"
-                    placeholder={tDiff('form.placeholders.color')}
+                    placeholder={t('difficultyPopup.form.placeholders.color')}
                     required
                     className="difficulty-modal__form-input"
                   />
@@ -1337,7 +1329,7 @@ const DifficultyPopup = ({
               </div>
 
               <div className="difficulty-modal__form-group">
-                <label className="difficulty-modal__form-label">{tDiff('form.labels.baseScore')}</label>
+                <label className="difficulty-modal__form-label">{t('difficultyPopup.form.labels.baseScore')}</label>
                 <input
                   type="number"
                   step="0.01"
@@ -1349,7 +1341,7 @@ const DifficultyPopup = ({
               </div>
 
               <div className="difficulty-modal__form-group">
-                <label className="difficulty-modal__form-label">{tDiff('form.labels.legacy')}</label>
+                <label className="difficulty-modal__form-label">{t('difficultyPopup.form.labels.legacy')}</label>
                 <input
                   type="text"
                   value={difficulty.legacy}
@@ -1375,9 +1367,9 @@ const DifficultyPopup = ({
             </form>
           ) : activeTab === 'announcements' ? (
             <div className="difficulty-modal__announcements">
-              <h2 className="difficulty-modal__title">{tDiff('announcements.title', { diffName: difficulty.name })}</h2>
+              <h2 className="difficulty-modal__title">{t('difficultyPopup.announcements.title', { diffName: difficulty.name })}</h2>
               {isLoadingDirectives ? (
-                <div className="difficulty-modal__loading-message">{tDiff('loading.directives')}</div>
+                <div className="difficulty-modal__loading-message">{t('difficultyPopup.loading.directives')}</div>
               ) : (
                 <form onSubmit={handleFormSubmit}>
                   <div className="difficulty-modal__directives-list">
@@ -1437,7 +1429,7 @@ const DifficultyPopup = ({
                                             type="button"
                                             className="difficulty-modal__directive-remove-button"
                                             onClick={() => handleRemoveDirective(index)}
-                                            aria-label={tDiff('announcements.directive.remove')}
+                                            aria-label={t('difficultyPopup.announcements.directive.remove')}
                                           >
                                             <TrashIcon color="#f55" size="1.5rem" />
                                           </button>
@@ -1451,7 +1443,7 @@ const DifficultyPopup = ({
                                           type="button"
                                           className="difficulty-modal__directive-copy-button"
                                           onClick={() => handleCopyDirective(directive)}
-                                          aria-label={tDiff('announcements.directive.copy')}
+                                          aria-label={t('difficultyPopup.announcements.directive.copy')}
                                         >
                                           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                             <path d="M8 4V16C8 17.1046 8.89543 18 10 18H18C19.1046 18 20 17.1046 20 16V7.24162C20 6.7034 19.7831 6.18861 19.4 5.8L16.2 2.6C15.8114 2.21687 15.2966 2 14.7584 2H10C8.89543 2 8 2.89543 8 4Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -1462,7 +1454,7 @@ const DifficultyPopup = ({
                                           <input
                                             type="text"
                                             className="difficulty-modal__directive-paste-input"
-                                            placeholder={tDiff('announcements.directive.paste')}
+                                            placeholder={t('difficultyPopup.announcements.directive.paste')}
                                             onPaste={(e) => handlePasteDirective(index, e)}
                                           />
                                         </div>
@@ -1470,7 +1462,7 @@ const DifficultyPopup = ({
                                       </div>
 
                                       <div className="difficulty-modal__form-group">
-                                        <label className="difficulty-modal__form-label">{tDiff('announcements.directive.name')}</label>
+                                        <label className="difficulty-modal__form-label">{t('difficultyPopup.announcements.directive.name')}</label>
                                         <input
                                           type="text"
                                           value={directive.name}
@@ -1482,7 +1474,7 @@ const DifficultyPopup = ({
 
                                       <div className="difficulty-modal__form-group">
                                         <CustomSelect
-                                          label={tDiff('announcements.mode.label')}
+                                          label={t('difficultyPopup.announcements.mode.label')}
                                           options={directiveModeOptions}
                                           value={directiveModeOptions.find(opt => opt.value === directive.mode)}
                                           onChange={(selected) => {
@@ -1514,12 +1506,12 @@ const DifficultyPopup = ({
                                           states={[TRIGGER_TYPES.PASS, TRIGGER_TYPES.LEVEL]}
                                           onChange={(value) => handleDirectiveChange(index, 'triggerType', value)}
                                           width={60}
-                                          label={tDiff('announcements.directive.triggerType')}
+                                          label={t('difficultyPopup.announcements.directive.triggerType')}
                                         />
                                       </div>
 
                                       <div className="difficulty-modal__form-group">
-                                        <label className="difficulty-modal__form-label">{tDiff('announcements.directive.description')}</label>
+                                        <label className="difficulty-modal__form-label">{t('difficultyPopup.announcements.directive.description')}</label>
                                         <textarea
                                           value={directive.description}
                                           onChange={(e) => handleDirectiveChange(index, 'description', e.target.value)}
@@ -1532,7 +1524,7 @@ const DifficultyPopup = ({
                                         <>
                                           <div className="difficulty-modal__form-group">
                                             <CustomSelect
-                                              label={tDiff('announcements.condition.type.label')}
+                                              label={t('difficultyPopup.announcements.condition.type.label')}
                                               options={conditionTypeOptions}
                                               value={conditionTypeOptions.find(opt => opt.value === (directive.condition?.type || 'ACCURACY'))}
                                               onChange={(selected) => handleDirectiveChange(index, 'condition.type', selected.value)}
@@ -1544,7 +1536,7 @@ const DifficultyPopup = ({
                                             <>
                                               <div className="difficulty-modal__form-group">
                                                 <CustomSelect
-                                                  label={tDiff('announcements.condition.operator.label')}
+                                                  label={t('difficultyPopup.announcements.condition.operator.label')}
                                                   options={operatorOptions}
                                                   value={operatorOptions.find(opt => opt.value === (directive.condition?.operator || 'GREATER_THAN_EQUAL'))}
                                                   onChange={(selected) => handleDirectiveChange(index, 'condition.operator', selected.value)}
@@ -1553,7 +1545,7 @@ const DifficultyPopup = ({
                                               </div>
 
                                               <div className="difficulty-modal__form-group">
-                                                <label className="difficulty-modal__form-label">{tDiff('announcements.condition.value')}</label>
+                                                <label className="difficulty-modal__form-label">{t('difficultyPopup.announcements.condition.value')}</label>
                                                 <input
                                                   type="number"
                                                   step="0.01"
@@ -1569,11 +1561,10 @@ const DifficultyPopup = ({
                                           {directive.condition?.type === 'CUSTOM' && (
                                             <div className="difficulty-modal__form-group">
                                               <div className="difficulty-modal__custom-function-header">
-                                                <label className="difficulty-modal__form-label">{tDiff('announcements.condition.customFunction')}</label>
+                                                <label className="difficulty-modal__form-label">{t('difficultyPopup.announcements.condition.customFunction')}</label>
                                                 <button
                                                   type="button"
                                                   className="difficulty-modal__help-button"
-                                                  onClick={() => setShowHelpModal(true)}
                                                   aria-label="Show custom function help"
                                                 >
                                                   <QuestionmarkCircleIcon color="#fff" size="24px" />
@@ -1592,7 +1583,7 @@ const DifficultyPopup = ({
 
                                       <div className="difficulty-modal__actions-section">
                                         <div className="difficulty-modal__actions-header">
-                                          <h4 className="difficulty-modal__actions-title">{tDiff('announcements.actions.title')}</h4>
+                                          <h4 className="difficulty-modal__actions-title">{t('difficultyPopup.announcements.actions.title')}</h4>
                                           <button
                                             type="button"
                                             className={`difficulty-modal__expand-button ${expandedActions[index] ? 'expanded' : ''}`}
@@ -1615,12 +1606,12 @@ const DifficultyPopup = ({
                                                 type="button"
                                                 className="difficulty-modal__action-remove-button"
                                                 onClick={() => handleRemoveAction(index, actionIndex)}
-                                                aria-label={tDiff('announcements.actions.remove')}
+                                                aria-label={t('difficultyPopup.announcements.actions.remove')}
                                               >
                                                 <TrashIcon color="#f55" size="1.2rem" />
                                               </button>
                                               <div className="difficulty-modal__form-group">
-                                                <label className="difficulty-modal__form-label">{tDiff('announcements.actions.channel', { returnObjects: true })["label"]}</label>
+                                                <label className="difficulty-modal__form-label">{t('difficultyPopup.announcements.actions.channel', { returnObjects: true })["label"]}</label>
                                                 <div className="difficulty-modal__select-with-edit">
                                                   <CustomSelect
                                                     width="100%"
@@ -1637,7 +1628,7 @@ const DifficultyPopup = ({
                                                         value: channel.id,
                                                         label: channel.label
                                                       })),
-                                                      { value: 'add_new', label: `+ ${tDiff('announcements.actions.channel.add')}` }
+                                                      { value: 'add_new', label: `+ ${t('difficultyPopup.announcements.actions.channel.add')}` }
                                                     ]}
                                                   />
                                                   {action.channelId && !['EVERYONE', 'NONE'].includes(action.channelId) && (
@@ -1650,7 +1641,7 @@ const DifficultyPopup = ({
                                                         const channelToEdit = availableChannels.find(c => c.id === action.channelId);
                                                         handleEditChannel(channelToEdit);
                                                       }}
-                                                      aria-label={tDiff('announcements.actions.channel.edit')}
+                                                      aria-label={t('difficultyPopup.announcements.actions.channel.edit')}
                                                     >
                                                       <EditIcon className="difficulty-modal__select-edit-button-icon" />
                                                     </button>
@@ -1659,7 +1650,7 @@ const DifficultyPopup = ({
                                               </div>
 
                                               <div className="difficulty-modal__form-group">
-                                                <label className="difficulty-modal__form-label">{tDiff('announcements.actions.pingType', { returnObjects: true })["label"]}</label>
+                                                <label className="difficulty-modal__form-label">{t('difficultyPopup.announcements.actions.pingType', { returnObjects: true })["label"]}</label>
                                                 <CustomSelect
                                                   value={{ value: action.pingType, label: getPingTypeOption(action.pingType) }}
                                                   onChange={(option) => handleDirectiveChange(index, `actions.${actionIndex}.pingType`, option.value)}
@@ -1674,7 +1665,7 @@ const DifficultyPopup = ({
                                               {action.pingType === 'ROLE' && (
                                                 <>
                                                   <div className="difficulty-modal__form-group">
-                                                    <label className="difficulty-modal__form-label">{tDiff('announcements.actions.role', { returnObjects: true })["label"]}</label>
+                                                    <label className="difficulty-modal__form-label">{t('difficultyPopup.announcements.actions.role', { returnObjects: true })["label"]}</label>
                                                     <div className="difficulty-modal__select-with-edit">
                                                       <CustomSelect
                                                       value={availableRoles.find(r => r.id === action.roleId) || null}
@@ -1690,7 +1681,7 @@ const DifficultyPopup = ({
                                                             value: role.id,
                                                             label: role.label
                                                           })),
-                                                          { value: 'add_new', label: `+ ${tDiff('announcements.actions.role.add')}` }
+                                                          { value: 'add_new', label: `+ ${t('difficultyPopup.announcements.actions.role.add')}` }
                                                         ]}
                                                         width="100%"
                                                       />
@@ -1704,7 +1695,7 @@ const DifficultyPopup = ({
                                                             const roleToEdit = availableRoles.find(r => r.id === action.roleId);
                                                             handleEditRole(roleToEdit);
                                                           }}
-                                                          aria-label={tDiff('announcements.actions.role.edit')}
+                                                          aria-label={t('difficultyPopup.announcements.actions.role.edit')}
                                                         >
                                                           <EditIcon className="difficulty-modal__select-edit-button-icon" />
                                                         </button>
@@ -1721,7 +1712,7 @@ const DifficultyPopup = ({
                                             className="difficulty-modal__action-add-button"
                                             onClick={() => handleAddAction(index)}
                                           >
-                                            {tDiff('announcements.actions.add')}
+                                            {t('difficultyPopup.announcements.actions.add')}
                                           </button>
                                         </div>
                                       </div>
@@ -1734,7 +1725,7 @@ const DifficultyPopup = ({
                                           className="difficulty-modal__form-input-checkbox"
                                         />
                                         <label>
-                                          {tDiff('announcements.directive.isActive')}
+                                          {t('difficultyPopup.announcements.directive.isActive')}
                                         </label>
                                       </div>
 
@@ -1746,7 +1737,7 @@ const DifficultyPopup = ({
                                           className="difficulty-modal__form-input-checkbox"
                                         />
                                         <label>
-                                          {tDiff('announcements.firstOfKind')}
+                                          {t('difficultyPopup.announcements.firstOfKind')}
                                         </label>
                                       </div>
                                     </div>
@@ -1766,7 +1757,7 @@ const DifficultyPopup = ({
                     className="difficulty-modal__directive-add-button"
                     onClick={handleAddDirective}
                   >
-                    {tDiff('announcements.directive.add')}
+                    {t('difficultyPopup.announcements.directive.add')}
                   </button>
 
                   <div className="difficulty-modal__actions">

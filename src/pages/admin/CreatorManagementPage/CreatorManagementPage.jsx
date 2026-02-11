@@ -28,7 +28,6 @@ const CreatorManagementPage = () => {
   const [creators, setCreators] = useState([]);
   const [levels, setLevels] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(null);
-  const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState(decodeURIComponent(window.location.search.split('search=')[1] || ""));
   const [creatorListSearchQuery, setCreatorListSearchQuery] = useState('');
   const [creatorToAddSearchQuery, setCreatorToAddSearchQuery] = useState('');
@@ -44,7 +43,6 @@ const CreatorManagementPage = () => {
   const maxCreatorResults = 100;
   const [selectedCreatorForAction, setSelectedCreatorForAction] = useState(null);
   const { t } = useTranslation('pages');
-  const tCreator = (key, params = {}) => t(`creatorManagement.${key}`, params);
   const [sort, setSort] = useState('NAME_ASC');
   const [pendingTeam, setPendingTeam] = useState(null);
   const [pendingCreators, setPendingCreators] = useState([]);
@@ -138,7 +136,6 @@ const CreatorManagementPage = () => {
     if (!preserveScroll) {
       setLevels([]);
     }
-    setLoading(true);
     try {
       const params = new URLSearchParams({
         offset: (currentPage - 1) * levelsPerPage,
@@ -168,10 +165,6 @@ const CreatorManagementPage = () => {
       if (!api.isCancel(error)) {
         console.error('Error fetching levels:', error);
         toast.error('Failed to fetch levels');
-      }
-    } finally {
-      if (!api.isCancel()) {
-        setLoading(false);
       }
     }
   };
@@ -865,8 +858,8 @@ const CreatorManagementPage = () => {
   return (
     <>
       <MetaTags
-          title={tCreator('meta.title')}
-          description={tCreator('meta.description')}
+          title={t('creatorManagement.meta.title')}
+          description={t('creatorManagement.meta.description')}
           url={currentUrl}
           image={''}
           type="article"
@@ -1004,23 +997,23 @@ const CreatorManagementPage = () => {
                 className="add-creator-button"
                 onClick={() => setShowAddCreatorForm(true)}
               >
-                {tCreator('buttons.addCreator')}
+                {t('creatorManagement.buttons.addCreator')}
               </button>
 
               <div className="sort-group">
-                <p>{tCreator('sort.byName')}</p>
+                <p>{t('creatorManagement.sort.byName')}</p>
                 <div className="sort-buttons">
                   <button 
                     className={`sort-button ${sort === 'NAME_ASC' ? 'active' : ''}`}
                     onClick={() => handleSort('NAME_ASC')}
-                    title={tCreator('sort.byName')}
+                    title={t('creatorManagement.sort.byName')}
                   >
                     <SortAscIcon color="#aaa" />
                   </button>
                   <button 
                     className={`sort-button ${sort === 'NAME_DESC' ? 'active' : ''}`}
                     onClick={() => handleSort('NAME_DESC')}
-                    title={tCreator('sort.byName')}
+                    title={t('creatorManagement.sort.byName')}
                   >
                     <SortDescIcon color="#aaa" />
                   </button>
@@ -1028,7 +1021,7 @@ const CreatorManagementPage = () => {
               </div>
 
               <div className="sort-group">
-                <p>{tCreator('sort.byId')}</p>
+                <p>{t('creatorManagement.sort.byId')}</p>
                 <div className="sort-buttons">
                   <button 
                     className={`sort-button ${sort === 'ID_ASC' ? 'active' : ''}`}
@@ -1048,7 +1041,7 @@ const CreatorManagementPage = () => {
               </div>
 
               <div className="sort-group">
-                <p>{tCreator('sort.byCharts')}</p>
+                <p>{t('creatorManagement.sort.byCharts')}</p>
                 <div className="sort-buttons">
                   <button 
                     className={`sort-button ${sort === 'CHARTS_ASC' ? 'active' : ''}`}
@@ -1073,7 +1066,7 @@ const CreatorManagementPage = () => {
                 <div className="search-box">
                   <input
                     type="text"
-                    placeholder={tCreator('filters.searchPlaceholder')}
+                    placeholder={t('creatorManagement.filters.searchPlaceholder')}
                     value={creatorListSearchQuery}
                     onChange={(e) => {
                       setCreatorListSearchQuery(e.target.value);
@@ -1089,7 +1082,7 @@ const CreatorManagementPage = () => {
                       checked={hideVerifiedCreators}
                       onChange={(e) => setHideVerifiedCreators(e.target.checked)}
                     />
-                    {tCreator('filters.hideVerified')}
+                    {t('creatorManagement.filters.hideVerified')}
                   </label>
                   <label className={excludeAliases ? 'active' : ''}>
                     <input
@@ -1097,7 +1090,7 @@ const CreatorManagementPage = () => {
                       checked={excludeAliases}
                       onChange={(e) => setExcludeAliases(e.target.checked)}
                     />
-                    {tCreator('filters.excludeAliases')}
+                    {t('creatorManagement.filters.excludeAliases')}
                   </label>
                 </div>
 
@@ -1137,20 +1130,20 @@ const CreatorManagementPage = () => {
                 {!loadingCreators && currentCreators.length === 0 ? (
                   <div className="no-results-message">
                     {creatorListSearchQuery 
-                      ? tCreator('messages.noResultsSearch', { query: creatorListSearchQuery })
-                      : tCreator('messages.noResults')}
+                      ? t('creatorManagement.messages.noResultsSearch', { query: creatorListSearchQuery })
+                      : t('creatorManagement.messages.noResults')}
                   </div>
                 ) : (
                   currentCreators.map(creator => (
                     <div key={`${creator.role}-${creator.id}`} className={`creator-item ${creator.isVerified ? 'verified' : ''}`}>
                       <div className="creator-info">
                         <h3>
-                          {creator.name} ({tCreator('creatorInfo.id')}: {creator.id})
-                          {creator.isVerified && <span className="verified-badge" title={tCreator('creatorInfo.verifiedBadge')}>✓</span>}
+                          {creator.name} ({t('creatorManagement.creatorInfo.id')}: {creator.id})
+                          {creator.isVerified && <span className="verified-badge" title={t('creatorManagement.creatorInfo.verifiedBadge')}>✓</span>}
                         </h3>
-                        <p>{tCreator('creatorInfo.charts')}: {creator.credits?.length || 0}</p>
+                        <p>{t('creatorManagement.creatorInfo.charts')}: {creator.credits?.length || 0}</p>
                         {creator.creatorAliases?.length > 0 && (
-                          <p>{tCreator('creatorInfo.aliases')}: {creator.creatorAliases.map(alias => alias.name).join(', ')}</p>
+                          <p>{t('creatorManagement.creatorInfo.aliases')}: {creator.creatorAliases.map(alias => alias.name).join(', ')}</p>
                         )}
                       </div>
                       <div className="creator-actions">
@@ -1158,7 +1151,7 @@ const CreatorManagementPage = () => {
                           onClick={() => handleCreatorAction(creator)}
                           className="action-button"
                         >
-                          {tCreator('buttons.manageCreator')}
+                          {t('creatorManagement.buttons.manageCreator')}
                         </button>
                       </div>
                     </div>
@@ -1262,24 +1255,24 @@ const CreatorManagementPage = () => {
       {showAddCreatorForm && (
         <div className="add-creator-form-overlay">
           <div className="add-creator-form">
-            <h3>{tCreator('form.title')}</h3>
+            <h3>{t('creatorManagement.form.title')}</h3>
             <div className="form-group">
-              <label>{tCreator('form.labels.creatorName')}</label>
+              <label>{t('creatorManagement.form.labels.creatorName')}</label>
               <input
                 type="text"
                 value={newCreatorData.name}
                 onChange={(e) => setNewCreatorData(prev => ({...prev, name: e.target.value}))}
-                placeholder={tCreator('form.placeholders.enterName')}
+                placeholder={t('creatorManagement.form.placeholders.enterName')}
               />
             </div>
             <div className="form-group">
-              <label>{tCreator('form.labels.aliases')}</label>
+              <label>{t('creatorManagement.form.labels.aliases')}</label>
               <div className="alias-input-group">
                 <input
                   type="text"
                   value={newCreatorAlias}
                   onChange={(e) => setNewCreatorAlias(e.target.value)}
-                  placeholder={tCreator('form.placeholders.enterAlias')}
+                  placeholder={t('creatorManagement.form.placeholders.enterAlias')}
                 />
                 <button 
                   onClick={() => {
@@ -1292,7 +1285,7 @@ const CreatorManagementPage = () => {
                     }
                   }}
                 >
-                  {tCreator('form.buttons.addAlias')}
+                  {t('creatorManagement.form.buttons.addAlias')}
                 </button>
               </div>
               <div className="aliases-list">
@@ -1316,7 +1309,7 @@ const CreatorManagementPage = () => {
                 className={`submit-button ${isCreatingCreator ? 'loading' : ''}`}
                 onClick={async () => {
                   if (!newCreatorData.name.trim()) {
-                    toast.error(tCreator('messages.nameRequired'));
+                    toast.error(t('creatorManagement.messages.nameRequired'));
                     return;
                   }
                   setIsCreatingCreator(true);
@@ -1325,9 +1318,9 @@ const CreatorManagementPage = () => {
                     await fetchCreators();
                     setShowAddCreatorForm(false);
                     setNewCreatorData({ name: '', aliases: [] });
-                    toast.success(tCreator('messages.creatorCreated'));
+                    toast.success(t('creatorManagement.messages.creatorCreated'));
                   } catch (error) {
-                    toast.error(error.response?.data?.error || tCreator('errors.createFailed'));
+                    toast.error(error.response?.data?.error || t('creatorManagement.errors.createFailed'));
                   } finally {
                     setIsCreatingCreator(false);
                   }

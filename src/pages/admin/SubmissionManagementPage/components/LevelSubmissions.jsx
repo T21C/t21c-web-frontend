@@ -17,7 +17,6 @@ import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 
 const LevelSubmissions = () => {
   const { t } = useTranslation(['components', 'common']);
-  const tLevel = (key, params = {}) => t(`levelSubmissions.${key}`, params);
   
   const [submissions, setSubmissions] = useState([]);
   const [videoEmbeds, setVideoEmbeds] = useState({});
@@ -248,7 +247,7 @@ const LevelSubmissions = () => {
       await handleSubmission(submission.id, 'approve');
     } catch (error) {
       console.error('Error updating submission with profiles:', error);
-      toast.error(tLevel('errors.profileUpdate'));
+      toast.error(t('levelSubmissions.errors.profileUpdate'));
     } finally {
       setProfileCreation({
         show: false,
@@ -395,7 +394,7 @@ const LevelSubmissions = () => {
       }));
     } catch (error) {
       console.error('Error adding creator:', error);
-      toast.error(tLevel('errors.addCreatorFailed'));
+      toast.error(t('levelSubmissions.errors.addCreatorFailed'));
     }
   };
 
@@ -474,12 +473,12 @@ const LevelSubmissions = () => {
         }));
       }
       
-      toast.success(tLevel('messages.songUpdated'));
+      toast.success(t('levelSubmissions.messages.songUpdated'));
       setShowSongSelector(false);
       setSelectedSongSubmission(null);
     } catch (error) {
       console.error('Error updating song:', error);
-      toast.error(error.response?.data?.error || tLevel('errors.updateSongFailed'));
+      toast.error(error.response?.data?.error || t('levelSubmissions.errors.updateSongFailed'));
     }
   };
 
@@ -570,11 +569,11 @@ const LevelSubmissions = () => {
         return submission;
       }));
       
-      toast.success(tLevel('messages.artistUpdated'));
+      toast.success(t('levelSubmissions.messages.artistUpdated'));
       handleArtistSelectorClose();
     } catch (error) {
       console.error('Error updating artist:', error);
-      toast.error(error.response?.data?.error || tLevel('errors.updateArtistFailed'));
+      toast.error(error.response?.data?.error || t('levelSubmissions.errors.updateArtistFailed'));
     }
   };
 
@@ -592,10 +591,10 @@ const LevelSubmissions = () => {
         setSubmissions(prevSubmissions => prevSubmissions.map(s => 
           s.id === submissionId ? { ...s, ...response.data } : s
         ));
-        toast.success(tLevel('messages.suffixUpdated'));
+        toast.success(t('levelSubmissions.messages.suffixUpdated'));
       } catch (error) {
         console.error('Error updating suffix:', error);
-        toast.error(tLevel('errors.suffixUpdateFailed'));
+        toast.error(t('levelSubmissions.errors.suffixUpdateFailed'));
       }
     }
     
@@ -653,9 +652,9 @@ const LevelSubmissions = () => {
     } catch (error) {
       console.error('Error removing creator:', error);
       if (error.response?.status === 400) {
-        toast.error(tLevel('errors.cannotRemoveLastCharter'));
+        toast.error(t('levelSubmissions.errors.cannotRemoveLastCharter'));
       } else {
-        toast.error(tLevel('errors.removeCreatorFailed'));
+        toast.error(t('levelSubmissions.errors.removeCreatorFailed'));
       }
     }
   };
@@ -681,7 +680,7 @@ const LevelSubmissions = () => {
         setShowSongManagement(true);
       } catch (error) {
         console.error('Error fetching song:', error);
-        toast.error(error.response?.data?.error || tLevel('errors.updateSongFailed'));
+        toast.error(error.response?.data?.error || t('levelSubmissions.errors.updateSongFailed'));
       }
     }
   };
@@ -707,7 +706,7 @@ const LevelSubmissions = () => {
         setShowArtistManagement(true);
       } catch (error) {
         console.error('Error fetching artist:', error);
-        toast.error(error.response?.data?.error || tLevel('errors.updateArtistFailed'));
+        toast.error(error.response?.data?.error || t('levelSubmissions.errors.updateArtistFailed'));
       }
     }
   };
@@ -757,10 +756,10 @@ const LevelSubmissions = () => {
         }
         return submission;
       }));
-      toast.success(tLevel('messages.songRequestAdded'));
+      toast.success(t('levelSubmissions.messages.songRequestAdded'));
     } catch (error) {
       console.error('Error adding song request:', error);
-      toast.error(error.response?.data?.error || tLevel('errors.addSongRequestFailed'));
+      toast.error(error.response?.data?.error || t('levelSubmissions.errors.addSongRequestFailed'));
     }
   };
 
@@ -788,10 +787,10 @@ const LevelSubmissions = () => {
         }
         return submission;
       }));
-      toast.success(tLevel('messages.artistRequestAdded'));
+      toast.success(t('levelSubmissions.messages.artistRequestAdded'));
     } catch (error) {
       console.error('Error adding artist request:', error);
-      toast.error(error.response?.data?.error || tLevel('errors.addArtistRequestFailed'));
+      toast.error(error.response?.data?.error || t('levelSubmissions.errors.addArtistRequestFailed'));
     }
   };
 
@@ -819,15 +818,15 @@ const LevelSubmissions = () => {
         }
         return submission;
       }));
-      toast.success(tLevel('messages.artistRequestRemoved'));
+      toast.success(t('levelSubmissions.messages.artistRequestRemoved'));
     } catch (error) {
       console.error('Error removing artist request:', error);
-      toast.error(error.response?.data?.error || tLevel('errors.removeArtistRequestFailed'));
+      toast.error(error.response?.data?.error || t('levelSubmissions.errors.removeArtistRequestFailed'));
     }
   };
 
   if (submissions?.length === 0 && !isLoading) {
-    return <p className="no-submissions">{tLevel('noSubmissions')}</p>;
+    return <p className="no-submissions">{t('levelSubmissions.noSubmissions')}</p>;
   }
 
   return (
@@ -845,7 +844,7 @@ const LevelSubmissions = () => {
                 <h3>
                   {submission.songObject?.name || submission.song}
                   {submission.songRequest?.isNewRequest && (
-                    <span className="request-badge">{tLevel('badges.newRequest')}</span>
+                    <span className="request-badge">{t('levelSubmissions.badges.newRequest')}</span>
                   )}
                 </h3>
                 <span className="submission-date">
@@ -857,15 +856,15 @@ const LevelSubmissions = () => {
                 <div className="submission-details">
                   {/* Song Management */}
                   <div className="detail-row">
-                    <span className="detail-label">{tLevel('details.song')}</span>
+                    <span className="detail-label">{t('levelSubmissions.details.song')}</span>
                     <div className="detail-value-group">
                       <span className="detail-value">
                         {submission.songObject?.name || submission.song}
                         {submission.songRequest?.isNewRequest && (
-                          <span className="request-badge">{tLevel('badges.newRequest')}</span>
+                          <span className="request-badge">{t('levelSubmissions.badges.newRequest')}</span>
                         )}
                         {!submission.songId && !submission.songRequest && (
-                          <span className="profile-request-unassigned" title={tLevel('badges.unassigned')}>
+                          <span className="profile-request-unassigned" title={t('levelSubmissions.badges.unassigned')}>
                             <WarningIcon className="warning-icon" color="#f00" />
                           </span>
                         )}
@@ -879,16 +878,16 @@ const LevelSubmissions = () => {
                               setShowSongSelector(true);
                             }}
                           >
-                            {tLevel('buttons.changeSong')}
+                            {t('levelSubmissions.buttons.changeSong')}
                           </button>
                         )}
                         {(submission.songObject || submission.songId) && (submission.artistObject || submission.artistId) && (
                           <button
                             className="manage-entity-button"
                             onClick={() => handleSongAction(submission)}
-                            title={!(submission.artistObject || submission.artistId) ? tLevel('errors.needArtistForSong') : ''}
+                            title={!(submission.artistObject || submission.artistId) ? t('levelSubmissions.errors.needArtistForSong') : ''}
                           >
-                            {tLevel('buttons.manageSong')}
+                            {t('levelSubmissions.buttons.manageSong')}
                           </button>
                         )}
                         {!submission.songRequest && (
@@ -896,7 +895,7 @@ const LevelSubmissions = () => {
                             className="add-entity-request-button"
                             onClick={() => handleAddSongRequest(submission.id)}
                           >
-                            {tLevel('buttons.addSongRequest')}
+                            {t('levelSubmissions.buttons.addSongRequest')}
                           </button>
                         )}
                       </div>
@@ -907,7 +906,7 @@ const LevelSubmissions = () => {
                   {submission.songId && submission.songObject ? (
                     <div className="creator-group">
                       <div className="creator-group-header">
-                        {tLevel('details.artist')}
+                        {t('levelSubmissions.details.artist')}
                       </div>
                       <div className="creator-list">
                         {submission.songObject.credits && submission.songObject.credits.length > 0 ? (
@@ -915,7 +914,7 @@ const LevelSubmissions = () => {
                             <div key={credit.artist?.id || idx} className="creator-item">
                               <span className="creator-name">
                                 {credit.artist?.name || 'Unknown'}
-                                <span className="locked-indicator" title={tLevel('messages.artistLockedToSong')}>
+                                <span className="locked-indicator" title={t('levelSubmissions.messages.artistLockedToSong')}>
                                   {' '}(Locked)
                                 </span>
                               </span>
@@ -923,9 +922,9 @@ const LevelSubmissions = () => {
                           ))
                         ) : (
                           <div className="creator-item">
-                            <span className="profile-request-unassigned" title={tLevel('badges.unassigned')}>
+                            <span className="profile-request-unassigned" title={t('levelSubmissions.badges.unassigned')}>
                               <WarningIcon className="warning-icon" color="#f00" />
-                              {tLevel('badges.unassigned')}
+                              {t('levelSubmissions.badges.unassigned')}
                             </span>
                           </div>
                         )}
@@ -934,7 +933,7 @@ const LevelSubmissions = () => {
                   ) : (
                     <div className="creator-group">
                       <div className="creator-group-header">
-                        {tLevel('details.artist')}
+                        {t('levelSubmissions.details.artist')}
                       </div>
                       <div className="creator-list">
                         {submission.artistRequests && submission.artistRequests.length > 0 ? (
@@ -944,11 +943,11 @@ const LevelSubmissions = () => {
                                 {artistRequest.artist?.name || artistRequest.artistName || 'Unknown'}
                                 {artistRequest.isNewRequest && (
                                   <span className="profile-request-badge">
-                                    {tLevel('badges.newRequest')}
+                                    {t('levelSubmissions.badges.newRequest')}
                                   </span>
                                 )}
                                 {!artistRequest.artistId && !artistRequest.isNewRequest && (
-                                  <span className="profile-request-unassigned" title={tLevel('badges.unassigned')}>
+                                  <span className="profile-request-unassigned" title={t('levelSubmissions.badges.unassigned')}>
                                     <WarningIcon className="warning-icon" color="#f00" />
                                   </span>
                                 )}
@@ -960,23 +959,23 @@ const LevelSubmissions = () => {
                                     className="remove-creator-button"
                                     onClick={() => handleRemoveArtistRequest(submission.id, artistRequest.id)}
                                   >
-                                    {tLevel('buttons.remove')}
+                                    {t('levelSubmissions.buttons.remove')}
                                   </button>
                                 )}
                                 <button
                                   className="manage-creator-button"
                                   onClick={() => handleArtistAction(submission, artistRequest)}
                                 >
-                                  {tLevel('buttons.manageArtist')}
+                                  {t('levelSubmissions.buttons.manageArtist')}
                                 </button>
                               </div>
                             </div>
                           ))
                         ) : (
                           <div className="creator-item">
-                            <span className="profile-request-unassigned" title={tLevel('badges.unassigned')}>
+                            <span className="profile-request-unassigned" title={t('levelSubmissions.badges.unassigned')}>
                               <WarningIcon className="warning-icon" color="#f00" />
-                              {tLevel('badges.unassigned')}
+                              {t('levelSubmissions.badges.unassigned')}
                             </span>
                           </div>
                         )}
@@ -986,7 +985,7 @@ const LevelSubmissions = () => {
                           className="add-creator-button"
                           onClick={() => handleAddArtistRequest(submission.id)}
                         >
-                          {tLevel('buttons.addArtistRequest')}
+                          {t('levelSubmissions.buttons.addArtistRequest')}
                         </button>
                       </div>
                     </div>
@@ -995,7 +994,7 @@ const LevelSubmissions = () => {
                       {/* Evidence Display */}
                       {submission.evidence && submission.evidence.length > 0 && (
                     <div className="detail-row">
-                      <span className="detail-label">{tLevel('details.evidence')}</span>
+                      <span className="detail-label">{t('levelSubmissions.details.evidence')}</span>
                       <div className="evidence-preview">
                         {submission.evidence.slice(0, 3).map((evidence, index) => {
                           const isImage = isImageUrl(evidence.link);
@@ -1047,7 +1046,7 @@ const LevelSubmissions = () => {
                   )}
                   <br/>
                   <div className="detail-row">
-                    <span className="detail-label">{tLevel('details.suffix')}</span>
+                    <span className="detail-label">{t('levelSubmissions.details.suffix')}</span>
                     <div className="detail-value-group suffix-edit-group">
                       {editingSuffix[submission.id] ? (
                         <div className="suffix-edit-controls">
@@ -1068,7 +1067,7 @@ const LevelSubmissions = () => {
                                 handleCancelSuffix(submission.id);
                               }
                             }}
-                            placeholder={tLevel('details.suffixPlaceholder')}
+                            placeholder={t('levelSubmissions.details.suffixPlaceholder')}
                             autoFocus
                           />
                           <div className="suffix-edit-buttons">
@@ -1091,7 +1090,7 @@ const LevelSubmissions = () => {
                       ) : (
                         <div className="suffix-display">
                           <span className="detail-value">
-                            {submission.suffix || <span style={{opacity: 0.5}}>{tLevel('details.suffixPlaceholder')}</span>}
+                            {submission.suffix || <span style={{opacity: 0.5}}>{t('levelSubmissions.details.suffixPlaceholder')}</span>}
                           </span>
                           <button
                             className="suffix-edit-btn"
@@ -1111,55 +1110,55 @@ const LevelSubmissions = () => {
                     </div>
                   </div>
                   <div className="detail-row">
-                    <span className="detail-label">{tLevel('details.difficulty')}</span>
+                    <span className="detail-label">{t('levelSubmissions.details.difficulty')}</span>
                     <span className="detail-value">{submission.diff}</span>
                   </div>
 
                   {submission.directDL ? (
                     <div className="detail-row">
-                      <span className="detail-label">{tLevel('details.download.label')}</span>
+                      <span className="detail-label">{t('levelSubmissions.details.download.label')}</span>
                       <a 
                         href={submission.directDL} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="detail-link"
                       >
-                        {tLevel('details.download.directLink')}
+                        {t('levelSubmissions.details.download.directLink')}
                         {submission.directDL.includes(import.meta.env.VITE_CDN_URL) && (
                           <ServerCloudIcon size="24px" color="#aaffaa" 
                             data-tooltip-id="cdn-tooltip"
                           />
                         )}
                         <Tooltip className="cdn-tooltip" id="cdn-tooltip" place="right">
-                          {tLevel('details.download.cdnLink')}
+                          {t('levelSubmissions.details.download.cdnLink')}
                         </Tooltip>
                       </a>
                     </div>
                   ) : (
                     <div className="detail-row">
-                      <span className="detail-label">{tLevel('details.download.label')}</span>
+                      <span className="detail-label">{t('levelSubmissions.details.download.label')}</span>
                       <span className="detail-value" style={{color: "rgb(255, 100, 100)"}}>
-                        {tLevel('details.download.notAvailable')}
+                        {t('levelSubmissions.details.download.notAvailable')}
                       </span>
                     </div>
                   )}
 
                   {submission.wsLink && (
                     <div className="detail-row">
-                      <span className="detail-label">{tLevel('details.workshop.label')}</span>
+                      <span className="detail-label">{t('levelSubmissions.details.workshop.label')}</span>
                       <a 
                         href={submission.wsLink} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="detail-link"
                       >
-                        {tLevel('details.workshop.link')}
+                        {t('levelSubmissions.details.workshop.link')}
                       </a>
                     </div>
                   )}
 
                   <div className="detail-row">
-                    <span className="detail-label">{tLevel('details.submitter')}</span>
+                    <span className="detail-label">{t('levelSubmissions.details.submitter')}</span>
                     <div className="submitter-details">
                       <span className="detail-value">{submission.submitterDiscordUsername? `@${submission.submitterDiscordUsername}` : submission.levelSubmitter?.username || "Null"}</span>
                       <span className="detail-subvalue">#{submission.levelSubmitter?.playerId || "Null"}</span>
@@ -1215,7 +1214,7 @@ const LevelSubmissions = () => {
                     return Object.entries(creatorsByRole || {}).map(([role, creators]) => (
                       <div key={role} className="creator-group">
                         <div className="creator-group-header">
-                          {tLevel(`details.${role}`)}
+                          {t(`levelSubmissions.details.${role}`)}
                         </div>
                         <div className="creator-list">
                           {creators.map((request, index) => (
@@ -1224,11 +1223,11 @@ const LevelSubmissions = () => {
                                 {request.creatorName}
                                 {request.isNewRequest && (
                                   <span className="profile-request-badge">
-                                    {tLevel('badges.newRequest')}
+                                    {t('levelSubmissions.badges.newRequest')}
                                   </span>
                                 )}
                                 {!request.creatorId && !request.isNewRequest && (
-                                  <span className="profile-request-unassigned" title={tLevel('badges.unassigned')}>
+                                  <span className="profile-request-unassigned" title={t('levelSubmissions.badges.unassigned')}>
                                     <WarningIcon className="warning-icon" color="#f00" />
                                   </span>
                                 )}
@@ -1242,14 +1241,14 @@ const LevelSubmissions = () => {
                                     className="remove-creator-button"
                                     onClick={() => handleRemoveCreator(submission.id, request.id)}
                                   >
-                                    {tLevel('buttons.remove')}
+                                    {t('levelSubmissions.buttons.remove')}
                                   </button>
                                 )}
                                 <button
                                   className="manage-creator-button"
                                   onClick={() => handleCreatorAction(submission, request, request.role)}
                                 >
-                                  {tLevel('buttons.manageCreator')}
+                                  {t('levelSubmissions.buttons.manageCreator')}
                                 </button>
                               </div>
                             </div>
@@ -1262,7 +1261,7 @@ const LevelSubmissions = () => {
                               className="add-creator-button"
                               onClick={() => handleAddCreator(submission.id, role)}
                             >
-                              {tLevel('buttons.addCreator', { role })}
+                              {t('levelSubmissions.buttons.addCreator', { role })}
                             </button>
                           </div>
                         )}
@@ -1273,7 +1272,7 @@ const LevelSubmissions = () => {
                   {/* Team Request */}
                   <div className="creator-group">
                     <div className="creator-group-header">
-                      {tLevel('details.team')}
+                      {t('levelSubmissions.details.team')}
                     </div>
                     <div className="creator-list">
                       {submission.teamRequestData ? (
@@ -1282,11 +1281,11 @@ const LevelSubmissions = () => {
                             {submission.teamRequestData.teamName}
                             {submission.teamRequestData.isNewRequest && (
                               <span className="profile-request-badge">
-                                {tLevel('badges.newRequest')}
+                                {t('levelSubmissions.badges.newRequest')}
                               </span>
                             )}
                             {!submission.teamRequestData.teamId && !submission.teamRequestData.isNewRequest && (
-                              <span className="profile-request-badge unassigned" title={tLevel('badges.unassigned')}>
+                              <span className="profile-request-badge unassigned" title={t('levelSubmissions.badges.unassigned')}>
                                 <WarningIcon className="warning-icon" color="#f00" />
                               </span>
                             )}
@@ -1296,13 +1295,13 @@ const LevelSubmissions = () => {
                               className="remove-creator-button"
                               onClick={() => handleRemoveCreator(submission.id, submission.teamRequestData.id)}
                             >
-                              {tLevel('buttons.remove')}
+                              {t('levelSubmissions.buttons.remove')}
                             </button>
                             <button
                               className="manage-creator-button"
                               onClick={() => handleCreatorAction(submission, submission.teamRequestData, 'team')}
                             >
-                              {tLevel('buttons.manageTeam')}
+                              {t('levelSubmissions.buttons.manageTeam')}
                             </button>
                           </div>
                         </div>
@@ -1312,7 +1311,7 @@ const LevelSubmissions = () => {
                             className="add-creator-button"
                             onClick={() => handleAddCreator(submission.id, 'team')}
                           >
-                            {tLevel('buttons.addTeam')}
+                            {t('levelSubmissions.buttons.addTeam')}
                           </button>
                         </div>
                       )}
@@ -1328,22 +1327,22 @@ const LevelSubmissions = () => {
                       disabled={disabledButtons[submission.id] || !canBeApproved(submission)}
                       title={!canBeApproved(submission) ? (
                         !(submission.songObject || submission.songId)
-                          ? tLevel('errors.needSongAndArtist')
+                          ? t('levelSubmissions.errors.needSongAndArtist')
                           : (!(submission.songId && submission.songObject?.credits) && 
                              !(submission.artistObject || submission.artistId) && 
                              (!submission.artistRequests || submission.artistRequests.length === 0))
-                            ? tLevel('errors.needSongAndArtist')
-                            : tLevel('errors.needProfiles')
+                            ? t('levelSubmissions.errors.needSongAndArtist')
+                            : t('levelSubmissions.errors.needProfiles')
                       ) : ''}
                     >
-                      {tLevel('buttons.allow')}
+                      {t('levelSubmissions.buttons.allow')}
                     </button>
                     <button 
                       onClick={() => handleSubmission(submission.id, 'decline')}
                       className="decline-btn"
                       disabled={disabledButtons[submission.id]}
                     >
-                      {tLevel('buttons.decline')}
+                      {t('levelSubmissions.buttons.decline')}
                     </button>
                   </div>
                 </div>

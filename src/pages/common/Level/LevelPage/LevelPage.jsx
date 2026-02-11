@@ -28,7 +28,6 @@ const limit = 50;
 
 const LevelPage = () => {
   const { t } = useTranslation('pages');
-  const tLevel = (key, params = {}) => t(`level.${key}`, params);
 
   const { user } = useAuth();
   const { difficulties, curationTypes, tags } = useContext(DifficultyContext);
@@ -99,13 +98,11 @@ const LevelPage = () => {
 
   // Add sort options similar to PassPage
   const sortOptions = [
-    { value: 'RECENT', label: tLevel('settings.sort.recent') },
-    { value: 'DIFF', label: tLevel('settings.sort.difficulty') },
-    { value: 'CLEARS', label: tLevel('settings.sort.clears') },
-    { value: 'LIKES', label: tLevel('settings.sort.likes') },
-    { value: 'RATING_ACCURACY', label: tLevel('settings.sort.ratingAccuracy') },
-    { value: 'RATING_ACCURACY_VOTES', label: tLevel('settings.sort.ratingAccuracyVotes') },
-    { value: 'RANDOM', label: tLevel('settings.sort.random') }
+    { value: 'RECENT', label: t('level.settings.sort.recent') },
+    { value: 'DIFF', label: t('level.settings.sort.difficulty') },
+    { value: 'CLEARS', label: t('level.settings.sort.clears') },
+    { value: 'LIKES', label: t('level.settings.sort.likes') },
+    { value: 'RANDOM', label: t('level.settings.sort.random') }
   ];
 
   // Fetch function
@@ -220,7 +217,7 @@ const LevelPage = () => {
 
   function handleLikeToggle() {
     if (!user) {
-      toast.error(tLevel('errors.loginRequired'));
+      toast.error(t('level.errors.loginRequired'));
       return;
     }
     setOnlyMyLikes(!onlyMyLikes);
@@ -457,8 +454,8 @@ const LevelPage = () => {
     return (
       <div className="level-page">
         <MetaTags
-          title={tLevel('meta.title')}
-          description={tLevel('meta.description')}
+          title={t('level.meta.title')}
+          description={t('level.meta.description')}
           url={currentUrl}
           image={''}
           type="article"
@@ -469,7 +466,7 @@ const LevelPage = () => {
           <div className="level-body-content" style={{marginTop: "45vh"}} >
             <div className="loader loader-level-page" style={{top: "-6rem"}}></div>
             <p style={{ fontSize: "1.5rem", fontWeight: "bold", justifyContent: "center", textAlign: "center"}}>
-              {tLevel('loading.difficulties')}
+              {t('level.loading.difficulties')}
             </p>
           </div>
         </div>
@@ -480,8 +477,8 @@ const LevelPage = () => {
   return (
     <div className="level-page">
       <MetaTags
-        title={tLevel('meta.title')}
-        description={tLevel('meta.description')}
+        title={t('level.meta.title')}
+        description={t('level.meta.description')}
         url={currentUrl}
         image={''}
         type="article"
@@ -506,13 +503,13 @@ const LevelPage = () => {
                    <path d="M12 3C7.04 3 3 7.04 3 12C3 16.96 7.04 21 12 21C16.96 21 21 16.96 21 12C21 7.04 16.96 3 12 3ZM12 19.5C7.86 19.5 4.5 16.14 4.5 12C4.5 7.86 7.86 4.5 12 4.5C16.14 4.5 19.5 7.86 19.5 12C19.5 16.14 16.14 19.5 12 19.5ZM14.3 7.7C14.91 8.31 15.25 9.13 15.25 10C15.25 10.87 14.91 11.68 14.3 12.3C13.87 12.73 13.33 13.03 12.75 13.16V13.5C12.75 13.91 12.41 14.25 12 14.25C11.59 14.25 11.25 13.91 11.25 13.5V12.5C11.25 12.09 11.59 11.75 12 11.75C12.47 11.75 12.91 11.57 13.24 11.24C13.57 10.91 13.75 10.47 13.75 10C13.75 9.53 13.57 9.09 13.24 8.76C12.58 8.1 11.43 8.1 10.77 8.76C10.44 9.09 10.26 9.53 10.26 10C10.26 10.41 9.92 10.75 9.51 10.75C9.1 10.75 8.76 10.41 8.76 10C8.76 9.13 9.1 8.32 9.71 7.7C10.94 6.47 13.08 6.47 14.31 7.7H14.3ZM13 16.25C13 16.8 12.55 17.25 12 17.25C11.45 17.25 11 16.8 11 16.25C11 15.7 11.45 15.25 12 15.25C12.55 15.25 13 15.7 13 16.25Z" fill="#ffffff"></path>
                  </g>
                </svg>
-               <span>{tLevel('buttons.searchHelp')}</span>
+               <span>{t('level.buttons.searchHelp')}</span>
              </button>
 
              <input
                value={searchInput}
                type="text"
-               placeholder={tLevel('input.placeholder')}
+               placeholder={t('level.input.placeholder')}
                onChange={handleQueryChange}
                className={searchInput != query ? 'search-pending' : ''}
              />
@@ -550,19 +547,19 @@ const LevelPage = () => {
            </div>
 
            <Tooltip id="search" place="bottom" noArrow>
-             {tLevel('toolTip.search')}
+             {t('level.toolTip.search')}
            </Tooltip>
            <Tooltip id="filter" place="bottom" noArrow>
-             {tLevel('toolTip.filter')}
+             {t('level.toolTip.filter')}
            </Tooltip>
            <Tooltip id="sort" place="bottom" noArrow>
-             {tLevel('toolTip.sort')}
+             {t('level.toolTip.sort')}
            </Tooltip>
            <Tooltip id="reset" place="bottom" noArrow>
-             {tLevel('toolTip.reset')}
+             {t('level.toolTip.reset')}
            </Tooltip>
            <Tooltip id="state-display" place="bottom" noArrow>
-             {tLevel('toolTip.stateDisplay')}
+             {t('level.toolTip.stateDisplay')}
            </Tooltip>
         </div>
 
@@ -572,7 +569,7 @@ const LevelPage = () => {
             className={`filter settings-class ${filterOpen ? 'visible' : 'hidden'}`}
           >
             <h2 className="setting-title">
-              {tLevel('settingExp.headerFilter')}
+              {t('level.settingExp.headerFilter')}
             </h2>
             <div className="filter-section">
               <div className="filter-row">
@@ -600,7 +597,7 @@ const LevelPage = () => {
                   selectedItems={selectedSpecialDiffs}
                   disableQuantum={true}
                   onToggle={toggleSpecialDifficulty}
-                  title={tLevel('settingExp.specialDifficulties')}
+                  title={t('level.settingExp.specialDifficulties')}
                 />
                 </div>
                 <div className={`curation-types-wrapper`}>
@@ -609,7 +606,7 @@ const LevelPage = () => {
                   selectedItems={selectedCurationTypes}
                   onToggle={toggleCurationType}
                   enableGrouping={false}
-                  title={tLevel('settingExp.curationTypes')}
+                  title={t('level.settingExp.curationTypes')}
                 />
                 </div>
                 <div className={`tags-selector-group`}>
@@ -618,7 +615,7 @@ const LevelPage = () => {
                       items={tags}
                       selectedItems={selectedTags}
                       onToggle={toggleTag}
-                      title={tLevel('settingExp.tags')}
+                      title={t('level.settingExp.tags')}
                     />
                   </div>
                   <button
@@ -634,13 +631,13 @@ const LevelPage = () => {
                   onClick={() => {
                     setQSliderVisible(!qSliderVisible);
                   }}
-                  title={tLevel('toolTip.toggleQSlider')}
+                  title={t('level.toolTip.toggleQSlider')}
                   data-tooltip-id="q-toggle"
                 >
                   <img src={difficulties.find(d => d.name === "Qq" || d.name.startsWith("Q")).icon} alt="Q Slider" />
                 </button>
                 <Tooltip id="q-toggle" place="bottom" noArrow>
-                  {tLevel('toolTip.toggleQSlider')}
+                  {t('level.toolTip.toggleQSlider')}
                 </Tooltip>
               </div>
 
@@ -651,23 +648,23 @@ const LevelPage = () => {
             className={`sort sort-class ${sortOpen ? 'visible' : 'hidden'}`}
           >
             <h2 className="setting-title">
-              {tLevel('settingExp.headerSort')}
+              {t('level.settingExp.headerSort')}
             </h2>
             <div className="sort-option">
             <CustomSelect
                   value={sortOptions.find(option => sort === option.value)}
                   onChange={(option) => handleSortType(option.value)}
                   options={sortOptions}
-                  label={tLevel('settings.sort.header')}
+                  label={t('level.settings.sort.header')}
                 />
                 
                 <div className="order">
-                <p>{tLevel('settingExp.sortOrder')}</p>
+                <p>{t('level.settingExp.sortOrder')}</p>
                 <Tooltip id="ascending" place="bottom" noArrow>
-                  {tLevel('toolTip.orderAsc')}
+                  {t('level.toolTip.orderAsc')}
                 </Tooltip>
                 <Tooltip id="descending" place="bottom" noArrow>
-                  {tLevel('toolTip.orderDesc')}
+                  {t('level.toolTip.orderDesc')}
                 </Tooltip>
 
                 <div className="wrapper">
@@ -699,7 +696,7 @@ const LevelPage = () => {
               <div className="order" >
                 <div className={`wrapper-like ${onlyMyLikes ? 'active' : ''}`} onClick={() => handleLikeToggle()}>
                   <LikeIcon color={onlyMyLikes ? "var(--color-white)" : "none"} size={"22px"} />
-                  <p>{tLevel('settingExp.myLikes')}</p>
+                  <p>{t('level.settingExp.myLikes')}</p>
                 </div>
               </div>
               )}
@@ -711,7 +708,7 @@ const LevelPage = () => {
           >
             <div className="state-switches-option">
               <div className="state-switches-item">
-                <span className="state-switches-label">{tLevel('settingExp.clearedLevels')}</span>
+                <span className="state-switches-label">{t('level.settingExp.clearedLevels')}</span>
                 <StateDisplay
                   currentState={clearedFilter}
                   onChange={(newState) => {
@@ -721,7 +718,7 @@ const LevelPage = () => {
                 />
               </div>
               <div className="state-switches-item">
-                <span className="state-switches-label">{tLevel('settingExp.availableDl')}</span>
+                <span className="state-switches-label">{t('level.settingExp.availableDl')}</span>
                 <StateDisplay
                   currentState={availableDlFilter}
                   onChange={(newState) => {
@@ -734,8 +731,8 @@ const LevelPage = () => {
                 <div className="state-switches-item">
                   <span className="state-switches-label">{
                   hasFlag(user, permissionFlags.SUPER_ADMIN) 
-                  ? tLevel('settingExp.deletedLevels') 
-                  : tLevel('settingExp.myHiddenLevels')}</span>
+                  ? t('level.settingExp.deletedLevels') 
+                  : t('level.settingExp.myHiddenLevels')}</span>
                   <StateDisplay
                     currentState={deletedFilter}
                     onChange={(newState) => {
@@ -748,9 +745,9 @@ const LevelPage = () => {
             </div>
           </div>
         </div>
-        <span className="total-search-results">{tLevel('totalResults', { count: totalLevels })}</span>
+        <span className="total-search-results">{t('level.totalResults', { count: totalLevels })}</span>
         <div className="view-mode-section">
-          <p>{tLevel('settingExp.viewMode')}</p>
+          <p>{t('level.settingExp.viewMode')}</p>
           <div className="view-mode-buttons">
             <button 
               className={`view-mode-button ${viewMode === 'normal' ? 'active' : ''}`}
@@ -758,7 +755,7 @@ const LevelPage = () => {
                 setViewMode('normal');
                 // View mode change doesn't need refresh, it's just UI
               }}
-              title={tLevel('toolTip.normalView')}
+              title={t('level.toolTip.normalView')}
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M3 5h18v2H3V5zm0 6h18v2H3v-2zm0 6h18v2H3v-2z"/>
@@ -770,7 +767,7 @@ const LevelPage = () => {
                 setViewMode('compact');
                 // View mode change doesn't need refresh, it's just UI
               }}
-              title={tLevel('toolTip.compactView')}
+              title={t('level.toolTip.compactView')}
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M3 4h18v1H3V4zm0 7h18v1H3v-1zm0 7h18v1H3v-1z"/>
@@ -782,7 +779,7 @@ const LevelPage = () => {
                 setViewMode('grid');
                 // View mode change doesn't need refresh, it's just UI
               }}
-              title={tLevel('toolTip.gridView')}
+              title={t('level.toolTip.gridView')}
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M3 3h7v7H3V3zm11 0h7v7h-7V3zm0 11h7v7h-7v-7zm-11 0h7v7H3v-7z"/>
@@ -792,7 +789,7 @@ const LevelPage = () => {
 
           {viewMode === 'grid' && (
             <div className="size-slider-container">
-              <p>{tLevel('settingExp.cardSize')}</p>
+              <p>{t('level.settingExp.cardSize')}</p>
               <input
                 type="range"
                 min="0"
@@ -817,7 +814,7 @@ const LevelPage = () => {
           loader={<div className="loader loader-level-page"></div>}
           endMessage={
             <p className="end-message">
-              <b>{tLevel('infScroll.end')}</b>
+              <b>{t('level.infScroll.end')}</b>
             </p>}
         >
           <div className={`${viewMode === 'grid' ? 'level-cards-grid' : ''} infinite-scroll-container`}>

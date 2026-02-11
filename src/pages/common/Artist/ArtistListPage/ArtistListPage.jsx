@@ -11,7 +11,6 @@ import { getVerificationClass } from '@/utils/Utility';
 
 const ArtistListPage = () => {
   const { t } = useTranslation(['pages', 'common']);
-  const tArtist = (key, params = {}) => t(`artistList.${key}`, params);
   const navigate = useNavigate();
   const currentUrl = window.location.origin + location.pathname;
   const {
@@ -126,10 +125,10 @@ const ArtistListPage = () => {
   };
 
   const sortOptions = [
-    { value: 'NAME_ASC', label: tArtist('sort.nameAsc') },
-    { value: 'NAME_DESC', label: tArtist('sort.nameDesc') },
-    { value: 'ID_ASC', label: tArtist('sort.idAsc') },
-    { value: 'ID_DESC', label: tArtist('sort.idDesc') }
+    { value: 'NAME_ASC', label: t('artistList.sort.nameAsc') },
+    { value: 'NAME_DESC', label: t('artistList.sort.nameDesc') },
+    { value: 'ID_ASC', label: t('artistList.sort.idAsc') },
+    { value: 'ID_DESC', label: t('artistList.sort.idDesc') }
   ];
 
   const verificationStateOptions = [
@@ -145,22 +144,22 @@ const ArtistListPage = () => {
   return (
     <div className="artist-list-page">
       <MetaTags
-        title={tArtist('meta.title')}
-        description={tArtist('meta.description')}
+        title={t('artistList.meta.title')}
+        description={t('artistList.meta.description')}
         url={currentUrl}
         image="/og-image.jpg"
         type="website"
       />
 
       <div className="artist-list-container">
-        <h1>{tArtist('title')}</h1>
+        <h1>{t('artistList.title')}</h1>
 
         <div className="artist-list-controls">
           <div className="search-container">
             <input
               type="text"
               className="search-input"
-              placeholder={tArtist('search.placeholder')}
+              placeholder={t('artistList.search.placeholder')}
               value={searchQuery}
               onChange={handleSearchChange}
             />
@@ -171,7 +170,7 @@ const ArtistListPage = () => {
               options={verificationStateOptions}
               value={verificationStateOptions.find(opt => opt.value === verificationState) || verificationStateOptions[0]}
               onChange={handleVerificationChange}
-              label={tArtist('filter.verificationState')}
+              label={t('artistList.filter.verificationState')}
               width="12rem"
             />
           </div>
@@ -181,7 +180,7 @@ const ArtistListPage = () => {
               options={sortOptions}
               value={sortOptions.find(opt => opt.value === sortBy) || sortOptions[0]}
               onChange={handleSortChange}
-              label={tArtist('sort.label')}
+              label={t('artistList.sort.label')}
               width="12rem"
             />
           </div>
@@ -199,7 +198,7 @@ const ArtistListPage = () => {
             endMessage={
               artists.length > 0 && (
                 <p className="end-message">
-                  <b>{tArtist('infScroll.end')}</b>
+                  <b>{t('artistList.infScroll.end')}</b>
                 </p>
               )
             }
@@ -242,7 +241,7 @@ const ArtistListPage = () => {
 
         {!loading && artists.length === 0 && (
           <div className="no-artists">
-            <p>{tArtist('noArtists')}</p>
+            <p>{t('artistList.noArtists')}</p>
           </div>
         )}
       </div>

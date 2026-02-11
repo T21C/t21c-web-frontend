@@ -12,7 +12,6 @@ import { createPortal } from 'react-dom';
 
 const AddToPackPopup = ({ level, onClose, onSuccess }) => {
   const { t } = useTranslation('components');
-  const tPopup = (key, params = {}) => t(`packPopups.addToPack.${key}`, params) || key;
   
   const { user } = useAuth();
   const navigate = useNavigate();
@@ -98,14 +97,14 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
   // Handle adding level to pack
   const handleAddToPack = async () => {
     if (!selectedPackId) {
-      toast.error(tPopup('errors.noPackSelected'));
+      toast.error(t('packPopups.addToPack.errors.noPackSelected'));
       return;
     }
 
     setLoading(true);
     try {
       await addLevelToPack(selectedPackId, level.id);
-      toast.success(tPopup('success.added'));
+      toast.success(t('packPopups.addToPack.success.added'));
       
       // Notify any listening PackDetailPage that the pack was updated
       window.dispatchEvent(new CustomEvent('packUpdated', {
@@ -117,11 +116,11 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
     } catch (error) {
       console.error('Error adding level to pack:', error);
       if (error.response?.status === 400) {
-        toast.error(tPopup('errors.alreadyInPack'));
+        toast.error(t('packPopups.addToPack.errors.alreadyInPack'));
       } else if (error.response?.status === 400 && error.response?.data?.error?.includes('Maximum')) {
-        toast.error(tPopup('errors.packFull'));
+        toast.error(t('packPopups.addToPack.errors.packFull'));
       } else {
-        toast.error(tPopup('errors.generic'));
+        toast.error(t('packPopups.addToPack.errors.generic'));
       }
     } finally {
       setLoading(false);
@@ -133,14 +132,14 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
     try {
       const newPack = await createPack(packData);
       setShowCreatePopup(false);
-      toast.success(tPopup('success.packCreated'));
+      toast.success(t('packPopups.addToPack.success.packCreated'));
       // Auto-select the newly created pack
       setSelectedPackId(newPack.id);
       // Refresh user packs to include the new pack
       fetchUserPacks();
     } catch (error) {
       console.error('Error creating pack:', error);
-      toast.error(tPopup('errors.createFailed'));
+      toast.error(t('packPopups.addToPack.errors.createFailed'));
     }
   };
 
@@ -186,14 +185,14 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
       <div className="add-to-pack-popup" onClick={onClose}>
         <div className="add-to-pack-popup__content" onClick={(e) => e.stopPropagation()}>
           <div className="add-to-pack-popup__header">
-            <h2 className="add-to-pack-popup__title">{tPopup('title')}</h2>
+            <h2 className="add-to-pack-popup__title">{t('packPopups.addToPack.title')}</h2>
             <button className="add-to-pack-popup__close" onClick={onClose}>
               <CrossIcon />
             </button>
           </div>
           <div className="add-to-pack-popup__body">
             <p className="add-to-pack-popup__login-message">
-              {tPopup('loginRequired')}
+              {t('packPopups.addToPack.loginRequired')}
             </p>
           </div>
         </div>
@@ -206,7 +205,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
       <div className="add-to-pack-popup" onClick={onClose}>
         <div className="add-to-pack-popup__content" onClick={(e) => e.stopPropagation()}>
           <div className="add-to-pack-popup__header">
-            <h2 className="add-to-pack-popup__title">{tPopup('title')}</h2>
+            <h2 className="add-to-pack-popup__title">{t('packPopups.addToPack.title')}</h2>
             <button className="add-to-pack-popup__close" onClick={onClose}>
               <CrossIcon />
             </button>
@@ -218,7 +217,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
                 {level.song} - {level.artist}
               </h3>
               <p className="add-to-pack-popup__level-creator">
-                {tPopup('by')} {formatCreatorDisplay(level)}
+                {t('packPopups.addToPack.by')} {formatCreatorDisplay(level)}
               </p>
             </div>
 
@@ -228,7 +227,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
                 <input
                   type="text"
                   className="add-to-pack-popup__search-input"
-                  placeholder={tPopup('searchPlaceholder')}
+                  placeholder={t('packPopups.addToPack.searchPlaceholder')}
                   value={searchQuery}
                   onChange={(e) => handleSearchChange(e.target.value)}
                 />
@@ -238,14 +237,14 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
             <div className="add-to-pack-popup__packs">
               <div className="add-to-pack-popup__packs-header">
                 <h4 className="add-to-pack-popup__packs-title">
-                  {tPopup('selectPack')}
+                  {t('packPopups.addToPack.selectPack')}
                 </h4>
                 <button
                   className="add-to-pack-popup__create-btn"
                   onClick={() => setShowCreatePopup(true)}
                 >
                   <PlusIcon />
-                  <span>{tPopup('createNew')}</span>
+                  <span>{t('packPopups.addToPack.createNew')}</span>
                 </button>
               </div>
 
@@ -253,13 +252,13 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
                 {loading ? (
                   <div className="add-to-pack-popup__loading">
                     <p className="add-to-pack-popup__loading-text">
-                      {tPopup('loading')}
+                      {t('packPopups.addToPack.loading')}
                     </p>
                   </div>
                 ) : userPacks.length === 0 ? (
                   <div className="add-to-pack-popup__empty">
                     <p className="add-to-pack-popup__empty-text">
-                      {searchQuery ? tPopup('noPacksFound') : tPopup('noPacks')}
+                      {searchQuery ? t('packPopups.addToPack.noPacksFound') : t('packPopups.addToPack.noPacks')}
                     </p>
                     {!searchQuery && (
                       <button
@@ -267,7 +266,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
                         onClick={() => setShowCreatePopup(true)}
                       >
                         <PlusIcon />
-                        <span>{tPopup('createFirst')}</span>
+                        <span>{t('packPopups.addToPack.createFirst')}</span>
                       </button>
                     )}
                   </div>
@@ -303,14 +302,14 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
                             {pack.name}
                           </h5>
                           <p className="add-to-pack-popup__pack-meta">
-                            {pack.totalLevelCount || 0} {tPopup('levels')}
+                            {pack.totalLevelCount || 0} {t('packPopups.addToPack.levels')}
                           </p>
                         </div>
 
                         {isAlreadyInPack && (
                           <div className="add-to-pack-popup__pack-status">
                             <span className="add-to-pack-popup__pack-status-text">
-                              {tPopup('alreadyInPack')}
+                              {t('packPopups.addToPack.alreadyInPack')}
                             </span>
                           </div>
                         )}
@@ -338,7 +337,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
                   </button>
                   
                   <span className="add-to-pack-popup__page-info">
-                    {tPopup('pagination.pageInfo', { current: currentPage, total: totalPages })}
+                    {t('packPopups.addToPack.pagination.pageInfo', { current: currentPage, total: totalPages })}
                   </span>
                   
                   <button
@@ -360,7 +359,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
                 type="button"
               >
                 <SearchIcon />
-                <span>{tPopup('lookupInPacks')}</span>
+                <span>{t('packPopups.addToPack.lookupInPacks')}</span>
               </button>
             <button
               className="add-to-pack-popup__cancel-btn"
@@ -374,7 +373,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
               onClick={handleAddToPack}
               disabled={!selectedPackId || loading}
             >
-              {loading ? tPopup('adding') : tPopup('addToPack')}
+              {loading ? t('packPopups.addToPack.adding') : t('packPopups.addToPack.addToPack')}
             </button>
           </div>
         </div>

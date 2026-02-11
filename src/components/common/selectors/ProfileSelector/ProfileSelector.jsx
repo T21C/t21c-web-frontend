@@ -14,13 +14,11 @@ export const ProfileSelector = ({
   disabled
 }) => {
   const { t } = useTranslation('components');
-  const tSelector = (key) => t(`profileSelector.${key}`) || key;
   const selectorRef = useRef(null);
 
   const [searchTerm, setSearchTerm] = useState('');
   const [profiles, setProfiles] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [selectedProfile, setSelectedProfile] = useState(null);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isRequestingNew, setIsRequestingNew] = useState(false);
 
@@ -91,7 +89,6 @@ export const ProfileSelector = ({
 
   // Handle profile selection
   const handleSelect = (profile) => {
-    setSelectedProfile(profile);
     setSearchTerm(profile.name);
     setShowDropdown(false);
     setIsRequestingNew(false);
@@ -107,7 +104,6 @@ export const ProfileSelector = ({
   const handleRequestNew = () => {
     setIsRequestingNew(true);
     setShowDropdown(false);
-    setSelectedProfile(null);
     onChange({
       id: null,
       name: searchTerm,
@@ -128,14 +124,14 @@ export const ProfileSelector = ({
             setIsRequestingNew(false);
           }}
           onFocus={() => setShowDropdown(true)}
-          placeholder={placeholder || tSelector('placeholder')}
+          placeholder={placeholder || t('profileSelector.placeholder')}
           disabled={disabled}
           required={required}
           className={`profile-selector-input ${isRequestingNew ? 'requesting-new' : ''}`}
         />
         {isRequestingNew && (
           <span className="profile-selector-new-badge">
-            {type === 'team' ? tSelector('newTeamRequest') : tSelector('newRequest')}
+            {type === 'team' ? t('profileSelector.newTeamRequest') : t('profileSelector.newRequest')}
           </span>
         )}
       </div>
@@ -144,7 +140,7 @@ export const ProfileSelector = ({
         <div className="profile-selector-dropdown">
           {loading ? (
             <div className="profile-selector-loading">
-              {tSelector('loading')}
+              {t('profileSelector.loading')}
             </div>
           ) : (
             <>
@@ -162,14 +158,14 @@ export const ProfileSelector = ({
                 <div className="profile-selector-request">
                   {profiles.length === 0 && (
                     <div className="profile-selector-no-results">
-                      {type === 'team' ? tSelector('noTeamsResults') : tSelector('noResults')}
+                      {type === 'team' ? t('profileSelector.noTeamsResults') : t('profileSelector.noResults')}
                     </div>
                   )}
                   <button
                     className="profile-selector-request-new"
                     onClick={handleRequestNew}
                   >
-                    {type === 'team' ? tSelector('requestNewTeam') : tSelector('requestNew')}
+                    {type === 'team' ? t('profileSelector.requestNewTeam') : t('profileSelector.requestNew')}
                   </button>
                 </div>
               )}

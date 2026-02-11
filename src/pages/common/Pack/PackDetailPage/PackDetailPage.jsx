@@ -97,8 +97,6 @@ const countPackItems = (items = []) => {
 
 const PackDetailPage = () => {
   const { t } = useTranslation('pages');
-  const tPack = (key, params = {}) => t(`packDetail.${key}`, params);
-  
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -136,11 +134,11 @@ const PackDetailPage = () => {
         setError(true);
       }
       if (error.response?.status === 404) {
-        toast.error(tPack('error.notFound'));
+        toast.error(t('packDetail.error.notFound'));
       } else if (error.response?.status === 403) {
-        toast.error(tPack('error.accessDenied'));
+        toast.error(t('packDetail.error.accessDenied'));
       } else {
-        toast.error(tPack('error.loadFailed'));
+        toast.error(t('packDetail.error.loadFailed'));
       }
     } finally {
       if (!silent) {
@@ -174,7 +172,7 @@ const PackDetailPage = () => {
   const handleEditPack = async (updatedPack) => {
     setPack({ ...pack, ...updatedPack });
     setShowEditPopup(false);
-    toast.success(tPack('edit.success'));
+    toast.success(t('packDetail.edit.success'));
   };
 
   // Handle delete pack
@@ -259,7 +257,7 @@ const PackDetailPage = () => {
 
   // Handle adding new folder
   const handleAddFolder = async () => {
-    const folderName = prompt(tPack('createFolder.prompt'));
+    const folderName = prompt(t('packDetail.createFolder.prompt'));
     if (!folderName?.trim()) return;
 
     try {
@@ -269,7 +267,7 @@ const PackDetailPage = () => {
         parentId: 0
       });
       
-      toast.success(tPack('createFolder.success'));
+      toast.success(t('packDetail.createFolder.success'));
       await fetchPack(true); // Silent refetch
       
       // Notify any other listeners that the pack was updated
@@ -278,13 +276,13 @@ const PackDetailPage = () => {
       }));
     } catch (error) {
       console.error('Error creating folder:', error);
-      toast.error(tPack('createFolder.error'));
+      toast.error(t('packDetail.createFolder.error'));
     }
   };
 
   // Handle adding new level (supports single ID or comma-separated IDs for bulk insert)
   const handleAddLevel = async () => {
-    const levelId = prompt(tPack('addLevel.prompt'));
+    const levelId = prompt(t('packDetail.addLevel.prompt'));
     if (!levelId?.trim()) return;
 
     try {
@@ -294,7 +292,7 @@ const PackDetailPage = () => {
         parentId: 0
       });
       
-      toast.success(tPack('addLevel.success'));
+      toast.success(t('packDetail.addLevel.success'));
       await fetchPack(true); // Silent refetch
       
       // Notify any other listeners that the pack was updated
@@ -303,7 +301,7 @@ const PackDetailPage = () => {
       }));
     } catch (error) {
       console.error('Error adding level:', error);
-      toast.error(error.response?.data?.error || tPack('addLevel.error'));
+      toast.error(error.response?.data?.error || t('packDetail.addLevel.error'));
     }
   };
 
@@ -354,7 +352,7 @@ const PackDetailPage = () => {
 
   // Handle rename folder
   const handleRenameFolder = async (item) => {
-    const newName = prompt(tPack('renameFolder.prompt'), item.name);
+    const newName = prompt(t('packDetail.renameFolder.prompt'), item.name);
     if (!newName?.trim() || newName === item.name) return;
 
     try {
@@ -362,7 +360,7 @@ const PackDetailPage = () => {
         name: newName.trim()
       });
       
-      toast.success(tPack('renameFolder.success'));
+      toast.success(t('packDetail.renameFolder.success'));
       await fetchPack(true); // Silent refetch
       
       // Notify any other listeners that the pack was updated
@@ -371,22 +369,22 @@ const PackDetailPage = () => {
       }));
     } catch (error) {
       console.error('Error renaming folder:', error);
-      toast.error(error.response?.data?.error || tPack('renameFolder.error'));
+      toast.error(error.response?.data?.error || t('packDetail.renameFolder.error'));
     }
   };
 
   // Handle delete item
   const handleDeleteItem = async (item) => {
     const confirmMessage = item?.type === 'folder' 
-      ? tPack('deleteFolder.confirm', { name: item.name })
-      : tPack('deleteLevel.confirm');
+      ? t('packDetail.deleteFolder.confirm', { name: item.name })
+      : t('packDetail.deleteLevel.confirm');
     
     if (!confirm(confirmMessage)) return;
 
     try {
       await api.delete(`/v2/database/levels/packs/${pack.id}/items/${item.id}`);
       
-      toast.success(tPack('deleteItem.success'));
+      toast.success(t('packDetail.deleteItem.success'));
       await fetchPack(true); // Silent refetch
       
       // Notify any other listeners that the pack was updated
@@ -395,7 +393,7 @@ const PackDetailPage = () => {
       }));
     } catch (error) {
       console.error('Error deleting item:', error);
-      toast.error(error.response?.data?.error || tPack('deleteItem.error'));
+      toast.error(error.response?.data?.error || t('packDetail.deleteItem.error'));
     }
   };
 
@@ -590,7 +588,7 @@ const PackDetailPage = () => {
       let currentParentId = destinationParentId;
       while (currentParentId !== 0 && currentParentId !== undefined) {
         if (currentParentId === activeId) {
-          toast.error(tPack('move.cannotMoveIntoSelf'));
+          toast.error(t('packDetail.move.cannotMoveIntoSelf'));
           return;
         }
         const nextParentId = findParentId(pack.items, currentParentId);
@@ -633,14 +631,14 @@ const PackDetailPage = () => {
       });
 
       setPack(prevPack => ({ ...prevPack, items: response.data.items }));
-      toast.success(tPack('move.success'));
+      toast.success(t('packDetail.move.success'));
       
       window.dispatchEvent(new CustomEvent('packUpdated', {
         detail: { packId: pack.id }
       }));
     } catch (error) {
       console.error('Failed to move item:', error);
-      toast.error(error.response?.data?.error || tPack('move.error'));
+      toast.error(error.response?.data?.error || t('packDetail.move.error'));
       await fetchPack(true);
     }
   };
@@ -677,11 +675,11 @@ const PackDetailPage = () => {
     if (!pack) return '';
     
     switch (parseInt(pack.viewMode)) {
-      case 1: return tPack('viewMode.public');
-      case 2: return tPack('viewMode.linkonly');
-      case 3: return tPack('viewMode.private');
-      case 4: return tPack('viewMode.forcedPrivate');
-      default: return tPack('viewMode.public');
+      case 1: return t('packDetail.viewMode.public');
+      case 2: return t('packDetail.viewMode.linkonly');
+      case 3: return t('packDetail.viewMode.private');
+      case 4: return t('packDetail.viewMode.forcedPrivate');
+      default: return t('packDetail.viewMode.public');
     }
   };
 
@@ -705,20 +703,20 @@ const PackDetailPage = () => {
       <div className="pack-detail-page">
         
         <div className="pack-detail-page__error">
-          <h2>{tPack('error.title')}</h2>
-          <p>{tPack('error.message')}</p>
+          <h2>{t('packDetail.error.title')}</h2>
+          <p>{t('packDetail.error.message')}</p>
           <button 
             className="pack-detail-page__retry-btn"
             onClick={() => fetchPack(false)}
           >
-            {tPack('error.retry')}
+            {t('packDetail.error.retry')}
           </button>
           <button 
             className="pack-detail-page__back-btn"
             style={{alignSelf: 'center'}}
             onClick={() => navigate('/packs')}
           >
-            {tPack('backToPacks')}
+            {t('packDetail.backToPacks')}
           </button>
         </div>
       </div>
@@ -746,7 +744,7 @@ const PackDetailPage = () => {
             onClick={() => navigate('/packs')}
           >
             <ArrowIcon style={{ transform: 'rotate(180deg)' }} />
-            <span>{tPack('backToPacks')}</span>
+            <span>{t('packDetail.backToPacks')}</span>
           </button>
           <div className="pack-detail-page__header-container">
         {/* Header */}
@@ -785,7 +783,7 @@ const PackDetailPage = () => {
                     className="pack-detail-page__owner-avatar"
                   />
                   <span className="pack-detail-page__owner-name">
-                    {tPack('by')} {pack.packOwner?.username || 'Unknown'}
+                    {t('packDetail.by')} {pack.packOwner?.username || 'Unknown'}
                   </span>
                 </div>
                 
@@ -810,12 +808,12 @@ const PackDetailPage = () => {
                   ? 'No downloadable levels available yet'
                   : !user
                     ? 'You must be logged in to download a pack'
-                  : `${tPack('actions.downloadPack')} (${packSizeLabel.sizeLabel}) ${packSizeLabel.isEstimated}`
+                  : `${t('packDetail.actions.downloadPack')} (${packSizeLabel.sizeLabel}) ${packSizeLabel.isEstimated}`
               }
               data-tooltip-place="bottom"
             >
               <DownloadIcon color="#ffffff" size={"20px"} />
-              <span>{tPack('actions.downloadPack')}</span>
+              <span>{t('packDetail.actions.downloadPack')}</span>
             </button>
             <Tooltip id="download-pack-tooltip" place="bottom" noArrow />
           </div>
@@ -824,10 +822,10 @@ const PackDetailPage = () => {
               <button
                 className="pack-detail-page__edit-btn"
                 onClick={() => setShowEditPopup(true)}
-                title={tPack('actions.edit')}
+                title={t('packDetail.actions.edit')}
               >
                 <EditIcon />
-                <span>{tPack('actions.edit')}</span>
+                <span>{t('packDetail.actions.edit')}</span>
               </button>
             </div>
           )}
@@ -839,7 +837,7 @@ const PackDetailPage = () => {
                 onClick={handleFavoriteClick}
               >
                 <LikeIcon color={pack.isFavorited ? "#ffffff" : "none"} />
-                <span>{pack.isFavorited ? tPack('actions.removeFromFavorites') : tPack('actions.addToFavorites')}</span>
+                <span>{pack.isFavorited ? t('packDetail.actions.removeFromFavorites') : t('packDetail.actions.addToFavorites')}</span>
               </button>
             </div>
           )}
@@ -853,7 +851,7 @@ const PackDetailPage = () => {
               {totalLevels}
             </span>
             <span className="pack-detail-page__stat-label">
-              {tPack('stats.levels')}
+              {t('packDetail.stats.levels')}
             </span>
           </div>
           
@@ -862,7 +860,7 @@ const PackDetailPage = () => {
               {pack.items?.length || 0}
             </span>
             <span className="pack-detail-page__stat-label">
-              {tPack('stats.items')}
+              {t('packDetail.stats.items')}
             </span>
           </div>
           
@@ -871,7 +869,7 @@ const PackDetailPage = () => {
               {formatDate(pack?.createdAt, i18next?.language)}
             </span>
             <span className="pack-detail-page__stat-label">
-              {tPack('stats.created')}
+              {t('packDetail.stats.created')}
             </span>
           </div>
         </div>
@@ -886,23 +884,23 @@ const PackDetailPage = () => {
                 <button
                   className="pack-detail-page__collapse-expand-btn"
                   onClick={() => handleCollapseExpandAll(false)}
-                  title={tPack('actions.collapseAll')}
+                  title={t('packDetail.actions.collapseAll')}
                 >
-                  📁➖ {tPack('actions.collapseAll')}
+                  📁➖ {t('packDetail.actions.collapseAll')}
                 </button>
               ) : (
                 <button
                   className="pack-detail-page__collapse-expand-btn"
                   onClick={() => handleCollapseExpandAll(true)}
-                  title={tPack('actions.expandAll')}
+                  title={t('packDetail.actions.expandAll')}
                 >
-                  📁➕ {tPack('actions.expandAll')}
+                  📁➕ {t('packDetail.actions.expandAll')}
                 </button>
               )}
             </div>
           )}
             <h2 className="pack-detail-page__levels-title">
-              {tPack('items.title')}
+              {t('packDetail.items.title')}
             </h2>
             <div className="pack-detail-page__levels-header-right">
               {canEdit && (
@@ -910,22 +908,22 @@ const PackDetailPage = () => {
                   <button
                     className="pack-detail-page__add-btn"
                     onClick={handleAddFolder}
-                    title={tPack('actions.addFolder')}
+                    title={t('packDetail.actions.addFolder')}
                   >
-                    <PlusIcon /> 📁 {tPack('actions.addFolder')}
+                    <PlusIcon /> 📁 {t('packDetail.actions.addFolder')}
                   </button>
                   <button
                     className="pack-detail-page__add-btn"
                     onClick={handleAddLevel}
-                    title={tPack('actions.addLevel')}
+                    title={t('packDetail.actions.addLevel')}
                   >
-                    <PlusIcon /> 🎵 {tPack('actions.addLevel')}
+                    <PlusIcon /> 🎵 {t('packDetail.actions.addLevel')}
                   </button>
                 </div>
               )}
               {canEdit && totalRenderableItems > 1 && (
                 <span className="pack-detail-page__drag-hint">
-                  {tPack('items.dragHint')}
+                  {t('packDetail.items.dragHint')}
                 </span>
               )}
             </div>
@@ -982,20 +980,20 @@ const PackDetailPage = () => {
             </DragDropContext>
           ) : (
             <div className="pack-detail-page__empty">
-              <p>{tPack('items.empty')}</p>
+              <p>{t('packDetail.items.empty')}</p>
               {canEdit && (
                 <div className="pack-detail-page__empty-actions">
                   <button
                     className="pack-detail-page__add-btn"
                     onClick={handleAddFolder}
                   >
-                    <PlusIcon /> {tPack('actions.addFolder')}
+                    <PlusIcon /> {t('packDetail.actions.addFolder')}
                   </button>
                   <button
                     className="pack-detail-page__add-btn"
                     onClick={handleAddLevel}
                   >
-                    <PlusIcon /> {tPack('actions.addLevel')}
+                    <PlusIcon /> {t('packDetail.actions.addLevel')}
                   </button>
                 </div>
               )}

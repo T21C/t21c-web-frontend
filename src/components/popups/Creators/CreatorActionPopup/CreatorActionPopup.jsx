@@ -4,9 +4,6 @@ import { CustomSelect } from '@/components/common/selectors';
 import api from '@/utils/api';
 import './creatorActionPopup.css';
 import { toast } from 'react-hot-toast';
-import { useNavigate } from 'react-router-dom';
-import { useDifficultyContext } from '@/contexts/DifficultyContext';
-import { ExternalLinkIcon } from '@/components/common/icons';
 
 const CreditRole = {
   CHARTER: 'charter',
@@ -20,9 +17,7 @@ const roleOptions = Object.entries(CreditRole).map(([key, value]) => ({
 
 export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
   const { t } = useTranslation('components');
-  const tCreator = (key, params) => t(`creatorActionPopup.actionPopup.${key}`, params) || key;
   const popupRef = useRef(null);
-  const { difficultyDict } = useDifficultyContext();
 
   const [mode, setMode] = useState('update'); // update, merge, split, discord, levels
   const [name, setName] = useState(creator?.name || '');
@@ -118,7 +113,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
       } catch (error) {
         if (!api.isCancel(error)) {
           console.error('Error fetching creators:', error);
-          setError(tCreator('errors.loadCreatorsFailed'));
+          setError(t('creatorActionPopup.actionPopup.errors.loadCreatorsFailed'));
           setAvailableCreators([]);
         }
       }
@@ -161,7 +156,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
           }
         } catch (err) {
           console.error('Error looking up user by Discord ID:', err);
-          setError(tCreator('errors.invalidDiscordId'));
+          setError(t('creatorActionPopup.actionPopup.errors.invalidDiscordId'));
           setIsLoading(false);
           return;
         }
@@ -175,13 +170,13 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
       });
 
       if (response.status === 200) {
-        setSuccess(tCreator('success.updated'));
+        setSuccess(t('creatorActionPopup.actionPopup.success.updated'));
         onUpdate();
       } else {
-        setError(response.data?.error || tCreator('errors.updateFailed'));
+        setError(response.data?.error || t('creatorActionPopup.actionPopup.errors.updateFailed'));
       }
     } catch (error) {
-      setError(tCreator('errors.updateFailed'));
+      setError(t('creatorActionPopup.actionPopup.errors.updateFailed'));
       console.error('Error updating creator:', error);
     } finally {
       setIsLoading(false);
@@ -199,11 +194,11 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
         sourceId: creator.id,
         targetId: mergeTarget.id
       });
-      setSuccess(tCreator('success.merged'));
+      setSuccess(t('creatorActionPopup.actionPopup.success.merged'));
       onUpdate();
       setTimeout(onClose, 1500);
     } catch (error) {
-      setError(tCreator('errors.mergeFailed'));
+      setError(t('creatorActionPopup.actionPopup.errors.mergeFailed'));
       console.error('Error merging creators:', error);
     } finally {
       setIsLoading(false);
@@ -224,11 +219,11 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
         newNames: validNames,
         roles: validNames.map((_, i) => splitRoles?.[i] || defaultRole)
       });
-      setSuccess(tCreator('success.split'));
+      setSuccess(t('creatorActionPopup.actionPopup.success.split'));
       onUpdate();
       setTimeout(onClose, 1500);
     } catch (error) {
-      setError(tCreator('errors.splitFailed'));
+      setError(t('creatorActionPopup.actionPopup.errors.splitFailed'));
       console.error('Error splitting creator:', error);
     } finally {
       setIsLoading(false);
@@ -243,7 +238,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
       const response = await api.get(`/v2/admin/users/discord/${discordId}`);
       
       if (response.status !== 200) {
-        toast.error(response.data.details || tCreator('errors.fetchDiscordFailed'));
+        toast.error(response.data.details || t('creatorActionPopup.actionPopup.errors.fetchDiscordFailed'));
         return;
       }
 
@@ -256,7 +251,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
       setShowDiscordConfirm(true);
     } catch (error) {
       console.error('Error fetching Discord ID:', error);
-      toast.error(tCreator('errors.fetchDiscordFailed'));
+      toast.error(t('creatorActionPopup.actionPopup.errors.fetchDiscordFailed'));
     } finally {
       setIsLoading(false);
     }
@@ -276,12 +271,12 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
       if (response.status === 200) {
         
         onUpdate();
-        toast.success(tCreator('success.discordUpdated'));
+        toast.success(t('creatorActionPopup.actionPopup.success.discordUpdated'));
         setDiscordId('');
       }
     } catch (error) {
       console.error('Error updating Discord info:', error);
-      toast.error(tCreator('errors.updateDiscordFailed'));
+      toast.error(t('creatorActionPopup.actionPopup.errors.updateDiscordFailed'));
     } finally {
       setIsLoading(false);
       setShowDiscordConfirm(false);
@@ -302,11 +297,11 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
       
       if (response.status === 200) {
         onUpdate();
-        toast.success(tCreator('success.userUnlinked'));
+        toast.success(t('creatorActionPopup.actionPopup.success.userUnlinked'));
       }
     } catch (error) {
       console.error('Error unlinking user:', error);
-      toast.error(tCreator('errors.unlinkFailed'));
+      toast.error(t('creatorActionPopup.actionPopup.errors.unlinkFailed'));
     } finally {
       setIsLoading(false);
       setShowUnlinkConfirm(false);
@@ -337,7 +332,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
           <button 
             className="close-popup-btn"
             onClick={onClose}
-            aria-label={tCreator('close')}
+            aria-label={t('creatorActionPopup.actionPopup.close')}
           >
             <svg 
               width="24" 
@@ -362,25 +357,25 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                 className={`mode-btn ${mode === 'update' ? 'active' : ''}`}
                 onClick={() => setMode('update')}
               >
-                {tCreator('modes.update')}
+                {t('creatorActionPopup.actionPopup.modes.update')}
               </button>
               <button 
                 className={`mode-btn ${mode === 'discord' ? 'active' : ''}`}
                 onClick={() => setMode('discord')}
               >
-                {tCreator('modes.discord')}
+                {t('creatorActionPopup.actionPopup.modes.discord')}
               </button>
               <button 
                 className={`mode-btn ${mode === 'merge' ? 'active' : ''}`}
                 onClick={() => setMode('merge')}
               >
-                {tCreator('modes.merge')}
+                {t('creatorActionPopup.actionPopup.modes.merge')}
               </button>
               <button 
                 className={`mode-btn ${mode === 'split' ? 'active' : ''}`}
                 onClick={() => setMode('split')}
               >
-                {tCreator('modes.split')}
+                {t('creatorActionPopup.actionPopup.modes.split')}
               </button>
             </div>
           </div>
@@ -392,12 +387,12 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
             {mode === 'update' && (
               <div className="update-form">
                 <div className="form-group">
-                  <label>{tCreator('update.name.label')}</label>
+                  <label>{t('creatorActionPopup.actionPopup.update.name.label')}</label>
                   <input
                     type="text"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    placeholder={tCreator('update.name.placeholder')}
+                    placeholder={t('creatorActionPopup.actionPopup.update.name.placeholder')}
                   />
                 </div>
 
@@ -408,20 +403,20 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                       checked={isVerified}
                       onChange={(e) => setIsVerified(e.target.checked)}
                     />
-                    {tCreator('update.verifyCreator')}
+                    {t('creatorActionPopup.actionPopup.update.verifyCreator')}
                   </label>
                 </div>
 
                 <div className="form-group">
-                  <label>{tCreator('update.aliases.label')}</label>
+                  <label>{t('creatorActionPopup.actionPopup.update.aliases.label')}</label>
                   <div className="alias-input-group">
                     <input
                       type="text"
                       value={newAlias}
                       onChange={(e) => setNewAlias(e.target.value)}
-                      placeholder={tCreator('update.aliases.placeholder')}
+                      placeholder={t('creatorActionPopup.actionPopup.update.aliases.placeholder')}
                     />
-                    <button onClick={handleAddAlias}>{tCreator('update.aliases.add')}</button>
+                    <button onClick={handleAddAlias}>{t('creatorActionPopup.actionPopup.update.aliases.add')}</button>
                   </div>
                   <div className="aliases-list">
                     {aliases.map((alias, index) => (
@@ -443,7 +438,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                       <circle cx="25" cy="25" r="20" fill="none" strokeWidth="5"></circle>
                     </svg>
                   ) : (
-                    tCreator('update.updateButton')
+                    t('creatorActionPopup.actionPopup.update.updateButton')
                   )}
                 </button>
               </div>
@@ -454,16 +449,16 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                 <div className="warning-notice">
                   <div className="warning-notice-icon">⚠️</div>
                   <div className="warning-notice-content">
-                    <strong>{tCreator('merge.warning.title')}</strong> {tCreator('merge.warning.message', { creatorName: creator?.name || '' })}
+                    <strong>{t('creatorActionPopup.actionPopup.merge.warning.title')}</strong> {t('creatorActionPopup.actionPopup.merge.warning.message', { creatorName: creator?.name || '' })}
                   </div>
                 </div>
 
                 <div className="form-group">
-                  <label>{tCreator('merge.selectTarget.label')}</label>
+                  <label>{t('creatorActionPopup.actionPopup.merge.selectTarget.label')}</label>
                   <CustomSelect
                     options={availableCreators === null ? [] : availableCreators.map(c => ({
                       value: c.id,
-                      label: tCreator('merge.creatorLabel', {
+                      label: t('creatorActionPopup.actionPopup.merge.creatorLabel', {
                         name: c.name,
                         id: c.id,
                         count: c.credits?.length || 0,
@@ -478,12 +473,12 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                       const target = availableCreators?.find(c => c.id === option?.value);
                       setMergeTarget(target);
                     }}
-                    placeholder={tCreator('merge.selectTarget.placeholder')}
+                    placeholder={t('creatorActionPopup.actionPopup.merge.selectTarget.placeholder')}
                     onInputChange={(value) => setMergeTargetSearch(value)}
                     isSearchable={true}
                     width="100%"
                     isLoading={availableCreators === null}
-                    noOptionsMessage={() => availableCreators === null ? t('loading.generic', { ns: 'common' }) : tCreator('merge.selectTarget.noOptions')}
+                    noOptionsMessage={() => availableCreators === null ? t('loading.generic', { ns: 'common' }) : t('creatorActionPopup.actionPopup.merge.selectTarget.noOptions')}
                   />
                 </div>
 
@@ -497,7 +492,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                       <circle cx="25" cy="25" r="20" fill="none" strokeWidth="5"></circle>
                     </svg>
                   ) : (
-                    tCreator('merge.mergeButton')
+                    t('creatorActionPopup.actionPopup.merge.mergeButton')
                   )}
                 </button>
               </div>
@@ -506,7 +501,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
             {mode === 'split' && (
               <div className="split-form">
                 <div className="form-group">
-                  <label>{tCreator('split.newNamesAndRoles.label')}</label>
+                  <label>{t('creatorActionPopup.actionPopup.split.newNamesAndRoles.label')}</label>
                   <div className="split-names-list">
                     {splitNames.map((name, index) => (
                       <div key={index} className="split-name-input">
@@ -519,7 +514,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                               newNames[index] = e.target.value;
                               setSplitNames(newNames);
                             }}
-                            placeholder={tCreator('split.newNamesAndRoles.namePlaceholder', { index: index + 1 })}
+                            placeholder={t('creatorActionPopup.actionPopup.split.newNamesAndRoles.namePlaceholder', { index: index + 1 })}
                           />
                           <CustomSelect
                             options={roleOptions}
@@ -529,7 +524,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                               newRoles[index] = option ? option.value : defaultRole;
                               setSplitRoles(newRoles);
                             }}
-                            placeholder={tCreator('split.newNamesAndRoles.rolePlaceholder')}
+                            placeholder={t('creatorActionPopup.actionPopup.split.newNamesAndRoles.rolePlaceholder')}
                             width="100%"
                           />
                         </div>
@@ -557,7 +552,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                       }}
                       className="add-name-button"
                     >
-                      {tCreator('split.newNamesAndRoles.addAnother')}
+                      {t('creatorActionPopup.actionPopup.split.newNamesAndRoles.addAnother')}
                     </button>
                   </div>
                 </div>
@@ -572,7 +567,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                       <circle cx="25" cy="25" r="20" fill="none" strokeWidth="5"></circle>
                     </svg>
                   ) : (
-                    tCreator('split.splitButton')
+                    t('creatorActionPopup.actionPopup.split.splitButton')
                   )}
                 </button>
               </div>
@@ -582,37 +577,37 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
               <div className="discord-form">
                 {creator?.user ? (
                   <div className="form-group">
-                    <label>{tCreator('discord.currentUser.label')}</label>
+                    <label>{t('creatorActionPopup.actionPopup.discord.currentUser.label')}</label>
                     <div className="linked-user-info">
                       {creator.user.avatarUrl && (
                         <img 
                           src={creator.user.avatarUrl}
-                          alt={tCreator('discord.currentUser.avatarAlt')}
+                          alt={t('creatorActionPopup.actionPopup.discord.currentUser.avatarAlt')}
                           className="user-avatar"
                         />
                       )}
                       <div className="user-info-content">
                         <p className="user-username">@{creator.user.username}</p>
-                        <p className="user-id">{tCreator('discord.currentUser.idLabel')} {creator.user.id}</p>
+                        <p className="user-id">{t('creatorActionPopup.actionPopup.discord.currentUser.idLabel')} {creator.user.id}</p>
                         <button
                           onClick={() => setShowUnlinkConfirm(true)}
                           className="unlink-button"
                           type="button"
                         >
-                          {tCreator('discord.currentUser.unlinkButton')}
+                          {t('creatorActionPopup.actionPopup.discord.currentUser.unlinkButton')}
                         </button>
                       </div>
                     </div>
                   </div>
                 ) : (
                   <div className="form-group">
-                    <label>{tCreator('discord.discordId.label')}</label>
+                    <label>{t('creatorActionPopup.actionPopup.discord.discordId.label')}</label>
                     <div className="discord-input-group">
                       <input
                         type="text"
                         value={discordId}
                         onChange={(e) => setDiscordId(e.target.value)}
-                        placeholder={tCreator('discord.discordId.placeholder')}
+                        placeholder={t('creatorActionPopup.actionPopup.discord.discordId.placeholder')}
                         disabled={isLoading || showDiscordConfirm}
                       />
                       <button
@@ -620,7 +615,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                         disabled={isLoading || showDiscordConfirm || !discordId}
                         className="fetch-discord-button"
                       >
-                        {tCreator('discord.discordId.validateButton')}
+                        {t('creatorActionPopup.actionPopup.discord.discordId.validateButton')}
                       </button>
                     </div>
                   </div>
@@ -632,17 +627,17 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                       {pendingDiscordInfo.avatarUrl && (
                         <img 
                           src={pendingDiscordInfo.avatarUrl}
-                          alt={tCreator('discord.confirm.avatarAlt')}
+                          alt={t('creatorActionPopup.actionPopup.discord.confirm.avatarAlt')}
                           className="discord-avatar"
                         />
                       )}
                       <div>
                         <p className="discord-username">@{pendingDiscordInfo.username}</p>
-                        <p className="discord-id">{tCreator('discord.currentUser.idLabel')} {pendingDiscordInfo.id}</p>
+                        <p className="discord-id">{t('creatorActionPopup.actionPopup.discord.currentUser.idLabel')} {pendingDiscordInfo.id}</p>
                       </div>
                     </div>
                     <p className="discord-confirm-message">
-                      {tCreator('discord.confirm.message')}
+                      {t('creatorActionPopup.actionPopup.discord.confirm.message')}
                     </p>
                     <div className="discord-confirm-buttons">
                       <button
@@ -650,14 +645,14 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                         disabled={isLoading}
                         className="discord-confirm-button"
                       >
-                        {tCreator('discord.confirm.confirmButton')}
+                        {t('creatorActionPopup.actionPopup.discord.confirm.confirmButton')}
                       </button>
                       <button
                         onClick={() => handleDiscordConfirm(false)}
                         disabled={isLoading}
                         className="discord-cancel-button"
                       >
-                        {tCreator('discord.confirm.cancelButton')}
+                        {t('creatorActionPopup.actionPopup.discord.confirm.cancelButton')}
                       </button>
                     </div>
                   </div>
@@ -666,21 +661,21 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                 {showUnlinkConfirm && (
                   <div className="confirm-dialog">
                     <div className="confirm-content">
-                      <p>{tCreator('discord.unlinkConfirm.message')}</p>
+                      <p>{t('creatorActionPopup.actionPopup.discord.unlinkConfirm.message')}</p>
                       <div className="confirm-buttons">
                         <button
                           onClick={() => handleUnlinkConfirm(true)}
                           className="confirm-yes"
                           disabled={isLoading}
                         >
-                          {tCreator('discord.unlinkConfirm.yesButton')}
+                          {t('creatorActionPopup.actionPopup.discord.unlinkConfirm.yesButton')}
                         </button>
                         <button
                           onClick={() => handleUnlinkConfirm(false)}
                           className="confirm-no"
                           disabled={isLoading}
                         >
-                          {tCreator('discord.unlinkConfirm.cancelButton')}
+                          {t('creatorActionPopup.actionPopup.discord.unlinkConfirm.cancelButton')}
                         </button>
                       </div>
                     </div>

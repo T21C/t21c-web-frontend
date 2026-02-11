@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next';
 
 const NewLevelsTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRemove, onEdit }) => {
   const { t } = useTranslation(['components', 'common']);
-  const tLevel = (key, params = {}) => t(`newLevelsTab.${key}`, params);
   
   const [removingIds, setRemovingIds] = useState(new Set());
   const [error, setError] = useState('');
@@ -25,7 +24,7 @@ const NewLevelsTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onR
       });
     } catch (err) {
       console.error('Error silently removing level:', err);
-      setError(tLevel('errors.silentRemoveLevel', { song: level.song }));
+      setError(t('newLevelsTab.errors.silentRemoveLevel', { song: level.song }));
       // Refetch the data to ensure UI is in sync
       window.location.reload();
     } finally {
@@ -58,7 +57,7 @@ const NewLevelsTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onR
                   </div>
                   <div className="item-subtitle">
                     {level.difficulty?.name}
-                    {level.team && tLevel('card.team', { team: level.team })}
+                    {level.team && t('newLevelsTab.card.team', { team: level.team })}
                   </div>
                 </div>
               </label>
@@ -76,8 +75,8 @@ const NewLevelsTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onR
                   onClick={() => handleSilentRemove(level)}
                   disabled={isLoading || removingIds.has(level.id)}
                   style ={{width: '40px', height: '40px'}}
-                  aria-label={tLevel('buttons.remove')}
-                  title={tLevel('buttons.removeTooltip')}
+                  aria-label={t('newLevelsTab.buttons.remove')}
+                  title={t('newLevelsTab.buttons.removeTooltip')}
                 >
                   {removingIds.has(level.id) ? (
                     <svg className="spinner spinner-svg" viewBox="0 0 50 50">
@@ -91,7 +90,7 @@ const NewLevelsTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onR
             </div>
           ))
         ) : (
-          <div className="no-items-message">{tLevel('noLevels')}</div>
+          <div className="no-items-message">{t('newLevelsTab.noLevels')}</div>
         )}
       </div>
     </div>

@@ -6,7 +6,6 @@ import { UserAvatar } from "@/components/layout";
 
 const PassCard = ({ pass }) => {
   const { t } = useTranslation('components');
-  const tCard = (key) => t(`cards.pass.${key}`) || key;
   
   const navigate = useNavigate();
   const { difficultyDict } = useDifficultyContext();
@@ -33,34 +32,34 @@ const PassCard = ({ pass }) => {
       <div className="pass-info-wrapper">
         <div className="group">
           <p className="pass-exp">#{pass.id} - {pass.player.name}<UserAvatar className="user-avatar" primaryUrl={pass.player.avatarUrl} /> </p>
-          {pass.isWorldsFirst && <span className="wf-badge">{tCard('flags.worldsFirst')}</span>}
+          {pass.isWorldsFirst && <span className="wf-badge">{t('cards.pass.flags.worldsFirst')}</span>}
         </div>
         <p className='pass-desc'>{pass.level.song}</p>
       </div>
 
       <div className="stats-wrapper">
         <div className="accuracy-section">
-          <p className="pass-exp">{tCard('stats.xAccuracy')}</p>
+          <p className="pass-exp">{t('cards.pass.stats.xAccuracy')}</p>
           <div className="pass-desc" style={{color: pass.accuracy === 1 ? "gold" : ""}}>{formattedAccuracy}</div>
         </div>
 
         <div className="score-section">
-          <p className="pass-exp">{tCard('stats.score')}</p>
+          <p className="pass-exp">{t('cards.pass.stats.score')}</p>
           <div className="pass-desc">{pass.scoreV2.toFixed(2)}</div>
         </div>
 
         {pass.speed && (
           <div className="speed-section">
-            <p className="pass-exp">{tCard('stats.speed')}</p>
+            <p className="pass-exp">{t('cards.pass.stats.speed')}</p>
             <div className="pass-desc">{pass.speed}x</div>
           </div>
         )}
       </div>
 
       <div className="flags-wrapper">
-        {pass.is12K && <div className="flag">{tCard('flags.twelveKey')}</div>}
-        {pass.is16K && <div className="flag">{tCard('flags.sixteenKey')}</div>}
-        {pass.isNoHoldTap && <div className="flag">{tCard('flags.noHoldTap')}</div>}
+        {pass.is12K && <div className="flag">{t('cards.pass.flags.twelveKey')}</div>}
+        {pass.is16K && <div className="flag">{t('cards.pass.flags.sixteenKey')}</div>}
+        {pass.isNoHoldTap && <div className="flag">{t('cards.pass.flags.noHoldTap')}</div>}
       </div>
 
       <div className="video-wrapper">
@@ -70,7 +69,7 @@ const PassCard = ({ pass }) => {
             onClick={onAnchorClick} 
             target="_blank" 
             rel="noreferrer"
-            title={tCard('links.video')}
+            title={t('cards.pass.links.video')}
           >
             <svg viewBox="0 -3 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#000000">
               <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
