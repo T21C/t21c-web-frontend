@@ -11,6 +11,7 @@ export function formatNumber(num, digits = 2) {
 
 
 async function getVideoDetails(url) {
+  if (!url) return null;
   return await api.get(`${import.meta.env.VITE_API_URL}/v2/media/video-details/${encodeURIComponent(url)}`).then(res => res.data);
 }
 

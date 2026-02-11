@@ -20,7 +20,7 @@ const Navigation = ({ children, config: externalConfig = null }) => {
   const location = useLocation();
 
   // Create navigation config from external config or generate from context
-  const config = externalConfig || createNavigationConfig(t, { user, location });
+  const config = externalConfig || createNavigationConfig({ user, location });
 
   // Close mobile nav when location changes
   useEffect(() => {
