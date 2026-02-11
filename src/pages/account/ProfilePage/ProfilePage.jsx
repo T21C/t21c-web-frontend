@@ -9,18 +9,17 @@ import { ScoreCard } from "@/components/cards";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
 import { AdminPlayerPopup, CreatorAssignmentPopup } from "@/components/popups";
-import { DefaultAvatar, ShieldIcon, EditIcon, SearchIcon, SortAscIcon, SortDescIcon, PackIcon, EyeIcon, EyeOffIcon, DiscordIcon } from "@/components/common/icons";
+import { DefaultAvatar, ShieldIcon, EditIcon, SortAscIcon, SortDescIcon, PackIcon, EyeIcon, EyeOffIcon } from "@/components/common/icons";
 import { CaseOpenSelector, CustomSelect } from "@/components/common/selectors";
 import caseOpen from "@/assets/icons/case.png";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { ScrollButton } from "@/components/common/buttons";
 import { useProfileContext } from "@/contexts/ProfileContext";
-import toast from 'react-hot-toast';
 import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
 
-const PASSES_PER_PAGE = 20;
+const PASSES_PER_PAGE = 50;
 
 const parseRankColor = (rank) => {
   var clr;
@@ -51,7 +50,6 @@ const ProfilePage = () => {
     const [displayedPasses, setDisplayedPasses] = useState([]);
     const [hasMore, setHasMore] = useState(true);
     const [showHiddenPasses, setShowHiddenPasses] = useState(false);
-    const [hasDiscordProvider, setHasDiscordProvider] = useState(false);
 
     const isOwnProfile = !playerId || Number(playerId) === user?.playerId;
 
@@ -70,10 +68,6 @@ const ProfilePage = () => {
     const setSearchQuery = (query) => profileContext.setSearchQuery(playerId, query);
     const setSortType = (type) => profileContext.setSortType(playerId, type);
     const setSortOrder = (order) => profileContext.setSortOrder(playerId, order);
-    
-    useEffect(() => {
-      setHasDiscordProvider(user?.providers?.some(provider => provider.name === 'discord'));
-    }, [user]);
 
     var valueLabels = {
       rankedScore: tProfile('valueLabels.rankedScore'),
