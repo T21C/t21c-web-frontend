@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import i18next from 'i18next';
 import { getSongDisplayName } from '@/utils/levelHelpers';
+import { useDifficultyContext } from '@/contexts/DifficultyContext';
 
 const trimString = (str, maxLength = 40) => {
   if (!str || typeof str !== 'string') return '';
@@ -26,6 +27,7 @@ export const RatingCard = ({
     const [copySuccess, setCopySuccess] = useState(false);
     const isVote = /^vote/i.test(rating.level.rerateNum);
     const userRating = rating.details?.find(detail => detail.userId === user?.id)?.rating || "";
+    const { difficultyDict } = useDifficultyContext();
     // Calculate averages
     const managerRatings = 
     trimString(
@@ -114,21 +116,21 @@ export const RatingCard = ({
           
           <div className="rating-card-details">
             {/* Top row - Rating averages */}
-            {!showDetailedView && (rating.communityDifficulty || rating.averageDifficulty || userRating) && (
+            {!showDetailedView && (rating.communityDifficultyId || rating.averageDifficulty || userRating) && (
               <div className="rating-info-grid top-row" >
                 <div className="rating-info-item" data-label={t('rating.ratingCard.labels.yourRating')}>
                   <div className="content">{userRating}</div>
               </div>
               <div className="rating-info-item" data-label={t('rating.ratingCard.labels.managerAverage')}>
-                <div className="content">{rating.averageDifficulty?.name}</div>
+                <div className="content">{difficultyDict[rating.averageDifficultyId]?.name}</div>
               </div>
               <div className="rating-info-item" data-label={t('rating.ratingCard.labels.communityAverage')}>
-                  <div className="content">{rating.communityDifficulty?.name}</div>
+                  <div className="content">{difficultyDict[rating.communityDifficultyId]?.name}</div>
                 </div>
               </div>
             )}
 
-            {showDetailedView && (rating.communityDifficulty || rating.averageDifficulty || userRating) && (
+            {showDetailedView && (rating.communityDifficultyId || rating.averageDifficultyId || userRating) && (
               <div className="rating-info-grid top-row" >
                 <div className="rating-info-item" data-label={t('rating.ratingCard.labels.yourRating')}>
                   <div className="content">{userRating}</div>
@@ -148,7 +150,7 @@ export const RatingCard = ({
                 {rerateValue && (
                   <div 
                     className="rating-info-item" 
-                    data-label={tRating(`labels.${rating.level.rerateNum ? 'rerateNumber' : 'requestedRating'}`)}
+                    data-label={t(`rating.ratingCard.labels.${rating.level.rerateNum ? 'rerateNumber' : 'requestedRating'}`)}
                   >
                     <div className="content">{rerateValue}</div>
                   </div>
