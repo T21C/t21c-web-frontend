@@ -9,7 +9,7 @@
   "stats": {
     "totalUsers": "Total Users",
     "averageRatingsPerDay": "Avg Ratings/Day",
-    "totalRatings": "Total Ratings"
+    "totalRatings": "Total"
   },
   "legend": {
     "circleOrnament": "5+ ratings/day",
