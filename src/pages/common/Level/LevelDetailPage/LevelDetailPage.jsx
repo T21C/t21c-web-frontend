@@ -1148,6 +1148,27 @@ const LevelDetailPage = ({ mockData = null }) => {
     }
   }, [effectiveId, user?.id, mockData]);
 
+  const fetchCdnData = useCallback(async () => {
+    if (!effectiveId || mockData) {
+      return;
+    }
+
+    try {
+      const response = await api.get(`${import.meta.env.VITE_LEVELS}/${effectiveId}/cdnData`);
+      setRes(prevRes => {
+        if (!prevRes) return prevRes;
+        return {
+          ...prevRes,
+          bpm: response.data.bpm ?? prevRes.bpm,
+          tilecount: response.data.tilecount ?? prevRes.tilecount,
+          accessCount: response.data.accessCount ?? prevRes.accessCount
+        };
+      });
+    } catch (error) {
+      console.error("Error fetching CDN data:", error);
+    }
+  }, [effectiveId, mockData]);
+
   const fetchLevelData = useCallback(async (isRefresh = false) => {
     // Use mock data if provided - completely override everything
     if (mockData) {
@@ -1181,6 +1202,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       
       // Fetch like status separately after main data is loaded
       await fetchIsLiked();
+      await fetchCdnData();
     } catch (error) {
       console.error("Error fetching level data:", error);
       if (error.response?.status === 404 || error.response?.status === 403) {
@@ -1193,7 +1215,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       setInfoLoading(false);
       setIsRefreshingLeaderboard(false);
     }
-  }, [effectiveId, mockData, t, fetchIsLiked]);
+  }, [effectiveId, mockData, t, fetchIsLiked, fetchCdnData]);
 
   useEffect(() => {
     fetchLevelData();
@@ -2487,7 +2509,7 @@ const LevelDetailPage = ({ mockData = null }) => {
               metadata={res.metadata}
               incrementAccessCount={() => setRes(prevRes => ({
                 ...prevRes,
-                accessCount: prevRes.accessCount + 1
+                accessCount: (prevRes.accessCount || 0) + 1
               }))}
           />
       )}
