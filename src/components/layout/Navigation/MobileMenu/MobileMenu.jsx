@@ -116,7 +116,7 @@ const MobileMenu = ({
                 items={[
                   ...userMenuItems,
                   {
-                    translationKey: "dropdowns.user.logout",
+                    translationKey: "navigation.main.dropdowns.user.logout",
                     onClick: () => {
                       logout();
                       onClose();

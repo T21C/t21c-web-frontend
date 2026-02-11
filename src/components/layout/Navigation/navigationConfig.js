@@ -84,9 +84,9 @@ export const createNavigationConfig = (context = {}) => {
         type: "dropdown",
         label: "navigation.main.links.creators",
         items: [
-          //{ to: "/admin/creators", translationKey: "dropdowns.creators.adofaiCreators" },
-          { to: "/songs", translationKey: "dropdowns.creators.songs" },
-          { to: "/artists", translationKey: "dropdowns.creators.artists" },
+          //{ to: "/admin/creators", translationKey: "navigation.main.dropdowns.creators.adofaiCreators" },
+          { to: "/songs", translationKey: "navigation.main.dropdowns.creators.songs" },
+          { to: "/artists", translationKey: "navigation.main.dropdowns.creators.artists" },
         ],
         isActive: (pathname) =>
           //pathname.startsWith("/admin/creators") ||
