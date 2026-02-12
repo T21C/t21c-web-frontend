@@ -103,7 +103,7 @@ export const createNavigationConfig = (context = {}) => {
         label: "navigation.main.links.more",
         items: [
           { to: "/passes", translationKey: "navigation.main.dropdowns.more.passes" },
-          { to: "/admin/rating", translationKey: "navigation.main.dropdowns.more.rating" },
+          { to: "/rating", translationKey: "navigation.main.dropdowns.more.rating" },
           { to: "/curations", translationKey: "navigation.main.dropdowns.admin.curations" },
           { divider: true },
           {
@@ -119,7 +119,7 @@ export const createNavigationConfig = (context = {}) => {
         isActive: (pathname) =>
           pathname.startsWith("/passes") ||
           pathname.startsWith("/curations") ||
-          pathname.startsWith("/admin/rating") ||
+          pathname.startsWith("/rating") ||
           pathname.startsWith("/terms-of-service") ||
           pathname.startsWith("/privacy-policy") ||
           pathname === "/about",

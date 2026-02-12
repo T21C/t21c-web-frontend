@@ -74,6 +74,7 @@ function App() {
           <Route path='admin' element={<PrivateRoute><Pages.AdminPage /></PrivateRoute>} />
           <Route path='admin/submissions' element={<PrivateRoute><Pages.SubmissionManagementPage /></PrivateRoute>} />
           <Route path='admin/rating' element={<Pages.RatingPage />} />
+          <Route path='rating' element={<Pages.RatingPage />} />
           <Route path='admin/announcements' element={<PrivateRoute><Pages.AnnouncementPage /></PrivateRoute>} />
           <Route path='admin/backups' element={<PrivateRoute><Pages.BackupPage /></PrivateRoute>} />
           <Route path='admin/difficulties' element={<PrivateRoute><Pages.DifficultyPage /></PrivateRoute>} />

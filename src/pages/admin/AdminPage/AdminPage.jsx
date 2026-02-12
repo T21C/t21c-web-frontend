@@ -13,7 +13,7 @@ const AdminPage = () => {
   const adminLinks = [
     {
       id: 'rating',
-      path: '/admin/rating',
+      path: '/rating',
       title: t("admin.links.rating"),
       description: t("admin.links.ratingDesc"),
       icon: "📝"

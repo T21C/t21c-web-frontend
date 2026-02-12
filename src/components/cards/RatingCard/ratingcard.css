@@ -12,8 +12,13 @@
   box-shadow: 0 0 10px rgba(0, 255, 0, 0.1);
 }
 
+.rating-card.gq-cleared {
+  background: #2e2206;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.1);
+}
+
 .rating-card.four-rated {
-  background: #231818;
+  background: #281515;
   box-shadow: 0 0 10px rgba(255, 0, 0, 0.1);
 }
 
@@ -34,6 +39,9 @@
 .rating-card .vote-tag {
   position: relative;
   background: #231818;
+  pointer-events: none;
+  -webkit-user-select: none;
+  user-select: none;
   font-weight: 1000;
   font-size: 25rem;
   height: 0;

@@ -80,6 +80,7 @@ export const RatingCard = ({
       <div
         className={`rating-card ${
           rating.details.filter(detail => !detail.isCommunityRating).length >= 4 || isVote ? 'four-rated' : 
+          difficultyDict[rating.level.diffId]?.name.includes('GQ') && rating.level.clears >= 1 ? 'gq-cleared' :
           rating.lowDiff ? 'low-diff' : ''}`}
       >
         {isVote && (
