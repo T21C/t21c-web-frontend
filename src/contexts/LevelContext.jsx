@@ -56,7 +56,7 @@ const LevelContextProvider = (props) => {
     });
     const [sliderQRangeDrag, setSliderQRangeDrag] = useState(() => {
         const saved = Cookies.get(COOKIE_KEYS.SLIDER_Q_RANGE_DRAG);
-        return saved ? JSON.parse(saved) : [1, 1];
+        return saved ? JSON.parse(saved) : [1, 9999];
     });
     const [selectedSpecialDiffs, setSelectedSpecialDiffs] = useState(() => {
         const saved = Cookies.get(COOKIE_KEYS.SELECTED_SPECIAL_DIFFS);
@@ -90,7 +90,7 @@ const LevelContextProvider = (props) => {
             
             // Get available Q difficulties (includes GQ)
             const qDifficulties = difficulties
-                .filter(d => d.name.startsWith('Q'))
+                .filter(d => d.name.includes('Q'))
                 .sort((a, b) => a.sortOrder - b.sortOrder);
 
             if (qDifficulties.length > 0) {
@@ -120,9 +120,9 @@ const LevelContextProvider = (props) => {
             } else {
                 // Only reset if there are no Q difficulties
                 setSliderQRange([]);
-                setSliderQRangeDrag([1, 1]);
+                setSliderQRangeDrag([1, 9999]);
                 Cookies.set(COOKIE_KEYS.SLIDER_Q_RANGE, JSON.stringify([]));
-                Cookies.set(COOKIE_KEYS.SLIDER_Q_RANGE_DRAG, JSON.stringify([1, 1]));
+                Cookies.set(COOKIE_KEYS.SLIDER_Q_RANGE_DRAG, JSON.stringify([1, 9999]));
             }
         }
     }, [difficulties]);

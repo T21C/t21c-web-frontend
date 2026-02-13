@@ -3,7 +3,7 @@ import ReactSelect, { components } from 'react-select';
 import './select.css';
 
 const CustomSelect = ({
-  options,
+  options = [],
   value,
   onChange,
   label,
@@ -179,7 +179,7 @@ const CustomSelect = ({
             onChange(option);
             handleMenuClose();
           }}
-          options={options}
+          options={Array.isArray(options) ? options : []}
           menuPortalTarget={menuPortalTarget}
           classNamePrefix="custom-select"
           styles={customStyles}

@@ -62,7 +62,7 @@ const SongDetailPage = () => {
         <div className="error-container">
           <h2>{t(`songDetail.errors.${error || 'notFound'}`)}</h2>
           <button onClick={() => navigate('/songs')} className="back-button">
-            {t('songDetails.backToList')}
+            {t('songDetail.backToList')}
           </button>
         </div>
       </div>
@@ -72,8 +72,8 @@ const SongDetailPage = () => {
   return (
     <div className="song-detail-page">
       <MetaTags
-        title={`${song.name} - ${t('songDetails.meta.title')}`}
-        description={t('songDetails.meta.description', { name: song.name })}
+        title={`${song.name} - ${t('songDetail.meta.title')}`}
+        description={t('songDetail.meta.description', { name: song.name })}
         url={currentUrl}
         image="/og-image.jpg"
         type="article"
@@ -100,7 +100,7 @@ const SongDetailPage = () => {
           {/* Aliases */}
           {song.aliases && song.aliases.length > 0 && (
             <div className="song-section">
-              <h2>{t('songDetails.sections.aliases')}</h2>
+              <h2>{t('songDetail.sections.aliases')}</h2>
               <div className="aliases-list">
                 {song.aliases.map((alias) => (
                   <span key={alias.id} className="alias-tag">{alias.alias}</span>
@@ -112,7 +112,7 @@ const SongDetailPage = () => {
           {/* Links */}
           {song.links && song.links.length > 0 && (
             <div className="song-section">
-              <h2>{t('songDetails.sections.links')}</h2>
+              <h2>{t('songDetail.sections.links')}</h2>
               <div className="links-list">
                 {song.links.map((link) => (
                   <a
@@ -133,7 +133,7 @@ const SongDetailPage = () => {
           {/* Artists */}
           {song.credits && song.credits.length > 0 && (
             <div className="song-section">
-              <h2>{t('songDetails.sections.artists')}</h2>
+              <h2>{t('songDetail.sections.artists')}</h2>
               <div className="artists-list">
                 {song.credits.map((credit) => (
                   <div
@@ -162,7 +162,7 @@ const SongDetailPage = () => {
 
           {song.extraInfo && (
             <div className="song-section">
-              <h2>{t('songDetails.sections.extraInfo')}</h2>
+              <h2>{t('songDetail.sections.extraInfo')}</h2>
               <div className="extra-info-content">{song.extraInfo}</div>
             </div>
           )}
@@ -170,7 +170,7 @@ const SongDetailPage = () => {
           {/* Evidence */}
           {song.evidences && song.evidences.length > 0 && (
             <div className="song-section">
-              <h2>{t('songDetails.sections.evidence')}</h2>
+              <h2>{t('songDetail.sections.evidence')}</h2>
               <div className="evidence-preview">
                 {song.evidences.slice(0, 4).map((evidence) => {
                   const isImage = isImageUrl(evidence.link);
@@ -212,7 +212,7 @@ const SongDetailPage = () => {
           {/* Levels */}
           {song.levels && song.levels.length > 0 && (
             <div className="song-section">
-              <h2>{t('songDetails.sections.levels')}</h2>
+              <h2>{t('songDetail.sections.levels')}</h2>
               <div className="levels-list">
                 {song.levels.map((level) => (
                   <LevelCard

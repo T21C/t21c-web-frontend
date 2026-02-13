@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { getVideoDetails } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { validateFeelingRating } from "@/utils/Utility";
-import { useTranslation } from "react-i18next";
+import { Trans, useTranslation } from "react-i18next";
 import { StagingModeWarning } from "@/components/common/display";
 import { ProfileSelector } from "@/components/common/selectors";
 import { LevelSelectionPopup, CDNTosPopup, LevelUploadPopup } from "@/components/popups/Levels";
@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { QuestionmarkCircleIcon } from "@/components/common/icons";
 import { Tooltip } from "react-tooltip";
+import toast from "react-hot-toast";
 
 const encodeFilename = (str) => {
   // Convert string to UTF-8 bytes, then to hex
@@ -76,10 +77,6 @@ const LevelSubmissionPage = () => {
   const [isFormValid, setIsFormValid] = useState(false);
   const [isFormValidDisplay, setIsFormValidDisplay] = useState({});
   const [finalSubmissionId, setFinalSubmissionId] = useState(null);
-
-  const [showMessage, setShowMessage] = useState(false)
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(null);
 
   const [submitAttempt, setSubmitAttempt] = useState(false);
   const [submission, setSubmission] = useState(false);
@@ -143,11 +140,6 @@ const LevelSubmissionPage = () => {
 
     // If no pattern matches, return the original URL
     return url;
-  };
-
-  const truncateString = (str, maxLength) => {
-    if (!str) return "";
-    return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
   };
 
   const validateForm = () => {
@@ -258,13 +250,8 @@ const LevelSubmissionPage = () => {
     }));
   };
 
-  const handleCloseSuccessMessage = () => {
-    setShowMessage(false)
-  };
-
   const submissionForm = new FormManager("level")
   const resetForm = () => {
-    setSuccess(true);
     setFormStateKey(formStateKey + 1);
     // Reset all form state
     setForm(initialFormState);
@@ -292,12 +279,10 @@ const LevelSubmissionPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setShowMessage(true);
-    setSuccess(false);
-    
+
     if(!user){
       console.error("No user logged in");
-      setError(t('levelSubmission.alert.login'));
+      toast.error(t('levelSubmission.alert.login'));
       return;
     }
 
@@ -307,18 +292,17 @@ const LevelSubmissionPage = () => {
     
     if (!songValue?.trim() || !artistValue?.trim() || !form.diff?.trim() || !form.videoLink?.trim()) {
       setSubmitAttempt(true);
-      setError(t('levelSubmission.alert.form'));
+      toast.error(t('levelSubmission.alert.form'));
       return;
     }
 
     if (!Object.values(isFormValid).every(Boolean)) {
       setSubmitAttempt(true);
-      setError(t('levelSubmission.alert.form'));
+      toast.error(t('levelSubmission.alert.form'));
       return;
     }
 
     setSubmission(true);
-    setError(null);
 
     try {
       // Clean the video URL before submission
@@ -436,12 +420,13 @@ const LevelSubmissionPage = () => {
       }
       
       if (response.success) {
-        // Upload is complete, popup will close automatically when status becomes 'completed'
-        // Small delay to allow progress update to be received
-        setTimeout(() => {
+        if (form.levelZip) {
+          // Zip upload: wait for LevelUploadPopup onUploadComplete (SSE 'completed') to reset form and show toast
+        } else {
           setShowUploadProgress(false);
           resetForm();
-        }, 500);
+          toast.success(t('levelSubmission.alert.success'));
+        }
       } else {
         setShowUploadProgress(false);
         throw new Error(response.error || 'Failed to submit form');
@@ -449,7 +434,8 @@ const LevelSubmissionPage = () => {
     } catch (error) {
       console.error('Submission error:', error);
       setShowUploadProgress(false);
-      setError(error.response?.data?.error || error.message || error.error || "Unknown error occurred");
+      const errMsg = error.response?.data?.error || error.message || error.error || "Unknown error occurred";
+      toast.error(`${t('levelSubmission.alert.error')} ${typeof errMsg === 'string' ? errMsg : errMsg?.message || ''}`);
     } finally {
       setSubmission(false);
     }
@@ -465,12 +451,13 @@ const LevelSubmissionPage = () => {
 
       if (response.data.success) {
         resetForm();
+        toast.success(t('levelSubmission.alert.success'));
       } else {
         throw new Error(response.data.error || 'Failed to select level');
       }
     } catch (error) {
       console.error('Level selection error:', error);
-      setError(error.message || 'Failed to select level');
+      toast.error(error.message || 'Failed to select level');
     } finally {
       setShowLevelSelection(false);
       setShowCancelWarning(false);
@@ -499,12 +486,13 @@ const LevelSubmissionPage = () => {
 
       if (response.data.success) {
         resetForm();
+        toast.success(t('levelSubmission.alert.success'));
       } else {
         throw new Error(response.data.error || 'Failed to select level');
       }
     } catch (error) {
       console.error('Level selection error:', error);
-      setError(error.message || 'Failed to select level');
+      toast.error(error.message || 'Failed to select level');
     } finally {
       setShowLevelSelection(false);
       setShowCancelWarning(false);
@@ -647,14 +635,14 @@ const LevelSubmissionPage = () => {
     try {
       // Validate file type and size
       if (!validateZipSize(file)) {
-        setError(t('levelSubmission.alert.invalidZip'));
+        toast.error(t('levelSubmission.alert.invalidZip'));
         return;
       }
 
       // Prepare zip file for upload
       const preparedZip = prepareZipForUpload(file);
       if (!preparedZip) {
-        setError(t('levelSubmission.alert.invalidZip'));
+        toast.error(t('levelSubmission.alert.invalidZip'));
         return;
       }
 
@@ -670,7 +658,7 @@ const LevelSubmissionPage = () => {
 
     } catch (error) {
       console.error('Error preparing zip file:', error);
-      setError(t('levelSubmission.alert.invalidZip'));
+      toast.error(t('levelSubmission.alert.invalidZip'));
     }
   };
 
@@ -727,7 +715,7 @@ const LevelSubmissionPage = () => {
 
     // Check if it's a zip file
     if (!file.name.toLowerCase().endsWith('.zip')) {
-      setError(t('levelSubmission.alert.invalidZip'));
+      toast.error(t('levelSubmission.alert.invalidZip'));
       return;
     }
 
@@ -745,16 +733,6 @@ const LevelSubmissionPage = () => {
       
       <div className="form-container">
         {import.meta.env.MODE !== "production" && <StagingModeWarning />}
-        <div className={`result-message ${showMessage && (success || error) ? 'visible' : ''}`} 
-        style={{backgroundColor: 
-        ( success? "#2b2" :
-          error? "#b22":
-          "#888"
-        )}}>
-          {success ? <p>{t('levelSubmission.alert.success')}</p> :
-           error && <p>{t('levelSubmission.alert.error')} {truncateString(error?.message || error?.toString() || error, 60)}</p>}
-          <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
-        </div>
 
         {showLevelSelection && (
           <LevelSelectionPopup
@@ -797,7 +775,9 @@ const LevelSubmissionPage = () => {
             fileName={levelZipInfo?.name}
             uploadId={uploadId}
             onUploadComplete={() => {
-              // Upload completed, popup will stay open until user closes it
+              setShowUploadProgress(false);
+              resetForm();
+              toast.success(t('levelSubmission.alert.success'));
             }}
           />
         )}
@@ -806,7 +786,6 @@ const LevelSubmissionPage = () => {
         {showSongSelector && (
           <SongSelectorPopup
             onClose={() => setShowSongSelector(false)}
-            selectedArtist={selectedSong?.isNewRequest ? null : artists.filter(a => a.id && !a.isNewRequest)}
             onSelect={async (songData) => {
               // Force evidence requirement for new song requests
               const requiresEvidence = songData.isNewRequest ? true : (songData.requiresEvidence || false);
@@ -993,14 +972,18 @@ const LevelSubmissionPage = () => {
                 />
                 < QuestionmarkCircleIcon 
                 style={{opacity: 0.7}}
-                data-tooltip-content={t('levelSubmission.suffixTooltip')} 
                 className="suffix-tooltip-icon" 
                 data-tooltip-id="suffix-tooltip" 
                 data-tooltip-place="bottom"
                 />
                 <Tooltip 
                 id="suffix-tooltip" 
-                style={{maxWidth: "400px", zIndex: 100}} />
+                style={{maxWidth: "400px", zIndex: 100}}>
+                  <Trans 
+                  ns={"pages"}
+                  i18nKey="levelSubmission.suffixTooltip" 
+                  components={{ bold: <b /> }} />
+                </Tooltip>
               </div>
               <br/>
               <h3>{t('levelSubmission.submInfo.artists')}</h3>
@@ -1176,7 +1159,7 @@ const LevelSubmissionPage = () => {
                     onChange={(e) => {
                       const files = Array.from(e.target.files || []);
                       if (files.length + evidenceFiles.length > 10) {
-                        setError(t('levelSubmission.alert.maxEvidenceFiles'));
+                        toast.error(t('levelSubmission.alert.maxEvidenceFiles'));
                         return;
                       }
                       setEvidenceFiles(prev => [...prev, ...files].slice(0, 10));
