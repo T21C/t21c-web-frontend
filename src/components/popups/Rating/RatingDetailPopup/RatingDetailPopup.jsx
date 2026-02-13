@@ -45,7 +45,7 @@ export const RatingDetailPopup = ({
   weeklyRaterActivity = []
 }) => {
   const currentUser = user;
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
 
   const { difficulties, difficultyDict } = useDifficultyContext();
   const [videoData, setVideoData] = useState(null);
@@ -428,7 +428,7 @@ export const RatingDetailPopup = ({
   );
 
   const getSaveButtonText = () => {
-    if (isSaving) return t('rating.detailPopup.buttons.saving');
+    if (isSaving) return t('buttons.saving', { ns: 'common' });
     if (!pendingRating && initialRating) return t('rating.detailPopup.buttons.removeRating');
     return t('rating.detailPopup.buttons.saveChanges');
   };
