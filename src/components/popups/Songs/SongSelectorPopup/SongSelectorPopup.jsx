@@ -300,6 +300,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
     setSuccess('');
 
     try {
+      if (!songDetails) return;
       const songData = {
         songId: selectedSongId,
         songName: songDetails.name,

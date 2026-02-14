@@ -7,6 +7,7 @@ const LevelUploadPopup = ({
   onClose,
   fileName,
   uploadId,
+  uploadProgress,
   onUploadComplete
 }) => {
   const { t } = useTranslation('components');
@@ -171,6 +172,15 @@ const LevelUploadPopup = ({
     return t('levelUploadPopup.processingSubtext');
   };
 
+  // During file transfer use uploadProgress; after that use server-sent progress
+  const effectiveProgressPercent =
+    step === 'uploading' && typeof uploadProgress === 'number'
+      ? uploadProgress
+      : (progress?.progressPercent ?? null);
+  const showProgressBar =
+    (step === 'uploading' || step === 'processing' || step === 'caching') &&
+    effectiveProgressPercent !== null;
+
   return (
     <div className="level-upload-popup__overlay">
       <div className="level-upload-popup" ref={popupRef}>
@@ -213,17 +223,17 @@ const LevelUploadPopup = ({
               <div className="spinner spinner-large" />
               <p>{getStatusText()}</p>
               
-              {progress && (
+              {showProgressBar && (
                 <>
                   <div className="level-upload-popup__progress-container">
                     <div className="level-upload-popup__progress-bar">
                       <div 
                         className="level-upload-popup__progress-fill"
-                        style={{ width: `${progress.progressPercent || 0}%` }}
+                        style={{ width: `${effectiveProgressPercent ?? 0}%` }}
                       />
                     </div>
                     <div className="level-upload-popup__progress-text">
-                      {progress.progressPercent || 0}%
+                      {effectiveProgressPercent ?? 0}%
                     </div>
                   </div>
                   
@@ -233,7 +243,7 @@ const LevelUploadPopup = ({
                 </>
               )}
               
-              {!progress && (
+              {!showProgressBar && (
                 <p className="level-upload-popup__subtext">
                   {getStatusSubtext()}
                 </p>

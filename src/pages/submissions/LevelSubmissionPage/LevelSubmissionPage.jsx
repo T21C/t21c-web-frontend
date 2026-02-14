@@ -108,6 +108,7 @@ const LevelSubmissionPage = () => {
   const [isDragOver, setIsDragOver] = useState(false);
   const [showUploadProgress, setShowUploadProgress] = useState(false);
   const [uploadId, setUploadId] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState(null);
 
   // Helper function to clean video URLs
   const cleanVideoUrl = (url) => {
@@ -400,6 +401,7 @@ const LevelSubmissionPage = () => {
         // Generate uploadId for progress tracking and show popup
         const generatedUploadId = crypto.randomUUID();
         setUploadId(generatedUploadId);
+        setUploadProgress(null);
         submissionForm.setDetail('uploadId', generatedUploadId);
         setShowUploadProgress(true);
         
@@ -407,10 +409,13 @@ const LevelSubmissionPage = () => {
         await new Promise(resolve => setTimeout(resolve, 100));
       }
 
-      const response = await submissionForm.submit();
+      const response = await submissionForm.submit({
+        onUploadProgress: (percent) => setUploadProgress(percent)
+      });
       
       if (response.requiresLevelSelection) {
         setShowUploadProgress(false);
+        setUploadProgress(null);
         setLevelFiles(response.levelFiles);
         setSelectedFileId(response.fileId);
         setShowLevelSelection(true);
@@ -424,16 +429,19 @@ const LevelSubmissionPage = () => {
           // Zip upload: wait for LevelUploadPopup onUploadComplete (SSE 'completed') to reset form and show toast
         } else {
           setShowUploadProgress(false);
+          setUploadProgress(null);
           resetForm();
           toast.success(t('levelSubmission.alert.success'));
         }
       } else {
         setShowUploadProgress(false);
+        setUploadProgress(null);
         throw new Error(response.error || 'Failed to submit form');
       }
     } catch (error) {
       console.error('Submission error:', error);
       setShowUploadProgress(false);
+      setUploadProgress(null);
       const errMsg = error.response?.data?.error || error.message || error.error || "Unknown error occurred";
       toast.error(`${t('levelSubmission.alert.error')} ${typeof errMsg === 'string' ? errMsg : errMsg?.message || ''}`);
     } finally {
@@ -771,11 +779,13 @@ const LevelSubmissionPage = () => {
         {showUploadProgress && (
           <LevelUploadPopup
             isOpen={showUploadProgress}
-            onClose={() => setShowUploadProgress(false)}
+            onClose={() => { setShowUploadProgress(false); setUploadProgress(null); }}
             fileName={levelZipInfo?.name}
             uploadId={uploadId}
+            uploadProgress={uploadProgress}
             onUploadComplete={() => {
               setShowUploadProgress(false);
+              setUploadProgress(null);
               resetForm();
               toast.success(t('levelSubmission.alert.success'));
             }}

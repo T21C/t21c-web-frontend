@@ -45,7 +45,7 @@ class FormManager {
         return this.details[key]; // Retrieve the details using the key
     }
 
-    async submit() {
+    async submit(options = {}) {
         try {
             let requestData;
             let headers = {
@@ -84,7 +84,16 @@ class FormManager {
                 headers['Content-Type'] = 'application/json';
             }
 
-            const response = await api.post(this.apiUrl, requestData, { headers });
+            const requestConfig = { headers };
+            if (this.hasFiles && typeof options.onUploadProgress === 'function') {
+                requestConfig.onUploadProgress = (progressEvent) => {
+                    const { loaded, total } = progressEvent;
+                    const percent = total ? Math.round((loaded / total) * 100) : 0;
+                    options.onUploadProgress(percent);
+                };
+            }
+
+            const response = await api.post(this.apiUrl, requestData, requestConfig);
 
             if (response.status === 200) {
                 return response.data;
