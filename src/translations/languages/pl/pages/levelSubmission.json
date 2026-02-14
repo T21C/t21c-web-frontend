@@ -28,6 +28,8 @@
     "error": "Błąd: ",
     "loading": "Przesyłanie...",
     "login": "Zaloguj się, aby przesłać poziom",
-    "form": "Wypełnij poprawnie wszystkie wymagane pola"
+    "form": "Wypełnij poprawnie wszystkie wymagane pola",
+    "maxEvidenceFiles": "Maksymalnie 10 zdjęć dowodowych",
+    "evidenceFileTooLarge": "Każde zdjęcie dowodowe musi mieć mniej niż {{maxMb}} MB"
   }
 } 

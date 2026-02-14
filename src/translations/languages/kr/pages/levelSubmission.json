@@ -30,7 +30,10 @@
     "loading": "제출 중...",
     "login": "레벨을 제출하려면 로그인 해주세요",
     "form": "필수 항목을 올바르게 작성해 주세요",
-    "invalidZip": "유효한 zip 파일을 업로드해 주세요"
+    "invalidZip": "유효한 zip 파일을 업로드해 주세요",
+    "invalidZipSize": "zip 파일 크기가 너무 큽니다 (최대 {{maxSize}} MB)",
+    "maxEvidenceFiles": "증거 이미지는 최대 10개까지 가능합니다",
+    "evidenceFileTooLarge": "각 증거 이미지는 {{maxMb}} MB 미만이어야 합니다"
   },
   "buttons": {
     "addCharter": "제작자 추가",

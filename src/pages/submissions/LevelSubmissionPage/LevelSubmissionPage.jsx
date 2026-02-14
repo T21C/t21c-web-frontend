@@ -1167,7 +1167,14 @@ const LevelSubmissionPage = () => {
                     accept="image/*"
                     multiple
                     onChange={(e) => {
+                      const MAX_EVIDENCE_SIZE_MB = 10;
+                      const maxBytes = MAX_EVIDENCE_SIZE_MB * 1024 * 1024;
                       const files = Array.from(e.target.files || []);
+                      const oversized = files.filter((f) => f.size > maxBytes);
+                      if (oversized.length > 0) {
+                        toast.error(t('levelSubmission.alert.evidenceFileTooLarge', { maxMb: MAX_EVIDENCE_SIZE_MB }));
+                        return;
+                      }
                       if (files.length + evidenceFiles.length > 10) {
                         toast.error(t('levelSubmission.alert.maxEvidenceFiles'));
                         return;

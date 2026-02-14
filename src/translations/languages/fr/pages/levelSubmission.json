@@ -40,6 +40,9 @@
     "loading": "Envoi...",
     "login": "Vous devez être connecté pour soumettre un niveau ",
     "form": "Veuillez remplir tous les champs obligatoires",
-    "invalidZip": "Veuillez télécharger un fichier zip valide"
+    "invalidZip": "Veuillez télécharger un fichier zip valide",
+    "invalidZipSize": "La taille du fichier zip est trop grande (max {{maxSize}} MB)",
+    "maxEvidenceFiles": "Maximum 10 images de preuve autorisées",
+    "evidenceFileTooLarge": "Chaque image de preuve doit faire moins de {{maxMb}} Mo"
   }
 } 

@@ -40,7 +40,10 @@
     "loading": "提交中……",
     "login": "提交关卡前请先登录",
     "form": "请正确填写所有必填项",
-    "invalidZip": "请上传有效压缩文件"
+    "invalidZip": "请上传有效压缩文件",
+    "invalidZipSize": "压缩文件大小太大（最大 {{maxSize}} MB）",
+    "maxEvidenceFiles": "最多可上传 10 张证据图片",
+    "evidenceFileTooLarge": "每张证据图片须小于 {{maxMb}} MB"
   },
   "warnings": {
     "pendingProfiles": "下列个人资料将被创建："
