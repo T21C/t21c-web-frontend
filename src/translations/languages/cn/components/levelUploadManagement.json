@@ -2,6 +2,7 @@
   "title": "管理已上传关卡",
   "errors": {
     "invalidZip": "压缩文件无效",
+    "invalidZipSize": "压缩文件大小太大（最大 {{maxSize}} MB）",
     "fetchFailed": "获取关卡文件失败",
     "uploadFailed": "上传关卡文件失败",
     "selectFailed": "选择关卡文件失败",

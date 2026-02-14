@@ -643,7 +643,7 @@ const LevelSubmissionPage = () => {
     try {
       // Validate file type and size
       if (!validateZipSize(file)) {
-        toast.error(t('levelSubmission.alert.invalidZip'));
+        toast.error(t('levelSubmission.alert.invalidZipSize', { maxSize: 140 }));
         return;
       }
 

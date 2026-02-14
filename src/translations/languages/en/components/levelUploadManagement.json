@@ -2,6 +2,7 @@
   "title": "Manage Level Upload",
   "errors": {
     "invalidZip": "Invalid zip file",
+    "invalidZipSize": "Zip file size is too large (max {{maxSize}} MB)",
     "fetchFailed": "Failed to fetch level files",
     "uploadFailed": "Failed to upload level file",
     "selectFailed": "Failed to select level file",
