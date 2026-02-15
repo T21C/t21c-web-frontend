@@ -175,6 +175,7 @@ const LevelSelectionPopup = ({
             <input
               id="search"
               type="text"
+              autoComplete='off'
               value={searchTerm}
               onChange={handleSearchChange}
               placeholder={t('levelSelectionPopup.filters.searchPlaceholder')}

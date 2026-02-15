@@ -960,6 +960,7 @@ const LevelSubmissionPage = () => {
               >
                 <input
                   type="text"
+                  autoComplete='level-song'
                   placeholder={t('levelSubmission.submInfo.song')}
                   name="song"
                   value={selectedSong?.songName || form.song}
@@ -975,6 +976,7 @@ const LevelSubmissionPage = () => {
               <div className="suffix-input">
                 <input 
                   type="text"
+                  autoComplete='level-suffix'
                   placeholder={t('levelSubmission.submInfo.suffix')}
                   name="suffix"
                   value={form.suffix}
@@ -1015,6 +1017,7 @@ const LevelSubmissionPage = () => {
                   >
                     <input
                       type="text"
+                      autoComplete='level-artist'
                       placeholder={t('levelSubmission.submInfo.artist')}
                       name={`artist-${index}`}
                       value={artist.name || ''}
@@ -1058,6 +1061,7 @@ const LevelSubmissionPage = () => {
             <div className="youtube-input">
               <input
                 type="text"
+                autoComplete='level-video-link'
                 placeholder={t('levelSubmission.submInfo.videoLink')}
                 name="videoLink"
                 value={form.videoLink}
@@ -1227,6 +1231,7 @@ const LevelSubmissionPage = () => {
                 </div>
                 <input
                   type="text"
+                  autoComplete='off'
                   placeholder={t('levelSubmission.submInfo.diff')}
                   name="diff"
                   value={form.diff}
@@ -1251,6 +1256,7 @@ const LevelSubmissionPage = () => {
             <div className="info-group" style={{marginTop: "2rem"}}>
               <input
                 type="text"
+                autoComplete='level-dl-link'
                 placeholder={t('levelSubmission.submInfo.dlLink')}
                 name="dlLink"
                 value={form.dlLink}
@@ -1265,6 +1271,7 @@ const LevelSubmissionPage = () => {
               <span className="dl-links-or">{t('levelSubmission.submInfo.dlLinksOr')}</span>
               <input
                 type="text"
+                autoComplete='level-workshop-link'
                 placeholder={t('levelSubmission.submInfo.workshop')}
                 name="workshopLink"
                 value={form.workshopLink}

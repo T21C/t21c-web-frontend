@@ -667,6 +667,7 @@ const PassSubmissionPage = () => {
               <div className="search-container" ref={searchContainerRef}>
                 <input
                   type="text"
+                  autoComplete='off'
                   placeholder={t('passSubmission.submInfo.levelId')}
                   name="levelId"
                   value={searchInput}
@@ -765,6 +766,7 @@ const PassSubmissionPage = () => {
                 type="text"
                 placeholder={t('passSubmission.videoInfo.videoLink')}
                 name="videoLink"
+                autoComplete='pass-video-link'
                 value={form.videoLink}
                 onChange={handleInputChange}
                 style={{ borderColor: isFormValidDisplay.videoLink ? "" : "red" }}
@@ -806,6 +808,7 @@ const PassSubmissionPage = () => {
               >
                 <input
                   type="checkbox"
+                  autoComplete='off'
                   value={form.isNoHold}
                   onChange={handleInputChange}
                   name="isNoHold"
@@ -823,6 +826,7 @@ const PassSubmissionPage = () => {
             <div className="info-input">
               <input
                 type="text"
+                autoComplete='off'
                 placeholder={t('passSubmission.submInfo.speed')}
                 name="speed"
                 value={form.speed}
@@ -835,6 +839,7 @@ const PassSubmissionPage = () => {
               <div style={{ display: 'flex', justifyContent: "center", gap: "10px"}}>
                 <input
                   type="text"
+                  autoComplete='pass-feeling-rating'
                   placeholder={t('passSubmission.submInfo.feelDiff')}
                   name="feelingRating"
                   value={form.feelingRating}
@@ -900,6 +905,7 @@ const PassSubmissionPage = () => {
                   <p>{t('passSubmission.judgements.ePerfect')}</p>
                   <input
                     type="text"
+                    autoComplete='off'
                     placeholder="#"
                     name="ePerfect"
                     value={form.ePerfect}
@@ -914,6 +920,7 @@ const PassSubmissionPage = () => {
                   <p>{t('passSubmission.judgements.perfect')}</p>
                   <input
                     type="text"
+                    autoComplete='off'
                     placeholder="#"
                     name="perfect"
                     value={form.perfect}
@@ -928,6 +935,7 @@ const PassSubmissionPage = () => {
                   <p>{t('passSubmission.judgements.lPerfect')}</p>
                   <input
                     type="text"
+                    autoComplete='off'
                     placeholder="#"
                     name="lPerfect"
                     value={form.lPerfect}
@@ -945,6 +953,7 @@ const PassSubmissionPage = () => {
                   <p>{t('passSubmission.judgements.tooearly')}</p>
                   <input
                     type="text"
+                    autoComplete='off'
                     placeholder="#"
                     name="tooEarly"
                     value={form.tooEarly}
@@ -959,6 +968,7 @@ const PassSubmissionPage = () => {
                   <p>{t('passSubmission.judgements.early')}</p>
                   <input
                     type="text"
+                    autoComplete='off'
                     placeholder="#"
                     name="early"
                     value={form.early}
@@ -973,6 +983,7 @@ const PassSubmissionPage = () => {
                   <p>{t('passSubmission.judgements.late')}</p>
                   <input
                     type="text"
+                    autoComplete='off'
                     placeholder="#"
                     name="late"
                     value={form.late}

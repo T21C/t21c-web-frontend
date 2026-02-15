@@ -232,6 +232,7 @@ const LoginPage = () => {
               <label htmlFor="password">{t('login.form.labels.password')}</label>
               <input
                 type="password"
+                autoComplete='login-password'
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}

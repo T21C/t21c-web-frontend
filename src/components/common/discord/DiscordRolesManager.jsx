@@ -660,6 +660,7 @@ const DiscordRolesManager = ({
                 <label>{t('discordRoles.guild.form.guildId')}</label>
                 <input
                   type="text"
+                  autoComplete='off'
                   value={guildForm.guildId}
                   onChange={(e) => setGuildForm({ ...guildForm, guildId: e.target.value })}
                   required
@@ -670,6 +671,7 @@ const DiscordRolesManager = ({
                 <label>{t('discordRoles.guild.form.displayName')}</label>
                 <input
                   type="text"
+                  autoComplete='off'
                   value={guildForm.name}
                   onChange={(e) => setGuildForm({ ...guildForm, name: e.target.value })}
                   required
@@ -680,6 +682,7 @@ const DiscordRolesManager = ({
                 <label>{t('discordRoles.guild.form.botToken')}</label>
                 <input
                   type="password"
+                  autoComplete='off'
                   value={guildForm.botToken}
                   onChange={(e) => setGuildForm({ ...guildForm, botToken: e.target.value })}
                   required={!editingGuild}
@@ -735,6 +738,7 @@ const DiscordRolesManager = ({
                 <label>{t('discordRoles.role.form.roleId')}</label>
                 <input
                   type="text"
+                  autoComplete='off'
                   value={roleForm.roleId}
                   onChange={(e) => setRoleForm({ ...roleForm, roleId: e.target.value })}
                   required
@@ -745,6 +749,7 @@ const DiscordRolesManager = ({
                 <label>{t('discordRoles.role.form.label')}</label>
                 <input
                   type="text"
+                  autoComplete='off'
                   value={roleForm.label}
                   onChange={(e) => setRoleForm({ ...roleForm, label: e.target.value })}
                   required
@@ -798,6 +803,7 @@ const DiscordRolesManager = ({
                 <label>{t('discordRoles.role.form.conflictGroup')}</label>
                 <input
                   type="text"
+                  autoComplete='off'
                   value={roleForm.conflictGroup}
                   onChange={(e) => setRoleForm({ ...roleForm, conflictGroup: e.target.value })}
                   placeholder={t('discordRoles.role.form.conflictGroupPlaceholder')}

@@ -508,6 +508,7 @@ const LevelPage = () => {
 
              <input
                value={searchInput}
+               autoComplete='off'
                type="text"
                placeholder={t('level.input.placeholder')}
                onChange={handleQueryChange}

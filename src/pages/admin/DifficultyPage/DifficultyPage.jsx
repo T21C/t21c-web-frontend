@@ -1354,6 +1354,7 @@ const DifficultyPage = () => {
                 <p>{t('difficulty.passwordModal.message', { action: pendingAction?.type })}</p>
                 <input
                   type="password"
+                  autoComplete='section-password-super-admin'
                   value={superAdminPassword}
                   onChange={(e) => setSuperAdminPassword(e.target.value)}
                   placeholder={t('difficulty.passwordModal.placeholder')}
@@ -1389,6 +1390,7 @@ const DifficultyPage = () => {
                 <p>{t('difficulty.passwordModal.initialMessage')}</p>
                 <input
                   type="password"
+                  autoComplete='section-password-super-admin'
                   value={superAdminPassword}
                   onChange={(e) => setSuperAdminPassword(e.target.value)}
                   placeholder={t('difficulty.passwordModal.placeholder')}

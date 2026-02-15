@@ -390,6 +390,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                   <label>{t('creatorActionPopup.actionPopup.update.name.label')}</label>
                   <input
                     type="text"
+                    autoComplete='off'
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     placeholder={t('creatorActionPopup.actionPopup.update.name.placeholder')}
@@ -412,6 +413,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
                   <div className="alias-input-group">
                     <input
                       type="text"
+                      autoComplete='off'
                       value={newAlias}
                       onChange={(e) => setNewAlias(e.target.value)}
                       placeholder={t('creatorActionPopup.actionPopup.update.aliases.placeholder')}

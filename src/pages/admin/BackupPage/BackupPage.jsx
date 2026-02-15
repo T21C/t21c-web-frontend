@@ -793,6 +793,7 @@ const BackupPage = () => {
             <p>{t('backup.passwordModal.initialMessage')}</p>
             <input
               type="password"
+              autoComplete='section-password-super-admin'
               value={initialPassword}
               onChange={(e) => setInitialPassword(e.target.value)}
               placeholder={t('backup.passwordModal.placeholder')}

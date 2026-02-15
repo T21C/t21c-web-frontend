@@ -1240,6 +1240,18 @@
     font-weight: 500;
   }
 
+  .submission-admin-page .assigned-player-link {
+    color: var(--color-white);
+    font-weight: 500;
+    text-decoration: none;
+    transition: color 0.2s ease, text-decoration-color 0.2s ease;
+  }
+
+  .submission-admin-page .assigned-player-link:hover {
+    color: #9370DB;
+    text-decoration: underline;
+  }
+
   .submission-admin-page .player-assignment {
     margin-top: 1rem;
     padding-top: 0.5rem;

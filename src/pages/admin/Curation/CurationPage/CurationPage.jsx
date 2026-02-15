@@ -609,6 +609,7 @@ const CurationPage = () => {
             <p>{t('curation.password.description')}</p>
             <input
               type="password"
+              autoComplete='section-password-super-admin'
               value={superAdminPassword}
               onChange={(e) => setSuperAdminPassword(e.target.value)}
               placeholder={t('curation.password.placeholder')}

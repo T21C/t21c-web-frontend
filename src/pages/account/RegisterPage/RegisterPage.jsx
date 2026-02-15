@@ -372,6 +372,7 @@ const RegisterPage = () => {
                 type="email"
                 id="email"
                 name="email"
+                autoComplete='register-email'
                 value={formData.email}
                 onChange={handleChange}
                 onBlur={handleBlur}
@@ -386,6 +387,7 @@ const RegisterPage = () => {
               <div className="username-input">
                 <input
                   type="text"
+                  autoComplete='register-username'
                   id="username"
                   name="username"
                   value={formData.username}
@@ -415,6 +417,7 @@ const RegisterPage = () => {
               <label htmlFor="password">{t('register.form.password.label')}</label>
               <input
                 type="password"
+                autoComplete='off'
                 id="password"
                 name="password"
                 value={formData.password}
@@ -430,6 +433,7 @@ const RegisterPage = () => {
               <label htmlFor="confirmPassword">{t('register.form.password.confirmLabel')}</label>
               <input
                 type="password"
+                autoComplete='off'
                 id="confirmPassword"
                 name="confirmPassword"
                 value={formData.confirmPassword}

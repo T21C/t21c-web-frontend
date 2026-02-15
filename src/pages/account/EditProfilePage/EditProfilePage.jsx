@@ -458,6 +458,7 @@ const EditProfilePage = () => {
             <div className="username-input-wrapper">
               <input
                 type="text"
+                autoComplete='off'
                 id="username"
                 name="username"
                 value={formData.username}
@@ -490,6 +491,7 @@ const EditProfilePage = () => {
             <label htmlFor="nickname">{t('editProfile.form.labels.nickname')}</label>
             <input
               type="text"
+              autoComplete='off'
               id="nickname"
               name="nickname"
               value={formData.nickname}

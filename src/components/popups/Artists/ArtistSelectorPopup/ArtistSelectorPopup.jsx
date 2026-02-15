@@ -281,6 +281,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                   <div className="search-input-wrapper">
                     <input
                       type="text"
+                      autoComplete='off'
                       className="search-input"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
@@ -341,6 +342,7 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
                     <label>{t('artistSelector.createForm.name')}</label>
                     <input
                       type="text"
+                      autoComplete='off'
                       value={newName}
                       onChange={(e) => setNewName(e.target.value)}
                       placeholder={t('artistSelector.createForm.namePlaceholder')}

@@ -73,6 +73,7 @@ export const CountrySelect = ({ value, onChange }) => {
         <div className="select-country-dropdown">
           <input
             type="text"
+            autoComplete='off'
             className="select-country-search"
             placeholder={t('player.countrySelect.search.placeholder')}
             value={searchTerm}

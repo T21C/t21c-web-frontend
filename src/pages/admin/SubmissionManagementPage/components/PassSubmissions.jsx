@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import placeholder from '@/assets/placeholder/1.png';
 import { getVideoDetails } from "@/utils";
@@ -405,16 +406,26 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
                           [submission.id]: value
                         }))}
                         onSelect={(player) => handlePlayerSelect(submission.id, player)}
-                        currentPlayer={submission.assignedPlayerId}
                       />
                     
 
                     {submission.assignedPlayer && (
                       <div className="assigned-player-info">
                         <span className="assigned-player-label">{t('passSubmissions.playerAssignment.current')}</span>
-                        <span className="assigned-player-name">
-                          {submission.assignedPlayer.name || "Null"} (ID: {submission.assignedPlayerId || "Null"})
-                        </span>
+                        {(submission.assignedPlayerId ?? submission.assignedPlayer?.id) != null ? (
+                          <Link
+                            to={`/profile/${submission.assignedPlayerId ?? submission.assignedPlayer?.id}`}
+                            className="assigned-player-link"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {submission.assignedPlayer.name || "Null"} (ID: {submission.assignedPlayerId ?? submission.assignedPlayer?.id})
+                          </Link>
+                        ) : (
+                          <span className="assigned-player-name">
+                            {submission.assignedPlayer.name || "Null"} (ID: Null)
+                          </span>
+                        )}
                         <button
                           className="manage-profile-button"
                           onClick={() => handleManagePlayer(submission)}

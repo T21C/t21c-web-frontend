@@ -3,7 +3,7 @@ import api from '@/utils/api';
 import "./playerinput.css";
 import { useTranslation } from 'react-i18next';
 
-export const PlayerInput = ({ value, onChange, onSelect, currentPlayer }) => {
+export const PlayerInput = ({ value, onChange, onSelect }) => {
   const { t } = useTranslation(['components', 'common']);
 
   const [showDropdown, setShowDropdown] = useState(false);
@@ -143,6 +143,7 @@ export const PlayerInput = ({ value, onChange, onSelect, currentPlayer }) => {
       <div className="player-input-container">
         <input
           type="text"
+          autoComplete='player-input-name'
           value={creationStatus === 'creating' ? t('loading.creatingWithName', { ns: 'common', name: value }) : value}
           onChange={(e) => {
             onChange(e.target.value);

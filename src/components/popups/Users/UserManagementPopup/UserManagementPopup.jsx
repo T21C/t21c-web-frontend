@@ -463,8 +463,11 @@ const UserManagementPopup = ({ onClose, currentUser, initialMode = 'rater' }) =>
                      {/* Only show password input for super admins */}
            {hasFlag(currentUser, permissionFlags.SUPER_ADMIN) && (
              <div className="header-password-input">
+              <input type="hidden" name="superadmin-verification-password" />
                <input
                  type="password"
+                 autoComplete="current-password"
+                 data-form-type="other"
                  value={superAdminPassword}
                  onChange={(e) => setSuperAdminPassword(e.target.value)}
                  placeholder={t('userManagement.superAdmin.password.placeholder')}
@@ -477,12 +480,14 @@ const UserManagementPopup = ({ onClose, currentUser, initialMode = 'rater' }) =>
         <div className="search-section">
           <input
             type="text"
+            name="user-management-search"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={t('userManagement.search.placeholder')}
             className="search-input"
-            autoComplete='off'
-            aria-autocomplete='none'
+            autoComplete="off"
+            aria-autocomplete="none"
+            data-form-type="other"
           />
         </div>
 
@@ -510,6 +515,7 @@ const UserManagementPopup = ({ onClose, currentUser, initialMode = 'rater' }) =>
           <div className="add-user-section">
             <input
               type="text"
+              autoComplete='new-user-username'
               value={newUserUsername}
               onChange={(e) => setNewUserUsername(e.target.value)}
               placeholder={t('userManagement.addUser.placeholder')}

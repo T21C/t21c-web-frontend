@@ -111,6 +111,7 @@ export const RatingInput = ({
       <div className={`rating-input-container ${disabled ? 'disabled' : ''}`}>
         <input
           type="text"
+          autoComplete='off'
           value={inputValue}
           onChange={handleInputChange}
           onFocus={() => setShowDropdown(true)}

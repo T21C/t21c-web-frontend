@@ -490,13 +490,14 @@ const RatingPage = () => {
                   <circle cx="11" cy="11" r="8"></circle>
                   <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
-                <input
-                  type="text"
+                <textarea
                   className="search-input"
+                  rows={1}
                   placeholder={t('rating.search.placeholder')}
-                  name="search"
+                  name="rating-level-search"
                   autoComplete="off"
                   aria-autocomplete="none"
+                  data-form-type="other"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />

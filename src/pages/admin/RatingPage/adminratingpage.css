@@ -598,6 +598,7 @@
 
 .admin-rating-page .admin-rating-body .search-input {
   background: transparent;
+  resize: none;
   border: none;
   color: var(--color-white);
   font-size: 0.95rem;

@@ -432,6 +432,7 @@ const handleSubmit = async (e) => {
             <div className="id-input">
               <input
                 type="text"
+                autoComplete='off'
                 placeholder={t('passPopups.edit.form.submInfo.levelId')}
                 name="levelId"
                 value={form.levelId}
@@ -502,6 +503,7 @@ const handleSubmit = async (e) => {
             <div className="youtube-input">
                   <input
                     type="text"
+                    autoComplete='pass-video-link'
                     placeholder={t('passPopups.edit.form.videoInfo.videoLink')}
                     name="videoLink"
                     value={form.videoLink}
@@ -524,6 +526,7 @@ const handleSubmit = async (e) => {
                       <h4>{t('passPopups.edit.form.videoInfo.timestamp')}</h4>
                       <input
                         type="text"
+                        autoComplete='off'
                         placeholder="YYYY-MM-DDTHH:MM:SS"
                         name="vidUploadTime"
                         value={form.vidUploadTime}
@@ -559,20 +562,22 @@ const handleSubmit = async (e) => {
           
           
           <div className="info-input">
-                  <input
-                    type="text"
-                    placeholder={t('passPopups.edit.form.submInfo.speed')}
-                    name="speed"
-                    value={form.speed}
-                    onChange={handleInputChange}
-                    style={{ 
-                      borderColor: isFormValidDisplay.speed ? "" : "red",
-                      backgroundColor: isValidSpeed? "transparent" : "#faa"}}
-                  />
+            <input
+              type="text"
+              autoComplete='off'
+              placeholder={t('passPopups.edit.form.submInfo.speed')}
+              name="speed"
+              value={form.speed}
+              onChange={handleInputChange}
+              style={{ 
+                borderColor: isFormValidDisplay.speed ? "" : "red",
+                backgroundColor: isValidSpeed? "transparent" : "#faa"}}
+            />
       
             <div style={{ display: 'flex', justifyContent: "center", gap: "10px"}}>
               <input
                 type="text"
+                autoComplete='off'
                 placeholder={t('passPopups.edit.form.submInfo.feelDiff')}
                 name="feelingRating"
                 value={form.feelingRating}
@@ -671,6 +676,7 @@ const handleSubmit = async (e) => {
                     <p>{t('passPopups.edit.form.judgements.ePerfect')}</p>
                     <input
                       type="text"
+                      autoComplete='off'
                       placeholder="#"
                       name="ePerfect"
                       value={form.ePerfect}
@@ -685,6 +691,7 @@ const handleSubmit = async (e) => {
                     <p>{t('passPopups.edit.form.judgements.perfect')}</p>
                     <input
                       type="text"
+                      autoComplete='off'
                       placeholder="#"
                       name="perfect"
                       value={form.perfect}
@@ -696,8 +703,10 @@ const handleSubmit = async (e) => {
 
                   <div className="each-accuracy">
                     <p>{t('passPopups.edit.form.judgements.lPerfect')}</p>
-                    <input type="text"
+                    <input 
+                      type="text"
                       name="lPerfect"
+                      autoComplete='off'
                       placeholder="#"
                       value={form.lPerfect}
                       onChange={handleInputChange}
@@ -712,6 +721,7 @@ const handleSubmit = async (e) => {
                     <p>{t('passPopups.edit.form.judgements.tooearly')}</p>
                     <input
                       type="text"
+                      autoComplete='off'
                       placeholder="#"
                       name="tooEarly"
                       value={form.tooEarly}
@@ -725,6 +735,7 @@ const handleSubmit = async (e) => {
                     <p>{t('passPopups.edit.form.judgements.early')}</p>
                     <input
                       type="text"
+                      autoComplete='off'
                       placeholder="#"
                       name="early"
                       value={form.early}
@@ -738,6 +749,7 @@ const handleSubmit = async (e) => {
                     <p>{t('passPopups.edit.form.judgements.late')}</p>
                     <input
                       type="text"
+                      autoComplete='off'
                       placeholder="#"
                       name="late"
                       value={form.late}

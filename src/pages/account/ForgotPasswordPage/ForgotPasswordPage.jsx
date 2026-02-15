@@ -312,6 +312,7 @@ const ForgotPasswordPage = () => {
                 <label htmlFor="password">{t('forgotPassword.reset.form.labels.password')}</label>
                 <input
                   type="password"
+                  autnComplete='off'
                   id="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -327,6 +328,7 @@ const ForgotPasswordPage = () => {
                 <label htmlFor="confirmPassword">{t('forgotPassword.reset.form.labels.confirmPassword')}</label>
                 <input
                   type="password"
+                  autoComplete='off'
                   id="confirmPassword"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}

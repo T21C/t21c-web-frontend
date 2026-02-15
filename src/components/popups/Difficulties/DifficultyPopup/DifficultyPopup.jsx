@@ -983,6 +983,7 @@ const DifficultyPopup = ({
                 <div className="difficulty-modal__form-group">
                   <input
                     type="password"
+                    autoComplete='section-password-super-admin'
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder={t('difficultyPopup.modal.password.placeholder')}

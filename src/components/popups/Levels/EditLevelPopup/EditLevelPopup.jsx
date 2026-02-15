@@ -504,6 +504,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                 <div className="song-selector-field" onClick={() => isFieldAllowed('song') && setShowSongSelector(true)}>
                   <input
                     type="text"
+                    autoComplete='off'
                     id="song"
                     name="song"
                     value={formData.song}
@@ -522,6 +523,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                 <label htmlFor="suffix">{t('levelPopups.edit.form.labels.suffix')}</label>
                 <input
                   type="text"
+                  autoComplete='level-suffix'
                   id="suffix"
                   name="suffix"
                   value={formData.suffix}
@@ -637,6 +639,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                     <div className={`rerate-num ${formData.toRate ? 'show' : ''}`}>
                       <input
                         type="text"
+                        autoComplete='off'
                         name="rerateNum"
                         value={formData.rerateNum}
                         onChange={handleInputChange}
@@ -648,6 +651,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   <div className={`rerate-reason ${formData.toRate ? 'show' : ''}`}>
                     <input
                       type="text"
+                      autoComplete='off'
                       name="rerateReason"
                       value={formData.rerateReason}
                       onChange={handleInputChange}
@@ -719,6 +723,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               <label htmlFor="videoLink">{t('levelPopups.edit.form.labels.videoLink')}</label>
               <input
                 type="text"
+                autoComplete='level-video-link'
                 id="videoLink"
                 name="videoLink"
                 value={formData.videoLink}
@@ -752,6 +757,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                 <div className="edit-level-popup__dl-link-container">
                   <input
                     type="text"
+                    autoComplete='level-dl-link'
                     id="dlLink"
                     name="dlLink"
                     value={formData.dlLink}
@@ -790,6 +796,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               <label htmlFor="workshopLink">{t('levelPopups.edit.form.labels.workshopLink')}</label>
               <input
                 type="text"
+                autoComplete='level-workshop-link'
                 id="workshopLink"
                 name="workshopLink"
                 value={formData.workshopLink}
@@ -801,6 +808,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
             <div className={`form-group ${isSuperAdmin ? 'field-enabled' : ''}`}>
               <label htmlFor="publicComments">{t('levelPopups.edit.form.labels.publicComments')}</label>
               <textarea
+                autoComplete='off'
                 id="publicComments"
                 name="publicComments"
                 value={formData.publicComments}

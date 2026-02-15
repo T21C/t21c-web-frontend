@@ -279,6 +279,7 @@ const LeaderboardPage = () => {
           <div className="search-container">
             <input
               value={query}
+              autoComplete='off'
               type="text"
               placeholder={t('leaderboard.input.placeholder')}
               onChange={handleQueryChange}

@@ -100,6 +100,7 @@ export const ProfileCreationModal = ({ profiles, onComplete, onCancel }) => {
                 <label htmlFor="discordId">{t('profileCreationModal.fields.discordId')}</label>
                 <input
                   type="text"
+                  autoComplete='off'
                   id="discordId"
                   name="discordId"
                   value={formData.discordId || ''}
@@ -112,6 +113,7 @@ export const ProfileCreationModal = ({ profiles, onComplete, onCancel }) => {
                 <label htmlFor="country">{t('profileCreationModal.fields.country')}</label>
                 <input
                   type="text"
+                  autoComplete='off'
                   id="country"
                   name="country"
                   value={formData.country || ''}

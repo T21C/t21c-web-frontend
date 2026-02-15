@@ -369,6 +369,7 @@ const PassPage = () => {
 
             <input
               value={pendingQuery}
+              autoComplete='off'
               type="text"
               placeholder={t('pass.input.placeholder')}
               onChange={handleQueryChange}

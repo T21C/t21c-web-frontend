@@ -117,6 +117,7 @@ export const ProfileSelector = ({
       <div className="profile-selector-input-container">
         <input
           type="text"
+          autoComplete='profile-selector'
           value={searchTerm}
           onChange={(e) => {
             setSearchTerm(e.target.value);

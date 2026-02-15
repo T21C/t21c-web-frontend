@@ -210,6 +210,7 @@ const PackPageContent = () => {
 
             <input
               value={pendingQuery}
+              autoComplete='off'
               type="text"
               placeholder={t('pack.search.placeholder')}
               onChange={handleQueryChange}

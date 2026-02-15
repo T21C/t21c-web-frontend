@@ -158,6 +158,7 @@ const ArtistListPage = () => {
           <div className="search-container">
             <input
               type="text"
+              autoComplete='off'
               className="search-input"
               placeholder={t('artistList.search.placeholder')}
               value={searchQuery}
