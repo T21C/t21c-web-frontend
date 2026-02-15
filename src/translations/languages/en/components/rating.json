@@ -6,6 +6,7 @@
       "currentDifficulty": "Current Difficulty:",
       "averageRating": "Manager Rating:",
       "communityRating": "Community Rating:",
+      "clearedCount": "Clears: {{count}}",
       "rerateNum": "Requested rating:",
       "rerateReason": "Rerate Reason:",
       "yourRating": "Your Rating:",

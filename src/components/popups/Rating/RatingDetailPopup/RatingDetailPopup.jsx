@@ -487,6 +487,12 @@ export const RatingDetailPopup = ({
 
             <p className="artist">{selectedRating.level.artist}</p>
             <span className="creator">{formatCreatorDisplay(selectedRating.level)}</span>
+            <div className="level-id-cleared-count-container">
+            <span className="level-id">#{selectedRating.level.id}</span>
+            <span className="cleared-count">
+              {t('rating.detailPopup.labels.clearedCount', { count: selectedRating.level.clears || 0 })}
+            </span>
+            </div>
           </div>
           
           <div className="popup-main-content-container">

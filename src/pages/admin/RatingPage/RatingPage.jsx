@@ -267,6 +267,8 @@ const RatingPage = () => {
     if (!sortedRatings) return [];
     
     let filtered = sortedRatings.filter(rating => {
+      // Exclude entries that are no longer marked for rating
+      if (rating.level?.toRate === false) return false;
       if (hideRated) {
         const userDetail = rating.details?.find(detail => detail.userId === user?.id);
         if (userDetail || /^vote/i.test(rating.level.rerateNum)) return false;
@@ -566,17 +568,25 @@ const RatingPage = () => {
                 onUpdate={(updatedData) => {
                   if (updatedData) {
                     const updatedLevel = updatedData.level || updatedData;
-                    setRatings(prev => prev.map(rating => 
-                      rating.level.id === updatedLevel.id 
-                        ? {
-                            ...rating,
-                            level: {
-                              ...rating.level,
-                              ...updatedLevel
+                    const shouldRemove = updatedLevel.toRate === false;
+                    if (shouldRemove) {
+                      setRatings(prev => (prev || []).filter(r => r.level?.id !== updatedLevel.id));
+                      if (selectedRating?.level?.id === updatedLevel.id) {
+                        setSelectedRating(null);
+                      }
+                    } else {
+                      setRatings(prev => prev?.map(rating =>
+                        rating.level.id === updatedLevel.id
+                          ? {
+                              ...rating,
+                              level: {
+                                ...rating.level,
+                                ...updatedLevel
+                              }
                             }
-                          }
-                        : rating
-                    ));
+                          : rating
+                      ) ?? prev);
+                    }
                   }
                   setOpenEditDialog(false);
                   setSelectedLevel(null);
