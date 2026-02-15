@@ -47,7 +47,6 @@ return (
                   <CrossedPhoneIcon color="#ff2424" size={80} />
                 </div>
             </div>
-          </div>
 
           <div className="rules-section info">
             <h3>{t('passSubmissionRules.clearRules.title')}</h3>
@@ -146,6 +145,7 @@ return (
           <div className="rules-section info">
             <p><strong>Note:</strong> {t('passSubmissionRules.footer.note')}</p>
           </div>
+        </div>
         </div>
       </div>
   );

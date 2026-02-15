@@ -800,6 +800,7 @@
   border-color: rgba(255, 255, 255, 0.1);
   background: rgba(255, 255, 255, 0.01);
   border-style: dashed;
+  margin-top: 1rem;
 }
 
 .pass-submission-page .rules-section.info h3 {
