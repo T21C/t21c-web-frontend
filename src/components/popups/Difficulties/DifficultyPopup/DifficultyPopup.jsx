@@ -658,6 +658,13 @@ const DifficultyPopup = ({
   // Helper function to get translation for ping type options
   const getPingTypeOption = (type) => t(`difficultyPopup.announcements.actions.pingType.options.${type}`);
 
+  const toggleDirective = (index) => {
+    setExpandedDirectives(prev => ({
+      ...prev,
+      [index]: !prev[index]
+    }));
+  };
+
   // Prepare options for CustomSelect components
   const difficultyTypeOptions = useMemo(() => [
     { value: 'PGU', label: t('difficultyPopup.difficultyTypes.PGU') },
@@ -785,13 +792,6 @@ const DifficultyPopup = ({
       setPasteError(t('difficultyPopup.announcements.directive.pasteError'));
       showToast(t('difficultyPopup.announcements.directive.pasteError'), 'error');
     }
-  };
-
-  const toggleDirective = (index) => {
-    setExpandedDirectives(prev => ({
-      ...prev,
-      [index]: !prev[index]
-    }));
   };
 
   const toggleActions = (directiveIndex) => {
