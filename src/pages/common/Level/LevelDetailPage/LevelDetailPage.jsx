@@ -1468,33 +1468,66 @@ const LevelDetailPage = ({ mockData = null }) => {
     const isArtist = field === 'artist';
     const hasPopup = isSong ? hasSongPopup : hasArtistPopup;
       
-    // Use normalized name if available, otherwise use title
-    const displayName = isSong ? 
-    <span onClick={() => setShowSongPopup(true)} className="level-title-clickable">{getSongDisplayName(level)}</span>
-    : hasPopup ? (
-    <div className="level-artist-list-wrapper">
-      {level.songObject?.artists.map((artist, index) => (<div key={artist.id}>
-        <span 
-        className="level-artist-name"
-        key={artist.id}
-        onClick={() => handleArtistClick(artist)}>
-          {artist.name}
-        </span>
-        
-        {index < level.songObject?.artists.length - 1 && 
-        <span className="level-artist-separator"> & </span>}
-        </div>
-      ))}
-    </div>) : getArtistDisplayName(level);
+    // Song title: always use level-title-text for consistent external styling
+    if (isSong) {
+      const songName = getSongDisplayName(level);
+      const isClickable = hasSongPopup;
+      return (
+        <>
+          <span
+            className={`level-title-text${isClickable ? ' level-title-clickable' : ''}`}
+            onClick={isClickable ? () => setShowSongPopup(true) : undefined}
+            title={isClickable ? "Click to view song details" : undefined}
+          >
+            {songName}
+          </span>
+          {aliases.length > 0 && (
+            <>
+              <span 
+                className={`tag-list-arrow ${isOpen ? 'open' : ''}`}
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                onClick={() => handleAliasButtonClick(field)}
+              >
+                ▼
+              </span>
+              <AliasesDropdown 
+                aliases={aliases}
+                show={isOpen}
+                onClose={handleDropdownClose}
+              />
+            </>
+          )}
+        </>
+      );
+    }
+      
+    // Artist: use normalized list or plain text
+    const displayName = hasPopup ? (
+      <div className="level-artist-list-wrapper">
+        {level.songObject?.artists.map((artist, index) => (
+          <div key={artist.id}>
+            <span 
+              className="level-artist-name"
+              onClick={() => handleArtistClick(artist)}
+            >
+              {artist.name}
+            </span>
+            {index < level.songObject?.artists.length - 1 && 
+              <span className="level-artist-separator"> & </span>}
+          </div>
+        ))}
+      </div>
+    ) : (
+      <span className="level-artist-text">{getArtistDisplayName(level)}</span>
+    );
     
     const handleClick = (e) => {
       if (hasPopup) {
         e.stopPropagation();
-        if (isSong) {
-          setShowSongPopup(true);
-        } else if (isArtist) {
-          setShowArtistPopup(true);
-        }
+        setShowArtistPopup(true);
       }
     };
 
@@ -1502,14 +1535,14 @@ const LevelDetailPage = ({ mockData = null }) => {
       <>
         {hasPopup ? (
           <span 
-            className="level-title-clickable"
+            className="level-title-clickable-wrapper"
             onClick={handleClick}
-            title={isSong ? "Click to view song details" : "Click to view artist details"}
+            title="Click to view artist details"
           >
             {displayName}
           </span>
         ) : (
-          <span>{displayName}</span>
+          displayName
         )}
         {aliases.length > 0 && !level.songObject?.artists && (
           <>
