@@ -659,15 +659,15 @@ const PackDetailPage = () => {
     
     switch (parseInt(pack.viewMode)) {
       case 1: // PUBLIC
-        return <EyeIcon className="pack-detail-page__view-icon public" />;
+        return <EyeIcon className="view-icon public" />;
       case 2: // LINKONLY
-        return <UsersIcon className="pack-detail-page__view-icon linkonly" />;
+        return <UsersIcon className="view-icon linkonly" />;
       case 3: // PRIVATE
-        return <LockIcon className="pack-detail-page__view-icon private" />;
+        return <LockIcon className="view-icon private" />;
       case 4: // FORCED_PRIVATE
-        return <LockIcon className="pack-detail-page__view-icon forced-private" />;
+        return <LockIcon className="view-icon forced-private" />;
       default:
-        return <EyeIcon className="pack-detail-page__view-icon public" />;
+        return <EyeIcon className="view-icon public" />;
     }
   };
 
@@ -693,7 +693,7 @@ const PackDetailPage = () => {
     return (
       <div className="pack-detail-page">
         
-        <div className="loader loader-level-detail" />
+        <div className="loader loader-pass-detail" />
       </div>
     );
   }
@@ -702,17 +702,17 @@ const PackDetailPage = () => {
     return (
       <div className="pack-detail-page">
         
-        <div className="pack-detail-page__error">
+        <div className="error">
           <h2>{t('packDetail.error.title')}</h2>
           <p>{t('packDetail.error.message')}</p>
           <button 
-            className="pack-detail-page__retry-btn"
+            className="retry-btn"
             onClick={() => fetchPack(false)}
           >
             {t('packDetail.error.retry')}
           </button>
           <button 
-            className="pack-detail-page__back-btn"
+            className="back-btn"
             style={{alignSelf: 'center'}}
             onClick={() => navigate('/packs')}
           >
@@ -740,66 +740,66 @@ const PackDetailPage = () => {
       
       <div className="pack-body">
       <button 
-            className="pack-detail-page__back-btn"
+            className="back-btn"
             onClick={() => navigate('/packs')}
           >
             <ArrowIcon style={{ transform: 'rotate(180deg)' }} />
             <span>{t('packDetail.backToPacks')}</span>
           </button>
-          <div className="pack-detail-page__header-container">
+          <div className="header-container">
         {/* Header */}
-        <div className="pack-detail-page__header">
+        <div className="header">
 
-          <div className="pack-detail-page__title-section">
-            <div className="pack-detail-page__title-content">
-            <div className="pack-detail-page__icon">
+          <div className="title-section">
+            <div className="title-content">
+            <div className="icon">
               {pack.iconUrl ? (
                 <img 
                   src={pack.iconUrl} 
                   alt={pack.name}
-                  className="pack-detail-page__icon-img"
+                  className="icon-img"
                 />
               ) : (
-                <div className="pack-detail-page__icon-placeholder">
+                <div className="icon-placeholder">
                   📦
                 </div>
               )}
             </div>
-            <h1 className="pack-detail-page__title">
+            <h1 className="title">
                 {pack.name}
                 {pack.isPinned && (
-                  <PinIcon className="pack-detail-page__pinned-icon" />
+                  <PinIcon className="pinned-icon" />
                 )}
               </h1>
               </div>
             
-            <div className="pack-detail-page__title-content">
+            <div className="title-content">
 
               
-              <div className="pack-detail-page__meta">
-                <div className="pack-detail-page__owner">
+              <div className="meta">
+                <div className="owner">
                   <UserAvatar 
                     primaryUrl={pack.packOwner?.avatarUrl || 'Unknown'} 
-                    className="pack-detail-page__owner-avatar"
+                    className="owner-avatar"
                   />
-                  <span className="pack-detail-page__owner-name">
+                  <span className="owner-name">
                     {t('packDetail.by')} {pack.packOwner?.username || 'Unknown'}
                   </span>
                 </div>
                 
-                <div className="pack-detail-page__view-mode">
+                <div className="view-mode">
                   {getViewModeIcon()}
-                  <span className="pack-detail-page__view-mode-text">
+                  <span className="view-mode-text">
                     {getViewModeText()}
                   </span>
                 </div>
               </div>
             </div>
           </div>
-<div className="pack-detail-page__actions-container">
-          <div className="pack-detail-page__actions">
+<div className="actions-container">
+          <div className="actions">
             <button
-              className="pack-detail-page__download-btn"
+              className="download-btn"
               onClick={handlePackDownloadClick}
               disabled={packDownloadDisabled || !user}
               data-tooltip-id="download-pack-tooltip"
@@ -818,9 +818,9 @@ const PackDetailPage = () => {
             <Tooltip id="download-pack-tooltip" place="bottom" noArrow />
           </div>
           {canEdit && (
-            <div className="pack-detail-page__actions">
+            <div className="actions">
               <button
-                className="pack-detail-page__edit-btn"
+                className="edit-btn"
                 onClick={() => setShowEditPopup(true)}
                 title={t('packDetail.actions.edit')}
               >
@@ -831,9 +831,9 @@ const PackDetailPage = () => {
           )}
 
           {user && (
-            <div className="pack-detail-page__actions">
+            <div className="actions">
               <button
-                className="pack-detail-page__favorite-btn"
+                className="favorite-btn"
                 onClick={handleFavoriteClick}
               >
                 <LikeIcon color={pack.isFavorited ? "#ffffff" : "none"} />
@@ -845,30 +845,30 @@ const PackDetailPage = () => {
         </div>
 
         {/* Stats */}
-        <div className="pack-detail-page__stats">
-          <div className="pack-detail-page__stat">
-            <span className="pack-detail-page__stat-value">
+        <div className="stats">
+          <div className="stat">
+            <span className="stat-value">
               {totalLevels}
             </span>
-            <span className="pack-detail-page__stat-label">
+            <span className="stat-label">
               {t('packDetail.stats.levels')}
             </span>
           </div>
           
-          <div className="pack-detail-page__stat">
-            <span className="pack-detail-page__stat-value">
+          <div className="stat">
+            <span className="stat-value">
               {pack.items?.length || 0}
             </span>
-            <span className="pack-detail-page__stat-label">
+            <span className="stat-label">
               {t('packDetail.stats.items')}
             </span>
           </div>
           
-          <div className="pack-detail-page__stat">
-            <span className="pack-detail-page__stat-value">
+          <div className="stat">
+            <span className="stat-value">
               {formatDate(pack?.createdAt, i18next?.language)}
             </span>
-            <span className="pack-detail-page__stat-label">
+            <span className="stat-label">
               {t('packDetail.stats.created')}
             </span>
           </div>
@@ -876,13 +876,13 @@ const PackDetailPage = () => {
         </div>
 
         {/* Content */}
-        <div className="pack-detail-page__content" ref={scrollRef}>
-          <div className="pack-detail-page__levels-header">
+        <div className="content" ref={scrollRef}>
+          <div className="levels-header">
           {pack?.items && pack.items.length > 0 && getAllFolderIds(pack.items).length > 0 && (
-            <div className="pack-detail-page__tree-controls">
+            <div className="tree-controls">
               {areAllFoldersExpanded() ? (
                 <button
-                  className="pack-detail-page__collapse-expand-btn"
+                  className="collapse-expand-btn"
                   onClick={() => handleCollapseExpandAll(false)}
                   title={t('packDetail.actions.collapseAll')}
                 >
@@ -890,7 +890,7 @@ const PackDetailPage = () => {
                 </button>
               ) : (
                 <button
-                  className="pack-detail-page__collapse-expand-btn"
+                  className="collapse-expand-btn"
                   onClick={() => handleCollapseExpandAll(true)}
                   title={t('packDetail.actions.expandAll')}
                 >
@@ -899,21 +899,21 @@ const PackDetailPage = () => {
               )}
             </div>
           )}
-            <h2 className="pack-detail-page__levels-title">
+            <h2 className="levels-title">
               {t('packDetail.items.title')}
             </h2>
-            <div className="pack-detail-page__levels-header-right">
+            <div className="levels-header-right">
               {canEdit && (
-                <div className="pack-detail-page__add-buttons">
+                <div className="add-buttons">
                   <button
-                    className="pack-detail-page__add-btn"
+                    className="add-btn"
                     onClick={handleAddFolder}
                     title={t('packDetail.actions.addFolder')}
                   >
                     <PlusIcon /> 📁 {t('packDetail.actions.addFolder')}
                   </button>
                   <button
-                    className="pack-detail-page__add-btn"
+                    className="add-btn"
                     onClick={handleAddLevel}
                     title={t('packDetail.actions.addLevel')}
                   >
@@ -922,7 +922,7 @@ const PackDetailPage = () => {
                 </div>
               )}
               {canEdit && totalRenderableItems > 1 && (
-                <span className="pack-detail-page__drag-hint">
+                <span className="drag-hint">
                   {t('packDetail.items.dragHint')}
                 </span>
               )}
@@ -952,7 +952,7 @@ const PackDetailPage = () => {
               >
                 {(provided, snapshot) => (
                   <div
-                    className={`pack-detail-page__items-list ${snapshot.isDraggingOver ? 'is-dragging-over' : ''}`}
+                    className={`items-list ${snapshot.isDraggingOver ? 'is-dragging-over' : ''}`}
                     ref={provided.innerRef}
                     {...provided.droppableProps}
                   >
@@ -979,18 +979,18 @@ const PackDetailPage = () => {
               </Droppable>
             </DragDropContext>
           ) : (
-            <div className="pack-detail-page__empty">
+            <div className="empty">
               <p>{t('packDetail.items.empty')}</p>
               {canEdit && (
-                <div className="pack-detail-page__empty-actions">
+                <div className="empty-actions">
                   <button
-                    className="pack-detail-page__add-btn"
+                    className="add-btn"
                     onClick={handleAddFolder}
                   >
                     <PlusIcon /> {t('packDetail.actions.addFolder')}
                   </button>
                   <button
-                    className="pack-detail-page__add-btn"
+                    className="add-btn"
                     onClick={handleAddLevel}
                   >
                     <PlusIcon /> {t('packDetail.actions.addLevel')}

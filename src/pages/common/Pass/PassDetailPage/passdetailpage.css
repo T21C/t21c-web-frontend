@@ -1,6 +1,7 @@
 .pass-detail {
   color: var(--color-white);
   padding: 2rem 3rem 5rem 3rem;
+  min-height: 90vh;
   display: flex;
   flex-direction: column;
   align-content: center;
