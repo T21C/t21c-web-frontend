@@ -104,7 +104,7 @@ export const createNavigationConfig = (context = {}) => {
         items: [
           { to: "/passes", translationKey: "navigation.main.dropdowns.more.passes" },
           { to: "/rating", translationKey: "navigation.main.dropdowns.more.rating" },
-          { to: "/curations", translationKey: "navigation.main.dropdowns.admin.curations" },
+          { to: "/admin/curations", translationKey: "navigation.main.dropdowns.admin.curations" },
           { divider: true },
           {
             disabled: true,
@@ -134,7 +134,7 @@ export const createNavigationConfig = (context = {}) => {
         items: [
           { to: "/admin/submissions", translationKey: "navigation.main.dropdowns.admin.submissions" },
           { to: "/admin/announcements", translationKey: "navigation.main.dropdowns.admin.announcements" },
-          { to: "/curations", translationKey: "navigation.main.dropdowns.admin.curations" },
+          { to: "/admin/curations", translationKey: "navigation.main.dropdowns.admin.curations" },
           { divider: true },
           { to: "/admin/songs", translationKey: "navigation.main.dropdowns.admin.songs" },
           { to: "/admin/artists", translationKey: "navigation.main.dropdowns.admin.artists" },

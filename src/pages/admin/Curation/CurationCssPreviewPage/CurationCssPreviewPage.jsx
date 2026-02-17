@@ -186,7 +186,14 @@ const CurationCssPreviewPage = () => {
       }
     });
   };
-
+  if (isLoading || !levelData) {
+    return (
+      <div className="curation-css-preview-loading">
+        <div className="spinner spinner-large spinner-primary"></div>
+        <p>{t('curationCssPreview.loading')}</p>
+      </div>
+    );
+  }
 
   // Check if user can access this curation
   if (!canAccessCuration(curation)) {
@@ -212,14 +219,7 @@ const CurationCssPreviewPage = () => {
     );
   }
 
-  if (isLoading || !levelData) {
-    return (
-      <div className="curation-css-preview-loading">
-        <div className="spinner spinner-large spinner-primary"></div>
-        <p>{t('curationCssPreview.loading')}</p>
-      </div>
-    );
-  }
+
 
   return (
     <div className="curation-css-preview-page">
