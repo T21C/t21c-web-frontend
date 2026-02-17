@@ -2,7 +2,7 @@
   "title": "用户管理",
   "modeToggle": {
     "rater": "评级员",
-    "curator": "选谱员"
+    "curator": "精选委员"
   },
   "loading": "正在加载用户……",
   "search": {
@@ -26,14 +26,14 @@
   "roles": {
     "rater": "评级员",
     "superadmin": "超级管理员",
-    "curator": "选谱员",
-    "headCurator": "选谱员长"
+    "curator": "精选委员",
+    "headCurator": "精选委员长"
   },
   "buttons": {
-    "promote": "升级",
-    "demote": "降级",
-    "promoteTo": "升级至 {{role}}",
-    "demoteTo": "降级至 {{role}}"
+    "promote": "升职",
+    "demote": "降职",
+    "promoteTo": "升职至 {{role}}",
+    "demoteTo": "降职至 {{role}}"
   },
 
   "errors": {

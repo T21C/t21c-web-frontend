@@ -40,7 +40,7 @@
   },
   "abilities": {
     "customCSS": "自定义 CSS",
-    "curatorAssignable": "选谱员可分配",
+    "curatorAssignable": "精选委员可分配",
     "raterAssignable": "评级员可分配",
     "showAssigner": "显示分配者",
     "forceDescription": "必填描述",

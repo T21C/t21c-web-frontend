@@ -4,6 +4,9 @@
   "loading": "正在加载提交……",
   "error": "加载提交时出错",
   "details": {
+    "song": "歌曲：",
+    "suffix": "后缀：",
+    "suffixPlaceholder": "可选后缀（例如，\"Nerfed\"）",
     "artist": "曲师：",
     "charter": "谱师：",
     "difficulty": "评级：",
@@ -19,11 +22,19 @@
     },
     "team": "团队：",
     "vfxer": "特效师：",
-    "submitter": "提交者："
+    "submitter": "提交者：",
+    "evidence": "凭证："
   },
   "buttons": {
     "manageCreator": "管理创作者",
     "manageTeam": "管理团队",
+    "manageSong": "管理歌曲",
+    "manageArtist": "管理艺术家",
+    "changeSong": "更改歌曲",
+    "changeArtist": "更改艺术家",
+    "addSongRequest": "请求为新歌曲",
+    "addArtistRequest": "添加新艺术家",
+    "removeArtist": "移除艺术家",
     "allow": "允许",
     "decline": "拒绝",
     "addCharter": "添加采音师",
@@ -47,13 +58,15 @@
   "messages": {
     "success": {
       "approved": "提交批准成功",
-      "rejected": "提交拒绝成功"
+      "rejected": "提交拒绝成功",
+      "suffixUpdated": "后缀更新成功"
     },
     "error": {
       "generic": "发生错误",
       "approve": "提交批准失败",
       "reject": "提交拒绝失败"
-    }
+    },
+      "artistLockedToSong": "曲师已固定至所选歌曲且无法更改"
   },
   "warnings": {
     "pendingProfiles": "将申请创建下列个人资料：",
@@ -70,8 +83,8 @@
     "create": {
       "title": "创建新创作者",
       "namePlaceholder": "输入创作者名称",
-      "success": "创建创作者成功",
-      "error": "创建创作者失败"
+      "success": "创作者创建成功",
+      "error": "创作者创建失败"
     },
     "assign": {
       "title": "指定创建者",
@@ -84,6 +97,15 @@
     "addCreatorFailed": "添加创作者失败",
     "removeCreatorFailed": "删除创作者失败",
     "cannotRemoveLastCharter": "无法删除最后一位采音师",
-    "needProfiles": "所有创作者资料必须在批准前分配"
+    "needProfiles": "所有创作者资料必须在允许提交前分配",
+    "needSongAndArtist": "歌曲和曲师在允许提交前必须设置",
+    "needArtistForSong": "曲师在管理歌曲前必须设置",
+    "artistLockedToSong": "无法修改曲师信息：曲师信息已固定为所选歌曲的信息",
+    "suffixUpdateFailed": "后缀更新失败",
+    "updateSongFailed": "歌曲更新失败",
+    "updateArtistFailed": "艺术家更新失败",
+    "addSongRequestFailed": "歌曲请求添加失败",
+    "addArtistRequestFailed": "曲师请求添加失败",
+    "removeArtistRequestFailed": "曲师请求移除失败"
   }
 } 

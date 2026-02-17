@@ -6,7 +6,7 @@
     "failedToLinkAccount": "绑定 {provider} 账户失败",
     "failedToUnlinkAccount": "解绑 {provider} 账户失败",
     "failedToUpdateProfile": "更新个人资料失败",
-    "invalidFileType": "文件格式无效。请上传jpeg格式、png格式或webp格式图像",
+    "invalidFileType": "文件格式无效。请上传jpeg格式、png格式或webp格式的图像",
     "failedToUploadAvatar": "上传头像失败",
     "failedToRemoveAvatar": "删除头像失败"
   },
@@ -21,7 +21,8 @@
   "avatar": {
     "dragDropOrClick": "拖动文件至此或点击上传",
     "removeAvatar": "删除头像",
-    "removing": "正在删除……"
+    "removing": "正在删除……",
+    "confirmRemove": "你确定移除你的头像吗？此操作不可撤销。"
   },
   "form": {
     "labels": {
@@ -32,10 +33,9 @@
     },
     "emailVerification": {
       "message": "你需要验证你的电子邮箱",
-      "arrow": "→"
+      "arrow": "点我开始"
     },
     "buttons": {
-      "cancel": "取消",
       "saveChanges": "保存更改",
       "saving": "正在保存……"
     }

@@ -6,6 +6,7 @@
       "currentDifficulty": "当前难度：",
       "averageRating": "评级员评级：",
       "communityRating": "玩家评级：",
+      "clearedCount": "通关数：{{count}}",
       "rerateNum": "申请等级：",
       "rerateReason": "重评级原因：",
       "yourRating": "你的评级：",
@@ -20,7 +21,6 @@
     "buttons": {
       "saveChanges": "保存更改",
       "removeRating": "删除评级",
-      "saving": "保存中……",
       "viewAdminRatings": "查看评级员评级",
       "viewCommunityRatings": "查看其他玩家评级"
     },
@@ -52,6 +52,7 @@
     "labels": {
       "yourRating": "你的评级",
       "managerAverage": "评级员平均评级",
+      "clearedCount": "通关数：{{count}}",
       "managerRatings": "评级员评级",
       "communityAverage": "玩家平均评级",
       "communityRatings": "玩家评级",
@@ -98,6 +99,10 @@
           {
             "title": "评论中的ID链接",
             "description": "你可以在评论区添加 ID 指示，例如“#1527”。这将自动将其转换为 idPrefixDontChange:1527"
+          },
+          {
+            "title": "隐藏投票",
+            "description": "你可以通过在搜索栏中添加 \"-vote\" 来隐藏处于投票中的关卡。"
           }
         ]
       },
@@ -135,7 +140,6 @@
           "close": "关闭当前打开的弹出窗口"
         }
       }
-
     }
   }
 } 

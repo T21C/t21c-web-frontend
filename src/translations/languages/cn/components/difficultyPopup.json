@@ -1,7 +1,11 @@
 {
   "tabs": {
     "details": "详细信息",
-    "announcement": "公告"
+    "announcement": "公告",
+    "discordRoles": "Discord 身份组"
+  },
+  "discordRoles": {
+    "title": "同步 Discord 身份组"
   },
   "modal": {
     "create": {
@@ -41,8 +45,8 @@
       "id": "ID",
       "name": "名称",
       "type": "类型",
-      "icon": "图标 链接",
-      "legacyIcon": "传统图标 链接",
+      "icon": "图标链接",
+      "legacyIcon": "传统图标链接",
       "emoji": "表情",
       "legacyEmoji": "传统表情",
       "color": "颜色",
@@ -51,8 +55,23 @@
       "sortOrder": "排序顺序",
       "legacy": "传统名称"
     },
+    "optional": "可选",
     "placeholders": {
-      "color": "#RRGGBB"
+      "color": "#RRGGBB",
+      "id": "如果为空则自动赋值"
+    },
+    "helpText": {
+      "id": "留空则自动分配最小可用 ID"
+    },
+    "icon": {
+      "change": "修改图标",
+      "select": "选择图标",
+      "help": "上传图标文件（JPEG，PNG，WebP或SVG格式，最大 5MB）"
+    },
+    "legacyIcon": {
+      "change": "修改传统图标",
+      "select": "选择传统图标",
+      "help": "上传传统图标文件（JPEG，PNG，WebP或SVG格式，最大 5MB） - 可选"
     }
   },
   "difficultyTypes": {
@@ -179,11 +198,11 @@
         }
       },
       "role": {
-        "create": "创建身份",
-        "label": "身份",
-        "add": "添加身份",
-        "edit": "编辑身份",
-        "delete": "删除身份"
+        "create": "创建身份组",
+        "label": "身份组",
+        "add": "添加身份组",
+        "edit": "编辑身份组",
+        "delete": "删除身份组"
       }
     }
   },
@@ -208,11 +227,7 @@
     }
   },
   "buttons": {
-    "create": "创建",
-    "save": "保存",
-    "delete": "删除",
-    "cancel": "取消",
-    "add": "添加"
+    "create": "创建"
   },
   "errors": {
     "passwordRequired": "需要超管密码",

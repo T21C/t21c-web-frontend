@@ -38,7 +38,7 @@
   "actions": {
     "addLevel": "添加关卡",
     "manageTypes": "管理类型",
-    "manageCurators": "管理选谱员",
+    "manageCurators": "管理精选委员",
     "manageSchedule": "管理每周精选",
     "editCuration": "编辑精选关卡",
     "deleteCuration": "删除精选关卡"

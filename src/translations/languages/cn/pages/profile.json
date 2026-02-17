@@ -42,7 +42,24 @@
   "labels": {
     "totalPasses": "共 {{count}} 个通关记录"
   },
+  "showHiddenPasses": "显示已隐藏通关记录",
+  "hideHiddenPasses": "隐藏已隐藏通关记录",
   "infiniteScroll": {
     "end": "已经到底啦！"
+  },
+  "discordRoleSync": {
+    "buttonTitle": {
+      "own": "刷新你的 Discord 身份组",
+      "other": "为此用户刷新 Discord 身份组"
+    },
+    "success": {
+      "own": "你的 Discord 身份组刷新成功",
+      "other": "Discord 身份组刷新成功"
+    },
+    "errors": {
+      "noUser": "无法确定用户ID",
+      "generic": "Discord 身份组刷新失败",
+      "tooManyRequests": "请求过多。请稍后再试。（{{retryAfter}}）"
+    }
   }
 } 

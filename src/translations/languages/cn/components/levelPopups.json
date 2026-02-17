@@ -6,6 +6,7 @@
     "form": {
       "labels": {
         "song": "曲名",
+        "suffix": "后缀",
         "artist": "曲师",
         "creator": "制作者",
         "charter": "谱师",
@@ -27,15 +28,19 @@
         "ppBaseScore": "无暇基础分",
         "previousBaseScore": "先前基础分",
         "rerateNumber": "重评评级",
-        "rerateReason": "重评原因"
+        "rerateReason": "重评原因",
+        "selectSong": "点击选择歌曲",
+        "suffix": "可选后缀（例如，\"Nerfed\"）"
+      },
+      "badges": {
+        "selected": "已选择"
       },
       "checkboxes": {
         "toRate": "标记为待评级"
       },
       "buttons": {
         "save": {
-          "default": "保存更改",
-          "saving": "保存中……"
+          "default": "保存更改"
         },
         "delete": {
           "default": "删除",
@@ -62,7 +67,8 @@
       "update": "更新关卡失败",
       "delete": "软删除失败",
       "toggleHidden": "切换隐藏状态失败",
-      "restore": "恢复关卡失败"
+      "restore": "恢复关卡失败",
+      "cannotCreateSong": "无法在编辑关卡时创建新歌曲。请选择现有歌曲。"
     },
     "tags": {
       "title": "管理关卡标签",
@@ -88,8 +94,7 @@
     "title": "下载选项",
     "close": "关闭",
     "closePopup": "关闭窗口",
-    "loading": "正在加载下载选项……",
-    "oversizedNotice": "此关卡文件过大，不支持转换。仅可下载原始 zip。",
+    "oversizedNotice": "此关卡文件过大，无法进行转换。仅提供原始压缩文件下载。",
     "step1": {
       "prompt": "选择下载方式：",
       "downloadOriginal": "下载原始文件",

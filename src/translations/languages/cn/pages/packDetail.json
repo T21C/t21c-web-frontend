@@ -16,7 +16,8 @@
   "items": {
     "title": "地图包内容",
     "dragHint": "拖动项目以重新排序或合并它们",
-    "empty": "此包为空。"
+    "empty": "此包为空。",
+    "dragToReorder": "拖动来重新排序"
   },
   "actions": {
     "edit": "编辑此包",

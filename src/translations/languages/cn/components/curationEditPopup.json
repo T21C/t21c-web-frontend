@@ -19,9 +19,7 @@
     "thumbnail": "关卡缩略图"
   },
   "actions": {
-    "cancel": "取消",
-    "save": "保存更改",
-    "saving": "正在保存……"
+    "save": "保存更改"
   },
   "notifications": {
     "updated": "精选关卡更新成功",

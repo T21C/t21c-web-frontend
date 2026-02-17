@@ -9,7 +9,7 @@
   },
   "tabs": {
     "mysql": "MySQL 备份",
-    "files": "Files 备份"
+    "files": "文件备份"
   },
   "stats": {
     "totalSize": "总大小：{{size}}"

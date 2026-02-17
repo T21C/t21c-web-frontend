@@ -4,7 +4,8 @@
     "description": "查看 {{playerName}} 通关 {{song}} - {{artist}} 的记录"
   },
   "banners": {
-    "deleted": "该通关记录已被删除"
+    "deleted": "该通关记录已被删除",
+    "hidden": "该通关记录已从通关记录列表中隐藏"
   },
   "level": {
     "baseScore": "{{score}}PP",
@@ -91,5 +92,26 @@
   },
   "buttons": {
     "edit": "编辑通关记录"
+  },
+  "actions": {
+    "hide": "隐藏",
+    "unhide": "取消隐藏"
+  },
+  "confirm": {
+    "hide": {
+      "title": "隐藏通关记录",
+      "message": "你确定从通关记录列表中隐藏此通关记录吗？它将仅对你可见。",
+      "confirm": "隐藏",
+      "processing": "隐藏中……"
+    },
+    "unhide": {
+      "title": "取消隐藏通关记录",
+      "message": "你确定在通关记录列表中展示此通关记录吗？它将对所有人可见。",
+      "confirm": "取消隐藏",
+      "processing": "取消中……"
+    }
+  },
+  "errors": {
+    "toggleHidden": "可见性更改失败"
   }
 } 

@@ -20,6 +20,11 @@
     "auditLog": "审核日志",
     "auditLogDesc": "查看所有管理员操作的审核日志",
     "curations": "精选关卡",
-    "curationsDesc": "分配质量等级到各个关卡并安排每周精选"
+    "curationsDesc": "分配质量等级到各个关卡并安排每周精选",
+    "songs": "歌曲",
+    "songsDesc": "管理歌曲及相关信息",
+    "artists": "艺术家",
+    "artistsDesc": "管理艺术家和他们的信息"
+
   }
 } 

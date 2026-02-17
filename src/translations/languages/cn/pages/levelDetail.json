@@ -20,7 +20,8 @@
   },
   "tooltips": {
     "loginRequired": "登录以收藏此关卡",
-    "clearRequired": "你需要通过该关卡以评价其评级准确度"
+    "clearRequired": "你需要通过该关卡以评价其评级准确度",
+    "editDisabled": "此关卡已分配超过两个采音师。如果您认为自己应该是​所有者，请联系管理员。"
     },
   "links": {
     "download": "下载关卡",
@@ -52,7 +53,8 @@
     },
     "totalClears": {
       "label": "总通关次数",
-      "value": "{{count}}"
+      "value": "{{count}}",
+      "tooltip": " 共 {{total}} 次，共 {{unique}} 人"
     },
     "waiting": "加载中……"
   },
@@ -103,9 +105,8 @@
   "errors": {
     "loginRequired": "你需要登录以收藏此关卡",
     "likeFailed": "更新收藏状态失败",
-    "voteFailed": "提交评级准确度投票失败",
-    "refreshFailed": "排行榜刷新失败"
-  },
+    "voteFailed": "提交评级准确度投票失败"
+    },
   "messages": {
     "liked": "已收藏！",
     "unliked": "取消收藏",
@@ -130,5 +131,11 @@
   },
   "tags": {
     "header": "关卡标签"
+  },
+  "weeklyAppearance": {
+    "header": "周常展示",
+    "primary": "优秀",
+    "secondary": "传奇",
+    "position": "位于 {{position}}"
   }
 } 

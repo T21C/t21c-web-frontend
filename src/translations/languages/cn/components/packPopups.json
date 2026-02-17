@@ -16,7 +16,6 @@
     "levels": "关卡",
     "alreadyInPack": "已在包中",
     "loading": "正在加载地图包……",
-    "cancel": "取消",
     "addToPack": "添加至地图包",
     "lookupInPacks": "在包中查找",
     "adding": "添加中……",
@@ -30,12 +29,12 @@
       "packCreated": "地图包创建成功"
     },
     "errors": {
-      "addFailed": "添加关卡失败",
-      "fetchPacksFailed": "获取你的地图包失败",
+      "addFailed": "关卡添加失败",
+      "fetchPacksFailed": "地图包获取失败",
       "noPackSelected": "请选择一个包",
       "alreadyInPack": "此关卡已在选中的包中",
       "packFull": "此地图包已达到最大关卡数",
-      "createFailed": "创建地图包失败",
+      "createFailed": "地图包创建失败",
       "generic": "添加此关卡至地图包时发生错误"
     }
   },
@@ -52,7 +51,6 @@
       "placeholder": "https://example.com/icon.png",
       "help": "可选：为你的地图包选择一个图标",
       "upload": "上传图标",
-      "uploading": "上传中……",
       "remove": "删除",
       "removing": "删除中……"
     },
@@ -75,9 +73,7 @@
       "label": "固定在顶部",
       "help": "把此包固定在你的地图包列表顶端"
     },
-    "cancel": "取消",
     "create": "创建地图包",
-    "creating": "创建中……",
     "success": {
       "created": "地图包创建成功！",
       "iconSelected": "图标选择成功！",
@@ -103,7 +99,6 @@
       "placeholder": "https://example.com/icon.png",
       "help": "可选：为你的地图包选择一个图标",
       "upload": "上传图标",
-      "uploading": "上传中……",
       "remove": "删除",
       "removing": "删除中……"
     },
@@ -128,30 +123,41 @@
       "label": "固定在顶部",
       "help": "把此包固定在你的地图包列表顶端"
     },
-    "cancel": "取消",
-    "save": "保存",
-    "saving": "保存中……",
-    "delete": "删除",
+    "save": "保存更改",
+    "delete": "删除此包",
     "deleting": "删除中……",
     "noPermission": "你无权限编辑此包",
     "deleteConfirm": {
       "title": "删除此包",
       "message": "你确定你要删除此包吗？此操作不可撤销。",
-      "cancel": "取消",
-      "confirm": "删除"
+      "confirm": "删除此包"
+    },
+    "transferOwnership": {
+      "label": "更改所有者",
+      "currentOwner": "当前所有者",
+      "placeholder": "按名称或昵称搜索……",
+      "searching": "搜索中……",
+      "noResults": "未找到用户",
+      "selected": "已选中",
+      "transfer": "更改所有者",
+      "transferring": "更改中",
+      "help": "将地图包所有者更改为另一个用户。"
     },
     "success": {
       "updated": "地图包更新成功！",
       "deleted": "地图包删除成功！",
       "iconUploaded": "图标上传成功！",
-      "iconRemoved": "图标删除成功！"
+      "iconRemoved": "图标删除成功！",
+      "ownershipTransferred": "所有者更改成功！"
     },
     "errors": {
       "nameRequired": "需要包名",
-      "updateFailed": "更新此包失败",
-      "deleteFailed": "删除此包失败",
-      "iconUploadFailed": "更新图标失败",
-      "iconRemoveFailed": "删除图标失败"
+      "updateFailed": "地图包更新失败",
+      "deleteFailed": "地图包删除失败",
+      "iconUploadFailed": "图标更新失败",
+      "iconRemoveFailed": "图标删除失败",
+      "selectNewOwner": "请选择新所有者",
+      "transferFailed": "更改所有者失败"
     }
   },
   "downloadPack": {
@@ -162,10 +168,9 @@
     "processing": "正在处理……在我们正在准备下载时请稍等。",
     "processingSubtext": "这可能需要一些时间，具体取决于地图包的总大小。",
     "ready": "下载准备就绪！点击下方按钮以下载。",
-    "readySubtext": "链接失效于{{expiresAt}}.",
+    "readySubtext": "链接失效于{{expiresAt}}。",
     "readySubtextFallback": "链接失效于未知时间。",
     "sizeExceeded": "一次下载的地图包大小不能超过 15GB。请选择较小的地图包或分多次下载。",
-    "cancel": "取消",
     "generateDownload": "生成下载链接",
     "close": "关闭",
     "download": "下载"

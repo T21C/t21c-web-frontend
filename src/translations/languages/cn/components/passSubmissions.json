@@ -1,9 +1,9 @@
 {
-  "noSubmissions": "没有要审核的通关记录",
+  "noSubmissions": "没有待审核的通关记录",
   "details": {
-    "level": "关卡：",
-    "player": "玩家：",
-    "feelingDiff": "体感难度：",
+    "level": "关卡",
+    "player": "玩家",
+    "feelingDiff": "体感难度",
     "speed": "飙速",
     "judgements": {
       "label": "判定："
@@ -31,8 +31,6 @@
   "buttons": {
     "allow": "允许",
     "decline": "拒绝",
-    "save": "保存",
-    "cancel": "取消",
     "reset": "重置",
     "clear": "清除",
     "selectAll": "全选",
@@ -64,10 +62,6 @@
   "modal": {
     "title": "确认操作",
     "confirmMessage": "将把 @{{username}} 分配给 {{playerName}}。继续？",
-    "buttons": {
-      "confirm": "确认",
-      "cancel": "取消"
-    },
     "tooltip": "{{discordUsername}} → {{playerName}}"
   },
   "notifications": {
