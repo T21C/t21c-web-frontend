@@ -127,7 +127,6 @@ const SubmissionManagementPage = () => {
                 {t('submissionManagement.tabs.autoAllow')}
                 {isAutoAllowing && (
                   <div className="loading-spinner">
-                    <RefreshIcon color="#fff" size="20px" />
                   </div>
                 )}
               </button>
