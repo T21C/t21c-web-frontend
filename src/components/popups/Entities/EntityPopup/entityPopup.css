@@ -215,6 +215,7 @@
 }
 
 .entity-popup .popup-loading {
+  min-height: 100px;
   padding: 40px;
   text-align: center;
   color: rgba(255, 255, 255, 0.7);

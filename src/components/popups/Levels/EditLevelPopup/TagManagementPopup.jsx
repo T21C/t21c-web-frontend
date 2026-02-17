@@ -159,7 +159,7 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
             />
 
             {isLoading ? (
-              <p className="tag-management-loading">{t('loading', { ns: 'common' })}</p>
+              <p className="tag-management-loading">{t('loading.generic', { ns: 'common' })}</p>
             ) : availableTags.length === 0 ? (
               <p className="tag-management-empty">
                 {searchQuery ? t('levelPopups.edit.tags.noResults') : t('levelPopups.edit.tags.noAvailableTags')}

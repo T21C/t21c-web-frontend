@@ -77,7 +77,7 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
     return (
       <div className="entity-popup-overlay">
         <div className="entity-popup" ref={popupRef}>
-          <div className="popup-loading">{t('loading', { ns: 'common' })}</div>
+          <div className="popup-loading">{t('loading.generic', { ns: 'common' })}</div>
         </div>
       </div>
     );
