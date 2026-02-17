@@ -1,6 +1,5 @@
 .pass-detail {
   color: var(--color-white);
-  min-height: 100vh;
   padding: 2rem 3rem 5rem 3rem;
   display: flex;
   flex-direction: column;
@@ -656,6 +655,7 @@
   padding: 2rem;
   max-width: 400px;
   width: 90%;
+  -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
 }
 

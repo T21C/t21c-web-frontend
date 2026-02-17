@@ -121,7 +121,7 @@ const PassDetailPage = () => {
 
   if (res == null)
     return (
-      <div style={{ height: "100vh", width: "100vw", backgroundColor: "#090909" }}>
+      <div style={{ height: "100vh", width: "100vw"}}>
         
         <div className="loader loader-pass-detail"></div>
       </div>
