@@ -1,26 +1,24 @@
 {
   "meta": {
     "title": "CSS 预览 - TUF",
-    "description": "预览并编辑精选谱面的自定义 CSS "
+    "description": "预览并编辑精选谱面的自定义 CSS"
   },
   "loading": "正在加载预览……",
   "editor": {
     "title": "CSS 编辑器",
-    "subtitle": "为此精选关卡编辑自定义 CSS ",
+    "subtitle": "为此精选关卡编辑自定义 CSS",
     "cssLabel": "自定义 CSS",
-    "placeholder": "在此处输入你的自定义 CSS ……",
+    "placeholder": "在此处输入你的自定义 CSS……",
     "help": "输入 CSS 规则以自定义该精选谱面的外观。",
     "expand": "展开编辑器",
     "collapse": "收起编辑器"
   },
-  "actions": {
-    "save": "保存更改",
-    "saving": "保存中……",
-    "discard": "放弃修改",
-    "backToEdit": "返回编辑器"
+  "confirmations": {
+    "reset": "放弃所有更改并重置为已保存的 CSS？"
   },
   "notifications": {
-    "saved": "CSS 更改保存成功"
+    "saved": "CSS 更改保存成功",
+    "reset": "已重置为已保存的版本"
   },
   "errors": {
     "saveFailed": "CSS 更改保存失败"

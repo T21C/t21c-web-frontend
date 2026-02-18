@@ -29,7 +29,6 @@ function App() {
         fallback={
           <div
             style={{
-              height: "100vh",
               width: "100vw",
             }}
           >

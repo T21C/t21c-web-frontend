@@ -838,7 +838,7 @@ const CreatorManagementPage = () => {
           type="website"
         />
         
-        <div className="creator-management-container">
+        <div className="creator-management-container page-content">
           <div className="loader loader-level-detail"/>
         </div>
       </div>
@@ -866,7 +866,7 @@ const CreatorManagementPage = () => {
       />
       
       <div className="creator-management-page">
-        <div className="creator-management-container">
+        <div className="creator-management-container page-content">
           <h1>Creator Management</h1>
           
 

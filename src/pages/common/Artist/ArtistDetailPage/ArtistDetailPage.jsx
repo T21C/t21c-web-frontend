@@ -78,7 +78,7 @@ const ArtistDetailPage = () => {
         type="article"
       />
 
-      <div className="artist-detail-container">
+      <div className="artist-detail-container page-content-1000">
         <div className="artist-header">
           {artist.avatarUrl && (
             <div className="artist-avatar-large">

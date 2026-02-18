@@ -1,16 +1,11 @@
 .access-denied-page {
-  background-color: var(--color-black);
   width: 100%;
-  color: var(--color-white);
   min-height: 100vh;
   position: relative;
-  padding-top: 2rem;
 }
 
 .access-denied-page .access-denied-container {
   width: 90%;
-  max-width: 1200px;
-  margin: 0 auto;
   padding: 2rem;
   position: relative;
   z-index: 10;
@@ -19,7 +14,6 @@
 
 .access-denied-page h1 {
   font-size: 2rem;
-  color: var(--color-white);
   margin-bottom: 1rem;
 }
 

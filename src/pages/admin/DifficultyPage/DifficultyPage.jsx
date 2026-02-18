@@ -655,7 +655,7 @@ const DifficultyPage = () => {
           type="website"
         />
         
-        <div className="difficulty-container">
+        <div className="difficulty-container page-content">
           <div className="loader loader-level-detail"/>
         </div>
       </div>
@@ -684,7 +684,7 @@ const DifficultyPage = () => {
       
       <div className="difficulty-page">
         {!isAnyPopupOpen && <ScrollButton />}
-        <div className="difficulty-container">
+        <div className="difficulty-container page-content-1000">
           <div className="header-container">
             <h1>{t('difficulty.header.title')}</h1>
             <button

@@ -45,5 +45,9 @@
   },
   "confirmations": {
     "deleteCuration": "你确定你想要删除此精选关卡吗？"
+  },
+  "pagination": {
+    "pageLabel": "第 ",
+    "pageOf": " 页，共 {{total}} 页"
   }
 }

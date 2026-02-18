@@ -8,7 +8,8 @@
     "failedToUpdateProfile": "Failed to update profile",
     "invalidFileType": "Invalid file type. Please upload a JPEG, PNG, or WebP image.",
     "failedToUploadAvatar": "Failed to upload avatar",
-    "failedToRemoveAvatar": "Failed to remove avatar"
+    "failedToRemoveAvatar": "Failed to remove avatar",
+    "usernameAlphanumeric": "Username can only contain letters, numbers and underscores"
   },
   "success": {
     "passwordChanged": "Password changed successfully!",

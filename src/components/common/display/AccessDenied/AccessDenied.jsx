@@ -21,7 +21,7 @@ const AccessDenied = ({
       />
       
       <div className="access-denied-page">
-        <div className="access-denied-container">
+        <div className="access-denied-container page-content">
           <h1>{t('stateDisplay.accessDenied.title')}</h1>
           <p>{t('stateDisplay.accessDenied.message')}</p>
         </div>

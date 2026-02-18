@@ -202,7 +202,7 @@ const AnnouncementPage = () => {
         />
         
         <div className="announcement-page">
-          <div className="announcement-container">
+          <div className="announcement-container page-content">
             <div className="loader loader-level-detail"/>
           </div>
         </div>
@@ -233,7 +233,7 @@ const AnnouncementPage = () => {
         
         <div className="announcement-page">
           <ScrollButton />
-          <div className="announcement-container">
+          <div className="announcement-container page-content">
             <div className="error-message">{error}</div>
             <button onClick={fetchItems} className="announce-button">
               {t('announcement.buttons.retry')}
@@ -256,7 +256,7 @@ const AnnouncementPage = () => {
       
       <div className="announcement-page">
         <ScrollButton />
-        <div className="announcement-container">
+        <div className="announcement-container page-content">
           <div className="header-container">
             <h1>{t('announcement.header.title')}</h1>
             <button 
@@ -307,7 +307,6 @@ const AnnouncementPage = () => {
           <button
             className="select-all-button"
             onClick={handleSelectAll}
-            style={{ marginBottom: '1rem', marginLeft: '1rem' }}
             disabled={isLoading || (
               activeTab === 'passes' ? passes.length === 0 : 
               activeTab === 'newLevels' ? newLevels.length === 0 : 

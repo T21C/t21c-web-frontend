@@ -240,7 +240,7 @@ const PassDetailPage = () => {
             </div>
           </div>
 
-          <div className="body">
+          <div className="pass-detail-body">
             <div className="info">
               <div className="info-items">
                 <div className="info-item">

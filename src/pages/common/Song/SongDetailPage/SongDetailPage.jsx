@@ -79,7 +79,7 @@ const SongDetailPage = () => {
         type="article"
       />
 
-      <div className="song-detail-container">
+      <div className="song-detail-container page-content-1000">
         <div className="song-header">
           <div className="song-header-content">
             <div className="song-name-wrapper">

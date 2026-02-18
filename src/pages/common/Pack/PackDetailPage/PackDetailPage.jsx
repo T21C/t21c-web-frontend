@@ -738,7 +738,7 @@ const PackDetailPage = () => {
       />
       
       
-      <div className="pack-body">
+      <div className="pack-body page-content-70rem">
       <button 
             className="back-btn"
             onClick={() => navigate('/packs')}

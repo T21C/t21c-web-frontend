@@ -3,7 +3,6 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #121212; /* Dark mode background */
   padding: 1rem;
 }
 
@@ -19,14 +18,12 @@
 }
 
 .callback-page .callback-container h1 {
-  color: #dfdfdf; /* Dark mode primary color */
   margin-bottom: 1.5rem;
   font-size: 2rem;
   transition: color 0.3s ease-in-out;
 }
 
 .callback-page .status-message {
-  color: #E0E0E0; /* Dark mode text color */
   margin-bottom: 1rem;
   line-height: 1.5;
   transition: color 0.3s ease-in-out;
@@ -43,8 +40,8 @@
 }
 
 .callback-page .redirect-message {
-  color: #B0B0B0; /* Dark mode secondary text color */
   font-size: 0.875rem;
+  color: var(--color-white-t60);
   transition: color 0.3s ease-in-out;
 }
 

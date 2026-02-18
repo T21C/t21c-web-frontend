@@ -835,24 +835,6 @@ const LevelDetailPage = ({ mockData = null }) => {
      return css; // trust admins 
   }, []);
 
-  // Scope CSS to level-detail.curated with higher specificity
-  const scopeCSS = useCallback((css) => {
-    if (!css) return '';
-
-    // Extract @import statements to the beginning of the CSS
-    const importStatements = [];
-    let cssWithoutImports = css.replace(/@font-face\s+\{[\s\S]+?}/g, (match) => {
-      importStatements.push(match);
-      return '';
-    });
-    
-    cssWithoutImports = cssWithoutImports.replace(/([^{}]+){/g, '.level-detail.curated[data-custom-styles="true"] $1{')
-    
-    // Combine imports at the beginning with the rest of the CSS
-    const scopedCSS = importStatements.join('\n') + '\n' + cssWithoutImports;
-    return scopedCSS;
-  }, []);
-
   // Generate custom color CSS based on curation's custom color
   const createCustomColorCSS = useCallback((curation) => {
     if (!curation?.customColor || !curation?.type) {
@@ -945,10 +927,8 @@ const LevelDetailPage = ({ mockData = null }) => {
       return null;
     }
 
-    const sanitizedCSS = sanitizeCSS(curation.customCSS);
-    const scopedCSS = scopeCSS(sanitizedCSS);
-    return scopedCSS;
-  }, [sanitizeCSS, scopeCSS]);
+    return sanitizeCSS(curation.customCSS);
+  }, [sanitizeCSS]);
 
   // Simple setter for external CSS overrides (for preview system)
   const setExternalCssOverrideValue = useCallback((css) => {
@@ -971,11 +951,7 @@ const LevelDetailPage = ({ mockData = null }) => {
     const style = document.createElement('style');
     style.type = 'text/css';
     
-    // Apply scoping for external overrides
-    const sanitizedCSS = sanitizeCSS(css);
-    const scopedCSS = scopeCSS(sanitizedCSS);
-
-    style.innerHTML = scopedCSS;
+    style.innerHTML = sanitizeCSS(css);
     style.setAttribute('data-external-override', 'true');
     style.setAttribute('data-level-id', effectiveId);
     style.setAttribute('data-hmr-id', `external-${effectiveId}-${Date.now()}`);
@@ -984,7 +960,7 @@ const LevelDetailPage = ({ mockData = null }) => {
     document.head.appendChild(style);
     setExternalStyleElement(style);
     setExternalCssOverride(css);
-  }, [effectiveId, externalStyleElement, sanitizeCSS, scopeCSS]);
+  }, [effectiveId, externalStyleElement, sanitizeCSS]);
 
   // Expose the setter function globally for the preview system
   useEffect(() => {
@@ -1724,7 +1700,7 @@ const LevelDetailPage = ({ mockData = null }) => {
     return (
       <div className="level-detail">
         
-        <div className="wrapper-level wrapper-level-top">
+        <div className="wrapper-level">
           <div className="deletion-banner-wrapper">
             <div className="deletion-banner">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
@@ -1781,7 +1757,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       >
         
 
-        <div className="wrapper-level wrapper-level-top">
+        <div className="wrapper-level">
         {res?.level?.isDeleted ? (
           <div className="deletion-banner-wrapper">
             <div className="deletion-banner">
@@ -2215,7 +2191,7 @@ const LevelDetailPage = ({ mockData = null }) => {
             </div>
           </div>
 
-          <div className="body">
+          <div className="level-detail-body">
 
             <div className="info">
               {sortedLeaderboard.length > 0 ? (<>

@@ -1,13 +1,5 @@
-.curation-preview-page {
-  min-height: 100vh;
-  background: var(--bg-primary);
-  color: var(--text-primary);
-}
-
 .curation-preview-page__content {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
+  margin: 2rem auto;
 }
 
 .curation-preview-page__header {

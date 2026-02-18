@@ -81,7 +81,7 @@ const SubmissionManagementPage = () => {
       
       <div className="submission-admin-page">
         <ScrollButton />
-        <div className="submissions-admin-container">
+        <div className="submissions-admin-container page-content">
           <div className="header-container">
             <h1>{t('submissionManagement.header.title')}</h1>
             <button 

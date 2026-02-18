@@ -1,17 +1,11 @@
 .creator-management-page {
-  min-height: 100vh;
-  color: #ffffff;
   position: relative;
   z-index: 1;
-  padding: 2rem;
-  padding-top: 2rem;
 }
 
 .creator-management-page .creator-management-container {
-  max-width: 1200px;
   display: flex;
   flex-direction: column;
-  margin: 0 auto;
   padding: 2rem;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);

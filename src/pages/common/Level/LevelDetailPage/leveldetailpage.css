@@ -1,7 +1,8 @@
 /* ===================================
    LEVEL DETAIL PAGE - REFACTORED CSS
-   Easy-to-customize modular approach
+   Base layer: custom curation CSS overrides via unlayered injection
    =================================== */
+@layer level-detail-base {
 
 /* ============================================
    CSS CUSTOM PROPERTIES (DESIGN TOKENS)
@@ -84,7 +85,6 @@
    ============================================ */
 .level-detail {
   color: var(--primary-text);
-  min-height: 100vh;
   position: relative;
 }
 
@@ -92,11 +92,6 @@
   padding: 0 var(--spacing-2xl);
   position: relative;
   z-index: var(--z-content);
-}
-
-.level-detail .wrapper-level-top {
-  padding-top: var(--spacing-xl);
-  position: relative;
 }
 
 /* ============================================
@@ -987,7 +982,7 @@
 /* ============================================
    MAIN BODY LAYOUT
    ============================================ */
-.level-detail .body {
+.level-detail .level-detail-body {
   display: flex;
   align-items: center;
   gap: var(--spacing-md);
@@ -998,7 +993,7 @@
   z-index: 1;
 }
 
-.level-detail .body .info {
+.level-detail .level-detail-body .info {
   display: grid;
   grid-template-columns: repeat(minmax(200px, 1fr));
   gap: var(--spacing-md);
@@ -1010,19 +1005,19 @@
   min-width: 40%;
 }
 
-.level-detail .body .info .info-item {
+.level-detail .level-detail-body .info .info-item {
   display: grid;
   grid-template-columns: 1fr 1fr;
   align-items: center;
   font-weight: bold;
 }
 
-.level-detail .body .info .info-item p {
+.level-detail .level-detail-body .info .info-item p {
   margin: 0;
   width: fit-content;
 }
 
-.level-detail .body .info .info-item .info-desc {
+.level-detail .level-detail-body .info .info-item .info-desc {
   display: inline-block;
   white-space: nowrap;
   overflow: hidden;
@@ -1037,7 +1032,7 @@
   text-shadow: 0 0 5px #000;
 }
 
-.level-detail .body .info .info-button {
+.level-detail .level-detail-body .info .info-button {
   max-height: 2.8rem;
   height: 100%;
   width: 100%;
@@ -1055,13 +1050,13 @@
   margin-top: auto;
 }
 
-.level-detail .body .info .info-button:hover {
+.level-detail .level-detail-body .info .info-button:hover {
   background-color: var(--accent-color);
   transform: translateY(-1px);
   box-shadow: var(--shadow-md);
 }
 
-.level-detail .body .info .not-beaten-container {
+.level-detail .level-detail-body .info .not-beaten-container {
   display: flex;
   gap: var(--spacing-sm);
   flex-direction: column;
@@ -1071,21 +1066,21 @@
   width: 100%;
 }
 
-.level-detail .body .info .not-beaten-container .not-beaten-text {
+.level-detail .level-detail-body .info .not-beaten-container .not-beaten-text {
   font-size: var(--font-size-lg);
   font-weight: bold;
   text-align: center;
   color: var(--secondary-text);
 }
 
-.level-detail .body .info .not-beaten-container .challenge-text {
+.level-detail .level-detail-body .info .not-beaten-container .challenge-text {
   font-size: var(--font-size-sm);
   opacity: 0.5;
   text-align: center;
   color: var(--secondary-text);
 }
 
-.level-detail .body .youtube {
+.level-detail .level-detail-body .youtube {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1097,13 +1092,13 @@
   border: 1px solid var(--glass-border);
 }
 
-.level-detail .body .youtube iframe {
+.level-detail .level-detail-body .youtube iframe {
   height: 100%;
   width: 100%;
   object-fit: contain;
 }
 
-.level-detail .body .youtube .thumbnail-container {
+.level-detail .level-detail-body .youtube .thumbnail-container {
   background-size: cover;
   background-position: center;
   height: 100%;
@@ -1115,7 +1110,7 @@
   background-repeat: no-repeat;
 }
 
-.level-detail .body .youtube .thumbnail-text {
+.level-detail .level-detail-body .youtube .thumbnail-text {
   font-size: 24px;
   font-weight: bold;
   text-align: center;
@@ -1123,12 +1118,12 @@
   text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
 }
 
-.level-detail .body .youtube .thumbnail-text a {
+.level-detail .level-detail-body .youtube .thumbnail-text a {
   color: rgb(117, 188, 255);
   text-decoration: none;
 }
 
-.level-detail .body .youtube .thumbnail-text a:hover {
+.level-detail .level-detail-body .youtube .thumbnail-text a:hover {
   text-decoration: underline;
 }
 
@@ -1499,15 +1494,15 @@
 }
 
 @media (max-width: 1150px) {
-  .level-detail .body {
+  .level-detail .level-detail-body {
     flex-direction: column;
   }
   
-  .level-detail .body .info {
+  .level-detail .level-detail-body .info {
     width: 100%;
   }
   
-  .level-detail .body .youtube {
+  .level-detail .level-detail-body .youtube {
     aspect-ratio: 16/9;
     width: 100%;
   }
@@ -1669,7 +1664,7 @@
   }
   
   
-  .level-detail .body .info .info-item {
+  .level-detail .level-detail-body .info .info-item {
     padding-bottom: var(--spacing-sm);
     gap: var(--spacing-xs);
     display: flex;
@@ -2603,7 +2598,7 @@
     width: 100%;
   }
   
-  .level-detail .body {
+  .level-detail .level-detail-body {
     overflow-x: hidden;
     width: 100%;
   }
@@ -2730,12 +2725,12 @@
 
 /* Improve mobile video container */
 @media (max-width: 768px) {
-  .level-detail .body .youtube {
+  .level-detail .level-detail-body .youtube {
     position: relative;
     overflow: hidden;
   }
   
-  .level-detail .body .youtube iframe {
+  .level-detail .level-detail-body .youtube iframe {
     position: absolute;
     top: 0;
     left: 0;
@@ -2743,7 +2738,7 @@
     height: 100%;
   }
   
-  .level-detail .body .youtube .thumbnail-container {
+  .level-detail .level-detail-body .youtube .thumbnail-container {
     position: absolute;
     top: 0;
     left: 0;
@@ -2769,12 +2764,12 @@
     word-wrap: break-word;
   }
   
-  .level-detail .body .info .info-item p {
+  .level-detail .level-detail-body .info .info-item p {
     line-height: 1.4;
     word-wrap: break-word;
   }
   
-  .level-detail .body .info .info-item .info-desc {
+  .level-detail .level-detail-body .info .info-item .info-desc {
     line-height: 1.3;
     word-wrap: break-word;
   }
@@ -2925,11 +2920,11 @@
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
   }
   
-  .level-detail .body .info .info-item p {
+  .level-detail .level-detail-body .info .info-item p {
     text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
   }
   
-  .level-detail .body .info .info-item .info-desc {
+  .level-detail .level-detail-body .info .info-item .info-desc {
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
   }
   
@@ -3027,8 +3022,8 @@
   
   .level-detail .title-container .level-title,
   .level-detail .title-container .level-info,
-  .level-detail .body .info .info-item p,
-  .level-detail .body .info .info-item .info-desc,
+  .level-detail .level-detail-body .info .info-item p,
+  .level-detail .level-detail-body .info .info-item .info-desc,
   .level-detail .rank h1,
   .level-detail .rank h3 {
     -webkit-user-select: text;
@@ -3053,7 +3048,7 @@
     transform: translateZ(0);
   }
   
-  .level-detail .body {
+  .level-detail .level-detail-body {
     will-change: auto;
     transform: translateZ(0);
   }
@@ -3137,8 +3132,8 @@
   
   .level-detail .title-container .level-title,
   .level-detail .title-container .level-info,
-  .level-detail .body .info .info-item p,
-  .level-detail .body .info .info-item .info-desc,
+  .level-detail .level-detail-body .info .info-item p,
+  .level-detail .level-detail-body .info .info-item .info-desc,
   .level-detail .rank h1,
   .level-detail .rank h3 {
     -webkit-user-select: text;
@@ -3173,11 +3168,11 @@
     height: 1rem;
   }
   
-  .level-detail .body .info .info-item p {
+  .level-detail .level-detail-body .info .info-item p {
     font-size: clamp(0.8rem, 3.5vw, 1rem);
   }
   
-  .level-detail .body .info .info-item .info-desc {
+  .level-detail .level-detail-body .info .info-item .info-desc {
     font-size: clamp(0.7rem, 3vw, 0.9rem);
   }
   
@@ -3200,7 +3195,7 @@
     contain: layout style paint;
   }
   
-  .level-detail .body {
+  .level-detail .level-detail-body {
     contain: layout style paint;
   }
   
@@ -3219,7 +3214,7 @@
     outline: 1px solid transparent;
   }
   
-  .level-detail .body {
+  .level-detail .level-detail-body {
     outline: 1px solid transparent;
   }
   
@@ -3237,8 +3232,8 @@
   
   .level-detail .title-container .level-title,
   .level-detail .title-container .level-info,
-  .level-detail .body .info .info-item p,
-  .level-detail .body .info .info-item .info-desc,
+  .level-detail .level-detail-body .info .info-item p,
+  .level-detail .level-detail-body .info .info-item .info-desc,
   .level-detail .rank h1,
   .level-detail .rank h3 {
     -webkit-font-smoothing: antialiased;
@@ -3264,7 +3259,7 @@
     transform: translateZ(0);
   }
   
-  .level-detail .body {
+  .level-detail .level-detail-body {
     -webkit-transform: translateZ(0);
     -moz-transform: translateZ(0);
     -ms-transform: translateZ(0);
@@ -3636,3 +3631,5 @@
   background-position: center;
   background-repeat: no-repeat;
 }
+
+} /* end @layer level-detail-base */

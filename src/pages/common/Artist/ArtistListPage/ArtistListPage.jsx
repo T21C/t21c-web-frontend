@@ -151,7 +151,7 @@ const ArtistListPage = () => {
         type="website"
       />
 
-      <div className="artist-list-container">
+      <div className="artist-list-container page-content">
         <h1>{t('artistList.title')}</h1>
 
         <div className="artist-list-controls">
@@ -191,7 +191,7 @@ const ArtistListPage = () => {
           <div className="loader loader-level-page"></div>
         ) : (
           <InfiniteScroll
-            style={{ paddingBottom: "7rem", minHeight: "100vh", overflow: "visible" }}
+            style={{ paddingBottom: "7rem", overflow: "visible" }}
             dataLength={artists.length}
             next={handleLoadMore}
             hasMore={hasMore}

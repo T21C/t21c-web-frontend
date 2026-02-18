@@ -10,6 +10,31 @@ import { CustomSelect } from "@/components/common/selectors";
 
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
 
+const Pagination = ({ page, total, pageSize, setPage, setPageSize, pageSizeOptions }  ) => {
+  return (
+    <div className="auditlog-pagination">
+  <span>
+    Page {page} of {Math.ceil(total / pageSize) || 1}
+  </span>
+  <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}>
+    Prev
+  </button>
+  <button
+    onClick={() => setPage((p) => (p * pageSize < total ? p + 1 : p))}
+    disabled={page * pageSize >= total}
+  >
+    Next
+  </button>
+  <CustomSelect
+    options={pageSizeOptions}
+    value={pageSizeOptions.find(opt => opt.value === pageSize.toString())}
+    onChange={(selected) => { setPageSize(Number(selected.value)); setPage(1); }}
+    width="150px"
+  />
+</div>
+  )
+}
+
 const AuditLogPage = () => {
   const currentUrl = window.location.href;
   const [logs, setLogs] = useState([]);
@@ -90,7 +115,7 @@ const AuditLogPage = () => {
           type="website"
         />
         
-      <div className="auditlog-container">
+      <div className="auditlog-container page-content">
         <h1>Audit Logs</h1>
         <div className="auditlog-filters">
           <input
@@ -138,6 +163,7 @@ const AuditLogPage = () => {
             placeholder="Search"
           />
         </div>
+        <Pagination page={page} total={total} pageSize={pageSize} setPage={setPage} setPageSize={setPageSize} pageSizeOptions={pageSizeOptions} />
         <div className="auditlog-card-list">
           {loading ? (
             <div>Loading...</div>
@@ -149,26 +175,7 @@ const AuditLogPage = () => {
             ))
           )}
         </div>
-        <div className="auditlog-pagination">
-          <span>
-            Page {page} of {Math.ceil(total / pageSize) || 1}
-          </span>
-          <button onClick={() => setPage((p) => Math.max(1, p - 1))} disabled={page === 1}>
-            Prev
-          </button>
-          <button
-            onClick={() => setPage((p) => (p * pageSize < total ? p + 1 : p))}
-            disabled={page * pageSize >= total}
-          >
-            Next
-          </button>
-          <CustomSelect
-            options={pageSizeOptions}
-            value={pageSizeOptions.find(opt => opt.value === pageSize.toString())}
-            onChange={(selected) => { setPageSize(Number(selected.value)); setPage(1); }}
-            width="120px"
-          />
-        </div>
+        <Pagination page={page} total={total} pageSize={pageSize} setPage={setPage} setPageSize={setPageSize} pageSizeOptions={pageSizeOptions} />
       </div>
     </div>
   );

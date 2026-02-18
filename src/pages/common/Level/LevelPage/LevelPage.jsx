@@ -462,7 +462,7 @@ const LevelPage = () => {
         />
         
   
-        <div className="level-body">
+        <div className="level-body page-content-70rem">
           <div className="level-body-content" style={{marginTop: "45vh"}} >
             <div className="loader loader-level-page" style={{top: "-6rem"}}></div>
             <p style={{ fontSize: "1.5rem", fontWeight: "bold", justifyContent: "center", textAlign: "center"}}>
@@ -485,7 +485,7 @@ const LevelPage = () => {
       />
       
 
-      <div className="level-body">
+      <div className="level-body page-content-70rem">
         <ScrollButton />
         <ReferencesButton />
         <div className="search-section">
@@ -808,7 +808,7 @@ const LevelPage = () => {
         </div>
 
         <InfiniteScroll
-          style={{ paddingBottom: "7rem", minHeight: "100vh", overflow: "visible", "position": "relative", "zIndex": "5" }}
+          style={{ paddingBottom: "7rem", overflow: "visible", "position": "relative", "zIndex": "5" }}
           dataLength={levelsData.length}
           next={() => setPageNumber((prevPageNumber) => prevPageNumber + 1)}
           hasMore={hasMore}

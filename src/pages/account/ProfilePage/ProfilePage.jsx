@@ -412,8 +412,8 @@ const ProfilePage = () => {
                 <span className="profile-banner-text">{t('profile.emailVerification')}</span>
                 <span className="email-verification-arrow">→</span>
               </div>
-            ) : <br />
-          ): <br />}
+            ) : null
+          ): null}
           {playerData != null ? (Object.keys(playerData).length > 0 ? (
             <div className="player-body">
               <div className="player-content">

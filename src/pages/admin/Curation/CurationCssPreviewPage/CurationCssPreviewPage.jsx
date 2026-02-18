@@ -121,38 +121,48 @@ const CurationCssPreviewPage = () => {
     };
   }, []);
 
+  const hasUnsavedChanges = customCSS !== originalCSS;
+
   const handleSave = async () => {
     if (!curation) {
       toast.error('No curation found for this level');
       return;
     }
 
+    const typeId = curation.typeId ?? curation.type?.id;
+    if (typeId == null || isNaN(Number(typeId))) {
+      toast.error('Curation type is missing');
+      return;
+    }
+
     try {
       setIsSaving(true);
-      
-      await api.put(`${import.meta.env.VITE_CURATIONS}/${curation.id}`, {
-        typeId: parseInt(curation.typeId),
-        shortDescription: curation.shortDescription,
-        description: curation.description,
-        customCSS: customCSS,
-        customColor: curation.customColor
-      });
+
+      const payload = {
+        typeId: parseInt(typeId, 10),
+        shortDescription: curation.shortDescription ?? '',
+        description: curation.description ?? '',
+        customCSS: customCSS ?? '',
+        customColor: curation.customColor ?? null
+      };
+
+      const response = await api.put(`${import.meta.env.VITE_CURATIONS}/${curation.id}`, payload);
+
+      const updatedCuration = response.data?.curation ?? { ...curation, customCSS };
+      setCuration(updatedCuration);
+      setOriginalCSS(customCSS);
+
+      if (levelData?.level?.curation) {
+        setLevelData((prev) => ({
+          ...prev,
+          level: {
+            ...prev.level,
+            curation: { ...prev.level.curation, customCSS }
+          }
+        }));
+      }
 
       toast.success(t('curationCssPreview.notifications.saved'));
-      
-      // Create updated curation object with new CSS
-      const updatedCuration = {
-        ...curation,
-        customCSS: customCSS
-      };
-      
-      // Navigate back to the curation management page with updated data
-      navigate(`/admin/curations`, {
-        state: { 
-          updatedCuration: updatedCuration,
-          action: 'saved'
-        }
-      });
     } catch (error) {
       const errorMessage = error.response?.data?.error || t('curationCssPreview.errors.saveFailed');
       toast.error(errorMessage);
@@ -161,31 +171,40 @@ const CurationCssPreviewPage = () => {
     }
   };
 
-  const handleDiscard = () => {
-    // Create curation object with original CSS
-    const originalCuration = {
-      ...curation,
-      customCSS: originalCSS
-    };
-    
-    // Navigate back to the curation management page with original data
+  const handleReset = () => {
+    const confirmed = window.confirm(t('curationCssPreview.confirmations.reset'));
+    if (!confirmed) return;
+
+    setCustomCSS(originalCSS);
+    toast.success(t('curationCssPreview.notifications.reset'));
+  };
+
+  const handleReturn = () => {
+    if (hasUnsavedChanges) {
+      const confirmed = window.confirm(t('confirmations.unsavedChanges', { ns: 'common' }));
+      if (!confirmed) return;
+    }
+
+    const curationToPass = { ...curation, customCSS: hasUnsavedChanges ? originalCSS : customCSS };
+
     navigate(`/admin/curations`, {
       state: { 
-        updatedCuration: originalCuration,
-        action: 'discarded'
+        updatedCuration: curationToPass,
+        action: 'returned'
       }
     });
   };
 
-  const handleBackToEdit = () => {
-    // Navigate back to the curation edit popup with current CSS
-    navigate(`/admin/curations/edit/${curation?.id || 'new'}`, {
-      state: { 
-        customCSS: customCSS,
-        action: 'backToEdit'
+  // Warn on tab close / navigate away with unsaved changes
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (hasUnsavedChanges) {
+        e.preventDefault();
       }
-    });
-  };
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+    return () => window.removeEventListener('beforeunload', handleBeforeUnload);
+  }, [hasUnsavedChanges]);
   if (isLoading || !levelData) {
     return (
       <div className="curation-css-preview-loading">
@@ -261,32 +280,32 @@ const CurationCssPreviewPage = () => {
             />
             <div className="css-editor-help">
               <p>{t('curationCssPreview.editor.help')}</p>
-              <p><strong>Note:</strong> Write CSS as if targeting <code>.level-detail.curated</code>. The system will automatically scope it properly.</p>
+              <p><strong>Note:</strong> Your CSS is injected as-is after the base styles. Target <code>.level-detail</code> and its descendants. No transformation is applied.</p>
               <p><strong>Example:</strong> <code>.left {'{'} box-shadow: 0 0 10px; {'}'}</code> will target the left section.</p>
             </div>
           </div>
           
           <div className="css-editor-actions">
             <button
-              className="discard-button"
-              onClick={handleDiscard}
-              disabled={isSaving}
+              className="reset-button"
+              onClick={handleReset}
+              disabled={isSaving || !hasUnsavedChanges}
             >
-              {t('curationCssPreview.actions.discard')}
+              {t('buttons.reset', { ns: 'common' })}
             </button>
             <button
               className="save-button"
               onClick={handleSave}
-              disabled={isSaving}
+              disabled={isSaving || !hasUnsavedChanges}
             >
-              {isSaving ? t('loading.saving', { ns: 'common' }) : t('curationCssPreview.actions.save')}
+              {isSaving ? t('loading.saving', { ns: 'common' }) : t('buttons.save', { ns: 'common' })}
             </button>
             <button
-              className="back-to-edit-button"
-              onClick={handleBackToEdit}
+              className="return-button"
+              onClick={handleReturn}
               disabled={isSaving}
             >
-              {t('curationCssPreview.actions.backToEdit')}
+              {t('buttons.return', { ns: 'common' })}
             </button>
           </div>
         </div>

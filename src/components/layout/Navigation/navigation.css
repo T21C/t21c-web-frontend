@@ -16,7 +16,7 @@ nav {
 
 .nav-spacer {
   position: relative;
-  height: 4rem;
+  height: var(--navbar-height);
 }
 
 .nav-wrapper {

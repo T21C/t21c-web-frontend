@@ -292,7 +292,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
         url={currentUrl}
       />
 
-      <div className="entity-management-container">
+      <div className="entity-management-container page-content">
         <h1>{tEntity('title')}</h1>
 
         <div className="controls">
@@ -335,7 +335,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
           <div className="loader loader-level-page"></div>
         ) : (
           <InfiniteScroll
-            style={{ paddingBottom: "7rem", minHeight: "100vh", overflow: "visible" }}
+            style={{ paddingBottom: "7rem", overflow: "visible" }}
             dataLength={entities.length}
             next={handleLoadMore}
             hasMore={hasMore}

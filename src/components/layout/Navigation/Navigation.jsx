@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import "./navigation.css";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "@/contexts/AuthContext";
@@ -18,9 +18,30 @@ const Navigation = ({ children, config: externalConfig = null }) => {
   const [openNav, setOpenNav] = useState(false);
   const { user, initiateLogin } = useAuth();
   const location = useLocation();
+  const navSpacerRef = useRef(null);
 
   // Create navigation config from external config or generate from context
   const config = externalConfig || createNavigationConfig({ user, location });
+
+  // Update global --navbar-height so other elements can use calc(100vh - var(--navbar-height))
+  useEffect(() => {
+    const el = navSpacerRef.current;
+    if (!el) return;
+
+    const setNavbarHeight = () => {
+      const height = el.getBoundingClientRect().height;
+      console.log("navbar height", height);
+      document.documentElement.style.setProperty("--navbar-height", `${height}px`);
+    };
+
+    setNavbarHeight();
+    const observer = new ResizeObserver(setNavbarHeight);
+    observer.observe(el);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   // Close mobile nav when location changes
   useEffect(() => {
@@ -129,7 +150,7 @@ const Navigation = ({ children, config: externalConfig = null }) => {
     <>
       <div className="nav-spacer" />
 
-      <nav>
+      <nav ref={navSpacerRef}>
         <div className="nav-wrapper">
           {/* Left side: Logo and main navigation links */}
           <div className="nav-left">

@@ -129,7 +129,7 @@ const HealthCheckPage = () => {
         type="website"
       />
       
-      <div className="health-check-container">
+      <div className="health-check-container page-content">
         <h1>{t('healthCheck.title')}</h1>
         
         {lastUpdated && (

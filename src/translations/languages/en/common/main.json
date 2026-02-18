@@ -44,7 +44,12 @@
     "add": "Add",
     "remove": "Remove",
     "update": "Update",
-    "upload": "Upload"
+    "upload": "Upload",
+    "return": "Return",
+    "reset": "Reset"
+  },
+  "confirmations": {
+    "unsavedChanges": "You have unsaved changes. Are you sure you want to leave?"
   },
   "promote": "Promote",
   "demote": "Demote",

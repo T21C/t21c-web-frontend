@@ -329,7 +329,7 @@ const PassPage = () => {
         />
         
   
-        <div className="pass-body">
+        <div className="pass-body page-content-70rem">
           {renderContent()}
         </div>
       </div>
@@ -347,7 +347,7 @@ const PassPage = () => {
       />
       
 
-      <div className="pass-body">
+      <div className="pass-body page-content-70rem">
         <ScrollButton />
         <div className="search-section">
           {/* Search Row */}

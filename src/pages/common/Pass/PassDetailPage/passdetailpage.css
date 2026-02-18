@@ -1,7 +1,4 @@
 .pass-detail {
-  color: var(--color-white);
-  padding: 2rem 3rem 5rem 3rem;
-  min-height: 90vh;
   display: flex;
   flex-direction: column;
   align-content: center;
@@ -272,7 +269,7 @@
   margin-top: 0.35rem;
 }
 
-.pass-detail .body {
+.pass-detail .pass-detail-body {
   display: flex;
   gap: 1rem;
   margin-bottom: 1rem;

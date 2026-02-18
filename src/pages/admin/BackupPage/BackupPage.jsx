@@ -678,7 +678,7 @@ const BackupPage = () => {
           type="website"
         />
         
-        <div className="admin-backup-body">
+        <div className="admin-backup-body page-content">
           <div className="loader loader-level-detail"/>
         </div>
       </div>
@@ -704,7 +704,7 @@ const BackupPage = () => {
         image="/og-image.jpg"
         type="website"
       />
-      <div className="admin-backup-body">
+      <div className="admin-backup-body page-content">
         <div className="header-container">
           <h1>{t('backup.header.title')}</h1>
           <button 

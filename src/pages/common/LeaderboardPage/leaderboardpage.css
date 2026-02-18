@@ -1,13 +1,3 @@
-.leaderboard-page .leaderboard-body {
-  position: relative;
-  z-index: 2;
-  padding: 0 1.5rem;
-  padding-top: 2rem;
-  min-height: 100vh;
-  max-width: 70rem;
-  margin: 0 auto;
-  overflow-x: hidden;
-}
 .leaderboard-page .leaderboard-body .leaderboard-input-option {
   position: relative;
   z-index: 3;

@@ -157,8 +157,18 @@ const EditProfilePage = () => {
     };
   }, []);
 
+  const usernameAlphanumericRegex = /^[a-zA-Z0-9_]*$/;
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
+    if (name === 'username') {
+      const sanitized = value.replace(/[^a-zA-Z0-9_]/g, '');
+      setFormData((prev) => ({
+        ...prev,
+        [name]: sanitized,
+      }));
+      return;
+    }
     setFormData((prev) => ({
       ...prev,
       [name]: value,
@@ -351,6 +361,12 @@ const EditProfilePage = () => {
     setError('');
     setSuccess('');
 
+    if (formData.username && !usernameAlphanumericRegex.test(formData.username)) {
+      setError(t('editProfile.error.usernameAlphanumeric'));
+      setIsSavingProfile(false);
+      return;
+    }
+
     try {
       const response = await api.put(`${import.meta.env.VITE_PROFILE}/me`, {
         username: formData.username,
@@ -399,7 +415,7 @@ const EditProfilePage = () => {
     <>
     
     <div className="edit-profile-page">
-      <div className="edit-profile-container">
+      <div className="edit-profile-container page-content-600">
         <h1>{t('editProfile.title')}</h1>
 
         {error && <div className="error-message">{error}</div>}

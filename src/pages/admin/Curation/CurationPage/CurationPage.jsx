@@ -287,9 +287,7 @@ const CurationPage = () => {
       });
 
       // Show appropriate message
-      if (action === 'saved') {
-        toast.success(t('curation.notifications.updated'));
-      } else if (action === 'discarded') {
+      if (action === 'discarded') {
         toast.success(t('curation.notifications.discarded'));
       } else if (action === 'backToEdit') {
         // Open the CurationEditPopup with the updated curation
@@ -412,7 +410,7 @@ const CurationPage = () => {
       
       
       
-      <div className="curation-container">
+      <div className="curation-container page-content">
         <div className="curation-header">
           <h1>{t('curation.title')}</h1>
           <p>{t('curation.description')}</p>
@@ -576,10 +574,10 @@ const CurationPage = () => {
               disabled={currentPage === 1}
               className="curation-pagination-btn"
             >
-              Previous
+              {t('pagination.previous', { ns: 'common' })}
             </button>
             <div className="curation-page-controls">
-              <span>Page </span>
+              <span>{t('curation.pagination.pageLabel')}</span>
               <input
                 type="number"
                 max={totalPages}
@@ -587,15 +585,16 @@ const CurationPage = () => {
                 onChange={handlePageInputChange}
                 onBlur={handlePageInputBlur}
                 className="curation-page-input"
+                aria-label={t('pagination.page', { ns: 'common', page: currentPage, total: totalPages })}
               />
-              <span> of {totalPages}</span>
+              <span>{t('curation.pagination.pageOf', { total: totalPages })}</span>
             </div>
             <button 
               onClick={handleNextPage}
               disabled={currentPage >= totalPages}
               className="curation-pagination-btn"
             >
-              Next
+              {t('pagination.next', { ns: 'common' })}
             </button>
           </div>
         )}

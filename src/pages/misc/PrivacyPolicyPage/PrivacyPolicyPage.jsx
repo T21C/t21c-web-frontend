@@ -16,7 +16,7 @@ const PrivacyPolicyPage = () => {
       />
       
       <div className="privacy-policy">
-        <div className="privacy-container">
+        <div className="privacy-container page-content-70rem">
           <div className="privacy-content">
             <section className="privacy-section">
               <h1>Privacy Policy</h1>

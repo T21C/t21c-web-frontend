@@ -154,7 +154,7 @@ const PackPageContent = () => {
       />
       
       
-      <div className="pack-page__container">
+      <div className="pack-page__container page-content-70rem">
         <div className="pack-page__header">
           <div className="pack-page__title-section">
             <h1 className="pack-page__title">

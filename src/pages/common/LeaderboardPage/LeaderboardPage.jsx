@@ -272,7 +272,7 @@ const LeaderboardPage = () => {
       />
       
 
-      <div className="leaderboard-body">
+      <div className="leaderboard-body page-content-70rem">
         <ScrollButton />  
         
         <div className="leaderboard-input-option">

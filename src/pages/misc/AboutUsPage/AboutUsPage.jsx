@@ -79,7 +79,7 @@ const AboutUsPage = () => {
       />
         
         <div className="about-us">
-        <div className="about-us-container">
+        <div className="about-us-container page-content-70rem">
           <div className="about-content">
             <section className="about-section">
               <h2>{t('about.sections.whoWeAre.title')}</h2>

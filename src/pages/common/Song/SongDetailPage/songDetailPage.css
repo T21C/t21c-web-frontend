@@ -1,12 +1,5 @@
-.song-detail-page {
-  min-height: 100vh;
-  padding: 2rem;
-  color: var(--color-white);
-}
-
 .song-detail-page .song-detail-container {
-  max-width: 1000px;
-  margin: 0 auto;
+  margin: 2rem auto;
 }
 
 .song-detail-page .song-header {

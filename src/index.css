@@ -1,6 +1,8 @@
 @import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap");
 
 :root {
+  /* Set by Navigation.jsx via ResizeObserver; fallback for SSR / before mount */
+  --navbar-height: 2rem;
   --text-color: #f9fafb;
   --color-black: #090909;
   --color-white: #f9fafb;
@@ -44,12 +46,15 @@
   --bg-secondary: #111;
 }
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  scrollbar-color: #ffffff9b #181818;
-  font-family: "Roboto", sans-serif;
+@layer reset {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scrollbar-color: #ffffff9b #181818;
+    color: var(--text-color);
+    font-family: "Roboto", sans-serif;
+  }
 }
 
 .svg-fill path {
@@ -68,9 +73,38 @@ body {
   background-color: var(--color-black);
 }
 
+/* Use --navbar-height for full-height layouts: height: calc(100vh - var(--navbar-height)); min-height: calc(100vh - var(--navbar-height)); */
 .body {
   position: relative;
   z-index: 2;
+  margin: 2rem auto;
+  min-height: calc(90vh - 5rem);
+}
+
+/* Shared content wrappers: max-width + margin: 0 auto */
+.page-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-content-70rem {
+  max-width: 70rem;
+  margin: 0 auto;
+}
+
+.page-content-1000 {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.page-content-600 {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.page-content-800 {
+  max-width: 800px;
+  margin: 0 auto;
 }
 
 .wrapper-top {

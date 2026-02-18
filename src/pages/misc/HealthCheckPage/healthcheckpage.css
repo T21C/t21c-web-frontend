@@ -1,7 +1,5 @@
 .health-check-container {
   width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
   margin-top: 2rem;
   padding: 2rem;
   z-index: 2;

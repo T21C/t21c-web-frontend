@@ -150,7 +150,7 @@ const SongListPage = () => {
         type="website"
       />
 
-      <div className="song-list-container">
+      <div className="song-list-container page-content">
         <h1>{t('songList.title')}</h1>
 
         <div className="song-list-controls">

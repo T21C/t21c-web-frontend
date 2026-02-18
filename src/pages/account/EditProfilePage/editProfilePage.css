@@ -1,23 +1,13 @@
-.edit-profile-page {
-  min-height: 100vh;
-  color: #ffffff;
-  position: relative;
-  z-index: 1;
-  padding: 2rem;
-}
-
 .edit-profile-page .edit-profile-container {
-  max-width: 600px;
   margin: 2rem auto;
   padding: 2rem;
-  background: #222;
+  background: var(--bg-secondary, #222);
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .edit-profile-page .edit-profile-container h1 {
   margin-bottom: 2rem;
-  color: #ffffff;
   font-size: 2rem;
   text-align: center;
 }
@@ -51,7 +41,6 @@
 .edit-profile-page .form-group label {
   display: block;
   margin-bottom: 0.5rem;
-  color: #ffffff;
   font-weight: 500;
 }
 
@@ -61,7 +50,6 @@
   border: 1px solid #404040;
   border-radius: 4px;
   background: #333333;
-  color: #ffffff;
   font-size: 1rem;
   transition: border-color 0.3s ease;
 }
@@ -414,7 +402,6 @@
 
 .edit-profile-page .form-actions .button {
   background: #333333;
-  color: #ffffff;
   border: 1px solid #404040;
 }
 

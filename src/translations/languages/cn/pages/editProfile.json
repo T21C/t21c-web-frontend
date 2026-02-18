@@ -8,7 +8,8 @@
     "failedToUpdateProfile": "更新个人资料失败",
     "invalidFileType": "文件格式无效。请上传jpeg格式、png格式或webp格式的图像",
     "failedToUploadAvatar": "上传头像失败",
-    "failedToRemoveAvatar": "删除头像失败"
+    "failedToRemoveAvatar": "删除头像失败",
+    "usernameAlphanumeric": "用户名只能包含字母、数字和下划线"
   },
   "success": {
     "passwordChanged": "密码修改成功！",

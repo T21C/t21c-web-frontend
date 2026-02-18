@@ -1,7 +1,6 @@
 .home {
   overflow: visible;
   position: relative;
-  color: var(--color-white);
 }
 
 .home .home-container {

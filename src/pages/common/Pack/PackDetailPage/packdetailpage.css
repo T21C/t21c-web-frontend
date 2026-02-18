@@ -1,15 +1,8 @@
-.pack-detail-page {
-  min-height: 90vh;
-}
-
 .pack-detail-page .pack-body {
   position: relative;
   z-index: 2;
   padding: 0 1.5rem;
   padding-top: 2rem;
-  min-height: 100vh;
-  max-width: 70rem;
-  margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;

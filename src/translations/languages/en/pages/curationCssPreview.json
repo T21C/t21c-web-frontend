@@ -13,13 +13,12 @@
     "expand": "Expand Editor",
     "collapse": "Collapse Editor"
   },
-  "actions": {
-    "save": "Save Changes",
-    "discard": "Discard Changes",
-    "backToEdit": "Back to Edit"
+  "confirmations": {
+    "reset": "Discard all changes and reset to saved CSS?"
   },
   "notifications": {
-    "saved": "CSS changes saved successfully"
+    "saved": "CSS changes saved successfully",
+    "reset": "Changes reset to saved version"
   },
   "errors": {
     "saveFailed": "Failed to save CSS changes"

@@ -1,11 +1,3 @@
-.submission-admin-page {
-    width: 100%;
-    color: var(--color-white);
-    min-height: 100vh;
-    font-size: 1.3rem;
-    position: relative;
-  }
-
   .submission-admin-page .notification-badge {
     position: absolute;
     top: -5px;
@@ -773,11 +765,6 @@
   }
 
   .submission-admin-page .submissions-admin-container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 2rem;
-    padding-top: 2rem;
     position: relative;
     z-index: 10;
     padding-bottom: 10rem;
@@ -1123,7 +1110,7 @@
     justify-content: center;
     align-items: center;
     position: relative;
-    margin-bottom: 2rem;
+    padding: 1rem 0;
   }
 
   .submission-admin-page .header-container h1 {

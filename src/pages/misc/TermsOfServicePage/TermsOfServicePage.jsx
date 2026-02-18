@@ -17,7 +17,7 @@ const TermsOfServicePage = () => {
       />
     
       <div className="terms-of-service">
-        <div className="terms-container">
+        <div className="terms-container page-content-70rem">
           <div className="terms-content">
             <section className="terms-section">
               <h1>Terms of Service</h1>

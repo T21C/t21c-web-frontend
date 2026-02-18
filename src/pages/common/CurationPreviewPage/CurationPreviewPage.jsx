@@ -76,7 +76,7 @@ const CurationPreviewPage = () => {
       
       
       
-      <div className="curation-preview-page__content">
+      <div className="curation-preview-page__content page-content-800">
         <div className="curation-preview-page__header">
           <div className="curation-preview-page__type-badge" style={{ backgroundColor: curation.type?.color }}>
             {curation.type?.name}
