@@ -118,7 +118,7 @@ export const createNavigationConfig = (context = {}) => {
         ],
         isActive: (pathname) =>
           pathname.startsWith("/passes") ||
-          pathname.startsWith("/curations") ||
+          pathname.startsWith("/admin/curations") ||
           pathname.startsWith("/rating") ||
           pathname.startsWith("/terms-of-service") ||
           pathname.startsWith("/privacy-policy") ||

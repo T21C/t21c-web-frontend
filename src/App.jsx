@@ -3,6 +3,8 @@ import { Suspense } from "react";
 import { Navigation } from "@/components/layout";
 import { AuthProvider } from '@/contexts/AuthContext';
 import { PrivateRoute } from "@/components/auth";
+import { DeprecatedRedirect } from "@/components/routing/DeprecatedRedirect";
+import { DEPRECATED_ROUTES } from "@/config/deprecatedRoutes";
 import * as Pages from '@/pages/index';
 import { Toaster } from "react-hot-toast";
 
@@ -37,6 +39,14 @@ function App() {
         }
       >
         <Routes>
+          {/* Deprecated routes – redirect to current URLs */}
+          {DEPRECATED_ROUTES.map(({ path, redirect }) => (
+            <Route
+              key={path}
+              path={path}
+              element={<DeprecatedRedirect redirect={redirect} />}
+            />
+          ))}
           {/* Auth Routes */}
           <Route path="login" element={<Pages.LoginPage />} />
           <Route path="register" element={<Pages.RegisterPage />} />
@@ -72,7 +82,6 @@ function App() {
           {/* Admin Routes - Protected */}
           <Route path='admin' element={<PrivateRoute><Pages.AdminPage /></PrivateRoute>} />
           <Route path='admin/submissions' element={<PrivateRoute><Pages.SubmissionManagementPage /></PrivateRoute>} />
-          <Route path='admin/rating' element={<Pages.RatingPage />} />
           <Route path='rating' element={<Pages.RatingPage />} />
           <Route path='admin/announcements' element={<PrivateRoute><Pages.AnnouncementPage /></PrivateRoute>} />
           <Route path='admin/backups' element={<PrivateRoute><Pages.BackupPage /></PrivateRoute>} />
