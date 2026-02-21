@@ -1,29 +1,25 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
-import Cookies from 'js-cookie';
+
+const PROFILE_SETTINGS_KEY = 'profile_settings';
 
 export const ProfileContext = createContext();
 
 export const ProfileContextProvider = ({ children }) => {
-  // Cookie key for storing all profile settings
-  const COOKIE_KEY = 'profile_settings';
-
-  // Initialize settings from cookies
   const [profileSettings, setProfileSettings] = useState(() => {
     try {
-      const savedSettings = Cookies.get(COOKIE_KEY);
-      return savedSettings ? JSON.parse(savedSettings) : {};
+      const saved = localStorage.getItem(PROFILE_SETTINGS_KEY);
+      return saved ? JSON.parse(saved) : {};
     } catch (e) {
-      console.error('Error parsing profile settings from cookies:', e);
+      console.error('Error parsing profile settings:', e);
       return {};
     }
   });
 
-  // Save settings to cookies whenever they change
   useEffect(() => {
     try {
-      Cookies.set(COOKIE_KEY, JSON.stringify(profileSettings), { expires: 365 });
+      localStorage.setItem(PROFILE_SETTINGS_KEY, JSON.stringify(profileSettings));
     } catch (e) {
-      console.error('Error saving profile settings to cookies:', e);
+      console.error('Error saving profile settings:', e);
     }
   }, [profileSettings]);
 

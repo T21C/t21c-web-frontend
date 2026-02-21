@@ -1,6 +1,5 @@
 /* eslint-disable react/prop-types */
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from "react"
-import Cookies from 'js-cookie';
 import api from '@/utils/api';
 import { useAuth } from './AuthContext';
 import { useLocation } from 'react-router-dom';
@@ -12,38 +11,31 @@ const PackContextProvider = (props) => {
     const { user } = useAuth();
     const location = useLocation();
     
-    // Page-exclusive state for pack browsing/filtering
     const [packs, setPacks] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(false);
 
-    // Pagination state
     const [hasMore, setHasMore] = useState(true);
     const [pageNumber, setPageNumber] = useState(0);
 
-    // Favorites state
     const [favorites, setFavorites] = useState([]);
     const [favoritesLoading, setFavoritesLoading] = useState(false);
     
-    // Filter state (with cookie persistence)
-    const [filters, setFilters] = useState(() => { return {
-        query: Cookies.get('pack_query') || "",
-        viewMode: Cookies.get('pack_viewMode') || LevelPackViewModes.PUBLIC,
-        sort: Cookies.get('pack_sort') || "RECENT",
-        order: Cookies.get('pack_order') || "DESC",
-        myLikesOnly: Cookies.get('pack_myLikesOnly') === 'true' || false
-    }});
+    const [filters, setFilters] = useState(() => ({
+        query: localStorage.getItem('pack_query') || "",
+        viewMode: localStorage.getItem('pack_viewMode') || LevelPackViewModes.PUBLIC,
+        sort: localStorage.getItem('pack_sort') || "RECENT",
+        order: localStorage.getItem('pack_order') || "DESC",
+        myLikesOnly: localStorage.getItem('pack_myLikesOnly') === 'true' || false
+    }));
     
-    // Use ref to access current filters without causing re-renders
     const filtersRef = useRef(filters);
     filtersRef.current = filters;
 
-    // Save filters to cookies
     useEffect(() => {
-        // Convert values to strings for cookie storage
         Object.entries(filters).forEach(([key, value]) => {
-            const cookieValue = value === null || value === undefined ? '' : value;
-            Cookies.set(`pack_${key}`, cookieValue, { expires: 365 });
+            const str = value === null || value === undefined ? '' : String(value);
+            localStorage.setItem(`pack_${key}`, str);
         });
     }, [filters]);
 

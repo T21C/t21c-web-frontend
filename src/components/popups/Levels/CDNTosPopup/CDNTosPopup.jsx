@@ -1,7 +1,8 @@
 import { useTranslation } from 'react-i18next';
-import Cookies from 'js-cookie';
 import './cdntospopup.css';
 import { useState } from 'react';
+
+const CDN_TOS_AGREED_KEY = 'cdn_tos_agreed';
 
 const CDNTosPopup = ({ onAgree, onDecline }) => {
     const { t } = useTranslation('pages');
@@ -9,7 +10,7 @@ const CDNTosPopup = ({ onAgree, onDecline }) => {
 
     const handleAgree = () => {
         if (dontShowAgain) {
-            Cookies.set('cdn_tos_agreed', 'true', { expires: 365 }); // Cookie expires in 1 year
+            localStorage.setItem(CDN_TOS_AGREED_KEY, 'true');
         }
         onAgree();
     };

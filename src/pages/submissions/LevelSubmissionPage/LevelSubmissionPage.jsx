@@ -15,7 +15,6 @@ import { ArtistSelectorPopup } from "@/components/popups/Artists";
 
 import api from "@/utils/api";
 import { prepareZipForUpload, validateZipSize } from '@/utils/zipUtils';
-import Cookies from 'js-cookie';
 import { useNavigate } from "react-router-dom";
 import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { QuestionmarkCircleIcon } from "@/components/common/icons";
@@ -623,7 +622,7 @@ const LevelSubmissionPage = () => {
 
   // Check if user has agreed to CDN ToS
   const hasAgreedToCdnTos = () => {
-    return Cookies.get('cdn_tos_agreed') === 'true';
+    return localStorage.getItem('cdn_tos_agreed') === 'true';
   };
 
   const handleCdnTosAgree = () => {

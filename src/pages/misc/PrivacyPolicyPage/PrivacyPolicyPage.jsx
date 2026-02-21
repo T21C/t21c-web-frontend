@@ -97,7 +97,7 @@ const PrivacyPolicyPage = () => {
                 </div>
                 <div className="cookie-type">
                   <h3>Preference Cookies</h3>
-                  <p>These cookies allow the website to remember choices for sorting and filtering you select. The information these cookies collect is anonymous and they do not track your browsing activity on other websites.</p>
+                  <p>These cookies allow the website to remember choices for sorting and filtering you select. The information these cookies collect is anonymous and they do not track your browsing activity in any way.</p>
                 </div>
               </div>
             </section>

@@ -1,50 +1,51 @@
 /**
- * Cookie utility functions for managing browser cookies
- */
-
-/**
- * Set a cookie with the given name, value, and optional expiration days
- * @param {string} name - Cookie name
- * @param {string} value - Cookie value
- * @param {number} days - Number of days until expiration (default: 30)
+ * Local storage utility (replaces cookie-based preference storage).
+ * Same API as before for compatibility; values persist until cleared.
+ *
+ * @param {string} name - Key name
+ * @param {string} value - Value
+ * @param {number} days - Ignored; kept for API compatibility
  */
 export const setCookie = (name, value, days = 30) => {
-  const expires = new Date();
-  expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
-  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+  try {
+    localStorage.setItem(name, value);
+  } catch (e) {
+    console.warn('Failed to set storage:', e);
+  }
 };
 
 /**
- * Get a cookie value by name
- * @param {string} name - Cookie name
- * @returns {string|null} - Cookie value or null if not found
+ * Get a value by key
+ * @param {string} name - Key name
+ * @returns {string|null} - Value or null if not found
  */
 export const getCookie = (name) => {
-  const nameEQ = name + "=";
-  const ca = document.cookie.split(';');
-  for (let i = 0; i < ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
-    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+  try {
+    return localStorage.getItem(name);
+  } catch (e) {
+    return null;
   }
-  return null;
 };
 
 /**
- * Delete a cookie by name
- * @param {string} name - Cookie name
+ * Delete a key
+ * @param {string} name - Key name
  */
 export const deleteCookie = (name) => {
-  document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;`;
+  try {
+    localStorage.removeItem(name);
+  } catch (e) {
+    console.warn('Failed to remove storage:', e);
+  }
 };
 
 /**
- * Check if a cookie exists and has a specific value
- * @param {string} name - Cookie name
+ * Check if key exists and has a specific value
+ * @param {string} name - Key name
  * @param {string} value - Expected value
- * @returns {boolean} - True if cookie exists and matches value
+ * @returns {boolean}
  */
 export const hasCookieValue = (name, value) => {
-  const cookieValue = getCookie(name);
-  return cookieValue === value;
+  const stored = getCookie(name);
+  return stored === value;
 };

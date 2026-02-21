@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from "@/contexts/AuthContext";
-import axios from 'axios';
+import api from '@/utils/api';
 import './callback.css';
 
 const CallbackPage = () => {
@@ -10,7 +10,7 @@ const CallbackPage = () => {
   const [loading, setLoading] = useState(true);
   const [isLinking, setIsLinking] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
-  const { fetchUser, getOriginUrl, clearOriginUrl } = useAuth();
+  const { fetchUser, setUser, getOriginUrl, clearOriginUrl } = useAuth();
 
   const handleContinue = () => {
     setRedirecting(true);
@@ -53,38 +53,23 @@ const CallbackPage = () => {
       }
 
       try {
-        // Handle login flow
         const link = linking ? `/v2/auth/oauth/link/${provider}` : `/v2/auth/oauth/callback/${provider}`;
+        const response = await api.post(link, { code, linking });
 
-        const response = await axios.post(
-          `${import.meta.env.VITE_API_URL}${link}`,
-          { 
-            code,
-            linking
-           }
-        );
-
-        // Handle different response formats for linking vs. authentication
         if (linking) {
-          // For linking, we don't expect a token in the response
-          // Just check if the request was successful
           if (response.status === 200) {
-            // Refresh user data to get updated linked accounts
             await fetchUser();
             handleSuccessfulAuth();
           } else {
             throw new Error('Linking failed');
           }
         } else {
-          // For regular authentication, expect a token
-          const { token } = response.data;
-          if (token) {
-            localStorage.setItem('token', token);
-            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            await fetchUser();
+          const { user: userData } = response.data;
+          if (userData) {
+            setUser(userData);
             handleSuccessfulAuth();
           } else {
-            throw new Error('No token received from server');
+            throw new Error('No user received from server');
           }
         }
       } catch (err) {

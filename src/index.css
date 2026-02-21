@@ -52,7 +52,7 @@
     padding: 0;
     box-sizing: border-box;
     scrollbar-color: #ffffff9b #181818;
-    color: var(--text-color);
+    color: inherit;
     font-family: "Roboto", sans-serif;
   }
 }

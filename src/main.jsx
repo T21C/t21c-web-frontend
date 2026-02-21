@@ -1,6 +1,9 @@
 import ReactDOM from 'react-dom/client';
+import { runNonAuthCookieClearOnLaunch } from '@/utils/cookieClearUtil';
 import App from '@/App';
 import '@/index.css';
+
+runNonAuthCookieClearOnLaunch();
 import { BrowserRouter } from 'react-router-dom';
 import { LevelContextProvider } from '@/contexts/LevelContext';
 import { I18nextProvider } from "react-i18next";
