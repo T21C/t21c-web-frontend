@@ -185,7 +185,6 @@ const ProfilePage = () => {
           }
 
 
-          console.log(response);
           if (response.data?.success) {
             toast.success(
               hasFlag(user, permissionFlags.SUPER_ADMIN) 

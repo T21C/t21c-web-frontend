@@ -30,7 +30,6 @@ const Navigation = ({ children, config: externalConfig = null }) => {
 
     const setNavbarHeight = () => {
       const height = el.getBoundingClientRect().height;
-      console.log("navbar height", height);
       document.documentElement.style.setProperty("--navbar-height", `${height}px`);
     };
 
