@@ -38,10 +38,6 @@ interface ImportMetaEnv {
   readonly VITE_BACKUP_API: string;
   readonly VITE_RATERS_API: string;
 
-  // External API Keys
-  readonly VITE_YOUTUBE_API_KEY: string;
-  readonly VITE_RECAPTCHA_SITE_KEY: string;
-
   readonly VITE_APRIL_FOOLS: boolean;
 
   readonly VITE_CDN_URL: string;

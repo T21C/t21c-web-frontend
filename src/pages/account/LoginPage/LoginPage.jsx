@@ -169,12 +169,12 @@ const LoginPage = () => {
       }
       if (captchaRequired) {
         setRequireCaptcha(true);
-        setCaptchaKey(prev => prev + 1);
-        if (!requireCaptcha) { 
-          // delay render to allow captcha to load
-          await new Promise(resolve => setTimeout(resolve, 500))
-        };
-        setCaptchaToken(null);
+      }
+      // Always reset captcha on failed login so we never reuse an old token (e.g. after interceptor returned "Refresh token required")
+      setCaptchaToken(null);
+      setCaptchaKey(prev => prev + 1);
+      if (captchaRequired && !requireCaptcha) {
+        await new Promise(resolve => setTimeout(resolve, 500));
       }
     } finally {
       setLoading(false);

@@ -58,8 +58,12 @@ api.interceptors.response.use(
     const originalRequest = error.config;
 
     if (error.response?.status === 401 && !originalRequest._retry) {
-      if (originalRequest.url?.includes('/auth/refresh') || originalRequest.url?.includes('/auth/logout')) {
-        window.dispatchEvent(new Event('auth:logout'));
+      // Don't try refresh for auth endpoints that return 401 as part of their normal flow
+      const isLoginOrRegister = originalRequest.url?.includes('/auth/login') || originalRequest.url?.includes('/auth/register');
+      if (isLoginOrRegister || originalRequest.url?.includes('/auth/refresh') || originalRequest.url?.includes('/auth/logout')) {
+        if (!isLoginOrRegister) {
+          window.dispatchEvent(new Event('auth:logout'));
+        }
         return Promise.reject(error);
       }
 
