@@ -104,7 +104,7 @@ export const NotificationProvider = ({ children }) => {
     }
 
     const apiUrl = import.meta.env.VITE_API_URL;
-    const eventsEndpoint = `${apiUrl}/events`;
+    const eventsEndpoint = `${apiUrl}/v2/events`;
 
     console.debug('SSE: Setting up new connection');
     eventSourceRef.current = new EventSource(eventsEndpoint, {

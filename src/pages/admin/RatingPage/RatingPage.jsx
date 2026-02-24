@@ -129,7 +129,7 @@ const RatingPage = () => {
           params.set('userId', user.id);
         }
 
-        const url = `${import.meta.env.VITE_API_URL}/events?${params.toString()}`;
+        const url = `${import.meta.env.VITE_API_URL}/v2/events?${params.toString()}`;
         console.debug('SSE Client: Connecting to', url);
 
         eventSource = new EventSource(url, {

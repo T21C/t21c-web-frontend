@@ -1,6 +1,6 @@
 import "./packpage.css";
-import "../../sort.css";
-import "../../search-section.css";
+import "@/pages/common/sort.css";
+import "@/pages/common/search-section.css";
 import { useContext, useEffect, useState, useCallback, useRef } from "react";
 
 import { PackCard } from "@/components/cards";

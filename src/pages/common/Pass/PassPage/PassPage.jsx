@@ -1,6 +1,6 @@
 import "./passpage.css";
-import "../../sort.css";
-import "../../search-section.css";
+import "@/pages/common/sort.css";
+import "@/pages/common/search-section.css";
 import { useContext, useEffect, useState, useCallback } from "react";
 
 import { MetaTags } from "@/components/common/display";

@@ -54,7 +54,7 @@ const PackDownloadPopup = ({
     // Connect to SSE endpoint with specific source for this download BEFORE API call
     const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002';
     const source = `packDownload:${preDownloadId}`;
-    const eventSource = new EventSource(`${apiUrl}/events?source=${encodeURIComponent(source)}`, {
+    const eventSource = new EventSource(`${apiUrl}/v2/events?source=${encodeURIComponent(source)}`, {
       withCredentials: true
     });
 
