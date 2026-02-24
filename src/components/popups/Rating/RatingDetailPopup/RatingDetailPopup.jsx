@@ -10,6 +10,9 @@ import { ExternalLinkIcon, DownloadIcon } from '@/components/common/icons';
 import { formatCreatorDisplay } from "@/utils/Utility";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import toast from 'react-hot-toast';
+import autoratercato from "@/assets/icons/autorater cato.png";
+import { Tooltip } from "react-tooltip";
 // Cache for video data
 const videoCache = new Map();
 
@@ -23,7 +26,7 @@ async function updateRating(id, rating, comment, isCommunityRating = false) {
     });
 
     if (!response.data.rating) {
-      throw new Error('Failed to update rating');
+      throw new Error(response.error || 'Failed to update rating');
     }
 
     return response.data.rating;
@@ -65,6 +68,7 @@ export const RatingDetailPopup = ({
   const [isDetailsCollapsed, setIsDetailsCollapsed] = useState(false);
   const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [showSecondRatings, setShowSecondRatings] = useState(false);
+  const [isAutorating, setIsAutorating] = useState(false);
 
   const popupRef = useRef(null);
 
@@ -234,6 +238,26 @@ export const RatingDetailPopup = ({
     document.addEventListener('keydown', handleKeyPress);
     return () => document.removeEventListener('keydown', handleKeyPress);
   }, [hasUnsavedChanges, isSaving, pendingRating, pendingComment, isCommentRequired, initialRating]);
+
+
+  const runAutorate = async (ratingId) => {
+    if (isAutorating) return;
+    setIsAutorating(true);
+    try {
+      await api.post(`${import.meta.env.VITE_API_URL}/v2/external/autorate/${ratingId}`);
+      toast.success(t('rating.detailPopup.messages.autorateSuccess'));
+      const { data } = await api.get(import.meta.env.VITE_RATING_API);
+      setRatings(data);
+      const updated = data?.find((r) => r.id === selectedRating?.id);
+      if (updated) setSelectedRating(updated);
+    } catch (error) {
+      console.error('Error autorating rating:', error);
+      toast.error(error.response?.data?.error || error.response?.data?.message || error.message || error.error || t('rating.detailPopup.errors.autorateFailed'));
+    } finally {
+      setIsAutorating(false);
+    }
+  };
+
 
   const validateRating = (rating) => {
       setIsCommentRequired(true);
@@ -628,6 +652,29 @@ export const RatingDetailPopup = ({
                     <label className="rating-field-label">
                       {showSecondRatings ? t('rating.detailPopup.labels.communityRatings') : t('rating.detailPopup.labels.adminRatings')}
                     </label>
+                    {isSuperAdmin && (
+                      <button
+                        type="button"
+                        className={`autorater-icon-btn ${isAutorating ? 'autorater-icon--loading' : ''}`}
+                        onClick={() => runAutorate(selectedRating?.id)}
+                        disabled={isAutorating}
+                        aria-busy={isAutorating}
+                        aria-label="Autorate"
+                      >
+                        <img 
+                        src={autoratercato} 
+                          alt="AutoRater" 
+                          className="autorater-icon"
+                          data-tooltip-id="autorate-tooltip"
+                        />
+                      </button>
+                    )}
+                    <Tooltip id="autorate-tooltip" place="right" noArrow >
+                      Estimate rating
+                      <br /> 
+                      meow :3
+                    </Tooltip>
+                  
                     <button 
                       className={`ratings-toggle-btn ${showSecondRatings ? 'show-second' : ''}`}
                       onClick={() => setShowSecondRatings(!showSecondRatings)}

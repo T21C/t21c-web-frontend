@@ -20,7 +20,8 @@
       "saveFailed": "Nie udało się zapisać zmian",
       "updateFailed": "Nie udało się zaaktualizować oceny",
       "unsavedChanges": "Masz niezapisane zmiany. Czy na pewno chcesz zamknąć?",
-      "deleteFailed": "Nie udało się usunąć oceny"
+      "deleteFailed": "Nie udało się usunąć oceny",
+      "autorateFailed": "Nie udało się zautomatyzować oceny"
     },
     "tooltips": {
       "lastUpdated": "Ostatnio zaktualizowane",
@@ -32,6 +33,9 @@
     },
     "confirmations": {
       "deleteRating": "Czy na pewno chcesz usunąć tą ocenę gracza {{username}}?"
+    },
+    "messages": {
+      "autorateSuccess": "Ocena zautomatyzowana pomyślnie"
     }
   },
   "ratingCard": {

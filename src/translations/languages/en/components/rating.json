@@ -30,7 +30,8 @@
       "saveFailed": "Failed to save changes",
       "updateFailed": "Failed to update rating",
       "unsavedChanges": "You have unsaved changes. Are you sure you want to close?",
-      "deleteFailed": "Failed to delete rating"
+      "deleteFailed": "Failed to delete rating",
+      "autorateFailed": "Failed to autorate rating"
     },
     "tooltips": {
       "lastUpdated": "Last updated time",
@@ -45,7 +46,8 @@
       "deleteRating": "Are you sure you want to delete this rating from {{username}}?"
     },
     "messages": {
-      "ratingBanned": "You are not allowed to rate"
+      "ratingBanned": "You are not allowed to rate",
+      "autorateSuccess": "Rating autorated successfully"
     }
   },
   "ratingCard": {

@@ -30,7 +30,8 @@
       "saveFailed": "保存更改失败",
       "updateFailed": "更新评级失败",
       "unsavedChanges": "你有未保存的更改，确定要退出吗？",
-      "deleteFailed": "删除评级失败"
+      "deleteFailed": "删除评级失败",
+      "autorateFailed": "自动评级失败"
     },
     "tooltips": {
       "lastUpdated": "上次更新时间",
@@ -45,7 +46,8 @@
       "deleteRating": "你确定删除 {{username}} 的评级吗？"
     }, 
     "messages": {
-      "ratingBanned": "你没有评级权限"
+      "ratingBanned": "你没有评级权限",
+      "autorateSuccess": "自动评级成功"
     }
   },
   "ratingCard": {
