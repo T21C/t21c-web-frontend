@@ -198,6 +198,7 @@ const BackupList = ({ backups, type, isLoadingBackups, showConfirmation, storedP
   const [newName, setNewName] = useState('');
   const [renameLoading, setRenameLoading] = useState(false);
   const [downloadProgress, setDownloadProgress] = useState({});
+  const [downloadIndeterminate, setDownloadIndeterminate] = useState({});
   const [downloading, setDownloading] = useState({});
 
   const getFileNameAndExtension = (filename) => {
@@ -252,6 +253,7 @@ const BackupList = ({ backups, type, isLoadingBackups, showConfirmation, storedP
     try {
       setDownloading(prev => ({ ...prev, [backup.filename]: true }));
       setDownloadProgress(prev => ({ ...prev, [backup.filename]: 0 }));
+      setDownloadIndeterminate(prev => ({ ...prev, [backup.filename]: true }));
 
       const response = await api.get(
         `${import.meta.env.VITE_BACKUP_API}/download/${type}/${backup.filename}`,
@@ -261,8 +263,12 @@ const BackupList = ({ backups, type, isLoadingBackups, showConfirmation, storedP
           },
           responseType: 'blob',
           onDownloadProgress: (progressEvent) => {
-            const percentCompleted = Math.round((progressEvent.loaded * 100) / progressEvent.total);
-            setDownloadProgress(prev => ({ ...prev, [backup.filename]: percentCompleted }));
+            const total = progressEvent.total;
+            if (total != null && total > 0) {
+              const percentCompleted = Math.min(100, Math.round((progressEvent.loaded * 100) / total));
+              setDownloadProgress(prev => ({ ...prev, [backup.filename]: percentCompleted }));
+              setDownloadIndeterminate(prev => ({ ...prev, [backup.filename]: false }));
+            }
           }
         }
       );
@@ -276,15 +282,19 @@ const BackupList = ({ backups, type, isLoadingBackups, showConfirmation, storedP
       link.parentNode.removeChild(link);
       window.URL.revokeObjectURL(url);
 
+      setDownloadProgress(prev => ({ ...prev, [backup.filename]: 100 }));
+      setDownloadIndeterminate(prev => ({ ...prev, [backup.filename]: false }));
       setTimeout(() => {
         setDownloadProgress(prev => ({ ...prev, [backup.filename]: 0 }));
+        setDownloadIndeterminate(prev => ({ ...prev, [backup.filename]: false }));
         setDownloading(prev => ({ ...prev, [backup.filename]: false }));
-      }, 1000);
+      }, 400);
     } catch (error) {
       console.error('Failed to download backup:', error);
       toast.error(t('backup.notifications.downloadFailed'));
       setDownloading(prev => ({ ...prev, [backup.filename]: false }));
       setDownloadProgress(prev => ({ ...prev, [backup.filename]: 0 }));
+      setDownloadIndeterminate(prev => ({ ...prev, [backup.filename]: false }));
     }
   };
 
@@ -302,7 +312,8 @@ const BackupList = ({ backups, type, isLoadingBackups, showConfirmation, storedP
       <div className="backup-list">
         {backups.map((backup) => {
           const [fileName, extension] = getFileNameAndExtension(backup.filename);
-          const progress = downloadProgress[backup.filename] || 0;
+          const progress = downloadProgress[backup.filename] ?? 0;
+          const isIndeterminate = downloadIndeterminate[backup.filename];
           const isDownloading = downloading[backup.filename];
           const circumference = 2 * Math.PI * 10;
           const offset = circumference - (progress / 100) * circumference;
@@ -311,7 +322,7 @@ const BackupList = ({ backups, type, isLoadingBackups, showConfirmation, storedP
             <div key={backup.filename} className="backup-item">
               <div className="download-wrapper">
                 <div className={`download-progress ${isDownloading ? 'visible' : ''}`}>
-                  <svg className="progress-circle" width="24" height="24">
+                  <svg className="progress-circle" width="24" height="24" viewBox="0 0 24 24">
                     <circle
                       className="progress-background"
                       cx="12"
@@ -319,12 +330,12 @@ const BackupList = ({ backups, type, isLoadingBackups, showConfirmation, storedP
                       r="10"
                     />
                     <circle
-                      className="progress-bar"
+                      className={`progress-bar ${isIndeterminate && isDownloading ? 'indeterminate' : ''}`}
                       cx="12"
                       cy="12"
                       r="10"
                       strokeDasharray={circumference}
-                      strokeDashoffset={offset}
+                      strokeDashoffset={isIndeterminate && isDownloading ? 0 : offset}
                     />
                   </svg>
                 </div>

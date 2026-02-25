@@ -1137,11 +1137,45 @@ const LevelDetailPage = ({ mockData = null }) => {
           ...prevRes,
           bpm: response.data.bpm ?? prevRes.bpm,
           tilecount: response.data.tilecount ?? prevRes.tilecount,
-          accessCount: response.data.accessCount ?? prevRes.accessCount
+          accessCount: response.data.accessCount ?? prevRes.accessCount,
+          metadata: response.data.metadata ?? prevRes.metadata
         };
       });
     } catch (error) {
       console.error("Error fetching CDN data:", error);
+    }
+  }, [effectiveId, mockData]);
+
+  const fetchPassesForLevel = useCallback(async () => {
+    if (!effectiveId || mockData) {
+      return;
+    }
+
+    try {
+      const response = await api.get(`${import.meta.env.VITE_PASSES}/level/${effectiveId}`);
+      const passes = Array.isArray(response.data) ? response.data : [];
+      setRes(prevRes => {
+        if (!prevRes?.level) return prevRes;
+        return {
+          ...prevRes,
+          level: {
+            ...prevRes.level,
+            passes
+          }
+        };
+      });
+    } catch (error) {
+      console.error("Error fetching passes for level:", error);
+      setRes(prevRes => {
+        if (!prevRes?.level) return prevRes;
+        return {
+          ...prevRes,
+          level: {
+            ...prevRes.level,
+            passes: []
+          }
+        };
+      });
     }
   }, [effectiveId, mockData]);
 
@@ -1168,7 +1202,12 @@ const LevelDetailPage = ({ mockData = null }) => {
       setRes(prevRes => ({
         ...prevRes,
         ...levelData.data,
-        isLiked: false // Initialize as false, will be fetched separately
+        level: {
+          ...levelData.data?.level,
+          // Keep previous passes until fetchPassesForLevel overwrites (avoids empty leaderboard flash)
+          passes: prevRes?.level?.passes
+        },
+        isLiked: prevRes?.isLiked ?? false
       }));
       setNotFound(false);
       
@@ -1176,9 +1215,12 @@ const LevelDetailPage = ({ mockData = null }) => {
         toast.success(t('levelDetail.leaderboard.refreshed'));
       }
       
-      // Fetch like status separately after main data is loaded
-      await fetchIsLiked();
-      await fetchCdnData();
+      // Assemble extra bits from separate endpoints: passes, CDN metadata, like status
+      await Promise.all([
+        fetchPassesForLevel(),
+        fetchCdnData(),
+        fetchIsLiked()
+      ]);
     } catch (error) {
       console.error("Error fetching level data:", error);
       if (error.response?.status === 404 || error.response?.status === 403) {
@@ -1191,7 +1233,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       setInfoLoading(false);
       setIsRefreshingLeaderboard(false);
     }
-  }, [effectiveId, mockData, t, fetchIsLiked, fetchCdnData]);
+  }, [effectiveId, mockData, t, fetchIsLiked, fetchCdnData, fetchPassesForLevel]);
 
   useEffect(() => {
     fetchLevelData();
@@ -1611,7 +1653,8 @@ const LevelDetailPage = ({ mockData = null }) => {
             ...response.data.level,
             difficulty: response.data.level.difficulty,
             baseScore: response.data.level.baseScore,
-            publicComments: response.data.level.publicComments
+            publicComments: response.data.level.publicComments,
+            passes: prevRes?.level?.passes
           }
         }));
       }
@@ -1645,10 +1688,6 @@ const LevelDetailPage = ({ mockData = null }) => {
             likes: response.data.likes
           }
         }));
-        
-        // Refresh like status from server to ensure cache consistency
-        await fetchIsLiked();
-        
         toast.success(action === 'like' ? t('levelDetail.messages.liked') : t('levelDetail.messages.unliked'));
       }
     } catch (error) {
@@ -2405,9 +2444,10 @@ const LevelDetailPage = ({ mockData = null }) => {
               level: {
                 ...prevRes.level,
                 ...newLevel,
-                aliases: newLevel.aliases || prevRes.level.aliases
+                aliases: newLevel.aliases ?? prevRes.level?.aliases,
+                passes: prevRes?.level?.passes
               },
-              rerateHistory: updatedLevel.rerateHistory || prevRes.rerateHistory // ensure rerateHistory is updated
+              rerateHistory: updatedLevel.rerateHistory ?? prevRes.rerateHistory
             }));
           }}
         />
@@ -2430,7 +2470,7 @@ const LevelDetailPage = ({ mockData = null }) => {
           level={res.level}
           onClose={() => setShowAddToPackPopup(false)}
           onSuccess={() => {
-            // Optionally refresh data or show success message
+            fetchLevelData(false);
           }}
         />
       )}
