@@ -40,7 +40,7 @@ export default defineConfig(({ command, mode }) => {
     build: {
       sourcemap: mode === 'development',
       minify: mode !== 'development',
-      outDir: 'dist',
+      outDir: process.env.BUILD_OUT_DIR || 'dist',
       assetsDir: 'assets',
       manifest: true,
       cssCodeSplit: true,

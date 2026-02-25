@@ -7,9 +7,9 @@
     "dev": "vite --host",
     "staging": "vite --mode staging --host",
     "prod": "vite --mode production --host",
-    "build:dev": "vite build --mode development && serve -s dist -l 5173",
-    "build:staging": "vite build --mode staging",
-    "build:prod": "cross-env NODE_OPTIONS='--max-old-space-size=8192' vite build --mode production",
+    "build:dev": "cross-env BUILD_OUT_DIR=dist.tmp vite build --mode development && node scripts/swap-dist.mjs && serve -s dist -l 5173",
+    "build:staging": "cross-env BUILD_OUT_DIR=dist.tmp vite build --mode staging && node scripts/swap-dist.mjs",
+    "build:prod": "cross-env BUILD_OUT_DIR=dist.tmp NODE_OPTIONS='--max-old-space-size=8192' vite build --mode production && node scripts/swap-dist.mjs",
     "preview": "vite preview",
     "preview:prod": "vite preview --mode production",
     "lint": "eslint . --ext js,jsx --max-warnings 0"
