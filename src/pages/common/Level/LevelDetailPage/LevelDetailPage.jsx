@@ -1179,6 +1179,25 @@ const LevelDetailPage = ({ mockData = null }) => {
     }
   }, [effectiveId, mockData]);
 
+  const fetchRatingData = useCallback(async () => {
+    if (!effectiveId || mockData) {
+      return;
+    }
+
+    try {
+      const response = await api.get(`${import.meta.env.VITE_LEVELS}/${effectiveId}/ratings`);
+      setRes(prevRes => {
+        if (!prevRes) return prevRes;
+        return {
+          ...prevRes,
+          ratings: response.data ?? prevRes.ratings
+        };
+      });
+    } catch (error) {
+      console.error("Error fetching rating data:", error);
+    }
+  }, [effectiveId, mockData]);
+
   const fetchLevelData = useCallback(async (isRefresh = false) => {
     // Use mock data if provided - completely override everything
     if (mockData) {
@@ -1219,7 +1238,8 @@ const LevelDetailPage = ({ mockData = null }) => {
       await Promise.all([
         fetchPassesForLevel(),
         fetchCdnData(),
-        fetchIsLiked()
+        fetchIsLiked(),
+        fetchRatingData()
       ]);
     } catch (error) {
       console.error("Error fetching level data:", error);
@@ -1233,7 +1253,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       setInfoLoading(false);
       setIsRefreshingLeaderboard(false);
     }
-  }, [effectiveId, mockData, t, fetchIsLiked, fetchCdnData, fetchPassesForLevel]);
+  }, [effectiveId, mockData, t, fetchIsLiked, fetchCdnData, fetchPassesForLevel, fetchRatingData]);
 
   useEffect(() => {
     fetchLevelData();
