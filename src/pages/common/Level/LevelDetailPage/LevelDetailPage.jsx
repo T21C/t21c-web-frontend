@@ -1782,7 +1782,6 @@ const LevelDetailPage = ({ mockData = null }) => {
     );
 
   const difficulty = difficultyDict[res.level.diffId];
-  const averageDifficulty = difficultyDict[res.ratings?.averageDifficultyId];
   
   // Use tags from level data, sorted by groupSortOrder then sortOrder
   const tags = [...(res.level.tags || [])].sort((a, b) => {
@@ -1868,13 +1867,13 @@ const LevelDetailPage = ({ mockData = null }) => {
                   alt={difficulty.name || 'Difficulty icon'} 
                   className="difficulty-icon"
                 />
-                {(res.ratings?.averageDifficultyId && 
-                 averageDifficulty?.icon) &&
-                 averageDifficulty?.type == "PGU" &&
-                 difficulty.name.startsWith("Q") ?
+                {res.ratings?.averageDifficultyId && 
+                 difficultyDict[res.ratings?.averageDifficultyId]?.icon &&
+                 difficultyDict[res.ratings?.averageDifficultyId]?.type == "PGU" &&
+                 difficulty.name.includes("Q") ?
                 <img 
                     className="rating-icon"
-                    src={averageDifficulty.icon}
+                    src={difficultyDict[res.ratings?.averageDifficultyId]?.icon}
                     alt="Rating icon" />
                 : null
                 }
