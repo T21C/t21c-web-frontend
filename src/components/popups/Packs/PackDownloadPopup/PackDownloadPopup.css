@@ -51,6 +51,7 @@
 .pack-download-popup__title {
   font-size: 1.3rem;
   font-weight: 600;
+  overflow: hidden;
   margin: 0;
 }
 
@@ -62,6 +63,8 @@
 
 .pack-download-popup__description {
   font-size: 0.9rem;
+  overflow: hidden;
+  max-width: 100%;
   color: rgb(141 255 85);
 }
 
@@ -99,6 +102,21 @@
   background: rgba(255, 82, 82, 0.15);
   color: #ff8080;
   font-weight: 500;
+}
+
+.pack-download-popup__checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.pack-download-popup__checkbox {
+  width: 1rem;
+  height: 1rem;
+  accent-color: var(--accent-primary, #687bff);
 }
 
 .pack-download-popup__actions {

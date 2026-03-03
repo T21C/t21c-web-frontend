@@ -285,14 +285,14 @@ const CreatePackPopup = ({ onClose, onCreate }) => {
               onClick={onClose}
               disabled={loading}
             >
-              {t('packPopups.createPack.cancel')}
+              {t('buttons.cancel', { ns: 'common' })}
             </button>
             <button
               type="submit"
               className="create-pack-popup__create-btn"
               disabled={loading || !formData.name.trim()}
             >
-              {loading ? t('packPopups.createPack.creating') : t('packPopups.createPack.create')}
+              {loading ? t('loading.creating', { ns: 'common' }) : t('packPopups.createPack.create')}
             </button>
           </div>
         </form>

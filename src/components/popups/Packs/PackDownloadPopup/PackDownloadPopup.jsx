@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import './PackDownloadPopup.css';
 import { formatEstimatedSize } from '@/utils/packDownloadUtils';
 
@@ -19,6 +19,7 @@ const PackDownloadPopup = ({
   const [error, setError] = useState(null);
   const [downloadData, setDownloadData] = useState(null);
   const [progress, setProgress] = useState(null);
+  const [trimFolderNames, setTrimFolderNames] = useState(true);
   
   // Track the pre-generated downloadId for SSE subscription
   const [preDownloadId, setPreDownloadId] = useState(null);
@@ -167,8 +168,8 @@ const PackDownloadPopup = ({
     await new Promise(resolve => setTimeout(resolve, 100));
 
     try {
-      // Pass the pre-generated downloadId to the API
-      const response = await onRequestDownload(downloadId);
+      // Pass the pre-generated downloadId and options to the API
+      const response = await onRequestDownload(downloadId, { trimFolderNames });
       if (!response || !response.url) {
         throw new Error('Download link was not returned by the server.');
       }
@@ -228,20 +229,16 @@ const PackDownloadPopup = ({
           {step === 'confirm' && (
             <div className="pack-download-popup__step pack-download-popup__step--confirm">
               {!exceedsSizeLimit && (<p className="pack-download-popup__description">
-                {contextName 
-                  ? (() => {
-                      const desc = t('packPopups.downloadPack.description', { contextName: 'PLACEHOLDER' });
-                      const parts = desc.split('PLACEHOLDER');
-                      return (
-                        <>
-                          {parts[0]}
-                          <strong>{contextName}</strong>
-                          {parts[1]}
-                        </>
-                      );
-                    })()
-                  : t('packPopups.downloadPack.descriptionFallback')
-                }
+                {contextName ? (
+                  <Trans
+                    ns="components"
+                    i18nKey="packPopups.downloadPack.description"
+                    values={{ contextName }}
+                    components={{ strong: <strong /> }}
+                  />
+                ) : (
+                  t('packPopups.downloadPack.descriptionFallback')
+                )}
               </p> )}
               <div className="pack-download-popup__estimate-container">
                 <span className="pack-download-popup__estimate-label">{t('packPopups.downloadPack.estimatedSize')} </span>
@@ -265,12 +262,21 @@ const PackDownloadPopup = ({
                   {error}
                 </div>
               )}
+              <label className="pack-download-popup__checkbox-label">
+                <input
+                  type="checkbox"
+                  checked={trimFolderNames}
+                  onChange={(e) => setTrimFolderNames(e.target.checked)}
+                  className="pack-download-popup__checkbox"
+                />
+                {t('packPopups.downloadPack.trimFolderNames')}
+              </label>
               <div className="pack-download-popup__actions">
                 <button
                   className="pack-download-popup__secondary-btn"
                   onClick={onClose}
                 >
-                  {t('packPopups.downloadPack.cancel')}
+                  {t('buttons.cancel', { ns: 'common' })}
                 </button>
                 <button
                   className="pack-download-popup__primary-btn"

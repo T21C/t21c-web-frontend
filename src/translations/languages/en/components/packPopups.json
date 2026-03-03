@@ -162,7 +162,7 @@
   },
   "downloadPack": {
     "title": "Download {{contextName}}",
-    "description": "This will generate a downloadable archive for {{contextName}}.",
+    "description": "This will generate a downloadable archive for <strong>{{contextName}}</strong>.",
     "descriptionFallback": "This will generate a downloadable archive for this selection.",
     "estimatedSize": "Estimated size:",
     "processing": "Processing... please wait while we prepare the download.",
@@ -173,6 +173,7 @@
     "sizeExceeded": "Pack download cannot exceed 15GB at once. Select a smaller pack or split into multiple downloads.",
     "generateDownload": "Generate Download",
     "close": "Close",
-    "download": "Download"
+    "download": "Download",
+    "trimFolderNames": "Shorten folder names for path compatibility"
   }
 }
