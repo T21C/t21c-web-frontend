@@ -2,7 +2,6 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import api from '@/utils/api';
 import { useNotification } from './NotificationContext';
 import { useNavigate } from 'react-router-dom';
-import Cookies from 'js-cookie';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
 const AuthContext = createContext();
@@ -18,26 +17,36 @@ export const AuthProvider = ({ children }) => {
   const { restartNotifications, resetNotifications, cleanup } = useNotification();
   const navigate = useNavigate();
 
-  // Cookie management for origin URL
+  // LocalStorage management for origin URL (5 minute expiration)
+  const ORIGIN_URL_KEY = 'originUrl';
+  const ORIGIN_URL_EXPIRY_KEY = 'originUrl_expiry';
+  const ORIGIN_URL_EXPIRY_MS = 5 * 60 * 1000; // 5 minutes in ms
+
   const getOriginUrl = () => {
-    return Cookies.get('originUrl') || null;
+    const value = localStorage.getItem(ORIGIN_URL_KEY);
+    const expiry = localStorage.getItem(ORIGIN_URL_EXPIRY_KEY);
+    if (!value) return null;
+    if (!expiry || Date.now() > Number(expiry)) {
+      localStorage.removeItem(ORIGIN_URL_KEY);
+      localStorage.removeItem(ORIGIN_URL_EXPIRY_KEY);
+      return null;
+    }
+    return value;
   };
 
   const setOriginUrl = (url) => {
     if (url) {
-      // Set cookie with 5 minute expiration
-      Cookies.set('originUrl', url, { 
-        expires: 1/288, // 5 minutes (1/288 of a day)
-        secure: true,
-        sameSite: 'strict'
-      });
+      localStorage.setItem(ORIGIN_URL_KEY, url);
+      localStorage.setItem(ORIGIN_URL_EXPIRY_KEY, String(Date.now() + ORIGIN_URL_EXPIRY_MS));
     } else {
-      Cookies.remove('originUrl');
+      localStorage.removeItem(ORIGIN_URL_KEY);
+      localStorage.removeItem(ORIGIN_URL_EXPIRY_KEY);
     }
   };
 
   const clearOriginUrl = () => {
-    Cookies.remove('originUrl');
+    localStorage.removeItem(ORIGIN_URL_KEY);
+    localStorage.removeItem(ORIGIN_URL_EXPIRY_KEY);
   };
 
   // Listen for auth events
