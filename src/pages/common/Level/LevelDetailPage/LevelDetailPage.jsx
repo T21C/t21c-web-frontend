@@ -79,29 +79,17 @@ const getRatingAccuracyColor = (value) => {
 
 const getHighScores = (players) => {
   if (!players?.length) return null;
-  
+  const sortedPlayers = players.sort((a, b) => 
+    new Date(a.vidUploadTime) - new Date(b.vidUploadTime));
+  console.log(sortedPlayers);
   return {
-    firstClear: players
-    .sort(((a, b) => 
-      new Date(a.vidUploadTime) < new Date(b.vidUploadTime) ? a : b))
-    .reduce((a, b) => 
-      new Date(a.vidUploadTime) < new Date(b.vidUploadTime) ? a : b),
-    highestScore: players
-    .sort(((a, b) => 
-      new Date(a.vidUploadTime) < new Date(b.vidUploadTime) ? a : b))
-    .reduce((a, b) => 
+    firstClear: sortedPlayers[0],
+    highestScore: sortedPlayers.reduce((a, b) => 
       b.scoreV2 > a.scoreV2 ? b : a),
-    highestAcc: players
-    .sort(((a, b) => 
-      new Date(a.vidUploadTime) < new Date(b.vidUploadTime) ? a : b))
-    .reduce((a, b) => 
+    highestAcc: sortedPlayers.reduce((a, b) => 
       b.accuracy > a.accuracy ? b : a),
-    highestSpeed: players.some(p => p.speed) ? 
-      players
-      .sort(((a, b) => 
-        new Date(a.vidUploadTime) < new Date(b.vidUploadTime) ? a : b))
-      .sort((a, b) => (b.scoreV2 || 0) - (a.scoreV2 || 0))
-      .reduce((a, b) => (b.speed || 0) > (a.speed || 0) ? b : a) : null
+    highestSpeed: sortedPlayers.some(p => p.speed) ? 
+      sortedPlayers.reduce((a, b) => (b.speed || 0) > (a.speed || 0) ? b : a) : null
   };
 };
 
