@@ -44,12 +44,11 @@ const PrivacyPolicyPage = () => {
                   </ul>
                 </div>
                 <div className="data-category">
-                  <h3>Cookies</h3>
+                  <h3>Cookies and Storage</h3>
                   <p>Information maintained through cookies and similar tracking technologies.</p>
                   <ul>
-                    <li>Session cookies</li>
-                    <li>Search settings cookies</li>
-                    <li>Authentication tokens</li>
+                    <li>Session authentication cookies</li>
+                    <li>Local storage for preferences and settings</li>
                   </ul>
                 </div>
               </div>
@@ -89,17 +88,8 @@ const PrivacyPolicyPage = () => {
 
             <section className="privacy-section">
               <h2>Cookies</h2>
-              <p>We use cookies to hold basic information for website functionality. Cookies are files with a small amount of data which may include an anonymous unique identifier.</p>
-              <div className="cookie-types">
-                <div className="cookie-type">
-                  <h3>Essential Cookies</h3>
-                  <p>These cookies are necessary for the website to function and cannot be switched off in our systems. They are usually only set in response to actions made by you which amount to a request for services, such as setting your privacy preferences, logging in, or filling in forms.</p>
-                </div>
-                <div className="cookie-type">
-                  <h3>Preference Cookies</h3>
-                  <p>These cookies allow the website to remember choices for sorting and filtering you select. The information these cookies collect is anonymous and they do not track your browsing activity in any way.</p>
-                </div>
-              </div>
+              <p>We use cookies only and only to store your authentication token. It will never be used to track your browsing activity or to store any other information.</p>
+              <p>These cookies are required for the authentication system to function. By creating and using an account, you agree to the use of these cookies.</p>
             </section>
 
             <section className="privacy-section">

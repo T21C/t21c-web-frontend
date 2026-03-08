@@ -70,10 +70,6 @@
   transition: transform 0.2s ease;
 }
 
-.privacy-policy .data-category:hover {
-  transform: translateY(-5px);
-}
-
 .privacy-policy .data-category h3 {
   color: #fff;
   margin: 0 0 0.75rem 0;
@@ -104,10 +100,6 @@
   transition: transform 0.2s ease;
 }
 
-.privacy-policy .partner-card:hover {
-  transform: translateY(-5px);
-}
-
 .privacy-policy .partner-card h3 {
   color: #fff;
   margin: 0 0 0.75rem 0;
@@ -131,10 +123,6 @@
   border-radius: 4px;
   padding: 1.5rem;
   transition: transform 0.2s ease;
-}
-
-.privacy-policy .cookie-type:hover {
-  transform: translateY(-5px);
 }
 
 .privacy-policy .cookie-type h3 {
