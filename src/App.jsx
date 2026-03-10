@@ -1,7 +1,6 @@
 import { Route, Routes } from "react-router-dom";
 import { Suspense } from "react";
 import { Navigation } from "@/components/layout";
-import { AuthProvider } from '@/contexts/AuthContext';
 import { PrivateRoute } from "@/components/auth";
 import { DeprecatedRedirect } from "@/components/routing/DeprecatedRedirect";
 import { DEPRECATED_ROUTES } from "@/config/deprecatedRoutes";

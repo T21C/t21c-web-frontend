@@ -34,6 +34,7 @@ const queryClient = new QueryClient({
   },
 });
 
+// i love my little chud pyramid of doom
 ReactDOM.createRoot(document.getElementById('root')).render(
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
