@@ -10,7 +10,7 @@ import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
-    <AuthProvider>
+    <>
       <Navigation />
       <div className="body">
       <Toaster
@@ -103,7 +103,7 @@ function App() {
         </Routes>
       </Suspense>
       </div>
-    </AuthProvider>
+    </>
   );
 }
 
