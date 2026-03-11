@@ -291,6 +291,7 @@
 }
 
 .curation-page .curation-action-btn {
+  padding: 0.35rem;
   display: flex;
   align-items: center;
   justify-content: center;
