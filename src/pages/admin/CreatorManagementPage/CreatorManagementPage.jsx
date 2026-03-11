@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 
 import { CustomSelect } from '@/components/common/selectors';
@@ -324,7 +324,6 @@ const CreatorManagementPage = () => {
         teamsCancelTokenRef.current.cancel('Component unmounted');
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, teamSearchQuery]);
   
   const handleCreateTeam = async () => {
