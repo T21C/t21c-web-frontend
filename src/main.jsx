@@ -7,7 +7,6 @@ runNonAuthCookieClearOnLaunch();
 import { BrowserRouter } from 'react-router-dom';
 import { LevelContextProvider } from '@/contexts/LevelContext';
 import { I18nextProvider } from "react-i18next";
-import { UserContextProvider } from '@/contexts/UserContext';
 import { GoogleOAuthProvider } from "@react-oauth/google"
 import { AuthProvider } from '@/contexts/AuthContext';
 import { PlayerContextProvider } from '@/contexts/PlayerContext';
@@ -45,23 +44,21 @@ ReactDOM.createRoot(document.getElementById('root')).render(
               <LevelContextProvider>
                 <NotificationProvider>
                   <I18nextProvider i18n={i18next}>
-                    <UserContextProvider>
-                      <PlayerContextProvider>
-                        <ProfileContextProvider>
-                          <RatingFilterProvider>
-                            <PassContextProvider>
-                              <PackContextProvider>
-                                <ArtistContextProvider>
-                                  <SongContextProvider>
-                                    <App />
-                                  </SongContextProvider>
-                                </ArtistContextProvider>
-                              </PackContextProvider>
-                            </PassContextProvider>
-                          </RatingFilterProvider>
-                        </ProfileContextProvider>
-                      </PlayerContextProvider>
-                    </UserContextProvider>
+                    <PlayerContextProvider>
+                      <ProfileContextProvider>
+                        <RatingFilterProvider>
+                          <PassContextProvider>
+                            <PackContextProvider>
+                              <ArtistContextProvider>
+                                <SongContextProvider>
+                                  <App />
+                                </SongContextProvider>
+                              </ArtistContextProvider>
+                            </PackContextProvider>
+                          </PassContextProvider>
+                        </RatingFilterProvider>
+                      </ProfileContextProvider>
+                    </PlayerContextProvider>
                   </I18nextProvider>
                 </NotificationProvider>
               </LevelContextProvider>

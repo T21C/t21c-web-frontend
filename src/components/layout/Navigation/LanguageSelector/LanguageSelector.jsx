@@ -1,12 +1,11 @@
-import React, { useState, useContext, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import { UserContext } from "@/contexts/UserContext";
-import i18next from "i18next";
 import { isoToEmoji } from "@/utils";
 import api from "@/utils/api";
 import { ChevronIcon } from "@/components/common/icons";
 import "./languageSelector.css";
 import { useTranslation } from 'react-i18next';
+import { changeAppLanguage, normalizeLanguage } from "@/translations/config";
 
 /**
  * Language selector component
@@ -15,7 +14,7 @@ import { useTranslation } from 'react-i18next';
  * @param {boolean} props.asListItem - Whether to render as list item (default: true for mobile)
  */
 const LanguageSelector = ({ variant = "desktop", asListItem = null }) => {
-  const { t } = useTranslation('components');
+  const { t, i18n } = useTranslation('components');
   const [isOpen, setIsOpen] = useState(false);
   const [languages, setLanguages] = useState({
     en: { display: "English", countryCode: "us", status: 100 },
@@ -30,9 +29,9 @@ const LanguageSelector = ({ variant = "desktop", asListItem = null }) => {
     es: { display: "Español", countryCode: "es", status: 0 },
   });
 
-  const { language, setLanguage } = useContext(UserContext);
   const dropdownRef = useRef(null);
   const portalRef = useRef(null);
+  const language = normalizeLanguage(i18n.resolvedLanguage || i18n.language);
 
   // Fetch language implementation status on mount
   useEffect(() => {
@@ -47,13 +46,6 @@ const LanguageSelector = ({ variant = "desktop", asListItem = null }) => {
 
     fetchLanguageStatus();
   }, []);
-
-  // Normalize language code
-  useEffect(() => {
-    if (language === "us") {
-      setLanguage("en");
-    }
-  }, [language, setLanguage]);
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -99,17 +91,14 @@ const LanguageSelector = ({ variant = "desktop", asListItem = null }) => {
     setIsOpen(!isOpen);
   };
 
-  const handleChangeLanguage = (newLanguage, e) => {
+  const handleChangeLanguage = async (newLanguage, e) => {
     e.stopPropagation();
 
     if (languages[newLanguage].status === 0) {
       return;
     }
 
-    const i18nLanguage = newLanguage === "us" ? "en" : newLanguage;
-    // Update context state immediately so all components re-render together
-    setLanguage(i18nLanguage);
-    i18next.changeLanguage(i18nLanguage);
+    await changeAppLanguage(newLanguage);
     setIsOpen(false);
   };
 

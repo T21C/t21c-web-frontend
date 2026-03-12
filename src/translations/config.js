@@ -2,87 +2,77 @@ import i18next from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import { loadTranslations } from './utils/loadTranslations';
 
+const DEFAULT_LANGUAGE = 'en';
+const NAMESPACES = ['common', 'pages', 'components'];
 
-// Initialize resources object
-const resources = {};
+export const normalizeLanguage = (lang) => lang === 'us' ? DEFAULT_LANGUAGE : (lang || DEFAULT_LANGUAGE);
 
-// Function to load a specific language
-const loadLanguage = async (lang) => {
-  if (resources[lang]) {
-    return resources[lang];
-  }
+export const ensureLanguageLoaded = async (lang) => {
+  const normalizedLanguage = normalizeLanguage(lang);
 
   try {
+    await Promise.all(NAMESPACES.map(async namespace => {
+      if (i18next.hasResourceBundle(normalizedLanguage, namespace)) {
+        return;
+      }
 
-    // Initialize language resources
-    resources[lang] = {
-      pages: {},
-      components: {},
-      common: {},
-    };
-
-    // Load pages and components translations
-    const [pagesTranslations, componentsTranslations, commonTranslations] = await Promise.all([
-      loadTranslations(lang, 'pages'),
-      loadTranslations(lang, 'components'),
-      loadTranslations(lang, 'common')
-
-    ]);
-
-    resources[lang].pages = pagesTranslations;
-    resources[lang].components = componentsTranslations;
-    resources[lang].common = commonTranslations;
-    return resources[lang];
+      const translations = await loadTranslations(normalizedLanguage, namespace);
+      i18next.addResourceBundle(normalizedLanguage, namespace, translations, true, true);
+    }));
   } catch (error) {
-    console.error(`Error loading translations for ${lang}:`, error);
-    // Fallback to English if loading fails
-    return lang === 'en' ? {} : loadLanguage('en');
+    console.error(`Error loading translations for ${normalizedLanguage}:`, error);
+
+    if (normalizedLanguage !== DEFAULT_LANGUAGE) {
+      await ensureLanguageLoaded(DEFAULT_LANGUAGE);
+      return DEFAULT_LANGUAGE;
+    }
   }
+
+  return normalizedLanguage;
 };
 
-// Function to initialize translations
-const initializeTranslations = async () => {
-  const currentLang = localStorage.getItem('appLanguage') || 'en';
-  
-  // Load current language and English (if not already current)
-  await Promise.all([
-    loadLanguage(currentLang),
-    currentLang !== 'en' ? loadLanguage('en') : Promise.resolve(),
-  ]);
+export const changeAppLanguage = async (lang) => {
+  const normalizedLanguage = await ensureLanguageLoaded(lang);
 
-  // Initialize i18next
+  await i18next.changeLanguage(normalizedLanguage);
+  localStorage.setItem('appLanguage', normalizedLanguage);
+
+  return normalizedLanguage;
+};
+
+const initializeTranslations = async () => {
+  const currentLang = normalizeLanguage(localStorage.getItem('appLanguage'));
+
   await i18next
     .use(initReactI18next)
     .init({
-      resources,
       lng: currentLang,
-      fallbackLng: 'en',
+      fallbackLng: DEFAULT_LANGUAGE,
       interpolation: {
         escapeValue: false,
         nestingSeparator: '$',
         formatSeparator: ',',
-        format: function(value, format, lng) {
+        format: function(value, format) {
           if (format === 'uppercase') return value.toUpperCase();
           if (format === 'lowercase') return value.toLowerCase();
           return value;
         },
       },
-      ns: ['common', 'pages', 'components'],
+      ns: NAMESPACES,
       defaultNS: 'common',
       debug: true,
+      resources: {},
     });
 
-  // Set up language change handler
-  i18next.on('languageChanged', async (newLang) => {
-    if (!resources[newLang]) {
-      await loadLanguage(newLang);
-      // Add loaded resources to i18next (don't use reloadResources - that requires a backend)
+  await ensureLanguageLoaded(DEFAULT_LANGUAGE);
 
-    }
-  });
+  if (currentLang !== DEFAULT_LANGUAGE) {
+    await ensureLanguageLoaded(currentLang);
+  }
+
+  await i18next.changeLanguage(currentLang);
 };
 
-// Initialize translations
 initializeTranslations().catch(console.error);
 
-export default i18next; 
+export default i18next;
