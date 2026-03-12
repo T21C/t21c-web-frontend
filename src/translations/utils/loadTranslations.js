@@ -1,68 +1,64 @@
+const KNOWN_NAMESPACES = ['common', 'pages', 'components'];
+
+const createNamespaceBuckets = () => ({
+  common: {},
+  pages: {},
+  components: {},
+});
+
+const toTranslationKey = (relativePath) => relativePath.replace(/\//g, '_');
+
 /**
- * Dynamically loads all translation files from a specific directory
- * @param {string} language - The language code (e.g., 'en', 'es')
- * @param {string} category - The category of translations ('pages', 'components', or 'common')
- * @param {string} basePath - Optional base path for translation files (default: '../languages')
- * @returns {Object} - Object containing all translations for the specified language and category
+ * Loads all translation files for a language and groups them by namespace folder.
+ * Example: `languages/en/common/main.json` is assigned to the `common` namespace,
+ * while `languages/en/pages/foo/bar.json` becomes `pages.foo_bar`.
+ *
+ * @param {string} language - The language code (e.g. 'en', 'es')
+ * @param {string | null} namespace - Optional namespace filter ('pages', 'components', 'common')
+ * @returns {Object} Namespace map, or a single namespace object when `namespace` is provided
  */
-export const loadTranslations = async (language, category, basePath = '../languages') => {
-  const translations = {};
-  
+export const loadTranslations = async (language, namespace = null) => {
+  const translationsByNamespace = createNamespaceBuckets();
+
   try {
-    // Vite's import.meta.glob requires a literal string pattern, not a dynamic variable
-    // Use a broad literal pattern that matches all translation files, then filter at runtime
-    // This pattern matches: ../languages/*/pages/**/*.json, ../languages/*/components/**/*.json, ../languages/*/common/**/*.json
-    const allFiles = import.meta.glob('../languages/*/pages/**/*.json', { eager: true });
-    const componentFiles = import.meta.glob('../languages/*/components/**/*.json', { eager: true });
-    const commonFiles = import.meta.glob('../languages/*/**/*.json', { eager: true });
-    
-    // Combine all files based on category
-    const relevantFiles = category === 'pages' ? allFiles 
-      : category === 'components' ? componentFiles 
-      : category === 'common' ? commonFiles 
-      : {};
-    
-    // Pattern to match files for the specific language and category
-    // Matches paths containing: .../languages/{language}/{category}/.../{filename}.json
-    const languageCategoryPattern = new RegExp(`/languages/${language}/${category}/`);
-    
-    // Process each translation file for the specified language and category
-    Object.keys(relevantFiles).forEach(path => {
-      if (languageCategoryPattern.test(path)) {
-        const fileContent = relevantFiles[path].default;
-        
-        if (!fileContent || typeof fileContent !== 'object') {
-          return; // Skip invalid files
-        }
-        
-        // Extract relative path from category directory
-        // Match: .../languages/{language}/{category}/(...)/{filename}.json
-        const relativePathMatch = path.match(new RegExp(`/languages/${language}/${category}/(.+)\\.json$`));
-        
-        if (category === 'common') {
-          // For common, merge all files into a single namespace
-          // All JSON files in common directory (and subdirectories) are merged together
-          Object.assign(translations, fileContent);
-        } else {
-          // For pages and components, use filename (without extension) as key
-          // Handle both direct files (e.g., pages/home.json) and nested files (e.g., pages/subdir/file.json)
-          if (relativePathMatch) {
-            const relativePath = relativePathMatch[1];
-            // Use the relative path as key, replacing slashes with underscores for nested files
-            // Or just use the filename if it's a direct file
-            const key = relativePath.includes('/') 
-              ? relativePath.replace(/\//g, '_')
-              : relativePath;
-            
-            translations[key] = fileContent;
-          }
-        }
+    const allFiles = import.meta.glob('../languages/*/**/*.json', { eager: true });
+    const namespaceFilter = namespace && KNOWN_NAMESPACES.includes(namespace) ? namespace : null;
+
+    Object.entries(allFiles).forEach(([path, module]) => {
+      const match = path.match(/\/languages\/([^/]+)\/([^/]+)\/(.+)\.json$/);
+
+      if (!match) {
+        return;
       }
+
+      const [, fileLanguage, fileNamespace, relativePath] = match;
+
+      if (fileLanguage !== language || !KNOWN_NAMESPACES.includes(fileNamespace)) {
+        return;
+      }
+
+      if (namespaceFilter && fileNamespace !== namespaceFilter) {
+        return;
+      }
+
+      const fileContent = module?.default;
+
+      if (!fileContent || typeof fileContent !== 'object') {
+        return;
+      }
+
+      if (fileNamespace === 'common') {
+        Object.assign(translationsByNamespace.common, fileContent);
+        return;
+      }
+
+      translationsByNamespace[fileNamespace][toTranslationKey(relativePath)] = fileContent;
     });
-    
-    return translations;
+
+    return namespaceFilter ? translationsByNamespace[namespaceFilter] : translationsByNamespace;
   } catch (error) {
-    console.warn(`Note: Some translations for ${category} in ${language} might be missing:`, error);
-    return translations; // Return any translations we managed to load
+    const target = namespace || 'all namespaces';
+    console.warn(`Note: Some translations for ${target} in ${language} might be missing:`, error);
+    return namespace ? translationsByNamespace[namespace] : translationsByNamespace;
   }
-}; 
+};

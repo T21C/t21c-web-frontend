@@ -11,14 +11,23 @@ export const ensureLanguageLoaded = async (lang) => {
   const normalizedLanguage = normalizeLanguage(lang);
 
   try {
-    await Promise.all(NAMESPACES.map(async namespace => {
-      if (i18next.hasResourceBundle(normalizedLanguage, namespace)) {
-        return;
-      }
+    const missingNamespaces = NAMESPACES.filter(namespace => !i18next.hasResourceBundle(normalizedLanguage, namespace));
 
-      const translations = await loadTranslations(normalizedLanguage, namespace);
-      i18next.addResourceBundle(normalizedLanguage, namespace, translations, true, true);
-    }));
+    if (missingNamespaces.length === 0) {
+      return normalizedLanguage;
+    }
+
+    const translationsByNamespace = await loadTranslations(normalizedLanguage);
+
+    missingNamespaces.forEach(namespace => {
+      i18next.addResourceBundle(
+        normalizedLanguage,
+        namespace,
+        translationsByNamespace[namespace] || {},
+        true,
+        true
+      );
+    });
   } catch (error) {
     console.error(`Error loading translations for ${normalizedLanguage}:`, error);
 
