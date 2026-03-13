@@ -220,7 +220,7 @@
 
 @media (max-width: 768px) {
   .about-us {
-    padding: 5rem 1.5rem 3rem;
+    padding: 1rem 1.5rem 1.5rem;
   }
 
   .about-us .about-header h1 {
@@ -284,6 +284,12 @@
   animation-delay: 0.5s;
   display:grid;
   font-weight: 600;
+}
+
+@media (max-width: 768px) {
+  .about-us .main-title {
+    font-size: 3rem;
+  }
 }
 
 .about-us .title-mask {

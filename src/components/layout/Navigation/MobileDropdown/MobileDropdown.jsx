@@ -127,7 +127,7 @@ const MobileDropdown = ({
                     : item.label}
                   {item.badge && (
                     <span className="nav-mobile-dropdown-badge">
-                      {t('navigation.main.' + item.badge)}
+                      {t(item.badge)}
                     </span>
                   )}
                 </div>

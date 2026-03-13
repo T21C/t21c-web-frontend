@@ -830,9 +830,6 @@ nav {
   .nav-language-select__option {
     /* Prevent double-tap zoom */
     touch-action: manipulation;
-    /* Ensure minimum touch target size (44x44px) */
-    min-height: 44px;
-    min-width: 44px;
     /* Better touch feedback */
     -webkit-tap-highlight-color: rgba(255, 255, 255, 0.1);
   }

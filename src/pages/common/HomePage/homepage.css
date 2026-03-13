@@ -703,7 +703,7 @@
 /* Small phone adjustments */
 @media (max-width: 480px) {
   .home .home-container {
-    padding: 4.5rem 0.75rem 1.5rem 0.75rem;
+    padding: 0rem 0.75rem 1.5rem 0.75rem;
   }
 
   .home .weekly-curations-section {
