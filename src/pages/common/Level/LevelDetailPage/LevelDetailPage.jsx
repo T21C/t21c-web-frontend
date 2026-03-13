@@ -2359,6 +2359,7 @@ const LevelDetailPage = ({ mockData = null }) => {
           <div className="rank">
             <div className="rank-header">
               <h1>{t('levelDetail.leaderboard.header')}</h1>
+              {/*
               <button 
                 className={`refresh-leaderboard-button ${isRefreshingLeaderboard ? 'refreshing' : ''}`}
                 onClick={() => fetchLevelData(true)}
@@ -2367,6 +2368,7 @@ const LevelDetailPage = ({ mockData = null }) => {
               >
                 <RefreshIcon size="20px" />
               </button>
+              */}
             </div>
             {sortedLeaderboard.length > 0 ? (
               <div className="sort">

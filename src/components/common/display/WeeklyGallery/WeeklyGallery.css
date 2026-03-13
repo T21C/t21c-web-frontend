@@ -36,7 +36,7 @@
   text-decoration: none;
 }
 
-.weekly-gallery__item:hover {
+.weekly-gallery__item--hovered {
   transform: scale(1.05) !important;
   filter: brightness(1.1) !important;
 }
@@ -56,7 +56,8 @@
   transition: transform 0.3s ease;
 }
 
-.weekly-gallery__item:hover .weekly-gallery__thumbnail {
+.weekly-gallery__item:hover .weekly-gallery__thumbnail,
+.weekly-gallery__item--hovered .weekly-gallery__thumbnail {
   transform: scale(1.1);
 }
 
@@ -91,7 +92,8 @@
   transition: transform 0.3s ease;
 }
 
-.weekly-gallery__item:hover .weekly-gallery__item-overlay {
+.weekly-gallery__item:hover .weekly-gallery__item-overlay,
+.weekly-gallery__item--hovered .weekly-gallery__item-overlay {
   transform: translateY(0) scale(1.01);
 }
 

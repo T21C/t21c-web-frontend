@@ -1223,8 +1223,13 @@
 .level-detail .rank .sort {
   display: flex;
   gap: var(--spacing-md);
-  margin-bottom: var(--spacing-md);
   padding: var(--spacing-sm);
+  padding-left: var(--spacing-md);
+}
+
+.level-detail .rank .sort > * {
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 .level-detail .rank .sort svg {
@@ -1268,11 +1273,11 @@
 }
 
 .level-detail .rank .rank-header {
+  margin-top: var(--spacing-sm);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-sm);
 }
 
 .level-detail .rank h1 {

@@ -17,6 +17,7 @@ const WeeklyGallery = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoScrolling, setIsAutoScrolling] = useState(autoScroll);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+  const [hoveredIndex, setHoveredIndex] = useState(null);
   const autoScrollRef = useRef(null);
   const pauseTimeoutRef = useRef(null);
   const containerRef = useRef(null);
@@ -104,16 +105,19 @@ const WeeklyGallery = ({
 
   const goToIndex = useCallback((index) => {
     setCurrentIndex(index);
+    setHoveredIndex(null);
     pauseAutoScroll();
   }, [pauseAutoScroll]);
 
   const goToNext = useCallback(() => {
     setCurrentIndex(prev => (prev + 1) % curations.length);
+    setHoveredIndex(null);
     pauseAutoScroll();
   }, [curations.length, pauseAutoScroll]);
 
   const goToPrevious = useCallback(() => {
     setCurrentIndex(prev => (prev - 1 + curations.length) % curations.length);
+    setHoveredIndex(null);
     pauseAutoScroll();
   }, [curations.length, pauseAutoScroll]);
 
@@ -261,7 +265,7 @@ const WeeklyGallery = ({
               <NavLink
                 to={`/levels/${curation.scheduledCuration?.level?.id || curation.level?.id}`}
                 key={curation.id}
-                className={`weekly-gallery__item ${position.zIndex === 0 ? 'active' : ''}`}
+                className={`weekly-gallery__item ${position.zIndex === 0 ? 'active' : ''}${hoveredIndex === index ? ' weekly-gallery__item--hovered' : ''}`}
                 style={{
                   zIndex: position.zIndex,
                   opacity: position.opacity,
@@ -269,6 +273,8 @@ const WeeklyGallery = ({
                   filter: position.filter,
                   pointerEvents: position.opacity === 1 ? 'auto' : 'none'
                 }}
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
                 onClick={() => onCurationClick?.(curation)}
               >
                 <div className="weekly-gallery__item-preview">

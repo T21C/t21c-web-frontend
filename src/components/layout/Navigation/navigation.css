@@ -27,6 +27,7 @@ nav {
   margin: 0 auto;
   padding: 0.5rem 1rem 0.5rem 2rem;
   position: relative;
+  min-height: 4rem;
 }
 
 /* Logo */
@@ -37,7 +38,6 @@ nav {
 }
 
 .nav-logo {
-  width: 8rem;
   height: 2.5rem;
   overflow: hidden;
   display: flex;
@@ -900,11 +900,6 @@ nav {
 
   .nav-language-select.mobile {
     display: block;
-  }
-
-  .nav-logo {
-    width: 6rem;
-    height: 2rem;
   }
 
   .nav-list {

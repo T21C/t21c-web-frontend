@@ -32,7 +32,7 @@
 .home .logo-container {
   position: relative;
   margin: 0 auto;
-  width: 50%;
+  width: clamp(500px, 70%, 1000px);
   height: auto;
 }
 
