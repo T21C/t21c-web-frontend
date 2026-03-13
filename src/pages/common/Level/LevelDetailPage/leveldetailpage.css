@@ -1205,7 +1205,7 @@
 /* ============================================
    RANK/LEADERBOARD SECTION
    ============================================ */
-.level-detail .rank .sort .svg-fill.active {
+.level-detail .rank .leaderboard-sort .svg-fill.active {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
@@ -1220,19 +1220,19 @@
   padding: var(--spacing-sm);
 }
 
-.level-detail .rank .sort {
+.level-detail .rank .leaderboard-sort {
   display: flex;
   gap: var(--spacing-md);
   padding: var(--spacing-sm);
   padding-left: var(--spacing-md);
 }
 
-.level-detail .rank .sort > * {
+.level-detail .rank .leaderboard-sort > * {
   -webkit-user-select: none;
   user-select: none;
 }
 
-.level-detail .rank .sort svg {
+.level-detail .rank .leaderboard-sort svg {
   height: 2.2rem;
   width: 2.2rem;
   background-color: var(--glass-bg);
@@ -1243,16 +1243,16 @@
   transition: all var(--transition-normal);
 }
 
-.level-detail .rank .sort svg:focus {
+.level-detail .rank .leaderboard-sort svg:focus {
   outline: none;
 }
 
-.level-detail .rank .sort svg:hover {
+.level-detail .rank .leaderboard-sort svg:hover {
   background-color: var(--accent-color);
   border-color: var(--accent-color);
 }
 
-.level-detail .rank .sort .sort-button-container {
+.level-detail .rank .leaderboard-sort .sort-button-container {
   position: relative;
   display: flex;
   align-items: center;
@@ -1260,7 +1260,7 @@
   cursor: pointer;
 }
 
-.level-detail .rank .sort .sort-direction-indicator {
+.level-detail .rank .leaderboard-sort .sort-direction-indicator {
   color: var(--primary-text);
   font-size: 1.2rem;
   font-weight: 600;
@@ -1268,7 +1268,7 @@
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.5);
 }
 
-.level-detail .rank .sort .sort-direction-indicator.flip-up {
+.level-detail .rank .leaderboard-sort .sort-direction-indicator.flip-up {
   transform: rotate(180deg);
 }
 

@@ -2371,7 +2371,7 @@ const LevelDetailPage = ({ mockData = null }) => {
               */}
             </div>
             {sortedLeaderboard.length > 0 ? (
-              <div className="sort">
+              <div className="leaderboard-sort">
                 <Tooltip id="tm" place="top" noArrow>
                   {t('levelDetail.leaderboard.tooltips.time')}
                 </Tooltip>
