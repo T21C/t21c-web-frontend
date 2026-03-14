@@ -34,8 +34,6 @@ const LevelPage = () => {
   const {
     levelsData,
     setLevelsData,
-    legacyDiff,
-    setLegacyDiff,
     filterOpen,
     setFilterOpen,
     sortOpen,
@@ -90,6 +88,7 @@ const LevelPage = () => {
   // Timeout ref for debounced fetch
   const fetchTimeoutRef = useRef(null);
   const cancelTokenRef = useRef(null);
+  const isFirstFilterEffectRef = useRef(true);
 
   // Filter difficulties by type
   const pguDifficulties = difficulties.filter(d => d.type === 'PGU').sort((a, b) => a.sortOrder - b.sortOrder);
@@ -356,13 +355,35 @@ const LevelPage = () => {
 
   // Debounced fetch on filter/query changes
   useEffect(() => {
+    // On initial mount, keep existing context-backed results (e.g. browser back/forward navigation).
+    // Only fetch if there is no cached data yet.
+    if (isFirstFilterEffectRef.current) {
+      isFirstFilterEffectRef.current = false;
+
+      if (levelsData.length === 0) {
+        fetchTimeoutRef.current = setTimeout(() => {
+          fetchLevelsData(true);
+        }, 500);
+      }
+
+      return () => {
+        if (fetchTimeoutRef.current) {
+          clearTimeout(fetchTimeoutRef.current);
+        }
+        if (cancelTokenRef.current) {
+          cancelTokenRef.current();
+        }
+      };
+    }
+
     // Clear any existing timeout
     if (fetchTimeoutRef.current) {
       clearTimeout(fetchTimeoutRef.current);
     }
     
-    setPageNumber(0);
-    setLevelsData([]);
+    if (pageNumber !== 0) {
+      setPageNumber(0);
+    }
     setHasMore(true);
 
     // Set a new timeout to trigger fetch after 500ms
@@ -823,9 +844,7 @@ const LevelPage = () => {
               <LevelCard
                 key={index}
                 level={l}
-                legacyMode={legacyDiff}
                 user={user}
-                sortBy={sort}
                 displayMode={viewMode}
                 size={cardSize}
                 showTags={showTagsInCards}

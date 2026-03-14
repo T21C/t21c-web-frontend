@@ -81,7 +81,6 @@ const getHighScores = (players) => {
   if (!players?.length) return null;
   const sortedPlayers = players.sort((a, b) => 
     new Date(a.vidUploadTime) - new Date(b.vidUploadTime));
-  console.log(sortedPlayers);
   return {
     firstClear: sortedPlayers[0],
     highestScore: sortedPlayers.reduce((a, b) => 

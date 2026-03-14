@@ -18,9 +18,7 @@ import { getSongDisplayName, getArtistDisplayName } from "@/utils/levelHelpers";
 const LevelCard = ({
   level: initialLevel = null,
   packItem = null,
-  legacyMode,
   user,
-  sortBy,
   displayMode = 'normal',
   size = 'medium',
   showTags = true,
