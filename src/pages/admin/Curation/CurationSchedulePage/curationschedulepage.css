@@ -4,11 +4,23 @@
   z-index: 2;
   margin: 0 auto;
   padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.curation-schedule-page__panel {
+  background: linear-gradient(180deg, rgba(25, 30, 45, 0.55), rgba(12, 16, 28, 0.55));
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.2);
 }
 
 .curation-schedule-page__header {
   text-align: center;
-  margin-bottom: 3rem;
+  margin-bottom: 1rem;
+  background: linear-gradient(180deg, rgba(30, 36, 54, 0.62), rgba(15, 20, 34, 0.62));
+  border-radius: 14px;
+  padding: 1.25rem 1.5rem;
 }
 
 .curation-schedule-page__header-top {
@@ -34,15 +46,12 @@
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 600;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease;
   text-decoration: none;
 }
 
 .curation-schedule-page__back-btn:hover {
-  background: rgba(0, 0, 0, 0.6);
-  border-color: #4a9eff;
-  transform: translateY(-1px);
-  color: #ffffff;
+  transform: scale(1.04);
 }
 
 .curation-schedule-page__header h1 {
@@ -62,11 +71,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 3rem;
   padding: 1rem;
-  background: rgba(0, 0, 0, 0.4);
-  border-radius: 12px;
-  border: 2px solid rgba(0, 0, 0, 0);
+  border: 1px solid transparent;
 }
 
 .curation-schedule-page__week-btn {
@@ -79,13 +85,12 @@
   background: rgba(0, 0, 0, 0.6);
   color: #ffffff;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease;
   font-weight: 600;
 }
 
 .curation-schedule-page__week-btn:hover {
-  background: #4a9eff;
-  border-color: #4a9eff;
+  transform: scale(1.04);
 }
 
 .curation-schedule-page__week-title {
@@ -97,22 +102,25 @@
 
 .curation-schedule-page__loading {
   text-align: center;
-  padding: 3rem;
+  padding: 1.5rem;
   font-size: 1.2rem;
-  color: #a0a0a0;
+  color: #c2cbdb;
 }
 
 /* Hall of Fame Sections */
 .curation-schedule-page__hall-section {
-  margin-bottom: 4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
 }
 
 .curation-schedule-page__hall-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 1.5rem;
-  padding: 0 1rem;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
 }
 
 .curation-schedule-page__hall-header h3 {
@@ -156,15 +164,13 @@
   justify-content: center;
   font-size: 1.5rem;
   font-weight: bold;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease;
   flex-shrink: 0;
   z-index: 2;
 }
 
 .curation-schedule-page__scroll-btn:hover:not(:disabled) {
-  background: #4a9eff;
-  border-color: #4a9eff;
-  transform: scale(1.1);
+  transform: scale(1.08);
 }
 
 .curation-schedule-page__scroll-btn:disabled {
@@ -177,6 +183,8 @@
   overflow-x: auto;
   overflow-y: hidden;
   scroll-behavior: smooth;
+  border-radius: 10px;
+  scrollbar-color: #999 #0005;
   -ms-overflow-style: none; /* IE and Edge */
 }
 
@@ -209,7 +217,6 @@
 .curation-schedule-page__hall-item:hover {
   border-color: #4a9eff;
   background: rgba(0, 0, 0, 0.5);
-  transform: translateY(-2px);
 }
 
 .curation-schedule-page__hall-position {
@@ -305,12 +312,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease;
 }
 
 .curation-schedule-page__remove-btn:hover {
-  background: #d32f2f;
-  transform: scale(1.1);
+  transform: scale(1.08);
 }
 
 .curation-schedule-page__add-slot {
@@ -322,7 +328,7 @@
   width: 280px;
   flex-shrink: 0;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: transform 0.2s ease;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -333,10 +339,7 @@
 }
 
 .curation-schedule-page__add-slot:hover {
-  border-color: #4a9eff;
-  background: rgba(0, 0, 0, 0.4);
-  color: #4a9eff;
-  transform: translateY(-2px);
+  transform: scale(1.03);
 }
 
 .curation-schedule-page__add-icon {
@@ -374,10 +377,12 @@
   .curation-schedule-page__content {
     padding: 1rem;
     max-width: 100%;
+    gap: 1rem;
   }
 
   .curation-schedule-page__header {
-    margin-bottom: 2rem;
+    margin-bottom: 0;
+    padding: 1rem;
   }
 
   .curation-schedule-page__header-top {
@@ -406,7 +411,6 @@
   .curation-schedule-page__week-nav {
     flex-direction: column;
     gap: 1rem;
-    margin-bottom: 2rem;
     padding: 1rem;
   }
 
@@ -423,12 +427,12 @@
   }
 
   .curation-schedule-page__hall-section {
-    margin-bottom: 2rem;
+    padding: 0.75rem;
   }
 
   .curation-schedule-page__hall-header {
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 0;
   }
 
   .curation-schedule-page__hall-header h3 {
@@ -471,11 +475,11 @@
     right: 0.5rem;
   }
   .curation-schedule-page__scroll-btn--right:not(:disabled):hover {
-    transform: translateY(-50%) scale(1);
+    transform: translateY(-50%) scale(1.08);
   }
 
   .curation-schedule-page__scroll-btn--left:not(:disabled):hover {
-    transform: translateY(-50%) scale(1);
+    transform: translateY(-50%) scale(1.08);
   }
 
 

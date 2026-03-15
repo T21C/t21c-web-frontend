@@ -48,6 +48,12 @@ const CurationSchedulePage = () => {
     return `${formatDate(monday, i18next?.language)} - ${formatDate(weekEnd, i18next?.language)}`;
   };
 
+  const getTypeBackgroundColor = (typeColor) => {
+    if (!typeColor) return '#60606080';
+    // Add alpha to hex/rgb colors for consistent pill styling.
+    return `${typeColor}80`;
+  };
+
   useEffect(() => {
     if (hasFlag(user, permissionFlags.SUPER_ADMIN)) {
       fetchSchedules();
@@ -86,7 +92,7 @@ const CurationSchedulePage = () => {
   const handleCurationSelect = async (curation) => {
     try {
       // Ensure the date is sent in UTC format
-      const response = await api.post(`${import.meta.env.VITE_CURATIONS}/schedules`, {
+      await api.post(`${import.meta.env.VITE_CURATIONS}/schedules`, {
         curationId: curation.id,
         weekStart: currentMonday.toISOString().split('T')[0],
         listType: selectionMode.type // 'primary' or 'secondary'
@@ -181,7 +187,7 @@ const CurationSchedulePage = () => {
         </div>
 
         {/* Week Navigation */}
-        <div className="curation-schedule-page__week-nav">
+        <div className="curation-schedule-page__week-nav curation-schedule-page__panel">
           <button 
             className="curation-schedule-page__week-btn"
             onClick={() => handleWeekChange(-1)}
@@ -200,10 +206,12 @@ const CurationSchedulePage = () => {
         </div>
 
         {/* Primary Hall of Fame */}
-        <div className="curation-schedule-page__hall-section">
+        <div className="curation-schedule-page__hall-section curation-schedule-page__panel">
           <div className="curation-schedule-page__hall-header">
+            <div className="curation-schedule-page__hall-header-left">
             <h3>{t('curationSchedule.primaryHall.title')}</h3>
             <p>{t('curationSchedule.primaryHall.description')}</p>
+            </div>
             <span className="curation-schedule-page__count">
               {primarySchedules.length}/20
             </span>
@@ -243,7 +251,7 @@ const CurationSchedulePage = () => {
                       <p>{schedule.scheduledCuration?.level?.artist || 'Unknown Artist'}</p>
                       <div 
                         className="curation-schedule-page__hall-type"
-                        style={{ backgroundColor: schedule.scheduledCuration?.type?.color + '80' || '#60606080' }}
+                        style={{ backgroundColor: getTypeBackgroundColor(schedule.scheduledCuration?.type?.color) }}
                       >
                         {schedule.scheduledCuration?.type?.name || 'Unknown Type'}
                       </div>
@@ -283,10 +291,12 @@ const CurationSchedulePage = () => {
         </div>
 
         {/* Secondary Hall of Fame */}
-        <div className="curation-schedule-page__hall-section">
+        <div className="curation-schedule-page__hall-section curation-schedule-page__panel">
           <div className="curation-schedule-page__hall-header">
+            <div className="curation-schedule-page__hall-header-left">
             <h3>{t('curationSchedule.secondaryHall.title')}</h3>
             <p>{t('curationSchedule.secondaryHall.description')}</p>
+            </div>
             <span className="curation-schedule-page__count">
               {secondarySchedules.length}/20
             </span>
@@ -326,7 +336,7 @@ const CurationSchedulePage = () => {
                       <p>{schedule.scheduledCuration?.level?.artist || 'Unknown Artist'}</p>
                       <div 
                         className="curation-schedule-page__hall-type"
-                        style={{ backgroundColor: schedule.scheduledCuration?.type?.color || '#666' }}
+                        style={{ backgroundColor: getTypeBackgroundColor(schedule.scheduledCuration?.type?.color) }}
                       >
                         {schedule.scheduledCuration?.type?.name || 'Unknown Type'}
                       </div>
@@ -366,7 +376,7 @@ const CurationSchedulePage = () => {
         </div>
 
         {isLoading && (
-          <div className="curation-schedule-page__loading">
+          <div className="curation-schedule-page__loading curation-schedule-page__panel">
             {t('curationSchedule.loading')}
           </div>
         )}
