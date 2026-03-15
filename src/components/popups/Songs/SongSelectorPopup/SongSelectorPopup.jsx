@@ -8,9 +8,11 @@ import { CustomSelect } from '@/components/common/selectors';
 export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selectedArtist = null, allowCreate = true }) => {
   const { t } = useTranslation(['components', 'common']);
   const popupRef = useRef(null);
+  const normalizedInitialSongId = initialSong?.id ?? initialSong?.songId ?? null;
+  const normalizedInitialSongName = initialSong?.name ?? initialSong?.songName ?? '';
 
   // Core state
-  const [selectedSongId, setSelectedSongId] = useState(initialSong?.id || null);
+  const [selectedSongId, setSelectedSongId] = useState(normalizedInitialSongId);
   const [songDetails, setSongDetails] = useState(initialSong || null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
@@ -32,14 +34,16 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
   useEffect(() => {
     // Only show create form if we have an explicit new request (name but no id)
     // Otherwise, reset the create form state
-    if (!initialSong || initialSong.id || !initialSong.name) {
+    if (!initialSong || normalizedInitialSongId || !normalizedInitialSongName) {
       setShowCreateForm(false);
       setNewName('');
       setVerificationState('pending');
     } else {
+      setShowCreateForm(true);
+      setNewName(normalizedInitialSongName);
       setVerificationState(initialSong.verificationState || 'pending');
     }
-  }, [initialSong]);
+  }, [initialSong, normalizedInitialSongId, normalizedInitialSongName]);
 
   // Clear song selection when artist changes to a new request
   useEffect(() => {
@@ -57,12 +61,11 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
 
   const handleCreateClick = () => {
     setShowCreateForm(true);
-    setNewName(initialSong?.name || '');
+    setNewName((searchQuery || '').trim() || normalizedInitialSongName);
     setVerificationState(initialSong?.verificationState || 'pending');
     // Clear any selected song when creating a new request
     setSelectedSongId(null);
     setSongDetails(null);
-    setSearchQuery('');
     setSearchResults([]);
   };
 
@@ -75,7 +78,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
         : selectedArtist?.isNewRequest;
       
       // Check if initialSong is a new request (has name but no id)
-      const isNewSongRequest = initialSong && !initialSong.id && initialSong.name;
+      const isNewSongRequest = initialSong && !normalizedInitialSongId && normalizedInitialSongName;
       
       // If a new artist request is set, clear any existing song selection
       if (hasNewRequest && initialSong?.id) {
@@ -91,11 +94,11 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
         return;
       }
 
-      if (initialSong?.id) {
-        setSelectedSongId(initialSong.id);
+      if (normalizedInitialSongId) {
+        setSelectedSongId(normalizedInitialSongId);
         setIsLoadingDetails(true);
         try {
-          const song = await fetchSongDetails(initialSong.id);
+          const song = await fetchSongDetails(normalizedInitialSongId);
           
           // If existing artist(s) are selected, verify the song belongs to all of them
           if (selectedArtist && song) {
@@ -125,7 +128,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
     };
 
     loadInitialDetails();
-  }, [initialSong, selectedArtist]);
+  }, [initialSong, selectedArtist, normalizedInitialSongId, normalizedInitialSongName]);
 
   // Handle search with pagination
   useEffect(() => {
@@ -145,7 +148,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
 
         // If existing artist(s) are selected AND we're not requesting a new song, filter songs by those artists
         // Don't filter when requesting a new song (initialSong has name but no id)
-        const isNewSongRequest = initialSong && !initialSong.id && initialSong.name;
+        const isNewSongRequest = initialSong && !normalizedInitialSongId && normalizedInitialSongName;
         if (selectedArtist && !isNewSongRequest) {
           if (Array.isArray(selectedArtist)) {
             // Multiple artists: filter by all of them
@@ -304,7 +307,8 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
       const songData = {
         songId: selectedSongId,
         songName: songDetails.name,
-        isNewRequest: false
+        isNewRequest: false,
+        verificationState: songDetails.verificationState || null
       };
 
       onSelect(songData);

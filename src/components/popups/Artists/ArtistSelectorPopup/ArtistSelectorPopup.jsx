@@ -183,7 +183,8 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
         artistId: selectedArtistId,
         artistName: artistDetails.name,
         isNewRequest: false,
-        requiresEvidence: false
+        requiresEvidence: false,
+        verificationState: artistDetails.verificationState || null
       };
 
       onSelect(artistData);
