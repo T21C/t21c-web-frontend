@@ -28,7 +28,7 @@
       }
     },
     "discord": {
-      "title": "우리의 Discord에 참여하세요!"
+      "title": "저희의 Discord에 참여하세요!"
     },
     "comingSoon": "더 재미있는 기능이 곧 추가됩니다..."
   },
@@ -53,7 +53,7 @@
       "github": "GitHub"
     },
     "copyright": {
-      "main": "© {{year}} TUF. 7th Beat Games와는 무관합니다.",
+      "main": "© 2026 TUF. Not affiliated with 7th Beat Games.",
       "credit": "❤️를 담아 V0W4N이 제작"
     }
   }

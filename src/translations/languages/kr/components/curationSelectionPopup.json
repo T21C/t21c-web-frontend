@@ -1,0 +1,21 @@
+{
+  "title": "Select Curation",
+  "description": "Choose a curation to add to the weekly schedule",
+  "filters": {
+    "search": "Search",
+    "searchPlaceholder": "Search by song, artist, or creator...",
+    "type": "Curation Type",
+    "allTypes": "All Types"
+  },
+  "loading": "Loading curations...",
+  "empty": "No curations found",
+  "creator": "Creator",
+  "actions": {
+    "select": "Select"
+  },
+  "pagination": {
+    "previous": "Previous",
+    "next": "Next",
+    "pageInfo": "Page {{current}} of {{total}}"
+  }
+}

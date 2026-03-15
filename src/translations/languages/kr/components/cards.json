@@ -25,7 +25,7 @@
       "worldsFirst": "최초",
       "twelveKey": "12키",
       "sixteenKey": "16키",
-      "noHoldTap": "NHT"
+      "noHoldTap": "홀드 설정 꺼짐"
     },
     "links": {
       "video": "영상 보기"
@@ -37,12 +37,12 @@
       "rankedScore": "공식 점수",
       "generalScore": "일반 점수",
       "ppScore": "완벽한 플레이 점수",
-      "wfScore": "최초 점수",
+      "wfScore": "최초 클리어 점수",
       "score12K": "12키 점수",
       "averageXacc": "평균 절대정확도",
       "totalPasses": "총 클리어 수",
-      "universalPassCount": "21 / U 클리어",
-      "worldsFirstCount": "최초 클리어",
+      "universalPassCount": "U 클리어 수",
+      "worldsFirstCount": "최초 클리어 수",
       "topDiff": "최고 난이도",
       "top12kDiff": "최고 12키 난이도"
     }
@@ -62,6 +62,22 @@
       "worldsFirstCount": "최초 클리어",
       "topDiff": "최고 난이도",
       "top12kDiff": "최고 12키 난이도"
+    }
+  },
+  "pack": {
+    "more": "더보기",
+    "clickToView": "눌러서 보기",
+    "addToFavorites": "즐겨찾기에 추가",
+    "removeFromFavorites": "즐겨찾기에서 제거",
+    "edit": "수정",
+    "viewMode": {
+      "public": "공개",
+      "linkonly": "링크 전용",
+      "private": "비공개",
+      "forcedPrivate": "비공개 (잠김)"
+    },
+    "stats": {
+      "levels": "레벨(들)"
     }
   }
 }

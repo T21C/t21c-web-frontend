@@ -4,71 +4,72 @@
     "labels": {
       "creator": "제작자:",
       "currentDifficulty": "현재 난이도:",
-      "averageRating": "관리자 평가:",
-      "communityRating": "커뮤니티 평가:",
-      "rerateNum": "재평가 요청 횟수:",
-      "rerateReason": "재평가 사유:",
-      "yourRating": "내 평가:",
+      "averageRating": "관리자 책정:",
+      "communityRating": "커뮤니티 책정:",
+      "rerateNum": "재책정 요청 횟수:",
+      "rerateReason": "재책정 사유:",
+      "yourRating": "내 책정:",
       "yourComment": "내 댓글:",
-      "otherRatings": "다른 평가들:",
-      "noRatings": "아직 평가가 없습니다",
-      "adminRatings": "관리자 평가",
-      "communityRatings": "커뮤니티 평가",
-      "noAdminRatings": "아직 관리자 평가가 없습니다",
-      "noCommunityRatings": "아직 커뮤니티 평가가 없습니다"
+      "otherRatings": "다른 책정들:",
+      "noRatings": "아직 책정이 없습니다",
+      "adminRatings": "관리자 책정",
+      "communityRatings": "커뮤니티 책정",
+      "noAdminRatings": "아직 관리자 책정이 없습니다",
+      "noCommunityRatings": "아직 커뮤니티 책정이 없습니다"
     },
     "buttons": {
       "saveChanges": "변경 사항 저장",
-      "removeRating": "평가 삭제",
+      "removeRating": "책정 삭제",
       "saving": "저장 중...",
-      "viewAdminRatings": "관리자 평가 보기",
-      "viewCommunityRatings": "커뮤니티 평가 보기"
+      "viewAdminRatings": "관리자 책정 보기",
+      "viewCommunityRatings": "커뮤니티 책정 보기"
     },
     "errors": {
       "commentLength": "댓글은 1000자 미만이어야 합니다",
-      "commentRequired": "-2 평가에는 댓글이 필수입니다",
+      "commentRequired": "-2 책정에는 댓글이 필수입니다",
       "saveFailed": "변경 사항 저장 실패",
-      "updateFailed": "평가 업데이트 실패",
+      "updateFailed": "책정 업데이트 실패",
       "unsavedChanges": "저장되지 않은 변경 사항이 있습니다. 닫으시겠습니까?",
-      "deleteFailed": "평가 삭제 실패",
-      "autorateFailed": "자동 평가 실패"
+      "deleteFailed": "책정 삭제 실패",
+      "autorateFailed": "자동책정 실패"
     },
     "tooltips": {
       "lastUpdated": "마지막 업데이트 시간",
-      "requiredComment": "-2 평가 시 댓글이 필요합니다"
+      "requiredComment": "-2 책정 시 댓글이 필요합니다"
     },
     "placeholders": {
-      "requiredComment": "-2 평가 이유를 설명해 주세요...",
+      "requiredComment": "-2 책정 이유를 설명해 주세요...",
       "difficultyInput": "난이도를 입력해 주세요...",
-      "communityComment": "평가 이유를 작성해 주세요..."
+      "communityComment": "책정의 이유를 작성해 주세요..."
     },
     "confirmations": {
-      "deleteRating": "{{username}}의 평가를 삭제하시겠습니까?"
+      "deleteRating": "{{username}}의 책정을 삭제하시겠습니까?"
     },
     "messages": {
-      "ratingBanned": "평가할 권한이 없습니다",
-      "autorateSuccess": "자동 평가가 완료되었습니다"
+      "ratingBanned": "책정할 권한이 없습니다",
+      "autorateSuccess": "자동책정이 완료되었습니다"
     }
   },
   "ratingCard": {
     "labels": {
-      "yourRating": "내 평가",
+      "yourRating": "내 책정",
       "managerAverage": "관리자 평균",
-      "managerRatings": "관리자 평가들",
+      "clearedCount": "클리어 {{count}}개",
+      "managerRatings": "관리자 책정들",
       "communityAverage": "커뮤니티 평균",
-      "communityRatings": "커뮤니티 평가들",
-      "allRatings": "전체 평가",
+      "communityRatings": "커뮤니티 책정들",
+      "allRatings": "전체 책정",
       "average": "평균",
-      "rerateNumber": "재평가 횟수",
-      "requestedRating": "재평가 요청",
-      "rerateMessage": "재평가 메시지",
+      "rerateNumber": "재책정 횟수",
+      "requestedRating": "재책정 요청",
+      "rerateMessage": "재책정 메시지",
       "lastUpdated": "마지막 업데이트",
       "updatedAt": "업데이트됨: "
     },
     "tooltips": {
       "expandReason": "클릭하여 확장",
-      "deleteRating": "평가 삭제",
-      "lastUpdated": "이 평가가 마지막으로 수정된 시간",
+      "deleteRating": "책정 삭제",
+      "lastUpdated": "이 책정이 마지막으로 수정된 시간",
       "copyLink": "링크 복사"
     },
     "buttons": {
@@ -79,43 +80,47 @@
     }
   },
   "helpPopup": {
-    "title": "평가 시스템 안내",
+    "title": "책정 시스템 안내",
     "closeButton": "안내 닫기",
     "sections": {
       "rating": {
-        "title": "평가 형식",
-        "description": "평가는 단일 평가, 범위 평가, 특수 평가 등 다양한 형식으로 입력할 수 있습니다.",
+        "title": "책정 형식",
+        "description": "책정은 단일 책정, 범위 책정, 특수 책정 등 다양한 형식으로 입력할 수 있습니다.",
         "examples": {
           "title": "예시",
-          "simple": "단순 평가",
-          "range": "전체 표기 범위 평가",
-          "shortRange": "동일 (두 경우 모두 P 접두어 생략 가능)",
-          "special": "특수 평가 포함",
-          "negative": "음수 특수 평가 포함"
+          "simple": "단순 책정",
+          "range": "전체 표기 범위 책정",
+          "shortRange": "동일 (두 경우 모두 P 접두어 적용됨)",
+          "special": "특수 책정 포함",
+          "negative": "음수 특수 책정 포함"
         }
       },
       "extras": {
-        "title": "추가 평가 기능",
+        "title": "추가 책정 기능",
         "features": [
           {
             "title": "댓글 내 ID 링크",
             "description": "댓글에 \"#1527\" 같은 레벨 ID를 포함하면 자동으로 idPrefixDontChange:1527로 변환됩니다."
+          },
+          {
+            "title": "투표 책정 숨기기",
+            "description": "검색에 \"-vote\"를 추가하여 현재 투표 중인 레벨들을 가릴 수 있습니다."
           }
         ]
       },
       "averaging": {
-        "title": "평가 평균 계산",
+        "title": "책정 평균 계산",
         "description": "시스템은 다음 요소들을 고려한 가중 평균 방식을 사용합니다:",
         "points": {
-          "special": "특수 평가(Censored, Impossible 등)는 4표 이상 받으면 평균을 덮어씁니다",
-          "ranges": "범위 평가(U12~U14 등)는 평균 산출 전에 처리됩니다",
-          "order": "PGU 평가는 숫자가 아니라 난이도 순서로 평균이 계산됩니다"
+          "special": "특수 책정(Censored, Impossible 등)는 4표 이상 받으면 평균을 덮어씁니다",
+          "ranges": "범위 책정(U12~U14 등)는 평균 산출 전에 처리됩니다",
+          "order": "PGU 책정은 숫자가 아니라 난이도 순서로 평균이 계산됩니다"
         }
       },
       "filters": {
         "title": "사용 가능한 필터",
         "hideRated": "평가한 항목 숨기기",
-        "hideRatedDesc": "이미 평가한 레벨을 숨깁니다",
+        "hideRatedDesc": "이미 평가한 레벨을 숨김",
         "lowDiff": "낮은 난이도",
         "lowDiffDesc": "낮은 난이도로 표시된 레벨 필터링",
         "fourVote": "4표 이상 평가됨",
@@ -124,16 +129,16 @@
       "requirements": {
         "title": "요구 사항",
         "points": {
-          "comment": "-2 평가 시 댓글이 필요합니다",
-          "format": "평가는 PGU 형식(P1-P20, G1-G20, U1-U20) 또는 유효한 특수 평가여야 합니다",
-          "special": "특수 평가는 미리 정의되어 있으며 수정할 수 없습니다"
+          "comment": "-2 책정 시 댓글이 필요합니다",
+          "format": "책정은 PGU 형식(P1-P20, G1-G20, U1-U20) 또는 유효한 특수 책정이여야 합니다",
+          "special": "특수 책정은 미리 정의되어 있으며 수정할 수 없습니다"
         }
       },
       "shortcuts": {
         "title": "단축키",
         "points": {
-          "submit": "평가 저장",
-          "reset": "평가 강제 새로고침",
+          "submit": "책정 저장",
+          "reset": "책정 강제 새로고침",
           "close": "현재 열려 있는 팝업 닫기"
         }
       }

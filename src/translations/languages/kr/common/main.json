@@ -1,6 +1,6 @@
 {
   "validation": {
-    "required": "이 필드는 필수입니다",
+    "required": "필수로 입력해야 합니다",
     "min_length": "{{length}}자 이상이어야 합니다",
     "max_length": "{{length}}자 이하여야 합니다",
     "email": "유효한 이메일 주소여야 합니다",
@@ -20,28 +20,60 @@
     "generic": "로딩 중...",
     "submitting": "제출 중...",
     "saving": "저장 중...",
-    "deleting": "삭제 중..."
+    "deleting": "삭제 중...",
+    "creating": "생성 중...",
+    "creatingWithName": "{{name}} 생성 중...",
+    "updating": "업데이트 중...",
+    "uploading": "업로드 중...",
+    "searching": "검색 중..."
   },
   "buttons": {
     "submit": "제출",
     "cancel": "취소",
     "save": "저장",
+    "saving": "저장 중...",
     "delete": "삭제",
+    "deleting": "삭제 중...",
     "edit": "편집",
+    "done": "완료",
     "close": "닫기",
     "back": "뒤로",
     "next": "다음",
-    "previous": "이전"
+    "previous": "이전",
+    "confirm": "확인",
+    "add": "추가",
+    "remove": "제거",
+    "update": "업데이트",
+    "upload": "업로드",
+    "return": "Return",
+    "reset": "초기화"
+  },
+  "confirmations": {
+    "unsavedChanges": "저장하지 않은 변경 사항이 있습니다. 정말로 나가시겠습니까?"
   },
   "promote": "승진",
   "demote": "강등",
   "promoteTo": "{{role}}로 승진",
   "demoteTo": "{{role}}로 강등",
   "currentRole": "현재 역할",
+  "totalResults": "{{count}}개의 검색 결과",
   "pagination": {
     "previous": "이전",
     "next": "다음",
     "page": "{{total}} 중 {{page}}페이지",
-    "showing": "{{total}}개 항목 중 {{start}}-{{end}} 표시 중"
+    "showing": "{{total}} 중 {{start}}-{{end}} 표시 중"
+  },
+  "verification": {
+    "verificationState": "인증 상태",
+    "all": "모두",
+    "unverified": "인증 안됨",
+    "pending": "대기 중",
+    "declined": "거절",
+    "mostly_declined": "대부분 거절",
+    "mostly_allowed": "대부분 허가",
+    "conditional": "조건 있음",
+    "ysmod_only": "YoutubeStreamMod 전용",
+    "allowed": "허가",
+    "tuf_verified": "TUF 인증됨"
   }
-}
+} 

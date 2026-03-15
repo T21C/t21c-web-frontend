@@ -20,9 +20,10 @@
         "description": "여러 검색 조건을 연산자를 사용해 조합할 수 있습니다.",
         "examples": {
           "title": "연산자 예시",
-          "and": "'hello'라는 곡명과 'camellia'라는 아티스트를 모두 만족하는 채보를 검색합니다 (AND 조건)",
-          "or": "goTe 채보(단 EX 제외) 또는 XNOR 채보를 검색합니다 (OR 조건)",
-          "complex": "'onus' 채보 중 'gazizi'가 제작한 것 또는 'ludicin'이 작곡한 곡의 채보를 검색합니다 (AND/OR 복합 조건)"
+          "and": "양쪽 모두의 조건을 만족하는 레벨을 검색합니다. 'hello'라는 곡명과 'camellia'라는 아티스트를 모두 만족하는 채보를 검색합니다.",
+          "or": "양쪽 중 하나 이상의 조건을 만족하는 레벨을 검색합니다. (goTe EX는 제외한) goTe 채보 또는 아무 XNOR 채보를 검색합니다.",
+          "complex": "AND와 OR 조건을 복합 사용한 검색입니다. 'onus' 채보 중 'gazizi'가 제작한 것 또는 'ludicin'이 작곡한 곡의 채보를 검색합니다",
+          "not": "'\\!'의 사용은 그 단어가 포함된 검색 결과를 제외합니다. 'onus' 곡명의 채보를 'nerfed' 를 제외하고 검색합니다."
         }
       },
       "tips": {
@@ -30,7 +31,7 @@
         "points": {
           "caseSensitive": "대소문자를 구분하지 않습니다 - 'SONG'과 'song'은 동일한 결과를 반환합니다",
           "partial": "콜론(:)은 부분 일치를 허용합니다 - 'song:Ex'는 'Example'과 일치합니다",
-          "exact": "등호(=)는 정확한 일치를 요구합니다 - 'song=Example'은 'Example'만 일치합니다",
+          "exact": "등호(=)는 정확한 일치만을 허용합니다 - 'song=Example'은 'Example'과만 일치합니다",
           "spaces": "검색어에 공백을 포함할 수 있습니다 - 'song:Example Song'도 작동합니다",
           "order": "조건의 순서는 각 그룹 내에서 중요하지 않습니다",
           "roles": "'creator'는 모든 역할을 포함한 제작자 검색에, 'charter' 또는 'vfxer'는 특정 역할로 제한된 검색에 사용합니다"

@@ -11,5 +11,12 @@
   "button": {
     "buttonPass": "클리어 제출",
     "buttonLevel": "레벨 제출"
+  },
+    "banner": {
+    "submissionSuspended": "제출 정지된 상태입니다",
+    "banned": "계정이 제재된 상태입니다",
+    "emailVerification": "이메일을 인증해야 합니다. 아래 버튼을 눌러 인증 페이지로 이동하세요",
+    "contact": "이것이 오류로 여겨진다면 Discord로 문의하세요",
+    "verifyEmail": "이메일 인증"
   }
 }

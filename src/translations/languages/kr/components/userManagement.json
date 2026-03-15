@@ -1,0 +1,53 @@
+{
+  "title": "User Management",
+  "modeToggle": {
+    "rater": "Raters",
+    "curator": "Curators"
+  },
+  "loading": "Loading users...",
+  "search": {
+    "placeholder": "Search by username or ID..."
+  },
+  "superAdmin": {
+    "password": {
+      "placeholder": "Enter super admin password"
+    }
+  },
+  "addUser": {
+    "placeholder": "Enter username",
+    "button": "Add User"
+  },
+  "userEntry": {
+    "unknown": "Unknown",
+    "buttons": {
+      "remove": "Remove"
+    }
+  },
+  "roles": {
+    "rater": "Rater",
+    "superadmin": "Super Admin",
+    "curator": "Curator",
+    "headCurator": "Head Curator"
+  },
+  "buttons": {
+    "promote": "Promote",
+    "demote": "Demote",
+    "promoteTo": "Promote to {{role}}",
+    "demoteTo": "Demote to {{role}}"
+  },
+
+  "errors": {
+    "passwordRequired": "Password is required",
+    "invalidPassword": "Invalid super admin password",
+    "deleteConfirm": "Are you sure you want to remove this user?",
+    "updateRoleFailed": "Failed to update role",
+    "deleteFailed": "Failed to remove user",
+    "loadFailed": "Failed to load users",
+    "addFailed": "Failed to add user",
+    "userNotFound": "User not found",
+    "alreadyHighestRole": "User already has the highest role",
+    "alreadyLowestRole": "User already has the lowest role",
+    "noRoleToRemove": "User has no role to remove",
+    "cannotRemoveBottomRole": "Cannot remove user from base role - they can only be demoted"
+  }
+}

@@ -2,7 +2,7 @@
   "title": "Submit Pass",
   "thumbnailInfo": "Video information will appear here",
   "submInfo": {
-    "levelId": "Level ID",
+    "levelId": "Search for a level or input ID",
     "altname": "Leaderboard Name",
     "nohold": "No Hold Tap",
     "speed": "Speed (opt., >=1.0)",

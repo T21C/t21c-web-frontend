@@ -1,0 +1,112 @@
+{
+  "title": "{{name}} 작곡가 관리",
+  "tabs": {
+    "update": "업데이트",
+    "merge": "병합",
+    "split": "분리",
+    "aliases": "이명(Alias)",
+    "links": "링크",
+    "evidence": "증거",
+    "relations": "Relations"
+  },
+  "form": {
+    "name": "이름",
+    "avatarUrl": "Avatar",
+    "avatarUrlPlaceholder": "Enter avatar URL",
+    "avatarCdnInfo": "CDN-hosted avatar can only be changed via upload/delete",
+    "verificationState": "인증 상태"
+  },
+  "merge": {
+    "info": "이 작곡가를 다른 작곡가에 병합합니다. 모든 데이터가 이전됩니다.",
+    "search": "목표 작곡가 검색",
+    "placeholder": "이름 검색..."
+  },
+  "split": {
+    "info": "Split this artist into two existing artists. All data (aliases, links, evidences, avatar) and song credits will be duplicated for both target artists.",
+    "entity1": "First Target Artist",
+    "entity2": "Second Target Artist",
+    "entity1Placeholder": "Search and select first target artist...",
+    "entity2Placeholder": "Search and select second target artist...",
+    "deleteOriginal": "Delete original artist after splitting"
+  },
+  "aliases": {
+    "add": "이명(Alias) 추가",
+    "placeholder": "이명(Alias) 입력"
+  },
+  "links": {
+    "add": "링크 추가",
+    "placeholder": "URL 입력"
+  },
+  "entityExtraInfo": {
+    "label": "Extra Info",
+    "placeholder": "Additional notes or information about this {{type}}",
+    "empty": "No extra info added"
+  },
+  "evidence": {
+    "add": "Upload Evidence Images",
+    "addLink": "Add External Evidence Link",
+    "linkPlaceholder": "Enter external URL",
+    "extraInfo": "Extra Info",
+    "extraInfoPlaceholder": "Additional notes or information about this evidence",
+    "pendingUpload": "Pending Upload",
+    "uploaded": "Uploaded Evidence",
+    "dropZoneText": "Drag & drop images here or click to select",
+    "dropZoneHint": "Select multiple image files",
+    "existing": "Existing Evidence",
+    "deleteConfirm": "Are you sure you want to delete this evidence?"
+  },
+  "relations": {
+    "search": "작곡가 검색",
+    "placeholder": "이름 검색...",
+    "existing": "Existing Relations",
+    "none": "No relations found",
+    "treeView": "Tree View",
+    "addRelation": "Add Relation",
+    "typeToSearch": "Type to search artists...",
+    "noResults": "No artists found"
+  },
+  "buttons": {
+    "merge": "병합",
+    "merging": "병합 중...",
+    "split": "분리",
+    "splitting": "분리 중...",
+    "checking": "확인 중...",
+    "proceed": "Proceed",
+    "deleteAvatar": "Avatar 제거",
+    "selectAvatar": "Avatar 파일 선택",
+    "addRelation": "Add Relation",
+    "removeRelation": "Remove Relation"
+  },
+  "messages": {
+    "updated": "Artist updated successfully",
+    "merged": "Artists merged successfully",
+    "split": "Artist split into '{{name1}}' and '{{name2}}'",
+    "splitSuccess": "Artist split successfully",
+    "avatarUploaded": "Avatar uploaded successfully",
+    "avatarDeleted": "Avatar deleted successfully",
+    "evidenceAdded": "Evidence added successfully",
+    "evidenceUpdated": "Evidence updated successfully",
+    "evidenceDeleted": "Evidence deleted successfully",
+    "entityExtraInfoUpdated": "Extra info updated successfully",
+    "relationAdded": "Relation added successfully",
+    "relationRemoved": "Relation removed successfully"
+  },
+  "errors": {
+    "updateFailed": "Failed to update artist",
+    "mergeFailed": "Failed to merge artists",
+    "splitFailed": "Failed to split artist",
+    "selectTarget": "Please select a target artist",
+    "bothNamesRequired": "Both artist names are required",
+    "namesMustBeDifferent": "Artist names must be different",
+    "bothEntitiesRequired": "Please select both target artists",
+    "entitiesMustBeDifferent": "Target artists must be different",
+    "checkFailed": "Failed to check existing artists",
+    "loadArtistsFailed": "Failed to load artists",
+    "noFile": "Please select a file",
+    "uploadFailed": "Failed to upload avatar",
+    "deleteFailed": "Failed to delete",
+    "evidenceFailed": "Failed to add evidence",
+    "invalidFileType": "Please select image files only",
+    "invalidLink": "Please enter a valid link"
+  }
+}
