@@ -452,7 +452,7 @@ const BackupPage = () => {
   const { t } = useTranslation(['pages', 'common']);
   const { user } = useAuth();
   const currentUrl = window.location.origin + location.pathname;
-  const [activeTab, setActiveTab] = useState('mysql');
+  const [activeTab] = useState('mysql');
   const [backups, setBackups] = useState({ mysql: [], files: [] });
   const [sortOrder, setSortOrder] = useState('newest');
   const [showInitialPasswordModal, setShowInitialPasswordModal] = useState(true);
@@ -717,6 +717,9 @@ const BackupPage = () => {
       />
       <div className="admin-backup-body page-content">
         <div className="header-container">
+          <div className="total-size">
+            {t('backup.stats.totalSize', { size: formatFileSize(totalSize) })}
+          </div>
           <h1>{t('backup.header.title')}</h1>
           <button 
             className="refresh-button"
@@ -728,29 +731,11 @@ const BackupPage = () => {
           </button>
         </div>
 
-        <div className="backup-tabs-container">
-          <div className="backup-tabs">
-            <button
-              className={`tab-button ${activeTab === 'mysql' ? 'active' : ''}`}
-              onClick={() => setActiveTab('mysql')}
-            >
-              {t('backup.tabs.mysql')}
-            </button>
-            <button
-              className={`tab-button ${activeTab === 'files' ? 'active' : ''}`}
-              onClick={() => setActiveTab('files')}
-            >
-              {t('backup.tabs.files')}
-            </button>
-          </div>
-          <div className="total-size">
-            {t('backup.stats.totalSize', { size: formatFileSize(totalSize) })}
-          </div>
-        </div>
+
 
         <div className="backup-header">
           <div className="header-left">
-            <h2>{activeTab === 'mysql' ? t('backup.tabs.mysql') : t('backup.tabs.files')}</h2>
+            <h2>{t('backup.tabs.mysql')}</h2>
             <div className="sort-buttons">
               <button
                 className={`sort-btn ${sortOrder === 'newest' ? 'active' : ''}`}

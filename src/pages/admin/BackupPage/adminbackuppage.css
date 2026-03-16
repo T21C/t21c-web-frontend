@@ -388,6 +388,8 @@
 .admin-backup-page .total-size {
   color: var(--color-white-t80);
   font-size: 1.1rem;
+  position: absolute;
+  left: 0;
   padding: 0.5rem 1rem;
   border-radius: 6px;
 }
