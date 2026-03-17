@@ -13,6 +13,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
   const [error, setError] = useState(null);
   const [levelFiles, setLevelFiles] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(null);
+  const [isSelecting, setIsSelecting] = useState(false);
   const [targetLevel, setTargetLevel] = useState(null);
   const [originalZip, setOriginalZip] = useState(null);
   const [songFiles, setSongFiles] = useState({});
@@ -28,11 +29,23 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
         const data = await response.json();
         
         if (data.metadata) {
-          // Set level files
-          const files = Object.entries(data.metadata.levelFiles).map(([key, file]) => ({
-            ...file,
-            fullPath: key
-          }));
+          const allLevelFiles = Array.isArray(data.metadata.allLevelFiles) ? data.metadata.allLevelFiles : [];
+          const levelFilesMap = data.metadata.levelFiles || {};
+
+          const files = allLevelFiles.length > 0
+            ? allLevelFiles.map((file) => {
+                const relativePath = file.relativePath || file.name;
+                return {
+                  ...file,
+                  fullPath: relativePath,
+                  storagePath: file.path || levelFilesMap[relativePath]?.path,
+                };
+              })
+            : Object.entries(levelFilesMap).map(([key, file]) => ({
+                ...file,
+                fullPath: file.relativePath || key,
+                storagePath: file.path,
+              }));
           setLevelFiles(files);
 
           // Set song files
@@ -41,9 +54,13 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
           // Set original zip info
           setOriginalZip(data.metadata.originalZip);
 
-          // Set target level (store full path, not just filename)
-          const targetPath = data.metadata.targetLevel;
-          setTargetLevel(targetPath || null);
+          // Set target level as canonical relative/full path for reliable matching.
+          const targetPath =
+            data.metadata.targetLevelRelativePath ||
+            files.find((f) => f.storagePath === data.metadata.targetLevel)?.fullPath ||
+            data.metadata.targetLevel ||
+            null;
+          setTargetLevel(targetPath);
         }
       } catch (error) {
         console.error('Error fetching level files:', error);
@@ -153,9 +170,11 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
   };
 
   const handleLevelSelect = async () => {
-    if (!selectedLevel) return;
+    if (!selectedLevel || isSelecting || selectedLevel === targetLevel) return;
 
     try {
+      setIsSelecting(true);
+      setError(null);
       const result = await api.post(`${import.meta.env.VITE_LEVELS}/${level.id}/select-level`, {
         selectedLevel,
       });
@@ -169,6 +188,8 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
       }
     } catch (error) {
       setError(error.response?.data?.error || t('levelUploadManagement.errors.selectFailed'));
+    } finally {
+      setIsSelecting(false);
     }
   };
 
@@ -296,7 +317,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
             )}
             {targetLevel && (
               <div className="current-target">
-                {t('levelUploadManagement.sections.levelSelection.currentTarget', { name: targetLevel.split(/\\|\//).pop() })}
+                {t('levelUploadManagement.sections.levelSelection.currentTarget', { name: targetLevel })}
               </div>
             )}
             <div className="level-list">
@@ -329,11 +350,15 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
             </div>
             {selectedLevel && levelFiles.length > 0 && (
             <button 
-              className="select-button"
+              className={`select-button ${isSelecting ? 'is-selecting' : ''}`}
               onClick={handleLevelSelect}
-              disabled={!selectedLevel || selectedLevel === targetLevel}
+              disabled={!selectedLevel || selectedLevel === targetLevel || isSelecting}
             >
-              {selectedLevel === targetLevel ? t('levelUploadManagement.buttons.currentlySelected') : t('levelUploadManagement.buttons.select')}
+              {isSelecting
+                ? `${t('levelUploadManagement.buttons.select')}...`
+                : selectedLevel === targetLevel
+                  ? t('levelUploadManagement.buttons.currentlySelected')
+                  : t('levelUploadManagement.buttons.select')}
             </button>
             )}
           </div>

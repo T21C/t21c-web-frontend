@@ -194,6 +194,7 @@
 .level-upload-management-popup .select-button {
   background-color: #417fc6;
   color: white;
+  transition: background-color 0.2s, transform 0.12s ease, box-shadow 0.12s ease;
 }
 
 .level-upload-management-popup .select-button:hover {
@@ -204,6 +205,11 @@
   background-color: #2a2a2a;
   color: rgba(255, 255, 255, 0.6);
   cursor: not-allowed;
+}
+
+.level-upload-management-popup .select-button.is-selecting, 
+.level-upload-management-popup .select-button:not(:disabled):active {
+  transform: scale(0.99);
 }
 
 .level-upload-management-popup .cancel-upload-button {
