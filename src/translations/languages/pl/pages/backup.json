@@ -1,15 +1,11 @@
 {
   "meta": {
     "title": "Kopie zapasowe | TUF",
-    "description": "Zarządzaj bazą danych i kopiami zapasowymi w The Universal Forums (TUF)"
+    "description": "Zarządzaj kopiami zapasowymi MySQL w The Universal Forums (TUF)"
   },
   "header": {
     "title": "Kopie zapasowe",
     "refresh": "Odśwież kopie zapasowe"
-  },
-  "tabs": {
-    "mysql": "Kopie zapasowe MySQL",
-    "files": "Kopie zapasowe plików"
   },
   "stats": {
     "totalSize": "Całkowity rozmiar: {{size}}"
@@ -19,7 +15,7 @@
     "oldest": "Najstarsze"
   },
   "buttons": {
-    "create": "Utwórz kopię zapasową {{type}}",
+    "create": "Utwórz kopię zapasową MySQL",
     "creating": "Tworzenie...",
     "restore": "Przywróć",
     "delete": "Usuń",
@@ -39,7 +35,7 @@
     }
   },
   "noBackups": {
-    "title": "Brak dostępnych kopii zapasowych {{type}}",
+    "title": "Brak dostępnych kopii zapasowych MySQL",
     "message": "Stwórz swoją pierwszą kopię zapasową używając powyższego przycisku"
   },
   "timeAgo": {
@@ -72,7 +68,7 @@
     }
   },
   "notifications": {
-    "backupCreated": "Pomyślnie utworzono kopię zapasową {{type}}",
+    "backupCreated": "Pomyślnie utworzono kopię zapasową MySQL",
     "backupRestored": "Pomyślnie przywrócono kopię zapasową",
     "backupDeleted": "Pomyślnie usunięto kopię zapasową",
     "downloadFailed": "Nie udało się pobrać kopii zapasowej",

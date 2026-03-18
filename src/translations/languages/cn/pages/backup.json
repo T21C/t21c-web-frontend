@@ -1,15 +1,11 @@
 {
   "meta": {
     "title": "备份 | TUF",
-    "description": "管理论坛上的数据库与文件备份"
+    "description": "管理论坛上的 MySQL 备份"
   },
   "header": {
     "title": "备份列表",
     "refresh": "刷新备份列表"
-  },
-  "tabs": {
-    "mysql": "MySQL 备份",
-    "files": "文件备份"
   },
   "stats": {
     "totalSize": "总大小：{{size}}"
@@ -19,7 +15,7 @@
     "oldest": "最早"
   },
   "buttons": {
-    "create": "创建 {{type}} 备份",
+    "create": "创建 MySQL 备份",
     "creating": "创建中……",
     "restore": "恢复",
     "delete": "删除",
@@ -40,7 +36,7 @@
     }
   },
   "noBackups": {
-    "title": "无 {{type}} 备份",
+    "title": "无 MySQL 备份",
     "message": "点击上方按钮创建你的第一个备份"
   },
   "timeAgo": {
@@ -74,7 +70,7 @@
     "restoreMessage": "确认恢复此备份？这将覆写当前数据。"
   },
   "notifications": {
-    "backupCreated": "{{type}} 备份创建成功",
+    "backupCreated": "MySQL 备份创建成功",
     "backupRestored": "备份恢复成功",
     "backupDeleted": "备份删除成功",
     "downloadFailed": "备份下载失败",

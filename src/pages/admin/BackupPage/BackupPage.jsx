@@ -14,7 +14,7 @@ import i18next from "i18next";
 
 const MAX_FILE_SIZE = 500 * 1024 * 1024; // 500MB in bytes
 
-const UploadZone = ({ type, onUploadComplete, storedPassword, isLoadingBackups }) => {
+const UploadZone = ({ onUploadComplete, storedPassword, isLoadingBackups }) => {
   const { t } = useTranslation(['pages', 'common']);
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
@@ -46,7 +46,7 @@ const UploadZone = ({ type, onUploadComplete, storedPassword, isLoadingBackups }
       formData.append('backup', file);
       
       const response = await api.post(
-        `${import.meta.env.VITE_BACKUP_API}/upload/${type}`,
+        `${import.meta.env.VITE_BACKUP_API}/upload`,
         formData,
         {
           headers: {
@@ -138,7 +138,7 @@ const UploadZone = ({ type, onUploadComplete, storedPassword, isLoadingBackups }
       <input
         type="file"
         onChange={handleFileSelect}
-        accept=".sql,.zip,.tar.gz"
+        accept=".sql"
         disabled={isUploading}
       />
       {isUploading && (
@@ -192,7 +192,7 @@ const TimeAgo = ({ date }) => {
   return <span className="time-ago">{timeAgo}</span>;
 };
 
-const BackupList = ({ backups, type, isLoadingBackups, showConfirmation, storedPassword }) => {
+const BackupList = ({ backups, isLoadingBackups, showConfirmation, storedPassword }) => {
   const { t } = useTranslation(['pages', 'common']);
   const [editingId, setEditingId] = useState(null);
   const [newName, setNewName] = useState('');
@@ -213,7 +213,7 @@ const BackupList = ({ backups, type, isLoadingBackups, showConfirmation, storedP
     try {
       setRenameLoading(true);
       const response = await api.post(
-        `${import.meta.env.VITE_BACKUP_API}/rename/${type}/${backup.filename}`,
+        `${import.meta.env.VITE_BACKUP_API}/rename/${backup.filename}`,
         { newName: newName + getFileNameAndExtension(backup.filename)[1] },
         {
           headers: {
@@ -237,9 +237,9 @@ const BackupList = ({ backups, type, isLoadingBackups, showConfirmation, storedP
 
   const handleAction = (action, backup) => {
     if (action === 'restore') {
-      showConfirmation('restore', 'restore', { type, filename: backup.filename });
+      showConfirmation('restore', 'restore', { filename: backup.filename });
     } else if (action === 'delete') {
-      showConfirmation('delete', 'delete', { type, filename: backup.filename });
+      showConfirmation('delete', 'delete', { filename: backup.filename });
     } else if (action === 'download') {
       handleDownload(backup);
     } else if (action === 'rename') {
@@ -256,7 +256,7 @@ const BackupList = ({ backups, type, isLoadingBackups, showConfirmation, storedP
       setDownloadIndeterminate(prev => ({ ...prev, [backup.filename]: true }));
 
       const response = await api.get(
-        `${import.meta.env.VITE_BACKUP_API}/download/${type}/${backup.filename}`,
+        `${import.meta.env.VITE_BACKUP_API}/download/${backup.filename}`,
         {
           headers: {
             'X-Super-Admin-Password': storedPassword
@@ -301,7 +301,7 @@ const BackupList = ({ backups, type, isLoadingBackups, showConfirmation, storedP
   if (!backups || backups.length === 0) {
     return (
       <div className="no-backups-message">
-        <h2>{t('backup.noBackups.title', { type })}</h2>
+        <h2>{t('backup.noBackups.title')}</h2>
         <p>{t('backup.noBackups.message')}</p>
       </div>
     );
@@ -452,8 +452,7 @@ const BackupPage = () => {
   const { t } = useTranslation(['pages', 'common']);
   const { user } = useAuth();
   const currentUrl = window.location.origin + location.pathname;
-  const [activeTab] = useState('mysql');
-  const [backups, setBackups] = useState({ mysql: [], files: [] });
+  const [backups, setBackups] = useState([]);
   const [sortOrder, setSortOrder] = useState('newest');
   const [showInitialPasswordModal, setShowInitialPasswordModal] = useState(true);
   const [initialPassword, setInitialPassword] = useState('');
@@ -513,9 +512,9 @@ const BackupPage = () => {
       if (type === 'create') {
         await handleCreateBackupWithPassword(params);
       } else if (type === 'delete') {
-        await handleDeleteWithPassword(params.type, params.filename);
+        await handleDeleteWithPassword(params.filename);
       } else if (type === 'restore') {
-        await handleRestoreWithPassword(params.type, params.filename);
+        await handleRestoreWithPassword(params.filename);
       }
     } finally {
       setShowConfirmationModal(false);
@@ -532,7 +531,7 @@ const BackupPage = () => {
     try {
       setIsCreatingBackup(true);
       const response = await api.post(
-        `${import.meta.env.VITE_BACKUP_API}/create/${activeTab}`, 
+        `${import.meta.env.VITE_BACKUP_API}/create`, 
         {},
         {
           headers: {
@@ -541,7 +540,7 @@ const BackupPage = () => {
         }
     );
       if (response.data.success) {
-        toast.success(t('backup.notifications.backupCreated', { type: activeTab.toUpperCase() }));
+        toast.success(t('backup.notifications.backupCreated'));
         await loadBackups();
       }
     } catch (error) {
@@ -552,11 +551,11 @@ const BackupPage = () => {
     }
   };
 
-  const handleDeleteWithPassword = async (type, filename) => {
+  const handleDeleteWithPassword = async (filename) => {
     try {
       setIsDeletingBackup(true);
       const response = await api.delete(
-        `${import.meta.env.VITE_BACKUP_API}/delete/${type}/${filename}`,
+        `${import.meta.env.VITE_BACKUP_API}/delete/${filename}`,
         {
           headers: {
             'X-Super-Admin-Password': storedPassword
@@ -575,11 +574,11 @@ const BackupPage = () => {
     }
   };
 
-  const handleRestoreWithPassword = async (type, filename) => {
+  const handleRestoreWithPassword = async (filename) => {
     try {
       setIsRestoringBackup(true);
       const response = await api.post(
-        `${import.meta.env.VITE_BACKUP_API}/restore/${type}/${filename}`,
+        `${import.meta.env.VITE_BACKUP_API}/restore/${filename}`,
         {},
         {
           headers: {
@@ -602,7 +601,7 @@ const BackupPage = () => {
     try {
       setIsLoadingBackups(true);
       const response = await api.get(`${import.meta.env.VITE_BACKUP_API}/list`);
-      setBackups(response.data);
+      setBackups(response?.data?.mysql || []);
     } catch (error) {
       console.error('Failed to load backups:', error);
       toast.error(t('backup.notifications.loadFailed'));
@@ -619,64 +618,18 @@ const BackupPage = () => {
     showConfirmation('create', 'create', {});
   };
 
-  const handleRestore = async (type, filename) => {
-    try {
-      setIsRestoringBackup(true);
-      const response = await api.post(
-        `${import.meta.env.VITE_BACKUP_API}/restore/${type}/${filename}`,
-        {},
-        {
-          headers: {
-            'X-Super-Admin-Password': storedPassword
-          }
-        }
-      );
-      if (response.data.success) {
-        toast.success(t('backup.notifications.backupRestored'));
-      }
-    } catch (error) {
-      console.error('Failed to restore backup:', error);
-      toast.error(t('backup.notifications.restoreFailed'));
-    } finally {
-      setIsRestoringBackup(false);
-    }
-  };
-
-  const handleDelete = async (type, filename) => {
-    try {
-      setIsDeletingBackup(true);
-      const response = await api.delete(
-        `${import.meta.env.VITE_BACKUP_API}/delete/${type}/${filename}`,
-        {
-          headers: {
-            'X-Super-Admin-Password': storedPassword
-          }
-        }
-      );
-      if (response.data.success) {
-        toast.success(t('backup.notifications.backupDeleted'));
-        await loadBackups();
-      }
-    } catch (error) {
-      console.error('Failed to delete backup:', error);
-      toast.error(t('backup.notifications.deleteFailed'));
-    } finally {
-      setIsDeletingBackup(false);
-    }
-  };
-
   const sortedBackups = useMemo(() => {
-    const currentBackups = [...backups[activeTab]];
+    const currentBackups = [...backups];
     return currentBackups.sort((a, b) => {
       const timeA = new Date(a.created).getTime();
       const timeB = new Date(b.created).getTime();
       return sortOrder === 'newest' ? timeB - timeA : timeA - timeB;
     });
-  }, [backups, activeTab, sortOrder]);
+  }, [backups, sortOrder]);
 
   const totalSize = useMemo(() => {
-    return backups[activeTab].reduce((total, backup) => total + backup.size, 0);
-  }, [backups, activeTab]);
+    return backups.reduce((total, backup) => total + backup.size, 0);
+  }, [backups]);
 
   if (user.permissionFlags === undefined) {
     return (
@@ -735,7 +688,6 @@ const BackupPage = () => {
 
         <div className="backup-header">
           <div className="header-left">
-            <h2>{t('backup.tabs.mysql')}</h2>
             <div className="sort-buttons">
               <button
                 className={`sort-btn ${sortOrder === 'newest' ? 'active' : ''}`}
@@ -759,14 +711,13 @@ const BackupPage = () => {
             >
               {isCreatingBackup 
                 ? t('loading.creating', { ns: 'common' }) 
-                : t('backup.buttons.create', { type: activeTab.toUpperCase() })
+                : t('backup.buttons.create')
               }
             </button>
           </div>
         </div>
 
         <UploadZone 
-          type={activeTab}
           onUploadComplete={loadBackups}
           storedPassword={storedPassword}
           isLoadingBackups={isLoadingBackups}
@@ -774,7 +725,6 @@ const BackupPage = () => {
 
         <BackupList
           backups={sortedBackups}
-          type={activeTab}
           isLoadingBackups={isLoadingBackups}
           showConfirmation={showConfirmation}
           storedPassword={storedPassword}

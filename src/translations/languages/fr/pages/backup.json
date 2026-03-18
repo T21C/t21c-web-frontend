@@ -1,15 +1,11 @@
 {
   "meta": {
     "title": "Backups | TUF",
-    "description": "Gérer la database et les fichiers de backups pour The Universal Forums (TUF)"
+    "description": "Gérer les backups MySQL pour The Universal Forums (TUF)"
   },
   "header": {
     "title": "Backups",
     "refresh": "Rafraîchir les backup"
-  },
-  "tabs": {
-    "mysql": "Backup MySQL",
-    "files": "Backup des fichiers"
   },
   "stats": {
     "totalSize": "Taille totale: {{size}}"
@@ -19,7 +15,7 @@
     "oldest": "Le plus ancien"
   },
   "buttons": {
-    "create": "Créer une backup {{type}}",
+    "create": "Créer une backup MySQL",
     "creating": "Création...",
     "restore": "Restaurer",
     "delete": "Supprimer",
@@ -29,7 +25,7 @@
     "confirm": "Confirmer"
   },
   "noBackups": {
-    "title": "Aucune backup {{type}} disponible",
+    "title": "Aucune backup MySQL disponible",
     "message": "Créez une première backup avec le bouton au dessus"
   },
   "timeAgo": {
@@ -59,7 +55,7 @@
     }
   },
   "notifications": {
-    "backupCreated": "Backup {{type}} créée avec succès",
+    "backupCreated": "Backup MySQL créée avec succès",
     "backupRestored": "Backup restaurée avec succès",
     "backupDeleted": "Backup supprimée avec succès",
     "downloadFailed": "Echec du téléchargement de la backup",
