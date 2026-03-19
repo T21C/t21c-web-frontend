@@ -25,7 +25,7 @@
         "second": "1-month ban",
         "third": "6-month ban"
       },
-      "explanation": "Using modified keycaps that allow multiple switches to be pressed at once provides an unfair mechanical advantage."
+      "explanation": "Using modified keycaps that allow multiple switches to be pressed at once provides an unfair mechanical advantage. Bottom row keys are allowed (e.g. using shift keycap to press ctrl and windows key at the same time); for foot keys, any physical pedals are allowed"
     },
     "rule2": {
       "title": "Rule 2 – Untruthful Edited Judgements (Accuracy Manipulation)",

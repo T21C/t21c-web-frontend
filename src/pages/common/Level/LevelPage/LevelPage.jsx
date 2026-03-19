@@ -222,60 +222,37 @@ const LevelPage = () => {
     setOnlyMyLikes(!onlyMyLikes);
   }
 
-  // Handle slider value updates without triggering immediate fetches
-  function handleSliderChange(newRange) {
-    setSliderRange(newRange);
-    
-    // Find difficulties corresponding to slider values
-    const lowDiff = pguDifficulties.find(d => d.sortOrder === newRange[0]) || 
-                   pguDifficulties.find(d => d.sortOrder >= newRange[0]);
-    const highDiff = pguDifficulties.find(d => d.sortOrder === newRange[1]) || 
-                    [...pguDifficulties].reverse().find(d => d.sortOrder <= newRange[1]);
-                    
-    setSelectedLowFilterDiff(lowDiff?.name || "P1");  // Fallback to P1
-    setSelectedHighFilterDiff(highDiff?.name || "U20"); // Fallback to U20
-  }
+
 
   function handleSliderQChange(newRange) {
-    // If newRange is a list of difficulty names, keep it as is
     if (newRange && newRange.length > 0 && typeof newRange[0] === 'string') {
-      // For display purposes, convert to sortOrder values
       const sortOrderValues = newRange.map(name => {
         const diff = difficulties.find(d => d.name === name);
         return diff ? diff.sortOrder : 1;
       });
       
-      // Ensure we have at least two values for the slider display
       if (sortOrderValues.length === 1) {
         setSliderQRangeDrag([sortOrderValues[0], sortOrderValues[0]]);
       } else {
         setSliderQRangeDrag([sortOrderValues[0], sortOrderValues[sortOrderValues.length - 1]]);
       }
     } else if (newRange && newRange.length === 2) {
-      // Already sortOrder values
       setSliderQRangeDrag(newRange);
     } else if (newRange && newRange.length === 1) {
-      // If we only have one value, duplicate it
       setSliderQRangeDrag([newRange[0], newRange[0]]);
     } else {
-      // If we have no values, use the first Q difficulty
       const firstQ = qDifficulties[0]?.sortOrder || 1;
       setSliderQRangeDrag([firstQ, firstQ]);
     }
   }
 
   const handleSliderQChangeComplete = useCallback((newRange) => {
-    // If newRange is a list of difficulty names, keep it as is
-    // newrange = ["Q1", "Q2", "Q3"]
-
     if (!newRange) {
       setSliderQRange(qDifficulties.map(d => d.name));
       setSliderQRangeDrag([qDifficulties[0]?.sortOrder || 1, qDifficulties[qDifficulties.length - 1]?.sortOrder || 1]);
       return;
     }
-    // Keep the list of difficulty names
-    
-    // For display purposes, convert to sortOrder values
+
     const sortOrderValues = newRange.map(name => {
       const diff = difficulties.find(d => d.name === name);
       return diff ? diff.sortOrder : 1;
@@ -285,12 +262,9 @@ const LevelPage = () => {
     setSliderQRange(newRange);
   }, [qDifficulties, difficulties]);
 
-  // Handle slider changes complete (after drag or click)
   const handleSliderChangeComplete = useCallback((newRange) => {
-     // Don't call handleSliderChange here, do the logic directly
     setSliderRange(newRange);
     
-    // Find difficulties corresponding to slider values
     const lowDiff = pguDifficulties.find(d => d.sortOrder === newRange[0]) || 
                    pguDifficulties.find(d => d.sortOrder >= newRange[0]);
     const highDiff = pguDifficulties.find(d => d.sortOrder === newRange[1]) || 
@@ -335,7 +309,7 @@ const LevelPage = () => {
     setSearchInput(newValue);
     setQuery(newValue);
     setPageNumber(0);
-    setLevelsData([]);
+    setLevelsData(null);
   }
 
   // Note: Removed auto-clearing of curation types when filter changes to 'hide'
@@ -360,7 +334,7 @@ const LevelPage = () => {
     if (isFirstFilterEffectRef.current) {
       isFirstFilterEffectRef.current = false;
 
-      if (levelsData.length === 0) {
+      if (!levelsData || levelsData.length === 0) {
         fetchTimeoutRef.current = setTimeout(() => {
           fetchLevelsData(true);
         }, 500);
@@ -388,6 +362,7 @@ const LevelPage = () => {
 
     // Set a new timeout to trigger fetch after 500ms
     fetchTimeoutRef.current = setTimeout(() => {
+      setLevelsData(null);
       fetchLevelsData(true);
     }, 500);
     
@@ -399,7 +374,23 @@ const LevelPage = () => {
         cancelTokenRef.current();
       }
     };
-  }, [query, sort, order, deletedFilter, clearedFilter, availableDlFilter, selectedLowFilterDiff, selectedHighFilterDiff, sliderQRange, qSliderVisible, selectedCurationTypes, selectedTags, selectedSpecialDiffs, onlyMyLikes, user]);
+  }, [
+    query, 
+    sort,
+    order, 
+    deletedFilter, 
+    clearedFilter, 
+    availableDlFilter, 
+    selectedLowFilterDiff, 
+    selectedHighFilterDiff,
+    sliderQRange, 
+    qSliderVisible, 
+    selectedCurationTypes, 
+    selectedTags, 
+    selectedSpecialDiffs, 
+    onlyMyLikes, 
+    user
+  ]);
 
   // Direct fetch for page number changes (pagination)
   useEffect(() => {
@@ -428,14 +419,14 @@ const LevelPage = () => {
   function handleSortType(value) {
     setSort(value);
     setPageNumber(0);
-    setLevelsData([]);
+    setLevelsData(null);
     setHasMore(true);
   }
 
   function handleSortOrder(value) {
     setOrder(value);
     setPageNumber(0);
-    setLevelsData([]);
+    setLevelsData(null);
     setHasMore(true);
   }
 
@@ -597,7 +588,7 @@ const LevelPage = () => {
               <div className="filter-row">
                 <DifficultySlider
                   values={sliderRange}
-                  onChange={handleSliderChange}
+                  onChange={setSliderRange}
                   onChangeComplete={handleSliderChangeComplete}
                   mode="pgu"
                 />
@@ -828,6 +819,7 @@ const LevelPage = () => {
           )}
         </div>
 
+        {levelsData ? (
         <InfiniteScroll
           style={{ paddingBottom: "7rem", overflow: "visible", "position": "relative", "zIndex": "5" }}
           dataLength={levelsData.length}
@@ -852,7 +844,9 @@ const LevelPage = () => {
             ))}
           </div>
         </InfiniteScroll>
-
+        ) : (
+          <div className="loader loader-level-page"></div>
+        )}
         {showHelpPopup && (<LevelHelpPopup onClose={() => setShowHelpPopup(false)} />)}
       </div>
     </div>
