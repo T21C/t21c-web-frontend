@@ -38,7 +38,7 @@ import {
   ScoreIcon,
   RefreshIcon
 } from "@/components/common/icons";
-import { createEventSystem, formatCreatorDisplay, formatDate, isCdnUrl, selectIconSize } from "@/utils/Utility";
+import { createEventSystem, formatBaseScore, formatCreatorDisplay, formatDate, isCdnUrl, selectIconSize } from "@/utils/Utility";
 import { getSongDisplayName, getArtistDisplayName } from "@/utils/levelHelpers";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
@@ -1882,7 +1882,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                   difficultyDict={difficultyDict}
                 />
                 <div className="pp-display">
-                  {(res.level.baseScore || difficulty.baseScore || 0).toFixed(1)}PP
+                  {formatBaseScore(res.level.baseScore || difficulty.baseScore || 0)}PP
                 </div>
                 <div className="level-id">#{effectiveId}</div>
               </div>

@@ -411,6 +411,21 @@ export function selectIconSize(url, size = "small") {
   return url.replace('/original', `/${size}`);
 }
 
+/** Base score as display string (no suffix); trims trailing fraction zeros, keeps one 0 after "." if needed. */
+export function formatBaseScore(baseScore) {
+  const n = Number(baseScore);
+  if (!Number.isFinite(n)) return '0';
+  let str = n.toString();
+  if (/[eE]/.test(str)) {
+    str = n.toFixed(20);
+  }
+  if (str.includes('.')) {
+    str = str.replace(/0+$/, '');
+    if (str.endsWith('.')) str += '0';
+  }
+  return str;
+}
+
 export function getVerificationClass(state) {
   return `verification-chip ${state?.replace(' ', '-') || 'unverified'}`;
 };
