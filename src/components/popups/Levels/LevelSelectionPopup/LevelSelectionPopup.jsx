@@ -184,37 +184,7 @@ const LevelSelectionPopup = ({
           </div>
         </div>
 
-        {/* Enhanced Pagination */}
-        {totalPages > 1 && (
-          <div className="level-selection-modal__pagination">
-            <button 
-              onClick={handlePreviousPage}
-              disabled={currentPage === 1}
-              className="level-selection-modal__pagination-btn"
-            >
-              Previous
-            </button>
-            <div className="level-selection-modal__page-controls">
-              <span>Page </span>
-              <input
-                type="number"
-                max={totalPages}
-                value={inputValue}
-                onChange={handlePageInputChange}
-                onBlur={handlePageInputBlur}
-                className="level-selection-modal__page-input"
-              />
-              <span> of {totalPages}</span>
-            </div>
-            <button 
-              onClick={handleNextPage}
-              disabled={currentPage >= totalPages}
-              className="level-selection-modal__pagination-btn"
-            >
-              Next
-            </button>
-          </div>
-        )}
+       
 
         <div className="level-selection-modal__levels">
           {isLoading ? (
@@ -257,6 +227,38 @@ const LevelSelectionPopup = ({
             ))
           )}
         </div>
+
+         {/* Enhanced Pagination */}
+         {totalPages > 1 && (
+          <div className="level-selection-modal__pagination">
+            <button 
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+              className="level-selection-modal__pagination-btn"
+            >
+              Previous
+            </button>
+            <div className="level-selection-modal__page-controls">
+              <span>Page </span>
+              <input
+                type="number"
+                max={totalPages}
+                value={inputValue}
+                onChange={handlePageInputChange}
+                onBlur={handlePageInputBlur}
+                className="level-selection-modal__page-input"
+              />
+              <span> of {totalPages}</span>
+            </div>
+            <button 
+              onClick={handleNextPage}
+              disabled={currentPage >= totalPages}
+              className="level-selection-modal__pagination-btn"
+            >
+              Next
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );
