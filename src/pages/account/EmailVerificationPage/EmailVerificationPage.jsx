@@ -26,6 +26,18 @@ const EmailVerificationPage = () => {
       return;
     }
 
+    // One-time token is cleared server-side; remounts (e.g. React Strict Mode or a full-tree loading flash) must not POST again.
+    const tokenDoneKey = `emailVerifyOk:${token}`;
+    try {
+      if (sessionStorage.getItem(tokenDoneKey)) {
+        setStatus(user ? 'success' : 'verify-success-login-required');
+        verificationAttempted.current = true;
+        return;
+      }
+    } catch {
+      // sessionStorage unavailable
+    }
+
     if (verificationAttempted.current) {
       return;
     }
@@ -37,6 +49,11 @@ const EmailVerificationPage = () => {
         const data = await verifyEmail(token);
         if (data?.email) {
           setVerificationEmail(data.email);
+        }
+        try {
+          sessionStorage.setItem(tokenDoneKey, '1');
+        } catch {
+          // ignore
         }
         // Use /me result from verifyEmail (avoids stale closure on `user` after await)
         if (data?.user) {

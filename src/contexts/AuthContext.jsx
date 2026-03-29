@@ -118,8 +118,13 @@ export const AuthProvider = ({ children }) => {
     }
   }, [user]);
 
-  /** @returns {Promise<object | null | undefined>} Current profile user, null on auth error, undefined if skipped (throttle) */
-  const fetchUser = async (force = false) => {
+  /**
+   * @param {boolean} force
+   * @param {{ silent?: boolean }} [options] If silent, does not toggle global `loading` (avoids unmounting the tree — needed after verify-email / change-email so the verification page does not remount and retry a one-time token).
+   * @returns {Promise<object | null | undefined>} Current profile user, null on auth error, undefined if skipped (throttle)
+   */
+  const fetchUser = async (force = false, options = {}) => {
+    const silent = options && typeof options === 'object' && options.silent === true;
     const now = Date.now();
     if (!force && now - lastFetchTime < 1000) {
       return undefined;
@@ -127,7 +132,9 @@ export const AuthProvider = ({ children }) => {
     setLastFetchTime(now);
 
     try {
-      setLoading(true);
+      if (!silent) {
+        setLoading(true);
+      }
       const response = await api.get('/v2/auth/profile/me');
       const newUser = response.data.user;
       setUser(newUser);
@@ -140,7 +147,9 @@ export const AuthProvider = ({ children }) => {
       setUser(null);
       return null;
     } finally {
-      setLoading(false);
+      if (!silent) {
+        setLoading(false);
+      }
     }
   };
 
@@ -280,7 +289,7 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await api.post('/v2/auth/verify/email', { token });
       // Force refresh: default fetchUser throttles within 1s and would leave stale isEmailVerified
-      const profileUser = await fetchUser(true);
+      const profileUser = await fetchUser(true, { silent: true });
       window.dispatchEvent(new Event('auth:permission-changed'));
       return {
         ...response.data,
@@ -303,7 +312,20 @@ export const AuthProvider = ({ children }) => {
   const changeEmail = async (email) => {
     try {
       const response = await api.post('/v2/auth/verify/change-email', { email });
-      await fetchUser(true);
+      if (response.data?.user) {
+        setUser((prev) =>
+          prev
+            ? {
+                ...prev,
+                email: response.data.user.email,
+                isEmailVerified: response.data.user.isEmailVerified,
+                permissionFlags: response.data.user.permissionFlags,
+              }
+            : response.data.user
+        );
+      }
+      await fetchUser(true, { silent: true });
+      window.dispatchEvent(new Event('auth:permission-changed'));
       return response.data;
     } catch (error) {
       throw error;
