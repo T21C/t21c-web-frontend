@@ -9,6 +9,8 @@ import api from '@/utils/api';
 import { useNavigate } from 'react-router-dom';
 import { formatCreatorDisplay } from "@/utils/Utility";
 import { createPortal } from 'react-dom';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { getPortalRoot } from '@/utils/portalRoot';
 
 const AddToPackPopup = ({ level, onClose, onSuccess }) => {
   const { t } = useTranslation('components');
@@ -171,13 +173,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
     return () => document.removeEventListener('click', handleClickOutside);
   }, [onClose]);
 
-  // Prevent body scroll
-  useEffect(() => {
-    document.body.style.overflowY = 'hidden';
-    return () => {
-      document.body.style.overflowY = '';
-    };
-  }, []);
+  useBodyScrollLock(true);
 
   let popupContent = null;
   if (!user) {
@@ -387,7 +383,7 @@ const AddToPackPopup = ({ level, onClose, onSuccess }) => {
       )}
     </>
   );
-  return createPortal(popupContent, document.body);
+  return createPortal(popupContent, getPortalRoot());
 };
 
 export default AddToPackPopup;

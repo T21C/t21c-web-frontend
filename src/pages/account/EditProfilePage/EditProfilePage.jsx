@@ -7,8 +7,10 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
 import ImageSelectorPopup from '@/components/common/selectors/ImageSelectorPopup/ImageSelectorPopup';
+import { ChangeEmailPopup } from '@/components/popups/Users';
 import { CountrySelect } from '@/components/common/selectors';
 import { useTranslation } from 'react-i18next';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 
 const usernameChangeCooldown = 1 * 24 * 60 * 60 * 1000; // 1 day
@@ -24,10 +26,9 @@ const ProviderIcon = ({ provider, size, color="#fff" }) => {
 
 const EditProfilePage = () => {
   const { t } = useTranslation(['pages', 'common']);
-  const { user, changePassword, linkProvider, unlinkProvider, setUser, fetchUser } = useAuth();
+  const { user, changePassword, changeEmail, linkProvider, unlinkProvider, setUser, fetchUser } = useAuth();
   const [formData, setFormData] = useState({
     username: user?.username || '',
-    email: user?.email || '',
     nickname: user?.nickname || '',
     currentPassword: '',
     newPassword: '',
@@ -45,7 +46,8 @@ const EditProfilePage = () => {
   const [avatarPreview, setAvatarPreview] = useState(user?.avatarUrl ? user.avatarUrl : null);
   const [uploadError, setUploadError] = useState(null);
   const fileInputRef = useRef(null);
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [isAvatarPopupOpen, setIsAvatarPopupOpen] = useState(false);
+  const [isEmailChangePopupOpen, setIsEmailChangePopupOpen] = useState(false);
   const [initialImage, setInitialImage] = useState(null);
   const [usernameRateLimit, setUsernameRateLimit] = useState(null);
   const [usernameTimer, setUsernameTimer] = useState(null);
@@ -53,23 +55,7 @@ const EditProfilePage = () => {
   const [isUsernameEditing, setIsUsernameEditing] = useState(false);
   const [originalUsername, setOriginalUsername] = useState(user?.username || '');
 
-  useEffect(() => {
-    if (isPopupOpen) {
-      // Lock scrolling
-      document.body.style.overflowY = 'hidden';
-      document.body.style.paddingRight = `${window.innerWidth - document.documentElement.clientWidth}px`;
-    } else {
-      // Restore scrolling
-      document.body.style.overflowY = '';
-      document.body.style.paddingRight = '';
-    }
-
-    return () => {
-      // Cleanup: ensure scrolling is restored
-      document.body.style.overflowY = '';
-      document.body.style.paddingRight = '';
-    };
-  }, [isPopupOpen]);
+  useBodyScrollLock(isAvatarPopupOpen || isEmailChangePopupOpen);
 
   // Check for existing rate limit on mount
   useEffect(() => {
@@ -238,13 +224,13 @@ const EditProfilePage = () => {
     const reader = new FileReader();
     reader.onload = () => {
       setInitialImage(reader.result);
-      setIsPopupOpen(true);
+      setIsAvatarPopupOpen(true);
     };
     reader.readAsDataURL(file);
   };
 
   const handlePopupClose = () => {
-    setIsPopupOpen(false);
+    setIsAvatarPopupOpen(false);
     setInitialImage(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -329,7 +315,7 @@ const EditProfilePage = () => {
     const reader = new FileReader();
     reader.onload = () => {
       setInitialImage(reader.result);
-      setIsPopupOpen(true);
+      setIsAvatarPopupOpen(true);
     };
     reader.readAsDataURL(file);
   }, []);
@@ -368,7 +354,7 @@ const EditProfilePage = () => {
     }
 
     try {
-      const response = await api.put(`${import.meta.env.VITE_PROFILE}/me`, {
+      await api.put(`${import.meta.env.VITE_PROFILE}/me`, {
         username: formData.username,
         nickname: formData.nickname,
         country: formData.country,
@@ -463,6 +449,48 @@ const EditProfilePage = () => {
 
         <form onSubmit={handleSubmit} className="edit-profile-form">
           <div className="form-group">
+            <label htmlFor="profile-email-display">{t('editProfile.form.labels.email')}</label>
+            <div className="username-input-wrapper">
+              <input
+                type="text"
+                id="profile-email-display"
+                readOnly
+                className="input-field readonly"
+                value={user?.email || ''}
+                autoComplete="off"
+              />
+              <button
+                type="button"
+                className="username-action-btn edit"
+                onClick={() => setIsEmailChangePopupOpen(true)}
+                disabled={isSavingProfile}
+                title={t('editProfile.emailChange.editTitle')}
+              >
+                <span className="username-action-icon">
+                  <EditIcon color="#fff" size="24px" />
+                </span>
+              </button>
+            </div>
+            {!hasFlag(user, permissionFlags.EMAIL_VERIFIED) && (
+              <div
+                className="email-verification-message email-verification-message--compact"
+                role="button"
+                tabIndex={0}
+                onClick={() => navigate('/profile/verify-email')}
+                onKeyDown={(ev) => {
+                  if (ev.key === 'Enter' || ev.key === ' ') {
+                    ev.preventDefault();
+                    navigate('/profile/verify-email');
+                  }
+                }}
+              >
+                <span className="profile-banner-text">{t('editProfile.form.emailVerification.message')}</span>
+                <span className="email-verification-arrow">{t('editProfile.form.emailVerification.arrow')}</span>
+              </div>
+            )}
+          </div>
+
+          <div className="form-group">
             <label htmlFor="username">
               {t('editProfile.form.labels.username')}
               {usernameTimer && (
@@ -515,25 +543,6 @@ const EditProfilePage = () => {
               required
               className="input-field"
             />
-          </div>
-
-          <div className="form-group">
-            <label htmlFor="email">{t('editProfile.form.labels.email')}</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleInputChange}
-              disabled
-              className="input-field disabled"
-            />
-            {!hasFlag(user, permissionFlags.EMAIL_VERIFIED) && (
-              <div className="email-verification-message" onClick={() => navigate('/profile/verify-email')}>
-                <span className="profile-banner-text">{t('editProfile.form.emailVerification.message')}</span>
-                <span className="email-verification-arrow">{t('editProfile.form.emailVerification.arrow')}</span>
-              </div>
-            )}
           </div>
 
           <div className="form-group">
@@ -704,11 +713,17 @@ const EditProfilePage = () => {
     </div>
 
     <ImageSelectorPopup
-      isOpen={isPopupOpen}
+      isOpen={isAvatarPopupOpen}
       onClose={handlePopupClose}
       onSave={handlePopupSave}
       currentAvatar={avatarPreview}
       initialImage={initialImage}
+    />
+    <ChangeEmailPopup
+      isOpen={isEmailChangePopupOpen}
+      onClose={() => setIsEmailChangePopupOpen(false)}
+      currentEmail={user?.email}
+      changeEmail={changeEmail}
     />
     </>
   );

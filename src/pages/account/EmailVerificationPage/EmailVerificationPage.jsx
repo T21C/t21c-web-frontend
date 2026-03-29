@@ -9,65 +9,47 @@ const EmailVerificationPage = () => {
   const [error, setError] = useState('');
   const [resending, setResending] = useState(false);
   const [verificationEmail, setVerificationEmail] = useState('');
-  const { user, verifyEmail, resendVerification, fetchUser, initiateLogin } = useAuth();
+  const { user, verifyEmail, resendVerification, initiateLogin } = useAuth();
   const navigate = useNavigate();
   const verificationAttempted = useRef(false);
 
+  const token = searchParams.get('token');
+
   useEffect(() => {
-    // If user is already verified, show already verified state immediately
     if (user?.isEmailVerified) {
       setStatus('already-verified');
       return;
     }
 
-    const token = searchParams.get('token');
-    
-    // If no token, treat as manual page visit
     if (!token) {
       setStatus('needs-verification');
       return;
     }
-    
-    // Prevent multiple verification attempts
+
     if (verificationAttempted.current) {
       return;
     }
-    
     verificationAttempted.current = true;
-    
-    const verifyToken = async () => {
+
+    (async () => {
       try {
-        // Try to verify the email regardless of login status
-        const response = await verifyEmail(token);
-        
-        // If we got an email back from the verification, store it
-        if (response && response.email) {
-          setVerificationEmail(response.email);
+        setStatus('verifying');
+        const data = await verifyEmail(token);
+        if (data?.email) {
+          setVerificationEmail(data.email);
         }
-        
-        // If user is not logged in, show the login prompt
-        if (!user) {
+        // Use /me result from verifyEmail (avoids stale closure on `user` after await)
+        if (data?.user) {
+          setStatus('success');
+        } else {
           setStatus('verify-success-login-required');
-          return;
         }
-        
-        // Otherwise proceed with normal success flow
-        setStatus('success');
       } catch (err) {
         setStatus('error');
-        setError(err.message);
+        setError(err.message || 'Verification failed');
       }
-    };
-
-    verifyToken();
-  }, [searchParams, verifyEmail, user]);
-
-  // Separate effect to fetch user data after successful verification
-  useEffect(() => {
-    if (status === 'success') {
-      fetchUser();
-    }
-  }, [status, fetchUser]);
+    })();
+  }, [token, verifyEmail, user?.isEmailVerified]);
 
   const handleResendVerification = async () => {
     const emailToUse = user?.email || verificationEmail;
@@ -80,7 +62,7 @@ const EmailVerificationPage = () => {
     try {
       setResending(true);
       setError(''); // Clear any existing errors before attempting
-      await resendVerification(emailToUse);
+      await resendVerification();
       setStatus('resent');
     } catch (err) {
       // Handle specific error cases
@@ -97,7 +79,7 @@ const EmailVerificationPage = () => {
 
   const renderContent = () => {
     // For non-logged in users with a token, show simplified content
-    if (!user && searchParams.get('token')) {
+    if (!user && token) {
       switch (status) {
         case 'verifying':
           return (

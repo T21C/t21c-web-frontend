@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { getPortalRoot } from '@/utils/portalRoot';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '@/contexts/AuthContext';
 import { CrossIcon, ImageIcon, TrashIcon } from '@/components/common/icons';
@@ -206,13 +208,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
     }
   };
 
-  // Prevent body scroll
-  useEffect(() => {
-    document.body.style.overflowY = 'hidden';
-    return () => {
-      document.body.style.overflowY = '';
-    };
-  }, []);
+  useBodyScrollLock(true);
 
   // Position dropdown portal and handle clicks outside
   useEffect(() => {
@@ -474,7 +470,7 @@ const EditPackPopup = ({ pack, onClose, onUpdate, onDelete }) => {
                         ))
                       )}
                     </div>,
-                    document.body
+                    getPortalRoot()
                   )}
                   {selectedNewOwner && (
                     <div className="edit-pack-popup__transfer-selected">

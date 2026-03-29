@@ -12,6 +12,8 @@ import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { TagManagementPopup } from './TagManagementPopup';
 import { isCdnUrl } from '@/utils/Utility';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { getPortalRoot } from '@/utils/portalRoot';
 import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { SongSelectorPopup } from '@/components/popups/Songs';
@@ -141,12 +143,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
     };
   }, [level]);
 
-  useEffect(() => {
-    document.body.style.overflowY = 'hidden';
-    return () => {
-      document.body.style.overflowY = '';
-    };
-  }, []);
+  useBodyScrollLock(true);
 
   const handleInputChange = (e) => {
     const { name, type, value, checked } = e.target;
@@ -920,5 +917,5 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
   );
 
   // Use portal to render popup at document.body level to escape stacking context
-  return createPortal(popupContent, document.body);
+  return createPortal(popupContent, getPortalRoot());
 }; 

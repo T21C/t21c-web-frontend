@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import toast from 'react-hot-toast';
@@ -78,16 +79,6 @@ const DiscordRolesManager = ({
   const [initialGuildForm, setInitialGuildForm] = useState(null);
   const [initialRoleForm, setInitialRoleForm] = useState(null);
 
-  useEffect(() => {    
-    // Lock scrolling
-    document.body.style.overflowY = 'hidden';
-
-    // Cleanup function to restore original scroll state
-    return () => {
-      document.body.style.overflowY = '';
-    };
-  }, []);
-
   // Track unsaved changes
   useEffect(() => {
     const hasChanges = showGuildModal || showRoleModal;
@@ -148,18 +139,8 @@ const DiscordRolesManager = ({
     resetRoleForm();
   };
 
-  useEffect(() => {    
-    // Lock scrolling when modals are open
-    if (showGuildModal || showRoleModal) {
-      document.body.style.overflowY = 'hidden';
-    }
+  useBodyScrollLock(showGuildModal || showRoleModal);
 
-    // Cleanup function to restore original scroll state
-    return () => {
-      document.body.style.overflowY = '';
-    };
-  }, [showGuildModal, showRoleModal]);
-  
   useEffect(() => {
     loadGuilds();
   }, []);

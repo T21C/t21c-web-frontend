@@ -9,7 +9,8 @@
     "invalidFileType": "Invalid file type. Please upload a JPEG, PNG, or WebP image.",
     "failedToUploadAvatar": "Failed to upload avatar",
     "failedToRemoveAvatar": "Failed to remove avatar",
-    "usernameAlphanumeric": "Username can only contain letters, numbers and underscores"
+    "usernameAlphanumeric": "Username can only contain letters, numbers and underscores",
+    "usernameChangeRateLimited": "You can only change your username once per day. Please try again later."
   },
   "success": {
     "passwordChanged": "Password changed successfully!",
@@ -40,6 +41,22 @@
       "saveChanges": "Save Changes",
       "saving": "Saving..."
     }
+  },
+  "emailChange": {
+    "title": "Change email",
+    "editTitle": "Change email",
+    "current": "Current email",
+    "new": "New email",
+    "confirm": "Confirm new email",
+    "submit": "Update email",
+    "updating": "Updating...",
+    "success": "Email updated. Check your inbox to verify your new address.",
+    "empty": "Enter a new email address.",
+    "invalidFormat": "Please enter a valid email address.",
+    "mismatch": "New email addresses do not match.",
+    "unchanged": "Enter a different email than your current one.",
+    "rateLimited": "Too many email change attempts. Please try again later.",
+    "failed": "Could not update email. Please try again."
   },
   "password": {
     "title": "Password",

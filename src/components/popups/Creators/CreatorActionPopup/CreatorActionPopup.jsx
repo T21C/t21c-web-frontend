@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useTranslation } from 'react-i18next';
 import { CustomSelect } from '@/components/common/selectors';
 import api from '@/utils/api';
@@ -315,15 +316,7 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
     setHasPendingChanges(nameChanged || aliasesChanged || verificationChanged);
   }, [name, aliases, creator, isVerified]);
 
-  useEffect(() => {
-    // Lock body scroll when popup opens
-    document.body.style.overflowY = 'hidden';
-    
-    // Cleanup: restore body scroll when popup closes
-    return () => {
-      document.body.style.overflowY = '';
-    };
-  }, []);
+  useBodyScrollLock(true);
 
   return (
     <div className="creator-action-popup-container">

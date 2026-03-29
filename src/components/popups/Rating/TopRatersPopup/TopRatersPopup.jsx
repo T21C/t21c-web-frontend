@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import './topraterspopup.css';
 import api from '@/utils/api';
 import PropTypes from 'prop-types';
@@ -104,16 +105,7 @@ const TopRatersPopup = ({ onClose }) => {
     }
   }, [onClose]);
 
-  useEffect(() => {    
-    // Lock scrolling
-    document.body.style.overflowY = 'hidden';
-
-    // Cleanup function to restore original scroll state
-    return () => {
-      document.body.style.overflowY = '';
-    };
-  }, []); // Empty dependency array since we only want this on mount/unmount
-
+  useBodyScrollLock(true);
 
   useEffect(() => {
     // Add event listeners

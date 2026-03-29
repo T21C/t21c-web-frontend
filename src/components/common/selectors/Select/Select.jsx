@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactSelect, { components } from 'react-select';
+import { getPortalRoot } from '@/utils/portalRoot';
 import './select.css';
 
 const CustomSelect = ({
@@ -9,7 +10,7 @@ const CustomSelect = ({
   label,
   width = "12rem",
   maxHeight = "",
-  menuPortalTarget = document.body,
+  menuPortalTarget,
   backgroundColor = "rgba(255, 255, 255, 0.2)",
   placeholderColor = "#fff8",
   ...props
@@ -180,7 +181,7 @@ const CustomSelect = ({
             handleMenuClose();
           }}
           options={Array.isArray(options) ? options : []}
-          menuPortalTarget={menuPortalTarget}
+          menuPortalTarget={menuPortalTarget ?? getPortalRoot()}
           classNamePrefix="custom-select"
           styles={customStyles}
           components={{ Menu }}

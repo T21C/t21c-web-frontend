@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import './ratinghelppopup.css';
 import { useTranslation } from 'react-i18next';
 import { CommentFormatter, KeyCombo, KeyDisplay } from '@/components/misc';
@@ -7,31 +8,25 @@ export const RatingHelpPopup = ({ onClose }) => {
   const { t } = useTranslation('components');
   const popupRef = useRef(null);
 
-  useEffect(() => {
-    // Lock scrolling
-    document.body.style.overflowY = 'hidden';
+  useBodyScrollLock(true);
 
-    // Capture and stop propagation of keyboard events
+  useEffect(() => {
     const handleKeyEvents = (event) => {
-      // Only stop propagation if the event originated within the popup
       if (popupRef.current?.contains(event.target)) {
         event.stopPropagation();
       }
     };
 
-    // Add capture phase event listeners for all keyboard events
     document.addEventListener('keydown', handleKeyEvents, true);
     document.addEventListener('keyup', handleKeyEvents, true);
     document.addEventListener('keypress', handleKeyEvents, true);
 
-    // Cleanup function
     return () => {
-      document.body.style.overflowY = '';
       document.removeEventListener('keydown', handleKeyEvents, true);
       document.removeEventListener('keyup', handleKeyEvents, true);
       document.removeEventListener('keypress', handleKeyEvents, true);
     };
-  }, []); // Empty dependency array since we only want this on mount/unmount
+  }, []);
 
   useEffect(() => {
     const handleEscapeKey = (event) => {

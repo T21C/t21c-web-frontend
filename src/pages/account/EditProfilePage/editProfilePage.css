@@ -295,6 +295,11 @@
   transform: translateX(4px);
 }
 
+.edit-profile-page .email-verification-message--compact {
+  margin-top: 0.5rem;
+  font-size: 13px;
+}
+
 .edit-profile-page .avatar-section {
   margin-bottom: 2rem;
   text-align: center;

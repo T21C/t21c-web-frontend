@@ -9,7 +9,8 @@
     "invalidFileType": "文件格式无效。请上传jpeg格式、png格式或webp格式的图像",
     "failedToUploadAvatar": "上传头像失败",
     "failedToRemoveAvatar": "删除头像失败",
-    "usernameAlphanumeric": "用户名只能包含字母、数字和下划线"
+    "usernameAlphanumeric": "用户名只能包含字母、数字和下划线",
+    "usernameChangeRateLimited": "用户名每天只能更改一次，请稍后再试。"
   },
   "success": {
     "passwordChanged": "密码修改成功！",
@@ -40,6 +41,22 @@
       "saveChanges": "保存更改",
       "saving": "正在保存……"
     }
+  },
+  "emailChange": {
+    "title": "更改邮箱",
+    "editTitle": "更改邮箱",
+    "current": "当前邮箱",
+    "new": "新邮箱",
+    "confirm": "确认新邮箱",
+    "submit": "更新邮箱",
+    "updating": "更新中……",
+    "success": "邮箱已更新，请查收邮件验证新地址。",
+    "empty": "请输入新邮箱地址。",
+    "invalidFormat": "请输入有效的邮箱地址。",
+    "mismatch": "两次输入的新邮箱不一致。",
+    "unchanged": "新邮箱不能与当前邮箱相同。",
+    "rateLimited": "更改邮箱过于频繁，请稍后再试。",
+    "failed": "无法更新邮箱，请重试。"
   },
   "password": {
     "title": "密码",

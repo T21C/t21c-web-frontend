@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useAuth } from '@/contexts/AuthContext';
 
 import { CustomSelect } from '@/components/common/selectors';
@@ -259,19 +260,7 @@ const CreatorManagementPage = () => {
     };
   }, [creatorToAddSearchQuery, selectedLevel, pendingCreators, excludeAliases]);
 
-  useEffect(() => {
-    // Prevent scrolling when modals are open
-    if (showMergeWarning || showSplitDialog) {
-      document.body.style.overflowY = 'hidden';
-    } else {
-      document.body.style.overflowY = '';
-    }
-
-    // Cleanup function to restore scrolling when component unmounts
-    return () => {
-      document.body.style.overflowY = '';
-    };
-  }, [showMergeWarning, showSplitDialog]);
+  useBodyScrollLock(showMergeWarning || showSplitDialog);
 
   useEffect(() => {
     const handleEscape = (e) => {

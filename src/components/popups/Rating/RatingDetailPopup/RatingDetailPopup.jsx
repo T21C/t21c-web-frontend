@@ -1,5 +1,6 @@
 import "./ratingdetailpopup.css";
 import { useEffect, useState, useRef } from 'react';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { getVideoDetails } from "@/utils";
 import { RatingItem } from '@/components/cards';
 import { RatingInput } from '@/components/common/selectors';
@@ -72,15 +73,7 @@ export const RatingDetailPopup = ({
 
   const popupRef = useRef(null);
 
-  useEffect(() => {    
-    // Lock scrolling
-    document.body.style.overflowY = 'hidden';
-
-    // Cleanup function to restore original scroll state
-    return () => {
-      document.body.style.overflowY = '';
-    };
-  }, []); // Empty dependency array since we only want this on mount/unmount
+  useBodyScrollLock(true);
 
   useEffect(() => {
     if (selectedRating) {

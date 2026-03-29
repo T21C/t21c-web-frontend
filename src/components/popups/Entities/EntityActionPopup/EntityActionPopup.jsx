@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import './entityActionPopup.css';
@@ -75,15 +76,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
         { value: 'unverified', label: t('verification.unverified', { ns: 'common' }) }
       ];
 
-  useEffect(() => {    
-    // Lock scrolling
-    document.body.style.overflowY = 'hidden';
-
-    // Cleanup function to restore original scroll state
-    return () => {
-      document.body.style.overflowY = '';
-    };
-  }, []);
+  useBodyScrollLock(true);
 
   // Song-specific state
   const [credits, setCredits] = useState(type === 'song' ? (song?.credits || []) : []);

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import './LevelUploadPopup.css';
 
 const LevelUploadPopup = ({
@@ -95,26 +96,7 @@ const LevelUploadPopup = ({
     };
   }, [uploadId, isOpen, onUploadComplete]);
 
-  useEffect(() => {
-    if (!isOpen) {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      return undefined;
-    }
-
-    const scrollY = window.scrollY;
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.width = '100%';
-
-    return () => {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      window.scrollTo(0, scrollY);
-    };
-  }, [isOpen]);
+  useBodyScrollLock(isOpen);
 
   useEffect(() => {
     if (!isOpen) return undefined;

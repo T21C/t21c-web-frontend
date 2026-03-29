@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import './LevelDownloadPopup.css';
 import EnhancedSelect from './EnhancedSelect';
 import { Tooltip } from 'react-tooltip';
@@ -71,30 +72,7 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, legacyDllink, in
         }
     }, [metadata?.transformUnavailable]);
 
-    // Handle scroll locking
-    useEffect(() => {
-        if (isOpen) {
-            // Save current scroll position
-            const scrollY = window.scrollY;
-            document.body.style.position = 'fixed';
-            document.body.style.top = `-${scrollY}px`;
-            document.body.style.width = '100%';
-        } else {
-            // Restore scroll position
-            const scrollY = document.body.style.top;
-            document.body.style.position = '';
-            document.body.style.top = '';
-            document.body.style.width = '';
-            window.scrollTo(0, parseInt(scrollY || '0') * -1);
-        }
-
-        return () => {
-            // Cleanup in case component unmounts while popup is open
-            document.body.style.position = '';
-            document.body.style.top = '';
-            document.body.style.width = '';
-        };
-    }, [isOpen]);
+    useBodyScrollLock(true);
 
     useEffect(() => {
         const handleEscapeKey = (event) => {

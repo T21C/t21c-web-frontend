@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import "./packcard.css"
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { EditPackPopup } from "@/components/popups/Packs";
 import { EditIcon, PinIcon, LockIcon, EyeIcon, LikeIcon } from "@/components/common/icons";
 import toast from 'react-hot-toast';
@@ -34,18 +35,7 @@ const PackCard = ({
 
   const isFavorited = pack.isFavorited;
 
-  // Add effect to handle body overflow when edit popup is open
-  useEffect(() => {
-    if (showEditPopup) {
-      document.body.style.overflowY = 'hidden';
-    } else {
-      document.body.style.overflowY = '';
-    }
-
-    return () => {
-      document.body.style.overflowY = '';
-    };
-  }, [showEditPopup]);
+  useBodyScrollLock(showEditPopup);
 
   const handlePackClick = () => {
     // Use linkCode if available, otherwise fall back to numerical ID

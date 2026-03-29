@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useTranslation } from 'react-i18next';
 import { isImageUrl } from '@/utils/Utility';
 import './evidenceGalleryPopup.css';
@@ -50,15 +51,7 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
   }, [onClose, zoom, currentIndex, evidenceList.length]);
 
 
-  useEffect(() => {
-    // Lock body scroll when popup opens
-    document.body.style.overflowY = 'hidden';
-    
-    // Cleanup: restore body scroll when popup closes
-    return () => {
-      document.body.style.overflowY = '';
-    };
-  }, []);
+  useBodyScrollLock(true);
 
   // Reset zoom and position when image changes
   useEffect(() => {

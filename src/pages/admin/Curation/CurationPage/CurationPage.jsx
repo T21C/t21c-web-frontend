@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useAuth } from "@/contexts/AuthContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 
@@ -54,19 +55,15 @@ const CurationPage = () => {
   const verifyPasswordCancelTokenRef = useRef(null);
 
 
-  // Add effect to handle body scrolling
-  useEffect(() => {
-    const isAnyOpen = showPasswordPrompt || showLevelSelectionPopup || showTypeManagementPopup || showCurationEditPopup || showCuratorManagementPopup || showDiscordRolesPopup;
-    if (isAnyOpen) {
-      document.body.style.overflowY = 'hidden';
-    } else {
-      document.body.style.overflowY = '';
-    }
+  const curationScrollLockActive =
+    showPasswordPrompt ||
+    showLevelSelectionPopup ||
+    showTypeManagementPopup ||
+    showCurationEditPopup ||
+    showCuratorManagementPopup ||
+    showDiscordRolesPopup;
 
-    return () => {
-      document.body.style.overflowY = '';
-    };
-  }, [showPasswordPrompt, showLevelSelectionPopup, showTypeManagementPopup, showCurationEditPopup, showCuratorManagementPopup, showDiscordRolesPopup]);
+  useBodyScrollLock(curationScrollLockActive);
 
   const verifyPassword = async (password) => {
     try {

@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useAuth } from "@/contexts/AuthContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 
@@ -233,23 +234,35 @@ const DifficultyPage = () => {
   };
 
 
-  // Add effect to handle body scrolling
-  useEffect(() => {
-    const isAnyOpen = isCreating || editingDifficulty !== null || 
-                          deletingDifficulty !== null || showPasswordPrompt || showInitialPasswordPrompt ||
-                          isCreatingTag || editingTag !== null || deletingTag !== null ||
-                          showDiscordRolesPopup;
-    setIsAnyPopupOpen(isAnyOpen);
-    if (isAnyOpen) {
-      document.body.style.overflowY = 'hidden';
-    } else {
-      document.body.style.overflowY = '';
-    }
+  const anyModalOpen = useMemo(
+    () =>
+      isCreating ||
+      editingDifficulty !== null ||
+      deletingDifficulty !== null ||
+      showPasswordPrompt ||
+      showInitialPasswordPrompt ||
+      isCreatingTag ||
+      editingTag !== null ||
+      deletingTag !== null ||
+      showDiscordRolesPopup,
+    [
+      isCreating,
+      editingDifficulty,
+      deletingDifficulty,
+      showPasswordPrompt,
+      showInitialPasswordPrompt,
+      isCreatingTag,
+      editingTag,
+      deletingTag,
+      showDiscordRolesPopup,
+    ]
+  );
 
-    return () => {
-      document.body.style.overflowY = '';
-    };
-  }, [isCreating, editingDifficulty, deletingDifficulty, showPasswordPrompt, showInitialPasswordPrompt]);
+  useEffect(() => {
+    setIsAnyPopupOpen(anyModalOpen);
+  }, [anyModalOpen]);
+
+  useBodyScrollLock(anyModalOpen);
 
   // Initial password verification
   useEffect(() => {

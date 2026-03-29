@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import api from '@/utils/api';
 import './songSelectorPopup.css';
 import { getVerificationClass } from '@/utils/Utility';
@@ -322,11 +323,7 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
     }
   };
 
-  // Scroll lock management
-  useEffect(() => {
-    document.body.classList.add('body-scroll-lock');
-    return () => document.body.classList.remove('body-scroll-lock');
-  }, []);
+  useBodyScrollLock(true);
 
   // Close handlers
   useEffect(() => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import { getPortalRoot } from "@/utils/portalRoot";
 import { isoToEmoji } from "@/utils";
 import api from "@/utils/api";
 import { ChevronIcon } from "@/components/common/icons";
@@ -182,7 +183,7 @@ const LanguageSelector = ({ variant = "desktop", asListItem = null }) => {
           </li>
 
           {mobileDropdownContent &&
-            createPortal(mobileDropdownContent, document.body)}
+            createPortal(mobileDropdownContent, getPortalRoot())}
         </>
       );
     } else {
@@ -197,7 +198,7 @@ const LanguageSelector = ({ variant = "desktop", asListItem = null }) => {
           </div>
 
           {mobileDropdownContent &&
-            createPortal(mobileDropdownContent, document.body)}
+            createPortal(mobileDropdownContent, getPortalRoot())}
         </>
       );
     }

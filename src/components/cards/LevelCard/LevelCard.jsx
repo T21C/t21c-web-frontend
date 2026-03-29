@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import "./levelcard.css"
 import { useTranslation } from "react-i18next";
 import { useState, useEffect } from "react";
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { EditLevelPopup } from "@/components/popups/Levels";
 import { AddToPackPopup } from "@/components/popups/Packs";
 import { SongPopup } from "@/components/popups/Songs";
@@ -65,17 +66,7 @@ const LevelCard = ({
   const hasSongPopup = (level.songs && level.songs.length > 0) ? true : false;
   const hasArtistPopup = (level.artists && level.artists.length > 0) ? true : false;
 
-  // Handle body overflow when popups are open
-  useEffect(() => {
-    if (showEditPopup || showAddToPackPopup || showSongPopup || showArtistPopup) {
-      document.body.style.overflowY = 'hidden';
-    } else {
-      document.body.style.overflowY = '';
-    }
-    return () => {
-      document.body.style.overflowY = '';
-    };
-  }, [showEditPopup, showAddToPackPopup, showSongPopup, showArtistPopup]);
+  useBodyScrollLock(showEditPopup || showAddToPackPopup || showSongPopup || showArtistPopup);
 
   // Fetch thumbnail for grid mode
   useEffect(() => {

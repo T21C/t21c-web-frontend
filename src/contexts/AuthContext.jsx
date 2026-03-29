@@ -118,9 +118,12 @@ export const AuthProvider = ({ children }) => {
     }
   }, [user]);
 
+  /** @returns {Promise<object | null | undefined>} Current profile user, null on auth error, undefined if skipped (throttle) */
   const fetchUser = async (force = false) => {
     const now = Date.now();
-    if (!force && now - lastFetchTime < 1000) return;
+    if (!force && now - lastFetchTime < 1000) {
+      return undefined;
+    }
     setLastFetchTime(now);
 
     try {
@@ -131,9 +134,11 @@ export const AuthProvider = ({ children }) => {
       if (hasAnyFlag(newUser, [permissionFlags.SUPER_ADMIN, permissionFlags.RATER])) {
         restartNotifications(true);
       }
+      return newUser;
     } catch (error) {
       console.error('[Auth] Error fetching user:', error);
       setUser(null);
+      return null;
     } finally {
       setLoading(false);
     }
@@ -274,19 +279,34 @@ export const AuthProvider = ({ children }) => {
   const verifyEmail = async (token) => {
     try {
       const response = await api.post('/v2/auth/verify/email', { token });
-      await fetchUser();
-      return response.data;
+      // Force refresh: default fetchUser throttles within 1s and would leave stale isEmailVerified
+      const profileUser = await fetchUser(true);
+      window.dispatchEvent(new Event('auth:permission-changed'));
+      return {
+        ...response.data,
+        user: profileUser ?? null,
+      };
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Failed to verify email');
     }
   };
 
-  const resendVerification = async (email) => {
+  const resendVerification = async () => {
     try {
-      const response = await api.post('/v2/auth/verify/resend', { email });
+      const response = await api.post('/v2/auth/verify/resend');
       return response.data;
     } catch (error) {
       throw new Error(error.response?.data?.message || 'Failed to resend verification email');
+    }
+  };
+
+  const changeEmail = async (email) => {
+    try {
+      const response = await api.post('/v2/auth/verify/change-email', { email });
+      await fetchUser(true);
+      return response.data;
+    } catch (error) {
+      throw error;
     }
   };
 
@@ -330,6 +350,7 @@ export const AuthProvider = ({ children }) => {
     updateToken,
     verifyEmail,
     resendVerification,
+    changeEmail,
     requestPasswordReset,
     resetPassword,
     setUser,

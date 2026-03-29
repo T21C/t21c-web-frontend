@@ -1,5 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { getPortalRoot } from '@/utils/portalRoot';
 import { useTranslation } from 'react-i18next';
 import { CustomSelect } from '@/components/common/selectors';
 import api from '@/utils/api';
@@ -19,16 +21,7 @@ export const CreatorAssignmentPopup = ({ user, onClose, onUpdate }) => {
   const [currentCreator, setCurrentCreator] = useState(user?.creator || null);
 
 
-  useEffect(() => {
-    // Lock body scroll when popup opens
-    document.body.style.overflowY = 'hidden';
-    
-    // Cleanup: restore body scroll when popup closes
-    return () => {
-      document.body.style.overflowY = '';
-    };
-  }, []);
-
+  useBodyScrollLock(true);
 
   // Update currentCreator when user prop changes
   useEffect(() => {
@@ -302,5 +295,5 @@ export const CreatorAssignmentPopup = ({ user, onClose, onUpdate }) => {
   );
 
   // Use portal to render popup at document.body level to escape stacking context
-  return createPortal(popupContent, document.body);
+  return createPortal(popupContent, getPortalRoot());
 }; 

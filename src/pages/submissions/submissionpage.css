@@ -131,7 +131,6 @@
   background-color: var(--color-purple-1);
   color: var(--color-white);
   background-color: rgb(111, 51, 150);
-  transform: translate(-50%, 45%);
 }
 .submission-page .link {
   margin: 1rem 0;

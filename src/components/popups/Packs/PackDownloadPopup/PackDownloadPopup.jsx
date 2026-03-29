@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import './PackDownloadPopup.css';
 import { formatEstimatedSize } from '@/utils/packDownloadUtils';
 
@@ -101,26 +102,7 @@ const PackDownloadPopup = ({
     };
   }, [preDownloadId]);
 
-  useEffect(() => {
-    if (!isOpen) {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      return undefined;
-    }
-
-    const scrollY = window.scrollY;
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollY}px`;
-    document.body.style.width = '100%';
-
-    return () => {
-      document.body.style.position = '';
-      document.body.style.top = '';
-      document.body.style.width = '';
-      window.scrollTo(0, scrollY);
-    };
-  }, [isOpen]);
+  useBodyScrollLock(isOpen);
 
   useEffect(() => {
     if (!isOpen) return undefined;

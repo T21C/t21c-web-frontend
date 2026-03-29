@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
+import { getPortalRoot } from '@/utils/portalRoot';
 import './EnhancedSelect.css';
 
 const EnhancedSelect = ({ 
@@ -279,7 +280,7 @@ const EnhancedSelect = ({
                         )}
                     </div>
                 </div>,
-                document.body
+                getPortalRoot()
             )}
         </div>
     );

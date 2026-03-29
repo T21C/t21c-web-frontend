@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { CustomSelect } from '@/components/common/selectors';
 import api from '@/utils/api';
 import './submissionCreatorPopup.css';
@@ -304,11 +305,7 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
     }
   };
 
-  // Scroll lock management
-  useEffect(() => {
-    document.body.classList.add('body-scroll-lock');
-    return () => document.body.classList.remove('body-scroll-lock');
-  }, []);
+  useBodyScrollLock(true);
 
   // Close handlers
   useEffect(() => {
