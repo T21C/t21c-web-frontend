@@ -12,6 +12,7 @@ import { CountrySelect } from '@/components/common/selectors';
 import { useTranslation } from 'react-i18next';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { AccountStatusBanners } from '@/components/account/AccountStatusBanners/AccountStatusBanners';
 
 const usernameChangeCooldown = 1 * 24 * 60 * 60 * 1000; // 1 day
 
@@ -26,7 +27,15 @@ const ProviderIcon = ({ provider, size, color="#fff" }) => {
 
 const EditProfilePage = () => {
   const { t } = useTranslation(['pages', 'common']);
-  const { user, changePassword, changeEmail, linkProvider, unlinkProvider, setUser, fetchUser } = useAuth();
+  const {
+    user,
+    changePassword,
+    changeEmail,
+    linkProvider,
+    unlinkProvider,
+    setUser,
+    fetchUser,
+  } = useAuth();
   const [formData, setFormData] = useState({
     username: user?.username || '',
     nickname: user?.nickname || '',
@@ -54,6 +63,7 @@ const EditProfilePage = () => {
   const timerIntervalRef = useRef(null);
   const [isUsernameEditing, setIsUsernameEditing] = useState(false);
   const [originalUsername, setOriginalUsername] = useState(user?.username || '');
+  const [isDeletionBusy, setIsDeletionBusy] = useState(false);
 
   useBodyScrollLock(isAvatarPopupOpen || isEmailChangePopupOpen);
 
@@ -397,10 +407,51 @@ const EditProfilePage = () => {
 
   const isLastProvider = user?.password === null && user?.providers?.length === 1;
 
+  const hasPendingDeletion = Boolean(user?.deletionExecuteAt && user?.deletionScheduledAt);
+
+  const formatDeletionInstant = (value) => {
+    if (!value) return '';
+    const d = value instanceof Date ? value : new Date(value);
+    return Number.isNaN(d.getTime()) ? '' : d.toLocaleString();
+  };
+
+  const handleScheduleAccountDeletion = async () => {
+    if (!window.confirm(t('editProfile.dangerZone.confirmDelete'))) return;
+    setIsDeletionBusy(true);
+    try {
+      await api.post(`${import.meta.env.VITE_PROFILE}/me/delete`);
+      await fetchUser(true);
+      toast.success(t('editProfile.dangerZone.successScheduled'));
+    } catch (err) {
+      toast.error(
+        err.response?.data?.error || t('editProfile.dangerZone.errorSchedule'),
+      );
+    } finally {
+      setIsDeletionBusy(false);
+    }
+  };
+
+  const handleCancelAccountDeletion = async () => {
+    if (!window.confirm(t('editProfile.dangerZone.confirmCancel'))) return;
+    setIsDeletionBusy(true);
+    try {
+      await api.post(`${import.meta.env.VITE_PROFILE}/me/delete/cancel`);
+      await fetchUser(true);
+      toast.success(t('editProfile.dangerZone.successCanceled'));
+    } catch (err) {
+      toast.error(
+        err.response?.data?.error || t('editProfile.dangerZone.errorCancel'),
+      );
+    } finally {
+      setIsDeletionBusy(false);
+    }
+  };
+
   return (
     <>
-    
+    <AccountStatusBanners variant="edit" user={user} navigate={navigate} />
     <div className="edit-profile-page">
+
       <div className="edit-profile-container page-content-600">
         <h1>{t('editProfile.title')}</h1>
 
@@ -707,6 +758,55 @@ const EditProfilePage = () => {
               <DiscordIcon size={16} />
               {t('editProfile.linkedAccounts.linkDiscord')}
             </button>
+          )}
+        </div>
+
+        <div className="section-divider" />
+
+        <div className="danger-zone">
+          <h2>{t('editProfile.dangerZone.title')}</h2>
+          <p className="danger-zone__description">{t('editProfile.dangerZone.description')}</p>
+          {hasPendingDeletion ? (
+            <div className="danger-zone__pending">
+              <p className="danger-zone__pending-title">{t('editProfile.dangerZone.pendingTitle')}</p>
+              <ul className="danger-zone__dates">
+                <li>
+                  {t('editProfile.dangerZone.scheduledAt', {
+                    date: formatDeletionInstant(user.deletionScheduledAt),
+                  })}
+                </li>
+                <li>
+                  {t('editProfile.dangerZone.executesAt', {
+                    date: formatDeletionInstant(user.deletionExecuteAt),
+                  })}
+                </li>
+              </ul>
+              <div className="danger-zone__actions">
+                <button
+                  type="button"
+                  className="button danger-zone__button danger-zone__button--secondary"
+                  onClick={handleCancelAccountDeletion}
+                  disabled={isDeletionBusy}
+                >
+                  {isDeletionBusy
+                    ? t('editProfile.dangerZone.canceling')
+                    : t('editProfile.dangerZone.cancelButton')}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="danger-zone__actions">
+              <button
+                type="button"
+                className="button danger-zone__button danger-zone__button--destructive"
+                onClick={handleScheduleAccountDeletion}
+                disabled={isDeletionBusy}
+              >
+                {isDeletionBusy
+                  ? t('editProfile.dangerZone.scheduling')
+                  : t('editProfile.dangerZone.deleteButton')}
+              </button>
+            </div>
           )}
         </div>
       </div>

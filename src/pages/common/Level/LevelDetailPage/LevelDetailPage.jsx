@@ -21,6 +21,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { MetaTags } from "@/components/common/display";
+import { StatusBanner } from "@/components/common/StatusBanner/StatusBanner";
 import { 
   DownloadIcon, 
   EditIcon,
@@ -726,6 +727,17 @@ const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict })
     </div>
   );
 };
+
+const LevelBannerWarningIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden>
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth={2}
+      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+    />
+  </svg>
+);
 
 const LevelDetailPage = ({ mockData = null }) => {
   const { t } = useTranslation(['pages', 'common']);
@@ -1747,14 +1759,9 @@ const LevelDetailPage = ({ mockData = null }) => {
       <div className="level-detail">
         
         <div className="wrapper-level">
-          <div className="deletion-banner-wrapper">
-            <div className="deletion-banner">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-              <span>{t('levelDetail.banners.notFound')}</span>
-            </div>
-          </div>
+          <StatusBanner tone="dangerGradient" placement="content" icon={<LevelBannerWarningIcon />}>
+            {t('levelDetail.banners.notFound')}
+          </StatusBanner>
         </div>
       </div>
     );
@@ -1804,23 +1811,13 @@ const LevelDetailPage = ({ mockData = null }) => {
 
         <div className="wrapper-level">
         {res?.level?.isDeleted ? (
-          <div className="deletion-banner-wrapper">
-            <div className="deletion-banner">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-              <span>{t('levelDetail.banners.deleted')}</span>
-            </div>
-          </div>
+          <StatusBanner tone="dangerGradient" placement="content" icon={<LevelBannerWarningIcon />}>
+            {t('levelDetail.banners.deleted')}
+          </StatusBanner>
         ) : res?.level?.isHidden ? (
-          <div className="deletion-banner-wrapper">
-            <div className="deletion-banner hidden">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-              <span>{t('levelDetail.banners.hidden')}</span>
-            </div>
-          </div>
+          <StatusBanner tone="neutral" placement="content" icon={<LevelBannerWarningIcon />}>
+            {t('levelDetail.banners.hidden')}
+          </StatusBanner>
         ) : null}
       
           <div className="header">

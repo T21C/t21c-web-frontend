@@ -8,6 +8,7 @@
   "notLoggedIn": "You are not logged in",
   "emailVerification": "Please verify your email address to access all features",
   "banned": "Your account has been banned",
+  "accountScheduledDeletion": "Your account is scheduled for deletion on {{date}}. You can cancel from Edit profile until then.",
   "submissionSuspended": "Your submissions have been suspended",
   "searchForOther": "Can't display your profile, search for another player",
   "valueLabels": {

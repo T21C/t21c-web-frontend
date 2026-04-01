@@ -4,65 +4,6 @@
   align-content: center;
 }
 
-.pass-detail .deletion-banner-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 2rem;
-}
-
-.pass-detail .deletion-banner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  background-color: rgba(220, 53, 69, 0.9);
-  padding: 0.75rem 2rem;
-  border-radius: 4px;
-  max-width: 70rem;
-  z-index: 2;
-}
-
-.pass-detail .deletion-banner svg {
-  width: 1.5rem;
-  height: 1.5rem;
-  color: white;
-}
-
-.pass-detail .deletion-banner span {
-  color: white;
-  font-weight: 500;
-}
-
-.pass-detail .hidden-banner-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 2rem;
-}
-
-.pass-detail .hidden-banner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.5rem;
-  background-color: rgba(128, 128, 128, 0.3);
-  padding: 0.75rem 2rem;
-  border-radius: 4px;
-  max-width: 70rem;
-  z-index: 2;
-  opacity: 0.7;
-}
-
-.pass-detail .hidden-banner svg {
-  width: 1.5rem;
-  height: 1.5rem;
-  color: var(--color-white-t60);
-}
-
-.pass-detail .hidden-banner span {
-  color: var(--color-white-t60);
-  font-weight: 500;
-}
-
 .pass-detail .pass-content {
   position: relative;
   z-index: 2;

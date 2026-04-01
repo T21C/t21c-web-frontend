@@ -11,21 +11,23 @@ function App() {
   return (
     <>
       <Navigation />
+      <div className="app-notifications" aria-live="polite">
+        <Toaster
+          position="bottom-right"
+          toastOptions={{
+            duration: 3000,
+            style: {
+              background: 'var(--color-black)',
+              color: 'var(--color-white)',
+              border: '1px solid var(--color-white-t20)',
+              borderRadius: '4px',
+              padding: '0.75rem 1rem',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)'
+            }
+          }}
+        />
+      </div>
       <div className="body">
-      <Toaster
-        position="bottom-right"
-        toastOptions={{
-          duration: 3000,
-          style: {
-            background: 'var(--color-black)',
-            color: 'var(--color-white)',
-            border: '1px solid var(--color-white-t20)',
-            borderRadius: '4px',
-            padding: '0.75rem 1rem',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.2)'
-          }
-        }}
-      />
       <Suspense
         fallback={
           <div

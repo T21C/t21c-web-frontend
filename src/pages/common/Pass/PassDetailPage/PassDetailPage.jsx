@@ -8,6 +8,7 @@ import { useTranslation } from "react-i18next";
 import api from "@/utils/api";
 import { EditPassPopup } from "@/components/popups/Passes";
 import { MetaTags } from "@/components/common/display";
+import { StatusBanner } from "@/components/common/StatusBanner/StatusBanner";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { formatDate } from "@/utils/Utility";
 import i18next from "i18next";
@@ -147,20 +148,14 @@ const PassDetailPage = () => {
       
       <div className="pass-detail">
         {pass?.isDeleted && (
-          <div className="deletion-banner-wrapper">
-            <div className="deletion-banner">
-              <TrashIcon />
-              <span>{t('passDetail.banners.deleted')}</span>
-            </div>
-          </div>
+          <StatusBanner tone="danger" placement="centered" icon={<TrashIcon color="#fff" size="24px" />}>
+            {t('passDetail.banners.deleted')}
+          </StatusBanner>
         )}
         {pass?.isHidden && !pass?.isDeleted && (
-          <div className="hidden-banner-wrapper">
-            <div className="hidden-banner">
-              <EyeOffIcon />
-              <span>{t('passDetail.banners.hidden')}</span>
-            </div>
-          </div>
+          <StatusBanner tone="muted" placement="centered" icon={<EyeOffIcon color="rgba(255,255,255,0.6)" size="24px" />}>
+            {t('passDetail.banners.hidden')}
+          </StatusBanner>
         )}
 
         <div className="pass-content">

@@ -1,0 +1,188 @@
+/* Encapsulated under .status-banner-slot / .status-banner */
+/* placement="dock" needs a positioned ancestor (e.g. position: relative on the page root). */
+
+.status-banner-slot {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 0;
+}
+
+/* Slot aligns with main content column width */
+.status-banner-slot--content {
+  max-width: var(--content-max-width);
+  margin: 0 auto var(--spacing-md);
+}
+
+/* Slot centers the ribbon horizontally (e.g. under a wide page shell) */
+.status-banner-slot--centered {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.status-banner-slot--centered .status-banner--tone-danger {
+  background-color: rgba(220, 53, 69, 0.9);
+  border-radius: 4px;
+  max-width: min(70rem, 100%);
+  width: 100%;
+  align-self: center;
+  padding: 0.75rem 2rem;
+}
+
+.status-banner-slot--centered .status-banner--tone-muted {
+  max-width: min(70rem, 100%);
+}
+
+/* Ribbon pinned to the top edge of a positioned ancestor */
+.status-banner-slot--dock {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+/* Ribbon in normal flow with spacing below (forms, settings pages) */
+.status-banner-slot--stack {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.status-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-md, 8px);
+  color: #fff;
+  padding: 12px 16px;
+  text-align: center;
+  font-weight: 600;
+  transition: background-color 0.2s ease;
+}
+
+.status-banner__label {
+  font-size: 16px;
+  font-weight: 600;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.status-banner__icon {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-banner__icon svg {
+  width: 1.5rem;
+  height: 1.5rem;
+  flex-shrink: 0;
+}
+
+/* Tones */
+.status-banner--tone-danger {
+  background-color: #ff2222;
+}
+
+.status-banner--tone-dangerGradient {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  border-radius: var(--border-radius, 8px);
+  padding: var(--spacing-md, 12px) var(--spacing-lg, 16px);
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.15));
+  width: 100%;
+}
+
+.status-banner--tone-neutral {
+  background: linear-gradient(135deg, #6b6b6b, #5a5a5a);
+  border-radius: var(--border-radius, 8px);
+  padding: var(--spacing-md, 12px) var(--spacing-lg, 16px);
+  box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.15));
+  width: 100%;
+}
+
+.status-banner--tone-muted {
+  gap: 0.5rem;
+  background-color: rgba(128, 128, 128, 0.3);
+  padding: 0.75rem 2rem;
+  border-radius: 4px;
+  width: 100%;
+  align-self: center;
+  opacity: 0.7;
+}
+
+.status-banner--tone-muted .status-banner__label {
+  color: var(--color-white-t60, rgba(255, 255, 255, 0.6));
+  text-shadow: none;
+  font-weight: 500;
+}
+
+.status-banner--tone-muted .status-banner__icon svg {
+  color: var(--color-white-t60, rgba(255, 255, 255, 0.6));
+}
+
+.status-banner--tone-warning {
+  background-color: #b45309;
+}
+
+.status-banner--tone-caution {
+  background-color: #b89900;
+}
+
+.status-banner--tone-accent {
+  background-color: #8d00a9;
+  cursor: pointer;
+}
+
+.status-banner--interactive.status-banner--tone-accent:hover {
+  background-color: #ab16c9;
+}
+
+.status-banner--interactive .status-banner__arrow {
+  font-size: 16px;
+  font-weight: 600;
+  transition: transform 0.2s ease;
+}
+
+.status-banner--interactive:hover .status-banner__arrow {
+  transform: translateX(4px);
+}
+
+@media (max-width: 768px) {
+  .status-banner-slot--content {
+    margin-left: var(--spacing-sm, 8px);
+    margin-right: var(--spacing-sm, 8px);
+  }
+
+  .status-banner-slot--content .status-banner {
+    flex-direction: column;
+    word-wrap: break-word;
+    padding: var(--spacing-md, 12px);
+    text-align: center;
+  }
+
+  .status-banner-slot--content .status-banner__icon svg {
+    width: 48px;
+    height: 48px;
+    margin: 0 auto var(--spacing-sm, 8px);
+    display: block;
+  }
+
+  .status-banner {
+    padding: 10px 12px;
+  }
+
+  .status-banner__label {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .status-banner {
+    padding: 8px 10px;
+  }
+
+  .status-banner__label {
+    font-size: 13px;
+  }
+}

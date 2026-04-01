@@ -13,11 +13,12 @@ import { CreatorAssignmentPopup } from "@/components/popups/Creators";
 import { ShieldIcon, EditIcon, SortAscIcon, SortDescIcon, PackIcon, EyeIcon, EyeOffIcon } from "@/components/common/icons";
 import { CaseOpenSelector, CustomSelect } from "@/components/common/selectors";
 import caseOpen from "@/assets/icons/case.png";
-import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { ScrollButton } from "@/components/common/buttons";
 import { useProfileContext } from "@/contexts/ProfileContext";
+import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
+import { AccountStatusBanners } from "@/components/account/AccountStatusBanners/AccountStatusBanners";
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
 
 const PASSES_PER_PAGE = 50;
@@ -387,6 +388,10 @@ const ProfilePage = () => {
       }
 
       return (
+        <>
+        {user && isOwnProfile ? (
+          <AccountStatusBanners variant="profile" user={user} navigate={navigate} />
+        ) : null}
         <div className="player-page">
           <MetaTags
             title={playerData?.name ? t('profile.meta.title', { name: playerData.name }) : t('profile.meta.defaultTitle')}
@@ -397,22 +402,7 @@ const ProfilePage = () => {
           />
           
           <ScrollButton />
-          {user && isOwnProfile ? (
-            hasFlag(user, permissionFlags.BANNED) ? (
-              <div className="profile-banner banned">
-                <span className="profile-banner-text">{t('profile.banned')}</span>
-              </div>
-            ) : hasFlag(user, permissionFlags.SUBMISSIONS_PAUSED) ? (
-            <div className="profile-banner submissions-paused">
-              <span className="profile-banner-text">{t('profile.submissionSuspended')}</span>
-            </div>
-            ) : !hasFlag(user, permissionFlags.EMAIL_VERIFIED) ? (
-              <div className="profile-banner email-verification" onClick={() => navigate('/profile/verify-email')}>
-                <span className="profile-banner-text">{t('profile.emailVerification')}</span>
-                <span className="email-verification-arrow">→</span>
-              </div>
-            ) : null
-          ): null}
+
           {playerData != null ? (Object.keys(playerData).length > 0 ? (
             <div className="player-body">
               <div className="player-content">
@@ -751,6 +741,7 @@ const ProfilePage = () => {
             />
           )}
         </div>
+        </>
       );
 }
 

@@ -8,6 +8,7 @@
   "notLoggedIn": "未登录",
   "emailVerification": "请验证邮箱地址以访问所有功能",
   "banned": "你的账号已被封禁",
+  "accountScheduledDeletion": "你的账号已安排在 {{date}} 删除。在此之前可在「编辑资料」中取消。",
   "submissionSuspended": "你的提交功能已被暂停",
   "searchForOther": "无法显示你的个人资料，搜索其他玩家",
   "valueLabels": {

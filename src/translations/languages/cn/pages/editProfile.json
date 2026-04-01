@@ -75,6 +75,23 @@
     "linkDiscord": "绑定 Discord 账户",
     "unlink": "解绑",
     "cannotUnlinkLastProvider": "无法在没有密码的情况下解绑最后一个提供商"
+  },
+  "dangerZone": {
+    "title": "删除账户",
+    "description": "将永久删除您的账户及与您绑定的数据。您有 3 天时间可以撤销。在此期间您的资料不会出现在排行榜上。",
+    "deleteButton": "删除我的账户",
+    "scheduling": "正在处理…",
+    "confirmDelete": "确定安排删除账户？您的资料将在 3 天内从排行榜隐藏，之后账户将被永久删除。在此之前您可以随时取消。",
+    "pendingTitle": "已安排删除",
+    "scheduledAt": "申请时间：{{date}}",
+    "executesAt": "永久删除时间：{{date}}",
+    "cancelButton": "取消删除",
+    "canceling": "正在取消…",
+    "confirmCancel": "取消已安排的账户删除并恢复账户？",
+    "successScheduled": "已安排删除账户。",
+    "successCanceled": "已取消删除账户。",
+    "errorSchedule": "无法安排删除账户。",
+    "errorCancel": "无法取消删除账户。"
   }
 }
 

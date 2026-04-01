@@ -73,11 +73,17 @@ body {
   background-color: var(--color-black);
 }
 
+/* Toast host sits between nav and main content (react-hot-toast may portal; z-index helps when host renders in-tree) */
+.app-notifications {
+  position: relative;
+  z-index: 50;
+}
+
 /* Use --navbar-height for full-height layouts: height: calc(100vh - var(--navbar-height)); min-height: calc(100vh - var(--navbar-height)); */
 .body {
   position: relative;
   z-index: 2;
-  margin: 2rem auto 0;
+  padding: 2rem 0 0;
   min-height: calc(90vh - 5rem);
 }
 

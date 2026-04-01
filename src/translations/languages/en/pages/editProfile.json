@@ -75,6 +75,23 @@
     "linkDiscord": "Link Discord Account",
     "unlink": "Unlink",
     "cannotUnlinkLastProvider": "Cannot unlink last provider without a password"
+  },
+  "dangerZone": {
+    "title": "Delete account",
+    "description": "Permanently remove your account and user-bound data. You have 3 days to cancel. During that time your profile is hidden from the leaderboard.",
+    "deleteButton": "Delete my account",
+    "scheduling": "Scheduling…",
+    "confirmDelete": "Schedule account deletion? Your profile will be hidden from the leaderboard for 3 days, then your account will be permanently deleted. You can cancel anytime before then.",
+    "pendingTitle": "Deletion scheduled",
+    "scheduledAt": "Requested: {{date}}",
+    "executesAt": "Permanent deletion: {{date}}",
+    "cancelButton": "Cancel deletion",
+    "canceling": "Canceling…",
+    "confirmCancel": "Cancel scheduled account deletion and restore your account?",
+    "successScheduled": "Account deletion scheduled.",
+    "successCanceled": "Account deletion canceled.",
+    "errorSchedule": "Could not schedule account deletion.",
+    "errorCancel": "Could not cancel account deletion."
   }
 }
 

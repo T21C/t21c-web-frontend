@@ -95,36 +95,6 @@
 }
 
 /* ============================================
-   BANNER SYSTEM
-   ============================================ */
-.level-detail .deletion-banner-wrapper {
-  max-width: var(--content-max-width);
-  margin: 0 auto var(--spacing-md);
-}
-
-.level-detail .deletion-banner {
-  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-  border-radius: var(--border-radius);
-  padding: var(--spacing-md) var(--spacing-lg);
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-  font-weight: 600;
-  box-shadow: var(--shadow-md);
-}
-
-.level-detail .deletion-banner.hidden {
-  background: linear-gradient(135deg, #6b6b6b, #5a5a5a);
-}
-
-
-.level-detail .deletion-banner svg {
-  width: 1.5rem;
-  height: 1.5rem;
-  flex-shrink: 0;
-}
-
-/* ============================================
    HEADER SECTION
    ============================================ */
 .level-detail .header {
@@ -2822,26 +2792,6 @@
   }
 }
 
-/* Improve mobile error states */
-@media (max-width: 768px) {
-  .level-detail .deletion-banner-wrapper {
-    margin: var(--spacing-sm);
-  }
-  
-  .level-detail .deletion-banner {
-    padding: var(--spacing-md);
-    text-align: center;
-    word-wrap: break-word;
-  }
-  
-  .level-detail .deletion-banner svg {
-    width: 48px;
-    height: 48px;
-    margin: 0 auto var(--spacing-sm);
-    display: block;
-  }
-}
-
 /* Improve mobile animation performance */
 @media (max-width: 768px) {
   .level-detail * {
@@ -2993,8 +2943,7 @@
 
 /* Improve mobile loading and error states */
 @media (max-width: 768px) {
-  .level-detail .loader,
-  .level-detail .deletion-banner {
+  .level-detail .loader {
     border-radius: var(--border-radius-lg);
     background: var(--glass-bg);
     border: 1px solid var(--glass-border);
@@ -3002,8 +2951,7 @@
     backdrop-filter: blur(10px);
   }
   
-  .level-detail .loader svg,
-  .level-detail .deletion-banner svg {
+  .level-detail .loader svg {
     color: var(--accent-color);
   }
 }
