@@ -8,6 +8,7 @@ import ThumbnailUpload from '@/components/common/upload/ThumbnailUpload';
 import { hasAbility, canAssignCurationType } from '@/utils/curationTypeUtils';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatCreatorDisplay } from '@/utils/Utility';
+import { ItemPickManager } from '@/components/common/selectors';
 
 function stateFromCuration(curation) {
   const types = curation?.types || [];
@@ -56,17 +57,30 @@ const CurationEditPopup = ({
   const [previewPending, setPreviewPending] = useState(false);
   const modalRef = useRef(null);
 
-  const getAssignableCurationTypes = useMemo(() => {
-    if (!curationTypes || !user) return curationTypes || [];
-    return curationTypes.filter((type) =>
-      canAssignCurationType(user.permissionFlags, type.abilities)
-    );
-  }, [curationTypes, user]);
-
   const selectedTypes = useMemo(() => {
     const set = new Set(form.typeIds);
     return (curationTypes || []).filter((t) => set.has(t.id));
   }, [form.typeIds, curationTypes]);
+
+  const curationTypePoolFilter = useCallback(
+    (type) =>
+      !user || canAssignCurationType(user.permissionFlags, type.abilities),
+    [user]
+  );
+
+  const curationPickLabels = useMemo(
+    () => ({
+      sectionCurrent: t('curationEditPopup.form.typesCurrent'),
+      sectionAdd: t('curationEditPopup.form.typesAdd'),
+      searchPlaceholder: t('curationEditPopup.form.typesSearchPlaceholder'),
+      emptySelected: t('curationEditPopup.form.typesNoneSelected'),
+      emptyPool: t('curationEditPopup.form.typesNoneAvailable'),
+      noResults: t('curationEditPopup.form.typesNoResults'),
+      removeItem: t('curationEditPopup.form.removeType'),
+      addItem: t('curationEditPopup.form.addType'),
+    }),
+    [t]
+  );
 
   const canUseCustomCSS = selectedTypes.some((t) => hasAbility(t, 1n << 0n));
   const canUseCustomColor = selectedTypes.some((t) => hasAbility(t, 1n << 14n));
@@ -129,15 +143,6 @@ const CurationEditPopup = ({
       document.removeEventListener('mouseup', handleMouseUp);
     };
   }, [isOpen, mouseDownOutside]);
-
-  const toggleTypeId = (typeId) => {
-    setForm((prev) => {
-      const set = new Set(prev.typeIds);
-      if (set.has(typeId)) set.delete(typeId);
-      else set.add(typeId);
-      return { ...prev, typeIds: [...set] };
-    });
-  };
 
   const validate = () => {
     for (const tid of form.typeIds) {
@@ -231,22 +236,17 @@ const CurationEditPopup = ({
           ) : (
             <form onSubmit={handleSubmit} className="curation-edit-modal__form">
               <div className="curation-edit-modal__form-group curation-edit-modal__types-tags">
-                <span className="curation-edit-modal__label">{t('curationEditPopup.form.types')}</span>
-                <div className="curation-edit-modal__type-chips">
-                  {getAssignableCurationTypes.map((type) => {
-                    const checked = form.typeIds.includes(type.id);
-                    return (
-                      <label key={type.id} className="curation-edit-modal__type-chip">
-                        <input
-                          type="checkbox"
-                          checked={checked}
-                          onChange={() => toggleTypeId(type.id)}
-                        />
-                        <span style={{ color: type.color }}>{type.name}</span>
-                      </label>
-                    );
-                  })}
-                </div>
+                <ItemPickManager
+                  className="curation-edit-modal__item-pick"
+                  items={curationTypes || []}
+                  selectedIds={form.typeIds}
+                  onSelectedIdsChange={(ids) => setForm((p) => ({ ...p, typeIds: ids }))}
+                  poolFilter={curationTypePoolFilter}
+                  enableGrouping
+                  fallbackGroupLabel={t('facetQueryBuilder.fallbackGroup')}
+                  labels={curationPickLabels}
+                  resetSearchSignal={isOpen}
+                />
               </div>
 
               <div className="curation-edit-modal__form-group">

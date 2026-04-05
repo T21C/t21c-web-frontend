@@ -469,20 +469,6 @@
   color: #e0e0e0;
 }
 
-.curation-edit-modal .curation-edit-modal__type-chips {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem 1rem;
-}
-
-.curation-edit-modal .curation-edit-modal__type-chip {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  cursor: pointer;
-  font-size: 0.95rem;
-}
-
-.curation-edit-modal .curation-edit-modal__type-chip input {
-  cursor: pointer;
+.curation-edit-modal .curation-edit-modal__item-pick {
+  margin-top: 0.25rem;
 }

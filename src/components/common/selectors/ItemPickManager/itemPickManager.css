@@ -1,0 +1,149 @@
+/* ItemPickManager — scoped; use for tags, curation types, etc. */
+.item-pick-manager {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.item-pick-manager__section {
+  display: flex;
+  padding: 0.75rem;
+  background-color: var(--color-black-t30);
+  flex-direction: column;
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  gap: 0.5rem;
+  min-width: 0;
+}
+
+.item-pick-manager__heading {
+  color: #fff;
+  font-size: 1rem;
+  margin: 0 0 0.25rem;
+  font-weight: 600;
+}
+
+.item-pick-manager__grouped {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.item-pick-manager__grouped--scroll {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.item-pick-manager__group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.item-pick-manager__group-title {
+  margin: 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.65);
+}
+
+.item-pick-manager__search {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  border-radius: 4px;
+  border: 1px solid #333;
+  background: #2a2a2a;
+  color: #fff;
+  font-size: 0.875rem;
+  margin-bottom: 0.25rem;
+}
+
+.item-pick-manager__search:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.item-pick-manager__chip-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: flex-start;
+}
+
+.item-pick-manager__chip-row--scroll {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.item-pick-manager__chip {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  background-color: var(--ipm-bg, transparent);
+  border: 2px solid var(--ipm-border, transparent);
+  color: var(--ipm-text, inherit);
+  box-shadow: var(--ipm-shadow, none);
+  font-size: 0.875rem;
+  font-weight: 500;
+  min-width: 0;
+}
+
+.item-pick-manager__chip--addable,
+.item-pick-manager__chip--removable {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.item-pick-manager__chip--addable:hover,
+.item-pick-manager__chip--removable:hover {
+  box-shadow: var(--ipm-shadow, none), 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.item-pick-manager__chip-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.item-pick-manager__chip-name {
+  flex: 1;
+  filter: brightness(3);
+  min-width: 0;
+}
+
+.item-pick-manager__chip-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.item-pick-manager__chip-action--add {
+  font-size: 1.25rem;
+  font-weight: 600;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.item-pick-manager__chip-action--remove {
+  padding: 0.15rem;
+}
+
+.item-pick-manager__empty,
+.item-pick-manager__loading {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.875rem;
+  padding: 0.5rem;
+  text-align: center;
+  margin: 0;
+}

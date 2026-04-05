@@ -12,6 +12,7 @@ import { SlotMachine } from "./SlotMachine/SlotMachine";
 import { CaseOpenSelector } from "./CaseOpenSelector/CaseOpenSelector";
 import RangeSelector from "./RangeSelector/RangeSelector";
 import ImageSelectorPopup from "./ImageSelectorPopup/ImageSelectorPopup";
+import ItemPickManager from "./ItemPickManager/ItemPickManager";
 
 export {
     CountrySelect,
@@ -27,5 +28,6 @@ export {
     SlotMachine,
     CaseOpenSelector,
     RangeSelector,
-    ImageSelectorPopup
+    ImageSelectorPopup,
+    ItemPickManager
 }
