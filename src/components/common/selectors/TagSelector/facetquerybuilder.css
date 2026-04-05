@@ -122,7 +122,11 @@
 
 .facet-query-builder__chips {
   display: flex;
+  padding: 0.35rem;
   flex-wrap: wrap;
+  width: 100%;
+  border-radius: 4px;
+  background: var(--color-white-t10);
   gap: 0.35rem;
 }
 
