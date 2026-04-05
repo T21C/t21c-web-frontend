@@ -298,41 +298,35 @@ const CurationEditPopup = ({
                 </div>
               )}
 
-              {canUseCustomCSS ? (
-                <div className="curation-edit-modal__form-group">
-                  <label htmlFor="curation-css">{t('curationEditPopup.form.customCSS')}</label>
-                  <textarea
-                    id="curation-css"
-                    value={form.customCSS}
-                    onChange={(e) => setForm((p) => ({ ...p, customCSS: e.target.value }))}
-                    className="curation-edit-modal__css-textarea"
-                    rows={6}
-                  />
-                  <button
-                    type="button"
-                    className="curation-edit-modal__preview-button"
-                    onClick={() => {
-                      setPreviewPending(true);
-                      navigate(`/admin/curations/preview/${levelId}`, {
-                        state: { customCSS: form.customCSS },
-                      });
-                    }}
-                  >
-                    {t('curationEditPopup.form.previewCSS')}
-                  </button>
-                </div>
-              ) : (
-                form.customCSS &&
-                String(form.customCSS).trim() && (
-                  <div className="curation-edit-modal__form-group">
-                    <div className="curation-edit-modal__warning">
-                      <p>
-                        <strong>⚠️</strong> {t('curationEditPopup.warnings.cssUnsupported')}
-                      </p>
-                    </div>
-                  </div>
-                )
-              )}
+              <div className="curation-edit-modal__form-group curation-edit-modal__form-group--custom-css">
+                <label htmlFor="curation-css">{t('curationEditPopup.form.customCSS')}</label>
+                {!canUseCustomCSS && (
+                  <p className="curation-edit-modal__help-text curation-edit-modal__css-unsupported-hint">
+                    {t('curationEditPopup.warnings.cssUnsupported')}
+                  </p>
+                )}
+                <textarea
+                  id="curation-css"
+                  value={form.customCSS}
+                  onChange={(e) => setForm((p) => ({ ...p, customCSS: e.target.value }))}
+                  className="curation-edit-modal__css-textarea curation-edit-modal__textarea"
+                  rows={6}
+                  disabled={!canUseCustomCSS}
+                />
+                <button
+                  type="button"
+                  className="curation-edit-modal__preview-button"
+                  disabled={!canUseCustomCSS}
+                  onClick={() => {
+                    setPreviewPending(true);
+                    navigate(`/admin/curations/preview/${levelId}`, {
+                      state: { customCSS: form.customCSS },
+                    });
+                  }}
+                >
+                  {t('curationEditPopup.form.previewCSS')}
+                </button>
+              </div>
 
               {form.id != null && (
                 <div className="curation-edit-modal__form-group">

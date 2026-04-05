@@ -178,7 +178,6 @@ const CurationSelectionPopup = ({
               setCurationFacetFilter(v || makeEmptyCurationFacet());
               setCurrentPage(1);
             }}
-            enableGrouping={false}
             title={t('curationSelectionPopup.filters.facetBuilderTitle')}
           />
         </div>

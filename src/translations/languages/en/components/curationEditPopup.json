@@ -38,7 +38,7 @@
     "saveAll": "Save all"
   },
   "warnings": {
-    "cssUnsupported": "The selected type does not support custom CSS on the level page."
+    "cssUnsupported": "Selected types do not support custom CSS."
   },
   "notifications": {
     "updated": "Curations saved successfully",

@@ -478,7 +478,6 @@ const CurationPage = () => {
               onChange={(v) =>
                 setFilters((prev) => ({ ...prev, curationFacet: v }))
               }
-              enableGrouping={false}
               title={t('curation.filters.selectedTypes')}
             />
           </div>
@@ -487,6 +486,7 @@ const CurationPage = () => {
             <label>{t('curation.filters.search')}</label>
             <input
               name='curation-search'
+              className="input-search"
               autoComplete='off'
               aria-autocomplete='none'
               type="text"

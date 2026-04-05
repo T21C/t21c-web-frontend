@@ -279,6 +279,16 @@
   min-height: 80px;
 }
 
+.curation-edit-modal .curation-edit-modal__form-group--custom-css {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.curation-edit-modal .curation-edit-modal__css-unsupported-hint {
+  margin: 0 0 0.15rem;
+}
+
 .curation-edit-modal__css-textarea {
   color: #ffffff;
   font-family: 'Courier New', monospace;
@@ -289,6 +299,18 @@
   resize: vertical;
   min-height: 200px;
   max-height: 600px;
+}
+
+.curation-edit-modal__css-textarea:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  color: rgba(255, 255, 255, 0.75);
+  background: #141414;
+  border-color: #2a2a2a;
+}
+
+.curation-edit-modal__css-textarea:disabled:focus {
+  border-color: #2a2a2a;
 }
 
 .curation-edit-modal__preview-button {
