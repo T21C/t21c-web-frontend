@@ -1,7 +1,11 @@
 {
-  "title": "Edit Curation",
+  "title": "Edit level curations",
   "description": "Customize the curation settings for this level",
+  "descriptionLevel": "Choose curation types (tags), then edit description, CSS, and color for this level. One curation record per level holds all shared content.",
+  "emptyHint": "No curations yet. Add a row below, or save now to clear all curations for this level.",
+  "rowTitle": "Curation {{n}}",
   "form": {
+    "types": "Curation types",
     "type": "Curation Type",
     "selectType": "Select a curation type",
     "shortDescription": "Short Description",
@@ -10,6 +14,7 @@
     "description": "Description",
     "descriptionPlaceholder": "Enter a description for this curation...",
     "descriptionRequired": "Description is required for this curation type",
+    "descriptionRequiredType": "Description is required for type \"{{name}}\"",
     "descriptionRequiredPlaceholder": "Description is required...",
     "customColor": "Custom Color",
     "customCSS": "Custom CSS",
@@ -19,15 +24,23 @@
     "thumbnail": "Level Thumbnail"
   },
   "actions": {
-    "save": "Save Changes"
+    "save": "Save Changes",
+    "addCuration": "Add curation",
+    "removeCuration": "Remove this curation",
+    "saveAll": "Save all"
+  },
+  "warnings": {
+    "cssUnsupported": "The selected type does not support custom CSS on the level page."
   },
   "notifications": {
-    "updated": "Curation updated successfully",
+    "updated": "Curations saved successfully",
     "thumbnailUpdated": "Thumbnail updated successfully",
     "thumbnailRemoved": "Thumbnail removed successfully"
   },
   "errors": {
-    "updateFailed": "Failed to update curation",
+    "loadFailed": "Failed to load curations for this level",
+    "typeRequired": "Select a type for each curation row, or remove empty rows",
+    "updateFailed": "Failed to save curations",
     "thumbnailUpdateFailed": "Failed to update thumbnail",
     "thumbnailRemoveFailed": "Failed to remove thumbnail"
   }

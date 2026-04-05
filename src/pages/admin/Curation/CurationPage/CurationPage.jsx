@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useAuth } from "@/contexts/AuthContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
@@ -18,7 +18,8 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { hasAnyFlag, hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { canAssignCurationType } from '@/utils/curationTypeUtils';
 import { formatCreatorDisplay } from '@/utils/Utility';
-import { CustomSelect } from '@/components/common/selectors';
+import { FacetQueryBuilder } from '@/components/common/selectors';
+import { buildFacetQueryParam } from '@/utils/facetQueryCodec';
 
 const CurationPage = () => {
   const navigate = useNavigate();
@@ -29,12 +30,12 @@ const CurationPage = () => {
   const currentUrl = window.location.origin + location.pathname;
 
   const [isLoading, setIsLoading] = useState(false);
-  const [curations, setCurations] = useState([]);
+  const [levelInstances, setLevelInstances] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [inputValue, setInputValue] = useState('1');
   const [filters, setFilters] = useState({
-    typeId: '',
+    curationFacet: null,
     search: '',
   });
   const [verifiedPassword, setVerifiedPassword] = useState('');
@@ -46,7 +47,7 @@ const CurationPage = () => {
   const [showCurationEditPopup, setShowCurationEditPopup] = useState(false);
   const [showCuratorManagementPopup, setShowCuratorManagementPopup] = useState(false);
   const [showDiscordRolesPopup, setShowDiscordRolesPopup] = useState(false);
-  const [editingCuration, setEditingCuration] = useState(null);
+  const [editingLevel, setEditingLevel] = useState(null);
 
   // Cancel token refs for request cancellation
   const fetchCurationsCancelTokenRef = useRef(null);
@@ -124,12 +125,13 @@ const CurationPage = () => {
   };
 
   const handleAddNewLevel = () => {
-    setEditingCuration(null);
+    setEditingLevel(null);
     setShowLevelSelectionPopup(true);
   };
 
-  const handleEditCuration = (curation) => {
-    setEditingCuration(curation);
+  const handleEditLevel = (row) => {
+    const level = row.level ?? row.curations[0]?.level;
+    setEditingLevel({ level, curations: row.curations });
     setShowCurationEditPopup(true);
   };
 
@@ -153,11 +155,21 @@ const CurationPage = () => {
       
       // Add the new curation to the list manually
       const newCuration = response.data.curation;
-      setCurations(prev => [newCuration, ...prev]);
+      const levelId = newCuration.levelId ?? newCuration.level?.id;
+      setLevelInstances((prev) => {
+        const idx = prev.findIndex((row) => (row.level?.id ?? row.curations[0]?.levelId) === levelId);
+        if (idx >= 0) {
+          const next = [...prev];
+          const curations = [...next[idx].curations, newCuration];
+          next[idx] = { ...next[idx], level: next[idx].level ?? newCuration.level, curations };
+          return next;
+        }
+        return [{ level: newCuration.level, curations: [newCuration] }, ...prev];
+      });
       
       // Close popup and reset state
       setShowLevelSelectionPopup(false);
-      setEditingCuration(null);
+      setEditingLevel(null);
     } catch (error) {
       if (api.isCancel(error)) {
         // Request was cancelled, don't show error
@@ -167,10 +179,30 @@ const CurationPage = () => {
     }
   };
 
-  const handleCurationUpdate = (updatedCuration) => {
-    setCurations(prev => prev.map(cur => 
-      cur.id === updatedCuration.id ? updatedCuration : cur
-    ));
+  const handleLevelCurationsBulkUpdate = ({ levelId: lid, curations }) => {
+    setLevelInstances((prev) =>
+      prev.map((row) => {
+        const id = row.level?.id ?? row.curations[0]?.levelId;
+        if (id !== lid) return row;
+        const lev = curations[0]?.level ?? row.level;
+        return { level: lev, curations };
+      })
+    );
+  };
+
+  const handleCurationPatched = (partial) => {
+    setLevelInstances((prev) =>
+      prev.map((row) => {
+        const lid = row.level?.id ?? row.curations[0]?.levelId;
+        if (partial.levelId != null && lid !== partial.levelId) return row;
+        return {
+          ...row,
+          curations: row.curations.map((c) =>
+            c.id === partial.id ? { ...c, previewLink: partial.previewLink } : c
+          ),
+        };
+      })
+    );
   };
 
   const handleTypeManagementUpdate = () => {
@@ -195,7 +227,14 @@ const CurationPage = () => {
       await api.delete(`${import.meta.env.VITE_CURATIONS}/${curation.id}`, {
         cancelToken: deleteCurationCancelTokenRef.current.token
       });
-      setCurations(prev => prev.filter(cur => cur.id !== curation.id));
+      setLevelInstances((prev) =>
+        prev
+          .map((row) => ({
+            ...row,
+            curations: row.curations.filter((cur) => cur.id !== curation.id),
+          }))
+          .filter((row) => row.curations.length > 0)
+      );
       toast.success(t('curation.notifications.deleted'));
     } catch (error) {
       if (api.isCancel(error)) {
@@ -221,15 +260,21 @@ const CurationPage = () => {
       setIsLoading(true);
       const params = new URLSearchParams({
         page: currentPage,
-        ...(filters.typeId && { typeId: filters.typeId }),
+        groupByLevel: 'true',
         ...(filters.search && { search: filters.search }),
       });
+      const facetQuery = buildFacetQueryParam({
+        curationTypes: filters.curationFacet,
+        combine: 'and',
+      });
+      if (facetQuery) params.append('facetQuery', facetQuery);
 
       const response = await api.get(`${import.meta.env.VITE_CURATIONS}?${params}`, {
         cancelToken: fetchCurationsCancelTokenRef.current.token
       });
-      setCurations(response.data.curations);
-      setTotalPages(response.data.totalPages);
+      setLevelInstances(response.data.levelInstances ?? []);
+      const tp = response.data.totalPages;
+      setTotalPages(typeof tp === 'number' ? tp : 0);
     } catch (error) {
       if (api.isCancel(error)) {
         // Request was cancelled, don't update state or show error
@@ -270,17 +315,31 @@ const CurationPage = () => {
       const { updatedCuration, action } = location.state;
       
       // Update the curations list with the new data
-      setCurations(prev => {
-        const existingIndex = prev.findIndex(cur => cur.id === updatedCuration.id);
-        if (existingIndex >= 0) {
-          // Update existing curation
-          const updated = [...prev];
-          updated[existingIndex] = updatedCuration;
-          return updated;
-        } else {
-          // Add new curation (shouldn't happen from preview, but just in case)
-          return [updatedCuration, ...prev];
+      setLevelInstances((prev) => {
+        let found = false;
+        const next = prev.map((row) => {
+          const has = row.curations.some((c) => c.id === updatedCuration.id);
+          if (!has) return row;
+          found = true;
+          return {
+            ...row,
+            curations: row.curations.map((c) =>
+              c.id === updatedCuration.id ? updatedCuration : c
+            ),
+          };
+        });
+        if (found) return next;
+        const levelId = updatedCuration.levelId ?? updatedCuration.level?.id;
+        const idx = next.findIndex((row) => (row.level?.id ?? row.curations[0]?.levelId) === levelId);
+        if (idx >= 0) {
+          const copy = [...next];
+          copy[idx] = {
+            ...copy[idx],
+            curations: [...copy[idx].curations, updatedCuration],
+          };
+          return copy;
         }
+        return [{ level: updatedCuration.level, curations: [updatedCuration] }, ...next];
       });
 
       // Show appropriate message
@@ -288,7 +347,11 @@ const CurationPage = () => {
         toast.success(t('curation.notifications.discarded'));
       } else if (action === 'backToEdit') {
         // Open the CurationEditPopup with the updated curation
-        setEditingCuration(updatedCuration);
+        setEditingLevel({
+          level: updatedCuration.level,
+          curations: null,
+          levelId: updatedCuration.levelId ?? updatedCuration.level?.id,
+        });
         setShowCurationEditPopup(true);
       }
 
@@ -298,7 +361,7 @@ const CurationPage = () => {
   }, [location.state, navigate, location.pathname]);
 
   const handleFilterChange = (key, value) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
+    setFilters((prev) => ({ ...prev, [key]: value }));
     setCurrentPage(1);
     setInputValue('1');
   };
@@ -364,38 +427,29 @@ const CurationPage = () => {
 
   const handleClosePopup = () => {
     setShowLevelSelectionPopup(false);
-    setEditingCuration(null);
+    setEditingLevel(null);
   };
 
   const handleCloseCurationEditPopup = () => {
     setShowCurationEditPopup(false);
-    setEditingCuration(null);
+    setEditingLevel(null);
   };
 
   const isAccessibleCuration = (curation) => {
     if (!curation || !user) return false;
-    
-    // Super admins and head curators can access all curations
+
     if (hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR])) {
       return true;
     }
-    
-    // Check if user can assign this curation type
-    if (curation.type && curation.type.abilities) {
-      return canAssignCurationType(user.permissionFlags, curation.type.abilities);
-    }
-    
-    return false;
+
+    const types = curation.types || (curation.type ? [curation.type] : []);
+    return types.some(
+      (t) => t.abilities && canAssignCurationType(user.permissionFlags, t.abilities)
+    );
   };
 
-  // Prepare options for CustomSelect
-  const curationTypeOptions = useMemo(() => [
-    { value: '', label: t('curation.filters.allTypes') },
-    ...curationTypes.map(type => ({
-      value: type.id.toString(),
-      label: type.name
-    }))
-  ], [curationTypes]);
+  const canEditLevelRow = (row) =>
+    row.curations.some((c) => isAccessibleCuration(c));
 
   return (
     <div className="curation-page">
@@ -415,16 +469,20 @@ const CurationPage = () => {
 
         {/* Filters */}
         <div className="curation-filters">
-          <div className="curation-filter-group">
-            <CustomSelect
-              label={t('curation.filters.type')}
-              options={curationTypeOptions}
-              value={curationTypeOptions.find(opt => opt.value === (filters.typeId ? filters.typeId.toString() : ''))}
-              onChange={(selected) => handleFilterChange('typeId', selected.value)}
-              width="100%"
+          <div className="curation-filter-group curation-filter-group--types">
+            <label>{t('curation.filters.types')}</label>
+            <p className="curation-type-filter-hint">{t('curation.filters.typesHint')}</p>
+            <FacetQueryBuilder
+              items={curationTypes}
+              value={filters.curationFacet}
+              onChange={(v) =>
+                setFilters((prev) => ({ ...prev, curationFacet: v }))
+              }
+              enableGrouping={false}
+              title={t('curation.filters.selectedTypes')}
             />
           </div>
-          
+
           <div className="curation-filter-group">
             <label>{t('curation.filters.search')}</label>
             <input
@@ -501,65 +559,90 @@ const CurationPage = () => {
         <div className="curation-list">
           {isLoading ? (
             <div className="curation-loading">{t('curation.loading')}</div>
-          ) : curations.length === 0 ? (
+          ) : levelInstances.length === 0 ? (
             <div className="curation-empty">{t('curation.empty')}</div>
           ) : (
-            curations.map(curation => (
-              <div key={curation.id} className={`curation-item ${isAccessibleCuration(curation) ? '' : 'protected'}`}>
-                <div className="curation-item-wrapper">
-                  <div className="curation-song-wrapper">
-                    
-                    <div className="curation-song-header">
-                    <div className="curation-icon-wrapper">
-                    <img 
-                      src={curation.type?.icon || '/default-curation-icon.png'} 
-                      alt={curation.type?.name || 'Curation type'} 
-                      className="curation-icon" 
-                    />
-                  </div>
-                      <img 
-                        src={curation.level?.difficulty?.icon || '/default-difficulty-icon.png'} 
-                        alt={curation.level?.difficulty?.name || 'Difficulty'} 
-                        className="curation-difficulty-icon" 
-                      />
-                      <h3>{curation.level?.song || 'Unknown Level'}</h3>
-                      <p className="curation-level-id">#{curation.level?.id}</p>
+            levelInstances.map((row) => {
+              const level = row.level ?? row.curations[0]?.level;
+              const rowKey = level?.id ?? `row-${row.curations[0]?.id}`;
+              return (
+                <div key={rowKey} className="curation-item curation-item--level">
+                  <div className="curation-item-wrapper curation-item-wrapper--level">
+                    <div className="curation-song-wrapper">
+                      <div className="curation-song-header">
+                        <img
+                          src={level?.difficulty?.icon || '/default-difficulty-icon.png'}
+                          alt={level?.difficulty?.name || 'Difficulty'}
+                          className="curation-difficulty-icon"
+                        />
+                        <h3>{level?.song || 'Unknown Level'}</h3>
+                        <p className="curation-level-id">#{level?.id}</p>
+                        {canEditLevelRow(row) && (
+                          <button
+                            type="button"
+                            className="curation-level-edit-btn"
+                            onClick={() => handleEditLevel(row)}
+                            title={t('curation.actions.editLevel')}
+                          >
+                            <EditIcon />
+                          </button>
+                        )}
+                      </div>
+                      <div className="curation-artist-creator">
+                        <p className="curation-artist">{level?.artist || 'Unknown Artist'}</p>
+                        <p className="curation-creator">{formatCreatorDisplay(level)}</p>
+                      </div>
                     </div>
-                    <div className="curation-artist-creator">
-                    <p className="curation-artist">{curation.level?.artist || 'Unknown Artist'}</p>
-                    <p className="curation-creator">{formatCreatorDisplay(curation.level)}</p>
-                  </div>
-                  </div>
 
-                  <div className="curation-type-info">
-                    <span className="curation-type-name" style={{ color: curation.type?.color }}>
-                      {curation.type?.name}
-                    </span>
+                    <div className="curation-level-curations">
+                      {row.curations.map((curation) => {
+                        const types = curation.types || (curation.type ? [curation.type] : []);
+                        return (
+                          <div
+                            key={curation.id}
+                            className={`curation-type-slot ${isAccessibleCuration(curation) ? '' : 'protected'}`}
+                          >
+                            <div className="curation-type-info curation-type-info--inline curation-type-info--multi">
+                              {types.length === 0 ? (
+                                <span className="curation-type-name curation-type-name--empty">—</span>
+                              ) : (
+                                types.map((typ) => (
+                                  <span key={typ.id} className="curation-type-badge">
+                                    <img
+                                      src={typ.icon || '/default-curation-icon.png'}
+                                      alt=""
+                                      className="curation-type-slot-icon"
+                                    />
+                                    <span
+                                      className="curation-type-name"
+                                      style={{ color: typ.color }}
+                                    >
+                                      {typ.name}
+                                    </span>
+                                  </span>
+                                ))
+                              )}
+                            </div>
+                            {isAccessibleCuration(curation) && (
+                              <div className="curation-item-actions">
+                                <button
+                                  type="button"
+                                  className="curation-action-btn curation-action-btn--delete"
+                                  onClick={() => handleDeleteCuration(curation)}
+                                  title={t('curation.actions.deleteCuration')}
+                                >
+                                  <TrashIcon />
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
-
-                  { 
-                  isAccessibleCuration(curation)
-                  && (
-                  <div className="curation-item-actions">
-                    <button 
-                      className="curation-action-btn curation-action-btn--edit"
-                      onClick={() => handleEditCuration(curation)}
-                      title={t('curation.actions.editCuration')}
-                    >
-                      <EditIcon />
-                    </button>
-                    <button 
-                      className="curation-action-btn curation-action-btn--delete"
-                      onClick={() => handleDeleteCuration(curation)}
-                      title={t('curation.actions.deleteCuration')}
-                    >
-                      <TrashIcon />
-                    </button>
-                  </div>
-                  )}
                 </div>
-              </div>
-            ))
+              );
+            })
           )}
         </div>
 
@@ -656,9 +739,16 @@ const CurationPage = () => {
         <CurationEditPopup
           isOpen={showCurationEditPopup}
           onClose={handleCloseCurationEditPopup}
-          curation={editingCuration}
+          levelId={
+            editingLevel &&
+            (editingLevel.levelId ??
+              editingLevel.level?.id ??
+              editingLevel.curations?.[0]?.levelId)
+          }
+          level={editingLevel?.level}
           curationTypes={curationTypes}
-          onUpdate={handleCurationUpdate}
+          onUpdate={handleLevelCurationsBulkUpdate}
+          onCurationPatched={handleCurationPatched}
         />
 
         {/* Curator Management Popup */}

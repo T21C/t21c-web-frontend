@@ -1,34 +1,47 @@
 {
-  "title": "Edit Curation",
-  "description": "Customize the curation settings for this level",
+  "title": "레벨 큐레이션 편집",
+  "description": "이 레벨의 큐레이션 설정을 변경합니다",
+  "descriptionLevel": "큐레이션 유형(태그)을 선택하고 설명·CSS·색상을 편집합니다. 레벨당 하나의 큐레이션 레코드에 공유됩니다.",
+  "rowTitle": "큐레이션 {{n}}",
+  "emptyHint": "큐레이션이 없습니다. 아래에서 추가하거나, 지금 저장하면 이 레벨의 큐레이션을 모두 제거합니다.",
   "form": {
-    "type": "Curation Type",
-    "selectType": "Select a curation type",
-    "shortDescription": "Short Description",
-    "shortDescriptionPlaceholder": "Brief description (max 255 characters)...",
-    "shortDescriptionHelp": "A brief description that will be displayed in gallery views and previews",
-    "description": "Description",
-    "descriptionPlaceholder": "Enter a description for this curation...",
-    "descriptionRequired": "Description is required for this curation type",
-    "descriptionRequiredPlaceholder": "Description is required...",
-    "customColor": "Custom Color",
-    "customCSS": "Custom CSS",
-    "previewCSS": "Preview CSS",
-    "customCSSPlaceholder": "/* Enter custom CSS for this level's detail page */\n.curation-custom {\n  /* Your custom styles here */\n}",
-    "customCSSHelp": "This CSS will be applied to the level's detail page. Use this to customize the appearance and layout.",
-    "thumbnail": "Level Thumbnail"
+    "types": "큐레이션 유형",
+    "type": "큐레이션 유형",
+    "selectType": "유형 선택",
+    "shortDescription": "짧은 설명",
+    "shortDescriptionPlaceholder": "짧은 설명(최대 255자)...",
+    "shortDescriptionHelp": "갤러리·미리보기에 표시되는 짧은 설명",
+    "description": "설명",
+    "descriptionPlaceholder": "설명 입력...",
+    "descriptionRequired": "이 유형은 설명이 필요합니다",
+    "descriptionRequiredType": "유형 \"{{name}}\"에는 설명이 필요합니다",
+    "descriptionRequiredPlaceholder": "설명이 필요합니다...",
+    "customColor": "사용자 색상",
+    "customCSS": "사용자 CSS",
+    "previewCSS": "CSS 미리보기",
+    "customCSSPlaceholder": "/* 레벨 상세 페이지용 CSS */\n.curation-custom {\n}",
+    "customCSSHelp": "이 CSS는 레벨 상세 페이지에 적용됩니다.",
+    "thumbnail": "썸네일"
   },
   "actions": {
-    "save": "Save Changes"
+    "save": "저장",
+    "addCuration": "큐레이션 추가",
+    "removeCuration": "이 큐레이션 제거",
+    "saveAll": "모두 저장"
+  },
+  "warnings": {
+    "cssUnsupported": "선택한 유형은 레벨 페이지에서 사용자 CSS를 지원하지 않습니다."
   },
   "notifications": {
-    "updated": "Curation updated successfully",
-    "thumbnailUpdated": "Thumbnail updated successfully",
-    "thumbnailRemoved": "Thumbnail removed successfully"
+    "updated": "저장되었습니다",
+    "thumbnailUpdated": "썸네일이 업데이트되었습니다",
+    "thumbnailRemoved": "썸네일이 제거되었습니다"
   },
   "errors": {
-    "updateFailed": "Failed to update curation",
-    "thumbnailUpdateFailed": "Failed to update thumbnail",
-    "thumbnailRemoveFailed": "Failed to remove thumbnail"
+    "loadFailed": "이 레벨의 큐레이션을 불러오지 못했습니다",
+    "typeRequired": "각 행에 유형을 선택하거나 빈 행을 삭제하세요",
+    "updateFailed": "저장에 실패했습니다",
+    "thumbnailUpdateFailed": "썸네일 업데이트 실패",
+    "thumbnailRemoveFailed": "썸네일 제거 실패"
   }
 }

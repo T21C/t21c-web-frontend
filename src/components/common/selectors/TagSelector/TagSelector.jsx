@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import './tagselector.css';
 import { useTranslation } from 'react-i18next';
+import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 
 // Define group order and their display names
 const GROUP_ORDER = {
@@ -20,6 +21,7 @@ const TagSelector = ({
   const { t } = useTranslation('components');
 
   const [isOpen, setIsOpen] = useState(false);
+  useBodyScrollLock(isOpen);
   const dropdownRef = useRef(null);
   if (!items) return null;
 

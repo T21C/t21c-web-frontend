@@ -97,7 +97,8 @@ export const getDefaultColor = (abilities) => {
 export const getHoverInfo = (curation) => {
   const info = [];
   
-  if (curation.type && hasAbility(curation.type.abilities, 1n << 10n)) { // SHOW_ASSIGNER
+  const types = curation.types || (curation.type ? [curation.type] : []);
+  if (types.some((t) => hasAbility(t.abilities, 1n << 10n))) {
     info.push(`By: ${curation.assignedBy || 'Unknown'}`);
   }
   
@@ -171,4 +172,35 @@ export const getAbilityNames = (curationType) => {
   });
   
   return names;
+};
+
+/** Sort linked types (tags) for badges/icons */
+export const sortCurationTypesForDisplay = (types, curationTypesDict) => {
+  if (!types?.length) return [];
+  return [...types].sort((a, b) => {
+    const ta = curationTypesDict[a.id] || a;
+    const tb = curationTypesDict[b.id] || b;
+    const ga = (ta?.groupSortOrder ?? 0) - (tb?.groupSortOrder ?? 0);
+    if (ga !== 0) return ga;
+    const s = (ta?.sortOrder ?? 0) - (tb?.sortOrder ?? 0);
+    if (s !== 0) return s;
+    return (ta?.id ?? 0) - (tb?.id ?? 0);
+  });
+};
+
+export const sortCurationsForDisplay = (curations, curationTypesDict) => {
+  if (!curations?.length) return [];
+  return [...curations].sort((a, b) => {
+    const firstT = (c) =>
+      c.types?.[0] || c.type || (c.typeId != null ? curationTypesDict[c.typeId] : null);
+    const ta = firstT(a);
+    const tb = firstT(b);
+    const ga = (ta?.groupSortOrder ?? 0) - (tb?.groupSortOrder ?? 0);
+    if (ga !== 0) return ga;
+    const s = (ta?.sortOrder ?? 0) - (tb?.sortOrder ?? 0);
+    if (s !== 0) return s;
+    const tid = (ta?.id ?? 0) - (tb?.id ?? 0);
+    if (tid !== 0) return tid;
+    return (a.id ?? 0) - (b.id ?? 0);
+  });
 };

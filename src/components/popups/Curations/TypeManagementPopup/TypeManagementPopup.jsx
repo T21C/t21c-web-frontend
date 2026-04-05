@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import './typemanagementpopup.css';
@@ -27,6 +27,8 @@ const TypeManagementPopup = ({
   const [selectedType, setSelectedType] = useState(null);
   const [mouseDownOutside, setMouseDownOutside] = useState(false);
   const [isReordering, setIsReordering] = useState(false);
+  const [isGroupsReordering, setIsGroupsReordering] = useState(false);
+  const [typesSubTab, setTypesSubTab] = useState('types');
   const [localCurationTypes, setLocalCurationTypes] = useState([]);
   const modalRef = useRef(null);
 
@@ -36,7 +38,8 @@ const TypeManagementPopup = ({
     color: '#3B82F6',
     abilities: 0n,
     icon: null,
-    iconPreview: null
+    iconPreview: null,
+    group: '',
   });
 
   const handleMouseDown = (e) => {
@@ -67,12 +70,37 @@ const TypeManagementPopup = ({
     };
   }, [isOpen, mouseDownOutside]);
 
-  // Sync local curation types with props
+  // Sync local curation types with props (group order, then type order)
   useEffect(() => {
     if (curationTypes) {
-      setLocalCurationTypes([...curationTypes].sort((a, b) => a.sortOrder - b.sortOrder));
+      setLocalCurationTypes(
+        [...curationTypes].sort((a, b) => {
+          const ga = a.groupSortOrder ?? 0;
+          const gb = b.groupSortOrder ?? 0;
+          if (ga !== gb) return ga - gb;
+          return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
+        })
+      );
     }
   }, [curationTypes]);
+
+  const groupedSections = useMemo(() => {
+    const groups = {};
+    for (const t of localCurationTypes) {
+      const key = t.group || '';
+      if (!groups[key]) {
+        groups[key] = {
+          name: key,
+          types: [],
+          groupSortOrder: t.groupSortOrder ?? 0,
+        };
+      }
+      groups[key].types.push(t);
+    }
+    return Object.values(groups).sort((a, b) => a.groupSortOrder - b.groupSortOrder);
+  }, [localCurationTypes]);
+
+  const orderedGroups = groupedSections;
 
   const resetForm = () => {
     setFormData({
@@ -80,7 +108,8 @@ const TypeManagementPopup = ({
       color: '#3B82F6',
       abilities: 0n,
       icon: null,
-      iconPreview: null
+      iconPreview: null,
+      group: '',
     });
   };
 
@@ -96,7 +125,8 @@ const TypeManagementPopup = ({
       color: type.color,
       abilities: BigInt(type.abilities || 0),
       icon: null,
-      iconPreview: type.icon
+      iconPreview: type.icon,
+      group: type.group || '',
     });
     setMode(POPUP_MODES.EDIT);
   };
@@ -199,7 +229,8 @@ const TypeManagementPopup = ({
       const submitData = {
         name: formData.name.trim(),
         color: formData.color,
-        abilities: formData.abilities.toString()
+        abilities: formData.abilities.toString(),
+        group: formData.group?.trim() ?? '',
       };
 
       let response;
@@ -246,45 +277,114 @@ const TypeManagementPopup = ({
     }
   };
 
-  const handleDragEnd = async (result) => {
+  const handleTypeDragEnd = async (result, groupName) => {
     if (!result.destination) return;
-    
+    if (result.source.droppableId !== result.destination.droppableId) return;
+
     setIsReordering(true);
-    
-    try {      
-      const items = Array.from(localCurationTypes);
+    try {
+      const groupTypes = localCurationTypes.filter((x) => (x.group || '') === groupName);
+      const sortedInGroup = [...groupTypes].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+      const items = Array.from(sortedInGroup);
       const [reorderedItem] = items.splice(result.source.index, 1);
       items.splice(result.destination.index, 0, reorderedItem);
-      
       const updatedItems = items.map((item, index) => ({
         ...item,
-        sortOrder: index
+        sortOrder: index,
       }));
-      
-      setLocalCurationTypes(updatedItems);
-      
-      const response = await api.put(`${import.meta.env.VITE_CURATIONS}/types/sort-orders`, {
-        sortOrders: updatedItems.map(item => ({
-          id: item.id,
-          sortOrder: item.sortOrder
-        }))
-      }, {
-        headers: {
-          'X-Super-Admin-Password': verifiedPassword
-        }
+
+      setLocalCurationTypes((prev) => {
+        const map = new Map(updatedItems.map((x) => [x.id, x]));
+        return prev.map((row) => map.get(row.id) ?? row);
       });
+
+      await api.put(
+        `${import.meta.env.VITE_CURATIONS}/types/sort-orders`,
+        {
+          sortOrders: updatedItems.map((item) => ({
+            id: item.id,
+            sortOrder: item.sortOrder,
+          })),
+        },
+        {
+          headers: {
+            'X-Super-Admin-Password': verifiedPassword,
+          },
+        }
+      );
 
       toast.success(t('typeManagementPopup.notifications.reordered'));
       onTypeUpdate();
     } catch (err) {
       console.error('Error updating sort orders:', err);
       toast.error(t('typeManagementPopup.notifications.reorderFailed'));
-      // Reset to original order
       if (curationTypes) {
-        setLocalCurationTypes([...curationTypes].sort((a, b) => a.sortOrder - b.sortOrder));
+        setLocalCurationTypes(
+          [...curationTypes].sort((a, b) => {
+            const ga = a.groupSortOrder ?? 0;
+            const gb = b.groupSortOrder ?? 0;
+            if (ga !== gb) return ga - gb;
+            return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
+          })
+        );
       }
     } finally {
       setIsReordering(false);
+    }
+  };
+
+  const handleGroupDragEnd = async (result) => {
+    if (!result.destination) return;
+
+    setIsGroupsReordering(true);
+    try {
+      const items = Array.from(orderedGroups);
+      const [reorderedItem] = items.splice(result.source.index, 1);
+      items.splice(result.destination.index, 0, reorderedItem);
+
+      const groupUpdates = items.map((group, index) => ({
+        name: group.name,
+        sortOrder: index,
+      }));
+
+      setLocalCurationTypes((prev) =>
+        prev.map((row) => {
+          const tagGroup = row.group || '';
+          const gu = groupUpdates.find((g) => g.name === tagGroup);
+          if (gu) {
+            return { ...row, groupSortOrder: gu.sortOrder };
+          }
+          return row;
+        })
+      );
+
+      await api.put(
+        `${import.meta.env.VITE_CURATIONS}/types/group-sort-orders`,
+        { groups: groupUpdates },
+        {
+          headers: {
+            'X-Super-Admin-Password': verifiedPassword,
+          },
+        }
+      );
+
+      toast.success(t('typeManagementPopup.notifications.groupsReordered'));
+      onTypeUpdate();
+    } catch (err) {
+      console.error('Error updating group sort orders:', err);
+      toast.error(t('typeManagementPopup.notifications.groupReorderFailed'));
+      if (curationTypes) {
+        setLocalCurationTypes(
+          [...curationTypes].sort((a, b) => {
+            const ga = a.groupSortOrder ?? 0;
+            const gb = b.groupSortOrder ?? 0;
+            if (ga !== gb) return ga - gb;
+            return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
+          })
+        );
+      }
+    } finally {
+      setIsGroupsReordering(false);
     }
   };
 
@@ -328,88 +428,165 @@ const TypeManagementPopup = ({
               </button>
             </div>
 
-            <DragDropContext onDragEnd={handleDragEnd}>
-              <Droppable droppableId="curation-types">
-                {(provided) => (
-                  <div 
-                    className="type-management-modal__types"
-                    {...provided.droppableProps}
-                    ref={provided.innerRef}
-                  >
-                    {isLoading ? (
-                      <div className="type-management-modal__loading">{t('typeManagementPopup.loading')}</div>
-                    ) : localCurationTypes.length === 0 ? (
-                      <div className="type-management-modal__empty">{t('typeManagementPopup.empty')}</div>
-                    ) : (
-                      localCurationTypes.map((type, index) => (
-                        <Draggable 
-                          key={type.id} 
-                          draggableId={type.id.toString()} 
-                          index={index}
-                          isDragDisabled={isReordering}
-                        >
-                          {(provided, snapshot) => (
-                            <div 
+            <div className="type-management-modal__sub-tabs">
+              <button
+                type="button"
+                className={`type-management-modal__sub-tab ${typesSubTab === 'types' ? 'active' : ''}`}
+                onClick={() => setTypesSubTab('types')}
+              >
+                {t('typeManagementPopup.tabs.types')}
+              </button>
+              <button
+                type="button"
+                className={`type-management-modal__sub-tab ${typesSubTab === 'groups' ? 'active' : ''}`}
+                onClick={() => setTypesSubTab('groups')}
+              >
+                {t('typeManagementPopup.tabs.groups')}
+              </button>
+            </div>
+
+            {typesSubTab === 'types' ? (
+              <div className="type-management-modal__grouped-types">
+                {isLoading ? (
+                  <div className="type-management-modal__loading">{t('typeManagementPopup.loading')}</div>
+                ) : localCurationTypes.length === 0 ? (
+                  <div className="type-management-modal__empty">{t('typeManagementPopup.empty')}</div>
+                ) : (
+                  groupedSections.map((section) => (
+                    <div key={section.name || 'ungrouped'} className="type-management-modal__type-group-section">
+                      <h3 className="type-management-modal__type-group-title">
+                        {section.name || t('typeManagementPopup.groups.ungrouped')}
+                        <span className="type-management-modal__type-group-count">({section.types.length})</span>
+                      </h3>
+                      <DragDropContext onDragEnd={(r) => handleTypeDragEnd(r, section.name)}>
+                        <Droppable droppableId={`group-${section.name || 'ungrouped'}`}>
+                          {(provided) => (
+                            <div
+                              className="type-management-modal__types"
+                              {...provided.droppableProps}
                               ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                              className={`type-management-modal__type-item ${snapshot.isDragging ? 'dragging' : ''}`}
                             >
-                              <div className="type-management-modal__type-info">
-                                <div className="type-management-modal__type-header">
-                                  <div className="type-management-modal__drag-handle">
-                                    ⋮⋮
-                                  </div>
-                                  {type.icon && (
-                                    <img 
-                                      src={type.icon} 
-                                      alt={`${type.name} icon`}
-                                      className="type-management-modal__type-icon"
-                                    />
+                              {section.types.map((type, index) => (
+                                <Draggable
+                                  key={type.id}
+                                  draggableId={`type-${type.id}`}
+                                  index={index}
+                                  isDragDisabled={isReordering}
+                                >
+                                  {(dragProvided, snapshot) => (
+                                    <div
+                                      ref={dragProvided.innerRef}
+                                      {...dragProvided.draggableProps}
+                                      {...dragProvided.dragHandleProps}
+                                      className={`type-management-modal__type-item ${snapshot.isDragging ? 'dragging' : ''}`}
+                                    >
+                                      <div className="type-management-modal__type-info">
+                                        <div className="type-management-modal__type-header">
+                                          <div className="type-management-modal__drag-handle">⋮⋮</div>
+                                          {type.icon && (
+                                            <img
+                                              src={type.icon}
+                                              alt={`${type.name} icon`}
+                                              className="type-management-modal__type-icon"
+                                            />
+                                          )}
+                                          <h3>{type.name}</h3>
+                                        </div>
+                                        <div className="type-management-modal__type-details">
+                                          <span
+                                            className="type-management-modal__type-color"
+                                            style={{ backgroundColor: type.color }}
+                                          >
+                                            {type.color}
+                                          </span>
+                                          <span className="type-management-modal__type-abilities">
+                                            {type.abilities > 0
+                                              ? t('typeManagementPopup.hasAbilities')
+                                              : t('typeManagementPopup.noAbilities')}
+                                          </span>
+                                        </div>
+                                      </div>
+
+                                      <div className="type-management-modal__type-actions">
+                                        <button
+                                          type="button"
+                                          className="type-management-modal__action-btn type-management-modal__action-btn--edit"
+                                          onClick={() => handleEditType(type)}
+                                          title={t('typeManagementPopup.actions.edit')}
+                                          disabled={isReordering}
+                                        >
+                                          <EditIcon size={30} />
+                                        </button>
+                                        <button
+                                          type="button"
+                                          className="type-management-modal__action-btn type-management-modal__action-btn--delete"
+                                          onClick={() => handleDeleteType(type)}
+                                          title={t('typeManagementPopup.actions.delete')}
+                                          disabled={isLoading || isReordering}
+                                        >
+                                          <TrashIcon size={34} />
+                                        </button>
+                                      </div>
+                                    </div>
                                   )}
-                                  <h3>{type.name}</h3>
-                                </div>
-                                <div className="type-management-modal__type-details">
-                                  <span 
-                                    className="type-management-modal__type-color"
-                                    style={{ backgroundColor: type.color }}
-                                  >
-                                    {type.color}
-                                  </span>
-                                  <span className="type-management-modal__type-abilities">
-                                    {type.abilities > 0 ? t('typeManagementPopup.hasAbilities') : t('typeManagementPopup.noAbilities')}
-                                  </span>
-                                </div>
-                              </div>
-                              
-                              <div className="type-management-modal__type-actions">
-                                <button
-                                  className="type-management-modal__action-btn type-management-modal__action-btn--edit"
-                                  onClick={() => handleEditType(type)}
-                                  title={t('typeManagementPopup.actions.edit')}
-                                  disabled={isReordering}
-                                >
-                                  <EditIcon size={30}/>
-                                </button>
-                                <button
-                                  className="type-management-modal__action-btn type-management-modal__action-btn--delete"
-                                  onClick={() => handleDeleteType(type)}
-                                  title={t('typeManagementPopup.actions.delete')}
-                                  disabled={isLoading || isReordering}
-                                >
-                                  <TrashIcon size={34}/>
-                                </button>
-                              </div>
+                                </Draggable>
+                              ))}
+                              {provided.placeholder}
                             </div>
                           )}
-                        </Draggable>
-                      ))
-                    )}
-                    {provided.placeholder}
-                  </div>
+                        </Droppable>
+                      </DragDropContext>
+                    </div>
+                  ))
                 )}
-              </Droppable>
-            </DragDropContext>
+              </div>
+            ) : (
+              <div className="type-management-modal__groups-tab">
+                {isLoading ? (
+                  <div className="type-management-modal__loading">{t('typeManagementPopup.loading')}</div>
+                ) : orderedGroups.length === 0 ? (
+                  <div className="type-management-modal__empty">{t('typeManagementPopup.groups.empty')}</div>
+                ) : (
+                  <DragDropContext onDragEnd={handleGroupDragEnd}>
+                    <Droppable droppableId="curation-type-groups">
+                      {(provided) => (
+                        <div
+                          className="type-management-modal__groups-list"
+                          {...provided.droppableProps}
+                          ref={provided.innerRef}
+                        >
+                          {orderedGroups.map((group, index) => (
+                            <Draggable
+                              key={group.name || 'ungrouped'}
+                              draggableId={`ctype-group-${group.name || 'ungrouped'}`}
+                              index={index}
+                              isDragDisabled={isGroupsReordering}
+                            >
+                              {(gProvided, snapshot) => (
+                                <div
+                                  ref={gProvided.innerRef}
+                                  {...gProvided.draggableProps}
+                                  {...gProvided.dragHandleProps}
+                                  className={`type-management-modal__group-item ${snapshot.isDragging ? 'dragging' : ''}`}
+                                >
+                                  <div className="type-management-modal__group-item-name">
+                                    {group.name || t('typeManagementPopup.groups.ungrouped')}
+                                  </div>
+                                  <div className="type-management-modal__group-item-count">
+                                    {t('typeManagementPopup.groups.typeCount', { count: group.types.length })}
+                                  </div>
+                                </div>
+                              )}
+                            </Draggable>
+                          ))}
+                          {provided.placeholder}
+                        </div>
+                      )}
+                    </Droppable>
+                  </DragDropContext>
+                )}
+              </div>
+            )}
           </>
         )}
 
@@ -425,6 +602,18 @@ const TypeManagementPopup = ({
                 onChange={(e) => handleFormChange('name', e.target.value)}
                 placeholder={t('typeManagementPopup.form.namePlaceholder')}
                 required
+                className="type-management-modal__input"
+              />
+            </div>
+
+            <div className="type-management-modal__form-group">
+              <label htmlFor="group">{t('typeManagementPopup.form.group')}</label>
+              <input
+                id="group"
+                type="text"
+                value={formData.group}
+                onChange={(e) => handleFormChange('group', e.target.value)}
+                placeholder={t('typeManagementPopup.form.groupPlaceholder')}
                 className="type-management-modal__input"
               />
             </div>

@@ -1,6 +1,7 @@
 /* eslint-disable react/prop-types */
-import { createContext, useState, useEffect } from "react"
+import { createContext, useState, useEffect, useRef } from "react"
 import { useDifficultyContext } from "./DifficultyContext";
+import { migrateLegacyNamesToFacet } from "@/utils/facetQueryCodec";
 
 const STORAGE_KEYS = {
     LEGACY_DIFF: 'level_legacy_diff',
@@ -20,14 +21,40 @@ const STORAGE_KEYS = {
     SELECTED_SPECIAL_DIFFS: 'level_selected_special_diffs',
     Q_SLIDER_VISIBLE: 'level_q_slider_visible',
     ONLY_MY_LIKES: 'level_only_my_likes',
+    /** @deprecated migrated to LEVEL_FACET_V1 */
     SELECTED_CURATION_TYPES: 'level_selected_curation_types',
-    SELECTED_TAGS: 'level_selected_tags'
+    /** @deprecated migrated to LEVEL_FACET_V1 */
+    SELECTED_TAGS: 'level_selected_tags',
+    LEVEL_FACET_V1: 'level_facet_v1',
 };
 
 const LevelContext = createContext()
 
+function loadLevelFacetV1() {
+    try {
+        const r = localStorage.getItem(STORAGE_KEYS.LEVEL_FACET_V1);
+        if (r) {
+            const p = JSON.parse(r);
+            if (p && typeof p === 'object') {
+                return {
+                    tags: p.tags ?? null,
+                    curationTypes: p.curationTypes ?? null,
+                    combine: p.combine === 'or' ? 'or' : 'and',
+                };
+            }
+        }
+    } catch { /* ignore */ }
+    return { tags: null, curationTypes: null, combine: 'and' };
+}
+
 const LevelContextProvider = (props) => {
-    const { noLegacyDifficulties: difficulties } = useDifficultyContext();
+    const {
+        noLegacyDifficulties: difficulties,
+        tags,
+        curationTypes,
+        tagsLoading,
+        curationTypesLoading,
+    } = useDifficultyContext();
 
     const [levelsData, setLevelsData] = useState([])
     const [legacyDiff, setLegacyDiff] = useState(() => localStorage.getItem(STORAGE_KEYS.LEGACY_DIFF) === 'true');
@@ -65,14 +92,8 @@ const LevelContextProvider = (props) => {
         return saved != null ? saved === 'true' : true;
     });
     const [onlyMyLikes, setOnlyMyLikes] = useState(() => localStorage.getItem(STORAGE_KEYS.ONLY_MY_LIKES) === 'true');
-    const [selectedCurationTypes, setSelectedCurationTypes] = useState(() => {
-        const saved = localStorage.getItem(STORAGE_KEYS.SELECTED_CURATION_TYPES);
-        return saved ? JSON.parse(saved) : [];
-    });
-    const [selectedTags, setSelectedTags] = useState(() => {
-        const saved = localStorage.getItem(STORAGE_KEYS.SELECTED_TAGS);
-        return saved ? JSON.parse(saved) : [];
-    });
+    const [levelFacetFilters, setLevelFacetFilters] = useState(() => loadLevelFacetV1());
+    const levelFacetMigrationDoneRef = useRef(false);
     // Effect to validate and adjust ranges based on difficulties
     useEffect(() => {
         if (difficulties.length > 0) {
@@ -123,6 +144,38 @@ const LevelContextProvider = (props) => {
             }
         }
     }, [difficulties]);
+
+    /** One-time: legacy name arrays -> level_facet_v1 (must run before persisting empty state) */
+    useEffect(() => {
+        if (tagsLoading || curationTypesLoading) return;
+        if (levelFacetMigrationDoneRef.current) return;
+        levelFacetMigrationDoneRef.current = true;
+        if (localStorage.getItem(STORAGE_KEYS.LEVEL_FACET_V1)) return;
+        try {
+            const rawT = localStorage.getItem(STORAGE_KEYS.SELECTED_TAGS);
+            const rawC = localStorage.getItem(STORAGE_KEYS.SELECTED_CURATION_TYPES);
+            const tagNames = rawT ? JSON.parse(rawT) : [];
+            const ctNames = rawC ? JSON.parse(rawC) : [];
+            const next = migrateLegacyNamesToFacet(
+                Array.isArray(tagNames) ? tagNames : [],
+                Array.isArray(ctNames) ? ctNames : [],
+                tags || [],
+                curationTypes || []
+            );
+            setLevelFacetFilters(next);
+            localStorage.setItem(STORAGE_KEYS.LEVEL_FACET_V1, JSON.stringify(next));
+        } catch (e) {
+            console.error('Level facet migration failed', e);
+            const fallback = { tags: null, curationTypes: null, combine: 'and' };
+            setLevelFacetFilters(fallback);
+            localStorage.setItem(STORAGE_KEYS.LEVEL_FACET_V1, JSON.stringify(fallback));
+        }
+    }, [tagsLoading, curationTypesLoading, tags, curationTypes]);
+
+    useEffect(() => {
+        if (!levelFacetMigrationDoneRef.current) return;
+        localStorage.setItem(STORAGE_KEYS.LEVEL_FACET_V1, JSON.stringify(levelFacetFilters));
+    }, [levelFacetFilters]);
 
     useEffect(() => {
         localStorage.setItem(STORAGE_KEYS.LEGACY_DIFF, legacyDiff);
@@ -192,10 +245,6 @@ const LevelContextProvider = (props) => {
         localStorage.setItem(STORAGE_KEYS.ONLY_MY_LIKES, onlyMyLikes);
     }, [onlyMyLikes]);
 
-    useEffect(() => {
-        localStorage.setItem(STORAGE_KEYS.SELECTED_CURATION_TYPES, JSON.stringify(selectedCurationTypes));
-    }, [selectedCurationTypes]);
-
     return (
         <LevelContext.Provider 
             value={{ 
@@ -220,8 +269,7 @@ const LevelContextProvider = (props) => {
                 selectedSpecialDiffs, setSelectedSpecialDiffs,
                 qSliderVisible, setQSliderVisible,
                 onlyMyLikes, setOnlyMyLikes,
-                selectedCurationTypes, setSelectedCurationTypes,
-                selectedTags, setSelectedTags
+                levelFacetFilters, setLevelFacetFilters
             }}
         >
             {props.children}

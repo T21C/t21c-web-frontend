@@ -89,7 +89,61 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 0.75rem;
   transition: transform 0.3s ease;
+}
+
+.weekly-gallery__overlay-top {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 1rem;
+  width: 100%;
+}
+
+.weekly-gallery__difficulty-hero {
+  flex-shrink: 0;
+  width: 3.5rem;
+  height: 3.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.weekly-gallery__difficulty-hero-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.9));
+}
+
+.weekly-gallery__info-and-curations {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: row;
+  gap: 0.75rem;
+}
+
+.weekly-gallery__curation-icons-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-left: auto;
+  justify-content: flex-end;
+}
+
+.weekly-gallery__standalone-curation-icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  flex-shrink: 0;
+}
+
+.weekly-gallery__standalone-curation-img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  filter: drop-shadow(1px 1px 8px rgba(0, 0, 0, 1));
 }
 
 .weekly-gallery__item:hover .weekly-gallery__item-overlay,

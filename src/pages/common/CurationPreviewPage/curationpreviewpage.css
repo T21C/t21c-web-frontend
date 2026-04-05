@@ -7,6 +7,14 @@
   margin-bottom: 3rem;
 }
 
+.curation-preview-page .curation-preview-page__type-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
 .curation-preview-page__type-badge {
   display: inline-block;
   padding: 0.5rem 1rem;

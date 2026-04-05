@@ -7,6 +7,16 @@
   "description": "为关卡分配质量等级并管理每周精选",
   "filters": {
     "type": "精选关卡类型",
+    "types": "精选类型",
+    "typesHint": "仅显示至少包含任一已选类型的关卡。不选则显示全部关卡。",
+    "selectedTypes": "按类型筛选",
+    "addTypes": "添加筛选类型",
+    "noTypesSelected": "未选择 — 包含全部类型",
+    "searchTypesPlaceholder": "搜索类型…",
+    "noTypeResults": "无匹配类型",
+    "noAvailableTypes": "已全部加入筛选",
+    "removeType": "从筛选中移除",
+    "addType": "加入筛选",
     "allTypes": "所有类型",
     "search": "搜索",
     "searchPlaceholder": "按歌曲、艺术家或创作者搜索……"
@@ -40,6 +50,7 @@
     "manageTypes": "管理类型",
     "manageCurators": "管理精选委员",
     "manageSchedule": "管理每周精选",
+    "editLevel": "编辑此关卡全部精选",
     "editCuration": "编辑精选关卡",
     "deleteCuration": "删除精选关卡"
   },

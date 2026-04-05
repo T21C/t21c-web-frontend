@@ -8,15 +8,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 1100;
 }
 
 .curation-selection-modal__content {
   background-color: #2a2a2a;
   border-radius: 12px;
   padding: 2rem;
-  max-width: 900px;
-  width: 90%;
+  max-width: 960px;
+  width: 92%;
   max-height: 90vh;
   overflow-y: auto;
   border: 2px solid #404040;
@@ -56,6 +56,166 @@
 .curation-selection-modal__header p {
   color: #a0a0a0;
   margin: 0;
+}
+
+.curation-selection-modal__type-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.curation-selection-modal__type-filter-col {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1 1 280px;
+  min-width: 0;
+  padding: 1rem;
+  background: #1e1e1e;
+  border: 2px solid #404040;
+  border-radius: 10px;
+}
+
+.curation-selection-modal__type-filter-label {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.curation-selection-modal__type-filter-hint {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #a0a0a0;
+  line-height: 1.35;
+}
+
+.curation-selection-modal__type-chip-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  min-height: 2rem;
+  align-items: flex-start;
+}
+
+.curation-selection-modal__type-chip-list--pick {
+  max-height: 7rem;
+  overflow-y: auto;
+  padding-top: 0.25rem;
+}
+
+.curation-selection-modal__type-filter-empty {
+  font-size: 0.85rem;
+  color: #888;
+  font-style: italic;
+}
+
+.curation-selection-modal__type-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.45rem;
+  border-radius: 8px;
+  border: 2px solid var(--cs-chip-border, #666);
+  background: var(--cs-chip-bg, #333);
+  color: var(--cs-chip-text, #fff);
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.curation-selection-modal__type-chip--add {
+  cursor: pointer;
+  border: none;
+  font: inherit;
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.curation-selection-modal__type-chip--add:hover {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+
+.curation-selection-modal__type-chip-icon {
+  width: 1.1rem;
+  height: 1.1rem;
+  object-fit: contain;
+}
+
+.curation-selection-modal__type-chip-remove {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.15rem;
+  margin-left: 0.1rem;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.curation-selection-modal__type-chip-remove:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.curation-selection-modal__type-chip-plus {
+  margin-left: 0.2rem;
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+.curation-selection-modal__multi-hint {
+  font-size: 0.85rem;
+  color: #a0a0a0;
+  margin-bottom: 0.75rem;
+}
+
+.curation-selection-modal__item--selected {
+  border-color: #4a9eff;
+  box-shadow: 0 0 0 1px #4a9eff;
+}
+
+.curation-selection-modal__item-check {
+  flex-shrink: 0;
+}
+
+.curation-selection-modal__checkbox {
+  width: 1.15rem;
+  height: 1.15rem;
+  cursor: pointer;
+  accent-color: #4a9eff;
+  pointer-events: none;
+}
+
+.curation-selection-modal__multi-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 1rem;
+}
+
+.curation-selection-modal__confirm-multi-btn {
+  padding: 0.65rem 1.25rem;
+  background: #4caf50;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, opacity 0.2s ease;
+}
+
+.curation-selection-modal__confirm-multi-btn:hover:not(:disabled) {
+  background: #43a047;
+}
+
+.curation-selection-modal__confirm-multi-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.curation-selection-modal__filter-group--full {
+  flex: 1 1 100%;
+  min-width: 100%;
 }
 
 .curation-selection-modal__filters {
@@ -190,6 +350,13 @@
   flex-direction: column;
   align-items: flex-end;
   gap: 0.5rem;
+}
+
+.curation-selection-modal .curation-selection-modal__type-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  justify-content: flex-end;
 }
 
 .curation-selection-modal__type-badge {

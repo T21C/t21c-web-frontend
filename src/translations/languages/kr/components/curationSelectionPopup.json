@@ -1,21 +1,36 @@
 {
-  "title": "Select Curation",
-  "description": "Choose a curation to add to the weekly schedule",
+  "title": "큐레이션 선택",
+  "description": "주간 일정에 추가할 큐레이션을 선택하세요",
+  "descriptionMulti": "레벨의 큐레이션 유형으로 필터한 뒤 하나 이상 선택하세요",
   "filters": {
-    "search": "Search",
-    "searchPlaceholder": "Search by song, artist, or creator...",
-    "type": "Curation Type",
-    "allTypes": "All Types"
+    "search": "검색",
+    "searchPlaceholder": "노래, 아티스트 또는 제작자로 검색...",
+    "type": "큐레이션 유형",
+    "allTypes": "모든 유형",
+    "mustInclude": "레벨에 필요(모두)",
+    "mustIncludeHint": "선택한 유형을 모두 가진 레벨만 표시합니다.",
+    "excludeTypes": "제외(하나라도 있으면)",
+    "excludeTypesHint": "이 유형 중 하나라도 있는 레벨은 숨깁니다.",
+    "searchTypes": "유형 검색…",
+    "noneSelected": "없음 — 제한 없음",
+    "noneExcluded": "제외 없음",
+    "remove": "제거"
   },
-  "loading": "Loading curations...",
-  "empty": "No curations found",
-  "creator": "Creator",
+  "multiSelectHint": "행을 클릭해 선택/해제한 뒤 아래 버튼을 누르세요.",
+  "loading": "큐레이션 로딩 중...",
+  "empty": "큐레이션을 찾을 수 없습니다",
+  "creator": "제작자",
   "actions": {
-    "select": "Select"
+    "select": "선택",
+    "applySelected": "선택 {{count}}개 적용"
   },
   "pagination": {
-    "previous": "Previous",
-    "next": "Next",
-    "pageInfo": "Page {{current}} of {{total}}"
+    "previous": "이전",
+    "next": "다음",
+    "pageInfo": "{{current}} / {{total}} 페이지"
+  },
+  "errors": {
+    "fetchFailed": "큐레이션을 불러오지 못했습니다",
+    "noneSelected": "최소 하나를 선택하세요"
   }
 }

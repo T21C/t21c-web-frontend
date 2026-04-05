@@ -28,6 +28,7 @@ function App() {
         />
       </div>
       <div className="body">
+      <div className="nav-spacer" />
       <Suspense
         fallback={
           <div

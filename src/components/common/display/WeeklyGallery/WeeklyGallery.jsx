@@ -288,45 +288,57 @@ const WeeklyGallery = ({
                 </div>
                 
                 <div className="weekly-gallery__item-overlay">
-                  {/* Top Left: Level Info */}
-                  <div className="weekly-gallery__item-info-top-left">
-                    <div className="weekly-gallery__level-id-container">
-                      <div className="weekly-gallery__level-id">#{curation.scheduledCuration?.level?.id || curation.level?.id || '?'} </div>
-                      <div className="weekly-gallery__charter-name">By {formatCreatorDisplay(curation.scheduledCuration?.level || curation.level)}</div>
-                    </div>
-                    <div className="weekly-gallery__song-title">{curation.scheduledCuration?.level?.song || curation.level?.song || 'Unknown Song'}</div>
-                    <div className="weekly-gallery__artist-name">{curation.scheduledCuration?.level?.artist || curation.level?.artist || 'Unknown Artist'}</div>
-                    
-                  </div>
-
-                  {/* Top Right: Icons */}
-                  <div className="weekly-gallery__item-icons-top-right">
-                    {/* Curation Type Icon */}
-                    <div className="weekly-gallery__curation-icon">
-                      {(curation.scheduledCuration?.type?.icon || curation.type?.icon) ? (
-                        <img 
-                          src={curation.scheduledCuration?.type?.icon || curation.type?.icon} 
-                          alt={curation.scheduledCuration?.type?.name || curation.type?.name || 'Curation Type'} 
-                          className="weekly-gallery__type-icon"
-                        />
-                      ) : (
-                        <div className="weekly-gallery__type-icon-placeholder">🎵</div>
-                      )}
-                    </div>
-                    
-                    {/* Difficulty Icon */}
-                    <div className="weekly-gallery__difficulty-icon">
-                      {(curation.scheduledCuration?.level?.difficulty?.icon || curation.level?.difficulty?.icon) ? (
-                        <img 
-                          src={curation.scheduledCuration?.level?.difficulty?.icon || curation.level?.difficulty?.icon} 
-                          alt={curation.scheduledCuration?.level?.difficulty?.name || curation.level?.difficulty?.name || 'Difficulty'} 
-                          className="weekly-gallery__difficulty-icon-img"
+                  {(() => {
+                    const levelRow = curation.scheduledCuration?.level || curation.level;
+                    const diff = levelRow?.difficulty;
+                    const fromList = curation.scheduledCuration?.allCurationsForLevel;
+                    let typeIcons = [];
+                    if (fromList && fromList.length > 0) {
+                      typeIcons = fromList.flatMap((row) =>
+                        row.types?.length ? row.types : row.type ? [row.type] : []
+                      );
+                    } else if (curation.scheduledCuration?.types?.length) {
+                      typeIcons = curation.scheduledCuration.types;
+                    } else if (curation.scheduledCuration?.type) {
+                      typeIcons = [curation.scheduledCuration.type];
+                    } else if (curation.type) {
+                      typeIcons = [curation.type];
+                    }
+                    return (
+                  <div className="weekly-gallery__overlay-top">
+                    <div className="weekly-gallery__difficulty-hero">
+                      {diff?.icon ? (
+                        <img
+                          src={diff.icon}
+                          alt={diff.name || 'Difficulty'}
+                          className="weekly-gallery__difficulty-hero-img"
                         />
                       ) : (
                         <div className="weekly-gallery__difficulty-icon-placeholder">?</div>
                       )}
                     </div>
+                    <div className="weekly-gallery__info-and-curations">
+                      <div className="weekly-gallery__item-info-top-left">
+                        <div className="weekly-gallery__level-id-container">
+                          <div className="weekly-gallery__level-id">#{levelRow?.id || '?'}</div>
+                          <div className="weekly-gallery__charter-name">By {formatCreatorDisplay(levelRow)}</div>
+                        </div>
+                        <div className="weekly-gallery__song-title">{levelRow?.song || 'Unknown Song'}</div>
+                        <div className="weekly-gallery__artist-name">{levelRow?.artist || 'Unknown Artist'}</div>
+                      </div>
+                      <div className="weekly-gallery__curation-icons-row">
+                        {typeIcons.map((t, ti) =>
+                          t?.icon ? (
+                            <div key={t.id ?? ti} className="weekly-gallery__standalone-curation-icon">
+                              <img src={t.icon} alt={t.name || ''} className="weekly-gallery__standalone-curation-img" />
+                            </div>
+                          ) : null
+                        )}
+                      </div>
+                    </div>
                   </div>
+                    );
+                  })()}
 
                   {/* Bottom Center: Short Description */}
                   <div className="weekly-gallery__item-short-description">

@@ -78,8 +78,16 @@ const CurationPreviewPage = () => {
       
       <div className="curation-preview-page__content page-content-800">
         <div className="curation-preview-page__header">
-          <div className="curation-preview-page__type-badge" style={{ backgroundColor: curation.type?.color }}>
-            {curation.type?.name}
+          <div className="curation-preview-page__type-badges">
+            {(curation.types || (curation.type ? [curation.type] : [])).map((typ) => (
+              <div
+                key={typ.id}
+                className="curation-preview-page__type-badge"
+                style={{ backgroundColor: typ.color }}
+              >
+                {typ.name}
+              </div>
+            ))}
           </div>
           <h1>{level?.song || 'Unknown Level'}</h1>
           <p className="curation-preview-page__artist">{level?.artist || 'Unknown Artist'}</p>

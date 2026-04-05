@@ -140,6 +140,176 @@
   min-width: 200px;
 }
 
+.curation-page .curation-filter-group--types {
+  flex: 1 1 100%;
+  min-width: min(100%, 320px);
+}
+
+.curation-page .curation-type-filter-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #a0a0a0;
+  line-height: 1.35;
+}
+
+.curation-page .curation-type-filter-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  background: #1e1e1e;
+  border: 2px solid #404040;
+  border-radius: 8px;
+}
+
+.curation-page .curation-type-filter-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.curation-page .curation-type-filter-heading {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e0e0e0;
+}
+
+.curation-page .curation-type-filter-search {
+  padding: 0.65rem 0.75rem;
+  border: 2px solid #404040;
+  border-radius: 8px;
+  background: #2a2a2a;
+  color: #ffffff;
+  font-size: 0.95rem;
+}
+
+.curation-page .curation-type-filter-search:focus {
+  outline: none;
+  border-color: #4a9eff;
+}
+
+.curation-page .curation-type-filter-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  max-height: 11rem;
+  overflow-y: auto;
+}
+
+.curation-page .curation-type-filter-empty {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #888;
+}
+
+.curation-page .curation-type-filter-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.5rem;
+  border-radius: 8px;
+  border: 2px solid var(--ctf-border, #666);
+  background: var(--ctf-bg, #333);
+  color: var(--ctf-text, #fff);
+  box-shadow: var(--ctf-shadow, none);
+  font-size: 0.85rem;
+}
+
+.curation-page .curation-type-filter-chip--addable {
+  cursor: pointer;
+  transition: filter 0.15s ease, transform 0.15s ease;
+}
+
+.curation-page .curation-type-filter-chip--addable:hover {
+  filter: brightness(1.12);
+  transform: translateY(-1px);
+}
+
+.curation-page .curation-type-filter-chip-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  object-fit: contain;
+}
+
+.curation-page .curation-type-filter-chip-name {
+  font-weight: 600;
+}
+
+.curation-page .curation-type-filter-chip-remove,
+.curation-page .curation-type-filter-chip-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 0.15rem;
+  padding: 0.2rem;
+  width: 20px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.curation-page .curation-type-filter-chip-remove:hover,
+.curation-page .curation-type-filter-chip-add:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.curation-page .curation-level-curations {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: min(100%, 280px);
+}
+
+.curation-page .curation-type-slot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: space-between;
+}
+
+.curation-page .curation-type-slot.protected {
+  pointer-events: none;
+  opacity: 0.65;
+}
+
+.curation-page .curation-type-info--inline {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.curation-page .curation-type-info--multi {
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+}
+
+.curation-page .curation-type-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.curation-page .curation-type-slot-icon {
+  width: 2rem;
+  height: 2rem;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.curation-page .curation-item-wrapper--level {
+  align-items: flex-start;
+}
+
 .curation-page .curation-filter-group label {
   font-weight: 600;
   color: #ffffff;
@@ -229,6 +399,26 @@
   align-items: center;
   gap: 0.5rem;
   margin-bottom: 0.25rem;
+  flex-wrap: wrap;
+}
+
+.curation-page .curation-level-edit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  padding: 0.4rem 0.55rem;
+  border: 2px solid #4a9eff;
+  border-radius: 8px;
+  background: #2a2a2a;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+.curation-page .curation-level-edit-btn:hover {
+  background: #333;
+  border-color: #6bb3ff;
 }
 
 .curation-page .curation-difficulty-icon {

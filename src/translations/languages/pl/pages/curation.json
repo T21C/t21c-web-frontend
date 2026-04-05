@@ -7,6 +7,16 @@
   "description": "Przypisywanie poziomów jakości do poziomów i zarządzanie programami kuratorskimi",
   "filters": {
     "type": "Typ kuratora",
+    "types": "Typy kuracji",
+    "typesHint": "Pokaż poziomy, które mają co najmniej jedną kurację wybranego typu. Puste = wszystkie.",
+    "selectedTypes": "Filtr typów",
+    "addTypes": "Dodaj typy do filtra",
+    "noTypesSelected": "Brak wyboru — wszystkie typy",
+    "searchTypesPlaceholder": "Szukaj typów…",
+    "noTypeResults": "Brak pasujących typów",
+    "noAvailableTypes": "Wszystkie typy już wybrane",
+    "removeType": "Usuń z filtra",
+    "addType": "Dodaj do filtra",
     "allTypes": "Wszystkie typy",
     "search": "Szukaj",
     "searchPlaceholder": "Szukaj według piosenki, artysty lub twórcy..."
@@ -40,6 +50,7 @@
     "manageTypes": "Zarządzaj typami",
     "manageCurators": "Zarządzaj kuratorami",
     "manageSchedule": "Zarządzaj harmonogramem",
+    "editLevel": "Edytuj przypisania kuracji do poziomu",
     "editCuration": "Edytuj kuratora",
     "deleteCuration": "Usuń kuratora"
   },

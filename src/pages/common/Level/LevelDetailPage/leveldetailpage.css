@@ -2598,7 +2598,7 @@
   .level-detail .title-container .aliases-dropdown,
   .tags-dropdown,
   .rating-votes-dropdown,
-  .curation-tooltip-dropdown,
+  .curation-tooltip-dropdown:not(.level-detail__curation-inline-assignee),
   .level-detail .weekly-appearance-dropdown {
     position: fixed;
     top: 50%;
@@ -2624,9 +2624,14 @@
     min-width: 300px;
   }
   
-  .curation-tooltip-dropdown {
+  .curation-tooltip-dropdown:not(.level-detail__curation-inline-assignee) {
     max-width: 90vw;
     min-width: 300px;
+  }
+
+  .level-detail .level-detail__curation-inline-assignee {
+    max-width: min(90vw, 320px);
+    min-width: 200px;
   }
 
   .level-detail .weekly-appearance-dropdown {
@@ -3583,6 +3588,81 @@
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+}
+
+.level-detail .level-detail__curation-panel {
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  gap: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+  width: fit-content;
+}
+
+.level-detail .level-detail__curation-icons-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.level-detail .level-detail__curation-icon-with-tooltip {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.level-detail .level-detail__curation-icon-with-tooltip:hover,
+.level-detail .level-detail__curation-icon-with-tooltip:focus-within {
+  z-index: 121;
+}
+
+.level-detail .level-detail__curation-icon-with-tooltip .curation-tooltip-dropdown {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.15s ease, visibility 0.15s ease;
+}
+
+.level-detail .level-detail__curation-icon-with-tooltip:hover .curation-tooltip-dropdown,
+.level-detail .level-detail__curation-icon-with-tooltip:focus-within .curation-tooltip-dropdown {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.level-detail .level-detail__curation-icon-cell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: default;
+}
+
+.level-detail .level-detail__curation-type-icon-img {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  object-fit: contain;
+}
+
+.level-detail .level-detail__curation-icon-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--glass-border);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--primary-text);
+}
+
+.level-detail .level-detail__curation-inline-assignee .curation-tooltip-avatar {
+  width: 3.25rem;
+  height: 3.25rem;
 }
 
 } /* end @layer level-detail-base */

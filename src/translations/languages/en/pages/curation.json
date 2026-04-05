@@ -7,6 +7,16 @@
   "description": "Assign quality tiers to levels and manage curation schedules",
   "filters": {
     "type": "Curation Type",
+    "types": "Curation types",
+    "typesHint": "Show levels that have at least one curation of any selected type. Leave empty to show all levels.",
+    "selectedTypes": "Filter by types",
+    "addTypes": "Add types to filter",
+    "noTypesSelected": "None selected — all types included",
+    "searchTypesPlaceholder": "Search types…",
+    "noTypeResults": "No matching types",
+    "noAvailableTypes": "All types are already selected",
+    "removeType": "Remove from filter",
+    "addType": "Add to filter",
     "allTypes": "All Types",
     "search": "Search",
     "searchPlaceholder": "Search by song, artist, or creator..."
@@ -39,6 +49,7 @@
     "manageTypes": "Manage Types",
     "manageCurators": "Manage Curators",
     "manageSchedule": "Manage Schedule",
+    "editLevel": "Edit curations for this level",
     "editCuration": "Edit Curation",
     "deleteCuration": "Delete Curation"
   },

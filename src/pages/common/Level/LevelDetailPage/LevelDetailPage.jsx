@@ -45,6 +45,7 @@ import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
 import { ABILITIES, hasBit } from '@/utils/Abilities';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
+import { sortCurationsForDisplay, sortCurationTypesForDisplay } from "@/utils/curationTypeUtils";
 import i18next from "i18next";
 
 const minus2Reasons = []
@@ -567,54 +568,6 @@ const RatingAccuracyDialog = ({ isOpen, onClose, onSave, initialValue = 0 }) => 
   );
 };
 
-// Refactor RerateHistoryDropdown to match AliasesDropdown pattern
-const CurationTooltip = ({ curation, show, onClose }) => {
-  const { t } = useTranslation(['pages', 'common']);
-  const dropdownRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [onClose]);
-
-  const handleDropdownClick = (e) => {
-    e.stopPropagation();
-  };
-
-  if (!show || !curation) return null;
-
-  return (
-    <div className="curation-tooltip-dropdown" ref={dropdownRef} onClick={handleDropdownClick}>
-      <div className="curation-tooltip-type">{curation.type.name}</div>
-      <div className="curation-tooltip-assigned">assigned by</div>
-      <div className="curation-tooltip-user">
-        {curation.assignedByUser?.avatarUrl && (
-          <img 
-            className="curation-tooltip-avatar" 
-            src={selectIconSize(curation.assignedByUser.avatarUrl, "small")} 
-            alt={curation.assignedByUser.nickname || 'User'} 
-          />
-        )}
-        <span className="curation-tooltip-name">
-          {curation.assignedByUser?.nickname || 'Unknown'}
-        </span>
-        <span className="curation-tooltip-username">
-          @{curation.assignedByUser?.username || 'unknown'}
-        </span>
-      </div>
-      <div className="curation-tooltip-time">
-        At {formatDate(curation.createdAt, i18next?.language)}
-      </div>
-    </div>
-  );
-};
-
 const WeeklyAppearanceDropdown = ({ schedules, show, onClose }) => {
   const { t } = useTranslation(['pages', 'common']);
   const dropdownRef = useRef(null);
@@ -780,7 +733,7 @@ const LevelDetailPage = ({ mockData = null }) => {
   const [showSongPopup, setShowSongPopup] = useState(false);
   const [showArtistPopup, setShowArtistPopup] = useState(false);
 
-  const { difficultyDict } = useDifficultyContext();
+  const { difficultyDict, curationTypesDict } = useDifficultyContext();
 
   const location = useLocation();
   const currentUrl = window.location.origin + location.pathname;
@@ -792,6 +745,24 @@ const LevelDetailPage = ({ mockData = null }) => {
 
 
   const [clickedArtist, setClickedArtist] = useState(null);
+
+  const [activeAliasDropdown, setActiveAliasDropdown] = useState(null);
+  const [showTagsDropdown, setShowTagsDropdown] = useState(false);
+  const [showRatingPopup, setShowRatingPopup] = useState(false);
+  const [levelTimeout, setLevelTimeout] = useState(null);
+  const [showWheel, setShowWheel] = useState(false);
+  const [showSlotMachine, setShowSlotMachine] = useState(false);
+  const [selectedDifficulty, setSelectedDifficulty] = useState(null);
+  const [slots, setSlots] = useState(3);
+  const [showMinus2Reason, setShowMinus2Reason] = useState(false);
+  const [showGimmickReason, setShowGimmickReason] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const sliderRef = useRef(null);
+  const [showDownloadPopup, setShowDownloadPopup] = useState(false);
+  const [showRerateDropdown, setShowRerateDropdown] = useState(false);
+  const [rerateArrowEnabled, setRerateArrowEnabled] = useState(true);
+  const [isRefreshingLeaderboard, setIsRefreshingLeaderboard] = useState(false);
+  const [showWeeklyAppearanceDropdown, setShowWeeklyAppearanceDropdown] = useState(false);
 
   const handleArtistClick = (artist) => {
     setClickedArtist(artist);
@@ -806,6 +777,16 @@ const LevelDetailPage = ({ mockData = null }) => {
   useEffect(() => {
     setIsLongDescription(res?.level?.curation?.description?.length > 250);
   }, [res?.level?.curation?.description]);
+
+  const curationsSorted = useMemo(() => {
+    if (!res?.level) return [];
+    const raw = res.level.curations?.length
+      ? res.level.curations
+      : res.level.curation
+        ? [res.level.curation]
+        : [];
+    return sortCurationsForDisplay(raw, curationTypesDict);
+  }, [res?.level?.curations, res?.level?.curation, res?.level, curationTypesDict]);
 
   useEffect(() => {
     const uniqueClears = new Set(sortedLeaderboard.map(player => player.playerId));
@@ -836,12 +817,12 @@ const LevelDetailPage = ({ mockData = null }) => {
 
   // Generate custom color CSS based on curation's custom color
   const createCustomColorCSS = useCallback((curation) => {
-    if (!curation?.customColor || !curation?.type) {
+    if (!curation?.customColor) {
       return null;
     }
 
-    // Check if the curation type has the CUSTOM_COLOR_THEME ability
-    if (!hasBit(curation.type.abilities, ABILITIES.CUSTOM_COLOR_THEME)) {
+    const types = curation.types || (curation.type ? [curation.type] : []);
+    if (!types.some((t) => hasBit(t.abilities, ABILITIES.CUSTOM_COLOR_THEME))) {
       return null;
     }
 
@@ -921,8 +902,8 @@ const LevelDetailPage = ({ mockData = null }) => {
       return null;
     }
 
-    // Check if the curation type has the CUSTOM_CSS ability
-    if (curation.type && !hasBit(curation.type.abilities, ABILITIES.CUSTOM_CSS)) {
+    const types = curation.types || (curation.type ? [curation.type] : []);
+    if (types.length > 0 && !types.some((t) => hasBit(t.abilities, ABILITIES.CUSTOM_CSS))) {
       return null;
     }
 
@@ -974,31 +955,6 @@ const LevelDetailPage = ({ mockData = null }) => {
       };
     }
   }, [setExternalCssOverrideValue]);
-
-  const [activeAliasDropdown, setActiveAliasDropdown] = useState(null);
-  const [showTagsDropdown, setShowTagsDropdown] = useState(false);
-  const [showCurationTooltip, setShowCurationTooltip] = useState(false);
-
-  const [showRatingPopup, setShowRatingPopup] = useState(false);
-
-  const [levelTimeout, setLevelTimeout] = useState(null);
-  const [showWheel, setShowWheel] = useState(false);
-  const [showSlotMachine, setShowSlotMachine] = useState(false);
-  const [selectedDifficulty, setSelectedDifficulty] = useState(null);
-  const [slots, setSlots] = useState(3);
-  const [showMinus2Reason, setShowMinus2Reason] = useState(false);
-  const [showGimmickReason, setShowGimmickReason] = useState(false);
-
-  const [isDragging, setIsDragging] = useState(false);
-  const sliderRef = useRef(null);
-
-  const [showDownloadPopup, setShowDownloadPopup] = useState(false);
-  const [showRerateDropdown, setShowRerateDropdown] = useState(false);
-  const [rerateArrowEnabled, setRerateArrowEnabled] = useState(true);
-  const [isRefreshingLeaderboard, setIsRefreshingLeaderboard] = useState(false);
-  const [showWeeklyAppearanceDropdown, setShowWeeklyAppearanceDropdown] = useState(false);
-
-
 
   const handleRerateDropdownToggle = () => {
     if (!rerateArrowEnabled) return;
@@ -1784,7 +1740,7 @@ const LevelDetailPage = ({ mockData = null }) => {
     if (groupOrderA !== groupOrderB) return groupOrderA - groupOrderB;
     return (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
   });
-  
+
   return (
     <div>
       <MetaTags
@@ -1798,10 +1754,14 @@ const LevelDetailPage = ({ mockData = null }) => {
         className={`level-detail ${(res?.level?.curation && !externalCssOverride) || externalCssOverride ? 'curated' : ''}`}
         data-custom-styles={(externalCssOverride || curationStyles) ? "true" : undefined}
         data-custom-color={
-          res?.level?.curation?.customColor && 
-          res?.level?.curation?.type && 
-          hasBit(res.level.curation.type.abilities, ABILITIES.CUSTOM_COLOR_THEME) 
-            ? "true" : undefined
+          (() => {
+            const cur = res?.level?.curation;
+            if (!cur?.customColor) return undefined;
+            const types = cur.types || (cur.type ? [cur.type] : []);
+            return types.some((t) => hasBit(t.abilities, ABILITIES.CUSTOM_COLOR_THEME))
+              ? "true"
+              : undefined;
+          })()
         }
         style={{
           '--header-bg-image': videoDetail?.image ? `url(${videoDetail.image})` : 'none'
@@ -1823,7 +1783,7 @@ const LevelDetailPage = ({ mockData = null }) => {
           <div className="header">
             <div className="left">
 
-              {res?.level?.curation?.curationSchedules?.length > 0 && (
+              {res?.level?.curationSchedules?.length > 0 && (
                 <div 
                   className="weekly-appearance-container"
                   onMouseEnter={() => setShowWeeklyAppearanceDropdown(true)}
@@ -1837,7 +1797,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                     />
                   </div>
                   <WeeklyAppearanceDropdown
-                    schedules={res?.level?.curation?.curationSchedules}
+                    schedules={res?.level?.curationSchedules}
                     show={showWeeklyAppearanceDropdown}
                     onClose={() => setShowWeeklyAppearanceDropdown(false)}
                   />
@@ -1883,26 +1843,6 @@ const LevelDetailPage = ({ mockData = null }) => {
                 </div>
                 <div className="level-id">#{effectiveId}</div>
               </div>
-              {res?.level?.curation?.type && (
-                <div className="curation-type-container-wrapper mobile">
-                  <div 
-                    className="curation-type-container"
-                    onMouseEnter={() => setShowCurationTooltip(true)}
-                    onMouseLeave={() => setShowCurationTooltip(false)}
-                  >
-                    <img 
-                      className="curation-type-icon" 
-                      src={res.level.curation.type.icon} 
-                      alt={res.level.curation.type.name} 
-                    />
-                  </div>
-                  <CurationTooltip 
-                    curation={res.level.curation}
-                    show={showCurationTooltip}
-                    onClose={() => setShowCurationTooltip(false)}
-                  />
-                </div>
-              )}
               </div>
               <div className="title-container">
                 <div className="level-title">
@@ -1984,30 +1924,73 @@ const LevelDetailPage = ({ mockData = null }) => {
                 )}
               </div>
 
-              {/* Curation Type */}
-              {res?.level?.curation?.type && (
-                <div className="curation-type-container-wrapper">
-                  <div 
-                    className="curation-type-container"
-                    onMouseEnter={() => setShowCurationTooltip(true)}
-                    onMouseLeave={() => setShowCurationTooltip(false)}
-                  >
-                    <img 
-                      className="curation-type-icon" 
-                      src={res.level.curation.type.icon} 
-                      alt={res.level.curation.type.name} 
-                    />
+              {curationsSorted.length > 0 && (
+                <div className="level-detail__curation-panel">
+                  <div className="level-detail__curation-icons-row">
+                    {curationsSorted.map((curation) => {
+                      const typesSorted = sortCurationTypesForDisplay(
+                        curation.types || (curation.type ? [curation.type] : []),
+                        curationTypesDict
+                      );
+                      const primaryType = typesSorted[0];
+                      const typeLabel =
+                        typesSorted.map((t) => t.name).join(', ') || 'Curation';
+                      const assigner = curation.assignedByUser;
+                      return (
+                        <div
+                          key={curation.id}
+                          className="level-detail__curation-icon-with-tooltip"
+                        >
+                          <div
+                            className="level-detail__curation-icon-cell"
+                            title={typeLabel}
+                          >
+                            {primaryType?.icon ? (
+                              <img
+                                src={primaryType.icon}
+                                alt={primaryType.name || ''}
+                                className="level-detail__curation-type-icon-img"
+                              />
+                            ) : (
+                              <span className="level-detail__curation-icon-placeholder">
+                                {typeLabel.charAt(0).toUpperCase()}
+                              </span>
+                            )}
+                          </div>
+                          <div
+                            className="curation-tooltip-dropdown level-detail__curation-inline-assignee"
+                            role="tooltip"
+                          >
+                            <div className="curation-tooltip-type">{typeLabel}</div>
+                            <div className="curation-tooltip-assigned">assigned by</div>
+                            <div className="curation-tooltip-user">
+                              {assigner?.avatarUrl && (
+                                <img
+                                  className="curation-tooltip-avatar"
+                                  src={selectIconSize(assigner.avatarUrl, 'small')}
+                                  alt={assigner.nickname || 'User'}
+                                />
+                              )}
+                              <span className="curation-tooltip-name">
+                                {assigner?.nickname || 'Unknown'}
+                              </span>
+                              <span className="curation-tooltip-username">
+                                @{assigner?.username || 'unknown'}
+                              </span>
+                            </div>
+                            <div className="curation-tooltip-time">
+                              At {formatDate(curation.createdAt, i18next?.language)}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-                  <CurationTooltip 
-                    curation={res.level.curation}
-                    show={showCurationTooltip}
-                    onClose={() => setShowCurationTooltip(false)}
-                  />
                 </div>
               )}
 
               {/* Expandable Curation Description */}
-              {res?.level?.curation?.type && 
+              {(res?.level?.curation?.types?.length > 0 || res?.level?.curation?.type) &&
                res?.level?.curation?.description && 
                res.level.curation.description.trim() && (
                 <div className={`curation-description-container ${isDescriptionExpanded ? 'expanded' : ''} ${isLongDescription ? 'expandable' : ''}`}>

@@ -7,6 +7,16 @@
   "description": "Attribuer des niveaux de qualité aux niveaux et gérer les programmes de curation",
   "filters": {
     "type": "Type de curation",
+    "types": "Types de curation",
+    "typesHint": "Afficher les niveaux ayant au moins une curation d’un des types sélectionnés. Vide = tous.",
+    "selectedTypes": "Filtrer par types",
+    "addTypes": "Ajouter des types au filtre",
+    "noTypesSelected": "Aucun — tous les types",
+    "searchTypesPlaceholder": "Rechercher un type…",
+    "noTypeResults": "Aucun type correspondant",
+    "noAvailableTypes": "Tous les types sont déjà sélectionnés",
+    "removeType": "Retirer du filtre",
+    "addType": "Ajouter au filtre",
     "allTypes": "Tous les types",
     "search": "Rechercher",
     "searchPlaceholder": "Rechercher par chanson, artiste ou créateur..."
@@ -40,6 +50,7 @@
     "manageTypes": "Gérer les types",
     "manageCurators": "Gérer les conservateurs",
     "manageSchedule": "Gérer le programme",
+    "editLevel": "Modifier les curations du niveau",
     "editCuration": "Modifier la curation",
     "deleteCuration": "Supprimer la curation"
   },

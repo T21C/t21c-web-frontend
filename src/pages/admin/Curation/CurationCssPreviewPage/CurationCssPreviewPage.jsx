@@ -30,18 +30,15 @@ const CurationCssPreviewPage = () => {
   // Check if user can access this curation
   const canAccessCuration = (curation) => {
     if (!curation || !user) return false;
-    
-    // Super admins and head curators can access all curations
+
     if (hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR])) {
       return true;
     }
-    
-    // Check if user can assign this curation type
-    if (curation.type && curation.type.abilities) {
-      return canAssignCurationType(user.permissionFlags, curation.type.abilities);
-    }
-    
-    return false;
+
+    const types = curation.types || (curation.type ? [curation.type] : []);
+    return types.some(
+      (t) => t.abilities && canAssignCurationType(user.permissionFlags, t.abilities)
+    );
   };
 
   // Get the CSS from the location state or URL parameters
@@ -129,17 +126,14 @@ const CurationCssPreviewPage = () => {
       return;
     }
 
-    const typeId = curation.typeId ?? curation.type?.id;
-    if (typeId == null || isNaN(Number(typeId))) {
-      toast.error('Curation type is missing');
-      return;
-    }
+    const types = curation.types || (curation.type ? [curation.type] : []);
+    const typeIds = types.map((t) => t.id).filter((id) => id != null);
 
     try {
       setIsSaving(true);
 
       const payload = {
-        typeId: parseInt(typeId, 10),
+        typeIds,
         shortDescription: curation.shortDescription ?? '',
         description: curation.description ?? '',
         customCSS: customCSS ?? '',
@@ -226,8 +220,9 @@ const CurationCssPreviewPage = () => {
     );
   }
 
-  // Check if curation type has CUSTOM_CSS ability
-  if (!hasBit(curation?.type?.abilities, ABILITIES.CUSTOM_CSS)) {
+  const curationTypesForCss = curation?.types || (curation?.type ? [curation.type] : []);
+  const hasAnyCustomCssType = curationTypesForCss.some((t) => hasBit(t?.abilities, ABILITIES.CUSTOM_CSS));
+  if (!hasAnyCustomCssType) {
     const currentUrl = window.location.origin + location.pathname;
     return (
       <AccessDenied 
@@ -261,14 +256,6 @@ const CurationCssPreviewPage = () => {
         </div>
         
         <div className="css-editor-content">
-          {/* Warning if curation type doesn't have CUSTOM_CSS ability */}
-          {curation?.type && !hasBit(curation.type.abilities, ABILITIES.CUSTOM_CSS) && (
-            <div className="css-editor-warning">
-              <p><strong>⚠️ Warning:</strong> This curation type doesn&apos;t have the &quot;Custom CSS&quot; ability enabled. 
-              Custom CSS will not be applied to the actual level page, but you can still preview it here.</p>
-            </div>
-          )}
-          
           <div className="css-editor-textarea-container">
             <label htmlFor="css-editor">{t('curationCssPreview.editor.cssLabel')}</label>
             <textarea

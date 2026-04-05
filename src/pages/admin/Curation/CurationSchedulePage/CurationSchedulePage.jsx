@@ -137,18 +137,15 @@ const CurationSchedulePage = () => {
   // Check if user can access a specific curation
   const canAccessCuration = (curation) => {
     if (!curation || !user) return false;
-    
-    // Super admins and head curators can access all curations
+
     if (hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR])) {
       return true;
     }
-    
-    // Check if user can assign this curation type
-    if (curation.type && curation.type.abilities) {
-      return canAssignCurationType(user.permissionFlags, curation.type.abilities);
-    }
-    
-    return false;
+
+    const types = curation.types || (curation.type ? [curation.type] : []);
+    return types.some(
+      (t) => t.abilities && canAssignCurationType(user.permissionFlags, t.abilities)
+    );
   };
 
   // Get excluded curation IDs for the popup
@@ -251,9 +248,15 @@ const CurationSchedulePage = () => {
                       <p>{schedule.scheduledCuration?.level?.artist || 'Unknown Artist'}</p>
                       <div 
                         className="curation-schedule-page__hall-type"
-                        style={{ backgroundColor: getTypeBackgroundColor(schedule.scheduledCuration?.type?.color) }}
+                        style={{
+                          backgroundColor: getTypeBackgroundColor(
+                            schedule.scheduledCuration?.types?.[0]?.color ?? schedule.scheduledCuration?.type?.color
+                          ),
+                        }}
                       >
-                        {schedule.scheduledCuration?.type?.name || 'Unknown Type'}
+                        {schedule.scheduledCuration?.types?.length
+                          ? schedule.scheduledCuration.types.map((x) => x.name).join(', ')
+                          : schedule.scheduledCuration?.type?.name || 'Unknown Type'}
                       </div>
                     </div>
                     <div className="curation-schedule-page__hall-actions">
@@ -336,9 +339,15 @@ const CurationSchedulePage = () => {
                       <p>{schedule.scheduledCuration?.level?.artist || 'Unknown Artist'}</p>
                       <div 
                         className="curation-schedule-page__hall-type"
-                        style={{ backgroundColor: getTypeBackgroundColor(schedule.scheduledCuration?.type?.color) }}
+                        style={{
+                          backgroundColor: getTypeBackgroundColor(
+                            schedule.scheduledCuration?.types?.[0]?.color ?? schedule.scheduledCuration?.type?.color
+                          ),
+                        }}
                       >
-                        {schedule.scheduledCuration?.type?.name || 'Unknown Type'}
+                        {schedule.scheduledCuration?.types?.length
+                          ? schedule.scheduledCuration.types.map((x) => x.name).join(', ')
+                          : schedule.scheduledCuration?.type?.name || 'Unknown Type'}
                       </div>
                     </div>
                     <div className="curation-schedule-page__hall-actions">

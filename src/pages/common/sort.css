@@ -119,7 +119,7 @@
   padding: 1.25rem 1.75rem;
   transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   height: fit-content;
-  max-height: 300px;
+  max-height: 500px;
   margin-bottom: 1rem;
 }
 
@@ -199,7 +199,6 @@
     
       .state-switches .state-switches-item {
         flex-direction: column;
-        align-items: flex-start;
         gap: 0.5rem;
         padding: 0.5rem;
       }

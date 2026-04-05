@@ -251,12 +251,30 @@
 
 .level-card .curation-icon {
   filter: drop-shadow(0 0 3px rgba(0, 0, 0, 1));
-  bottom: -11%;
-  right: -11%;
   position: absolute;
   width: 1.5rem;
   height: 1.5rem;
   border-radius: 50%;
+}
+
+.level-card .img-wrapper .curation-icon--1 {
+  bottom: -11%;
+  right: -11%;
+}
+
+.level-card .img-wrapper .curation-icon--2 {
+  bottom: -15%;
+  right: -40%;
+}
+
+.level-card .img-wrapper .curation-icon--3 {
+  bottom: -40%;
+  right: -18%;
+}
+
+.level-card .img-wrapper .curation-icon--4 {
+  bottom: -48%;
+  right: -38%;
 }
 
 .level-card .base-score-wrapper {

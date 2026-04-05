@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import "./levelcard.css"
 import { useTranslation } from "react-i18next";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { EditLevelPopup } from "@/components/popups/Levels";
 import { AddToPackPopup } from "@/components/popups/Packs";
@@ -14,6 +14,7 @@ import { ABILITIES, hasBit } from "@/utils/Abilities";
 import { permissionFlags } from "@/utils/UserPermissions";
 import { hasFlag } from "@/utils/UserPermissions";
 import { getSongDisplayName, getArtistDisplayName } from "@/utils/levelHelpers";
+import { sortCurationsForDisplay, sortCurationTypesForDisplay } from "@/utils/curationTypeUtils";
 
 
 const LevelCard = ({
@@ -53,7 +54,27 @@ const LevelCard = ({
   const [thumbnailUrl, setThumbnailUrl] = useState('');
   const { difficultyDict, curationTypesDict, tagsDict } = useDifficultyContext();
   const difficultyInfo = difficultyDict[level.diffId];
-  const curationTypeInfo = curationTypesDict[level.curation?.typeId];
+  const curationsList = useMemo(() => {
+    const raw = level.curations?.length
+      ? level.curations
+      : level.curation
+        ? [level.curation]
+        : [];
+    return sortCurationsForDisplay(raw, curationTypesDict);
+  }, [level.curations, level.curation, curationTypesDict]);
+  /** Up to 4 curation type icons from the level’s curation (M2M types) */
+  const curationTypeIconSlots = useMemo(() => {
+    const first = curationsList[0];
+    if (!first) return [];
+    const types = first.types || (first.type ? [first.type] : []);
+    return sortCurationTypesForDisplay(types, curationTypesDict)
+      .slice(0, 4)
+      .map((t) => {
+        const info = curationTypesDict[t.id] || t;
+        return { key: t.id, typeId: t.id, icon: info?.icon };
+      })
+      .filter((x) => x.icon);
+  }, [curationsList, curationTypesDict]);
   const navigate = useNavigate();
 
   // Computed values
@@ -95,9 +116,15 @@ const LevelCard = ({
 
   // Determine glow class based on abilities
   const getGlowClass = () => {
-    if (!curationTypeInfo?.abilities) return '';
-    if (hasBit(curationTypeInfo.abilities, ABILITIES.LEVEL_LIST_LEGENDARY_GLOW)) return 'legendary';
-    if (hasBit(curationTypeInfo.abilities, ABILITIES.LEVEL_LIST_BASIC_GLOW)) return 'basic-glow';
+    for (const slot of curationTypeIconSlots) {
+      const info = curationTypesDict[slot.typeId];
+      if (!info?.abilities) continue;
+      if (hasBit(info.abilities, ABILITIES.LEVEL_LIST_LEGENDARY_GLOW)) return 'legendary';
+    }
+    for (const slot of curationTypeIconSlots) {
+      const info = curationTypesDict[slot.typeId];
+      if (hasBit(info.abilities, ABILITIES.LEVEL_LIST_BASIC_GLOW)) return 'basic-glow';
+    }
     return '';
   };
 
@@ -120,13 +147,15 @@ const LevelCard = ({
         />
       )}
       
-      {showCuration && level.curation?.typeId && curationTypeInfo?.icon && (
-        <img 
-          className="curation-icon"
-          src={curationTypeInfo.icon}
-          alt="Curation icon" 
-        />
-      )}
+      {showCuration &&
+        curationTypeIconSlots.map((slot, idx) => (
+            <img
+              key={slot.key ?? `${slot.typeId}-${idx}`}
+              className={`curation-icon curation-icon--${idx + 1}`}
+              src={slot.icon}
+              alt="Curation icon"
+            />
+        ))}
       
       {showBaseScore && customBaseScore && (
         <div className="base-score-wrapper">
@@ -247,7 +276,7 @@ const LevelCard = ({
       <div 
         className="level-tags-wrapper" 
         data-single={single}
-        data-curated={isCurated || !!level.curation?.typeId}
+        data-curated={isCurated || curationsList.length > 0}
         data-itemcount={itemCount || tags.length}
       >
         {tags.map((tag, index) => {
@@ -278,7 +307,7 @@ const LevelCard = ({
 
   const renderTagsSpacer = () => {
     if (!tags || tags.length <= 1) return null;
-    return <div className="tags-spacer" data-itemcount={tags.length} data-curated={!!level.curation?.typeId} />;
+    return <div className="tags-spacer" data-itemcount={tags.length} data-curated={curationsList.length > 0} />;
   };
 
   const renderClearedCheckmark = ({ className = '', noHover = false } = {}) => (
@@ -501,13 +530,14 @@ const LevelCard = ({
             />
           )}
           
-          {level.curation?.typeId && curationTypeInfo?.icon && (
-            <img 
-              className="curation-icon"
-              src={curationTypeInfo.icon}
-              alt="Curation icon" 
-            />
-          )}
+          {curationTypeIconSlots.map((slot, idx) => (
+              <img
+                key={slot.key ?? `${slot.typeId}-${idx}`}
+                className={`curation-icon curation-icon--${idx + 1}`}
+                src={slot.icon}
+                alt="Curation icon"
+              />
+          ))}
           
           {customBaseScore && (
             <div className="base-score-wrapper">

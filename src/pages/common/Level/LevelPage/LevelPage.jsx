@@ -3,7 +3,6 @@ import "./levelpage.css";
 import "@/pages/common/sort.css";
 import "@/pages/common/search-section.css";
 import { useContext, useEffect, useState, useCallback, useRef } from "react";
-
 import { LevelCard } from "@/components/cards";
 import { StateDisplay, CustomSelect } from "@/components/common/selectors";
 import { Tooltip } from "react-tooltip";
@@ -16,7 +15,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { DifficultyContext } from "@/contexts/DifficultyContext";
 import { ReferencesButton, ScrollButton } from "@/components/common/buttons";
 import { MetaTags } from "@/components/common/display";
-import { DifficultySlider, TagSelector } from "@/components/common/selectors";
+import { DifficultySlider, TagSelector, FacetQueryBuilder } from "@/components/common/selectors";
+import { buildFacetQueryParam, facetDomainHasFilter } from "@/utils/facetQueryCodec";
 import { SortAscIcon, SortDescIcon, ResetIcon, SortIcon , FilterIcon, LikeIcon, SwitchIcon, EyeIcon, EyeOffIcon} from "@/components/common/icons";
 import { LevelHelpPopup } from "@/components/popups/Levels";
 import toast from 'react-hot-toast';
@@ -28,6 +28,7 @@ const limit = 50;
 
 const LevelPage = () => {
   const { t } = useTranslation('pages');
+  const { t: tc } = useTranslation('components');
 
   const { user } = useAuth();
   const { difficulties, curationTypes, tags } = useContext(DifficultyContext);
@@ -72,10 +73,8 @@ const LevelPage = () => {
     setQSliderVisible,
     onlyMyLikes,
     setOnlyMyLikes,
-    selectedCurationTypes,
-    setSelectedCurationTypes,
-    selectedTags,
-    setSelectedTags
+    levelFacetFilters,
+    setLevelFacetFilters
   } = useContext(LevelContext);
 
   const [showHelpPopup, setShowHelpPopup] = useState(false);
@@ -84,7 +83,7 @@ const LevelPage = () => {
   const [stateDisplayOpen, setStateDisplayOpen] = useState(false);
   const [searchInput, setSearchInput] = useState(query);
   const [showTagsInCards, setShowTagsInCards] = useState(true);
-  
+
   // Timeout ref for debounced fetch
   const fetchTimeoutRef = useRef(null);
   const cancelTokenRef = useRef(null);
@@ -120,6 +119,7 @@ const LevelPage = () => {
         ].filter(Boolean);
         const uniqueSpecialDiffs = [...new Set(allSpecialDiffs)];
 
+        const facetQuery = buildFacetQueryParam(levelFacetFilters);
         const params = {
           limit,
           offset: resetPage ? 0 : pageNumber * limit,
@@ -131,10 +131,9 @@ const LevelPage = () => {
           specialDifficulties: uniqueSpecialDiffs.length > 0 ? uniqueSpecialDiffs.join(',') : undefined,
           onlyMyLikes: user ? onlyMyLikes : undefined,
           availableDlFilter: availableDlFilter || 'show',
-          curatedTypesFilter: selectedCurationTypes.length > 0 ? selectedCurationTypes.join(',') : undefined,
-          tagsFilter: selectedTags.length > 0 ? selectedTags.join(',') : undefined
+          ...(facetQuery ? { facetQuery } : {}),
         };
-        
+
         const response = await api.get(
           `${import.meta.env.VITE_LEVELS}`,
           {
@@ -206,8 +205,7 @@ const LevelPage = () => {
     selectedHighFilterDiff, 
     sliderQRange, 
     qSliderVisible, 
-    selectedCurationTypes, 
-    selectedTags, 
+    levelFacetFilters,
     selectedSpecialDiffs, 
     onlyMyLikes, 
     user,
@@ -279,26 +277,6 @@ const LevelPage = () => {
       const newSelection = prev.includes(diffName)
         ? prev.filter(d => d !== diffName)
         : [...prev, diffName];
-      
-      return newSelection;
-    });
-  }
-
-  function toggleCurationType(typeName) {
-    setSelectedCurationTypes(prev => {
-      const newSelection = prev.includes(typeName)
-        ? prev.filter(name => name !== typeName)
-        : [...prev, typeName];
-      
-      return newSelection;
-    });
-  }
-
-  function toggleTag(tagName) {
-    setSelectedTags(prev => {
-      const newSelection = prev.includes(tagName)
-        ? prev.filter(name => name !== tagName)
-        : [...prev, tagName];
       
       return newSelection;
     });
@@ -385,8 +363,7 @@ const LevelPage = () => {
     selectedHighFilterDiff,
     sliderQRange, 
     qSliderVisible, 
-    selectedCurationTypes, 
-    selectedTags, 
+    levelFacetFilters,
     selectedSpecialDiffs, 
     onlyMyLikes, 
     user
@@ -454,7 +431,7 @@ const LevelPage = () => {
     setDeletedFilter("hide");
     setClearedFilter("show");
     setAvailableDlFilter("show");
-    setSelectedCurationTypes([]);
+    setLevelFacetFilters({ tags: null, curationTypes: null, combine: 'and' });
     setQSliderVisible(false);
     setPageNumber(0);
     setLevelsData([]);
@@ -614,20 +591,24 @@ const LevelPage = () => {
                 />
                 </div>
                 <div className={`curation-types-wrapper`}>
-                <TagSelector
+                <FacetQueryBuilder
                   items={curationTypes}
-                  selectedItems={selectedCurationTypes}
-                  onToggle={toggleCurationType}
+                  value={levelFacetFilters.curationTypes}
+                  onChange={(v) =>
+                    setLevelFacetFilters((prev) => ({ ...prev, curationTypes: v }))
+                  }
                   enableGrouping={false}
                   title={t('level.settingExp.curationTypes')}
                 />
                 </div>
                 <div className={`tags-selector-group`}>
                   <div className={`tags-wrapper`}>
-                    <TagSelector
+                    <FacetQueryBuilder
                       items={tags}
-                      selectedItems={selectedTags}
-                      onToggle={toggleTag}
+                      value={levelFacetFilters.tags}
+                      onChange={(v) =>
+                        setLevelFacetFilters((prev) => ({ ...prev, tags: v }))
+                      }
                       title={t('level.settingExp.tags')}
                     />
                   </div>
@@ -639,6 +620,27 @@ const LevelPage = () => {
                     {showTagsInCards ? <EyeIcon size="18px" /> : <EyeOffIcon size="18px" />}
                   </button>
                 </div>
+                {facetDomainHasFilter(levelFacetFilters.tags) &&
+                  facetDomainHasFilter(levelFacetFilters.curationTypes) && (
+                    <div className="level-page__facet-combine">
+                      <span className="level-page__facet-combine-label">
+                        {tc('facetQueryBuilder.combineTagsCuration')}
+                      </span>
+                      <select
+                        className="level-page__facet-combine-select"
+                        value={levelFacetFilters.combine}
+                        onChange={(e) =>
+                          setLevelFacetFilters((prev) => ({
+                            ...prev,
+                            combine: e.target.value === 'or' ? 'or' : 'and',
+                          }))
+                        }
+                      >
+                        <option value="and">{tc('facetQueryBuilder.and')}</option>
+                        <option value="or">{tc('facetQueryBuilder.or')}</option>
+                      </select>
+                    </div>
+                  )}
                 <button 
                   className={`q-toggle-button ${qSliderVisible ? 'active' : ''}`}
                   onClick={() => {
@@ -664,7 +666,7 @@ const LevelPage = () => {
               {t('level.settingExp.headerSort')}
             </h2>
             <div className="sort-option">
-            <CustomSelect
+                <CustomSelect
                   value={sortOptions.find(option => sort === option.value)}
                   onChange={(option) => handleSortType(option.value)}
                   options={sortOptions}

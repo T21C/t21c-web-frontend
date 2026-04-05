@@ -4,6 +4,7 @@ import { PlayerInput } from "./PlayerInput/PlayerInput";
 import { ProfileSelector } from "./ProfileSelector/ProfileSelector";
 import CustomSelect from "./Select/Select";
 import TagSelector from "./TagSelector/TagSelector";
+import FacetQueryBuilder from "./TagSelector/FacetQueryBuilder";
 import StateDisplay from "./StateDisplay/StateDisplay";
 import { RatingInput } from "./RatingInput/RatingInput";
 import { RouletteWheel } from "./RouletteWheel/RouletteWheel";
@@ -19,6 +20,7 @@ export {
     ProfileSelector,
     CustomSelect,
     TagSelector,
+    FacetQueryBuilder,
     StateDisplay,
     RatingInput,
     RouletteWheel,

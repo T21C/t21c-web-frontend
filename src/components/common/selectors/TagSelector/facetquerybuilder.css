@@ -1,0 +1,316 @@
+.facet-query-builder {
+  position: relative;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.facet-query-builder__toggle {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  background: var(--color-white-t20);
+  border: none;
+  border-radius: 4px;
+  font-size: 1rem;
+  color: var(--color-white);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.facet-query-builder__toggle:hover {
+  background: var(--color-white-t30);
+}
+
+.facet-query-builder__count {
+  color: var(--color-white-t70);
+  font-size: 0.8rem;
+  margin-left: auto;
+}
+
+.facet-query-builder__chevron {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.facet-query-builder--open .facet-query-builder__chevron {
+  transform: rotate(180deg);
+}
+
+.facet-query-builder__backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+  cursor: pointer;
+}
+
+.facet-query-builder__panel {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  width: min(32rem, 92vw);
+  background: var(--color-black);
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  padding: 1rem;
+  z-index: 1000;
+  max-height: min(70vh, 640px);
+  overflow-y: auto;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.facet-query-builder__toolbar {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.facet-query-builder__mode {
+  flex: 1;
+  padding: 0.4rem 0.6rem;
+  border: 1px solid var(--color-white-t30);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-white-t80);
+  cursor: pointer;
+}
+
+.facet-query-builder__mode.is-active {
+  background: var(--color-white-t20);
+  color: var(--color-white);
+}
+
+.facet-query-builder__search {
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-white-t20);
+  background: var(--color-white-t10);
+  color: var(--color-white);
+  font-size: 0.9rem;
+}
+
+.facet-query-builder__simple {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.facet-query-builder__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.facet-query-builder__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.facet-query-builder__chip--exclude {
+  outline: 1px dashed var(--color-white-t40);
+}
+
+.facet-query-builder__chip-icon {
+  width: 1rem;
+  height: 1rem;
+  object-fit: contain;
+}
+
+.facet-query-builder__grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.facet-query-builder__group-title {
+  margin: 0 0 0.35rem;
+  font-size: 0.85rem;
+  color: var(--color-white-t70);
+}
+
+.facet-query-builder__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.facet-query-builder__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.5rem;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.facet-query-builder__item.is-selected {
+  outline: 2px solid var(--color-white-t80);
+}
+
+.facet-query-builder__item-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.facet-query-builder__advanced {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.facet-query-builder__between--inline {
+  padding: 0.15rem 0;
+}
+
+.facet-query-builder__cond-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--color-white-t12);
+}
+
+.facet-query-builder__cond-row:last-of-type {
+  border-bottom: none;
+}
+
+.facet-query-builder__cond-head {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.facet-query-builder__select {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.facet-query-builder__select--quant,
+.facet-query-builder__select--between {
+  min-width: 5.5rem;
+}
+
+.facet-query-builder__remove-cond {
+  margin-left: auto;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: 1px solid var(--color-white-t25);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-white-t80);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.facet-query-builder__remove-cond:hover {
+  background: var(--color-white-t15);
+}
+
+.facet-query-builder__chips--wrap {
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.facet-query-builder__add-item {
+  padding: 0.3rem 0.55rem;
+  border: 1px dashed var(--color-white-t35);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-white-t85);
+  font-size: 0.82rem;
+  cursor: pointer;
+}
+
+.facet-query-builder__add-item:hover {
+  background: var(--color-white-t10);
+}
+
+.facet-query-builder__add-condition {
+  align-self: flex-start;
+  padding: 0.4rem 0.65rem;
+  border: 1px solid var(--color-white-t25);
+  border-radius: 4px;
+  background: var(--color-white-t08);
+  color: var(--color-white);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.facet-query-builder__add-condition:hover {
+  background: var(--color-white-t15);
+}
+
+.facet-query-builder__row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.facet-query-builder__row-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-white-t80);
+}
+
+.facet-query-builder__between {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.facet-query-builder__between-label {
+  font-size: 0.8rem;
+  color: var(--color-white-t70);
+}
+
+
+.facet-query-builder__add-wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.facet-query-builder__suggest {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  max-height: 6rem;
+  overflow-y: auto;
+}
+
+.facet-query-builder__suggest-item {
+  padding: 0.2rem 0.45rem;
+  font-size: 0.8rem;
+  border: 1px solid var(--color-white-t20);
+  border-radius: 4px;
+  background: var(--color-white-t10);
+  color: var(--color-white);
+  cursor: pointer;
+}
+
+.facet-query-builder__suggest-item:hover {
+  background: var(--color-white-t20);
+}

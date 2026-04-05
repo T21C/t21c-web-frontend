@@ -7,6 +7,16 @@
   "description": "레벨에 품질 등급을 할당하고 큐레이션 프로그램 관리",
   "filters": {
     "type": "큐레이션 유형",
+    "types": "큐레이션 유형",
+    "typesHint": "선택한 유형 중 하나라도 있는 레벨만 표시합니다. 비우면 전체입니다.",
+    "selectedTypes": "유형으로 필터",
+    "addTypes": "필터에 유형 추가",
+    "noTypesSelected": "없음 — 모든 유형",
+    "searchTypesPlaceholder": "유형 검색…",
+    "noTypeResults": "일치하는 유형 없음",
+    "noAvailableTypes": "모든 유형이 이미 선택됨",
+    "removeType": "필터에서 제거",
+    "addType": "필터에 추가",
     "allTypes": "모든 유형",
     "search": "검색",
     "searchPlaceholder": "노래, 아티스트 또는 제작자로 검색..."
@@ -40,6 +50,7 @@
     "manageTypes": "유형 관리",
     "manageCurators": "큐레이터 관리",
     "manageSchedule": "일정 관리",
+    "editLevel": "이 레벨 큐레이션 편집",
     "editCuration": "큐레이션 편집",
     "deleteCuration": "큐레이션 삭제"
   },

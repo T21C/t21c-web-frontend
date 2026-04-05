@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '@/utils/api';
@@ -8,71 +8,103 @@ import ThumbnailUpload from '@/components/common/upload/ThumbnailUpload';
 import { hasAbility, canAssignCurationType } from '@/utils/curationTypeUtils';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatCreatorDisplay } from '@/utils/Utility';
-import { CustomSelect } from '@/components/common/selectors';
+
+function stateFromCuration(curation) {
+  const types = curation?.types || [];
+  return {
+    id: curation?.id,
+    shortDescription: curation?.shortDescription || '',
+    description: curation?.description || '',
+    customCSS: curation?.customCSS || '',
+    customColor: curation?.customColor || '#ffffff',
+    previewLink: curation?.previewLink || null,
+    typeIds: types.map((t) => t.id),
+  };
+}
+
+function emptyFormState() {
+  return {
+    id: undefined,
+    shortDescription: '',
+    description: '',
+    customCSS: '',
+    customColor: '#ffffff',
+    previewLink: null,
+    typeIds: [],
+  };
+}
 
 const CurationEditPopup = ({
   isOpen,
   onClose,
-  curation,
+  levelId,
+  level: levelProp,
   curationTypes,
-  onUpdate
+  onUpdate,
+  onCurationPatched,
 }) => {
   const { t } = useTranslation(['components', 'common']);
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
 
-  const [formData, setFormData] = useState({
-    typeId: '',
-    shortDescription: '',
-    description: '',
-    customCSS: '',
-    customColor: '#ffffff'
-  });
+  const [form, setForm] = useState(emptyFormState);
+  const [level, setLevel] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
   const [mouseDownOutside, setMouseDownOutside] = useState(false);
+  const [previewPending, setPreviewPending] = useState(false);
   const modalRef = useRef(null);
 
-  // Get current curation type and its abilities
-  const currentCurationType = useMemo(() => {
-    if (!curation || !curationTypes) return null;
-    return curationTypes.find(type => type.id.toString() === formData.typeId);
-  }, [curation, curationTypes, formData.typeId]);
-
-  // Check abilities for the current curation type
-  const canUseCustomCSS = useMemo(() => {
-    return currentCurationType && hasAbility(currentCurationType, 1n << 0n); // CUSTOM_CSS
-  }, [currentCurationType]);
-
-  const canUseCustomColor = useMemo(() => {
-    return currentCurationType && hasAbility(currentCurationType, 1n << 14n); // CUSTOM_COLOR_THEME
-  }, [currentCurationType]);
-
-  const requiresDescription = useMemo(() => {
-    return currentCurationType && hasAbility(currentCurationType, 1n << 11n); // FORCE_DESCRIPTION
-  }, [currentCurationType]);
-
-  const isFrontPageEligible = useMemo(() => {
-    return currentCurationType && hasAbility(currentCurationType, 1n << 13n); // FRONT_PAGE_ELIGIBLE
-  }, [currentCurationType]);
-
-  // Get curation types that the current user can assign
   const getAssignableCurationTypes = useMemo(() => {
     if (!curationTypes || !user) return curationTypes || [];
-
-    return curationTypes.filter(type => {
-      return canAssignCurationType(user.permissionFlags, type.abilities);
-    });
+    return curationTypes.filter((type) =>
+      canAssignCurationType(user.permissionFlags, type.abilities)
+    );
   }, [curationTypes, user]);
 
-  // Prepare options for CustomSelect
-  const curationTypeOptions = useMemo(() => [
-    { value: '', label: t('curationEditPopup.form.selectType') },
-    ...getAssignableCurationTypes.map(type => ({
-      value: type.id.toString(),
-      label: type.name
-    }))
-  ], [getAssignableCurationTypes, t]);
+  const selectedTypes = useMemo(() => {
+    const set = new Set(form.typeIds);
+    return (curationTypes || []).filter((t) => set.has(t.id));
+  }, [form.typeIds, curationTypes]);
+
+  const canUseCustomCSS = selectedTypes.some((t) => hasAbility(t, 1n << 0n));
+  const canUseCustomColor = selectedTypes.some((t) => hasAbility(t, 1n << 14n));
+
+  const loadForm = useCallback(async () => {
+    if (!levelId) return;
+    setIsLoading(true);
+    try {
+      const res = await api.get(`${import.meta.env.VITE_CURATIONS}`, {
+        params: { levelId, limit: 200 },
+      });
+      const list = res.data.curations || [];
+      const first = list[0];
+      setForm(first ? stateFromCuration(first) : emptyFormState());
+      if (first?.level) setLevel(first.level);
+      else if (levelProp) setLevel(levelProp);
+    } catch (e) {
+      console.error(e);
+      toast.error(t('curationEditPopup.errors.loadFailed'));
+      setForm(emptyFormState());
+    } finally {
+      setIsLoading(false);
+    }
+  }, [levelId, levelProp, t]);
+
+  useEffect(() => {
+    if (!isOpen || !levelId) return;
+    setLevel(levelProp || null);
+    loadForm();
+  }, [isOpen, levelId, levelProp, loadForm]);
+
+  useEffect(() => {
+    if (location.state?.customCSS !== undefined && previewPending) {
+      setForm((prev) => ({ ...prev, customCSS: location.state.customCSS }));
+      setPreviewPending(false);
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+  }, [location.state, navigate, location.pathname, previewPending]);
 
   const handleMouseDown = (e) => {
     if (modalRef.current && !modalRef.current.contains(e.target)) {
@@ -91,266 +123,256 @@ const CurationEditPopup = ({
     if (isOpen) {
       document.addEventListener('mousedown', handleMouseDown);
       document.addEventListener('mouseup', handleMouseUp);
-      
-      // Initialize form data when curation changes
-      if (curation) {
-        setFormData({
-          typeId: curation.typeId?.toString() || '',
-          shortDescription: curation.shortDescription || '',
-          description: curation.description || '',
-          customCSS: curation.customCSS || '',
-          customColor: curation.customColor || '#ffffff'
-        });
-      }
     }
-
     return () => {
       document.removeEventListener('mousedown', handleMouseDown);
       document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isOpen, mouseDownOutside, curation]);
+  }, [isOpen, mouseDownOutside]);
 
-  // Handle customCSS updates from preview page
-  useEffect(() => {
-    if (location.state?.customCSS !== undefined) {
-      setFormData(prev => ({
-        ...prev,
-        customCSS: location.state.customCSS
-      }));
-      
-      // Clear the state to prevent re-processing
-      navigate(location.pathname, { replace: true, state: {} });
+  const toggleTypeId = (typeId) => {
+    setForm((prev) => {
+      const set = new Set(prev.typeIds);
+      if (set.has(typeId)) set.delete(typeId);
+      else set.add(typeId);
+      return { ...prev, typeIds: [...set] };
+    });
+  };
+
+  const validate = () => {
+    for (const tid of form.typeIds) {
+      const type = curationTypes.find((x) => x.id === tid);
+      if (!type) continue;
+      if (
+        hasAbility(type, 1n << 11n) &&
+        (!form.description || !String(form.description).trim())
+      ) {
+        toast.error(t('curationEditPopup.form.descriptionRequiredType', { name: type.name }));
+        return false;
+      }
     }
-  }, [location.state, navigate, location.pathname]);
-
-  const handleInputChange = (field, value) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }));
+    return true;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    if (!curation) {
-      toast.error('No curation selected for editing');
-      return;
-    }
-
-    // Check if description is required but missing
-    if (requiresDescription && (!formData.description || formData.description.trim() === '')) {
-      toast.error(t('curationEditPopup.form.descriptionRequired'));
-      return;
-    }
+    if (!levelId || !validate()) return;
 
     try {
-      setIsLoading(true);
-      
-      const response = await api.put(`${import.meta.env.VITE_CURATIONS}/${curation.id}`, {
-        typeId: parseInt(formData.typeId),
-        shortDescription: formData.shortDescription,
-        description: formData.description,
-        customCSS: formData.customCSS,
-        customColor: formData.customColor
+      setIsSaving(true);
+      const res = await api.put(`${import.meta.env.VITE_CURATIONS}/level/${levelId}`, {
+        shortDescription: form.shortDescription,
+        description: form.description,
+        customCSS: form.customCSS,
+        customColor: form.customColor,
+        typeIds: form.typeIds,
       });
-
       toast.success(t('curationEditPopup.notifications.updated'));
-      onUpdate(response.data.curation);
+      onUpdate({ levelId, curations: res.data.curations, level: res.data.curations[0]?.level });
       onClose();
     } catch (error) {
-      const errorMessage = error.response?.data?.error || t('curationEditPopup.errors.updateFailed');
-      toast.error(errorMessage);
+      toast.error(
+        error.response?.data?.error || t('curationEditPopup.errors.updateFailed')
+      );
     } finally {
-      setIsLoading(false);
+      setIsSaving(false);
     }
   };
 
-  if (!isOpen || !curation) return null;
+  const displayLevel = level || levelProp;
+
+  if (!isOpen || !levelId) return null;
 
   return (
     <div className="curation-edit-modal">
       <div className="curation-edit-modal__content" ref={modalRef}>
-        <button 
+        <button
+          type="button"
           className="curation-edit-modal__close-button"
           onClick={onClose}
-          type="button"
         >
           ✖
         </button>
 
         <div className="curation-edit-modal__header">
           <h2>{t('curationEditPopup.title')}</h2>
-          <p>{t('curationEditPopup.description')}</p>
+          <p>{t('curationEditPopup.descriptionLevel')}</p>
         </div>
 
         <div className="curation-edit-modal__content-scroll">
-        {/* Level Information Display */}
-        <div className="curation-edit-modal__level-info">
-          <div className="curation-edit-modal__level-card">
-            <div className="curation-edit-modal__level-header">
-              <img 
-                src={curation.level?.difficulty?.icon || '/default-difficulty-icon.png'} 
-                alt={curation.level?.difficulty?.name || 'Difficulty'} 
-                className="curation-edit-modal__difficulty-icon" 
-              />
-              <div className="curation-edit-modal__level-details">
-                <h3>{curation.level?.song || 'Unknown Level'}</h3>
-                <p className="curation-edit-modal__level-artist">{curation.level?.artist || 'Unknown Artist'}</p>
-                <p className="curation-edit-modal__level-creator">{formatCreatorDisplay(curation.level)}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <form onSubmit={handleSubmit} className="curation-edit-modal__form">
-          {/* Curation Type Selection */}
-          <div className="curation-edit-modal__form-group">
-            <CustomSelect
-              label={t('curationEditPopup.form.type')}
-              options={curationTypeOptions}
-              value={curationTypeOptions.find(opt => opt.value === (formData.typeId ? formData.typeId.toString() : ''))}
-              onChange={(selected) => handleInputChange('typeId', selected.value)}
-              width="100%"
-            />
-          </div>
-
-          {/* Short Description */}
-          <div className="curation-edit-modal__form-group">
-            <label htmlFor="short-description">{t('curationEditPopup.form.shortDescription')}</label>
-            <input
-              id="short-description"
-              type="text"
-              value={formData.shortDescription}
-              onChange={(e) => handleInputChange('shortDescription', e.target.value)}
-              placeholder={t('curationEditPopup.form.shortDescriptionPlaceholder')}
-              className="curation-edit-modal__input"
-              maxLength={255}
-            />
-            <p className="curation-edit-modal__help-text">
-              {t('curationEditPopup.form.shortDescriptionHelp')} ({formData.shortDescription.length}/255)
-            </p>
-          </div>
-
-          {/* Description */}
-          <div className="curation-edit-modal__form-group">
-            <label htmlFor="description">
-              {t('curationEditPopup.form.description')}
-              {requiresDescription && <span className="required">*</span>}
-            </label>
-            <textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => handleInputChange('description', e.target.value)}
-              placeholder={requiresDescription ? t('curationEditPopup.form.descriptionRequiredPlaceholder') : t('curationEditPopup.form.descriptionPlaceholder')}
-              className="curation-edit-modal__textarea"
-              rows={3}
-              required={requiresDescription}
-            />
-          </div>
-
-          {/* Custom Color */}
-          {canUseCustomColor && (
-            <div className="curation-edit-modal__form-group">
-              <label htmlFor="custom-color">{t('curationEditPopup.form.customColor')}</label>
-              <div className="curation-edit-modal__color-input">
-                <input
-                  id="custom-color"
-                  type="color"
-                  value={formData.customColor}
-                  onChange={(e) => handleInputChange('customColor', e.target.value)}
-                  className="curation-edit-modal__color-picker"
-                />
-                <input
-                  type="text"
-                  value={formData.customColor}
-                  onChange={(e) => handleInputChange('customColor', e.target.value)}
-                  placeholder="#ffffff"
-                  className="curation-edit-modal__color-text"
-                />
-              </div>
-            </div>
-          )}
-
-          {/* Custom CSS */}
-          {canUseCustomCSS ? (
-            <div className="curation-edit-modal__form-group">
-              <label htmlFor="custom-css">{t('curationEditPopup.form.customCSS')}</label>
-              <textarea
-                id="custom-css"
-                value={formData.customCSS}
-                onChange={(e) => handleInputChange('customCSS', e.target.value)}
-                placeholder={t('curationEditPopup.form.customCSSPlaceholder')}
-                className="curation-edit-modal__css-textarea"
-                rows={8}
-              />
-              <p className="curation-edit-modal__help-text">{t('curationEditPopup.form.customCSSHelp')}</p>
-              
-              {/* Preview Button */}
-              <button
-                type="button"
-                className="curation-edit-modal__preview-button"
-                onClick={() => {
-                  // Navigate to the preview page with the current CSS
-                  navigate(`/admin/curations/preview/${curation.levelId}`, {
-                    state: { customCSS: formData.customCSS }
-                  });
-                }}
-                disabled={!curation?.levelId}
-              >
-                {t('curationEditPopup.form.previewCSS')}
-              </button>
-            </div>
-          ) : (
-            // Show warning if custom CSS is entered but type doesn't support it
-            formData.customCSS && formData.customCSS.trim() && (
-              <div className="curation-edit-modal__form-group">
-                <div className="curation-edit-modal__warning">
-                  <p><strong>⚠️ Warning:</strong> The selected curation type doesn&apos;t support custom CSS. 
-                  Your CSS will not be applied to the level page.</p>
+          {displayLevel && (
+            <div className="curation-edit-modal__level-info">
+              <div className="curation-edit-modal__level-card">
+                <div className="curation-edit-modal__level-header">
+                  <img
+                    src={displayLevel.difficulty?.icon || '/default-difficulty-icon.png'}
+                    alt=""
+                    className="curation-edit-modal__difficulty-icon"
+                  />
+                  <div className="curation-edit-modal__level-details">
+                    <h3>{displayLevel.song || 'Unknown Level'}</h3>
+                    <p className="curation-edit-modal__level-artist">
+                      {displayLevel.artist || 'Unknown Artist'}
+                    </p>
+                    <p className="curation-edit-modal__level-creator">
+                      {formatCreatorDisplay(displayLevel)}
+                    </p>
+                    <p className="curation-edit-modal__level-id">#{levelId}</p>
+                  </div>
                 </div>
               </div>
-            )
+            </div>
           )}
 
-          {/* Thumbnail Upload */}
-          <div className="curation-edit-modal__form-group">
-            <label>{t('curationEditPopup.form.thumbnail')}</label>
-            <ThumbnailUpload
-              currentThumbnail={curation.previewLink}
-              onThumbnailUpdate={(thumbnailUrl) => {
-                // Refresh curation data after thumbnail update
-                const updatedCuration = { ...curation, previewLink: thumbnailUrl };
-                onUpdate(updatedCuration);
-              }}
-              onThumbnailRemove={() => {
-                // Refresh curation data after thumbnail removal
-                const updatedCuration = { ...curation, previewLink: null };
-                onUpdate(updatedCuration);
-              }}
-              uploadEndpoint={`${import.meta.env.VITE_CURATIONS}/${curation.id}/thumbnail`}
-            />
-          </div>
+          {isLoading ? (
+            <div className="curation-edit-modal__loading-inline">
+              {t('loading.generic', { ns: 'common' })}
+            </div>
+          ) : (
+            <form onSubmit={handleSubmit} className="curation-edit-modal__form">
+              <div className="curation-edit-modal__form-group curation-edit-modal__types-tags">
+                <span className="curation-edit-modal__label">{t('curationEditPopup.form.types')}</span>
+                <div className="curation-edit-modal__type-chips">
+                  {getAssignableCurationTypes.map((type) => {
+                    const checked = form.typeIds.includes(type.id);
+                    return (
+                      <label key={type.id} className="curation-edit-modal__type-chip">
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={() => toggleTypeId(type.id)}
+                        />
+                        <span style={{ color: type.color }}>{type.name}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
 
-          {/* Form Actions */}
-          <div className="curation-edit-modal__actions">
-            <button
-              type="button"
-              onClick={onClose}
-              className="curation-edit-modal__cancel-btn"
-              disabled={isLoading}
-            >
-              {t('buttons.cancel', { ns: 'common' })}
-            </button>
-            <button
-              type="submit"
-              className="curation-edit-modal__save-btn"
-              disabled={isLoading || !formData.typeId}
-            >
-              {isLoading ? t('loading.saving', { ns: 'common' }) : t('buttons.save', { ns: 'common' })}
-            </button>
-          </div>
-        </form>
+              <div className="curation-edit-modal__form-group">
+                <label htmlFor="curation-short">{t('curationEditPopup.form.shortDescription')}</label>
+                <input
+                  id="curation-short"
+                  type="text"
+                  value={form.shortDescription}
+                  onChange={(e) => setForm((p) => ({ ...p, shortDescription: e.target.value }))}
+                  className="curation-edit-modal__input"
+                  maxLength={255}
+                />
+              </div>
+
+              <div className="curation-edit-modal__form-group">
+                <label htmlFor="curation-desc">
+                  {t('curationEditPopup.form.description')}
+                  {selectedTypes.some((t) => hasAbility(t, 1n << 11n)) && (
+                    <span className="required">*</span>
+                  )}
+                </label>
+                <textarea
+                  id="curation-desc"
+                  value={form.description}
+                  onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
+                  className="curation-edit-modal__textarea"
+                  rows={3}
+                />
+              </div>
+
+              {canUseCustomColor && (
+                <div className="curation-edit-modal__form-group">
+                  <label htmlFor="curation-color">{t('curationEditPopup.form.customColor')}</label>
+                  <div className="curation-edit-modal__color-input">
+                    <input
+                      id="curation-color"
+                      type="color"
+                      value={form.customColor}
+                      onChange={(e) => setForm((p) => ({ ...p, customColor: e.target.value }))}
+                      className="curation-edit-modal__color-picker"
+                    />
+                    <input
+                      type="text"
+                      value={form.customColor}
+                      onChange={(e) => setForm((p) => ({ ...p, customColor: e.target.value }))}
+                      className="curation-edit-modal__color-text"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {canUseCustomCSS ? (
+                <div className="curation-edit-modal__form-group">
+                  <label htmlFor="curation-css">{t('curationEditPopup.form.customCSS')}</label>
+                  <textarea
+                    id="curation-css"
+                    value={form.customCSS}
+                    onChange={(e) => setForm((p) => ({ ...p, customCSS: e.target.value }))}
+                    className="curation-edit-modal__css-textarea"
+                    rows={6}
+                  />
+                  <button
+                    type="button"
+                    className="curation-edit-modal__preview-button"
+                    onClick={() => {
+                      setPreviewPending(true);
+                      navigate(`/admin/curations/preview/${levelId}`, {
+                        state: { customCSS: form.customCSS },
+                      });
+                    }}
+                  >
+                    {t('curationEditPopup.form.previewCSS')}
+                  </button>
+                </div>
+              ) : (
+                form.customCSS &&
+                String(form.customCSS).trim() && (
+                  <div className="curation-edit-modal__form-group">
+                    <div className="curation-edit-modal__warning">
+                      <p>
+                        <strong>⚠️</strong> {t('curationEditPopup.warnings.cssUnsupported')}
+                      </p>
+                    </div>
+                  </div>
+                )
+              )}
+
+              {form.id != null && (
+                <div className="curation-edit-modal__form-group">
+                  <label>{t('curationEditPopup.form.thumbnail')}</label>
+                  <ThumbnailUpload
+                    currentThumbnail={form.previewLink}
+                    onThumbnailUpdate={(url) => {
+                      setForm((p) => ({ ...p, previewLink: url }));
+                      if (onCurationPatched) onCurationPatched({ id: form.id, previewLink: url, levelId });
+                    }}
+                    onThumbnailRemove={() => {
+                      setForm((p) => ({ ...p, previewLink: null }));
+                      if (onCurationPatched) onCurationPatched({ id: form.id, previewLink: null, levelId });
+                    }}
+                    uploadEndpoint={`${import.meta.env.VITE_CURATIONS}/${form.id}/thumbnail`}
+                  />
+                </div>
+              )}
+
+              <div className="curation-edit-modal__actions">
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="curation-edit-modal__cancel-btn"
+                  disabled={isSaving}
+                >
+                  {t('buttons.cancel', { ns: 'common' })}
+                </button>
+                <button
+                  type="submit"
+                  className="curation-edit-modal__save-btn"
+                  disabled={isSaving}
+                >
+                  {isSaving
+                    ? t('loading.saving', { ns: 'common' })
+                    : t('curationEditPopup.actions.saveAll')}
+                </button>
+              </div>
+            </form>
+          )}
         </div>
       </div>
     </div>

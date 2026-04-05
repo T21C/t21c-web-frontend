@@ -26,11 +26,24 @@
     "updated": "Curation type updated successfully",
     "deleted": "Curation type deleted successfully",
     "reordered": "Curation types reordered successfully",
-    "reorderFailed": "Failed to reorder curation types"
+    "reorderFailed": "Failed to reorder curation types",
+    "groupsReordered": "Curation type groups reordered successfully",
+    "groupReorderFailed": "Failed to reorder curation type groups"
+  },
+  "tabs": {
+    "types": "Types",
+    "groups": "Groups"
+  },
+  "groups": {
+    "ungrouped": "Ungrouped",
+    "empty": "No groups yet",
+    "typeCount": "{{count}} type(s)"
   },
   "form": {
     "name": "Type Name",
     "namePlaceholder": "Enter curation type name",
+    "group": "Group",
+    "groupPlaceholder": "Optional — same label groups types together",
     "color": "Color",
     "icon": "Icon",
     "iconHelp": "Upload an icon for this curation type (JPEG, PNG, WebP, SVG, max 1MB)",
