@@ -597,7 +597,6 @@ const LevelPage = () => {
                   onChange={(v) =>
                     setLevelFacetFilters((prev) => ({ ...prev, curationTypes: v }))
                   }
-                  enableGrouping={false}
                   title={t('level.settingExp.curationTypes')}
                 />
                 </div>
@@ -620,27 +619,6 @@ const LevelPage = () => {
                     {showTagsInCards ? <EyeIcon size="18px" /> : <EyeOffIcon size="18px" />}
                   </button>
                 </div>
-                {facetDomainHasFilter(levelFacetFilters.tags) &&
-                  facetDomainHasFilter(levelFacetFilters.curationTypes) && (
-                    <div className="level-page__facet-combine">
-                      <span className="level-page__facet-combine-label">
-                        {tc('facetQueryBuilder.combineTagsCuration')}
-                      </span>
-                      <select
-                        className="level-page__facet-combine-select"
-                        value={levelFacetFilters.combine}
-                        onChange={(e) =>
-                          setLevelFacetFilters((prev) => ({
-                            ...prev,
-                            combine: e.target.value === 'or' ? 'or' : 'and',
-                          }))
-                        }
-                      >
-                        <option value="and">{tc('facetQueryBuilder.and')}</option>
-                        <option value="or">{tc('facetQueryBuilder.or')}</option>
-                      </select>
-                    </div>
-                  )}
                 <button 
                   className={`q-toggle-button ${qSliderVisible ? 'active' : ''}`}
                   onClick={() => {

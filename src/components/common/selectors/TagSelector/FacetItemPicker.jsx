@@ -10,6 +10,7 @@ import './facetitempicker.css';
 const FacetItemPicker = ({
   isOpen,
   onClose,
+  overlayRef,
   items,
   excludeIds = new Set(),
   onPick,
@@ -61,18 +62,41 @@ const FacetItemPicker = ({
 
   const root = getPortalRoot();
 
+  const setOverlayNode = (el) => {
+    if (overlayRef) {
+      if (typeof overlayRef === 'function') overlayRef(el);
+      else overlayRef.current = el;
+    }
+  };
+
   return createPortal(
-    <div className="facet-item-picker" role="dialog" aria-modal="true">
+    <div ref={setOverlayNode} className="facet-item-picker" role="dialog" aria-modal="true">
       <button
         type="button"
         className="facet-item-picker__backdrop"
         aria-label="Close"
-        onClick={onClose}
+        onMouseDown={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
       />
-      <div className="facet-item-picker__dialog" ref={panelRef}>
+      <div
+        className="facet-item-picker__dialog"
+        ref={panelRef}
+        onMouseDown={(e) => e.stopPropagation()}
+      >
         <div className="facet-item-picker__header">
           <h3 className="facet-item-picker__title">{title}</h3>
-          <button type="button" className="facet-item-picker__close" onClick={onClose}>
+          <button
+            type="button"
+            className="facet-item-picker__close"
+            onMouseDown={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+          >
             ×
           </button>
         </div>

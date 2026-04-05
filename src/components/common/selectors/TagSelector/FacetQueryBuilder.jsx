@@ -1,11 +1,24 @@
-import React, { useMemo, useState, useRef, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import React, { useMemo, useState, useRef, useEffect, useId, useCallback } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
+import { Tooltip } from 'react-tooltip';
 import { CustomSelect } from '@/components/common/selectors';
 import FacetItemPicker from './FacetItemPicker';
 import './facetquerybuilder.css';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 
-// todo: add warning when switching off advanced mode with double click confirm 
+/** True if switching this advanced domain to simple mode would drop non-trivial structure. */
+function advancedSwitchToSimpleIsLossy(adv) {
+  if (!adv || adv.mode !== 'advanced') return false;
+  if ((adv.excludeIds || []).length > 0) return true;
+  const groups = adv.groups || [];
+  if (groups.length > 1) return true;
+  if (groups.length === 1) {
+    const g = groups[0];
+    const q = g.quantifier === 'all' ? 'all' : 'any';
+    if (q === 'all' && (g.ids || []).length > 1) return true;
+  }
+  return false;
+}
 
 function emptyAdvanced() {
   return {
@@ -57,11 +70,14 @@ function removeGroupAt(groups, betweenPairs, i) {
  */
 const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = true }) => {
   const { t } = useTranslation('components');
+  const simpleConfirmTooltipId = `facet-qb-simple-${useId().replace(/:/g, '')}`;
   const [isOpen, setIsOpen] = useState(false);
   const [addSearch, setAddSearch] = useState('');
   const [picker, setPicker] = useState(null);
-  const dropdownRef = useRef(null);
-  useBodyScrollLock(isOpen);
+  const [simpleSwitchArmed, setSimpleSwitchArmed] = useState(false);
+  const builderRootRef = useRef(null);
+  const pickerOverlayRef = useRef(null);
+  useBodyScrollLock(isOpen || Boolean(picker));
 
   const uiMode = value?.mode === 'advanced' ? 'advanced' : 'simple';
 
@@ -78,20 +94,54 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
   }, [uiMode]);
 
   useEffect(() => {
-    const handleOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        setIsOpen(false);
-      }
+    if (uiMode === 'simple') setSimpleSwitchArmed(false);
+  }, [uiMode]);
+
+  useEffect(() => {
+    if (!isOpen) setSimpleSwitchArmed(false);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!simpleSwitchArmed) return undefined;
+    const id = setTimeout(() => setSimpleSwitchArmed(false), 5000);
+    return () => clearTimeout(id);
+  }, [simpleSwitchArmed]);
+
+  useEffect(() => {
+    if (!isOpen && !picker) return undefined;
+
+    const isInsideReactSelectMenu = (target) => {
+      if (!target || typeof target.closest !== 'function') return false;
+      return Boolean(
+        target.closest('.custom-select-menu') ||
+          target.closest('.custom-select__menu') ||
+          target.closest('[class*="custom-select__menu-portal"]')
+      );
     };
-    if (isOpen) {
-      document.addEventListener('mousedown', handleOutside);
-      document.addEventListener('touchstart', handleOutside);
-    }
+
+    const handleOutside = (event) => {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+
+      if (pickerOverlayRef.current?.contains(target)) return;
+      if (isInsideReactSelectMenu(target)) return;
+      if (builderRootRef.current?.contains(target)) return;
+
+      if (picker) {
+        setPicker(null);
+        return;
+      }
+
+      setIsOpen(false);
+    };
+
+    document.addEventListener('mousedown', handleOutside);
+    document.addEventListener('touchstart', handleOutside);
     return () => {
       document.removeEventListener('mousedown', handleOutside);
       document.removeEventListener('touchstart', handleOutside);
     };
-  }, [isOpen]);
+  }, [isOpen, picker]);
 
   const ensureSimple = () => {
     if (!value || value.mode !== 'simple') return { mode: 'simple', op: 'or', ids: [] };
@@ -106,6 +156,7 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
 
   const switchToAdvanced = () => {
     if (value?.mode === 'advanced') return;
+    setSimpleSwitchArmed(false);
     const ids = value?.mode === 'simple' ? value.ids || [] : [];
     onChange(
       padBetweenPairs({
@@ -124,7 +175,30 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
     (value.groups || []).forEach((g) => (g.ids || []).forEach((id) => all.add(id)));
     const ids = [...all];
     onChange(ids.length ? { mode: 'simple', op: 'or', ids } : null);
+    setSimpleSwitchArmed(false);
   };
+
+  const handleClickSimpleMode = () => {
+    if (!value || value.mode !== 'advanced') return;
+    const lossy = advancedSwitchToSimpleIsLossy(value);
+    if (!lossy) {
+      switchToSimple();
+      return;
+    }
+    if (simpleSwitchArmed) {
+      switchToSimple();
+      return;
+    }
+    setSimpleSwitchArmed(true);
+  };
+
+  const resetSimpleSwitchArmedUnlessSimpleButton = useCallback((e) => {
+    if (!simpleSwitchArmed) return;
+    const t = e.target;
+    if (!(t instanceof Element)) return;
+    if (t.closest('[data-facet-qb-simple-mode]')) return;
+    setSimpleSwitchArmed(false);
+  }, [simpleSwitchArmed]);
 
   const updateAdvanced = (patch) => {
     const base = value?.mode === 'advanced' ? { ...value, ...patch } : { ...emptyAdvanced(), ...patch };
@@ -248,7 +322,10 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
   if (!items) return null;
 
   return (
-    <div className={`facet-query-builder ${isOpen ? 'facet-query-builder--open' : ''}`}>
+    <div
+      ref={builderRootRef}
+      className={`facet-query-builder ${isOpen ? 'facet-query-builder--open' : ''}`}
+    >
       <button
         type="button"
         className="facet-query-builder__toggle"
@@ -265,16 +342,45 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
 
       {isOpen && (
         <>
-          <div className="facet-query-builder__backdrop" onClick={() => setIsOpen(false)} aria-hidden />
-          <div className="facet-query-builder__panel" ref={dropdownRef}>
+          <div
+            className="facet-query-builder__backdrop"
+            onMouseDown={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsOpen(false);
+            }}
+            aria-hidden
+          />
+          <div
+            className="facet-query-builder__panel"
+            onMouseDown={resetSimpleSwitchArmedUnlessSimpleButton}
+          >
             <div className="facet-query-builder__toolbar">
               <button
                 type="button"
-                className={`facet-query-builder__mode ${uiMode === 'simple' ? 'is-active' : ''}`}
-                onClick={() => switchToSimple()}
+                className={`facet-query-builder__mode ${uiMode === 'simple' ? 'is-active' : ''} ${
+                  simpleSwitchArmed ? 'facet-query-builder__mode--simple-warn' : ''
+                }`}
+                data-facet-qb-simple-mode
+                data-tooltip-id={simpleConfirmTooltipId}
+                onClick={handleClickSimpleMode}
               >
                 {t('facetQueryBuilder.simple')}
               </button>
+              <Tooltip
+                id={simpleConfirmTooltipId}
+                isOpen={simpleSwitchArmed}
+                imperativeModeOnly
+                place="bottom"
+                noArrow
+                className="facet-query-builder__simple-confirm-tooltip"
+              >
+              <Trans
+                ns="components"
+                i18nKey="facetQueryBuilder.switchSimpleWillLoseSettings"
+                components={{ b: <b />, br: <br /> }}
+              />
+              </Tooltip>
               <button
                 type="button"
                 className={`facet-query-builder__mode ${uiMode === 'advanced' ? 'is-active' : ''}`}
@@ -347,9 +453,9 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
                   <div key={gi}>
                     {gi > 0 && (
                       <div className="facet-query-builder__between facet-query-builder__between--inline">
-                        <label className="facet-query-builder__between-label">
+                        <span className="facet-query-builder__between-label">
                           {t('facetQueryBuilder.betweenGroups')}
-                        </label>
+                        </span>
                         <div className="facet-query-builder__select facet-query-builder__select--between">
                           <CustomSelect
                             width="6rem"
@@ -465,6 +571,7 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
 
       <FacetItemPicker
         isOpen={Boolean(picker)}
+        overlayRef={pickerOverlayRef}
         onClose={() => setPicker(null)}
         items={filteredItems}
         excludeIds={

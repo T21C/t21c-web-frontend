@@ -87,6 +87,23 @@
   color: var(--color-white);
 }
 
+.facet-query-builder .facet-query-builder__mode--simple-warn {
+  border-color: rgba(220, 80, 80, 0.95);
+  color: #ffc9c9;
+  background: rgba(100, 28, 28, 0.45);
+  box-shadow: 0 0 0 1px rgba(220, 80, 80, 0.45);
+  transition-timing-function: cubic-bezier(0.64, 0.57, 0.67, 1.53);
+  transition-duration: 0.2s;
+  animation: horizontal-shake 0.2s forwards;
+}
+
+.facet-query-builder .facet-query-builder__simple-confirm-tooltip {
+  max-width: min(22rem, 92vw);
+  z-index: 10050;
+  line-height: 1.35;
+  font-size: 0.88rem;
+}
+
 .facet-query-builder__search {
   width: 100%;
   padding: 0.5rem 0.65rem;
