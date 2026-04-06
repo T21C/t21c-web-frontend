@@ -93,7 +93,6 @@
 }
 .level-card .img-wrapper {
   width: 3rem;
-  height: 3rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -185,9 +184,8 @@
   cursor: pointer;
   justify-content: flex-end;
   flex-shrink: 0;
-  min-width: 0;
 }
-.level-card .downloads-wrapper a {
+.level-card .downloads-wrapper > * {
   display: block;
   height: 2.5rem;
   width: 2.5rem;
@@ -286,7 +284,8 @@
 
 @media (max-width: 795px) {
   .level-card .downloads-wrapper {
-    min-width: 200px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
   }
   
   .level-card .song-wrapper {
@@ -295,6 +294,9 @@
   
   .level-card .level-card-wrapper {
     gap: 0.75rem;
+  }
+  .level-card .img-wrapper {
+    margin-right: 1rem;
   }
 }
 
@@ -334,7 +336,12 @@
   
   .level-card .downloads-wrapper {
     min-width: auto;
+    display: flex;
     flex-shrink: 0;
+  }
+
+  .level-card .img-wrapper {
+    margin-right: 0;
   }
 }
 @media (max-width: 545px) {
@@ -354,7 +361,7 @@
   
   .level-card .level-card-wrapper {
     gap: 0.5rem;
-    padding: 0.8rem 0.25rem;
+    padding: 0.8rem 0.25rem 0.8rem 0.5rem;
   }
   
   .level-card .level-card-wrapper .stats-line {
@@ -383,9 +390,15 @@
     width: 120px;
   }
   .level-card .img-wrapper {
-    width: 2rem;
+    width: 2.75rem;
+    margin: 0 0.5rem;
   }
-  .level-card .downloads-wrapper a {
+  .level-card .curation-icon {
+    width: 1.15rem;
+    height: 1.15rem;
+    --radius: 1.45rem;
+  }
+  .level-card .downloads-wrapper > *{
     height: 2rem;
     width: 2rem;
   }
@@ -397,13 +410,16 @@
   }
   
   .level-card .level-card-wrapper {
-    gap: 0.4rem;
+    gap: 0.5rem;
     padding: 0.6rem 0.2rem;
     min-height: 3.5rem;
   }
+  .level-card .img-wrapper {
+    margin: 0 0.5rem;
+  }
   
   .level-card .level-card-wrapper .stats-line {
-    padding-left: 3rem;
+    padding-left: 0;
   }
   
   .level-card .downloads-wrapper {
@@ -412,7 +428,7 @@
 }
 @media (max-width: 380px) {
   .level-card .level-exp {
-    font-size: 0.6rem;
+    font-size: 0.7rem;
   }
   .level-card .level-desc {
     font-size: 0.9rem;
@@ -428,14 +444,14 @@
     width: 110px;
   }
   .level-card .img-wrapper {
-    width: 1.5rem;
+    width: 2.5rem;
   }
   .level-card .song-wrapper {
     padding-right: 0;
     width: auto;
     flex: 1;
   }
-  .level-card .downloads-wrapper a {
+  .level-card .downloads-wrapper > * {
     height: 2rem;
     width: 2rem;
   }
@@ -446,10 +462,6 @@
     min-height: 3rem;
   }
   
-  .level-card .level-card-wrapper .stats-line {
-    padding-left: 2.5rem;
-  }
-  
   .level-card .downloads-wrapper {
     gap: 0.25rem;
   }
@@ -457,13 +469,7 @@
 
 @media (max-width: 320px) {
   .level-card .level-exp {
-    font-size: 0.5rem;
-  }
-  .level-card .level-desc {
-    font-size: 0.8rem;
-  }
-  .level-card .level-id {
-    font-size: 0.4rem;
+    font-size: 0.7rem;
   }
   .level-card .downloads-wrapper {
     min-width: 50px;
@@ -473,26 +479,18 @@
     width: 90px;
   }
   .level-card .img-wrapper {
-    width: 1.25rem;
+    width: 2.5rem;
   }
   .level-card .song-wrapper {
     padding-right: 0;
     width: auto;
     flex: 1;
   }
-  .level-card .downloads-wrapper a {
-    height: 1.75rem;
-    width: 1.75rem;
-  }
   
   .level-card .level-card-wrapper {
     gap: 0.2rem;
     padding: 0.5rem 0.1rem;
     min-height: 2.5rem;
-  }
-  
-  .level-card .level-card-wrapper .stats-line {
-    padding-left: 2rem;
   }
   
   .level-card .downloads-wrapper {
