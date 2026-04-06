@@ -3632,12 +3632,6 @@
   pointer-events: auto;
 }
 
-.level-detail .level-detail__curation-icon-cell {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: default;
-}
 
 .level-detail .level-detail__curation-type-icon-img {
   width: 2.5rem;

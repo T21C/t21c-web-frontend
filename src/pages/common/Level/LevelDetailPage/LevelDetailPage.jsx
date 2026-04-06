@@ -1932,7 +1932,6 @@ const LevelDetailPage = ({ mockData = null }) => {
                         curation.types || (curation.type ? [curation.type] : []),
                         curationTypesDict
                       );
-                      const primaryType = typesSorted[0];
                       const typeLabel =
                         typesSorted.map((t) => t.name).join(', ') || 'Curation';
                       const assigner = curation.assignedByUser;
@@ -1945,17 +1944,13 @@ const LevelDetailPage = ({ mockData = null }) => {
                             className="level-detail__curation-icon-cell"
                             title={typeLabel}
                           >
-                            {primaryType?.icon ? (
-                              <img
-                                src={primaryType.icon}
-                                alt={primaryType.name || ''}
-                                className="level-detail__curation-type-icon-img"
-                              />
-                            ) : (
-                              <span className="level-detail__curation-icon-placeholder">
-                                {typeLabel.charAt(0).toUpperCase()}
-                              </span>
-                            )}
+                          {typesSorted.map((t) => (
+                            <img
+                              src={t.icon}
+                              alt={t.name || ''}
+                              className="level-detail__curation-type-icon-img"
+                            />
+                          ))}
                           </div>
                           <div
                             className="curation-tooltip-dropdown level-detail__curation-inline-assignee"
