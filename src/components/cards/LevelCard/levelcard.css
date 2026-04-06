@@ -98,6 +98,7 @@
   align-items: center;
   justify-content: center;
   position: relative;
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 1));
 }
 .level-card .img-wrapper .difficulty-icon {
   -o-object-fit: contain;
@@ -166,6 +167,9 @@
   padding-right: 50px;
   min-width: 0;
   flex-shrink: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 .level-card .song-wrapper .group {
   width: 100%;
@@ -250,31 +254,22 @@
 }
 
 .level-card .curation-icon {
-  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 1));
   position: absolute;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: 1.25rem;
+  height: 1.25rem;
   border-radius: 50%;
-}
-
-.level-card .img-wrapper .curation-icon--1 {
-  bottom: -11%;
-  right: -11%;
-}
-
-.level-card .img-wrapper .curation-icon--2 {
-  bottom: -15%;
-  right: -40%;
-}
-
-.level-card .img-wrapper .curation-icon--3 {
-  bottom: -40%;
-  right: -18%;
-}
-
-.level-card .img-wrapper .curation-icon--4 {
-  bottom: -48%;
-  right: -38%;
+  /* Fan radiates from the shared corner; 0° = right, 90° = down (clockwise). */
+  transform-origin: bottom right;
+  --arc-center: 45deg;
+  --rotation-offset: 25deg;
+  --radius: 1.65rem;
+  --curation-count: 1;
+  --theta: calc(
+    var(--arc-center)
+    + var(--idx) * var(--rotation-offset)
+    - (var(--curation-count) - 1) * var(--rotation-offset) / 2
+  );
+  transform: rotate(var(--theta)) translate(var(--radius)) rotate(calc(-1 * var(--theta)));
 }
 
 .level-card .base-score-wrapper {
@@ -1354,41 +1349,15 @@
 }
 
 
-/* Level tags wrapper (normal/compact modes) */
-.level-tags-wrapper {
+/* Level tags under song title (normal/compact list modes) */
+.level-card .song-wrapper .level-tags-wrapper {
   display: flex;
-  margin-top: 0.3rem;
-  position: absolute;
-  gap: 0.1rem;
-}
-
-.level-tags-wrapper[data-single="true"] {
-  position: absolute;
-  bottom: -11%;
-  width: fit-content;
-  left: -11%;
-  margin-bottom: 0;
-}
-
-.tags-spacer {
-  height: 1rem;
-}
-
-.tags-spacer[data-curated="true"] {
-  height: 1rem;
-}
-
-.tags-spacer[data-itemcount="2"] {
-  height: 0.8rem;
-}
-
-
-.level-tags-wrapper[data-curated="true"] {
-  margin-top: 0.5rem;
-}
-
-.level-tags-wrapper[data-curated="true"][data-itemcount="2"] {
   margin-top: 0.2rem;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem;
+  min-width: 0;
+  width: 100%;
 }
 
 /* Level tag badge - grid mode */
@@ -1408,13 +1377,8 @@
   filter: drop-shadow(0 0 3px rgba(0, 0, 0, 1));
 }
 
-.level-tags-wrapper[data-single="true"] .level-tag-badge {
-  width: 1.1rem;
-  height: 1.1rem;
-}
-
-/* Level tag badge - normal/compact modes */
-.level-tags-wrapper .level-tag-badge {
+/* Level tag badge - normal/compact list modes (under song) */
+.level-card .song-wrapper .level-tags-wrapper .level-tag-badge {
   padding: 0;
   border-radius: 50%;
   aspect-ratio: 1/1;

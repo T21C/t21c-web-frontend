@@ -132,7 +132,7 @@ const LevelCard = ({
   // REUSABLE RENDER FUNCTIONS
   // ============================================
 
-  const renderDifficultyIcon = ({ showRating = true, showCuration = true, showBaseScore = true, showTags: showTagsInIcon = false } = {}) => (
+  const renderDifficultyIcon = ({ showRating = true, showCuration = true, showBaseScore = true } = {}) => (
     <div className="img-wrapper">
       <img src={difficultyDict[difficultyInfo?.id]?.icon} alt={difficultyInfo?.name || 'Difficulty icon'} className="difficulty-icon" />
       
@@ -152,6 +152,7 @@ const LevelCard = ({
             <img
               key={slot.key ?? `${slot.typeId}-${idx}`}
               className={`curation-icon curation-icon--${idx + 1}`}
+              style={{ '--idx': idx, '--curation-count': curationTypeIconSlots.length }}
               src={slot.icon}
               alt="Curation icon"
             />
@@ -162,8 +163,6 @@ const LevelCard = ({
           <p className="base-score-value">{customBaseScore} PP</p>
         </div>
       )}
-      
-      {showTagsInIcon && tags && tags.length > 0 && renderTagsWrapper()}
     </div>
   );
 
@@ -179,10 +178,10 @@ const LevelCard = ({
             {artistName}
           </p>
         </div>
-        <p 
-        className="level-desc">
+        <p className="level-desc">
           {songName} 
         </p>
+        {tags && tags.length > 0 && renderTagsWrapper()}
       </div>
     );
   };
@@ -267,47 +266,31 @@ const LevelCard = ({
     )
   );
 
-  const renderTagsWrapper = ({ isSingle = false, isCurated = false, itemCount = 0 } = {}) => {
+  const renderTagsWrapper = () => {
     if (!tags || tags.length === 0) return null;
-    
-    const single = isSingle || tags.length === 1;
-    
+
     return (
-      <div 
-        className="level-tags-wrapper" 
-        data-single={single}
-        data-curated={isCurated || curationsList.length > 0}
-        data-itemcount={itemCount || tags.length}
-      >
-        {tags.map((tag, index) => {
-          const isLastInOddRow = tags.length % 2 === 1 && index === tags.length - 1;
-          return (
-            <div
-              key={tag.id}
-              className="level-tag-badge"
-              style={{
-                '--tag-bg-color': `${tag.color}50`,
-                '--tag-border-color': tag.color,
-                '--tag-text-color': tag.color
-              }}
-              data-span-full={isLastInOddRow}
-              title={tag.name}
-            >
-              {tag.icon ? (
-                <img src={selectIconSize(tag.icon, "small")} alt={tag.name} />
-              ) : (
-                <span className="level-tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
-              )}
-            </div>
-          );
-        })}
+      <div className="level-tags-wrapper">
+        {tags.map((tag) => (
+          <div
+            key={tag.id}
+            className="level-tag-badge"
+            style={{
+              '--tag-bg-color': `${tag.color}50`,
+              '--tag-border-color': tag.color,
+              '--tag-text-color': tag.color
+            }}
+            title={tag.name}
+          >
+            {tag.icon ? (
+              <img src={selectIconSize(tag.icon, "small")} alt={tag.name} />
+            ) : (
+              <span className="level-tag-letter">{tag.name.charAt(0).toUpperCase()}</span>
+            )}
+          </div>
+        ))}
       </div>
     );
-  };
-
-  const renderTagsSpacer = () => {
-    if (!tags || tags.length <= 1) return null;
-    return <div className="tags-spacer" data-itemcount={tags.length} data-curated={curationsList.length > 0} />;
   };
 
   const renderClearedCheckmark = ({ className = '', noHover = false } = {}) => (
@@ -501,7 +484,7 @@ const LevelCard = ({
   const renderNormalTwoLineLayout = () => (
     <>
       <div className="info-line">
-        {renderDifficultyIcon({ showTagsInIcon: true })}
+        {renderDifficultyIcon()}
         {renderSongInfo()}
         {renderCreatorInfo()}
       </div>
@@ -533,7 +516,8 @@ const LevelCard = ({
           {curationTypeIconSlots.map((slot, idx) => (
               <img
                 key={slot.key ?? `${slot.typeId}-${idx}`}
-                className={`curation-icon curation-icon--${idx + 1}`}
+                className={`curation-icon`}
+                style={{ '--idx': idx, '--curation-count': curationTypeIconSlots.length }}
                 src={slot.icon}
                 alt="Curation icon"
               />
@@ -544,16 +528,7 @@ const LevelCard = ({
               <p className="base-score-value">{customBaseScore} PP</p>
             </div>
           )}
-          
-          {tags && tags.length === 1 && renderTagsWrapper({ isSingle: true })}
         </div>
-        
-        {tags && tags.length > 1 && (
-          <>
-            {renderTagsWrapper()}
-            {renderTagsSpacer()}
-          </>
-        )}
       </div>
       
       {renderSongInfo()}
