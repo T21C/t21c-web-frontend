@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
+import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/constants/cdnImageAccept';
 import toast from 'react-hot-toast';
 import './thumbnailupload.css';
 
@@ -35,9 +36,7 @@ const ThumbnailUpload = ({
   const handleThumbnailChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Validate file type
-      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/gif', 'image/svg'];
-      if (!allowedTypes.includes(file.type)) {
+      if (!isCdnSupportedImageMimeType(file.type)) {
         toast.error('Invalid file type. Please select a JPEG, PNG, WebP, GIF, or SVG file.');
         return;
       }
@@ -148,7 +147,7 @@ const ThumbnailUpload = ({
           ref={fileInputRef}
           id={fileInputId}
           type="file"
-          accept="image/jpeg,image/jpg,image/png,image/webp,image/gif,image/svg"
+          accept={CDN_IMAGE_ACCEPT}
           onChange={handleThumbnailChange}
           className="thumbnail-upload__file-input"
           disabled={disabled}

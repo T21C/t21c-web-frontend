@@ -20,6 +20,7 @@ import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { QuestionmarkCircleIcon } from "@/components/common/icons";
 import { Tooltip } from "react-tooltip";
 import toast from "react-hot-toast";
+import { CDN_IMAGE_ACCEPT } from '@/constants/cdnImageAccept';
 
 const encodeFilename = (str) => {
   // Convert string to UTF-8 bytes, then to hex
@@ -1183,7 +1184,7 @@ const LevelSubmissionPage = () => {
                 <div className="evidence-files-container">
                   <input
                     type="file"
-                    accept="image/*"
+                    accept={CDN_IMAGE_ACCEPT}
                     multiple
                     onChange={(e) => {
                       const MAX_EVIDENCE_SIZE_MB = 10;

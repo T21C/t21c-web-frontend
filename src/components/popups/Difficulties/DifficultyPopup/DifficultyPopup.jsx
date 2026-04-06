@@ -6,6 +6,7 @@ import api from '@/utils/api';
 import './difficultypopup.css';
 import toast from 'react-hot-toast';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
+import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/constants/cdnImageAccept';
 
 const DIRECTIVE_MODES = {
   STATIC: 'STATIC',
@@ -820,10 +821,8 @@ const DifficultyPopup = ({
   const handleIconChange = (e, isLegacy = false) => {
     const file = e.target.files[0];
     if (file) {
-      // Validate file type
-      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml'];
-      if (!allowedTypes.includes(file.type)) {
-        showToast('Invalid file type. Only JPEG, PNG, WebP, and SVG files are allowed.', 'error');
+      if (!isCdnSupportedImageMimeType(file.type)) {
+        showToast('Invalid file type. Only JPEG, PNG, WebP, GIF, and SVG files are allowed.', 'error');
         return;
       }
 
@@ -1241,7 +1240,7 @@ const DifficultyPopup = ({
                   )}
                   <input
                     type="file"
-                    accept="image/jpeg,image/jpg,image/png,image/webp,image/svg+xml"
+                    accept={CDN_IMAGE_ACCEPT}
                     onChange={(e) => handleIconChange(e, false)}
                     className="difficulty-modal__file-input"
                     id="icon-upload"
@@ -1274,7 +1273,7 @@ const DifficultyPopup = ({
                   )}
                   <input
                     type="file"
-                    accept="image/jpeg,image/jpg,image/png,image/webp,image/svg+xml"
+                    accept={CDN_IMAGE_ACCEPT}
                     onChange={(e) => handleIconChange(e, true)}
                     className="difficulty-modal__file-input"
                     id="legacy-icon-upload"

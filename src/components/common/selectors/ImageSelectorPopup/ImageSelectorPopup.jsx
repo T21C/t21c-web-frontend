@@ -3,6 +3,7 @@ import { toast } from 'react-hot-toast';
 import { FixedCropper, CircleStencil, ImageRestriction } from 'react-advanced-cropper';
 import 'react-advanced-cropper/dist/style.css';
 import './ImageSelectorPopup.css';
+import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/constants/cdnImageAccept';
 
 const ImageSelectorPopup = ({ isOpen, onClose, onSave, currentAvatar, initialImage }) => {
     const [image, setImage] = useState(null);
@@ -95,10 +96,8 @@ const ImageSelectorPopup = ({ isOpen, onClose, onSave, currentAvatar, initialIma
         const file = e.target.files[0];
         if (!file) return;
 
-        // Validate file type
-        const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-        if (!allowedTypes.includes(file.type)) {
-            toast.error('Invalid file type. Please upload a JPEG, PNG, or WebP image.');
+        if (!isCdnSupportedImageMimeType(file.type)) {
+            toast.error('Invalid file type. Please upload a JPEG, PNG, WebP, GIF, or SVG image.');
             return;
         }
 
@@ -196,7 +195,7 @@ const ImageSelectorPopup = ({ isOpen, onClose, onSave, currentAvatar, initialIma
                                 <input
                                     ref={fileInputRef}
                                     type="file"
-                                    accept="image/jpeg,image/png,image/webp"
+                                    accept={CDN_IMAGE_ACCEPT}
                                     onChange={handleFileSelect}
                                     style={{ display: 'none' }}
                                 />

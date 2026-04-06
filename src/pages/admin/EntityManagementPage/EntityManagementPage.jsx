@@ -14,6 +14,7 @@ import './entityManagementPage.css';
 import { Link } from 'react-router-dom';
 import { getVerificationClass, isCdnUrl, isImageUrl } from '@/utils/Utility';
 import { EvidenceGalleryPopup } from '@/components/popups/Evidence';
+import { CDN_IMAGE_ACCEPT } from '@/constants/cdnImageAccept';
 
 const EntityManagementPage = ({ type = 'artist' }) => {
   const { t } = useTranslation(['pages', 'common']);
@@ -492,7 +493,7 @@ const EntityManagementPage = ({ type = 'artist' }) => {
                   <div className="avatar-upload">
                     <input
                       type="file"
-                      accept="image/*"
+                      accept={CDN_IMAGE_ACCEPT}
                       onChange={(e) => {
                         const file = e.target.files?.[0] || null;
                         setAvatarFile(file);

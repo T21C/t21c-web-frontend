@@ -4,6 +4,7 @@ import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import './entityActionPopup.css';
 import { toast } from 'react-hot-toast';
+import { isCdnSupportedImageMimeType } from '@/constants/cdnImageAccept';
 import { UpdateTab, MergeTab, SplitTab, AliasesTab, LinksTab, CreditsTab, EvidenceTab, LevelSuffixTab, RelationsTab } from './tabs';
 
 export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'artist' }) => {
@@ -715,7 +716,7 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
   const handleEvidenceFileSelect = (files) => {
     if (!files || files.length === 0) return;
     
-    const fileArray = Array.from(files).filter(file => file.type.startsWith('image/'));
+    const fileArray = Array.from(files).filter(file => isCdnSupportedImageMimeType(file.type));
     if (fileArray.length === 0) {
       toast.error(tEntity('errors.invalidFileType'));
       return;

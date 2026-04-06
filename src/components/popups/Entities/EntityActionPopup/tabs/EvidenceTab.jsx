@@ -2,6 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { isImageUrl, isCdnUrl } from '@/utils/Utility';
 import { EvidenceGalleryPopup } from '@/components/popups/Evidence';
+import { CDN_IMAGE_ACCEPT } from '@/constants/cdnImageAccept';
 
 export const EvidenceTab = ({
   type,
@@ -141,7 +142,7 @@ export const EvidenceTab = ({
         >
           <input
             type="file"
-            accept="image/*"
+            accept={CDN_IMAGE_ACCEPT}
             multiple
             id="evidence-upload-input"
             style={{ display: 'none' }}

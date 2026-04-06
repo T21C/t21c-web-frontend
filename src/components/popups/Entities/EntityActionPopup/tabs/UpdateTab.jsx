@@ -1,6 +1,7 @@
 import React from 'react';
 import { CustomSelect } from '@/components/common/selectors';
 import { useTranslation } from 'react-i18next';
+import { CDN_IMAGE_ACCEPT } from '@/constants/cdnImageAccept';
 export const UpdateTab = ({
   type,
   name,
@@ -49,7 +50,7 @@ export const UpdateTab = ({
             <div className="avatar-upload">
               <input
                 type="file"
-                accept="image/*"
+                accept={CDN_IMAGE_ACCEPT}
                 onChange={(e) => {
                   const file = e.target.files?.[0] || null;
                   setAvatarFile(file);

@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { ABILITIES } from '@/utils/Abilities';
+import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/constants/cdnImageAccept';
 
 const POPUP_MODES = {
   LIST: 'LIST',
@@ -167,10 +168,8 @@ const TypeManagementPopup = ({
   const handleIconChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Validate file type
-      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml'];
-      if (!allowedTypes.includes(file.type)) {
-        toast.error('Invalid file type. Only JPEG, PNG, WebP, and SVG files are allowed.');
+      if (!isCdnSupportedImageMimeType(file.type)) {
+        toast.error('Invalid file type. Only JPEG, PNG, WebP, GIF, and SVG files are allowed.');
         return;
       }
 
@@ -659,7 +658,7 @@ const TypeManagementPopup = ({
                 )}
                 <input
                   type="file"
-                  accept="image/jpeg,image/jpg,image/png,image/webp,image/svg+xml"
+                  accept={CDN_IMAGE_ACCEPT}
                   onChange={handleIconChange}
                   className="type-management-modal__file-input"
                   id="icon-upload"

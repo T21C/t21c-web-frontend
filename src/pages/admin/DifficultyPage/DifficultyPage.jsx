@@ -14,6 +14,7 @@ import { useTranslation } from 'react-i18next';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { RatingInput } from '@/components/common/selectors';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
+import { CDN_IMAGE_ACCEPT } from '@/constants/cdnImageAccept';
 
 const DifficultyPage = () => {
   const { user } = useAuth();
@@ -1062,7 +1063,7 @@ const DifficultyPage = () => {
                         <label>{t('difficulty.tags.create.icon.label')}</label>
                         <input
                           type="file"
-                          accept="image/*"
+                          accept={CDN_IMAGE_ACCEPT}
                           onChange={(e) => {
                             const file = e.target.files?.[0];
                             if (file) {
@@ -1173,7 +1174,7 @@ const DifficultyPage = () => {
                         <label>{t('difficulty.tags.edit.icon.label')}</label>
                         <input
                           type="file"
-                          accept="image/*"
+                          accept={CDN_IMAGE_ACCEPT}
                           onChange={(e) => {
                             const file = e.target.files?.[0];
                             if (file) {

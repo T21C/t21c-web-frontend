@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { AccountStatusBanners } from '@/components/account/AccountStatusBanners/AccountStatusBanners';
+import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/constants/cdnImageAccept';
 
 const usernameChangeCooldown = 1 * 24 * 60 * 60 * 1000; // 1 day
 
@@ -224,9 +225,7 @@ const EditProfilePage = () => {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validate file type
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-    if (!allowedTypes.includes(file.type)) {
+    if (!isCdnSupportedImageMimeType(file.type)) {
       toast.error(t('editProfile.error.invalidFileType'));
       return;
     }
@@ -315,9 +314,7 @@ const EditProfilePage = () => {
     const file = e.dataTransfer.files[0];
     if (!file) return;
 
-    // Validate file type
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
-    if (!allowedTypes.includes(file.type)) {
+    if (!isCdnSupportedImageMimeType(file.type)) {
       toast.error(t('editProfile.error.invalidFileType'));
       return;
     }
@@ -481,7 +478,7 @@ const EditProfilePage = () => {
             <input
               ref={fileInputRef}
               type="file"
-              accept="image/jpeg,image/png,image/webp"
+              accept={CDN_IMAGE_ACCEPT}
               onChange={handleFileSelect}
               style={{ display: 'none' }}
             />
