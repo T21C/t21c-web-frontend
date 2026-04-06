@@ -1,12 +1,23 @@
 {
   "noSubmissions": "No pending pass submissions to review",
   "details": {
+    "level": "Niveau",
     "levelId": "ID de niveau :",
     "player": "Joueur.se :",
     "feelingDiff": "Diff. Ressentie :",
+    "speed": "Vitesse",
     "judgements": {
       "label": "Jugements:",
       "types": {
+        "earlyDouble": "Double Tôt",
+        "earlySingle": "Simple Tôt",
+        "ePerfect": "Parfait-Tôt",
+        "perfect": "Parfait",
+        "lPerfect": "Parfait-Tard",
+        "lateSingle": "Simple Tard",
+        "lateDouble": "Double Tard"
+      },
+      "fields": {
         "earlyDouble": "Double Tôt",
         "earlySingle": "Simple Tôt",
         "ePerfect": "Parfait-Tôt",
@@ -55,10 +66,20 @@
     "processing": "Erreur lors du traitement de la soumission",
     "autoAllow": "Échec de l'approbation Auto des soumissions",
     "loading": "Échec du chargement des soumissions",
-    "saving": "Échec de la sauvegarde des soumissions"
+    "saving": "Échec de la sauvegarde des soumissions",
+    "patch": "Échec de la mise à jour de la soumission"
   },
   "success": {
-    "autoAllow": "Approbation auto de {{count}} soumission"
+    "autoAllow": "Approbation auto de {{count}} soumission",
+    "patch": "Soumission mise à jour"
+  },
+  "edit": {
+    "edit": "Modifier",
+    "save": "Sauvegarder",
+    "cancel": "Annuler",
+    "levelPlaceholder": "Rechercher ou saisir l’ID du niveau",
+    "fetchingLevel": "Chargement du niveau…",
+    "songPlaceholder": "Morceau"
   },
   "loading": "Chargement des soumissions ...",
   "noItems": "Aucune soumission trouvée",

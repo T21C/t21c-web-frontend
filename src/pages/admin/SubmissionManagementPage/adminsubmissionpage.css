@@ -891,6 +891,262 @@
     color: #fff;
   }
 
+  .submission-admin-page .pass-submission-card .pass-submission-meta-edit {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-meta-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 0.5rem 0.75rem;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-meta-row-main {
+    display: flex;
+    flex: 1;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    min-width: 0;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-meta-edit-btn,
+  .submission-admin-page .pass-submission-card .pass-submission-meta-save,
+  .submission-admin-page .pass-submission-card .pass-submission-meta-cancel {
+    padding: 0.25rem 0.6rem;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(0, 0, 0, 0.25);
+    color: var(--color-white);
+    cursor: pointer;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-meta-save {
+    background: rgba(40, 120, 60, 0.5);
+    border-color: rgba(80, 200, 120, 0.4);
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-meta-cancel {
+    background: rgba(60, 60, 60, 0.5);
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-meta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-items: center;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-inline-edit {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-speed-input {
+    min-width: 5rem;
+    max-width: 8rem;
+    padding: 0.25rem 0.4rem;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    color: #fff;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-judgements-edit {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-judgements-inputs {
+    display: flex;
+    flex-wrap: wrap;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-judgement-field {
+    display: flex;
+    flex-direction: column;
+    font-size: 0.75rem;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-judgement-field input {
+    width: 3.2rem;
+    padding: 0.2rem;
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    text-align: center;
+    border-radius: 3px;
+    color: #fff;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-judgement-label {
+    color: #aaa;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-flags-edit {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-flag-field {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.9rem;
+    cursor: pointer;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-level-edit {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-level-edit .id-input {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    max-width: 28rem;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-level-edit .search-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-level-edit .search-container input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.35rem 0.5rem;
+    background: rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+    color: #fff;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-level-edit .expand-button {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    background: rgba(255, 255, 255, 0.12);
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-level-edit .expand-button svg {
+    width: 1rem;
+    height: 1rem;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-level-edit .expand-button.expanded svg {
+    transform: rotate(180deg);
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-level-edit .level-dropdown {
+    display: none;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    z-index: 20;
+    max-height: 14rem;
+    overflow-y: auto;
+    margin-top: 2px;
+    background: rgba(20, 20, 24, 0.98);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-level-edit .level-dropdown.expanded {
+    display: block;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-level-edit .level-option {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.5rem;
+    cursor: pointer;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-level-edit .level-option:hover {
+    background: rgba(255, 255, 255, 0.08);
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-level-edit .difficulty-icon {
+    width: 1.75rem;
+    height: 1.75rem;
+    object-fit: contain;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-level-edit .level-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-level-edit .level-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-level-edit .level-details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem 0.5rem;
+    font-size: 0.8rem;
+    color: #aaa;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-level-edit .information {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.25rem;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-level-edit .level-icon {
+    width: 2rem;
+    height: 2rem;
+    object-fit: contain;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-level-edit .level-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+
+  .submission-admin-page .pass-submission-card .pass-submission-level-edit .level-info-sub {
+    margin: 0;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+
   .submission-admin-page .pass-submission-card .embed-container {
     grid-column: 7 / span 5; /* Takes up last 5 columns */
     height:70%

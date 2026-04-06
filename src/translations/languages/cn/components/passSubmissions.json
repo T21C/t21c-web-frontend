@@ -6,7 +6,16 @@
     "feelingDiff": "体感难度",
     "speed": "飙速",
     "judgements": {
-      "label": "判定："
+      "label": "判定：",
+      "fields": {
+        "earlyDouble": "双早",
+        "earlySingle": "单早",
+        "ePerfect": "早判",
+        "perfect": "大P",
+        "lPerfect": "晚判",
+        "lateSingle": "单晚",
+        "lateDouble": "双晚"
+      }
     },
     "flags": {
       "label": "标签：",
@@ -43,12 +52,22 @@
     "processing": "提交项目处理失败",
     "autoAllow": "自动通过提交项目失败",
     "profileUpdate": "无法通过个人资料更新通关记录",
-    "needProfileCreation": "批准前需创建个人资料"
+    "needProfileCreation": "批准前需创建个人资料",
+    "patch": "更新失败"
   },
   "success": {
     "playerAssigned": "成功分配给 {{playerName}}",
     "autoAllow": "已自动通过 {{count}} 项通关记录",
-    "playerCreated": "成功创建并分配{{playerName}}"
+    "playerCreated": "成功创建并分配{{playerName}}",
+    "patch": "已更新"
+  },
+  "edit": {
+    "edit": "编辑",
+    "save": "保存",
+    "cancel": "取消",
+    "levelPlaceholder": "搜索或输入关卡 ID",
+    "fetchingLevel": "加载关卡中…",
+    "songPlaceholder": "曲名"
   },
   "loading": "加载项目中……",
   "noItems": "未找到项目",

@@ -8,6 +8,7 @@ import api from "@/utils/api";
 import { PlayerInput } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
 import { ProfileCreationModal } from './ProfileCreationModal';
+import PassSubmissionEditableMeta from './PassSubmissionEditableMeta';
 import { AdminPlayerPopup } from '@/components/popups/Users';
 import { formatDate } from '@/utils/Utility';
 import i18next from 'i18next';
@@ -323,65 +324,35 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
               
               <div className="card-content">
                 <div className="submission-details">
-                  <div className="detail-row">
-                    <span className="detail-label">{t('passSubmissions.details.level')}</span>
-                    <div
-                      className="level-info"
-                      onClick={() => {
-                        if (submission.level?.id) {
-                          window.open(`/levels/${submission.level.id}`, '_blank');
-                        }
-                      }}
-                    >
-                      <img src={difficultyDict[submission.level?.diffId]?.icon} alt={submission.level?.song?.name} className="diff-icon" />
-                      <span className="detail-value">{submission.level?.song || "Null"}</span>
-                    </div>
-                  </div>
+                  <PassSubmissionEditableMeta
+                    submission={submission}
+                    difficultyDict={difficultyDict}
+                    onPatched={(updated) => {
+                      setSubmissions((prev) => prev.map((s) => (s.id === updated.id ? updated : s)));
+                    }}
+                    betweenLevelAndSpeed={
+                      <>
+                        <div className="detail-row">
+                          <span className="detail-label">{t('passSubmissions.details.player')}</span>
+                          <span className="detail-value">{submission.passer || "Null"}</span>
+                        </div>
 
-                  <div className="detail-row">
-                    <span className="detail-label">{t('passSubmissions.details.player')}</span>
-                    <span className="detail-value">{submission.passer || "Null"}</span>
-                  </div>
-
-                  <div className="detail-row">
-                    <span className="detail-label">{t('passSubmissions.details.feelingDiff')}</span>
-                    <span className="detail-value">{submission.feelingDifficulty || "Null"}</span>
-                  </div>
-                
-                  <div className="detail-row">
-                    <span className="detail-label">{t('passSubmissions.details.speed')}</span>
-                    <span className="detail-value">{submission.speed || "1.0"}</span>
-                  </div>
-
-                  <div className="detail-row">
-                    <span className="detail-label">{t('passSubmissions.details.submitter')}</span>
-                    <div className="submitter-details">
-                      <span className="detail-value">{submission.submitterDiscordUsername? `@${submission.submitterDiscordUsername}` : submission.passSubmitter?.username || "Null"}</span>
-                      <span className="detail-subvalue">#{submission.passSubmitter?.playerId || "Null"}</span>
-                    </div>
-                  </div>
-
-                  <div className="detail-row">
-                    <span className="detail-label">{t('passSubmissions.details.judgements.label')}</span>
-                    <div className="judgements-details">
-                      <span className="judgement early-double">{submission.judgements?.earlyDouble !== null ? submission.judgements?.earlyDouble : "0"}</span>
-                      <span className="judgement early-single">{submission.judgements?.earlySingle !== null ? submission.judgements?.earlySingle : "0"}</span>
-                      <span className="judgement e-perfect">{submission.judgements?.ePerfect !== null ? submission.judgements?.ePerfect : "0"}</span>
-                      <span className="judgement perfect">{submission.judgements?.perfect !== null ? submission.judgements?.perfect : "0"}</span>
-                      <span className="judgement l-perfect">{submission.judgements?.lPerfect !== null ? submission.judgements?.lPerfect : "0"}</span>
-                      <span className="judgement late-single">{submission.judgements?.lateSingle !== null ? submission.judgements?.lateSingle : "0"}</span>
-                      <span className="judgement late-double">{submission.judgements?.lateDouble !== null ? submission.judgements?.lateDouble : "0"}</span>
-                    </div>
-                  </div>
-
-                  <div className="detail-row">
-                    <span className="detail-label">{t('passSubmissions.details.flags.label')}</span>
-                    <div className="flags-details">
-                      {submission.flags?.is12K && <span>{t('passSubmissions.details.flags.types.12k')}</span>}
-                      {submission.flags?.isNoHoldTap && <span>{t('passSubmissions.details.flags.types.nht')}</span>}
-                      {submission.flags?.is16K && <span>{t('passSubmissions.details.flags.types.16k')}</span>}
-                    </div>
-                  </div>
+                        <div className="detail-row">
+                          <span className="detail-label">{t('passSubmissions.details.feelingDiff')}</span>
+                          <span className="detail-value">{submission.feelingDifficulty || "Null"}</span>
+                        </div>
+                      </>
+                    }
+                    betweenSpeedAndJudgements={
+                      <div className="detail-row">
+                        <span className="detail-label">{t('passSubmissions.details.submitter')}</span>
+                        <div className="submitter-details">
+                          <span className="detail-value">{submission.submitterDiscordUsername? `@${submission.submitterDiscordUsername}` : submission.passSubmitter?.username || "Null"}</span>
+                          <span className="detail-subvalue">#{submission.passSubmitter?.playerId || "Null"}</span>
+                        </div>
+                      </div>
+                    }
+                  />
 
                   <div className="detail-row">
                     <span className="detail-label">{t('passSubmissions.details.uploadTime')}</span>

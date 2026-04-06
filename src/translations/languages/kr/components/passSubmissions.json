@@ -6,7 +6,16 @@
     "feelingDiff": "체감 난이도",
     "speed": "배속",
     "judgements": {
-      "label": "판정"
+      "label": "판정",
+      "fields": {
+        "earlyDouble": "ED",
+        "earlySingle": "ES",
+        "ePerfect": "EP",
+        "perfect": "P",
+        "lPerfect": "LP",
+        "lateSingle": "LS",
+        "lateDouble": "LD"
+      }
     },
     "flags": {
       "label": "플래그",
@@ -43,11 +52,21 @@
     "noPlayer": "승인 전에 플레이어를 지정해 주세요",
     "playerAssignment": "플레이어 지정에 실패했습니다",
     "processing": "제출물 처리 중 오류가 발생했습니다",
-    "autoAllow": "자동 허용 중 오류가 발생했습니다"
+    "autoAllow": "자동 허용 중 오류가 발생했습니다",
+    "patch": "제출물을 업데이트하지 못했습니다"
   },
   "success": {
     "playerAssigned": "{{playerName}}(으)로 성공적으로 지정되었습니다",
-    "autoAllow": "{{count}}개의 제출물을 자동 허용했습니다"
+    "autoAllow": "{{count}}개의 제출물을 자동 허용했습니다",
+    "patch": "제출물이 업데이트되었습니다"
+  },
+  "edit": {
+    "edit": "편집",
+    "save": "저장",
+    "cancel": "취소",
+    "levelPlaceholder": "검색 또는 레벨 ID 입력",
+    "fetchingLevel": "레벨 불러오는 중…",
+    "songPlaceholder": "곡"
   },
   "loading": "제출물 불러오는 중...",
   "noItems": "제출물이 없습니다",

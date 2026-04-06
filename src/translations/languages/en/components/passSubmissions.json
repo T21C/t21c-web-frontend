@@ -6,7 +6,16 @@
     "feelingDiff": "Feeling Difficulty",
     "speed": "Speed",
     "judgements": {
-      "label": "Judgements"
+      "label": "Judgements",
+      "fields": {
+        "earlyDouble": "ED",
+        "earlySingle": "ES",
+        "ePerfect": "EP",
+        "perfect": "P",
+        "lPerfect": "LP",
+        "lateSingle": "LS",
+        "lateDouble": "LD"
+      }
     },
     "flags": {
       "label": "Flags",
@@ -43,12 +52,22 @@
     "processing": "Error processing submission",
     "autoAllow": "Error auto-allowing submissions",
     "profileUpdate": "Failed to update submission with profile",
-    "needProfileCreation": "Profile needs to be created before approval"
+    "needProfileCreation": "Profile needs to be created before approval",
+    "patch": "Failed to update submission"
   },
   "success": {
     "playerAssigned": "Successfully assigned to {{playerName}}",
     "autoAllow": "Auto-allowed {{count}} submissions",
-    "playerCreated": "Successfully created and assigned {{playerName}}"
+    "playerCreated": "Successfully created and assigned {{playerName}}",
+    "patch": "Submission updated"
+  },
+  "edit": {
+    "edit": "Edit",
+    "save": "Save",
+    "cancel": "Cancel",
+    "levelPlaceholder": "Search or enter level ID",
+    "fetchingLevel": "Loading level…",
+    "songPlaceholder": "Song"
   },
   "loading": "Loading submissions...",
   "noItems": "No submissions found",

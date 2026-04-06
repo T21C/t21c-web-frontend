@@ -1,6 +1,7 @@
 {
   "noSubmissions": "Brak przejść oczekujących sprawdzenia",
   "details": {
+    "level": "Poziom",
     "levelId": "ID poziomu:",
     "player": "Gracz:",
     "feelingDiff": "Szacowany poziom trudności:",
@@ -8,6 +9,15 @@
     "judgements": {
       "label": "Judgment'y:",
       "types": {
+      },
+      "fields": {
+        "earlyDouble": "ED",
+        "earlySingle": "ES",
+        "ePerfect": "EP",
+        "perfect": "P",
+        "lPerfect": "LP",
+        "lateSingle": "LS",
+        "lateDouble": "LD"
       }
     },
     "flags": {
@@ -43,11 +53,21 @@
     "noPlayer": "Przypisz gracza przed zatwierdzeniem",
     "playerAssignment": "Nie udało się przypisać gracza",
     "processing": "Błąd podczas przetwarzania zgłoszenia",
-    "autoAllow": "Nie udało się automatycznie zaakceptować zgłoszeń"
+    "autoAllow": "Nie udało się automatycznie zaakceptować zgłoszeń",
+    "patch": "Nie udało się zaktualizować zgłoszenia"
   },
   "success": {
     "playerAssigned": "Pomyślnie przypisano do {{playerName}}",
-    "autoAllow": "Zaakceptowano automatycznie {{count}} zgłoszenia/eń"
+    "autoAllow": "Zaakceptowano automatycznie {{count}} zgłoszenia/eń",
+    "patch": "Zaktualizowano zgłoszenie"
+  },
+  "edit": {
+    "edit": "Edytuj",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "levelPlaceholder": "Szukaj lub wpisz ID poziomu",
+    "fetchingLevel": "Ładowanie poziomu…",
+    "songPlaceholder": "Utwór"
   },
   "loading": "Ładowanie zgłoszeń...",
   "noItems": "Nie znaleziono zgłoszeń",
