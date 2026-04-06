@@ -91,6 +91,7 @@
 .level-upload-management-popup .level-selection {
   display: flex;
   flex-direction: column;
+  margin-bottom: 15px;
   gap: 15px;
 }
 
@@ -226,7 +227,6 @@
   background-color: #2a2a2a;
   padding: 10px;
   border-radius: 4px;
-  margin-bottom: 15px;
   color: #ffffff;
 }
 
@@ -247,13 +247,11 @@
   background-color: #2a2a2a;
   padding: 10px;
   border-radius: 4px;
-  margin-bottom: 15px;
   color: #ffffff;
 }
 
 .level-upload-management-popup .zip-name {
   font-weight: bold;
-  margin-bottom: 5px;
 }
 
 .level-upload-management-popup .zip-size {
@@ -265,7 +263,6 @@
   background-color: #2a2a2a;
   padding: 10px;
   border-radius: 4px;
-  margin-bottom: 15px;
   color: #ffffff;
 }
 

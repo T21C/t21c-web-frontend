@@ -296,14 +296,13 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
           </div>
         ) : (
           <>
+            {originalZip && (
           <div className="level-selection">
             <h3>{t('levelUploadManagement.sections.levelSelection.title')}</h3>
-            {originalZip && (
               <div className="original-zip-info">
                 <div className="zip-name">{t('levelUploadManagement.sections.levelSelection.originalZip.title', { name: originalZip.name })}</div>
                 <div className="zip-size">{t('levelUploadManagement.sections.levelSelection.originalZip.size', { size: (originalZip.size / 1024 / 1024).toFixed(2) })}</div>
               </div>
-            )}
             {Object.keys(songFiles).length > 0 && (
               <div className="song-files-info">
                 <h4>{t('levelUploadManagement.sections.levelSelection.songFiles.title')}</h4>
@@ -362,7 +361,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
             </button>
             )}
           </div>
-          <br />
+        )}
           <div className="upload-actions">
             <input
               type="file"
@@ -377,7 +376,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
             >
               {t('levelUploadManagement.buttons.uploadNew')}
             </button>
-            {level.dlLink && level.dlLink !== 'removed' && (
+            {isCdnUrl(level.dlLink) && (
               <button 
                 className="delete-button"
                 onClick={handleDelete}
