@@ -56,7 +56,7 @@ const ClearCard = ({scoreData, index}) => {
         <div className="player-info" onClick={redirect}>
           <div className="avatar-container">
             <UserAvatar 
-              primaryUrl={selectIconSize(scoreData.player.user?.avatarUrl, "small")}
+              primaryUrl={scoreData.player.user?.avatarUrl}
               fallbackUrl={scoreData.player.pfp}
               className="pfp"
             />

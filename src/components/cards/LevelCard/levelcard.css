@@ -259,9 +259,9 @@
   /* Fan radiates from the shared corner; 0° = right, 90° = down (clockwise). */
   transform-origin: bottom right;
   --arc-center: 45deg;
-  --rotation-offset: 25deg;
   --radius: 1.65rem;
   --curation-count: 1;
+  --rotation-offset: 90deg / var(--curation-count);
   --theta: calc(
     var(--arc-center)
     + var(--idx) * var(--rotation-offset)

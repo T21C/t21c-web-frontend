@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import DefaultAvatar from '@/components/common/icons/DefaultAvatar';
 import './useravatar.css';
+import { selectIconSize } from '@/utils/Utility';
 
 const UserAvatar = ({ 
   primaryUrl, 
@@ -10,7 +11,7 @@ const UserAvatar = ({
 }) => {
   const [imgSrc, setImgSrc] = useState(null);
 
-  const handleImageError = async (primary, fallback) => {
+  const handleImage = async (primary, fallback) => {
     try {
       // Try primary URL first
       if (primary) {
@@ -41,7 +42,7 @@ const UserAvatar = ({
   };
 
   useEffect(() => {
-    handleImageError(primaryUrl, fallbackUrl);
+    handleImage(selectIconSize(primaryUrl, "small"), selectIconSize(fallbackUrl, "small"));
   }, [primaryUrl, fallbackUrl]);
 
   return (
