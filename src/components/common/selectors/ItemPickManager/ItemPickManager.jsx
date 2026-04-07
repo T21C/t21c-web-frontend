@@ -3,11 +3,17 @@ import { TrashIcon } from '@/components/common/icons';
 import './itemPickManager.css';
 
 /**
- * @typedef {{ id: number, name: string, color?: string, icon?: string, group?: string, groupSortOrder?: number }} PickableItem
+ * @typedef {{ id: number, name: string, color?: string, icon?: string, group?: string, groupSortOrder?: number, sortOrder?: number }} PickableItem
  */
 
+function comparePickableBySort(a, b) {
+  const so = (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
+  if (so !== 0) return so;
+  return (a.id ?? 0) - (b.id ?? 0);
+}
+
 /**
- * Group items for the "add" pool (by group + sort order).
+ * Group items for the "add" pool (by group + group sort order; items within a group by sortOrder).
  * @param {PickableItem[]} items
  * @param {string} fallbackGroupLabel
  */
@@ -26,6 +32,9 @@ function buildGroupedPool(items, fallbackGroupLabel) {
     }
     return acc;
   }, {});
+  for (const data of Object.values(itemGroups)) {
+    data.items.sort(comparePickableBySort);
+  }
   return Object.entries(itemGroups).sort((a, b) => a[1].groupSortOrder - b[1].groupSortOrder);
 }
 
@@ -110,13 +119,23 @@ const ItemPickManager = ({
   const poolFiltered = useMemo(() => {
     const selected = new Set(selectedIds);
     const q = searchQuery.toLowerCase().trim();
-    return (items || []).filter((it) => {
+    const filtered = (items || []).filter((it) => {
       if (selected.has(it.id)) return false;
       if (poolFilter && !poolFilter(it)) return false;
       if (!q) return true;
       return String(it.name).toLowerCase().includes(q);
     });
-  }, [items, selectedIds, searchQuery, poolFilter]);
+    if (!enableGrouping) {
+      const byGroupThenSort = (a, b) => {
+        const ga = a.groupSortOrder ?? 0;
+        const gb = b.groupSortOrder ?? 0;
+        if (ga !== gb) return ga - gb;
+        return comparePickableBySort(a, b);
+      };
+      return [...filtered].sort(byGroupThenSort);
+    }
+    return filtered;
+  }, [items, selectedIds, searchQuery, poolFilter, enableGrouping]);
 
   const groupedSelected = useMemo(
     () =>

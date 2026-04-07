@@ -7,6 +7,7 @@ import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { ABILITIES } from '@/utils/Abilities';
 import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/constants/cdnImageAccept';
+import { useDifficultyContext } from '@/contexts/DifficultyContext';
 
 const POPUP_MODES = {
   LIST: 'LIST',
@@ -22,6 +23,7 @@ const TypeManagementPopup = ({
   verifiedPassword
 }) => {
   const { t } = useTranslation('components');
+  const { reloadCurationTypes } = useDifficultyContext();
 
   const [mode, setMode] = useState(POPUP_MODES.LIST);
   const [isLoading, setIsLoading] = useState(false);
@@ -98,7 +100,22 @@ const TypeManagementPopup = ({
       }
       groups[key].types.push(t);
     }
-    return Object.values(groups).sort((a, b) => a.groupSortOrder - b.groupSortOrder);
+    // Must match handleTypeDragEnd: within a named group, order is sortOrder only (not global
+    // groupSortOrder-then-sortOrder iteration order, or Draggable indices disagree with splice).
+    return Object.values(groups)
+      .map((section) => ({
+        ...section,
+        types: [...section.types].sort((a, b) => {
+          const so = (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
+          if (so !== 0) return so;
+          return (a.id ?? 0) - (b.id ?? 0);
+        }),
+        groupSortOrder:
+          section.types.length > 0
+            ? Math.min(...section.types.map((x) => x.groupSortOrder ?? 0))
+            : 0,
+      }))
+      .sort((a, b) => a.groupSortOrder - b.groupSortOrder);
   }, [localCurationTypes]);
 
   const orderedGroups = groupedSections;
@@ -112,6 +129,14 @@ const TypeManagementPopup = ({
       iconPreview: null,
       group: '',
     });
+  };
+
+  /** Refetch curation types into DifficultyContext (array + dict + cache), then optional parent callback. */
+  const syncTypesWithContext = async () => {
+    await reloadCurationTypes(true);
+    if (typeof onTypeUpdate === 'function') {
+      onTypeUpdate();
+    }
   };
 
   const handleCreateNew = () => {
@@ -146,7 +171,7 @@ const TypeManagementPopup = ({
       });
       
       toast.success(t('typeManagementPopup.notifications.deleted'));
-      onTypeUpdate();
+      await syncTypesWithContext();
     } catch (error) {
       const errorMessage = error.response?.data?.error || 'Failed to delete curation type';
       toast.error(errorMessage);
@@ -266,7 +291,7 @@ const TypeManagementPopup = ({
         );
       }
 
-      onTypeUpdate();
+      await syncTypesWithContext();
       handleBackToList();
     } catch (error) {
       const errorMessage = error.response?.data?.error || `Failed to ${mode === POPUP_MODES.CREATE ? 'create' : 'update'} curation type`;
@@ -283,7 +308,11 @@ const TypeManagementPopup = ({
     setIsReordering(true);
     try {
       const groupTypes = localCurationTypes.filter((x) => (x.group || '') === groupName);
-      const sortedInGroup = [...groupTypes].sort((a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0));
+      const sortedInGroup = [...groupTypes].sort((a, b) => {
+        const so = (a.sortOrder ?? 0) - (b.sortOrder ?? 0);
+        if (so !== 0) return so;
+        return (a.id ?? 0) - (b.id ?? 0);
+      });
       const items = Array.from(sortedInGroup);
       const [reorderedItem] = items.splice(result.source.index, 1);
       items.splice(result.destination.index, 0, reorderedItem);
@@ -313,7 +342,7 @@ const TypeManagementPopup = ({
       );
 
       toast.success(t('typeManagementPopup.notifications.reordered'));
-      onTypeUpdate();
+      await syncTypesWithContext();
     } catch (err) {
       console.error('Error updating sort orders:', err);
       toast.error(t('typeManagementPopup.notifications.reorderFailed'));
@@ -368,7 +397,7 @@ const TypeManagementPopup = ({
       );
 
       toast.success(t('typeManagementPopup.notifications.groupsReordered'));
-      onTypeUpdate();
+      await syncTypesWithContext();
     } catch (err) {
       console.error('Error updating group sort orders:', err);
       toast.error(t('typeManagementPopup.notifications.groupReorderFailed'));

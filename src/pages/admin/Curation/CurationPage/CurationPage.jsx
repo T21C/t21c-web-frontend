@@ -205,11 +205,6 @@ const CurationPage = () => {
     );
   };
 
-  const handleTypeManagementUpdate = () => {
-    // Reload curation types from the context to get the latest data after modifications
-    reloadCurationTypes();
-  };
-
   const handleDeleteCuration = async (curation) => {
     if (!window.confirm(t('curation.confirmations.deleteCuration'))) {
       return;
@@ -731,7 +726,6 @@ const CurationPage = () => {
           isOpen={showTypeManagementPopup}
           onClose={() => setShowTypeManagementPopup(false)}
           curationTypes={curationTypes}
-          onTypeUpdate={handleTypeManagementUpdate}
           verifiedPassword={verifiedPassword}
         />
 
