@@ -4,7 +4,7 @@ import { Tooltip } from 'react-tooltip';
 import { CustomSelect } from '@/components/common/selectors';
 import FacetItemPicker from './FacetItemPicker';
 import './facetquerybuilder.css';
-import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+//import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 
 /** True if switching this advanced domain to simple mode would drop non-trivial structure. */
 function advancedSwitchToSimpleIsLossy(adv) {
@@ -77,7 +77,7 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
   const [simpleSwitchArmed, setSimpleSwitchArmed] = useState(false);
   const builderRootRef = useRef(null);
   const pickerOverlayRef = useRef(null);
-  useBodyScrollLock(isOpen || Boolean(picker));
+  //useBodyScrollLock(isOpen || Boolean(picker));
 
   const uiMode = value?.mode === 'advanced' ? 'advanced' : 'simple';
 
@@ -342,6 +342,7 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
 
       {isOpen && (
         <>
+          {/*
           <div
             className="facet-query-builder__backdrop"
             onMouseDown={(e) => e.stopPropagation()}
@@ -351,6 +352,7 @@ const FacetQueryBuilder = ({ items, value, onChange, title, enableGrouping = tru
             }}
             aria-hidden
           />
+          */}
           <div
             className="facet-query-builder__panel"
             onMouseDown={resetSimpleSwitchArmedUnlessSimpleButton}
