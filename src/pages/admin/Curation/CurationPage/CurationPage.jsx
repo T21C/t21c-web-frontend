@@ -130,6 +130,7 @@ const CurationPage = () => {
   };
 
   const handleEditLevel = (row) => {
+    if (!canEditLevelRow(row)) return;
     const level = row.level ?? row.curations[0]?.level;
     setEditingLevel({ level, curations: row.curations });
     setShowCurationEditPopup(true);
@@ -240,7 +241,22 @@ const CurationPage = () => {
     }
   };
 
+  /** Same rules as CurationEditPopup `canManageThisCuration`: every type must be assignable (strict); OR was wrong here. */
+  const canManageCuration = (curation) => {
+    if (!curation || !user) return false;
+    if (hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR])) {
+      return true;
+    }
+    const types = curation.types || (curation.type ? [curation.type] : []);
+    if (types.length === 0) return true;
+    return types.every((t) => {
+      if (t.abilities == null) return false;
+      return canAssignCurationType(user.permissionFlags, t.abilities);
+    });
+  };
 
+  const canEditLevelRow = (row) =>
+    row.curations.length > 0 && row.curations.every((c) => canManageCuration(c));
 
   const fetchCurations = async () => {
     try {
@@ -341,19 +357,20 @@ const CurationPage = () => {
       if (action === 'discarded') {
         toast.success(t('curation.notifications.discarded'));
       } else if (action === 'backToEdit') {
-        // Open the CurationEditPopup with the updated curation
-        setEditingLevel({
-          level: updatedCuration.level,
-          curations: null,
-          levelId: updatedCuration.levelId ?? updatedCuration.level?.id,
-        });
-        setShowCurationEditPopup(true);
+        if (canManageCuration(updatedCuration)) {
+          setEditingLevel({
+            level: updatedCuration.level,
+            curations: null,
+            levelId: updatedCuration.levelId ?? updatedCuration.level?.id,
+          });
+          setShowCurationEditPopup(true);
+        }
       }
 
       // Clear the state to prevent re-processing
       navigate(location.pathname, { replace: true, state: {} });
     }
-  }, [location.state, navigate, location.pathname]);
+  }, [location.state, navigate, location.pathname, user]);
 
   const handleFilterChange = (key, value) => {
     setFilters((prev) => ({ ...prev, [key]: value }));
@@ -429,22 +446,6 @@ const CurationPage = () => {
     setShowCurationEditPopup(false);
     setEditingLevel(null);
   };
-
-  const isAccessibleCuration = (curation) => {
-    if (!curation || !user) return false;
-
-    if (hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR])) {
-      return true;
-    }
-
-    const types = curation.types || (curation.type ? [curation.type] : []);
-    return types.some(
-      (t) => t.abilities && canAssignCurationType(user.permissionFlags, t.abilities)
-    );
-  };
-
-  const canEditLevelRow = (row) =>
-    row.curations.some((c) => isAccessibleCuration(c));
 
   return (
     <div className="curation-page">
@@ -572,7 +573,13 @@ const CurationPage = () => {
                         />
                         <h3>{level?.song || 'Unknown Level'}</h3>
                         <p className="curation-level-id">#{level?.id}</p>
-                        {canEditLevelRow(row) && (
+                      </div>
+                      <div className="curation-artist-creator">
+                        <p className="curation-artist">{level?.artist || 'Unknown Artist'}</p>
+                        <p className="curation-creator">{formatCreatorDisplay(level)}</p>
+                      </div>
+                    </div>
+                    {canEditLevelRow(row) && (
                           <button
                             type="button"
                             className="curation-level-edit-btn"
@@ -582,20 +589,13 @@ const CurationPage = () => {
                             <EditIcon />
                           </button>
                         )}
-                      </div>
-                      <div className="curation-artist-creator">
-                        <p className="curation-artist">{level?.artist || 'Unknown Artist'}</p>
-                        <p className="curation-creator">{formatCreatorDisplay(level)}</p>
-                      </div>
-                    </div>
-
                     <div className="curation-level-curations">
                       {row.curations.map((curation) => {
                         const types = curation.types || (curation.type ? [curation.type] : []);
                         return (
                           <div
                             key={curation.id}
-                            className={`curation-type-slot ${isAccessibleCuration(curation) ? '' : 'protected'}`}
+                            className={`curation-type-slot ${canManageCuration(curation) ? '' : 'protected'}`}
                           >
                             <div className="curation-type-info curation-type-info--inline curation-type-info--multi">
                               {types.length === 0 ? (
@@ -618,7 +618,7 @@ const CurationPage = () => {
                                 ))
                               )}
                             </div>
-                            {isAccessibleCuration(curation) && (
+                            {canManageCuration(curation) && (
                               <div className="curation-item-actions">
                                 <button
                                   type="button"

@@ -46,6 +46,7 @@
     "thumbnailRemoved": "썸네일이 제거되었습니다"
   },
   "errors": {
+    "cannotManageCuration": "현재 선택된 유형 조합으로는 이 역할에서 이 큐레이션을 편집할 수 없습니다.",
     "loadFailed": "이 레벨의 큐레이션을 불러오지 못했습니다",
     "typeRequired": "각 행에 유형을 선택하거나 빈 행을 삭제하세요",
     "updateFailed": "저장에 실패했습니다",

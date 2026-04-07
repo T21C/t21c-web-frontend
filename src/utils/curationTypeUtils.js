@@ -159,6 +159,7 @@ export const getAbilityNames = (curationType) => {
     [1n << 7n]: 'RATER_ASSIGNABLE',
     [1n << 10n]: 'SHOW_ASSIGNER',
     [1n << 11n]: 'FORCE_DESCRIPTION',
+    [1n << 12n]: 'ALLOW_DESCRIPTION',
     [1n << 13n]: 'FRONT_PAGE_ELIGIBLE',
     [1n << 14n]: 'CUSTOM_COLOR_THEME',
     [1n << 15n]: 'LEVEL_LIST_BASIC_GLOW',

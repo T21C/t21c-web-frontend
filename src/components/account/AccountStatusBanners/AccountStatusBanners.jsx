@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
-import { StatusBanner } from '@/components/common/StatusBanner/StatusBanner';
+import { StatusBanner } from '@/components/common/display/StatusBanner/StatusBanner';
 
 const formatDeletionInstant = (value) => {
   if (!value) return '';

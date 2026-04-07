@@ -21,7 +21,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import api from "@/utils/api";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { MetaTags } from "@/components/common/display";
-import { StatusBanner } from "@/components/common/StatusBanner/StatusBanner";
+import { StatusBanner } from "@/components/common/display/StatusBanner/StatusBanner";
 import { 
   DownloadIcon, 
   EditIcon,
@@ -1946,6 +1946,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                           >
                           {typesSorted.map((t) => (
                             <img
+                              key={t.id ?? t.name ?? t.icon}
                               src={t.icon}
                               alt={t.name || ''}
                               className="level-detail__curation-type-icon-img"

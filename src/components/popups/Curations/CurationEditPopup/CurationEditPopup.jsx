@@ -6,9 +6,15 @@ import './curationeditpopup.css';
 import toast from 'react-hot-toast';
 import ThumbnailUpload from '@/components/common/upload/ThumbnailUpload';
 import { hasAbility, canAssignCurationType } from '@/utils/curationTypeUtils';
+import { hasAnyFlag, permissionFlags } from '@/utils/UserPermissions';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatCreatorDisplay } from '@/utils/Utility';
 import { ItemPickManager } from '@/components/common/selectors';
+
+const ABILITY_CUSTOM_CSS = 1n << 0n;
+const ABILITY_FORCE_DESCRIPTION = 1n << 11n;
+const ABILITY_ALLOW_DESCRIPTION = 1n << 12n;
+const ABILITY_CUSTOM_COLOR_THEME = 1n << 14n;
 
 function stateFromCuration(curation) {
   const types = curation?.types || [];
@@ -55,17 +61,35 @@ const CurationEditPopup = ({
   const [isSaving, setIsSaving] = useState(false);
   const [mouseDownOutside, setMouseDownOutside] = useState(false);
   const [previewPending, setPreviewPending] = useState(false);
+  /** Types from last GET curations response — used when an id is not yet in `curationTypes` (stale catalog) */
+  const [typesFromApi, setTypesFromApi] = useState([]);
   const modalRef = useRef(null);
 
   const selectedTypes = useMemo(() => {
-    const set = new Set(form.typeIds);
-    return (curationTypes || []).filter((t) => set.has(t.id));
-  }, [form.typeIds, curationTypes]);
+    const catalog = curationTypes || [];
+    const byCatalogId = new Map(catalog.map((t) => [t.id, t]));
+    const byApiId = new Map((typesFromApi || []).map((t) => [t.id, t]));
+    return form.typeIds
+      .map((id) => byCatalogId.get(id) || byApiId.get(id))
+      .filter(Boolean);
+  }, [form.typeIds, curationTypes, typesFromApi]);
 
+  const isElevatedCurationUser = user && hasAnyFlag(user, [permissionFlags.SUPER_ADMIN, permissionFlags.HEAD_CURATOR]);
+
+  const canManageThisCuration = useMemo(() => {
+    if (!user) return true;
+    if (isElevatedCurationUser) return true;
+    if (selectedTypes.length === 0) return true;
+    return selectedTypes.every((t) => canAssignCurationType(user.permissionFlags, t.abilities));
+  }, [selectedTypes, user, isElevatedCurationUser]);
+
+  /** Add-pool: show every type this user may assign; do not hide the pool when tier gating blocks editing */
   const curationTypePoolFilter = useCallback(
     (type) =>
-      !user || canAssignCurationType(user.permissionFlags, type.abilities),
-    [user]
+      !user ||
+      isElevatedCurationUser ||
+      canAssignCurationType(user.permissionFlags, type.abilities),
+    [user, isElevatedCurationUser]
   );
 
   const curationPickLabels = useMemo(
@@ -82,8 +106,21 @@ const CurationEditPopup = ({
     [t]
   );
 
-  const canUseCustomCSS = selectedTypes.some((t) => hasAbility(t, 1n << 0n));
-  const canUseCustomColor = selectedTypes.some((t) => hasAbility(t, 1n << 14n));
+  /** Visual capabilities (OR): any selected type can unlock CSS/color/description for display. */
+  const canEditCustomCSS =
+    isElevatedCurationUser ||
+    (selectedTypes.length > 0 && selectedTypes.some((t) => hasAbility(t, ABILITY_CUSTOM_CSS)));
+  const canEditCustomColor =
+    isElevatedCurationUser ||
+    (selectedTypes.length > 0 && selectedTypes.some((t) => hasAbility(t, ABILITY_CUSTOM_COLOR_THEME)));
+  const canEditDescription =
+    isElevatedCurationUser ||
+    (selectedTypes.length > 0 &&
+      selectedTypes.some(
+        (t) => hasAbility(t, ABILITY_ALLOW_DESCRIPTION) || hasAbility(t, ABILITY_FORCE_DESCRIPTION)
+      ));
+  const canUseCustomCSS = canEditCustomCSS;
+  const canUseCustomColor = canEditCustomColor;
 
   const loadForm = useCallback(async () => {
     if (!levelId) return;
@@ -94,12 +131,14 @@ const CurationEditPopup = ({
       });
       const list = res.data.curations || [];
       const first = list[0];
+      setTypesFromApi(first?.types || []);
       setForm(first ? stateFromCuration(first) : emptyFormState());
       if (first?.level) setLevel(first.level);
       else if (levelProp) setLevel(levelProp);
     } catch (e) {
       console.error(e);
       toast.error(t('curationEditPopup.errors.loadFailed'));
+      setTypesFromApi([]);
       setForm(emptyFormState());
     } finally {
       setIsLoading(false);
@@ -146,14 +185,15 @@ const CurationEditPopup = ({
 
   const validate = () => {
     for (const tid of form.typeIds) {
-      const type = curationTypes.find((x) => x.id === tid);
+      const type = selectedTypes.find((x) => x.id === tid);
       if (!type) continue;
-      if (
-        hasAbility(type, 1n << 11n) &&
-        (!form.description || !String(form.description).trim())
-      ) {
-        toast.error(t('curationEditPopup.form.descriptionRequiredType', { name: type.name }));
-        return false;
+      if (hasAbility(type, ABILITY_FORCE_DESCRIPTION)) {
+        const hasAnyText =
+          String(form.shortDescription ?? '').trim() || String(form.description ?? '').trim();
+        if (!hasAnyText) {
+          toast.error(t('curationEditPopup.form.descriptionRequiredType', { name: type.name }));
+          return false;
+        }
       }
     }
     return true;
@@ -162,16 +202,28 @@ const CurationEditPopup = ({
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!levelId || !validate()) return;
+    if (!canManageThisCuration) {
+      toast.error(t('curationEditPopup.errors.cannotManageCuration'));
+      return;
+    }
 
     try {
       setIsSaving(true);
-      const res = await api.put(`${import.meta.env.VITE_CURATIONS}/level/${levelId}`, {
-        shortDescription: form.shortDescription,
-        description: form.description,
-        customCSS: form.customCSS,
-        customColor: form.customColor,
+      // Omit visual fields the user cannot edit so the API does not treat them as an attempted update (avoids 403 on empty defaults).
+      const body = {
         typeIds: form.typeIds,
-      });
+      };
+      if (canEditDescription) {
+        body.shortDescription = form.shortDescription;
+        body.description = form.description;
+      }
+      if (canEditCustomCSS) {
+        body.customCSS = form.customCSS;
+      }
+      if (canEditCustomColor) {
+        body.customColor = form.customColor;
+      }
+      const res = await api.put(`${import.meta.env.VITE_CURATIONS}/level/${levelId}`, body);
       toast.success(t('curationEditPopup.notifications.updated'));
       onUpdate({ levelId, curations: res.data.curations, level: res.data.curations[0]?.level });
       onClose();
@@ -250,7 +302,12 @@ const CurationEditPopup = ({
               </div>
 
               <div className="curation-edit-modal__form-group">
-                <label htmlFor="curation-short">{t('curationEditPopup.form.shortDescription')}</label>
+                <label htmlFor="curation-short">
+                  {t('curationEditPopup.form.shortDescription')}
+                  {selectedTypes.some((t) => hasAbility(t, ABILITY_FORCE_DESCRIPTION)) && (
+                    <span className="required">*</span>
+                  )}
+                </label>
                 <input
                   id="curation-short"
                   type="text"
@@ -258,13 +315,14 @@ const CurationEditPopup = ({
                   onChange={(e) => setForm((p) => ({ ...p, shortDescription: e.target.value }))}
                   className="curation-edit-modal__input"
                   maxLength={255}
+                  disabled={!canManageThisCuration || !canEditDescription}
                 />
               </div>
 
               <div className="curation-edit-modal__form-group">
                 <label htmlFor="curation-desc">
                   {t('curationEditPopup.form.description')}
-                  {selectedTypes.some((t) => hasAbility(t, 1n << 11n)) && (
+                  {selectedTypes.some((t) => hasAbility(t, ABILITY_FORCE_DESCRIPTION)) && (
                     <span className="required">*</span>
                   )}
                 </label>
@@ -274,6 +332,7 @@ const CurationEditPopup = ({
                   onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))}
                   className="curation-edit-modal__textarea"
                   rows={3}
+                  disabled={!canManageThisCuration || !canEditDescription}
                 />
               </div>
 
@@ -287,12 +346,14 @@ const CurationEditPopup = ({
                       value={form.customColor}
                       onChange={(e) => setForm((p) => ({ ...p, customColor: e.target.value }))}
                       className="curation-edit-modal__color-picker"
+                      disabled={!canManageThisCuration || !canEditCustomColor}
                     />
                     <input
                       type="text"
                       value={form.customColor}
                       onChange={(e) => setForm((p) => ({ ...p, customColor: e.target.value }))}
                       className="curation-edit-modal__color-text"
+                      disabled={!canManageThisCuration || !canEditCustomColor}
                     />
                   </div>
                 </div>
@@ -311,12 +372,12 @@ const CurationEditPopup = ({
                   onChange={(e) => setForm((p) => ({ ...p, customCSS: e.target.value }))}
                   className="curation-edit-modal__css-textarea curation-edit-modal__textarea"
                   rows={6}
-                  disabled={!canUseCustomCSS}
+                  disabled={!canManageThisCuration || !canEditCustomCSS}
                 />
                 <button
                   type="button"
                   className="curation-edit-modal__preview-button"
-                  disabled={!canUseCustomCSS}
+                  disabled={!canManageThisCuration || !canEditCustomCSS}
                   onClick={() => {
                     setPreviewPending(true);
                     navigate(`/admin/curations/preview/${levelId}`, {
@@ -332,6 +393,7 @@ const CurationEditPopup = ({
                 <div className="curation-edit-modal__form-group">
                   <label>{t('curationEditPopup.form.thumbnail')}</label>
                   <ThumbnailUpload
+                    disabled={!canManageThisCuration}
                     currentThumbnail={form.previewLink}
                     onThumbnailUpdate={(url) => {
                       setForm((p) => ({ ...p, previewLink: url }));
@@ -358,7 +420,7 @@ const CurationEditPopup = ({
                 <button
                   type="submit"
                   className="curation-edit-modal__save-btn"
-                  disabled={isSaving}
+                  disabled={isSaving || !canManageThisCuration}
                 >
                   {isSaving
                     ? t('loading.saving', { ns: 'common' })

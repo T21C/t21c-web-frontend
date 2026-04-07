@@ -8,7 +8,7 @@ import { useTranslation } from "react-i18next";
 import api from "@/utils/api";
 import { EditPassPopup } from "@/components/popups/Passes";
 import { MetaTags } from "@/components/common/display";
-import { StatusBanner } from "@/components/common/StatusBanner/StatusBanner";
+import { StatusBanner } from "@/components/common/display/StatusBanner/StatusBanner";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { formatDate } from "@/utils/Utility";
 import i18next from "i18next";

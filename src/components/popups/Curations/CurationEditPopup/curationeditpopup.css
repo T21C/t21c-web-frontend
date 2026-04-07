@@ -279,6 +279,14 @@
   min-height: 80px;
 }
 
+.curation-edit-modal__textarea:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  color: rgba(255, 255, 255, 0.75);
+  background: #141414;
+  border-color: #2a2a2a;
+}
+
 .curation-edit-modal .curation-edit-modal__form-group--custom-css {
   display: flex;
   flex-direction: column;

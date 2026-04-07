@@ -38,7 +38,7 @@
     "saveAll": "Save all"
   },
   "warnings": {
-    "cssUnsupported": "Selected types do not support custom CSS."
+    "cssUnsupported": "None of the selected types support custom CSS."
   },
   "notifications": {
     "updated": "Curations saved successfully",
@@ -46,6 +46,7 @@
     "thumbnailRemoved": "Thumbnail removed successfully"
   },
   "errors": {
+    "cannotManageCuration": "You cannot edit this curation with its current types for your role.",
     "loadFailed": "Failed to load curations for this level",
     "typeRequired": "Select a type for each curation row, or remove empty rows",
     "updateFailed": "Failed to save curations",
