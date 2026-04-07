@@ -16,6 +16,8 @@ import { hasFlag } from "@/utils/UserPermissions";
 import { getSongDisplayName, getArtistDisplayName } from "@/utils/levelHelpers";
 import { sortCurationsForDisplay, sortCurationTypesForDisplay } from "@/utils/curationTypeUtils";
 
+/** Curation type names hidden from the difficulty-arc curation icons */
+const HIDDEN_CURATION_ARC_TYPE_NAMES = new Set(['C0', 'V0']);
 
 const LevelCard = ({
   level: initialLevel = null,
@@ -68,6 +70,11 @@ const LevelCard = ({
     if (!first) return [];
     const types = first.types || (first.type ? [first.type] : []);
     return sortCurationTypesForDisplay(types, curationTypesDict)
+      .filter((t) => {
+        const info = curationTypesDict[t.id] || t;
+        const name = info?.name ?? t.name;
+        return !HIDDEN_CURATION_ARC_TYPE_NAMES.has(name);
+      })
       .slice(0, 4)
       .map((t) => {
         const info = curationTypesDict[t.id] || t;
