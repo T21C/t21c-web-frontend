@@ -1974,7 +1974,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                               </span>
                             </div>
                             <div className="curation-tooltip-time">
-                              At {formatDate(curation.createdAt, i18next?.language)}
+                              Updated on {formatDate(curation.updatedAt, i18next?.language)}
                             </div>
                           </div>
                         </div>
