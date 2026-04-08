@@ -49,7 +49,23 @@
     "error": "错误：",
     "loading": "提交中……",
     "login": "上传通关记录前请先登录",
-    "form": "请正确填写所有必填项"
+    "form": "请正确填写所有必填项",
+    "more": "另有 {{count}} 项"
+  },
+  "fieldShort": {
+    "levelId": "关卡 ID",
+    "videoLink": "视频链接",
+    "player": "玩家",
+    "speed": "飙速",
+    "feelingRating": "体感难度",
+    "ePerfect": "稍快！",
+    "perfect": "完美！",
+    "lPerfect": "稍慢！",
+    "tooEarly": "太快！！",
+    "early": "太快！",
+    "late": "太慢！",
+    "rulesAccepted": "已阅读规则",
+    "keyMode": "12键/16键"
   },
   "score": {
     "needId": "输入关卡 ID",

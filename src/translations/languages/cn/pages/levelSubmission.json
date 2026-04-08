@@ -47,11 +47,21 @@
     "loading": "提交中……",
     "login": "提交关卡前请先登录",
     "form": "请正确填写所有必填项",
+    "more": "另有 {{count}} 项",
     "invalidZip": "请上传有效压缩文件",
     "invalidZipSize": "压缩文件过大（最大 {{maxSize}} MB）",
     "maxEvidenceFiles": "最多允许10个凭证图片",
     "evidenceRequired": "请求新曲师或歌曲是需要凭证",
     "evidenceFileTooLarge": "每个凭证图片必须小于 {{maxMb}} MB"
+  },
+  "fieldShort": {
+    "song": "曲名",
+    "artist": "曲师",
+    "diff": "难度",
+    "videoLink": "视频链接",
+    "charter": "谱师",
+    "directLink": "下载/工坊/Zip",
+    "evidence": "凭证"
   },
   "warnings": {
     "pendingProfiles": "下列个人资料将被创建："

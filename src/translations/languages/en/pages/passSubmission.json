@@ -48,7 +48,23 @@
     "success": "Pass submitted successfully!",
     "error": "Error: ",
     "login": "Please log in to submit a pass",
-    "form": "Please fill in all required fields correctly"
+    "form": "Please fill in all required fields correctly",
+    "more": "+ {{count}} more"
+  },
+  "fieldShort": {
+    "levelId": "Level ID",
+    "videoLink": "Video link",
+    "player": "Player",
+    "speed": "Speed",
+    "feelingRating": "Feeling difficulty",
+    "ePerfect": "Early Perfect",
+    "perfect": "Perfect",
+    "lPerfect": "Late Perfect",
+    "tooEarly": "Too Early",
+    "early": "Early",
+    "late": "Late",
+    "rulesAccepted": "Rules accepted",
+    "keyMode": "12K/16K"
   },
   "score": {
     "needId": "Enter level ID",

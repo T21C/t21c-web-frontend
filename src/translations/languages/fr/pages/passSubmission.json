@@ -49,7 +49,23 @@
     "error": "Erreur: ",
     "loading": "Envoi...",
     "login": "Vous devez être connecté pour envoyer une complétion",
-    "form": "Veuillez remplir les champs obligatoires"
+    "form": "Veuillez remplir les champs obligatoires",
+    "more": "+ {{count}} autres"
+  },
+  "fieldShort": {
+    "levelId": "ID du niveau",
+    "videoLink": "Lien vidéo",
+    "player": "Joueur",
+    "speed": "Vitesse",
+    "feelingRating": "Difficulté",
+    "ePerfect": "Parfait tôt",
+    "perfect": "Parfait",
+    "lPerfect": "Parfait tard",
+    "tooEarly": "Trop tôt",
+    "early": "Tôt",
+    "late": "Tard",
+    "rulesAccepted": "Règles acceptées",
+    "keyMode": "12K/16K"
   },
   "score": {
     "needId": "Entrez l'identifiant du niveau",

@@ -21,6 +21,7 @@ import { useNavigate } from "react-router-dom";
 import RulePopup from "./RulePopup";
 import { formatCreatorDisplay } from "@/utils/Utility";
 import { getCookie, setCookie } from "@/utils/cookieUtils";
+import toast from "react-hot-toast";
 
 
 const PassSubmissionPage = () => {
@@ -62,10 +63,6 @@ const PassSubmissionPage = () => {
   const [isFormValid, setIsFormValid] = useState(false);
   const [isFormValidDisplay, setIsFormValidDisplay] = useState({});
   const [IsUDiff, setIsUDiff] = useState(false)
-
-  const [showMessage, setShowMessage] = useState(false)
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(null);
 
   const [submitAttempt, setSubmitAttempt] = useState(false);
   const [submission, setSubmission] = useState(false);
@@ -435,24 +432,49 @@ const PassSubmissionPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setShowMessage(true);
-    setSuccess(false);
     
     if(!user){
       console.error("No user logged in");
-      setError(t('passSubmission.alert.login'));
+      toast.error(t('passSubmission.alert.login'));
       return;
     }
 
     
-    if (!Object.values(isFormValid).every(Boolean)) {
+    const validityEntries =
+      isFormValid && typeof isFormValid === 'object' ? Object.entries(isFormValid) : [];
+    const invalidKeys = validityEntries.filter(([, ok]) => !ok).map(([k]) => k);
+
+    if (invalidKeys.length > 0) {
       setSubmitAttempt(true);
-      setError(t('passSubmission.alert.form'));
+
+      const labelForKey = (k) => {
+        const fallback = {
+          levelId: 'Level ID',
+          videoLink: 'Video link',
+          player: 'Player',
+          speed: 'Speed',
+          feelingRating: 'Feeling difficulty',
+          ePerfect: 'Early Perfect',
+          perfect: 'Perfect',
+          lPerfect: 'Late Perfect',
+          tooEarly: 'Too Early',
+          early: 'Early',
+          late: 'Late',
+          rulesAccepted: 'Rules accepted',
+          keyMode: '12K/16K',
+        };
+        return t(`passSubmission.fieldShort.${k}`, { defaultValue: fallback[k] || k });
+      };
+
+      const shownCount = 3;
+      const invalidFieldsText = invalidKeys.map(labelForKey).slice(0, shownCount).join(', ');
+      const remainingCount = invalidKeys.length - shownCount;
+      const moreText = remainingCount > 0 ? ` ${t('passSubmission.alert.more', { count: remainingCount })}` : '';
+      toast.error(`${t('passSubmission.alert.form')}: ${invalidFieldsText}${moreText}`);
       return;
     }
 
     setSubmission(true);
-    setError(null);
 
     try {
       // Clean the video URL before submission
@@ -484,7 +506,7 @@ const PassSubmissionPage = () => {
       submissionForm.setDetail('is16K', IsUDiff && form.is16K);
 
       const result = await submissionForm.submit();
-      setSuccess(true);
+      toast.success(t('passSubmission.alert.success'));
       setFormStateKey(prevKey => prevKey + 1);
       setForm(initialFormState);
       setSearchInput('');
@@ -492,15 +514,12 @@ const PassSubmissionPage = () => {
 
     } catch (err) {
       console.error("Submission error:", err);
-      setError(err.response?.data?.error || err.message || err.error || "Unknown error occurred");
+      const errMsg = err.response?.data?.error || err.message || err.error || "Unknown error occurred";
+      toast.error(`${t('passSubmission.alert.error')} ${truncateString(errMsg?.message || errMsg?.toString?.() || errMsg, 120)}`);
     } finally {
       setSubmission(false);
       setSubmitAttempt(false);
     }
-  };
-
-  const handleCloseSuccessMessage = () => {
-    setShowMessage(false)
   };
 
   const searchLevels = async (query) => {
@@ -628,17 +647,6 @@ const PassSubmissionPage = () => {
       
       <div className="form-container">
         {import.meta.env.MODE !== "production" && <StagingModeWarning />}
-        <div className={`result-message ${showMessage ? 'visible' : ''}`} 
-          style={{backgroundColor: 
-          ( success? "#2b2" :
-            error? "#b22":
-            "#888"
-          )}}>
-          {success? (<p>{t('passSubmission.alert.success')}</p>) :
-          error? (<p>{t('passSubmission.alert.error')}{truncateString(error?.message || error?.toString() || error, 120)}</p>):
-          (<p>{t('loading.generic', { ns: 'common' })}</p>)}
-          <button onClick={handleCloseSuccessMessage} className="close-btn">×</button>
-        </div>
 
         <form className={`form-container ${videoDetail ? 'shadow' : ''}`}
           style={{backgroundImage: `url(${videoDetail ? videoDetail.image : placeholder})`}}>

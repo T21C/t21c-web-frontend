@@ -47,11 +47,21 @@
     "loading": "Submitting...",
     "login": "Please log in to submit a level",
     "form": "Please fill in all required fields correctly",
+    "more": "+ {{count}} more",
     "invalidZip": "Please upload a valid zip file",
     "invalidZipSize": "Zip file size is too large (max {{maxSize}} MB)",
     "maxEvidenceFiles": "Maximum 10 evidence images allowed",
     "evidenceRequired": "Evidence is required for new song/artist requests",
     "evidenceFileTooLarge": "Each evidence image must be under {{maxMb}} MB"
+  },
+  "fieldShort": {
+    "song": "Song",
+    "artist": "Artist",
+    "diff": "Difficulty",
+    "videoLink": "Video link",
+    "charter": "Charter",
+    "directLink": "Download/Workshop/Zip",
+    "evidence": "Evidence"
   },
   "warnings": {
     "pendingProfiles": "The following profiles will be created:"

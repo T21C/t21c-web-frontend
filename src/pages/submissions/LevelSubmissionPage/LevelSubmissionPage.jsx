@@ -294,19 +294,33 @@ const LevelSubmissionPage = () => {
       return;
     }
 
-    // Validate song/artist - must have either selected or text input
-    const songValue = selectedSong?.songName || form.song;
-    const artistValue = artists.length > 0 ? artists.map(a => a.name).filter(Boolean).join(', ') : form.artist;
-    
-    if (!songValue?.trim() || !artistValue?.trim() || !form.diff?.trim() || !form.videoLink?.trim()) {
-      setSubmitAttempt(true);
-      toast.error(t('levelSubmission.alert.form'));
-      return;
-    }
+    const validityEntries =
+      isFormValid && typeof isFormValid === 'object' ? Object.entries(isFormValid) : [];
+    const invalidKeys = validityEntries.filter(([, ok]) => !ok).map(([k]) => k);
 
-    if (!Object.values(isFormValid).every(Boolean)) {
+    if (invalidKeys.length > 0) {
       setSubmitAttempt(true);
-      toast.error(t('levelSubmission.alert.form'));
+
+      const labelForKey = (k) => {
+        const fallback = {
+          song: 'Song',
+          artist: 'Artist',
+          diff: 'Difficulty',
+          videoLink: 'Video link',
+          charter: 'Charter',
+          directLink: 'Download/Workshop/Zip',
+          evidence: 'Evidence',
+        };
+        return t(`levelSubmission.fieldShort.${k}`, { defaultValue: fallback[k] || k });
+      };
+
+      const shownCount = 3;
+      const invalidFieldsText = invalidKeys.map(labelForKey).slice(0, shownCount).join(', ');
+      const remainingCount = invalidKeys.length - shownCount;
+      const moreText =
+        remainingCount > 0 ? ` ${t('levelSubmission.alert.more', { count: remainingCount })}` : '';
+
+      toast.error(`${t('levelSubmission.alert.form')}: ${invalidFieldsText}${moreText}`);
       return;
     }
 

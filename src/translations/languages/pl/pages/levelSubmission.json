@@ -29,7 +29,17 @@
     "loading": "Przesyłanie...",
     "login": "Zaloguj się, aby przesłać poziom",
     "form": "Wypełnij poprawnie wszystkie wymagane pola",
+    "more": "+ {{count}} więcej",
     "maxEvidenceFiles": "Maksymalnie 10 zdjęć dowodowych",
     "evidenceFileTooLarge": "Każde zdjęcie dowodowe musi mieć mniej niż {{maxMb}} MB"
+  },
+  "fieldShort": {
+    "song": "Piosenka",
+    "artist": "Artysta",
+    "diff": "Trudność",
+    "videoLink": "Link do wideo",
+    "charter": "Charter",
+    "directLink": "Pobranie/Warsztat/Zip",
+    "evidence": "Dowód"
   }
 } 

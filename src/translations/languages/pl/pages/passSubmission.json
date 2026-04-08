@@ -49,7 +49,23 @@
     "error": "Błąd: ",
     "loading": "Przesyłanie...",
     "login": "Zaloguj się, aby przesłać przejście",
-    "form": "Wypełnij poprawnie wszystkie wymagane pola"
+    "form": "Wypełnij poprawnie wszystkie wymagane pola",
+    "more": "+ {{count}} więcej"
+  },
+  "fieldShort": {
+    "levelId": "ID poziomu",
+    "videoLink": "Link do wideo",
+    "player": "Gracz",
+    "speed": "Prędkość",
+    "feelingRating": "Trudność",
+    "ePerfect": "WPerfekcyjnie",
+    "perfect": "Perfekcyjnie",
+    "lPerfect": "PPerfekcyjnie",
+    "tooEarly": "Za wcześnie",
+    "early": "Wcześnie",
+    "late": "Późno",
+    "rulesAccepted": "Regulamin",
+    "keyMode": "12K/16K"
   },
   "score": {
     "needId": "Wpisz ID poziomu",

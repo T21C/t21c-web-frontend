@@ -49,7 +49,8 @@
     "error": "오류: ",
     "loading": "제출 중...",
     "login": "클리어 제출을 위해 로그인하세요",
-    "form": "필수 항목을 모두 올바르게 작성하세요"
+    "form": "필수 항목을 모두 올바르게 작성하세요",
+    "more": "+ {{count}}개 더"
   },
   "score": {
     "needId": "레벨 ID를 입력하세요",
@@ -59,5 +60,20 @@
   },
   "warnings": {
     "pendingProfiles": "다음 프로필이 생성 요청됩니다:"
+  },
+  "fieldShort": {
+    "levelId": "레벨 ID",
+    "videoLink": "영상 링크",
+    "player": "플레이어",
+    "speed": "배속",
+    "feelingRating": "체감 난이도",
+    "ePerfect": "빠름",
+    "perfect": "완벽",
+    "lPerfect": "느림",
+    "tooEarly": "너무 빠름",
+    "early": "빠름!",
+    "late": "느림!",
+    "rulesAccepted": "규칙 확인",
+    "keyMode": "12K/16K"
   }
 }
