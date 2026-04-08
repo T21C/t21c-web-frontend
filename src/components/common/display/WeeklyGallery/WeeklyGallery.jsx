@@ -291,19 +291,7 @@ const WeeklyGallery = ({
                   {(() => {
                     const levelRow = curation.scheduledCuration?.level || curation.level;
                     const diff = levelRow?.difficulty;
-                    const fromList = curation.scheduledCuration?.allCurationsForLevel;
-                    let typeIcons = [];
-                    if (fromList && fromList.length > 0) {
-                      typeIcons = fromList.flatMap((row) =>
-                        row.types?.length ? row.types : row.type ? [row.type] : []
-                      );
-                    } else if (curation.scheduledCuration?.types?.length) {
-                      typeIcons = curation.scheduledCuration.types;
-                    } else if (curation.scheduledCuration?.type) {
-                      typeIcons = [curation.scheduledCuration.type];
-                    } else if (curation.type) {
-                      typeIcons = [curation.type];
-                    }
+                    let typeIcons = curation.types.filter((t) => !['V0', 'C0'].includes(t.name));
                     return (
                   <div className="weekly-gallery__overlay-top">
                     <div className="weekly-gallery__difficulty-hero">

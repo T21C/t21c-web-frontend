@@ -127,8 +127,7 @@
 
 .weekly-gallery__curation-icons-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.15rem;
   margin-left: auto;
   justify-content: flex-end;
 }
