@@ -37,7 +37,7 @@
 /* Ribbon pinned to the top edge of a positioned ancestor */
 .status-banner-slot--dock {
   position: absolute;
-  top: 0;
+  top: var(--navbar-height);
   left: 0;
   right: 0;
   z-index: 1000;
