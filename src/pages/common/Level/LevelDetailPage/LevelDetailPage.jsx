@@ -45,7 +45,13 @@ import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
 import { ABILITIES, hasBit } from '@/utils/Abilities';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
-import { sortCurationsForDisplay, sortCurationTypesForDisplay } from "@/utils/curationTypeUtils";
+import {
+  getCurationTypesResolved,
+  hasAbility,
+  hydrateCurationWithCatalog,
+  sortCurationsForDisplay,
+  sortCurationTypesForDisplay,
+} from "@/utils/curationTypeUtils";
 import i18next from "i18next";
 
 const minus2Reasons = []
@@ -785,8 +791,15 @@ const LevelDetailPage = ({ mockData = null }) => {
       : res.level.curation
         ? [res.level.curation]
         : [];
-    return sortCurationsForDisplay(raw, curationTypesDict);
+    return sortCurationsForDisplay(raw, curationTypesDict).map((c) =>
+      hydrateCurationWithCatalog(c, curationTypesDict)
+    );
   }, [res?.level?.curations, res?.level?.curation, res?.level, curationTypesDict]);
+
+  const themeCurationHydrated = useMemo(() => {
+    if (!res?.level?.curation) return null;
+    return hydrateCurationWithCatalog(res.level.curation, curationTypesDict);
+  }, [res?.level?.curation, curationTypesDict]);
 
   useEffect(() => {
     const uniqueClears = new Set(sortedLeaderboard.map(player => player.playerId));
@@ -821,7 +834,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       return null;
     }
 
-    const types = curation.types || (curation.type ? [curation.type] : []);
+    const types = getCurationTypesResolved(curation, curationTypesDict);
     if (!types.some((t) => hasBit(t.abilities, ABILITIES.CUSTOM_COLOR_THEME))) {
       return null;
     }
@@ -894,7 +907,7 @@ const LevelDetailPage = ({ mockData = null }) => {
         --accent-color: ${customColor};
       }
     `;
-  }, []);
+  }, [curationTypesDict]);
 
   // Custom CSS injection system for curations
   const createCurationStyleSheet = useCallback((curation) => {
@@ -902,13 +915,13 @@ const LevelDetailPage = ({ mockData = null }) => {
       return null;
     }
 
-    const types = curation.types || (curation.type ? [curation.type] : []);
+    const types = getCurationTypesResolved(curation, curationTypesDict);
     if (types.length > 0 && !types.some((t) => hasBit(t.abilities, ABILITIES.CUSTOM_CSS))) {
       return null;
     }
 
     return sanitizeCSS(curation.customCSS);
-  }, [sanitizeCSS]);
+  }, [sanitizeCSS, curationTypesDict]);
 
   // Simple setter for external CSS overrides (for preview system)
   const setExternalCssOverrideValue = useCallback((css) => {
@@ -1237,7 +1250,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       return;
     }
 
-    if (!res?.level?.curation) {
+    if (!themeCurationHydrated) {
       // Remove custom styles if no curation
       if (customStyleElement && customStyleElement.parentNode) {
         customStyleElement.parentNode.removeChild(customStyleElement);
@@ -1251,7 +1264,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       return;
     }
 
-    const curation = res.level.curation;
+    const curation = themeCurationHydrated;
     
     // Handle custom color styles
     const customColorCSS = createCustomColorCSS(curation);
@@ -1309,7 +1322,14 @@ const LevelDetailPage = ({ mockData = null }) => {
         customColorStyleElement.parentNode.removeChild(customColorStyleElement);
       }
     };
-  }, [res?.level?.curation, createCurationStyleSheet, createCustomColorCSS, effectiveId, externalCssOverride, disableDefaultStyling]);
+  }, [
+    themeCurationHydrated,
+    createCurationStyleSheet,
+    createCustomColorCSS,
+    effectiveId,
+    externalCssOverride,
+    disableDefaultStyling,
+  ]);
 
 
 
@@ -1755,9 +1775,9 @@ const LevelDetailPage = ({ mockData = null }) => {
         data-custom-styles={(externalCssOverride || curationStyles) ? "true" : undefined}
         data-custom-color={
           (() => {
-            const cur = res?.level?.curation;
+            const cur = themeCurationHydrated;
             if (!cur?.customColor) return undefined;
-            const types = cur.types || (cur.type ? [cur.type] : []);
+            const types = getCurationTypesResolved(cur, curationTypesDict);
             return types.some((t) => hasBit(t.abilities, ABILITIES.CUSTOM_COLOR_THEME))
               ? "true"
               : undefined;
@@ -1929,7 +1949,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                   <div className="level-detail__curation-icons-row">
                     {curationsSorted.map((curation) => {
                       const typesSorted = sortCurationTypesForDisplay(
-                        curation.types || (curation.type ? [curation.type] : []),
+                        curation.types || [],
                         curationTypesDict
                       );
                       const typeLabel =
@@ -1958,6 +1978,8 @@ const LevelDetailPage = ({ mockData = null }) => {
                             role="tooltip"
                           >
                             <div className="curation-tooltip-type">{typeLabel}</div>
+                            {typesSorted.every((t) => hasAbility(t, ABILITIES.SHOW_ASSIGNER)) && (
+                            <>
                             <div className="curation-tooltip-assigned">assigned by</div>
                             <div className="curation-tooltip-user">
                               {assigner?.avatarUrl && (
@@ -1974,6 +1996,8 @@ const LevelDetailPage = ({ mockData = null }) => {
                                 @{assigner?.username || 'unknown'}
                               </span>
                             </div>
+                            </>
+                            )}
                             <div className="curation-tooltip-time">
                               Updated on {formatDate(curation.updatedAt, i18next?.language)}
                             </div>
@@ -1986,9 +2010,9 @@ const LevelDetailPage = ({ mockData = null }) => {
               )}
 
               {/* Expandable Curation Description */}
-              {(res?.level?.curation?.types?.length > 0 || res?.level?.curation?.type) &&
-               res?.level?.curation?.description && 
-               res.level.curation.description.trim() && (
+              {(themeCurationHydrated?.types?.length > 0 || themeCurationHydrated?.type) &&
+               themeCurationHydrated?.description &&
+               themeCurationHydrated.description.trim() && (
                 <div className={`curation-description-container ${isDescriptionExpanded ? 'expanded' : ''} ${isLongDescription ? 'expandable' : ''}`}>
                   <div 
                     className={`curation-description ${isDescriptionExpanded ? 'expanded' : ''}`}
@@ -1996,10 +2020,10 @@ const LevelDetailPage = ({ mockData = null }) => {
                   >
                     <div className="curation-description-content">
                       {isDescriptionExpanded ? 
-                        res.level.curation.description : 
+                        themeCurationHydrated.description : 
                         isLongDescription ? 
-                          `${res.level.curation.description.substring(0, 250)}...` : 
-                          res.level.curation.description
+                          `${themeCurationHydrated.description.substring(0, 250)}...` : 
+                          themeCurationHydrated.description
                       }
                     </div>
                     {isLongDescription && (

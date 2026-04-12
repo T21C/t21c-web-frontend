@@ -90,22 +90,6 @@ export const getDefaultColor = (abilities) => {
 };
 
 /**
- * Get hover information for a curation type
- * @param {Object} curation - Curation object with type and metadata
- * @returns {string}
- */
-export const getHoverInfo = (curation) => {
-  const info = [];
-  
-  const types = curation.types || (curation.type ? [curation.type] : []);
-  if (types.some((t) => hasAbility(t.abilities, 1n << 10n))) {
-    info.push(`By: ${curation.assignedBy || 'Unknown'}`);
-  }
-  
-  return info.join(' | ');
-};
-
-/**
  * Check if a user can assign a curation type based on their permissions
  * @param {bigint} userFlags - User's permission flags
  * @param {bigint} curationAbilities - Curation type's abilities
@@ -178,30 +162,109 @@ export const getAbilityNames = (curationType) => {
 /** Sort linked types (tags) for badges/icons */
 export const sortCurationTypesForDisplay = (types, curationTypesDict) => {
   if (!types?.length) return [];
-  return [...types].sort((a, b) => {
-    const ta = curationTypesDict[a.id] || a;
-    const tb = curationTypesDict[b.id] || b;
-    const ga = (ta?.groupSortOrder ?? 0) - (tb?.groupSortOrder ?? 0);
-    if (ga !== 0) return ga;
-    const s = (ta?.sortOrder ?? 0) - (tb?.sortOrder ?? 0);
-    if (s !== 0) return s;
-    return (ta?.id ?? 0) - (tb?.id ?? 0);
+  return [...types].sort((typeA, typeB) => {
+    const resolvedTypeA = curationTypesDict[typeA.id] || typeA;
+    const resolvedTypeB = curationTypesDict[typeB.id] || typeB;
+    const groupOrderDiff = (resolvedTypeA?.groupSortOrder ?? 0) - (resolvedTypeB?.groupSortOrder ?? 0);
+    if (groupOrderDiff !== 0) return groupOrderDiff;
+    const sortOrderDiff = (resolvedTypeA?.sortOrder ?? 0) - (resolvedTypeB?.sortOrder ?? 0);
+    if (sortOrderDiff !== 0) return sortOrderDiff;
+    return (resolvedTypeA?.id ?? 0) - (resolvedTypeB?.id ?? 0);
   });
+};
+
+/**
+ * Prefer DifficultyContext curationTypesDict[type.id] so abilities/icons/names stay current vs embedded API rows.
+ */
+export const resolveCurationTypeFromDict = (typeRef, curationTypesDict) => {
+  if (!typeRef || typeRef.id == null) return typeRef;
+  return curationTypesDict[typeRef.id] || typeRef;
+};
+
+const THEME_ABILITY_BITS = [ABILITIES.CUSTOM_CSS, ABILITIES.CUSTOM_COLOR_THEME];
+
+function pickThemeTypeFromResolvedList(types) {
+  if (!types?.length) return null;
+  for (const t of types) {
+    if (THEME_ABILITY_BITS.some((ab) => hasAbility(t, ab))) return t;
+  }
+  return types[0];
+}
+
+/**
+ * Resolved + sorted curation types for a row (M2M types, optional typeIds, or legacy `type`).
+ */
+export const getCurationTypesResolved = (curation, curationTypesDict) => {
+  if (!curation) return [];
+  const dict = curationTypesDict || {};
+  if (Array.isArray(curation.types) && curation.types.length > 0) {
+    const merged = curation.types.map((t) => resolveCurationTypeFromDict(t, dict));
+    return sortCurationTypesForDisplay(merged, dict);
+  }
+  if (Array.isArray(curation.typeIds) && curation.typeIds.length > 0) {
+    return sortCurationTypesForDisplay(
+      curation.typeIds.map((id) => dict[id]).filter(Boolean),
+      dict
+    );
+  }
+  if (curation.type?.id != null) {
+    const t = resolveCurationTypeFromDict(curation.type, dict);
+    return sortCurationTypesForDisplay([t], dict);
+  }
+  return [];
+};
+
+export const resolveCurationThemeType = (curation, curationTypesDict) => {
+  if (!curation) return null;
+  const dict = curationTypesDict || {};
+  if (curation.type?.id != null) {
+    const fromAlias = resolveCurationTypeFromDict(curation.type, dict);
+    if (fromAlias) return fromAlias;
+  }
+  if (curation.themeTypeId != null && dict[curation.themeTypeId]) {
+    return dict[curation.themeTypeId];
+  }
+  return pickThemeTypeFromResolvedList(getCurationTypesResolved(curation, dict));
+};
+
+/** Attach catalog-resolved `types` and theme `type` onto a curation object (non-mutating). */
+export const hydrateCurationWithCatalog = (curation, curationTypesDict) => {
+  if (!curation) return curation;
+  const types = getCurationTypesResolved(curation, curationTypesDict);
+  const type = resolveCurationThemeType(curation, curationTypesDict);
+  return {...curation, types, type};
+};
+
+/**
+ * @param {Object} curation - Curation row
+ * @param {Record<number, object>|undefined} curationTypesDict - optional; when set, abilities come from catalog
+ */
+export const getHoverInfo = (curation, curationTypesDict) => {
+  const info = [];
+
+  const types = curationTypesDict
+    ? getCurationTypesResolved(curation, curationTypesDict)
+    : curation.types || (curation.type ? [curation.type] : []);
+  if (types.some((t) => hasAbility(t, ABILITIES.SHOW_ASSIGNER))) {
+    info.push(`By: ${curation.assignedBy || 'Unknown'}`);
+  }
+
+  return info.join(' | ');
 };
 
 export const sortCurationsForDisplay = (curations, curationTypesDict) => {
   if (!curations?.length) return [];
-  return [...curations].sort((a, b) => {
-    const firstT = (c) =>
-      c.types?.[0] || c.type || (c.typeId != null ? curationTypesDict[c.typeId] : null);
-    const ta = firstT(a);
-    const tb = firstT(b);
-    const ga = (ta?.groupSortOrder ?? 0) - (tb?.groupSortOrder ?? 0);
-    if (ga !== 0) return ga;
-    const s = (ta?.sortOrder ?? 0) - (tb?.sortOrder ?? 0);
-    if (s !== 0) return s;
-    const tid = (ta?.id ?? 0) - (tb?.id ?? 0);
-    if (tid !== 0) return tid;
-    return (a.id ?? 0) - (b.id ?? 0);
+  const dict = curationTypesDict || {};
+  return [...curations].sort((curationA, curationB) => {
+    const getPrimaryType = (curation) => getCurationTypesResolved(curation, dict)[0] || null;
+    const primaryTypeA = getPrimaryType(curationA);
+    const primaryTypeB = getPrimaryType(curationB);
+    const groupOrderDiff = (primaryTypeA?.groupSortOrder ?? 0) - (primaryTypeB?.groupSortOrder ?? 0);
+    if (groupOrderDiff !== 0) return groupOrderDiff;
+    const sortOrderDiff = (primaryTypeA?.sortOrder ?? 0) - (primaryTypeB?.sortOrder ?? 0);
+    if (sortOrderDiff !== 0) return sortOrderDiff;
+    const typeIdDiff = (primaryTypeA?.id ?? 0) - (primaryTypeB?.id ?? 0);
+    if (typeIdDiff !== 0) return typeIdDiff;
+    return (curationA.id ?? 0) - (curationB.id ?? 0);
   });
 };

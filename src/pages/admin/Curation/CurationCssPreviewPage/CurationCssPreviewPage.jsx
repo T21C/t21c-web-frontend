@@ -5,15 +5,17 @@ import api from '@/utils/api';
 import toast from 'react-hot-toast';
 import LevelDetailPage from '@/pages/common/Level/LevelDetailPage/LevelDetailPage';
 import { ABILITIES, hasBit } from '@/utils/Abilities';
-import { canAssignCurationType } from '@/utils/curationTypeUtils';
+import { canAssignCurationType, getCurationTypesResolved } from '@/utils/curationTypeUtils';
 import { hasAnyFlag, permissionFlags } from '@/utils/UserPermissions';
 import { useAuth } from "@/contexts/AuthContext";
+import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import './curationcsspreviewpage.css';
 import { AccessDenied } from '@/components/common/display';
 
 const CurationCssPreviewPage = () => {
   const { t } = useTranslation(['pages', 'common']);
   const { user } = useAuth();
+  const { curationTypesDict } = useDifficultyContext();
   
   const { levelId } = useParams();
   const navigate = useNavigate();
@@ -35,7 +37,7 @@ const CurationCssPreviewPage = () => {
       return true;
     }
 
-    const types = curation.types || (curation.type ? [curation.type] : []);
+    const types = getCurationTypesResolved(curation, curationTypesDict);
     return types.some(
       (t) => t.abilities && canAssignCurationType(user.permissionFlags, t.abilities)
     );
@@ -126,7 +128,7 @@ const CurationCssPreviewPage = () => {
       return;
     }
 
-    const types = curation.types || (curation.type ? [curation.type] : []);
+    const types = getCurationTypesResolved(curation, curationTypesDict);
     const typeIds = types.map((t) => t.id).filter((id) => id != null);
 
     try {
@@ -220,7 +222,7 @@ const CurationCssPreviewPage = () => {
     );
   }
 
-  const curationTypesForCss = curation?.types || (curation?.type ? [curation.type] : []);
+  const curationTypesForCss = getCurationTypesResolved(curation, curationTypesDict);
   const hasAnyCustomCssType = curationTypesForCss.some((t) => hasBit(t?.abilities, ABILITIES.CUSTOM_CSS));
   if (!hasAnyCustomCssType) {
     const currentUrl = window.location.origin + location.pathname;

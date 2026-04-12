@@ -14,7 +14,11 @@ import { ABILITIES, hasBit } from "@/utils/Abilities";
 import { permissionFlags } from "@/utils/UserPermissions";
 import { hasFlag } from "@/utils/UserPermissions";
 import { getSongDisplayName, getArtistDisplayName } from "@/utils/levelHelpers";
-import { sortCurationsForDisplay, sortCurationTypesForDisplay } from "@/utils/curationTypeUtils";
+import {
+  getCurationTypesResolved,
+  sortCurationsForDisplay,
+  sortCurationTypesForDisplay,
+} from "@/utils/curationTypeUtils";
 
 /** Curation type names hidden from the difficulty-arc curation icons */
 const HIDDEN_CURATION_ARC_TYPE_NAMES = new Set(['C0', 'V0']);
@@ -68,7 +72,7 @@ const LevelCard = ({
   const curationTypeIconSlots = useMemo(() => {
     const first = curationsList[0];
     if (!first) return [];
-    const types = first.types || (first.type ? [first.type] : []);
+    const types = getCurationTypesResolved(first, curationTypesDict);
     return sortCurationTypesForDisplay(types, curationTypesDict)
       .filter((t) => {
         const info = curationTypesDict[t.id] || t;
