@@ -156,13 +156,171 @@
   background-color: rgba(255, 255, 255, 0.2);
 }
 
+.level-upload-management-popup .upload-actions-primary {
+  width: 100%;
+}
+
+.level-upload-management-popup .upload-actions-inline {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: stretch;
+  width: 100%;
+}
+
+.level-upload-management-popup .upload-actions-inline .upload-button{
+  flex: 1 1 140px;
+  min-width: 0;
+}
+
+.level-upload-management-popup .upload-button--full {
+  width: 100%;
+}
+
+.level-upload-management-popup .upload-from-url-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  padding: 12px;
+  background-color: #252525;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+.level-upload-management-popup .upload-from-url-panel-header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.level-upload-management-popup .upload-from-url-panel-close {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: #ffffff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.level-upload-management-popup .upload-from-url-panel-close:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.level-upload-management-popup .upload-from-url-panel-close:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.level-upload-management-popup .upload-from-url-title {
+  margin: 0;
+  color: #ffffff;
+  font-size: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.level-upload-management-popup .upload-import-button {
+  padding: 10px 20px;
+  border: 2px solid #417fc6;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s, color 0.2s;
+  background-color: transparent;
+  color: #7eb3ea;
+}
+
+.level-upload-management-popup .upload-import-button:hover:not(:disabled) {
+  background-color: rgba(65, 127, 198, 0.2);
+  color: #ffffff;
+}
+
+.level-upload-management-popup .upload-import-button:disabled {
+  border-color: #2a2a2a;
+  color: rgba(255, 255, 255, 0.4);
+  cursor: not-allowed;
+}
+
+.level-upload-management-popup .upload-from-url-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.level-upload-management-popup .upload-from-url-input {
+  flex: 1 1 200px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid #444;
+  border-radius: 4px;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: 0.9rem;
+}
+
+.level-upload-management-popup .upload-from-url-input:disabled {
+  opacity: 0.6;
+}
+
+.level-upload-management-popup .upload-from-url-submit {
+  flex: 0 0 auto;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  background-color: #417fc6;
+  color: white;
+  transition: background-color 0.2s;
+}
+
+.level-upload-management-popup .upload-from-url-submit:hover:not(:disabled) {
+  background-color: #2d67a1;
+}
+
+.level-upload-management-popup .upload-from-url-submit:disabled {
+  background-color: #2a2a2a;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
+}
+
+.level-upload-management-popup .progress-fill--indeterminate {
+  width: 38%;
+  margin-left: 0;
+  animation: level-upload-url-progress 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes level-upload-url-progress {
+  from {
+    margin-left: 0;
+  }
+  to {
+    margin-left: 62%;
+  }
+}
+
 .level-upload-management-popup .upload-actions {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  margin-top: 4px;
 }
 
 .level-upload-management-popup .upload-button,
+.level-upload-management-popup .upload-import-button,
 .level-upload-management-popup .delete-button,
 .level-upload-management-popup .select-button,
 .level-upload-management-popup .cancel-upload-button {
@@ -181,6 +339,12 @@
 
 .level-upload-management-popup .upload-button:hover {
   background-color: #2d67a1;
+}
+
+.level-upload-management-popup .upload-button:disabled {
+  background-color: #2a2a2a;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: not-allowed;
 }
 
 .level-upload-management-popup .delete-button {
@@ -307,6 +471,7 @@
   }
 
   .level-upload-management-popup .upload-button,
+  .level-upload-management-popup .upload-import-button,
   .level-upload-management-popup .delete-button,
   .level-upload-management-popup .select-button,
   .level-upload-management-popup .cancel-upload-button {
@@ -327,6 +492,7 @@
   }
 
   .level-upload-management-popup .upload-button,
+  .level-upload-management-popup .upload-import-button,
   .level-upload-management-popup .delete-button,
   .level-upload-management-popup .select-button,
   .level-upload-management-popup .cancel-upload-button {

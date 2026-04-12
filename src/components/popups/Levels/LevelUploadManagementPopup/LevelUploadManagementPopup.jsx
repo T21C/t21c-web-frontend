@@ -7,9 +7,19 @@ import { uploadFileInChunks, validateChunkedUpload } from '@/utils/chunkedUpload
 import { isCdnUrl } from '@/utils/Utility';
 import { CrossIcon } from '@/components/common/icons';
 
-const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, setLevel }) => {
+const LevelUploadManagementPopup = ({
+  level,
+  formData,
+  setFormData,
+  onClose,
+  setLevel,
+  isSuperAdmin = false,
+}) => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
+  const [urlImportIndeterminate, setUrlImportIndeterminate] = useState(false);
+  const [urlImportPanelOpen, setUrlImportPanelOpen] = useState(false);
+  const [importUrl, setImportUrl] = useState('');
   const [error, setError] = useState(null);
   const [levelFiles, setLevelFiles] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState(null);
@@ -73,6 +83,27 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
     fetchLevelFiles();
   }, [formData]);
 
+  useEffect(() => {
+    const v = level?.dlLink;
+    if (!v || v === 'removed') {
+      setImportUrl('');
+    } else {
+      setImportUrl(String(v));
+    }
+  }, [level?.id, level?.dlLink]);
+
+  useEffect(() => {
+    setUrlImportPanelOpen(false);
+  }, [level?.id]);
+
+  const closeUrlImportPanel = () => {
+    if (isUploading) {
+      return;
+    }
+    setUrlImportPanelOpen(false);
+    setError(null);
+  };
+
   // Cleanup: Cancel any ongoing requests when component unmounts
   useEffect(() => {
     return () => {
@@ -92,6 +123,7 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
 
     try {
       setIsUploading(true);
+      setUrlImportIndeterminate(false);
       setError(null);
       setUploadProgress(0);
 
@@ -165,6 +197,70 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
       setError(error.response?.data?.error || t('levelUploadManagement.errors.uploadFailed'));
     } finally {
       setIsUploading(false);
+      abortControllerRef.current = null;
+    }
+  };
+
+  const handleUploadFromUrl = async () => {
+    const trimmed = importUrl.trim();
+    if (!trimmed) {
+      setError(t('levelUploadManagement.errors.missingUrl'));
+      return;
+    }
+    if (isCdnUrl(trimmed)) {
+      setError(t('levelUploadManagement.errors.cdnNotAllowed'));
+      return;
+    }
+
+    abortControllerRef.current = new AbortController();
+    const signal = abortControllerRef.current.signal;
+
+    try {
+      setIsUploading(true);
+      setUrlImportIndeterminate(true);
+      setError(null);
+      setUploadProgress(0);
+
+      const response = await api.post(
+        `${import.meta.env.VITE_LEVELS}/${level.id}/upload-from-url`,
+        {url: trimmed},
+        {
+          signal,
+          timeout: 300000,
+        },
+      );
+
+      if (signal.aborted) {
+        return;
+      }
+
+      if (response.data.success) {
+        const updatedLevel = response.data.level || {};
+        const newDlLink = updatedLevel.dlLink || response.data.dlLink;
+        setFormData((prev) => ({
+          ...prev,
+          dlLink: newDlLink,
+        }));
+        if (newDlLink) {
+          setImportUrl(String(newDlLink));
+        }
+        if (setLevel) {
+          setLevel({level: {...level, ...updatedLevel, dlLink: newDlLink}});
+        }
+        setUploadProgress(100);
+        fetchLevelFiles();
+      }
+    } catch (err) {
+      if (api.isCancel && api.isCancel(err)) {
+        return;
+      }
+      if (err.name === 'AbortError' || err.name === 'CanceledError') {
+        return;
+      }
+      setError(err.response?.data?.error || t('levelUploadManagement.errors.importFailed'));
+    } finally {
+      setIsUploading(false);
+      setUrlImportIndeterminate(false);
       abortControllerRef.current = null;
     }
   };
@@ -272,13 +368,15 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
         {isUploading ? (
           <div className="upload-progress">
             <div className="progress-bar">
-              <div 
-                className="progress-fill"
-                style={{ width: `${uploadProgress}%` }}
+              <div
+                className={`progress-fill${urlImportIndeterminate ? ' progress-fill--indeterminate' : ''}`}
+                style={urlImportIndeterminate ? undefined : {width: `${uploadProgress}%`}}
               />
             </div>
             <div className="progress-text">
-              {t('levelUploadManagement.upload.progress', { progress: uploadProgress.toFixed(2) })}
+              {urlImportIndeterminate
+                ? t('levelUploadManagement.upload.importFromUrl')
+                : t('levelUploadManagement.upload.progress', {progress: uploadProgress.toFixed(2)})}
             </div>
             <button
               className="cancel-upload-button"
@@ -370,16 +468,90 @@ const LevelUploadManagementPopup = ({ level, formData, setFormData, onClose, set
               ref={fileInputRef}
               style={{ display: 'none' }}
             />
-            <button 
-              className="upload-button"
-              onClick={() => fileInputRef.current?.click()}
-            >
-              {t('levelUploadManagement.buttons.uploadNew')}
-            </button>
+            <div className="upload-actions-primary">
+              {isSuperAdmin ? (
+                urlImportPanelOpen ? (
+                  <div className="upload-from-url-panel">
+                    <div className="upload-from-url-panel-header">
+                      <h3 className="upload-from-url-title">
+                        {t('levelUploadManagement.uploadFromUrl.title')}
+                      </h3>
+                      <button
+                        type="button"
+                        className="upload-from-url-panel-close"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          closeUrlImportPanel();
+                        }}
+                        disabled={isUploading}
+                        aria-label={t('levelUploadManagement.uploadFromUrl.closePanelAria')}
+                      >
+                        <CrossIcon color="#fff" size="20px" />
+                      </button>
+                    </div>
+                    <div className="upload-from-url-row">
+                      <input
+                        type="url"
+                        className="upload-from-url-input"
+                        value={importUrl}
+                        onChange={(e) => {
+                          setImportUrl(e.target.value);
+                          setError(null);
+                        }}
+                        placeholder={t('levelUploadManagement.uploadFromUrl.placeholder')}
+                        disabled={isUploading}
+                        autoComplete="off"
+                      />
+                      <button
+                        type="button"
+                        className="upload-from-url-submit"
+                        onClick={handleUploadFromUrl}
+                        disabled={isUploading || !importUrl.trim()}
+                      >
+                        {t('levelUploadManagement.uploadFromUrl.submit')}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="upload-actions-inline">
+                    <button
+                      type="button"
+                      className="upload-button"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={isUploading}
+                    >
+                      {t('levelUploadManagement.buttons.uploadNew')}
+                    </button>
+                    <button
+                      type="button"
+                      className="upload-import-button"
+                      onClick={() => {
+                        setError(null);
+                        setUrlImportPanelOpen(true);
+                      }}
+                      disabled={isUploading}
+                    >
+                      {t('levelUploadManagement.buttons.import')}
+                    </button>
+                  </div>
+                )
+              ) : (
+                <button
+                  type="button"
+                  className="upload-button upload-button--full"
+                  onClick={() => fileInputRef.current?.click()}
+                  disabled={isUploading}
+                >
+                  {t('levelUploadManagement.buttons.uploadNew')}
+                </button>
+              )}
+            </div>
             {isCdnUrl(level.dlLink) && (
-              <button 
+              <button
+                type="button"
                 className="delete-button"
                 onClick={handleDelete}
+                disabled={isUploading}
               >
                 {t('levelUploadManagement.buttons.deleteCurrent')}
               </button>

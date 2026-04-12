@@ -892,6 +892,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
           onClose={() => setShowUploadManagement(false)}
           setFormData={setFormData}
           formData={formData}
+          isSuperAdmin={isSuperAdmin}
         />
       )}
 

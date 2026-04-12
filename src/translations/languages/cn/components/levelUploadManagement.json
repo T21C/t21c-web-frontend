@@ -6,7 +6,11 @@
     "fetchFailed": "获取关卡文件失败",
     "uploadFailed": "上传关卡文件失败",
     "selectFailed": "选择关卡文件失败",
-    "deleteFailed": "删除关卡文件失败"
+    "deleteFailed": "删除关卡文件失败",
+    "missingUrl": "请输入 URL",
+    "cdnNotAllowed": "该链接指向站点 CDN，请使用直接下载链接。",
+    "invalidUrl": "无效的 URL",
+    "importFailed": "从 URL 导入压缩包失败"
   },
   "sections": {
     "levelSelection": {
@@ -26,12 +30,20 @@
     "select": "选择关卡",
     "currentlySelected": "当前选中",
     "uploadNew": "上传新关卡",
+    "import": "导入",
     "deleteCurrent": "删除当前关卡",
     "close": "✖",
     "cancel": "取消上传"
   },
   "upload": {
-    "progress": "上传中……{{progress}}%"
+    "progress": "上传中……{{progress}}%",
+    "importFromUrl": "正在从 URL 导入…"
+  },
+  "uploadFromUrl": {
+    "title": "从 URL 上传",
+    "placeholder": "https://…",
+    "submit": "导入",
+    "closePanelAria": "关闭并返回上传选项"
   },
   "confirmDelete": "你确定要删除此关卡文件吗？此操作无法撤消。",
   "confirmCloseDuringUpload": "上传中。你确定要取消吗？"
