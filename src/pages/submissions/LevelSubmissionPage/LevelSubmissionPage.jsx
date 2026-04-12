@@ -29,8 +29,50 @@ const encodeFilename = (str) => {
     .join('');
 };
 
-const isYsmodOnlyState = (verificationState) =>
-  typeof verificationState === 'string' && verificationState.toLowerCase() === 'ysmod_only';
+/** Keep in sync with server/src/server/submissions/submissionEvidenceRules.ts (display-only). */
+const SONG_VERIFICATION_NO_EVIDENCE = new Set(['ysmod_only', 'allowed', 'tuf_verified']);
+const ARTIST_VERIFICATION_NO_EVIDENCE = new Set(['ysmod_only', 'allowed', 'mostly_allowed', 'tuf_verified']);
+const ARTIST_LINEUP_WAIVES_SONG_EVIDENCE = new Set(['allowed', 'mostly_allowed']);
+
+const normalizeVerificationState = (value) =>
+  typeof value === 'string' && value.trim() ? value.trim().toLowerCase() : null;
+
+const songStateDoesNotRequireEvidenceDisplay = (state) => {
+  const n = normalizeVerificationState(state);
+  return Boolean(n && SONG_VERIFICATION_NO_EVIDENCE.has(n));
+};
+
+const artistStateDoesNotRequireEvidenceDisplay = (state) => {
+  const n = normalizeVerificationState(state);
+  return Boolean(n && ARTIST_VERIFICATION_NO_EVIDENCE.has(n));
+};
+
+const artistLineupWaivesSongEvidenceDisplay = (establishedStates) => {
+  if (!establishedStates.length) return false;
+  return establishedStates.every((s) => {
+    const n = normalizeVerificationState(s);
+    return Boolean(n && ARTIST_LINEUP_WAIVES_SONG_EVIDENCE.has(n));
+  });
+};
+
+const getEstablishedArtistStatesForDisplay = (artistList) =>
+  artistList.filter((a) => a.id && !a.isNewRequest).map((a) => a.verificationState);
+
+/** UI hint only; server enforces evidence in form route. */
+const displaySongEvidenceLikelyRequired = (song, artistList) => {
+  if (!song?.isNewRequest) return false;
+  if (song.songId && songStateDoesNotRequireEvidenceDisplay(song.verificationState)) return false;
+  const lineup = getEstablishedArtistStatesForDisplay(artistList || []);
+  if (artistLineupWaivesSongEvidenceDisplay(lineup)) return false;
+  return true;
+};
+
+const displayArtistEvidenceLikelyRequired = (artistList) =>
+  artistList.some((a) => {
+    if (!a.isNewRequest) return false;
+    if (!a.id) return true;
+    return !artistStateDoesNotRequireEvidenceDisplay(a.verificationState);
+  });
 
 const LevelSubmissionPage = () => {
   const initialFormState = {
@@ -59,9 +101,7 @@ const LevelSubmissionPage = () => {
     songId: null,
     artistId: null,
     isNewSongRequest: false,
-    isNewArtistRequest: false,
-    requiresSongEvidence: false,
-    requiresArtistEvidence: false
+    isNewArtistRequest: false
   };
 
   const { t } = useTranslation('pages');
@@ -169,16 +209,6 @@ const LevelSubmissionPage = () => {
     // Validate download links - only required if no zip is uploaded
     validationResult.directLink = form.levelZip || form.dlLink?.trim?.() !== '' || form.workshopLink?.trim?.() !== '';
     
-    // Validate evidence - required only when a new request is not ysmod_only
-    const hasNewSongRequest = selectedSong?.isNewRequest || false;
-    const hasNewArtistRequests = artists.some(artist => artist.isNewRequest);
-    const requiresSongEvidence = hasNewSongRequest && !isYsmodOnlyState(selectedSong?.verificationState);
-    const requiresArtistEvidence = artists.some(
-      artist => artist.isNewRequest && !isYsmodOnlyState(artist.verificationState)
-    );
-    const requiresEvidence = requiresSongEvidence || requiresArtistEvidence;
-    validationResult.evidence = !requiresEvidence || evidenceFiles.length > 0;
-    
     // Check for pending profile creations
     const newPendingProfiles = [];
     
@@ -224,7 +254,7 @@ const LevelSubmissionPage = () => {
 
   useEffect(() => {
     validateForm();
-  }, [form, submitAttempt, charters, vfxers, team, selectedSong, artists, evidenceFiles]);
+  }, [form, submitAttempt, charters, vfxers, team, selectedSong, artists]);
 
   useEffect(() => {
     const { videoLink } = form;
@@ -309,7 +339,6 @@ const LevelSubmissionPage = () => {
           videoLink: 'Video link',
           charter: 'Charter',
           directLink: 'Download/Workshop/Zip',
-          evidence: 'Evidence',
         };
         return t(`levelSubmission.fieldShort.${k}`, { defaultValue: fallback[k] || k });
       };
@@ -371,14 +400,6 @@ const LevelSubmissionPage = () => {
       // Check if any artist is a new request
       const hasNewArtistRequest = artists.some(artist => artist.isNewRequest);
       submissionForm.setDetail('isNewArtistRequest', hasNewArtistRequest);
-      // Evidence is required for new requests unless they are ysmod_only
-      const requiresSongEvidence = (selectedSong?.isNewRequest || false) && !isYsmodOnlyState(selectedSong?.verificationState);
-      const requiresArtistEvidence = artists.some(
-        artist => artist.isNewRequest && !isYsmodOnlyState(artist.verificationState)
-      );
-      submissionForm.setDetail('requiresSongEvidence', requiresSongEvidence);
-      submissionForm.setDetail('requiresArtistEvidence', requiresArtistEvidence);
-      submissionForm.setDetail('songVerificationState', selectedSong?.verificationState || null);
       submissionForm.setDetail('diff', form.diff);
       submissionForm.setDetail('suffix', form.suffix || '');
       submissionForm.setDetail('videoLink', cleanedVideoUrl);
@@ -397,20 +418,13 @@ const LevelSubmissionPage = () => {
           artistName: artist.name,
           artistId: artist.id,
           isNewRequest: artist.isNewRequest,
-          requiresEvidence: artist.isNewRequest ? !isYsmodOnlyState(artist.verificationState) : false,
           verificationState: artist.verificationState || null
         }));
       
       submissionForm.setDetail('artistRequests', artistRequests);
       
-      // Add evidence files if present - FormManager will handle File objects
-      // Evidence is required when new song/artist requests exist
-      const requiresEvidence = requiresSongEvidence || requiresArtistEvidence;
-      if (evidenceFiles.length > 0 || requiresEvidence) {
-        if (evidenceFiles.length === 0 && requiresEvidence) {
-          throw new Error('Evidence is required for new song/artist requests');
-        }
-        submissionForm.setDetail('evidence', evidenceFiles); // Pass as array
+      if (evidenceFiles.length > 0) {
+        submissionForm.setDetail('evidence', evidenceFiles);
         submissionForm.setDetail('evidenceType', evidenceType);
       }
       
@@ -614,10 +628,7 @@ const LevelSubmissionPage = () => {
       ...prev,
       artist: artistDisplayName,
       artistId: updatedArtists.length === 1 && updatedArtists[0].id ? updatedArtists[0].id : null,
-      isNewArtistRequest: hasNewArtistRequest,
-      requiresArtistEvidence: updatedArtists.some(
-        a => a.isNewRequest && !isYsmodOnlyState(a.verificationState)
-      )
+      isNewArtistRequest: hasNewArtistRequest
     }));
   };
 
@@ -638,10 +649,7 @@ const LevelSubmissionPage = () => {
       ...prev,
       artist: artistDisplayName,
       artistId: updatedArtists.length === 1 && updatedArtists[0].id ? updatedArtists[0].id : null,
-      isNewArtistRequest: hasNewArtistRequest,
-      requiresArtistEvidence: updatedArtists.some(
-        a => a.isNewRequest && !isYsmodOnlyState(a.verificationState)
-      )
+      isNewArtistRequest: hasNewArtistRequest
     }));
   };
 
@@ -821,21 +829,13 @@ const LevelSubmissionPage = () => {
           <SongSelectorPopup
             onClose={() => setShowSongSelector(false)}
             onSelect={async (songData) => {
-              const requiresEvidence = songData.isNewRequest
-                ? !isYsmodOnlyState(songData.verificationState)
-                : (songData.requiresEvidence || false);
-              const finalSongData = {
-                ...songData,
-                requiresEvidence: requiresEvidence
-              };
-              
+              const finalSongData = {...songData};
               setSelectedSong(finalSongData);
               setForm(prev => ({
                 ...prev,
                 song: finalSongData.songName || prev.song,
                 songId: finalSongData.songId || null,
-                isNewSongRequest: finalSongData.isNewRequest || false,
-                requiresSongEvidence: requiresEvidence
+                isNewSongRequest: finalSongData.isNewRequest || false
               }));
               
               // If a valid song is selected (not a new request), fetch artists and auto-assign them
@@ -888,10 +888,7 @@ const LevelSubmissionPage = () => {
                     ...prev,
                     artist: artistDisplayName,
                     artistId: artists.length === 1 && artists[0].id ? artists[0].id : null,
-                    isNewArtistRequest: hasNewArtistRequest,
-                    requiresArtistEvidence: artists.some(
-                      a => a.isNewRequest && !isYsmodOnlyState(a.verificationState)
-                    )
+                    isNewArtistRequest: hasNewArtistRequest
                   }));
                 }
               }
@@ -907,13 +904,8 @@ const LevelSubmissionPage = () => {
           <ArtistSelectorPopup
             onClose={() => setShowArtistSelector({ show: false, index: 0 })}
             onSelect={(artistData) => {
-              // Evidence is required for new artist requests unless they are ysmod_only
-              const requiresEvidence = artistData.isNewRequest
-                ? !isYsmodOnlyState(artistData.verificationState)
-                : (artistData.requiresEvidence || false);
               const finalArtistData = {
                 ...artistData,
-                requiresEvidence: requiresEvidence,
                 verificationState: artistData.verificationState || null
               };
               
@@ -930,15 +922,11 @@ const LevelSubmissionPage = () => {
               // Update form with combined artist names
               const artistDisplayName = updatedArtists.map(a => a.name).filter(Boolean).join(', ');
               const hasNewArtistRequest = updatedArtists.some(a => a.isNewRequest);
-              const requiresArtistEvidence = updatedArtists.some(
-                a => a.isNewRequest && !isYsmodOnlyState(a.verificationState)
-              );
               setForm(prev => ({
                 ...prev,
                 artist: artistDisplayName,
                 artistId: updatedArtists.length === 1 && updatedArtists[0].id ? updatedArtists[0].id : null,
-                isNewArtistRequest: hasNewArtistRequest,
-                requiresArtistEvidence: requiresArtistEvidence
+                isNewArtistRequest: hasNewArtistRequest
               }));
               
               setShowArtistSelector({ show: false, index: 0 });
@@ -1187,10 +1175,9 @@ const LevelSubmissionPage = () => {
                     </label>
                   )}
                 </div>
-                {evidenceFiles.length === 0 && (
-                  ((selectedSong?.isNewRequest && !isYsmodOnlyState(selectedSong?.verificationState)) ||
-                    artists.some(artist => artist.isNewRequest && !isYsmodOnlyState(artist.verificationState)))
-                ) && (
+                {evidenceFiles.length === 0 &&
+                  (displaySongEvidenceLikelyRequired(selectedSong, artists) ||
+                    displayArtistEvidenceLikelyRequired(artists)) && (
                   <div className="evidence-required-warning" style={{ color: 'red', marginTop: '10px' }}>
                     {t('levelSubmission.alert.evidenceRequired')}
                   </div>

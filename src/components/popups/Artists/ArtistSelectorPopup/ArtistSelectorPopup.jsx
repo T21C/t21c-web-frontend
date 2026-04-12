@@ -156,7 +156,6 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
         artistName: newName.trim(),
         isNewRequest: true,
         verificationState: verificationState,
-        requiresEvidence: verificationState === 'declined' || verificationState === 'mostly_declined'
       };
 
       onSelect(newArtistData);
@@ -184,7 +183,6 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
         artistId: selectedArtistId,
         artistName: artistDetails.name,
         isNewRequest: false,
-        requiresEvidence: false,
         verificationState: artistDetails.verificationState || null
       };
 

@@ -548,9 +548,9 @@ const LevelSubmissions = () => {
           artistRequestId: artistRequestId,
           artistName: artistData.artistName,
           isNewRequest: artistData.isNewRequest || false,
-          requiresEvidence: artistData.isNewRequest 
+          requiresEvidence: artistData.isNewRequest
             ? (artistData.verificationState === 'declined' || artistData.verificationState === 'mostly_declined')
-            : (artistData.requiresEvidence || false),
+            : false,
           verificationState: artistData.verificationState || null
         }
       );

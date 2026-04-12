@@ -48,7 +48,7 @@ export function AccountStatusBanners({ variant = 'edit', user, navigate }) {
     return (
       <StatusBanner
         tone="accent"
-        placement={placement}
+        placement="dock"
         interactive
         onClick={() => navigate?.('/profile/verify-email')}
         role="button"
