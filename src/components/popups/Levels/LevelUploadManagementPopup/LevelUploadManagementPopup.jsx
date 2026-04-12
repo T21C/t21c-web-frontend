@@ -35,6 +35,25 @@ const LevelUploadManagementPopup = ({
 
   const { job: cdnJob } = useJobProgressStream(cdnJobId, Boolean(isUploading && cdnJobId));
 
+  /** Prefer API `error` + `code`; append HTTP code when helpful for admins. */
+  const formatAxiosLevelError = (err, fallbackMessage) => {
+    const data = err.response?.data;
+    const status = err.response?.status;
+    const msg = typeof data?.error === 'string' ? data.error.trim() : '';
+    const code =
+      typeof data?.code === 'number' ? data.code : typeof status === 'number' ? status : null;
+    if (msg && code != null && !/\(HTTP\s*\d+\)/i.test(msg) && !/\bHTTP\s*\d{3}\b/i.test(msg)) {
+      return `${msg} (HTTP ${code})`;
+    }
+    if (msg) {
+      return msg;
+    }
+    if (code != null) {
+      return `${fallbackMessage} (HTTP ${code})`;
+    }
+    return fallbackMessage;
+  };
+
   const fetchLevelFiles = async () => {
     if (formData.dlLink && formData.dlLink !== 'removed' && isCdnUrl(formData.dlLink)) {
       try {
@@ -200,7 +219,7 @@ const LevelUploadManagementPopup = ({
       if (error.name === 'AbortError' || error.name === 'CanceledError') {
         return;
       }
-      setError(error.response?.data?.error || t('levelUploadManagement.errors.uploadFailed'));
+      setError(formatAxiosLevelError(error, t('levelUploadManagement.errors.uploadFailed')));
     } finally {
       setIsUploading(false);
       setCdnJobId(null);
@@ -265,7 +284,7 @@ const LevelUploadManagementPopup = ({
       if (err.name === 'AbortError' || err.name === 'CanceledError') {
         return;
       }
-      setError(err.response?.data?.error || t('levelUploadManagement.errors.importFailed'));
+      setError(formatAxiosLevelError(err, t('levelUploadManagement.errors.importFailed')));
     } finally {
       setIsUploading(false);
       setCdnJobId(null);
@@ -291,7 +310,7 @@ const LevelUploadManagementPopup = ({
         setError(result.data.error || t('levelUploadManagement.errors.selectFailed'));
       }
     } catch (error) {
-      setError(error.response?.data?.error || t('levelUploadManagement.errors.selectFailed'));
+      setError(formatAxiosLevelError(error, t('levelUploadManagement.errors.selectFailed')));
     } finally {
       setIsSelecting(false);
     }
@@ -324,7 +343,7 @@ const LevelUploadManagementPopup = ({
         onClose();
       }
     } catch (error) {
-      setError(error.response?.data?.error || t('levelUploadManagement.errors.deleteFailed'));
+      setError(formatAxiosLevelError(error, t('levelUploadManagement.errors.deleteFailed')));
     }
   };
 
