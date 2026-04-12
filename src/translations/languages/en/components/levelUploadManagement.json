@@ -37,7 +37,9 @@
   },
   "upload": {
     "progress": "Uploading... {{progress}}%",
-    "importFromUrl": "Importing from URL…"
+    "importFromUrl": "Importing from URL…",
+    "urlStageDownload": "Download",
+    "urlStageCdn": "CDN"
   },
   "uploadFromUrl": {
     "title": "Upload from URL",

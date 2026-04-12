@@ -1,0 +1,74 @@
+.zip-level-files-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: min(50vh, 360px);
+  overflow-y: auto;
+}
+
+.zip-level-files-list--selection-disabled .zip-level-files-list__item {
+  cursor: not-allowed;
+  opacity: 0.82;
+}
+
+.zip-level-files-list__item {
+  padding: 10px;
+  background-color: var(--color-black-t20);
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-align: left;
+  border: 1px solid transparent;
+}
+
+.zip-level-files-list__item:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.zip-level-files-list__item--selected {
+  background-color: #417fc6;
+  color: #fff;
+}
+
+.zip-level-files-list__item--selected:hover {
+  background-color: #3a72b8;
+}
+
+.zip-level-files-list__item--target {
+  border: 2px solid rgba(255, 200, 100, 0.6);
+}
+
+.zip-level-files-list__name {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.zip-level-files-list__path {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 8px;
+  word-break: break-all;
+  font-family: monospace;
+}
+
+.zip-level-files-list__item--selected .zip-level-files-list__path {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.zip-level-files-list__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.zip-level-files-list__meta span {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.zip-level-files-list__item--selected .zip-level-files-list__meta span {
+  background-color: rgba(255, 255, 255, 0.2);
+}

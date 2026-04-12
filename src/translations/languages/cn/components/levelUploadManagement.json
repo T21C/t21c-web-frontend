@@ -37,7 +37,9 @@
   },
   "upload": {
     "progress": "上传中……{{progress}}%",
-    "importFromUrl": "正在从 URL 导入…"
+    "importFromUrl": "正在从 URL 导入…",
+    "urlStageDownload": "下载",
+    "urlStageCdn": "CDN"
   },
   "uploadFromUrl": {
     "title": "从 URL 上传",

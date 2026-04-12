@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { useJobProgressStream } from '@/hooks/useJobProgressStream';
 import './PackDownloadPopup.css';
 import { formatEstimatedSize } from '@/utils/packDownloadUtils';
 
@@ -15,15 +16,16 @@ const PackDownloadPopup = ({
 }) => {
   const { t } = useTranslation('components');
   const popupRef = useRef(null);
-  const eventSourceRef = useRef(null);
   const [step, setStep] = useState('confirm');
   const [error, setError] = useState(null);
   const [downloadData, setDownloadData] = useState(null);
-  const [progress, setProgress] = useState(null);
   const [trimFolderNames, setTrimFolderNames] = useState(true);
-  
-  // Track the pre-generated downloadId for SSE subscription
-  const [preDownloadId, setPreDownloadId] = useState(null);
+  const [packJobId, setPackJobId] = useState(null);
+
+  const { job: packJob } = useJobProgressStream(
+    packJobId,
+    Boolean(isOpen && step === 'processing' && packJobId)
+  );
 
   const MAX_DOWNLOAD_SIZE_BYTES = 15 * 1024 * 1024 * 1024; // 15GB
   const exceedsSizeLimit = (sizeSummary?.totalBytes || 0) > MAX_DOWNLOAD_SIZE_BYTES;
@@ -32,75 +34,14 @@ const PackDownloadPopup = ({
     setStep('confirm');
     setError(null);
     setDownloadData(null);
-    setProgress(null);
-    setPreDownloadId(null);
+    setPackJobId(null);
   }, []);
 
-  // Clean up SSE when popup closes
   useEffect(() => {
     if (!isOpen) {
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-        eventSourceRef.current = null;
-      }
       resetState();
     }
   }, [isOpen, resetState]);
-
-  // Set up SSE connection when we have a preDownloadId (before API call)
-  useEffect(() => {
-    if (!preDownloadId) {
-      return;
-    }
-
-    // Connect to SSE endpoint with specific source for this download BEFORE API call
-    const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3002';
-    const source = `packDownload:${preDownloadId}`;
-    const eventSource = new EventSource(`${apiUrl}/v2/events?source=${encodeURIComponent(source)}`, {
-      withCredentials: true
-    });
-
-    eventSourceRef.current = eventSource;
-
-    eventSource.onopen = () => {
-      console.debug('SSE connected for pack download:', preDownloadId);
-    };
-
-    eventSource.onerror = (error) => {
-      console.debug('SSE error:', error);
-    };
-
-    eventSource.onmessage = (event) => {
-      try {
-        const message = JSON.parse(event.data);
-        
-        // Only handle packDownloadProgress events
-        if (message.type !== 'packDownloadProgress') {
-          return;
-        }
-        
-        const data = message.data;
-        console.debug('Pack download progress:', data);
-        setProgress(data);
-        
-        // Handle status transitions
-        if (data.status === 'failed') {
-          setError(data.error || 'Pack generation failed');
-          setStep('confirm');
-          setProgress(null);
-        }
-      } catch (e) {
-        // Ignore parse errors for non-JSON messages (like keepalive)
-      }
-    };
-
-    return () => {
-      if (eventSourceRef.current) {
-        eventSourceRef.current.close();
-        eventSourceRef.current = null;
-      }
-    };
-  }, [preDownloadId]);
 
   useBodyScrollLock(isOpen);
 
@@ -140,26 +81,17 @@ const PackDownloadPopup = ({
 
     setError(null);
     setStep('processing');
-    setProgress(null); // Reset progress
 
-    // Generate a downloadId upfront so we can subscribe to SSE before calling API
     const downloadId = crypto.randomUUID();
-    setPreDownloadId(downloadId);
-
-    // Small delay to ensure SSE connection is established before API call starts
-    await new Promise(resolve => setTimeout(resolve, 100));
+    setPackJobId(downloadId);
 
     try {
-      // Pass the pre-generated downloadId and options to the API
       const response = await onRequestDownload(downloadId, { trimFolderNames });
       if (!response || !response.url) {
         throw new Error('Download link was not returned by the server.');
       }
-      
+
       setDownloadData(response);
-      
-      // The API waits for generation to complete before returning a response with a URL.
-      // Once we have the URL, the download is ready.
       setStep('ready');
     } catch (err) {
       const message =
@@ -168,7 +100,7 @@ const PackDownloadPopup = ({
         'Failed to generate download link.';
       setError(message);
       setStep('confirm');
-      setProgress(null);
+      setPackJobId(null);
     }
   };
 
@@ -225,7 +157,7 @@ const PackDownloadPopup = ({
               <div className="pack-download-popup__estimate-container">
                 <span className="pack-download-popup__estimate-label">{t('packPopups.downloadPack.estimatedSize')} </span>
                 <span className={`pack-download-popup__estimate-value ${exceedsSizeLimit ? 'exceeded' : ''}`}>
-                  {sizeLabel} 
+                  {sizeLabel}
                 <span className="pack-download-popup__estimate-value-estimated">{isEstimated}</span></span>
               </div>
               {exceedsSizeLimit && (
@@ -275,55 +207,20 @@ const PackDownloadPopup = ({
             <div className="pack-download-popup__step pack-download-popup__step--processing">
               <div className="spinner spinner-large pack-download-popup__spinner" />
               <p>{t('packPopups.downloadPack.processing')}</p>
-              
-              {progress && (
-                <>
-                  <div className="pack-download-popup__progress-container">
-                    <div className="pack-download-popup__progress-bar">
-                      <div 
-                        className="pack-download-popup__progress-fill"
-                        style={{ width: `${progress.progressPercent || 0}%` }}
-                      />
-                    </div>
-                    <div className="pack-download-popup__progress-text">
-                      {progress.progressPercent || 0}%
-                    </div>
+              {packJob && typeof packJob.percent === 'number' && (
+                <div className="pack-download-popup__progress-container">
+                  <div className="pack-download-popup__progress-bar">
+                    <div
+                      className="pack-download-popup__progress-fill"
+                      style={{ width: `${Math.min(100, Math.max(0, packJob.percent))}%` }}
+                    />
                   </div>
-                  
-                  {progress.status === 'processing' && progress.currentLevel && (
-                    <p className="pack-download-popup__subtext">
-                      Unpacking: {progress.currentLevel}
-                      {progress.totalLevels > 0 && (
-                        <> ({progress.processedLevels} / {progress.totalLevels})</>
-                      )}
-                    </p>
-                  )}
-                  
-                  {progress.status === 'zipping' && (
-                    <p className="pack-download-popup__subtext">
-                      Creating zip file...
-                    </p>
-                  )}
-                  
-                  {progress.status === 'uploading' && (
-                    <p className="pack-download-popup__subtext">
-                      Uploading to storage...
-                    </p>
-                  )}
-                  
-                  {!progress.currentLevel && progress.status === 'processing' && (
-                    <p className="pack-download-popup__subtext">
-                      {t('packPopups.downloadPack.processingSubtext')}
-                    </p>
-                  )}
-                </>
+                  <div className="pack-download-popup__progress-text">{packJob.percent}%</div>
+                </div>
               )}
-              
-              {!progress && (
-                <p className="pack-download-popup__subtext">
-                  {t('packPopups.downloadPack.processingSubtext')}
-                </p>
-              )}
+              <p className="pack-download-popup__subtext">
+                {packJob?.message || t('packPopups.downloadPack.processingSubtext')}
+              </p>
             </div>
           )}
 
@@ -361,4 +258,3 @@ const PackDownloadPopup = ({
 };
 
 export default PackDownloadPopup;
-

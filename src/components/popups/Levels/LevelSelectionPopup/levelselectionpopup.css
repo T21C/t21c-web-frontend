@@ -485,4 +485,46 @@
   .level-selection-modal__song-wrapper {
     min-width: 100px;
   }
-} 
+}
+
+.submission-zip-level-modal {
+  max-height: 90vh;
+  height: auto;
+}
+
+.submission-zip-level-modal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid #404040;
+}
+
+.submission-zip-level-modal__confirm {
+  padding: 0.65rem 1.25rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  background: #417fc6;
+  color: #fff;
+}
+
+.submission-zip-level-modal__confirm:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.submission-zip-level-modal__confirm:not(:disabled):hover {
+  background: #3a72b8;
+}
+
+.submission-zip-level-modal__confirm--loading {
+  cursor: wait;
+}
+
+.level-selection-modal__close-button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}

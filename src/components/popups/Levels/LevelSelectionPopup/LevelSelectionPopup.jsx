@@ -4,17 +4,25 @@ import api from '@/utils/api';
 import './levelselectionpopup.css';
 import toast from 'react-hot-toast';
 import { formatCreatorDisplay } from '@/utils/Utility';
+import ZipLevelFilesList from '@/components/popups/Levels/ZipLevelFilesList/ZipLevelFilesList.jsx';
 
-const LIMIT = 20; 
+const LIMIT = 20;
 
 const LevelSelectionPopup = ({
   isOpen,
   onClose,
   onLevelSelect,
-  curationTypes
+  onSelect,
+  levelFiles,
+  curationTypes: _curationTypes,
 }) => {
   const { t } = useTranslation('components');
-  const tCur = (key, params = {}) => t(`levelSelectionPopup.${key}`, params);
+
+  const zipPickerMode =
+    Boolean(isOpen) &&
+    Array.isArray(levelFiles) &&
+    levelFiles.length > 0 &&
+    typeof onSelect === 'function';
 
   const [levels, setLevels] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -23,6 +31,8 @@ const LevelSelectionPopup = ({
   const [totalPages, setTotalPages] = useState(1);
   const [inputValue, setInputValue] = useState('1');
   const [mouseDownOutside, setMouseDownOutside] = useState(false);
+  const [selectedZipKey, setSelectedZipKey] = useState(null);
+  const [isConfirmingZip, setIsConfirmingZip] = useState(false);
   const modalRef = useRef(null);
 
   const handleMouseDown = (e) => {
@@ -38,35 +48,16 @@ const LevelSelectionPopup = ({
     setMouseDownOutside(false);
   };
 
-  useEffect(() => {
-    if (isOpen) {
-      document.addEventListener('mousedown', handleMouseDown);
-      document.addEventListener('mouseup', handleMouseUp);
-      fetchLevels();
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleMouseDown);
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isOpen, mouseDownOutside]);
-
-  useEffect(() => {
-    if (isOpen) {
-      fetchLevels();
-    }
-  }, [isOpen, currentPage, searchTerm]);
-
-  const fetchLevels = async () => {
+  async function fetchLevels() {
     try {
       setIsLoading(true);
       const params = new URLSearchParams({
         offset: (currentPage - 1) * LIMIT,
         limit: LIMIT,
         query: searchTerm,
-        curatedTypesFilter: "hide"
+        curatedTypesFilter: 'hide',
       });
-      
+
       const response = await api.get(`${import.meta.env.VITE_LEVELS}?${params}`);
       setLevels(response.data.results || []);
       setTotalPages(Math.ceil(response.data.total / LIMIT) || 1);
@@ -76,13 +67,53 @@ const LevelSelectionPopup = ({
     } finally {
       setIsLoading(false);
     }
+  }
+
+  useEffect(() => {
+    if (!isOpen) {
+      return undefined;
+    }
+    document.addEventListener('mousedown', handleMouseDown);
+    document.addEventListener('mouseup', handleMouseUp);
+    if (!zipPickerMode) {
+      void fetchLevels();
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleMouseDown);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isOpen, zipPickerMode, mouseDownOutside]);
+
+  useEffect(() => {
+    if (!isOpen || zipPickerMode) {
+      return;
+    }
+    void fetchLevels();
+  }, [isOpen, currentPage, searchTerm, zipPickerMode]);
+
+  useEffect(() => {
+    if (isOpen && zipPickerMode) {
+      setSelectedZipKey(null);
+      setIsConfirmingZip(false);
+    }
+  }, [isOpen, zipPickerMode, levelFiles]);
+
+  const handleConfirmZipSelection = async () => {
+    if (!selectedZipKey || isConfirmingZip) {
+      return;
+    }
+    setIsConfirmingZip(true);
+    try {
+      await Promise.resolve(onSelect(selectedZipKey));
+    } finally {
+      setIsConfirmingZip(false);
+    }
   };
 
   const handleLevelSelect = (level) => {
-    // Just pass the level data for creating a new curation
     onLevelSelect({
       levelId: level.id,
-      level: level
+      level: level,
     });
   };
 
@@ -116,51 +147,89 @@ const LevelSelectionPopup = ({
   const handlePageInputChange = (e) => {
     const input = e.target.value;
     setInputValue(input);
-    
-    // Allow empty input - don't immediately change page
+
     if (input === '') {
       return;
     }
-    
-    // Remove leading zeros and parse
+
     const cleanInput = input.replace(/^0+/, '') || '0';
-    const page = parseInt(cleanInput);
-    
-    // Only change page if it's a valid number within bounds
+    const page = parseInt(cleanInput, 10);
+
     if (!isNaN(page) && page >= 1 && page <= totalPages) {
       handlePageChange(page);
     }
   };
 
   const handlePageInputBlur = () => {
-    // When user finishes typing, ensure we have a valid page
     if (inputValue === '' || inputValue === '0') {
       setInputValue('1');
       handlePageChange(1);
       return;
     }
-    
-    // Remove leading zeros and parse
+
     const cleanInput = inputValue.replace(/^0+/, '') || '0';
-    const page = parseInt(cleanInput);
-    
-    // If invalid or out of bounds, default to page 1
+    const page = parseInt(cleanInput, 10);
+
     if (isNaN(page) || page < 1 || page > totalPages) {
       setInputValue('1');
       handlePageChange(1);
     }
   };
 
-  if (!isOpen) return null;
+  if (!isOpen) {
+    return null;
+  }
+
+  if (zipPickerMode) {
+    return (
+      <div className="level-selection-modal">
+        <div
+          className="level-selection-modal__content submission-zip-level-modal"
+          ref={modalRef}
+        >
+          <button
+            className="level-selection-modal__close-button"
+            onClick={onClose}
+            type="button"
+            disabled={isConfirmingZip}
+          >
+            ✖
+          </button>
+
+          <div className="level-selection-modal__header">
+            <h2>{t('levelSelectionPopup.zipPicker.title')}</h2>
+            <p>{t('levelSelectionPopup.zipPicker.description')}</p>
+          </div>
+
+          <ZipLevelFilesList
+            levelFiles={levelFiles}
+            selectedKey={selectedZipKey}
+            onSelectKey={setSelectedZipKey}
+            selectionDisabled={isConfirmingZip}
+          />
+
+          <div className="submission-zip-level-modal__actions">
+            <button
+              type="button"
+              className={`submission-zip-level-modal__confirm${isConfirmingZip ? ' submission-zip-level-modal__confirm--loading' : ''}`}
+              disabled={!selectedZipKey || isConfirmingZip}
+              aria-busy={isConfirmingZip}
+              onClick={() => void handleConfirmZipSelection()}
+            >
+              {isConfirmingZip
+                ? t('levelSelectionPopup.zipPicker.confirmLoading')
+                : t('levelSelectionPopup.zipPicker.confirm')}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="level-selection-modal">
       <div className="level-selection-modal__content" ref={modalRef}>
-        <button 
-          className="level-selection-modal__close-button"
-          onClick={onClose}
-          type="button"
-        >
+        <button className="level-selection-modal__close-button" onClick={onClose} type="button">
           ✖
         </button>
 
@@ -175,7 +244,7 @@ const LevelSelectionPopup = ({
             <input
               id="search"
               type="text"
-              autoComplete='off'
+              autoComplete="off"
               value={searchTerm}
               onChange={handleSearchChange}
               placeholder={t('levelSelectionPopup.filters.searchPlaceholder')}
@@ -184,28 +253,30 @@ const LevelSelectionPopup = ({
           </div>
         </div>
 
-       
-
         <div className="level-selection-modal__levels">
           {isLoading ? (
-            <div className="level-selection-modal__loading"><div className="loader" /></div>
+            <div className="level-selection-modal__loading">
+              <div className="loader" />
+            </div>
           ) : levels.length === 0 ? (
             <div className="level-selection-modal__empty">{t('levelSelectionPopup.empty')}</div>
           ) : (
-            levels.map(level => (
+            levels.map((level) => (
               <div key={level.id} className="level-selection-modal__level-item">
                 <div className="level-selection-modal__level-card-wrapper">
                   <div className="level-selection-modal__img-wrapper">
-                    <img 
-                      src={level.difficulty?.icon || '/default-difficulty-icon.png'} 
-                      alt={level.difficulty?.name || 'Difficulty icon'} 
-                      className="level-selection-modal__difficulty-icon" 
+                    <img
+                      src={level.difficulty?.icon || '/default-difficulty-icon.png'}
+                      alt={level.difficulty?.name || 'Difficulty icon'}
+                      className="level-selection-modal__difficulty-icon"
                     />
                   </div>
 
                   <div className="level-selection-modal__song-wrapper">
                     <div className="level-selection-modal__group">
-                      <p className="level-selection-modal__level-exp">#{level.id} - {level.artist}</p>
+                      <p className="level-selection-modal__level-exp">
+                        #{level.id} - {level.artist}
+                      </p>
                     </div>
                     <p className="level-selection-modal__level-desc">{level.song || 'Unknown Song'}</p>
                   </div>
@@ -228,13 +299,13 @@ const LevelSelectionPopup = ({
           )}
         </div>
 
-         {/* Enhanced Pagination */}
-         {totalPages > 1 && (
+        {totalPages > 1 && (
           <div className="level-selection-modal__pagination">
-            <button 
+            <button
               onClick={handlePreviousPage}
               disabled={currentPage === 1}
               className="level-selection-modal__pagination-btn"
+              type="button"
             >
               Previous
             </button>
@@ -250,10 +321,11 @@ const LevelSelectionPopup = ({
               />
               <span> of {totalPages}</span>
             </div>
-            <button 
+            <button
               onClick={handleNextPage}
               disabled={currentPage >= totalPages}
               className="level-selection-modal__pagination-btn"
+              type="button"
             >
               Next
             </button>
@@ -264,4 +336,4 @@ const LevelSelectionPopup = ({
   );
 };
 
-export default LevelSelectionPopup; 
+export default LevelSelectionPopup;

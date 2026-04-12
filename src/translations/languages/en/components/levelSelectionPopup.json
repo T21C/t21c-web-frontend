@@ -12,5 +12,11 @@
   "create": "Create",
   "selectLevel": "Select this level",
   "createLevel": "Create curation for this level",
-  "creator": "Creator"
+  "creator": "Creator",
+  "zipPicker": {
+    "title": "Choose the chart for this submission",
+    "description": "Your zip contains multiple .adofai charts. Select the one that matches this submission.",
+    "confirm": "Use selected chart",
+    "confirmLoading": "Applying…"
+  }
 }

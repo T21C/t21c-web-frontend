@@ -12,5 +12,11 @@
   "create": "Create",
   "selectLevel": "Select this level",
   "createLevel": "Create curation for this level",
-  "creator": "Creator"
+  "creator": "Creator",
+  "zipPicker": {
+    "title": "이 제출에 사용할 채보 선택",
+    "description": "압축 파일에 .adofai 채보가 여러 개 있습니다. 이 제출에 해당하는 채보를 선택하세요.",
+    "confirm": "선택한 채보 사용",
+    "confirmLoading": "적용 중…"
+  }
 }

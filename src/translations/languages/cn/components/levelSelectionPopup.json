@@ -12,5 +12,11 @@
   "create": "添加",
   "selectLevel": "选择此关卡",
   "createLevel": "将此关卡添加至精选关卡",
-  "creator": "创作者"
+  "creator": "创作者",
+  "zipPicker": {
+    "title": "选择用于本投稿的谱面",
+    "description": "压缩包内包含多个 .adofai 谱面，请选择与本投稿对应的那一个。",
+    "confirm": "使用所选谱面",
+    "confirmLoading": "正在应用…"
+  }
 }

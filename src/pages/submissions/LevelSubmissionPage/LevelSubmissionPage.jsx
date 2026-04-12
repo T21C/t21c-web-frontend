@@ -9,18 +9,20 @@ import { validateFeelingRating } from "@/utils/Utility";
 import { Trans, useTranslation } from "react-i18next";
 import { StagingModeWarning } from "@/components/common/display";
 import { ProfileSelector } from "@/components/common/selectors";
-import { LevelSelectionPopup, CDNTosPopup, LevelUploadPopup } from "@/components/popups/Levels";
+import { LevelSelectionPopup, CDNTosPopup } from "@/components/popups/Levels";
 import { SongSelectorPopup } from "@/components/popups/Songs";
 import { ArtistSelectorPopup } from "@/components/popups/Artists";
 
 import api from "@/utils/api";
 import { prepareZipForUpload, validateZipSize } from '@/utils/zipUtils';
+import { zipLevelFileKey } from '@/components/popups/Levels/ZipLevelFilesList/ZipLevelFilesList.jsx';
 import { useNavigate } from "react-router-dom";
 import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { QuestionmarkCircleIcon } from "@/components/common/icons";
 import { Tooltip } from "react-tooltip";
 import toast from "react-hot-toast";
 import { CDN_IMAGE_ACCEPT } from '@/constants/cdnImageAccept';
+import { useJobProgressStream } from '@/hooks/useJobProgressStream';
 
 const encodeFilename = (str) => {
   // Convert string to UTF-8 bytes, then to hex
@@ -149,9 +151,10 @@ const LevelSubmissionPage = () => {
   const [showCdnTos, setShowCdnTos] = useState(false);
   const [pendingZipFile, setPendingZipFile] = useState(null);
   const [isDragOver, setIsDragOver] = useState(false);
-  const [showUploadProgress, setShowUploadProgress] = useState(false);
-  const [uploadId, setUploadId] = useState(null);
-  const [uploadProgress, setUploadProgress] = useState(null);
+  const [zipProgressJobId, setZipProgressJobId] = useState(null);
+  const [zipXhrPercent, setZipXhrPercent] = useState(0);
+
+  const { job: zipJob } = useJobProgressStream(zipProgressJobId, Boolean(submission && zipProgressJobId));
 
   // Helper function to clean video URLs
   const cleanVideoUrl = (url) => {
@@ -290,25 +293,31 @@ const LevelSubmissionPage = () => {
 
   const submissionForm = new FormManager("level")
   const resetForm = () => {
-    setFormStateKey(formStateKey + 1);
+    setFormStateKey((k) => k + 1);
     // Reset all form state
     setForm(initialFormState);
     setPendingProfiles([]);
     setVideoDetail(null);
     setLevelZipInfo(null);
-    
+    setPendingZipFile(null);
+    setShowCdnTos(false);
+    setIsDragOver(false);
+    setZipProgressJobId(null);
+    setZipXhrPercent(0);
+    setFinalSubmissionId(null);
+
     // Reset creator states with empty values
     setCharters([{ name: '', id: null, isNewRequest: false }]);
     setVfxers([{ name: '', id: null, isNewRequest: false }]);
     setTeam({ name: '', id: null, isNewRequest: false });
-    
+
     // Reset song/artist selection
     setSelectedSong(null);
     setArtists([{ name: '', id: null, isNewRequest: false }]);
     setEvidenceFiles([]);
     setEvidenceType('song');
     // Note: Artist selector will be re-enabled automatically when selectedSong is null
-    
+
     // Reset validation states
     setSubmitAttempt(false);
     setIsInvalidFeelingRating(false);
@@ -354,6 +363,8 @@ const LevelSubmissionPage = () => {
     }
 
     setSubmission(true);
+    setZipXhrPercent(0);
+    setZipProgressJobId(null);
 
     try {
       // Clean the video URL before submission
@@ -431,55 +442,41 @@ const LevelSubmissionPage = () => {
       // Encode the original filename using our UTF-8 to hex encoding
       if (form.levelZip) {
         submissionForm.setDetail('originalname', encodeFilename(form.levelZip.name));
-        
-        // Generate uploadId for progress tracking and show popup
-        const generatedUploadId = crypto.randomUUID();
-        setUploadId(generatedUploadId);
-        setUploadProgress(null);
-        submissionForm.setDetail('uploadId', generatedUploadId);
-        setShowUploadProgress(true);
-        
-        // Small delay to ensure SSE connection is established before upload starts
-        await new Promise(resolve => setTimeout(resolve, 100));
+        const zipJob = crypto.randomUUID();
+        setZipProgressJobId(zipJob);
+        submissionForm.setDetail('uploadId', zipJob);
       }
 
       const response = await submissionForm.submit({
-        onUploadProgress: (percent) => setUploadProgress(percent)
+        onUploadProgress: form.levelZip
+          ? (pct) => setZipXhrPercent(typeof pct === 'number' ? pct : 0)
+          : undefined
       });
       
       if (response.requiresLevelSelection) {
-        setShowUploadProgress(false);
-        setUploadProgress(null);
         setLevelFiles(response.levelFiles);
         setSelectedFileId(response.fileId);
         setShowLevelSelection(true);
+        resetForm();
         setFinalSubmissionId(response.submissionId);
         setSubmission(false); // Reset submission state since we're waiting for level selection
         return;
       }
       
       if (response.success) {
-        if (form.levelZip) {
-          // Zip upload: wait for LevelUploadPopup onUploadComplete (SSE 'completed') to reset form and show toast
-        } else {
-          setShowUploadProgress(false);
-          setUploadProgress(null);
-          resetForm();
-          toast.success(t('levelSubmission.alert.success'));
-        }
+        resetForm();
+        toast.success(t('levelSubmission.alert.success'));
       } else {
-        setShowUploadProgress(false);
-        setUploadProgress(null);
         throw new Error(response.error || 'Failed to submit form');
       }
     } catch (error) {
       console.error('Submission error:', error);
-      setShowUploadProgress(false);
-      setUploadProgress(null);
       const errMsg = error.response?.data?.error || error.message || error.error || "Unknown error occurred";
       toast.error(`${t('levelSubmission.alert.error')} ${typeof errMsg === 'string' ? errMsg : errMsg?.message || ''}`);
     } finally {
       setSubmission(false);
+      setZipProgressJobId(null);
+      setZipXhrPercent(0);
     }
   };
 
@@ -523,7 +520,7 @@ const LevelSubmissionPage = () => {
       
       const response = await api.post(import.meta.env.VITE_SELECT_LEVEL, {
         submissionId: finalSubmissionId,
-        selectedLevel: largestFile.name
+        selectedLevel: zipLevelFileKey(largestFile) || largestFile.name,
       });
 
       if (response.data.success) {
@@ -776,6 +773,7 @@ const LevelSubmissionPage = () => {
 
         {showLevelSelection && (
           <LevelSelectionPopup
+            isOpen={showLevelSelection}
             levelFiles={levelFiles}
             onSelect={handleLevelSelect}
             onClose={handleLevelSelectionClose}
@@ -804,23 +802,6 @@ const LevelSubmissionPage = () => {
           <CDNTosPopup 
             onAgree={handleCdnTosAgree}
             onDecline={handleCdnTosDecline}
-          />
-        )}
-
-        {/* Level Upload Progress Popup */}
-        {showUploadProgress && (
-          <LevelUploadPopup
-            isOpen={showUploadProgress}
-            onClose={() => { setShowUploadProgress(false); setUploadProgress(null); }}
-            fileName={levelZipInfo?.name}
-            uploadId={uploadId}
-            uploadProgress={uploadProgress}
-            onUploadComplete={() => {
-              setShowUploadProgress(false);
-              setUploadProgress(null);
-              resetForm();
-              toast.success(t('levelSubmission.alert.success'));
-            }}
           />
         )}
 
@@ -1398,6 +1379,15 @@ const LevelSubmissionPage = () => {
                   );
                 })}
               </div>
+            )}
+
+            {submission && zipProgressJobId && (
+              <p className="level-submission-page__zip-job-status" aria-live="polite">
+                {zipJob?.message || (zipXhrPercent > 0 ? `Sending file… ${zipXhrPercent}%` : 'Submitting…')}
+                {typeof zipJob?.percent === 'number' && zipJob.percent > zipXhrPercent
+                  ? ` · ${zipJob.percent}%`
+                  : ''}
+              </p>
             )}
 
             <button 

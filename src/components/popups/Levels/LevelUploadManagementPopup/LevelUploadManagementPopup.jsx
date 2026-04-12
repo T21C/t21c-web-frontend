@@ -6,6 +6,8 @@ import { encodeFilename } from '@/utils/zipUtils';
 import { uploadFileInChunks, validateChunkedUpload } from '@/utils/chunkedUpload';
 import { isCdnUrl } from '@/utils/Utility';
 import { CrossIcon } from '@/components/common/icons';
+import { useJobProgressStream } from '@/hooks/useJobProgressStream';
+import ZipLevelFilesList from '@/components/popups/Levels/ZipLevelFilesList/ZipLevelFilesList.jsx';
 
 const LevelUploadManagementPopup = ({
   level,
@@ -17,7 +19,7 @@ const LevelUploadManagementPopup = ({
 }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
-  const [urlImportIndeterminate, setUrlImportIndeterminate] = useState(false);
+  const [cdnJobId, setCdnJobId] = useState(null);
   const [urlImportPanelOpen, setUrlImportPanelOpen] = useState(false);
   const [importUrl, setImportUrl] = useState('');
   const [error, setError] = useState(null);
@@ -30,6 +32,8 @@ const LevelUploadManagementPopup = ({
   const fileInputRef = useRef(null);
   const abortControllerRef = useRef(null);
   const { t } = useTranslation(['components']);
+
+  const { job: cdnJob } = useJobProgressStream(cdnJobId, Boolean(isUploading && cdnJobId));
 
   const fetchLevelFiles = async () => {
     if (formData.dlLink && formData.dlLink !== 'removed' && isCdnUrl(formData.dlLink)) {
@@ -123,9 +127,10 @@ const LevelUploadManagementPopup = ({
 
     try {
       setIsUploading(true);
-      setUrlImportIndeterminate(false);
       setError(null);
       setUploadProgress(0);
+      const jobId = crypto.randomUUID();
+      setCdnJobId(jobId);
 
       // Upload file in chunks
       const fileId = await uploadFileInChunks(
@@ -158,7 +163,8 @@ const LevelUploadManagementPopup = ({
           {
             fileId,
             fileName: encodeFilename(file.name),
-            fileSize: file.size
+            fileSize: file.size,
+            uploadJobId: jobId
           },
           {
             signal,
@@ -197,6 +203,7 @@ const LevelUploadManagementPopup = ({
       setError(error.response?.data?.error || t('levelUploadManagement.errors.uploadFailed'));
     } finally {
       setIsUploading(false);
+      setCdnJobId(null);
       abortControllerRef.current = null;
     }
   };
@@ -217,13 +224,14 @@ const LevelUploadManagementPopup = ({
 
     try {
       setIsUploading(true);
-      setUrlImportIndeterminate(true);
       setError(null);
       setUploadProgress(0);
+      const jobId = crypto.randomUUID();
+      setCdnJobId(jobId);
 
       const response = await api.post(
         `${import.meta.env.VITE_LEVELS}/${level.id}/upload-from-url`,
-        {url: trimmed},
+        { url: trimmed, uploadJobId: jobId },
         {
           signal,
           timeout: 300000,
@@ -260,7 +268,7 @@ const LevelUploadManagementPopup = ({
       setError(err.response?.data?.error || t('levelUploadManagement.errors.importFailed'));
     } finally {
       setIsUploading(false);
-      setUrlImportIndeterminate(false);
+      setCdnJobId(null);
       abortControllerRef.current = null;
     }
   };
@@ -346,6 +354,18 @@ const LevelUploadManagementPopup = ({
     e.stopPropagation();
   };
 
+  const streamPct = typeof cdnJob?.percent === 'number' ? cdnJob.percent : 0;
+  const fillPct = Math.min(100, Math.max(uploadProgress, streamPct));
+  const isUrlImportProgress = cdnJob?.meta?.source === 'upload_from_url';
+  const progressLine =
+    isUrlImportProgress && cdnJob?.phase === 'downloading_remote'
+      ? `${t('levelUploadManagement.upload.urlStageDownload')}: ${cdnJob.message || '…'} · ${streamPct.toFixed(0)}%`
+      : isUrlImportProgress && cdnJob?.phase && cdnJob.phase !== 'downloading_remote'
+        ? `${t('levelUploadManagement.upload.urlStageCdn')}: ${cdnJob.message || '…'} · ${streamPct.toFixed(0)}%`
+        : cdnJob?.message
+          ? `${cdnJob.message} · ${fillPct.toFixed(0)}%`
+          : t('levelUploadManagement.upload.progress', { progress: uploadProgress.toFixed(2) });
+
   return (
     <div className="level-upload-management-popup" onClick={handleOverlayClick}>
       <div className="level-upload-management-content" onClick={handleContentClick}>
@@ -369,15 +389,11 @@ const LevelUploadManagementPopup = ({
           <div className="upload-progress">
             <div className="progress-bar">
               <div
-                className={`progress-fill${urlImportIndeterminate ? ' progress-fill--indeterminate' : ''}`}
-                style={urlImportIndeterminate ? undefined : {width: `${uploadProgress}%`}}
+                className="progress-fill"
+                style={{ width: `${fillPct}%` }}
               />
             </div>
-            <div className="progress-text">
-              {urlImportIndeterminate
-                ? t('levelUploadManagement.upload.importFromUrl')
-                : t('levelUploadManagement.upload.progress', {progress: uploadProgress.toFixed(2)})}
-            </div>
+            <div className="progress-text">{progressLine}</div>
             <button
               className="cancel-upload-button"
               onClick={() => {
@@ -417,34 +433,15 @@ const LevelUploadManagementPopup = ({
                 {t('levelUploadManagement.sections.levelSelection.currentTarget', { name: targetLevel })}
               </div>
             )}
-            <div className="level-list">
-              {levelFiles.map((file) => (
-                <div 
-                  key={file.fullPath}
-                  className={`level-item ${selectedLevel === file.fullPath ? 'selected' : ''} ${targetLevel === file.fullPath ? 'target' : ''}`}
-                  onClick={() => {
-                    setSelectedLevel(file.fullPath);
-                    setError(null);
-                  }}
-                >
-                  <div className="level-name">
-                    {file.name}
-                  </div>
-                  <div className="level-path">
-                    {file.fullPath}
-                  </div>
-                  <div className="level-info">
-                    <span>Size: {(file.size / 1024 / 1024).toFixed(2)} MB</span>
-                    {file.hasYouTubeStream && <span>Has YouTube Stream</span>}
-                    {file.songFilename && <span>Song: {file.songFilename}</span>}
-                    {file.artist && <span>Artist: {file.artist}</span>}
-                    {file.author && <span>Author: {file.author}</span>}
-                    {file.difficulty && <span>Difficulty: {file.difficulty}</span>}
-                    {file.bpm && <span>BPM: {file.bpm.toFixed(2)}</span>}
-                  </div>
-                </div>
-              ))}
-            </div>
+            <ZipLevelFilesList
+              levelFiles={levelFiles}
+              selectedKey={selectedLevel}
+              onSelectKey={(key) => {
+                setSelectedLevel(key);
+                setError(null);
+              }}
+              targetKey={targetLevel}
+            />
             {selectedLevel && levelFiles.length > 0 && (
             <button 
               className={`select-button ${isSelecting ? 'is-selecting' : ''}`}
