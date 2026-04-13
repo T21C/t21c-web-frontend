@@ -460,6 +460,7 @@
 .level-detail .rerate-history-dropdown-anchor {
   position: relative;
   display: flex;
+  right: -50%;
   flex-direction: column;
   align-items: center;
 }
@@ -2555,18 +2556,18 @@
   .level-detail .left .like-button,
   .level-detail .rerate-arrow,
   .level-detail .title-container .tag-list-arrow {
-    min-height: 44px;
-    min-width: 44px;
+    min-height: 16px;
+    min-width: 16px;  
   }
   
   .level-detail .rank .sort svg {
-    min-height: 44px;
-    min-width: 44px;
+    min-height: 16px;
+    min-width: 16px;
   }
   
   .level-detail .difficulty-icon {
-    min-height: 44px;
-    min-width: 44px;
+    min-height: 16px;
+    min-width: 16px;
   }
   
   .level-detail .rating-icon {
