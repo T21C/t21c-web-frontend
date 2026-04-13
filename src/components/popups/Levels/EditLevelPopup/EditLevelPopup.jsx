@@ -471,6 +471,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
         <div className="popup-header">
           <h2>{t('levelPopups.edit.title')}</h2>
           <div className="popup-actions">
+            {/* deprecated 
             <button 
               className="manage-aliases-btn"
               onClick={(e) => {
@@ -482,6 +483,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
             >
               {t('levelPopups.edit.manageAliases')}
             </button>
+            */}
             <button 
               className="close-popup-btn" 
               onClick={(e) => {

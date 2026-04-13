@@ -541,7 +541,7 @@ const LevelUploadManagementPopup = ({
                     </button>
                     <button
                       type="button"
-                      className="upload-import-button tuf-btn-fill-accent"
+                      className="upload-import-button"
                       onClick={() => {
                         setError(null);
                         setUrlImportPanelOpen(true);
