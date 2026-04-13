@@ -75,5 +75,16 @@
     "ysmod_only": "YSMod Only",
     "allowed": "Allowed",
     "tuf_verified": "TUF Verified"
+  },
+  "pass": {
+    "updated": "Pass updated",
+    "deleted": "Pass deleted",
+    "restored": "Pass restored",
+    "errors": {
+      "playerRequired": "Please select a valid player",
+      "updateFailed": "Failed to update pass",
+      "deleteFailed": "Soft deletion failed",
+      "restoreFailed": "Restoration failed"
+    }
   }
 } 

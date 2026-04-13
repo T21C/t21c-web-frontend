@@ -7,9 +7,11 @@ import { FetchIcon } from '@/components/common/icons';
 import { useNavigate } from 'react-router-dom';
 import { PlayerInput } from '@/components/common/selectors';
 import { useState } from 'react';
+import api from "@/utils/api";
 import toast from 'react-hot-toast';
 import { PassCoreForm } from '@/components/common/cores/PassCoreForm/PassCoreForm';
 import { usePassCoreForm } from '@/components/common/cores/PassCoreForm/usePassCoreForm';
+import { truncateString } from '@/components/common/cores/PassCoreForm/passCoreUtils';
 
 export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
   const { t } = useTranslation('components');
@@ -38,11 +40,6 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
   const [submission, setSubmission] = useState(false);
 
   const navigate = useNavigate();
-
-  const truncateString = (str, maxLength) => {
-    if (!str) return "";
-    return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
-  };
 
   const {
     form,
@@ -79,7 +76,7 @@ const handleSubmit = async (e) => {
 
   // Check if player is selected
   if (!form.playerId) {
-    toast.error("Please select a valid player", { id: toastId });
+    toast.error(t('pass.errors.playerRequired', { ns: 'common' }), { id: toastId });
     return;
   }
 
@@ -132,12 +129,12 @@ const handleSubmit = async (e) => {
     );
 
     if (response.data) {
-      toast.success(t('passPopups.edit.alert.success'), { id: toastId });
+      toast.success(t('pass.updated', { ns: 'common' }), { id: toastId });
       if (onUpdate) {
         await onUpdate(response.data.pass);
       }
     } else {
-      toast.error("Failed to update pass", { id: toastId });
+      toast.error(t('pass.errors.updateFailed', { ns: 'common' }), { id: toastId });
     }
   } catch (err) {
     console.error("Error updating pass:", err);
@@ -165,12 +162,12 @@ const handleSubmit = async (e) => {
         if (onUpdate) {
           await onUpdate(response.data.pass);
         }
-        toast.success(t('passPopups.edit.form.buttons.delete.default'), { id: toastId });
+        toast.success(t('pass.deleted', { ns: 'common' }), { id: toastId });
         onClose();
       }
     } catch (err) {
       console.error(err);
-      toast.error(err.response?.data?.message || "Soft deletion failed", { id: toastId });
+      toast.error(err.response?.data?.message || t('pass.errors.deleteFailed', { ns: 'common' }), { id: toastId });
     } finally {
       setSubmission(false);
     }
@@ -190,12 +187,12 @@ const handleSubmit = async (e) => {
         if (onUpdate) {
           await onUpdate(response.data);
         }
-        toast.success(t('passPopups.edit.form.buttons.delete.restore'), { id: toastId });
+        toast.success(t('pass.restored', { ns: 'common' }), { id: toastId });
         onClose();
       }
     } catch (err) {
       console.error(err);
-      toast.error(err.response?.data?.message || "Restoration failed", { id: toastId });
+      toast.error(err.response?.data?.message || t('pass.errors.restoreFailed', { ns: 'common' }), { id: toastId });
     } finally {
       setSubmission(false);
     }

@@ -72,7 +72,9 @@ export const ProfileSelector = ({
         const encodedSearchTerm = encodeURIComponent(searchTerm);
         const response = await api.get(`${endpoint}/search/${encodedSearchTerm}`);
         if (type === 'player') {
-          setProfiles(response.data.map(user => user.player));
+          const body = response.data;
+          const rows = Array.isArray(body) ? body : (body?.results ?? []);
+          setProfiles(rows.map((user) => user.player));
         } else {
           setProfiles(response.data);
         }

@@ -1211,22 +1211,30 @@ const LevelSubmissionPage = () => {
 
             <div className="info-group">
               <div className="diff-tooltip">
-                <div className="tooltip-container">
-                  <span style={{
-                    color: 'red',
-                    visibility: `${isInvalidFeelingRating ? '' : 'hidden'}`,
-                    backgroundColor: "rgba(255, 255, 0, 0.25)",
-                    padding: "0.2rem 0.4rem",
-                    borderRadius: "5px",
-                    margin: "0 -0.1rem"
-                  }}>?</span>
-                  <span className="tooltip" 
+                <div
+                  className="diff-feeling-tooltip-trigger"
+                  data-tooltip-id={isInvalidFeelingRating ? 'level-submission-diff-tooltip' : ''}
+                  data-tooltip-content={t('levelSubmission.tooltip')}
+                  style={{ visibility: isInvalidFeelingRating ? 'visible' : 'hidden' }}
+                >
+                  <span
                     style={{
-                      visibility: `${isInvalidFeelingRating ? '' : 'hidden'}`,
-                      bottom: "115%",
-                      left: "-2rem"
-                    }}>{t('levelSubmission.tooltip')}</span>
+                      color: 'red',
+                      backgroundColor: 'rgba(255, 255, 0, 0.25)',
+                      padding: '0.2rem 0.4rem',
+                      borderRadius: '5px',
+                      margin: '0 -0.1rem',
+                    }}
+                  >
+                    ?
+                  </span>
                 </div>
+                <Tooltip
+                  id="level-submission-diff-tooltip"
+                  place="bottom"
+                  style={{ maxWidth: '220px', zIndex: 100 }}
+                  effect="solid"
+                />
                 <input
                   type="text"
                   autoComplete='off'

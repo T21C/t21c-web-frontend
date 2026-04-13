@@ -3,7 +3,7 @@ import api from '@/utils/api';
 import "./playerinput.css";
 import { useTranslation } from 'react-i18next';
 
-export const PlayerInput = ({ value, onChange, onSelect }) => {
+export const PlayerInput = ({ value, onChange, onSelect, allowCreatePlayer = true }) => {
   const { t } = useTranslation(['components', 'common']);
 
   const [showDropdown, setShowDropdown] = useState(false);
@@ -23,7 +23,8 @@ export const PlayerInput = ({ value, onChange, onSelect }) => {
     setIsLoading(true);
     try {
       const response = await api.get(`${import.meta.env.VITE_PLAYERS}/search/${encodeURIComponent(searchTerm)}`);
-      const players = await response.data;
+      const body = response.data;
+      const players = Array.isArray(body) ? body : (body?.results ?? []);
       setSearchResults(players);
     } catch (error) {
       setSearchResults([]);
@@ -199,22 +200,26 @@ export const PlayerInput = ({ value, onChange, onSelect }) => {
                       </div>
                     </div>
                   ))}
-                  <div
-                    className="player-option create-new"
-                    onClick={() => handleSelect({ isNew: true, name: value })}
-                  >
-                    <span>{t('player.playerInput.creation.button', { name: value })}</span>
-                  </div>
+                  {allowCreatePlayer && (
+                    <div
+                      className="player-option create-new"
+                      onClick={() => handleSelect({ isNew: true, name: value })}
+                    >
+                      <span>{t('player.playerInput.creation.button', { name: value })}</span>
+                    </div>
+                  )}
                 </>
               ) : value.length >= 2 ? (
                 <div className="no-results">
                   {t('player.playerInput.noResults')}
-                  <div
-                    className="player-option create-new"
-                    onClick={() => handleSelect({ isNew: true, name: value })}
-                  >
-                    <span>{t('player.playerInput.creation.button', { name: value })}</span>
-                  </div>
+                  {allowCreatePlayer && (
+                    <div
+                      className="player-option create-new"
+                      onClick={() => handleSelect({ isNew: true, name: value })}
+                    >
+                      <span>{t('player.playerInput.creation.button', { name: value })}</span>
+                    </div>
+                  )}
                 </div>
               ) : (
                 <div className="player-hint">{t('player.playerInput.minChars')}</div>

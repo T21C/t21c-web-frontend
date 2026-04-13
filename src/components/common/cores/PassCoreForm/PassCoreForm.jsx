@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Tooltip } from 'react-tooltip';
+import './PassCoreForm.css';
 
 export const PASS_CORE_COPY = {
   submit: {
@@ -124,7 +125,7 @@ export function PassCoreForm({
 
   return (
     <form
-      className={`form-container ${videoDetail ? 'shadow' : ''}`}
+      className={`form-container pass-core-form ${videoDetail ? 'shadow' : ''}`}
       style={{
         backgroundImage: `url(${videoDetail ? videoDetail.image : placeholderImage})`,
       }}
@@ -276,30 +277,35 @@ export function PassCoreForm({
               }}
             />
 
-            {mode === 'edit' ? (
-              <div
-                className="fr-tooltip-icon"
-                data-tooltip-id={!isValidFeelingRating ? 'fr-tooltip' : ''}
-                data-tooltip-content={t(copy.feelingTooltip, { ns: copy.ns })}
+            <div
+              className="fr-tooltip-icon"
+              data-tooltip-id={!isValidFeelingRating ? 'fr-tooltip' : ''}
+              data-tooltip-content={t(copy.feelingTooltip, { ns: copy.ns })}
+            >
+              <span
+                style={{
+                  visibility: !isValidFeelingRating ? 'visible' : 'hidden',
+                  ...(mode === 'submit'
+                    ? {
+                        color: 'red',
+                        padding: '0.2rem 0.4rem',
+                        borderRadius: '5px',
+                      }
+                    : {}),
+                }}
               >
-                <span style={{ visibility: `${!isValidFeelingRating ? '' : 'hidden'}` }}>?</span>
-                <Tooltip className="tooltip" id="fr-tooltip" place="bottom-end" effect="solid" />
-              </div>
-            ) : (
-              <div className="tooltip-container">
-                <span style={{ color: 'red', visibility: `${!isValidFeelingRating ? '' : 'hidden'}` }}>?</span>
-                <span
-                  className="tooltip"
-                  style={{
-                    visibility: `${!isValidFeelingRating ? '' : 'hidden'}`,
-                    bottom: '115%',
-                    right: '-15%',
-                  }}
-                >
-                  {t(copy.feelingTooltip, { ns: copy.ns })}
-                </span>
-              </div>
-            )}
+                ?
+              </span>
+              <Tooltip 
+              className="tooltip" 
+              id="fr-tooltip" 
+              place="bottom-end" 
+              effect="solid" 
+              style={{ 
+                maxWidth: '300px', 
+                zIndex: 100, 
+                background: 'var(--color-black)' }} />
+            </div>
           </div>
         </div>
 

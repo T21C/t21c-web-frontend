@@ -75,5 +75,16 @@
     "ysmod_only": "YoutubeStreamMod 전용",
     "allowed": "허가",
     "tuf_verified": "TUF 인증됨"
+  },
+  "pass": {
+    "updated": "기록이 업데이트되었습니다",
+    "deleted": "기록이 삭제되었습니다",
+    "restored": "기록이 복구되었습니다",
+    "errors": {
+      "playerRequired": "유효한 플레이어를 선택해 주세요",
+      "updateFailed": "기록 업데이트에 실패했습니다",
+      "deleteFailed": "소프트 삭제에 실패했습니다",
+      "restoreFailed": "복구에 실패했습니다"
+    }
   }
 } 

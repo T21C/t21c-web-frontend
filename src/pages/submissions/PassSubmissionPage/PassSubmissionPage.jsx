@@ -9,7 +9,7 @@ import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { useTranslation } from "react-i18next";
 import api from "@/utils/api";
 import { StagingModeWarning } from "@/components/common/display";
-import { ProfileSelector } from "@/components/common/selectors";
+import { PlayerInput } from "@/components/common/selectors";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { useNavigate } from "react-router-dom";
 import RulePopup from "./RulePopup";
@@ -18,13 +18,15 @@ import { getCookie, setCookie } from "@/utils/cookieUtils";
 import toast from "react-hot-toast";
 import { PassCoreForm } from "@/components/common/cores/PassCoreForm/PassCoreForm";
 import { usePassCoreForm } from "@/components/common/cores/PassCoreForm/usePassCoreForm";
+import { truncateString } from "@/components/common/cores/PassCoreForm/passCoreUtils";
 
 
 const PassSubmissionPage = () => {
   const initialFormState = {
     levelId: '',
     videoLink: '',
-    player: null,
+    playerId: '',
+    leaderboardName: '',
     speed: '',
     feelingRating: '',
     ePerfect: '',
@@ -59,7 +61,7 @@ const PassSubmissionPage = () => {
   const dropdownRef = useRef(null);
   const searchContainerRef = useRef(null);
 
-  const [pendingProfiles, setPendingProfiles] = useState([]);
+  // PlayerInput on this page does not offer creating new players; select an existing profile only.
 
   const [searchInput, setSearchInput] = useState('');
   const searchTimeoutRef = useRef(null);
@@ -78,11 +80,6 @@ const PassSubmissionPage = () => {
     if (levelLoading) return "#ffc107";
     if (!level) return "#dc3545";
     return "#28a745";
-  };
-
-  const truncateString = (str, maxLength) => {
-    if (!str) return "";
-    return str.length > maxLength ? str.substring(0, maxLength) + "..." : str;
   };
 
   const {
@@ -110,19 +107,10 @@ const PassSubmissionPage = () => {
       difficultyDict[lvl?.difficulty?.id]?.name?.[0] === "U" || difficultyDict[lvl?.difficulty?.id]?.name?.[0] === "Q",
     requireKeyModeWhenUDiff: true,
     extraValidation: ({ form: nextForm }) => ({
-      player: nextForm.player !== null,
+      playerId: Boolean(nextForm.playerId),
       rulesAccepted: hasReadPassRules,
     }),
   });
-
-  // Pending profile creation warning stays submission-only
-  useEffect(() => {
-    const newPendingProfiles = [];
-    if (form.player?.isNewRequest) {
-      newPendingProfiles.push({ type: "player", name: form.player.name });
-    }
-    setPendingProfiles(newPendingProfiles);
-  }, [form.player]);
 
   // Save hasReadPassRules state to cookie whenever it changes
   useEffect(() => {
@@ -143,15 +131,13 @@ const PassSubmissionPage = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       const { username } = user;
-      if (pendingProfiles.length > 0) {
-        return;
-      }
       try {
         // Search for profiles matching the channel name
         const searchUrl = `${import.meta.env.VITE_PLAYERS}/search/${encodeURIComponent(username)}`;
 
         const response = await api.get(searchUrl);
-        const profiles = response.data;
+        const body = response.data;
+        const profiles = Array.isArray(body) ? body : (body?.results ?? []);
 
         // Find exact match (case insensitive)
         const exactMatchResult = profiles.find(p => 
@@ -159,26 +145,26 @@ const PassSubmissionPage = () => {
         );
 
         // Directly set the form state with the profile data
-        setForm(prev => ({
-          ...prev,
-          player: exactMatchResult ? {
-            id: exactMatchResult.player.id,
-            name: exactMatchResult.player.name,
-            isNewRequest: false
-          } : {
-            name: username,
-            isNewRequest: true
-          }
-        }));
+        if (exactMatchResult?.player?.id) {
+          setForm((prev) => ({
+            ...prev,
+            playerId: exactMatchResult.player.id,
+            leaderboardName: exactMatchResult.player.name,
+          }));
+        } else {
+          // Pre-fill name only; user must select an existing player from the dropdown
+          setForm((prev) => ({
+            ...prev,
+            playerId: "",
+            leaderboardName: username,
+          }));
+        }
       } catch (error) {
         console.error('[Profile Search] Error searching profiles:', error);
-        // Set as new request on error
-        setForm(prev => ({
+        setForm((prev) => ({
           ...prev,
-          player: {
-            name: username,
-            isNewRequest: true
-          }
+          playerId: "",
+          leaderboardName: username,
         }));
       }
     };
@@ -273,9 +259,9 @@ const PassSubmissionPage = () => {
 
       submissionForm.setDetail('levelId', form.levelId);
       submissionForm.setDetail('videoLink', cleanedVideoUrl);
-      submissionForm.setDetail('passer', form.player?.name || '');
-      submissionForm.setDetail('passerId', form.player?.id);
-      submissionForm.setDetail('passerRequest', form.player?.isNewRequest || false);
+      submissionForm.setDetail('passer', form.leaderboardName || '');
+      submissionForm.setDetail('passerId', form.playerId || null);
+      submissionForm.setDetail('passerRequest', false);
       submissionForm.setDetail('speed', form.speed);
       submissionForm.setDetail('feelingDifficulty', form.feelingRating);
       submissionForm.setDetail('title', videoDetail?.title || '');
@@ -301,7 +287,6 @@ const PassSubmissionPage = () => {
       setFormStateKey(prevKey => prevKey + 1);
       setForm(initialFormState);
       setSearchInput('');
-      setPendingProfiles([]); // Clear pending profiles after successful submission
 
     } catch (err) {
       console.error("Submission error:", err);
@@ -400,29 +385,7 @@ const PassSubmissionPage = () => {
     };
   }, []);
 
-  // Add handler for profile changes
-  const handleProfileChange = (field, value) => {
-    
-    setForm(prev => {
-      const newForm = {
-        ...prev,
-        [field]: value
-      };
-      return newForm;
-    });
-
-    // Reset pending profiles when profile selection changes
-    if (field === 'player') {
-      const newPendingProfiles = [];
-      if (value?.isNewRequest) {
-        newPendingProfiles.push({
-          type: 'player',
-          name: value.name
-        });
-      }
-      setPendingProfiles(newPendingProfiles);
-    }
-  };
+  // Profile selection is handled by PlayerInput now.
 
   // Add cleanup effect
   useEffect(() => {
@@ -552,32 +515,27 @@ const PassSubmissionPage = () => {
             </a>
           )}
           renderPrimarySelector={() => (
-            <ProfileSelector
-              key={formStateKey}
-              type="player"
-              value={form.player}
-              onChange={(value) => handleProfileChange("player", value)}
-              required
-              placeholder={t("passSubmission.submInfo.altname")}
-              className={isFormValidDisplay.player ? "" : "error"}
-              allowNewRequest={true}
+            <PlayerInput
+              allowCreatePlayer={false}
+              value={form.leaderboardName || ""}
+              onChange={(value) => {
+                setForm((prev) => ({
+                  ...prev,
+                  leaderboardName: value,
+                  playerId: "",
+                }));
+              }}
+              onSelect={(player) => {
+                setForm((prev) => ({
+                  ...prev,
+                  leaderboardName: player.name,
+                  playerId: player.id,
+                }));
+              }}
             />
           )}
           renderBelowJudgements={() => (
             <>
-              {pendingProfiles.length > 0 && (
-                <div className="pending-profiles-warning">
-                  {t("passSubmission.warnings.pendingProfiles")}
-                  <ul>
-                    {pendingProfiles.map((profile, index) => (
-                      <li key={index}>
-                        {profile.type}: <b>{profile.name}</b>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
               <div className="rules-checkbox-container">
                 <div className="rules-checkbox">
                   <input

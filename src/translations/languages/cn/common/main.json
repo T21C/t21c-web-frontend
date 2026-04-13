@@ -75,5 +75,16 @@
     "ysmod_only": "仅限 YSMod",
     "allowed": "已授权",
     "tuf_verified": "已经过 TUF 认证"
+  },
+  "pass": {
+    "updated": "成绩已更新",
+    "deleted": "成绩已删除",
+    "restored": "成绩已恢复",
+    "errors": {
+      "playerRequired": "请选择有效的玩家",
+      "updateFailed": "更新成绩失败",
+      "deleteFailed": "软删除失败",
+      "restoreFailed": "恢复失败"
+    }
   }
 } 
