@@ -653,7 +653,7 @@
 
 @media (max-width: 1024px) {
   .pass-detail {
-    padding: 5rem 1.5rem 1.5rem;
+    padding: 1rem 1.5rem 1.5rem;
   }
 
   .pass-detail .header {
@@ -671,7 +671,7 @@
 
 @media (max-width: 640px) {
   .pass-detail {
-    padding: 5rem 1rem 1rem;
+    padding: 1rem 1rem 1rem;
   }
 
   .pass-detail .level-card,

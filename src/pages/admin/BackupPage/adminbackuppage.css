@@ -439,7 +439,7 @@
 @media screen and (max-width: 768px) {
   .admin-backup-page .admin-backup-body {
     padding: 1rem;
-    padding-top: 5rem;
+    padding-top: 1rem;
   }
 
   .admin-backup-page .backup-header {

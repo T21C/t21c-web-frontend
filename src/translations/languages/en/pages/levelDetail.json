@@ -35,6 +35,9 @@
   "aliases": {
     "header": "Alternative Names"
   },
+  "artists": {
+    "more": "{{count}} more"
+  },
   "stats": {
     "firstClear": {
       "label": "First Clear",

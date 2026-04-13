@@ -1559,7 +1559,7 @@ const LevelDetailPage = ({ mockData = null }) => {
           <span
             className={`level-title-text${isClickable ? ' level-title-clickable' : ''}`}
             onClick={isClickable ? () => setShowSongPopup(true) : undefined}
-            title={isClickable ? "Click to view song details" : undefined}
+            title={isClickable ? t('levelDetail.song.clickToViewDetails') : undefined}
           >
             {songName}
           </span>
@@ -1589,7 +1589,7 @@ const LevelDetailPage = ({ mockData = null }) => {
     // Artist: use normalized list or plain text
     const displayName = hasPopup ? (
       <div className="level-artist-list-wrapper">
-        {level.songObject?.artists.map((artist, index) => (
+        {level.songObject?.artists.slice(0, 4).map((artist, index) => (
           <div key={artist.id}>
             <span 
               className="level-artist-name"
@@ -1601,6 +1601,9 @@ const LevelDetailPage = ({ mockData = null }) => {
               <span className="level-artist-separator"> & </span>}
           </div>
         ))}
+        {level.songObject?.artists.length > 4 && (
+          <span className="level-artist-more">{t('levelDetail.artists.more', { count: level.songObject?.artists.length - 4 })}</span>
+        )}
       </div>
     ) : (
       <span className="level-artist-text">{getArtistDisplayName(level)}</span>

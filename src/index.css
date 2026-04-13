@@ -101,7 +101,7 @@ body {
 .body {
   position: relative;
   z-index: 2;
-  padding: 2rem 0 0;
+  padding: 1.5rem 0 0;
   min-height: calc(90vh - 5rem);
 }
 

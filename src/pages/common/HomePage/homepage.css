@@ -607,7 +607,7 @@
 /* Mobile Adjustments */
 @media (max-width: 768px) {
   .home .home-container {
-    padding: 5rem 1rem 2rem 1rem;
+    padding: 1rem 1rem 2rem 1rem;
   }
 
   .home .weekly-curations-section {
@@ -758,7 +758,7 @@
 /* Landscape mode adjustments */
 @media (max-height: 600px) and (orientation: landscape) {
   .home .home-container {
-    padding-top: 4rem;
+    padding-top: 0rem;
   }
 
   .home .main-title {

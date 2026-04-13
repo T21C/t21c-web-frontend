@@ -15,7 +15,7 @@
 .edit-pass-popup-overlay .form-container {
   position: relative;
   max-width: 1200px;
-  max-height: 90vh;
+  max-height: 85vh;
   overflow-y: auto;
   margin: auto;
   border-radius: 8px;
@@ -360,47 +360,6 @@
 .edit-pass-popup-overlay .delete-button:disabled {
   background-color: #555555;
   cursor: not-allowed;
-}
-
-.edit-pass-popup-overlay .result-message {
-  position: fixed;
-  top: 2rem;
-  right: 2rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 5px;
-  color: #ffffff;
-  font-weight: bold;
-  z-index: 10003;
-  opacity: 0;
-  transform: translateX(100%);
-  transition: all 0.3s ease;
-  max-width: 300px;
-  word-wrap: break-word;
-  display: flex;
-  align-items: center;
-}
-
-.edit-pass-popup-overlay .result-message.visible {
-  opacity: 1;
-  transform: translateX(0);
-}
-
-.edit-pass-popup-overlay .result-message p {
-  margin: 0;
-  font-size: 0.9rem;
-}
-
-.edit-pass-popup-overlay .result-message .close-btn {
-  background: none;
-  border: none;
-  color: #ffffff;
-  cursor: pointer;
-  margin-left: 1rem;
-  font-size: 1.2rem;
-}
-
-.edit-pass-popup-overlay .result-message .close-btn:hover {
-  opacity: 0.7;
 }
 
 .edit-pass-popup-overlay .form-container form .info .checkbox-row {
