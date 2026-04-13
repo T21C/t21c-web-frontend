@@ -747,7 +747,7 @@ const BackupPage = () => {
             {initialPasswordError && <p className="error-message">{initialPasswordError}</p>}
             <div className="password-modal-actions">
               <button 
-                className="confirm-btn tuf-btn-fill-primary"
+                className="confirm-btn btn-fill-primary"
                 onClick={handleInitialPasswordSubmit}
                 style={{pointerEvents: !initialPassword || isVerifyingPassword ? 'none' : 'auto'}}
                 disabled={!initialPassword || isVerifyingPassword}
@@ -770,7 +770,7 @@ const BackupPage = () => {
             </p>
             <div className="password-modal-actions">
               <button 
-                className="confirm-btn tuf-btn-fill-primary"
+                className="confirm-btn btn-fill-primary"
                 onClick={handleConfirmation}
                 disabled={
                   (confirmationAction?.type === 'create' && isCreatingBackup) ||
@@ -781,7 +781,7 @@ const BackupPage = () => {
                 {t('buttons.confirm', { ns: 'common' })}
               </button>
               <button 
-                className="cancel-btn tuf-btn-fill-neutral-dark"
+                className="cancel-btn btn-fill-neutral-dark"
                 onClick={() => {
                   setShowConfirmationModal(false);
                   setConfirmationAction(null);

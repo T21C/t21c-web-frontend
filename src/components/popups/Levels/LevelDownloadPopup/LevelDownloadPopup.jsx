@@ -6,6 +6,7 @@ import { Tooltip } from 'react-tooltip';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { useAuth } from '@/contexts/AuthContext';
 import { useTranslation } from 'react-i18next';
+import { CloseButton } from '@/components/common/buttons';
 import { formatFileSize } from '@/utils/zipUtils';
 
 const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, legacyDllink, incrementAccessCount, metadata }) => {
@@ -177,26 +178,11 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, legacyDllink, in
     return (
         <div className="level-download-popup">
             <div className="level-download-content" ref={popupRef}>
-                <button 
-                    className="close-popup-btn"
+                <CloseButton
+                    variant="floating"
                     onClick={onClose}
                     aria-label={t('levelPopups.download.closePopup')}
-                >
-                    <svg 
-                        width="24" 
-                        height="24" 
-                        viewBox="0 0 24 24" 
-                        fill="none" 
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <path 
-                            d="M6 6L18 18M6 18L18 6" 
-                            stroke="currentColor" 
-                            strokeWidth="2" 
-                            strokeLinecap="round"
-                        />
-                    </svg>
-                </button>
+                />
 
                 <h2>{t('levelPopups.download.title')}</h2>
                 

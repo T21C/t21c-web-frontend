@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import api from '@/utils/api';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import './curationselectionpopup.css';
+import { CloseButton } from '@/components/common/buttons';
 import toast from 'react-hot-toast';
 import { FacetQueryBuilder } from '@/components/common/selectors';
 import { buildFacetQueryParam } from '@/utils/facetQueryCodec';
@@ -25,7 +26,7 @@ const CurationSelectionPopup = ({
   excludeIds = [],
   multiSelect = false,
 }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
   const { curationTypes } = useDifficultyContext();
 
   const [curations, setCurations] = useState([]);
@@ -154,13 +155,13 @@ const CurationSelectionPopup = ({
   return (
     <div className="curation-selection-modal">
       <div className="curation-selection-modal__content" ref={modalRef}>
-        <button
+        <CloseButton
+          variant="floating"
           type="button"
           className="curation-selection-modal__close-button"
           onClick={onClose}
-        >
-          ✖
-        </button>
+          aria-label={t('buttons.close', { ns: 'common' })}
+        />
 
         <div className="curation-selection-modal__header">
           <h2>{t('curationSelectionPopup.title')}</h2>

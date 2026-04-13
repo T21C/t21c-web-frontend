@@ -3,7 +3,7 @@ import { createPortal } from 'react-dom';
 import { getPortalRoot } from '@/utils/portalRoot';
 import { toast } from 'react-hot-toast';
 import { useTranslation } from 'react-i18next';
-import { CrossIcon } from '@/components/common/icons';
+import { CloseButton } from '@/components/common/buttons';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import './changeEmailPopup.css';
 
@@ -96,15 +96,13 @@ const ChangeEmailPopup = ({ isOpen, onClose, currentEmail, changeEmail }) => {
       >
         <div className="change-email-popup-header">
           <h2 id="change-email-popup-title">{t('editProfile.emailChange.title')}</h2>
-          <button
-            type="button"
+          <CloseButton
+            variant="inline"
             className="change-email-popup-close"
             onClick={onClose}
             disabled={isSaving}
-            aria-label="Close"
-          >
-            <CrossIcon color="#fff" size="24px" />
-          </button>
+            aria-label={t('buttons.close', { ns: 'common' })}
+          />
         </div>
 
         <p className="change-email-popup-current">

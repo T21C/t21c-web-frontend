@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { UserAvatar } from '@/components/layout';
 import { hasAnyFlag, permissionFlags } from '@/utils/UserPermissions';
 import { hasFlag } from '@/utils/UserPermissions';
+import { CloseButton } from '@/components/common/buttons';
 
 // Role configuration for different management types
 const ROLE_CONFIGS = {
@@ -317,7 +318,7 @@ const UserEntry = ({ user, onUpdate, onDelete, superAdminPassword, onError, role
 };
 
 const UserManagementPopup = ({ onClose, currentUser, initialMode = 'rater' }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
   
   // Determine initial mode based on user permissions
   const getInitialMode = () => {
@@ -474,7 +475,11 @@ const UserManagementPopup = ({ onClose, currentUser, initialMode = 'rater' }) =>
                />
              </div>
            )}
-          <button className="close-button" onClick={onClose}>×</button>
+          <CloseButton
+            variant="inline"
+            onClick={onClose}
+            aria-label={t('buttons.close', { ns: 'common' })}
+          />
         </div>
 
         <div className="search-section">

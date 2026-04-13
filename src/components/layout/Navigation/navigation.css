@@ -105,7 +105,7 @@ nav {
   border-bottom: none;
   background: transparent;
 }
-/* Submit control (shared with .tuf-btn-fill-primary in index.css) */
+/* Submit control (shared with .btn-fill-primary in index.css) */
 .nav-submit-button {
   padding: 0.5rem 1rem;
   border-radius: 0.25rem;

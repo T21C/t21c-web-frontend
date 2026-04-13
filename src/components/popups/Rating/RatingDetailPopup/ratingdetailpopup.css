@@ -98,31 +98,6 @@
     z-index: 1001;
 }
 
-.rating-popup .close-popup-btn {
-    position: absolute;
-    top: 1rem;
-    right: 1rem;
-    background: none;
-    border: none;
-    padding: 8px;
-    cursor: pointer;
-    color: #fff; /* or any color you prefer */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
-    border-radius: 50%;
-    transition: background-color 0.2s;
-}
-
-.rating-popup .close-popup-btn:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.rating-popup .close-popup-btn svg {
-    display: block;
-}
-
 .rating-popup .popup-content {
     display: flex;
     flex-direction: column;
@@ -800,7 +775,7 @@
     flex-direction: column;
   }
 
-  .rating-popup .close-popup-btn {
+  .rating-popup .rating-popup-close.tuf-close-button--floating {
     top: 6rem;
     background: var(--color-white-t20);
   }
@@ -883,7 +858,7 @@
     padding: 4.5rem 1rem 1rem 1rem;
   }
 
-  .rating-popup .close-popup-btn {
+  .rating-popup .rating-popup-close.tuf-close-button--floating {
     top: 5rem;
     right: 1.5rem;
   }

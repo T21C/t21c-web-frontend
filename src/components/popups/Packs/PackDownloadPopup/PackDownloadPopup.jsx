@@ -4,6 +4,7 @@ import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { useJobProgressStream } from '@/hooks/useJobProgressStream';
 import './PackDownloadPopup.css';
 import { formatEstimatedSize } from '@/utils/packDownloadUtils';
+import { CloseButton } from '@/components/common/buttons';
 
 const DEFAULT_SIZE_SUMMARY = { totalBytes: 0, missingCount: 0, levelCount: 0 };
 
@@ -14,7 +15,7 @@ const PackDownloadPopup = ({
   sizeSummary = DEFAULT_SIZE_SUMMARY,
   onRequestDownload
 }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
   const popupRef = useRef(null);
   const [step, setStep] = useState('confirm');
   const [error, setError] = useState(null);
@@ -114,26 +115,12 @@ const PackDownloadPopup = ({
   return (
     <div className="pack-download-popup__overlay">
       <div className="pack-download-popup" ref={popupRef}>
-        <button
+        <CloseButton
+          variant="floating"
           className="pack-download-popup__close-btn"
           onClick={onClose}
-          aria-label="Close pack download popup"
-        >
-          <svg
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M6 6L18 18M6 18L18 6"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
+          aria-label={t('buttons.close', { ns: 'common' })}
+        />
 
         <div className="pack-download-popup__content">
           <h2 className="pack-download-popup__title">

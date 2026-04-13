@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import './packhelppopup.css';
 import { useTranslation } from 'react-i18next';
+import { CloseButton } from '@/components/common/buttons';
 
 /**
  * PackHelpPopup - A help popup component that displays information about pack search functionality
@@ -52,26 +53,11 @@ export const PackHelpPopup = ({ onClose }) => {
   return (
     <div className="pack-help-popup-overlay">
       <div className="pack-help-popup" ref={popupRef}>
-        <button 
-          className="close-popup-btn"
+        <CloseButton
+          variant="floating"
           onClick={onClose}
           aria-label={t('packHelpPopup.closeButton')}
-        >
-          <svg 
-            width="24" 
-            height="24" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path 
-              d="M6 6L18 18M6 18L18 6" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
+        />
 
         <div className="help-content">
           <h2>{t('packHelpPopup.title')}</h2>

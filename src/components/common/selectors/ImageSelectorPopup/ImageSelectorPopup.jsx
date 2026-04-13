@@ -4,8 +4,11 @@ import { FixedCropper, CircleStencil, ImageRestriction } from 'react-advanced-cr
 import 'react-advanced-cropper/dist/style.css';
 import './ImageSelectorPopup.css';
 import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/constants/cdnImageAccept';
+import { useTranslation } from 'react-i18next';
+import { CloseButton } from '@/components/common/buttons';
 
 const ImageSelectorPopup = ({ isOpen, onClose, onSave, currentAvatar, initialImage }) => {
+    const { t } = useTranslation('common');
     const [image, setImage] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [rotation, setRotation] = useState(0);
@@ -147,7 +150,7 @@ const ImageSelectorPopup = ({ isOpen, onClose, onSave, currentAvatar, initialIma
             <div className="image-selector-popup">
                 <div className="image-selector-popup-header">
                     <h2>Edit Profile Picture</h2>
-                    <button className="close-button" onClick={onClose}>×</button>
+                    <CloseButton variant="inline" onClick={onClose} aria-label={t('buttons.close')} />
                 </div>
 
                 <div className="image-selector-popup-content">
@@ -224,7 +227,7 @@ const ImageSelectorPopup = ({ isOpen, onClose, onSave, currentAvatar, initialIma
                             Cancel
                         </button>
                         <button 
-                            className="save-button tuf-btn-fill-primary" 
+                            className="save-button btn-fill-primary" 
                             onClick={handleSave}
                             disabled={!image || isLoading}
                         >

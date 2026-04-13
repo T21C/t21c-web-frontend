@@ -35,20 +35,6 @@
   color: #fff;
 }
 
-.alias-management-popup .close-button {
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 24px;
-  cursor: pointer;
-  padding: 0;
-  line-height: 1;
-}
-
-.alias-management-popup .close-button:hover {
-  color: #ff4444;
-}
-
 .alias-management-popup .add-alias-form {
   background-color: #2a2a2a;
   padding: 20px;

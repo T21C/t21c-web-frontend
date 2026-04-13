@@ -15,7 +15,7 @@ import { ArtistSelectorPopup } from "@/components/popups/Artists";
 
 import api from "@/utils/api";
 import { prepareZipForUpload, validateZipSize } from '@/utils/zipUtils';
-import { zipLevelFileKey } from '@/components/popups/Levels/ZipLevelFilesList/ZipLevelFilesList.jsx';
+import { zipLevelFileKey } from '@/components/popups/Levels/ZipLevelFilesList/ZipLevelFilesList';
 import { useNavigate } from "react-router-dom";
 import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { QuestionmarkCircleIcon } from "@/components/common/icons";
@@ -786,10 +786,10 @@ const LevelSubmissionPage = () => {
               <h3>Warning: Level Selection Required</h3>
               <p>If you close this window, the system will automatically select the largest .adofai file from your zip and proceed with the submission. Are you sure you want to continue?</p>
               <div className="warning-buttons">
-                <button onClick={handleCancelConfirm} className="confirm-btn tuf-btn-fill-danger">
+                <button onClick={handleCancelConfirm} className="confirm-btn btn-fill-danger">
                   Proceed with Largest File
                 </button>
-                <button onClick={handleCancelReject} className="cancel-btn tuf-btn-fill-neutral-muted">
+                <button onClick={handleCancelReject} className="cancel-btn btn-fill-neutral-muted">
                   Return to Selection
                 </button>
               </div>
@@ -1031,7 +1031,7 @@ const LevelSubmissionPage = () => {
                   </div>
                   {index > 0 && (
                     <button 
-                      className="creator-action-btn remove-creator-btn tuf-btn-fill-danger"
+                      className="creator-action-btn remove-creator-btn btn-fill-danger"
                       onClick={() => removeArtist(index)}
                       type="button"
                       disabled={selectedSong?.songId && !selectedSong?.isNewRequest}
@@ -1043,7 +1043,7 @@ const LevelSubmissionPage = () => {
               ))}
               {(!selectedSong?.songId || selectedSong?.isNewRequest) && (
                 <button 
-                  className="creator-action-btn add-creator-btn tuf-btn-fill-neutral"
+                  className="creator-action-btn add-creator-btn btn-fill-neutral"
                   onClick={addArtist}
                   type="button"
                 >
@@ -1103,7 +1103,7 @@ const LevelSubmissionPage = () => {
                     style={{ display: 'none' }}
                   />
                   {
-                  <label htmlFor="levelZip" className={`zip-upload-button tuf-btn-fill-accent ${isDragOver ? 'drag-over' : ''}`}>
+                  <label htmlFor="levelZip" className={`zip-upload-button btn-fill-accent ${isDragOver ? 'drag-over' : ''}`}>
                     {t('levelSubmission.buttons.uploadZip')}
                   </label>
                   }
@@ -1117,7 +1117,7 @@ const LevelSubmissionPage = () => {
                   </div>
                   <button 
                     type="button" 
-                    className="remove-zip-btn tuf-btn-fill-danger"
+                    className="remove-zip-btn btn-fill-danger"
                     onClick={handleRemoveZip}
                   >
                     🗑️
@@ -1305,7 +1305,7 @@ const LevelSubmissionPage = () => {
                   />
                   {index > 0 && (
                     <button 
-                      className="creator-action-btn remove-creator-btn tuf-btn-fill-danger"
+                      className="creator-action-btn remove-creator-btn btn-fill-danger"
                       onClick={() => removeCharter(index)}
                       type="button"
                     >
@@ -1315,7 +1315,7 @@ const LevelSubmissionPage = () => {
                 </div>
               ))}
               <button 
-                className="creator-action-btn add-creator-btn tuf-btn-fill-neutral"
+                className="creator-action-btn add-creator-btn btn-fill-neutral"
                 onClick={addCharter}
                 type="button"
               >
@@ -1338,7 +1338,7 @@ const LevelSubmissionPage = () => {
                   />
                   {index > 0 && (
                     <button 
-                      className="creator-action-btn remove-creator-btn tuf-btn-fill-danger"
+                      className="creator-action-btn remove-creator-btn btn-fill-danger"
                       onClick={() => removeVfxer(index)}
                       type="button"
                     >
@@ -1348,7 +1348,7 @@ const LevelSubmissionPage = () => {
                 </div>
               ))}
               <button 
-                className="creator-action-btn add-creator-btn tuf-btn-fill-neutral"
+                className="creator-action-btn add-creator-btn btn-fill-neutral"
                 onClick={addVfxer}
                 type="button"
               >
@@ -1399,7 +1399,7 @@ const LevelSubmissionPage = () => {
             )}
 
             <button 
-              className="submit tuf-btn-fill-primary alt" 
+              className="submit btn-fill-primary alt" 
               onClick={handleSubmit}
               disabled={submission}
             >

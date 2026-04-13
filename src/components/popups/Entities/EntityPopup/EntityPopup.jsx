@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import api from '@/utils/api';
 import './entityPopup.css';
 import { ExternalLinkIcon } from '@/components/common/icons';
+import { CloseButton } from '@/components/common/buttons';
 import { getVerificationClass } from '@/utils/Utility';
 
 export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
@@ -115,7 +116,12 @@ export const EntityPopup = ({ artist, song, onClose, type = 'artist' }) => {
             )}
             <h2 className="popup-title">{entityData.name}</h2>
           </div>
-          <button className="popup-close-button" onClick={onClose}>×</button>
+          <CloseButton
+            variant="inline"
+            className="popup-close-button"
+            onClick={onClose}
+            aria-label={t('buttons.close', { ns: 'common' })}
+          />
         </div>
 
         <div className="popup-content">

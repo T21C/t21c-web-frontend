@@ -40,7 +40,7 @@ module.exports = {
       version: 'detect'
     }
   },
-  plugins: ['import', 'react'],
+  plugins: ['import', 'react', 'react-hooks'],
   rules: {
     // Enable import resolution and named exports validation
     'import/no-unresolved': 'error',

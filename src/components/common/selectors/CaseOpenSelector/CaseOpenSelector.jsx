@@ -4,6 +4,8 @@ import { toast } from 'react-hot-toast';
 import api from '@/utils/api';
 import { createEventSystem } from '@/utils/Utility';
 import { useAuth } from '@/contexts/AuthContext';
+import { useTranslation } from 'react-i18next';
+import { CloseButton } from '@/components/common/buttons';
 
 const TOTAL_ITEMS = 50; // Total items in the strip
 const INITIAL_ITEMS = 20; // Number of items to pre-generate
@@ -52,6 +54,7 @@ const stripStyle = {
 };
 
 export const CaseOpenSelector = ({ targetPlayerId, onClose, isSpinning: parentIsSpinning }) => {
+  const { t } = useTranslation('common');
   const { user } = useAuth();
   const [isInitialSpin, setIsInitialSpin] = useState(true);
   const [modifiers, setModifiers] = useState([]);
@@ -447,12 +450,12 @@ export const CaseOpenSelector = ({ targetPlayerId, onClose, isSpinning: parentIs
       </div>
 
       {!isSpinning && onClose && (
-        <button 
+        <CloseButton
+          variant="floating"
           className="case-open-selector__close-button"
           onClick={onClose}
-        >
-          ✖
-        </button>
+          aria-label={t('buttons.close')}
+        />
       )}
     </div>
   );

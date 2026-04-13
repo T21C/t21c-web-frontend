@@ -1,7 +1,9 @@
 import ReferencesButton from "./ReferencesButton/ReferencesButton"
 import ScrollButton from "./ScrollButton/ScrollButton"
+import CloseButton from "./CloseButton/CloseButton"
 
 export {
     ReferencesButton,
-    ScrollButton
+    ScrollButton,
+    CloseButton,
 }

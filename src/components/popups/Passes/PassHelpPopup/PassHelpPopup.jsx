@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import './passhelppopup.css';
 import { useTranslation } from 'react-i18next';
+import { CloseButton } from '@/components/common/buttons';
 
 export const PassHelpPopup = ({ onClose }) => {
   const { t } = useTranslation(['components']);
@@ -31,26 +32,11 @@ export const PassHelpPopup = ({ onClose }) => {
   return (
     <div className="pass-help-popup-overlay">
       <div className="pass-help-popup" ref={popupRef}>
-        <button 
-          className="close-popup-btn"
+        <CloseButton
+          variant="floating"
           onClick={onClose}
           aria-label={t('pass.helpPopup.closeButton')}
-        >
-          <svg 
-            width="24" 
-            height="24" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path 
-              d="M6 6L18 18M6 18L18 6" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
+        />
 
         <div className="help-content">
           <h2>{t('pass.helpPopup.title')}</h2>

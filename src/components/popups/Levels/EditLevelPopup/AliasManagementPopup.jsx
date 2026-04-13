@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import './aliasmanagementpopup.css';
 import api from '@/utils/api';
 import { CustomSelect } from '@/components/common/selectors';
+import { CloseButton } from '@/components/common/buttons';
 
 const AliasManagementPopup = ({ levelId, onClose }) => {
+  const { t } = useTranslation('common');
   const [aliases, setAliases] = useState([]);
   const [newAlias, setNewAlias] = useState({ field: 'song', alias: '', propagate: false, matchType: 'exact' });
   const [loading, setLoading] = useState(false);
@@ -152,15 +155,14 @@ const AliasManagementPopup = ({ levelId, onClose }) => {
       <div className="alias-management-content" onClick={handleContentClick}>
         <div className="alias-management-header">
           <h2>Manage Aliases</h2>
-          <button 
-            className="close-button" 
+          <CloseButton
+            variant="inline"
             onClick={(e) => {
               e.stopPropagation();
               onClose();
             }}
-          >
-            ×
-          </button>
+            aria-label={t('buttons.close')}
+          />
         </div>
 
         {error && <div className="error-message">{error}</div>}
@@ -247,7 +249,7 @@ const AliasManagementPopup = ({ levelId, onClose }) => {
                       <button
                         onClick={() => handleDeleteAlias(alias.id)}
                         disabled={loading}
-                        className="delete-button tuf-btn-fill-danger"
+                        className="delete-button btn-fill-danger"
                       >
                         Delete
                       </button>

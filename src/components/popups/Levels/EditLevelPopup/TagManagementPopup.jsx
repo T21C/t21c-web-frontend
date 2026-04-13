@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import './editlevelpopup.css';
 import api from '@/utils/api';
 import { useTranslation } from 'react-i18next';
+import { CloseButton } from '@/components/common/buttons';
 import { ItemPickManager } from '@/components/common/selectors';
 
 export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave }) => {
@@ -92,17 +93,11 @@ export const TagManagementPopup = ({ levelId, currentTags = [], onClose, onSave 
       }}
     >
       <div className="edit-level-popup tag-management-popup" onClick={(e) => e.stopPropagation()}>
-        <button type="button" className="close-popup-btn" onClick={handleCancel}>
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M18 6L6 18M6 6l12 12"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-        </button>
+        <CloseButton
+          variant="floating"
+          onClick={handleCancel}
+          aria-label={t('buttons.close', { ns: 'common' })}
+        />
 
         <div className="popup-content">
           <h2>{t('levelPopups.edit.tags.title')}</h2>

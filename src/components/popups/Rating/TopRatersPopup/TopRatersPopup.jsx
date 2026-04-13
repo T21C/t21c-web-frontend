@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { useTranslation } from 'react-i18next';
 import { UserAvatar } from '@/components/layout';
 import { CrownIcon } from '@/components/common/icons';
+import { CloseButton } from '@/components/common/buttons';
 
 // Format numbers for better readability
 const formatNumber = (num) => {
@@ -66,7 +67,7 @@ const TopRaterEntry = ({ rater, rank, averagePerDay }) => {
 };
 
 const TopRatersPopup = ({ onClose }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
 
   const [topRaters, setTopRaters] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -195,7 +196,11 @@ const TopRatersPopup = ({ onClose }) => {
       <div className="top-raters-popup">
         <div className="popup-header">
           <h2>{t('topRaters.title')}</h2>
-          <button className="close-button" onClick={onClose}>×</button>
+          <CloseButton
+            variant="inline"
+            onClick={onClose}
+            aria-label={t('buttons.close', { ns: 'common' })}
+          />
         </div>
 
         <div className="date-selection">

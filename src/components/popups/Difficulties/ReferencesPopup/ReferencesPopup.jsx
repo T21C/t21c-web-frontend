@@ -5,6 +5,7 @@ import api from '@/utils/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { useTranslation } from 'react-i18next';
+import { CloseButton } from '@/components/common/buttons';
 import { toast } from 'react-hot-toast';
 import rollingIcon from '@/assets/icons/Rolling RITK.png';
 import indexingIcon from '@/assets/icons/Indexing RITK.png';
@@ -805,7 +806,11 @@ const ReferencesPopup = ({ onClose }) => {
         className="references-popup"
       >
         <div className="popup-header">
-          <button className="close-popup-btn" onClick={onClose}>×</button>
+          <CloseButton
+            variant="floating"
+            onClick={onClose}
+            aria-label={t('references.popup.buttons.close')}
+          />
           
           <div className="tab-navigation">
             <button className="nav-arrow left" onClick={() => handleTabChange(-1)}>

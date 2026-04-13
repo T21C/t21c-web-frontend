@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import api from '@/utils/api';
 import './songSelectorPopup.css';
+import { CloseButton } from '@/components/common/buttons';
 import { getVerificationClass } from '@/utils/Utility';
 import { CustomSelect } from '@/components/common/selectors';
 
@@ -351,7 +352,11 @@ export const SongSelectorPopup = ({ onClose, onSelect, initialSong = null, selec
       <div className="song-selector-popup" ref={popupRef}>
         <div className="popup-header">
           <h2>{t('songSelector.title')}</h2>
-          <button className="close-button" onClick={onClose}>×</button>
+          <CloseButton
+            variant="inline"
+            onClick={onClose}
+            aria-label={t('buttons.close', { ns: 'common' })}
+          />
         </div>
 
         <div className="popup-content">

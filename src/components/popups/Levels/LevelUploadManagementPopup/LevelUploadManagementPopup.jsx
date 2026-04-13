@@ -6,8 +6,9 @@ import { encodeFilename } from '@/utils/zipUtils';
 import { uploadFileInChunks, validateChunkedUpload } from '@/utils/chunkedUpload';
 import { isCdnUrl } from '@/utils/Utility';
 import { CrossIcon } from '@/components/common/icons';
+import { CloseButton } from '@/components/common/buttons';
 import { useJobProgressStream } from '@/hooks/useJobProgressStream';
-import ZipLevelFilesList from '@/components/popups/Levels/ZipLevelFilesList/ZipLevelFilesList.jsx';
+import ZipLevelFilesList from '@/components/popups/Levels/ZipLevelFilesList/ZipLevelFilesList';
 
 const LevelUploadManagementPopup = ({
   level,
@@ -31,7 +32,7 @@ const LevelUploadManagementPopup = ({
   const [songFiles, setSongFiles] = useState({});
   const fileInputRef = useRef(null);
   const abortControllerRef = useRef(null);
-  const { t } = useTranslation(['components']);
+  const { t } = useTranslation(['components', 'common']);
 
   const { job: cdnJob } = useJobProgressStream(cdnJobId, Boolean(isUploading && cdnJobId));
 
@@ -391,16 +392,15 @@ const LevelUploadManagementPopup = ({
       <div className="level-upload-management-content" onClick={handleContentClick}>
         <div className="level-upload-management-header">
           <h2>{t('levelUploadManagement.title')}</h2>
-          <button 
-            className="close-button tuf-btn-fill-neutral" 
+          <CloseButton
+            variant="inline"
             onClick={(e) => {
               e.stopPropagation();
               handleClose();
             }}
             disabled={isUploading}
-          >
-            <CrossIcon color="#fff" size={"24px"} />
-          </button>
+            aria-label={t('buttons.close', { ns: 'common' })}
+          />
         </div>
 
         {error && <div className="error-message">{error}</div>}
@@ -415,7 +415,7 @@ const LevelUploadManagementPopup = ({
             </div>
             <div className="progress-text">{progressLine}</div>
             <button
-              className="cancel-upload-button tuf-btn-fill-danger"
+              className="cancel-upload-button btn-fill-danger"
               onClick={() => {
                 if (abortControllerRef.current) {
                   abortControllerRef.current.abort();
@@ -464,7 +464,7 @@ const LevelUploadManagementPopup = ({
             />
             {selectedLevel && levelFiles.length > 0 && (
             <button 
-              className={`select-button tuf-btn-fill-primary ${isSelecting ? 'is-selecting' : ''}`}
+              className={`select-button btn-fill-primary ${isSelecting ? 'is-selecting' : ''}`}
               onClick={handleLevelSelect}
               disabled={!selectedLevel || selectedLevel === targetLevel || isSelecting}
             >
@@ -521,7 +521,7 @@ const LevelUploadManagementPopup = ({
                       />
                       <button
                         type="button"
-                        className="upload-from-url-submit tuf-btn-fill-primary"
+                        className="upload-from-url-submit btn-fill-primary"
                         onClick={handleUploadFromUrl}
                         disabled={isUploading || !importUrl.trim()}
                       >
@@ -533,7 +533,7 @@ const LevelUploadManagementPopup = ({
                   <div className="upload-actions-inline">
                     <button
                       type="button"
-                      className="upload-button tuf-btn-fill-primary"
+                      className="upload-button btn-fill-primary"
                       onClick={() => fileInputRef.current?.click()}
                       disabled={isUploading}
                     >
@@ -555,7 +555,7 @@ const LevelUploadManagementPopup = ({
               ) : (
                 <button
                   type="button"
-                  className="upload-button upload-button--full tuf-btn-fill-primary"
+                  className="upload-button upload-button--full btn-fill-primary"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isUploading}
                 >
@@ -566,7 +566,7 @@ const LevelUploadManagementPopup = ({
             {isCdnUrl(level.dlLink) && (
               <button
                 type="button"
-                className="delete-button tuf-btn-fill-danger"
+                className="delete-button btn-fill-danger"
                 onClick={handleDelete}
                 disabled={isUploading}
               >

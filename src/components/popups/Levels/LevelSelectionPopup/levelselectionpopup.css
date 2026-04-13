@@ -26,21 +26,11 @@
   position: relative;
 }
 
-.level-selection-modal__close-button {
-  position: absolute;
-  top: 1rem;
-  right: 1rem;
-  background: none;
-  border: none;
-  font-size: 1.5rem;
+.level-selection-modal .level-selection-modal__close-button.tuf-close-button--floating {
   color: #a0a0a0;
-  cursor: pointer;
-  padding: 0.5rem;
-  border-radius: 4px;
-  transition: all 0.2s ease;
 }
 
-.level-selection-modal__close-button:hover {
+.level-selection-modal .level-selection-modal__close-button.tuf-close-button--floating:hover:not(:disabled) {
   color: #ffffff;
   background: #333333;
 }
@@ -524,7 +514,7 @@
   cursor: wait;
 }
 
-.level-selection-modal__close-button:disabled {
+.level-selection-modal .level-selection-modal__close-button.tuf-close-button--floating:disabled {
   opacity: 0.35;
   cursor: not-allowed;
 }

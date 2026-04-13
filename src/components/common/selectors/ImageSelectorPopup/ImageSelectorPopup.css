@@ -37,22 +37,6 @@
     color: #fff;
 }
 
-.close-button {
-    background: none;
-    border: none;
-    font-size: 24px;
-    cursor: pointer;
-    color: #fff;
-    padding: 0;
-    line-height: 1;
-    opacity: 0.7;
-    transition: opacity 0.2s;
-}
-
-.close-button:hover {
-    opacity: 1;
-}
-
 .image-selector-popup-content {
     padding: 16px;
     flex: 1;

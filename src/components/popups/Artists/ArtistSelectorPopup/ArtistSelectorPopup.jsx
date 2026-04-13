@@ -4,6 +4,7 @@ import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import api from '@/utils/api';
 import { CustomSelect } from '@/components/common/selectors';
 import './artistSelectorPopup.css';
+import { CloseButton } from '@/components/common/buttons';
 
 export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null }) => {
   const { t } = useTranslation(['components', 'common']);
@@ -225,7 +226,11 @@ export const ArtistSelectorPopup = ({ onClose, onSelect, initialArtist = null })
       <div className="artist-selector-popup" ref={popupRef}>
         <div className="popup-header">
           <h2>{t('artistSelector.title')}</h2>
-          <button className="close-button" onClick={onClose}>×</button>
+          <CloseButton
+            variant="inline"
+            onClick={onClose}
+            aria-label={t('buttons.close', { ns: 'common' })}
+          />
         </div>
 
         <div className="popup-content">

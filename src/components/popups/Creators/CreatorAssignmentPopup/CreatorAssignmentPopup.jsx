@@ -3,13 +3,14 @@ import { createPortal } from 'react-dom';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { getPortalRoot } from '@/utils/portalRoot';
 import { useTranslation } from 'react-i18next';
+import { CloseButton } from '@/components/common/buttons';
 import { CustomSelect } from '@/components/common/selectors';
 import api from '@/utils/api';
 import './creatorAssignmentPopup.css';
 import { toast } from 'react-hot-toast';
 
 export const CreatorAssignmentPopup = ({ user, onClose, onUpdate }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
   const popupRef = useRef(null);
   const closeTimeoutRef = useRef(null);
 
@@ -188,9 +189,11 @@ export const CreatorAssignmentPopup = ({ user, onClose, onUpdate }) => {
   const popupContent = (
     <div className="creator-assignment-popup-overlay">
       <div className="creator-assignment-popup" ref={popupRef}>
-        <button className="close-popup-btn" onClick={onClose}>
-          ×
-        </button>
+        <CloseButton
+          variant="floating"
+          onClick={onClose}
+          aria-label={t('buttons.close', { ns: 'common' })}
+        />
 
         <div className="popup-header">
           <h2>Assign Creator to User</h2>

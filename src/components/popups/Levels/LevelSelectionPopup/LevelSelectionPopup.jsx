@@ -4,7 +4,8 @@ import api from '@/utils/api';
 import './levelselectionpopup.css';
 import toast from 'react-hot-toast';
 import { formatCreatorDisplay } from '@/utils/Utility';
-import ZipLevelFilesList from '@/components/popups/Levels/ZipLevelFilesList/ZipLevelFilesList.jsx';
+import ZipLevelFilesList from '@/components/popups/Levels/ZipLevelFilesList/ZipLevelFilesList';
+import { CloseButton } from '@/components/common/buttons';
 
 const LIMIT = 20;
 
@@ -16,7 +17,7 @@ const LevelSelectionPopup = ({
   levelFiles,
   curationTypes: _curationTypes,
 }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
 
   const zipPickerMode =
     Boolean(isOpen) &&
@@ -187,14 +188,14 @@ const LevelSelectionPopup = ({
           className="level-selection-modal__content submission-zip-level-modal"
           ref={modalRef}
         >
-          <button
+          <CloseButton
+            variant="floating"
             className="level-selection-modal__close-button"
             onClick={onClose}
             type="button"
             disabled={isConfirmingZip}
-          >
-            ✖
-          </button>
+            aria-label={t('buttons.close', { ns: 'common' })}
+          />
 
           <div className="level-selection-modal__header">
             <h2>{t('levelSelectionPopup.zipPicker.title')}</h2>
@@ -229,9 +230,13 @@ const LevelSelectionPopup = ({
   return (
     <div className="level-selection-modal">
       <div className="level-selection-modal__content" ref={modalRef}>
-        <button className="level-selection-modal__close-button" onClick={onClose} type="button">
-          ✖
-        </button>
+        <CloseButton
+          variant="floating"
+          className="level-selection-modal__close-button"
+          onClick={onClose}
+          type="button"
+          aria-label={t('buttons.close', { ns: 'common' })}
+        />
 
         <div className="level-selection-modal__header">
           <h2>{t('levelSelectionPopup.titleAdd')}</h2>

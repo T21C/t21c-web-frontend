@@ -4,6 +4,7 @@ import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import { CustomSelect } from '@/components/common/selectors';
 import api from '@/utils/api';
 import './submissionCreatorPopup.css';
+import { CloseButton } from '@/components/common/buttons';
 
 const CreditRole = {
   CHARTER: 'charter',
@@ -32,7 +33,7 @@ const getRoleCreditCount = (credits, role) => {
 };
 
 export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialRole, initialRequest }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
   const popupRef = useRef(null);
 
   // Core state
@@ -335,7 +336,11 @@ export const SubmissionCreatorPopup = ({ submission, onClose, onUpdate, initialR
       <div className="submission-creator-popup" ref={popupRef}>
         <div className="popup-header">
           <h2>{t('submissionCreator.title')}</h2>
-          <button className="close-button" onClick={onClose}>×</button>
+          <CloseButton
+            variant="inline"
+            onClick={onClose}
+            aria-label={t('buttons.close', { ns: 'common' })}
+          />
         </div>
 
         <div className="popup-content">

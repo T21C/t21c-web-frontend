@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import './ratinghelppopup.css';
 import { useTranslation } from 'react-i18next';
+import { CloseButton } from '@/components/common/buttons';
 import { CommentFormatter, KeyCombo, KeyDisplay } from '@/components/misc';
 
 export const RatingHelpPopup = ({ onClose }) => {
@@ -54,26 +55,11 @@ export const RatingHelpPopup = ({ onClose }) => {
   return (
     <div className="rating-help-popup-overlay">
       <div className="rating-help-popup" ref={popupRef}>
-        <button 
-          className="close-popup-btn"
+        <CloseButton
+          variant="floating"
           onClick={onClose}
           aria-label={t('rating.helpPopup.closeButton')}
-        >
-          <svg 
-            width="24" 
-            height="24" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path 
-              d="M6 6L18 18M6 18L18 6" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
+        />
 
         <div className="help-content">
           <h2>{t('rating.helpPopup.title')}</h2>

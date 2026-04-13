@@ -4,9 +4,10 @@ import { useTranslation } from 'react-i18next';
 import { isImageUrl } from '@/utils/Utility';
 import './evidenceGalleryPopup.css';
 import { ChevronIcon, ExternalLinkIcon } from '@/components/common/icons';
+import { CloseButton } from '@/components/common/buttons';
 
 export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDelete = false }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
   const popupRef = useRef(null);
   const imageRef = useRef(null);
   const containerRef = useRef(null);
@@ -216,7 +217,11 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
         <div className="evidence-gallery-popup" ref={popupRef} onClick={(e) => e.stopPropagation()}>
           <div className="popup-header">
             <h2>{t('evidenceGallery.title')}</h2>
-            <button className="close-button" onClick={onClose}>×</button>
+            <CloseButton
+              variant="inline"
+              onClick={onClose}
+              aria-label={t('buttons.close', { ns: 'common' })}
+            />
           </div>
           <div className="popup-content">
             <p className="no-evidence">{t('evidenceGallery.noEvidence')}</p>
@@ -237,7 +242,11 @@ export const EvidenceGalleryPopup = ({ evidence, onClose, onDelete = null, canDe
             {t('evidenceGallery.title')} ({currentIndex + 1}/{evidenceList.length})
             <ExternalLinkIcon onClick={() => window.open(currentEvidence.link, '_blank')} />
           </h2>
-          <button className="close-button" onClick={onClose}>×</button>
+          <CloseButton
+            variant="inline"
+            onClick={onClose}
+            aria-label={t('buttons.close', { ns: 'common' })}
+          />
         </div>
 
         <div className="popup-content">

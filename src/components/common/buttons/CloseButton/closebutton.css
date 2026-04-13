@@ -1,0 +1,88 @@
+/* CloseButton: parent must be position: relative when variant="floating". */
+.tuf-close-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  color: var(--color-white);
+  cursor: pointer;
+  line-height: 0;
+  border-radius: 50%;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.tuf-close-button:hover:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.tuf-close-button:active:not(:disabled) {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
+.tuf-close-button:focus-visible {
+  outline: 2px solid rgba(255, 255, 255, 0.45);
+  outline-offset: 2px;
+}
+
+.tuf-close-button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Min touch target ~44px for inline use */
+.tuf-close-button.tuf-close-button--inline {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px;
+}
+
+.tuf-close-button.tuf-close-button--inline.tuf-close-button--size-sm {
+  min-width: 36px;
+  min-height: 36px;
+  padding: 4px;
+}
+
+.tuf-close-button.tuf-close-button--inline.tuf-close-button--size-lg {
+  min-width: 48px;
+  min-height: 48px;
+  padding: 10px;
+}
+
+/* Corner overlay: absolute positioning; parent needs position: relative */
+.tuf-close-button.tuf-close-button--floating {
+  position: absolute;
+  z-index: 2;
+  top: 1rem;
+  right: 1rem;
+  padding: 8px;
+}
+
+.tuf-close-button.tuf-close-button--floating.tuf-close-button--placement-top-end {
+  top: 1rem;
+  right: 1rem;
+  bottom: auto;
+  left: auto;
+}
+
+.tuf-close-button.tuf-close-button--floating.tuf-close-button--placement-top-start {
+  top: 1rem;
+  left: 1rem;
+  right: auto;
+  bottom: auto;
+}
+
+.tuf-close-button.tuf-close-button--floating.tuf-close-button--size-sm {
+  padding: 4px;
+}
+
+.tuf-close-button.tuf-close-button--floating.tuf-close-button--size-lg {
+  padding: 10px;
+}
+
+.tuf-close-button .tuf-close-button__icon {
+  display: block;
+  flex-shrink: 0;
+}

@@ -6,6 +6,7 @@ import './entityActionPopup.css';
 import { toast } from 'react-hot-toast';
 import { isCdnSupportedImageMimeType } from '@/constants/cdnImageAccept';
 import { UpdateTab, MergeTab, SplitTab, AliasesTab, LinksTab, CreditsTab, EvidenceTab, LevelSuffixTab, RelationsTab } from './tabs';
+import { CloseButton } from '@/components/common/buttons';
 
 export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'artist' }) => {
   const { t } = useTranslation(['components', 'common']);
@@ -932,7 +933,11 @@ export const EntityActionPopup = ({ artist, song, onClose, onUpdate, type = 'art
       <div className={`entity-action-popup`} ref={popupRef}>
         <div className="popup-header">
           <h2>{tEntity('title', { name: entity.name })}</h2>
-          <button className="close-button" onClick={onClose}>×</button>
+          <CloseButton
+            variant="inline"
+            onClick={onClose}
+            aria-label={t('buttons.close', { ns: 'common' })}
+          />
         </div>
 
         <div className="popup-content">

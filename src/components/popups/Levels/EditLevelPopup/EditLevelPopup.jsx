@@ -17,6 +17,7 @@ import { getPortalRoot } from '@/utils/portalRoot';
 import { useAuth } from '@/contexts/AuthContext';
 import { hasFlag, permissionFlags } from '@/utils/UserPermissions';
 import { SongSelectorPopup } from '@/components/popups/Songs';
+import { CloseButton } from '@/components/common/buttons';
 
 export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPage = false }) => {
   const { t } = useTranslation(['components', 'common']);
@@ -484,15 +485,15 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               {t('levelPopups.edit.manageAliases')}
             </button>
             */}
-            <button 
-              className="close-popup-btn" 
+            <CloseButton
+              className="edit-level-popup-header-close"
+              variant="floating"
               onClick={(e) => {
                 e.stopPropagation();
                 handleClose();
               }}
-            >
-              {t('levelPopups.edit.close')}
-            </button>
+              aria-label={t('levelPopups.edit.close')}
+            />
           </div>
         </div>
         <div className="popup-content">
@@ -819,13 +820,13 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
             {error && <div className="error-message">{error}</div>}
             
             <div className="button-group">
-              <button type="submit" disabled={isSaving} className="save-button tuf-btn-fill-primary">
+              <button type="submit" disabled={isSaving} className="save-button btn-fill-primary">
                 {isSaving ? t('loading.saving', { ns: 'common' }) : t('levelPopups.edit.form.buttons.save.default')}
               </button>
               {level.isDeleted ? (
                 <button 
                   type="button"
-                  className="restore-button tuf-btn-fill-success"
+                  className="restore-button btn-fill-success"
                   onClick={handleRestore}
                   disabled={isSaving}
                 >
@@ -834,7 +835,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               ) : level.isHidden ? (
                 <button 
                   type="button"
-                  className="restore-button tuf-btn-fill-success"
+                  className="restore-button btn-fill-success"
                   onClick={handleToggleHidden}
                   disabled={isSaving}
                 >
@@ -845,7 +846,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   {isSuperAdmin ? (
                     <button 
                       type="button" 
-                      className={`delete-button tuf-btn-fill-danger ${isHideMode ? 'hide-mode' : ''}`}
+                      className={`delete-button btn-fill-danger ${isHideMode ? 'hide-mode' : ''}`}
                       onClick={handleDelete}
                       disabled={isSaving}
                     >
@@ -859,7 +860,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   ) : (
                     <button 
                       type="button" 
-                      className="delete-button hide-mode tuf-btn-fill-neutral-muted"
+                      className="delete-button hide-mode btn-fill-neutral-muted"
                       onClick={handleToggleHidden}
                       disabled={isSaving}
                     >

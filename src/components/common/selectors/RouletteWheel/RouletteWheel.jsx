@@ -1,7 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import './roulettewheel.css';
 import { createEventSystem } from '@/utils/Utility';
-
+import { CloseButton } from '@/components/common/buttons';
 
 export const RouletteWheel = ({ 
   items, 
@@ -11,6 +12,7 @@ export const RouletteWheel = ({
   enableGimmicks = false,
   mode: initialMode = 'icon'
 }) => {
+  const { t } = useTranslation('common');
   const filteredItems = items.filter(item => item.name !== 'bus' && item.name !== 'epic');
   const [isSpinning, setIsSpinning] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -264,15 +266,18 @@ export const RouletteWheel = ({
   return (
     <div className="roulette-wheel-popup">
       <div className="roulette-wheel-container">
-        <button 
-          className="close-button" 
+        <CloseButton
+          variant="floating"
+          className="roulette-wheel-popup-close"
           onClick={onClose}
           disabled={isSpinning}
-          style={{ 
+          aria-label={t('buttons.close')}
+          style={{
             opacity: isSpinning ? 0.5 : 1,
-            cursor: isSpinning ? 'not-allowed' : 'pointer'
+            cursor: isSpinning ? 'not-allowed' : 'pointer',
+            zIndex: 1000,
           }}
-        >×</button>
+        />
         <div className="roulette-wheel-content">
           <div className="wheel-container">
             <div className="wheel-pointer"></div>

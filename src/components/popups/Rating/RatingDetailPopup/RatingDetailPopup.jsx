@@ -6,7 +6,7 @@ import { RatingItem } from '@/components/cards';
 import { RatingInput } from '@/components/common/selectors';
 import api from '@/utils/api';
 import { useTranslation } from 'react-i18next';
-import { ReferencesButton } from '@/components/common/buttons';
+import { ReferencesButton, CloseButton } from '@/components/common/buttons';
 import { ExternalLinkIcon, DownloadIcon } from '@/components/common/icons';
 import { formatCreatorDisplay } from "@/utils/Utility";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
@@ -466,26 +466,12 @@ export const RatingDetailPopup = ({
         </div>
       )}
       <div className={`rating-popup ${isExiting ? 'exiting' : ''}`} ref={popupRef}>
-        <button 
-          className="close-popup-btn"
+        <CloseButton
+          className="rating-popup-close"
+          variant="floating"
           onClick={handleClose}
           aria-label={t('rating.detailPopup.closeButton')}
-        >
-          <svg 
-            width="24" 
-            height="24" 
-            viewBox="0 0 24 24" 
-            fill="none" 
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path 
-              d="M6 6L18 18M6 18L18 6" 
-              stroke="currentColor" 
-              strokeWidth="2" 
-              strokeLinecap="round"
-            />
-          </svg>
-        </button>
+        />
         <div className="popup-content">
           <div className="popup-header">
             <div className="top-header-content">

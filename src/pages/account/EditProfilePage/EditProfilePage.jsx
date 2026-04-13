@@ -486,7 +486,7 @@ const EditProfilePage = () => {
           
           {avatarPreview && (
             <button 
-              className="remove-avatar-btn tuf-btn-fill-danger"
+              className="remove-avatar-btn btn-fill-danger"
               onClick={handleAvatarRemove}
               disabled={isUploadingAvatar}
             >
@@ -509,7 +509,7 @@ const EditProfilePage = () => {
               />
               <button
                 type="button"
-                className="username-action-btn edit tuf-btn-fill-secondary"
+                className="username-action-btn edit btn-fill-secondary"
                 onClick={() => setIsEmailChangePopupOpen(true)}
                 disabled={isSavingProfile}
                 title={t('editProfile.emailChange.editTitle')}
@@ -562,7 +562,7 @@ const EditProfilePage = () => {
               {!usernameRateLimit && (
                 <button
                   type="button"
-                  className={`username-action-btn ${isUsernameEditing ? 'cancel tuf-btn-fill-danger' : 'edit tuf-btn-fill-secondary'}`}
+                  className={`username-action-btn ${isUsernameEditing ? 'cancel btn-fill-danger' : 'edit btn-fill-secondary'}`}
                   onClick={isUsernameEditing ? handleUsernameCancel : handleUsernameEditClick}
                   disabled={isSavingProfile && isUsernameEditing}
                   title={isUsernameEditing ? t('buttons.cancel', { ns: 'common' }) : t('buttons.edit', { ns: 'common' })}
@@ -604,7 +604,7 @@ const EditProfilePage = () => {
 
           <div className="form-actions">
             <button 
-              className="button tuf-btn-fill-neutral-dark"
+              className="button btn-fill-neutral-dark"
               type="button" 
               onClick={() => navigate('/profile')}
               disabled={isSavingProfile}
@@ -612,7 +612,7 @@ const EditProfilePage = () => {
               {t('buttons.cancel', { ns: 'common' })}
             </button>
             <button 
-              className="button submit-button tuf-btn-fill-primary"
+              className="button submit-button btn-fill-primary"
               type="submit"
               disabled={isSavingProfile}
             >
@@ -652,13 +652,13 @@ const EditProfilePage = () => {
               />
             </div>
 
-            <button type="submit" className="save-button tuf-btn-fill-primary">
+            <button type="submit" className="save-button btn-fill-primary">
               {t('editProfile.password.createPassword')}
             </button>
           </form>
         ) : !isChangingPassword ? (
           <button
-            className="change-password-button tuf-btn-fill-secondary"
+            className="change-password-button btn-fill-secondary"
             onClick={() => setIsChangingPassword(true)}
           >
             {t('editProfile.password.changePassword')}
@@ -704,12 +704,12 @@ const EditProfilePage = () => {
               />
             </div>
 
-            <button type="submit" className="save-button tuf-btn-fill-primary">
+            <button type="submit" className="save-button btn-fill-primary">
               {t('editProfile.password.updatePassword')}
             </button>
             <button
               type="button"
-              className="change-password-button tuf-btn-fill-secondary"
+              className="change-password-button btn-fill-secondary"
               onClick={() => setIsChangingPassword(false)}
               style={{ marginTop: '1rem' }}
             >
@@ -735,7 +735,7 @@ const EditProfilePage = () => {
               </div>
               <div className="unlink-container">
                 <button
-                  className={`unlink-button tuf-btn-fill-danger ${isLastProvider ? 'disabled' : ''}`}
+                  className={`unlink-button btn-fill-danger ${isLastProvider ? 'disabled' : ''}`}
                   onClick={() => handleProviderUnlink('discord')}
                   disabled={isLastProvider}
                   data-tooltip-id="unlink-tooltip"
@@ -749,7 +749,7 @@ const EditProfilePage = () => {
             </div>
           ) : (
             <button
-              className="link-button tuf-btn-fill-discord"
+              className="link-button btn-fill-discord"
               onClick={() => handleProviderLink('discord')}
             >
               <DiscordIcon size={16} />
@@ -781,7 +781,7 @@ const EditProfilePage = () => {
               <div className="danger-zone__actions">
                 <button
                   type="button"
-                  className="button danger-zone__button danger-zone__button--secondary tuf-btn-fill-neutral-heavy"
+                  className="button danger-zone__button danger-zone__button--secondary btn-fill-neutral-heavy"
                   onClick={handleCancelAccountDeletion}
                   disabled={isDeletionBusy}
                 >
@@ -795,7 +795,7 @@ const EditProfilePage = () => {
             <div className="danger-zone__actions">
               <button
                 type="button"
-                className="button danger-zone__button danger-zone__button--destructive tuf-btn-fill-danger"
+                className="button danger-zone__button danger-zone__button--destructive btn-fill-danger"
                 onClick={handleScheduleAccountDeletion}
                 disabled={isDeletionBusy}
               >

@@ -8,6 +8,7 @@ import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd';
 import { ABILITIES } from '@/utils/Abilities';
 import { CDN_IMAGE_ACCEPT, isCdnSupportedImageMimeType } from '@/constants/cdnImageAccept';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
+import { CloseButton } from '@/components/common/buttons';
 
 const POPUP_MODES = {
   LIST: 'LIST',
@@ -22,7 +23,7 @@ const TypeManagementPopup = ({
   onTypeUpdate,
   verifiedPassword
 }) => {
-  const { t } = useTranslation('components');
+  const { t } = useTranslation(['components', 'common']);
   const { reloadCurationTypes } = useDifficultyContext();
 
   const [mode, setMode] = useState(POPUP_MODES.LIST);
@@ -421,13 +422,13 @@ const TypeManagementPopup = ({
   return (
     <div className="type-management-modal">
       <div className="type-management-modal__content" ref={modalRef}>
-        <button 
+        <CloseButton
+          variant="floating"
           className="type-management-modal__close-button"
           onClick={onClose}
           type="button"
-        >
-          ✖
-        </button>
+          aria-label={t('buttons.close', { ns: 'common' })}
+        />
 
         {/* Header */}
         <div className="type-management-modal__header">

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useDifficultyContext } from '@/contexts/DifficultyContext';
 import { DiscordRolesManager } from '@/components/common/discord';
 import './discordrolespopup.css';
+import { CloseButton } from '@/components/common/buttons';
 
 const DiscordRolesPopup = ({
   isOpen,
@@ -76,13 +77,13 @@ const DiscordRolesPopup = ({
   return (
     <div className="discord-roles-popup">
       <div className="discord-roles-popup__content" ref={modalRef}>
-        <button 
+        <CloseButton
+          variant="floating"
           className="discord-roles-popup__close-button"
           onClick={handleClose}
           type="button"
-        >
-          ✖
-        </button>
+          aria-label={t('buttons.close', { ns: 'common' })}
+        />
 
         <div className="discord-roles-popup__header">
           <h2>{t('discordRoles.title')}</h2>

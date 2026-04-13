@@ -17,7 +17,7 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import { useLocation } from 'react-router-dom';
-import { ScrollButton } from "@/components/common/buttons";
+import { ScrollButton, CloseButton } from "@/components/common/buttons";
 import { PassIcon, ChartIcon, LeaderboardIcon } from "@/components/common/icons";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { createEventSystem } from "@/utils/Utility";
@@ -280,6 +280,7 @@ const DifficultyGraph = ({ data, mode }) => {
 
 
 const WheelPopup = ({ items, seed, onSelect, onClose, handleTimeout }) => {
+  const { t } = useTranslation('common');
   const [rotation, setRotation] = useState(0);
   const [isSpinning, setIsSpinning] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -439,15 +440,18 @@ const WheelPopup = ({ items, seed, onSelect, onClose, handleTimeout }) => {
   return (
     <div className="level-wheel-popup">
       <div className="level-wheel-container">
-        <button 
-          className="level-close-button" 
+        <CloseButton
+          variant="floating"
+          className="level-close-button"
           onClick={onClose}
           disabled={isSpinning}
-          style={{ 
+          aria-label={t('buttons.close')}
+          style={{
             opacity: isSpinning ? 0.5 : 1,
-            cursor: isSpinning ? 'not-allowed' : 'pointer'
+            cursor: isSpinning ? 'not-allowed' : 'pointer',
+            zIndex: 1000,
           }}
-        >×</button>
+        />
         
         <div className="level-wheel-content">
           <div className="level-wheel-image-container" style={{paddingBottom: selectedItem ? "60%" : "80%"}}>

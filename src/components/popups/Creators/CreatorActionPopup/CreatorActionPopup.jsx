@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
+import { CloseButton } from '@/components/common/buttons';
 import { useTranslation } from 'react-i18next';
 import { CustomSelect } from '@/components/common/selectors';
 import api from '@/utils/api';
@@ -322,26 +323,11 @@ export const CreatorActionPopup = ({ creator, onClose, onUpdate }) => {
     <div className="creator-action-popup-container">
       <div className="creator-action-popup-overlay">
         <div className="creator-action-popup" ref={popupRef}>
-          <button 
-            className="close-popup-btn"
+          <CloseButton
+            variant="floating"
             onClick={onClose}
             aria-label={t('creatorActionPopup.actionPopup.close')}
-          >
-            <svg 
-              width="24" 
-              height="24" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path 
-                d="M6 6L18 18M6 18L18 6" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round"
-              />
-            </svg>
-          </button>
+          />
 
           <div className="popup-header">
             <h2>{creator?.name}</h2>

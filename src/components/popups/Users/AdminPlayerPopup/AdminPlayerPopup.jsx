@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './adminplayerpopup.css';
+import { CloseButton } from '@/components/common/buttons';
 import api from '@/utils/api';
 import { CountrySelect } from '@/components/common/selectors';
 import { toast } from 'react-hot-toast';
@@ -237,7 +238,11 @@ const AdminPlayerPopup = ({ player = {}, onClose, onUpdate }) => {
       <div className="admin-player-popup" onClick={(e) => e.stopPropagation()}>
         <div className="admin-player-popup-header">
           <h2>{t('adminPopups.player.title')}</h2>
-          <button className="close-button" onClick={onClose}>{t('adminPopups.player.close')}</button>
+          <CloseButton
+            variant="inline"
+            onClick={onClose}
+            aria-label={t('adminPopups.player.close')}
+          />
         </div>
 
         <div className="admin-form">

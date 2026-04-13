@@ -19,7 +19,7 @@
   --color-gray-3: #e9e9ea;
   --success-color: #28a745;
   --danger-color: #dc3545;
-  /* Semantic button fills: one base per variant; hover/active via .tuf-btn-fill-* + filter in @layer components */
+  /* Semantic button fills: one base per variant; hover/active via .btn-fill-* + filter in @layer components */
   --btn-primary: #4a90e2;
   --btn-primary-alt: #745bda;
   --btn-danger: #bb2222;
@@ -497,7 +497,6 @@ select:-moz-focusring {
 
 button {
   cursor: pointer;
-  border: 1px solid var(--color-white-t20);
 }
 
 @layer components {
@@ -505,17 +504,17 @@ button {
    * Button fill utilities: solid fill lives on ::before so filter (hover/active)
    * never affects label, icons, or other content.
    */
-  .tuf-btn-fill-primary,
-  .tuf-btn-fill-danger,
-  .tuf-btn-fill-neutral,
-  .tuf-btn-fill-neutral-dark,
-  .tuf-btn-fill-neutral-muted,
-  .tuf-btn-fill-neutral-heavy,
-  .tuf-btn-fill-secondary,
-  .tuf-btn-fill-discord,
-  .tuf-btn-fill-accent,
-  .tuf-btn-fill-success,
-  .tuf-btn-fill-glass {
+  .btn-fill-primary,
+  .btn-fill-danger,
+  .btn-fill-neutral,
+  .btn-fill-neutral-dark,
+  .btn-fill-neutral-muted,
+  .btn-fill-neutral-heavy,
+  .btn-fill-secondary,
+  .btn-fill-discord,
+  .btn-fill-accent,
+  .btn-fill-success,
+  .btn-fill-glass {
     position: relative;
     z-index: 0;
     isolation: isolate;
@@ -524,170 +523,170 @@ button {
     color: var(--color-white);
   }
 
-  .tuf-btn-fill-primary {
-    --tuf-btn-fill: var(--btn-primary);
+  .btn-fill-primary {
+    --btn-fill: var(--btn-primary);
   }
-  .tuf-btn-fill-primary.alt {
-    --tuf-btn-fill: var(--btn-primary-alt);
+  .btn-fill-primary.alt {
+    --btn-fill: var(--btn-primary-alt);
   }
-  .tuf-btn-fill-danger {
-    --tuf-btn-fill: var(--btn-danger);
+  .btn-fill-danger {
+    --btn-fill: var(--btn-danger);
   }
-  .tuf-btn-fill-neutral {
-    --tuf-btn-fill: var(--btn-neutral);
+  .btn-fill-neutral {
+    --btn-fill: var(--btn-neutral);
   }
-  .tuf-btn-fill-neutral-dark {
-    --tuf-btn-fill: var(--btn-neutral-dark);
+  .btn-fill-neutral-dark {
+    --btn-fill: var(--btn-neutral-dark);
   }
-  .tuf-btn-fill-neutral-muted {
-    --tuf-btn-fill: var(--btn-neutral-muted);
+  .btn-fill-neutral-muted {
+    --btn-fill: var(--btn-neutral-muted);
   }
-  .tuf-btn-fill-neutral-heavy {
-    --tuf-btn-fill: var(--btn-neutral-heavy);
+  .btn-fill-neutral-heavy {
+    --btn-fill: var(--btn-neutral-heavy);
   }
-  .tuf-btn-fill-secondary {
-    --tuf-btn-fill: var(--btn-secondary);
+  .btn-fill-secondary {
+    --btn-fill: var(--btn-secondary);
   }
-  .tuf-btn-fill-discord {
-    --tuf-btn-fill: var(--btn-discord);
+  .btn-fill-discord {
+    --btn-fill: var(--btn-discord);
   }
-  .tuf-btn-fill-accent {
-    --tuf-btn-fill: var(--color-purple-2);
+  .btn-fill-accent {
+    --btn-fill: var(--color-purple-2);
   }
-  .tuf-btn-fill-success {
-    --tuf-btn-fill: var(--btn-success);
+  .btn-fill-success {
+    --btn-fill: var(--btn-success);
   }
-  .tuf-btn-fill-glass {
-    --tuf-btn-fill: var(--color-white-t20);
+  .btn-fill-glass {
+    --btn-fill: var(--color-white-t20);
     transition: transform 0.2s;
   }
 
-  .tuf-btn-fill-primary::before,
-  .tuf-btn-fill-danger::before,
-  .tuf-btn-fill-neutral::before,
-  .tuf-btn-fill-neutral-dark::before,
-  .tuf-btn-fill-neutral-muted::before,
-  .tuf-btn-fill-neutral-heavy::before,
-  .tuf-btn-fill-secondary::before,
-  .tuf-btn-fill-discord::before,
-  .tuf-btn-fill-accent::before,
-  .tuf-btn-fill-success::before,
-  .tuf-btn-fill-glass::before {
+  .btn-fill-primary::before,
+  .btn-fill-danger::before,
+  .btn-fill-neutral::before,
+  .btn-fill-neutral-dark::before,
+  .btn-fill-neutral-muted::before,
+  .btn-fill-neutral-heavy::before,
+  .btn-fill-secondary::before,
+  .btn-fill-discord::before,
+  .btn-fill-accent::before,
+  .btn-fill-success::before,
+  .btn-fill-glass::before {
     content: "";
     position: absolute;
     inset: 0;
     z-index: -1;
     border-radius: inherit;
-    background-color: var(--tuf-btn-fill);
+    background-color: var(--btn-fill);
     transition: filter 100ms linear;
   }
 
-  .tuf-btn-fill-primary:hover:not(:disabled)::before {
+  .btn-fill-primary:hover:not(:disabled)::before {
     filter: brightness(0.88);
   }
-  .tuf-btn-fill-primary:active:not(:disabled)::before {
+  .btn-fill-primary:active:not(:disabled)::before {
     filter: brightness(0.8);
   }
-  .tuf-btn-fill-primary:disabled::before {
+  .btn-fill-primary:disabled::before {
     filter: none;
     opacity: 0.72;
   }
-  .tuf-btn-fill-primary:disabled {
+  .btn-fill-primary:disabled {
     cursor: not-allowed;
   }
 
-  .tuf-btn-fill-danger:hover:not(:disabled)::before {
+  .btn-fill-danger:hover:not(:disabled)::before {
     filter: brightness(0.88);
   }
-  .tuf-btn-fill-danger:active:not(:disabled)::before {
+  .btn-fill-danger:active:not(:disabled)::before {
     filter: brightness(0.78);
   }
-  .tuf-btn-fill-danger:disabled::before {
+  .btn-fill-danger:disabled::before {
     filter: none;
     background-color: var(--btn-disabled-fill);
     opacity: 1;
   }
-  .tuf-btn-fill-danger:disabled {
+  .btn-fill-danger:disabled {
     cursor: not-allowed;
   }
 
-  .tuf-btn-fill-neutral:hover:not(:disabled)::before {
+  .btn-fill-neutral:hover:not(:disabled)::before {
     filter: brightness(1.12);
   }
-  .tuf-btn-fill-neutral:active:not(:disabled)::before {
+  .btn-fill-neutral:active:not(:disabled)::before {
     filter: brightness(1.06);
   }
 
-  .tuf-btn-fill-neutral-dark:hover:not(:disabled)::before {
+  .btn-fill-neutral-dark:hover:not(:disabled)::before {
     filter: brightness(1.18);
   }
-  .tuf-btn-fill-neutral-dark:active:not(:disabled)::before {
+  .btn-fill-neutral-dark:active:not(:disabled)::before {
     filter: brightness(1.08);
   }
 
-  .tuf-btn-fill-neutral-muted:hover:not(:disabled)::before {
+  .btn-fill-neutral-muted:hover:not(:disabled)::before {
     filter: brightness(0.78);
   }
-  .tuf-btn-fill-neutral-muted:active:not(:disabled)::before {
+  .btn-fill-neutral-muted:active:not(:disabled)::before {
     filter: brightness(0.68);
   }
 
-  .tuf-btn-fill-neutral-heavy:hover:not(:disabled)::before {
+  .btn-fill-neutral-heavy:hover:not(:disabled)::before {
     filter: brightness(1.12);
   }
-  .tuf-btn-fill-neutral-heavy:active:not(:disabled)::before {
+  .btn-fill-neutral-heavy:active:not(:disabled)::before {
     filter: brightness(0.88);
   }
 
-  .tuf-btn-fill-secondary:hover:not(:disabled)::before {
+  .btn-fill-secondary:hover:not(:disabled)::before {
     filter: brightness(0.92);
   }
-  .tuf-btn-fill-secondary:active:not(:disabled)::before {
+  .btn-fill-secondary:active:not(:disabled)::before {
     filter: brightness(0.85);
   }
 
-  .tuf-btn-fill-discord:hover:not(:disabled)::before {
+  .btn-fill-discord:hover:not(:disabled)::before {
     filter: brightness(0.9);
   }
-  .tuf-btn-fill-discord:active:not(:disabled)::before {
+  .btn-fill-discord:active:not(:disabled)::before {
     filter: brightness(0.82);
   }
 
-  .tuf-btn-fill-accent:hover:not(:disabled)::before {
+  .btn-fill-accent:hover:not(:disabled)::before {
     filter: brightness(1.08);
   }
-  .tuf-btn-fill-accent:active:not(:disabled)::before {
+  .btn-fill-accent:active:not(:disabled)::before {
     filter: brightness(0.95);
   }
 
-  .tuf-btn-fill-success:hover:not(:disabled)::before {
+  .btn-fill-success:hover:not(:disabled)::before {
     filter: brightness(0.9);
   }
-  .tuf-btn-fill-success:active:not(:disabled)::before {
+  .btn-fill-success:active:not(:disabled)::before {
     filter: brightness(0.82);
   }
-  .tuf-btn-fill-success:disabled::before {
+  .btn-fill-success:disabled::before {
     filter: none;
     background-color: var(--btn-secondary);
     opacity: 0.85;
   }
-  .tuf-btn-fill-success:disabled {
+  .btn-fill-success:disabled {
     cursor: not-allowed;
   }
 
-  .tuf-btn-fill-glass:hover:not(:disabled)::before {
+  .btn-fill-glass:hover:not(:disabled)::before {
     filter: brightness(1.15);
   }
-  .tuf-btn-fill-glass:active:not(:disabled)::before {
+  .btn-fill-glass:active:not(:disabled)::before {
     filter: brightness(1.05);
   }
 
   /* When route overrides the fill (e.g. nav submit active), repaint ::before only */
-  .nav-link.active .tuf-btn-fill-primary::before {
+  .nav-link.active .btn-fill-primary::before {
     filter: none;
     background-color: var(--color-purple-2);
   }
-  .pass-detail .hide-button.hidden.tuf-btn-fill-glass::before {
+  .pass-detail .hide-button.hidden.btn-fill-glass::before {
     filter: none;
     background-color: var(--btn-primary);
   }

@@ -42,6 +42,7 @@ import {
 import { createEventSystem, formatBaseScore, formatCreatorDisplay, formatDate, isCdnUrl, selectIconSize } from "@/utils/Utility";
 import { getSongDisplayName, getArtistDisplayName } from "@/utils/levelHelpers";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
+import { CloseButton } from '@/components/common/buttons';
 import { toast } from 'react-hot-toast';
 import { ABILITIES, hasBit } from '@/utils/Abilities';
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -339,11 +340,13 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
             <h2>{getSongDisplayName(level)}</h2>
             <p>{getArtistDisplayName(level)}</p>
             <span className="createdAt">{t('levelDetail.info.createdAt')}: {formatDate(videoDetail?.timestamp || level.createdAt, i18next?.language)}</span>
-            <button className="popup-close-button" onClick={onClose} title={t('levelDetail.buttons.close')}>
-              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M18 6L6 18M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
-            </button>
+            <CloseButton
+              variant="floating"
+              className="popup-close-button"
+              onClick={onClose}
+              title={t('levelDetail.buttons.close')}
+              aria-label={t('levelDetail.buttons.close')}
+            />
           </div>
           <div className="popup-body">
             <div className="team-info">
@@ -2247,7 +2250,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                   }
                   className={
                     `like-button 
-                    ${res.isLiked ? 'liked' : ''} 
+                    ${res.isLiked ? 'liked' : ''}
                     ${user ? 'available' : ''}`} 
                   onClick={handleLikeToggle}
                   disabled={isLiking || !user}

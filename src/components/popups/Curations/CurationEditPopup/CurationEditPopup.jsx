@@ -10,6 +10,7 @@ import { hasAnyFlag, permissionFlags } from '@/utils/UserPermissions';
 import { useAuth } from '@/contexts/AuthContext';
 import { formatCreatorDisplay } from '@/utils/Utility';
 import { ItemPickManager } from '@/components/common/selectors';
+import { CloseButton } from '@/components/common/buttons';
 
 const ABILITY_CUSTOM_CSS = 1n << 0n;
 const ABILITY_FORCE_DESCRIPTION = 1n << 11n;
@@ -243,13 +244,13 @@ const CurationEditPopup = ({
   return (
     <div className="curation-edit-modal">
       <div className="curation-edit-modal__content" ref={modalRef}>
-        <button
+        <CloseButton
+          variant="floating"
           type="button"
           className="curation-edit-modal__close-button"
           onClick={onClose}
-        >
-          ✖
-        </button>
+          aria-label={t('buttons.close', { ns: 'common' })}
+        />
 
         <div className="curation-edit-modal__header">
           <h2>{t('curationEditPopup.title')}</h2>

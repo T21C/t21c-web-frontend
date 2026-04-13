@@ -12,6 +12,7 @@ import toast from 'react-hot-toast';
 import { PassCoreForm } from '@/components/common/cores/PassCoreForm/PassCoreForm';
 import { usePassCoreForm } from '@/components/common/cores/PassCoreForm/usePassCoreForm';
 import { truncateString } from '@/utils/Utility';
+import { CloseButton } from '@/components/common/buttons';
 
 export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
   const { t } = useTranslation('components');
@@ -201,13 +202,12 @@ const handleSubmit = async (e) => {
   return (
     <div className="edit-pass-popup-overlay">
       <div className="form-container">
-        <button 
-          className="close-button tuf-btn-fill-neutral" 
+        <CloseButton
+          variant="floating"
+          className="edit-pass-popup-close"
           onClick={onClose}
-          aria-label="Close"
-        >
-          {t('passPopups.edit.close')}
-        </button>
+          aria-label={t('passPopups.edit.close')}
+        />
         <PassCoreForm
           mode="edit"
           placeholderImage={placeholder}
@@ -286,7 +286,7 @@ const handleSubmit = async (e) => {
           )}
           renderSubmitActions={() => (
             <div className="button-group">
-              <button disabled={submission} className="save-button tuf-btn-fill-primary" onClick={handleSubmit}>
+              <button disabled={submission} className="save-button btn-fill-primary" onClick={handleSubmit}>
                 {submission
                   ? t('loading.saving', { ns: 'common' })
                   : t('buttons.save', { ns: 'common' })}
@@ -294,7 +294,7 @@ const handleSubmit = async (e) => {
 
               <button
                 type="button"
-                className="delete-button tuf-btn-fill-danger"
+                className="delete-button btn-fill-danger"
                 onClick={pass.isDeleted ? handleRestore : handleDelete}
                 disabled={submission}
               >

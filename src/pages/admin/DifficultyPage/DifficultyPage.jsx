@@ -4,7 +4,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 
 import { MetaTags, AccessDenied } from '@/components/common/display';
-import { ScrollButton } from '@/components/common/buttons';
+import { ScrollButton, CloseButton } from '@/components/common/buttons';
 import { DifficultyPopup } from '@/components/popups/Difficulties';
 import { DiscordRolesPopup } from '@/components/popups/DiscordRoles';
 import api from '@/utils/api';
@@ -1019,17 +1019,15 @@ const DifficultyPage = () => {
                   }}
                 >
                   <div className="difficulty-modal-content">
-                    <button
+                    <CloseButton
+                      variant="floating"
                       className="modal-close-button"
                       onClick={() => {
                         setIsCreatingTag(false);
                         setNewTag({ name: '', iconFile: null, icon: null, color: '#FF5733' });
                       }}
-                    >
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </button>
+                      aria-label={t('buttons.close', { ns: 'common' })}
+                    />
                     <h2>{t('difficulty.tags.create.title')}</h2>
                     <form onSubmit={(e) => { e.preventDefault(); handleCreateTag(); }}>
                       <div className="form-group">
@@ -1133,14 +1131,12 @@ const DifficultyPage = () => {
                   }}
                 >
                   <div className="difficulty-modal-content">
-                    <button
+                    <CloseButton
+                      variant="floating"
                       className="modal-close-button"
                       onClick={handleCloseEditTag}
-                    >
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </button>
+                      aria-label={t('buttons.close', { ns: 'common' })}
+                    />
                     <h2>{t('difficulty.tags.edit.title')}</h2>
                     <form onSubmit={(e) => { e.preventDefault(); handleUpdateTag(); }}>
                       <div className="form-group">
@@ -1241,14 +1237,12 @@ const DifficultyPage = () => {
                   }}
                 >
                   <div className="difficulty-modal-content">
-                    <button
+                    <CloseButton
+                      variant="floating"
                       className="modal-close-button"
                       onClick={() => setDeletingTag(null)}
-                    >
-                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                      </svg>
-                    </button>
+                      aria-label={t('buttons.close', { ns: 'common' })}
+                    />
                     <h2>{t('difficulty.tags.delete.title')}</h2>
                     <p>{t('difficulty.tags.delete.message', { name: deletingTag.name })}</p>
                     <p>
@@ -1286,14 +1280,12 @@ const DifficultyPage = () => {
               }}
             >
               <div className="difficulty-modal-content delete-modal">
-                <button 
+                <CloseButton
+                  variant="floating"
                   className="modal-close-button"
                   onClick={handleCloseDeleteModal}
-                >
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M6 18L18 6M6 6l12 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </button>
+                  aria-label={t('buttons.close', { ns: 'common' })}
+                />
 
                 <div className={`delete-warning ${showDeleteInput ? 'fade-out' : ''}`}>
                   <h2>{t('difficulty.modal.delete.warning.title')}</h2>
@@ -1376,14 +1368,14 @@ const DifficultyPage = () => {
                 {error && <p className="error-message">{error}</p>}
                 <div className="password-modal-actions">
                   <button 
-                    className="confirm-btn tuf-btn-fill-primary"
+                    className="confirm-btn btn-fill-primary"
                     onClick={handlePasswordPromptSubmit}
                     disabled={!superAdminPassword}
                   >
                     {t('buttons.confirm', { ns: 'common' })}
                   </button>
                   <button 
-                    className="cancel-btn tuf-btn-fill-neutral-dark"
+                    className="cancel-btn btn-fill-neutral-dark"
                     onClick={() => {
                       setShowPasswordPrompt(false);
                       setSuperAdminPassword('');
@@ -1412,7 +1404,7 @@ const DifficultyPage = () => {
                 {error && <p className="error-message">{error}</p>}
                 <div className="password-modal-actions">
                   <button 
-                    className="confirm-btn tuf-btn-fill-primary"
+                    className="confirm-btn btn-fill-primary"
                     onClick={handleInitialPasswordSubmit}
                     disabled={!superAdminPassword}
                   >
@@ -1470,12 +1462,13 @@ const DifficultyPage = () => {
             {notifications.map(({ id, message, type }) => (
               <div key={id} className={`notification ${type}`}>
                 {message}
-                <button
+                <CloseButton
+                  variant="inline"
+                  size="sm"
                   className="close-notification"
                   onClick={() => setNotifications(prev => prev.filter(n => n.id !== id))}
-                >
-                  ×
-                </button>
+                  aria-label={t('buttons.close', { ns: 'common' })}
+                />
               </div>
             ))}
           </div>
