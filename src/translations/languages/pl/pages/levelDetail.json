@@ -76,5 +76,11 @@
     "clearCard": {
       "feeling": "Szacowany poz. trudności:"
     }
+  },
+  "toRatePending": {
+    "header": "Oczekuje na ponowną ocenę",
+    "rerateNumber": "Żądany rating",
+    "rerateMessage": "Wiadomość",
+    "noDetails": "Brak dodatkowych informacji."
   }
 } 

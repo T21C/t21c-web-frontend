@@ -275,6 +275,7 @@ const LevelUploadManagementPopup = ({
           setLevel({level: {...level, ...updatedLevel, dlLink: newDlLink}});
         }
         setUploadProgress(100);
+        setUrlImportPanelOpen(false);
         fetchLevelFiles();
       }
     } catch (err) {

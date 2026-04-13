@@ -130,6 +130,12 @@
     "date": "Date",
     "user": "User"
   },
+  "toRatePending": {
+    "header": "Pending rerate",
+    "rerateNumber": "Requested rating",
+    "rerateMessage": "Rerate message",
+    "noDetails": "No rerate details were provided."
+  },
   "tags": {
     "header": "Level Tags"
   },

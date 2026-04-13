@@ -441,18 +441,30 @@
   color: #ddd;
 }
 
-/* Weekly Appearance Display */
-.level-detail .weekly-appearance-container {
+/* Top-left header badges (weekly lists, pending rerate, …) */
+.level-detail .level-detail-header-corner-icons {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   position: absolute;
-  top: 4px;
-  left: 4px;
+  top: 0;
+  left: 0;
   gap: var(--spacing-xs);
   z-index: 20;
 }
 
-.level-detail .weekly-appearance-icon {
+.level-detail .header-corner-icon-slot {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.level-detail .rerate-history-dropdown-anchor {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.level-detail .header-corner-icon {
   opacity: 0.4;
   cursor: pointer;
   display: flex;
@@ -463,12 +475,13 @@
   border-radius: var(--border-radius);
 }
 
-.level-detail .weekly-appearance-icon:hover {
+.level-detail .header-corner-icon:hover {
   opacity: 0.6;
   background: rgba(255, 255, 255, 0.1);
 }
 
-.level-detail .weekly-appearance-dropdown {
+.level-detail .weekly-appearance-dropdown,
+.level-detail .to-rate-pending-dropdown {
   position: absolute;
   top: calc(100% + 8px);
   left: 0;
@@ -485,9 +498,12 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-xs);
+  -webkit-user-select: text;
+  user-select: text;
 }
 
-.level-detail .weekly-appearance-header {
+.level-detail .weekly-appearance-header,
+.level-detail .to-rate-pending-header {
   color: var(--secondary-text);
   font-size: 1.1em;
   font-weight: 600;
@@ -495,6 +511,41 @@
   border-bottom: 1px solid var(--glass-border);
   padding-bottom: 4px;
   text-shadow: 0 0 10px rgba(0, 0, 0, 1);
+}
+
+.level-detail .to-rate-pending-dropdown .to-rate-pending-body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  color: var(--primary-text);
+  font-size: 0.95em;
+}
+
+.level-detail .to-rate-pending-dropdown .to-rate-pending-body p {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.level-detail .to-rate-pending-dropdown .to-rate-pending-body b {
+  color: var(--secondary-text);
+  font-size: 0.88em;
+  font-weight: 600;
+}
+
+.level-detail .to-rate-pending-dropdown .to-rate-pending-reason span {
+  white-space: pre-wrap;
+  word-break: break-word;
+  line-height: 1.4;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.level-detail .to-rate-pending-dropdown p.to-rate-pending-empty {
+  color: var(--secondary-text);
+  font-size: 0.9em;
+  font-style: italic;
 }
 
 .level-detail .weekly-appearance-list {
@@ -2047,6 +2098,8 @@
   gap: var(--spacing-xs);
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 .level-detail .rerate-history-header {
@@ -2122,13 +2175,7 @@
   gap: 2px;
 }
 
-.level-detail .rerate-history-date {
-  font-size: 0.85em;
-  color: var(--secondary-text);
-}
-
 .level-detail .rerate-history-user {
-  font-size: 0.85em;
   color: #e0cfff;
 }
 
@@ -2150,21 +2197,23 @@
 
 .level-detail .rerate-arrow.open {
   transform: rotate(180deg);
+}
+
+.level-detail .rerate-arrow .rerate-arrow-icon,
+.level-detail .rerate-arrow .rerate-history-icon {
+  position: absolute;
+  bottom: 50%;
+  right: 50%;
+  transform: translate(50%, 50%);
+  transition: opacity var(--transition-normal);
   -webkit-user-select: none;
   user-select: none;
 }
 
 .level-detail .rerate-arrow .rerate-arrow-icon {
-  position: absolute;
-  bottom: 50%;
-  right: 50%;
-  transform: translate(50%, 50%);
   font-size: 1em;
   color: var(--primary-text);
-  -webkit-user-select: none;
-  user-select: none;
   opacity: 0;
-  transition: opacity var(--transition-normal);
 }
 
 .level-detail .rerate-arrow.open .rerate-arrow-icon {
@@ -2172,12 +2221,7 @@
 }
 
 .level-detail .rerate-arrow .rerate-history-icon {
-  position: absolute;
-  bottom: 50%;
-  right: 50%;
-  transform: translate(50%, 50%);
   opacity: 0.8;
-  transition: opacity var(--transition-normal);
 }
 
 .level-detail .rerate-arrow.open .rerate-history-icon {
@@ -2599,7 +2643,8 @@
   .tags-dropdown,
   .rating-votes-dropdown,
   .curation-tooltip-dropdown:not(.level-detail__curation-inline-assignee),
-  .level-detail .weekly-appearance-dropdown {
+  .level-detail .weekly-appearance-dropdown,
+  .level-detail .to-rate-pending-dropdown {
     position: fixed;
     top: 50%;
     left: 50%;
@@ -2634,7 +2679,8 @@
     min-width: 200px;
   }
 
-  .level-detail .weekly-appearance-dropdown {
+  .level-detail .weekly-appearance-dropdown,
+  .level-detail .to-rate-pending-dropdown {
     max-width: 90vw;
     min-width: 280px;
   }

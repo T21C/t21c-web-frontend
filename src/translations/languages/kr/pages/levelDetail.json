@@ -108,5 +108,11 @@
     "loginToVote": "Login to vote",
     "viewAllVotes": "View all votes",
     "noVotes": "No votes yet"
+  },
+  "toRatePending": {
+    "header": "재평가 대기",
+    "rerateNumber": "요청 난이도",
+    "rerateMessage": "메시지",
+    "noDetails": "추가 정보가 없습니다."
   }
 } 

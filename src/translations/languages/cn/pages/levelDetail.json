@@ -129,6 +129,12 @@
     "date": "日期",
     "user": "用户"
   },
+  "toRatePending": {
+    "header": "待重新评级",
+    "rerateNumber": "请求评级",
+    "rerateMessage": "说明",
+    "noDetails": "未填写额外信息。"
+  },
   "tags": {
     "header": "关卡标签"
   },

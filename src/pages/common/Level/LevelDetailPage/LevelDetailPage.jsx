@@ -574,24 +574,80 @@ const RatingAccuracyDialog = ({ isOpen, onClose, onSave, initialValue = 0 }) => 
   );
 };
 
-const WeeklyAppearanceDropdown = ({ schedules, show, onClose }) => {
+const ToRatePendingDropdown = ({ show, onClose, level, containerRef }) => {
   const { t } = useTranslation(['pages', 'common']);
-  const dropdownRef = useRef(null);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        onClose();
-      }
+    if (!show) return;
+    const handlePointerDownCapture = (event) => {
+      if (containerRef?.current?.contains(event.target)) return;
+      onClose();
     };
+    document.addEventListener('mousedown', handlePointerDownCapture, true);
+    return () => document.removeEventListener('mousedown', handlePointerDownCapture, true);
+  }, [show, onClose, containerRef]);
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [onClose]);
+  useEffect(() => {
+    if (!show) return;
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [show, onClose]);
 
-  const handleDropdownClick = (e) => {
-    e.stopPropagation();
-  };
+  if (!show || !level?.toRate) return null;
+
+  const rerateNumRaw = level.rerateNum;
+  const rerateNum =
+    rerateNumRaw === undefined || rerateNumRaw === null ? '' : String(rerateNumRaw).trim();
+  const rerateReason = typeof level.rerateReason === 'string' ? level.rerateReason.trim() : '';
+
+  return (
+    <div className="to-rate-pending-dropdown">
+      <div className="to-rate-pending-header">{t('levelDetail.toRatePending.header')}</div>
+      <div className="to-rate-pending-body">
+        {rerateNum ? (
+          <p>
+            <b>{t('levelDetail.toRatePending.rerateNumber')}</b>
+            <span>{rerateNum}</span>
+          </p>
+        ) : null}
+        {rerateReason ? (
+          <p className="to-rate-pending-reason">
+            <b>{t('levelDetail.toRatePending.rerateMessage')}</b>
+            <span>{rerateReason}</span>
+          </p>
+        ) : null}
+        {!rerateNum && !rerateReason ? (
+          <p className="to-rate-pending-empty">{t('levelDetail.toRatePending.noDetails')}</p>
+        ) : null}
+      </div>
+    </div>
+  );
+};
+
+const WeeklyAppearanceDropdown = ({ schedules, show, onClose, containerRef }) => {
+  const { t } = useTranslation(['pages', 'common']);
+
+  useEffect(() => {
+    if (!show) return;
+    const handlePointerDownCapture = (event) => {
+      if (containerRef?.current?.contains(event.target)) return;
+      onClose();
+    };
+    document.addEventListener('mousedown', handlePointerDownCapture, true);
+    return () => document.removeEventListener('mousedown', handlePointerDownCapture, true);
+  }, [show, onClose, containerRef]);
+
+  useEffect(() => {
+    if (!show) return;
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [show, onClose]);
 
   if (!show || !schedules?.length) return null;
 
@@ -601,7 +657,7 @@ const WeeklyAppearanceDropdown = ({ schedules, show, onClose }) => {
   });
 
   return (
-    <div className="weekly-appearance-dropdown" ref={dropdownRef} onClick={handleDropdownClick}>
+    <div className="weekly-appearance-dropdown">
       <div className="weekly-appearance-header">{t('levelDetail.weeklyAppearance.header')}</div>
       <div className="weekly-appearance-list">
         {sortedSchedules.map((schedule, index) => (
@@ -624,30 +680,32 @@ const WeeklyAppearanceDropdown = ({ schedules, show, onClose }) => {
   );
 };
 
-const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict }) => {
+const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict, containerRef }) => {
   const { t } = useTranslation(['pages', 'common']);
-  const dropdownRef = useRef(null);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        onClose();
-      }
-      event.stopPropagation();
+    if (!show) return;
+    const handlePointerDownCapture = (event) => {
+      if (containerRef?.current?.contains(event.target)) return;
+      onClose();
     };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [onClose]);
+    document.addEventListener('mousedown', handlePointerDownCapture, true);
+    return () => document.removeEventListener('mousedown', handlePointerDownCapture, true);
+  }, [show, onClose, containerRef]);
 
-
-  const handleDropdownClick = (e) => {
-    e.stopPropagation();
-  };
+  useEffect(() => {
+    if (!show) return;
+    const onKey = (e) => {
+      if (e.key === 'Escape') onClose();
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [show, onClose]);
 
   if (!show || !rerateHistory?.length) return null;
 
   return (
-    <div className="rerate-history-dropdown" ref={dropdownRef} onClick={handleDropdownClick}>
+    <div className="rerate-history-dropdown">
       <div className="rerate-history-header">{t('levelDetail.rerateHistory.header', { defaultValue: 'Rerate History' })}</div>
       <div className="rerate-history-sequence">
         {rerateHistory.slice().reverse().map((entry, idx) => {
@@ -675,7 +733,7 @@ const RerateHistoryDropdown = ({ show, onClose, rerateHistory, difficultyDict })
                   {(entry.newBaseScore || difficultyDict[entry.newDiffId]?.baseScore !== undefined) && <div className="rerate-history-basescore">{entry.newBaseScore || difficultyDict[entry.newDiffId]?.baseScore}PP</div>}
                 </div>
                 <div className="rerate-history-meta">
-                  <span className="rerate-history-date">{formatDate(entry.createdAt, i18next?.language)}</span>
+                  <span>{formatDate(entry.createdAt, i18next?.language)}</span>
                   {entry.user && <span className="rerate-history-user">{entry.user.username || entry.reratedBy}</span>}
                 </div>
               </div>
@@ -769,6 +827,13 @@ const LevelDetailPage = ({ mockData = null }) => {
   const [rerateArrowEnabled, setRerateArrowEnabled] = useState(true);
   const [isRefreshingLeaderboard, setIsRefreshingLeaderboard] = useState(false);
   const [showWeeklyAppearanceDropdown, setShowWeeklyAppearanceDropdown] = useState(false);
+  const [showToRatePendingDropdown, setShowToRatePendingDropdown] = useState(false);
+  const weeklyHeaderCornerSlotRef = useRef(null);
+  const toRateHeaderCornerSlotRef = useRef(null);
+  const rerateHistoryAnchorRef = useRef(null);
+
+  const closeWeeklyAppearanceDropdown = useCallback(() => setShowWeeklyAppearanceDropdown(false), []);
+  const closeToRatePendingDropdown = useCallback(() => setShowToRatePendingDropdown(false), []);
 
   const handleArtistClick = (artist) => {
     setClickedArtist(artist);
@@ -969,12 +1034,6 @@ const LevelDetailPage = ({ mockData = null }) => {
     }
   }, [setExternalCssOverrideValue]);
 
-  const handleRerateDropdownToggle = () => {
-    if (!rerateArrowEnabled) return;
-    setShowRerateDropdown(true);
-    setRerateArrowEnabled(false);
-  };
-
   const handleRerateDropdownClose = () => {
     setShowRerateDropdown(false);
     // Wait for mouseup before re-enabling the arrow
@@ -983,6 +1042,16 @@ const LevelDetailPage = ({ mockData = null }) => {
       window.removeEventListener('mouseup', enableArrow);
     };
     window.addEventListener('mouseup', enableArrow);
+  };
+
+  const handleRerateDropdownToggle = () => {
+    if (!rerateArrowEnabled) return;
+    if (showRerateDropdown) {
+      handleRerateDropdownClose();
+      return;
+    }
+    setShowRerateDropdown(true);
+    setRerateArrowEnabled(false);
   };
 
   useEffect(() => {
@@ -1803,24 +1872,74 @@ const LevelDetailPage = ({ mockData = null }) => {
           <div className="header">
             <div className="left">
 
-              {res?.level?.curationSchedules?.length > 0 && (
-                <div 
-                  className="weekly-appearance-container"
-                  onMouseEnter={() => setShowWeeklyAppearanceDropdown(true)}
-                  onMouseLeave={() => setShowWeeklyAppearanceDropdown(false)}
-                >
-                  <div className="weekly-appearance-icon">
-                    <CalendarIcon 
-                      size={"24px"}
-                      color="#fff"
-                      className="weekly-appearance-icon-icon"
-                    />
-                  </div>
-                  <WeeklyAppearanceDropdown
-                    schedules={res?.level?.curationSchedules}
-                    show={showWeeklyAppearanceDropdown}
-                    onClose={() => setShowWeeklyAppearanceDropdown(false)}
-                  />
+              {(res?.level?.curationSchedules?.length > 0 || res?.level?.toRate) && (
+                <div className="level-detail-header-corner-icons">
+                  {res?.level?.curationSchedules?.length > 0 && (
+                    <div ref={weeklyHeaderCornerSlotRef} className="header-corner-icon-slot">
+                      <div
+                        className="header-corner-icon"
+                        role="button"
+                        tabIndex={0}
+                        aria-expanded={showWeeklyAppearanceDropdown}
+                        aria-haspopup="dialog"
+                        aria-label={t('levelDetail.weeklyAppearance.header')}
+                        title={t('levelDetail.weeklyAppearance.header')}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowWeeklyAppearanceDropdown((open) => !open);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setShowWeeklyAppearanceDropdown((open) => !open);
+                          }
+                        }}
+                      >
+                        <CalendarIcon
+                          size={"20px"}
+                          color="#fff"
+                          className="weekly-appearance-icon-icon"
+                        />
+                      </div>
+                      <WeeklyAppearanceDropdown
+                        schedules={res?.level?.curationSchedules}
+                        show={showWeeklyAppearanceDropdown}
+                        onClose={closeWeeklyAppearanceDropdown}
+                        containerRef={weeklyHeaderCornerSlotRef}
+                      />
+                    </div>
+                  )}
+                  {res?.level?.toRate && (
+                    <div ref={toRateHeaderCornerSlotRef} className="header-corner-icon-slot">
+                      <div
+                        className="header-corner-icon"
+                        role="button"
+                        tabIndex={0}
+                        aria-expanded={showToRatePendingDropdown}
+                        aria-haspopup="dialog"
+                        aria-label={t('levelDetail.toRatePending.header')}
+                        title={t('levelDetail.toRatePending.header')}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowToRatePendingDropdown((open) => !open);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            setShowToRatePendingDropdown((open) => !open);
+                          }
+                        }}
+                      >
+                        <RefreshIcon color="#fff" size={"20px"} />
+                      </div>
+                      <ToRatePendingDropdown
+                        level={res.level}
+                        show={showToRatePendingDropdown}
+                        onClose={closeToRatePendingDropdown}
+                        containerRef={toRateHeaderCornerSlotRef}
+                      />
+                    </div>
+                  )}
                 </div>
               )}
               <div className="level-id mobile">#{effectiveId}</div>
@@ -1842,22 +1961,25 @@ const LevelDetailPage = ({ mockData = null }) => {
                 : null
                 }
                 {res?.rerateHistory?.length > 0 && (
-                  <span
-                    className={`rerate-arrow ${showRerateDropdown ? 'open' : ''}`}
-                    onClick={handleRerateDropdownToggle}
-                    title={t('levelDetail.rerateHistory.header', { defaultValue: 'Show rerate history' })}
-                    data-disabled={!rerateArrowEnabled}
-                  >
-                    <HistoryListIcon className="rerate-history-icon" size={"24px"}/>
-                    <span className="rerate-arrow-icon">&#9660;</span>
-                  </span>
+                  <div ref={rerateHistoryAnchorRef} className="rerate-history-dropdown-anchor">
+                    <span
+                      className={`rerate-arrow ${showRerateDropdown ? 'open' : ''}`}
+                      onClick={handleRerateDropdownToggle}
+                      title={t('levelDetail.rerateHistory.header', { defaultValue: 'Show rerate history' })}
+                      data-disabled={!rerateArrowEnabled}
+                    >
+                      <HistoryListIcon className="rerate-history-icon" size={"24px"}/>
+                      <span className="rerate-arrow-icon">&#9660;</span>
+                    </span>
+                    <RerateHistoryDropdown
+                      rerateHistory={res?.rerateHistory}
+                      show={showRerateDropdown}
+                      onClose={handleRerateDropdownClose}
+                      difficultyDict={difficultyDict}
+                      containerRef={rerateHistoryAnchorRef}
+                    />
+                  </div>
                 )}
-                <RerateHistoryDropdown
-                  rerateHistory={res?.rerateHistory}
-                  show={showRerateDropdown}
-                  onClose={handleRerateDropdownClose}
-                  difficultyDict={difficultyDict}
-                />
                 <div className="pp-display">
                   {formatBaseScore(res.level.baseScore || difficulty.baseScore || 0)}PP
                 </div>

@@ -53,5 +53,11 @@
   },
   "dialog": {
     "fullInfo": "Voir plus d'infos"
+  },
+  "toRatePending": {
+    "header": "En attente de reclassement",
+    "rerateNumber": "Note demandée",
+    "rerateMessage": "Message",
+    "noDetails": "Aucun détail supplémentaire."
   }
 } 
