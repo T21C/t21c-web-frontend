@@ -202,7 +202,7 @@ const handleSubmit = async (e) => {
     <div className="edit-pass-popup-overlay">
       <div className="form-container">
         <button 
-          className="close-button" 
+          className="close-button tuf-btn-fill-neutral" 
           onClick={onClose}
           aria-label="Close"
         >
@@ -286,7 +286,7 @@ const handleSubmit = async (e) => {
           )}
           renderSubmitActions={() => (
             <div className="button-group">
-              <button disabled={submission} className="save-button" onClick={handleSubmit}>
+              <button disabled={submission} className="save-button tuf-btn-fill-primary" onClick={handleSubmit}>
                 {submission
                   ? t('loading.saving', { ns: 'common' })
                   : t('buttons.save', { ns: 'common' })}
@@ -294,7 +294,7 @@ const handleSubmit = async (e) => {
 
               <button
                 type="button"
-                className="delete-button"
+                className="delete-button tuf-btn-fill-danger"
                 onClick={pass.isDeleted ? handleRestore : handleDelete}
                 disabled={submission}
               >

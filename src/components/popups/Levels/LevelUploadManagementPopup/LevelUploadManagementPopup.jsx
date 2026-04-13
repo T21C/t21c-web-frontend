@@ -392,7 +392,7 @@ const LevelUploadManagementPopup = ({
         <div className="level-upload-management-header">
           <h2>{t('levelUploadManagement.title')}</h2>
           <button 
-            className="close-button" 
+            className="close-button tuf-btn-fill-neutral" 
             onClick={(e) => {
               e.stopPropagation();
               handleClose();
@@ -415,7 +415,7 @@ const LevelUploadManagementPopup = ({
             </div>
             <div className="progress-text">{progressLine}</div>
             <button
-              className="cancel-upload-button"
+              className="cancel-upload-button tuf-btn-fill-danger"
               onClick={() => {
                 if (abortControllerRef.current) {
                   abortControllerRef.current.abort();
@@ -464,7 +464,7 @@ const LevelUploadManagementPopup = ({
             />
             {selectedLevel && levelFiles.length > 0 && (
             <button 
-              className={`select-button ${isSelecting ? 'is-selecting' : ''}`}
+              className={`select-button tuf-btn-fill-primary ${isSelecting ? 'is-selecting' : ''}`}
               onClick={handleLevelSelect}
               disabled={!selectedLevel || selectedLevel === targetLevel || isSelecting}
             >
@@ -521,7 +521,7 @@ const LevelUploadManagementPopup = ({
                       />
                       <button
                         type="button"
-                        className="upload-from-url-submit"
+                        className="upload-from-url-submit tuf-btn-fill-primary"
                         onClick={handleUploadFromUrl}
                         disabled={isUploading || !importUrl.trim()}
                       >
@@ -533,7 +533,7 @@ const LevelUploadManagementPopup = ({
                   <div className="upload-actions-inline">
                     <button
                       type="button"
-                      className="upload-button"
+                      className="upload-button tuf-btn-fill-primary"
                       onClick={() => fileInputRef.current?.click()}
                       disabled={isUploading}
                     >
@@ -541,7 +541,7 @@ const LevelUploadManagementPopup = ({
                     </button>
                     <button
                       type="button"
-                      className="upload-import-button"
+                      className="upload-import-button tuf-btn-fill-accent"
                       onClick={() => {
                         setError(null);
                         setUrlImportPanelOpen(true);
@@ -555,7 +555,7 @@ const LevelUploadManagementPopup = ({
               ) : (
                 <button
                   type="button"
-                  className="upload-button upload-button--full"
+                  className="upload-button upload-button--full tuf-btn-fill-primary"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isUploading}
                 >
@@ -566,7 +566,7 @@ const LevelUploadManagementPopup = ({
             {isCdnUrl(level.dlLink) && (
               <button
                 type="button"
-                className="delete-button"
+                className="delete-button tuf-btn-fill-danger"
                 onClick={handleDelete}
                 disabled={isUploading}
               >

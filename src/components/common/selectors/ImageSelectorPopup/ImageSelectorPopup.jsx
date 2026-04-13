@@ -224,7 +224,7 @@ const ImageSelectorPopup = ({ isOpen, onClose, onSave, currentAvatar, initialIma
                             Cancel
                         </button>
                         <button 
-                            className="save-button" 
+                            className="save-button tuf-btn-fill-primary" 
                             onClick={handleSave}
                             disabled={!image || isLoading}
                         >

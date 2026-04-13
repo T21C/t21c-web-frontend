@@ -41,18 +41,11 @@
   right: 1rem;
   height: 2.5rem;
   width: 2.5rem;
-  background-color: #4a4a4a;
-  color: #ffffff;
-  border: none;
   border-radius: 50%;
   font-size: 1.5rem;
   cursor: pointer;
   z-index: 10002;
-  transition: background-color 0.3s ease;
-}
-
-.edit-pass-popup-overlay .close-button:hover {
-  background-color: #5a5a5a;
+  transition: filter 100ms linear;
 }
 
 .edit-pass-popup-overlay .button-group {
@@ -64,40 +57,10 @@
 .edit-pass-popup-overlay .button-group button {
   flex: 1;
   padding: 0.75rem 1.5rem;
-  border: none;
   border-radius: 5px;
   font-size: 1rem;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  color: #ffffff;
-}
-
-.edit-pass-popup-overlay .delete-button {
-  background-color: var(--btn-danger-bg);
-  color: #ffffff;
-}
-
-.edit-pass-popup-overlay .delete-button:hover:not(:disabled) {
-  background-color: var(--btn-danger-hover);
-}
-
-.edit-pass-popup-overlay .delete-button:disabled {
-  background-color: var(--btn-danger-disabled);
-  cursor: not-allowed;
-}
-
-.edit-pass-popup-overlay .save-button {
-  background-color: var(--btn-primary-bg);
-  color: #ffffff;
-}
-
-.edit-pass-popup-overlay .save-button:hover:not(:disabled) {
-  background-color: var(--btn-primary-hover);
-}
-
-.edit-pass-popup-overlay .save-button:active:not(:disabled) {
-  background-color: var(--btn-primary-active);
 }
 
 .edit-pass-popup-overlay .pass-core-form .checkbox-row .announcement-status {

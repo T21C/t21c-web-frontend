@@ -817,13 +817,13 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
             {error && <div className="error-message">{error}</div>}
             
             <div className="button-group">
-              <button type="submit" disabled={isSaving} className="save-button">
+              <button type="submit" disabled={isSaving} className="save-button tuf-btn-fill-primary">
                 {isSaving ? t('loading.saving', { ns: 'common' }) : t('levelPopups.edit.form.buttons.save.default')}
               </button>
               {level.isDeleted ? (
                 <button 
                   type="button"
-                  className="restore-button"
+                  className="restore-button tuf-btn-fill-success"
                   onClick={handleRestore}
                   disabled={isSaving}
                 >
@@ -832,7 +832,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
               ) : level.isHidden ? (
                 <button 
                   type="button"
-                  className="restore-button"
+                  className="restore-button tuf-btn-fill-success"
                   onClick={handleToggleHidden}
                   disabled={isSaving}
                 >
@@ -843,7 +843,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   {isSuperAdmin ? (
                     <button 
                       type="button" 
-                      className={`delete-button ${isHideMode ? 'hide-mode' : ''}`}
+                      className={`delete-button tuf-btn-fill-danger ${isHideMode ? 'hide-mode' : ''}`}
                       onClick={handleDelete}
                       disabled={isSaving}
                     >
@@ -857,7 +857,7 @@ export const EditLevelPopup = ({ level, onClose, onUpdate, isFromAnnouncementPag
                   ) : (
                     <button 
                       type="button" 
-                      className="delete-button hide-mode"
+                      className="delete-button hide-mode tuf-btn-fill-neutral-muted"
                       onClick={handleToggleHidden}
                       disabled={isSaving}
                     >

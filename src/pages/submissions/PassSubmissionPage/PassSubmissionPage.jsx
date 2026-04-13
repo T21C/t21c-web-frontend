@@ -438,7 +438,7 @@ const PassSubmissionPage = () => {
                 {searchResults.length > 0 && (
                   <button
                     type="button"
-                    className={`expand-button ${isExpanded ? "expanded" : ""}`}
+                    className={`expand-button tuf-btn-fill-primary ${isExpanded ? "expanded" : ""}`}
                     onClick={toggleExpand}
                   >
                     <svg
@@ -556,7 +556,7 @@ const PassSubmissionPage = () => {
             </>
           )}
           renderSubmitActions={() => (
-            <button className="submit" onClick={handleSubmit} disabled={submission}>
+            <button className="submit tuf-btn-fill-primary alt" onClick={handleSubmit} disabled={submission}>
               {submission
                 ? t("loading.submitting", { ns: "common" })
                 : t("buttons.submit", { ns: "common" })}

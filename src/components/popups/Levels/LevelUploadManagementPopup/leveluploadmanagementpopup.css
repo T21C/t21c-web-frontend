@@ -36,9 +36,6 @@
 }
 
 .level-upload-management-popup .close-button {
-  background: none;
-  border: none;
-  color: #ffffff;
   font-size: 1.5rem;
   cursor: pointer;
   padding: 0;
@@ -48,11 +45,7 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  transition: background-color 0.2s;
-}
-
-.level-upload-management-popup .close-button:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  transition: filter 0.2s;
 }
 
 .level-upload-management-popup .error-message {
@@ -278,21 +271,17 @@
 .level-upload-management-popup .upload-from-url-submit {
   flex: 0 0 auto;
   padding: 10px 16px;
-  border: none;
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
-  background-color: #417fc6;
-  color: white;
-  transition: background-color 0.2s;
 }
 
-.level-upload-management-popup .upload-from-url-submit:hover:not(:disabled) {
-  background-color: #2d67a1;
+.level-upload-management-popup .upload-from-url-submit:disabled::before {
+  filter: none;
+  background-color: var(--btn-neutral-dark);
 }
 
 .level-upload-management-popup .upload-from-url-submit:disabled {
-  background-color: #2a2a2a;
   color: rgba(255, 255, 255, 0.5);
   cursor: not-allowed;
 }
@@ -325,49 +314,28 @@
 .level-upload-management-popup .select-button,
 .level-upload-management-popup .cancel-upload-button {
   padding: 10px 20px;
-  border: none;
   border-radius: 4px;
   cursor: pointer;
   font-weight: bold;
-  transition: background-color 0.2s;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
 }
 
-.level-upload-management-popup .upload-button {
-  background-color: #417fc6;
-  color: white;
-}
-
-.level-upload-management-popup .upload-button:hover {
-  background-color: #2d67a1;
+.level-upload-management-popup .upload-button:disabled::before {
+  filter: none;
+  background-color: var(--btn-neutral-dark);
 }
 
 .level-upload-management-popup .upload-button:disabled {
-  background-color: #2a2a2a;
   color: rgba(255, 255, 255, 0.5);
   cursor: not-allowed;
 }
 
-.level-upload-management-popup .delete-button {
-  background-color: #c64141;
-  color: white;
-}
-
-.level-upload-management-popup .delete-button:hover {
-  background-color: #a13535;
-}
-
-.level-upload-management-popup .select-button {
-  background-color: #417fc6;
-  color: white;
-  transition: background-color 0.2s, transform 0.12s ease, box-shadow 0.12s ease;
-}
-
-.level-upload-management-popup .select-button:hover {
-  background-color: #2d67a1;
+.level-upload-management-popup .select-button:disabled::before {
+  filter: none;
+  background-color: var(--btn-neutral-dark);
 }
 
 .level-upload-management-popup .select-button:disabled {
-  background-color: #2a2a2a;
   color: rgba(255, 255, 255, 0.6);
   cursor: not-allowed;
 }
@@ -378,13 +346,7 @@
 }
 
 .level-upload-management-popup .cancel-upload-button {
-  background-color: #c64141;
-  color: white;
   margin-top: 10px;
-}
-
-.level-upload-management-popup .cancel-upload-button:hover {
-  background-color: #a13535;
 }
 
 .level-upload-management-popup .current-target {

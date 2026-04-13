@@ -536,24 +536,14 @@
 .pass-detail .hide-button {
   height: 3.5rem;
   width: 3.5rem;
-  background-color: var(--color-purple-3);
-  border: none;
   border-radius: 50%;
   color: var(--color-white);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: filter 0.2s, transform 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0.75rem;
-}
-
-.pass-detail .hide-button {
-  background-color: var(--color-white-t20);
-}
-
-.pass-detail .hide-button.hidden {
-  background-color: var(--color-purple-3);
 }
 
 .pass-detail .edit-button:hover,
@@ -627,22 +617,15 @@
 }
 
 .pass-detail .hide-confirm-actions .confirm-button {
-  background-color: var(--color-purple-3);
   color: var(--color-white);
 }
 
 .pass-detail .hide-confirm-actions .confirm-button:hover:not(:disabled) {
-  background-color: var(--color-purple-2);
   transform: translateY(-1px);
 }
 
 .pass-detail .hide-confirm-actions .cancel-button {
-  background-color: var(--color-white-t20);
   color: var(--color-white);
-}
-
-.pass-detail .hide-confirm-actions .cancel-button:hover:not(:disabled) {
-  background-color: var(--color-white-t30);
 }
 
 .pass-detail .hide-confirm-actions .confirm-button:disabled,

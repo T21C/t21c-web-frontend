@@ -19,13 +19,18 @@
   --color-gray-3: #e9e9ea;
   --success-color: #28a745;
   --danger-color: #dc3545;
-  /* Primary/destructive button fills (pass/level submit, edit save, delete/remove); distinct from --danger-color */
-  --btn-primary-bg: #8f7dea;
-  --btn-primary-hover: #7763c2;
-  --btn-primary-active: #6b57b8;
-  --btn-danger-bg: #8b0000;
-  --btn-danger-hover: #a00000;
-  --btn-danger-disabled: #555555;
+  /* Semantic button fills: one base per variant; hover/active via .tuf-btn-fill-* + filter in @layer components */
+  --btn-primary: #4a90e2;
+  --btn-primary-alt: #745bda;
+  --btn-danger: #bb2222;
+  --btn-neutral: #4a4a4a;
+  --btn-neutral-dark: #2a2a2a;
+  --btn-neutral-muted: #666666;
+  --btn-neutral-heavy: #495057;
+  --btn-secondary: #6c757d;
+  --btn-discord: #7289da;
+  --btn-success: #41c641;
+  --btn-disabled-fill: #555555;
   --warning-color: #ffc107;
   --color-black-t5: rgba(9, 9, 9, 0.05);
   --color-black-t10: rgba(9, 9, 9, 0.1);
@@ -495,7 +500,198 @@ button {
   border: 1px solid var(--color-white-t20);
 }
 
+@layer components {
+  /*
+   * Button fill utilities: solid fill lives on ::before so filter (hover/active)
+   * never affects label, icons, or other content.
+   */
+  .tuf-btn-fill-primary,
+  .tuf-btn-fill-danger,
+  .tuf-btn-fill-neutral,
+  .tuf-btn-fill-neutral-dark,
+  .tuf-btn-fill-neutral-muted,
+  .tuf-btn-fill-neutral-heavy,
+  .tuf-btn-fill-secondary,
+  .tuf-btn-fill-discord,
+  .tuf-btn-fill-accent,
+  .tuf-btn-fill-success,
+  .tuf-btn-fill-glass {
+    position: relative;
+    z-index: 0;
+    isolation: isolate;
+    border: none;
+    background-color: transparent;
+    color: var(--color-white);
+  }
 
+  .tuf-btn-fill-primary {
+    --tuf-btn-fill: var(--btn-primary);
+  }
+  .tuf-btn-fill-primary.alt {
+    --tuf-btn-fill: var(--btn-primary-alt);
+  }
+  .tuf-btn-fill-danger {
+    --tuf-btn-fill: var(--btn-danger);
+  }
+  .tuf-btn-fill-neutral {
+    --tuf-btn-fill: var(--btn-neutral);
+  }
+  .tuf-btn-fill-neutral-dark {
+    --tuf-btn-fill: var(--btn-neutral-dark);
+  }
+  .tuf-btn-fill-neutral-muted {
+    --tuf-btn-fill: var(--btn-neutral-muted);
+  }
+  .tuf-btn-fill-neutral-heavy {
+    --tuf-btn-fill: var(--btn-neutral-heavy);
+  }
+  .tuf-btn-fill-secondary {
+    --tuf-btn-fill: var(--btn-secondary);
+  }
+  .tuf-btn-fill-discord {
+    --tuf-btn-fill: var(--btn-discord);
+  }
+  .tuf-btn-fill-accent {
+    --tuf-btn-fill: var(--color-purple-2);
+  }
+  .tuf-btn-fill-success {
+    --tuf-btn-fill: var(--btn-success);
+  }
+  .tuf-btn-fill-glass {
+    --tuf-btn-fill: var(--color-white-t20);
+    transition: transform 0.2s;
+  }
+
+  .tuf-btn-fill-primary::before,
+  .tuf-btn-fill-danger::before,
+  .tuf-btn-fill-neutral::before,
+  .tuf-btn-fill-neutral-dark::before,
+  .tuf-btn-fill-neutral-muted::before,
+  .tuf-btn-fill-neutral-heavy::before,
+  .tuf-btn-fill-secondary::before,
+  .tuf-btn-fill-discord::before,
+  .tuf-btn-fill-accent::before,
+  .tuf-btn-fill-success::before,
+  .tuf-btn-fill-glass::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    background-color: var(--tuf-btn-fill);
+    transition: filter 100ms linear;
+  }
+
+  .tuf-btn-fill-primary:hover:not(:disabled)::before {
+    filter: brightness(0.88);
+  }
+  .tuf-btn-fill-primary:active:not(:disabled)::before {
+    filter: brightness(0.8);
+  }
+  .tuf-btn-fill-primary:disabled::before {
+    filter: none;
+    opacity: 0.72;
+  }
+  .tuf-btn-fill-primary:disabled {
+    cursor: not-allowed;
+  }
+
+  .tuf-btn-fill-danger:hover:not(:disabled)::before {
+    filter: brightness(0.88);
+  }
+  .tuf-btn-fill-danger:active:not(:disabled)::before {
+    filter: brightness(0.78);
+  }
+  .tuf-btn-fill-danger:disabled::before {
+    filter: none;
+    background-color: var(--btn-disabled-fill);
+    opacity: 1;
+  }
+  .tuf-btn-fill-danger:disabled {
+    cursor: not-allowed;
+  }
+
+  .tuf-btn-fill-neutral:hover:not(:disabled)::before {
+    filter: brightness(1.12);
+  }
+  .tuf-btn-fill-neutral:active:not(:disabled)::before {
+    filter: brightness(1.06);
+  }
+
+  .tuf-btn-fill-neutral-dark:hover:not(:disabled)::before {
+    filter: brightness(1.18);
+  }
+  .tuf-btn-fill-neutral-dark:active:not(:disabled)::before {
+    filter: brightness(1.08);
+  }
+
+  .tuf-btn-fill-neutral-muted:hover:not(:disabled)::before {
+    filter: brightness(0.78);
+  }
+  .tuf-btn-fill-neutral-muted:active:not(:disabled)::before {
+    filter: brightness(0.68);
+  }
+
+  .tuf-btn-fill-neutral-heavy:hover:not(:disabled)::before {
+    filter: brightness(1.12);
+  }
+  .tuf-btn-fill-neutral-heavy:active:not(:disabled)::before {
+    filter: brightness(0.88);
+  }
+
+  .tuf-btn-fill-secondary:hover:not(:disabled)::before {
+    filter: brightness(0.92);
+  }
+  .tuf-btn-fill-secondary:active:not(:disabled)::before {
+    filter: brightness(0.85);
+  }
+
+  .tuf-btn-fill-discord:hover:not(:disabled)::before {
+    filter: brightness(0.9);
+  }
+  .tuf-btn-fill-discord:active:not(:disabled)::before {
+    filter: brightness(0.82);
+  }
+
+  .tuf-btn-fill-accent:hover:not(:disabled)::before {
+    filter: brightness(1.08);
+  }
+  .tuf-btn-fill-accent:active:not(:disabled)::before {
+    filter: brightness(0.95);
+  }
+
+  .tuf-btn-fill-success:hover:not(:disabled)::before {
+    filter: brightness(0.9);
+  }
+  .tuf-btn-fill-success:active:not(:disabled)::before {
+    filter: brightness(0.82);
+  }
+  .tuf-btn-fill-success:disabled::before {
+    filter: none;
+    background-color: var(--btn-secondary);
+    opacity: 0.85;
+  }
+  .tuf-btn-fill-success:disabled {
+    cursor: not-allowed;
+  }
+
+  .tuf-btn-fill-glass:hover:not(:disabled)::before {
+    filter: brightness(1.15);
+  }
+  .tuf-btn-fill-glass:active:not(:disabled)::before {
+    filter: brightness(1.05);
+  }
+
+  /* When route overrides the fill (e.g. nav submit active), repaint ::before only */
+  .nav-link.active .tuf-btn-fill-primary::before {
+    filter: none;
+    background-color: var(--color-purple-2);
+  }
+  .pass-detail .hide-button.hidden.tuf-btn-fill-glass::before {
+    filter: none;
+    background-color: var(--btn-primary);
+  }
+}
 
 /* Toast Styles */
 .Toastify__toast {
@@ -657,34 +853,17 @@ button {
 
 .password-modal-actions button {
   padding: 0.5rem 1rem;
-  border: none;
   border-radius: 4px;
   cursor: pointer;
   font-weight: 500;
-  transition: background-color 0.2s;
 }
 
 .password-modal-actions .confirm-btn {
-  background-color: #007bff;
   color: #ffffff;
-}
-
-.password-modal-actions .confirm-btn:hover {
-  background-color: #0056b3;
-}
-
-.password-modal-actions .confirm-btn:disabled {
-  background-color: #4a4a4a;
-  cursor: not-allowed;
 }
 
 .password-modal-actions .cancel-btn {
-  background-color: #2a2a2a;
   color: #ffffff;
-}
-
-.password-modal-actions .cancel-btn:hover {
-  background-color: #3a3a3a;
 }
 
 .password-modal-content .error-message {

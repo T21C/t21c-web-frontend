@@ -202,21 +202,6 @@
     border-color: #555;
 }
 
-.save-button {
-    background: #9d4edd;
-    border: none;
-    color: white;
-}
-
-.save-button:hover {
-    background: #7b2cbf;
-}
-
-.save-button:disabled {
-    background: #444;
-    cursor: not-allowed;
-}
-
 /* Cropper custom styles */
 .cropper-view-box,
 .cropper-face {

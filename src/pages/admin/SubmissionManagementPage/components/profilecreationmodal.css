@@ -127,16 +127,6 @@
   background-color: var(--background-color-secondary);
 }
 
-.profile-creation-modal .submit-btn {
-  background-color: var(--primary-color);
-  border: none;
-  color: white;
-}
-
-.profile-creation-modal .submit-btn:hover:not(:disabled) {
-  background-color: var(--primary-color-dark);
-}
-
 .profile-creation-modal .modal-actions button:disabled {
   opacity: 0.6;
   cursor: not-allowed;

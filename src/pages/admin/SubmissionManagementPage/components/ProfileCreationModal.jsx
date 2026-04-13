@@ -150,7 +150,7 @@ export const ProfileCreationModal = ({ profiles, onComplete, onCancel }) => {
             </button>
             <button 
               type="submit"
-              className="submit-btn"
+              className="submit-btn tuf-btn-fill-primary"
               disabled={isLoading}
             >
               {isLoading ? t('loading.creating', { ns: 'common' }) : 

@@ -86,51 +86,17 @@
 .edit-profile-page .unlink-button {
   width: 100%;
   padding: 0.75rem;
-  border: none;
   border-radius: 4px;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
   flex-grow: 0;
-  transition: background-color 0.2s ease;
-}
-
-.edit-profile-page .save-button {
-  background-color: #9d4edd;
-  color: white;
-}
-
-.edit-profile-page .save-button:hover {
-  background-color: #7b2cbf;
-}
-
-.edit-profile-page .change-password-button {
-  background-color: #6c757d;
-  color: white;
-}
-
-.edit-profile-page .change-password-button:hover {
-  background-color: #5a6268;
-}
-
-.edit-profile-page .link-button {
-  background-color: #7289da;
-  color: white;
-}
-
-.edit-profile-page .link-button:hover {
-  background-color: #5b6eae;
+  transition: filter 0.2s ease;
 }
 
 .edit-profile-page .unlink-button {
-  background-color: #dc3545;
   width: unset;
   padding: 0.75rem 1rem;
-  color: white;
-}
-
-.edit-profile-page .unlink-button:hover {
-  background-color: #c82333;
 }
 
 .edit-profile-page .section-divider {
@@ -205,16 +171,9 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
-  background-color: #ff4444;
-  color: white;
-  border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.edit-profile-page .unlink-button:hover {
-  background-color: #cc0000;
+  transition: filter 0.2s ease;
 }
 
 .edit-profile-page .link-button {
@@ -222,22 +181,15 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1rem;
-  background-color: #7289da;
-  color: white;
-  border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: filter 0.2s ease;
   width: 100%;
   justify-content: center;
 }
 
 .edit-profile-page .link-button > svg {
   filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.5));
-}
-
-.edit-profile-page .link-button:hover {
-  background-color: #5b6eae;
 }
 
 .edit-profile-page .provider-username {
@@ -258,14 +210,22 @@
   cursor: help;
 }
 
-.edit-profile-page .unlink-button.disabled {
-  background-color: #666;
+.edit-profile-page .unlink-button.disabled::before,
+.edit-profile-page .unlink-button:disabled::before {
+  filter: none;
+  background-color: var(--btn-disabled-fill);
+}
+
+.edit-profile-page .unlink-button.disabled,
+.edit-profile-page .unlink-button:disabled {
   cursor: not-allowed;
   opacity: 0.7;
 }
 
-.edit-profile-page .unlink-button.disabled:hover {
-  background-color: #666;
+.edit-profile-page .unlink-button.disabled:hover::before,
+.edit-profile-page .unlink-button:disabled:hover::before {
+  filter: none;
+  background-color: var(--btn-disabled-fill);
 }
 
 .edit-profile-page .email-verification-message {
@@ -358,20 +318,17 @@
 .edit-profile-page .remove-avatar-btn {
   margin-top: 1rem;
   padding: 0.5rem 1rem;
-  background: #dc3545;
-  color: white;
-  border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background 0.3s ease;
+  transition: filter 0.3s ease;
 }
 
-.edit-profile-page .remove-avatar-btn:hover {
-  background: #c82333;
+.edit-profile-page .remove-avatar-btn:disabled::before {
+  filter: none;
+  background-color: var(--btn-secondary);
 }
 
 .edit-profile-page .remove-avatar-btn:disabled {
-  background: #6c757d;
   cursor: not-allowed;
 }
 
@@ -389,29 +346,9 @@
 
 .edit-profile-page .form-actions .button {
   padding: 0.75rem 1.5rem;
-  border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: all 0.3s ease;
   font-weight: 500;
-}
-
-.edit-profile-page .form-actions .button.submit-button {
-  background: #9d4edd;
-  color: white;
-}
-
-.edit-profile-page .form-actions .button.submit-button:hover {
-  background: #7b2cbf;
-}
-
-.edit-profile-page .form-actions .button {
-  background: #333333;
-  border: 1px solid #404040;
-}
-
-.edit-profile-page .form-actions .button:hover {
-  background: #404040;
 }
 
 .edit-profile-page .form-actions .button:disabled {
@@ -530,37 +467,22 @@
 }
 
 .edit-profile-page .username-action-btn {
-  border: none;
   border-radius: 4px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0.5rem;
-  color: white;
-  transition: background-color 0.3s ease;
   min-width: 36px;
   height: 100%;
 }
 
-.edit-profile-page .username-action-btn.edit {
-  background-color: #6c757d;
-}
-
-.edit-profile-page .username-action-btn.edit:hover {
-  background-color: #5a6268;
-}
-
-.edit-profile-page .username-action-btn.cancel {
-  background-color: #dc3545;
-}
-
-.edit-profile-page .username-action-btn.cancel:hover {
-  background-color: #c82333;
+.edit-profile-page .username-action-btn:disabled::before {
+  filter: none;
+  background-color: var(--btn-secondary);
 }
 
 .edit-profile-page .username-action-btn:disabled {
-  background-color: #6c757d;
   cursor: not-allowed;
   opacity: 0.7;
 }
@@ -656,25 +578,11 @@
 }
 
 .edit-profile-page .danger-zone__button--destructive {
-  background-color: #c82333;
-  border-color: #c82333;
-  color: #fff;
-}
-
-.edit-profile-page .danger-zone__button--destructive:hover:not(:disabled) {
-  background-color: #a71d2a;
-  border-color: #a71d2a;
+  border-color: transparent;
 }
 
 .edit-profile-page .danger-zone__button--secondary {
-  background-color: #495057;
-  border-color: #495057;
-  color: #fff;
-}
-
-.edit-profile-page .danger-zone__button--secondary:hover:not(:disabled) {
-  background-color: #343a40;
-  border-color: #343a40;
+  border-color: transparent;
 }
 
 .edit-profile-page .danger-zone__button:disabled {

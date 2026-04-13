@@ -105,29 +105,13 @@ nav {
   border-bottom: none;
   background: transparent;
 }
-/* Submit Button */
+/* Submit control (shared with .tuf-btn-fill-primary in index.css) */
 .nav-submit-button {
   padding: 0.5rem 1rem;
-  background: var(--color-purple-1);
   border-radius: 0.25rem;
-  color: var(--color-white);
   text-decoration: none;
-  transition: all 0.2s ease;
-  border: none;
   cursor: pointer;
 }
-
-.nav-submit-button:hover {
-  background: var(--color-purple-2);
-  transform: translateY(-1px);
-}
-
-.nav-submit-button.active {
-  border-bottom: none;
-  background: var(--color-purple-2);
-}
-
-
 
 /* Sign In Button */
 .nav-signin-button {

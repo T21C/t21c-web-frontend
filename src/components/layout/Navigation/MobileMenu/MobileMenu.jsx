@@ -41,7 +41,7 @@ const MobileMenu = ({
     switch (item.type) {
       case "link":
         return (
-          <li key={item.to || index} className="nav-list-item">
+          <li key={item.to || index} className={`nav-list-item ${item.className || ""}`.trim()}>
             <NavLink to={item.to} onClick={onClose}>
               {t(item.translationKey)}
             </NavLink>

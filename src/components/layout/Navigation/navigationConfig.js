@@ -152,7 +152,7 @@ export const createNavigationConfig = (context = {}) => {
         type: "link",
         to: "/submission",
         translationKey: "navigation.main.links.submission",
-        className: "nav-submit-button",
+        className: "nav-submit-button tuf-btn-fill-primary alt",
         linkClassName: "no-active",
         isActive: (pathname) => {return false},
       },

@@ -1376,14 +1376,14 @@ const DifficultyPage = () => {
                 {error && <p className="error-message">{error}</p>}
                 <div className="password-modal-actions">
                   <button 
-                    className="confirm-btn"
+                    className="confirm-btn tuf-btn-fill-primary"
                     onClick={handlePasswordPromptSubmit}
                     disabled={!superAdminPassword}
                   >
                     {t('buttons.confirm', { ns: 'common' })}
                   </button>
                   <button 
-                    className="cancel-btn"
+                    className="cancel-btn tuf-btn-fill-neutral-dark"
                     onClick={() => {
                       setShowPasswordPrompt(false);
                       setSuperAdminPassword('');
@@ -1412,7 +1412,7 @@ const DifficultyPage = () => {
                 {error && <p className="error-message">{error}</p>}
                 <div className="password-modal-actions">
                   <button 
-                    className="confirm-btn"
+                    className="confirm-btn tuf-btn-fill-primary"
                     onClick={handleInitialPasswordSubmit}
                     disabled={!superAdminPassword}
                   >

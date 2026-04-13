@@ -247,7 +247,7 @@ const AliasManagementPopup = ({ levelId, onClose }) => {
                       <button
                         onClick={() => handleDeleteAlias(alias.id)}
                         disabled={loading}
-                        className="delete-button"
+                        className="delete-button tuf-btn-fill-danger"
                       >
                         Delete
                       </button>

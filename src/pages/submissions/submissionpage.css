@@ -64,16 +64,8 @@
   padding: 0.5rem 1rem;
   font-weight: 600;
   margin-top: 1rem;
-  background-color: rgb(166, 0, 255, 0.5);
-  transition: all 0.2s ease-out;
-  border: none;
   font-size: 1.2rem;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.submission-page .banner-container .banner .verify-email .button:hover {
-  background-color: rgb(166, 0, 255, 0.8);
+  transition: filter 0.2s ease-out;
 }
 
 .submission-page .banner-container .banner .contact {
@@ -116,21 +108,14 @@
   margin: 1rem auto;
   max-width: 30rem;
   padding: 0.75rem 2rem;
-  background-color: var(--color-purple-1);
-  border: none;
   border-radius: 8px;
   color: var(--color-white);
   font-size: 1rem;
   cursor: pointer;
   font-weight: bold;
-  transition: all 0.2s ease;
+  transition: filter 0.2s ease;
   display: block;
   width: fit-content;
-}
-.submission-page button:hover {
-  background-color: var(--color-purple-1);
-  color: var(--color-white);
-  background-color: rgb(111, 51, 150);
 }
 .submission-page .link {
   margin: 1rem 0;

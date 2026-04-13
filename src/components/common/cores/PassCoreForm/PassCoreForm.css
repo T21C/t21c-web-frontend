@@ -108,8 +108,6 @@
 }
 
 .pass-core-form .info .id-input .expand-button {
-  background-color: hsl(252, 100%, 72%);
-  border: none;
   border-radius: 3px;
   width: 32px;
   height: 32px;
@@ -117,17 +115,8 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: all 0.2s ease;
-  color: white;
+  transition: filter 100ms linear;
   padding: 0.5rem;
-}
-
-.pass-core-form .info .id-input .expand-button:hover {
-  background-color: hsl(252, 100%, 68%);
-}
-
-.pass-core-form .info .id-input .expand-button:active {
-  background-color: hsl(252, 100%, 62%);
 }
 
 .pass-core-form .info .id-input .expand-button svg {
@@ -425,29 +414,13 @@
   max-width: 70rem;
   margin: 1rem auto 0;
   padding: 0.5rem 1rem;
-  border: none;
   border-radius: 3px;
-  background-color: var(--btn-primary-bg);
   color: var(--color-white, #fff);
   font-weight: bold;
   font-size: 1.2rem;
   text-shadow: 0 0 4px rgba(0, 0, 0, 0.35);
   cursor: pointer;
-  transition: background-color 100ms linear;
   box-sizing: border-box;
-}
-
-.pass-core-form .info > .submit:hover:not(:disabled) {
-  background-color: var(--btn-primary-hover);
-}
-
-.pass-core-form .info > .submit:active:not(:disabled) {
-  background-color: var(--btn-primary-active);
-}
-
-.pass-core-form .info > .submit:disabled {
-  opacity: 0.72;
-  cursor: not-allowed;
 }
 
 @media (max-width: 900px) {
@@ -629,10 +602,6 @@
 @media (hover: none) and (pointer: coarse) {
   .pass-core-form .info > .submit:hover {
     transform: none;
-  }
-
-  .pass-core-form .info .id-input .expand-button:hover {
-    background-color: hsl(252, 100%, 72%);
   }
 
   .pass-core-form .info .id-input .level-dropdown .level-option:hover {

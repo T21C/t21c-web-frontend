@@ -174,50 +174,34 @@
 .edit-level-popup-overlay .button-group button {
   flex: 1;
   padding: 12px;
-  border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
-  transition: background 0.2s ease;
+  transition: filter 0.2s ease;
 }
 
 .edit-level-popup-overlay .save-button {
   margin-top: 0;
   width: auto;
   padding: 12px;
-  background: #417fc6;
-  color: white;
-  border: none;
   border-radius: 4px;
   cursor: pointer;
   font-size: 16px;
-  transition: background 0.2s ease;
-}
-
-.edit-level-popup-overlay .save-button:disabled {
-  background: #737f8d;
-  cursor: not-allowed;
-}
-
-.edit-level-popup-overlay .save-button:hover:not(:disabled) {
-  background: #2d67a1;
 }
 
 .edit-level-popup-overlay .delete-button {
-  background: #c64141;
-  color: white;
   max-width: 13rem;
   position: relative;
-  transition: background-color 0.3s ease;
 }
 
-.edit-level-popup-overlay .delete-button:hover:not(:disabled) {
-  background: #a13535;
+.edit-level-popup-overlay .delete-button:disabled::before {
+  filter: none;
+  background-color: var(--btn-secondary);
 }
 
 .edit-level-popup-overlay .delete-button:disabled {
-  background: #8d7373;
   cursor: not-allowed;
+  opacity: 0.85;
 }
 
 .edit-level-popup-overlay .delete-button .toggle-arrow {
@@ -247,12 +231,13 @@
   background: rgba(255, 255, 255, 0.1);
 }
 
-.edit-level-popup-overlay .delete-button.hide-mode {
-  background: #666;
+.edit-level-popup-overlay .delete-button.hide-mode::before {
+  filter: none;
+  background-color: var(--btn-neutral-muted);
 }
 
-.edit-level-popup-overlay .delete-button.hide-mode:hover:not(:disabled) {
-  background: #555;
+.edit-level-popup-overlay .delete-button.hide-mode:hover:not(:disabled)::before {
+  filter: brightness(0.85);
 }
 
 .edit-level-popup-overlay .delete-button.hide-mode .toggle-arrow::after {
@@ -443,19 +428,8 @@
 }
 
 .edit-level-popup-overlay .restore-button {
-  background: #41c641;
-  color: white;
   max-width: 13rem;
-  transition: background-color 0.3s ease;
-}
-
-.edit-level-popup-overlay .restore-button:hover:not(:disabled) {
-  background: #35a135;
-}
-
-.edit-level-popup-overlay .restore-button:disabled {
-  background: #738d73;
-  cursor: not-allowed;
+  transition: filter 0.3s ease;
 }
 
 .edit-level-popup-overlay .base-score-display {

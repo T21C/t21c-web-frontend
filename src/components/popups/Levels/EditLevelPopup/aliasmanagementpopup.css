@@ -172,13 +172,8 @@
 }
 
 .alias-management-popup .delete-button {
-  background-color: #ff4444;
   padding: 6px 12px;
   font-size: 12px;
-}
-
-.alias-management-popup .delete-button:hover:not(:disabled) {
-  background-color: #cc3333;
 }
 
 .alias-management-popup .affected-levels-notice {

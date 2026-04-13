@@ -690,14 +690,14 @@ const CurationPage = () => {
             />
             <div className="password-modal-actions">
               <button 
-                className="confirm-btn"
+                className="confirm-btn tuf-btn-fill-primary"
                 onClick={handlePasswordPromptSubmit}
                 disabled={!superAdminPassword}
               >
                 {t('curation.password.submit')}
               </button>
               <button 
-                className="cancel-btn"
+                className="cancel-btn tuf-btn-fill-neutral-dark"
                 onClick={() => {
                   setShowPasswordPrompt(false);
                   setSuperAdminPassword('');
