@@ -15,6 +15,12 @@ export function trimString(str, maxLength = 40) {
   return str.length > maxLength ? str.substring(0, maxLength - 3) + '...' : str;
 }
 
+/** Truncates at maxLength chars then appends "..." (unlike trimString, which fits within maxLength including ellipsis). */
+export function truncateString(str, maxLength) {
+  if (!str) return '';
+  return str.length > maxLength ? `${str.substring(0, maxLength)}...` : str;
+}
+
 export function getRatingValue(rating) {
   if (!rating || typeof rating !== 'string') return null;
   

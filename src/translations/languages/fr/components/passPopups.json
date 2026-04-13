@@ -38,16 +38,6 @@
         "tooearly": "Trop tôt",
         "early": "Tôt",
         "late": "Tard"
-      },
-      "buttons": {
-        "submit": "Soumettre",
-        "submitWait": "Envoi ...",
-        "delete": {
-          "default": "Supprimer",
-          "deleting": "Suppression ...",
-          "restore": "Restaurer",
-          "restoring": "Restauration ..."
-        }
       }
     },
     "acc": "Précision : ",

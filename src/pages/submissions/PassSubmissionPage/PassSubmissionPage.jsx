@@ -18,7 +18,7 @@ import { getCookie, setCookie } from "@/utils/cookieUtils";
 import toast from "react-hot-toast";
 import { PassCoreForm } from "@/components/common/cores/PassCoreForm/PassCoreForm";
 import { usePassCoreForm } from "@/components/common/cores/PassCoreForm/usePassCoreForm";
-import { truncateString } from "@/components/common/cores/PassCoreForm/passCoreUtils";
+import { truncateString } from "@/utils/Utility";
 
 
 const PassSubmissionPage = () => {
@@ -557,8 +557,9 @@ const PassSubmissionPage = () => {
           )}
           renderSubmitActions={() => (
             <button className="submit" onClick={handleSubmit} disabled={submission}>
-              {t("passSubmission.submit")}
-              {submission && <>{t("passSubmission.submitWait")}</>}
+              {submission
+                ? t("loading.submitting", { ns: "common" })
+                : t("buttons.submit", { ns: "common" })}
             </button>
           )}
           formatCreatorDisplay={formatCreatorDisplay}

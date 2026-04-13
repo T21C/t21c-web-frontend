@@ -74,17 +74,30 @@
 }
 
 .edit-pass-popup-overlay .delete-button {
-  background-color: #8b0000;
+  background-color: var(--btn-danger-bg);
   color: #ffffff;
 }
 
 .edit-pass-popup-overlay .delete-button:hover:not(:disabled) {
-  background-color: #a00000;
+  background-color: var(--btn-danger-hover);
 }
 
 .edit-pass-popup-overlay .delete-button:disabled {
-  background-color: #555555;
+  background-color: var(--btn-danger-disabled);
   cursor: not-allowed;
+}
+
+.edit-pass-popup-overlay .save-button {
+  background-color: var(--btn-primary-bg);
+  color: #ffffff;
+}
+
+.edit-pass-popup-overlay .save-button:hover:not(:disabled) {
+  background-color: var(--btn-primary-hover);
+}
+
+.edit-pass-popup-overlay .save-button:active:not(:disabled) {
+  background-color: var(--btn-primary-active);
 }
 
 .edit-pass-popup-overlay .pass-core-form .checkbox-row .announcement-status {

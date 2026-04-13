@@ -1,6 +1,7 @@
 import { CheckmarkIcon, CrossedPhoneIcon, CrossIcon } from "@/components/common/icons";
 import { useTranslation } from "react-i18next";
 
+import "./RulePopup.css";
 import strict from "@/assets/icons/Strict.png"
 import normal from "@/assets/icons/Normal.png"
 import lenient from "@/assets/icons/Lenient.png"
@@ -8,7 +9,7 @@ import lenient from "@/assets/icons/Lenient.png"
 const RulePopup = ({ setShowRulesPopup }) => {
   const { t } = useTranslation('components');
 return (
-    <div className="rules-popup-overlay" onClick={() => setShowRulesPopup(false)}>
+    <div className="pass-rules-popup rules-popup-overlay" onClick={() => setShowRulesPopup(false)}>
       <div className="rules-popup" onClick={(e) => e.stopPropagation()}>
         <div className="rules-popup-header">
           <h2>{t('passSubmissionRules.title')}</h2>

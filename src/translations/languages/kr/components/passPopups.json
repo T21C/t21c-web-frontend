@@ -38,16 +38,6 @@
         "tooearly": "너무 빠름",
         "early": "빠름!",
         "late": "느림!"
-      },
-      "buttons": {
-        "submit": "제출",
-        "submitWait": "제출 중...",
-        "delete": {
-          "default": "삭제",
-          "deleting": "삭제 중...",
-          "restore": "복구",
-          "restoring": "복구 중..."
-        }
       }
     },
     "acc": "정확도: ",

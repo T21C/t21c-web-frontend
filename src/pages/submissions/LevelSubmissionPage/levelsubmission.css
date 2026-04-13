@@ -215,7 +215,7 @@
 
 .level-submission-page form .info .submit {
   width: 100%;
-  background-color: #8f7dea;
+  background-color: var(--btn-primary-bg);
   border: none;
   border-radius: 3px;
   color: var(--color-white);
@@ -229,10 +229,10 @@
   transition: all 100ms linear;
 }
 .level-submission-page form .info .submit:hover {
-  background-color: #7763c2;
+  background-color: var(--btn-primary-hover);
 }
 .level-submission-page form .info .submit:active {
-  background-color: #7763c2;
+  background-color: var(--btn-primary-active);
 }
 
 .level-submission-page .thumbnail-container {
@@ -389,7 +389,7 @@
 }
 
 .level-submission-page form .info .remove-creator-btn {
-  background-color: #8b0000;
+  background-color: var(--btn-danger-bg);
   color: white;
   padding: 0.5rem;
   min-width: 2.5rem;
@@ -398,7 +398,7 @@
 }
 
 .level-submission-page form .info .remove-creator-btn:hover {
-  background-color: #a00000;
+  background-color: var(--btn-danger-hover);
 }
 
 .level-submission-page form .info .creator-action-btn:disabled {
@@ -568,7 +568,7 @@
 }
 
 .level-submission-page .remove-zip-btn {
-  background-color: #8b0000;
+  background-color: var(--btn-danger-bg);
   color: white;
   border: none;
   border-radius: 4px;
@@ -580,7 +580,7 @@
 }
 
 .level-submission-page .remove-zip-btn:hover {
-  background-color: #a00000;
+  background-color: var(--btn-danger-hover);
   transform: scale(1.05);
 }
 

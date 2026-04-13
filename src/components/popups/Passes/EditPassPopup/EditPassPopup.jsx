@@ -11,7 +11,7 @@ import api from "@/utils/api";
 import toast from 'react-hot-toast';
 import { PassCoreForm } from '@/components/common/cores/PassCoreForm/PassCoreForm';
 import { usePassCoreForm } from '@/components/common/cores/PassCoreForm/usePassCoreForm';
-import { truncateString } from '@/components/common/cores/PassCoreForm/passCoreUtils';
+import { truncateString } from '@/utils/Utility';
 
 export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
   const { t } = useTranslation('components');
@@ -66,7 +66,7 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
 
 const handleSubmit = async (e) => {
   e.preventDefault();
-  const toastId = toast.loading(t('loading.generic', { ns: 'common' }));
+  const toastId = toast.loading(t('loading.saving', { ns: 'common' }));
   
   if (!user) {
     console.error("no user");
@@ -286,8 +286,10 @@ const handleSubmit = async (e) => {
           )}
           renderSubmitActions={() => (
             <div className="button-group">
-              <button disabled={submission} className="submit" onClick={handleSubmit}>
-                {t('passPopups.edit.form.buttons.submit')}
+              <button disabled={submission} className="save-button" onClick={handleSubmit}>
+                {submission
+                  ? t('loading.saving', { ns: 'common' })
+                  : t('buttons.save', { ns: 'common' })}
               </button>
 
               <button
@@ -297,8 +299,8 @@ const handleSubmit = async (e) => {
                 disabled={submission}
               >
                 {pass.isDeleted
-                  ? t('passPopups.edit.form.buttons.delete.restore')
-                  : t('passPopups.edit.form.buttons.delete.default')}
+                  ? t('buttons.restore', { ns: 'common' })
+                  : t('buttons.delete', { ns: 'common' })}
               </button>
             </div>
           )}

@@ -38,16 +38,6 @@
         "tooearly": "太快！！",
         "early": "太快！",
         "late": "太慢！"
-      },
-      "buttons": {
-        "submit": "提交",
-        "submitWait": "提交中……",
-        "delete": {
-          "default": "删除",
-          "deleting": "删除中……",
-          "restore": "恢复",
-          "restoring": "恢复中……"
-        }
       }
     },
     "acc": "精准度：",

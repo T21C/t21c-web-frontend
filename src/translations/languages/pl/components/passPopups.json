@@ -38,16 +38,6 @@
         "tooearly": "Za wcześnie",
         "early": "Wcześnie",
         "late": "Późno"
-      },
-      "buttons": {
-        "submit": "Prześlij",
-        "submitWait": "Przesyłanie...",
-        "delete": {
-          "default": "Usuń",
-          "deleting": "Usuwanie...",
-          "restore": "Odzyskaj",
-          "restoring": "Odzyskiwanie..."
-        }
       }
     },
     "acc": "Dokładność: ",

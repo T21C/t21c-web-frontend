@@ -38,8 +38,6 @@
   },
   "acc": "Précision: ",
   "scoreCalc": "Score: ",
-  "submit": "Envoyer",
-  "submitWait": "...",
   "holdTooltip": "Cochez ceci si vous n'avez pas utilisé les maintients alternatifs",
   "12kTooltip": "Cochez ceci si vous avez utilisé 12 touches",
   "16kTooltip": "Cochez ceci si vous avez utilisé 16 touches",

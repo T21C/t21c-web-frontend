@@ -38,8 +38,6 @@
   },
   "acc": "Accuracy: ",
   "scoreCalc": "Score: ",
-  "submit": "Submit",
-  "submitWait": "...",
   "holdTooltip": "Check this if a different hold tile behavior was used (no holding required etc.)",
   "12kTooltip": "Check this if 12K was used (12 or less keys)",
   "16kTooltip": "Check this if 16K was used (13+ keys)",
