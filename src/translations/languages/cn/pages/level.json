@@ -29,8 +29,7 @@
       "difficulty": "等级",
       "clears": "通关记录",
       "likes": "收藏",
-      "ratingAccuracy": "评级准确度",
-      "ratingAccuracyVotes": "总票数",
+      "baseScore": "基础分",
       "random": "随机"
     }
   },

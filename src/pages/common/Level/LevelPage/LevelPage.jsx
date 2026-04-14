@@ -100,6 +100,7 @@ const LevelPage = () => {
     { value: 'DIFF', label: t('level.settings.sort.difficulty') },
     { value: 'CLEARS', label: t('level.settings.sort.clears') },
     { value: 'LIKES', label: t('level.settings.sort.likes') },
+    { value: 'BASESCORE', label: t('level.settings.sort.baseScore') },
     { value: 'RANDOM', label: t('level.settings.sort.random') }
   ];
 

@@ -19,8 +19,7 @@
     "saveRating": "Save Rating"
   },
   "tooltips": {
-    "loginRequired": "Login to like this level",
-    "clearRequired": "You need to clear this level to vote on its rating accuracy"
+    "loginRequired": "Login to like this level"
   },
   "links": {
     "download": "Download Level",
@@ -84,30 +83,15 @@
   "components": {
     "clearCard": {
       "feeling": "Feeling:"
-    },
-    "ratingAccuracy": {
-      "title": "Rating Accuracy",
-      "description": "How accurate is this level's difficulty rating?",
-      "voteButton": "Vote on Accuracy",
-      "saveButton": "Save Vote",
-      "cancelButton": "Cancel"
     }
   },
   "errors": {
     "loginRequired": "You need to be logged in to like this level",
-    "likeFailed": "Failed to update like status",
-    "voteFailed": "Failed to submit rating accuracy vote"
+    "likeFailed": "Failed to update like status"
   },
   "messages": {
     "liked": "Liked!",
-    "unliked": "Unliked",
-    "voteSubmitted": "Rating accuracy vote submitted successfully"
-  },
-  "ratingAccuracy": {
-    "votesHeader": "Votes",
-    "loginToVote": "Login to vote",
-    "viewAllVotes": "View all votes",
-    "noVotes": "No votes yet"
+    "unliked": "Unliked"
   },
   "toRatePending": {
     "header": "재평가 대기",

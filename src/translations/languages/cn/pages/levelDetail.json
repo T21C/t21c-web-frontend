@@ -20,7 +20,6 @@
   },
   "tooltips": {
     "loginRequired": "登录以收藏此关卡",
-    "clearRequired": "你需要通过该关卡以评价其评级准确度",
     "editDisabled": "此关卡已分配超过两个采音师。如果您认为自己应该是​所有者，请联系管理员。"
     },
   "links": {
@@ -93,30 +92,15 @@
   "components": {
     "clearCard": {
       "feeling": "体感难度："
-    },
-    "ratingAccuracy": {
-      "title": "评级准确度",
-      "description": "此关卡的评级有多准确？",
-      "voteButton": "评价准确度",
-      "saveButton": "保存评价",
-      "cancelButton": "取消"
     }
   },
   "errors": {
     "loginRequired": "你需要登录以收藏此关卡",
-    "likeFailed": "更新收藏状态失败",
-    "voteFailed": "提交评级准确度投票失败"
-    },
+    "likeFailed": "更新收藏状态失败"
+  },
   "messages": {
     "liked": "已收藏！",
-    "unliked": "取消收藏",
-    "voteSubmitted": "评级准确度投票提交成功"
-  },
-  "ratingAccuracy": {
-    "votesHeader": "评价",
-    "loginToVote": "登录以投票",
-    "viewAllVotes": "浏览全部投票",
-    "noVotes": "无投票"
+    "unliked": "取消收藏"
   },
   "rerateHistory": {
     "header": "重评历史",

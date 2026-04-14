@@ -26,7 +26,6 @@ import {
   DownloadIcon, 
   EditIcon,
   HistoryListIcon, 
-  InfoIcon, 
   LikeIcon, 
   SteamIcon, 
   PackIcon, 
@@ -60,31 +59,6 @@ const gimmickReasons = []
 
 
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
-
-const accuracyLabel = {
-  "-5": "Extremely underrated",
-  "-4": "Very underrated",
-  "-3": "Significantly underrated",
-  "-2": "Underrated",
-  "-1": "Slightly underrated",
-  "0": "Perfect",
-  "1": "Slightly overrated",
-  "2": "Overrated",
-  "3": "Significantly overrated",
-  "4": "Very overrated",
-  "5": "Extremely overrated"
-};
-
-const getRatingAccuracyColor = (value) => {
-  const digit = Math.abs(value).toString()[0];
-  if (digit === "0") return "#00ff00";
-  if (digit === "1") return "#99ff00"; 
-  if (digit === "2") return "#ffff00";
-  if (digit === "3") return "#ff9900";
-  if (digit === "4") return "#ff6600";
-  if (digit === "5") return "#ff0000";
-  return "#ff0000";
-};
 
 const getHighScores = (players) => {
   if (!players?.length) return null;
@@ -220,51 +194,6 @@ const TagsDropdown = ({ tags, show, onClose }) => {
             </div>
           </div>
         ))}
-      </div>
-    </div>
-  );
-};
-
-const RatingVotesDropdown = ({ votes, show, onClose }) => {
-  const { t } = useTranslation('pages');
-  const dropdownRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-        onClose();
-      }
-    };
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, [onClose]);
-
-  const handleDropdownClick = (e) => {
-    e.stopPropagation();
-  };
-
-  if (!show) return null;
-
-  return (
-    <div className="rating-votes-dropdown" ref={dropdownRef} onClick={handleDropdownClick}>
-      <div className="rating-votes-header">{t('levelDetail.ratingAccuracy.votesHeader')}</div>
-      <div className="rating-votes-list">
-        {votes.length > 0 ? votes.map((vote, index) => (
-          <div key={index} className="rating-vote-item">
-            <span className="rating-vote-user">{vote.user.name}</span>
-            <span 
-              className="rating-vote-value"
-            >
-              {vote.user.player.name} - <span 
-                className="rating-vote-value-span"
-                style={{ 
-                  '--rating-color': getRatingAccuracyColor(vote.vote),
-                  '--rating-color-shadow': `${getRatingAccuracyColor(vote.vote)}66`
-                }}>{accuracyLabel[vote.vote.toString()]}</span>
-            </span>
-          </div>
-        )) : <div className="rating-votes-empty">{t('levelDetail.ratingAccuracy.noVotes')}</div>}
       </div>
     </div>
   );
@@ -416,164 +345,6 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
         </div>
       </div>
     </>
-  );
-};
-
-
-// Rating Accuracy Vote Dialog
-const RatingAccuracyDialog = ({ isOpen, onClose, onSave, initialValue = 0 }) => {
-  const [value, setValue] = useState(initialValue);
-  const [isDragging, setIsDragging] = useState(false);
-  const sliderRef = useRef(null);
-  const { t } = useTranslation('pages');
-
-  // Reset value when dialog opens
-  useEffect(() => {
-    if (isOpen) {
-      setValue(initialValue);
-    }
-  }, [isOpen, initialValue]);
-
-  // Handle pointer move during drag (works for both mouse and touch)
-  const handlePointerMove = useCallback((e) => {
-    if (!isDragging || !sliderRef.current) return;
-
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const rect = sliderRef.current.getBoundingClientRect();
-    const pixelRange = rect.width;
-    const valueRange = 10; // -5 to 5 = 10 range
-    const pixelMoved = clientX - rect.left;
-    const percentage = Math.max(0, Math.min(1, pixelMoved / pixelRange));
-    const newValue = Math.round((percentage * valueRange) - 5);
-    
-    setValue(newValue);
-  }, [isDragging]);
-
-  // Handle pointer up (works for both mouse and touch)
-  const handlePointerUp = useCallback(() => {
-    if (isDragging) {
-      setIsDragging(false);
-    }
-  }, [isDragging]);
-
-  // Add and remove event listeners
-  useEffect(() => {
-    if (isDragging) {
-      window.addEventListener('mousemove', handlePointerMove);
-      window.addEventListener('mouseup', handlePointerUp);
-      window.addEventListener('touchmove', handlePointerMove);
-      window.addEventListener('touchend', handlePointerUp);
-    }
-    return () => {
-      window.removeEventListener('mousemove', handlePointerMove);
-      window.removeEventListener('mouseup', handlePointerUp);
-      window.removeEventListener('touchmove', handlePointerMove);
-      window.removeEventListener('touchend', handlePointerUp);
-    };
-  }, [isDragging, handlePointerMove, handlePointerUp]);
-
-  // Handle track click
-  const handleTrackClick = useCallback((e) => {
-    if (!sliderRef.current) return;
-    
-    const rect = sliderRef.current.getBoundingClientRect();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const pixelMoved = clientX - rect.left;
-    const percentage = Math.max(0, Math.min(1, pixelMoved / rect.width));
-    const newValue = Math.round((percentage * 10) - 5);
-    
-    setValue(newValue);
-  }, []);
-
-  // Handle drag start
-  const handleDragStart = useCallback((e) => {
-    e.preventDefault();
-    setIsDragging(true);
-  }, []);
-
-  // Prevent default drag behavior
-  const preventDrag = useCallback((e) => {
-    e.preventDefault();
-  }, []);
-
-  // Handle save
-  const handleSave = useCallback(() => {
-    onSave(value);
-    onClose();
-  }, [value, onSave, onClose]);
-
-  if (!isOpen) return null;
-
-  return (
-    <div className="rating-accuracy-dialog">
-      <div className="rating-accuracy-dialog-content">
-        <div className="rating-accuracy-dialog-header">
-          <div className="rating-accuracy-dialog-title">
-            {t('levelDetail.components.ratingAccuracy.title')}
-          </div>
-          <button 
-            className="rating-accuracy-dialog-close"
-            onClick={onClose}
-          >
-            ×
-          </button>
-        </div>
-        
-        <div className="rating-accuracy-dialog-description">
-          {t('levelDetail.components.ratingAccuracy.description')}
-        </div>
-        
-        <div className="rating-accuracy-dialog-slider">
-          <div 
-            ref={sliderRef}
-            className="rating-accuracy-dialog-slider-container"
-            onClick={handleTrackClick}
-            onTouchStart={handleTrackClick}
-          >
-            <div 
-              className="rating-accuracy-dialog-slider-marker"
-              style={{ 
-                '--marker-position': `${((value + 5) / 10) * 100}%`,
-                '--marker-color': getRatingAccuracyColor(value)
-              }}
-              onMouseDown={handleDragStart}
-              onTouchStart={handleDragStart}
-              onDragStart={preventDrag}
-              draggable="false"
-            >
-              {value}
-            </div>
-          </div>
-        </div>
-        
-        <div className="rating-accuracy-dialog-slider-labels">
-          <span 
-            className="rating-accuracy-dialog-label"
-            style={{ 
-              '--rating-color': getRatingAccuracyColor(value),
-              '--rating-color-shadow': `${getRatingAccuracyColor(value)}66`
-            }}
-          >
-            {accuracyLabel[Math.round(value)]}
-          </span>
-        </div>
-        
-        <div className="rating-accuracy-dialog-buttons">
-          <button 
-            className="rating-accuracy-dialog-button rating-accuracy-dialog-cancel"
-            onClick={onClose}
-          >
-            {t('buttons.cancel', { ns: 'common' })}
-          </button>
-          <button 
-            className="rating-accuracy-dialog-button rating-accuracy-dialog-save"
-            onClick={handleSave}
-          >
-            {t('buttons.save', { ns: 'common' })}
-          </button>
-        </div>
-      </div>
-    </div>
   );
 };
 
@@ -823,8 +594,6 @@ const LevelDetailPage = ({ mockData = null }) => {
   const [slots, setSlots] = useState(3);
   const [showMinus2Reason, setShowMinus2Reason] = useState(false);
   const [showGimmickReason, setShowGimmickReason] = useState(false);
-  const [isDragging, setIsDragging] = useState(false);
-  const sliderRef = useRef(null);
   const [showDownloadPopup, setShowDownloadPopup] = useState(false);
   const [showRerateDropdown, setShowRerateDropdown] = useState(false);
   const [rerateArrowEnabled, setRerateArrowEnabled] = useState(true);
@@ -1067,41 +836,6 @@ const LevelDetailPage = ({ mockData = null }) => {
     });
     setSlots(parseInt(modifiedSlots() || 3));
   }, []);
-
-  const handleSliderMouseMove = (e) => {
-    if (isDragging) {
-      updateSliderValue(e);
-    }
-  };
-
-  const handleSliderMouseUp = () => {
-    setIsDragging(false);
-  };
-
-  const updateSliderValue = (e) => {
-    if (!sliderRef.current) return;
-    
-    const rect = sliderRef.current.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const percentage = Math.max(0, Math.min(1, x / rect.width));
-    
-    const value = Math.round((percentage * 10) - 5);
-    
-    handleRatingAccuracyVote(value);
-  };
-
-  // Add event listeners for drag behavior
-  useEffect(() => {
-    if (isDragging) {
-      document.addEventListener('mousemove', handleSliderMouseMove);
-      document.addEventListener('mouseup', handleSliderMouseUp);
-    }
-    
-    return () => {
-      document.removeEventListener('mousemove', handleSliderMouseMove);
-      document.removeEventListener('mouseup', handleSliderMouseUp);
-    };
-  }, [isDragging]);
 
   const handleAliasButtonClick = (field) => {
     setActiveAliasDropdown(current => current === field ? null : field);
@@ -1768,33 +1502,6 @@ const LevelDetailPage = ({ mockData = null }) => {
     }
   };
 
-  /*
-  const handleRatingAccuracyVote = async (vote) => {
-    if (!user || !res?.isCleared) return;
-    try {
-      const response = await api.put(`${import.meta.env.VITE_LEVELS}/${effectiveId}/rating-accuracy-vote`, { vote });
-      
-      if (response.data.level) {
-        setRes(prevRes => ({
-          ...prevRes,
-          level: {
-            ...prevRes.level,
-            ratingAccuracy: response.data.level.ratingAccuracy
-          },
-          totalVotes: response.data.totalVotes,
-          votes: response.data.votes ? response.data.votes : prevRes.votes
-        }));
-        
-        toast.success(t('levelDetail.messages.voteSubmitted'));
-      }
-    } catch (error) {
-      console.error('Error submitting rating accuracy vote:', error);
-      toast.error(t('levelDetail.errors.voteFailed'));
-    }
-  };
-  */
-
-
   // Find the download button click handler and replace it with:
   const handleDownloadClick = (e) => {
     e.preventDefault();
@@ -2163,82 +1870,9 @@ const LevelDetailPage = ({ mockData = null }) => {
                 </div>
               )}
               
-              {/* Rating Accuracy Display, disabled for now
-              {difficulty.type === "PGU" && res.level.clears > 0 && (
-                <div className="rating-accuracy-container">
-                  <div className="rating-accuracy-display-title">Rating Accuracy</div>
-                  <div 
-                  className="rating-accuracy-display-scale"
-                >
-                  <div 
-                    className="rating-accuracy-display-marker" 
-                    style={{ 
-                      '--marker-position': `${getPosition(res.level.ratingAccuracy || 0)}%`,
-                      '--marker-color': getRatingAccuracyColor(res.level.ratingAccuracy || 0)
-                    }}
-                  >
-                  </div>
-                </div>
-                <div className="rating-accuracy-labels">
-                  <span 
-                    style={{
-                      '--rating-color': getRatingAccuracyColor(res.level.ratingAccuracy || 0),
-                      '--rating-color-shadow': `${getRatingAccuracyColor(res.level.ratingAccuracy || 0)}66`
-                    }}>{accuracyLabel[Math.round(res.level.ratingAccuracy || 0).toString()]}</span>
-                </div>
-                <button 
-                  className="rating-accuracy-vote-button"
-                  onClick={() => setIsRatingAccuracyDialogOpen(true)}
-                  disabled={!user || !res?.isCleared}
-                  data-tooltip-id="rating-accuracy-tooltip"
-                  data-tooltip-content={
-                    !user 
-                      ? t('levelDetail.ratingAccuracy.loginToVote')
-                      : !res?.isCleared 
-                        ? t('levelDetail.tooltips.clearRequired')
-                        : t('levelDetail.components.ratingAccuracy.voteButton')
-                  }
-                >
-                  {t('levelDetail.components.ratingAccuracy.voteButton')}
-                </button>
-                <span className="rating-accuracy-vote-count">Votes: {res.totalVotes || 0}</span>
-                {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
-                  <>
-                <InfoIcon 
-                className="rating-accuracy-info-button"  
-                size={"20px"} 
-                
-                onMouseDown={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                }}
-                onClick={handleOpenRatingAccuracyInfo} 
-                data-tooltip-id="rating-accuracy-info-tooltip"
-                data-tooltip-content={
-                  t('levelDetail.ratingAccuracy.viewAllVotes')
-                }
-                />
-                <RatingVotesDropdown 
-                  votes={res.votes} 
-                  show={isAllVotesOpen} 
-                  onMouseDown={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                  }}
-                  onClose={handleCloseRatingAccuracyInfo} 
-                />
-                </>
-                )}
-                <Tooltip id="rating-accuracy-tooltip" place="bottom" noArrow />
-                <Tooltip id="rating-accuracy-info-tooltip" place="bottom" noArrow />
-
-              </div>
-              )}
-              */}
-              
               <div 
                 className="like-container"
-                data-margin-auto={!(difficulty.type === "PGU" && res.level.clears > 0)}
+                data-margin-auto={true}
               >
                 <span className="like-count">{res.level.likes || 0}</span>
                 <button 
@@ -2658,16 +2292,6 @@ const LevelDetailPage = ({ mockData = null }) => {
           slots={slots}
         />
       )}
-
-      {/* Rating Accuracy Dialog */}
-      {/*
-      <RatingAccuracyDialog 
-        isOpen={isRatingAccuracyDialogOpen}
-        onClose={() => setIsRatingAccuracyDialogOpen(false)}
-        onSave={handleRatingAccuracyVote}
-        initialValue={0}
-      />
-      */}
 
       {showSongPopup && res.level && hasSongPopup && (
         <SongPopup

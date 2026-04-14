@@ -28,8 +28,7 @@
       "difficulty": "난이도",
       "clears": "클리어 수",
       "likes": "좋아요 수",
-      "ratingAccuracy": "난이도 정확도",
-      "ratingAccuracyVotes": "난이도 정확도 투표 수",
+      "baseScore": "베이스 스코어",
       "random": "무작위"
     }
   },

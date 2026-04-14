@@ -29,8 +29,7 @@
       "difficulty": "Difficulty",
       "clears": "Clears",
       "likes": "Likes",
-      "ratingAccuracy": "Rating Accuracy",
-      "ratingAccuracyVotes": "Total Votes",
+      "baseScore": "Base Score",
       "random": "Random"
     }
   },
