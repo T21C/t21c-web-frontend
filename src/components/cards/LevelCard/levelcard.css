@@ -11,9 +11,9 @@
   position: relative;
   display: flex;
   justify-content: left;
-  gap: 1rem;
+  gap: 0.5rem;
   min-height: 4rem;
-  padding: 0.75rem 0.5rem;
+  padding: 0.75rem 0.75rem 0.75rem 0.5rem;
   border-radius: 0px;
   cursor: pointer;
   align-items: center;
@@ -108,7 +108,7 @@
 .level-card .creator-wrapper {
   overflow: hidden;
   width: 200px;
-  flex: 1.3;
+  flex: 1.1;
   min-width: 0;
   flex-shrink: 1;
 }
@@ -125,10 +125,10 @@
 
 
 .level-card .song-wrapper {
-  flex: 1.7;
+  margin-left: 0.5rem;
+  flex: 2;
   overflow: hidden;
   width: 200px;
-  padding-right: 50px;
   min-width: 0;
   flex-shrink: 1;
   display: flex;
@@ -142,10 +142,11 @@
   gap: 0.3rem;
 }
 .level-card .downloads-wrapper {
-  flex: 0.8;
+  flex: 0.6;
   display: flex;
   gap: 0.5rem;
   align-items: center;
+  margin-left: 0.5rem;
   cursor: pointer;
   justify-content: flex-end;
   flex-shrink: 0;
@@ -253,10 +254,6 @@
     grid-template-columns: 1fr 1fr;
   }
   
-  .level-card .song-wrapper {
-    padding-right: 30px;
-  }
-  
   .level-card .level-card-wrapper {
     gap: 0.75rem;
   }
@@ -291,7 +288,6 @@
   }
   
   .level-card .song-wrapper {
-    padding-right: 0;
     flex: 1;
   }
   
@@ -369,7 +365,6 @@
   }
   
   .level-card .song-wrapper {
-    padding-right: 0;
     width: auto;
     flex: 1;
   }
@@ -412,7 +407,6 @@
     width: 2.5rem;
   }
   .level-card .song-wrapper {
-    padding-right: 0;
     width: auto;
     flex: 1;
   }
@@ -447,7 +441,6 @@
     width: 2.5rem;
   }
   .level-card .song-wrapper {
-    padding-right: 0;
     width: auto;
     flex: 1;
   }
@@ -1313,14 +1306,21 @@
 
 
 /* Level tags under song title (normal/compact list modes) */
-.level-card .song-wrapper .level-tags-wrapper {
+.level-card .song-wrapper .level-underline-wrapper {
   display: flex;
   margin-top: 0.2rem;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.2rem;
   min-width: 0;
   width: 100%;
+}
+
+.level-card .song-wrapper .level-tags-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem;
+  min-width: 0;
 }
 
 /* Level tag badge - grid mode */
@@ -1371,23 +1371,46 @@
   line-height: 1;
 }
 /* Icon wrapper with conditional opacity */
-.icon-wrapper {
+.level-card .icon-wrapper {
   opacity: var(--icon-opacity, 1);
 }
 
-.icon-wrapper[data-opacity="0"] {
+.level-card .icon-wrapper[data-opacity="0"] {
   opacity: 0;
 }
 
-.icon-wrapper[data-opacity="1"] {
+.level-card .icon-wrapper[data-opacity="1"] {
   opacity: 1;
 }
 
 /* Edit button */
-.edit-button {
+.level-card .edit-button {
   margin-left: var(--edit-button-margin, auto);
 }
 
-.edit-button[data-margin-zero="true"] {
+.level-card .edit-button[data-margin-zero="true"] {
   margin-left: 0;
+}
+
+.level-card .metadata-block {
+  display: flex;
+  flex-direction: row;
+  gap: 0.25rem;
+  flex: 1;
+  align-items: center;
+  justify-content: flex-end;
+  padding-right: 1rem;
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.level-card .metadata-item {
+  padding: 0.1rem 0.25rem;
+  border-radius: 0.25rem;
+  background: var(--color-black-t15);
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+  gap: 0.05rem;
 }

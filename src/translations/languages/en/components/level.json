@@ -15,6 +15,18 @@
           "creatorField": "Search by creator name across all roles (e.g., 'creator:Nep' or 'creator=Nephrolepis')"
         }
       },
+      "numeric": {
+        "title": "BPM and tile count",
+        "description": "Filter by chart BPM or tile count using bpm: or tilecount: with a number, or prefix the number with >, <, >=, or <=. Separate multiple conditions with commas (AND) within the same search group.",
+        "examples": {
+          "title": "Numeric examples",
+          "bpmExact": "Exact BPM (also works with bpm=180)",
+          "tilesExact": "Exact tile count",
+          "bpmRange": "BPM strictly between 100 and 200 (use >= or <= if you want inclusive bounds)",
+          "tilesMin": "At least 1000 tiles",
+          "combine": "Combine with song/artist filters, e.g. song:hello, bpm:>150"
+        }
+      },
       "operators": {
         "title": "Search Operators",
         "description": "You can combine multiple search conditions using operators.",

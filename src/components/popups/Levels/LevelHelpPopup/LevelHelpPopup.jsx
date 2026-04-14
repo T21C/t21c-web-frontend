@@ -57,6 +57,21 @@ export const LevelHelpPopup = ({ onClose }) => {
           </section>
 
           <section>
+            <h3>{t('level.helpPopup.sections.numeric.title')}</h3>
+            <p>{t('level.helpPopup.sections.numeric.description')}</p>
+            <div className="examples">
+              <h4>{t('level.helpPopup.sections.numeric.examples.title')}</h4>
+              <ul>
+                <li><b><code>bpm:180</code></b> — {t('level.helpPopup.sections.numeric.examples.bpmExact')}</li>
+                <li><b><code>tilecount:500</code></b> — {t('level.helpPopup.sections.numeric.examples.tilesExact')}</li>
+                <li><b><code>bpm:&gt;100, bpm:&lt;200</code></b> — {t('level.helpPopup.sections.numeric.examples.bpmRange')}</li>
+                <li><b><code>tilecount:&gt;=1000</code></b> — {t('level.helpPopup.sections.numeric.examples.tilesMin')}</li>
+                <li>{t('level.helpPopup.sections.numeric.examples.combine')}</li>
+              </ul>
+            </div>
+          </section>
+
+          <section>
             <h3>{t('level.helpPopup.sections.operators.title')}</h3>
             <p>{t('level.helpPopup.sections.operators.description')}</p>
             <div className="examples">

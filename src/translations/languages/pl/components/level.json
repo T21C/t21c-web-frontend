@@ -13,6 +13,18 @@
           "charterField": "Użyj 'charter:Char' dla wyszukiwania o częściowej zgodności lub 'charter=Charter' dla dokładnego wyszukiwania"
         }
       },
+      "numeric": {
+        "title": "BPM i liczba kafelków",
+        "description": "Użyj bpm: lub tilecount: z liczbą albo prefiksów >, <, >=, <= przed liczbą. W jednej grupie wyszukiwania łącz warunki przecinkiem (AND).",
+        "examples": {
+          "title": "Przykłady liczbowe",
+          "bpmExact": "Dokładne BPM (działa też bpm=180)",
+          "tilesExact": "Dokładna liczba kafelków",
+          "bpmRange": "BPM między 100 a 200 (ścisłe; dla granic użyj >= lub <=)",
+          "tilesMin": "Co najmniej 1000 kafelków",
+          "combine": "Łącz z innymi polami, np. song:hello, bpm:>150"
+        }
+      },
       "operators": {
         "title": "Operator wyszukiwania",
         "description": "Możesz łączyć ze sobą wiele warunków wyszukiwania przy pomocy operatorów.",

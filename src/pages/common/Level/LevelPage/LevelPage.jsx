@@ -101,6 +101,8 @@ const LevelPage = () => {
     { value: 'CLEARS', label: t('level.settings.sort.clears') },
     { value: 'LIKES', label: t('level.settings.sort.likes') },
     { value: 'BASESCORE', label: t('level.settings.sort.baseScore') },
+    { value: 'BPM', label: t('level.settings.sort.bpm') },
+    { value: 'TILES', label: t('level.settings.sort.tiles') },
     { value: 'RANDOM', label: t('level.settings.sort.random') }
   ];
 

@@ -30,6 +30,8 @@
       "clears": "Clears",
       "likes": "Likes",
       "baseScore": "Base Score",
+      "bpm": "BPM",
+      "tiles": "Tiles",
       "random": "Random"
     }
   },

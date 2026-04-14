@@ -898,7 +898,8 @@ const LevelDetailPage = ({ mockData = null }) => {
     }
   }, [effectiveId, user?.id, mockData]);
 
-  const fetchCdnData = useCallback(async () => {
+  /** accessCount + zip metadata for download popup (bpm/tilecount come from level in GET /levels/:id). */
+  const fetchCdnDownloadExtras = useCallback(async () => {
     if (!effectiveId || mockData) {
       return;
     }
@@ -909,14 +910,12 @@ const LevelDetailPage = ({ mockData = null }) => {
         if (!prevRes) return prevRes;
         return {
           ...prevRes,
-          bpm: response.data.bpm ?? prevRes.bpm,
-          tilecount: response.data.tilecount ?? prevRes.tilecount,
           accessCount: response.data.accessCount ?? prevRes.accessCount,
           metadata: response.data.metadata ?? prevRes.metadata
         };
       });
     } catch (error) {
-      console.error("Error fetching CDN data:", error);
+      console.error("Error fetching CDN download extras:", error);
     }
   }, [effectiveId, mockData]);
 
@@ -1008,10 +1007,10 @@ const LevelDetailPage = ({ mockData = null }) => {
         toast.success(t('levelDetail.leaderboard.refreshed'));
       }
       
-      // Assemble extra bits from separate endpoints: passes, CDN metadata, like status
+      // Assemble extra bits from separate endpoints: passes, CDN download extras, like status
       await Promise.all([
         fetchPassesForLevel(),
-        fetchCdnData(),
+        fetchCdnDownloadExtras(),
         fetchIsLiked(),
         fetchRatingData()
       ]);
@@ -1027,7 +1026,7 @@ const LevelDetailPage = ({ mockData = null }) => {
       setInfoLoading(false);
       setIsRefreshingLeaderboard(false);
     }
-  }, [effectiveId, mockData, t, fetchIsLiked, fetchCdnData, fetchPassesForLevel, fetchRatingData]);
+  }, [effectiveId, mockData, t, fetchIsLiked, fetchCdnDownloadExtras, fetchPassesForLevel, fetchRatingData]);
 
   useEffect(() => {
     fetchLevelData();
@@ -1712,21 +1711,21 @@ const LevelDetailPage = ({ mockData = null }) => {
                   {renderTitleWithAliases('artist')}
                   </div>
                 </div>
-                {(res.tilecount || res.bpm) && (
+                {(res.level?.tilecount || res.level?.bpm) && (
                   <div className="metadata-container">  
-                  {res.tilecount && (
+                  {!!res.level?.tilecount && (
                     <div className="metadata-item">
                       <ChartIcon size={18} />
                       {/* <span className="metadata-label">Tilecount</span> */}
-                      <span className="metadata-value">{res.tilecount}</span>
+                      <span className="metadata-value">{res.level.tilecount}</span>
                     </div>
                   )}
-                  {res.bpm && (
+                  {!!res.level?.bpm && (
                     <div className="metadata-item">
                       {/* <span className="metadata-icon">ICON</span> */}
                       {/* <span className="metadata-label">Start BPM</span> */}
                       <MetronomeIcon size={18} />
-                      <span className="metadata-value">{res.bpm}</span>
+                      <span className="metadata-value">{res.level.bpm}</span>
                     </div>
                   )}
                   </div>

@@ -29,6 +29,8 @@
       "clears": "클리어 수",
       "likes": "좋아요 수",
       "baseScore": "베이스 스코어",
+      "bpm": "BPM",
+      "tiles": "타일 수",
       "random": "무작위"
     }
   },

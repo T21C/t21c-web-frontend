@@ -8,7 +8,7 @@ import { AddToPackPopup } from "@/components/popups/Packs";
 import { SongPopup } from "@/components/popups/Songs";
 import { ArtistPopup } from "@/components/popups/Artists";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { EditIcon, SteamIcon, DownloadIcon, VideoIcon, PassIcon, LikeIcon, PackIcon, DragHandleIcon } from "@/components/common/icons";
+import { EditIcon, SteamIcon, DownloadIcon, VideoIcon, PassIcon, LikeIcon, PackIcon, DragHandleIcon, MetronomeIcon, ChartIcon } from "@/components/common/icons";
 import { formatCreatorDisplay, selectIconSize } from "@/utils/Utility";
 import { ABILITIES, hasBit } from "@/utils/Abilities";
 import { permissionFlags } from "@/utils/UserPermissions";
@@ -60,6 +60,8 @@ const LevelCard = ({
   const [thumbnailUrl, setThumbnailUrl] = useState('');
   const { difficultyDict, curationTypesDict, tagsDict } = useDifficultyContext();
   const difficultyInfo = difficultyDict[level.diffId];
+  const chartTilecount = level.tilecount;
+  const chartBpm = level.bpm;
   const curationsList = useMemo(() => {
     const raw = level.curations?.length
       ? level.curations
@@ -281,6 +283,7 @@ const LevelCard = ({
     if (!tags || tags.length === 0) return null;
 
     return (
+      <div className="level-underline-wrapper">
       <div className="level-tags-wrapper">
         {tags.map((tag) => (
           <div
@@ -300,6 +303,24 @@ const LevelCard = ({
             )}
           </div>
         ))}
+      
+      </div>
+      {(chartTilecount != null && chartTilecount !== '') || (chartBpm != null && chartBpm !== '') ? (
+        <div className="metadata-block">
+          {chartTilecount != null && chartTilecount !== '' && (
+          <div className="metadata-item">
+            <ChartIcon size={18}  />
+            <span className="metadata-value">{chartTilecount}</span>
+          </div>
+          )}
+          {chartBpm != null && chartBpm !== '' && (
+          <div className="metadata-item">
+            <MetronomeIcon size={18} />
+            <span className="metadata-value">{chartBpm}</span>
+          </div>
+          )}
+        </div>
+        ) : null}
       </div>
     );
   };

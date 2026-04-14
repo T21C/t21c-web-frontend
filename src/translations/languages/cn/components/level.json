@@ -15,6 +15,18 @@
           "creatorField": "按创作者名称搜索所有角色（示例：“creator:Nep” 或 “creator=Nephrolepis”）"
         }
       },
+      "numeric": {
+        "title": "BPM 与物块数",
+        "description": "使用 bpm: 或 tilecount: 加数字进行筛选；可在数字前加 >、<、>=、<= 表示范围。同一搜索组内用英文逗号连接多个条件（与）。",
+        "examples": {
+          "title": "数值示例",
+          "bpmExact": "精确 BPM（亦可用 bpm=180）",
+          "tilesExact": "精确物块数",
+          "bpmRange": "BPM 严格在 100–200 之间（需要包含端点请用 >= 或 <=）",
+          "tilesMin": "至少 1000 个物块",
+          "combine": "可与歌曲/曲师等条件组合，例如 song:hello, bpm:>150"
+        }
+      },
       "operators": {
         "title": "搜索运算符",
         "description": "你可以使用运算符组合多个搜索条件。",
