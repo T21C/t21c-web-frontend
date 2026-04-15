@@ -30,6 +30,10 @@
     "downloadPack": "下载地图包",
     "downloadFolder": "下载文件夹"
   },
+  "download": {
+    "estimatedLong": "（预计：缺少 {{count}} 个大小元数据）",
+    "estimatedShort": "（预计，缺少 {{count}} 个）"
+  },
   "createFolder": {
     "prompt": "输入新文件夹名称：",
     "success": "文件夹创建成功",

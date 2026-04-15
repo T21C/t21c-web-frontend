@@ -89,7 +89,7 @@ const PackDownloadPopup = ({
     try {
       const response = await onRequestDownload(downloadId, { trimFolderNames });
       if (!response || !response.url) {
-        throw new Error('Download link was not returned by the server.');
+        throw new Error(t('packPopups.downloadPack.errors.noUrl'));
       }
 
       setDownloadData(response);
@@ -98,7 +98,7 @@ const PackDownloadPopup = ({
       const message =
         err?.response?.data?.error ||
         err?.message ||
-        'Failed to generate download link.';
+        t('packPopups.downloadPack.errors.generateFailed');
       setError(message);
       setStep('confirm');
       setPackJobId(null);
@@ -110,7 +110,7 @@ const PackDownloadPopup = ({
     window.open(downloadData.url, '_blank', 'noopener,noreferrer');
   };
 
-  const { sizeLabel, isEstimated } = formatEstimatedSize(sizeSummary || DEFAULT_SIZE_SUMMARY);
+  const { sizeLabel, missingCount } = formatEstimatedSize(sizeSummary || DEFAULT_SIZE_SUMMARY);
 
   return (
     <div className="pack-download-popup__overlay">
@@ -124,7 +124,9 @@ const PackDownloadPopup = ({
 
         <div className="pack-download-popup__content">
           <h2 className="pack-download-popup__title">
-            {t('packPopups.downloadPack.title', { contextName: contextName || 'Pack' })}
+            {t('packPopups.downloadPack.title', {
+              contextName: contextName || t('packPopups.downloadPack.defaultContextName'),
+            })}
           </h2>
 
           {step === 'confirm' && (
@@ -145,17 +147,21 @@ const PackDownloadPopup = ({
                 <span className="pack-download-popup__estimate-label">{t('packPopups.downloadPack.estimatedSize')} </span>
                 <span className={`pack-download-popup__estimate-value ${exceedsSizeLimit ? 'exceeded' : ''}`}>
                   {sizeLabel}
-                <span className="pack-download-popup__estimate-value-estimated">{isEstimated}</span></span>
+                  {missingCount > 0 && (
+                    <span className="pack-download-popup__estimate-value-estimated">
+                      {t('packPopups.downloadPack.estimatedSuffix', { count: missingCount })}
+                    </span>
+                  )}
+                </span>
               </div>
               {exceedsSizeLimit && (
                 <div className="pack-download-popup__error" role="alert">
                   {t('packPopups.downloadPack.sizeExceeded')}
                 </div>
               )}
-              {isEstimated && !exceedsSizeLimit && (
+              {missingCount > 0 && !exceedsSizeLimit && (
                 <p className="pack-download-popup__notice">
-                  Some levels are missing size metadata. The final download may
-                  be larger than estimated.
+                  {t('packPopups.downloadPack.estimatedMayBeLarger')}
                 </p>
               )}
               {error && (

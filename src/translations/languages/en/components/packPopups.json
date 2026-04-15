@@ -162,9 +162,12 @@
   },
   "downloadPack": {
     "title": "Download {{contextName}}",
+    "defaultContextName": "Pack",
     "description": "This will generate a downloadable archive for <strong>{{contextName}}</strong>.",
     "descriptionFallback": "This will generate a downloadable archive for this selection.",
     "estimatedSize": "Estimated size:",
+    "estimatedSuffix": "(estimated: {{count}} missing metadata)",
+    "estimatedMayBeLarger": "Some levels are missing size metadata. The final download may be larger than estimated.",
     "processing": "Processing... please wait while we prepare the download.",
     "processingSubtext": "This may take a moment depending on the total size of the pack.",
     "ready": "Your download is ready! Click the button below to start the download.",
@@ -174,6 +177,10 @@
     "generateDownload": "Generate Download",
     "close": "Close",
     "download": "Download",
-    "trimFolderNames": "Shorten folder names for path compatibility"
+    "trimFolderNames": "Shorten folder names for path compatibility",
+    "errors": {
+      "noUrl": "Download link was not returned by the server.",
+      "generateFailed": "Failed to generate download link."
+    }
   }
 }

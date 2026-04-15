@@ -50,20 +50,13 @@ export const summarizeFolderSize = (folder) => {
   return aggregateItems(folder.children || []);
 };
 
-export const formatEstimatedSize = ({ totalBytes, missingCount }) => {
+export const formatEstimatedSize = ({ totalBytes, missingCount } = {}) => {
   const sizeLabel =
     typeof totalBytes === 'number' && totalBytes > 0
       ? formatFileSize(totalBytes)
       : '0 Bytes';
 
-  if (missingCount > 0) {
-    return { 
-      sizeLabel, 
-      isEstimated: `(estimated, ${missingCount} items missing metadata)`,
-      shortEstimated: `(est., ${missingCount} missing)`
-    };
-  }
-
-  return { sizeLabel, isEstimated: null, shortEstimated: null };
+  const mc = typeof missingCount === 'number' && missingCount > 0 ? missingCount : 0;
+  return { sizeLabel, missingCount: mc };
 };
 

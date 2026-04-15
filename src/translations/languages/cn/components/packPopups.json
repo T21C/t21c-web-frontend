@@ -162,9 +162,12 @@
   },
   "downloadPack": {
     "title": "下载 {{contextName}}",
+    "defaultContextName": "地图包",
     "description": "这将生成一个可下载的 <strong>{{contextName}}</strong> 压缩包。",
     "descriptionFallback": "这将生成一个可供下载的压缩文件。",
     "estimatedSize": "预计大小：",
+    "estimatedSuffix": "（预计：缺少 {{count}} 个大小元数据）",
+    "estimatedMayBeLarger": "部分关卡缺少大小元数据，最终下载可能会比预计更大。",
     "processing": "正在处理……在我们正在准备下载时请稍等。",
     "processingSubtext": "这可能需要一些时间，具体取决于地图包的总大小。",
     "ready": "下载准备就绪！点击下方按钮以下载。",
@@ -174,6 +177,10 @@
     "generateDownload": "生成下载链接",
     "close": "关闭",
     "download": "下载",
-    "trimFolderNames": "缩短文件夹名称以兼容路径长度限制"
+    "trimFolderNames": "缩短文件夹名称以兼容路径长度限制",
+    "errors": {
+      "noUrl": "服务器未返回下载链接。",
+      "generateFailed": "生成下载链接失败。"
+    }
   }
 }

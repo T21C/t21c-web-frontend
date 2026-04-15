@@ -811,7 +811,11 @@ const PackDetailPage = () => {
                   ? 'No downloadable levels available yet'
                   : !user
                     ? 'You must be logged in to download a pack'
-                  : `${t('packDetail.actions.downloadPack')} (${packSizeLabel.sizeLabel}) ${packSizeLabel.isEstimated}`
+                  : `${t('packDetail.actions.downloadPack')} (${packSizeLabel.sizeLabel})${
+                      packSizeLabel.missingCount > 0
+                        ? ` ${t('packDetail.download.estimatedLong', { count: packSizeLabel.missingCount })}`
+                        : ''
+                    }`
               }
               data-tooltip-place="bottom"
             >

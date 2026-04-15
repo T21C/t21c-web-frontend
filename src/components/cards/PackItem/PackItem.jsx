@@ -155,7 +155,11 @@ const PackItem = ({
                     ? 'No downloadable levels in this folder'
                     : !user
                       ? 'You must be logged in to download a folder'
-                      : `${downloadFolderLabel} (${folderSizeLabel.sizeLabel}) ${folderSizeLabel.isEstimated ? folderSizeLabel.isEstimated : ''}`
+                      : `${downloadFolderLabel} (${folderSizeLabel.sizeLabel})${
+                          folderSizeLabel.missingCount > 0
+                            ? ` ${t('pages:packDetail.download.estimatedLong', { count: folderSizeLabel.missingCount })}`
+                            : ''
+                        }`
                 }
                 data-tooltip-place="bottom"
               >
@@ -166,7 +170,9 @@ const PackItem = ({
                 <span className="pack-item__download-size">
                   {folderSizeLabel.sizeLabel}{' '}
                   <span className="pack-item__download-size-estimated">
-                    {folderSizeLabel.shortEstimated}
+                    {folderSizeLabel.missingCount > 0
+                      ? t('pages:packDetail.download.estimatedShort', { count: folderSizeLabel.missingCount })
+                      : ''}
                   </span>
                 </span>
               </button>
