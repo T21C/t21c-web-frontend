@@ -18,50 +18,27 @@
   padding: 2rem;
   width: 90%;
   max-width: 800px;
-  max-height: 85vh;
+  height: 85vh;
   position: relative;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow-y: auto;
 }
 
-.level-help-popup .help-content {
+.level-help-popup .help-content,
+.level-help-popup .level-help-popup__content {
   color: #fff;
 }
 
-.level-help-popup h2 {
+.level-help-popup h2,
+.level-help-popup .level-help-popup__title {
   margin: 0 0 1.5rem;
   font-size: 1.8rem;
   color: #fff;
 }
 
-.level-help-popup section {
-  margin-bottom: 2rem;
-}
-
-.level-help-popup h3 {
-  margin: 0 0 1rem;
-  font-size: 1.4rem;
-  color: #fff;
-}
-
-.level-help-popup h4 {
-  margin: 1rem 0 0.5rem;
-  font-size: 1.1rem;
-  color: #ddd;
-}
-
-.level-help-popup p {
-  margin: 0.5rem 0;
-  line-height: 1.5;
-  color: #ddd;
-}
-
-.level-help-popup ul {
-  margin: 0.5rem 0;
-  padding-left: 1.5rem;
-}
-
-.level-help-popup li {
+.level-help-popup p,
+.level-help-popup .level-help-popup__subtitle,
+.level-help-popup .level-help-popup__intro {
   margin: 0.5rem 0;
   line-height: 1.5;
   color: #ddd;
@@ -75,16 +52,164 @@
   font-size: 0.9em;
 }
 
-.level-help-popup .examples {
-  background: rgba(255, 255, 255, 0.05);
-  padding: 1rem;
-  border-radius: 4px;
-  margin: 1rem 0;
-}
-
 .level-help-popup strong {
   color: #fff;
   font-weight: 600;
+}
+
+.level-help-popup .level-help-popup__subtitle {
+  margin-top: -1rem;
+  margin-bottom: 1.25rem;
+}
+
+.level-help-popup .level-help-popup__accordion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.level-help-popup .level-help-popup__section {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.level-help-popup .level-help-popup__section-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  background: transparent;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+}
+
+.level-help-popup .level-help-popup__section-header:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.level-help-popup .level-help-popup__section-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.level-help-popup .level-help-popup__chevron {
+  width: 1.25rem;
+  height: 1.25rem;
+  display: grid;
+  place-items: center;
+  opacity: 0.9;
+  transition: transform 150ms ease;
+}
+
+.level-help-popup .level-help-popup__chevron svg {
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.level-help-popup .level-help-popup__section.is-open .level-help-popup__chevron {
+  transform: rotate(180deg);
+}
+
+.level-help-popup .level-help-popup__section-panel {
+  padding: 0 1rem 0 1rem;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+  gap: 0.75rem;
+  max-height: 0;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.level-help-popup .level-help-popup__section-panel.open {
+  padding: 1rem;
+  max-height: 500px;
+}
+
+.level-help-popup .level-help-popup__intro {
+  margin-top: 0;
+}
+
+.level-help-popup .level-help-popup__field-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.level-help-popup .level-help-popup__field-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  padding: 0.6rem 0.65rem;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.level-help-popup .level-help-popup__token {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+}
+
+.level-help-popup .level-help-popup__token code {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.level-help-popup .level-help-popup__field-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  min-width: 0;
+}
+
+.level-help-popup .level-help-popup__field-title {
+  color: #fff;
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.level-help-popup .level-help-popup__field-desc {
+  color: #ddd;
+  line-height: 1.35;
+}
+
+.level-help-popup .level-help-popup__examples {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.85rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.level-help-popup .level-help-popup__examples-title {
+  color: #fff;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+.level-help-popup .level-help-popup__examples-list,
+.level-help-popup .level-help-popup__bullets {
+  margin: 0;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.level-help-popup .level-help-popup__examples-list li,
+.level-help-popup .level-help-popup__bullets li {
+  color: #ddd;
+  line-height: 1.45;
 }
 
 /* Mobile Responsiveness */
@@ -94,16 +219,9 @@
     width: 95%;
   }
 
-  .level-help-popup h2 {
+  .level-help-popup h2,
+  .level-help-popup .level-help-popup__title {
     font-size: 1.5rem;
-  }
-
-  .level-help-popup h3 {
-    font-size: 1.2rem;
-  }
-
-  .level-help-popup h4 {
-    font-size: 1rem;
   }
 
   .level-help-popup code {
@@ -120,11 +238,8 @@
     padding: 1rem;
   }
 
-  .level-help-popup h2 {
+  .level-help-popup h2,
+  .level-help-popup .level-help-popup__title {
     font-size: 1.3rem;
-  }
-
-  .level-help-popup section {
-    margin-bottom: 1.5rem;
   }
 } 

@@ -2,6 +2,80 @@
   "helpPopup": {
     "title": "搜索帮助",
     "closeButton": "关闭",
+    "v2": {
+      "subtitle": "高级搜索是一套简短的查询语法。组合字段、运算符与范围可以快速缩小结果。",
+      "examplesTitle": "示例",
+      "groups": {
+        "basics": {
+          "title": "基础（解析规则）",
+          "intro": "用 field:value 或 field=value 写条件。英文逗号(,)表示同组 AND，| 用于分割 OR 组。",
+          "examples": {
+            "and": "<b><code>song:hello, artist:camellia</code></b><br/>两条条件都要满足（AND）。",
+            "or": "<b><code>song=goTe | song:xnor</code></b><br/>任意一组满足即可（OR）。",
+            "not": "<b><code>song:onus, \\!nerfed</code></b><br/>排除包含某词的结果（NOT）。"
+          }
+        },
+        "text": {
+          "title": "文本字段（名称/角色）",
+          "intro": "不区分大小写。: 表示部分匹配，= 表示完全匹配。",
+          "examples": {
+            "partialVsExact": "<b><code>song:go</code></b> 为部分匹配，<b><code>song=goTe</code></b> 为完全匹配。",
+            "multiWord": "<b><code>artist:Camellia (feat. Nanahira)</code></b> 可用——值中允许空格。",
+            "mixTextAndNumeric": "<b><code>song:hello, bpm:>150</code></b><br/>同组可混合文本与数值条件。"
+          }
+        },
+        "numeric": {
+          "title": "数值字段（范围/时长）",
+          "intro": "支持精确值与比较。用 >、<、>=、<= 指定范围。",
+          "examples": {
+            "bpmRange": "<b><code>bpm:>100, bpm:<200</code></b> 过滤 100–200 BPM。",
+            "tilesMin": "<b><code>tilecount:>=1000</code></b> 过滤至少 1000 物块。",
+            "timeUnits": "<b><code>time:>10m15s</code></b> 或 <b><code>time:<50s</code></b><br/>时长支持 h/m/s/ms 单位。",
+            "timeMsPlain": "<b><code>time:>130000</code></b><br/>纯数字按毫秒(ms)解释。"
+          }
+        },
+        "idsAndLinks": {
+          "title": "ID 与链接（精确/内部）",
+          "intro": "部分字段适合精确匹配或内部标识。",
+          "examples": {
+            "idExact": "<b><code>id=1234</code></b> 按关卡数值 ID 过滤。",
+            "linkMatch": "<b><code>dlLink:drive.google</code></b> 按下载链接部分文本过滤。"
+          }
+        },
+        "tips": {
+          "title": "技巧",
+          "intro": "一些容易忽略的细节。",
+          "bullets": {
+            "caseInsensitive": "不区分大小写：SONG 与 song 效果相同。",
+            "spacesAllowed": "值中允许空格：song:Example Song 可用。",
+            "orderDoesNotMatter": "同组内条件顺序无关：artist:foo, song:bar 等同 song:bar, artist:foo。",
+            "aliasesMayMatch": "歌曲/曲师可能会匹配已知别名(alias)，不只显示名。",
+            "groupingMentalModel": "可理解为 (A AND B) OR (C AND D)：逗号构造 AND 组，| 分割 OR 组。"
+          }
+        }
+      },
+      "fields": {
+        "operatorColon": { "title": "部分匹配", "desc": "用 : 进行部分匹配（例：song:go）。" },
+        "operatorEquals": { "title": "完全匹配", "desc": "用 = 进行完全匹配（例：song=goTe）。" },
+        "operatorComma": { "title": "同组 AND", "desc": "用英文逗号分隔，表示同组内都必须满足。" },
+        "operatorPipe": { "title": "组间 OR", "desc": "用 | 分割 OR 组；任意一组满足即可。" },
+        "operatorNot": { "title": "NOT（排除）", "desc": "用 \\! 前缀排除包含该词的结果。" },
+        "song": { "title": "歌曲名", "desc": "按歌曲名过滤（含别名）。" },
+        "artist": { "title": "曲师名", "desc": "按曲师名过滤（含别名/署名）。" },
+        "creator": { "title": "作者（任意角色）", "desc": "跨所有作者角色搜索（charter、vfx 等）。" },
+        "charter": { "title": "采音师/谱师（Charter）", "desc": "按谱师名称过滤。" },
+        "vfxer": { "title": "特效师（VFXer）", "desc": "按特效师名称过滤。" },
+        "team": { "title": "团队", "desc": "按团队名称过滤（含别名）。" },
+        "bpm": { "title": "BPM", "desc": "按 BPM 过滤（精确/范围）。" },
+        "tilecount": { "title": "物块数", "desc": "按物块数过滤（精确/范围）。" },
+        "time": { "title": "谱面时长", "desc": "按谱面时长过滤（h/m/s/ms 或毫秒）。" },
+        "id": { "title": "关卡 ID", "desc": "按数值关卡 ID 过滤。" },
+        "hashtag": { "title": "关卡 ID（替代）", "desc": "使用 <code>#123</code> 等同于 <code>id=123</code>。" },
+        "dlLink": { "title": "下载链接", "desc": "按下载链接文本过滤。" },
+        "legacyDllink": { "title": "旧下载链接", "desc": "按旧字段下载链接文本过滤（旧条目）。" },
+        "videolink": { "title": "视频链接", "desc": "按视频链接文本过滤。" }
+      }
+    },
     "sections": {
       "search": {
         "title": "特定字段搜索",

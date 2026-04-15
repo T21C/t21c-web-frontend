@@ -2,6 +2,80 @@
   "helpPopup": {
     "title": "검색 도움말",
     "closeButton": "닫기",
+    "v2": {
+      "subtitle": "고급 검색은 간단한 쿼리 문법입니다. 필드 토큰/연산자/범위를 조합해 결과를 빠르게 좁힐 수 있어요.",
+      "examplesTitle": "예시",
+      "groups": {
+        "basics": {
+          "title": "기본 (쿼리 해석 방식)",
+          "intro": "조건은 field:value 또는 field=value 형태로 씁니다. 쉼표(,)는 같은 그룹의 AND, | 는 OR 그룹을 만듭니다.",
+          "examples": {
+            "and": "<b><code>song:hello, artist:camellia</code></b><br/>두 조건을 모두 만족(AND).",
+            "or": "<b><code>song=goTe | song:xnor</code></b><br/>둘 중 하나의 그룹이 만족하면 포함(OR).",
+            "not": "<b><code>song:onus, \\!nerfed</code></b><br/>특정 단어가 포함된 결과를 제외(NOT)."
+          }
+        },
+        "text": {
+          "title": "텍스트 필드 (이름/역할)",
+          "intro": "대소문자를 구분하지 않습니다. : 는 부분 일치, = 는 정확히 일치입니다.",
+          "examples": {
+            "partialVsExact": "<b><code>song:go</code></b>는 부분 일치, <b><code>song=goTe</code></b>는 정확히 일치.",
+            "multiWord": "<b><code>artist:Camellia (feat. Nanahira)</code></b>처럼 공백도 허용됩니다.",
+            "mixTextAndNumeric": "<b><code>song:hello, bpm:>150</code></b><br/>텍스트 + 숫자 조건을 한 그룹에서 혼합 가능."
+          }
+        },
+        "numeric": {
+          "title": "숫자 필드 (범위/길이)",
+          "intro": "정확한 값 또는 비교로 필터합니다. >, <, >=, <= 로 범위를 지정합니다.",
+          "examples": {
+            "bpmRange": "<b><code>bpm:>100, bpm:<200</code></b> BPM 100~200 범위.",
+            "tilesMin": "<b><code>tilecount:>=1000</code></b> 타일 1000개 이상.",
+            "timeUnits": "<b><code>time:>10m15s</code></b> 또는 <b><code>time:<50s</code></b><br/>h/m/s/ms 단위 사용(채보 길이).",
+            "timeMsPlain": "<b><code>time:>130000</code></b><br/>단위 없는 숫자는 밀리초(ms)로 해석됩니다."
+          }
+        },
+        "idsAndLinks": {
+          "title": "ID & 링크 (정확/내부 필터)",
+          "intro": "일부 필드는 정확히 일치하거나 내부 식별자를 대상으로 합니다.",
+          "examples": {
+            "idExact": "<b><code>id=1234</code></b> 특정 레벨 ID로 필터.",
+            "linkMatch": "<b><code>dlLink:drive.google</code></b> 다운로드 링크 일부 문자열로 필터."
+          }
+        },
+        "tips": {
+          "title": "팁",
+          "intro": "자주 헷갈리는 부분을 정리했습니다.",
+          "bullets": {
+            "caseInsensitive": "대소문자를 구분하지 않습니다.",
+            "spacesAllowed": "값에 공백을 포함할 수 있습니다. (예: song:Example Song)",
+            "orderDoesNotMatter": "한 그룹 안에서 조건 순서는 중요하지 않습니다.",
+            "aliasesMayMatch": "곡/아티스트는 표기명뿐 아니라 별칭(alias)도 매칭될 수 있습니다.",
+            "groupingMentalModel": "(A AND B) OR (C AND D)처럼 생각해보세요. 쉼표는 AND, | 는 OR 그룹입니다."
+          }
+        }
+      },
+      "fields": {
+        "operatorColon": { "title": "부분 일치", "desc": ": 를 사용하면 부분 일치로 검색합니다 (예: song:go)." },
+        "operatorEquals": { "title": "정확히 일치", "desc": "= 를 사용하면 정확히 일치하는 값만 검색합니다 (예: song=goTe)." },
+        "operatorComma": { "title": "그룹 내부 AND", "desc": "쉼표로 구분된 조건은 같은 그룹에서 모두 만족해야 합니다." },
+        "operatorPipe": { "title": "그룹 간 OR", "desc": "| 로 OR 그룹을 만듭니다. 어느 한 그룹이 만족하면 포함됩니다." },
+        "operatorNot": { "title": "NOT (제외)", "desc": "\\! 로 시작하면 해당 단어를 포함한 결과를 제외합니다." },
+        "song": { "title": "곡 이름", "desc": "곡 이름으로 필터(별칭 포함)." },
+        "artist": { "title": "아티스트 이름", "desc": "아티스트 이름으로 필터(별칭/크레딧 포함)." },
+        "creator": { "title": "제작자(전체 역할)", "desc": "모든 제작자 역할(채보/VFX 등)을 대상으로 검색합니다." },
+        "charter": { "title": "채보자", "desc": "채보자 이름으로 필터." },
+        "vfxer": { "title": "VFX 담당", "desc": "VFX 담당자 이름으로 필터." },
+        "team": { "title": "팀", "desc": "팀 이름으로 필터(별칭 포함)." },
+        "bpm": { "title": "BPM", "desc": "BPM으로 필터(정확/범위)." },
+        "tilecount": { "title": "타일 수", "desc": "타일 수로 필터(정확/범위)." },
+        "time": { "title": "채보 길이", "desc": "채보 길이로 필터(h/m/s/ms 또는 밀리초)." },
+        "id": { "title": "레벨 ID", "desc": "숫자 레벨 ID로 필터." },
+        "hashtag": { "title": "레벨 ID (대체)", "desc": "<code>#123</code> 은 <code>id=123</code> 과 동일합니다." },
+        "dlLink": { "title": "다운로드 링크", "desc": "다운로드 링크 문자열로 필터." },
+        "legacyDllink": { "title": "레거시 다운로드 링크", "desc": "구형 항목의 레거시 다운로드 링크 문자열로 필터." },
+        "videolink": { "title": "영상 링크", "desc": "영상 링크 문자열로 필터." }
+      }
+    },
     "sections": {
       "search": {
         "title": "필드별 검색",

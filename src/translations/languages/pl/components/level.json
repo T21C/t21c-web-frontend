@@ -2,6 +2,80 @@
   "helpPopup": {
     "title": "Pomoc w wyszukiwaniu",
     "closeButton": "Zamknij",
+    "v2": {
+      "subtitle": "Wyszukiwanie zaawansowane to mały język zapytań. Łącz pola, operatory i zakresy, aby szybko zawężać wyniki.",
+      "examplesTitle": "Przykłady",
+      "groups": {
+        "basics": {
+          "title": "Podstawy (jak parsujemy zapytanie)",
+          "intro": "Zapisuj warunki jako field:value lub field=value. Przecinek (,) oznacza AND w grupie, a | tworzy grupy OR.",
+          "examples": {
+            "and": "<b><code>song:hello, artist:camellia</code></b><br/>Oba warunki muszą pasować (AND).",
+            "or": "<b><code>song=goTe | song:xnor</code></b><br/>Wystarczy dopasowanie jednej grupy (OR).",
+            "not": "<b><code>song:onus, \\!nerfed</code></b><br/>Wyklucz wyniki zawierające frazę (NOT)."
+          }
+        },
+        "text": {
+          "title": "Pola tekstowe (nazwy i role)",
+          "intro": "Bez rozróżniania wielkości liter. : to dopasowanie częściowe, = to dopasowanie dokładne.",
+          "examples": {
+            "partialVsExact": "<b><code>song:go</code></b> dopasowuje częściowo, a <b><code>song=goTe</code></b> dokładnie.",
+            "multiWord": "<b><code>artist:Camellia (feat. Nanahira)</code></b> działa — spacje są dozwolone.",
+            "mixTextAndNumeric": "<b><code>song:hello, bpm:>150</code></b><br/>Możesz mieszać tekst i liczby w jednej grupie."
+          }
+        },
+        "numeric": {
+          "title": "Pola liczbowe (zakresy i czas)",
+          "intro": "Pola liczbowe wspierają wartości dokładne i porównania. Użyj >, <, >=, <= dla zakresów.",
+          "examples": {
+            "bpmRange": "<b><code>bpm:>100, bpm:<200</code></b> filtruje BPM między 100 a 200.",
+            "tilesMin": "<b><code>tilecount:>=1000</code></b> filtruje poziomy z co najmniej 1000 kafelków.",
+            "timeUnits": "<b><code>time:>10m15s</code></b> lub <b><code>time:<50s</code></b><br/>Użyj jednostek h/m/s/ms dla długości chartu.",
+            "timeMsPlain": "<b><code>time:>130000</code></b><br/>Gołe liczby są interpretowane jako milisekundy."
+          }
+        },
+        "idsAndLinks": {
+          "title": "ID i linki (dokładne/techniczne)",
+          "intro": "Niektóre pola najlepiej działają jako dopasowania dokładne lub identyfikatory wewnętrzne.",
+          "examples": {
+            "idExact": "<b><code>id=1234</code></b> filtruje konkretny poziom po id.",
+            "linkMatch": "<b><code>dlLink:drive.google</code></b> filtruje po fragmencie linku do pobrania."
+          }
+        },
+        "tips": {
+          "title": "Wskazówki",
+          "intro": "Kilka szczegółów, które pomagają uniknąć niespodzianek.",
+          "bullets": {
+            "caseInsensitive": "Wyszukiwanie jest nieczułe na wielkość liter.",
+            "spacesAllowed": "Spacje w wartościach są dozwolone.",
+            "orderDoesNotMatter": "Kolejność warunków w grupie nie ma znaczenia.",
+            "aliasesMayMatch": "Nazwy song/artist mogą dopasować się także do aliasów.",
+            "groupingMentalModel": "Myśl o tym jak (A AND B) OR (C AND D): przecinki budują AND, | dzieli na OR."
+          }
+        }
+      },
+      "fields": {
+        "operatorColon": { "title": "Dopasowanie częściowe", "desc": "Użyj : dla dopasowania częściowego (np. song:go)." },
+        "operatorEquals": { "title": "Dopasowanie dokładne", "desc": "Użyj = dla dopasowania dokładnego (np. song=goTe)." },
+        "operatorComma": { "title": "AND w grupie", "desc": "Oddziel warunki przecinkami, aby wszystkie musiały pasować." },
+        "operatorPipe": { "title": "OR między grupami", "desc": "Użyj | aby utworzyć grupy OR; wystarczy, że jedna grupa pasuje." },
+        "operatorNot": { "title": "NOT (wyklucz)", "desc": "Dodaj prefiks \\!, aby wykluczyć wyniki zawierające daną frazę." },
+        "song": { "title": "Nazwa utworu", "desc": "Filtruj po nazwie utworu (wspiera aliasy)." },
+        "artist": { "title": "Nazwa artysty", "desc": "Filtruj po nazwie artysty (wspiera aliasy i kredyty)." },
+        "creator": { "title": "Twórca (dowolna rola)", "desc": "Szukaj twórców we wszystkich rolach (charter, vfx itd.)." },
+        "charter": { "title": "Charter", "desc": "Filtruj po nazwie charter-a." },
+        "vfxer": { "title": "VFXer", "desc": "Filtruj po nazwie VFXer-a." },
+        "team": { "title": "Team", "desc": "Filtruj po nazwie teamu (wspiera aliasy)." },
+        "bpm": { "title": "BPM", "desc": "Filtruj po BPM (dokładnie lub zakres)." },
+        "tilecount": { "title": "Liczba kafelków", "desc": "Filtruj po liczbie kafelków (dokładnie lub zakres)." },
+        "time": { "title": "Długość chartu", "desc": "Filtruj po długości chartu (h/m/s/ms lub milisekundy)." },
+        "id": { "title": "ID poziomu", "desc": "Filtruj po liczbowym id poziomu." },
+        "hashtag": { "title": "ID poziomu (alt)", "desc": "Użycie <code>#123</code> jest tym samym co <code>id=123</code>." },
+        "dlLink": { "title": "Link do pobrania", "desc": "Filtruj po tekście linku do pobrania." },
+        "legacyDllink": { "title": "Legacy link do pobrania", "desc": "Filtruj po legacy linku do pobrania (starsze wpisy)." },
+        "videolink": { "title": "Link do wideo", "desc": "Filtruj po tekście linku do wideo." }
+      }
+    },
     "sections": {
       "search": {
         "title": "Wyszukiwanie zaawansowane",
