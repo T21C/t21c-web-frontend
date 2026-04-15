@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import "./scorecard.css"
 import "@/index.css"
 import { useTranslation } from "react-i18next";
-import { formatSpeed, formatScore } from "@/utils/Utility"
+import { clampFloat, formatScore } from "@/utils/Utility"
 import { formatNumber } from "@/utils";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { Tooltip } from "react-tooltip";
@@ -79,7 +79,7 @@ const ScoreCard = ({scoreData, topScores, potentialTopScores}) => {
 
       <div className="speed-wrapper">
           <p className="score-exp">{t('score.card.labels.speed')}</p>
-          <div className="score-desc">{formatSpeed(scoreData.speed)}×</div>
+          <div className="score-desc">{clampFloat(scoreData.speed, 2)}×</div>
       </div>
 
       <div className="vid-logo-wrapper">

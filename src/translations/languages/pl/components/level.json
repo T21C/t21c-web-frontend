@@ -14,14 +14,17 @@
         }
       },
       "numeric": {
-        "title": "BPM i liczba kafelków",
-        "description": "Użyj bpm: lub tilecount: z liczbą albo prefiksów >, <, >=, <= przed liczbą. W jednej grupie wyszukiwania łącz warunki przecinkiem (AND).",
+        "title": "BPM, kafelki i długość chartu",
+        "description": "Filtruj po BPM (bpm:), liczbie kafelków (tilecount:) lub długości chartu w ms (time:). Dla time: użyj jednostek h, m, s, ms (np. 10m15s, 50s) albo samej liczby jako milisekundy. Prefiksy >, <, >=, <=. W jednej grupie łącz warunki przecinkiem (AND).",
         "examples": {
           "title": "Przykłady liczbowe",
           "bpmExact": "Dokładne BPM (działa też bpm=180)",
           "tilesExact": "Dokładna liczba kafelków",
           "bpmRange": "BPM między 100 a 200 (ścisłe; dla granic użyj >= lub <=)",
           "tilesMin": "Co najmniej 1000 kafelków",
+          "timeComposite": "Poziomy dłuższe niż 10 min 15 s (długość chartu)",
+          "timeMin": "Poziomy krótsze niż 50 s",
+          "timeMsPlain": "Poziomy dłuższe niż 130000 ms (liczba bez jednostek = milisekundy)",
           "combine": "Łącz z innymi polami, np. song:hello, bpm:>150"
         }
       },

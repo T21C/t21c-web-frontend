@@ -8,7 +8,7 @@ import { AddToPackPopup } from "@/components/popups/Packs";
 import { SongPopup } from "@/components/popups/Songs";
 import { ArtistPopup } from "@/components/popups/Artists";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
-import { EditIcon, SteamIcon, DownloadIcon, VideoIcon, PassIcon, LikeIcon, PackIcon, DragHandleIcon, MetronomeIcon, ChartIcon } from "@/components/common/icons";
+import { EditIcon, SteamIcon, DownloadIcon, VideoIcon, PassIcon, LikeIcon, PackIcon, DragHandleIcon, MetronomeIcon, ChartIcon, TimeIcon } from "@/components/common/icons";
 import { formatCreatorDisplay, selectIconSize } from "@/utils/Utility";
 import { ABILITIES, hasBit } from "@/utils/Abilities";
 import { permissionFlags } from "@/utils/UserPermissions";
@@ -19,6 +19,7 @@ import {
   sortCurationsForDisplay,
   sortCurationTypesForDisplay,
 } from "@/utils/curationTypeUtils";
+import { formatDuration } from "@/utils/levelHelpers";
 
 /** Curation type names hidden from the difficulty-arc curation icons */
 const HIDDEN_CURATION_ARC_TYPE_NAMES = new Set(['C0', 'V0']);
@@ -307,6 +308,12 @@ const LevelCard = ({
       </div>
       {(chartTilecount != null && chartTilecount !== '') || (chartBpm != null && chartBpm !== '') ? (
         <div className="metadata-block">
+          {level.levelLengthInMs != null && level.levelLengthInMs !== '' && (
+            <div className="metadata-item">
+              <TimeIcon size={18} />
+              <span className="metadata-value">{formatDuration(level.levelLengthInMs)}</span>
+            </div>
+          )}
           {chartTilecount != null && chartTilecount !== '' && (
           <div className="metadata-item">
             <ChartIcon size={18}  />

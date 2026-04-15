@@ -66,6 +66,9 @@ export const LevelHelpPopup = ({ onClose }) => {
                 <li><b><code>tilecount:500</code></b> — {t('level.helpPopup.sections.numeric.examples.tilesExact')}</li>
                 <li><b><code>bpm:&gt;100, bpm:&lt;200</code></b> — {t('level.helpPopup.sections.numeric.examples.bpmRange')}</li>
                 <li><b><code>tilecount:&gt;=1000</code></b> — {t('level.helpPopup.sections.numeric.examples.tilesMin')}</li>
+                <li><b><code>time:&gt;10m15s</code></b> — {t('level.helpPopup.sections.numeric.examples.timeComposite')}</li>
+                <li><b><code>time:&lt;50s</code></b> — {t('level.helpPopup.sections.numeric.examples.timeMin')}</li>
+                <li><b><code>time:&gt;130000</code></b> — {t('level.helpPopup.sections.numeric.examples.timeMsPlain')}</li>
                 <li>{t('level.helpPopup.sections.numeric.examples.combine')}</li>
               </ul>
             </div>

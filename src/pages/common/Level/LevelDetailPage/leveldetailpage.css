@@ -3288,25 +3288,14 @@
   justify-content: center;
 }
 
-.level-detail .level-detail__curation-icon-with-tooltip:hover,
-.level-detail .level-detail__curation-icon-with-tooltip:focus-within {
-  z-index: 121;
-}
 
-.level-detail .level-detail__curation-icon-with-tooltip .curation-tooltip-dropdown {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity 0.15s ease, visibility 0.15s ease;
-}
-
-.level-detail .level-detail__curation-icon-with-tooltip:hover .curation-tooltip-dropdown,
-.level-detail .level-detail__curation-icon-with-tooltip:focus-within .curation-tooltip-dropdown {
+/* Portaled curation tooltip: position comes from inline style (fixed to viewport) */
+.curation-tooltip-dropdown.curation-tooltip-dropdown--portal {
+  position: fixed;
   opacity: 1;
   visibility: visible;
   pointer-events: auto;
 }
-
 
 .level-detail .level-detail__curation-type-icon-img {
   width: 2.5rem;

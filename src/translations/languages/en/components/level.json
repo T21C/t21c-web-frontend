@@ -16,14 +16,17 @@
         }
       },
       "numeric": {
-        "title": "BPM and tile count",
-        "description": "Filter by chart BPM or tile count using bpm: or tilecount: with a number, or prefix the number with >, <, >=, or <=. Separate multiple conditions with commas (AND) within the same search group.",
+        "title": "BPM, tile count, and chart length",
+        "description": "Filter by BPM (bpm:), tile count (tilecount:), or chart length in milliseconds (time:). For time:, use h, m, s, or ms units (e.g. 10m15s, 50s), or a plain number as milliseconds. Prefix with >, <, >=, or <= for ranges. Separate multiple conditions with commas (AND) within the same search group.",
         "examples": {
           "title": "Numeric examples",
           "bpmExact": "Exact BPM (also works with bpm=180)",
           "tilesExact": "Exact tile count",
           "bpmRange": "BPM strictly between 100 and 200 (use >= or <= if you want inclusive bounds)",
           "tilesMin": "At least 1000 tiles",
+          "timeComposite": "Levels longer than 10 minutes 15 seconds (chart length)",
+          "timeMin": "Levels shorter than 50 seconds",
+          "timeMsPlain": "Levels longer than 130000 ms (plain number = milliseconds)",
           "combine": "Combine with song/artist filters, e.g. song:hello, bpm:>150"
         }
       },

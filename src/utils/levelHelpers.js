@@ -46,3 +46,17 @@ export const getSongDisplayName = (level) => {
     return songName;
   }
 };
+
+
+export const formatDuration = (duration) => {
+  if (!duration) return '';
+  const hours = Math.floor(duration / 3600000);
+  const minutes = Math.floor((duration % 3600000) / 60000);
+  const seconds = Math.floor((duration % 60000) / 1000);
+  const timeArray = [
+    hours > 0 ? hours.toString().padStart(2, '0') : '', 
+    minutes > 0 ? minutes.toString().padStart(2, '0') : '', 
+    seconds > 0 ? seconds.toString().padStart(2, '0') : '',
+  ];
+  return timeArray.filter(time => time !== '').join(':');
+};

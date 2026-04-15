@@ -16,14 +16,17 @@
         }
       },
       "numeric": {
-        "title": "BPM과 타일 수",
-        "description": "bpm: 또는 tilecount: 뒤에 숫자를 붙이거나, 숫자 앞에 >, <, >=, <= 를 붙여 범위를 지정합니다. 같은 검색 그룹 안에서는 쉼표로 조건을 AND로 묶습니다.",
+        "title": "BPM, 타일 수, 채보 길이",
+        "description": "bpm:, tilecount:, 채보 길이(ms)는 time: 으로 필터합니다. time: 은 h, m, s, ms 단위(예: 10m15s, 50s) 또는 단위 없는 숫자(밀리초)를 사용하고, >, <, >=, <= 로 범위를 지정합니다. 같은 검색 그룹 안에서는 쉼표로 AND.",
         "examples": {
           "title": "숫자 검색 예시",
           "bpmExact": "정확한 BPM (bpm=180 도 동일)",
           "tilesExact": "정확한 타일 수",
           "bpmRange": "BPM이 100 초과 200 미만 (끝값 포함은 >=, <= 사용)",
           "tilesMin": "타일 수 1000 이상",
+          "timeComposite": "채보 길이가 10분 15초보다 긴 레벨",
+          "timeMin": "채보 길이가 50초 미만인 레벨",
+          "timeMsPlain": "채보 길이가 130000 ms 초과 (단위 없으면 밀리초)",
           "combine": "곡·아티스트 등과 함께 사용 가능 (예: song:hello, bpm:>150)"
         }
       },

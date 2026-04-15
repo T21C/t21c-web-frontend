@@ -53,7 +53,7 @@ import PercentIcon from './PercentIcon';
 import CalendarIcon from './CalendarIcon';
 import ScoreIcon from './ScoreIcon';
 import ChartIcon from './ChartIcon';
-
+import TimeIcon from './TimeIcon';
 export {
     DefaultAvatar,
     DiscordIcon,
@@ -109,5 +109,6 @@ export {
     PercentIcon,
     CalendarIcon,
     ScoreIcon,
-    ChartIcon
+    ChartIcon,
+    TimeIcon
 }

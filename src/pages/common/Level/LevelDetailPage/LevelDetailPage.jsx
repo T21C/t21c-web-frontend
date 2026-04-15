@@ -2,8 +2,10 @@
 // eslint-disable-next-line no-unused-vars
 import "./leveldetailpage.css"
 import placeholder from "@/assets/placeholder/3.png";
-import React, { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import React, { useEffect, useLayoutEffect, useState, useRef, useCallback, useMemo } from "react";
+import { createPortal } from "react-dom";
 import { useLocation, useParams } from 'react-router-dom';
+import { getPortalRoot } from "@/utils/portalRoot";
 
 import {
   getVideoDetails
@@ -36,10 +38,11 @@ import {
   PercentIcon, 
   CalendarIcon, 
   ScoreIcon,
-  RefreshIcon
+  RefreshIcon,
+  TimeIcon
 } from "@/components/common/icons";
 import { createEventSystem, formatBaseScore, formatCreatorDisplay, formatDate, isCdnUrl, selectIconSize } from "@/utils/Utility";
-import { getSongDisplayName, getArtistDisplayName } from "@/utils/levelHelpers";
+import { getSongDisplayName, getArtistDisplayName, formatDuration } from "@/utils/levelHelpers";
 import { RouletteWheel, SlotMachine } from '@/components/common/selectors';
 import { CloseButton } from '@/components/common/buttons';
 import { toast } from 'react-hot-toast';
@@ -637,6 +640,56 @@ const LevelDetailPage = ({ mockData = null }) => {
     if (!res?.level?.curation) return null;
     return hydrateCurationWithCatalog(res.level.curation, curationTypesDict);
   }, [res?.level?.curation, curationTypesDict]);
+
+  const [hoveredCurationTooltipId, setHoveredCurationTooltipId] = useState(null);
+  const [curationTooltipCoords, setCurationTooltipCoords] = useState({ top: 0, left: 0 });
+  const curationTooltipAnchorRefs = useRef({});
+  const curationTooltipCloseTimerRef = useRef(null);
+
+  const clearCurationTooltipClose = useCallback(() => {
+    if (curationTooltipCloseTimerRef.current) {
+      clearTimeout(curationTooltipCloseTimerRef.current);
+      curationTooltipCloseTimerRef.current = null;
+    }
+  }, []);
+
+  const scheduleCurationTooltipClose = useCallback(() => {
+    clearCurationTooltipClose();
+    curationTooltipCloseTimerRef.current = setTimeout(() => {
+      setHoveredCurationTooltipId(null);
+      curationTooltipCloseTimerRef.current = null;
+    }, 120);
+  }, [clearCurationTooltipClose]);
+
+  const updateCurationTooltipPosition = useCallback((curationId) => {
+    const el = curationTooltipAnchorRefs.current[curationId];
+    if (!el) return;
+    const rect = el.getBoundingClientRect();
+    setCurationTooltipCoords({ top: rect.bottom + 8, left: rect.left + rect.width / 2 });
+  }, []);
+
+  useLayoutEffect(() => {
+    if (hoveredCurationTooltipId == null) return;
+    updateCurationTooltipPosition(hoveredCurationTooltipId);
+  }, [hoveredCurationTooltipId, updateCurationTooltipPosition]);
+
+  useEffect(() => {
+    if (hoveredCurationTooltipId == null) return;
+    const onScrollOrResize = () => updateCurationTooltipPosition(hoveredCurationTooltipId);
+    window.addEventListener("scroll", onScrollOrResize, true);
+    window.addEventListener("resize", onScrollOrResize);
+    return () => {
+      window.removeEventListener("scroll", onScrollOrResize, true);
+      window.removeEventListener("resize", onScrollOrResize);
+    };
+  }, [hoveredCurationTooltipId, updateCurationTooltipPosition]);
+
+  useEffect(() => () => clearCurationTooltipClose(), [clearCurationTooltipClose]);
+
+  const hoveredCurationForTooltip = useMemo(() => {
+    if (hoveredCurationTooltipId == null) return null;
+    return curationsSorted.find((c) => c.id === hoveredCurationTooltipId) ?? null;
+  }, [hoveredCurationTooltipId, curationsSorted]);
 
   useEffect(() => {
     const uniqueClears = new Set(sortedLeaderboard.map(player => player.playerId));
@@ -1713,9 +1766,15 @@ const LevelDetailPage = ({ mockData = null }) => {
                 </div>
                 {(res.level?.tilecount || res.level?.bpm) && (
                   <div className="metadata-container">  
+                  {!!res.level?.levelLengthInMs && (
+                    <div className="metadata-item">
+                      <TimeIcon size={22} />
+                      <span className="metadata-value">{formatDuration(res.level.levelLengthInMs)}</span>
+                    </div>
+                  )}
                   {!!res.level?.tilecount && (
                     <div className="metadata-item">
-                      <ChartIcon size={18} />
+                      <ChartIcon size={22} />
                       {/* <span className="metadata-label">Tilecount</span> */}
                       <span className="metadata-value">{res.level.tilecount}</span>
                     </div>
@@ -1724,7 +1783,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                     <div className="metadata-item">
                       {/* <span className="metadata-icon">ICON</span> */}
                       {/* <span className="metadata-label">Start BPM</span> */}
-                      <MetronomeIcon size={18} />
+                      <MetronomeIcon size={22} />
                       <span className="metadata-value">{res.level.bpm}</span>
                     </div>
                   )}
@@ -1793,6 +1852,18 @@ const LevelDetailPage = ({ mockData = null }) => {
                         <div
                           key={curation.id}
                           className="level-detail__curation-icon-with-tooltip"
+                          ref={(el) => {
+                            if (el) {
+                              curationTooltipAnchorRefs.current[curation.id] = el;
+                            } else {
+                              delete curationTooltipAnchorRefs.current[curation.id];
+                            }
+                          }}
+                          onMouseEnter={() => {
+                            clearCurationTooltipClose();
+                            setHoveredCurationTooltipId(curation.id);
+                          }}
+                          onMouseLeave={scheduleCurationTooltipClose}
                         >
                           <div
                             className="level-detail__curation-icon-cell"
@@ -1806,35 +1877,6 @@ const LevelDetailPage = ({ mockData = null }) => {
                               className="level-detail__curation-type-icon-img"
                             />
                           ))}
-                          </div>
-                          <div
-                            className="curation-tooltip-dropdown level-detail__curation-inline-assignee"
-                            role="tooltip"
-                          >
-                            <div className="curation-tooltip-type">{typeLabel}</div>
-                            {typesSorted.every((t) => hasAbility(t, ABILITIES.SHOW_ASSIGNER)) && (
-                            <>
-                            <div className="curation-tooltip-assigned">assigned by</div>
-                            <div className="curation-tooltip-user">
-                              {assigner?.avatarUrl && (
-                                <img
-                                  className="curation-tooltip-avatar"
-                                  src={selectIconSize(assigner.avatarUrl, 'small')}
-                                  alt={assigner.nickname || 'User'}
-                                />
-                              )}
-                              <span className="curation-tooltip-name">
-                                {assigner?.nickname || 'Unknown'}
-                              </span>
-                              <span className="curation-tooltip-username">
-                                @{assigner?.username || 'unknown'}
-                              </span>
-                            </div>
-                            </>
-                            )}
-                            <div className="curation-tooltip-time">
-                              Updated on {formatDate(curation.updatedAt, i18next?.language)}
-                            </div>
                           </div>
                         </div>
                       );
@@ -2321,6 +2363,59 @@ const LevelDetailPage = ({ mockData = null }) => {
               }))}
           />
       )}
+
+      {hoveredCurationForTooltip &&
+        createPortal(
+          (() => {
+            const typesSortedPortal = sortCurationTypesForDisplay(
+              hoveredCurationForTooltip.types || [],
+              curationTypesDict
+            );
+            const typeLabelPortal = typesSortedPortal.map((t) => t.name).join(", ") || "Curation";
+            const assignerPortal = hoveredCurationForTooltip.assignedByUser;
+            return (
+              <div
+                className="curation-tooltip-dropdown level-detail__curation-inline-assignee curation-tooltip-dropdown--portal"
+                role="tooltip"
+                style={{
+                  position: "fixed",
+                  top: curationTooltipCoords.top,
+                  left: curationTooltipCoords.left,
+                  transform: "translateX(-50%)",
+                  zIndex: 121,
+                }}
+                onMouseEnter={clearCurationTooltipClose}
+                onMouseLeave={scheduleCurationTooltipClose}
+              >
+                <div className="curation-tooltip-type">{typeLabelPortal}</div>
+                {typesSortedPortal.every((t) => hasAbility(t, ABILITIES.SHOW_ASSIGNER)) && (
+                  <>
+                    <div className="curation-tooltip-assigned">assigned by</div>
+                    <div className="curation-tooltip-user">
+                      {assignerPortal?.avatarUrl && (
+                        <img
+                          className="curation-tooltip-avatar"
+                          src={selectIconSize(assignerPortal.avatarUrl, "small")}
+                          alt={assignerPortal.nickname || "User"}
+                        />
+                      )}
+                      <span className="curation-tooltip-name">
+                        {assignerPortal?.nickname || "Unknown"}
+                      </span>
+                      <span className="curation-tooltip-username">
+                        @{assignerPortal?.username || "unknown"}
+                      </span>
+                    </div>
+                  </>
+                )}
+                <div className="curation-tooltip-time">
+                  Updated on {formatDate(hoveredCurationForTooltip.updatedAt, i18next?.language)}
+                </div>
+              </div>
+            );
+          })(),
+          getPortalRoot()
+        )}
 
       </div>
     </div>
