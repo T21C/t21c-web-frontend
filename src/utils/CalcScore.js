@@ -85,18 +85,19 @@ const getSpeedMtp = (SPEED, isDesBus=false)=>{
     return 1
 }
 
-const getScore = (passData, levelData) => {
+const getScore = (passData, levelData, difficultyDict = {}) => {
     const speed = passData['speed']
     const inputs = passData['judgements']
     const accuracy = calcAcc(inputs)
+    const diff = difficultyDict[levelData?.diffId]
     const base = 
     accuracy === 1 && levelData.ppBaseScore ? levelData.ppBaseScore :
     levelData.baseScore ? levelData.baseScore
-    : levelData.difficulty?.baseScore || 0;
+    : diff?.baseScore || 0;
     const xaccMtp = getXaccMtp(inputs, base)
     var speedMtp = 0
     var score = 0
-    if (levelData?.difficulty?.name == "Marathon"){
+    if (diff?.name == "Marathon"){
         speedMtp = getSpeedMtp(speed, true)
         score = Math.max(base * xaccMtp * speedMtp, 0)
     }
@@ -108,10 +109,10 @@ const getScore = (passData, levelData) => {
 }
 
 
-export const getScoreV2 = (passData, levelData) => {
+export const getScoreV2 = (passData, levelData, difficultyDict = {}) => {
     
     const inputs = passData['judgements'];
-    const scoreOrig = getScore(passData, levelData);
+    const scoreOrig = getScore(passData, levelData, difficultyDict);
     var mtp = getScoreV2Mtp(inputs);
     if (passData['isNoHoldTap']) 
        {

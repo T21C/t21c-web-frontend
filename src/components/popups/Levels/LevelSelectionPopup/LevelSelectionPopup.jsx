@@ -6,6 +6,7 @@ import toast from 'react-hot-toast';
 import { formatCreatorDisplay } from '@/utils/Utility';
 import ZipLevelFilesList from '@/components/popups/Levels/ZipLevelFilesList/ZipLevelFilesList';
 import { CloseButton } from '@/components/common/buttons';
+import { useDifficultyContext } from '@/contexts/DifficultyContext';
 
 const LIMIT = 20;
 
@@ -18,6 +19,7 @@ const LevelSelectionPopup = ({
   curationTypes: _curationTypes,
 }) => {
   const { t } = useTranslation(['components', 'common']);
+  const { difficultyDict } = useDifficultyContext();
 
   const zipPickerMode =
     Boolean(isOpen) &&
@@ -271,8 +273,8 @@ const LevelSelectionPopup = ({
                 <div className="level-selection-modal__level-card-wrapper">
                   <div className="level-selection-modal__img-wrapper">
                     <img
-                      src={level.difficulty?.icon || '/default-difficulty-icon.png'}
-                      alt={level.difficulty?.name || 'Difficulty icon'}
+                      src={difficultyDict[level.diffId]?.icon || '/default-difficulty-icon.png'}
+                      alt={difficultyDict[level.diffId]?.name || 'Difficulty icon'}
                       className="level-selection-modal__difficulty-icon"
                     />
                   </div>

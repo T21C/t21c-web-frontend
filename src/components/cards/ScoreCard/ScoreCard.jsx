@@ -37,7 +37,7 @@ const ScoreCard = ({scoreData, topScores, potentialTopScores}) => {
     <div className={`score-card ${isHiddenPass ? 'hidden-pass' : ''}`} style={{pointerEvents: isHiddenLevel ? 'none' : 'auto'}}>
       <div className="img-wrapper">
         {!isHiddenLevel && (
-          <img src={difficultyDict[scoreData.level.difficulty.id]?.icon} referrerPolicy="no-referrer" alt="" />
+          <img src={difficultyDict[scoreData.level.diffId]?.icon} referrerPolicy="no-referrer" alt="" />
         )}
         {isHiddenLevel && (
           <div className="hidden-level-icon">🔒</div>

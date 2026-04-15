@@ -62,7 +62,7 @@ export const EditPassPopup = ({ pass, onClose, onUpdate }) => {
   } = usePassCoreForm({
     mode: "edit",
     initialForm: initialFormState,
-    isUDiffLevel: (lvl) => lvl?.difficulty?.id >= 41,
+    isUDiffLevel: (lvl) => (lvl?.diffId ?? 0) >= 41,
   });
 
 const handleSubmit = async (e) => {

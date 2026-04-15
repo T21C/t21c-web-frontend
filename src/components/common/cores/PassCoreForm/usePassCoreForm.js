@@ -3,6 +3,7 @@ import api from "@/utils/api";
 import { getVideoDetails } from "@/utils";
 import calcAcc from "@/utils/CalcAcc";
 import { getScoreV2 } from "@/utils/CalcScore";
+import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { parseJudgements } from "@/utils/ParseJudgements";
 import { validateFeelingRating, validateNumber, validateSpeed } from "@/utils/Utility";
 import { useTranslation } from "react-i18next";
@@ -38,6 +39,7 @@ export function usePassCoreForm({
 }) {
   const copy = getPassCoreCopy(mode);
   const { t } = useTranslation([copy.ns, "common"]);
+  const { difficultyDict } = useDifficultyContext();
 
   const [form, setForm] = useState(initialForm);
   const [accuracy, setAccuracy] = useState(null);
@@ -158,7 +160,7 @@ export function usePassCoreForm({
     } else if (!Object.values(passData).every((value) => value !== null)) {
       setScore(t(copy.scoreNeedInfo, { ns: copy.ns }));
     } else if (passData && lvl) {
-      setScore(getScoreV2(passData, lvl).toFixed(2));
+      setScore(getScoreV2(passData, lvl, difficultyDict).toFixed(2));
     } else {
       setScore(t(copy.scoreNoInfo, { ns: copy.ns }));
     }
@@ -168,6 +170,11 @@ export function usePassCoreForm({
     if (level) updateAccuracyAndScore(form, level);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [level]);
+
+  useEffect(() => {
+    if (level) updateAccuracyAndScore(form, level);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [difficultyDict]);
 
   const validate = (nextForm) => {
     const validationResult = {};

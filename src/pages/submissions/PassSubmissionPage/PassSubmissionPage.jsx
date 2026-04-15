@@ -104,7 +104,7 @@ const PassSubmissionPage = () => {
     initialForm: initialFormState,
     rejectDeletedLevel: true,
     isUDiffLevel: (lvl) =>
-      difficultyDict[lvl?.difficulty?.id]?.name?.[0] === "U" || difficultyDict[lvl?.difficulty?.id]?.name?.[0] === "Q",
+      difficultyDict[lvl?.diffId]?.name?.[0] === "U" || difficultyDict[lvl?.diffId]?.name?.[0] === "Q",
     requireKeyModeWhenUDiff: true,
     extraValidation: ({ form: nextForm }) => ({
       playerId: Boolean(nextForm.playerId),
@@ -460,8 +460,8 @@ const PassSubmissionPage = () => {
                 {searchResults.map((result) => (
                   <div key={result.id} className="level-option" onClick={() => handleLevelSelect(result)}>
                     <img
-                      src={difficultyDict[result.difficulty.id]?.icon}
-                      alt={difficultyDict[result.difficulty.id]?.name}
+                      src={difficultyDict[result.diffId]?.icon}
+                      alt={difficultyDict[result.diffId]?.name}
                       className="difficulty-icon"
                     />
                     <div className="level-content">
@@ -481,8 +481,8 @@ const PassSubmissionPage = () => {
           renderLevelInfoLeading={() =>
             level && form.levelId ? (
               <img
-                src={difficultyDict[level.difficulty.id]?.icon}
-                alt={difficultyDict[level.difficulty.id]?.name}
+                src={difficultyDict[level.diffId]?.icon}
+                alt={difficultyDict[level.diffId]?.name}
                 className="level-icon"
               />
             ) : null

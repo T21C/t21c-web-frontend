@@ -13,6 +13,7 @@ import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { formatDate } from "@/utils/Utility";
 import i18next from "i18next";
 import { EyeIcon, EyeOffIcon, TrashIcon } from "@/components/common/icons";
+import { useDifficultyContext } from "@/contexts/DifficultyContext";
 
 const currentUrl = window.location.origin + location.pathname;
 
@@ -33,6 +34,7 @@ const PassDetailPage = () => {
   const [res, setRes] = useState(null);
   const [videoDetail, setVideoDetail] = useState(null);
   const { user } = useAuth();
+  const { difficultyDict } = useDifficultyContext();
   const [openEditDialog, setOpenEditDialog] = useState(false);
   const [particles, setParticles] = useState([]);
   const [showHideConfirm, setShowHideConfirm] = useState(false);
@@ -130,7 +132,8 @@ const PassDetailPage = () => {
 
   const { pass } = res;
   const accuracy = pass.accuracy;
-  const baseScore = pass.level?.baseScore || pass.level?.difficulty?.baseScore;
+  const levelDiff = difficultyDict[pass.level?.diffId];
+  const baseScore = pass.level?.baseScore || levelDiff?.baseScore;
 
   return (
     <>
@@ -163,7 +166,7 @@ const PassDetailPage = () => {
             <div className="level-card">
               <div className="difficulty-section">
                 <div className="difficulty-icon">
-                  <img src={pass.level?.difficulty?.icon} alt={pass.level?.difficulty?.name} />
+                  <img src={levelDiff?.icon} alt={levelDiff?.name} />
                 </div>
                 {baseScore && <span className="base-score">{t('passDetail.level.baseScore', { score: baseScore })}</span>}
               </div>
@@ -316,7 +319,7 @@ const PassDetailPage = () => {
                     </div>
                   </div>
                   <div className="bottom">
-                    <div className={`judgement-item too-early ${pass.judgements?.earlyDouble === 0 && pass.level?.difficulty?.name[0] !== "P" && accuracy !== 1 ? 'zero-shine' : ''}`}>
+                    <div className={`judgement-item too-early ${pass.judgements?.earlyDouble === 0 && levelDiff?.name?.[0] !== "P" && accuracy !== 1 ? 'zero-shine' : ''}`}>
                       <label>{t('passDetail.judgements.types.tooEarly.label')}</label>
                       <span>{t('passDetail.judgements.types.tooEarly.value', { count: pass.judgements?.earlyDouble || 0 })}</span>
                     </div>

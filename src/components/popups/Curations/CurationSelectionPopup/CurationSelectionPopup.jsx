@@ -27,7 +27,7 @@ const CurationSelectionPopup = ({
   multiSelect = false,
 }) => {
   const { t } = useTranslation(['components', 'common']);
-  const { curationTypes } = useDifficultyContext();
+  const { curationTypes, difficultyDict } = useDifficultyContext();
 
   const [curations, setCurations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -275,14 +275,14 @@ const CurationSelectionPopup = ({
                           </div>
                         ))}
                       </div>
-                      {curation.level?.difficulty && (
+                      {curation.level?.diffId != null && difficultyDict[curation.level.diffId] && (
                         <div className="curation-selection-modal__difficulty">
                           <img
-                            src={curation.level.difficulty.icon}
-                            alt={curation.level.difficulty.name}
+                            src={difficultyDict[curation.level.diffId].icon}
+                            alt={difficultyDict[curation.level.diffId].name}
                             className="curation-selection-modal__difficulty-icon"
                           />
-                          <span>{curation.level.difficulty.name}</span>
+                          <span>{difficultyDict[curation.level.diffId].name}</span>
                         </div>
                       )}
                     </div>

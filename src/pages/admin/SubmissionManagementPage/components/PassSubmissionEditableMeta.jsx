@@ -330,7 +330,7 @@ export default function PassSubmissionEditableMeta({
 
   const level = submission.level;
   const flags = submission.flags;
-  const diffIconKey = level?.diffId ?? level?.difficulty?.id;
+  const diffIconKey = level?.diffId;
 
   return (
     <div className="pass-submission-meta-edit">
@@ -390,8 +390,8 @@ export default function PassSubmissionEditableMeta({
                       onClick={() => handleLevelSelect(result)}
                     >
                       <img
-                        src={difficultyDict[result.difficulty?.id]?.icon}
-                        alt={result.difficulty?.name}
+                        src={difficultyDict[result.diffId]?.icon}
+                        alt={difficultyDict[result.diffId]?.name}
                         className="difficulty-icon"
                       />
                       <div className="level-content">
@@ -410,8 +410,8 @@ export default function PassSubmissionEditableMeta({
                   {levelPreview && levelInput && /^\d+$/.test(levelInput.trim()) ? (
                     <>
                       <img
-                        src={difficultyDict[levelPreview.difficulty?.id]?.icon}
-                        alt={levelPreview.difficulty?.name}
+                        src={difficultyDict[levelPreview.diffId]?.icon}
+                        alt={difficultyDict[levelPreview.diffId]?.name}
                         className="level-icon"
                       />
                       <div className="level-info">

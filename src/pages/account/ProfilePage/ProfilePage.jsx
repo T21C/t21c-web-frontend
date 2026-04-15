@@ -19,6 +19,7 @@ import { useProfileContext } from "@/contexts/ProfileContext";
 import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 import { CreatorIcon } from "@/components/common/icons/CreatorIcon";
 import { AccountStatusBanners } from "@/components/account/AccountStatusBanners/AccountStatusBanners";
+import { useDifficultyContext } from "@/contexts/DifficultyContext";
 const ENABLE_ROULETTE = import.meta.env.VITE_APRIL_FOOLS === "true";
 
 const PASSES_PER_PAGE = 50;
@@ -60,6 +61,7 @@ const ProfilePage = () => {
     
     // Get context for search and sort state (per player)
     const profileContext = useProfileContext();
+    const { difficultyDict } = useDifficultyContext();
     const currentSettings = profileContext.getPlayerSettings(playerId);
     
     const searchQuery = currentSettings.searchQuery;
@@ -255,27 +257,29 @@ const ProfilePage = () => {
           value: 'difficulty', 
           label: t('profile.sort.byDifficulty'), 
           sortFn: (a, b) => {
-            // First: .difficulty.type == "PGU" sorted before others
-            const typeA = a.level?.difficulty?.type === "PGU" ? 0 : 1;
-            const typeB = b.level?.difficulty?.type === "PGU" ? 0 : 1;
+            // First: PGU difficulties sorted before others
+            const diffA = difficultyDict[a.level?.diffId];
+            const diffB = difficultyDict[b.level?.diffId];
+            const typeA = diffA?.type === "PGU" ? 0 : 1;
+            const typeB = diffB?.type === "PGU" ? 0 : 1;
             if (typeA !== typeB) {
               return sortOrder !== 'DESC' ? typeB - typeA : typeA - typeB;
             }
 
-            const sortOrderA = a.level?.difficulty?.sortOrder || 0;
-            const sortOrderB = b.level?.difficulty?.sortOrder || 0;
+            const sortOrderA = diffA?.sortOrder || 0;
+            const sortOrderB = diffB?.sortOrder || 0;
             if (sortOrderA !== sortOrderB) {
               return sortOrder === 'DESC' ? sortOrderB - sortOrderA : sortOrderA - sortOrderB;
             }
 
-            const baseScoreA = a.level?.baseScore || a.level?.difficulty?.baseScore || 0;
-            const baseScoreB = b.level?.baseScore || b.level?.difficulty?.baseScore || 0;
+            const baseScoreA = a.level?.baseScore || diffA?.baseScore || 0;
+            const baseScoreB = b.level?.baseScore || diffB?.baseScore || 0;
             if (baseScoreA !== baseScoreB) {
               return sortOrder !== 'DESC' ? baseScoreB - baseScoreA : baseScoreA - baseScoreB;
             }
           }
         }
-      ], [t, sortOrder, playerData?.topScores]);
+      ], [t, sortOrder, playerData?.topScores, difficultyDict]);
 
       const selectedSortOption = useMemo(() => 
         sortOptions.find(option => option.value === sortType),
@@ -286,12 +290,12 @@ const ProfilePage = () => {
       const searchableFields = useMemo(() => ({
         song: (pass) => pass.level?.song?.toLowerCase() || '',
         artist: (pass) => pass.level?.artist?.toLowerCase() || '',
-        difficulty: (pass) => pass.level?.difficulty?.name?.toLowerCase() || '',
+        difficulty: (pass) => difficultyDict[pass.level?.diffId]?.name?.toLowerCase() || '',
         creators: (pass) => pass.level?.levelCredits?.map(credit => 
           credit.creator?.name?.toLowerCase() || ''
         ).join(' ') || '',
         team: (pass) => pass.level?.teamObject?.name?.toLowerCase() || '',
-      }), []);
+      }), [difficultyDict]);
 
       // Filtered and sorted passes
       const filteredAndSortedPasses = useMemo(() => {

@@ -295,10 +295,9 @@ const RatingPage = () => {
           rating.level.song?.toLowerCase().includes(query) ||
           rating.level.artist?.toLowerCase().includes(query) ||
           rating.level.id?.toString().includes(query) ||
-          rating.level.difficulty?.name?.toLowerCase().includes(query) ||
+          difficultyDict[rating.level.diffId]?.name?.toLowerCase().includes(query) ||
           difficultyDict[rating.averageDifficultyId]?.name?.toLowerCase().includes(query) ||
           difficultyDict[rating.communityDifficultyId]?.name?.toLowerCase().includes(query)
-          //  || difficultyDict[rating.level.difficultyId]?.name?.toLowerCase().includes(query); idk about this one
 
         if (basicMatch) return true;
 

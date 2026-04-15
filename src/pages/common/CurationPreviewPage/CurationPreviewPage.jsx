@@ -9,10 +9,12 @@ import { useTranslation } from 'react-i18next';
 import { formatCreatorDisplay } from '@/utils/Utility';
 import { formatDate } from '@/utils/Utility';
 import i18next from 'i18next';
+import { useDifficultyContext } from '@/contexts/DifficultyContext';
 
 const CurationPreviewPage = () => {
   const { id } = useParams();
   const { t } = useTranslation('pages');
+  const { difficultyDict } = useDifficultyContext();
   const currentUrl = window.location.origin + location.pathname;
 
   const [isLoading, setIsLoading] = useState(true);
@@ -117,7 +119,7 @@ const CurationPreviewPage = () => {
             <div className="curation-preview-page__level-details">
               <div className="curation-preview-page__detail">
                 <span className="curation-preview-page__detail-label">{t('curationPreview.levelInfo.difficulty')}</span>
-                <span className="curation-preview-page__detail-value">{level.difficulty?.name || 'Unknown'}</span>
+                <span className="curation-preview-page__detail-value">{difficultyDict[level.diffId]?.name || 'Unknown'}</span>
               </div>
               <div className="curation-preview-page__detail">
                 <span className="curation-preview-page__detail-label">{t('curationPreview.levelInfo.clears')}</span>

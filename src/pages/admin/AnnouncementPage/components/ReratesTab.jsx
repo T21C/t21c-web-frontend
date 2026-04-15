@@ -3,9 +3,11 @@ import '../announcementpage.css';
 import { useState } from 'react';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
+import { useDifficultyContext } from '@/contexts/DifficultyContext';
 
 const ReratesTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRemove, onEdit }) => {
   const { t } = useTranslation('components');
+  const { difficultyDict } = useDifficultyContext();
   
   const [removingIds, setRemovingIds] = useState(new Set());
   const [error, setError] = useState('');
@@ -41,9 +43,11 @@ const ReratesTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRem
   };
 
   const shouldShowBaseScore = (level) => {
+    const hasCurrentBase =
+      level.baseScore != null || difficultyDict[level.diffId]?.baseScore != null;
     return (
-      (level.baseScore || level.difficulty.basescore) 
-      && level.previousBaseScore
+      hasCurrentBase
+      && level.previousBaseScore != null
       && level.previousBaseScore !== level.baseScore
     );
   };
@@ -71,14 +75,14 @@ const ReratesTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRem
                     <div className="rerate-values">
                       <span className="rerate-value">
                         {shouldShowDifficulty(level) ? t('reratesTab.card.subtitle.difficulty', { 
-                          oldDifficulty: level.previousDifficulty?.name,
-                          newDifficulty: level.difficulty?.name
-                        }) : level.difficulty?.name}
+                          oldDifficulty: difficultyDict[level.previousDiffId]?.name ?? level.previousDifficulty?.name,
+                          newDifficulty: difficultyDict[level.diffId]?.name
+                        }) : difficultyDict[level.diffId]?.name}
 
                       </span>
                       <span className="rerate-value">
                       {shouldShowBaseScore(level) && t('reratesTab.card.subtitle.baseScore', { 
-                        oldBaseScore: level.previousBaseScore || level.difficulty.basescore,
+                        oldBaseScore: level.previousBaseScore ?? difficultyDict[level.previousDiffId]?.baseScore,
                         newBaseScore: level.baseScore 
                       })}
                       </span>

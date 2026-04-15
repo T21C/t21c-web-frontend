@@ -4,6 +4,7 @@ import './WeeklyGallery.css';
 import { ArrowIcon } from '../../icons';
 import { formatCreatorDisplay } from '@/utils/Utility';
 import { NavLink } from 'react-router-dom';
+import { useDifficultyContext } from '@/contexts/DifficultyContext';
 
 const WeeklyGallery = ({ 
   curations = [], 
@@ -13,6 +14,7 @@ const WeeklyGallery = ({
   className = ''
 }) => {
   const { t } = useTranslation('components');
+  const { difficultyDict } = useDifficultyContext();
   
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoScrolling, setIsAutoScrolling] = useState(autoScroll);
@@ -290,7 +292,7 @@ const WeeklyGallery = ({
                 <div className="weekly-gallery__item-overlay">
                   {(() => {
                     const levelRow = curation.scheduledCuration?.level || curation.level;
-                    const diff = levelRow?.difficulty;
+                    const diff = difficultyDict[levelRow?.diffId];
                     let typeIcons = curation.types.filter((t) => !['V0', 'C0'].includes(t.name));
                     return (
                   <div className="weekly-gallery__overlay-top">

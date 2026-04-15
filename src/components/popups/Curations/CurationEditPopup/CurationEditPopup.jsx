@@ -11,6 +11,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { formatCreatorDisplay } from '@/utils/Utility';
 import { ItemPickManager } from '@/components/common/selectors';
 import { CloseButton } from '@/components/common/buttons';
+import { useDifficultyContext } from '@/contexts/DifficultyContext';
 
 const ABILITY_CUSTOM_CSS = 1n << 0n;
 const ABILITY_FORCE_DESCRIPTION = 1n << 11n;
@@ -55,6 +56,7 @@ const CurationEditPopup = ({
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
+  const { difficultyDict } = useDifficultyContext();
 
   const [form, setForm] = useState(emptyFormState);
   const [level, setLevel] = useState(null);
@@ -263,7 +265,7 @@ const CurationEditPopup = ({
               <div className="curation-edit-modal__level-card">
                 <div className="curation-edit-modal__level-header">
                   <img
-                    src={displayLevel.difficulty?.icon || '/default-difficulty-icon.png'}
+                    src={difficultyDict[displayLevel.diffId]?.icon || '/default-difficulty-icon.png'}
                     alt=""
                     className="curation-edit-modal__difficulty-icon"
                   />

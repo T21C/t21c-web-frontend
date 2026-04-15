@@ -1502,12 +1502,13 @@ const LevelDetailPage = ({ mockData = null }) => {
       }
 
       if (response.data.level) {
+        const levelPatch = { ...response.data.level };
+        delete levelPatch.difficulty;
         setRes(prevRes => ({
           ...prevRes,
           level: {
             ...prevRes.level,
-            ...response.data.level,
-            difficulty: response.data.level.difficulty,
+            ...levelPatch,
             baseScore: response.data.level.baseScore,
             publicComments: response.data.level.publicComments,
             passes: prevRes?.level?.passes

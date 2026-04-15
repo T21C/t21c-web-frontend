@@ -3,10 +3,12 @@ import api from '@/utils/api';
 import { useState } from 'react';
 import { TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
+import { useDifficultyContext } from '@/contexts/DifficultyContext';
   
 const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemove }) => {
   const { t } = useTranslation('components');
-  
+  const { difficultyDict } = useDifficultyContext();
+
   const [removingIds, setRemovingIds] = useState(new Set());
   const [error, setError] = useState('');
 
@@ -72,8 +74,8 @@ const PassesTab = ({ passes, selectedPasses, onCheckboxChange, isLoading, onRemo
                       } | {t('passesTab.card.stats.accuracy', { 
                         accuracy: ((pass.accuracy || 0) * 100).toFixed(2)
                       })}
-                      {pass.level?.difficulty?.name && t('passesTab.card.stats.difficulty', { 
-                        difficultyName: pass.level.difficulty.name 
+                      {difficultyDict[pass.level?.diffId]?.name && t('passesTab.card.stats.difficulty', { 
+                        difficultyName: difficultyDict[pass.level.diffId].name 
                       })}
                     </div>
                   </div>

@@ -25,7 +25,7 @@ const CurationPage = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user } = useAuth();
-  const { curationTypes, reloadCurationTypes } = useDifficultyContext();
+  const { curationTypes, reloadCurationTypes, difficultyDict } = useDifficultyContext();
   const { t } = useTranslation(['pages', 'common']);
   const currentUrl = window.location.origin + location.pathname;
 
@@ -567,8 +567,8 @@ const CurationPage = () => {
                     <div className="curation-song-wrapper">
                       <div className="curation-song-header">
                         <img
-                          src={level?.difficulty?.icon || '/default-difficulty-icon.png'}
-                          alt={level?.difficulty?.name || 'Difficulty'}
+                          src={difficultyDict[level?.diffId]?.icon || '/default-difficulty-icon.png'}
+                          alt={difficultyDict[level?.diffId]?.name || 'Difficulty'}
                           className="curation-difficulty-icon"
                         />
                         <h3>{level?.song || 'Unknown Level'}</h3>

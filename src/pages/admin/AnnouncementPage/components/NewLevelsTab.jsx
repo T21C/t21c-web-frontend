@@ -3,9 +3,11 @@ import api from '@/utils/api';
 import { useState } from 'react';
 import { EditIcon, TrashIcon } from '@/components/common/icons';
 import { useTranslation } from 'react-i18next';
+import { useDifficultyContext } from '@/contexts/DifficultyContext';
 
 const NewLevelsTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onRemove, onEdit }) => {
   const { t } = useTranslation(['components', 'common']);
+  const { difficultyDict } = useDifficultyContext();
   
   const [removingIds, setRemovingIds] = useState(new Set());
   const [error, setError] = useState('');
@@ -56,7 +58,7 @@ const NewLevelsTab = ({ levels, selectedLevels, onCheckboxChange, isLoading, onR
                     {level.song} - {level.artist}
                   </div>
                   <div className="item-subtitle">
-                    {level.difficulty?.name}
+                    {difficultyDict[level.diffId]?.name}
                     {level.team && t('newLevelsTab.card.team', { team: level.team })}
                   </div>
                 </div>
