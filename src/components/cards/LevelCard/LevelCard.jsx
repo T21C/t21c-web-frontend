@@ -9,7 +9,7 @@ import { SongPopup } from "@/components/popups/Songs";
 import { ArtistPopup } from "@/components/popups/Artists";
 import { useDifficultyContext } from "@/contexts/DifficultyContext";
 import { EditIcon, SteamIcon, DownloadIcon, VideoIcon, PassIcon, LikeIcon, PackIcon, DragHandleIcon, MetronomeIcon, ChartIcon, TimeIcon } from "@/components/common/icons";
-import { formatCreatorDisplay, selectIconSize } from "@/utils/Utility";
+import { clampFloat, formatCreatorDisplay, selectIconSize } from "@/utils/Utility";
 import { ABILITIES, hasBit } from "@/utils/Abilities";
 import { permissionFlags } from "@/utils/UserPermissions";
 import { hasFlag } from "@/utils/UserPermissions";
@@ -323,7 +323,7 @@ const LevelCard = ({
           {chartBpm != null && chartBpm !== '' && (
           <div className="metadata-item">
             <MetronomeIcon size={18} />
-            <span className="metadata-value">{chartBpm}</span>
+            <span className="metadata-value">{clampFloat(chartBpm, 2)}</span>
           </div>
           )}
         </div>

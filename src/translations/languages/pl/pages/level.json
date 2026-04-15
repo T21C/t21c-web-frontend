@@ -25,6 +25,20 @@
     "clearsDesc": "Sortuj od największej ilości przejść",
     "random": "Losowe sortowanie"
   },
+  "settings": {
+    "sort": {
+      "header": "Sortuj poziomy według...",
+      "recent": "ID",
+      "difficulty": "Trudność",
+      "clears": "Przejścia",
+      "likes": "Polubienia",
+      "baseScore": "Base Score",
+      "bpm": "BPM",
+      "tiles": "Kafelki",
+      "time": "Czas",
+      "random": "Losowo"
+    }
+  },
   "settingExp": {
     "headerFilter": "Ustawienia filtrowania",
     "headerSort": "Ustawienia sortowania",

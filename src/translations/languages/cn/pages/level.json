@@ -32,6 +32,7 @@
       "baseScore": "基础分",
       "bpm": "BPM",
       "tiles": "物块数",
+      "time": "时长",
       "random": "随机"
     }
   },

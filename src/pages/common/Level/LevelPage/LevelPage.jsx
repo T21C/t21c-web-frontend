@@ -103,6 +103,7 @@ const LevelPage = () => {
     { value: 'BASESCORE', label: t('level.settings.sort.baseScore') },
     { value: 'BPM', label: t('level.settings.sort.bpm') },
     { value: 'TILES', label: t('level.settings.sort.tiles') },
+    { value: 'TIME', label: t('level.settings.sort.time') },
     { value: 'RANDOM', label: t('level.settings.sort.random') }
   ];
 

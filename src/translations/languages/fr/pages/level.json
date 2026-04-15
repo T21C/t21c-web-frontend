@@ -20,6 +20,20 @@
     "difficultyDesc": "Trier par difficultés descendante",
     "random": "Trier aléatoirement"
   },
+  "settings": {
+    "sort": {
+      "header": "Trier les niveaux par...",
+      "recent": "ID",
+      "difficulty": "Difficulté",
+      "clears": "Clears",
+      "likes": "Likes",
+      "baseScore": "Base Score",
+      "bpm": "BPM",
+      "tiles": "Tiles",
+      "time": "Temps",
+      "random": "Aléatoire"
+    }
+  },
   "settingExp": {
     "headerFilter": "Paramètres des filtres",
     "headerSort": "Paramètres de triage",
