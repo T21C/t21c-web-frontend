@@ -398,17 +398,33 @@ const LevelPage = () => {
   }
 
   function handleSortType(value) {
-    setSort(value);
     setPageNumber(0);
-    setLevelsData(null);
     setHasMore(true);
+    setLevelsData(null);
+    if (value === sort) {
+      if (fetchTimeoutRef.current) {
+        clearTimeout(fetchTimeoutRef.current);
+        fetchTimeoutRef.current = null;
+      }
+      fetchLevelsData(true);
+      return;
+    }
+    setSort(value);
   }
 
   function handleSortOrder(value) {
-    setOrder(value);
     setPageNumber(0);
-    setLevelsData(null);
     setHasMore(true);
+    setLevelsData(null);
+    if (value === order) {
+      if (fetchTimeoutRef.current) {
+        clearTimeout(fetchTimeoutRef.current);
+        fetchTimeoutRef.current = null;
+      }
+      fetchLevelsData(true);
+      return;
+    }
+    setOrder(value);
   }
 
   function resetAll() {
