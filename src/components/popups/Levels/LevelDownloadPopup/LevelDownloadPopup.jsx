@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useBodyScrollLock } from '@/hooks/useBodyScrollLock';
 import './LevelDownloadPopup.css';
 import EnhancedSelect from './EnhancedSelect';
@@ -9,16 +9,22 @@ import { useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
 import { formatFileSize } from '@/utils/zipUtils';
 
-const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, legacyDllink, incrementAccessCount, metadata }) => {
+const LevelDownloadPopup = ({
+    isOpen,
+    onClose,
+    levelId,
+    fileId: fileIdProp,
+    dlLink,
+    legacyDllink,
+    incrementAccessCount,
+    metadata,
+    transformOptions: transformOptionsProp,
+}) => {
     const { t } = useTranslation('components');
     const [step, setStep] = useState(1);
     const { user } = useAuth();
     const [selectionMode, setSelectionMode] = useState('drop'); // 'keep' or 'drop'
     const [availableFilters, setAvailableFilters] = useState([]);
-    const [availableOptions, setAvailableOptions] = useState(null);
-    const [isFileCorrupted, setIsFileCorrupted] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [isOversizedLevel, setIsOversizedLevel] = useState(false);
     const [transformOptions, setTransformOptions] = useState({
         keepEvents: [],
         dropEvents: [],
@@ -31,47 +37,28 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, legacyDllink, in
     });
 
     const popupRef = useRef(null);
-    const fileId = dlLink.split('/').pop();
+    const fileId = fileIdProp || (typeof dlLink === 'string' ? dlLink.split('/').pop() : null);
 
-    // Fetch available options from the server
-    useEffect(() => {
-        if (!levelId || !fileId) return;
-
-        const fetchTransformOptions = async () => {
-            setIsLoading(true);
-            try {
-                const response = await fetch(`${import.meta.env.VITE_CDN_URL}/levels/transform-options?fileId=${fileId}`);
-                
-                if (response.status === 500) {
-                    // File is missing/corrupted - show error without auto-downloading
-                    setIsFileCorrupted(true);
-                    return;
-                }
-
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch transform options: ${response.status}`);
-                }
-
-                const data = await response.json();
-                setAvailableOptions(data);
-                setIsFileCorrupted(false);
-                setIsOversizedLevel(!!data.transformUnavailable);
-            } catch (error) {
-                console.error('Error fetching transform options:', error);
-                setIsFileCorrupted(true);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchTransformOptions();
-    }, [levelId, fileId]);
-
-    useEffect(() => {
-        if (metadata?.transformUnavailable) {
-            setIsOversizedLevel(true);
-        }
-    }, [metadata?.transformUnavailable]);
+    // Download popup consumes `transformOptions` and `metadata` that the level
+    // detail page already fetched in parallel with its main requests; no extra
+    // network call here. The parent explicitly sets both fields to `null` once
+    // the /cdnData request settles (success or error), so the sentinel for
+    // "still in flight" is `undefined` on either prop.
+    const extrasLoading = metadata === undefined || transformOptionsProp === undefined;
+    const availableOptions = transformOptionsProp ?? null;
+    const isOversizedLevel = !!(
+        availableOptions?.transformUnavailable ||
+        metadata?.transformUnavailable
+    );
+    const isFileCorrupted = !extrasLoading && !metadata && !availableOptions;
+    const hasTransformOptionPayload = useMemo(() => {
+        if (!availableOptions) return false;
+        return (
+            Array.isArray(availableOptions.eventTypes) ||
+            Array.isArray(availableOptions.filterTypes) ||
+            Array.isArray(availableOptions.advancedFilterTypes)
+        );
+    }, [availableOptions]);
 
     useBodyScrollLock(true);
 
@@ -186,7 +173,11 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, legacyDllink, in
 
                 <h2>{t('levelPopups.download.title')}</h2>
                 
-                {isFileCorrupted ? (
+                {extrasLoading ? (
+                    <div className="download-step loading-state">
+                        <p>{t('loading.generic', { ns: 'common' })}</p>
+                    </div>
+                ) : isFileCorrupted ? (
                     <div className="download-step error-state">
                         <div className="error-icon">⚠️</div>
                         <h3>{t('levelPopups.download.errors.corrupted')}</h3>
@@ -212,10 +203,6 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, legacyDllink, in
                             )}
                         </div>
                     </div>
-                ) : isLoading ? (
-                    <div className="download-step loading-state">
-                        <p>{t('loading.generic', { ns: 'common' })}</p>
-                    </div>
                 ) : step === 1 ? (
                     <div className="download-step">
                         <p>{t('levelPopups.download.step1.prompt')}</p>
@@ -228,7 +215,7 @@ const LevelDownloadPopup = ({ isOpen, onClose, levelId, dlLink, legacyDllink, in
                             <button onClick={() => handleDownload('original')}>
                                 {t('levelPopups.download.step1.downloadOriginal')} ({formatFileSize(metadata?.originalZip?.size)})
                             </button>
-                            {!(isOversizedLevel || metadata?.transformUnavailable) && (
+                            {!(isOversizedLevel || metadata?.transformUnavailable) && hasTransformOptionPayload && (
                                 <button onClick={() => setStep(2)}>
                                     {t('levelPopups.download.step1.convertDownload')}
                                 </button>

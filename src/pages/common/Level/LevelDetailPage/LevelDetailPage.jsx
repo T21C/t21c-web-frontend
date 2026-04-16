@@ -951,7 +951,7 @@ const LevelDetailPage = ({ mockData = null }) => {
     }
   }, [effectiveId, user?.id, mockData]);
 
-  /** accessCount + zip metadata for download popup (bpm/tilecount come from level in GET /levels/:id). */
+  /** CDN zip metadata for download popup (downloadCount comes from level row in GET /levels/:id). */
   const fetchCdnDownloadExtras = useCallback(async () => {
     if (!effectiveId || mockData) {
       return;
@@ -963,12 +963,20 @@ const LevelDetailPage = ({ mockData = null }) => {
         if (!prevRes) return prevRes;
         return {
           ...prevRes,
-          accessCount: response.data.accessCount ?? prevRes.accessCount,
-          metadata: response.data.metadata ?? prevRes.metadata
+          metadata: response.data.metadata ?? prevRes.metadata ?? null,
+          transformOptions: response.data.transformOptions ?? prevRes.transformOptions ?? null
         };
       });
     } catch (error) {
       console.error("Error fetching CDN download extras:", error);
+      setRes(prevRes => {
+        if (!prevRes) return prevRes;
+        return {
+          ...prevRes,
+          metadata: prevRes.metadata ?? null,
+          transformOptions: prevRes.transformOptions ?? null
+        };
+      });
     }
   }, [effectiveId, mockData]);
 
@@ -2029,7 +2037,7 @@ const LevelDetailPage = ({ mockData = null }) => {
               {res.level.dlLink && res.level.dlLink.match(/http[s]?:\/\//) && (
                 <button className="svg-stroke" href={res.level.dlLink} target="_blank" title={t('levelDetail.links.download')} onClick={handleDownloadClick}>
                   <DownloadIcon size={"36px"}/>
-                  {res.accessCount !== undefined && <span className="access-count">{res.accessCount || 0}</span>}
+                  {res.level.downloadCount !== undefined && <span className="access-count">{res.level.downloadCount || 0}</span>}
                 </button>
               )}
               {res.level.workshopLink && (
@@ -2376,12 +2384,17 @@ const LevelDetailPage = ({ mockData = null }) => {
               isOpen={showDownloadPopup}
               onClose={() => setShowDownloadPopup(false)}
               levelId={id}
+              fileId={res.level.fileId}
               dlLink={res.level.dlLink}
               legacyDllink={res.level.legacyDllink}
               metadata={res.metadata}
+              transformOptions={res.transformOptions}
               incrementAccessCount={() => setRes(prevRes => ({
                 ...prevRes,
-                accessCount: (prevRes.accessCount || 0) + 1
+                level: {
+                  ...prevRes.level,
+                  downloadCount: (prevRes.level?.downloadCount || 0) + 1
+                }
               }))}
           />
       )}
