@@ -268,7 +268,7 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
       <div className="level-detail-popup-overlay" onClick={onClose}></div>
       <div className="level-detail-popup popup-scale-up">
         <div className="popup-content">
-          <div className="popup-header" style={{ '--popup-header-bg': `#${difficulty.color}ff` }}>
+          <div className="popup-header" style={{ '--popup-header-bg': difficulty?.color ? `#${difficulty.color}ff` : undefined }}>
             <h2>{getSongDisplayName(level)}</h2>
             <p>{getArtistDisplayName(level)}</p>
             <span className="createdAt">{t('levelDetail.info.createdAt')}: {formatDate(videoDetail?.timestamp || level.createdAt, i18next?.language)}</span>
@@ -290,18 +290,18 @@ const FullInfoPopup = ({ level, onClose, videoDetail, difficulty }) => {
               )}
               <div className="each-info">
                 <span>{t('levelDetail.info.difficulty')}:</span>
-                <span>{difficulty.name}</span>
+                <span>{difficulty?.name ?? '—'}</span>
               </div>
-              {(level.baseScore || difficulty.baseScore) && (
+              {(level.baseScore || difficulty?.baseScore) && (
                 <div className="each-info">
                   <span>{t('levelDetail.info.baseScore')}:</span>
-                  <span>{level.baseScore || difficulty.baseScore}PP</span>
+                  <span>{level.baseScore || difficulty?.baseScore}PP</span>
                 </div>
               )}
-              {(level.ppBaseScore || difficulty.ppBaseScore) && (
+              {(level.ppBaseScore || difficulty?.ppBaseScore) && (
                 <div className="each-info">
                   <span>{t('levelDetail.info.ppBaseScore')}:</span>
-                  <span>{level.ppBaseScore || difficulty.ppBaseScore}PP</span>
+                  <span>{level.ppBaseScore || difficulty?.ppBaseScore}PP</span>
                 </div>
               )}
               {level.aliases && level.aliases.length > 0 && (
@@ -574,7 +574,7 @@ const LevelDetailPage = ({ mockData = null }) => {
   const [showSongPopup, setShowSongPopup] = useState(false);
   const [showArtistPopup, setShowArtistPopup] = useState(false);
 
-  const { difficultyDict, curationTypesDict } = useDifficultyContext();
+  const { difficultyDict, curationTypesDict, difficulties } = useDifficultyContext();
 
   const location = useLocation();
   const currentUrl = window.location.origin + location.pathname;
@@ -1586,6 +1586,25 @@ const LevelDetailPage = ({ mockData = null }) => {
       </div>
     );
 
+  if (difficulties.length === 0) {
+    return (
+      <div className="level-detail-loading-container">
+        <div className="loader loader-level-detail"></div>
+        <p
+          style={{
+            fontSize: '1.5rem',
+            fontWeight: 'bold',
+            justifyContent: 'center',
+            textAlign: 'center',
+            marginTop: '1rem',
+          }}
+        >
+          {t('level.loading.difficulties')}
+        </p>
+      </div>
+    );
+  }
+
   const difficulty = difficultyDict[res.level.diffId];
   
   // Use tags from level data, sorted by groupSortOrder then sortOrder
@@ -1711,21 +1730,23 @@ const LevelDetailPage = ({ mockData = null }) => {
               <div className="level-id mobile">#{effectiveId}</div>
               <div className="difficulty-curation-row">
               <div className="diff rerate-history-container">
-                <img 
-                  src={difficulty.icon} 
-                  alt={difficulty.name || 'Difficulty icon'} 
-                  className="difficulty-icon"
-                />
-                {res.ratings?.averageDifficultyId && 
+                {difficulty?.icon ? (
+                  <img
+                    src={difficulty.icon}
+                    alt={difficulty.name || 'Difficulty icon'}
+                    className="difficulty-icon"
+                  />
+                ) : null}
+                {res.ratings?.averageDifficultyId &&
                  difficultyDict[res.ratings?.averageDifficultyId]?.icon &&
                  difficultyDict[res.ratings?.averageDifficultyId]?.type == "PGU" &&
-                 difficulty.name.includes("Q") ?
-                <img 
+                 difficulty?.name?.includes("Q") ? (
+                  <img
                     className="rating-icon"
                     src={difficultyDict[res.ratings?.averageDifficultyId]?.icon}
-                    alt="Rating icon" />
-                : null
-                }
+                    alt="Rating icon"
+                  />
+                ) : null}
                 {res?.rerateHistory?.length > 0 && (
                   <div ref={rerateHistoryAnchorRef} className="rerate-history-dropdown-anchor">
                     <span
@@ -1747,7 +1768,7 @@ const LevelDetailPage = ({ mockData = null }) => {
                   </div>
                 )}
                 <div className="pp-display">
-                  {formatBaseScore(res.level.baseScore || difficulty.baseScore || 0)}PP
+                  {formatBaseScore(res.level.baseScore || difficulty?.baseScore || 0)}PP
                 </div>
                 <div className="level-id">#{effectiveId}</div>
               </div>
