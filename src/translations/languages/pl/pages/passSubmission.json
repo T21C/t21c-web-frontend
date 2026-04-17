@@ -4,7 +4,7 @@
   "submInfo": {
     "levelId": "ID poziomu",
     "altname": "Alternatywna nazwa (opcj.)",
-    "nohold": "No Hold Tap (NHT)",
+    "nohold": "Alt. Tap Option (NHT)",
     "speed": "Prędkość (opcj., >=1.0)",
     "feelDiff": "Szacowany poziom trudności",
     "is12K": "12K",

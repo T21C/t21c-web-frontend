@@ -4,7 +4,7 @@
   "submInfo": {
     "levelId": "Search for a level or input ID",
     "altname": "Leaderboard Name",
-    "nohold": "No Hold Tap",
+    "nohold": "Alt. Tap Option",
     "speed": "Speed (opt., >=1.0)",
     "feelDiff": "Feeling Difficulty",
     "is12K": "12K",
