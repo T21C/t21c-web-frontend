@@ -36,7 +36,8 @@ const parseRankColor = (rank) => {
 }
 
 const ProfilePage = () => {
-    let {playerId} = useParams()
+    const params = useParams()
+    let playerId = params.playerId
     const [playerData, setPlayerData] = useState(null)
     const [showCaseOpen, setShowCaseOpen] = useState(false);
     const { t } = useTranslation('pages');
@@ -58,6 +59,13 @@ const ProfilePage = () => {
     if (!playerId) {
       playerId = user?.playerId;
     }
+
+    useEffect(() => {
+      const urlPlayerId = params.playerId;
+      if (!urlPlayerId && user?.playerId) {
+        navigate(`/profile/${user.playerId}`, { replace: true });
+      }
+    }, [params.playerId, user?.playerId, navigate]);
     
     // Get context for search and sort state (per player)
     const profileContext = useProfileContext();
