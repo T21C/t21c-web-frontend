@@ -1,61 +1,34 @@
 /**
- * Utility functions for handling zip file operations
+ * Utility functions for handling zip file operations.
+ *
+ * NOTE: Filenames are no longer hex-encoded on transport. The chunked upload flow carries
+ * the raw UTF-8 file name inside a JSON init body; the server NFC-normalises it on receipt.
+ * The legacy multipart submission flow relies on `form-data`/browser multipart encoding, which
+ * handles UTF-8 filenames correctly on all modern targets.
  */
 
 /**
- * Prepares a zip file for upload by encoding the original filename
- * @param {File} file - The zip file to prepare
- * @returns {Object} Object containing the prepared file and original name
+ * Prepares a zip file for upload. Validates type and returns the file plus its original name.
+ * @param {File} file
+ * @returns {{ file: File, originalName: string, size: number } | null}
  */
 export const prepareZipForUpload = (file) => {
   if (!file) return null;
-
-  // Validate file type
   if (file.type !== 'application/zip' && file.type !== 'application/x-zip-compressed') {
     throw new Error('Invalid file type. Please upload a zip file.');
   }
-
-  // Create a new File object with the encoded name
-  const encodedName = encodeFilename(file.name);
-  const preparedFile = new File([file], encodedName, {
-    type: file.type,
-    lastModified: file.lastModified,
-  });
-
   return {
-    file: preparedFile,
-    originalName: file.name,
-    size: file.size
+    file,
+    originalName: typeof file.name === 'string' ? file.name.normalize('NFC') : file.name,
+    size: file.size,
   };
 };
 
 /**
- * Encodes a filename to UTF-8 hex to handle special characters
- * @param {string} filename - The filename to encode
- * @returns {string} The encoded filename
- */
-export const encodeFilename = (filename) => {
-  return Array.from(new TextEncoder().encode(filename))
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
-};
-
-/**
- * Decodes a hex-encoded filename back to UTF-8
- * @param {string} encodedFilename - The encoded filename
- * @returns {string} The decoded filename
- */
-export const decodeFilename = (encodedFilename) => {
-  const hex = encodedFilename.match(/.{1,2}/g) || [];
-  const bytes = new Uint8Array(hex.map(byte => parseInt(byte, 16)));
-  return new TextDecoder().decode(bytes);
-};
-
-/**
- * Validates a zip file's size
- * @param {File} file - The zip file to validate
- * @param {number} maxSizeMB - Maximum size in megabytes
- * @returns {boolean} Whether the file size is valid
+ * Validates a zip file's size.
+ * @param {File} file
+ * @param {number} [maxSizeMB]
+ * @returns {boolean}
  */
 export const validateZipSize = (file, maxSizeMB = 100) => {
   const maxSizeBytes = maxSizeMB * 1024 * 1024;

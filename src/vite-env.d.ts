@@ -29,7 +29,6 @@ interface ImportMetaEnv {
 
   // Statistics and Other Endpoints
   readonly VITE_STATISTICS: string;
-  readonly VITE_FORM_SUBMIT: string;
   readonly VITE_PROFILE: string;
   readonly VITE_IMAGE: string;
   readonly VITE_BILIBILI_API: string;

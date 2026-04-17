@@ -1,7 +1,7 @@
 
 import "./passsubmission.css";
 import placeholder from "@/assets/placeholder/3.png";
-import { FormManager } from "@/components/misc/FormManager/FormManager";
+import { submitPass } from "@/utils/submissions/passSubmission";
 import { useEffect, useState, useRef } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { FetchIcon } from "@/components/common/icons";
@@ -172,8 +172,6 @@ const PassSubmissionPage = () => {
     fetchProfile();
   }, []);
 
- const submissionForm = new FormManager("pass")
-
   // Helper function to clean video URLs
   const cleanVideoUrl = (url) => {
     // Match various video URL formats
@@ -254,35 +252,31 @@ const PassSubmissionPage = () => {
     setSubmission(true);
 
     try {
-      // Clean the video URL before submission
       const cleanedVideoUrl = cleanVideoUrl(form.videoLink);
 
-      submissionForm.setDetail('levelId', form.levelId);
-      submissionForm.setDetail('videoLink', cleanedVideoUrl);
-      submissionForm.setDetail('passer', form.leaderboardName || '');
-      submissionForm.setDetail('passerId', form.playerId || null);
-      submissionForm.setDetail('passerRequest', false);
-      submissionForm.setDetail('speed', form.speed);
-      submissionForm.setDetail('feelingDifficulty', form.feelingRating);
-      submissionForm.setDetail('title', videoDetail?.title || '');
-      submissionForm.setDetail('videoLink', cleanedVideoUrl);
-      submissionForm.setDetail('rawTime', videoDetail?.timestamp || new Date().toISOString());
+      const payload = {
+        levelId: form.levelId,
+        videoLink: cleanedVideoUrl,
+        passer: form.leaderboardName || '',
+        passerId: form.playerId || null,
+        passerRequest: false,
+        speed: form.speed,
+        feelingDifficulty: form.feelingRating,
+        title: videoDetail?.title || '',
+        rawTime: videoDetail?.timestamp || new Date().toISOString(),
+        earlyDouble: parseInt(form.tooEarly) || 0,
+        earlySingle: parseInt(form.early) || 0,
+        ePerfect: parseInt(form.ePerfect) || 0,
+        perfect: parseInt(form.perfect) || 0,
+        lPerfect: parseInt(form.lPerfect) || 0,
+        lateSingle: parseInt(form.late) || 0,
+        lateDouble: 0,
+        is12K: isUDiff && form.is12K,
+        isNoHoldTap: form.isNoHold,
+        is16K: isUDiff && form.is16K,
+      };
 
-      // Add judgements directly to form
-      submissionForm.setDetail('earlyDouble', parseInt(form.tooEarly) || 0);
-      submissionForm.setDetail('earlySingle', parseInt(form.early) || 0);
-      submissionForm.setDetail('ePerfect', parseInt(form.ePerfect) || 0);
-      submissionForm.setDetail('perfect', parseInt(form.perfect) || 0);
-      submissionForm.setDetail('lPerfect', parseInt(form.lPerfect) || 0);
-      submissionForm.setDetail('lateSingle', parseInt(form.late) || 0);
-      submissionForm.setDetail('lateDouble', 0);
-
-      // Add flags directly to form
-      submissionForm.setDetail('is12K', isUDiff && form.is12K);
-      submissionForm.setDetail('isNoHoldTap', form.isNoHold);
-      submissionForm.setDetail('is16K', isUDiff && form.is16K);
-
-      const result = await submissionForm.submit();
+      await submitPass(payload);
       toast.success(t('passSubmission.alert.success'));
       setFormStateKey(prevKey => prevKey + 1);
       setForm(initialFormState);
@@ -290,7 +284,7 @@ const PassSubmissionPage = () => {
 
     } catch (err) {
       console.error("Submission error:", err);
-      const errMsg = err.response?.data?.error || err.message || err.error || "Unknown error occurred";
+      const errMsg = err.details || err.message || "Unknown error occurred";
       toast.error(`${t('passSubmission.alert.error')} ${truncateString(errMsg?.message || errMsg?.toString?.() || errMsg, 120)}`);
     } finally {
       setSubmission(false);

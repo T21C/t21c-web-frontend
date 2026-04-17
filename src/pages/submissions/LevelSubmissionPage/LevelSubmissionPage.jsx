@@ -1,8 +1,7 @@
 
 import "./levelsubmission.css";
 import placeholder from "@/assets/placeholder/3.png";
-import { FormManager } from "@/components/misc/FormManager/FormManager";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getVideoDetails } from "@/utils";
 import { useAuth } from "@/contexts/AuthContext";
 import { validateFeelingRating } from "@/utils/Utility";
@@ -22,14 +21,12 @@ import { QuestionmarkCircleIcon } from "@/components/common/icons";
 import { Tooltip } from "react-tooltip";
 import toast from "react-hot-toast";
 import { CDN_IMAGE_ACCEPT } from '@/constants/cdnImageAccept';
-import { useJobProgressStream } from '@/hooks/useJobProgressStream';
-
-const encodeFilename = (str) => {
-  // Convert string to UTF-8 bytes, then to hex
-  return Array.from(new TextEncoder().encode(str))
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('');
-};
+import {
+  validateLevel,
+  uploadLevelZip,
+  submitLevel,
+  selectLevelChart,
+} from '@/utils/submissions/levelSubmission';
 
 /** Keep in sync with server/src/server/submissions/submissionEvidenceRules.ts (display-only). */
 const SONG_VERIFICATION_NO_EVIDENCE = new Set(['ysmod_only', 'allowed', 'tuf_verified']);
@@ -151,10 +148,8 @@ const LevelSubmissionPage = () => {
   const [showCdnTos, setShowCdnTos] = useState(false);
   const [pendingZipFile, setPendingZipFile] = useState(null);
   const [isDragOver, setIsDragOver] = useState(false);
-  const [zipProgressJobId, setZipProgressJobId] = useState(null);
-  const [zipXhrPercent, setZipXhrPercent] = useState(0);
-
-  const { job: zipJob } = useJobProgressStream(zipProgressJobId, Boolean(submission && zipProgressJobId));
+  const [uploadProgress, setUploadProgress] = useState({ phase: 'idle', percent: 0 });
+  const uploadAbortRef = useRef(null);
 
   // Helper function to clean video URLs
   const cleanVideoUrl = (url) => {
@@ -291,7 +286,6 @@ const LevelSubmissionPage = () => {
     }));
   };
 
-  const submissionForm = new FormManager("level")
   const resetForm = () => {
     setFormStateKey((k) => k + 1);
     // Reset all form state
@@ -302,8 +296,7 @@ const LevelSubmissionPage = () => {
     setPendingZipFile(null);
     setShowCdnTos(false);
     setIsDragOver(false);
-    setZipProgressJobId(null);
-    setZipXhrPercent(0);
+    setUploadProgress({ phase: 'idle', percent: 0 });
     setFinalSubmissionId(null);
 
     // Reset creator states with empty values
@@ -363,14 +356,14 @@ const LevelSubmissionPage = () => {
     }
 
     setSubmission(true);
-    setZipXhrPercent(0);
-    setZipProgressJobId(null);
+    setUploadProgress({ phase: 'validating', percent: 0 });
+
+    const abortController = new AbortController();
+    uploadAbortRef.current = abortController;
 
     try {
-      // Clean the video URL before submission
       const cleanedVideoUrl = cleanVideoUrl(form.videoLink);
 
-      // Prepare creator requests - only include non-empty entries
       const creatorRequests = [
         ...charters
           .filter(charter => charter.name)
@@ -390,39 +383,18 @@ const LevelSubmissionPage = () => {
           }))
       ];
 
-      // Prepare team request if present
       const teamRequest = team.name ? {
         teamName: team.name,
         teamId: team.id,
         isNewRequest: team.isNewRequest
       } : null;
 
-      // Set song/artist data (normalized or text)
-      const artistDisplayName = artists.length > 0 
+      const artistDisplayName = artists.length > 0
         ? artists.map(a => a.name).filter(Boolean).join(', ')
         : form.artist;
-      submissionForm.setDetail('artist', artistDisplayName);
-      submissionForm.setDetail('song', selectedSong?.songName || form.song);
-      submissionForm.setDetail('songId', selectedSong?.songId || null);
-      // Use first artist ID for backward compatibility, or null if multiple artists
       const firstArtistId = artists.length === 1 && artists[0].id ? artists[0].id : null;
-      submissionForm.setDetail('artistId', firstArtistId);
-      submissionForm.setDetail('isNewSongRequest', selectedSong?.isNewRequest || false);
-      // Check if any artist is a new request
       const hasNewArtistRequest = artists.some(artist => artist.isNewRequest);
-      submissionForm.setDetail('isNewArtistRequest', hasNewArtistRequest);
-      submissionForm.setDetail('diff', form.diff);
-      submissionForm.setDetail('suffix', form.suffix || '');
-      submissionForm.setDetail('videoLink', cleanedVideoUrl);
-      submissionForm.setDetail('directDL', form.dlLink);
-      submissionForm.setDetail('wsLink', form.workshopLink);
-      
-      
-      submissionForm.setDetail('creatorRequests', creatorRequests);
-      submissionForm.setDetail('teamRequest', teamRequest);
-      submissionForm.setDetail('levelZip', form.levelZip);
-      
-      // Add artist requests (similar to creator requests)
+
       const artistRequests = artists
         .filter(artist => artist.name)
         .map(artist => ({
@@ -431,68 +403,96 @@ const LevelSubmissionPage = () => {
           isNewRequest: artist.isNewRequest,
           verificationState: artist.verificationState || null
         }));
-      
-      submissionForm.setDetail('artistRequests', artistRequests);
-      
-      if (evidenceFiles.length > 0) {
-        submissionForm.setDetail('evidence', evidenceFiles);
-        submissionForm.setDetail('evidenceType', evidenceType);
-      }
-      
-      // Encode the original filename using our UTF-8 to hex encoding
+
+      const payload = {
+        artist: artistDisplayName,
+        song: selectedSong?.songName || form.song,
+        songId: selectedSong?.songId || null,
+        artistId: firstArtistId,
+        isNewSongRequest: selectedSong?.isNewRequest || false,
+        isNewArtistRequest: hasNewArtistRequest,
+        diff: form.diff,
+        suffix: form.suffix || '',
+        videoLink: cleanedVideoUrl,
+        directDL: form.dlLink,
+        wsLink: form.workshopLink,
+        creatorRequests,
+        teamRequest,
+        artistRequests,
+        hasZip: Boolean(form.levelZip),
+        evidenceType: evidenceFiles.length > 0 ? evidenceType : null,
+        originalname: form.levelZip
+          ? (typeof form.levelZip.name === 'string' ? form.levelZip.name.normalize('NFC') : form.levelZip.name)
+          : null,
+      };
+
+      await validateLevel(payload, { signal: abortController.signal });
+
+      let uploadSessionId = null;
       if (form.levelZip) {
-        submissionForm.setDetail('originalname', encodeFilename(form.levelZip.name));
-        const zipJob = crypto.randomUUID();
-        setZipProgressJobId(zipJob);
-        submissionForm.setDetail('uploadId', zipJob);
+        setUploadProgress({ phase: 'uploading', percent: 0 });
+        const session = await uploadLevelZip(form.levelZip, {
+          signal: abortController.signal,
+          onProgress: (p) => {
+            const percent = typeof p?.percent === 'number' ? p.percent : 0;
+            setUploadProgress({ phase: p?.phase || 'uploading', percent });
+          },
+        });
+        uploadSessionId = session?.id ?? null;
       }
 
-      const response = await submissionForm.submit({
-        onUploadProgress: form.levelZip
-          ? (pct) => setZipXhrPercent(typeof pct === 'number' ? pct : 0)
-          : undefined
+      setUploadProgress({ phase: 'submitting', percent: 100 });
+
+      const response = await submitLevel({
+        payload,
+        uploadSessionId,
+        evidenceFiles,
+        signal: abortController.signal,
       });
-      
-      if (response.requiresLevelSelection) {
+
+      if (response?.requiresLevelSelection) {
         setLevelFiles(response.levelFiles);
         setSelectedFileId(response.fileId);
         setShowLevelSelection(true);
         resetForm();
         setFinalSubmissionId(response.submissionId);
-        setSubmission(false); // Reset submission state since we're waiting for level selection
+        setSubmission(false);
         return;
       }
-      
-      if (response.success) {
+
+      if (response?.success) {
         resetForm();
         toast.success(t('levelSubmission.alert.success'));
       } else {
-        throw new Error(response.error || 'Failed to submit form');
+        throw new Error(response?.error || 'Failed to submit form');
       }
     } catch (error) {
+      if (error?.name === 'AbortError' || error?.name === 'CanceledError') {
+        return;
+      }
       console.error('Submission error:', error);
-      const errMsg = error.response?.data?.error || error.message || error.error || "Unknown error occurred";
+      const errMsg = error.details || error.message || "Unknown error occurred";
       toast.error(`${t('levelSubmission.alert.error')} ${typeof errMsg === 'string' ? errMsg : errMsg?.message || ''}`);
     } finally {
+      uploadAbortRef.current = null;
       setSubmission(false);
-      setZipProgressJobId(null);
-      setZipXhrPercent(0);
+      setUploadProgress({ phase: 'idle', percent: 0 });
     }
   };
 
   const handleLevelSelect = async (selectedLevel) => {
     try {
-      setSubmission(true); // Show loading state during level selection
-      const response = await api.post(import.meta.env.VITE_SELECT_LEVEL, {
+      setSubmission(true);
+      const response = await selectLevelChart({
         submissionId: finalSubmissionId,
-        selectedLevel
+        selectedLevel,
       });
 
-      if (response.data.success) {
+      if (response?.success) {
         resetForm();
         toast.success(t('levelSubmission.alert.success'));
       } else {
-        throw new Error(response.data.error || 'Failed to select level');
+        throw new Error(response?.error || 'Failed to select level');
       }
     } catch (error) {
       console.error('Level selection error:', error);
@@ -518,16 +518,16 @@ const LevelSubmissionPage = () => {
         current.size > largest.size ? current : largest
       );
       
-      const response = await api.post(import.meta.env.VITE_SELECT_LEVEL, {
+      const response = await selectLevelChart({
         submissionId: finalSubmissionId,
         selectedLevel: zipLevelFileKey(largestFile) || largestFile.name,
       });
 
-      if (response.data.success) {
+      if (response?.success) {
         resetForm();
         toast.success(t('levelSubmission.alert.success'));
       } else {
-        throw new Error(response.data.error || 'Failed to select level');
+        throw new Error(response?.error || 'Failed to select level');
       }
     } catch (error) {
       console.error('Level selection error:', error);
@@ -1389,12 +1389,13 @@ const LevelSubmissionPage = () => {
               </div>
             )}
 
-            {submission && zipProgressJobId && (
+            {submission && uploadProgress.phase !== 'idle' && (
               <p className="level-submission-page__zip-job-status" aria-live="polite">
-                {zipJob?.message || (zipXhrPercent > 0 ? `Sending file… ${zipXhrPercent}%` : 'Submitting…')}
-                {typeof zipJob?.percent === 'number' && zipJob.percent > zipXhrPercent
-                  ? ` · ${zipJob.percent}%`
-                  : ''}
+                {uploadProgress.phase === 'validating' && 'Validating…'}
+                {uploadProgress.phase === 'uploading' && `Uploading zip… ${uploadProgress.percent}%`}
+                {uploadProgress.phase === 'assembling' && 'Assembling upload…'}
+                {uploadProgress.phase === 'submitting' && 'Finalising submission…'}
+                {!['validating', 'uploading', 'assembling', 'submitting'].includes(uploadProgress.phase) && 'Working…'}
               </p>
             )}
 

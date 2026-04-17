@@ -404,18 +404,18 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  border: none;
   margin-left: auto;
   padding: 0.4rem 0.55rem;
   border-radius: 8px;
-  background: #2a2a2a;
+  background: var(--btn-neutral);
   color: #fff;
   cursor: pointer;
   transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .curation-page .curation-level-edit-btn:hover {
-  background: #333;
-  border-color: #6bb3ff;
+  background: var(--btn-neutral-muted);
 }
 
 .curation-page .curation-difficulty-icon {

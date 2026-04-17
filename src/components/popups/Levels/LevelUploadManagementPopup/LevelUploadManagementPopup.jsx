@@ -2,8 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import api from '@/utils/api';
 import './leveluploadmanagementpopup.css';
 import { useTranslation } from 'react-i18next';
-import { encodeFilename } from '@/utils/zipUtils';
-import { uploadFileInChunks, validateChunkedUpload } from '@/utils/chunkedUpload';
+import { ChunkedUploadClient } from '@/utils/upload/ChunkedUploadClient';
 import { isCdnUrl } from '@/utils/Utility';
 import { CrossIcon } from '@/components/common/icons';
 import { CloseButton } from '@/components/common/buttons';
@@ -152,65 +151,41 @@ const LevelUploadManagementPopup = ({
       const jobId = crypto.randomUUID();
       setCdnJobId(jobId);
 
-      // Upload file in chunks
-      const fileId = await uploadFileInChunks(
-        file,
-        `${import.meta.env.VITE_CHUNK_UPLOAD_URL}/chunk`,
-        (progress) => setUploadProgress(progress)
+      const client = new ChunkedUploadClient({ kind: 'level-zip' });
+      const { session: uploadSession } = await client.upload(file, {
+        meta: { levelId: level.id },
+        signal,
+        onProgress: ({ phase, percent }) => {
+          const clamped = Math.max(0, Math.min(100, Number.isFinite(percent) ? percent : 0));
+          // Hashing + uploading together occupy 0..95%; completing the final 5% is an approximation.
+          if (phase === 'hashing') setUploadProgress(Math.round(clamped * 0.15));
+          else if (phase === 'uploading') setUploadProgress(15 + Math.round(clamped * 0.8));
+          else if (phase === 'completing') setUploadProgress(95 + Math.round(clamped * 0.05));
+        },
+      });
+
+      if (signal.aborted) return;
+
+      const response = await api.post(
+        `${import.meta.env.VITE_LEVELS}/${level.id}/upload`,
+        {
+          sessionId: uploadSession.id,
+          uploadJobId: jobId,
+        },
+        {
+          signal,
+          timeout: 300000,
+        },
       );
 
-      // Check if cancelled before validation
-      if (signal.aborted) {
-        return;
-      }
-
-      // Validate the upload
-      const validationResult = await validateChunkedUpload(
-        fileId,
-        `${import.meta.env.VITE_CHUNK_UPLOAD_URL}/validate`
-      );
-
-      // Check if cancelled before final upload
-      if (signal.aborted) {
-        return;
-      }
-
-      if (validationResult.success) {
-        // Now submit the level with the fileId and encoded filename
-        // Use signal to allow cancellation
-        const response = await api.post(
-          `${import.meta.env.VITE_LEVELS}/${level.id}/upload`,
-          {
-            fileId,
-            fileName: encodeFilename(file.name),
-            fileSize: file.size,
-            uploadJobId: jobId
-          },
-          {
-            signal,
-            timeout: 300000, // 5 minutes timeout for large file processing
-          }
-        );
-
-        if (response.data.success) {
-          // Update formData with new dlLink
-          const updatedLevel = response.data.level || {};
-          const newDlLink = updatedLevel.dlLink || response.data.dlLink;
-          setFormData(prev => ({
-            ...prev,
-            dlLink: newDlLink
-          }));
-          
-          // Update level data through onUpdate callback
-          // setLevel is actually onUpdate which expects { level: {...} } format
-          if (setLevel) {
-            setLevel({ level: { ...level, ...updatedLevel, dlLink: newDlLink } });
-          }
-          
-          fetchLevelFiles();
+      if (response.data.success) {
+        const updatedLevel = response.data.level || {};
+        const newDlLink = updatedLevel.dlLink || response.data.dlLink;
+        setFormData(prev => ({ ...prev, dlLink: newDlLink }));
+        if (setLevel) {
+          setLevel({ level: { ...level, ...updatedLevel, dlLink: newDlLink } });
         }
-      } else {
-        throw new Error('Upload validation failed');
+        fetchLevelFiles();
       }
     } catch (error) {
       // Don't show error if request was cancelled (user closed popup or navigated away)

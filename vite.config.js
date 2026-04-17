@@ -35,7 +35,7 @@ export default defineConfig(({ command, mode }) => {
       }
     },
     optimizeDeps: {
-      include: ['react-helmet-async']
+      include: ['react-helmet-async', 'hash-wasm']
     },
     build: {
       sourcemap: mode === 'development',
