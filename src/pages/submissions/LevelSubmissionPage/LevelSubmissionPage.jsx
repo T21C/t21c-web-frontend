@@ -27,6 +27,7 @@ import {
   submitLevel,
   selectLevelChart,
 } from '@/utils/submissions/levelSubmission';
+import { useJobProgressStream } from '@/hooks/useJobProgressStream';
 
 /** Keep in sync with server/src/server/submissions/submissionEvidenceRules.ts (display-only). */
 const SONG_VERIFICATION_NO_EVIDENCE = new Set(['ysmod_only', 'allowed', 'tuf_verified']);
@@ -149,7 +150,10 @@ const LevelSubmissionPage = () => {
   const [pendingZipFile, setPendingZipFile] = useState(null);
   const [isDragOver, setIsDragOver] = useState(false);
   const [uploadProgress, setUploadProgress] = useState({ phase: 'idle', percent: 0 });
+  const [cdnJobId, setCdnJobId] = useState(null);
   const uploadAbortRef = useRef(null);
+
+  const { job: cdnJob } = useJobProgressStream(cdnJobId, Boolean(submission && cdnJobId));
 
   // Helper function to clean video URLs
   const cleanVideoUrl = (url) => {
@@ -297,6 +301,7 @@ const LevelSubmissionPage = () => {
     setShowCdnTos(false);
     setIsDragOver(false);
     setUploadProgress({ phase: 'idle', percent: 0 });
+    setCdnJobId(null);
     setFinalSubmissionId(null);
 
     // Reset creator states with empty values
@@ -357,6 +362,7 @@ const LevelSubmissionPage = () => {
 
     setSubmission(true);
     setUploadProgress({ phase: 'validating', percent: 0 });
+    setCdnJobId(null);
 
     const abortController = new AbortController();
     uploadAbortRef.current = abortController;
@@ -443,9 +449,18 @@ const LevelSubmissionPage = () => {
 
       setUploadProgress({ phase: 'submitting', percent: 100 });
 
+      // Subscribe to the CDN's own progress stream so the "finalising" phase
+      // can show the server-side zip ingest (hash, processing, caching, etc.)
+      // starting from 0. Only relevant when a zip was actually uploaded.
+      const cdnUploadJobId = uploadSessionId ? crypto.randomUUID() : null;
+      if (cdnUploadJobId) {
+        setCdnJobId(cdnUploadJobId);
+      }
+
       const response = await submitLevel({
         payload,
         uploadSessionId,
+        uploadJobId: cdnUploadJobId,
         evidenceFiles,
         signal: abortController.signal,
       });
@@ -477,6 +492,7 @@ const LevelSubmissionPage = () => {
       uploadAbortRef.current = null;
       setSubmission(false);
       setUploadProgress({ phase: 'idle', percent: 0 });
+      setCdnJobId(null);
     }
   };
 
@@ -1394,7 +1410,15 @@ const LevelSubmissionPage = () => {
                 {uploadProgress.phase === 'validating' && 'Validating…'}
                 {uploadProgress.phase === 'uploading' && `Uploading zip… ${uploadProgress.percent}%`}
                 {uploadProgress.phase === 'assembling' && 'Assembling upload…'}
-                {uploadProgress.phase === 'submitting' && 'Finalising submission…'}
+                {uploadProgress.phase === 'submitting' && (
+                  cdnJob
+                    ? `${cdnJob.message || cdnJob.phase || 'Processing on CDN'}${
+                        typeof cdnJob.percent === 'number' ? ` · ${cdnJob.percent}%` : ''
+                      }`
+                    : cdnJobId
+                      ? 'Processing on CDN… 0%'
+                      : 'Finalising submission…'
+                )}
                 {!['validating', 'uploading', 'assembling', 'submitting'].includes(uploadProgress.phase) && 'Working…'}
               </p>
             )}

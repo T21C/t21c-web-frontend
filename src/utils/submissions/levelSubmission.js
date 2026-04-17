@@ -67,13 +67,21 @@ export async function uploadLevelZip(file, { onProgress, signal } = {}) {
  * is the id of the assembled upload session (or null for a directDL-only
  * submission). `evidenceFiles` is an array of up to 10 File objects.
  */
-export async function submitLevel({ payload, uploadSessionId = null, evidenceFiles = [], signal, onUploadProgress } = {}) {
+export async function submitLevel({
+  payload,
+  uploadSessionId = null,
+  uploadJobId = null,
+  evidenceFiles = [],
+  signal,
+  onUploadProgress,
+} = {}) {
   const formData = new FormData();
   formData.append(
     'meta',
     JSON.stringify({
       ...payload,
       uploadSessionId,
+      uploadJobId,
     }),
   );
   for (const file of evidenceFiles) {

@@ -188,7 +188,7 @@ const SongListPage = () => {
 
         {loading && songs.length === 0 ? (
           <div className="loader loader-level-page"></div>
-        ) : (
+        ) : songs.length > 0 ? (
           <InfiniteScroll
             style={{ paddingBottom: "7rem", minHeight: "100vh", overflow: "visible" }}
             dataLength={songs.length}
@@ -251,13 +251,12 @@ const SongListPage = () => {
               ))}
             </div>
           </InfiniteScroll>
-        )}
-
-        {!loading && songs.length === 0 && (
+        ) : (
           <div className="no-songs">
             <p>{t('songList.noSongs')}</p>
           </div>
         )}
+
       </div>
     </div>
   );
