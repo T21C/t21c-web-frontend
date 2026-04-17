@@ -22,7 +22,9 @@ export const PlayerInput = ({ value, onChange, onSelect, allowCreatePlayer = tru
 
     setIsLoading(true);
     try {
-      const response = await api.get(`${import.meta.env.VITE_PLAYERS}/search/${encodeURIComponent(searchTerm)}`);
+      const response = await api.get(
+        `${import.meta.env.VITE_PLAYERS_V3}/search?query=${encodeURIComponent(searchTerm)}`,
+      );
       const body = response.data;
       const players = Array.isArray(body) ? body : (body?.results ?? []);
       setSearchResults(players);
@@ -86,8 +88,8 @@ export const PlayerInput = ({ value, onChange, onSelect, allowCreatePlayer = tru
         }, 1500);
       }
     } else {
-      onChange(player.player.user?.nickname || player.player.name);
-      onSelect(player.player);
+      onChange(player.user?.nickname || player.name);
+      onSelect(player);
       closeDropdown();
     }
   };
@@ -185,16 +187,16 @@ export const PlayerInput = ({ value, onChange, onSelect, allowCreatePlayer = tru
                       className="player-option"
                       onClick={() => handleSelect(player)}
                     >
-                      <img src={player.player.user?.avatarUrl || player.player.pfp} alt={player.player.name} className="player-pfp" />
+                      <img src={player.user?.avatarUrl || player.pfp} alt={player.name} className="player-pfp" />
                       <div className="player-info-container">
                         <div className="player-info">
                           <span className="player-name">
-                            {player.player.user?.nickname || player.player.name}
+                            {player.user?.nickname || player.name}
                           </span>
                           <span className="player-handle">
-                            {player.player.user?.username && `@${player.player.user.username}`}
+                            {player.user?.username && `@${player.user.username}`}
                           </span> 
-                          <span className="player-country">{player.player.country}</span>
+                          <span className="player-country">{player.country}</span>
                         </div>
                         <span className="player-score">{(player.rankedScore || 0).toFixed(2)}</span>
                       </div>

@@ -97,7 +97,7 @@ const ProfilePage = () => {
     useEffect(() => {
         const fetchPlayer = async () => {
           try {
-            const response = await api.get(import.meta.env.VITE_PLAYERS+"/"+playerId);
+            const response = await api.get(`${import.meta.env.VITE_PLAYERS_V3}/${playerId}/profile`);
             setPlayerData(response.data);
 
           } catch (error) {
@@ -129,11 +129,10 @@ const ProfilePage = () => {
       };
 
       const handleCreatorAssignmentUpdate = () => {
-        // Refresh player data to get updated creator information
         if (playerId) {
           const fetchPlayer = async () => {
             try {
-              const response = await api.get(import.meta.env.VITE_PLAYERS+"/"+playerId);
+              const response = await api.get(`${import.meta.env.VITE_PLAYERS_V3}/${playerId}/profile`);
               setPlayerData(response.data);
             } catch (error) {
               console.error('Error fetching updated player data:', error);
@@ -160,10 +159,10 @@ const ProfilePage = () => {
       };
 
       const handleViewUserPacks = () => {
-        if (playerData?.username) {
-          // Use window context to pass the search query
+        const handle = playerData?.user?.username;
+        if (handle) {
           window.packSearchContext = {
-            query: `owner:${playerData.username}`,
+            query: `owner:${handle}`,
             timestamp: Date.now()
           };
           navigate('/packs');
@@ -409,7 +408,7 @@ const ProfilePage = () => {
             title={playerData?.name ? t('profile.meta.title', { name: playerData.name }) : t('profile.meta.defaultTitle')}
             description={t('profile.meta.description', { name: playerData?.name || 'Unknown Player' })}
             url={currentUrl}
-            image={playerData?.avatar || playerData?.avatarUrl || playerData?.pfp || '/default-avatar.jpg'}
+            image={playerData?.user?.avatarUrl || playerData?.pfp || '/default-avatar.jpg'}
             type="profile"
           />
           
@@ -434,7 +433,7 @@ const ProfilePage = () => {
                       <div className="player-picture-container">
                       <div className="player-picture-and-info">
                       <UserAvatar 
-                        primaryUrl={playerData?.avatarUrl || playerData?.pfp}
+                        primaryUrl={playerData?.user?.avatarUrl || playerData?.pfp}
                         fallbackUrl={playerData?.pfp || '/default-avatar.jpg'}
                         className="player-picture"
                       />
@@ -445,8 +444,8 @@ const ProfilePage = () => {
                       <div className="diff-info">
                       <p>{valueLabels?.topDiff}</p>
                       <img
-                        src={playerData?.stats?.topDiff?.icon || "/placeholder-difficulty.png"}
-                        alt={playerData?.stats?.topDiff?.name || 'No difficulty set'}
+                        src={difficultyDict[playerData?.topDiffId]?.icon || "/placeholder-difficulty.png"}
+                        alt={difficultyDict[playerData?.topDiffId]?.name || 'No difficulty set'}
                         className="diff-image"
                       />
                     </div>
@@ -454,8 +453,8 @@ const ProfilePage = () => {
                     <div className="diff-info">
                       <p>{valueLabels?.top12kDiff}</p>
                       <img
-                        src={playerData?.stats?.top12kDiff?.icon || "/placeholder-difficulty.png"}
-                        alt={playerData?.stats?.top12kDiff?.name || 'No 12K difficulty set'}
+                        src={difficultyDict[playerData?.top12kDiffId]?.icon || "/placeholder-difficulty.png"}
+                        alt={difficultyDict[playerData?.top12kDiffId]?.name || 'No 12K difficulty set'}
                         className="diff-image"
                       />
                     </div>
@@ -465,19 +464,19 @@ const ProfilePage = () => {
                        <div className="player-name-rank">
                          <div className="player-name-container">
                            <h1>{playerData?.name || 'Unknown Player'}</h1>
-                           {playerData?.username && (
-                             <span className="player-discord-handle">@{playerData.username}</span>
+                           {playerData?.user?.username && (
+                             <span className="player-discord-handle">@{playerData.user.username}</span>
                            )}
                          </div>
                          <div className="player-rank-flag">
                            <h2
                              style={{
-                               color: parseRankColor(playerData?.stats?.rankedScoreRank || 0), 
-                               backgroundColor: `${parseRankColor(playerData?.stats?.rankedScoreRank || 0)}27`,
+                               color: parseRankColor(playerData?.rankedScoreRank || 0), 
+                               backgroundColor: `${parseRankColor(playerData?.rankedScoreRank || 0)}27`,
                            }}
-                           className={playerData.username ? "shift-rank-display" : ""}
+                           className={playerData?.user?.username ? "shift-rank-display" : ""}
                            
-                           >#{playerData?.stats?.rankedScoreRank || 'Unranked'}</h2>
+                           >#{playerData?.rankedScoreRank || 'Unranked'}</h2>
                            <img
                              src={isoToEmoji(playerData?.country || 'XX')}
                              alt={playerData?.country || 'Unknown Country'}
@@ -491,8 +490,8 @@ const ProfilePage = () => {
                     <div className="diff-info">
                       <p>{valueLabels?.topDiff}</p>
                       <img
-                        src={playerData?.stats?.topDiff?.icon || "/placeholder-difficulty.png"}
-                        alt={playerData?.stats?.topDiff?.name || 'No difficulty set'}
+                        src={difficultyDict[playerData?.topDiffId]?.icon || "/placeholder-difficulty.png"}
+                        alt={difficultyDict[playerData?.topDiffId]?.name || 'No difficulty set'}
                         className="diff-image"
                       />
                     </div>
@@ -500,8 +499,8 @@ const ProfilePage = () => {
                     <div className="diff-info">
                       <p>{valueLabels?.top12kDiff}</p>
                       <img
-                        src={playerData?.stats?.top12kDiff?.icon || "/placeholder-difficulty.png"}
-                        alt={playerData?.stats?.top12kDiff?.name || 'No 12K difficulty set'}
+                        src={difficultyDict[playerData?.top12kDiffId]?.icon || "/placeholder-difficulty.png"}
+                        alt={difficultyDict[playerData?.top12kDiffId]?.name || 'No 12K difficulty set'}
                         className="diff-image"
                       />
                     </div>
@@ -537,7 +536,7 @@ const ProfilePage = () => {
                       />
                     </button>
                   )}
-                  {playerData?.username && (
+                  {playerData?.user?.username && (
                     <button 
                       className="edit-button"
                       onClick={handleViewUserPacks}

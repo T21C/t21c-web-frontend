@@ -42,7 +42,7 @@ const PassSubmissions = ({ setIsAutoAllowing }) => {
 
 
   const getPlayerData = async (playerId) => {
-    const response = await api.get(`${import.meta.env.VITE_PLAYERS}/${playerId}`);
+    const response = await api.get(`${import.meta.env.VITE_PLAYERS_V3}/${playerId}`);
     return response.data;
   };
 

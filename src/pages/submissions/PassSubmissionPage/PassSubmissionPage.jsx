@@ -132,24 +132,23 @@ const PassSubmissionPage = () => {
     const fetchProfile = async () => {
       const { username } = user;
       try {
-        // Search for profiles matching the channel name
-        const searchUrl = `${import.meta.env.VITE_PLAYERS}/search/${encodeURIComponent(username)}`;
+        // Search for profiles matching the channel name (v3 flat player docs)
+        const searchUrl = `${import.meta.env.VITE_PLAYERS_V3}/search?query=${encodeURIComponent(username)}`;
 
         const response = await api.get(searchUrl);
         const body = response.data;
         const profiles = Array.isArray(body) ? body : (body?.results ?? []);
 
-        // Find exact match (case insensitive)
-        const exactMatchResult = profiles.find(p => 
-          p.player.name.toLowerCase() === user.nickname.toLowerCase()
+        // Find exact match (case insensitive) against the flat player doc name
+        const exactMatchResult = profiles.find(p =>
+          p?.name && p.name.toLowerCase() === user.nickname.toLowerCase()
         );
 
-        // Directly set the form state with the profile data
-        if (exactMatchResult?.player?.id) {
+        if (exactMatchResult?.id) {
           setForm((prev) => ({
             ...prev,
-            playerId: exactMatchResult.player.id,
-            leaderboardName: exactMatchResult.player.name,
+            playerId: exactMatchResult.id,
+            leaderboardName: exactMatchResult.name,
           }));
         } else {
           // Pre-fill name only; user must select an existing player from the dropdown

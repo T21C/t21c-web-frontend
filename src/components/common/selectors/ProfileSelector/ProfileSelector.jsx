@@ -43,10 +43,11 @@ export const ProfileSelector = ({
   }, [value]);
 
   // Get API endpoint based on type
+  // Players use the v3 Elasticsearch-backed endpoint; other profile types keep their v2 paths.
   const getEndpoint = () => {
     switch (type) {
       case 'player':
-        return import.meta.env.VITE_PLAYERS;
+        return import.meta.env.VITE_PLAYERS_V3;
       case 'charter':
         return import.meta.env.VITE_CREATORS;
       case 'vfx':
@@ -70,11 +71,16 @@ export const ProfileSelector = ({
       try {
         const endpoint = getEndpoint();
         const encodedSearchTerm = encodeURIComponent(searchTerm);
-        const response = await api.get(`${endpoint}/search/${encodedSearchTerm}`);
+        // v3 player search uses `/search?query=`; other endpoints keep `/search/:name`.
+        const url = type === 'player'
+          ? `${endpoint}/search?query=${encodedSearchTerm}`
+          : `${endpoint}/search/${encodedSearchTerm}`;
+        const response = await api.get(url);
         if (type === 'player') {
           const body = response.data;
           const rows = Array.isArray(body) ? body : (body?.results ?? []);
-          setProfiles(rows.map((user) => user.player));
+          // v3 returns flat player docs directly — no `player` wrapper.
+          setProfiles(rows);
         } else {
           setProfiles(response.data);
         }

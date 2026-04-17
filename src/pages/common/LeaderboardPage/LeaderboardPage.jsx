@@ -105,22 +105,26 @@ const LeaderboardPage = () => {
         params.append('filters', JSON.stringify({...apiFilters, country: country}));
       }
       
-      const endpoint = `/v2/database/leaderboard?${params.toString()}`;
+      const endpoint = `${import.meta.env.VITE_LEADERBOARD_V3}?${params.toString()}`;
       const response = await api.get(endpoint);
-      
+
+      // v3 returns flat ES documents with `rankedScoreRank` / `rank` already attached
+      // by the server, regardless of the active sort (rankedScore is the canonical
+      // rank metric; banned players get -1).
+      const results = Array.isArray(response.data.results) ? response.data.results : [];
+
       if (offset === 0) {
-        setPlayerData(response.data.results);
-        setDisplayedPlayers(response.data.results);
-        
-        // Store maxFields if they're in the response
+        setPlayerData(results);
+        setDisplayedPlayers(results);
+
         if (response.data.maxFields) {
           setMaxFields(response.data.maxFields);
         }
       } else {
-        setPlayerData(prev => [...prev, ...response.data.results]);
-        setDisplayedPlayers(prev => [...prev, ...response.data.results]);
+        setPlayerData(prev => [...prev, ...results]);
+        setDisplayedPlayers(prev => [...prev, ...results]);
       }
-      
+
       setHasMore(displayedPlayers.length < response.data.count);
     } catch (error) {
       if (!api.isCancel(error)) {
@@ -527,7 +531,7 @@ const LeaderboardPage = () => {
           </div>
         </div>
 
-        <div style={{ minHeight: "200px" }}>
+        <div style={{ minHeight: "500px" }}>
           {!playerData ? (
             <div className="loader loader-level-page"></div>
           ) : (
@@ -545,17 +549,11 @@ const LeaderboardPage = () => {
                 )
               }
             >
-              {displayedPlayers.map((playerStat, index) => (
+              {displayedPlayers.map((playerStat) => (
                 <PlayerCard
                   key={playerStat.id}
                   currSort={sortBy}
-                  player={{
-                    ...playerStat,
-                    name: playerStat.player.name,
-                    country: playerStat.player.country,
-                    isBanned: hasFlag(playerStat.player.user, permissionFlags.BANNED),
-                    pfp: playerStat.player.pfp,
-                  }}
+                  player={playerStat}
                   onCreatorAssignmentClick={handleCreatorAssignmentClick}
                 />
               ))}

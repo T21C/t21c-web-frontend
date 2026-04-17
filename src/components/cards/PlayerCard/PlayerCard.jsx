@@ -43,8 +43,8 @@ const PlayerCard = ({player, onCreatorAssignmentClick}) => {
 
   const handleCreatorAssignmentClick = (e) => {
     e.stopPropagation();
-    if (onCreatorAssignmentClick && player.player?.user) {
-      onCreatorAssignmentClick(player.player.user);
+    if (onCreatorAssignmentClick && player.user) {
+      onCreatorAssignmentClick(player.user);
     }
   };
 
@@ -76,13 +76,12 @@ const PlayerCard = ({player, onCreatorAssignmentClick}) => {
     },
   };
     
+  const primaryValue = player[sortBy];
   const primaryField = {
     label: sortLabels[sortBy],
-    value: player[sortBy] !== undefined ? 
-      diffFields.includes(sortBy) 
-        ? player[sortBy].name
-        : player[sortBy]
-    : player.generalScore,
+    value: diffFields.includes(sortBy)
+      ? (primaryValue?.name ?? '-')
+      : (primaryValue ?? player.generalScore ?? 0),
   };
 
   const excludeKeys = Object.keys(scoreFields).filter(key => key === prioritizedField);
@@ -109,14 +108,14 @@ const PlayerCard = ({player, onCreatorAssignmentClick}) => {
   }
 
   // Add difficulty icons if the sort field is a difficulty type
-  const difficultyIcon = diffFields.includes(sortBy) ? player[sortBy].icon : null;
+  const difficultyIcon = diffFields.includes(sortBy) ? player[sortBy]?.icon ?? null : null;
 
   return (
     <div className='player-card' onClick={() => redirect()} style={{backgroundColor: player.rankedScoreRank === -1 ? "#ff000099" : ""}}>
       <div className="img-wrapper">
         <div className="image-container">
           <UserAvatar  
-            primaryUrl={player.avatarUrl}
+            primaryUrl={player.user?.avatarUrl}
             fallbackUrl={player.pfp}
           />
         </div>
@@ -137,18 +136,18 @@ const PlayerCard = ({player, onCreatorAssignmentClick}) => {
           <p className='player-name'>
             {player.name}
             
-        {user && player.player?.user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+        {user && player.user && hasFlag(user, permissionFlags.SUPER_ADMIN) && (
           <button
             className="creator-assignment-btn"
             onClick={handleCreatorAssignmentClick}
             title="Assign Creator"
           >
-              <CreatorIcon className="creator-assignment-icon" color={player.player.user.creator ? '#5f5' : '#fff'} />
+              <CreatorIcon className="creator-assignment-icon" color={player.user.creator ? '#5f5' : '#fff'} />
           </button>
         )}
             </p>
-          {player.player.user?.username && (
-            <span className="player-discord-handle">@{player.player.user?.username}</span>
+          {player.user?.username && (
+            <span className="player-discord-handle">@{player.user?.username}</span>
           )}
         </div>
       </div>
