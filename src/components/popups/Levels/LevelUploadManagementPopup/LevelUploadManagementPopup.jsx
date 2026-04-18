@@ -203,7 +203,7 @@ const LevelUploadManagementPopup = ({
 
       if (response.status === 202) {
         const job = await waitForJobCompletion(jobId, { signal, timeoutMs: 120 * 60 * 1000 });
-        const newId = job?.meta?.newFileId;
+        const newId = job?.newFileId ?? job?.meta?.newFileId;
         if (!newId || typeof newId !== 'string') {
           throw new Error('Upload finished but server did not return a file id');
         }
@@ -227,6 +227,7 @@ const LevelUploadManagementPopup = ({
         return;
       }
       setError(formatAxiosLevelError(error, t('levelUploadManagement.errors.uploadFailed')));
+      console.error('Error uploading level:', error);
     } finally {
       setIsUploading(false);
       setCdnJobId(null);
@@ -270,7 +271,7 @@ const LevelUploadManagementPopup = ({
 
       if (response.status === 202) {
         const job = await waitForJobCompletion(jobId, { signal, timeoutMs: 120 * 60 * 1000 });
-        const newId = job?.meta?.newFileId;
+        const newId = job?.newFileId ?? job?.meta?.newFileId;
         if (!newId || typeof newId !== 'string') {
           throw new Error('Import finished but server did not return a file id');
         }
@@ -293,6 +294,7 @@ const LevelUploadManagementPopup = ({
         return;
       }
       setError(formatAxiosLevelError(err, t('levelUploadManagement.errors.importFailed')));
+      console.error('Error importing level from URL:', err);
     } finally {
       setIsUploading(false);
       setCdnJobId(null);

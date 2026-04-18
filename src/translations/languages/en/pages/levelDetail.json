@@ -8,7 +8,9 @@
     "hidden": "This level is currently hidden",
     "notFound": "Level not found"
   },
-  
+  "song": {
+    "clickToViewDetails": "Click to view details"
+  },
   "buttons": {
     "edit": "Edit Level",
     "close": "Close",
