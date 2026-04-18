@@ -13,7 +13,12 @@ import { SongSelectorPopup } from "@/components/popups/Songs";
 import { ArtistSelectorPopup } from "@/components/popups/Artists";
 
 import api from "@/utils/api";
-import { prepareZipForUpload, validateZipSize } from '@/utils/zipUtils';
+import {
+  prepareZipForUpload,
+  validateZipSize,
+  hasAcceptedArchiveExtension,
+  ARCHIVE_ACCEPT_ATTR,
+} from '@/utils/zipUtils';
 import { zipLevelFileKey } from '@/components/popups/Levels/ZipLevelFilesList/ZipLevelFilesList';
 import { useNavigate } from "react-router-dom";
 import { hasAnyFlag, hasFlag, permissionFlags } from "@/utils/UserPermissions";
@@ -766,8 +771,8 @@ const LevelSubmissionPage = () => {
     const file = e.dataTransfer?.files?.[0];
     if (!file) return;
 
-    // Check if it's a zip file
-    if (!file.name.toLowerCase().endsWith('.zip')) {
+    // Accept any supported archive format (.zip, .rar, .7z, .tar, .tar.gz, .tgz).
+    if (!hasAcceptedArchiveExtension(file.name)) {
       toast.error(t('levelSubmission.alert.invalidZip'));
       return;
     }
@@ -1113,7 +1118,7 @@ const LevelSubmissionPage = () => {
                 >
                   <input
                     type="file"
-                    accept=".zip"
+                    accept={ARCHIVE_ACCEPT_ATTR}
                     onChange={handleZipUpload}
                     id="levelZip"
                     style={{ display: 'none' }}

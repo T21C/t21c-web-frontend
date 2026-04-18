@@ -9,6 +9,7 @@ import { CrossIcon } from '@/components/common/icons';
 import { CloseButton } from '@/components/common/buttons';
 import { useJobProgressStream } from '@/hooks/useJobProgressStream';
 import ZipLevelFilesList from '@/components/popups/Levels/ZipLevelFilesList/ZipLevelFilesList';
+import { ARCHIVE_ACCEPT_ATTR } from '@/utils/zipUtils';
 
 const LevelUploadManagementPopup = ({
   level,
@@ -488,7 +489,7 @@ const LevelUploadManagementPopup = ({
           <div className="upload-actions">
             <input
               type="file"
-              accept=".zip"
+              accept={ARCHIVE_ACCEPT_ATTR}
               onChange={handleZipUpload}
               ref={fileInputRef}
               style={{ display: 'none' }}
