@@ -1,62 +1,57 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import DefaultAvatar from '@/components/common/icons/DefaultAvatar';
 import './useravatar.css';
 import { selectIconSize } from '@/utils/Utility';
 
-const UserAvatar = ({ 
-  primaryUrl, 
-  fallbackUrl = '', 
-  className = '', 
-  onError = () => {} 
+const UserAvatar = ({
+  primaryUrl,
+  fallbackUrl = '',
+  className = '',
+  onError = () => {},
 }) => {
   const [imgSrc, setImgSrc] = useState(null);
-
-  const handleImage = async (primary, fallback) => {
-    try {
-      // Try primary URL first
-      if (primary) {
-        const response = await fetch(primary);
-        if (response.ok) {
-          setImgSrc(primary);
-          return;
-        }
-      }
-      
-      // Try fallback URL if primary fails
-      if (fallback && fallback !== 'none') {
-        const response = await fetch(fallback);
-        if (response.ok) {
-          setImgSrc(fallback);
-          return;
-        }
-      }
-      
-      // If both fail, set to null to show default avatar
-      setImgSrc(null);
-      onError();
-    } catch (error) {
-      //console.error('Error loading avatar:', error);
-      setImgSrc(null);
-      onError();
-    }
-  };
+  const switchedToFallbackRef = useRef(false);
 
   useEffect(() => {
-    handleImage(selectIconSize(primaryUrl, "small"), selectIconSize(fallbackUrl, "small"));
+    switchedToFallbackRef.current = false;
+    const primary = selectIconSize(primaryUrl, 'small');
+    const fallback = selectIconSize(fallbackUrl, 'small');
+    if (primary) {
+      setImgSrc(primary);
+    } else if (fallback && fallback !== 'none') {
+      setImgSrc(fallback);
+    } else {
+      setImgSrc(null);
+    }
   }, [primaryUrl, fallbackUrl]);
+
+  const handleImgError = () => {
+    const primary = selectIconSize(primaryUrl, 'small');
+    const fallback = selectIconSize(fallbackUrl, 'small');
+    if (
+      !switchedToFallbackRef.current &&
+      primary &&
+      fallback &&
+      fallback !== 'none' &&
+      fallback !== primary
+    ) {
+      switchedToFallbackRef.current = true;
+      setImgSrc(fallback);
+      return;
+    }
+    setImgSrc(null);
+    onError();
+  };
 
   return (
     <div className={`user-avatar-container ${className}`}>
       {imgSrc ? (
-        <img 
-          src={imgSrc} 
-          referrerPolicy="no-referrer" 
-          alt="User avatar" 
+        <img
+          src={imgSrc}
+          referrerPolicy="no-referrer"
+          alt="User avatar"
           className="avatar-image"
-          onError={() => {
-            setImgSrc(null);
-            onError();
-          }}
+          onError={handleImgError}
         />
       ) : (
         <DefaultAvatar className="avatar-image" />
@@ -65,4 +60,4 @@ const UserAvatar = ({
   );
 };
 
-export default UserAvatar; 
+export default UserAvatar;
