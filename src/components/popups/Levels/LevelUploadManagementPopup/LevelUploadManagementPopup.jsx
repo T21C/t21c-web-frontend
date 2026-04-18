@@ -3,6 +3,7 @@ import api from '@/utils/api';
 import './leveluploadmanagementpopup.css';
 import { useTranslation } from 'react-i18next';
 import { ChunkedUploadClient } from '@/utils/upload/ChunkedUploadClient';
+import { waitForJobCompletion } from '@/utils/jobs/waitForJobCompletion';
 import { isCdnUrl } from '@/utils/Utility';
 import { CrossIcon } from '@/components/common/icons';
 import { CloseButton } from '@/components/common/buttons';
@@ -136,6 +137,24 @@ const LevelUploadManagementPopup = ({
     };
   }, []);
 
+  const applySuccessfulLevelUpload = (updatedLevel, newDlLink, { closeUrlPanel = false } = {}) => {
+    setFormData((prev) => ({
+      ...prev,
+      dlLink: newDlLink,
+    }));
+    if (newDlLink) {
+      setImportUrl(String(newDlLink));
+    }
+    if (setLevel) {
+      setLevel({ level: { ...level, ...updatedLevel, dlLink: newDlLink } });
+    }
+    setUploadProgress(100);
+    if (closeUrlPanel) {
+      setUrlImportPanelOpen(false);
+    }
+    fetchLevelFiles();
+  };
+
   const handleZipUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
@@ -174,18 +193,30 @@ const LevelUploadManagementPopup = ({
         },
         {
           signal,
-          timeout: 300000,
+          timeout: 120 * 60 * 1000,
         },
       );
+
+      if (signal.aborted) {
+        return;
+      }
+
+      if (response.status === 202) {
+        const job = await waitForJobCompletion(jobId, { signal, timeoutMs: 120 * 60 * 1000 });
+        const newId = job?.meta?.newFileId;
+        if (!newId || typeof newId !== 'string') {
+          throw new Error('Upload finished but server did not return a file id');
+        }
+        const base = String(import.meta.env.VITE_CDN_URL || '').replace(/\/$/, '');
+        const newDlLink = `${base}/${newId}`;
+        applySuccessfulLevelUpload({}, newDlLink, { closeUrlPanel: false });
+        return;
+      }
 
       if (response.data.success) {
         const updatedLevel = response.data.level || {};
         const newDlLink = updatedLevel.dlLink || response.data.dlLink;
-        setFormData(prev => ({ ...prev, dlLink: newDlLink }));
-        if (setLevel) {
-          setLevel({ level: { ...level, ...updatedLevel, dlLink: newDlLink } });
-        }
-        fetchLevelFiles();
+        applySuccessfulLevelUpload(updatedLevel, newDlLink, { closeUrlPanel: false });
       }
     } catch (error) {
       // Don't show error if request was cancelled (user closed popup or navigated away)
@@ -229,7 +260,7 @@ const LevelUploadManagementPopup = ({
         { url: trimmed, uploadJobId: jobId },
         {
           signal,
-          timeout: 300000,
+          timeout: 120 * 60 * 1000,
         },
       );
 
@@ -237,22 +268,22 @@ const LevelUploadManagementPopup = ({
         return;
       }
 
+      if (response.status === 202) {
+        const job = await waitForJobCompletion(jobId, { signal, timeoutMs: 120 * 60 * 1000 });
+        const newId = job?.meta?.newFileId;
+        if (!newId || typeof newId !== 'string') {
+          throw new Error('Import finished but server did not return a file id');
+        }
+        const base = String(import.meta.env.VITE_CDN_URL || '').replace(/\/$/, '');
+        const newDlLink = `${base}/${newId}`;
+        applySuccessfulLevelUpload({}, newDlLink, { closeUrlPanel: true });
+        return;
+      }
+
       if (response.data.success) {
         const updatedLevel = response.data.level || {};
         const newDlLink = updatedLevel.dlLink || response.data.dlLink;
-        setFormData((prev) => ({
-          ...prev,
-          dlLink: newDlLink,
-        }));
-        if (newDlLink) {
-          setImportUrl(String(newDlLink));
-        }
-        if (setLevel) {
-          setLevel({level: {...level, ...updatedLevel, dlLink: newDlLink}});
-        }
-        setUploadProgress(100);
-        setUrlImportPanelOpen(false);
-        fetchLevelFiles();
+        applySuccessfulLevelUpload(updatedLevel, newDlLink, { closeUrlPanel: true });
       }
     } catch (err) {
       if (api.isCancel && api.isCancel(err)) {
