@@ -1,0 +1,194 @@
+.creator-profile-page {
+  width: 100%;
+  min-height: 100vh;
+  padding-top: 2rem;
+}
+
+.creator-profile-page .creator-profile-page__body {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.creator-profile-page .creator-profile-page__loading,
+.creator-profile-page .creator-profile-page__notfound {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 4rem 1rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.creator-profile-page .creator-profile-page__header {
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  padding: 1.5rem;
+  border-radius: 10px;
+  background: rgba(20, 20, 20, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.creator-profile-page .creator-profile-page__avatar {
+  width: 6rem;
+  height: 6rem;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.creator-profile-page .creator-profile-page__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.creator-profile-page .creator-profile-page__title {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  min-width: 0;
+}
+
+.creator-profile-page .creator-profile-page__name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.creator-profile-page .creator-profile-page__name {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.creator-profile-page .creator-profile-page__verified {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #fff;
+  background: #3aa3ff;
+}
+
+.creator-profile-page .creator-profile-page__handle {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.creator-profile-page .creator-profile-page__id {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.creator-profile-page .creator-profile-page__section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-radius: 10px;
+  background: rgba(20, 20, 20, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  z-index: 1;
+}
+
+.creator-profile-page .creator-profile-page__section-title {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.creator-profile-page .creator-profile-page__stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(10rem, 1fr));
+  gap: 0.75rem;
+}
+
+.creator-profile-page .creator-profile-page__stat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding: 0.75rem 0.9rem;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.creator-profile-page .creator-profile-page__stat-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.creator-profile-page .creator-profile-page__stat-value {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.creator-profile-page .creator-profile-page__bio-placeholder {
+  margin: 0;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.creator-profile-page .creator-profile-page__levels-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.creator-profile-page .creator-profile-page__levels-count {
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.55);
+  font-size: 0.95rem;
+}
+
+.creator-profile-page .creator-profile-page__levels-controls {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.creator-profile-page .creator-profile-page__search-input {
+  flex: 1 1 14rem;
+  min-width: 10rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(20, 20, 20, 0.6);
+  color: #fff;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+.creator-profile-page .creator-profile-page__sort-buttons {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.creator-profile-page .creator-profile-page__levels-empty {
+  margin: 0;
+  padding: 2rem;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.creator-profile-page .creator-profile-page__levels-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}

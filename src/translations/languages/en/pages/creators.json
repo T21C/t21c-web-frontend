@@ -1,0 +1,68 @@
+{
+  "meta": {
+    "title": "Creators",
+    "description": "Browse chart creators, charters, and VFXers"
+  },
+  "input": {
+    "placeholder": "Search by creator name..."
+  },
+  "tooltips": {
+    "sort": "Sort results",
+    "reset": "Reset all filters",
+    "recentAsc": "Sort ascending",
+    "recentDesc": "Sort descending"
+  },
+  "settings": {
+    "sort": {
+      "header": "Sort Settings",
+      "sortOrder": "Sort Order",
+      "sortBy": "Sort by"
+    }
+  },
+  "sortOptions": {
+    "name": "Name",
+    "chartsTotal": "Total Charts",
+    "chartsCreated": "Charts Created",
+    "chartsCharted": "Charts Charted",
+    "chartsVfxed": "Charts VFX'd",
+    "chartsTeamed": "Charts (Team Member)",
+    "totalChartClears": "Total Chart Clears",
+    "totalChartLikes": "Total Chart Likes"
+  },
+  "infiniteScroll": {
+    "end": "You've reached the end!"
+  },
+  "card": {
+    "verified": "Verified",
+    "chartsTotal": "{{count}} charts",
+    "noUser": "No linked account"
+  },
+  "profile": {
+    "meta": {
+      "title": "{{name}} - Creator Profile",
+      "description": "Charts and stats for {{name}}"
+    },
+    "loading": "Loading creator...",
+    "notFound": "Creator not found",
+    "verified": "Verified",
+    "stats": {
+      "header": "Creator Stats",
+      "chartsCreated": "Charts Created",
+      "chartsCharted": "Charts Charted",
+      "chartsVfxed": "Charts VFX'd",
+      "chartsTeamed": "Charts (Team Member)",
+      "chartsTotal": "Total Charts",
+      "totalChartClears": "Total Chart Clears",
+      "totalChartLikes": "Total Chart Likes"
+    },
+    "bio": {
+      "header": "Bio",
+      "placeholder": "This creator hasn't written a bio yet."
+    },
+    "levels": {
+      "header": "Charts",
+      "empty": "No charts found for this creator yet.",
+      "searchPlaceholder": "Search this creator's charts..."
+    }
+  }
+}

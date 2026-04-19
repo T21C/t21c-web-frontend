@@ -28,6 +28,7 @@
     "dropdowns": {
       "creators": {
         "adofaiCreators": "ADOFAI 제작자",
+        "creators": "제작자",
         "artists": "작곡가",
         "songs": "곡"
       },

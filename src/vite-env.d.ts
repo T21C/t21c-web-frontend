@@ -22,6 +22,8 @@ interface ImportMetaEnv {
   readonly VITE_PLAYERS_V3: string;
   readonly VITE_LEADERBOARD_V3: string;
   readonly VITE_CREATORS: string;
+  readonly VITE_CREATORS_V3: string;
+  readonly VITE_CREATORS_LEADERBOARD_V3: string;
   readonly VITE_TEAMS: string;
 
   // Rating Related

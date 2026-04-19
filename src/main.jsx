@@ -15,6 +15,8 @@ import { HelmetProvider } from 'react-helmet-async';
 import { NotificationProvider } from '@/contexts/NotificationContext';
 import { ArtistContextProvider } from '@/contexts/ArtistContext';
 import { SongContextProvider } from '@/contexts/SongContext';
+import { CreatorListContextProvider } from '@/contexts/CreatorListContext';
+import { CreatorProfileContextProvider } from '@/contexts/CreatorProfileContext';
 import i18next from '@/translations/config';
 import { RatingFilterProvider } from '@/contexts/RatingFilterContext';
 import { ProfileContextProvider } from '@/contexts/ProfileContext';
@@ -49,7 +51,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                             <PackContextProvider>
                               <ArtistContextProvider>
                                 <SongContextProvider>
-                                  <App />
+                                  <CreatorListContextProvider>
+                                    <CreatorProfileContextProvider>
+                                      <App />
+                                    </CreatorProfileContextProvider>
+                                  </CreatorListContextProvider>
                                 </SongContextProvider>
                               </ArtistContextProvider>
                             </PackContextProvider>

@@ -80,6 +80,8 @@ function App() {
           <Route path='artists/:id' element={<Pages.ArtistDetailPage />} />
           <Route path='songs' element={<Pages.SongListPage />} />
           <Route path='songs/:id' element={<Pages.SongDetailPage />} />
+          <Route path='creators' element={<Pages.CreatorsListPage />} />
+          <Route path='creator/:creatorId' element={<Pages.CreatorProfilePage />} />
 
           {/* Admin Routes - Protected */}
           <Route path='admin' element={<PrivateRoute><Pages.AdminPage /></PrivateRoute>} />
