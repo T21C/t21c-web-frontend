@@ -76,6 +76,11 @@
   --bg-secondary: #111;
 }
 
+/* Root viewport only: reserves scrollbar space so layout does not jump. Do not use on * — it breaks nested scroll areas and flex. */
+html {
+  scrollbar-gutter: stable;
+}
+
 @layer reset {
   * {
     margin: 0;
@@ -112,6 +117,7 @@ body {
 /* Use --navbar-height for full-height layouts: height: calc(100vh - var(--navbar-height)); min-height: calc(100vh - var(--navbar-height)); */
 .body {
   position: relative;
+  width: 100%;
   z-index: 2;
   padding: 1.5rem 0 0;
   min-height: calc(90vh - 5rem);
