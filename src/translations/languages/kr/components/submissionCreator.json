@@ -48,7 +48,6 @@
   "stats": {
     "title": "제작자 통계",
     "totalLevels": "전체 채보 수",
-    "verifiedLevels": "검증된 채보",
     "charterCount": "제작자 수",
     "vfxerCount": "이펙터 수",
     "selectedRole": "선택된 역할 수"
@@ -56,12 +55,10 @@
   "teamStats": {
     "title": "팀 통계",
     "totalLevels": "전체 채보 수",
-    "verifiedLevels": "검증된 채보",
     "memberCount": "멤버 수"
   },
   "status": {
-    "verified": "✓ 검증된 제작자",
-    "verifiedTeam": "✓ 검증된 팀"
+    "verified": "✓ 검증된 제작자"
   },
   "badges": {
     "newRequest": "새 요청"

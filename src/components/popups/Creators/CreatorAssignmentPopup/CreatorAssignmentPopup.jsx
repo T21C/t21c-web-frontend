@@ -5,6 +5,7 @@ import { getPortalRoot } from '@/utils/portalRoot';
 import { useTranslation } from 'react-i18next';
 import { CloseButton } from '@/components/common/buttons';
 import { CustomSelect } from '@/components/common/selectors';
+import { CreatorStatusBadge } from '@/components/common/display';
 import api from '@/utils/api';
 import './creatorAssignmentPopup.css';
 import { toast } from 'react-hot-toast';
@@ -214,8 +215,12 @@ export const CreatorAssignmentPopup = ({ user, onClose, onUpdate }) => {
                     <div className="creator-id">(ID: {currentCreator.id})</div>
                   </div>
                   
-                  {currentCreator.isVerified && (
-                      <div className="creator-verified">✓ Verified</div>
+                  {currentCreator.verificationStatus && (
+                      <CreatorStatusBadge
+                        status={currentCreator.verificationStatus}
+                        size="small"
+                        className="creator-card-status"
+                      />
                   )}
                 </div>
                 <button

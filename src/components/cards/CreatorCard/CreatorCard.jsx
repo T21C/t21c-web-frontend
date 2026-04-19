@@ -4,6 +4,7 @@ import { useContext } from "react";
 import "./creatorcard.css";
 import { formatNumber } from "@/utils";
 import { UserAvatar } from "@/components/layout";
+import { CreatorStatusBadge } from "@/components/common/display";
 import { CreatorListContext } from "@/contexts/CreatorListContext";
 
 const SECONDARY_KEYS = ["totalChartClears", "totalChartLikes"];
@@ -52,10 +53,13 @@ const CreatorCard = ({ creator }) => {
         </p>
         <div className="creator-card__name-row">
           <span className="creator-card__name">{creator.name}</span>
-          {creator.isVerified && (
-            <span className="creator-card__verified" title={t('creators.card.verified')}>
-              ✓
-            </span>
+          {creator.verificationStatus && (
+            <CreatorStatusBadge
+              status={creator.verificationStatus}
+              size="small"
+              showLabel={false}
+              className="creator-card__status"
+            />
           )}
         </div>
         {creator.user?.username ? (

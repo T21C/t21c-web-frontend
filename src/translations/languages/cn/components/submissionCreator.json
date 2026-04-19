@@ -49,7 +49,6 @@
   "stats": {
     "title": "创作者统计数据",
     "totalLevels": "总关卡数",
-    "verifiedLevels": "已验证关卡数",
     "charterCount": "采音师数",
     "vfxerCount": "特效师数",
     "selectedRole": "选中的身份数"
@@ -57,13 +56,11 @@
   "teamStats": {
     "title": "团队统计数据",
     "totalLevels": "总关卡数",
-    "verifiedLevels": "已验证",
     "memberCount": "成员数量",
     "members": "成员"
   },
   "status": {
-    "verified": "✓ 已验证创作者",
-    "verifiedTeam": "✓ 已验证团队"
+    "verified": "✓ 已验证创作者"
   },
   "badges": {
     "newRequest": "新请求"

@@ -31,15 +31,13 @@
     }
   },
   "filters": {
-    "hideVerified": "Hide Verified Creators",
     "excludeAliases": "Exclude Aliases from Search",
     "searchPlaceholder": "Search creators by name or alias..."
   },
   "creatorInfo": {
     "id": "ID",
     "charts": "Charts",
-    "aliases": "Aliases",
-    "verifiedBadge": "Verified Creator"
+    "aliases": "Aliases"
   },
   "messages": {
     "noResults": "No creators found",

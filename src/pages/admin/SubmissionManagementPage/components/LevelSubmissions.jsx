@@ -318,7 +318,7 @@ const LevelSubmissions = () => {
               totalLevels: request.creator.credits?.length || 0,
             },
             aliases: request.creator.creatorAliases?.map(alias => alias.name) || [],
-            isVerified: request.creator.isVerified || false
+            verificationStatus: request.creator.verificationStatus || 'allowed'
           }
         };
       } else if (request?.isNewRequest) {
@@ -495,8 +495,7 @@ const LevelSubmissions = () => {
         ...artistRequest,
         artist: {
           ...artistRequest.artist,
-          aliases: artistRequest.artist.artistAliases?.map(alias => alias.name) || [],
-          isVerified: artistRequest.artist.isVerified || false
+          aliases: artistRequest.artist.artistAliases?.map(alias => alias.name) || []
         }
       };
     } else if (artistRequest?.isNewRequest) {

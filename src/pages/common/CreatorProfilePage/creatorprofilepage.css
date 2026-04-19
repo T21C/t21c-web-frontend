@@ -1,7 +1,6 @@
 .creator-profile-page {
   width: 100%;
   min-height: 100vh;
-  padding-top: 2rem;
 }
 
 .creator-profile-page .creator-profile-page__body {
@@ -68,17 +67,31 @@
   color: #fff;
 }
 
-.creator-profile-page .creator-profile-page__verified {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1.4rem;
-  height: 1.4rem;
-  border-radius: 50%;
-  font-size: 0.85rem;
-  font-weight: 700;
+.creator-profile-page .creator-profile-page__title {
+  flex-grow: 1;
+}
+
+.creator-profile-page .creator-profile-page__admin-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+  align-self: flex-start;
+}
+
+.creator-profile-page .creator-profile-page__manage-btn {
+  background: rgba(58, 163, 255, 0.18);
+  border: 1px solid rgba(58, 163, 255, 0.5);
   color: #fff;
-  background: #3aa3ff;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.creator-profile-page .creator-profile-page__manage-btn:hover {
+  background: rgba(58, 163, 255, 0.32);
+  border-color: rgba(58, 163, 255, 0.85);
 }
 
 .creator-profile-page .creator-profile-page__handle {

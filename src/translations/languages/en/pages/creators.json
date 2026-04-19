@@ -37,6 +37,14 @@
     "chartsTotal": "{{count}} charts",
     "noUser": "No linked account"
   },
+  "verificationStatus": {
+    "help": {
+      "declined": "The creator has declined to have their charts featured. Levels remain hidden from public listings.",
+      "pending": "Waiting on confirmation from the creator. Default state for newly added creators.",
+      "conditional": "The creator has accepted under specific conditions. Coordinate before any submissions are added.",
+      "allowed": "The creator has agreed to have their charts featured on the forum."
+    }
+  },
   "profile": {
     "meta": {
       "title": "{{name}} - Creator Profile",
@@ -45,6 +53,7 @@
     "loading": "Loading creator...",
     "notFound": "Creator not found",
     "verified": "Verified",
+    "manageButton": "Manage creator",
     "stats": {
       "header": "Creator Stats",
       "chartsCreated": "Charts Created",

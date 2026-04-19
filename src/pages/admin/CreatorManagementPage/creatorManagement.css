@@ -297,15 +297,6 @@
   background-color: #404040;
 }
 
-.creator-management-page .level-item.verified {
-  background-color: rgba(76, 175, 80, 0.1);
-  border-left-color: #4CAF50;
-}
-
-.creator-management-page .level-item.verified:hover {
-  background-color: rgba(76, 175, 80, 0.15);
-}
-
 .creator-management-page .level-item.selected {
   border: 2px solid #4a9eff;
 }
@@ -537,7 +528,6 @@
 }
 
 .creator-management-page .save-button,
-.creator-management-page .verify-button,
 .creator-management-page .cancel-button {
   flex: 1;
   height: 42px;
@@ -569,21 +559,6 @@
   opacity: 0.7;
 }
 
-.creator-management-page .verify-button {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.creator-management-page .verify-button:hover:not(:disabled) {
-  background-color: #45a049;
-}
-
-.creator-management-page .verify-button:disabled {
-  background-color: #2d7230;
-  cursor: not-allowed;
-  opacity: 0.7;
-}
-
 .creator-management-page .cancel-button {
   background-color: #666666;
   color: white;
@@ -599,13 +574,11 @@
   opacity: 0.7;
 }
 
-.creator-management-page .save-button.loading,
-.creator-management-page .verify-button.loading {
+.creator-management-page .save-button.loading {
   color: transparent;
 }
 
-.creator-management-page .save-button .spinner,
-.creator-management-page .verify-button .spinner {
+.creator-management-page .save-button .spinner {
   position: absolute;
   left: 50%;
   top: 50%;
@@ -757,41 +730,10 @@
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.creator-management-page .level-item.verified {
-  border-left: 4px solid #4CAF50;
-}
-
 .creator-management-page .level-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-}
-
-.creator-management-page .verified-badge {
-  background: #4CAF50;
-  color: white;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  margin-left: 10px;
-}
-
-.creator-management-page .verify-button {
-  background: #4CAF50;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.creator-management-page .verify-button:hover {
-  background: #45a049;
 }
 
 .creator-management-page .page-controls {
@@ -961,18 +903,6 @@
   display: flex;
   align-items: center;
   gap: 8px;
-}
-
-.creator-management-page .creator-info .verified-badge {
-  font-size: 14px;
-  color: #4CAF50;
-  background: rgba(76, 175, 80, 0.1);
-  width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
 }
 
 .creator-management-page .creator-info p {
@@ -1773,62 +1703,6 @@
 
   .creator-management-page .management-actions {
     flex-direction: column;
-  }
-}
-
-.creator-management-page .verification-buttons {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.creator-management-page .unverify-button {
-  background: #ff6b6b;
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background 0.2s;
-  font-size: 0.9rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.creator-management-page .unverify-button:hover:not(:disabled) {
-  background: #ff4f4f;
-}
-
-.creator-management-page .unverify-button:disabled {
-  background: #ff6b6b88;
-  cursor: not-allowed;
-}
-
-.creator-management-page .unverify-button.loading {
-  color: transparent;
-}
-
-.creator-management-page .unverify-button .spinner {
-  width: 20px;
-  height: 20px;
-  animation: spin 1s linear infinite;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
-
-@media (max-width: 768px) {
-  .creator-management-page .verification-buttons {
-    flex-direction: column;
-    gap: 4px;
-  }
-
-  .creator-management-page .unverify-button {
-    width: 100%;
   }
 }
 

@@ -7,12 +7,14 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useCreatorProfileContext } from "@/contexts/CreatorProfileContext";
 import { LevelCard } from "@/components/cards";
 import { UserAvatar } from "@/components/layout";
-import { MetaTags } from "@/components/common/display";
+import { MetaTags, CreatorStatusBadge } from "@/components/common/display";
 import { ScrollButton } from "@/components/common/buttons";
 import { CustomSelect } from "@/components/common/selectors";
 import { SortAscIcon, SortDescIcon } from "@/components/common/icons";
+import { CreatorManagementPopup } from "@/components/popups/Creators";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { formatNumber } from "@/utils";
+import { hasFlag, permissionFlags } from "@/utils/UserPermissions";
 
 const LIMIT = 30;
 
@@ -35,6 +37,8 @@ const CreatorProfilePage = () => {
   const [profile, setProfile] = useState(null);
   const [profileLoading, setProfileLoading] = useState(true);
   const [profileError, setProfileError] = useState(null);
+  const [profileReloadKey, setProfileReloadKey] = useState(0);
+  const [showManagementPopup, setShowManagementPopup] = useState(false);
 
   const [levelsData, setLevelsData] = useState(null);
   const [totalLevels, setTotalLevels] = useState(0);
@@ -80,7 +84,7 @@ const CreatorProfilePage = () => {
         if (mounted) setProfileLoading(false);
       });
     return () => { mounted = false; };
-  }, [creatorId]);
+  }, [creatorId, profileReloadKey]);
 
   const fetchLevelsData = useCallback(async (resetPage = false) => {
     if (cancelTokenRef.current) {
@@ -187,10 +191,12 @@ const CreatorProfilePage = () => {
           <div className="creator-profile-page__title">
             <div className="creator-profile-page__name-row">
               <h1 className="creator-profile-page__name">{creatorDoc.name}</h1>
-              {creatorDoc.isVerified && (
-                <span className="creator-profile-page__verified" title={t('creators.profile.verified')}>
-                  ✓
-                </span>
+              {creatorDoc.verificationStatus && (
+                <CreatorStatusBadge
+                  status={creatorDoc.verificationStatus}
+                  size="medium"
+                  className="creator-profile-page__status"
+                />
               )}
             </div>
             {creatorDoc.user?.username && (
@@ -198,6 +204,17 @@ const CreatorProfilePage = () => {
             )}
             <span className="creator-profile-page__id">ID: {creatorDoc.id}</span>
           </div>
+          {hasFlag(user, permissionFlags.SUPER_ADMIN) && (
+            <div className="creator-profile-page__admin-actions">
+              <button
+                type="button"
+                className="creator-profile-page__manage-btn"
+                onClick={() => setShowManagementPopup(true)}
+              >
+                {t('creators.profile.manageButton', { defaultValue: 'Manage' })}
+              </button>
+            </div>
+          )}
         </header>
 
         <section className="creator-profile-page__section">
@@ -293,6 +310,14 @@ const CreatorProfilePage = () => {
           )}
         </section>
       </div>
+
+      {showManagementPopup && (
+        <CreatorManagementPopup
+          creator={creatorDoc}
+          onClose={() => setShowManagementPopup(false)}
+          onUpdate={() => setProfileReloadKey((k) => k + 1)}
+        />
+      )}
     </div>
   );
 };
